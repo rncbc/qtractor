@@ -223,8 +223,15 @@ bool qtractorLv2PluginType::open (void)
 
 	// Retrieve plugin type names.
 	SLV2Value name = slv2_plugin_get_name(m_slv2_plugin);
-	m_sName = slv2_value_as_string(name);
-	slv2_value_free(name);
+	if (name) {
+		m_sName = slv2_value_as_string(name);
+		slv2_value_free(name);
+	} else {
+		m_sName = filename();
+		int iIndex = m_sName.lastIndexOf('/')
+		if (iIndex > 0)
+			m_sName = m_sName.right(m_sName.length() - iIndex - 1);
+	}
 
 	// Sanitize plugin label.
 	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");

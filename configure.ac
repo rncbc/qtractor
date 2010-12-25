@@ -124,7 +124,7 @@ AC_ARG_ENABLE(lv2-saverestore,
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
-  AC_HELP_STRING([--jack-session], [enable JACK session support (default=yes)]),
+  AC_HELP_STRING([--enable-jack-session], [enable JACK session support (default=yes)]),
   [ac_jack_session="$enableval"],
   [ac_jack_session="yes"])
 
