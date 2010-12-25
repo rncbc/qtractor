@@ -905,19 +905,17 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				long t = iTime - iEditHeadTime;
 				double t1 = (double) t / (double) d;
 				double t2 = (double) (t + iDuration) / (double) d;
-				fprintf(stderr, "DEBUG> p=%g t1=%g", p, t1);
 				if (p > 0.0) {
 					if (t1 > 0.0 && t1 < 1.0)
-						t1 = ::sqrt(t1 * ::pow((-1.0 / p) * ::log(t1) + 1.0, p));
+						t1 = ::sqrt(t1 * ::pow(1.0 - (::log(t1) / p), p));
 					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
-						t2 = ::sqrt(t2 * ::pow((-1.0 / p) * ::log(t2) + 1.0, p));
+						t2 = ::sqrt(t2 * ::pow(1.0 - (::log(t2) / p), p));
 				} else {
 					if (t1 > 0.0 && t1 < 1.0)
-						t1 = ::sqrt(((t1 - 1.0) * ::pow((1.0 / p) * ::log(1.0 - t1) + 1.0, -p)) + 1.0);
+						t1 = ::sqrt(((1.0 - t1) * ::pow(1.0 + (::log(1.0 - t1) / p), -p)));
 					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
-						t2 = ::sqrt(((t2 - 1.0) * ::pow((1.0 / p) * ::log(1.0 - t2) + 1.0, -p)) + 1.0);
+						t2 = ::sqrt(((1.0 - t2) * ::pow(1.0 + (::log(1.0 - t2) / p), -p)));
 				}
-				fprintf(stderr, " -> %g\n", t1);
 				t1 = t1 * d + iEditHeadTime;
 				if (m_ui.TimeshiftDurationCheckBox->isChecked()) {
 					t2 = t2 * d + iEditHeadTime;
