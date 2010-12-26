@@ -191,6 +191,10 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 	// Flush current buffer.
 	flushStdoutBuffer();
 
+#ifdef CONFIG_DEBUG
+	bCapture = false;
+#endif
+
 #if !defined(WIN32)
 	// Destroy if already enabled.
 	if (!bCapture && m_pStdoutNotifier) {

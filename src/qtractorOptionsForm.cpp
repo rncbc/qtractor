@@ -514,6 +514,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	choosePluginType(iPluginType);
 
+#ifdef CONFIG_DEBUG
+	m_ui.StdoutCaptureCheckBox->setEnabled(false);
+#endif
+
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
 	stabilizeForm();
