@@ -228,7 +228,7 @@ bool qtractorLv2PluginType::open (void)
 		slv2_value_free(name);
 	} else {
 		m_sName = filename();
-		int iIndex = m_sName.lastIndexOf('/')
+		int iIndex = m_sName.lastIndexOf('/');
 		if (iIndex > 0)
 			m_sName = m_sName.right(m_sName.length() - iIndex - 1);
 	}
