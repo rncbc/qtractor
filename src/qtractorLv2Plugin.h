@@ -50,6 +50,12 @@
 #include "lv2_saverestore.h"
 #endif
 
+#ifdef CONFIG_LV2_PERSIST
+// LV2 Persist support.
+#include "lv2_persist.h"
+#define QTRACTOR_LV2_ATOM_STRING_ID 2
+#endif
+
 #ifdef CONFIG_LV2_GTK_UI
 // Forward declarations.
 class QX11EmbedContainer;
@@ -138,6 +144,8 @@ public:
 	SLV2Plugin slv2_plugin() const;
 	SLV2Instance slv2_instance(unsigned short iInstance) const;
 
+	LV2_Handle lv2_handle(unsigned short iInstance) const;
+
 	// Audio port numbers.
 	unsigned long audioIn(unsigned short i)
 		{ return m_piAudioIns[i]; }
@@ -181,21 +189,36 @@ public:
 
 #endif
 
-#ifdef CONFIG_LV2_SAVERESTORE
-
 	// Configuration (restore) stuff.
 	void configure(const QString& sKey, const QString& sValue);
 
 	// Plugin configuration/state (save) snapshot.
 	void freezeConfigs();
 
+	// Plugin configuration/state (load) realization.
+	void realizeConfigs();
+
+#ifdef CONFIG_LV2_SAVERESTORE
+
 	// LV2 Save/Restore extension data descriptor accessor.
 	const LV2SR_Descriptor *lv2_sr_descriptor(unsigned short iInstance) const;
 
-	bool lv2_save(unsigned short iInstance,
+	bool lv2_sr_save(unsigned short iInstance,
 		const char *pszDirectory, LV2SR_File ***pppFiles);
-	bool lv2_restore(unsigned short iInstance,
+	bool lv2_sr_restore(unsigned short iInstance,
 		const LV2SR_File **ppFiles);
+
+#endif
+
+#ifdef CONFIG_LV2_PERSIST
+
+	// LV2 Persist extension data descriptor accessor.
+	const LV2_Persist *lv2_persist_descriptor(unsigned short iInstance) const;
+
+	void lv2_persist_store(
+		const char *key, const void *value, size_t size, uint32_t type);
+	const void *lv2_persist_retrieve(
+		const char *key, size_t *size, uint32_t *type);
 
 #endif
 
@@ -250,6 +273,10 @@ protected:
 	QX11EmbedContainer *m_pX11EmbedContainer;
 #endif
 
+#endif
+
+#ifdef CONFIG_LV2_PERSIST
+	QHash<QString, QByteArray> m_lv2_persist_configs;
 #endif
 };
 

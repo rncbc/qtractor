@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.7.48, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.7.49, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -121,6 +121,11 @@ AC_ARG_ENABLE(lv2-saverestore,
   AC_HELP_STRING([--enable-lv2-saverestore], [enable LV2 plug-in save/restore support (default=yes)]),
   [ac_lv2_saverestore="$enableval"],
   [ac_lv2_saverestore="yes"])
+
+AC_ARG_ENABLE(lv2-persist,
+  AC_HELP_STRING([--enable-lv2-persist], [enable LV2 plug-in persistence support (default=yes)]),
+  [ac_lv2_persist="$enableval"],
+  [ac_lv2_persist="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -530,6 +535,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_gtk_ui="no"
       ac_lv2_external_ui="no"
       ac_lv2_saverestore="no"
+      ac_lv2_persist="no"
    fi
 fi
 
@@ -713,7 +719,7 @@ if test "x$ac_lv2" = "xyes"; then
       # Check for proper headers.
       CFLAGS="$ac_lv2_cflags $CFLAGS"
       CPPFLAGS="$ac_lv2_cflags $CPPFLAGS"
-      AC_CHECK_HEADERS(lv2.h slv2/slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
+      AC_CHECK_HEADERS(lv2.h lv2_uri_map.h slv2/slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
       if test "x$ac_lv2" = "xyes"; then
          ac_cflags="$ac_cflags $ac_lv2_cflags"
       fi
@@ -737,9 +743,10 @@ else
    ac_lv2_gtk_ui="no"
    ac_lv2_external_ui="no"
    ac_lv2_saverestore="no"
+   ac_lv2_persist="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h lv2_uri_map.h,
+   AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h,
       [ac_lv2_event="yes"], [ac_lv2_event="no"])
    if test "x$ac_lv2_event" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event/MIDI extension is available.])
@@ -779,6 +786,14 @@ if test "x$ac_lv2_saverestore" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_SAVERESTORE, 1, [Define if LV2 save/restore extension is available.])
    else
       AC_MSG_WARN([*** LV2 save/restore extension will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_persist" = "xyes"; then
+   AC_CHECK_HEADER(lv2_persist.h, [ac_lv2_persist="yes"], [ac_lv2_persist="no"])
+   if test "x$ac_lv2_persist" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_PERSIST, 1, [Define if LV2 persist extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 persist extension will be disabled.])
    fi
 fi
 
@@ -852,6 +867,7 @@ echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
+echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
 echo
 echo "  JACK Session support (EXPERIMENTAL)  . . . . . . .: $ac_jack_session"
 echo

@@ -465,6 +465,9 @@ public:
 	virtual void freezeConfigs() {}
 	virtual void releaseConfigs() {}
 
+	// Plugin configure realization.
+	virtual void realizeConfigs();
+	
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/) {}
 	virtual void closeEditor() {};
@@ -518,7 +521,7 @@ public:
 
 	void setConfig(const QString& sKey, const QString& sValue)
 		{ m_configs[sKey] = sValue; }
-	QString config(const QString& sKey) const
+	const QString& config(const QString& sKey)
 		{ return m_configs[sKey]; }
 
 	// Plugin parameter values stuff.
@@ -527,6 +530,9 @@ public:
 	// Plugin parameter/state snapshot.
 	void freezeValues();
 	void releaseValues();
+
+	// Plugin aparameter/state realization.
+	void realizeValues();
 
 	void setValues(const Values& values)
 		{ m_values = values; }
@@ -537,10 +543,6 @@ public:
 		{ m_values[iIndex] = fValue; }
 	float value(unsigned long iIndex) const
 		{ return m_values[iIndex]; }
-
-	// Plugin configure realization.
-	void realizeConfigs();
-	void realizeValues();
 
 	// Plugin configure clearance.
 	void clearConfigs()
