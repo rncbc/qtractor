@@ -40,7 +40,7 @@ static uint32_t qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
 {
 #ifdef CONFIG_LV2_EVENT
-	if (strcmp(map, LV2_EVENT_URI) == 0 &&
+	if ((map && strcmp(map, LV2_EVENT_URI) == 0) &&
 		strcmp(uri, SLV2_EVENT_CLASS_MIDI) == 0)
 		return QTRACTOR_LV2_MIDI_EVENT_ID;
 	else
@@ -1315,6 +1315,19 @@ void qtractorLv2Plugin::freezeConfigs (void)
 {
 	if (!type()->isConfigure())
 		return;
+	
+#ifdef CONFIG_LV2_PERSIST
+
+	for (unsigned short i = 0; i < instances(); ++i) {
+		const LV2_Persist *persist = lv2_persist_descriptor(i);
+		if (persist) {
+			LV2_Handle handle = lv2_handle(i);
+			if (handle)
+				(*persist->save)(handle, qtractor_lv2_persist_store, this);
+		}
+	}
+
+#endif	// CONFIG_LV2_PERSIST
 
 #ifdef CONFIG_LV2_SAVERESTORE
 	
@@ -1379,19 +1392,6 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	::free(ppFiles);
 
 #endif	// CONFIG_LV2_SAVERESTORE
-
-#ifdef CONFIG_LV2_PERSIST
-
-	for (unsigned short i = 0; i < instances(); ++i) {
-		const LV2_Persist *persist = lv2_persist_descriptor(i);
-		if (persist) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*persist->save)(handle, qtractor_lv2_persist_store, this);
-		}
-	}
-
-#endif	// CONFIG_LV2_PERSIST
 }
 
 // Plugin configuration/state (load) realization.

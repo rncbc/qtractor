@@ -5,7 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- LV2 Persist extension support introduced.
+- LV2 Persist extension support is being introduced.
+  (EXPERIMENTAL)
 
 - A new timeshift MIDI tool has been added, after
   an awesome patch by Jiri Prochaszka aka Anchakor;
