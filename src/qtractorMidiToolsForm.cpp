@@ -912,9 +912,9 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 						t2 = ::sqrt(t2 * ::pow(1.0 - (::log(t2) / p), p));
 				} else {
 					if (t1 > 0.0 && t1 < 1.0)
-						t1 = 1.0 - ::sqrt((1.0 - t1) * ::pow(1.0 + (::log(1.0 - t1) / p), -p));
+						t1 = ::sqrt(1.0 - ((1.0 - t1) * ::pow(1.0 + (::log(1.0 - t1) / p), -p)));
 					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
-						t2 = 1.0 - ::sqrt((1.0 - t2) * ::pow(1.0 + (::log(1.0 - t2) / p), -p));
+						t2 = ::sqrt(1.0 - ((1.0 - t2) * ::pow(1.0 + (::log(1.0 - t2) / p), -p)));
 				}
 				t1 = t1 * d + iEditHeadTime;
 				if (m_ui.TimeshiftDurationCheckBox->isChecked()) {
