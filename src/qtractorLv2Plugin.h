@@ -198,6 +198,9 @@ public:
 	// Plugin configuration/state (load) realization.
 	void realizeConfigs();
 
+	// Plugin configuration/state release.
+	void releaseConfigs();
+
 #ifdef CONFIG_LV2_SAVERESTORE
 
 	// LV2 Save/Restore extension data descriptor accessor.

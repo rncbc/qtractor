@@ -1414,11 +1414,20 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		}
 	}
 
-	m_lv2_persist_configs.clear();
-
 #endif	// CONFIG_LV2_PERSIST
 
 	qtractorPlugin::realizeConfigs();
+}
+
+
+// Plugin configuration/state release.
+void qtractorLv2Plugin::releaseConfigs (void)
+{
+#ifdef CONFIG_LV2_PERSIST
+	m_lv2_persist_configs.clear();
+#endif
+
+	qtractorPlugin::releaseConfigs();
 }
 
 
