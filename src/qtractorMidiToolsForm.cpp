@@ -32,6 +32,7 @@
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QPainter>
 
 #include <time.h>
 #include <math.h>
@@ -39,6 +40,70 @@
 
 // This shall hold the default preset name.
 static QString g_sDefPreset;
+
+
+class TimeshiftCurve : public QWidget
+{
+public:
+
+	// Constructor.
+	TimeshiftCurve(QWidget *pParent = 0) : QWidget(pParent), m_p(0.0) {}
+
+	// Accessors.
+	void setTimeshift(double p) { m_p = p; update(); }
+
+	// Characteristic method.
+	static double timeshift(double t, double p)
+	{
+		if (p > 0.0)
+			t = ::sqrt(t * ::pow(1.0 - (::log(t) / p), p));
+		else
+		if (p < 0.0)
+			t = ::sqrt(1.0 - ((1.0 - t) * ::pow(1.0 + (::log(1.0 - t) / p), -p)));
+
+		return t;
+	}
+
+protected:
+
+	// Paint event method.
+	void paintEvent(QPaintEvent */*pPaintEvent*/)
+	{
+		QPainter painter(this);
+
+		painter.setRenderHint(QPainter::Antialiasing);
+
+		int w = QWidget::width();
+		int h = QWidget::height();
+
+		int x = w >> 1;
+		int y = h >> 1;
+
+		QPen pen(Qt::red);
+		painter.setPen(pen);
+		painter.setPen(Qt::gray);
+		painter.drawLine(x, 0, x, h);
+		painter.drawLine(0, y, w, y);
+
+		QPainterPath path;
+		path.moveTo(0, h);
+		for (x = 4; x < w; x += 4) {
+			double t = double(x) / double(w);
+			path.lineTo(x, h - int(timeshift(t, m_p) * double(h)));
+		}
+		path.lineTo(w, 0);
+
+		pen.setColor(Qt::red);
+		pen.setWidth(2);
+		painter.setPen(pen);
+		painter.drawPath(path);
+	}
+
+private:
+
+	// Instance variables
+	double m_p;
+};
 
 
 //----------------------------------------------------------------------------
@@ -60,7 +125,14 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	m_iDirtyCount = 0;
 	m_iUpdate = 0;
 
-    m_ui.PresetNameComboBox->setValidator(
+	// Special timeshift characteristic curve display...
+	m_pTimeshiftCurve = new TimeshiftCurve();
+	QVBoxLayout *pFrameLayout = new QVBoxLayout();
+	pFrameLayout->setMargin(1);
+	pFrameLayout->addWidget(m_pTimeshiftCurve);
+	m_ui.TimeshiftFrame->setLayout(pFrameLayout);
+
+	m_ui.PresetNameComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetNameComboBox));
 	m_ui.PresetNameComboBox->setInsertPolicy(QComboBox::NoInsert);
 
@@ -106,8 +178,11 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	// Load initial preset names;
 	loadPreset(g_sDefPreset);
+	timeshiftSpinBoxChanged(m_ui.TimeshiftSpinBox->value());
 	refreshPresets();
 	
+	// Draw timeshift curve always.
+
 	// Try to restore old window positioning.
 	// adjustSize();
 
@@ -272,7 +347,10 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.TimeshiftSpinBox,
 		SIGNAL(valueChanged(double)),
-		SLOT(changed()));
+		SLOT(timeshiftSpinBoxChanged(double)));
+	QObject::connect(m_ui.TimeshiftSlider,
+		SIGNAL(valueChanged(int)),
+		SLOT(timeshiftSliderChanged(int)));
 	QObject::connect(m_ui.TimeshiftDurationCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -905,17 +983,10 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				long t = iTime - iEditHeadTime;
 				double t1 = (double) t / (double) d;
 				double t2 = (double) (t + iDuration) / (double) d;
-				if (p > 0.0) {
-					if (t1 > 0.0 && t1 < 1.0)
-						t1 = ::sqrt(t1 * ::pow(1.0 - (::log(t1) / p), p));
-					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
-						t2 = ::sqrt(t2 * ::pow(1.0 - (::log(t2) / p), p));
-				} else {
-					if (t1 > 0.0 && t1 < 1.0)
-						t1 = ::sqrt(1.0 - ((1.0 - t1) * ::pow(1.0 + (::log(1.0 - t1) / p), -p)));
-					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
-						t2 = ::sqrt(1.0 - ((1.0 - t2) * ::pow(1.0 + (::log(1.0 - t2) / p), -p)));
-				}
+				if (t1 > 0.0 && t1 < 1.0)
+					t1 = TimeshiftCurve::timeshift(t1, p);
+				if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
+					t2 = TimeshiftCurve::timeshift(t2, p);
 				t1 = t1 * d + iEditHeadTime;
 				if (m_ui.TimeshiftDurationCheckBox->isChecked()) {
 					t2 = t2 * d + iEditHeadTime;
@@ -1132,9 +1203,59 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		iEnabled++;
 	m_ui.TimeshiftLabel->setEnabled(bEnabled);
 	m_ui.TimeshiftSpinBox->setEnabled(bEnabled);
+	m_ui.TimeshiftText->setEnabled(bEnabled);
 	m_ui.TimeshiftDurationCheckBox->setEnabled(bEnabled);
+	m_pTimeshiftCurve->setVisible(bEnabled);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(iEnabled > 0);
+}
+
+
+// Timeshift characteristic stuff.
+void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
+{
+	if (m_iUpdate > 0)
+		return;
+
+	m_iUpdate++;
+	int i = int(10000.0 * p / 100.0);
+#if 0
+	double c = (1 + ::log(100.0)) / 100.0;
+	if (p > 0.0)
+		i = + int(::pow(10.0, c * double(+ i)));
+	else
+	if (p < 0.0)
+		i = - int(::pow(10.0, c * double(- i)));
+qDebug("DEBUG> timeshiftSpinBoxChanged(%g) i=%d", p, i);
+#endif
+	m_ui.TimeshiftSlider->setValue(i);
+	m_pTimeshiftCurve->setTimeshift(p);
+	m_iUpdate--;
+
+	changed();
+}
+
+void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
+{
+	if (m_iUpdate > 0)
+		return;
+
+	m_iUpdate++;
+	double p = 100.0 * double(i) / 10000.0;
+#if 0
+	double c = 100.0 / (1 + ::log(100.0));
+	if (i > 0)
+		p = + double(c * ::log(+ p));
+	else
+	if (i < 0)
+		p = - double(c * ::log(- p));
+qDebug("DEBUG> timeshiftSliderChanged(%d) p=%g", i, p);
+#endif
+	m_ui.TimeshiftSpinBox->setValue(p);
+	m_pTimeshiftCurve->setTimeshift(m_ui.TimeshiftSpinBox->value());
+	m_iUpdate--;
+
+	changed();
 }
 
 

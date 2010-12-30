@@ -27,7 +27,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>240</height>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -79,7 +79,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
+		<iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
        </property>
       </widget>
      </item>
@@ -95,7 +95,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+		<iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
        </property>
       </widget>
      </item>
@@ -104,7 +104,7 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint">
+       <property name="sizeHint" stdset="0">
         <size>
          <width>180</width>
          <height>20</height>
@@ -117,7 +117,7 @@
    <item>
     <widget class="QTabWidget" name="ToolTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="Quantize">
       <attribute name="title">
@@ -148,7 +148,7 @@
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -200,7 +200,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -313,7 +313,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>73</width>
            <height>20</height>
@@ -326,7 +326,7 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>16</height>
@@ -365,7 +365,7 @@
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -404,7 +404,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -459,7 +459,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -472,7 +472,7 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>16</height>
@@ -511,7 +511,7 @@
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -550,7 +550,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -586,7 +586,7 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>16</height>
@@ -625,7 +625,7 @@
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -664,7 +664,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -755,7 +755,7 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>16</height>
@@ -794,7 +794,7 @@
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -854,7 +854,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -890,7 +890,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>20</height>
@@ -903,7 +903,7 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>16</height>
@@ -942,7 +942,7 @@
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>19</height>
@@ -987,7 +987,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>224</width>
            <height>58</height>
@@ -1064,7 +1064,7 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>358</width>
            <height>38</height>
@@ -1079,7 +1079,7 @@
        <string>T&amp;imeshift</string>
       </attribute>
       <layout class="QGridLayout">
-       <item row="0" column="0" colspan="4">
+       <item row="0" column="0" colspan="3">
         <widget class="QCheckBox" name="TimeshiftCheckBox">
          <property name="font">
           <font>
@@ -1103,7 +1103,7 @@
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
            <height>19</height>
@@ -1129,62 +1129,87 @@
          <property name="toolTip">
           <string>Timeshift parameter</string>
          </property>
-         <property name="accelerated" >
+         <property name="accelerated">
           <bool>true</bool>
          </property>
-         <property name="decimals" >
+         <property name="decimals">
           <number>3</number>
          </property>
-         <property name="singleStep" >
-          <double>0.001</double>
-         </property>
          <property name="minimum">
-          <double>-1000.000</double>
+		  <double>-100.000</double>
          </property>
          <property name="maximum">
-          <double>1000.000</double>
+		  <double>100.000</double>
+         </property>
+         <property name="singleStep">
+		  <double>0.001</double>
          </property>
          <property name="value">
-          <double>0.001</double>
+		  <double>0.000</double>
          </property>
         </widget>
        </item>
-       <item row="1" column="3" >
-        <spacer>
+       <item row="1" column="3">
+        <widget class="QSlider" name="TimeshiftSlider">
+         <property name="toolTip">
+          <string>Timeshift parameter</string>
+         </property>
+         <property name="minimum">
+		  <number>-10000</number>
+         </property>
+         <property name="maximum">
+		  <number>10000</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint">
+        </widget>
+       </item>
+       <item row="1" column="4" rowspan="2">
+        <widget class="QFrame" name="TimeshiftFrame">
+         <property name="minimumSize">
           <size>
-           <width>224</width>
-           <height>19</height>
+           <width>80</width>
+           <height>80</height>
           </size>
          </property>
-        </spacer>
+         <property name="toolTip">
+          <string>Timeshift curve</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Panel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+        </widget>
        </item>
        <item row="2" column="2" colspan="2">
         <widget class="QLabel" name="TimeshiftText">
          <property name="text">
-             <string>P = 0 : no change.
+          <string>P = 0 : no change.
 P &gt; 0 : accelerating shift.
 P &lt; 0 : slowing down shift.
 Edit head/tail (blue) markers define the shift range.</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1" colspan="3">
+       <item row="3" column="1" colspan="4">
         <widget class="QCheckBox" name="TimeshiftDurationCheckBox">
          <property name="text">
           <string>Timeshift duration</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1" colspan="3">
+       <item row="4" column="1" colspan="4">
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint">
+         <property name="sizeHint" stdset="0">
           <size>
            <width>358</width>
            <height>38</height>
@@ -1266,7 +1291,8 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>RescaleValueCheckBox</tabstop>
   <tabstop>RescaleValueSpinBox</tabstop>
   <tabstop>TimeshiftCheckBox</tabstop>
-  <tabstop>TimeshiftPLineEdit</tabstop>
+  <tabstop>TimeshiftSpinBox</tabstop>
+  <tabstop>TimeshiftSlider</tabstop>
   <tabstop>TimeshiftDurationCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>

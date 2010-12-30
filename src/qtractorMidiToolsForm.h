@@ -64,6 +64,9 @@ protected slots:
     void presetSave();
     void presetDelete();
 
+	void timeshiftSpinBoxChanged(double p);
+	void timeshiftSliderChanged(int i);
+
 	void formatChanged(int);
 	void changed();
 	void accept();
@@ -89,6 +92,8 @@ private:
 
 	int m_iDirtyCount;
 	int m_iUpdate;
+
+	class TimeshiftCurve *m_pTimeshiftCurve;
 };
 
 
