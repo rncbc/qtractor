@@ -1218,16 +1218,14 @@ void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
 		return;
 
 	m_iUpdate++;
-	int i = int(10000.0 * p / 100.0);
-#if 0
-	double c = (1 + ::log(100.0)) / 100.0;
+	const double b = 10000.0 / (1.0 + log10(100.0));
+	const double m = (10000.0 - b) / log10(100.0);
+	int i = 0; // = int(10000.0 * p / 100.0);
 	if (p > 0.0)
-		i = + int(::pow(10.0, c * double(+ i)));
+		i = + int(m * ::log10(+ p) + b);
 	else
 	if (p < 0.0)
-		i = - int(::pow(10.0, c * double(- i)));
-qDebug("DEBUG> timeshiftSpinBoxChanged(%g) i=%d", p, i);
-#endif
+		i = - int(m * ::log10(- p) + b);
 	m_ui.TimeshiftSlider->setValue(i);
 	m_pTimeshiftCurve->setTimeshift(p);
 	m_iUpdate--;
@@ -1241,18 +1239,16 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 		return;
 
 	m_iUpdate++;
-	double p = 100.0 * double(i) / 10000.0;
-#if 0
-	double c = 100.0 / (1 + ::log(100.0));
+	const double b = 10000.0 / (1.0 + ::log10(100.0));
+	const double m = (10000.0 - b) / ::log10(100.0);
+	double p = 0.0; // = 100.0 * double(i) / 10000.0;
 	if (i > 0)
-		p = + double(c * ::log(+ p));
+		p = + ::pow(10.0, (double(+ i) - b) / m);
 	else
 	if (i < 0)
-		p = - double(c * ::log(- p));
-qDebug("DEBUG> timeshiftSliderChanged(%d) p=%g", i, p);
-#endif
+		p = - ::pow(10.0, (double(- i) - b) / m);
 	m_ui.TimeshiftSpinBox->setValue(p);
-	m_pTimeshiftCurve->setTimeshift(m_ui.TimeshiftSpinBox->value());
+	m_pTimeshiftCurve->setTimeshift(p);
 	m_iUpdate--;
 
 	changed();
