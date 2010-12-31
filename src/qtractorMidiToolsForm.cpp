@@ -57,9 +57,11 @@ public:
 	{
 		if (p > 0.0f)
 			t = ::sqrtf(t * ::powf(1.0f - (::logf(t) / p), p));
+		//	t = ::powf(t, p);
 		else
 		if (p < 0.0f)
 			t = ::sqrtf(1.0f - ((1.0f - t) * ::powf(1.0f + (::logf(1.0f- t) / p), -p)));
+		//	t = 1.0f - ::powf(1.0f - t, -p);
 
 		return t;
 	}
@@ -79,9 +81,8 @@ protected:
 		int x = w >> 1;
 		int y = h >> 1;
 
-		QPen pen(Qt::red);
+		QPen pen(Qt::gray);
 		painter.setPen(pen);
-		painter.setPen(Qt::gray);
 		painter.drawLine(x, 0, x, h);
 		painter.drawLine(0, y, w, y);
 
