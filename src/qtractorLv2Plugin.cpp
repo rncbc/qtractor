@@ -1527,7 +1527,7 @@ void qtractorLv2Plugin::lv2_persist_store (
 	const char *key, const void *value, size_t size, uint32_t type )
 {
 	if (value && type == QTRACTOR_LV2_ATOM_STRING_ID)
-		setConfig(key, QString::fromUtf8((const char *) value, (int) size));
+		setConfig(key, QString::fromUtf8((const char *) value, (int) size - 1));
 }
 
 

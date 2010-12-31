@@ -50,16 +50,16 @@ public:
 	TimeshiftCurve(QWidget *pParent = 0) : QWidget(pParent), m_p(0.0) {}
 
 	// Accessors.
-	void setTimeshift(double p) { m_p = p; update(); }
+	void setTimeshift(float p) { m_p = p; update(); }
 
 	// Characteristic method.
-	static double timeshift(double t, double p)
+	static float timeshift(float t, float p)
 	{
-		if (p > 0.0)
-			t = ::sqrt(t * ::pow(1.0 - (::log(t) / p), p));
+		if (p > 0.0f)
+			t = ::sqrtf(t * ::powf(1.0f - (::logf(t) / p), p));
 		else
-		if (p < 0.0)
-			t = ::sqrt(1.0 - ((1.0 - t) * ::pow(1.0 + (::log(1.0 - t) / p), -p)));
+		if (p < 0.0f)
+			t = ::sqrtf(1.0f - ((1.0f - t) * ::powf(1.0f + (::logf(1.0f- t) / p), -p)));
 
 		return t;
 	}
@@ -88,8 +88,8 @@ protected:
 		QPainterPath path;
 		path.moveTo(0, h);
 		for (x = 4; x < w; x += 4) {
-			double t = double(x) / double(w);
-			path.lineTo(x, h - int(timeshift(t, m_p) * double(h)));
+			float t = float(x) / float(w);
+			path.lineTo(x, h - int(timeshift(t, m_p) * float(h)));
 		}
 		path.lineTo(w, 0);
 
@@ -102,7 +102,7 @@ protected:
 private:
 
 	// Instance variables
-	double m_p;
+	float m_p;
 };
 
 
@@ -977,19 +977,20 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				= pSession->tickFromFrame(pSession->editHead()) - iTimeOffset;
 			unsigned long iEditTailTime
 				= pSession->tickFromFrame(pSession->editTail()) - iTimeOffset;
-			unsigned long d = iEditTailTime - iEditHeadTime;
-			double p = m_ui.TimeshiftSpinBox->value();
-			if ((p < -1e-6 || p > 1e-6) && (d > 0)) {
-				long t = iTime - iEditHeadTime;
-				double t1 = (double) t / (double) d;
-				double t2 = (double) (t + iDuration) / (double) d;
-				if (t1 > 0.0 && t1 < 1.0)
+			float d = float(iEditTailTime - iEditHeadTime);
+			float p = float(m_ui.TimeshiftSpinBox->value());
+			if ((p < -1e-6f || p > 1e-6f) && (d > 0.0f)) {
+				float t  = float(iTime - iEditHeadTime);
+				float t1 = t / d;
+				float t2 = (t + float(iDuration)) / d;
+				if (t1 > 0.0f && t1 < 1.0f)
 					t1 = TimeshiftCurve::timeshift(t1, p);
-				if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
+				if (m_ui.TimeshiftDurationCheckBox->isChecked()
+					&& (t2 > 0.0f && t2 < 1.0f))
 					t2 = TimeshiftCurve::timeshift(t2, p);
-				t1 = t1 * d + iEditHeadTime;
+				t1 = t1 * d + float(iEditHeadTime);
 				if (m_ui.TimeshiftDurationCheckBox->isChecked()) {
-					t2 = t2 * d + iEditHeadTime;
+					t2 = t2 * d + float(iEditHeadTime);
 					pEditCommand->resizeEventTime(pEvent, t1, t2 - t1);
 				} else {
 					pEditCommand->moveEvent(pEvent, pEvent->note(), t1);
@@ -1218,16 +1219,19 @@ void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
 		return;
 
 	m_iUpdate++;
-	const double b = 10000.0 / (1.0 + log10(100.0));
-	const double m = (10000.0 - b) / log10(100.0);
-	int i = 0; // = int(10000.0 * p / 100.0);
-	if (p > 0.0)
-		i = + int(m * ::log10(+ p) + b);
+	const float b = 10000.0f / (1.0f + ::log10f(100.0f));
+	const float m = (10000.0f - b) / ::log10f(100.0f);
+	int i = int(10000.0f * float(p) / 100.0f);
+	if (p > +0.1)
+		i = + int(m * ::log10f(float(+ p)) + b);
 	else
-	if (p < 0.0)
-		i = - int(m * ::log10(- p) + b);
+	if (p < -0.1)
+		i = - int(m * ::log10f(float(- p)) + b);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiToolsForm::timeshiftSpinBoxChanged(%g) i=%d", float(p), i);
+#endif
 	m_ui.TimeshiftSlider->setValue(i);
-	m_pTimeshiftCurve->setTimeshift(p);
+	m_pTimeshiftCurve->setTimeshift(float(p));
 	m_iUpdate--;
 
 	changed();
@@ -1239,15 +1243,18 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 		return;
 
 	m_iUpdate++;
-	const double b = 10000.0 / (1.0 + ::log10(100.0));
-	const double m = (10000.0 - b) / ::log10(100.0);
-	double p = 0.0; // = 100.0 * double(i) / 10000.0;
+	const float b = 10000.0f / (1.0f + ::log10f(100.0f));
+	const float m = (10000.0f - b) / ::log10f(100.0f);
+	float p = 0.0f; // = 100.0f * float(i) / 10000.0f;
 	if (i > 0)
-		p = + ::pow(10.0, (double(+ i) - b) / m);
+		p = + ::powf(10.0f, (float(+ i) - b) / m);
 	else
 	if (i < 0)
-		p = - ::pow(10.0, (double(- i) - b) / m);
-	m_ui.TimeshiftSpinBox->setValue(p);
+		p = - ::powf(10.0f, (float(- i) - b) / m);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiToolsForm::timeshiftSliderChanged(%d) p=%g", i, p);
+#endif
+	m_ui.TimeshiftSpinBox->setValue(double(p));
 	m_pTimeshiftCurve->setTimeshift(p);
 	m_iUpdate--;
 
