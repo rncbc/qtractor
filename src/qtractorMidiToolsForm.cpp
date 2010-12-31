@@ -1204,6 +1204,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		iEnabled++;
 	m_ui.TimeshiftLabel->setEnabled(bEnabled);
 	m_ui.TimeshiftSpinBox->setEnabled(bEnabled);
+	m_ui.TimeshiftSlider->setEnabled(bEnabled);
 	m_ui.TimeshiftText->setEnabled(bEnabled);
 	m_ui.TimeshiftDurationCheckBox->setEnabled(bEnabled);
 	m_pTimeshiftCurve->setVisible(bEnabled);
