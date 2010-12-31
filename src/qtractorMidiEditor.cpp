@@ -1313,15 +1313,18 @@ void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
 {
 	// Select all/none view contents.
 	if (bSelect) {
-		const QRect rect(0, 0,
-			m_pEditView->contentsWidth(),
-			m_pEditView->contentsHeight());
+		const QRect rect(-1, -1,
+			m_pEditView->contentsWidth()  + 2,
+			m_pEditView->contentsHeight() + 2);
 		selectRect(rect, bToggle, true);
 	} else {
 		m_select.clear();
 		updateContents();
 		selectionChangeNotify();
 	}
+
+	// Make sure main view keeps focus...
+	m_pEditView->setFocus();
 }
 
 
@@ -3369,8 +3372,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 		return false;
 	}
 
-	// Make sure we've get focus back...
-	pScrollView->setFocus();
+	// Done.
 	return true;
 }
 

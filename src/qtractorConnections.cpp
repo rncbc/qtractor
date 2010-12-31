@@ -274,9 +274,6 @@ void qtractorConnections::keyPressEvent ( QKeyEvent *pKeyEvent )
 		QWidget::keyPressEvent(pKeyEvent);
 		break;
 	}
-
-	// Make sure we've get focus back...
-	QWidget::setFocus();
 }
 
 

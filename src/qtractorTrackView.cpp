@@ -1757,6 +1757,9 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 			updateContents(rectUpdate);
 		m_pTracks->selectionChangeNotify();
 	}
+
+	// Make sure we keep focus...
+	qtractorScrollView::setFocus();
 }
 
 
@@ -1785,6 +1788,9 @@ void qtractorTrackView::selectEditRange (void)
 
 	// Make its due...
 	m_pTracks->selectionChangeNotify();
+	
+	// Make sure we keep focus...
+	qtractorScrollView::setFocus();
 }
 
 
@@ -1832,6 +1838,9 @@ void qtractorTrackView::selectAll ( bool bSelect )
 			updateContents(rectUpdate);
 		m_pTracks->selectionChangeNotify();
 	}
+
+	// Make sure we keep focus...
+	qtractorScrollView::setFocus();
 }
 
 
