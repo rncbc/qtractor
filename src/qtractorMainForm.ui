@@ -361,14 +361,14 @@
      <addaction name="separator" />
      <addaction name="editClipSplitAction" />
      <addaction name="editClipMergeAction" />
-     <addaction name="separator" />
      <addaction name="editClipNormalizeAction" />
-     <addaction name="editClipToolsMenu" />
      <addaction name="separator" />
 	 <addaction name="editClipTempoAction" />
      <addaction name="separator" />
      <addaction name="editClipImportAction" />
      <addaction name="editClipExportAction" />
+     <addaction name="separator" />
+     <addaction name="editClipToolsMenu" />
     </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
