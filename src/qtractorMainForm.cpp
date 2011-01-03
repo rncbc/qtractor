@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -632,9 +632,27 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipNormalizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipNormalize()));
-	QObject::connect(m_ui.editClipQuantizeAction,
+	QObject::connect(m_ui.editClipToolsQuantizeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editClipQuantize()));
+		SLOT(editClipToolsQuantize()));
+	QObject::connect(m_ui.editClipToolsTransposeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipToolsTranspose()));
+	QObject::connect(m_ui.editClipToolsNormalizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipToolsNormalize()));
+	QObject::connect(m_ui.editClipToolsRandomizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipToolsRandomize()));
+	QObject::connect(m_ui.editClipToolsResizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipToolsResize()));
+	QObject::connect(m_ui.editClipToolsRescaleAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipToolsRescale()));
+	QObject::connect(m_ui.editClipToolsTimeshiftAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipToolsTimeshift()));
 	QObject::connect(m_ui.editClipTempoAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipTempo()));
@@ -2231,22 +2249,100 @@ void qtractorMainForm::editClipNormalize (void)
 	qDebug("qtractorMainForm::editClipNormalize()");
 #endif
 
-	// Export current clip, if any...
+	// Normalize current clip, if any...
 	if (m_pTracks)
 		m_pTracks->normalizeClip();
 }
 
 
 // Quantize current clip.
-void qtractorMainForm::editClipQuantize (void)
+void qtractorMainForm::editClipToolsQuantize (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::editClipQuantize()");
+	qDebug("qtractorMainForm::editClipToolsQuantize()");
 #endif
 
-	// Export current clip, if any...
+	// Quantize current clip events, if any...
 	if (m_pTracks)
-		m_pTracks->quantizeClip();
+		m_pTracks->executeClipTool(qtractorMidiEditor::Quantize);
+}
+
+
+// Transpose current clip.
+void qtractorMainForm::editClipToolsTranspose (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editClipToolsTranspose()");
+#endif
+
+	// Tranpose current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeClipTool(qtractorMidiEditor::Transpose);
+}
+
+
+// Normalize current clip.
+void qtractorMainForm::editClipToolsNormalize (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editClipToolsNormalize()");
+#endif
+
+	// Normalize current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeClipTool(qtractorMidiEditor::Normalize);
+}
+
+
+// Randomize current clip.
+void qtractorMainForm::editClipToolsRandomize (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editClipToolsRandomize()");
+#endif
+
+	// Randomize current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeClipTool(qtractorMidiEditor::Randomize);
+}
+
+
+// Resize current clip.
+void qtractorMainForm::editClipToolsResize (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editClipToolsResize()");
+#endif
+
+	// Resize current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeClipTool(qtractorMidiEditor::Resize);
+}
+
+
+// Rescale current clip.
+void qtractorMainForm::editClipToolsRescale (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editClipToolsRescale()");
+#endif
+
+	// Rescale  current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeClipTool(qtractorMidiEditor::Rescale);
+}
+
+
+// Timeshift current clip.
+void qtractorMainForm::editClipToolsTimeshift (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editClipToolsTimeshift()");
+#endif
+
+	// Timeshift current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeClipTool(qtractorMidiEditor::Timeshift);
 }
 
 
@@ -3983,9 +4079,8 @@ void qtractorMainForm::stabilizeForm (void)
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.editClipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL || bSelected);
-	m_ui.editClipQuantizeAction->setEnabled((pClip != NULL || bSelected)
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
-		&& m_pSession->snapPerBeat() > 0);
+	m_ui.editClipToolsMenu->setEnabled((pClip != NULL || bSelected)
+		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
 	m_ui.editClipTempoAction->setEnabled(pClip != NULL || bSelectable);
 	m_ui.editClipImportAction->setEnabled(bTracks);
 		// pTrack && pTrack->trackType() == qtractorTrack::Audio);

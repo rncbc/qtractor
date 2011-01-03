@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -340,6 +340,18 @@
      <addaction name="editSelectTrackAction" />
      <addaction name="editSelectAllAction" />
     </widget>
+    <widget class="QMenu" name="editClipToolsMenu" >
+     <property name="title" >
+      <string>T&amp;ools</string>
+     </property>
+     <addaction name="editClipToolsQuantizeAction" />
+     <addaction name="editClipToolsTransposeAction" />
+     <addaction name="editClipToolsNormalizeAction" />
+     <addaction name="editClipToolsRandomizeAction" />
+     <addaction name="editClipToolsResizeAction" />
+     <addaction name="editClipToolsRescaleAction" />
+     <addaction name="editClipToolsTimeshiftAction" />
+    </widget>
     <widget class="QMenu" name="editClipMenu" >
      <property name="title" >
       <string>Cl&amp;ip</string>
@@ -351,7 +363,7 @@
      <addaction name="editClipMergeAction" />
      <addaction name="separator" />
      <addaction name="editClipNormalizeAction" />
-     <addaction name="editClipQuantizeAction" />
+     <addaction name="editClipToolsMenu" />
      <addaction name="separator" />
 	 <addaction name="editClipTempoAction" />
      <addaction name="separator" />
@@ -851,18 +863,102 @@
     <string>Normalize current clip (gain/volume)</string>
    </property>
   </action>
-  <action name="editClipQuantizeAction" >
+  <action name="editClipToolsQuantizeAction" >
    <property name="text" >
-    <string>&amp;Quantize</string>
+    <string>&amp;Quantize...</string>
    </property>
    <property name="iconText" >
     <string>Quantize Clip</string>
    </property>
    <property name="toolTip" >
-    <string>Quantize clip</string>
+    <string>Quantize clip events</string>
    </property>
    <property name="statusTip" >
-    <string>Quantize current MIDI clip (snap to beat)</string>
+    <string>Quantize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="editClipToolsTransposeAction" >
+   <property name="text" >
+    <string>&amp;Transpose...</string>
+   </property>
+   <property name="iconText" >
+    <string>Transpose Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Transpose clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transpose current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="editClipToolsNormalizeAction" >
+   <property name="text" >
+    <string>&amp;Normalize...</string>
+   </property>
+   <property name="iconText" >
+    <string>Normalize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Normalize clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Normalize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="editClipToolsRandomizeAction" >
+   <property name="text" >
+    <string>&amp;Randomize...</string>
+   </property>
+   <property name="iconText" >
+    <string>Randomize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Randomize clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Randomize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="editClipToolsResizeAction" >
+   <property name="text" >
+    <string>Resi&amp;ze...</string>
+   </property>
+   <property name="iconText" >
+    <string>Resize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Resize clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Resize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="editClipToolsRescaleAction" >
+   <property name="text" >
+    <string>Re&amp;scale...</string>
+   </property>
+   <property name="iconText" >
+    <string>Rescale Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Rescale clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Rescale current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="editClipToolsTimeshiftAction" >
+   <property name="text" >
+    <string>T&amp;imeshift...</string>
+   </property>
+   <property name="iconText" >
+    <string>Timeshift Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Timeshift clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Timeshift current MIDI clip events</string>
    </property>
   </action>
   <action name="editClipTempoAction" >

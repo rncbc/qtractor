@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,9 +34,9 @@
 // Constructor.
 qtractorMidiEditCommand::qtractorMidiEditCommand (
 	qtractorMidiClip *pMidiClip, const QString& sName )
-	: qtractorCommand(sName), m_pMidiClip(pMidiClip)
+	: qtractorCommand(sName), m_pMidiClip(pMidiClip), m_bAdjusted(false),
+		m_iDuration((pMidiClip->sequence())->duration())		
 {
-	m_iDuration = (pMidiClip->sequence())->duration();
 }
 
 
@@ -215,6 +215,108 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	// Renqueue dropped events...
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, false);
+
+	// Adjust edit-command result to prevent event overlapping.
+	if (bRedo && !m_bAdjusted) m_bAdjusted = adjust();
+	
+	return true;
+}
+
+
+// Adjust edit-command result to prevent event overlapping.
+bool qtractorMidiEditCommand::adjust (void)
+{
+	if (m_pMidiClip == NULL)
+		return false;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
+		return false;
+
+	// HACK: What we're going to do here is about checking the
+	// whole sequence, fixing any overlapping note events and
+	// adjusting the issued command for proper undo/redo...
+	qtractorMidiSequence::NoteMap notes;
+
+	// For each event, do rescan...
+	qtractorMidiEvent *pEvent = pSeq->events().first();
+	while (pEvent) {
+		unsigned long iTime = pEvent->time();
+		unsigned long iTimeEnd = iTime + pEvent->duration();
+		qtractorMidiEvent *pNextEvent = pEvent->next();
+		// NOTEON: Find previous note event and check overlaps...
+		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+			// Already there?
+			unsigned char note = pEvent->note();
+			qtractorMidiSequence::NoteMap::Iterator iter = notes.find(note);
+			if (iter != notes.end()) {
+				qtractorMidiEvent *pPrevEvent = *iter;
+				unsigned long iPrevTime = pPrevEvent->time();
+				unsigned long iPrevTimeEnd = iPrevTime + pPrevEvent->duration();
+				// Inner operlap...
+				if (iTime > iPrevTime && iTime < iPrevTimeEnd) {
+					// Left-side outer event...
+					unsigned long iDuration = pPrevEvent->duration();
+					pPrevEvent->setDuration(iTime - iPrevTime);
+					if (!findEvent(pPrevEvent, ResizeEventTime))
+						resizeEventTime(pPrevEvent, iPrevTime, iDuration);
+					// Right-side outer event...
+					if (iTimeEnd < iPrevTimeEnd) {
+						qtractorMidiEvent *pNewEvent
+							= new qtractorMidiEvent(*pPrevEvent);
+						pNewEvent->setTime(iTimeEnd);
+						pNewEvent->setDuration(iPrevTimeEnd - iTimeEnd);
+						insertEvent(pNewEvent);
+						pSeq->insertEvent(pNewEvent);
+						pNextEvent = pNewEvent->next();
+					}
+				}
+				else
+				// Loose overlap?...
+				if (iTime == iPrevTime) {
+					// Exact overlap...
+					if (iTimeEnd == iPrevTimeEnd) {
+						pSeq->unlinkEvent(pPrevEvent);
+						if (!findEvent(pPrevEvent, RemoveEvent))
+							removeEvent(pPrevEvent);
+					} else {
+						// Partial overlap...
+						if (iTimeEnd < iPrevTimeEnd) {
+							// Short over large...
+							unsigned long iDuration = pPrevEvent->duration();
+							pPrevEvent->setDuration(pEvent->duration());
+							if (!findEvent(pPrevEvent, ResizeEventTime))
+								resizeEventTime(pPrevEvent, iPrevTime, iDuration);
+							iDuration = pEvent->duration();
+							pSeq->unlinkEvent(pEvent);
+							pEvent->setTime(iTimeEnd);
+							pEvent->setDuration(iPrevTimeEnd - iTimeEnd);
+							pSeq->insertEvent(pEvent);
+							if (!findEvent(pEvent, ResizeEventTime)) {
+								resizeEventTime(pEvent, iTime, iDuration);
+							}
+						} else {
+							// Large over short...
+							unsigned long iDuration = pEvent->duration();
+							pSeq->unlinkEvent(pEvent);
+							pEvent->setTime(iPrevTimeEnd);
+							pEvent->setDuration(iTimeEnd - iPrevTimeEnd);
+							pSeq->insertEvent(pEvent);
+							if (!findEvent(pEvent, ResizeEventTime)) {
+								resizeEventTime(pEvent, iTime, iDuration);
+							}
+						}
+						// We've move it ahead...
+						pEvent = pPrevEvent;
+					}					
+				}
+			}
+			// Set as last note...
+			notes[note] = pEvent;
+		}
+		// Iterate next...
+		pEvent = pNextEvent;
+	}
 
 	return true;
 }

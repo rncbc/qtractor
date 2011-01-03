@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip tools (quantize, transpose, normalize,
+  randomize, resize, rescale and the new timeshift)
+  are now all accessible from the main tracks view
+  (Edit/Clip/Tools menu) and apply to all events on
+  current selected clip(s). (EXPERIMENTAL)
+
 - LV2 Persist extension support is being introduced.
   (EXPERIMENTAL)
 

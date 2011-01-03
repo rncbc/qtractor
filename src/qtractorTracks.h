@@ -1,7 +1,7 @@
 // qtractorTracks.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -36,6 +36,7 @@ class qtractorSession;
 class qtractorClip;
 class qtractorClipCommand;
 class qtractorMidiClipCommand;
+class qtractorMidiToolsForm;
 
 
 //----------------------------------------------------------------------------
@@ -83,7 +84,7 @@ public:
 	bool editClip(qtractorClip *pClip = NULL);
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
-	bool quantizeClip(qtractorClip *pClip = NULL);
+	bool executeClipTool(int iTool, qtractorClip *pClip = NULL);
 	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();
 	bool mergeClips();
@@ -149,8 +150,9 @@ protected:
 	// Multi-clip command builders.
 	bool normalizeClipCommand(
 		qtractorClipCommand *pClipCommand, qtractorClip *pClip);
-	bool quantizeClipCommand(
-		qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip);
+	bool executeClipToolCommand(
+		qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip,
+		qtractorMidiToolsForm *pToolsForm);
 
 	// Common clip-export/merge methods.
 	bool mergeExportClips(qtractorClipCommand *pClipCommand);

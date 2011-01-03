@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,6 +80,9 @@ protected:
 	// Common executive method.
 	bool execute(bool bRedo);
 
+	// Adjust edit-command result to prevent event overlapping.
+	bool adjust();
+
 private:
 
 	// Event item struct.
@@ -106,6 +109,8 @@ private:
 	qtractorMidiClip *m_pMidiClip;
 
 	QList<Item *> m_items;
+
+	bool m_bAdjusted;
 
 	unsigned long m_iDuration;
 };

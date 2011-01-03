@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,6 +52,9 @@
 #include "qtractorPasteRepeatForm.h"
 
 #include "qtractorMidiEditorForm.h"
+
+#include "qtractorMidiToolsForm.h"
+#include "qtractorMidiEditSelect.h"
 
 #include <QVBoxLayout>
 #include <QProgressBar>
@@ -688,16 +691,31 @@ bool qtractorTracks::normalizeClipCommand (
 }
 
 
-// Quantize given(current) MIDI clip.
-bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
+// Execute tool on a given(current) MIDI clip.
+bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 {
+	qtractorMidiToolsForm toolsForm(this);
+	toolsForm.setToolIndex(iTool);
+	if (!toolsForm.exec())
+		return false;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
-
-	// Make it as an undoable command...
+	
+	// Make it as an undoable named command...
+	QString sTool;
+	switch (iTool) {
+	case 0:	sTool = tr("quantize");  break;
+	case 1:	sTool = tr("transpose"); break;
+	case 2:	sTool = tr("normalize"); break;
+	case 3:	sTool = tr("randomize"); break;
+	case 4:	sTool = tr("resize");    break;
+	case 5:	sTool = tr("rescale");   break;
+	case 6:	sTool = tr("timeshift"); break;
+	}
 	qtractorMidiClipCommand *pMidiClipCommand
-		= new qtractorMidiClipCommand(tr("clip quantize"));
+		= new qtractorMidiClipCommand(tr("clip tool %1").arg(sTool));
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -707,9 +725,9 @@ bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 		for ( ; iter != items.constEnd(); ++iter)
-			quantizeClipCommand(pMidiClipCommand, iter.key());
+			executeClipToolCommand(pMidiClipCommand, iter.key(), &toolsForm);
 	}	// Single, current clip instead?
-	else quantizeClipCommand(pMidiClipCommand, pClip);
+	else executeClipToolCommand(pMidiClipCommand, pClip, &toolsForm);
 
 	QApplication::restoreOverrideCursor();
 
@@ -724,15 +742,12 @@ bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
 }
 
 
-bool qtractorTracks::quantizeClipCommand (
-	qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip )
+bool qtractorTracks::executeClipToolCommand (
+	qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip,
+	qtractorMidiToolsForm *pToolsForm )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return false;
-
-	unsigned short iQuantize = pSession->snapPerBeat();
-	if (iQuantize < 1)
 		return false;
 
 	if (pClip == NULL)
@@ -758,10 +773,6 @@ bool qtractorTracks::quantizeClipCommand (
 		iLength = pClip->clipSelectEnd() - pClip->clipSelectStart();
 	}
 
-	// Make it as an undoable command...
-	qtractorMidiEditCommand *pEditCommand
-		= new qtractorMidiEditCommand(pMidiClip, tr("clip quantize"));
-
 	qtractorMidiSequence *pSeq = pMidiClip->sequence();
 	unsigned long iTimeOffset = pSeq->timeOffset();
 
@@ -777,25 +788,27 @@ bool qtractorTracks::quantizeClipCommand (
 	pNode = cursor.seekFrame(f1 += iLength);
 	unsigned long iTimeEnd = iTimeStart + pNode->tickFromFrame(f1) - t1;
 
+	// Emulate an user-made selection...
+	qtractorMidiEditSelect select;
+	const QRect rect; // Dummy event rectangle.	
 	for (qtractorMidiEvent *pEvent = pSeq->events().first();
 			pEvent; pEvent = pEvent->next()) {
 		unsigned long iTime = pEvent->time();
 		if (iTime >= iTimeStart && iTime < iTimeEnd) {
-			pNode = cursor.seekTick(iTime);
-			unsigned long q = pNode->ticksPerBeat / iQuantize;
-			iTime = q * ((iTime + (q >> 1)) / q);
-			unsigned long iDuration = pEvent->duration();
-			if (pEvent->type() == qtractorMidiEvent::NOTEON)
-				iDuration = q * ((iDuration + q - 1) / q);
-			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
+			select.addItem(pEvent, rect, rect);
 		}
 	}
 
+	// Add new edit command from tool...
+	pMidiClipCommand->addEditCommand(
+		pToolsForm->editCommand(pMidiClip, &select,
+			pSession->tickFromFrame(pClip->clipStart())));
+
+			
 	// Must be brand new revision...
 	pMidiClip->setRevision(0);
 
 	// That's it...
-	pMidiClipCommand->addEditCommand(pEditCommand);
 	return true;
 }
 
