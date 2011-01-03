@@ -547,7 +547,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragPunchOut:
 			// New punch-out boundary...
-			if (pSession->punchOut() < pSession->editTail()) {
+			if (pSession->punchIn() < pSession->editTail()) {
 				// Yep, new punch-out point...
 				pSession->setPunch(
 					pSession->punchIn(), pSession->editTail());

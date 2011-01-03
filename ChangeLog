@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Moving the punch-out marker over the main track
+  time ruler was failing to shrink the punch-in/out
+  range, now it does (not).
+
 - MIDI clip tools (quantize, transpose, normalize,
   randomize, resize, rescale and the new timeshift)
   are now all accessible from the main tracks view
