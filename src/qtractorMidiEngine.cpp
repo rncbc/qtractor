@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1244,6 +1244,26 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 }
 
 
+// Reset ouput queue drift stats (audio vs. MIDI)...
+void qtractorMidiEngine::resetDrift (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiEngine::resetDrift()");
+#endif
+
+//--DRIFT-SKEW-BEGIN--
+	snd_seq_queue_tempo_t *pAlsaTempo;
+	snd_seq_queue_tempo_alloca(&pAlsaTempo);
+	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
+	unsigned int iSkewBase = snd_seq_queue_tempo_get_skew_base(pAlsaTempo);
+	snd_seq_queue_tempo_set_skew(pAlsaTempo, iSkewBase);
+	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
+//--DRIFT-SKEW-END--
+
+	m_iTimeDrift = 0;
+}
+
+
 // Do ouput queue status (audio vs. MIDI)...
 void qtractorMidiEngine::drift (void)
 {
@@ -1396,7 +1416,9 @@ bool qtractorMidiEngine::activate (void)
 
 	// Reset/zero tickers...
 	m_iTimeStart = 0;
-	m_iTimeDrift = 0;
+
+	// Reset output queue drift compensator...
+	resetDrift();
 
 	// Reset all dependable monitoring...
 	resetAllMonitors();
@@ -1431,9 +1453,11 @@ bool qtractorMidiEngine::start (void)
 	resetTempo();
 	resetAllMonitors();
 
+	// Reset output queue drift compensator...
+	resetDrift();
+
 	// Start queue timer...
 	m_iTimeStart = long(pSession->tickFromFrame(pMidiCursor->frame()));
-	m_iTimeDrift = 0;
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -1556,7 +1580,7 @@ void qtractorMidiEngine::restartLoop (void)
 		m_iTimeStart -= long(pSession->tickFromFrame(pSession->loopEnd())
 			- pSession->tickFromFrame(pSession->loopStart()));
 	//	m_iTimeStart += m_iTimeDrift; -- Drift correction?
-		m_iTimeDrift  = 0;
+		resetDrift();
 	}
 }
 

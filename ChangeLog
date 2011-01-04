@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Attempt to reset audio/MIDI time drift compensator
+  on every engine start and loop turnaround.
+
 - Moving the punch-out marker over the main track
   time ruler was failing to shrink the punch-in/out
   range, now it does (not).
