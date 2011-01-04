@@ -1,7 +1,7 @@
 // qtractorMixer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@
 
 #include <QScrollArea>
 #include <QFrame>
+#include <QHash>
 
 
 // Forward declarations.
@@ -259,7 +260,8 @@ private:
 	QHBoxLayout *m_pWorkspaceLayout;
 
 	// The Strips list.
-	QList<qtractorMixerStrip *> m_strips;
+	typedef QHash<qtractorMonitor *, qtractorMixerStrip *> Strips;
+	Strips m_strips;
 	
 	// Selection stuff.
 	bool                m_bSelectEnabled;

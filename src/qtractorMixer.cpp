@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -889,7 +889,8 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 	// Add this to the workspace layout...
 	m_pWorkspaceLayout->addWidget(pStrip);
 
-	m_strips.append(pStrip);
+	m_strips.insert(pStrip->meter()->monitor(), pStrip);
+
 	pStrip->show();
 }
 
@@ -906,9 +907,9 @@ void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 
 	pStrip->hide();
 
-	int iStrip = m_strips.indexOf(pStrip);
-	if (iStrip >= 0) {
-		m_strips.removeAt(iStrip);
+	qtractorMonitor *pMonitor = pStrip->meter()->monitor();
+	if (findStrip(pMonitor) == pStrip) {
+		m_strips.remove(pMonitor);
 		delete pStrip;
 	}
 
@@ -919,14 +920,7 @@ void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 // Find a mixer strip, given its monitor handle.
 qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor )
 {
-	QListIterator<qtractorMixerStrip *> iter(m_strips);
-	while (iter.hasNext()) {
-		qtractorMixerStrip *pStrip = iter.next();
-		if (pStrip->meter() && (pStrip->meter())->monitor() == pMonitor)
-			return pStrip;
-	}
-	
-	return NULL;
+	return m_strips.value(pMonitor, NULL);
 }
 
 
@@ -947,9 +941,9 @@ QWidget *qtractorMixerRack::workspace (void) const
 // Complete rack refreshment.
 void qtractorMixerRack::refresh (void)
 {
-	QListIterator<qtractorMixerStrip *> iter(m_strips);
-	while (iter.hasNext())
-		iter.next()->refresh();
+	Strips::ConstIterator strip = m_strips.constBegin();
+	for ( ; strip != m_strips.constEnd(); ++strip)
+		strip.value()->refresh();
 }
 
 
@@ -1005,16 +999,16 @@ void qtractorMixerRack::markStrips ( int iMark )
 {
 	m_pWorkspace->setUpdatesEnabled(false);
 
-	QListIterator<qtractorMixerStrip *> iter(m_strips);
-	while (iter.hasNext())
-		iter.next()->setMark(iMark);
+	Strips::ConstIterator strip = m_strips.constBegin();
+	for ( ; strip != m_strips.constEnd(); ++strip)
+		strip.value()->setMark(iMark);
 }
 
 void qtractorMixerRack::cleanStrips ( int iMark )
 {
-	QMutableListIterator<qtractorMixerStrip *> iter(m_strips);
-	while (iter.hasNext()) {
-		qtractorMixerStrip *pStrip = iter.next();
+	Strips::Iterator strip = m_strips.begin();
+	while (strip != m_strips.end()) {
+		qtractorMixerStrip *pStrip = strip.value();
 		if (pStrip->mark() == iMark) {
 			// Remove from the workspace layout...
 			m_pWorkspaceLayout->removeWidget(pStrip);
@@ -1024,10 +1018,11 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 			// Hide strip...
 			pStrip->hide();
 			// Remove from list...
-			iter.remove();
+			strip = m_strips.erase(strip);
 			// and finally get rid of it.
 			delete pStrip;
 		}
+		else ++strip;
 	}
 
 	m_pWorkspace->adjustSize();
@@ -1038,18 +1033,18 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 // Update all strips track buttons.
 void qtractorMixerRack::updateTrackButtons (void)
 {
-	QListIterator<qtractorMixerStrip *> iter(m_strips);
-	while (iter.hasNext())
-		iter.next()->updateTrackButtons();
+	Strips::ConstIterator strip = m_strips.constBegin();
+	for ( ; strip != m_strips.constEnd(); ++strip)
+		strip.value()->updateTrackButtons();
 }
 
 
 // Update all strips monitor buttons.
 void qtractorMixerRack::updateMonitorButtons (void)
 {
-	QListIterator<qtractorMixerStrip *> iter(m_strips);
-	while (iter.hasNext())
-		iter.next()->updateMonitorButton();
+	Strips::ConstIterator strip = m_strips.constBegin();
+	for ( ; strip != m_strips.constEnd(); ++strip)
+		strip.value()->updateMonitorButton();
 }
 
 
