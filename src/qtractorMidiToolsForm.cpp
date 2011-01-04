@@ -56,7 +56,7 @@ public:
 	static float timeshift(float t, float p)
 	{
 		if (p > 0.0f)
-			t = ::sqrtf(t * ::powf(1.0f - (::logf(t) / p), p));
+			t = ::sqrtf(t * ::powf(1.0f - (10.0f * ::logf(t) / p), 0.1f * p));
 		//	t = ::powf(t, p);
 		else
 		if (p < 0.0f)
@@ -1221,14 +1221,12 @@ void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
 		return;
 
 	m_iUpdate++;
-	const float b = 10000.0f / (1.0f + ::log10f(100.0f));
-	const float m = (10000.0f - b) / ::log10f(100.0f);
-	int i = int(10000.0f * float(p) / 100.0f);
-	if (p > +0.1)
-		i = + int(m * ::log10f(float(+ p)) + b);
+	int i = 0; // = int(10000.0f * float(p) / 100.0f);
+	if (p > +0.001)
+		i = + int(2000.0f * ::log10f(1000.0f * float(+ p)));
 	else
-	if (p < -0.1)
-		i = - int(m * ::log10f(float(- p)) + b);
+	if (p < -0.001)
+		i = - int(2000.0f * ::log10f(1000.0f * float(- p)));
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiToolsForm::timeshiftSpinBoxChanged(%g) i=%d", float(p), i);
 #endif
@@ -1245,14 +1243,12 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 		return;
 
 	m_iUpdate++;
-	const float b = 10000.0f / (1.0f + ::log10f(100.0f));
-	const float m = (10000.0f - b) / ::log10f(100.0f);
 	float p = 0.0f; // = 100.0f * float(i) / 10000.0f;
 	if (i > 0)
-		p = + ::powf(10.0f, (float(+ i) - b) / m);
+		p = + 0.001f * ::powf(10.0f, (0.0005f * float(+ i)));
 	else
 	if (i < 0)
-		p = - ::powf(10.0f, (float(- i) - b) / m);
+		p = - 0.001f * ::powf(10.0f, (0.0005f * float(- i)));
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiToolsForm::timeshiftSliderChanged(%d) p=%g", i, p);
 #endif
