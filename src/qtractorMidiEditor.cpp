@@ -1363,12 +1363,12 @@ void qtractorMidiEditor::selectEvent ( qtractorMidiEvent *pEvent, bool bSelect )
 	// Commit selection...
 	m_select.update(true);
 
-	rectUpdateView = rectUpdateView.unite(m_select.rectView());
+	rectUpdateView = rectUpdateView.united(m_select.rectView());
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
 		rectUpdateView.size()));
 
-	rectUpdateEvent = rectUpdateEvent.unite(m_select.rectEvent());
+	rectUpdateEvent = rectUpdateEvent.united(m_select.rectEvent());
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
@@ -2292,12 +2292,12 @@ void qtractorMidiEditor::updateDragSelect (
 	bool bCommit = (flags & SelectCommit);
 	m_select.update(bCommit);
 
-	rectUpdateView = rectUpdateView.unite(m_select.rectView());
+	rectUpdateView = rectUpdateView.united(m_select.rectView());
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
 		rectUpdateView.size()));
 
-	rectUpdateEvent = rectUpdateEvent.unite(m_select.rectEvent());
+	rectUpdateEvent = rectUpdateEvent.united(m_select.rectEvent());
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
@@ -2587,13 +2587,13 @@ void qtractorMidiEditor::updateDragMove (
 		m_posDelta.setY(0);
 	}
 
-	rectUpdateView = rectUpdateView.unite(
+	rectUpdateView = rectUpdateView.united(
 		m_select.rectView().translated(m_posDelta));
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
 		rectUpdateView.size()));
 
-	rectUpdateEvent = rectUpdateEvent.unite(
+	rectUpdateEvent = rectUpdateEvent.united(
 		m_select.rectEvent().translated(m_posDelta.x(), 0));
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
@@ -2661,13 +2661,13 @@ void qtractorMidiEditor::updateDragResize (
 	m_posDelta.setX(dx);
 	m_posDelta.setY(dy);
 
-	rectUpdateView = rectUpdateView.unite(
+	rectUpdateView = rectUpdateView.united(
 		m_select.rectView().translated(m_posDelta.x(), 0));
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
 		rectUpdateView.size()));
 
-	rectUpdateEvent = rectUpdateEvent.unite(
+	rectUpdateEvent = rectUpdateEvent.united(
 		m_select.rectEvent().translated(m_posDelta));
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),

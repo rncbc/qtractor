@@ -1,7 +1,7 @@
 // qtractorClipSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,7 +63,7 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 		// Reset united selection rectangle...
 		m_rect.setRect(0, 0, 0, 0);
 		for (iter = m_items.begin(); iter != m_items.end(); ++iter)
-			m_rect = m_rect.unite(iter.value()->rectClip);
+			m_rect = m_rect.united(iter.value()->rectClip);
 		// Done with clip deselection.
 	} else if (bSelect) {
 		pClip->setClipSelected(true);
@@ -77,7 +77,7 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 			&& m_pTrackSingle != pClip->track())
 			m_pTrackSingle = NULL;
 		// Unite whole selection reactangular area...
-		m_rect = m_rect.unite(rect);
+		m_rect = m_rect.united(rect);
 	}
 }
 
@@ -86,7 +86,7 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 void qtractorClipSelect::addClip ( qtractorClip *pClip, const QRect& rect )
 {
 	m_items.insert(pClip, new Item(rect));
-	m_rect = m_rect.unite(rect);
+	m_rect = m_rect.united(rect);
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorMidiEditSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -55,8 +55,8 @@ void qtractorMidiEditSelect::addItem ( qtractorMidiEvent *pEvent,
 {
 	m_items.insert(pEvent, new Item(rectEvent, rectView, iDeltaTime));
 
-	m_rectEvent = m_rectEvent.unite(rectEvent);
-	m_rectView = m_rectView.unite(rectView);
+	m_rectEvent = m_rectEvent.united(rectEvent);
+	m_rectView = m_rectView.united(rectView);
 	
 	if (m_pAnchorEvent == NULL || m_pAnchorEvent->time() > pEvent->time())
 		m_pAnchorEvent = pEvent;
@@ -123,8 +123,8 @@ void qtractorMidiEditSelect::commit (void)
 	ItemList::ConstIterator iter = m_items.constBegin();
 	for ( ; iter != m_items.constEnd(); ++iter) {
 		Item *pItem = iter.value();
-		m_rectEvent = m_rectEvent.unite(pItem->rectEvent);
-		m_rectView = m_rectView.unite(pItem->rectView);
+		m_rectEvent = m_rectEvent.united(pItem->rectEvent);
+		m_rectView = m_rectView.united(pItem->rectView);
 	}
 }
 

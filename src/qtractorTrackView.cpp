@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -382,7 +382,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					if (iClipStart < iTrackEnd)
 						w += pSession->pixelFromFrame(iTrackEnd - iClipStart);
 					const QRect& clipRect
-						= QRect(x, y1 - cy + 1, w, h).intersect(trackRect);
+						= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 					if (!clipRect.isEmpty()) {
 					#if 0
 						// Just draw a semi-transparent rectangle...
@@ -1677,11 +1677,11 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 				QRect rectClip(x, y, w, h);
 				if (rect.intersects(rectClip)) {
 					if (selectMode != SelectClip)
-						rectClip = rectRange.intersect(rectClip);
+						rectClip = rectRange.intersected(rectClip);
 					m_pClipSelect->selectClip(pClip, rectClip, true);
 					if (selectMode != SelectClip)
 						pClip->setClipSelect(iSelectStart, iSelectEnd);
-					rectUpdate = rectUpdate.unite(rectClip);
+					rectUpdate = rectUpdate.united(rectClip);
 				}
 			}
 		}
@@ -1742,7 +1742,7 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 				const QRect rectClip(x, y, w, h);
 				m_pClipSelect->selectClip(pClip, rectClip,
 					!pClip->isClipSelected());
-				rectUpdate = rectUpdate.unite(rectClip);
+				rectUpdate = rectUpdate.united(rectClip);
 				iUpdate++;
 			}
 			break;
