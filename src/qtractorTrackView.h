@@ -243,6 +243,9 @@ protected:
 	void showClipSelect() const;
 	void hideClipSelect() const;
 
+	// Show selection tooltip...
+	void showToolTip(const QRect& rect, int dx) const;
+
 	// Update single track clip selection.
 	void updateSingleTrack(int y, int h) const;
 

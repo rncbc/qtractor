@@ -1896,6 +1896,32 @@ void qtractorTrackView::updateClipSelect (void)
 }
 
 
+// Show selection tooltip...
+void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
+	unsigned long iFrameStart = pSession->frameSnap(
+		pTimeScale->frameFromPixel(rect.left() + dx));
+	unsigned long iFrameEnd = pSession->frameSnap(
+		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
+
+	QToolTip::showText(
+		QCursor::pos(),
+		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
+			.arg(pTimeScale->textFromFrame(iFrameStart))
+			.arg(pTimeScale->textFromFrame(iFrameEnd))
+			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
+		qtractorScrollView::viewport());
+}
+
+
 // Draw/hide the whole current clip selection.
 void qtractorTrackView::showClipSelect (void) const
 {
@@ -1905,6 +1931,8 @@ void qtractorTrackView::showClipSelect (void) const
 		qtractorClipSelect::Item *pClipItem = iter.value();
 		moveRubberBand(&(pClipItem->rubberBand), pClipItem->rectClip, 3);
 	}
+
+	showToolTip(m_pClipSelect->rect(), m_iDraggingX);
 }
 
 void qtractorTrackView::hideClipSelect (void) const
@@ -1960,11 +1988,16 @@ void qtractorTrackView::updateDropRects ( int y, int h ) const
 
 void qtractorTrackView::showDropRects (void) const
 {
+	QRect rect;
+
 	QListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
 		DropItem *pDropItem = iter.next();
 		moveRubberBand(&(pDropItem->rubberBand), pDropItem->rect, 3);
+		rect = rect.united(pDropItem->rect);
 	}
+	
+	showToolTip(rect, m_iDraggingX);
 }
 
 void qtractorTrackView::hideDropRects (void) const
@@ -2086,10 +2119,19 @@ void qtractorTrackView::dragFadeMove ( const QPoint& pos )
 	m_iDraggingX = dx;
 	moveRubberBand(&m_pRubberBand, m_rectHandle);
 	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
-
+	
 	// Prepare to update the whole view area...
 	qtractorScrollView::viewport()->update(
 		QRect(contentsToViewport(m_rectDrag.topLeft()), m_rectDrag.size()));
+
+	// Show fade-in/out tooltip..
+	QRect rect(m_rectDrag);
+	if (m_dragState == DragFadeIn)
+		rect.setRight(m_rectHandle.left() + m_iDraggingX);
+	else
+	if (m_dragState == DragFadeOut)
+		rect.setLeft(m_rectHandle.right() + m_iDraggingX);
+	showToolTip(rect, 0);
 }
 
 
@@ -2163,6 +2205,7 @@ void qtractorTrackView::dragResizeMove ( const QPoint& pos )
 	}
 
 	moveRubberBand(&m_pRubberBand, rect, 3);
+	showToolTip(rect, 0);
 	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 }
 

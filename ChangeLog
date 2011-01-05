@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- A floating tool-tip is now shown while dragging,
+  moving, resizing or pasting selected clips over
+  the main tracks view, displaying current target
+  position and extent. (EXPERIMENTAL)
+
 - Attempt to reset audio/MIDI time drift compensator
   on every engine start and loop turnaround.
 
