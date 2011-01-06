@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -690,10 +690,12 @@ QTreeWidgetItem *qtractorFileListView::findItem (
 	const QString& sText, int iType ) const
 {
 	// Iterate all over the place to search for the item...
-	QList<QTreeWidgetItem *> items = QTreeWidget::findItems(sText,
-		Qt::MatchFlags(
-			Qt::MatchExactly | Qt::CaseSensitive | Qt::MatchRecursive),
-		(iType == GroupItem ? 0 : pathColumn()));
+	QList<QTreeWidgetItem *> items
+		= QTreeWidget::findItems(
+			QRegExp::escape(sText),
+			Qt::MatchFlags(
+				Qt::MatchRegExp | Qt::CaseSensitive | Qt::MatchRecursive),
+			(iType == GroupItem ? 0 : pathColumn()));
 		
 	// Really check if it's of the intended type...
 	QListIterator<QTreeWidgetItem *> iter(items);

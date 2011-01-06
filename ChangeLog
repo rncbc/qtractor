@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Files tree widget sticky "New Group" item fixed.
+
 - A floating tool-tip is now shown while dragging,
   moving, resizing or pasting selected clips or
   events over the main tracks view and MIDI clip
