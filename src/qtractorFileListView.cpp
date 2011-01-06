@@ -690,12 +690,9 @@ QTreeWidgetItem *qtractorFileListView::findItem (
 	const QString& sText, int iType ) const
 {
 	// Iterate all over the place to search for the item...
-	QList<QTreeWidgetItem *> items
-		= QTreeWidget::findItems(
-			QRegExp::escape(sText),
-			Qt::MatchFlags(
-				Qt::MatchRegExp | Qt::CaseSensitive | Qt::MatchRecursive),
-			(iType == GroupItem ? 0 : pathColumn()));
+	QList<QTreeWidgetItem *> items = QTreeWidget::findItems(sText,
+		Qt::MatchFlags(Qt::MatchExactly | Qt::MatchRecursive),
+		(iType == GroupItem ? 0 : pathColumn()));
 		
 	// Really check if it's of the intended type...
 	QListIterator<QTreeWidgetItem *> iter(items);
