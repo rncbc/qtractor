@@ -91,6 +91,10 @@ public:
 	void setSnapGrid(bool bSnapGrid);
 	bool isSnapGrid() const;
 
+	// Floating tool-tips mode.
+	void setToolTips(bool bToolTips);
+	bool isToolTips() const;
+
 	// Edit (creational) mode.
 	void setEditMode(bool bEditMode);
 	bool isEditMode() const;
@@ -279,7 +283,8 @@ public:
 	void focusOut(qtractorScrollView *pScrollView);
 
 	// MIDI event tool tip helper.
-	QString eventToolTip(qtractorMidiEvent *pEvent) const;
+	QString eventToolTip(qtractorMidiEvent *pEvent,
+		long iTimeDelta = 0, int iNoteDelta = 0, int iValueDelta = 0) const;
 
 	// Visualize the event selection drag-move.
 	void paintDragState(qtractorScrollView *pScrollView,
@@ -495,6 +500,9 @@ private:
 
 	// Snap-to-beat grid mode.
 	bool m_bSnapGrid;
+
+	// Floating tool-tips mode.
+	bool m_bToolTips;
 
 	// Last useful editing values.
 	struct {

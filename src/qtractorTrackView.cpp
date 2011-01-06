@@ -90,6 +90,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 	m_bDropSpan = true;
 	m_bSnapGrid = true;
+	m_bToolTips = true;
 
 	clear();
 
@@ -1899,6 +1900,9 @@ void qtractorTrackView::updateClipSelect (void)
 // Show selection tooltip...
 void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
 {
+	if (!m_bToolTips)
+		return;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
@@ -3275,6 +3279,18 @@ void qtractorTrackView::setSnapGrid ( bool bSnapGrid )
 bool qtractorTrackView::isSnapGrid (void) const
 {
 	return m_bSnapGrid;
+}
+
+
+// Floating tool-tips mode.
+void qtractorTrackView::setToolTips ( bool bToolTips )
+{
+	m_bToolTips = bToolTips;
+}
+
+bool qtractorTrackView::isToolTips (void) const
+{
+	return m_bToolTips;
 }
 
 

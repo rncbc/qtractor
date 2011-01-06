@@ -298,6 +298,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Snap-to-beat grid mode.
 	m_bSnapGrid = false;
 
+	// Floating tool-tips mode.
+	m_bToolTips = true;
+
 	// Last default editing values.
 	m_last.note      = 0x3c;	// middle-C
 	m_last.value     = 0x40;
@@ -611,6 +614,18 @@ void qtractorMidiEditor::setSnapGrid ( bool bSnapGrid )
 bool qtractorMidiEditor::isSnapGrid (void) const
 {
 	return m_bSnapGrid;
+}
+
+
+// Floating tool-tips mode.
+void qtractorMidiEditor::setToolTips ( bool bToolTips )
+{
+	m_bToolTips = bToolTips;
+}
+
+bool qtractorMidiEditor::isToolTips (void) const
+{
+	return m_bToolTips;
 }
 
 
@@ -2110,8 +2125,10 @@ bool qtractorMidiEditor::dragMoveFilter (
 					= pScrollView->viewportToContents(pHelpEvent->pos());
 				qtractorMidiEvent *pMidiEvent = eventAt(pScrollView, pos);
 				if (pMidiEvent) {
-					QToolTip::showText(pHelpEvent->globalPos(),
-						eventToolTip(pMidiEvent));
+					QToolTip::showText(
+						pHelpEvent->globalPos(),
+						eventToolTip(pMidiEvent),
+						pScrollView->viewport());
 					return true;
 				} else {
 					const QString sToolTip("%1 (%2)");
@@ -2121,8 +2138,10 @@ bool qtractorMidiEditor::dragMoveFilter (
 						int ch = m_pEditList->contentsHeight();
 						note = (ch - pos.y()) / m_pEditList->itemHeight();
 					}
-					QToolTip::showText(pHelpEvent->globalPos(),
-						sToolTip.arg(noteName(note)).arg(note));
+					QToolTip::showText(
+						pHelpEvent->globalPos(),
+						sToolTip.arg(noteName(note)).arg(note),
+						pScrollView->viewport());
 					return true;
 				}
 			}
@@ -2607,6 +2626,15 @@ void qtractorMidiEditor::updateDragMove (
 			iNote -= (m_posDelta.y() / h1);
 		m_pEditList->dragNoteOn(iNote, m_pEventDrag->velocity());
 	}
+
+	// Show anchor event tooltip...
+	if (m_bToolTips && m_select.anchorEvent()) {
+		QToolTip::showText(
+			QCursor::pos(),
+			eventToolTip(m_select.anchorEvent(),
+				timeDelta(pScrollView), noteDelta(pScrollView), 0),
+			pScrollView->viewport());
+	}
 }
 
 
@@ -2672,6 +2700,15 @@ void qtractorMidiEditor::updateDragResize (
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
+
+	// Show anchor event tooltip...
+	if (m_bToolTips && m_select.anchorEvent()) {
+		QToolTip::showText(
+			QCursor::pos(),
+			eventToolTip(m_select.anchorEvent(),
+				timeDelta(pScrollView), 0, valueDelta(pScrollView)),
+			pScrollView->viewport());
+	}
 }
 
 
@@ -3084,43 +3121,58 @@ void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
 
 
 // MIDI event tool tip helper.
-QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
+QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
+	long iTimeDelta, int iNoteDelta, int iValueDelta ) const
 {
-	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+	long d0 = 0;
+	if (m_resizeMode == ResizeNoteRight) {
+		d0 = iTimeDelta;
+		iTimeDelta = 0;
+	}
+	else
+	if (m_resizeMode == ResizeNoteLeft)
+		d0 = -iTimeDelta;
+
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset) + pEvent->time();
+	t0 = (t0 + iTimeDelta < 0 ? 0 : t0 + iTimeDelta);
 	QString sToolTip = tr("Time:\t%1\nType:\t")
-		.arg(m_pTimeScale->textFromTick(t0 + pEvent->time()));
+		.arg(m_pTimeScale->textFromTick(t0));
 
 	switch (pEvent->type()) {
 //	case qtractorMidiEvent::NOTEOFF:
 //		sToolTip += tr("Note Off (%1)").arg(int(pEvent->note()));
 //		break;
 	case qtractorMidiEvent::NOTEON:
+		d0 = (pEvent->duration() + d0 < 0 ? 0 : pEvent->duration() + d0);
 		sToolTip += tr("Note On (%1) %2\nVelocity:\t%3\nDuration:\t%4")
-			.arg(int(pEvent->note()))
-			.arg(noteName(pEvent->note()))
-			.arg(int(pEvent->velocity()))
-			.arg(m_pTimeScale->textFromTick(t0, true, pEvent->duration()));
+			.arg(int(pEvent->note() + iNoteDelta))
+			.arg(noteName(pEvent->note() + iNoteDelta))
+			.arg(int(pEvent->velocity() + iValueDelta))
+			.arg(m_pTimeScale->textFromTick(t0, true, d0));
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		sToolTip += tr("Key Press (%1) %2\nValue:\t%3")
-			.arg(int(pEvent->note()))
-			.arg(noteName(pEvent->note()))
-			.arg(int(pEvent->value()));
+			.arg(int(pEvent->note() + iNoteDelta))
+			.arg(noteName(pEvent->note() + iNoteDelta))
+			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CONTROLLER:
 		sToolTip += tr("Controller (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->controller()))
 			.arg(controllerName(int(pEvent->controller())))
-			.arg(int(pEvent->value()));
+			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::PGMCHANGE:
-		sToolTip += tr("Pgm Change (%1)").arg(int(pEvent->value()));
+		sToolTip += tr("Pgm Change (%1)")
+			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CHANPRESS:
-		sToolTip += tr("Chan Press (%1)").arg(int(pEvent->value()));
+		sToolTip += tr("Chan Press (%1)")
+			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::PITCHBEND:
-		sToolTip = tr("Pich Bend (%d)").arg(int(pEvent->pitchBend()));
+		sToolTip = tr("Pich Bend (%d)")
+			.arg(int(pEvent->pitchBend() + iValueDelta));
 		break;
 	case qtractorMidiEvent::SYSEX:
 	{

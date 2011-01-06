@@ -177,6 +177,10 @@ public:
 	void setSnapGrid(bool bSnapGrid);
 	bool isSnapGrid() const;
 
+	// Floating tool-tips mode.
+	void setToolTips(bool bToolTips);
+	bool isToolTips() const;
+
 protected:
 
 	// Resize event handler.
@@ -360,6 +364,9 @@ private:
 
 	// Snap-to-beat grid mode.
 	bool m_bSnapGrid;
+
+	// Floating tool-tips mode.
+	bool m_bToolTips;
 
 	// The local clipboard item.
 	struct ClipItem
