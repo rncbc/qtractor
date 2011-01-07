@@ -125,6 +125,12 @@
      <addaction name="viewToolbarViewAction" />
      <addaction name="viewToolbarTransportAction" />
     </widget>
+    <widget class="QMenu" name="viewWindowsMenu" >
+     <property name="title" >
+      <string>&amp;Windows</string>
+     </property>
+	 <addaction name="viewEventsAction" />
+    </widget>
     <widget class="QMenu" name="viewZoomMenu" >
      <property name="icon" >
       <iconset resource="qtractor.qrc" >:/images/viewZoomTool.png</iconset>
@@ -149,9 +155,10 @@
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
-    <addaction name="separator" />
-	<addaction name="viewToolTipsAction" />
+    <addaction name="viewWindowsMenu" />
 	<addaction name="separator" />
+	<addaction name="viewToolTipsAction" />
+    <addaction name="separator" />
 	<addaction name="viewNoteDurationAction" />
     <addaction name="viewNoteColorAction" />
     <addaction name="viewValueColorAction" />
@@ -160,8 +167,6 @@
 	<addaction name="viewSnapMenu" />
 	<addaction name="separator" />
 	<addaction name="viewRefreshAction" />
-	<addaction name="separator" />
-    <addaction name="viewEventsAction" />
     <addaction name="separator" />
     <addaction name="viewPreviewAction" />
     <addaction name="viewFollowAction" />

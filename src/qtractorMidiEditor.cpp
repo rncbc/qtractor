@@ -3134,7 +3134,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 		d0 = -iTimeDelta;
 
 	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset) + pEvent->time();
-	t0 = (t0 + iTimeDelta < 0 ? 0 : t0 + iTimeDelta);
+	t0 = (long(t0) + iTimeDelta < 0 ? 0 : t0 + iTimeDelta);
 	QString sToolTip = tr("Time:\t%1\nType:\t")
 		.arg(m_pTimeScale->textFromTick(t0));
 
@@ -3143,7 +3143,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 //		sToolTip += tr("Note Off (%1)").arg(int(pEvent->note()));
 //		break;
 	case qtractorMidiEvent::NOTEON:
-		d0 = (pEvent->duration() + d0 < 0 ? 0 : pEvent->duration() + d0);
+		d0 = (long(pEvent->duration()) + d0 < 0 ? 0 : pEvent->duration() + d0);
 		sToolTip += tr("Note On (%1) %2\nVelocity:\t%3\nDuration:\t%4")
 			.arg(int(pEvent->note() + iNoteDelta))
 			.arg(noteName(pEvent->note() + iNoteDelta))

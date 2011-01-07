@@ -243,6 +243,15 @@
      <addaction name="viewToolbarTimeAction" />
      <addaction name="viewToolbarThumbAction" />
     </widget>
+    <widget class="QMenu" name="viewWindowsMenu" >
+     <property name="title" >
+      <string>&amp;Windows</string>
+     </property>
+	 <addaction name="viewFilesAction" />
+	 <addaction name="viewMessagesAction" />
+	 <addaction name="viewConnectionsAction" />
+	 <addaction name="viewMixerAction" />
+    </widget>
     <widget class="QMenu" name="viewZoomMenu" >
      <property name="icon" >
       <iconset resource="qtractor.qrc" >:/images/viewZoomTool.png</iconset>
@@ -267,14 +276,10 @@
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
-	<addaction name="separator" />
+    <addaction name="viewWindowsMenu" />
+    <addaction name="separator" />
 	<addaction name="viewToolTipsAction" />
 	<addaction name="separator" />
-    <addaction name="viewFilesAction" />
-    <addaction name="viewMessagesAction" />
-    <addaction name="viewConnectionsAction" />
-    <addaction name="viewMixerAction" />
-    <addaction name="separator" />
     <addaction name="viewZoomMenu" />
     <addaction name="viewSnapMenu" />
 	<addaction name="separator" />
