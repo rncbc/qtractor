@@ -267,7 +267,9 @@
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
-    <addaction name="separator" />
+	<addaction name="separator" />
+	<addaction name="viewToolTipsAction" />
+	<addaction name="separator" />
     <addaction name="viewFilesAction" />
     <addaction name="viewMessagesAction" />
     <addaction name="viewConnectionsAction" />
@@ -275,7 +277,7 @@
     <addaction name="separator" />
     <addaction name="viewZoomMenu" />
     <addaction name="viewSnapMenu" />
-    <addaction name="separator" />
+	<addaction name="separator" />
     <addaction name="viewRefreshAction" />
     <addaction name="separator" />
     <addaction name="viewInstrumentsAction" />
@@ -1755,6 +1757,23 @@
    </property>
    <property name="statusTip" >
 	<string>Snap grid view mode</string>
+   </property>
+  </action>
+  <action name="viewToolTipsAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>Too&amp;l Tips</string>
+   </property>
+   <property name="iconText" >
+	<string>Tool tips</string>
+   </property>
+   <property name="toolTip" >
+	<string>Tool tips</string>
+   </property>
+   <property name="statusTip" >
+	<string>Floating tool tips view mode</string>
    </property>
   </action>
   <action name="viewRefreshAction" >

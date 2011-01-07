@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -336,6 +336,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewSnapGridAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewSnapGrid(bool)));
+	QObject::connect(m_ui.viewToolTipsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolTips(bool)));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -399,6 +402,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewPreviewAction->setChecked(pOptions->bMidiPreview);
 		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollow);
 		m_ui.viewSnapGridAction->setChecked(pOptions->bMidiSnapGrid);
+		m_ui.viewToolTipsAction->setChecked(pOptions->bMidiToolTips);
 		if (pOptions->bMidiEditMode)
 			m_ui.editModeOnAction->setChecked(true);
 		else
@@ -415,6 +419,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pMidiEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
 		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
 		m_pMidiEditor->setSnapGrid(pOptions->bMidiSnapGrid);
+		m_pMidiEditor->setToolTips(pOptions->bMidiToolTips);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
 		m_pMidiEditor->setEditModeDraw(pOptions->bMidiEditModeDraw);
 		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
@@ -561,6 +566,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
 		pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
 		pOptions->bMidiSnapGrid = m_pMidiEditor->isSnapGrid();
+		pOptions->bMidiToolTips = m_pMidiEditor->isToolTips();
 		pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
 		pOptions->bMidiEditModeDraw = m_pMidiEditor->isEditModeDraw();
 		pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
@@ -1284,6 +1290,13 @@ void qtractorMidiEditorForm::viewSnapGrid ( bool bOn )
 {
 	m_pMidiEditor->setSnapGrid(bOn);
 	m_pMidiEditor->updateContents();
+}
+
+
+// Set floating tool-tips view mode
+void qtractorMidiEditorForm::viewToolTips ( bool bOn )
+{
+	m_pMidiEditor->setToolTips(bOn);
 }
 
 

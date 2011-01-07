@@ -796,6 +796,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewSnapGridAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewSnapGrid(bool)));
+	QObject::connect(m_ui.viewToolTipsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolTips(bool)));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -1008,9 +1011,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_ui.editSelectModeClipAction->setChecked(true);
 		break;
 	}
-	m_pTracks->trackView()->setSelectMode(selectMode);
-	m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
-	m_pTracks->trackView()->setSnapGrid(m_pOptions->bTrackViewSnapGrid);
+
+	qtractorTrackView *pTrackView = m_pTracks->trackView();
+	pTrackView->setSelectMode(selectMode);
+	pTrackView->setDropSpan(m_pOptions->bTrackViewDropSpan);
+	pTrackView->setSnapGrid(m_pOptions->bTrackViewSnapGrid);
+	pTrackView->setToolTips(m_pOptions->bTrackViewToolTips);
 
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
@@ -1030,6 +1036,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.viewToolbarTimeAction->setChecked(m_pOptions->bTimeToolbar);
 	m_ui.viewToolbarThumbAction->setChecked(m_pOptions->bThumbToolbar);
 	m_ui.viewSnapGridAction->setChecked(pOptions->bTrackViewSnapGrid);
+	m_ui.viewToolTipsAction->setChecked(pOptions->bTrackViewToolTips);
 
 	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
@@ -1234,6 +1241,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
 			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
 			m_pOptions->bTrackViewSnapGrid = m_ui.viewSnapGridAction->isChecked();
+			m_pOptions->bTrackViewToolTips = m_ui.viewToolTipsAction->isChecked();
 			m_pOptions->bMetronome = m_ui.transportMetroAction->isChecked();
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
@@ -3016,6 +3024,14 @@ void qtractorMainForm::viewSnapGrid ( bool bOn )
 }
 
 
+// Set floating tool-tips view mode
+void qtractorMainForm::viewToolTips ( bool bOn )
+{
+	if (m_pTracks)
+		m_pTracks->trackView()->setToolTips(bOn);
+}
+
+
 // Change snap-per-beat setting via menu.
 void qtractorMainForm::viewSnap (void)
 {
@@ -4015,7 +4031,7 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 
 void qtractorMainForm::stabilizeForm (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::stabilizeForm()");
 #endif
 
@@ -5449,7 +5465,7 @@ void qtractorMainForm::activateMidiFile ( const QString& /* sFilename */ )
 // Tracks view selection change slot.
 void qtractorMainForm::trackSelectionChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::trackSelectionChanged()");
 #endif
 
@@ -5478,7 +5494,7 @@ void qtractorMainForm::trackSelectionChanged (void)
 // Mixer view selection change slot.
 void qtractorMainForm::mixerSelectionChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::mixerSelectionChanged()");
 #endif
 
@@ -5498,7 +5514,7 @@ void qtractorMainForm::mixerSelectionChanged (void)
 // Tracks view selection change slot.
 void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::selectionNotifySlot()");
 #endif
 
@@ -5532,7 +5548,7 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Clip editors update helper.
 void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::changeNotifySlot()");
 #endif
 
@@ -5543,7 +5559,7 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::updateNotifySlot()");
 #endif
 
