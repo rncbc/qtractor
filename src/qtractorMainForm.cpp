@@ -5195,14 +5195,12 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 	case qtractorMmcEvent::STOP:
 	case qtractorMmcEvent::PAUSE:
 		sMmcText += tr("STOP");
-		if (m_pSession->isPlaying()) 
-			setPlaying(false);
+		setPlaying(false);
 		break;
 	case qtractorMmcEvent::PLAY:
 	case qtractorMmcEvent::DEFERRED_PLAY:
 		sMmcText += tr("PLAY");
-		if (!m_pSession->isPlaying()) 
-			setPlaying(true);
+		setPlaying(true);
 		break;
 	case qtractorMmcEvent::FAST_FORWARD:
 		sMmcText += tr("FFWD");
