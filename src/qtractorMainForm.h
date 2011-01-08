@@ -246,10 +246,12 @@ public slots:
 	void updateSnapMenu();
 
 	void addAudioFile(const QString& sFilename);
-	void activateAudioFile(const QString& sFilename);
+	void selectAudioFile(const QString& sFilename, int iTrackChannel);
+	void activateAudioFile(const QString& sFilename, int iTrackChannel = -1);
 
 	void addMidiFile(const QString& sFilename);
-	void activateMidiFile(const QString& sFilename);
+	void selectMidiFile(const QString& sFilename, int iTrackChannel);
+	void activateMidiFile(const QString& sFilename, int iTrackChannel = -1);
 
 	void trackSelectionChanged();
 	void mixerSelectionChanged();

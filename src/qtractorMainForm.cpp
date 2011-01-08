@@ -1170,11 +1170,17 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		SIGNAL(selectionChanged()),
 		SLOT(mixerSelectionChanged()));
 	QObject::connect(m_pFiles->audioListView(),
-		SIGNAL(activated(const QString&)),
-		SLOT(activateAudioFile(const QString&)));
+		SIGNAL(selected(const QString&, int)),
+		SLOT(selectAudioFile(const QString&, int)));
+	QObject::connect(m_pFiles->audioListView(),
+		SIGNAL(activated(const QString&, int)),
+		SLOT(activateAudioFile(const QString&, int)));
 	QObject::connect(m_pFiles->midiListView(),
-		SIGNAL(activated(const QString&)),
-		SLOT(activateMidiFile(const QString&)));
+		SIGNAL(selected(const QString&, int)),
+		SLOT(selectMidiFile(const QString&, int)));
+	QObject::connect(m_pFiles->midiListView(),
+		SIGNAL(activated(const QString&, int)),
+		SLOT(activateMidiFile(const QString&, int)));
 	QObject::connect(m_pFiles->audioListView(),
 		SIGNAL(contentsChanged()),
 		SLOT(contentsChanged()));
@@ -5418,9 +5424,34 @@ void qtractorMainForm::addAudioFile ( const QString& sFilename )
 }
 
 
-// Audio file activation slot funtion.
-void qtractorMainForm::activateAudioFile ( const QString& sFilename )
+// Audio file selection slot funtion.
+void qtractorMainForm::selectAudioFile (
+	const QString& sFilename, int iTrackChannel )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::selectAudioFile(\"%s\", %d)",
+		sFilename.toUtf8().constData(), iTrackChannel);
+#endif
+
+	// Select audio file...
+	if (m_pTracks) {
+		m_pTracks->trackView()->selectFile(
+			qtractorTrack::Audio, sFilename, iTrackChannel);
+	}
+
+	stabilizeForm();
+}
+
+
+// Audio file activation slot funtion.
+void qtractorMainForm::activateAudioFile (
+	const QString& sFilename, int /*iTrackChannel*/ )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::selectAudioFile(\"%s\")",
+		sFilename.toUtf8().constData());
+#endif
+
 	// Make sure session is activated...
 	checkRestartSession();
 
@@ -5451,11 +5482,36 @@ void qtractorMainForm::addMidiFile ( const QString& sFilename )
 }
 
 
-// MIDI file activation slot funtion.
-void qtractorMainForm::activateMidiFile ( const QString& /* sFilename */ )
+// MIDI file selection slot funtion.
+void qtractorMainForm::selectMidiFile (
+	const QString& sFilename, int iTrackChannel )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::selectMidiFile(\"%s\", %d)",
+		sFilename.toUtf8().constData(), iTrackChannel);
+#endif
+
+	// Select MIDI file track/channel...
+	if (m_pTracks) {
+		m_pTracks->trackView()->selectFile(
+			qtractorTrack::Midi, sFilename, iTrackChannel);
+	}
+
+	stabilizeForm();
+}
+
+
+// MIDI file activation slot funtion.
+void qtractorMainForm::activateMidiFile (
+	const QString& sFilename, int iTrackChannel )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::activateMidiFile(\"%s\", %d)",
+		sFilename.toUtf8().constData(), iTrackChannel);
+#endif
+
 	//
-	// TODO: Activate the just selected MIDI file...
+	// TODO: Activate the MIDI file track/channel...
 	//
 
 	stabilizeForm();

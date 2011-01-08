@@ -107,7 +107,10 @@ public:
 signals:
 
 	// File entry activated.
-	void activated(const QString& sFilename);
+	void selected(const QString& sFilename, int iTrackChannel);
+	// File entry activated.
+	void activated(const QString& sFilename, int iTrackChannel);
+
 	// Contents change signal;
 	void contentsChanged();
 

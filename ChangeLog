@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Direct clip selection from Files list item has
+  been brute-forcefully implemented (after being
+  challenged by Jiri Prochaszka aka Anchakor:).
+
 - Files tree widget sticky "New Group" item fixed.
 
 - A new menu option has been added (View/Tool Tips)

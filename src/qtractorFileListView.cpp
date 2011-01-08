@@ -734,11 +734,28 @@ QStringList qtractorFileListView::openFileNames (void)
 // In-place toggle slot.
 void qtractorFileListView::itemClickedSlot ( QTreeWidgetItem *pItem )
 {
-	if (pItem && pItem->childCount() > 0) {
+	if (pItem == NULL)
+		return;
+
+	if (pItem->type() == GroupItem) {
 		qtractorFileGroupItem *pGroupItem
 			= static_cast<qtractorFileGroupItem *> (pItem);
 		if (pGroupItem)
 			pGroupItem->setOpen(!pGroupItem->isOpen());
+	}
+	else
+	if (pItem->type() == FileItem) {
+		qtractorFileListItem *pFileItem
+			= static_cast<qtractorFileListItem *> (pItem);
+		if (pFileItem)
+			emit selected(pFileItem->path(), -1);
+	}
+	else
+	if (pItem->type() == ChannelItem) {
+		qtractorFileChannelItem *pChannelItem
+			= static_cast<qtractorFileChannelItem *> (pItem);
+		if (pChannelItem)
+			emit selected(pChannelItem->path(), pChannelItem->channel());
 	}
 }
 
@@ -746,11 +763,21 @@ void qtractorFileListView::itemClickedSlot ( QTreeWidgetItem *pItem )
 // In-place activation slot.
 void qtractorFileListView::itemActivatedSlot ( QTreeWidgetItem *pItem )
 {
-	if (pItem && pItem->type() == FileItem) {
+	if (pItem == NULL)
+		return;
+
+	if (pItem->type() == FileItem) {
 		qtractorFileListItem *pFileItem
 			= static_cast<qtractorFileListItem *> (pItem);
 		if (pFileItem)
-			emit activated(pFileItem->path());
+			emit activated(pFileItem->path(), -1);
+	}
+	else
+	if (pItem->type() == ChannelItem) {
+		qtractorFileChannelItem *pChannelItem
+			= static_cast<qtractorFileChannelItem *> (pItem);
+		if (pChannelItem)
+			emit activated(pChannelItem->path(), pChannelItem->channel());
 	}
 }
 

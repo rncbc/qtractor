@@ -1845,6 +1845,56 @@ void qtractorTrackView::selectAll ( bool bSelect )
 }
 
 
+// Select all clips of given filename and track/channel.
+void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
+	const QString& sFilename, int iTrackChannel )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Reset selection...
+	QRect rectUpdate = m_pClipSelect->rect();
+	m_pClipSelect->clear();
+	
+	int y1 = 0;
+	int y2 = 0;
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		y1  = y2;
+		y2 += pTrack->zoomHeight();
+		if (pTrack->trackType() != trackType)
+			continue;
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			if (pClip->filename() != sFilename)
+				continue;
+			if (iTrackChannel >= 0 && trackType == qtractorTrack::Midi) {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pClip);
+				if (pMidiClip
+					&& int(pMidiClip->trackChannel()) != iTrackChannel)
+					continue;
+			}
+			int x = pSession->pixelFromFrame(pClip->clipStart());
+			int w = pSession->pixelFromFrame(pClip->clipLength());
+			m_pClipSelect->selectClip(pClip, QRect(x, y1, w, y2 - y1), true);
+		}
+	}
+
+	// This is most probably an overall update...
+	if (m_pClipSelect->items().count() > 0)
+		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
+	if (!rectUpdate.isEmpty()) {
+		updateContents(rectUpdate);
+		m_pTracks->selectionChangeNotify();
+	}
+
+	// Make sure we keep focus...
+	qtractorScrollView::setFocus();
+}
+
+
 // Whether there's any clip currently editable.
 qtractorClip *qtractorTrackView::currentClip (void) const
 {
