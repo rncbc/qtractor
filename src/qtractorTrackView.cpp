@@ -1539,7 +1539,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
 	if (static_cast<QWidget *> (pObject) == pViewport) {
-		if (pEvent->type() == QEvent::ToolTip) {
+		if (pEvent->type() == QEvent::ToolTip && m_bToolTips) {
 			QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
 			if (pHelpEvent) {
 				const QPoint& pos

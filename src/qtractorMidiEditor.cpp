@@ -2118,7 +2118,7 @@ bool qtractorMidiEditor::dragMoveFilter (
 	qtractorScrollView *pScrollView, QObject *pObject, QEvent *pEvent )
 {
 	if (static_cast<QWidget *> (pObject) == pScrollView->viewport()) {
-		if (pEvent->type() == QEvent::ToolTip) {
+		if (pEvent->type() == QEvent::ToolTip && m_bToolTips) {
 			QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
 			if (pHelpEvent) {
 				const QPoint& pos
