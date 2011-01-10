@@ -112,7 +112,7 @@ public:
 
 	// Select all clips of given filename and track/channel.
 	void selectFile(qtractorTrack::TrackType trackType,
-		const QString& sFilename, int iTrackChannel);
+		const QString& sFilename, int iTrackChannel, bool bSelect);
 
 	// Whether there's any clip currently editable.
 	qtractorClip *currentClip() const;

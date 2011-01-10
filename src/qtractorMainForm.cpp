@@ -1170,8 +1170,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		SIGNAL(selectionChanged()),
 		SLOT(mixerSelectionChanged()));
 	QObject::connect(m_pFiles->audioListView(),
-		SIGNAL(selected(const QString&, int)),
-		SLOT(selectAudioFile(const QString&, int)));
+		SIGNAL(selected(const QString&, int, bool)),
+		SLOT(selectAudioFile(const QString&, int, bool)));
 	QObject::connect(m_pFiles->audioListView(),
 		SIGNAL(activated(const QString&, int)),
 		SLOT(activateAudioFile(const QString&, int)));
@@ -5424,17 +5424,17 @@ void qtractorMainForm::addAudioFile ( const QString& sFilename )
 
 // Audio file selection slot funtion.
 void qtractorMainForm::selectAudioFile (
-	const QString& sFilename, int iTrackChannel )
+	const QString& sFilename, int iTrackChannel, bool bSelect )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::selectAudioFile(\"%s\", %d)",
-		sFilename.toUtf8().constData(), iTrackChannel);
+	qDebug("qtractorMainForm::selectAudioFile(\"%s\", %d, %d)",
+		sFilename.toUtf8().constData(), iTrackChannel, int(bSelect));
 #endif
 
 	// Select audio file...
 	if (m_pTracks) {
 		m_pTracks->trackView()->selectFile(
-			qtractorTrack::Audio, sFilename, iTrackChannel);
+			qtractorTrack::Audio, sFilename, iTrackChannel, bSelect);
 	}
 
 	stabilizeForm();
@@ -5482,17 +5482,17 @@ void qtractorMainForm::addMidiFile ( const QString& sFilename )
 
 // MIDI file selection slot funtion.
 void qtractorMainForm::selectMidiFile (
-	const QString& sFilename, int iTrackChannel )
+	const QString& sFilename, int iTrackChannel, bool bSelect )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::selectMidiFile(\"%s\", %d)",
-		sFilename.toUtf8().constData(), iTrackChannel);
+	qDebug("qtractorMainForm::selectMidiFile(\"%s\", %d, %d)",
+		sFilename.toUtf8().constData(), iTrackChannel, int(bSelect));
 #endif
 
 	// Select MIDI file track/channel...
 	if (m_pTracks) {
 		m_pTracks->trackView()->selectFile(
-			qtractorTrack::Midi, sFilename, iTrackChannel);
+			qtractorTrack::Midi, sFilename, iTrackChannel, bSelect);
 	}
 
 	stabilizeForm();

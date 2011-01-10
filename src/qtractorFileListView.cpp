@@ -748,14 +748,16 @@ void qtractorFileListView::itemClickedSlot ( QTreeWidgetItem *pItem )
 		qtractorFileListItem *pFileItem
 			= static_cast<qtractorFileListItem *> (pItem);
 		if (pFileItem)
-			emit selected(pFileItem->path(), -1);
+			emit selected(pFileItem->path(), -1, pFileItem->isSelected());
 	}
 	else
 	if (pItem->type() == ChannelItem) {
 		qtractorFileChannelItem *pChannelItem
 			= static_cast<qtractorFileChannelItem *> (pItem);
 		if (pChannelItem)
-			emit selected(pChannelItem->path(), pChannelItem->channel());
+			emit selected(pChannelItem->path(),
+				pChannelItem->channel(),
+				pChannelItem->isSelected());
 	}
 }
 

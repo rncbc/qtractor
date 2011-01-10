@@ -1847,7 +1847,7 @@ void qtractorTrackView::selectAll ( bool bSelect )
 
 // Select all clips of given filename and track/channel.
 void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
-	const QString& sFilename, int iTrackChannel )
+	const QString& sFilename, int iTrackChannel, bool bSelect )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1878,7 +1878,7 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 			}
 			int x = pSession->pixelFromFrame(pClip->clipStart());
 			int w = pSession->pixelFromFrame(pClip->clipLength());
-			m_pClipSelect->selectClip(pClip, QRect(x, y1, w, y2 - y1), true);
+			m_pClipSelect->selectClip(pClip, QRect(x, y1, w, y2 - y1), bSelect);
 		}
 	}
 

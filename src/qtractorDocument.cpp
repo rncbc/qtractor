@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -176,6 +176,8 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
+		if (!info.isWritable()) // Read-only media?
+			QDir::setCurrent(QDir::temp().path());
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
 		sDocname = m_sName + '.' + g_sDefaultExt;
 		m_pZipFile->extractAll();
