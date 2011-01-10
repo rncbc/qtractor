@@ -130,6 +130,7 @@ public slots:
 	void editSelectNone();
 	void editSelectRange();
 	void editSelectTrack();
+	void editSelectTrackRange();
 	void editSelectAll();
 	void editClipNew();
 	void editClipEdit();

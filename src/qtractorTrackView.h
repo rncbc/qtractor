@@ -103,6 +103,9 @@ public:
 	// Select everything under a given (rubber-band) rectangle.
 	void selectRect(const QRect& rectDrag,
 		SelectMode selectMode, SelectEdit = EditBoth);
+
+	// Select every clip of a given track-range.
+	void selectTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrackPtr, bool bReset = true);
 	// Select range interval between edit head and tail.

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- New Edit/Select/Track Range (Ctrl+Shift+R) action
+  added to main tracks view menu.
+
 - Direct clip selection from Files list item has
   been brute-forcefully implemented (after being
   challenged by Jiri Prochaszka aka Anchakor:).

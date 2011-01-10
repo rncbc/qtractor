@@ -1670,9 +1670,9 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 			for (qtractorClip *pClip = pTrack->clips().first();
 					pClip; pClip = pClip->next()) {
 				int x = pSession->pixelFromFrame(pClip->clipStart());
-				int w = pSession->pixelFromFrame(pClip->clipLength());
 				if (x > rect.right())
 					break;
+				int w = pSession->pixelFromFrame(pClip->clipLength());
 				// Test whether the whole clip rectangle
 				// intersects the rubber-band range one...
 				QRect rectClip(x, y, w, h);
@@ -1690,6 +1690,11 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 	}
 
 	// Update the screen real estate...
+	if (m_pClipSelect->items().count() > 0)
+		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
+	if (!rectUpdate.isEmpty())
+		updateContents(rectUpdate);
+
 	if (!rectUpdate.isEmpty())
 		updateContents(rectUpdate);
 
@@ -1714,6 +1719,70 @@ qtractorTrackView::SelectMode qtractorTrackView::selectMode (void) const
 }
 
 
+// Select every clip of a given track-range.
+void qtractorTrackView::selectTrackRange ( qtractorTrack *pTrackPtr, bool bReset )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	unsigned long iSelectStart = pSession->editHead();
+	unsigned long iSelectEnd   = pSession->editTail();
+
+	// Get and select the track's rectangular area
+	// between the edit head and tail points...
+	QRect rect(0, 0, 0, qtractorScrollView::contentsHeight());
+	rect.setLeft(pSession->pixelFromFrame(iSelectStart));
+	rect.setRight(pSession->pixelFromFrame(iSelectEnd));
+
+	// Reset selection...
+	QRect rectUpdate = m_pClipSelect->rect();
+	if (bReset && m_pClipSelect->singleTrack() != pTrackPtr)
+		m_pClipSelect->clear();
+	
+	int y1, y2 = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		y1  = y2;
+		y2 += pTrack->zoomHeight();
+		if (pTrack == pTrackPtr) {
+			int y = y1 + 1;
+			int h = y2 - y1 - 2;
+			rect.setY(y);
+			rect.setHeight(h);
+			for (qtractorClip *pClip = pTrack->clips().first();
+					pClip; pClip = pClip->next()) {
+				int x = pSession->pixelFromFrame(pClip->clipStart());
+				if (x > rect.right())
+					break;
+				int w = pSession->pixelFromFrame(pClip->clipLength());
+				// Test whether the track clip rectangle
+				// intersects the rubber-band range one...
+				QRect rectClip(x, y, w, h);
+				if (rect.intersects(rectClip)) {
+					rectClip = rect.intersected(rectClip);
+					m_pClipSelect->selectClip(pClip, rectClip, true);
+					pClip->setClipSelect(iSelectStart, iSelectEnd);
+				}
+			}
+			break;
+		}
+		pTrack = pTrack->next();
+	}
+
+	// This is most probably an overall update...
+	if (m_pClipSelect->items().count() > 0)
+		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
+	if (!rectUpdate.isEmpty()) {
+		updateContents(rectUpdate);
+		m_pTracks->selectionChangeNotify();
+	}
+
+	// Make sure we keep focus...
+	qtractorScrollView::setFocus();
+}
+
+
 // Select every clip of a given track.
 void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 {
@@ -1721,13 +1790,10 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 	if (pSession == NULL)
 		return;
 
-	int iUpdate = 0;
-	if (bReset && m_pClipSelect->singleTrack() != pTrackPtr) {
+	QRect rectUpdate = m_pClipSelect->rect();
+	if (bReset && m_pClipSelect->singleTrack() != pTrackPtr)
 		m_pClipSelect->clear();
-		iUpdate++;
-	}
 
-	QRect rectUpdate;
 	int y1, y2 = 0;
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {
@@ -1740,22 +1806,19 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 					pClip; pClip = pClip->next()) {
 				int x = pSession->pixelFromFrame(pClip->clipStart());
 				int w = pSession->pixelFromFrame(pClip->clipLength());
-				const QRect rectClip(x, y, w, h);
-				m_pClipSelect->selectClip(pClip, rectClip,
+				m_pClipSelect->selectClip(pClip, QRect(x, y, w, h),
 					!pClip->isClipSelected());
-				rectUpdate = rectUpdate.united(rectClip);
-				iUpdate++;
 			}
 			break;
 		}
 		pTrack = pTrack->next();
 	}
 
-	if (iUpdate > 0) {
-		if (bReset || rectUpdate.isEmpty())
-			updateContents();
-		else
-			updateContents(rectUpdate);
+	// This is most probably an overall update...
+	if (m_pClipSelect->items().count() > 0)
+		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
+	if (!rectUpdate.isEmpty()) {
+		updateContents(rectUpdate);
 		m_pTracks->selectionChangeNotify();
 	}
 
@@ -1806,7 +1869,6 @@ void qtractorTrackView::selectAll ( bool bSelect )
 		// Reset selection...
 		m_pClipSelect->clear();
 		// Select all clips on all tracks...
-		int iUpdate = 0;
 		int y1, y2 = 0;
 		qtractorTrack *pTrack = pSession->tracks().first();
 		while (pTrack) {
@@ -1818,14 +1880,12 @@ void qtractorTrackView::selectAll ( bool bSelect )
 					pClip; pClip = pClip->next()) {
 				int x = pSession->pixelFromFrame(pClip->clipStart());
 				int w = pSession->pixelFromFrame(pClip->clipLength());
-				const QRect rectClip(x, y, w, h);
-				m_pClipSelect->selectClip(pClip, rectClip, bSelect);
-				iUpdate++;
+				m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
 			}
 			pTrack = pTrack->next();
 		}
 		// This is most probably an overall update...
-		if (iUpdate > 0) {
+		if (m_pClipSelect->items().count() > 0) {
 			updateContents(m_pClipSelect->rect());
 			m_pTracks->selectionChangeNotify();
 		}
@@ -1865,6 +1925,8 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 		y2 += pTrack->zoomHeight();
 		if (pTrack->trackType() != trackType)
 			continue;
+		int y = y1 + 1;
+		int h = y2 - y1 - 2;
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
 			if (pClip->filename() != sFilename)
@@ -1878,7 +1940,7 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 			}
 			int x = pSession->pixelFromFrame(pClip->clipStart());
 			int w = pSession->pixelFromFrame(pClip->clipLength());
-			m_pClipSelect->selectClip(pClip, QRect(x, y1, w, y2 - y1), bSelect);
+			m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
 		}
 	}
 

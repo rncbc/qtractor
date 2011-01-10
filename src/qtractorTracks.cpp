@@ -1548,6 +1548,15 @@ void qtractorTracks::selectCurrentTrack ( bool bReset )
 }
 
 
+// Select all clips on current track range.
+void qtractorTracks::selectCurrentTrackRange (void)
+{
+	qtractorTrack *pTrack = currentTrack();
+	if (pTrack)
+		m_pTrackView->selectTrackRange(pTrack);
+}
+
+
 // Select all clips on all tracks.
 void qtractorTracks::selectAll ( bool bSelect )
 {

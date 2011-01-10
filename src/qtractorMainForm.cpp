@@ -614,6 +614,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editSelectTrackAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectTrack()));
+	QObject::connect(m_ui.editSelectTrackRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectTrackRange()));
 	QObject::connect(m_ui.editSelectAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
@@ -2147,7 +2150,7 @@ void qtractorMainForm::editSelectNone (void)
 	qDebug("qtractorMainForm::editSelectNone()");
 #endif
 
-	// Select Track...
+	// Select nothing...
 	if (m_pTracks)
 		m_pTracks->selectAll(false);
 
@@ -2162,7 +2165,7 @@ void qtractorMainForm::editSelectRange (void)
 	qDebug("qtractorMainForm::editSelectRange()");
 #endif
 
-	// Select Track...
+	// Select edit-range...
 	if (m_pTracks)
 		m_pTracks->selectEditRange();
 
@@ -2177,9 +2180,24 @@ void qtractorMainForm::editSelectTrack (void)
 	qDebug("qtractorMainForm::editSelectTrack()");
 #endif
 
-	// Select Track...
+	// Select current track...
 	if (m_pTracks)
 		m_pTracks->selectCurrentTrack(true);
+
+	stabilizeForm();
+}
+
+
+// Mark track-range as selected.
+void qtractorMainForm::editSelectTrackRange (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editSelectTrackRange()");
+#endif
+
+	// Select track-range...
+	if (m_pTracks)
+		m_pTracks->selectCurrentTrackRange();
 
 	stabilizeForm();
 }
@@ -2192,7 +2210,7 @@ void qtractorMainForm::editSelectAll (void)
 	qDebug("qtractorMainForm::editSelectAll()");
 #endif
 
-	// Select All...
+	// Select all...
 	if (m_pTracks)
 		m_pTracks->selectAll();
 
@@ -4090,6 +4108,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editDeleteAction->setEnabled(bSelected);
 
 	m_ui.editSelectAllAction->setEnabled(iSessionLength > 0);
+	m_ui.editSelectTrackRangeAction->setEnabled(bEnabled && bSelectable);
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);

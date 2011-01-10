@@ -109,6 +109,7 @@ public:
 	// Selection methods.
 	void selectEditRange();
 	void selectCurrentTrack(bool bReset = false);
+	void selectCurrentTrackRange();
 	void selectAll(bool bSelect = true);
 
 	// Simple main-form redirectors.

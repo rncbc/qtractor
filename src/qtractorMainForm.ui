@@ -345,6 +345,7 @@
      <addaction name="editSelectNoneAction" />
      <addaction name="editSelectRangeAction" />
      <addaction name="editSelectTrackAction" />
+     <addaction name="editSelectTrackRangeAction" />
      <addaction name="editSelectAllAction" />
     </widget>
     <widget class="QMenu" name="editClipToolsMenu" >
@@ -772,6 +773,23 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="editSelectTrackRangeAction" >
+   <property name="text" >
+    <string>Trac&amp;k Range</string>
+   </property>
+   <property name="iconText" >
+    <string>Select Track Range</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select track range</string>
+   </property>
+   <property name="statusTip" >
+    <string>Mark track range as selected</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+R</string>
    </property>
   </action>
   <action name="editSelectAllAction" >
@@ -1974,7 +1992,7 @@
     <string>Transport loop</string>
    </property>
    <property name="shortcut" >
-    <string>Shift+Ctrl+L</string>
+    <string>Ctrl+Shift+L</string>
    </property>
   </action>
   <action name="transportLoopSetAction" >
@@ -2074,7 +2092,7 @@
     <string>Transport punch in/out</string>
    </property>
    <property name="shortcut" >
-    <string>Shift+Ctrl+P</string>
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="transportPunchSetAction" >
