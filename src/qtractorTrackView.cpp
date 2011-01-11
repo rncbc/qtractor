@@ -1737,7 +1737,8 @@ void qtractorTrackView::selectTrackRange ( qtractorTrack *pTrackPtr, bool bReset
 
 	// Reset selection...
 	QRect rectUpdate = m_pClipSelect->rect();
-	if (bReset && m_pClipSelect->singleTrack() != pTrackPtr)
+	if (bReset)
+	//	&& (pTrackPtr == NULL || m_pClipSelect->singleTrack() != pTrackPtr))
 		m_pClipSelect->clear();
 	
 	int y1, y2 = 0;
@@ -1745,7 +1746,7 @@ void qtractorTrackView::selectTrackRange ( qtractorTrack *pTrackPtr, bool bReset
 	while (pTrack) {
 		y1  = y2;
 		y2 += pTrack->zoomHeight();
-		if (pTrack == pTrackPtr) {
+		if (pTrack == pTrackPtr || pTrackPtr == NULL) {
 			int y = y1 + 1;
 			int h = y2 - y1 - 2;
 			rect.setY(y);
@@ -1761,11 +1762,14 @@ void qtractorTrackView::selectTrackRange ( qtractorTrack *pTrackPtr, bool bReset
 				QRect rectClip(x, y, w, h);
 				if (rect.intersects(rectClip)) {
 					rectClip = rect.intersected(rectClip);
-					m_pClipSelect->selectClip(pClip, rectClip, true);
-					pClip->setClipSelect(iSelectStart, iSelectEnd);
+					bool bSelect = !pClip->isClipSelected();
+					m_pClipSelect->selectClip(pClip, rectClip, bSelect);
+					if (bSelect)
+						pClip->setClipSelect(iSelectStart, iSelectEnd);
 				}
 			}
-			break;
+			if (pTrack == pTrackPtr)
+				break;
 		}
 		pTrack = pTrack->next();
 	}
@@ -1806,8 +1810,8 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 					pClip; pClip = pClip->next()) {
 				int x = pSession->pixelFromFrame(pClip->clipStart());
 				int w = pSession->pixelFromFrame(pClip->clipLength());
-				m_pClipSelect->selectClip(pClip, QRect(x, y, w, h),
-					!pClip->isClipSelected());
+				bool bSelect = !pClip->isClipSelected();
+				m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
 			}
 			break;
 		}
@@ -1822,37 +1826,6 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 		m_pTracks->selectionChangeNotify();
 	}
 
-	// Make sure we keep focus...
-	qtractorScrollView::setFocus();
-}
-
-
-// Select range interval between edit head and tail.
-void qtractorTrackView::selectEditRange (void)
-{
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	// Get and select the whole rectangular area
-	// between the edit head and tail points...
-	QRect rect(0, 0, 0, qtractorScrollView::contentsHeight());
-	rect.setLeft(pSession->pixelFromFrame(pSession->editHead()));
-	rect.setRight(pSession->pixelFromFrame(pSession->editTail()));
-
-	// HACK: Make sure the snap goes straight...
-	unsigned short iSnapPerBeat4 = (pSession->snapPerBeat() << 2);
-	if (iSnapPerBeat4 > 0)
-		rect.translate(pSession->pixelsPerBeat() / iSnapPerBeat4, 0);
-
-	// Make the selection, but don't change edit head nor tail...
-	selectRect(rect,
-		qtractorTrackView::SelectRange,
-		qtractorTrackView::EditNone);
-
-	// Make its due...
-	m_pTracks->selectionChangeNotify();
-	
 	// Make sure we keep focus...
 	qtractorScrollView::setFocus();
 }

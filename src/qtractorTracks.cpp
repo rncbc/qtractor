@@ -1532,11 +1532,10 @@ void qtractorTracks::deleteClipSelect (void)
 
 
 // Select range interval between edit head and tail.
-void qtractorTracks::selectEditRange (void)
+void qtractorTracks::selectEditRange ( bool bReset )
 {
-	m_pTrackView->selectEditRange();
+	m_pTrackView->selectTrackRange(NULL, bReset);
 }
-
 
 
 // Select all clips on current track.
@@ -1549,11 +1548,11 @@ void qtractorTracks::selectCurrentTrack ( bool bReset )
 
 
 // Select all clips on current track range.
-void qtractorTracks::selectCurrentTrackRange (void)
+void qtractorTracks::selectCurrentTrackRange ( bool bReset )
 {
 	qtractorTrack *pTrack = currentTrack();
 	if (pTrack)
-		m_pTrackView->selectTrackRange(pTrack);
+		m_pTrackView->selectTrackRange(pTrack, bReset);
 }
 
 

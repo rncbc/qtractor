@@ -108,8 +108,6 @@ public:
 	void selectTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrackPtr, bool bReset = true);
-	// Select range interval between edit head and tail.
-	void selectEditRange();
 	// Select all contents.
 	void selectAll(bool bSelect = true);
 

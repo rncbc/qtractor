@@ -107,9 +107,9 @@ public:
 	void deleteClipSelect();
 
 	// Selection methods.
-	void selectEditRange();
+	void selectEditRange(bool bReset = false);
 	void selectCurrentTrack(bool bReset = false);
-	void selectCurrentTrackRange();
+	void selectCurrentTrackRange(bool bReset = false);
 	void selectAll(bool bSelect = true);
 
 	// Simple main-form redirectors.
