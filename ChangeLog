@@ -5,8 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
-- New Edit/Select/Track Range (Ctrl+Shift+R) action
-  added to main tracks view menu.
+- Single track range selection is now available
+  on main menu (Edit/Select/Track Range; default
+  keyboard shortcut: Ctrl+Shift+R); additionally
+  to vertical range and horizontal track actions
+  (Edit/Select/Range, Track) all these operations
+  can now toggle over the previous selection.
 
 - Direct clip selection from Files list item has
   been brute-forcefully implemented (after being

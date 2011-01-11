@@ -1179,8 +1179,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		SIGNAL(activated(const QString&, int)),
 		SLOT(activateAudioFile(const QString&, int)));
 	QObject::connect(m_pFiles->midiListView(),
-		SIGNAL(selected(const QString&, int)),
-		SLOT(selectMidiFile(const QString&, int)));
+		SIGNAL(selected(const QString&, int, bool)),
+		SLOT(selectMidiFile(const QString&, int, bool)));
 	QObject::connect(m_pFiles->midiListView(),
 		SIGNAL(activated(const QString&, int)),
 		SLOT(activateMidiFile(const QString&, int)));
