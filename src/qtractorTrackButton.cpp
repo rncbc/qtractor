@@ -1,7 +1,7 @@
 // qtractorTrackButton.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,12 +29,12 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorTrackButton -- Track tool button.
+// qtractorTrackButton -- Track tool button (observer).
 
 // Constructor.
 qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	qtractorTrack::ToolType toolType, const QSize& fixedSize,
-	QWidget *pParent ) : QToolButton(pParent)
+	QWidget *pParent ) : qtractorObserverWidget<QToolButton> (pParent)
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
@@ -50,7 +50,7 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	QPalette pal(QToolButton::palette());
 	m_rgbText = pal.buttonText().color();
 	m_rgbOff  = pal.button().color();
-	switch (toolType) {
+	switch (m_toolType) {
 	case qtractorTrack::Record:
 		QToolButton::setText("R");
 		QToolButton::setToolTip(tr("Record"));
@@ -68,30 +68,18 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 		break;
 	}
 
-	QObject::connect(this, SIGNAL(toggled(bool)), SLOT(toggledSlot(bool)));
+	updateTrack(); // Visitor setup.
 
-	updateTrack();
+	QObject::connect(this, SIGNAL(toggled(bool)), SLOT(toggledSlot(bool)));
 }
 
 
-// Special state slot.
-void qtractorTrackButton::updateTrack (void)
+// Visitors overload.
+void qtractorTrackButton::updateValue ( float fValue )
 {
 	m_iUpdate++;
 
-	bool bOn = false;
-
-	switch (m_toolType) {
-	case qtractorTrack::Record:
-		bOn = (m_pTrack && m_pTrack->isRecord());
-		break;
-	case qtractorTrack::Mute:
-		bOn = (m_pTrack && m_pTrack->isMute());
-		break;
-	case qtractorTrack::Solo:
-		bOn = (m_pTrack && m_pTrack->isSolo());
-		break;
-	}
+	bool bOn = (fValue > 0.0f);
 
 	QPalette pal(QToolButton::palette());
 	pal.setColor(QPalette::ButtonText, bOn ? m_rgbOn.darker() : m_rgbText);
@@ -112,7 +100,7 @@ void qtractorTrackButton::toggledSlot ( bool bOn )
 		return;
 
 	// Just emit proper signal...
-	emit trackButtonToggled(this, bOn);
+	m_pTrack->stateChangeNotify(m_toolType, bOn);
 }
 
 
@@ -120,6 +108,7 @@ void qtractorTrackButton::toggledSlot ( bool bOn )
 void qtractorTrackButton::setTrack ( qtractorTrack *pTrack )
 {
 	m_pTrack = pTrack;
+
 	updateTrack();
 }
 
@@ -128,9 +117,29 @@ qtractorTrack *qtractorTrackButton::track (void) const
 	return m_pTrack;
 }
 
+
 qtractorTrack::ToolType qtractorTrackButton::toolType (void) const
 {
 	return m_toolType;
+}
+
+
+// Track state (record, mute, solo) button setup.
+void qtractorTrackButton::updateTrack (void)
+{
+	switch (m_toolType) {
+	case qtractorTrack::Record:
+		setSubject(m_pTrack->recordSubject());
+		break;
+	case qtractorTrack::Mute:
+		setSubject(m_pTrack->muteSubject());
+		break;
+	case qtractorTrack::Solo:
+		setSubject(m_pTrack->soloSubject());
+		break;
+	}
+
+	observer()->update();
 }
 
 

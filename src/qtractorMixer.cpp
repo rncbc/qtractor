@@ -219,21 +219,6 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
 		m_pButtonLayout->addWidget(m_pSoloButton);
-		qtractorTracks *pTracks = NULL;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pTracks = pMainForm->tracks();
-		if (pTracks) {
-			QObject::connect(m_pRecordButton,
-				SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-				pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
-			QObject::connect(m_pMuteButton,
-				SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-				pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
-			QObject::connect(m_pSoloButton,
-				SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-				pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
-		}
 		m_pMonitorButton->setToolTip(tr("Monitor (rec)"));
 		m_pBusButton = NULL;
 	} else {
@@ -647,25 +632,18 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 #endif
 	QFrame::setPalette(pal);
 #ifdef CONFIG_GRADIENT
-	updateTrackButtons();
+	if (m_pRecordButton)
+		m_pRecordButton->observer()->update();
+	if (m_pMuteButton)
+		m_pMuteButton->observer()->update();
+	if (m_pSoloButton)
+		m_pSoloButton->observer()->update();
 #endif
 }
 
 bool qtractorMixerStrip::isSelected (void) const
 {
 	return m_bSelected;
-}
-
-
-// Update track buttons state.
-void qtractorMixerStrip::updateTrackButtons (void)
-{
-	if (m_pRecordButton)
-		m_pRecordButton->updateTrack();
-	if (m_pMuteButton)
-		m_pMuteButton->updateTrack();
-	if (m_pSoloButton)
-		m_pSoloButton->updateTrack();
 }
 
 
@@ -1027,15 +1005,6 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 
 	m_pWorkspace->adjustSize();
 	m_pWorkspace->setUpdatesEnabled(true);
-}
-
-
-// Update all strips track buttons.
-void qtractorMixerRack::updateTrackButtons (void)
-{
-	Strips::ConstIterator strip = m_strips.constBegin();
-	for ( ; strip != m_strips.constEnd(); ++strip)
-		strip.value()->updateTrackButtons();
 }
 
 

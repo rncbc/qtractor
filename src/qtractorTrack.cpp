@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,11 +38,38 @@
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
 
+#include "qtractorTrackCommand.h"
+
 #include "qtractorMainForm.h"
 
 #include <QPainter>
 
 #include <QDomDocument>
+
+
+//------------------------------------------------------------------------
+// qtractorTrack::StateObserver -- Local track state observer.
+
+class qtractorTrack::StateObserver : public qtractorObserver
+{
+public:
+
+	// Constructor.
+	StateObserver(qtractorTrack *pTrack, ToolType toolType,
+		qtractorSubject *pSubject) : qtractorObserver(pSubject),
+			m_pTrack(pTrack), m_toolType(toolType) {}
+
+protected:
+
+	// Update feedback.
+	void update() { m_pTrack->stateChangeNotify(m_toolType, value() > 0.0f); }
+
+private:
+
+	// Members.
+	qtractorTrack *m_pTrack;
+	ToolType m_toolType;
+};
 
 
 //-------------------------------------------------------------------------
@@ -116,6 +143,14 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_clips.setAutoDelete(true);
 
+	m_pRecordSubject  = new qtractorSubject();
+	m_pMuteSubject    = new qtractorSubject();
+	m_pSoloSubject    = new qtractorSubject();
+
+	m_pRecordObserver = new StateObserver(this, Record, m_pRecordSubject);
+	m_pMuteObserver   = new StateObserver(this, Mute,   m_pMuteSubject);
+	m_pSoloObserver   = new StateObserver(this, Solo,   m_pSoloSubject);
+
 	unsigned int iFlags = qtractorPluginList::Track;
 	if (trackType == qtractorTrack::Midi)
 		iFlags |= qtractorPluginList::Midi;
@@ -131,6 +166,20 @@ qtractorTrack::~qtractorTrack (void)
 {
 	close();
 	clear();
+
+	if (m_pSoloObserver)
+		delete m_pSoloObserver;
+	if (m_pMuteObserver)
+		delete m_pMuteObserver;
+	if (m_pRecordObserver)
+		delete m_pRecordObserver;
+
+	if (m_pSoloSubject)
+		delete m_pSoloSubject;
+	if (m_pMuteSubject)
+		delete m_pMuteSubject;
+	if (m_pRecordSubject)
+		delete m_pRecordSubject;
 
 	if (m_pPluginList)
 		delete m_pPluginList;
@@ -380,62 +429,71 @@ void qtractorTrack::setMonitor ( bool bMonitor )
 
 
 // Record status accessors.
-bool qtractorTrack::isRecord (void) const
-{
-	return m_props.record;
-}
-
 void qtractorTrack::setRecord ( bool bRecord )
 {
-	if ((m_props.record && !bRecord) || (!m_props.record && bRecord))
+	const bool bOldRecord = isRecord();
+	if ((bOldRecord && !bRecord) || (!bOldRecord && bRecord))
 		m_pSession->setRecordTracks(bRecord);
 
 	m_props.record = bRecord;
+
+	m_pRecordObserver->setValue(bRecord ? 1.0f : 0.0f);
 
 	if (m_pSession->isRecording())
 		m_pSession->trackRecord(this, bRecord);
 }
 
-
-// Mute status accessors.
-bool qtractorTrack::isMute (void) const
+bool qtractorTrack::isRecord (void) const
 {
-	return m_props.mute;
+	return (m_pRecordSubject->value() > 0.0f);
 }
 
+
+// Mute status accessors.
 void qtractorTrack::setMute ( bool bMute )
 {
 	if (m_pSession->isPlaying() && bMute)
 		m_pSession->trackMute(this, bMute);
 
-	if ((m_props.mute && !bMute) || (!m_props.mute && bMute))
+	const bool bOldMute = isMute();
+	if ((bOldMute && !bMute) || (!bOldMute && bMute))
 		m_pSession->setMuteTracks(bMute);
 
 	m_props.mute = bMute;
+
+	m_pMuteObserver->setValue(bMute ? 1.0f : 0.0f);
 
 	if (m_pSession->isPlaying() && !bMute)
 		m_pSession->trackMute(this, bMute);
 }
 
-
-// Solo status accessors.
-bool qtractorTrack::isSolo (void) const
+bool qtractorTrack::isMute (void) const
 {
-	return m_props.solo;
+	return (m_pMuteSubject->value() > 0.0f);
 }
 
+
+// Solo status accessors.
 void qtractorTrack::setSolo ( bool bSolo )
 {
 	if (m_pSession->isPlaying() && bSolo)
 		m_pSession->trackSolo(this, bSolo);
 
-	if ((m_props.solo && !bSolo) || (!m_props.solo && bSolo))
+	const bool bOldSolo = isSolo();
+	if ((bOldSolo && !bSolo) || (!bOldSolo && bSolo))
 		m_pSession->setSoloTracks(bSolo);
 
 	m_props.solo = bSolo;
 
+	m_pSoloObserver->setValue(bSolo ? 1.0f : 0.0f);
+
 	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
+}
+
+bool qtractorTrack::isSolo (void) const
+{
+	return (m_pSoloSubject->value() > 0.0f);
 }
 
 
@@ -986,6 +1044,38 @@ void qtractorTrack::updateClipEditors (void)
 		pClip->updateEditor(true);
 		pClip = pClip->next();
 	}
+}
+
+
+// Track state (record, mute, solo) button setup.
+qtractorSubject *qtractorTrack::recordSubject (void) const
+{
+	return m_pRecordSubject;
+}
+
+qtractorSubject *qtractorTrack::muteSubject (void) const
+{
+	return m_pMuteSubject;
+}
+
+qtractorSubject *qtractorTrack::soloSubject (void) const
+{
+	return m_pSoloSubject;
+}
+
+
+// Track state (mute, solo) notifier (proto-slot).
+void qtractorTrack::stateChangeNotify ( ToolType toolType, bool bOn )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrack[%p]::stateChangeNotify(%d, %d)",
+		this, int(toolType), int(bOn));
+#endif
+
+	// Put it in the form of an undoable command...
+	if (m_pSession)
+		m_pSession->execute(
+			new qtractorTrackStateCommand(this, toolType, bOn));
 }
 
 

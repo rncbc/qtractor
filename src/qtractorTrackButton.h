@@ -1,7 +1,7 @@
 // qtractorTrackButton.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,11 +26,13 @@
 
 #include <QToolButton>
 
+#include "qtractorObserverWidget.h"
+
 
 //----------------------------------------------------------------------------
-// qtractorTrackButton -- Track tool button.
+// qtractorTrackButton -- Track observer tool button.
 
-class qtractorTrackButton : public QToolButton
+class qtractorTrackButton : public qtractorObserverWidget<QToolButton>
 {
 	Q_OBJECT
 
@@ -44,26 +46,28 @@ public:
 	// Specific accessors.
 	void setTrack(qtractorTrack *pTrack);
 	qtractorTrack *track() const;
+
 	qtractorTrack::ToolType toolType() const;
-
-	// Update track button state.
-	void updateTrack();
-
-signals:
-
-	// Track change notification.
-	void trackButtonToggled(qtractorTrackButton *pTrackButton, bool bOn);
 
 protected slots:
 
 	// Special toggle slot.
 	void toggledSlot(bool bOn);
 
+protected:
+
+	// Visitor setup.
+	void updateTrack();
+
+	// Visitors overload.
+	void updateValue(float fValue);
+
 private:
 
 	// Instance variables.
 	qtractorTrack *m_pTrack;
 	qtractorTrack::ToolType m_toolType;
+
 	int m_iUpdate;
 
 	// Special background colors.

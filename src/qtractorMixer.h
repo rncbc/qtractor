@@ -90,7 +90,6 @@ public:
 
 	// Update monitor/track buttons state.
 	void updateMonitorButton();
-	void updateTrackButtons();
 
 	// Strip refreshment.
 	void refresh();
@@ -216,9 +215,6 @@ public:
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
-
-	// Update all strips track buttons.
-	void updateTrackButtons();
 
 	// Update all strips monitor buttons.
 	void updateMonitorButtons();

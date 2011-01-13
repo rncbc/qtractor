@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -610,15 +610,7 @@ bool qtractorTrackStateCommand::redo (void)
 	m_bOn = bOn;
 
 	// Toggle/update all other?
-	qtractorMixerRack *pTrackRack = pMainForm->mixer()->trackRack();
-	if (m_tracks.isEmpty()) {
-		// Update one track mixer strip...
-		qtractorMixerStrip *pStrip
-			= pTrackRack->findStrip(pTrack->monitor());
-		if (pStrip)
-			pStrip->updateTrackButtons();
-		// Done with single mode.
-	} else {
+	if (!m_tracks.isEmpty()) {
 		// Exclusive mode.
 		qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
 		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
@@ -649,8 +641,6 @@ bool qtractorTrackStateCommand::redo (void)
 			// Swap for undo...
 			pTrackItem->on = bOn;
 		}
-		// Update all track mixer strips...
-		pTrackRack->updateTrackButtons();
 		// Done with exclusive mode.
 	}
 

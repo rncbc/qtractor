@@ -4007,14 +4007,6 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 			default:
 				break;
 			}
-			// Update track-buttons...
-			m_pTracks->trackList()->updateTrack(pTrack);
-			if (m_pMixer) {
-				qtractorMixerStrip *pStrip
-					= m_pMixer->trackRack()->findStrip(pTrack->monitor());
-				if (pStrip)
-					pStrip->updateTrackButtons();
-			}
 			// Done.
 			stabilizeForm();
 		}

@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -140,28 +140,6 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	pHBoxLayout->addWidget(m_pMuteButton);
 	pHBoxLayout->addWidget(m_pSoloButton);
 	QWidget::setLayout(pHBoxLayout);
-
-	qtractorTracks *pTracks = pTrackList->tracks();
-	if (pTracks) {
-		QObject::connect(m_pRecordButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
-		QObject::connect(m_pMuteButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
-		QObject::connect(m_pSoloButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
-	}
-}
-
-
-// Public feedbacker.
-void qtractorTrackItemWidget::updateTrack (void)
-{
-	m_pRecordButton->updateTrack();
-	m_pMuteButton->updateTrack();
-	m_pSoloButton->updateTrack();
 }
 
 
@@ -385,8 +363,6 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			break;
 		}
 	}
-
-	widget->updateTrack();
 }
 
 

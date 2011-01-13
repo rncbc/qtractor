@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- An internal rewrite (aka. refactoring) have been
+  carried out, making sure that all track state
+  action buttons (R, M, S) are now all under the
+  observer pattern umbrella. (EXPERIMENTAL)
+ 
 - Single track range selection is now available
   on main menu (Edit/Select/Track Range; default
   keyboard shortcut: Ctrl+Shift+R); additionally

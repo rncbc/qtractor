@@ -26,7 +26,6 @@
 
 // Forward declarations.
 class qtractorInstrumentList;
-class qtractorTrackButton;
 class qtractorTrackItemWidget;
 class qtractorTrackList;
 class qtractorTrackTime;
@@ -129,11 +128,6 @@ public:
 	void zoomIn();
 	void zoomOut();
 	void zoomReset();
-
-public slots:
-
-	// Track button notification.
-	void trackButtonSlot(qtractorTrackButton *pTrackButton, bool bOn);
 
 protected:
 

@@ -1,7 +1,7 @@
 // qtractorTrack.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,6 +35,8 @@ class qtractorPluginList;
 class qtractorMonitor;
 class qtractorClip;
 class qtractorBus;
+
+class qtractorSubject;
 
 // Special forward declarations.
 class QDomElement;
@@ -201,6 +203,14 @@ public:
 	// Update all clips editors.
 	void updateClipEditors();
 
+	// Track state (record, mute, solo) button setup.
+	qtractorSubject *recordSubject() const;
+	qtractorSubject *muteSubject() const;
+	qtractorSubject *soloSubject() const;
+
+	// Track state (record, mute, solo) notifier (proto-slot).
+	void stateChangeNotify(ToolType toolType, bool bOn);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
@@ -271,6 +281,17 @@ private:
 	qtractorClip *m_pClipRecord;    // Current clip on record (capture).
 
 	qtractorPluginList *m_pPluginList;	// Plugin chain (audio).
+
+	// State (mute, solo) observer stuff.
+	class StateObserver;
+
+	StateObserver   *m_pRecordObserver;
+	StateObserver   *m_pMuteObserver;
+	StateObserver   *m_pSoloObserver;
+
+	qtractorSubject *m_pRecordSubject;
+	qtractorSubject *m_pMuteSubject;
+	qtractorSubject *m_pSoloSubject;
 };
 
 
