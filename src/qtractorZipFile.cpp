@@ -1,7 +1,7 @@
 // qtractorZipFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -901,7 +901,7 @@ qtractorZipFile::Status qtractorZipFile::status (void) const
 // otherwise returns false.
 bool qtractorZipFile::isReadable (void) const
 {
-	return m_pZip->device->isReadable();
+	return (m_pZip->status == NoError) && m_pZip->device->isReadable();
 }
 
 
@@ -909,7 +909,7 @@ bool qtractorZipFile::isReadable (void) const
 // otherwise returns false.
 bool qtractorZipFile::isWritable (void) const
 {
-	return m_pZip->device->isWritable();
+	return (m_pZip->status == NoError) && m_pZip->device->isWritable();
 }
 
 
@@ -917,9 +917,7 @@ bool qtractorZipFile::isWritable (void) const
 bool qtractorZipFile::exists (void) const
 {
 	QFile *pFile = qobject_cast<QFile *> (m_pZip->device);
-	if (pFile == NULL)
-		return true;
-	return pFile->exists();
+	return (pFile ? pFile->exists() : false);
 }
 
 

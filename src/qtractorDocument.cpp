@@ -179,6 +179,11 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 		if (!info.isWritable()) // Read-only media?
 			QDir::setCurrent(QDir::temp().path());
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
+		if (!m_pZipFile->isReadable()) {
+			delete m_pZipFile;
+			m_pZipFile = NULL;
+			return false;
+		}
 		sDocname = m_sName + '.' + g_sDefaultExt;
 		m_pZipFile->extractAll();
 		m_pZipFile->close();
@@ -240,6 +245,11 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
+		if (!m_pZipFile->isWritable()) {
+			delete m_pZipFile;
+			m_pZipFile = NULL;
+			return false;
+		}
 		sDocname = m_sName + '.' + g_sDefaultExt;
 	}
 #endif

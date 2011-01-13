@@ -1888,10 +1888,14 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 
 	// Reset selection...
 	QRect rectUpdate = m_pClipSelect->rect();
-	m_pClipSelect->clear();
-	
-	int y1 = 0;
-	int y2 = 0;
+	if ((QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+		m_pClipSelect->clear();
+
+	int x0 = qtractorScrollView::contentsWidth();
+	int y0 = qtractorScrollView::contentsHeight();
+
+	int y1, y2 = 0;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		y1  = y2;
@@ -1914,6 +1918,8 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 			int x = pSession->pixelFromFrame(pClip->clipStart());
 			int w = pSession->pixelFromFrame(pClip->clipLength());
 			m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
+			if (x0 > x) x0 = x;
+			if (y0 > y) y0 = y;
 		}
 	}
 
@@ -1924,6 +1930,9 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 		updateContents(rectUpdate);
 		m_pTracks->selectionChangeNotify();
 	}
+
+	// Make sure the earliest is barely visible...
+	qtractorScrollView::ensureVisible(x0, y0, 24, 24);
 
 	// Make sure we keep focus...
 	qtractorScrollView::setFocus();
