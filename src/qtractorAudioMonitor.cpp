@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -161,6 +161,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		delete [] m_pfValues;
 		m_pfValues = 0;
 	}
+
 	// Delete old panning-gains holders...
 	if (m_pfGains) {
 		delete [] m_pfGains;

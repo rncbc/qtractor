@@ -106,16 +106,16 @@ private:
 // qtractorMixerStrip -- Mixer strip widget.
 
 // Constructors.
-qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
-	qtractorBus *pBus, qtractorBus::BusMode busMode )
+qtractorMixerStrip::qtractorMixerStrip (
+	qtractorMixerRack *pRack, qtractorBus *pBus, qtractorBus::BusMode busMode )
 	: QFrame(pRack->workspace()), m_pRack(pRack),
 		m_pBus(pBus), m_busMode(busMode), m_pTrack(NULL)
 {
 	initMixerStrip();
 }
 
-qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
-	qtractorTrack * pTrack )
+qtractorMixerStrip::qtractorMixerStrip (
+	qtractorMixerRack *pRack, qtractorTrack *pTrack )
 	: QFrame(pRack->workspace()), m_pRack(pRack),
 		m_pBus(NULL), m_busMode(qtractorBus::None), m_pTrack(pTrack)
 {
@@ -518,9 +518,9 @@ void qtractorMixerStrip::setBus ( qtractorBus *pBus )
 	m_pBus = pBus;
 
 	if (m_busMode & qtractorBus::Input) {
-		setMonitor(m_pBus->monitor_in());
+		m_pRack->updateStrip(this, m_pBus->monitor_in());
 	} else {
-		setMonitor(m_pBus->monitor_out());
+		m_pRack->updateStrip(this, m_pBus->monitor_out());
 	}
 
 	switch (m_pBus->busType()) {
@@ -574,14 +574,14 @@ void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 
 	m_pTrack = pTrack;
 
+	m_pRack->updateStrip(this, m_pTrack->monitor());
+
 	m_pPluginListView->setPluginList(m_pTrack->pluginList());
 	m_pPluginListView->setEnabled(true);
 
 	m_pRecordButton->setTrack(m_pTrack);
 	m_pMuteButton->setTrack(m_pTrack);
 	m_pSoloButton->setTrack(m_pTrack);
-
-	setMonitor(m_pTrack->monitor());
 
 	updateMonitorButton();
 	updateMidiLabel();
@@ -910,6 +910,20 @@ void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor )
 {
 	return m_strips.value(pMonitor, NULL);
+}
+
+
+// Update a mixer strip on rack list.
+void qtractorMixerRack::updateStrip (
+	qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor )
+{
+	qtractorMonitor *pOldMonitor = pStrip->meter()->monitor();
+	if (findStrip(pOldMonitor) == pStrip)
+		m_strips.remove(pOldMonitor);
+	
+	pStrip->setMonitor(pMonitor);
+
+	m_strips.insert(pMonitor, pStrip);
 }
 
 

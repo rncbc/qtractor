@@ -196,6 +196,9 @@ public:
 	// Find a mixer strip, given its monitor handle.
 	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor);
 
+	// Update a mixer strip on rack list.
+	void updateStrip(qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor);
+
 	// Current Strip count.
 	int stripCount() const;
 

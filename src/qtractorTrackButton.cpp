@@ -42,6 +42,8 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	m_toolType = toolType;
 	m_iUpdate  = 0;
 
+	m_pMidiControlAction = NULL;
+
 	QPushButton::setFixedSize(fixedSize);
 	QPushButton::setFocusPolicy(Qt::NoFocus);
 //	QPushButton::setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -155,18 +157,21 @@ Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
 void qtractorTrackButton::addMidiControlAction (
 	qtractorMidiControlObserver *pMidiObserver )
 {
-	QAction *pAction = new QAction(
+	if (m_pMidiControlAction)
+		QPushButton::removeAction(m_pMidiControlAction);
+		
+	m_pMidiControlAction = new QAction(
 		QIcon(":/images/itemControllers.png"),
 		tr("MIDI Controller..."), this);
 
-	pAction->setData(
+	m_pMidiControlAction->setData(
 		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
 
-	QObject::connect(pAction,
+	QObject::connect(m_pMidiControlAction,
 		SIGNAL(triggered(bool)),
 		SLOT(midiControlActionSlot()));
 
-	QPushButton::addAction(pAction);
+	QPushButton::addAction(m_pMidiControlAction);
 	QPushButton::setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
@@ -174,7 +179,7 @@ void qtractorTrackButton::addMidiControlAction (
 void qtractorTrackButton::midiControlActionSlot (void)
 {
 	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction) {
+	if (pAction && pAction == m_pMidiControlAction) {
 		qtractorMidiControlObserver *pMidiObserver
 			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
 		if (pMidiObserver) {

@@ -80,6 +80,9 @@ private:
 	QColor m_rgbText;
 	QColor m_rgbOn;
 	QColor m_rgbOff;
+
+	// MIDI controller/observer leftover.
+	QAction *m_pMidiControlAction;
 };
 
 
