@@ -45,7 +45,7 @@ class QVBoxLayout;
 
 class QLabel;
 class QSplitter;
-class QToolButton;
+class QPushButton;
 
 
 //----------------------------------------------------------------------------
@@ -152,8 +152,8 @@ private:
 	qtractorTrackButton    *m_pMuteButton;
 	qtractorTrackButton    *m_pSoloButton;
 	qtractorMeter          *m_pMeter;
-	QToolButton            *m_pBusButton;
-	QToolButton            *m_pMonitorButton;
+	QPushButton            *m_pBusButton;
+	QPushButton            *m_pMonitorButton;
 	QLabel                 *m_pMidiLabel;
 
 	// Selection stuff.

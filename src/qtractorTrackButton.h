@@ -24,7 +24,7 @@
 
 #include "qtractorTrack.h"
 
-#include <QToolButton>
+#include <QPushButton>
 
 #include "qtractorObserverWidget.h"
 
@@ -32,7 +32,7 @@
 //----------------------------------------------------------------------------
 // qtractorTrackButton -- Track observer tool button.
 
-class qtractorTrackButton : public qtractorObserverWidget<QToolButton>
+class qtractorTrackButton : public qtractorObserverWidget<QPushButton>
 {
 	Q_OBJECT
 
@@ -54,7 +54,13 @@ protected slots:
 	// Special toggle slot.
 	void toggledSlot(bool bOn);
 
+	// MIDI controller/observer attachment (context menu) slot.
+	void midiControlActionSlot();
+
 protected:
+
+	// MIDI controller/observer attachment (context menu) activator.
+	void addMidiControlAction(qtractorMidiControlObserver *pMidiObserver);
 
 	// Visitor setup.
 	void updateTrack();

@@ -22,6 +22,8 @@
 #include "qtractorAbout.h"
 #include "qtractorTrackButton.h"
 
+#include "qtractorMidiControlObserverForm.h"
+
 #if QT_VERSION < 0x040300
 #define lighter(x)	light(x)
 #define darker(x)	dark(x)
@@ -34,36 +36,37 @@
 // Constructor.
 qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	qtractorTrack::ToolType toolType, const QSize& fixedSize,
-	QWidget *pParent ) : qtractorObserverWidget<QToolButton> (pParent)
+	QWidget *pParent ) : qtractorObserverWidget<QPushButton> (pParent)
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
 	m_iUpdate  = 0;
 
-	QToolButton::setFixedSize(fixedSize);
-	QToolButton::setToolButtonStyle(Qt::ToolButtonTextOnly);
-	QToolButton::setCheckable(true);
+	QPushButton::setFixedSize(fixedSize);
+	QPushButton::setFocusPolicy(Qt::NoFocus);
+//	QPushButton::setToolButtonStyle(Qt::ToolButtonTextOnly);
+	QPushButton::setCheckable(true);
 
-	QToolButton::setFont(
-		QFont(QToolButton::font().family(), (fixedSize.height() < 16 ? 5 : 6)));
+	QPushButton::setFont(
+		QFont(QPushButton::font().family(), (fixedSize.height() < 16 ? 5 : 6)));
 
-	QPalette pal(QToolButton::palette());
+	QPalette pal(QPushButton::palette());
 	m_rgbText = pal.buttonText().color();
 	m_rgbOff  = pal.button().color();
 	switch (m_toolType) {
 	case qtractorTrack::Record:
-		QToolButton::setText("R");
-		QToolButton::setToolTip(tr("Record"));
+		QPushButton::setText("R");
+		QPushButton::setToolTip(tr("Record"));
 		m_rgbOn = Qt::red;
 		break;
 	case qtractorTrack::Mute:
-		QToolButton::setText("M");
-		QToolButton::setToolTip(tr("Mute"));
+		QPushButton::setText("M");
+		QPushButton::setToolTip(tr("Mute"));
 		m_rgbOn = Qt::yellow;
 		break;
 	case qtractorTrack::Solo:
-		QToolButton::setText("S");
-		QToolButton::setToolTip(tr("Solo"));
+		QPushButton::setText("S");
+		QPushButton::setToolTip(tr("Solo"));
 		m_rgbOn = Qt::cyan;
 		break;
 	}
@@ -81,12 +84,12 @@ void qtractorTrackButton::updateValue ( float fValue )
 
 	bool bOn = (fValue > 0.0f);
 
-	QPalette pal(QToolButton::palette());
+	QPalette pal(QPushButton::palette());
 	pal.setColor(QPalette::ButtonText, bOn ? m_rgbOn.darker() : m_rgbText);
 	pal.setColor(QPalette::Button, bOn ? m_rgbOn : m_rgbOff);
-	QToolButton::setPalette(pal);
+	QPushButton::setPalette(pal);
 
-	QToolButton::setChecked(bOn);
+	QPushButton::setChecked(bOn);
 
 	m_iUpdate--;
 }
@@ -130,16 +133,56 @@ void qtractorTrackButton::updateTrack (void)
 	switch (m_toolType) {
 	case qtractorTrack::Record:
 		setSubject(m_pTrack->recordSubject());
+		addMidiControlAction(m_pTrack->recordObserver());
 		break;
 	case qtractorTrack::Mute:
 		setSubject(m_pTrack->muteSubject());
+		addMidiControlAction(m_pTrack->muteObserver());
 		break;
 	case qtractorTrack::Solo:
 		setSubject(m_pTrack->soloSubject());
+		addMidiControlAction(m_pTrack->soloObserver());
 		break;
 	}
 
 	observer()->update();
+}
+
+// MIDI controller/observer attachment (context menu) activator.
+//
+Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
+
+void qtractorTrackButton::addMidiControlAction (
+	qtractorMidiControlObserver *pMidiObserver )
+{
+	QAction *pAction = new QAction(
+		QIcon(":/images/itemControllers.png"),
+		tr("MIDI Controller..."), this);
+
+	pAction->setData(
+		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
+
+	QObject::connect(pAction,
+		SIGNAL(triggered(bool)),
+		SLOT(midiControlActionSlot()));
+
+	QPushButton::addAction(pAction);
+	QPushButton::setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+
+void qtractorTrackButton::midiControlActionSlot (void)
+{
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		qtractorMidiControlObserver *pMidiObserver
+			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+		if (pMidiObserver) {
+			qtractorMidiControlObserverForm form(parentWidget());
+			form.setMidiObserver(pMidiObserver);
+			form.exec();
+		}
+	}
 }
 
 

@@ -25,9 +25,10 @@
 #include "qtractorMidiEvent.h"
 
 #include "qtractorSession.h"
-
 #include "qtractorSessionCursor.h"
-#include "qtractorSessionDocument.h"
+
+#include "qtractorDocument.h"
+
 #include "qtractorAudioEngine.h"
 
 #include "qtractorMidiSequence.h"

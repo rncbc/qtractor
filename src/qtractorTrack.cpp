@@ -27,7 +27,7 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
 
-#include "qtractorSessionDocument.h"
+#include "qtractorDocument.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioMonitor.h"
 #include "qtractorMidiEngine.h"
@@ -386,6 +386,10 @@ const QString& qtractorTrack::trackName (void) const
 void qtractorTrack::setTrackName ( const QString& sTrackName )
 {
 	m_props.trackName = sTrackName;
+
+	m_pRecordSubject->setName(sTrackName + ' ' + QObject::tr("Record"));
+	m_pMuteSubject->setName(sTrackName + ' ' + QObject::tr("Mute"));
+	m_pSoloSubject->setName(sTrackName + ' ' + QObject::tr("Solo"));
 }
 
 
@@ -1065,6 +1069,22 @@ qtractorSubject *qtractorTrack::muteSubject (void) const
 qtractorSubject *qtractorTrack::soloSubject (void) const
 {
 	return m_pSoloSubject;
+}
+
+
+qtractorMidiControlObserver *qtractorTrack::recordObserver (void) const
+{
+	return static_cast<qtractorMidiControlObserver *> (m_pRecordObserver);
+}
+
+qtractorMidiControlObserver *qtractorTrack::muteObserver (void) const
+{
+	return static_cast<qtractorMidiControlObserver *> (m_pMuteObserver);
+}
+
+qtractorMidiControlObserver *qtractorTrack::soloObserver (void) const
+{
+	return static_cast<qtractorMidiControlObserver *> (m_pSoloObserver);
 }
 
 

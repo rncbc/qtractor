@@ -312,10 +312,8 @@ public:
 		unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorSessionDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorSessionDocument *pDocument, QDomElement *pElement);
 
 	// Session property structure.
 	struct Properties

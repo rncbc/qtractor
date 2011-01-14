@@ -25,7 +25,7 @@
 
 #include "qtractorSession.h"
 
-#include "qtractorSessionDocument.h"
+#include "qtractorDocument.h"
 
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"

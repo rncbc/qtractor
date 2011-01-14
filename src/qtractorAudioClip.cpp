@@ -25,7 +25,7 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
 
-#include "qtractorSessionDocument.h"
+#include "qtractorDocument.h"
 
 #include "qtractorSession.h"
 

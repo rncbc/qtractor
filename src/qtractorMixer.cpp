@@ -190,13 +190,13 @@ void qtractorMixerStrip::initMixerStrip (void)
 		QIcon::Normal, QIcon::On);
 	const QSizePolicy buttonPolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-	m_pMonitorButton = new QToolButton(/*this*/);
+	m_pMonitorButton = new QPushButton(/*this*/);
 	m_pMonitorButton->setFixedHeight(16);
+	m_pMonitorButton->setFocusPolicy(Qt::NoFocus);
 	m_pMonitorButton->setSizePolicy(buttonPolicy);
 	m_pMonitorButton->setFont(font6);
 	m_pMonitorButton->setIcon(icons);
-	m_pMonitorButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-//	m_pMonitorButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+//	m_pMonitorButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	m_pMonitorButton->setText(tr("monitor"));
 	m_pMonitorButton->setCheckable(true);
 
@@ -223,10 +223,11 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pBusButton = NULL;
 	} else {
 		meterType = m_pBus->busType();
-		m_pBusButton = new QToolButton(/*this*/);
+		m_pBusButton = new QPushButton(/*this*/);
 		m_pBusButton->setFixedHeight(14);
+		m_pBusButton->setFocusPolicy(Qt::NoFocus);
 		m_pBusButton->setSizePolicy(buttonPolicy);
-		m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+	//	m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
 		m_pBusButton->setFont(font6);
 		m_pBusButton->setText(
 			m_busMode & qtractorBus::Input ? tr("inputs") : tr("outputs"));
@@ -405,21 +406,21 @@ void qtractorMixerStrip::updateName (void)
 	}
 	
 	QString sGain;
-	QString sTitle = sName + ' ';
+	QString sType;
 	switch (meterType) {
 	case qtractorTrack::Audio:
 		m_pLabel->setIcon(QIcon(":/images/trackAudio.png"));
-		sTitle += tr("(Audio)");
-		sGain   = tr("Gain");
+		sType = tr("(Audio)");
+		sGain = tr("Gain");
 		break;
 	case qtractorTrack::Midi:
 		m_pLabel->setIcon(QIcon(":/images/trackMidi.png"));
-		sTitle += tr("(MIDI)");
-		sGain   = tr("Volume");
+		sType = tr("(MIDI)");
+		sGain = tr("Volume");
 		break;
 	case qtractorTrack::None:
 	default:
-		sTitle += tr("(None)");
+		sType = tr("(None)");
 		break;
 	}
 
@@ -427,11 +428,11 @@ void qtractorMixerStrip::updateName (void)
 
 	qtractorMonitor *pMonitor = m_pMeter->monitor();
 	if (pMonitor) {
-		pMonitor->panningSubject()->setName(sTitle + ' ' + tr("Pan"));
-		pMonitor->gainSubject()->setName(sTitle + ' ' + sGain);
+		pMonitor->panningSubject()->setName(sName + ' ' + tr("Pan"));
+		pMonitor->gainSubject()->setName(sName + ' ' + sGain);
 	}
 
-	QFrame::setToolTip(sTitle);
+	QFrame::setToolTip(sName + ' ' + sType);
 }
 
 

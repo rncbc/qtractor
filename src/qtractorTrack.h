@@ -37,6 +37,7 @@ class qtractorClip;
 class qtractorBus;
 
 class qtractorSubject;
+class qtractorMidiControlObserver;
 
 // Special forward declarations.
 class QDomElement;
@@ -208,6 +209,10 @@ public:
 	qtractorSubject *muteSubject() const;
 	qtractorSubject *soloSubject() const;
 
+	qtractorMidiControlObserver *recordObserver() const;
+	qtractorMidiControlObserver *muteObserver() const;
+	qtractorMidiControlObserver *soloObserver() const;
+	
 	// Track state (record, mute, solo) notifier (proto-slot).
 	void stateChangeNotify(ToolType toolType, bool bOn);
 

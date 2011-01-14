@@ -21,8 +21,8 @@
 
 #include "qtractorAbout.h"
 #include "qtractorSession.h"
-
 #include "qtractorSessionCursor.h"
+
 #include "qtractorSessionDocument.h"
 
 #include "qtractorAudioEngine.h"

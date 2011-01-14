@@ -27,9 +27,10 @@
 
 #include "qtractorSession.h"
 
+#include "qtractorDocument.h"
+
 #include "qtractorMonitor.h"
 #include "qtractorSessionCursor.h"
-#include "qtractorSessionDocument.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiBuffer.h"
 #include "qtractorPlugin.h"
