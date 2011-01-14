@@ -197,10 +197,8 @@ public:
 	void sendSppCommand(int iCmdType, unsigned short iSongPos = 0) const;
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// MIDI-export method.
 	bool fileExport(const QString& sExportPath,
@@ -431,7 +429,7 @@ public:
 	// Retrieve/restore client:port connections.
 	// return the effective number of connection attempts.
 	int updateConnects(BusMode busMode,
-		ConnectList& connects, bool bConnect = false);
+		ConnectList& connects, bool bConnect = false) const;
 
 	// MIDI master volume.
 	void setMasterVolume(float fVolume);
@@ -444,10 +442,8 @@ public:
 	void setPanning(qtractorTrack *pTrack, float fPanning);
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 protected:
 
@@ -469,16 +465,12 @@ protected:
 	void updatePluginList(qtractorPluginList *pPluginList, int iFlags);
 
 	// Document instrument map methods.
-	bool loadMidiMap(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveMidiMap(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadMidiMap(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveMidiMap(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Document SysEx setup list methods.
-	bool loadSysexList(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveSysexList(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadSysexList(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveSysexList(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 private:
 

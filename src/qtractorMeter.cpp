@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,9 +22,12 @@
 #include "qtractorAbout.h"
 #include "qtractorMeter.h"
 
-#include "qtractorObserverWidget.h"
-
 #include "qtractorMonitor.h"
+
+#include "qtractorMidiControlObserver.h"
+#include "qtractorMidiControlObserverForm.h"
+
+#include "qtractorObserverWidget.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -102,17 +105,17 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 
 
 //----------------------------------------------------------------------
-// class qtractorMeterPanSliderInterface -- Observer interface.
+// class qtractorMeter::PanSliderInterface -- Observer interface.
 //
 
 // Local converter interface.
-class qtractorMeterPanSliderInterface
+class qtractorMeter::PanSliderInterface
 	: public qtractorObserverSlider::Interface
 {
 public:
 
 	// Constructor.
-	qtractorMeterPanSliderInterface (
+	PanSliderInterface (
 		qtractorObserverSlider *pSlider )
 		: qtractorObserverSlider::Interface(pSlider) {}
 
@@ -126,20 +129,24 @@ public:
 
 
 //----------------------------------------------------------------------------
-// qtractorMeterGainObserver -- Local dedicated observer.
+// qtractorMeter::PanObserver -- Local dedicated observer.
 
-class qtractorMeterPanObserver : public qtractorObserver
+class qtractorMeter::PanObserver : public qtractorMidiControlObserver
 {
 public:
 
 	// Constructor.
-	qtractorMeterPanObserver(qtractorMeter *pMeter)
-		: qtractorObserver(NULL), m_pMeter(pMeter) {}
+	PanObserver(qtractorMeter *pMeter)
+		: qtractorMidiControlObserver(NULL), m_pMeter(pMeter) {}
 
 protected:
 
 	// Update feedback.
-	void update() { m_pMeter->panningChangedNotify(value()); }
+	void update()
+	{
+		m_pMeter->panningChangedNotify(value());
+		qtractorMidiControlObserver::update();
+	}
 
 private:
 
@@ -149,20 +156,24 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorMeterGainObserver -- Local dedicated observer.
+// qtractorMeter::GainObserver -- Local dedicated observer.
 
-class qtractorMeterGainObserver : public qtractorObserver
+class qtractorMeter::GainObserver : public qtractorMidiControlObserver
 {
 public:
 
 	// Constructor.
-	qtractorMeterGainObserver(qtractorMeter *pMeter)
-		: qtractorObserver(NULL), m_pMeter(pMeter) {}
+	GainObserver(qtractorMeter *pMeter)
+		: qtractorMidiControlObserver(NULL), m_pMeter(pMeter) {}
 
 protected:
 
 	// Update feedback.
-	void update() { m_pMeter->gainChangedNotify(value()); }
+	void update()
+	{
+		m_pMeter->gainChangedNotify(value());
+		qtractorMidiControlObserver::update();
+	}
 
 private:
 
@@ -227,13 +238,12 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 #endif
 	m_pVBoxLayout->addWidget(m_pGainSpinBox);
 
-	m_pPanObserver  = new qtractorMeterPanObserver(this);
-	m_pGainObserver = new qtractorMeterGainObserver(this);
+	m_pPanObserver  = new PanObserver(this);
+	m_pGainObserver = new GainObserver(this);
 	
 	m_iPeakFalloff = 0;
 
-	m_pPanSlider->setInterface(
-		new qtractorMeterPanSliderInterface(m_pPanSlider));
+	m_pPanSlider->setInterface(new PanSliderInterface(m_pPanSlider));
 
 	m_pPanSlider->setTickPosition(QSlider::NoTicks);
 	m_pPanSlider->setMinimum(-100);
@@ -264,6 +274,9 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSpinBox->setAccelerated(true);
 #endif
 	m_pGainSpinBox->setToolTip(tr("Gain"));
+
+	addMidiControlAction(m_pPanSlider,  m_pPanObserver);
+	addMidiControlAction(m_pGainSlider, m_pGainObserver);
 
 	QWidget::setMinimumHeight(140);
 	QWidget::setSizePolicy(
@@ -421,6 +434,119 @@ void qtractorMeter::panningChangedNotify ( float fPanning )
 void qtractorMeter::gainChangedNotify ( float fGain )
 {
 	emit gainChangedSignal(fGain);
+}
+
+
+// MIDI controller/observer attachment (context menu) activator.
+//
+Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
+
+void qtractorMeter::addMidiControlAction (
+	QWidget *pWidget, qtractorMidiControlObserver *pMidiObserver )
+{
+	QAction *pAction = new QAction(
+		QIcon(":/images/itemControllers.png"),
+		tr("MIDI Controller..."), pWidget);
+
+	pAction->setData(
+		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
+
+	QObject::connect(pAction,
+		SIGNAL(triggered(bool)),
+		SLOT(midiControlActionSlot()));
+
+	pWidget->addAction(pAction);
+	pWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+
+void qtractorMeter::midiControlActionSlot (void)
+{
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		qtractorMidiControlObserver *pMidiObserver
+			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+		if (pMidiObserver) {
+			qtractorMidiControlObserverForm form(this);
+			form.setMidiObserver(pMidiObserver);
+			form.exec();
+		}
+	}
+}
+
+
+// Load meter (pan, gain) controllers (MIDI).
+void qtractorMeter::loadControllers ( QDomElement *pElement )
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	qtractorMidiControl::Controllers controllers;
+	pMidiControl->loadControllers(pElement, controllers);
+	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
+	while (iter.hasNext()) {
+		qtractorMidiControl::Controller *pController = iter.next();
+		qtractorMidiControlObserver *pObserver = NULL;
+		switch (pController->index) {
+		case 0: // 0=PanObserver
+			pObserver = static_cast<qtractorMidiControlObserver *> (m_pPanObserver);
+			break;
+		case 1: // 1=GainObserver
+			pObserver = static_cast<qtractorMidiControlObserver *> (m_pGainObserver);
+			break;
+		}
+		if (pObserver) {
+			pObserver->setType(pController->ctype);
+			pObserver->setChannel(pController->channel);
+			pObserver->setParam(pController->param);
+			pObserver->setLogarithmic(pController->logarithmic);
+			pObserver->setFeedback(pController->feedback);
+			pMidiControl->mapMidiObserver(pObserver);
+		}
+	}
+
+	qDeleteAll(controllers);
+}
+
+
+// Save meter (pan, gain) controllers (MIDI).
+void qtractorMeter::saveControllers (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	qtractorMidiControl::Controllers controllers;
+
+	if (pMidiControl->isMidiObserverMapped(m_pPanObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 0; // 0=PanObserver
+		pController->ctype = m_pPanObserver->type();
+		pController->channel = m_pPanObserver->channel();
+		pController->param = m_pPanObserver->param();
+		pController->logarithmic = m_pPanObserver->isLogarithmic();
+		pController->feedback = m_pPanObserver->isFeedback();
+		controllers.append(pController);
+	}
+
+	if (pMidiControl->isMidiObserverMapped(m_pGainObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 1; // 1=GainObserver
+		pController->ctype = m_pGainObserver->type();
+		pController->channel = m_pGainObserver->channel();
+		pController->param = m_pGainObserver->param();
+		pController->logarithmic = m_pGainObserver->isLogarithmic();
+		pController->feedback = m_pGainObserver->isFeedback();
+		controllers.append(pController);
+	}
+
+	pMidiControl->saveControllers(pDocument, pElement, controllers);
+
+	qDeleteAll(controllers);
 }
 
 

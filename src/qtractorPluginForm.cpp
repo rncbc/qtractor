@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -807,7 +807,7 @@ void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
 }
 
 
-// MIDI controller/observer attachement (context menu)
+// MIDI controller/observer attachment (context menu)
 //
 Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
 
@@ -846,17 +846,17 @@ void qtractorPluginForm::midiControlActionSlot (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorPluginParamSliderInterface -- Observer interface.
+// class qtractorPluginParamWidget::SliderInterface -- Observer interface.
 //
 
 // Local converter interface.
-class qtractorPluginParamSliderInterface
+class qtractorPluginParamWidget::SliderInterface
 	: public qtractorObserverSlider::Interface
 {
 public:
 
 	// Constructor.
-	qtractorPluginParamSliderInterface (
+	SliderInterface (
 		qtractorObserverSlider *pSlider, qtractorPluginParam *pParam )
 		: qtractorObserverSlider::Interface(pSlider), m_pParam(pParam) {}
 
@@ -945,8 +945,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 3);
 		}
 		m_pSlider = new qtractorObserverSlider(/*this*/);
-		m_pSlider->setInterface(
-			new qtractorPluginParamSliderInterface(m_pSlider, m_pParam));
+		m_pSlider->setInterface(new SliderInterface(m_pSlider, m_pParam));
 		m_pSlider->setOrientation(Qt::Horizontal);
 		m_pSlider->setTickPosition(QSlider::NoTicks);
 		m_pSlider->setMinimumWidth(120);

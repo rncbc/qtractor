@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -456,7 +456,7 @@ QString qtractorAudioClip::toolTip (void) const
 
 // Virtual document element methods.
 bool qtractorAudioClip::loadClipElement (
-	qtractorSessionDocument * /* pDocument */, QDomElement *pElement )
+	qtractorDocument * /* pDocument */, QDomElement *pElement )
 {
 	// Load track children...
 	for (QDomNode nChild = pElement->firstChild();
@@ -480,7 +480,7 @@ bool qtractorAudioClip::loadClipElement (
 
 
 bool qtractorAudioClip::saveClipElement (
-	qtractorSessionDocument *pDocument, QDomElement *pElement )
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	QDomElement eAudioClip = pDocument->document()->createElement("audio-clip");
 	pDocument->saveTextElement("filename",

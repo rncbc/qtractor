@@ -2224,8 +2224,8 @@ qtractorTimeScale::Cursor *qtractorMidiEngine::metroCursor (void) const
 
 
 // Document element methods.
-bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorMidiEngine::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	qtractorEngine::clear();
 
@@ -2300,8 +2300,8 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorMidiEngine::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	// Save transport/control modes...
 	QDomElement eControl
@@ -3368,8 +3368,8 @@ void qtractorMidiBus::updatePluginList (
 
 // Retrieve all current ALSA connections for a given bus mode interface;
 // return the effective number of connection attempts...
-int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
-	ConnectList& connects, bool bConnect )
+int qtractorMidiBus::updateConnects (
+	qtractorBus::BusMode busMode, ConnectList& connects, bool bConnect ) const
 {
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
@@ -3575,8 +3575,8 @@ void qtractorMidiBus::setPanning ( qtractorTrack *pTrack, float fPanning )
 
 
 // Document element methods.
-bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorMidiBus::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	for (QDomNode nProp = pElement->firstChild();
 			!nProp.isNull();
@@ -3636,8 +3636,8 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorMidiBus::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	pElement->setAttribute("name",
 		qtractorMidiBus::busName());
@@ -3719,8 +3719,8 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 
 
 // Document instrument map methods.
-bool qtractorMidiBus::loadMidiMap ( qtractorSessionDocument * /*pDocument*/,
-	QDomElement *pElement )
+bool qtractorMidiBus::loadMidiMap (
+	qtractorDocument * /*pDocument*/, QDomElement *pElement )
 {
 	m_patches.clear();
 
@@ -3768,8 +3768,8 @@ bool qtractorMidiBus::loadMidiMap ( qtractorSessionDocument * /*pDocument*/,
 }
 
 
-bool qtractorMidiBus::saveMidiMap ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorMidiBus::saveMidiMap (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	// Save map items...
 	QHash<unsigned short, Patch>::ConstIterator iter;
@@ -3801,8 +3801,8 @@ bool qtractorMidiBus::saveMidiMap ( qtractorSessionDocument *pDocument,
 
 
 // Document SysEx setup list methods.
-bool qtractorMidiBus::loadSysexList ( qtractorSessionDocument * /*pDocument*/,
-	QDomElement *pElement )
+bool qtractorMidiBus::loadSysexList (
+	qtractorDocument * /*pDocument*/, QDomElement *pElement )
 {
 	// Must have one...
 	if (m_pSysexList == NULL)
@@ -3837,8 +3837,8 @@ bool qtractorMidiBus::loadSysexList ( qtractorSessionDocument * /*pDocument*/,
 }
 
 
-bool qtractorMidiBus::saveSysexList ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorMidiBus::saveSysexList (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	// Must have one...
 	if (m_pSysexList == NULL)

@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@
 class qtractorBus;
 class qtractorSession;
 class qtractorSessionCursor;
-class qtractorSessionDocument;
+class qtractorDocument;
 class qtractorMonitor;
 
 class QDomElement;
@@ -99,10 +99,8 @@ public:
 	virtual int updateConnects();
 
 	// Document element methods.
-	virtual bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement) = 0;
-	virtual bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement) = 0;
+	virtual bool loadElement(qtractorDocument *pDocument, QDomElement *pElement) = 0;
+	virtual bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const = 0;
 
 protected:
 
@@ -242,13 +240,13 @@ public:
 	// Retrieve/restore client:port connections;
 	// return the effective number of connection attempts.
 	virtual int updateConnects(BusMode busMode,
-		ConnectList& connects, bool bConnect = false) = 0;
+		ConnectList& connects, bool bConnect = false) const = 0;
 
 	// Document element methods.
 	static bool loadConnects(ConnectList& connects,
-		qtractorSessionDocument *pDocument, QDomElement *pElement);
+		qtractorDocument *pDocument, QDomElement *pElement);
 	static bool saveConnects(ConnectList& connects,
-		qtractorSessionDocument *pDocument, QDomElement *pElement);
+		qtractorDocument *pDocument, QDomElement *pElement);
 
 	// Bus mode textual helper methods.
 	static BusMode busModeFromText (const QString& sText);

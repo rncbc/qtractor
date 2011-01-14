@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,7 +46,7 @@ class qtractorPluginListItem;
 
 class qtractorMidiManager;
 
-class qtractorSessionDocument;
+class qtractorDocument;
 
 class QDomDocument;
 class QDomElement;
@@ -558,27 +558,14 @@ public:
 	void saveConfigs(QDomDocument *pDocument, QDomElement *pElement);
 	void saveValues(QDomDocument *pDocument, QDomElement *pElement);
 
-	// Parameter controllers (MIDI).
-	struct Controller
-	{
-		unsigned long index;
-		qtractorMidiControl::ControlType ctype;
-		unsigned short channel;
-		unsigned short param;
-		bool logarithmic;
-		bool feedback;
-	};
-
-	typedef QList<Controller *> Controllers;
-
-	// Load plugin parameter controllers (MIDI).
-	static void loadControllers(QDomElement *pElement, Controllers& controllers);
-
-	// Save plugin parameter controllers (MIDI).
-	void saveControllers(qtractorSessionDocument *pDocument, QDomElement *pElement);
+	// Load/save plugin parameter controllers (MIDI).
+	static void loadControllers(
+		QDomElement *pElement, qtractorMidiControl::Controllers& controllers);
+	void saveControllers(
+		qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Map/realize plugin parameter controllers (MIDI).
-	void mapControllers(Controllers& controllers);
+	void mapControllers(const qtractorMidiControl::Controllers& controllers);
 
 protected:
 
@@ -704,10 +691,8 @@ public:
 	void process(float **ppBuffer, unsigned int nframes);
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement);
 
 	// MIDI manager deferred load/cache specifics.
 	void setMidiBank(int iMidiBank)

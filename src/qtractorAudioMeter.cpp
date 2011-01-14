@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -334,18 +334,17 @@ void qtractorAudioMeterValue::resizeEvent (QResizeEvent *pResizeEvent)
 
 
 //----------------------------------------------------------------------
-// class qtractorAudioMeterGainSpinBoxInterface -- Observer interface.
+// class qtractorAudioMeter::GainSpinBoxInterface -- Observer interface.
 //
 
 // Local converter interface.
-class qtractorAudioMeterGainSpinBoxInterface
+class qtractorAudioMeter::GainSpinBoxInterface
 	: public qtractorObserverSpinBox::Interface
 {
 public:
 
 	// Constructor.
-	qtractorAudioMeterGainSpinBoxInterface (
-		qtractorObserverSpinBox *pSpinBox )
+	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
 		: qtractorObserverSpinBox::Interface(pSpinBox) {}
 
 	// Formerly Pure virtuals.
@@ -358,18 +357,17 @@ public:
 
 
 //----------------------------------------------------------------------
-// class qtractorAudioMeterGainSliderInterface -- Observer interface.
+// class qtractorAudioMeter::GainSliderInterface -- Observer interface.
 //
 
 // Local converter interface.
-class qtractorAudioMeterGainSliderInterface
+class qtractorAudioMeter::GainSliderInterface
 	: public qtractorObserverSlider::Interface
 {
 public:
 
 	// Constructor.
-	qtractorAudioMeterGainSliderInterface (
-		qtractorObserverSlider *pSlider )
+	GainSliderInterface ( qtractorObserverSlider *pSlider )
 		: qtractorObserverSlider::Interface(pSlider) {}
 
 	// Formerly Pure virtuals.
@@ -401,10 +399,8 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 
 	topWidget()->hide();
 
-	gainSlider()->setInterface(
-		new qtractorAudioMeterGainSliderInterface(gainSlider()));
-	gainSpinBox()->setInterface(
-		new qtractorAudioMeterGainSpinBoxInterface(gainSpinBox()));
+	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
+	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
 
 	gainSlider()->setMaximum(11500);
 

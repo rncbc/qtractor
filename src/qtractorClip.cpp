@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -124,8 +124,7 @@ const QString& qtractorClip::filename (void) const
 	return m_sFilename;
 }
 
-QString qtractorClip::relativeFilename (
-	qtractorSessionDocument *pDocument ) const
+QString qtractorClip::relativeFilename ( qtractorDocument *pDocument ) const
 {
 	if (pDocument && pDocument->isArchive())
 		return pDocument->addFile(m_sFilename);
@@ -544,8 +543,8 @@ QString qtractorClip::toolTip (void) const
 
 
 // Document element methods.
-bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorClip::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	qtractorClip::setClipName(pElement->attribute("name"));
 
@@ -603,8 +602,8 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorClip::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	pElement->setAttribute("name", qtractorClip::clipName());
 

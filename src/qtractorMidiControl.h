@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -233,6 +233,25 @@ public:
 	// Document file methods.
 	bool loadDocument(const QString& sFilename);
 	bool saveDocument(const QString& sFilename);
+
+	// Parameter controllers (MIDI).
+	struct Controller
+	{
+		unsigned long  index;
+		ControlType    ctype;
+		unsigned short channel;
+		unsigned short param;
+		bool           logarithmic;
+		bool           feedback;
+	};
+
+	typedef QList<Controller *> Controllers;
+
+	// Load/save meter controllers (MIDI).
+	static void loadControllers(
+		QDomElement *pElement, Controllers& controllers);
+	static void saveControllers(qtractorDocument *pDocument,
+		QDomElement *pElement, const Controllers& controllers);
 
 	// Document textual helpers.
 	static ControlType typeFromText(const QString& sText);

@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -708,7 +708,7 @@ QString qtractorMidiClip::toolTip (void) const
 
 // Virtual document element methods.
 bool qtractorMidiClip::loadClipElement (
-	qtractorSessionDocument * /* pDocument */, QDomElement *pElement )
+	qtractorDocument * /* pDocument */, QDomElement *pElement )
 {
 	// Load track children...
 	for (QDomNode nChild = pElement->firstChild();
@@ -732,7 +732,7 @@ bool qtractorMidiClip::loadClipElement (
 
 
 bool qtractorMidiClip::saveClipElement (
-	qtractorSessionDocument *pDocument, QDomElement *pElement )
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
 	pDocument->saveTextElement("filename",

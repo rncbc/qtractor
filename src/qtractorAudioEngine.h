@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -107,10 +107,8 @@ public:
 	int process(unsigned int nframes);
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Session UUID accessors.
 	void setSessionId(const QString& sSessionId);
@@ -341,13 +339,11 @@ public:
 	// Retrieve/restore client:port connections;
 	// return the effective number of connection attempts...
 	int updateConnects(BusMode busMode,
-		ConnectList& connects, bool bConnect = false);
+		ConnectList& connects, bool bConnect = false) const;
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 protected:
 

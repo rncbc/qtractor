@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -650,6 +650,72 @@ QString qtractorMidiControl::textFromKey ( unsigned short iKey )
 		return "*"; // "TrackParam";
 	else
 		return QString::number(iKey);
+}
+
+
+// Load meter controllers (MIDI).
+void qtractorMidiControl::loadControllers (
+	QDomElement *pElement, Controllers& controllers )
+{
+	qDeleteAll(controllers);
+	controllers.clear();
+
+	for (QDomNode nController = pElement->firstChild();
+			!nController.isNull(); nController = nController.nextSibling()) {
+		// Convert node to element, if any.
+		QDomElement eController = nController.toElement();
+		if (eController.isNull())
+			continue;
+		// Check for controller item...
+		if (eController.tagName() == "controller") {
+			Controller *pController = new Controller;
+			pController->index = eController.attribute("index").toULong();
+			pController->ctype = typeFromText(eController.attribute("type"));
+			for (QDomNode nProp = eController.firstChild();
+					!nProp.isNull(); nProp = nProp.nextSibling()) {
+				// Convert node to element, if any.
+				QDomElement eProp = nProp.toElement();
+				if (eProp.isNull())
+					continue;
+				// Check for property item...
+				if (eProp.tagName() == "channel")
+					pController->channel = eProp.text().toUShort();
+				else
+				if (eProp.tagName() == "param")
+					pController->param = eProp.text().toUShort();
+				else
+				if (eProp.tagName() == "logarithmic")
+					pController->logarithmic = qtractorDocument::boolFromText(eProp.text());
+				else
+				if (eProp.tagName() == "feedback")
+					pController->feedback = qtractorDocument::boolFromText(eProp.text());
+			}
+			controllers.append(pController);
+		}
+	}
+}
+
+
+// Save meter controllers (MIDI).
+void qtractorMidiControl::saveControllers ( qtractorDocument *pDocument,
+	QDomElement *pElement, const Controllers& controllers )
+{
+	QListIterator<Controller *> iter(controllers);
+	while (iter.hasNext()) {
+		Controller *pController = iter.next();
+		QDomElement eController = pDocument->document()->createElement("controller");
+		eController.setAttribute("index", QString::number(pController->index));
+		eController.setAttribute("type", textFromType(pController->ctype));
+		pDocument->saveTextElement("channel",
+			QString::number(pController->channel), &eController);
+		pDocument->saveTextElement("param",
+			QString::number(pController->param), &eController);
+		pDocument->saveTextElement("logarithmic",
+			qtractorDocument::textFromBool(pController->logarithmic), &eController);
+		pDocument->saveTextElement("feedback",
+			qtractorDocument::textFromBool(pController->feedback), &eController);
+		pElement->appendChild(eController);
+	}
 }
 
 

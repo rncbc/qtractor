@@ -404,24 +404,34 @@ void qtractorMixerStrip::updateName (void)
 		m_pLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	}
 	
-	QString sSuffix;
+	QString sGain;
+	QString sTitle = sName + ' ';
 	switch (meterType) {
 	case qtractorTrack::Audio:
 		m_pLabel->setIcon(QIcon(":/images/trackAudio.png"));
-		sSuffix = tr("(Audio)");
+		sTitle += tr("(Audio)");
+		sGain   = tr("Gain");
 		break;
 	case qtractorTrack::Midi:
 		m_pLabel->setIcon(QIcon(":/images/trackMidi.png"));
-		sSuffix = tr("(MIDI)");
+		sTitle += tr("(MIDI)");
+		sGain   = tr("Volume");
 		break;
 	case qtractorTrack::None:
 	default:
-		sSuffix = tr("(None)");
+		sTitle += tr("(None)");
 		break;
 	}
 
 	m_pLabel->setText(sName);
-	QFrame::setToolTip(sName + ' ' + sSuffix);
+
+	qtractorMonitor *pMonitor = m_pMeter->monitor();
+	if (pMonitor) {
+		pMonitor->panningSubject()->setName(sTitle + ' ' + tr("Pan"));
+		pMonitor->gainSubject()->setName(sTitle + ' ' + sGain);
+	}
+
+	QFrame::setToolTip(sTitle);
 }
 
 

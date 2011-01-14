@@ -29,7 +29,7 @@
 
 // Forward declarations.
 class qtractorSession;
-class qtractorSessionDocument;
+class qtractorDocument;
 class qtractorInstrumentList;
 class qtractorPluginList;
 class qtractorMonitor;
@@ -212,10 +212,12 @@ public:
 	void stateChangeNotify(ToolType toolType, bool bOn);
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
+
+	// Load/save track state (record, mute, soloe) controllers (MIDI).
+	void loadControllers(QDomElement *pElement);
+	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Track properties structure.
 	struct Properties

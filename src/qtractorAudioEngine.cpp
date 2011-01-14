@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -938,8 +938,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 
 // Document element methods.
-bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorAudioEngine::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	qtractorEngine::clear();
 
@@ -996,8 +996,8 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorAudioEngine::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	// Save transport/control modes...
 	QDomElement eControl
@@ -2284,7 +2284,7 @@ void qtractorAudioBus::updatePluginList (
 // Retrieve all current JACK connections for a given bus mode interface;
 // return the effective number of connection attempts...
 int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
-	ConnectList& connects, bool bConnect )
+	ConnectList& connects, bool bConnect ) const
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
@@ -2387,8 +2387,8 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 
 
 // Document element methods.
-bool qtractorAudioBus::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorAudioBus::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	for (QDomNode nProp = pElement->firstChild();
 			!nProp.isNull();
@@ -2444,8 +2444,8 @@ bool qtractorAudioBus::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorAudioBus::saveElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorAudioBus::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	pElement->setAttribute("name",
 		qtractorAudioBus::busName());

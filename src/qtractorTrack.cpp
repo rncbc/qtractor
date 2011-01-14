@@ -50,19 +50,23 @@
 //------------------------------------------------------------------------
 // qtractorTrack::StateObserver -- Local track state observer.
 
-class qtractorTrack::StateObserver : public qtractorObserver
+class qtractorTrack::StateObserver : public qtractorMidiControlObserver
 {
 public:
 
 	// Constructor.
 	StateObserver(qtractorTrack *pTrack, ToolType toolType,
-		qtractorSubject *pSubject) : qtractorObserver(pSubject),
+		qtractorSubject *pSubject) : qtractorMidiControlObserver(pSubject),
 			m_pTrack(pTrack), m_toolType(toolType) {}
 
 protected:
 
 	// Update feedback.
-	void update() { m_pTrack->stateChangeNotify(m_toolType, value() > 0.0f); }
+	void update()
+	{
+		m_pTrack->stateChangeNotify(m_toolType, value() > 0.0f);
+		qtractorMidiControlObserver::update();
+	}
 
 private:
 
@@ -1080,8 +1084,8 @@ void qtractorTrack::stateChangeNotify ( ToolType toolType, bool bOn )
 
 
 // Document element methods.
-bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorTrack::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	qtractorTrack::setTrackName(pElement->attribute("name"));
 	qtractorTrack::setTrackType(
@@ -1212,8 +1216,8 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorTrack::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	pElement->setAttribute("name", qtractorTrack::trackName());
 	pElement->setAttribute("type",
@@ -1324,6 +1328,96 @@ QString qtractorTrack::textFromTrackType ( TrackType trackType )
 		break;
 	}
 	return sText;
+}
+
+
+// Load track state (record, mute, solo) controllers (MIDI).
+void qtractorTrack::loadControllers ( QDomElement *pElement )
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	qtractorMidiControl::Controllers controllers;
+	pMidiControl->loadControllers(pElement, controllers);
+	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
+	while (iter.hasNext()) {
+		qtractorMidiControl::Controller *pController = iter.next();
+		qtractorMidiControlObserver *pObserver = NULL;
+		switch (pController->index) {
+		case 0: // 0=RecordObserver
+			pObserver = static_cast<qtractorMidiControlObserver *> (m_pRecordObserver);
+			break;
+		case 1: // 1=MuteObserver
+			pObserver = static_cast<qtractorMidiControlObserver *> (m_pMuteObserver);
+			break;
+		case 2: // 2=SoloObserver
+			pObserver = static_cast<qtractorMidiControlObserver *> (m_pSoloObserver);
+			break;
+		}
+		if (pObserver) {
+			pObserver->setType(pController->ctype);
+			pObserver->setChannel(pController->channel);
+			pObserver->setParam(pController->param);
+			pObserver->setLogarithmic(pController->logarithmic);
+			pObserver->setFeedback(pController->feedback);
+			pMidiControl->mapMidiObserver(pObserver);
+		}
+	}
+
+	qDeleteAll(controllers);
+}
+
+
+// Save track state (record, mute, solo) controllers (MIDI).
+void qtractorTrack::saveControllers (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	qtractorMidiControl::Controllers controllers;
+
+	if (pMidiControl->isMidiObserverMapped(m_pRecordObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 0; // 0=RecordObserver
+		pController->ctype = m_pRecordObserver->type();
+		pController->channel = m_pRecordObserver->channel();
+		pController->param = m_pRecordObserver->param();
+		pController->logarithmic = m_pRecordObserver->isLogarithmic();
+		pController->feedback = m_pRecordObserver->isFeedback();
+		controllers.append(pController);
+	}
+
+	if (pMidiControl->isMidiObserverMapped(m_pMuteObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 1; // 1=MuteObserver
+		pController->ctype = m_pMuteObserver->type();
+		pController->channel = m_pMuteObserver->channel();
+		pController->param = m_pMuteObserver->param();
+		pController->logarithmic = m_pMuteObserver->isLogarithmic();
+		pController->feedback = m_pMuteObserver->isFeedback();
+		controllers.append(pController);
+	}
+
+	if (pMidiControl->isMidiObserverMapped(m_pSoloObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 2; // 2=SoloObserver
+		pController->ctype = m_pSoloObserver->type();
+		pController->channel = m_pSoloObserver->channel();
+		pController->param = m_pSoloObserver->param();
+		pController->logarithmic = m_pSoloObserver->isLogarithmic();
+		pController->feedback = m_pSoloObserver->isFeedback();
+		controllers.append(pController);
+	}
+
+	pMidiControl->saveControllers(pDocument, pElement, controllers);
+
+	qDeleteAll(controllers);
 }
 
 

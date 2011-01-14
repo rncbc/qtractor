@@ -1,7 +1,7 @@
 // qtractorMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,8 +22,6 @@
 #ifndef __qtractorMeter_h
 #define __qtractorMeter_h
 
-#include "qtractorObserver.h"
-
 #include <QWidget>
 
 
@@ -31,11 +29,16 @@
 class qtractorMeter;
 class qtractorMonitor;
 
+class qtractorSubject;
+
 class qtractorObserverSlider;
 class qtractorObserverSpinBox;
 
-class qtractorMeterPanObserver;
-class qtractorMeterGainObserver;
+class qtractorMidiControlObserver;
+
+class qtractorDocument;
+
+class QDomElement;
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -153,13 +156,31 @@ public:
 	void panningChangedNotify(float fPanning);
 	void gainChangedNotify(float fGain);
 
+	// Load/save meter (pan, gain) controllers (MIDI).
+	void loadControllers(QDomElement *pElement);
+	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
+
 signals:
 
 	// Observer value-changed signals.
 	void panningChangedSignal(float);
 	void gainChangedSignal(float);
 
+protected slots:
+
+	// MIDI controller/observer attachment (context menu) slot.
+	void midiControlActionSlot();
+
+protected:
+
+	// MIDI controller/observer attachment (context menu) activator.
+	void addMidiControlAction(
+		QWidget *pWidget, qtractorMidiControlObserver *pObserver);
+
 private:
+
+	// Local forward declarations.
+	class PanSliderInterface;
 
 	// Local instance variables.
 	QVBoxLayout *m_pVBoxLayout;
@@ -173,8 +194,11 @@ private:
 	qtractorObserverSlider  *m_pGainSlider;
 	qtractorObserverSpinBox *m_pGainSpinBox;
 
-	qtractorMeterPanObserver  *m_pPanObserver;
-	qtractorMeterGainObserver *m_pGainObserver;
+	class PanObserver;
+	class GainObserver;
+
+	PanObserver  *m_pPanObserver;
+	GainObserver *m_pGainObserver;
 
 	// Peak falloff mode setting (0=no peak falloff).
 	int m_iPeakFalloff;

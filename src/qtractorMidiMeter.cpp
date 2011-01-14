@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -215,18 +215,17 @@ void qtractorMidiMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiMeterGainSpinBoxInterface -- Observer interface.
+// class qtractorMidiMeter::GainSpinBoxInterface -- Observer interface.
 //
 
 // Local converter interface.
-class qtractorMidiMeterGainSpinBoxInterface
+class qtractorMidiMeter::GainSpinBoxInterface
 	: public qtractorObserverSpinBox::Interface
 {
 public:
 
 	// Constructor.
-	qtractorMidiMeterGainSpinBoxInterface (
-		qtractorObserverSpinBox *pSpinBox )
+	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
 		: qtractorObserverSpinBox::Interface(pSpinBox) {}
 
 	// Formerly Pure virtuals.
@@ -239,18 +238,17 @@ public:
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiMeterGainSliderInterface -- Observer interface.
+// class qtractorMidiMeter::GainSliderInterface -- Observer interface.
 //
 
 // Local converter interface.
-class qtractorMidiMeterGainSliderInterface
+class qtractorMidiMeter::GainSliderInterface
 	: public qtractorObserverSlider::Interface
 {
 public:
 
 	// Constructor.
-	qtractorMidiMeterGainSliderInterface (
-		qtractorObserverSlider *pSlider )
+	GainSliderInterface ( qtractorObserverSlider *pSlider )
 		: qtractorObserverSlider::Interface(pSlider) {}
 
 	// Formerly Pure virtuals.
@@ -288,10 +286,8 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOff]);
 	topLayout()->addWidget(m_pMidiLabel);
 
-	gainSlider()->setInterface(
-		new qtractorMidiMeterGainSliderInterface(gainSlider()));
-	gainSpinBox()->setInterface(
-		new qtractorMidiMeterGainSpinBoxInterface(gainSpinBox()));
+	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
+	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
 
 	gainSpinBox()->setMinimum(0.0f);
 	gainSpinBox()->setMaximum(100.0f);

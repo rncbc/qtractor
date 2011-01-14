@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,7 +24,8 @@
 #include "qtractorSession.h"
 
 #include "qtractorSessionCursor.h"
-#include "qtractorSessionDocument.h"
+
+#include "qtractorDocument.h"
 
 #include <QDomDocument>
 
@@ -391,7 +392,7 @@ bool qtractorBus::isMonitor (void) const
 
 // Document element methods.
 bool qtractorBus::loadConnects ( ConnectList& connects,
-	qtractorSessionDocument * /*pDocument*/, QDomElement *pElement )
+	qtractorDocument * /*pDocument*/, QDomElement *pElement )
 {
 	connects.clear();
 
@@ -447,7 +448,7 @@ bool qtractorBus::loadConnects ( ConnectList& connects,
 }
 
 bool qtractorBus::saveConnects ( ConnectList& connects,
-	qtractorSessionDocument *pDocument,	QDomElement *pElement )
+	qtractorDocument *pDocument,	QDomElement *pElement )
 {
 	// Save connect items...
 	QListIterator<ConnectItem *> iter(connects);

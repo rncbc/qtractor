@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@
 #include "qtractorOptions.h"
 
 #include "qtractorSession.h"
-#include "qtractorSessionDocument.h"
+#include "qtractorDocument.h"
 
 #ifdef CONFIG_LADSPA
 #include "qtractorLadspaPlugin.h"
@@ -1376,8 +1376,8 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 
 
 // Document element methods.
-bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorPluginList::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	// Reset some MIDI manager elements...
 	m_iMidiBank = -1;
@@ -1409,7 +1409,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			bool bActivated = false;
 			qtractorPlugin::Configs configs;
 			qtractorPlugin::Values values;
-			qtractorPlugin::Controllers controllers;
+			qtractorMidiControl::Controllers controllers;
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(
 					ePlugin.attribute("type"));
@@ -1495,7 +1495,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
+bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 	QDomElement *pElement )
 {
 	// Save current MIDI bank/program setting...
@@ -1577,89 +1577,57 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 
 // Load plugin parameter controllers (MIDI).
 void qtractorPlugin::loadControllers (
-	QDomElement *pElement, Controllers& controllers )
+	QDomElement *pElement, qtractorMidiControl::Controllers& controllers )
 {
-	qDeleteAll(controllers);
-	controllers.clear();
-
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
 		return;
 
-	for (QDomNode nController = pElement->firstChild();
-			!nController.isNull(); nController = nController.nextSibling()) {
-		// Convert node to element, if any.
-		QDomElement eController = nController.toElement();
-		if (eController.isNull())
-			continue;
-		// Check for controller item...
-		if (eController.tagName() == "controller") {
-			Controller *pController = new Controller;
-			pController->index = eController.attribute("index").toULong();
-			pController->ctype = qtractorMidiControl::typeFromText(eController.attribute("type"));
-			for (QDomNode nProp = eController.firstChild();
-					!nProp.isNull(); nProp = nProp.nextSibling()) {
-				// Convert node to element, if any.
-				QDomElement eProp = nProp.toElement();
-				if (eProp.isNull())
-					continue;
-				// Check for property item...
-				if (eProp.tagName() == "channel")
-					pController->channel = eProp.text().toUShort();
-				else
-				if (eProp.tagName() == "param")
-					pController->param = eProp.text().toUShort();
-				else
-				if (eProp.tagName() == "logarithmic")
-					pController->logarithmic = qtractorDocument::boolFromText(eProp.text());
-				else
-				if (eProp.tagName() == "feedback")
-					pController->feedback = qtractorDocument::boolFromText(eProp.text());
-			}
-			controllers.append(pController);
-		}
-	}
+	pMidiControl->loadControllers(pElement, controllers);
 }
 
 
 // Save plugin parameter controllers (MIDI).
 void qtractorPlugin::saveControllers (
-	qtractorSessionDocument *pDocument, QDomElement *pElement )
+	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
 		return;
 
+	qtractorMidiControl::Controllers controllers;
 	Params::ConstIterator param = m_params.constBegin();
 	for ( ; param != m_params.constEnd(); ++param) {
 		qtractorPluginParam *pParam = param.value();
 		qtractorPluginParam::Observer *pObserver = pParam->observer();
-		if (!pMidiControl->isMidiObserverMapped(pObserver))
-			continue;
-		QDomElement eController = pDocument->document()->createElement("controller");
-		eController.setAttribute("index", QString::number(pParam->index()));
-		eController.setAttribute("type", qtractorMidiControl::textFromType(pObserver->type()));
-		pDocument->saveTextElement("channel",
-			QString::number(pObserver->channel()), &eController);
-		pDocument->saveTextElement("param",
-			QString::number(pObserver->param()), &eController);
-		pDocument->saveTextElement("logarithmic",
-			qtractorDocument::textFromBool(pObserver->isLogarithmic()), &eController);
-		pDocument->saveTextElement("feedback",
-			qtractorDocument::textFromBool(pObserver->isFeedback()), &eController);
-		pElement->appendChild(eController);
+		if (pMidiControl->isMidiObserverMapped(pObserver)) {
+			qtractorMidiControl::Controller *pController
+				= new qtractorMidiControl::Controller;
+			pController->index = pParam->index();
+			pController->ctype = pObserver->type();
+			pController->channel = pObserver->channel();
+			pController->param = pObserver->param();
+			pController->logarithmic = pObserver->isLogarithmic();
+			pController->feedback = pObserver->isFeedback();
+			controllers.append(pController);
+		}
 	}
+
+	pMidiControl->saveControllers(pDocument, pElement, controllers);
+
+	qDeleteAll(controllers);
 }
 
 
 // Map/realize plugin parameter controllers (MIDI).
-void qtractorPlugin::mapControllers ( Controllers& controllers )
+void qtractorPlugin::mapControllers (
+	const qtractorMidiControl::Controllers& controllers )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl) {
-		QListIterator<Controller *> iter(controllers);
+		QListIterator<qtractorMidiControl::Controller *> iter(controllers);
 		while (iter.hasNext()) {
-			Controller *pController = iter.next();
+			qtractorMidiControl::Controller *pController = iter.next();
 			qtractorPluginParam *pParam = findParam(pController->index);
 			if (pParam == NULL)
 				continue;

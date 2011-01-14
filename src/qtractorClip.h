@@ -1,7 +1,7 @@
 // qtractorClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -54,7 +54,7 @@ public:
 	void setFilename(const QString&  sFilename);
 	const QString& filename() const;
 
-	QString relativeFilename(qtractorSessionDocument *pDocument) const;
+	QString relativeFilename(qtractorDocument *pDocument) const;
 
 	// Clip label accessors.
 	void setClipName(const QString& sClipName)
@@ -188,10 +188,8 @@ public:
 	float gain(unsigned long iOffset) const;
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement);
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Clip fade type textual helper methods.
 	static FadeType fadeInTypeFromText(const QString& sText);
@@ -215,10 +213,10 @@ protected:
 		FadeMode fadeMode, FadeType fadeType);
 
 	// Virtual document element methods.
-	virtual bool loadClipElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement) = 0;
-	virtual bool saveClipElement(qtractorSessionDocument *pDocument,
-		QDomElement *pElement) = 0;
+	virtual bool loadClipElement(
+		qtractorDocument *pDocument, QDomElement *pElement) = 0;
+	virtual bool saveClipElement(
+		qtractorDocument *pDocument, QDomElement *pElement) const = 0;
 
 	// Gain fractionalizer(tm)...
 	struct { int num, den; } m_fractGain;
