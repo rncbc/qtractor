@@ -24,6 +24,8 @@
 
 #include "qtractorList.h"
 
+#include "qtractorMidiControl.h"
+
 #include <QColor>
 
 
@@ -226,8 +228,12 @@ public:
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Load/save track state (record, mute, soloe) controllers (MIDI).
-	void loadControllers(QDomElement *pElement);
+	static void loadControllers(QDomElement *pElement,
+		qtractorMidiControl::Controllers& controllers);
 	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
+
+	// Map track state (record, mute, solo) controllers (MIDI).
+	void mapControllers(const qtractorMidiControl::Controllers& controllers);
 
 	// Track properties structure.
 	struct Properties

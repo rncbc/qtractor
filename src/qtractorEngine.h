@@ -24,8 +24,6 @@
 
 #include "qtractorTrack.h"
 
-#include <QList>
-
 // Forward declarations.
 class qtractorBus;
 class qtractorSessionCursor;
@@ -178,6 +176,14 @@ public:
 
 	// State (monitor) notifier (proto-slot).
 	void monitorChangeNotify(bool bOn);
+
+	// Load/save track state (record, mute, soloe) controllers (MIDI).
+	static void loadControllers(QDomElement *pElement,
+		qtractorMidiControl::Controllers& controllers);
+	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
+
+	// Map track state (record, mute, solo) controllers (MIDI).
+	void mapControllers(const qtractorMidiControl::Controllers& controllers);
 
 	// Connection list stuff.
 	struct ConnectItem

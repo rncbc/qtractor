@@ -116,6 +116,7 @@ public:
 	// Panning subject accessors.
 	void setPanningSubject(qtractorSubject *pSubject);
 	qtractorSubject *panningSubject() const;
+	qtractorMidiControlObserver *panningObserver() const;
 
 	// Panning accessors.
 	void setPanning(float fPanning);
@@ -125,6 +126,7 @@ public:
 	// Gain subject accessors.
 	void setGainSubject(qtractorSubject *pSubject);
 	qtractorSubject *gainSubject() const;
+	qtractorMidiControlObserver *gainObserver() const;
 
 	// Gain accessors.
 	void setGain(float fGain);
@@ -155,10 +157,6 @@ public:
 	// Observer value-changed callbacks.
 	void panningChangedNotify(float fPanning);
 	void gainChangedNotify(float fGain);
-
-	// Load/save meter (pan, gain) controllers (MIDI).
-	void loadControllers(QDomElement *pElement);
-	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 signals:
 

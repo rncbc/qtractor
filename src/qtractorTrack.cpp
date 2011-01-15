@@ -1414,40 +1414,10 @@ QString qtractorTrack::textFromTrackType ( TrackType trackType )
 
 
 // Load track state (record, mute, solo) controllers (MIDI).
-void qtractorTrack::loadControllers ( QDomElement *pElement )
+void qtractorTrack::loadControllers (
+	QDomElement *pElement, qtractorMidiControl::Controllers& controllers )
 {
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
-		return;
-
-	qtractorMidiControl::Controllers controllers;
-	pMidiControl->loadControllers(pElement, controllers);
-	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
-	while (iter.hasNext()) {
-		qtractorMidiControl::Controller *pController = iter.next();
-		qtractorMidiControlObserver *pObserver = NULL;
-		switch (pController->index) {
-		case 3: // 3=RecordObserver
-			pObserver = static_cast<qtractorMidiControlObserver *> (m_pRecordObserver);
-			break;
-		case 4: // 4=MuteObserver
-			pObserver = static_cast<qtractorMidiControlObserver *> (m_pMuteObserver);
-			break;
-		case 5: // 5=SoloObserver
-			pObserver = static_cast<qtractorMidiControlObserver *> (m_pSoloObserver);
-			break;
-		}
-		if (pObserver) {
-			pObserver->setType(pController->ctype);
-			pObserver->setChannel(pController->channel);
-			pObserver->setParam(pController->param);
-			pObserver->setLogarithmic(pController->logarithmic);
-			pObserver->setFeedback(pController->feedback);
-			pMidiControl->mapMidiObserver(pObserver);
-		}
-	}
-
-	qDeleteAll(controllers);
+	qtractorMidiControl::loadControllers(pElement, controllers);
 }
 
 
@@ -1459,7 +1429,60 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl == NULL)
 		return;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return;
+
+	qtractorMixerStrip *pMixerStrip
+		= pMixer->trackRack()->findStrip(m_pMonitor);
+	if (pMixerStrip == NULL)
+		return;
+
 	qtractorMidiControl::Controllers controllers;
+
+	if (pMidiControl->isMidiObserverMapped(m_pMonitorObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 0; // 0=MonitorObserver
+		pController->ctype = m_pMonitorObserver->type();
+		pController->channel = m_pMonitorObserver->channel();
+		pController->param = m_pMonitorObserver->param();
+		pController->logarithmic = m_pMonitorObserver->isLogarithmic();
+		pController->feedback = m_pMonitorObserver->isFeedback();
+		controllers.append(pController);
+	}
+
+	qtractorMidiControlObserver *pPanObserver
+		= pMixerStrip->meter()->panningObserver();
+	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 1; // 1=PanObserver
+		pController->ctype = pPanObserver->type();
+		pController->channel = pPanObserver->channel();
+		pController->param = pPanObserver->param();
+		pController->logarithmic = pPanObserver->isLogarithmic();
+		pController->feedback = pPanObserver->isFeedback();
+		controllers.append(pController);
+	}
+
+	qtractorMidiControlObserver *pGainObserver
+		= pMixerStrip->meter()->gainObserver();
+	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->index = 2; // 2=GainObserver
+		pController->ctype = pGainObserver->type();
+		pController->channel = pGainObserver->channel();
+		pController->param = pGainObserver->param();
+		pController->logarithmic = pGainObserver->isLogarithmic();
+		pController->feedback = pGainObserver->isFeedback();
+		controllers.append(pController);
+	}
 
 	if (pMidiControl->isMidiObserverMapped(m_pRecordObserver)) {
 		qtractorMidiControl::Controller *pController
@@ -1497,9 +1520,67 @@ void qtractorTrack::saveControllers (
 		controllers.append(pController);
 	}
 
-	pMidiControl->saveControllers(pDocument, pElement, controllers);
+	qtractorMidiControl::saveControllers(pDocument, pElement, controllers);
 
 	qDeleteAll(controllers);
+	controllers.clear();
+}
+
+
+// Map track state (record, mute, solo) controllers (MIDI).
+void qtractorTrack::mapControllers (
+	const qtractorMidiControl::Controllers& controllers )
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return;
+
+	qtractorMixerStrip *pMixerStrip
+		= pMixer->trackRack()->findStrip(m_pMonitor);
+	if (pMixerStrip == NULL)
+		return;
+
+	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
+	while (iter.hasNext()) {
+		qtractorMidiControl::Controller *pController = iter.next();
+		qtractorMidiControlObserver *pObserver = NULL;
+		switch (pController->index) {
+		case 0: // 0=MonitorObserver
+			pObserver = monitorObserver();
+			break;
+		case 1: // 1=PanObserver
+			pObserver = pMixerStrip->meter()->panningObserver();
+			break;
+		case 2: // 2=GainObserver
+			pObserver = pMixerStrip->meter()->gainObserver();
+			break;
+		case 3: // 3=RecordObserver
+			pObserver = recordObserver();
+			break;
+		case 4: // 4=MuteObserver
+			pObserver = muteObserver();
+			break;
+		case 5: // 5=SoloObserver
+			pObserver = soloObserver();
+			break;
+		}
+		if (pObserver) {
+			pObserver->setType(pController->ctype);
+			pObserver->setChannel(pController->channel);
+			pObserver->setParam(pController->param);
+			pObserver->setLogarithmic(pController->logarithmic);
+			pObserver->setFeedback(pController->feedback);
+			pMidiControl->mapMidiObserver(pObserver);
+		}
+	}
 }
 
 

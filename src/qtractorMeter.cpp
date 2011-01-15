@@ -334,6 +334,11 @@ qtractorSubject *qtractorMeter::panningSubject (void) const
 	return m_pPanObserver->subject();
 }
 
+qtractorMidiControlObserver *qtractorMeter::panningObserver (void) const
+{
+	return static_cast<qtractorMidiControlObserver *> (m_pPanObserver);
+}
+
 
 // Stereo panning accessors.
 void qtractorMeter::setPanning ( float fPanning )
@@ -369,6 +374,11 @@ void qtractorMeter::setGainSubject ( qtractorSubject *pSubject )
 qtractorSubject *qtractorMeter::gainSubject (void) const
 {
 	return m_pGainObserver->subject();
+}
+
+qtractorMidiControlObserver *qtractorMeter::gainObserver (void) const
+{
+	return static_cast<qtractorMidiControlObserver *> (m_pGainObserver);
 }
 
 
@@ -472,81 +482,6 @@ void qtractorMeter::midiControlActionSlot (void)
 			form.exec();
 		}
 	}
-}
-
-
-// Load meter (pan, gain) controllers (MIDI).
-void qtractorMeter::loadControllers ( QDomElement *pElement )
-{
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
-		return;
-
-	qtractorMidiControl::Controllers controllers;
-	pMidiControl->loadControllers(pElement, controllers);
-	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
-	while (iter.hasNext()) {
-		qtractorMidiControl::Controller *pController = iter.next();
-		qtractorMidiControlObserver *pObserver = NULL;
-		switch (pController->index) {
-		case 1: // 1=PanObserver
-			pObserver = static_cast<qtractorMidiControlObserver *> (m_pPanObserver);
-			break;
-		case 2: // 2=GainObserver
-			pObserver = static_cast<qtractorMidiControlObserver *> (m_pGainObserver);
-			break;
-		}
-		if (pObserver) {
-			pObserver->setType(pController->ctype);
-			pObserver->setChannel(pController->channel);
-			pObserver->setParam(pController->param);
-			pObserver->setLogarithmic(pController->logarithmic);
-			pObserver->setFeedback(pController->feedback);
-			pMidiControl->mapMidiObserver(pObserver);
-		}
-	}
-
-	qDeleteAll(controllers);
-}
-
-
-// Save meter (pan, gain) controllers (MIDI).
-void qtractorMeter::saveControllers (
-	qtractorDocument *pDocument, QDomElement *pElement ) const
-{
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
-		return;
-
-	qtractorMidiControl::Controllers controllers;
-
-	if (pMidiControl->isMidiObserverMapped(m_pPanObserver)) {
-		qtractorMidiControl::Controller *pController
-			= new qtractorMidiControl::Controller;
-		pController->index = 1; // 1=PanObserver
-		pController->ctype = m_pPanObserver->type();
-		pController->channel = m_pPanObserver->channel();
-		pController->param = m_pPanObserver->param();
-		pController->logarithmic = m_pPanObserver->isLogarithmic();
-		pController->feedback = m_pPanObserver->isFeedback();
-		controllers.append(pController);
-	}
-
-	if (pMidiControl->isMidiObserverMapped(m_pGainObserver)) {
-		qtractorMidiControl::Controller *pController
-			= new qtractorMidiControl::Controller;
-		pController->index = 2; // 2=GainObserver
-		pController->ctype = m_pGainObserver->type();
-		pController->channel = m_pGainObserver->channel();
-		pController->param = m_pGainObserver->param();
-		pController->logarithmic = m_pGainObserver->isLogarithmic();
-		pController->feedback = m_pGainObserver->isFeedback();
-		controllers.append(pController);
-	}
-
-	pMidiControl->saveControllers(pDocument, pElement, controllers);
-
-	qDeleteAll(controllers);
 }
 
 
