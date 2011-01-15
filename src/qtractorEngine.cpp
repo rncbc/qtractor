@@ -392,6 +392,8 @@ qtractorTrack::TrackType qtractorBus::busType (void) const
 void qtractorBus::setBusName ( const QString& sBusName )
 {
 	m_sBusName = sBusName;
+
+	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sBusName));
 }
 
 const QString& qtractorBus::busName (void) const
