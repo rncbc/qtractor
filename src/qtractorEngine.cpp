@@ -377,6 +377,9 @@ qtractorBus::~qtractorBus (void)
 		delete m_pMonitorObserver;
 	if (m_pMonitorSubject)
 		delete m_pMonitorSubject;
+
+	qDeleteAll(m_controllers);
+	m_controllers.clear();
 }
 
 
@@ -462,10 +465,9 @@ void qtractorBus::monitorChangeNotify ( bool bOn )
 
 
 // Load track state (record, mute, solo) controllers (MIDI).
-void qtractorBus::loadControllers (
-	QDomElement *pElement, qtractorMidiControl::Controllers& controllers )
+void qtractorBus::loadControllers ( QDomElement *pElement )
 {
-	qtractorMidiControl::loadControllers(pElement, controllers);
+	qtractorMidiControl::loadControllers(pElement, m_controllers);
 }
 
 
@@ -549,8 +551,7 @@ void qtractorBus::saveControllers (
 
 
 // Map track state (record, mute, solo) controllers (MIDI).
-void qtractorBus::mapControllers (
-	const qtractorMidiControl::Controllers& controllers )
+void qtractorBus::mapControllers (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
@@ -578,7 +579,7 @@ void qtractorBus::mapControllers (
 	if (pMixerStrip == NULL)
 		return;
 
-	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
+	QListIterator<qtractorMidiControl::Controller *> iter(m_controllers);
 	while (iter.hasNext()) {
 		qtractorMidiControl::Controller *pController = iter.next();
 		qtractorMidiControlObserver *pObserver = NULL;
@@ -602,6 +603,9 @@ void qtractorBus::mapControllers (
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}
+	
+	qDeleteAll(m_controllers);
+	m_controllers.clear();
 }
 
 

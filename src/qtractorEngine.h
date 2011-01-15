@@ -178,12 +178,11 @@ public:
 	void monitorChangeNotify(bool bOn);
 
 	// Load/save track state (record, mute, soloe) controllers (MIDI).
-	static void loadControllers(QDomElement *pElement,
-		qtractorMidiControl::Controllers& controllers);
+	void loadControllers(QDomElement *pElement);
 	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Map track state (record, mute, solo) controllers (MIDI).
-	void mapControllers(const qtractorMidiControl::Controllers& controllers);
+	void mapControllers();
 
 	// Connection list stuff.
 	struct ConnectItem
@@ -283,6 +282,8 @@ private:
 	class MonitorObserver;
 	MonitorObserver *m_pMonitorObserver;
 	qtractorSubject *m_pMonitorSubject;
+
+	qtractorMidiControl::Controllers m_controllers;
 };
 
 

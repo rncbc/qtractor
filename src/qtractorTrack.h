@@ -228,12 +228,11 @@ public:
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Load/save track state (record, mute, soloe) controllers (MIDI).
-	static void loadControllers(QDomElement *pElement,
-		qtractorMidiControl::Controllers& controllers);
+	void loadControllers(QDomElement *pElement);
 	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Map track state (record, mute, solo) controllers (MIDI).
-	void mapControllers(const qtractorMidiControl::Controllers& controllers);
+	void mapControllers();
 
 	// Track properties structure.
 	struct Properties
@@ -313,6 +312,8 @@ private:
 	qtractorSubject *m_pRecordSubject;
 	qtractorSubject *m_pMuteSubject;
 	qtractorSubject *m_pSoloSubject;
+
+	qtractorMidiControl::Controllers m_controllers;
 };
 
 

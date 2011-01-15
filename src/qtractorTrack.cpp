@@ -220,6 +220,9 @@ qtractorTrack::~qtractorTrack (void)
 	if (m_pMonitorSubject)
 		delete m_pMonitorSubject;
 
+	qDeleteAll(m_controllers);
+	m_controllers.clear();
+
 	if (m_pPluginList)
 		delete m_pPluginList;
 	if (m_pMonitor)
@@ -1414,10 +1417,9 @@ QString qtractorTrack::textFromTrackType ( TrackType trackType )
 
 
 // Load track state (record, mute, solo) controllers (MIDI).
-void qtractorTrack::loadControllers (
-	QDomElement *pElement, qtractorMidiControl::Controllers& controllers )
+void qtractorTrack::loadControllers ( QDomElement *pElement )
 {
-	qtractorMidiControl::loadControllers(pElement, controllers);
+	qtractorMidiControl::loadControllers(pElement, m_controllers);
 }
 
 
@@ -1528,8 +1530,7 @@ void qtractorTrack::saveControllers (
 
 
 // Map track state (record, mute, solo) controllers (MIDI).
-void qtractorTrack::mapControllers (
-	const qtractorMidiControl::Controllers& controllers )
+void qtractorTrack::mapControllers (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
@@ -1548,7 +1549,7 @@ void qtractorTrack::mapControllers (
 	if (pMixerStrip == NULL)
 		return;
 
-	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
+	QListIterator<qtractorMidiControl::Controller *> iter(m_controllers);
 	while (iter.hasNext()) {
 		qtractorMidiControl::Controller *pController = iter.next();
 		qtractorMidiControlObserver *pObserver = NULL;
@@ -1581,6 +1582,9 @@ void qtractorTrack::mapControllers (
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}
+
+	qDeleteAll(m_controllers);
+	m_controllers.clear();
 }
 
 
