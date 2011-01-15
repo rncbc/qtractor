@@ -24,6 +24,8 @@
 
 #include "qtractorEngine.h"
 
+#include "qtractorTrackButton.h"
+
 #include <QScrollArea>
 #include <QFrame>
 #include <QHash>
@@ -37,8 +39,9 @@ class qtractorMixer;
 class qtractorPluginListView;
 class qtractorMeter;
 
+class qtractorMonitorButton;
+
 class qtractorMainForm;
-class qtractorTrackButton;
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -46,6 +49,53 @@ class QVBoxLayout;
 class QLabel;
 class QSplitter;
 class QPushButton;
+
+
+//----------------------------------------------------------------------------
+// qtractorMonitorButton -- Monitor observer tool button.
+
+class qtractorMonitorButton : public qtractorMidiControlButton
+{
+	Q_OBJECT
+
+public:
+
+	// Constructors.
+	qtractorMonitorButton(qtractorTrack *pTrack, QWidget *pParent = 0);
+	qtractorMonitorButton(qtractorBus *pBus, QWidget *pParent = 0);
+
+	// Specific track accessors.
+	void setTrack(qtractorTrack *pTrack);
+	qtractorTrack *track() const;
+
+	// Specific bus accessors.
+	void setBus(qtractorBus *pBus);
+	qtractorBus *bus() const;
+
+protected slots:
+
+	// Special toggle slot.
+	void toggledSlot(bool bOn);
+
+protected:
+
+	// Common initializer.
+	void initMonitorButton();
+
+	// Visitor setup.
+	void updateMonitor();
+
+	// Visitors overload.
+	void updateValue(float fValue);
+
+private:
+
+	// Instance variables.
+	qtractorTrack *m_pTrack;
+	qtractorBus   *m_pBus;
+
+	int m_iUpdate;
+};
 
 
 //----------------------------------------------------------------------------
@@ -88,9 +138,6 @@ public:
 	void setSelected(bool bSelected);
 	bool isSelected() const;
 
-	// Update monitor/track buttons state.
-	void updateMonitorButton();
-
 	// Strip refreshment.
 	void refresh();
 
@@ -109,9 +156,6 @@ protected slots:
 
 	// Bus connections button notification.
 	void busButtonSlot();
-
-	// Common passthru/monitor button slot
-	void monitorButtonSlot(bool bOn);
 
 	// Meter slider change slots.
 	void panningChangedSlot(float);
@@ -148,12 +192,12 @@ private:
 	IconLabel              *m_pLabel;
 	qtractorPluginListView *m_pPluginListView;
 	QHBoxLayout            *m_pButtonLayout;
+	qtractorMonitorButton  *m_pMonitorButton;
 	qtractorTrackButton    *m_pRecordButton;
 	qtractorTrackButton    *m_pMuteButton;
 	qtractorTrackButton    *m_pSoloButton;
 	qtractorMeter          *m_pMeter;
 	QPushButton            *m_pBusButton;
-	QPushButton            *m_pMonitorButton;
 	QLabel                 *m_pMidiLabel;
 
 	// Selection stuff.
@@ -161,7 +205,6 @@ private:
 
 	// Hacko-list-management mark...
 	int m_iMark;
-	int m_iUpdate;
 };
 
 
@@ -218,9 +261,6 @@ public:
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
-
-	// Update all strips monitor buttons.
-	void updateMonitorButtons();
 
 public slots:
 

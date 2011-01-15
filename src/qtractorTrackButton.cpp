@@ -31,27 +31,76 @@
 
 
 //----------------------------------------------------------------------------
+// qtractorMidiControlButton -- MIDI controller observer tool button.
+
+// Constructor.
+qtractorMidiControlButton::qtractorMidiControlButton ( QWidget *pParent )
+	: qtractorObserverWidget<QPushButton> (pParent), m_pMidiControlAction(NULL)
+
+{
+	QPushButton::setFocusPolicy(Qt::NoFocus);
+//	QPushButton::setToolButtonStyle(Qt::ToolButtonTextOnly);
+	QPushButton::setCheckable(true);
+}
+
+
+// MIDI controller/observer attachment (context menu) activator.
+//
+Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
+
+void qtractorMidiControlButton::addMidiControlAction (
+	qtractorMidiControlObserver *pMidiObserver )
+{
+	if (m_pMidiControlAction)
+		QPushButton::removeAction(m_pMidiControlAction);
+		
+	m_pMidiControlAction = new QAction(
+		QIcon(":/images/itemControllers.png"),
+		tr("MIDI Controller..."), this);
+
+	m_pMidiControlAction->setData(
+		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
+
+	QObject::connect(m_pMidiControlAction,
+		SIGNAL(triggered(bool)),
+		SLOT(midiControlActionSlot()));
+
+	QPushButton::addAction(m_pMidiControlAction);
+	QPushButton::setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+
+void qtractorMidiControlButton::midiControlActionSlot (void)
+{
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction && pAction == m_pMidiControlAction) {
+		qtractorMidiControlObserver *pMidiObserver
+			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+		if (pMidiObserver) {
+			qtractorMidiControlObserverForm form(parentWidget());
+			form.setMidiObserver(pMidiObserver);
+			form.exec();
+		}
+	}
+}
+
+
+//----------------------------------------------------------------------------
 // qtractorTrackButton -- Track tool button (observer).
 
 // Constructor.
 qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	qtractorTrack::ToolType toolType, const QSize& fixedSize,
-	QWidget *pParent ) : qtractorObserverWidget<QPushButton> (pParent)
+	QWidget *pParent ) : qtractorMidiControlButton(pParent)
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
 	m_iUpdate  = 0;
 
-	m_pMidiControlAction = NULL;
-
 	QPushButton::setFixedSize(fixedSize);
-	QPushButton::setFocusPolicy(Qt::NoFocus);
-//	QPushButton::setToolButtonStyle(Qt::ToolButtonTextOnly);
-	QPushButton::setCheckable(true);
-
 	QPushButton::setFont(
 		QFont(QPushButton::font().family(), (fixedSize.height() < 16 ? 5 : 6)));
-
+	
 	QPalette pal(QPushButton::palette());
 	m_rgbText = pal.buttonText().color();
 	m_rgbOff  = pal.button().color();
@@ -148,46 +197,6 @@ void qtractorTrackButton::updateTrack (void)
 	}
 
 	observer()->update();
-}
-
-// MIDI controller/observer attachment (context menu) activator.
-//
-Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
-
-void qtractorTrackButton::addMidiControlAction (
-	qtractorMidiControlObserver *pMidiObserver )
-{
-	if (m_pMidiControlAction)
-		QPushButton::removeAction(m_pMidiControlAction);
-		
-	m_pMidiControlAction = new QAction(
-		QIcon(":/images/itemControllers.png"),
-		tr("MIDI Controller..."), this);
-
-	m_pMidiControlAction->setData(
-		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
-
-	QObject::connect(m_pMidiControlAction,
-		SIGNAL(triggered(bool)),
-		SLOT(midiControlActionSlot()));
-
-	QPushButton::addAction(m_pMidiControlAction);
-	QPushButton::setContextMenuPolicy(Qt::ActionsContextMenu);
-}
-
-
-void qtractorTrackButton::midiControlActionSlot (void)
-{
-	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction && pAction == m_pMidiControlAction) {
-		qtractorMidiControlObserver *pMidiObserver
-			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
-		if (pMidiObserver) {
-			qtractorMidiControlObserverForm form(parentWidget());
-			form.setMidiObserver(pMidiObserver);
-			form.exec();
-		}
-	}
 }
 
 

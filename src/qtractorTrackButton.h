@@ -30,9 +30,38 @@
 
 
 //----------------------------------------------------------------------------
+// qtractorMidiControlButton -- MIDI controller observer tool button.
+
+class qtractorMidiControlButton : public qtractorObserverWidget<QPushButton>
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiControlButton(QWidget *pParent = 0);
+
+protected slots:
+
+	// MIDI controller/observer attachment (context menu) slot.
+	void midiControlActionSlot();
+
+protected:
+
+	// MIDI controller/observer attachment (context menu) activator.
+	void addMidiControlAction(qtractorMidiControlObserver *pMidiObserver);
+
+private:
+
+	// MIDI controller/observer leftover.
+	QAction *m_pMidiControlAction;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorTrackButton -- Track observer tool button.
 
-class qtractorTrackButton : public qtractorObserverWidget<QPushButton>
+class qtractorTrackButton : public qtractorMidiControlButton
 {
 	Q_OBJECT
 
@@ -54,13 +83,7 @@ protected slots:
 	// Special toggle slot.
 	void toggledSlot(bool bOn);
 
-	// MIDI controller/observer attachment (context menu) slot.
-	void midiControlActionSlot();
-
 protected:
-
-	// MIDI controller/observer attachment (context menu) activator.
-	void addMidiControlAction(qtractorMidiControlObserver *pMidiObserver);
 
 	// Visitor setup.
 	void updateTrack();
@@ -80,9 +103,6 @@ private:
 	QColor m_rgbText;
 	QColor m_rgbOn;
 	QColor m_rgbOff;
-
-	// MIDI controller/observer leftover.
-	QAction *m_pMidiControlAction;
 };
 
 

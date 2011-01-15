@@ -730,15 +730,7 @@ bool qtractorTrackMonitorCommand::redo (void)
 	m_bMonitor = bMonitor;
 
 	// Toggle/update all other?
-	qtractorMixerRack *pTrackRack = pMainForm->mixer()->trackRack();
-	if (m_tracks.isEmpty()) {
-		// Update one track mixer strip...
-		qtractorMixerStrip *pStrip
-			= pTrackRack->findStrip(pTrack->monitor());
-		if (pStrip)
-			pStrip->updateMonitorButton();
-		// Done with single mode.
-	} else {
+	if (!m_tracks.isEmpty()) {
 		// Exclusive mode.
 		qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
@@ -757,8 +749,6 @@ bool qtractorTrackMonitorCommand::redo (void)
 			// Swap for undo...
 			pTrackItem->on = bMonitor;
 		}
-		// Update all track mixer strips...
-		pTrackRack->updateMonitorButtons();
 		// Done with exclusive mode.
 	}
 
