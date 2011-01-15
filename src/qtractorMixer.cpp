@@ -504,7 +504,7 @@ void qtractorMixerStrip::clear (void)
 	m_pPluginListView->setEnabled(false);
 	m_pPluginListView->setPluginList(NULL);
 
-	setMonitor(NULL);
+	m_pRack->updateStrip(this, NULL);
 }
 
 
@@ -923,7 +923,8 @@ void qtractorMixerRack::updateStrip (
 	
 	pStrip->setMonitor(pMonitor);
 
-	m_strips.insert(pMonitor, pStrip);
+	if (pMonitor)
+		m_strips.insert(pMonitor, pStrip);
 }
 
 

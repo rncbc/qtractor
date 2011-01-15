@@ -30,7 +30,6 @@ class qtractorMidiMeter;
 class qtractorMidiMeterValue;
 class qtractorMidiMonitor;
 
-class QToolButton;
 class QLabel;
 
 class QResizeEvent;

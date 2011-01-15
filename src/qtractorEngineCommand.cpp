@@ -328,6 +328,10 @@ bool qtractorBusCommand::deleteBus (void)
 	if (pSession == NULL)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	// Get the device view root item...
 	qtractorEngine *pEngine = NULL;
 	switch (m_pBus->busType()) {
@@ -350,11 +354,22 @@ bool qtractorBusCommand::deleteBus (void)
 	pSession->lock();
 	pSession->setPlaying(false);
 
-	// Close all applicable tracks...
+	// Close all applicable tracks (and mixer strips)...
+	qtractorMixerStrip *pStrip;
+	qtractorMixer *pMixer = pMainForm->mixer();
+	QList<qtractorMixerStrip *> strips;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
+		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus) {
 			pTrack->close();
+			if (pMixer) {
+				pStrip = (pMixer->trackRack())->findStrip(pTrack->monitor());
+				if (pStrip) {
+					pStrip->clear();
+					strips.append(pStrip);
+				}
+			}
+		}			
 	}
 
 	// May close now the bus...
@@ -386,11 +401,18 @@ bool qtractorBusCommand::deleteBus (void)
 	}
 
 	// Update mixer (clean old strips...)
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorMixer *pMixer = pMainForm->mixer();
-		if (pMixer)
-			pMixer->updateBuses();
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks && pMixer) {
+		QListIterator<qtractorMixerStrip *> iter(strips);
+		while (iter.hasNext()) {
+			qtractorTrack *pTrack = iter.next()->track();
+			if (pTrack) {
+				pTrack->open();
+				// Update track list item...
+				(pTracks->trackList())->updateTrack(pTrack);
+			}
+		}
+		pMixer->updateBuses();
 	}
 
 	// Carry on...
