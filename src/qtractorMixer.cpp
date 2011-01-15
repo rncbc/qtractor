@@ -311,11 +311,11 @@ void qtractorMixerStrip::initMixerStrip (void)
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
 		meterType = m_pTrack->trackType();
-		const QSize buttonSize(16, 14);
 		m_pMonitorButton = new qtractorMonitorButton(m_pTrack);
-		m_pMonitorButton->setFixedHeight(buttonSize.height());
+		m_pMonitorButton->setFixedHeight(16);
 		m_pMonitorButton->setSizePolicy(buttonPolicy);
 		m_pMonitorButton->setFont(font6);
+		const QSize buttonSize(16, 14);
 		m_pRecordButton = new qtractorTrackButton(m_pTrack,
 			qtractorTrack::Record, buttonSize/*, this*/);
 		m_pRecordButton->setSizePolicy(buttonPolicy);
@@ -334,7 +334,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	if (m_pBus) {
 		meterType = m_pBus->busType();
 		m_pMonitorButton = new qtractorMonitorButton(m_pBus);
-		m_pMonitorButton->setFixedHeight(14);
+		m_pMonitorButton->setFixedHeight(16);
 		m_pMonitorButton->setSizePolicy(buttonPolicy);
 		m_pMonitorButton->setFont(font6);
 		m_pBusButton = new QPushButton(/*this*/);
