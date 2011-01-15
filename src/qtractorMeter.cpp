@@ -489,10 +489,10 @@ void qtractorMeter::loadControllers ( QDomElement *pElement )
 		qtractorMidiControl::Controller *pController = iter.next();
 		qtractorMidiControlObserver *pObserver = NULL;
 		switch (pController->index) {
-		case 0: // 0=PanObserver
+		case 1: // 1=PanObserver
 			pObserver = static_cast<qtractorMidiControlObserver *> (m_pPanObserver);
 			break;
-		case 1: // 1=GainObserver
+		case 2: // 2=GainObserver
 			pObserver = static_cast<qtractorMidiControlObserver *> (m_pGainObserver);
 			break;
 		}
@@ -523,7 +523,7 @@ void qtractorMeter::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->index = 0; // 0=PanObserver
+		pController->index = 1; // 1=PanObserver
 		pController->ctype = m_pPanObserver->type();
 		pController->channel = m_pPanObserver->channel();
 		pController->param = m_pPanObserver->param();
@@ -535,7 +535,7 @@ void qtractorMeter::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->index = 1; // 1=GainObserver
+		pController->index = 2; // 2=GainObserver
 		pController->ctype = m_pGainObserver->type();
 		pController->channel = m_pGainObserver->channel();
 		pController->param = m_pGainObserver->param();

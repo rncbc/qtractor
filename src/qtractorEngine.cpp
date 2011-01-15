@@ -22,8 +22,11 @@
 #include "qtractorEngine.h"
 
 #include "qtractorSession.h"
-
 #include "qtractorSessionCursor.h"
+
+#include "qtractorMidiControlObserver.h"
+
+#include "qtractorEngineCommand.h"
 
 #include "qtractorDocument.h"
 
@@ -318,6 +321,33 @@ int qtractorEngine::updateConnects ( qtractorBus *pBus )
 }
 
 
+//------------------------------------------------------------------------
+// qtractorBus::MonitorObserver -- Local bus state observer.
+
+class qtractorBus::MonitorObserver : public qtractorMidiControlObserver
+{
+public:
+
+	// Constructor.
+	MonitorObserver(qtractorBus *pBus, qtractorSubject *pSubject)
+		: qtractorMidiControlObserver(pSubject), m_pBus(pBus) {}
+
+protected:
+
+	// Update feedback.
+	void update()
+	{
+		m_pBus->monitorChangeNotify(value() > 0.0f);
+		qtractorMidiControlObserver::update();
+	}
+
+private:
+
+	// Members.
+	qtractorBus *m_pBus;
+};
+
+
 //----------------------------------------------------------------------
 // class qtractorBus -- Managed ALSA sequencer port set
 //
@@ -329,12 +359,18 @@ qtractorBus::qtractorBus ( qtractorEngine *pEngine,
 	m_pEngine  = pEngine;
 	m_sBusName = sBusName;
 	m_busMode  = busMode;
-	m_bMonitor = bMonitor;
+
+	m_pMonitorSubject = new qtractorSubject(bMonitor ? 1.0f : 0.0f);
+	m_pMonitorObserver = new MonitorObserver(this, m_pMonitorSubject);
 }
 
 // Destructor.
 qtractorBus::~qtractorBus (void)
 {
+	if (m_pMonitorObserver)
+		delete m_pMonitorObserver;
+	if (m_pMonitorSubject)
+		delete m_pMonitorSubject;
 }
 
 
@@ -381,12 +417,39 @@ qtractorBus::BusMode qtractorBus::busMode (void) const
 // Pass-thru mode accessor.
 void qtractorBus::setMonitor ( bool bMonitor )
 {
-	m_bMonitor = bMonitor;
+	m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 bool qtractorBus::isMonitor (void) const
 {
-	return m_bMonitor;
+	return (m_pMonitorSubject->value() > 0.0f);
+}
+
+
+// Bus state (monitor) button setup.
+qtractorSubject *qtractorBus::monitorSubject (void) const
+{
+	return m_pMonitorSubject;
+}
+
+qtractorMidiControlObserver *qtractorBus::monitorObserver (void) const
+{
+	return static_cast<qtractorMidiControlObserver *> (m_pMonitorObserver);
+}
+
+
+// Bus state (monitor) notifier (proto-slot).
+void qtractorBus::monitorChangeNotify ( bool bOn )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorBus[%p]::monitorChangeNotify(%d)", this, int(bOn));
+#endif
+
+	// Put it in the form of an undoable command...
+	qtractorSession *pSession = m_pEngine->session();
+	if (pSession)
+		pSession->execute(
+			new qtractorBusMonitorCommand(this, bOn));
 }
 
 

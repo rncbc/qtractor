@@ -48,6 +48,33 @@
 
 
 //------------------------------------------------------------------------
+// qtractorTrack::MonitorObserver -- Local track state observer.
+
+class qtractorTrack::MonitorObserver : public qtractorMidiControlObserver
+{
+public:
+
+	// Constructor.
+	MonitorObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
+		: qtractorMidiControlObserver(pSubject), m_pTrack(pTrack) {}
+
+protected:
+
+	// Update feedback.
+	void update()
+	{
+		m_pTrack->monitorChangeNotify(value() > 0.0f);
+		qtractorMidiControlObserver::update();
+	}
+
+private:
+
+	// Members.
+	qtractorTrack *m_pTrack;
+};
+
+
+//------------------------------------------------------------------------
 // qtractorTrack::StateObserver -- Local track state observer.
 
 class qtractorTrack::StateObserver : public qtractorMidiControlObserver
@@ -147,9 +174,13 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_clips.setAutoDelete(true);
 
+	m_pMonitorSubject = new qtractorSubject();
+
 	m_pRecordSubject  = new qtractorSubject();
 	m_pMuteSubject    = new qtractorSubject();
 	m_pSoloSubject    = new qtractorSubject();
+
+	m_pMonitorObserver = new MonitorObserver(this, m_pMonitorSubject);
 
 	m_pRecordObserver = new StateObserver(this, Record, m_pRecordSubject);
 	m_pMuteObserver   = new StateObserver(this, Mute,   m_pMuteSubject);
@@ -177,6 +208,8 @@ qtractorTrack::~qtractorTrack (void)
 		delete m_pMuteObserver;
 	if (m_pRecordObserver)
 		delete m_pRecordObserver;
+	if (m_pMonitorObserver)
+		delete m_pMonitorObserver;
 
 	if (m_pSoloSubject)
 		delete m_pSoloSubject;
@@ -184,6 +217,8 @@ qtractorTrack::~qtractorTrack (void)
 		delete m_pMuteSubject;
 	if (m_pRecordSubject)
 		delete m_pRecordSubject;
+	if (m_pMonitorSubject)
+		delete m_pMonitorSubject;
 
 	if (m_pPluginList)
 		delete m_pPluginList;
@@ -387,9 +422,10 @@ void qtractorTrack::setTrackName ( const QString& sTrackName )
 {
 	m_props.trackName = sTrackName;
 
-	m_pRecordSubject->setName(sTrackName + ' ' + QObject::tr("Record"));
-	m_pMuteSubject->setName(sTrackName + ' ' + QObject::tr("Mute"));
-	m_pSoloSubject->setName(sTrackName + ' ' + QObject::tr("Solo"));
+	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sTrackName));
+	m_pRecordSubject->setName(QObject::tr("%1 Record").arg(sTrackName));
+	m_pMuteSubject->setName(QObject::tr("%1 Mute").arg(sTrackName));
+	m_pSoloSubject->setName(QObject::tr("%1 Solo").arg(sTrackName));
 }
 
 
@@ -427,12 +463,14 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 // Record monitoring status accessors.
 bool qtractorTrack::isMonitor (void) const
 {
-	return m_props.monitor;
+	return (m_pMonitorSubject->value() > 0.0f);
 }
 
 void qtractorTrack::setMonitor ( bool bMonitor )
 {
 	m_props.monitor = bMonitor;
+
+	m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 
@@ -1055,7 +1093,12 @@ void qtractorTrack::updateClipEditors (void)
 }
 
 
-// Track state (record, mute, solo) button setup.
+// Track state (monitor record, mute, solo) button setup.
+qtractorSubject *qtractorTrack::monitorSubject (void) const
+{
+	return m_pMonitorSubject;
+}
+
 qtractorSubject *qtractorTrack::recordSubject (void) const
 {
 	return m_pRecordSubject;
@@ -1071,6 +1114,11 @@ qtractorSubject *qtractorTrack::soloSubject (void) const
 	return m_pSoloSubject;
 }
 
+
+qtractorMidiControlObserver *qtractorTrack::monitorObserver (void) const
+{
+	return static_cast<qtractorMidiControlObserver *> (m_pMonitorObserver);
+}
 
 qtractorMidiControlObserver *qtractorTrack::recordObserver (void) const
 {
@@ -1088,7 +1136,21 @@ qtractorMidiControlObserver *qtractorTrack::soloObserver (void) const
 }
 
 
-// Track state (mute, solo) notifier (proto-slot).
+// Track state (monitor) notifier (proto-slot).
+void qtractorTrack::monitorChangeNotify ( bool bOn )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrack[%p]::monitorChangeNotify(%d)", this, int(bOn));
+#endif
+
+	// Put it in the form of an undoable command...
+	if (m_pSession)
+		m_pSession->execute(
+			new qtractorTrackMonitorCommand(this, bOn));
+}
+
+
+// Track state (record, mute, solo) notifier (proto-slot).
 void qtractorTrack::stateChangeNotify ( ToolType toolType, bool bOn )
 {
 #ifdef CONFIG_DEBUG
@@ -1365,13 +1427,13 @@ void qtractorTrack::loadControllers ( QDomElement *pElement )
 		qtractorMidiControl::Controller *pController = iter.next();
 		qtractorMidiControlObserver *pObserver = NULL;
 		switch (pController->index) {
-		case 0: // 0=RecordObserver
+		case 3: // 3=RecordObserver
 			pObserver = static_cast<qtractorMidiControlObserver *> (m_pRecordObserver);
 			break;
-		case 1: // 1=MuteObserver
+		case 4: // 4=MuteObserver
 			pObserver = static_cast<qtractorMidiControlObserver *> (m_pMuteObserver);
 			break;
-		case 2: // 2=SoloObserver
+		case 5: // 5=SoloObserver
 			pObserver = static_cast<qtractorMidiControlObserver *> (m_pSoloObserver);
 			break;
 		}
@@ -1402,7 +1464,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pRecordObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->index = 0; // 0=RecordObserver
+		pController->index = 3; // 3=RecordObserver
 		pController->ctype = m_pRecordObserver->type();
 		pController->channel = m_pRecordObserver->channel();
 		pController->param = m_pRecordObserver->param();
@@ -1414,7 +1476,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pMuteObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->index = 1; // 1=MuteObserver
+		pController->index = 4; // 4=MuteObserver
 		pController->ctype = m_pMuteObserver->type();
 		pController->channel = m_pMuteObserver->channel();
 		pController->param = m_pMuteObserver->param();
@@ -1426,7 +1488,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pSoloObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->index = 2; // 2=SoloObserver
+		pController->index = 5; // 5=SoloObserver
 		pController->ctype = m_pSoloObserver->type();
 		pController->channel = m_pSoloObserver->channel();
 		pController->param = m_pSoloObserver->param();

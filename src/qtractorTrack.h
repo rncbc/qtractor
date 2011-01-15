@@ -204,15 +204,20 @@ public:
 	// Update all clips editors.
 	void updateClipEditors();
 
-	// Track state (record, mute, solo) button setup.
+	// Track state (monitor, record, mute, solo) button setup.
+	qtractorSubject *monitorSubject() const;
 	qtractorSubject *recordSubject() const;
 	qtractorSubject *muteSubject() const;
 	qtractorSubject *soloSubject() const;
 
+	qtractorMidiControlObserver *monitorObserver() const;
 	qtractorMidiControlObserver *recordObserver() const;
 	qtractorMidiControlObserver *muteObserver() const;
 	qtractorMidiControlObserver *soloObserver() const;
-	
+
+	// Track state (monitor) notifier (proto-slot).
+	void monitorChangeNotify(bool bOn);
+
 	// Track state (record, mute, solo) notifier (proto-slot).
 	void stateChangeNotify(ToolType toolType, bool bOn);
 
@@ -289,13 +294,16 @@ private:
 
 	qtractorPluginList *m_pPluginList;	// Plugin chain (audio).
 
-	// State (mute, solo) observer stuff.
+	// State (monitor, record, mute, solo) observer stuff.
+	class MonitorObserver;
 	class StateObserver;
 
+	MonitorObserver *m_pMonitorObserver;
 	StateObserver   *m_pRecordObserver;
 	StateObserver   *m_pMuteObserver;
 	StateObserver   *m_pSoloObserver;
 
+	qtractorSubject *m_pMonitorSubject;
 	qtractorSubject *m_pRecordSubject;
 	qtractorSubject *m_pMuteSubject;
 	qtractorSubject *m_pSoloSubject;

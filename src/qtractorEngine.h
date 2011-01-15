@@ -28,10 +28,7 @@
 
 // Forward declarations.
 class qtractorBus;
-class qtractorSession;
 class qtractorSessionCursor;
-class qtractorDocument;
-class qtractorMonitor;
 
 class QDomElement;
 
@@ -175,6 +172,13 @@ public:
 	virtual qtractorMonitor *monitor_in()  const = 0;
 	virtual qtractorMonitor *monitor_out() const = 0;
 
+	// State (monitor) button setup.
+	qtractorSubject *monitorSubject() const;
+	qtractorMidiControlObserver *monitorObserver() const;
+
+	// State (monitor) notifier (proto-slot).
+	void monitorChangeNotify(bool bOn);
+
 	// Connection list stuff.
 	struct ConnectItem
 	{
@@ -264,11 +268,15 @@ private:
 
 	QString m_sBusName;
 	BusMode m_busMode;
-	bool m_bMonitor;
 
 	// Connections stuff.
 	ConnectList m_inputs;
 	ConnectList m_outputs;
+
+	// State (monitor) observer stuff.
+	class MonitorObserver;
+	MonitorObserver *m_pMonitorObserver;
+	qtractorSubject *m_pMonitorSubject;
 };
 
 

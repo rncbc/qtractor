@@ -661,8 +661,7 @@ bool qtractorMixerStrip::isSelected (void) const
 // Strip refreshment.
 void qtractorMixerStrip::refresh (void)
 {
-	if (m_pMeter)
-		m_pMeter->refresh();
+	if (m_pMeter) m_pMeter->refresh();
 }
 
 
