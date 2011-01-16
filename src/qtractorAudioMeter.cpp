@@ -25,6 +25,8 @@
 
 #include "qtractorObserverWidget.h"
 
+#include "qtractorMidiControlObserver.h"
+
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QPainter>
@@ -398,6 +400,8 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 #endif
 
 	topWidget()->hide();
+
+	gainObserver()->setLogarithmic(true);
 
 	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
 	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));

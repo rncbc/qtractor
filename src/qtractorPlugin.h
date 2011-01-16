@@ -404,7 +404,11 @@ public:
 
 	// Parameter list accessor.
 	void addParam(qtractorPluginParam *pParam)
-		{ m_params.insert(pParam->index(), pParam); }
+	{
+		if (pParam->isLogarithmic())
+			pParam->observer()->setLogarithmic(true);
+		m_params.insert(pParam->index(), pParam);
+	}
 
 	// An accessible list of parameters.
 	typedef QHash<unsigned long, qtractorPluginParam *> Params;
