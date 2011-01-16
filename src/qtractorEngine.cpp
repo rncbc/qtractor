@@ -378,8 +378,11 @@ qtractorBus::~qtractorBus (void)
 	if (m_pMonitorSubject)
 		delete m_pMonitorSubject;
 
-	qDeleteAll(m_controllers);
-	m_controllers.clear();
+	qDeleteAll(m_controllers_out);
+	m_controllers_out.clear();
+
+	qDeleteAll(m_controllers_in);
+	m_controllers_in.clear();
 }
 
 
@@ -465,15 +468,18 @@ void qtractorBus::monitorChangeNotify ( bool bOn )
 
 
 // Load track state (record, mute, solo) controllers (MIDI).
-void qtractorBus::loadControllers ( QDomElement *pElement )
+void qtractorBus::loadControllers ( QDomElement *pElement, BusMode busMode )
 {
-	qtractorMidiControl::loadControllers(pElement, m_controllers);
+	if (busMode & Input)
+		qtractorMidiControl::loadControllers(pElement, m_controllers_in);
+	else
+		qtractorMidiControl::loadControllers(pElement, m_controllers_out);
 }
 
 
 // Save track state (record, mute, solo) controllers (MIDI).
 void qtractorBus::saveControllers (
-	qtractorDocument *pDocument, QDomElement *pElement ) const
+	qtractorDocument *pDocument, QDomElement *pElement, BusMode busMode ) const
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
@@ -489,7 +495,7 @@ void qtractorBus::saveControllers (
 
 	qtractorMonitor *pMonitor = NULL;
 	qtractorMixerRack *pMixerRack = NULL;
-	if (m_busMode & Input) {
+	if (busMode & Input) {
 		pMonitor = monitor_in();
 		pMixerRack = pMixer->inputRack();
 	} else {
@@ -503,6 +509,7 @@ void qtractorBus::saveControllers (
 
 	qtractorMidiControl::Controllers controllers;
 
+	if (busMode & Input) // It suffices for Duplex...
 	if (pMidiControl->isMidiObserverMapped(m_pMonitorObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -551,7 +558,7 @@ void qtractorBus::saveControllers (
 
 
 // Map track state (record, mute, solo) controllers (MIDI).
-void qtractorBus::mapControllers (void)
+void qtractorBus::mapControllers ( BusMode busMode )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
@@ -567,7 +574,7 @@ void qtractorBus::mapControllers (void)
 
 	qtractorMonitor *pMonitor = NULL;
 	qtractorMixerRack *pMixerRack = NULL;
-	if (m_busMode & Input) {
+	if (busMode & Input) {
 		pMonitor = monitor_in();
 		pMixerRack = pMixer->inputRack();
 	} else {
@@ -579,7 +586,9 @@ void qtractorBus::mapControllers (void)
 	if (pMixerStrip == NULL)
 		return;
 
-	QListIterator<qtractorMidiControl::Controller *> iter(m_controllers);
+	qtractorMidiControl::Controllers& controllers
+		= (busMode & Input ? m_controllers_in : m_controllers_out);
+	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
 	while (iter.hasNext()) {
 		qtractorMidiControl::Controller *pController = iter.next();
 		qtractorMidiControlObserver *pObserver = NULL;
@@ -604,8 +613,8 @@ void qtractorBus::mapControllers (void)
 		}
 	}
 	
-	qDeleteAll(m_controllers);
-	m_controllers.clear();
+	qDeleteAll(controllers);
+	controllers.clear();
 }
 
 

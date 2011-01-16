@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Attempt to have custom MIDI controller mapping
+  /learn on all of mixer controls (monitor, gain,
+  panning, record, mute, solo). (EXPERIMENTAL)
+
 - An internal rewrite (aka. refactoring) have been
   carried out, making sure that all track state
   action buttons (R, M, S) are now all under the

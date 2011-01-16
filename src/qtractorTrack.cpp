@@ -1261,6 +1261,11 @@ bool qtractorTrack::loadElement (
 			}
 		}
 		else
+		if (eChild.tagName() == "controllers") {
+			// Load track controllers...
+			qtractorTrack::loadControllers(&eChild);
+		}
+		else
 		// Load clips...
 		if (eChild.tagName() == "clips" && !pDocument->isTemplate()) {
 			for (QDomNode nClip = eChild.firstChild();
@@ -1359,6 +1364,12 @@ bool qtractorTrack::saveElement (
 	pDocument->saveTextElement("foreground-color",
 		qtractorTrack::foreground().name(), &eView);
 	pElement->appendChild(eView);
+
+	// Save track controllers...
+	QDomElement eControllers
+		= pDocument->document()->createElement("controllers");
+	qtractorTrack::saveControllers(pDocument, &eControllers);
+	pElement->appendChild(eControllers);
 
 	// Clips are not saved when in template mode...
 	if (!pDocument->isTemplate()) {

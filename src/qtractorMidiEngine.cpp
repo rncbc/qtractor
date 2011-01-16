@@ -3608,6 +3608,8 @@ bool qtractorMidiBus::loadElement (
 			if (qtractorMidiBus::monitor_in())
 				qtractorMidiBus::monitor_in()->setPanning(
 					eProp.text().toFloat());
+		} else if (eProp.tagName() == "input-controllers") {
+			qtractorMidiBus::loadControllers(&eProp, qtractorBus::Input);
 		} else if (eProp.tagName() == "input-plugins") {
 			if (qtractorMidiBus::pluginList_in())
 				qtractorMidiBus::pluginList_in()->loadElement(
@@ -3623,6 +3625,8 @@ bool qtractorMidiBus::loadElement (
 			if (qtractorMidiBus::monitor_out())
 				qtractorMidiBus::monitor_out()->setPanning(
 					eProp.text().toFloat());
+		} else if (eProp.tagName() == "output-controllers") {
+			qtractorMidiBus::loadControllers(&eProp, qtractorBus::Output);
 		} else if (eProp.tagName() == "output-plugins") {
 			if (qtractorMidiBus::pluginList_out())
 				qtractorMidiBus::pluginList_out()->loadElement(
@@ -3656,6 +3660,11 @@ bool qtractorMidiBus::saveElement (
 		pDocument->saveTextElement("input-panning",
 			QString::number(qtractorMidiBus::monitor_in()->panning()),
 				pElement);
+		QDomElement eInputControllers
+			= pDocument->document()->createElement("input-controllers");
+		qtractorMidiBus::saveControllers(pDocument,
+			&eInputControllers, qtractorBus::Input);
+		pElement->appendChild(eInputControllers);
 		if (qtractorMidiBus::pluginList_in()) {
 			QDomElement eInputPlugins
 				= pDocument->document()->createElement("input-plugins");
@@ -3678,6 +3687,11 @@ bool qtractorMidiBus::saveElement (
 		pDocument->saveTextElement("output-panning",
 			QString::number(qtractorMidiBus::monitor_out()->panning()),
 				pElement);
+		QDomElement eOutputControllers
+			= pDocument->document()->createElement("output-controllers");
+		qtractorMidiBus::saveControllers(pDocument,
+			&eOutputControllers, qtractorBus::Output);
+		pElement->appendChild(eOutputControllers);
 		if (qtractorMidiBus::pluginList_out()) {
 			QDomElement eOutputPlugins
 				= pDocument->document()->createElement("output-plugins");

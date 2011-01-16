@@ -2416,6 +2416,8 @@ bool qtractorAudioBus::loadElement (
 			if (qtractorAudioBus::monitor_in())
 				qtractorAudioBus::monitor_in()->setPanning(
 					eProp.text().toFloat());
+		} else if (eProp.tagName() == "input-controllers") {
+			qtractorAudioBus::loadControllers(&eProp, qtractorBus::Input);
 		} else if (eProp.tagName() == "input-plugins") {
 			if (qtractorAudioBus::pluginList_in())
 				qtractorAudioBus::pluginList_in()->loadElement(
@@ -2431,6 +2433,8 @@ bool qtractorAudioBus::loadElement (
 			if (qtractorAudioBus::monitor_out())
 				qtractorAudioBus::monitor_out()->setPanning(
 					eProp.text().toFloat());
+		} else if (eProp.tagName() == "output-controllers") {
+			qtractorAudioBus::loadControllers(&eProp, qtractorBus::Output);
 		} else if (eProp.tagName() == "output-plugins") {
 			if (qtractorAudioBus::pluginList_out())
 				qtractorAudioBus::pluginList_out()->loadElement(
@@ -2471,6 +2475,11 @@ bool qtractorAudioBus::saveElement (
 				QString::number(qtractorAudioBus::monitor_in()->panning()),
 					pElement);
 		}
+		QDomElement eInputControllers
+			= pDocument->document()->createElement("input-controllers");
+		qtractorAudioBus::saveControllers(pDocument,
+			&eInputControllers, qtractorBus::Input);
+		pElement->appendChild(eInputControllers);
 		if (qtractorAudioBus::pluginList_in()) {
 			QDomElement eInputPlugins
 				= pDocument->document()->createElement("input-plugins");
@@ -2495,6 +2504,11 @@ bool qtractorAudioBus::saveElement (
 				QString::number(qtractorAudioBus::monitor_out()->panning()),
 					pElement);
 		}
+		QDomElement eOutputControllers
+			= pDocument->document()->createElement("output-controllers");
+		qtractorAudioBus::saveControllers(pDocument,
+			&eOutputControllers, qtractorBus::Output);
+		pElement->appendChild(eOutputControllers);
 		if (qtractorAudioBus::pluginList_out()) {
 			QDomElement eOutputPlugins
 				= pDocument->document()->createElement("output-plugins");

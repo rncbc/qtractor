@@ -473,6 +473,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	QFrame::setAutoFillBackground(true);
 
 	updateName();
+
 	setSelected(false);
 }
 
@@ -1364,6 +1365,8 @@ void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
 		if (bReset)
 			pStrip->setBus(pBus);
 	}
+
+	pBus->mapControllers(busMode);
 }
 
 
@@ -1377,6 +1380,8 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 		if (bReset)
 			pStrip->setTrack(pTrack);
 	}
+
+	pTrack->mapControllers();
 }
 
 
