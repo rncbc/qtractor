@@ -1,7 +1,7 @@
 // qtractorMonitor.h
 //
 /****************************************************************************
-   Copyright (C) 2006-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2006-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,7 +34,8 @@ public:
 
 	// Constructor.
 	qtractorMonitor(float fGain = 1.0f, float fPanning = 0.0f)
-		: m_gain(fGain), m_panning(fPanning) {}
+		: m_gain(fGain), m_panning(fPanning)
+		{ m_panning.setMinValue(-1.0f); }
 
 	// Virtual destructor.
 	virtual ~qtractorMonitor() {}
