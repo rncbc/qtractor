@@ -1,7 +1,7 @@
 // qtractorObserverWidget.h
 //
 /****************************************************************************
-   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -107,10 +107,6 @@ public:
 			delete m_pInterface;
 		m_pInterface = pInterface;
 	}
-
-	// Interface accessor.
-	Interface *interface() const
-		{ return m_pInterface; }
 
 	// Interface methods.
 	float scaleFromValue(float fValue) const
