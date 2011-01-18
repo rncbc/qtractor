@@ -61,8 +61,7 @@ Features
 - Unlimited tempo/time-signature map.
 - MIDI clip editor (matrix/piano roll).
 - MIDI instrument definitions (a-la Cakewalk(tm) [17]).
-- MIDI controller mapping (mixer).
-- MIDI controller learn/assignment (plug-in parameters).
+- MIDI controller mapping/learn/assignment (mixer and plug-in parameters).
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master/slave.
 - JACK session support.

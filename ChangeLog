@@ -3,17 +3,17 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.4.8  2011-01-18  The Fiery Demigoddess
 
 - MIDI controller mapping/learn is now possible
   on all mixer controls (monitor, gain, panning,
-  record, mute, solo). (EXPERIMENTAL)
+  record, mute, solo).
 
 - An internal rewrite (aka. refactoring) have been
   carried out, making sure that all track state
   action buttons (R, M, S) are now all under the
-  observer pattern umbrella. (EXPERIMENTAL)
- 
+  observer pattern umbrella.
+
 - Single track range selection is now available
   on main menu (Edit/Select/Track Range; default
   keyboard shortcut: Ctrl+Shift+R); additionally
@@ -32,7 +32,7 @@ SVN TRUNK
   moving, resizing or pasting selected clips or
   events over the main tracks view and MIDI clip
   editor (piano-roll) respectively, displaying
-  current target position and status. (EXPERIMENTAL)
+  current target position and status.
 
 - Attempt to reset audio/MIDI time drift compensator
   on every engine start and loop turnaround.
@@ -45,29 +45,26 @@ SVN TRUNK
   randomize, resize, rescale and the new timeshift)
   are now all accessible from the main tracks view
   (Edit/Clip/Tools menu) and apply to all events on
-  current selected clip(s). (EXPERIMENTAL)
+  current selected clip(s).
 
 - LV2 Persist extension support is being introduced.
-  (EXPERIMENTAL)
 
 - A new timeshift MIDI tool has been added, after
   an awesome patch by Jiri Prochaszka aka Anchakor;
   applies to selected events between edit markers,
   distorting their time and duration (optionally),
   either slowing down and accelerating, based on
-  a given parameter P value. (EXPERIMENTAL)
+  a given parameter P value.
 
 - Audio clip/buffer pitch-shifting fixes with regard
   to latency correction due on the RubberBand library
-  one-pass (real-time) processing mode. (EXPERIMENTAL)
+  one-pass (real-time) processing mode.
 
 - New Send Gain and Dry/Wet control parameters have
   been implemented for audio Inserts pseudo-plugins.
-  (EXPERIMENTAL)
 
 - MIDI channel/master volume enqueued events are now
   affected by the current track/bus volume (0-100%).
-  (EXPERIMENTAL)
 
 - Prevent old rounding error when resetting to plugin
   parameter default value with the mouse middle-button
@@ -132,18 +129,17 @@ SVN TRUNK
 - After too many a user request, a brand new session
   archive file type is being introduced (.qtz) which
   tries to bundle in one single zip archive all the
-  media and contents of a session (EXPERIMENTAL).
+  media and contents of a session.
 
 - Add that to eye-candy: either loop or punch-in/out
   outer ranges are now shaded on the main track-view,
   thumb-view and MIDI clip editor (piano-roll) views.
 
 - LV2 GTK UI plug-in hosting is now roaring its ugly
-  head (EXTREMELY EXPERIMENTAL, SUBJECT TO IMMEDIATE
-  REGRESSION WITHOUT PRIOR NOTICE).
+  head (EXPERIMENTAL).
 
 - Ignore all initial and decremental notifications of
-  audio engine's buffer-size changes (EXPERIMENTAL).
+  audio engine's buffer-size changes.
 
 - Internal audio buffer loop points were not being set
   properly for non-zero clip offsets, leaving some as
@@ -160,7 +156,7 @@ SVN TRUNK
   patch #3081954, by Jesse Lucas).
 
 - Attempt to mitigate audio clip sequencing glitches
-  on single-core/single-thread machines. (TESTING)
+  on single-core/single-thread machines.
 
 
 0.4.7  2010-09-30  The Furious Desertrix

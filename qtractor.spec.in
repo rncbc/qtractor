@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 32
+%define release 33
 
 %define _prefix	@ac_prefix@
 
@@ -64,6 +64,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 
 %changelog
+* Tue Jan 19 2011 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.8
+- The Fiery Demigoddess release.
 * Thu Sep 30 2010 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.7
 - The Furious Desertrix release.
 * Fri May 21 2010 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.6
