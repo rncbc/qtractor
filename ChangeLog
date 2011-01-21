@@ -3,6 +3,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- MIDI editor anchor event floating tool-tip fix.
+
+- Probable fix for GtkStyle usage detection (might
+  be gentoo specific).
+
+
 0.4.8  2011-01-18  The Fiery Demigoddess
 
 - MIDI controller mapping/learn is now possible

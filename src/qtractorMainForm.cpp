@@ -116,6 +116,7 @@
 #include <QDropEvent>
 
 #if defined(Q_WS_X11) && QT_VERSION >= 0x040600
+#undef QT_NO_STYLE_GTK
 #include <QGtkStyle>
 #endif
 

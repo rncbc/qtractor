@@ -2628,12 +2628,17 @@ void qtractorMidiEditor::updateDragMove (
 	}
 
 	// Show anchor event tooltip...
-	if (m_bToolTips && m_select.anchorEvent()) {
-		QToolTip::showText(
-			QCursor::pos(),
-			eventToolTip(m_select.anchorEvent(),
-				timeDelta(pScrollView), noteDelta(pScrollView), 0),
-			pScrollView->viewport());
+	if (m_bToolTips) {
+		qtractorMidiEvent *pEvent = m_pEventDrag;
+		if (pEvent == NULL)
+			pEvent = m_select.anchorEvent();
+		if (pEvent) {
+			QToolTip::showText(
+				QCursor::pos(),
+				eventToolTip(pEvent,
+					timeDelta(pScrollView), noteDelta(pScrollView), 0),
+				pScrollView->viewport());
+		}
 	}
 }
 
@@ -2702,12 +2707,17 @@ void qtractorMidiEditor::updateDragResize (
 		rectUpdateEvent.size()));
 
 	// Show anchor event tooltip...
-	if (m_bToolTips && m_select.anchorEvent()) {
-		QToolTip::showText(
-			QCursor::pos(),
-			eventToolTip(m_select.anchorEvent(),
-				timeDelta(pScrollView), 0, valueDelta(pScrollView)),
-			pScrollView->viewport());
+	if (m_bToolTips) {
+		qtractorMidiEvent *pEvent = m_pEventDrag;
+		if (pEvent == NULL)
+			pEvent = m_select.anchorEvent();
+		if (pEvent) {
+			QToolTip::showText(
+				QCursor::pos(),
+				eventToolTip(pEvent,
+					timeDelta(pScrollView), 0, valueDelta(pScrollView)),
+				pScrollView->viewport());
+		}
 	}
 }
 
