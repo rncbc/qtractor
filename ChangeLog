@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Files widget item selection feedback/foocus fix.
+
 - MIDI editor anchor event floating tool-tip fix.
 
 - Probable fix for GtkStyle usage detection (might

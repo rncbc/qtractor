@@ -492,6 +492,7 @@ void qtractorFileListView::openFile (void)
 		return;
 
 	// Find a proper group parent group item...
+	qtractorFileListItem *pFileItem = NULL;
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
 	// Pick each one of the selected files...
 	int iUpdate = 0;
@@ -499,7 +500,7 @@ void qtractorFileListView::openFile (void)
 	while (iter.hasNext()) {
 		const QString& sPath = iter.next();
 		// Add the new file item...
-		qtractorFileListItem *pFileItem	= addFileItem(sPath, pParentItem);
+		pFileItem = addFileItem(sPath, pParentItem);
 		// Make all this new open and visible.
 		if (pFileItem) {
 			iUpdate++;
@@ -508,6 +509,10 @@ void qtractorFileListView::openFile (void)
 		}
 	}
 
+	// Make the last one current...
+	if (pFileItem)
+		QTreeWidget::setCurrentItem(pFileItem);
+		
 	// Make proper notifications...
 	if (iUpdate > 0)
 		emit contentsChanged();
