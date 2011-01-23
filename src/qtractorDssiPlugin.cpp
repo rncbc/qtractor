@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -824,7 +824,12 @@ bool qtractorDssiPluginType::open (void)
 	QFileInfo fi(file()->filename());
 	QFileInfo gi(fi.dir(), fi.baseName());
 	if (gi.isDir()) {
-		QDir dir(gi.absoluteFilePath(), fi.baseName() + "_*");
+		QDir dir(gi.absoluteFilePath());
+		const QString sMask("%1_*");
+		QStringList names;
+		names.append(sMask.arg(fi.baseName()));
+		names.append(sMask.arg(m_pLadspaDescriptor->Label));
+		dir.setNameFilters(names);
 		QStringList guis = dir.entryList(QDir::Files | QDir::Executable);
 		if (!guis.isEmpty()) {
 			gi.setFile(dir, guis.first()); // FIXME: Only the first?

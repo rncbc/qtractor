@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Executable DSSI plug-in GUI detection fixed.
+
+- Backout default session directory after cleaning
+  up extracted archive/zip bundle session (.qtz).
+
 - Files widget item selection feedback/foocus fix.
 
 - MIDI editor anchor event floating tool-tip fix.

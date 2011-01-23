@@ -1659,21 +1659,6 @@ bool qtractorMainForm::closeSession (void)
 	if (bClose) {
 		// Just in case we were in the middle of something...
 		setPlaying(false);
-		// Reset all dependables to default.
-		m_pMixer->clear();
-		m_pFiles->clear();
-		// Close session engines.
-		m_pSession->close();
-		m_pSession->clear();
-		m_pTempoCursor->clear();
-		// And last but not least.
-		m_pConnections->clear();
-		m_pTracks->clear();
-		// Reset playhead.
-		m_iPlayHead = 0;
-	#ifdef CONFIG_LV2
-		qtractorLv2PluginType::slv2_close();
-	#endif
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();
@@ -1691,6 +1676,21 @@ bool qtractorMainForm::closeSession (void)
 			}
 			qtractorDocument::clearExtractedArchives(bRemove);
 		}
+	#endif
+		// Reset all dependables to default.
+		m_pMixer->clear();
+		m_pFiles->clear();
+		// Close session engines.
+		m_pSession->close();
+		m_pSession->clear();
+		m_pTempoCursor->clear();
+		// And last but not least.
+		m_pConnections->clear();
+		m_pTracks->clear();
+		// Reset playhead.
+		m_iPlayHead = 0;
+	#ifdef CONFIG_LV2
+		qtractorLv2PluginType::slv2_close();
 	#endif
 		// Some defaults are due...
 		if (m_pOptions) {
