@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@
 
 #include <QHeaderView>
 #include <QMessageBox>
+#include <QTime>
 #include <QMenu>
 
 
@@ -118,6 +119,10 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	// Initialize locals.
 	m_pTimeScale  = NULL;
 
+	m_pTempoTap   = new QTime();
+	m_iTempoTap   = 0;
+	m_fTempoTap   = 0.0f;
+
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
 	m_iDirtyTotal = 0;
@@ -156,7 +161,10 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 		SLOT(frameChanged(unsigned long)));
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
-		SLOT(changed()));
+		SLOT(tempoChanged(float, unsigned short, unsigned short)));
+	QObject::connect(m_ui.TempoPushButton,
+		SIGNAL(clicked()),
+		SLOT(tempoTap()));
 
 	QObject::connect(m_ui.RefreshPushButton,
 		SIGNAL(clicked()),
@@ -563,6 +571,25 @@ void qtractorTimeScaleForm::frameChanged ( unsigned long iFrame )
 }
 
 
+// Tempo signature has changed.
+void qtractorTimeScaleForm::tempoChanged (
+	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTeimeScaleForm::tempoChanged(%g, %u, %u)",
+		fTempo, iBeatsPerBar, iBeatDivisor);
+#endif
+
+	m_iTempoTap = 0;
+	m_fTempoTap = 0.0f;
+
+	changed();
+}
+
+
 void qtractorTimeScaleForm::changed (void)
 {
 	if (m_iDirtySetup > 0)
@@ -592,6 +619,28 @@ void qtractorTimeScaleForm::reject (void)
 
 	if (bReject)
 		QDialog::reject();
+}
+
+
+// Tempo tap click.
+void qtractorTimeScaleForm::tempoTap (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTimeScaleForm::tempoTap()");
+#endif
+
+	int iTimeTap = m_pTempoTap->restart();
+	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
+		m_fTempoTap += (60000.0f / float(iTimeTap));
+		if (++m_iTempoTap >= 3) {
+			m_fTempoTap /= float(m_iTempoTap);
+			m_iTempoTap  = 1; // Median-like averaging...
+			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), true);
+		}
+	} else {
+		m_iTempoTap = 0;
+		m_fTempoTap = 0.0f;
+	}
 }
 
 

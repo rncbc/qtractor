@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Tempo tap button was added to View/Tempo Map...
+  dialog (EXPERIMENTAL).
+
 - Executable DSSI plug-in GUI detection fixed.
 
 - Backout default session directory after cleaning
