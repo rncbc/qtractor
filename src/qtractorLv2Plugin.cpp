@@ -199,8 +199,6 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 
 #ifdef CONFIG_LV2_GTK_UI
 
-#include <QX11EmbedContainer>
-
 #undef signals // Collides with GTK symbology
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
@@ -603,7 +601,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_ui_widget(NULL)
 	#ifdef CONFIG_LV2_GTK_UI
 		, m_pGtkWindow(NULL)
-		, m_pX11EmbedContainer(NULL)
 	#endif
 	#endif
 {
@@ -1009,21 +1006,24 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		if (m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 			// Create embeddable native window...
 			m_pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+		qDebug("DEBUG> gtk_window_new() = %p", m_pGtkWindow);
 			gtk_window_set_resizable(GTK_WINDOW(m_pGtkWindow), 1);
+		qDebug("DEBUG> gtk_window_set_resizable(%p)", m_pGtkWindow);
 			gtk_window_set_title(
 				GTK_WINDOW(m_pGtkWindow),
 				m_aEditorTitle.constData());
+		qDebug("DEBUG> gtk_window_set_title(%p)", m_pGtkWindow);
 			// Add plugin widget into our new window container... 
 			gtk_container_add(
 				GTK_CONTAINER(m_pGtkWindow),
-				(GtkWidget *) m_lv2_ui_widget);
+				static_cast<GtkWidget *> (m_lv2_ui_widget));
+		qDebug("DEBUG> gtk_container_add(%p, %p)", m_pGtkWindow, static_cast<GtkWidget *> (m_lv2_ui_widget));
 			g_signal_connect(
 				G_OBJECT(m_pGtkWindow), "destroy",
 				G_CALLBACK(qtractor_lv2_gtk_window_destroy), this);
+		qDebug("DEBUG> g_signal_connect(%p, \"destroy\")", m_pGtkWindow);
 			gtk_widget_show_all(m_pGtkWindow);
-			m_pX11EmbedContainer = new QX11EmbedContainer(pParent);
-			m_pX11EmbedContainer->embedClient(
-				GDK_WINDOW_XID(gtk_widget_get_window(m_pGtkWindow)));
+		qDebug("DEBUG> gtk_widget_show_all(%p)", m_pGtkWindow);
 		}
 	#endif
 		g_lv2Plugins.append(this);
@@ -1059,11 +1059,6 @@ void qtractorLv2Plugin::closeEditor (void)
 			GtkWidget *pGtkWindow = m_pGtkWindow;
 			m_pGtkWindow = NULL;
 			gtk_widget_destroy(pGtkWindow);
-		}
-		if (m_pX11EmbedContainer) {
-			m_pX11EmbedContainer->discardClient();
-			delete m_pX11EmbedContainer;
-			m_pX11EmbedContainer = NULL;
 		}
 	}
 #endif
@@ -1137,12 +1132,6 @@ void qtractorLv2Plugin::idleEditor (void)
 
 void qtractorLv2Plugin::closeEditorEx (void)
 {
-	if (m_pX11EmbedContainer) {
-		m_pX11EmbedContainer->discardClient();
-		delete m_pX11EmbedContainer;
-		m_pX11EmbedContainer = NULL;
-	}
-
 	if (m_pGtkWindow) {
 		m_pGtkWindow = NULL;	
 		setEditorClosed(true);
@@ -1167,7 +1156,6 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 			break;
 		case LV2_UI_TYPE_GTK:
 		#ifdef CONFIG_LV2_GTK_UI
-			if (m_pX11EmbedContainer) m_pX11EmbedContainer->show();
 			if (m_pGtkWindow) gtk_widget_show_all(m_pGtkWindow);
 		#endif
 			break;
@@ -1185,7 +1173,6 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		case LV2_UI_TYPE_GTK:
 		#ifdef CONFIG_LV2_GTK_UI
 			if (m_pGtkWindow) gtk_widget_hide_all(m_pGtkWindow);
-			if (m_pX11EmbedContainer) m_pX11EmbedContainer->hide();
 		#endif
 			break;
 		}

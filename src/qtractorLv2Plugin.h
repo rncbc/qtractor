@@ -56,11 +56,6 @@
 #define QTRACTOR_LV2_ATOM_STRING_ID 2
 #endif
 
-#ifdef CONFIG_LV2_GTK_UI
-// Forward declarations.
-class QX11EmbedContainer;
-#endif
- 
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -273,7 +268,6 @@ protected:
 #ifdef CONFIG_LV2_GTK_UI
 	// Our own GTK UI widget (parent frame).
 	struct _GtkWidget *m_pGtkWindow;
-	QX11EmbedContainer *m_pX11EmbedContainer;
 #endif
 
 #endif

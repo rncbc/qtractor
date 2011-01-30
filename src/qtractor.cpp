@@ -44,6 +44,11 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#ifdef CONFIG_LV2_GTK_UI
+#undef signals // Collides with GTK symbology
+#include <gtk/gtk.h>
+#endif
+
 #ifdef CONFIG_XUNIQUE
 
 #include <QX11Info>
@@ -324,14 +329,17 @@ int main ( int argc, char **argv )
 	signal(SIGBUS,  stacktrace);
 #endif
 #endif
+#if defined(Q_WS_X11)
 #ifdef CONFIG_VST
 #ifdef CONFIG_XINITTHREADS
-#if defined(Q_WS_X11)
 	if (!XInitThreads()) {
 		qFatal("Error: XInitThreads() failed. Stop.");
 		return 1;
 	}
 #endif
+#endif
+#ifdef CONFIG_LV2_GTK_UI
+	gtk_init(&argc, &argv);
 #endif
 #endif
 	qtractorApplication app(argc, argv);
