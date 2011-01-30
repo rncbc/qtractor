@@ -898,7 +898,7 @@ void qtractorLv2Plugin::process (
 #ifdef CONFIG_LV2_UI
 
 // Open editor.
-void qtractorLv2Plugin::openEditor ( QWidget *pParent )
+void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 {
 	if (m_lv2_ui_widget) {
 		setEditorVisible(true);
@@ -1006,24 +1006,18 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		if (m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 			// Create embeddable native window...
 			m_pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-		qDebug("DEBUG> gtk_window_new() = %p", m_pGtkWindow);
 			gtk_window_set_resizable(GTK_WINDOW(m_pGtkWindow), 1);
-		qDebug("DEBUG> gtk_window_set_resizable(%p)", m_pGtkWindow);
 			gtk_window_set_title(
 				GTK_WINDOW(m_pGtkWindow),
 				m_aEditorTitle.constData());
-		qDebug("DEBUG> gtk_window_set_title(%p)", m_pGtkWindow);
 			// Add plugin widget into our new window container... 
 			gtk_container_add(
 				GTK_CONTAINER(m_pGtkWindow),
 				static_cast<GtkWidget *> (m_lv2_ui_widget));
-		qDebug("DEBUG> gtk_container_add(%p, %p)", m_pGtkWindow, static_cast<GtkWidget *> (m_lv2_ui_widget));
 			g_signal_connect(
 				G_OBJECT(m_pGtkWindow), "destroy",
 				G_CALLBACK(qtractor_lv2_gtk_window_destroy), this);
-		qDebug("DEBUG> g_signal_connect(%p, \"destroy\")", m_pGtkWindow);
-			gtk_widget_show_all(m_pGtkWindow);
-		qDebug("DEBUG> gtk_widget_show_all(%p)", m_pGtkWindow);
+		//	gtk_widget_show_all(m_pGtkWindow);
 		}
 	#endif
 		g_lv2Plugins.append(this);
