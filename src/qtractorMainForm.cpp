@@ -4357,7 +4357,12 @@ void qtractorMainForm::updateSession (void)
 	//  Actually (re)start session engines...
 	if (startSession()) {
 		// (Re)set playhead...
-		m_pSession->setPlayHead(0);
+		if (m_ui.transportAutoBackwardAction->isChecked()) {
+			if (m_iPlayHead > m_pSession->editHead())
+				m_pSession->setPlayHead(m_pSession->editHead());
+			else
+				m_pSession->setPlayHead(0);
+		}
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->setMidiPatch(false); // Deferred++
 		// Get on with the special ALSA sequencer notifier...
@@ -4377,6 +4382,9 @@ void qtractorMainForm::updateSession (void)
 	// Ah, make it stand right.
 	if (m_pTracks)
 		m_pTracks->trackView()->setFocus();
+
+	// Of course!...
+	m_iTransportUpdate++;
 }
 
 
