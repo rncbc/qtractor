@@ -1,7 +1,7 @@
 /* lv2_event.h - C header file for the LV2 events extension.
  *
  * Copyright (C) 2006-2007 Lars Luthman <lars.luthman@gmail.com>
- * Copyright (C) 2008-2009 Dave Robillard <http://drobilla.net>
+ * Copyright (C) 2008-2009 David Robillard <http://drobilla.net>
  *
  * This header is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -27,8 +27,7 @@
 #include <stdint.h>
 
 /** @file
- * This header defines the code portion of the LV2 events extension with URI
- * <http://lv2plug.in/ns/ext/event> ('lv2ev').
+ * C header for the LV2 Event extension <http://lv2plug.in/ns/ext/event>.
  *
  * This extension is a generic transport mechanism for time stamped events
  * of any type (e.g. MIDI, OSC, ramps, etc).  Each port can transport mixed
@@ -256,5 +255,5 @@ typedef struct {
 } LV2_Event_Feature;
 
 
-#endif // LV2_EVENT_H
+#endif /* LV2_EVENT_H */
 

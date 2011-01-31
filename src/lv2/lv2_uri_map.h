@@ -1,6 +1,6 @@
 /* lv2_uri_map.h - C header file for the LV2 URI Map extension.
  *
- * Copyright (C) 2008-2009 Dave Robillard <http://drobilla.net>
+ * Copyright (C) 2008-2009 David Robillard <http://drobilla.net>
  *
  * This header is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -17,16 +17,8 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 01222-1307 USA
  */
 
-#ifndef LV2_URI_MAP_H
-#define LV2_URI_MAP_H
-
-#define LV2_URI_MAP_URI "http://lv2plug.in/ns/ext/uri-map"
-
-#include <stdint.h>
-
 /** @file
- * This header defines the LV2 URI Map extension with the URI
- * <http://lv2plug.in/ns/ext/uri-map> (preferred prefix 'lv2urimap').
+ * C header for the LV2 URI Map extension <http://lv2plug.in/ns/ext/uri-map>.
  *
  * This extension defines a simple mechanism for plugins to map URIs to
  * integers, usually for performance reasons (e.g. processing events
@@ -36,6 +28,13 @@
  * comparison.  This allows the extensibility of RDF with the performance of
  * integers (or centrally defined enumerations).
  */
+
+#ifndef LV2_URI_MAP_H
+#define LV2_URI_MAP_H
+
+#define LV2_URI_MAP_URI "http://lv2plug.in/ns/ext/uri-map"
+
+#include <stdint.h>
 
 
 /** Opaque pointer to host data. */
@@ -84,5 +83,5 @@ typedef struct {
 } LV2_URI_Map_Feature;
 
 
-#endif // LV2_URI_MAP_H
+#endif /* LV2_URI_MAP_H */
 

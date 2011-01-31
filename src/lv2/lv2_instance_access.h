@@ -1,5 +1,5 @@
 /* lv2_extension_data.h - C header file for the LV2 Instance Access extension.
- * Copyright (C) 2008-2009 Dave Robillard <http://drobilla.net>
+ * Copyright (C) 2008-2009 David Robillard <http://drobilla.net>
  *
  * This header is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -23,7 +23,7 @@
 
 
 /** @file
- * This header defines the LV2 Instance Access extension with the URI
+ * C header for the LV2 Instance Access extension
  * <http://lv2plug.in/ns/ext/instance-access>.
  *
  * This extension defines a method for (e.g.) plugin UIs to get a direct

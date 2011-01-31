@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 extension headers update.
+
 - Got rid of recent QX11EmbedContainer bloating,
   while introducing gtk_init() as for LV2 GTK UI
   support stabilization (EXTREMELY EXPERIMENTAL).

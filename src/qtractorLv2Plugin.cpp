@@ -1043,12 +1043,6 @@ void qtractorLv2Plugin::closeEditor (void)
 
 #ifdef CONFIG_LV2_GTK_UI
 	if (m_lv2_ui_type == LV2_UI_TYPE_GTK) {
-		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
-		if (ui_descriptor && ui_descriptor->cleanup) {
-			LV2UI_Handle ui_handle = lv2_ui_handle();
-			if (ui_handle)
-				(*ui_descriptor->cleanup)(ui_handle);
-		}
 		if (m_pGtkWindow) {
 			GtkWidget *pGtkWindow = m_pGtkWindow;
 			m_pGtkWindow = NULL;
@@ -1057,6 +1051,15 @@ void qtractorLv2Plugin::closeEditor (void)
 	}
 #endif
 
+#if 0
+	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+	if (ui_descriptor && ui_descriptor->cleanup) {
+		LV2UI_Handle ui_handle = lv2_ui_handle();
+		if (ui_handle)
+			(*ui_descriptor->cleanup)(ui_handle);
+	}
+#endif
+	
 	m_lv2_ui_type = LV2_UI_TYPE_NONE;
 	
 	int iLv2Plugin = g_lv2Plugins.indexOf(this);

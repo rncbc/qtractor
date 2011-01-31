@@ -1,6 +1,6 @@
 /* lv2_event_helpers.h - Helper functions for the LV2 events extension.
  *
- * Copyright (C) 2008-2009 Dave Robillard <http://drobilla.net>
+ * Copyright (C) 2008-2009 David Robillard <http://drobilla.net>
  *
  * This header is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -28,8 +28,8 @@
 #include "lv2_event.h"
 
 /** @file
- * This header defines some helper functions for the the LV2 events extension
- * with URI <http://lv2plug.in/ns/ext/event> ('lv2ev').
+ * Helper functions for the LV2 Event extension
+ * <http://lv2plug.in/ns/ext/event>.
  *
  * These functions are provided for convenience only, use of them is not
  * required for supporting lv2ev (i.e. the events extension is defined by the
@@ -98,7 +98,7 @@ lv2_event_begin(LV2_Event_Iterator* iter,
 }
 
 
-/** Check if @a iter is valid..
+/** Check if @a iter is valid.
  * @return True if @a iter is valid, otherwise false (past end of buffer) */
 static inline bool
 lv2_event_is_valid(LV2_Event_Iterator* iter)
@@ -148,7 +148,7 @@ lv2_event_get(LV2_Event_Iterator* iter,
 
 
 /** Write an event at @a iter.
- * The event (if any) pointed to by @iter will be overwritten, and @a iter
+ * The event (if any) pointed to by @a iter will be overwritten, and @a iter
  * incremented to point to the following event (i.e. several calls to this
  * function can be done in sequence without twiddling iter in-between).
  * @return True if event was written, otherwise false (buffer is full). */
@@ -213,7 +213,7 @@ lv2_event_reserve(LV2_Event_Iterator* iter,
 
 
 /** Write an event at @a iter.
- * The event (if any) pointed to by @iter will be overwritten, and @a iter
+ * The event (if any) pointed to by @a iter will be overwritten, and @a iter
  * incremented to point to the following event (i.e. several calls to this
  * function can be done in sequence without twiddling iter in-between).
  * @return True if event was written, otherwise false (buffer is full). */
@@ -239,5 +239,5 @@ lv2_event_write_event(LV2_Event_Iterator* iter,
 	return true;
 }
 
-#endif // LV2_EVENT_HELPERS_H
+#endif /* LV2_EVENT_HELPERS_H */
 
