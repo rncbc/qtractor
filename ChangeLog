@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Transport auto-backward option is now honored
+  whenever a new session gets loaded.
+
 - LV2 extension headers update.
 
 - Got rid of recent QX11EmbedContainer bloating,
