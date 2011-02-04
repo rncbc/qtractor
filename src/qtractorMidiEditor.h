@@ -315,10 +315,20 @@ public:
 	// Controller name map accessor.
 	const QString& controllerName(unsigned char controller) const;
 
+	// Default note names accessor.
+	static const QStringList noteNames();
+
 	// Default note name map accessor.
 	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
 	// Default controller name accessor.
 	static const QString& defaultControllerName(unsigned char controller);
+
+	// Default scale names accessor.
+	static const QStringList scaleNames();
+
+	// Scale quantizer method.	
+	static unsigned char snapToScale(
+		unsigned char note, unsigned char key, int iScale);
 
 public slots:
 

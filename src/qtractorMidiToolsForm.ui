@@ -250,7 +250,7 @@
        <item row="3" column="1">
         <widget class="QCheckBox" name="QuantizeSwingCheckBox">
          <property name="text">
-          <string>&amp;Swing:</string>
+          <string>S&amp;wing:</string>
          </property>
         </widget>
        </item>
@@ -321,7 +321,28 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="1" colspan="5">
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="QuantizeScaleCheckBox">
+         <property name="text">
+          <string>&amp;Scale:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QComboBox" name="QuantizeScaleKeyComboBox">
+         <property name="toolTip">
+          <string>Scale-quantize key</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3" colspan="2">
+        <widget class="QComboBox" name="QuantizeScaleComboBox">
+         <property name="toolTip">
+          <string>Scale-quantize type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="5">
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1136,16 +1157,16 @@
           <number>3</number>
          </property>
          <property name="minimum">
-          <double>-100.000000000000000</double>
+          <double>-100.0</double>
          </property>
          <property name="maximum">
-          <double>100.000000000000000</double>
+          <double>100.0</double>
          </property>
          <property name="singleStep">
-          <double>0.001000000000000</double>
+          <double>0.001</double>
          </property>
          <property name="value">
-          <double>0.000000000000000</double>
+          <double>0.000</double>
          </property>
         </widget>
        </item>
@@ -1269,6 +1290,9 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>QuantizeSwingComboBox</tabstop>
   <tabstop>QuantizeSwingSpinBox</tabstop>
   <tabstop>QuantizeSwingTypeComboBox</tabstop>
+  <tabstop>QuantizeScaleCheckBox</tabstop>
+  <tabstop>QuantizeScaleKeyComboBox</tabstop>
+  <tabstop>QuantizeScaleComboBox</tabstop>
   <tabstop>TransposeCheckBox</tabstop>
   <tabstop>TransposeNoteCheckBox</tabstop>
   <tabstop>TransposeNoteSpinBox</tabstop>

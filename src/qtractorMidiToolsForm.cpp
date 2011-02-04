@@ -174,6 +174,14 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(0);
 	}
 
+	// Scale-quantize stuff...
+	m_ui.QuantizeScaleKeyComboBox->clear();
+	m_ui.QuantizeScaleKeyComboBox->insertItems(0, qtractorMidiEditor::noteNames());
+	m_ui.QuantizeScaleKeyComboBox->setCurrentIndex(0);
+	m_ui.QuantizeScaleComboBox->clear();
+	m_ui.QuantizeScaleComboBox->insertItems(0, qtractorMidiEditor::scaleNames());
+	m_ui.QuantizeScaleComboBox->setCurrentIndex(0);
+
 	// Choose BBT to be default format here.
 	formatChanged(qtractorTimeScale::BBT);
 
@@ -236,6 +244,15 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeSwingSpinBox,
 		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeScaleCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeScaleKeyComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeScaleComboBox,
+		SIGNAL(activated(int)),
 		SLOT(changed()));
 
 	QObject::connect(m_ui.TransposeCheckBox,
@@ -450,6 +467,12 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.QuantizeTimeSpinBox->setValue(vlist[9].toInt());
 			m_ui.QuantizeDurationSpinBox->setValue(vlist[10].toInt());
 		}
+		// Scale-quantize tool...
+		if (vlist.count() > 13) {
+			m_ui.QuantizeScaleCheckBox->setChecked(vlist[11].toBool());
+			m_ui.QuantizeScaleKeyComboBox->setCurrentIndex(vlist[12].toInt());
+			m_ui.QuantizeScaleComboBox->setCurrentIndex(vlist[13].toInt());
+		}
 		// Transpose tool...
 		vlist = settings.value("/Transpose").toList();
 		if (vlist.count() > 4) {
@@ -540,6 +563,9 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.QuantizeSwingTypeComboBox->currentIndex());
 		vlist.append(m_ui.QuantizeTimeSpinBox->value());
 		vlist.append(m_ui.QuantizeDurationSpinBox->value());
+		vlist.append(m_ui.QuantizeScaleCheckBox->isChecked());
+		vlist.append(m_ui.QuantizeScaleKeyComboBox->currentIndex());
+		vlist.append(m_ui.QuantizeScaleComboBox->currentIndex());
 		settings.setValue("/Quantize", vlist);
 		// Transpose tool...
 		vlist.clear();
@@ -808,6 +834,13 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				if (iDuration < 0) iDuration = 0;
 			}
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
+			// Scale quantize...
+			if (m_ui.QuantizeScaleCheckBox->isChecked()) {
+				int iNote = qtractorMidiEditor::snapToScale(pEvent->note(),
+					m_ui.QuantizeScaleKeyComboBox->currentIndex(),
+					m_ui.QuantizeScaleComboBox->currentIndex());
+				pEditCommand->moveEvent(pEvent, iNote, iTime);
+			}
 		}
 		// Transpose tool...
 		if (m_ui.TransposeCheckBox->isChecked()) {
@@ -1097,6 +1130,13 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.QuantizeSwingComboBox->setEnabled(bEnabled2);
 	m_ui.QuantizeSwingSpinBox->setEnabled(bEnabled2);
 	m_ui.QuantizeSwingTypeComboBox->setEnabled(bEnabled2);
+
+	m_ui.QuantizeScaleCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.QuantizeScaleCheckBox->isChecked();
+	if (bEnabled2)
+		iEnabled++;
+	m_ui.QuantizeScaleKeyComboBox->setEnabled(bEnabled2);
+	m_ui.QuantizeScaleComboBox->setEnabled(bEnabled2);
 
 	// Transpose tool...
 

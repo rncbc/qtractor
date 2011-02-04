@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Brand new MIDI tool: Scale-quantize (TESTING).
+
 - Transport auto-backward option is now honored
   whenever a new session gets loaded.
 
