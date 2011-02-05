@@ -265,6 +265,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiEditToolbar = m_settings.value("/EditToolbar", true).toBool();
 	bMidiViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
 	bMidiTransportToolbar = m_settings.value("/TransportToolbar", false).toBool();
+	bMidiScaleToolbar = m_settings.value("/ScaleToolbar", false).toBool();
 	bMidiNoteDuration = m_settings.value("/NoteDuration", true).toBool();
 	bMidiNoteColor   = m_settings.value("/NoteColor", false).toBool();
 	bMidiValueColor  = m_settings.value("/ValueColor", false).toBool();
@@ -278,6 +279,8 @@ void qtractorOptions::loadOptions (void)
 	iMidiSnapPerBeat = m_settings.value("/SnapPerBeat", 4).toInt();
 	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	bMidiToolTips    = m_settings.value("/ToolTips", true).toBool();
+	iMidiSnapToScaleKey = m_settings.value("/SnapToScaleKey", 0).toInt();
+	iMidiSnapToScaleType = m_settings.value("/SnapToScaleType", 0).toInt();
 	m_settings.endGroup();
 
 	// Meter colors.
@@ -476,6 +479,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/EditToolbar", bMidiEditToolbar);
 	m_settings.setValue("/ViewToolbar", bMidiViewToolbar);
 	m_settings.setValue("/TransportToolbar", bMidiTransportToolbar);
+	m_settings.setValue("/ScaleToolbar", bMidiScaleToolbar);
 	m_settings.setValue("/NoteDuration", bMidiNoteDuration);
 	m_settings.setValue("/NoteColor", bMidiNoteColor);
 	m_settings.setValue("/ValueColor", bMidiValueColor);
@@ -489,6 +493,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/SnapPerBeat", iMidiSnapPerBeat);
 	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
 	m_settings.setValue("/ToolTips", bMidiToolTips);
+	m_settings.setValue("/SnapToScaleKey", iMidiSnapToScaleKey);
+	m_settings.setValue("/SnapToScaleType", iMidiSnapToScaleType);
 	m_settings.endGroup();
 
 	// Meter colors.

@@ -200,6 +200,7 @@ public:
 	bool bMidiEditToolbar;
 	bool bMidiViewToolbar;
 	bool bMidiTransportToolbar;
+	bool bMidiScaleToolbar;
 	bool bMidiNoteDuration;
 	bool bMidiNoteColor;
 	bool bMidiValueColor;
@@ -213,6 +214,8 @@ public:
 	int  iMidiSnapPerBeat;
 	bool bMidiSnapGrid;
 	bool bMidiToolTips;
+	int  iMidiSnapToScaleKey;
+	int  iMidiSnapToScaleType;
 
 	// Meter colors.
 	QStringList audioMeterColors;

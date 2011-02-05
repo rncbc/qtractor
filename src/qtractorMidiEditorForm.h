@@ -131,6 +131,7 @@ protected slots:
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarView(bool bOn);
 	void viewToolbarTransport(bool bOn);
+	void viewToolbarScale(bool bOn);
 	void viewNoteDuration(bool bOn);
 	void viewNoteColor(bool bOn);
 	void viewValueColor(bool bOn);
@@ -165,7 +166,10 @@ protected slots:
 	void eventTypeChanged(int);
 	void controllerChanged(int);
 
-	void snapPerBeatChanged(int iSnap);
+	void snapToScaleKeyChanged(int iSnapToScaleKey);
+	void snapToScaleTypeChanged(int iSnapToScaleType);
+
+	void snapPerBeatChanged(int iSnapPerBeat);
 
 protected:
 
@@ -202,6 +206,10 @@ private:
 	QComboBox *m_pViewTypeComboBox;
 	QComboBox *m_pEventTypeComboBox;
 	QComboBox *m_pControllerComboBox;
+
+	// Snap-to-scale/quantize selection widgets...
+	QComboBox *m_pSnapToScaleKeyComboBox;
+	QComboBox *m_pSnapToScaleTypeComboBox;
 
 	// Status items.
 	QLabel *m_pTrackNameLabel;

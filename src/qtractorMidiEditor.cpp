@@ -491,10 +491,10 @@ const QStringList qtractorMidiEditor::scaleNames (void)
 
 // Scale quantizer method.
 unsigned char qtractorMidiEditor::snapToScale (
-	unsigned char note, unsigned char key, int iScale )
+	unsigned char note, int iKey, int iScale )
 {
-	int n = note + (12 - key);
-	return 12 * ((n / 12) - 1) + key + g_aScaleTab[iScale].note[n % 12];
+	int n = int(note) + (12 - iKey);
+	return 12 * ((n / 12) - 1) + iKey + int(g_aScaleTab[iScale].note[n % 12]);
 }
 
 
@@ -584,6 +584,10 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 
 	// Which widget holds focus on drag-paste?
 	m_pEditPaste = NULL;
+
+	// Snap-to-scale (aka.in-place scale-quantize) stuff.
+	m_iSnapToScaleKey  = 0;
+	m_iSnapToScaleType = 0;
 
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
@@ -1101,6 +1105,30 @@ void qtractorMidiEditor::setValueColor ( bool bValueColor )
 bool qtractorMidiEditor::isValueColor (void) const
 {
 	return m_bValueColor;
+}
+
+
+// Snap-to-scale/quantize key accessor.
+void qtractorMidiEditor::setSnapToScaleKey ( int iSnapToScaleKey )
+{
+	m_iSnapToScaleKey = iSnapToScaleKey;
+}
+
+int qtractorMidiEditor::snapToScaleKey (void) const
+{
+	return m_iSnapToScaleKey;
+}
+
+
+// Snap-to-scale/quantize type accessor.
+void qtractorMidiEditor::setSnapToScaleType ( int iSnapToScaleType )
+{
+	m_iSnapToScaleType = iSnapToScaleType;
+}
+
+int qtractorMidiEditor::snapToScaleType (void) const
+{
+	return m_iSnapToScaleType;
 }
 
 
@@ -1923,6 +1951,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	int ch = m_pEditView->contentsHeight();
 	int h1 = m_pEditList->itemHeight();
 	unsigned char note = (ch - pos.y()) / h1;
+	if (m_iSnapToScaleType > 0)
+		note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
 
 	// Check for note/pitch changes...
 	if (m_bEventDragEdit && m_pEventDrag
@@ -2842,7 +2872,10 @@ void qtractorMidiEditor::updateDragMove (
 			y1 = 0;
 		if (y1 + rect.height() > ch)
 			y1 = ch - rect.height();
-		m_posDelta.setY(h1 * (y1 / h1) - y0); 
+		unsigned char note = 127 - (y1 / h1);
+		if (m_iSnapToScaleType > 0)
+			note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
+		m_posDelta.setY(h1 * (127 - note) - y0);
 	} else {
 		m_posDelta.setY(0);
 	}

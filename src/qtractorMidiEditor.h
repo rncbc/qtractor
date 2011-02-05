@@ -181,6 +181,14 @@ public:
 	void setValueColor(bool bValueColor);
 	bool isValueColor() const;
 
+	// Snap-to-scale/quantize key accessor.
+	void setSnapToScaleKey(int iSnapToScaleKey);
+	int snapToScaleKey() const;
+
+	// Snap-to-scale/quantize type accessor.
+	void setSnapToScaleType(int iSnapToScaleType);
+	int snapToScaleType() const;
+
 	// Alterrnate command action update helper...
 	void updateUndoAction(QAction *pAction) const;
 	void updateRedoAction(QAction *pAction) const;
@@ -328,7 +336,7 @@ public:
 
 	// Scale quantizer method.	
 	static unsigned char snapToScale(
-		unsigned char note, unsigned char key, int iScale);
+		unsigned char note, int iKey, int iScale);
 
 public slots:
 
@@ -564,6 +572,10 @@ private:
 	// Instrument defined names for current clip/track.
 	QHash<unsigned char, QString> m_controllerNames;
 	QHash<unsigned char, QString> m_noteNames;
+
+	// Snap-to-scale (aka.in-place scale-quantize) stuff.
+	int m_iSnapToScaleKey;
+	int m_iSnapToScaleType;
 };
 
 

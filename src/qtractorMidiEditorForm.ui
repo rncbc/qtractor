@@ -124,6 +124,7 @@
      <addaction name="viewToolbarEditAction" />
      <addaction name="viewToolbarViewAction" />
      <addaction name="viewToolbarTransportAction" />
+     <addaction name="viewToolbarScaleAction" />
     </widget>
     <widget class="QMenu" name="viewWindowsMenu" >
      <property name="title" >
@@ -288,6 +289,14 @@
    </attribute>
   </widget>
   <widget class="QToolBar" name="editEventToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="snapToScaleToolbar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -867,7 +876,7 @@
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string>T&amp;ransport</string>
+    <string>&amp;Transport</string>
    </property>
    <property name="iconText" >
     <string>Transport Toolbar</string>
@@ -877,6 +886,23 @@
    </property>
    <property name="statusTip" >
     <string>Show/hide the transport toolbar</string>
+   </property>
+  </action>
+  <action name="viewToolbarScaleAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Scale</string>
+   </property>
+   <property name="iconText" >
+    <string>Scale Toolbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>Scale toolbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the scale toolbar</string>
    </property>
   </action>
   <action name="viewNoteDurationAction" >

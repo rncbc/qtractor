@@ -85,10 +85,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Snap-per-beat combo-box.
 	m_pSnapPerBeatComboBox = new QComboBox(m_ui.viewToolbar);
 	m_pSnapPerBeatComboBox->setEditable(false);
-	m_pSnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
-	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
-	m_ui.viewToolbar->addSeparator();
-	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
 
 	// Event type selection widgets...
 	m_pViewTypeComboBox = new QComboBox(m_ui.editViewToolbar);
@@ -99,7 +95,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pControllerComboBox->setEditable(false);
 	m_pControllerComboBox->setMinimumWidth(220);
 
+	// Snap-to-scale/quantize selection widgets...
+	m_pSnapToScaleKeyComboBox = new QComboBox(m_ui.snapToScaleToolbar);
+	m_pSnapToScaleKeyComboBox->setEditable(false);
+	m_pSnapToScaleTypeComboBox = new QComboBox(m_ui.snapToScaleToolbar);
+	m_pSnapToScaleKeyComboBox->setEditable(false);
+
 	// Pre-fill the combo-boxes...
+	m_pSnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
+
 	const QIcon iconViewType(":/images/itemProperty.png");
 	m_pViewTypeComboBox->addItem(iconViewType,
 		tr("Note On"), int(qtractorMidiEvent::NOTEON));
@@ -122,13 +126,33 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pEventTypeComboBox->addItem(iconEventType,
 		tr("Sys Ex"), int(qtractorMidiEvent::SYSEX));
 
+	// Snap-to-scale/quantize selection widgets...
+	m_pSnapToScaleKeyComboBox->insertItems(0, qtractorMidiEditor::noteNames());
+	m_pSnapToScaleTypeComboBox->insertItems(0, qtractorMidiEditor::scaleNames());
+
 //	updateInstrumentNames();
 
+	// Set combo-boxes tooltips...
+	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
+	m_pViewTypeComboBox->setToolTip(tr("Note type"));
+	m_pEventTypeComboBox->setToolTip(tr("Value type"));
+	m_pControllerComboBox->setToolTip(tr("Controller type"));
+	m_pSnapToScaleKeyComboBox->setToolTip(tr("Scale key"));
+	m_pSnapToScaleTypeComboBox->setToolTip(tr("Scale type"));
+
 	// Add combo-boxes to toolbars...
+	m_ui.viewToolbar->addSeparator();
+	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
+
 	m_ui.editViewToolbar->addWidget(m_pViewTypeComboBox);
+
 	m_ui.editEventToolbar->addWidget(m_pEventTypeComboBox);
 	m_ui.editEventToolbar->addSeparator();
 	m_ui.editEventToolbar->addWidget(m_pControllerComboBox);
+
+	m_ui.snapToScaleToolbar->addWidget(m_pSnapToScaleKeyComboBox);
+	m_ui.snapToScaleToolbar->addSeparator();
+	m_ui.snapToScaleToolbar->addWidget(m_pSnapToScaleTypeComboBox);
 
 	QStatusBar *pStatusBar = statusBar();
 
@@ -297,6 +321,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarTransportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarTransport(bool)));
+	QObject::connect(m_ui.viewToolbarScaleAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarScale(bool)));
 	QObject::connect(m_ui.viewNoteDurationAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteDuration(bool)));
@@ -375,6 +402,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(activated(int)),
 		SLOT(controllerChanged(int)));
 
+	QObject::connect(m_pSnapToScaleKeyComboBox,
+		SIGNAL(activated(int)),
+		SLOT(snapToScaleKeyChanged(int)));
+	QObject::connect(m_pSnapToScaleTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(snapToScaleTypeChanged(int)));
+
 	QObject::connect(m_pMidiEditor,
 		SIGNAL(selectNotifySignal(qtractorMidiEditor *)),
 		SLOT(selectionChanged(qtractorMidiEditor *)));
@@ -396,6 +430,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
 		m_ui.viewToolbarTransportAction->setChecked(pOptions->bMidiTransportToolbar);
+		m_ui.viewToolbarScaleAction->setChecked(pOptions->bMidiScaleToolbar);
 		m_ui.viewNoteDurationAction->setChecked(pOptions->bMidiNoteDuration);
 		m_ui.viewNoteColorAction->setChecked(pOptions->bMidiNoteColor);
 		m_ui.viewValueColorAction->setChecked(pOptions->bMidiValueColor);
@@ -415,6 +450,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		viewToolbarTransport(pOptions->bMidiTransportToolbar);
+		viewToolbarScale(pOptions->bMidiScaleToolbar);
 		m_pMidiEditor->setZoomMode(pOptions->iMidiZoomMode);
 		m_pMidiEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
 		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
@@ -427,8 +463,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pMidiEditor->setNoteDuration(pOptions->bMidiNoteDuration);
 		m_pMidiEditor->setSendNotes(pOptions->bMidiPreview);
 		m_pMidiEditor->setSyncView(pOptions->bMidiFollow);
+		m_pMidiEditor->setSnapToScaleKey(pOptions->iMidiSnapToScaleKey);
+		m_pMidiEditor->setSnapToScaleType(pOptions->iMidiSnapToScaleType);
 		// Default snap-per-beat setting...
 		m_pSnapPerBeatComboBox->setCurrentIndex(pOptions->iMidiSnapPerBeat);
+		// Default snap-to-scale settings...
+		m_pSnapToScaleKeyComboBox->setCurrentIndex(pOptions->iMidiSnapToScaleKey);
+		m_pSnapToScaleTypeComboBox->setCurrentIndex(pOptions->iMidiSnapToScaleType);
 		// Restore whole dock windows state.
 		QByteArray aDockables = pOptions->settings().value(
 			"/MidiEditor/Layout/DockWindows").toByteArray();
@@ -562,6 +603,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 		pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 		pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
+		pOptions->bMidiScaleToolbar = m_ui.snapToScaleToolbar->isVisible();
 		pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
 		pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
 		pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
@@ -576,6 +618,9 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
 		// Save snap-per-beat setting...
 		pOptions->iMidiSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
+		// Save snap-to-scale settings...
+		pOptions->iMidiSnapToScaleKey = m_pSnapToScaleKeyComboBox->currentIndex();
+		pOptions->iMidiSnapToScaleType = m_pSnapToScaleTypeComboBox->currentIndex();
 		// Close floating dock windows...
 		if (m_pMidiEventList->isFloating())
 			m_pMidiEventList->close();
@@ -1198,6 +1243,20 @@ void qtractorMidiEditorForm::viewToolbarTransport ( bool bOn )
 }
 
 
+// Show/hide the scale-toolbar.
+void qtractorMidiEditorForm::viewToolbarScale ( bool bOn )
+{
+#if 0
+	if (bOn)
+		m_ui.snapToScaleToolbar->show();
+	else
+		m_ui.snapToScaleToolbar->hide();
+#else
+	m_ui.snapToScaleToolbar->setVisible(bOn);
+#endif
+}
+
+
 // View note (pitch) coloring.
 void qtractorMidiEditorForm::viewNoteColor ( bool bOn )
 {
@@ -1588,6 +1647,19 @@ void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 		m_pMidiEditor->updateContents();
 
 	m_pMidiEditor->editView()->setFocus();
+}
+
+
+// Snap-to-scale/quantize combo-box change slots.
+void qtractorMidiEditorForm::snapToScaleKeyChanged ( int iSnapToScaleKey )
+{
+	m_pMidiEditor->setSnapToScaleKey(iSnapToScaleKey);
+}
+
+
+void qtractorMidiEditorForm::snapToScaleTypeChanged ( int iSnapToScaleType )
+{
+	m_pMidiEditor->setSnapToScaleType(iSnapToScaleType);
 }
 
 
