@@ -104,31 +104,34 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Pre-fill the combo-boxes...
 	m_pSnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
 
-	const QIcon iconViewType(":/images/itemProperty.png");
-	m_pViewTypeComboBox->addItem(iconViewType,
+	const QIcon icon(":/images/itemProperty.png");
+
+	m_pViewTypeComboBox->addItem(icon,
 		tr("Note On"), int(qtractorMidiEvent::NOTEON));
-	m_pViewTypeComboBox->addItem(iconViewType,
+	m_pViewTypeComboBox->addItem(icon,
 		tr("Key Press"), int(qtractorMidiEvent::KEYPRESS));
 
-	const QIcon iconEventType(":/images/itemProperty.png");
-	m_pEventTypeComboBox->addItem(iconEventType,
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Note Velocity"), int(qtractorMidiEvent::NOTEON));
-	m_pEventTypeComboBox->addItem(iconEventType,
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Key Press"), int(qtractorMidiEvent::KEYPRESS));
-	m_pEventTypeComboBox->addItem(iconEventType,
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Controller"), int(qtractorMidiEvent::CONTROLLER));
-	m_pEventTypeComboBox->addItem(iconEventType,
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Pgm Change"), int(qtractorMidiEvent::PGMCHANGE));
-	m_pEventTypeComboBox->addItem(iconEventType,
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Chan Press"), int(qtractorMidiEvent::CHANPRESS));
-	m_pEventTypeComboBox->addItem(iconEventType,
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Pitch Bend"), int(qtractorMidiEvent::PITCHBEND));
-	m_pEventTypeComboBox->addItem(iconEventType,
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Sys Ex"), int(qtractorMidiEvent::SYSEX));
 
 	// Snap-to-scale/quantize selection widgets...
-	m_pSnapToScaleKeyComboBox->insertItems(0, qtractorMidiEditor::noteNames());
-	m_pSnapToScaleTypeComboBox->insertItems(0, qtractorMidiEditor::scaleNames());
+	QStringListIterator iter(qtractorMidiEditor::noteNames());
+	while (iter.hasNext())
+		m_pSnapToScaleKeyComboBox->addItem(icon, iter.next());
+	m_pSnapToScaleTypeComboBox->insertItems(0,
+		qtractorMidiEditor::scaleNames());
 
 //	updateInstrumentNames();
 

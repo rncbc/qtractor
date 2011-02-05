@@ -1386,11 +1386,16 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 
 
 // Update buses'racks.
-void qtractorMixer::updateBuses (void)
+void qtractorMixer::updateBuses ( bool bReset )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
+
+	if (bReset) {
+		m_pInputRack->clear();
+		m_pOutputRack->clear();		
+	}
 
 	m_pInputRack->markStrips(1);
 	m_pOutputRack->markStrips(1);
@@ -1419,11 +1424,14 @@ void qtractorMixer::updateBuses (void)
 
 
 // Update tracks'rack.
-void qtractorMixer::updateTracks (void)
+void qtractorMixer::updateTracks ( bool bReset )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
+
+	if (bReset)
+		m_pTrackRack->clear();
 
 	m_pTrackRack->markStrips(1);
 

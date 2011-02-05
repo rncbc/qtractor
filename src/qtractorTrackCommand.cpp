@@ -248,6 +248,11 @@ bool qtractorMoveTrackCommand::redo (void)
 	// Swap it nice, finally.
 	m_pNextTrack = pNextTrack;
 
+	// Mixer turn...
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer)
+		pMixer->updateTracks(true);
+
 	// ATTN: MIDI controller map feedback.
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl) {

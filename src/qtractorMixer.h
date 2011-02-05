@@ -329,8 +329,8 @@ public:
 	qtractorMixerRack *outputRack() const;
 	
 	// Update buses and tracks'racks.
-	void updateBuses();
-	void updateTracks();
+	void updateBuses(bool bReset = false);
+	void updateTracks(bool bReset = false);
 
 	// Update mixer rack, checking whether the monitor actually exists.
 	void updateBusStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
