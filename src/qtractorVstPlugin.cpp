@@ -189,9 +189,6 @@ public:
 		}
 	#endif
 
-		QWidget::setWindowTitle(tr("%1 - Editor")
-			.arg(m_pVstPlugin->editorTitle()));
-
 		// Final stabilization...
 		m_pVstPlugin->setEditorVisible(true);
 		m_pVstPlugin->idleEditor();
@@ -934,6 +931,7 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 
 	m_pEditorWidget = new EditorWidget(NULL, wflags);
 	m_pEditorWidget->open(this);
+	m_pEditorWidget->setWindowTitle(editorTitle());
 }
 
 

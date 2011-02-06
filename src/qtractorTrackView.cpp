@@ -229,8 +229,7 @@ void qtractorTrackView::updateContentsHeight (void)
 	}
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorTrackView::updateContentsHeight()");
-		" => iContentsHeight=%d", iContentsHeight);
+	qDebug("qtractorTrackView::updateContentsHeight(%d)", iContentsHeight);
 #endif
 
 	// Do the contents resize thing...
@@ -262,8 +261,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 	}
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorTrackView::updateContentsWidth()");
-		" => iContentsWidth=%d", iContentsWidth);
+	qDebug("qtractorTrackView::updateContentsWidth(%d)", iContentsWidth);
 #endif
 
 	// Do the contents resize thing...

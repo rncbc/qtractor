@@ -63,54 +63,37 @@
 //----------------------------------------------------------------------------
 // qtractorTrackListHeaderModel -- Track-list header model.
 
-class qtractorTrackListHeaderModel : public QAbstractListModel
+// Constructor.
+qtractorTrackListHeaderModel::qtractorTrackListHeaderModel ( QObject *pParent )
+	: QAbstractListModel(pParent)
 {
-public:
-
-	// Constructor.
-	qtractorTrackListHeaderModel(QObject *pParent = 0)
-		: QAbstractListModel(pParent)
-	{
-		m_headerText
-			<< tr("Nr")
-			<< tr("Track Name")
-			<< tr("Bus")
-			<< tr("Ch")
-			<< tr("Patch")
-			<< tr("Instrument");
-	};
-
-	int rowCount(const QModelIndex&) const
-		{ return 0; }
-
-	int columnCount(const QModelIndex&) const
-		{ return m_headerText.count(); }
-
-	QVariant headerData(int section, Qt::Orientation orient, int role) const
-	{
-		if (orient == Qt::Horizontal) {
-			switch (role) {
-			case Qt::DisplayRole:
-				return m_headerText.at(section);
-			case Qt::TextAlignmentRole:
-				if (section == qtractorTrackList::Number ||
-					section == qtractorTrackList::Channel)
-					return int(Qt::AlignHCenter | Qt::AlignVCenter);
-				else
-					return int(Qt::AlignLeft | Qt::AlignVCenter);
-			}
-		}	
-		return QVariant();
-	}
-
-	QVariant data(const QModelIndex&, int) const
-		{ return QVariant(); }
-
-private:
-
-	// Model variables.
-	QStringList m_headerText;
+	m_headerText
+		<< tr("Nr")
+		<< tr("Track Name")
+		<< tr("Bus")
+		<< tr("Ch")
+		<< tr("Patch")
+		<< tr("Instrument");
 };
+
+QVariant qtractorTrackListHeaderModel::headerData (
+	int section, Qt::Orientation orient, int role ) const
+{
+	if (orient == Qt::Horizontal) {
+		switch (role) {
+		case Qt::DisplayRole:
+			return m_headerText.at(section);
+		case Qt::TextAlignmentRole:
+			if (section == qtractorTrackList::Number ||
+				section == qtractorTrackList::Channel)
+				return int(Qt::AlignHCenter | Qt::AlignVCenter);
+			else
+				return int(Qt::AlignLeft | Qt::AlignVCenter);
+		}
+	}	
+
+	return QVariant();
+}
 
 
 //----------------------------------------------------------------------------

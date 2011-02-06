@@ -313,6 +313,8 @@ private:
 
 class qtractorMixer : public QWidget
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
