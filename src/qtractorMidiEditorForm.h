@@ -145,6 +145,8 @@ protected slots:
 	void viewZoomVertical();
 	void viewZoomAll();
 	void viewSnap();
+	void viewScaleKey();
+	void viewScaleType();
 	void viewSnapGrid(bool bOn);
 	void viewToolTips(bool bOn);
 	void viewRefresh();
@@ -155,6 +157,7 @@ protected slots:
 
 	void updateZoomMenu();
 	void updateSnapMenu();
+	void updateScaleMenu();
 
 	void sendNote(int iNote, int iVelocity);
 

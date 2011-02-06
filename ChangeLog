@@ -5,14 +5,15 @@ ChangeLog
 
 SVN TRUNK
 
-- Mixer track strips are now completetly redone
-  whenever a track gets moved or re-ordered on
-  main track list-view.
-
 - Two brand new MIDI tools make their appearence:
   Scale-Quantize and Snap-to-Scale. The later may
   be readily accessible from the MIDI clip editor
-  toolbar (check View/Toolbars/Scale) (TESTING).
+  toolbar and menu (check View/Toolbars/Scale and
+  View/Scale). (TESTING)
+
+- Mixer track strips are now completetly redone
+  whenever a track gets moved or re-ordered on
+  main track list-view.
 
 - Transport auto-backward option is now honored
   whenever a new session gets loaded.

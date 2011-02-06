@@ -153,6 +153,11 @@
       <string>S&amp;nap</string>
      </property>
     </widget>
+    <widget class="QMenu" name="viewScaleMenu" >
+     <property name="title" >
+      <string>Sc&amp;ale</string>
+     </property>
+    </widget>
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
@@ -166,6 +171,7 @@
 	<addaction name="separator" />
 	<addaction name="viewZoomMenu" />
 	<addaction name="viewSnapMenu" />
+	<addaction name="viewScaleMenu" />
 	<addaction name="separator" />
 	<addaction name="viewRefreshAction" />
     <addaction name="separator" />

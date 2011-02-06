@@ -312,6 +312,7 @@ static struct
 	{ QT_TR_NOOP("Jewish (Magen Abot)"),    { 0, 1, 1, 3, 4, 4, 6, 6, 8, 8,10,11 } },
 	{ QT_TR_NOOP("Oriental (A)"),           { 0, 1, 1, 1, 4, 5, 6, 6, 8, 8,10,10 } },
 	{ QT_TR_NOOP("Oriental (B)"),           { 0, 1, 1, 1, 1, 1, 6, 6, 6, 9,10,10 } },
+	{ QT_TR_NOOP("Oriental (C)"),           { 0, 1, 1, 1, 4, 5, 6, 6, 6, 9,10,10 } },
 	{ QT_TR_NOOP("Roumanian Minor"),        { 0, 0, 2, 3, 3, 3, 6, 7, 7, 9,10,10 } },
 	{ QT_TR_NOOP("Neapolitan"),             { 0, 1, 1, 3, 3, 5, 5, 7, 8, 8, 8,11 } },
 	{ QT_TR_NOOP("Neapolitan Major"),       { 0, 1, 1, 3, 3, 5, 5, 7, 7, 9, 9,11 } },
@@ -340,26 +341,17 @@ static struct
 //	{ QT_TR_NOOP("Egyptian"),               { 0, 0, 2, 2, 2, 5, 5, 7, 7, 7,10,10 } },	// identical to "Pentatonic Neutral"
 //	{ QT_TR_NOOP("Ethiopian (A Raray)"),    { 0, 0, 2, 2, 4, 5, 5, 7, 7, 9, 9,11 } },	// identical to "Major"
 //	{ QT_TR_NOOP("Ethiopian (Geez & Ezel)"),{ 0, 0, 2, 3, 3, 5, 5, 7, 8, 8,10,10 } },	// identical to "Melodic Minor (Descending)"
-//	{ QT_TR_NOOP("Harmonic Minor"),         { 0, 0, 2, 3, 3, 5, 5, 7, 8, 8, 8,11 } },	// identical to "Harmonic Minor"
 //	{ QT_TR_NOOP("Hawaiian"),               { 0, 0, 2, 3, 3, 5, 5, 7, 7, 9, 9,11 } },	// identical to "Melodic Minor (Ascending)"
 //	{ QT_TR_NOOP("Hindustan"),              { 0, 0, 2, 2, 4, 5, 5, 7, 8, 8,10,10 } },	// identical to "Hindu"
-//	{ QT_TR_NOOP("Hungarian Major"),        { 0, 0, 0, 3, 4, 4, 6, 7, 7, 9,10,10 } },	// identical to "Hungarian Major"
-//	{ QT_TR_NOOP("Hungarian Gypsy"),        { 0, 0, 2, 3, 3, 3, 6, 7, 8, 8, 8,11 } },	// identical to "Hungarian Minor"
-//	{ QT_TR_NOOP("Hungarian Persian"),      { 0, 1, 1, 1, 4, 5, 5, 7, 8, 8, 8,11 } },	// identical to "Hungarian Gypsy Persian"
-//	{ QT_TR_NOOP("Hungarian Minor"),        { 0, 0, 2, 3, 3, 3, 6, 7, 8, 8, 8,11 } },	// identical to "Hungarian Minor"
-//	{ QT_TR_NOOP("Japanese (A)"),           { 0, 1, 1, 1, 1, 5, 5, 7, 8, 8, 8, 8 } },	// identical to "Japanese (A)"
-//	{ QT_TR_NOOP("Japenese (B)"),           { 0, 0, 2, 2, 2, 5, 5, 7, 8, 8, 8, 8 } },	// identical to "Japanese (B)"
 	{ QT_TR_NOOP("Japanese (Ichikosucho)"), { 0, 0, 2, 2, 4, 5, 6, 7, 7, 9, 9,11 } },
 	{ QT_TR_NOOP("Japanese (Taishikicho)"), { 0, 0, 2, 2, 4, 5, 6, 7, 7, 9,10,11 } },
 	{ QT_TR_NOOP("Javaneese"),              { 0, 1, 1, 3, 3, 5, 5, 7, 7, 9,10,10 } },
-//	{ QT_TR_NOOP("Jewish (Adonai Malakh)"), { 0, 1, 2, 3, 3, 5, 5, 7, 7, 9,10,10 } },	// identical to "Jewish (Adonai Malakh)"
-//	{ QT_TR_NOOP("Jewish (Ahava Rabba)"),   { 0, 1, 1, 1, 4, 5, 5, 7, 8, 8,10,10 } },	// identical to "Jewish (Ahaba Rabba)"
-//	{ QT_TR_NOOP("Jewish (Magen Abot)"),    { 0, 1, 1, 3, 4, 4, 6, 6, 8, 8,10,11 } },	// identical to "Jewish (Magen Abot)"
 //	{ QT_TR_NOOP("Kafi Theta"),             { 0, 0, 2, 3, 3, 5, 5, 7, 7, 9,10,10 } },	// identical to "Dorian"
 //	{ QT_TR_NOOP("Kalyan Theta"),           { 0, 0, 2, 2, 4, 4, 6, 7, 7, 9, 9,11 } },	// identical to "Lydian"
 //	{ QT_TR_NOOP("Khamaj Theta"),           { 0, 0, 2, 2, 4, 5, 5, 7, 7, 9,10,10 } },	// identical to "Mixolydian"
 //	{ QT_TR_NOOP("Madelynian"),             { 0, 1, 1, 3, 3, 5, 6, 6, 8, 8,10,10 } },	// identical to "Locrian"
 	{ QT_TR_NOOP("Marva Theta"),            { 0, 1, 1, 1, 4, 4, 6, 7, 7, 9, 9,11 } },
+#ifdef QTRACTOR_MELA_SCALES
 	{ QT_TR_NOOP("Mela Bhavapriya"),        { 0, 1, 2, 2, 2, 5, 5, 7, 8, 9, 9, 9 } },
 	{ QT_TR_NOOP("Mela Chakravakam"),       { 0, 1, 1, 1, 4, 5, 5, 7, 7, 9,10,10 } },
 	{ QT_TR_NOOP("Mela Chalanata"),         { 0, 0, 0, 3, 4, 5, 5, 7, 7, 7,10,11 } },
@@ -432,49 +424,46 @@ static struct
 	{ QT_TR_NOOP("Mela Varunapriya"),       { 0, 0, 2, 3, 3, 5, 5, 7, 7, 7,10,11 } },
 //	{ QT_TR_NOOP("Mela Visvambari"),        { 0, 1, 1, 1, 4, 4, 6, 7, 7, 7,10,11 } },	// identical to "Mela Divyamani"
 	{ QT_TR_NOOP("Mela Yagapriya"),         { 0, 0, 0, 3, 4, 5, 5, 7, 8, 9, 9, 9 } },
+#endif	// QTRACTOR_MELA_SCALES
 //	{ QT_TR_NOOP("Mohammedan"),             { 0, 0, 2, 3, 3, 5, 5, 7, 8, 8, 8,11 } },	// identical to "Harmonic Minor"
 	{ QT_TR_NOOP("Persian"),                { 0, 1, 1, 1, 4, 5, 6, 6, 8, 8, 8,11 } },
-//	{ QT_TR_NOOP("Purvi Theta"),            { 0, 1, 1, 1, 4, 4, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Kamavarardhani"
-//	{ QT_TR_NOOP("Roumanian Minor"),        { 0, 0, 2, 3, 3, 3, 6, 7, 7, 9,10,10 } },	// identical to "Roumanian Minor"
+	{ QT_TR_NOOP("Purvi Theta"),            { 0, 1, 1, 1, 4, 4, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Kamavarardhani"
 //	{ QT_TR_NOOP("Spanish Gypsy"),          { 0, 1, 1, 1, 4, 5, 5, 7, 8, 8,10,10 } },	// identical to "Jewish (Ahaba Rabba)"
-//	{ QT_TR_NOOP("Todi Theta"),             { 0, 1, 1, 3, 3, 3, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Subhapantuvarali"
+	{ QT_TR_NOOP("Todi Theta"),             { 0, 1, 1, 3, 3, 3, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Subhapantuvarali"
 //	{ QT_TR_NOOP("Aux Diminished"),         { 0, 0, 2, 3, 3, 5, 6, 6, 8, 9, 9,11 } },	// identical to "Octatonic (W-H)"
 //	{ QT_TR_NOOP("Aux Augmented"),          { 0, 0, 2, 2, 4, 4, 6, 6, 8, 8,10,10 } },	// identical to "Whole Tone"
 //	{ QT_TR_NOOP("Aux Diminished Blues"),   { 0, 1, 1, 3, 4, 4, 6, 7, 7, 9,10,10 } },	// identical to "Octatonic (H-W)"
 	{ QT_TR_NOOP("Enigmatic"),              { 0, 1, 1, 1, 4, 4, 6, 6, 8, 8,10,11 } },
-//	{ QT_TR_NOOP("Hirajoshi"),              { 0, 0, 2, 3, 3, 3, 3, 7, 8, 8, 8, 8 } },	// identical to "Hirajoshi"
 	{ QT_TR_NOOP("Kumoi"),                  { 0, 0, 2, 3, 3, 3, 3, 7, 7, 9, 9, 9 } },
 	{ QT_TR_NOOP("Lydian Augmented"),       { 0, 0, 2, 2, 4, 4, 6, 6, 8, 9, 9,11 } },
-	{ QT_TR_NOOP("Oriental (B)"),           { 0, 1, 1, 1, 4, 5, 6, 6, 6, 9,10,10 } },
 //	{ QT_TR_NOOP("Pelog"),                  { 0, 1, 1, 3, 3, 3, 3, 7, 8, 8, 8, 8 } },	// identical to "Balinese"
 	{ QT_TR_NOOP("Prometheus"),             { 0, 0, 2, 2, 4, 4, 6, 6, 6, 9,10,10 } },
 	{ QT_TR_NOOP("Prometheus Neapolitan"),  { 0, 1, 1, 1, 4, 4, 6, 6, 6, 9,10,10 } },
 	{ QT_TR_NOOP("Six Tone Symmetrical"),   { 0, 1, 1, 1, 4, 5, 5, 5, 8, 9, 9, 9 } },
 	{ QT_TR_NOOP("Super Locrian"),          { 0, 1, 1, 3, 4, 4, 6, 6, 8, 8,10,10 } },
-//	{ QT_TR_NOOP("Lydian Minor"),           { 0, 0, 2, 2, 4, 4, 6, 7, 8, 8,10,10 } },	// identical to "Mela Risabhapriya"
-//	{ QT_TR_NOOP("Lydian Diminished"),      { 0, 0, 2, 3, 3, 3, 6, 7, 7, 9, 9,11 } },	// identical to "Mela Dharmavati"
+	{ QT_TR_NOOP("Lydian Minor"),           { 0, 0, 2, 2, 4, 4, 6, 7, 8, 8,10,10 } },	// identical to "Mela Risabhapriya"
+	{ QT_TR_NOOP("Lydian Diminished"),      { 0, 0, 2, 3, 3, 3, 6, 7, 7, 9, 9,11 } },	// identical to "Mela Dharmavati"
 //	{ QT_TR_NOOP("Major Locrian"),          { 0, 0, 2, 2, 4, 5, 6, 6, 8, 8,10,10 } },	// identical to "Arabian (B)"
 //	{ QT_TR_NOOP("Hindu"),                  { 0, 0, 2, 2, 4, 5, 5, 7, 8, 8,10,10 } },	// identical to "Hindu"
 //	{ QT_TR_NOOP("Diminished Whole Tone"),  { 0, 1, 1, 3, 4, 4, 6, 6, 8, 8,10,10 } },	// identical to "Super Locrian" 
 	{ QT_TR_NOOP("Half Diminished"),        { 0, 0, 2, 3, 3, 5, 6, 6, 8, 8,10,10 } },
-//	{ QT_TR_NOOP("Bhairav"),                { 0, 1, 1, 1, 4, 5, 5, 7, 8, 8, 8,11 } },	// identical to "Hungarian Gypsy Persian"
-//	{ QT_TR_NOOP("Yaman"),                  { 0, 0, 2, 2, 4, 4, 6, 7, 7, 9, 9,11 } },	// identical to "Lydian"
-//	{ QT_TR_NOOP("Todi"),                   { 0, 1, 1, 3, 3, 5, 5, 7, 8, 8,10,10 } },	// identical to "Phrygian"
+	{ QT_TR_NOOP("Bhairav"),                { 0, 1, 1, 1, 4, 5, 5, 7, 8, 8, 8,11 } },	// identical to "Hungarian Gypsy Persian"
+	{ QT_TR_NOOP("Yaman"),                  { 0, 0, 2, 2, 4, 4, 6, 7, 7, 9, 9,11 } },	// identical to "Lydian"
+	{ QT_TR_NOOP("Todi"),                   { 0, 1, 1, 3, 3, 5, 5, 7, 8, 8,10,10 } },	// identical to "Phrygian"
 	{ QT_TR_NOOP("Jog"),                    { 0, 0, 0, 3, 4, 5, 5, 7, 7, 7,10,10 } },
-//	{ QT_TR_NOOP("Multani"),                { 0, 1, 1, 3, 3, 3, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Subhapantuvarali"
-//	{ QT_TR_NOOP("Darbari"),                { 0, 0, 2, 3, 3, 5, 5, 7, 8, 8,10,10 } },	// identical to "Melodic Minor (Descending)"
+	{ QT_TR_NOOP("Multani"),                { 0, 1, 1, 3, 3, 3, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Subhapantuvarali"
+	{ QT_TR_NOOP("Darbari"),                { 0, 0, 2, 3, 3, 5, 5, 7, 8, 8,10,10 } },	// identical to "Melodic Minor (Descending)"
 	{ QT_TR_NOOP("Malkauns"),               { 0, 0, 0, 3, 3, 5, 5, 5, 8, 8,10,10 } },
-//	{ QT_TR_NOOP("Bhoopali"),               { 0, 0, 2, 2, 4, 4, 4, 7, 7, 9, 9, 9 } },	// identical to "Pentatonic Major"
-//	{ QT_TR_NOOP("Shivaranjani"),           { 0, 0, 2, 3, 3, 3, 3, 7, 7, 9, 9, 9 } },	// identical to "Kumoi"
+	{ QT_TR_NOOP("Bhoopali"),               { 0, 0, 2, 2, 4, 4, 4, 7, 7, 9, 9, 9 } },	// identical to "Pentatonic Major"
+	{ QT_TR_NOOP("Shivaranjani"),           { 0, 0, 2, 3, 3, 3, 3, 7, 7, 9, 9, 9 } },	// identical to "Kumoi"
 	{ QT_TR_NOOP("Marwa"),                  { 0, 1, 1, 1, 4, 4, 6, 6, 6, 9, 9,11 } },
-//	{ QT_TR_NOOP("Blues"),                  { 0, 0, 0, 3, 3, 5, 6, 7, 7, 7,10,10 } },  // identical to "Pentatonic Blues"
-//	{ QT_TR_NOOP("Minor 5"),                { 0, 0, 0, 3, 3, 5, 5, 7, 7, 7,10,10 } },	// identical to "Pentatonic Minor"
+	{ QT_TR_NOOP("Blues"),                  { 0, 0, 0, 3, 3, 5, 6, 7, 7, 7,10,10 } },   // identical to "Pentatonic Blues"
+	{ QT_TR_NOOP("Minor 5"),                { 0, 0, 0, 3, 3, 5, 5, 7, 7, 7,10,10 } },	// identical to "Pentatonic Minor"
 	{ QT_TR_NOOP("Major 5"),                { 0, 0, 0, 0, 4, 5, 5, 7, 7, 7, 7,11 } },
 	{ QT_TR_NOOP("5"),                      { 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7 } },
 	{ QT_TR_NOOP("45"),                     { 0, 0, 0, 0, 0, 5, 5, 7, 7, 7, 7, 7 } },
 	{ QT_TR_NOOP("457"),                    { 0, 0, 0, 0, 0, 5, 5, 7, 7, 7,10,10 } },
-//	{ QT_TR_NOOP("M6"),                     { 0, 0, 2, 3, 3, 5, 5, 7, 7, 7,10,11 } },	// identical to "Mela Varunapriya"
-//	{ QT_TR_NOOP("Major"),                  { 0, 0, 2, 2, 4, 5, 5, 7, 7, 9, 9,11 } },	// identical to "Major"
+	{ QT_TR_NOOP("M 6"),                    { 0, 0, 2, 3, 3, 5, 5, 7, 7, 7,10,11 } },	// identical to "Mela Varunapriya"
 	{ NULL,                                 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
 };
 

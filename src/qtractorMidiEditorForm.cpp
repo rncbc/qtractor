@@ -389,6 +389,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewSnapMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateSnapMenu()));
+	QObject::connect(m_ui.viewScaleMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateScaleMenu()));
 
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
@@ -1379,6 +1382,36 @@ void qtractorMidiEditorForm::viewSnap (void)
 }
 
 
+// Change snap-to-scale key setting via menu.
+void qtractorMidiEditorForm::viewScaleKey (void)
+{
+	// Retrieve snap-to-scale key index from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		// Commit the change as usual...
+		snapToScaleKeyChanged(pAction->data().toInt());
+		// Update the other toolbar control...
+		m_pSnapToScaleKeyComboBox->setCurrentIndex(
+			m_pMidiEditor->snapToScaleKey());
+	}
+}
+
+
+// Change snap-to-scale typesetting via menu.
+void qtractorMidiEditorForm::viewScaleType (void)
+{
+	// Retrieve snap-to-scale type index from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		// Commit the change as usual...
+		snapToScaleTypeChanged(pAction->data().toInt());
+		// Update the other toolbar control...
+		m_pSnapToScaleTypeComboBox->setCurrentIndex(
+			m_pMidiEditor->snapToScaleType());
+	}
+}
+
+
 // Refresh view display.
 void qtractorMidiEditorForm::viewRefresh (void)
 {
@@ -1627,6 +1660,37 @@ void qtractorMidiEditorForm::updateSnapMenu (void)
 
 	m_ui.viewSnapMenu->addSeparator();
 	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
+}
+
+
+// Snap-to-scale view menu builder.
+void qtractorMidiEditorForm::updateScaleMenu (void)
+{
+	m_ui.viewScaleMenu->clear();
+
+	int iSnapToScaleKey = m_pMidiEditor->snapToScaleKey();
+	int iScaleKey = 0;
+	QStringListIterator iter_key(qtractorMidiEditor::noteNames());
+	while (iter_key.hasNext()) {
+		QAction *pAction = m_ui.viewScaleMenu->addAction(
+			iter_key.next(), this, SLOT(viewScaleKey()));
+		pAction->setCheckable(true);
+		pAction->setChecked(iScaleKey == iSnapToScaleKey);
+		pAction->setData(iScaleKey++);
+	}
+
+	m_ui.viewScaleMenu->addSeparator();
+
+	int iSnapToScaleType = m_pMidiEditor->snapToScaleType();
+	int iScaleType = 0;
+	QStringListIterator iter_type(qtractorMidiEditor::scaleNames());
+	while (iter_type.hasNext()) {
+		QAction *pAction = m_ui.viewScaleMenu->addAction(
+			iter_type.next(), this, SLOT(viewScaleType()));
+		pAction->setCheckable(true);
+		pAction->setChecked(iScaleType == iSnapToScaleType);
+		pAction->setData(iScaleType++);
+	}
 }
 
 
