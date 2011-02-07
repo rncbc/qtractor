@@ -72,18 +72,18 @@ static struct
 } g_aNoteNames[] = {
 
 	// Diatonic note map...
-	{  0, _TR("C")  },
-	{  1, _TR("C#") },
-	{  2, _TR("D")  },
-	{  3, _TR("D#") },
-	{  4, _TR("E")  },
-	{  5, _TR("F")  },
-	{  6, _TR("F#") },
-	{  7, _TR("G")  },
-	{  8, _TR("G#") },
-	{  9, _TR("A")  },
-	{ 10, _TR("A#") },
-	{ 11, _TR("B")  },
+	{  0, _TR("C")     },
+	{  1, _TR("C#/Db") },
+	{  2, _TR("D")     },
+	{  3, _TR("D#/Eb") },
+	{  4, _TR("E")     },
+	{  5, _TR("F")     },
+	{  6, _TR("F#/Gb") },
+	{  7, _TR("G")     },
+	{  8, _TR("G#/Ab") },
+	{  9, _TR("A")     },
+	{ 10, _TR("A#/Bb") },
+	{ 11, _TR("B")     },
 
 	// GM Drum note map...
 	{ 35, _TR("Acoustic Bass Drum") },
@@ -265,29 +265,12 @@ const QString& qtractorMidiEditor::defaultControllerName ( unsigned char control
 //----------------------------------------------------------------------------
 // MIDI Scale Names - Default scale names table.
 
-static
-const char *g_aScaleKeys[12] =
-{
-	_TR("C"),
-	_TR("C# / Db"),
-	_TR("D"),
-	_TR("D# / Eb"),
-	_TR("E"),
-	_TR("F"),
-	_TR("F# / Gb"),
-	_TR("G"),
-	_TR("G# / Ab"),
-	_TR("A"),
-	_TR("A# / Bb"),
-	_TR("B")
-};
-
 static struct
 {
 	const char   *name;
 	unsigned char note[12];
 
-} g_aScaleTypes[] = {
+} g_aScaleTab[] = {
 
 	{ _TR("Chromatic"),              { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11 } },
 	{ _TR("Major"),                  { 0, 0, 2, 2, 4, 5, 5, 7, 7, 9, 9,11 } },
@@ -439,7 +422,7 @@ static struct
 //	{ _TR("Mohammedan"),             { 0, 0, 2, 3, 3, 5, 5, 7, 8, 8, 8,11 } },	// identical to "Harmonic Minor"
 	{ _TR("Persian"),                { 0, 1, 1, 1, 4, 5, 6, 6, 8, 8, 8,11 } },
 	{ _TR("Purvi Theta"),            { 0, 1, 1, 1, 4, 4, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Kamavarardhani"
-//	{ _TR("Spanish Gypsy"),          { 0, 1, 1, 1, 4, 5, 5, 7, 8, 8,10,10 } },	// identical to "Jewish (Ahaba Rabba)"
+	{ _TR("Spanish Gypsy"),          { 0, 1, 1, 1, 4, 5, 5, 7, 8, 8,10,10 } },	// identical to "Jewish (Ahaba Rabba)"
 	{ _TR("Todi Theta"),             { 0, 1, 1, 3, 3, 3, 6, 7, 8, 8, 8,11 } },	// identical to "Mela Subhapantuvarali"
 //	{ _TR("Aux Diminished"),         { 0, 0, 2, 3, 3, 5, 6, 6, 8, 9, 9,11 } },	// identical to "Octatonic (W-H)"
 //	{ _TR("Aux Augmented"),          { 0, 0, 2, 2, 4, 4, 6, 6, 8, 8,10,10 } },	// identical to "Whole Tone"
@@ -447,7 +430,7 @@ static struct
 	{ _TR("Enigmatic"),              { 0, 1, 1, 1, 4, 4, 6, 6, 8, 8,10,11 } },
 	{ _TR("Kumoi"),                  { 0, 0, 2, 3, 3, 3, 3, 7, 7, 9, 9, 9 } },
 	{ _TR("Lydian Augmented"),       { 0, 0, 2, 2, 4, 4, 6, 6, 8, 9, 9,11 } },
-//	{ _TR("Pelog"),                  { 0, 1, 1, 3, 3, 3, 3, 7, 8, 8, 8, 8 } },	// identical to "Balinese"
+	{ _TR("Pelog"),                  { 0, 1, 1, 3, 3, 3, 3, 7, 8, 8, 8, 8 } },	// identical to "Balinese"
 	{ _TR("Prometheus"),             { 0, 0, 2, 2, 4, 4, 6, 6, 6, 9,10,10 } },
 	{ _TR("Prometheus Neapolitan"),  { 0, 1, 1, 1, 4, 4, 6, 6, 6, 9,10,10 } },
 	{ _TR("Six Tone Symmetrical"),   { 0, 1, 1, 1, 4, 5, 5, 5, 8, 9, 9, 9 } },
@@ -468,7 +451,7 @@ static struct
 	{ _TR("Bhoopali"),               { 0, 0, 2, 2, 4, 4, 4, 7, 7, 9, 9, 9 } },	// identical to "Pentatonic Major"
 	{ _TR("Shivaranjani"),           { 0, 0, 2, 3, 3, 3, 3, 7, 7, 9, 9, 9 } },	// identical to "Kumoi"
 	{ _TR("Marwa"),                  { 0, 1, 1, 1, 4, 4, 6, 6, 6, 9, 9,11 } },
-	{ _TR("Blues"),                  { 0, 0, 0, 3, 3, 5, 6, 7, 7, 7,10,10 } },   // identical to "Pentatonic Blues"
+	{ _TR("Blues"),                  { 0, 0, 0, 3, 3, 5, 6, 7, 7, 7,10,10 } },  // identical to "Pentatonic Blues"
 	{ _TR("Minor 5"),                { 0, 0, 0, 3, 3, 5, 5, 7, 7, 7,10,10 } },	// identical to "Pentatonic Minor"
 	{ _TR("Major 5"),                { 0, 0, 0, 0, 4, 5, 5, 7, 7, 7, 7,11 } },
 	{ _TR("5"),                      { 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7 } },
@@ -486,7 +469,7 @@ const QStringList qtractorMidiEditor::scaleKeyNames (void)
 	QStringList names;
 
 	for (int i = 0; i < 12; ++i)
-		names.append(tr(g_aScaleKeys[i]));
+		names.append(tr(g_aNoteNames[i].name));
 
 	return names;
 }
@@ -496,8 +479,8 @@ const QStringList qtractorMidiEditor::scaleTypeNames (void)
 {
 	QStringList names;
 
-	for (int i = 0; g_aScaleTypes[i].name; ++i)
-		names.append(tr(g_aScaleTypes[i].name));
+	for (int i = 0; g_aScaleTab[i].name; ++i)
+		names.append(tr(g_aScaleTab[i].name));
 
 	return names;
 }
@@ -507,7 +490,7 @@ unsigned char qtractorMidiEditor::snapToScale (
 	unsigned char note, int iKey, int iScale )
 {
 	int n = int(note) + (12 - iKey);
-	return 12 * ((n / 12) - 1) + iKey + int(g_aScaleTypes[iScale].note[n % 12]);
+	return 12 * ((n / 12) - 1) + iKey + int(g_aScaleTab[iScale].note[n % 12]);
 }
 
 
