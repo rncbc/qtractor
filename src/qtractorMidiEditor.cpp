@@ -72,18 +72,18 @@ static struct
 } g_aNoteNames[] = {
 
 	// Diatonic note map...
-	{  0, _TR("C")     },
-	{  1, _TR("C#/Db") },
-	{  2, _TR("D")     },
-	{  3, _TR("D#/Eb") },
-	{  4, _TR("E")     },
-	{  5, _TR("F")     },
-	{  6, _TR("F#/Gb") },
-	{  7, _TR("G")     },
-	{  8, _TR("G#/Ab") },
-	{  9, _TR("A")     },
-	{ 10, _TR("A#/Bb") },
-	{ 11, _TR("B")     },
+	{  0, _TR("C")  },
+	{  1, _TR("C#") },
+	{  2, _TR("D")  },
+	{  3, _TR("D#") },
+	{  4, _TR("E")  },
+	{  5, _TR("F")  },
+	{  6, _TR("F#") },
+	{  7, _TR("G")  },
+	{  8, _TR("G#") },
+	{  9, _TR("A")  },
+	{ 10, _TR("A#") },
+	{ 11, _TR("B")  },
 
 	// GM Drum note map...
 	{ 35, _TR("Acoustic Bass Drum") },
@@ -160,17 +160,6 @@ const QString qtractorMidiEditor::defaultNoteName (
 	}
 
 	return tr(g_aNoteNames[note % 12].name) + QString::number((note / 12) - 2);
-}
-
-// Default note names accessor.
-const QStringList qtractorMidiEditor::noteNames (void)
-{
-	QStringList names;
-
-	for (int n = 0; n < 12; ++n)
-		names.append(tr(g_aNoteNames[n % 12].name));
-
-	return names;
 }
 
 
@@ -275,12 +264,29 @@ const QString& qtractorMidiEditor::defaultControllerName ( unsigned char control
 //----------------------------------------------------------------------------
 // MIDI Scale Names - Default scale names table.
 
+static
+const char *g_aScaleKeys[12] =
+{
+	_TR("C"),
+	_TR("C# / Db"),
+	_TR("D"),
+	_TR("D# / Eb"),
+	_TR("E"),
+	_TR("F"),
+	_TR("F# / Gb"),
+	_TR("G"),
+	_TR("G# / Ab"),
+	_TR("A"),
+	_TR("A# / Bb"),
+	_TR("B")
+};
+
 static struct
 {
 	const char   *name;
 	unsigned char note[12];
 
-} g_aScaleTab[] = {
+} g_aScaleTypes[] = {
 
 	{ _TR("Chromatic"),              { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11 } },
 	{ _TR("Major"),                  { 0, 0, 2, 2, 4, 5, 5, 7, 7, 9, 9,11 } },
@@ -472,13 +478,25 @@ static struct
 	{ NULL,                          { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Default scale names table accessor.
-const QStringList qtractorMidiEditor::scaleNames (void)
+
+// Default scale key note names accessor.
+const QStringList qtractorMidiEditor::scaleKeyNames (void)
 {
 	QStringList names;
 
-	for (int i = 0; g_aScaleTab[i].name; ++i)
-		names.append(tr(g_aScaleTab[i].name));
+	for (int i = 0; i < 12; ++i)
+		names.append(tr(g_aScaleKeys[i]));
+
+	return names;
+}
+
+// Default scale type names table accessor.
+const QStringList qtractorMidiEditor::scaleTypeNames (void)
+{
+	QStringList names;
+
+	for (int i = 0; g_aScaleTypes[i].name; ++i)
+		names.append(tr(g_aScaleTypes[i].name));
 
 	return names;
 }
@@ -488,7 +506,7 @@ unsigned char qtractorMidiEditor::snapToScale (
 	unsigned char note, int iKey, int iScale )
 {
 	int n = int(note) + (12 - iKey);
-	return 12 * ((n / 12) - 1) + iKey + int(g_aScaleTab[iScale].note[n % 12]);
+	return 12 * ((n / 12) - 1) + iKey + int(g_aScaleTypes[iScale].note[n % 12]);
 }
 
 

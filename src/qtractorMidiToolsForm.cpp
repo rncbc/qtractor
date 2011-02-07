@@ -176,10 +176,12 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	// Scale-quantize stuff...
 	m_ui.QuantizeScaleKeyComboBox->clear();
-	m_ui.QuantizeScaleKeyComboBox->insertItems(0, qtractorMidiEditor::noteNames());
+	m_ui.QuantizeScaleKeyComboBox->insertItems(0,
+		qtractorMidiEditor::scaleKeyNames());
 	m_ui.QuantizeScaleKeyComboBox->setCurrentIndex(0);
 	m_ui.QuantizeScaleComboBox->clear();
-	m_ui.QuantizeScaleComboBox->insertItems(0, qtractorMidiEditor::scaleNames());
+	m_ui.QuantizeScaleComboBox->insertItems(0,
+		qtractorMidiEditor::scaleTypeNames());
 	m_ui.QuantizeScaleComboBox->setCurrentIndex(0);
 
 	// Choose BBT to be default format here.

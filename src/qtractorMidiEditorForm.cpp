@@ -127,11 +127,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		tr("Sys Ex"), int(qtractorMidiEvent::SYSEX));
 
 	// Snap-to-scale/quantize selection widgets...
-	QStringListIterator iter(qtractorMidiEditor::noteNames());
+	QStringListIterator iter(qtractorMidiEditor::scaleKeyNames());
 	while (iter.hasNext())
 		m_pSnapToScaleKeyComboBox->addItem(icon, iter.next());
 	m_pSnapToScaleTypeComboBox->insertItems(0,
-		qtractorMidiEditor::scaleNames());
+		qtractorMidiEditor::scaleTypeNames());
 
 //	updateInstrumentNames();
 
@@ -1670,7 +1670,7 @@ void qtractorMidiEditorForm::updateScaleMenu (void)
 
 	int iSnapToScaleKey = m_pMidiEditor->snapToScaleKey();
 	int iScaleKey = 0;
-	QStringListIterator iter_key(qtractorMidiEditor::noteNames());
+	QStringListIterator iter_key(qtractorMidiEditor::scaleKeyNames());
 	while (iter_key.hasNext()) {
 		QAction *pAction = m_ui.viewScaleMenu->addAction(
 			iter_key.next(), this, SLOT(viewScaleKey()));
@@ -1683,7 +1683,7 @@ void qtractorMidiEditorForm::updateScaleMenu (void)
 
 	int iSnapToScaleType = m_pMidiEditor->snapToScaleType();
 	int iScaleType = 0;
-	QStringListIterator iter_type(qtractorMidiEditor::scaleNames());
+	QStringListIterator iter_type(qtractorMidiEditor::scaleTypeNames());
 	while (iter_type.hasNext()) {
 		QAction *pAction = m_ui.viewScaleMenu->addAction(
 			iter_type.next(), this, SLOT(viewScaleType()));
