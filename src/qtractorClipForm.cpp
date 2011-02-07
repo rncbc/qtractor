@@ -48,19 +48,23 @@ static inline float log10f2 ( float x )
 static inline float pow10f2 ( float x )
 	{ return ::powf(10.0f, 0.05f * x); }
 
+// Translatable macro contextualizer.
+#undef  _TR
+#define _TR(x) QT_TRANSLATE_NOOP("qtractorClipForm", (x))
+
 
 //----------------------------------------------------------------------------
 // Fade types curves.
 
 const char *g_aFadeTypeNames[] = {
 
-	QT_TR_NOOP("Linear"),		// Linear (obvious:)
-	QT_TR_NOOP("Quadratic 1"),	// InQuad
-	QT_TR_NOOP("Quadratic 2"),	// OutQuad
-	QT_TR_NOOP("Quadratic 3"),	// InOutQuad
-	QT_TR_NOOP("Cubic 1"),		// InCubic
-	QT_TR_NOOP("Cubic 2"),		// OutCubic
-	QT_TR_NOOP("Cubic 3"),		// InOutCubic
+	_TR("Linear"),		// Linear (obvious:)
+	_TR("Quadratic 1"),	// InQuad
+	_TR("Quadratic 2"),	// OutQuad
+	_TR("Quadratic 3"),	// InOutQuad
+	_TR("Cubic 1"),		// InCubic
+	_TR("Cubic 2"),		// OutCubic
+	_TR("Cubic 3"),		// InOutCubic
 
 	NULL
 };

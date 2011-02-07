@@ -35,6 +35,11 @@
 
 #include <QDomDocument>
 
+// Translatable macro contextualizer.
+#undef  _TR
+#define _TR(x) QT_TRANSLATE_NOOP("qtractorMidiControl", (x))
+
+
 #include <math.h>
 
 // Possible cube roor optimization.
@@ -730,13 +735,13 @@ static struct
 
 } g_aControlTypes[] = {
 
-	{ qtractorMidiEvent::NOTEON,     "NOTEON",     QT_TR_NOOP("Note On")    },
-	{ qtractorMidiEvent::NOTEOFF,    "NOTEOFF",    QT_TR_NOOP("Note Off")   },
-	{ qtractorMidiEvent::KEYPRESS,   "KEYPRESS",   QT_TR_NOOP("Key Press")  },
-	{ qtractorMidiEvent::CONTROLLER, "CONTROLLER", QT_TR_NOOP("Controller") },
-	{ qtractorMidiEvent::PGMCHANGE,  "PGMCHANGE",  QT_TR_NOOP("Pgm Change") },
-	{ qtractorMidiEvent::CHANPRESS,  "CHANPRESS",  QT_TR_NOOP("Chan Press") },
-	{ qtractorMidiEvent::PITCHBEND,  "PITCHBEND",  QT_TR_NOOP("Pitch Bend") },
+	{ qtractorMidiEvent::NOTEON,     "NOTEON",     _TR("Note On")    },
+	{ qtractorMidiEvent::NOTEOFF,    "NOTEOFF",    _TR("Note Off")   },
+	{ qtractorMidiEvent::KEYPRESS,   "KEYPRESS",   _TR("Key Press")  },
+	{ qtractorMidiEvent::CONTROLLER, "CONTROLLER", _TR("Controller") },
+	{ qtractorMidiEvent::PGMCHANGE,  "PGMCHANGE",  _TR("Pgm Change") },
+	{ qtractorMidiEvent::CHANPRESS,  "CHANPRESS",  _TR("Chan Press") },
+	{ qtractorMidiEvent::PITCHBEND,  "PITCHBEND",  _TR("Pitch Bend") },
 
 	{ qtractorMidiControl::ControlType(0), NULL, NULL }
 };
@@ -822,12 +827,12 @@ static struct
 
 } g_aCommandNames[] = {
 
-	{ qtractorMidiControl::TRACK_GAIN,    "TRACK_GAIN",    QT_TR_NOOP("Track Gain")    },
-	{ qtractorMidiControl::TRACK_PANNING, "TRACK_PANNING", QT_TR_NOOP("Track Panning") },
-	{ qtractorMidiControl::TRACK_MONITOR, "TRACK_MONITOR", QT_TR_NOOP("Track Monitor") },
-	{ qtractorMidiControl::TRACK_RECORD,  "TRACK_RECORD",  QT_TR_NOOP("Track Record")  },
-	{ qtractorMidiControl::TRACK_MUTE,    "TRACK_MUTE",    QT_TR_NOOP("Track Mute")    },
-	{ qtractorMidiControl::TRACK_SOLO,    "TRACK_SOLO",    QT_TR_NOOP("Track Solo")    },
+	{ qtractorMidiControl::TRACK_GAIN,    "TRACK_GAIN",    _TR("Track Gain")    },
+	{ qtractorMidiControl::TRACK_PANNING, "TRACK_PANNING", _TR("Track Panning") },
+	{ qtractorMidiControl::TRACK_MONITOR, "TRACK_MONITOR", _TR("Track Monitor") },
+	{ qtractorMidiControl::TRACK_RECORD,  "TRACK_RECORD",  _TR("Track Record")  },
+	{ qtractorMidiControl::TRACK_MUTE,    "TRACK_MUTE",    _TR("Track Mute")    },
+	{ qtractorMidiControl::TRACK_SOLO,    "TRACK_SOLO",    _TR("Track Solo")    },
 
 	{ qtractorMidiControl::Command(0), NULL, NULL }
 };

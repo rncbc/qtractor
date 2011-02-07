@@ -535,12 +535,14 @@ void qtractorMixerStrip::updateName (void)
 
 	m_pLabel->setText(sName);
 
-	qtractorMonitor *pMonitor = m_pMeter->monitor();
-	if (pMonitor) {
-		pMonitor->panningSubject()->setName(sName + ' ' + tr("Pan"));
-		pMonitor->gainSubject()->setName(sName + ' ' + sGain);
+	if (m_pMeter) {
+		qtractorMonitor *pMonitor = m_pMeter->monitor();
+		if (pMonitor) {
+			pMonitor->panningSubject()->setName(sName + ' ' + tr("Pan"));
+			pMonitor->gainSubject()->setName(sName + ' ' + sGain);
+		}
 	}
-
+	
 	QFrame::setToolTip(sName + ' ' + sType);
 }
 
