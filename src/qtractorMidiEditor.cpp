@@ -240,6 +240,7 @@ static struct
 	{125, _TR("Omni Mode On") },
 	{126, _TR("Mono Operation") },
 	{127, _TR("Poly Operation") },
+
 	{  0, NULL }
 };
 

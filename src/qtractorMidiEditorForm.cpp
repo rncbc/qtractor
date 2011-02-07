@@ -98,6 +98,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Snap-to-scale/quantize selection widgets...
 	m_pSnapToScaleKeyComboBox = new QComboBox(m_ui.snapToScaleToolbar);
 	m_pSnapToScaleKeyComboBox->setEditable(false);
+	m_pSnapToScaleKeyComboBox->setMinimumWidth(86);
 	m_pSnapToScaleTypeComboBox = new QComboBox(m_ui.snapToScaleToolbar);
 	m_pSnapToScaleKeyComboBox->setEditable(false);
 
