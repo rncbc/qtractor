@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- All plugin list view changes are now properly
+  signaled to track properties and bus manager
+  dialogs and enable their respective acceptance.
+
 - Two brand new MIDI tools make their appearence:
   Scale-Quantize and Snap-to-Scale. The later may
   be readily accessible from the MIDI clip editor
