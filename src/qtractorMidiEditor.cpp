@@ -451,7 +451,7 @@ static struct
 	{ _TR("Bhoopali"),               { 0, 0, 2, 2, 4, 4, 4, 7, 7, 9, 9, 9 } },	// identical to "Pentatonic Major"
 	{ _TR("Shivaranjani"),           { 0, 0, 2, 3, 3, 3, 3, 7, 7, 9, 9, 9 } },	// identical to "Kumoi"
 	{ _TR("Marwa"),                  { 0, 1, 1, 1, 4, 4, 6, 6, 6, 9, 9,11 } },
-	{ _TR("Blues"),                  { 0, 0, 0, 3, 3, 5, 6, 7, 7, 7,10,10 } },  // identical to "Pentatonic Blues"
+//	{ _TR("Blues"),                  { 0, 0, 0, 3, 3, 5, 6, 7, 7, 7,10,10 } },  // identical to "Pentatonic Blues"
 	{ _TR("Minor 5"),                { 0, 0, 0, 3, 3, 5, 5, 7, 7, 7,10,10 } },	// identical to "Pentatonic Minor"
 	{ _TR("Major 5"),                { 0, 0, 0, 0, 4, 5, 5, 7, 7, 7, 7,11 } },
 	{ _TR("5"),                      { 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7 } },
