@@ -214,10 +214,8 @@ public:
 	unsigned short captureQuantize() const;
 
 	// ALSA device queue timer.
-	void setAlsaTimer(int iAlsaTimer)
-		{ m_iAlsaTimer = iAlsaTimer; }
-	int alsaTimer() const
-		{ return m_iAlsaTimer; }
+	void setAlsaTimer(int iAlsaTimer);
+	int alsaTimer() const;
 
 	// MMC device-id accessors.
 	void setMmcDevice(unsigned char mmcDevice);
@@ -241,7 +239,7 @@ public:
 protected:
 
 	// Concrete device (de)activation methods.
-	bool init(void);
+	bool init();
 	bool activate();
 	bool start();
 	void stop();
@@ -488,7 +486,7 @@ private:
 	// SysEx setup list.
 	qtractorMidiSysexList *m_pSysexList;
 
-	// Deafult instrument name.
+	// Default instrument name.
 	QString m_sInstrumentName;
 
 	// Channel patch mapper.
