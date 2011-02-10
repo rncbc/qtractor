@@ -110,8 +110,8 @@ class qtractorMidiOutputThread : public QThread
 public:
 
 	// Constructor.
-	qtractorMidiOutputThread(qtractorMidiEngine *pMidiEngine,
-		unsigned int iReadAhead = 0);
+	qtractorMidiOutputThread(
+		qtractorMidiEngine *pMidiEngine, unsigned int iReadAhead);
 
 	// Destructor.
 	~qtractorMidiOutputThread();
@@ -255,9 +255,6 @@ void qtractorMidiInputThread::run (void)
 qtractorMidiOutputThread::qtractorMidiOutputThread (
 	qtractorMidiEngine *pMidiEngine, unsigned int iReadAhead ) : QThread()
 {
-	if (iReadAhead < 1)
-		iReadAhead = ((pMidiEngine->session())->sampleRate() >> 1);
-
 	m_pMidiEngine = pMidiEngine;
 	m_bRunState   = false;
 	m_iReadAhead  = iReadAhead;
@@ -1403,7 +1400,8 @@ bool qtractorMidiEngine::activate (void)
 	m_pInputThread->start(QThread::TimeCriticalPriority);
 
 	// Create and start our own MIDI output queue thread...
-	m_pOutputThread = new qtractorMidiOutputThread(this);
+	unsigned int iReadAhead = (session()->sampleRate() >> 1);
+	m_pOutputThread = new qtractorMidiOutputThread(this, iReadAhead);
 	m_pOutputThread->start(QThread::HighPriority);
 
 	// Reset/zero tickers...

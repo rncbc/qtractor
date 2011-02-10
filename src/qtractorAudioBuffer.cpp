@@ -236,12 +236,15 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	}
 
 	// Allocate ring-buffer now.
-	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, m_iLength);
+	unsigned int iMinBufferSize = m_iLength;
+	if (iMinBufferSize == 0)
+		iMinBufferSize = (m_iSampleRate >> 1);
+	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, iMinBufferSize);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
 	m_iBufferSize = (m_iThreshold >> 2);
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample && m_fResampleRatio < 1.0f) {
-		unsigned int iMinBufferSize = (unsigned int) framesOut(m_iBufferSize);
+		iMinBufferSize = (unsigned int) framesOut(m_iBufferSize);
 		while (m_iBufferSize < iMinBufferSize)
 			m_iBufferSize <<= 1;
 	}

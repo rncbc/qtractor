@@ -314,6 +314,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 {
 	m_pJackClient = NULL;
 
+	m_iSampleRate = 0;
 	m_iBufferSize = 0;
 
 	m_iBufferOffset = 0;
@@ -407,7 +408,7 @@ jack_client_t *qtractorAudioEngine::jackClient (void) const
 // Internal sample-rate accessor.
 unsigned int qtractorAudioEngine::sampleRate (void) const
 {
-	return (m_pJackClient ? jack_get_sample_rate(m_pJackClient) : 0);
+	return m_iSampleRate;
 }
 
 // Buffer size accessor.
@@ -458,15 +459,16 @@ bool qtractorAudioEngine::init (void)
 	if (m_pJackClient == NULL)
 		return false;
 
-	// ATTN: First thing to remember is get initial buffer size.
+	// ATTN: First thing to remember is initial sample-rate and buffer size.
+	m_iSampleRate = jack_get_sample_rate(m_pJackClient);
 	m_iBufferSize = jack_get_buffer_size(m_pJackClient);
 
-	// ATTN: First thing to remember to set session sample rate.
+	// ATTN: Second is setting proper session client name.
 	pSession->setClientName(
 		QString::fromUtf8(jack_get_client_name(m_pJackClient)));
 
-	// ATTN: Second thing to remember to set session sample rate.
-	pSession->setSampleRate(sampleRate());
+	// ATTN: Third is setting session sample rate.
+	pSession->setSampleRate(m_iSampleRate);
 
 	// Open player/metronome buses, at least try...
 	openPlayerBus();
