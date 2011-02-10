@@ -238,7 +238,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Allocate ring-buffer now.
 	unsigned int iMinBufferSize = m_iLength;
 	if (iMinBufferSize == 0)
-		iMinBufferSize = (m_iSampleRate >> 1);
+		iMinBufferSize = (m_iSampleRate >> 2);
 	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, iMinBufferSize);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
 	m_iBufferSize = (m_iThreshold >> 2);
