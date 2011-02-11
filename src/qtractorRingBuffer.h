@@ -1,7 +1,7 @@
 // qtractorRingBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -93,18 +93,12 @@ qtractorRingBuffer<T>::qtractorRingBuffer ( unsigned short iChannels,
 {
 	m_iChannels = iChannels;
 
-	// Buffer size range.
+	// Adjust buffer size of nearest power-of-two, if necessary.
 	const unsigned int iMinBufferSize = 4096;
-	const unsigned int iMaxBufferSize = 4096 * 32;
+	m_iBufferSize = iMinBufferSize;
+	while (m_iBufferSize < iBufferSize)
+		m_iBufferSize <<= 1;
 
-	// Adjust size of nearest power-of-two, if necessary.
-	if (iBufferSize < iMaxBufferSize) {
-		m_iBufferSize = iMinBufferSize;
-		while (m_iBufferSize < iBufferSize)
-			m_iBufferSize <<= 1;
-	} else {
-		m_iBufferSize = iMaxBufferSize;
-	}
 	// The size overflow convenience mask and tthreshold.
 	m_iBufferMask = (m_iBufferSize - 1);
 

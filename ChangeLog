@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- A major hidden optimization has been implanted:
+  all audio clip buffer/disk-streaming threads are
+  finally merged into a single multiplexing thread
+  (was one thread per audio clip longer than 3 sec.
+  which was quite wasteful and creepy;). (TESTING)
+
 - All plugin list view changes are now properly
   signaled to track properties and bus manager
   dialogs and enable their respective acceptance.
