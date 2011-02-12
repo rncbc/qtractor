@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- More eye-candy: muted/non-soloed tracks are now
+  slightly shaded on the main track-view.
+
 - A major hidden optimization has been implanted:
   all audio clip buffer/disk-streaming threads are
   finally merged into a single multiplexing thread

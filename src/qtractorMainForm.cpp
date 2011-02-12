@@ -3385,13 +3385,13 @@ void qtractorMainForm::transportBackward (void)
 		list.append(0);
 		if (iPlayHead > m_pSession->editHead())
 			list.append(m_pSession->editHead());
-		if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
-			list.append(m_pSession->editTail());
+	//	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
+	//		list.append(m_pSession->editTail());
 		if (m_pSession->isLooping()) {
 			if (iPlayHead > m_pSession->loopStart())
 				list.append(m_pSession->loopStart());
-			if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
-				list.append(m_pSession->loopEnd());
+		//	if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
+		//		list.append(m_pSession->loopEnd());
 		}
 		if (iPlayHead > m_pSession->sessionLength() && !m_pSession->isPlaying())
 			list.append(m_pSession->sessionLength());

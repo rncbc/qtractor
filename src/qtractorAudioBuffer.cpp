@@ -62,10 +62,9 @@ protected:
 private:
 
 	// Instance variables.
-	unsigned int m_iSyncIndex;
 	unsigned int m_iSyncSize;
-
 	qtractorAudioBuffer **m_ppSyncItems;
+	volatile unsigned int m_iSyncIndex;
 	
 	// Whether the thread is logically running.
 	bool m_bRunState;
@@ -84,10 +83,9 @@ private:
 qtractorAudioBufferThread::qtractorAudioBufferThread (
 	unsigned int iSyncSize ) : QThread()
 {
-	m_iSyncIndex = 0;
-	m_iSyncSize  = iSyncSize;
-
+	m_iSyncSize   = iSyncSize;
 	m_ppSyncItems = new qtractorAudioBuffer * [m_iSyncSize];
+	m_iSyncIndex  = 0;
 
 	m_bRunState = false;
 }

@@ -1031,6 +1031,9 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 		}
 		pClip = pClip->next();
 	}
+
+	if (m_props.mute || (!m_props.solo && m_pSession->soloTracks()))
+		pPainter->fillRect(trackRect, QColor(0, 0, 0, 60));
 }
 
 
