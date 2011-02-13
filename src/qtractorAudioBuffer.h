@@ -236,7 +236,8 @@ private:
 	qtractorAudioPeak *m_pPeak;
 
 	static qtractorAudioBufferThread *g_pSyncThread;
-	static int g_iSyncThreadRefCount;
+
+	static int     g_iSyncThreadRefCount;
 	
 	// Sample-rate converter type global option.
 	static int     g_iResampleType;

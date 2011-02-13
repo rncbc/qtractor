@@ -151,7 +151,7 @@ void qtractorAudioBufferThread::run (void)
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
 		//m_mutex.unlock();
-		while(m_iSyncIndex > 0)
+		while (m_iSyncIndex > 0)
 			m_ppSyncItems[--m_iSyncIndex]->sync();
 		//m_mutex.lock();
 		m_cond.wait(&m_mutex);
@@ -334,13 +334,15 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Allocate ring-buffer now.
 	unsigned int iBufferSize = m_iLength;
 	if (iBufferSize == 0)
-		iBufferSize = (m_iSampleRate >> 2);
+		iBufferSize = (m_iSampleRate >> 1);
 	else
-	if (iBufferSize > (m_iSampleRate << 2))
-		iBufferSize = (m_iSampleRate << 2);
+	if (iBufferSize > (m_iSampleRate << 1))
+		iBufferSize = (m_iSampleRate << 1);
+
 	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, iBufferSize);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
 	m_iBufferSize = (m_iThreshold >> 2);
+
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample && m_fResampleRatio < 1.0f) {
 		iBufferSize = (unsigned int) framesOut(m_iBufferSize);
