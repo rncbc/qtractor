@@ -1933,7 +1933,7 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 	qtractorScrollView::ensureVisible(x0, y0, 24, 24);
 
 	// Make sure we keep focus...
-	// qtractorScrollView::setFocus();
+	qtractorScrollView::setFocus();
 }
 
 
