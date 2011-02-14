@@ -193,6 +193,7 @@ private:
 	unsigned int   m_iBufferSize;
 
 	volatile bool  m_bInitSync;
+	volatile bool  m_bWaitSync;
 	volatile bool  m_bReadSync;
 
 	volatile unsigned long m_iReadOffset;

@@ -39,7 +39,7 @@ class qtractorAudioBufferThread : public QThread
 public:
 
 	// Constructor.
-	qtractorAudioBufferThread(unsigned int iSyncSize = 1024);
+	qtractorAudioBufferThread(unsigned int iSyncSize = 128);
 
 	// Destructor.
 	~qtractorAudioBufferThread();
@@ -49,7 +49,7 @@ public:
 	bool runState() const;
 
 	// Wake from executive wait condition (RT-safe).
-	void sync(qtractorAudioBuffer *pAudioBuffer = NULL);
+	bool sync(qtractorAudioBuffer *pAudioBuffer = NULL);
 
 	// Bypass executive wait condition (non RT-safe).
 	void syncExport(qtractorAudioBuffer *pAudioBuffer);
@@ -111,7 +111,7 @@ bool qtractorAudioBufferThread::runState (void) const
 
 
 // Wake from executive wait condition (RT-safe).
-void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
+bool qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 {
 	if (pAudioBuffer == NULL)
 		m_iSyncIndex = 0;
@@ -119,13 +119,15 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 	if (m_iSyncIndex < m_iSyncSize)
 		m_ppSyncItems[m_iSyncIndex++] = pAudioBuffer;
 
-	if (m_mutex.tryLock()) {
+	bool bSync = m_mutex.tryLock();
+	if (bSync) {
 		m_cond.wakeAll();
 		m_mutex.unlock();
 	}
 #ifdef CONFIG_DEBUG_0
 	else qDebug("qtractorAudioBufferThread[%p]::sync(): tryLock() failed.", this);
 #endif
+	return bSync;
 }
 
 
@@ -185,6 +187,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_iThreshold     = 0;
 	m_iBufferSize    = 0;
 	m_bInitSync      = false;
+	m_bWaitSync      = false;
 	m_bReadSync      = false;
 	m_iReadOffset    = 0;
 	m_iWriteOffset   = 0;
@@ -444,6 +447,7 @@ void qtractorAudioBuffer::close (void)
 	m_iThreshold   = 0;
 	m_iBufferSize  = 0;
 	m_bInitSync    = false;
+	m_bWaitSync    = false;
 	m_bReadSync    = false;
 	m_iReadOffset  = 0;
 	m_iWriteOffset = 0;
@@ -516,9 +520,9 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (!m_bIntegral  &&
+	if (!m_bIntegral && !m_bWaitSync &&
 		g_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
-		g_pSyncThread->sync(this);
+		m_bWaitSync = g_pSyncThread->sync(this);
 
 	return nread;
 }
@@ -602,9 +606,9 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (!m_bIntegral  &&
+	if (!m_bWaitSync &&
 		g_pSyncThread && m_pRingBuffer->readable() > m_iThreshold)
-		g_pSyncThread->sync(this);
+		m_bWaitSync = g_pSyncThread->sync(this);
 
 	return nwrite;
 }
@@ -667,9 +671,9 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (!m_bIntegral  &&
+	if (!m_bIntegral && !m_bWaitSync &&
 		g_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
-		g_pSyncThread->sync(this);
+		m_bWaitSync = g_pSyncThread->sync(this);
 
 	return nread;
 }
@@ -746,8 +750,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	ATOMIC_INC(&m_seekPending);
 
 	// readSync();
-	if (g_pSyncThread)
-		g_pSyncThread->sync(this);
+	if (!m_bWaitSync && g_pSyncThread)
+		m_bWaitSync = g_pSyncThread->sync(this);
 
 	return true;
 }
@@ -830,6 +834,8 @@ void qtractorAudioBuffer::sync (void)
 	else
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
+
+	m_bWaitSync = false;
 }
 
 
