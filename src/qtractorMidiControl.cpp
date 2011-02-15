@@ -37,7 +37,7 @@
 
 // Translatable macro contextualizer.
 #undef  _TR
-#define _TR(x) QT_TRANSLATE_NOOP("qtractorMidiControl", (x))
+#define _TR(x) QT_TR_NOOP(x)
 
 
 #include <math.h>
@@ -772,7 +772,7 @@ static void initControlTypeNames (void)
 		// Pre-load ontrol-types hash table...
 		for (int i = 0; g_aControlTypes[i].name; ++i) {
 			qtractorMidiControl::ControlType ctype = g_aControlTypes[i].ctype;
-			const QString& sName = QObject::tr(g_aControlTypes[i].name);
+			const QString& sName = QObject::tr(g_aControlTypes[i].name, "controlType");
 			g_controlTypeNames.insert(ctype, sName);
 			g_nameControlTypes.insert(sName, ctype);
 		}
@@ -862,7 +862,7 @@ static void initCommandNames (void)
 		// Pre-load command-names hash table...
 		for (int i = 0; g_aCommandNames[i].name; ++i) {
 			qtractorMidiControl::Command command = g_aCommandNames[i].command;
-			const QString& sName = QObject::tr(g_aCommandNames[i].name);
+			const QString& sName = QObject::tr(g_aCommandNames[i].name, "commandName");
 			g_commandNames.insert(command, sName);
 			g_nameCommands.insert(sName, command);
 		}

@@ -50,7 +50,7 @@ static inline float pow10f2 ( float x )
 
 // Translatable macro contextualizer.
 #undef  _TR
-#define _TR(x) QT_TRANSLATE_NOOP("qtractorClipForm", (x))
+#define _TR(x) QT_TR_NOOP(x)
 
 
 //----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ static void initFadeTypes (void)
 		const QPixmap pmFadeOut(":/images/fadeOut.png");
 		for (int i = 0; g_aFadeTypeNames[i]; ++i) {
 			FadeTypeInfo& info = g_fadeTypes[i];
-			info.name = QObject::tr(g_aFadeTypeNames[i]);
+			info.name = QObject::tr(g_aFadeTypeNames[i], "fadeType");
 			info.iconFadeIn  = pmFadeIn.copy(i << 4, 0, 16, 16);
 			info.iconFadeOut = pmFadeOut.copy(i << 4, 0, 16, 16);
 		}

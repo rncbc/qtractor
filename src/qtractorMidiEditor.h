@@ -329,8 +329,8 @@ public:
 	static const QString& defaultControllerName(unsigned char controller);
 
 	// Default scale key/type names accessors.
-	static const QStringList scaleKeyNames();
-	static const QStringList scaleTypeNames();
+	static const QStringList& scaleKeyNames();
+	static const QStringList& scaleTypeNames();
 
 	// Scale quantizer method.	
 	static unsigned char snapToScale(

@@ -58,7 +58,7 @@
 
 // Translatable macro contextualizer.
 #undef  _TR
-#define _TR(x) QT_TRANSLATE_NOOP("qtractorMidiEditor", (x))
+#define _TR(x) QT_TR_NOOP(x)
 
 
 //----------------------------------------------------------------------------
@@ -147,9 +147,8 @@ const QString qtractorMidiEditor::defaultNoteName (
 		// Pre-load drum-names hash table...
 		if (g_noteNames.isEmpty()) {
 			for (int i = 12; g_aNoteNames[i].name; ++i) {
-				g_noteNames.insert(
-					g_aNoteNames[i].note,
-					tr(g_aNoteNames[i].name));
+				g_noteNames.insert(g_aNoteNames[i].note,
+					tr(g_aNoteNames[i].name, "noteName"));
 			}
 		}
 		// Check whether the drum note exists...
@@ -159,7 +158,7 @@ const QString qtractorMidiEditor::defaultNoteName (
 			return iter.value();
 	}
 
-	return tr(g_aNoteNames[note % 12].name) + QString::number((note / 12) - 2);
+	return tr(g_aNoteNames[note % 12].name, "noteName") + QString::number((note / 12) - 2);
 }
 
 
@@ -254,7 +253,7 @@ const QString& qtractorMidiEditor::defaultControllerName ( unsigned char control
 		for (int i = 0; g_aControllerNames[i].name; ++i) {
 			g_controllerNames.insert(
 				g_aControllerNames[i].controller,
-				tr(g_aControllerNames[i].name));
+				tr(g_aControllerNames[i].name, "controllerName"));
 		}
 	}
 
@@ -464,25 +463,29 @@ static struct
 
 
 // Default scale key note names accessor.
-const QStringList qtractorMidiEditor::scaleKeyNames (void)
+const QStringList& qtractorMidiEditor::scaleKeyNames (void)
 {
-	QStringList names;
+	static QStringList s_scaleKeys;
 
-	for (int i = 0; i < 12; ++i)
-		names.append(tr(g_aNoteNames[i].name));
+	if (s_scaleKeys.isEmpty()) {
+		for (int i = 0; i < 12; ++i)
+			s_scaleKeys.append(tr(g_aNoteNames[i].name, "scaleKeyName"));
+	}
 
-	return names;
+	return s_scaleKeys;
 }
 
 // Default scale type names table accessor.
-const QStringList qtractorMidiEditor::scaleTypeNames (void)
+const QStringList& qtractorMidiEditor::scaleTypeNames (void)
 {
-	QStringList names;
+	static QStringList s_scaleTypes;
 
-	for (int i = 0; g_aScaleTab[i].name; ++i)
-		names.append(tr(g_aScaleTab[i].name));
+	if (s_scaleTypes.isEmpty()) {
+		for (int i = 0; g_aScaleTab[i].name; ++i)
+			s_scaleTypes.append(tr(g_aScaleTab[i].name, "scaleTypeName"));
+	}
 
-	return names;
+	return s_scaleTypes;
 }
 
 // Scale quantizer method.
@@ -3318,9 +3321,8 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 		// At least have a GM Drums (Channel 10) help...
 		if (pTrack->midiChannel() == 9) {
 			for (int i = 13; g_aNoteNames[i].name; ++i) {
-				m_noteNames.insert(
-					g_aNoteNames[i].note,
-					tr(g_aNoteNames[i].name));
+				m_noteNames.insert(g_aNoteNames[i].note,
+					tr(g_aNoteNames[i].name, "noteName"));
 			}
 		}
 		// No instrument definition...
