@@ -148,7 +148,7 @@ const QString qtractorMidiEditor::defaultNoteName (
 		if (g_noteNames.isEmpty()) {
 			for (int i = 12; g_aNoteNames[i].name; ++i) {
 				g_noteNames.insert(g_aNoteNames[i].note,
-					tr(g_aNoteNames[i].name, "noteName"));
+					QObject::tr(g_aNoteNames[i].name, "noteName"));
 			}
 		}
 		// Check whether the drum note exists...
@@ -158,7 +158,8 @@ const QString qtractorMidiEditor::defaultNoteName (
 			return iter.value();
 	}
 
-	return tr(g_aNoteNames[note % 12].name, "noteName") + QString::number((note / 12) - 2);
+	return QObject::tr(g_aNoteNames[note % 12].name, "noteName")
+		+ QString::number((note / 12) - 2);
 }
 
 
@@ -251,9 +252,8 @@ const QString& qtractorMidiEditor::defaultControllerName ( unsigned char control
 	if (g_controllerNames.isEmpty()) {
 		// Pre-load controller-names hash table...
 		for (int i = 0; g_aControllerNames[i].name; ++i) {
-			g_controllerNames.insert(
-				g_aControllerNames[i].controller,
-				tr(g_aControllerNames[i].name, "controllerName"));
+			g_controllerNames.insert(g_aControllerNames[i].controller,
+				QObject::tr(g_aControllerNames[i].name, "controllerName"));
 		}
 	}
 
@@ -469,7 +469,7 @@ const QStringList& qtractorMidiEditor::scaleKeyNames (void)
 
 	if (s_scaleKeys.isEmpty()) {
 		for (int i = 0; i < 12; ++i)
-			s_scaleKeys.append(tr(g_aNoteNames[i].name, "scaleKeyName"));
+			s_scaleKeys.append(QObject::tr(g_aNoteNames[i].name, "scaleKeyName"));
 	}
 
 	return s_scaleKeys;
@@ -482,7 +482,7 @@ const QStringList& qtractorMidiEditor::scaleTypeNames (void)
 
 	if (s_scaleTypes.isEmpty()) {
 		for (int i = 0; g_aScaleTab[i].name; ++i)
-			s_scaleTypes.append(tr(g_aScaleTab[i].name, "scaleTypeName"));
+			s_scaleTypes.append(QObject::tr(g_aScaleTab[i].name, "scaleTypeName"));
 	}
 
 	return s_scaleTypes;
