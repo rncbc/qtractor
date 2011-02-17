@@ -74,6 +74,7 @@ headers = \
 	src/qtractorMonitor.h \
 	src/qtractorObserver.h \
 	src/qtractorObserverWidget.h \
+	src/qtractorOscControl.h \
 	src/qtractorOptions.h \
 	src/qtractorPlugin.h \
 	src/qtractorPluginCommand.h \
@@ -182,6 +183,7 @@ sources = \
 	src/qtractorMixer.cpp \
 	src/qtractorObserver.cpp \
 	src/qtractorObserverWidget.cpp \
+	src/qtractorOscControl.cpp \
 	src/qtractorOptions.cpp \
 	src/qtractorPlugin.cpp \
 	src/qtractorPluginCommand.cpp \

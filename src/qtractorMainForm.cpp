@@ -73,6 +73,8 @@
 
 #include "qtractorTrackCommand.h"
 
+#include "qtractorOscControl.h"
+
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
 #endif
@@ -304,6 +306,9 @@ qtractorMainForm::qtractorMainForm (
 
 	// Add the midi controller map...
 	m_pMidiControl = new qtractorMidiControl();
+
+	// Also the OSC control server (TESTING)...
+	m_pOscControl = new qtractorOscControl();
 
 #ifdef HAVE_SIGNAL_H
 
@@ -936,6 +941,10 @@ qtractorMainForm::~qtractorMainForm (void)
 	// Remove midi controllers.
 	if (m_pMidiControl)
 		delete m_pMidiControl;
+
+	// Remove OSC control server (TESTING).
+	if (m_pOscControl)
+		delete m_pOscControl;
 
 	// Pseudo-singleton reference shut-down.
 	g_pMainForm = NULL;

@@ -42,6 +42,7 @@ class qtractorMixer;
 class qtractorMmcEvent;
 class qtractorCtlEvent;
 class qtractorMidiControl;
+class qtractorOscControl;
 class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
 class qtractorTempoCursor;
@@ -351,6 +352,7 @@ private:
 	qtractorThumbView *m_pThumbView;
 	qtractorTempoCursor *m_pTempoCursor;
 	qtractorMidiControl *m_pMidiControl;
+	qtractorOscControl *m_pOscControl;
 	unsigned long m_iPlayHead;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
