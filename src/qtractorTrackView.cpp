@@ -1883,7 +1883,6 @@ void qtractorTrackView::selectInvert (void)
 			int x = pSession->pixelFromFrame(pClip->clipStart());
 			int w = pSession->pixelFromFrame(pClip->clipLength());
 			bool bSelect = !pClip->isClipSelected();
-			if (!bSelect)
 			m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
 		}
 	}
