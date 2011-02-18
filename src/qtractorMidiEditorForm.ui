@@ -79,9 +79,11 @@
     <property name="title" >
      <string>&amp;Select</string>
     </property>
+    <addaction name="editSelectAllAction" />
     <addaction name="editSelectNoneAction" />
     <addaction name="editSelectInvertAction" />
-    <addaction name="editSelectAllAction" />
+    <addaction name="separator" />
+    <addaction name="editSelectRangeAction" />
    </widget>
    <widget class="QMenu" name="toolsMenu" >
     <property name="title" >
@@ -620,6 +622,23 @@
     <string>Del</string>
    </property>
   </action>
+  <action name="editSelectAllAction" >
+   <property name="text" >
+    <string>Select &amp;All</string>
+   </property>
+   <property name="iconText" >
+    <string>Select All</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select all</string>
+   </property>
+   <property name="statusTip" >
+    <string>Select all</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+A</string>
+   </property>
+  </action>
   <action name="editSelectNoneAction" >
    <property name="text" >
     <string>Select &amp;None</string>
@@ -652,23 +671,6 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+I</string>
-   </property>
-  </action>
-  <action name="editSelectAllAction" >
-   <property name="text" >
-    <string>Select &amp;All</string>
-   </property>
-   <property name="iconText" >
-    <string>Select All</string>
-   </property>
-   <property name="toolTip" >
-    <string>Select all</string>
-   </property>
-   <property name="statusTip" >
-    <string>Select all</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="editSelectRangeAction" >

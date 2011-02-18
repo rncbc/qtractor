@@ -110,6 +110,7 @@ public:
 	void selectCurrentTrack(bool bReset = false);
 	void selectCurrentTrackRange(bool bReset = false);
 	void selectAll(bool bSelect = true);
+	void selectInvert();
 
 	// Simple main-form redirectors.
 	void selectionChangeNotify();

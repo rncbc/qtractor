@@ -113,9 +113,10 @@ protected slots:
 	void editPasteRepeat();
 	void editDelete();
 
-	void editSelectNone();
 	void editSelectAll();
+	void editSelectNone();
 	void editSelectInvert();
+	void editSelectRange();
 
 	void toolsQuantize();
 	void toolsTranspose();

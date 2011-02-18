@@ -127,11 +127,12 @@ public slots:
 	void editSelectModeClip();
 	void editSelectModeRange();
 	void editSelectModeRect();
+	void editSelectAll();
 	void editSelectNone();
-	void editSelectRange();
+	void editSelectInvert();
 	void editSelectTrack();
 	void editSelectTrackRange();
-	void editSelectAll();
+	void editSelectRange();
 	void editClipNew();
 	void editClipEdit();
 	void editClipSplit();

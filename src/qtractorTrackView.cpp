@@ -1876,6 +1876,46 @@ void qtractorTrackView::selectAll ( bool bSelect )
 }
 
 
+// Invert selection on all tracks and clips.
+void qtractorTrackView::selectInvert (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Reset selection...
+	QRect rectUpdate = m_pClipSelect->rect();
+
+	int y1, y2 = 0;
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		y1  = y2;
+		y2 += pTrack->zoomHeight();
+		int y = y1 + 1;
+		int h = y2 - y1 - 2;
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			int x = pSession->pixelFromFrame(pClip->clipStart());
+			int w = pSession->pixelFromFrame(pClip->clipLength());
+			bool bSelect = !pClip->isClipSelected();
+			if (!bSelect)
+			m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
+		}
+	}
+
+	// This is most probably an overall update...
+	if (m_pClipSelect->items().count() > 0)
+		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
+	if (!rectUpdate.isEmpty()) {
+		updateContents(rectUpdate);
+		m_pTracks->selectionChangeNotify();
+	}
+
+	// Make sure we keep focus...
+	qtractorScrollView::setFocus();
+}
+
+
 // Select all clips of given filename and track/channel.
 void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 	const QString& sFilename, int iTrackChannel, bool bSelect )

@@ -110,6 +110,8 @@ public:
 	void selectTrack(qtractorTrack *pTrackPtr, bool bReset = true);
 	// Select all contents.
 	void selectAll(bool bSelect = true);
+	// Invert selection on all tracks and clips.
+	void selectInvert();
 
 	// Select all clips of given filename and track/channel.
 	void selectFile(qtractorTrack::TrackType trackType,

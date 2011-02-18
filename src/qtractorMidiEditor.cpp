@@ -1596,9 +1596,9 @@ void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
 {
 	// Select all/none view contents.
 	if (bSelect) {
-		const QRect rect(-1, -1,
-			m_pEditView->contentsWidth()  + 2,
-			m_pEditView->contentsHeight() + 2);
+		const QRect rect(0, 0,
+			m_pEditView->contentsWidth(),
+			m_pEditView->contentsHeight());
 		selectRect(rect, bToggle, true);
 	} else {
 		m_select.clear();
@@ -1612,9 +1612,21 @@ void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
 }
 
 
+// Select range view contents.
+void qtractorMidiEditor::selectRange ( bool bToggle, bool bCommit )
+{
+	int x = m_iEditHeadX;
+	int y = 0;
+	int w = m_iEditTailX - m_iEditHeadX;
+	int h = m_pEditView->contentsHeight();
+
+	selectRect(QRect(x, y, w, h), bToggle, bCommit);
+}
+
+
 // Select everything between a given view rectangle.
-void qtractorMidiEditor::selectRect ( const QRect& rect, bool bToggle,
-	bool bCommit )
+void qtractorMidiEditor::selectRect (
+	const QRect& rect, bool bToggle, bool bCommit )
 {
 	int flags = SelectNone;
 	if (bToggle)
@@ -1622,6 +1634,7 @@ void qtractorMidiEditor::selectRect ( const QRect& rect, bool bToggle,
 	if (bCommit)
 		flags |= SelectCommit;
 	updateDragSelect(m_pEditView, rect.normalized(), flags);
+	resetDragState(m_pEditView);
 	selectionChangeNotify();
 }
 

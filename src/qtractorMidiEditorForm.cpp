@@ -205,7 +205,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	addAction(m_ui.viewMenubarAction);
 
 	// Special integration ones.
-	addAction(m_ui.editSelectRangeAction);
 	addAction(m_ui.transportBackwardAction);
 	addAction(m_ui.transportLoopAction);
 	addAction(m_ui.transportLoopSetAction);
@@ -275,15 +274,18 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.editDeleteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editDelete()));
+	QObject::connect(m_ui.editSelectAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectAll()));
 	QObject::connect(m_ui.editSelectNoneAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectNone()));
 	QObject::connect(m_ui.editSelectInvertAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectInvert()));
-	QObject::connect(m_ui.editSelectAllAction,
+	QObject::connect(m_ui.editSelectRangeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editSelectAll()));
+		SLOT(editSelectRange()));
 
 	QObject::connect(m_ui.toolsQuantizeAction,
 		SIGNAL(triggered(bool)),
@@ -496,9 +498,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Make last-but-not-least conections....
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
-		QObject::connect(m_ui.editSelectRangeAction,
-			SIGNAL(triggered(bool)),
-			pMainForm, SLOT(editSelectRange()));
 		QObject::connect(m_ui.transportBackwardAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportBackward()));
@@ -1111,6 +1110,13 @@ void qtractorMidiEditorForm::editSelectInvert (void)
 void qtractorMidiEditorForm::editSelectAll (void)
 {
 	m_pMidiEditor->selectAll(true, false);
+}
+
+
+// Select contents range.
+void qtractorMidiEditorForm::editSelectRange (void)
+{
+	m_pMidiEditor->selectRange(true, true);
 }
 
 
