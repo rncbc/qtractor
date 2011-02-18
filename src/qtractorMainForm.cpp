@@ -610,21 +610,24 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editSelectModeRectAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectModeRect()));
+	QObject::connect(m_ui.editSelectAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectAll()));
 	QObject::connect(m_ui.editSelectNoneAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectNone()));
-	QObject::connect(m_ui.editSelectRangeAction,
+	QObject::connect(m_ui.editSelectInvertAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editSelectRange()));
+		SLOT(editSelectInvert()));
 	QObject::connect(m_ui.editSelectTrackAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectTrack()));
 	QObject::connect(m_ui.editSelectTrackRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectTrackRange()));
-	QObject::connect(m_ui.editSelectAllAction,
+	QObject::connect(m_ui.editSelectRangeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editSelectAll()));
+		SLOT(editSelectRange()));
 	QObject::connect(m_ui.editClipNewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipNew()));
@@ -2152,6 +2155,21 @@ void qtractorMainForm::editSelectModeRect (void)
 }
 
 
+// Mark all as selected.
+void qtractorMainForm::editSelectAll (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editSelectAll()");
+#endif
+
+	// Select all...
+	if (m_pTracks)
+		m_pTracks->selectAll();
+
+	stabilizeForm();
+}
+
+
 // Mark all as unselected.
 void qtractorMainForm::editSelectNone (void)
 {
@@ -2167,16 +2185,16 @@ void qtractorMainForm::editSelectNone (void)
 }
 
 
-// Mark range as selected.
-void qtractorMainForm::editSelectRange (void)
+// Invert current selection.
+void qtractorMainForm::editSelectInvert (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::editSelectRange()");
+	qDebug("qtractorMainForm::editSelectInvert()");
 #endif
 
-	// Select edit-range...
+	// Invert selection...
 	if (m_pTracks)
-		m_pTracks->selectEditRange();
+		m_pTracks->selectInvert();
 
 	stabilizeForm();
 }
@@ -2212,16 +2230,16 @@ void qtractorMainForm::editSelectTrackRange (void)
 }
 
 
-// Mark all as selected.
-void qtractorMainForm::editSelectAll (void)
+// Mark range as selected.
+void qtractorMainForm::editSelectRange (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::editSelectAll()");
+	qDebug("qtractorMainForm::editSelectRange()");
 #endif
 
-	// Select all...
+	// Select edit-range...
 	if (m_pTracks)
-		m_pTracks->selectAll();
+		m_pTracks->selectEditRange();
 
 	stabilizeForm();
 }
@@ -4109,6 +4127,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editDeleteAction->setEnabled(bSelected);
 
 	m_ui.editSelectAllAction->setEnabled(iSessionLength > 0);
+	m_ui.editSelectInvertAction->setEnabled(iSessionLength > 0);
 	m_ui.editSelectTrackRangeAction->setEnabled(bEnabled && bSelectable);
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);

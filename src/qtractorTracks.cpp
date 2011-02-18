@@ -1563,6 +1563,13 @@ void qtractorTracks::selectAll ( bool bSelect )
 }
 
 
+// Invert selection on all tracks and clips.
+void qtractorTracks::selectInvert (void)
+{
+	m_pTrackView->selectInvert();
+}
+
+
 // Adds a new track into session.
 bool qtractorTracks::addTrack (void)
 {

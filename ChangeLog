@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- New main track-view clip selection tool: invert
+  current selection (Edit/Select/Invert). The MIDI
+  clip editor (piano-roll) also gets proper range
+  selection tool (Edit/Select/Range).
+
 - More eye-candy: muted/non-soloed tracks are now
   slightly shaded on the main track-view.
 

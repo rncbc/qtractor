@@ -223,9 +223,12 @@ public:
 	// Select all/none contents.
 	void selectAll(bool bSelect = true, bool bToggle = false);
 
+	// Select range view contents.
+	void selectRange(bool bToggle = false, bool bCommit = false);
+
 	// Select everything between a given view rectangle.
-	void selectRect(const QRect& rect, bool bToggle = false,
-		bool bCommit = false);
+	void selectRect(
+		const QRect& rect, bool bToggle = false, bool bCommit = false);
 
 	// Add/remove one single event to current selection.
 	void selectEvent(qtractorMidiEvent *pEvent, bool bSelect = true);

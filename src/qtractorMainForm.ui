@@ -342,11 +342,13 @@
      <property name="title" >
       <string>&amp;Select</string>
      </property>
+     <addaction name="editSelectAllAction" />
      <addaction name="editSelectNoneAction" />
-     <addaction name="editSelectRangeAction" />
+     <addaction name="editSelectInvertAction" />
+	 <addaction name="separator" />
      <addaction name="editSelectTrackAction" />
      <addaction name="editSelectTrackRangeAction" />
-     <addaction name="editSelectAllAction" />
+     <addaction name="editSelectRangeAction" />
     </widget>
     <widget class="QMenu" name="editClipToolsMenu" >
      <property name="title" >
@@ -724,6 +726,23 @@
     <string>Rectangular selection mode</string>
    </property>
   </action>
+  <action name="editSelectAllAction" >
+   <property name="text" >
+    <string>&amp;All</string>
+   </property>
+   <property name="iconText" >
+    <string>Select All</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select all</string>
+   </property>
+   <property name="statusTip" >
+    <string>Mark all as selected</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+A</string>
+   </property>
+  </action>
   <action name="editSelectNoneAction" >
    <property name="text" >
     <string>&amp;None</string>
@@ -741,21 +760,21 @@
     <string>Ctrl+Shift+A</string>
    </property>
   </action>
-  <action name="editSelectRangeAction" >
+  <action name="editSelectInvertAction" >
    <property name="text" >
-    <string>&amp;Range</string>
+    <string>&amp;Invert</string>
    </property>
    <property name="iconText" >
-    <string>Select Range</string>
+    <string>Select Invert</string>
    </property>
    <property name="toolTip" >
-    <string>Select range</string>
+    <string>Select invert</string>
    </property>
    <property name="statusTip" >
-    <string>Mark range as selected</string>
+    <string>Invert selection</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+R</string>
+    <string>Ctrl+I</string>
    </property>
   </action>
   <action name="editSelectTrackAction" >
@@ -792,21 +811,21 @@
     <string>Ctrl+Shift+R</string>
    </property>
   </action>
-  <action name="editSelectAllAction" >
+  <action name="editSelectRangeAction" >
    <property name="text" >
-    <string>&amp;All</string>
+    <string>&amp;Range</string>
    </property>
    <property name="iconText" >
-    <string>Select All</string>
+    <string>Select Range</string>
    </property>
    <property name="toolTip" >
-    <string>Select all</string>
+    <string>Select range</string>
    </property>
    <property name="statusTip" >
-    <string>Mark all as selected</string>
+    <string>Mark range as selected</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+A</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="editClipNewAction" >
