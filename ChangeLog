@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Rendering audio wave-forms while recording is
+  now a little bit smoother than before.
+
 - New main track-view clip selection tool: invert
   current selection (Edit/Select/Invert). The MIDI
   clip editor (piano-roll) also gets proper range

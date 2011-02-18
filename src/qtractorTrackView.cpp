@@ -195,8 +195,6 @@ void qtractorTrackView::clear (void)
 	m_iEditHeadX = 0;
 	m_iEditTailX = 0;
 
-	m_iLastRecordX = 0;
-
 	m_iPasteCount  = 0;
 	m_iPastePeriod = 0;
 
@@ -305,26 +303,13 @@ void qtractorTrackView::updateContentsRecord (void)
 	if (pSession == NULL)
 		return;
 
-	int cx = qtractorScrollView::contentsX();
-	int x  = cx;
-	int w  = qtractorScrollView::width();
-
-	int iCurrRecordX = m_iPlayHeadX;
-	if (iCurrRecordX > x + w)
-		iCurrRecordX = x + w;
-
-	if (m_iLastRecordX < iCurrRecordX) {
-		if (pSession->midiRecord() < 1 &&
-			x < m_iLastRecordX && m_iLastRecordX < x + w)
-			x = m_iLastRecordX - 8;
-		w = iCurrRecordX - x + 8;
-		qtractorScrollView::viewport()->update(
-			QRect(x - cx, 0, w, qtractorScrollView::height()));
-	}
-	else if (m_iLastRecordX > iCurrRecordX)
-		qtractorScrollView::viewport()->update();
-
-	m_iLastRecordX = iCurrRecordX;
+	QWidget *pViewport = qtractorScrollView::viewport();
+	int w = pSession->pixelFromFrame(pSession->sampleRate() >> 1);
+	int x = m_iPlayHeadX - (qtractorScrollView::contentsX() + w);
+	if (x > 0)
+		pViewport->update(QRect(x, 0, w, pViewport->height()));
+	else
+		pViewport->update();
 }
 
 

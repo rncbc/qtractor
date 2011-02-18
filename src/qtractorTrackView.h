@@ -423,9 +423,6 @@ private:
 	int m_iEditHeadX;
 	int m_iEditTailX;
 
-	// Recording state window.
-	int m_iLastRecordX;
-
 	// Paste interim parameters.
 	unsigned short m_iPasteCount;
 	unsigned long  m_iPastePeriod;
