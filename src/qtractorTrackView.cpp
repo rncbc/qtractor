@@ -302,9 +302,15 @@ void qtractorTrackView::updateContents (void)
 // Special recording visual feedback.
 void qtractorTrackView::updateContentsRecord (void)
 {
+	int x = 0;
+	int w = m_iPlayHeadX - qtractorScrollView::contentsX();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && pSession->midiRecord() < 1) {
+		x = w - m_iRecordWidth;
+		w = m_iRecordWidth;
+	}
+
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = m_iRecordWidth;
-	int x = m_iPlayHeadX - (qtractorScrollView::contentsX() + w);
 	if (x > 0)
 		pViewport->update(QRect(x, 0, w, pViewport->height()));
 	else
