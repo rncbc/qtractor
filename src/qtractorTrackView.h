@@ -423,6 +423,9 @@ private:
 	int m_iEditHeadX;
 	int m_iEditTailX;
 
+	// Record rolling update width.
+	int m_iRecordWidth;
+
 	// Paste interim parameters.
 	unsigned short m_iPasteCount;
 	unsigned long  m_iPastePeriod;
