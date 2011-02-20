@@ -115,7 +115,7 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 
 void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	unsigned long iClipStart, unsigned long iClipOffset,
-	unsigned long iClipLength, float fTimeStretch )
+	unsigned long iClipLength, float fTimeStretch, float fPitchShift )
 {
 	Item *pItem = new Item(ResizeClip, pClip, pClip->track());
 	pItem->clipStart  = iClipStart;
@@ -141,6 +141,8 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 				static_cast<qtractorMidiClip *> (pClip), fTimeStretch);
 		}
 	}
+	if (fPitchShift > 0.0f)
+		pItem->pitchShift = fPitchShift;
 	m_items.append(pItem);
 }
 
@@ -442,13 +444,17 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			unsigned long iOldFadeIn = pClip->fadeInLength();
 			unsigned long iOldFadeOut = pClip->fadeOutLength();
 			float fOldTimeStretch = 0.0f;
+			float fOldPitchShift  = 0.0f;
 			qtractorAudioClip *pAudioClip = NULL;
 			if (pTrack->trackType() == qtractorTrack::Audio) {
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 				if (pAudioClip) {
-					if (pItem->timeStretch > 0.0f)
+					if (pItem->timeStretch > 0.0f) {
 						fOldTimeStretch = pAudioClip->timeStretch();
-					pAudioClip->close(); // Scrap peak file.
+						pAudioClip->close(); // Scrap peak file.
+					}
+					if (pItem->pitchShift > 0.0f)
+						fOldPitchShift = pAudioClip->pitchShift();
 				}
 			}
 			else
@@ -461,9 +467,15 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pClip->setClipLength(pItem->clipLength);
 			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			if (pAudioClip && pItem->timeStretch > 0.0f) {
-				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pItem->timeStretch = fOldTimeStretch;
+			if (pAudioClip) {
+				if (pItem->timeStretch > 0.0f) {
+					pAudioClip->setTimeStretch(pItem->timeStretch);
+					pItem->timeStretch = fOldTimeStretch;
+				}
+				if (pItem->pitchShift > 0.0f) {
+					pAudioClip->setPitchShift(pItem->pitchShift);
+					pItem->pitchShift = fOldPitchShift;
+				}
 			}
 			if (pItem->editCommand) {
 				if (bRedo)

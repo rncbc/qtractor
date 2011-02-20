@@ -60,7 +60,7 @@ public:
 		unsigned long iClipLength);
 	void resizeClip(qtractorClip *pClip, unsigned long iClipStart,
 		unsigned long iClipOffset, unsigned long iClipLength,
-		float fTimeStretch = 0.0f);
+		float fTimeStretch = 0.0f, float fPitchShift = 0.0f);
 	void gainClip(qtractorClip *pClip, float fGain);
 	void fadeInClip(qtractorClip *pClip, unsigned long iFadeInLength,
 		qtractorClip::FadeType fadeInType);
