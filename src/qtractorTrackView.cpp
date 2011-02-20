@@ -1353,6 +1353,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		moveRubberBand(&m_pRubberBand, m_rectDrag);
 		qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 		selectRect(m_rectDrag, m_selectMode);
+		showToolTip(m_rectDrag, m_iDraggingX);
 		break;
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()

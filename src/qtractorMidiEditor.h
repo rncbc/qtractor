@@ -293,6 +293,9 @@ public:
 	// Lost focus handler.
 	void focusOut(qtractorScrollView *pScrollView);
 
+	// Show selection tooltip...
+	void showToolTip(qtractorScrollView *pScrollView, const QRect& rect) const;
+
 	// MIDI event tool tip helper.
 	QString eventToolTip(qtractorMidiEvent *pEvent,
 		long iTimeDelta = 0, int iNoteDelta = 0, int iValueDelta = 0) const;

@@ -2292,13 +2292,16 @@ void qtractorMidiEditor::dragMoveUpdate (
 		// Just about to start rubber-banding...
 		m_dragState = DragSelect;
 		// Fall thru...
-	case DragSelect:
+	case DragSelect: {
 		// Set new rubber-band extents...
+		const QRect& rect = QRect(m_posDrag, pos).normalized();
 		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
 		if (modifiers & Qt::ControlModifier)
 			flags |= SelectToggle;
-		updateDragSelect(pScrollView, QRect(m_posDrag, pos).normalized(), flags);
+		updateDragSelect(pScrollView, rect, flags);
+		showToolTip(pScrollView, rect);
 		break;
+	}
 	case DragMove:
 	case DragPaste:
 		// Drag-moving...
@@ -3709,6 +3712,34 @@ void qtractorMidiEditor::focusOut ( qtractorScrollView *pScrollView )
 {
 	if (m_dragState == DragStep && m_pEditPaste == pScrollView)
 		resetDragState(pScrollView);
+}
+
+
+// Show selection tooltip...
+void qtractorMidiEditor::showToolTip (
+	qtractorScrollView *pScrollView, const QRect& rect ) const
+{
+	if (pScrollView == NULL)
+		return;
+
+	if (!m_bToolTips)
+		return;
+
+	if (m_pTimeScale == NULL)
+		return;
+
+	unsigned long iFrameStart = m_pTimeScale->frameSnap(
+		m_iOffset + m_pTimeScale->frameFromPixel(rect.left()));
+	unsigned long iFrameEnd = m_pTimeScale->frameSnap(
+		iFrameStart + m_pTimeScale->frameFromPixel(rect.width()));
+
+	QToolTip::showText(
+		QCursor::pos(),
+		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
+			.arg(m_pTimeScale->textFromFrame(iFrameStart))
+			.arg(m_pTimeScale->textFromFrame(iFrameEnd))
+			.arg(m_pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
+		pScrollView->viewport());
 }
 
 
