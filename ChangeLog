@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Floating tool-tips now being shown also while
+  on mouse rubber-banding (drag-select).
+
 - Audio clip pitch-shifting change fixing; also,
   tooltips now showing semitones units instead of
   a clueless percentage.
