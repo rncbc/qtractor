@@ -472,13 +472,11 @@ void qtractorClipForm::accept (void)
 			if (iClipStart  != m_pClip->clipStart()  ||
 				iClipOffset != m_pClip->clipOffset() ||
 				iClipLength != m_pClip->clipLength() ||
-				fTimeStretch > 0.0f) {
+				fTimeStretch > 0.0f || fPitchShift > 0.0f) {
 				pClipCommand->resizeClip(m_pClip,
-					iClipStart, iClipOffset, iClipLength, fTimeStretch);
+					iClipStart, iClipOffset, iClipLength,
+					fTimeStretch, fPitchShift);
 			}
-			// Pitch-shifting changes...
-			if (fPitchShift > 0.0f)
-				pClipCommand->pitchShiftClip(m_pClip, fPitchShift);
 			// Fade in changes...
 			if (iFadeInLength != m_pClip->fadeInLength()
 				|| fadeInType != m_pClip->fadeInType())

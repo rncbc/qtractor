@@ -445,8 +445,8 @@ QString qtractorAudioClip::toolTip (void) const
 				sToolTip += QObject::tr("\n\t(%1% time stretch)")
 					.arg(100.0f * m_pBuff->timeStretch(), 0, 'g', 3);
 			if (m_pBuff->isPitchShift())
-				sToolTip += QObject::tr("\n\t(%1% pitch shift)")
-					.arg(100.0f * m_pBuff->pitchShift(), 0, 'g', 3);
+				sToolTip += QObject::tr("\n\t(%1 semitones pitch shift)")
+					.arg(12.0f * ::logf(m_pBuff->pitchShift()) / M_LN2, 0, 'g', 2);
 		}
 	}
 

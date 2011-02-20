@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip pitch-shifting change fixing; also,
+  tooltips now showing semitones units instead of
+  a clueless percentage.
+
 - Rendering audio wave-forms while recording is
   now a little bit smoother than before.
 
