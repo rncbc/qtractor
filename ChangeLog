@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Removed the misleading "(Any") special channel
+  value while on MIDI controllers/learn dialog.
+
 - Floating tool-tips now being shown also while
   on mouse rubber-banding (drag-select).
 
