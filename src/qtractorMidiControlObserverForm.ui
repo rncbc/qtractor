@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,13 +77,13 @@
        <property name="toolTip">
         <string>MIDI channel</string>
        </property>
-       <property name="specialValueText">
-        <string>(Any)</string>
-       </property>
        <property name="accelerated">
         <bool>false</bool>
        </property>
-       <property name="maximum">
+	   <property name="minimum">
+		<number>1</number>
+	   </property>
+	   <property name="maximum">
         <number>16</number>
        </property>
       </widget>
