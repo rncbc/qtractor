@@ -1257,7 +1257,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		#endif
 			break;
 		case LV2_UI_TYPE_QT4:
-		#ifdef CONFIG_LV2_QT4_UI:
+		#ifdef CONFIG_LV2_QT4_UI
 			if (m_pQt4Widget) m_pQt4Widget->show();
 		#endif
 			break;
