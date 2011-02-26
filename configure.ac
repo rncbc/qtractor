@@ -555,7 +555,7 @@ if test "x$ac_lv2" = "xyes"; then
          AC_DEFINE(CONFIG_LV2_QT4_UI, 1, [Define if LV2 QT4 UI extension is available.])
       fi
    else
-      ac_lv2_qt4_ui = "no"
+      ac_lv2_qt4_ui="no"
    fi
 fi
 

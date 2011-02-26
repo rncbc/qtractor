@@ -956,30 +956,6 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 		return;
 
 	int iNumUIs = slv2_uis_size(m_slv2_uis);
-//--TEST-BEGIN--
-	qDebug("DEBUG> ---UIs-BEGIN--");
-	SLV2Value gtk_type = slv2_value_new_uri(g_slv2_world, LV2_GTK_UI_URI);
-	SLV2Value qt4_type = slv2_value_new_uri(g_slv2_world, "http://lv2plug.in/ns/extensions/ui#Qt4UI");
-	SLV2Value ext_type = slv2_value_new_uri(g_slv2_world, "http://lv2plug.in/ns/extensions/ui#external");
-	for (int i = 0; i < iNumUIs; ++i) {
-		SLV2UI ui = slv2_uis_get_at(m_slv2_uis, i);
-		SLV2Value uri = slv2_ui_get_uri(ui);
-		qDebug("DEBUG> uri: \"%s\"", slv2_value_as_string(uri));
-		SLV2Values cs = slv2_ui_get_classes(ui);
-		int iNumClasses = slv2_values_size(cs);
-		for (int j = 0; j < iNumClasses; ++j) {
-			SLV2Value c = slv2_values_get_at(cs, j);
-			qDebug("DEBUG> class: \"%s\"", slv2_value_as_string(c));
-		}
-		qDebug("DEBUG> gtk_type: %d", slv2_ui_supported(ui, gtk_type));
-		qDebug("DEBUG> qt4_type: %d", slv2_ui_supported(ui, qt4_type));
-		qDebug("DEBUG> ext_type: %d", slv2_ui_supported(ui, ext_type));
-	}
-	slv2_value_free(gtk_type);
-	slv2_value_free(qt4_type);
-	slv2_value_free(ext_type);
-	qDebug("DEBUG> ---UIs-END--");
-//--TEST-END--	
 	for (int i = 0; i < iNumUIs; ++i) {
 		SLV2UI ui = slv2_uis_get_at(m_slv2_uis, i);
 	#ifdef CONFIG_LV2_EXTERNAL_UI
