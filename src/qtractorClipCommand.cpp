@@ -208,6 +208,12 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip,
 }
 
 
+void qtractorClipCommand::updateClip ( qtractorClip *pClip )
+{
+	m_items.append(new Item(UpdateClip, pClip, pClip->track()));
+}
+
+
 // Special clip record nethod.
 bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 {
@@ -553,6 +559,10 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->clipLength = iOldLength;
 			pItem->fadeOutLength = iOldFadeOut;
 			pSession->updateTrack(pTrack);
+			break;
+		}
+		case UpdateClip: {
+			pClip->open();
 			break;
 		}
 		default:

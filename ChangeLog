@@ -5,7 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
-- Removed the misleading "(Any") special channel
+- Force update/close of all MIDI clips and their
+  respective editors (piano-roll) if open, when
+  changing the global session tempo (BPM).
+
+- Removed the misleading "(Any)" special channel
   value while on MIDI controllers/learn dialog.
 
 - Floating tool-tips now being shown also while
