@@ -260,6 +260,7 @@ void qtractorOscServer::readyReadSlot (void)
 			while (data[i] != char(0))
 				types += data[i++];
 			if (!types.isEmpty()) {
+				++i; // Skip char(0)...
 				QList<QVariant> list;
 				for (int j = 0; j < types.size(); ++j) {
 					QChar type = types.at(j);
