@@ -172,6 +172,9 @@ public:
 	// LV2 UI handle accessor.
 	LV2UI_Handle lv2_ui_handle() const;
 
+	// LV2 UI cleanup method.
+	void lv2_ui_cleanup() const;
+
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
 		{ m_bEditorClosed = bClosed; }

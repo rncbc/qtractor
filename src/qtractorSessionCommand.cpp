@@ -78,22 +78,28 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 	if (m_fTempo > 0.0f) {
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
-			if (pTrack->trackType() == qtractorTrack::Audio) {
-				for (qtractorClip *pClip = pTrack->clips().first();
-						pClip; pClip = pClip->next()) {
-					qtractorAudioClip *pAudioClip
-						= static_cast<qtractorAudioClip *> (pClip);
-					if (pAudioClip) {
-						if (m_pClipCommand == NULL)
-							m_pClipCommand = new qtractorClipCommand(name());
-						if (pSession->isAutoTimeStretch()) {
+			for (qtractorClip *pClip = pTrack->clips().first();
+					pClip; pClip = pClip->next()) {
+				if (m_pClipCommand == NULL)
+					m_pClipCommand = new qtractorClipCommand(name());
+				switch (pTrack->trackType()) {
+				case qtractorTrack::Audio:
+					if (pSession->isAutoTimeStretch()) {
+						qtractorAudioClip *pAudioClip
+							= static_cast<qtractorAudioClip *> (pClip);
+						if (pAudioClip) {
 							float fTimeStretch = (pSession->tempo()
 								* pAudioClip->timeStretch()) / m_fTempo;
 							m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
-						} else {
-							m_pClipCommand->resetClip(pClip, pClip->clipLength());
 						}
+					} else {
+						m_pClipCommand->resetClip(pClip, pClip->clipLength());
 					}
+					break;
+				case qtractorTrack::Midi:
+					m_pClipCommand->updateClip(pClip);
+				default:
+					break;
 				}
 			}
 		}
@@ -154,7 +160,7 @@ bool qtractorSessionTempoCommand::redo (void)
 	if (m_iBeatType > 0 || m_iTicksPerBeat > 0 || m_iBeatDivisor > 0)
 		pSession->updateTimeResolution();
 
-	// In case we have audio clips around...
+	// In case we have clips around...
 	if (m_pClipCommand)
 		m_pClipCommand->redo();
 

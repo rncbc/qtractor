@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.27, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.28, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -539,6 +539,15 @@ if test "x$ac_lv2" = "xyes"; then
    fi
 fi
 
+# Check for SLV2 new UI instantiation availability.
+if test "x$ac_lv2" = "xyes"; then
+   LIBS="$ac_lv2_libs $LIBS"
+   AC_CHECK_LIB(slv2, slv2_ui_instance_new, [ac_lv2_ui_new="yes"], [ac_lv2_ui_new="no"])
+   if test "x$ac_lv2_ui_new" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_NEW, 1, [Define if slv2_ui_instance_new is available.])
+   fi
+fi
+
 # Check for JACK session event callback availability.
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])
@@ -868,6 +877,7 @@ echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
+echo "  LV2 Plug-in UI instantiation (NEW) . . . . . . . .: $ac_lv2_ui_new"
 echo
 echo "  JACK Session support (EXPERIMENTAL)  . . . . . . .: $ac_jack_session"
 echo
