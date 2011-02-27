@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.29, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.30, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -784,7 +784,7 @@ if test "x$ac_lv2_gtk_ui" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_GTK_UI, 1, [Define if LV2 GTK UI extension is available.])
    else
       AC_MSG_WARN([*** LV2 GTK UI extension will be disabled.])
-      ac_lv2_gtk_ui = "no"
+      ac_lv2_gtk_ui="no"
    fi
 fi
 if test "x$ac_lv2_external_ui" = "xyes"; then
