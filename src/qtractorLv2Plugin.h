@@ -273,6 +273,11 @@ protected:
 	struct _GtkWidget *m_pGtkWindow;
 #endif
 
+#ifdef CONFIG_LV2_QT4_UI
+	// Our own Qt4 UI widget (QX11EmebedContainer).
+	QWidget *m_pQt4Widget;
+#endif
+
 #endif
 
 #ifdef CONFIG_LV2_PERSIST

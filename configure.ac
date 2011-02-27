@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.28, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.29, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -111,6 +111,11 @@ AC_ARG_ENABLE(lv2-gtk-ui,
   AC_HELP_STRING([--enable-lv2-gtk-ui], [enable LV2 plug-in GTK UI support (default=yes)]),
   [ac_lv2_gtk_ui="$enableval"],
   [ac_lv2_gtk_ui="yes"])
+
+AC_ARG_ENABLE(lv2-qt4-ui,
+  AC_HELP_STRING([--enable-lv2-qt4-ui], [enable LV2 plug-in QT4 UI support (default=no)]),
+  [ac_lv2_qt4_ui="$enableval"],
+  [ac_lv2_qt4_ui="no"])
 
 AC_ARG_ENABLE(lv2-external-ui,
   AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
@@ -533,6 +538,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2="no"
       ac_lv2_event="no"
       ac_lv2_gtk_ui="no"
+      ac_lv2_qt4_ui="no"
       ac_lv2_external_ui="no"
       ac_lv2_saverestore="no"
       ac_lv2_persist="no"
@@ -545,6 +551,11 @@ if test "x$ac_lv2" = "xyes"; then
    AC_CHECK_LIB(slv2, slv2_ui_instance_new, [ac_lv2_ui_new="yes"], [ac_lv2_ui_new="no"])
    if test "x$ac_lv2_ui_new" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_UI_NEW, 1, [Define if slv2_ui_instance_new is available.])
+      if test "x$ac_lv2_qt4_ui" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_QT4_UI, 1, [Define if LV2 QT4 UI extension is available.])
+      fi
+   else
+      ac_lv2_qt4_ui="no"
    fi
 fi
 
@@ -750,6 +761,7 @@ else
    AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
    ac_lv2_event="no"
    ac_lv2_gtk_ui="no"
+   ac_lv2_qt4_ui="no"
    ac_lv2_external_ui="no"
    ac_lv2_saverestore="no"
    ac_lv2_persist="no"
@@ -873,11 +885,12 @@ echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 Plug-in UI instantiation (NEW) . . . . . . . .: $ac_lv2_ui_new"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
+echo "  LV2 Plug-in QT4 UI support (NEW) . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
-echo "  LV2 Plug-in UI instantiation (NEW) . . . . . . . .: $ac_lv2_ui_new"
 echo
 echo "  JACK Session support (EXPERIMENTAL)  . . . . . . .: $ac_jack_session"
 echo
