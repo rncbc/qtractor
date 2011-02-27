@@ -211,6 +211,8 @@ public slots:
 	void addAudioClipSlot(const QVariant& v);
 	void addAudioClipOnUniqueTrackSlot(const QVariant& v);
 	void ensureUniqueTrackSlot(const QVariant& v);
+	void setGlobalTempoSlot(const QVariant& v);
+	void advanceLoopRangeSlot(const QVariant& v);
 
 private:
 

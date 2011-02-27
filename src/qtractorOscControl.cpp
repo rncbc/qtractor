@@ -29,6 +29,7 @@
 
 #include "qtractorOscControl.h"
 
+
 //---------------------------------------------------------------------------
 // qtractorOscBase
 
@@ -335,11 +336,11 @@ void qtractorOscClient::sendData ( const QString& sPath, const QVariant& v )
 }
 
 
-
 //---------------------------------------------------------------------------
 // OSC command slots implementation...
 
 #include "qtractorSession.h"
+#include "qtractorSessionCommand.h"
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
 #include "qtractorAudioClip.h"
@@ -362,6 +363,10 @@ qtractorOscControl::qtractorOscControl (void)
 		this, SLOT(addAudioClipOnUniqueTrackSlot(const QVariant&)));
 	m_pOscServer->addPath("/EnsureUniqueTrack", QVariant::String,
 		this, SLOT(ensureUniqueTrackSlot(const QVariant&)));
+	m_pOscServer->addPath("/SetGlobalTempo", QVariant::List,
+		this, SLOT(setGlobalTempoSlot(const QVariant&)));
+	m_pOscServer->addPath("/AdvanceLoopRange", QVariant::List,
+		this, SLOT(advanceLoopRangeSlot(const QVariant&)));
 
 	// Pseudo-singleton reference setup.
 	g_pOscControl = this;	
@@ -458,7 +463,7 @@ void qtractorOscControl::addAudioClipSlot ( const QVariant& v )
 // EnsureUniqueTrackExistsForClip s:filename of clip
 //
 // Prepare a track associated with a given audio clip.
-// Subsequent calls to AddAudioClipOnUniqueTrack will use the newly created track
+// Subsequent calls to AddAudioClipOnUniqueTrack will use the newly created track.
 //
 void qtractorOscControl::ensureUniqueTrackSlot ( const QVariant& v )
 {
@@ -466,7 +471,7 @@ void qtractorOscControl::ensureUniqueTrackSlot ( const QVariant& v )
 	const QString& sFilename = v.toString();
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorOscControl::ensureUniqueTrackExistsForClipSlot(\"%s\"",
+	qDebug("qtractorOscControl::ensureUniqueTrackExistsForClipSlot(\"%s\")",
 		sFilename.toUtf8().constData());
 #endif
 
@@ -491,32 +496,40 @@ void qtractorOscControl::ensureUniqueTrackSlot ( const QVariant& v )
 }
 
 
-// AddAudioClipOnUniqueTrack s:filename i:start i:offset i:length
+// AddAudioClipOnUniqueTrack s:filename i:start i:offset i:length i:fade f:gain
 //
 // Put an audio clip on a unique track. All clips with this filename will go
-// on the same track. You must call EnsureUniqueTrackExistsForClip first.
+// on the same track. Start location is relative to the current edit tail.
 //
 void qtractorOscControl::addAudioClipOnUniqueTrackSlot ( const QVariant& v )
 {
 	// Parse arguments...
 	QList<QVariant> args = v.toList();
 
-	const QString& sFilename = args.at(0).toString();
+	const QString& sFilename = args.at(5).toString();
 	unsigned long iClipStart
-		= (args.count() > 1 ? args.at(1).toULongLong() : 0);
+		= (args.count() > 1 ? args.at(0).toULongLong() : 0);
 	unsigned long iClipOffset
-		= (args.count() > 2 ? args.at(2).toULongLong() : 0);
+		= (args.count() > 2 ? args.at(1).toULongLong() : 0);
 	unsigned long iClipLength
-		= (args.count() > 3 ? args.at(3).toULongLong() : 0);
+		= (args.count() > 3 ? args.at(2).toULongLong() : 0);
+	unsigned long iClipFade
+		= (args.count() > 4 ? args.at(3).toULongLong() : 0);
+	float fClipGain
+		= (args.count() > 5 ? args.at(4).toFloat() : 0.0f);
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorOscControl::addAudioClipUniqueTrackSlot(\"%s\", %lu, %lu, %lu)",
-		sFilename.toUtf8().constData(), iClipStart, iClipOffset, iClipLength);
+	qDebug("qtractorOscControl::addAudioClipUniqueTrackSlot(\"%s\", %lu, %lu, %lu, %lu, %g)",
+		sFilename.toUtf8().constData(), iClipStart, iClipOffset, iClipLength, iClipFade, fClipGain);
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
+
+	// Relative position
+	unsigned long iEditTail = pSession->editTail();
+	iClipStart += iEditTail;
 
 	// Find a track with this clip on it already
 	bool bFound = false;
@@ -549,8 +562,67 @@ void qtractorOscControl::addAudioClipOnUniqueTrackSlot ( const QVariant& v )
 	pAudioClip->setClipOffset(iClipOffset);
 	if (iClipLength > 0)
 		pAudioClip->setClipLength(iClipLength);
+	pAudioClip->setFadeInType(qtractorClip::Linear);
+	pAudioClip->setFadeOutType(qtractorClip::Linear);
+	pAudioClip->setFadeInLength(iClipFade);
+	pAudioClip->setFadeOutLength(iClipFade);
+	pAudioClip->setClipGain(fClipGain);
 	pClipCommand->addClip(pAudioClip, pTrack);
 	pSession->execute(pClipCommand);
+}
+
+
+// SetGlobalTempo f:tempo-bpm, i:beats-per-bar
+//
+// Sets the global tempo for the session.
+//
+void qtractorOscControl::setGlobalTempoSlot ( const QVariant& v )
+{
+	// Parse arguments...
+	QList<QVariant> args = v.toList();
+
+	float fTempo = args.at(0).toFloat();
+	int iBeatsPerBar = args.at(1).toInt();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorOscControl::setGlobalTempoSlot(%f, %d)", fTempo, iBeatsPerBar);
+#endif
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorSessionTempoCommand *pTempoCommand
+		= new qtractorSessionTempoCommand(pSession, fTempo, 0, iBeatsPerBar);
+	pSession->execute(pTempoCommand);
+}
+
+
+// advanceLoopRange i:edit-head, i:edit-tail
+//
+// Advances the edit head and tail forward.
+//
+void qtractorOscControl::advanceLoopRangeSlot ( const QVariant& v )
+{
+	// Parse arguments...
+	QList<QVariant> args = v.toList();
+
+	unsigned long iEditHead = args.at(0).toULongLong();
+	unsigned long iEditTail = args.at(1).toULongLong();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorOscControl::advanceLoopRangeSlot(%ul, %ul)", iEditHead, iEditTail);
+#endif
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorSessionLoopCommand *pLoopCommand
+		= new qtractorSessionLoopCommand(pSession,
+			pSession->loopEnd() + iEditHead,
+			pSession->loopEnd() + iEditTail);
+	pSession->execute(pLoopCommand);
 }
 
 
