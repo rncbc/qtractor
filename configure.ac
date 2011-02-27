@@ -113,9 +113,9 @@ AC_ARG_ENABLE(lv2-gtk-ui,
   [ac_lv2_gtk_ui="yes"])
 
 AC_ARG_ENABLE(lv2-qt4-ui,
-  AC_HELP_STRING([--enable-lv2-qt4-ui], [enable LV2 plug-in QT4 UI support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-qt4-ui], [enable LV2 plug-in QT4 UI support (default=no)]),
   [ac_lv2_qt4_ui="$enableval"],
-  [ac_lv2_qt4_ui="yes"])
+  [ac_lv2_qt4_ui="no"])
 
 AC_ARG_ENABLE(lv2-external-ui,
   AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
