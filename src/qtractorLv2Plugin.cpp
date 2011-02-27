@@ -1202,18 +1202,27 @@ void qtractorLv2Plugin::idleEditor (void)
 }
 
 
-#ifdef CONFIG_LV2_GTK_UI
+#ifdef CONFIG_LV2_UI
 
 void qtractorLv2Plugin::closeEditorEx (void)
 {
+#ifdef CONFIG_LV2_GTK_UI
 	if (m_pGtkWindow) {
 		m_pGtkWindow = NULL;	
 		setEditorClosed(true);
 		lv2_ui_cleanup();
 	}
+#endif
+#ifdef CONFIG_LV2_QT4_UI
+	if (m_pQt4Widget) {
+		m_pQt4Widget = NULL;	
+		setEditorClosed(true);
+		lv2_ui_cleanup();
+	}
+#endif
 }
 
-#endif
+#endif	// CONFIG_LV2_UI
 
 
 // GUI editor visibility state.
