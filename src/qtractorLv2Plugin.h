@@ -33,8 +33,11 @@
 #define  QTRACTOR_LV2_MIDI_EVENT_ID 1
 #endif
 
-#if defined(CONFIG_LV2_GTK_UI) || defined(CONFIG_LV2_EXTERNAL_UI)
+#if defined(CONFIG_LV2_GTK_UI) || defined(CONFIG_LV2_QT4_UI) || defined(CONFIG_LV2_EXTERNAL_UI)
 #define CONFIG_LV2_UI 1
+#endif
+
+#ifdef CONFIG_LV2_UI
 // LV2 UI data/instance access support.
 #include "lv2_data_access.h"
 #include "lv2_instance_access.h"
@@ -181,9 +184,7 @@ public:
 	bool isEditorClosed() const
 		{ return m_bEditorClosed; }
 
-#ifdef CONFIG_LV2_GTK_UI
 	void closeEditorEx();
-#endif
 
 #endif
 
