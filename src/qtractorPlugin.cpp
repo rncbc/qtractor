@@ -1076,6 +1076,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 
 	// Destroy any MIDI manager still there...
 	if (m_pMidiManager) {
+		m_bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
 		qtractorMidiManager::deleteMidiManager(m_pMidiManager);
 		m_pMidiManager = NULL;
 	}
