@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Dedicated audio outputs setting for instrument
+  plugins inserted on the MIDI track properties
+  dialog were not being honored, now fixed.
+
 - Force update/close of all MIDI clips and their
   respective editors (piano-roll) if open, when
   changing the global session tempo (BPM).
