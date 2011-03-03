@@ -276,7 +276,9 @@ protected:
 
 #ifdef CONFIG_LV2_QT4_UI
 	// Our own Qt4 UI widget (QX11EmebedContainer).
-	QWidget *m_pQt4Widget;
+	class EventFilter;
+	EventFilter *m_pQt4Filter;
+	QWidget     *m_pQt4Widget;
 #endif
 
 #endif
