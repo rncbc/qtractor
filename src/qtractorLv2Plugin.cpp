@@ -225,7 +225,34 @@ static void qtractor_lv2_gtk_window_destroy (
 #endif	// CONFIG_LV2_GTK_UI
 
 #ifdef CONFIG_LV2_QT4_UI
+
 #define LV2_QT4_UI_URI "http://lv2plug.in/ns/extensions/ui#Qt4UI"
+
+class qtractorLv2Plugin::EventFilter : public QObject
+{
+public:
+
+	// Constructor.
+	EventFilter(qtractorLv2Plugin *pLv2Plugin, QWidget *pQt4Widget)
+		: QObject(), m_pLv2Plugin(pLv2Plugin), m_pQt4Widget(pQt4Widget)
+		{ m_pQt4Widget->installEventFilter(this); }
+
+	bool eventFilter(QObject *pObject, QEvent *pEvent)
+	{
+		if (pObject == static_cast<QObject *> (m_pQt4Widget)
+			&& pEvent->type() == QEvent::Close)
+			m_pLv2Plugin->closeEditorEx();
+
+		return QObject::eventFilter(pObject, pEvent);
+	}
+
+private:
+	
+	// Instance variables.
+	qtractorLv2Plugin *m_pLv2Plugin;
+	QWidget           *m_pQt4Widget;
+};
+
 #endif
 
 #endif	// CONFIG_LV2_UI
@@ -636,6 +663,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pGtkWindow(NULL)
 	#endif
 	#ifdef CONFIG_LV2_QT4_UI
+		, m_pQt4Filter(NULL)
 		, m_pQt4Widget(NULL)
 	#endif
 	#endif
@@ -1074,6 +1102,7 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 		if (m_lv2_ui_type == LV2_UI_TYPE_QT4) {
 			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
+			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);
 		//	m_pQt4Widget->show();	
 		}
 	#endif
@@ -1129,10 +1158,14 @@ void qtractorLv2Plugin::closeEditor (void)
 
 #ifdef CONFIG_LV2_QT4_UI
 	if (m_lv2_ui_type == LV2_UI_TYPE_QT4) {
+		if (m_pQt4Filter) {
+			delete m_pQt4Filter;
+			m_pQt4Filter = NULL;
+		}
 		if (m_pQt4Widget) {
-			delete m_pQt4Widget;
+		//	delete m_pQt4Widget;
 			m_pQt4Widget = NULL;
-		//	lv2_ui_cleanup();
+			lv2_ui_cleanup();
 		}
 	}
 #endif
@@ -1206,6 +1239,10 @@ void qtractorLv2Plugin::idleEditor (void)
 
 void qtractorLv2Plugin::closeEditorEx (void)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLv2Plugin[%p]::closeEditorEx()", this);
+#endif
+
 #ifdef CONFIG_LV2_GTK_UI
 	if (m_pGtkWindow) {
 		m_pGtkWindow = NULL;	
@@ -1213,6 +1250,7 @@ void qtractorLv2Plugin::closeEditorEx (void)
 		lv2_ui_cleanup();
 	}
 #endif
+
 #ifdef CONFIG_LV2_QT4_UI
 	if (m_pQt4Widget) {
 		m_pQt4Widget = NULL;	
