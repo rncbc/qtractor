@@ -3829,6 +3829,9 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_GTK_UI
 	list << tr("LV2 Plug-in GTK UI support disabled.");
 #endif
+#ifndef CONFIG_LV2_QT4_UI
+	list << tr("LV2 Plug-in QT4 UI support disabled.");
+#endif
 #ifndef CONFIG_LV2_EXTERNAL_UI
 	list << tr("LV2 Plug-in External UI support disabled.");
 #endif

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.32, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.33, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -115,7 +115,7 @@ AC_ARG_ENABLE(lv2-gtk-ui,
 AC_ARG_ENABLE(lv2-qt4-ui,
   AC_HELP_STRING([--enable-lv2-qt4-ui], [enable LV2 plug-in QT4 UI support (default=no)]),
   [ac_lv2_qt4_ui="$enableval"],
-  [ac_lv2_qt4_ui="no"])
+  [ac_lv2_qt4_ui="yes"])
 
 AC_ARG_ENABLE(lv2-external-ui,
   AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
