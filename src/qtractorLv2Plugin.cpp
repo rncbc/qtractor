@@ -240,8 +240,10 @@ public:
 	bool eventFilter(QObject *pObject, QEvent *pEvent)
 	{
 		if (pObject == static_cast<QObject *> (m_pQt4Widget)
-			&& pEvent->type() == QEvent::Close)
+			&& pEvent->type() == QEvent::Close) {
+			m_pQt4Widget = NULL;
 			m_pLv2Plugin->closeEditorEx();
+		}
 
 		return QObject::eventFilter(pObject, pEvent);
 	}
@@ -1204,6 +1206,17 @@ void qtractorLv2Plugin::idleEditor (void)
 	if (m_lv2_ui_widget == NULL)
 		return;
 
+	// Do we need some clean-up...?
+    if (isEditorClosed()) {
+		setEditorClosed(false);
+		if (isFormVisible())
+			form()->toggleEditor(false);
+		m_bEditorVisible = false;
+		// Do really close now.
+		closeEditor();
+		return;
+	}
+
 	if (m_piControlOuts && m_pfControlOuts && m_pfControlOutsLast) {
 		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
 		if (ui_descriptor && ui_descriptor->port_event) {
@@ -1225,16 +1238,6 @@ void qtractorLv2Plugin::idleEditor (void)
 	if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 		LV2_EXTERNAL_UI_RUN((lv2_external_ui *) m_lv2_ui_widget);
 #endif
-
-	// Do we need some clean-up...?
-    if (isEditorClosed()) {
-		setEditorClosed(false);
-		if (isFormVisible())
-			form()->toggleEditor(false);
-		m_bEditorVisible = false;
-		// Do really close now.
-		closeEditor();
-	}
 }
 
 
@@ -1249,16 +1252,16 @@ void qtractorLv2Plugin::closeEditorEx (void)
 #ifdef CONFIG_LV2_GTK_UI
 	if (m_pGtkWindow) {
 		m_pGtkWindow = NULL;	
-		setEditorClosed(true);
 		lv2_ui_cleanup();
+		setEditorClosed(true);
 	}
 #endif
 
 #ifdef CONFIG_LV2_QT4_UI
 	if (m_pQt4Widget) {
 		m_pQt4Widget = NULL;	
-		setEditorClosed(true);
 		lv2_ui_cleanup();
+		setEditorClosed(true);
 	}
 #endif
 }
