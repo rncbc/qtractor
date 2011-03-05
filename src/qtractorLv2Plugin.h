@@ -249,7 +249,8 @@ protected:
 
 	QByteArray     m_aEditorTitle;
 	bool           m_bEditorVisible;
-	bool           m_bEditorClosed;
+
+	volatile bool  m_bEditorClosed;
 
 	SLV2UIs        m_slv2_uis;
 	SLV2UI         m_slv2_ui;
