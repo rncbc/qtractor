@@ -265,6 +265,10 @@ protected:
 	LV2_Feature  **m_lv2_ui_features;
 	LV2UI_Widget   m_lv2_ui_widget;
 
+#ifdef CONFIG_LV2_UI_NEW
+	SLV2UIHost     m_slv2_ui_host;
+#endif
+	
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	// Our own external UI host context.
 	lv2_external_ui_host m_lv2_ui_external;
