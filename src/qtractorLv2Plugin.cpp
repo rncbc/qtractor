@@ -661,6 +661,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_slv2_ui_instance(NULL)
 		, m_lv2_ui_features(NULL)
 		, m_lv2_ui_widget(NULL)
+	#ifdef CONFIG_LV2_UI_NEW
+		, m_slv2_ui_host(NULL)
+	#endif
 	#ifdef CONFIG_LV2_GTK_UI
 		, m_pGtkWindow(NULL)
 	#endif
@@ -1074,8 +1077,10 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	default:
 		break;
 	}
+	m_slv2_ui_host = slv2_ui_host_new(this,
+		qtractor_lv2_ui_write, NULL, NULL, NULL);
 	m_slv2_ui_instance = slv2_ui_instance_new(pLv2Type->slv2_plugin(),
-		m_slv2_ui, widget_type, qtractor_lv2_ui_write, this, m_lv2_ui_features);
+		m_slv2_ui, widget_type, m_slv2_ui_host, m_lv2_ui_features);
 #else
 	m_slv2_ui_instance = slv2_ui_instantiate(pLv2Type->slv2_plugin(),
 		m_slv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);
@@ -1186,6 +1191,13 @@ void qtractorLv2Plugin::closeEditor (void)
 		m_slv2_ui_instance = NULL;
 		m_lv2_ui_widget = NULL;
 	}
+
+#ifdef CONFIG_LV2_UI_NEW
+	if (m_slv2_ui_host) {
+		slv2_ui_host_free(m_slv2_ui_host);
+		m_slv2_ui_host = NULL;
+	}
+#endif
 
 	if (m_lv2_ui_features) {
 		delete [] m_lv2_ui_features;
