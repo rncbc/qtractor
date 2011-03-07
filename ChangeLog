@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Make sure given session directory has all the
+  necessary access permisssion (read/write) while
+  on session properties dialog.
+
 - Dedicated audio outputs setting for instrument
   plugins inserted on the MIDI track properties
   dialog were not being honored, now fixed.

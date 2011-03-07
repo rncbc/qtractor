@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -243,9 +243,11 @@ void qtractorSessionForm::changed (void)
 // Stabilize current form state.
 void qtractorSessionForm::stabilizeForm (void)
 {
+	QFileInfo fi(m_ui.SessionDirComboBox->currentText());
+
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.SessionNameLineEdit->text().isEmpty();
-	bValid = bValid && QDir(m_ui.SessionDirComboBox->currentText()).exists();
+	bValid = bValid && fi.isDir() && fi.isReadable() && fi.isWritable();
 //	bValid = bValid && !m_ui.DescriptionTextEdit->text().isEmpty();
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
