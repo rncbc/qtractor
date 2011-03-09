@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.36, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.37, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -810,7 +810,11 @@ if test "x$ac_lv2_saverestore" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_persist" = "xyes"; then
-   AC_CHECK_HEADER(lv2_persist.h, [ac_lv2_persist="yes"], [ac_lv2_persist="no"])
+   AC_CHECK_HEADER(lv2_persist.h, [ac_lv2_persist="yes"], [ac_lv2_persist="no"],
+      [[
+        #include <stdlib.h>
+        #include <lv2.h>
+      ]])
    if test "x$ac_lv2_persist" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PERSIST, 1, [Define if LV2 persist extension is available.])
    else

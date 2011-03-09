@@ -23,8 +23,6 @@
 #ifndef LV2_PERSIST_H
 #define LV2_PERSIST_H
 
-#include <lv2.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -394,9 +394,14 @@ bool qtractorLv2PluginType::open (void)
 	// Check the UI inventory...
 	SLV2UIs uis = slv2_plugin_get_uis(m_slv2_plugin);
 	if (uis) {
+	#ifdef CONFIG_LV2_UI_NEW
+		SLV2_FOREACH(i, uis) {
+			SLV2UI ui = slv2_uis_get(uis, i);
+	#else
 		int iNumUIs = slv2_uis_size(uis);
 		for (int i = 0; i < iNumUIs; ++i) {
 			SLV2UI ui = slv2_uis_get_at(uis, i);
+	#endif
 		#ifdef CONFIG_LV2_EXTERNAL_UI
 			if (slv2_ui_is_a(ui, g_slv2_external_ui_class)) {
 				m_bEditor = true;
@@ -576,7 +581,9 @@ void qtractorLv2PluginType::slv2_close (void)
 	slv2_value_free(g_slv2_qt4_ui_class);
 #endif
 
+#ifndef CONFIG_LV2_UI_NEW
 	slv2_plugins_free(g_slv2_world, g_slv2_plugins);
+#endif
 	slv2_world_free(g_slv2_world);
 
 	g_slv2_input_class   = NULL;
@@ -611,9 +618,14 @@ bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
 
 	unsigned long iIndex = 0;
 
+#ifdef CONFIG_LV2_UI_NEW
+	SLV2_FOREACH(i, g_slv2_plugins) {
+		SLV2Plugin plugin = slv2_plugins_get(g_slv2_plugins, i);
+#else
 	unsigned int iNumPlugins = slv2_plugins_size(g_slv2_plugins);
 	for (unsigned int i = 0; i < iNumPlugins; ++i) {
-		SLV2Plugin  plugin = slv2_plugins_get_at(g_slv2_plugins, i);
+		SLV2Plugin plugin = slv2_plugins_get_at(g_slv2_plugins, i);
+#endif
 		const char *pszUri = slv2_value_as_uri(slv2_plugin_get_uri(plugin));
 		qtractorLv2PluginType *pLv2Type
 			= qtractorLv2PluginType::createType(pszUri, plugin);
@@ -988,9 +1000,14 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	if (m_slv2_uis == NULL)
 		return;
 
+#ifdef CONFIG_LV2_UI_NEW
+	SLV2_FOREACH(i, m_slv2_uis) {
+		SLV2UI ui = slv2_uis_get(m_slv2_uis, i);
+#else
 	int iNumUIs = slv2_uis_size(m_slv2_uis);
 	for (int i = 0; i < iNumUIs; ++i) {
 		SLV2UI ui = slv2_uis_get_at(m_slv2_uis, i);
+#endif
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (slv2_ui_is_a(ui, g_slv2_external_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_EXTERNAL;
@@ -1077,10 +1094,9 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	default:
 		break;
 	}
-	m_slv2_ui_host = slv2_ui_host_new(this,
-		qtractor_lv2_ui_write, NULL, NULL, NULL);
+	m_slv2_ui_host = slv2_ui_host_new(qtractor_lv2_ui_write, NULL, NULL, NULL);
 	m_slv2_ui_instance = slv2_ui_instance_new(pLv2Type->slv2_plugin(),
-		m_slv2_ui, widget_type, m_slv2_ui_host, m_lv2_ui_features);
+		m_slv2_ui, widget_type, m_slv2_ui_host, this, m_lv2_ui_features);
 #else
 	m_slv2_ui_instance = slv2_ui_instantiate(pLv2Type->slv2_plugin(),
 		m_slv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);
@@ -1758,9 +1774,14 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 	// m_display.clear();
 	SLV2ScalePoints points = slv2_port_get_scale_points(plugin, port);
 	if (points) {
+	#ifdef CONFIG_LV2_UI_NEW
+		SLV2_FOREACH(i, points) {
+			SLV2ScalePoint point = slv2_scale_points_get(points, i);
+	#else
 		unsigned short iNumPoints = slv2_scale_points_size(points);
 		for (unsigned short i = 0; i < iNumPoints; ++i) {
 			SLV2ScalePoint point = slv2_scale_points_get_at(points, i);
+	#endif
 			SLV2Value value = slv2_scale_point_get_value(point);
 			SLV2Value label = slv2_scale_point_get_label(point);
 			if (value && label) {

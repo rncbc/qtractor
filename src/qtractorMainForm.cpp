@@ -3829,7 +3829,10 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_SAVERESTORE
 	list << tr("LV2 Plug-in Save/Restore support disabled.");
 #endif
+#ifndef CONFIG_LV2_PERSIST
+	list << tr("LV2 Plug-in Persist support disabled.");
 #endif
+#endif //  CONFIG_LV2
 #ifndef CONFIG_JACK_SESSION
 	list << tr("JACK Session support disabled.");
 #endif
