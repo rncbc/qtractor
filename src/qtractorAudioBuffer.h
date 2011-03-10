@@ -187,7 +187,6 @@ private:
 	qtractorAudioFile *m_pFile;
 
 	qtractorRingBuffer<float> *m_pRingBuffer;
-	qtractorAudioBufferThread *m_pSyncThread;
 
 	unsigned int   m_iThreshold;
 	unsigned int   m_iBufferSize;

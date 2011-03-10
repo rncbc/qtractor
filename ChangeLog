@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Plugin Activate All/Deactivate All menu fixing.
+
 - Make sure given session directory has all the
   necessary access permisssion (read/write) while
   on session properties dialog.
