@@ -848,11 +848,14 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			}
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input MIDI ports...
-			if (pMidiManager) {
-				for (unsigned short j = 0; j < iMidiIns; ++j) {
-					slv2_instance_connect_port(instance,
-						m_piMidiIns[j], pMidiManager->lv2_buffer());
-				}
+			static LV2_Event_Buffer s_dummyLv2Buffer;
+			::memset(&s_dummyLv2Buffer, 0, sizeof(LV2_Event_Buffer)); // FIXME!
+			LV2_Event_Buffer *pLv2Buffer = &s_dummyLv2Buffer;
+			if (pMidiManager)
+				pLv2Buffer = pMidiManager->lv2_buffer();
+			for (unsigned short j = 0; j < iMidiIns; ++j) {
+				slv2_instance_connect_port(instance,
+					m_piMidiIns[j], pLv2Buffer);
 			}
 		#endif
 			// Connect all existing output control ports...
