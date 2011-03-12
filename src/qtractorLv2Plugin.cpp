@@ -686,6 +686,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_piAudioOuts(NULL)
 	#ifdef CONFIG_LV2_EVENT
 		, m_piMidiIns(NULL)
+		, m_piMidiOuts(NULL)
 	#endif
 	#ifdef CONFIG_LV2_UI
 		, m_lv2_ui_type(LV2_UI_TYPE_NONE)
@@ -730,10 +731,13 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		}
 		iControlOuts = iAudioIns = iAudioOuts = 0;
 	#ifdef CONFIG_LV2_EVENT
-		unsigned short iMidiIns = pLv2Type->midiIns();
+		unsigned short iMidiIns  = pLv2Type->midiIns();
+		unsigned short iMidiOuts = pLv2Type->midiOuts();
 		if (iMidiIns > 0)
 			m_piMidiIns = new unsigned long [iMidiIns];
-		iMidiIns = 0;
+		if (iMidiOuts > 0)
+			m_piMidiOuts = new unsigned long [iMidiOuts];
+		iMidiIns = iMidiOuts = 0;
 	#endif
 		unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
 		for (unsigned long i = 0; i < iNumPorts; ++i) {
@@ -757,6 +761,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					if (slv2_port_is_a(plugin, port, g_slv2_audio_class))
 						m_piAudioOuts[iAudioOuts++] = i;
 					else
+				#ifdef CONFIG_LV2_EVENT
+					if (slv2_port_is_a(plugin, port, g_slv2_event_class) ||
+						slv2_port_is_a(plugin, port, g_slv2_midi_class))
+						m_piMidiOuts[iMidiOuts++] = i;
+					else
+				#endif
 					if (slv2_port_is_a(plugin, port, g_slv2_control_class)) {
 						m_piControlOuts[iControlOuts] = i;
 						m_pfControlOuts[iControlOuts] = 0.0f;
@@ -780,6 +790,8 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 
 	// Free up all the rest...
 #ifdef CONFIG_LV2_EVENT
+	if (m_piMidiOuts)
+		delete [] m_piMidiOuts;
 	if (m_piMidiIns)
 		delete [] m_piMidiIns;
 #endif
@@ -843,7 +855,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 #ifdef CONFIG_LV2_EVENT
 	qtractorMidiManager *pMidiManager = NULL;
-	unsigned short iMidiIns = pType->midiIns();
+	unsigned short iMidiIns  = pType->midiIns();
+	unsigned short iMidiOuts = pType->midiOuts();
 	if (iMidiIns > 0)
 		pMidiManager = list()->midiManager();
 #endif
@@ -872,6 +885,10 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input MIDI ports...
 			LV2_Event_Buffer *pLv2Buffer = g_pLv2DummyBuffer;
+			for (unsigned short j = 0; j < iMidiOuts; ++j) {
+				slv2_instance_connect_port(instance,
+					m_piMidiOuts[j], pLv2Buffer);
+			}
 			if (pMidiManager)
 				pLv2Buffer = pMidiManager->lv2_buffer();
 			for (unsigned short j = 0; j < iMidiIns; ++j) {
