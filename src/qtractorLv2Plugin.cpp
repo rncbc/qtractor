@@ -269,8 +269,11 @@ static SLV2Value g_slv2_input_class      = NULL;
 static SLV2Value g_slv2_output_class     = NULL;
 static SLV2Value g_slv2_control_class    = NULL;
 static SLV2Value g_slv2_audio_class      = NULL;
+
+#ifdef CONFIG_LV2_EVENT
 static SLV2Value g_slv2_event_class      = NULL;
 static SLV2Value g_slv2_midi_class       = NULL;
+#endif
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 static SLV2Value g_slv2_external_ui_class = NULL;
@@ -300,6 +303,10 @@ static SLV2Value g_slv2_toggled_prop     = NULL;
 static SLV2Value g_slv2_integer_prop     = NULL;
 static SLV2Value g_slv2_sample_rate_prop = NULL;
 static SLV2Value g_slv2_logarithmic_prop = NULL;
+
+#ifdef CONFIG_LV2_EVENT
+static LV2_Event_Buffer *g_pLv2DummyBuffer = NULL;
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -365,6 +372,7 @@ bool qtractorLv2PluginType::open (void)
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_output_class))
 					m_iAudioOuts++;
 			}
+		#ifdef CONFIG_LV2_EVENT
 			else
 			if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_event_class) ||
 				slv2_port_is_a(m_slv2_plugin, port, g_slv2_midi_class)) {
@@ -374,6 +382,7 @@ bool qtractorLv2PluginType::open (void)
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_output_class))
 					m_iMidiOuts++;
 			}
+		#endif
 		}
 	}
 
@@ -498,9 +507,10 @@ void qtractorLv2PluginType::slv2_open (void)
 	g_slv2_output_class  = slv2_value_new_uri(g_slv2_world, SLV2_PORT_CLASS_OUTPUT);
 	g_slv2_control_class = slv2_value_new_uri(g_slv2_world, SLV2_PORT_CLASS_CONTROL);
 	g_slv2_audio_class   = slv2_value_new_uri(g_slv2_world, SLV2_PORT_CLASS_AUDIO);
+#ifdef CONFIG_LV2_EVENT
 	g_slv2_event_class   = slv2_value_new_uri(g_slv2_world, SLV2_PORT_CLASS_EVENT);
 	g_slv2_midi_class    = slv2_value_new_uri(g_slv2_world, SLV2_EVENT_CLASS_MIDI);
-
+#endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	g_slv2_external_ui_class = slv2_value_new_uri(g_slv2_world,	LV2_EXTERNAL_UI_URI);
 #endif
@@ -535,6 +545,10 @@ void qtractorLv2PluginType::slv2_open (void)
 		SLV2_NAMESPACE_LV2 "sampleRate");
 	g_slv2_logarithmic_prop = slv2_value_new_uri(g_slv2_world,
 		"http://lv2plug.in/ns/dev/extportinfo#logarithmic");
+
+#ifdef CONFIG_LV2_EVENT
+	g_pLv2DummyBuffer = lv2_event_buffer_new(0, LV2_EVENT_AUDIO_STAMP);
+#endif
 }
 
 
@@ -548,6 +562,13 @@ void qtractorLv2PluginType::slv2_close (void)
 #endif
 
 	// Clean up.
+#ifdef CONFIG_LV2_EVENT
+	if (g_pLv2DummyBuffer) {
+		::free(g_pLv2DummyBuffer);
+		g_pLv2DummyBuffer = NULL;
+	}
+#endif
+	
 	slv2_value_free(g_slv2_toggled_prop);
 	slv2_value_free(g_slv2_integer_prop);
 	slv2_value_free(g_slv2_sample_rate_prop);
@@ -566,9 +587,10 @@ void qtractorLv2PluginType::slv2_close (void)
 	slv2_value_free(g_slv2_output_class);
 	slv2_value_free(g_slv2_control_class);
 	slv2_value_free(g_slv2_audio_class);
+#ifdef CONFIG_LV2_EVENT
 	slv2_value_free(g_slv2_event_class);
 	slv2_value_free(g_slv2_midi_class);
-
+#endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	slv2_value_free(g_slv2_external_ui_class);
 #endif
@@ -590,9 +612,10 @@ void qtractorLv2PluginType::slv2_close (void)
 	g_slv2_output_class  = NULL;
 	g_slv2_control_class = NULL;
 	g_slv2_audio_class   = NULL;
+#ifdef CONFIG_LV2_EVENT
 	g_slv2_event_class   = NULL;
 	g_slv2_midi_class    = NULL;
-
+#endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	g_slv2_external_ui_class = NULL;
 #endif
@@ -848,9 +871,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			}
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input MIDI ports...
-			static LV2_Event_Buffer s_dummyLv2Buffer;
-			::memset(&s_dummyLv2Buffer, 0, sizeof(LV2_Event_Buffer)); // FIXME!
-			LV2_Event_Buffer *pLv2Buffer = &s_dummyLv2Buffer;
+			LV2_Event_Buffer *pLv2Buffer = g_pLv2DummyBuffer;
 			if (pMidiManager)
 				pLv2Buffer = pMidiManager->lv2_buffer();
 			for (unsigned short j = 0; j < iMidiIns; ++j) {
