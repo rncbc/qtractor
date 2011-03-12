@@ -241,6 +241,7 @@ protected:
 #ifdef CONFIG_LV2_EVENT
 	// List of MIDI port indexes.
 	unsigned long *m_piMidiIns;
+	unsigned long *m_piMidiOuts;
 #endif
 
 #ifdef CONFIG_LV2_UI
