@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ static inline float cubef2 ( float x )
 qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
-		m_bLogarithmic(false), m_bFeedback(false)
+		m_bLogarithmic(false), m_bFeedback(false), m_bInvert(false)
 {
 }
 
@@ -72,17 +72,19 @@ qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 // MIDI mapped value converters.
 void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 {
-	const float fRatio
-		= float(m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
-//	setScaleValue(float(iValue) / fRatio);
-	subject()->setValue(valueFromScale((float(iValue) / fRatio), m_bLogarithmic));
+	const unsigned short iRatio
+		= (m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
+//	setScaleValue(float(iValue) / float(iRatio));
+	float fScale = float(m_bInvert ? iRatio - iValue : iValue) / float(iRatio);
+	subject()->setValue(valueFromScale(fScale, m_bLogarithmic));
 }
 
 unsigned short qtractorMidiControlObserver::midiValue (void) const
 {
-	const float fRatio
+	const unsigned short iRatio
 		= float(m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
-	return fRatio * scaleValue();
+	unsigned short iValue = float(iRatio) * scaleValue();
+	return (m_bInvert ? iRatio - iValue : iValue);
 }
 
 

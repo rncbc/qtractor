@@ -92,6 +92,9 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	QObject::connect(m_ui.FeedbackCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(change()));
+	QObject::connect(m_ui.InvertCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(change()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(clicked(QAbstractButton *)),
 		SLOT(click(QAbstractButton *)));
@@ -149,6 +152,7 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
+	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
@@ -300,6 +304,9 @@ void qtractorMidiControlObserverForm::accept (void)
 	bool bFeedback = false;
 	if (m_ui.FeedbackCheckBox->isEnabled())
 		bFeedback = m_ui.FeedbackCheckBox->isChecked();
+	bool bInvert = false;
+	if (m_ui.InvertCheckBox->isEnabled())
+		bInvert = m_ui.InvertCheckBox->isChecked();
 
 	// Check whether already mapped...
 	qtractorMidiControlObserver *pMidiObserver
@@ -321,6 +328,7 @@ void qtractorMidiControlObserverForm::accept (void)
 	m_pMidiObserver->setParam(iParam);
 	m_pMidiObserver->setLogarithmic(bLogarithmic);
 	m_pMidiObserver->setFeedback(bFeedback);
+	m_pMidiObserver->setInvert(bInvert);
 #if 0
 	pMidiControl->mapMidiObserver(m_pMidiObserver);
 #else

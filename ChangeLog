@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI controller mapping now with invert value
+  option, with an eye on cross-fading (TESTING).
+
 - Inserting a LV2 instrument/synth plugin on an
   audio track or bus were causing immediate crash,
   now fixed (give or take some event buffer stub).

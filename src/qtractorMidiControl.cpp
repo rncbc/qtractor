@@ -694,6 +694,9 @@ void qtractorMidiControl::loadControllers (
 				else
 				if (eProp.tagName() == "feedback")
 					pController->feedback = qtractorDocument::boolFromText(eProp.text());
+				else
+				if (eProp.tagName() == "invert")
+					pController->invert = qtractorDocument::boolFromText(eProp.text());
 			}
 			controllers.append(pController);
 		}
@@ -719,6 +722,8 @@ void qtractorMidiControl::saveControllers ( qtractorDocument *pDocument,
 			qtractorDocument::textFromBool(pController->logarithmic), &eController);
 		pDocument->saveTextElement("feedback",
 			qtractorDocument::textFromBool(pController->feedback), &eController);
+		pDocument->saveTextElement("invert",
+			qtractorDocument::textFromBool(pController->invert), &eController);
 		pElement->appendChild(eController);
 	}
 }
