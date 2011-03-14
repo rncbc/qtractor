@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.h
 //
 /****************************************************************************
-   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -68,6 +68,11 @@ public:
 	bool isFeedback() const
 		{ return m_bFeedback; }
 
+	void setInvert(bool bInvert)
+		{ m_bInvert = bInvert; }
+	bool isInvert() const
+		{ return m_bInvert; }
+
 	// Normalized scale accessors.
 	void setScaleValue(float fScale)
 		{ setValue(valueFromScale(fScale, m_bLogarithmic)); }
@@ -97,6 +102,7 @@ private:
 	// Property members.
 	bool m_bLogarithmic;
 	bool m_bFeedback;
+	bool m_bInvert;
 };
 
 

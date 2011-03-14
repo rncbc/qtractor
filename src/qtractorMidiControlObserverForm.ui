@@ -125,6 +125,13 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="QCheckBox" name="InvertCheckBox">
+       <property name="text">
+        <string>&amp;Invert</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -146,6 +153,7 @@
   <tabstop>ParamComboBox</tabstop>
   <tabstop>LogarithmicCheckBox</tabstop>
   <tabstop>FeedbackCheckBox</tabstop>
+  <tabstop>InvertCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

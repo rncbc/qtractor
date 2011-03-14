@@ -243,6 +243,7 @@ public:
 		unsigned short param;
 		bool           logarithmic;
 		bool           feedback;
+		bool           invert;
 	};
 
 	typedef QList<Controller *> Controllers;

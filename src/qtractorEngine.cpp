@@ -519,6 +519,7 @@ void qtractorBus::saveControllers (
 		pController->param = m_pMonitorObserver->param();
 		pController->logarithmic = m_pMonitorObserver->isLogarithmic();
 		pController->feedback = m_pMonitorObserver->isFeedback();
+		pController->invert = m_pMonitorObserver->isInvert();
 		controllers.append(pController);
 	}
 
@@ -533,6 +534,7 @@ void qtractorBus::saveControllers (
 		pController->param = pPanObserver->param();
 		pController->logarithmic = pPanObserver->isLogarithmic();
 		pController->feedback = pPanObserver->isFeedback();
+		pController->invert = pPanObserver->isInvert();
 		controllers.append(pController);
 	}
 
@@ -547,6 +549,7 @@ void qtractorBus::saveControllers (
 		pController->param = pGainObserver->param();
 		pController->logarithmic = pGainObserver->isLogarithmic();
 		pController->feedback = pGainObserver->isFeedback();
+		pController->invert = pGainObserver->isInvert();
 		controllers.append(pController);
 	}
 
@@ -609,6 +612,7 @@ void qtractorBus::mapControllers ( BusMode busMode )
 			pObserver->setParam(pController->param);
 			pObserver->setLogarithmic(pController->logarithmic);
 			pObserver->setFeedback(pController->feedback);
+			pObserver->setInvert(pController->invert);
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}
