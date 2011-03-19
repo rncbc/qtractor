@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.43, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.44, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -888,11 +888,11 @@ echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
-echo "  LV2 Plug-in UI instantiation (NEW) . . . . . . . .: $ac_lv2_ui_new"
+echo "  LV2 Plug-in UI instantiation (libslv2-10)  . . . .: $ac_lv2_ui_new"
+echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
-echo "  LV2 Plug-in QT4 UI support (NEW) . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
+echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
 echo
