@@ -299,7 +299,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	m_pPluginListView = new qtractorPluginListView(/*this*/);
 	m_pPluginListView->setFont(font6);
-	m_pPluginListView->setFixedHeight(fm.lineSpacing() << 2);
+	m_pPluginListView->setFixedHeight((fm.lineSpacing() + 2) << 2);
 	m_pPluginListView->setTinyScrollBar(true);
 	m_pLayout->addWidget(m_pPluginListView);
 

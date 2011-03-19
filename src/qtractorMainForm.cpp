@@ -3817,7 +3817,7 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_VST
 	list << tr("VST Plug-in support disabled.");
 #endif
-#ifdef CONFIG_VESTIGE
+#ifdef  CONFIG_VESTIGE
 	list << tr("VeSTige header support enabled.");
 #endif
 #ifndef CONFIG_LV2
@@ -3826,11 +3826,13 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_EVENT
 	list << tr("LV2 Plug-in MIDI/Event support disabled.");
 #endif
-#ifndef CONFIG_LV2_GTK_UI
-	list << tr("LV2 Plug-in GTK UI support disabled.");
-#endif
+#ifdef  CONFIG_LV2_UI_NEW
 #ifndef CONFIG_LV2_QT4_UI
 	list << tr("LV2 Plug-in QT4 UI support disabled.");
+#endif
+#endif // CONFIG_LV2_UI_NEW
+#ifndef CONFIG_LV2_GTK_UI
+	list << tr("LV2 Plug-in GTK UI support disabled.");
 #endif
 #ifndef CONFIG_LV2_EXTERNAL_UI
 	list << tr("LV2 Plug-in External UI support disabled.");
@@ -3841,7 +3843,7 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_PERSIST
 	list << tr("LV2 Plug-in Persist support disabled.");
 #endif
-#endif //  CONFIG_LV2
+#endif // CONFIG_LV2
 #ifndef CONFIG_JACK_SESSION
 	list << tr("JACK Session support disabled.");
 #endif
