@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Main left pane vertical splitter resize hack, 
+  avoiding some track list update re-entrancy.
+
 - MIDI controller mapping now with invert value
   option, with an eye on cross-fading (TESTING).
 
