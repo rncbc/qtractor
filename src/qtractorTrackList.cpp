@@ -143,6 +143,8 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 
 	m_pRubberBand = NULL;
 
+	m_iUpdateContents = 0;
+
 	m_pPixmap[IconAudio] = new QPixmap(":/images/trackAudio.png");
 	m_pPixmap[IconMidi]  = new QPixmap(":/images/trackMidi.png");
 
@@ -584,20 +586,34 @@ void qtractorTrackList::updateContentsHeight (void)
 // Rectangular contents update.
 void qtractorTrackList::updateContents ( const QRect& rect )
 {
+	if (m_iUpdateContents > 0)
+		return;
+
+	++m_iUpdateContents;
+
 	updatePixmap(
 		qtractorScrollView::contentsX(), qtractorScrollView::contentsY());
 
 	qtractorScrollView::updateContents(rect);
+	
+	--m_iUpdateContents;
 }
 
 
 // Overall contents update.
 void qtractorTrackList::updateContents (void)
 {
+	if (m_iUpdateContents > 0)
+		return;
+
+	++m_iUpdateContents;
+
 	updatePixmap(
 		qtractorScrollView::contentsX(), qtractorScrollView::contentsY());
 
 	qtractorScrollView::updateContents();
+
+	--m_iUpdateContents;
 }
 
 
@@ -715,7 +731,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	m_pixmap.fill(pal.window().color());
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+	painter.initFrom(pViewport);
 
 	// Update actual contents size...
 	m_pHeader->setOffset(cx);

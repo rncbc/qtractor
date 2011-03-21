@@ -246,6 +246,9 @@ private:
 
 	qtractorRubberBand *m_pRubberBand;
 
+	// To avoid update reentries.
+	int m_iUpdateContents;
+
 	// Track icon pixmap stuff.
 	enum { IconAudio = 0, IconMidi = 1, IconCount = 2 };
 
