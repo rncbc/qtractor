@@ -1689,7 +1689,7 @@ bool qtractorTracks::addAudioTracks (
 	if (pSession == NULL)
 		return false;
 
-	pSession->lock();
+//	pSession->lock();
 
 	// Account for actual updates...
 	int iUpdate = 0;
@@ -1765,7 +1765,8 @@ bool qtractorTracks::addAudioTracks (
 		delete pImportTrackCommand;
 	}
 
-	pSession->unlock();
+//	pSession->unlock();
+
 	return bResult;
 }
 
@@ -1782,7 +1783,7 @@ bool qtractorTracks::addMidiTracks (
 	if (pSession == NULL)
 		return false;
 
-	pSession->lock();
+//	pSession->lock();
 
 	// Account for actual updates...
 	int iUpdate = 0;
@@ -1882,7 +1883,8 @@ bool qtractorTracks::addMidiTracks (
 		delete pImportTrackCommand;
 	}
 
-	pSession->unlock();
+//	pSession->unlock();
+
 	return bResult;
 }
 
