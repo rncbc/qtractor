@@ -5,11 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI controller mapping now with "Invert" value
+  option. Also, a new "Inputs" button has been
+  added for MIDI control port connections access.
+
 - Main left pane vertical splitter resize hack, 
   avoiding some track list update re-entrancy.
-
-- MIDI controller mapping now with invert value
-  option, with an eye on cross-fading (TESTING).
 
 - Inserting a LV2 instrument/synth plugin on an
   audio track or bus were causing immediate crash,
@@ -54,7 +55,7 @@ SVN TRUNK
   all audio clip buffer/disk-streaming threads are
   finally merged into a single multiplexing thread
   (was one thread per audio clip longer than 3 sec.
-  which was quite wasteful and creepy;). (TESTING)
+  which was quite wasteful and creepy;).
 
 - All plugin list view changes are now properly
   signaled to track properties and bus manager
@@ -64,7 +65,7 @@ SVN TRUNK
   Scale-Quantize and Snap-to-Scale. The later may
   be readily accessible from the MIDI clip editor
   toolbar and menu (check View/Toolbars/Scale and
-  View/Scale). (TESTING)
+  View/Scale).
 
 - Mixer track strips are now completetly redone
   whenever a track gets moved or re-ordered on
@@ -77,10 +78,10 @@ SVN TRUNK
 
 - Got rid of recent QX11EmbedContainer bloating,
   while introducing gtk_init() as for LV2 GTK UI
-  support stabilization (EXTREMELY EXPERIMENTAL).
+  support stabilization.
 
-- Tempo tap button was added to View/Tempo Map...
-  dialog (EXPERIMENTAL).
+- Tempo tap helper button was added to View/Tempo
+  Map... dialog.
 
 - Executable DSSI plug-in GUI detection fixed.
 

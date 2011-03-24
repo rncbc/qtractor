@@ -978,7 +978,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		| Qt::WindowMinMaxButtonsHint
 		| Qt::WindowCloseButtonHint;
 	if (m_pOptions->bKeepToolsOnTop) {
-		pParent = this;
+        pParent = this;
 		wflags |= Qt::Tool;
 	}
 	// Other child/tools forms are also created right away...

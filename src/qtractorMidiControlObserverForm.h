@@ -28,6 +28,8 @@
 class qtractorMidiControlObserver;
 class qtractorCtlEvent;
 
+class QCloseEvent;
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiControlObserverForm -- UI wrapper form.
@@ -38,14 +40,12 @@ class qtractorMidiControlObserverForm : public QDialog
 
 public:
 
-	// Constructor.
-	qtractorMidiControlObserverForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
-
-	// Destructor.
-	~qtractorMidiControlObserverForm();
-
 	// Pseudo-singleton instance.
 	static qtractorMidiControlObserverForm *getInstance();
+
+	// Pseudo-constructor.
+	static void showInstance(qtractorMidiControlObserver *pMidiObserver,
+		QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 
 	// Observer accessors.
 	void setMidiObserver(qtractorMidiControlObserver *pMidiObserver);
@@ -64,7 +64,16 @@ protected slots:
 
 	void accept();
 	void reject();
+	void inputs();
 	void reset();
+
+protected:
+
+	// Constructor.
+	qtractorMidiControlObserverForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+
+	// Pseudo-destructor.
+	void closeEvent(QCloseEvent *pCloseEvent);
 
 private:
 

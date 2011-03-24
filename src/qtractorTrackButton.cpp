@@ -76,11 +76,8 @@ void qtractorMidiControlButton::midiControlActionSlot (void)
 	if (pAction && pAction == m_pMidiControlAction) {
 		qtractorMidiControlObserver *pMidiObserver
 			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
-		if (pMidiObserver) {
-			qtractorMidiControlObserverForm form(parentWidget());
-			form.setMidiObserver(pMidiObserver);
-			form.exec();
-		}
+		if (pMidiObserver)
+			qtractorMidiControlObserverForm::showInstance(pMidiObserver, parentWidget());
 	}
 }
 
