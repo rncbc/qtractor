@@ -476,11 +476,8 @@ void qtractorMeter::midiControlActionSlot (void)
 	if (pAction) {
 		qtractorMidiControlObserver *pMidiObserver
 			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
-		if (pMidiObserver) {
-			qtractorMidiControlObserverForm form(this);
-			form.setMidiObserver(pMidiObserver);
-			form.exec();
-		}
+		if (pMidiObserver)
+			qtractorMidiControlObserverForm::showInstance(pMidiObserver, this);
 	}
 }
 

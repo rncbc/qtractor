@@ -28,6 +28,10 @@
 
 #include "qtractorSession.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorMidiEngine.h"
+#include "qtractorConnections.h"
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -48,6 +52,9 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Make it auto-modeless dialog...
+	QDialog::setAttribute(Qt::WA_DeleteOnClose);
+
 	// Populate command list.
 	const QIcon iconControlType(":/images/itemProperty.png");
 //	m_ui.ControlTypeComboBox->clear();
@@ -65,6 +72,11 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
+
+	// Aadd a special Inputs button...
+	QPushButton *pInputsButton
+		= new QPushButton(QIcon(":/images/itemMidiPortIn.png"), tr("Inputs"));
+	m_ui.DialogButtonBox->addButton(pInputsButton, QDialogButtonBox::ActionRole);
 
 	// Start clean.
 	m_iDirtyCount = 0;
@@ -105,16 +117,12 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 		SIGNAL(rejected()),
 		SLOT(reject()));
 
+	QObject::connect(pInputsButton,
+		SIGNAL(clicked()),
+		SLOT(inputs()));
+
 	// Pseudo-singleton reference setup.
 	g_pMidiObserverForm = this;
-}
-
-
-// Destructor.
-qtractorMidiControlObserverForm::~qtractorMidiControlObserverForm (void)
-{
-	// Pseudo-singleton reference setup.
-	g_pMidiObserverForm = NULL;
 }
 
 
@@ -123,6 +131,22 @@ qtractorMidiControlObserverForm *
 qtractorMidiControlObserverForm::getInstance (void)
 {
 	return g_pMidiObserverForm;
+}
+
+
+// Pseudo-constructor.
+void qtractorMidiControlObserverForm::showInstance (
+	qtractorMidiControlObserver *pMidiObserver,
+	QWidget *pParent, Qt::WindowFlags wflags )
+{
+	qtractorMidiControlObserverForm *pMidiObserverForm
+		= qtractorMidiControlObserverForm::getInstance();
+	if (pMidiObserverForm)
+		pMidiObserverForm->close();
+
+	pMidiObserverForm = new qtractorMidiControlObserverForm(pParent, wflags);
+	pMidiObserverForm->setMidiObserver(pMidiObserver);
+	pMidiObserverForm->show();
 }
 
 
@@ -169,6 +193,17 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 qtractorMidiControlObserver *qtractorMidiControlObserverForm::midiObserver (void) const
 {
 	return m_pMidiObserver;
+}
+
+
+// Pseudo-destructor.
+void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
+{
+	// Pseudo-singleton reference setup.
+	g_pMidiObserverForm = NULL;
+
+	// Sure acceptance and probable destruction (cf. WA_DeleteOnClose).
+	QDialog::closeEvent(pCloseEvent);
 }
 
 
@@ -266,7 +301,7 @@ void qtractorMidiControlObserverForm::change (void)
 void qtractorMidiControlObserverForm::click ( QAbstractButton *pButton )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiControlObserverForm::buttonClick(%p)", pButton);
+	qDebug("qtractorMidiControlObserverForm::click(%p)", pButton);
 #endif
 
 	QDialogButtonBox::ButtonRole role
@@ -342,6 +377,7 @@ void qtractorMidiControlObserverForm::accept (void)
 
 	// Just go with dialog acceptance...
 	QDialog::accept();
+	QDialog::close();
 }
 
 
@@ -372,6 +408,7 @@ void qtractorMidiControlObserverForm::reject (void)
 
 	// Just go with dialog rejection...
 	QDialog::reject();
+	QDialog::close();
 }
 
 
@@ -395,6 +432,30 @@ void qtractorMidiControlObserverForm::reset (void)
 
 	// Bail out...
 	QDialog::accept();
+	QDialog::close();
+}
+
+
+// Show control inputs (Custom button slot).
+void qtractorMidiControlObserverForm::inputs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiControlObserverForm::inputs()");
+#endif
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->connections()) {
+		(pMainForm->connections())->showBus(
+			pMidiEngine->controlBus_in(), qtractorBus::Input);
+	}
 }
 
 
