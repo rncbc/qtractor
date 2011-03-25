@@ -73,17 +73,6 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
 
-	// Add a special Inputs button...
-	QPushButton *pInputsButton
-		= new QPushButton(QIcon(":/images/itemMidiPortIn.png"), tr("Inputs"));
-	m_ui.DialogButtonBox->addButton(pInputsButton, QDialogButtonBox::ActionRole);
-
-	qtractorMidiEngine *pMidiEngine = NULL;
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pMidiEngine = pSession->midiEngine();
-	pInputsButton->setEnabled(pMidiEngine && pMidiEngine->controlBus_in());
-
 	// Start clean.
 	m_iDirtyCount = 0;
 	m_iDirtySetup = 0;
@@ -113,6 +102,12 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	QObject::connect(m_ui.InvertCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(change()));
+	QObject::connect(m_ui.InputsPushButton,
+		SIGNAL(clicked()),
+		SLOT(inputs()));
+	QObject::connect(m_ui.OutputsPushButton,
+		SIGNAL(clicked()),
+		SLOT(outputs()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(clicked(QAbstractButton *)),
 		SLOT(click(QAbstractButton *)));
@@ -122,10 +117,6 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(rejected()),
 		SLOT(reject()));
-
-	QObject::connect(pInputsButton,
-		SIGNAL(clicked()),
-		SLOT(inputs()));
 
 	// Pseudo-singleton reference setup.
 	g_pMidiObserverForm = this;
@@ -194,6 +185,8 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 
 	m_iDirtySetup--;
 	m_iDirtyCount = 0;
+
+	stabilizeForm();
 }
 
 qtractorMidiControlObserver *qtractorMidiControlObserverForm::midiObserver (void) const
@@ -299,7 +292,7 @@ void qtractorMidiControlObserverForm::change (void)
 #endif
 
 	m_iDirtyCount++;
-//	stabilizeForm();
+	stabilizeForm();
 }
 
 
@@ -461,6 +454,49 @@ void qtractorMidiControlObserverForm::inputs (void)
 	if (pMainForm && pMainForm->connections() && pMidiEngine->controlBus_in()) {
 		(pMainForm->connections())->showBus(
 			pMidiEngine->controlBus_in(), qtractorBus::Input);
+	}
+}
+
+
+// Show control outputs (Custom button slot).
+void qtractorMidiControlObserverForm::outputs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiControlObserverForm::outputs()");
+#endif
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->connections() && pMidiEngine->controlBus_out()) {
+		(pMainForm->connections())->showBus(
+			pMidiEngine->controlBus_out(), qtractorBus::Output);
+	}
+}
+
+
+// Update control widget state.
+void qtractorMidiControlObserverForm::stabilizeForm(void)
+{
+	qtractorMidiEngine *pMidiEngine = NULL;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine) {
+		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
+		m_ui.InputsPushButton->setEnabled(
+			pMidiEngine->controlBus_in() != NULL);
+		m_ui.OutputsPushButton->setEnabled(
+			bFeedback && pMidiEngine->controlBus_out() != NULL);
+	} else {
+		m_ui.InputsPushButton->setEnabled(false);
+		m_ui.OutputsPushButton->setEnabled(false);
 	}
 }
 
