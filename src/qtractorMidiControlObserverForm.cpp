@@ -73,10 +73,16 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
 
-	// Aadd a special Inputs button...
+	// Add a special Inputs button...
 	QPushButton *pInputsButton
 		= new QPushButton(QIcon(":/images/itemMidiPortIn.png"), tr("Inputs"));
 	m_ui.DialogButtonBox->addButton(pInputsButton, QDialogButtonBox::ActionRole);
+
+	qtractorMidiEngine *pMidiEngine = NULL;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pMidiEngine = pSession->midiEngine();
+	pInputsButton->setEnabled(pMidiEngine && pMidiEngine->controlBus_in());
 
 	// Start clean.
 	m_iDirtyCount = 0;
@@ -452,7 +458,7 @@ void qtractorMidiControlObserverForm::inputs (void)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && pMainForm->connections()) {
+	if (pMainForm && pMainForm->connections() && pMidiEngine->controlBus_in()) {
 		(pMainForm->connections())->showBus(
 			pMidiEngine->controlBus_in(), qtractorBus::Input);
 	}
