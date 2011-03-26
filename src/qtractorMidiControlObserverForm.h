@@ -65,7 +65,10 @@ protected slots:
 	void accept();
 	void reject();
 	void inputs();
+	void outputs();
 	void reset();
+
+	void stabilizeForm();
 
 protected:
 

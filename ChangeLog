@@ -6,8 +6,9 @@ ChangeLog
 SVN TRUNK
 
 - MIDI controller mapping now with "Invert" value
-  option. Also, a new "Inputs" button has been
-  added for MIDI control port connections access.
+  option. Also, new "Inputs" and "Outputs" buttons
+  have been added as helpers for MIDI control port
+  connections access.
 
 - Main left pane vertical splitter resize hack, 
   avoiding some track list update re-entrancy.
