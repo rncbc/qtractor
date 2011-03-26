@@ -234,6 +234,7 @@ void qtractorMidiControlObserverForm::activateControlType (
 		return;
 
 	const QIcon icon(":/images/itemControllers.png");
+	int iOldParam = m_ui.ParamComboBox->currentIndex();
 	m_ui.ParamComboBox->clear();
 	switch (ctype) {
 	case qtractorMidiEvent::CHANPRESS:
@@ -271,6 +272,10 @@ void qtractorMidiControlObserverForm::activateControlType (
 	default:
 		break;
 	}
+
+	// Restore old parameter index, if convenient...
+	if (iOldParam >= 0 && iOldParam < m_ui.ParamComboBox->count())
+		m_ui.ParamComboBox->setCurrentIndex(iOldParam);
 
 	// This is enabled by as long there's a value.
 	m_ui.LogarithmicCheckBox->setEnabled(
