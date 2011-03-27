@@ -145,6 +145,30 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorClipRecordExCommand - declaration.
+//
+
+class qtractorClipRecordExCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipRecordExCommand(qtractorClip *pClipRecordEx);
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	bool m_bClipRecordEx;
+
+	qtractorClip *m_pClipRecordEx;
+};
+
+
 #endif	// __qtractorClipCommand_h
 
 // end of qtractorClipCommand.h

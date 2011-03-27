@@ -1060,7 +1060,7 @@ void qtractorSession::setPlaying ( bool bPlaying )
 		for (qtractorTrack *pTrack = m_tracks.first();
 				pTrack; pTrack = pTrack->next()) {
 			qtractorClip *pClipRecord = pTrack->clipRecord();
-			if (pClipRecord) {
+			if (pClipRecord && !pTrack->isClipRecordEx()) {
 				pClipRecord->setClipStart(iClipStart);
 				// MIDI adjust to playing queue start...
 				if (pTrack->trackType() == qtractorTrack::Midi
@@ -1400,6 +1400,23 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 			trackMute(pTrack, false);
 	#endif
 		// Done.
+		return;
+	}
+
+	// Are we set record exclusive?
+	if (pTrack->isClipRecordEx()) {
+		// One-up current tracks in record mode.
+		switch (pTrack->trackType()) {
+		case qtractorTrack::Audio:
+			m_iAudioRecord++;
+			break;
+		case qtractorTrack::Midi:
+			m_iMidiRecord++;
+			break;
+		default:
+			break;
+		}
+		// Bail out.
 		return;
 	}
 

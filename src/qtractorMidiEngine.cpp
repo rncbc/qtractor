@@ -996,6 +996,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						&& (!pSession->isPunching()
 							|| ((tick >= pSession->punchInTime())
 							&&  (tick <  pSession->punchOutTime())))) {
+						if (pTrack->isClipRecordEx()
+							&& tick >= pMidiClip->clipStartTime())
+							pEv->time.tick = tick - pMidiClip->clipStartTime();
 						// Yep, we got a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, data1, data2, duration);

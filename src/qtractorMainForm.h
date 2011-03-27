@@ -135,6 +135,7 @@ public slots:
 	void editSelectRange();
 	void editClipNew();
 	void editClipEdit();
+	void editClipRecordEx();
 	void editClipSplit();
 	void editClipMerge();
 	void editClipNormalize();
