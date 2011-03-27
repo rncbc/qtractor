@@ -629,11 +629,11 @@ bool qtractorClipCommand::undo (void)
 
 // Constructor.
 qtractorClipRecordExCommand::qtractorClipRecordExCommand (
-	qtractorClip *pClipRecordEx )
+	qtractorClip *pClipRecordEx, bool bClipRecordEx )
 	: qtractorCommand(QObject::tr("clip record"))
 {
-	m_bClipRecordEx = true;
 	m_pClipRecordEx = pClipRecordEx;
+	m_bClipRecordEx = bClipRecordEx;
 
 	setRefresh(false);
 }

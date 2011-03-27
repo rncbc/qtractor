@@ -154,7 +154,7 @@ class qtractorClipRecordExCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorClipRecordExCommand(qtractorClip *pClipRecordEx);
+	qtractorClipRecordExCommand(qtractorClip *pClipRecordEx, bool bClipRecordEx);
 
 	// Virtual command methods.
 	bool redo();

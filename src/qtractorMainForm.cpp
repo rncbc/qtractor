@@ -631,7 +631,7 @@ qtractorMainForm::qtractorMainForm (
 		SLOT(editClipEdit()));
 	QObject::connect(m_ui.editClipRecordExAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editClipRecordEx()));
+		SLOT(editClipRecordEx(bool)));
 	QObject::connect(m_ui.editClipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipSplit()));
@@ -2270,10 +2270,10 @@ void qtractorMainForm::editClipEdit (void)
 
 
 // Enter in clip record/ overdub mode.
-void qtractorMainForm::editClipRecordEx (void)
+void qtractorMainForm::editClipRecordEx ( bool bOn )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::editClipRecordEx()");
+	qDebug("qtractorMainForm::editClipRecordEx(%d)", int(bOn));
 #endif
 
 	// Start record/overdub the current clip, if any...
@@ -2282,7 +2282,7 @@ void qtractorMainForm::editClipRecordEx (void)
 		if (pClip) {
 			qtractorTrack *pTrack = pClip->track();
 			if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
-				m_pSession->execute(new qtractorClipRecordExCommand(pClip));
+				m_pSession->execute(new qtractorClipRecordExCommand(pClip, bOn));
 		}
 	}
 }
