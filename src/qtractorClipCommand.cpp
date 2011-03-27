@@ -265,7 +265,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 				resizeClip(pMidiClip, iClipStart, iClipOffset, iClipLength);
 				if (pMainForm)
 					pMainForm->addMidiFile(sFilename);
-			}			
+			}
 		}
 		pTrack->setClipRecord(NULL);
 		return true;
