@@ -510,6 +510,12 @@ void qtractorClip::updateEditor ( bool /*bSelectClear*/ )
 	// Do nothing here.
 }
 
+// Clip editor contents update.
+void qtractorClip::updateEditorContents (void)
+{
+	// Do nothing here.
+}
+
 // Clip query-close method (return true if editing is done).
 bool qtractorClip::queryEditor (void)
 {

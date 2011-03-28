@@ -204,8 +204,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		// On read mode, SMF format is properly given by open file.
 		setFormat(pFile->format());
 		// Read the event sequence in...
-		if (!pFile->readTrack(m_pSeq, iTrackChannel))
-			return false;
+		pFile->readTrack(m_pSeq, iTrackChannel);
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag) {
 		#if 0
@@ -432,11 +431,10 @@ void qtractorMidiClip::close (void)
 	m_pSeq->close();
 
 	// Commit the final clip length...
-	if (m_pSeq->events().count() < 1)
-		iClipLength = 0;
-	else if (iClipLength < 1)
+	if (iClipLength < 1) {
 		iClipLength = pSession->frameFromTick(m_pSeq->duration());
-	setClipLength(iClipLength);
+		setClipLength(iClipLength);
+	}
 
 	// Now's time to write the whole thing...
 	bool bNewFile = (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
@@ -668,6 +666,18 @@ void qtractorMidiClip::updateEditor ( bool bSelectClear )
 	m_pMidiEditorForm->resetDirtyCount();
 	m_pMidiEditorForm->updateInstrumentNames();
 	m_pMidiEditorForm->stabilizeForm();
+}
+
+
+// Clip editor update.
+void qtractorMidiClip::updateEditorContents (void)
+{
+	if (m_pMidiEditorForm == NULL)
+		return;
+
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	if (pMidiEditor)
+		pMidiEditor->updateContents();
 }
 
 

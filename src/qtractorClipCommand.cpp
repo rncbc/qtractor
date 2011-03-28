@@ -267,6 +267,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 					pMainForm->addMidiFile(sFilename);
 			}
 		}
+        // Can get rid of the recorded clip.
 		pTrack->setClipRecord(NULL);
 		return true;
 	}
@@ -394,9 +395,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 
 //	pSession->lock();
 
-	QListIterator<qtractorAddTrackCommand *> track(m_trackCommands);
+	QListIterator<qtractorTrackCommand *> track(m_trackCommands);
 	while (track.hasNext()) {
-	    qtractorAddTrackCommand *pTrackCommand = track.next();
+	    qtractorTrackCommand *pTrackCommand = track.next();
 		if (bRedo)
 			pTrackCommand->redo();
 		else
@@ -650,16 +651,14 @@ bool qtractorClipRecordExCommand::redo (void)
 		return false;
 
 	// Carry on...
-	bool bClipRecordEx = m_bClipRecordEx;
+	bool bClipRecordEx = pTrack->isClipRecordEx();
 
-	pTrack->setRecord(bClipRecordEx);
-	pTrack->setClipRecordEx(bClipRecordEx);
-
-	if (bClipRecordEx)
-		pTrack->setClipRecord(m_pClipRecordEx);
+	pTrack->setRecord(m_bClipRecordEx);
+	pTrack->setClipRecord(m_bClipRecordEx ? m_pClipRecordEx : NULL);
+	pTrack->setClipRecordEx(m_bClipRecordEx);
 
 	// Reset for undo.
-	m_bClipRecordEx = !bClipRecordEx;
+	m_bClipRecordEx = bClipRecordEx;
 
 	return true;
 }

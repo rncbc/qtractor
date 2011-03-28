@@ -37,6 +37,7 @@ class QContextMenuEvent;
 class QActionGroup;
 class QComboBox;
 class QLabel;
+class QPalette;
 
 
 //----------------------------------------------------------------------------
@@ -220,7 +221,10 @@ private:
 	QLabel *m_pFileNameLabel;
 	QLabel *m_pTrackChannelLabel;
 	QLabel *m_pStatusModLabel;
+	QLabel *m_pStatusRecLabel;
 	QLabel *m_pDurationLabel;
+
+	QPalette *m_pRedPalette;
 };
 
 

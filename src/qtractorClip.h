@@ -169,10 +169,11 @@ public:
 	virtual void draw(QPainter *pPainter, const QRect& clipRect,
 		unsigned long iClipOffset) = 0;
 
-	// Clip editor method.
+	// Clip editor methods.
 	virtual bool startEditor(QWidget *pParent);
 	virtual void resetEditor(bool bSelectClear);
 	virtual void updateEditor(bool bSelectClear);
+	virtual void updateEditorContents();
 	virtual bool queryEditor();
 
 	// Clip tool-tip.
