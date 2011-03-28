@@ -891,6 +891,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.fileMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateRecentFilesMenu()));
+	QObject::connect(m_ui.editClipMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateClipMenu()));
 	QObject::connect(m_ui.trackExportMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateExportMenu()));
@@ -4143,9 +4146,6 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bRolling    = (bPlaying && bRecording);
 	bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
 
-	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
-		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
-
 	if (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected())
 		bSelected = true;
 
@@ -4162,24 +4162,6 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
-
-	m_ui.editClipNewAction->setEnabled(bEnabled);
-	m_ui.editClipEditAction->setEnabled(pClip != NULL);
-	m_ui.editClipRecordExAction->setEnabled(pClip != NULL
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
-	m_ui.editClipRecordExAction->setChecked(
-		pTrack && pTrack->isClipRecordEx());
-	m_ui.editClipSplitAction->setEnabled(pClip != NULL
-		&& iPlayHead > pClip->clipStart()
-		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
-	m_ui.editClipMergeAction->setEnabled(bSingleTrackSelected);
-	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL || bSelected);
-	m_ui.editClipToolsMenu->setEnabled((pClip != NULL || bSelected)
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
-	m_ui.editClipTempoAction->setEnabled(pClip != NULL || bSelectable);
-	m_ui.editClipImportAction->setEnabled(bTracks);
-		// pTrack && pTrack->trackType() == qtractorTrack::Audio);
-	m_ui.editClipExportAction->setEnabled(bSingleTrackSelected);
 
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(
@@ -4706,6 +4688,46 @@ void qtractorMainForm::updateMidiMetronome (void)
 	pMidiEngine->setMetroEnabled(bMidiMetronome);
 	pMidiEngine->setMetronome(
 		bMidiMetronome && m_ui.transportMetroAction->isChecked());
+}
+
+
+// Clip menu stabilizer.
+void qtractorMainForm::updateClipMenu (void)
+{
+	unsigned long iPlayHead = m_pSession->playHead();
+
+	qtractorTrack *pTrack = NULL;
+	qtractorClip  *pClip  = NULL;
+	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
+	if (bTracks) {
+		pTrack = m_pTracks->currentTrack();
+		pClip  = m_pTracks->currentClip();
+	}
+
+	bool bEnabled    = (pTrack != NULL);
+	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
+	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
+
+	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
+		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
+
+	m_ui.editClipNewAction->setEnabled(bEnabled);
+	m_ui.editClipEditAction->setEnabled(pClip != NULL);
+	m_ui.editClipRecordExAction->setEnabled(pClip != NULL
+		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
+	m_ui.editClipRecordExAction->setChecked(
+		pTrack && pTrack->isClipRecordEx());
+	m_ui.editClipSplitAction->setEnabled(pClip != NULL
+		&& iPlayHead > pClip->clipStart()
+		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
+	m_ui.editClipMergeAction->setEnabled(bSingleTrackSelected);
+	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL || bSelected);
+	m_ui.editClipToolsMenu->setEnabled((pClip != NULL || bSelected)
+		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
+	m_ui.editClipTempoAction->setEnabled(pClip != NULL || bSelectable);
+	m_ui.editClipImportAction->setEnabled(bTracks);
+		// pTrack && pTrack->trackType() == qtractorTrack::Audio);
+	m_ui.editClipExportAction->setEnabled(bSingleTrackSelected);
 }
 
 

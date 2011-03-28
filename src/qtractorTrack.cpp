@@ -838,8 +838,10 @@ void qtractorTrack::setClipRecord ( qtractorClip *pClipRecord )
 
 	m_pClipRecord = pClipRecord;
 
-	if (m_bClipRecordEx && m_pClipRecord == NULL)
+	if (m_bClipRecordEx && m_pClipRecord == NULL) {
 		m_bClipRecordEx = false;
+		setRecord(false);
+	}
 }
 
 qtractorClip *qtractorTrack::clipRecord (void) const

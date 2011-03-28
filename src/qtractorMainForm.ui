@@ -884,7 +884,7 @@
     <string>Record clip</string>
    </property>
    <property name="statusTip" >
-    <string>Record current clip</string>
+    <string>Record current clip (overdub)</string>
    </property>
   </action>
   <action name="editClipSplitAction" >

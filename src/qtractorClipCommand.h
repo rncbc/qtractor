@@ -29,7 +29,7 @@
 #include <QList>
 
 // Forward declarations.
-class qtractorAddTrackCommand;
+class qtractorTrackCommand;
 class qtractorMidiEditCommand;
 class qtractorMidiClip;
 
@@ -141,7 +141,7 @@ private:
 	QList<Item *> m_items;
 
 	// When new tracks are needed.
-	QList<qtractorAddTrackCommand *> m_trackCommands;
+	QList<qtractorTrackCommand *> m_trackCommands;
 };
 
 

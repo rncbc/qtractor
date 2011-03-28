@@ -245,6 +245,7 @@ public slots:
 	void midiClkNotify(float fTempo);
 
 	void updateRecentFilesMenu();
+	void updateClipMenu();
 	void updateExportMenu();
 	void updateZoomMenu();
 	void updateSnapMenu();
