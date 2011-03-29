@@ -192,14 +192,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pStatusModLabel->setAutoFillBackground(true);
 	pStatusBar->addPermanentWidget(m_pStatusModLabel);
 
-	// Session recording status.
-	m_pStatusRecLabel = new QLabel(tr("REC"));
-	m_pStatusRecLabel->setAlignment(Qt::AlignHCenter);
-	m_pStatusRecLabel->setMinimumSize(m_pStatusRecLabel->sizeHint() + pad);
-	m_pStatusRecLabel->setToolTip(tr("MIDI clip record state"));
-	m_pStatusRecLabel->setAutoFillBackground(true);
-	pStatusBar->addPermanentWidget(m_pStatusRecLabel);
-
 	// Sequence duration status.
 	m_pDurationLabel = new QLabel(tr("00:00:00.000"));
 	m_pDurationLabel->setAlignment(Qt::AlignHCenter);
@@ -207,9 +199,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pDurationLabel->setToolTip(tr("MIDI clip duration"));
 	m_pDurationLabel->setAutoFillBackground(true);
 	pStatusBar->addPermanentWidget(m_pDurationLabel);
-
-	m_pRedPalette = new QPalette(pStatusBar->palette());
-	m_pRedPalette->setColor(QPalette::Window, Qt::red);
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
@@ -560,10 +549,6 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 	// Get edit-mode action group down.
 	if (m_pEditModeActionGroup)
 		delete m_pEditModeActionGroup;
-
-	// Ditch rec-mode/red palette...
-	if (m_pRedPalette)
-		delete m_pRedPalette;
 }
 
 
@@ -1547,7 +1532,6 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_pTrackChannelLabel->clear();
 		m_pTrackNameLabel->clear();
 		m_pStatusModLabel->clear();
-		m_pStatusRecLabel->clear();
 		m_pDurationLabel->clear();
 		return;
 	}
@@ -1574,19 +1558,10 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));
 	m_pTrackNameLabel->setText(pSeq->name());
-
 	if (m_iDirtyCount > 0)
 		m_pStatusModLabel->setText(tr("MOD"));
 	else
 		m_pStatusModLabel->clear();
-
-	if (pTrack && pTrack->clipRecord() == pMidiClip) {
-		m_pStatusRecLabel->setText(tr("REC"));
-		m_pStatusRecLabel->setPalette(*m_pRedPalette);
-	} else {
-		m_pStatusRecLabel->clear();
-		m_pStatusRecLabel->setPalette(statusBar()->palette());
-	}
 
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	m_pDurationLabel->setText(pTimeScale->textFromTick(

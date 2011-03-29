@@ -369,8 +369,6 @@
      <addaction name="editClipNewAction" />
      <addaction name="editClipEditAction" />
      <addaction name="separator" />
-     <addaction name="editClipRecordExAction" />
-     <addaction name="separator" />
      <addaction name="editClipSplitAction" />
      <addaction name="editClipMergeAction" />
      <addaction name="editClipNormalizeAction" />
@@ -865,26 +863,6 @@
    </property>
    <property name="shortcut" >
     <string>F4</string>
-   </property>
-  </action>
-  <action name="editClipRecordExAction" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportRecord.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;Record</string>
-   </property>
-   <property name="iconText" >
-    <string>Record Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Record clip</string>
-   </property>
-   <property name="statusTip" >
-    <string>Record current clip (overdub)</string>
    </property>
   </action>
   <action name="editClipSplitAction" >

@@ -634,9 +634,6 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipEditAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipEdit()));
-	QObject::connect(m_ui.editClipRecordExAction,
-		SIGNAL(triggered(bool)),
-		SLOT(editClipRecordEx(bool)));
 	QObject::connect(m_ui.editClipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipSplit()));
@@ -2278,25 +2275,6 @@ void qtractorMainForm::editClipEdit (void)
 	// Start editing the current clip, if any...
 	if (m_pTracks)
 		m_pTracks->editClip();
-}
-
-
-// Enter in clip record/ overdub mode.
-void qtractorMainForm::editClipRecordEx ( bool bOn )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::editClipRecordEx(%d)", int(bOn));
-#endif
-
-	// Start record/overdub the current clip, if any...
-	if (m_pTracks) {
-		qtractorClip *pClip = m_pTracks->currentClip();
-		if (pClip) {
-			qtractorTrack *pTrack = pClip->track();
-			if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
-				m_pSession->execute(new qtractorClipRecordExCommand(pClip, bOn));
-		}
-	}
 }
 
 
@@ -4129,12 +4107,9 @@ void qtractorMainForm::stabilizeForm (void)
 	unsigned long iSessionLength = m_pSession->sessionLength();
 
 	qtractorTrack *pTrack = NULL;
-	qtractorClip  *pClip  = NULL;
 	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
-	if (bTracks) {
+	if (bTracks)
 		pTrack = m_pTracks->currentTrack();
-		pClip  = m_pTracks->currentClip();
-	}
 
 	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
@@ -4713,10 +4688,6 @@ void qtractorMainForm::updateClipMenu (void)
 
 	m_ui.editClipNewAction->setEnabled(bEnabled);
 	m_ui.editClipEditAction->setEnabled(pClip != NULL);
-	m_ui.editClipRecordExAction->setEnabled(pClip != NULL
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
-	m_ui.editClipRecordExAction->setChecked(
-		pTrack && pTrack->isClipRecordEx());
 	m_ui.editClipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
