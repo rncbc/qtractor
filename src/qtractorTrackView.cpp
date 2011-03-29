@@ -386,9 +386,6 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						pClipRecord->drawClip(pPainter, clipRect, iClipOffset);
 					#endif
 					}
-					// FIXME: somewhat expensive but nevertheless...
-					if (pTrack->isClipRecordEx())
-						pClipRecord->updateEditorContents();
 				}
 				pTrack = pTrack->next();
 			}

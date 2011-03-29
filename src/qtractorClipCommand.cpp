@@ -233,53 +233,17 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 	if (iClipStart >= iClipEnd)
 		return false;
 
-	// Time to update final clip length...
-	unsigned long iClipOffset = pClip->clipOffset();
-	unsigned long iClipLength = iClipEnd - iClipStart;
-
-	// Reference for immediate file addition...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-
-	// HACK: Care of MIDI clip overdub recording...
-	if (pTrack->isClipRecordEx()) {
-		if (pTrack->trackType() == qtractorTrack::Midi) {
-			qtractorMidiClip *pMidiClip
-				= static_cast<qtractorMidiClip *> (pClip);
-			if (pMidiClip) {
-				// Do not ever make a clip shorter than it was, ever...
-				if (iClipLength < pClip->clipLength())
-					iClipLength = pClip->clipLength();
-				// Have a new filename revision...
-				const QString& sFilename
-					= pMidiClip->createFilePathRevision(true);
-				// Save/replace the overdubbed clip...
-				qtractorMidiFile::saveCopyFile(sFilename,
-					pMidiClip->filename(),
-					pMidiClip->trackChannel(),
-					pMidiClip->format(),
-					pMidiClip->sequence(),
-					pSession->timeScale(),
-					pSession->tickFromFrame(pMidiClip->clipStart()));
-				// Post-commit dirty changes...
-				fileClip(pMidiClip, sFilename, pMidiClip->trackChannel());
-				resizeClip(pMidiClip, iClipStart, iClipOffset, iClipLength);
-				if (pMainForm)
-					pMainForm->addMidiFile(sFilename);
-			}
-		}
-        // Can get rid of the recorded clip.
-		pTrack->setClipRecord(NULL);
-		return true;
-	}
-
 	// Time to close the clip...
-	pClip->setClipLength(iClipLength);
+	pClip->setClipLength(iClipEnd - iClipStart);
 	pClip->close();
 
 	// Actual clip length might have changed on close.
-	iClipLength = pClip->clipLength();
+	unsigned long iClipLength = pClip->clipLength();
 	if (iClipLength < 1)
 		return false;
+
+	// Reference for immediate file addition...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 
 	// Now, its imperative to make a proper copy of those clips...
 	switch (pTrack->trackType()) {
@@ -621,51 +585,6 @@ bool qtractorClipCommand::redo (void)
 bool qtractorClipCommand::undo (void)
 {
 	return execute(false);
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorClipRecordExCommand - implementation.
-//
-
-// Constructor.
-qtractorClipRecordExCommand::qtractorClipRecordExCommand (
-	qtractorClip *pClipRecordEx, bool bClipRecordEx )
-	: qtractorCommand(QObject::tr("clip record"))
-{
-	m_pClipRecordEx = pClipRecordEx;
-	m_bClipRecordEx = bClipRecordEx;
-
-	setRefresh(false);
-}
-
-
-// Clip-record command method.
-bool qtractorClipRecordExCommand::redo (void)
-{
-	if (m_pClipRecordEx == NULL)
-		return false;
-
-	qtractorTrack *pTrack = m_pClipRecordEx->track();
-	if (pTrack == NULL)
-		return false;
-
-	// Carry on...
-	bool bClipRecordEx = pTrack->isClipRecordEx();
-
-	pTrack->setRecord(m_bClipRecordEx);
-	pTrack->setClipRecord(m_bClipRecordEx ? m_pClipRecordEx : NULL);
-	pTrack->setClipRecordEx(m_bClipRecordEx);
-
-	// Reset for undo.
-	m_bClipRecordEx = bClipRecordEx;
-
-	return true;
-}
-
-bool qtractorClipRecordExCommand::undo (void)
-{
-	return redo();
 }
 
 

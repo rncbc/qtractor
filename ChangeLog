@@ -5,8 +5,6 @@ ChangeLog
 
 SVN TRUNK
 
-- MIDI clip record/overdub trials (EXPERIMENTAL;).
-
 - MIDI controller mapping now with "Invert" value
   option. Also, new "Inputs" and "Outputs" buttons
   have been added as helpers for MIDI control port

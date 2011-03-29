@@ -173,9 +173,6 @@ public:
 	void setClipRecord(qtractorClip *pClipRecord);
 	qtractorClip *clipRecord() const;
 
-	void setClipRecordEx(bool bClipRecordEx);
-	bool isClipRecordEx() const;
-
 	// Background color accessors.
 	void setBackground(const QColor& bg);
 	const QColor& background() const;
@@ -299,8 +296,6 @@ private:
 	qtractorList<qtractorClip> m_clips; // List of clips.
 
 	qtractorClip *m_pClipRecord;    // Current clip on record (capture).
-
-	bool m_bClipRecordEx;           // Current clip on record/overdub flag.
 
 	qtractorPluginList *m_pPluginList;	// Plugin chain (audio).
 

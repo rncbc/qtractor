@@ -446,15 +446,6 @@ bool qtractorTracks::newClip (void)
 			}
 			// Make it a brand new revision...
 			pMidiClip->setRevision(1);
-			// Save/replace the clip track...
-			qtractorMidiFile::saveCopyFile(sFilename,
-				pMidiClip->filename(),
-				pMidiClip->trackChannel(),
-				pMidiClip->format(),
-				pMidiClip->sequence(),
-				pSession->timeScale(),
-				pSession->tickFromFrame(pMidiClip->clipStart()));
-			pMainForm->addMidiFile(sFilename);
 			// Insert the clip right away...
 			qtractorClipCommand *pClipCommand
 				= new qtractorClipCommand(tr("new clip"));
