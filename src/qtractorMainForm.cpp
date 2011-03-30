@@ -4107,9 +4107,12 @@ void qtractorMainForm::stabilizeForm (void)
 	unsigned long iSessionLength = m_pSession->sessionLength();
 
 	qtractorTrack *pTrack = NULL;
+	qtractorClip  *pClip  = NULL;
 	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
-	if (bTracks)
+	if (bTracks) {
 		pTrack = m_pTracks->currentTrack();
+		pClip  = m_pTracks->currentClip();
+	}
 
 	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
@@ -4138,6 +4141,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
+	m_ui.editClipNewAction->setEnabled(bEnabled);
+	m_ui.editClipEditAction->setEnabled(pClip != NULL);
+	
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(
 		bEnabled && (!bRolling || !pTrack->isRecord()));
