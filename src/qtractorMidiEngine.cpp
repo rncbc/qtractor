@@ -1861,7 +1861,7 @@ void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 	m_pOControlBus->sendSysex(pSysex, iSysex);
 
 	// Done.
-	delete pSysex;
+	delete [] pSysex;
 }
 
 
