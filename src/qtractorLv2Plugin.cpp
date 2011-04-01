@@ -435,6 +435,12 @@ bool qtractorLv2PluginType::open (void)
 				break;
 			}
 		#endif
+		#ifdef CONFIG_LV2_UI_NEW
+			if (slv2_ui_supported(ui, g_slv2_gtk_ui_class)) {
+				m_bEditor = true;
+				break;
+			}
+		#endif
 		}
 		slv2_uis_free(uis);
 	}
@@ -1067,12 +1073,19 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 		if (slv2_ui_supported(ui, g_slv2_qt4_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_QT4;
 			m_slv2_ui = ui;
-		//	brreak;
+		//	break;
 		}
 	#endif
 	#ifdef CONFIG_LV2_GTK_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_NONE &&
 			slv2_ui_is_a(ui, g_slv2_gtk_ui_class)) {
+			m_lv2_ui_type = LV2_UI_TYPE_GTK;
+			m_slv2_ui = ui;
+		//	break;
+		}
+	#endif
+	#ifdef CONFIG_LV2_UI_NEW
+		if (slv2_ui_supported(ui, g_slv2_gtk_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_GTK;
 			m_slv2_ui = ui;
 		//	break;
