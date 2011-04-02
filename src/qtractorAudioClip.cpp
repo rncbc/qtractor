@@ -365,14 +365,14 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 		for (n = 0; n < nframes; ++n) {
 			x = clipRect.x() + (n * clipRect.width()) / nframes;
 			y = clipRect.y() + h2;
-			for (i = 0; i < iChannels; ++i, ++pframes) {
+			for (i = 0; i < iChannels; ++i) {
 				ymax = (h2gain * pframes->max) >> m_fractGain.den;
 				yrms = (h2gain * pframes->rms) >> m_fractGain.den;
 				pPolyMax[i]->setPoint(n, x, y + ymax);
 				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
 				pPolyRms[i]->setPoint(n, x, y + yrms);
 				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
-				y += h1;
+				y += h1; ++pframes;
 			}
 		}
 	} else {
