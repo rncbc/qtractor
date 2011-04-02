@@ -1258,7 +1258,7 @@ bool qtractorAudioEngine::isMetroEnabled (void) const
 // Metronome bus mode accessors.
 void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 {
-	deleteMetroBus();
+//	deleteMetroBus();
 
 	m_bMetroBus = bMetroBus;
 
@@ -1292,11 +1292,6 @@ void qtractorAudioEngine::resetMetroBus (void)
 void qtractorAudioEngine::setMetroBarFilename ( const QString& sFilename )
 {
 	m_sMetroBarFilename = sFilename;
-
-	if (m_pMetroBarBuff) {
-		m_pMetroBarBuff->setLength(0);
-		m_pMetroBarBuff->open(m_sMetroBarFilename);
-	}
 }
 
 const QString& qtractorAudioEngine::metroBarFilename (void) const
@@ -1321,11 +1316,6 @@ float qtractorAudioEngine::metroBarGain (void) const
 void qtractorAudioEngine::setMetroBeatFilename ( const QString& sFilename )
 {
 	m_sMetroBeatFilename = sFilename;
-
-	if (m_pMetroBeatBuff) {
-		m_pMetroBeatBuff->setLength(0);
-		m_pMetroBeatBuff->open(m_sMetroBeatFilename);
-	}
 }
 
 const QString& qtractorAudioEngine::metroBeatFilename() const
@@ -1411,18 +1401,6 @@ bool qtractorAudioEngine::openMetroBus (void)
 // Close audio metronome stuff.
 void qtractorAudioEngine::closeMetroBus (void)
 {
-	if (m_pMetroBarBuff) {
-		m_pMetroBarBuff->close();
-		delete m_pMetroBarBuff;
-		m_pMetroBarBuff = NULL;
-	}
-
-	if (m_pMetroBeatBuff) {
-		m_pMetroBeatBuff->close();
-		delete m_pMetroBeatBuff;
-		m_pMetroBeatBuff = NULL;
-	}
-
 	if (m_bMetroBus && m_pMetroBus) {
 		m_pMetroBus->close();
 		removeBusEx(m_pMetroBus);
@@ -1437,6 +1415,18 @@ void qtractorAudioEngine::closeMetroBus (void)
 void qtractorAudioEngine::deleteMetroBus (void)
 {
 	closeMetroBus();
+
+	if (m_pMetroBarBuff) {
+		m_pMetroBarBuff->close();
+		delete m_pMetroBarBuff;
+		m_pMetroBarBuff = NULL;
+	}
+
+	if (m_pMetroBeatBuff) {
+		m_pMetroBeatBuff->close();
+		delete m_pMetroBeatBuff;
+		m_pMetroBeatBuff = NULL;
+	}
 
 	if (m_bMetroBus && m_pMetroBus)
 		delete m_pMetroBus;

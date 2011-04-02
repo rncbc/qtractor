@@ -4632,7 +4632,7 @@ void qtractorMainForm::updateAudioMetronome (void)
 
 	pAudioEngine->setMetroBarGain(m_pOptions->fMetroBarGain);
 	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
-	
+
 	bool bAudioMetronome = m_pOptions->bAudioMetronome;
 	pAudioEngine->setMetroBus(
 		bAudioMetronome && m_pOptions->bAudioMetroBus);
