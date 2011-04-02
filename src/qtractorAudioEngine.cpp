@@ -1258,7 +1258,7 @@ bool qtractorAudioEngine::isMetroEnabled (void) const
 // Metronome bus mode accessors.
 void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 {
-//	deleteMetroBus();
+	deleteMetroBus();
 
 	m_bMetroBus = bMetroBus;
 
