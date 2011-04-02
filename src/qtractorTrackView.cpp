@@ -195,7 +195,7 @@ void qtractorTrackView::clear (void)
 	m_iEditHeadX = 0;
 	m_iEditTailX = 0;
 
-	m_iRecordWidth = 0;
+	m_iLastRecordX = 0;
 	
 	m_iPasteCount  = 0;
 	m_iPastePeriod = 0;
@@ -258,7 +258,6 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 		m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 		m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
-		m_iRecordWidth = pSession->pixelFromFrame(pSession->sampleRate() >> 1);
 	}
 
 #ifdef CONFIG_DEBUG_0
@@ -302,19 +301,21 @@ void qtractorTrackView::updateContents (void)
 // Special recording visual feedback.
 void qtractorTrackView::updateContentsRecord (void)
 {
-	int x = 0;
-	int w = m_iPlayHeadX - qtractorScrollView::contentsX();
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->midiRecord() < 1) {
-		x = w - m_iRecordWidth;
-		w = m_iRecordWidth;
-	}
-
 	QWidget *pViewport = qtractorScrollView::viewport();
-	if (x > 0)
+	int cx = qtractorScrollView::contentsX();
+	int w = m_iPlayHeadX - cx;
+	if (w > 0 && w < pViewport->width()) {
+		int x = 0;
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession && pSession->midiRecord() < 1) {
+			if (m_iLastRecordX >= cx && m_iLastRecordX < m_iPlayHeadX) {
+				x = m_iLastRecordX - cx;
+				w = (m_iPlayHeadX - m_iLastRecordX);
+			}
+			m_iLastRecordX = m_iPlayHeadX;
+		}	
 		pViewport->update(QRect(x, 0, w, pViewport->height()));
-	else
-		pViewport->update();
+	}
 }
 
 
