@@ -34,6 +34,7 @@
 
 #ifdef CONFIG_LV2_PERSIST
 #define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
+#define LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
 #endif
 
 static QHash<uint32_t, QByteArray> g_uri_map;
@@ -551,7 +552,6 @@ bool qtractorLv2PluginType::open (void)
 	m_bConfigure = m_bConfigure ||
 		slv2_plugin_has_feature(m_slv2_plugin, g_slv2_persist_hint);
 #endif
-
 #ifdef CONFIG_LV2_UI
 	// Check the UI inventory...
 	SLV2UIs uis = slv2_plugin_get_uis(m_slv2_plugin);
@@ -1943,7 +1943,8 @@ int qtractorLv2Plugin::lv2_persist_store (
 {
 	if (value == NULL)
 		return 1;
-	if (type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI))
+	if (type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI) &&
+		type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_XMLS_STRING_URI))
 		return 1;
 	if ((flags & LV2_PERSIST_IS_POD) == 0)
 		return 1;
