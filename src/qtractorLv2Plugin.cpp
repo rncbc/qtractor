@@ -36,8 +36,7 @@
 #define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
 #endif
 
-static QHash<QString, uint32_t>    g_uri_to_id;
-static QHash<uint32_t, QByteArray> g_id_to_uri;
+static QHash<uint32_t, QByteArray> g_uri_map;
 
 static uint32_t qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
@@ -51,10 +50,8 @@ static uint32_t qtractor_lv2_uri_to_id (
 	const QString sUri(uri);
 	uint32_t id = qHash(sUri);
 
-	if (!g_uri_to_id.contains(sUri)) {
-		g_uri_to_id.insert(sUri, id);
-		g_id_to_uri.insert(id, sUri.toUtf8());
-	}
+	if (!g_uri_map.contains(id))
+		g_uri_map.insert(id, sUri.toUtf8());
 
 	return id;
 }
@@ -77,8 +74,8 @@ static const char *qtractor_lv2_id_to_uri (
 	    return SLV2_EVENT_CLASS_MIDI;
 #endif
 
-	if (g_id_to_uri.contains(id))
-		return g_id_to_uri[id].constData();
+	if (g_uri_map.contains(id))
+		return g_uri_map[id].constData();
 	else
 		return NULL;
 }
@@ -1795,6 +1792,8 @@ int qtractorLv2Plugin::lv2_persist_store (
 	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
 	if (value == NULL)
+		return 1;
+	if (type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI))
 		return 1;
 	if ((flags & LV2_PERSIST_IS_POD) == 0)
 		return 1;
