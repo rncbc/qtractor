@@ -58,6 +58,11 @@
 #include "lv2_persist.h"
 #endif
 
+#ifdef CONFIG_LV2_FILES
+// LV2 Files support.
+#include "lv2_files.h"
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -243,6 +248,9 @@ protected:
 	unsigned long *m_piMidiOuts;
 #endif
 
+	// Local copy of features array.
+	LV2_Feature  **m_lv2_features;
+
 #ifdef CONFIG_LV2_UI
 
 	int            m_lv2_ui_type;
@@ -290,6 +298,11 @@ protected:
 
 #ifdef CONFIG_LV2_PERSIST
 	QHash<QString, QByteArray> m_lv2_persist_configs;
+#endif
+
+#ifdef CONFIG_LV2_FILES
+	LV2_Feature            m_lv2_files_feature;
+	LV2_Files_File_Support m_lv2_file_support;
 #endif
 };
 
