@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.58, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.59, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -131,6 +131,11 @@ AC_ARG_ENABLE(lv2-persist,
   AC_HELP_STRING([--enable-lv2-persist], [enable LV2 plug-in persistence support (default=yes)]),
   [ac_lv2_persist="$enableval"],
   [ac_lv2_persist="yes"])
+
+AC_ARG_ENABLE(lv2-files,
+  AC_HELP_STRING([--enable-lv2-files], [enable LV2 plug-in files support (default=yes)]),
+  [ac_lv2_files="$enableval"],
+  [ac_lv2_files="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -542,6 +547,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_external_ui="no"
       ac_lv2_saverestore="no"
       ac_lv2_persist="no"
+      ac_lv2_files="no"
    fi
 fi
 
@@ -765,6 +771,7 @@ else
    ac_lv2_external_ui="no"
    ac_lv2_saverestore="no"
    ac_lv2_persist="no"
+   ac_lv2_files="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h,
@@ -811,14 +818,21 @@ if test "x$ac_lv2_saverestore" = "xyes"; then
 fi
 if test "x$ac_lv2_persist" = "xyes"; then
    AC_CHECK_HEADER(lv2_persist.h, [ac_lv2_persist="yes"], [ac_lv2_persist="no"],
-      [[
-        #include <stdlib.h>
+      [[#include <stdlib.h>
         #include <lv2.h>
       ]])
    if test "x$ac_lv2_persist" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PERSIST, 1, [Define if LV2 persist extension is available.])
    else
       AC_MSG_WARN([*** LV2 persist extension will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_files" = "xyes"; then
+   AC_CHECK_HEADER(lv2_files.h, [ac_lv2_files="yes"], [ac_lv2_files="no"])
+   if test "x$ac_lv2_files" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_FILES, 1, [Define if LV2 files extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 files extension will be disabled.])
    fi
 fi
 
@@ -895,6 +909,7 @@ echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
+echo "  LV2 Plug-in Files support  . . . . . . . . . . . .: $ac_lv2_files"
 echo
 echo "  JACK Session support (EXPERIMENTAL)  . . . . . . .: $ac_jack_session"
 echo
