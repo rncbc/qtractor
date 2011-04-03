@@ -29,34 +29,64 @@
 #include "qtractorMidiBuffer.h"
 #endif
 
-// URI map feature.
+// URI map (uri_to_id) feature.
 #include "lv2_uri_map.h"
 
 #ifdef CONFIG_LV2_PERSIST
 #define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
 #endif
 
+static QHash<QString, uint32_t>    g_uri_to_id;
+static QHash<uint32_t, QByteArray> g_id_to_uri;
+
 static uint32_t qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
 {
 #ifdef CONFIG_LV2_EVENT
 	if ((map && strcmp(map, LV2_EVENT_URI) == 0) &&
-		strcmp(uri, SLV2_EVENT_CLASS_MIDI) == 0)
-		return QTRACTOR_LV2_MIDI_EVENT_ID;
-	else
+	    strcmp(uri, SLV2_EVENT_CLASS_MIDI) == 0)
+	    return QTRACTOR_LV2_MIDI_EVENT_ID;
 #endif
-#ifdef CONFIG_LV2_PERSIST
-	if (strcmp(uri, LV2_ATOM_STRING_URI) == 0)
-		return QTRACTOR_LV2_ATOM_STRING_ID;
-	else
-#endif
-	return 0;
+
+	const QString sUri(uri);
+	uint32_t id = qHash(sUri);
+
+	if (!g_uri_to_id.contains(sUri)) {
+		g_uri_to_id.insert(sUri, id);
+		g_id_to_uri.insert(id, sUri.toUtf8());
+	}
+
+	return id;
 }
 
 static LV2_URI_Map_Feature g_lv2_uri_map =
 	{ NULL, qtractor_lv2_uri_to_id };
 static const LV2_Feature g_lv2_uri_map_feature =
 	{ LV2_URI_MAP_URI, &g_lv2_uri_map };
+
+
+// URI unmap (id_to_uri) feature.
+#include "lv2_uri_unmap.h"
+
+static const char *qtractor_lv2_id_to_uri (
+	LV2_URI_Unmap_Callback_Data /*data*/, const char *map, uint32_t id )
+{
+#ifdef CONFIG_LV2_EVENT
+	if ((map && strcmp(map, LV2_EVENT_URI) == 0)
+	    && id == QTRACTOR_LV2_MIDI_EVENT_ID)
+	    return SLV2_EVENT_CLASS_MIDI;
+#endif
+
+	if (g_id_to_uri.contains(id))
+		return g_id_to_uri[id].constData();
+	else
+		return NULL;
+}
+
+static LV2_URI_Unmap_Feature g_lv2_uri_unmap =
+	{ NULL, qtractor_lv2_id_to_uri };
+static const LV2_Feature g_lv2_uri_unmap_feature =
+	{ LV2_URI_UNMAP_URI, &g_lv2_uri_unmap };
 
 
 #ifdef CONFIG_LV2_EVENT
@@ -96,23 +126,24 @@ static const LV2_Feature g_lv2_saverestore_feature =
 static const LV2_Feature g_lv2_persist_feature =
 	{ LV2_PERSIST_URI, NULL };
 
-static void qtractor_lv2_persist_store ( void *callback_data,
-	const char *key, const void *value, size_t size, uint32_t type )
+static int qtractor_lv2_persist_store ( void *callback_data,
+	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (callback_data);
 	if (pLv2Plugin == NULL)
-		return;
+		return 1;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_persist_store(%p, \"%s\", %d, %d)", pLv2Plugin, key, int(size), int(type));
+	qDebug("qtractor_lv2_persist_store(%p, %d, %d, %d, %d)", pLv2Plugin,
+		int(key), int(size), int(type), int(flags));
 #endif
 
-	pLv2Plugin->lv2_persist_store(key, value, size, type);
+	return pLv2Plugin->lv2_persist_store(key, value, size, type, flags);
 }
 
 static const void *qtractor_lv2_persist_retrieve ( void *callback_data,
-	const char *key, size_t *size, uint32_t *type )
+	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (callback_data);
@@ -120,10 +151,10 @@ static const void *qtractor_lv2_persist_retrieve ( void *callback_data,
 		return NULL;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_persist_retrieve(%p, \"%s\")", pLv2Plugin, key);
+	qDebug("qtractor_lv2_persist_retrieve(%p, %d)", pLv2Plugin, key);
 #endif
 
-	return pLv2Plugin->lv2_persist_retrieve(key, size, type);
+	return pLv2Plugin->lv2_persist_retrieve(key, size, type, flags);
 }
 
 #endif	// CONFIG_LV2_PERSIST
@@ -131,8 +162,9 @@ static const void *qtractor_lv2_persist_retrieve ( void *callback_data,
 
 static const LV2_Feature *g_lv2_features[] =
 {
-#ifdef CONFIG_LV2_EVENT
 	&g_lv2_uri_map_feature,
+	&g_lv2_uri_unmap_feature,
+#ifdef CONFIG_LV2_EVENT
 	&g_lv2_event_ref_feature,
 #endif
 #ifdef CONFIG_LV2_SAVERESTORE
@@ -1759,23 +1791,42 @@ const LV2_Persist *qtractorLv2Plugin::lv2_persist_descriptor (
 }
 
 
-void qtractorLv2Plugin::lv2_persist_store (
-	const char *key, const void *value, size_t size, uint32_t type )
+int qtractorLv2Plugin::lv2_persist_store (
+	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
-	if (value && type == QTRACTOR_LV2_ATOM_STRING_ID)
-		setConfig(key, QString::fromUtf8((const char *) value, (int) size - 1));
+	if (value == NULL)
+		return 1;
+	if ((flags & LV2_PERSIST_IS_POD) == 0)
+		return 1;
+	if ((flags & LV2_PERSIST_IS_PORTABLE) == 0)
+		return 1;
+
+	const char *pszKey = qtractor_lv2_id_to_uri(NULL, NULL, key);
+	if (pszKey == NULL)
+		return 1;
+
+	const QString& sKey = QString::fromUtf8(pszKey);
+	setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
+	return 0;
 }
 
 
 const void *qtractorLv2Plugin::lv2_persist_retrieve (
-	const char *key, size_t *size, uint32_t *type )
+	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
 {
-	const QByteArray& data = m_lv2_persist_configs[key];
+	const char *pszKey = qtractor_lv2_id_to_uri(NULL, NULL, key);
+	if (pszKey == NULL)
+		return NULL;
+
+	const QString& sKey = QString::fromUtf8(pszKey);
+	const QByteArray& data = m_lv2_persist_configs[sKey];
 
 	if (size)
 		*size = data.size();
 	if (type)
-		*type = QTRACTOR_LV2_ATOM_STRING_ID;
+		*type = qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI);
+	if (flags)
+		*flags = LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE;
 
 	return data.constData();
 }

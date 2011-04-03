@@ -56,7 +56,6 @@
 #ifdef CONFIG_LV2_PERSIST
 // LV2 Persist support.
 #include "lv2_persist.h"
-#define QTRACTOR_LV2_ATOM_STRING_ID 2
 #endif
 
 
@@ -217,10 +216,10 @@ public:
 	// LV2 Persist extension data descriptor accessor.
 	const LV2_Persist *lv2_persist_descriptor(unsigned short iInstance) const;
 
-	void lv2_persist_store(
-		const char *key, const void *value, size_t size, uint32_t type);
+	int lv2_persist_store(
+		uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags);
 	const void *lv2_persist_retrieve(
-		const char *key, size_t *size, uint32_t *type);
+		uint32_t key, size_t *size, uint32_t *type, uint32_t *flags);
 
 #endif
 
