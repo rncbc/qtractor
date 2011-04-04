@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,8 +31,6 @@
 #include <QDir>
 
 #include <QDateTime>
-#include <QWidget>
-#include <QEvent>
 
 #include <math.h>
 
@@ -426,17 +424,19 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 #endif
 
 	// Cache effect, only valid if we're really reading...
-	unsigned long iPeakOffset2 = iPeakOffset + iPeakFrames;
-	if (iPeakOffset2 >= m_iBuffOffset) {
+#if 0
+	unsigned long iPeakEnd = iPeakOffset + iPeakFrames;
+	if (iPeakEnd >= m_iBuffOffset) {
 		if (iPeakOffset >= m_iBuffOffset) {
-			unsigned long iBuffOffset2 = m_iBuffOffset + m_iBuffLength;
-			if (iBuffOffset2 >= iPeakOffset2)
+			unsigned long iBuffEnd = m_iBuffOffset + m_iBuffLength;
+			if (iBuffEnd >= iPeakEnd) {
 				return m_pBuffer
 					+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
-			if (m_iBuffOffset + m_iBuffSize >= iPeakOffset2) {
-				iPeakFrames = iPeakOffset2 - iBuffOffset2;
+			}
+			if (m_iBuffOffset + m_iBuffSize >= iPeakEnd) {
+				iPeakFrames = iPeakEnd - iBuffEnd;
 				m_iBuffLength
-					+= readBuffer(m_iBuffLength, iBuffOffset2, iPeakFrames);
+					+= readBuffer(m_iBuffLength, iBuffEnd, iPeakFrames);
 				return m_pBuffer
 					+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
 			}
@@ -453,6 +453,28 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 			}
 		}
 	}
+#else
+	unsigned long iPeakEnd = iPeakOffset + iPeakFrames;
+	unsigned long iBuffEnd = m_iBuffOffset + m_iBuffLength;
+	if (iPeakOffset < m_iBuffOffset) {
+		if (iPeakEnd < iBuffEnd
+			&& m_iBuffLength + (iBuffEnd - iPeakEnd) < m_iBuffSize) {
+			::memmove(
+				m_pBuffer + m_peakHeader.channels * (iPeakEnd - m_iBuffOffset),
+				m_pBuffer,
+				m_peakHeader.channels * (iBuffEnd - iPeakEnd) * sizeof(Frame));
+			m_iBuffLength += readBuffer(0, iPeakOffset, m_iBuffOffset - iPeakOffset);
+			m_iBuffOffset  = iPeakOffset;
+			return m_pBuffer;
+		}
+	}
+	else
+	if (iPeakOffset < iBuffEnd) {
+		if (iPeakEnd > iBuffEnd)
+			m_iBuffLength += readBuffer(m_iBuffLength, iBuffEnd, iPeakEnd - iBuffEnd);
+		return m_pBuffer + m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
+	}
+#endif
 
 	// Read peak data as requested...
 	m_iBuffLength = readBuffer(0, iPeakOffset, iPeakFrames);
@@ -492,14 +514,12 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 	int nread = 0;
 	if (m_peakFile.seek(sizeof(Header) + iOffset))
 		nread = (int) m_peakFile.read(&pBuffer[0], iLength);
-	// Zero the remaining...
-	if (nread < (int) iLength) {
-		::memset(&pBuffer[nread], 0, iLength - nread);
-		if (m_openMode != Read)
-			iPeakFrames = nread / (m_peakHeader.channels * sizeof(Frame));
-	}
 
-	return iPeakFrames;
+	// Zero the remaining...
+	if (nread < (int) iLength)
+		::memset(&pBuffer[nread], 0, iLength - nread);
+
+	return nread / (m_peakHeader.channels * sizeof(Frame));
 }
 
 
