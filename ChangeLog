@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio peak/waveform is now slightly tweaked from
+  the early optimization days (master C++ guru has
+  always said that was root of all evil anyway :).
+
 - MIDI controller mapping now with "Invert" value
   option. Also, new "Inputs" and "Outputs" buttons
   have been added as helpers for MIDI control port

@@ -401,6 +401,9 @@ void qtractorAudioBuffer::close (void)
 	if (m_pFile == NULL)
 		return;
 
+	// Avoid any other interference (ought to be atomic)...
+	m_bWaitSync = true;
+	
 	// Not sync-managed anymore?...
 	if (--g_iSyncThreadRefCount == 0 && g_pSyncThread) {
 		if (g_pSyncThread->isRunning()) do {
