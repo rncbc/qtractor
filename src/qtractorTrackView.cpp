@@ -312,7 +312,7 @@ void qtractorTrackView::updateContentsRecord (void)
 				x = m_iLastRecordX - cx;
 				w = (m_iPlayHeadX - m_iLastRecordX);
 			}
-			m_iLastRecordX = m_iPlayHeadX - (w << 1);
+			m_iLastRecordX = m_iPlayHeadX - (w >> 1);
 		}	
 		pViewport->update(QRect(x, 0, w, pViewport->height()));
 	}
