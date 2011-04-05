@@ -33,11 +33,12 @@
 #include "lv2_uri_map.h"
 
 #ifdef CONFIG_LV2_PERSIST
-#define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
+//undef LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
 #define LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
 #endif
 
-static QHash<uint32_t, QByteArray> g_uri_map;
+static QHash<QString, uint32_t>    g_uri_map;
+static QHash<uint32_t, QByteArray> g_ids_map;
 
 static uint32_t qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
@@ -49,11 +50,12 @@ static uint32_t qtractor_lv2_uri_to_id (
 #endif
 
 	const QString sUri(uri);
-	uint32_t id = qHash(sUri);
+	if (g_uri_map.contains(sUri))
+		return g_uri_map.value(sUri);
 
-	if (!g_uri_map.contains(id))
-		g_uri_map.insert(id, sUri.toUtf8());
-
+	uint32_t id = g_uri_map.size() + 1000;
+	g_uri_map.insert(sUri, id);
+	g_ids_map.insert(id, sUri.toUtf8());
 	return id;
 }
 
@@ -75,8 +77,8 @@ static const char *qtractor_lv2_id_to_uri (
 	    return SLV2_EVENT_CLASS_MIDI;
 #endif
 
-	if (g_uri_map.contains(id))
-		return g_uri_map[id].constData();
+	if (g_ids_map.contains(id))
+		return g_ids_map[id].constData();
 	else
 		return NULL;
 }
@@ -149,7 +151,7 @@ static const void *qtractor_lv2_persist_retrieve ( void *callback_data,
 		return NULL;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_persist_retrieve(%p, %d)", pLv2Plugin, key);
+	qDebug("qtractor_lv2_persist_retrieve(%p, %d)", pLv2Plugin, int(key));
 #endif
 
 	return pLv2Plugin->lv2_persist_retrieve(key, size, type, flags);
@@ -1943,8 +1945,7 @@ int qtractorLv2Plugin::lv2_persist_store (
 {
 	if (value == NULL)
 		return 1;
-	if (type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI) &&
-		type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_XMLS_STRING_URI))
+	if (type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_XMLS_STRING_URI))
 		return 1;
 	if ((flags & LV2_PERSIST_IS_POD) == 0)
 		return 1;
@@ -1974,7 +1975,7 @@ const void *qtractorLv2Plugin::lv2_persist_retrieve (
 	if (size)
 		*size = data.size();
 	if (type)
-		*type = qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI);
+		*type = qtractor_lv2_uri_to_id(NULL, NULL, LV2_XMLS_STRING_URI);
 	if (flags)
 		*flags = LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE;
 
