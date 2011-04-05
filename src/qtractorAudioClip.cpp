@@ -331,7 +331,7 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	// Needed an even number of polygon points...
 	bool bZoomedIn = (clipRect.width() > int(nframes));
 	unsigned int iPolyPoints
-		= (bZoomedIn ? nframes : (clipRect.width() >> 1)) << 1;
+		= (bZoomedIn ? nframes: (clipRect.width() >> 1)) << 1;
 	if (iPolyPoints < 2)
 		return;
 
@@ -355,15 +355,16 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	int h2 = (h1 >> 1);
 	int h2gain = (h2 * m_fractGain.num); 
 	int ymax, yrms;
-	unsigned int n;
+	unsigned int n, n2;
 	int x, y;
 
 	// Build polygonal vertexes...
 	if (bZoomedIn) {
 		// Zoomed in...
 		// - trade peak-frames for pixels.
+		n2 = nframes - 1;
 		for (n = 0; n < nframes; ++n) {
-			x = clipRect.x() + (n * clipRect.width()) / nframes;
+			x = clipRect.x() + (n * clipRect.width()) / n2;
 			y = clipRect.y() + h2;
 			for (i = 0; i < iChannels; ++i) {
 				ymax = (h2gain * pframes->max) >> m_fractGain.den;
@@ -379,9 +380,9 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 		// Zoomed out...
 		// - trade (2) pixels for peak-frames (expensiver).
 		int x2, k = 0;
-		unsigned int n2, n0 = 0;
+		unsigned int n0 = 0;
 		unsigned char v, vmax, vrms;
-		for (x2 = 0; x2 < clipRect.width(); x2 += 2, ++k) {
+		for (x2 = 0; x2 < clipRect.width(); x2 += 2) {
 			x = clipRect.x() + x2;
 			y = clipRect.y() + h2;
 			n = (iChannels * x2 * nframes) / clipRect.width();
@@ -405,6 +406,7 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 				y += h1;
 			}
 			n0 = n + iChannels;
+			++k;
 		}
 	}
 
