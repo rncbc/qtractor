@@ -879,21 +879,27 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 1];
+	m_lv2_features = new LV2_Feature * [iFeatures + 2];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
 #ifdef CONFIG_LV2_FILES
 
-	m_lv2_file_support.host_data = this;
-	m_lv2_file_support.abstract_path = &qtractor_lv2_files_abstract_path;
-	m_lv2_file_support.absolute_path = &qtractor_lv2_files_absolute_path;
-	m_lv2_file_support.new_file_path = &qtractor_lv2_files_new_file_path;
+	m_lv2_files_path_support.host_data = this;
+	m_lv2_files_path_support.abstract_path = &qtractor_lv2_files_abstract_path;
+	m_lv2_files_path_support.absolute_path = &qtractor_lv2_files_absolute_path;
 
-	m_lv2_files_feature.URI = LV2_FILES_FILE_SUPPORT_URI;
-	m_lv2_files_feature.data = &m_lv2_file_support;
-	m_lv2_features[iFeatures++] = &m_lv2_files_feature;
+	m_lv2_files_path_feature.URI = LV2_FILES_PATH_SUPPORT_URI;
+	m_lv2_files_path_feature.data = &m_lv2_files_path_support;
+	m_lv2_features[iFeatures++] = &m_lv2_files_path_feature;
 
+	m_lv2_files_new_file_support.host_data = this;
+	m_lv2_files_new_file_support.new_file_path = &qtractor_lv2_files_new_file_path;
+
+	m_lv2_files_new_file_feature.URI = LV2_FILES_NEW_FILE_SUPPORT_URI;
+	m_lv2_files_new_file_feature.data = &m_lv2_files_new_file_support;
+	m_lv2_features[iFeatures++] = &m_lv2_files_new_file_feature;
+	
 	m_lv2_features[iFeatures] = NULL;
 
 #endif

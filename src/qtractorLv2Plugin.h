@@ -301,8 +301,10 @@ protected:
 #endif
 
 #ifdef CONFIG_LV2_FILES
-	LV2_Feature            m_lv2_files_feature;
-	LV2_Files_File_Support m_lv2_file_support;
+	LV2_Feature                m_lv2_files_path_feature;
+	LV2_Files_Path_Support     m_lv2_files_path_support;
+	LV2_Feature                m_lv2_files_new_file_feature;
+	LV2_Files_New_File_Support m_lv2_files_new_file_support;
 #endif
 };
 
