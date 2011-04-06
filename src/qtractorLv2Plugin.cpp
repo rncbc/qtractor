@@ -33,8 +33,8 @@
 #include "lv2_uri_map.h"
 
 #ifdef CONFIG_LV2_PERSIST
-//undef LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
-#define LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
+#define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
+//undef LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
 #endif
 
 static QHash<QString, uint32_t>    g_uri_map;
@@ -1951,7 +1951,7 @@ int qtractorLv2Plugin::lv2_persist_store (
 {
 	if (value == NULL)
 		return 1;
-	if (type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_XMLS_STRING_URI))
+	if (type != qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI))
 		return 1;
 	if ((flags & LV2_PERSIST_IS_POD) == 0)
 		return 1;
@@ -1981,7 +1981,7 @@ const void *qtractorLv2Plugin::lv2_persist_retrieve (
 	if (size)
 		*size = data.size();
 	if (type)
-		*type = qtractor_lv2_uri_to_id(NULL, NULL, LV2_XMLS_STRING_URI);
+		*type = qtractor_lv2_uri_to_id(NULL, NULL, LV2_ATOM_STRING_URI);
 	if (flags)
 		*flags = LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE;
 
