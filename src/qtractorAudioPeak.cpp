@@ -425,29 +425,16 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 
 	// Cache effect, only valid if we're really reading...
 	unsigned long iPeakEnd = iPeakOffset + iPeakFrames;
-	if (iPeakEnd > m_iBuffOffset) {
-		if (iPeakOffset < m_iBuffOffset) {
-			unsigned int iPeakFrames2 = m_iBuffOffset - iPeakOffset;
-			if (m_iBuffLength + iPeakFrames2 < m_iBuffSize) {
-				::memmove(
-					m_pBuffer + m_peakHeader.channels * iPeakFrames2,
-					m_pBuffer,
-					m_peakHeader.channels * m_iBuffLength * sizeof(Frame));
-				m_iBuffLength += readBuffer(0, iPeakOffset, iPeakFrames2);
-				m_iBuffOffset  = iPeakOffset;
-				return m_pBuffer;
-			}
-		} else {
-			unsigned long iBuffEnd = m_iBuffOffset + m_iBuffLength;
-			if (iBuffEnd >= iPeakEnd)
-				return m_pBuffer
-					+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
-			if (m_iBuffOffset + m_iBuffSize >= iPeakEnd) {
-				m_iBuffLength
-					+= readBuffer(m_iBuffLength, iBuffEnd, iPeakEnd - iBuffEnd);
-				return m_pBuffer
-					+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
-			}
+	if (iPeakOffset >= m_iBuffOffset && m_iBuffOffset < iPeakEnd) {
+		unsigned long iBuffEnd = m_iBuffOffset + m_iBuffLength;
+		if (iBuffEnd >= iPeakEnd)
+			return m_pBuffer
+				+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
+		if (m_iBuffOffset + m_iBuffSize >= iPeakEnd) {
+			m_iBuffLength
+				+= readBuffer(m_iBuffLength, iBuffEnd, iPeakEnd - iBuffEnd);
+			return m_pBuffer
+				+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
 		}
 	}
 
