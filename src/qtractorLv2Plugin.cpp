@@ -152,21 +152,26 @@ static const void *qtractor_lv2_persist_retrieve ( void *callback_data,
 uint32_t qtractorLv2Plugin::lv2_uri_to_id ( const char *uri )
 {
 	const QString sUri(uri);
-	if (g_uri_map.contains(sUri))
-		return g_uri_map.value(sUri);
 
-	uint32_t id = g_uri_map.size() + 1000;
-	g_uri_map.insert(sUri, id);
-	g_ids_map.insert(id, sUri.toUtf8());
-	return id;
+	QHash<QString, uint32_t>::ConstIterator iter = g_uri_map.find(sUri);
+	if (iter == g_uri_map.constEnd()) {
+		uint32_t id = g_uri_map.size() + 1000;
+		g_uri_map.insert(sUri, id);
+		g_ids_map.insert(id, sUri.toUtf8());
+		return id;
+	}
+
+	return iter.value();
 }
 
 const char *qtractorLv2Plugin::lv2_id_to_uri ( uint32_t id )
 {
-	if (g_ids_map.contains(id))
-		return g_ids_map[id].constData();
-	else
+	QHash<uint32_t, QByteArray>::ConstIterator iter
+		= g_ids_map.find(id);
+	if (iter == g_ids_map.constEnd())
 		return NULL;
+
+	return iter.value().constData();
 }
 
 #endif	// CONFIG_LV2_PERSIST
@@ -2001,15 +2006,24 @@ const void *qtractorLv2Plugin::lv2_persist_retrieve (
 		return NULL;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
-	const QByteArray& data = m_lv2_persist_configs[sKey];
+	if (sKey.isEmpty())
+		return NULL;
+
+	QHash<QString, QByteArray>::ConstIterator iter
+		= m_lv2_persist_configs.find(sKey);
+	if (iter == m_lv2_persist_configs.constEnd())
+		return NULL;
+
+	const QByteArray& data = iter.value();
 
 	if (size)
 		*size = data.size();
 	if (type) {
-		*type = lv2_uri_to_id(LV2_ATOM_STRING_URI);
 		ConfigTypes::ConstIterator ctype = m_lv2_persist_ctypes.find(sKey);
 		if (ctype != m_lv2_persist_ctypes.constEnd())
 			*type = ctype.value();
+		else
+			*type = lv2_uri_to_id(LV2_ATOM_STRING_URI);
 	}
 	if (flags)
 		*flags = LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE;
