@@ -2019,7 +2019,8 @@ const void *qtractorLv2Plugin::lv2_persist_retrieve (
 	if (size)
 		*size = data.size();
 	if (type) {
-		ConfigTypes::ConstIterator ctype = m_lv2_persist_ctypes.find(sKey);
+		QHash<QString, uint32_t>::ConstIterator ctype
+			= m_lv2_persist_ctypes.find(sKey);
 		if (ctype != m_lv2_persist_ctypes.constEnd())
 			*type = ctype.value();
 		else
