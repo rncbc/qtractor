@@ -563,7 +563,7 @@ public:
 
 	// Plugin configure clearance.
 	void clearConfigs()
-		{ m_configs.clear(); }
+		{ m_configs.clear(); m_ctypes.clear(); }
 	void clearValues()
 		{ m_values.clear(); }
 
