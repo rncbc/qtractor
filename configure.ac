@@ -552,6 +552,8 @@ if test "x$ac_lv2" = "xyes"; then
 fi
 
 # Check for SLV2 new UI instantiation availability.
+ac_lv2_ui_new="no"
+
 if test "x$ac_lv2" = "xyes"; then
    LIBS="$ac_lv2_libs $LIBS"
    AC_CHECK_LIB(slv2, slv2_ui_instance_new, [ac_lv2_ui_new="yes"], [ac_lv2_ui_new="no"])
@@ -902,7 +904,7 @@ echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in UI instantiation (libslv2-10)  . . . .: $ac_lv2_ui_new"
+echo "  LV2 Plug-in UI instantiation (libslv2 >= 0.7)  . .: $ac_lv2_ui_new"
 echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
