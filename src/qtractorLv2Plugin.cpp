@@ -896,7 +896,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 2];
+	m_lv2_features = new LV2_Feature * [iFeatures + 3];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
@@ -917,9 +917,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_files_new_file_feature.data = &m_lv2_files_new_file_support;
 	m_lv2_features[iFeatures++] = &m_lv2_files_new_file_feature;
 	
-	m_lv2_features[iFeatures] = NULL;
-
 #endif
+
+	m_lv2_features[iFeatures] = NULL;
 
 	// Get some structural data first...
 	SLV2Plugin plugin = pLv2Type->slv2_plugin();
