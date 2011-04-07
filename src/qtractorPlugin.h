@@ -528,6 +528,19 @@ public:
 	const QString& config(const QString& sKey)
 		{ return m_configs[sKey]; }
 
+	// Plugin configuration (types) stuff.
+	typedef QHash<QString, QString> ConfigTypes;
+
+	void setConfigTypes(const ConfigTypes& ctypes)
+		{ m_ctypes = ctypes; }
+	const ConfigTypes& configTypes() const
+		{ return m_ctypes; }
+
+	void setConfigType(const QString& sKey, const QString& sType)
+		{ m_ctypes[sKey] = sType; }
+	const QString& configType(const QString& sKey)
+		{ return m_ctypes[sKey]; }
+
 	// Plugin parameter values stuff.
 	typedef QHash<unsigned long, float> Values;
 
@@ -555,7 +568,8 @@ public:
 		{ m_values.clear(); }
 
 	// Load plugin configuration/parameter values stuff.
-	static void loadConfigs(QDomElement *pElement, Configs& configs);
+	static void loadConfigs(
+		QDomElement *pElement, Configs& configs, ConfigTypes& ctypes);
 	static void loadValues(QDomElement *pElement, Values& values);
 
 	// Save plugin configuration/parameter values stuff.
@@ -601,6 +615,9 @@ private:
 
 	// Plugin configuration (CLOB) stuff.
 	Configs m_configs;
+
+	// Plugin configuration (type) stuff.
+	ConfigTypes m_ctypes;
 
 	// Plugin parameter values (part of configuration).
 	Values m_values;

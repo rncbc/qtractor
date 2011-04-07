@@ -228,6 +228,10 @@ public:
 
 #endif
 
+	// URI map helpers.
+	static uint32_t    lv2_uri_to_id(const char *uri);
+	static const char *lv2_id_to_uri(uint32_t id);
+
 protected:
 
 	// Instance variables.
@@ -298,6 +302,7 @@ protected:
 
 #ifdef CONFIG_LV2_PERSIST
 	QHash<QString, QByteArray> m_lv2_persist_configs;
+	QHash<QString, uint32_t>   m_lv2_persist_ctypes;
 #endif
 
 #ifdef CONFIG_LV2_FILES

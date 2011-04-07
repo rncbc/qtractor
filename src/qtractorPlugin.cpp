@@ -820,7 +820,7 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 		// Check for preset item...
 		if (eChild.tagName() == "configs" || eChild.tagName() == "configure") {
 			// Parse for config entries...
-			qtractorPlugin::loadConfigs(&eChild, m_configs);
+			qtractorPlugin::loadConfigs(&eChild, m_configs, m_ctypes);
 		}
 		else
 		if (eChild.tagName() == "params") {
@@ -947,7 +947,8 @@ void qtractorPlugin::realizeValues (void)
 
 
 // Load plugin configuration stuff (CLOB).
-void qtractorPlugin::loadConfigs ( QDomElement *pElement, Configs& configs )
+void qtractorPlugin::loadConfigs (
+	QDomElement *pElement, Configs& configs, ConfigTypes& ctypes )
 {
 	for (QDomNode nConfig = pElement->firstChild();
 			!nConfig.isNull();
@@ -956,8 +957,15 @@ void qtractorPlugin::loadConfigs ( QDomElement *pElement, Configs& configs )
 		QDomElement eConfig = nConfig.toElement();
 		if (eConfig.isNull())
 			continue;
-		if (eConfig.tagName() == "config")
-			configs[eConfig.attribute("key")] = eConfig.text();
+		if (eConfig.tagName() == "config") {
+			const QString& sKey = eConfig.attribute("key");
+			if (!sKey.isEmpty()) {
+				configs[sKey] = eConfig.text();
+				const QString& sType = eConfig.attribute("type");
+				if (!sType.isEmpty())
+					ctypes[sKey] = sType;
+			}
+		}
 	}
 }
 
@@ -989,6 +997,9 @@ void qtractorPlugin::saveConfigs (
 	for (; iter != m_configs.constEnd(); ++iter) {
 		QDomElement eConfig = pDocument->createElement("config");
 		eConfig.setAttribute("key", iter.key());
+		ConfigTypes::ConstIterator ctype = m_ctypes.find(iter.key());
+		if (ctype != m_ctypes.constEnd())
+			eConfig.setAttribute("type", ctype.value());
 		eConfig.appendChild(
 			pDocument->createTextNode(iter.value()));
 		pElement->appendChild(eConfig);
@@ -1304,6 +1315,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	if (pNewPlugin) {
 		pNewPlugin->setPreset(pPlugin->preset());
 		pNewPlugin->setConfigs(pPlugin->configs());
+		pNewPlugin->setConfigTypes(pPlugin->configTypes());
 		pNewPlugin->setValues(pPlugin->values());
 		pNewPlugin->realizeConfigs();
 		pNewPlugin->realizeValues();
@@ -1406,6 +1418,7 @@ bool qtractorPluginList::loadElement (
 			QStringList vlist;
 			bool bActivated = false;
 			qtractorPlugin::Configs configs;
+			qtractorPlugin::ConfigTypes ctypes;
 			qtractorPlugin::Values values;
 			qtractorMidiControl::Controllers controllers;
 			qtractorPluginType::Hint typeHint
@@ -1438,7 +1451,7 @@ bool qtractorPluginList::loadElement (
 				else
 				if (eParam.tagName() == "configs" || eParam.tagName() == "configure") {
 					// Load plugin configuration stuff (CLOB)...
-					qtractorPlugin::loadConfigs(&eParam, configs);
+					qtractorPlugin::loadConfigs(&eParam, configs, ctypes);
 				}
 				else
 				if (eParam.tagName() == "params") {
@@ -1465,6 +1478,7 @@ bool qtractorPluginList::loadElement (
 			if (pPlugin) {
 				pPlugin->setPreset(sPreset);
 				pPlugin->setConfigs(configs);
+				pPlugin->setConfigTypes(ctypes);
 				if (!vlist.isEmpty())
 					pPlugin->setValueList(vlist);
 				if (!values.isEmpty())
