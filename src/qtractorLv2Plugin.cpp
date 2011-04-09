@@ -153,7 +153,7 @@ uint32_t qtractorLv2Plugin::lv2_uri_to_id ( const char *uri )
 {
 	const QString sUri(uri);
 
-	QHash<QString, uint32_t>::ConstIterator iter = g_uri_map.find(sUri);
+	QHash<QString, uint32_t>::ConstIterator iter = g_uri_map.constFind(sUri);
 	if (iter == g_uri_map.constEnd()) {
 		uint32_t id = g_uri_map.size() + 1000;
 		g_uri_map.insert(sUri, id);
@@ -167,7 +167,7 @@ uint32_t qtractorLv2Plugin::lv2_uri_to_id ( const char *uri )
 const char *qtractorLv2Plugin::lv2_id_to_uri ( uint32_t id )
 {
 	QHash<uint32_t, QByteArray>::ConstIterator iter
-		= g_ids_map.find(id);
+		= g_ids_map.constFind(id);
 	if (iter == g_ids_map.constEnd())
 		return NULL;
 
@@ -1855,11 +1855,16 @@ void qtractorLv2Plugin::realizeConfigs (void)
 	Configs::ConstIterator config = configs().constBegin();
 	for (; config != configs().constEnd(); ++config) {
 		const QString& sKey = config.key();
-		m_lv2_persist_configs.insert(sKey, config.value().toUtf8());
-		ConfigTypes::ConstIterator ctype = ctypes.find(sKey);
-		if (ctype != ctypes.constEnd()) {
-			m_lv2_persist_ctypes.insert(sKey,
-				lv2_uri_to_id(ctype.value().toUtf8().constData()));
+		const char *pszType = NULL;
+		ConfigTypes::ConstIterator ctype = ctypes.constFind(sKey);
+		if (ctype != ctypes.constEnd())
+			pszType = ctype.value().toUtf8().constData();
+		if (pszType == NULL || ::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
+			m_lv2_persist_configs.insert(sKey, config.value().toUtf8());
+		} else {
+			m_lv2_persist_configs.insert(sKey, qUncompress(
+				QByteArray::fromBase64(config.value().toUtf8())));
+			m_lv2_persist_ctypes.insert(sKey, lv2_uri_to_id(pszType));
 		}
 	}
 
@@ -2003,7 +2008,15 @@ int qtractorLv2Plugin::lv2_persist_store (
 		return 1;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
-	setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
+	if (::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
+		setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
+	} else {
+		QByteArray data = qCompress(
+			QByteArray((const char *) value, size)).toBase64();
+		for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
+			data.insert(i, "\n       "); // Indentation.
+		setConfig(sKey, data.constData());
+	}
 	setConfigType(sKey, QString::fromUtf8(pszType));
 	return 0;
 }
@@ -2021,7 +2034,7 @@ const void *qtractorLv2Plugin::lv2_persist_retrieve (
 		return NULL;
 
 	QHash<QString, QByteArray>::ConstIterator iter
-		= m_lv2_persist_configs.find(sKey);
+		= m_lv2_persist_configs.constFind(sKey);
 	if (iter == m_lv2_persist_configs.constEnd())
 		return NULL;
 
@@ -2031,7 +2044,7 @@ const void *qtractorLv2Plugin::lv2_persist_retrieve (
 		*size = data.size();
 	if (type) {
 		QHash<QString, uint32_t>::ConstIterator ctype
-			= m_lv2_persist_ctypes.find(sKey);
+			= m_lv2_persist_ctypes.constFind(sKey);
 		if (ctype != m_lv2_persist_ctypes.constEnd())
 			*type = ctype.value();
 		else
