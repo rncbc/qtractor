@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.64, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.65, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -133,9 +133,9 @@ AC_ARG_ENABLE(lv2-persist,
   [ac_lv2_persist="yes"])
 
 AC_ARG_ENABLE(lv2-files,
-  AC_HELP_STRING([--enable-lv2-files], [enable LV2 plug-in files support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-files], [enable LV2 plug-in files support (default=no)]),
   [ac_lv2_files="$enableval"],
-  [ac_lv2_files="yes"])
+  [ac_lv2_files="no"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -911,9 +911,9 @@ echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
-echo "  LV2 Plug-in Files support  . . . . . . . . . . . .: $ac_lv2_files"
+echo "  LV2 Plug-in Files support (EXPERIMENTAL) . . . . .: $ac_lv2_files"
 echo
-echo "  JACK Session support (EXPERIMENTAL)  . . . . . . .: $ac_jack_session"
+echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
