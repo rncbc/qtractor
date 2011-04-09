@@ -1855,11 +1855,12 @@ void qtractorLv2Plugin::realizeConfigs (void)
 	Configs::ConstIterator config = configs().constBegin();
 	for (; config != configs().constEnd(); ++config) {
 		const QString& sKey = config.key();
-		const char *pszType = NULL;
+		QByteArray aType;
 		ConfigTypes::ConstIterator ctype = ctypes.constFind(sKey);
 		if (ctype != ctypes.constEnd())
-			pszType = ctype.value().toUtf8().constData();
-		if (pszType == NULL || ::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
+			aType = ctype.value().toUtf8();
+		const char *pszType = aType.constData();
+		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
 			m_lv2_persist_configs.insert(sKey, config.value().toUtf8());
 		} else {
 			m_lv2_persist_configs.insert(sKey, qUncompress(
