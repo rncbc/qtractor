@@ -225,13 +225,17 @@ static char *qtractor_lv2_files_abstract_path (
 	if (pLv2Plugin == NULL)
 		return NULL;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_files_abstract_path(%p, \"%s\"", pLv2Plugin, absolute_path);
+#endif
+
 	QFileInfo fi(absolute_path);
 
 	const QString& sFileName
 		= qtractor_lv2_files_prefix(pLv2Plugin) + fi.fileName();
 	
 	// abstract_path...
-	const QString& sAbstractPath = QFileInfo(sFileName).path();
+	const QString& sAbstractPath = QFileInfo(sFileName).filePath();
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
@@ -242,6 +246,10 @@ static char *qtractor_lv2_files_absolute_path (
 		= static_cast<qtractorLv2Plugin *> (host_data);
 	if (pLv2Plugin == NULL)
 		return NULL;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_files_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
+#endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -272,6 +280,10 @@ static char *qtractor_lv2_files_new_file_path (
 		= static_cast<qtractorLv2Plugin *> (host_data);
 	if (pLv2Plugin == NULL)
 		return NULL;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_files_new_file_path(%p, \"%s\"", pLv2Plugin, relative_path);
+#endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1978,9 +1990,8 @@ int qtractorLv2Plugin::lv2_persist_store (
 {
 	if (value == NULL)
 		return 1;
-	if ((flags & LV2_PERSIST_IS_POD) == 0)
-		return 1;
-	if ((flags & LV2_PERSIST_IS_PORTABLE) == 0)
+
+	if ((flags & (LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE)) == 0)
 		return 1;
 
 	const char *pszKey = lv2_id_to_uri(key);
