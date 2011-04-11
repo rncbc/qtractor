@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Improved timing for monitored MIDI events being
+  buffered though MIDI instrument plugins, while 
+  playback/transport is rolling.
+
 - Audio peak/waveform is now slightly tweaked from
   the early optimization days (master C++ guru has
   always said that was root of all evil anyway :).
