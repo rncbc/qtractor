@@ -2017,8 +2017,8 @@ int qtractorLv2Plugin::lv2_persist_store (
 		for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
 			data.insert(i, "\n       "); // Indentation.
 		setConfig(sKey, data.constData());
+		setConfigType(sKey, QString::fromUtf8(pszType));
 	}
-	setConfigType(sKey, QString::fromUtf8(pszType));
 	return 0;
 }
 
