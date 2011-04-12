@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Autonomic resizing of mixer bus splitter sizes.
+
 - Improved timing for monitored MIDI events being
   buffered though MIDI instrument plugins, while 
   playback/transport is rolling.
