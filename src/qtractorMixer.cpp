@@ -1422,6 +1422,27 @@ void qtractorMixer::updateBuses ( bool bReset )
 
 	m_pOutputRack->cleanStrips(1);
 	m_pInputRack->cleanStrips(1);
+
+	// Autonomic resizing of bus splitter sizes...
+	int ws, iUpdate = 0;
+	QList<int> sizes = m_pSplitter->sizes();
+	int& w0 = sizes[0];
+	int& w1 = sizes[1];
+	int& w2 = sizes[2];
+	ws = m_pInputRack->workspace()->width() + 4;
+	if (w0 > ws) {
+		w1 += (w0 - ws);
+		w0  = ws;
+		iUpdate++;
+	}
+	ws = m_pOutputRack->workspace()->width() + 4;
+	if (w2 > ws) {
+		w1 += (w2 - ws);
+		w2  = ws;
+		iUpdate++;
+	}
+	if (iUpdate > 0)
+		m_pSplitter->setSizes(sizes);
 }
 
 
