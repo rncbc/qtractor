@@ -335,6 +335,22 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	int ch = qtractorScrollView::contentsHeight();
 	int x;
 
+	// Draw track clip selection...
+	if (isClipSelected()) {
+		const QRect rectView(qtractorScrollView::viewport()->rect());
+		const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		for ( ; iter != items.constEnd(); ++iter) {
+			qtractorClipSelect::Item *pClipItem = iter.value();
+			QRect rectClip(pClipItem->rectClip);
+			rectClip.moveTopLeft(
+				qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+			rectClip = rectClip.intersected(rectView);
+			if (!rectClip.isEmpty())
+				pPainter->fillRect(rectClip, QColor(0, 0, 255, 120));
+		}
+	}
+
 	// On-the-fly recording clip drawing...
 	if (pSession->isRecording() && pSession->isPlaying()) {
 		unsigned long iTrackStart = pSession->frameFromPixel(cx + rect.x());
@@ -1569,13 +1585,13 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 	bool bSelect = !(pClipItem && pClipItem->rectClip.contains(m_posDrag));
 	if (!bReset) {
 		m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, bSelect);
-		updateContents(m_rectDrag);
+		qtractorScrollView::update();
 		m_pTracks->selectionChangeNotify();
 	} else if (bSelect || m_selectMode != SelectClip) {
 		m_pClipSelect->clear();
 		if (bSelect)
 			m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, true);
-		updateContents();
+		qtractorScrollView::update();
 		m_pTracks->selectionChangeNotify();
 	}
 
@@ -1640,10 +1656,12 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 		rect.setBottom(rectRange.height());
 	}
 
-	// Let's start invalidading things...
-	QRect rectUpdate = m_pClipSelect->rect();
 	// Reset all selected clips...
-	m_pClipSelect->clear();
+	int iUpdate = 0;
+	if (m_pClipSelect->items().count() > 0) {
+		m_pClipSelect->clear();
+		++iUpdate;
+	}
 
 	// Now find all the clips/regions that fall
 	// in the given rectangular region...
@@ -1672,7 +1690,7 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 					m_pClipSelect->selectClip(pClip, rectClip, true);
 					if (selectMode != SelectClip)
 						pClip->setClipSelect(iSelectStart, iSelectEnd);
-					rectUpdate = rectUpdate.united(rectClip);
+					++iUpdate;
 				}
 			}
 		}
@@ -1680,13 +1698,10 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 	}
 
 	// Update the screen real estate...
-	if (m_pClipSelect->items().count() > 0)
-		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
-	if (!rectUpdate.isEmpty())
-		updateContents(rectUpdate);
-
-	if (!rectUpdate.isEmpty())
-		updateContents(rectUpdate);
+	if (iUpdate > 0) {
+		qtractorScrollView::update();
+	//	m_pTracks->selectionChangeNotify();
+	}
 
 	// That's all very nice but we'll also set edit-range positioning...
 	if (selectEdit & EditHead)
@@ -1726,10 +1741,12 @@ void qtractorTrackView::selectTrackRange ( qtractorTrack *pTrackPtr, bool bReset
 	rect.setRight(pSession->pixelFromFrame(iSelectEnd));
 
 	// Reset selection...
-	QRect rectUpdate = m_pClipSelect->rect();
-	if (bReset)
+	int iUpdate = 0;
+	if (bReset) {
 	//	&& (pTrackPtr == NULL || m_pClipSelect->singleTrack() != pTrackPtr))
 		m_pClipSelect->clear();
+		++iUpdate;
+	}
 	
 	int y1, y2 = 0;
 	qtractorTrack *pTrack = pSession->tracks().first();
@@ -1756,6 +1773,7 @@ void qtractorTrackView::selectTrackRange ( qtractorTrack *pTrackPtr, bool bReset
 					m_pClipSelect->selectClip(pClip, rectClip, bSelect);
 					if (bSelect)
 						pClip->setClipSelect(iSelectStart, iSelectEnd);
+					++iUpdate;
 				}
 			}
 			if (pTrack == pTrackPtr)
@@ -1765,10 +1783,8 @@ void qtractorTrackView::selectTrackRange ( qtractorTrack *pTrackPtr, bool bReset
 	}
 
 	// This is most probably an overall update...
-	if (m_pClipSelect->items().count() > 0)
-		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
-	if (!rectUpdate.isEmpty()) {
-		updateContents(rectUpdate);
+	if (iUpdate > 0) {
+		qtractorScrollView::update();
 		m_pTracks->selectionChangeNotify();
 	}
 
@@ -1784,9 +1800,11 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 	if (pSession == NULL)
 		return;
 
-	QRect rectUpdate = m_pClipSelect->rect();
-	if (bReset && m_pClipSelect->singleTrack() != pTrackPtr)
+	int iUpdate = 0;
+	if (bReset && m_pClipSelect->singleTrack() != pTrackPtr) {
 		m_pClipSelect->clear();
+		++iUpdate;
+	}
 
 	int y1, y2 = 0;
 	qtractorTrack *pTrack = pSession->tracks().first();
@@ -1802,6 +1820,7 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 				int w = pSession->pixelFromFrame(pClip->clipLength());
 				bool bSelect = !pClip->isClipSelected();
 				m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
+				++iUpdate;
 			}
 			break;
 		}
@@ -1809,10 +1828,8 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 	}
 
 	// This is most probably an overall update...
-	if (m_pClipSelect->items().count() > 0)
-		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
-	if (!rectUpdate.isEmpty()) {
-		updateContents(rectUpdate);
+	if (iUpdate > 0) {
+		qtractorScrollView::update();
 		m_pTracks->selectionChangeNotify();
 	}
 
@@ -1828,9 +1845,14 @@ void qtractorTrackView::selectAll ( bool bSelect )
 	if (pSession == NULL)
 		return;
 
-	if (bSelect) {
-		// Reset selection...
+	// Reset selection...
+	int iUpdate = 0;
+	if (m_pClipSelect->items().count() > 0) {
 		m_pClipSelect->clear();
+		++iUpdate;
+	}
+
+	if (bSelect) {
 		// Select all clips on all tracks...
 		int y1, y2 = 0;
 		qtractorTrack *pTrack = pSession->tracks().first();
@@ -1844,22 +1866,15 @@ void qtractorTrackView::selectAll ( bool bSelect )
 				int x = pSession->pixelFromFrame(pClip->clipStart());
 				int w = pSession->pixelFromFrame(pClip->clipLength());
 				m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
+				++iUpdate;
 			}
 			pTrack = pTrack->next();
 		}
-		// This is most probably an overall update...
-		if (m_pClipSelect->items().count() > 0) {
-			updateContents(m_pClipSelect->rect());
-			m_pTracks->selectionChangeNotify();
-		}
-	}
-	else
-	// Clear all selections...
-	if (m_pClipSelect->items().count() > 0) {
-		QRect rectUpdate = m_pClipSelect->rect();
-		m_pClipSelect->clear();
-		if (!rectUpdate.isEmpty())
-			updateContents(rectUpdate);
+	} 
+
+	// This is most probably an overall update...
+	if (iUpdate > 0) {
+		qtractorScrollView::update();
 		m_pTracks->selectionChangeNotify();
 	}
 
@@ -1875,9 +1890,8 @@ void qtractorTrackView::selectInvert (void)
 	if (pSession == NULL)
 		return;
 
-	// Reset selection...
-	QRect rectUpdate = m_pClipSelect->rect();
-
+	// Invert selection...
+	int iUpdate = 0;
 	int y1, y2 = 0;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1891,14 +1905,13 @@ void qtractorTrackView::selectInvert (void)
 			int w = pSession->pixelFromFrame(pClip->clipLength());
 			bool bSelect = !pClip->isClipSelected();
 			m_pClipSelect->selectClip(pClip, QRect(x, y, w, h), bSelect);
+			++iUpdate;
 		}
 	}
 
 	// This is most probably an overall update...
-	if (m_pClipSelect->items().count() > 0)
-		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
-	if (!rectUpdate.isEmpty()) {
-		updateContents(rectUpdate);
+	if (iUpdate > 0) {
+		qtractorScrollView::update();
 		m_pTracks->selectionChangeNotify();
 	}
 
@@ -1916,15 +1929,16 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 		return;
 
 	// Reset selection...
-	QRect rectUpdate = m_pClipSelect->rect();
+	int iUpdate = 0;
 	if ((QApplication::keyboardModifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+		& (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
 		m_pClipSelect->clear();
+		++iUpdate;
+	}
 
 	int x0 = qtractorScrollView::contentsWidth();
 	int y0 = qtractorScrollView::contentsHeight();
 
-	int iUpdate = 0;
 	int y1, y2 = 0;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1955,16 +1969,12 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 	}
 
 	// This is most probably an overall update...
-	if (m_pClipSelect->items().count() > 0)
-		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
-	if (!rectUpdate.isEmpty()) {
-		updateContents(rectUpdate);
+	if (iUpdate > 0) {
+		qtractorScrollView::update();
 		m_pTracks->selectionChangeNotify();
-	}
-
-	// Make sure the earliest is barely visible...
-	if (iUpdate > 0)
+		// Make sure the earliest is barely visible...
 		qtractorScrollView::ensureVisible(x0, y0, 24, 24);
+	}
 
 	// Make sure we keep focus... (maybe not:)
 //	qtractorScrollView::setFocus();

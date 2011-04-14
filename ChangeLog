@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Almost complete rewrite of the main track-view
+  selection and redrawing logic, taking advantage
+  of the fundamentally static graphical backstore.
+
 - Autonomic resizing of mixer bus splitter sizes.
 
 - Improved timing for monitored MIDI events being
