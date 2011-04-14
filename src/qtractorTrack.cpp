@@ -1009,6 +1009,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			}
 			QRect rect(x, y, w - x, h);
 			pClip->drawClip(pPainter, rect, iClipOffset);
+		#if 0
 			// Draw the clip selection...
 			if (pClip->isClipSelected()) {
 				unsigned long iSelectStart = pClip->clipSelectStart();
@@ -1028,6 +1029,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				rect.setRect(x, y, w - x, h);
 				pPainter->fillRect(rect, QColor(0, 0, 255, 120));
 			}
+		#endif
 		}
 		pClip = pClip->next();
 	}
