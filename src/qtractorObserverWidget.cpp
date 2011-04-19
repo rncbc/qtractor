@@ -46,13 +46,17 @@ void qtractorObserverCheckBox::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverCheckBox[%p]::updateValue(%g)", this, fValue);
 #endif
+	++m_iUpdateValue;
 	QCheckBox::setChecked(bool(scaleFromValue(fValue)));
+	--m_iUpdateValue;
 }
 
 
 // Protected slot.
 void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 {
+	if (m_iUpdateValue > 0)
+		return;
 	if (observer()->isBusy())
 		return;
 
@@ -84,13 +88,17 @@ void qtractorObserverSpinBox::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSpinBox[%p]::updateValue(%g)", this, fValue);
 #endif
+	++m_iUpdateValue;
 	QDoubleSpinBox::setValue(scaleFromValue(fValue));
+	--m_iUpdateValue;
 }
 
 
 // Protected slot.
 void qtractorObserverSpinBox::spinBoxChanged ( double value )
 {
+	if (m_iUpdateValue > 0)
+		return;
 	if (observer()->isBusy())
 		return;
 
@@ -150,13 +158,17 @@ void qtractorObserverSlider::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSlider[%p]::updateValue(%g)", this, fValue);
 #endif
+	++m_iUpdateValue;
 	QSlider::setValue(int(scaleFromValue(fValue)));
+	--m_iUpdateValue;
 }
 
 
 // Protected slot.
 void qtractorObserverSlider::sliderChanged ( int iValue )
 {
+	if (m_iUpdateValue > 0)
+		return;
 	if (observer()->isBusy())
 		return;
 

@@ -82,7 +82,8 @@ public:
 
 	// Constructor.
 	qtractorObserverWidget(QWidget *pParent = 0)
-		: Widget(pParent), m_pInterface(NULL), m_observer(NULL, this) {}
+		: Widget(pParent), m_iUpdateValue(0),
+			m_pInterface(NULL), m_observer(NULL, this) {}
 
 	// Destructor.
 	~qtractorObserverWidget()
@@ -119,6 +120,9 @@ protected:
 	// Pure virtual visitor.
 	virtual void updateValue(float fValue) = 0;
 	
+	// Recursive update guardian.
+	int m_iUpdateValue;
+
 private:
 
 	// Members.

@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Avoid recursive observer widget value updates.
+
 - Almost complete rewrite of the main track-view
   selection and redrawing logic, taking advantage
   of the fundamentally static graphical backstore.

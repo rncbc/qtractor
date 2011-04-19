@@ -89,7 +89,7 @@ unsigned short qtractorMidiControlObserver::midiValue (void) const
 
 
 // Normalized scale coneverters.
-float qtractorMidiControlObserver::valueFromScale (	float fScale, bool bCubic ) const
+float qtractorMidiControlObserver::valueFromScale ( float fScale, bool bCubic ) const
 {
 	if (bCubic)
 		fScale = ::cubef2(fScale);
