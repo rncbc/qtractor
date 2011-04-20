@@ -722,6 +722,9 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	dump_state(QString(">seek(%1)").arg(iFrame));
 #endif
 
+	// Force (mature) out-of-sync...
+	m_bWaitSync = false;
+
 	// Adjust to logical offset...
 	iFrame += m_iOffset;
 
@@ -753,8 +756,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	ATOMIC_INC(&m_seekPending);
 
 	// readSync();
-	if (!m_bWaitSync && g_pSyncThread)
-		m_bWaitSync = g_pSyncThread->sync(this);
+	if (g_pSyncThread)
+		g_pSyncThread->sync(this);
 
 	return true;
 }
