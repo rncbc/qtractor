@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Hopeful fix to a potential audio buffering race
+  condition, which was a probable cause of random
+  muted clips (maybe fixing bug #3290178).
+
 - Avoid recursive observer widget value updates.
 
 - Almost complete rewrite of the main track-view
