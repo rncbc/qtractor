@@ -1309,12 +1309,12 @@ unsigned long qtractorSession::punchOutTime (void) const
 
 unsigned long qtractorSession::frameTime (void) const
 {
-	return	m_pAudioEngine->sessionCursor()->frameTime();
+	return m_pAudioEngine->sessionCursor()->frameTime();
 }
 
 unsigned long qtractorSession::framePos (void) const
 {
-	return	m_pAudioEngine->sessionCursor()->framePos();
+	return m_pAudioEngine->sessionCursor()->framePos();
 }
 
 
