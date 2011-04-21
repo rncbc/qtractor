@@ -215,19 +215,12 @@ void qtractorClipCommand::updateClip ( qtractorClip *pClip )
 
 
 // Special clip record nethod.
-bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
+bool qtractorClipCommand::addClipRecord (
+	qtractorTrack *pTrack, unsigned long iClipEnd )
 {
 	qtractorClip *pClip = pTrack->clipRecord();
 	if (pClip == NULL)
 		return false;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	// Arrange for formal clip length...
-	unsigned long iClipEnd = (pSession->isPunching()
-		? pSession->punchOut() : pSession->framePos());
 
 	unsigned long iClipStart = pClip->clipStart();
 	if (iClipStart >= iClipEnd)

@@ -72,7 +72,7 @@ public:
 	void updateClip(qtractorClip *pClip);
 
 	// Special clip record method.
-	bool addClipRecord(qtractorTrack *pTrack);
+	bool addClipRecord(qtractorTrack *pTrack, unsigned long iClipEnd);
 
 	// When new tracks are needed.
 	void addTrack(qtractorTrack *pTrack);
