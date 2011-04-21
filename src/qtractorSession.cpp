@@ -1356,25 +1356,34 @@ void qtractorSession::setRecording ( bool bRecording )
 	m_bRecording = bRecording;
 
 	// For all armed tracks...
+	unsigned long iClipStart = playHead();
+
+	if (isPunching()) {
+		unsigned long iPunchIn = punchIn();
+		if (iClipStart < iPunchIn)
+			iClipStart = iPunchIn;
+	}
+
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->isRecord())
-			trackRecord(pTrack, bRecording);
+			trackRecord(pTrack, bRecording, iClipStart);
 	}
 }
 
-bool qtractorSession::isRecording() const
+bool qtractorSession::isRecording (void) const
 {
 	return m_bRecording;
 }
 
 
 // Immediate track record-arming.
-void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
+void qtractorSession::trackRecord (
+	qtractorTrack *pTrack, bool bRecord, unsigned long iClipStart )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorSession::trackRecord(\"%s\", %d)",
-		pTrack->trackName().toUtf8().constData(), (int) bRecord);
+	qDebug("qtractorSession::trackRecord(\"%s\", %d, %lu)",
+		pTrack->trackName().toUtf8().constData(), int(bRecord), iClipStart);
 #endif
 
 	// Just ditch the in-record clip...
@@ -1401,15 +1410,6 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	#endif
 		// Done.
 		return;
-	}
-
-	// Here's the place to create and set the capture clip...
-	unsigned long iClipStart = playHead();
-
-	if (isPunching()) {
-		unsigned long iPunchIn = punchIn();
-		if (iClipStart < iPunchIn)
-			iClipStart = iPunchIn;
 	}
 
 	switch (pTrack->trackType()) {

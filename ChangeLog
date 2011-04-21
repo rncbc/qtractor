@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Make sure all clips in multiple recording tracks
+  start at the very same position when recording is
+  already engaged and rolling.
+
 - Hopeful fix to a potential audio buffering race
   condition, which was a probable cause of random
   muted clips (maybe fixing bug #3290178).
@@ -40,7 +44,7 @@ SVN TRUNK
 - Plugin Activate All/Deactivate All menu fixing.
 
 - Make sure given session directory has all the
-  necessary access permisssion (read/write) while
+  necessary access permission (read/write) while
   on session properties dialog.
 
 - Dedicated audio outputs setting for instrument
@@ -82,13 +86,13 @@ SVN TRUNK
   signaled to track properties and bus manager
   dialogs and enable their respective acceptance.
 
-- Two brand new MIDI tools make their appearence:
+- Two brand new MIDI tools make their appearance:
   Scale-Quantize and Snap-to-Scale. The later may
   be readily accessible from the MIDI clip editor
   toolbar and menu (check View/Toolbars/Scale and
   View/Scale).
 
-- Mixer track strips are now completetly redone
+- Mixer track strips are now completely redone
   whenever a track gets moved or re-ordered on
   main track list-view.
 
@@ -109,7 +113,7 @@ SVN TRUNK
 - Backout default session directory after cleaning
   up extracted archive/zip bundle session (.qtz).
 
-- Files widget item selection feedback/foocus fix.
+- Files widget item selection feedback/focus fix.
 
 - MIDI editor anchor event floating tool-tip fix.
 

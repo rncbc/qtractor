@@ -417,7 +417,7 @@ bool qtractorEditTrackCommand::redo (void)
 	// Howdy, maybe we're already have a name on recording...
 	bool bRecord = m_pTrack->isRecord();
 	if (bRecord)
-		pSession->trackRecord(m_pTrack, false);
+		pSession->trackRecord(m_pTrack, false, 0);
 
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
@@ -434,8 +434,15 @@ bool qtractorEditTrackCommand::redo (void)
 				.arg(m_pTrack->outputBusName()));
 	}
 	else // Reassign recording...
-	if (bRecord)
-		pSession->trackRecord(m_pTrack, true);
+	if (bRecord) {
+		unsigned long iClipStart = pSession->playHead();
+		if (pSession->isPunching()) {
+			unsigned long iPunchIn = pSession->punchIn();
+			if (iClipStart < iPunchIn)
+				iClipStart = iPunchIn;
+		}
+		pSession->trackRecord(m_pTrack, true, iClipStart);
+	}
 
 	// Refresh track item, at least the names...
 	pTracks->trackList()->updateTrack(m_pTrack);

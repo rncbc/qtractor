@@ -278,7 +278,8 @@ public:
 	unsigned short midiRecord() const;
 
 	// Special track-immediate methods.
-	void trackRecord(qtractorTrack *pTrack, bool bRecord);
+	void trackRecord(
+		qtractorTrack *pTrack, bool bRecord, unsigned long iClipStart);
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 	void trackSolo(qtractorTrack *pTrack, bool bSolo);
 
