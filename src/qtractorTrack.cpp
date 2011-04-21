@@ -488,8 +488,15 @@ void qtractorTrack::setRecord ( bool bRecord )
 
 	m_pRecordObserver->setValue(bRecord ? 1.0f : 0.0f);
 
-	if (m_pSession->isRecording())
-		m_pSession->trackRecord(this, bRecord);
+	if (m_pSession->isRecording()) {
+		unsigned long iClipStart = m_pSession->playHead();
+		if (m_pSession->isPunching()) {
+			unsigned long iPunchIn = m_pSession->punchIn();
+			if (iClipStart < iPunchIn)
+				iClipStart = iPunchIn;
+		}
+		m_pSession->trackRecord(this, bRecord, iClipStart);
+	}
 }
 
 bool qtractorTrack::isRecord (void) const
