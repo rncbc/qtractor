@@ -69,7 +69,8 @@ public:
 	void timeStretchClip(qtractorClip *pClip, float fTimeStretch);
 	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
 	void resetClip(qtractorClip *pClip, unsigned long iClipLength);
-	void reopenClip(qtractorClip *pClip);
+
+	void reopenClip(qtractorClip *pClip, bool bClose = false);
 
 	// Special clip record method.
 	bool addClipRecord(qtractorTrack *pTrack, unsigned long iClipEnd);
@@ -144,7 +145,7 @@ private:
 	QList<qtractorTrackCommand *> m_trackCommands;
 
 	// When clips need to reopem.
-	QHash<qtractorClip *, int> m_clips;
+	QHash<qtractorClip *, bool> m_clips;
 };
 
 
