@@ -88,7 +88,7 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
 
-	reopenClip(pClip);
+	reopenClip(pClip, true);
 }
 
 
@@ -150,7 +150,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	m_items.append(pItem);
 
 	if (pItem->editCommand == NULL)
-		reopenClip(pClip);
+		reopenClip(pClip, fTimeStretch > 0.0f);
 }
 
 
@@ -189,7 +189,7 @@ void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
 	pItem->timeStretch = fTimeStretch;
 	m_items.append(pItem);
 
-	reopenClip(pClip);
+	reopenClip(pClip, true);
 }
 
 
@@ -221,12 +221,12 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip,
 }
 
 
-void qtractorClipCommand::reopenClip ( qtractorClip *pClip )
+void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 {
-	QHash<qtractorClip *, int>::ConstIterator iter
+	QHash<qtractorClip *, bool>::ConstIterator iter
 		= m_clips.constFind(pClip);
 	if (iter == m_clips.constEnd())
-		m_clips.insert(pClip, 1);
+		m_clips.insert(pClip, bClose);
 }
 
 
@@ -378,9 +378,11 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	}
 
 	// Pre-close needed clips once...
-	QHash<qtractorClip *, int>::ConstIterator clip;
-	for (clip = m_clips.constBegin(); clip != m_clips.constEnd(); ++clip)
-		clip.key()->close();	// Scrap peak file (audio).
+	QHash<qtractorClip *, bool>::ConstIterator clip;
+	for (clip = m_clips.constBegin(); clip != m_clips.constEnd(); ++clip) {
+		if (clip.value()) // Scrap peak file (audio).
+			clip.key()->close();
+	}
 
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
@@ -471,7 +473,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				if (pAudioClip) {
 					if (pItem->timeStretch > 0.0f) {
 						fOldTimeStretch = pAudioClip->timeStretch();
-						pAudioClip->close(); // Scrap peak file.
+					//--pAudioClip->close(); // Scrap peak file.
 					}
 					if (pItem->pitchShift > 0.0f)
 						fOldPitchShift = pAudioClip->pitchShift();
