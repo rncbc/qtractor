@@ -60,6 +60,8 @@ qtractorClipCommand::~qtractorClipCommand (void)
 
 	qDeleteAll(m_trackCommands);
 	m_trackCommands.clear();
+
+	m_clips.clear();
 }
 
 
@@ -85,6 +87,8 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->filename = sFilename;
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
+
+	reopenClip(pClip);
 }
 
 
@@ -144,6 +148,9 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	if (fPitchShift > 0.0f)
 		pItem->pitchShift = fPitchShift;
 	m_items.append(pItem);
+
+	if (pItem->editCommand == NULL)
+		reopenClip(pClip);
 }
 
 
@@ -181,6 +188,8 @@ void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
 	Item *pItem = new Item(TimeStretchClip, pClip, pClip->track());
 	pItem->timeStretch = fTimeStretch;
 	m_items.append(pItem);
+
+	reopenClip(pClip);
 }
 
 
@@ -190,6 +199,8 @@ void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
 	Item *pItem = new Item(PitchShiftClip, pClip, pClip->track());
 	pItem->pitchShift = fPitchShift;
 	m_items.append(pItem);
+
+	reopenClip(pClip);
 }
 
 
@@ -205,12 +216,17 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip,
 			pItem->fadeOutLength = iFadeOutLength;
 	}
 	m_items.append(pItem);
+
+	reopenClip(pClip);
 }
 
 
-void qtractorClipCommand::updateClip ( qtractorClip *pClip )
+void qtractorClipCommand::reopenClip ( qtractorClip *pClip )
 {
-	m_items.append(new Item(UpdateClip, pClip, pClip->track()));
+	QHash<qtractorClip *, int>::ConstIterator iter
+		= m_clips.constFind(pClip);
+	if (iter == m_clips.constEnd())
+		m_clips.insert(pClip, 1);
 }
 
 
@@ -361,6 +377,11 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pTrackCommand->undo();
 	}
 
+	// Pre-close needed clips once...
+	QHash<qtractorClip *, int>::ConstIterator clip;
+	for (clip = m_clips.constBegin(); clip != m_clips.constEnd(); ++clip)
+		clip.key()->close();	// Scrap peak file (audio).
+
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
@@ -397,8 +418,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				iOldTrackChannel = pMidiClip->trackChannel();
 				pMidiClip->setTrackChannel(pItem->trackChannel);
 			}
-			pClip->close();	// Scrap peak file (audio).
-			pClip->open();
+		//--pClip->close();	// Scrap peak file (audio).
+		//--pClip->open();
 			pItem->filename = sOldFilename;
 			if (pMidiClip)
 				pItem->trackChannel = iOldTrackChannel;
@@ -456,9 +477,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 						fOldPitchShift = pAudioClip->pitchShift();
 				}
 			}
-			else
-			if (pItem->editCommand == NULL)
-				pClip->close();
+		//--else
+		//--if (pItem->editCommand == NULL)
+		//--	pClip->close();
 			if (iOldStart != pItem->clipStart)
 				pTrack->unlinkClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
@@ -482,7 +503,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				else
 					(pItem->editCommand)->undo();
 			}
-			else pClip->open();
+		//--else pClip->open();
 			if (iOldStart != pItem->clipStart)
 				pTrack->insertClip(pClip);
 			pItem->clipStart  = iOldStart;
@@ -524,9 +545,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip) {
 				float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pAudioClip->close();			// Scrap peak file.
+			//--pAudioClip->close();			// Scrap peak file.
 				pAudioClip->updateClipTime();	// Care of tempo change.
-				pAudioClip->open();
+			//--pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;
 			}
 			break;
@@ -538,7 +559,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip) {
 				float fOldPitchShift = pAudioClip->pitchShift();
 				pAudioClip->setPitchShift(pItem->pitchShift);
-				pAudioClip->open();
+			//--pAudioClip->open();
 				pItem->pitchShift = fOldPitchShift;
 			}
 			break;
@@ -548,20 +569,20 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			unsigned long iOldFadeOut = pClip->fadeOutLength();
 			pClip->setClipLength(pItem->clipLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			pClip->open();
+		//--pClip->open();
 			pItem->clipLength = iOldLength;
 			pItem->fadeOutLength = iOldFadeOut;
 			pSession->updateTrack(pTrack);
-			break;
-		}
-		case UpdateClip: {
-			pClip->open();
 			break;
 		}
 		default:
 			break;
 		}
 	}
+
+	// Re-open needed clips, just once...
+	for (clip = m_clips.constBegin(); clip != m_clips.constEnd(); ++clip)
+		clip.key()->open();
 
 //	pSession->unlock();
 

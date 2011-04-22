@@ -97,7 +97,7 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 					}
 					break;
 				case qtractorTrack::Midi:
-					m_pClipCommand->updateClip(pClip);
+					m_pClipCommand->reopenClip(pClip);
 				default:
 					break;
 				}

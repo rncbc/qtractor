@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip filename change segfault/crash fixed.
+
 - Make sure all clips in multiple recording tracks
   start and end at the very same position whenever
   recording is already engaged and rolling.
