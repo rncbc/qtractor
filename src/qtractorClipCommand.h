@@ -69,7 +69,7 @@ public:
 	void timeStretchClip(qtractorClip *pClip, float fTimeStretch);
 	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
 	void resetClip(qtractorClip *pClip, unsigned long iClipLength);
-	void updateClip(qtractorClip *pClip);
+	void reopenClip(qtractorClip *pClip);
 
 	// Special clip record method.
 	bool addClipRecord(qtractorTrack *pTrack, unsigned long iClipEnd);
@@ -101,7 +101,7 @@ private:
 		RenameClip, MoveClip, ResizeClip,
 		GainClip, FadeInClip, FadeOutClip,
 		TimeStretchClip, PitchShiftClip,
-		ResetClip, UpdateClip
+		ResetClip
 	};
 
 	// Clip item struct.
@@ -142,6 +142,9 @@ private:
 
 	// When new tracks are needed.
 	QList<qtractorTrackCommand *> m_trackCommands;
+
+	// When clips need to reopem.
+	QHash<qtractorClip *, int> m_clips;
 };
 
 
