@@ -1,7 +1,7 @@
 // qtractorSpinBox.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -101,7 +101,7 @@ private:
 
 	// Instance variables.
 	qtractorTimeScale *m_pTimeScale;
-	unsigned long      m_iDefaultValue;
+	unsigned long      m_iValue;
 	unsigned long      m_iMinimumValue;
 	unsigned long      m_iMaximumValue;
 	unsigned long      m_iDeltaValue;

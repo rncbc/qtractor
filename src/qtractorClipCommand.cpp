@@ -366,7 +366,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	if (pSession == NULL)
 		return false;
 
-//	pSession->lock();
+	pSession->lock();
 
 	QListIterator<qtractorTrackCommand *> track(m_trackCommands);
 	while (track.hasNext()) {
@@ -586,7 +586,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	for (clip = m_clips.constBegin(); clip != m_clips.constEnd(); ++clip)
 		clip.key()->open();
 
-//	pSession->unlock();
+	pSession->unlock();
 
 	return true;
 }

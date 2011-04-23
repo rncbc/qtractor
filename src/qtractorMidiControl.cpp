@@ -42,7 +42,7 @@
 
 #include <math.h>
 
-// Possible cube roor optimization.
+// Possible cube root optimization.
 // (borrowed from metamerist.com)
 static inline float cbrtf2 ( float x )
 {
