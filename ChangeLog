@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Custom time/tempo spin-box widget change fixup.
+
 - Audio clip filename change segfault/crash fixed.
 
 - Make sure all clips in multiple recording tracks

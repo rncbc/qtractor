@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorSpinBox.h"
 
 #include <QLineEdit>
@@ -34,7 +35,7 @@ qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
 	: QAbstractSpinBox(pParent)
 {
 	m_pTimeScale    = NULL;
-	m_iDefaultValue = 0;
+	m_iValue        = 0;
 	m_iMinimumValue = 0;
 	m_iMaximumValue = 0;
 	m_iDeltaValue   = 0;
@@ -62,7 +63,7 @@ qtractorTimeSpinBox::~qtractorTimeSpinBox (void)
 // Mark that we got actual value.
 void qtractorTimeSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 {
-	QAbstractSpinBox::lineEdit()->setText(textFromValue(m_iDefaultValue));
+	QAbstractSpinBox::lineEdit()->setText(textFromValue(m_iValue));
 	QAbstractSpinBox::interpretText();
 }
 
@@ -89,7 +90,7 @@ qtractorTimeScale::DisplayFormat qtractorTimeSpinBox::displayFormat (void) const
 
 void qtractorTimeSpinBox::updateDisplayFormat (void)
 {
-	setValue(m_iDefaultValue);
+	setValue(m_iValue);
 }
 
 
@@ -103,9 +104,9 @@ void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 	if (iValue > m_iMaximumValue && m_iMaximumValue > m_iMinimumValue)
 		iValue = m_iMaximumValue;
 	
-	bool bValueChanged = (iValue != m_iDefaultValue);
+	bool bValueChanged = (iValue != m_iValue);
 
-	m_iDefaultValue = iValue;
+	m_iValue = iValue;
 
 	if (QAbstractSpinBox::isVisible()) {
 		QAbstractSpinBox::lineEdit()->setText(textFromValue(iValue));
@@ -119,11 +120,7 @@ void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 
 unsigned long qtractorTimeSpinBox::value (void) const
 {
-	if (QAbstractSpinBox::isVisible()) {
-		return valueFromText(QAbstractSpinBox::text());
-	} else {
-		return m_iDefaultValue;
-	}
+	return m_iValue;
 }
 
 
@@ -210,7 +207,7 @@ void qtractorTimeSpinBox::fixup ( QString& sText ) const
 		this, sText.toUtf8().constData());
 #endif
 
-	sText = textFromValue(m_iDefaultValue);
+	sText = textFromValue(m_iValue);
 }
 
 
@@ -302,7 +299,7 @@ void qtractorTimeSpinBox::editingFinishedSlot (void)
 #endif
 
 	// Kind of final fixup.
-	setValue(value());
+	setValue(valueFromText(QAbstractSpinBox::text()));
 }
 
 
@@ -386,11 +383,7 @@ void qtractorTempoSpinBox::setTempo (
 
 float qtractorTempoSpinBox::tempo (void) const
 {
-	if (QAbstractSpinBox::isVisible()) {
-		return tempoFromText(QAbstractSpinBox::text());
-	} else {
-		return m_fTempo;
-	}
+	return m_fTempo;
 }
 
 
@@ -425,11 +418,7 @@ void qtractorTempoSpinBox::setBeatsPerBar (
 
 unsigned short qtractorTempoSpinBox::beatsPerBar (void) const
 {
-	if (QAbstractSpinBox::isVisible()) {
-		return beatsPerBarFromText(QAbstractSpinBox::text());
-	} else {
-		return m_iBeatsPerBar;
-	}
+	return m_iBeatsPerBar;
 }
 
 
@@ -464,11 +453,7 @@ void qtractorTempoSpinBox::setBeatDivisor (
 
 unsigned short qtractorTempoSpinBox::beatDivisor (void) const
 {
-	if (QAbstractSpinBox::isVisible()) {
-		return beatDivisorFromText(QAbstractSpinBox::text());
-	} else {
-		return m_iBeatDivisor;
-	}
+	return m_iBeatDivisor;
 }
 
 
@@ -581,9 +566,10 @@ void qtractorTempoSpinBox::editingFinishedSlot (void)
 #endif
 
 	// Kind of final fixup.
-	setTempo(tempo());
-	setBeatsPerBar(beatsPerBar());
-	setBeatDivisor(beatDivisor());
+	const QString& sText = QAbstractSpinBox::text();
+	setTempo(tempoFromText(sText));
+	setBeatsPerBar(beatsPerBarFromText(sText));
+	setBeatDivisor(beatDivisorFromText(sText));
 }
 
 
