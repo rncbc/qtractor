@@ -25,6 +25,10 @@
 
 #include "qtractorTimeStretcher.h"
 
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
+
 
 // Glitch, click, pop-free ramp length (in frames).
 #define QTRACTOR_RAMP_LENGTH	32
@@ -49,7 +53,7 @@ public:
 	bool runState() const;
 
 	// Wake from executive wait condition (RT-safe).
-	bool sync(qtractorAudioBuffer *pAudioBuffer = NULL);
+	void sync(qtractorAudioBuffer *pAudioBuffer = NULL);
 
 	// Bypass executive wait condition (non RT-safe).
 	void syncExport(qtractorAudioBuffer *pAudioBuffer);
@@ -62,10 +66,13 @@ protected:
 private:
 
 	// Instance variables.
-	unsigned int m_iSyncSize;
+	unsigned int          m_iSyncSize;
+	unsigned int          m_iSyncMask;
 	qtractorAudioBuffer **m_ppSyncItems;
-	volatile unsigned int m_iSyncIndex;
-	
+
+	volatile unsigned int m_iSyncRead;
+	volatile unsigned int m_iSyncWrite;
+
 	// Whether the thread is logically running.
 	bool m_bRunState;
 
@@ -83,9 +90,13 @@ private:
 qtractorAudioBufferThread::qtractorAudioBufferThread (
 	unsigned int iSyncSize ) : QThread()
 {
-	m_iSyncSize   = iSyncSize;
+	m_iSyncSize = (64 << 1);
+	while (m_iSyncSize < iSyncSize)
+		m_iSyncSize <<= 1;
+	m_iSyncMask = (m_iSyncSize - 1);
 	m_ppSyncItems = new qtractorAudioBuffer * [m_iSyncSize];
-	m_iSyncIndex  = 0;
+	m_iSyncRead   = 0;
+	m_iSyncWrite  = 0;
 
 	m_bRunState = false;
 }
@@ -111,23 +122,35 @@ bool qtractorAudioBufferThread::runState (void) const
 
 
 // Wake from executive wait condition (RT-safe).
-bool qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
+void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 {
-	if (pAudioBuffer == NULL)
-		m_iSyncIndex = 0;
-	else
-	if (m_iSyncIndex < m_iSyncSize)
-		m_ppSyncItems[m_iSyncIndex++] = pAudioBuffer;
+	if (pAudioBuffer == NULL) {
+		m_iSyncRead = m_iSyncWrite = 0;
+	} else if (!pAudioBuffer->isWaitSync()) {
+		unsigned int n;
+		unsigned int w = m_iSyncWrite;
+		unsigned int r = m_iSyncRead;
+		if (w > r) {
+			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
+		} else if (r > w) {
+			n = (r - w) - 1;
+		} else {
+			n = m_iSyncSize - 1;
+		}
+		if (n > 0) {
+			pAudioBuffer->setWaitSync(true);
+			m_ppSyncItems[m_iSyncWrite] = pAudioBuffer;
+			++m_iSyncWrite &= m_iSyncMask;
+		}
+	}
 
-	bool bSync = m_mutex.tryLock();
-	if (bSync) {
+	if (m_mutex.tryLock()) {
 		m_cond.wakeAll();
 		m_mutex.unlock();
 	}
 #ifdef CONFIG_DEBUG_0
 	else qDebug("qtractorAudioBufferThread[%p]::sync(): tryLock() failed.", this);
 #endif
-	return bSync;
 }
 
 
@@ -153,8 +176,21 @@ void qtractorAudioBufferThread::run (void)
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
 		//m_mutex.unlock();
-		while (m_iSyncIndex > 0)
-			m_ppSyncItems[--m_iSyncIndex]->sync();
+		unsigned int w = m_iSyncWrite;
+		unsigned int r = m_iSyncRead;
+		unsigned int n;
+		if (w > r) {
+			n = w - r;
+		} else {
+			n = (w - r + m_iSyncSize) & m_iSyncMask;
+		}
+		for ( ; n > 0; --n) {
+			qtractorAudioBuffer *pAudioBuffer = m_ppSyncItems[r];
+			pAudioBuffer->setWaitSync(false);
+			pAudioBuffer->sync();
+			++r &= m_iSyncMask;
+		}
+		m_iSyncRead = r;
 		//m_mutex.lock();
 		m_cond.wait(&m_mutex);
 	}
@@ -523,9 +559,9 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (!m_bIntegral && !m_bWaitSync &&
+	if (!m_bIntegral &&
 		g_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
-		m_bWaitSync = g_pSyncThread->sync(this);
+		g_pSyncThread->sync(this);
 
 	return nread;
 }
@@ -609,9 +645,8 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (!m_bWaitSync &&
-		g_pSyncThread && m_pRingBuffer->readable() > m_iThreshold)
-		m_bWaitSync = g_pSyncThread->sync(this);
+	if (g_pSyncThread && m_pRingBuffer->readable() > m_iThreshold)
+		g_pSyncThread->sync(this);
 
 	return nwrite;
 }
@@ -674,9 +709,9 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (!m_bIntegral && !m_bWaitSync &&
+	if (!m_bIntegral &&
 		g_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
-		m_bWaitSync = g_pSyncThread->sync(this);
+		g_pSyncThread->sync(this);
 
 	return nread;
 }
@@ -705,6 +740,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 
 	// Force (premature) out-of-sync...
 	m_bReadSync = false;
+	m_bWaitSync = false;
 
 	// Are we off-limits?
 	if (iFrame >= m_iLength)
@@ -721,9 +757,6 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 #ifdef DEBUG
 	dump_state(QString(">seek(%1)").arg(iFrame));
 #endif
-
-	// Force (mature) out-of-sync...
-	m_bWaitSync = false;
 
 	// Adjust to logical offset...
 	iFrame += m_iOffset;
@@ -840,8 +873,6 @@ void qtractorAudioBuffer::sync (void)
 	else
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
-
-	m_bWaitSync = false;
 }
 
 
@@ -873,6 +904,18 @@ bool qtractorAudioBuffer::inSync (
 void qtractorAudioBuffer::syncExport (void)
 {
 	if (g_pSyncThread) g_pSyncThread->syncExport(this);
+}
+
+
+// Sync waiter flag accessors.
+void qtractorAudioBuffer::setWaitSync ( bool bWaitSync )
+{
+	m_bWaitSync = bWaitSync;
+}
+
+bool qtractorAudioBuffer::isWaitSync (void) const
+{
+	return m_bWaitSync;
 }
 
 

@@ -5,6 +5,14 @@ ChangeLog
 
 SVN TRUNK
 
+- Not replacing a session directory that already
+  exists on loading an archive file (.qtz) is now
+  fixed with an usable brand new untitled session.
+
+- The major thread optimization has been slightly
+  improved: the audio clip buffer/disk-streaming
+  thread is now served in a FIFO manner (was LIFO).
+
 - Custom time/tempo spin-box widget change fixup.
 
 - Audio clip filename change segfault/crash fixed.

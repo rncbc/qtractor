@@ -1748,8 +1748,12 @@ bool qtractorMainForm::loadSessionFile (
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
 				.arg(info.filePath()),
-				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
+				m_iUntitled++;
+				m_sFilename.clear();
+				updateSession();
 				return false;
+			}
 		}
 	}
 #endif
