@@ -31,11 +31,6 @@
 #include <samplerate.h>
 #endif
 
-#include <QThread>
-#include <QMutex>
-#include <QWaitCondition>
-
-
 // Forward declarations.
 class qtractorAudioPeak;
 class qtractorAudioBufferThread;
@@ -56,7 +51,7 @@ public:
 	~qtractorAudioBuffer();
 
 	// Internal file descriptor accessors.
-	qtractorAudioFile* file() const;
+	qtractorAudioFile *file() const;
 
 	// File implementation properties.
 	unsigned short channels() const;
@@ -128,6 +123,10 @@ public:
 	// Export-mode sync executive.
 	void syncExport();
 
+	// Sync waiter flag accessor.
+	void setWaitSync(bool bWaitSync);
+	bool isWaitSync() const;
+
 	// Internal peak descriptor accessors.
 	void setPeak(qtractorAudioPeak *pPeak);
 	qtractorAudioPeak *peak() const;
@@ -180,7 +179,7 @@ protected:
 
 private:
 
-	// Audio file instance variables.
+	// Audio buffer instance variables.
 	unsigned short m_iChannels;
 	unsigned int   m_iSampleRate;
 
