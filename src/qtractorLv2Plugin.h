@@ -38,9 +38,15 @@
 #endif
 
 #ifdef CONFIG_LV2_UI
+// LV2 UI support.
+#include "lv2_ui.h"
 // LV2 UI data/instance access support.
 #include "lv2_data_access.h"
 #include "lv2_instance_access.h"
+#endif
+
+#ifdef CONFIG_LV2_UI_NEW
+#include <suil/suil.h>
 #endif
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -266,7 +272,6 @@ protected:
 
 	SLV2UIs        m_slv2_uis;
 	SLV2UI         m_slv2_ui;
-	SLV2UIInstance m_slv2_ui_instance;
 
 	LV2_Extension_Data_Feature m_lv2_data_access;
 
@@ -275,10 +280,14 @@ protected:
 
 	LV2_Feature    m_lv2_ui_feature;
 	LV2_Feature  **m_lv2_ui_features;
-	LV2UI_Widget   m_lv2_ui_widget;
 
 #ifdef CONFIG_LV2_UI_NEW
-	SLV2UIHost     m_slv2_ui_host;
+	SuilHost       m_suil_host;
+	SuilInstance   m_suil_instance;
+	SuilWidget     m_lv2_ui_widget;
+#else
+	SLV2UIInstance m_slv2_ui_instance;
+	LV2UI_Widget   m_lv2_ui_widget;
 #endif
 	
 #ifdef CONFIG_LV2_EXTERNAL_UI

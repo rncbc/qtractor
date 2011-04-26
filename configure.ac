@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.76, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.77, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -556,9 +556,9 @@ ac_lv2_ui_new="no"
 
 if test "x$ac_lv2" = "xyes"; then
    LIBS="$ac_lv2_libs $LIBS"
-   AC_CHECK_LIB(slv2, slv2_ui_instance_new, [ac_lv2_ui_new="yes"], [ac_lv2_ui_new="no"])
+   AC_CHECK_LIB(suil, suil_instance_new, [ac_lv2_ui_new="yes"], [ac_lv2_ui_new="no"])
    if test "x$ac_lv2_ui_new" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_UI_NEW, 1, [Define if slv2_ui_instance_new is available.])
+	  AC_DEFINE(CONFIG_LV2_UI_NEW, 1, [Define if suil_instance_new is available.])
       if test "x$ac_lv2_qt4_ui" = "xyes"; then
          AC_DEFINE(CONFIG_LV2_QT4_UI, 1, [Define if LV2 QT4 UI extension is available.])
       fi
