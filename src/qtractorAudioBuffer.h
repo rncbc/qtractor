@@ -150,7 +150,6 @@ protected:
 
 	// Read-sync mode methods (playback).
 	void readSync();
-	void readSyncIn();
 
 	// Write-sync mode method (recording).
 	void writeSync();
