@@ -40,6 +40,7 @@ class qtractorBus;
 
 class qtractorSubject;
 class qtractorMidiControlObserver;
+class qtractorAudioBufferThread;
 
 // Special forward declarations.
 class QDomElement;
@@ -206,6 +207,9 @@ public:
 	// Update all clips editors.
 	void updateClipEditors();
 
+	// Audio buffer ring-cache (playlist) methods.
+	qtractorAudioBufferThread *syncThread();
+
 	// Track state (monitor, record, mute, solo) button setup.
 	qtractorSubject *monitorSubject() const;
 	qtractorSubject *recordSubject() const;
@@ -295,9 +299,12 @@ private:
 
 	qtractorList<qtractorClip> m_clips; // List of clips.
 
-	qtractorClip *m_pClipRecord;    // Current clip on record (capture).
+	qtractorClip *m_pClipRecord;        // Current clip on record (capture).
 
 	qtractorPluginList *m_pPluginList;	// Plugin chain (audio).
+
+	// Audio buffer ring-cache (playlist).
+	qtractorAudioBufferThread *m_pSyncThread;
 
 	// State (monitor, record, mute, solo) observer stuff.
 	class MonitorObserver;

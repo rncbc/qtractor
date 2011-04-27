@@ -149,7 +149,8 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	if (bWrite && iChannels < 1)
 		return false;
 
-	m_pBuff = new qtractorAudioBuffer(iChannels, pSession->sampleRate());
+	m_pBuff = new qtractorAudioBuffer(
+		pTrack->syncThread(), iChannels, pSession->sampleRate());
 	m_pBuff->setOffset(clipOffset());
 	m_pBuff->setLength(clipLength());
 	m_pBuff->setTimeStretch(m_fTimeStretch);
@@ -521,8 +522,8 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	if (iLength < 1)
 		iLength = clipLength();
 
-	qtractorAudioBuffer *pBuff
-		= new qtractorAudioBuffer(iChannels, pSession->sampleRate());
+	qtractorAudioBuffer *pBuff = new qtractorAudioBuffer(
+		pTrack->syncThread(), iChannels, pSession->sampleRate());
 	pBuff->setOffset(iOffset);
 	pBuff->setLength(iLength);
 	pBuff->setTimeStretch(timeStretch());

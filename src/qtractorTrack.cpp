@@ -30,6 +30,7 @@
 #include "qtractorDocument.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioMonitor.h"
+#include "qtractorAudioBuffer.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiMonitor.h"
 #include "qtractorMidiBuffer.h"
@@ -174,6 +175,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_clips.setAutoDelete(true);
 
+	m_pSyncThread = NULL;
+
 	m_pMonitorSubject = new qtractorSubject();
 
 	m_pRecordSubject  = new qtractorSubject();
@@ -247,6 +250,16 @@ void qtractorTrack::clear (void)
 	m_props.solo    = false;
 	m_props.gain    = 1.0f;
 	m_props.panning = 0.0f;
+
+	if (m_pSyncThread) {
+		if (m_pSyncThread->isRunning()) do {
+			m_pSyncThread->setRunState(false);
+		//	m_pSyncThread->terminate();
+			m_pSyncThread->sync();
+		} while (!m_pSyncThread->wait(100));
+		delete m_pSyncThread;
+		m_pSyncThread = NULL;
+	}
 }
 
 
@@ -1105,6 +1118,18 @@ void qtractorTrack::updateClipEditors (void)
 		pClip->updateEditor(true);
 		pClip = pClip->next();
 	}
+}
+
+
+// Audio buffer ring-cache (playlist) methods.
+qtractorAudioBufferThread *qtractorTrack::syncThread (void)
+{
+	if (m_pSyncThread == NULL) {
+		m_pSyncThread = new qtractorAudioBufferThread();
+		m_pSyncThread->start(QThread::HighPriority);
+	}
+
+	return m_pSyncThread;
 }
 
 

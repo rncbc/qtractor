@@ -236,6 +236,9 @@ private:
 	// Audio-export freewheeling (internal) state.
 	bool m_bFreewheel;
 
+	// Common audio buffer sync thread.
+	qtractorAudioBufferThread *m_pSyncThread;
+
 	// Audio-export (in)active state.
 	volatile bool        m_bExporting;
 	qtractorAudioBus    *m_pExportBus;

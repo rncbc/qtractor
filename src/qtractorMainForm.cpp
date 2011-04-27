@@ -5263,6 +5263,9 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 // Custom (JACK) transport sync event handler.
 void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
 {
+	if (m_pSession->isBusy())
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::audioSyncNotify(%lu)", iPlayHead);
 #endif
