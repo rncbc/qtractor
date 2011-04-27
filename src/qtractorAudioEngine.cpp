@@ -321,7 +321,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// Audio-export freewheeling (internal) state.
 	m_bFreewheel = false;
-	
+
 	// Common audio buffer sync thread.
 	m_pSyncThread = NULL;
 
