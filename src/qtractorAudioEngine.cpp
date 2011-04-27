@@ -322,6 +322,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// Audio-export freewheeling (internal) state.
 	m_bFreewheel = false;
 	
+	// Common audio buffer sync thread.
+	m_pSyncThread = NULL;
+
 	// Audio-export (in)active state.
 	m_bExporting   = false;
 	m_pExportBus   = NULL;
@@ -469,6 +472,10 @@ bool qtractorAudioEngine::init (void)
 
 	// ATTN: Third is setting session sample rate.
 	pSession->setSampleRate(m_iSampleRate);
+
+	// Our dedicated audio buffer thread...
+	m_pSyncThread = new qtractorAudioBufferThread();
+	m_pSyncThread->start(QThread::HighPriority);
 
 	// Open player/metronome buses, at least try...
 	openPlayerBus();
@@ -625,6 +632,17 @@ void qtractorAudioEngine::clean (void)
 	// Clean player/metronome buses...
 	deletePlayerBus();
 	deleteMetroBus();
+
+	// Terminate common player/metro sync thread...
+	if (m_pSyncThread) {
+		if (m_pSyncThread->isRunning()) do {
+			m_pSyncThread->setRunState(false);
+		//	m_pSyncThread->terminate();
+			m_pSyncThread->sync();
+		} while (!m_pSyncThread->wait(100));
+		delete m_pSyncThread;
+		m_pSyncThread = NULL;
+	}
 
 	// Audio-export stilll around? weird...
 	if (m_pExportFile) {
@@ -1389,9 +1407,12 @@ bool qtractorAudioEngine::openMetroBus (void)
 	}
 
 	// We got it...
-	m_pMetroBarBuff = new qtractorAudioBuffer(iChannels, sampleRate());
+	unsigned int iSampleRate = sampleRate();
+	m_pMetroBarBuff = new qtractorAudioBuffer(
+		m_pSyncThread, iChannels, iSampleRate);
 	m_pMetroBarBuff->open(m_sMetroBarFilename);
-	m_pMetroBeatBuff = new qtractorAudioBuffer(iChannels, sampleRate());
+	m_pMetroBeatBuff = new qtractorAudioBuffer(
+		m_pSyncThread, iChannels, iSampleRate);
 	m_pMetroBeatBuff->open(m_sMetroBeatFilename);
 
 	return true;
@@ -1566,7 +1587,8 @@ bool qtractorAudioEngine::openPlayerBus (void)
 	}
 
 	// We got it...
-	m_pPlayerBuff = new qtractorAudioBuffer(iChannels, sampleRate());
+	m_pPlayerBuff = new qtractorAudioBuffer(
+		m_pSyncThread, iChannels, sampleRate());
 
 	return true;
 }

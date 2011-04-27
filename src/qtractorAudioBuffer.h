@@ -31,10 +31,63 @@
 #include <samplerate.h>
 #endif
 
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
+
+
 // Forward declarations.
 class qtractorAudioPeak;
-class qtractorAudioBufferThread;
+class qtractorAudioBuffer;
 class qtractorTimeStretcher;
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioBufferThread -- Ring-cache manager thread.
+//
+
+class qtractorAudioBufferThread : public QThread
+{
+public:
+
+	// Constructor.
+	qtractorAudioBufferThread(unsigned int iSyncSize = 128);
+
+	// Destructor.
+	~qtractorAudioBufferThread();
+
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
+	// Wake from executive wait condition (RT-safe).
+	void sync(qtractorAudioBuffer *pAudioBuffer = NULL);
+
+	// Bypass executive wait condition (non RT-safe).
+	void syncExport(qtractorAudioBuffer *pAudioBuffer);
+
+protected:
+
+	// The main thread executive.
+	void run();
+
+private:
+
+	// Instance variables.
+	unsigned int          m_iSyncSize;
+	unsigned int          m_iSyncMask;
+	qtractorAudioBuffer **m_ppSyncItems;
+
+	volatile unsigned int m_iSyncRead;
+	volatile unsigned int m_iSyncWrite;
+
+	// Whether the thread is logically running.
+	bool m_bRunState;
+
+	// Thread synchronization objects.
+	QMutex m_mutex;
+	QWaitCondition m_cond;
+};
 
 
 //----------------------------------------------------------------------
@@ -45,8 +98,11 @@ class qtractorAudioBuffer
 {
 public:
 
-	// Constructors.
-	qtractorAudioBuffer(unsigned short iChannels, unsigned int iSampleRate);
+	// Constructor.
+	qtractorAudioBuffer(
+		qtractorAudioBufferThread *pSyncThread,
+		unsigned short iChannels, unsigned int iSampleRate);
+
 	// Default destructor.
 	~qtractorAudioBuffer();
 
@@ -179,6 +235,8 @@ protected:
 private:
 
 	// Audio buffer instance variables.
+	qtractorAudioBufferThread *m_pSyncThread;
+
 	unsigned short m_iChannels;
 	unsigned int   m_iSampleRate;
 
@@ -233,10 +291,6 @@ private:
 
 	qtractorAudioPeak *m_pPeak;
 
-	static qtractorAudioBufferThread *g_pSyncThread;
-
-	static int     g_iSyncThreadRefCount;
-	
 	// Sample-rate converter type global option.
 	static int     g_iResampleType;
 

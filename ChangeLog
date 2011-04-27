@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Yet again, the audio clip buffer/disk-streaming
+  optimization has been almost completely redrawn:
+  now there's one thread per audio track. (HIGHLY
+  EXPERIMENTAL)
+
 - Not replacing a session directory that already
   exists on loading an archive file (.qtz) is now
   fixed with an usable brand new untitled session.
