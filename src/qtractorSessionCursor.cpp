@@ -88,29 +88,31 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		// Optimize if seeking forward...
 		if (iFrame > m_iFrame)
 			pClip = pClipLast;
-		// Locate first clip not past
-		// the target frame position..
+		// Locate first clip not past the target frame position..
 		pClip = seekClip(pTrack, pClip, iFrame);
 		// Update cursor track clip...
 		m_ppClips[iTrack] = pClip;
-		// Set fine position within target clip...
-		if (bSync && pClip && pTrack->trackType() == m_syncType) {
-			// Now care for old/previous clip...
+		// Now something fulcral for clips around...
+		if (pTrack->trackType() == m_syncType) {
+			// Care for old/previous clip...
 			if (pClipLast && pClipLast != pClip)
 				pClipLast->reset(m_pSession->isLooping());
-			// Take care of overlapping clips...
-			unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
-			while (pClip) {
-				unsigned long iClipStart = pClip->clipStart();
-				if (iClipStart > iClipEnd)
-					break;
-				if (iFrame >= iClipStart &&
-					iFrame <  iClipStart + pClip->clipLength()) {
-					pClip->seek(iFrame - iClipStart);
-				} else {
-					pClip->reset(m_pSession->isLooping());
+			// Set final position within target clip...
+			if (pClip && bSync) {
+				// Take care of overlapping clips...
+				unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
+				while (pClip) {
+					unsigned long iClipStart = pClip->clipStart();
+					if (iClipStart > iClipEnd)
+						break;
+					if (iFrame >= iClipStart &&
+						iFrame <  iClipStart + pClip->clipLength()) {
+						pClip->seek(iFrame - iClipStart);
+					} else {
+						pClip->reset(m_pSession->isLooping());
+					}
+					pClip = pClip->next();
 				}
-				pClip = pClip->next();
 			}
 		}
 		// Next track...

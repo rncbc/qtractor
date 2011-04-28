@@ -1318,8 +1318,13 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 
 	// If looping, we'll reset to loop-start point,
 	// otherwise it's a buffer full-reset...
-	if (bLooping && m_iLoopStart < m_iLoopEnd)
+	if (bLooping && m_iLoopStart < m_iLoopEnd) {
 		iFrame = m_iLoopStart;
+		// Make sure we're not already there...
+		// (force out-of-sync with an unlikely offset!)
+		if (!m_bIntegral)
+			m_iReadOffset = m_iOffset + m_iLength + 1;
+	}
 
 	seek(iFrame);
 
