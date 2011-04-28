@@ -282,8 +282,8 @@ protected:
 	LV2_Feature  **m_lv2_ui_features;
 
 #ifdef CONFIG_LV2_UI_NEW
-	SuilHost       m_suil_host;
-	SuilInstance   m_suil_instance;
+	SuilHost      *m_suil_host;
+	SuilInstance  *m_suil_instance;
 	SuilWidget     m_lv2_ui_widget;
 #else
 	SLV2UIInstance m_slv2_ui_instance;
