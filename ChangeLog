@@ -6,7 +6,7 @@ ChangeLog
 SVN TRUNK
 
 - A rare audio clip looping out-of-sync condition
-  got squared, hopefully ;)
+  got squared, hopefully the last ;)
 
 - Yet again, the audio clip buffer/disk-streaming
   optimization has been almost completely redrawn:
