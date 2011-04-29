@@ -1275,7 +1275,8 @@ void qtractorMidiEngine::drift (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		unsigned long iAudioFrame = pSession->playHead();
+	//	unsigned long iAudioFrame = pSession->playHead();
+		unsigned long iAudioFrame = pSession->audioEngine()->jackFrameTime();
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		long iAudioTime = long(pNode->tickFromFrame(iAudioFrame));
 		long iMidiTime = m_iTimeStart
