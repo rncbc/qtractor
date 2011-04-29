@@ -359,6 +359,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// Ramping playback spin-lock.
 	ATOMIC_SET(&m_ramping, 0);
 	ATOMIC_SET(&m_ramping_off, 0);
+
+	// Actual number of frames on engine start.
+	m_iJackFrameTime = 0;
 }
 
 
@@ -587,6 +590,9 @@ bool qtractorAudioEngine::start (void)
 	// Start transport rolling...
 	if (m_transportMode & qtractorBus::Output)
 		jack_transport_start(m_pJackClient);
+
+	// Get start number of frames.
+	m_iJackFrameTime = jack_frame_time(m_pJackClient);
 
 	// We're now ready and running...
 	return true;
@@ -1720,6 +1726,13 @@ void qtractorAudioEngine::setRamping ( int iRamping )
 int qtractorAudioEngine::ramping (void) const
 {
 	return (ATOMIC_GET(&m_ramping_off) ? -1 : ATOMIC_GET(&m_ramping));
+}
+
+
+// Actual number of frames elapsed since engine start.
+unsigned long qtractorAudioEngine::jackFrameTime (void) const
+{
+	return (m_pJackClient ? jack_frame_time(m_pJackClient) - m_iJackFrameTime : 0);
 }
 
 
