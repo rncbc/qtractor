@@ -193,7 +193,7 @@ public:
 	int ramping() const;
 
 	// Actual number of frames elapsed since engine start.
-	unsigned long jackFrameTime() const;
+	unsigned long jackFrame() const;
 
 protected:
 
@@ -280,7 +280,7 @@ private:
 	qtractorAtomic m_ramping_off;
 
 	// Actual number of frames on engine start.
-	unsigned long m_iJackFrameTime;
+	long m_iJackFrameStart;
 };
 
 

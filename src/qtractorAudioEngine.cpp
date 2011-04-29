@@ -361,7 +361,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	ATOMIC_SET(&m_ramping_off, 0);
 
 	// Actual number of frames on engine start.
-	m_iJackFrameTime = 0;
+	m_iJackFrameStart = 0;
 }
 
 
@@ -592,7 +592,11 @@ bool qtractorAudioEngine::start (void)
 		jack_transport_start(m_pJackClient);
 
 	// Get start number of frames.
-	m_iJackFrameTime = jack_frame_time(m_pJackClient);
+	m_iJackFrameStart = jack_frame_time(m_pJackClient);
+
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor)
+		m_iJackFrameStart -= long(pAudioCursor->frame());
 
 	// We're now ready and running...
 	return true;
@@ -1730,9 +1734,9 @@ int qtractorAudioEngine::ramping (void) const
 
 
 // Actual number of frames elapsed since engine start.
-unsigned long qtractorAudioEngine::jackFrameTime (void) const
+unsigned long qtractorAudioEngine::jackFrame (void) const
 {
-	return (m_pJackClient ? jack_frame_time(m_pJackClient) - m_iJackFrameTime : 0);
+	return (m_pJackClient ? jack_frame_time(m_pJackClient) - m_iJackFrameStart : 0);
 }
 
 
