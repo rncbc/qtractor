@@ -166,6 +166,12 @@ public:
 	float pitchShift() const;
 	bool isPitchShift() const;
 
+	// Sync thread state flags accessors.
+	enum SyncFlag { InitSync = 1, ReadSync = 2, WaitSync = 4 };
+	
+	void setSyncFlag(SyncFlag flag, bool bOn = true);
+	bool isSyncFlag(SyncFlag flag) const;
+
 	// Initial thread-sync executive (if file is on read mode,
 	// check whether it can be cache-loaded integrally).
 	bool initSync();
@@ -178,10 +184,6 @@ public:
 
 	// Export-mode sync executive.
 	void syncExport();
-
-	// Sync waiter flag accessor.
-	void setWaitSync(bool bWaitSync);
-	bool isWaitSync() const;
 
 	// Internal peak descriptor accessors.
 	void setPeak(qtractorAudioPeak *pPeak);
@@ -247,9 +249,7 @@ private:
 	unsigned int   m_iThreshold;
 	unsigned int   m_iBufferSize;
 
-	volatile bool  m_bInitSync;
-	volatile bool  m_bWaitSync;
-	volatile bool  m_bReadSync;
+	volatile unsigned char m_syncFlags;
 
 	volatile unsigned long m_iReadOffset;
 	volatile unsigned long m_iWriteOffset;

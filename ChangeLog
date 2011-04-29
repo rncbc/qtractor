@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio buffering internal synchronization logic
+  gets it bartered: three bools for a single byte
+  flag (TESTING).
+
 - Connections are now preserved as possible when
   changing bus properties (View/Buses.../Update).
 
