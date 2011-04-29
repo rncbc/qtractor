@@ -1276,16 +1276,13 @@ void qtractorMidiEngine::drift (void)
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
 	//	unsigned long iAudioFrame = pSession->playHead();
-		unsigned long iAudioFrame = pSession->audioEngine()->jackFrameTime();
+		unsigned long iAudioFrame = pSession->audioEngine()->jackFrame();
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		long iAudioTime = long(pNode->tickFromFrame(iAudioFrame));
 		long iMidiTime = m_iTimeStart
 			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
-		iAudioFrame += readAhead();
-		long iDeltaMax = long(pNode->tickFromFrame(iAudioFrame)) - iAudioTime;
-		long iDeltaTime = (iAudioTime - iMidiTime); // - m_iTimeDrift;
-		if (iAudioTime > iDeltaMax && iMidiTime > m_iTimeDrift /*iDeltaMax*/ &&
-			iDeltaTime && iDeltaTime > -iDeltaMax && iDeltaTime < +iDeltaMax) {
+		long iDeltaTime = (iAudioTime - iMidiTime);
+		if (iDeltaTime && iAudioTime > 0 && iMidiTime > m_iTimeDrift) {
 		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
 			snd_seq_queue_tempo_alloca(&pAlsaTempo);
