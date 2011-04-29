@@ -176,6 +176,15 @@ bool qtractorBusCommand::updateBus (void)
 	QString sBusName = m_pBus->busName();
 	bool bMonitor = m_pBus->isMonitor();
 
+	// Save current connections...
+	qtractorBus::ConnectList inputs;
+	qtractorBus::ConnectList outputs;
+
+	if (busMode & qtractorBus::Input)
+		m_pBus->updateConnects(qtractorBus::Input, inputs);
+	if (busMode & qtractorBus::Output)
+		m_pBus->updateConnects(qtractorBus::Output, outputs);
+
 	// Special case typed buses...
 	qtractorAudioBus *pAudioBus = NULL;
 	qtractorMidiBus *pMidiBus = NULL;
@@ -271,6 +280,12 @@ bool qtractorBusCommand::updateBus (void)
 	// Yet special for audio buses...
 	if (pAudioBus)
 		pAudioBus->autoConnect();
+
+	// Restore previous connections...
+	if (m_busMode & qtractorBus::Input)
+		m_pBus->updateConnects(qtractorBus::Input, inputs, true);
+	if (m_busMode & qtractorBus::Output)
+		m_pBus->updateConnects(qtractorBus::Output, outputs, true);
 
 	// (Re)open all applicable tracks
 	// and (reset) respective mixer strips too ...

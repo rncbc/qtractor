@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Connections are now preserved as possible when
+  changing bus properties (View/Buses.../Update).
+
 - A rare audio clip looping out-of-sync condition
   got squared, hopefully the last ;)
 
