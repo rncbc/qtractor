@@ -74,11 +74,11 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 	if (pAudioBuffer == NULL) {
 		unsigned int r = m_iSyncRead;
 		while (r != m_iSyncWrite) {
-			m_ppSyncItems[r]->setWaitSync(false);
+			m_ppSyncItems[r]->setSyncFlag(qtractorAudioBuffer::WaitSync, false);
 			++r &= m_iSyncMask;
 		}
 		m_iSyncRead = r;
-	} else if (pAudioBuffer->isWaitSync()) {
+	} else if (pAudioBuffer->isSyncFlag(qtractorAudioBuffer::WaitSync)) {
 		return;
 	} else {
 		unsigned int n;
@@ -92,7 +92,7 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 			n = m_iSyncSize - 1;
 		}
 		if (n > 0) {
-			pAudioBuffer->setWaitSync(true);
+			pAudioBuffer->setSyncFlag(qtractorAudioBuffer::WaitSync);
 			m_ppSyncItems[m_iSyncWrite] = pAudioBuffer;
 			++m_iSyncWrite &= m_iSyncMask;
 		}
@@ -167,9 +167,9 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	m_iThreshold     = 0;
 	m_iBufferSize    = 0;
-	m_bInitSync      = false;
-	m_bWaitSync      = false;
-	m_bReadSync      = false;
+
+	m_syncFlags      = 0;
+
 	m_iReadOffset    = 0;
 	m_iWriteOffset   = 0;
 	m_iFileLength    = 0;
@@ -182,7 +182,6 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 	m_iLoopEnd       = 0;
 
 	m_iSeekOffset    = 0;
-
 	ATOMIC_SET(&m_seekPending, 0);
 
 	m_ppFrames       = NULL;
@@ -378,7 +377,7 @@ void qtractorAudioBuffer::close (void)
 		return;
 
 	// Avoid any other interference (ought to be atomic)...
-	m_bWaitSync = false;
+	setSyncFlag(WaitSync, false);
 
 	// Write-behind any remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write) {
@@ -414,9 +413,9 @@ void qtractorAudioBuffer::close (void)
 	// Reset all relevant state variables.
 	m_iThreshold   = 0;
 	m_iBufferSize  = 0;
-	m_bInitSync    = false;
-	m_bWaitSync    = false;
-	m_bReadSync    = false;
+
+	m_syncFlags    = 0;
+
 	m_iReadOffset  = 0;
 	m_iWriteOffset = 0;
 	m_iFileLength  = 0;
@@ -480,7 +479,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 	m_iReadOffset = (ro + nread);
 	if (m_iReadOffset >= m_iOffset + m_iLength) {
 		// Force out-of-sync...
-		m_bReadSync = false;
+		setSyncFlag(ReadSync, false);
 	}
 
 #ifdef DEBUG_0
@@ -630,7 +629,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	m_iReadOffset = (ro + nread);
 	if (m_iReadOffset >= m_iOffset + m_iLength) {
 		// Force out-of-sync...
-		m_bReadSync = false;
+		setSyncFlag(ReadSync, false);
 	}
 
 #ifdef DEBUG_0
@@ -655,7 +654,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return false;
 
 	// Must not break while on initial sync...
-	if (!m_bInitSync)
+	if (!isSyncFlag(InitSync))
 		return false;
 
 	// Seek is only valid on read-only mode.
@@ -668,8 +667,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	m_iRampGain = 1;
 
 	// Force (premature) out-of-sync...
-	m_bReadSync = false;
-	m_bWaitSync = false;
+	setSyncFlag(ReadSync, false);
+	setSyncFlag(WaitSync, false);
 
 	// Are we off-limits?
 	if (iFrame >= m_iLength)
@@ -713,8 +712,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	// Force (late) out-of-sync...
 	//	m_bReadSync = false;
 	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
-	m_iSeekOffset = iFrame;
 
+	m_iSeekOffset = iFrame;
 	ATOMIC_INC(&m_seekPending);
 
 	// readSync();
@@ -722,6 +721,21 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		m_pSyncThread->sync(this);
 
 	return true;
+}
+
+
+// Sync thread state flags accessors (ought to be inline?).
+void qtractorAudioBuffer::setSyncFlag ( SyncFlag flag, bool bOn )
+{
+	if (bOn)
+		m_syncFlags |=  (unsigned char) (flag);
+	else
+		m_syncFlags &= ~(unsigned char) (flag);
+}
+
+bool qtractorAudioBuffer::isSyncFlag ( SyncFlag flag ) const
+{
+	return (m_syncFlags & (unsigned char) (flag));
 }
 
 
@@ -733,19 +747,20 @@ bool qtractorAudioBuffer::initSync (void)
 		return false;
 	if (m_pFile->mode() & qtractorAudioFile::Write)
 		return false;
-	if (m_bInitSync)
+
+	if (isSyncFlag(InitSync))
 		return false;
 
 	// Reset all relevant state variables.
 	// m_bInitSync = false;
-	m_bReadSync    = false;
+	setSyncFlag(ReadSync, false);
+
 	m_iReadOffset  = 0;
 	m_iWriteOffset = 0;
 	m_iFileLength  = 0;
 	m_bIntegral    = false;
 
 	m_iSeekOffset  = 0;
-
 	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
@@ -756,11 +771,12 @@ bool qtractorAudioBuffer::initSync (void)
 	// Set to initial offset...
 	m_iSeekOffset = m_iOffset;
 	ATOMIC_INC(&m_seekPending);
+
 	// Initial buffer read in...
 	readSync();
 
 	// We're mostly done with initialization...
-	m_bInitSync = true;
+	setSyncFlag(InitSync);
 
 	// Check if fitted integrally...
 	if (m_iFileLength < m_iOffset + m_pRingBuffer->bufferSize() - 1) {
@@ -779,7 +795,7 @@ bool qtractorAudioBuffer::initSync (void)
 	}
 
 	// Done.
-	return m_bInitSync;
+	return isSyncFlag(InitSync);
 }
 
 
@@ -789,7 +805,7 @@ void qtractorAudioBuffer::sync (void)
 	if (m_pFile == NULL)
 		return;
 
-	if (!m_bWaitSync)
+	if (!isSyncFlag(WaitSync))
 		return;
 
 	if (!initSync()) {
@@ -801,7 +817,7 @@ void qtractorAudioBuffer::sync (void)
 			writeSync();
 	}
 
-	m_bWaitSync = false;
+	setSyncFlag(WaitSync, false);
 }
 
 
@@ -809,23 +825,23 @@ void qtractorAudioBuffer::sync (void)
 bool qtractorAudioBuffer::inSync (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
-	if (!m_bInitSync)
+	if (!isSyncFlag(InitSync))
 		return false;
 
-	if (!m_bReadSync) {
+	if (!isSyncFlag(ReadSync)) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",
 			this, iFrameStart, iFrameEnd,
 			(long) m_iReadOffset - (iFrameStart + m_iOffset));
 	#endif
 		if (m_iReadOffset == iFrameStart + m_iOffset) {
-			m_bReadSync = true;
+			setSyncFlag(ReadSync);
 		} else {
 			seek(iFrameEnd);
 		}
 	}
 
-	return m_bReadSync;
+	return isSyncFlag(ReadSync);
 }
 
 
@@ -833,18 +849,6 @@ bool qtractorAudioBuffer::inSync (
 void qtractorAudioBuffer::syncExport (void)
 {
 	if (m_pSyncThread) m_pSyncThread->syncExport(this);
-}
-
-
-// Sync waiter flag accessors.
-void qtractorAudioBuffer::setWaitSync ( bool bWaitSync )
-{
-	m_bWaitSync = bWaitSync;
-}
-
-bool qtractorAudioBuffer::isWaitSync (void) const
-{
-	return m_bWaitSync;
 }
 
 
@@ -874,11 +878,11 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned int nahead = ws;
 	unsigned int ntotal = 0;
 
-	while (nahead > 0 && m_bWaitSync && !ATOMIC_GET(&m_seekPending)) {
+	while (nahead > 0 && isSyncFlag(WaitSync) && !ATOMIC_GET(&m_seekPending)) {
 		// Take looping into account, if any...
 		unsigned long ls = m_iOffset + m_iLoopStart;
 		unsigned long le = m_iOffset + m_iLoopEnd;
-		bool bLooping = (ls < le && m_iWriteOffset < le && m_bInitSync);
+		bool bLooping = (ls < le && m_iWriteOffset < le && isSyncFlag(InitSync));
 		// Adjust request for sane size...
 		if (nahead > m_iBufferSize)
 			nahead = m_iBufferSize;
@@ -942,7 +946,7 @@ void qtractorAudioBuffer::writeSync (void)
 	unsigned int nbehind = rs;
 	unsigned int ntotal  = 0;
 
-	while (nbehind > 0 && m_bWaitSync) {
+	while (nbehind > 0 && isSyncFlag(WaitSync)) {
 		// Adjust request for sane size...
 		if (nbehind > m_iBufferSize)
 			nbehind = m_iBufferSize;
@@ -1410,7 +1414,7 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	}
 
 	// Force out-of-sync...
-	m_bReadSync = false;
+	setSyncFlag(ReadSync, false);
 	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
 //	seek(m_iReadOffset - m_iOffset);
 }
