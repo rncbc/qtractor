@@ -24,7 +24,21 @@
 
 #include "qtractorPlugin.h"
 
+#ifdef CONFIG_LIBSLV2
 #include <slv2/slv2.h>
+#endif
+
+#ifdef CONFIG_LIBLILV
+#include <lilv/lilv.h>
+#define SLV2Plugin   LilvPlugin*
+#define SLV2Instance LilvInstance*
+#define SLV2UIs      LilvUIs*
+#define SLV2UI       LilvUI*
+#endif
+
+#ifdef CONFIG_LIBSUIL
+#include <suil/suil.h>
+#endif
 
 #ifdef CONFIG_LV2_EVENT
 // LV2 Event/MIDI support.
@@ -43,10 +57,6 @@
 // LV2 UI data/instance access support.
 #include "lv2_data_access.h"
 #include "lv2_instance_access.h"
-#endif
-
-#ifdef CONFIG_LV2_UI_NEW
-#include <suil/suil.h>
 #endif
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -281,11 +291,13 @@ protected:
 	LV2_Feature    m_lv2_ui_feature;
 	LV2_Feature  **m_lv2_ui_features;
 
-#ifdef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSUIL
 	SuilHost      *m_suil_host;
 	SuilInstance  *m_suil_instance;
 	SuilWidget     m_lv2_ui_widget;
-#else
+#endif
+
+#if CONFIG_LIBSLV2
 	SLV2UIInstance m_slv2_ui_instance;
 	LV2UI_Widget   m_lv2_ui_widget;
 #endif
