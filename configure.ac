@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.84, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.85, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -66,6 +66,24 @@ AC_ARG_ENABLE(libz,
   AC_HELP_STRING([--enable-libz], [enable libz interface (default=yes)]),
   [ac_libz="$enableval"],
   [ac_libz="yes"])
+
+# Enable SLV2 support.
+AC_ARG_ENABLE(slv2,
+  AC_HELP_STRING([--enable-slv2], [enable SLV2 interface support (default=yes)]),
+  [ac_slv2="$enableval"],
+  [ac_slv2="yes"])
+
+# Enable LILV support.
+AC_ARG_ENABLE(lilv,
+  AC_HELP_STRING([--enable-lilv], [enable LILV interface support (default=no)]),
+  [ac_lilv="$enableval"],
+  [ac_lilv="no"])
+
+# Enable SUIL support.
+AC_ARG_ENABLE(suil,
+  AC_HELP_STRING([--enable-suil], [enable SUIL interface support (default=no)]),
+  [ac_suil="$enableval"],
+  [ac_suil="no"])
 
 # Enable SSE optimization.
 AC_ARG_ENABLE(sse,
@@ -234,6 +252,16 @@ AC_ARG_WITH(libslv2,
   AC_HELP_STRING([--with-libslv2=PATH], [use alternate libslv2 path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
+# Set for alternate liblilv installation dir.
+AC_ARG_WITH(liblilv,
+  AC_HELP_STRING([--with-liblilv=PATH], [use alternate liblilv path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate libsuil installation dir.
+AC_ARG_WITH(libsuil,
+  AC_HELP_STRING([--with-libsuil=PATH], [use alternate libsuil path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
 # Set for alternate LADSPA include dir.
 AC_ARG_WITH(ladspa,
   AC_HELP_STRING([--with-ladspa=PATH], [use alternate LADSPA header path]),
@@ -355,8 +383,6 @@ if test "x$ac_sse" = "xyes"; then
    fi
 fi
 
-AC_SUBST(ac_cflags)
-
 
 # A common error message:
 ac_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt-devel)."
@@ -386,7 +412,10 @@ AC_SUBST(ac_uic)
 # Check for pkg-config utility (needed for LV2 GTK UI support).
 AC_PATH_PROG(ac_pkg_config, pkg-config, [no], $ac_path)
 if test "x$ac_pkg_config" = "xno"; then
-   ac_lv2 = "no"
+   ac_lv2="no"
+   ac_slv2="no"
+   ac_lilv="no"
+   ac_suil="no"
 fi
 
 
@@ -520,26 +549,48 @@ fi
 if test "x$ac_libz" = "xyes"; then
    AC_CHECK_LIB(z, main, [ac_libz="yes"], [ac_libz="no"])
    if test "x$ac_libz" = "xyes"; then
-	  AC_DEFINE(CONFIG_LIBZ, 1, [Define if libz is available.])
-	  ac_libs="$ac_libs -lz"
+      AC_DEFINE(CONFIG_LIBZ, 1, [Define if libz is available.])
+      ac_libs="$ac_libs -lz"
    else
-	  AC_MSG_WARN([*** z library not found.])
-	  AC_MSG_WARN([*** Archive/Zip file support will be disabled.])
+      AC_MSG_WARN([*** z library not found.])
+      AC_MSG_WARN([*** Archive/Zip file support will be disabled.])
    fi
 fi
 
-# Check for optional libslv2 library.
-if test "x$ac_lv2" = "xyes"; then
-   AC_CHECK_LIB(slv2, main, [ac_lv2="yes"], [ac_lv2="no"])
+# Check for optional liblilv library.
+if test "x$ac_lilv" = "xyes"; then
+   AC_CHECK_LIB(lilv-0, main, [ac_lilv="yes"], [ac_lilv="no"])
 fi
-if test "x$ac_lv2" = "xyes"; then
-   ac_lv2_libs=`$ac_pkg_config --libs slv2 2>/dev/null`
-   if test -n "$ac_lv2_libs"; then
-      ac_libs="$ac_libs $ac_lv2_libs"
+if test "x$ac_lilv" = "xyes"; then
+   ac_lilv_libs=`$ac_pkg_config --libs lilv-0 2>/dev/null`
+   if test -n "$ac_lilv_libs"; then
+      ac_libs="$ac_libs $ac_lilv_libs"
+      AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
+      ac_slv2="no"
+	  ac_suil="yes"
+   else
+      AC_MSG_WARN([*** lilv library not found.])
+      ac_slv2="yes"
+      ac_lilv="no"
+      ac_suil="no"
+   fi
+else
+   ac_suil="no"
+fi
+
+# Check for optional libslv2 library.
+if test "x$ac_slv2" = "xyes"; then
+   AC_CHECK_LIB(slv2, main, [ac_slv2="yes"], [ac_slv2="no"])
+fi
+if test "x$ac_slv2" = "xyes"; then
+   ac_slv2_libs=`$ac_pkg_config --libs slv2 2>/dev/null`
+   if test -n "$ac_slv2_libs"; then
+      ac_libs="$ac_libs $ac_slv2_libs"
       AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
    else
       AC_MSG_WARN([*** slv2 library not found.])
       AC_MSG_WARN([*** LV2 plugin support will be disabled.])
+      ac_slv2="no"
       ac_lv2="no"
       ac_lv2_event="no"
       ac_lv2_gtk_ui="no"
@@ -551,20 +602,25 @@ if test "x$ac_lv2" = "xyes"; then
    fi
 fi
 
-# Check for SLV2 new UI instantiation availability.
-ac_lv2_ui_new="no"
-
-if test "x$ac_lv2" = "xyes"; then
-   LIBS="$ac_lv2_libs $LIBS"
-   AC_CHECK_LIB(suil, suil_instance_new, [ac_lv2_ui_new="yes"], [ac_lv2_ui_new="no"])
-   if test "x$ac_lv2_ui_new" = "xyes"; then
-	  AC_DEFINE(CONFIG_LV2_UI_NEW, 1, [Define if suil_instance_new is available.])
+# Check for LV2 new UI instantiation availability (libsuil).
+if test "x$ac_suil" = "xyes"; then
+   AC_CHECK_LIB(suil-0, main, [ac_suil="yes"], [ac_suil="no"])
+fi
+if test "x$ac_suil" = "xyes"; then
+   ac_suil_libs=`$ac_pkg_config --libs suil-0 2>/dev/null`
+   if test -n "$ac_suil_libs"; then
+      ac_libs="$ac_libs $ac_suil_libs"
+      AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if libsuil is available.])
       if test "x$ac_lv2_qt4_ui" = "xyes"; then
          AC_DEFINE(CONFIG_LV2_QT4_UI, 1, [Define if LV2 QT4 UI extension is available.])
       fi
    else
+      AC_MSG_WARN([*** suil library not found.])
+      ac_suil="no"
       ac_lv2_qt4_ui="no"
    fi
+else
+   ac_lv2_qt4_ui="no"
 fi
 
 # Check for JACK session event callback availability.
@@ -649,7 +705,52 @@ fi
 if test "x$ac_libz" = "xyes"; then
    AC_CHECK_HEADER(zlib.h, [ac_zlib_h="yes"], [ac_zlib_h="no"])
    if test "x$ac_zlib_h" = "xno"; then
-	  AC_MSG_ERROR([zlib.h header file not found.])
+      AC_MSG_ERROR([zlib.h header file not found.])
+   fi
+fi
+
+# Check for slv2 headers.
+if test "x$ac_slv2" = "xyes"; then
+   ac_slv2_cflags=`$ac_pkg_config --cflags slv2 2>/dev/null`
+   if test -n "$ac_slv2_cflags"; then
+	  CFLAGS="$ac_slv2_cflags $CFLAGS"
+	  CPPFLAGS="$ac_slv2_cflags $CPPFLAGS"
+   fi
+   AC_CHECK_HEADER(slv2/slv2.h, [ac_slv2_h="yes"], [ac_slv2_h="no"])
+   if test "x$ac_slv2_h" = "xno"; then
+      AC_MSG_ERROR([slv2.h header file not found.])
+   else
+      ac_cflags="$ac_slv2_cflags $ac_cflags"
+   fi
+fi
+
+# Check for lilv headers.
+if test "x$ac_lilv" = "xyes"; then
+   ac_lilv_cflags=`$ac_pkg_config --cflags lilv-0 2>/dev/null`
+   if test -n "$ac_lilv_cflags"; then
+	  CFLAGS="$ac_lilv_cflags $CFLAGS"
+	  CPPFLAGS="$ac_lilv_cflags $CPPFLAGS"
+   fi
+   AC_CHECK_HEADER(lilv/lilv.h, [ac_lilv_h="yes"], [ac_lilv_h="no"])
+   if test "x$ac_lilv_h" = "xno"; then
+      AC_MSG_ERROR([lilv.h header file not found.])
+   else
+      ac_cflags="$ac_lilv_cflags $ac_cflags"
+   fi
+fi
+
+# Check for suil headers.
+if test "x$ac_suil" = "xyes"; then
+   ac_suil_cflags=`$ac_pkg_config --cflags suil-0 2>/dev/null`
+   if test -n "$ac_suil_cflags"; then
+	  CFLAGS="$ac_suil_cflags $CFLAGS"
+	  CPPFLAGS="$ac_suil_cflags $CPPFLAGS"
+   fi
+   AC_CHECK_HEADER(suil/suil.h, [ac_suil_h="yes"], [ac_suil_h="no"])
+   if test "x$ac_suil_h" = "xno"; then
+      AC_MSG_ERROR([suil.h header file not found.])
+   else
+      ac_cflags="$ac_suil_cflags $ac_cflags"
    fi
 fi
 
@@ -869,6 +970,7 @@ if test "x$ac_stacktrace" = "xyes"; then
 fi
 
 AC_SUBST(ac_incpath)
+AC_SUBST(ac_cflags)
 
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -903,9 +1005,11 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
-echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in UI instantiation (libslv2 >= 0.7)  . .: $ac_lv2_ui_new"
-echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
+echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
+echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_slv2"
+echo "  LV2 Plug-in support (liblilv) (NEW)  . . . . . . .: $ac_lilv"
+echo "  LV2 Plug-in UI instantiation (libsuil) (NEW) . . .: $ac_suil"
+echo "  LV2 Plug-in QT4 UI support (NEW) . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"

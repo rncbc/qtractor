@@ -25,6 +25,74 @@
 
 #include "qtractorLv2Plugin.h"
 
+#ifdef CONFIG_LIBLILV
+
+#define SLV2World						LilvWorld*
+#define SLV2Value						LilvNode*
+#define SLV2Plugins						LilvPlugins*
+#define SLV2Port						LilvPort*
+#define SLV2ScalePoints					LilvScalePoints*
+#define SLV2ScalePoint					LilvScalePoint*
+
+#define SLV2_NAMESPACE_LV2				"http://lv2plug.in/ns/lv2core#"
+
+#define SLV2_PORT_CLASS_PORT			LILV_URI_PORT
+#define SLV2_PORT_CLASS_INPUT			LILV_URI_INPUT_PORT
+#define SLV2_PORT_CLASS_OUTPUT			LILV_URI_OUTPUT_PORT
+#define SLV2_PORT_CLASS_CONTROL			LILV_URI_CONTROL_PORT
+#define SLV2_PORT_CLASS_AUDIO			LILV_URI_AUDIO_PORT
+#define SLV2_PORT_CLASS_EVENT			LILV_URI_EVENT_PORT
+#define SLV2_EVENT_CLASS_MIDI			LILV_URI_MIDI_EVENT
+
+#define slv2_world_new					lilv_world_new
+#define slv2_world_free					lilv_world_free
+#define slv2_world_load_all				lilv_world_load_all
+#define slv2_world_get_all_plugins		lilv_world_get_all_plugins
+#define slv2_value_as_uri         		lilv_node_as_uri
+#define slv2_value_as_string			lilv_node_as_string
+#define slv2_value_as_float				lilv_node_as_float
+#define slv2_value_new_uri				lilv_new_uri
+#define slv2_value_free					lilv_node_free
+#define slv2_plugin_has_feature			lilv_plugin_has_feature
+#define slv2_plugin_get_name			lilv_plugin_get_name
+#define slv2_plugin_get_uri				lilv_plugin_get_uri
+#define slv2_plugin_get_uis				lilv_plugin_get_uis
+#define slv2_plugin_get_num_ports		lilv_plugin_get_num_ports
+#define slv2_plugin_get_port_by_index	lilv_plugin_get_port_by_index
+#define slv2_plugin_instantiate			lilv_plugin_instantiate
+#define slv2_plugins_get_by_uri			lilv_plugins_get_by_uri
+#define slv2_plugins_get				lilv_plugins_get
+#define slv2_plugins_size				lilv_plugins_size
+#define slv2_plugins_free				lilv_plugins_free
+#define slv2_instance_free				lilv_instance_free
+#define slv2_instance_connect_port		lilv_instance_connect_port
+#define slv2_instance_get_descriptor	lilv_instance_get_descriptor
+#define slv2_instance_get_handle		lilv_instance_get_handle
+#define slv2_instance_activate			lilv_instance_activate
+#define slv2_instance_deactivate		lilv_instance_deactivate
+#define slv2_instance_run				lilv_instance_run
+#define slv2_port_is_a					lilv_port_is_a
+#define slv2_port_has_property			lilv_port_has_property
+#define slv2_port_get_name				lilv_port_get_name
+#define slv2_port_get_range				lilv_port_get_range
+#define slv2_port_get_scale_points		lilv_port_get_scale_points
+#define slv2_scale_points_size			lilv_scale_points_size
+#define slv2_scale_points_free			lilv_scale_points_free
+#define slv2_scale_points_get			lilv_scale_points_get
+#define slv2_scale_point_get_value		lilv_scale_point_get_value
+#define slv2_scale_point_get_label		lilv_scale_point_get_label
+#define slv2_uis_size					lilv_uis_size
+#define slv2_uis_get					lilv_uis_get
+#define slv2_uis_free					lilv_uis_free
+#define slv2_ui_is_a					lilv_ui_is_a
+#define slv2_ui_get_uri					lilv_ui_get_uri
+#define slv2_ui_get_bundle_uri			lilv_ui_get_bundle_uri
+#define slv2_ui_get_binary_uri			lilv_ui_get_binary_uri
+#define slv2_uri_to_path				lilv_uri_to_path
+
+#endif	// CONFIG_LIBLILV
+
+
 #ifdef CONFIG_LV2_EVENT
 #include "qtractorMidiBuffer.h"
 #endif
@@ -340,7 +408,7 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_TYPE_EXTERNAL   3
 
 static void qtractor_lv2_ui_write (
-#ifdef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSUIL
 	SuilController ui_controller,
 #else
 	LV2UI_Controller ui_controller,
@@ -457,14 +525,14 @@ static SLV2World   g_slv2_world   = NULL;
 static SLV2Plugins g_slv2_plugins = NULL;
 
 // Supported port classes.
-static SLV2Value g_slv2_input_class      = NULL;
-static SLV2Value g_slv2_output_class     = NULL;
-static SLV2Value g_slv2_control_class    = NULL;
-static SLV2Value g_slv2_audio_class      = NULL;
+static SLV2Value g_slv2_input_class       = NULL;
+static SLV2Value g_slv2_output_class      = NULL;
+static SLV2Value g_slv2_control_class     = NULL;
+static SLV2Value g_slv2_audio_class       = NULL;
 
 #ifdef CONFIG_LV2_EVENT
-static SLV2Value g_slv2_event_class      = NULL;
-static SLV2Value g_slv2_midi_class       = NULL;
+static SLV2Value g_slv2_event_class       = NULL;
+static SLV2Value g_slv2_midi_class        = NULL;
 #endif
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -472,29 +540,29 @@ static SLV2Value g_slv2_external_ui_class = NULL;
 #endif
 
 #ifdef CONFIG_LV2_GTK_UI
-static SLV2Value g_slv2_gtk_ui_class     = NULL;
+static SLV2Value g_slv2_gtk_ui_class      = NULL;
 #endif
 
 #ifdef CONFIG_LV2_QT4_UI
-static SLV2Value g_slv2_qt4_ui_class     = NULL;
+static SLV2Value g_slv2_qt4_ui_class      = NULL;
 #endif
 
 // Supported plugin features.
-static SLV2Value g_slv2_realtime_hint    = NULL;
+static SLV2Value g_slv2_realtime_hint     = NULL;
 
 #ifdef CONFIG_LV2_SAVERESTORE
-static SLV2Value g_slv2_saverestore_hint = NULL;
+static SLV2Value g_slv2_saverestore_hint  = NULL;
 #endif
 
 #ifdef CONFIG_LV2_PERSIST
-static SLV2Value g_slv2_persist_hint     = NULL;
+static SLV2Value g_slv2_persist_hint      = NULL;
 #endif
 
 // Supported port properties (hints).
-static SLV2Value g_slv2_toggled_prop     = NULL;
-static SLV2Value g_slv2_integer_prop     = NULL;
-static SLV2Value g_slv2_sample_rate_prop = NULL;
-static SLV2Value g_slv2_logarithmic_prop = NULL;
+static SLV2Value g_slv2_toggled_prop      = NULL;
+static SLV2Value g_slv2_integer_prop      = NULL;
+static SLV2Value g_slv2_sample_rate_prop  = NULL;
+static SLV2Value g_slv2_logarithmic_prop  = NULL;
 
 #ifdef CONFIG_LV2_EVENT
 static LV2_Event_Buffer *g_pLv2DummyBuffer = NULL;
@@ -547,7 +615,7 @@ bool qtractorLv2PluginType::open (void)
 
 	unsigned long iNumPorts = slv2_plugin_get_num_ports(m_slv2_plugin);
 	for (unsigned long i = 0; i < iNumPorts; ++i) {
-		SLV2Port port = slv2_plugin_get_port_by_index(m_slv2_plugin, i);
+		const SLV2Port port = slv2_plugin_get_port_by_index(m_slv2_plugin, i);
 		if (port) {
 			if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_control_class)) {
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_input_class))
@@ -594,9 +662,9 @@ bool qtractorLv2PluginType::open (void)
 	// Check the UI inventory...
 	SLV2UIs uis = slv2_plugin_get_uis(m_slv2_plugin);
 	if (uis) {
-	#ifdef CONFIG_LV2_UI_NEW
-		SLV2_FOREACH(uis, i, uis) {
-			SLV2UI ui = slv2_uis_get(uis, i);
+	#ifdef CONFIG_LIBLILV
+		LILV_FOREACH(uis, i, uis) {
+			const SLV2UI ui = slv2_uis_get(uis, i);
 	#else
 		int iNumUIs = slv2_uis_size(uis);
 		for (int i = 0; i < iNumUIs; ++i) {
@@ -613,7 +681,7 @@ bool qtractorLv2PluginType::open (void)
 				m_bEditor = true;
 				break;
 			}
-		#ifdef CONFIG_LV2_UI_NEW
+		#ifdef CONFIG_LIBSUIL
 			if (suil_ui_supported(LV2_QT4_UI_URI, LV2_QT4_UI_URI)) {
 				m_bEditor = true;
 				break;
@@ -625,7 +693,7 @@ bool qtractorLv2PluginType::open (void)
 				m_bEditor = true;
 				break;
 			}
-		#ifdef CONFIG_LV2_UI_NEW
+		#ifdef CONFIG_LIBSUIL
 			if (suil_ui_supported(LV2_QT4_UI_URI, LV2_GTK_UI_URI)) {
 				m_bEditor = true;
 				break;
@@ -677,7 +745,8 @@ SLV2Plugin qtractorLv2PluginType::slv2_plugin ( const QString& sUri )
 	if (uri == NULL)
 		return NULL;
 
-	SLV2Plugin plugin = slv2_plugins_get_by_uri(g_slv2_plugins, uri);
+	SLV2Plugin plugin = const_cast<SLV2Plugin> (
+		slv2_plugins_get_by_uri(g_slv2_plugins, uri));
 
 	slv2_value_free(uri);
 	return plugin;
@@ -697,7 +766,9 @@ void qtractorLv2PluginType::slv2_open (void)
 	// Find all installed plugins.
 	g_slv2_world = slv2_world_new();
 	slv2_world_load_all(g_slv2_world);
-	g_slv2_plugins = slv2_world_get_all_plugins(g_slv2_world);
+
+	g_slv2_plugins = const_cast<SLV2Plugins> (
+		slv2_world_get_all_plugins(g_slv2_world));
 
 	// Set up the port classes we support.
 	g_slv2_input_class   = slv2_value_new_uri(g_slv2_world, SLV2_PORT_CLASS_INPUT);
@@ -800,7 +871,7 @@ void qtractorLv2PluginType::slv2_close (void)
 	slv2_value_free(g_slv2_qt4_ui_class);
 #endif
 
-#ifndef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSLV2
 	slv2_plugins_free(g_slv2_world, g_slv2_plugins);
 #endif
 	slv2_world_free(g_slv2_world);
@@ -838,13 +909,15 @@ bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
 
 	unsigned long iIndex = 0;
 
-#ifdef CONFIG_LV2_UI_NEW
-	SLV2_FOREACH(plugins, i, g_slv2_plugins) {
-		SLV2Plugin plugin = slv2_plugins_get(g_slv2_plugins, i);
+#ifdef CONFIG_LIBLILV
+	LILV_FOREACH(plugins, i, g_slv2_plugins) {
+		SLV2Plugin plugin = const_cast<SLV2Plugin> (
+			slv2_plugins_get(g_slv2_plugins, i));
 #else
 	unsigned int iNumPlugins = slv2_plugins_size(g_slv2_plugins);
 	for (unsigned int i = 0; i < iNumPlugins; ++i) {
-		SLV2Plugin plugin = slv2_plugins_get_at(g_slv2_plugins, i);
+		SLV2Plugin plugin = const_cast<SLV2Plugin> (
+			slv2_plugins_get_at(g_slv2_plugins, i));
 #endif
 		const char *pszUri = slv2_value_as_uri(slv2_plugin_get_uri(plugin));
 		qtractorLv2PluginType *pLv2Type
@@ -893,10 +966,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_slv2_uis(NULL)
 		, m_slv2_ui(NULL)
 		, m_lv2_ui_features(NULL)
-	#ifdef CONFIG_LV2_UI_NEW
+	#ifdef CONFIG_LIBSUIL
 		, m_suil_host(NULL)
 		, m_suil_instance(NULL)
-	#else
+	#endif
+	#ifdef CONFIG_LIBSLV2
 		, m_slv2_ui_instance(NULL)
 	#endif
 		, m_lv2_ui_widget(NULL)
@@ -943,7 +1017,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_features[iFeatures] = NULL;
 
 	// Get some structural data first...
-	SLV2Plugin plugin = pLv2Type->slv2_plugin();
+	const SLV2Plugin plugin = pLv2Type->slv2_plugin();
 	if (plugin) {
 		unsigned short iControlOuts = pLv2Type->controlOuts();
 		unsigned short iAudioIns    = pLv2Type->audioIns();
@@ -969,7 +1043,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 		unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
 		for (unsigned long i = 0; i < iNumPorts; ++i) {
-			SLV2Port port = slv2_plugin_get_port_by_index(plugin, i);
+			const SLV2Port port = slv2_plugin_get_port_by_index(plugin, i);
 			if (port) {
 				if (slv2_port_is_a(plugin, port, g_slv2_input_class)) {
 					if (slv2_port_is_a(plugin, port, g_slv2_audio_class))
@@ -1054,7 +1128,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	if (iInstances == instances() && !pType->isMidi())
 		return;
 
-	SLV2Plugin plugin = slv2_plugin();
+	const SLV2Plugin plugin = slv2_plugin();
 	if (plugin == NULL)
 		return;
 
@@ -1167,7 +1241,7 @@ SLV2Instance qtractorLv2Plugin::slv2_instance ( unsigned short iInstance ) const
 
 LV2_Handle qtractorLv2Plugin::lv2_handle ( unsigned short iInstance ) const
 {
-	SLV2Instance instance = slv2_instance(iInstance);
+	const SLV2Instance instance = slv2_instance(iInstance);
 	return (instance ? slv2_instance_get_handle(instance) : NULL);
 }
 
@@ -1205,7 +1279,7 @@ void qtractorLv2Plugin::process (
 	if (m_pInstances == NULL)
 		return;
 
-	SLV2Plugin plugin = slv2_plugin();
+	const SLV2Plugin plugin = slv2_plugin();
 	if (plugin == NULL)
 		return;
 
@@ -1272,31 +1346,33 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	if (m_slv2_uis == NULL)
 		return;
 
-#ifdef CONFIG_LV2_UI_NEW
-	SLV2_FOREACH(uis, i, m_slv2_uis) {
-		SLV2UI ui = slv2_uis_get(m_slv2_uis, i);
+#ifdef CONFIG_LIBLILV
+	LILV_FOREACH(uis, i, m_slv2_uis) {
+		SLV2UI ui = const_cast<SLV2UI> (
+			slv2_uis_get(m_slv2_uis, i));
 #else
 	int iNumUIs = slv2_uis_size(m_slv2_uis);
 	for (int i = 0; i < iNumUIs; ++i) {
-		SLV2UI ui = slv2_uis_get_at(m_slv2_uis, i);
+		SLV2UI ui = const_cast<SLV2UI> (
+			slv2_uis_get_at(m_slv2_uis, i));
 #endif
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (slv2_ui_is_a(ui, g_slv2_external_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_EXTERNAL;
-			m_slv2_ui = ui;
+			m_slv2_ui = const_cast<SLV2UI> (ui);
 			break;
 		}
 	#endif
 	#ifdef CONFIG_LV2_QT4_UI
 		if (slv2_ui_is_a(ui, g_slv2_qt4_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_QT4;
-			m_slv2_ui = ui;
+			m_slv2_ui = const_cast<SLV2UI> (ui);
 		//	break;
 		}
-	#ifdef CONFIG_LV2_UI_NEW
+	#ifdef CONFIG_LIBSUIL
 		if (suil_ui_supported(LV2_QT4_UI_URI, LV2_QT4_UI_URI)) {
 			m_lv2_ui_type = LV2_UI_TYPE_QT4;
-			m_slv2_ui = ui;
+			m_slv2_ui = const_cast<SLV2UI> (ui);
 		//	break;
 		}
 	#endif
@@ -1305,13 +1381,13 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 		if (m_lv2_ui_type == LV2_UI_TYPE_NONE &&
 			slv2_ui_is_a(ui, g_slv2_gtk_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_GTK;
-			m_slv2_ui = ui;
+			m_slv2_ui = const_cast<SLV2UI> (ui);
 		//	break;
 		}
-	#ifdef CONFIG_LV2_UI_NEW
+	#ifdef CONFIG_LIBSUIL
 		if (suil_ui_supported(LV2_QT4_UI_URI, LV2_GTK_UI_URI)) {
 			m_lv2_ui_type = LV2_UI_TYPE_GTK;
-			m_slv2_ui = ui;
+			m_slv2_ui = const_cast<SLV2UI> (ui);
 		//	break;
 		}
 	#endif
@@ -1321,7 +1397,7 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	if (m_slv2_ui == NULL)
 		return;
 
-	SLV2Instance instance = slv2_instance(0);
+	const SLV2Instance instance = slv2_instance(0);
 	if (instance == NULL)
 		return;
 	
@@ -1357,7 +1433,7 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 
 	m_lv2_ui_features[iFeatures] = NULL;
 
-#ifdef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSUIL
 	SLV2Value widget_type = NULL;
 	switch (m_lv2_ui_type) {
 	case LV2_UI_TYPE_GTK:
@@ -1389,7 +1465,7 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 		m_slv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);
 #endif
 
-#ifdef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSUIL
 	if (m_suil_instance) {
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
@@ -1405,7 +1481,9 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 				m_piControlOuts[j], sizeof(float), 0, &m_pfControlOuts[j]);
 		}
 	}
-#else
+#endif
+
+#ifdef CONFIG_LIBSLV2
 	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
 	if (ui_descriptor && ui_descriptor->port_event) {
 		LV2UI_Handle ui_handle = lv2_ui_handle();
@@ -1427,7 +1505,7 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	}
 #endif
 
-#ifdef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSUIL
 	if (m_suil_instance) {
 		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
 	#ifdef CONFIG_LV2_QT4_UI
@@ -1458,7 +1536,9 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	#endif
 		g_lv2Plugins.append(this);
 	}
-#else
+#endif
+
+#ifdef CONFIG_LIBSLV2
 	if (m_slv2_ui_instance) {
 		m_lv2_ui_widget = slv2_ui_instance_get_widget(m_slv2_ui_instance);
 	#ifdef CONFIG_LV2_QT4_UI
@@ -1540,7 +1620,7 @@ void qtractorLv2Plugin::closeEditor (void)
 	if (iLv2Plugin >= 0)
 		g_lv2Plugins.removeAt(iLv2Plugin);
 
-#ifdef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSUIL
 	if (m_suil_instance) {
 		suil_instance_free(m_suil_instance);
 		m_suil_instance = NULL;
@@ -1550,7 +1630,9 @@ void qtractorLv2Plugin::closeEditor (void)
 		suil_host_free(m_suil_host);
 		m_suil_host = NULL;
 	}
-#else
+#endif
+
+#ifdef CONFIG_LIBSLV2
 	if (m_slv2_ui_instance) {
 		slv2_ui_instance_free(m_slv2_ui_instance);
 		m_slv2_ui_instance = NULL;
@@ -1589,7 +1671,7 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 
 	if (m_piControlOuts && m_pfControlOuts && m_pfControlOutsLast) {
-	#ifdef CONFIG_LV2_UI_NEW
+	#ifdef CONFIG_LIBSUIL
 		if (m_suil_instance) {
 			unsigned long iControlOuts = type()->controlOuts();
 			for (unsigned short j = 0; j < iControlOuts; ++j) {
@@ -1600,7 +1682,8 @@ void qtractorLv2Plugin::idleEditor (void)
 				}
 			}
 		}
-	#else
+	#endif
+	#ifdef CONFIG_LIBSLV2
 		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
 		if (ui_descriptor && ui_descriptor->port_event) {
 			LV2UI_Handle ui_handle = lv2_ui_handle();
@@ -1737,14 +1820,19 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 void qtractorLv2Plugin::updateParam (
 	qtractorPluginParam *pParam, float fValue )
 {
-#ifdef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLv2Plugin[%p]::updateParam(%lu, %g)",
+		this, pParam->index(), fValue); 
+#endif
 
+#ifdef CONFIG_LIBSUIL
 	if (m_suil_instance) {
 		suil_instance_port_event(m_suil_instance,
 			pParam->index(), sizeof(float), 0, &fValue);
 	}
+#endif
 
-#else	// CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSLV2
 
 	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
 	if (ui_descriptor == NULL)
@@ -1756,15 +1844,10 @@ void qtractorLv2Plugin::updateParam (
 	if (ui_handle == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorLv2Plugin[%p]::updateParam(%lu, %g)",
-		this, pParam->index(), fValue); 
-#endif
-
 	(*ui_descriptor->port_event)(ui_handle,
 		pParam->index(), sizeof(float), 0, &fValue);
 
-#endif	// !CONFIG_LV2_UI_NEW
+#endif
 }
 
 
@@ -1780,7 +1863,7 @@ void qtractorLv2Plugin::idleEditorAll (void)
 // LV2 UI descriptor accessor.
 const LV2UI_Descriptor *qtractorLv2Plugin::lv2_ui_descriptor (void) const
 {
-#ifndef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSLV2
 	if (m_slv2_ui_instance)
 		return slv2_ui_instance_get_descriptor(m_slv2_ui_instance);
 	else
@@ -1792,7 +1875,7 @@ const LV2UI_Descriptor *qtractorLv2Plugin::lv2_ui_descriptor (void) const
 // LV2 UI handle accessor.
 LV2UI_Handle qtractorLv2Plugin::lv2_ui_handle (void) const
 {
-#ifndef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSLV2
 	if (m_slv2_ui_instance)
 		return slv2_ui_instance_get_handle(m_slv2_ui_instance);
 	else
@@ -1808,7 +1891,7 @@ void qtractorLv2Plugin::lv2_ui_cleanup (void) const
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_cleanup()", this);
 #endif
 
-#ifndef CONFIG_LV2_UI_NEW
+#ifdef CONFIG_LIBSLV2
 	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
 	if (ui_descriptor && ui_descriptor->cleanup) {
 		LV2UI_Handle ui_handle = lv2_ui_handle();
@@ -2009,7 +2092,7 @@ void qtractorLv2Plugin::releaseConfigs (void)
 const LV2SR_Descriptor *qtractorLv2Plugin::lv2_sr_descriptor (
 	unsigned short iInstance ) const
 {
-	SLV2Instance instance = slv2_instance(iInstance);
+	const SLV2Instance instance = slv2_instance(iInstance);
 	if (instance == NULL)
 		return NULL;
 
@@ -2080,7 +2163,7 @@ bool qtractorLv2Plugin::lv2_sr_restore ( unsigned short iInstance,
 const LV2_Persist *qtractorLv2Plugin::lv2_persist_descriptor (
 	unsigned short iInstance ) const
 {
-	SLV2Instance instance = slv2_instance(iInstance);
+	const SLV2Instance instance = slv2_instance(iInstance);
 	if (instance == NULL)
 		return NULL;
 
@@ -2174,8 +2257,8 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 	qtractorLv2Plugin *pLv2Plugin, unsigned long iIndex )
 	: qtractorPluginParam(pLv2Plugin, iIndex), m_iPortHints(None)
 {
-	SLV2Plugin plugin = pLv2Plugin->slv2_plugin();
-	SLV2Port port = slv2_plugin_get_port_by_index(plugin, iIndex);
+	const SLV2Plugin plugin = pLv2Plugin->slv2_plugin();
+	const SLV2Port port = slv2_plugin_get_port_by_index(plugin, iIndex);
 
 	// Set nominal parameter name...
 	SLV2Value name = slv2_port_get_name(plugin, port);
@@ -2193,7 +2276,10 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 		m_iPortHints |= Logarithmic;
 
 	// Initialize range values...
-	SLV2Value vdef, vmin, vmax;
+	SLV2Value vdef;
+	SLV2Value vmin;
+	SLV2Value vmax;
+
 	slv2_port_get_range(plugin, port, &vdef, &vmin, &vmax);
 
 	setMinValue(vmin ? slv2_value_as_float(vmin) : 0.0f);
@@ -2209,16 +2295,16 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 	// m_display.clear();
 	SLV2ScalePoints points = slv2_port_get_scale_points(plugin, port);
 	if (points) {
-	#ifdef CONFIG_LV2_UI_NEW
-		SLV2_FOREACH(scale_points, i, points) {
-			SLV2ScalePoint point = slv2_scale_points_get(points, i);
+	#ifdef CONFIG_LIBLILV
+		LILV_FOREACH(scale_points, i, points) {
+			const SLV2ScalePoint point = slv2_scale_points_get(points, i);
 	#else
 		unsigned short iNumPoints = slv2_scale_points_size(points);
 		for (unsigned short i = 0; i < iNumPoints; ++i) {
-			SLV2ScalePoint point = slv2_scale_points_get_at(points, i);
+			const SLV2ScalePoint point = slv2_scale_points_get_at(points, i);
 	#endif
-			SLV2Value value = slv2_scale_point_get_value(point);
-			SLV2Value label = slv2_scale_point_get_label(point);
+			const SLV2Value value = slv2_scale_point_get_value(point);
+			const SLV2Value label = slv2_scale_point_get_label(point);
 			if (value && label) {
 				float   fValue = slv2_value_as_float(value);
 				QString sLabel = slv2_value_as_string(label);

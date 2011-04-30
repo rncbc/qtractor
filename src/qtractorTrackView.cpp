@@ -390,18 +390,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					const QRect& clipRect
 						= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 					if (!clipRect.isEmpty()) {
-					#if 0
-						// Just draw a semi-transparent rectangle...
-						QColor rgbPen   = pTrack->background().darker();
-						QColor rgbBrush = pTrack->background();
-						rgbPen.setAlpha(120);
-						rgbBrush.setAlpha(120);
-						pPainter->setPen(rgbPen);
-						pPainter->setBrush(rgbBrush);
-						pPainter->drawRect(clipRect);
-					#else
 						pClipRecord->drawClip(pPainter, clipRect, iClipOffset);
-					#endif
+						pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));
 					}
 				}
 				pTrack = pTrack->next();
