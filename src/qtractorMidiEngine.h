@@ -284,7 +284,9 @@ private:
 	// The delta-time when playback started .
 	long m_iTimeStart;
 	long m_iTimeDrift;
-	
+
+	long m_iFrameStart;
+
 	// The assigned control buses.
 	bool             m_bControlBus;
 	qtractorMidiBus *m_pIControlBus;

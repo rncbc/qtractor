@@ -192,7 +192,7 @@ public:
 	void setRamping(int iRamping);
 	int ramping() const;
 
-	// Actual number of frames elapsed since engine start.
+	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrame() const;
 
 protected:
@@ -278,9 +278,6 @@ private:
 	// Ramping hacky spin-lock.
 	qtractorAtomic m_ramping;
 	qtractorAtomic m_ramping_off;
-
-	// Actual number of frames on engine start.
-	long m_iJackFrameStart;
 };
 
 
