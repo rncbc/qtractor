@@ -5,6 +5,16 @@ ChangeLog
 
 SVN TRUNK
 
+- An appropriate export filename is now suggested
+  as default (Track/export Tracks...).
+
+- Follow-playhead automatism is now temporarily
+  suspended while mouse cursor hovering prompts
+  for any editing action (applies to main track
+  -view and MIDI clip editor/piano-roll).
+
+- Recording clips now shown in a reddish shade ;)
+
 - Audio vs. MIDI time drift correction now takes
   jack_frame_time() as audio time reference.
 

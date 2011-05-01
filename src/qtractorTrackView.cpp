@@ -1976,7 +1976,8 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 		updateRect(rectUpdate.united(m_pClipSelect->rect()));
 		m_pTracks->selectionChangeNotify();
 		// Make sure the earliest is barely visible...
-		qtractorScrollView::ensureVisible(x0, y0, 24, 24);
+		if (isClipSelected())
+			qtractorScrollView::ensureVisible(x0, y0, 24, 24);
 	}
 
 	// Make sure we keep focus... (maybe not:)
@@ -2771,7 +2772,8 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	iPositionX = x;
 
 	// Force position to be in view?
-	if (bSyncView && (x < x0 || x > x0 + w - wm) && m_dragState == DragNone) {
+	if (bSyncView && (x < x0 || x > x0 + w - wm)
+		&& m_dragState == DragNone && m_dragCursor == DragNone) {
 		 // Maybe we'll need some head-room...
 		if (x < qtractorScrollView::contentsWidth() - w) {
 			qtractorScrollView::setContentsPos(

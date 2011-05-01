@@ -486,7 +486,7 @@ private:
 	enum DragState { 
 		DragNone = 0, DragStart, DragSelect,
 		DragMove, DragResize, DragPaste, DragStep
-	} m_dragState;
+	} m_dragState, m_dragCursor;
 
 	// Common drag-resize mode.
 	enum ResizeMode { 
