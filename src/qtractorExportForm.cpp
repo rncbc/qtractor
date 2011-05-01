@@ -159,6 +159,12 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	if (pOptions)
 		pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
 
+	// Suggest a new export export filename...
+	if (pSession) {
+		m_ui.ExportPathComboBox->setEditText(
+			pSession->createFilePath("export", 0, m_sExportExt));
+	}
+
 	// Fill in the output bus names list...
 	m_ui.ExportBusNameComboBox->clear();
 	if (pEngine) {
