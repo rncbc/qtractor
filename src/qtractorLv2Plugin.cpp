@@ -461,14 +461,13 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 #endif	// CONFIG_LV2_EXTERNAL_UI
 
 
+#ifdef CONFIG_LIBSLV2
 #ifdef CONFIG_LV2_GTK_UI
 
 #undef signals // Collides with GTK symbology
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-
-#ifndef CONFIG_LIBSUIL
 
 static void qtractor_lv2_gtk_window_destroy (
 	GtkWidget *pGtkWindow, gpointer pvArg )
@@ -487,8 +486,7 @@ static void qtractor_lv2_gtk_window_destroy (
 }
 
 #endif
-
-#endif	// CONFIG_LV2_GTK_UI
+#endif	// CONFIG_LIBSLV2
 
 
 #ifdef CONFIG_LV2_QT4_UI
@@ -678,20 +676,26 @@ bool qtractorLv2PluginType::open (void)
 			}
 		#endif
 		#ifdef CONFIG_LIBSUIL
+		#ifdef CONFIG_LV2_QT4_UI
 			if (suil_ui_supported(LV2_QT4_UI_URI, LV2_QT4_UI_URI)) {
-				m_bEditor = true;
-				break;
-			}
-			if (suil_ui_supported(LV2_QT4_UI_URI, LV2_GTK_UI_URI)) {
 				m_bEditor = true;
 				break;
 			}
 		#endif
 		#ifdef CONFIG_LV2_GTK_UI
+			if (suil_ui_supported(LV2_QT4_UI_URI, LV2_GTK_UI_URI)) {
+				m_bEditor = true;
+				break;
+			}
+		#endif
+		#endif
+		#ifdef CONFIG_LIBSLV2
+		#ifdef CONFIG_LV2_GTK_UI
 			if (slv2_ui_is_a(ui, g_slv2_gtk_ui_class)) {
 				m_bEditor = true;
 				break;
 			}
+		#endif
 		#endif
 		}
 		slv2_uis_free(uis);
@@ -959,14 +963,18 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_slv2_ui_instance(NULL)
 	#endif
 		, m_lv2_ui_widget(NULL)
+    #ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
 		, m_pGtkWindow(NULL)
 	#endif
+	#endif
+    #ifdef CONFIG_LIBSUIL
 	#ifdef CONFIG_LV2_QT4_UI
 		, m_pQt4Filter(NULL)
 		, m_pQt4Widget(NULL)
 	#endif
 	#endif
+    #endif	// CONFIG_LV2_UI
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2Plugin[%p] uri=\"%s\"",
@@ -1348,6 +1356,23 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 			break;
 		}
 	#endif
+	#ifdef CONFIG_LIBSUIL
+	#ifdef CONFIG_LV2_QT4_UI
+		if (suil_ui_supported(LV2_QT4_UI_URI, LV2_QT4_UI_URI)) {
+			m_lv2_ui_type = LV2_UI_TYPE_QT4;
+			m_slv2_ui = const_cast<SLV2UI> (ui);
+		//	break;
+		}
+	#endif
+	#ifdef CONFIG_LV2_GTK_UI
+		if (suil_ui_supported(LV2_QT4_UI_URI, LV2_GTK_UI_URI)) {
+			m_lv2_ui_type = LV2_UI_TYPE_GTK;
+			m_slv2_ui = const_cast<SLV2UI> (ui);
+		//	break;
+		}
+	#endif
+	#endif
+	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
 		if (slv2_ui_is_a(ui, g_slv2_gtk_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_GTK;
@@ -1355,12 +1380,6 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 		//	break;
 		}
 	#endif
-	#ifdef CONFIG_LIBSUIL
-		if (suil_ui_supported(LV2_QT4_UI_URI, LV2_GTK_UI_URI)) {
-			m_lv2_ui_type = LV2_UI_TYPE_GTK;
-			m_slv2_ui = const_cast<SLV2UI> (ui);
-		//	break;
-		}
 	#endif
 	}
 
@@ -1406,6 +1425,9 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 #ifdef CONFIG_LIBSUIL
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
+	case LV2_UI_TYPE_EXTERNAL:
+		ui_type_uri = LV2_EXTERNAL_UI_URI;
+		break;
 	case LV2_UI_TYPE_GTK:
 		ui_type_uri = LV2_GTK_UI_URI;
 		break;
@@ -1469,7 +1491,7 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	if (m_suil_instance) {
 		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
 	#ifdef CONFIG_LV2_QT4_UI
-		if (m_lv2_ui_widget) {
+		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
 			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
 			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);
@@ -1484,7 +1506,7 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 	if (m_slv2_ui_instance) {
 		m_lv2_ui_widget = slv2_ui_instance_get_widget(m_slv2_ui_instance);
 	#ifdef CONFIG_LV2_GTK_UI
-		if (m_lv2_ui_type == LV2_UI_TYPE_GTK) {
+		if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 			// Create embeddable native window...
 			m_pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 			gtk_window_set_resizable(GTK_WINDOW(m_pGtkWindow), 1);
@@ -1523,6 +1545,7 @@ void qtractorLv2Plugin::closeEditor (void)
 
 	setEditorVisible(false);
 
+#ifdef CONFIG_LIBSLV2
 #ifdef CONFIG_LV2_GTK_UI
 	if (m_pGtkWindow) {
 		GtkWidget *pGtkWindow = m_pGtkWindow;
@@ -1531,7 +1554,9 @@ void qtractorLv2Plugin::closeEditor (void)
 	//	lv2_ui_cleanup();
 	}
 #endif
+#endif
 
+#ifdef CONFIG_LIBSUIL
 #ifdef CONFIG_LV2_QT4_UI
 	if (m_pQt4Filter) {
 		delete m_pQt4Filter;
@@ -1542,6 +1567,7 @@ void qtractorLv2Plugin::closeEditor (void)
 		m_pQt4Widget = NULL;
 	//	lv2_ui_cleanup();
 	}
+#endif
 #endif
 
 	m_lv2_ui_type = LV2_UI_TYPE_NONE;
@@ -1646,6 +1672,7 @@ void qtractorLv2Plugin::closeEditorEx (void)
 	qDebug("qtractorLv2Plugin[%p]::closeEditorEx()", this);
 #endif
 
+#ifdef CONFIG_LIBSLV2
 #ifdef CONFIG_LV2_GTK_UI
 	if (m_pGtkWindow) {
 		m_pGtkWindow = NULL;	
@@ -1653,13 +1680,16 @@ void qtractorLv2Plugin::closeEditorEx (void)
 		setEditorClosed(true);
 	}
 #endif
+#endif
 
+#ifdef CONFIG_LIBSUIL
 #ifdef CONFIG_LV2_QT4_UI
 	if (m_pQt4Widget) {
 		m_pQt4Widget = NULL;	
 		lv2_ui_cleanup();
 		setEditorClosed(true);
 	}
+#endif
 #endif
 }
 
@@ -1677,11 +1707,15 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_SHOW((lv2_external_ui *) m_lv2_ui_widget);
 	#endif
+	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
 		if (m_pGtkWindow) gtk_widget_show_all(m_pGtkWindow);
 	#endif
+	#endif
+	#ifdef CONFIG_LIBSUIL
 	#ifdef CONFIG_LV2_QT4_UI
 		if (m_pQt4Widget) m_pQt4Widget->show();
+	#endif
 	#endif
 		m_bEditorVisible = true;
 	}
@@ -1691,11 +1725,15 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_HIDE((lv2_external_ui *) m_lv2_ui_widget);
 	#endif
+	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
 		if (m_pGtkWindow) gtk_widget_hide_all(m_pGtkWindow);
 	#endif
+	#endif
+	#ifdef CONFIG_LIBSUIL
 	#ifdef CONFIG_LV2_QT4_UI
 		if (m_pQt4Widget) m_pQt4Widget->hide();
+	#endif
 	#endif
 		m_bEditorVisible = false;
 	}
@@ -1717,6 +1755,7 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		m_lv2_ui_external.plugin_human_id = m_aEditorTitle.constData();
 	#endif
+	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
 		if (m_pGtkWindow) {
 			gtk_window_set_title(
@@ -1724,9 +1763,12 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 				m_aEditorTitle.constData());
 		}
 	#endif
+	#endif
+	#ifdef CONFIG_LIBSUIL
 	#ifdef CONFIG_LV2_QT4_UI
 		if (m_pQt4Widget)
 			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
+	#endif
 	#endif
 	}
 }
