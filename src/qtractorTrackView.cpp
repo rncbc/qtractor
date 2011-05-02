@@ -208,6 +208,10 @@ void qtractorTrackView::clear (void)
 		delete m_pRubberBand;
 	m_pRubberBand = NULL;
 
+	m_bDragSingleTrack = false;
+	m_iDragSingleTrackY = 0;
+	m_iDragSingleTrackHeight = 0;
+
 	qtractorScrollView::setContentsPos(0, 0);
 }
 
@@ -800,8 +804,16 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 	// and only between same track type...
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 	if (pSingleTrack &&
-		(pTrack == NULL || pSingleTrack->trackType() == pTrack->trackType()))
-		updateSingleTrack(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
+		(pTrack == NULL || pSingleTrack->trackType() == pTrack->trackType())) {
+		m_bDragSingleTrack = true;
+		m_iDragSingleTrackY = tvi.trackRect.y() + 1;
+		m_iDragSingleTrackHeight = tvi.trackRect.height() - 2;
+	} else {
+		m_bDragSingleTrack = false;
+		m_iDragSingleTrackY = 0;
+		m_iDragSingleTrackHeight = 0;
+	}
+
 	// Special update on keyboard vertical drag-stepping...
 	if (bKeyStep)
 		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y()
@@ -2082,7 +2094,12 @@ void qtractorTrackView::showClipSelect (void) const
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorClipSelect::Item *pClipItem = iter.value();
-		moveRubberBand(&(pClipItem->rubberBand), pClipItem->rectClip, 3);
+		QRect rectClip = pClipItem->rectClip;
+		if (m_bDragSingleTrack) {
+			rectClip.setY(m_iDragSingleTrackY);
+			rectClip.setHeight(m_iDragSingleTrackHeight);
+		}
+		moveRubberBand(&(pClipItem->rubberBand), rectClip, 3);
 	}
 
 	showToolTip(m_pClipSelect->rect(), m_iDraggingX);
@@ -2096,19 +2113,6 @@ void qtractorTrackView::hideClipSelect (void) const
 		qtractorRubberBand *pRubberBand = iter.value()->rubberBand;
 		if (pRubberBand && pRubberBand->isVisible())
 			pRubberBand->hide();
-	}
-}
-
-
-// Update single track clip selection.
-void qtractorTrackView::updateSingleTrack ( int y, int h ) const
-{
-	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
-	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
-		qtractorClipSelect::Item *pClipItem = iter.value();
-		pClipItem->rectClip.setY(y);
-		pClipItem->rectClip.setHeight(h);
 	}
 }
 
@@ -2473,6 +2477,11 @@ void qtractorTrackView::resetDragState (void)
 	// No pasting nomore.
 	m_iPasteCount  = 0;
 	m_iPastePeriod = 0;
+
+	// Single track dragging reset.
+	m_bDragSingleTrack = false;
+	m_iDragSingleTrackY = 0;
+	m_iDragSingleTrackHeight = 0;
 
 	// If we were moving clips around,
 	// just hide selection, of course.
@@ -3154,6 +3163,7 @@ void qtractorTrackView::pasteClipboard (
 		QCursor(QPixmap(":/images/editPaste.png"), 12, 12));
 
 	// Let's-a go...
+	qtractorScrollView::update();
 	dragMoveTrack(pos + m_posStep);
 }
 
