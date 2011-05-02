@@ -538,7 +538,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		m_pSessionCursor->seek(iTrackStart);
 	}
 
-	const QColor& rgbLight = pal.midlight().color().darker(120);
+	const QColor& rgbLight = pal.midlight().color();
 	const QColor& rgbMid   = pal.mid().color();
 	const QColor& rgbDark  = rgbMid.darker(120);
 	
