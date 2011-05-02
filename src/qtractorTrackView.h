@@ -260,9 +260,6 @@ protected:
 	// Show selection tooltip...
 	void showToolTip(const QRect& rect, int dx) const;
 
-	// Update single track clip selection.
-	void updateSingleTrack(int y, int h) const;
-
 	// Draw/hide the whole drop rectagle list
 	void updateDropRects(int y, int h) const;
 	void showDropRects() const;
@@ -432,6 +429,11 @@ private:
 	// Paste interim parameters.
 	unsigned short m_iPasteCount;
 	unsigned long  m_iPastePeriod;
+
+	// Single track dragging interim parameters.
+	bool m_bDragSingleTrack;
+	int  m_iDragSingleTrackY;
+	int  m_iDragSingleTrackHeight;
 };
 
 
