@@ -2865,6 +2865,7 @@ int qtractorTrackView::editTailX (void) const
 // Clear current selection (no notify).
 void qtractorTrackView::clearClipSelect (void)
 {
+	g_clipboard.clear();
 	m_pClipSelect->clear();
 }
 
