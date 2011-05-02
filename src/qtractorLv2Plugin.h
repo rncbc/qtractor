@@ -307,19 +307,23 @@ protected:
 	lv2_external_ui_host m_lv2_ui_external;
 #endif
 
+#ifdef CONFIG_LIBSLV2
 #ifdef CONFIG_LV2_GTK_UI
 	// Our own GTK UI widget (parent frame).
 	struct _GtkWidget *m_pGtkWindow;
 #endif
+#endif
 
+#ifdef CONFIG_LIBSUIL
 #ifdef CONFIG_LV2_QT4_UI
 	// Our own Qt4 UI widget (QX11EmebedContainer).
 	class EventFilter;
 	EventFilter *m_pQt4Filter;
 	QWidget     *m_pQt4Widget;
 #endif
-
 #endif
+
+#endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LV2_PERSIST
 	QHash<QString, QByteArray> m_lv2_persist_configs;
