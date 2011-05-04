@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Mouse wheel effect to sliders is now reversed.
+
 - An appropriate export filename is now suggested
   as default (Track/export Tracks...).
 

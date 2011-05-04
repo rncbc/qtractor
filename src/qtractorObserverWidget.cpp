@@ -138,7 +138,7 @@ void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	int iValue = value();
 
-	if (pWheelEvent->delta() > 0)
+	if (pWheelEvent->delta() < 0)
 		iValue -= pageStep();
 	else
 		iValue += pageStep();
