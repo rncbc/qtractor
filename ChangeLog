@@ -5,8 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI tempo/time-signature map import problem
+  has been hopefully fixed (bug #329791).
+
 - Session and track names are now sanitized from
-  slashes (bug# #625798@bugs.debian.org).
+  slashes (bug# 625798@bugs.debian.org).
 
 - Mouse wheel effect to sliders is now reversed.
 

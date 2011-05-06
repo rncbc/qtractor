@@ -1,7 +1,7 @@
 // qtractorMidiFileTempo.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -169,10 +169,6 @@ void qtractorMidiFileTempo::fromTimeScale (
 	if (pTimeScale == NULL)
 		return;
 
-	// Needed conversion if resolutions differ...
-	unsigned short p = m_pMidiFile->ticksPerBeat();
-	unsigned short q = pTimeScale->ticksPerBeat();
-
 	// Copy tempo-map nodes...
 	m_nodes.clear();
 
@@ -181,8 +177,7 @@ void qtractorMidiFileTempo::fromTimeScale (
 	while (pNode) {
 		unsigned long iTime
 			= (pNode->tick > iTimeOffset ? pNode->tick - iTimeOffset : 0);
-		addNode((iTime * p) / q,
-			pNode->tempo,
+		addNode(iTime, pNode->tempo,
 			pNode->beatsPerBar,
 			pNode->beatDivisor);
 		pNode = pNode->next();
@@ -195,10 +190,6 @@ void qtractorMidiFileTempo::intoTimeScale (
 	if (pTimeScale == NULL)
 		return;
 
-	// Needed conversion if resolutions differ...
-	unsigned short p = pTimeScale->ticksPerBeat();
-	unsigned short q = m_pMidiFile->ticksPerBeat();
-
 	// Copy tempo-map nodes...
 	pTimeScale->reset();
 
@@ -206,7 +197,7 @@ void qtractorMidiFileTempo::intoTimeScale (
 	while (pNode) {
 		unsigned long iTime = pNode->tick + iTimeOffset;
 		pTimeScale->addNode(
-			pTimeScale->frameFromTick((iTime * p) / q),
+			pTimeScale->frameFromTick(iTime),
 			pNode->tempo, 2,
 			pNode->beatsPerBar,
 			pNode->beatDivisor);
