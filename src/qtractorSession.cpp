@@ -1321,7 +1321,7 @@ unsigned long qtractorSession::framePos (void) const
 // Sanitize a given name.
 QString qtractorSession::sanitize ( const QString& s )
 {
-	return s.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+	return s.simplified().replace(QRegExp("[\\s|\\.|\\-|/]+"), "_");
 }
 
 

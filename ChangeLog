@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Session and track names are now sanitized from
+  slashes (bug# #625798@bugs.debian.org).
+
 - Mouse wheel effect to sliders is now reversed.
 
 - An appropriate export filename is now suggested
