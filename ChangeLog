@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio peak file generation is now pipelined on
+  a single unique thread, instead of old one per
+  audio clip file basis.
+
 - MIDI tempo/time-signature map import problem
   has been hopefully fixed (bug #329791).
 

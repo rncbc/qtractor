@@ -216,6 +216,8 @@ void qtractorSession::clear (void)
 
 	ATOMIC_SET(&m_busy, 0);
 
+	m_pAudioPeakFactory->sync();
+
 	m_pCurrentTrack = NULL;
 
 	m_tracks.clear();
