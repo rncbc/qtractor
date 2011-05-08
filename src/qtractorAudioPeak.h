@@ -86,6 +86,10 @@ public:
 	void addRef();
 	void removeRef();
 
+	// Sync thread state flags accessors.
+	void setWaitSync(bool bWaitSync);
+	bool isWaitSync() const;
+
 protected:
 
 	// Internal creational methods.
@@ -121,11 +125,10 @@ private:
 
 	QMutex         m_mutex;
 
-	// The peak file creation detached thread.
-	qtractorAudioPeakThread *m_pPeakThread;
+	volatile bool  m_bWaitSync;
 
 	// Current reference count.
-	unsigned int m_iRefCount;
+	unsigned int   m_iRefCount;
 };
 
 
@@ -146,6 +149,10 @@ public:
 
 	// Default destructor.
 	~qtractorAudioPeak() { m_pPeakFile->removeRef(); }
+
+	// Reference accessor.
+	qtractorAudioPeakFile *peakFile() const
+		{ return m_pPeakFile; }
 
 	// Peak file accessors.
 	const QString& filename() const
@@ -204,6 +211,9 @@ public:
 	// Peak ready event notification.
 	void notifyPeakEvent();
 
+	// Base sync method.
+	void sync(qtractorAudioPeakFile *pPeakFile = NULL);
+
 signals:
 
 	// Peak ready signal.
@@ -219,6 +229,10 @@ private:
 
 	// Auto-delete property.
 	bool m_bAutoRemove;
+
+	// The peak file creation detached thread.
+	qtractorAudioPeakThread *m_pPeakThread;
+
 };
 
 

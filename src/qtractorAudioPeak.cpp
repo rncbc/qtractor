@@ -27,8 +27,11 @@
 
 #include <QApplication>
 #include <QFileInfo>
-#include <QThread>
 #include <QDir>
+
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include <QDateTime>
 
@@ -36,10 +39,10 @@
 
 
 // Audio file buffer size in frames per channel.
-static const unsigned int c_iAudioFrames = (16 * 1024);
+static const unsigned int c_iAudioFrames = (32 * 1024);
 
 // Peak file buffer size in frames per channel.
-static const unsigned int c_iPeakFrames = (4 * 1024);
+static const unsigned int c_iPeakFrames = (8 * 1024);
 
 // Default peak period as a digest representation in frames per channel.
 static const unsigned short c_iPeakPeriod = 1024;
@@ -62,13 +65,16 @@ class qtractorAudioPeakThread : public QThread
 public:
 
 	// Constructor.
-	qtractorAudioPeakThread(qtractorAudioPeakFile *pPeakFile);
+	qtractorAudioPeakThread(unsigned int iSyncSize = 128);
 	// Destructor.
 	~qtractorAudioPeakThread();
 
 	// Thread run state accessors.
 	void setRunState(bool bRunState);
 	bool runState() const;
+
+	// Wake from executive wait condition.
+	void sync(qtractorAudioPeakFile *pPeakFile = NULL);
 
 protected:
 
@@ -77,35 +83,55 @@ protected:
 
 	// Actual peak file creation methods.
 	// (this is just about to be used internally)
+	bool openPeakFile();
 	bool writePeakFile();
 	void closePeakFile();
 
+	void notifyPeakEvent() const;
+
 private:
 
-	// Whether the thread is logically running.
-	volatile bool m_bRunState;
+	// The peak file queue instance reference.
+	unsigned int           m_iSyncSize;
+	unsigned int           m_iSyncMask;
+	qtractorAudioPeak    **m_ppSyncItems;
 
-	// The peak file instance reference.
+	volatile unsigned int  m_iSyncRead;
+	volatile unsigned int  m_iSyncWrite;
+
+	// Whether the thread is logically running.
+	bool m_bRunState;
+
+	// Thread synchronization objects.
+	QMutex m_mutex;
+	QWaitCondition m_cond;
+
+	// Current audio peak file instance.
 	qtractorAudioPeakFile *m_pPeakFile;
 
-	// The audio file instance.
+	// Current audio file instance.
 	qtractorAudioFile *m_pAudioFile;
 
-	// Audio file buffer.
+	// Current audio file buffer.
 	float **m_ppAudioFrames;
 };
 
 
 // Constructor.
-qtractorAudioPeakThread::qtractorAudioPeakThread (
-	qtractorAudioPeakFile *pPeakFile )
+qtractorAudioPeakThread::qtractorAudioPeakThread ( unsigned int iSyncSize )
 {
+	m_iSyncSize = (64 << 1);
+	while (m_iSyncSize < iSyncSize)
+		m_iSyncSize <<= 1;
+	m_iSyncMask = (m_iSyncSize - 1);
+	m_ppSyncItems = new qtractorAudioPeak * [m_iSyncSize];
+	m_iSyncRead   = 0;
+	m_iSyncWrite  = 0;
+
 	m_bRunState = false;
-	m_pPeakFile = pPeakFile;
 
-	m_pAudioFile
-		= qtractorAudioFileFactory::createAudioFile(pPeakFile->filename());
-
+	m_pPeakFile  = NULL;
+	m_pAudioFile = NULL;
 	m_ppAudioFrames = NULL;
 }
 
@@ -113,55 +139,15 @@ qtractorAudioPeakThread::qtractorAudioPeakThread (
 // Destructor.
 qtractorAudioPeakThread::~qtractorAudioPeakThread (void)
 {
-	closePeakFile();
-}
-
-
-// The main thread executive.
-void qtractorAudioPeakThread::run (void)
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorAudioPeakThread[%p]::run(): started...", this);
-#endif
-
-	m_bRunState = true;
-
-	// Open audio sample file...
-	if (m_pAudioFile->open(m_pPeakFile->filename())) {
-		unsigned short iChannels   = m_pAudioFile->channels();
-		unsigned int   iSampleRate = m_pAudioFile->sampleRate();
-		// Create the peak file from the sample audio one...
-		if (m_pPeakFile->openWrite(iChannels, iSampleRate)) {
-			// Allocate audio file frame buffer
-			// and peak period accumulators.
-			m_ppAudioFrames = new float* [iChannels];
-			for (unsigned short i = 0; i < iChannels; ++i)
-				m_ppAudioFrames[i] = new float [c_iAudioFrames];
-			// Go ahead with the whole bunch...
-			while (m_bRunState && writePeakFile())
-				/* empty loop */;
-		}
-		// We're done.
-		closePeakFile();
-	}
-
-	// May send notification event, anyway...
-	qtractorAudioPeakFactory *pAudioPeakFactory = NULL;
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pAudioPeakFactory = pSession->audioPeakFactory();
-	if (pAudioPeakFactory)
-		pAudioPeakFactory->notifyPeakEvent();
-
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorAudioPeakThread[%p]::run(): stopped.\n", this);
-#endif
+	delete [] m_ppSyncItems;
 }
 
 
 // Run state accessor.
 void qtractorAudioPeakThread::setRunState ( bool bRunState )
 {
+	QMutexLocker locker(&m_mutex);
+
 	m_bRunState = bRunState;
 }
 
@@ -171,11 +157,142 @@ bool qtractorAudioPeakThread::runState (void) const
 }
 
 
+// Wake from executive wait condition.
+void qtractorAudioPeakThread::sync ( qtractorAudioPeakFile *pPeakFile )
+{
+	if (pPeakFile == NULL) {
+		unsigned int r = m_iSyncRead;
+		while (r != m_iSyncWrite) {
+			qtractorAudioPeakFile *pPeakFile
+				= m_ppSyncItems[r]->peakFile();
+			pPeakFile->setWaitSync(false);
+			++r &= m_iSyncMask;
+		}
+	//	m_iSyncRead = r;
+	} else if (!pPeakFile->isWaitSync()) {
+		unsigned int n;
+		unsigned int w = m_iSyncWrite;
+		unsigned int r = m_iSyncRead;
+		if (w > r) {
+			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
+		} else if (r > w) {
+			n = (r - w) - 1;
+		} else {
+			n = m_iSyncSize - 1;
+		}
+		if (n > 0) {
+			pPeakFile->setWaitSync(true);
+			m_ppSyncItems[m_iSyncWrite] = new qtractorAudioPeak(pPeakFile);
+			++m_iSyncWrite &= m_iSyncMask;
+		}
+	}
+
+	if (m_mutex.tryLock()) {
+		m_cond.wakeAll();
+		m_mutex.unlock();
+	}
+#ifdef CONFIG_DEBUG_0
+	else qDebug("qtractorAudioPeakThread[%p]::sync(): tryLock() failed.", this);
+#endif
+}
+
+
+// The main thread executive cycle.
+void qtractorAudioPeakThread::run (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorAudioPeakThread[%p]::run(): started...", this);
+#endif
+
+	m_bRunState = true;
+
+	m_mutex.lock();
+	while (m_bRunState) {
+		// Do whatever we must, then wait for more...
+		//m_mutex.unlock();
+		unsigned int r = m_iSyncRead;
+		while (r != m_iSyncWrite) {
+			qtractorAudioPeak *pSyncItem = m_ppSyncItems[r];
+			m_pPeakFile = pSyncItem->peakFile();
+			if (openPeakFile()) {
+				// Go ahead with the whole bunch...
+				while (writePeakFile())
+					/* empty loop */;
+				// We're done.
+				closePeakFile();
+			}
+			delete pSyncItem;
+			++r &= m_iSyncMask;
+		}
+		m_iSyncRead = r;
+		// Send notification event, anyway...
+		notifyPeakEvent();
+		//m_mutex.lock();
+		m_cond.wait(&m_mutex);
+	}
+	m_mutex.unlock();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorAudioPeakThread[%p]::run(): stopped.\n", this);
+#endif
+}
+
+
+// Open the peak file for create.
+bool qtractorAudioPeakThread::openPeakFile (void)
+{
+	if (!m_pPeakFile->isWaitSync())
+		return false;
+
+	m_pAudioFile
+		= qtractorAudioFileFactory::createAudioFile(m_pPeakFile->filename());
+	if (m_pAudioFile == NULL)
+		return false;
+
+	if (!m_pAudioFile->open(m_pPeakFile->filename())) {
+		delete m_pAudioFile;
+		m_pAudioFile = NULL;
+		return false;
+	}
+
+	unsigned short iChannels   = m_pAudioFile->channels();
+	unsigned int   iSampleRate = m_pAudioFile->sampleRate();
+
+	if (!m_pPeakFile->openWrite(iChannels, iSampleRate)) {
+		delete m_pAudioFile;
+		m_pAudioFile = NULL;
+		return false;
+	}
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorAudioPeakThread::openPeakFile(%p)", m_pPeakFile);
+#endif
+
+	// Allocate audio file frame buffer
+	// and peak period accumulators.
+	m_ppAudioFrames = new float* [iChannels];
+	for (unsigned short i = 0; i < iChannels; ++i)
+		m_ppAudioFrames[i] = new float [c_iAudioFrames];
+
+	return true;
+}
+
+
 // Create the peak file chunk.
 bool qtractorAudioPeakThread::writePeakFile (void)
 {
+	if (!m_bRunState)
+		return false;
+
+	if (!m_pPeakFile->isWaitSync())
+		return false;
+
 	if (m_ppAudioFrames == NULL)
 		return false;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorAudioPeakThread::writePeakFile(%p)", m_pPeakFile);
+#endif
 
 	// Read another bunch of frames from the physical audio file...
 	int nread = m_pAudioFile->read(m_ppAudioFrames, c_iAudioFrames);
@@ -189,6 +306,10 @@ bool qtractorAudioPeakThread::writePeakFile (void)
 // Close the (hopefully) created peak file.
 void qtractorAudioPeakThread::closePeakFile (void)
 {
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorAudioPeakThread::closePeakFile(%p)", m_pPeakFile);
+#endif
+
 	// Always force target file close.
 	m_pPeakFile->closeWrite();
 
@@ -198,13 +319,35 @@ void qtractorAudioPeakThread::closePeakFile (void)
 		for (unsigned short i = 0; i < iChannels; ++i)
 			delete [] m_ppAudioFrames[i];
 		delete [] m_ppAudioFrames;
+		m_ppAudioFrames = NULL;
 	}
-	m_ppAudioFrames = NULL;
 
 	// Finally the source file too.
-	if (m_pAudioFile)
+	if (m_pAudioFile) {
 		delete m_pAudioFile;
-	m_pAudioFile = NULL;
+		m_pAudioFile = NULL;
+	}
+
+	m_pPeakFile->setWaitSync(false);
+
+	// Send notification event, someway...
+	notifyPeakEvent();
+}
+
+
+// Send notification event, someway...
+void qtractorAudioPeakThread::notifyPeakEvent (void) const
+{
+	if (!m_bRunState)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		qtractorAudioPeakFactory *pPeakFactory
+			= pSession->audioPeakFactory();
+		if (pPeakFactory)
+			pPeakFactory->notifyPeakEvent();
+	}
 }
 
 
@@ -237,7 +380,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	m_iPeakPeriod  = 0;
 	m_iPeak        = 0;
 
-	m_pPeakThread  = NULL;
+	m_bWaitSync    = false;
 
 	m_iRefCount    = 0;
 
@@ -262,34 +405,25 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 // Default destructor.
 qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 {
-	// Check if peak thread is still running.
-	bool bAborted = false;
-	if (m_pPeakThread) {
-		// Try to wait for thread termination...
-		if (m_pPeakThread->isRunning()) {
-			m_pPeakThread->setRunState(false);
-		//	m_pPeakThread->terminate();
-			m_pPeakThread->wait();
-			bAborted = true;
-		}
-		delete m_pPeakThread;
-		m_pPeakThread = NULL;
-	}
+	// Check if it's aborting (ought to be atomic)...
+	bool bAborted = m_bWaitSync;
+	m_bWaitSync = false;
 
 	// Close the file, anyway now.
 	closeWrite();
 	closeRead();
 
 	// Tell master-factory that we're out.
-	qtractorAudioPeakFactory *pAudioPeakFactory = NULL;
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pAudioPeakFactory = pSession->audioPeakFactory();
-	if (pAudioPeakFactory) {
-		pAudioPeakFactory->removePeak(this);
-		// Do we get rid from the filesystem too?
-		if (pAudioPeakFactory->isAutoRemove() || bAborted)
-			m_peakFile.remove();
+	if (pSession) {
+		qtractorAudioPeakFactory *pPeakFactory
+			= pSession->audioPeakFactory();
+		if (pPeakFactory) {
+			pPeakFactory->removePeak(this);
+			// Do we get rid from the filesystem too?
+			if (pPeakFactory->isAutoRemove() || bAborted)
+				m_peakFile.remove();
+		}
 	}
 }
 
@@ -301,26 +435,25 @@ bool qtractorAudioPeakFile::openRead (void)
 	if (m_openMode != None)
 		return true;
 
-	// Check if we're still on creative thread...
-	if (m_pPeakThread) {
-		// If running try waiting for it to finnish...
-		if (m_pPeakThread->isRunning())
-			return false;
-		// OK. We're done with our creative thread.
-		delete m_pPeakThread;
-		m_pPeakThread = NULL;
-	} else  {
-		// Need some preliminary file information...
-		QFileInfo fileInfo(m_sFilename);
-		QFileInfo peakInfo(m_peakFile.fileName());
-		// Have we a peak file up-to-date,
-		// or must the peak file be (re)created?
-		if (!peakInfo.exists() || peakInfo.created() < fileInfo.created()) {
-		//	|| peakInfo.lastModified() < fileInfo.lastModified()) {
-			m_pPeakThread = new qtractorAudioPeakThread(this);
-			m_pPeakThread->start();
-			return false;
+	// Are we still waiting for its creation?
+	if (m_bWaitSync)
+		return false;
+
+	// Need some preliminary file information...
+	QFileInfo fileInfo(m_sFilename);
+	QFileInfo peakInfo(m_peakFile.fileName());
+	// Have we a peak file up-to-date,
+	// or must the peak file be (re)created?
+	if (!peakInfo.exists() || peakInfo.created() < fileInfo.created()) {
+	//	|| peakInfo.lastModified() < fileInfo.lastModified()) {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			qtractorAudioPeakFactory *pPeakFactory
+				= pSession->audioPeakFactory();
+			if (pPeakFactory)
+				pPeakFactory->sync(this);
 		}
+		return false;
 	}
 
 	// Make things critical...
@@ -668,13 +801,25 @@ void qtractorAudioPeakFile::removeRef (void)
 }
 
 
+// Sync thread state flags accessors.
+void qtractorAudioPeakFile::setWaitSync ( bool bWaitSync )
+{
+	m_bWaitSync = bWaitSync;
+}
+
+bool qtractorAudioPeakFile::isWaitSync (void) const
+{
+	return m_bWaitSync;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioPeakFactory -- Audio peak file factory (singleton).
 //
 
 // Constructor.
 qtractorAudioPeakFactory::qtractorAudioPeakFactory ( QObject *pParent )
-	: QObject(pParent), m_bAutoRemove(false)
+	: QObject(pParent), m_bAutoRemove(false), m_pPeakThread(NULL)
 {
 }
 
@@ -682,6 +827,16 @@ qtractorAudioPeakFactory::qtractorAudioPeakFactory ( QObject *pParent )
 // Default destructor.
 qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 {
+	if (m_pPeakThread) {
+		if (m_pPeakThread->isRunning()) do {
+			m_pPeakThread->setRunState(false);
+		//	m_pPeakThread->terminate();
+			m_pPeakThread->sync();
+		} while (!m_pPeakThread->wait(100));
+		delete m_pPeakThread;
+		m_pPeakThread = NULL;
+	}
+
 	qDeleteAll(m_peaks);
 	m_peaks.clear();
 }
@@ -692,6 +847,11 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	const QString& sFilename, float fTimeStretch )
 {
 	QMutexLocker locker(&m_mutex);
+
+	if (m_pPeakThread == NULL) {
+		m_pPeakThread = new qtractorAudioPeakThread();
+		m_pPeakThread->start();
+	}
 
 	const QString sKey = sFilename + '_' + QString::number(fTimeStretch);
 	qtractorAudioPeakFile *pPeakFile = m_peaks.value(sKey, NULL);
@@ -728,6 +888,13 @@ bool qtractorAudioPeakFactory::isAutoRemove (void) const
 void qtractorAudioPeakFactory::notifyPeakEvent (void)
 {
 	emit peakEvent();
+}
+
+
+// Base sync method.
+void qtractorAudioPeakFactory::sync ( qtractorAudioPeakFile *pPeakFile )
+{
+	if (m_pPeakThread) m_pPeakThread->sync(pPeakFile);
 }
 
 
