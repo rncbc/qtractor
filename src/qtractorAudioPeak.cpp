@@ -128,6 +128,8 @@ qtractorAudioPeakThread::qtractorAudioPeakThread ( unsigned int iSyncSize )
 	m_iSyncRead   = 0;
 	m_iSyncWrite  = 0;
 
+	::memset(m_ppSyncItems, 0, m_iSyncSize * sizeof(qtractorAudioPeak *));
+
 	m_bRunState = false;
 
 	m_pPeakFile  = NULL;
@@ -163,9 +165,9 @@ void qtractorAudioPeakThread::sync ( qtractorAudioPeakFile *pPeakFile )
 	if (pPeakFile == NULL) {
 		unsigned int r = m_iSyncRead;
 		while (r != m_iSyncWrite) {
-			qtractorAudioPeakFile *pPeakFile
-				= m_ppSyncItems[r]->peakFile();
-			pPeakFile->setWaitSync(false);
+			qtractorAudioPeak *pSyncItem = m_ppSyncItems[r];
+			if (pSyncItem)
+				pSyncItem->peakFile()->setWaitSync(false);
 			++r &= m_iSyncMask;
 		}
 	//	m_iSyncRead = r;
@@ -222,6 +224,7 @@ void qtractorAudioPeakThread::run (void)
 				closePeakFile();
 			}
 			delete pSyncItem;
+			m_ppSyncItems[r] = NULL;
 			++r &= m_iSyncMask;
 		}
 		m_iSyncRead = r;
