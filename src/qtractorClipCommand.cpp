@@ -27,6 +27,7 @@
 
 #include "qtractorSession.h"
 #include "qtractorAudioClip.h"
+#include "qtractorAudioEngine.h"
 #include "qtractorMidiClip.h"
 #include "qtractorFiles.h"
 
@@ -263,6 +264,10 @@ bool qtractorClipCommand::addClipRecord (
 			pAudioClip = new qtractorAudioClip(*pAudioClip);
 			pAudioClip->setClipStart(iClipStart);
 			pAudioClip->setClipLength(iClipLength);
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+			if (pAudioBus)
+				pAudioClip->setClipOffset(pAudioBus->latency_in());
 			addClip(pAudioClip, pTrack);
 			if (pMainForm)
 				pMainForm->addAudioFile(pAudioClip->filename());

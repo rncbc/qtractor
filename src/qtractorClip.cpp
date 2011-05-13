@@ -154,7 +154,8 @@ void qtractorClip::setClipLength ( unsigned long iClipLength )
 	m_iClipLength = iClipLength;
 
 	if (m_pTrack && m_pTrack->session())
-		m_iClipLengthTime = m_pTrack->session()->tickFromFrame(iClipLength);
+		m_iClipLengthTime = m_pTrack->session()->tickFromFrameRange(
+			m_iClipStart, m_iClipStart + m_iClipLength);
 }
 
 
@@ -164,7 +165,8 @@ void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 	m_iClipOffset = iClipOffset;
 
 	if (m_pTrack && m_pTrack->session())
-		m_iClipOffsetTime = m_pTrack->session()->tickFromFrame(iClipOffset);
+		m_iClipOffsetTime = m_pTrack->session()->tickFromFrameRange(
+			m_iClipStart, m_iClipStart + m_iClipOffset);
 }
 
 
@@ -253,7 +255,8 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	m_iFadeInLength = iFadeInLength;
 
 	if (m_pTrack && m_pTrack->session())
-		m_iFadeInTime = m_pTrack->session()->tickFromFrame(iFadeInLength);
+		m_iFadeInTime = m_pTrack->session()->tickFromFrameRange(
+			m_iClipStart, m_iClipStart + m_iFadeInLength);
 }
 
 
@@ -276,7 +279,9 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 	m_iFadeOutLength = iFadeOutLength;
 
 	if (m_pTrack && m_pTrack->session())
-		m_iFadeOutTime = m_pTrack->session()->tickFromFrame(iFadeOutLength);
+		m_iFadeOutTime = m_pTrack->session()->tickFromFrameRange(
+			m_iClipStart + m_iClipLength - m_iFadeOutLength,
+			m_iClipStart + m_iClipLength);
 }
 
 
@@ -313,12 +318,18 @@ void qtractorClip::updateClipTime (void)
 	if (pSession == NULL)
 		return;
 
-	m_iClipStart  = pSession->frameFromTick(m_iClipStartTime);
-	m_iClipOffset = pSession->frameFromTick(m_iClipOffsetTime);
-	m_iClipLength = pSession->frameFromTick(m_iClipLengthTime);
+	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
 
-	m_iFadeInLength  = pSession->frameFromTick(m_iFadeInTime);
-	m_iFadeOutLength = pSession->frameFromTick(m_iFadeOutTime);
+	m_iClipOffset = pSession->frameFromTickRange(
+		m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime);
+	m_iClipLength = pSession->frameFromTickRange(
+		m_iClipStartTime, m_iClipStartTime + m_iClipLengthTime);
+
+	m_iFadeInLength = pSession->frameFromTickRange(
+		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);
+	m_iFadeOutLength = pSession->frameFromTickRange(
+		m_iClipStartTime + m_iClipLengthTime - m_iFadeOutTime,
+		m_iClipStartTime + m_iClipLengthTime);
 }
 
 

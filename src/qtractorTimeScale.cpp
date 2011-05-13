@@ -643,4 +643,27 @@ QStringList qtractorTimeScale::snapItems ( int iSnap )
 }
 
 
+// Tick/Frame range conversion (delta conversion).
+unsigned long qtractorTimeScale::frameFromTickRange (
+	unsigned long iTickStart, unsigned long iTickEnd )
+{
+	Node *pNode = m_cursor.seekTick(iTickStart);
+	unsigned long iFrameStart = (pNode ? pNode->frameFromTick(iTickStart) : 0);
+	pNode = m_cursor.seekTick(iTickEnd);
+	unsigned long iFrameEnd = (pNode ? pNode->frameFromTick(iTickEnd) : 0);
+	return (iFrameEnd > iFrameStart ? iFrameEnd - iFrameStart : 0);
+}
+
+
+unsigned long qtractorTimeScale::tickFromFrameRange (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	Node *pNode = m_cursor.seekFrame(iFrameStart);
+	unsigned long iTickStart = (pNode ? pNode->tickFromFrame(iFrameStart) : 0);
+	pNode = m_cursor.seekFrame(iFrameEnd);
+	unsigned long iTickEnd = (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
+	return (iTickEnd > iTickStart ? iTickEnd - iTickStart : 0);
+}
+
+
 // end of qtractorTimeScale.cpp

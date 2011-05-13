@@ -343,6 +343,10 @@ public:
 	qtractorPluginList *pluginList_in()  const;
 	qtractorPluginList *pluginList_out() const;
 
+	// Audio I/O port latency accessors.
+	unsigned int latency_in()  const;
+	unsigned int latency_out() const;
+
 	// Retrieve/restore client:port connections;
 	// return the effective number of connection attempts...
 	int updateConnects(BusMode busMode,

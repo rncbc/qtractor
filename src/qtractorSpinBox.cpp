@@ -23,6 +23,7 @@
 #include "qtractorSpinBox.h"
 
 #include <QLineEdit>
+#include <QLocale>
 
 #include <math.h>
 
@@ -496,14 +497,17 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
 
 	const QString& sText = QAbstractSpinBox::lineEdit()->text();
-	const int iPos = sText.section(' ', 0, 0).length() + 1;
-	if (iCursorPos < iPos)
-		setTempo(tempo() + 0.1f * float(iSteps));
+	if (iCursorPos < sText.section(' ', 0, 0).length() + 1) {
+		if (iCursorPos > sText.section(QLocale().decimalPoint(), 0, 0).length())
+			setTempo(tempo() + 0.1f * float(iSteps));
+		else
+			setTempo(tempo() + float(iSteps));
+	}
 	else
-	if (iCursorPos < iPos + sText.section(' ', 1, 1).section('/', 0, 0).length() + 1)
-		setBeatsPerBar(int(beatsPerBar()) + iSteps);
-	else
+	if (iCursorPos > sText.section('/', 0, 0).length())
 		setBeatDivisor(int(beatDivisor()) + iSteps);
+	else
+		setBeatsPerBar(int(beatsPerBar()) + iSteps);
 
 	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
 }

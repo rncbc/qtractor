@@ -543,7 +543,7 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 		= new qtractorMidiManager(pSession, pPluginList);
 	pSession->addMidiManager(pMidiManager);
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiManager::createMidiManager(%p)", pMidiManager);
 #endif
 
@@ -560,7 +560,7 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 	if (pSession == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiManager::deleteMidiManager(%p)", pMidiManager);
 #endif
 

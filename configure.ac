@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.8.93, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.8.94, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -160,6 +160,12 @@ AC_ARG_ENABLE(jack-session,
   AC_HELP_STRING([--enable-jack-session], [enable JACK session support (default=yes)]),
   [ac_jack_session="$enableval"],
   [ac_jack_session="yes"])
+
+# Enable JACK latency support.
+AC_ARG_ENABLE(jack-latency,
+  AC_HELP_STRING([--enable-jack-latency], [enable JACK latency support (default=yes)]),
+  [ac_jack_latency="$enableval"],
+  [ac_jack_latency="yes"])
 
 # Enable X11 unique/single instance.
 AC_ARG_ENABLE(xunique,
@@ -628,6 +634,16 @@ if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])
 fi
 
+# Check for (new) JACK latency support availability.
+if test "x$ac_jack_latency" = "xyes"; then
+   AC_CHECK_LIB(jack, jack_port_get_latency_range, [ac_jack_latency="yes"], [ac_jack_latency="no"])
+   if test "x$ac_jack_latency" = "xyes"; then
+      AC_DEFINE(CONFIG_JACK_LATENCY, 1, [Define if JACK latency support is available.])
+   else
+      AC_MSG_WARN([*** JACK latency support will be disabled.])
+   fi
+fi
+
 # Some recent distros (eg. fedora, debian) require this.
 ac_libs="$ac_libs -lX11"
 
@@ -1018,6 +1034,7 @@ echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
 echo "  LV2 Plug-in Files support (EXPERIMENTAL) . . . . .: $ac_lv2_files"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
+echo "  JACK Latency support (EXPERIMENTAL)  . . . . . . .: $ac_jack_latency"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
