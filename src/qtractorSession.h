@@ -140,6 +140,12 @@ public:
 	unsigned long frameFromTick(unsigned long iTick);
 	unsigned long tickFromFrame(unsigned long iFrame);
 
+	// Tick/Frame range conversion (delta conversion).
+	unsigned long frameFromTickRange(
+	    unsigned long iTickStart, unsigned long iTickEnd);
+	unsigned long tickFromFrameRange(
+	    unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Beat/frame snap filters.
 	unsigned long tickSnap(unsigned long iTick);
 	unsigned long frameSnap(unsigned long iFrame);

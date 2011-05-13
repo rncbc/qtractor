@@ -2249,6 +2249,64 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 }
 
 
+// Audio I/O port latency accessors.
+unsigned int qtractorAudioBus::latency_in (void) const
+{
+	if (m_ppIPorts == NULL)
+		return 0;
+
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return 0;
+
+	unsigned int iLatencyIn = pAudioEngine->bufferSize();
+
+#ifdef CONFIG_JACK_LATENCY
+	jack_nframes_t range_min = 0;
+	jack_latency_range_t range;
+	for (unsigned int i = 0; i < m_iChannels; ++i) {
+		if (m_ppIPorts[i] == NULL)
+			continue;
+		jack_port_get_latency_range(m_ppIPorts[i], JackCaptureLatency, &range);
+		if (range_min > range.min || i == 0)
+			range_min = range.min;
+	}
+	iLatencyIn += range_min;
+#endif
+
+	return iLatencyIn;
+}
+
+unsigned int qtractorAudioBus::latency_out (void) const
+{
+	if (m_ppOPorts == NULL)
+		return 0;
+
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return 0;
+
+	unsigned int iLatencyOut = pAudioEngine->bufferSize();
+
+#ifdef CONFIG_JACK_LATENCY
+	jack_nframes_t range_min = 0;
+	jack_latency_range_t range;
+	for (unsigned int i = 0; i < m_iChannels; ++i) {
+		if (m_ppOPorts[i] == NULL)
+			continue;
+		jack_port_get_latency_range(m_ppOPorts[i], JackPlaybackLatency, &range);
+		if (range_min > range.min || i == 0)
+			range_min = range.min;
+	}
+	iLatencyOut += range_min;
+#endif
+
+	return iLatencyOut;
+}
+
+
 // Create plugin-list properly.
 qtractorPluginList *qtractorAudioBus::createPluginList ( int iFlags ) const
 {

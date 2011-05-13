@@ -3858,6 +3858,9 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_JACK_SESSION
 	list << tr("JACK Session support disabled.");
 #endif
+#ifndef CONFIG_JACK_LATENCY
+	list << tr("JACK Latency support disabled.");
+#endif
 
 	// Stuff the about box text...
 	QString sText = "<p>\n";

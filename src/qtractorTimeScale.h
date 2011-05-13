@@ -469,6 +469,12 @@ public:
 		return (pNode ? pNode->beatDivisor : 2);
 	}
 
+	// Tick/Frame range conversion (delta conversion).
+	unsigned long frameFromTickRange(
+	    unsigned long iTickStart, unsigned long iTickEnd);
+	unsigned long tickFromFrameRange(
+	    unsigned long iFrameStart, unsigned long iFrameEnd);
+
 protected:
 
 	// Tempo-map independent coefficients.

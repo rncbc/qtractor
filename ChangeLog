@@ -5,6 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- Custom tempo spin-box widgets now honoring the
+  decimal point cursor positioning for integral
+  up/down tempo value stepping.
+
+- Audio recording latency is now compensated via
+  automatic clip offsetting. (EXPERIMENTAL)
+
 - Audio peak file generation is now pipelined on
   a single unique thread, instead of old one per
   audio clip file basis.
@@ -22,8 +29,8 @@ SVN TRUNK
 
 - Follow-playhead automatism is now temporarily
   suspended while mouse cursor hovering prompts
-  for any editing action (applies to main track
-  -view and MIDI clip editor/piano-roll).
+  for any editing action (applies to main track-
+  view and MIDI clip editor/piano-roll).
 
 - Recording clips now shown in a reddish shade ;)
 

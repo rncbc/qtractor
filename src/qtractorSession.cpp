@@ -591,6 +591,20 @@ unsigned long qtractorSession::tickFromFrame ( unsigned long iFrame )
 }
 
 
+// Tick/Frame range conversion (delta conversion).
+unsigned long qtractorSession::frameFromTickRange (
+    unsigned long iTickStart, unsigned long iTickEnd )
+{
+	return m_props.timeScale.frameFromTickRange(iTickStart, iTickEnd);
+}
+
+unsigned long qtractorSession::tickFromFrameRange (
+    unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	return m_props.timeScale.tickFromFrameRange(iFrameStart, iFrameEnd);
+}
+
+
 // Beat/frame snap filters.
 unsigned long qtractorSession::tickSnap ( unsigned long iTick )
 {
