@@ -457,9 +457,9 @@ unsigned long qtractorTimeScale::frameFromText (
 					bars += pNode->bar;
 			} else {
 				if (bars > 0)
-					bars--;
+					--bars;
 				if (beats > 0)
-					beats--;
+					--beats;
 			}
 			pNode = m_cursor.seekBar(bars);
 			if (pNode) {
@@ -528,8 +528,8 @@ QString qtractorTimeScale::textFromFrame (
 					bars += pNode->bar;
 			}
 			if (!bDelta) {
-				bars++;
-				beats++;
+				++bars;
+				++beats;
 			}
 			sText.sprintf("%u.%02u.%03lu", bars, beats, ticks);
 			break;
@@ -626,13 +626,13 @@ QStringList qtractorTimeScale::snapItems ( int iSnap )
 
 	if (iSnap == 0) {
 		items.append(QObject::tr("None"));
-		iSnap++;
+		++iSnap;
 	}
 
 	QString sPrefix = QObject::tr("Beat");
 	if (iSnap == 1) {
 		items.append(sPrefix);
-		iSnap++;
+		++iSnap;
 	}
 
 	sPrefix += "/%1";

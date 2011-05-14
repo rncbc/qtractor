@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -344,7 +344,7 @@ void qtractorMidiControlForm::mapSlot (void)
 		ctype, iChannel, iParam, command, iTrack, bFeedback);
 
 	m_iDirtyCount = 0;
-	m_iDirtyMap++;
+	++m_iDirtyMap;
 
 	refreshControlMap();
 }
@@ -371,7 +371,7 @@ void qtractorMidiControlForm::unmapSlot (void)
 	pMidiControl->unmapChannelParam(ctype, iChannel, iParam);
 
 	m_iDirtyCount = 0;
-	m_iDirtyMap++;
+	++m_iDirtyMap;
 
 	refreshControlMap();
 }
@@ -513,7 +513,7 @@ void qtractorMidiControlForm::typeChangedSlot (void)
 	if (m_iUpdating > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 
 	stabilizeTypeChange();
 	stabilizeKeyChange();
@@ -538,7 +538,7 @@ void qtractorMidiControlForm::keyChangedSlot (void)
 	if (m_iUpdating > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 
 	stabilizeKeyChange();
 }
@@ -573,9 +573,9 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 				&& pItem->text(3)[0] == '+')
 				continue;
 			if (pItem->text(1) == sChannel && pItem->text(2) == sParam) {
-				m_iUpdating++;
+				++m_iUpdating;
 				m_ui.ControlMapListView->setCurrentItem(pItem);
-				m_iUpdating--;
+				--m_iUpdating;
 				break;
 			}
 		}
@@ -595,7 +595,7 @@ void qtractorMidiControlForm::valueChangedSlot (void)
 	if (m_iUpdating > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 
 	stabilizeValueChange();
 }
@@ -629,7 +629,7 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 		pMidiControl->mapChannelParam(
 			ctype, iChannel, iParam, command, iTrack, bFeedback);
 		m_iDirtyCount = 0;
-		m_iDirtyMap++;
+		++m_iDirtyMap;
 		refreshControlMap();
 	}
 }
@@ -656,7 +656,7 @@ void qtractorMidiControlForm::stabilizeForm (void)
 
 	pItem = m_ui.ControlMapListView->currentItem();
 	if (pItem) {
-		m_iUpdating++;
+		++m_iUpdating;
 		m_ui.ControlTypeComboBox->setCurrentIndex(
 			m_ui.ControlTypeComboBox->findText(pItem->text(0)));
 		stabilizeTypeChange();
@@ -670,7 +670,7 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		m_ui.CommandComboBox->setCurrentIndex(
 			m_ui.CommandComboBox->findText(pItem->text(4)));
 		m_ui.FeedbackCheckBox->setChecked(pItem->text(5) == tr("Yes"));
-		m_iUpdating--;
+		--m_iUpdating;
 	}
 
 	m_ui.ReloadPushButton->setEnabled(m_iDirtyMap > 0);

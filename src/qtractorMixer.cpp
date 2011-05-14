@@ -144,9 +144,9 @@ qtractorBus *qtractorMonitorButton::bus (void) const
 // Visitors overload.
 void qtractorMonitorButton::updateValue ( float fValue )
 {
-	m_iUpdate++;
+	++m_iUpdate;
 	QPushButton::setChecked(fValue > 0.0f);
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 
@@ -1433,13 +1433,13 @@ void qtractorMixer::updateBuses ( bool bReset )
 	if (w0 > ws) {
 		w1 += (w0 - ws);
 		w0  = ws;
-		iUpdate++;
+		++iUpdate;
 	}
 	ws = m_pOutputRack->workspace()->width() + 4;
 	if (w2 > ws) {
 		w1 += (w2 - ws);
 		w2  = ws;
-		iUpdate++;
+		++iUpdate;
 	}
 	if (iUpdate > 0)
 		m_pSplitter->setSizes(sizes);

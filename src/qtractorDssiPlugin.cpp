@@ -245,7 +245,7 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	if (pDssiPlugin == NULL)
 		return 1;
 
-	pDssiEditor->busy++;
+	++(pDssiEditor->busy);
 
 	if (pDssiEditor->target)
 		lo_address_free(pDssiEditor->target);
@@ -265,7 +265,7 @@ static int osc_update ( DssiEditor *pDssiEditor,
 		::free(pDssiEditor->path);
 	pDssiEditor->path = lo_url_get_path(url);
 
-	pDssiEditor->busy--;
+	--(pDssiEditor->busy);
 
 	// Update plugin configuration...
 	const qtractorPlugin::Configs& configs = pDssiPlugin->configs();
@@ -316,10 +316,10 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Save and send configuration to plugin...
-	pDssiEditor->busy++;
+	++(pDssiEditor->busy);
 	pDssiPlugin->setConfig(key, value);
 	pDssiPlugin->configure(key, value);
-	pDssiEditor->busy--;
+	--(pDssiEditor->busy);
 
 	return 0;
 }
@@ -340,11 +340,11 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Plugin parameter lookup.
-	pDssiEditor->busy++;
+	++(pDssiEditor->busy);
 	qtractorPluginForm *pForm = pDssiPlugin->form();
 	if (pForm)
 		pForm->updateParamValue(param, value, true);
-	pDssiEditor->busy--;
+	--(pDssiEditor->busy);
 
 	return 0;
 }
@@ -365,9 +365,9 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Bank/Program selection pending...
-	pDssiEditor->busy++;
+	++(pDssiEditor->busy);
 	pDssiPlugin->selectProgram(bank, prog);
-	pDssiEditor->busy--;
+	--(pDssiEditor->busy);
 
 	return 0;
 }
@@ -689,7 +689,7 @@ public:
 
 	// Reference count methods.
 	void addRef()
-		{ m_iRefCount++; }
+		{ ++m_iRefCount; }
 	void removeRef()
 		{ if (--m_iRefCount == 0) delete this; }
 
@@ -1061,9 +1061,9 @@ void qtractorDssiPlugin::process (
 		else (*pLadspaDescriptor->run)(handle, nframes);
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
-			iIChannel++;
+			++iIChannel;
 		if (iOChannel < iChannels - 1)
-			iOChannel++;
+			++iOChannel;
 	}
 }
 

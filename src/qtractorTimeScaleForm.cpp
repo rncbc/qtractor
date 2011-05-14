@@ -216,7 +216,7 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 	}
 
 	if (pNode) {
-		m_iDirtySetup++;
+		++m_iDirtySetup;
 		// Make this into view...
 		m_ui.BarSpinBox->setValue(pNode->barFromFrame(iFrame) + 1);
 		m_ui.FrameSpinBox->setValue(iFrame);
@@ -281,7 +281,7 @@ void qtractorTimeScaleForm::refresh (void)
 // Current node list accessors.
 void qtractorTimeScaleForm::setCurrentNode ( qtractorTimeScale::Node *pNode )
 {
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	int iItemCount = m_ui.TimeScaleListView->topLevelItemCount();
 	for (int i = 0; i < iItemCount; ++i) {
@@ -357,7 +357,7 @@ void qtractorTimeScaleForm::selectNode (void)
 	}
 
 	// Get new one into view...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	m_ui.BarSpinBox->setValue(pNode->bar + 1);
 	m_ui.FrameSpinBox->setValue(pNode->frame);
@@ -429,7 +429,7 @@ void qtractorTimeScaleForm::addNode (void)
 
 	refresh();
 
-	m_iDirtyTotal++;
+	++m_iDirtyTotal;
 }
 
 
@@ -462,7 +462,7 @@ void qtractorTimeScaleForm::updateNode (void)
 
 	refresh();
 
-	m_iDirtyTotal++;
+	++m_iDirtyTotal;
 }
 
 
@@ -512,7 +512,7 @@ void qtractorTimeScaleForm::removeNode (void)
 
 	refresh();
 
-	m_iDirtyTotal++;
+	++m_iDirtyTotal;
 }
 
 
@@ -525,13 +525,13 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 		return;
 
 	if (iBar > 0)
-		iBar--;
+		--iBar;
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
 
 	if (pNode) {
-		m_iDirtySetup++;
+		++m_iDirtySetup;
 		unsigned long iFrame = pNode->frameFromBar(iBar);
 		m_ui.FrameSpinBox->setValue(iFrame);
 		m_iDirtySetup = 0;
@@ -539,7 +539,7 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 		ensureVisibleFrame(iFrame);
 	}
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -559,14 +559,14 @@ void qtractorTimeScaleForm::frameChanged ( unsigned long iFrame )
 	}
 
 	if (pNode) {
-		m_iDirtySetup++;
+		++m_iDirtySetup;
 		m_ui.BarSpinBox->setValue(pNode->barFromFrame(iFrame) + 1);
 		m_iDirtySetup = 0;
 		setCurrentNode(pNode);
 		ensureVisibleFrame(iFrame);
 	}
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -595,7 +595,7 @@ void qtractorTimeScaleForm::changed (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 

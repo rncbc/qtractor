@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -216,13 +216,13 @@ bool qtractorPortListItem::operator< ( const QTreeWidgetItem& other ) const
 	int cch1 = s1.length();
 	int cch2 = s2.length();
 
-	for (ich1 = ich2 = 0; ich1 < cch1 && ich2 < cch2; ich1++, ich2++) {
+	for (ich1 = ich2 = 0; ich1 < cch1 && ich2 < cch2; ++ich1, ++ich2) {
 
 		// Skip (white)spaces...
 		while (s1.at(ich1).isSpace())
-			ich1++;
+			++ich1;
 		while (s2.at(ich2).isSpace())
-			ich2++;
+			++ich2;
 
 		// Normalize (to uppercase) the next characters...
 		QChar ch1 = s1.at(ich1).toUpper();
@@ -232,10 +232,10 @@ bool qtractorPortListItem::operator< ( const QTreeWidgetItem& other ) const
 			// Find the whole length numbers...
 			int iDigits1 = ich1++;
 			while (ich1 < cch1 && s1.at(ich1).isDigit())
-				ich1++;
+				++ich1;
 			int iDigits2 = ich2++;
 			while (ich2 < cch2 && s2.at(ich2).isDigit())
-				ich2++;
+				++ich2;
 			// Compare as natural decimal-numbers...
 			int n1 = s1.mid(iDigits1, ich1 - iDigits1).toInt();
 			int n2 = s2.mid(iDigits2, ich2 - iDigits2).toInt();
@@ -360,8 +360,8 @@ void qtractorClientListItem::cleanClientPorts ( int iMark )
 		if (pPortItem && pPortItem->portMark() == iMark) {
 			pPortItem->cleanConnects();
 			delete pPortItem;
-			iChildCount--;
-			iChild--;
+			--iChildCount;
+			--iChild;
 		}
 	}
 }
@@ -377,10 +377,10 @@ void qtractorClientListItem::setHilite ( bool bHilite )
 {
 	// Update the client highlightning if changed...
 	if (bHilite)
-		m_iHilite++;
+		++m_iHilite;
 	else
 	if (m_iHilite > 0)
-		m_iHilite--;
+		--m_iHilite;
 
 	// Set the new color.
 	const QPalette& pal = QTreeWidgetItem::treeWidget()->palette();
@@ -678,8 +678,8 @@ void qtractorClientListView::cleanClientPorts ( int iMark )
 		if (pClientItem) {
 			if (pClientItem->clientMark() == iMark) {
 				delete pClientItem;
-				iItemCount--;
-				iItem--;
+				--iItemCount;
+				--iItem;
 			} else {
 				pClientItem->cleanClientPorts(iMark);
 			}
@@ -950,13 +950,13 @@ bool qtractorClientListView::lessThan (
 	int cch1 = s1.length();
 	int cch2 = s2.length();
 
-	for (ich1 = ich2 = 0; ich1 < cch1 && ich2 < cch2; ich1++, ich2++) {
+	for (ich1 = ich2 = 0; ich1 < cch1 && ich2 < cch2; ++ich1, ++ich2) {
 
 		// Skip (white)spaces...
 		while (s1.at(ich1).isSpace())
-			ich1++;
+			++ich1;
 		while (s2.at(ich2).isSpace())
-			ich2++;
+			++ich2;
 
 		// Normalize (to uppercase) the next characters...
 		QChar ch1 = s1.at(ich1).toUpper();
@@ -966,10 +966,10 @@ bool qtractorClientListView::lessThan (
 			// Find the whole length numbers...
 			int iDigits1 = ich1++;
 			while (ich1 < cch1 && s1.at(ich1).isDigit())
-				ich1++;
+				++ich1;
 			int iDigits2 = ich2++;
 			while (ich2 < cch2 && s2.at(ich2).isDigit())
-				ich2++;
+				++ich2;
 			// Compare as natural decimal-numbers...
 			int n1 = s1.mid(iDigits1, ich1 - iDigits1).toInt();
 			int n2 = s2.mid(iDigits2, ich2 - iDigits2).toInt();
@@ -1310,8 +1310,8 @@ bool qtractorConnect::canConnectSelected (void)
 					if (pOPort && pIPort && pOPort->findConnect(pIPort) == NULL)
 						return true;
 				}
-				iOItem++;
-				iIItem++;
+				++iOItem;
+				++iIItem;
 			}
 		} else {
 			// Many(all)-to-one connection...
@@ -1329,7 +1329,7 @@ bool qtractorConnect::canConnectSelected (void)
 					if (pOPort && pOPort->findConnect(pIPort) == NULL)
 						return true;
 				}
-				iOItem++;
+				++iOItem;
 			}
 		}
 	} else {
@@ -1353,7 +1353,7 @@ bool qtractorConnect::canConnectSelected (void)
 					if (pIPort && pOPort->findConnect(pIPort) == NULL)
 						return true;
 				}
-				iIItem++;
+				++iIItem;
 			}
 		} else {
 			// One-to-one connection...
@@ -1417,8 +1417,8 @@ bool qtractorConnect::connectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pIItem);
 					connectPortsEx(pOPort, pIPort);
 				}
-				iOItem++;
-				iIItem++;
+				++iOItem;
+				++iIItem;
 			}
 		} else {
 			// Many(all)-to-one connection...
@@ -1435,7 +1435,7 @@ bool qtractorConnect::connectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pOItem);
 					connectPortsEx(pOPort, pIPort);
 				}
-				iOItem++;
+				++iOItem;
 			}
 		}
 	} else {
@@ -1458,7 +1458,7 @@ bool qtractorConnect::connectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pIItem);
 					connectPortsEx(pOPort, pIPort);
 				}
-				iIItem++;
+				++iIItem;
 			}
 		} else {
 			// One-to-one connection...
@@ -1511,8 +1511,8 @@ bool qtractorConnect::canDisconnectSelected (void)
 					if (pOPort && pIPort && pOPort->findConnect(pIPort))
 						return true;
 				}
-				iOItem++;
-				iIItem++;
+				++iOItem;
+				++iIItem;
 			}
 		} else {
 			// Many(all)-to-one connection...
@@ -1530,7 +1530,7 @@ bool qtractorConnect::canDisconnectSelected (void)
 					if (pOPort && pOPort->findConnect(pIPort))
 						return true;
 				}
-				iOItem++;
+				++iOItem;
 			}
 		}
 	} else {
@@ -1554,7 +1554,7 @@ bool qtractorConnect::canDisconnectSelected (void)
 					if (pIPort && pOPort->findConnect(pIPort))
 						return true;
 				}
-				iIItem++;
+				++iIItem;
 			}
 		} else {
 			// One-to-one connection...
@@ -1618,8 +1618,8 @@ bool qtractorConnect::disconnectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pIItem);
 					disconnectPortsEx(pOPort, pIPort);
 				}
-				iOItem++;
-				iIItem++;
+				++iOItem;
+				++iIItem;
 			}
 		} else {
 			// Many(all)-to-one connection...
@@ -1636,7 +1636,7 @@ bool qtractorConnect::disconnectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pOItem);
 					disconnectPortsEx(pOPort, pIPort);
 				}
-				iOItem++;
+				++iOItem;
 			}
 		}
 	} else {
@@ -1659,7 +1659,7 @@ bool qtractorConnect::disconnectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pIItem);
 					disconnectPortsEx(pOPort, pIPort);
 				}
-				iIItem++;
+				++iIItem;
 			}
 		} else {
 			// One-to-one connection...
@@ -1765,11 +1765,11 @@ void qtractorConnect::updateContents ( bool bClear )
 	// Add (newer) client:ports and respective connections...
 	if (m_pOListView->updateClientPorts() > 0) {
 		m_pOListView->refresh();
-		iDirtyCount++;
+		++iDirtyCount;
 	}
 	if (m_pIListView->updateClientPorts() > 0) {
 		m_pIListView->refresh();
-		iDirtyCount++;
+		++iDirtyCount;
 	}
 	updateConnections();
 

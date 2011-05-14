@@ -133,10 +133,10 @@ qtractorTempoAdjustForm::~qtractorTempoAdjustForm (void)
 // Range accessors.
 void qtractorTempoAdjustForm::setRangeStart ( unsigned long iRangeStart )
 {
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 	m_ui.RangeStartSpinBox->setValue(iRangeStart, false);
 	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 unsigned long qtractorTempoAdjustForm::rangeStart (void) const
@@ -146,13 +146,13 @@ unsigned long qtractorTempoAdjustForm::rangeStart (void) const
 
 void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
 {
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 	m_ui.RangeLengthSpinBox->setValue(iRangeLength, false);
 	unsigned int iRangeBeats = m_pTimeScale->beatFromFrame(iRangeLength);
 	unsigned long q = m_pTimeScale->beatsPerBar();
 	iRangeBeats = q * ((iRangeBeats + (q >> 1)) / q);
 	m_ui.RangeBeatsSpinBox->setValue(iRangeBeats);
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 unsigned long qtractorTempoAdjustForm::rangeLength (void) const
@@ -211,7 +211,7 @@ void qtractorTempoAdjustForm::changed (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 

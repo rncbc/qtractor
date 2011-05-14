@@ -1020,12 +1020,12 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				x += m_pSession->pixelFromFrame(iClipStart - iTrackStart);
 			} else {
 				iClipOffset = iTrackStart - iClipStart;
-				x--;	// Give some clip left-border room.
+				--x;	// Give some clip left-border room.
 			}
 			if (iClipEnd < iTrackEnd) {
 				w -= m_pSession->pixelFromFrame(iTrackEnd - iClipEnd);// + 1;
 			} else {
-				w++;	// Give some clip right-border room.
+				++w;	// Give some clip right-border room.
 			}
 			QRect rect(x, y, w - x, h);
 			pClip->drawClip(pPainter, rect, iClipOffset);
@@ -1039,12 +1039,12 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				if (iSelectStart >= iTrackStart) {
 					x += m_pSession->pixelFromFrame(iSelectStart - iTrackStart);
 				} else {
-					x--;	// Give selection some left-border room.
+					--x;	// Give selection some left-border room.
 				}
 				if (iSelectEnd < iTrackEnd) {
 					w -= m_pSession->pixelFromFrame(iTrackEnd - iSelectEnd);
 				} else {
-					w++;	// Give selection some right-border room.
+					++w;	// Give selection some right-border room.
 				}
 				rect.setRect(x, y, w - x, h);
 				pPainter->fillRect(rect, QColor(0, 0, 255, 120));

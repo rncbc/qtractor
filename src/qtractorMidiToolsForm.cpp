@@ -166,7 +166,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		// Default quantization value...
 		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
 		if (iSnapPerBeat > 0)
-			iSnapPerBeat--;
+			--iSnapPerBeat;
 		int iSnapIndex = qtractorTimeScale::indexFromSnap(iSnapPerBeat);
 		m_ui.QuantizeTimeComboBox->setCurrentIndex(iSnapIndex);
 		m_ui.QuantizeDurationComboBox->setCurrentIndex(iSnapIndex);
@@ -632,7 +632,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 // Preset list loader.
 void qtractorMidiToolsForm::refreshPresets (void)
 {
-	m_iUpdate++;
+	++m_iUpdate;
 
 	const QString sOldPreset = m_ui.PresetNameComboBox->currentText();
 	m_ui.PresetNameComboBox->clear();
@@ -648,7 +648,7 @@ void qtractorMidiToolsForm::refreshPresets (void)
 	m_ui.PresetNameComboBox->setEditText(sOldPreset);
 
 	m_iDirtyCount = 0;
-	m_iUpdate--;
+	--m_iUpdate;
 
 	stabilizeForm();
 }
@@ -662,7 +662,7 @@ void qtractorMidiToolsForm::presetChanged ( const QString& sPreset )
 
 	if (!sPreset.isEmpty()
 		&& m_ui.PresetNameComboBox->findText(sPreset) >= 0)
-		m_iDirtyCount++;
+		++m_iDirtyCount;
 
 	stabilizeForm();
 }
@@ -670,12 +670,12 @@ void qtractorMidiToolsForm::presetChanged ( const QString& sPreset )
 
 void qtractorMidiToolsForm::presetActivated ( const QString& sPreset )
 {
-	m_iUpdate++;
+	++m_iUpdate;
 
 	loadPreset(sPreset);
 
 	m_iDirtyCount = 0;
-	m_iUpdate--;
+	--m_iUpdate;
 	
 	stabilizeForm();
 }
@@ -1046,7 +1046,7 @@ void qtractorMidiToolsForm::changed (void)
 	if (m_iUpdate > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -1112,14 +1112,14 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.QuantizeTimeCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.QuantizeTimeCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.QuantizeTimeComboBox->setEnabled(bEnabled2);
 	m_ui.QuantizeTimeSpinBox->setEnabled(bEnabled2);
 
 	m_ui.QuantizeDurationCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.QuantizeDurationCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.QuantizeDurationComboBox->setEnabled(bEnabled2);
 	m_ui.QuantizeDurationSpinBox->setEnabled(bEnabled2);
 
@@ -1128,7 +1128,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.QuantizeSwingCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.QuantizeSwingCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.QuantizeSwingComboBox->setEnabled(bEnabled2);
 	m_ui.QuantizeSwingSpinBox->setEnabled(bEnabled2);
 	m_ui.QuantizeSwingTypeComboBox->setEnabled(bEnabled2);
@@ -1136,7 +1136,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.QuantizeScaleCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.QuantizeScaleCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.QuantizeScaleKeyComboBox->setEnabled(bEnabled2);
 	m_ui.QuantizeScaleComboBox->setEnabled(bEnabled2);
 
@@ -1147,13 +1147,13 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.TransposeNoteCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.TransposeNoteCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.TransposeNoteSpinBox->setEnabled(bEnabled2);
 
 	m_ui.TransposeTimeCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.TransposeTimeCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.TransposeTimeSpinBox->setEnabled(bEnabled2);
 	m_ui.TransposeFormatComboBox->setEnabled(bEnabled2);
 
@@ -1164,13 +1164,13 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.NormalizePercentCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.NormalizePercentCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.NormalizePercentSpinBox->setEnabled(bEnabled2);
 
 	m_ui.NormalizeValueCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.NormalizeValueCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.NormalizeValueSpinBox->setEnabled(bEnabled2);
 
 	// Randomize tool...
@@ -1180,25 +1180,25 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.RandomizeNoteCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RandomizeNoteCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.RandomizeNoteSpinBox->setEnabled(bEnabled2);
 
 	m_ui.RandomizeTimeCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RandomizeTimeCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.RandomizeTimeSpinBox->setEnabled(bEnabled2);
 
 	m_ui.RandomizeDurationCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RandomizeDurationCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.RandomizeDurationSpinBox->setEnabled(bEnabled2);
 
 	m_ui.RandomizeValueCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RandomizeValueCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.RandomizeValueSpinBox->setEnabled(bEnabled2);
 
 	// Resize tool...
@@ -1208,14 +1208,14 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.ResizeDurationCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.ResizeDurationCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.ResizeDurationSpinBox->setEnabled(bEnabled2);
 	m_ui.ResizeFormatComboBox->setEnabled(bEnabled2);
 
 	m_ui.ResizeValueCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.ResizeValueCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.ResizeValueSpinBox->setEnabled(bEnabled2);
 
 	// Rescale tool...
@@ -1225,26 +1225,26 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.RescaleTimeCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RescaleTimeCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.RescaleTimeSpinBox->setEnabled(bEnabled2);
 
 	m_ui.RescaleDurationCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RescaleDurationCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.RescaleDurationSpinBox->setEnabled(bEnabled2);
 
 	m_ui.RescaleValueCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RescaleValueCheckBox->isChecked();
 	if (bEnabled2)
-		iEnabled++;
+		++iEnabled;
 	m_ui.RescaleValueSpinBox->setEnabled(bEnabled2);
 
 	// Timeshift tool...
 
 	bEnabled = m_ui.TimeshiftCheckBox->isChecked();
 	if (bEnabled)
-		iEnabled++;
+		++iEnabled;
 	m_ui.TimeshiftLabel->setEnabled(bEnabled);
 	m_ui.TimeshiftSpinBox->setEnabled(bEnabled);
 	m_ui.TimeshiftSlider->setEnabled(bEnabled);
@@ -1262,7 +1262,7 @@ void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
 	if (m_iUpdate > 0)
 		return;
 
-	m_iUpdate++;
+	++m_iUpdate;
 	int i = 0; // = int(10000.0f * float(p) / 100.0f);
 	if (p > +0.001)
 		i = + int(2000.0f * ::log10f(1000.0f * float(+ p)));
@@ -1274,7 +1274,7 @@ void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
 #endif
 	m_ui.TimeshiftSlider->setValue(i);
 	m_pTimeshiftCurve->setTimeshift(float(p));
-	m_iUpdate--;
+	--m_iUpdate;
 
 	changed();
 }
@@ -1284,7 +1284,7 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 	if (m_iUpdate > 0)
 		return;
 
-	m_iUpdate++;
+	++m_iUpdate;
 	float p = 0.0f; // = 100.0f * float(i) / 10000.0f;
 	if (i > 0)
 		p = + 0.001f * ::powf(10.0f, (0.0005f * float(+ i)));
@@ -1296,7 +1296,7 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 #endif
 	m_ui.TimeshiftSpinBox->setValue(double(p));
 	m_pTimeshiftCurve->setTimeshift(p);
-	m_iUpdate--;
+	--m_iUpdate;
 
 	changed();
 }

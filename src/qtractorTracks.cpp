@@ -324,17 +324,17 @@ void qtractorTracks::updateContents ( bool bRefresh )
 	// Update/sync from session tracks.
 	int iRefresh = 0;
 	if (bRefresh)
-		iRefresh++;
+		++iRefresh;
 	int iTrack = 0;
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {
 		// Check if item is already on list
 		if (m_pTrackList->trackRow(pTrack) < 0) {
 			m_pTrackList->insertTrack(iTrack, pTrack);
-			iRefresh++;
+			++iRefresh;
 		}
 		pTrack = pTrack->next();
-		iTrack++;
+		++iTrack;
 	}
 
 	// Update dependant views.
@@ -890,7 +890,7 @@ bool qtractorTracks::importClips (
 				// Depending of SMF format...
 				int iTrackChannel = pTrack->midiChannel();
 				if (file.format() == 1)
-					iTrackChannel++;
+					++iTrackChannel;
 				// Add the MIDI clip at once...
 				qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 				pMidiClip->setFilename(sPath);
@@ -1752,11 +1752,11 @@ bool qtractorTracks::addAudioTracks (
 		pTrack->addClip(pAudioClip);
 		if (iTrackClip == 0)
 			pTrack->setTrackName(pAudioClip->clipName());
-		iTrackClip++;
+		++iTrackClip;
 		// Add the new track to composite command...
 		if (bDropSpan)
 			iClipStart += pAudioClip->clipLength();
-		iUpdate++;
+		++iUpdate;
 		// Don't forget to add this one to local repository.
 		if (pMainForm) {
 			pMainForm->addAudioFile(sPath);
@@ -1833,7 +1833,7 @@ bool qtractorTracks::addMidiTracks (
 			continue;
 		// It all depends on the format...
 		int iTracks = (file.format() == 1 ? file.tracks() : 16);
-		for (int iTrackChannel = 0; iTrackChannel < iTracks; iTrackChannel++) {
+		for (int iTrackChannel = 0; iTrackChannel < iTracks; ++iTrackChannel) {
 			// Create a new track right away...
 			const QColor& color = qtractorTrack::trackColor(++iTrack);
 			qtractorTrack *pTrack
@@ -1856,7 +1856,7 @@ bool qtractorTracks::addMidiTracks (
 			// only the first track/channel has some tempo/time signature...
 			if (iTrackChannel == 0) {
 				// Some adjustment required...
-				iImport++;
+				++iImport;
 				iClipStart = pSession->frameFromTick(iTimeStart);
 				pMidiClip->setClipStart(iClipStart);
 			}
@@ -1866,7 +1866,7 @@ bool qtractorTracks::addMidiTracks (
 				pTrack->setTrackName(pMidiClip->clipName());
 				pTrack->setMidiChannel(pMidiClip->channel());
 				pImportTrackCommand->addTrack(pTrack);
-				iUpdate++;
+				++iUpdate;
 				// Don't forget to add this one to local repository.
 				if (pMainForm)
 					pMainForm->addMidiFile(sPath);

@@ -1,7 +1,7 @@
 // qtractorAudioFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,7 +82,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	SF_FORMAT_INFO sffinfo;
 	int iCount = 0;
 	::sf_command(NULL, SFC_GET_FORMAT_MAJOR_COUNT, &iCount, sizeof(int));
-	for (int i = 0 ; i < iCount; i++) {
+	for (int i = 0 ; i < iCount; ++i) {
 		sffinfo.format = i;
 		::sf_command(NULL, SFC_GET_FORMAT_MAJOR, &sffinfo, sizeof(sffinfo));
 		pFormat = new FileFormat;

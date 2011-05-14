@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,18 +66,18 @@ bool qtractorLadspaPluginType::open (void)
 			= m_pLadspaDescriptor->PortDescriptors[i];
 		if (LADSPA_IS_PORT_INPUT(portType)) {
 			if (LADSPA_IS_PORT_AUDIO(portType))
-				m_iAudioIns++;
+				++m_iAudioIns;
 			else
 			if (LADSPA_IS_PORT_CONTROL(portType))
-				m_iControlIns++;
+				++m_iControlIns;
 		}
 		else
 		if (LADSPA_IS_PORT_OUTPUT(portType)) {
 			if (LADSPA_IS_PORT_AUDIO(portType))
-				m_iAudioOuts++;
+				++m_iAudioOuts;
 			else
 			if (LADSPA_IS_PORT_CONTROL(portType))
-				m_iControlOuts++;
+				++m_iControlOuts;
 		}
 	}
 
@@ -382,9 +382,9 @@ void qtractorLadspaPlugin::process (
 		(*pLadspaDescriptor->run)(handle, nframes);
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
-			iIChannel++;
+			++iIChannel;
 		if (iOChannel < iChannels - 1)
-			iOChannel++;
+			++iOChannel;
 	}
 }
 

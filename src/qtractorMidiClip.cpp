@@ -184,7 +184,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			// SMF format 1 (2 tracks, 1 channel)
 			iTrackChannel = 1;
 			iFormat = 1;
-			iTracks++;
+			++iTracks;
 		}
 		// That's it.
 		setFormat(iFormat);
@@ -332,7 +332,7 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	}
 
 	if (!bForce)
-		m_iRevision++;
+		++m_iRevision;
 
 	return sFilename;
 }

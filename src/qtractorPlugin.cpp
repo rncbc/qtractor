@@ -252,7 +252,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
 			if (pType->open()) {
 				path.addType(pType);
 				pType->close();
-				iIndex++;
+				++iIndex;
 			} else {
 				delete pType;
 				break;
@@ -273,7 +273,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
 			if (pType->open()) {
 				path.addType(pType);
 				pType->close();
-				iIndex++;
+				++iIndex;
 			} else {
 				delete pType;
 				break;
@@ -299,7 +299,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
 			if (pType->open()) {
 				path.addType(pType);
 				pType->close();
-				iIndex++;
+				++iIndex;
 			} else {
 				delete pType;
 			}
@@ -1079,7 +1079,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 
 	// Delete old interim buffer...
 	if (m_pppBuffers[1]) {
-		for (i = 0; i < m_iChannels; i++)
+		for (i = 0; i < m_iChannels; ++i)
 			delete [] m_pppBuffers[1][i];
 		delete [] m_pppBuffers[1];
 		m_pppBuffers[1] = NULL;
@@ -1107,7 +1107,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	// Allocate new interim buffer...
 	if (m_iChannels > 0 && m_iBufferSize > 0) {
 		m_pppBuffers[1] = new float * [m_iChannels];
-		for (i = 0; i < m_iChannels; i++) {
+		for (i = 0; i < m_iChannels; ++i) {
 			m_pppBuffers[1][i] = new float [m_iBufferSize];
 			::memset(m_pppBuffers[1][i], 0, m_iBufferSize * sizeof(float));
 		}
@@ -1157,7 +1157,7 @@ void qtractorPluginList::resetBuffer (void)
 #endif
 	// Reset interim buffer, if any...
 	if (m_pppBuffers[1]) {
-		for (unsigned short i = 0; i < m_iChannels; i++)
+		for (unsigned short i = 0; i < m_iChannels; ++i)
 			::memset(m_pppBuffers[1][i], 0, m_iBufferSize * sizeof(float));
 	}
 #if 0
@@ -1184,9 +1184,9 @@ bool qtractorPluginList::isActivatedAll (void) const
 void qtractorPluginList::updateActivated ( bool bActivated )
 {
 	if (bActivated) {
-		m_iActivated++;
+		++m_iActivated;
 	} else  {
-		m_iActivated--;
+		--m_iActivated;
 	}
 }
 

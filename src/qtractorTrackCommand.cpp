@@ -355,7 +355,7 @@ bool qtractorImportTrackCommand::redo (void)
 		if (!m_pSaveCommand->redo())
 		    bResult = false;
 	}
-	m_iSaveCount++;
+	++m_iSaveCount;
 
 	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
 	while (iter.hasNext()) {
@@ -582,7 +582,7 @@ bool qtractorTrackStateCommand::redo (void)
 		// Was it before (skip undos)?
 		if (m_pClipCommand && (m_iRecordCount % 2) == 0)
 			m_pClipCommand->redo();
-		m_iRecordCount++;
+		++m_iRecordCount;
 		// Carry on...
 		pTrack->setRecord(m_bOn);
 		break;

@@ -104,7 +104,7 @@ qtractorRingBuffer<T>::qtractorRingBuffer ( unsigned short iChannels,
 
 	// Allocate actual buffer stuff...
 	m_ppBuffer = new T* [m_iChannels];
-	for (unsigned short i = 0; i < m_iChannels; i++)
+	for (unsigned short i = 0; i < m_iChannels; ++i)
 		m_ppBuffer[i] = new T [m_iBufferSize];
 
 	ATOMIC_SET(&m_iReadIndex,  0);
@@ -117,7 +117,7 @@ qtractorRingBuffer<T>::~qtractorRingBuffer (void)
 {
 	// Deallocate any buffer stuff...
 	if (m_ppBuffer) {
-		for (unsigned short i = 0; i < m_iChannels; i++)
+		for (unsigned short i = 0; i < m_iChannels; ++i)
 			delete [] m_ppBuffer[i];
 		delete [] m_ppBuffer;
 	}
@@ -174,7 +174,7 @@ int qtractorRingBuffer<T>::read ( T **ppFrames, unsigned int iFrames,
 		n2 = 0;
 	}
 
-	for (unsigned short i = 0; i < m_iChannels; i++) {
+	for (unsigned short i = 0; i < m_iChannels; ++i) {
 		::memcpy((T *)(ppFrames[i] + iOffset),
 			(T *)(m_ppBuffer[i] + r), n1 * sizeof(T));
 		if (n2) {
@@ -213,7 +213,7 @@ int qtractorRingBuffer<T>::write ( T **ppFrames, unsigned int iFrames,
 		n2 = 0;
 	}
 
-	for (unsigned short i = 0; i < m_iChannels; i++) {
+	for (unsigned short i = 0; i < m_iChannels; ++i) {
 		::memcpy((T *)(m_ppBuffer[i] + w),
 			(T *)(ppFrames[i] + iOffset), n1 * sizeof(T));
 		if (n2 > 0) {

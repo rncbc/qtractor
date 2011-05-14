@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -731,9 +731,9 @@ void qtractorVstPlugin::process (
 	#endif
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
-			iIChannel++;
+			++iIChannel;
 		if (iOChannel < iChannels - 1)
-			iOChannel++;
+			++iOChannel;
 	}
 }
 
@@ -1013,7 +1013,7 @@ void qtractorVstPlugin::idleTimerAll (void)
 			unsigned short iBusyTimer = 0;
 			for (unsigned short i = 0; pVstPlugin->instances(); ++i) {
 				if (!pVstPlugin->vst_dispatch(0, effIdle, 0, 0, NULL, 0.0f))
-					iBusyTimer++;
+					++iBusyTimer;
 			}
 			// Are we into idleness still?
 			if (iBusyTimer > 0)

@@ -1,7 +1,7 @@
 // qtractorMessages.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -299,7 +299,7 @@ void qtractorMessages::appendMessagesLine ( const QString& s )
 			// from start to next line-block...
 			textCursor.movePosition(
 				QTextCursor::NextBlock, QTextCursor::KeepAnchor);
-			m_iMessagesLines--;
+			--m_iMessagesLines;
 		}
 		// Remove the excessive line-blocks...
 		textCursor.removeSelectedText();
@@ -307,7 +307,7 @@ void qtractorMessages::appendMessagesLine ( const QString& s )
 	}
 
 	m_pMessagesTextView->append(s);
-	m_iMessagesLines++;
+	++m_iMessagesLines;
 }
 
 

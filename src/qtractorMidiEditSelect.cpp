@@ -102,7 +102,7 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 		if ((pItem->flags & 3) == 0) {
 			delete pItem;
 			iter = m_items.erase(iter);
-			iUpdate++;
+			++iUpdate;
 		}
 		else ++iter;
 	}

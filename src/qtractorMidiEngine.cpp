@@ -765,7 +765,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 {
 	// Deferred processsing?
 	if (!bForceImmediate) {
-		m_iResetAllControllers++;
+		++m_iResetAllControllers;
 		return;
 	}
 
@@ -863,11 +863,11 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 		fprintf(stderr, " sysex {");
 		unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
-		for (unsigned int i = 0; i < pEv->data.ext.len; i++)
+		for (unsigned int i = 0; i < pEv->data.ext.len; ++i)
 			fprintf(stderr, " %02x", data[i]);
 		fprintf(stderr, " }\n");
 	} else {
-		for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); i++)
+		for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); ++i)
 			fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
 		fprintf(stderr, "\n");
 	}
@@ -1059,7 +1059,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					snd_seq_ev_set_subs(pEv);
 					snd_seq_ev_set_direct(pEv);
 					snd_seq_event_output_direct(m_pAlsaSeq, pEv);
-				//	iDrainOutput++;
+				//	++iDrainOutput;
 					// Done with MIDI-thru.
 					pMidiBus->midiMonitor_out()->enqueue(type, data2);
 				}
@@ -1113,7 +1113,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
 		fprintf(stderr, " sysex {");
 		unsigned char *data = (unsigned char *) pEvent->sysex();
-		for (unsigned int i = 0; i < pEvent->sysex_len(); i++)
+		for (unsigned int i = 0; i < pEvent->sysex_len(); ++i)
 			fprintf(stderr, " %02x", data[i]);
 		fprintf(stderr, " }\n");
 	} else {
@@ -2435,7 +2435,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 			pSeq->setName(sName + pTrack->trackName());
 		} else {
 			// SMF Format 1
-			iTracks++;
+			++iTracks;
 			pSeq = new qtractorMidiSequence(
 				pTrack->trackName(), iTracks, iTicksPerBeat);
 			pSeq->setChannel(pTrack->midiChannel());
@@ -2488,7 +2488,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	}
 
 	// Account for the only or META info track...
-	iTracks++;
+	++iTracks;
 
 	// Special on SMF Format 1...
 	if (ppSeqs == NULL) {
@@ -3519,7 +3519,7 @@ int qtractorMidiBus::updateConnects (
 			if (iItem >= 0) {
 				connects.removeAt(iItem);
 				delete pItem;
-				iUpdate++;
+				++iUpdate;
 			}
 		}
 	}

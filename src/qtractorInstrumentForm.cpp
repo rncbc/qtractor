@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -230,7 +230,7 @@ void qtractorInstrumentForm::importSlot (void)
 				pItem->setText(1, sPath);
 				m_ui.FilesListView->setCurrentItem(pItem);
 				pOptions->sInstrumentDir = info.absolutePath();
-			//	m_iDirtyCount++;
+			//	++m_iDirtyCount;
 			}
 		}
 	}
@@ -253,7 +253,7 @@ void qtractorInstrumentForm::removeSlot (void)
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
 		delete pItem;
-		m_iDirtyCount++;
+		++m_iDirtyCount;
 	}
 
 	stabilizeForm();
@@ -270,7 +270,7 @@ void qtractorInstrumentForm::moveUpSlot (void)
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem - 1, pItem);
 			m_ui.FilesListView->setCurrentItem(pItem);
-			m_iDirtyCount++;
+			++m_iDirtyCount;
 		}
 	}
 
@@ -288,7 +288,7 @@ void qtractorInstrumentForm::moveDownSlot (void)
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem + 1, pItem);
 			m_ui.FilesListView->setCurrentItem(pItem);
-			m_iDirtyCount++;
+			++m_iDirtyCount;
 		}
 	}
 
@@ -310,7 +310,7 @@ void qtractorInstrumentForm::reloadSlot (void)
 
 	// Load each file in order...
 	int iItemCount = m_ui.FilesListView->topLevelItemCount();
-	for (int iItem = 0; iItem < iItemCount; iItem++) {
+	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = m_ui.FilesListView->topLevelItem(iItem);
 		if (pItem) 
 			m_pInstruments->load(pItem->text(1));
@@ -602,7 +602,7 @@ void qtractorInstrumentForm::refreshForm (void)
 		pListItem->setText(0, tr("Bank Select Methods"));
 		if (m_pInstruments->count() > 0) {
 			QTreeWidgetItem *pChildItem = NULL;
-			for (int iBankSelMethod = 0; iBankSelMethod < 4; iBankSelMethod++) {
+			for (int iBankSelMethod = 0; iBankSelMethod < 4; ++iBankSelMethod) {
 				pChildItem = new qtractorInstrumentGroupItem(pListItem, pChildItem);
 				pChildItem->setIcon(0, QIcon(":/images/itemProperty.png"));
 				pChildItem->setText(0,

@@ -1,7 +1,7 @@
 // qtractorAudioConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -167,7 +167,7 @@ int qtractorAudioClientListView::updateClientPorts (void)
 						if (pClientItem == NULL) {
 							pClientItem = new qtractorAudioClientItem(this,
 								sClientName);
-							iDirtyCount++;
+							++iDirtyCount;
 						}
 						if (pClientItem && pPortItem == NULL) {
 							jack_port_t *pJackPort = jack_port_by_name(
@@ -175,7 +175,7 @@ int qtractorAudioClientListView::updateClientPorts (void)
 							if (pJackPort) {
 								pPortItem = new qtractorAudioPortItem(
 									pClientItem, sPortName, pJackPort);
-								iDirtyCount++;
+								++iDirtyCount;
 							}
 						}
 						if (pPortItem)
@@ -183,7 +183,7 @@ int qtractorAudioClientListView::updateClientPorts (void)
 					}
 				}
 			}
-			iClientPort++;
+			++iClientPort;
 		}
 		::free(ppszClientPorts);
 	}
@@ -241,7 +241,7 @@ void qtractorAudioConnect::createIcons (void)
 void qtractorAudioConnect::deleteIcons (void)
 {
 	if (--g_iIconsRefCount == 0) {
-		for (int i = 0; i < IconCount; i++) {
+		for (int i = 0; i < IconCount; ++i) {
 			if (g_apIcons[i])
 				delete g_apIcons[i];
 			g_apIcons[i] = NULL;
@@ -403,7 +403,7 @@ void qtractorAudioConnect::updateConnections (void)
 						pOPort->addConnect(pIPort);
 						pIPort->addConnect(pOPort);
 					}
-					iClientPort++;
+					++iClientPort;
 				}
 				::free(ppszClientPorts);
 			}

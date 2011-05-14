@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -253,7 +253,7 @@ bool qtractorAudioMadFile::decode (void)
 		m_iRingBufferMask = (m_iRingBufferSize - 1);
 		// Allocate actual buffer stuff...
 		m_ppRingBuffer = new float* [m_iChannels];
-		for (unsigned short i = 0; i < m_iChannels; i++)
+		for (unsigned short i = 0; i < m_iChannels; ++i)
 			m_ppRingBuffer[i] = new float [m_iRingBufferSize];
 		// Reset ring-buffer pointers.
 		m_iRingBufferRead  = 0;
@@ -265,9 +265,9 @@ bool qtractorAudioMadFile::decode (void)
 	}
 
 	const float fScale = (float) (1L << MAD_F_FRACBITS);
-	for (unsigned int n = 0; n < iFrames; n++) {
+	for (unsigned int n = 0; n < iFrames; ++n) {
 		if (m_curr.iOutputOffset >= m_iSeekOffset) {
-			for (unsigned short i = 0; i < m_iChannels; i++) {
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
 				int iSample = bError ? 0 : *(m_madSynth.pcm.samples[i] + n);
 				m_ppRingBuffer[i][m_iRingBufferWrite] = (float) iSample / fScale;
 			}
@@ -321,7 +321,7 @@ int qtractorAudioMadFile::read ( float **ppFrames, unsigned int iFrames )
 			n1 = nread;
 			n2 = 0;
 		}
-		for (unsigned short i = 0; i < m_iChannels; i++) {
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			::memcpy(ppFrames[i], (float *)(m_ppRingBuffer[i] + r),
 				n1 * sizeof(float));
 			if (n2 > 0) {
@@ -423,7 +423,7 @@ void qtractorAudioMadFile::close (void)
 
 	// Free allocated buffers, if any.
 	if (m_ppRingBuffer) {
-		for (unsigned short i = 0; i < m_iChannels; i++)
+		for (unsigned short i = 0; i < m_iChannels; ++i)
 			delete [] m_ppRingBuffer[i];
 		delete [] m_ppRingBuffer;
 		m_ppRingBuffer = NULL;

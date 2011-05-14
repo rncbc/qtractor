@@ -618,28 +618,28 @@ bool qtractorLv2PluginType::open (void)
 		if (port) {
 			if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_control_class)) {
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_input_class))
-					m_iControlIns++;
+					++m_iControlIns;
 				else
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_output_class))
-					m_iControlOuts++;
+					++m_iControlOuts;
 			}
 			else
 			if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_audio_class)) {
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_input_class))
-					m_iAudioIns++;
+					++m_iAudioIns;
 				else
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_output_class))
-					m_iAudioOuts++;
+					++m_iAudioOuts;
 			}
 		#ifdef CONFIG_LV2_EVENT
 			else
 			if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_event_class) ||
 				slv2_port_is_a(m_slv2_plugin, port, g_slv2_midi_class)) {
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_input_class))
-					m_iMidiIns++;
+					++m_iMidiIns;
 				else
 				if (slv2_port_is_a(m_slv2_plugin, port, g_slv2_output_class))
-					m_iMidiOuts++;
+					++m_iMidiOuts;
 			}
 		#endif
 		}
@@ -915,7 +915,7 @@ bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
 			if (pLv2Type->open()) {
 				path.addType(pLv2Type);
 				pLv2Type->close();
-				iIndex++;
+				++iIndex;
 			} else {
 				delete pLv2Type;
 			}
@@ -1307,9 +1307,9 @@ void qtractorLv2Plugin::process (
 			slv2_instance_run(instance, nframes);
 			// Wrap channels?...
 			if (iIChannel < iChannels - 1)
-				iIChannel++;
+				++iIChannel;
 			if (iOChannel < iChannels - 1)
-				iOChannel++;
+				++iOChannel;
 		}
 	}
 }

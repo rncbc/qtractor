@@ -805,10 +805,10 @@ void qtractorMidiEditor::setVerticalZoom ( unsigned short iVerticalZoom )
 	int iItemHeight
 		= (iVerticalZoom * qtractorMidiEditList::ItemHeightBase) / 100;
 	if (iItemHeight < qtractorMidiEditList::ItemHeightMax && iZoomStep > 0)
-		iItemHeight++;
+		++iItemHeight;
 	else
 	if (iItemHeight > qtractorMidiEditList::ItemHeightMin && iZoomStep < 0)
-		iItemHeight--;
+		--iItemHeight;
 	m_pEditList->setItemHeight(iItemHeight);
 
 	m_pTimeScale->setVerticalZoom(iVerticalZoom);

@@ -158,7 +158,7 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	if (m_pMidiObserver->subject() == NULL)
 		return;
 
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	QDialog::setWindowTitle(
 		m_pMidiObserver->subject()->name() + " - " + tr("MIDI Controller"));
@@ -183,7 +183,7 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 		pResetButton->setEnabled(
 			pMidiControl->isMidiObserverMapped(m_pMidiObserver));
 
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 	m_iDirtyCount = 0;
 
 	stabilizeForm();
@@ -296,7 +296,7 @@ void qtractorMidiControlObserverForm::change (void)
 	qDebug("qtractorMidiControlObserverForm::change()");
 #endif
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -333,7 +333,7 @@ void qtractorMidiControlObserverForm::accept (void)
 			m_ui.ControlTypeComboBox->currentText());
 	unsigned short iChannel = m_ui.ChannelSpinBox->value();
 	if (iChannel > 0)
-		iChannel--;
+		--iChannel;
 	unsigned short iParam = 0;
 	if (m_ui.ParamComboBox->isEnabled())
 		iParam = m_ui.ParamComboBox->currentIndex();
