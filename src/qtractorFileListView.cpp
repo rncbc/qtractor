@@ -503,7 +503,7 @@ void qtractorFileListView::openFile (void)
 		pFileItem = addFileItem(sPath, pParentItem);
 		// Make all this new open and visible.
 		if (pFileItem) {
-			iUpdate++;
+			++iUpdate;
 			if (pParentItem)
 				pParentItem->setOpen(true);
 		}
@@ -550,7 +550,7 @@ void qtractorFileListView::copyItem ( bool bCut )
 				urls.append(QUrl::fromLocalFile(pFileItem->path()));
 				if (bCut) {
 					delete pFileItem;
-					iUpdate++;
+					++iUpdate;
 				}
 			}
 		}
@@ -587,7 +587,7 @@ void qtractorFileListView::pasteItem (void)
 			qtractorFileListItem *pFileItem	= addFileItem(sPath, pParentItem);
 			// Make all this new open and visible.
 			if (pFileItem) {
-				iUpdate++;
+				++iUpdate;
 				if (pParentItem)
 					pParentItem->setOpen(true);
 			}
@@ -635,7 +635,7 @@ void qtractorFileListView::deleteItem (void)
 		while (iter.hasNext()) {
 			QTreeWidgetItem *pItem = iter.next();
 			delete pItem;
-			iUpdate++;
+			++iUpdate;
 		}
 	} else {
 		QTreeWidgetItem *pItem = QTreeWidget::currentItem();
@@ -655,7 +655,7 @@ void qtractorFileListView::deleteItem (void)
 			}
 			// Definite single-delete...
 			delete pItem;
-			iUpdate++;
+			++iUpdate;
 		}
 	}
 
@@ -1156,9 +1156,9 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 			// Is it one from ourselves (file item) ?...
 			if (m_pDragItem && m_pDragItem->type() == FileItem) {
 				if (dropItem(pDropItem, findItem(sPath, FileItem), bOutdent))
-					iUpdate++;
+					++iUpdate;
 			} else if (addFileItem(sPath, pParentItem))
-				iUpdate++;
+				++iUpdate;
 		}
 	} else if (pMimeData->hasText()) {
 		// Maybe its just a new convenience group...
@@ -1166,9 +1166,9 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 		// Is it one from ourselves (group item) ?...
 		if (m_pDragItem && m_pDragItem->type() == GroupItem) {
 			if (dropItem(pDropItem, findItem(sText, GroupItem), bOutdent))
-				iUpdate++;
+				++iUpdate;
 		} else if (addGroupItem(sText, pParentItem))
-			iUpdate++;
+			++iUpdate;
 	}
 
 	// Teke care of change modification...

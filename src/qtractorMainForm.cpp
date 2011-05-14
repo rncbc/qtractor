@@ -937,7 +937,7 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pSelectModeActionGroup;
 
 	// Reclaim status items palettes...
-	for (int i = 0; i < PaletteItems; i++)
+	for (int i = 0; i < PaletteItems; ++i)
 		delete m_paletteItems[i];
 
 	// Custom tempo cursor.
@@ -1430,7 +1430,7 @@ bool qtractorMainForm::newSession (void)
 		return loadSessionFile(m_pOptions->sSessionTemplatePath, true);
 
 	// Ok, increment untitled count.
-	m_iUntitled++;
+	++m_iUntitled;
 
 	// Stabilize form.
 	m_sFilename.clear();
@@ -1634,7 +1634,7 @@ bool qtractorMainForm::editSession (void)
 		m_pSession->unlock();
 
 	// Transport status needs an update too...
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 
 	// Done.
 	return true;
@@ -1758,7 +1758,7 @@ bool qtractorMainForm::loadSessionFile (
 				"Do you want to replace it?")
 				.arg(info.filePath()),
 				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
-				m_iUntitled++;
+				++m_iUntitled;
 				m_sFilename.clear();
 				updateSession();
 				return false;
@@ -1815,7 +1815,7 @@ bool qtractorMainForm::loadSessionFile (
 
 	// Stabilize form...
 	if (bTemplate) {
-		m_iUntitled++;
+		++m_iUntitled;
 		m_sFilename.clear();
 	} else {
 		m_sFilename = sFilename;
@@ -3255,7 +3255,7 @@ void qtractorMainForm::viewOptions (void)
 		}
 		// Audio engine control modes...
 		if (iOldTransportMode != m_pOptions->iTransportMode) {
-			m_iDirtyCount++; // Fake session properties change.
+			++m_iDirtyCount; // Fake session properties change.
 			updateTransportMode();
 		//	iNeedRestart |= RestartSession;
 		}
@@ -3329,7 +3329,7 @@ void qtractorMainForm::viewOptions (void)
 			(iOldMidiSppMode   != m_pOptions->iMidiSppMode)   ||
 			(iOldMidiClockMode != m_pOptions->iMidiClockMode) ||
 			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)) {
-			m_iDirtyCount++; // Fake session properties change.
+			++m_iDirtyCount; // Fake session properties change.
 			updateMidiControlModes();
 		}
 		// Audio engine audition/pre-listening player options...
@@ -3434,7 +3434,7 @@ void qtractorMainForm::transportBackward (void)
 	#endif
 		m_pSession->setPlayHead(iPlayHead);
 	}
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 
 	stabilizeForm();
 }
@@ -3547,7 +3547,7 @@ void qtractorMainForm::transportForward (void)
 	#endif
 		m_pSession->setPlayHead(iPlayHead);
 	}
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 
 	stabilizeForm();
 }
@@ -3926,7 +3926,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 			m_pSession->setPlayHead(iPlayHead);
 		}
 	}	// Start something... ;)
-	else m_iTransportUpdate++;
+	else ++m_iTransportUpdate;
 
 	// Done with playback switch...
 	return true;
@@ -3957,7 +3957,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pClipCommand->addClipRecord(pTrack, iClipEnd))
-				iUpdate++;
+				++iUpdate;
 		}
 		// Put it in the form of an undoable command...
 		if (iUpdate > 0) {
@@ -3998,7 +3998,7 @@ int qtractorMainForm::setRolling ( int iRolling )
 			m_bTransportPlaying = m_pSession->isPlaying();
 		if (m_bTransportPlaying)
 			m_pSession->setPlaying(false);
-		m_iTransportUpdate++;
+		++m_iTransportUpdate;
 	} else {
 		if (m_bTransportPlaying)
 			m_pSession->setPlaying(true);
@@ -4013,7 +4013,7 @@ int qtractorMainForm::setRolling ( int iRolling )
 void qtractorMainForm::setLocate ( unsigned long iLocate )
 {
 	m_pSession->setPlayHead(m_pSession->frameFromLocate(iLocate));
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 }
 
 
@@ -4028,14 +4028,14 @@ void qtractorMainForm::setShuttle ( float fShuttle )
 		setRolling(+1);
 
 	m_fTransportShuttle = fShuttle;
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 }
 
 
 void qtractorMainForm::setStep ( int iStep )
 {
 	m_iTransportStep += iStep;
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 }
 
 
@@ -4069,7 +4069,7 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 void qtractorMainForm::setSongPos ( unsigned short iSongPos )
 {
 	m_pSession->setPlayHead(m_pSession->frameFromSongPos(iSongPos));
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 }
 
 
@@ -4338,7 +4338,7 @@ bool qtractorMainForm::startSession (void)
 			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 			m_pSession->updateSampleRate(iOldSampleRate);
 			QApplication::restoreOverrideCursor();
-			m_iDirtyCount++;
+			++m_iDirtyCount;
 		}
 	} else {
 		// Uh-oh, we can't go on like this...
@@ -4422,7 +4422,7 @@ void qtractorMainForm::updateSession (void)
 		m_pTracks->trackView()->setFocus();
 
 	// Of course!...
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 }
 
 
@@ -4479,12 +4479,12 @@ void qtractorMainForm::updateRecentFilesMenu (void)
 	int iRecentFiles = m_pOptions->recentFiles.count();
 	while (iRecentFiles > m_pOptions->iMaxRecentFiles) {
 		m_pOptions->recentFiles.pop_back();
-		iRecentFiles--;
+		--iRecentFiles;
 	}
 
 	// Rebuild the recent files menu...
 	m_ui.fileOpenRecentMenu->clear();
-	for (int i = 0; i < iRecentFiles; i++) {
+	for (int i = 0; i < iRecentFiles; ++i) {
 		const QString& sFilename = m_pOptions->recentFiles[i];
 		if (QFileInfo(sFilename).exists()) {
 			QAction *pAction = m_ui.fileOpenRecentMenu->addAction(
@@ -4889,7 +4889,7 @@ void qtractorMainForm::timerSlot (void)
 		}
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
 			// Update transport status anyway...
-			m_iTransportUpdate++;
+			++m_iTransportUpdate;
 			// Send MMC LOCATE command...
 			if (!pAudioEngine->isFreewheel()) {
 				pMidiEngine->sendMmcLocate(
@@ -4983,7 +4983,7 @@ void qtractorMainForm::timerSlot (void)
 							// Send MMC RECORD_EXIT command...
 							pMidiEngine->sendMmcCommand(
 								qtractorMmcEvent::RECORD_EXIT);
-							m_iTransportUpdate++;
+							++m_iTransportUpdate;
 						}
 					} else {
 						m_pTracks->trackView()->updateContentsRecord();
@@ -5001,7 +5001,7 @@ void qtractorMainForm::timerSlot (void)
 					if (m_pSession->isLooping()) {
 						// Maybe it's better go on with looping, eh?
 						m_pSession->setPlayHead(m_pSession->loopStart());
-						m_iTransportUpdate++;
+						++m_iTransportUpdate;
 					}
 					else
 					// Auto-backward reset feature...
@@ -5010,7 +5010,7 @@ void qtractorMainForm::timerSlot (void)
 							m_pSession->setPlayHead(m_pSession->editHead());
 						else
 							m_pSession->setPlayHead(0);
-						m_iTransportUpdate++;
+						++m_iTransportUpdate;
 					} else {
 						// Stop at once!
 						transportPlay();
@@ -5170,11 +5170,11 @@ void qtractorMainForm::audioShutNotify (void)
 void qtractorMainForm::audioXrunNotify (void)
 {
 	// An XRUN has just been notified...
-	m_iXrunCount++;
+	++m_iXrunCount;
 
 	// Skip this one, maybe we're under some kind of storm;
 	if (m_iXrunTimer > 0)
-		m_iXrunSkip++;
+		++m_iXrunSkip;
 
 	// Defer the informative effect...
 	if (m_iXrunTimer  < QTRACTOR_TIMER_DELAY)
@@ -5278,7 +5278,7 @@ void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
 #endif
 
 	m_pSession->setPlayHead(iPlayHead);
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 }
 
 
@@ -5498,7 +5498,7 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	} else {
 		m_pSession->setTempo(fTempo);
 	}
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 
 	updateContents(NULL, true);
 	stabilizeForm();
@@ -5771,7 +5771,7 @@ void qtractorMainForm::contentsChanged (void)
 
 	m_pThumbView->updateContents();
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	selectionNotifySlot(NULL);
 }
 
@@ -5801,7 +5801,7 @@ void qtractorMainForm::transportTempoChanged (
 				fTempo, 2, iBeatsPerBar, iBeatDivisor));
 	}
 
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 }
 
 void qtractorMainForm::transportTempoFinished (void)
@@ -5814,11 +5814,11 @@ void qtractorMainForm::transportTempoFinished (void)
 	qDebug("qtractorMainForm::transportTempoFinished()");
 #endif
 
-	s_iTempoFinished++;
+	++s_iTempoFinished;
 	m_pTempoSpinBox->clearFocus();
 //	if (m_pTracks)
 //		m_pTracks->trackView()->setFocus();
-	s_iTempoFinished--;
+	--s_iTempoFinished;
 }
 
 
@@ -5850,7 +5850,7 @@ void qtractorMainForm::transportTimeChanged ( unsigned long iPlayHead )
 #endif
 
 	m_pSession->setPlayHead(iPlayHead);
-	m_iTransportUpdate++;
+	++m_iTransportUpdate;
 
 	stabilizeForm();
 }
@@ -5865,11 +5865,11 @@ void qtractorMainForm::transportTimeFinished (void)
 	qDebug("qtractorMainForm::transportTimeFinished()");
 #endif
 
-	s_iTimeFinished++;
+	++s_iTimeFinished;
 	m_pTimeSpinBox->clearFocus();
 //	if (m_pTracks)
 //		m_pTracks->trackView()->setFocus();
-	s_iTimeFinished--;
+	--s_iTimeFinished;
 }
 
 

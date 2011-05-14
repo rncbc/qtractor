@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -254,7 +254,7 @@ void qtractorBusForm::setBus ( qtractorBus *pBus )
 
 	// For each child, test for identity...
 	int iChildCount = pRootItem->childCount();
-	for (int i = 0; i < iChildCount; i++) {
+	for (int i = 0; i < iChildCount; ++i) {
 		QTreeWidgetItem *pItem = pRootItem->child(i);
 		// If identities match, select as current device item.
 		qtractorBusListItem *pBusItem
@@ -284,7 +284,7 @@ bool qtractorBusForm::isDirty (void)
 // Show current selected bus.
 void qtractorBusForm::showBus ( qtractorBus *pBus )
 {
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	// Reset plugin lists...
 	resetPluginLists();
@@ -359,7 +359,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 
 	// Reset dirty flag...
 	m_iDirtyCount = 0;	
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 
 	// Done.
 	stabilizeForm();
@@ -446,7 +446,7 @@ void qtractorBusForm::selectBus (void)
 			buttons)) {
 		case QMessageBox::Apply:
 			if (updateBusEx(m_pBus)) {
-				m_iDirtyTotal++;
+				++m_iDirtyTotal;
 				refreshBuses();
 			}
 			// Fall thru...
@@ -640,7 +640,7 @@ void qtractorBusForm::createBus (void)
 
 	// Execute and refresh form...
 	if (pSession->execute(pCreateBusCommand)) {
-		m_iDirtyTotal++;
+		++m_iDirtyTotal;
 		refreshBuses();
 	}
 
@@ -654,7 +654,7 @@ void qtractorBusForm::updateBus (void)
 {
 	// That's it...
 	if (updateBusEx(m_pBus)) {
-		m_iDirtyTotal++;
+		++m_iDirtyTotal;
 		refreshBuses();
 	}
 
@@ -712,7 +712,7 @@ void qtractorBusForm::deleteBus (void)
 
 	// Execute and refresh form...
 	if (pSession->execute(pDeleteBusCommand)) {
-		m_iDirtyTotal++;
+		++m_iDirtyTotal;
 		refreshBuses();
 	}
 
@@ -735,7 +735,7 @@ void qtractorBusForm::changed (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -928,7 +928,7 @@ void qtractorBusForm::updateMidiInstruments (void)
 		return;
 
 	// Avoid superfluous change notifications...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	const QIcon& icon = QIcon(":/images/itemInstrument.png");
 	if (pMidiBus->pluginList_out()) {
@@ -950,7 +950,7 @@ void qtractorBusForm::updateMidiInstruments (void)
 		m_ui.MidiInstrumentComboBox->addItem(icon, iter.value().instrumentName());
 
 	// Done.
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 

@@ -235,7 +235,7 @@ void qtractorSessionForm::reject (void)
 // Dirty up settings.
 void qtractorSessionForm::changed (void)
 {
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 

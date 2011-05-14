@@ -1,7 +1,7 @@
 // qtractorScrollView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -187,12 +187,12 @@ void qtractorScrollView::scrollContentsBy ( int dx, int dy )
 
 	if (dx) {
 		m_rectContents.moveLeft(m_rectContents.x() - dx);
-		iUpdate++;
+		++iUpdate;
 	}
 
 	if (dy) {
 		m_rectContents.moveTop(m_rectContents.y() - dy);
-		iUpdate++;
+		++iUpdate;
 	}
 
 	if (iUpdate > 0) {

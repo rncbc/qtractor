@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -112,13 +112,13 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 			close();
 			return false;
 		}
-		m_iOffset++;
-		iMThdLength--;
+		++m_iOffset;
+		--iMThdLength;
 	}
 
 	// Allocate the track map.
 	m_pTrackInfo = new TrackInfo [m_iTracks];
-	for (int iTrack = 0; iTrack < m_iTracks; iTrack++) {
+	for (int iTrack = 0; iTrack < m_iTracks; ++iTrack) {
 		// Must be a track header "MTrk"...
 		readData((unsigned char *) &header[0], 4); header[4] = (char) 0;
 		if (::strcmp(header, SMF_MTRK)) {
@@ -223,7 +223,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 			if ((iStatus & 0x80) == 0) {
 				// Go back one byte...
 				::ungetc(iStatus, m_pFile);
-				m_iOffset--;
+				--m_iOffset;
 				iStatus = iLastStatus;
 			} else {
 				iLastStatus = iStatus;
@@ -843,13 +843,13 @@ int qtractorMidiFile::readInt ( unsigned short n )
 	
 	if (n > 0) {
 		// Fixed length (n bytes) integer read.
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; ++i) {
 			val <<= 8;
 			c = ::fgetc(m_pFile);
 			if (c < 0)
 				return -1;
 			val |= c;
-			m_iOffset++;
+			++m_iOffset;
 		}
 	} else {
 		// Variable length integer read.
@@ -859,7 +859,7 @@ int qtractorMidiFile::readInt ( unsigned short n )
 				return -1;
 			val <<= 7;
 			val |= (c & 0x7f);
-			m_iOffset++;
+			++m_iOffset;
 		}
 		while ((c & 0x80) == 0x80);
 	}
@@ -889,7 +889,7 @@ int qtractorMidiFile::writeInt ( int val, unsigned short n )
 			c = (val & (0xff << i)) >> i;
 			if (::fputc(c & 0xff, m_pFile) < 0)
 				return -1;
-			m_iOffset++;
+			++m_iOffset;
 		}
 	} else {
 		// Variable length integer write.
@@ -902,7 +902,7 @@ int qtractorMidiFile::writeInt ( int val, unsigned short n )
 		while (true) {
 			if (::fputc(c & 0xff, m_pFile) < 0)
 				return -1;
-			n++;
+			++n;
 			if ((c & 0x80) == 0)
 				break;
 			c >>= 8;
@@ -984,7 +984,7 @@ QString qtractorMidiFile::createFilePathRevision (
 	sBasename += "-%1." + fi.completeSuffix();
 
 	if (iRevision < 1)
-		iRevision++;
+		++iRevision;
 
 	fi.setFile(adir, sBasename.arg(iRevision));
 	while (fi.exists())

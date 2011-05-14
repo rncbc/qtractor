@@ -117,7 +117,7 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		}
 		// Next track...
 		pTrack = pTrack->next();
-		iTrack++;
+		++iTrack;
 	}
 
 	// Done.
@@ -226,7 +226,7 @@ void qtractorSessionCursor::removeTrack ( qtractorTrack *pTrack )
 void qtractorSessionCursor::removeTrack ( unsigned int iTrack )
 {
 	--m_iTracks;	
-	for ( ; iTrack < m_iTracks; iTrack++)
+	for ( ; iTrack < m_iTracks; ++iTrack)
 		m_ppClips[iTrack] = m_ppClips[iTrack + 1];
 	m_ppClips[iTrack] = NULL;
 }
@@ -266,7 +266,7 @@ void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
 		}
 		ppClips[iTrack] = pClip;
 		pTrack = pTrack->next();
-		iTrack++;
+		++iTrack;
 	}
 }
 

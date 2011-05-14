@@ -359,7 +359,7 @@ int qtractorTrackList::trackRow ( qtractorTrack *pTrack ) const
 	while (iter.hasNext()) {
 		if (pTrack == iter.next()->track)
 			return iTrack;
-		iTrack++;
+		++iTrack;
 	}
 
 	return -1;
@@ -382,7 +382,7 @@ int qtractorTrackList::trackRowAt ( const QPoint& pos )
 		y2 += (iter.next()->track)->zoomHeight();
 		if (y >= y1 && y < y2)
 			return iTrack;
-		iTrack++;
+		++iTrack;
 	}
 
 	return -1;
@@ -442,7 +442,7 @@ QRect qtractorTrackList::trackRect ( int iTrack ) const
 				rect.setHeight(y2 - y1);
 				break;
 			}
-			iTrack--;
+			--iTrack;
 		}
 	}
 
@@ -536,7 +536,7 @@ void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 			updateContents();
 			break;
 		}
-		iTrack++;
+		++iTrack;
 	}
 }
 
@@ -781,7 +781,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 			}
 		}
 		else if (pItem->widget) (pItem->widget)->hide();
-		iTrack++;
+		++iTrack;
 	}
 
 	if (cy + h > ch) {

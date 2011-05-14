@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -209,7 +209,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		return;
 
 	// Mark that we're changing thing's here...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	// Clip properties cloning...
 	m_pClip = pClip;
@@ -321,7 +321,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	adjustSize();
 	
 	// Backup clean.
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 	m_iDirtyCount = 0;
 
 	// Done.
@@ -397,7 +397,7 @@ void qtractorClipForm::accept (void)
 				if (pAudioClip) {
 					pAudioClip->setTimeStretch(fTimeStretch);
 					pAudioClip->setPitchShift(fPitchShift);
-					iFileChange++;
+					++iFileChange;
 				}
 				break;
 			}
@@ -406,7 +406,7 @@ void qtractorClipForm::accept (void)
 					= static_cast<qtractorMidiClip *> (m_pClip);
 				if (pMidiClip) {
 					pMidiClip->setTrackChannel(iTrackChannel);
-					iFileChange++;
+					++iFileChange;
 				}
 				break;
 			}
@@ -435,7 +435,7 @@ void qtractorClipForm::accept (void)
 			pClipCommand->renameClip(m_pClip, sClipName);
 			// Filename changes...
 			if (sFilename != m_pClip->filename())
-				iFileChange++;
+				++iFileChange;
 			// Track-channel and time-stretch issues...
 			switch (clipType) {
 			case qtractorTrack::Audio: {
@@ -454,7 +454,7 @@ void qtractorClipForm::accept (void)
 					= static_cast<qtractorMidiClip *> (m_pClip);
 				if (pMidiClip) {
 					if (iTrackChannel != pMidiClip->trackChannel())
-						iFileChange++;
+						++iFileChange;
 				}
 				break;
 			}
@@ -552,7 +552,7 @@ void qtractorClipForm::reject (void)
 // Dirty up settings.
 void qtractorClipForm::changed (void)
 {
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 

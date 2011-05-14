@@ -182,7 +182,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		while (iRows > 12 && iCols < 4)
 			iRows = (params.count() / ++iCols);
 		if (params.count() % iCols)	// Adjust to balance.
-			iRows++;
+			++iRows;
 		int iRow = 0;
 		int iCol = 0;
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
@@ -195,7 +195,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			addMidiControlAction(pParamWidget, pParam->observer());
 			if (++iRow >= iRows) {
 				iRow = 0;
-				iCol++;
+				++iCol;
 			}
 		}
 	}
@@ -260,12 +260,12 @@ void qtractorPluginForm::toggleEditor ( bool bOn )
 	if (m_iUpdate > 0)
 		return;
 
-	m_iUpdate++;
+	++m_iUpdate;
 
 	// Set the toggle button anyway...
 	m_ui.EditToolButton->setChecked(bOn);
 
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 
@@ -284,9 +284,9 @@ void qtractorPluginForm::setPreset ( const QString& sPreset )
 	if (sEditText.isEmpty())
 		sEditText = g_sDefPreset;
 
-	m_iUpdate++;
+	++m_iUpdate;
 	m_ui.PresetComboBox->setEditText(sEditText);
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 QString qtractorPluginForm::preset (void) const
@@ -327,9 +327,9 @@ void qtractorPluginForm::updateActivated (void)
 	if (m_iUpdate > 0)
 		return;
 
-	m_iUpdate++;
+	++m_iUpdate;
 	m_ui.ActivateToolButton->setChecked(m_pPlugin->isActivated());
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 
@@ -378,7 +378,7 @@ void qtractorPluginForm::changeParamSlot ( unsigned long iIndex )
 #endif
 
 	// Sure is dirty...
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilize();
 }
 
@@ -390,7 +390,7 @@ void qtractorPluginForm::changePresetSlot ( const QString& sPreset )
 		return;
 
 	if (!sPreset.isEmpty() && m_ui.PresetComboBox->findText(sPreset) >= 0)
-		m_iDirtyCount++;
+		++m_iDirtyCount;
 
 	stabilize();
 }
@@ -636,7 +636,7 @@ void qtractorPluginForm::paramsSlot ( bool bOn )
 	if (m_iUpdate > 0)
 		return;
 
-	m_iUpdate++;
+	++m_iUpdate;
 
 	m_ui.ParamsGridWidget->setVisible(bOn);
 	if (bOn)
@@ -649,7 +649,7 @@ void qtractorPluginForm::paramsSlot ( bool bOn )
 	resize(width() + 1, height() + 1);
 	adjustSize();
 
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 
@@ -662,14 +662,14 @@ void qtractorPluginForm::editSlot ( bool bOn )
 	if (m_iUpdate > 0)
 		return;
 
-	m_iUpdate++;
+	++m_iUpdate;
 
 	if (bOn)
 		m_pPlugin->openEditor(this);
 	else
 		m_pPlugin->closeEditor();
 
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 
@@ -696,7 +696,7 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 	if (m_iUpdate > 0)
 		return;
 
-	m_iUpdate++;
+	++m_iUpdate;
 
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -704,7 +704,7 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 		pSession->execute(
 			new qtractorActivatePluginCommand(m_pPlugin, bOn));
 
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 
@@ -720,7 +720,8 @@ void qtractorPluginForm::refresh (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginForm[%p]::refresh()", this);
 #endif
-	m_iUpdate++;
+
+	++m_iUpdate;
 
 	qtractorSubject::flushQueue();
 
@@ -745,7 +746,7 @@ void qtractorPluginForm::refresh (void)
 	qtractorSubject::resetQueue();
 
 	m_iDirtyCount = 0;
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 

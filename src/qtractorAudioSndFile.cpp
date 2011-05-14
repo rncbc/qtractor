@@ -1,7 +1,7 @@
 // qtractorAudioSndFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -110,8 +110,8 @@ int qtractorAudioSndFile::read ( float **ppFrames, unsigned int iFrames )
 	if (nread > 0) {
 		unsigned short i;
 		unsigned int n, k = 0;
-		for (n = 0; n < (unsigned int) nread; n++) {
-			for (i = 0; i < (unsigned short) m_sfinfo.channels; i++)
+		for (n = 0; n < (unsigned int) nread; ++n) {
+			for (i = 0; i < (unsigned short) m_sfinfo.channels; ++i)
 				ppFrames[i][n] = m_pBuffer[k++];
 		}
 	}
@@ -128,8 +128,8 @@ int qtractorAudioSndFile::write ( float **ppFrames, unsigned int iFrames )
 	allocBufferCheck(iFrames);
 	unsigned short i;
 	unsigned int n, k = 0;
-	for (n = 0; n < iFrames; n++) {
-		for (i = 0; i < (unsigned short) m_sfinfo.channels; i++)
+	for (n = 0; n < iFrames; ++n) {
+		for (i = 0; i < (unsigned short) m_sfinfo.channels; ++i)
 			m_pBuffer[k++] = ppFrames[i][n];
 	}
 	return ::sf_writef_float(m_pSndFile, m_pBuffer, iFrames);

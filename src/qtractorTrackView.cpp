@@ -314,7 +314,7 @@ void qtractorTrackView::updateContentsRecord (void)
 		if (pSession && pSession->midiRecord() < 1) {
 			if (m_iLastRecordX >= cx && m_iLastRecordX < m_iPlayHeadX) {
 				x = m_iLastRecordX - cx;
-				w = (m_iPlayHeadX - m_iLastRecordX);
+				w = m_iPlayHeadX - m_iLastRecordX;
 			}
 			m_iLastRecordX = m_iPlayHeadX - (w >> 1);
 		}	
@@ -564,7 +564,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			painter.drawLine(0, y2 - cy - 1, w, y2 - cy - 1);
 		}
 		pTrack = pTrack->next();
-		iTrack++;
+		++iTrack;
 	}
 
 	// Draw vertical grid lines...
@@ -673,7 +673,7 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 		if (y2 > pos.y())
 			break;
 		pTrack = pTrack->next();
-		iTrack++;
+		++iTrack;
 	}
 
 	if (bSelectTrack)
@@ -762,7 +762,7 @@ bool qtractorTrackView::trackInfo ( qtractorTrack *pTrackPtr,
 			return true;
 		}
 		pTrack = pTrack->next();
-		iTrack++;
+		++iTrack;
 	}
 
 	return false;
@@ -923,7 +923,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 				if (pDropItem->channel < 0) {
 					int iTracks = (file.format() == 1 ? file.tracks() : 16);
 					for (int iTrackChannel = 0;
-							iTrackChannel < iTracks; iTrackChannel++) {
+							iTrackChannel < iTracks; ++iTrackChannel) {
 						if (file.readTrack(&seq, iTrackChannel)
 							&& seq.duration() > 0) {
 							t1 = t0 + seq.duration();
@@ -1141,7 +1141,7 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 					&& pDropItem->channel >= 0) {
 					m_pTracks->addMidiTrackChannel(
 						pDropItem->path, pDropItem->channel, iClipStart);
-					iAddTrack++;
+					++iAddTrack;
 				} else  {
 					files.append(pDropItem->path);
 				}
@@ -1151,11 +1151,11 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 				switch (m_dropType) {
 				case qtractorTrack::Audio:
 					m_pTracks->addAudioTracks(files, iClipStart);
-					iAddTrack++;
+					++iAddTrack;
 					break;
 				case qtractorTrack::Midi:
 					m_pTracks->addMidiTracks(files, iClipStart);
-					iAddTrack++;
+					++iAddTrack;
 					break;
 				default:
 					break;
@@ -1232,7 +1232,7 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 		// If multiple items, just snap/concatenate them...
 		iClipStart = pSession->frameSnap(iClipStart
 			+ pSession->frameFromPixel(pDropItem->rect.width()));
-		iTrackClip++;
+		++iTrackClip;
 	}
 
 	// Clean up.
@@ -3273,7 +3273,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 		// If track's new it will need a name...
 		if (bAddTrack && iTrackClip == 0)
 			pTrack->setTrackName(pClip->clipName());
-		iTrackClip++;
+		++iTrackClip;
 	}
 
 	// May reset selection, yep.
@@ -3364,7 +3364,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 				// If track's new it will need a name...
 				if (bAddTrack && iTrackClip == 0)
 					pTrack->setTrackName(pClip->clipName());
-				iTrackClip++;
+				++iTrackClip;
 			}
 		}
 		// Set to repeat...

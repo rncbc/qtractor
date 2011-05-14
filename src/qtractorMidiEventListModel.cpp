@@ -1,7 +1,7 @@
 // qtractorMidiEventListModel.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -184,14 +184,14 @@ qtractorMidiEvent *qtractorMidiEventListModel::eventAt ( int i ) const
 	if (i > m_iEvent) {
 		while (m_pEvent && m_pEvent->next() && i > m_iEvent) {
 			m_pEvent = m_pEvent->next();
-			m_iEvent++;
+			++m_iEvent;
 		}
 	}
 	else 
 	if (i < m_iEvent) {
 		while (m_pEvent && m_pEvent->prev() && i < m_iEvent) {
 			m_pEvent = m_pEvent->prev();
-			m_iEvent--;
+			--m_iEvent;
 		}
 	}
 
@@ -217,7 +217,7 @@ QModelIndex qtractorMidiEventListModel::indexOfEvent (
 		while (m_pEvent != pEvent && m_pEvent->next()
 			&& m_pEvent->time() == iTime) {
 			m_pEvent = m_pEvent->next();
-			m_iEvent++;
+			++m_iEvent;
 		}
 	}
 
@@ -243,13 +243,13 @@ QModelIndex qtractorMidiEventListModel::indexFromTick (
 		while (m_pEvent && m_pEvent->prev()
 			&& (m_pEvent->prev())->time() >= iTime) {
 			m_pEvent = m_pEvent->prev();
-			m_iEvent--;
+			--m_iEvent;
 		}
 	}
 	else
 	while (m_pEvent && m_pEvent->next() && iTime > m_pEvent->time()) {
 		m_pEvent = m_pEvent->next();
-		m_iEvent++;
+		++m_iEvent;
 	}
 
 	//qDebug("indexFromTick(%lu) index=%d time=%lu", iTime, m_iEvent, m_pEvent->time());

@@ -821,7 +821,7 @@ void qtractorMidiEditorForm::resetDirtyCount (void)
 	// MIDI clip might be dirty already.
 	qtractorMidiClip *pMidiClip = midiClip();
 	if (pMidiClip && pMidiClip->isDirty())
-		m_iDirtyCount++;
+		++m_iDirtyCount;
 }
 
 
@@ -1541,7 +1541,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	int k = 0;
 	if (format() == 0) {
 		sTrackChannel = tr("Channel %1");
-		k++;
+		++k;
 	} else {
 		sTrackChannel = tr("Track %1");
 	}
@@ -1791,7 +1791,7 @@ void qtractorMidiEditorForm::selectionChanged ( qtractorMidiEditor *pMidiEditor 
 
 void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
 {
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 
 	selectionChanged(pMidiEditor);
 }

@@ -128,7 +128,7 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 // Visitors overload.
 void qtractorTrackButton::updateValue ( float fValue )
 {
-	m_iUpdate++;
+	++m_iUpdate;
 
 	bool bOn = (fValue > 0.0f);
 
@@ -139,7 +139,7 @@ void qtractorTrackButton::updateValue ( float fValue )
 
 	QPushButton::setChecked(bOn);
 
-	m_iUpdate--;
+	--m_iUpdate;
 }
 
 

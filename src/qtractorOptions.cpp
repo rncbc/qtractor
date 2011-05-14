@@ -559,7 +559,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		if (iCmdArgs > 0) {
 			sSessionFile += ' ';
 			sSessionFile += args.at(i);
-			iCmdArgs++;
+			++iCmdArgs;
 			continue;
 		}
 
@@ -581,7 +581,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			}
 			sSessionId = sVal;
 			if (iEqual < 0)
-				i++;
+				++i;
 		}
 		else
 	#endif
@@ -598,7 +598,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			// If we don't have one by now,
 			// this will be the startup session file...
 			sSessionFile += sArg;
-			iCmdArgs++;
+			++iCmdArgs;
 		}
 	}
 
@@ -669,7 +669,7 @@ void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 		pComboBox->setUpdatesEnabled(false);
 		pComboBox->setDuplicatesEnabled(false);
 		pComboBox->clear();
-		for (int i = 0; i < iLimit; i++) {
+		for (int i = 0; i < iLimit; ++i) {
 			const QString& sText = m_settings.value(
 				"/Item" + QString::number(i + 1)).toString();
 			if (sText.isEmpty())
@@ -693,10 +693,10 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 		int i = pComboBox->findText(sCurrentText);
 		if (i >= 0) {
 			pComboBox->removeItem(i);
-			iCount--;
+			--iCount;
 		}
 		pComboBox->insertItem(0, sCurrentText);
-		iCount++;
+		++iCount;
 	}
 
 	// Take care of item limit...
@@ -705,7 +705,7 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 
 	// Save combobox list to configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
-	for (int i = 0; i < iCount; i++) {
+	for (int i = 0; i < iCount; ++i) {
 		const QString& sText = pComboBox->itemText(i);
 		if (sText.isEmpty())
 			continue;

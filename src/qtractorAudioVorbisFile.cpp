@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -203,7 +203,7 @@ int qtractorAudioVorbisFile::read ( float **ppFrames, unsigned int iFrames )
 		nread = ::ov_read_float(&m_ovfile, &ppBuffer, iFrames, &m_ovsect);
 	if (nread > 0) {
 		unsigned short i;
-		for (i = 0; i < (unsigned short) m_ovinfo->channels; i++) {
+		for (i = 0; i < (unsigned short) m_ovinfo->channels; ++i) {
 			::memcpy(ppFrames[i], ppBuffer[i], nread * sizeof(float));
 		}
 	}
@@ -228,7 +228,7 @@ int qtractorAudioVorbisFile::write ( float **ppFrames, unsigned int iFrames )
 	float **ppBuffer = vorbis_analysis_buffer(&m_ovdsp, iFrames);
 
 	// Uninterleaved samples...
-	for (unsigned short i = 0; i < m_iChannels; i++)
+	for (unsigned short i = 0; i < m_iChannels; ++i)
 		::memcpy(ppBuffer[i], ppFrames[i], iFrames * sizeof(float));
 
 	// Tell the library how much we actually submitted...

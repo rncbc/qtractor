@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,7 +128,7 @@ qtractorTrackForm::qtractorTrackForm (
 		new qtractorColorItemDelegate(m_ui.BackgroundColorComboBox));
 	m_ui.ForegroundColorComboBox->clear();
 	m_ui.BackgroundColorComboBox->clear();
-	for (int i = 1; i < 28; i++) {
+	for (int i = 1; i < 28; ++i) {
 		const QColor rgbBack = qtractorTrack::trackColor(i);
 		const QColor rgbFore = rgbBack.darker();
 		m_ui.ForegroundColorComboBox->addItem(rgbFore.name());
@@ -239,7 +239,7 @@ qtractorTrackForm::~qtractorTrackForm (void)
 void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 {
 	// Avoid dirty this all up.
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	// Set target track reference descriptor.
 	m_pTrack = pTrack;
@@ -306,7 +306,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 
 	// Backup clean.
 	m_iDirtyCount = 0;
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 
 	// Done.
 	stabilizeForm();
@@ -506,7 +506,7 @@ void qtractorTrackForm::updateInstruments (void)
 		return;
 
 	// Avoid superfluous change notifications...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	m_ui.InstrumentComboBox->clear();
 	m_ui.InstrumentComboBox->addItem(tr("(No instrument)"));
@@ -527,7 +527,7 @@ void qtractorTrackForm::updateInstruments (void)
 		m_ui.InstrumentComboBox->addItem(icon, iter.value().instrumentName());
 
 	// Done.
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 
@@ -552,7 +552,7 @@ void qtractorTrackForm::updateInstrumentsAdd (
 void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 {
 	// Avoid superfluos change notifications...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	// Make changes due to track type change.
 	qtractorEngine *pEngine = NULL;
@@ -601,7 +601,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	adjustSize();
 
 	// Done.
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 
@@ -623,7 +623,7 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 #endif
 
 	// Avoid superfluos change notifications...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	// MIDI channel patch...
 	const qtractorMidiBus::Patch& patch = m_pMidiBus->patch(iChannel);
@@ -653,7 +653,7 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 		iBankSelMethod, iBank, iProg);
 
 	// Done.
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 
@@ -681,7 +681,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		return;
 
 	// Avoid superfluos change notifications...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	// Default (none) patch bank list...
 	int iBankIndex = 0;
@@ -762,7 +762,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	updatePrograms(sInstrumentName, iBank, iProg);
 
 	// Done.
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 
@@ -790,7 +790,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		return;
 
 	// Avoid superfluos change notifications...
-	m_iDirtySetup++;
+	++m_iDirtySetup;
 
 	// Default (none) patch program list...
 	// Refresh patch program mapping...
@@ -860,7 +860,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	}
 
 	// Done.
-	m_iDirtySetup--;
+	--m_iDirtySetup;
 }
 
 
@@ -987,7 +987,7 @@ void qtractorTrackForm::foregroundColorChanged ( const QString& sText )
 
 	updateColorText(m_ui.ForegroundColorComboBox, QColor(sText));
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -999,7 +999,7 @@ void qtractorTrackForm::backgroundColorChanged ( const QString& sText )
 
 	updateColorText(m_ui.BackgroundColorComboBox, QColor(sText));
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -1016,7 +1016,7 @@ void qtractorTrackForm::changed (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -1245,7 +1245,7 @@ void qtractorTrackForm::progChanged (void)
 		m_pMidiBus->setPatch(iChannel, sInstrumentName,
 			iBankSelMethod, iBank, iProg, m_pTrack);
 		// Make it dirty.
-		m_iDirtyPatch++;
+		++m_iDirtyPatch;
 	}
 
 	// Flag that it changed anyhow!

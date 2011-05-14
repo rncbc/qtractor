@@ -765,7 +765,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (m_bPlayerBus && m_pPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
 		else
-			iOutputBus++;
+			++iOutputBus;
 		ATOMIC_SET(&m_playerLock, 0);
 	}
 
@@ -778,7 +778,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		while (pMidiManager) {
 			pMidiManager->process(iTimeStart, iTimeEnd);
 			if (!pMidiManager->isAudioOutputBus())
-				iOutputBus++;
+				++iOutputBus;
 			pMidiManager = pMidiManager->next();
 		}
 	}
@@ -814,7 +814,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 								(pTrack->pluginList())->process(
 									pOutputBus->buffer(), nframes);
 							pOutputBus->buffer_commit(nframes);
-							iOutputBus++;
+							++iOutputBus;
 						}
 					}
 				}
@@ -2387,7 +2387,7 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 
 	// For each channel...
 	ConnectItem item;
-	for (item.index = 0; item.index < m_iChannels; item.index++) {
+	for (item.index = 0; item.index < m_iChannels; ++item.index) {
 		// Get port connections...
 		const char **ppszClientPorts = jack_port_get_all_connections(
 			pAudioEngine->jackClient(), ppPorts[item.index]);
@@ -2410,7 +2410,7 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 				}
 				else if (!bConnect)
 					connects.append(new ConnectItem(item));
-				iClientPort++;
+				++iClientPort;
 			}
 			::free(ppszClientPorts);
 		}
@@ -2456,7 +2456,7 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 			if (iItem >= 0) {
 				connects.removeAt(iItem);
 				delete pItem;
-				iUpdate++;
+				++iUpdate;
 			}
 		}
 	}

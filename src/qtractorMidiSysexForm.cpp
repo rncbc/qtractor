@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -254,7 +254,7 @@ void qtractorMidiSysexForm::importSlot (void)
 		const QString& sPath = ifile.next();
 		if (loadSysexItems(items, sPath)) {
 			pOptions->sMidiSysexDir = QFileInfo(sPath).absolutePath();
-			m_iDirtyCount++;
+			++m_iDirtyCount;
 		}
 	}
 	m_ui.SysexListView->addTopLevelItems(items);
@@ -347,7 +347,7 @@ void qtractorMidiSysexForm::moveUpSlot (void)
 			pItem = m_ui.SysexListView->takeTopLevelItem(iItem);
 			m_ui.SysexListView->insertTopLevelItem(iItem - 1, pItem);
 			m_ui.SysexListView->setCurrentItem(pItem);
-			m_iDirtyCount++;
+			++m_iDirtyCount;
 		}
 	}
 
@@ -365,7 +365,7 @@ void qtractorMidiSysexForm::moveDownSlot (void)
 			pItem = m_ui.SysexListView->takeTopLevelItem(iItem);
 			m_ui.SysexListView->insertTopLevelItem(iItem + 1, pItem);
 			m_ui.SysexListView->setCurrentItem(pItem);
-			m_iDirtyCount++;
+			++m_iDirtyCount;
 		}
 	}
 
@@ -384,14 +384,14 @@ void qtractorMidiSysexForm::loadSlot ( const QString& sName )
 	if (pOptions == NULL)
 		return;
 
-	m_iUpdateSysex++;
+	++m_iUpdateSysex;
 
 	QSettings& settings = pOptions->settings();
 	settings.beginGroup(sysexGroup());
 	loadSysexFile(settings.value(sName).toString());
 	settings.endGroup();
 
-	m_iUpdateSysex--;
+	--m_iUpdateSysex;
 
 	refreshSysex();
 	stabilizeForm();
@@ -439,12 +439,12 @@ void qtractorMidiSysexForm::openSlot (void)
 		QFileInfo fi(sFilename);
 		if (fi.exists()) {
 			// Get it loaded alright...
-			m_iUpdateSysex++;
+			++m_iUpdateSysex;
 			loadSysexFile(sFilename);
 			m_ui.NameComboBox->setEditText(fi.baseName());
 			pOptions->sMidiSysexDir = fi.absolutePath();
-			m_iDirtyItem++;
-			m_iUpdateSysex--;
+			++m_iDirtyItem;
+			--m_iUpdateSysex;
 		}
 	}
 
@@ -518,10 +518,10 @@ void qtractorMidiSysexForm::saveSlot (void)
 		if (QFileInfo(sFilename).suffix().isEmpty())
 			sFilename += '.' + sExt;
 		// Get it saved alright...
-		m_iUpdateSysex++;
+		++m_iUpdateSysex;
 		saveSysexFile(sFilename);
 		settings.setValue(sName, sFilename);
-		m_iUpdateSysex--;
+		--m_iUpdateSysex;
 		pOptions->sMidiSysexDir = QFileInfo(sFilename).absolutePath();
 	}
 	settings.endGroup();
@@ -558,7 +558,7 @@ void qtractorMidiSysexForm::deleteSlot (void)
 	}
 
 	// Go ahead...
-	m_iUpdateSysex++;
+	++m_iUpdateSysex;
 
 	QSettings& settings = pOptions->settings();
 	settings.beginGroup(sysexGroup());
@@ -570,7 +570,7 @@ void qtractorMidiSysexForm::deleteSlot (void)
 	settings.remove(sName);
 	settings.endGroup();
 
-	m_iUpdateSysex--;
+	--m_iUpdateSysex;
 
 	refreshSysex();
 	stabilizeForm();
@@ -598,7 +598,7 @@ void qtractorMidiSysexForm::addSlot (void)
 
 	m_ui.SysexListView->setCurrentItem(pItem);
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	m_iDirtyItem = 0;
 
 	stabilizeForm();
@@ -622,7 +622,7 @@ void qtractorMidiSysexForm::updateSlot (void)
 
 	m_ui.SysexListView->setCurrentItem(pItem);
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	m_iDirtyItem = 0;
 
 	stabilizeForm();
@@ -635,7 +635,7 @@ void qtractorMidiSysexForm::removeSlot (void)
 	QTreeWidgetItem *pItem = m_ui.SysexListView->currentItem();
 	if (pItem) {
 		delete pItem;
-		m_iDirtyCount++;
+		++m_iDirtyCount;
 		m_iDirtyItem = 0;
 	}
 
@@ -646,15 +646,15 @@ void qtractorMidiSysexForm::removeSlot (void)
 // Clear all SysEx items from list.
 void qtractorMidiSysexForm::clearSlot (void)
 {
-	m_iUpdateSysex++;
+	++m_iUpdateSysex;
 
 	m_ui.SysexListView->clear();
 	m_ui.NameComboBox->lineEdit()->clear();
 	m_ui.SysexTextEdit->clear();
 
-	m_iUpdateSysex--;
+	--m_iUpdateSysex;
 
-	m_iDirtyCount++;
+	++m_iDirtyCount;
 	m_iDirtyItem = 0;
 
 	stabilizeForm();
@@ -668,9 +668,9 @@ void qtractorMidiSysexForm::nameChanged ( const QString& sName )
 		return;
 
 	if (!sName.isEmpty() && m_ui.NameComboBox->findText(sName) >= 0)
-		m_iDirtySysex++;
+		++m_iDirtySysex;
 
-	m_iDirtyItem++;
+	++m_iDirtyItem;
 	stabilizeForm();
 }
 
@@ -680,9 +680,9 @@ void qtractorMidiSysexForm::textChanged (void)
 	if (m_iUpdateSysex > 0)
 		return;
 
-	m_iDirtySysex++;
+	++m_iDirtySysex;
 
-	m_iDirtyItem++;
+	++m_iDirtyItem;
 	stabilizeForm();
 }
 
@@ -763,12 +763,12 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 	QTreeWidgetItem *pItem = m_ui.SysexListView->currentItem();
 	if (pItem) {
 		if (m_iDirtyItem == 0) {
-			m_iUpdateSysex++;
+			++m_iUpdateSysex;
 			qtractorMidiSysex *pSysex
 				= static_cast<qtractorMidiSysexItem *> (pItem)->sysex();
 			m_ui.NameComboBox->setEditText(pSysex->name());
 			m_ui.SysexTextEdit->setText(pSysex->text());
-			m_iUpdateSysex--;
+			--m_iUpdateSysex;
 			m_iDirtyItem = 0;
 		}
 		int iItem = m_ui.SysexListView->indexOfTopLevelItem(pItem);
@@ -835,7 +835,7 @@ void qtractorMidiSysexForm::refreshSysex (void)
 	if (m_iUpdateSysex > 0)
 		return;
 
-	m_iUpdateSysex++;
+	++m_iUpdateSysex;
 
 	const QString sOldName = m_ui.NameComboBox->currentText();
 	m_ui.NameComboBox->clear();
@@ -848,7 +848,7 @@ void qtractorMidiSysexForm::refreshSysex (void)
 	m_ui.NameComboBox->setEditText(sOldName);
 
 	m_iDirtySysex = 0;
-	m_iUpdateSysex--;
+	--m_iUpdateSysex;
 }
 
 

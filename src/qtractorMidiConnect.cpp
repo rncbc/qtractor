@@ -1,7 +1,7 @@
 // qtractorMidiConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -224,22 +224,22 @@ int qtractorMidiClientListView::updateClientPorts (void)
 							if (pClientItem == NULL) {
 								pClientItem = new qtractorMidiClientItem(this,
 									sClientName, iAlsaClient);
-								iDirtyCount++;
+								++iDirtyCount;
 							} else {
 								pPortItem = pClientItem->findPortItem(iAlsaPort);
 								if (sClientName != pClientItem->clientName()) {
 									pClientItem->setClientName(sClientName);
-									iDirtyCount++;
+									++iDirtyCount;
 								}
 							}
 							if (pClientItem) {
 								if (pPortItem == NULL) {
 									pPortItem = new qtractorMidiPortItem(
 										pClientItem, sPortName, iAlsaPort);
-									iDirtyCount++;
+									++iDirtyCount;
 								} else if (sPortName != pPortItem->portName()) {
 									pPortItem->setPortName(sPortName);
-									iDirtyCount++;
+									++iDirtyCount;
 								}
 							}
 							if (pPortItem)
@@ -299,7 +299,7 @@ void qtractorMidiConnect::createIcons (void)
 void qtractorMidiConnect::deleteIcons (void)
 {
 	if (--g_iIconsRefCount == 0) {
-		for (int i = 0; i < IconCount; i++) {
+		for (int i = 0; i < IconCount; ++i) {
 			if (g_apIcons[i])
 				delete g_apIcons[i];
 			g_apIcons[i] = NULL;

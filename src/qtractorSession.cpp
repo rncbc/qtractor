@@ -903,9 +903,9 @@ qtractorTrack *qtractorSession::trackAt ( int iTrack ) const
 void qtractorSession::setRecordTracks ( bool bRecord )
 {
 	if (bRecord) {
-		m_iRecordTracks++;
+		++m_iRecordTracks;
 	} else if (m_iRecordTracks > 0) {
-		m_iRecordTracks--;
+		--m_iRecordTracks;
 	}
 }
 
@@ -919,9 +919,9 @@ unsigned int qtractorSession::recordTracks (void) const
 void qtractorSession::setMuteTracks ( bool bMute )
 {
 	if (bMute) {
-		m_iMuteTracks++;
+		++m_iMuteTracks;
 	} else if (m_iMuteTracks > 0) {
-		m_iMuteTracks--;
+		--m_iMuteTracks;
 	}
 }
 
@@ -935,9 +935,9 @@ unsigned int qtractorSession::muteTracks (void) const
 void qtractorSession::setSoloTracks ( bool bSolo )
 {
 	if (bSolo) {
-		m_iSoloTracks++;
+		++m_iSoloTracks;
 	} else if (m_iSoloTracks > 0) {
-		m_iSoloTracks--;
+		--m_iSoloTracks;
 	}
 }
 
@@ -1351,7 +1351,7 @@ QString qtractorSession::createFilePath ( const QString& sTrackName,
 	sFilename += qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
 
 	if (iClipNo < 1)
-		iClipNo++;
+		--iClipNo;
 
 	QFileInfo fi(m_props.sessionDir, sFilename.arg(iClipNo));
 	while (fi.exists())
@@ -1411,10 +1411,10 @@ void qtractorSession::trackRecord (
 		// One-down current tracks in record mode.
 		switch (pTrack->trackType()) {
 		case qtractorTrack::Audio:
-			m_iAudioRecord--;
+			--m_iAudioRecord;
 			break;
 		case qtractorTrack::Midi:
-			m_iMidiRecord--;
+			--m_iMidiRecord;
 			break;
 		default:
 			break;
@@ -1439,7 +1439,7 @@ void qtractorSession::trackRecord (
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
 		// One-up audio tracks in record mode.
-		m_iAudioRecord++;
+		++m_iAudioRecord;
 		break;
 	}
 	case qtractorTrack::Midi:
@@ -1460,7 +1460,7 @@ void qtractorSession::trackRecord (
 				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);
 		}
 		// One-up MIDI tracks in record mode.
-		m_iMidiRecord++;
+		++m_iMidiRecord;
 		break;
 	}
 	default:
@@ -1614,7 +1614,7 @@ void qtractorSession::process ( qtractorSessionCursor *pSessionCursor,
 				iFrameStart, iFrameEnd);
 		}
 		pTrack = pTrack->next();
-		iTrack++;
+		++iTrack;
 	}
 }
 
