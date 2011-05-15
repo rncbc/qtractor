@@ -1342,18 +1342,16 @@ QString qtractorSession::sanitize ( const QString& s )
 
 
 // Create a brand new filename (absolute file path).
-QString qtractorSession::createFilePath ( const QString& sTrackName,
-	int iClipNo, const QString& sExt )
+QString qtractorSession::createFilePath (
+    const QString& sTrackName, const QString& sExt )
 {
 	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
 	if (!sFilename.isEmpty())
 		sFilename += '-';
 	sFilename += qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
 
-	if (iClipNo < 1)
-		--iClipNo;
-
-	QFileInfo fi(m_props.sessionDir, sFilename.arg(iClipNo));
+	int iClipNo = 0;
+	QFileInfo fi(m_props.sessionDir, sFilename.arg(++iClipNo));
 	while (fi.exists())
 		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
 
@@ -1434,7 +1432,7 @@ void qtractorSession::trackRecord (
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(iClipStart);
 		pAudioClip->openAudioFile(
-			createFilePath(pTrack->trackName(), 0,
+			createFilePath(pTrack->trackName(),
 				qtractorAudioFileFactory::defaultExt()),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
@@ -1447,7 +1445,7 @@ void qtractorSession::trackRecord (
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 		pMidiClip->setClipStart(iClipStart);
 		pMidiClip->openMidiFile(
-			createFilePath(pTrack->trackName(), 0, "mid"),
+			createFilePath(pTrack->trackName(), "mid"),
 			qtractorMidiClip::defaultFormat(),
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip);

@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -159,10 +159,10 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	if (pOptions)
 		pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
 
-	// Suggest a new export export filename...
+	// Suggest a brand new export filename...
 	if (pSession) {
 		m_ui.ExportPathComboBox->setEditText(
-			pSession->createFilePath("export", 0, m_sExportExt));
+			pSession->createFilePath("export", m_sExportExt));
 	}
 
 	// Fill in the output bus names list...
