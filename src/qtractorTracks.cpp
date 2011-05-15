@@ -423,8 +423,8 @@ bool qtractorTracks::newClip (void)
 				pSession->ticksPerBeat() * pSession->beatsPerBar()));
 		}
 		// Create a clip filename from scratch...
-		const QString& sFilename = pSession->createFilePath(
-			pTrack->trackName(), pTrack->clips().count(), "mid");
+		const QString& sFilename
+			= pSession->createFilePath(pTrack->trackName(), "mid");
 		pClip->setFilename(sFilename);
 		pClip->setClipName(QFileInfo(sFilename).baseName());
 		// Proceed to setup the MDII clip properly...
@@ -1055,7 +1055,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this, sTitle,
-		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+		pSession->createFilePath(pTrack->trackName(), sExt), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 	fileDialog.setFileMode(QFileDialog::AnyFile);
@@ -1314,7 +1314,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this, sTitle,
-		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+		pSession->createFilePath(pTrack->trackName(), sExt), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 	fileDialog.setFileMode(QFileDialog::AnyFile);
