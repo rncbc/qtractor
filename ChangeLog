@@ -7,7 +7,7 @@ SVN TRUNK
 
 - Recording clips now shown in a reddish shade;
   also, it's all now shown a bit more correctly,
-  reagrding the lead and withing looping range.
+  regarding the lead and withing looping range.
 
 - Session file format saved on JACK session has
   been reverted to the normal regular one (.qts)
