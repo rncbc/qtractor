@@ -315,8 +315,11 @@ void qtractorTrackView::updateContentsRecord (void)
 			if (m_iLastRecordX >= cx && m_iLastRecordX < m_iPlayHeadX) {
 				x = m_iLastRecordX - cx;
 				w = m_iPlayHeadX - m_iLastRecordX;
+				m_iLastRecordX = m_iPlayHeadX - (w >> 1);
+			} else {
+				w = pViewport->width();
+				m_iLastRecordX = m_iPlayHeadX - (w >> 3);
 			}
-			m_iLastRecordX = m_iPlayHeadX - (w >> 1);
 		}	
 		pViewport->update(QRect(x, 0, w, pViewport->height()));
 	}
@@ -362,8 +365,11 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		if (iTrackStart < iTrackEnd) {
 			int y1 = 0;
 			int y2 = 0;
+			int w;
 			unsigned long iFramePos = pSession->framePos();
 			unsigned long iFrameOffset = iFramePos - iTrackEnd;
+			unsigned long iLoopStart = pSession->loopStart();
+			unsigned long iLoopEnd = pSession->loopEnd();
 			qtractorTrack *pTrack = pSession->tracks().first();
 			while (pTrack && y2 < ch) {
 				y1  = y2;
@@ -376,19 +382,43 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						rect.left() - 1, y1 - cy + 1, rect.width() + 2, h);
 					unsigned long iClipStart  = pClipRecord->clipStart();
 					unsigned long iClipOffset = iFrameOffset;
-					if (pSession->isLooping()) {
-						unsigned long iLoopStart = pSession->loopStart();
-						unsigned long iLoopEnd   = pSession->loopEnd();
-						if (iClipStart > iLoopStart && iClipStart < iLoopEnd
-							&& iFramePos > iLoopEnd) {
-							iClipOffset -= iClipStart - iLoopStart;
+					if (iLoopStart < iLoopEnd) { // aka. pSession->isLooping()
+						// Clip recording started within loop range:
+						// -- adjust turn-around clip offset...
+						if (iClipStart > iLoopStart && iClipStart < iLoopEnd) {
+							if (iFramePos > iLoopEnd) {
+								iClipOffset -= iClipStart - iLoopStart;
+								iClipStart = iLoopStart;
+							}
+						}
+						else
+						// Clip recording is within loop range:
+						// -- redraw leading clip segment...
+						if (iFramePos > iLoopStart) {
+							unsigned long iLeadOffset = 0;
+							if (iClipStart < iTrackStart)
+								iLeadOffset += iTrackStart - iClipStart;
+							x = pSession->pixelFromFrame(iClipStart) - cx;
+							w = 0;
+							if (iClipStart < iLoopStart) {
+								w += pSession->pixelFromFrame(iLoopStart - iClipStart);
+								iClipOffset += iLoopStart - iClipStart;
+							}
+							const QRect& leadRect
+								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
+							if (!leadRect.isEmpty()) {
+								pClipRecord->drawClip(pPainter, leadRect, iLeadOffset);
+								pPainter->fillRect(leadRect, QColor(255, 0, 0, 120));
+							}
 							iClipStart = iLoopStart;
 						}
 					}
+					// Clip recording rolling:
+					// -- redraw current clip segment...
 					if (iClipStart < iTrackStart)
 						iClipOffset += iTrackStart - iClipStart;
 					x = pSession->pixelFromFrame(iClipStart) - cx;
-					int w = 0;
+					w = 0;
 					if (iClipStart < iTrackEnd)
 						w += pSession->pixelFromFrame(iTrackEnd - iClipStart);
 					const QRect& clipRect
@@ -556,7 +586,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 				painter.setPen(rgbLight);
 				painter.drawLine(0, y1 - cy, w, y1 - cy);
 			}
-			QRect trackRect(0, y1 - cy + 1, w, y2 - y1 - 2);
+			const QRect trackRect(0, y1 - cy + 1, w, y2 - y1 - 2);
 			painter.fillRect(trackRect, rgbMid);
 			pTrack->drawTrack(&painter, trackRect, iTrackStart, iTrackEnd,
 				m_pSessionCursor->clip(iTrack));
