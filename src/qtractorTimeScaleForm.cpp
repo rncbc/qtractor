@@ -632,7 +632,7 @@ void qtractorTimeScaleForm::tempoTap (void)
 	int iTimeTap = m_pTempoTap->restart();
 	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
 		m_fTempoTap += (60000.0f / float(iTimeTap));
-		if (++m_iTempoTap >= 3) {
+		if (++m_iTempoTap > 2) {
 			m_fTempoTap /= float(m_iTempoTap);
 			m_iTempoTap  = 1; // Median-like averaging...
 			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), true);

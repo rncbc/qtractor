@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Recording clips now shown in a reddish shade;
+  also, it's all now shown a bit more correctly,
+  reagrding the lead and withing looping range.
+
 - Session file format saved on JACK session has
   been reverted to the normal regular one (.qts)
   instead of the archive/zip bundle (.qtz) which
@@ -38,8 +42,6 @@ SVN TRUNK
   suspended while mouse cursor hovering prompts
   for any editing action (applies to main track-
   view and MIDI clip editor/piano-roll).
-
-- Recording clips now shown in a reddish shade ;)
 
 - Audio vs. MIDI time drift correction now takes
   jack_frame_time() as audio time reference.
