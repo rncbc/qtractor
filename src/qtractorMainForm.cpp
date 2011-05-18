@@ -1158,7 +1158,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
 		// Just load the prabable startup session...
-		if (loadSessionFile(m_pOptions->sSessionFile))
+		if (loadSessionFileEx(m_pOptions->sSessionFile))
 			m_pOptions->sSessionFile.clear();
 	} else {
 		// Change to last known session dir...
@@ -1340,7 +1340,7 @@ void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
 		QString sFilename = pMimeData->urls().first().toLocalFile();
 		// Close current session and try to load the new one...
 		if (!sFilename.isEmpty() && closeSession())
-			loadSessionFile(sFilename);
+			loadSessionFileEx(sFilename);
 	}
 }
 
@@ -1427,7 +1427,7 @@ bool qtractorMainForm::newSession (void)
 	// Check whether we start new session
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate)
-		return loadSessionFile(m_pOptions->sSessionTemplatePath, true);
+		return loadSessionFileEx(m_pOptions->sSessionTemplatePath, true);
 
 	// Ok, increment untitled count.
 	++m_iUntitled;
@@ -1724,17 +1724,13 @@ bool qtractorMainForm::closeSession (void)
 
 
 // Load a session from specific file path.
-bool qtractorMainForm::loadSessionFile (
+bool qtractorMainForm::loadSessionFileEx (
 	const QString& sFilename, bool bTemplate )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::loadSessionFile(\"%s\", %d)",
+	qDebug("qtractorMainForm::loadSessionFileEx(\"%s\", %d)",
 		sFilename.toUtf8().constData(), int(bTemplate));
 #endif
-
-	// Set default session dir...
-	const QString& sSessionDir = QFileInfo(sFilename).absolutePath();
-	m_pSession->setSessionDir(sSessionDir);
 
 	// Flag whether we're about to save as template or archive...
 	QFileInfo info(sFilename);
@@ -1792,7 +1788,6 @@ bool qtractorMainForm::loadSessionFile (
 		}
 		// Got something loaded...
 		if (m_pOptions) {
-			m_pOptions->sSessionDir = sSessionDir;
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine)
 				m_pOptions->iTransportMode = int(pAudioEngine->transportMode());
@@ -1803,7 +1798,7 @@ bool qtractorMainForm::loadSessionFile (
 				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
 				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
 			}
-			m_pOptions->saveOptions();
+		//	m_pOptions->saveOptions();
 		}
 	} else {
 		// Something went wrong...
@@ -1830,12 +1825,27 @@ bool qtractorMainForm::loadSessionFile (
 }
 
 
+bool qtractorMainForm::loadSessionFile (
+	const QString& sFilename, bool bTemplate )
+{
+	bool bResult = loadSessionFileEx(sFilename, bTemplate);
+
+	// Save as default session directory...
+	if (m_pOptions && bResult) {
+		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+		m_pOptions->saveOptions();
+	}
+
+	return bResult;
+}
+
+
 // Save current session to specific file path.
-bool qtractorMainForm::saveSessionFile (
+bool qtractorMainForm::saveSessionFileEx (
 	const QString& sFilename, bool bTemplate )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::saveSessionFile(\"%s\", %d)",
+	qDebug("qtractorMainForm::saveSessionFileEx(\"%s\", %d)",
 		sFilename.toUtf8().constData(), int(bTemplate));
 #endif
 
@@ -1914,18 +1924,27 @@ bool qtractorMainForm::saveSessionFile (
 			"Sorry.").arg(sFilename));
 	}
 
-	// Save as default session directory.
-	if (m_pOptions) {
-		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
-		m_pOptions->saveOptions();
-	}
-
 	// Stabilize form...
 	if (!bTemplate)
 		m_sFilename = sFilename;
 
 	appendMessages(tr("Save session: \"%1\".").arg(sessionName(m_sFilename)));
 	stabilizeForm();
+
+	return bResult;
+}
+
+
+bool qtractorMainForm::saveSessionFile (
+	const QString& sFilename, bool bTemplate )
+{
+	bool bResult = saveSessionFileEx(sFilename, bTemplate);
+
+	// Save as default session directory...
+	if (m_pOptions && bResult) {
+		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+		m_pOptions->saveOptions();
+	}
 
 	return bResult;
 }
@@ -1961,7 +1980,7 @@ void qtractorMainForm::fileOpenRecent (void)
 			QString sFilename = m_pOptions->recentFiles[iIndex];
 			// Check if we can safely close the current session...
 			if (!sFilename.isEmpty() && closeSession())
-				loadSessionFile(sFilename);
+				loadSessionFileEx(sFilename);
 		}
 	}
 }
@@ -5251,7 +5270,7 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	const QString sFilename
 		= QFileInfo(sSessionDir, sSessionFile).absoluteFilePath();
 
-	if (saveSessionFile(sFilename, bTemplate))
+	if (saveSessionFileEx(sFilename, bTemplate))
 		args << QString("\"${SESSION_DIR}%1\"").arg(sSessionFile);
 
 	const QByteArray aCmdLine = args.join(" ").toUtf8();

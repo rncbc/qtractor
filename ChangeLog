@@ -5,6 +5,14 @@ ChangeLog
 
 SVN TRUNK
 
+- Some current working directory trickery is now
+  in place avoiding JACK session directories to
+  ever be picked as default, as much as possible.
+
+- Ghost-playbacks are now avoided on audio clips
+  that are artificially extended beyond their own
+  audio file lengths.
+
 - Recording clips now shown in a reddish shade;
   also, it's all now shown a bit more correctly,
   regarding the lead and withing looping range.

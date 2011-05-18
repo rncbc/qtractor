@@ -438,8 +438,6 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 {
 	if (m_pRingBuffer == NULL)
 		return -1;
-	if (m_pFile == NULL)
-		return -1;
 
 #ifdef DEBUG_0
 	dump_state(QString("+read(%1)").arg(iFrames));
@@ -447,8 +445,12 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 
 	int nread;
 
-	// Are we self-contained (ie. got integral file in buffer) and looping?
+	// Are we off decoded file limits (EoS)?
 	unsigned long ro = m_iReadOffset;
+	if (ro >= m_iFileLength)
+		return 0;
+
+	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 	// Are we in the middle of the loop range ?
@@ -500,8 +502,6 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, unsigned int iOffset )
 {
 	if (m_pRingBuffer == NULL)
-		return -1;
-	if (m_pFile == NULL)
 		return -1;
 
 	unsigned short iBuffers = m_pRingBuffer->channels();
@@ -586,8 +586,6 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 {
 	if (m_pRingBuffer == NULL)
 		return -1;
-	if (m_pFile == NULL)
-		return -1;
 
 #ifdef DEBUG_0
 	dump_state(QString("+readMix(%1)").arg(iFrames));
@@ -595,8 +593,12 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 
 	int nread;
 
-	// Are we self-contained (ie. got integral file in buffer) and looping?
+	// Are we off decoded file limits (EoS)?
 	unsigned long ro = m_iReadOffset;
+	if (ro >= m_iFileLength)
+		return 0;
+
+	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 	// Are we in the middle of the loop range ?
@@ -650,16 +652,17 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 {
 	if (m_pRingBuffer == NULL)
 		return false;
+
+	// Seek is only valid on read-only mode.
 	if (m_pFile == NULL)
+		return false;
+	if (m_pFile->mode() & qtractorAudioFile::Write)
 		return false;
 
 	// Must not break while on initial sync...
 	if (!isSyncFlag(InitSync))
 		return false;
 
-	// Seek is only valid on read-only mode.
-	if (m_pFile->mode() & qtractorAudioFile::Write)
-		return false;
 
 	// Reset running gain...
 	m_fPrevGain = 0.0f;
@@ -743,6 +746,10 @@ bool qtractorAudioBuffer::isSyncFlag ( SyncFlag flag ) const
 // check whether it can be cache-loaded integrally).
 bool qtractorAudioBuffer::initSync (void)
 {
+	if (m_pRingBuffer == NULL)
+		return false;
+
+	// Initialization is only valid on read-only mode.
 	if (m_pFile == NULL)
 		return false;
 	if (m_pFile->mode() & qtractorAudioFile::Write)
@@ -1310,8 +1317,6 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 void qtractorAudioBuffer::reset ( bool bLooping )
 {
 	if (m_pRingBuffer == NULL)
-		return;
-	if (m_pFile == NULL)
 		return;
 
 #ifdef DEBUG

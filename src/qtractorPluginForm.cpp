@@ -203,8 +203,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Show editor button if available?
 	m_ui.EditToolButton->setVisible(bEditor);
-	//if (bEditor)
-	//	toggleEditor(m_pPlugin->isEditorVisible());
+	if (bEditor)
+		toggleEditor(m_pPlugin->isEditorVisible());
 
 	// Show insert tool options...
 	bool bInsertPlugin

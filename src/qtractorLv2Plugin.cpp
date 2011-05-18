@@ -1737,6 +1737,9 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	#endif
 		m_bEditorVisible = false;
 	}
+
+	if (isFormVisible())
+		form()->toggleEditor(m_bEditorVisible);
 }
 
 bool qtractorLv2Plugin::isEditorVisible (void) const

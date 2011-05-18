@@ -671,7 +671,7 @@ void qtractorPluginListView::moveDownPlugin (void)
 
 
 // Show/hide an existing plugin form slot.
-void qtractorPluginListView::editPlugin (void)
+void qtractorPluginListView::propertiesPlugin (void)
 {
 	if (m_pPluginList == NULL)
 		return;
@@ -689,6 +689,28 @@ void qtractorPluginListView::editPlugin (void)
 		(pPlugin->form())->hide();
 	else
 		(pPlugin->form())->activateForm();
+}
+
+
+// Show/hide an existing plugin editor (GUI) slot.
+void qtractorPluginListView::editPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem == NULL)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == NULL)
+		return;
+
+	if (pPlugin->isEditorVisible())
+		pPlugin->closeEditor();
+	else
+		pPlugin->openEditor(pPlugin->form());
 }
 
 
@@ -1193,11 +1215,18 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formEdit.png"),
-		tr("&Edit Plugin..."), this, SLOT(editPlugin()));
+		QIcon(":/images/trackProperties.png"),
+		tr("&Properties"), this, SLOT(propertiesPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
 	pAction->setEnabled(pItem != NULL);
+
+	pAction = menu.addAction(
+		QIcon(":/images/formEdit.png"),
+		tr("&Edit"), this, SLOT(editPlugin()));
+	pAction->setCheckable(true);
+	pAction->setChecked(pPlugin && pPlugin->isEditorVisible());
+	pAction->setEnabled(pPlugin && pPlugin->type()->isEditor());
 
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
 	if (pMidiManager) {
