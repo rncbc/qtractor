@@ -291,7 +291,10 @@ protected:
 	bool editSession();
 	bool closeSession();
 
+	bool loadSessionFileEx(const QString& sFilename, bool bTemplate = false);
 	bool loadSessionFile(const QString& sFilename, bool bTemplate = false);
+
+	bool saveSessionFileEx(const QString& sFilename, bool bTemplate = false);
 	bool saveSessionFile(const QString& sFilename, bool bTemplate = false);
 
 	bool startSession();

@@ -171,13 +171,13 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	QString sDocname = info.filePath();
 	QIODevice::OpenMode mode = QIODevice::ReadOnly;
 
-	// ATTN: Always move to session file's directory first...
-	QDir::setCurrent(info.path());
-
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
+		// ATTN: Always move to session file's directory first...
 		if (!info.isWritable()) // Read-only media?
 			QDir::setCurrent(QDir::temp().path());
+		else
+			QDir::setCurrent(info.path());	
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
 		if (!m_pZipFile->isReadable()) {
 			delete m_pZipFile;

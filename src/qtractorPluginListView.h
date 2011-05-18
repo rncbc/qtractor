@@ -116,6 +116,7 @@ public slots:
 	void removePlugin();
 	void moveUpPlugin();
 	void moveDownPlugin();
+	void propertiesPlugin();
 	void editPlugin();
 
 protected slots:
