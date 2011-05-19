@@ -17,13 +17,6 @@ SVN TRUNK
   also, it's all now shown a bit more correctly,
   regarding the lead and withing looping range.
 
-- Session file format saved on JACK session has
-  been reverted to the normal regular one (.qts)
-  instead of the archive/zip bundle (.qtz) which
-  was leading to unforgiveable and horrible data
-  loss when saving to an already existing JACK
-  session directory. (REGRESSION)
-
 - Custom tempo spin-box widgets now honoring the
   decimal point cursor positioning for integral
   up/down tempo value stepping.
