@@ -5252,7 +5252,7 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	const QString sSessionFile = sSessionName + '.'
 		+ (bTemplate
 			? qtractorDocument::templateExt()
-			: qtractorDocument::defaultExt());
+			: qtractorDocument::archiveExt());
 
 	QStringList args;
 	args << QApplication::applicationFilePath();
