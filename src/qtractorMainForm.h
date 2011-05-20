@@ -291,11 +291,13 @@ protected:
 	bool editSession();
 	bool closeSession();
 
-	bool loadSessionFileEx(const QString& sFilename, bool bTemplate = false);
-	bool loadSessionFile(const QString& sFilename, bool bTemplate = false);
+	bool loadSessionFileEx(
+		const QString& sFilename, bool bTemplate, bool bUpdate = false);
+	bool loadSessionFile(const QString& sFilename);
 
-	bool saveSessionFileEx(const QString& sFilename, bool bTemplate = false);
-	bool saveSessionFile(const QString& sFilename, bool bTemplate = false);
+	bool saveSessionFileEx(
+	    const QString& sFilename, bool bTemplate, bool bUpdate = false);
+	bool saveSessionFile(const QString& sFilename);
 
 	bool startSession();
 	bool checkRestartSession();
