@@ -367,13 +367,19 @@ qtractorMainForm::qtractorMainForm (
 	}
 #endif
 
+	const QSize  pad(4, 0);
+	const QFont& font0 = qtractorMainForm::font();
+	const QFont  font(font0.family(), font0.pointSize() + 2);
+	const QFontMetrics fm(font);
+	const int d = fm.height() + fm.leading() + 8;
+	
 	// Transport time.
-	const QFont& font = qtractorMainForm::font();
+	const QString sTime("+99:99:99.999");
 	m_pTimeSpinBox = new qtractorTimeSpinBox();
 	m_pTimeSpinBox->setTimeScale(m_pSession->timeScale());
-	m_pTimeSpinBox->setFont(QFont(font.family(), font.pointSize() + 2));
+	m_pTimeSpinBox->setFont(font);
 	m_pTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTimeSpinBox->setMinimumSize(QSize(128, 26));
+	m_pTimeSpinBox->setMinimumSize(QSize(fm.width(sTime) + d, d) + pad);
 	m_pTimeSpinBox->setPalette(pal);
 //	m_pTimeSpinBox->setAutoFillBackground(true);
 	m_pTimeSpinBox->setToolTip(tr("Current time (playhead)"));
@@ -382,13 +388,13 @@ qtractorMainForm::qtractorMainForm (
 //	m_ui.timeToolbar->addSeparator();
 
 	// Tempo spin-box.
-	const QSize pad(4, 0);
+	const QString sTempo("999.9 9/9");
 	m_pTempoSpinBox = new qtractorTempoSpinBox();
 //	m_pTempoSpinBox->setDecimals(1);
 //	m_pTempoSpinBox->setMinimum(1.0f);
 //	m_pTempoSpinBox->setMaximum(1000.0f);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTempoSpinBox->setMinimumSize(QSize(96, 26));
+	m_pTempoSpinBox->setMinimumSize(QSize(fm.width(sTempo) + d, d) + pad);
 	m_pTempoSpinBox->setPalette(pal);
 //	m_pTempoSpinBox->setAutoFillBackground(true);
 	m_pTempoSpinBox->setToolTip(tr("Current tempo (BPM)"));
@@ -515,9 +521,8 @@ qtractorMainForm::qtractorMainForm (
 	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session length time.
-	const QString sTime("00:00:00.000");
 	pLabel = new QLabel(sTime);
-	pLabel->setAlignment(Qt::AlignRight);
+	pLabel->setAlignment(Qt::AlignHCenter);
 	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
 	pLabel->setToolTip(tr("Session total time"));
 	pLabel->setAutoFillBackground(true);
@@ -525,8 +530,7 @@ qtractorMainForm::qtractorMainForm (
 	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session sample rate.
-	const QString sRate("44100 Hz");
-	pLabel = new QLabel(sRate);
+	pLabel = new QLabel("199999 Hz");
 	pLabel->setAlignment(Qt::AlignHCenter);
 	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
 	pLabel->setAutoFillBackground(true);
@@ -4503,6 +4507,9 @@ void qtractorMainForm::updateRecentFilesMenu (void)
 			pAction->setData(i);
 		}
 	}
+
+	// Settle as enabled?
+	m_ui.fileOpenRecentMenu->setEnabled(!m_ui.fileOpenRecentMenu->isEmpty());
 }
 
 
