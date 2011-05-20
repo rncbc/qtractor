@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Main toolbar time and tempo widgets get their
+  visual extents a bit more theme-friendlier ;).
+
 - Some current working directory trickery is now
   in place avoiding JACK session directories to
   ever be picked as default, as much as possible.
