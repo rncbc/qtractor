@@ -1216,7 +1216,7 @@ void qtractorPluginListView::contextMenuEvent (
 
 	pAction = menu.addAction(
 		QIcon(":/images/trackProperties.png"),
-		tr("&Properties"), this, SLOT(propertiesPlugin()));
+		tr("&Properties..."), this, SLOT(propertiesPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
 	pAction->setEnabled(pItem != NULL);

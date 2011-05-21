@@ -445,7 +445,7 @@ qtractorMeter *qtractorBusCommand::meter (void) const
 {
 	qtractorBus *pBus = bus();
 	if (pBus == NULL)
-		return false;
+		return NULL;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
