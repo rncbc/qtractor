@@ -1918,6 +1918,11 @@ bool qtractorMainForm::saveSessionFileEx (
 			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 			m_pOptions->saveOptions();
 		}
+	#ifdef CONFIG_LIBZ
+		// FIXME: Is it time to cleanup extracted archives (do NOT remove)?
+		if ((iFlags & qtractorDocument::Archive) == 0)
+			qtractorDocument::clearExtractedArchives(false);
+	#endif
 	} else {
 		// Something went wrong...
 		appendMessagesError(
