@@ -1787,9 +1787,8 @@ bool qtractorMainForm::loadSessionFileEx (
 	if (bResult) {
 		// Got something loaded...
 		// we're not dirty anymore.
-		if (!bTemplate) {
-			if (bUpdate)
-				updateRecentFiles(sFilename);
+		if (!bTemplate && bUpdate) {
+			updateRecentFiles(sFilename);
 		//	m_iDirtyCount = 0;
 		}
 		// Save as default session directory...
@@ -1813,7 +1812,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		m_sFilename = sFilename;
 	}
 
-	appendMessages(tr("Open session: \"%1\".").arg(sessionName(m_sFilename)));
+	appendMessages(tr("Open session: \"%1\".").arg(sessionName(sFilename)));
 
 	// Now we'll try to create (update) the whole GUI session.
 	updateSession();
@@ -1900,9 +1899,8 @@ bool qtractorMainForm::saveSessionFileEx (
 	if (bResult) {
 		// Got something saved...
 		// we're not dirty anymore.
-		if (!bTemplate) {
-			if (bUpdate)
-				updateRecentFiles(sFilename);
+		if (!bTemplate && bUpdate) {
+			updateRecentFiles(sFilename);
 			m_iDirtyCount = 0;
 		}
 		// Save as default session directory...
@@ -1929,10 +1927,10 @@ bool qtractorMainForm::saveSessionFileEx (
 	}
 
 	// Stabilize form...
-	if (!bTemplate)
+	if (!bTemplate && bUpdate)
 		m_sFilename = sFilename;
 
-	appendMessages(tr("Save session: \"%1\".").arg(sessionName(m_sFilename)));
+	appendMessages(tr("Save session: \"%1\".").arg(sessionName(sFilename)));
 	stabilizeForm();
 
 	return bResult;
