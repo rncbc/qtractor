@@ -1803,7 +1803,7 @@ bool qtractorMainForm::loadSessionFileEx (
 			"Sorry.").arg(sFilename));
 	}
 
-	// Stabilize form...
+	// Stabilize form title...
 	if (bTemplate) {
 		++m_iUntitled;
 		m_sFilename.clear();
@@ -1926,11 +1926,13 @@ bool qtractorMainForm::saveSessionFileEx (
 			"Sorry.").arg(sFilename));
 	}
 
-	// Stabilize form...
-	if (!bTemplate && bUpdate)
+	// Stabilize form title...
+	if (!bTemplate)
 		m_sFilename = sFilename;
 
 	appendMessages(tr("Save session: \"%1\".").arg(sessionName(sFilename)));
+
+	// Show static results...
 	stabilizeForm();
 
 	return bResult;
