@@ -1750,7 +1750,14 @@ bool qtractorMainForm::loadSessionFileEx (
 		iFlags |= qtractorDocument::Archive;
 		// Take special precaution for already
 		// existing archive directory...
-		info.setFile(info.path() + '/' + info.completeBaseName());
+		QString sPath;
+		if (bUpdate) {
+			sPath = info.path();
+		} else {
+			sPath = QDir::temp().path();
+			iFlags |= qtractorDocument::Temporary;
+		}
+		info.setFile(sPath + QDir::separator() + info.completeBaseName());
 		if (info.exists() && info.isDir()) {
 			if (QMessageBox::warning(this,
 				tr("Warning") + " - " QTRACTOR_TITLE,
@@ -1918,11 +1925,6 @@ bool qtractorMainForm::saveSessionFileEx (
 			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 			m_pOptions->saveOptions();
 		}
-	#ifdef CONFIG_LIBZ
-		// FIXME: Is it time to cleanup extracted archives (do NOT remove)?
-		if ((iFlags & qtractorDocument::Archive) == 0)
-			qtractorDocument::clearExtractedArchives(false);
-	#endif
 	} else {
 		// Something went wrong...
 		appendMessagesError(
@@ -5262,7 +5264,7 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	const QString sSessionFile = sSessionName + '.'
 		+ (bTemplate
 			? qtractorDocument::templateExt()
-			: qtractorDocument::defaultExt());
+			: qtractorDocument::archiveExt());
 
 	QStringList args;
 	args << QApplication::applicationFilePath();

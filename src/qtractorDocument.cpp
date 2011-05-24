@@ -146,6 +146,11 @@ bool qtractorDocument::isArchive (void) const
 	return (m_flags & Archive);
 }
 
+bool qtractorDocument::isTemporary (void) const
+{
+	return (m_flags & Temporary);
+}
+
 
 //-------------------------------------------------------------------------
 // qtractorDocument -- loaders.
@@ -174,7 +179,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
 		// ATTN: Always move to session file's directory first...
-		if (!info.isWritable()) // Read-only media?
+		if (!info.isWritable() || isTemporary()) // Read-only media?
 			QDir::setCurrent(QDir::temp().path());
 		else
 			QDir::setCurrent(info.path());	

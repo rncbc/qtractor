@@ -40,7 +40,7 @@ class qtractorDocument
 public:
 
 	// Document flags.
-	enum Flags { Default = 0, Template = 1, Archive = 2 };
+	enum Flags { Default = 0, Template = 1, Archive = 2, Temporary = 4 };
 
 	// Constructor.
 	qtractorDocument(QDomDocument *pDocument,
@@ -62,6 +62,7 @@ public:
 
 	bool isTemplate() const;
 	bool isArchive() const;
+	bool isTemporary() const;
 
 	// Archive filename filter.
 	QString addFile (const QString& sFilename) const;
