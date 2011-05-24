@@ -6,11 +6,10 @@ ChangeLog
 SVN TRUNK
 
 - Session file format saved on JACK session has
-  been reverted to the normal regular one (.qts)
-  instead of the archive/zip bundle (.qtz) which
-  was leading to unforgiveable and horrible data
-  loss when saving to an already existing JACK
-  session directory. (REGRESSION)
+  been reverted to archive/zip bundle one (.qtz)
+  now using temporary extraction directory when
+  loading an existing  JACK session (REGRESSION
+  REVERT).
 
 - Main toolbar time and tempo widgets get their
   visual extents a bit more theme-friendlier ;).
