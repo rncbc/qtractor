@@ -1785,8 +1785,9 @@ bool qtractorMainForm::loadSessionFileEx (
 	if (bResult) {
 		// Got something loaded...
 		// we're not dirty anymore.
-		if (!bTemplate && bUpdate) {
-			updateRecentFiles(sFilename);
+		if (!bTemplate) {
+			if (bUpdate)
+				updateRecentFiles(sFilename);
 		//	m_iDirtyCount = 0;
 		}
 		// Save as default session directory...
@@ -1897,8 +1898,9 @@ bool qtractorMainForm::saveSessionFileEx (
 	if (bResult) {
 		// Got something saved...
 		// we're not dirty anymore.
-		if (!bTemplate && bUpdate) {
-			updateRecentFiles(sFilename);
+		if (!bTemplate) {
+			if (bUpdate)
+				updateRecentFiles(sFilename);
 			m_iDirtyCount = 0;
 		}
 		// Save as default session directory...
