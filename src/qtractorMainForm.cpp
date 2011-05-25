@@ -1713,6 +1713,7 @@ bool qtractorMainForm::closeSession (void)
 	#endif
 		// Some defaults are due...
 		if (m_pOptions) {
+			m_pSession->setSessionDir(m_pOptions->sSessionDir);
 			m_pSession->setSnapPerBeat(
 				qtractorTimeScale::snapFromIndex(m_pOptions->iSnapPerBeat));
 			m_pSession->setTempo(m_pOptions->fTempo);
@@ -1912,7 +1913,7 @@ bool qtractorMainForm::saveSessionFileEx (
 				updateRecentFiles(sFilename);
 			m_iDirtyCount = 0;
 		}
-		// Save as default session directory...
+		// Save some default session properties...
 		if (m_pOptions && bUpdate) {
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine)
