@@ -3,13 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.4.9  2011-05-26  The Final Dudette
 
 - Session file format saved on JACK session has
   been reverted to archive/zip bundle one (.qtz)
   now using temporary extraction directory when
-  loading an existing  JACK session (REGRESSION
-  REVERT).
+  loading an existing JACK session.
 
 - Main toolbar time and tempo widgets get their
   visual extents a bit more theme-friendlier ;).
@@ -24,14 +23,14 @@ SVN TRUNK
 
 - Recording clips now shown in a reddish shade;
   also, it's all now shown a bit more correctly,
-  regarding the lead and withing looping range.
+  regarding the lead and within looping range.
 
 - Custom tempo spin-box widgets now honoring the
   decimal point cursor positioning for integral
   up/down tempo value stepping.
 
 - Audio recording latency is now compensated via
-  automatic clip offsetting. (EXPERIMENTAL)
+  automatic clip offsetting.
 
 - Audio peak file generation is now pipelined on
   a single unique thread, instead of old one per
@@ -58,7 +57,7 @@ SVN TRUNK
 
 - Audio buffering internal synchronization logic
   gets it bartered: three bools for a single byte
-  flag (TESTING).
+  flag.
 
 - Connections are now preserved as possible when
   changing bus properties (View/Buses.../Update).
@@ -68,8 +67,7 @@ SVN TRUNK
 
 - Yet again, the audio clip buffer/disk-streaming
   optimization has been almost completely redrawn:
-  now there's one thread per audio track. (HIGHLY
-  EXPERIMENTAL)
+  now there's one thread per audio track.
 
 - Not replacing a session directory that already
   exists on loading an archive file (.qtz) is now
