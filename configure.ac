@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.9, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.9.1, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -632,6 +632,8 @@ fi
 # Check for JACK session event callback availability.
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])
+else
+   AC_MSG_WARN([*** JACK latency support will be disabled.])
 fi
 
 # Check for (new) JACK latency support availability.
@@ -854,43 +856,32 @@ fi
 
 # Check for LV2 headers.
 if test -n "$ac_with_lv2"; then
-   CFLAGS="-I$ac_with_lv2 $CFLAGS"
-   CPPFLAGS="-I$ac_with_lv2 $CPPFLAGS"
    ac_lv2="yes"
 fi
 if test "x$ac_lv2" = "xyes"; then
-   ac_lv2_cflags=`$ac_pkg_config --cflags slv2 2>/dev/null`
-   if test -n "$ac_lv2_cflags"; then
-      # Check for proper headers.
-      CFLAGS="$ac_lv2_cflags $CFLAGS"
-      CPPFLAGS="$ac_lv2_cflags $CPPFLAGS"
-      AC_CHECK_HEADERS(lv2.h lv2_uri_map.h slv2/slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
-      if test "x$ac_lv2" = "xyes"; then
-         ac_cflags="$ac_cflags $ac_lv2_cflags"
-      fi
-   else
-      ac_lv2="no"
-   fi
-fi
-if test "x$ac_lv2" = "xyes"; then
-   AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
    if test -n "$ac_with_lv2"; then
+      CFLAGS="-I$ac_with_lv2 $CFLAGS"
+      CPPFLAGS="-I$ac_with_lv2 $CPPFLAGS"
       ac_incpath="$ac_with_lv2 $ac_incpath"
    else
       CFLAGS="$CFLAGS -Isrc/lv2"
       CPPFLAGS="$CPPFLAGS -Isrc/lv2"
       ac_incpath="$ac_incpath lv2"
    fi
-else
-   AC_MSG_WARN([*** LV2 header files not found.])
-   AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
-   ac_lv2_event="no"
-   ac_lv2_gtk_ui="no"
-   ac_lv2_qt4_ui="no"
-   ac_lv2_external_ui="no"
-   ac_lv2_saverestore="no"
-   ac_lv2_persist="no"
-   ac_lv2_files="no"
+   AC_CHECK_HEADERS(lv2.h lv2_uri_map.h lv2_uri_unmap.h, [ac_lv2="yes"], [ac_lv2="no"])
+   if test "x$ac_lv2" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
+   else
+      AC_MSG_WARN([*** LV2 header files not found.])
+      AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
+      ac_lv2_event="no"
+      ac_lv2_gtk_ui="no"
+      ac_lv2_qt4_ui="no"
+      ac_lv2_external_ui="no"
+      ac_lv2_saverestore="no"
+      ac_lv2_persist="no"
+      ac_lv2_files="no"
+   fi
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h,
@@ -961,6 +952,7 @@ if test "x$ac_jack_session" = "xyes"; then
    if test "x$ac_jack_session" = "xyes"; then
       AC_DEFINE(CONFIG_JACK_SESSION, 1, [Define if JACK session support is available.])
    else
+      AC_MSG_WARN([*** jack/session.h file not found.])
       AC_MSG_WARN([*** JACK session support will be disabled.])
    fi
 fi
@@ -1034,7 +1026,7 @@ echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
 echo "  LV2 Plug-in Files support (EXPERIMENTAL) . . . . .: $ac_lv2_files"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
-echo "  JACK Latency support (EXPERIMENTAL)  . . . . . . .: $ac_jack_latency"
+echo "  JACK Latency support (NEW) . . . . . . . . . . . .: $ac_jack_latency"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"

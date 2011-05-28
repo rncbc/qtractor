@@ -3,6 +3,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- LV2 extension headers update.
+
+- Fixed configure of newer LV2 host implementation
+  stack (LILV) when older (SLV2) is not present.
+
+
 0.4.9  2011-05-26  The Final Dudette
 
 - Session file format saved on JACK session has
