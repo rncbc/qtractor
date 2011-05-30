@@ -1192,20 +1192,20 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 			// Should force sync now and then...
 			if ((count % 33) == 0) pBuff->syncExport();
 			// Quite similar to qtractorAudioClip::process()...
-			unsigned long iClipSelectStart = pClip->clipSelectStart();
-			unsigned long iClipSelectEnd   = pClip->clipSelectEnd();;
-			if (iFrameStart < iClipSelectStart && iFrameEnd > iClipSelectStart) {
-				unsigned long iOffset = iFrameEnd - iClipSelectStart;
-				while (!pBuff->inSync(iClipSelectStart - iFrameStart, iOffset))
+			unsigned long iClipStart = pClip->clipStart();
+			unsigned long iClipEnd   = iClipStart + pClip->clipLength();;
+			if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
+				unsigned long iOffset = iFrameEnd - iClipStart;
+				while (!pBuff->inSync(iClipStart - iFrameStart, iOffset))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iOffset,
-					iChannels, iClipSelectStart - iFrameStart,
+					iChannels, iClipStart - iFrameStart,
 					pClip->gain(iOffset));
 			}
 			else
-			if (iFrameStart >= iClipSelectStart && iFrameStart < iClipSelectEnd) {
-				unsigned long iOffset = iFrameEnd - iClipSelectStart;
-				while (!pBuff->inSync(iFrameStart - iClipSelectStart, iOffset))
+			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
+				unsigned long iOffset = iFrameEnd - iClipStart;
+				while (!pBuff->inSync(iFrameStart - iClipStart, iOffset))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
 					iChannels, 0, pClip->gain(iOffset));
