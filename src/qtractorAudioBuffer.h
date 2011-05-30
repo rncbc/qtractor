@@ -64,12 +64,13 @@ public:
 	void sync(qtractorAudioBuffer *pAudioBuffer = NULL);
 
 	// Bypass executive wait condition (non RT-safe).
-	void syncExport(qtractorAudioBuffer *pAudioBuffer);
+	void syncExport();
 
 protected:
 
-	// The main thread executive.
+	// The main thread executives.
 	void run();
+	void process();
 
 private:
 

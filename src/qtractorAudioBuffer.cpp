@@ -109,11 +109,11 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 
 
 // Bypass executive wait condition (non RT-safe).
-void qtractorAudioBufferThread::syncExport ( qtractorAudioBuffer *pAudioBuffer )
+void qtractorAudioBufferThread::syncExport (void)
 {
 	QMutexLocker locker(&m_mutex);
 
-	pAudioBuffer->sync();
+	process();
 }
 
 
@@ -130,12 +130,7 @@ void qtractorAudioBufferThread::run (void)
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
 		//m_mutex.unlock();
-		unsigned int r = m_iSyncRead;
-		while (r != m_iSyncWrite) {
-			m_ppSyncItems[r]->sync();
-			++r &= m_iSyncMask;
-		}
-		m_iSyncRead = r;
+		process();
 		//m_mutex.lock();
 		m_cond.wait(&m_mutex);
 	}
@@ -144,6 +139,18 @@ void qtractorAudioBufferThread::run (void)
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioBufferThread[%p]::run(): stopped.", this);
 #endif
+}
+
+
+// Thread run executive.
+void qtractorAudioBufferThread::process (void)
+{
+	unsigned int r = m_iSyncRead;
+	while (r != m_iSyncWrite) {
+		m_ppSyncItems[r]->sync();
+		++r &= m_iSyncMask;
+	}
+	m_iSyncRead = r;
 }
 
 
@@ -663,25 +670,26 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	if (!isSyncFlag(InitSync))
 		return false;
 
-
 	// Reset running gain...
 	m_fPrevGain = 0.0f;
 	m_fNextGain = 1.0f;
 	m_iRampGain = 1;
 
-	// Force (premature) out-of-sync...
-	setSyncFlag(ReadSync, false);
-	setSyncFlag(WaitSync, false);
-
 	// Are we off-limits?
 	if (iFrame >= m_iLength)
 		return false;
+
+	// Force (premature) out-of-sync...
+	setSyncFlag(ReadSync, false);
+	setSyncFlag(WaitSync, false);
 
 	// Special case on integral cached files...
 	if (m_bIntegral) {
 		m_pRingBuffer->setReadIndex(iFrame);
 	//	m_iWriteOffset = m_iOffset + iFrame;
 		m_iReadOffset  = m_iOffset + iFrame;
+		// Maybe (always) in-sync...
+		setSyncFlag(ReadSync);
 		return true;
 	}
 
@@ -700,6 +708,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;
+		// Maybe (late) in-sync...
+		setSyncFlag(ReadSync);
 		return true;
 	}
 
@@ -759,7 +769,7 @@ bool qtractorAudioBuffer::initSync (void)
 		return false;
 
 	// Reset all relevant state variables.
-	// m_bInitSync = false;
+	// m_bReadSync = false;
 	setSyncFlag(ReadSync, false);
 
 	m_iReadOffset  = 0;
@@ -783,6 +793,7 @@ bool qtractorAudioBuffer::initSync (void)
 	readSync();
 
 	// We're mostly done with initialization...
+	// m_bInitSync = true;
 	setSyncFlag(InitSync);
 
 	// Check if fitted integrally...
@@ -855,7 +866,7 @@ bool qtractorAudioBuffer::inSync (
 // Export-mode sync executive.
 void qtractorAudioBuffer::syncExport (void)
 {
-	if (m_pSyncThread) m_pSyncThread->syncExport(this);
+	if (m_pSyncThread) m_pSyncThread->syncExport();
 }
 
 

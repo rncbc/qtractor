@@ -348,13 +348,17 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 		for ( ; iter != items.constEnd(); ++iter) {
-			qtractorClipSelect::Item *pClipItem = iter.value();
-			QRect rectClip(pClipItem->rectClip);
-			rectClip.moveTopLeft(
-				qtractorScrollView::contentsToViewport(rectClip.topLeft()));
-			rectClip = rectClip.intersected(rectView);
-			if (!rectClip.isEmpty())
-				pPainter->fillRect(rectClip, QColor(0, 0, 255, 120));
+			qtractorClip *pClip = iter.key();
+			// Make sure it's a legal selection...
+			if (pClip->track() && pClip->isClipSelected()) {
+				qtractorClipSelect::Item *pClipItem = iter.value();
+				QRect rectClip(pClipItem->rectClip);
+				rectClip.moveTopLeft(
+					qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+				rectClip = rectClip.intersected(rectView);
+				if (!rectClip.isEmpty())
+					pPainter->fillRect(rectClip, QColor(0, 0, 255, 120));
+			}
 		}
 	}
 
@@ -2123,13 +2127,17 @@ void qtractorTrackView::showClipSelect (void) const
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
-		qtractorClipSelect::Item *pClipItem = iter.value();
-		QRect rectClip = pClipItem->rectClip;
-		if (m_bDragSingleTrack) {
-			rectClip.setY(m_iDragSingleTrackY);
-			rectClip.setHeight(m_iDragSingleTrackHeight);
+		qtractorClip *pClip = iter.key();
+		// Make sure it's a legal selection...
+		if (pClip->track() && pClip->isClipSelected()) {
+			qtractorClipSelect::Item *pClipItem = iter.value();
+			QRect rectClip = pClipItem->rectClip;
+			if (m_bDragSingleTrack) {
+				rectClip.setY(m_iDragSingleTrackY);
+				rectClip.setHeight(m_iDragSingleTrackHeight);
+			}
+			moveRubberBand(&(pClipItem->rubberBand), rectClip, 3);
 		}
-		moveRubberBand(&(pClipItem->rubberBand), rectClip, 3);
 	}
 
 	showToolTip(m_pClipSelect->rect(), m_iDraggingX);
@@ -2957,7 +2965,9 @@ bool qtractorTrackView::queryClipSelect (void)
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
-		if (!iter.key()->queryEditor())
+		qtractorClip *pClip = iter.key();
+		// Make sure it's a legal selection...
+		if (pClip->track() && pClip->isClipSelected() && !pClip->queryEditor())
 			return false;
 	}
 
@@ -2996,96 +3006,99 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
-		qtractorClipSelect::Item *pClipItem = iter.value();
 		qtractorClip  *pClip  = iter.key();
 		qtractorTrack *pTrack = pClip->track();
-		// Clip parameters.
-		unsigned long iClipStart    = pClip->clipStart();
-		unsigned long iClipOffset   = pClip->clipOffset();
-		unsigned long iClipLength   = pClip->clipLength();
-		unsigned long iClipEnd      = iClipStart + iClipLength;
-		// Clip selection points.
-		unsigned long iSelectStart  = pClip->clipSelectStart();
-		unsigned long iSelectEnd    = pClip->clipSelectEnd();
-		unsigned long iSelectOffset = iSelectStart - iClipStart;
-		unsigned long iSelectLength = iSelectEnd - iSelectStart;
-		// Determine and dispatch selected clip regions...
-		if (iSelectStart > iClipStart) {
-			if (iSelectEnd < iClipEnd) {
-				// -- Middle region...
-				if (bClipboard) {
-					g_clipboard.addItem(pClip,
-						pClipItem->rectClip,
-						iSelectStart,
-						iClipOffset + iSelectOffset,
-						iSelectLength);
-				}
-				if (pClipCommand) {
-					// Left-clip...
-					pClipCommand->resizeClip(pClip,
-						iClipStart,
-						iClipOffset,
-						iSelectOffset);
-					// Right-clip...
-					qtractorClip *pClipEx = cloneClip(pClip);
-					if (pClipEx) {
-						pClipEx->setClipStart(iSelectEnd);
-						pClipEx->setClipOffset(iClipOffset
-							+ iSelectOffset + iSelectLength);
-						pClipEx->setClipLength(iClipEnd - iSelectEnd);
-						pClipEx->setFadeOutLength(pClip->fadeOutLength());
-						pClipCommand->addClip(pClipEx, pTrack);
+		// Make sure it's legal selection...
+		if (pTrack && pClip->isClipSelected()) {
+			// Clip parameters.
+			unsigned long iClipStart    = pClip->clipStart();
+			unsigned long iClipOffset   = pClip->clipOffset();
+			unsigned long iClipLength   = pClip->clipLength();
+			unsigned long iClipEnd      = iClipStart + iClipLength;
+			// Clip selection points.
+			unsigned long iSelectStart  = pClip->clipSelectStart();
+			unsigned long iSelectEnd    = pClip->clipSelectEnd();
+			unsigned long iSelectOffset = iSelectStart - iClipStart;
+			unsigned long iSelectLength = iSelectEnd - iSelectStart;
+			// Determine and dispatch selected clip regions...
+			qtractorClipSelect::Item *pClipItem = iter.value();
+			if (iSelectStart > iClipStart) {
+				if (iSelectEnd < iClipEnd) {
+					// -- Middle region...
+					if (bClipboard) {
+						g_clipboard.addItem(pClip,
+							pClipItem->rectClip,
+							iSelectStart,
+							iClipOffset + iSelectOffset,
+							iSelectLength);
 					}
+					if (pClipCommand) {
+						// Left-clip...
+						pClipCommand->resizeClip(pClip,
+							iClipStart,
+							iClipOffset,
+							iSelectOffset);
+						// Right-clip...
+						qtractorClip *pClipEx = cloneClip(pClip);
+						if (pClipEx) {
+							pClipEx->setClipStart(iSelectEnd);
+							pClipEx->setClipOffset(iClipOffset
+								+ iSelectOffset + iSelectLength);
+							pClipEx->setClipLength(iClipEnd - iSelectEnd);
+							pClipEx->setFadeOutLength(pClip->fadeOutLength());
+							pClipCommand->addClip(pClipEx, pTrack);
+						}
+					}
+					// Done, middle region.
+				} else {
+					// -- Right region...
+					if (bClipboard) {
+						g_clipboard.addItem(pClip,
+							pClipItem->rectClip,
+							iSelectStart,
+							iClipOffset + iSelectOffset,
+							iSelectLength);
+					}
+					if (pClipCommand) {
+						pClipCommand->resizeClip(pClip,
+							iClipStart,
+							iClipOffset,
+							iSelectOffset);
+					}
+					// Done, right region.
 				}
-				// Done, middle region.
-			} else {
-				// -- Right region...
+			}
+			else
+			if (iSelectEnd < iClipEnd) {
+				// -- Left region...
 				if (bClipboard) {
 					g_clipboard.addItem(pClip,
 						pClipItem->rectClip,
-						iSelectStart,
-						iClipOffset + iSelectOffset,
+						iClipStart,
+						iClipOffset,
 						iSelectLength);
 				}
 				if (pClipCommand) {
 					pClipCommand->resizeClip(pClip,
+						iSelectEnd,
+						iClipOffset + iSelectLength,
+						iClipLength - iSelectLength);
+				}
+				// Done, left region.
+			} else {
+				// -- Whole clip...
+				if (bClipboard) {
+					g_clipboard.addItem(pClip,
+						pClipItem->rectClip,
 						iClipStart,
 						iClipOffset,
-						iSelectOffset);
+						iClipLength);
 				}
-				// Done, right region.
+				if (pClipCommand) {
+					pClipCommand->removeClip(pClip);
+				}
+				// Done, whole clip.
 			}
-		}
-		else
-		if (iSelectEnd < iClipEnd) {
-			// -- Left region...
-			if (bClipboard) {
-				g_clipboard.addItem(pClip,
-					pClipItem->rectClip,
-					iClipStart,
-					iClipOffset,
-					iSelectLength);
-			}
-			if (pClipCommand) {
-				pClipCommand->resizeClip(pClip,
-					iSelectEnd,
-					iClipOffset + iSelectLength,
-					iClipLength - iSelectLength);
-			}
-			// Done, left region.
-		} else {
-			// -- Whole clip...
-			if (bClipboard) {
-				g_clipboard.addItem(pClip,
-					pClipItem->rectClip,
-					iClipStart,
-					iClipOffset,
-					iClipLength);
-			}
-			if (pClipCommand) {
-				pClipCommand->removeClip(pClip);
-			}
-			// Done, whole clip.
 		}
 	}
 
@@ -3245,65 +3258,68 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
-		qtractorClipSelect::Item *pClipItem = iter.value();
 		qtractorClip *pClip = iter.key();
 		if (pSingleTrack == NULL)
 			pTrack = pClip->track();
-		// Clip parameters.
-		unsigned long iClipStart    = pClip->clipStart();
-		unsigned long iClipOffset   = pClip->clipOffset();
-		unsigned long iClipLength   = pClip->clipLength();
-		unsigned long iClipEnd      = iClipStart + iClipLength;
-		// Clip selection points.
-		unsigned long iSelectStart  = pClip->clipSelectStart();
-		unsigned long iSelectEnd    = pClip->clipSelectEnd();
-		unsigned long iSelectOffset = iSelectStart - iClipStart;
-		unsigned long iSelectLength = iSelectEnd - iSelectStart;
-		// Determine and keep clip regions...
-		if (iSelectStart > iClipStart) {
-			// -- Left clip...
-			qtractorClip *pClipLeft = cloneClip(pClip);
-			pClipLeft->setClipStart(iClipStart);
-			pClipLeft->setClipOffset(iClipOffset);
-			pClipLeft->setClipLength(iSelectOffset);
-			pClipLeft->setFadeInLength(pClip->fadeInLength());
-			pClipCommand->addClip(pClipLeft, pClipLeft->track());
-			// Done, left clip.
+		// Make sure it's legal selection...
+		if (pTrack && pClip->isClipSelected()) {
+			// Clip parameters.
+			unsigned long iClipStart    = pClip->clipStart();
+			unsigned long iClipOffset   = pClip->clipOffset();
+			unsigned long iClipLength   = pClip->clipLength();
+			unsigned long iClipEnd      = iClipStart + iClipLength;
+			// Clip selection points.
+			unsigned long iSelectStart  = pClip->clipSelectStart();
+			unsigned long iSelectEnd    = pClip->clipSelectEnd();
+			unsigned long iSelectOffset = iSelectStart - iClipStart;
+			unsigned long iSelectLength = iSelectEnd - iSelectStart;
+			// Determine and keep clip regions...
+			qtractorClipSelect::Item *pClipItem = iter.value();
+			if (iSelectStart > iClipStart) {
+				// -- Left clip...
+				qtractorClip *pClipLeft = cloneClip(pClip);
+				pClipLeft->setClipStart(iClipStart);
+				pClipLeft->setClipOffset(iClipOffset);
+				pClipLeft->setClipLength(iSelectOffset);
+				pClipLeft->setFadeInLength(pClip->fadeInLength());
+				pClipCommand->addClip(pClipLeft, pClipLeft->track());
+				// Done, left clip.
+			}
+			if (iSelectEnd < iClipEnd) {
+				// -- Right clip...
+				qtractorClip *pClipRight = cloneClip(pClip);
+				pClipRight->setClipStart(iSelectEnd);
+				pClipRight->setClipOffset(iClipOffset
+					+ iSelectOffset + iSelectLength);
+				pClipRight->setClipLength(iClipEnd - iSelectEnd);
+				pClipRight->setFadeOutLength(pClip->fadeOutLength());
+				pClipCommand->addClip(pClipRight, pClipRight->track());
+				// Done, right clip.
+			}
+			// Convert to precise frame positioning,
+			// but only the first clip gets snapped...
+			iClipStart = iSelectStart;
+			if (iTrackClip == 0) {
+				int x = (pClipItem->rectClip.x() + m_iDraggingX);
+				unsigned long iFrameStart = pSession->frameSnap(
+					pSession->frameFromPixel(x > 0 ? x : 0));
+				iClipDelta = long(iFrameStart) - long(iClipStart);
+				iClipStart = iFrameStart;
+			} else if (long(iClipStart) + iClipDelta > 0) {
+				iClipStart += iClipDelta;
+			} else {
+				iClipStart = 0;
+			}
+			// -- Moved clip...
+			pClipCommand->moveClip(pClip, pTrack,
+				iClipStart,
+				iClipOffset + iSelectOffset,
+				iSelectLength);
+			// If track's new it will need a name...
+			if (bAddTrack && iTrackClip == 0)
+				pTrack->setTrackName(pClip->clipName());
+			++iTrackClip;
 		}
-		if (iSelectEnd < iClipEnd) {
-			// -- Right clip...
-			qtractorClip *pClipRight = cloneClip(pClip);
-			pClipRight->setClipStart(iSelectEnd);
-			pClipRight->setClipOffset(iClipOffset
-				+ iSelectOffset + iSelectLength);
-			pClipRight->setClipLength(iClipEnd - iSelectEnd);
-			pClipRight->setFadeOutLength(pClip->fadeOutLength());
-			pClipCommand->addClip(pClipRight, pClipRight->track());
-			// Done, right clip.
-		}
-		// Convert to precise frame positioning,
-		// but only the first clip gets snapped...
-		iClipStart = iSelectStart;
-		if (iTrackClip == 0) {
-			int x = (pClipItem->rectClip.x() + m_iDraggingX);
-			unsigned long iFrameStart = pSession->frameSnap(
-				pSession->frameFromPixel(x > 0 ? x : 0));
-			iClipDelta = long(iFrameStart) - long(iClipStart);
-			iClipStart = iFrameStart;
-		} else if (long(iClipStart) + iClipDelta > 0) {
-			iClipStart += iClipDelta;
-		} else {
-			iClipStart = 0;
-		}
-		// -- Moved clip...
-		pClipCommand->moveClip(pClip, pTrack,
-			iClipStart,
-			iClipOffset + iSelectOffset,
-			iSelectLength);
-		// If track's new it will need a name...
-		if (bAddTrack && iTrackClip == 0)
-			pTrack->setTrackName(pClip->clipName());
-		++iTrackClip;
 	}
 
 	// May reset selection, yep.

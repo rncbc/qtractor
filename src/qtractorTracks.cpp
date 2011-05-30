@@ -606,12 +606,16 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Multiple clip selection...
-	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
-	if (pClipSelect->items().count() > 0) {
+	if (isClipSelected()) {
+		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter)
-			normalizeClipCommand(pClipCommand, iter.key());
+		for ( ; iter != items.constEnd(); ++iter) {
+			// Make sure it's legal selection...
+			pClip = iter.key();
+			if (pClip->track() && pClip->isClipSelected())
+				normalizeClipCommand(pClipCommand, pClip);
+		}
 	}	// Single, current clip instead?
 	else normalizeClipCommand(pClipCommand, pClip);
 
@@ -729,12 +733,16 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Multiple clip selection...
-	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
-	if (pClipSelect->items().count() > 0) {
+	if (isClipSelected()) {
+		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter)
-			executeClipToolCommand(pMidiClipCommand, iter.key(), &toolsForm);
+		for ( ; iter != items.constEnd(); ++iter) {
+			// Make sure it's legal selection...
+			qtractorClip *pClip = iter.key();
+			if (pClip->track() && pClip->isClipSelected())
+				executeClipToolCommand(pMidiClipCommand, pClip, &toolsForm);
+		}
 	}	// Single, current clip instead?
 	else executeClipToolCommand(pMidiClipCommand, pClip, &toolsForm);
 
@@ -1013,6 +1021,7 @@ struct audioClipBufferItem
 		buff->setTimeStretch(clip->timeStretch());
 		buff->setPitchShift(clip->pitchShift());
 		buff->open(clip->filename());
+		buff->syncExport();
 	}
 
 	// Destructor.
@@ -1118,15 +1127,16 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorClip *pClip = iter.key();
 		qtractorTrack *pTrack = pClip->track();
-		if (pTrack == NULL)
-			continue;
-		qtractorAudioBufferThread *pSyncThread = pTrack->syncThread();
-		if (iSelectStart > pClip->clipSelectStart())
-			iSelectStart = pClip->clipSelectStart();
-		if (iSelectEnd < pClip->clipSelectEnd())
-			iSelectEnd = pClip->clipSelectEnd();
-		list.append(new audioClipBufferItem(
-			pClip, pSyncThread, iChannels, iSampleRate));
+		// Make sure it's a legal selection...
+		if (pTrack && pClip->isClipSelected()) {
+			qtractorAudioBufferThread *pSyncThread = pTrack->syncThread();
+			if (iSelectStart > pClip->clipSelectStart())
+				iSelectStart = pClip->clipSelectStart();
+			if (iSelectEnd < pClip->clipSelectEnd())
+				iSelectEnd = pClip->clipSelectEnd();
+			list.append(new audioClipBufferItem(
+				pClip, pSyncThread, iChannels, iSampleRate));
+		}
 	}
 
 	// A progress indication might be friendly...
@@ -1182,20 +1192,20 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 			// Should force sync now and then...
 			if ((count % 33) == 0) pBuff->syncExport();
 			// Quite similar to qtractorAudioClip::process()...
-			unsigned long iClipStart = pClip->clipStart();
-			unsigned long iClipEnd   = iClipStart + pClip->clipLength();
-			if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
-				unsigned long iOffset = iFrameEnd - iClipStart;
-				while (!pBuff->inSync(0, iOffset))
+			unsigned long iClipSelectStart = pClip->clipSelectStart();
+			unsigned long iClipSelectEnd   = pClip->clipSelectEnd();;
+			if (iFrameStart < iClipSelectStart && iFrameEnd > iClipSelectStart) {
+				unsigned long iOffset = iFrameEnd - iClipSelectStart;
+				while (!pBuff->inSync(iClipSelectStart - iFrameStart, iOffset))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iOffset,
-					iChannels, iClipStart - iFrameStart,
+					iChannels, iClipSelectStart - iFrameStart,
 					pClip->gain(iOffset));
 			}
 			else
-			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
-				unsigned long iOffset = iFrameEnd - iClipStart;
-				while (!pBuff->inSync(iFrameStart - iClipStart, iOffset))
+			if (iFrameStart >= iClipSelectStart && iFrameStart < iClipSelectEnd) {
+				unsigned long iOffset = iFrameEnd - iClipSelectStart;
+				while (!pBuff->inSync(iFrameStart - iClipSelectStart, iOffset))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
 					iChannels, 0, pClip->gain(iOffset));
@@ -1373,10 +1383,13 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	unsigned long iSelectEnd = 0;
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorClip *pClip = iter.key();
-		if (iSelectStart > pClip->clipSelectStart())
-			iSelectStart = pClip->clipSelectStart();
-		if (iSelectEnd < pClip->clipSelectEnd())
-			iSelectEnd = pClip->clipSelectEnd();
+		// Make sure it's a legal selection...
+		if (pClip->track() && pClip->isClipSelected()) {
+			if (iSelectStart > pClip->clipSelectStart())
+				iSelectStart = pClip->clipSelectStart();
+			if (iSelectEnd < pClip->clipSelectEnd())
+				iSelectEnd = pClip->clipSelectEnd();
+		}
 	}
 
 	// Multi-selection extents (in ticks)...
@@ -1404,63 +1417,66 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorClip *pClip = iter.key();
-		// Clip parameters.
-		unsigned long iClipStart  = pClip->clipStart();
-		unsigned long iClipOffset = pClip->clipOffset();
-		unsigned long iClipLength = pClip->clipLength();
-		unsigned long iClipEnd    = iClipStart + iClipLength;
-		// Determine and keep clip regions...
-		if (pClipCommand) {
-			if (iSelectStart > iClipStart) {
-				// -- Left clip...
-				pClipCommand->resizeClip(pClip,
-					iClipStart,
-					iClipOffset,
-					iSelectStart - iClipStart);
-				// Done, left clip.
-			}
-			else
-			if (iSelectEnd < iClipEnd) {
-				// -- Right clip...
-				pClipCommand->resizeClip(pClip,
-					iSelectEnd,
-					iClipOffset + (iSelectEnd - iClipStart),
-					iClipEnd - iSelectEnd);
-				// Done, right clip.
-			} else {
-				// -- Inner clip...
-				pClipCommand->removeClip(pClip);
-				// Done, inner clip.
-			}
-		}
-		// Do the MIDI merge, itself...
-		qtractorMidiClip *pMidiClip
-			= static_cast<qtractorMidiClip *> (pClip);
-		if (pMidiClip) {
-			unsigned long iTimeClip
-				= pSession->tickFromFrame(pClip->clipStart());
-			unsigned long iTimeOffset = iTimeClip - iTimeStart;
-			// For each event...
-			qtractorMidiEvent *pEvent
-				= pMidiClip->sequence()->events().first();
-			while (pEvent && iTimeClip + pEvent->time() < iTimeStart)
-				pEvent = pEvent->next();
-			while (pEvent && iTimeClip + pEvent->time() < iTimeEnd) {
-				qtractorMidiEvent *pNewEvent
-					= new qtractorMidiEvent(*pEvent);
-				pNewEvent->setTime(iTimeOffset + pEvent->time());
-				if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
-					unsigned long iTimeEvent = iTimeClip + pEvent->time();
-					float fGain = pMidiClip->gain(
-						pSession->frameFromTick(iTimeEvent)
-						- pClip->clipStart());
-					pNewEvent->setVelocity((unsigned char)
-						(fGain * float(pEvent->velocity())) & 0x7f);
-					if (iTimeEvent + pEvent->duration() > iTimeEnd)
-						pNewEvent->setDuration(iTimeEnd - iTimeEvent);
+		// Make sure it's a legal selection...
+		if (pClip->track() && pClip->isClipSelected()) {
+			// Clip parameters.
+			unsigned long iClipStart  = pClip->clipStart();
+			unsigned long iClipOffset = pClip->clipOffset();
+			unsigned long iClipLength = pClip->clipLength();
+			unsigned long iClipEnd    = iClipStart + iClipLength;
+			// Determine and keep clip regions...
+			if (pClipCommand) {
+				if (iSelectStart > iClipStart) {
+					// -- Left clip...
+					pClipCommand->resizeClip(pClip,
+						iClipStart,
+						iClipOffset,
+						iSelectStart - iClipStart);
+					// Done, left clip.
 				}
-				seq.insertEvent(pNewEvent);
-				pEvent = pEvent->next();
+				else
+				if (iSelectEnd < iClipEnd) {
+					// -- Right clip...
+					pClipCommand->resizeClip(pClip,
+						iSelectEnd,
+						iClipOffset + (iSelectEnd - iClipStart),
+						iClipEnd - iSelectEnd);
+					// Done, right clip.
+				} else {
+					// -- Inner clip...
+					pClipCommand->removeClip(pClip);
+					// Done, inner clip.
+				}
+			}
+			// Do the MIDI merge, itself...
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (pClip);
+			if (pMidiClip) {
+				unsigned long iTimeClip
+					= pSession->tickFromFrame(pClip->clipStart());
+				unsigned long iTimeOffset = iTimeClip - iTimeStart;
+				// For each event...
+				qtractorMidiEvent *pEvent
+					= pMidiClip->sequence()->events().first();
+				while (pEvent && iTimeClip + pEvent->time() < iTimeStart)
+					pEvent = pEvent->next();
+				while (pEvent && iTimeClip + pEvent->time() < iTimeEnd) {
+					qtractorMidiEvent *pNewEvent
+						= new qtractorMidiEvent(*pEvent);
+					pNewEvent->setTime(iTimeOffset + pEvent->time());
+					if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
+						unsigned long iTimeEvent = iTimeClip + pEvent->time();
+						float fGain = pMidiClip->gain(
+							pSession->frameFromTick(iTimeEvent)
+							- pClip->clipStart());
+						pNewEvent->setVelocity((unsigned char)
+							(fGain * float(pEvent->velocity())) & 0x7f);
+						if (iTimeEvent + pEvent->duration() > iTimeEnd)
+							pNewEvent->setDuration(iTimeEnd - iTimeEvent);
+					}
+					seq.insertEvent(pNewEvent);
+					pEvent = pEvent->next();
+				}
 			}
 		}
 	}
