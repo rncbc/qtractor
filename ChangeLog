@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip merge/export lock-ups now untangled
+  (fixes bug #3308998).
+
 - LV2 extension headers update.
 
 - Fixed configure of newer LV2 host implementation
