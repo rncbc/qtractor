@@ -629,6 +629,18 @@ else
    ac_lv2_qt4_ui="no"
 fi
 
+# Check for either LV2 host library (libslv2 or liblilv).
+if test "x$ac_slv2" = "xno" -a "x$ac_lilv" = "xno"; then
+   ac_lv2="no"
+   ac_lv2_event="no"
+   ac_lv2_gtk_ui="no"
+   ac_lv2_qt4_ui="no"
+   ac_lv2_external_ui="no"
+   ac_lv2_saverestore="no"
+   ac_lv2_persist="no"
+   ac_lv2_files="no"
+fi
+
 # Check for JACK session event callback availability.
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])

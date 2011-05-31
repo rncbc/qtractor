@@ -27,7 +27,7 @@ BuildRequires:	librubberband-devel >= 1.0.1
 BuildRequires:	liblo-devel
 BuildRequires:	ladspa-devel
 BuildRequires:	dssi-devel
-#BuildRequires:	lv2core-devel
+BuildRequires:	lv2core-devel
 #BuildRequires:	libslv2-devel
 
 
