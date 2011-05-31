@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Old/deprecated JACK port latency support added
+  to audio recording latency compensation.
+
 - Audio clip merge/export lock-ups now untangled
   (fixes bug #3308998).
 
