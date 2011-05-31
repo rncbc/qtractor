@@ -2273,6 +2273,16 @@ unsigned int qtractorAudioBus::latency_in (void) const
 			range_min = range.min;
 	}
 	iLatencyIn += range_min;
+#else
+	jack_nframes_t lat, lat_min = 0;
+	for (unsigned int i = 0; i < m_iChannels; ++i) {
+		if (m_ppIPorts[i] == NULL)
+			continue;
+		lat = jack_port_get_latency(m_ppIPorts[i]);
+		if (lat_min > lat || i == 0)
+			lat_min = lat;
+	}
+	iLatencyIn += lat_min;
 #endif
 
 	return iLatencyIn;
@@ -2301,6 +2311,16 @@ unsigned int qtractorAudioBus::latency_out (void) const
 			range_min = range.min;
 	}
 	iLatencyOut += range_min;
+#else
+	jack_nframes_t lat, lat_min = 0;
+	for (unsigned int i = 0; i < m_iChannels; ++i) {
+		if (m_ppOPorts[i] == NULL)
+			continue;
+		lat = jack_port_get_latency(m_ppOPorts[i]);
+		if (lat_min > lat || i == 0)
+			lat_min = lat;
+	}
+	iLatencyOut += lat_min;
 #endif
 
 	return iLatencyOut;
