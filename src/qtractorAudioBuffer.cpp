@@ -454,8 +454,11 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 
 	// Are we off decoded file limits (EoS)?
 	unsigned long ro = m_iReadOffset;
-	if (ro >= m_iFileLength)
+	if (ro >= m_iFileLength) {
+		// Force out-of-sync...
+		setSyncFlag(ReadSync, false);
 		return 0;
+	}
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned long ls = m_iLoopStart;
@@ -602,8 +605,11 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 
 	// Are we off decoded file limits (EoS)?
 	unsigned long ro = m_iReadOffset;
-	if (ro >= m_iFileLength)
+	if (ro >= m_iFileLength) {
+		// Force out-of-sync...
+		setSyncFlag(ReadSync, false);
 		return 0;
+	}
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned long ls = m_iLoopStart;
