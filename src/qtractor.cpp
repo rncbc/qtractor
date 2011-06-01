@@ -280,7 +280,8 @@ void stacktrace ( int signo )
 	signal(signo, SIG_DFL);
 
 	static const char *shell  = "/bin/sh";
-	static const char *format = "gdb -q --batch --pid=%d --eval-command=bt";
+	static const char *format = "gdb -q --batch --pid=%d"
+		" --eval-command='thread apply all bt'";
 
 	snprintf(cmd, sizeof(cmd), format, (int) getpid());
 
