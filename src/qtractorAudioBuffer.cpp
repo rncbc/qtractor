@@ -384,7 +384,9 @@ void qtractorAudioBuffer::close (void)
 		return;
 
 	// Avoid any other interference (ought to be atomic)...
-	setSyncFlag(WaitSync, false);
+	while (m_pSyncThread && isSyncFlag(WaitSync))
+		m_pSyncThread->syncExport();
+	//setSyncFlag(WaitSync, false);
 
 	// Write-behind any remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write) {

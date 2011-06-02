@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Debugging stacktrace now applies to all working
+  threads.
+
 - Fixed muted loop playback on audio clips ending
   coincidentally with the loop-turn/end point.
 
