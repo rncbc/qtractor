@@ -1,7 +1,7 @@
 // qtractorObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,8 +63,8 @@ public:
 			return false;
 		QueueItem *pItem = &m_pQueueItems[--m_iQueueIndex];
 		qtractorSubject *pSubject = pItem->subject;
-		pSubject->setQueued(false);
 		pSubject->notify(pItem->sender);
+		pSubject->setQueued(false);
 		return true;
 	}
 
@@ -116,7 +116,7 @@ static qtractorSubjectQueue g_subjectQueue;
 
 // Constructor.
 qtractorSubject::qtractorSubject ( float fValue )
-	: m_fValue(fValue), m_bBusy(false), m_bQueued(false), m_fPrevValue(fValue),
+	: m_fValue(fValue), m_bQueued(false), m_fPrevValue(fValue),
 		m_fMinValue(0.0f), m_fMaxValue(1.0f), m_fDefaultValue(fValue)
 {
 }
@@ -124,8 +124,6 @@ qtractorSubject::qtractorSubject ( float fValue )
 // Destructor.
 qtractorSubject::~qtractorSubject (void)
 {
-	m_bBusy = true;
-
 	QListIterator<qtractorObserver *> iter(m_observers);
 	while (iter.hasNext())
 		iter.next()->setSubject(NULL);
@@ -159,18 +157,9 @@ float qtractorSubject::prevValue (void) const
 }
 
 
-// Busy flag predicate.
-bool qtractorSubject::isBusy (void) const
-{
-	return m_bBusy;
-}
-
-
 // Observer/view updater.
 void qtractorSubject::notify ( qtractorObserver *pSender )
 {
-	m_bBusy = true;
-
 	QListIterator<qtractorObserver *> iter(m_observers);
 	while (iter.hasNext()) {
 		qtractorObserver *pObserver = iter.next();
@@ -178,8 +167,6 @@ void qtractorSubject::notify ( qtractorObserver *pSender )
 			continue;
 		pObserver->update();
 	}
-
-	m_bBusy = false;
 }
 
 

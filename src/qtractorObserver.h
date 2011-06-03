@@ -1,7 +1,7 @@
 // qtractorObserver.h
 //
 /****************************************************************************
-   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,9 +48,6 @@ public:
 	float value() const;
 
 	float prevValue() const;
-
-	// Busy flag predicate.
-	bool isBusy() const;
 
 	// Observers notification
 	void notify(qtractorObserver *pSender = NULL);
@@ -104,7 +101,6 @@ private:
 
 	// Instance variables.
 	float   m_fValue;
-	bool	m_bBusy;
 	bool	m_bQueued;
 
 	float   m_fPrevValue;
@@ -178,8 +174,8 @@ public:
 		{ if (m_pSubject) m_pSubject->resetValue(this); }
 
 	// Busy flag predicate.
-	bool isBusy() const
-		{ return (m_pSubject ? m_pSubject->isBusy() : true); }
+	bool isQueued() const
+		{ return (m_pSubject ? m_pSubject->isQueued() : false); }
 
 	// Pure virtual view updater.
 	virtual void update() = 0;
