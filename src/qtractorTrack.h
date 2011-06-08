@@ -41,6 +41,8 @@ class qtractorBus;
 class qtractorSubject;
 class qtractorMidiControlObserver;
 class qtractorAudioBufferThread;
+class qtractorCurveList;
+class qtractorCurveFile;
 
 // Special forward declarations.
 class QDomElement;
@@ -231,12 +233,24 @@ public:
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
-	// Load/save track state (record, mute, soloe) controllers (MIDI).
+	// Load/save track state (record, mute, solo) controllers (MIDI).
 	void loadControllers(QDomElement *pElement);
 	void saveControllers(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Map track state (record, mute, solo) controllers (MIDI).
 	void mapControllers();
+
+	// Track automation accessor.
+	qtractorCurveList *curveList() const
+		{ return m_pCurveList; }
+
+	// Track automation curve serialization methods.
+	bool loadCurveFile (qtractorDocument *pDocument,
+		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
+	bool saveCurveFile (qtractorDocument *pDocument,
+		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
+
+	bool applyCurveFile (qtractorCurveFile *pCurveFile) const;
 
 	// Track properties structure.
 	struct Properties
@@ -321,6 +335,8 @@ private:
 	qtractorSubject *m_pSoloSubject;
 
 	qtractorMidiControl::Controllers m_controllers;
+
+	qtractorCurveList *m_pCurveList;
 };
 
 

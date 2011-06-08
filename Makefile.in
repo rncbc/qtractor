@@ -29,6 +29,8 @@ headers = \
 	src/qtractorConnect.h \
 	src/qtractorConnections.h \
 	src/qtractorCtlEvent.h \
+	src/qtractorCurve.h \
+	src/qtractorCurveFile.h \
 	src/qtractorDocument.h \
 	src/qtractorDssiPlugin.h \
 	src/qtractorEngine.h \
@@ -143,6 +145,8 @@ sources = \
 	src/qtractorCommand.cpp \
 	src/qtractorConnect.cpp \
 	src/qtractorConnections.cpp \
+	src/qtractorCurve.cpp \
+	src/qtractorCurveFile.cpp \
 	src/qtractorDocument.cpp \
 	src/qtractorDssiPlugin.cpp \
 	src/qtractorEngine.cpp \

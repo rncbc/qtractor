@@ -35,6 +35,7 @@
 #include "qtractorMixer.h"
 
 #include "qtractorDocument.h"
+#include "qtractorCurveFile.h"
 
 #include <QDomDocument>
 
@@ -467,7 +468,7 @@ void qtractorBus::monitorChangeNotify ( bool bOn )
 }
 
 
-// Load track state (record, mute, solo) controllers (MIDI).
+// Load bus (monitor, gain, pan) controllers (MIDI).
 void qtractorBus::loadControllers ( QDomElement *pElement, BusMode busMode )
 {
 	if (busMode & Input)
@@ -477,7 +478,7 @@ void qtractorBus::loadControllers ( QDomElement *pElement, BusMode busMode )
 }
 
 
-// Save track state (record, mute, solo) controllers (MIDI).
+// Save bus (monitor, gain, pan) controllers (MIDI).
 void qtractorBus::saveControllers (
 	qtractorDocument *pDocument, QDomElement *pElement, BusMode busMode ) const
 {
@@ -560,7 +561,7 @@ void qtractorBus::saveControllers (
 }
 
 
-// Map track state (record, mute, solo) controllers (MIDI).
+// Map bus (monitor, gain, pan) controllers (MIDI).
 void qtractorBus::mapControllers ( BusMode busMode )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
@@ -584,7 +585,7 @@ void qtractorBus::mapControllers ( BusMode busMode )
 		pMonitor = monitor_out();
 		pMixerRack = pMixer->outputRack();
 	}
-	
+
 	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
 	if (pMixerStrip == NULL)
 		return;
@@ -619,6 +620,162 @@ void qtractorBus::mapControllers ( BusMode busMode )
 	
 	qDeleteAll(controllers);
 	controllers.clear();
+}
+
+
+// Load bus automation curves (monitor, gain, pan).
+bool qtractorBus::loadCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode /*busMode*/ ) const
+{
+	qtractorSession *pSession = m_pEngine->session();
+	if (pSession == NULL)
+		return false;
+
+	return pCurveFile->load(pDocument, pElement, pSession->timeScale());
+}
+
+
+// Save bus automation curves (monitor, gain, pan).
+bool qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode busMode ) const
+{
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return false;
+
+	qtractorSession *pSession = m_pEngine->session();
+	if (pSession == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return false;
+
+	QString sBusName(busName());
+	qtractorMonitor *pMonitor = NULL;
+	qtractorMixerRack *pMixerRack = NULL;
+	if (busMode & Input) {
+		pMonitor = monitor_in();
+		pMixerRack = pMixer->inputRack();
+		sBusName += "_in";
+	} else {
+		pMonitor = monitor_out();
+		pMixerRack = pMixer->outputRack();
+		sBusName += "_out";
+	}
+	
+	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
+	if (pMixerStrip == NULL)
+		return false;
+
+	pCurveFile->clear();
+	pCurveFile->setFilename(pSession->createFilePath(sBusName, ".mid"));
+
+	qtractorCurve *pCurve;
+
+	if (busMode & Input) { // It suffices for Duplex...
+	pCurve = pCurveList->findCurve(monitorSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 0;	// 0=MonitorSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 80;	// 80=General Purpose Button 1 (on/off)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}}
+
+	pCurve = pCurveList->findCurve(
+		pMixerStrip->meter()->panningSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 1;	// 1=PanningSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 10;	// 10=Pan Position (coarse)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	pCurve = pCurveList->findCurve(
+		pMixerStrip->meter()->gainSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 2; // 2=GainSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 7;	// 7=Volume (coarse)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	return pCurveFile->save(pDocument, pElement, pSession->timeScale());
+}
+
+
+// Apply bus automation curves (monitor, gain, pan).
+bool qtractorBus::applyCurveFile ( qtractorCurveFile *pCurveFile, BusMode busMode ) const
+{
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return false;
+
+	qtractorSession *pSession = m_pEngine->session();
+	if (pSession == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return false;
+
+	qtractorMonitor *pMonitor = NULL;
+	qtractorMixerRack *pMixerRack = NULL;
+	if (busMode & Input) {
+		pMonitor = monitor_in();
+		pMixerRack = pMixer->inputRack();
+	} else {
+		pMonitor = monitor_out();
+		pMixerRack = pMixer->outputRack();
+	}
+	
+	qtractorMixerStrip *pMixerStrip = pMixerRack->findStrip(pMonitor);
+	if (pMixerStrip == NULL)
+		return false;
+
+	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
+	while (iter.hasNext()) {
+		qtractorCurveFile::Item *pCurveItem = iter.next();
+		switch (pCurveItem->index) {
+		case 0: // 0=MonitorSubject
+			pCurveItem->subject = monitorSubject();
+			break;
+		case 1: // 1=PanSubject
+			pCurveItem->subject = pMixerStrip->meter()->panningSubject();
+			break;
+		case 2: // 2=GainSubject
+			pCurveItem->subject = pMixerStrip->meter()->gainSubject();
+			break;
+		}
+	}
+
+	return pCurveFile->apply(pSession->timeScale());
 }
 
 

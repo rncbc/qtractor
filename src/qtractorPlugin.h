@@ -47,6 +47,7 @@ class qtractorPluginListItem;
 class qtractorMidiManager;
 
 class qtractorDocument;
+class qtractorCurveFile;
 
 class QDomDocument;
 class QDomElement;
@@ -584,6 +585,14 @@ public:
 
 	// Map/realize plugin parameter controllers (MIDI).
 	void mapControllers(const qtractorMidiControl::Controllers& controllers);
+
+	// Plugin automation curve serialization methods.
+	bool loadCurveFile (qtractorDocument *pDocument,
+		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
+	bool saveCurveFile (qtractorDocument *pDocument,
+		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
+
+	bool applyCurveFile (qtractorCurveFile *pCurveFile) const;
 
 protected:
 

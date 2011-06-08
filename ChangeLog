@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- TYOQA: first underground sources are emerging...
+
 - Debugging stacktrace now applies to all working
   threads.
 
