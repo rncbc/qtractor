@@ -27,6 +27,7 @@
 // Forward declarations.
 class qtractorBus;
 class qtractorSessionCursor;
+class qtractorCurveFile;
 
 class QDomElement;
 
@@ -177,14 +178,22 @@ public:
 	// State (monitor) notifier (proto-slot).
 	void monitorChangeNotify(bool bOn);
 
-	// Load/save track state (record, mute, soloe) controllers (MIDI).
+	// Load/save bus (monitor, gain, pan) controllers (MIDI).
 	void loadControllers(
 		QDomElement *pElement, BusMode busMode);
 	void saveControllers(qtractorDocument *pDocument,
 		QDomElement *pElement, BusMode busMode) const;
 
-	// Map track state (record, mute, solo) controllers (MIDI).
+	// Map bus (monitor, gain, pan) controllers (MIDI).
 	void mapControllers(BusMode busMode);
+
+	// Bus automation curve serialization methods.
+	bool loadCurveFile(qtractorDocument *pDocument,
+		QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode busMode) const;
+	bool saveCurveFile(qtractorDocument *pDocument,
+		QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode busMode) const;
+
+	bool applyCurveFile(qtractorCurveFile *pCurveFile, BusMode busMode) const;
 
 	// Connection list stuff.
 	struct ConnectItem

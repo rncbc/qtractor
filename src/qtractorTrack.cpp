@@ -38,6 +38,7 @@
 #include "qtractorPlugin.h"
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
+#include "qtractorCurveFile.h"
 
 #include "qtractorTrackCommand.h"
 
@@ -189,6 +190,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pMuteObserver   = new StateObserver(this, Mute,   m_pMuteSubject);
 	m_pSoloObserver   = new StateObserver(this, Solo,   m_pSoloSubject);
 
+	m_pCurveList = new qtractorCurveList();
+	
 	unsigned int iFlags = qtractorPluginList::Track;
 	if (trackType == qtractorTrack::Midi)
 		iFlags |= qtractorPluginList::Midi;
@@ -226,6 +229,8 @@ qtractorTrack::~qtractorTrack (void)
 	qDeleteAll(m_controllers);
 	m_controllers.clear();
 
+	if (m_pCurveList)
+		delete m_pCurveList;
 	if (m_pPluginList)
 		delete m_pPluginList;
 	if (m_pMonitor)
@@ -910,6 +915,10 @@ qtractorTrack::Properties& qtractorTrack::properties (void)
 void qtractorTrack::process ( qtractorClip *pClip,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
+	// Track automation hard-place...
+	if (m_pCurveList->isEnabled())
+		m_pCurveList->process(iFrameStart);
+
 	// Audio-buffers needs some preparation...
 	unsigned int nframes = iFrameEnd - iFrameStart;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
@@ -1577,7 +1586,7 @@ void qtractorTrack::saveControllers (
 }
 
 
-// Map track state (record, mute, solo) controllers (MIDI).
+// Map track state (monitor, gain, pan, record, mute, solo) controllers (MIDI).
 void qtractorTrack::mapControllers (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
@@ -1633,6 +1642,191 @@ void qtractorTrack::mapControllers (void)
 
 	qDeleteAll(m_controllers);
 	m_controllers.clear();
+}
+
+
+// Load track automation curves (monitor, gain, pan, record, mute, solo).
+bool qtractorTrack::loadCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	return pCurveFile->load(pDocument, pElement, pSession->timeScale());
+}
+
+
+// Save track automation curves (monitor, gain, pan, record, mute, solo).
+bool qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+{
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return false;
+
+	qtractorMixerStrip *pMixerStrip
+		= pMixer->trackRack()->findStrip(m_pMonitor);
+	if (pMixerStrip == NULL)
+		return false;
+
+	pCurveFile->clear();
+	pCurveFile->setFilename(pSession->createFilePath(trackName(), ".mid"));
+
+	qtractorCurve *pCurve;
+
+	pCurve = pCurveList->findCurve(monitorSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 0;	// 0=MonitorSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 80;	// 80=General Purpose Button 1 (on/off)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	pCurve = pCurveList->findCurve(
+		pMixerStrip->meter()->panningSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 1;	// 1=PanningSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 10;	// 10=Pan Position (coarse)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	pCurve = pCurveList->findCurve(
+		pMixerStrip->meter()->gainSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 2; // 2=GainSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 7;	// 7=Volume (coarse)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	pCurve = pCurveList->findCurve(recordSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 3;	// 3=RecordSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 81;	// 81=General Purpose Button 2 (on/off)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	pCurve = pCurveList->findCurve(muteSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 3;	// 4=MuteSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 82;	// 82=General Purpose Button 3 (on/off)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	pCurve = pCurveList->findCurve(soloSubject());
+	if (pCurve && pCurve->isEnabled()) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->index = 3;	// 4=SoloSubject
+		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		pCurveItem->param = 83;	// 83=General Purpose Button 4 (on/off)
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
+	return pCurveFile->save(pDocument, pElement, pSession->timeScale());
+}
+
+
+// Apply track automation curves (monitor, gain, pan, record, mute, solo).
+bool qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
+{
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return false;
+
+	qtractorMixerStrip *pMixerStrip
+		= pMixer->trackRack()->findStrip(m_pMonitor);
+	if (pMixerStrip == NULL)
+		return false;
+
+	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
+	while (iter.hasNext()) {
+		qtractorCurveFile::Item *pCurveItem = iter.next();
+		switch (pCurveItem->index) {
+		case 0: // 0=MonitorSubject
+			pCurveItem->subject = monitorSubject();
+			break;
+		case 1: // 1=PanSubject
+			pCurveItem->subject = pMixerStrip->meter()->panningSubject();
+			break;
+		case 2: // 2=GainSubject
+			pCurveItem->subject = pMixerStrip->meter()->gainSubject();
+			break;
+		case 3: // 3=RecordSubject
+			pCurveItem->subject = recordSubject();
+			break;
+		case 4: // 4=MuteSubject
+			pCurveItem->subject = muteSubject();
+			break;
+		case 5: // 5=SoloSubject
+			pCurveItem->subject = soloSubject();
+			break;
+		}
+	}
+
+	return pCurveFile->apply(pSession->timeScale());
 }
 
 

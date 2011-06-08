@@ -32,6 +32,7 @@
 
 #include "qtractorSession.h"
 #include "qtractorDocument.h"
+#include "qtractorCurveFile.h"
 
 #ifdef CONFIG_LADSPA
 #include "qtractorLadspaPlugin.h"
@@ -1652,6 +1653,88 @@ void qtractorPlugin::mapControllers (
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}
+}
+
+
+// Load plugin automation curves (monitor, gain, pan, record, mute, solo).
+bool qtractorPlugin::loadCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	return pCurveFile->load(pDocument, pElement, pSession->timeScale());
+}
+
+
+// Save plugin automation curves (monitor, gain, pan, record, mute, solo).
+bool qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+{
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	QString sPluginName(list()->name());
+	sPluginName += type()->label();
+	sPluginName += '-';
+	sPluginName += QString::number(type()->uniqueID(), 16);
+
+	pCurveFile->clear();
+	pCurveFile->setFilename(pSession->createFilePath(sPluginName, ".mid"));
+
+	unsigned short iParam = 0;
+	Params::ConstIterator param = m_params.constBegin();
+	for ( ; param != m_params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
+		qtractorCurve *pCurve = pCurveList->findCurve(pParam->subject());
+		if (pCurve && pCurve->isEnabled()) {
+			unsigned short controller = (iParam % 0x7f);
+			if (controller == 0x00 || controller == 0x20)
+				++iParam; // Avoid bank-select controllers, please.
+			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+			pCurveItem->index = pParam->index();
+			pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+			pCurveItem->channel = ((iParam / 0x7f) % 16);
+			pCurveItem->param = (iParam % 0x7f);
+			pCurveItem->mode = pCurve->mode();
+			pCurveItem->process = pCurve->isProcess();
+			pCurveItem->capture = pCurve->isCapture();
+			pCurveItem->subject = pCurve->subject();
+			pCurveFile->addItem(pCurveItem);
+			++iParam;
+		}
+	}
+
+	return pCurveFile->save(pDocument, pElement, pSession->timeScale());
+}
+
+
+// Apply plugin automation curves (monitor, gain, pan, record, mute, solo).
+bool qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
+{
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
+	while (iter.hasNext()) {
+		qtractorCurveFile::Item *pCurveItem = iter.next();
+		qtractorPluginParam *pParam = findParam(pCurveItem->index);
+		if (pParam)
+			pCurveItem->subject = pParam->subject();
+	}
+
+	return pCurveFile->apply(pSession->timeScale());
 }
 
 
