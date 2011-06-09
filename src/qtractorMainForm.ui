@@ -172,7 +172,7 @@
 	</widget>
 	<widget class="QMenu" name="trackCurveMenu" >
 	 <property name="title" >
-	  <string>&amp;Automation</string>
+	  <string>A&amp;utomation</string>
 	 </property>
 	 <addaction name="trackCurveSelectMenu" />
 	 <addaction name="separator" />
@@ -209,7 +209,7 @@
     </widget>
     <widget class="QMenu" name="trackMoveMenu" >
      <property name="title" >
-      <string>&amp;Move</string>
+      <string>Mo&amp;ve</string>
      </property>
      <addaction name="trackMoveTopAction" />
      <addaction name="trackMoveUpAction" />
@@ -1456,7 +1456,7 @@
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string>A&amp;uto Monitor</string>
+    <string>Auto &amp;Monitor</string>
    </property>
    <property name="iconText" >
     <string>Auto Monitor</string>

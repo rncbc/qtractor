@@ -43,6 +43,7 @@ class qtractorMidiControlObserver;
 class qtractorAudioBufferThread;
 class qtractorCurveList;
 class qtractorCurveFile;
+class qtractorCurve;
 
 // Special forward declarations.
 class QDomElement;
@@ -242,6 +243,9 @@ public:
 
 	// Track automation curve list accessor.
 	qtractorCurveList *curveList() const;
+
+	// Track automation current curve accessor.
+	qtractorCurve *currentCurve() const;
 
 	// Track automation curve serialization methods.
 	bool loadCurveFile (qtractorDocument *pDocument,
