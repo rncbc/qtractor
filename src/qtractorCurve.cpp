@@ -176,11 +176,9 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 // Destructor.
 qtractorCurve::~qtractorCurve (void)
 {
-#if 0	
-	m_pList->removeCurve(this);
+//	m_pList->removeCurve(this);
 
 	clear();
-#endif
 }
 
 
