@@ -190,8 +190,6 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pMuteObserver   = new StateObserver(this, Mute,   m_pMuteSubject);
 	m_pSoloObserver   = new StateObserver(this, Solo,   m_pSoloSubject);
 
-	m_pCurveList = new qtractorCurveList();
-	
 	unsigned int iFlags = qtractorPluginList::Track;
 	if (trackType == qtractorTrack::Midi)
 		iFlags |= qtractorPluginList::Midi;
@@ -229,8 +227,6 @@ qtractorTrack::~qtractorTrack (void)
 	qDeleteAll(m_controllers);
 	m_controllers.clear();
 
-	if (m_pCurveList)
-		delete m_pCurveList;
 	if (m_pPluginList)
 		delete m_pPluginList;
 	if (m_pMonitor)
@@ -915,10 +911,6 @@ qtractorTrack::Properties& qtractorTrack::properties (void)
 void qtractorTrack::process ( qtractorClip *pClip,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
-	// Track automation hard-place...
-	if (m_pCurveList->isEnabled())
-		m_pCurveList->process(iFrameStart);
-
 	// Audio-buffers needs some preparation...
 	unsigned int nframes = iFrameEnd - iFrameStart;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
@@ -936,6 +928,10 @@ void qtractorTrack::process ( qtractorClip *pClip,
 
 	// Playback...
 	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		// Track automation processing...
+		qtractorCurveList *pCurveList = curveList();
+		if (pCurveList && pCurveList->isEnabled())
+			pCurveList->process(iFrameStart);
 		// Now, for every clip...
 		while (pClip && pClip->clipStart() < iFrameEnd) {
 			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
@@ -1642,6 +1638,13 @@ void qtractorTrack::mapControllers (void)
 
 	qDeleteAll(m_controllers);
 	m_controllers.clear();
+}
+
+
+// Track automation curve list accessor.
+qtractorCurveList *qtractorTrack::curveList (void) const
+{
+	return (m_pPluginList ? m_pPluginList->curveList() : NULL);
 }
 
 

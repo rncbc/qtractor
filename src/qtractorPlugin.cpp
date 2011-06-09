@@ -1042,6 +1042,8 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	m_pppBuffers[0] = NULL;
 	m_pppBuffers[1] = NULL;
 
+	m_pCurveList = new qtractorCurveList();
+
 	setBuffer(iChannels, iBufferSize, iSampleRate, iFlags);
 }
 
@@ -1053,6 +1055,8 @@ qtractorPluginList::~qtractorPluginList (void)
 
 	// Clear out all dependables...
 	m_views.clear();
+
+	delete m_pCurveList;
 }
 
 

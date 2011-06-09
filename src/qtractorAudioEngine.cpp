@@ -2249,6 +2249,18 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 }
 
 
+// Automation curve list accessors.
+qtractorCurveList *qtractorAudioBus::curveList_in (void) const
+{
+	return (m_pIPluginList ? m_pIPluginList->curveList() : NULL);
+}
+
+qtractorCurveList *qtractorAudioBus::curveList_out (void) const
+{
+	return (m_pOPluginList ? m_pOPluginList->curveList() : NULL);
+}
+
+
 // Audio I/O port latency accessors.
 unsigned int qtractorAudioBus::latency_in (void) const
 {

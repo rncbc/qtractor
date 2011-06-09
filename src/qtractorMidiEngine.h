@@ -40,6 +40,7 @@ class qtractorMidiOutputThread;
 class qtractorMidiMonitor;
 class qtractorMidiSysexList;
 class qtractorPluginList;
+class qtractorCurveList;
 
 class QSocketNotifier;
 
@@ -425,6 +426,10 @@ public:
 	// Plugin-chain accessors.
 	qtractorPluginList *pluginList_in()  const;
 	qtractorPluginList *pluginList_out() const;
+
+	// Automation curve list accessors.
+	qtractorCurveList *curveList_in()  const;
+	qtractorCurveList *curveList_out() const;
 
 	// Retrieve/restore client:port connections.
 	// return the effective number of connection attempts.

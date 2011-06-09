@@ -36,6 +36,7 @@ class qtractorAudioBuffer;
 class qtractorAudioMonitor;
 class qtractorAudioFile;
 class qtractorPluginList;
+class qtractorCurveList;
 
 
 //----------------------------------------------------------------------
@@ -342,6 +343,10 @@ public:
 	// Plugin-chain accessors.
 	qtractorPluginList *pluginList_in()  const;
 	qtractorPluginList *pluginList_out() const;
+
+	// Automation curve list accessors.
+	qtractorCurveList *curveList_in()  const;
+	qtractorCurveList *curveList_out() const;
 
 	// Audio I/O port latency accessors.
 	unsigned int latency_in()  const;

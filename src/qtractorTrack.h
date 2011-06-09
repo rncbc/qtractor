@@ -240,9 +240,8 @@ public:
 	// Map track state (record, mute, solo) controllers (MIDI).
 	void mapControllers();
 
-	// Track automation accessor.
-	qtractorCurveList *curveList() const
-		{ return m_pCurveList; }
+	// Track automation curve list accessor.
+	qtractorCurveList *curveList() const;
 
 	// Track automation curve serialization methods.
 	bool loadCurveFile (qtractorDocument *pDocument,
@@ -335,8 +334,6 @@ private:
 	qtractorSubject *m_pSoloSubject;
 
 	qtractorMidiControl::Controllers m_controllers;
-
-	qtractorCurveList *m_pCurveList;
 };
 
 
