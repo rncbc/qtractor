@@ -1648,6 +1648,14 @@ qtractorCurveList *qtractorTrack::curveList (void) const
 }
 
 
+// Track automation current curve accessor.
+qtractorCurve *qtractorTrack::currentCurve (void) const
+{
+	qtractorCurveList *pCurveList = curveList();
+	return (pCurveList ? pCurveList->currentCurve() : NULL);
+}
+
+
 // Load track automation curves (monitor, gain, pan, record, mute, solo).
 bool qtractorTrack::loadCurveFile ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const

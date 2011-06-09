@@ -2658,10 +2658,7 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 	if (pTrack == NULL)
 		return;
 
-	qtractorCurve *pCurrentCurve = NULL;
-	qtractorCurveList *pCurveList = pTrack->curveList();
-	if (pCurveList)
-		pCurrentCurve = pCurveList->currentCurve();
+	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
 	if (pCurrentCurve == NULL)
 		return;
 
@@ -2682,10 +2679,7 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 	if (pTrack == NULL)
 		return;
 
-	qtractorCurve *pCurrentCurve = NULL;
-	qtractorCurveList *pCurveList = pTrack->curveList();
-	if (pCurveList)
-		pCurrentCurve = pCurveList->currentCurve();
+	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
 	if (pCurrentCurve == NULL)
 		return;
 
@@ -2706,10 +2700,7 @@ void qtractorMainForm::trackCurveClear (void)
 	if (pTrack == NULL)
 		return;
 
-	qtractorCurve *pCurrentCurve = NULL;
-	qtractorCurveList *pCurveList = pTrack->curveList();
-	if (pCurveList)
-		pCurrentCurve = pCurveList->currentCurve();
+	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
 	if (pCurrentCurve == NULL)
 		return;
 
