@@ -156,6 +156,13 @@ public slots:
 	void trackProperties();
 	void trackInputs();
 	void trackOutputs();
+	void trackCurveSelect(QAction *pAction);
+	void trackCurveProcess(bool bOn);
+	void trackCurveCapture(bool bOn);
+	void trackCurveClear();
+	void trackCurveProcessAll(bool bOn);
+	void trackCurveCaptureAll(bool bOn);
+	void trackCurveClearAll();
 	void trackStateRecord(bool bOn);
 	void trackStateMute(bool bOn);
 	void trackStateSolo(bool bOn);
@@ -169,13 +176,6 @@ public slots:
 	void trackMoveUp();
 	void trackMoveDown();
 	void trackMoveBottom();
-	void trackCurveSelect(QAction *pAction);
-	void trackCurveProcess(bool bOn);
-	void trackCurveCapture(bool bOn);
-	void trackCurveClear();
-	void trackCurveProcessAll(bool bOn);
-	void trackCurveCaptureAll(bool bOn);
-	void trackCurveClearAll();
 	void trackAutoMonitor(bool bOn);
 	void trackImportAudio();
 	void trackImportMidi();

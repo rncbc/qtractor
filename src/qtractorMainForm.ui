@@ -165,6 +165,27 @@
     <property name="title" >
      <string>&amp;Track</string>
     </property>
+	<widget class="QMenu" name="trackCurveSelectMenu" >
+	 <property name="title" >
+	  <string>&amp;Select</string>
+	 </property>
+	</widget>
+	<widget class="QMenu" name="trackCurveMenu" >
+	 <property name="title" >
+	  <string>&amp;Automation</string>
+	 </property>
+	 <addaction name="trackCurveSelectMenu" />
+	 <addaction name="separator" />
+	 <addaction name="trackCurveProcessAction" />
+	 <addaction name="trackCurveCaptureAction" />
+	 <addaction name="separator" />
+	 <addaction name="trackCurveClearAction" />
+	 <addaction name="separator" />
+	 <addaction name="trackCurveProcessAllAction" />
+	 <addaction name="trackCurveCaptureAllAction" />
+	 <addaction name="separator" />
+	 <addaction name="trackCurveClearAllAction" />
+	</widget>
     <widget class="QMenu" name="trackStateMenu" >
      <property name="title" >
       <string>&amp;State</string>
@@ -195,27 +216,6 @@
      <addaction name="trackMoveDownAction" />
      <addaction name="trackMoveBottomAction" />
     </widget>
-	<widget class="QMenu" name="trackCurveSelectMenu" >
-	 <property name="title" >
-	  <string>&amp;Select</string>
-	 </property>
-	</widget>
-	<widget class="QMenu" name="trackCurveMenu" >
-	 <property name="title" >
-	  <string>&amp;Automation</string>
-	 </property>
-	 <addaction name="trackCurveSelectMenu" />
-	 <addaction name="separator" />
-	 <addaction name="trackCurveProcessAction" />
-	 <addaction name="trackCurveCaptureAction" />
-	 <addaction name="separator" />
-	 <addaction name="trackCurveClearAction" />
-	 <addaction name="separator" />
-	 <addaction name="trackCurveProcessAllAction" />
-	 <addaction name="trackCurveCaptureAllAction" />
-	 <addaction name="separator" />
-	 <addaction name="trackCurveClearAllAction" />
-	</widget>
 	<widget class="QMenu" name="trackImportMenu" >
      <property name="title" >
       <string>Impor&amp;t Tracks</string>
@@ -238,11 +238,12 @@
     <addaction name="trackInputsAction" />
     <addaction name="trackOutputsAction" />
     <addaction name="separator" />
+	<addaction name="trackCurveMenu" />
+	<addaction name="separator" />
     <addaction name="trackStateMenu" />
     <addaction name="trackNavigateMenu" />
     <addaction name="trackMoveMenu" />
-	<addaction name="trackCurveMenu" />
-	<addaction name="separator" />
+    <addaction name="separator" />
     <addaction name="trackAutoMonitorAction" />
     <addaction name="separator" />
     <addaction name="trackImportMenu" />
@@ -1160,6 +1161,102 @@
     <string>Show current track output bus connections</string>
    </property>
   </action>
+  <action name="trackCurveProcessAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>&amp;Play</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation playback</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation playback</string>
+   </property>
+   <property name="statusTip" >
+	<string>Playback curve automation</string>
+   </property>
+  </action>
+  <action name="trackCurveCaptureAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>&amp;Record</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation record</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation record</string>
+   </property>
+   <property name="statusTip" >
+	<string>Record curve automation</string>
+   </property>
+  </action>
+  <action name="trackCurveClearAction" >
+   <property name="text" >
+	<string>&amp;Clear</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation clear</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation clear</string>
+   </property>
+   <property name="statusTip" >
+	<string>Clear curve automation</string>
+   </property>
+  </action>
+  <action name="trackCurveProcessAllAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>Play &amp;All</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation playback all</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation playback all</string>
+   </property>
+   <property name="statusTip" >
+	<string>Playback all curve automation</string>
+   </property>
+  </action>
+  <action name="trackCurveCaptureAllAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>Rec&amp;ord All</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation record all</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation record all</string>
+   </property>
+   <property name="statusTip" >
+	<string>Record all curve automation</string>
+   </property>
+  </action>
+  <action name="trackCurveClearAllAction" >
+   <property name="text" >
+	<string>C&amp;lear All</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation clear all</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation clear all</string>
+   </property>
+   <property name="statusTip" >
+	<string>Clear all curve automation</string>
+   </property>
+  </action>
   <action name="trackStateRecordAction" >
    <property name="checkable" >
     <bool>true</bool>
@@ -1352,103 +1449,6 @@
    </property>
    <property name="statusTip" >
     <string>Move current track to bottom</string>
-   </property>
-  </action>
-  <action name="trackCurveProcessAction" >
-   <property name="checkable" >
-	<bool>true</bool>
-   </property>
-   <property name="text" >
-	<string>&amp;Play</string>
-   </property>
-   <property name="iconText" >
-	<string>Automation playback</string>
-   </property>
-   <property name="toolTip" >
-	<string>Automation playback</string>
-   </property>
-   <property name="statusTip" >
-	<string>Playback curve automation</string>
-   </property>
-  </action>
-  <action name="trackCurveCaptureAction" >
-   <property name="checkable" >
-	<bool>true</bool>
-   </property>
-   <property name="text" >
-	<string>&amp;Record</string>
-   </property>
-   <property name="iconText" >
-	<string>Automation record</string>
-   </property>
-   <property name="toolTip" >
-	<string>Automation record</string>
-   </property>
-   <property name="statusTip" >
-	<string>Record curve automation</string>
-   </property>
-  </action>
-  <action name="trackCurveClearAction" >
-   <property name="text" >
-	<string>&amp;Clear</string>
-   </property>
-   <property name="iconText" >
-	<string>Automation clear</string>
-   </property>
-   <property name="toolTip" >
-	<string>Automation clear</string>
-   </property>
-   <property name="statusTip" >
-	<string>Clear curve automation</string>
-   </property>
-  </action>
-
-  <action name="trackCurveProcessAllAction" >
-   <property name="checkable" >
-	<bool>true</bool>
-   </property>
-   <property name="text" >
-	<string>Play &amp;All</string>
-   </property>
-   <property name="iconText" >
-	<string>Automation playback all</string>
-   </property>
-   <property name="toolTip" >
-	<string>Automation playback all</string>
-   </property>
-   <property name="statusTip" >
-	<string>Playback all curve automation</string>
-   </property>
-  </action>
-  <action name="trackCurveCaptureAllAction" >
-   <property name="checkable" >
-	<bool>true</bool>
-   </property>
-   <property name="text" >
-	<string>Rec&amp;ord All</string>
-   </property>
-   <property name="iconText" >
-	<string>Automation record all</string>
-   </property>
-   <property name="toolTip" >
-	<string>Automation record all</string>
-   </property>
-   <property name="statusTip" >
-	<string>Record all curve automation</string>
-   </property>
-  </action>
-  <action name="trackCurveClearAllAction" >
-   <property name="text" >
-	<string>C&amp;lear All</string>
-   </property>
-   <property name="iconText" >
-	<string>Automation clear all</string>
-   </property>
-   <property name="toolTip" >
-	<string>Automation clear all</string>
-   </property>
-   <property name="statusTip" >
-	<string>Clear all curve automation</string>
    </property>
   </action>
   <action name="trackAutoMonitorAction" >
