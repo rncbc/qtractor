@@ -73,6 +73,8 @@
 
 #include "qtractorTrackCommand.h"
 
+#include "qtractorCurve.h"
+
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
 #endif
@@ -727,6 +729,27 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackMoveBottomAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackMoveBottom()));
+	QObject::connect(m_ui.trackCurveSelectMenu,
+		SIGNAL(triggered(QAction *)),
+		SLOT(trackCurveSelect(QAction *)));
+	QObject::connect(m_ui.trackCurveProcessAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveProcess(bool)));
+	QObject::connect(m_ui.trackCurveCaptureAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveCapture(bool)));
+	QObject::connect(m_ui.trackCurveClearAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveClear()));
+	QObject::connect(m_ui.trackCurveProcessAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveProcessAll(bool)));
+	QObject::connect(m_ui.trackCurveCaptureAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveCaptureAll(bool)));
+	QObject::connect(m_ui.trackCurveClearAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveClearAll()));
 	QObject::connect(m_ui.trackAutoMonitorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackAutoMonitor(bool)));
@@ -890,6 +913,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateClipMenu()));
+	QObject::connect(m_ui.trackCurveMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateCurveMenu()));
 	QObject::connect(m_ui.trackExportMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateExportMenu()));
@@ -2555,6 +2581,10 @@ void qtractorMainForm::trackInputs (void)
 	if (pTrack->inputBus() == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackInputs()");
+#endif
+
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->inputBus(), qtractorBus::Input);
 }
@@ -2571,6 +2601,10 @@ void qtractorMainForm::trackOutputs (void)
 	if (pTrack->outputBus() == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackOutputs()");
+#endif
+
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->outputBus(), qtractorBus::Output);
 }
@@ -2584,6 +2618,10 @@ void qtractorMainForm::trackStateRecord ( bool bOn )
 		pTrack = m_pTracks->currentTrack();
 	if (pTrack == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackStateRecord(%d)", int(bOn));
+#endif
 
 	m_pSession->execute(
 		new qtractorTrackStateCommand(pTrack, qtractorTrack::Record, bOn));
@@ -2599,6 +2637,10 @@ void qtractorMainForm::trackStateMute ( bool bOn )
 	if (pTrack == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackStateMute(%d)", int(bOn));
+#endif
+
 	m_pSession->execute(
 		new qtractorTrackStateCommand(pTrack, qtractorTrack::Mute, bOn));
 }
@@ -2612,6 +2654,10 @@ void qtractorMainForm::trackStateSolo (  bool bOn  )
 		pTrack = m_pTracks->currentTrack();
 	if (pTrack == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackStateSolo(%d)", int(bOn));
+#endif
 
 	m_pSession->execute(
 		new qtractorTrackStateCommand(pTrack, qtractorTrack::Solo, bOn));
@@ -2627,6 +2673,10 @@ void qtractorMainForm::trackStateMonitor ( bool bOn )
 	if (pTrack == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackStateMonitor(%d)", int(bOn));
+#endif
+
 	m_pSession->execute(
 		new qtractorTrackMonitorCommand(pTrack, bOn));
 }
@@ -2635,6 +2685,10 @@ void qtractorMainForm::trackStateMonitor ( bool bOn )
 // Make current the first track on list.
 void qtractorMainForm::trackNavigateFirst (void)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackNavigateFirst()");
+#endif
+
 	if (m_pTracks && m_pTracks->trackList())
 		(m_pTracks->trackList())->setCurrentTrackRow(0);
 }
@@ -2643,6 +2697,10 @@ void qtractorMainForm::trackNavigateFirst (void)
 // Make current the previous track on list.
 void qtractorMainForm::trackNavigatePrev (void)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackNavigatePrev()");
+#endif
+
 	if (m_pTracks && m_pTracks->trackList()) {
 		int iTrack = (m_pTracks->trackList())->currentTrackRow();
 		if (iTrack < 0 && (m_pTracks->trackList())->trackRowCount() > 0)
@@ -2656,6 +2714,10 @@ void qtractorMainForm::trackNavigatePrev (void)
 // Make current the next track on list.
 void qtractorMainForm::trackNavigateNext (void)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackNavigateNext()");
+#endif
+
 	if (m_pTracks && m_pTracks->trackList()) {
 		int iTrack = (m_pTracks->trackList())->currentTrackRow();
 		if (iTrack < (m_pTracks->trackList())->trackRowCount() - 1)
@@ -2667,6 +2729,10 @@ void qtractorMainForm::trackNavigateNext (void)
 // Make current the last track on list.
 void qtractorMainForm::trackNavigateLast (void)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackNavigateLast()");
+#endif
+
 	if (m_pTracks && m_pTracks->trackList()) {
 		int iLastTrack = (m_pTracks->trackList())->trackRowCount() - 1;
 		if (iLastTrack >= 0)
@@ -2678,6 +2744,10 @@ void qtractorMainForm::trackNavigateLast (void)
 // Make none current track on list.
 void qtractorMainForm::trackNavigateNone (void)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackNavigateNone()");
+#endif
+
 	if (m_pTracks && m_pTracks->trackList())
 		(m_pTracks->trackList())->setCurrentTrackRow(-1);
 }
@@ -2694,6 +2764,10 @@ void qtractorMainForm::trackMoveTop (void)
 		pTrack = m_pTracks->currentTrack();
 	if (pTrack == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackMoveTop()");
+#endif
 
 	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, m_pSession->tracks().first()));
@@ -2713,6 +2787,10 @@ void qtractorMainForm::trackMoveUp (void)
 	if (pNextTrack == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackMoveUp()");
+#endif
+
 	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, pNextTrack));
 }
@@ -2731,6 +2809,10 @@ void qtractorMainForm::trackMoveDown (void)
 	if (pNextTrack == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackMoveDown()");
+#endif
+
 	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, pNextTrack->next()));
 }
@@ -2745,8 +2827,177 @@ void qtractorMainForm::trackMoveBottom (void)
 	if (pTrack == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackMoveBottom()");
+#endif
+
 	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, NULL));
+}
+
+
+// Track automation curve selection menu.
+void qtractorMainForm::trackCurveSelect ( QAction *pAction )
+{
+	qtractorSubject *pSubject = static_cast<qtractorSubject *> (
+		qVariantValue<void *> (pAction->data()));
+	if (pSubject == NULL)
+		return;
+
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return;
+
+	qtractorCurve *pCurve = pCurveList->findCurve(pSubject);
+	if (pCurve == NULL)
+		pCurve = new qtractorCurve(pCurveList, pSubject, qtractorCurve::Hold);
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveSelect(%p)", pCurve);
+#endif
+
+	pCurveList->setCurrentCurve(pCurve);
+}
+
+
+// Track automation curve playback toggle.
+void qtractorMainForm::trackCurveProcess ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurve *pCurrentCurve = NULL;
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList)
+		pCurrentCurve = pCurveList->currentCurve();
+	if (pCurrentCurve == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveProcess(%d)", int(bOn));
+#endif
+
+	pCurrentCurve->setProcess(bOn);
+}
+
+
+// Track automation curve record toggle.
+void qtractorMainForm::trackCurveCapture ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurve *pCurrentCurve = NULL;
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList)
+		pCurrentCurve = pCurveList->currentCurve();
+	if (pCurrentCurve == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveCapture(%d)", int(bOn));
+#endif
+
+	pCurrentCurve->setCapture(bOn);
+}
+
+
+// Track automation curve clear.
+void qtractorMainForm::trackCurveClear (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurve *pCurrentCurve = NULL;
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList)
+		pCurrentCurve = pCurveList->currentCurve();
+	if (pCurrentCurve == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveClear()");
+#endif
+
+	pCurrentCurve->clear();
+}
+
+
+// Track automation all curves playback toggle.
+void qtractorMainForm::trackCurveProcessAll ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveProcessAll(%d)", int(bOn));
+#endif
+
+	pCurveList->setProcessAll(bOn);
+}
+
+
+// Track automation all curves record toggle.
+void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveCaptureAll(%d)", int(bOn));
+#endif
+
+	pCurveList->setCaptureAll(bOn);
+}
+
+
+// Track automation all curves clear.
+void qtractorMainForm::trackCurveClearAll (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveClearAll()");
+#endif
+
+	pCurveList->clear();
 }
 
 
@@ -2754,7 +3005,7 @@ void qtractorMainForm::trackMoveBottom (void)
 void qtractorMainForm::trackAutoMonitor ( bool bOn )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackAutoMonitor()");
+	qDebug("qtractorMainForm::trackAutoMonitor(%d)", int(bOn));
 #endif
 
 	qtractorTrack *pTrack = NULL;
@@ -4194,6 +4445,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.trackMoveUpAction->setEnabled(bEnabled && pTrack->prev() != NULL);
 	m_ui.trackMoveDownAction->setEnabled(bEnabled && pTrack->next() != NULL);
 	m_ui.trackMoveBottomAction->setEnabled(bEnabled && pTrack->next() != NULL);
+	m_ui.trackCurveMenu->setEnabled(bEnabled);
 	m_ui.trackImportAudioAction->setEnabled(m_pTracks != NULL);
 	m_ui.trackImportMidiAction->setEnabled(m_pTracks != NULL);
 	m_ui.trackAutoMonitorAction->setEnabled(m_pTracks != NULL);
@@ -4703,6 +4955,143 @@ void qtractorMainForm::updateMidiMetronome (void)
 		bMidiMetronome && m_ui.transportMetroAction->isChecked());
 }
 
+
+// Curve/automation menu stabilizer.
+void qtractorMainForm::updateCurveMenu (void)
+{
+	qtractorTrack *pTrack
+		= (m_pTracks ? m_pTracks->currentTrack(): NULL);
+	qtractorCurveList *pCurveList
+		= (pTrack ? pTrack->curveList() : NULL);
+	qtractorCurve *pCurrentCurve
+		= (pCurveList ? pCurveList->currentCurve() : NULL);
+
+	bool bEnabled = trackCurveSelectMenu(m_ui.trackCurveSelectMenu);
+	m_ui.trackCurveSelectMenu->setEnabled(bEnabled);
+
+	bool bCurveEnabled = bEnabled && pCurrentCurve && pCurrentCurve->isEnabled();
+
+	m_ui.trackCurveProcessAction->setEnabled(bCurveEnabled);
+	m_ui.trackCurveProcessAction->setChecked(
+		pCurrentCurve && pCurrentCurve->isProcess());
+
+	m_ui.trackCurveCaptureAction->setEnabled(bCurveEnabled);
+	m_ui.trackCurveCaptureAction->setChecked(
+		pCurrentCurve && pCurrentCurve->isCapture());
+
+	m_ui.trackCurveClearAction->setEnabled(bCurveEnabled);
+
+	m_ui.trackCurveProcessAllAction->setEnabled(bEnabled);
+	m_ui.trackCurveProcessAllAction->setChecked(
+		pCurveList && pCurveList->isProcessAll());
+
+	m_ui.trackCurveCaptureAllAction->setEnabled(bEnabled);
+	m_ui.trackCurveCaptureAllAction->setChecked(
+		pCurveList && pCurveList->isCaptureAll());
+
+	m_ui.trackCurveClearAllAction->setEnabled(bEnabled);
+}
+
+
+// Track curve/automation select menu builder.
+bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
+{
+	pMenu->clear();
+
+	if (m_pTracks == NULL)
+		return false;
+
+	qtractorTrack *pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return false;
+
+	qtractorMixerStrip *pMixerStrip
+		= pMixer->trackRack()->findStrip(pTrack->monitor());
+	if (pMixerStrip == NULL)
+		return false;
+
+	qtractorCurve *pCurrentCurve
+		= pCurveList->currentCurve();
+	qtractorSubject *pCurrentSubject
+		= (pCurrentCurve ? pCurrentCurve->subject() : NULL);
+
+	QAction *pAction;
+	qtractorSubject *pSubject;
+
+	pSubject = pTrack->monitorSubject();
+	pAction = pMenu->addAction(pSubject->name());
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurrentSubject == pSubject);
+	pAction->setData(qVariantFromValue((void *) pSubject));
+
+	pSubject = pMixerStrip->meter()->panningSubject();
+	pAction = pMenu->addAction(pSubject->name());
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurrentSubject == pSubject);
+	pAction->setData(qVariantFromValue((void *) pSubject));
+
+	pSubject = pMixerStrip->meter()->gainSubject();
+	pAction = pMenu->addAction(pSubject->name());
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurrentSubject == pSubject);
+	pAction->setData(qVariantFromValue((void *) pSubject));
+
+	pMenu->addSeparator();
+
+	pSubject = pTrack->recordSubject();
+	pAction = pMenu->addAction(pSubject->name());
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurrentSubject == pSubject);
+	pAction->setData(qVariantFromValue((void *) pSubject));
+
+	pSubject = pTrack->muteSubject();
+	pAction = pMenu->addAction(pSubject->name());
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurrentSubject == pSubject);
+	pAction->setData(qVariantFromValue((void *) pSubject));
+
+	pSubject = pTrack->soloSubject();
+	pAction = pMenu->addAction(pSubject->name());
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurrentSubject == pSubject);
+	pAction->setData(qVariantFromValue((void *) pSubject));
+
+	qtractorPluginList *pPluginList = pTrack->pluginList();
+	if (pPluginList->count() > 0) {
+		pMenu->addSeparator();
+		qtractorPlugin *pPlugin = pPluginList->first();
+		while (pPlugin) {
+			const qtractorPlugin::Params& params = pPlugin->params();
+			if (params.count() > 0) {
+				QMenu *pParamMenu = pMenu->addMenu(pPlugin->type()->name());
+				qtractorPlugin::Params::ConstIterator param
+					= params.constBegin();
+				for ( ; param != params.constEnd(); ++param) {
+					pSubject = param.value()->subject();
+					pAction = pParamMenu->addAction(pSubject->name());
+					pAction->setCheckable(true);
+					pAction->setChecked(pCurrentSubject == pSubject);
+					pAction->setData(qVariantFromValue((void *) pSubject));
+				}
+			}
+			pPlugin = pPlugin->next();
+		}
+	}
+
+	return true;
+}
 
 // Clip menu stabilizer.
 void qtractorMainForm::updateClipMenu (void)
