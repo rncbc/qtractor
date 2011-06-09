@@ -3374,6 +3374,18 @@ void qtractorMidiBus::updatePluginList (
 }
 
 
+// Automation curve list accessors.
+qtractorCurveList *qtractorMidiBus::curveList_in (void) const
+{
+	return (m_pIPluginList ? m_pIPluginList->curveList() : NULL);
+}
+
+qtractorCurveList *qtractorMidiBus::curveList_out (void) const
+{
+	return (m_pOPluginList ? m_pOPluginList->curveList() : NULL);
+}
+
+
 // Retrieve all current ALSA connections for a given bus mode interface;
 // return the effective number of connection attempts...
 int qtractorMidiBus::updateConnects (

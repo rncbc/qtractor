@@ -47,6 +47,7 @@ class qtractorPluginListItem;
 class qtractorMidiManager;
 
 class qtractorDocument;
+class qtractorCurveList;
 class qtractorCurveFile;
 
 class QDomDocument;
@@ -689,6 +690,10 @@ public:
 	unsigned int bufferSize() const { return m_iBufferSize; }
 	unsigned int flags()      const { return m_iFlags; }
 
+	// Specific automation curve list accessor.
+	qtractorCurveList *curveList() const
+		{ return m_pCurveList; }
+
 	// Specific MIDI manager accessor.
 	qtractorMidiManager *midiManager() const
 		{ return m_pMidiManager; }
@@ -756,6 +761,9 @@ private:
 
 	// An accessible list of observers.
 	QList<qtractorPluginListView *> m_views;
+
+	// Specific automation curve list accessor.
+	qtractorCurveList *m_pCurveList;
 
 	// Specific MIDI manager.
 	qtractorMidiManager *m_pMidiManager;
