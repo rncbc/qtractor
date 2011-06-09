@@ -330,7 +330,7 @@ public:
 		{ setAutoDelete(true); }
 
 	// ~Destructor.
-	~qtractorCurveList() { clear(); }
+	~qtractorCurveList() { m_subjects.clear(); }
 
 	// Simple list methods.
 	void addCurve(qtractorCurve *pCurve)
@@ -349,14 +349,14 @@ public:
 
 		pCurve->setEnabled(false);
 
-		unlink(pCurve);
-
 		if (pCurve->isProcess())
 			updateProcess(false);
 		if (pCurve->isCapture())
 			updateCapture(false);
 
 		m_subjects.remove(pCurve->subject());
+
+		remove(pCurve);
 	}
 
 	qtractorCurve *findCurve(qtractorSubject *pSubject) const
