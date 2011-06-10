@@ -179,10 +179,15 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pSyncThread = NULL;
 
 	m_pMonitorSubject = new qtractorSubject();
+	m_pMonitorSubject->setToggled(true);
 
 	m_pRecordSubject  = new qtractorSubject();
 	m_pMuteSubject    = new qtractorSubject();
 	m_pSoloSubject    = new qtractorSubject();
+
+	m_pRecordSubject->setToggled(true);
+	m_pMuteSubject->setToggled(true);
+	m_pSoloSubject->setToggled(true);
 
 	m_pMonitorObserver = new MonitorObserver(this, m_pMonitorSubject);
 

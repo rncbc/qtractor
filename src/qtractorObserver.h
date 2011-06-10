@@ -45,22 +45,33 @@ public:
 
 	// Direct value accessors.
 	void setValue(float fValue, qtractorObserver *pSender = NULL);
-	float value() const;
+	float value() const
+		{ return m_fValue; }
 
-	float prevValue() const;
+	// Indirect value accessors.
+	void setValueEx(float fValue, qtractorObserver *pSender = NULL)
+		{ if (!m_bQueued) setValue(fValue, pSender); }
+
+	float prevValue() const
+		{ return m_fPrevValue; }
 
 	// Observers notification
 	void notify(qtractorObserver *pSender = NULL);
 
 	// Observer list accessors.
-	void attach(qtractorObserver *pObserver);
-	void detach(qtractorObserver *pObserver);
+	void attach(qtractorObserver *pObserver)
+		{ m_observers.append(pObserver); }
+	void detach(qtractorObserver *pObserver)
+		{ m_observers.removeAll(pObserver); }
 
-	const QList<qtractorObserver *>& observers() const;
+	const QList<qtractorObserver *>& observers() const
+		{ return m_observers; }
 
 	// Queue status accessors.
-	void setQueued(bool bQueued);
-	bool isQueued() const;
+	void setQueued(bool bQueued)
+		{ m_bQueued = bQueued; }
+	bool isQueued() const
+		{ return m_bQueued; }
 
 	// Direct address accessor.
 	float *data() { return &m_fValue; }
@@ -88,6 +99,12 @@ public:
 	float defaultValue() const
 		{ return m_fDefaultValue; }
 
+	// Toggled mode accessors.
+	void setToggled(bool bToggled)
+		{ m_bToggled = bToggled; }
+	bool isToggled() const
+		{ return m_bToggled; }
+
 	void resetValue(qtractorObserver *pSender = NULL)
 		{ setValue(m_fDefaultValue, pSender); }
 	
@@ -114,7 +131,10 @@ private:
 
 	// Default value.
 	float   m_fDefaultValue;
-	
+
+	// Toggled value mode (max or min).
+	bool    m_bToggled;
+
 	QList<qtractorObserver *> m_observers;
 };
 
@@ -155,6 +175,10 @@ public:
 	float value() const
 		{ return (m_pSubject ? m_pSubject->value() : 0.0f); }
 
+	// Indirect value accessors.
+	void setValueEx(float fValue)
+		{ if (m_pSubject) m_pSubject->setValueEx(fValue, this); }
+
 	float prevValue() const
 		{ return (m_pSubject ? m_pSubject->prevValue() : 0.0f); }
 
@@ -173,9 +197,13 @@ public:
 	void resetValue()
 		{ if (m_pSubject) m_pSubject->resetValue(this); }
 
-	// Busy flag predicate.
+	// Queue status accessors.
 	bool isQueued() const
 		{ return (m_pSubject ? m_pSubject->isQueued() : false); }
+
+	// Toggled mode accessors.
+	bool isToggled() const
+		{ return (m_pSubject ? m_pSubject->isToggled() : false); }
 
 	// Pure virtual view updater.
 	virtual void update() = 0;

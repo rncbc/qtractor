@@ -160,7 +160,7 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 	qtractorSubject *pSubject, Mode mode, unsigned int iMinFrameDist )
 	: m_pList(pList), m_mode(mode), m_iMinFrameDist(iMinFrameDist),
 		m_observer(pSubject, this), m_state(Idle), m_cursor(this),
-		m_color(Qt::red), m_bToggled(false)
+		m_color(Qt::red)
 {
 	m_nodes.setAutoDelete(true);
 	m_cursors.setAutoDelete(false);
@@ -212,20 +212,6 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 		this, iFrame, fValue, int(bSmooth));
 #endif
 
-	const float fMaxValue = m_observer.maxValue();
-	const float fMinValue = m_observer.minValue();
-
-	if (m_bToggled) {
-		const float fMidValue = 0.5f * (fMaxValue + fMinValue);
-		fValue = (fValue > fMidValue ?  fMaxValue : fMinValue);
-	} 
-	else 
-	if (fValue > fMaxValue)
-		fValue = fMaxValue;
-	else
-	if (fValue < fMinValue)
-		fValue = fMinValue;
-
 	Node *pNode = NULL;
 	Node *pNext = m_cursor.seek(frameDist(iFrame));
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
@@ -237,11 +223,12 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 		pNode = pPrev;
 	else
 	if (bSmooth) {
-		const float fThreshold = 0.01f * (fMaxValue - fMinValue);
+		const float fThreshold
+			= 0.01f * (m_observer.maxValue() - m_observer.minValue());
 		float y0 = (pPrev ? pPrev->value : m_tail.value);
 		float y1 = fValue;
 		float y2 = (pNext ? pNext->value : m_tail.value);
-		if (m_mode == Hold || m_bToggled) {
+		if (m_mode == Hold || m_observer.isToggled()) {
 			if (fabs(y1 - y0) < fThreshold)
 				return NULL;
 			if (fabs(y2 - y1) < fThreshold)
