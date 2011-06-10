@@ -62,21 +62,15 @@ public:
 
 	// Curve mode accessor.
 	void setMode(Mode mode)
-		{ m_mode = (m_bToggled ? Hold : mode); }
+		{ m_mode = (m_observer.isToggled() ? Hold : mode); }
 	Mode mode() const
-		{ return (m_bToggled ? Hold : m_mode); }
+		{ return (m_observer.isToggled() ? Hold : m_mode); }
 
 	// Minimum distance between adjacent nodes accessors.
 	void setMinFrameDist(unsigned int iMinFrameDist)
 		{ m_iMinFrameDist = iMinFrameDist; }
 	unsigned int minFrameDist() const
 		{ return m_iMinFrameDist; }
-
-	// Toggled mode accessors.
-	void setToggled(bool bToggled)
-		{ m_bToggled = bToggled; if (m_bToggled) m_mode = Hold; }
-	bool isToggled() const
-		{ return m_bToggled; }
 
 	// The curve node declaration.
 	struct Node : public qtractorList<Node>::Link
@@ -199,7 +193,7 @@ public:
 
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
-		{ if (isProcessEnabled()) m_observer.setValue(value(iFrame)); }
+		{ if (isProcessEnabled()) m_observer.setValueEx(value(iFrame)); }
 	void process() { process(m_cursor.frame()); }
 
 	// Convert MIDI sequence events to curve nodes.
@@ -286,9 +280,6 @@ private:
 
 	// Curve color.
 	QColor m_color;
-
-	// Toggle mode.
-	bool m_bToggled;
 
 	// Dirtyness counter.
 	int m_iDirtyCount;

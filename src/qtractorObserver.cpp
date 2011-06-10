@@ -117,7 +117,8 @@ static qtractorSubjectQueue g_subjectQueue;
 // Constructor.
 qtractorSubject::qtractorSubject ( float fValue )
 	: m_fValue(fValue), m_bQueued(false), m_fPrevValue(fValue),
-		m_fMinValue(0.0f), m_fMaxValue(1.0f), m_fDefaultValue(fValue)
+		m_fMinValue(0.0f), m_fMaxValue(1.0f),
+		m_fDefaultValue(fValue), m_bToggled(false)
 {
 }
 
@@ -135,6 +136,17 @@ qtractorSubject::~qtractorSubject (void)
 // Direct value accessors.
 void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 {
+	if (m_bToggled) {
+		const float fMidValue = 0.5f * (m_fMaxValue + m_fMinValue);
+		fValue = (fValue > fMidValue ?  m_fMaxValue : m_fMinValue);
+	}
+	else 
+	if (fValue > m_fMaxValue)
+		fValue = m_fMaxValue;
+	else
+	if (fValue < m_fMinValue)
+		fValue = m_fMinValue;
+
 	if (fValue == m_fValue)
 		return;
 
@@ -144,16 +156,6 @@ void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 	}
 
 	m_fValue = fValue;
-}
-
-float qtractorSubject::value (void) const
-{
-	return m_fValue;
-}
-
-float qtractorSubject::prevValue (void) const
-{
-	return m_fPrevValue;
 }
 
 
@@ -167,36 +169,6 @@ void qtractorSubject::notify ( qtractorObserver *pSender )
 			continue;
 		pObserver->update();
 	}
-}
-
-
-// Observer list accessors.
-void qtractorSubject::attach ( qtractorObserver *pObserver )
-{
-	m_observers.append(pObserver);
-}
-
-void qtractorSubject::detach ( qtractorObserver *pObserver )
-{
-	m_observers.removeAll(pObserver);
-}
-
-
-const QList<qtractorObserver *>& qtractorSubject::observers (void) const
-{
-	return m_observers;
-}
-
-
-// Queue status accessors.
-void qtractorSubject::setQueued ( bool bQueued )
-{
-	m_bQueued = bQueued;
-}
-
-bool qtractorSubject::isQueued (void) const
-{
-	return m_bQueued;
 }
 
 

@@ -57,8 +57,6 @@ void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 {
 	if (m_iUpdateValue > 0)
 		return;
-	if (observer()->isQueued())
-		return;
 
 	float fValue = valueFromScale(bValue ? 1.0f : 0.0f);
 #ifdef CONFIG_DEBUG_0
@@ -98,8 +96,6 @@ void qtractorObserverSpinBox::updateValue ( float fValue )
 void qtractorObserverSpinBox::spinBoxChanged ( double value )
 {
 	if (m_iUpdateValue > 0)
-		return;
-	if (observer()->isQueued())
 		return;
 
 	float fValue = valueFromScale(float(value));
@@ -168,8 +164,6 @@ void qtractorObserverSlider::updateValue ( float fValue )
 void qtractorObserverSlider::sliderChanged ( int iValue )
 {
 	if (m_iUpdateValue > 0)
-		return;
-	if (observer()->isQueued())
 		return;
 
 	float fValue = valueFromScale(float(iValue));

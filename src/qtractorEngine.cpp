@@ -368,6 +368,8 @@ qtractorBus::qtractorBus ( qtractorEngine *pEngine,
 	m_busMode  = busMode;
 
 	m_pMonitorSubject = new qtractorSubject(bMonitor ? 1.0f : 0.0f);
+	m_pMonitorSubject->setToggled(true);
+
 	m_pMonitorObserver = new MonitorObserver(this, m_pMonitorSubject);
 }
 
