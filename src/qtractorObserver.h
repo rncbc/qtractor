@@ -48,10 +48,6 @@ public:
 	float value() const
 		{ return m_fValue; }
 
-	// Indirect value accessors.
-	void setValueEx(float fValue, qtractorObserver *pSender = NULL)
-		{ if (!m_bQueued) setValue(fValue, pSender); }
-
 	float prevValue() const
 		{ return m_fPrevValue; }
 
@@ -99,15 +95,30 @@ public:
 	float defaultValue() const
 		{ return m_fDefaultValue; }
 
+	void resetValue(qtractorObserver *pSender = NULL)
+		{ setValue(m_fDefaultValue, pSender); }
+
 	// Toggled mode accessors.
 	void setToggled(bool bToggled)
 		{ m_bToggled = bToggled; }
 	bool isToggled() const
 		{ return m_bToggled; }
 
-	void resetValue(qtractorObserver *pSender = NULL)
-		{ setValue(m_fDefaultValue, pSender); }
-	
+	// Filter value within legal bounds.
+	float safeValue (float fValue) const
+	{
+		if (m_bToggled)
+			fValue = (fValue > m_fMinValue ? m_fMaxValue : m_fMinValue);
+		else 
+		if (fValue > m_fMaxValue)
+			fValue = m_fMaxValue;
+		else
+		if (fValue < m_fMinValue)
+			fValue = m_fMinValue;
+
+		return fValue;
+	}
+
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue();
 	
@@ -175,10 +186,6 @@ public:
 	float value() const
 		{ return (m_pSubject ? m_pSubject->value() : 0.0f); }
 
-	// Indirect value accessors.
-	void setValueEx(float fValue)
-		{ if (m_pSubject) m_pSubject->setValueEx(fValue, this); }
-
 	float prevValue() const
 		{ return (m_pSubject ? m_pSubject->prevValue() : 0.0f); }
 
@@ -204,6 +211,10 @@ public:
 	// Toggled mode accessors.
 	bool isToggled() const
 		{ return (m_pSubject ? m_pSubject->isToggled() : false); }
+
+	// Filter value within legal bounds.
+	float safeValue(float fValue) const
+		{ return (m_pSubject ? m_pSubject->safeValue(fValue) : 0.0f); }
 
 	// Pure virtual view updater.
 	virtual void update() = 0;

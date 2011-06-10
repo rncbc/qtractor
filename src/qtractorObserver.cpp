@@ -136,17 +136,6 @@ qtractorSubject::~qtractorSubject (void)
 // Direct value accessors.
 void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 {
-	if (m_bToggled) {
-		const float fMidValue = 0.5f * (m_fMaxValue + m_fMinValue);
-		fValue = (fValue > fMidValue ?  m_fMaxValue : m_fMinValue);
-	}
-	else 
-	if (fValue > m_fMaxValue)
-		fValue = m_fMaxValue;
-	else
-	if (fValue < m_fMinValue)
-		fValue = m_fMinValue;
-
 	if (fValue == m_fValue)
 		return;
 
@@ -155,7 +144,7 @@ void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 		g_subjectQueue.push(this, pSender);
 	}
 
-	m_fValue = fValue;
+	m_fValue = safeValue(fValue);
 }
 
 
