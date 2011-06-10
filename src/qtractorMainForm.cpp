@@ -2771,7 +2771,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 	qDebug("qtractorMainForm::trackCurveClearAll()");
 #endif
 
-	pCurveList->clear();
+	pCurveList->clearAll();
 }
 
 

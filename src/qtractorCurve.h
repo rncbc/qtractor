@@ -193,7 +193,14 @@ public:
 
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
-		{ if (isProcessEnabled()) m_observer.setValueEx(value(iFrame)); }
+	{
+		if (isProcessEnabled()) {
+			Node *pNode = seek(iFrame);
+			if (!isCapture())
+				m_observer.setValue(value(pNode, iFrame));
+		}
+	}
+
 	void process() { process(m_cursor.frame()); }
 
 	// Convert MIDI sequence events to curve nodes.
@@ -321,7 +328,7 @@ public:
 		{ setAutoDelete(true); }
 
 	// ~Destructor.
-	~qtractorCurveList() { m_subjects.clear(); }
+	~qtractorCurveList() { clearAll(); }
 
 	// Simple list methods.
 	void addCurve(qtractorCurve *pCurve)
@@ -455,6 +462,20 @@ public:
 		{ return isProcess() && m_iProcess >= count(); }
 	bool isProcess() const
 		{ return m_iProcess > 0; }
+
+	// Whole list cleaner.
+	void clearAll()
+	{
+		m_subjects.clear();
+
+		m_pCurrentCurve = NULL;
+
+		clear();
+
+		m_iEnabled = 0;
+		m_iCapture = 0;
+		m_iProcess = 0;
+	}
 
 	// Signal/slot notifier accessor.
 	qtractorCurveListProxy *proxy()

@@ -279,7 +279,7 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 
 qtractorCurve::Node *qtractorCurve::addNode ( unsigned long iFrame, float fValue )
 {
-	Node *pNode = insertNode(iFrame, fValue, true);
+	Node *pNode = insertNode(iFrame, m_observer.safeValue(fValue), true);
 
 	if (pNode)
 		updateNode(pNode);
