@@ -2611,10 +2611,12 @@ void qtractorMainForm::trackOutputs (void)
 
 
 // Track automation curve selection menu.
+Q_DECLARE_METATYPE(qtractorSubject *);
+
 void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 {
-	qtractorSubject *pSubject = static_cast<qtractorSubject *> (
-		qVariantValue<void *> (pAction->data()));
+	qtractorSubject *pSubject
+		= qVariantValue<qtractorSubject *> (pAction->data());
 	if (pSubject == NULL)
 		return;
 
@@ -5025,19 +5027,19 @@ bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
 	pAction = pMenu->addAction(pSubject->name());
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue((void *) pSubject));
+	pAction->setData(qVariantFromValue(pSubject));
 
 	pSubject = pMixerStrip->meter()->panningSubject();
 	pAction = pMenu->addAction(pSubject->name());
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue((void *) pSubject));
+	pAction->setData(qVariantFromValue(pSubject));
 
 	pSubject = pMixerStrip->meter()->gainSubject();
 	pAction = pMenu->addAction(pSubject->name());
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue((void *) pSubject));
+	pAction->setData(qVariantFromValue(pSubject));
 
 	pMenu->addSeparator();
 
@@ -5045,19 +5047,19 @@ bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
 	pAction = pMenu->addAction(pSubject->name());
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue((void *) pSubject));
+	pAction->setData(qVariantFromValue(pSubject));
 
 	pSubject = pTrack->muteSubject();
 	pAction = pMenu->addAction(pSubject->name());
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue((void *) pSubject));
+	pAction->setData(qVariantFromValue(pSubject));
 
 	pSubject = pTrack->soloSubject();
 	pAction = pMenu->addAction(pSubject->name());
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue((void *) pSubject));
+	pAction->setData(qVariantFromValue(pSubject));
 
 	qtractorPluginList *pPluginList = pTrack->pluginList();
 	if (pPluginList->count() > 0) {
@@ -5074,7 +5076,7 @@ bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
 					pAction = pParamMenu->addAction(pSubject->name());
 					pAction->setCheckable(true);
 					pAction->setChecked(pCurrentSubject == pSubject);
-					pAction->setData(qVariantFromValue((void *) pSubject));
+					pAction->setData(qVariantFromValue(pSubject));
 				}
 			}
 			pPlugin = pPlugin->next();

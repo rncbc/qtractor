@@ -35,6 +35,7 @@
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorPlugin.h"
+#include "qtractorCurve.h"
 
 #include "qtractorInstrument.h"
 #include "qtractorCommand.h"
@@ -1603,11 +1604,19 @@ bool qtractorSession::isAutoTimeStretch (void) const
 void qtractorSession::process ( qtractorSessionCursor *pSessionCursor,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
-	// Now, for every Audio track...
+	const qtractorTrack::TrackType syncType = pSessionCursor->syncType();
+
+	// Now, for every track...
 	int iTrack = 0;
 	qtractorTrack *pTrack = m_tracks.first();
 	while (pTrack) {
-		if (pTrack->trackType() == pSessionCursor->syncType()) {
+		// Track automation processing...
+		if (syncType == qtractorTrack::Audio) {
+			qtractorCurveList *pCurveList = pTrack->curveList();
+			if (pCurveList && pCurveList->isEnabled())
+				pCurveList->process(iFrameStart);
+		}
+		if (syncType == pTrack->trackType()) {
 			pTrack->process(pSessionCursor->clip(iTrack),
 				iFrameStart, iFrameEnd);
 		}

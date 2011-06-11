@@ -43,6 +43,7 @@
 #include "qtractorTrackCommand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorTracks.h"
 
 #include <QPainter>
 
@@ -66,8 +67,23 @@ protected:
 	// Update feedback.
 	void update()
 	{
-		m_pTrack->stateChangeNotify(m_toolType, value() > 0.0f);
+		bool bOn = (value() > 0.0f);
+		switch (m_toolType) {
+		case qtractorTrack::Record:
+			m_pTrack->setRecord(bOn);
+			break;
+		case qtractorTrack::Mute:
+			m_pTrack->setMute(bOn);
+			break;
+		case qtractorTrack::Solo:
+			m_pTrack->setSolo(bOn);
+			break;
+		}
 		qtractorMidiControlObserver::update();
+
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->tracks()->updateContents(true);
 	}
 
 private:
@@ -906,10 +922,6 @@ void qtractorTrack::process ( qtractorClip *pClip,
 
 	// Playback...
 	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
-		// Track automation processing...
-		qtractorCurveList *pCurveList = curveList();
-		if (pCurveList && pCurveList->isEnabled())
-			pCurveList->process(iFrameStart);
 		// Now, for every clip...
 		while (pClip && pClip->clipStart() < iFrameEnd) {
 			if (iFrameStart < pClip->clipStart() + pClip->clipLength())

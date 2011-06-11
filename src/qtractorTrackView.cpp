@@ -40,6 +40,8 @@
 #include "qtractorMainForm.h"
 #include "qtractorThumbView.h"
 
+#include "qtractorCurve.h"
+
 #include <QToolButton>
 #include <QScrollBar>
 #include <QToolTip>
@@ -340,7 +342,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	int cx = qtractorScrollView::contentsX();
 	int cy = qtractorScrollView::contentsY();
 	int ch = qtractorScrollView::contentsHeight();
-	int x;
+	int x, w;
 
 	// Draw track clip selection...
 	if (isClipSelected()) {
@@ -369,7 +371,6 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		if (iTrackStart < iTrackEnd) {
 			int y1 = 0;
 			int y2 = 0;
-			int w;
 			unsigned long iFramePos = pSession->framePos();
 			unsigned long iFrameOffset = iFramePos - iTrackEnd;
 			unsigned long iLoopStart = pSession->loopStart();
@@ -436,7 +437,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			}
 		}
 	}
-
+	
 	// Draw edit-head line...
 //	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 	x = m_iEditHeadX - cx;
