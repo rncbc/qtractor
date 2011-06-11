@@ -122,17 +122,13 @@ public:
 
 	// To optimize and keep track of current frame
 	// position, mostly like a sequence cursor/iterator.
-	class Cursor : public qtractorList<Cursor>::Link
+	class Cursor
 	{
 	public:
 
 		// Constructor.
 		Cursor(qtractorCurve *pCurve)
-			: m_pCurve(pCurve), m_pNode(NULL), m_iFrame(0)
-			{ m_pCurve->addCursor(this); }
-
-		// Destructor.
-		~Cursor() { m_pCurve->removeCursor(this); }
+			: m_pCurve(pCurve), m_pNode(NULL), m_iFrame(0) {}
 		
 		// Accessors.
 		qtractorCurve *curve() const { return m_pCurve; }
@@ -156,12 +152,6 @@ public:
 		unsigned long  m_iFrame;
 	};
 
-	// Public cursor attach methods.
-	void addCursor(Cursor *pCursor)
-		{ m_cursors.append(pCursor); }
-	void removeCursor(Cursor *pCursor)
-		{ m_cursors.unlink(pCursor); }
-	
 	// Internal cursor accessor.
 	const Cursor& cursor() const { return m_cursor; }
 
@@ -231,9 +221,6 @@ protected:
 	// Snap to minimum distance frame.
 	unsigned long frameDist(unsigned long iFrame) const;
 
-	// Update node and reset all cursors.
-	void resetNode(Node *pNode);
-
 	// Node interpolation coefficients updater.
 	void updateNode(Node *pNode);
 	void updateNodeEx(Node *pNode);
@@ -272,9 +259,6 @@ private:
 
 	// The curve node list.
 	qtractorList<Node> m_nodes;
-
-	// The attached cursor list.
-	qtractorList<Cursor> m_cursors;
 
 	// Default (initial/final) node.
 	Node m_tail;

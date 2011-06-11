@@ -157,13 +157,6 @@ public slots:
 	void trackProperties();
 	void trackInputs();
 	void trackOutputs();
-	void trackCurveSelect(QAction *pAction);
-	void trackCurveProcess(bool bOn);
-	void trackCurveCapture(bool bOn);
-	void trackCurveClear();
-	void trackCurveProcessAll(bool bOn);
-	void trackCurveCaptureAll(bool bOn);
-	void trackCurveClearAll();
 	void trackStateRecord(bool bOn);
 	void trackStateMute(bool bOn);
 	void trackStateSolo(bool bOn);
@@ -182,6 +175,14 @@ public slots:
 	void trackImportMidi();
 	void trackExportAudio();
 	void trackExportMidi();
+	void trackCurveSelect(QAction *pAction);
+	void trackCurveMode(QAction *pAction);
+	void trackCurveProcess(bool bOn);
+	void trackCurveCapture(bool bOn);
+	void trackCurveClear();
+	void trackCurveProcessAll(bool bOn);
+	void trackCurveCaptureAll(bool bOn);
+	void trackCurveClearAll();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);
@@ -345,6 +346,7 @@ protected:
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 
 	bool trackCurveSelectMenu(QMenu *pMenu) const;
+	bool trackCurveModeMenu(QMenu *pMenu) const;
 
 private:
 
