@@ -163,7 +163,6 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 		m_color(Qt::red)
 {
 	m_nodes.setAutoDelete(true);
-	m_cursors.setAutoDelete(false);
 
 	m_tail.frame = 0;
 //	m_tail.value = m_observer.defaultValue();
@@ -197,7 +196,7 @@ void qtractorCurve::clear (void)
 
 	m_nodes.clear();
 
-	resetNode(NULL);
+	m_cursor.reset(NULL);
 
 	m_iDirtyCount = 0;
 }
@@ -309,7 +308,7 @@ void qtractorCurve::removeNode ( Node *pNode )
 	qDebug("qtractorCurve[%p]::removeNode(%p)", this, pNode);
 #endif
 
-	resetNode(pNode);
+	m_cursor.reset(pNode);
 
 	Node *pNext = pNode->next();
 	m_nodes.remove(pNode);
@@ -331,17 +330,6 @@ unsigned long qtractorCurve::frameDist ( unsigned long iFrame ) const
 	}
 
 	return iFrame;
-}
-
-
-// Update node and reset all cursors.
-void qtractorCurve::resetNode ( qtractorCurve::Node *pNode )
-{
-	Cursor *pCursor = m_cursors.first();
-	while (pCursor) {
-		pCursor->reset(pNode);
-		pCursor = pCursor->next();
-	}
 }
 
 

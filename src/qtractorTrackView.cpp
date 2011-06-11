@@ -364,13 +364,18 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		}
 	}
 
+	// Common stuff for the job(s) ahead...
+	unsigned long iTrackStart = 0;
+	unsigned long iTrackEnd   = 0;
+
+	int y1 = 0;
+	int y2 = 0;
+
 	// On-the-fly recording clip drawing...
 	if (pSession->isRecording() && pSession->isPlaying()) {
-		unsigned long iTrackStart = pSession->frameFromPixel(cx + rect.x());
-		unsigned long iTrackEnd   = pSession->playHead();
+		iTrackStart = pSession->frameFromPixel(cx + rect.x());
+		iTrackEnd   = pSession->playHead();
 		if (iTrackStart < iTrackEnd) {
-			int y1 = 0;
-			int y2 = 0;
 			unsigned long iFramePos = pSession->framePos();
 			unsigned long iFrameOffset = iFramePos - iTrackEnd;
 			unsigned long iLoopStart = pSession->loopStart();
@@ -436,8 +441,89 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				pTrack = pTrack->next();
 			}
 		}
+		// Make-up for next job...
+		y1 = y2 = 0;
+		iTrackEnd = 0;
 	}
 	
+	// Automation curve drawing...
+	x = rect.left()  - 1;
+	w = rect.width() + 2;
+
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack && y2 < ch) {
+		y1  = y2;
+		y2 += pTrack->zoomHeight();
+		qtractorCurve *pCurve = pTrack->currentCurve();
+		if (pCurve) {
+			const int h = y2 - y1 - 2;
+			const QRect trackRect(x, y1 - cy + 1, w, h);
+			if (iTrackStart == 0)
+				iTrackStart = pSession->frameFromPixel(cx + rect.x());
+			if (iTrackEnd == 0)
+				iTrackEnd = pSession->frameFromPixel(cx + rect.right());
+			unsigned long frame = iTrackStart;
+			qtractorCurve::Cursor cursor(pCurve);
+			qtractorCurve::Node *pNode = cursor.seek(frame);
+			qtractorCurve::Mode mode = pCurve->mode();
+			int x2, x1 = trackRect.x();
+			int y2, y1 = h - int(cursor.value(pNode, frame) * float(h));	
+			QPainterPath path;
+			path.moveTo(x1, y1);
+			while (pNode && pNode->frame < iTrackEnd) {
+				x2 = pSession->pixelFromFrame(pNode->frame) - cx;
+				y2 = h - int(pNode->value * float(h));
+				pPainter->setPen(Qt::darkGray);
+				pPainter->drawRect(QRect(x2 - 4, y2 - 4, 8, 8));
+				switch (mode) {
+				case qtractorCurve::Hold:
+					path.lineTo(x2, y1);
+					path.lineTo(x2, y2);
+					y1 = y2;
+					break;
+				case qtractorCurve::Linear:
+					path.lineTo(x2, y2);
+					break;
+				default:
+					break;
+				}
+				pNode = pNode->next();
+			}	
+			if (mode == qtractorCurve::Spline)	 {
+				for (x2 = x1 + 4; x2 < rect.right() + 4; x2 += 4) {
+					frame = pSession->frameFromPixel(cx + x2);
+					y2 = h - int(cursor.value(frame) * float(h));
+					path.lineTo(x2, y2);
+				}
+			} else {
+				x2 = rect.right();
+				frame = pSession->frameFromPixel(cx + x2);
+				y2 = h - int(cursor.value(frame) * float(h));
+				switch (mode) {
+				case qtractorCurve::Hold:
+					path.lineTo(x2, y1);
+					path.lineTo(x2, y2);
+					break;
+				case qtractorCurve::Linear:
+					path.lineTo(x2, y2);
+					break;
+				default:
+					break;
+				}
+			}
+			// Draw line...
+			QColor rgbCurve(pCurve->color());
+			QPen pen(rgbCurve);
+			pen.setWidth(2);
+			pPainter->strokePath(path, pen);	
+			// Fill semi-transparent area...
+			rgbCurve.setAlpha(20);
+			path.lineTo(x2, h);
+			path.lineTo(x1, h);
+			pPainter->fillPath(path, rgbCurve);
+		}
+	}
+
 	// Draw edit-head line...
 //	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 	x = m_iEditHeadX - cx;
