@@ -328,33 +328,6 @@ int qtractorEngine::updateConnects ( qtractorBus *pBus )
 }
 
 
-//------------------------------------------------------------------------
-// qtractorBus::MonitorObserver -- Local bus state observer.
-
-class qtractorBus::MonitorObserver : public qtractorMidiControlObserver
-{
-public:
-
-	// Constructor.
-	MonitorObserver(qtractorBus *pBus, qtractorSubject *pSubject)
-		: qtractorMidiControlObserver(pSubject), m_pBus(pBus) {}
-
-protected:
-
-	// Update feedback.
-	void update()
-	{
-		m_pBus->monitorChangeNotify(value() > 0.0f);
-		qtractorMidiControlObserver::update();
-	}
-
-private:
-
-	// Members.
-	qtractorBus *m_pBus;
-};
-
-
 //----------------------------------------------------------------------
 // class qtractorBus -- Managed ALSA sequencer port set
 //
@@ -370,7 +343,7 @@ qtractorBus::qtractorBus ( qtractorEngine *pEngine,
 	m_pMonitorSubject = new qtractorSubject(bMonitor ? 1.0f : 0.0f);
 	m_pMonitorSubject->setToggled(true);
 
-	m_pMonitorObserver = new MonitorObserver(this, m_pMonitorSubject);
+	m_pMonitorObserver = new qtractorMidiControlObserver(m_pMonitorSubject);
 }
 
 // Destructor.
@@ -451,7 +424,7 @@ qtractorSubject *qtractorBus::monitorSubject (void) const
 
 qtractorMidiControlObserver *qtractorBus::monitorObserver (void) const
 {
-	return static_cast<qtractorMidiControlObserver *> (m_pMonitorObserver);
+	return m_pMonitorObserver;
 }
 
 

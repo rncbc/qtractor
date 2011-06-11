@@ -454,11 +454,17 @@ void qtractorMixerStrip::initMixerStrip (void)
 	// Eventually the right one...
 	if (m_pMeter) {
 		m_pLayout->addWidget(m_pMeter);
-		QObject::connect(m_pMeter,
-			SIGNAL(panningChangedSignal(float)),
+		QObject::connect(m_pMeter->panSlider(),
+			SIGNAL(valueChanged(float)),
 			SLOT(panningChangedSlot(float)));
-		QObject::connect(m_pMeter,
-			SIGNAL(gainChangedSignal(float)),
+		QObject::connect(m_pMeter->panSpinBox(),
+			SIGNAL(valueChanged(float)),
+			SLOT(panningChangedSlot(float)));
+		QObject::connect(m_pMeter->gainSlider(),
+			SIGNAL(valueChanged(float)),
+			SLOT(gainChangedSlot(float)));
+		QObject::connect(m_pMeter->gainSpinBox(),
+			SIGNAL(valueChanged(float)),
 			SLOT(gainChangedSlot(float)));
 	}
 

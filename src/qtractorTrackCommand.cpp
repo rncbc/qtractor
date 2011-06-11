@@ -626,8 +626,6 @@ bool qtractorTrackStateCommand::redo (void)
 	// Toggle/update all other?
 	if (!m_tracks.isEmpty()) {
 		// Exclusive mode.
-		qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
-		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		QListIterator<TrackItem *> iter(m_tracks);
 		while (iter.hasNext()) {

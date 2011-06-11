@@ -324,10 +324,10 @@ private:
 	qtractorAudioBufferThread *m_pSyncThread;
 
 	// State (monitor, record, mute, solo) observer stuff.
-	class MonitorObserver;
+	qtractorMidiControlObserver *m_pMonitorObserver;
+
 	class StateObserver;
 
-	MonitorObserver *m_pMonitorObserver;
 	StateObserver   *m_pRecordObserver;
 	StateObserver   *m_pMuteObserver;
 	StateObserver   *m_pSoloObserver;

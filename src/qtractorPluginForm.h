@@ -135,6 +135,8 @@ private:
 
 class qtractorPluginParamWidget : public QFrame
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
@@ -152,6 +154,11 @@ protected:
 	
 	// Spin-box decimals helper.
 	int paramDecimals() const;
+
+protected slots:
+
+	// Parameter value change slot.
+	void updateValue(float fValue);
 
 private:
 

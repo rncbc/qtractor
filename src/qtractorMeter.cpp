@@ -144,7 +144,9 @@ protected:
 	// Update feedback.
 	void update()
 	{
-		m_pMeter->panningChangedNotify(value());
+		m_pMeter->monitor()->update();
+		m_pMeter->updatePanning();
+
 		qtractorMidiControlObserver::update();
 	}
 
@@ -171,7 +173,9 @@ protected:
 	// Update feedback.
 	void update()
 	{
-		m_pMeter->gainChangedNotify(value());
+		m_pMeter->monitor()->update();
+		m_pMeter->updateGain();
+
 		qtractorMidiControlObserver::update();
 	}
 
@@ -432,18 +436,6 @@ void qtractorMeter::setPeakFalloff ( int iPeakFalloff )
 int qtractorMeter::peakFalloff (void) const
 {
 	return m_iPeakFalloff;
-}
-
-
-// Observer value-changed callbacks.
-void qtractorMeter::panningChangedNotify ( float fPanning )
-{
-	emit panningChangedSignal(fPanning);
-}
-
-void qtractorMeter::gainChangedNotify ( float fGain )
-{
-	emit gainChangedSignal(fGain);
 }
 
 

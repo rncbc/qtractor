@@ -269,7 +269,7 @@ public:
 	// Constructor.
 	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
 		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_subject(0.0f), m_observer(&m_subject, this) {}
+			m_subject(0.0f), m_observer(&m_subject) {}
 
 	// Main properties accessors.
 	qtractorPlugin *plugin() const { return m_pPlugin; }
@@ -312,32 +312,6 @@ public:
 	float defaultValue() const
 		{ return m_subject.defaultValue(); }
 	
-	//------------------------------------------------------------------------
-	// Observer -- Local dedicated observer.
-	
-	class Observer : public qtractorMidiControlObserver
-	{
-	public:
-	
-		// Constructor.
-		Observer(qtractorSubject *pSubject, qtractorPluginParam *pParam)
-			: qtractorMidiControlObserver(pSubject), m_pParam(pParam) {}
-	
-	protected:
-	
-		// Update feedback.
-		void update()
-		{
-			m_pParam->updateValue(value(), true);
-			qtractorMidiControlObserver::update();
-		}
-	
-	private:
-	
-		// Members.
-		qtractorPluginParam *m_pParam;
-	};
-
 	// Current parameter value.
 	void setValue(float fValue, bool bUpdate);
 	float value() const
@@ -355,7 +329,7 @@ public:
 	qtractorSubject *subject() { return &m_subject; }
 
 	// Specialized observer value.
-	Observer *observer() { return &m_observer; }
+	qtractorMidiControlObserver *observer() { return &m_observer; }
 
 private:
 
@@ -367,7 +341,7 @@ private:
 	qtractorSubject m_subject;
 
 	// Port observer manager.
-	Observer m_observer;
+	qtractorMidiControlObserver m_observer;
 };
 
 
