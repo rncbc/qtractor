@@ -171,7 +171,6 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
 	m_ui.ParamComboBox->setCurrentIndex(m_pMidiObserver->param());
 
-	m_ui.LogarithmicCheckBox->setEnabled(!m_pMidiObserver->isToggled());
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
@@ -280,6 +279,7 @@ void qtractorMidiControlObserverForm::activateControlType (
 
 	// This is enabled by as long there's a value.
 	m_ui.LogarithmicCheckBox->setEnabled(
+		m_pMidiObserver && !m_pMidiObserver->isToggled() &&
 		ctype != qtractorMidiEvent::PGMCHANGE);
 
 	// Try make changes dirty.

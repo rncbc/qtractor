@@ -979,6 +979,24 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		}
 	}
 
+	if (m_pCheckBox) {
+		QObject::connect(m_pCheckBox,
+			SIGNAL(valueChanged(float)),
+			SLOT(updateValue(float)));
+	}
+
+	if (m_pSpinBox) {
+		QObject::connect(m_pSpinBox,
+			SIGNAL(valueChanged(float)),
+			SLOT(updateValue(float)));
+	}
+
+	if (m_pSlider) {
+		QObject::connect(m_pSlider,
+			SIGNAL(valueChanged(float)),
+			SLOT(updateValue(float)));
+	}
+
 	QFrame::setLayout(m_pGridLayout);
 //	QFrame::setFrameShape(QFrame::StyledPanel);
 //	QFrame::setFrameShadow(QFrame::Raised);
@@ -1024,6 +1042,13 @@ int qtractorPluginParamWidget::paramDecimals (void) const
 		++iDecimals;
 
 	return iDecimals;
+}
+
+
+// Parameter value change slot.
+void qtractorPluginParamWidget::updateValue ( float fValue )
+{
+	m_pParam->updateValue(fValue, true);
 }
 
 

@@ -154,16 +154,6 @@ public:
 	void setPeakFalloff(int bPeakFalloff);
 	int peakFalloff() const;
 
-	// Observer value-changed callbacks.
-	void panningChangedNotify(float fPanning);
-	void gainChangedNotify(float fGain);
-
-signals:
-
-	// Observer value-changed signals.
-	void panningChangedSignal(float);
-	void gainChangedSignal(float);
-
 protected slots:
 
 	// MIDI controller/observer attachment (context menu) slot.

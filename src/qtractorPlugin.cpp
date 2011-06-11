@@ -1616,7 +1616,7 @@ void qtractorPlugin::saveControllers (
 	Params::ConstIterator param = m_params.constBegin();
 	for ( ; param != m_params.constEnd(); ++param) {
 		qtractorPluginParam *pParam = param.value();
-		qtractorPluginParam::Observer *pObserver = pParam->observer();
+		qtractorMidiControlObserver *pObserver = pParam->observer();
 		if (pMidiControl->isMidiObserverMapped(pObserver)) {
 			qtractorMidiControl::Controller *pController
 				= new qtractorMidiControl::Controller;
@@ -1648,7 +1648,7 @@ void qtractorPlugin::mapControllers (
 			qtractorPluginParam *pParam = findParam(pController->index);
 			if (pParam == NULL)
 				continue;
-			qtractorPluginParam::Observer *pObserver = pParam->observer();
+			qtractorMidiControlObserver *pObserver = pParam->observer();
 			pObserver->setType(pController->ctype);
 			pObserver->setChannel(pController->channel);
 			pObserver->setParam(pController->param);

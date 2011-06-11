@@ -50,33 +50,6 @@
 
 
 //------------------------------------------------------------------------
-// qtractorTrack::MonitorObserver -- Local track state observer.
-
-class qtractorTrack::MonitorObserver : public qtractorMidiControlObserver
-{
-public:
-
-	// Constructor.
-	MonitorObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
-		: qtractorMidiControlObserver(pSubject), m_pTrack(pTrack) {}
-
-protected:
-
-	// Update feedback.
-	void update()
-	{
-		m_pTrack->monitorChangeNotify(value() > 0.0f);
-		qtractorMidiControlObserver::update();
-	}
-
-private:
-
-	// Members.
-	qtractorTrack *m_pTrack;
-};
-
-
-//------------------------------------------------------------------------
 // qtractorTrack::StateObserver -- Local track state observer.
 
 class qtractorTrack::StateObserver : public qtractorMidiControlObserver
@@ -189,7 +162,7 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pMuteSubject->setToggled(true);
 	m_pSoloSubject->setToggled(true);
 
-	m_pMonitorObserver = new MonitorObserver(this, m_pMonitorSubject);
+	m_pMonitorObserver = new qtractorMidiControlObserver(m_pMonitorSubject);
 
 	m_pRecordObserver = new StateObserver(this, Record, m_pRecordSubject);
 	m_pMuteObserver   = new StateObserver(this, Mute,   m_pMuteSubject);
@@ -499,7 +472,7 @@ void qtractorTrack::setMonitor ( bool bMonitor )
 // Record status accessors.
 void qtractorTrack::setRecord ( bool bRecord )
 {
-	const bool bOldRecord = isRecord();
+	const bool bOldRecord = m_props.record; // isRecord();
 	if ((bOldRecord && !bRecord) || (!bOldRecord && bRecord))
 		m_pSession->setRecordTracks(bRecord);
 
@@ -520,7 +493,7 @@ void qtractorTrack::setRecord ( bool bRecord )
 
 bool qtractorTrack::isRecord (void) const
 {
-	return (m_pRecordSubject->value() > 0.0f);
+	return m_props.record; // (m_pRecordSubject->value() > 0.0f);
 }
 
 
@@ -530,7 +503,7 @@ void qtractorTrack::setMute ( bool bMute )
 	if (m_pSession->isPlaying() && bMute)
 		m_pSession->trackMute(this, bMute);
 
-	const bool bOldMute = isMute();
+	const bool bOldMute = m_props.mute; // isMute();
 	if ((bOldMute && !bMute) || (!bOldMute && bMute))
 		m_pSession->setMuteTracks(bMute);
 
@@ -544,7 +517,7 @@ void qtractorTrack::setMute ( bool bMute )
 
 bool qtractorTrack::isMute (void) const
 {
-	return (m_pMuteSubject->value() > 0.0f);
+	return m_props.mute; // (m_pMuteSubject->value() > 0.0f);
 }
 
 
@@ -554,7 +527,7 @@ void qtractorTrack::setSolo ( bool bSolo )
 	if (m_pSession->isPlaying() && bSolo)
 		m_pSession->trackSolo(this, bSolo);
 
-	const bool bOldSolo = isSolo();
+	const bool bOldSolo = m_props.solo; // isSolo();
 	if ((bOldSolo && !bSolo) || (!bOldSolo && bSolo))
 		m_pSession->setSoloTracks(bSolo);
 
@@ -568,7 +541,7 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 bool qtractorTrack::isSolo (void) const
 {
-	return (m_pSoloSubject->value() > 0.0f);
+	return m_props.solo; // (m_pSoloSubject->value() > 0.0f);
 }
 
 
@@ -1167,7 +1140,7 @@ qtractorSubject *qtractorTrack::soloSubject (void) const
 
 qtractorMidiControlObserver *qtractorTrack::monitorObserver (void) const
 {
-	return static_cast<qtractorMidiControlObserver *> (m_pMonitorObserver);
+	return m_pMonitorObserver;
 }
 
 qtractorMidiControlObserver *qtractorTrack::recordObserver (void) const

@@ -152,6 +152,10 @@ protected:
 protected slots:
 
 	void checkBoxChanged(bool bValue);
+
+signals:
+
+	void valueChanged(float);
 };
 
 
@@ -176,6 +180,10 @@ protected:
 protected slots:
 
 	void spinBoxChanged(double value);
+
+signals:
+
+	void valueChanged(float);
 };
 
 
@@ -204,6 +212,10 @@ protected:
 protected slots:
 
 	void sliderChanged(int iValue);
+
+signals:
+
+	void valueChanged(float);
 };
 
 

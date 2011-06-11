@@ -290,9 +290,9 @@ private:
 	ConnectList m_outputs;
 
 	// State (monitor) observer stuff.
-	class MonitorObserver;
-	MonitorObserver *m_pMonitorObserver;
 	qtractorSubject *m_pMonitorSubject;
+
+	qtractorMidiControlObserver *m_pMonitorObserver;
 
 	qtractorMidiControl::Controllers m_controllers_in;
 	qtractorMidiControl::Controllers m_controllers_out;

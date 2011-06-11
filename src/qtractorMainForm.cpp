@@ -6118,7 +6118,7 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMainForm::updateNotifySlot()");
+	qDebug("qtractorMainForm::updateNotifySlot(%d)", int(bRefresh));
 #endif
 
 	// Always reset any track view selection...

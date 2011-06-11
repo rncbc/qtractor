@@ -63,6 +63,8 @@ void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 	qDebug("qtractorObserverCheckBox[%p]::checkBoxChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
+
+	emit valueChanged(fValue);
 }
 
 
@@ -103,6 +105,8 @@ void qtractorObserverSpinBox::spinBoxChanged ( double value )
 	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
+
+	emit valueChanged(fValue);
 }
 
 
@@ -171,6 +175,8 @@ void qtractorObserverSlider::sliderChanged ( int iValue )
 	qDebug("qtractorObserverSlider[%p]::sliderChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
+
+	emit valueChanged(fValue);
 };
 
 
