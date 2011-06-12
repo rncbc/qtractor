@@ -1756,6 +1756,10 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	if (pSession == NULL)
 		return;
 
+	pCurveFile->setFilename(QDir::cleanPath(
+		QDir(pSession->sessionDir())
+			.absoluteFilePath(pCurveFile->filename())));
+
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
