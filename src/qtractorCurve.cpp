@@ -514,9 +514,6 @@ void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 	clear();
 
 	// Convert events to nodes...
-	const float fMinValue = m_observer.minValue();
-	const float fMaxValue = m_observer.maxValue();
-
 	if (pSeq->channel() == iChannel) {
 		qtractorMidiEvent *pEvent = pSeq->events().first();
 		while (pEvent) {
@@ -527,8 +524,7 @@ void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 					fScale = float(pEvent->pitchBend()) / float(0x3fff);
 				else
 					fScale = float(pEvent->value()) / float(0x7f);
-				float fValue = fMinValue + fScale * (fMaxValue - fMinValue);
-				insertNode(iFrame, fValue, false);
+				insertNode(iFrame, m_observer.valueFromScale(fScale), false);
 			}
 			pEvent = pEvent->next();
 		}
@@ -564,14 +560,11 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 	}
 
 	// Convert nodes to events...
-	const float fMinValue = m_observer.minValue();
-	const float fMaxValue = m_observer.maxValue();
-
 	qtractorCurve::Node *pNode = m_nodes.first();
 	while (pNode) {
 		unsigned long iTime = ts.tickFromFrame(pNode->frame);
 		qtractorMidiEvent *pEvent = new qtractorMidiEvent(iTime, ctype, iParam);
-		float fScale = (pNode->value - fMinValue) / (fMaxValue - fMinValue);
+		float fScale = m_observer.scaleFromValue(pNode->value);
 		if (ctype == qtractorMidiEvent::PITCHBEND)
 			pEvent->setPitchBend(float(0x3fff) * fScale);
 		else

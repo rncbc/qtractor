@@ -188,12 +188,11 @@ public:
 	void mapControllers(BusMode busMode);
 
 	// Bus automation curve serialization methods.
-	bool loadCurveFile(qtractorDocument *pDocument,
-		QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode busMode) const;
-	bool saveCurveFile(qtractorDocument *pDocument,
-		QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode busMode) const;
-
-	bool applyCurveFile(qtractorCurveFile *pCurveFile, BusMode busMode) const;
+	static void loadCurveFile(
+		QDomElement *pElement, BusMode busMode, qtractorCurveFile *pCurveFile);
+	void saveCurveFile(qtractorDocument *pDocument,
+		QDomElement *pElement, BusMode busMode, qtractorCurveFile *pCurveFile) const;
+	void applyCurveFile(BusMode busMode, qtractorCurveFile *pCurveFile) const;
 
 	// Connection list stuff.
 	struct ConnectItem

@@ -84,11 +84,10 @@ public:
 	}
 
 	// Curve item list serialization methods.
-	bool save(qtractorDocument *pDocument,
+	void load(QDomElement *pElement);
+	void save(qtractorDocument *pDocument,
 		QDomElement *pElement, qtractorTimeScale *pTimeScale) const;
-	bool load(qtractorDocument *pDocument,
-		QDomElement *pElement, qtractorTimeScale *pTimeScale);
-	bool apply(qtractorTimeScale *pTimeScale);
+	void apply(qtractorTimeScale *pTimeScale);
 
 	// Text/curve-mode converters...
 	static qtractorCurve::Mode modeFromText(const QString& sText);

@@ -467,12 +467,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorCurve::Node *pNode = cursor.seek(frame);
 			qtractorCurve::Mode mode = pCurve->mode();
 			int x2, x1 = trackRect.x();
-			int y2, y1 = h - int(cursor.value(pNode, frame) * float(h));	
+			int y2, y1 = h - int(cursor.scale(pNode, frame) * float(h));	
 			QPainterPath path;
 			path.moveTo(x1, y1);
 			while (pNode && pNode->frame < iTrackEnd) {
 				x2 = pSession->pixelFromFrame(pNode->frame) - cx;
-				y2 = h - int(pNode->value * float(h));
+				y2 = h - int(cursor.scale(pNode) * float(h));
 				pPainter->setPen(Qt::darkGray);
 				pPainter->drawRect(QRect(x2 - 4, y2 - 4, 8, 8));
 				switch (mode) {
@@ -492,13 +492,13 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			if (mode == qtractorCurve::Spline)	 {
 				for (x2 = x1 + 4; x2 < rect.right() + 4; x2 += 4) {
 					frame = pSession->frameFromPixel(cx + x2);
-					y2 = h - int(cursor.value(frame) * float(h));
+					y2 = h - int(cursor.scale(frame) * float(h));
 					path.lineTo(x2, y2);
 				}
 			} else {
 				x2 = rect.right();
 				frame = pSession->frameFromPixel(cx + x2);
-				y2 = h - int(cursor.value(frame) * float(h));
+				y2 = h - int(cursor.scale(frame) * float(h));
 				switch (mode) {
 				case qtractorCurve::Hold:
 					path.lineTo(x2, y1);

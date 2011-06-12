@@ -47,7 +47,7 @@ public:
 
 	// Constructor.
 	qtractorCurve(qtractorCurveList *pList, qtractorSubject *pSubject,
-		Mode mode, unsigned int iMinFrameDist = 1000);
+		Mode mode, unsigned int iMinFrameDist = 2400);
 
 	// Destructor.
 	~qtractorCurve();
@@ -103,9 +103,21 @@ public:
 	Node *seek(unsigned long iFrame)
 		{ return m_cursor.seek(iFrame); }
 
-	// Common interpolate method.
+	// Common interpolate methods.
 	float value(const Node *pNode, unsigned long iFrame) const;
 	float value(unsigned long iFrame);
+
+	// Normalized scale converters.
+	float valueFromScale ( float fScale ) const
+		{ return m_observer.valueFromScale(fScale); }
+	float scaleFromValue ( float fValue ) const
+		{ return m_observer.scaleFromValue(fValue); }
+
+	// Common normalized methods.
+	float scale(const Node *pNode, unsigned long iFrame) const
+		{ return scaleFromValue(value(pNode, iFrame)); }
+	float scale(unsigned long iFrame)
+		{ return scaleFromValue(value(iFrame)); }
 
 	// Default value accessors.
 	void setDefaultValue(float fDefaultValue);
@@ -138,11 +150,20 @@ public:
 		Node *seek(unsigned long iFrame);
 		void reset(Node *pNode = NULL);
 
-		// Interpolate method.
+		// Interpolate methods.
 		float value(const Node *pNode, unsigned long iFrame) const
 			{ return m_pCurve->value(pNode, iFrame); }
 		float value(unsigned long iFrame)
 			{ return value(seek(iFrame), iFrame); }
+
+		// Normalized methods.
+		float scale(const Node *pNode, unsigned long iFrame) const
+			{ return m_pCurve->scale(pNode, iFrame); }
+		float scale(unsigned long iFrame)
+			{ return scale(seek(iFrame), iFrame); }
+
+		float scale(const Node *pNode) const
+			{ return m_pCurve->scaleFromValue(pNode->value); }
 
 	private:
 

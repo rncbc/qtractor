@@ -348,6 +348,10 @@ public:
 	qtractorCurveList *curveList_in()  const;
 	qtractorCurveList *curveList_out() const;
 
+	// Automation curve serializer accessors.
+	qtractorCurveFile *curveFile_in()  const;
+	qtractorCurveFile *curveFile_out() const;
+
 	// Audio I/O port latency accessors.
 	unsigned int latency_in()  const;
 	unsigned int latency_out() const;
@@ -390,6 +394,10 @@ private:
 	// Plugin-chain instances.
 	qtractorPluginList *m_pIPluginList;
 	qtractorPluginList *m_pOPluginList;
+
+	// Automation curve serializer instances.
+	qtractorCurveFile  *m_pICurveFile;
+	qtractorCurveFile  *m_pOCurveFile;
 
 	// Specific JACK ports stuff.
 	jack_port_t **m_ppIPorts;

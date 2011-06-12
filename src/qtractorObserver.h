@@ -119,6 +119,12 @@ public:
 		return fValue;
 	}
 
+	// Normalized scale converters.
+	float valueFromScale ( float fScale ) const
+		{ return m_fMinValue + fScale * (m_fMaxValue - m_fMinValue); }
+	float scaleFromValue ( float fValue ) const
+		{ return (fValue - m_fMinValue) / (m_fMaxValue - m_fMinValue); }
+
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue();
 	
@@ -215,6 +221,12 @@ public:
 	// Filter value within legal bounds.
 	float safeValue(float fValue) const
 		{ return (m_pSubject ? m_pSubject->safeValue(fValue) : 0.0f); }
+
+	// Normalized scale converters.
+	float valueFromScale ( float fScale ) const
+		{ return (m_pSubject ? m_pSubject->valueFromScale(fScale) : 0.0f); }
+	float scaleFromValue ( float fValue ) const
+		{ return (m_pSubject ? m_pSubject->scaleFromValue(fValue) : 0.0f); }
 
 	// Pure virtual view updater.
 	virtual void update() = 0;
