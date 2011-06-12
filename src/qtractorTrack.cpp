@@ -1846,6 +1846,10 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	if (pMixerStrip == NULL)
 		return;
 
+	pCurveFile->setFilename(QDir::cleanPath(
+		QDir(pSession->sessionDir())
+			.absoluteFilePath(pCurveFile->filename())));
+	
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
