@@ -1716,7 +1716,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	Params::ConstIterator param = m_params.constBegin();
 	for ( ; param != m_params.constEnd(); ++param) {
 		qtractorPluginParam *pParam = param.value();
-		qtractorCurve *pCurve = pCurveList->findCurve(pParam->subject());
+		qtractorCurve *pCurve = pParam->subject()->curve();
 		if (pCurve && pCurve->isEnabled()) {
 			unsigned short controller = (iParam % 0x7f);
 			if (controller == 0x00 || controller == 0x20)

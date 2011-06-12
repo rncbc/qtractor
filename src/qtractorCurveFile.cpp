@@ -62,8 +62,7 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 					Item *pItem = new Item;
 					pItem->name  = eItem.attribute("name");
 					pItem->index = eItem.attribute("index").toULong();
-					pItem->ctype = qtractorMidiControl::typeFromText(
-						eItem.attribute("type"));
+					pItem->mode  = modeFromText(eItem.attribute("mode"));
 					for (QDomNode nProp = eItem.firstChild();
 							!nProp.isNull(); nProp = nProp.nextSibling()) {
 						// Convert node to element, if any.
@@ -71,14 +70,13 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 						if (eProp.isNull())
 							continue;
 						// Check for property item...
+						if (eProp.tagName() == "type")
+							pItem->ctype = qtractorMidiControl::typeFromText(eProp.text());
 						if (eProp.tagName() == "channel")
 							pItem->channel = eProp.text().toUShort();
 						else
 						if (eProp.tagName() == "param")
 							pItem->param = eProp.text().toUShort();
-						else
-						if (eProp.tagName() == "mode")
-							pItem->mode = modeFromText(eProp.text());
 						else
 						if (eProp.tagName() == "process")
 							pItem->process = qtractorDocument::boolFromText(eProp.text());
@@ -121,7 +119,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
-		qtractorCurve *pCurve = m_pCurveList->findCurve(pItem->subject);
+		qtractorCurve *pCurve = (pItem->subject)->curve();
 		if (pCurve && pCurve->isEnabled()) {
 			qtractorMidiSequence *pSeq = ppSeqs[iSeq];
 			pCurve->writeMidiSequence(pSeq,
@@ -132,10 +130,10 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 			QDomElement eItem
 				= pDocument->document()->createElement("curve-item");
 			eItem.setAttribute("name", pItem->name);
-			eItem.setAttribute("index",
-				QString::number(pItem->index));
-			eItem.setAttribute("type",
-				qtractorMidiControl::textFromType(pItem->ctype));
+			eItem.setAttribute("index", QString::number(pItem->index));
+			eItem.setAttribute("mode", textFromMode(pItem->mode));
+			pDocument->saveTextElement("type",
+				qtractorMidiControl::textFromType(pItem->ctype), &eItem);
 			pDocument->saveTextElement("channel",
 				QString::number(pItem->channel), &eItem);
 			pDocument->saveTextElement("param",
@@ -180,7 +178,7 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
-		qtractorCurve *pCurve = m_pCurveList->findCurve(pItem->subject);
+		qtractorCurve *pCurve = (pItem->subject)->curve();
 		if (pCurve == NULL)
 			pCurve = new qtractorCurve(m_pCurveList, pItem->subject, pItem->mode);
 		qtractorMidiSequence seq(QString(), pItem->channel, iTicksPerBeat);

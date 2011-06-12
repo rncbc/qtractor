@@ -1723,7 +1723,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 
 	qtractorCurve *pCurve;
 
-	pCurve = pCurveList->findCurve(monitorSubject());
+	pCurve = monitorSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -1738,8 +1738,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pCurveList->findCurve(
-		pMixerStrip->meter()->panningSubject());
+	pCurve = pMixerStrip->meter()->panningSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -1754,8 +1753,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pCurveList->findCurve(
-		pMixerStrip->meter()->gainSubject());
+	pCurve = pMixerStrip->meter()->gainSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -1770,7 +1768,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pCurveList->findCurve(recordSubject());
+	pCurve = recordSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -1785,7 +1783,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pCurveList->findCurve(muteSubject());
+	pCurve = muteSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -1800,7 +1798,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pCurveList->findCurve(soloSubject());
+	pCurve = soloSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
