@@ -2046,6 +2046,13 @@ void qtractorTracks::contentsChangeNotify (void)
 }
 
 
+// Track viewport update.
+void qtractorTracks::updateTrackView (void)
+{
+	m_pTrackView->update();
+}
+
+
 // Overall contents reset.
 void qtractorTracks::clear(void)
 {

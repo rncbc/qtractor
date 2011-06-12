@@ -47,7 +47,7 @@ public:
 
 	// Constructor.
 	qtractorCurve(qtractorCurveList *pList, qtractorSubject *pSubject,
-		Mode mode, unsigned int iMinFrameDist = 2400);
+		Mode mode, unsigned int iMinFrameDist = 3200);
 
 	// Destructor.
 	~qtractorCurve();

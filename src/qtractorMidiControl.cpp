@@ -674,6 +674,7 @@ void qtractorMidiControl::loadControllers (
 		// Check for controller item...
 		if (eController.tagName() == "controller") {
 			Controller *pController = new Controller;
+			pController->name  = eController.attribute("name");
 			pController->index = eController.attribute("index").toULong();
 			pController->ctype = typeFromText(eController.attribute("type"));
 			for (QDomNode nProp = eController.firstChild();
@@ -712,6 +713,7 @@ void qtractorMidiControl::saveControllers ( qtractorDocument *pDocument,
 	while (iter.hasNext()) {
 		Controller *pController = iter.next();
 		QDomElement eController = pDocument->document()->createElement("controller");
+		eController.setAttribute("name", pController->name);
 		eController.setAttribute("index", QString::number(pController->index));
 		eController.setAttribute("type", textFromType(pController->ctype));
 		pDocument->saveTextElement("channel",

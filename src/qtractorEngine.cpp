@@ -490,6 +490,7 @@ void qtractorBus::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pMonitorObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 0; // 0=MonitorObserver
 		pController->ctype = m_pMonitorObserver->type();
 		pController->channel = m_pMonitorObserver->channel();
@@ -505,6 +506,7 @@ void qtractorBus::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 1; // 1=PanObserver
 		pController->ctype = pPanObserver->type();
 		pController->channel = pPanObserver->channel();
@@ -520,6 +522,7 @@ void qtractorBus::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 2; // 2=GainObserver
 		pController->ctype = pGainObserver->type();
 		pController->channel = pGainObserver->channel();
@@ -659,8 +662,9 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	pCurve = pCurveList->findCurve(monitorSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 0;	// 0=MonitorSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 80;	// 80=General Purpose Button 1 (on/off)
 		pCurveItem->mode = pCurve->mode();
@@ -674,8 +678,9 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pMixerStrip->meter()->panningSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 1;	// 1=PanningSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 10;	// 10=Pan Position (coarse)
 		pCurveItem->mode = pCurve->mode();
@@ -689,8 +694,9 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pMixerStrip->meter()->gainSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 2; // 2=GainSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 7;	// 7=Volume (coarse)
 		pCurveItem->mode = pCurve->mode();
