@@ -157,6 +157,11 @@ protected:
 	bool mergeExportAudioClips(qtractorClipCommand *pClipCommand);
 	bool mergeExportMidiClips(qtractorClipCommand *pClipCommand);
 
+public slots:
+
+	// Track viewport update.
+	void updateTrackView();
+
 protected slots:
 
 	// Zoom view slots.

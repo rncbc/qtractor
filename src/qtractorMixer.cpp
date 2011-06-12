@@ -40,6 +40,7 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorCurve.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorBusForm.h"
@@ -1418,6 +1419,14 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 
 	pTrack->mapControllers();
 	pTrack->applyCurveFile(pTrack->curveFile());
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pCurveList && pMainForm && pMainForm->tracks()) {
+		QObject::connect(
+			pCurveList->proxy(), SIGNAL(update()),
+			pMainForm->tracks(), SLOT(updateTrackView()));
+	}
 }
 
 

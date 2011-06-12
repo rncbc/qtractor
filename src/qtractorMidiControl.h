@@ -237,6 +237,7 @@ public:
 	// Parameter controllers (MIDI).
 	struct Controller
 	{
+		QString        name;
 		unsigned long  index;
 		ControlType    ctype;
 		unsigned short channel;

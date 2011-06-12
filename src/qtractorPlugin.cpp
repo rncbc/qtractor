@@ -1638,6 +1638,7 @@ void qtractorPlugin::saveControllers (
 		if (pMidiControl->isMidiObserverMapped(pObserver)) {
 			qtractorMidiControl::Controller *pController
 				= new qtractorMidiControl::Controller;
+			pController->name = pParam->name();
 			pController->index = pParam->index();
 			pController->ctype = pObserver->type();
 			pController->channel = pObserver->channel();
@@ -1721,8 +1722,9 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			if (controller == 0x00 || controller == 0x20)
 				++iParam; // Avoid bank-select controllers, please.
 			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+			pCurveItem->name = pParam->name();
 			pCurveItem->index = pParam->index();
-			pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+			pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 			pCurveItem->channel = ((iParam / 0x7f) % 16);
 			pCurveItem->param = (iParam % 0x7f);
 			pCurveItem->mode = pCurve->mode();

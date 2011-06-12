@@ -2952,7 +2952,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 
 	pCurveList->setCurrentCurve(pCurve);
 
-	m_pTracks->trackView()->update();
+	m_pTracks->updateTrackView();
 }
 
 
@@ -2977,7 +2977,7 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 	pCurrentCurve->setMode(mode);
 	pCurrentCurve->update();
 	
-	m_pTracks->trackView()->update();
+	m_pTracks->updateTrackView();
 }
 
 
@@ -3042,7 +3042,7 @@ void qtractorMainForm::trackCurveClear (void)
 
 	pCurrentCurve->clear();
 	
-	m_pTracks->trackView()->update();
+	m_pTracks->updateTrackView();
 }
 
 
@@ -3107,7 +3107,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 
 	pCurveList->clearAll();
 	
-	m_pTracks->trackView()->update();
+	m_pTracks->updateTrackView();
 }
 
 

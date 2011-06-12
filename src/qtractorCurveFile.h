@@ -39,6 +39,9 @@ class qtractorCurveFile
 {
 public:
 
+	// Controller types.
+	typedef qtractorMidiEvent::EventType ControlType;
+
 	// Constructor.
 	qtractorCurveFile(qtractorCurveList *pCurveList)
 		: m_pCurveList(pCurveList) {}
@@ -59,8 +62,9 @@ public:
 	// Curve item escriptor.
 	struct Item
 	{
+		QString          name;
 		unsigned long    index;
-		qtractorMidiEvent::EventType type;
+		ControlType      ctype;
 		unsigned short   channel;
 		unsigned short   param;
 		qtractorCurve::Mode mode;

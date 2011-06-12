@@ -206,11 +206,6 @@ void qtractorCurve::clear (void)
 qtractorCurve::Node *qtractorCurve::insertNode (
 	unsigned long iFrame, float fValue, bool bSmooth )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorCurve[%p]::insertNode(%lu, %g, %d)",
-		this, iFrame, fValue, int(bSmooth));
-#endif
-
 	Node *pNode = NULL;
 	Node *pNext = m_cursor.seek(frameDist(iFrame));
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
@@ -278,6 +273,10 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 
 qtractorCurve::Node *qtractorCurve::addNode ( unsigned long iFrame, float fValue )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorCurve[%p]::addNode(%lu, %g)", this, iFrame, fValue);
+#endif
+
 	Node *pNode = insertNode(iFrame, m_observer.safeValue(fValue), true);
 
 	if (pNode)
@@ -547,16 +546,16 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 		ts.copy(*pTimeScale);
 	ts.setTicksPerBeat(pSeq->ticksPerBeat());
 
-	// Clenup all existing events...
-	if (pSeq->channel() == iChannel) {
-		qtractorMidiEvent *pEvent = pSeq->events().first();
-		while (pEvent) {
-			qtractorMidiEvent *pEventNext = pEvent->next();
-			if (pEvent->type() == ctype && pEvent->note() == iParam) {
-				pSeq->removeEvent(pEvent);
-			}
-			pEvent = pEventNext;
-		}
+	// Set proper sequence channel...
+	pSeq->setChannel(iChannel);
+
+	// Cleanup existing nodes...
+	qtractorMidiEvent *pEvent = pSeq->events().first();
+	while (pEvent) {
+		qtractorMidiEvent *pEventNext = pEvent->next();
+		if (pEvent->type() == ctype && pEvent->note() == iParam)
+			pSeq->removeEvent(pEvent);
+		pEvent = pEventNext;
 	}
 
 	// Convert nodes to events...

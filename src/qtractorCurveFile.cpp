@@ -60,8 +60,9 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 				// Check for controller item...
 				if (eItem.tagName() == "curve-item") {
 					Item *pItem = new Item;
+					pItem->name  = eItem.attribute("name");
 					pItem->index = eItem.attribute("index").toULong();
-					pItem->type = qtractorMidiControl::typeFromText(
+					pItem->ctype = qtractorMidiControl::typeFromText(
 						eItem.attribute("type"));
 					for (QDomNode nProp = eItem.firstChild();
 							!nProp.isNull(); nProp = nProp.nextSibling()) {
@@ -112,7 +113,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	qtractorMidiSequence **ppSeqs = new qtractorMidiSequence * [iSeqs];
 	for (iSeq = 0; iSeq < iSeqs; ++iSeq)
-		ppSeqs[iSeq] = new qtractorMidiSequence(QString(), iSeq, iTicksPerBeat);
+		ppSeqs[iSeq] = new qtractorMidiSequence(QString(), 0, iTicksPerBeat);
 
 	iSeq = 0;
 
@@ -124,16 +125,17 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 		if (pCurve && pCurve->isEnabled()) {
 			qtractorMidiSequence *pSeq = ppSeqs[iSeq];
 			pCurve->writeMidiSequence(pSeq,
-				pItem->type,
+				pItem->ctype,
 				pItem->channel,
 				pItem->param,
 				pTimeScale);
 			QDomElement eItem
 				= pDocument->document()->createElement("curve-item");
+			eItem.setAttribute("name", pItem->name);
 			eItem.setAttribute("index",
 				QString::number(pItem->index));
 			eItem.setAttribute("type",
-				qtractorMidiControl::textFromType(pItem->type));
+				qtractorMidiControl::textFromType(pItem->ctype));
 			pDocument->saveTextElement("channel",
 				QString::number(pItem->channel), &eItem);
 			pDocument->saveTextElement("param",
@@ -181,10 +183,10 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 		qtractorCurve *pCurve = m_pCurveList->findCurve(pItem->subject);
 		if (pCurve == NULL)
 			pCurve = new qtractorCurve(m_pCurveList, pItem->subject, pItem->mode);
-		qtractorMidiSequence seq(QString(), iSeq, iTicksPerBeat);
+		qtractorMidiSequence seq(QString(), pItem->channel, iTicksPerBeat);
 		if (file.readTrack(&seq, iSeq)) {
 			pCurve->readMidiSequence(&seq,
-				pItem->type,
+				pItem->ctype,
 				pItem->channel,
 				pItem->param,
 				pTimeScale);
@@ -195,8 +197,6 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	}
 
 	file.close();
-
-	clear();
 }
 
 

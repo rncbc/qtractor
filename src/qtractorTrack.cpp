@@ -1512,6 +1512,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pMonitorObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 0; // 0=MonitorObserver
 		pController->ctype = m_pMonitorObserver->type();
 		pController->channel = m_pMonitorObserver->channel();
@@ -1526,6 +1527,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 1; // 1=PanObserver
 		pController->ctype = pPanObserver->type();
 		pController->channel = pPanObserver->channel();
@@ -1540,6 +1542,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 2; // 2=GainObserver
 		pController->ctype = pGainObserver->type();
 		pController->channel = pGainObserver->channel();
@@ -1552,6 +1555,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pRecordObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 3; // 3=RecordObserver
 		pController->ctype = m_pRecordObserver->type();
 		pController->channel = m_pRecordObserver->channel();
@@ -1564,6 +1568,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pMuteObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 4; // 4=MuteObserver
 		pController->ctype = m_pMuteObserver->type();
 		pController->channel = m_pMuteObserver->channel();
@@ -1576,6 +1581,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pSoloObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
+		pController->name = m_pMonitorObserver->subject()->name();
 		pController->index = 5; // 5=SoloObserver
 		pController->ctype = m_pSoloObserver->type();
 		pController->channel = m_pSoloObserver->channel();
@@ -1720,8 +1726,9 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	pCurve = pCurveList->findCurve(monitorSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 0;	// 0=MonitorSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 80;	// 80=General Purpose Button 1 (on/off)
 		pCurveItem->mode = pCurve->mode();
@@ -1735,8 +1742,9 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pMixerStrip->meter()->panningSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 1;	// 1=PanningSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 10;	// 10=Pan Position (coarse)
 		pCurveItem->mode = pCurve->mode();
@@ -1750,8 +1758,9 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pMixerStrip->meter()->gainSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 2; // 2=GainSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 7;	// 7=Volume (coarse)
 		pCurveItem->mode = pCurve->mode();
@@ -1764,8 +1773,9 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	pCurve = pCurveList->findCurve(recordSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 3;	// 3=RecordSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 81;	// 81=General Purpose Button 2 (on/off)
 		pCurveItem->mode = pCurve->mode();
@@ -1778,8 +1788,9 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	pCurve = pCurveList->findCurve(muteSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
-		pCurveItem->index = 3;	// 4=MuteSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->name = pCurve->subject()->name();
+		pCurveItem->index = 4;	// 4=MuteSubject
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 82;	// 82=General Purpose Button 3 (on/off)
 		pCurveItem->mode = pCurve->mode();
@@ -1792,8 +1803,9 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	pCurve = pCurveList->findCurve(soloSubject());
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
-		pCurveItem->index = 3;	// 4=SoloSubject
-		pCurveItem->type = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->name = pCurve->subject()->name();
+		pCurveItem->index = 5;	// 5=SoloSubject
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		pCurveItem->param = 83;	// 83=General Purpose Button 4 (on/off)
 		pCurveItem->mode = pCurve->mode();
