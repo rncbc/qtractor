@@ -431,6 +431,10 @@ public:
 	qtractorCurveList *curveList_in()  const;
 	qtractorCurveList *curveList_out() const;
 
+	// Automation curve serializer accessors.
+	qtractorCurveFile *curveFile_in()  const;
+	qtractorCurveFile *curveFile_out() const;
+
 	// Retrieve/restore client:port connections.
 	// return the effective number of connection attempts.
 	int updateConnects(BusMode busMode,
@@ -489,6 +493,10 @@ private:
 	// Plugin-chain instances.
 	qtractorPluginList *m_pIPluginList;
 	qtractorPluginList *m_pOPluginList;
+
+	// Automation curve serializer instances.
+	qtractorCurveFile  *m_pICurveFile;
+	qtractorCurveFile  *m_pOCurveFile;
 
 	// SysEx setup list.
 	qtractorMidiSysexList *m_pSysexList;

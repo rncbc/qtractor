@@ -38,6 +38,7 @@
 #include "qtractorCurveFile.h"
 
 #include <QDomDocument>
+#include <QDir>
 
 
 //----------------------------------------------------------------------
@@ -599,36 +600,35 @@ void qtractorBus::mapControllers ( BusMode busMode )
 
 
 // Load bus automation curves (monitor, gain, pan).
-bool qtractorBus::loadCurveFile ( qtractorDocument *pDocument,
-	QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode /*busMode*/ ) const
+void qtractorBus::loadCurveFile (
+	QDomElement *pElement, BusMode /*busMode*/, qtractorCurveFile *pCurveFile )
 {
-	qtractorSession *pSession = m_pEngine->session();
-	if (pSession == NULL)
-		return false;
-
-	return pCurveFile->load(pDocument, pElement, pSession->timeScale());
+	if (pCurveFile) pCurveFile->load(pElement);
 }
 
 
 // Save bus automation curves (monitor, gain, pan).
-bool qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
-	QDomElement *pElement, qtractorCurveFile *pCurveFile, BusMode busMode ) const
+void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, BusMode busMode, qtractorCurveFile *pCurveFile ) const
 {
+	if (pCurveFile == NULL)
+		return;
+
 	qtractorCurveList *pCurveList = pCurveFile->list();
 	if (pCurveList == NULL)
-		return false;
+		return;
 
 	qtractorSession *pSession = m_pEngine->session();
 	if (pSession == NULL)
-		return false;
+		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return false;
+		return;
 
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer == NULL)
-		return false;
+		return;
 
 	QString sBusName(busName());
 	qtractorMonitor *pMonitor = NULL;
@@ -645,10 +645,13 @@ bool qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	
 	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
 	if (pMixerStrip == NULL)
-		return false;
+		return;
 
 	pCurveFile->clear();
-	pCurveFile->setFilename(pSession->createFilePath(sBusName, ".mid"));
+
+	const QString sBaseName(sBusName + "_curve");
+	pCurveFile->setFilename(QDir(pSession->sessionDir())
+		.relativeFilePath(pSession->createFilePath(sBaseName, "mid")));
 
 	qtractorCurve *pCurve;
 
@@ -697,28 +700,33 @@ bool qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	return pCurveFile->save(pDocument, pElement, pSession->timeScale());
+	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }
 
 
 // Apply bus automation curves (monitor, gain, pan).
-bool qtractorBus::applyCurveFile ( qtractorCurveFile *pCurveFile, BusMode busMode ) const
+void qtractorBus::applyCurveFile ( BusMode busMode, qtractorCurveFile *pCurveFile ) const
 {
+	if (pCurveFile == NULL)
+		return;
+	if (pCurveFile->items().isEmpty())
+		return;
+
 	qtractorCurveList *pCurveList = pCurveFile->list();
 	if (pCurveList == NULL)
-		return false;
+		return;
 
 	qtractorSession *pSession = m_pEngine->session();
 	if (pSession == NULL)
-		return false;
+		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return false;
+		return;
 
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer == NULL)
-		return false;
+		return;
 
 	qtractorMonitor *pMonitor = NULL;
 	qtractorMixerRack *pMixerRack = NULL;
@@ -732,7 +740,7 @@ bool qtractorBus::applyCurveFile ( qtractorCurveFile *pCurveFile, BusMode busMod
 	
 	qtractorMixerStrip *pMixerStrip = pMixerRack->findStrip(pMonitor);
 	if (pMixerStrip == NULL)
-		return false;
+		return;
 
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
@@ -750,7 +758,7 @@ bool qtractorBus::applyCurveFile ( qtractorCurveFile *pCurveFile, BusMode busMod
 		}
 	}
 
-	return pCurveFile->apply(pSession->timeScale());
+	pCurveFile->apply(pSession->timeScale());
 }
 
 

@@ -1426,6 +1426,7 @@ bool qtractorPluginList::loadElement (
 			qtractorPlugin::ConfigTypes ctypes;
 			qtractorPlugin::Values values;
 			qtractorMidiControl::Controllers controllers;
+			qtractorCurveFile cfile(qtractorPluginList::curveList());
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(
 					ePlugin.attribute("type"));
@@ -1468,6 +1469,11 @@ bool qtractorPluginList::loadElement (
 					// Load plugin parameter controllers...
 					qtractorPlugin::loadControllers(&eParam, controllers);
 				}
+				else
+				if (eParam.tagName() == "curve-file") {
+					// Load plugin automation curves...
+					qtractorPlugin::loadCurveFile(&eParam, &cfile);
+				}
 			}
 			qtractorPlugin *pPlugin
 				= qtractorPluginFile::createPlugin(this,
@@ -1490,6 +1496,7 @@ bool qtractorPluginList::loadElement (
 					pPlugin->setValues(values);
 				append(pPlugin);
 				pPlugin->mapControllers(controllers);
+				pPlugin->applyCurveFile(&cfile);
 				pPlugin->setActivated(bActivated); // Later's better!
 			}
 			// Cleanup.
@@ -1524,7 +1531,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			QString::number(m_pMidiManager->currentProg()), pElement);
 
 	// Save plugins...
-	for (qtractorPlugin *pPlugin = first();
+	for (qtractorPlugin *pPlugin = qtractorPluginList::first();
 			pPlugin; pPlugin = pPlugin->next()) {
 
 		// Do freeze plugin state...
@@ -1559,10 +1566,21 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		QDomElement eParams = pDocument->document()->createElement("params");
 		pPlugin->saveValues(pDocument->document(), &eParams);
 		ePlugin.appendChild(eParams);
+		// Plugin paramneter controllers...
 		QDomElement eControllers
 			= pDocument->document()->createElement("controllers");
 		pPlugin->saveControllers(pDocument, &eControllers);
 		ePlugin.appendChild(eControllers);
+		// Save plugin automation...
+		qtractorCurveList *pCurveList = qtractorPluginList::curveList();
+		if (pCurveList && pCurveList->isEnabled()) {
+			qtractorCurveFile cfile(pCurveList);
+			QDomElement eCurveFile
+				= pDocument->document()->createElement("curve-file");
+			pPlugin->saveCurveFile(pDocument, &eCurveFile, &cfile);
+			pElement->appendChild(eCurveFile);
+		}
+	
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
 
@@ -1661,37 +1679,38 @@ void qtractorPlugin::mapControllers (
 
 
 // Load plugin automation curves (monitor, gain, pan, record, mute, solo).
-bool qtractorPlugin::loadCurveFile ( qtractorDocument *pDocument,
-	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+void qtractorPlugin::loadCurveFile (
+	QDomElement *pElement, qtractorCurveFile *pCurveFile )
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	return pCurveFile->load(pDocument, pElement, pSession->timeScale());
+	if (pCurveFile) pCurveFile->load(pElement);
 }
 
 
 // Save plugin automation curves (monitor, gain, pan, record, mute, solo).
-bool qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
+void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
 {
+	if (pCurveFile == NULL)
+		return;
+
 	qtractorCurveList *pCurveList = pCurveFile->list();
 	if (pCurveList == NULL)
-		return false;
+		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return false;
-
-	QString sPluginName(list()->name());
-	sPluginName += type()->label();
-	sPluginName += '-';
-	sPluginName += QString::number(type()->uniqueID(), 16);
+		return;
 
 	pCurveFile->clear();
-	pCurveFile->setFilename(pSession->createFilePath(sPluginName, ".mid"));
 
+	QString sBaseName(list()->name());
+	sBaseName += type()->label();
+	sBaseName += '_';
+	sBaseName += QString::number(type()->uniqueID(), 16);
+	sBaseName += "_curve";
+	pCurveFile->setFilename(QDir(pSession->sessionDir())
+		.relativeFilePath(pSession->createFilePath(sBaseName, "mid")));
+	
 	unsigned short iParam = 0;
 	Params::ConstIterator param = m_params.constBegin();
 	for ( ; param != m_params.constEnd(); ++param) {
@@ -1715,20 +1734,25 @@ bool qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 		}
 	}
 
-	return pCurveFile->save(pDocument, pElement, pSession->timeScale());
+	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }
 
 
 // Apply plugin automation curves (monitor, gain, pan, record, mute, solo).
-bool qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
+void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 {
+	if (pCurveFile == NULL)
+		return;
+	if (pCurveFile->items().isEmpty())
+		return;
+
 	qtractorCurveList *pCurveList = pCurveFile->list();
 	if (pCurveList == NULL)
-		return false;
+		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return false;
+		return;
 
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
@@ -1738,7 +1762,7 @@ bool qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 			pCurveItem->subject = pParam->subject();
 	}
 
-	return pCurveFile->apply(pSession->timeScale());
+	pCurveFile->apply(pSession->timeScale());
 }
 
 

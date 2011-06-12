@@ -48,6 +48,7 @@
 #include <QPainter>
 
 #include <QDomDocument>
+#include <QDir>
 
 
 //------------------------------------------------------------------------
@@ -190,6 +191,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pPluginList = new qtractorPluginList(0, 0, pSession->sampleRate(), iFlags);
 
+	m_pCurveFile = new qtractorCurveFile(m_pPluginList->curveList());
+
 	setHeight(HeightBase);	// Default track height.
 	clear();
 }
@@ -221,6 +224,8 @@ qtractorTrack::~qtractorTrack (void)
 	qDeleteAll(m_controllers);
 	m_controllers.clear();
 
+	if (m_pCurveFile)
+		delete m_pCurveFile;
 	if (m_pPluginList)
 		delete m_pPluginList;
 	if (m_pMonitor)
@@ -1298,6 +1303,11 @@ bool qtractorTrack::loadElement (
 			qtractorTrack::loadControllers(&eChild);
 		}
 		else
+		if (eChild.tagName() == "curve-file") {
+			// Load track automation curves...
+			qtractorTrack::loadCurveFile(&eChild, m_pCurveFile);
+		}
+		else
 		// Load clips...
 		if (eChild.tagName() == "clips" && !pDocument->isTemplate()) {
 			for (QDomNode nClip = eChild.firstChild();
@@ -1402,6 +1412,16 @@ bool qtractorTrack::saveElement (
 		= pDocument->document()->createElement("controllers");
 	qtractorTrack::saveControllers(pDocument, &eControllers);
 	pElement->appendChild(eControllers);
+
+	// Save track automation...
+	qtractorCurveList *pCurveList = qtractorTrack::curveList();
+	if (pCurveList && pCurveList->isEnabled()) {
+		qtractorCurveFile cfile(pCurveList);
+		QDomElement eCurveFile
+			= pDocument->document()->createElement("curve-file");
+		qtractorTrack::saveCurveFile(pDocument, &eCurveFile, &cfile);
+		pElement->appendChild(eCurveFile);
+	}
 
 	// Clips are not saved when in template mode...
 	if (!pDocument->isTemplate()) {
@@ -1638,6 +1658,13 @@ qtractorCurveList *qtractorTrack::curveList (void) const
 }
 
 
+// Track automation curve serializer accessor.
+qtractorCurveFile *qtractorTrack::curveFile (void) const
+{
+	return m_pCurveFile;
+}
+
+
 // Track automation current curve accessor.
 qtractorCurve *qtractorTrack::currentCurve (void) const
 {
@@ -1647,44 +1674,46 @@ qtractorCurve *qtractorTrack::currentCurve (void) const
 
 
 // Load track automation curves (monitor, gain, pan, record, mute, solo).
-bool qtractorTrack::loadCurveFile ( qtractorDocument *pDocument,
-	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+void qtractorTrack::loadCurveFile (
+	QDomElement *pElement, qtractorCurveFile *pCurveFile )
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	return pCurveFile->load(pDocument, pElement, pSession->timeScale());
+	if (pCurveFile) pCurveFile->load(pElement);
 }
 
 
 // Save track automation curves (monitor, gain, pan, record, mute, solo).
-bool qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
+void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
 {
+	if (pCurveFile == NULL)
+		return;
+
 	qtractorCurveList *pCurveList = pCurveFile->list();
 	if (pCurveList == NULL)
-		return false;
+		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return false;
+		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return false;
+		return;
 
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer == NULL)
-		return false;
+		return;
 
 	qtractorMixerStrip *pMixerStrip
 		= pMixer->trackRack()->findStrip(m_pMonitor);
 	if (pMixerStrip == NULL)
-		return false;
+		return;
 
 	pCurveFile->clear();
-	pCurveFile->setFilename(pSession->createFilePath(trackName(), ".mid"));
+
+	const QString sBaseName(trackName() + "_curve");
+	pCurveFile->setFilename(QDir(pSession->sessionDir())
+		.relativeFilePath(pSession->createFilePath(sBaseName, "mid")));
 
 	qtractorCurve *pCurve;
 
@@ -1774,33 +1803,38 @@ bool qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	return pCurveFile->save(pDocument, pElement, pSession->timeScale());
+	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }
 
 
 // Apply track automation curves (monitor, gain, pan, record, mute, solo).
-bool qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
+void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 {
+	if (pCurveFile == NULL)
+		return;
+	if (pCurveFile->items().isEmpty())
+		return;
+
 	qtractorCurveList *pCurveList = pCurveFile->list();
 	if (pCurveList == NULL)
-		return false;
+		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return false;
+		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return false;
+		return;
 
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer == NULL)
-		return false;
+		return;
 
 	qtractorMixerStrip *pMixerStrip
 		= pMixer->trackRack()->findStrip(m_pMonitor);
 	if (pMixerStrip == NULL)
-		return false;
+		return;
 
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
@@ -1827,7 +1861,7 @@ bool qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 		}
 	}
 
-	return pCurveFile->apply(pSession->timeScale());
+	pCurveFile->apply(pSession->timeScale());
 }
 
 

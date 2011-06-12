@@ -36,20 +36,78 @@
 //
 
 // Curve item list serialization methods.
-bool qtractorCurveFile::save ( qtractorDocument *pDocument,
+void qtractorCurveFile::load ( QDomElement *pElement )
+{
+	clear();
+
+	for (QDomNode nChild = pElement->firstChild();
+			!nChild.isNull(); nChild = nChild.nextSibling()) {
+		// Convert node to element, if any.
+		QDomElement eChild = nChild.toElement();
+		if (eChild.isNull())
+			continue;
+		// Check for child item...
+		if (eChild.tagName() == "filename")
+			m_sFilename = eChild.text();
+		else
+		if (eChild.tagName() == "curve-items") {
+			for (QDomNode nItem = eChild.firstChild();
+					!nItem.isNull(); nItem = nItem.nextSibling()) {
+				// Convert node to element, if any.
+				QDomElement eItem = nItem.toElement();
+				if (eItem.isNull())
+					continue;
+				// Check for controller item...
+				if (eItem.tagName() == "curve-item") {
+					Item *pItem = new Item;
+					pItem->index = eItem.attribute("index").toULong();
+					pItem->type = qtractorMidiControl::typeFromText(
+						eItem.attribute("type"));
+					for (QDomNode nProp = eItem.firstChild();
+							!nProp.isNull(); nProp = nProp.nextSibling()) {
+						// Convert node to element, if any.
+						QDomElement eProp = nProp.toElement();
+						if (eProp.isNull())
+							continue;
+						// Check for property item...
+						if (eProp.tagName() == "channel")
+							pItem->channel = eProp.text().toUShort();
+						else
+						if (eProp.tagName() == "param")
+							pItem->param = eProp.text().toUShort();
+						else
+						if (eProp.tagName() == "mode")
+							pItem->mode = modeFromText(eProp.text());
+						else
+						if (eProp.tagName() == "process")
+							pItem->process = qtractorDocument::boolFromText(eProp.text());
+						else
+						if (eProp.tagName() == "capture")
+							pItem->capture = qtractorDocument::boolFromText(eProp.text());
+					}
+					pItem->subject = NULL;
+					addItem(pItem);
+				}
+			}
+		}
+	}
+}
+
+
+void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorTimeScale *pTimeScale ) const
 {
 	if (m_pCurveList == NULL)
-		return false;
+		return;
 
 	unsigned short iSeq;
 	unsigned short iSeqs = m_items.count();
 	if (iSeqs < 1)
-		return false;
+		return;
 
 	qtractorMidiFile file;
 	if (!file.open(m_sFilename, qtractorMidiFile::Write))
-		return false;
+		return;
 
 	unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	qtractorMidiSequence **ppSeqs = new qtractorMidiSequence * [iSeqs];
@@ -102,80 +160,17 @@ bool qtractorCurveFile::save ( qtractorDocument *pDocument,
 	pDocument->saveTextElement("filename",
 		pDocument->addFile(m_sFilename), pElement);
 	pElement->appendChild(eItems);
-
-	return true;
 }
 
 
-bool qtractorCurveFile::load ( qtractorDocument *pDocument,
-	QDomElement *pElement, qtractorTimeScale */*pTimeScale*/ )
-{
-	clear();
-
-	for (QDomNode nChild = pElement->firstChild();
-			!nChild.isNull(); nChild = nChild.nextSibling()) {
-		// Convert node to element, if any.
-		QDomElement eChild = nChild.toElement();
-		if (eChild.isNull())
-			continue;
-		// Check for child item...
-		if (eChild.tagName() == "filename")
-			m_sFilename = eChild.text();
-		else
-		if (eChild.tagName() == "curve-items") {
-			for (QDomNode nItem = eChild.firstChild();
-					!nItem.isNull(); nItem = nItem.nextSibling()) {
-				// Convert node to element, if any.
-				QDomElement eItem = nItem.toElement();
-				if (eItem.isNull())
-					continue;
-				// Check for controller item...
-				if (eItem.tagName() == "curve-item") {
-					Item *pItem = new Item;
-					pItem->index = eItem.attribute("index").toULong();
-					pItem->type = qtractorMidiControl::typeFromText(
-						eItem.attribute("type"));
-					for (QDomNode nProp = eItem.firstChild();
-							!nProp.isNull(); nProp = nProp.nextSibling()) {
-						// Convert node to element, if any.
-						QDomElement eProp = nProp.toElement();
-						if (eProp.isNull())
-							continue;
-						// Check for property item...
-						if (eProp.tagName() == "channel")
-							pItem->channel = eProp.text().toUShort();
-						else
-						if (eProp.tagName() == "param")
-							pItem->param = eProp.text().toUShort();
-						else
-						if (eProp.tagName() == "mode")
-							pItem->mode = modeFromText(eProp.text());
-						else
-						if (eProp.tagName() == "process")
-							pItem->process = pDocument->boolFromText(eProp.text());
-						else
-						if (eProp.tagName() == "capture")
-							pItem->capture = pDocument->boolFromText(eProp.text());
-					}
-					pItem->subject = NULL;
-					addItem(pItem);
-				}
-			}
-		}
-	}
-
-	return true;
-}
-
-
-bool qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
+void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 {
 	if (m_pCurveList == NULL)
-		return false;
+		return;
 
 	qtractorMidiFile file;
 	if (!file.open(m_sFilename, qtractorMidiFile::Read))
-		return false;
+		return;
 
 	unsigned short iSeq = 0;
 	unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
@@ -201,7 +196,7 @@ bool qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 
 	file.close();
 
-	return true;
+	clear();
 }
 
 

@@ -88,27 +88,16 @@ unsigned short qtractorMidiControlObserver::midiValue (void) const
 }
 
 
-// Normalized scale coneverters.
+// Normalized scale converters.
 float qtractorMidiControlObserver::valueFromScale ( float fScale, bool bCubic ) const
 {
-	if (bCubic)
-		fScale = ::cubef2(fScale);
-
-	return minValue() + fScale * (maxValue() - minValue());
+	return qtractorObserver::valueFromScale(bCubic ? ::cubef2(fScale) : fScale);
 }
 
 float qtractorMidiControlObserver::scaleFromValue ( float fValue, bool bCubic ) const
 {
-	float fScale = 0.0f;
-
-	float fDelta = (maxValue() - minValue());
-	if (fDelta > +1E-6f || fDelta < -1E-6f)
-		fScale = (fValue - minValue()) / fDelta;
-
-	if (bCubic)
-		fScale = ::cbrtf2(fScale);
-
-	return fScale;
+	float fScale = qtractorObserver::scaleFromValue(fValue);
+	return (bCubic ? ::cbrtf2(fScale) : fScale);
 }
 
 

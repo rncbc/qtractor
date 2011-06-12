@@ -1375,6 +1375,33 @@ void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
 	}
 
 	pBus->mapControllers(busMode);
+#if 0
+	qtractorAudioBus *pAudioBus;
+	qtractorMidiBus  *pMidiBus;
+
+	switch (pBus->busType()) {
+	case qtractorTrack::Audio:
+		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus) {
+			pAudioBus->applyCurveFile(busMode,
+				(busMode == qtractorBus::Input
+			       ? pAudioBus->curveFile_in()
+			       : pAudioBus->curveFile_out()));
+		}
+		break;
+	case qtractorTrack::Midi:
+		pMidiBus = static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			pMidiBus->applyCurveFile(busMode,
+				(busMode == qtractorBus::Input
+			         ? pMidiBus->curveFile_in()
+			         : pMidiBus->curveFile_out()));
+		}
+		break;
+	default:
+		break;
+	}
+#endif
 }
 
 
@@ -1390,6 +1417,7 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 	}
 
 	pTrack->mapControllers();
+	pTrack->applyCurveFile(pTrack->curveFile());
 }
 
 

@@ -244,16 +244,18 @@ public:
 	// Track automation curve list accessor.
 	qtractorCurveList *curveList() const;
 
+	// Track automation curve serializer accessor.
+	qtractorCurveFile *curveFile() const;
+
 	// Track automation current curve accessor.
 	qtractorCurve *currentCurve() const;
 
 	// Track automation curve serialization methods.
-	bool loadCurveFile (qtractorDocument *pDocument,
+	static void loadCurveFile(
+		QDomElement *pElement, qtractorCurveFile *pCurveFile);
+	void saveCurveFile(qtractorDocument *pDocument,
 		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
-	bool saveCurveFile (qtractorDocument *pDocument,
-		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
-
-	bool applyCurveFile (qtractorCurveFile *pCurveFile) const;
+	void applyCurveFile(qtractorCurveFile *pCurveFile) const;
 
 	// Track properties structure.
 	struct Properties
@@ -338,6 +340,8 @@ private:
 	qtractorSubject *m_pSoloSubject;
 
 	qtractorMidiControl::Controllers m_controllers;
+
+	qtractorCurveFile *m_pCurveFile;
 };
 
 
