@@ -659,7 +659,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	qtractorCurve *pCurve;
 
 	if (busMode & Input) { // It suffices for Duplex...
-	pCurve = pCurveList->findCurve(monitorSubject());
+	pCurve = monitorSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -674,8 +674,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}}
 
-	pCurve = pCurveList->findCurve(
-		pMixerStrip->meter()->panningSubject());
+	pCurve = pMixerStrip->meter()->panningSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -690,8 +689,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pCurveList->findCurve(
-		pMixerStrip->meter()->gainSubject());
+	pCurve = pMixerStrip->meter()->gainSubject()->curve();
 	if (pCurve && pCurve->isEnabled()) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();

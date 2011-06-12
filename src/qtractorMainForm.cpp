@@ -1922,6 +1922,11 @@ bool qtractorMainForm::saveSessionFileEx (
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
 		.save(sFilename, qtractorDocument::Flags(iFlags));
 
+#ifdef CONFIG_LIBZ
+	if ((iFlags & qtractorDocument::Archive) == 0)
+		qtractorDocument::clearExtractedArchives();
+#endif
+
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
 
@@ -2932,7 +2937,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 		= qVariantValue<qtractorSubject *> (pAction->data());
 	qtractorCurve *pCurve = NULL;
 	if (pSubject) {
-		pCurve = pCurveList->findCurve(pSubject);
+		pCurve = pSubject->curve();
 		if (pCurve == NULL)
 			pCurve = new qtractorCurve(pCurveList, pSubject, qtractorCurve::Hold);
 	}

@@ -169,6 +169,8 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 
 	clear();
 
+	m_observer.setCurve(this);
+
 	m_pList->addCurve(this);
 }
 
@@ -176,6 +178,8 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 qtractorCurve::~qtractorCurve (void)
 {
 //	m_pList->removeCurve(this);
+
+	m_observer.setCurve(NULL);
 
 	clear();
 }

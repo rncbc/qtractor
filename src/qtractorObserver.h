@@ -28,6 +28,7 @@
 // Forward declarations.
 class qtractorSubject;
 class qtractorObserver;
+class qtractorCurve;
 
 
 //---------------------------------------------------------------------------
@@ -125,6 +126,12 @@ public:
 	float scaleFromValue ( float fValue ) const
 		{ return (fValue - m_fMinValue) / (m_fMaxValue - m_fMinValue); }
 
+	// Automation curve association.
+	void setCurve(qtractorCurve *pCurve)
+		{ m_pCurve = pCurve; }
+	qtractorCurve *curve() const
+		{ return m_pCurve; }
+
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue();
 	
@@ -152,6 +159,10 @@ private:
 	// Toggled value mode (max or min).
 	bool    m_bToggled;
 
+	// Automation curve association.
+	qtractorCurve *m_pCurve;
+
+	// List of observers (obviously)
 	QList<qtractorObserver *> m_observers;
 };
 
@@ -227,6 +238,12 @@ public:
 		{ return (m_pSubject ? m_pSubject->valueFromScale(fScale) : 0.0f); }
 	float scaleFromValue ( float fValue ) const
 		{ return (m_pSubject ? m_pSubject->scaleFromValue(fValue) : 0.0f); }
+
+	// Automation curve association.
+	void setCurve(qtractorCurve *pCurve)
+		{ if (m_pSubject) m_pSubject->setCurve(pCurve); }
+	qtractorCurve *curve() const
+		{ return (m_pSubject ? m_pSubject->curve() : NULL); }
 
 	// Pure virtual view updater.
 	virtual void update() = 0;

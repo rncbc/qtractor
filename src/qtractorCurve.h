@@ -25,7 +25,6 @@
 #include "qtractorObserver.h"
 #include "qtractorMidiSequence.h"
 
-#include <QHash>
 #include <QColor>
 
 
@@ -254,7 +253,7 @@ protected:
 		// Constructor.
 		Observer(qtractorSubject *pSubject, qtractorCurve *pCurve)
 		    : qtractorObserver(pSubject), m_pCurve(pCurve) {}
-	
+
 		// Capture updater.
 		void update() { m_pCurve->capture(); }
 
@@ -338,8 +337,6 @@ public:
 	// Simple list methods.
 	void addCurve(qtractorCurve *pCurve)
 	{
-		m_subjects.insert(pCurve->subject(), pCurve);
-
 		append(pCurve);
 
 		pCurve->setEnabled(true);
@@ -357,13 +354,8 @@ public:
 		if (pCurve->isCapture())
 			updateCapture(false);
 
-		m_subjects.remove(pCurve->subject());
-
 		remove(pCurve);
 	}
-
-	qtractorCurve *findCurve(qtractorSubject *pSubject) const
-		{ return m_subjects.value(pSubject, NULL); }
 
 	// Set common curve length procedure.
 	void setLength(unsigned long iLength)
@@ -471,8 +463,6 @@ public:
 	// Whole list cleaner.
 	void clearAll()
 	{
-		m_subjects.clear();
-
 		m_pCurrentCurve = NULL;
 
 		clear();
@@ -501,9 +491,6 @@ private:
 	int m_iEnabled;
 	int m_iCapture;
 	int m_iProcess;
-
-	// Hashed subjects lookup.
-	QHash<qtractorSubject *, qtractorCurve *> m_subjects;
 
 	// Signal/slot notifier.
 	qtractorCurveListProxy m_proxy;
