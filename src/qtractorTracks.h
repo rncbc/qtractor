@@ -130,6 +130,9 @@ public:
 	void zoomOut();
 	void zoomReset();
 
+	// Track-list update (current track only).
+	void updateTrackList();
+
 protected:
 
 	// Zoom factor constants.
@@ -159,7 +162,7 @@ protected:
 
 public slots:
 
-	// Track viewport update.
+	// Track-view update (obviously a slot).
 	void updateTrackView();
 
 protected slots:

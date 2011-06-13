@@ -2046,7 +2046,16 @@ void qtractorTracks::contentsChangeNotify (void)
 }
 
 
-// Track viewport update.
+// Track-list update (current track only).
+void qtractorTracks::updateTrackList (void)
+{
+	qtractorTrack *pTrack = currentTrack();
+	if (pTrack)
+		m_pTrackList->updateTrack(pTrack);
+}
+
+
+// Track-view update (obviously a slot).
 void qtractorTracks::updateTrackView (void)
 {
 	m_pTrackView->update();

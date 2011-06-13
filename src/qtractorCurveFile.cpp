@@ -29,6 +29,7 @@
 #include "qtractorMidiControl.h"
 
 #include <QDomDocument>
+#include <QDir>
 
 
 //----------------------------------------------------------------------
@@ -157,8 +158,10 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 		delete ppSeqs[iSeq];
 	delete [] ppSeqs;
 
+	const QString& sFilename
+		= QDir(m_sBaseDir).relativeFilePath(m_sFilename);
 	pDocument->saveTextElement("filename",
-		pDocument->addFile(m_sFilename), pElement);
+		pDocument->addFile(sFilename), pElement);
 	pElement->appendChild(eItems);
 }
 
@@ -168,8 +171,10 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	if (m_pCurveList == NULL)
 		return;
 
+	const QString& sFilename = QDir(m_sBaseDir).absoluteFilePath(m_sFilename);
+
 	qtractorMidiFile file;
-	if (!file.open(m_sFilename, qtractorMidiFile::Read))
+	if (!file.open(sFilename, qtractorMidiFile::Read))
 		return;
 
 	unsigned short iSeq = 0;
