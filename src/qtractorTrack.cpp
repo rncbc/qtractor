@@ -48,7 +48,6 @@
 #include <QPainter>
 
 #include <QDomDocument>
-#include <QDir>
 
 
 //------------------------------------------------------------------------
@@ -1718,8 +1717,8 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->clear();
 
 	const QString sBaseName(trackName() + "_curve");
-	pCurveFile->setFilename(QDir(pSession->sessionDir())
-		.relativeFilePath(pSession->createFilePath(sBaseName, "mid")));
+	pCurveFile->setBaseDir(pSession->sessionDir());
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
 
 	qtractorCurve *pCurve;
 
@@ -1846,9 +1845,7 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	if (pMixerStrip == NULL)
 		return;
 
-	pCurveFile->setFilename(QDir::cleanPath(
-		QDir(pSession->sessionDir())
-			.absoluteFilePath(pCurveFile->filename())));
+	pCurveFile->setBaseDir(pSession->sessionDir());
 	
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {

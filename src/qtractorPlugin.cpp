@@ -1455,7 +1455,7 @@ bool qtractorPluginList::loadElement (
 				if (eParam.tagName() == "activated")
 					bActivated = qtractorDocument::boolFromText(eParam.text());
 				else
-				if (eParam.tagName() == "configs" || eParam.tagName() == "configure") {
+				if (eParam.tagName() == "configs") {
 					// Load plugin configuration stuff (CLOB)...
 					qtractorPlugin::loadConfigs(&eParam, configs, ctypes);
 				}
@@ -1578,7 +1578,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			QDomElement eCurveFile
 				= pDocument->document()->createElement("curve-file");
 			pPlugin->saveCurveFile(pDocument, &eCurveFile, &cfile);
-			pElement->appendChild(eCurveFile);
+			ePlugin.appendChild(eCurveFile);
 		}
 	
 		// Add this plugin...
@@ -1705,12 +1705,14 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->clear();
 
 	QString sBaseName(list()->name());
+	sBaseName += '_';
 	sBaseName += type()->label();
 	sBaseName += '_';
 	sBaseName += QString::number(type()->uniqueID(), 16);
 	sBaseName += "_curve";
-	pCurveFile->setFilename(QDir(pSession->sessionDir())
-		.relativeFilePath(pSession->createFilePath(sBaseName, "mid")));
+
+	pCurveFile->setBaseDir(pSession->sessionDir());
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
 	
 	unsigned short iParam = 0;
 	Params::ConstIterator param = m_params.constBegin();
@@ -1756,9 +1758,7 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	if (pSession == NULL)
 		return;
 
-	pCurveFile->setFilename(QDir::cleanPath(
-		QDir(pSession->sessionDir())
-			.absoluteFilePath(pCurveFile->filename())));
+	pCurveFile->setBaseDir(pSession->sessionDir());
 
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
