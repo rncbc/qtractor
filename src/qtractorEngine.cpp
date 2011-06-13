@@ -38,7 +38,6 @@
 #include "qtractorCurveFile.h"
 
 #include <QDomDocument>
-#include <QDir>
 
 
 //----------------------------------------------------------------------
@@ -653,8 +652,8 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->clear();
 
 	const QString sBaseName(sBusName + "_curve");
-	pCurveFile->setFilename(QDir(pSession->sessionDir())
-		.relativeFilePath(pSession->createFilePath(sBaseName, "mid")));
+	pCurveFile->setBaseDir(pSession->sessionDir());
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
 
 	qtractorCurve *pCurve;
 
@@ -746,9 +745,7 @@ void qtractorBus::applyCurveFile ( BusMode busMode, qtractorCurveFile *pCurveFil
 	if (pMixerStrip == NULL)
 		return;
 
-	pCurveFile->setFilename(QDir::cleanPath(
-		QDir(pSession->sessionDir())
-			.absoluteFilePath(pCurveFile->filename())));
+	pCurveFile->setBaseDir(pSession->sessionDir());
 
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {

@@ -53,6 +53,12 @@ public:
 	qtractorCurveList *list() const
 		{ return m_pCurveList; }
 
+	// Base directory path.
+	void setBaseDir(const QString& sBaseDir)
+		{ m_sBaseDir = sBaseDir; }
+	const QString& baseDir() const
+		{ return m_sBaseDir; }
+
 	// Filename accessor.
 	void setFilename(const QString& sFilename)
 		{ m_sFilename = sFilename; }
@@ -101,6 +107,7 @@ private:
 
 	// Instance variables.
 	qtractorCurveList *m_pCurveList;
+	QString            m_sBaseDir;
 	QString            m_sFilename;
 	QList<Item *>      m_items;
 };
