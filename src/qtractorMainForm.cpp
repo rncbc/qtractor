@@ -2994,7 +2994,10 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveProcess(%d)", int(bOn));
 #endif
 
+	if (!bOn) pCurrentCurve->setCapture(false);
 	pCurrentCurve->setProcess(bOn);
+
+	m_pTracks->updateTrackList();
 }
 
 
@@ -3015,7 +3018,10 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveCapture(%d)", int(bOn));
 #endif
 
+	if (bOn) pCurrentCurve->setProcess(true);
 	pCurrentCurve->setCapture(bOn);
+
+	m_pTracks->updateTrackList();
 }
 
 
@@ -3038,6 +3044,7 @@ void qtractorMainForm::trackCurveClear (void)
 
 	pCurrentCurve->clear();
 	
+	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 }
 
@@ -3060,6 +3067,8 @@ void qtractorMainForm::trackCurveProcessAll ( bool bOn )
 #endif
 
 	pCurveList->setProcessAll(bOn);
+
+	m_pTracks->updateTrackList();
 }
 
 
@@ -3081,6 +3090,8 @@ void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
 #endif
 
 	pCurveList->setCaptureAll(bOn);
+
+	m_pTracks->updateTrackList();
 }
 
 
@@ -3103,6 +3114,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 
 	pCurveList->clearAll();
 	
+	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 }
 
@@ -5029,7 +5041,8 @@ void qtractorMainForm::updateCurveMenu (void)
 		pCurveList && pCurveList->isCaptureAll());
 	m_ui.trackCurveCaptureAllAction->setEnabled(bEnabled);
 
-	m_ui.trackCurveClearAllAction->setEnabled(pCurveList->count() > 0);
+	m_ui.trackCurveClearAllAction->setEnabled(
+		pCurveList && pCurveList->count() > 0);
 }
 
 

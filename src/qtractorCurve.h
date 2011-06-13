@@ -399,7 +399,7 @@ public:
 	}
 
 	bool isEnabledAll() const
-		{ return isCapture() && m_iCapture >= count(); }
+		{ return isEnabled() && m_iEnabled >= count(); }
 	bool isEnabled() const
 		{ return m_iEnabled > 0; }
 

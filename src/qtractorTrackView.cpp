@@ -449,7 +449,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	// Automation curve drawing...
 	x = rect.left()  - 1;
 	w = rect.width() + 2;
-
+	
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack && y2 < ch) {
 		y1  = y2;
@@ -466,23 +466,23 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorCurve::Cursor cursor(pCurve);
 			qtractorCurve::Node *pNode = cursor.seek(frame);
 			qtractorCurve::Mode mode = pCurve->mode();
-			int x2, x1 = trackRect.x();
-			int y2, y1 = h - int(cursor.scale(pNode, frame) * float(h));	
+			int xc2, xc1 = trackRect.x();
+			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h));	
 			QPainterPath path;
-			path.moveTo(x1, y1);
+			path.moveTo(xc1, yc1);
 			while (pNode && pNode->frame < iTrackEnd) {
-				x2 = pSession->pixelFromFrame(pNode->frame) - cx;
-				y2 = h - int(cursor.scale(pNode) * float(h));
+				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
+				yc2 = y2 - int(cursor.scale(pNode) * float(h));
 				pPainter->setPen(Qt::darkGray);
-				pPainter->drawRect(QRect(x2 - 4, y2 - 4, 8, 8));
+				pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 				switch (mode) {
 				case qtractorCurve::Hold:
-					path.lineTo(x2, y1);
-					path.lineTo(x2, y2);
-					y1 = y2;
+					path.lineTo(xc2, yc1);
+					path.lineTo(xc2, yc2);
+					yc1 = yc2;
 					break;
 				case qtractorCurve::Linear:
-					path.lineTo(x2, y2);
+					path.lineTo(xc2, yc2);
 					break;
 				default:
 					break;
@@ -490,22 +490,22 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				pNode = pNode->next();
 			}	
 			if (mode == qtractorCurve::Spline)	 {
-				for (x2 = x1 + 4; x2 < rect.right() + 4; x2 += 4) {
-					frame = pSession->frameFromPixel(cx + x2);
-					y2 = h - int(cursor.scale(frame) * float(h));
-					path.lineTo(x2, y2);
+				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 4) {
+					frame = pSession->frameFromPixel(cx + xc2);
+					yc2 = y2 - int(cursor.scale(frame) * float(h));
+					path.lineTo(xc2, yc2);
 				}
 			} else {
-				x2 = rect.right();
-				frame = pSession->frameFromPixel(cx + x2);
-				y2 = h - int(cursor.scale(frame) * float(h));
+				xc2 = rect.right();
+				frame = pSession->frameFromPixel(cx + xc2);
+				yc2 = y2 - int(cursor.scale(frame) * float(h));
 				switch (mode) {
 				case qtractorCurve::Hold:
-					path.lineTo(x2, y1);
-					path.lineTo(x2, y2);
+					path.lineTo(xc2, yc1);
+					path.lineTo(xc2, yc2);
 					break;
 				case qtractorCurve::Linear:
-					path.lineTo(x2, y2);
+					path.lineTo(xc2, yc2);
 					break;
 				default:
 					break;
@@ -518,10 +518,11 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			pPainter->strokePath(path, pen);	
 			// Fill semi-transparent area...
 			rgbCurve.setAlpha(20);
-			path.lineTo(x2, h);
-			path.lineTo(x1, h);
+			path.lineTo(xc2, y2);
+			path.lineTo(xc1, y2);
 			pPainter->fillPath(path, rgbCurve);
 		}
+		pTrack = pTrack->next();
 	}
 
 	// Draw edit-head line...

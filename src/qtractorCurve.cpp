@@ -587,8 +587,12 @@ void qtractorCurve::setEnabled ( bool bEnabled )
 	qDebug("qtractorCurve[%p]::setEnabled(%d)", this, int(bEnabled));
 #endif
 
+	bool bOldEnabled = (m_state & Enabled);
+
 	m_state = State(bEnabled ? (m_state | Enabled) : (m_state & ~Enabled));
-	m_pList->updateEnabled(m_state & Enabled);
+
+	if ((bEnabled && !bOldEnabled) || (!bEnabled && bOldEnabled))
+		m_pList->updateEnabled(bEnabled);
 }
 
 
@@ -598,8 +602,12 @@ void qtractorCurve::setCapture ( bool bCapture )
 	qDebug("qtractorCurve[%p]::setCapture(%d)", this, int(bCapture));
 #endif
 
+	bool bOldCapture = (m_state & Capture);
+
 	m_state = State(bCapture ? (m_state | Capture) : (m_state & ~Capture));
-	m_pList->updateCapture(m_state & Capture);
+
+	if ((bCapture && !bOldCapture) || (!bCapture && bOldCapture))
+		m_pList->updateCapture(bCapture);
 }
 
 
@@ -609,8 +617,12 @@ void qtractorCurve::setProcess ( bool bProcess )
 	qDebug("qtractorCurve[%p]::setProcess(%d)", this, int(bProcess));
 #endif
 
+	bool bOldProcess = (m_state & Process);
+
 	m_state = State(bProcess ? (m_state | Process) : (m_state & ~Process));
-	m_pList->updateProcess(m_state & Process);
+
+	if ((bProcess && !bOldProcess) || (!bProcess && bOldProcess))
+		m_pList->updateProcess(bProcess);
 }
 
 

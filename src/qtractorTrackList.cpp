@@ -40,6 +40,8 @@
 #include "qtractorMainForm.h"
 #include "qtractorMixer.h"
 
+#include "qtractorCurve.h"
+
 #include <QHeaderView>
 
 #include <QApplication>
@@ -58,6 +60,67 @@
 #define lighter(x)	light(x)
 #define darker(x)	dark(x)
 #endif
+
+
+//----------------------------------------------------------------------------
+// qtractorCurveButton -- Track automation curve menu button.
+
+class qtractorCurveButton : public QPushButton
+{
+
+public:
+
+	// Constructor.
+	qtractorCurveButton(qtractorTrack *pTrack, QWidget *pParent)
+		: QPushButton(pParent), m_pTrack(pTrack)
+		{ QPushButton::setFocusPolicy(Qt::NoFocus); }
+
+	// Button state updater.
+	void updateTrack()
+	{
+		qtractorCurveList *pCurveList = m_pTrack->curveList();
+		if (pCurveList && pCurveList->isEnabled()) {
+			QPalette pal;
+			if (pCurveList->isCapture()) {
+				pal.setColor(QPalette::Button, Qt::magenta);
+				pal.setColor(QPalette::ButtonText, Qt::darkRed);
+			}
+			else
+			if (pCurveList->isProcess()) {
+				pal.setColor(QPalette::Button, Qt::darkGreen);
+				pal.setColor(QPalette::ButtonText, Qt::green);
+			}
+			QPushButton::setPalette(pal);
+		}
+	}
+
+protected:
+
+	// Virtual trap to set current track
+	// before showing the menu...
+	bool hitButton(const QPoint& pos) const
+	{
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorTracks *pTracks = pMainForm->tracks();
+			if (pTracks) {
+				qtractorTrackList *pTrackList = pTracks->trackList();
+				if (pTrackList) {
+					int iTrack = pTrackList->trackRow(m_pTrack);
+					if (iTrack >= 0)
+						pTrackList->setCurrentTrackRow(iTrack);
+				}
+			}
+		}
+
+		return QPushButton::hitButton(pos);
+	}
+
+private:
+
+	// Instance variables.
+	qtractorTrack *m_pTrack;
+};
 
 
 //----------------------------------------------------------------------------
@@ -118,7 +181,18 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	m_pSoloButton   = new qtractorTrackButton(pTrack,
 		qtractorTrack::Solo, buttonSize, this);
 
+	m_pCurveButton = new qtractorCurveButton(pTrack, this);
+	m_pCurveButton->setFixedSize(QSize(32, 16));
+	m_pCurveButton->setFont(m_pRecordButton->font());
+	m_pCurveButton->setText("A");
+	m_pCurveButton->setToolTip(tr("Automation"));
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		m_pCurveButton->setMenu(pMainForm->trackCurveMenu());
+
 //	pHBoxLayout->addStretch();
+	pHBoxLayout->addWidget(m_pCurveButton);
 	pHBoxLayout->addWidget(m_pRecordButton);
 	pHBoxLayout->addWidget(m_pMuteButton);
 	pHBoxLayout->addWidget(m_pSoloButton);
@@ -348,6 +422,8 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			break;
 		}
 	}
+
+	widget->curveButton()->updateTrack();
 }
 
 

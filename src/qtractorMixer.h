@@ -35,13 +35,9 @@
 class qtractorMixerStrip;
 class qtractorMixerRack;
 class qtractorMixer;
-
-class qtractorPluginListView;
 class qtractorMeter;
 
-class qtractorMonitorButton;
-
-class qtractorMainForm;
+class qtractorPluginListView;
 
 class QHBoxLayout;
 class QVBoxLayout;
