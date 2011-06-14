@@ -82,8 +82,8 @@ public:
 		if (pCurveList && pCurveList->isEnabled()) {
 			QPalette pal;
 			if (pCurveList->isCapture()) {
-				pal.setColor(QPalette::Button, Qt::magenta);
-				pal.setColor(QPalette::ButtonText, Qt::darkRed);
+				pal.setColor(QPalette::Button, Qt::darkRed);
+				pal.setColor(QPalette::ButtonText, Qt::red);
 			}
 			else
 			if (pCurveList->isProcess()) {
@@ -97,20 +97,14 @@ public:
 protected:
 
 	// Virtual trap to set current track
-	// before showing the menu...
+	// before showing the automation menu...
 	bool hitButton(const QPoint& pos) const
 	{
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
 			qtractorTracks *pTracks = pMainForm->tracks();
-			if (pTracks) {
-				qtractorTrackList *pTrackList = pTracks->trackList();
-				if (pTrackList) {
-					int iTrack = pTrackList->trackRow(m_pTrack);
-					if (iTrack >= 0)
-						pTrackList->setCurrentTrackRow(iTrack);
-				}
-			}
+			if (pTracks)
+				pTracks->trackList()->setCurrentTrack(m_pTrack);
 		}
 
 		return QPushButton::hitButton(pos);
@@ -589,7 +583,12 @@ int qtractorTrackList::trackRowCount (void) const
 }
 
 
-// Retrieves current selected track reference.
+// Current selected track reference.
+void qtractorTrackList::setCurrentTrack ( qtractorTrack *pTrack )
+{
+	setCurrentTrackRow(trackRow(pTrack));
+}
+
 qtractorTrack *qtractorTrackList::currentTrack (void) const
 {
 	if (m_iCurrentTrack < 0 || m_iCurrentTrack >= m_items.count())
@@ -602,18 +601,19 @@ qtractorTrack *qtractorTrackList::currentTrack (void) const
 // Find the list view item from track pointer reference.
 void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 {
-	int iTrack = 0;
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
-		if (pTrack == pItem->track) {
+		if (pTrack == NULL || pTrack == pItem->track) {
 			// Force update the data...
 			pItem->update(this);
-			updateContents();
-			break;
+			// Specific bail out...
+			if (pTrack)
+				break;
 		}
-		++iTrack;
 	}
+
+	updateContents();
 }
 
 

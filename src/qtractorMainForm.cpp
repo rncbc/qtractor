@@ -2948,6 +2948,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 
 	pCurveList->setCurrentCurve(pCurve);
 
+	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 }
 
@@ -2973,6 +2974,7 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 	pCurrentCurve->setMode(mode);
 	pCurrentCurve->update();
 	
+	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 }
 
@@ -6158,11 +6160,11 @@ void qtractorMainForm::mixerSelectionChanged (void)
 
 	// Select sync to tracks...
 	if (m_pTracks && m_pMixer && m_pMixer->trackRack()) {
-		int iTrack = -1;
+		qtractorTrack *pTrack = NULL;
 		qtractorMixerStrip *pStrip = (m_pMixer->trackRack())->selectedStrip();
-		if (pStrip && pStrip->track())
-			iTrack = (m_pTracks->trackList())->trackRow(pStrip->track());
-		(m_pTracks->trackList())->setCurrentTrackRow(iTrack);
+		if (pStrip)
+			pTrack = pStrip->track();
+		(m_pTracks->trackList())->setCurrentTrack(pTrack);
 	}
 
 	stabilizeForm();
