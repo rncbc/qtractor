@@ -196,6 +196,9 @@ public:
 	void process_record(
 		unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Track special process automation executive.
+	void process_curve(unsigned long iFrame);
+
 	// Track paint method.
 	void drawTrack(QPainter *pPainter, const QRect& trackRect,
 		unsigned long iTrackStart, unsigned long iTrackEnd,

@@ -2982,7 +2982,10 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 
 	pCurrentCurve->setMode(mode);
 	pCurrentCurve->update();
-	
+
+	if (!m_pSession->isPlaying())
+		pTrack->process_curve(m_iPlayHead);
+
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 }
@@ -3008,6 +3011,9 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 	if (!bOn) pCurrentCurve->setCapture(false);
 	pCurrentCurve->setProcess(bOn);
 
+	if (bOn && !m_pSession->isPlaying())
+		pTrack->process_curve(m_iPlayHead);
+
 	m_pTracks->updateTrackList();
 }
 
@@ -3032,6 +3038,9 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 	if (bOn) pCurrentCurve->setProcess(true);
 	pCurrentCurve->setCapture(bOn);
 
+	if (bOn && !m_pSession->isPlaying())
+		pTrack->process_curve(m_iPlayHead);
+
 	m_pTracks->updateTrackList();
 }
 
@@ -3054,7 +3063,10 @@ void qtractorMainForm::trackCurveClear (void)
 #endif
 
 	pCurrentCurve->clear();
-	
+
+	if (!m_pSession->isPlaying())
+		pTrack->process_curve(m_iPlayHead);
+
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 }
@@ -3079,6 +3091,9 @@ void qtractorMainForm::trackCurveProcessAll ( bool bOn )
 
 	pCurveList->setProcessAll(bOn);
 
+	if (bOn && !m_pSession->isPlaying())
+		pTrack->process_curve(m_iPlayHead);
+
 	m_pTracks->updateTrackList();
 }
 
@@ -3100,7 +3115,11 @@ void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveCaptureAll(%d)", int(bOn));
 #endif
 
+	if (bOn) pCurveList->setProcessAll(true);
 	pCurveList->setCaptureAll(bOn);
+
+	if (bOn && !m_pSession->isPlaying())
+		pTrack->process_curve(m_iPlayHead);
 
 	m_pTracks->updateTrackList();
 }
@@ -4739,6 +4758,9 @@ void qtractorMainForm::updateSession (void)
 	// We're definitely clean...
 	qtractorSubject::resetQueue();
 
+	// Sync all process-enabled automation curves...
+	m_pSession->process_curve(m_iPlayHead);
+
 	// Ah, make it stand right.
 	if (m_pTracks)
 		m_pTracks->trackView()->setFocus();
@@ -6290,6 +6312,7 @@ void qtractorMainForm::contentsChanged (void)
 	m_pThumbView->updateContents();
 
 	++m_iDirtyCount;
+
 	selectionNotifySlot(NULL);
 }
 

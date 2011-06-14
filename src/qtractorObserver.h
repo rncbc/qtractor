@@ -39,7 +39,7 @@ class qtractorSubject
 public:
 
 	// Constructor.
-	qtractorSubject(float fValue = 0.0f);
+	qtractorSubject(float fValue = 0.0f, float fDefaultValue = 0.0f);
 
 	// Destructor.
 	~qtractorSubject();

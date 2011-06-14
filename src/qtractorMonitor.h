@@ -34,7 +34,7 @@ public:
 
 	// Constructor.
 	qtractorMonitor(float fGain = 1.0f, float fPanning = 0.0f)
-		: m_gain(fGain), m_panning(fPanning)
+		: m_gain(fGain, 1.0f), m_panning(fPanning, 0.0f)
 		{ m_panning.setMinValue(-1.0f); }
 
 	// Virtual destructor.
