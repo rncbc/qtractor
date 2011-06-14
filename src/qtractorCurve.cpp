@@ -177,7 +177,7 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 // Destructor.
 qtractorCurve::~qtractorCurve (void)
 {
-//	m_pList->removeCurve(this);
+	m_pList->removeCurve(this);
 
 	m_observer.setCurve(NULL);
 
@@ -199,8 +199,9 @@ void qtractorCurve::clear (void)
 	m_tail.d = 0.0f;
 
 	m_nodes.clear();
-
 	m_cursor.reset(NULL);
+
+	updateNodeEx(NULL);
 
 	m_iDirtyCount = 0;
 }

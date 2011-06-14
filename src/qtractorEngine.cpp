@@ -340,10 +340,11 @@ qtractorBus::qtractorBus ( qtractorEngine *pEngine,
 	m_sBusName = sBusName;
 	m_busMode  = busMode;
 
-	m_pMonitorSubject = new qtractorSubject(bMonitor ? 1.0f : 0.0f);
+	m_pMonitorSubject = new qtractorSubject();
 	m_pMonitorSubject->setToggled(true);
 
 	m_pMonitorObserver = new qtractorMidiControlObserver(m_pMonitorSubject);
+	m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 // Destructor.
