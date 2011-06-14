@@ -108,8 +108,10 @@ public:
 	// Filter value within legal bounds.
 	float safeValue (float fValue) const
 	{
-		if (m_bToggled)
-			fValue = (fValue > m_fMinValue ? m_fMaxValue : m_fMinValue);
+		if (m_bToggled) {
+			const float fThreshold = 0.5f * (m_fMinValue + m_fMaxValue);
+			fValue = (fValue > fThreshold ?  m_fMaxValue : m_fMinValue);
+		}
 		else 
 		if (fValue > m_fMaxValue)
 			fValue = m_fMaxValue;
