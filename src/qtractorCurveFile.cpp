@@ -200,6 +200,8 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	}
 
 	file.close();
+
+	clear();
 }
 
 

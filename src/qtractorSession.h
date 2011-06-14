@@ -317,6 +317,9 @@ public:
 	void process_record(
 		unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Session special process automation executive.
+	void process_curve(unsigned long iFrame);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorSessionDocument *pDocument, QDomElement *pElement);

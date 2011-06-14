@@ -1210,15 +1210,8 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 	seek(iFrame, true);
 
 	// Sync all track automation...
-	if (!bPlaying) {
-		qtractorTrack *pTrack = m_tracks.first();
-		while (pTrack) {
-			qtractorCurveList *pCurveList = pTrack->curveList();
-			if (pCurveList && pCurveList->isProcessEnabled())
-				pCurveList->process(iFrame);
-			pTrack = pTrack->next();
-		}
-	}
+	if (!bPlaying)
+		process_curve(iFrame);
 
 	setPlaying(bPlaying);
 	unlock();
@@ -1646,6 +1639,18 @@ void qtractorSession::process_record (
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Audio && pTrack->isRecord())
 			pTrack->process_record(iFrameStart, iFrameEnd);
+	}
+}
+
+
+// Session special process automation executive.
+void qtractorSession::process_curve ( unsigned long iFrame )
+{
+	// Now, for every track...
+	qtractorTrack *pTrack = m_tracks.first();
+	while (pTrack) {
+		pTrack->process_curve(iFrame);
+		pTrack = pTrack->next();
 	}
 }
 

@@ -996,6 +996,16 @@ void qtractorTrack::process_record (
 }
 
 
+// Track special process automation executive.
+void qtractorTrack::process_curve ( unsigned long iFrame )
+{
+	qtractorCurveList *pCurveList = curveList();
+	if (pCurveList && pCurveList->isProcessEnabled())
+		pCurveList->process(iFrame);
+}
+
+
+
 // Track paint method.
 void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 	unsigned long iTrackStart, unsigned long iTrackEnd, qtractorClip *pClip )
