@@ -517,7 +517,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			pen.setWidth(2);
 			pPainter->strokePath(path, pen);	
 			// Fill semi-transparent area...
-			rgbCurve.setAlpha(20);
+			rgbCurve.setAlpha(30);
 			path.lineTo(xc2, y2);
 			path.lineTo(xc1, y2);
 			pPainter->fillPath(path, rgbCurve);

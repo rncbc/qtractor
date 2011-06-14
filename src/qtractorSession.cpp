@@ -1209,6 +1209,17 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 
 	seek(iFrame, true);
 
+	// Sync all track automation...
+	if (!bPlaying) {
+		qtractorTrack *pTrack = m_tracks.first();
+		while (pTrack) {
+			qtractorCurveList *pCurveList = pTrack->curveList();
+			if (pCurveList && pCurveList->isProcessEnabled())
+				pCurveList->process(iFrame);
+			pTrack = pTrack->next();
+		}
+	}
+
 	setPlaying(bPlaying);
 	unlock();
 }
@@ -1613,7 +1624,7 @@ void qtractorSession::process ( qtractorSessionCursor *pSessionCursor,
 		// Track automation processing...
 		if (syncType == qtractorTrack::Audio) {
 			qtractorCurveList *pCurveList = pTrack->curveList();
-			if (pCurveList && pCurveList->isEnabled())
+			if (pCurveList && pCurveList->isProcessEnabled())
 				pCurveList->process(iFrameStart);
 		}
 		if (syncType == pTrack->trackType()) {

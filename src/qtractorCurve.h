@@ -354,7 +354,7 @@ public:
 		if (pCurve->isCapture())
 			updateCapture(false);
 
-		remove(pCurve);
+	//	remove(pCurve);
 	}
 
 	// Set common curve length procedure.
@@ -425,6 +425,8 @@ public:
 		{ return isCapture() && m_iCapture >= count(); }
 	bool isCapture() const
 		{ return m_iCapture > 0; }
+	bool isCaptureEnabled() const
+		{ return isEnabled() && isCapture(); }
 
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
@@ -459,6 +461,8 @@ public:
 		{ return isProcess() && m_iProcess >= count(); }
 	bool isProcess() const
 		{ return m_iProcess > 0; }
+	bool isProcessEnabled() const
+		{ return isEnabled() && isProcess(); }
 
 	// Whole list cleaner.
 	void clearAll()
