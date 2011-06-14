@@ -128,7 +128,8 @@ public:
 	int currentTrackRow() const;
 	int trackRowCount() const;
 
-	// Retrieve current selected track reference.
+	// Current selected track reference.
+	void setCurrentTrack(qtractorTrack *pTrack);
 	qtractorTrack *currentTrack() const;
 
 	// Update the list view item from track pointer reference.

@@ -1423,6 +1423,7 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 	qtractorCurveList *pCurveList = pTrack->curveList();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pCurveList && pMainForm && pMainForm->tracks()) {
+		pMainForm->tracks()->updateTrackList();
 		QObject::connect(
 			pCurveList->proxy(), SIGNAL(update()),
 			pMainForm->tracks(), SLOT(updateTrackView()));

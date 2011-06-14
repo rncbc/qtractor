@@ -2049,9 +2049,7 @@ void qtractorTracks::contentsChangeNotify (void)
 // Track-list update (current track only).
 void qtractorTracks::updateTrackList (void)
 {
-	qtractorTrack *pTrack = currentTrack();
-	if (pTrack)
-		m_pTrackList->updateTrack(pTrack);
+	m_pTrackList->updateTrack(currentTrack());
 }
 
 
