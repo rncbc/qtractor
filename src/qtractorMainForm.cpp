@@ -2950,6 +2950,9 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
+
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -2979,6 +2982,9 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -3006,6 +3012,9 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 		pTrack->process_curve(m_iPlayHead);
 
 	m_pTracks->updateTrackList();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -3033,6 +3042,9 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 		pTrack->process_curve(m_iPlayHead);
 
 	m_pTracks->updateTrackList();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -3060,6 +3072,9 @@ void qtractorMainForm::trackCurveClear (void)
 
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -3086,6 +3101,9 @@ void qtractorMainForm::trackCurveProcessAll ( bool bOn )
 		pTrack->process_curve(m_iPlayHead);
 
 	m_pTracks->updateTrackList();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -3113,6 +3131,9 @@ void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
 		pTrack->process_curve(m_iPlayHead);
 
 	m_pTracks->updateTrackList();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -3137,6 +3158,9 @@ void qtractorMainForm::trackCurveClearAll (void)
 	
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 

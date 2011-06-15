@@ -222,12 +222,12 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 		pNode = pPrev;
 	else
 	if (bSmooth) {
-		const float fThreshold
-			= 0.01f * (m_observer.maxValue() - m_observer.minValue());
 		float y0 = (pPrev ? pPrev->value : m_tail.value);
 		float y1 = fValue;
 		float y2 = (pNext ? pNext->value : m_tail.value);
 		if (m_mode == Hold || m_observer.isToggled()) {
+			const float fThreshold
+				= 0.01f * (m_observer.maxValue() - m_observer.minValue());
 			if (fabs(y1 - y0) < fThreshold)
 				return NULL;
 			if (fabs(y2 - y1) < fThreshold)
@@ -238,7 +238,7 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 			float x2 = (pNext ? float(pNext->frame) : m_tail.frame);
 			float s1 = (x1 > x0 ? (y1 - y0) / (x1 - x0) : 0.0f);
 			float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
-			if (fabs(y3 - y2) < fThreshold)
+			if (fabs(y3 - y2) < 0.5f * fabs(y3 - y1))
 				return NULL;
 			if (pPrev) {
 				pNode = pPrev;
@@ -251,7 +251,7 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 				y2 = fValue;
 				s1 = (y1 - y0) / (x1 - x0);
 				y3 = s1 * (x2 - x1) + y1;
-				if (fabs(y3 - y2) > fThreshold)
+				if (fabs(y3 - y2) > 0.5f * fabs(y3 - y1))
 					pNode = NULL;
 			}
 		}
