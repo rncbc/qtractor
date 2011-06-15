@@ -2950,9 +2950,6 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
-
-	++m_iDirtyCount;
-	stabilizeForm();
 }
 
 
