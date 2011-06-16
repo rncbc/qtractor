@@ -45,6 +45,7 @@ protected slots:
 
 	// MIDI controller/observer attachment (context menu) slot.
 	void midiControlActionSlot();
+	void midiControlMenuSlot(const QPoint& pos);
 
 protected:
 

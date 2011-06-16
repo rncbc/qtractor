@@ -809,37 +809,25 @@ void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
 
 
 // MIDI controller/observer attachment (context menu)
-//
-Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
-
 void qtractorPluginForm::addMidiControlAction (
 	QWidget *pWidget, qtractorMidiControlObserver *pMidiObserver )
 {
-	QAction *pAction = new QAction(
-		QIcon(":/images/itemControllers.png"),
-		tr("MIDI Controller..."), pWidget);
-
-	pAction->setData(
-		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
-
-	QObject::connect(pAction,
-		SIGNAL(triggered(bool)),
-		SLOT(midiControlActionSlot()));
-
-	pWidget->addAction(pAction);
-	pWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+	qtractorMidiControlObserverForm::addMidiControlAction(
+		this, pWidget, pMidiObserver);
 }
 
 
 void qtractorPluginForm::midiControlActionSlot (void)
 {
-	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction) {
-		qtractorMidiControlObserver *pMidiObserver
-			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
-		if (pMidiObserver)
-			qtractorMidiControlObserverForm::showInstance(pMidiObserver, this);
-	}
+	qtractorMidiControlObserverForm::midiControlAction(
+		this, qobject_cast<QAction *> (sender()));
+}
+
+
+void qtractorPluginForm::midiControlMenuSlot ( const QPoint& pos )
+{
+	qtractorMidiControlObserverForm::midiControlMenu(
+		qobject_cast<QWidget *> (sender()), pos);
 }
 
 

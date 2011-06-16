@@ -54,6 +54,12 @@ public:
 	// Process incoming controller event.
 	void processEvent(const qtractorCtlEvent& ctle);
 
+	// MIDI controller/observer attachment (context menu) activator.
+	static QAction *addMidiControlAction(QWidget *pParent,
+		QWidget *pWidget, qtractorMidiControlObserver *pMidiObserver);
+	static void midiControlAction(QWidget *pParent, QAction *pAction);
+	static void midiControlMenu(QWidget *pParent, const QPoint& pos);
+
 protected slots:
 
 	void activateControlType(const QString&);
@@ -77,6 +83,10 @@ protected:
 
 	// Pseudo-destructor.
 	void closeEvent(QCloseEvent *pCloseEvent);
+
+	// Add esquisite automation menu actions...
+	static void addMidiControlMenu(
+		QMenu *pMenu, qtractorMidiControlObserver *pMidiObserver);
 
 private:
 
