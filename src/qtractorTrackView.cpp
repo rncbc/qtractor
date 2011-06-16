@@ -40,8 +40,6 @@
 #include "qtractorMainForm.h"
 #include "qtractorThumbView.h"
 
-#include "qtractorCurve.h"
-
 #include <QToolButton>
 #include <QScrollBar>
 #include <QToolTip>
@@ -93,6 +91,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_bDropSpan = true;
 	m_bSnapGrid = true;
 	m_bToolTips = true;
+
+	m_bCurveEdit = false;
 
 	clear();
 
@@ -213,6 +213,8 @@ void qtractorTrackView::clear (void)
 	m_bDragSingleTrack = false;
 	m_iDragSingleTrackY = 0;
 	m_iDragSingleTrackHeight = 0;
+
+	m_pDragCurveNode = NULL;
 
 	qtractorScrollView::setContentsPos(0, 0);
 }
@@ -821,36 +823,34 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 
 
 // Get clip from given contents position.
-qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
-	bool bSelectTrack, QRect *pClipRect ) const
+qtractorClip *qtractorTrackView::clipAtTrack (
+	const QPoint& pos, QRect *pClipRect,
+	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
 {
-	qtractorTrackViewInfo tvi;
-	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
 	if (pTrack == NULL)
 		return NULL;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL || m_pSessionCursor == NULL)
 		return NULL;
 
-	if (m_pSessionCursor == NULL)
-		return NULL;
-
-	qtractorClip *pClip = m_pSessionCursor->clip(tvi.trackIndex);
+	qtractorClip *pClip = m_pSessionCursor->clip(pTrackViewInfo->trackIndex);
 	if (pClip == NULL)
 		pClip = pTrack->clips().first();
 	if (pClip == NULL)
 		return NULL;
 
 	qtractorClip *pClipAt = NULL;
-	while (pClip && pClip->clipStart() < tvi.trackEnd) {
+	while (pClip && pClip->clipStart() < pTrackViewInfo->trackEnd) {
 		int x = pSession->pixelFromFrame(pClip->clipStart());
 		int w = pSession->pixelFromFrame(pClip->clipLength());
 		if (pos.x() >= x && x + w >= pos.x()) {
 			pClipAt = pClip;
-			if (pClipRect)
+			if (pClipRect) {
 				pClipRect->setRect(
-					x, tvi.trackRect.y(), w, tvi.trackRect.height());
+					x, pTrackViewInfo->trackRect.y(),
+					w, pTrackViewInfo->trackRect.height());
+			}
 		}
 		pClip = pClip->next();
 	}
@@ -859,21 +859,82 @@ qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
 }
 
 
+qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
+	bool bSelectTrack, QRect *pClipRect ) const
+{
+	qtractorTrackViewInfo tvi;
+	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
+	return clipAtTrack(pos, pClipRect, pTrack, &tvi);
+}
+
+
+// Get automation curve node from given contents position.
+qtractorCurve::Node *qtractorTrackView::nodeAtTrack ( const QPoint& pos,
+	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+{
+	if (pTrack == NULL)
+		return NULL;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL || m_pSessionCursor == NULL)
+		return NULL;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return NULL;
+
+	qtractorCurve *pCurve = pCurveList->currentCurve();
+	if (pCurve == NULL)
+		return NULL;
+
+	int y0 = pTrackViewInfo->trackRect.y();
+	int w  = pTrackViewInfo->trackRect.width();
+	int h  = pTrackViewInfo->trackRect.height();
+	int cx = qtractorScrollView::contentsX();
+
+	unsigned long frame = pSession->frameFromPixel(cx);
+	qtractorCurve::Cursor cursor(pCurve);
+	qtractorCurve::Node *pNode = cursor.seek(frame);
+
+	while (pNode) {
+		int x = pSession->pixelFromFrame(pNode->frame);
+		if (x > cx + w) // No use....
+			break;
+		int y = y0 + h - int(cursor.scale(pNode) * float(h));
+		if (QRect(x - 4, y - 4, 8, 8).contains(pos))
+			return pNode;
+		// Test next...
+		pNode = pNode->next();
+	}
+
+	// Not found.
+	return NULL;
+}
+
+
+qtractorCurve::Node *qtractorTrackView::nodeAt ( const QPoint& pos ) const
+{
+	qtractorTrackViewInfo tvi;
+	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+	return nodeAtTrack(pos, pTrack, &tvi);
+}
+
+
 // Get contents visible rectangle from given track.
-bool qtractorTrackView::trackInfo ( qtractorTrack *pTrackPtr,
+bool qtractorTrackView::trackInfo ( qtractorTrack *pTrack,
 	qtractorTrackViewInfo *pTrackViewInfo ) const
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL || m_pSessionCursor == NULL)
 		return false;
 
 	int y1, y2 = 0;
 	int iTrack = 0;
-	qtractorTrack *pTrack = pSession->tracks().first();
-	while (pTrack) {
+	qtractorTrack *pTrackEx = pSession->tracks().first();
+	while (pTrackEx) {
 		y1  = y2;
-		y2 += pTrack->zoomHeight();
-		if (pTrack == pTrackPtr) {
+		y2 += pTrackEx->zoomHeight();
+		if (pTrackEx == pTrack) {
 			int x = qtractorScrollView::contentsX();
 			int w = qtractorScrollView::width();   	// View width, not contents.
 			pTrackViewInfo->trackIndex = iTrack;
@@ -883,7 +944,7 @@ bool qtractorTrackView::trackInfo ( qtractorTrack *pTrackPtr,
 			pTrackViewInfo->trackRect.setRect(x, y1 + 1, w, y2 - y1 - 2);
 			return true;
 		}
-		pTrack = pTrack->next();
+		pTrackEx = pTrackEx->next();
 		++iTrack;
 	}
 
@@ -895,11 +956,15 @@ bool qtractorTrackView::trackInfo ( qtractorTrack *pTrackPtr,
 bool qtractorTrackView::clipInfo ( qtractorClip *pClip,
 	QRect *pClipRect ) const
 {
-	qtractorTrackViewInfo tvi;
-	if (!trackInfo(pClip->track(), &tvi))
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
 		return false;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorTrackViewInfo tvi;
+	if (!trackInfo(pTrack, &tvi))
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
 	if (pSession) {
 		int x = pSession->pixelFromFrame(pClip->clipStart());
 		int w = pSession->pixelFromFrame(pClip->clipLength());
@@ -1400,6 +1465,29 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
+	// Automation curve editing modes...
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		if (m_dragCursor == DragCurveNode) {
+			qtractorTrackViewInfo tvi;
+			qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+			if (pTrack) {
+				qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
+				if (pNode) {
+					m_pDragCurveTrack = pTrack;
+					m_pDragCurveNode = pNode;
+				}
+			}
+		}
+		if (m_bCurveEdit)
+			dragCurveNodeMove(pos, !bModifier);
+		if (m_dragCursor == DragCurveNode) {
+			if (m_pDragCurveTrack && m_pDragCurveNode)
+				m_dragState = DragCurveNode;
+			qtractorScrollView::mousePressEvent(pMouseEvent);
+			return;
+		}
+	}
+
 	// Force null state.
 	m_pClipDrag = NULL;
 	resetDragState();
@@ -1418,7 +1506,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			m_posDrag   = pos;
 			m_pClipDrag = clipAt(m_posDrag, true, &m_rectDrag);
 			// Should it be selected(toggled)?
-			if (m_pClipDrag && !dragFadeResizeStart(pos)) {
+			if (m_pClipDrag && !dragMoveStart(pos)) {
 				// Show that we're about to something...
 				m_dragCursor = m_dragState;
 				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
@@ -1471,7 +1559,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragNone:
 		// Try to catch mouse over the fade or resize handles...
-		dragFadeResizeStart(pos);
+		dragMoveStart(pos);
 		break;
 	case DragMove:
 	case DragPaste:
@@ -1489,6 +1577,9 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragResizeRight:
 		dragResizeMove(pos);
 		break;
+	case DragCurveNode:
+		dragCurveNodeMove(pos, true);
+		break;
 	case DragSelect:
 		m_rectDrag.setBottomRight(pos);
 		moveRubberBand(&m_pRubberBand, m_rectDrag);
@@ -1500,7 +1591,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		if ((m_posDrag - pos).manhattanLength()
 			> QApplication::startDragDistance()) {
 			// Check if we're pointing in some fade-in/out or resize handle...
-			if (dragFadeResizeStart(m_posDrag)) {
+			if (dragMoveStart(m_posDrag)) {
 				m_dragState = m_dragCursor;
 				if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
 					// DragFade...
@@ -2335,14 +2426,26 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 
 
 // Check whether we're up to drag a clip fade-in/out or resize handle.
-bool qtractorTrackView::dragFadeResizeStart ( const QPoint& pos )
+bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorTrackViewInfo tvi;
+	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+	if (pTrack == NULL)
+		return false;
+
+	qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
+	if (pNode) {
+		m_dragCursor = DragCurveNode;
+		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+		return true;
+	}
+
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return false;
 
 	QRect rectClip;
-	qtractorClip *pClip = clipAt(pos, false, &rectClip);
+	qtractorClip *pClip = clipAtTrack(pos, &rectClip, pTrack, &tvi);
 	if (pClip) {
 		// Fade-in handle check...
 		m_rectHandle.setRect(rectClip.left() + 1
@@ -2573,6 +2676,60 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 }
 
 
+// Automation curve node drag-move methods.
+void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
+{
+	qtractorTrackViewInfo tvi;
+	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+	if (pTrack == NULL || (m_pDragCurveTrack && pTrack != m_pDragCurveTrack))
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return;
+
+	qtractorCurve *pCurve = pCurveList->currentCurve();
+	if (pCurve == NULL)
+		return;
+
+	qtractorCurve::Node *pNode = m_pDragCurveNode;
+
+	m_pDragCurveNode = NULL;
+
+	if (pNode)
+		pCurve->removeNode(pNode);
+
+	if (!bAddNode)
+		return;
+
+	if (m_pDragCurveTrack == NULL) {
+		m_pDragCurveTrack = pTrack;
+		m_dragCursor = DragCurveNode;
+		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+	}
+
+	qtractorScrollView::ensureVisible(pos.x(), pos.y());
+
+	unsigned long frame = pSession->frameFromPixel(pos.x());
+	int y = tvi.trackRect.y();
+	int h = tvi.trackRect.height();
+	float value = pCurve->valueFromScale(float(y + h - pos.y()) / float(h));
+	pNode = pCurve->addNode(frame, value);
+	if (pNode) {
+		m_pDragCurveNode = pNode;
+		QWidget *pViewport = qtractorScrollView::viewport();
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		QToolTip::showText(pViewport->mapToGlobal(contentsToViewport(pos)),
+			QString("(%1, %2)").arg(pTimeScale->textFromFrame(pNode->frame))
+				.arg(pNode->value), pViewport);
+	}
+}
+
+
 // Reset drag/select/move state.
 void qtractorTrackView::resetDragState (void)
 {
@@ -2608,6 +2765,10 @@ void qtractorTrackView::resetDragState (void)
 	m_bDragSingleTrack = false;
 	m_iDragSingleTrackY = 0;
 	m_iDragSingleTrackHeight = 0;
+
+	// Automation curve stuff reset.
+	m_pDragCurveTrack = NULL;
+	m_pDragCurveNode = NULL;
 
 	// If we were moving clips around,
 	// just hide selection, of course.
@@ -3583,6 +3744,18 @@ void qtractorTrackView::setToolTips ( bool bToolTips )
 bool qtractorTrackView::isToolTips (void) const
 {
 	return m_bToolTips;
+}
+
+
+// Automation curve node editing mode.
+void qtractorTrackView::setCurveEdit ( bool bCurveEdit )
+{
+	m_bCurveEdit = bCurveEdit;
+}
+
+bool qtractorTrackView::isCurveEdit (void) const
+{
+	return m_bCurveEdit;
 }
 
 

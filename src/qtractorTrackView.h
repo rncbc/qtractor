@@ -26,6 +26,7 @@
 #include "qtractorRubberBand.h"
 
 #include "qtractorTrack.h"
+#include "qtractorCurve.h"
 
 #include <QPixmap>
 
@@ -191,6 +192,10 @@ public:
 	void setToolTips(bool bToolTips);
 	bool isToolTips() const;
 
+	// Automation curve node editing mode.
+	void setCurveEdit(bool bCurveEdit);
+	bool isCurveEdit() const;
+
 protected:
 
 	// Resize event handler.
@@ -202,9 +207,18 @@ protected:
 	// Get track from given contents vertical position.
 	qtractorTrack *trackAt(const QPoint& pos, bool bSelectTrack = false,
 		qtractorTrackViewInfo *pTrackViewInfo = NULL) const;
+
 	// Get clip from given contents position.
 	qtractorClip *clipAt(const QPoint& pos, bool bSelectTrack = false,
 		QRect *pClipRect = NULL) const;
+	// Get clip from given contents position.
+	qtractorClip *clipAtTrack(const QPoint& pos, QRect *pClipRect,
+		qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo) const;
+
+	// Get automation curve node from given contents position.
+	qtractorCurve::Node *nodeAtTrack(const QPoint& pos,
+		qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo) const;
+	qtractorCurve::Node *nodeAt(const QPoint& pos) const;
 
 	// Get contents visible rectangle from given track.
 	bool trackInfo(qtractorTrack *pTrackPtr,
@@ -270,7 +284,7 @@ protected:
 		const QRect& rectDrag, int thick = 1) const;
 
 	// Clip fade-in/out handle and resize detection.
-	bool dragFadeResizeStart(const QPoint& pos);
+	bool dragMoveStart(const QPoint& pos);
 
 	// Clip fade-in/out handle drag-move methods.
 	void dragFadeMove(const QPoint& pos);
@@ -279,6 +293,9 @@ protected:
 	// Clip resize drag-move methods.
 	void dragResizeMove(const QPoint& pos);
 	void dragResizeDrop(const QPoint& pos, bool bTimeStretch = false);
+
+	// Automation curve node drag-move methods.
+	void dragCurveNodeMove(const QPoint& pos, bool bAddNode = false);
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -349,7 +366,7 @@ private:
 		DragNone = 0, DragStart, DragSelect,
 		DragMove, DragDrop, DragDropPaste, DragStep,
 		DragPaste, DragFadeIn, DragFadeOut,
-		DragResizeLeft, DragResizeRight
+		DragResizeLeft, DragResizeRight, DragCurveNode
 	} m_dragState, m_dragCursor;
 
 	qtractorClip *m_pClipDrag;
@@ -374,6 +391,9 @@ private:
 
 	// Floating tool-tips mode.
 	bool m_bToolTips;
+
+	// Automation curve node editing mode.
+	bool m_bCurveEdit;
 
 	// The local clipboard item.
 	struct ClipItem
@@ -434,6 +454,10 @@ private:
 	bool m_bDragSingleTrack;
 	int  m_iDragSingleTrackY;
 	int  m_iDragSingleTrackHeight;
+
+	// Automation curve editing node.
+	qtractorTrack       *m_pDragCurveTrack;
+	qtractorCurve::Node *m_pDragCurveNode;
 };
 
 
