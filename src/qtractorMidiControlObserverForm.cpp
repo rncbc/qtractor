@@ -32,6 +32,10 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorConnections.h"
 
+#include "qtractorCurve.h"
+#include "qtractorTracks.h"
+#include "qtractorTrackList.h"
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -504,6 +508,157 @@ void qtractorMidiControlObserverForm::stabilizeForm(void)
 		m_ui.InputsPushButton->setEnabled(false);
 		m_ui.OutputsPushButton->setEnabled(false);
 	}
+}
+
+
+// MIDI controller/observer attachment (context menu) activator.
+//
+Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
+
+QAction *qtractorMidiControlObserverForm::addMidiControlAction (
+	QWidget *pParent, QWidget *pWidget, qtractorMidiControlObserver *pMidiObserver )
+{
+	QAction *pAction = new QAction(
+		QIcon(":/images/itemControllers.png"),
+		tr("MIDI Controller..."), pWidget);
+
+	pAction->setData(
+		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
+
+	QObject::connect(
+		pAction, SIGNAL(triggered(bool)),
+		pParent, SLOT(midiControlActionSlot()));
+
+	pWidget->addAction(pAction);
+
+	pWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(
+		pWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
+		pParent, SLOT(midiControlMenuSlot(const QPoint&)));
+
+	return pAction;
+}
+
+
+void qtractorMidiControlObserverForm::midiControlAction (
+	QWidget *pParent, QAction *pAction )
+{
+	if (pAction == NULL)
+		return;
+
+	qtractorMidiControlObserver *pMidiObserver
+		= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+	if (pMidiObserver)
+		qtractorMidiControlObserverForm::showInstance(pMidiObserver, pParent);
+}
+
+
+void qtractorMidiControlObserverForm::midiControlMenu (
+	QWidget *pWidget, const QPoint& pos )
+{
+	if (pWidget == NULL)
+		return;
+
+	QAction *pMidiControlAction = NULL;
+	qtractorMidiControlObserver *pMidiObserver = NULL;
+	QListIterator<QAction *> iter(pWidget->actions());
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		pMidiObserver
+			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+		if (pMidiObserver) {
+			pMidiControlAction = pAction;
+			break;
+		}
+	}
+
+	if (pMidiControlAction == NULL)
+		return;
+	if (pMidiObserver == NULL)
+		return;
+
+	QMenu menu(pWidget);
+	menu.addAction(pMidiControlAction);
+
+	qtractorMidiControlObserverForm::addMidiControlMenu(&menu, pMidiObserver);
+
+	menu.exec(pWidget->mapToGlobal(pos));
+}
+
+
+// Add esquisite automation menu actions...
+void qtractorMidiControlObserverForm::addMidiControlMenu (
+	QMenu *pMenu, qtractorMidiControlObserver *pMidiObserver )
+{
+	qtractorSubject *pSubject = pMidiObserver->subject();
+	if (pSubject == NULL)
+		return;
+
+	qtractorCurve *pCurve = pSubject->curve();
+	if (pCurve == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pCurve->list();
+	if (pCurveList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	int iTrack = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		if (pTrack->curveList() == pCurveList)
+			break;
+		pTrack = pTrack->next();
+		++iTrack;
+	}
+
+	if (pTrack == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == NULL)
+		return;
+
+	if (pCurveList->currentCurve() != pCurve) {
+		pCurveList->setCurrentCurve(pCurve);
+		pTracks->updateTrackView();
+	}
+
+	pTracks->trackList()->setCurrentTrackRow(iTrack);
+
+	QAction *pAction;
+
+	pMenu->addSeparator();
+
+	pAction = pMenu->addAction(tr("&Play"));
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurve->isProcess());
+	pAction->setEnabled(pCurve->isEnabled());
+	QObject::connect(
+		pAction, SIGNAL(triggered(bool)),
+		pMainForm, SLOT(trackCurveProcess(bool)));
+
+	pAction = pMenu->addAction(tr("&Record"));
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurve->isCapture());
+	pAction->setEnabled(pCurve->isEnabled());
+	QObject::connect(
+		pAction, SIGNAL(triggered(bool)),
+		pMainForm, SLOT(trackCurveCapture(bool)));
+
+	pMenu->addSeparator();
+
+	pAction = pMenu->addAction(tr("&Clear"));
+	QObject::connect(
+		pAction, SIGNAL(triggered(bool)),
+		pMainForm, SLOT(trackCurveClear()));
 }
 
 

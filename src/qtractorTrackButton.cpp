@@ -45,40 +45,29 @@ qtractorMidiControlButton::qtractorMidiControlButton ( QWidget *pParent )
 
 
 // MIDI controller/observer attachment (context menu) activator.
-//
-Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
-
 void qtractorMidiControlButton::addMidiControlAction (
 	qtractorMidiControlObserver *pMidiObserver )
 {
 	if (m_pMidiControlAction)
-		QPushButton::removeAction(m_pMidiControlAction);
-		
-	m_pMidiControlAction = new QAction(
-		QIcon(":/images/itemControllers.png"),
-		tr("MIDI Controller..."), this);
+		removeAction(m_pMidiControlAction);
 
-	m_pMidiControlAction->setData(
-		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
-
-	QObject::connect(m_pMidiControlAction,
-		SIGNAL(triggered(bool)),
-		SLOT(midiControlActionSlot()));
-
-	QPushButton::addAction(m_pMidiControlAction);
-	QPushButton::setContextMenuPolicy(Qt::ActionsContextMenu);
+	m_pMidiControlAction
+		= qtractorMidiControlObserverForm::addMidiControlAction(
+			this, this, pMidiObserver);
 }
 
 
 void qtractorMidiControlButton::midiControlActionSlot (void)
 {
-	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction && pAction == m_pMidiControlAction) {
-		qtractorMidiControlObserver *pMidiObserver
-			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
-		if (pMidiObserver)
-			qtractorMidiControlObserverForm::showInstance(pMidiObserver, parentWidget());
-	}
+	qtractorMidiControlObserverForm::midiControlAction(
+		this, qobject_cast<QAction *> (sender()));
+}
+
+
+void qtractorMidiControlButton::midiControlMenuSlot ( const QPoint& pos )
+{
+	qtractorMidiControlObserverForm::midiControlMenu(
+		qobject_cast<QWidget *> (sender()), pos);
 }
 
 

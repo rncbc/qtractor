@@ -93,7 +93,9 @@ protected slots:
 	void sendsSlot();
 	void returnsSlot();
 	void activateSlot(bool bOn);
+
 	void midiControlActionSlot();
+	void midiControlMenuSlot(const QPoint& pos);
 
 	void updateParamSlot(unsigned long iIndex, float fValue, bool bUpdate);
 	void changeParamSlot(unsigned long iIndex);
