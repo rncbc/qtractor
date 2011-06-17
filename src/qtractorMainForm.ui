@@ -76,6 +76,8 @@
    <addaction name="editSelectModeRangeAction" />
    <addaction name="editSelectModeRectAction" />
    <addaction name="separator" />
+   <addaction name="editSelectModeCurveAction" />
+   <addaction name="separator" />
    <addaction name="editClipNewAction" />
    <addaction name="editClipEditAction" />
   </widget>
@@ -366,6 +368,8 @@
      <addaction name="editSelectModeClipAction" />
      <addaction name="editSelectModeRangeAction" />
      <addaction name="editSelectModeRectAction" />
+	 <addaction name="separator" />
+     <addaction name="editSelectModeCurveAction" />
     </widget>
     <widget class="QMenu" name="editSelectMenu" >
      <property name="title" >
@@ -753,6 +757,26 @@
    </property>
    <property name="statusTip" >
     <string>Rectangular selection mode</string>
+   </property>
+  </action>
+  <action name="editSelectModeCurveAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="qtractor.qrc" >:/images/editSelectCurve.png</iconset>
+   </property>
+   <property name="text" >
+	<string>&amp;Automation</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation</string>
+   </property>
+   <property name="statusTip" >
+	<string>Automation edit mode</string>
    </property>
   </action>
   <action name="editSelectAllAction" >

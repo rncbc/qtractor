@@ -470,12 +470,14 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorCurve::Mode mode = pCurve->mode();
 			int xc2, xc1 = trackRect.x();
 			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h));	
+			QColor rgbCurve(pCurve->color());
+			rgbCurve.setAlpha(120);
+			pPainter->setPen(rgbCurve);
 			QPainterPath path;
 			path.moveTo(xc1, yc1);
 			while (pNode && pNode->frame < iTrackEnd) {
 				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
 				yc2 = y2 - int(cursor.scale(pNode) * float(h));
-				pPainter->setPen(Qt::darkGray);
 				pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 				switch (mode) {
 				case qtractorCurve::Hold:
@@ -514,12 +516,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				}
 			}
 			// Draw line...
-			QColor rgbCurve(pCurve->color());
+			rgbCurve.setAlpha(240);
 			QPen pen(rgbCurve);
 			pen.setWidth(2);
 			pPainter->strokePath(path, pen);	
 			// Fill semi-transparent area...
-			rgbCurve.setAlpha(30);
+			rgbCurve.setAlpha(40);
 			path.lineTo(xc2, y2);
 			path.lineTo(xc1, y2);
 			pPainter->fillPath(path, rgbCurve);
@@ -1578,7 +1580,8 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		dragResizeMove(pos);
 		break;
 	case DragCurveNode:
-		dragCurveNodeMove(pos, true);
+		dragCurveNodeMove(pos, (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 		break;
 	case DragSelect:
 		m_rectDrag.setBottomRight(pos);
@@ -1681,6 +1684,10 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragResizeRight:
 			dragResizeDrop(pos, bModifier);
 			break;
+		case DragCurveNode:
+			// For immediate visual feedback...
+			m_pTracks->contentsChangeNotify();
+			break;
 		case DragStart:
 			// Deferred left-button positioning...
 			if (m_pClipDrag) {
@@ -1765,11 +1772,21 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			if (pHelpEvent) {
 				const QPoint& pos
 					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
-				qtractorClip *pClip = clipAt(pos);
-				if (pClip) {
-					QToolTip::showText(
-						pHelpEvent->globalPos(), pClip->toolTip(), pViewport);
-					return true;
+				qtractorTrackViewInfo tvi;
+				qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+				if (pTrack) {
+					qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
+					if (pNode) {
+						QToolTip::showText(pHelpEvent->globalPos(),
+							nodeToolTip(pNode, pTrack), pViewport);
+						return true;
+					}
+					qtractorClip *pClip = clipAtTrack(pos, NULL, pTrack, &tvi);
+					if (pClip) {
+						QToolTip::showText(pHelpEvent->globalPos(),
+							pClip->toolTip(), pViewport);
+						return true;
+					}
 				}
 			}
 		}
@@ -2722,11 +2739,44 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	if (pNode) {
 		m_pDragCurveNode = pNode;
 		QWidget *pViewport = qtractorScrollView::viewport();
-		qtractorTimeScale *pTimeScale = pSession->timeScale();
 		QToolTip::showText(pViewport->mapToGlobal(contentsToViewport(pos)),
-			QString("(%1, %2)").arg(pTimeScale->textFromFrame(pNode->frame))
-				.arg(pNode->value), pViewport);
+			nodeToolTip(m_pDragCurveNode, m_pDragCurveTrack), pViewport);
 	}
+}
+
+
+// Common tool-tip builder for automation nodes.
+QString qtractorTrackView::nodeToolTip (
+    qtractorCurve::Node *pNode, qtractorTrack *pTrack ) const
+{
+	QString sToolTip;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return sToolTip;
+
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return sToolTip;
+
+	sToolTip = QString("(%2, %3)")
+		.arg(pTimeScale->textFromFrame(pNode->frame))
+		.arg(pNode->value);
+	
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList) {
+		qtractorCurve *pCurve = pCurveList->currentCurve();
+		if (pCurve) {
+			qtractorSubject *pSubject = pCurve->subject();
+			if (pSubject) {
+				sToolTip = QString("%1\n%2")
+					.arg(pSubject->name())
+					.arg(sToolTip);
+			}
+		}
+	}
+
+	return sToolTip;
 }
 
 

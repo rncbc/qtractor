@@ -634,6 +634,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editSelectRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectRange()));
+	QObject::connect(m_ui.editSelectModeCurveAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectModeCurve(bool)));
 	QObject::connect(m_ui.editClipNewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipNew()));
@@ -1068,6 +1071,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	pTrackView->setDropSpan(m_pOptions->bTrackViewDropSpan);
 	pTrackView->setSnapGrid(m_pOptions->bTrackViewSnapGrid);
 	pTrackView->setToolTips(m_pOptions->bTrackViewToolTips);
+	pTrackView->setCurveEdit(m_pOptions->bTrackViewCurveEdit);
 
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
@@ -1076,6 +1080,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
 
 	// Initial decorations toggle state.
+	m_ui.editSelectModeCurveAction->setChecked(pOptions->bTrackViewCurveEdit);
+
 	m_ui.viewMenubarAction->setChecked(m_pOptions->bMenubar);
 	m_ui.viewStatusbarAction->setChecked(m_pOptions->bStatusbar);
 	m_ui.viewToolbarFileAction->setChecked(m_pOptions->bFileToolbar);
@@ -1300,6 +1306,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
 			m_pOptions->bTrackViewSnapGrid = m_ui.viewSnapGridAction->isChecked();
 			m_pOptions->bTrackViewToolTips = m_ui.viewToolTipsAction->isChecked();
+			m_pOptions->bTrackViewCurveEdit = m_ui.editSelectModeCurveAction->isChecked();
 			m_pOptions->bMetronome = m_ui.transportMetroAction->isChecked();
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
@@ -2217,6 +2224,14 @@ void qtractorMainForm::editSelectModeRect (void)
 		m_pOptions->iTrackViewSelectMode = 2;
 
 	stabilizeForm();
+}
+
+
+// Special automation curve node edit mode.
+void qtractorMainForm::editSelectModeCurve ( bool bOn )
+{
+	if (m_pTracks)
+		m_pTracks->trackView()->setCurveEdit(bOn);
 }
 
 

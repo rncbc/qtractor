@@ -192,6 +192,7 @@ public:
 	bool bTrackViewDropSpan;
 	bool bTrackViewSnapGrid;
 	bool bTrackViewToolTips;
+	bool bTrackViewCurveEdit;
 
 	// MIDI Editor options...
 	bool bMidiMenubar;
