@@ -76,6 +76,7 @@ public:
 		qtractorCurve::Mode mode;
 		bool             process;
 		bool             capture;
+		QColor           color;
 		qtractorSubject *subject;
 	};
 

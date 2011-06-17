@@ -180,6 +180,7 @@ public slots:
 	void trackCurveMode(QAction *pAction);
 	void trackCurveProcess(bool bOn);
 	void trackCurveCapture(bool bOn);
+	void trackCurveColor();
 	void trackCurveClear();
 	void trackCurveProcessAll(bool bOn);
 	void trackCurveCaptureAll(bool bOn);

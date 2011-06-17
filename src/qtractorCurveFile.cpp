@@ -84,6 +84,9 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 						else
 						if (eProp.tagName() == "capture")
 							pItem->capture = qtractorDocument::boolFromText(eProp.text());
+						else
+						if (eProp.tagName() == "color")
+							pItem->color.setNamedColor(eProp.text());
 					}
 					pItem->subject = NULL;
 					addItem(pItem);
@@ -145,6 +148,8 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 				pDocument->textFromBool(pItem->process), &eItem);
 			pDocument->saveTextElement("capture",
 				pDocument->textFromBool(pItem->capture), &eItem);
+			pDocument->saveTextElement("color",
+				pItem->color.name(), &eItem);
 			eItems.appendChild(eItem);
 		}
 		++iSeq;
@@ -196,6 +201,7 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 		}
 		pCurve->setProcess(pItem->process);
 		pCurve->setCapture(pItem->capture);
+		pCurve->setColor(pItem->color);
 		++iSeq;
 	}
 

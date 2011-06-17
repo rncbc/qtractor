@@ -228,6 +228,8 @@
 	 <addaction name="trackCurveSelectMenu" />
 	 <addaction name="separator" />
 	 <addaction name="trackCurveModeMenu" />
+	 <addaction name="trackCurveColorAction" />
+	 <addaction name="separator" />
 	 <addaction name="trackCurveProcessAction" />
 	 <addaction name="trackCurveCaptureAction" />
 	 <addaction name="separator" />
@@ -1471,6 +1473,20 @@
    </property>
    <property name="statusTip" >
     <string>Export tracks to MIDI file</string>
+   </property>
+  </action>
+  <action name="trackCurveColorAction" >
+   <property name="text" >
+	<string>C&amp;olor...</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation color</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation color</string>
+   </property>
+   <property name="statusTip" >
+	<string>Color curve automation</string>
    </property>
   </action>
   <action name="trackCurveProcessAction" >
