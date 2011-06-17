@@ -297,6 +297,9 @@ protected:
 	// Automation curve node drag-move methods.
 	void dragCurveNodeMove(const QPoint& pos, bool bAddNode = false);
 
+	// Common tool-tip builder for automation nodes.
+	QString nodeToolTip(qtractorCurve::Node *pNode, qtractorTrack *pTrack) const;
+
 	// Reset drag/select/move state.
 	void resetDragState();
 

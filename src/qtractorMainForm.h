@@ -129,6 +129,7 @@ public slots:
 	void editSelectModeClip();
 	void editSelectModeRange();
 	void editSelectModeRect();
+	void editSelectModeCurve(bool bOn);
 	void editSelectAll();
 	void editSelectNone();
 	void editSelectInvert();
