@@ -112,6 +112,8 @@
 #include <QClipboard>
 #include <QProgressBar>
 
+#include <QColorDialog>
+
 #include <QContextMenuEvent>
 #include <QDragEnterEvent>
 #include <QCloseEvent>
@@ -753,6 +755,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackCurveModeMenu,
 		SIGNAL(triggered(QAction *)),
 		SLOT(trackCurveMode(QAction *)));
+	QObject::connect(m_ui.trackCurveColorAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveColor()));
 	QObject::connect(m_ui.trackCurveProcessAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackCurveProcess(bool)));
@@ -3060,6 +3065,34 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 }
 
 
+// Track automation curve color picker.
+void qtractorMainForm::trackCurveColor (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
+	if (pCurrentCurve == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveColor()");
+#endif
+
+	QColor color = QColorDialog::getColor(pCurrentCurve->color(), this);
+	if (color.isValid())
+		pCurrentCurve->setColor(color);
+
+	m_pTracks->updateTrackView();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
+}
+
+
 // Track automation curve clear.
 void qtractorMainForm::trackCurveClear (void)
 {
@@ -5080,6 +5113,7 @@ void qtractorMainForm::updateCurveMenu (void)
 	if (bCurveEnabled)
 		bCurveEnabled = trackCurveModeMenu(m_ui.trackCurveModeMenu);
 	m_ui.trackCurveModeMenu->setEnabled(bCurveEnabled);
+	m_ui.trackCurveColorAction->setEnabled(bCurveEnabled);
 
 	m_ui.trackCurveProcessAction->setEnabled(bCurveEnabled);
 	m_ui.trackCurveProcessAction->setChecked(
