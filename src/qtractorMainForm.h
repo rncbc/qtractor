@@ -138,21 +138,6 @@ public slots:
 	void editSelectTrack();
 	void editSelectTrackRange();
 	void editSelectRange();
-	void editClipNew();
-	void editClipEdit();
-	void editClipSplit();
-	void editClipMerge();
-	void editClipNormalize();
-	void editClipToolsQuantize();
-	void editClipToolsTranspose();
-	void editClipToolsNormalize();
-	void editClipToolsRandomize();
-	void editClipToolsResize();
-	void editClipToolsRescale();
-	void editClipToolsTimeshift();
-	void editClipTempo();
-	void editClipImport();
-	void editClipExport();
 
 	void trackAdd();
 	void trackRemove();
@@ -186,6 +171,22 @@ public slots:
 	void trackCurveProcessAll(bool bOn);
 	void trackCurveCaptureAll(bool bOn);
 	void trackCurveClearAll();
+
+	void clipNew();
+	void clipEdit();
+	void clipSplit();
+	void clipMerge();
+	void clipNormalize();
+	void clipToolsQuantize();
+	void clipToolsTranspose();
+	void clipToolsNormalize();
+	void clipToolsRandomize();
+	void clipToolsResize();
+	void clipToolsRescale();
+	void clipToolsTimeshift();
+	void clipTempo();
+	void clipImport();
+	void clipExport();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);
@@ -257,6 +258,7 @@ public slots:
 	void midiClkNotify(float fTempo);
 
 	void updateRecentFilesMenu();
+	void updateTrackMenu();
 	void updateCurveMenu();
 	void updateClipMenu();
 	void updateExportMenu();

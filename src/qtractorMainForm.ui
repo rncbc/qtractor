@@ -78,8 +78,8 @@
    <addaction name="separator" />
    <addaction name="editSelectModeCurveAction" />
    <addaction name="separator" />
-   <addaction name="editClipNewAction" />
-   <addaction name="editClipEditAction" />
+   <addaction name="clipNewAction" />
+   <addaction name="clipEditAction" />
   </widget>
   <widget class="QToolBar" name="trackToolbar" >
    <property name="orientation" >
@@ -385,35 +385,35 @@
      <addaction name="editSelectTrackRangeAction" />
      <addaction name="editSelectRangeAction" />
     </widget>
-    <widget class="QMenu" name="editClipToolsMenu" >
+	<widget class="QMenu" name="clipToolsMenu" >
      <property name="title" >
       <string>T&amp;ools</string>
      </property>
-     <addaction name="editClipToolsQuantizeAction" />
-     <addaction name="editClipToolsTransposeAction" />
-     <addaction name="editClipToolsNormalizeAction" />
-     <addaction name="editClipToolsRandomizeAction" />
-     <addaction name="editClipToolsResizeAction" />
-     <addaction name="editClipToolsRescaleAction" />
-     <addaction name="editClipToolsTimeshiftAction" />
+	 <addaction name="clipToolsQuantizeAction" />
+	 <addaction name="clipToolsTransposeAction" />
+	 <addaction name="clipToolsNormalizeAction" />
+	 <addaction name="clipToolsRandomizeAction" />
+	 <addaction name="clipToolsResizeAction" />
+	 <addaction name="clipToolsRescaleAction" />
+	 <addaction name="clipToolsTimeshiftAction" />
     </widget>
-    <widget class="QMenu" name="editClipMenu" >
+	<widget class="QMenu" name="clipMenu" >
      <property name="title" >
       <string>Cl&amp;ip</string>
      </property>
-     <addaction name="editClipNewAction" />
-     <addaction name="editClipEditAction" />
+	 <addaction name="clipNewAction" />
+	 <addaction name="clipEditAction" />
      <addaction name="separator" />
-     <addaction name="editClipSplitAction" />
-     <addaction name="editClipMergeAction" />
-     <addaction name="editClipNormalizeAction" />
+	 <addaction name="clipSplitAction" />
+	 <addaction name="clipMergeAction" />
+	 <addaction name="clipNormalizeAction" />
      <addaction name="separator" />
-	 <addaction name="editClipTempoAction" />
+	 <addaction name="clipTempoAction" />
      <addaction name="separator" />
-     <addaction name="editClipImportAction" />
-     <addaction name="editClipExportAction" />
+	 <addaction name="clipImportAction" />
+	 <addaction name="clipExportAction" />
      <addaction name="separator" />
-     <addaction name="editClipToolsMenu" />
+	 <addaction name="clipToolsMenu" />
     </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
@@ -428,7 +428,8 @@
     <addaction name="editSelectModeMenu" />
     <addaction name="editSelectMenu" />
     <addaction name="separator" />
-    <addaction name="editClipMenu" />
+	<addaction name="trackMenu" />
+	<addaction name="clipMenu" />
    </widget>
    <widget class="QMenu" name="fileMenu" >
     <property name="title" >
@@ -454,6 +455,7 @@
    <addaction name="fileMenu" />
    <addaction name="editMenu" />
    <addaction name="trackMenu" />
+   <addaction name="clipMenu" />
    <addaction name="viewMenu" />
    <addaction name="transportMenu" />
    <addaction name="separator" />
@@ -883,9 +885,9 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="editClipNewAction" >
+  <action name="clipNewAction" >
    <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editClipNew.png</iconset>
+	<iconset resource="qtractor.qrc" >:/images/clipNew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New...</string>
@@ -900,9 +902,9 @@
     <string>Create new clip</string>
    </property>
   </action>
-  <action name="editClipEditAction" >
+  <action name="clipEditAction" >
    <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editClip.png</iconset>
+	<iconset resource="qtractor.qrc" >:/images/clipEdit.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Edit...</string>
@@ -920,7 +922,7 @@
     <string>F4</string>
    </property>
   </action>
-  <action name="editClipSplitAction" >
+  <action name="clipSplitAction" >
    <property name="text" >
     <string>&amp;Split</string>
    </property>
@@ -934,7 +936,7 @@
     <string>Split current clip at playhead</string>
    </property>
   </action>
-  <action name="editClipMergeAction" >
+  <action name="clipMergeAction" >
    <property name="text" >
     <string>&amp;Merge...</string>
    </property>
@@ -948,7 +950,7 @@
     <string>Merge selected clips</string>
    </property>
   </action>
-  <action name="editClipNormalizeAction" >
+  <action name="clipNormalizeAction" >
    <property name="text" >
 	   <string>N&amp;ormalize</string>
    </property>
@@ -962,7 +964,7 @@
     <string>Normalize current clip (gain/volume)</string>
    </property>
   </action>
-  <action name="editClipToolsQuantizeAction" >
+  <action name="clipToolsQuantizeAction" >
    <property name="text" >
     <string>&amp;Quantize...</string>
    </property>
@@ -976,7 +978,7 @@
     <string>Quantize current MIDI clip events</string>
    </property>
   </action>
-  <action name="editClipToolsTransposeAction" >
+  <action name="clipToolsTransposeAction" >
    <property name="text" >
     <string>&amp;Transpose...</string>
    </property>
@@ -990,7 +992,7 @@
     <string>Transpose current MIDI clip events</string>
    </property>
   </action>
-  <action name="editClipToolsNormalizeAction" >
+  <action name="clipToolsNormalizeAction" >
    <property name="text" >
     <string>&amp;Normalize...</string>
    </property>
@@ -1004,7 +1006,7 @@
     <string>Normalize current MIDI clip events</string>
    </property>
   </action>
-  <action name="editClipToolsRandomizeAction" >
+  <action name="clipToolsRandomizeAction" >
    <property name="text" >
     <string>&amp;Randomize...</string>
    </property>
@@ -1018,7 +1020,7 @@
     <string>Randomize current MIDI clip events</string>
    </property>
   </action>
-  <action name="editClipToolsResizeAction" >
+  <action name="clipToolsResizeAction" >
    <property name="text" >
     <string>Resi&amp;ze...</string>
    </property>
@@ -1032,7 +1034,7 @@
     <string>Resize current MIDI clip events</string>
    </property>
   </action>
-  <action name="editClipToolsRescaleAction" >
+  <action name="clipToolsRescaleAction" >
    <property name="text" >
     <string>Re&amp;scale...</string>
    </property>
@@ -1046,7 +1048,7 @@
     <string>Rescale current MIDI clip events</string>
    </property>
   </action>
-  <action name="editClipToolsTimeshiftAction" >
+  <action name="clipToolsTimeshiftAction" >
    <property name="text" >
     <string>T&amp;imeshift...</string>
    </property>
@@ -1060,7 +1062,7 @@
     <string>Timeshift current MIDI clip events</string>
    </property>
   </action>
-  <action name="editClipTempoAction" >
+  <action name="clipTempoAction" >
    <property name="text" >
     <string>&amp;Tempo...</string>
    </property>
@@ -1077,7 +1079,7 @@
     <string>F7</string>
    </property>
   </action>
-  <action name="editClipImportAction" >
+  <action name="clipImportAction" >
    <property name="text" >
     <string>&amp;Import...</string>
    </property>
@@ -1091,7 +1093,7 @@
     <string>Import clip from file(s)</string>
    </property>
   </action>
-  <action name="editClipExportAction" >
+  <action name="clipExportAction" >
    <property name="text" >
     <string>E&amp;xport...</string>
    </property>

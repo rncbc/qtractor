@@ -3,8 +3,8 @@
 		<file>images/qtractor.png</file>
 		<file>images/qtractorMidiEditor.png</file>
 		<file>images/qtractorTracks.png</file>
-		<file>images/editClip.png</file>
-		<file>images/editClipNew.png</file>
+		<file>images/clipEdit.png</file>
+		<file>images/clipNew.png</file>
 		<file>images/editCopy.png</file>
 		<file>images/editCut.png</file>
 		<file>images/editDelete.png</file>
