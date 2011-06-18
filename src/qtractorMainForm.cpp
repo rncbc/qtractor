@@ -4539,9 +4539,12 @@ void qtractorMainForm::stabilizeForm (void)
 	unsigned long iSessionLength = m_pSession->sessionLength();
 
 	qtractorTrack *pTrack = NULL;
+	qtractorClip  *pClip  = NULL;
 	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
-	if (bTracks)
+	if (bTracks) {
 		pTrack = m_pTracks->currentTrack();
+		pClip  = m_pTracks->currentClip();
+	}
 
 	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
@@ -4569,6 +4572,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+
+	m_ui.clipNewAction->setEnabled(bEnabled);
+	m_ui.clipEditAction->setEnabled(pClip != NULL);
 
 	// Update view menu state...
 	m_ui.viewFilesAction->setChecked(
@@ -5324,15 +5330,15 @@ void qtractorMainForm::updateClipMenu (void)
 		pClip  = m_pTracks->currentClip();
 	}
 
-	bool bEnabled    = (pTrack != NULL);
+//	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 
 	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
 		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
 
-	m_ui.clipNewAction->setEnabled(bEnabled);
-	m_ui.clipEditAction->setEnabled(pClip != NULL);
+//	m_ui.clipNewAction->setEnabled(bEnabled);
+//	m_ui.clipEditAction->setEnabled(pClip != NULL);
 	m_ui.clipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
@@ -6395,6 +6401,17 @@ void qtractorMainForm::contentsChanged (void)
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	m_pThumbView->updateContents();
+
+	dirtyNotifySlot();
+}
+
+
+// Tracks view contents dirty up slot.
+void qtractorMainForm::dirtyNotifySlot (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMainForm::dirtyNotifySlot()");
+#endif
 
 	++m_iDirtyCount;
 

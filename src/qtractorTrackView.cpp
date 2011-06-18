@@ -341,8 +341,6 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	if (pSession == NULL)
 		return;
 
-	pPainter->setRenderHint(QPainter::Antialiasing);
-
 	int cx = qtractorScrollView::contentsX();
 	int cy = qtractorScrollView::contentsY();
 	int ch = qtractorScrollView::contentsHeight();
@@ -451,6 +449,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 	
 	// Automation curve drawing...
+	pPainter->setRenderHint(QPainter::Antialiasing, true);
+
 	x = rect.left()  - 1;
 	w = rect.width() + 2;
 	
@@ -473,8 +473,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			int xc2, xc1 = trackRect.x();
 			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h));	
 			QColor rgbCurve(pCurve->color());
-			rgbCurve.setAlpha(120);
-			pPainter->setPen(rgbCurve);
+			QPen pen(rgbCurve);
+			pPainter->setPen(pen);
 			QPainterPath path;
 			path.moveTo(xc1, yc1);
 			while (pNode && pNode->frame < iTrackEnd) {
@@ -496,7 +496,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				pNode = pNode->next();
 			}	
 			if (mode == qtractorCurve::Spline)	 {
-				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 4) {
+				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 8) {
 					frame = pSession->frameFromPixel(cx + xc2);
 					yc2 = y2 - int(cursor.scale(frame) * float(h));
 					path.lineTo(xc2, yc2);
@@ -518,18 +518,18 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				}
 			}
 			// Draw line...
-			rgbCurve.setAlpha(240);
-			QPen pen(rgbCurve);
 			pen.setWidth(2);
 			pPainter->strokePath(path, pen);	
 			// Fill semi-transparent area...
-			rgbCurve.setAlpha(40);
+			rgbCurve.setAlpha(60);
 			path.lineTo(xc2, y2);
 			path.lineTo(xc1, y2);
 			pPainter->fillPath(path, rgbCurve);
 		}
 		pTrack = pTrack->next();
 	}
+
+	pPainter->setRenderHint(QPainter::Antialiasing, false);
 
 	// Draw edit-head line...
 //	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
@@ -1688,7 +1688,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragCurveNode:
 			// For immediate visual feedback...
-			m_pTracks->contentsChangeNotify();
+			m_pTracks->dirtyChangeNotify();
 			break;
 		case DragStart:
 			// Deferred left-button positioning...
