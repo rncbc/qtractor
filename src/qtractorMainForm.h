@@ -49,6 +49,8 @@ class qtractorTempoCursor;
 class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 
+class qtractorSubject;
+
 class QLabel;
 class QComboBox;
 class QProgressBar;
@@ -346,6 +348,8 @@ protected:
 
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 
+	void trackCurveSelectMenuAction(QMenu *pMenu,
+		qtractorSubject *pSubject, qtractorSubject *pCurrentSubject) const;
 	bool trackCurveSelectMenu(QMenu *pMenu) const;
 	bool trackCurveModeMenu(QMenu *pMenu) const;
 

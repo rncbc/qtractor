@@ -341,6 +341,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	if (pSession == NULL)
 		return;
 
+	pPainter->setRenderHint(QPainter::Antialiasing);
+
 	int cx = qtractorScrollView::contentsX();
 	int cy = qtractorScrollView::contentsY();
 	int ch = qtractorScrollView::contentsHeight();

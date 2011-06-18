@@ -634,21 +634,34 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pTracks->trackList()->setCurrentTrackRow(iTrack);
 
 	QAction *pAction;
+	const QSize sizes(16, 16);
 
 	pMenu->addSeparator();
 
-	pAction = pMenu->addAction(tr("&Play"));
+	QIcon iconProcess;
+	iconProcess.addFile(":/images/trackCurveEnabled.png",
+		sizes, QIcon::Normal, QIcon::Off);
+	iconProcess.addFile(":/images/trackCurveProcess.png",
+		sizes, QIcon::Normal, QIcon::On);
+
+	pAction = pMenu->addAction(iconProcess, tr("&Play"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve->isProcess());
-	pAction->setEnabled(pCurve->isEnabled());
+//	pAction->setEnabled(pCurve->isEnabled());
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveProcess(bool)));
 
-	pAction = pMenu->addAction(tr("&Record"));
+	QIcon iconCapture;
+	iconCapture.addFile(":/images/trackCurveEnabled.png",
+		sizes, QIcon::Normal, QIcon::Off);
+	iconCapture.addFile(":/images/trackCurveCapture.png",
+		sizes, QIcon::Normal, QIcon::On);
+
+	pAction = pMenu->addAction(iconCapture, tr("&Record"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve->isCapture());
-	pAction->setEnabled(pCurve->isEnabled());
+//	pAction->setEnabled(pCurve->isEnabled());
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveCapture(bool)));

@@ -67,6 +67,10 @@
 		<file>images/itemRpns.png</file>
 		<file>images/trackAdd.png</file>
 		<file>images/trackAudio.png</file>
+		<file>images/trackCurveCapture.png</file>
+		<file>images/trackCurveEnabled.png</file>
+		<file>images/trackCurveNone.png</file>
+		<file>images/trackCurveProcess.png</file>
 		<file>images/trackMidi.png</file>
 		<file>images/trackMidiOff.png</file>
 		<file>images/trackMidiOn.png</file>
