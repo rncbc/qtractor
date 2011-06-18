@@ -453,7 +453,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 
 	x = rect.left()  - 1;
 	w = rect.width() + 2;
-	
+
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack && y2 < ch) {
 		y1  = y2;
@@ -471,7 +471,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorCurve::Node *pNode = cursor.seek(frame);
 			qtractorCurve::Mode mode = pCurve->mode();
 			int xc2, xc1 = trackRect.x();
-			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h));	
+			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h)) - cy;
 			QColor rgbCurve(pCurve->color());
 			QPen pen(rgbCurve);
 			pPainter->setPen(pen);
@@ -479,7 +479,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			path.moveTo(xc1, yc1);
 			while (pNode && pNode->frame < iTrackEnd) {
 				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
-				yc2 = y2 - int(cursor.scale(pNode) * float(h));
+				yc2 = y2 - int(cursor.scale(pNode) * float(h)) - cy;
 				pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 				switch (mode) {
 				case qtractorCurve::Hold:
@@ -498,13 +498,13 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			if (mode == qtractorCurve::Spline)	 {
 				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 8) {
 					frame = pSession->frameFromPixel(cx + xc2);
-					yc2 = y2 - int(cursor.scale(frame) * float(h));
+					yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
 					path.lineTo(xc2, yc2);
 				}
 			} else {
 				xc2 = rect.right();
 				frame = pSession->frameFromPixel(cx + xc2);
-				yc2 = y2 - int(cursor.scale(frame) * float(h));
+				yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
 				switch (mode) {
 				case qtractorCurve::Hold:
 					path.lineTo(xc2, yc1);
@@ -522,8 +522,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			pPainter->strokePath(path, pen);	
 			// Fill semi-transparent area...
 			rgbCurve.setAlpha(60);
-			path.lineTo(xc2, y2);
-			path.lineTo(xc1, y2);
+			path.lineTo(xc2, y2 - cy);
+			path.lineTo(xc1, y2 - cy);
 			pPainter->fillPath(path, rgbCurve);
 		}
 		pTrack = pTrack->next();

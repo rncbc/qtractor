@@ -438,23 +438,26 @@ void qtractorCurve::setLength ( unsigned long iLength )
 // Intra-curve frame positioning value seeker.
 qtractorCurve::Node *qtractorCurve::Cursor::seek ( unsigned long iFrame )
 {
+	Node *pNode = m_pNode;
+
 	if (iFrame < m_iFrame) {
 		// Seek backward...
-		if (m_pNode == NULL)
-			m_pNode = m_pCurve->nodes().last();
-		while (m_pNode && m_pNode->prev() && (m_pNode->prev())->frame > iFrame)
-			m_pNode = m_pNode->prev();
+		if (pNode == NULL)
+			pNode = m_pCurve->nodes().last();
+		while (pNode && pNode->prev() && (pNode->prev())->frame > iFrame)
+			pNode = pNode->prev();
 	} else {
 		// Seek forward...
-		if (m_pNode == NULL)
-			m_pNode = m_pCurve->nodes().first();
-		while (m_pNode && m_pNode->frame < iFrame)
-			m_pNode = m_pNode->next();
+		if (pNode == NULL)
+			pNode = m_pCurve->nodes().first();
+		while (pNode && pNode->frame < iFrame)
+			pNode = pNode->next();
 	}
 
 	m_iFrame = iFrame;
+	m_pNode = pNode;
 
-	return (m_pNode && m_pNode->frame >= m_iFrame ? m_pNode : NULL);
+	return (pNode && pNode->frame >= iFrame ? pNode : NULL);
 }
 
 
