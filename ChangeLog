@@ -5,7 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
-- TYOQA: the underground sources are emerging...
+- TYOQA! the underground sources have emerged:...
+  after years in the making, track automation, or
+  dynamic curves as some like to call, is finally
+  a reality, tricky but real ;) (EXPERIMENTAL)
 
 - Debugging stacktrace now applies to all working
   threads.
