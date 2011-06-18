@@ -279,6 +279,7 @@ public slots:
 	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void updateNotifySlot(bool bRefresh);
+	void dirtyNotifySlot();
 
 	void transportTimeChanged(unsigned long iPlayHead);
 	void transportTimeFinished();

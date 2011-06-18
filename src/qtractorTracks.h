@@ -115,6 +115,7 @@ public:
 	// Simple main-form redirectors.
 	void selectionChangeNotify();
 	void contentsChangeNotify();
+	void dirtyChangeNotify();
 
 	// Overall contents reset.
 	void clear();

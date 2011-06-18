@@ -2037,12 +2037,19 @@ void qtractorTracks::selectionChangeNotify (void)
 }
 
 
-// Simple main-form dirty-flag redirector.
+// Simple main-form dirty-flag redirectors.
 void qtractorTracks::contentsChangeNotify (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->changeNotifySlot(NULL);
+}
+
+void qtractorTracks::dirtyChangeNotify (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->dirtyNotifySlot();
 }
 
 
