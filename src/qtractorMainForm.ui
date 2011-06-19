@@ -1494,8 +1494,9 @@
   <action name="trackCurveProcessAction" >
    <property name="icon" >
 	<iconset resource="qtractor.qrc" >
-	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
 	 <normalon>:/images/trackCurveProcess.png</normalon>
+	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
+	 <disabledoff>:/images/trackCurveNone.png</disabledoff>
 	</iconset>
    </property>
    <property name="checkable" >
@@ -1517,8 +1518,9 @@
   <action name="trackCurveCaptureAction" >
    <property name="icon" >
 	<iconset resource="qtractor.qrc" >
-	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
 	 <normalon>:/images/trackCurveCapture.png</normalon>
+	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
+	 <disabledoff>:/images/trackCurveNone.png</disabledoff>
 	</iconset>
    </property>
    <property name="checkable" >
@@ -1554,8 +1556,9 @@
   <action name="trackCurveProcessAllAction" >
    <property name="icon" >
 	<iconset resource="qtractor.qrc" >
-	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
 	 <normalon>:/images/trackCurveProcess.png</normalon>
+	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
+	 <disabledoff>:/images/trackCurveNone.png</disabledoff>
 	</iconset>
    </property>
    <property name="checkable" >
@@ -1577,8 +1580,9 @@
   <action name="trackCurveCaptureAllAction" >
    <property name="icon" >
 	<iconset resource="qtractor.qrc" >
-	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
 	 <normalon>:/images/trackCurveCapture.png</normalon>
+	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
+	 <disabledoff>:/images/trackCurveNone.png</disabledoff>
 	</iconset>
    </property>
    <property name="checkable" >
