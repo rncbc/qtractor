@@ -44,7 +44,7 @@ public:
 
 	// Constructor.
 	qtractorCurveFile(qtractorCurveList *pCurveList)
-		: m_pCurveList(pCurveList) {}
+		: m_pCurveList(pCurveList), m_iCurrentCurve(-1) {}
 
 	// Destructor.	
 	~qtractorCurveFile() { clear(); }
@@ -59,11 +59,17 @@ public:
 	const QString& baseDir() const
 		{ return m_sBaseDir; }
 
-	// Filename accessor.
+	// Filename accessors.
 	void setFilename(const QString& sFilename)
 		{ m_sFilename = sFilename; }
 	const QString& filename() const
 		{ return m_sFilename; }
+
+	// Current curve index accesors.
+	void setCurrentCurve(int iCurrentCurve)
+		{ m_iCurrentCurve = iCurrentCurve; }
+	int currentCurve() const
+		{ return m_iCurrentCurve; }
 
 	// Curve item escriptor.
 	struct Item
@@ -92,6 +98,8 @@ public:
 	{
 		qDeleteAll(m_items);
 		m_items.clear();
+
+		m_iCurrentCurve = -1;
 	}
 
 	// Curve item list serialization methods.
@@ -110,7 +118,10 @@ private:
 	qtractorCurveList *m_pCurveList;
 	QString            m_sBaseDir;
 	QString            m_sFilename;
+
 	QList<Item *>      m_items;
+
+	int                m_iCurrentCurve;
 };
 
 
