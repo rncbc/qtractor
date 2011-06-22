@@ -27,6 +27,27 @@
 #include <math.h>
 
 
+// Possible cube root optimization.
+// (borrowed from metamerist.com)
+static inline float cbrtf2 ( float x )
+{
+#ifdef CONFIG_FLOAT32
+	// Avoid strict-aliasing optimization (gcc -O2).
+	union { float f; int i; } u;
+	u.f = x;
+	u.i = (u.i / 3) + 710235478;
+	return u.f;
+#else
+	return cbrtf(x);
+#endif
+}
+
+static inline float cubef2 ( float x )
+{
+	return x * x * x;
+}
+
+
 //----------------------------------------------------------------------
 // qtractorCurve::updateNode -- Node coefficients computation helpers.
 //
@@ -75,7 +96,7 @@ inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 	// Shamelessly using the same reference source article as Ardour ;)
 	// CJC Kuger, "Constrained Cubic Spline Interpolation", August 2002
 	// http://www.korf.co.uk/spline.pdf
-	const float FZERO = 1e-9f;
+	const float fZero = 1e-9f;
 
 	float x0 = float(pNode->frame);
 
@@ -94,21 +115,21 @@ inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 		y1 = y0;
 	}
 
-	if (fabs(y1 - y2) > FZERO)
+	if (fabs(y1 - y2) > fZero)
 		s1 =  x1 / (y1 - y2);
 
 	if (pPrev) {
 		pPrev = pPrev->prev();
-		if (pPrev && (fabs(y1 - pPrev->value) > FZERO)) {
+		if (pPrev && (fabs(y1 - pPrev->value) > fZero)) {
 			float s0 = (x1 - float(pPrev->frame) - x0) / (y1 - pPrev->value);
-			if (s1 * s0 > 0.0f && fabs(s1 + s0) > FZERO)
+			if (s1 * s0 > 0.0f && fabs(s1 + s0) > fZero)
 				f1 = 2.0f / (s1 + s0);
 		}
 	}
 
-	if (pNext && (fabs(pNext->value - y2) > FZERO))
+	if (pNext && (fabs(pNext->value - y2) > fZero))
 		s2 = (float(pNext->frame) - x0) / (pNext->value - y2);
-	if (s2 * s1 > 0.0f && fabs(s2 + s1) > FZERO)
+	if (s2 * s1 > 0.0f && fabs(s2 + s1) > fZero)
 		f2 = 2.0f / (s2 + s1);
 
 	float x12 = x1 * x1;
@@ -160,7 +181,7 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 	qtractorSubject *pSubject, Mode mode, unsigned int iMinFrameDist )
 	: m_pList(pList), m_mode(mode), m_iMinFrameDist(iMinFrameDist),
 		m_observer(pSubject, this), m_state(Idle), m_cursor(this),
-		m_color(Qt::red)
+		m_bLogarithmic(false), m_color(Qt::red)
 {
 	m_nodes.setAutoDelete(true);
 
@@ -228,17 +249,18 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 		if (m_mode == Hold || m_observer.isToggled()) {
 			const float fThreshold
 				= 0.01f * (m_observer.maxValue() - m_observer.minValue());
-			if (fabs(y1 - y0) < fThreshold)
+			if (fabs(y1 - y0) < fThreshold && !m_bLogarithmic)
 				return NULL;
 			if (fabs(y2 - y1) < fThreshold)
 				pNode = pNext;
 		} else {
+			const float fThreshold = (m_bLogarithmic ? 0.1f : 0.5f);
 			float x0 = (pPrev ? float(pPrev->frame) : 0.0f);
 			float x1 = float(iFrame);
 			float x2 = (pNext ? float(pNext->frame) : m_tail.frame);
 			float s1 = (x1 > x0 ? (y1 - y0) / (x1 - x0) : 0.0f);
 			float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
-			if (fabs(y3 - y2) < 0.5f * fabs(y3 - y1))
+			if (fabs(y3 - y2) < fThreshold * fabs(y3 - y1))
 				return NULL;
 			if (pPrev) {
 				pNode = pPrev;
@@ -251,7 +273,7 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 				y2 = fValue;
 				s1 = (y1 - y0) / (x1 - x0);
 				y3 = s1 * (x2 - x1) + y1;
-				if (fabs(y3 - y2) > 0.5f * fabs(y3 - y1))
+				if (fabs(y3 - y2) > fThreshold * fabs(y3 - y1))
 					pNode = NULL;
 			}
 		}
@@ -504,6 +526,19 @@ float qtractorCurve::value ( const Node *pNode, unsigned long iFrame ) const
 float qtractorCurve::value ( unsigned long iFrame )
 {
 	return value(m_cursor.seek(iFrame), iFrame);
+}
+
+
+// Normalized scale converters.
+float qtractorCurve::valueFromScale ( float fScale ) const 
+{
+	return m_observer.valueFromScale(m_bLogarithmic ? ::cubef2(fScale) : fScale);
+}
+
+float qtractorCurve::scaleFromValue ( float fValue ) const
+{
+	float fScale = m_observer.scaleFromValue(fValue);
+	return (m_bLogarithmic ? ::cbrtf2(fScale) : fScale);
 }
 
 

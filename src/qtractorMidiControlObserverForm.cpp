@@ -520,7 +520,7 @@ QAction *qtractorMidiControlObserverForm::addMidiControlAction (
 {
 	QAction *pAction = new QAction(
 		QIcon(":/images/itemControllers.png"),
-		tr("MIDI Controller..."), pWidget);
+		tr("&MIDI Controller..."), pWidget);
 
 	pAction->setData(
 		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
@@ -637,18 +637,22 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 
 	pMenu->addSeparator();
 
+	QMenu *pCurveModeMenu = pMainForm->trackCurveModeMenu();
+	pCurveModeMenu->setEnabled(pCurve->isEnabled());
+	pMenu->addMenu(pCurveModeMenu);
+
 	QIcon iconProcess;
 	iconProcess.addPixmap(
 		QPixmap(":/images/trackCurveProcess.png"), QIcon::Normal, QIcon::On);
 	iconProcess.addPixmap(
 		QPixmap(":/images/trackCurveEnabled.png"), QIcon::Normal, QIcon::Off);
-//	iconProcess.addPixmap(
-//		QPixmap(":/images/trackCurveNone.png"), QIcon::Disabled, QIcon::Off);
+	iconProcess.addPixmap(
+		QPixmap(":/images/trackCurveNone.png"), QIcon::Disabled, QIcon::Off);
 
 	pAction = pMenu->addAction(iconProcess, tr("&Play"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve->isProcess());
-//	pAction->setEnabled(pCurve->isEnabled());
+	pAction->setEnabled(pCurve->isEnabled());
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveProcess(bool)));
@@ -658,13 +662,13 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 		QPixmap(":/images/trackCurveCapture.png"), QIcon::Normal, QIcon::On);
 	iconCapture.addPixmap(
 		QPixmap(":/images/trackCurveEnabled.png"), QIcon::Normal, QIcon::Off);
-//	iconProcess.addPixmap(
-//		QPixmap(":/images/trackCurveNone.png"), QIcon::Disabled, QIcon::Off);
+	iconProcess.addPixmap(
+		QPixmap(":/images/trackCurveNone.png"), QIcon::Disabled, QIcon::Off);
 
 	pAction = pMenu->addAction(iconCapture, tr("&Record"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve->isCapture());
-//	pAction->setEnabled(pCurve->isEnabled());
+	pAction->setEnabled(pCurve->isEnabled());
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveCapture(bool)));
