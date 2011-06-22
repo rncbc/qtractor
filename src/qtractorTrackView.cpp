@@ -2700,7 +2700,10 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 {
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
-	if (pTrack == NULL || (m_pDragCurveTrack && pTrack != m_pDragCurveTrack))
+	if (pTrack == NULL)
+		return;
+
+	if (m_pDragCurveTrack && m_pDragCurveTrack != pTrack)
 		return;
 
 	qtractorSession *pSession = pTrack->session();
@@ -2740,9 +2743,11 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	pNode = pCurve->addNode(frame, value);
 	if (pNode) {
 		m_pDragCurveNode = pNode;
-		QWidget *pViewport = qtractorScrollView::viewport();
-		QToolTip::showText(pViewport->mapToGlobal(contentsToViewport(pos)),
-			nodeToolTip(m_pDragCurveNode, m_pDragCurveTrack), pViewport);
+		if (m_bToolTips) {
+			QWidget *pViewport = qtractorScrollView::viewport();
+			QToolTip::showText(pViewport->mapToGlobal(contentsToViewport(pos)),
+				nodeToolTip(m_pDragCurveNode, m_pDragCurveTrack), pViewport);
+		}
 	}
 }
 
