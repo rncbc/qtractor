@@ -2765,6 +2765,10 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 
 void qtractorMainForm::trackCurveMode ( QAction *pAction )
 {
+	int iMode = pAction->data().toInt();
+	if (iMode < 0)
+		return;
+
 	qtractorTrack *pTrack = NULL;
 	if (m_pTracks)
 		pTrack = m_pTracks->currentTrack();
@@ -2775,7 +2779,7 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 	if (pCurrentCurve == NULL)
 		return;
 
-	qtractorCurve::Mode mode = qtractorCurve::Mode(pAction->data().toInt());
+	qtractorCurve::Mode mode = qtractorCurve::Mode(iMode);
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::trackCurveMode(%d)", int(mode));
@@ -5361,16 +5365,16 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 	pMenu->addSeparator();
 
 	pMenu->addAction(m_ui.trackCurveLogarithmicAction);
-	m_ui.trackCurveLogarithmicAction->setEnabled(
-		pCurrentCurve != NULL);
 	m_ui.trackCurveLogarithmicAction->setChecked(
 		pCurrentCurve && pCurrentCurve->isLogarithmic());
+	m_ui.trackCurveLogarithmicAction->setData(-1);
+//	m_ui.trackCurveLogarithmicAction->setEnabled(
+//		pCurrentCurve && pCurrentCurve->isEnabled());
 
 	pMenu->addAction(m_ui.trackCurveColorAction);
-	m_ui.trackCurveColorAction->setEnabled(
-		pCurrentCurve != NULL);
-	m_ui.trackCurveLogarithmicAction->setChecked(
-		pCurrentCurve && pCurrentCurve->isLogarithmic());
+	m_ui.trackCurveColorAction->setData(-1);
+//	m_ui.trackCurveColorAction->setEnabled(
+//		pCurrentCurve && pCurrentCurve->isEnabled());
 
 	return true;
 }

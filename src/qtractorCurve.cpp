@@ -248,13 +248,15 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 		float y2 = (pNext ? pNext->value : m_tail.value);
 		if (m_mode == Hold || m_observer.isToggled()) {
 			const float fThreshold
-				= 0.01f * (m_observer.maxValue() - m_observer.minValue());
-			if (fabs(y1 - y0) < fThreshold && !m_bLogarithmic)
-				return NULL;
+				= (m_bLogarithmic ? 0.1f * fabs(y1) : 0.01f)
+				* (m_observer.maxValue() - m_observer.minValue());
 			if (fabs(y2 - y1) < fThreshold)
 				pNode = pNext;
+			else
+			if (fabs(y1 - y0) < fThreshold)
+				return NULL;
 		} else {
-			const float fThreshold = (m_bLogarithmic ? 0.1f : 0.5f);
+			const float fThreshold = 0.5f; // (m_bLogarithmic ? 0.1f : 0.5f);
 			float x0 = (pPrev ? float(pPrev->frame) : 0.0f);
 			float x1 = float(iFrame);
 			float x2 = (pNext ? float(pNext->frame) : m_tail.frame);
