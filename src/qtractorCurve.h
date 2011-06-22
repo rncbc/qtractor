@@ -107,10 +107,8 @@ public:
 	float value(unsigned long iFrame);
 
 	// Normalized scale converters.
-	float valueFromScale ( float fScale ) const
-		{ return m_observer.valueFromScale(fScale); }
-	float scaleFromValue ( float fValue ) const
-		{ return m_observer.scaleFromValue(fValue); }
+	float valueFromScale(float fScale) const;
+	float scaleFromValue(float fValue) const;
 
 	// Common normalized methods.
 	float scale(const Node *pNode, unsigned long iFrame) const
@@ -223,6 +221,12 @@ public:
 		qtractorMidiEvent::EventType ctype, unsigned short iChannel,
 		unsigned short iParam, qtractorTimeScale *pTimeScale) const;
 
+	// Logarithmic scale mode accessors.
+	void setLogarithmic(bool bLogarithmic)
+		{ m_bLogarithmic = bLogarithmic; }
+	bool isLogarithmic() const
+		{ return m_bLogarithmic; }
+
 	// Curve mode accessor.
 	void setColor(const QColor& color)
 		{ m_color = color; }
@@ -288,6 +292,9 @@ private:
 
 	// Optimizing cursor.
 	Cursor m_cursor;
+
+	// Logarithmic scale mode accessors.
+	bool m_bLogarithmic;
 
 	// Curve color.
 	QColor m_color;

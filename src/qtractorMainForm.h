@@ -50,6 +50,7 @@ class qtractorTempoCursor;
 class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 
+class qtractorMidiControlObserver;
 class qtractorSubject;
 
 class QLabel;
@@ -102,6 +103,8 @@ public:
 		{ return m_ui.trackMenu; }
 	QMenu *trackCurveMenu() const
 		{ return m_ui.trackCurveMenu; }
+	QMenu *trackCurveModeMenu() const
+		{ return m_ui.trackCurveModeMenu; }
 
 	QProgressBar *progressBar() const
 		{ return m_pProgressBar; }
@@ -167,6 +170,7 @@ public slots:
 	void trackCurveMode(QAction *pAction);
 	void trackCurveProcess(bool bOn);
 	void trackCurveCapture(bool bOn);
+	void trackCurveLogarithmic(bool bOn);
 	void trackCurveColor();
 	void trackCurveClear();
 	void trackCurveProcessAll(bool bOn);
@@ -261,6 +265,7 @@ public slots:
 	void updateRecentFilesMenu();
 	void updateTrackMenu();
 	void updateCurveMenu();
+	void updateCurveModeMenu();
 	void updateClipMenu();
 	void updateExportMenu();
 	void updateZoomMenu();
@@ -353,9 +358,10 @@ protected:
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 
 	void trackCurveSelectMenuAction(QMenu *pMenu,
-		qtractorSubject *pSubject, qtractorSubject *pCurrentSubject) const;
-	bool trackCurveSelectMenu(QMenu *pMenu) const;
-	bool trackCurveModeMenu(QMenu *pMenu) const;
+		qtractorMidiControlObserver *pObserver, qtractorSubject *pCurrentSubject) const;
+
+	bool trackCurveSelectMenuReset(QMenu *pMenu) const;
+	bool trackCurveModeMenuReset(QMenu *pMenu) const;
 
 private:
 

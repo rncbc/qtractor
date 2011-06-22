@@ -496,7 +496,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				pNode = pNode->next();
 			}	
 			if (mode == qtractorCurve::Spline)	 {
-				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 8) {
+				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 4) {
 					frame = pSession->frameFromPixel(cx + xc2);
 					yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
 					path.lineTo(xc2, yc2);
@@ -1537,7 +1537,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case Qt::RightButton:
 			// Have no sense if pointer falls over a clip...
-			m_pClipDrag = clipAt(pos);
+			m_pClipDrag = clipAt(pos, true);
 			if (m_pClipDrag == NULL) {
 				// Right-button edit-tail positioning...
 				setEditTail(iFrame);

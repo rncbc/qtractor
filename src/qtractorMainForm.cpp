@@ -715,6 +715,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackCurveModeMenu,
 		SIGNAL(triggered(QAction *)),
 		SLOT(trackCurveMode(QAction *)));
+	QObject::connect(m_ui.trackCurveLogarithmicAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveLogarithmic(bool)));
 	QObject::connect(m_ui.trackCurveColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackCurveColor()));
@@ -939,6 +942,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackCurveMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateCurveMenu()));
+	QObject::connect(m_ui.trackCurveModeMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateCurveModeMenu()));
 	QObject::connect(m_ui.viewZoomMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateZoomMenu()));
@@ -2717,7 +2723,7 @@ void qtractorMainForm::trackExportMidi (void)
 
 
 // Track automation curve selection menu.
-Q_DECLARE_METATYPE(qtractorSubject *);
+Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
 
 void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 {
@@ -2731,13 +2737,16 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 	if (pCurveList == NULL)
 		return;
 
-	qtractorSubject *pSubject
-		= qVariantValue<qtractorSubject *> (pAction->data());
+	qtractorMidiControlObserver *pObserver
+		= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+	qtractorSubject *pSubject = (pObserver ? pObserver->subject() : NULL);
 	qtractorCurve *pCurve = NULL;
 	if (pSubject) {
 		pCurve = pSubject->curve();
-		if (pCurve == NULL)
+		if (pCurve == NULL) {
 			pCurve = new qtractorCurve(pCurveList, pSubject, qtractorCurve::Hold);
+			pCurve->setLogarithmic(pObserver->isLogarithmic());
+		}
 	}
 
 #ifdef CONFIG_DEBUG
@@ -2840,6 +2849,32 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 		pTrack->process_curve(m_iPlayHead);
 
 	m_pTracks->updateTrackList();
+	
+	++m_iDirtyCount;
+	stabilizeForm();
+}
+
+
+// Track automation curve logarithmic toggle.
+void qtractorMainForm::trackCurveLogarithmic ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
+	if (pCurrentCurve == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveLogarithmic(%d)", int(bOn));
+#endif
+
+	pCurrentCurve->setLogarithmic(bOn);
+
+	m_pTracks->updateTrackView();
 	
 	++m_iDirtyCount;
 	stabilizeForm();
@@ -5139,7 +5174,7 @@ void qtractorMainForm::updateCurveMenu (void)
 	qtractorCurve *pCurrentCurve
 		= (pCurveList ? pCurveList->currentCurve() : NULL);
 
-	bool bEnabled = trackCurveSelectMenu(m_ui.trackCurveSelectMenu);
+	bool bEnabled = trackCurveSelectMenuReset(m_ui.trackCurveSelectMenu);
 	m_ui.trackCurveMenu->setEnabled(bEnabled);
 	m_ui.trackCurveSelectMenu->setEnabled(bEnabled);
 
@@ -5147,10 +5182,8 @@ void qtractorMainForm::updateCurveMenu (void)
 		bEnabled = pCurveList->isEnabled();
 
 	bool bCurveEnabled = bEnabled && pCurrentCurve && pCurrentCurve->isEnabled();
-	if (bCurveEnabled)
-		bCurveEnabled = trackCurveModeMenu(m_ui.trackCurveModeMenu);
+
 	m_ui.trackCurveModeMenu->setEnabled(bCurveEnabled);
-	m_ui.trackCurveColorAction->setEnabled(bCurveEnabled);
 
 	m_ui.trackCurveProcessAction->setEnabled(bCurveEnabled);
 	m_ui.trackCurveProcessAction->setChecked(
@@ -5177,13 +5210,21 @@ void qtractorMainForm::updateCurveMenu (void)
 }
 
 
+// Curve/automation mode menu stabilizer.
+void qtractorMainForm::updateCurveModeMenu (void)
+{
+	trackCurveModeMenuReset(m_ui.trackCurveModeMenu);
+}
+
+
 // Track curve/automation select item builder.
 void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
-	qtractorSubject *pSubject, qtractorSubject *pCurrentSubject ) const
+	qtractorMidiControlObserver *pObserver, qtractorSubject *pCurrentSubject ) const
 {
 	QIcon   icon(":images/trackCurveNone.png");
 	QString text(tr("&None"));
 
+	qtractorSubject *pSubject = (pObserver ? pObserver->subject() : NULL);
 	if (pSubject) {
 		text = pSubject->name();
 		qtractorCurve *pCurve = pSubject->curve();
@@ -5202,12 +5243,12 @@ void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
 	QAction *pAction = pMenu->addAction(icon, text);
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue(pSubject));
+	pAction->setData(qVariantFromValue(pObserver));
 }
 
 
 // Track curve/automation select menu builder.
-bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
+bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 {
 	pMenu->clear();
 
@@ -5241,20 +5282,20 @@ bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
 	   = (pCurrentCurve ? pCurrentCurve->subject() : NULL);
 
 	trackCurveSelectMenuAction(pMenu,
-		pTrack->monitorSubject(), pCurrentSubject);
+		pTrack->monitorObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pMixerStrip->meter()->panningSubject(), pCurrentSubject);
+		pMixerStrip->meter()->panningObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pMixerStrip->meter()->gainSubject(), pCurrentSubject);
+		pMixerStrip->meter()->gainObserver(), pCurrentSubject);
 
 	pMenu->addSeparator();
 
 	trackCurveSelectMenuAction(pMenu,
-		pTrack->recordSubject(), pCurrentSubject);
+		pTrack->recordObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pTrack->muteSubject(), pCurrentSubject);
+		pTrack->muteObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pTrack->soloSubject(), pCurrentSubject);
+		pTrack->soloObserver(), pCurrentSubject);
 
 	qtractorPluginList *pPluginList = pTrack->pluginList();
 	if (pPluginList->count() > 0) {
@@ -5268,7 +5309,7 @@ bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
 					= params.constBegin();
 				for ( ; param != params.constEnd(); ++param) {
 					trackCurveSelectMenuAction(pParamMenu,
-						param.value()->subject(), pCurrentSubject);
+						param.value()->observer(), pCurrentSubject);
 				}
 			}
 			pPlugin = pPlugin->next();
@@ -5283,7 +5324,7 @@ bool qtractorMainForm::trackCurveSelectMenu ( QMenu *pMenu ) const
 }
 
 
-bool qtractorMainForm::trackCurveModeMenu ( QMenu *pMenu ) const
+bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 {
 	pMenu->clear();
 
@@ -5316,6 +5357,20 @@ bool qtractorMainForm::trackCurveModeMenu ( QMenu *pMenu ) const
 	pAction->setChecked(mode == qtractorCurve::Spline);
 	pAction->setData(int(qtractorCurve::Spline));
 	pAction->setEnabled(!bToggled);
+
+	pMenu->addSeparator();
+
+	pMenu->addAction(m_ui.trackCurveLogarithmicAction);
+	m_ui.trackCurveLogarithmicAction->setEnabled(
+		pCurrentCurve != NULL);
+	m_ui.trackCurveLogarithmicAction->setChecked(
+		pCurrentCurve && pCurrentCurve->isLogarithmic());
+
+	pMenu->addAction(m_ui.trackCurveColorAction);
+	m_ui.trackCurveColorAction->setEnabled(
+		pCurrentCurve != NULL);
+	m_ui.trackCurveLogarithmicAction->setChecked(
+		pCurrentCurve && pCurrentCurve->isLogarithmic());
 
 	return true;
 }

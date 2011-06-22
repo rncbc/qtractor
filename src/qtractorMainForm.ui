@@ -218,7 +218,7 @@
 	</widget>
 	<widget class="QMenu" name="trackCurveModeMenu" >
 	 <property name="title" >
-	  <string>&amp;Mode</string>
+	  <string>M&amp;ode</string>
 	 </property>
 	</widget>
 	<widget class="QMenu" name="trackCurveMenu" >
@@ -228,8 +228,6 @@
 	 <addaction name="trackCurveSelectMenu" />
 	 <addaction name="separator" />
 	 <addaction name="trackCurveModeMenu" />
-	 <addaction name="trackCurveColorAction" />
-	 <addaction name="separator" />
 	 <addaction name="trackCurveProcessAction" />
 	 <addaction name="trackCurveCaptureAction" />
 	 <addaction name="separator" />
@@ -1477,6 +1475,23 @@
     <string>Export tracks to MIDI file</string>
    </property>
   </action>
+  <action name="trackCurveLogarithmicAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>Log&amp;arithmic</string>
+   </property>
+   <property name="iconText" >
+	<string>Automation logarithmic</string>
+   </property>
+   <property name="toolTip" >
+	<string>Automation logarithmic</string>
+   </property>
+   <property name="statusTip" >
+	<string>Automation curve logarithmic scale</string>
+   </property>
+  </action>
   <action name="trackCurveColorAction" >
    <property name="text" >
 	<string>C&amp;olor...</string>
@@ -1488,7 +1503,7 @@
 	<string>Automation color</string>
    </property>
    <property name="statusTip" >
-	<string>Color curve automation</string>
+	<string>Automation curve color</string>
    </property>
   </action>
   <action name="trackCurveProcessAction" >
@@ -1512,7 +1527,7 @@
 	<string>Automation playback</string>
    </property>
    <property name="statusTip" >
-	<string>Playback curve automation</string>
+	<string>Playback automation curve</string>
    </property>
   </action>
   <action name="trackCurveCaptureAction" >
@@ -1536,7 +1551,7 @@
 	<string>Automation record</string>
    </property>
    <property name="statusTip" >
-	<string>Record curve automation</string>
+	<string>Record automation curve</string>
    </property>
   </action>
   <action name="trackCurveClearAction" >
@@ -1550,17 +1565,10 @@
 	<string>Automation clear</string>
    </property>
    <property name="statusTip" >
-	<string>Clear curve automation</string>
+	<string>Clear automation curve</string>
    </property>
   </action>
   <action name="trackCurveProcessAllAction" >
-   <property name="icon" >
-	<iconset resource="qtractor.qrc" >
-	 <normalon>:/images/trackCurveProcess.png</normalon>
-	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
-	 <disabledoff>:/images/trackCurveNone.png</disabledoff>
-	</iconset>
-   </property>
    <property name="checkable" >
 	<bool>true</bool>
    </property>
@@ -1574,17 +1582,10 @@
 	<string>Automation playback all</string>
    </property>
    <property name="statusTip" >
-	<string>Playback all curve automation</string>
+	<string>Playback all automation curves</string>
    </property>
   </action>
   <action name="trackCurveCaptureAllAction" >
-   <property name="icon" >
-	<iconset resource="qtractor.qrc" >
-	 <normalon>:/images/trackCurveCapture.png</normalon>
-	 <normaloff>:/images/trackCurveEnabled.png</normaloff>
-	 <disabledoff>:/images/trackCurveNone.png</disabledoff>
-	</iconset>
-   </property>
    <property name="checkable" >
 	<bool>true</bool>
    </property>
@@ -1598,7 +1599,7 @@
 	<string>Automation record all</string>
    </property>
    <property name="statusTip" >
-	<string>Record all curve automation</string>
+	<string>Record all automation curves</string>
    </property>
   </action>
   <action name="trackCurveClearAllAction" >
@@ -1612,7 +1613,7 @@
 	<string>Automation clear all</string>
    </property>
    <property name="statusTip" >
-	<string>Clear all curve automation</string>
+	<string>Clear all automation curves</string>
    </property>
   </action>
   <action name="viewMenubarAction" >
