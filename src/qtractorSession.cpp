@@ -1348,17 +1348,19 @@ QString qtractorSession::sanitize ( const QString& s )
 
 // Create a brand new filename (absolute file path).
 QString qtractorSession::createFilePath (
-    const QString& sTrackName, const QString& sExt )
+	const QString& sTrackName, const QString& sExt, int iClipNo )
 {
 	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
 	if (!sFilename.isEmpty())
 		sFilename += '-';
 	sFilename += qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
 
-	int iClipNo = 0;
-	QFileInfo fi(m_props.sessionDir, sFilename.arg(++iClipNo));
-	while (fi.exists())
+	QFileInfo fi;
+	if (iClipNo > 0) {
+		fi.setFile(m_props.sessionDir, sFilename.arg(iClipNo));
+	} else do {
 		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+	} while (fi.exists());
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorSession::createFilePath(\"%s\")",
