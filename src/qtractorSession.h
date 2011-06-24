@@ -272,7 +272,8 @@ public:
 	static QString sanitize(const QString& s); 
 
 	// Create a brand new filename (absolute file path).
-	QString createFilePath(const QString& sTrackName, const QString& sExt); 
+	QString createFilePath(
+		const QString& sTrackName, const QString& sExt, int iClipNo = 0);
 
 	// Consolidated session record state.
 	void setRecording(bool bRecording);
