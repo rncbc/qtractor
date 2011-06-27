@@ -35,7 +35,8 @@
 #include "qtractorFileListView.h"
 #include "qtractorClipSelect.h"
 #include "qtractorClipCommand.h"
-#include "qtractorClipCommand.h"
+
+#include "qtractorCurveCommand.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorThumbView.h"
@@ -94,6 +95,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 	m_bCurveEdit = false;
 
+	m_pCurveCommand = NULL;
+	
 	clear();
 
 	// Zoom tool widgets
@@ -210,6 +213,10 @@ void qtractorTrackView::clear (void)
 		delete m_pRubberBand;
 	m_pRubberBand = NULL;
 
+	if (m_pCurveCommand)
+		delete m_pCurveCommand;
+	m_pCurveCommand = NULL;
+	
 	m_bDragSingleTrack = false;
 	m_iDragSingleTrackY = 0;
 	m_iDragSingleTrackHeight = 0;
@@ -451,8 +458,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	// Automation curve drawing...
 	pPainter->setRenderHint(QPainter::Antialiasing, true);
 
-	x = rect.left()  - 1;
-	w = rect.width() + 2;
+	x = rect.left();	// - 1;
+	w = rect.width();	// + 2;
 
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack && y2 < ch) {
@@ -1688,7 +1695,11 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragCurveNode:
 			// For immediate visual feedback...
-			m_pTracks->dirtyChangeNotify();
+			if (m_pCurveCommand && !m_pCurveCommand->isEmpty()) {
+				pSession->commands()->push(m_pCurveCommand);
+				m_pCurveCommand = NULL;
+				m_pTracks->dirtyChangeNotify();
+			}
 			break;
 		case DragStart:
 			// Deferred left-button positioning...
@@ -2718,12 +2729,17 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	if (pCurve == NULL)
 		return;
 
+	if (m_pCurveCommand == NULL)
+		m_pCurveCommand = new qtractorCurveCommand(tr("automation edit"));
+	
 	qtractorCurve::Node *pNode = m_pDragCurveNode;
 
 	m_pDragCurveNode = NULL;
 
-	if (pNode)
+	if (pNode) {
+		m_pCurveCommand->removeNode(pCurve, pNode->frame, pNode->value);
 		pCurve->removeNode(pNode);
+	}
 
 	if (!bAddNode)
 		return;
@@ -2742,6 +2758,7 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	float value = pCurve->valueFromScale(float(y + h - pos.y()) / float(h));
 	pNode = pCurve->addNode(frame, value);
 	if (pNode) {
+		m_pCurveCommand->addNode(pCurve, pNode->frame, pNode->value);
 		m_pDragCurveNode = pNode;
 		if (m_bToolTips) {
 			QWidget *pViewport = qtractorScrollView::viewport();
@@ -2826,6 +2843,10 @@ void qtractorTrackView::resetDragState (void)
 	// Automation curve stuff reset.
 	m_pDragCurveTrack = NULL;
 	m_pDragCurveNode = NULL;
+
+	if (m_pCurveCommand)
+		delete m_pCurveCommand;
+	m_pCurveCommand = NULL;
 
 	// If we were moving clips around,
 	// just hide selection, of course.

@@ -38,6 +38,8 @@ class qtractorMidiSequence;
 class qtractorSessionCursor;
 class qtractorTrackListItem;
 
+class qtractorCurveCommand;
+
 class QToolButton;
 
 class QDragEnterEvent;
@@ -461,6 +463,8 @@ private:
 	// Automation curve editing node.
 	qtractorTrack       *m_pDragCurveTrack;
 	qtractorCurve::Node *m_pDragCurveNode;
+
+	qtractorCurveCommand *m_pCurveCommand;
 };
 
 
