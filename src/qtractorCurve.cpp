@@ -323,7 +323,7 @@ qtractorCurve::Node *qtractorCurve::addNode ( unsigned long iFrame, float fValue
 // Remove an existing node from curve.
 void qtractorCurve::removeNode ( unsigned long iFrame )
 {
-	removeNode(m_cursor.seek(frameDist(iFrame)));
+	removeNode(m_cursor.seek(iFrame));
 }
 
 
@@ -459,7 +459,7 @@ void qtractorCurve::setLength ( unsigned long iLength )
 }
 
 
-// Intra-curve frame positioning value seeker.
+// Intra-curve frame positioning node seeker.
 qtractorCurve::Node *qtractorCurve::Cursor::seek ( unsigned long iFrame )
 {
 	Node *pNode = m_pNode;
