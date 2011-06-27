@@ -2336,17 +2336,13 @@ void qtractorTrackView::showClipSelect (void) const
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
-		qtractorClip *pClip = iter.key();
-		// Make sure it's a legal selection...
-		if (pClip->track() && pClip->isClipSelected()) {
-			qtractorClipSelect::Item *pClipItem = iter.value();
-			QRect rectClip = pClipItem->rectClip;
-			if (m_bDragSingleTrack) {
-				rectClip.setY(m_iDragSingleTrackY);
-				rectClip.setHeight(m_iDragSingleTrackHeight);
-			}
-			moveRubberBand(&(pClipItem->rubberBand), rectClip, 3);
+		qtractorClipSelect::Item *pClipItem = iter.value();
+		QRect rectClip = pClipItem->rectClip;
+		if (m_bDragSingleTrack) {
+			rectClip.setY(m_iDragSingleTrackY);
+			rectClip.setHeight(m_iDragSingleTrackHeight);
 		}
+		moveRubberBand(&(pClipItem->rubberBand), rectClip, 3);
 	}
 
 	showToolTip(m_pClipSelect->rect(), m_iDraggingX);
@@ -3230,7 +3226,7 @@ int qtractorTrackView::editTailX (void) const
 // Clear current selection (no notify).
 void qtractorTrackView::clearClipSelect (void)
 {
-	g_clipboard.clear();
+//	g_clipboard.clear();
 	m_pClipSelect->clear();
 }
 
