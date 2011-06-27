@@ -76,20 +76,18 @@ bool qtractorCurveCommand::execute ( bool bRedo )
 		qtractorCurve *pCurve = pItem->curve;
 		// Execute the command item...
 		switch (pItem->command) {
-		case AddNode: {
+		case AddNode:
 			if (bRedo)
 				pCurve->addNode(pItem->frame, pItem->value);
 			else
 				pCurve->removeNode(pItem->frame);
 			break;
-		}
-		case RemoveNode: {
+		case RemoveNode:
 			if (bRedo)
 				pCurve->removeNode(pItem->frame);
 			else
 				pCurve->addNode(pItem->frame, pItem->value);
 			break;
-		}
 		default:
 			break;
 		}
