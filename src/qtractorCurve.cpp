@@ -323,7 +323,7 @@ qtractorCurve::Node *qtractorCurve::addNode ( unsigned long iFrame, float fValue
 // Remove an existing node from curve.
 void qtractorCurve::removeNode ( unsigned long iFrame )
 {
-	removeNode(m_cursor.seek(iFrame));
+	removeNode(m_cursor.seek(frameDist(iFrame)));
 }
 
 

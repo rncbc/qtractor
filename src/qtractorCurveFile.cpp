@@ -230,7 +230,8 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 
 	file.close();
 
-	m_pCurveList->setCurrentCurve(pCurrentCurve);
+	if (pCurrentCurve)
+		m_pCurveList->setCurrentCurve(pCurrentCurve);
 
 	clear();
 }
