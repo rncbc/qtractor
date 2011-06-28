@@ -23,12 +23,9 @@
 #define __qtractorCurveCommand_h
 
 #include "qtractorCommand.h"
+#include "qtractorCurve.h"
 
 #include <QList>
-
-
-// Forward declarations.
-class qtractorCurve;
 
 
 //----------------------------------------------------------------------
@@ -45,8 +42,8 @@ public:
 	virtual ~qtractorCurveCommand();
 
 	// Primitive command methods.
-	void addNode(qtractorCurve *pCurve, unsigned long iFrame, float fValue);
-	void removeNode(qtractorCurve *pCurve, unsigned long iFrame, float fValue);
+	void addNode(qtractorCurve *pCurve, qtractorCurve::Node *pNode);
+	void removeNode(qtractorCurve *pCurve, qtractorCurve::Node *pNode);
 
 	// Composite predicate.
 	bool isEmpty() const;
@@ -72,13 +69,13 @@ private:
 	{
 		// Item constructor.
 		Item(CommandType cmd,
-			qtractorCurve *pCurve, unsigned long iFrame, float fValue)
-			: command(cmd), curve(pCurve), frame(iFrame), value(fValue) {}
+			qtractorCurve *pCurve, qtractorCurve::Node *pNode)
+			: command(cmd), curve(pCurve), node(pNode), autoDelete(false) {}
 		// Item members.
-		CommandType    command;
+		CommandType command;
 		qtractorCurve *curve;
-		unsigned long  frame;
-		float          value;
+		qtractorCurve::Node *node;
+		bool autoDelete;
 	};
 
 	// Instance variables.

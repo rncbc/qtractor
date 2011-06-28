@@ -93,9 +93,9 @@ public:
 	void clear();
 
 	// Node list management methods.
-	Node *insertNode(unsigned long iFrame, float fValue, bool bSmooth = false);
-	Node *addNode(unsigned long iFrame, float fValue);
-	void removeNode(unsigned long iFrame);
+	Node *addNode(unsigned long iFrame, float fValue, bool bSmooth = true);
+	void insertNode(Node *pNode);
+	void unlinkNode(Node *pNode);
 	void removeNode(Node *pNode);
 
 	// Master seeker method.
@@ -238,9 +238,6 @@ public:
 		{ return m_iDirtyCount > 0; }
 
 protected:
-
-	// Nearest node locators.
-	Node *findNode(unsigned long iFrame) const;
 
 	// Snap to minimum distance frame.
 	unsigned long frameDist(unsigned long iFrame) const;
