@@ -72,8 +72,7 @@
 #include "qtractorMidiEditor.h"
 
 #include "qtractorTrackCommand.h"
-
-#include "qtractorCurve.h"
+#include "qtractorCurveCommand.h"
 
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
@@ -2744,6 +2743,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 	qDebug("qtractorMainForm::trackCurveSelect(%p)", pCurve);
 #endif
 
+#if 0
 	pCurveList->setCurrentCurve(pCurve);
 
 	m_pTracks->updateTrackList();
@@ -2751,6 +2751,9 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveSelectCommand(pCurveList, pCurve));
+#endif
 }
 
 
@@ -2776,6 +2779,7 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 	qDebug("qtractorMainForm::trackCurveMode(%d)", int(mode));
 #endif
 
+#if 0
 	pCurrentCurve->setMode(mode);
 	pCurrentCurve->update();
 
@@ -2787,6 +2791,9 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveModeCommand(pCurrentCurve, mode));
+#endif
 }
 
 
@@ -2807,6 +2814,7 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveProcess(%d)", int(bOn));
 #endif
 
+#if 0
 	if (!bOn) pCurrentCurve->setCapture(false);
 	pCurrentCurve->setProcess(bOn);
 
@@ -2817,6 +2825,9 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveProcessCommand(pCurrentCurve, bOn));
+#endif
 }
 
 
@@ -2837,6 +2848,7 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveCapture(%d)", int(bOn));
 #endif
 
+#if 0
 	if (bOn) pCurrentCurve->setProcess(true);
 	pCurrentCurve->setCapture(bOn);
 
@@ -2847,6 +2859,9 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveCaptureCommand(pCurrentCurve, bOn));
+#endif
 }
 
 
@@ -2867,12 +2882,16 @@ void qtractorMainForm::trackCurveLogarithmic ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveLogarithmic(%d)", int(bOn));
 #endif
 
+#if 0
 	pCurrentCurve->setLogarithmic(bOn);
 
 	m_pTracks->updateTrackView();
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveLogarithmicCommand(pCurrentCurve, bOn));
+#endif
 }
 
 
@@ -2896,13 +2915,19 @@ void qtractorMainForm::trackCurveColor (void)
 	const QString sTitle(pCurrentCurve->subject()->name());
 	const QColor& color = QColorDialog::getColor(
 		pCurrentCurve->color(), this, sTitle + " - " QTRACTOR_TITLE);
-	if (color.isValid())
-		pCurrentCurve->setColor(color);
+	if (!color.isValid())
+		return;
+
+#if 0
+	pCurrentCurve->setColor(color);
 
 	m_pTracks->updateTrackView();
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveColorCommand(pCurrentCurve, color));
+#endif
 }
 
 
@@ -2923,6 +2948,7 @@ void qtractorMainForm::trackCurveClear (void)
 	qDebug("qtractorMainForm::trackCurveClear()");
 #endif
 
+#if 0
 	pCurrentCurve->clear();
 
 	if (!m_pSession->isPlaying())
@@ -2933,6 +2959,9 @@ void qtractorMainForm::trackCurveClear (void)
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveClearCommand(pCurrentCurve));
+#endif
 }
 
 
@@ -2953,6 +2982,7 @@ void qtractorMainForm::trackCurveProcessAll ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveProcessAll(%d)", int(bOn));
 #endif
 
+#if 0
 	if (!bOn) pCurveList->setCaptureAll(false);
 	pCurveList->setProcessAll(bOn);
 
@@ -2963,6 +2993,9 @@ void qtractorMainForm::trackCurveProcessAll ( bool bOn )
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveProcessAllCommand(pCurveList, bOn));
+#endif
 }
 
 
@@ -2983,6 +3016,7 @@ void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveCaptureAll(%d)", int(bOn));
 #endif
 
+#if 0
 	if (bOn) pCurveList->setProcessAll(true);
 	pCurveList->setCaptureAll(bOn);
 
@@ -2993,6 +3027,9 @@ void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveCaptureAllCommand(pCurveList, bOn));
+#endif
 }
 
 
