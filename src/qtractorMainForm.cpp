@@ -76,8 +76,6 @@
 
 #include "qtractorOscControl.h"
 
-#include "qtractorCurve.h"
-
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
 #endif
@@ -2901,7 +2899,7 @@ void qtractorMainForm::trackCurveLogarithmic ( bool bOn )
 	++m_iDirtyCount;
 	stabilizeForm();
 #else
-	m_pSession->execute(new qtractorCurveLogarithmicCommand(pCurrentCurve), bOn);
+	m_pSession->execute(new qtractorCurveLogarithmicCommand(pCurrentCurve, bOn));
 #endif
 }
 
@@ -2937,7 +2935,7 @@ void qtractorMainForm::trackCurveColor (void)
 	++m_iDirtyCount;
 	stabilizeForm();
 #else
-	m_pSession->execute(new qtractorCurveColorCommand(pCurrentCurve), color);
+	m_pSession->execute(new qtractorCurveColorCommand(pCurrentCurve, color));
 #endif
 }
 

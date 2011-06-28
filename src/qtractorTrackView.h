@@ -38,7 +38,7 @@ class qtractorMidiSequence;
 class qtractorSessionCursor;
 class qtractorTrackListItem;
 
-class qtractorCurveCommand;
+class qtractorCurveEditCommand;
 
 class QToolButton;
 
@@ -300,7 +300,7 @@ protected:
 	void dragCurveNodeMove(const QPoint& pos, bool bAddNode = false);
 
 	// Common tool-tip builder for automation nodes.
-	QString nodeToolTip(qtractorCurve::Node *pNode, qtractorTrack *pTrack) const;
+	QString nodeToolTip(qtractorCurve *pCurve, qtractorCurve::Node *pNode) const;
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -461,10 +461,10 @@ private:
 	int  m_iDragSingleTrackHeight;
 
 	// Automation curve editing node.
-	qtractorTrack       *m_pDragCurveTrack;
+	qtractorCurve       *m_pDragCurve;
 	qtractorCurve::Node *m_pDragCurveNode;
 
-	qtractorCurveCommand *m_pCurveCommand;
+	qtractorCurveEditCommand *m_pCurveEditCommand;
 };
 
 
