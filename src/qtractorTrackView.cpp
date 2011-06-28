@@ -95,7 +95,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 	m_bCurveEdit = false;
 
-	m_pCurveCommand = NULL;
+	m_pCurveEditCommand = NULL;
 	
 	clear();
 
@@ -213,9 +213,9 @@ void qtractorTrackView::clear (void)
 		delete m_pRubberBand;
 	m_pRubberBand = NULL;
 
-	if (m_pCurveCommand)
-		delete m_pCurveCommand;
-	m_pCurveCommand = NULL;
+	if (m_pCurveEditCommand)
+		delete m_pCurveEditCommand;
+	m_pCurveEditCommand = NULL;
 	
 	m_bDragSingleTrack = false;
 	m_iDragSingleTrackY = 0;
@@ -1484,7 +1484,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			if (pTrack) {
 				qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 				if (pNode) {
-					m_pDragCurveTrack = pTrack;
+					m_pDragCurve = pTrack->currentCurve();
 					m_pDragCurveNode = pNode;
 				}
 			}
@@ -1492,7 +1492,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (m_bCurveEdit)
 			dragCurveNodeMove(pos, !bModifier);
 		if (m_dragCursor == DragCurveNode) {
-			if (m_pDragCurveTrack && m_pDragCurveNode)
+			if (m_pDragCurve && m_pDragCurveNode)
 				m_dragState = DragCurveNode;
 			qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
@@ -1724,9 +1724,9 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		default:
 			// Specially when editing curve nodes,
 			// for immediate visual feedback...
-			if (m_pCurveCommand && !m_pCurveCommand->isEmpty()) {
-				pSession->commands()->push(m_pCurveCommand);
-				m_pCurveCommand = NULL;
+			if (m_pCurveEditCommand && !m_pCurveEditCommand->isEmpty()) {
+				pSession->commands()->push(m_pCurveEditCommand);
+				m_pCurveEditCommand = NULL;
 				m_pTracks->dirtyChangeNotify();
 			}
 			break;
@@ -1790,8 +1790,9 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				if (pTrack) {
 					qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 					if (pNode) {
+						qtractorCurve *pCurve = pTrack->currentCurve();
 						QToolTip::showText(pHelpEvent->globalPos(),
-							nodeToolTip(pNode, pTrack), pViewport);
+							nodeToolTip(pCurve, pNode), pViewport);
 						return true;
 					}
 					qtractorClip *pClip = clipAtTrack(pos, NULL, pTrack, &tvi);
@@ -2710,9 +2711,6 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	if (pTrack == NULL)
 		return;
 
-	if (m_pDragCurveTrack && m_pDragCurveTrack != pTrack)
-		return;
-
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return;
@@ -2725,23 +2723,26 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	if (pCurve == NULL)
 		return;
 
-	if (m_pCurveCommand == NULL)
-		m_pCurveCommand = new qtractorCurveCommand(tr("automation edit"));
+	if (m_pDragCurve && m_pDragCurve != pCurve)
+		return;
+
+	if (m_pCurveEditCommand == NULL)
+		m_pCurveEditCommand = new qtractorCurveEditCommand(pCurve);
 	
 	qtractorCurve::Node *pNode = m_pDragCurveNode;
 
 	m_pDragCurveNode = NULL;
 
 	if (pNode) {
-		m_pCurveCommand->removeNode(pCurve, pNode);
+		m_pCurveEditCommand->removeNode(pNode);
 		pCurve->unlinkNode(pNode);
 	}
 
 	if (!bAddNode)
 		return;
 
-	if (m_pDragCurveTrack == NULL) {
-		m_pDragCurveTrack = pTrack;
+	if (m_pDragCurve == NULL) {
+		m_pDragCurve = pCurve;
 		m_dragCursor = DragCurveNode;
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 	}
@@ -2754,12 +2755,12 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	float value = pCurve->valueFromScale(float(y + h - pos.y()) / float(h));
 	pNode = pCurve->addNode(frame, value);
 	if (pNode) {
-		m_pCurveCommand->addNode(pCurve, pNode);
+		m_pCurveEditCommand->addNode(pNode);
 		m_pDragCurveNode = pNode;
 		if (m_bToolTips) {
 			QWidget *pViewport = qtractorScrollView::viewport();
 			QToolTip::showText(pViewport->mapToGlobal(contentsToViewport(pos)),
-				nodeToolTip(m_pDragCurveNode, m_pDragCurveTrack), pViewport);
+				nodeToolTip(m_pDragCurve, m_pDragCurveNode), pViewport);
 		}
 	}
 }
@@ -2767,31 +2768,24 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 
 // Common tool-tip builder for automation nodes.
 QString qtractorTrackView::nodeToolTip (
-    qtractorCurve::Node *pNode, qtractorTrack *pTrack ) const
+	qtractorCurve *pCurve, qtractorCurve::Node *pNode) const
 {
 	QString sToolTip;
 
-	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
-		return sToolTip;
-
-	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
-		return sToolTip;
-
-	sToolTip = QString("(%2, %3)")
-		.arg(pTimeScale->textFromFrame(pNode->frame))
-		.arg(pNode->value);
-	
-	qtractorCurveList *pCurveList = pTrack->curveList();
-	if (pCurveList) {
-		qtractorCurve *pCurve = pCurveList->currentCurve();
-		if (pCurve) {
-			qtractorSubject *pSubject = pCurve->subject();
-			if (pSubject) {
-				sToolTip = QString("%1\n%2")
-					.arg(pSubject->name())
-					.arg(sToolTip);
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		if (pTimeScale) {
+			sToolTip = QString("(%2, %3)")
+				.arg(pTimeScale->textFromFrame(pNode->frame))
+				.arg(pNode->value);
+			if (pCurve) {
+				qtractorSubject *pSubject = pCurve->subject();
+				if (pSubject) {
+					sToolTip = QString("%1\n%2")
+						.arg(pSubject->name())
+						.arg(sToolTip);
+				}
 			}
 		}
 	}
@@ -2837,12 +2831,12 @@ void qtractorTrackView::resetDragState (void)
 	m_iDragSingleTrackHeight = 0;
 
 	// Automation curve stuff reset.
-	m_pDragCurveTrack = NULL;
+	m_pDragCurve = NULL;
 	m_pDragCurveNode = NULL;
 
-	if (m_pCurveCommand)
-		delete m_pCurveCommand;
-	m_pCurveCommand = NULL;
+	if (m_pCurveEditCommand)
+		delete m_pCurveEditCommand;
+	m_pCurveEditCommand = NULL;
 
 	// If we were moving clips around,
 	// just hide selection, of course.
