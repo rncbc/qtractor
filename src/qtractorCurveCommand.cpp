@@ -22,8 +22,6 @@
 #include "qtractorAbout.h"
 #include "qtractorCurveCommand.h"
 
-#include "qtractorCurve.h"
-
 
 //----------------------------------------------------------------------
 // class qtractorCurveCommand - declaration.
@@ -38,6 +36,13 @@ qtractorCurveCommand::qtractorCurveCommand ( const QString& sName )
 // Destructor.
 qtractorCurveCommand::~qtractorCurveCommand (void)
 {
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		Item *pItem = iter.next();
+		if (pItem->autoDelete)
+			delete pItem->node;
+	}
+
 	qDeleteAll(m_items);
 	m_items.clear();
 }
@@ -45,16 +50,16 @@ qtractorCurveCommand::~qtractorCurveCommand (void)
 
 // Primitive command methods.
 void qtractorCurveCommand::addNode (
-    qtractorCurve *pCurve, unsigned long iFrame, float fValue )
+	qtractorCurve *pCurve, qtractorCurve::Node *pNode )
 {
-	m_items.append(new Item(AddNode, pCurve, iFrame, fValue));
+	m_items.append(new Item(AddNode, pCurve, pNode));
 }
 
 
 void qtractorCurveCommand::removeNode (
-	qtractorCurve *pCurve, unsigned long iFrame, float fValue )
+	qtractorCurve *pCurve, qtractorCurve::Node *pNode )
 {
-	m_items.append(new Item(RemoveNode, pCurve, iFrame, fValue));
+	m_items.append(new Item(RemoveNode, pCurve, pNode));
 }
 
 
@@ -78,15 +83,17 @@ bool qtractorCurveCommand::execute ( bool bRedo )
 		switch (pItem->command) {
 		case AddNode:
 			if (bRedo)
-				pCurve->addNode(pItem->frame, pItem->value);
+				pCurve->insertNode(pItem->node);
 			else
-				pCurve->removeNode(pItem->frame);
+				pCurve->unlinkNode(pItem->node);
 			break;
+			pItem->autoDelete = !bRedo;
 		case RemoveNode:
 			if (bRedo)
-				pCurve->removeNode(pItem->frame);
+				pCurve->unlinkNode(pItem->node);
 			else
-				pCurve->addNode(pItem->frame, pItem->value);
+				pCurve->insertNode(pItem->node);
+			pItem->autoDelete = bRedo;
 			break;
 		default:
 			break;

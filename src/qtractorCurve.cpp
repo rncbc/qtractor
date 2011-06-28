@@ -229,9 +229,14 @@ void qtractorCurve::clear (void)
 
 
 // Insert a new node, in frame order.
-qtractorCurve::Node *qtractorCurve::insertNode (
+qtractorCurve::Node *qtractorCurve::addNode (
 	unsigned long iFrame, float fValue, bool bSmooth )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorCurve[%p]::addNode(%lu, %g, %d)", this,
+		iFrame, fValue, int(bSmooth));
+#endif
+
 	Node *pNode = NULL;
 	Node *pNext = m_cursor.seek(frameDist(iFrame));
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
@@ -285,6 +290,8 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 		// Move/update the existing one as average...
 		pNode->frame = m_cursor.frame();
 		pNode->value = fValue;
+		updateNode(pNode);
+		pNode = NULL; // Not a brand new node!
 	} else {
 		// Create a brand new node,
 		// insert it in the right frame...
@@ -293,23 +300,8 @@ qtractorCurve::Node *qtractorCurve::insertNode (
 			m_nodes.insertBefore(pNode, pNext);
 		else
 			m_nodes.append(pNode);
-	}
-
-	// Done.
-	return pNode;
-}
-
-
-qtractorCurve::Node *qtractorCurve::addNode ( unsigned long iFrame, float fValue )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorCurve[%p]::addNode(%lu, %g)", this, iFrame, fValue);
-#endif
-
-	Node *pNode = insertNode(iFrame, m_observer.safeValue(fValue), true);
-
-	if (pNode)
 		updateNode(pNode);
+	}
 
 	// Dirty up...
 	++m_iDirtyCount;
@@ -320,13 +312,56 @@ qtractorCurve::Node *qtractorCurve::addNode ( unsigned long iFrame, float fValue
 }
 
 
-// Remove an existing node from curve.
-void qtractorCurve::removeNode ( unsigned long iFrame )
+// Insert curve node in correct frame order.
+void qtractorCurve::insertNode ( Node *pNode )
 {
-	removeNode(m_cursor.seek(frameDist(iFrame)));
+	if (pNode == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorCurve[%p]::insertNode(%p)", this, pNode);
+#endif
+
+	Node *pNext = m_cursor.seek(pNode->frame);
+
+	if (pNext)
+		m_nodes.insertBefore(pNode, pNext);
+	else
+		m_nodes.append(pNode);
+
+	updateNode(pNode);
+
+	// Dirty up...
+	++m_iDirtyCount;
+
+	m_pList->notify();
 }
 
 
+// Unlink an existing node from curve.
+void qtractorCurve::unlinkNode ( Node *pNode )
+{
+	if (pNode == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorCurve[%p]::unlinkNode(%p)", this, pNode);
+#endif
+
+	m_cursor.reset(pNode);
+
+	Node *pNext = pNode->next();
+	m_nodes.unlink(pNode);
+	updateNode(pNext);
+
+	// Dirty up...
+	++m_iDirtyCount;
+
+	m_pList->notify();
+}
+
+
+// Remove an existing node from curve.
 void qtractorCurve::removeNode ( Node *pNode )
 {
 	if (pNode == NULL)
@@ -568,7 +603,8 @@ void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 					fScale = float(pEvent->pitchBend()) / float(0x3fff);
 				else
 					fScale = float(pEvent->value()) / float(0x7f);
-				insertNode(iFrame, m_observer.valueFromScale(fScale), false);
+				float fValue = m_observer.valueFromScale(fScale);
+				m_nodes.append(new Node(iFrame, fValue));
 			}
 			pEvent = pEvent->next();
 		}

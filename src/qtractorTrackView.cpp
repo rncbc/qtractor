@@ -1693,14 +1693,6 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragResizeRight:
 			dragResizeDrop(pos, bModifier);
 			break;
-		case DragCurveNode:
-			// For immediate visual feedback...
-			if (m_pCurveCommand && !m_pCurveCommand->isEmpty()) {
-				pSession->commands()->push(m_pCurveCommand);
-				m_pCurveCommand = NULL;
-				m_pTracks->dirtyChangeNotify();
-			}
-			break;
 		case DragStart:
 			// Deferred left-button positioning...
 			if (m_pClipDrag) {
@@ -1724,11 +1716,19 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				// immediate visual feedback...
 				m_pTracks->selectionChangeNotify();
 			}
-			// Fall thru...
+			break;
+		case DragCurveNode:
 		case DragStep:
 		case DragDrop:
 		case DragNone:
 		default:
+			// Specially when editing curve nodes,
+			// for immediate visual feedback...
+			if (m_pCurveCommand && !m_pCurveCommand->isEmpty()) {
+				pSession->commands()->push(m_pCurveCommand);
+				m_pCurveCommand = NULL;
+				m_pTracks->dirtyChangeNotify();
+			}
 			break;
 		}
 	}
@@ -2733,8 +2733,8 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	m_pDragCurveNode = NULL;
 
 	if (pNode) {
-		m_pCurveCommand->removeNode(pCurve, pNode->frame, pNode->value);
-		pCurve->removeNode(pNode);
+		m_pCurveCommand->removeNode(pCurve, pNode);
+		pCurve->unlinkNode(pNode);
 	}
 
 	if (!bAddNode)
@@ -2754,7 +2754,7 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	float value = pCurve->valueFromScale(float(y + h - pos.y()) / float(h));
 	pNode = pCurve->addNode(frame, value);
 	if (pNode) {
-		m_pCurveCommand->addNode(pCurve, pNode->frame, pNode->value);
+		m_pCurveCommand->addNode(pCurve, pNode);
 		m_pDragCurveNode = pNode;
 		if (m_bToolTips) {
 			QWidget *pViewport = qtractorScrollView::viewport();
