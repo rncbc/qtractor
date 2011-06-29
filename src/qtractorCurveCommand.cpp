@@ -418,4 +418,57 @@ qtractorCurveClearCommand::qtractorCurveClearCommand ( qtractorCurve *pCurve )
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorCurveClearAllCommand - declaration.
+//
+
+// Constructor.
+qtractorCurveClearAllCommand::qtractorCurveClearAllCommand (
+	qtractorCurveList *pCurveList )
+	: qtractorCurveListCommand(QObject::tr("automation clear all"), pCurveList)
+{
+	if (m_pCurveList) {
+		qtractorCurve *pCurve = m_pCurveList->first();
+		while (pCurve) {
+			m_commands.append(new qtractorCurveClearCommand(pCurve));
+			pCurve = pCurve->next();
+		}
+	}
+}
+
+
+// Destructor.
+qtractorCurveClearAllCommand::~qtractorCurveClearAllCommand (void)
+{
+	qDeleteAll(m_commands);
+	m_commands.clear();
+}
+
+
+// Composite predicate.
+bool qtractorCurveClearAllCommand::isEmpty (void) const
+{
+	return m_commands.isEmpty();
+}
+
+
+// Virtual executive method.
+bool qtractorCurveClearAllCommand::execute ( bool bRedo )
+{
+	if (m_pCurveList == NULL)
+		return false;
+
+	QListIterator<qtractorCurveClearCommand *> iter(m_commands);
+	while (iter.hasNext()) {
+		qtractorCurveClearCommand *pCommand = iter.next();
+		if (bRedo)
+			pCommand->redo();
+		else
+			pCommand->undo();
+	}
+
+	return true;
+}
+
+
 // end of qtractorCurveCommand.cpp

@@ -3050,6 +3050,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 	qDebug("qtractorMainForm::trackCurveClearAll()");
 #endif
 
+#if 0
 	pCurveList->clearAll();
 	
 	m_pTracks->updateTrackList();
@@ -3057,6 +3058,9 @@ void qtractorMainForm::trackCurveClearAll (void)
 	
 	++m_iDirtyCount;
 	stabilizeForm();
+#else
+	m_pSession->execute(new qtractorCurveClearAllCommand(pCurveList));
+#endif
 }
 
 

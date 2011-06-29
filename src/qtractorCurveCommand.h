@@ -343,6 +343,35 @@ public:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorCurveClearAllCommand - declaration.
+//
+
+class qtractorCurveClearAllCommand : public qtractorCurveListCommand
+{
+public:
+
+	// Constructor.
+	qtractorCurveClearAllCommand(qtractorCurveList *pCurveList);
+
+	// Destructor.
+	~qtractorCurveClearAllCommand();
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+protected:
+
+	// Virtual executive method.
+	bool execute(bool bRedo);
+
+private:
+
+	// Instance variables.
+	QList<qtractorCurveClearCommand *> m_commands;
+};
+
+
 #endif	// __qtractorCurveCommand_h
 
 // end of qtractorCurveCommand.h

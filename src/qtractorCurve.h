@@ -55,7 +55,9 @@ public:
 	qtractorCurveList *list() const
 		{ return m_pList; }
 
-	// Curve subject accessor.
+	// Curve subject accessors.
+	void setSubject(qtractorSubject *pSubject)
+		{ m_observer.setSubject(pSubject); }
 	qtractorSubject *subject() const
 		{ return m_observer.subject(); }
 
