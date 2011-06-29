@@ -456,7 +456,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 	
 	// Automation curve drawing...
-	pPainter->setRenderHint(QPainter::Antialiasing, true);
+	//pPainter->setRenderHint(QPainter::Antialiasing, true);
 
 	x = rect.left();	// - 1;
 	w = rect.width();	// + 2;
@@ -525,7 +525,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				}
 			}
 			// Draw line...
-			pen.setWidth(2);
+			//pen.setWidth(2);
 			pPainter->strokePath(path, pen);	
 			// Fill semi-transparent area...
 			rgbCurve.setAlpha(60);
@@ -536,7 +536,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		pTrack = pTrack->next();
 	}
 
-	pPainter->setRenderHint(QPainter::Antialiasing, false);
+	//pPainter->setRenderHint(QPainter::Antialiasing, false);
 
 	// Draw edit-head line...
 //	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
