@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip anti-glitch/ramp-smoothing effect is
+  now slightly independent of current buffer-size
+  period (mitigating bug #3338113 effect).
+
 - Once buried under the Edit menu, Clip menu has
   been finally promoted to top main menu.
 
