@@ -395,6 +395,22 @@ bool qtractorTrack::open (void)
 					pStrip->setTrack(this);
 			}
 		}
+		// Update gain and panning curve new subjects...
+		qtractorCurveList *pCurveList = m_pPluginList->curveList();
+		if (pCurveList) {
+			qtractorCurve *pCurve = pCurveList->first();
+			while (pCurve) {
+				qtractorSubject *pSubject = pCurve->subject();
+				if (pSubject) {
+					if (pSubject == pMonitor->gainSubject())
+						pCurve->setSubject(m_pMonitor->gainSubject());
+					else
+					if (pSubject == pMonitor->panningSubject())
+						pCurve->setSubject(m_pMonitor->panningSubject());
+				}
+				pCurve = pCurve->next();
+			}
+		}		
 		// That's it...
 		delete pMonitor;
 	}
