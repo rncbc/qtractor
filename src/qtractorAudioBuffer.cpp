@@ -1203,6 +1203,9 @@ int qtractorAudioBuffer::readMixFrames (
 		m_fPrevGain = m_fNextGain = 1.0f;
 		m_iRampGain = -1;
 	}
+	
+	if (m_iRampGain)
+		m_fPrevGain = m_fNextGain;
 
 	float fGainStep = (m_fNextGain - m_fPrevGain) / float(iFrames);
 
