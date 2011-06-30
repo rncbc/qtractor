@@ -321,12 +321,14 @@ bool qtractorCurveCaptureAllCommand::execute ( bool bRedo )
 // Constructors.
 qtractorCurveEditCommand::qtractorCurveEditCommand (
 	const QString& sName, qtractorCurve *pCurve )
-	: qtractorCurveCommand(sName, pCurve)
+	: qtractorCurveCommand(sName, pCurve),
+		m_edits(pCurve)
 {
 }
 
 qtractorCurveEditCommand::qtractorCurveEditCommand ( qtractorCurve *pCurve )
-	: qtractorCurveCommand(QObject::tr("automation edit"), pCurve)
+	: qtractorCurveCommand(QObject::tr("automation edit"), pCurve),
+		m_edits(pCurve)
 {
 }
 
@@ -334,69 +336,47 @@ qtractorCurveEditCommand::qtractorCurveEditCommand ( qtractorCurve *pCurve )
 // Destructor.
 qtractorCurveEditCommand::~qtractorCurveEditCommand (void)
 {
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pItem = iter.next();
-		if (pItem->autoDelete)
-			delete pItem->node;
-	}
-
-	qDeleteAll(m_items);
-	m_items.clear();
+	m_edits.clear();
 }
 
 
 // Primitive command methods.
 void qtractorCurveEditCommand::addNode ( qtractorCurve::Node *pNode )
 {
-	m_items.append(new Item(AddNode, pNode));
+	m_edits.addNode(pNode);
+}
+
+
+void qtractorCurveEditCommand::moveNode ( qtractorCurve::Node *pNode )
+{
+	m_edits.moveNode(pNode);
 }
 
 
 void qtractorCurveEditCommand::removeNode ( qtractorCurve::Node *pNode )
 {
-	m_items.append(new Item(RemoveNode, pNode));
+	m_edits.removeNode(pNode);
+}
+
+
+void qtractorCurveEditCommand::addEditList ( qtractorCurveEditList *pEditList )
+{
+	if (pEditList) m_edits.append(*pEditList);
 }
 
 
 // Composite predicate.
 bool qtractorCurveEditCommand::isEmpty (void) const
 {
-	return m_items.isEmpty();
+	return m_edits.isEmpty();
 }
 
 
 // Common executive method.
 bool qtractorCurveEditCommand::execute ( bool bRedo )
 {
-	if (m_pCurve == NULL)
+	if (!m_edits.execute(bRedo))
 		return false;
-
-	QListIterator<Item *> iter(m_items);
-	if (!bRedo)
-		iter.toBack();
-	while (bRedo ? iter.hasNext() : iter.hasPrevious()) {
-		Item *pItem = (bRedo ? iter.next() : iter.previous());
-		// Execute the command item...
-		switch (pItem->command) {
-		case AddNode:
-			if (bRedo)
-				m_pCurve->insertNode(pItem->node);
-			else
-				m_pCurve->unlinkNode(pItem->node);
-			break;
-			pItem->autoDelete = !bRedo;
-		case RemoveNode:
-			if (bRedo)
-				m_pCurve->unlinkNode(pItem->node);
-			else
-				m_pCurve->insertNode(pItem->node);
-			pItem->autoDelete = bRedo;
-			break;
-		default:
-			break;
-		}
-	}
 
 	return qtractorCurveBaseCommand::execute(bRedo);
 }

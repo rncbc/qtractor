@@ -230,11 +230,11 @@ void qtractorCurve::clear (void)
 
 // Insert a new node, in frame order.
 qtractorCurve::Node *qtractorCurve::addNode (
-	unsigned long iFrame, float fValue, bool bSmooth )
+	unsigned long iFrame, float fValue, qtractorCurveEditList *pEditList )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorCurve[%p]::addNode(%lu, %g, %d)", this,
-		iFrame, fValue, int(bSmooth));
+	qDebug("qtractorCurve[%p]::addNode(%lu, %g, %p)", this,
+		iFrame, fValue, pEditList);
 #endif
 
 	Node *pNode = NULL;
@@ -246,8 +246,8 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	else
 	if (pPrev && pPrev->frame == m_cursor.frame())
 		pNode = pPrev;
-	else
-	if (bSmooth) {
+	else {
+		// Smoothing...
 		float y0 = (pPrev ? pPrev->value : m_tail.value);
 		float y1 = fValue;
 		float y2 = (pNext ? pNext->value : m_tail.value);
@@ -288,6 +288,8 @@ qtractorCurve::Node *qtractorCurve::addNode (
 
 	if (pNode) {
 		// Move/update the existing one as average...
+		if (pEditList)
+			pEditList->moveNode(pNode);
 		pNode->frame = m_cursor.frame();
 		pNode->value = fValue;
 		updateNode(pNode);
@@ -300,6 +302,8 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			m_nodes.insertBefore(pNode, pNext);
 		else
 			m_nodes.append(pNode);
+		if (pEditList)
+			pEditList->addNode(pNode);
 		updateNode(pNode);
 	}
 
@@ -700,6 +704,57 @@ void qtractorCurve::setProcess ( bool bProcess )
 
 	if ((bProcess && !bOldProcess) || (!bProcess && bOldProcess))
 		m_pList->updateProcess(bProcess);
+}
+
+
+//----------------------------------------------------------------------
+// qtractorCurveEditList -- Curve node edit list.
+
+// Curve edit list command executive.
+bool qtractorCurveEditList::execute ( bool bRedo )
+{
+	if (m_pCurve == NULL)
+		return false;
+
+	QListIterator<Item *> iter(m_items);
+	if (!bRedo)
+		iter.toBack();
+	while (bRedo ? iter.hasNext() : iter.hasPrevious()) {
+		Item *pItem = (bRedo ? iter.next() : iter.previous());
+		// Execute the command item...
+		switch (pItem->command)	{
+		case AddNode: {
+			if (bRedo)
+				m_pCurve->insertNode(pItem->node);
+			else
+				m_pCurve->unlinkNode(pItem->node);
+			pItem->autoDelete = !bRedo;
+			break;
+		}
+		case MoveNode: {
+			qtractorCurve::Node *pNode = pItem->node;
+			unsigned long iFrame = pNode->frame;
+			float fValue = pNode->value;
+			pNode->frame = pItem->frame;
+			pNode->value = pItem->value;
+			pItem->frame = iFrame;
+			pItem->value = fValue;
+			break;
+		}
+		case RemoveNode: {
+			if (bRedo)
+				m_pCurve->unlinkNode(pItem->node);
+			else
+				m_pCurve->insertNode(pItem->node);
+			pItem->autoDelete = bRedo;
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+	return true;
 }
 
 
