@@ -451,4 +451,124 @@ bool qtractorCurveClearAllCommand::execute ( bool bRedo )
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorCurveEditListCommand - declaration.
+//
+
+// Constructor.
+qtractorCurveEditListCommand::qtractorCurveEditListCommand (
+	qtractorCurveList *pCurveList )
+	: qtractorCurveListCommand(QObject::tr("automation edit list"), pCurveList)
+{
+	if (m_pCurveList) {
+		qtractorCurve *pCurve = m_pCurveList->first();
+		while (pCurve) {
+			qtractorCurveEditList *pEditList = pCurve->editList();
+			if (pEditList && !pEditList->isEmpty()) {
+				qtractorCurveEditCommand *pCommand
+					= new qtractorCurveEditCommand(pCurve);
+				pCommand->addEditList(pEditList);
+				m_commands.append(pCommand);
+				pEditList->clear();
+			}
+			pCurve = pCurve->next();
+		}
+	}
+}
+
+
+// Destructor.
+qtractorCurveEditListCommand::~qtractorCurveEditListCommand (void)
+{
+	qDeleteAll(m_commands);
+	m_commands.clear();
+}
+
+
+// Composite predicate.
+bool qtractorCurveEditListCommand::isEmpty (void) const
+{
+	return m_commands.isEmpty();
+}
+
+
+// Virtual executive method.
+bool qtractorCurveEditListCommand::execute ( bool bRedo )
+{
+	if (m_pCurveList == NULL)
+		return false;
+
+	QListIterator<qtractorCurveEditCommand *> iter(m_commands);
+	while (iter.hasNext()) {
+		qtractorCurveEditCommand *pCommand = iter.next();
+		if (bRedo)
+			pCommand->redo();
+		else
+			pCommand->undo();
+	}
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorCurveCaptureListCommand - declaration.
+//
+
+// Constructor.
+qtractorCurveCaptureListCommand::qtractorCurveCaptureListCommand (void)
+	: qtractorCommand(QObject::tr("automation record"))
+{
+}
+
+
+// Destructor.
+qtractorCurveCaptureListCommand::~qtractorCurveCaptureListCommand (void)
+{
+	qDeleteAll(m_commands);
+	m_commands.clear();
+}
+
+
+// Curve list adder.
+void qtractorCurveCaptureListCommand::addCurveList (
+	qtractorCurveList *pCurveList )
+{
+	qtractorCurveEditListCommand *pCommand
+		= new qtractorCurveEditListCommand(pCurveList);
+	if (pCommand->isEmpty())
+		delete pCommand;
+	else
+		m_commands.append(pCommand);
+}
+
+
+// Composite predicate.
+bool qtractorCurveCaptureListCommand::isEmpty (void) const
+{
+	return m_commands.isEmpty();
+}
+
+
+// Virtual command methods.
+bool qtractorCurveCaptureListCommand::redo (void)
+{
+	QListIterator<qtractorCurveEditListCommand *> iter(m_commands);
+	while (iter.hasNext())
+		iter.next()->redo();
+
+	return true;
+}
+
+
+bool qtractorCurveCaptureListCommand::undo (void)
+{
+	QListIterator<qtractorCurveEditListCommand *> iter(m_commands);
+	while (iter.hasNext())
+		iter.next()->undo();
+
+	return true;
+}
+
+
 // end of qtractorCurveCommand.cpp

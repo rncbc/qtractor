@@ -25,8 +25,6 @@
 #include "qtractorCommand.h"
 #include "qtractorCurve.h"
 
-#include <QList>
-
 
 //----------------------------------------------------------------------
 // class qtractorCurveBaseCommand - declaration.
@@ -355,6 +353,66 @@ private:
 
 	// Instance variables.
 	QList<qtractorCurveClearCommand *> m_commands;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorCurveEditListCommand - declaration.
+//
+
+class qtractorCurveEditListCommand : public qtractorCurveListCommand
+{
+public:
+
+	// Constructor.
+	qtractorCurveEditListCommand(qtractorCurveList *pCurveList);
+
+	// Destructor.
+	~qtractorCurveEditListCommand();
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+protected:
+
+	// Virtual executive method.
+	bool execute(bool bRedo);
+
+private:
+
+	// Instance variables.
+	QList<qtractorCurveEditCommand *> m_commands;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorCurveCaptureListCommand - declaration.
+//
+
+class qtractorCurveCaptureListCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorCurveCaptureListCommand();
+
+	// Destructor.
+	~qtractorCurveCaptureListCommand();
+
+	// Curve list adder.
+	void addCurveList(qtractorCurveList *pCurveList);
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	QList<qtractorCurveEditListCommand *> m_commands;
 };
 
 

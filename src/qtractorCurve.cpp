@@ -181,9 +181,11 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 	qtractorSubject *pSubject, Mode mode, unsigned int iMinFrameDist )
 	: m_pList(pList), m_mode(mode), m_iMinFrameDist(iMinFrameDist),
 		m_observer(pSubject, this), m_state(Idle), m_cursor(this),
-		m_bLogarithmic(false), m_color(Qt::red)
+		m_bLogarithmic(false), m_color(Qt::red), m_pEditList(NULL)
 {
 	m_nodes.setAutoDelete(true);
+
+	m_pEditList = new qtractorCurveEditList(this);
 
 	m_tail.frame = 0;
 //	m_tail.value = m_observer.defaultValue();
@@ -203,6 +205,8 @@ qtractorCurve::~qtractorCurve (void)
 	m_observer.setCurve(NULL);
 
 	clear();
+
+	delete m_pEditList;
 }
 
 
