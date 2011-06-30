@@ -296,7 +296,10 @@ public:
 
 	// Primitive command methods.
 	void addNode(qtractorCurve::Node *pNode);
+	void moveNode(qtractorCurve::Node *pNode);
 	void removeNode(qtractorCurve::Node *pNode);
+
+	void addEditList(qtractorCurveEditList *pEditList);
 
 	// Composite predicate.
 	bool isEmpty() const;
@@ -308,25 +311,8 @@ protected:
 
 private:
 
-	// Primitive command types.
-	enum CommandType {
-		AddNode, RemoveNode
-	};
-
-	// Curve item struct.
-	struct Item
-	{
-		// Item constructor.
-		Item(CommandType cmd, qtractorCurve::Node *pNode)
-			: command(cmd), node(pNode), autoDelete(false) {}
-		// Item members.
-		CommandType command;
-		qtractorCurve::Node *node;
-		bool autoDelete;
-	};
-
 	// Instance variables.
-	QList<Item *> m_items;
+	qtractorCurveEditList m_edits;
 };
 
 

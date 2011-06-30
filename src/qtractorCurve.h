@@ -30,7 +30,9 @@
 
 // Forward declarations.
 class qtractorTimeScale;
+
 class qtractorCurveList;
+class qtractorCurveEditList;
 
 
 //----------------------------------------------------------------------
@@ -95,7 +97,9 @@ public:
 	void clear();
 
 	// Node list management methods.
-	Node *addNode(unsigned long iFrame, float fValue, bool bSmooth = true);
+	Node *addNode(unsigned long iFrame, float fValue,
+		qtractorCurveEditList *pEditList = NULL);
+
 	void insertNode(Node *pNode);
 	void unlinkNode(Node *pNode);
 	void removeNode(Node *pNode);
@@ -507,6 +511,103 @@ private:
 
 	// Current selected curve.
 	qtractorCurve *m_pCurrentCurve;
+};
+
+
+//----------------------------------------------------------------------
+// qtractorCurveEditList -- Curve node edit (command) list.
+
+class qtractorCurveEditList
+{
+public:
+
+	// Constructor.
+	qtractorCurveEditList(qtractorCurve *pCurve)
+		: m_pCurve(pCurve) {}
+
+	// Copy cnstructor.
+	qtractorCurveEditList(const qtractorCurveEditList& list)
+		: m_pCurve(list.curve()) { append(list); }
+
+	// Destructor
+	~qtractorCurveEditList() { clear(); }
+
+	// Curve accessor.
+	qtractorCurve *curve() const
+		{ return m_pCurve; }
+
+	// List predicate accessor.
+	bool isEmpty() const
+		{ return m_items.isEmpty(); }
+
+	// List methods.
+	void addNode(qtractorCurve::Node *pNode)
+		{ m_items.append(new Item(AddNode, pNode)); }
+	void moveNode(qtractorCurve::Node *pNode)
+		{ m_items.append(new Item(MoveNode, pNode)); }
+	void removeNode(qtractorCurve::Node *pNode)
+		{ m_items.append(new Item(RemoveNode, pNode)); }
+
+	// List appender.
+	void append(const qtractorCurveEditList& list)
+	{
+		QListIterator<Item *> iter(list.m_items);
+		while (iter.hasNext())
+			m_items.append(new Item(*iter.next()));
+	}
+
+	// List cleanup.
+	void clear()
+	{
+		QListIterator<Item *> iter(m_items);
+		while (iter.hasNext()) {
+			Item *pItem = iter.next();
+			if (pItem->autoDelete)
+				delete pItem->node;
+		}
+
+		qDeleteAll(m_items);
+		m_items.clear();
+	}
+
+	// Curve edit list command executive.
+	bool execute(bool bRedo = true);
+
+protected:
+
+	// Primitive command types.
+	enum Command {
+		AddNode, MoveNode, RemoveNode
+	};
+
+	// Curve item struct.
+	struct Item
+	{
+		// Item constructor.
+		Item(Command cmd, qtractorCurve::Node *pNode)
+			: command(cmd), node(pNode),
+				frame(pNode->frame), value(pNode->value),
+				autoDelete(false) {}
+
+		// Item copy constructor.
+		Item(const Item& item)
+			: command(item.command), node(item.node),
+				frame(item.frame), value(item.value),
+				autoDelete(item.autoDelete) {}
+
+		// Item members.
+		Command command;
+		qtractorCurve::Node *node;
+		unsigned long frame;
+		float value;
+		bool autoDelete;
+	};
+
+private:
+
+	// Instance variables.
+	qtractorCurve *m_pCurve;
+	QList<Item *>  m_items;
 };
 
 

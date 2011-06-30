@@ -2749,13 +2749,13 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 
 	qtractorScrollView::ensureVisible(pos.x(), pos.y());
 
+	qtractorCurveEditList edits(pCurve);
 	unsigned long frame = pSession->frameFromPixel(pos.x());
 	int y = tvi.trackRect.y();
 	int h = tvi.trackRect.height();
 	float value = pCurve->valueFromScale(float(y + h - pos.y()) / float(h));
-	pNode = pCurve->addNode(frame, value);
+	pNode = pCurve->addNode(frame, value, &edits);
 	if (pNode) {
-		m_pCurveEditCommand->addNode(pNode);
 		m_pDragCurveNode = pNode;
 		if (m_bToolTips) {
 			QWidget *pViewport = qtractorScrollView::viewport();
@@ -2763,6 +2763,7 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 				nodeToolTip(m_pDragCurve, m_pDragCurveNode), pViewport);
 		}
 	}
+	m_pCurveEditCommand->addEditList(&edits);
 }
 
 
