@@ -4417,6 +4417,20 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 			setRecording(false);
 		// Stop transport rolling, immediately...
 		setRolling(0);
+		// Session tracks automation recording.
+		qtractorCurveCaptureListCommand *pCurveCommand = NULL;
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			qtractorCurveList *pCurveList = pTrack->curveList();
+			if (pCurveList && pCurveList->isCaptureEnabled()
+				&& !pCurveList->isEditListEmpty()) {
+				if (pCurveCommand == NULL)
+					pCurveCommand = new qtractorCurveCaptureListCommand();
+				pCurveCommand->addCurveList(pCurveList);
+			}
+		}
+		if (pCurveCommand)
+			m_pSession->commands()->push(pCurveCommand);
 		// Auto-backward reset feature...
 		if (m_ui.transportAutoBackwardAction->isChecked()) {
 			unsigned long iPlayHead = m_pSession->playHead();

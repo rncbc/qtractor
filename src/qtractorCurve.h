@@ -200,11 +200,6 @@ public:
 	void setCapture(bool bCapture);
 	void setProcess(bool bProcess);
 
-	// Record automation procedure.
-	void capture(unsigned long iFrame)
-		{ if (isCaptureEnabled()) addNode(iFrame, m_observer.value()); }
-	void capture() { capture(m_cursor.frame()); }
-
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
 	{
@@ -216,6 +211,18 @@ public:
 	}
 
 	void process() { process(m_cursor.frame()); }
+
+	// Record automation procedure.
+	void capture(unsigned long iFrame)
+	{
+		if (isCaptureEnabled())
+			addNode(iFrame, m_observer.value(), m_pEditList);
+	}
+
+	void capture() { capture(m_cursor.frame()); }
+
+	qtractorCurveEditList *editList() const
+		{ return m_pEditList; }
 
 	// Convert MIDI sequence events to curve nodes.
 	void readMidiSequence(qtractorMidiSequence *pSeq,
@@ -302,6 +309,9 @@ private:
 	// Curve color.
 	QColor m_color;
 
+	// Capture (record) edit list.
+	qtractorCurveEditList *m_pEditList;
+
 	// Dirtyness counter.
 	int m_iDirtyCount;
 };
@@ -325,192 +335,6 @@ public:
 signals:
 
 	void update();
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorCurveList -- Automation item list
-//
-
-class qtractorCurveList : public qtractorList<qtractorCurve>
-{
-public:
-
-	// Constructor.
-	qtractorCurveList() : m_iEnabled(0),
-		m_iCapture(0), m_iProcess(0), m_pCurrentCurve(NULL)
-		{ setAutoDelete(true); }
-
-	// ~Destructor.
-	~qtractorCurveList() { clearAll(); }
-
-	// Simple list methods.
-	void addCurve(qtractorCurve *pCurve)
-	{
-		append(pCurve);
-
-		pCurve->setEnabled(true);
-	}
-
-	void removeCurve(qtractorCurve *pCurve)
-	{
-		if (m_pCurrentCurve == pCurve)
-			m_pCurrentCurve =  NULL;
-
-		pCurve->setEnabled(false);
-
-		if (pCurve->isProcess())
-			updateProcess(false);
-		if (pCurve->isCapture())
-			updateCapture(false);
-
-	//	remove(pCurve);
-	}
-
-	// Set common curve length procedure.
-	void setLength(unsigned long iLength)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->setLength(iLength);
-			pCurve = pCurve->next();
-		}
-	}
-
-	unsigned long length() const
-		{ return (first() ? first()->length() : 0); }
-
-	// Record automation procedure.
-	void capture(unsigned long iFrame)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->capture(iFrame);
-			pCurve = pCurve->next();
-		}
-	}
-
-	// Enabled management.
-	void updateEnabled(bool bEnabled)
-	{
-		if (bEnabled)
-			++m_iEnabled;
-		else
-			--m_iEnabled;
-	}
-
-	void setEnabledAll(bool bEnabled)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->setEnabled(bEnabled);
-			pCurve = pCurve->next();
-		}
-	}
-
-	bool isEnabledAll() const
-		{ return isEnabled() && m_iEnabled >= count(); }
-	bool isEnabled() const
-		{ return m_iEnabled > 0; }
-
-	// Capture management.
-	void updateCapture(bool bCapture)
-	{
-		if (bCapture)
-			++m_iCapture;
-		else
-			--m_iCapture;
-	}
-
-	void setCaptureAll(bool bCapture)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->setCapture(bCapture);
-			pCurve = pCurve->next();
-		}
-	}
-
-	bool isCaptureAll() const
-		{ return isCapture() && m_iCapture >= count(); }
-	bool isCapture() const
-		{ return m_iCapture > 0; }
-	bool isCaptureEnabled() const
-		{ return isEnabled() && isCapture(); }
-
-	// The meta-processing automation procedure.
-	void process(unsigned long iFrame)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->process(iFrame);
-			pCurve = pCurve->next();
-		}
-	}
-
-	// Process management.
-	void updateProcess(bool bProcess)
-	{
-		if (bProcess)
-			++m_iProcess;
-		else
-		if (!bProcess)
-			--m_iProcess;
-	}
-
-	void setProcessAll(bool bProcess)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->setProcess(bProcess);
-			pCurve = pCurve->next();
-		}
-	}
-
-	bool isProcessAll() const
-		{ return isProcess() && m_iProcess >= count(); }
-	bool isProcess() const
-		{ return m_iProcess > 0; }
-	bool isProcessEnabled() const
-		{ return isEnabled() && isProcess(); }
-
-	// Whole list cleaner.
-	void clearAll()
-	{
-		m_pCurrentCurve = NULL;
-
-		clear();
-
-		m_iEnabled = 0;
-		m_iCapture = 0;
-		m_iProcess = 0;
-	}
-
-	// Signal/slot notifier accessor.
-	qtractorCurveListProxy *proxy()
-		{ return &m_proxy; }
-
-	// Signal/slot notification.
-	void notify() { m_proxy.notify(); }
-
-	// Current curve accessors.
-	void setCurrentCurve(qtractorCurve *pCurve)
-		{ m_pCurrentCurve = pCurve; }
-	qtractorCurve *currentCurve() const
-		{ return m_pCurrentCurve; }
-
-private:
-
-	// Mass capture/process state counters.
-	int m_iEnabled;
-	int m_iCapture;
-	int m_iProcess;
-
-	// Signal/slot notifier.
-	qtractorCurveListProxy m_proxy;
-
-	// Current selected curve.
-	qtractorCurve *m_pCurrentCurve;
 };
 
 
@@ -608,6 +432,205 @@ private:
 	// Instance variables.
 	qtractorCurve *m_pCurve;
 	QList<Item *>  m_items;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorCurveList -- Automation item list
+//
+
+class qtractorCurveList : public qtractorList<qtractorCurve>
+{
+public:
+
+	// Constructor.
+	qtractorCurveList() : m_iEnabled(0),
+		m_iProcess(0), m_iCapture(0), m_pCurrentCurve(NULL)
+		{ setAutoDelete(true); }
+
+	// ~Destructor.
+	~qtractorCurveList() { clearAll(); }
+
+	// Simple list methods.
+	void addCurve(qtractorCurve *pCurve)
+	{
+		append(pCurve);
+
+		pCurve->setEnabled(true);
+	}
+
+	void removeCurve(qtractorCurve *pCurve)
+	{
+		if (m_pCurrentCurve == pCurve)
+			m_pCurrentCurve =  NULL;
+
+		pCurve->setEnabled(false);
+
+		if (pCurve->isProcess())
+			updateProcess(false);
+		if (pCurve->isCapture())
+			updateCapture(false);
+
+	//	remove(pCurve);
+	}
+
+	// Set common curve length procedure.
+	void setLength(unsigned long iLength)
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			pCurve->setLength(iLength);
+			pCurve = pCurve->next();
+		}
+	}
+
+	unsigned long length() const
+		{ return (first() ? first()->length() : 0); }
+
+	// Record automation procedure.
+	void capture(unsigned long iFrame)
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			pCurve->capture(iFrame);
+			pCurve = pCurve->next();
+		}
+	}
+
+	// Enabled management.
+	void updateEnabled(bool bEnabled)
+	{
+		if (bEnabled)
+			++m_iEnabled;
+		else
+			--m_iEnabled;
+	}
+
+	void setEnabledAll(bool bEnabled)
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			pCurve->setEnabled(bEnabled);
+			pCurve = pCurve->next();
+		}
+	}
+
+	bool isEnabledAll() const
+		{ return isEnabled() && m_iEnabled >= count(); }
+	bool isEnabled() const
+		{ return m_iEnabled > 0; }
+
+	// The meta-processing automation procedure.
+	void process(unsigned long iFrame)
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			pCurve->process(iFrame);
+			pCurve = pCurve->next();
+		}
+	}
+
+	// Process management.
+	void updateProcess(bool bProcess)
+	{
+		if (bProcess)
+			++m_iProcess;
+		else
+		if (!bProcess)
+			--m_iProcess;
+	}
+
+	void setProcessAll(bool bProcess)
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			pCurve->setProcess(bProcess);
+			pCurve = pCurve->next();
+		}
+	}
+
+	bool isProcessAll() const
+		{ return isProcess() && m_iProcess >= count(); }
+	bool isProcess() const
+		{ return m_iProcess > 0; }
+	bool isProcessEnabled() const
+		{ return isEnabled() && isProcess(); }
+
+	// Capture management.
+	void updateCapture(bool bCapture)
+	{
+		if (bCapture)
+			++m_iCapture;
+		else
+			--m_iCapture;
+	}
+
+	void setCaptureAll(bool bCapture)
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			pCurve->setCapture(bCapture);
+			pCurve = pCurve->next();
+		}
+	}
+
+	bool isCaptureAll() const
+		{ return isCapture() && m_iCapture >= count(); }
+	bool isCapture() const
+		{ return m_iCapture > 0; }
+	bool isCaptureEnabled() const
+		{ return isEnabled() && isCapture(); }
+
+	// Check whether there's any captured material.
+	bool isEditListEmpty() const
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			qtractorCurveEditList *pEditList = pCurve->editList();
+			if (pEditList && !pEditList->isEmpty())
+				return false;
+			pCurve = pCurve->next();
+		}
+		return true;
+	}
+
+	// Whole list cleaner.
+	void clearAll()
+	{
+		m_pCurrentCurve = NULL;
+
+		clear();
+
+		m_iEnabled = 0;
+		m_iCapture = 0;
+		m_iProcess = 0;
+	}
+
+	// Signal/slot notifier accessor.
+	qtractorCurveListProxy *proxy()
+		{ return &m_proxy; }
+
+	// Signal/slot notification.
+	void notify() { m_proxy.notify(); }
+
+	// Current curve accessors.
+	void setCurrentCurve(qtractorCurve *pCurve)
+		{ m_pCurrentCurve = pCurve; }
+	qtractorCurve *currentCurve() const
+		{ return m_pCurrentCurve; }
+
+private:
+
+	// Mass capture/process state counters.
+	int m_iEnabled;
+	int m_iProcess;
+	int m_iCapture;
+
+	// Signal/slot notifier.
+	qtractorCurveListProxy m_proxy;
+
+	// Current selected curve.
+	qtractorCurve *m_pCurrentCurve;
 };
 
 
