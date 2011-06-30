@@ -236,6 +236,8 @@ void qtractorCurve::clear (void)
 qtractorCurve::Node *qtractorCurve::addNode (
 	unsigned long iFrame, float fValue, qtractorCurveEditList *pEditList )
 {
+	fValue = m_observer.safeValue(fValue);
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorCurve[%p]::addNode(%lu, %g, %p)", this,
 		iFrame, fValue, pEditList);
@@ -296,8 +298,6 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			pEditList->moveNode(pNode);
 		pNode->frame = m_cursor.frame();
 		pNode->value = fValue;
-		updateNode(pNode);
-		pNode = NULL; // Not a brand new node!
 	} else {
 		// Create a brand new node,
 		// insert it in the right frame...
@@ -308,9 +308,10 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			m_nodes.append(pNode);
 		if (pEditList)
 			pEditList->addNode(pNode);
-		updateNode(pNode);
 	}
 
+	updateNode(pNode);
+	
 	// Dirty up...
 	++m_iDirtyCount;
 
