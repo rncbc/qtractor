@@ -223,20 +223,19 @@ void qtractorAudioMonitor::process (
 }
 
 void qtractorAudioMonitor::process_meter (
-	float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, unsigned int iOffset )
+	float **ppFrames, unsigned int iFrames, unsigned short iChannels )
 {
 	if (iChannels < 1)
 		iChannels = m_iChannels;
 
 	if (iChannels == m_iChannels) {
 		for (unsigned short i = 0; i < m_iChannels; ++i)
-			(*m_pfnProcessMeter)(ppFrames[i] + iOffset, iFrames, &m_pfValues[i]);
+			(*m_pfnProcessMeter)(ppFrames[i], iFrames, &m_pfValues[i]);
 	}
 	else if (iChannels > m_iChannels) {
 		unsigned short j = 0;
 		for (unsigned short i = 0; i < iChannels; ++i) {
-			(*m_pfnProcessMeter)(ppFrames[i] + iOffset, iFrames, &m_pfValues[j]);
+			(*m_pfnProcessMeter)(ppFrames[i], iFrames, &m_pfValues[j]);
 			if (++j >= m_iChannels)
 				j = 0;
 		}
@@ -244,7 +243,7 @@ void qtractorAudioMonitor::process_meter (
 	else { // (iChannels < m_iChannels)
 		unsigned short i = 0;
 		for (unsigned short j = 0; j < m_iChannels; ++j) {
-			(*m_pfnProcessMeter)(ppFrames[i] + iOffset, iFrames, &m_pfValues[j]);
+			(*m_pfnProcessMeter)(ppFrames[i], iFrames, &m_pfValues[j]);
 			if (++i >= iChannels)
 				i = 0;
 		}

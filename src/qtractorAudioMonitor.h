@@ -50,8 +50,7 @@ public:
 	void process(float **ppFrames,
 		unsigned int iFrames, unsigned short iChannels = 0);
 	void process_meter(float **ppFrames,
-		unsigned int iFrames, unsigned short iChannels = 0,
-		unsigned int iOffset = 0);
+		unsigned int iFrames, unsigned short iChannels = 0);
 
 protected:
 
