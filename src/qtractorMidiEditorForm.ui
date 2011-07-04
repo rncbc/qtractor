@@ -393,7 +393,7 @@
   </action>
   <action name="filePropertiesAction" >
    <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editClip.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/clipEdit.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Properties...</string>
