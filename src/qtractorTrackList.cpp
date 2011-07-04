@@ -91,6 +91,15 @@ public:
 				pal.setColor(QPalette::ButtonText, Qt::green);
 			}
 			QPushButton::setPalette(pal);
+			QString sToolTip(tr("Automation (%1)"));
+			qtractorSubject *pSubject = NULL;
+			qtractorCurve *pCurrentCurve = pCurveList->currentCurve();
+			if (pCurrentCurve)
+				pSubject = pCurrentCurve->subject();
+			if (pSubject)
+				QPushButton::setToolTip(sToolTip.arg(pSubject->name()));
+			else
+				QPushButton::setToolTip(sToolTip.arg(tr("none")));
 		}
 	}
 

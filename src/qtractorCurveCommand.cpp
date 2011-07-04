@@ -103,7 +103,7 @@ qtractorCurveSelectCommand::qtractorCurveSelectCommand (
 
 
 // Virtual command methods.
-bool qtractorCurveSelectCommand::execute ( bool /*bRedo*/ )
+bool qtractorCurveSelectCommand::execute ( bool bRedo )
 {
 	if (m_pCurveList == NULL)
 		return false;
@@ -112,7 +112,7 @@ bool qtractorCurveSelectCommand::execute ( bool /*bRedo*/ )
 	m_pCurveList->setCurrentCurve(m_pCurrentCurve);
 	m_pCurrentCurve = pCurrentCurve;
 
-	return true;
+	return qtractorCurveBaseCommand::execute(bRedo);
 }
 
 
