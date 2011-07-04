@@ -827,7 +827,7 @@ bool qtractorTrackGainCommand::redo (void)
 
 	// Set track gain (respective monitor gets set too...)
 	pTrack->setGain(m_fGain);
-
+#if 0
 	// MIDI tracks are special...
 	if (pTrack->trackType() == qtractorTrack::Midi) {
 		// Gotta make sure we've a proper MIDI bus...
@@ -836,7 +836,7 @@ bool qtractorTrackGainCommand::redo (void)
 		if (pMidiBus)
 			pMidiBus->setVolume(pTrack, m_fGain);
 	}
-
+#endif
 	// Send MIDI controller command(s)...
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();

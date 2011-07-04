@@ -95,6 +95,78 @@ private:
 };
 
 
+//----------------------------------------------------------------------------
+// qtractorTrack::MidiVolumeObserver -- Local dedicated observer.
+
+class qtractorTrack::MidiVolumeObserver : public qtractorObserver
+{
+public:
+
+	// Constructor.
+	MidiVolumeObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
+		: qtractorObserver(pSubject), m_pTrack(pTrack), m_volume(0) {}
+
+protected:
+
+	// Update feedback.
+	void update()
+	{
+		const float fVolume = value();
+		const unsigned char vol = int(127.0f * fVolume) & 0x7f;
+		if (m_volume != vol) {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
+			if (pMidiBus) {
+				pMidiBus->setVolume(m_pTrack, fVolume);
+				m_volume = vol;
+			}
+		}
+	}
+
+private:
+
+	// Members.
+	qtractorTrack *m_pTrack;
+	unsigned char  m_volume;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorTrack::MidiPanningObserver -- Local dedicated observer.
+
+class qtractorTrack::MidiPanningObserver : public qtractorObserver
+{
+public:
+
+	// Constructor.
+	MidiPanningObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
+		: qtractorObserver(pSubject), m_pTrack(pTrack), m_panning(0) {}
+
+protected:
+
+	// Update feedback.
+	void update()
+	{
+		const float fPanning = value();
+		const unsigned char pan = (0x40 + int(63.0f * fPanning)) & 0x7f;
+		if (m_panning != pan) {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
+			if (pMidiBus) {
+				pMidiBus->setPanning(m_pTrack, fPanning);
+				m_panning = pan;
+			}
+		}
+	}
+
+private:
+
+	// Members.
+	qtractorTrack *m_pTrack;
+	unsigned char  m_panning;
+};
+
+
 //-------------------------------------------------------------------------
 // qtractorTrack::Properties -- Track properties structure.
 
@@ -167,6 +239,9 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_clips.setAutoDelete(true);
 
 	m_pSyncThread = NULL;
+
+	m_pMidiVolumeObserver  = NULL;
+	m_pMidiPanningObserver = NULL;
 
 	m_pMonitorSubject = new qtractorSubject();
 	m_pMonitorSubject->setToggled(true);
@@ -352,6 +427,10 @@ bool qtractorTrack::open (void)
 		if (pMidiBus) {
 			m_pMonitor = new qtractorMidiMonitor(
 				m_props.gain, m_props.panning);
+			m_pMidiVolumeObserver = new MidiVolumeObserver(
+				this, m_pMonitor->gainSubject());
+			m_pMidiPanningObserver = new MidiPanningObserver(
+				this, m_pMonitor->panningSubject());
 		}
 		// Get audio bus as for the plugin list...
 		qtractorAudioBus *pAudioBus = NULL;
@@ -423,6 +502,16 @@ bool qtractorTrack::open (void)
 // Track close method.
 void qtractorTrack::close (void)
 {
+	if (m_pMidiVolumeObserver) {
+		delete m_pMidiVolumeObserver;
+		m_pMidiVolumeObserver = NULL;
+	}
+
+	if (m_pMidiPanningObserver) {
+		delete m_pMidiPanningObserver;
+		m_pMidiPanningObserver = NULL;
+	}
+
 #if 0
 	if (m_pMonitor) {
 		delete m_pMonitor;

@@ -328,6 +328,13 @@ private:
 	// Audio buffer ring-cache (playlist).
 	qtractorAudioBufferThread *m_pSyncThread;
 
+	// MIDI track/channel (volume, panning) observers.
+	class MidiVolumeObserver;
+	class MidiPanningObserver;
+
+	MidiVolumeObserver  *m_pMidiVolumeObserver;
+	MidiPanningObserver *m_pMidiPanningObserver;
+
 	// State (monitor, record, mute, solo) observer stuff.
 	qtractorMidiControlObserver *m_pMonitorObserver;
 
