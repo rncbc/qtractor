@@ -5,17 +5,17 @@ ChangeLog
 
 SVN TRUNK
 
+- TYOQA! the underground sources have emerged:...
+  after years in the making, track automation, or
+  dynamic curves as some like to call, is finally
+  a reality, tricky but real ;) (EXPERIMENTAL)
+
 - Audio clip anti-glitch/ramp-smoothing effect is
   now slightly independent of current buffer-size
   period (mitigating bug #3338113 effect).
 
 - Once buried under the Edit menu, Clip menu has
   been finally promoted to top main menu.
-
-- TYOQA! the underground sources have emerged:...
-  after years in the making, track automation, or
-  dynamic curves as some like to call, is finally
-  a reality, tricky but real ;) (EXPERIMENTAL)
 
 - Debugging stacktrace now applies to all working
   threads.

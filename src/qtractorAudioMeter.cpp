@@ -478,7 +478,7 @@ void qtractorAudioMeter::reset (void)
 	if (m_iChannels > 0) {
 		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
-			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i/*, boxWidget()*/);
+			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i);
 			m_ppAudioValues[i]->show();
 		}
 	}
