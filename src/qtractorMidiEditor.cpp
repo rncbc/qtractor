@@ -1247,72 +1247,99 @@ void qtractorMidiEditor::verticalZoomStep ( int iZoomStep )
 // Zoom view slots.
 void qtractorMidiEditor::zoomIn (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	if (m_iZoomMode & ZoomHorizontal)
 		horizontalZoomStep(+ ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
 		verticalZoomStep(+ ZoomStep);
 
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorMidiEditor::zoomOut (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	if (m_iZoomMode & ZoomHorizontal)
 		horizontalZoomStep(- ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
 		verticalZoomStep(- ZoomStep);
 
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
 void qtractorMidiEditor::zoomReset (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	if (m_iZoomMode & ZoomHorizontal)
 		horizontalZoomStep(ZoomBase - m_pTimeScale->horizontalZoom());
 	if (m_iZoomMode & ZoomVertical)
 		verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
 
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
 void qtractorMidiEditor::horizontalZoomInSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	horizontalZoomStep(+ ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorMidiEditor::horizontalZoomOutSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	horizontalZoomStep(- ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
 void qtractorMidiEditor::verticalZoomInSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	verticalZoomStep(+ ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorMidiEditor::verticalZoomOutSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	verticalZoomStep(- ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
 void qtractorMidiEditor::horizontalZoomResetSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	horizontalZoomStep(ZoomBase - m_pTimeScale->horizontalZoom());
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorMidiEditor::verticalZoomResetSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
@@ -1805,6 +1832,77 @@ void qtractorMidiEditor::centerContents (void)
 			cy = 0;
 		m_pEditView->setContentsPos(m_pEditView->contentsX(), cy);
 	}
+
+	// Update visual cursors anyway...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		setPlayHead(pSession->playHead(), false);
+		setEditHead(pSession->editHead(), false);
+		setEditTail(pSession->editTail(), false);
+	}
+
+	// Trigger a complete view update...
+	m_pEditList->updateContents();
+	m_pEditTime->updateContents();
+	m_pEditView->updateContents();
+	m_pEditEvent->updateContents();
+}
+
+
+// Zoom centering prepare method.
+// (usually before zoom change)
+void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
+{
+	if (m_pTimeScale == NULL)
+		return;
+
+	QWidget *pViewport = m_pEditView->viewport();
+	const QRect& rect = pViewport->rect();
+	const QPoint& pos = pViewport->mapFromGlobal(QCursor::pos());
+	if (rect.contains(pos)) {
+		zc.x = pos.x();
+		zc.y = pos.y();
+	} else {
+	#if 0
+		zc.x = 0;
+		zc.y = 0;
+	#else
+		zc.x = (rect.width()  >> 1);
+		zc.y = (rect.height() >> 1);
+	#endif
+	}
+
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	int cx = m_pEditView->contentsX();
+	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
+
+	int cy = m_pEditView->contentsY();
+	zc.item = (cy + zc.y) / m_pEditList->itemHeight();
+}
+
+
+// Zoom centering post methods.
+// (usually after zoom change)
+void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
+{
+	if (m_pTimeScale == NULL)
+		return;
+
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	int cx = m_pTimeScale->pixelFromFrame(zc.frame);
+	int cy = zc.item * m_pEditList->itemHeight();
+
+	if (cx > zc.x + x0) cx -= zc.x + x0; else cx = 0;
+	if (cy > zc.y) cy -= zc.y; else cy = 0;
+
+	// Update dependant views.
+	m_pEditList->updateContentsHeight();
+	m_pEditView->updateContentsWidth();
+
+	updateSelect(true);
+
+	// Do the centering...
+	m_pEditView->setContentsPos(cx, cy);
 
 	// Update visual cursors anyway...
 	qtractorSession *pSession = qtractorSession::getInstance();

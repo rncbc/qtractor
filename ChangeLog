@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- All zooming in/out is now relative to either the
+  viewport center or current mouse cursor position
+  if found laying inside. (EXPERIMENTAL)
+
 - TYOQA! the underground sources have emerged:...
   after years in the making, track automation, or
   dynamic curves as some like to call, is finally

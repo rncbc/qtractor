@@ -143,9 +143,16 @@ protected:
 	void horizontalZoomStep(int iZoomStep);
 	void verticalZoomStep(int iZoomStep);
 
-	// Try to center horizontally/vertically
-	// (usually after zoom change)
-	void centerContents();
+	// Zoom centering context.
+	struct ZoomCenter
+	{
+		int x, y;
+		unsigned long frame;
+	};
+
+	// Zoom centering prepare and post methods.
+	void zoomCenterPre(ZoomCenter& zc) const;
+	void zoomCenterPost(const ZoomCenter& zc);
 
 	// Multi-clip command builders.
 	bool normalizeClipCommand(
