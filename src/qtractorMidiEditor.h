@@ -368,6 +368,17 @@ protected:
 	void horizontalZoomStep(int iZoomStep);
 	void verticalZoomStep(int iZoomStep);
 
+	// Zoom centering context.
+	struct ZoomCenter
+	{
+		int x, y, item;
+		unsigned long frame;
+	};
+
+	// Zoom centering prepare and post methods.
+	void zoomCenterPre(ZoomCenter& zc) const;
+	void zoomCenterPost(const ZoomCenter& zc);
+
 	// Selection flags
 	enum { 
 		SelectNone   = 0,

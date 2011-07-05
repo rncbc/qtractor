@@ -216,22 +216,28 @@ int qtractorTracks::zoomMode (void) const
 // Zoom view actuators.
 void qtractorTracks::zoomIn (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	if (m_iZoomMode & ZoomHorizontal)
 		horizontalZoomStep(+ ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
 		verticalZoomStep(+ ZoomStep);
 
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorTracks::zoomOut (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	if (m_iZoomMode & ZoomHorizontal)
 		horizontalZoomStep(- ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
 		verticalZoomStep(- ZoomStep);
 
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
@@ -241,37 +247,52 @@ void qtractorTracks::zoomReset (void)
 	if (pSession == NULL)
 		return;
 
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	if (m_iZoomMode & ZoomHorizontal)
 		horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
 	if (m_iZoomMode & ZoomVertical)
 		verticalZoomStep(ZoomBase - pSession->verticalZoom());
 
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
 void qtractorTracks::horizontalZoomInSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	horizontalZoomStep(+ ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorTracks::horizontalZoomOutSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	horizontalZoomStep(- ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorTracks::verticalZoomInSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	verticalZoomStep(+ ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorTracks::verticalZoomOutSlot (void)
 {
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	verticalZoomStep(- ZoomStep);
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 void qtractorTracks::viewZoomResetSlot (void)
@@ -280,29 +301,63 @@ void qtractorTracks::viewZoomResetSlot (void)
 	if (pSession == NULL)
 		return;
 
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
 	// All zoom base are belong to us :)
 	verticalZoomStep(ZoomBase - pSession->verticalZoom());
 	horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
-	centerContents();
+	zoomCenterPost(zc);
 }
 
 
-// Try to center horizontally/vertically
-// (usually after zoom change)
-void qtractorTracks::centerContents (void)
+// Zoom centering prepare method.
+// (usually before zoom change)
+void qtractorTracks::zoomCenterPre ( ZoomCenter& zc ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
-		
-	// Get current session frame location...
-	unsigned long iFrame = m_pTrackView->sessionCursor()->frame();
+
+	QWidget *pViewport = m_pTrackView->viewport();
+	const QRect& rect = pViewport->rect();
+	const QPoint& pos = pViewport->mapFromGlobal(QCursor::pos());
+	if (rect.contains(pos)) {
+		zc.x = pos.x();
+		zc.y = 0; // pos.y();
+	} else {
+	#if 0
+		zc.x = 0;
+		zc.y = 0;
+	#else
+		zc.x = (rect.width() >> 1);
+		zc.y = 0; // (rect.height() >> 1);
+	#endif
+	}
+
+	int cx = m_pTrackView->contentsX();
+	zc.frame = pSession->frameFromPixel(cx + zc.x);
+}
+
+
+// Zoom centering post methods.
+// (usually after zoom change)
+void qtractorTracks::zoomCenterPost ( const ZoomCenter& zc )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	int cx = pSession->pixelFromFrame(zc.frame);
+	int cy = m_pTrackView->contentsY();
+
+	if (cx > zc.x) cx -= zc.x; else cx = 0;
+	if (cy > zc.y) cy -= zc.y; else cy = 0;
 
 	// Update the dependant views...
 	m_pTrackList->updateContentsHeight();
 	m_pTrackView->updateContentsWidth();
-	m_pTrackView->setContentsPos(
-		pSession->pixelFromFrame(iFrame), m_pTrackView->contentsY());
+	m_pTrackView->setContentsPos(cx, cy);
 	m_pTrackView->updateContents();
 
 	// Make its due...
