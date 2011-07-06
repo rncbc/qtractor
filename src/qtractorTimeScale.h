@@ -179,10 +179,10 @@ public:
 
 		// Beat/pixel convertors.
 		unsigned int beatFromPixel(int x) const
-			{ return beat + uroundf(
+			{ return beat + (unsigned long) (
 				(beatRate * (x - pixel)) / ts->pixelRate()); }
 		int pixelFromBeat(unsigned int iBeat) const
-			{ return pixel + uroundf(
+			{ return pixel + (unsigned long) (
 				(ts->pixelRate() * (iBeat - beat)) / beatRate); }
 
 		// Pixel/beat rate convertor.
@@ -191,10 +191,10 @@ public:
 
 		// Bar/pixel convertors.
 		unsigned short barFromPixel(int x) const
-			{ return bar + uroundf(
+			{ return bar + (unsigned long) (
 				(beatRate * (x - pixel)) / (ts->pixelRate() * beatsPerBar)); }
 		int pixelFromBar(unsigned short iBar) const
-			{ return pixel + uroundf(
+			{ return pixel + (unsigned long) (
 				(ts->pixelRate() * beatsPerBar * (iBar - bar)) / beatRate); }
 
 		// Bar/beat convertors.
