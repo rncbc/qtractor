@@ -67,7 +67,10 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 					pItem->name  = eItem.attribute("name");
 					pItem->index = eItem.attribute("index").toULong();
 					pItem->mode  = modeFromText(eItem.attribute("mode"));
-					pItem->logarithmic = false; // Default.
+					pItem->process = false; // Defaults.
+					pItem->capture = false;
+					pItem->locked  = false;
+					pItem->logarithmic = false;
 					for (QDomNode nProp = eItem.firstChild();
 							!nProp.isNull(); nProp = nProp.nextSibling()) {
 						// Convert node to element, if any.
@@ -88,6 +91,9 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 						else
 						if (eProp.tagName() == "capture")
 							pItem->capture = qtractorDocument::boolFromText(eProp.text());
+						else
+						if (eProp.tagName() == "locked")
+							pItem->locked = qtractorDocument::boolFromText(eProp.text());
 						else
 						if (eProp.tagName() == "logarithmic")
 							pItem->logarithmic = qtractorDocument::boolFromText(eProp.text());
@@ -156,6 +162,8 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 				pDocument->textFromBool(pItem->process), &eItem);
 			pDocument->saveTextElement("capture",
 				pDocument->textFromBool(pItem->capture), &eItem);
+			pDocument->saveTextElement("locked",
+				pDocument->textFromBool(pItem->locked), &eItem);
 			pDocument->saveTextElement("logarithmic",
 				pDocument->textFromBool(pItem->logarithmic), &eItem);
 			pDocument->saveTextElement("color",
@@ -223,6 +231,7 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 		}
 		pCurve->setProcess(pItem->process);
 		pCurve->setCapture(pItem->capture);
+		pCurve->setLocked(pItem->locked);
 		pCurve->setLogarithmic(pItem->logarithmic);
 		pCurve->setColor(pItem->color);
 		++iSeq;

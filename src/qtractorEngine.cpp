@@ -672,6 +672,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveItem->mode = pCurve->mode();
 		pCurveItem->process = pCurve->isProcess();
 		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->locked = pCurve->isLocked();
 		pCurveItem->logarithmic = pCurve->isLogarithmic();
 		pCurveItem->color = pCurve->color();
 		pCurveItem->subject = pCurve->subject();
@@ -689,6 +690,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveItem->mode = pCurve->mode();
 		pCurveItem->process = pCurve->isProcess();
 		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->locked = pCurve->isLocked();
 		pCurveItem->logarithmic = pCurve->isLogarithmic();
 		pCurveItem->color = pCurve->color();
 		pCurveItem->subject = pCurve->subject();
@@ -707,6 +709,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveItem->process = pCurve->isProcess();
 		pCurveItem->capture = pCurve->isCapture();
 		pCurveItem->logarithmic = pCurve->isLogarithmic();
+		pCurveItem->locked = pCurve->isLocked();
 		pCurveItem->color = pCurve->color();
 		pCurveItem->subject = pCurve->subject();
 		pCurveFile->addItem(pCurveItem);

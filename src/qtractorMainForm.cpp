@@ -720,6 +720,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackCurveColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackCurveColor()));
+	QObject::connect(m_ui.trackCurveLockedAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveLocked(bool)));
 	QObject::connect(m_ui.trackCurveProcessAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackCurveProcess(bool)));
@@ -729,6 +732,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackCurveClearAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackCurveClear()));
+	QObject::connect(m_ui.trackCurveLockedAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackCurveLockedAll(bool)));
 	QObject::connect(m_ui.trackCurveProcessAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackCurveProcessAll(bool)));
@@ -2806,6 +2812,32 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 }
 
 
+// Track automation curve lock toggle.
+void qtractorMainForm::trackCurveLocked ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
+	if (pCurrentCurve == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveLocked(%d)", int(bOn));
+#endif
+
+	pCurrentCurve->setLocked(bOn);
+
+	m_pTracks->updateTrackView();
+
+	++m_iDirtyCount;
+	stabilizeForm();
+}
+
+
 // Track automation curve playback toggle.
 void qtractorMainForm::trackCurveProcess ( bool bOn )
 {
@@ -2971,6 +3003,32 @@ void qtractorMainForm::trackCurveClear (void)
 #else
 	m_pSession->execute(new qtractorCurveClearCommand(pCurrentCurve));
 #endif
+}
+
+
+// Track automation all curves lock toggle.
+void qtractorMainForm::trackCurveLockedAll ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackCurveLockedAll(%d)", int(bOn));
+#endif
+
+	pCurveList->setLockedAll(bOn);
+
+	m_pTracks->updateTrackView();
+
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -5244,6 +5302,10 @@ void qtractorMainForm::updateCurveMenu (void)
 
 	m_ui.trackCurveModeMenu->setEnabled(bCurveEnabled);
 
+	m_ui.trackCurveLockedAction->setEnabled(bCurveEnabled);
+	m_ui.trackCurveLockedAction->setChecked(
+		pCurrentCurve && pCurrentCurve->isLocked());
+
 	m_ui.trackCurveProcessAction->setEnabled(bCurveEnabled);
 	m_ui.trackCurveProcessAction->setChecked(
 		pCurrentCurve && pCurrentCurve->isProcess());
@@ -5253,6 +5315,11 @@ void qtractorMainForm::updateCurveMenu (void)
 		pCurrentCurve && pCurrentCurve->isCapture());
 
 	m_ui.trackCurveClearAction->setEnabled(bCurveEnabled);
+
+	m_ui.trackCurveLockedAllAction->setEnabled(bEnabled);
+	m_ui.trackCurveLockedAllAction->setChecked(
+		pCurveList && pCurveList->isLockedAll());
+	m_ui.trackCurveLockedAllAction->setEnabled(bEnabled);
 
 	m_ui.trackCurveProcessAllAction->setEnabled(bEnabled);
 	m_ui.trackCurveProcessAllAction->setChecked(

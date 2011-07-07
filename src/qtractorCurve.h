@@ -180,7 +180,7 @@ public:
 	const Cursor& cursor() const { return m_cursor; }
 
 	// Curve state.
-	enum State { Idle = 0, Enabled = 1, Process = 2, Capture = 4 };
+	enum State { Idle = 0, Enabled = 1, Process = 2, Capture = 4, Locked = 8 };
 
 	bool isIdle() const
 		{ return (m_state == Idle); }
@@ -190,6 +190,9 @@ public:
 		{ return (m_state & Process); }
 	bool isCapture() const
 		{ return (m_state & Capture); }
+	bool isLocked() const
+		{ return (m_state & Locked); }
+
 	bool isProcessEnabled() const
 		{ return isEnabled() && isProcess(); }
 	bool isCaptureEnabled() const
@@ -199,6 +202,7 @@ public:
 	void setEnabled(bool bEnabled);
 	void setCapture(bool bCapture);
 	void setProcess(bool bProcess);
+	void setLocked(bool bLocked);
 
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
@@ -445,7 +449,8 @@ public:
 
 	// Constructor.
 	qtractorCurveList() : m_iEnabled(0),
-		m_iProcess(0), m_iCapture(0), m_pCurrentCurve(NULL)
+		m_iProcess(0), m_iCapture(0),
+	    m_iLocked(0), m_pCurrentCurve(NULL)
 		{ setAutoDelete(true); }
 
 	// ~Destructor.
@@ -470,6 +475,8 @@ public:
 			updateProcess(false);
 		if (pCurve->isCapture())
 			updateCapture(false);
+		if (pCurve->isLocked())
+			updateLocked(false);
 
 	//	remove(pCurve);
 	}
@@ -581,6 +588,29 @@ public:
 	bool isCaptureEnabled() const
 		{ return isEnabled() && isCapture(); }
 
+	// Locked management.
+	void updateLocked(bool bLocked)
+	{
+		if (bLocked)
+			++m_iLocked;
+		else
+			--m_iLocked;
+	}
+
+	void setLockedAll(bool bLocked)
+	{
+		qtractorCurve *pCurve = first();
+		while (pCurve) {
+			pCurve->setLocked(bLocked);
+			pCurve = pCurve->next();
+		}
+	}
+
+	bool isLockedAll() const
+		{ return isLocked() && m_iLocked >= count(); }
+	bool isLocked() const
+		{ return m_iLocked > 0; }
+
 	// Check whether there's any captured material.
 	bool isEditListEmpty() const
 	{
@@ -625,6 +655,7 @@ private:
 	int m_iEnabled;
 	int m_iProcess;
 	int m_iCapture;
+	int m_iLocked;
 
 	// Signal/slot notifier.
 	qtractorCurveListProxy m_proxy;
