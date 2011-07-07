@@ -82,6 +82,7 @@ public:
 		qtractorCurve::Mode mode;
 		bool             process;
 		bool             capture;
+		bool             locked;
 		bool             logarithmic;
 		QColor           color;
 		qtractorSubject *subject;

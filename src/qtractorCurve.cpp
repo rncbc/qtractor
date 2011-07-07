@@ -712,6 +712,21 @@ void qtractorCurve::setProcess ( bool bProcess )
 }
 
 
+void qtractorCurve::setLocked ( bool bLocked )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorCurve[%p]::setLocked(%d)", this, int(bLocked));
+#endif
+
+	bool bOldLocked = (m_state & Locked);
+
+	m_state = State(bLocked ? (m_state | Locked) : (m_state & ~Locked));
+
+	if ((bLocked && !bOldLocked) || (!bLocked && bOldLocked))
+		m_pList->updateLocked(bLocked);
+}
+
+
 //----------------------------------------------------------------------
 // qtractorCurveEditList -- Curve node edit list.
 

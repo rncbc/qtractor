@@ -487,7 +487,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			while (pNode && pNode->frame < iTrackEnd) {
 				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
 				yc2 = y2 - int(cursor.scale(pNode) * float(h)) - cy;
-				pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
+				if (!pCurve->isLocked())
+					pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 				switch (mode) {
 				case qtractorCurve::Hold:
 					path.lineTo(xc2, yc1);
@@ -896,6 +897,8 @@ qtractorCurve::Node *qtractorTrackView::nodeAtTrack ( const QPoint& pos,
 
 	qtractorCurve *pCurve = pCurveList->currentCurve();
 	if (pCurve == NULL)
+		return NULL;
+	if (pCurve->isLocked())
 		return NULL;
 
 	int y0 = pTrackViewInfo->trackRect.y();
@@ -2721,6 +2724,8 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 
 	qtractorCurve *pCurve = pCurveList->currentCurve();
 	if (pCurve == NULL)
+		return;
+	if (pCurve->isLocked())
 		return;
 
 	if (m_pDragCurve && m_pDragCurve != pCurve)

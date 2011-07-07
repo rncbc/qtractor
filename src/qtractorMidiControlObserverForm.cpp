@@ -641,6 +641,16 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pCurveModeMenu->setEnabled(pCurve->isEnabled());
 	pMenu->addMenu(pCurveModeMenu);
 
+	pAction = pMenu->addAction(tr("&Lock"));
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurve->isLocked());
+	pAction->setEnabled(pCurve->isEnabled());
+	QObject::connect(
+		pAction, SIGNAL(triggered(bool)),
+		pMainForm, SLOT(trackCurveLocked(bool)));
+
+	pMenu->addSeparator();
+
 	QIcon iconProcess;
 	iconProcess.addPixmap(
 		QPixmap(":/images/trackCurveProcess.png"), QIcon::Normal, QIcon::On);

@@ -169,11 +169,13 @@ public slots:
 	void trackCurveMode(QAction *pAction);
 	void trackCurveProcess(bool bOn);
 	void trackCurveCapture(bool bOn);
+	void trackCurveLocked(bool bOn);
 	void trackCurveLogarithmic(bool bOn);
 	void trackCurveColor();
 	void trackCurveClear();
 	void trackCurveProcessAll(bool bOn);
 	void trackCurveCaptureAll(bool bOn);
+	void trackCurveLockedAll(bool bOn);
 	void trackCurveClearAll();
 
 	void clipNew();
