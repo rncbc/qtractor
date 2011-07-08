@@ -477,6 +477,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorCurve::Cursor cursor(pCurve);
 			qtractorCurve::Node *pNode = cursor.seek(frame);
 			qtractorCurve::Mode mode = pCurve->mode();
+			bool bLogarithmic = pCurve->isLogarithmic();
 			int xc2, xc1 = trackRect.x();
 			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h)) - cy;
 			QColor rgbCurve(pCurve->color());
@@ -496,14 +497,15 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					yc1 = yc2;
 					break;
 				case qtractorCurve::Linear:
-					path.lineTo(xc2, yc2);
-					break;
+					if (!bLogarithmic) path.lineTo(xc2, yc2);
+					// Fall thru...
 				default:
 					break;
 				}
 				pNode = pNode->next();
 			}	
-			if (mode == qtractorCurve::Spline)	 {
+			if ((mode == qtractorCurve::Spline) ||
+				(mode == qtractorCurve::Linear && bLogarithmic)) {
 				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 4) {
 					frame = pSession->frameFromPixel(cx + xc2);
 					yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
