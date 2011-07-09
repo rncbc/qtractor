@@ -480,6 +480,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			bool bLogarithmic = pCurve->isLogarithmic();
 			int xc2, xc1 = trackRect.x();
 			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h)) - cy;
+			int yc3, xc3 = xc1 + 4;
 			QColor rgbCurve(pCurve->color());
 			QPen pen(rgbCurve);
 			pPainter->setPen(pen);
@@ -493,40 +494,46 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				switch (mode) {
 				case qtractorCurve::Hold:
 					path.lineTo(xc2, yc1);
-					path.lineTo(xc2, yc2);
 					yc1 = yc2;
 					break;
 				case qtractorCurve::Linear:
-					if (!bLogarithmic) path.lineTo(xc2, yc2);
+					if (!bLogarithmic)
+						break;
 					// Fall thru...
+				case qtractorCurve::Spline:
 				default:
+					for ( ; xc3 < xc2 - 4; xc3 += 4) {
+						frame = pSession->frameFromPixel(cx + xc3);
+						yc3 = h - int(cursor.scale(frame) * float(h)) - cy;
+						path.lineTo(xc3, yc3);
+					}
+					xc3 = xc2 + 4;
 					break;
 				}
+				path.lineTo(xc2, yc2);
 				pNode = pNode->next();
-			}	
-			if ((mode == qtractorCurve::Spline) ||
-				(mode == qtractorCurve::Linear && bLogarithmic)) {
-				for (xc2 = xc1 + 4; xc2 < rect.right() + 4; xc2 += 4) {
-					frame = pSession->frameFromPixel(cx + xc2);
-					yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
-					path.lineTo(xc2, yc2);
-				}
-			} else {
-				xc2 = rect.right();
-				frame = pSession->frameFromPixel(cx + xc2);
-				yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
-				switch (mode) {
-				case qtractorCurve::Hold:
-					path.lineTo(xc2, yc1);
-					path.lineTo(xc2, yc2);
-					break;
-				case qtractorCurve::Linear:
-					path.lineTo(xc2, yc2);
-					break;
-				default:
-					break;
-				}
 			}
+			xc2 = rect.right();
+			frame = pSession->frameFromPixel(cx + xc2);
+			yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
+			switch (mode) {
+			case qtractorCurve::Hold:
+				path.lineTo(xc2, yc1);
+				break;
+			case qtractorCurve::Linear:
+				if (!bLogarithmic)
+					break;
+				// Fall thru...
+			case qtractorCurve::Spline:
+			default:
+				for ( ; xc3 < xc2 - 4; xc3 += 4) {
+					frame = pSession->frameFromPixel(cx + xc3);
+					yc3 = h - int(cursor.scale(frame) * float(h)) - cy;
+					path.lineTo(xc3, yc3);
+				}
+				break;
+			}
+			path.lineTo(xc2, yc2);
 			// Draw line...
 			//pen.setWidth(2);
 			pPainter->strokePath(path, pen);	
