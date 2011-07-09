@@ -504,7 +504,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				default:
 					for ( ; xc3 < xc2 - 4; xc3 += 4) {
 						frame = pSession->frameFromPixel(cx + xc3);
-						yc3 = h - int(cursor.scale(frame) * float(h)) - cy;
+						yc3 = y2 - int(cursor.scale(frame) * float(h)) - cy;
 						path.lineTo(xc3, yc3);
 					}
 					xc3 = xc2 + 4;
@@ -528,7 +528,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			default:
 				for ( ; xc3 < xc2 - 4; xc3 += 4) {
 					frame = pSession->frameFromPixel(cx + xc3);
-					yc3 = h - int(cursor.scale(frame) * float(h)) - cy;
+					yc3 = y2 - int(cursor.scale(frame) * float(h)) - cy;
 					path.lineTo(xc3, yc3);
 				}
 				break;
