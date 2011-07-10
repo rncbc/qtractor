@@ -478,6 +478,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorCurve::Node *pNode = cursor.seek(frame);
 			qtractorCurve::Mode mode = pCurve->mode();
 			bool bLogarithmic = pCurve->isLogarithmic();
+			bool bLocked = pCurve->isLocked();
 			int xc2, xc1 = trackRect.x();
 			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h)) - cy;
 			int yc3, xc3 = xc1 + 4;
@@ -489,7 +490,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			while (pNode && pNode->frame < iTrackEnd) {
 				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
 				yc2 = y2 - int(cursor.scale(pNode) * float(h)) - cy;
-				if (!pCurve->isLocked())
+				if (!bLocked)
 					pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 				switch (mode) {
 				case qtractorCurve::Hold:
