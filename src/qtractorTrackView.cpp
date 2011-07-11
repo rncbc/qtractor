@@ -2762,7 +2762,7 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 	}
 
-	qtractorScrollView::ensureVisible(pos.x(), pos.y());
+    qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	qtractorCurveEditList edits(pCurve);
 	unsigned long frame = pSession->frameFromPixel(pos.x());
