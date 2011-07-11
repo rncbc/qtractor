@@ -277,7 +277,6 @@ private:
 
 	qtractorTimeStretcher *m_pTimeStretcher;
 
-	float          m_fPrevGain;
 	float          m_fNextGain;
 	int            m_iRampGain;
 
