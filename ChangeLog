@@ -5,6 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- All changes to audio gain and panning on tracks
+  and buses are now applied following a piece-wise
+  linear ramp, reducing the old nasty clicks, pops
+  or zipper artifacts that might be awfully audible
+  on some situations, most specially on automation.
+  (EXPERIMENTAL)
+
 - All zooming in/out is now relative to either the
   viewport center or current mouse cursor position
   if found laying inside. (EXPERIMENTAL)

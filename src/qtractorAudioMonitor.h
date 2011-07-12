@@ -63,9 +63,11 @@ private:
 	unsigned short m_iChannels;
 	float         *m_pfValues;
 	float         *m_pfGains;
+	float         *m_pfPrevGains;
 
 	// Monitoring evaluator processor.
 	void (*m_pfnProcess)(float *, unsigned int, float, float *);
+	void (*m_pfnProcessIter)(float *, unsigned int, float, float, float *);
 	void (*m_pfnProcessMeter)(float *, unsigned int, float *);
 };
 
