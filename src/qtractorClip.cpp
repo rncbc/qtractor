@@ -291,7 +291,7 @@ float qtractorClip::gain ( unsigned long iOffset ) const
 	if (iOffset >= m_iClipLength)
 		return 0.0f;
 
-	float fGain = m_fGain; // * m_pTrack->gain();
+	float fGain = m_fGain;
 
 	if (m_iFadeInLength > 0 && iOffset < m_iFadeInLength) {
 		fGain *= (*m_pFadeInFunctor)(
