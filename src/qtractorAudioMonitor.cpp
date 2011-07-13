@@ -86,10 +86,8 @@ static inline void sse_process_iter ( float *pFrames, unsigned int iFrames,
 
 	const float fGainStep = 4.0f * (fGainLast - fGainIter) / float(iFrames);
 
-	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames) {
+	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames)
 		*pFrames++ *= fGainIter;
-		fGainIter += fGainStep;
-	}
 	
 	for (; iFrames >= 4; iFrames -= 4) {
 		v2 = _mm_mul_ps(_mm_loadu_ps(pFrames), _mm_load_ps1(&fGainIter));
@@ -99,10 +97,8 @@ static inline void sse_process_iter ( float *pFrames, unsigned int iFrames,
 		pFrames += 4;
 	}
 
-	for (; iFrames > 0; --iFrames) {
+	for (; iFrames > 0; --iFrames)
 		*pFrames++ *= fGainIter;
-		fGainIter += fGainStep;
-	}
 
 	*pfValue = *(float *) &v1; // CHEAT: take 1st of 4 possible values.
 }
@@ -325,8 +321,7 @@ void qtractorAudioMonitor::update (void)
 #endif
 	}
 	// Apply to multi-channel gain array (paired fashion)...
-	unsigned short i;
-	unsigned short iChannels = (m_iChannels - (m_iChannels % 2));
+	unsigned short i, iChannels = (m_iChannels - (m_iChannels % 2));
 	for (i = 0; i < iChannels; ++i)
 		m_pfGains[i] = afGains[i % 2];
 	while (i < m_iChannels)
