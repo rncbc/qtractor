@@ -250,9 +250,9 @@ public:
 	const QColor& color() const
 		{ return m_color; }
 
-	// Dirtyness status.
-	bool isDirty() const
-		{ return m_iDirtyCount > 0; }
+    // Emptyness status.
+    bool isEmpty() const
+        { return (m_nodes.count() < 1); }
 
 protected:
 
@@ -315,9 +315,6 @@ private:
 
 	// Capture (record) edit list.
 	qtractorCurveEditList *m_pEditList;
-
-	// Dirtyness counter.
-	int m_iDirtyCount;
 };
 
 
@@ -624,7 +621,11 @@ public:
 		return true;
 	}
 
-	// Whole list cleaner.
+    // Emptyness status.
+    bool isEmpty() const
+        { return (count() < 1); }
+
+    // Whole list cleaner.
 	void clearAll()
 	{
 		m_pCurrentCurve = NULL;

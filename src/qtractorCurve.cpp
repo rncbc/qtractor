@@ -227,8 +227,6 @@ void qtractorCurve::clear (void)
 	m_cursor.reset(NULL);
 
 	updateNodeEx(NULL);
-
-	m_iDirtyCount = 0;
 }
 
 
@@ -313,8 +311,6 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	updateNode(pNode);
 	
 	// Dirty up...
-	++m_iDirtyCount;
-
 	m_pList->notify();
 
 	return pNode;
@@ -341,8 +337,6 @@ void qtractorCurve::insertNode ( Node *pNode )
 	updateNode(pNode);
 
 	// Dirty up...
-	++m_iDirtyCount;
-
 	m_pList->notify();
 }
 
@@ -364,8 +358,6 @@ void qtractorCurve::unlinkNode ( Node *pNode )
 	updateNode(pNext);
 
 	// Dirty up...
-	++m_iDirtyCount;
-
 	m_pList->notify();
 }
 
@@ -387,8 +379,6 @@ void qtractorCurve::removeNode ( Node *pNode )
 	updateNode(pNext);
 
 	// Dirty up...
-	++m_iDirtyCount;
-
 	m_pList->notify();
 }
 
@@ -494,7 +484,6 @@ void qtractorCurve::setLength ( unsigned long iLength )
 		Node *pPrev = pNode->prev();
 		m_nodes.remove(pNode);
 		pNode = pPrev;
-		++m_iDirtyCount;
 	}
 
 	updateNode(pNode);
@@ -620,9 +609,6 @@ void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 	}
 
 	update();
-
-	// Not dirty by now...
-	m_iDirtyCount = 0;
 }
 
 

@@ -196,6 +196,9 @@ public:
 	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrame() const;
 
+    // Reset all audio monitoring...
+    void resetAllMonitors();
+
 protected:
 
 	// Concrete device (de)activation methods.
