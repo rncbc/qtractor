@@ -2121,6 +2121,7 @@ void qtractorMainForm::editCut (void)
 }
 
 
+
 // Copy selection to clipboard.
 void qtractorMainForm::editCopy (void)
 {
@@ -2975,10 +2976,23 @@ void qtractorMainForm::trackCurveClear (void)
 	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
 	if (pCurrentCurve == NULL)
 		return;
+    if (pCurrentCurve->isEmpty())
+        return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::trackCurveClear()");
 #endif
+
+    if (m_pOptions && m_pOptions->bConfirmRemove) {
+        if (QMessageBox::warning(this,
+            tr("Warning") + " - " QTRACTOR_TITLE,
+            tr("About to clear automation:\n\n"
+            "\"%1\"\n\n"
+            "Are you sure?")
+            .arg(pCurrentCurve->subject()->name()),
+            QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+            return;
+    }
 
 #if 0
 	pCurrentCurve->clear();
@@ -3103,10 +3117,23 @@ void qtractorMainForm::trackCurveClearAll (void)
 	qtractorCurveList *pCurveList = pTrack->curveList();
 	if (pCurveList == NULL)
 		return;
+    if (pCurveList->isEmpty())
+        return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::trackCurveClearAll()");
 #endif
+
+    if (m_pOptions && m_pOptions->bConfirmRemove) {
+        if (QMessageBox::warning(this,
+            tr("Warning") + " - " QTRACTOR_TITLE,
+            tr("About to clear all automation:\n\n"
+            "\"%1\"\n\n"
+            "Are you sure?")
+            .arg(pTrack->trackName()),
+            QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+            return;
+    }
 
 #if 0
 	pCurveList->clearAll();

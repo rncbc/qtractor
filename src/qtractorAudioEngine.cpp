@@ -544,6 +544,9 @@ bool qtractorAudioEngine::activate (void)
 			qtractorAudioEngine_sync, this);
 	}
 
+    // Reset all dependable monitoring...
+    resetAllMonitors();
+
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
 
@@ -583,7 +586,10 @@ bool qtractorAudioEngine::start (void)
 	if (!isActivated())
 	    return false;
 
-	// Make sure we have an actual session cursor...
+    // Reset all dependables...
+    resetAllMonitors();
+
+    // Make sure we have an actual session cursor...
 	resetMetro();
 
 	// Start transport rolling...
@@ -1731,6 +1737,40 @@ int qtractorAudioEngine::ramping (void) const
 unsigned long qtractorAudioEngine::jackFrame (void) const
 {
 	return (m_pJackClient ? jack_frame_time(m_pJackClient) : 0);
+}
+
+
+// Reset all audio monitoring...
+void qtractorAudioEngine::resetAllMonitors (void)
+{
+    // There must a session reference...
+    qtractorSession *pSession = session();
+    if (pSession == NULL)
+        return;
+
+    // Reset all audio bus monitors...
+    for (qtractorBus *pBus = buses().first();
+            pBus; pBus = pBus->next()) {
+        qtractorAudioBus *pAudioBus
+            = static_cast<qtractorAudioBus *> (pBus);
+        if (pAudioBus) {
+            if (pAudioBus->audioMonitor_in())
+                pAudioBus->audioMonitor_in()->reset();
+            if (pAudioBus->audioMonitor_out())
+                pAudioBus->audioMonitor_out()->reset();
+        }
+    }
+
+    // Reset all audio track channel monitors...
+    for (qtractorTrack *pTrack = pSession->tracks().first();
+            pTrack; pTrack = pTrack->next()) {
+        if (pTrack->trackType() == qtractorTrack::Audio) {
+            qtractorAudioMonitor *pAudioMonitor
+                = static_cast<qtractorAudioMonitor *> (pTrack->monitor());
+            if (pAudioMonitor)
+                pAudioMonitor->reset();
+        }
+    }
 }
 
 

@@ -52,6 +52,9 @@ public:
 	void process_meter(float **ppFrames,
 		unsigned int iFrames, unsigned short iChannels = 0);
 
+    // Reset channel gain trackers.
+    void reset();
+
 protected:
 
 	// Rebuild the whole panning-gain array...
