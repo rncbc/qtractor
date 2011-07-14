@@ -48,15 +48,17 @@ void qtractorObserverCheckBox::updateValue ( float fValue )
 #endif
 	++m_iUpdateValue;
 	QCheckBox::setChecked(bool(scaleFromValue(fValue)));
-	--m_iUpdateValue;
+//	--m_iUpdateValue;
 }
 
 
 // Protected slot.
 void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 {
-	if (m_iUpdateValue > 0)
+	if (m_iUpdateValue > 0) {
+		m_iUpdateValue = 0;
 		return;
+	}
 
 	float fValue = valueFromScale(bValue ? 1.0f : 0.0f);
 #ifdef CONFIG_DEBUG_0
@@ -90,15 +92,17 @@ void qtractorObserverSpinBox::updateValue ( float fValue )
 #endif
 	++m_iUpdateValue;
 	QDoubleSpinBox::setValue(scaleFromValue(fValue));
-	--m_iUpdateValue;
+//	--m_iUpdateValue;
 }
 
 
 // Protected slot.
 void qtractorObserverSpinBox::spinBoxChanged ( double value )
 {
-	if (m_iUpdateValue > 0)
+	if (m_iUpdateValue > 0) {
+		m_iUpdateValue = 0;
 		return;
+	}
 
 	float fValue = valueFromScale(float(value));
 #ifdef CONFIG_DEBUG_0
@@ -160,15 +164,17 @@ void qtractorObserverSlider::updateValue ( float fValue )
 #endif
 	++m_iUpdateValue;
 	QSlider::setValue(int(scaleFromValue(fValue)));
-	--m_iUpdateValue;
+//	--m_iUpdateValue;
 }
 
 
 // Protected slot.
 void qtractorObserverSlider::sliderChanged ( int iValue )
 {
-	if (m_iUpdateValue > 0)
+	if (m_iUpdateValue > 0) {
+		m_iUpdateValue = 0;
 		return;
+	}
 
 	float fValue = valueFromScale(float(iValue));
 #ifdef CONFIG_DEBUG_0
