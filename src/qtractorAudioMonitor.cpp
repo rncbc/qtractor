@@ -245,8 +245,8 @@ float qtractorAudioMonitor::value ( unsigned short iChannel ) const
 // Reset channel gain trackers.
 void qtractorAudioMonitor::reset (void)
 {
-    for (unsigned short i = 0; i < m_iChannels; ++i)
-        m_pfPrevGains[i] = 0.0f;
+	for (unsigned short i = 0; i < m_iChannels; ++i)
+		m_pfPrevGains[i] = 0.0f;
 
 	++m_iProcessRamp;
 }
@@ -353,31 +353,31 @@ void qtractorAudioMonitor::process_meter (
 // Rebuild the whole panning-gain array...
 void qtractorAudioMonitor::update (void)
 {
-    const float fPan = 0.5f * (1.0f + panning());
-    const float fGain = gain();
-    float afGains[2] = { fGain, fGain };
+	const float fPan = 0.5f * (1.0f + panning());
+	const float fGain = gain();
+	float afGains[2] = { fGain, fGain };
 
 	// (Re)compute equal-power stereo-panning gains...
 	if (fPan < 0.499f || fPan > 0.501f) {
 #ifdef QTRACTOR_MONITOR_PANNING_SQRT
-        afGains[0] *= M_SQRT2 * ::sqrtf(1.0f - fPan);
-        afGains[1] *= M_SQRT2 * ::sqrtf(fPan);
+		afGains[0] *= M_SQRT2 * ::sqrtf(1.0f - fPan);
+		afGains[1] *= M_SQRT2 * ::sqrtf(fPan);
 #else
-        afGains[0] *= M_SQRT2 * ::cosf(fPan * M_PI_2);
-        afGains[1] *= M_SQRT2 * ::sinf(fPan * M_PI_2);
+		afGains[0] *= M_SQRT2 * ::cosf(fPan * M_PI_2);
+		afGains[1] *= M_SQRT2 * ::sinf(fPan * M_PI_2);
 #endif
     }
 
-    // Apply to multi-channel gain array (paired fashion)...
-    unsigned short i, iChannels = (m_iChannels - (m_iChannels % 2));
-    for (i = 0; i < iChannels; ++i) {
-        m_pfPrevGains[i] = m_pfGains[i];
-        m_pfGains[i] = afGains[i % 2];
-    }
-    while (i < m_iChannels) {
-        m_pfPrevGains[i] = m_pfGains[i];
-        m_pfGains[i++] = fGain;
-    }
+	// Apply to multi-channel gain array (paired fashion)...
+	unsigned short i, iChannels = (m_iChannels - (m_iChannels % 2));
+	for (i = 0; i < iChannels; ++i) {
+		m_pfPrevGains[i] = m_pfGains[i];
+		m_pfGains[i] = afGains[i % 2];
+	}
+	for ( ; i < m_iChannels; ++i) {
+		m_pfPrevGains[i] = m_pfGains[i];
+		m_pfGains[i] = fGain;
+	}
 
 	// Trigger ramp-processing...
 	++m_iProcessRamp;

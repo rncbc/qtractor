@@ -1748,29 +1748,29 @@ void qtractorAudioEngine::resetAllMonitors (void)
     if (pSession == NULL)
         return;
 
-    // Reset all audio bus monitors...
-    for (qtractorBus *pBus = buses().first();
-            pBus; pBus = pBus->next()) {
-        qtractorAudioBus *pAudioBus
-            = static_cast<qtractorAudioBus *> (pBus);
-        if (pAudioBus) {
-            if (pAudioBus->audioMonitor_in())
-                pAudioBus->audioMonitor_in()->reset();
-            if (pAudioBus->audioMonitor_out())
-                pAudioBus->audioMonitor_out()->reset();
-        }
-    }
-
-    // Reset all audio track channel monitors...
-    for (qtractorTrack *pTrack = pSession->tracks().first();
-            pTrack; pTrack = pTrack->next()) {
-        if (pTrack->trackType() == qtractorTrack::Audio) {
-            qtractorAudioMonitor *pAudioMonitor
-                = static_cast<qtractorAudioMonitor *> (pTrack->monitor());
-            if (pAudioMonitor)
-                pAudioMonitor->reset();
-        }
-    }
+	// Reset all audio bus monitors...
+	for (qtractorBus *pBus = buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus) {
+		//	if (pAudioBus->audioMonitor_in())
+		//		pAudioBus->audioMonitor_in()->reset();
+			if (pAudioBus->audioMonitor_out())
+				pAudioBus->audioMonitor_out()->reset();
+		}
+	}
+	
+	// Reset all audio track channel monitors...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Audio) {
+			qtractorAudioMonitor *pAudioMonitor
+				= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
+			if (pAudioMonitor)
+				pAudioMonitor->reset();
+		}
+	}
 }
 
 
