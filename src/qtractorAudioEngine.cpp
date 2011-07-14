@@ -1152,6 +1152,12 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 		return false;
 	}
 
+	// We'll be busy...
+	pSession->lock();
+
+	// HACK! reset subject/observers queue...
+	qtractorSubject::resetQueue();
+
 	// Start with fixing the export range...
 	m_bExporting   = true;
 	m_pExportBus   = pExportBus;
@@ -1199,13 +1205,17 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	bool bResult = m_bExporting;
 
 	// Free up things here.
-	delete m_pExportFile;
+	delete m_pExportFile;	
+
 	m_bExporting   = false;
 	m_pExportBus   = NULL;
 	m_pExportFile  = NULL;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
 	m_bExportDone  = true;
+
+	// Back to business..
+	pSession->unlock();
 
 	// Done whether successfully.
 	return bResult;
