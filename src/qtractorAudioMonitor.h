@@ -67,10 +67,11 @@ private:
 	float         *m_pfValues;
 	float         *m_pfGains;
 	float         *m_pfPrevGains;
+	volatile int   m_iProcessRamp;
 
 	// Monitoring evaluator processor.
 	void (*m_pfnProcess)(float *, unsigned int, float, float *);
-	void (*m_pfnProcessIter)(float *, unsigned int, float, float, float *);
+	void (*m_pfnProcessRamp)(float *, unsigned int, float, float, float *);
 	void (*m_pfnProcessMeter)(float *, unsigned int, float *);
 };
 

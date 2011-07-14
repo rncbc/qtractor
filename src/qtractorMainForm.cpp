@@ -688,6 +688,15 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackMoveBottomAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackMoveBottom()));
+	QObject::connect(m_ui.trackHeightUpAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackHeightUp()));
+	QObject::connect(m_ui.trackHeightDownAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackHeightDown()));
+	QObject::connect(m_ui.trackHeightResetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackHeightReset()));
 	QObject::connect(m_ui.trackAutoMonitorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackAutoMonitor(bool)));
@@ -2122,6 +2131,7 @@ void qtractorMainForm::editCut (void)
 
 
 
+
 // Copy selection to clipboard.
 void qtractorMainForm::editCopy (void)
 {
@@ -2642,6 +2652,64 @@ void qtractorMainForm::trackMoveBottom (void)
 
 	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, NULL));
+}
+
+
+// Increase current track height.
+void qtractorMainForm::trackHeightUp (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackHeightUp()");
+#endif
+
+	int iZoomHeight = (150 * pTrack->zoomHeight()) / 100;
+	m_pSession->execute(
+		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+}
+
+
+// Decreate current track height.
+void qtractorMainForm::trackHeightDown (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackHeightDown()");
+#endif
+
+	int iZoomHeight = (75 * pTrack->zoomHeight()) / 100;
+	m_pSession->execute(
+		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+}
+
+
+// Reset current track height.
+void qtractorMainForm::trackHeightReset (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackHeightReset()");
+#endif
+
+	int iVerticalZoom = m_pSession->verticalZoom();
+	int iZoomHeight = (iVerticalZoom * qtractorTrack::HeightBase) / 100;
+	m_pSession->execute(
+		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 }
 
 
@@ -5284,6 +5352,7 @@ void qtractorMainForm::updateTrackMenu (void)
 	m_ui.trackMoveUpAction->setEnabled(bEnabled && pTrack->prev() != NULL);
 	m_ui.trackMoveDownAction->setEnabled(bEnabled && pTrack->next() != NULL);
 	m_ui.trackMoveBottomAction->setEnabled(bEnabled && pTrack->next() != NULL);
+	m_ui.trackHeightMenu->setEnabled(bEnabled);
 	m_ui.trackCurveMenu->setEnabled(bEnabled);
 //	m_ui.trackImportAudioAction->setEnabled(m_pTracks != NULL);
 //	m_ui.trackImportMidiAction->setEnabled(m_pTracks != NULL);
