@@ -266,7 +266,7 @@ void qtractorAudioMonitor::process (
 			for (unsigned short i = 0; i < m_iChannels; ++i) {
 				(*m_pfnProcessRamp)(ppFrames[i], iFrames,
 					m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
-				m_pfPrevGains[i] = m_pfGains[i];
+			//	m_pfPrevGains[i] = m_pfGains[i];
 			}
 		}
 		else if (iChannels > m_iChannels) {
@@ -274,7 +274,7 @@ void qtractorAudioMonitor::process (
 			for (unsigned short j = 0; j < iChannels; ++j) {
 				(*m_pfnProcessRamp)(ppFrames[j], iFrames,
 					m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
-				m_pfPrevGains[i] = m_pfGains[i];
+			//	m_pfPrevGains[i] = m_pfGains[i];
 				if (++i >= m_iChannels)
 					i = 0;
 			}
@@ -284,7 +284,7 @@ void qtractorAudioMonitor::process (
 			for (unsigned short i = 0; i < m_iChannels; ++i) {
 				(*m_pfnProcessRamp)(ppFrames[j], iFrames,
 					m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
-				m_pfPrevGains[i] = m_pfGains[i];
+			//	m_pfPrevGains[i] = m_pfGains[i];
 				if (++j >= iChannels)
 					j = 0;
 			}
