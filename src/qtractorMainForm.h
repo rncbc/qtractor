@@ -161,6 +161,9 @@ public slots:
 	void trackMoveUp();
 	void trackMoveDown();
 	void trackMoveBottom();
+	void trackHeightUp();
+	void trackHeightDown();
+	void trackHeightReset();
 	void trackAutoMonitor(bool bOn);
 	void trackImportAudio();
 	void trackImportMidi();

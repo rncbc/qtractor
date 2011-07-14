@@ -1092,6 +1092,9 @@
    <property name="statusTip" >
     <string>Zoom reset</string>
    </property>
+   <property name="shortcut" >
+	<string>Ctrl+1</string>
+   </property>
   </action>
   <action name="viewZoomHorizontalAction" >
    <property name="checkable" >
@@ -1301,7 +1304,7 @@
     <string>Transport loop</string>
    </property>
    <property name="shortcut" >
-    <string>Shift+Ctrl+L</string>
+	<string>Ctrl+Shift+L</string>
    </property>
   </action>
   <action name="transportLoopSetAction" >
@@ -1404,7 +1407,7 @@
     <string>Transport punch in/out</string>
    </property>
    <property name="shortcut" >
-    <string>Shift+Ctrl+P</string>
+	<string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="transportPunchSetAction" >

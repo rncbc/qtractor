@@ -78,7 +78,7 @@ static inline void sse_process (
 	*pfValue = *(float *) &v1; // CHEAT: take 1st of 4 possible values.
 }
 
-static inline void sse_process_iter ( float *pFrames, unsigned int iFrames,
+static inline void sse_process_ramp ( float *pFrames, unsigned int iFrames,
 	float fGainIter, float fGainLast, float *pfValue )
 {
 	__m128 v1 = _mm_load_ps1(pfValue);
@@ -133,7 +133,7 @@ static inline void std_process (
 	}
 }
 
-static inline void std_process_iter ( float *pFrames, unsigned int iFrames,
+static inline void std_process_ramp ( float *pFrames, unsigned int iFrames,
 	float fGainIter, float fGainLast, float *pfValue )
 {
 	const float fGainStep = (fGainLast - fGainIter) / float(iFrames);
@@ -162,17 +162,18 @@ static inline void std_process_meter (
 // Constructor.
 qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 	float fGain, float fPanning ) : qtractorMonitor(fGain, fPanning),
-	m_iChannels(0), m_pfValues(NULL), m_pfGains(NULL), m_pfPrevGains(NULL)
+	m_iChannels(0), m_pfValues(NULL), m_pfGains(NULL), m_pfPrevGains(NULL),
+	m_iProcessRamp(0)
 {
 #if defined(__SSE__)
 	if (sse_enabled()) {
 		m_pfnProcess = sse_process;
-		m_pfnProcessIter = sse_process_iter;
+		m_pfnProcessRamp = sse_process_ramp;
 		m_pfnProcessMeter = sse_process_meter;
 	} else {
 #endif
 	m_pfnProcess = std_process;
-	m_pfnProcessIter = std_process_iter;
+	m_pfnProcessRamp = std_process_ramp;
 	m_pfnProcessMeter = std_process_meter;
 #if defined(__SSE__)
 	}
@@ -246,6 +247,8 @@ void qtractorAudioMonitor::reset (void)
 {
     for (unsigned short i = 0; i < m_iChannels; ++i)
         m_pfPrevGains[i] = 0.0f;
+
+	++m_iProcessRamp;
 }
 
 
@@ -256,34 +259,67 @@ void qtractorAudioMonitor::process (
 	if (iChannels < 1)
 		iChannels = m_iChannels;
 
-	if (iChannels == m_iChannels) {
-		for (unsigned short i = 0; i < m_iChannels; ++i) {
-			(*m_pfnProcessIter)(ppFrames[i], iFrames,
-				m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
-			m_pfPrevGains[i] = m_pfGains[i];
+	if (m_iProcessRamp > 0) {
+		m_iProcessRamp = 0;
+		// Do ramp-processing...
+		if (iChannels == m_iChannels) {
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
+				(*m_pfnProcessRamp)(ppFrames[i], iFrames,
+					m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
+				m_pfPrevGains[i] = m_pfGains[i];
+			}
 		}
-	}
-	else if (iChannels > m_iChannels) {
-		unsigned short i = 0;
-		for (unsigned short j = 0; j < iChannels; ++j) {
-			(*m_pfnProcessIter)(ppFrames[j], iFrames,
-				m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
-			m_pfPrevGains[i] = m_pfGains[i];
-			if (++i >= m_iChannels)
-				i = 0;
+		else if (iChannels > m_iChannels) {
+			unsigned short i = 0;
+			for (unsigned short j = 0; j < iChannels; ++j) {
+				(*m_pfnProcessRamp)(ppFrames[j], iFrames,
+					m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
+				m_pfPrevGains[i] = m_pfGains[i];
+				if (++i >= m_iChannels)
+					i = 0;
+			}
 		}
-	}
-	else { // (iChannels < m_iChannels)
-		unsigned short j = 0;
-		for (unsigned short i = 0; i < m_iChannels; ++i) {
-			(*m_pfnProcessIter)(ppFrames[j], iFrames,
-				m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
-			m_pfPrevGains[i] = m_pfGains[i];
-			if (++j >= iChannels)
-				j = 0;
+		else { // (iChannels < m_iChannels)
+			unsigned short j = 0;
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
+				(*m_pfnProcessRamp)(ppFrames[j], iFrames,
+					m_pfPrevGains[i], m_pfGains[i], &m_pfValues[i]);
+				m_pfPrevGains[i] = m_pfGains[i];
+				if (++j >= iChannels)
+					j = 0;
+			}
 		}
+		// Done ramp-processing.
+	} else {
+		// Do normal-processing...
+		if (iChannels == m_iChannels) {
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
+				(*m_pfnProcess)(ppFrames[i], iFrames,
+					m_pfGains[i], &m_pfValues[i]);
+			}
+		}
+		else if (iChannels > m_iChannels) {
+			unsigned short i = 0;
+			for (unsigned short j = 0; j < iChannels; ++j) {
+				(*m_pfnProcess)(ppFrames[j], iFrames,
+					m_pfGains[i], &m_pfValues[i]);
+				if (++i >= m_iChannels)
+					i = 0;
+			}
+		}
+		else { // (iChannels < m_iChannels)
+			unsigned short j = 0;
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
+				(*m_pfnProcess)(ppFrames[j], iFrames,
+					m_pfGains[i], &m_pfValues[i]);
+				if (++j >= iChannels)
+					j = 0;
+			}
+		}
+		// Done normal-processing.
 	}
 }
+
 
 void qtractorAudioMonitor::process_meter (
 	float **ppFrames, unsigned int iFrames, unsigned short iChannels )
@@ -317,11 +353,12 @@ void qtractorAudioMonitor::process_meter (
 // Rebuild the whole panning-gain array...
 void qtractorAudioMonitor::update (void)
 {
-    // (Re)compute equal-power stereo-panning gains...
     const float fPan = 0.5f * (1.0f + panning());
     const float fGain = gain();
     float afGains[2] = { fGain, fGain };
-    if (fPan < 0.499f || fPan > 0.501f) {
+
+	// (Re)compute equal-power stereo-panning gains...
+	if (fPan < 0.499f || fPan > 0.501f) {
 #ifdef QTRACTOR_MONITOR_PANNING_SQRT
         afGains[0] *= M_SQRT2 * ::sqrtf(1.0f - fPan);
         afGains[1] *= M_SQRT2 * ::sqrtf(fPan);
@@ -330,6 +367,7 @@ void qtractorAudioMonitor::update (void)
         afGains[1] *= M_SQRT2 * ::sinf(fPan * M_PI_2);
 #endif
     }
+
     // Apply to multi-channel gain array (paired fashion)...
     unsigned short i, iChannels = (m_iChannels - (m_iChannels % 2));
     for (i = 0; i < iChannels; ++i) {
@@ -340,6 +378,9 @@ void qtractorAudioMonitor::update (void)
         m_pfPrevGains[i] = m_pfGains[i];
         m_pfGains[i++] = fGain;
     }
+
+	// Trigger ramp-processing...
+	++m_iProcessRamp;
 }
 
 

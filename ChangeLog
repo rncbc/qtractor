@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Track/Height menu is now featured, giving access
+  to Increase, Decrease or Reset the current track
+  height.
+
 - All changes to audio gain and panning on tracks
   and buses are now applied following a piece-wise
   linear ramp, reducing the old nasty clicks, pops
@@ -14,7 +18,7 @@ SVN TRUNK
 
 - All zooming in/out is now relative to either the
   viewport center or current mouse cursor position
-  if found laying inside. (EXPERIMENTAL)
+  if found laying inside.
 
 - TYOQA! the underground sources have emerged:...
   after years in the making, track automation, or
