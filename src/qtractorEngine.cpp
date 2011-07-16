@@ -662,7 +662,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 
 	if (busMode & Input) { // It suffices for Duplex...
 	pCurve = monitorSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 0;	// 0=MonitorSubject
@@ -680,7 +680,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	}}
 
 	pCurve = pMixerStrip->meter()->panningSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 1;	// 1=PanningSubject
@@ -698,7 +698,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	}
 
 	pCurve = pMixerStrip->meter()->gainSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 2; // 2=GainSubject

@@ -1619,7 +1619,7 @@ void qtractorSession::process ( qtractorSessionCursor *pSessionCursor,
 		// Track automation processing...
 		if (syncType == qtractorTrack::Audio) {
 			qtractorCurveList *pCurveList = pTrack->curveList();
-			if (pCurveList && pCurveList->isProcessEnabled())
+			if (pCurveList && pCurveList->isProcess())
 				pCurveList->process(iFrameStart);
 		}
 		if (syncType == pTrack->trackType()) {

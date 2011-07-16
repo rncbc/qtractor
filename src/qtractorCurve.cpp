@@ -652,22 +652,6 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 }
 
 
-// Enabled/capture/process state setlers.
-void qtractorCurve::setEnabled ( bool bEnabled )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorCurve[%p]::setEnabled(%d)", this, int(bEnabled));
-#endif
-
-	bool bOldEnabled = (m_state & Enabled);
-
-	m_state = State(bEnabled ? (m_state | Enabled) : (m_state & ~Enabled));
-
-	if ((bEnabled && !bOldEnabled) || (!bEnabled && bOldEnabled))
-		m_pList->updateEnabled(bEnabled);
-}
-
-
 void qtractorCurve::setCapture ( bool bCapture )
 {
 #ifdef CONFIG_DEBUG

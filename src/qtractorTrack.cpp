@@ -1106,7 +1106,7 @@ void qtractorTrack::process_record (
 void qtractorTrack::process_curve ( unsigned long iFrame )
 {
 	qtractorCurveList *pCurveList = curveList();
-	if (pCurveList && pCurveList->isProcessEnabled())
+	if (pCurveList && pCurveList->isProcess())
 		pCurveList->process(iFrame);
 }
 
@@ -1530,7 +1530,7 @@ bool qtractorTrack::saveElement (
 
 	// Save track automation...
 	qtractorCurveList *pCurveList = qtractorTrack::curveList();
-	if (pCurveList && pCurveList->isEnabled()) {
+	if (pCurveList) {
 		qtractorCurveFile cfile(pCurveList);
 		QDomElement eCurveFile
 			= pDocument->document()->createElement("curve-file");
@@ -1840,7 +1840,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	qtractorCurve *pCurve;
 
 	pCurve = monitorSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 0;	// 0=MonitorSubject
@@ -1858,7 +1858,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	}
 
 	pCurve = pMixerStrip->meter()->panningSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 1;	// 1=PanningSubject
@@ -1876,7 +1876,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	}
 
 	pCurve = pMixerStrip->meter()->gainSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 2; // 2=GainSubject
@@ -1894,7 +1894,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	}
 
 	pCurve = recordSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 3;	// 3=RecordSubject
@@ -1912,7 +1912,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	}
 
 	pCurve = muteSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 4;	// 4=MuteSubject
@@ -1930,7 +1930,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	}
 
 	pCurve = soloSubject()->curve();
-	if (pCurve && pCurve->isEnabled()) {
+	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = 5;	// 5=SoloSubject
