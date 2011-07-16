@@ -4859,7 +4859,7 @@ void qtractorMainForm::stabilizeForm (void)
 	else
 		m_statusItems[StatusMod]->clear();
 
-	if (m_pSession->recordTracks() > 0)
+	if (bRecording && m_pSession->recordTracks() > 0)
 		m_statusItems[StatusRec]->setText(tr("REC"));
 	else
 		m_statusItems[StatusRec]->clear();
@@ -4886,7 +4886,7 @@ void qtractorMainForm::stabilizeForm (void)
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
 	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
-		bRolling ? PaletteRed : PaletteNone]);
+		bRecording && bRolling ? PaletteRed : PaletteNone]);
 	m_statusItems[StatusMute]->setPalette(*m_paletteItems[
 		m_pSession->muteTracks() > 0 ? PaletteYellow : PaletteNone]);
 	m_statusItems[StatusSolo]->setPalette(*m_paletteItems[
