@@ -24,6 +24,9 @@
 
 #include "qtractorMidiControlObserverForm.h"
 
+#include "qtractorMidiControlObserver.h"
+
+
 #if QT_VERSION < 0x040300
 #define lighter(x)	light(x)
 #define darker(x)	dark(x)
@@ -167,18 +170,32 @@ qtractorTrack::ToolType qtractorTrackButton::toolType (void) const
 // Track state (record, mute, solo) button setup.
 void qtractorTrackButton::updateTrack (void)
 {
+	qtractorMidiControlObserver *pMidiObserver;
+
 	switch (m_toolType) {
 	case qtractorTrack::Record:
 		setSubject(m_pTrack->recordSubject());
-		addMidiControlAction(m_pTrack->recordObserver());
+		pMidiObserver = m_pTrack->recordObserver();
+		if (pMidiObserver) {
+			pMidiObserver->setCurveList(m_pTrack->curveList());
+			addMidiControlAction(pMidiObserver);
+		}
 		break;
 	case qtractorTrack::Mute:
 		setSubject(m_pTrack->muteSubject());
-		addMidiControlAction(m_pTrack->muteObserver());
+		pMidiObserver = m_pTrack->muteObserver();
+		if (pMidiObserver) {
+			pMidiObserver->setCurveList(m_pTrack->curveList());
+			addMidiControlAction(pMidiObserver);
+		}
 		break;
 	case qtractorTrack::Solo:
 		setSubject(m_pTrack->soloSubject());
-		addMidiControlAction(m_pTrack->soloObserver());
+		pMidiObserver = m_pTrack->soloObserver();
+		if (pMidiObserver) {
+			pMidiObserver->setCurveList(m_pTrack->curveList());
+			addMidiControlAction(pMidiObserver);
+		}
 		break;
 	}
 

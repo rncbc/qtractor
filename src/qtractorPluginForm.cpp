@@ -192,7 +192,11 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				= new qtractorPluginParamWidget(pParam, this);
 			m_paramWidgets.insert(pParam->index(), pParamWidget);
 			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
-			addMidiControlAction(pParamWidget, pParam->observer());
+			qtractorMidiControlObserver *pMidiObserver = pParam->observer();
+			if (pMidiObserver) {
+				pMidiObserver->setCurveList(pPlugin->list()->curveList());
+				addMidiControlAction(pParamWidget, pMidiObserver);
+			}
 			if (++iRow >= iRows) {
 				iRow = 0;
 				++iCol;

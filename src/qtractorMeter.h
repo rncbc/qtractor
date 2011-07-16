@@ -154,17 +154,15 @@ public:
 	void setPeakFalloff(int bPeakFalloff);
 	int peakFalloff() const;
 
+	// MIDI controller/observer attachment (context menu) activator.
+	void addMidiControlAction(
+		QWidget *pWidget, qtractorMidiControlObserver *pObserver);
+
 protected slots:
 
 	// MIDI controller/observer attachment (context menu) slot.
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
-
-protected:
-
-	// MIDI controller/observer attachment (context menu) activator.
-	void addMidiControlAction(
-		QWidget *pWidget, qtractorMidiControlObserver *pObserver);
 
 private:
 

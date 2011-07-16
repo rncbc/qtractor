@@ -279,9 +279,6 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 #endif
 	m_pGainSpinBox->setToolTip(tr("Gain"));
 
-	addMidiControlAction(m_pPanSlider,  m_pPanObserver);
-	addMidiControlAction(m_pGainSlider, m_pGainObserver);
-
 	QWidget::setMinimumHeight(140);
 	QWidget::setSizePolicy(
 		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));

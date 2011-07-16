@@ -815,6 +815,9 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 		setSoloTracks(true);
 #endif
 
+	if (pTrack->curveList())
+		m_curves.insert(pTrack->curveList(), pTrack);
+
 	qtractorSessionCursor *pSessionCursor = m_cursors.first();
 	while (pSessionCursor) {
 		pSessionCursor->addTrack(pTrack);
@@ -884,6 +887,9 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 		setMuteTracks(false);
 	if (pTrack->isSolo())
 		setSoloTracks(false);
+
+	if (pTrack->curveList())
+		m_curves.remove(pTrack->curveList());
 
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		releaseMidiTag(pTrack);
@@ -1654,6 +1660,13 @@ void qtractorSession::process_curve ( unsigned long iFrame )
 		pTrack->process_curve(iFrame);
 		pTrack = pTrack->next();
 	}
+}
+
+
+// Find track of specific curve-list.
+qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) const
+{
+	return m_curves.value(pCurveList, NULL);
 }
 
 

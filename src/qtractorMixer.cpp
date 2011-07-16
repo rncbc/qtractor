@@ -40,6 +40,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorMidiControlObserver.h"
+
 #include "qtractorCurve.h"
 
 #include "qtractorMainForm.h"
@@ -172,7 +174,12 @@ void qtractorMonitorButton::updateMonitor (void)
 {
 	if (m_pTrack) {
 		setSubject(m_pTrack->monitorSubject());
-		addMidiControlAction(m_pTrack->monitorObserver());
+		qtractorMidiControlObserver *pMidiObserver
+			= m_pTrack->monitorObserver();
+		if (pMidiObserver) {
+			pMidiObserver->setCurveList(m_pTrack->curveList());
+			addMidiControlAction(pMidiObserver);
+		}
 	}
 	else
 	if (m_pBus) {
@@ -358,7 +365,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	m_pLayout->addWidget(m_pMonitorButton);
 	m_pLayout->addLayout(m_pButtonLayout);
-
+	
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
 	m_pMidiLabel = NULL;
@@ -454,6 +461,17 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	// Eventually the right one...
 	if (m_pMeter) {
+		// Set MIDI controller & automation hooks...
+		qtractorMidiControlObserver *pMidiObserver;
+		pMidiObserver = m_pMeter->panningObserver();
+		if (m_pTrack)
+			pMidiObserver->setCurveList(m_pTrack->curveList());
+		m_pMeter->addMidiControlAction(m_pMeter->panSlider(), pMidiObserver);
+		pMidiObserver = m_pMeter->gainObserver();
+		if (m_pTrack)
+			pMidiObserver->setCurveList(m_pTrack->curveList());
+		m_pMeter->addMidiControlAction(m_pMeter->gainSlider(), pMidiObserver);
+		// Finally, add to layout...	
 		m_pLayout->addWidget(m_pMeter);
 		QObject::connect(m_pMeter->panSlider(),
 			SIGNAL(valueChanged(float)),

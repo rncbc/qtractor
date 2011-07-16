@@ -55,7 +55,8 @@ static inline float cubef2 ( float x )
 qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
-		m_bLogarithmic(false), m_bFeedback(false), m_bInvert(false)
+		m_bLogarithmic(false), m_bFeedback(false), m_bInvert(false),
+		m_pCurveList(NULL)
 {
 }
 
