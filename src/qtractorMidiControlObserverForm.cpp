@@ -36,6 +36,8 @@
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
 
+#include "qtractorCurveCommand.h"
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -590,15 +592,7 @@ void qtractorMidiControlObserverForm::midiControlMenu (
 void qtractorMidiControlObserverForm::addMidiControlMenu (
 	QMenu *pMenu, qtractorMidiControlObserver *pMidiObserver )
 {
-	qtractorSubject *pSubject = pMidiObserver->subject();
-	if (pSubject == NULL)
-		return;
-
-	qtractorCurve *pCurve = pSubject->curve();
-	if (pCurve == NULL)
-		return;
-
-	qtractorCurveList *pCurveList = pCurve->list();
+	qtractorCurveList *pCurveList = pMidiObserver->curveList();
 	if (pCurveList == NULL)
 		return;
 
@@ -606,16 +600,12 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	if (pSession == NULL)
 		return;
 
-	int iTrack = 0;
-	qtractorTrack *pTrack = pSession->tracks().first();
-	while (pTrack) {
-		if (pTrack->curveList() == pCurveList)
-			break;
-		pTrack = pTrack->next();
-		++iTrack;
-	}
-
+	qtractorTrack *pTrack = pSession->findTrack(pCurveList);
 	if (pTrack == NULL)
+		return;
+
+	qtractorSubject *pSubject = pMidiObserver->subject();
+	if (pSubject == NULL)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -626,21 +616,37 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	if (pTracks == NULL)
 		return;
 
-	if (pCurveList->currentCurve() != pCurve) {
+	qtractorCurve *pCurve = pSubject->curve();
+
+	if (pCurve && pCurveList->currentCurve() != pCurve) {
 		pCurveList->setCurrentCurve(pCurve);
 		pTracks->updateTrackView();
 	}
 
-	pTracks->trackList()->setCurrentTrackRow(iTrack);
+	pTracks->trackList()->setCurrentTrack(pTrack);
 
 	QAction *pAction;
 
 	pMenu->addSeparator();
-	pMenu->addMenu(pMainForm->trackCurveModeMenu());
+
+	pAction = pMenu->addAction(tr("&Automation"));
+	pAction->setCheckable(true);
+	pAction->setChecked(pCurve && pCurve == pCurveList->currentCurve());
+	pAction->setData(qVariantFromValue(pMidiObserver));
+	QObject::connect(
+		pAction, SIGNAL(triggered(bool)),
+		pMainForm, SLOT(trackCurveSelect(bool)));
+
+	pMenu->addSeparator();
+
+	QMenu *pTrackCurveModeMenu = pMainForm->trackCurveModeMenu();
+	pTrackCurveModeMenu->setEnabled(pCurve != NULL);
+	pMenu->addMenu(pTrackCurveModeMenu);
 
 	pAction = pMenu->addAction(tr("&Lock"));
 	pAction->setCheckable(true);
-	pAction->setChecked(pCurve->isLocked());
+	pAction->setChecked(pCurve && pCurve->isLocked());
+	pAction->setEnabled(pCurve != NULL);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveLocked(bool)));
@@ -657,7 +663,8 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 
 	pAction = pMenu->addAction(iconProcess, tr("&Play"));
 	pAction->setCheckable(true);
-	pAction->setChecked(pCurve->isProcess());
+	pAction->setChecked(pCurve && pCurve->isProcess());
+	pAction->setEnabled(pCurve != NULL);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveProcess(bool)));
@@ -672,7 +679,8 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 
 	pAction = pMenu->addAction(iconCapture, tr("&Record"));
 	pAction->setCheckable(true);
-	pAction->setChecked(pCurve->isCapture());
+	pAction->setChecked(pCurve && pCurve->isCapture());
+	pAction->setEnabled(pCurve != NULL);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveCapture(bool)));
@@ -680,6 +688,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pMenu->addSeparator();
 
 	pAction = pMenu->addAction(tr("&Clear"));
+	pAction->setEnabled(pCurve != NULL);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveClear()));

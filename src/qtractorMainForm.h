@@ -168,7 +168,8 @@ public slots:
 	void trackImportMidi();
 	void trackExportAudio();
 	void trackExportMidi();
-	void trackCurveSelect(QAction *pAction);
+	void trackCurveSelect(bool On);
+	void trackCurveSelect(QAction *pAction, bool bOn = true);
 	void trackCurveMode(QAction *pAction);
 	void trackCurveProcess(bool bOn);
 	void trackCurveCapture(bool bOn);

@@ -2790,27 +2790,32 @@ void qtractorMainForm::trackExportMidi (void)
 // Track automation curve selection menu.
 Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
 
-void qtractorMainForm::trackCurveSelect ( QAction *pAction )
+void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 {
-	qtractorTrack *pTrack = NULL;
-	if (m_pTracks)
-		pTrack = m_pTracks->currentTrack();
-	if (pTrack == NULL)
-		return;
+	qtractorSubject *pSubject = NULL;
+	qtractorCurveList *pCurveList = NULL;
+	qtractorMidiControlObserver *pMidiObserver
+		= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+	if (pMidiObserver) {
+		pCurveList = pMidiObserver->curveList();
+		pSubject = pMidiObserver->subject();
+	} else {
+		qtractorTrack *pTrack = NULL;
+		if (m_pTracks)
+			pTrack = m_pTracks->currentTrack();
+		if (pTrack)
+			pCurveList = pTrack->curveList();
+	}
 
-	qtractorCurveList *pCurveList = pTrack->curveList();
 	if (pCurveList == NULL)
 		return;
 
-	qtractorMidiControlObserver *pObserver
-		= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
-	qtractorSubject *pSubject = (pObserver ? pObserver->subject() : NULL);
 	qtractorCurve *pCurve = NULL;
-	if (pSubject) {
+	if (bOn && pSubject) {
 		pCurve = pSubject->curve();
 		if (pCurve == NULL) {
 			pCurve = new qtractorCurve(pCurveList, pSubject, qtractorCurve::Hold);
-			pCurve->setLogarithmic(pObserver->isLogarithmic());
+			pCurve->setLogarithmic(pMidiObserver->isLogarithmic());
 		}
 	}
 
@@ -2828,7 +2833,14 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction )
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveSelectCommand(pCurveList, pCurve));
-#endif
+#endif	
+}
+
+void qtractorMainForm::trackCurveSelect ( bool bOn )
+{
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction)
+		trackCurveSelect(pAction, bOn);
 }
 
 

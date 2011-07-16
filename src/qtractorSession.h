@@ -361,6 +361,9 @@ public:
 	// Instrument names mapping.
 	qtractorInstrumentList *instruments() const;
 
+	// Find track of specific curve-list.
+	qtractorTrack *findTrack(qtractorCurveList *pCurveList) const;
+
 	// Singleton instance accessor.
 	static qtractorSession *getInstance();
 
@@ -450,6 +453,9 @@ private:
 
 	// Session command executive (undo/redo)
 	qtractorCommandList *m_pCommands;
+
+	// Curve-to-track mapping.
+	QHash<qtractorCurveList *, qtractorTrack *> m_curves;
 
 	// The singleton instance.
 	static qtractorSession *g_pSession;

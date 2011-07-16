@@ -27,6 +27,10 @@
 #include "qtractorMidiControl.h"
 
 
+// Forward declarations.
+class qtractorCurveList;
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiControlObserver -- MIDI controller observers.
 //
@@ -87,6 +91,12 @@ public:
 	float valueFromScale(float fScale, bool bCubic) const;
 	float scaleFromValue(float fValue, bool bCubic) const;
 
+	// Special indirect automation relatives accessors.
+	void setCurveList(qtractorCurveList *pCurveList)
+		{ m_pCurveList = pCurveList; }
+	qtractorCurveList *curveList() const
+		{ return m_pCurveList; }
+
 protected:
 
 	// Updater.
@@ -103,6 +113,9 @@ private:
 	bool m_bLogarithmic;
 	bool m_bFeedback;
 	bool m_bInvert;
+
+	// Special indirect automation relatives.
+	qtractorCurveList *m_pCurveList;
 };
 
 
