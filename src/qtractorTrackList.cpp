@@ -81,12 +81,12 @@ public:
 		qtractorCurveList *pCurveList = m_pTrack->curveList();
 		if (pCurveList) {
 			QPalette pal;
-			if (pCurveList->isCaptureEnabled()) {
+			if (pCurveList->isCapture()) {
 				pal.setColor(QPalette::Button, Qt::darkRed);
 				pal.setColor(QPalette::ButtonText, Qt::red);
 			}
 			else
-			if (pCurveList->isProcessEnabled()) {
+			if (pCurveList->isProcess()) {
 				pal.setColor(QPalette::Button, Qt::darkGreen);
 				pal.setColor(QPalette::ButtonText, Qt::green);
 			}

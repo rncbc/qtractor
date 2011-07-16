@@ -179,13 +179,11 @@ public:
 	// Internal cursor accessor.
 	const Cursor& cursor() const { return m_cursor; }
 
-	// Curve state.
-	enum State { Idle = 0, Enabled = 1, Process = 2, Capture = 4, Locked = 8 };
+	// Curve state flags.
+	enum State { Idle = 0, Process = 1, Capture = 2, Locked = 4 };
 
 	bool isIdle() const
 		{ return (m_state == Idle); }
-	bool isEnabled() const
-		{ return (m_state & Enabled); }
 	bool isProcess() const
 		{ return (m_state & Process); }
 	bool isCapture() const
@@ -193,13 +191,7 @@ public:
 	bool isLocked() const
 		{ return (m_state & Locked); }
 
-	bool isProcessEnabled() const
-		{ return isEnabled() && isProcess(); }
-	bool isCaptureEnabled() const
-		{ return isEnabled() && isCapture(); }
-
-	// Enabled/capture/process state settlers.
-	void setEnabled(bool bEnabled);
+	// Ccapture/process state settlers.
 	void setCapture(bool bCapture);
 	void setProcess(bool bProcess);
 	void setLocked(bool bLocked);
@@ -207,7 +199,7 @@ public:
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
 	{
-		if (isProcessEnabled()) {
+		if (isProcess()) {
 			Node *pNode = seek(iFrame);
 			if (!isCapture())
 				m_observer.setValue(value(pNode, iFrame));
@@ -219,7 +211,7 @@ public:
 	// Record automation procedure.
 	void capture(unsigned long iFrame)
 	{
-		if (isCaptureEnabled())
+		if (isCapture())
 			addNode(iFrame, m_observer.value(), m_pEditList);
 	}
 
@@ -445,28 +437,20 @@ class qtractorCurveList : public qtractorList<qtractorCurve>
 public:
 
 	// Constructor.
-	qtractorCurveList() : m_iEnabled(0),
-		m_iProcess(0), m_iCapture(0),
-	    m_iLocked(0), m_pCurrentCurve(NULL)
-		{ setAutoDelete(true); }
+	qtractorCurveList() : m_iProcess(0), m_iCapture(0), m_iLocked(0),
+		m_pCurrentCurve(NULL) { setAutoDelete(true); }
 
 	// ~Destructor.
 	~qtractorCurveList() { clearAll(); }
 
 	// Simple list methods.
 	void addCurve(qtractorCurve *pCurve)
-	{
-		append(pCurve);
-
-		pCurve->setEnabled(true);
-	}
+		{ append(pCurve); }
 
 	void removeCurve(qtractorCurve *pCurve)
 	{
 		if (m_pCurrentCurve == pCurve)
 			m_pCurrentCurve =  NULL;
-
-		pCurve->setEnabled(false);
 
 		if (pCurve->isProcess())
 			updateProcess(false);
@@ -501,29 +485,6 @@ public:
 		}
 	}
 
-	// Enabled management.
-	void updateEnabled(bool bEnabled)
-	{
-		if (bEnabled)
-			++m_iEnabled;
-		else
-			--m_iEnabled;
-	}
-
-	void setEnabledAll(bool bEnabled)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->setEnabled(bEnabled);
-			pCurve = pCurve->next();
-		}
-	}
-
-	bool isEnabledAll() const
-		{ return isEnabled() && m_iEnabled >= count(); }
-	bool isEnabled() const
-		{ return m_iEnabled > 0; }
-
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
 	{
@@ -557,8 +518,6 @@ public:
 		{ return isProcess() && m_iProcess >= count(); }
 	bool isProcess() const
 		{ return m_iProcess > 0; }
-	bool isProcessEnabled() const
-		{ return isEnabled() && isProcess(); }
 
 	// Capture management.
 	void updateCapture(bool bCapture)
@@ -582,8 +541,6 @@ public:
 		{ return isCapture() && m_iCapture >= count(); }
 	bool isCapture() const
 		{ return m_iCapture > 0; }
-	bool isCaptureEnabled() const
-		{ return isEnabled() && isCapture(); }
 
 	// Locked management.
 	void updateLocked(bool bLocked)
@@ -632,9 +589,9 @@ public:
 
 		clear();
 
-		m_iEnabled = 0;
 		m_iCapture = 0;
 		m_iProcess = 0;
+		m_iLocked  = 0;
 	}
 
 	// Signal/slot notifier accessor.
@@ -653,7 +610,6 @@ public:
 private:
 
 	// Mass capture/process state counters.
-	int m_iEnabled;
 	int m_iProcess;
 	int m_iCapture;
 	int m_iLocked;

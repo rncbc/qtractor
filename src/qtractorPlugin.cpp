@@ -1573,7 +1573,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		ePlugin.appendChild(eControllers);
 		// Save plugin automation...
 		qtractorCurveList *pCurveList = qtractorPluginList::curveList();
-		if (pCurveList && pCurveList->isEnabled()) {
+		if (pCurveList) {
 			qtractorCurveFile cfile(pCurveList);
 			QDomElement eCurveFile
 				= pDocument->document()->createElement("curve-file");
@@ -1719,7 +1719,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	for ( ; param != m_params.constEnd(); ++param) {
 		qtractorPluginParam *pParam = param.value();
 		qtractorCurve *pCurve = pParam->subject()->curve();
-		if (pCurve && pCurve->isEnabled()) {
+		if (pCurve) {
 			unsigned short controller = (iParam % 0x7f);
 			if (controller == 0x00 || controller == 0x20)
 				++iParam; // Avoid bank-select controllers, please.

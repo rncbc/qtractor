@@ -231,6 +231,10 @@ public:
 	// Resets all buffering.
 	void reset();
 
+	// Sync thread state flags accessors.
+	void setWaitSync(bool bWaitSync);
+	bool isWaitSync() const;
+
 	// Factory (proxy) methods.
 	static qtractorMidiManager *createMidiManager(
 		qtractorPluginList *pPluginList);
@@ -310,6 +314,8 @@ private:
 	snd_seq_event_t    *m_pBuffer;
 	unsigned int        m_iBuffer;
 
+	volatile bool       m_bWaitSync;
+
 #ifdef CONFIG_MIDI_PARSER
 	snd_midi_event_t   *m_pMidiParser;
 #endif
@@ -336,7 +342,8 @@ private:
 	Instruments m_instruments;
 
 	// Aync manager thread.
-	qtractorMidiManagerThread *m_pSyncThread;
+	static qtractorMidiManagerThread *g_pSyncThread;
+	static unsigned int g_iSyncThreadRefCount;
 
 	// Global factory options.
 	static bool g_bAudioOutputBus;

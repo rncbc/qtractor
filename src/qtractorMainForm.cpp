@@ -4575,7 +4575,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			qtractorCurveList *pCurveList = pTrack->curveList();
-			if (pCurveList && pCurveList->isCaptureEnabled()
+			if (pCurveList && pCurveList->isCapture()
 				&& !pCurveList->isEditListEmpty()) {
 				if (pCurveCommand == NULL)
 					pCurveCommand = new qtractorCurveCaptureListCommand();
@@ -5391,10 +5391,7 @@ void qtractorMainForm::updateCurveMenu (void)
 	m_ui.trackCurveMenu->setEnabled(bEnabled);
 	m_ui.trackCurveSelectMenu->setEnabled(bEnabled);
 
-	if (bEnabled)
-		bEnabled = pCurveList->isEnabled();
-
-	bool bCurveEnabled = bEnabled && pCurrentCurve && pCurrentCurve->isEnabled();
+	bool bCurveEnabled = bEnabled && pCurrentCurve != NULL;
 
 	m_ui.trackCurveModeMenu->setEnabled(bCurveEnabled);
 
@@ -5428,7 +5425,7 @@ void qtractorMainForm::updateCurveMenu (void)
 	m_ui.trackCurveCaptureAllAction->setEnabled(bEnabled);
 
 	m_ui.trackCurveClearAllAction->setEnabled(
-		pCurveList && pCurveList->count() > 0);
+		pCurveList && !pCurveList->isEmpty());
 }
 
 
