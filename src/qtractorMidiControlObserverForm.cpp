@@ -604,10 +604,6 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	if (pTrack == NULL)
 		return;
 
-	qtractorSubject *pSubject = pMidiObserver->subject();
-	if (pSubject == NULL)
-		return;
-
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
@@ -616,7 +612,10 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	if (pTracks == NULL)
 		return;
 
-	qtractorCurve *pCurve = pSubject->curve();
+	qtractorCurve *pCurve = NULL;
+	qtractorSubject *pSubject = pMidiObserver->subject();
+	if (pSubject)
+		pCurve = pSubject->curve();
 
 	if (pCurve && pCurveList->currentCurve() != pCurve) {
 		pCurveList->setCurrentCurve(pCurve);
