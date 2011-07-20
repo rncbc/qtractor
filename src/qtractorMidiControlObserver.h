@@ -88,8 +88,8 @@ public:
 	unsigned short midiValue() const;
 
 	// Normalized scale convertors.
-	float valueFromScale(float fScale, bool bCubic) const;
-	float scaleFromValue(float fValue, bool bCubic) const;
+	float valueFromScale(float fScale, bool bLogarithmic) const;
+	float scaleFromValue(float fValue, bool bLogarithmic) const;
 
 	// Special indirect automation relatives accessors.
 	void setCurveList(qtractorCurveList *pCurveList)

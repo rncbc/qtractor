@@ -587,6 +587,7 @@ float qtractorCurve::valueFromScale ( float fScale ) const
 	return m_observer.valueFromScale(fScale);
 }
 
+
 float qtractorCurve::scaleFromValue ( float fValue ) const
 {
 	float fScale = m_observer.scaleFromValue(fValue);
