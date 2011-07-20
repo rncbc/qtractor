@@ -567,13 +567,48 @@ float qtractorCurve::value ( unsigned long iFrame )
 // Normalized scale converters.
 float qtractorCurve::valueFromScale ( float fScale ) const 
 {
-	return m_observer.valueFromScale(m_bLogarithmic ? ::cubef2(fScale) : fScale);
+	if (m_bLogarithmic) {
+		const float fMaxValue = m_observer.maxValue();
+		const float fMinValue = m_observer.minValue();
+		if (fMinValue < 0.0f && fMaxValue > 0.0f) {
+			const float fMidScale = fMinValue / (fMinValue - fMaxValue);
+			if (fScale > fMidScale) {
+				const float fMaxScale = (1.0f - fMidScale);
+				fScale = (fScale - fMidScale) / fMaxScale;
+				fScale = fMidScale + fMaxScale * ::cubef2(fScale); 
+			} else {
+				fScale = (fMidScale - fScale) / fMidScale;
+				fScale = fMidScale - fMidScale * ::cubef2(fScale); 
+			}
+		}
+		else fScale = ::cubef2(fScale);
+	}
+
+	return m_observer.valueFromScale(fScale);
 }
 
 float qtractorCurve::scaleFromValue ( float fValue ) const
 {
 	float fScale = m_observer.scaleFromValue(fValue);
-	return (m_bLogarithmic ? ::cbrtf2(fScale) : fScale);
+
+	if (m_bLogarithmic) {
+		const float fMaxValue = m_observer.maxValue();
+		const float fMinValue = m_observer.minValue();
+		if (fMinValue < 0.0f && fMaxValue > 0.0f) {
+			const float fMidScale = fMinValue / (fMinValue - fMaxValue);
+			if (fScale > fMidScale) {
+				const float fMaxScale = (1.0f - fMidScale);
+				fScale = (fScale - fMidScale) / fMaxScale;
+				fScale = fMidScale + fMaxScale * ::cbrtf2(fScale); 
+			} else {
+				fScale = (fMidScale - fScale) / fMidScale;
+				fScale = fMidScale - fMidScale * ::cbrtf2(fScale); 
+			}
+		}
+		else fScale = ::cbrtf2(fScale);
+	}
+
+	return fScale;
 }
 
 
