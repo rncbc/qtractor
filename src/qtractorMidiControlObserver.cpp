@@ -90,15 +90,53 @@ unsigned short qtractorMidiControlObserver::midiValue (void) const
 
 
 // Normalized scale converters.
-float qtractorMidiControlObserver::valueFromScale ( float fScale, bool bCubic ) const
+float qtractorMidiControlObserver::valueFromScale (
+	float fScale, bool bLogarithmic ) const
 {
-	return qtractorObserver::valueFromScale(bCubic ? ::cubef2(fScale) : fScale);
+	if (bLogarithmic) {
+		const float fMaxValue = qtractorObserver::maxValue();
+		const float fMinValue = qtractorObserver::minValue();
+		if (fMinValue < 0.0f && fMaxValue > 0.0f) {
+			const float fMidScale = fMinValue / (fMinValue - fMaxValue);
+			if (fScale > fMidScale) {
+				const float fMaxScale = (1.0f - fMidScale);
+				fScale = (fScale - fMidScale) / fMaxScale;
+				fScale = fMidScale + fMaxScale * ::cubef2(fScale); 
+			} else {
+				fScale = (fMidScale - fScale) / fMidScale;
+				fScale = fMidScale - fMidScale * ::cubef2(fScale); 
+			}
+		}
+		else fScale = ::cubef2(fScale);
+	}
+
+	return qtractorObserver::valueFromScale(fScale);
 }
 
-float qtractorMidiControlObserver::scaleFromValue ( float fValue, bool bCubic ) const
+
+float qtractorMidiControlObserver::scaleFromValue (
+	float fValue, bool bLogarithmic ) const
 {
 	float fScale = qtractorObserver::scaleFromValue(fValue);
-	return (bCubic ? ::cbrtf2(fScale) : fScale);
+
+	if (bLogarithmic) {
+		const float fMaxValue = qtractorObserver::maxValue();
+		const float fMinValue = qtractorObserver::minValue();
+		if (fMinValue < 0.0f && fMaxValue > 0.0f) {
+			const float fMidScale = fMinValue / (fMinValue - fMaxValue);
+			if (fScale > fMidScale) {
+				const float fMaxScale = (1.0f - fMidScale);
+				fScale = (fScale - fMidScale) / fMaxScale;
+				fScale = fMidScale + fMaxScale * ::cbrtf2(fScale); 
+			} else {
+				fScale = (fMidScale - fScale) / fMidScale;
+				fScale = fMidScale - fMidScale * ::cbrtf2(fScale); 
+			}
+		}
+		else fScale = ::cbrtf2(fScale);
+	}
+
+	return fScale;
 }
 
 
