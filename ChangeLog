@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI controller learn/catch-up sees the way in:
+  MIDI controller changes are now only effective
+  after catching-up with their respective program
+  parameters, avoiding abrupt jumps and keeping a
+  safe and continuous behavior. (EXPERIMENTAL)
+
 - Track/Height menu is now featured, giving access
   to Increase, Decrease or Reset the current track
   height.
