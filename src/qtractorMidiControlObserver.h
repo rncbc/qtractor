@@ -114,6 +114,11 @@ private:
 	bool m_bFeedback;
 	bool m_bInvert;
 
+	// Tracking/catch-up members.
+	bool  m_bMidiValueInit;
+	bool  m_bMidiValueSync;
+	float m_fMidiValue;
+	
 	// Special indirect automation relatives.
 	qtractorCurveList *m_pCurveList;
 };

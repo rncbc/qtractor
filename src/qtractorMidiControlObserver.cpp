@@ -56,6 +56,7 @@ qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
 		m_bLogarithmic(false), m_bFeedback(false), m_bInvert(false),
+		m_bMidiValueInit(false), m_bMidiValueSync(false), m_fMidiValue(0.0f),
 		m_pCurveList(NULL)
 {
 }
@@ -77,7 +78,22 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		= (m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
 //	setScaleValue(float(iValue) / float(iRatio));
 	float fScale = float(m_bInvert ? iRatio - iValue : iValue) / float(iRatio);
-	subject()->setValue(valueFromScale(fScale, m_bLogarithmic));
+	float fValue = valueFromScale(fScale, m_bLogarithmic);
+
+	if (m_bMidiValueInit && !m_bMidiValueSync) {
+		const float v0 = m_fMidiValue;
+		const float v1 = qtractorObserver::value();
+		if ((fValue > v0 && v1 >= v0 && fValue >= v1) ||
+			(fValue < v0 && v0 >= v1 && v1 >= fValue))
+             m_bMidiValueSync = true;
+	}
+
+	if (m_bMidiValueSync)
+		subject()->setValue(fValue);
+	else
+		m_bMidiValueInit = true;
+
+	m_fMidiValue = fValue;
 }
 
 unsigned short qtractorMidiControlObserver::midiValue (void) const
@@ -151,6 +167,8 @@ void qtractorMidiControlObserver::update (void)
 				m_ctype, m_iChannel, m_iParam, midiValue());
 		}
 	}
+
+	m_bMidiValueSync = false;
 }
 
 
