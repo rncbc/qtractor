@@ -654,10 +654,6 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
-	const QString sBaseName(sBusName + "_curve");
-	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
-
 	qtractorCurve *pCurve;
 
 	if (busMode & Input) { // It suffices for Duplex...
@@ -714,6 +710,13 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveItem->subject = pCurve->subject();
 		pCurveFile->addItem(pCurveItem);
 	}
+
+	if (pCurveFile->isEmpty())
+		return;
+
+	const QString sBaseName(sBusName + "_curve");
+	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

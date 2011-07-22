@@ -1530,7 +1530,7 @@ bool qtractorTrack::saveElement (
 
 	// Save track automation...
 	qtractorCurveList *pCurveList = qtractorTrack::curveList();
-	if (pCurveList) {
+	if (pCurveList && !pCurveList->isEmpty()) {
 		qtractorCurveFile cfile(pCurveList);
 		QDomElement eCurveFile
 			= pDocument->document()->createElement("curve-file");
@@ -1833,10 +1833,6 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
-	const QString sBaseName(trackName() + "_curve");
-	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
-
 	qtractorCurve *pCurve;
 
 	pCurve = monitorSubject()->curve();
@@ -1946,6 +1942,13 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveItem->subject = pCurve->subject();
 		pCurveFile->addItem(pCurveItem);
 	}
+
+	if (pCurveFile->isEmpty())
+		return;
+
+	const QString sBaseName(trackName() + "_curve");
+	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

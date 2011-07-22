@@ -95,6 +95,10 @@ public:
 	void addItem(Item *pCurveItem)
 		{ m_items.append(pCurveItem); }
 	
+	// Curve item list emptyness predicate.
+	bool isEmpty() const
+		{ return m_items.isEmpty(); }
+
 	// Curve item list cleanup.
 	void clear()
 	{

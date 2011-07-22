@@ -3728,7 +3728,7 @@ bool qtractorMidiBus::saveElement (
 		pElement->appendChild(eInputControllers);
 		// Save input bus automation curves...
 		qtractorCurveList *pInputCurveList = qtractorMidiBus::curveList_in();
-		if (pInputCurveList) {
+		if (pInputCurveList && !pInputCurveList->isEmpty()) {
 			qtractorCurveFile cfile(pInputCurveList);
 			QDomElement eInputCurveFile
 				= pDocument->document()->createElement("input-curve-file");
@@ -3768,7 +3768,7 @@ bool qtractorMidiBus::saveElement (
 		pElement->appendChild(eOutputControllers);
 		// Save output bus automation curves...
 		qtractorCurveList *pOutputCurveList = qtractorMidiBus::curveList_out();
-		if (pOutputCurveList) {
+		if (pOutputCurveList && !pOutputCurveList->isEmpty()) {
 			qtractorCurveFile cfile(pOutputCurveList);
 			QDomElement eOutputCurveFile
 				= pDocument->document()->createElement("output-curve-file");
