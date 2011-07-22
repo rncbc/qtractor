@@ -1573,7 +1573,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		ePlugin.appendChild(eControllers);
 		// Save plugin automation...
 		qtractorCurveList *pCurveList = qtractorPluginList::curveList();
-		if (pCurveList) {
+		if (pCurveList && !pCurveList->isEmpty()) {
 			qtractorCurveFile cfile(pCurveList);
 			QDomElement eCurveFile
 				= pDocument->document()->createElement("curve-file");
@@ -1704,16 +1704,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
-
-	QString sBaseName(list()->name());
-	sBaseName += '_';
-	sBaseName += type()->label();
-	sBaseName += '_';
-	sBaseName += QString::number(type()->uniqueID(), 16);
-	sBaseName += "_curve";
-//	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", 1));
-
+	
 	unsigned short iParam = 0;
 	Params::ConstIterator param = m_params.constBegin();
 	for ( ; param != m_params.constEnd(); ++param) {
@@ -1740,6 +1731,18 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			++iParam;
 		}
 	}
+
+	if (pCurveFile->isEmpty())
+		return;
+
+	QString sBaseName(list()->name());
+	sBaseName += '_';
+	sBaseName += type()->label();
+	sBaseName += '_';
+	sBaseName += QString::number(type()->uniqueID(), 16);
+	sBaseName += "_curve";
+//	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", 1));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }
