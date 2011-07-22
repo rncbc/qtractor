@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.0  2011-07-22  Alpha Zulu (TYOQA)
 
 - MIDI controller learn/catch-up sees the way in:
   MIDI controller changes are now only effective
@@ -20,7 +20,6 @@ SVN TRUNK
   linear ramp, reducing the old nasty clicks, pops
   or zipper artifacts that might be awfully audible
   on some situations, most specially on automation.
-  (EXPERIMENTAL)
 
 - All zooming in/out is now relative to either the
   viewport center or current mouse cursor position
@@ -29,7 +28,7 @@ SVN TRUNK
 - TYOQA! the underground sources have emerged:...
   after years in the making, track automation, or
   dynamic curves as some like to call, is finally
-  a reality, tricky but real ;) (EXPERIMENTAL)
+  a reality, tricky but real ;)
 
 - Audio clip anti-glitch/ramp-smoothing effect is
   now slightly independent of current buffer-size

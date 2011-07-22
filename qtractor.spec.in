@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 34
+%define release 35
 
 %define _prefix	@ac_prefix@
 
@@ -67,6 +67,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 
 %changelog
+* Fri Jul 22 2011 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.0
+- Alpha Zulu (TYOQA) release.
 * Thu May 26 2011 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.9
 - Final Dudette release.
 * Tue Jan 19 2011 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.8
