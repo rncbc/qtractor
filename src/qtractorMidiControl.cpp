@@ -222,12 +222,12 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 
 
 // Find incoming controller event map.
-qtractorMidiControl::ControlMap::ConstIterator
-qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
+qtractorMidiControl::ControlMap::Iterator
+qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle )
 {
 	// Check if controller map includes this event...
-	ControlMap::ConstIterator it = m_controlMap.constBegin();
-	for ( ; it != m_controlMap.constEnd(); ++it) {
+	ControlMap::Iterator it = m_controlMap.begin();
+	for ( ; it != m_controlMap.end(); ++it) {
 		const MapKey& key = it.key();
 		if (key.match(ctle.type(), ctle.channel(), ctle.param()))
 			break;
@@ -237,7 +237,7 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
 
 
 // Process incoming controller event.
-bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
+bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 {
 	bool bResult = false;
 
@@ -255,14 +255,14 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 	}
 
 	// Find incoming controller event map tuple.
-	ControlMap::ConstIterator it = findEvent(ctle);
+	ControlMap::Iterator it = findEvent(ctle);
 	// Is there one mapped, indeed?
 	if (it == m_controlMap.end())
 		return bResult;
 
 	// Find the track by number...
 	const MapKey& key = it.key();
-	const MapVal& val = it.value();
+	MapVal& val = it.value();
 
 	int iTrack = val.track();
 	if (key.isChannelTrack()) {
@@ -283,47 +283,54 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 	if (pTrack == NULL)
 		return bResult;
 
+	float fValue;
 	switch (val.command()) {
 	case TRACK_GAIN:
-		bResult = pSession->execute(
-			new qtractorTrackGainCommand(pTrack,
-				(pTrack->trackType() == qtractorTrack::Audio
-					? cubef2(float(ctle.value()) / 127.0f)
-					: float(ctle.value()) / 127.0f),
-				true));
+		fValue = float(ctle.value()) / 127.0f;
+		if (pTrack->trackType() == qtractorTrack::Audio)
+			fValue = ::cubef2(fValue);
+		if (val.sync(fValue, pTrack->gain())) {
+			bResult = pSession->execute(
+				new qtractorTrackGainCommand(pTrack, val.value(), true));
+		}
 		break;
 	case TRACK_PANNING:
-		bResult = pSession->execute(
-			new qtractorTrackPanningCommand(pTrack,
-				(float(ctle.value()) - 64.0f) / 63.0f,
-				true));
+		fValue = (float(ctle.value()) - 64.0f) / 63.0f;
+		if (val.sync(fValue, pTrack->panning())) {
+			bResult = pSession->execute(
+				new qtractorTrackPanningCommand(pTrack, val.value(), true));
+		}
 		break;
 	case TRACK_MONITOR:
-		bResult = pSession->execute(
-			new qtractorTrackMonitorCommand(pTrack,
-				bool(ctle.value() > 0),
-				true));
+		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		if (val.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
+			bResult = pSession->execute(
+				new qtractorTrackMonitorCommand(pTrack, val.value(), true));
+		}
 		break;
 	case TRACK_RECORD:
-		bResult = pSession->execute(
-			new qtractorTrackStateCommand(pTrack,
-				qtractorTrack::Record,
-				bool(ctle.value()> 0),
-				true));
+		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		if (val.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
+			bResult = pSession->execute(
+				new qtractorTrackStateCommand(pTrack,
+					qtractorTrack::Record, val.value(), true));
+		}
 		break;
 	case TRACK_MUTE:
-		bResult = pSession->execute(
-			new qtractorTrackStateCommand(pTrack,
-				qtractorTrack::Mute,
-				bool(ctle.value() > 0),
-				true));
+		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		if (val.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
+			bResult = pSession->execute(
+				new qtractorTrackStateCommand(pTrack,
+					qtractorTrack::Mute, val.value(), true));
+		}
 		break;
 	case TRACK_SOLO:
-		bResult = pSession->execute(
-			new qtractorTrackStateCommand(pTrack,
-				qtractorTrack::Solo,
-				bool(ctle.value() > 0),
-				true));
+		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		if (val.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
+			bResult = pSession->execute(
+				new qtractorTrackStateCommand(pTrack,
+					qtractorTrack::Solo, val.value(), true));
+		}
 		break;
 	default:
 		break;
@@ -335,11 +342,11 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 
 // Process incoming command.
 void qtractorMidiControl::processTrackCommand (
-	Command command, int iTrack, float fValue, bool bCubic ) const
+	Command command, int iTrack, float fValue, bool bCubic )
 {
 	switch (command) {
 	case TRACK_GAIN:
-		if (bCubic) fValue = cbrtf2(fValue);
+		if (bCubic) fValue = ::cbrtf2(fValue);
 		sendTrackController(iTrack, command, int(127.0f * fValue));
 		break;
 	case TRACK_PANNING:
@@ -352,7 +359,7 @@ void qtractorMidiControl::processTrackCommand (
 
 
 void qtractorMidiControl::processTrackCommand (
-	Command command, int iTrack, bool bValue ) const
+	Command command, int iTrack, bool bValue )
 {
 	switch (command) {
 	case TRACK_MONITOR:
@@ -369,14 +376,17 @@ void qtractorMidiControl::processTrackCommand (
 
 // Further processing of outgoing midi controller messages
 void qtractorMidiControl::sendTrackController (
-	int iTrack, Command command, int iValue ) const
+	int iTrack, Command command, int iValue )
 {
 	// Search for the command and parameter in controller map...
-	ControlMap::ConstIterator it = m_controlMap.constBegin();
-	for ( ; it != m_controlMap.constEnd(); ++it) {
+	ControlMap::Iterator it = m_controlMap.begin();
+	for ( ; it != m_controlMap.end(); ++it) {
 		const MapKey& key = it.key();
-		const MapVal& val = it.value();
-		if (val.command() == command && val.isFeedback()) {
+		MapVal& val = it.value();
+		if (val.command() == command) {
+			val.syncReset();
+			if (!val.isFeedback())
+				continue;
 			// Now send the message out...
 			unsigned short iParam = (key.param() & TrackParamMask);
 			if (key.isChannelTrack())
@@ -401,7 +411,7 @@ void qtractorMidiControl::sendTrackController (
 	switch (command) {
 	case TRACK_GAIN:
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			iValue = int(127.0f * cbrtf2(pTrack->gain()));
+			iValue = int(127.0f * ::cbrtf2(pTrack->gain()));
 		else
 			iValue = int(127.0f * pTrack->gain());
 		break;

@@ -131,7 +131,8 @@ public:
 
 		// Constructor.
 		MapVal(Command command = Command(0), int iTrack = 0, bool bFeedback = false)
-			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
+			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback),
+				m_bValueInit(false), m_bValueSync(false), m_fValue(0.0f) {}
 
 		// Command accessors
 		void setCommand(Command command)
@@ -151,12 +152,42 @@ public:
 		int isFeedback() const
 			{ return m_bFeedback; }
 
+		// Tracking/catch-up methods.
+		bool sync(float fValue, float fOldValue)
+		{
+			if (m_bValueInit && !m_bValueSync) {
+				const float v0 = m_fValue;
+				const float v1 = fOldValue;
+				if ((fValue > v0 && v1 >= v0 && fValue >= v1) ||
+					(fValue < v0 && v0 >= v1 && v1 >= fValue))
+		             m_bValueSync = true;
+			}
+		
+			if (!m_bValueSync)
+				m_bValueInit = true;
+		
+			m_fValue = fValue;
+
+			return m_bValueSync;
+		}
+
+		void syncReset()
+			{ m_bValueSync = false; }
+
+		float value() const
+			{ return m_fValue; }
+
 	private:
 
 		// Instance (value) member variables.
 		Command m_command;
 		int     m_iTrack;
 		bool    m_bFeedback;
+
+		// Tracking/catch-up members.
+		bool    m_bValueInit;
+		bool    m_bValueSync;
+		float   m_fValue;
 	};
 
 	// MIDI control map type.
@@ -198,13 +229,13 @@ public:
 		unsigned short iChannel, unsigned short iParam, int iValue) const;
 
 	// Process incoming controller messages.
-	bool processEvent(const qtractorCtlEvent& ctle) const;
+	bool processEvent(const qtractorCtlEvent& ctle);
 
 	// Process incoming command.
 	void processTrackCommand(
-		Command command, int iTrack, float fValue, bool bCubic = false) const;
+		Command command, int iTrack, float fValue, bool bCubic = false);
 	void processTrackCommand(
-		Command command, int iTrack, bool bValue) const;
+		Command command, int iTrack, bool bValue);
 
 	// Control map accessor.
 	const ControlMap& controlMap() const { return m_controlMap; }
@@ -274,13 +305,13 @@ public:
 protected:
 
 	// Find incoming controller event map.
-	ControlMap::ConstIterator findEvent(const qtractorCtlEvent& ctle) const;
+	ControlMap::Iterator findEvent(const qtractorCtlEvent& ctle);
 
 	// Overloaded controller value senders.
 	void sendTrackController(
 		ControlType ctype, qtractorTrack *pTrack, Command command,
 		unsigned short iChannel, unsigned short iParam) const;
-	void sendTrackController(int iTrack, Command command, int iValue) const;
+	void sendTrackController(int iTrack, Command command, int iValue);
 
 private:
 
