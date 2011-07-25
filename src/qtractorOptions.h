@@ -165,6 +165,9 @@ public:
 	int     iPluginType;
 	bool	bPluginActivate;
 
+	// Automation curve mode default.
+	int     iCurveMode;
+
 	// Plug-in paths.
 	QStringList ladspaPaths;
 	QStringList dssiPaths;

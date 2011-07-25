@@ -2814,7 +2814,10 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 	if (bOn && pSubject) {
 		pCurve = pSubject->curve();
 		if (pCurve == NULL) {
-			pCurve = new qtractorCurve(pCurveList, pSubject, qtractorCurve::Hold);
+			qtractorCurve::Mode mode = qtractorCurve::Hold;
+			if (m_pOptions)
+				mode = qtractorCurve::Mode(m_pOptions->iCurveMode);
+			pCurve = new qtractorCurve(pCurveList, pSubject, mode);
 			pCurve->setLogarithmic(pMidiObserver->isLogarithmic());
 		}
 	}
@@ -2860,11 +2863,15 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 	if (pCurrentCurve == NULL)
 		return;
 
-	qtractorCurve::Mode mode = qtractorCurve::Mode(iMode);
-
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackCurveMode(%d)", int(mode));
+	qDebug("qtractorMainForm::trackCurveMode(%d)", iMode);
 #endif
+
+	// Save as future default...
+	if (m_pOptions)
+		m_pOptions->iCurveMode = iMode;
+
+	qtractorCurve::Mode mode = qtractorCurve::Mode(iMode);
 
 #if 0
 	pCurrentCurve->setMode(mode);
