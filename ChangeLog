@@ -3,6 +3,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Default automation curve mode is now preserved
+  (following suggestion by Alexandre Prokoudine,
+  thanks).
+
+
 0.5.0  2011-07-22  Alpha Zulu (TYOQA)
 
 - MIDI controller learn/catch-up sees the way in:
