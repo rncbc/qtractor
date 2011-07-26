@@ -263,7 +263,7 @@
       <item>
        <widget class="QComboBox" name="ExportBusNameComboBox" >
         <property name="toolTip" >
-         <string>Ouput bus name</string>
+         <string>Output bus name</string>
         </property>
        </widget>
       </item>

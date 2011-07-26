@@ -177,7 +177,7 @@
                </size>
               </property>
               <property name="toolTip" >
-               <string>Ouput bus name</string>
+               <string>Output bus name</string>
               </property>
              </widget>
             </item>

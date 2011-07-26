@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Just some typos fixing (patch #3378382 by c-korn).
+
 - Track view automation curve editing mode has been
   slightly fixed, now allowing for other previously
   existing point-and-click mouse operations.
