@@ -2819,6 +2819,9 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 				mode = qtractorCurve::Mode(m_pOptions->iCurveMode);
 			pCurve = new qtractorCurve(pCurveList, pSubject, mode);
 			pCurve->setLogarithmic(pMidiObserver->isLogarithmic());
+			qtractorTrack *pTrack = m_pSession->findTrack(pCurveList);
+			if (pTrack)
+				pCurve->setColor(pTrack->foreground().darker(160));
 		}
 	}
 
