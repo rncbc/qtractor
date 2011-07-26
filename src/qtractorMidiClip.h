@@ -56,27 +56,40 @@ public:
 	bool openMidiFile(qtractorMidiFile *pFile, int iTrackChannel = 0);
 
 	// MIDI file properties accessors.
-	void setTrackChannel(unsigned short iTrackChannel);
-	unsigned short trackChannel() const;
+	void setTrackChannel(unsigned short iTrackChannel)
+		{ m_iTrackChannel = iTrackChannel; }
+	unsigned short trackChannel() const
+		{ return m_iTrackChannel; }
 
-	void setFormat(unsigned short iFormat);
-	unsigned short format() const;
+	void setFormat(unsigned short iFormat)
+		{ m_iFormat = iFormat; }
+	unsigned short format() const
+		{ return m_iFormat; }
 
 	// (Meta)Session flag accessors.
-	void setSessionFlag(bool bSessionFlag);
-	bool isSessionFlag() const;
+	void setSessionFlag(bool bSessionFlag)
+		{ m_bSessionFlag = bSessionFlag; }
+	bool isSessionFlag() const
+		{ return m_bSessionFlag; }
 
-	// Revisionist methods.
-	void setRevision(unsigned short iRevision);
-	unsigned short revision() const;
+	// Revisionist accessors.
+	void setRevision(unsigned short iRevision)
+		{ m_iRevision = iRevision; }
+	unsigned short revision() const
+		{ return m_iRevision; }
 
+	// Revisionist method.
 	QString createFilePathRevision(bool bForce = false);
 
 	// Sequence properties accessors.
-	qtractorMidiSequence *sequence() const;
-	unsigned short channel() const;
-	int bank() const;
-	int program() const;
+	qtractorMidiSequence *sequence() const
+		{ return m_pSeq; }
+	unsigned short channel() const
+		{ return (m_pSeq ? m_pSeq->channel() : 0); }
+	int bank() const
+		{ return (m_pSeq ? m_pSeq->bank() : -1); }
+	int program() const
+		{ return (m_pSeq ? m_pSeq->program() : -1); }
 
 	// Intra-clip frame positioning.
 	void seek(unsigned long iFrame);
