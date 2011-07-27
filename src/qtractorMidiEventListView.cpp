@@ -89,8 +89,16 @@ qtractorMidiEditor *qtractorMidiEventListView::editor (void) const
 // Refreshner.
 void qtractorMidiEventListView::refresh (void)
 {
-	if (m_pListModel)
-		m_pListModel->reset();
+	if (m_pListModel == NULL)
+		return;
+
+	QItemSelectionModel *pSelectionModel = QTreeView::selectionModel();
+
+	const QModelIndex& index = pSelectionModel->currentIndex();
+
+	m_pListModel->reset();
+
+	pSelectionModel->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
 }
 
 
