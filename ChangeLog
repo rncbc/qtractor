@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Avoid cursor reset while editing MIDI events list
+  (fixes bug #3380259, reported by Frank Neumann).
+
 - Just some typos fixing (patch #3378382 by c-korn).
 
 - Track view automation curve editing mode has been
