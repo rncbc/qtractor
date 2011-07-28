@@ -114,11 +114,30 @@ qtractorMidiClip::~qtractorMidiClip (void)
 
 
 // The main use method.
-bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
-	int iTrackChannel, int iMode )
+bool qtractorMidiClip::openMidiFile (
+	const QString& sFilename, int iTrackChannel, int iMode )
 {
-	if (m_pFile)
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return false;
+
+	qtractorMidiSequence *pSeq = sequence();
+	if (pSeq == NULL)
+		return false;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiClip[%p]::openMidiFile(\"%s\", %d, %d)", this,
+		sFilename.toUtf8().constData(), iTrackChannel, iMode);
+#endif
+
+	if (m_pFile) {
 		delete m_pFile;
+		m_pFile = NULL;
+	}
 
 	// Create and open up the MIDI file...
 	m_pFile = new qtractorMidiFile();
@@ -128,33 +147,7 @@ bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
 		return false;
 	}
 
-	// Open-process mode...
-	return openMidiFile(m_pFile, iTrackChannel);
-}
-
-
-// Overloaded open method; reuse an already open MIDI file.
-bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
-	int iTrackChannel )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiClip[%p]::openMidiFile(\"%s\", %d, %d)", this,
-		pFile->filename().toUtf8().constData(), iTrackChannel, pFile->mode());
-#endif
-
-	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
-		return false;
-
-	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
-		return false;
-
 	// Initialize event container...
-	qtractorMidiSequence *pSeq = sequence();
-	if (pSeq == NULL)
-		return false;
-
 	pSeq->clear();
 	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 
@@ -176,7 +169,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	pSeq->setTimeLength(pNode->tickFromFrame(iLength) - t0);
 
 	// Are we on a pre-writing status?
-	if (pFile->mode() == qtractorMidiFile::Write) {
+	if (m_pFile->mode() == qtractorMidiFile::Write) {
 		// On write mode, iTrackChannel holds the SMF format,
 		// so we'll convert it here as properly.
 		unsigned short iFormat = 0;
@@ -193,22 +186,22 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		// That's it.
 		setFormat(iFormat);
 		// Write SMF header...
-		if (pFile->writeHeader(iFormat, iTracks, pSeq->ticksPerBeat())) {
+		if (m_pFile->writeHeader(iFormat, iTracks, pSeq->ticksPerBeat())) {
 			// Set initial local properties...
-			if (pFile->tempoMap()) {
-				pFile->tempoMap()->fromTimeScale(
+			if (m_pFile->tempoMap()) {
+				m_pFile->tempoMap()->fromTimeScale(
 					pSession->timeScale(), pSeq->timeOffset());
 			}
 		}
 		// And initial clip name...
-		pSeq->setName(QFileInfo(pFile->filename()).baseName());
+		pSeq->setName(QFileInfo(m_pFile->filename()).baseName());
 		pSeq->setChannel(pTrack->midiChannel());
 		// Nothing more as for writing...
 	} else {
 		// On read mode, SMF format is properly given by open file.
-		setFormat(pFile->format());
+		setFormat(m_pFile->format());
 		// Read the event sequence in...
-		pFile->readTrack(pSeq, iTrackChannel);
+		m_pFile->readTrack(pSeq, iTrackChannel);
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag) {
 		#if 0
@@ -235,8 +228,8 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 				pMidiBus->importSysexList(pSeq);
 		#endif
 			// Import tempo map as well...
-			if (pFile->tempoMap()) {
-				pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
+			if (m_pFile->tempoMap()) {
+				m_pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
 				pSession->updateTimeScale();
 			}
 			// Reset session flag now.
@@ -248,7 +241,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	}
 
 	// Set local properties...
-	setFilename(pFile->filename());
+	setFilename(m_pFile->filename());
 	setTrackChannel(iTrackChannel);
 	setDirty(false);
 

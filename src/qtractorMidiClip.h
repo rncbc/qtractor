@@ -52,8 +52,6 @@ public:
 	// The main use method.
 	bool openMidiFile(const QString& sFilename, int iTrackChannel = 0,
 		int iMode = qtractorMidiFile::Read);
-	// Overloaded open method; reuse an already open MIDI file.
-	bool openMidiFile(qtractorMidiFile *pFile, int iTrackChannel = 0);
 
 	// MIDI file properties accessors.
 	void setTrackChannel(unsigned short iTrackChannel)
