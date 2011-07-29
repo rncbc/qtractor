@@ -262,7 +262,7 @@ private:
 		qtractorInstrumentKeys    keys;
 		qtractorInstrumentDrums   drums;
 
-	} * m_pData;
+	} *m_pData;
 };
 
 
@@ -346,11 +346,11 @@ protected:
 	bool loadMidiNameDocument(QFile *pFile);
 
 	void loadMidiDeviceNames(QDomElement *pElement);
-	void loadMidiChannelNames(QDomElement *pElement, qtractorInstrument& instr);
-	void loadMidiBankNames(QDomElement *pElement, qtractorInstrument& instr);
-	void loadMidiPatchNames(QDomElement *pElement);
-	void loadMidiNoteNames(QDomElement *pElement);
-	void loadMidiControlNames(QDomElement *pElement);
+	void loadMidiChannelNameSet(QDomElement *pElement, qtractorInstrument& instr);
+	void loadMidiPatchBank(QDomElement *pElement, qtractorInstrument& instr, const QString& sName);
+	void loadMidiPatchNameList(QDomElement *pElement, const QString& sName);
+	void loadMidiNoteNameList(QDomElement *pElement, const QString& sName);
+	void loadMidiControlNameList(QDomElement *pElement, const QString& sName);
 
 private:
 
