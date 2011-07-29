@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI Names XML files (*.midnam) may now be imported
+  into MIDI instrument definitions. (EXPERIMENTAL)
+
 - Avoid cursor reset while editing MIDI events list
   (fixes bug #3380259, reported by Frank Neumann).
 
