@@ -27,6 +27,8 @@
 #include <QRegExp>
 #include <QDate>
 
+#include <QDomDocument>
+
 #include <stdlib.h>
 
 
@@ -149,6 +151,13 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 
 	// Check for a soundfont...
 	if (loadSoundFont(&file)) {
+		file.close();
+		appendFile(sFilename);
+		return true;
+	}
+
+	// Check for a MIDINameDocument...
+	if (loadMidiNameDocument(&file)) {
 		file.close();
 		appendFile(sFilename);
 		return true;
@@ -552,6 +561,8 @@ typedef struct _SoundFontChunk
 // Special SoundFont loader.
 bool qtractorInstrumentList::loadSoundFont ( QFile *pFile )
 {
+	pFile->seek(0);
+
 	// Check RIFF file header...
 	SoundFontChunk chunk;
 	pFile->read((char *) &chunk, sizeof(chunk));
@@ -639,6 +650,227 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 		pFile->seek(pFile->pos() + chunk.size);
 
 		iSize -= chunk.size;
+	}
+}
+
+
+// Special MIDINameDocument loader.
+bool qtractorInstrumentList::loadMidiNameDocument ( QFile *pFile )
+{
+	pFile->seek(0);
+
+	QDomDocument doc;
+	if (!doc.setContent(pFile))
+		return false;
+
+	QDomElement eRoot = doc.documentElement();
+	if (eRoot.tagName() != "MIDINameDocument")
+		return false;
+
+	for (QDomNode nItem = eRoot.firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		// Convert item node to element...
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "MasterDeviceNames")
+			loadMidiDeviceNames(&eItem);
+	}
+
+	return true;
+}
+
+
+void qtractorInstrumentList::loadMidiDeviceNames ( QDomElement *pElement )
+{
+	QString sInstrumentName;
+
+	for (QDomNode nItem = pElement->firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		// Convert item node to element...
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "Manufacturer") {
+			if (!sInstrumentName.isEmpty())
+				sInstrumentName += ' ';
+			sInstrumentName += eItem.text();
+		}
+		else
+		if (eItem.tagName() == "Model") {
+			if (!sInstrumentName.isEmpty())
+				sInstrumentName += ' ';
+			sInstrumentName += eItem.text();
+		}
+		else
+		if (eItem.tagName() == "ChannelNameSet") {
+			if (!sInstrumentName.isEmpty())
+				sInstrumentName += ' ';
+			sInstrumentName += eItem.attribute("Name");
+			qtractorInstrument& instr = (*this)[sInstrumentName];
+			instr.setInstrumentName(sInstrumentName);
+			loadMidiChannelNames(&eItem, instr);
+		}
+		else
+		if (eItem.tagName() == "PatchNameList")
+			loadMidiPatchNames(&eItem);
+		else
+		if (eItem.tagName() == "NoteNameList")
+			loadMidiNoteNames(&eItem);
+		else
+		if (eItem.tagName() == "ControlNameList")
+			loadMidiControlNames(&eItem);
+	}
+}
+
+
+void qtractorInstrumentList::loadMidiChannelNames (
+	QDomElement *pElement, qtractorInstrument& instr )
+{
+	for (QDomNode nItem = pElement->firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "PatchBank")
+			loadMidiBankNames(&eItem, instr);
+		else
+		if (eItem.tagName() == "NoteNameList")
+			loadMidiNoteNames(&eItem);
+		else
+		if (eItem.tagName() == "ControlNameList")
+			loadMidiControlNames(&eItem);
+	}
+}
+
+
+void qtractorInstrumentList::loadMidiBankNames (
+	QDomElement *pElement, qtractorInstrument& instr )
+{
+	const QString& sName = pElement->attribute("Name");
+	QString sBank = sName;
+	unsigned short iBank = 0;
+
+	for (QDomNode nItem = pElement->firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "MIDICommands") {
+			for (QDomNode nCommand = eItem.firstChild();
+					!nCommand.isNull();
+						nCommand = nCommand.nextSibling()) {
+				QDomElement eCommand = nCommand.toElement();
+				if (eCommand.isNull())
+					continue;
+				if (eCommand.tagName() == "ControlChange") {
+					unsigned short iControl
+						= eCommand.attribute("Control").toUShort();
+					unsigned short iValue
+						= eCommand.attribute("Value").toUShort();
+					if (iControl == 0)	// Bank MSB.
+						iBank |= ((iValue << 7) & 0x3f80);
+					else
+					if (iControl == 32)	// Bank LSB.
+						iBank |= (iValue & 0x7f);
+				}
+			}
+		}
+		else
+		if (eItem.tagName() == "UsesPatchNameList")
+			sBank = eItem.attribute("Name");
+	}
+
+	qtractorInstrumentData& patches = m_patches[sBank];
+	patches.setName(sName);
+
+	instr.setPatch(int(iBank), patches);
+}
+
+
+void qtractorInstrumentList::loadMidiPatchNames ( QDomElement *pElement )
+{
+	const QString& sName = pElement->attribute("Name");
+	qtractorInstrumentData& patches = m_patches[sName];
+
+	for (QDomNode nItem = pElement->firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "Patch") {
+			const QString& sProg = eItem.attribute("Name");
+			unsigned short iProg
+				= eItem.attribute("ProgramChange").toUShort();
+			patches[int(iProg)] = sProg;
+			for (QDomNode nSubItem = eItem.firstChild();
+					!nSubItem.isNull();
+						nSubItem = nSubItem.nextSibling()) {
+				QDomElement eSubItem = nSubItem.toElement();
+				if (eSubItem.isNull())
+					continue;
+				if (eSubItem.tagName() == "NoteNameList")
+					loadMidiNoteNames(&eSubItem);
+				else
+				if (eSubItem.tagName() == "ControlNameList")
+					loadMidiControlNames(&eSubItem);
+			}
+		}
+	}
+}
+
+
+void qtractorInstrumentList::loadMidiNoteNames ( QDomElement *pElement )
+{
+	const QString& sName = pElement->attribute("Name");
+	qtractorInstrumentData& notes = m_notes[sName];
+
+	for (QDomNode nItem = pElement->firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "Note") {
+			const QString& sNote = eItem.attribute("Name");
+			unsigned short iNote = eItem.attribute("Number").toUShort();
+			notes[int(iNote)] = sNote;
+		}
+	}
+}
+
+
+void qtractorInstrumentList::loadMidiControlNames ( QDomElement *pElement )
+{
+	const QString& sName = pElement->attribute("Name");
+	qtractorInstrumentData& controllers = m_controllers[sName];
+
+	for (QDomNode nItem = pElement->firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "Control") {
+			const QString& sControlType = eItem.attribute("Type");
+			const QString& sControl = eItem.attribute("Name");
+			unsigned short iControl = eItem.attribute("Number").toUShort();
+			if (sControlType == "RPN") {
+				qtractorInstrumentData& rpns = m_rpns[sName];
+				rpns[int(iControl)] = sControl;
+			}
+			else
+			if (sControlType == "NRPN") {
+				qtractorInstrumentData& nrpns = m_nrpns[sName];
+				nrpns[int(iControl)] = sControl;
+			}
+			else controllers[int(iControl)] = sControl;
+		}
 	}
 }
 

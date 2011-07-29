@@ -30,6 +30,8 @@
 class QTextStream;
 class QFile;
 
+class QDomElement;
+
 
 //----------------------------------------------------------------------
 // class qtractorInstrumentData -- instrument definition data classes.
@@ -112,7 +114,7 @@ private:
 		QString basedOn;
 		DataMap map;
 
-	} * m_pData;
+	} *m_pData;
 };
 
 class qtractorInstrumentDataList
@@ -339,6 +341,16 @@ protected:
 	// Special SoundFont loader.
 	bool loadSoundFont(QFile *pFile);
 	void loadSoundFontPresets(QFile *pFile, int iSize);
+
+	// Special MIDINameDocument loader.
+	bool loadMidiNameDocument(QFile *pFile);
+
+	void loadMidiDeviceNames(QDomElement *pElement);
+	void loadMidiChannelNames(QDomElement *pElement, qtractorInstrument& instr);
+	void loadMidiBankNames(QDomElement *pElement, qtractorInstrument& instr);
+	void loadMidiPatchNames(QDomElement *pElement);
+	void loadMidiNoteNames(QDomElement *pElement);
+	void loadMidiControlNames(QDomElement *pElement);
 
 private:
 
