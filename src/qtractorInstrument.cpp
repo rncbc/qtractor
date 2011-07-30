@@ -93,7 +93,7 @@ void qtractorInstrumentList::clearAll (void)
 
 	m_patches.clear();
 	m_notes.clear();
-	m_controllers.clear();
+	m_controls.clear();
 	m_rpns.clear();
 	m_nrpns.clear();
 
@@ -111,7 +111,7 @@ void qtractorInstrumentList::merge ( const qtractorInstrumentList& instruments )
 	// Names data lists merge...
 	mergeDataList(m_patches, instruments.patches());
 	mergeDataList(m_notes, instruments.notes());
-	mergeDataList(m_controllers, instruments.controllers());
+	mergeDataList(m_controls, instruments.controls());
 	mergeDataList(m_rpns, instruments.rpns());
 	mergeDataList(m_nrpns, instruments.nrpns());
 
@@ -224,8 +224,8 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 			}
 			else if (sLine == ".Controller Names") {
 				sect = ControlNames;
-			//	m_controllers.clear();
-				m_controllers[s0_127].setName(s0_127);
+			//	m_controls.clear();
+				m_controls[s0_127].setName(s0_127);
 			}
 			else if (sLine == ".RPN Names") {
 				sect = RpnNames;
@@ -288,7 +288,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				if (rxTitle.exactMatch(sLine)) {
 					// New controller name...
 					const QString& sTitle = rxTitle.cap(1);
-					pData = &(m_controllers[sTitle]);
+					pData = &(m_controls[sTitle]);
 					pData->setName(sTitle);
 				} else if (rxBasedOn.exactMatch(sLine)) {
 					pData->setBasedOn(rxBasedOn.cap(1));
@@ -349,7 +349,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 						? -1 : rxPatch.cap(1).toInt());
 					pInstrument->setPatch(iBank, m_patches[rxPatch.cap(2)]);
 				} else if (rxControl.exactMatch(sLine)) {
-					pInstrument->setControl(m_controllers[rxControl.cap(1)]);
+					pInstrument->setControl(m_controls[rxControl.cap(1)]);
 				} else if (rxRpn.exactMatch(sLine)) {
 					pInstrument->setRpn(m_rpns[rxRpn.cap(1)]);
 				} else if (rxNrpn.exactMatch(sLine)) {
@@ -434,7 +434,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 	// - Controller Names...
     ts << sepl << endl << endl;
 	ts << ".Controller Names" << endl;
-	saveDataList(ts, m_controllers);
+	saveDataList(ts, m_controls);
 
 	// - RPN Names...
     ts << sepl << endl << endl;
@@ -717,8 +717,10 @@ void qtractorInstrumentList::loadMidiDeviceNames ( QDomElement *pElement )
 			loadMidiChannelNameSet(&eItem, instr);
 		}
 		else
-		if (sTagName == "PatchNameList")
-			loadMidiPatchNameList(&eItem, sName);
+		if (sTagName == "PatchNameList") {
+			qtractorInstrument& instr = (*this)[sInstrumentName];
+			loadMidiPatchNameList(&eItem, instr, sName);
+		}
 		else
 		if (sTagName == "NoteNameList")
 			loadMidiNoteNameList(&eItem, sName);
@@ -743,11 +745,26 @@ void qtractorInstrumentList::loadMidiChannelNameSet (
 		if (sTagName == "PatchBank")
 			loadMidiPatchBank(&eItem, instr, sName);
 		else
+		if (sTagName == "PatchNameList")
+			loadMidiPatchNameList(&eItem, instr, sName);
+		else
 		if (sTagName == "NoteNameList")
 			loadMidiNoteNameList(&eItem, sName);
 		else
 		if (sTagName == "ControlNameList")
 			loadMidiControlNameList(&eItem, sName);
+		else
+		if (sTagName == "UsesPatchNameList")
+			instr.setPatch(-1, m_patches[sName]);
+		else
+		if (sTagName == "UsesNotesNameList")
+			instr.setNotes(-1, -1, m_notes[sName]);
+		else
+		if (sTagName == "UsesControlNameList") {
+			instr.setControl(m_controls[sName]);
+			instr.setRpn(m_rpns[sName]);
+			instr.setNrpn(m_nrpns[sName]);
+		}
 	}
 }
 
@@ -755,8 +772,7 @@ void qtractorInstrumentList::loadMidiChannelNameSet (
 void qtractorInstrumentList::loadMidiPatchBank (
 	QDomElement *pElement, qtractorInstrument& instr, const QString& sName )
 {
-	QString sBank = sName;
-	unsigned short iBank = 0;
+	int iBank = -1;
 
 	for (QDomNode nItem = pElement->firstChild();
 			!nItem.isNull();
@@ -765,7 +781,11 @@ void qtractorInstrumentList::loadMidiPatchBank (
 		if (eItem.isNull())
 			continue;
 		const QString& sTagName = eItem.tagName();
+		QString sSubName = eItem.attribute("Name");
+		if (sSubName.isEmpty())
+			sSubName = sName;
 		if (sTagName == "MIDICommands") {
+			iBank = 0;
 			for (QDomNode nCommand = eItem.firstChild();
 					!nCommand.isNull();
 						nCommand = nCommand.nextSibling()) {
@@ -786,19 +806,19 @@ void qtractorInstrumentList::loadMidiPatchBank (
 			}
 		}
 		else
-		if (sTagName == "UsesPatchNameList")
-			sBank = eItem.attribute("Name");
+		if (sTagName == "PatchNameList") {
+			loadMidiPatchNameList(&eItem, instr, sSubName);
+			instr.setPatch(iBank, m_patches[sSubName]);
+		}
 		else
-		if (sTagName == "PatchNameList")
-			loadMidiPatchNameList(&eItem, sBank);
+		if (sTagName == "UsesPatchNameList")
+			instr.setPatch(iBank, m_patches[sSubName]);
 	}
-
-	instr.setPatch(int(iBank), m_patches[sBank]);
 }
 
 
 void qtractorInstrumentList::loadMidiPatchNameList (
-	QDomElement *pElement, const QString& sName )
+	QDomElement *pElement, qtractorInstrument& instr, const QString& sName )
 {
 	qtractorInstrumentData& patches = m_patches[sName];
 
@@ -813,9 +833,8 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 		const QString& sTagName = eItem.tagName();
 		if (sTagName == "Patch") {
 			const QString& sProg = eItem.attribute("Name");
-			unsigned short iProg
-				= eItem.attribute("ProgramChange").toUShort();
-			patches[int(iProg)] = sProg;
+			int iProg = eItem.attribute("ProgramChange").toInt();
+			patches[iProg] = sProg;
 			for (QDomNode nSubItem = eItem.firstChild();
 					!nSubItem.isNull();
 						nSubItem = nSubItem.nextSibling()) {
@@ -833,6 +852,15 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 				else
 				if (sSubTagName == "ControlNameList")
 					loadMidiControlNameList(&eSubItem, sSubName);
+				else
+				if (sSubTagName == "UsesNoteNameList")
+					instr.setNotes(-1, iProg, m_notes[sSubName]);
+				else
+				if (sSubTagName == "UsesControlNameList") {
+					instr.setControl(m_controls[sSubName]);
+					instr.setRpn(m_rpns[sSubName]);
+					instr.setNrpn(m_nrpns[sSubName]);
+				}
 			}
 		}
 	}
@@ -872,8 +900,8 @@ void qtractorInstrumentList::loadMidiNoteNameList (
 				const QString& sSubTagName = eSubItem.tagName();
 				if (sSubTagName == "Note") {
 					const QString& sNote = eSubItem.attribute("Name");
-					unsigned short iNote = eSubItem.attribute("Number").toUShort();
-					notes[int(iNote)] = sSubName + sNote;
+					int iNote = eSubItem.attribute("Number").toInt();
+					notes[iNote] = sSubName + sNote;
 				}
 			}
 		}
@@ -884,11 +912,11 @@ void qtractorInstrumentList::loadMidiNoteNameList (
 void qtractorInstrumentList::loadMidiControlNameList (
 	QDomElement *pElement, const QString& sName )
 {
-	qtractorInstrumentData& controllers = m_controllers[sName];
-	qtractorInstrumentData& rpns  = m_rpns[sName];
+	qtractorInstrumentData& controls = m_controls[sName];
+	qtractorInstrumentData& rpns = m_rpns[sName];
 	qtractorInstrumentData& nrpns = m_nrpns[sName];
 
-	controllers.setName(sName);
+	controls.setName(sName);
 	rpns.setName(sName);
 	nrpns.setName(sName);
 
@@ -902,15 +930,15 @@ void qtractorInstrumentList::loadMidiControlNameList (
 		if (sTagName == "Control") {
 			const QString& sControlType = eItem.attribute("Type");
 			const QString& sControl = eItem.attribute("Name");
-			unsigned short iControl = eItem.attribute("Number").toUShort();
-			if (sControlType == "RPN")
-				rpns[int(iControl)] = sControl;
-			else
+			int iControl = eItem.attribute("Number").toInt();
 			if (sControlType == "NRPN")
-				nrpns[int(iControl)] = sControl;
+				nrpns[iControl] = sControl;
+			else
+			if (sControlType == "RPN")
+				rpns[iControl] = sControl;
 			else
 		//	if (sControlType == "7bit" || sControlType == "14bit")
-				controllers[int(iControl)] = sControl;
+				controls[iControl] = sControl;
 		}
 	}
 }
