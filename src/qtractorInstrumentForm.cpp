@@ -582,7 +582,7 @@ void qtractorInstrumentForm::refreshForm (void)
 		// - Controller Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Controller Names"));
-		listInstrumentDataList(pListItem, m_pInstruments->controllers(),
+		listInstrumentDataList(pListItem, m_pInstruments->controls(),
 			QIcon(":/images/itemControllers.png"));
 		names.append(pListItem);
 		// - RPN Names...

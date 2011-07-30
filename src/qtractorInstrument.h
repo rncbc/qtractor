@@ -295,31 +295,31 @@ public:
 	// Patch Names definition accessors.
 	const qtractorInstrumentDataList& patches() const
 		{ return m_patches; }
-	const qtractorInstrumentData& patch(const QString& sName)
+	const qtractorInstrumentData& patches(const QString& sName)
 		{ return m_patches[sName]; }
 
 	// Note Names definition accessors.
 	const qtractorInstrumentDataList& notes() const
 		{ return m_notes; }
-	const qtractorInstrumentData& note(const QString& sName)
+	const qtractorInstrumentData& notes(const QString& sName)
 		{ return m_notes[sName]; }
 
 	// Controller Names definition accessors.
-	const qtractorInstrumentDataList& controllers() const
-		{ return m_controllers; }
-	const qtractorInstrumentData& controller(const QString& sName)
-		{ return m_controllers[sName]; }
+	const qtractorInstrumentDataList& controls() const
+		{ return m_controls; }
+	const qtractorInstrumentData& controls(const QString& sName)
+		{ return m_controls[sName]; }
 
 	// RPN Names definition accessors.
 	const qtractorInstrumentDataList& rpns() const
 		{ return m_rpns; }
-	const qtractorInstrumentData& rpn(const QString& sName)
+	const qtractorInstrumentData& rpns(const QString& sName)
 		{ return m_rpns[sName]; }
 
 	// NRPN Names definition accessors.
 	const qtractorInstrumentDataList& nrpns() const
 		{ return m_nrpns; }
-	const qtractorInstrumentData& nrpn(const QString& sName)
+	const qtractorInstrumentData& nrpns(const QString& sName)
 		{ return m_nrpns[sName]; }
 
 	// Clear all contents.
@@ -345,19 +345,25 @@ protected:
 	// Special MIDINameDocument loader.
 	bool loadMidiNameDocument(QFile *pFile);
 
-	void loadMidiDeviceNames(QDomElement *pElement);
-	void loadMidiChannelNameSet(QDomElement *pElement, qtractorInstrument& instr);
-	void loadMidiPatchBank(QDomElement *pElement, qtractorInstrument& instr, const QString& sName);
-	void loadMidiPatchNameList(QDomElement *pElement, const QString& sName);
-	void loadMidiNoteNameList(QDomElement *pElement, const QString& sName);
-	void loadMidiControlNameList(QDomElement *pElement, const QString& sName);
+	void loadMidiDeviceNames(
+		QDomElement *pElement);
+	void loadMidiChannelNameSet(
+		QDomElement *pElement, qtractorInstrument& instr);
+	void loadMidiPatchBank(
+		QDomElement *pElement, qtractorInstrument& instr, const QString& sName);
+	void loadMidiPatchNameList(
+		QDomElement *pElement, qtractorInstrument& instr, const QString& sName);
+	void loadMidiNoteNameList(
+		QDomElement *pElement, const QString& sName);
+	void loadMidiControlNameList(
+		QDomElement *pElement, const QString& sName);
 
 private:
 
 	// To hold the names definition lists.
 	qtractorInstrumentDataList m_patches;
 	qtractorInstrumentDataList m_notes;
-	qtractorInstrumentDataList m_controllers;
+	qtractorInstrumentDataList m_controls;
 	qtractorInstrumentDataList m_rpns;
 	qtractorInstrumentDataList m_nrpns;
 	
