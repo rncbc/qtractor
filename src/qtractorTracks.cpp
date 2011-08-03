@@ -28,6 +28,7 @@
 #include "qtractorSession.h"
 #include "qtractorSessionCursor.h"
 
+#include "qtractorSessionCommand.h"
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
 #include "qtractorMidiEditCommand.h"
@@ -1562,6 +1563,66 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	QApplication::restoreOverrideCursor();
 
 	// That's it...
+	return true;
+}
+
+
+// Edit/loop-range from current clip settlers.
+bool qtractorTracks::rangeClip ( qtractorClip *pClip )
+{
+	return rangeClipEx(pClip, false);
+}
+
+bool qtractorTracks::loopClip ( qtractorClip *pClip )
+{
+	return rangeClipEx(pClip, true);
+}
+
+bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	unsigned long iEditHead = 0;
+	unsigned long iEditTail = 0;
+
+	// Multiple clip selection...
+	if (isClipSelected()) {
+		// Multi-selection extents (in frames)...
+		iEditHead = pSession->sessionLength();
+		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+		const qtractorClipSelect::ItemList& items = pClipSelect->items();
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		for ( ; iter != items.constEnd(); ++iter) {
+			qtractorClip *pClip = iter.key();
+			qtractorTrack *pTrack = pClip->track();
+			// Make sure it's a legal selection...
+			if (pTrack && pClip->isClipSelected()) {
+				if (iEditHead > pClip->clipSelectStart())
+					iEditHead = pClip->clipSelectStart();
+				if (iEditTail < pClip->clipSelectEnd())
+					iEditTail = pClip->clipSelectEnd();
+			}
+		}
+	} else {
+		if (pClip == NULL)
+			pClip = m_pTrackView->currentClip();
+		if (pClip) {
+			iEditHead = pClip->clipStart();
+			iEditTail = iEditHead + pClip->clipLength();
+		}
+	}
+
+	pSession->setEditHead(iEditHead);
+	pSession->setEditTail(iEditTail);
+
+	if (bLoopSet) {
+		return pSession->execute(
+			new qtractorSessionLoopCommand(pSession, iEditHead, iEditTail));
+	}
+
+	selectionChangeNotify();
 	return true;
 }
 

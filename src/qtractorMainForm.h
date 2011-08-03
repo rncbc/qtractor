@@ -187,6 +187,11 @@ public slots:
 	void clipSplit();
 	void clipMerge();
 	void clipNormalize();
+	void clipTempo();
+	void clipRangeSet();
+	void clipLoopSet();
+	void clipImport();
+	void clipExport();
 	void clipToolsQuantize();
 	void clipToolsTranspose();
 	void clipToolsNormalize();
@@ -194,9 +199,6 @@ public slots:
 	void clipToolsResize();
 	void clipToolsRescale();
 	void clipToolsTimeshift();
-	void clipTempo();
-	void clipImport();
-	void clipExport();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);

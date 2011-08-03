@@ -764,6 +764,21 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipNormalizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipNormalize()));
+	QObject::connect(m_ui.clipTempoAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTempo()));
+	QObject::connect(m_ui.clipRangeSetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipRangeSet()));
+	QObject::connect(m_ui.clipLoopSetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipLoopSet()));
+	QObject::connect(m_ui.clipImportAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipImport()));
+	QObject::connect(m_ui.clipExportAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipExport()));
 	QObject::connect(m_ui.clipToolsQuantizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipToolsQuantize()));
@@ -785,15 +800,6 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipToolsTimeshiftAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipToolsTimeshift()));
-	QObject::connect(m_ui.clipTempoAction,
-		SIGNAL(triggered(bool)),
-		SLOT(clipTempo()));
-	QObject::connect(m_ui.clipImportAction,
-		SIGNAL(triggered(bool)),
-		SLOT(clipImport()));
-	QObject::connect(m_ui.clipExportAction,
-		SIGNAL(triggered(bool)),
-		SLOT(clipExport()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -3311,6 +3317,106 @@ void qtractorMainForm::clipNormalize (void)
 }
 
 
+// Adjust current tempo from clip selection or interactive tapping...
+void qtractorMainForm::clipTempo (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTempo()");
+#endif
+
+	qtractorTempoAdjustForm form(this);
+	unsigned long iRangeStart  = m_pSession->editHead();
+	unsigned long iRangeLength = m_pSession->editTail() - iRangeStart;
+	if (m_pTracks) {
+		qtractorClip *pClip = m_pTracks->currentClip();
+		if (pClip) {
+			if (m_pTracks->isClipSelected()) {
+				iRangeStart  = pClip->clipSelectStart();
+				iRangeLength = pClip->clipSelectEnd() - iRangeStart;
+			} else {
+				iRangeStart  = pClip->clipStart();
+				iRangeLength = pClip->clipLength();
+			}
+		}
+	}
+	form.setRangeStart(iRangeStart);
+	form.setRangeLength(iRangeLength);
+	if (form.exec()) {
+		transportTempoChanged (
+			form.tempo(),
+			form.beatsPerBar(),
+			form.beatDivisor());
+		m_pSession->setEditTail(
+			m_pSession->editHead() + form.rangeLength());
+		selectionNotifySlot(NULL);
+	}
+}
+
+
+// Set edit-range from current clip.
+void qtractorMainForm::clipRangeSet (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipRangeSet()");
+#endif
+
+	// Normalize current clip, if any...
+	if (m_pTracks)
+		m_pTracks->rangeClip();
+}
+
+
+// Set loop from current clip range.
+void qtractorMainForm::clipLoopSet (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipLoopSet()");
+#endif
+
+	// Normalize current clip, if any...
+	if (m_pTracks)
+		m_pTracks->loopClip();
+}
+
+
+// Import (audio) clip.
+void qtractorMainForm::clipImport (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipImport()");
+#endif
+
+	// Import (audio) clip(s)...
+	if (m_pTracks) {
+		// Depending on current track type (default to audio)...
+		unsigned long iClipStart = m_pSession->editHead();
+		QStringList files;
+		qtractorTrack *pTrack = m_pTracks->currentTrack();
+		if (pTrack == NULL)
+			pTrack = m_pSession->tracks().first();
+		if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
+			files = m_pFiles->midiListView()->openFileNames();
+		else
+			files = m_pFiles->audioListView()->openFileNames();
+		m_pTracks->importClips(files, iClipStart);
+		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
+	}
+}
+
+
+// Export current clip.
+void qtractorMainForm::clipExport (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipExport()");
+#endif
+
+	// Export current clip, if any...
+	if (m_pTracks)
+		m_pTracks->exportClips();
+}
+
+
 // Quantize current clip.
 void qtractorMainForm::clipToolsQuantize (void)
 {
@@ -3399,80 +3505,6 @@ void qtractorMainForm::clipToolsTimeshift (void)
 	// Timeshift current clip events, if any...
 	if (m_pTracks)
 		m_pTracks->executeClipTool(qtractorMidiEditor::Timeshift);
-}
-
-
-// Adjust current tempo from clip selection or interactive tapping...
-void qtractorMainForm::clipTempo (void)
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipTempo()");
-#endif
-
-	qtractorTempoAdjustForm form(this);
-	unsigned long iRangeStart  = m_pSession->editHead();
-	unsigned long iRangeLength = m_pSession->editTail() - iRangeStart;
-	if (m_pTracks) {
-		qtractorClip *pClip = m_pTracks->currentClip();
-		if (pClip) {
-			if (m_pTracks->isClipSelected()) {
-				iRangeStart  = pClip->clipSelectStart();
-				iRangeLength = pClip->clipSelectEnd() - iRangeStart;
-			} else {
-				iRangeStart  = pClip->clipStart();
-				iRangeLength = pClip->clipLength();
-			}
-		}
-	}
-	form.setRangeStart(iRangeStart);
-	form.setRangeLength(iRangeLength);
-	if (form.exec()) {
-		transportTempoChanged (
-			form.tempo(),
-			form.beatsPerBar(),
-			form.beatDivisor());
-		m_pSession->setEditTail(
-			m_pSession->editHead() + form.rangeLength());
-		selectionNotifySlot(NULL);
-	}
-}
-
-
-// Import (audio) clip.
-void qtractorMainForm::clipImport (void)
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipImport()");
-#endif
-
-	// Import (audio) clip(s)...
-	if (m_pTracks) {
-		// Depending on current track type (default to audio)...
-		unsigned long iClipStart = m_pSession->editHead();
-		QStringList files;
-		qtractorTrack *pTrack = m_pTracks->currentTrack();
-		if (pTrack == NULL)
-			pTrack = m_pSession->tracks().first();
-		if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
-			files = m_pFiles->midiListView()->openFileNames();
-		else
-			files = m_pFiles->audioListView()->openFileNames();
-		m_pTracks->importClips(files, iClipStart);
-		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
-	}
-}
-
-
-// Export current clip.
-void qtractorMainForm::clipExport (void)
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipExport()");
-#endif
-
-	// Export current clip, if any...
-	if (m_pTracks)
-		m_pTracks->exportClips();
 }
 
 
@@ -5635,12 +5667,14 @@ void qtractorMainForm::updateClipMenu (void)
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(pClip != NULL || bSelected);
-	m_ui.clipToolsMenu->setEnabled((pClip != NULL || bSelected)
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
 	m_ui.clipTempoAction->setEnabled(pClip != NULL || bSelectable);
+	m_ui.clipRangeSetAction->setEnabled(pClip != NULL || bSelected);
+	m_ui.clipLoopSetAction->setEnabled(pClip != NULL || bSelected);
 	m_ui.clipImportAction->setEnabled(bTracks);
 		// pTrack && pTrack->trackType() == qtractorTrack::Audio);
 	m_ui.clipExportAction->setEnabled(bSingleTrackSelected);
+	m_ui.clipToolsMenu->setEnabled((pClip != NULL || bSelected)
+		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
 }
 
 
