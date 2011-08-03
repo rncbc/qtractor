@@ -83,6 +83,8 @@ public:
 	bool editClip(qtractorClip *pClip = NULL);
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
+	bool rangeClip(qtractorClip *pClip = NULL);
+	bool loopClip(qtractorClip *pClip = NULL);
 	bool executeClipTool(int iTool, qtractorClip *pClip = NULL);
 	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();
@@ -167,6 +169,8 @@ protected:
 	// Specialized clip-export/merge methods.
 	bool mergeExportAudioClips(qtractorClipCommand *pClipCommand);
 	bool mergeExportMidiClips(qtractorClipCommand *pClipCommand);
+
+	bool rangeClipEx(qtractorClip *pClip, bool bLoopSet);
 
 public slots:
 

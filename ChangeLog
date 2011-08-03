@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- New immediate edit/loop-range settings from current
+  clip extents (Clip/Range Set, Loop Set).
+
 - MIDI Names XML files (*.midnam) may now be imported
   into MIDI instrument definitions. (EXPERIMENTAL)
 
@@ -1899,7 +1902,7 @@ SVN TRUNK
   key-step movement is only allowed to selected clips belonging to
   one single and the same track.
 
-- Immediate session loop settting, accessible from the main menu.
+- Immediate session loop setting, accessible from the main menu.
 
 - Track properties dialog gets fixed again in its auto-size treat.
 

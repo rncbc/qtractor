@@ -58,7 +58,6 @@ static inline bool sse_enabled (void)
 }
 
 // SSE enabled processor versions.
-// SSE enabled processor versions.
 static inline void sse_process_send_gain (
 	float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )

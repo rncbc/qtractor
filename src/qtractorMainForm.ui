@@ -418,9 +418,12 @@
      <addaction name="clipSplitAction" />
      <addaction name="clipMergeAction" />
      <addaction name="clipNormalizeAction" />
-     <addaction name="separator" />
+	 <addaction name="separator" />
      <addaction name="clipTempoAction" />
-     <addaction name="separator" />
+	 <addaction name="separator" />
+	 <addaction name="clipRangeSetAction" />
+	 <addaction name="clipLoopSetAction" />
+	 <addaction name="separator" />
      <addaction name="clipImportAction" />
      <addaction name="clipExportAction" />
      <addaction name="separator" />
@@ -963,7 +966,7 @@
   </action>
   <action name="clipNormalizeAction" >
    <property name="text" >
-       <string>N&amp;ormalize</string>
+	<string>N&amp;ormalize</string>
    </property>
    <property name="iconText" >
     <string>Normalize Clip</string>
@@ -1088,6 +1091,34 @@
    </property>
    <property name="shortcut" >
     <string>F7</string>
+   </property>
+  </action>
+  <action name="clipRangeSetAction" >
+   <property name="text" >
+	<string>&amp;Range Set</string>
+   </property>
+   <property name="iconText" >
+	<string>Clip Range</string>
+   </property>
+   <property name="toolTip" >
+	<string>Clip range</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set edit-range from current clip extents</string>
+   </property>
+  </action>
+  <action name="clipLoopSetAction" >
+   <property name="text" >
+	<string>&amp;Loop Set</string>
+   </property>
+   <property name="iconText" >
+	<string>Clip Loop</string>
+   </property>
+   <property name="toolTip" >
+	<string>Clip loop</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set loop-range from current clip extents</string>
    </property>
   </action>
   <action name="clipImportAction" >
