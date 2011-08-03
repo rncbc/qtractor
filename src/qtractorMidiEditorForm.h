@@ -97,22 +97,20 @@ protected slots:
 	void fileTrackOutputs();
 	void fileTrackProperties();
 	void fileProperties();
+	void fileRangeSet();
+	void fileLoopSet();
 	void fileClose();
-
-	void editModeOn();
-	void editModeOff();
-
-	void editModeDraw(bool bOn);
 
 	void editUndo();
 	void editRedo();
-
 	void editCut();
 	void editCopy();
 	void editPaste();
 	void editPasteRepeat();
 	void editDelete();
-
+	void editModeOn();
+	void editModeOff();
+	void editModeDraw(bool bOn);
 	void editSelectAll();
 	void editSelectNone();
 	void editSelectInvert();

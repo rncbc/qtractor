@@ -6,7 +6,9 @@ ChangeLog
 SVN TRUNK
 
 - New immediate edit/loop-range settings from current
-  clip extents (Clip/Range Set, Loop Set).
+  clip extents, accessible on the main menu (Clip/Range
+  Set, Loop Set) and from MIDI clip editor menu as well
+  (File/Range Set, Loop Set).
 
 - MIDI Names XML files (*.midnam) may now be imported
   into MIDI instrument definitions. (EXPERIMENTAL)
