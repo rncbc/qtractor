@@ -61,7 +61,10 @@
     <addaction name="fileSaveAsAction" />
     <addaction name="separator" />
     <addaction name="filePropertiesAction" />
-    <addaction name="separator" />
+	<addaction name="separator" />
+	<addaction name="fileRangeSetAction" />
+	<addaction name="fileLoopSetAction" />
+	<addaction name="separator" />
     <addaction name="fileTrackMenu" />
     <addaction name="separator" />
     <addaction name="fileCloseAction" />
@@ -411,6 +414,34 @@
     <string>F4</string>
    </property>
   </action>
+  <action name="fileRangeSetAction" >
+   <property name="text" >
+	<string>&amp;Range Set</string>
+   </property>
+   <property name="iconText" >
+	<string>Clip Range</string>
+   </property>
+   <property name="toolTip" >
+	<string>Clip range</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set edit-range from clip extents</string>
+   </property>
+  </action>
+  <action name="fileLoopSetAction" >
+   <property name="text" >
+	<string>&amp;Loop Set</string>
+   </property>
+   <property name="iconText" >
+	<string>Clip Loop</string>
+   </property>
+   <property name="toolTip" >
+	<string>Clip loop</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set loop-range from clip extents</string>
+   </property>
+  </action>
   <action name="fileCloseAction" >
    <property name="text" >
     <string>&amp;Close</string>
@@ -423,66 +454,6 @@
    </property>
    <property name="statusTip" >
     <string>Close this MIDI clip editor</string>
-   </property>
-  </action>
-  <action name="editModeOffAction" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editModeOff.png</iconset>
-   </property>
-   <property name="text" >
-    <string>Edit Of&amp;f</string>
-   </property>
-   <property name="iconText" >
-    <string>Edit Off</string>
-   </property>
-   <property name="toolTip" >
-    <string>Edit off</string>
-   </property>
-   <property name="statusTip" >
-    <string>Set edit mode off</string>
-   </property>
-  </action>
-  <action name="editModeOnAction" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editModeOn.png</iconset>
-   </property>
-   <property name="text" >
-    <string>Edit &amp;On</string>
-   </property>
-   <property name="iconText" >
-    <string>Edit On</string>
-   </property>
-   <property name="toolTip" >
-    <string>Edit on</string>
-   </property>
-   <property name="statusTip" >
-    <string>Set edit mode on</string>
-   </property>
-  </action>
-  <action name="editModeDrawAction" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editModeDraw.png</iconset>
-   </property>
-   <property name="text" >
-    <string>Edit &amp;Draw</string>
-   </property>
-   <property name="iconText" >
-    <string>Edit draw mode</string>
-   </property>
-   <property name="statusTip" >
-    <string>Edit draw mode (notes)</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
    </property>
   </action>
   <action name="editUndoAction" >
@@ -620,6 +591,66 @@
    </property>
    <property name="shortcut" >
     <string>Del</string>
+   </property>
+  </action>
+  <action name="editModeOffAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="icon" >
+	<iconset resource="qtractor.qrc" >:/images/editModeOff.png</iconset>
+   </property>
+   <property name="text" >
+	<string>Edit Of&amp;f</string>
+   </property>
+   <property name="iconText" >
+	<string>Edit Off</string>
+   </property>
+   <property name="toolTip" >
+	<string>Edit off</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set edit mode off</string>
+   </property>
+  </action>
+  <action name="editModeOnAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="icon" >
+	<iconset resource="qtractor.qrc" >:/images/editModeOn.png</iconset>
+   </property>
+   <property name="text" >
+	<string>Edit &amp;On</string>
+   </property>
+   <property name="iconText" >
+	<string>Edit On</string>
+   </property>
+   <property name="toolTip" >
+	<string>Edit on</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set edit mode on</string>
+   </property>
+  </action>
+  <action name="editModeDrawAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="icon" >
+	<iconset resource="qtractor.qrc" >:/images/editModeDraw.png</iconset>
+   </property>
+   <property name="text" >
+	<string>Edit &amp;Draw</string>
+   </property>
+   <property name="iconText" >
+	<string>Edit draw mode</string>
+   </property>
+   <property name="statusTip" >
+	<string>Edit draw mode (notes)</string>
+   </property>
+   <property name="shortcut" >
+	<string/>
    </property>
   </action>
   <action name="editSelectAllAction" >

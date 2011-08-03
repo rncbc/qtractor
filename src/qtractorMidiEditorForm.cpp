@@ -238,20 +238,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.filePropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileProperties()));
+	QObject::connect(m_ui.fileRangeSetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileRangeSet()));
+	QObject::connect(m_ui.fileLoopSetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileLoopSet()));
 	QObject::connect(m_ui.fileCloseAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileClose()));
-
-	QObject::connect(m_ui.editModeOnAction,
-		SIGNAL(triggered(bool)),
-		SLOT(editModeOn()));
-	QObject::connect(m_ui.editModeOffAction,
-		SIGNAL(triggered(bool)),
-		SLOT(editModeOff()));
-
-	QObject::connect(m_ui.editModeDrawAction,
-		SIGNAL(triggered(bool)),
-		SLOT(editModeDraw(bool)));
 
 	QObject::connect(m_ui.editUndoAction,
 		SIGNAL(triggered(bool)),
@@ -274,6 +269,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.editDeleteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editDelete()));
+	QObject::connect(m_ui.editModeOnAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editModeOn()));
+	QObject::connect(m_ui.editModeOffAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editModeOff()));
+	QObject::connect(m_ui.editModeDrawAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editModeDraw(bool)));
 	QObject::connect(m_ui.editSelectAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
@@ -999,6 +1003,30 @@ void qtractorMidiEditorForm::fileTrackProperties (void)
 }
 
 
+// Edit-range setting to clip extents.
+void qtractorMidiEditorForm::fileRangeSet (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->rangeClip(m_pMidiEditor->midiClip());
+	}
+}
+
+
+// Loop-range setting to clip extents.
+void qtractorMidiEditorForm::fileLoopSet (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->loopClip(m_pMidiEditor->midiClip());
+	}
+}
+
+
 // Exit editing.
 void qtractorMidiEditorForm::fileClose (void)
 {
@@ -1009,32 +1037,6 @@ void qtractorMidiEditorForm::fileClose (void)
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Edit action slots.
-
-// Set edit-mode on.
-void qtractorMidiEditorForm::editModeOn (void)
-{
-	m_pMidiEditor->setEditMode(true);
-	m_pMidiEditor->updateContents();
-	
-	stabilizeForm();
-}
-
-// Set edit-mode off.
-void qtractorMidiEditorForm::editModeOff (void)
-{
-	m_pMidiEditor->setEditMode(false);
-	m_pMidiEditor->updateContents();
-
-	stabilizeForm();
-}
-
-
-// Toggle draw-mode (notes) 
-void qtractorMidiEditorForm::editModeDraw ( bool bOn )
-{
-	m_pMidiEditor->setEditModeDraw(bOn);
-}
-
 
 // Undo last edit command.
 void qtractorMidiEditorForm::editUndo (void)
@@ -1089,6 +1091,32 @@ void qtractorMidiEditorForm::editPasteRepeat (void)
 void qtractorMidiEditorForm::editDelete (void)
 {
 	m_pMidiEditor->deleteSelect();
+}
+
+
+// Set edit-mode on.
+void qtractorMidiEditorForm::editModeOn (void)
+{
+	m_pMidiEditor->setEditMode(true);
+	m_pMidiEditor->updateContents();
+
+	stabilizeForm();
+}
+
+// Set edit-mode off.
+void qtractorMidiEditorForm::editModeOff (void)
+{
+	m_pMidiEditor->setEditMode(false);
+	m_pMidiEditor->updateContents();
+
+	stabilizeForm();
+}
+
+
+// Toggle draw-mode (notes)
+void qtractorMidiEditorForm::editModeDraw ( bool bOn )
+{
+	m_pMidiEditor->setEditModeDraw(bOn);
 }
 
 
@@ -1499,6 +1527,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != NULL);
 	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != NULL);
 	m_ui.fileTrackPropertiesAction->setEnabled(pTrack != NULL);
+	m_ui.fileRangeSetAction->setEnabled(pTrack != NULL);
+	m_ui.fileLoopSetAction->setEnabled(pTrack != NULL);
 
 	m_pMidiEditor->updateUndoAction(m_ui.editUndoAction);
 	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
@@ -1512,6 +1542,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+
 #if 0
 	m_ui.toolsMenu->setEnabled(bSelected);
 #else

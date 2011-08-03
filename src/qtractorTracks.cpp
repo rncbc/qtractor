@@ -1588,21 +1588,22 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 	unsigned long iEditTail = 0;
 
 	// Multiple clip selection...
-	if (isClipSelected()) {
+	if (pClip == NULL && isClipSelected()) {
 		// Multi-selection extents (in frames)...
 		iEditHead = pSession->sessionLength();
 		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 		for ( ; iter != items.constEnd(); ++iter) {
-			qtractorClip *pClip = iter.key();
-			qtractorTrack *pTrack = pClip->track();
+			pClip = iter.key();
 			// Make sure it's a legal selection...
-			if (pTrack && pClip->isClipSelected()) {
-				if (iEditHead > pClip->clipSelectStart())
-					iEditHead = pClip->clipSelectStart();
-				if (iEditTail < pClip->clipSelectEnd())
-					iEditTail = pClip->clipSelectEnd();
+			if (pClip->isClipSelected()) {
+				unsigned long iClipStart = pClip->clipStart();
+				unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+				if (iEditHead > iClipStart)
+					iEditHead = iClipStart;
+				if (iEditTail < iClipEnd)
+					iEditTail = iClipEnd;
 			}
 		}
 	} else {
