@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,8 +25,9 @@
 
 #include "qtractorPluginListView.h"
 
-#include "qtractorSession.h"
+#include "qtractorInsertPlugin.h"
 
+#include "qtractorSession.h"
 #include "qtractorMidiBuffer.h"
 
 
@@ -177,6 +178,39 @@ bool qtractorAddAuxSendPluginCommand::undo (void)
 	return removePlugins();
 }
 
+
+//----------------------------------------------------------------------
+// class qtractorAuxSendPluginCommand - implementation
+//
+
+// Constructor.
+qtractorAuxSendPluginCommand::qtractorAuxSendPluginCommand (
+	qtractorAuxSendPlugin *pAuxSendPlugin, const QString& sAudioBusName )
+	: qtractorPluginCommand(QObject::tr("aux-send bus"), pAuxSendPlugin),
+		m_sAudioBusName(sAudioBusName)
+{
+}
+
+
+// Plugin insertion command methods.
+bool qtractorAuxSendPluginCommand::redo (void)
+{
+	qtractorAuxSendPlugin *pAuxSendPlugin
+		= static_cast<qtractorAuxSendPlugin *> (plugins().first());
+	if (pAuxSendPlugin == NULL)
+		return false;
+
+	QString sAudioBusName = pAuxSendPlugin->audioBusName();
+	pAuxSendPlugin->setAudioBusName(m_sAudioBusName);
+	m_sAudioBusName = sAudioBusName;
+
+	return true;
+}
+
+bool qtractorAuxSendPluginCommand::undo (void)
+{
+	return redo();
+}
 
 
 //----------------------------------------------------------------------
