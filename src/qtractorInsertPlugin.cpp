@@ -633,6 +633,21 @@ void qtractorAuxSendPlugin::setChannels ( unsigned short iChannels )
 	releaseConfigs();
 	releaseValues();
 
+	// Try to find a nice default...
+	if (m_sAudioBusName.isEmpty()) {
+		for (qtractorBus *pBus = pAudioEngine->buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				qtractorAudioBus *pAudioBus
+					= static_cast<qtractorAudioBus *> (pBus);
+				if (pAudioBus && pAudioBus->channels() == iChannels) {
+					m_sAudioBusName = pAudioBus->busName();
+					break;
+				}
+			}
+		}
+	}
+
 	// Setup aux-send bus...
 	setAudioBusName(m_sAudioBusName);
 

@@ -27,6 +27,8 @@
 #include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
 
+#include "qtractorInsertPlugin.h"
+
 #include "qtractorObserverWidget.h"
 
 #include "qtractorMidiControlObserverForm.h"
@@ -730,7 +732,18 @@ void qtractorPluginForm::changeAudioBusNameSlot ( const QString& sAudioBusName )
 	if (m_pPlugin == NULL)
 		return;
 
-	m_pPlugin->configure("audioBusName", sAudioBusName);
+	qtractorAuxSendPlugin *pAuxSendPlugin = NULL;
+	if (m_pPlugin->type()->typeHint() == qtractorPluginType::AuxSend)
+		pAuxSendPlugin = static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
+	if (pAuxSendPlugin == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->execute(
+		new qtractorAuxSendPluginCommand(pAuxSendPlugin, sAudioBusName));
 }
 
 
