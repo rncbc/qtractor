@@ -162,6 +162,7 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 	updateActivated();
 }
 
+
 // Destructor.
 qtractorPluginListItem::~qtractorPluginListItem (void)
 {
@@ -471,6 +472,39 @@ void qtractorPluginListView::addInsertPlugin (void)
 		(pPlugin->form())->activateForm();
 		// Make it a undoable command...
 		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
+	}
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
+// Add an insert pseudo-plugin slot.
+void qtractorPluginListView::addAuxSendPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorPluginFile::createPlugin(m_pPluginList,
+			QString(), // Empty filename!
+			m_pPluginList->channels(),
+			qtractorPluginType::AuxSend);
+	if (pPlugin) {
+		// Show the plugin form right away...
+		(pPlugin->form())->activateForm();
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddAuxSendPluginCommand(pPlugin));
 	}
 
 	// We're formerly done.
@@ -1154,6 +1188,10 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction = pInsertMenu->addAction(
 		QIcon(":/images/formAdd.png"),
 		tr("Add &Insert"), this, SLOT(addInsertPlugin()));
+	pAction->setEnabled(m_pPluginList->channels() > 0);
+	pAction = pInsertMenu->addAction(
+		QIcon(":/images/formAdd.png"),
+		tr("Add &Aux Send"), this, SLOT(addAuxSendPlugin()));
 	pAction->setEnabled(m_pPluginList->channels() > 0);
 	pInsertMenu->addSeparator();
 	bool bInsertEnabled = (pPlugin

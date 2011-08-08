@@ -2,6 +2,7 @@
 //
 /****************************************************************************
    Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -356,7 +357,7 @@ void qtractorInsertPlugin::process (
 		return;
 
 //	m_pAudioBus->process_prepare(nframes);
-	
+
 	float **ppOut = m_pAudioBus->out(); // Sends.
 	float **ppIn  = m_pAudioBus->in();  // Returns.
 
@@ -475,6 +476,273 @@ void qtractorInsertPlugin::freezeConfigs ( int iBusMode )
 qtractorAudioBus *qtractorInsertPlugin::audioBus (void) const
 {
 	return m_pAudioBus;
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorAuxSendPluginType -- Aux-send pseudo-plugin type instance.
+//
+
+// Derived methods.
+bool qtractorAuxSendPluginType::open (void)
+{
+	// Sanity check...
+	unsigned short iChannels = index();
+	if (iChannels < 1)
+		return false;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAuxSendPluginType[%p]::open() channels=%u",
+		this, iChannels);
+#endif
+
+	// Pseudo-plugin type names.
+	m_sName  = "Aux Send";
+	m_sLabel = m_sName.remove(' ');
+
+	// Pseudo-plugin unique identifier.
+	m_iUniqueID = iChannels;
+
+	// Pseudo-plugin port counts...
+	m_iControlIns  = 1;
+	m_iControlOuts = 0;
+	m_iAudioIns    = iChannels;
+	m_iAudioOuts   = iChannels;
+	m_iMidiIns     = 0;
+	m_iMidiOuts    = 0;
+
+	// Cache flags.
+	m_bRealtime  = true;
+	m_bConfigure = true;
+
+	// Done.
+	return true;
+}
+
+
+void qtractorAuxSendPluginType::close (void)
+{
+}
+
+
+// Factory method (static)
+qtractorAuxSendPluginType *qtractorAuxSendPluginType::createType (
+	unsigned short iChannels )
+{
+	// Sanity check...
+	if (iChannels < 1)
+		return NULL;
+
+	// Yep, most probably its a valid pseu-plugin...
+	return new qtractorAuxSendPluginType(iChannels);
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorAuxSendPlugin -- Aux-send pseudo-plugin instance.
+//
+
+// Constructors.
+qtractorAuxSendPlugin::qtractorAuxSendPlugin (
+	qtractorPluginList *pList, qtractorAuxSendPluginType *pAuxSendType )
+	: qtractorPlugin(pList, pAuxSendType), m_pAudioBus(NULL)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAuxSendPlugin[%p] channels=%u",
+		this, pAuxSendType->channels());
+#endif
+
+	// Custom optimized processors.
+#if defined(__SSE__)
+	if (sse_enabled()) {
+		m_pfnProcessDryWet = sse_process_dry_wet;
+	} else {
+#endif
+		m_pfnProcessDryWet = std_process_dry_wet;
+#if defined(__SSE__)
+	}
+#endif
+
+	// Create and attach the custom parameters...
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam->setName(QObject::tr("Send Gain"));
+	m_pSendGainParam->setMinValue(0.0f);
+	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setDefaultValue(0.0f);
+	m_pSendGainParam->setValue(0.0f, false);
+	addParam(m_pSendGainParam);
+}
+
+
+// Destructor.
+qtractorAuxSendPlugin::~qtractorAuxSendPlugin (void)
+{
+	// Cleanup plugin instance...
+	setChannels(0);
+}
+
+
+// Channel/instance number accessors.
+void qtractorAuxSendPlugin::setChannels ( unsigned short iChannels )
+{
+	// Check our type...
+	qtractorPluginType *pType = type();
+	if (pType == NULL)
+		return;
+
+	// We'll need this globals...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	// Estimate the (new) number of instances...
+	unsigned short iInstances
+		= pType->instances(iChannels, pType->isMidi());
+	// Now see if instance count changed anyhow...
+	if (iInstances == instances())
+		return;
+
+	// Gotta go for a while...
+	bool bActivated = isActivated();
+	setActivated(false);
+
+	// TODO: Cleanup bus...
+	if (m_pAudioBus)
+		m_pAudioBus = NULL;
+
+	// Set new instance number...
+	setInstances(iInstances);
+	if (iInstances < 1) {
+		setActivated(bActivated);
+		return;
+	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAuxSendPlugin[%p]::setChannels(%u) instances=%u",
+		this, iChannels, iInstances);
+#endif
+
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
+	releaseConfigs();
+	releaseValues();
+
+	// Setup aux-send bus...
+	setAudioBusName(m_sAudioBusName);
+
+	// (Re)activate instance if necessary...
+	setActivated(bActivated);
+}
+
+
+
+// Audio bus specific accessors.
+void qtractorAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
+{
+	if (sAudioBusName.isEmpty())
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (
+		pAudioEngine->findOutputBus(sAudioBusName));
+	if (pAudioBus && pAudioBus->channels() == channels()) {
+		m_pAudioBus = pAudioBus;
+		m_sAudioBusName = sAudioBusName;
+		setConfig("audioBusName", m_sAudioBusName);
+	} else {
+		m_pAudioBus = NULL;
+		m_sAudioBusName.clear();
+		clearConfigs();
+	}
+}
+
+
+const QString& qtractorAuxSendPlugin::audioBusName (void) const
+{
+	return m_sAudioBusName;
+}
+
+
+// The main plugin processing procedure.
+void qtractorAuxSendPlugin::process (
+	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
+{
+	if (m_pAudioBus == NULL)
+		return;
+
+//	m_pAudioBus->process_prepare(nframes);
+
+	float **ppOut = m_pAudioBus->out();
+
+	const unsigned short iChannels = channels();
+
+	for (unsigned short i = 0; i < iChannels; ++i)
+		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
+
+	const float fSendGain = m_pSendGainParam->value();
+	(*m_pfnProcessDryWet)(ppOut, ppOBuffer, nframes, iChannels, fSendGain);
+
+//	m_pAudioBus->process_commit(nframes);
+}
+
+
+// Do the actual activation.
+void qtractorAuxSendPlugin::activate (void)
+{
+}
+
+
+// Do the actual deactivation.
+void qtractorAuxSendPlugin::deactivate (void)
+{
+}
+
+
+// Pseudo-plugin configuration handlers.
+void qtractorAuxSendPlugin::configure ( const QString& sKey, const QString& sValue )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAuxSendPlugin[%p]::configure()", this);
+#endif
+
+	if (sKey == "audioBusName")
+		setAudioBusName(sValue);
+}
+
+
+// Pseudo-plugin configuration/state snapshot.
+void qtractorAuxSendPlugin::freezeConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAuxSendPlugin[%p]::freezeConfigs()", this);
+#endif
+
+	clearConfigs();
+
+	setConfig("audioBusName", m_sAudioBusName);
+}
+
+
+void qtractorAuxSendPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAuxSendPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
 }
 
 

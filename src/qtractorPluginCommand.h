@@ -105,6 +105,23 @@ public:
 
 
 //----------------------------------------------------------------------
+// class qtractorAddAuxSendPluginCommand - declaration.
+//
+
+class qtractorAddAuxSendPluginCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorAddAuxSendPluginCommand(qtractorPlugin *pPlugin = NULL);
+
+	// Plugin insertion command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorRemovePluginCommand - declaration.
 //
 
