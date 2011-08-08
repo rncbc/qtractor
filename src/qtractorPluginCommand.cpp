@@ -204,6 +204,8 @@ bool qtractorAuxSendPluginCommand::redo (void)
 	pAuxSendPlugin->setAudioBusName(m_sAudioBusName);
 	m_sAudioBusName = sAudioBusName;
 
+	(pAuxSendPlugin->form())->updateAudioBusName();
+
 	return true;
 }
 

@@ -54,6 +54,7 @@ public:
 
 	// Constructor.
 	qtractorPluginForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+
 	// Destructor.
 	~qtractorPluginForm();
 
@@ -68,6 +69,8 @@ public:
 
 	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
 	void changeParamValue(unsigned long iIndex);
+
+	void updateAudioBusName();
 
 	void activateForm();
 
