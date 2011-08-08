@@ -247,7 +247,17 @@
        </property>
       </widget>
      </item>
-     <item>
+	 <item>
+	  <widget class="QLabel" name="AudioBusNameLabel">
+	   <property name="text">
+		<string>Aux Send Bus:</string>
+	   </property>
+	  </widget>
+	 </item>
+	 <item>
+	  <widget class="QComboBox" name="AudioBusNameComboBox"/>
+	 </item>
+	 <item>
       <spacer>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -277,6 +287,7 @@
   <tabstop>ActivateToolButton</tabstop>
   <tabstop>SendsToolButton</tabstop>
   <tabstop>ReturnsToolButton</tabstop>
+  <tabstop>AudioBusNameComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc"/>

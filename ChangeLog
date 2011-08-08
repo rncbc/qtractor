@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- New aux-send/insert pseudo-plugin is now introduced,
+  allowing to route any track audio output to any other
+  audio output bus besides the nominal one -- thanks to
+  an original implementation from Holger Dehnhardt.
+  (EXPERIMENTAL)
+
 - New immediate edit/loop-range settings from current
   clip extents, accessible on the main menu (Clip/Range
   Set, Loop Set) and from MIDI clip editor menu as well

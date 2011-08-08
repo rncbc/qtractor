@@ -100,6 +100,8 @@ protected slots:
 	void updateParamSlot(unsigned long iIndex, float fValue, bool bUpdate);
 	void changeParamSlot(unsigned long iIndex);
 
+	void changeAudioBusNameSlot(const QString& sAudioBusName);
+
 protected:
 
 	void stabilize();

@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorPluginForm.h"
 #include "qtractorPluginCommand.h"
+#include "qtractorAudioEngine.h"
 
 #include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
@@ -124,6 +125,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.ReturnsToolButton,
 		SIGNAL(clicked()),
 		SLOT(returnsSlot()));
+	QObject::connect(m_ui.AudioBusNameComboBox,
+		SIGNAL(activated(const QString&)),
+		SLOT(changeAudioBusNameSlot(const QString&)));
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
@@ -215,6 +219,35 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		= ((m_pPlugin->type())->typeHint() == qtractorPluginType::Insert);
 	m_ui.SendsToolButton->setVisible(bInsertPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
+
+	// Show aux-send tool options...
+	bool bAuxSendPlugin
+		= ((m_pPlugin->type())->typeHint() == qtractorPluginType::AuxSend );
+	m_ui.AudioBusNameComboBox->setVisible(bAuxSendPlugin);
+	m_ui.AudioBusNameLabel->setVisible(bAuxSendPlugin);
+
+	if (bAuxSendPlugin) {
+		qtractorAudioEngine *pAudioEngine = NULL;
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine) {
+			const QIcon icon(":/images/trackAudio.png");
+			for (qtractorBus *pBus = pAudioEngine->buses().first();
+					pBus; pBus = pBus->next()) {
+				if (pBus->busMode() & qtractorBus::Output) {
+					qtractorAudioBus *pAudioBus
+						= static_cast<qtractorAudioBus *> (pBus);
+					if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
+						m_ui.AudioBusNameComboBox->addItem(icon, pAudioBus->busName());
+				}
+			}
+			const QString& sAudioBusName = m_pPlugin->config("audioBusName");
+			int iIndex = m_ui.AudioBusNameComboBox->findText(sAudioBusName);
+			if (iIndex >= 0)
+				m_ui.AudioBusNameComboBox->setCurrentIndex(iIndex);
+		}
+	}
 
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
@@ -688,6 +721,16 @@ void qtractorPluginForm::sendsSlot (void)
 void qtractorPluginForm::returnsSlot (void)
 {
 	qtractorPluginListView::insertPluginBus(m_pPlugin, qtractorBus::Input);
+}
+
+
+// Audio bus name (aux-send) slot.
+void qtractorPluginForm::changeAudioBusNameSlot ( const QString& sAudioBusName )
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	m_pPlugin->configure("audioBusName", sAudioBusName);
 }
 
 

@@ -325,13 +325,25 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 #endif
 
 	// Attend to insert pseudo-plugin hints...
-	if (sFilename.isEmpty() || typeHint == qtractorPluginType::Insert) {
-		qtractorInsertPluginType *pInsertType
-			= qtractorInsertPluginType::createType(iIndex);
-		if (pInsertType) {
-			if (pInsertType->open())
-				return new qtractorInsertPlugin(pList, pInsertType);
-			delete pInsertType;
+	if (sFilename.isEmpty()) {
+		if (typeHint == qtractorPluginType::Insert) {
+			qtractorInsertPluginType *pInsertType
+				= qtractorInsertPluginType::createType(iIndex);
+			if (pInsertType) {
+				if (pInsertType->open())
+					return new qtractorInsertPlugin(pList, pInsertType);
+				delete pInsertType;
+			}
+		}
+		else
+		if (typeHint == qtractorPluginType::AuxSend) {
+			qtractorAuxSendPluginType *pAuxSendType
+				= qtractorAuxSendPluginType::createType(iIndex);
+			if (pAuxSendType) {
+				if (pAuxSendType->open())
+					return new qtractorAuxSendPlugin(pList, pAuxSendType);
+				delete pAuxSendType;
+			}
 		}
 		// Don't bother with anything else.
 		return NULL;
@@ -476,6 +488,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "Insert")
 		return Insert;
 	else
+	if (sText == "AuxSend")
+		return AuxSend;
+	else
 	return Any;
 }
 
@@ -504,6 +519,9 @@ QString qtractorPluginType::textFromHint (
 #endif
 	if (typeHint == Insert)
 		return "Insert";
+	else
+	if (typeHint == AuxSend)
+		return "AuxSend";
 	else
 	return QObject::tr("(Any)");
 }
@@ -1375,7 +1393,6 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 		// Set proper buffers for this plugin...
 		float **ppIBuffer = m_pppBuffers[  iBuffer & 1];
 		float **ppOBuffer = m_pppBuffers[++iBuffer & 1];
-
 		// Time for the real thing...
 		pPlugin->process(ppIBuffer, ppOBuffer, nframes);
 	}

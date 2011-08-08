@@ -2,6 +2,7 @@
 //
 /****************************************************************************
    Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +29,7 @@
 // Forward declarations.
 class qtractorAudioBus;
 class qtractorInsertPluginParam;
+class qtractorAuxSendPluginParam;
 
 
 //----------------------------------------------------------------------------
@@ -130,8 +132,8 @@ class qtractorInsertPluginParam : public qtractorPluginParam
 public:
 
 	// Constructors.
-	qtractorInsertPluginParam(qtractorInsertPlugin *pInsertPlugin,
-		unsigned long iIndex) : qtractorPluginParam(pInsertPlugin, iIndex) {}
+	qtractorInsertPluginParam(qtractorPlugin *pPlugin,
+		unsigned long iIndex) : qtractorPluginParam(pPlugin, iIndex) {}
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const { return true; }
@@ -142,6 +144,93 @@ public:
 	bool isInteger() const { return false; }
 	bool isToggled() const { return false; }
 	bool isDisplay() const { return false; }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAuxSendPluginType -- Aux-send pseudo-plugin type instance.
+//
+
+class qtractorAuxSendPluginType : public qtractorPluginType
+{
+public:
+
+	// Constructor.
+	qtractorAuxSendPluginType(unsigned short iChannels)
+		: qtractorPluginType(NULL, iChannels, qtractorPluginType::AuxSend) {}
+
+	// Destructor.
+	~qtractorAuxSendPluginType()
+		{ close(); }
+
+	// Derived methods.
+	bool open();
+	void close();
+
+	// Compute the number of instances needed
+	// for the given input/output audio channels.
+	unsigned short instances(
+		unsigned short iChannels, bool /*bMidi*/) const
+		{ return (iChannels == m_iAudioOuts ? 1 : 0); }
+
+	// Factory method (static)
+	static qtractorAuxSendPluginType *createType(unsigned short iChannels);
+
+	// Specific named accessors.
+	unsigned short channels() const
+		{ return index(); }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAuxSendPlugin -- Aux-send pseudo-plugin instance.
+//
+
+class qtractorAuxSendPlugin : public qtractorPlugin
+{
+public:
+
+	// Constructors.
+	qtractorAuxSendPlugin(qtractorPluginList *pList,
+		qtractorAuxSendPluginType *pInsertType);
+
+	// Destructor.
+	~qtractorAuxSendPlugin();
+
+	// Channel/intsance number accessors.
+	void setChannels(unsigned short iChannels);
+
+	// The main plugin processing procedure.
+	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
+
+	// Plugin configuration handlers.
+	void configure(const QString& sKey, const QString& sValue);
+
+	// Plugin configuration/state snapshot.
+	void freezeConfigs();
+	void releaseConfigs();
+
+	// Audio bus specific accessors.
+	void setAudioBusName(const QString& sAudioBusName);
+	const QString& audioBusName() const;
+
+protected:
+
+	// Do the actual (de)activation.
+	void activate();
+	void deactivate();
+
+private:
+
+	// Instance variables.
+	qtractorAudioBus *m_pAudioBus;
+	QString           m_sAudioBusName;
+
+	qtractorInsertPluginParam *m_pSendGainParam;
+
+	// Custom optimized processors.
+	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
+		unsigned short, float);
 };
 
 

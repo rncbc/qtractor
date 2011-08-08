@@ -155,6 +155,31 @@ bool qtractorAddInsertPluginCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorAddAuxSendPluginCommand - implementation
+//
+
+// Constructor.
+qtractorAddAuxSendPluginCommand::qtractorAddAuxSendPluginCommand (
+	qtractorPlugin *pPlugin ) : qtractorPluginCommand(
+		QObject::tr("add aux-send"), pPlugin)
+{
+}
+
+
+// Plugin insertion command methods.
+bool qtractorAddAuxSendPluginCommand::redo (void)
+{
+	return addPlugins();
+}
+
+bool qtractorAddAuxSendPluginCommand::undo (void)
+{
+	return removePlugins();
+}
+
+
+
+//----------------------------------------------------------------------
 // class qtractorRemovePluginCommand - implementation
 //
 
