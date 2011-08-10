@@ -379,6 +379,8 @@ void qtractorPluginForm::updateAudioBusName (void)
 	if (m_pPlugin == NULL)
 		return;
 
+	m_ui.AudioBusNameComboBox->clear();
+
 	qtractorAuxSendPlugin *pAuxSendPlugin = NULL;
 	if ((m_pPlugin->type())->typeHint() == qtractorPluginType::AuxSend)
 		pAuxSendPlugin = static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
