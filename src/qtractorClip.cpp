@@ -633,8 +633,8 @@ bool qtractorClip::saveElement (
 	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	pElement->setAttribute("name", qtractorClip::clipName());
-	pElement->setAttribute("linked",
-		qtractorDocument::textFromBool(qtractorClip::isClipLinked()));
+	if (qtractorClip::isClipLinked())
+		pElement->setAttribute("linked", qtractorDocument::textFromBool(true));
 
 	// Save clip properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
