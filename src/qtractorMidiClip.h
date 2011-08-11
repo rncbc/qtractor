@@ -81,19 +81,19 @@ public:
 
 	// Sequence properties accessors.
 	qtractorMidiSequence *sequence() const
-		{ return m_pSeq; }
+		{ return (m_pData ? m_pData->sequence() : NULL); }
 	unsigned short channel() const
-		{ return (m_pSeq ? m_pSeq->channel() : 0); }
+		{ return (m_pData ? m_pData->channel() : 0); }
 	int bank() const
-		{ return (m_pSeq ? m_pSeq->bank() : -1); }
+		{ return (m_pData ? m_pData->bank() : -1); }
 	int program() const
-		{ return (m_pSeq ? m_pSeq->program() : -1); }
+		{ return (m_pData ? m_pData->program() : -1); }
 
 	// Statistical cached accessors.
 	unsigned char noteMin() const
-		{ return m_pSeq ? m_pSeq->noteMin() : m_noteMin; }
+		{ return m_pData ? m_pData->noteMin() : m_noteMin; }
 	unsigned char noteMax() const
-		{ return m_pSeq ? m_pSeq->noteMax() : m_noteMax; }
+		{ return m_pData ? m_pData->noteMax() : m_noteMax; }
 
 	// Intra-clip frame positioning.
 	void seek(unsigned long iFrame);
@@ -143,8 +143,7 @@ protected:
 private:
 
 	// Instance variables.
-	qtractorMidiFile     *m_pFile;
-	qtractorMidiSequence *m_pSeq;
+	qtractorMidiFile *m_pFile;
 
 	unsigned short m_iTrackChannel;
 	unsigned short m_iFormat;
@@ -156,6 +155,41 @@ private:
 	// Statistical cached variables.
 	unsigned char  m_noteMin;
 	unsigned char  m_noteMax;
+
+	// Most interesting data (ref-counted?)...
+	class Data
+	{
+	public:
+
+		// Constructor.
+		Data() : m_pSeq(new qtractorMidiSequence()) {}
+
+		// Destructor.
+		~Data() { delete m_pSeq; }
+
+		// Sequence accessor.
+		qtractorMidiSequence *sequence() const
+			{ return m_pSeq; }
+
+		// Sequence properties accessors.
+		unsigned short channel() const
+			{ return m_pSeq->channel(); }
+		int bank() const
+			{ return m_pSeq->bank(); }
+		int program() const
+			{ return m_pSeq->program(); }
+
+		unsigned char noteMin() const
+			{ return m_pSeq->noteMin(); }
+		unsigned char noteMax() const
+			{ return m_pSeq->noteMax(); }
+
+	private:
+
+		// Interesting variables.
+		qtractorMidiSequence *m_pSeq;
+
+	}  *m_pData;
 
 	// To optimize and keep track of current playback
 	// position, mostly like an sequence cursor/iterator.
