@@ -64,12 +64,15 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	: qtractorClip(pTrack)
 {
 	m_pFile = NULL;
-	m_pSeq  = new qtractorMidiSequence();
+	m_pSeq  = NULL;
 
 	m_iTrackChannel = 0;
 	m_iFormat = defaultFormat();
 	m_bSessionFlag = false;
 	m_iRevision = 0;
+
+	m_noteMin = 0;
+	m_noteMax = 0;
 
 	m_pMidiEditorForm = NULL;
 }
@@ -79,11 +82,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	: qtractorClip(clip.track())
 {
 	m_pFile = NULL;
-	m_pSeq  = new qtractorMidiSequence();
+	m_pSeq  = NULL;
 
-	m_pSeq->setNoteMin(clip.sequence()->noteMin());
-	m_pSeq->setNoteMax(clip.sequence()->noteMax());
-	
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 	setClipGain(clip.clipGain());
@@ -91,6 +91,9 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	m_iFormat = clip.format();
 	m_bSessionFlag = false;
 	m_iRevision = 0;
+
+	m_noteMin = clip.noteMin();
+	m_noteMax = clip.noteMax();
 
 	m_pMidiEditorForm = NULL;
 }
@@ -125,14 +128,15 @@ bool qtractorMidiClip::openMidiFile (
 	if (pSession == NULL)
 		return false;
 
-	qtractorMidiSequence *pSeq = sequence();
-	if (pSeq == NULL)
-		return false;
-
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiClip[%p]::openMidiFile(\"%s\", %d, %d)", this,
 		sFilename.toUtf8().constData(), iTrackChannel, iMode);
 #endif
+
+	if (m_pSeq) {
+		delete m_pSeq;
+		m_pSeq = NULL;
+	}
 
 	if (m_pFile) {
 		delete m_pFile;
@@ -147,9 +151,12 @@ bool qtractorMidiClip::openMidiFile (
 		return false;
 	}
 
+	// New sequence holder...
+	m_pSeq = new qtractorMidiSequence();
+
 	// Initialize event container...
-	pSeq->clear();
-	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
+	m_pSeq->clear();
+	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(clipStart());
@@ -158,15 +165,19 @@ bool qtractorMidiClip::openMidiFile (
 	if (clipStart() > clipOffset()) {
 		unsigned long iOffset = clipStart() - clipOffset();
 		pNode = cursor.seekFrame(iOffset);
-		pSeq->setTimeOffset(t0 - pNode->tickFromFrame(iOffset));
+		m_pSeq->setTimeOffset(t0 - pNode->tickFromFrame(iOffset));
 	} else {
 		pNode = cursor.seekFrame(clipOffset());
-		pSeq->setTimeOffset(pNode->tickFromFrame(clipOffset()));
+		m_pSeq->setTimeOffset(pNode->tickFromFrame(clipOffset()));
 	}
 
 	unsigned long iLength = clipStart() + clipLength();
 	pNode = cursor.seekFrame(iLength);
-	pSeq->setTimeLength(pNode->tickFromFrame(iLength) - t0);
+	m_pSeq->setTimeLength(pNode->tickFromFrame(iLength) - t0);
+
+	// Initial statistics...
+	m_pSeq->setNoteMin(m_noteMin);
+	m_pSeq->setNoteMax(m_noteMax);
 
 	// Are we on a pre-writing status?
 	if (m_pFile->mode() == qtractorMidiFile::Write) {
@@ -186,22 +197,22 @@ bool qtractorMidiClip::openMidiFile (
 		// That's it.
 		setFormat(iFormat);
 		// Write SMF header...
-		if (m_pFile->writeHeader(iFormat, iTracks, pSeq->ticksPerBeat())) {
+		if (m_pFile->writeHeader(iFormat, iTracks, m_pSeq->ticksPerBeat())) {
 			// Set initial local properties...
 			if (m_pFile->tempoMap()) {
 				m_pFile->tempoMap()->fromTimeScale(
-					pSession->timeScale(), pSeq->timeOffset());
+					pSession->timeScale(), m_pSeq->timeOffset());
 			}
 		}
 		// And initial clip name...
-		pSeq->setName(QFileInfo(m_pFile->filename()).baseName());
-		pSeq->setChannel(pTrack->midiChannel());
+		m_pSeq->setName(QFileInfo(m_pFile->filename()).baseName());
+		m_pSeq->setChannel(pTrack->midiChannel());
 		// Nothing more as for writing...
 	} else {
 		// On read mode, SMF format is properly given by open file.
 		setFormat(m_pFile->format());
 		// Read the event sequence in...
-		m_pFile->readTrack(pSeq, iTrackChannel);
+		m_pFile->readTrack(m_pSeq, iTrackChannel);
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag) {
 		#if 0
@@ -236,8 +247,8 @@ bool qtractorMidiClip::openMidiFile (
 			m_bSessionFlag = false;
 		}
 		// We should have events, otherwise this clip is of no use...
-		//	if (pSeq->events().count() < 1)
-		//		return false;
+		//if (m_pSeq->events().count() < 1)
+		//	return false;
 	}
 
 	// Set local properties...
@@ -247,20 +258,20 @@ bool qtractorMidiClip::openMidiFile (
 
 	// Clip name should be clear about it all.
 	if (clipName().isEmpty())
-		setClipName(pSeq->name());
+		setClipName(m_pSeq->name());
 	if (clipName().isEmpty())
 		setClipName(QFileInfo(filename()).baseName());
 
 	// Default clip length will be whole sequence duration.
-	if (clipLength() == 0 && pSeq->timeLength() > pSeq->timeOffset()) {
-		unsigned long t1 = t0 + (pSeq->timeLength() - pSeq->timeOffset());
+	if (clipLength() == 0 && m_pSeq->timeLength() > m_pSeq->timeOffset()) {
+		unsigned long t1 = t0 + (m_pSeq->timeLength() - m_pSeq->timeOffset());
 		pNode = cursor.seekTick(t1);
 		setClipLength(pNode->frameFromTick(t1) - clipStart());
 	}
 
 	// Uh oh...
-	m_playCursor.reset(pSeq);
-	m_drawCursor.reset(pSeq);
+	m_playCursor.reset(m_pSeq);
+	m_drawCursor.reset(m_pSeq);
 
 	return true;
 }
@@ -358,33 +369,33 @@ void qtractorMidiClip::close (void)
 	if (pSession == NULL)
 		return;
 
-	qtractorMidiSequence *pSeq = sequence();
-	if (pSeq == NULL)
-		return;
-
 	// Take pretended clip-length...
 	unsigned long iClipLength = clipLength();
-	if (iClipLength > 0)
-		pSeq->setTimeLength(pSession->tickFromFrame(iClipLength));
-
-	// Actual sequence closure...
-	pSeq->close();
-
-	// Commit the final clip length...
-	if (iClipLength < 1) {
-		iClipLength = pSession->frameFromTick(pSeq->duration());
-		setClipLength(iClipLength);
+	if (m_pSeq) {
+		if (iClipLength > 0)
+			m_pSeq->setTimeLength(pSession->tickFromFrame(iClipLength));
+		// Final read statistics...
+		m_noteMin = m_pSeq->noteMin();
+		m_noteMax = m_pSeq->noteMax();
+		// Actual sequence closure...
+		m_pSeq->close();
+		// Commit the final clip length...
+		if (iClipLength < 1) {
+			iClipLength = pSession->frameFromTick(m_pSeq->duration());
+			setClipLength(iClipLength);
+		}
 	}
 
 	// Now's time to write the whole thing...
 	bool bNewFile = (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
-	if (bNewFile && iClipLength > 0) {
+	if (bNewFile && iClipLength > 0 && m_pSeq) {
 		// Write channel tracks...
 		if (m_iFormat == 1)
 			m_pFile->writeTrack(NULL);  // Setup track (SMF format 1).
-		m_pFile->writeTrack(pSeq);    // Channel track.
+		m_pFile->writeTrack(m_pSeq);    // Channel track.
 		m_pFile->close();
 	}
+
 
 	// Get rid of owned allocations...
 	if (m_pFile) {
@@ -392,8 +403,10 @@ void qtractorMidiClip::close (void)
 		m_pFile = NULL;
 	}
 
-	// Reset sequence...
-	pSeq->clear();
+	if (m_pSeq) {
+		delete m_pSeq;
+		m_pSeq = NULL;
+	}
 
 	// If proven empty, remove the file.
 	if (bNewFile && iClipLength < 1)

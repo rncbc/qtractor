@@ -89,6 +89,12 @@ public:
 	int program() const
 		{ return (m_pSeq ? m_pSeq->program() : -1); }
 
+	// Statistical cached accessors.
+	unsigned char noteMin() const
+		{ return m_pSeq ? m_pSeq->noteMin() : m_noteMin; }
+	unsigned char noteMax() const
+		{ return m_pSeq ? m_pSeq->noteMax() : m_noteMax; }
+
 	// Intra-clip frame positioning.
 	void seek(unsigned long iFrame);
 
@@ -146,6 +152,10 @@ private:
 
 	// Revisionist count.
 	unsigned short m_iRevision;
+
+	// Statistical cached variables.
+	unsigned char  m_noteMin;
+	unsigned char  m_noteMax;
 
 	// To optimize and keep track of current playback
 	// position, mostly like an sequence cursor/iterator.
