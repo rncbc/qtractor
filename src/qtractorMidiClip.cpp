@@ -104,15 +104,7 @@ qtractorMidiClip::~qtractorMidiClip (void)
 {
 	close();
 
-	if (m_pMidiEditorForm) {
-		m_pMidiEditorForm->close();
-		delete m_pMidiEditorForm;
-	}
-
-	if (m_pData)
-		delete m_pData;
-	if (m_pFile)
-		delete m_pFile;
+	closeMidiFile();
 }
 
 
@@ -120,6 +112,8 @@ qtractorMidiClip::~qtractorMidiClip (void)
 bool qtractorMidiClip::openMidiFile (
 	const QString& sFilename, int iTrackChannel, int iMode )
 {
+	closeMidiFile();
+
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return false;
@@ -133,16 +127,6 @@ bool qtractorMidiClip::openMidiFile (
 		sFilename.toUtf8().constData(), iTrackChannel, iMode);
 #endif
 
-	if (m_pData) {
-		delete m_pData;
-		m_pData = NULL;
-	}
-
-	if (m_pFile) {
-		delete m_pFile;
-		m_pFile = NULL;
-	}
-
 	// Create and open up the MIDI file...
 	m_pFile = new qtractorMidiFile();
 	if (!m_pFile->open(sFilename, iMode)) {
@@ -153,6 +137,7 @@ bool qtractorMidiClip::openMidiFile (
 
 	// New data sequence holder...
 	m_pData = new Data();
+	m_pData->attach(this);
 
 	// Initialize event container...
 	qtractorMidiSequence *pSeq = m_pData->sequence();
@@ -282,6 +267,30 @@ bool qtractorMidiClip::openMidiFile (
 }
 
 
+// Private cleanup.
+void qtractorMidiClip::closeMidiFile (void)
+{
+	if (m_pMidiEditorForm) {
+		m_pMidiEditorForm->close();
+		delete m_pMidiEditorForm;
+		m_pMidiEditorForm = NULL;
+	}
+
+	if (m_pData) {
+		m_pData->detach(this);
+		if (m_pData->count() < 1) {
+			delete m_pData;
+			m_pData = NULL;
+		}
+	}
+
+	if (m_pFile) {
+		delete m_pFile;
+		m_pFile = NULL;
+	}
+}
+
+
 // Revisionist method.
 QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 {
@@ -406,40 +415,18 @@ void qtractorMidiClip::close (void)
 		m_pFile->close();
 	}
 
-
-	// Get rid of owned allocations...
-	if (m_pFile) {
-		delete m_pFile;
-		m_pFile = NULL;
-	}
+	// Just to be sure things get deallocated..
+	closeMidiFile();
 
 	// If proven empty, remove the file.
 	if (bNewFile && iClipLength < 1)
 		QFile::remove(filename());
-
-	// Get rid of editor form, if any.
-	if (m_pMidiEditorForm) {
-		m_pMidiEditorForm->close();
-		delete m_pMidiEditorForm;
-		m_pMidiEditorForm = NULL;
-	}
-
-	// Finally...
-	delete m_pData;
-	m_pData = NULL;
 }
 
 
 // MIDI clip (re)open method.
 void qtractorMidiClip::open (void)
 {
-	// WTF? is there an editor outstanding still there?
-	if (m_pMidiEditorForm) {
-		m_pMidiEditorForm->close();
-		delete m_pMidiEditorForm;
-		m_pMidiEditorForm = NULL;
-	}
-
 	// Go open the proper file...
 	openMidiFile(filename(), m_iTrackChannel);
 }
