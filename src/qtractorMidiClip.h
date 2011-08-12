@@ -140,6 +140,9 @@ protected:
 	bool loadClipElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveClipElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
+	// Private cleanup.
+	void closeMidiFile();
+
 private:
 
 	// Instance variables.
@@ -165,7 +168,7 @@ private:
 		Data() : m_pSeq(new qtractorMidiSequence()) {}
 
 		// Destructor.
-		~Data() { delete m_pSeq; }
+		~Data() { clear(); delete m_pSeq; }
 
 		// Sequence accessor.
 		qtractorMidiSequence *sequence() const
@@ -180,14 +183,33 @@ private:
 			{ return m_pSeq->program(); }
 
 		unsigned char noteMin() const
-			{ return m_pSeq->noteMin(); }
+		   { return m_pSeq->noteMin(); }
 		unsigned char noteMax() const
-			{ return m_pSeq->noteMax(); }
+		   { return m_pSeq->noteMax(); }
+
+		// Ref-counting related methods.
+		void attach(qtractorMidiClip *pMidiClip)
+			{ m_clips.append(pMidiClip); }
+
+		void detach(qtractorMidiClip *pMidiClip)
+			{ m_clips.removeAll(pMidiClip); }
+
+		unsigned short count() const
+			{ return m_clips.count(); }
+
+		const QList<qtractorMidiClip *>& clips() const
+			{ return m_clips; }
+
+		void clear()
+			{ m_clips.clear(); }
 
 	private:
 
 		// Interesting variables.
 		qtractorMidiSequence *m_pSeq;
+
+		// Ref-counting related stuff.
+		QList<qtractorMidiClip *> m_clips;
 
 	}  *m_pData;
 
