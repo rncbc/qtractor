@@ -753,6 +753,20 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 	// Adjust all tracks and clips (reopening all those...)
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
+		// Update automation stuff...
+		qtractorCurveList *pCurveList = pTrack->curveList();
+		if (pCurveList) {
+			for (qtractorCurve *pCurve = pCurveList->first();
+					pCurve; pCurve = pCurve->next()) {
+				for (qtractorCurve::Node *pNode = pCurve->nodes().first();
+						pNode; pNode = pNode->next()) {
+					pNode->frame = qtractorTimeScale::uroundf(
+						fRatio * float(pNode->frame));
+				}
+				pCurve->update();
+			}
+		}
+		// Update regular clip stuff...
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
 		//	pClip->setClipStart(qtractorTimeScale::uroundf(

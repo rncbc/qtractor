@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- All automation curve nodes are now relocated whenever
+  disparate session sample-rate is detected on load.
+
 - New aux-send/insert pseudo-plugin is now introduced,
   allowing to route any track audio output to any other
   audio output bus besides the nominal one -- thanks to
