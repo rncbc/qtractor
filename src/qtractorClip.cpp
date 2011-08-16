@@ -91,8 +91,6 @@ void qtractorClip::clear (void)
 
 	m_fGain           = 1.0f;
 
-	m_bLinked         = false;
-
 	// Gain fractionalizer(tm)...
 	m_fractGain.num   = 1;
 	m_fractGain.den   = 8;
@@ -220,18 +218,6 @@ void qtractorClip::setClipLoop ( unsigned long iLoopStart,
 	}
 
 	set_loop(m_iLoopStart, m_iLoopEnd);
-}
-
-
-// Clip link/ref-counted  accessors.
-void qtractorClip::setClipLinked ( bool bLinked )
-{
-	m_bLinked = bLinked;
-}
-
-bool qtractorClip::isClipLinked (void) const
-{
-	return m_bLinked;
 }
 
 
@@ -572,8 +558,6 @@ bool qtractorClip::loadElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	qtractorClip::setClipName(pElement->attribute("name"));
-	qtractorClip::setClipLinked(
-		qtractorDocument::boolFromText(pElement->attribute("linked")));
 
 	// Load clip children...
 	for (QDomNode nChild = pElement->firstChild();
@@ -633,8 +617,6 @@ bool qtractorClip::saveElement (
 	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	pElement->setAttribute("name", qtractorClip::clipName());
-	if (qtractorClip::isClipLinked())
-		pElement->setAttribute("linked", qtractorDocument::textFromBool(true));
 
 	// Save clip properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");

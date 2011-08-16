@@ -100,10 +100,6 @@ public:
 	unsigned long clipLoopEnd() const
 		{ return m_iLoopEnd; }
 
-	// Clip link/ref-counted accessors.
-	void setClipLinked(bool bLinked);
-	bool isClipLinked() const;
-
 	// Clip gain/volume accessors.
 	void setClipGain(float fGain);
 	float clipGain() const
@@ -245,9 +241,6 @@ private:
 
 	unsigned long m_iLoopStart;     // Clip loop start frame-offset.
 	unsigned long m_iLoopEnd;       // Clip loop end frame-offset.
-
-	// Clip linked/ref-counted property.
-	bool m_bLinked;
 
 	// Clip gain/volume.
 	float m_fGain;

@@ -478,46 +478,25 @@ bool qtractorTracks::newClip (void)
 			pClip->setClipLength(pSession->frameFromTick(
 				pSession->ticksPerBeat() * pSession->beatsPerBar()));
 		}
-		// Create a clip filename from scratch...
-		const QString& sFilename
-			= pSession->createFilePath(pTrack->trackName(), "mid");
-		pClip->setFilename(sFilename);
-		pClip->setClipName(QFileInfo(sFilename).baseName());
 		// Proceed to setup the MDII clip properly...
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
-			// Initialize MIDI event container...
-			qtractorMidiSequence *pSeq = pMidiClip->sequence();
-			pSeq->setName(pMidiClip->clipName());
-			pSeq->setChannel(pTrack->midiChannel());
-			pSeq->setTicksPerBeat(pSession->ticksPerBeat());
-			// Which SMF format?
-			if (pMidiClip->format() == 0) {
-				// SMF format 0 (1 track, 1 channel)
-				pMidiClip->setTrackChannel(pTrack->midiChannel());
-			} else {
-				// SMF format 1 (2 tracks, 1 channel)
-				pMidiClip->setTrackChannel(1);
+			// Create a clip filename from scratch...
+			const QString& sFilename
+				= pSession->createFilePath(pTrack->trackName(), "mid");
+			// Create the SMF for good...
+			if (pMidiClip->createMidiFile(sFilename)) {
+				// Add that to regular files...
+				pMainForm->addMidiFile(pClip->filename());
+				// Insert the clip right away...
+				qtractorClipCommand *pClipCommand
+					= new qtractorClipCommand(tr("new clip"));
+				pClipCommand->addClip(pClip, pTrack);
+				pSession->execute(pClipCommand);
+				// Just start the MIDI editor on it...
+				return pClip->startEditor(pMainForm);
 			}
-			// Make it a brand new revision...
-			pMidiClip->setRevision(1);
-			// Save/replace the clip track...
-			qtractorMidiFile::saveCopyFile(sFilename,
-				pMidiClip->filename(),
-				pMidiClip->trackChannel(),
-				pMidiClip->format(),
-				pMidiClip->sequence(),
-				pSession->timeScale(),
-				pSession->tickFromFrame(pMidiClip->clipStart()));
-			pMainForm->addMidiFile(sFilename);
-			// Insert the clip right away...
-			qtractorClipCommand *pClipCommand
-				= new qtractorClipCommand(tr("new clip"));
-			pClipCommand->addClip(pClip, pTrack);
-			pSession->execute(pClipCommand);
-			// Just start the MIDI editor on it...
-			return pClip->startEditor(pMainForm);
 		}
 	}
 
