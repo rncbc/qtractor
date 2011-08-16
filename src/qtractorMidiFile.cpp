@@ -990,7 +990,7 @@ QString qtractorMidiFile::createFilePathRevision (
 	while (fi.exists())
 		fi.setFile(adir, sBasename.arg(++iRevision));
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiFile::createFilePathRevision(\"%s\")",
 		fi.absoluteFilePath().toUtf8().constData());
 #endif
