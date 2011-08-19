@@ -62,6 +62,8 @@ public:
 	const QString& clipName() const
 		{ return m_sClipName; }
 
+	QString shortClipName(const QString& sClipName) const;
+
 	// Clip start frame accessors.
 	void setClipStart(unsigned long iClipStart);
 	unsigned long clipStart() const

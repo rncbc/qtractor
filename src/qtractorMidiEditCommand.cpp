@@ -201,24 +201,24 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		m_iDuration = iOldDuration;
 	}
 
+	// Adjust edit-command result to prevent event overlapping.
+	if (bRedo && !m_bAdjusted) m_bAdjusted = adjust();
+
 	// Or are we changing something more durable?
 	if (pSeq->duration() != iOldDuration) {
 		pSeq->setTimeLength(pSeq->duration());
-		m_pMidiClip->setClipLength(
+		m_pMidiClip->setClipLengthEx(
 			pSession->frameFromTick(pSession->tickFromFrame(
 				m_pMidiClip->clipStart()) + pSeq->duration())
 			- m_pMidiClip->clipStart());
-		m_pMidiClip->updateEditor(iSelectClear > 0);
+		m_pMidiClip->updateEditorEx(iSelectClear > 0);
 	}	// Just reset editor internals...
-	else m_pMidiClip->resetEditor(iSelectClear > 0);
+	else m_pMidiClip->resetEditorEx(iSelectClear > 0);
 
 	// Renqueue dropped events...
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, false);
 
-	// Adjust edit-command result to prevent event overlapping.
-	if (bRedo && !m_bAdjusted) m_bAdjusted = adjust();
-	
 	return true;
 }
 

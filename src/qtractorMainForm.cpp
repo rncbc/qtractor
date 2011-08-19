@@ -1948,10 +1948,7 @@ bool qtractorMainForm::saveSessionFileEx (
 						m_pSession->timeScale(),
 						m_pSession->tickFromFrame(pMidiClip->clipStart()));
 					// Pre-commit dirty changes...
-					pMidiClip->setFilename(sFilename);
-					pMidiClip->setDirty(false);
-					// And refresh any eventual editor out there...
-					pMidiClip->updateEditor(true);
+					pMidiClip->setFilenameEx(sFilename);
 					// Reference for immediate file addition...
 					addMidiFile(sFilename);
 				}
