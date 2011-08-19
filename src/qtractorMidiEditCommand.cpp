@@ -269,6 +269,8 @@ bool qtractorMidiEditCommand::adjust (void)
 						insertEvent(pNewEvent);
 						pSeq->insertEvent(pNewEvent);
 						pNextEvent = pNewEvent->next();
+						// Keep or set as last note...
+						pEvent = pNewEvent;
 					}
 				}
 				else
