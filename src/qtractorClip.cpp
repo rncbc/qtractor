@@ -138,6 +138,22 @@ QString qtractorClip::relativeFilename ( qtractorDocument *pDocument ) const
 }
 
 
+QString qtractorClip::shortClipName ( const QString& sClipName ) const
+{
+	QString sShortClipName(sClipName);
+
+	if (m_pTrack && m_pTrack->session()) {
+		const QString& sSessionName = m_pTrack->session()->sessionName();
+		if (!sSessionName.isEmpty()) {
+			const QString sRegExp("^%1[\\-|_|\\s]+");
+			sShortClipName.remove(QRegExp(sRegExp.arg(sSessionName)));
+		}
+	}
+
+	return sShortClipName;
+}
+
+
 // Clip start frame accessor.
 void qtractorClip::setClipStart ( unsigned long iClipStart )
 {

@@ -56,6 +56,74 @@ const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiClip::Key -- MIDI sequence clip (hash key).
+//
+class qtractorMidiClip::Key
+{
+public:
+
+	// Constructor.
+	Key(qtractorMidiClip *pMidiClip)
+		{ update(pMidiClip); }
+
+	// Key settler.
+	void update(qtractorMidiClip *pMidiClip)
+	{
+		qtractorTrack *pTrack = pMidiClip->track();
+		m_sFilename = pMidiClip->filename();;
+		m_iClipOffset = pMidiClip->clipOffset();
+		m_iClipLength = pMidiClip->clipLength();
+		m_iTrackChannel = pMidiClip->trackChannel();
+		m_iMidiChannel = (pTrack ? pTrack->midiChannel() : 0);
+	}
+
+	// Key accessors.
+	const QString& filename() const
+		{ return m_sFilename; }
+	unsigned long clipOffset() const
+		{ return m_iClipOffset; }
+	unsigned long clipLength() const
+		{ return m_iClipLength; }
+	unsigned short trackChannel() const
+		{ return m_iTrackChannel; }
+	unsigned short midiChannel() const
+		{ return m_iMidiChannel; }
+
+	// Match descriminator.
+	bool operator== (const Key& other) const
+	{
+		return m_sFilename     == other.filename()
+			&& m_iClipOffset   == other.clipOffset()
+			&& m_iClipLength   == other.clipLength()
+			&& m_iTrackChannel == other.trackChannel()
+			&& m_iMidiChannel  == other.midiChannel();
+	}
+
+private:
+
+	// Interesting variables.
+	QString        m_sFilename;
+	unsigned long  m_iClipOffset;
+	unsigned long  m_iClipLength;
+	unsigned short m_iTrackChannel;
+	unsigned short m_iMidiChannel;
+};
+
+
+uint qHash ( const qtractorMidiClip::Key& key )
+{
+	return qHash(key.filename())
+		 ^ qHash(key.clipOffset())
+		 ^ qHash(key.clipLength())
+		 ^ qHash(key.trackChannel())
+		 ^ qHash(key.midiChannel());
+}
+
+
+qtractorMidiClip::Hash qtractorMidiClip::g_hashTable;
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiClip -- MIDI sequence clip.
 //
 
@@ -64,7 +132,8 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	: qtractorClip(pTrack)
 {
 	m_pFile = NULL;
-	m_pSeq  = NULL;
+	m_pKey  = NULL;
+	m_pData = NULL;
 
 	m_iTrackChannel = 0;
 	m_iFormat = defaultFormat();
@@ -82,7 +151,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	: qtractorClip(clip.track())
 {
 	m_pFile = NULL;
-	m_pSeq  = NULL;
+	m_pKey  = NULL;
+	m_pData = NULL;
 
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
@@ -155,13 +225,18 @@ bool qtractorMidiClip::createMidiFile (
 	setDirty(false);
 
 	// Initialize MIDI event container...
-	m_pSeq = new qtractorMidiSequence();
+	m_pKey  = new Key(this);
+	m_pData = new Data();
+	m_pData->attach(this);
 
-	qtractorMidiSequence *pSeq = m_pSeq;
+	// Right on then...
+	g_hashTable.insert(*m_pKey, m_pData);
+
+	qtractorMidiSequence *pSeq = m_pData->sequence();
 
 	pSeq->clear();
 	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
-	pSeq->setName(QFileInfo(m_pFile->filename()).baseName());
+	pSeq->setName(shortClipName(QFileInfo(m_pFile->filename()).baseName()));
 	pSeq->setChannel(pTrack->midiChannel());
 
 	// Make it a brand new revision...
@@ -190,7 +265,7 @@ bool qtractorMidiClip::createMidiFile (
 	if (clipName().isEmpty())
 		setClipName(pSeq->name());
 	if (clipName().isEmpty())
-		setClipName(QFileInfo(filename()).baseName());
+		setClipName(shortClipName(QFileInfo(filename()).baseName()));
 
 	// Uh oh...
 	m_playCursor.reset(pSeq);
@@ -232,10 +307,30 @@ bool qtractorMidiClip::openMidiFile (
 	setTrackChannel(iTrackChannel);
 	setDirty(false);
 
-	// Initialize MIDI event container...
-	m_pSeq = new qtractorMidiSequence();
+	// New key-data sequence...
+	if (m_pFile->mode() == qtractorMidiFile::Read) {
+		m_pKey  = new Key(this);
+		m_pData = g_hashTable.value(*m_pKey, NULL);
+		if (m_pData) {
+			m_pData->attach(this);
+			qtractorMidiSequence *pSeq = m_pData->sequence();
+			// Clip name should be clear about it all.
+			if (clipName().isEmpty())
+				setClipName(pSeq->name());
+			if (clipName().isEmpty())
+				setClipName(shortClipName(QFileInfo(filename()).baseName()));
+			// Uh oh...
+			m_playCursor.reset(pSeq);
+			m_drawCursor.reset(pSeq);
+			return true;
+		}
+	}
 
-	qtractorMidiSequence *pSeq = m_pSeq;
+	// Initialize MIDI event container...
+	m_pData = new Data();
+	m_pData->attach(this);
+
+	qtractorMidiSequence *pSeq = m_pData->sequence();
 
 	pSeq->clear();
 	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
@@ -287,7 +382,7 @@ bool qtractorMidiClip::openMidiFile (
 			}
 		}
 		// And initial clip name...
-		pSeq->setName(QFileInfo(m_pFile->filename()).baseName());
+		pSeq->setName(shortClipName(QFileInfo(m_pFile->filename()).baseName()));
 		pSeq->setChannel(pTrack->midiChannel());
 		// Nothing more as for writing...
 	} else {
@@ -347,11 +442,17 @@ bool qtractorMidiClip::openMidiFile (
 	if (clipName().isEmpty())
 		setClipName(pSeq->name());
 	if (clipName().isEmpty())
-		setClipName(QFileInfo(filename()).baseName());
+		setClipName(shortClipName(QFileInfo(filename()).baseName()));
 
 	// Uh oh...
 	m_playCursor.reset(pSeq);
 	m_drawCursor.reset(pSeq);
+
+	// Something might have changed...
+	if (m_pKey) {
+		m_pKey->update(this);
+		g_hashTable.insert(*m_pKey, m_pData);
+	}
 
 	return true;
 }
@@ -366,9 +467,18 @@ void qtractorMidiClip::closeMidiFile (void)
 		m_pMidiEditorForm = NULL;
 	}
 
-	if (m_pSeq) {
-		delete m_pSeq;
-		m_pSeq = NULL;
+	if (m_pData) {
+		m_pData->detach(this);
+		if (m_pData->count() < 1) {
+			if (m_pKey) g_hashTable.remove(*m_pKey);
+			delete m_pData;
+			m_pData = NULL;
+		}
+	}
+
+	if (m_pKey) {
+		delete m_pKey;
+		m_pKey = NULL;
 	}
 
 	if (m_pFile) {
@@ -397,6 +507,63 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	if (!bForce) ++m_iRevision;
 
 	return sFilename;
+}
+
+
+// Sync all ref-counted filenames.
+void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
+{
+	if (m_pData == NULL)
+		return;
+
+	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorMidiClip *pMidiClip = iter.next();
+		pMidiClip->setFilename(sFilename);
+		pMidiClip->setDirty(false);
+		pMidiClip->updateEditor(true);
+	}
+}
+
+
+// Sync all ref-counted clip-lengths.
+void qtractorMidiClip::setClipLengthEx ( unsigned long iClipLength )
+{
+	if (m_pData == NULL)
+		return;
+
+	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->setClipLength(iClipLength);
+}
+
+
+// Sync all ref-counted clip editors.
+void qtractorMidiClip::updateEditorEx ( bool bSelectClear )
+{
+	if (m_pData == NULL)
+		return;
+
+	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->updateEditor(bSelectClear);
+}
+
+void qtractorMidiClip::resetEditorEx ( bool bSelectClear )
+{
+	if (m_pData == NULL)
+		return;
+
+	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->resetEditor(bSelectClear);
+}
+
+
+// Make sure the clip hash-table gets reset.
+void qtractorMidiClip::clearHashTable (void)
+{
+	g_hashTable.clear();
 }
 
 
