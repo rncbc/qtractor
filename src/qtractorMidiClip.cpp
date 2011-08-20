@@ -523,6 +523,12 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 		pMidiClip->setDirty(false);
 		pMidiClip->updateEditor(true);
 	}
+
+	if (m_pKey) {
+		g_hashTable.remove(*m_pKey);
+		m_pKey->update(this);
+		g_hashTable.insert(*m_pKey, m_pData);
+	}
 }
 
 
@@ -535,6 +541,12 @@ void qtractorMidiClip::setClipLengthEx ( unsigned long iClipLength )
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->setClipLength(iClipLength);
+
+	if (m_pKey) {
+		g_hashTable.remove(*m_pKey);
+		m_pKey->update(this);
+		g_hashTable.insert(*m_pKey, m_pData);
+	}
 }
 
 
