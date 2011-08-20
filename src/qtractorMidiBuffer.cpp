@@ -684,10 +684,10 @@ void qtractorMidiManager::createAudioOutputBus (void)
 	// Whether audio output bus is here owned, or...
 	if (m_bAudioOutputBus) {
 		// Owned, not part of audio engine...
-		m_pAudioOutputBus = new qtractorAudioBus(pAudioEngine,
-			m_pPluginList->name(),
-			qtractorBus::Output, false,
-			m_pPluginList->channels());
+		m_pAudioOutputBus
+			= new qtractorAudioBus(pAudioEngine, m_pPluginList->name(),
+				qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex),
+				false, m_pPluginList->channels(), true);
 		if (pAudioEngine->isActivated()) {
 			if (m_pAudioOutputBus->open())
 				m_pAudioOutputBus->autoConnect();

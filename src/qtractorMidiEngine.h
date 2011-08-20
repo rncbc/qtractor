@@ -347,8 +347,7 @@ public:
 
 	// Constructor.
 	qtractorMidiBus(qtractorMidiEngine *pMidiEngine,
-		const QString& sBusName, BusMode mode = Duplex,
-		bool bPassthru = false);
+		const QString& sBusName, BusMode busMode, bool bMonitor = false);
 
 	// Destructor.
 	~qtractorMidiBus();
