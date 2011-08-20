@@ -1728,7 +1728,8 @@ void qtractorMidiEngine::createControlBus (void)
 
 	// Whether control bus is here owned, or...
 	if (m_bControlBus) {
-		m_pOControlBus = new qtractorMidiBus(this, "Control");
+		m_pOControlBus = new qtractorMidiBus(this, "Control",
+			qtractorBus::BusMode(qtractorBus::Duplex | qtractorBus::Ex));
 		m_pIControlBus = m_pOControlBus;
 	} else {
 		// Find available control buses...
@@ -1972,8 +1973,8 @@ void qtractorMidiEngine::createMetroBus (void)
 
 	// Whether metronome bus is here owned, or...
 	if (m_bMetroBus) {
-		m_pMetroBus = new qtractorMidiBus(this,
-			"Metronome", qtractorBus::Output);
+		m_pMetroBus = new qtractorMidiBus(this, "Metronome",
+			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
 	} else {
 		// Find first available output buses...
 		for (qtractorBus *pBus = qtractorEngine::buses().first();
@@ -2653,7 +2654,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 {
 	m_iAlsaPort = -1;
 
-	if (busMode & qtractorBus::Input) {
+	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
 		m_pIMidiMonitor = new qtractorMidiMonitor();
 		m_pIPluginList  = createPluginList(qtractorPluginList::MidiInBus);
 		m_pICurveFile   = new qtractorCurveFile(m_pIPluginList->curveList());
@@ -2663,7 +2664,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 		m_pICurveFile   = NULL;
 	}
 
-	if (busMode & qtractorBus::Output) {
+	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		m_pOMidiMonitor = new qtractorMidiMonitor();
 		m_pOPluginList  = createPluginList(qtractorPluginList::MidiOutBus);
 		m_pOCurveFile   = new qtractorCurveFile(m_pOPluginList->curveList());
@@ -2781,8 +2782,10 @@ void qtractorMidiBus::close (void)
 // Bus mode change event.
 void qtractorMidiBus::updateBusMode (void)
 {
+	const qtractorBus::BusMode mode = busMode();
+
 	// Have a new/old input monitor?
-	if (busMode() & qtractorBus::Input) {
+	if ((mode & qtractorBus::Input) && !(mode & qtractorBus::Ex)) {
 		if (m_pIMidiMonitor == NULL)
 			m_pIMidiMonitor = new qtractorMidiMonitor();
 		if (m_pIPluginList == NULL)
@@ -2805,7 +2808,7 @@ void qtractorMidiBus::updateBusMode (void)
 	}
 
 	// Have a new/old output monitor?
-	if (busMode() & qtractorBus::Output) {
+	if ((mode & qtractorBus::Output) && !(mode & qtractorBus::Ex)) {
 		if (m_pOMidiMonitor == NULL)
 			m_pOMidiMonitor = new qtractorMidiMonitor();
 		if (m_pOPluginList == NULL)

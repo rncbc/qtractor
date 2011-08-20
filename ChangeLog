@@ -5,6 +5,14 @@ ChangeLog
 
 SVN TRUNK
 
+- General resource consumption and management has been
+  slightly improved, due to internal buses allocation
+  optimization.
+
+- Fixed nasty crash-bug that was severely affecting all
+  sessions that had at least one insert (pseudo-)plugin
+  on any audio input bus.
+
 - First brutal attempt to get linked, aka. ref-counted,
   MIDI clips into practice (HIGHLY EXPERIMENTAL).
 

@@ -341,11 +341,19 @@ qtractorBus::qtractorBus ( qtractorEngine *pEngine,
 	m_sBusName = sBusName;
 	m_busMode  = busMode;
 
-	m_pMonitorSubject = new qtractorSubject();
-	m_pMonitorSubject->setToggled(true);
+	if (m_busMode & Ex) {
+		m_pMonitorSubject = NULL;
+	} else {
+		m_pMonitorSubject = new qtractorSubject();
+		m_pMonitorSubject->setToggled(true);
+	}
 
-	m_pMonitorObserver = new qtractorMidiControlObserver(m_pMonitorSubject);
-	m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
+	if (m_busMode & Ex) {
+		m_pMonitorObserver = NULL;
+	} else {
+		m_pMonitorObserver = new qtractorMidiControlObserver(m_pMonitorSubject);
+		m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
+	}
 }
 
 // Destructor.
@@ -383,7 +391,8 @@ void qtractorBus::setBusName ( const QString& sBusName )
 {
 	m_sBusName = sBusName;
 
-	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sBusName));
+	if (m_pMonitorSubject)
+		m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sBusName));
 }
 
 const QString& qtractorBus::busName (void) const
@@ -409,12 +418,13 @@ qtractorBus::BusMode qtractorBus::busMode (void) const
 // Pass-thru mode accessor.
 void qtractorBus::setMonitor ( bool bMonitor )
 {
-	m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
+	if (m_pMonitorObserver)
+		m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 bool qtractorBus::isMonitor (void) const
 {
-	return (m_pMonitorSubject->value() > 0.0f);
+	return (m_pMonitorSubject ? (m_pMonitorSubject->value() > 0.0f) : false);
 }
 
 
@@ -459,6 +469,9 @@ void qtractorBus::loadControllers ( QDomElement *pElement, BusMode busMode )
 void qtractorBus::saveControllers (
 	qtractorDocument *pDocument, QDomElement *pElement, BusMode busMode ) const
 {
+	if (m_pMonitorObserver == NULL)
+		return;
+
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
 		return;
@@ -507,7 +520,7 @@ void qtractorBus::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = pPanObserver->subject()->name();
 		pController->index = 1; // 1=PanObserver
 		pController->ctype = pPanObserver->type();
 		pController->channel = pPanObserver->channel();
@@ -523,7 +536,7 @@ void qtractorBus::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = pGainObserver->subject()->name();
 		pController->index = 2; // 2=GainObserver
 		pController->ctype = pGainObserver->type();
 		pController->channel = pGainObserver->channel();
@@ -544,6 +557,9 @@ void qtractorBus::saveControllers (
 // Map bus (monitor, gain, pan) controllers (MIDI).
 void qtractorBus::mapControllers ( BusMode busMode )
 {
+	if (m_pMonitorObserver == NULL)
+		return;
+
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
 		return;
@@ -615,6 +631,9 @@ void qtractorBus::loadCurveFile (
 void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	QDomElement *pElement, BusMode busMode, qtractorCurveFile *pCurveFile ) const
 {
+	if (m_pMonitorSubject == NULL)
+		return;
+
 	if (pCurveFile == NULL)
 		return;
 
@@ -725,6 +744,9 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 // Apply bus automation curves (monitor, gain, pan).
 void qtractorBus::applyCurveFile ( BusMode busMode, qtractorCurveFile *pCurveFile ) const
 {
+	if (m_pMonitorSubject == NULL)
+		return;
+
 	if (pCurveFile == NULL)
 		return;
 	if (pCurveFile->items().isEmpty())

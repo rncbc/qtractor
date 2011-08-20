@@ -44,6 +44,7 @@ public:
 	// Constructor.
 	qtractorEngine(qtractorSession *pSession,
 		qtractorTrack::TrackType syncType);
+
 	// Destructor.
 	virtual ~qtractorEngine();
 
@@ -137,11 +138,11 @@ class qtractorBus : public qtractorList<qtractorBus>::Link
 public:
 
 	// Bus operation mode bit-flags.
-	enum BusMode { None = 0, Input = 1, Output = 2, Duplex = 3 };
+	enum BusMode { None = 0, Input = 1, Output = 2, Duplex = 3, Ex = 4 };
 
 	// Constructor.
-	qtractorBus(qtractorEngine *pEngine, const QString& sBusName,
-		BusMode busMode = Duplex, bool bMonitor = false);
+	qtractorBus(qtractorEngine *pEngine,
+		const QString& sBusName, BusMode busMode, bool bMonitor = false);
 
 	// Destructor.
 	virtual ~qtractorBus();

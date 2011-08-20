@@ -295,9 +295,8 @@ public:
 
 	// Constructor.
 	qtractorAudioBus(qtractorAudioEngine *pAudioEngine,
-		const QString& sBusName, BusMode busMode = Duplex,
-		bool bPassthru = false, unsigned short iChannels = 2,
-		bool bAutoConnect = true);
+		const QString& sBusName, BusMode busMode, bool bMonitor = false,
+		unsigned short iChannels = 2, bool bAutoConnect = true);
 
 	// Destructor.
 	~qtractorAudioBus();

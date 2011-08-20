@@ -710,10 +710,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				// Prepare all extra audio buses...
 				for (qtractorBus *pBusEx = busesEx().first();
 						pBusEx; pBusEx = pBusEx->next()) {
-					qtractorAudioBus *pAudioBus
+					qtractorAudioBus *pAudioBusEx
 						= static_cast<qtractorAudioBus *> (pBusEx);
-					if (pAudioBus)
-						pAudioBus->process_prepare(nframes);
+					if (pAudioBusEx)
+						pAudioBusEx->process_prepare(nframes);
 				}
 				// Export cycle...
 				pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
@@ -742,20 +742,20 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// buses needs monitoring while idle...
 	int iOutputBus = 0;
 
+	// Prepare all extra audio buses...
+	for (qtractorBus *pBusEx = busesEx().first();
+			pBusEx; pBusEx = pBusEx->next()) {
+		qtractorAudioBus *pAudioBusEx
+			= static_cast<qtractorAudioBus *> (pBusEx);
+		if (pAudioBusEx)
+			pAudioBusEx->process_prepare(nframes);
+	}
+
 	// Prepare all current audio buses...
 	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus)
-			pAudioBus->process_prepare(nframes);
-	}
-
-	// Prepare all extra audio buses...
-	for (qtractorBus *pBusEx = busesEx().first();
-			pBusEx; pBusEx = pBusEx->next()) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBusEx);
 		if (pAudioBus)
 			pAudioBus->process_prepare(nframes);
 	}
@@ -1384,8 +1384,8 @@ void qtractorAudioEngine::createMetroBus (void)
 
 	// Whether metronome bus is here owned, or...
 	if (m_bMetroBus) {
-		m_pMetroBus = new qtractorAudioBus(this,
-			"Metronome", qtractorBus::Output);
+		m_pMetroBus = new qtractorAudioBus(this, "Metronome",
+			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
 	} else {
 		// Metronome bus gets to be the first available output bus...
 		for (qtractorBus *pBus = qtractorEngine::buses().first();
@@ -1567,8 +1567,8 @@ void qtractorAudioEngine::createPlayerBus (void)
 
 	// Whether audition/pre-listening bus is here owned, or...
 	if (m_bPlayerBus) {
-		m_pPlayerBus = new qtractorAudioBus(this,
-			"Player", qtractorBus::Output);
+		m_pPlayerBus = new qtractorAudioBus(this, "Player",
+			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
 	} else {
 		// Audition/pre-listening bus gets to be
 		// the first available output bus...
@@ -1790,13 +1790,13 @@ void qtractorAudioEngine::resetAllMonitors (void)
 
 // Constructor.
 qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
-	const QString& sBusName, BusMode busMode, bool bPassthru,
+	const QString& sBusName, BusMode busMode, bool bMonitor,
 	unsigned short iChannels, bool bAutoConnect )
-	: qtractorBus(pAudioEngine, sBusName, busMode, bPassthru)
+	: qtractorBus(pAudioEngine, sBusName, busMode, bMonitor)
 {
 	m_iChannels = iChannels;
 
-	if (busMode & qtractorBus::Input) {
+	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
 		m_pIAudioMonitor = new qtractorAudioMonitor(iChannels);
 		m_pIPluginList   = createPluginList(qtractorPluginList::AudioInBus);
 		m_pICurveFile    = new qtractorCurveFile(m_pIPluginList->curveList());
@@ -1806,7 +1806,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 		m_pICurveFile    = NULL;
 	}
 
-	if (busMode & qtractorBus::Output) {
+	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		m_pOAudioMonitor = new qtractorAudioMonitor(iChannels);
 		m_pOPluginList   = createPluginList(qtractorPluginList::AudioOutBus);
 		m_pOCurveFile    = new qtractorCurveFile(m_pOPluginList->curveList());
@@ -2089,13 +2089,10 @@ void qtractorAudioBus::autoConnect (void)
 // Bus mode change event.
 void qtractorAudioBus::updateBusMode (void)
 {
-	qtractorAudioEngine *pAudioEngine
-		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
-		return;
+	const qtractorBus::BusMode mode = busMode();
 
 	// Have a new/old input monitor?
-	if (busMode() & qtractorBus::Input) {
+	if ((mode & qtractorBus::Input) && !(mode & qtractorBus::Ex)) {
 		if (m_pIAudioMonitor == NULL)
 			m_pIAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pIPluginList == NULL)
@@ -2118,7 +2115,7 @@ void qtractorAudioBus::updateBusMode (void)
 	}
 
 	// Have a new/old output monitor?
-	if (busMode() & qtractorBus::Output) {
+	if ((mode & qtractorBus::Output) && !(mode & qtractorBus::Ex)) {
 		if (m_pOAudioMonitor == NULL)
 			m_pOAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pOPluginList == NULL)
