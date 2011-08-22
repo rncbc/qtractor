@@ -28,7 +28,6 @@
 #include "qtractorAudioEngine.h"
 
 
-
 #if defined(__SSE__)
 
 #include <xmmintrin.h>
@@ -499,7 +498,8 @@ bool qtractorAuxSendPluginType::open (void)
 
 	// Pseudo-plugin type names.
 	m_sName  = "Aux Send";
-	m_sLabel = m_sName.remove(' ');
+	m_sLabel = m_sName;
+	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
 	m_iUniqueID = iChannels;
@@ -684,7 +684,6 @@ void qtractorAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
 		clearConfigs();
 	}
 }
-
 
 const QString& qtractorAuxSendPlugin::audioBusName (void) const
 {

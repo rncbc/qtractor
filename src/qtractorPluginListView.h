@@ -62,6 +62,9 @@ private:
 
 	// The plugin reference.
 	qtractorPlugin *m_pPlugin;
+
+	// Instance variables.
+	float m_fDirectAccessParamValue;
 };
 
 
@@ -167,6 +170,8 @@ protected:
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
 	void dragLeaveEvent(QDragLeaveEvent *);
 	void dropEvent(QDropEvent *pDropEvent);
+
+	void wheelEvent(QWheelEvent *pWheelEvent);
 
 	// Drag-n-drop stuff.
 	bool canDropEvent(QDropEvent *pDropEvent);

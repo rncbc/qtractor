@@ -104,6 +104,7 @@ protected slots:
 	void changeParamSlot(unsigned long iIndex);
 
 	void changeAudioBusNameSlot(const QString& sAudioBusName);
+	void changeDirectAccessParamSlot(int Index);
 
 protected:
 

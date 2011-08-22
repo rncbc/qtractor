@@ -345,6 +345,29 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorDirectAccessParamCommand - declaration.
+//
+
+class qtractorDirectAccessParamCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorDirectAccessParamCommand(qtractorPlugin *pPlugin,
+		long iDirectAccessParamIndex);
+
+	// Plugin-change command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	long m_iDirectAccessParamIndex;
+};
+
+
 #endif	// __qtractorPluginCommand_h
 
 // end of qtractorPluginCommand.h

@@ -273,6 +273,16 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QLabel" name="DirectAccessParamLabel">
+       <property name="text">
+        <string>Direct Access Parameter</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="DirectAccessParamComboBox"/>
+     </item>
     </layout>
    </item>
   </layout>
@@ -288,6 +298,7 @@
   <tabstop>SendsToolButton</tabstop>
   <tabstop>ReturnsToolButton</tabstop>
   <tabstop>AudioBusNameComboBox</tabstop>
+  <tabstop>DirectAccessParamComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc"/>

@@ -5,6 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- Following yet another great idea, and implementation,
+  by Holger Dehnhardt, who already brought us the new
+  aux-send insert plugin, thanks again, the so-called
+  direct access control option is now featured for any
+  plugin parameter right from plugin listings eg. mixer
+  strips. (EXPERIMENTAL).
+
 - General resource consumption and management has been
   slightly improved, due to internal buses allocation
   optimization.

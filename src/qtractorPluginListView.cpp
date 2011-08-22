@@ -111,9 +111,30 @@ public:
 			}
 			// Fill the background...
 			pPainter->fillRect(option.rect, rgbBack);
+			const QSize& iconSize = m_pListWidget->iconSize();
+			// Draw the direct access parameter value status...
+			qtractorPlugin *pPlugin = NULL;
+			qtractorPluginParam *pDirectAccessParam = NULL;
+			qtractorMidiControlObserver *pDirectAccessObserver = NULL;
+			qtractorPluginListItem *pListItem
+				= static_cast<qtractorPluginListItem *> (pItem);
+			if (pListItem)
+				pPlugin = pListItem->plugin();
+			if (pPlugin)
+				pDirectAccessParam = pPlugin->directAccessParam();
+			if (pDirectAccessParam)
+				pDirectAccessObserver = pDirectAccessParam->observer();
+			if (pDirectAccessObserver) {
+				float fScale = pDirectAccessObserver->scaleFromValue(
+					pDirectAccessParam->value(),
+					pDirectAccessParam->isLogarithmic());
+				QRect rectValue = option.rect
+					.adjusted(iconSize.width(), 1, -2, -2);
+				rectValue.setWidth(int(fScale * float(rectValue.width())));
+				pPainter->fillRect(rectValue, rgbBack.lighter(140));
+			}
 			// Draw the icon...
 			QRect rect = option.rect;
-			const QSize& iconSize = m_pListWidget->iconSize();
 			pPainter->drawPixmap(1,
 				rect.top() + ((rect.height() - iconSize.height()) >> 1),
 				pItem->icon().pixmap(iconSize));
@@ -866,8 +887,18 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			if (pItem)
 				pPlugin = pItem->plugin();
 			if (pPlugin) {
+				QString sToolTip = (pPlugin->type())->name();
+				if (pPlugin->isDirectAccessParam()) {
+					qtractorPluginParam *pDirectAccessParam
+						= pPlugin->directAccessParam();
+					if (pDirectAccessParam) {
+						sToolTip.append(QString("\n(%1: %2)")
+							.arg(pDirectAccessParam->name())
+							.arg(pDirectAccessParam->value()));
+					}
+				}
 				QToolTip::showText(pHelpEvent->globalPos(),
-					(pPlugin->type())->name(), pViewport);
+					sToolTip, pViewport);
 				return true;
 			}
 		}
@@ -875,6 +906,37 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 
 	// Not handled here.
 	return QListWidget::eventFilter(pObject, pEvent);
+}
+
+
+// trap the wheel event to change the value of the direcgAccessParameter
+void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
+{
+	const QPoint& pos = pWheelEvent->pos();
+	qtractorPluginListItem *pListItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
+	if (pListItem) {
+		qtractorPlugin *pPlugin = pListItem->plugin();
+		qtractorPluginParam *pDirectAccessParam = NULL;
+		qtractorMidiControlObserver *pDirectAccessObserver = NULL;
+		if (pPlugin)
+			pDirectAccessParam = pPlugin->directAccessParam();
+		if (pDirectAccessParam)
+			pDirectAccessObserver = pDirectAccessParam->observer();
+		if (pDirectAccessObserver) {
+			const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
+			float fValue = pDirectAccessObserver->value();
+			float fScale = pDirectAccessObserver->scaleFromValue(
+				fValue, bLogarithmic);
+			float fStep = (pWheelEvent->delta() > 0 ? 1.0f : -1.0f);
+			if (!pDirectAccessParam->isInteger())
+				fStep *= 0.1f;
+			fScale += fStep;
+			fValue = pDirectAccessObserver->valueFromScale(
+				fScale, bLogarithmic);
+			pDirectAccessParam->updateValue(fValue, true);
+		}
+	}
 }
 
 

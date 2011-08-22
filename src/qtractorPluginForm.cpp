@@ -46,7 +46,6 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QUrl>
-
 #include <QKeyEvent>
 
 #include <math.h>
@@ -130,6 +129,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.AudioBusNameComboBox,
 		SIGNAL(activated(const QString&)),
 		SLOT(changeAudioBusNameSlot(const QString&)));
+	QObject::connect(m_ui.DirectAccessParamComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changeDirectAccessParamSlot(int)));
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
@@ -191,9 +193,14 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			++iRows;
 		int iRow = 0;
 		int iCol = 0;
+		// Setup the none-item for the dirctAccessParameter combobox.
+		m_ui.DirectAccessParamComboBox->addItem(tr("(none)"), int(-1));
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		for ( ; param != params.constEnd(); ++param) {
 			qtractorPluginParam *pParam = param.value();
+			// Set the parameter name and the key as data
+			// to the direct access parameter combobox.
+			m_ui.DirectAccessParamComboBox->addItem(pParam->name(), int(param.key()));
 			qtractorPluginParamWidget *pParamWidget
 				= new qtractorPluginParamWidget(pParam, this);
 			m_paramWidgets.insert(pParam->index(), pParamWidget);
@@ -207,6 +214,14 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				iRow = 0;
 				++iCol;
 			}
+		}
+		// If direct access parameter is set,
+		// select the right item in the combo box.
+		if (m_pPlugin->directAccessParamIndex() >= 0) {
+			int iIndex = m_ui.DirectAccessParamComboBox->findData(
+				int(m_pPlugin->directAccessParamIndex()));
+			if (iIndex >= 0)
+				m_ui.DirectAccessParamComboBox->setCurrentIndex(iIndex);
 		}
 	}
 	m_ui.ParamsGridWidget->setLayout(m_pGridLayout);
@@ -759,6 +774,33 @@ void qtractorPluginForm::changeAudioBusNameSlot ( const QString& sAudioBusName )
 		new qtractorAuxSendPluginCommand(pAuxSendPlugin, sAudioBusName));
 }
 
+
+// Direct access parameter slot
+void qtractorPluginForm::changeDirectAccessParamSlot ( int iIndex )
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginForm[%p]::changeDirectAccessParamSlot(%d)", this, iIndex);
+#endif
+
+	long iDirectAccessParamIndex
+		= long(m_ui.DirectAccessParamComboBox->itemData(iIndex).toInt());
+
+	++m_iUpdate;
+
+	// Make it a undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(
+			new qtractorDirectAccessParamCommand(m_pPlugin, iDirectAccessParamIndex));
+
+	--m_iUpdate;
+}
 
 // Activation slot.
 void qtractorPluginForm::activateSlot ( bool bOn )

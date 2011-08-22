@@ -583,7 +583,7 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iInstances(0),
-		m_bActivated(false), m_pForm(NULL)
+		m_bActivated(false), m_pForm(NULL), m_iDirectAccessParamIndex(-1)
 {
 #if 0
 	// Open this...
@@ -899,6 +899,45 @@ bool qtractorPlugin::savePreset ( const QString& sFilename )
 qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 {
 	return m_params.value(iIndex, NULL);
+}
+
+
+// Direct access parameter
+qtractorPluginParam *qtractorPlugin::directAccessParam (void) const
+{
+	if (isDirectAccessParam())
+		return findParam(m_iDirectAccessParamIndex);
+	else
+		return NULL;
+}
+
+
+void qtractorPlugin::setDirectAccessParamIndex ( long iDirectAccessParamIndex )
+{
+	m_iDirectAccessParamIndex = iDirectAccessParamIndex;
+
+	updateDirectAccessParam();
+}
+
+
+long qtractorPlugin::directAccessParamIndex (void) const
+{
+	return m_iDirectAccessParamIndex;
+}
+
+
+bool qtractorPlugin::isDirectAccessParam (void) const
+{
+	return (m_iDirectAccessParamIndex >= 0);
+}
+
+
+// Write the value to the display item.
+void qtractorPlugin::updateDirectAccessParam (void)
+{
+	QListIterator<qtractorPluginListItem *> iter(m_items);
+	while (iter.hasNext())
+		iter.next()->updateActivated();
 }
 
 
@@ -1439,6 +1478,7 @@ bool qtractorPluginList::loadElement (
 			QString sPreset;
 			QStringList vlist;
 			bool bActivated = false;
+			long iDirectAccessParamIndex = -1;
 			qtractorPlugin::Configs configs;
 			qtractorPlugin::ConfigTypes ctypes;
 			qtractorPlugin::Values values;
@@ -1487,6 +1527,9 @@ bool qtractorPluginList::loadElement (
 					qtractorPlugin::loadControllers(&eParam, controllers);
 				}
 				else
+				if (eParam.tagName() == "direct-access-param")
+					iDirectAccessParamIndex = eParam.text().toLong();
+				else
 				if (eParam.tagName() == "curve-file") {
 					// Load plugin automation curves...
 					qtractorPlugin::loadCurveFile(&eParam, &cfile);
@@ -1514,6 +1557,7 @@ bool qtractorPluginList::loadElement (
 				append(pPlugin);
 				pPlugin->mapControllers(controllers);
 				pPlugin->applyCurveFile(&cfile);
+				pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
 				pPlugin->setActivated(bActivated); // Later's better!
 			}
 			// Cleanup.
@@ -1571,6 +1615,8 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			pType->label(), &ePlugin);
 		pDocument->saveTextElement("preset",
 			pPlugin->preset(), &ePlugin);
+		pDocument->saveTextElement("direct-access-param",
+			QString::number(pPlugin->directAccessParamIndex()), &ePlugin);
 	//	pDocument->saveTextElement("values",
 	//		pPlugin->valueList().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
