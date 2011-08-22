@@ -568,6 +568,13 @@ public:
 		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
 	void applyCurveFile (qtractorCurveFile *pCurveFile) const;
 
+	// Direct access parameter accessors.
+	qtractorPluginParam *directAccessParam() const;
+	void setDirectAccessParamIndex(long iDirectAccessParamIndex);
+	long directAccessParamIndex() const;
+	bool isDirectAccessParam() const;
+	void updateDirectAccessParam();
+
 protected:
 
 	// Instance number settler.
@@ -604,6 +611,9 @@ private:
 
 	// Plugin parameter values (part of configuration).
 	Values m_values;
+
+	// Direct access parameter, if any.
+	long m_iDirectAccessParamIndex;
 };
 
 

@@ -409,7 +409,6 @@ bool qtractorActivatePluginCommand::undo (void)
 	return redo();
 }
 
-
 //----------------------------------------------------------------------
 // class qtractorPresetPluginCommand - implementation
 //
@@ -561,7 +560,12 @@ bool qtractorPluginParamCommand::redo (void)
 	m_bUpdate    = true;
 
 	// Update the form, showing it up as necessary...
-	(pPlugin->form())->changeParamValue(m_pParam->index());
+	if (pPlugin->isFormVisible())
+		(pPlugin->form())->changeParamValue(m_pParam->index());
+
+	if (pPlugin->directAccessParamIndex() == long(m_pParam->index()))
+		pPlugin->updateDirectAccessParam();
+
 	// Update any GUI editor...
 	// pPlugin->idleEditor();
 
@@ -604,6 +608,39 @@ bool qtractorAudioOutputBusCommand::redo (void)
 }
 
 bool qtractorAudioOutputBusCommand::undo (void)
+{
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorDirectAccessParamCommand - implementation
+//
+
+// Constructor.
+qtractorDirectAccessParamCommand::qtractorDirectAccessParamCommand (
+	qtractorPlugin *pPlugin, long iDirectAccessParamIndex )
+	: qtractorPluginCommand(QObject::tr("direct access param"), pPlugin)
+{
+	m_iDirectAccessParamIndex = iDirectAccessParamIndex;
+}
+
+
+// Plugin-change command methods.
+bool qtractorDirectAccessParamCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == NULL)
+		return false;
+
+	long iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
+	pPlugin->setDirectAccessParamIndex(m_iDirectAccessParamIndex);
+	m_iDirectAccessParamIndex = iDirectAccessParamIndex;
+
+	return true;
+}
+
+bool qtractorDirectAccessParamCommand::undo (void)
 {
 	return redo();
 }
