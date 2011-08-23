@@ -113,6 +113,7 @@ public:
 			pPainter->fillRect(option.rect, rgbBack);
 			const QSize& iconSize = m_pListWidget->iconSize();
 			// Draw the direct access parameter value status...
+			QPolygon polyg(3);
 			qtractorPlugin *pPlugin = NULL;
 			qtractorPluginParam *pDirectAccessParam = NULL;
 			qtractorMidiControlObserver *pDirectAccessObserver = NULL;
@@ -132,15 +133,9 @@ public:
 					.adjusted(iconSize.width(), 1, -2, -2);
 				rectValue.setWidth(int(fScale * float(rectValue.width())));
 				pPainter->fillRect(rectValue, rgbBack.lighter(140));
-				QPolygon polyg(3);
 				polyg.setPoint(0, rectValue.right(), rectValue.top() + 1);
-				polyg.setPoint(1, rectValue.right() - 1, rectValue.bottom() + 1);
-				polyg.setPoint(2, rectValue.right() + 1, rectValue.bottom() + 1);
-				pPainter->setPen(rgbBack.darker(160));
-				pPainter->setBrush(rgbBack.darker(140));
-				pPainter->drawPolygon(polyg);
-				pPainter->setPen(rgbBack.lighter(160));
-				pPainter->drawLine(polyg.at(0), polyg.at(1));
+				polyg.setPoint(1, rectValue.right() - 2, rectValue.bottom() + 1);
+				polyg.setPoint(2, rectValue.right() + 2, rectValue.bottom() + 1);
 			}
 			// Draw the icon...
 			QRect rect = option.rect;
@@ -161,6 +156,14 @@ public:
 			pPainter->drawLine(
 				option.rect.left(),  option.rect.bottom(),
 				option.rect.right(), option.rect.bottom());
+			if (pDirectAccessObserver) {
+				pPainter->setRenderHint(QPainter::Antialiasing, true);
+				pPainter->setBrush(rgbBack.darker(140));
+				pPainter->drawPolygon(polyg);
+				pPainter->setPen(rgbBack.lighter(180));
+				pPainter->drawLine(polyg.at(0), polyg.at(1));
+				pPainter->setRenderHint(QPainter::Antialiasing, false);
+			}
 			pPainter->restore();
 		//	if (option.state & QStyle::State_HasFocus)
 		//		QItemDelegate::drawFocus(pPainter, option, option.rect);
