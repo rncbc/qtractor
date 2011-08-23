@@ -27,6 +27,8 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 
+#include "qtractorPluginListView.h"
+
 
 #if defined(__SSE__)
 
@@ -683,11 +685,23 @@ void qtractorAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
 		m_sAudioBusName.clear();
 		clearConfigs();
 	}
+
+	updateAudioBusName();
 }
 
 const QString& qtractorAuxSendPlugin::audioBusName (void) const
 {
 	return m_sAudioBusName;
+}
+
+
+// Audio bus to appear on plugin lists.
+void qtractorAuxSendPlugin::updateAudioBusName (void) const
+{
+	const QString& sText = (m_pAudioBus ? m_sAudioBusName : type()->name());
+	QListIterator<qtractorPluginListItem *> iter(items());
+	while (iter.hasNext())
+		iter.next()->setText(sText);
 }
 
 
