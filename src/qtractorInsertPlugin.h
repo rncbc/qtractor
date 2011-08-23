@@ -214,6 +214,9 @@ public:
 	void setAudioBusName(const QString& sAudioBusName);
 	const QString& audioBusName() const;
 
+	// Audio bus to appear on plugin lists.
+	void updateAudioBusName() const;
+
 protected:
 
 	// Do the actual (de)activation.

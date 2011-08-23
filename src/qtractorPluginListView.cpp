@@ -132,6 +132,15 @@ public:
 					.adjusted(iconSize.width(), 1, -2, -2);
 				rectValue.setWidth(int(fScale * float(rectValue.width())));
 				pPainter->fillRect(rectValue, rgbBack.lighter(140));
+				QPolygon polyg(3);
+				polyg.setPoint(0, rectValue.right(), rectValue.top() + 1);
+				polyg.setPoint(1, rectValue.right() - 1, rectValue.bottom() + 1);
+				polyg.setPoint(2, rectValue.right() + 1, rectValue.bottom() + 1);
+				pPainter->setPen(rgbBack.darker(160));
+				pPainter->setBrush(rgbBack.darker(140));
+				pPainter->drawPolygon(polyg);
+				pPainter->setPen(rgbBack.lighter(160));
+				pPainter->drawLine(polyg.at(0), polyg.at(1));
 			}
 			// Draw the icon...
 			QRect rect = option.rect;
@@ -887,14 +896,14 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			if (pItem)
 				pPlugin = pItem->plugin();
 			if (pPlugin) {
-				QString sToolTip = (pPlugin->type())->name();
+				QString sToolTip = pItem->text(); // (pPlugin->type())->name();
 				if (pPlugin->isDirectAccessParam()) {
 					qtractorPluginParam *pDirectAccessParam
 						= pPlugin->directAccessParam();
 					if (pDirectAccessParam) {
 						sToolTip.append(QString("\n(%1: %2)")
 							.arg(pDirectAccessParam->name())
-							.arg(pDirectAccessParam->value()));
+							.arg(pDirectAccessParam->value(), 0, 'g', 3));
 					}
 				}
 				QToolTip::showText(pHelpEvent->globalPos(),
