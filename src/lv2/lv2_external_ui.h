@@ -16,7 +16,10 @@
 #define LV2_EXTERNAL_UI_H__5AFE09A5_0FB7_47AF_924E_2AF0F8DE8873__INCLUDED
 
 /** UI extension suitable for out-of-process UIs */
-#define LV2_EXTERNAL_UI_URI "http://lv2plug.in/ns/extensions/ui#external"
+#define LV2_EXTERNAL_UI_URI "http://nedko.arnaudov.name/lv2/external_ui/"
+
+/** This extension used to be defined by a lv2plug.in URI */
+#define LV2_EXTERNAL_UI_DEPRECATED_URI "http://lv2plug.in/ns/extensions/ui#external"
 
 #ifdef __cplusplus
 extern "C" {
