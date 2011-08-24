@@ -348,9 +348,9 @@ bool qtractorMidiClip::openMidiFile (
 		pSeq->setTimeOffset(pNode->tickFromFrame(clipOffset()));
 	}
 
-	unsigned long iLength = clipStart() + clipLength();
-	pNode = cursor.seekFrame(iLength);
-	pSeq->setTimeLength(pNode->tickFromFrame(iLength) - t0);
+	unsigned long iClipEnd = clipStart() + clipLength();
+	pNode = cursor.seekFrame(iClipEnd);
+	pSeq->setTimeLength(pNode->tickFromFrame(iClipEnd) - t0);
 
 	// Initial statistics...
 	pSeq->setNoteMin(m_noteMin);

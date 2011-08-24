@@ -126,28 +126,37 @@ bool qtractorSessionTempoCommand::redo (void)
 	if (bPlaying)
 		pSession->lock();
 
+	// Maybe we'll need some drastic changes...
+	int iUpdateTimeResolution = 0;
+
 	// Tempo changes...
 	float fTempo = 0.0f;
-	unsigned short iBeatType = 0;
 	if (m_fTempo > 0.0f) {
 		fTempo = pSession->tempo();
 		pSession->setTempo(m_fTempo);
-	}
-	if (m_iBeatType > 0) {
-		iBeatType = pSession->beatType();
-		pSession->setBeatType(m_iBeatType);
+		++iUpdateTimeResolution;
 	}
 
 	// Time signature changes...
+	unsigned short iBeatType = 0;
+	if (m_iBeatType > 0) {
+		iBeatType = pSession->beatType();
+		pSession->setBeatType(m_iBeatType);
+		++iUpdateTimeResolution;
+	}
+
 	unsigned short iBeatsPerBar = 0;
-	unsigned short iBeatDivisor = 0;
 	if (m_iBeatsPerBar > 0) {
 		iBeatsPerBar = pSession->beatsPerBar();
 		pSession->setBeatsPerBar(m_iBeatsPerBar);
+	//	++iUpdateTimeResolution;
 	}
+
+	unsigned short iBeatDivisor = 0;
 	if (m_iBeatDivisor > 0) {
 		iBeatDivisor = pSession->beatDivisor();
 		pSession->setBeatDivisor(m_iBeatDivisor);
+		++iUpdateTimeResolution;
 	}
 
 	// Time resolution changes...
@@ -155,9 +164,10 @@ bool qtractorSessionTempoCommand::redo (void)
 	if (m_iTicksPerBeat > 0) {
 		iTicksPerBeat = pSession->ticksPerBeat();
 		pSession->setTicksPerBeat(m_iTicksPerBeat);
+		++iUpdateTimeResolution;
 	}
 
-	if (m_iBeatType > 0 || m_iTicksPerBeat > 0 || m_iBeatDivisor > 0)
+	if (iUpdateTimeResolution > 0)
 		pSession->updateTimeResolution();
 
 	// In case we have clips around...
