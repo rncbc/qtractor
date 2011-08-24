@@ -95,8 +95,10 @@ public:
 	void paint(QPainter *pPainter, const QStyleOptionViewItem& option,
 		const QModelIndex& index) const
 	{
-		// Unselectable items get special grayed out painting...
-		QListWidgetItem *pItem = m_pListWidget->item(index.row());
+		qtractorPluginListItem *pItem
+			= static_cast<qtractorPluginListItem *> (
+				m_pListWidget->item(index.row()));
+		// nb. Unselectable items get special grayed out painting...
 		if (pItem) {
 			pPainter->save();
 			const QPalette& pal = option.palette;
@@ -114,13 +116,9 @@ public:
 			const QSize& iconSize = m_pListWidget->iconSize();
 			// Draw the direct access parameter value status...
 			QPolygon polyg(3);
-			qtractorPlugin *pPlugin = NULL;
+			qtractorPlugin *pPlugin = pItem->plugin();
 			qtractorPluginParam *pDirectAccessParam = NULL;
 			qtractorMidiControlObserver *pDirectAccessObserver = NULL;
-			qtractorPluginListItem *pListItem
-				= static_cast<qtractorPluginListItem *> (pItem);
-			if (pListItem)
-				pPlugin = pListItem->plugin();
 			if (pPlugin)
 				pDirectAccessParam = pPlugin->directAccessParam();
 			if (pDirectAccessParam)
@@ -925,10 +923,10 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	const QPoint& pos = pWheelEvent->pos();
-	qtractorPluginListItem *pListItem
+	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
-	if (pListItem) {
-		qtractorPlugin *pPlugin = pListItem->plugin();
+	if (pItem) {
+		qtractorPlugin *pPlugin = pItem->plugin();
 		qtractorPluginParam *pDirectAccessParam = NULL;
 		qtractorMidiControlObserver *pDirectAccessObserver = NULL;
 		if (pPlugin)

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Added support for both new and older (deprecated uri)
+  lv2_external_ui extension (by nedko).
+
 - Following yet another great idea, and implementation,
   by Holger Dehnhardt, who already brought us the new
   aux-send insert plugin, thanks again, the so-called

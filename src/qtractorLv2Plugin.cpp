@@ -541,6 +541,9 @@ static SLV2Value g_slv2_midi_class        = NULL;
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EXTERNAL_UI
 static SLV2Value g_slv2_external_ui_class = NULL;
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+static SLV2Value g_slv2_external_ui_deprecated_class = NULL;
+#endif
 #endif
 static SLV2Value g_slv2_gtk_ui_class      = NULL;
 static SLV2Value g_slv2_qt4_ui_class      = NULL;
@@ -670,7 +673,11 @@ bool qtractorLv2PluginType::open (void)
 			SLV2UI ui = slv2_uis_get_at(uis, i);
 	#endif
 		#ifdef CONFIG_LV2_EXTERNAL_UI
-			if (slv2_ui_is_a(ui, g_slv2_external_ui_class)) {
+			if (slv2_ui_is_a(ui, g_slv2_external_ui_class)
+			#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+				|| slv2_ui_is_a(ui, g_slv2_external_ui_deprecated_class)
+			#endif
+			) {
 				m_bEditor = true;
 				break;
 			}
@@ -781,6 +788,10 @@ void qtractorLv2PluginType::slv2_open (void)
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	g_slv2_external_ui_class = slv2_value_new_uri(g_slv2_world,	LV2_EXTERNAL_UI_URI);
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+	g_slv2_external_ui_deprecated_class
+		= slv2_value_new_uri(g_slv2_world, LV2_EXTERNAL_UI_DEPRECATED_URI);
+#endif
 #endif
 	g_slv2_gtk_ui_class = slv2_value_new_uri(g_slv2_world, LV2_GTK_UI_URI);
 	g_slv2_qt4_ui_class = slv2_value_new_uri(g_slv2_world, LV2_QT4_UI_URI);
@@ -858,6 +869,9 @@ void qtractorLv2PluginType::slv2_close (void)
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	slv2_value_free(g_slv2_external_ui_class);
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+	slv2_value_free(g_slv2_external_ui_deprecated_class);
+#endif
 #endif
 	slv2_value_free(g_slv2_gtk_ui_class);
 	slv2_value_free(g_slv2_qt4_ui_class);
@@ -880,6 +894,9 @@ void qtractorLv2PluginType::slv2_close (void)
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	g_slv2_external_ui_class = NULL;
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+	g_slv2_external_ui_deprecated_class = NULL;
+#endif
 #endif
 	g_slv2_gtk_ui_class = NULL;
 	g_slv2_qt4_ui_class = NULL;
@@ -1350,7 +1367,11 @@ void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
 			slv2_uis_get_at(m_slv2_uis, i));
 #endif
 	#ifdef CONFIG_LV2_EXTERNAL_UI
-		if (slv2_ui_is_a(ui, g_slv2_external_ui_class)) {
+		if (slv2_ui_is_a(ui, g_slv2_external_ui_class)
+		#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+			|| slv2_ui_is_a(ui, g_slv2_external_ui_deprecated_class)
+		#endif
+		) {
 			m_lv2_ui_type = LV2_UI_TYPE_EXTERNAL;
 			m_slv2_ui = const_cast<SLV2UI> (ui);
 			break;
