@@ -188,9 +188,14 @@ void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
 {
 	Item *pItem = new Item(TimeStretchClip, pClip, pClip->track());
 	pItem->timeStretch = fTimeStretch;
+	if ((pClip->track())->trackType() == qtractorTrack::Midi) {
+		pItem->editCommand = createMidiEditCommand(
+			static_cast<qtractorMidiClip *> (pClip), fTimeStretch);
+	}
 	m_items.append(pItem);
 
-	reopenClip(pClip, true);
+	if (pItem->editCommand == NULL)
+		reopenClip(pClip, true);
 }
 
 
@@ -556,6 +561,13 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pAudioClip->updateClipTime();	// Care of tempo change.
 			//--pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;
+			}
+			else
+			if (pItem->editCommand) {
+				if (bRedo)
+					(pItem->editCommand)->redo();
+				else
+					(pItem->editCommand)->undo();
 			}
 			break;
 		}
