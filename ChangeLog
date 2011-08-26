@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Main track view now showing all clips above the grid.
+
 - Added support for both new and older (deprecated uri)
   lv2_external_ui extension (by nedko).
 
@@ -51,9 +53,6 @@ SVN TRUNK
 - Track view automation curve editing mode has been
   slightly fixed, now allowing for other previously
   existing point-and-click mouse operations.
-
-- Default automation curve color is now similar to
-  track's foregound color (instead of plain red).
 
 - Default automation curve mode is now preserved
   (following a suggestion by Alexandre Prokoudine,
