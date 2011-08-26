@@ -181,7 +181,7 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 	qtractorSubject *pSubject, Mode mode, unsigned int iMinFrameDist )
 	: m_pList(pList), m_mode(mode), m_iMinFrameDist(iMinFrameDist),
 		m_observer(pSubject, this), m_state(Idle), m_cursor(this),
-		m_bLogarithmic(false), m_color(Qt::red), m_pEditList(NULL)
+		m_bLogarithmic(false), m_color(Qt::darkRed), m_pEditList(NULL)
 {
 	m_nodes.setAutoDelete(true);
 
@@ -236,7 +236,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 {
 	fValue = m_observer.safeValue(fValue);
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::addNode(%lu, %g, %p)", this,
 		iFrame, fValue, pEditList);
 #endif
@@ -323,7 +323,7 @@ void qtractorCurve::insertNode ( Node *pNode )
 	if (pNode == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::insertNode(%p)", this, pNode);
 #endif
 
@@ -347,7 +347,7 @@ void qtractorCurve::unlinkNode ( Node *pNode )
 	if (pNode == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::unlinkNode(%p)", this, pNode);
 #endif
 
@@ -368,7 +368,7 @@ void qtractorCurve::removeNode ( Node *pNode )
 	if (pNode == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::removeNode(%p)", this, pNode);
 #endif
 
@@ -437,7 +437,7 @@ void qtractorCurve::updateNodeEx ( qtractorCurve::Node *pNode )
 // Refresh all coefficients.
 void qtractorCurve::update (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::update()", this);
 #endif
 
@@ -453,7 +453,7 @@ void qtractorCurve::update (void)
 // Default value accessors.
 void qtractorCurve::setDefaultValue ( float fDefaultValue )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setDefaultValue(%g)", this, fDefaultValue);
 #endif
 
@@ -473,7 +473,7 @@ void qtractorCurve::setDefaultValue ( float fDefaultValue )
 // Default length accessors.
 void qtractorCurve::setLength ( unsigned long iLength )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setLength(%ld)", this, iLength);
 #endif
 
@@ -690,7 +690,7 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 
 void qtractorCurve::setCapture ( bool bCapture )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setCapture(%d)", this, int(bCapture));
 #endif
 
@@ -705,7 +705,7 @@ void qtractorCurve::setCapture ( bool bCapture )
 
 void qtractorCurve::setProcess ( bool bProcess )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setProcess(%d)", this, int(bProcess));
 #endif
 
@@ -720,7 +720,7 @@ void qtractorCurve::setProcess ( bool bProcess )
 
 void qtractorCurve::setLocked ( bool bLocked )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setLocked(%d)", this, int(bLocked));
 #endif
 

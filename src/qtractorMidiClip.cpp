@@ -897,8 +897,41 @@ bool qtractorMidiClip::queryEditor (void)
 {
 	if (m_pMidiEditorForm)
 		return m_pMidiEditorForm->queryClose();
-	else
-		return qtractorClip::queryEditor();
+
+#if 0
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+		// Are any dirty changes pending commit?
+	if (isDirty()) {
+		// Have a new filename revision...
+		const QString& sFilename = createFilePathRevision(true);
+		// Save/replace the clip track...
+		qtractorMidiFile::saveCopyFile(
+			sFilename,
+			filename(),
+			trackChannel(),
+			format(),
+			sequence(),
+			pSession->timeScale(),
+			pSession->tickFromFrame(clipStart()));
+		// Pre-commit dirty changes...
+		setFilenameEx(sFilename);
+		// Reference for immediate file addition...
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->addMidiFile(sFilename);
+	}
+
+	return true;
+
+#else
+
+	return qtractorClip::queryEditor();
+
+#endif
 }
 
 

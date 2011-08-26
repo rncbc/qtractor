@@ -663,8 +663,10 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (w < 1 || h < 1)
 		return;
 
+	const QColor& rgbMid = pal.mid().color();
+	
 	m_pixmap = QPixmap(w, h);
-	m_pixmap.fill(pal.dark().color());
+	m_pixmap.fill(rgbMid);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -685,11 +687,38 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	}
 
 	const QColor& rgbLight = pal.midlight().color();
-	const QColor& rgbMid   = pal.mid().color();
 	const QColor& rgbDark  = rgbMid.darker(120);
 	
+	// Draw vertical grid lines...
+	int x;
+	if (m_bSnapGrid) {
+		qtractorTimeScale::Cursor cursor(pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
+		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
+		unsigned int iBeat = pNode->beatFromPixel(cx);
+		int x0 = x = pNode->pixelFromBeat(iBeat) - cx;
+		while (x < w) {
+			if (x >= 0) {
+				bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
+				if (bBeatIsBar) {
+					painter.setPen(rgbLight);
+					painter.drawLine(x, 0, x, h);
+					x0 = x + 16;
+					if (iBeat == pNode->beat)
+						iPixelsPerBeat = pNode->pixelsPerBeat();
+				}
+				if (bBeatIsBar || iPixelsPerBeat > 16) {
+					painter.setPen(rgbDark);
+					painter.drawLine(x - 1, 0, x - 1, h);
+				}
+			}
+			pNode = cursor.seekBeat(++iBeat);
+			x = pNode->pixelFromBeat(iBeat) - cx;
+		}
+	}
+
 	// Draw track and horizontal lines...
-	int x, y1, y2;
+	int y1, y2;
 	y1 = y2 = 0;
 	int iTrack = 0;
 	qtractorTrack *pTrack = pSession->tracks().first();
@@ -703,7 +732,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 				painter.drawLine(0, y1 - cy, w, y1 - cy);
 			}
 			const QRect trackRect(0, y1 - cy + 1, w, y2 - y1 - 2);
-			painter.fillRect(trackRect, rgbMid);
+		//	painter.fillRect(trackRect, rgbMid);
 			pTrack->drawTrack(&painter, trackRect, iTrackStart, iTrackEnd,
 				m_pSessionCursor->clip(iTrack));
 			painter.setPen(rgbDark);
@@ -713,38 +742,11 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		++iTrack;
 	}
 
-	// Draw vertical grid lines...
-	if (m_bSnapGrid && cy < y2) {
-		qtractorTimeScale::Cursor cursor(pSession->timeScale());
-		qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
-		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
-		unsigned int iBeat = pNode->beatFromPixel(cx);
-		int x0 = x = pNode->pixelFromBeat(iBeat) - cx;
-		while (x < w) {
-			if (x >= 0) {
-				bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
-				if (bBeatIsBar) {
-					painter.setPen(rgbLight);
-					painter.drawLine(x, 0, x, y2 - cy - 2);
-					x0 = x + 16;
-					if (iBeat == pNode->beat)
-						iPixelsPerBeat = pNode->pixelsPerBeat();
-				}
-				if (bBeatIsBar || iPixelsPerBeat > 16) {
-					painter.setPen(rgbDark);
-					painter.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
-				}
-			}
-			pNode = cursor.seekBeat(++iBeat);
-			x = pNode->pixelFromBeat(iBeat) - cx;
-		}
-	}
-
 	// Fill the empty area...
 	if (y2 < cy + h) {
 		painter.setPen(rgbMid);
 		painter.drawLine(0, y2 - cy, w, y2 - cy);
-	//	painter.fillRect(0, y2 - cy + 1, w, h, pal.dark().color());
+		painter.fillRect(0, y2 - cy + 1, w, h, pal.dark().color());
 	}
 
 	// Draw loop boundaries, if applicable...
