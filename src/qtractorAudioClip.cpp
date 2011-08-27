@@ -433,9 +433,8 @@ QString qtractorAudioClip::toolTip (void) const
 {
 	QString sToolTip = qtractorClip::toolTip();
 
-	qtractorAudioFile *pFile = NULL;
 	if (m_pBuff) {
-		pFile = m_pBuff->file();
+		qtractorAudioFile *pFile = m_pBuff->file();
 		if (pFile) {
 			sToolTip += QObject::tr("\nAudio:\t%1 channels, %2 Hz")
 				.arg(pFile->channels())
