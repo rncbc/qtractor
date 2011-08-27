@@ -204,6 +204,7 @@ private:
 
 	// The point from where drag started.
 	QPoint m_posDrag;
+
 	// Item we'll eventually drag around.
 	qtractorPluginListItem *m_pDragItem;
 	// Item we'll eventually drop something.
