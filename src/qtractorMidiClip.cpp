@@ -900,6 +900,10 @@ bool qtractorMidiClip::queryEditor (void)
 
 #if 0
 
+	return qtractorClip::queryEditor();
+
+#else
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
@@ -926,10 +930,6 @@ bool qtractorMidiClip::queryEditor (void)
 	}
 
 	return true;
-
-#else
-
-	return qtractorClip::queryEditor();
 
 #endif
 }

@@ -97,11 +97,12 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 					}
 					break;
 				case qtractorTrack::Midi:
-					if (!pSession->isAutoTimeStretch()) {
+					if (pSession->isAutoTimeStretch()) {
+						m_pClipCommand->reopenClip(pClip);
+					} else {
 						float fTimeStretch = (m_fTempo / pSession->tempo());
 						m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
 					}
-				//	m_pClipCommand->reopenClip(pClip);
 				default:
 					break;
 				}
@@ -138,7 +139,7 @@ bool qtractorSessionTempoCommand::redo (void)
 	if (m_fTempo > 0.0f) {
 		fTempo = pSession->tempo();
 		pSession->setTempo(m_fTempo);
-		++iUpdateTimeResolution;
+	//	++iUpdateTimeResolution;
 	}
 
 	// Time signature changes...
