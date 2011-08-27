@@ -704,13 +704,13 @@ void qtractorSession::updateTimeResolution (void)
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-		//	if (pTrack->trackType() == qtractorTrack::Midi)
-		//		pClip->close();
+			if (pTrack->trackType() == qtractorTrack::Midi)
+				pClip->close();
 			pClip->setClipStart(pClip->clipStart());
 			pClip->setClipOffset(pClip->clipOffset());
 			pClip->setClipLength(pClip->clipLength());
-		//	if (pTrack->trackType() == qtractorTrack::Midi)
-		//		pClip->open();
+			if (pTrack->trackType() == qtractorTrack::Midi)
+				pClip->open();
 		}
 	}
 
