@@ -23,10 +23,9 @@
 #define __qtractorAudioClip_h
 
 #include "qtractorClip.h"
-#include "qtractorAudioFile.h"
+#include "qtractorAudioBuffer.h"
 
 // Forward declarations.
-class qtractorAudioBuffer;
 class qtractorAudioPeak;
 
 
@@ -59,6 +58,10 @@ public:
 
 	// The main use method.
 	bool openAudioFile(const QString& sFilename, int iMode = qtractorAudioFile::Read);
+
+	// Sequence properties accessors.
+	qtractorAudioBuffer *buffer() const
+		{ return (m_pData ? m_pData->buffer() : NULL); }
 
 	// Direct write method.
 	void write(float **ppBuffer, unsigned int iFrames,
@@ -95,20 +98,98 @@ public:
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
 		unsigned long iOffset = 0, unsigned long iLength = 0) const;
 
+	// Most interesting key/data (ref-counted?)...
+	class Key;
+	class Data
+	{
+	public:
+
+		// Constructor.
+		Data(qtractorTrack *pTrack,
+			 unsigned short iChannels, unsigned int iSampleRate)
+			: m_pBuff(new qtractorAudioBuffer(pTrack->syncThread(),
+				iChannels, iSampleRate)) {}
+
+		// Destructor.
+		~Data() { clear(); delete m_pBuff; }
+
+		// Buffer accessor.
+		qtractorAudioBuffer *buffer() const
+			{ return m_pBuff; }
+
+		// Direct write method.
+		void write (float **ppBuffer, unsigned int iFrames,
+			unsigned short iChannels, unsigned int iOffset)
+			{ m_pBuff->write(ppBuffer, iFrames, iChannels, iOffset); }
+
+		// Direct sync method.
+		void syncExport()
+			{ m_pBuff->syncExport(); }
+
+		// Intra-clip frame positioning.
+		void seek(unsigned long iFrame)
+			{ m_pBuff->seek(iFrame); }
+
+		// Reset buffer state.
+		void reset(bool bLooping)
+			{ m_pBuff->reset(bLooping); }
+
+		// Loop positioning.
+		void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd)
+			{ m_pBuff->setLoop(iLoopStart, iLoopEnd); }
+
+		// Ref-counting related methods.
+		void attach(qtractorAudioClip *pAudioClip)
+			{ m_clips.append(pAudioClip); }
+
+		void detach(qtractorAudioClip *pAudioClip)
+			{ m_clips.removeAll(pAudioClip); }
+
+		unsigned short count() const
+			{ return m_clips.count(); }
+
+		const QList<qtractorAudioClip *>& clips() const
+			{ return m_clips; }
+
+		void clear()
+			{ m_clips.clear(); }
+
+	private:
+
+		// Interesting variables.
+		qtractorAudioBuffer *m_pBuff;
+
+		// Ref-counting related stuff.
+		QList<qtractorAudioClip *> m_clips;
+	};
+
+	typedef QHash<Key, Data *> Hash;
+
+	// Make sure the clip hash-table gets reset.
+	static void clearHashTable();
+
 protected:
 
 	// Virtual document element methods.
 	bool loadClipElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveClipElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
+	// Private cleanup.
+	void closeAudioFile();
+
 private:
 
 	// Instance variables.
-	qtractorAudioBuffer *m_pBuff;
-	qtractorAudioPeak   *m_pPeak;
+	qtractorAudioPeak *m_pPeak;
 
 	float m_fTimeStretch;
 	float m_fPitchShift;
+
+	// Most interesting key/data (ref-counted?)...
+	Key  *m_pKey;
+	Data *m_pData;
+
+	static Hash g_hashTable;
 };
 
 
