@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Bold attempt to get linked (aka. ref-counted) audio
+  and MIDI clips into practice (HIGHLY EXPERIMENTAL).
+
 - Main track view now showing all clips above the grid.
 
 - Added support for both new and older (deprecated uri)
@@ -24,9 +27,6 @@ SVN TRUNK
 - Fixed nasty crash-bug that was severely affecting all
   sessions that had at least one insert (pseudo-)plugin
   on any audio input bus.
-
-- First brutal attempt to get linked, aka. ref-counted,
-  MIDI clips into practice (HIGHLY EXPERIMENTAL).
 
 - All automation curve nodes are now relocated whenever
   disparate session sample-rate is detected on load.
