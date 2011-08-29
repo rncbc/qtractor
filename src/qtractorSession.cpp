@@ -238,6 +238,7 @@ void qtractorSession::clear (void)
 
 	m_pCommands->clear();
 
+	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
 
 	m_iSessionLength = 0;
