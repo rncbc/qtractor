@@ -93,13 +93,11 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 							m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
 						}
 					} else {
-						m_pClipCommand->resetClip(pClip, pClip->clipLength());
+						m_pClipCommand->resetClip(pClip);
 					}
 					break;
 				case qtractorTrack::Midi:
-					if (pSession->isAutoTimeStretch()) {
-						m_pClipCommand->reopenClip(pClip);
-					} else {
+					if (!pSession->isAutoTimeStretch()) {
 						float fTimeStretch = (m_fTempo / pSession->tempo());
 						m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
 					}

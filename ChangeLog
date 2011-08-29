@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Coherence of tempo changes on audio and MIDI clips,
+  whether automatic time-stretching is in effect, has
+  been slightly improved, hopefully fixed.
+
 - Bold attempt to get linked (aka. ref-counted) audio
   and MIDI clips into practice (HIGHLY EXPERIMENTAL).
 
