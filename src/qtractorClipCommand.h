@@ -68,7 +68,7 @@ public:
 		qtractorClip::FadeType fadeOutType);
 	void timeStretchClip(qtractorClip *pClip, float fTimeStretch);
 	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
-	void resetClip(qtractorClip *pClip, unsigned long iClipLength);
+	void resetClip(qtractorClip *pClip);
 
 	void reopenClip(qtractorClip *pClip, bool bClose = false);
 

@@ -189,6 +189,8 @@ void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
 	Item *pItem = new Item(TimeStretchClip, pClip, pClip->track());
 	pItem->timeStretch = fTimeStretch;
 	if ((pClip->track())->trackType() == qtractorTrack::Midi) {
+		pItem->clipLength = pClip->clipLength();
+		pItem->fadeOutLength = pClip->fadeOutLength();
 		pItem->editCommand = createMidiEditCommand(
 			static_cast<qtractorMidiClip *> (pClip), fTimeStretch);
 	}
@@ -210,17 +212,11 @@ void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
 }
 
 
-void qtractorClipCommand::resetClip ( qtractorClip *pClip,
-	unsigned long iClipLength )
+void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 {
 	Item *pItem = new Item(ResetClip, pClip, pClip->track());
-	pItem->clipLength = iClipLength;
-	long iFadeOutLength = long(pClip->fadeOutLength());
-	if (iFadeOutLength > 0) {
-		iFadeOutLength += long(iClipLength)	- long(pClip->clipLength());
-		if (iFadeOutLength > 0)
-			pItem->fadeOutLength = iFadeOutLength;
-	}
+	pItem->clipLength = pClip->clipLength();
+	pItem->fadeOutLength =  pClip->fadeOutLength();
 	m_items.append(pItem);
 
 	reopenClip(pClip);
@@ -564,10 +560,18 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			}
 			else
 			if (pItem->editCommand) {
+				unsigned long iOldLength  = pClip->clipLength();
+				unsigned long iOldFadeOut = pClip->fadeOutLength();
+				pClip->setClipLength(pItem->clipLength);
+				pClip->setFadeOutLength(pItem->fadeOutLength);
+			//--pClip->open();
+				pItem->clipLength = iOldLength;
+				pItem->fadeOutLength = iOldFadeOut;
 				if (bRedo)
 					(pItem->editCommand)->redo();
 				else
 					(pItem->editCommand)->undo();
+				pSession->updateTrack(pTrack);
 			}
 			break;
 		}
