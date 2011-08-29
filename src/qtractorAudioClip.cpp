@@ -331,6 +331,13 @@ void qtractorAudioClip::closeAudioFile (void)
 }
 
 
+// Make sure the clip hash-table gets reset.
+void qtractorAudioClip::clearHashTable (void)
+{
+	g_hashTable.clear();
+}
+
+
 // Direct write method.
 void qtractorAudioClip::write ( float **ppBuffer,
 	unsigned int iFrames, unsigned short iChannels, unsigned int iOffset )
