@@ -6,9 +6,13 @@ ChangeLog
 SVN TRUNK
 
 - Avoid JACK session filenames/paths to be ever shown;
-  untitled/default session name now picked up to match
-  the current LADISH project name, if present (as once
-  suggested by Nedko Ardaunov).
+  also avoid audio bus port (re)connections when JACK
+  sessions are (re)loaded, given the fact that session
+  management will take care of just that; more also,
+  untitled/default session names are now also picked
+  up to match current LADISH project name, obviously
+  given by LADISH_PROJECT_NAME environment variable,
+  whenever present (as suggested by Nedko Ardaunov).
 
 - Paste-repeat floating selection has been fixed (was
   showing only the last repeated selection).
