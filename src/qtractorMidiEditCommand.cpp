@@ -193,7 +193,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	}
 
 	// It's dirty, definitly...
-	m_pMidiClip->setDirty(true);
+	m_pMidiClip->setDirtyEx(true);
 
 	// Have we changed on something less durable?
 	if (m_iDuration != iOldDuration) {

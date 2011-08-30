@@ -36,6 +36,7 @@
 #include "qtractorOptions.h"
 #endif
 
+#include <QMessageBox>
 #include <QFileInfo>
 #include <QPainter>
 
@@ -472,8 +473,8 @@ void qtractorMidiClip::closeMidiFile (void)
 		if (m_pData->count() < 1) {
 			if (m_pKey) g_hashTable.remove(*m_pKey);
 			delete m_pData;
-			m_pData = NULL;
 		}
+		m_pData = NULL;
 	}
 
 	if (m_pKey) {
@@ -569,6 +570,18 @@ void qtractorMidiClip::resetEditorEx ( bool bSelectClear )
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->resetEditor(bSelectClear);
+}
+
+
+// Sync all ref-counted clip-dirtyness.
+void qtractorMidiClip::setDirtyEx ( bool bDirty )
+{
+	if (m_pData == NULL)
+		return;
+
+	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->setDirty(bDirty);
 }
 
 
@@ -898,40 +911,44 @@ bool qtractorMidiClip::queryEditor (void)
 	if (m_pMidiEditorForm)
 		return m_pMidiEditorForm->queryClose();
 
-#if 0
-
-	return qtractorClip::queryEditor();
-
-#else
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
-		// Are any dirty changes pending commit?
-	if (isDirty()) {
-		// Have a new filename revision...
-		const QString& sFilename = createFilePathRevision(true);
-		// Save/replace the clip track...
-		qtractorMidiFile::saveCopyFile(
-			sFilename,
-			filename(),
-			trackChannel(),
-			format(),
-			sequence(),
-			pSession->timeScale(),
-			pSession->tickFromFrame(clipStart()));
-		// Pre-commit dirty changes...
-		setFilenameEx(sFilename);
-		// Reference for immediate file addition...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pMainForm->addMidiFile(sFilename);
+	bool bQueryEditor = qtractorClip::queryEditor();
+
+	// Are any dirty changes pending commit?
+	if (!bQueryEditor) {
+		switch (qtractorMidiEditorForm::querySave(filename())) {
+		case QMessageBox::Save:	{
+			// Have a new filename revision...
+			const QString& sFilename = createFilePathRevision();
+			// Save/replace the clip track...
+			bQueryEditor = qtractorMidiFile::saveCopyFile(
+				sFilename, filename(), trackChannel(), format(),
+				sequence(),	pSession->timeScale(),
+				pSession->tickFromFrame(clipStart()));
+			if (bQueryEditor) {
+				// Pre-commit dirty changes...
+				setFilenameEx(sFilename);
+				// Reference for immediate file addition...
+				qtractorMainForm *pMainForm
+					= qtractorMainForm::getInstance();
+				if (pMainForm)
+					pMainForm->addMidiFile(sFilename);
+			}
+			break;
+		}
+		case QMessageBox::Discard:
+			bQueryEditor = true;
+			break;
+		case QMessageBox::Cancel:
+			bQueryEditor = false;
+			break;
+		}
 	}
 
-	return true;
-
-#endif
+	return bQueryEditor;
 }
 
 

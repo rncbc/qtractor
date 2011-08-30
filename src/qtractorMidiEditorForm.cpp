@@ -566,14 +566,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
-		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("The current MIDI clip has been changed:\n\n"
-			"\"%1\"\n\n"
-			"Do you want to save the changes?").arg(filename()),
-			QMessageBox::Save |
-			QMessageBox::Discard |
-			QMessageBox::Cancel)) {
+		switch (querySave(filename())) {
 		case QMessageBox::Save:
 			bQueryClose = saveClipFile(false);
 			// Fall thru....
@@ -586,6 +579,21 @@ bool qtractorMidiEditorForm::queryClose (void)
 	}
 
 	return bQueryClose;
+}
+
+
+// Save(as) warning message box.
+int qtractorMidiEditorForm::querySave ( const QString& sFilename )
+{
+	return (QMessageBox::warning(
+		qtractorMainForm::getInstance(),
+		tr("Warning") + " - " QTRACTOR_TITLE,
+		tr("The current MIDI clip has been changed:\n\n"
+		"\"%1\"\n\n"
+		"Do you want to save the changes?").arg(sFilename),
+		QMessageBox::Save |
+		QMessageBox::Discard |
+		QMessageBox::Cancel));
 }
 
 

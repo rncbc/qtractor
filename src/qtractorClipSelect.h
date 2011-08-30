@@ -26,7 +26,7 @@
 
 #include "qtractorRubberBand.h"
 
-#include <QHash>
+#include <QMultiHash>
 #include <QRect>
 
 
@@ -60,7 +60,7 @@ public:
 	};
 
 	// Selection list definition.
-	typedef QHash<qtractorClip *, Item *> ItemList;
+	typedef QMultiHash<qtractorClip *, Item *> ItemList;
 
 	// Clip selection method.
 	void selectClip(qtractorClip *pClip,

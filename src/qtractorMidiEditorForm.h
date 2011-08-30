@@ -84,6 +84,9 @@ public:
 
 	// Edit menu accessor.
 	QMenu *editMenu() const;
+	
+	// Save(as) warning message box.
+	static int querySave(const QString& sFilename);
 
 public slots:
 
