@@ -1233,8 +1233,27 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
 		// Just load the prabable startup session...
-		if (loadSessionFileEx(m_pOptions->sSessionFile, false, !bSessionId))
+		if (loadSessionFileEx(m_pOptions->sSessionFile, false, !bSessionId)) {
 			m_pOptions->sSessionFile.clear();
+			// Take appropriate action when session is loaded from
+			// some foreign session manager (eg. JACK session)...
+			if (bSessionId) {
+				// JACK session manager will take care of audio connections...
+				qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+				if (pAudioEngine) {
+					qtractorBus *pBus = pAudioEngine->buses().first();
+					for (; pBus; pBus = pBus->next()) {
+						pBus->outputs().clear();
+						pBus->inputs().clear();
+					}
+					pBus = pAudioEngine->busesEx().first();
+					for (; pBus; pBus = pBus->next()) {
+						pBus->outputs().clear();
+						pBus->inputs().clear();
+					}
+				}
+			}
+		}
 	} else {
 		// Change to last known session dir...
 		if (!m_pOptions->sSessionDir.isEmpty()) {
@@ -3348,12 +3367,15 @@ void qtractorMainForm::clipTempo (void)
 	form.setRangeStart(iRangeStart);
 	form.setRangeLength(iRangeLength);
 	if (form.exec()) {
+		bool bAutoTimeStretch = m_pSession->isAutoTimeStretch();
+		m_pSession->setAutoTimeStretch(false);
 		transportTempoChanged (
 			form.tempo(),
 			form.beatsPerBar(),
 			form.beatDivisor());
 		m_pSession->setEditTail(
 			m_pSession->editHead() + form.rangeLength());
+		m_pSession->setAutoTimeStretch(bAutoTimeStretch);
 		selectionNotifySlot(NULL);
 	}
 }
