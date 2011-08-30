@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Avoid JACK session filenames/paths to be ever shown;
+  untitled/default session name now picked up to match
+  the current LADISH project name, if present (as once
+  suggested by Nedko Ardaunov).
+
 - Paste-repeat floating selection has been fixed (was
   showing only the last repeated selection).
 
@@ -18,7 +23,7 @@ SVN TRUNK
 - Main track view now showing all clips above the grid.
 
 - Added support for both new and older (deprecated uri)
-  lv2_external_ui extension (by nedko).
+  lv2_external_ui extension (by Nedko Ardaunov).
 
 - Following yet another great idea, and implementation,
   by Holger Dehnhardt, who already brought us the new

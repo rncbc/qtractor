@@ -324,11 +324,11 @@ protected:
 	bool closeSession();
 
 	bool loadSessionFileEx(
-		const QString& sFilename, bool bTemplate, bool bUpdate = false);
+		const QString& sFilename, bool bTemplate, bool bUpdate);
 	bool loadSessionFile(const QString& sFilename);
 
 	bool saveSessionFileEx(
-	    const QString& sFilename, bool bTemplate, bool bUpdate = false);
+	    const QString& sFilename, bool bTemplate, bool bUpdate);
 	bool saveSessionFile(const QString& sFilename);
 
 	bool startSession();

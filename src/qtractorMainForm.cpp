@@ -1503,7 +1503,7 @@ bool qtractorMainForm::newSession (void)
 	// Check whether we start new session
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate)
-		return loadSessionFileEx(m_pOptions->sSessionTemplatePath, true);
+		return loadSessionFileEx(m_pOptions->sSessionTemplatePath, true, false);
 
 	// Ok, increment untitled count.
 	++m_iUntitled;
@@ -1866,9 +1866,8 @@ bool qtractorMainForm::loadSessionFileEx (
 	if (bResult) {
 		// Got something loaded...
 		// we're not dirty anymore.
-		if (!bTemplate) {
-			if (bUpdate)
-				updateRecentFiles(sFilename);
+		if (!bTemplate && bUpdate) {
+			updateRecentFiles(sFilename);
 		//	m_iDirtyCount = 0;
 		}
 		// Save as default session directory...
@@ -1885,11 +1884,11 @@ bool qtractorMainForm::loadSessionFileEx (
 	}
 
 	// Stabilize form title...
-	if (bTemplate) {
+	if (!bTemplate && bUpdate) {
+		m_sFilename = sFilename;
+	} else {
 		++m_iUntitled;
 		m_sFilename.clear();
-	} else {
-		m_sFilename = sFilename;
 	}
 
 	appendMessages(tr("Open session: \"%1\".").arg(sessionName(sFilename)));
@@ -1981,9 +1980,8 @@ bool qtractorMainForm::saveSessionFileEx (
 	if (bResult) {
 		// Got something saved...
 		// we're not dirty anymore.
-		if (!bTemplate) {
-			if (bUpdate)
-				updateRecentFiles(sFilename);
+		if (!bTemplate && bUpdate) {
+			updateRecentFiles(sFilename);
 			m_iDirtyCount = 0;
 		}
 		// Save some default session properties...
@@ -2010,7 +2008,7 @@ bool qtractorMainForm::saveSessionFileEx (
 	}
 
 	// Stabilize form title...
-	if (!bTemplate)
+	if (!bTemplate && bUpdate)
 		m_sFilename = sFilename;
 
 	appendMessages(tr("Save session: \"%1\".").arg(sessionName(sFilename)));
@@ -6195,6 +6193,8 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
 
 	if (m_pSession->sessionName().isEmpty())
+		m_pSession->setSessionName(::getenv("LADISH_PROJECT_NAME"));
+	if (m_pSession->sessionName().isEmpty())
 		editSession();
 
 	QString sSessionName = m_pSession->sessionName();
@@ -6215,17 +6215,19 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	const QString sFilename
 		= QFileInfo(sSessionDir, sSessionFile).absoluteFilePath();
 
-	if (saveSessionFileEx(sFilename, bTemplate))
+	if (saveSessionFileEx(sFilename, bTemplate, false))
 		args << QString("\"${SESSION_DIR}%1\"").arg(sSessionFile);
 
 	const QByteArray aCmdLine = args.join(" ").toUtf8();
-	pJackSessionEvent->command_line = strdup(aCmdLine.constData());
+	pJackSessionEvent->command_line = ::strdup(aCmdLine.constData());
 
 	jack_session_reply(pJackClient, pJackSessionEvent);
 	jack_session_event_free(pJackSessionEvent);
 
-	if (bQuit)
+	if (bQuit) {
+		m_iDirtyCount = 0;
 		close();
+	}
 
 #endif
 }
