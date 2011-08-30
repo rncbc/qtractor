@@ -320,8 +320,8 @@ void qtractorAudioClip::closeAudioFile (void)
 		if (m_pData->count() < 1) {
 			if (m_pKey) g_hashTable.remove(*m_pKey);
 			delete m_pData;
-			m_pData = NULL;
 		}
+		m_pData = NULL;
 	}
 
 	if (m_pKey) {

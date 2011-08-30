@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Paste-repeat floating selection has been fixed (was
+  showing only the last repeated selection).
+
 - Coherence of tempo changes on audio and MIDI clips,
   whether automatic time-stretching is in effect, has
   been slightly improved, hopefully fixed.

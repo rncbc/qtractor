@@ -204,6 +204,9 @@ public:
 	void updateEditorEx(bool bSelectClear);
 	void resetEditorEx(bool bSelectClear);
 
+	// Sync all ref-counted clip-dirtyness.
+	void setDirtyEx(bool bDirty);
+
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
 
