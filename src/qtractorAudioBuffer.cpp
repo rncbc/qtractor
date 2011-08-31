@@ -325,8 +325,8 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	if (iBufferSize == 0)
 		iBufferSize = (m_iSampleRate >> 1);
 	else
-	if (iBufferSize > (m_iSampleRate << 1))
-		iBufferSize = (m_iSampleRate << 1);
+	if (iBufferSize > (m_iSampleRate << 2))
+		iBufferSize = (m_iSampleRate << 2);
 
 	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, iBufferSize);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
