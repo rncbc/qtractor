@@ -100,6 +100,9 @@ public:
 	virtual bool loadElement(qtractorDocument *pDocument, QDomElement *pElement) = 0;
 	virtual bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const = 0;
 
+	// Clear/reset all pending connections.
+	void clearConnects();
+
 protected:
 
 	// Derived classes must set on this...

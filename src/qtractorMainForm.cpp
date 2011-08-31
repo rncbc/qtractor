@@ -1231,17 +1231,14 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			if (bSessionId) {
 				// JACK session manager will take care of audio connections...
 				qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-				if (pAudioEngine) {
-					qtractorBus *pBus = pAudioEngine->buses().first();
-					for (; pBus; pBus = pBus->next()) {
-						pBus->outputs().clear();
-						pBus->inputs().clear();
-					}
-					pBus = pAudioEngine->busesEx().first();
-					for (; pBus; pBus = pBus->next()) {
-						pBus->outputs().clear();
-						pBus->inputs().clear();
-					}
+				if (pAudioEngine)
+					pAudioEngine->clearConnects();
+				// LADISH session manager will take care of MIDI connections...
+				const QString sLadishApp = ::getenv("LADISH_APP_NAME");
+				if (!sLadishApp.isEmpty()) {
+					qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+					if (pMidiEngine)
+						pMidiEngine->clearConnects();
 				}
 			}
 		}

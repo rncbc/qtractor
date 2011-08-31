@@ -143,7 +143,7 @@ bool qtractorBusCommand::createBus (void)
 	if (pMainForm) {
 		qtractorMixer *pMixer = pMainForm->mixer();
 		if (pMixer)
-			pMixer->updateBuses();
+			pMixer->updateBuses(true);
 	}
 
 	// Done.

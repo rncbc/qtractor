@@ -329,6 +329,25 @@ int qtractorEngine::updateConnects ( qtractorBus *pBus )
 }
 
 
+// Clear/reset all pending connections.
+void qtractorEngine::clearConnects (void)
+{
+	qtractorBus *pBus;
+	
+	pBus = m_buses.first();
+	for (; pBus; pBus = pBus->next()) {
+		pBus->outputs().clear();
+		pBus->inputs().clear();
+	}
+
+	pBus = m_busesEx.first();
+	for (; pBus; pBus = pBus->next()) {
+		pBus->outputs().clear();
+		pBus->inputs().clear();
+	}
+}
+	
+	
 //----------------------------------------------------------------------
 // class qtractorBus -- Managed ALSA sequencer port set
 //
