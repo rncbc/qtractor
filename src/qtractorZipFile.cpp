@@ -545,20 +545,11 @@ bool qtractorZipDevice::extractEntry (
 				}
 			}
 			while (zstream.avail_out == 0);
-		#ifdef CONFIG_DEBUG
-			fprintf(stderr, "qtractorZipDevice::inflate(%3.0f%%) %s (%.0f%%)\r",
-				(100.0f * float(total_processed)) / float(total_uncompressed),
-				fh.file_name.data(),
-				(100.0f * float(n_file_write)) / float(uncompressed_size));
-		#endif
 		#ifdef QTRACTOR_PROGRESS_BAR
 			if (progress_bar) progress_bar->setValue(
 				(100.0f * float(total_processed)) / float(total_uncompressed));
 		#endif
 		}
-	#ifdef CONFIG_DEBUG
-		fprintf(stderr, "\n");
-	#endif
 	//	uncompressed_size = n_file_write;
 		::inflateEnd(&zstream);
 		if (crc_32 != read_uint(lfh.crc_32))
@@ -581,6 +572,12 @@ bool qtractorZipDevice::extractEntry (
 	utb.modtime = tse;
 	if (::utime(fh.file_name.data(), &utb))
 		qWarning("qtractorZipDevice::extractEntry: failed to set file time.");
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorZipDevice::inflate(%3.0f%%) %s",
+		(100.0f * float(total_processed)) / float(total_uncompressed),
+		fh.file_name.data());
+#endif
 
 	return true;
 }
@@ -779,20 +776,11 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 				}
 			}
 			while (zstream.avail_out == 0);
-		#ifdef CONFIG_DEBUG
-			fprintf(stderr, "qtractorZipDevice::deflate(%3.0f%%) %s (%.0f%%)\r",
-				(100.0f * float(total_processed)) / float(total_uncompressed),
-				fh.file_name.data(),
-				(100.0f * float(n_file_read)) / float(uncompressed_size));
-		#endif
 		#ifdef QTRACTOR_PROGRESS_BAR
 			if (progress_bar) progress_bar->setValue(
 				(100.0f * float(total_processed)) / float(total_uncompressed));
 		#endif
 		}
-	#ifdef CONFIG_DEBUG
-		fprintf(stderr, "\n");
-	#endif
 		compressed_size = n_file_write;
 		::deflateEnd(&zstream);
 		pFile->close();
@@ -814,6 +802,13 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 
 	// Done for next item so far...
 	write_offset = last_offset;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorZipDevice::deflate(%3.0f%%) %s.",
+		(100.0f * float(total_processed)) / float(total_uncompressed),
+		fh.file_name.data());
+#endif
+
 	return true;
 }
 

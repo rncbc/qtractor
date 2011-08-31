@@ -6,7 +6,7 @@ ChangeLog
 SVN TRUNK
 
 - Avoid JACK session filenames/paths to be ever shown;
-  also avoid audio bus port (re)connections when JACK
+  also avoid all buses ports (re)connections when JACK
   sessions are (re)loaded, given the fact that session
   management will take care of just that; more also,
   untitled/default session names are now also picked
