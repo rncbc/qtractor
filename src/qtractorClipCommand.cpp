@@ -188,16 +188,9 @@ void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
 {
 	Item *pItem = new Item(TimeStretchClip, pClip, pClip->track());
 	pItem->timeStretch = fTimeStretch;
-	if ((pClip->track())->trackType() == qtractorTrack::Midi) {
-		pItem->clipLength = pClip->clipLength();
-		pItem->fadeOutLength = pClip->fadeOutLength();
-		pItem->editCommand = createMidiEditCommand(
-			static_cast<qtractorMidiClip *> (pClip), fTimeStretch);
-	}
 	m_items.append(pItem);
 
-	if (pItem->editCommand == NULL)
-		reopenClip(pClip, true);
+	reopenClip(pClip, true);
 }
 
 
@@ -546,21 +539,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pAudioClip->updateClipTime();	// Care of tempo change.
 			//--pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;
-			}
-			else
-			if (pItem->editCommand) {
-				unsigned long iOldLength  = pClip->clipLength();
-				unsigned long iOldFadeOut = pClip->fadeOutLength();
-				pClip->setClipLength(pItem->clipLength);
-				pClip->setFadeOutLength(pItem->fadeOutLength);
-			//--pClip->open();
-				pItem->clipLength = iOldLength;
-				pItem->fadeOutLength = iOldFadeOut;
-				if (bRedo)
-					(pItem->editCommand)->redo();
-				else
-					(pItem->editCommand)->undo();
-				pSession->updateTrack(pTrack);
 			}
 			break;
 		}
