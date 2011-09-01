@@ -212,17 +212,6 @@ void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
 }
 
 
-void qtractorClipCommand::resetClip ( qtractorClip *pClip )
-{
-	Item *pItem = new Item(ResetClip, pClip, pClip->track());
-	pItem->clipLength = pClip->clipLength();
-	pItem->fadeOutLength =  pClip->fadeOutLength();
-	m_items.append(pItem);
-
-	reopenClip(pClip);
-}
-
-
 void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 {
 	QHash<qtractorClip *, bool>::ConstIterator iter
@@ -585,17 +574,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			//--pAudioClip->open();
 				pItem->pitchShift = fOldPitchShift;
 			}
-			break;
-		}
-		case ResetClip: {
-			unsigned long iOldLength  = pClip->clipLength();
-			unsigned long iOldFadeOut = pClip->fadeOutLength();
-			pClip->setClipLength(pItem->clipLength);
-			pClip->setFadeOutLength(pItem->fadeOutLength);
-		//--pClip->open();
-			pItem->clipLength = iOldLength;
-			pItem->fadeOutLength = iOldFadeOut;
-			pSession->updateTrack(pTrack);
 			break;
 		}
 		default:

@@ -27,6 +27,10 @@
 #include "qtractorTimeScale.h"
 
 
+// Forward declarations.
+class qtractorClipCommand;
+
+
 //----------------------------------------------------------------------
 // class qtractorTimeScaleCommand - declaration.
 //
@@ -42,9 +46,16 @@ public:
 		float fTempo = 120.0f, unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2);
 
+	// Destructor.
+	virtual ~qtractorTimeScaleCommand();
+	
 	// Time-scale accessor.
 	qtractorTimeScale *timeScale() const
 		{ return m_pTimeScale; }
+
+	// Make it automatic clip time-stretching command (static).
+	static qtractorClipCommand *createClipCommand(const QString& sName,
+		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
 
 protected:
 
@@ -65,6 +76,8 @@ private:
 	unsigned short m_iBeatType;
 	unsigned short m_iBeatsPerBar;
 	unsigned short m_iBeatDivisor;
+
+	qtractorClipCommand *m_pClipCommand;
 };
 
 

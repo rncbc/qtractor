@@ -1,7 +1,7 @@
 // qtractorSessionCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,11 +21,12 @@
 
 #include "qtractorAbout.h"
 #include "qtractorSessionCommand.h"
+
+#include "qtractorTimeScaleCommand.h"
 #include "qtractorClipCommand.h"
 
 #include "qtractorMidiEngine.h"
 #include "qtractorAudioEngine.h"
-#include "qtractorAudioClip.h"
 
 
 //----------------------------------------------------------------------
@@ -80,7 +81,7 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 		if (pTimeScale) {
 			qtractorTimeScale::Node *pNode
 				= pTimeScale->nodes().first();
-			m_pClipCommand = createClipCommand(pSession,
+			m_pClipCommand = qtractorTimeScaleCommand::createClipCommand(
 				name(), pNode, m_fTempo, pNode->tempo);
 		}
 	}
@@ -91,68 +92,6 @@ qtractorSessionTempoCommand::~qtractorSessionTempoCommand (void)
 {
 	if (m_pClipCommand)
 		delete m_pClipCommand;
-}
-
-
-// Make it automatic clip time-stretching command (static).
-qtractorClipCommand *qtractorSessionTempoCommand::createClipCommand (
-	qtractorSession *pSession, const QString& sName,
-	qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo )
-{
-	if (pSession == NULL)
-		return NULL;
-	if (pNode == NULL)
-		return NULL;
-	if (fNewTempo == fOldTempo)
-		return NULL;
-
-	qtractorTimeScale::Node *pNext = pNode->next();
-	unsigned long iFrameStart = pNode->frame;
-	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionLength());
-
-	qtractorClipCommand *pClipCommand = NULL;
-
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		for (qtractorClip *pClip = pTrack->clips().first();
-				pClip; pClip = pClip->next()) {
-			if (pClip->clipStart() <  iFrameStart ||
-				pClip->clipStart() >= iFrameEnd)
-				continue;
-			if (pClipCommand == NULL)
-				pClipCommand = new qtractorClipCommand(sName);
-			switch (pTrack->trackType()) {
-			case qtractorTrack::Audio:
-				if (pSession->isAutoTimeStretch()) {
-					qtractorAudioClip *pAudioClip
-						= static_cast<qtractorAudioClip *> (pClip);
-					if (pAudioClip) {
-						float fTimeStretch = (fOldTempo
-							* pAudioClip->timeStretch()) / fNewTempo;
-						pClipCommand->timeStretchClip(pClip, fTimeStretch);
-					}
-				} else {
-					pClipCommand->resetClip(pClip);
-				}
-				break;
-			case qtractorTrack::Midi:
-				if (!pSession->isAutoTimeStretch()) {
-					float fTimeStretch = (fNewTempo / fOldTempo);
-					pClipCommand->timeStretchClip(pClip, fTimeStretch);
-				}
-				// Fall thru...
-			default:
-				break;
-			}
-			// Take care of possible empty commands...
-			if (pClipCommand && pClipCommand->isEmpty()) {
-				delete pClipCommand;
-				pClipCommand = NULL;
-			}
-		}
-	}
-
-	return pClipCommand;
 }
 
 
