@@ -76,35 +76,12 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 
 	// Take care of time-stretching of all audio-clips...
 	if (m_fTempo > 0.0f) {
-		for (qtractorTrack *pTrack = pSession->tracks().first();
-				pTrack; pTrack = pTrack->next()) {
-			for (qtractorClip *pClip = pTrack->clips().first();
-					pClip; pClip = pClip->next()) {
-				if (m_pClipCommand == NULL)
-					m_pClipCommand = new qtractorClipCommand(name());
-				switch (pTrack->trackType()) {
-				case qtractorTrack::Audio:
-					if (pSession->isAutoTimeStretch()) {
-						qtractorAudioClip *pAudioClip
-							= static_cast<qtractorAudioClip *> (pClip);
-						if (pAudioClip) {
-							float fTimeStretch = (pSession->tempo()
-								* pAudioClip->timeStretch()) / m_fTempo;
-							m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
-						}
-					} else {
-						m_pClipCommand->resetClip(pClip);
-					}
-					break;
-				case qtractorTrack::Midi:
-					if (!pSession->isAutoTimeStretch()) {
-						float fTimeStretch = (m_fTempo / pSession->tempo());
-						m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
-					}
-				default:
-					break;
-				}
-			}
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		if (pTimeScale) {
+			qtractorTimeScale::Node *pNode
+				= pTimeScale->nodes().first();
+			m_pClipCommand = createClipCommand(pSession,
+				name(), pNode, m_fTempo, pNode->tempo);
 		}
 	}
 }
@@ -117,8 +94,70 @@ qtractorSessionTempoCommand::~qtractorSessionTempoCommand (void)
 }
 
 
-// Session-tempo command methods.
-bool qtractorSessionTempoCommand::redo (void)
+// Make it automatic clip time-stretching command (static).
+qtractorClipCommand *qtractorSessionTempoCommand::createClipCommand (
+	qtractorSession *pSession, const QString& sName,
+	qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo )
+{
+	if (pSession == NULL)
+		return NULL;
+	if (pNode == NULL)
+		return NULL;
+	if (fNewTempo == fOldTempo)
+		return NULL;
+
+	qtractorTimeScale::Node *pNext = pNode->next();
+	unsigned long iFrameStart = pNode->frame;
+	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionLength());
+
+	qtractorClipCommand *pClipCommand = NULL;
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			if (pClip->clipStart() <  iFrameStart ||
+				pClip->clipStart() >= iFrameEnd)
+				continue;
+			if (pClipCommand == NULL)
+				pClipCommand = new qtractorClipCommand(sName);
+			switch (pTrack->trackType()) {
+			case qtractorTrack::Audio:
+				if (pSession->isAutoTimeStretch()) {
+					qtractorAudioClip *pAudioClip
+						= static_cast<qtractorAudioClip *> (pClip);
+					if (pAudioClip) {
+						float fTimeStretch = (fOldTempo
+							* pAudioClip->timeStretch()) / fNewTempo;
+						pClipCommand->timeStretchClip(pClip, fTimeStretch);
+					}
+				} else {
+					pClipCommand->resetClip(pClip);
+				}
+				break;
+			case qtractorTrack::Midi:
+				if (!pSession->isAutoTimeStretch()) {
+					float fTimeStretch = (fNewTempo / fOldTempo);
+					pClipCommand->timeStretchClip(pClip, fTimeStretch);
+				}
+				// Fall thru...
+			default:
+				break;
+			}
+			// Take care of possible empty commands...
+			if (pClipCommand && pClipCommand->isEmpty()) {
+				delete pClipCommand;
+				pClipCommand = NULL;
+			}
+		}
+	}
+
+	return pClipCommand;
+}
+
+
+// Session-tempo common executive method.
+bool qtractorSessionTempoCommand::execute ( bool bRedo )
 {
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -174,8 +213,12 @@ bool qtractorSessionTempoCommand::redo (void)
 		pSession->updateTimeResolution();
 
 	// In case we have clips around...
-	if (m_pClipCommand)
-		m_pClipCommand->redo();
+	if (m_pClipCommand) {
+		if (bRedo)
+			m_pClipCommand->redo();
+		else
+			m_pClipCommand->undo();
+	}
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
@@ -203,10 +246,16 @@ bool qtractorSessionTempoCommand::redo (void)
 	return true;
 }
 
+// Session-tempo command methods.
+bool qtractorSessionTempoCommand::redo (void)
+{
+	return execute(true);
+}
+
+
 bool qtractorSessionTempoCommand::undo (void)
 {
-	// As we swap the prev/tempo this is non-idempotent.
-	return redo();
+	return execute(false);
 }
 
 
