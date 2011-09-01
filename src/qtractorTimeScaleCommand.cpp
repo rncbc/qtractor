@@ -27,8 +27,6 @@
 
 #include "qtractorAudioClip.h"
 
-#include <QString>
-
 
 //----------------------------------------------------------------------
 // class qtractorTimeScaleCommand - implementation.
@@ -194,14 +192,14 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 			if (pClip->clipStart() <  iFrameStart ||
 				pClip->clipStart() >= iFrameEnd)
 				continue;
-			if (pClipCommand == NULL)
-				pClipCommand = new qtractorClipCommand(sName);
 			switch (pTrack->trackType()) {
 			case qtractorTrack::Audio:
 				if (pSession->isAutoTimeStretch()) {
 					qtractorAudioClip *pAudioClip
 						= static_cast<qtractorAudioClip *> (pClip);
 					if (pAudioClip) {
+						if (pClipCommand == NULL)
+							pClipCommand = new qtractorClipCommand(sName);
 						float fTimeStretch = (fOldTempo
 							* pAudioClip->timeStretch()) / fNewTempo;
 						pClipCommand->timeStretchClip(pClip, fTimeStretch);
@@ -209,11 +207,6 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 				}
 				break;
 			case qtractorTrack::Midi:
-				if (!pSession->isAutoTimeStretch()) {
-					float fTimeStretch = (fNewTempo / fOldTempo);
-					pClipCommand->timeStretchClip(pClip, fTimeStretch);
-				}
-				// Fall thru...
 			default:
 				break;
 			}
