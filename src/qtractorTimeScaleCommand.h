@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,7 +43,8 @@ public:
 		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2);
 
 	// Time-scale accessor.
-	qtractorTimeScale *timeScale() const { return m_pTimeScale; }
+	qtractorTimeScale *timeScale() const
+		{ return m_pTimeScale; }
 
 protected:
 

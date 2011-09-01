@@ -1019,8 +1019,8 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 	if (pSingleTrack &&
 		(pTrack == NULL || pSingleTrack->trackType() == pTrack->trackType())) {
 		m_bDragSingleTrack = true;
-		m_iDragSingleTrackY = tvi.trackRect.y() + 1;
-		m_iDragSingleTrackHeight = tvi.trackRect.height() - 2;
+		m_iDragSingleTrackY = tvi.trackRect.y();
+		m_iDragSingleTrackHeight = tvi.trackRect.height();
 	} else {
 		m_bDragSingleTrack = false;
 		m_iDragSingleTrackY = 0;

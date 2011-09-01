@@ -80,6 +80,16 @@ public:
 	bool redo();
 	bool undo();
 
+	// Make it automatic clip time-stretching command (static).
+	static qtractorClipCommand *createClipCommand(
+		qtractorSession *pSession, const QString& sName,
+		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
+
+protected:
+
+	// Common executive method.
+	bool execute(bool bRedo);
+
 private:
 
 	// Instance variables.
