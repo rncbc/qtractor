@@ -1,7 +1,7 @@
 // qtractorSessionCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,11 +79,6 @@ public:
 	// Session-tempo command methods.
 	bool redo();
 	bool undo();
-
-	// Make it automatic clip time-stretching command (static).
-	static qtractorClipCommand *createClipCommand(
-		qtractorSession *pSession, const QString& sName,
-		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
 
 protected:
 

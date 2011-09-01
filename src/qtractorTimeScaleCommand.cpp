@@ -22,6 +22,11 @@
 #include "qtractorAbout.h"
 #include "qtractorTimeScaleCommand.h"
 
+#include "qtractorClipCommand.h"
+#include "qtractorSession.h"
+
+#include "qtractorAudioClip.h"
+
 #include <QString>
 
 
@@ -36,8 +41,17 @@ qtractorTimeScaleCommand::qtractorTimeScaleCommand ( const QString& sName,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor)
 	: qtractorCommand(sName), m_pTimeScale(pTimeScale), m_pNode(pNode),
 		m_iFrame(iFrame), m_fTempo(fTempo), m_iBeatType(iBeatType),
-		m_iBeatsPerBar(iBeatsPerBar), m_iBeatDivisor(iBeatDivisor)
+		m_iBeatsPerBar(iBeatsPerBar), m_iBeatDivisor(iBeatDivisor),
+		m_pClipCommand(NULL)
 {
+}
+
+
+// Destructor.
+qtractorTimeScaleCommand::~qtractorTimeScaleCommand (void)
+{
+	if (m_pClipCommand)
+		delete m_pClipCommand;
 }
 
 
@@ -47,12 +61,28 @@ bool qtractorTimeScaleCommand::addNode (void)
 	if (m_pNode)
 		return false;
 
+	if (m_pClipCommand)
+		m_pClipCommand->undo();
+	
 	m_pNode = m_pTimeScale->addNode(
 		m_iFrame,
 		m_fTempo,
 		m_iBeatType,
 		m_iBeatsPerBar,
 		m_iBeatDivisor);
+
+	if (m_pClipCommand) {
+		delete m_pClipCommand;
+		m_pClipCommand = NULL;
+	} else {
+		qtractorTimeScale::Node *pPrev = m_pNode->prev();
+		float fOldTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
+		float fNewTempo = m_pNode->tempo;
+		m_pClipCommand = createClipCommand(name(),
+			m_pNode, fNewTempo, fOldTempo);
+		if (m_pClipCommand)
+			m_pClipCommand->redo();
+	}
 
 	return (m_pNode != NULL);
 }
@@ -72,6 +102,17 @@ bool qtractorTimeScaleCommand::updateNode (void)
 	unsigned short iBeatsPerBar = m_pNode->beatsPerBar;
 	unsigned short iBeatDivisor = m_pNode->beatDivisor;
 
+	if (m_pClipCommand) {
+		m_pClipCommand->undo();
+		delete m_pClipCommand;
+		m_pClipCommand = NULL;
+	} else {
+		float fOldTempo = m_pNode->tempo;
+		float fNewTempo = m_fTempo;
+		m_pClipCommand = createClipCommand(name(),
+			m_pNode, fNewTempo, fOldTempo);
+	}
+
 	m_pNode->tempo       = m_fTempo;
 	m_pNode->beatType    = m_iBeatType;
 	m_pNode->beatsPerBar = m_iBeatsPerBar;
@@ -84,6 +125,9 @@ bool qtractorTimeScaleCommand::updateNode (void)
 	m_iBeatsPerBar = iBeatsPerBar;
 	m_iBeatDivisor = iBeatDivisor;
 
+	if (m_pClipCommand)
+		m_pClipCommand->redo();
+
 	return true;
 }
 
@@ -93,6 +137,18 @@ bool qtractorTimeScaleCommand::removeNode (void)
 {
 	if (m_pNode == NULL)
 		return false;
+
+	if (m_pClipCommand) {
+		m_pClipCommand->undo();
+		delete m_pClipCommand;
+		m_pClipCommand = NULL;
+	} else {
+		qtractorTimeScale::Node *pPrev = m_pNode->prev();
+		float fOldTempo = m_pNode->tempo;
+		float fNewTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
+		m_pClipCommand = createClipCommand(name(),
+			m_pNode, fNewTempo, fOldTempo);
+	}
 
 	m_iFrame       = m_pNode->frame;
 	m_fTempo       = m_pNode->tempo;
@@ -104,7 +160,73 @@ bool qtractorTimeScaleCommand::removeNode (void)
 
 	m_pNode = NULL;
 
+	if (m_pClipCommand)
+		m_pClipCommand->redo();
+
 	return true;
+}
+
+
+// Make it automatic clip time-stretching command (static).
+qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
+	const QString& sName, qtractorTimeScale::Node *pNode,
+	float fNewTempo, float fOldTempo )
+{
+	if (pNode == NULL)
+		return NULL;
+	if (fNewTempo == fOldTempo)
+		return NULL;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return NULL;
+
+	qtractorTimeScale::Node *pNext = pNode->next();
+	unsigned long iFrameStart = pNode->frame;
+	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionLength());
+
+	qtractorClipCommand *pClipCommand = NULL;
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			if (pClip->clipStart() <  iFrameStart ||
+				pClip->clipStart() >= iFrameEnd)
+				continue;
+			if (pClipCommand == NULL)
+				pClipCommand = new qtractorClipCommand(sName);
+			switch (pTrack->trackType()) {
+			case qtractorTrack::Audio:
+				if (pSession->isAutoTimeStretch()) {
+					qtractorAudioClip *pAudioClip
+						= static_cast<qtractorAudioClip *> (pClip);
+					if (pAudioClip) {
+						float fTimeStretch = (fOldTempo
+							* pAudioClip->timeStretch()) / fNewTempo;
+						pClipCommand->timeStretchClip(pClip, fTimeStretch);
+					}
+				}
+				break;
+			case qtractorTrack::Midi:
+				if (!pSession->isAutoTimeStretch()) {
+					float fTimeStretch = (fNewTempo / fOldTempo);
+					pClipCommand->timeStretchClip(pClip, fTimeStretch);
+				}
+				// Fall thru...
+			default:
+				break;
+			}
+		}
+	}
+
+	// Take care of possible empty commands...
+	if (pClipCommand && pClipCommand->isEmpty()) {
+		delete pClipCommand;
+		pClipCommand = NULL;
+	}
+	
+	return pClipCommand;
 }
 
 
