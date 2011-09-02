@@ -902,15 +902,24 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	if (bResult) {
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
-		pMidiClip->setFilenameEx(sFilename);
+		// Now, we avoid the linked/ref-counted instances
+		// if we're doing a prompted save (ie. Save As...)
+		if (bPrompt) {
+			pMidiClip->setFilename(sFilename);
+			pMidiClip->setDirty(false);
+			pMidiClip->updateHashData();
+			pMidiClip->updateEditor(true);
+		} else {
+			pMidiClip->setFilenameEx(sFilename);
+		}
 		// HACK: This operation is so important that
 		// it surely deserves being in the front page...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
 			pMainForm->appendMessages(
 				tr("MIDI file save: \"%1\", track-channel: %2.")
-				.arg(filename()).arg(trackChannel()));
-			pMainForm->addMidiFile(filename());
+				.arg(sFilename).arg(trackChannel()));
+			pMainForm->addMidiFile(sFilename);
 		}
 	}
 

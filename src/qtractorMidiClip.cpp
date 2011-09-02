@@ -517,19 +517,18 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 	if (m_pData == NULL)
 		return;
 
+	if (m_pKey) g_hashTable.remove(*m_pKey);
+
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
 		qtractorMidiClip *pMidiClip = iter.next();
 		pMidiClip->setFilename(sFilename);
 		pMidiClip->setDirty(false);
+		pMidiClip->updateHashKey();
 		pMidiClip->updateEditor(true);
 	}
 
-	if (m_pKey) {
-		g_hashTable.remove(*m_pKey);
-		m_pKey->update(this);
-		g_hashTable.insert(*m_pKey, m_pData);
-	}
+	if (m_pKey) g_hashTable.insert(*m_pKey, m_pData);
 }
 
 
@@ -539,15 +538,16 @@ void qtractorMidiClip::setClipLengthEx ( unsigned long iClipLength )
 	if (m_pData == NULL)
 		return;
 
-	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
-	while (iter.hasNext())
-		iter.next()->setClipLength(iClipLength);
+	if (m_pKey) g_hashTable.remove(*m_pKey);
 
-	if (m_pKey) {
-		g_hashTable.remove(*m_pKey);
-		m_pKey->update(this);
-		g_hashTable.insert(*m_pKey, m_pData);
+	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorMidiClip *pMidiClip = iter.next();
+		pMidiClip->setClipLength(iClipLength);
+		pMidiClip->updateHashKey();
 	}
+
+	if (m_pKey) g_hashTable.insert(*m_pKey, m_pData);
 }
 
 
@@ -582,6 +582,50 @@ void qtractorMidiClip::setDirtyEx ( bool bDirty )
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->setDirty(bDirty);
+}
+
+
+// Update local hash key.
+void qtractorMidiClip::updateHashKey (void)
+{
+	if (m_pKey) m_pKey->update(this);
+}
+
+
+// Update (clone) local hash data.
+void qtractorMidiClip::updateHashData (void)
+{
+	if (m_pData == NULL)
+		return;
+	if (m_pData->count() < 2)
+		return;
+
+	m_pData->detach(this);
+
+	Data *pNewData = new Data();
+
+	qtractorMidiSequence *pOldSeq = m_pData->sequence();
+	qtractorMidiSequence *pNewSeq = pNewData->sequence();
+
+	pNewSeq->setName(pOldSeq->name());
+	pNewSeq->setChannel(pOldSeq->channel());
+	pNewSeq->setBank(pOldSeq->bank());
+	pNewSeq->setProgram(pOldSeq->program());
+	pNewSeq->setTicksPerBeat(pOldSeq->ticksPerBeat());
+	pNewSeq->setTimeOffset(pOldSeq->timeOffset());
+	pNewSeq->setTimeLength(pOldSeq->timeLength());
+	pNewSeq->setDuration(pOldSeq->duration());
+	pNewSeq->setNoteMin(pOldSeq->noteMin());
+	pNewSeq->setNoteMax(pOldSeq->noteMax());
+	pNewSeq->copyEvents(pOldSeq);
+
+	m_pData = pNewData;
+	m_pData->attach(this);
+
+	if (m_pKey) {
+		m_pKey->update(this);
+		g_hashTable.insert(*m_pKey, m_pData);
+	}
 }
 
 

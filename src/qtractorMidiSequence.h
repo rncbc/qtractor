@@ -40,7 +40,7 @@ class qtractorMidiSequence
 public:
 
 	// Constructor.
-	qtractorMidiSequence(const QString& sName = QString::null,
+	qtractorMidiSequence(const QString& sName = QString(),
 		unsigned short iChannel = 0, unsigned short iTicksPerBeat = 960);
 
 	// Destructor.
@@ -111,6 +111,9 @@ public:
 	// Replace events from another sequence in given range.
 	void replaceEvents(qtractorMidiSequence *pSeq,
 		unsigned long iTimeOffset = 0, unsigned long iTimeLength = 0);
+
+	// Clopy all events from another sequence (raw-copy).
+	void copyEvents(qtractorMidiSequence *pSeq);
 
 	// Sequence closure method.
 	void close();

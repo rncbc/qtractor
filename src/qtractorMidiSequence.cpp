@@ -208,4 +208,20 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 }
 
 
+// Clopy all events from another sequence (raw-copy).
+void qtractorMidiSequence::copyEvents ( qtractorMidiSequence *pSeq )
+{
+	// Remove existing events.
+	m_events.clear();
+	
+	// Clone new ones...
+	qtractorMidiEvent *pEvent = pSeq->events().first();
+	for (; pEvent; pEvent = pEvent->next())
+		m_events.append(new qtractorMidiEvent(*pEvent));
+	
+	// Done.
+}
+
+
+
 // end of qtractorMidiSequence.cpp
