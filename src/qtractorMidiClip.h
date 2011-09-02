@@ -207,6 +207,12 @@ public:
 	// Sync all ref-counted clip-dirtyness.
 	void setDirtyEx(bool bDirty);
 
+	// Update local hash key.
+	void updateHashKey();
+
+	// Update (clone) local hash data.
+	void updateHashData();
+
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
 
