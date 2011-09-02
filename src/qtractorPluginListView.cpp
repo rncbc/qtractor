@@ -129,7 +129,9 @@ public:
 					pDirectAccessParam->isLogarithmic());
 				QRect rectValue = option.rect
 					.adjusted(iconSize.width(), 1, -2, -2);
-				rectValue.setWidth(int(fScale * float(rectValue.width())));
+				const int iDirectAccessWidth = rectValue.width();
+				pItem->setDirectAccessWidth(iDirectAccessWidth);
+				rectValue.setWidth(int(fScale * float(iDirectAccessWidth)));
 				pPainter->fillRect(rectValue, rgbBack.lighter(140));
 				polyg.setPoint(0, rectValue.right(), rectValue.top() + 1);
 				polyg.setPoint(1, rectValue.right() - 2, rectValue.bottom() + 1);
@@ -156,7 +158,7 @@ public:
 				option.rect.right(), option.rect.bottom());
 			if (pDirectAccessObserver) {
 				pPainter->setRenderHint(QPainter::Antialiasing, true);
-				pPainter->setBrush(rgbBack.darker(140));
+				pPainter->setBrush(rgbBack.darker(160));
 				pPainter->drawPolygon(polyg);
 				pPainter->setPen(rgbBack.lighter(180));
 				pPainter->drawLine(polyg.at(0), polyg.at(1));
@@ -182,10 +184,8 @@ private:
 
 // Constructors.
 qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
-	: QListWidgetItem()
+	: QListWidgetItem(), m_pPlugin(pPlugin), m_iDirectAccessWidth(0)
 {
-	m_pPlugin = pPlugin;
-
 	m_pPlugin->addItem(this);
 
 	QListWidgetItem::setText((m_pPlugin->type())->name());
@@ -233,6 +233,8 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	}
 
 	// Drag-and-drop stuff.
+	m_dragCursor  = DragNone;
+	m_dragState   = DragNone;
 	m_pDragItem   = NULL;
 	m_pDropItem   = NULL;
 	m_pRubberBand = NULL;
@@ -245,6 +247,7 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QListWidget::setIconSize(QSize(10, 10));
 	QListWidget::setItemDelegate(new qtractorPluginListItemDelegate(this));
 	QListWidget::setSelectionMode(QAbstractItemView::SingleSelection);
+	QListWidget::setMouseTracking(true);
 
 	QListWidget::viewport()->setBackgroundRole(QPalette::Window);
 
@@ -966,6 +969,7 @@ void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		m_posDrag   = pos;
 		m_pDragItem = pItem;
+		dragDirectAccess(pos);
 	}
 
 	QListWidget::mousePressEvent(pMouseEvent);	
@@ -976,20 +980,31 @@ void qtractorPluginListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	QListWidget::mouseMoveEvent(pMouseEvent);
 
-	if ((pMouseEvent->buttons() & Qt::LeftButton) && m_pDragItem
-		&& ((pMouseEvent->pos() - m_posDrag).manhattanLength()
-			>= QApplication::startDragDistance())) {
-		// We'll start dragging something alright...
-		QMimeData *pMimeData = new QMimeData();
-		encodeItem(pMimeData, m_pDragItem);
-		QDrag *pDrag = new QDrag(this);
-		pDrag->setMimeData(pMimeData);
-		pDrag->setPixmap(m_pDragItem->icon().pixmap(16));
-		pDrag->setHotSpot(QPoint(-4, -12));
-		pDrag->start(Qt::MoveAction);
-		// We've dragged and maybe dropped it by now...
-		m_pDragItem = NULL;
+	const QPoint& pos = pMouseEvent->pos();
+	if ((pMouseEvent->buttons() & Qt::LeftButton) && m_pDragItem) {
+		if (m_dragCursor != DragNone)
+			m_dragState = m_dragCursor;
+		if (m_dragState != DragNone) {
+			dragDirectAccess(pos);
+			return;
+		}
+		if ((pos - m_posDrag).manhattanLength()
+			>= QApplication::startDragDistance()) {
+			// We'll start dragging something alright...
+			QMimeData *pMimeData = new QMimeData();
+			encodeItem(pMimeData, m_pDragItem);
+			QDrag *pDrag = new QDrag(this);
+			pDrag->setMimeData(pMimeData);
+			pDrag->setPixmap(m_pDragItem->icon().pixmap(16));
+			pDrag->setHotSpot(QPoint(-4, -12));
+			pDrag->start(Qt::MoveAction);
+			// We've dragged and maybe dropped it by now...
+			m_pDragItem = NULL;
+		}
 	}
+	else
+	if (m_dragState == DragNone)
+		dragDirectAccess(pos);
 }
 
 
@@ -1000,7 +1015,6 @@ void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	const QPoint& pos = pMouseEvent->pos();
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
-
 	if (pItem && pos.x() > 0 && pos.x() < QListWidget::iconSize().width()
 		&& m_pClickedItem == pItem) {
 		qtractorPlugin *pPlugin = pItem->plugin();
@@ -1133,10 +1147,18 @@ void qtractorPluginListView::dragLeaveEvent ( QDragLeaveEvent * )
 		m_pRubberBand = NULL;
 	}
 
+	// Should fallback mouse cursor...
+	if (m_dragCursor != DragNone)
+		QListWidget::unsetCursor();
+
+	m_dragCursor = DragNone;
+	m_dragState  = DragNone;
+
 	m_pClickedItem = NULL;
 
 	m_pDragItem = NULL;
 	m_pDropItem = NULL;
+
 }
 
 
@@ -1391,6 +1413,55 @@ qtractorPluginListItem *qtractorPluginListView::decodeItem (
 		::memcpy(&pItem, data.constData(), sizeof(qtractorPluginListItem *));
 
 	return pItem;
+}
+
+
+// Direct access parameter handle.
+void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
+{
+	qtractorPluginListItem *pItem = m_pDragItem;
+	if (pItem == NULL)
+		pItem = static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
+	if (pItem == NULL)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == NULL)
+		return;
+
+	qtractorPluginParam *pDirectAccessParam	
+		= pPlugin->directAccessParam();
+	if (pDirectAccessParam == NULL)
+		return;
+
+	qtractorMidiControlObserver *pDirectAccessObserver
+		= pDirectAccessParam->observer();
+	if (pDirectAccessObserver == NULL)
+		return;
+
+	const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
+	const int iDirectAccessWidth = pItem->directAccessWidth();
+	const QRect& rectItem = QListWidget::visualItemRect(pItem)
+		.adjusted(QListWidget::iconSize().width(), 1, -2, -2);
+
+	if (m_dragState == DragNone) {
+		float fValue = pDirectAccessParam->value();
+		float fScale = pDirectAccessObserver->scaleFromValue(fValue, bLogarithmic);
+		int x = rectItem.x() + int(fScale * float(iDirectAccessWidth));
+		if (pos.x() > x - 4 && pos.x() < x + 4) {
+			m_dragCursor = DragDirectAccess;
+			QListWidget::setCursor(QCursor(Qt::PointingHandCursor));
+		} else {
+			QListWidget::unsetCursor();
+			m_dragCursor = DragNone;
+		}
+	}
+	else
+	if (m_dragState == DragDirectAccess) {
+		float fScale = float(pos.x() - rectItem.x()) / float(iDirectAccessWidth);
+		float fValue = pDirectAccessObserver->valueFromScale(fScale, bLogarithmic);
+		pDirectAccessParam->updateValue(fValue, true);
+	}
 }
 
 
