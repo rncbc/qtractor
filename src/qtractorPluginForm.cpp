@@ -33,6 +33,8 @@
 
 #include "qtractorMidiControlObserverForm.h"
 
+#include "qtractorBusForm.h"
+
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorEngine.h"
@@ -129,6 +131,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.AudioBusNameComboBox,
 		SIGNAL(activated(const QString&)),
 		SLOT(changeAudioBusNameSlot(const QString&)));
+	QObject::connect(m_ui.AudioBusNameToolButton,
+		SIGNAL(clicked()),
+		SLOT(clickAudioBusNameSlot()));
 	QObject::connect(m_ui.DirectAccessParamComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeDirectAccessParamSlot(int)));
@@ -242,6 +247,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		= ((m_pPlugin->type())->typeHint() == qtractorPluginType::AuxSend );
 	m_ui.AudioBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AudioBusNameLabel->setVisible(bAuxSendPlugin);
+	m_ui.AudioBusNameToolButton->setVisible(bAuxSendPlugin);
 
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
@@ -754,7 +760,7 @@ void qtractorPluginForm::returnsSlot (void)
 }
 
 
-// Audio bus name (aux-send) slot.
+// Audio bus name (aux-send) select slot.
 void qtractorPluginForm::changeAudioBusNameSlot ( const QString& sAudioBusName )
 {
 	if (m_pPlugin == NULL)
@@ -772,6 +778,41 @@ void qtractorPluginForm::changeAudioBusNameSlot ( const QString& sAudioBusName )
 
 	pSession->execute(
 		new qtractorAuxSendPluginCommand(pAuxSendPlugin, sAudioBusName));
+}
+
+
+// Audio bus name (aux-send) browse slot.
+void qtractorPluginForm::clickAudioBusNameSlot (void)
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	qtractorAuxSendPlugin *pAuxSendPlugin = NULL;
+	if (m_pPlugin->type()->typeHint() == qtractorPluginType::AuxSend)
+		pAuxSendPlugin = static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
+	if (pAuxSendPlugin == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+	
+	// Call here the bus management form.
+	qtractorBusForm busForm(this);
+	// Pre-select bus...
+	const QString& sAudioBusName = m_ui.AudioBusNameComboBox->currentText();
+	if (!sAudioBusName.isEmpty())
+		busForm.setBus(pAudioEngine->findBus(sAudioBusName));
+	// Go for it...
+	busForm.exec();
+
+	// Check if any buses have changed...
+	if (busForm.isDirty())
+		updateAudioBusName();
 }
 
 
