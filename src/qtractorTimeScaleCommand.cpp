@@ -179,6 +179,9 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 	if (pSession == NULL)
 		return NULL;
 
+	if (!pSession->isAutoTimeStretch())
+		return NULL;
+
 	qtractorTimeScale::Node *pNext = pNode->next();
 	unsigned long iFrameStart = pNode->frame;
 	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionLength());
@@ -192,23 +195,16 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 			if (pClip->clipStart() <  iFrameStart ||
 				pClip->clipStart() >= iFrameEnd)
 				continue;
-			switch (pTrack->trackType()) {
-			case qtractorTrack::Audio:
-				if (pSession->isAutoTimeStretch()) {
-					qtractorAudioClip *pAudioClip
-						= static_cast<qtractorAudioClip *> (pClip);
-					if (pAudioClip) {
-						if (pClipCommand == NULL)
-							pClipCommand = new qtractorClipCommand(sName);
-						float fTimeStretch = (fOldTempo
-							* pAudioClip->timeStretch()) / fNewTempo;
-						pClipCommand->timeStretchClip(pClip, fTimeStretch);
-					}
+			if (pTrack->trackType() == qtractorTrack::Audio) {
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (pClip);
+				if (pAudioClip) {
+					if (pClipCommand == NULL)
+						pClipCommand = new qtractorClipCommand(sName);
+					float fTimeStretch
+						= (fOldTempo * pAudioClip->timeStretch()) / fNewTempo;
+					pClipCommand->timeStretchClip(pClip, fTimeStretch);
 				}
-				break;
-			case qtractorTrack::Midi:
-			default:
-				break;
 			}
 		}
 	}

@@ -137,7 +137,7 @@ bool qtractorSessionTempoCommand::execute ( bool bRedo )
 	if (m_iBeatDivisor > 0) {
 		iBeatDivisor = pSession->beatDivisor();
 		pSession->setBeatDivisor(m_iBeatDivisor);
-		++iUpdateTimeResolution;
+	//	++iUpdateTimeResolution;
 	}
 
 	// Time resolution changes...
