@@ -41,6 +41,7 @@ public:
 
 	// Constructors.
 	qtractorPluginListItem(qtractorPlugin *pPlugin);
+
 	// Destructor.
 	~qtractorPluginListItem();
 
@@ -53,6 +54,12 @@ public:
 	// Activation methods.
 	void updateActivated();
 
+	// Last known item rectangle.
+	void setDirectAccessWidth(int iDirectAccessWidth)
+		{ m_iDirectAccessWidth = iDirectAccessWidth; }
+	int directAccessWidth() const
+		{ return m_iDirectAccessWidth; }
+
 protected:
 
 	// Common item initializer.
@@ -63,8 +70,8 @@ private:
 	// The plugin reference.
 	qtractorPlugin *m_pPlugin;
 
-	// Instance variables.
-	float m_fDirectAccessParamValue;
+	// Last known item logical width.
+	int m_iDirectAccessWidth;
 };
 
 
@@ -194,11 +201,19 @@ protected:
 	// Show insert pseudo-plugin audio bus connections.
 	void insertPluginBus(int iBusMode);
 	
+	// Direct access parameter handle.
+	void dragDirectAccess(const QPoint& pos);
+
 private:
 
 	// Instance variables.
 	qtractorPluginList *m_pPluginList;
 
+	// The current dragging item stuff.
+	enum DragState {
+		DragNone = 0, DragDirectAccess
+	} m_dragState, m_dragCursor;
+	
 	// The mouse clicked item for in-place (de)activation.
 	qtractorPluginListItem *m_pClickedItem;
 
