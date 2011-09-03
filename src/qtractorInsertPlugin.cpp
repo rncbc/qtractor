@@ -683,7 +683,7 @@ void qtractorAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
 	} else {
 		m_pAudioBus = NULL;
 		m_sAudioBusName.clear();
-		clearConfigs();
+	//	clearConfigs();
 	}
 
 	updateAudioBusName();
