@@ -188,7 +188,16 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 {
 	m_pPlugin->addItem(this);
 
-	QListWidgetItem::setText((m_pPlugin->type())->name());
+	QString sText;
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType->typeHint() == qtractorPluginType::AuxSend) {
+		qtractorAuxSendPlugin *pAuxSendPlugin
+			= static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
+		if (pAuxSendPlugin)
+			sText = pAuxSendPlugin->audioBusName();
+	}
+
+	QListWidgetItem::setText(sText.isEmpty() ? pType->name() : sText);
 
 	updateActivated();
 }
@@ -501,6 +510,7 @@ void qtractorPluginListView::addInsertPlugin (void)
 			QString(), // Empty filename!
 			m_pPluginList->channels(),
 			qtractorPluginType::Insert);
+
 	if (pPlugin) {
 		// Show the plugin form right away...
 		(pPlugin->form())->activateForm();
@@ -534,6 +544,7 @@ void qtractorPluginListView::addAuxSendPlugin (void)
 			QString(), // Empty filename!
 			m_pPluginList->channels(),
 			qtractorPluginType::AuxSend);
+
 	if (pPlugin) {
 		// Show the plugin form right away...
 		(pPlugin->form())->activateForm();
@@ -738,6 +749,38 @@ void qtractorPluginListView::moveDownPlugin (void)
 }
 
 
+// Select a direct access parameter index.
+void qtractorPluginListView::directAccessPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem == NULL)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == NULL)
+		return;
+
+	// Retrieve direct access parameter index from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction == NULL)
+		return;
+
+	int iDirectAccessParamIndex = pAction->data().toInt();
+
+	// Make it a undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+	
+	pSession->execute(
+		new qtractorDirectAccessParamCommand(pPlugin, iDirectAccessParamIndex));
+}
+
+
 // Show/hide an existing plugin form slot.
 void qtractorPluginListView::propertiesPlugin (void)
 {
@@ -889,31 +932,38 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
 	QWidget *pViewport = QListWidget::viewport();
-	if (static_cast<QWidget *> (pObject) == pViewport
-		&& pEvent->type() == QEvent::ToolTip) {
-		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
-		if (pHelpEvent) {
-			qtractorPluginListItem *pItem
-				= static_cast<qtractorPluginListItem *> (
-					QListWidget::itemAt(pHelpEvent->pos()));
-			qtractorPlugin *pPlugin = NULL;
-			if (pItem)
-				pPlugin = pItem->plugin();
-			if (pPlugin) {
-				QString sToolTip = pItem->text(); // (pPlugin->type())->name();
-				if (pPlugin->isDirectAccessParam()) {
-					qtractorPluginParam *pDirectAccessParam
-						= pPlugin->directAccessParam();
-					if (pDirectAccessParam) {
-						sToolTip.append(QString("\n(%1: %2)")
-							.arg(pDirectAccessParam->name())
-							.arg(pDirectAccessParam->value(), 0, 'g', 3));
+	if (static_cast<QWidget *> (pObject) == pViewport) {
+		if (pEvent->type() == QEvent::ToolTip) {
+			QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
+			if (pHelpEvent) {
+				qtractorPluginListItem *pItem
+					= static_cast<qtractorPluginListItem *> (
+						QListWidget::itemAt(pHelpEvent->pos()));
+				qtractorPlugin *pPlugin = NULL;
+				if (pItem)
+					pPlugin = pItem->plugin();
+				if (pPlugin) {
+					QString sToolTip = pItem->text(); // (pPlugin->type())->name();
+					if (pPlugin->isDirectAccessParam()) {
+						qtractorPluginParam *pDirectAccessParam
+							= pPlugin->directAccessParam();
+						if (pDirectAccessParam) {
+							sToolTip.append(QString("\n(%1: %2)")
+								.arg(pDirectAccessParam->name())
+								.arg(pDirectAccessParam->value(), 0, 'g', 3));
+						}
 					}
+					QToolTip::showText(pHelpEvent->globalPos(),
+						sToolTip, pViewport);
+					return true;
 				}
-				QToolTip::showText(pHelpEvent->globalPos(),
-					sToolTip, pViewport);
-				return true;
 			}
+		}
+		else
+		if (pEvent->type() == QEvent::Leave) {
+			m_dragCursor = DragNone;
+			QListWidget::unsetCursor();
+			return true;
 		}
 	}
 
@@ -1302,7 +1352,7 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("Act&ivate"), this, SLOT(activatePlugin()));
+		tr("Ac&tivate"), this, SLOT(activatePlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isActivated());
 	pAction->setEnabled(pPlugin != NULL);
@@ -1343,6 +1393,33 @@ void qtractorPluginListView::contextMenuEvent (
 		QIcon(":/images/formMoveDown.png"),
 		tr("Move &Down"), this, SLOT(moveDownPlugin()));
 	pAction->setEnabled(pItem && iItem < iItemCount - 1);
+
+	menu.addSeparator();
+
+	QMenu *pDirectAccessParamMenu = menu.addMenu("Dire&ct Access");
+	pDirectAccessParamMenu->setEnabled(pPlugin != NULL);
+
+	if (pPlugin) {
+		int iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
+		const qtractorPlugin::Params& params = pPlugin->params();
+		qtractorPlugin::Params::ConstIterator param = params.constBegin();
+		for ( ; param != params.constEnd(); ++param) {
+			qtractorPluginParam *pParam = param.value();
+			int iParamIndex = int(param.key());
+			pAction = pDirectAccessParamMenu->addAction(
+				pParam->name(), this, SLOT(directAccessPlugin()));
+			pAction->setCheckable(true);
+			pAction->setChecked(iDirectAccessParamIndex == iParamIndex);
+			pAction->setData(iParamIndex);
+		}
+		if (!params.isEmpty())
+			pDirectAccessParamMenu->addSeparator();
+		pAction = pDirectAccessParamMenu->addAction(
+			tr("&None"), this, SLOT(directAccessPlugin()));
+		pAction->setCheckable(true);
+		pAction->setChecked(iDirectAccessParamIndex < 0);
+		pAction->setData(int(-1));
+	}
 
 	menu.addSeparator();
 

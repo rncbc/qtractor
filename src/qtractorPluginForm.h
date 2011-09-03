@@ -106,7 +106,8 @@ protected slots:
 	void changeAudioBusNameSlot(const QString& sAudioBusName);
 	void clickAudioBusNameSlot();
 
-	void changeDirectAccessParamSlot(int Index);
+	void updateDirectAccessParamSlot();
+	void changeDirectAccessParamSlot();
 
 protected:
 
@@ -133,6 +134,8 @@ private:
 
 	typedef QHash<unsigned long, qtractorPluginParamWidget *> ParamWidgets;
 	ParamWidgets m_paramWidgets;
+
+	QMenu *m_pDirectAccessParamMenu;
 
 	int m_iDirtyCount;
 	int m_iUpdate;

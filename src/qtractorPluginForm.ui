@@ -299,14 +299,29 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="DirectAccessParamLabel">
-       <property name="text">
+	  <widget class="QPushButton" name="DirectAccessParamPushButton">
+	  <property name="minimumSize" >
+       <size>
+        <width>80</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="maximumSize" >
+       <size>
+        <width>120</width>
+        <height>24</height>
+       </size>
+      </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip">
         <string>Direct Access Parameter</string>
        </property>
+       <property name="text">
+        <string>Direct Access</string>
+       </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="DirectAccessParamComboBox"/>
      </item>
     </layout>
    </item>
@@ -324,7 +339,7 @@
   <tabstop>ReturnsToolButton</tabstop>
   <tabstop>AudioBusNameComboBox</tabstop>
   <tabstop>AudioBusNameToolButton</tabstop>
-  <tabstop>DirectAccessParamComboBox</tabstop>
+  <tabstop>DirectAccessParamPushButton</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc"/>

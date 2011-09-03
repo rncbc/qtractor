@@ -48,6 +48,8 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QUrl>
+
+#include <QMenu>
 #include <QKeyEvent>
 
 #include <math.h>
@@ -74,6 +76,9 @@ qtractorPluginForm::qtractorPluginForm (
 	m_pGridLayout = NULL;
 	m_iDirtyCount = 0;
 	m_iUpdate     = 0;
+
+	m_pDirectAccessParamMenu = new QMenu();
+	m_ui.DirectAccessParamPushButton->setMenu(m_pDirectAccessParamMenu);
 
     m_ui.PresetComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
@@ -134,12 +139,13 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.AudioBusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(clickAudioBusNameSlot()));
-	QObject::connect(m_ui.DirectAccessParamComboBox,
-		SIGNAL(activated(int)),
-		SLOT(changeDirectAccessParamSlot(int)));
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
+
+	QObject::connect(m_pDirectAccessParamMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateDirectAccessParamSlot()));
 
 	QObject::connect(this,
 		SIGNAL(updateParamSignal(unsigned long, float, bool)),
@@ -154,6 +160,8 @@ qtractorPluginForm::qtractorPluginForm (
 qtractorPluginForm::~qtractorPluginForm (void)
 {
 	clear();
+
+	delete m_pDirectAccessParamMenu;
 }
 
 
@@ -198,14 +206,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			++iRows;
 		int iRow = 0;
 		int iCol = 0;
-		// Setup the none-item for the dirctAccessParameter combobox.
-		m_ui.DirectAccessParamComboBox->addItem(tr("(none)"), int(-1));
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		for ( ; param != params.constEnd(); ++param) {
 			qtractorPluginParam *pParam = param.value();
-			// Set the parameter name and the key as data
-			// to the direct access parameter combobox.
-			m_ui.DirectAccessParamComboBox->addItem(pParam->name(), int(param.key()));
 			qtractorPluginParamWidget *pParamWidget
 				= new qtractorPluginParamWidget(pParam, this);
 			m_paramWidgets.insert(pParam->index(), pParamWidget);
@@ -219,14 +222,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				iRow = 0;
 				++iCol;
 			}
-		}
-		// If direct access parameter is set,
-		// select the right item in the combo box.
-		if (m_pPlugin->directAccessParamIndex() >= 0) {
-			int iIndex = m_ui.DirectAccessParamComboBox->findData(
-				int(m_pPlugin->directAccessParamIndex()));
-			if (iIndex >= 0)
-				m_ui.DirectAccessParamComboBox->setCurrentIndex(iIndex);
 		}
 	}
 	m_ui.ParamsGridWidget->setLayout(m_pGridLayout);
@@ -248,7 +243,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.AudioBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AudioBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AudioBusNameToolButton->setVisible(bAuxSendPlugin);
-
+		
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
 	
@@ -402,31 +397,38 @@ void qtractorPluginForm::updateAudioBusName (void)
 
 	m_ui.AudioBusNameComboBox->clear();
 
+	const QIcon icon(":/images/trackAudio.png");
+	m_ui.AudioBusNameComboBox->addItem(icon, tr("(none)"));
+
 	qtractorAuxSendPlugin *pAuxSendPlugin = NULL;
 	if ((m_pPlugin->type())->typeHint() == qtractorPluginType::AuxSend)
 		pAuxSendPlugin = static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
-	if (pAuxSendPlugin) {
-		qtractorAudioEngine *pAudioEngine = NULL;
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession)
-			pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine) {
-			const QIcon icon(":/images/trackAudio.png");
-			for (qtractorBus *pBus = pAudioEngine->buses().first();
-					pBus; pBus = pBus->next()) {
-				if (pBus->busMode() & qtractorBus::Output) {
-					qtractorAudioBus *pAudioBus
-						= static_cast<qtractorAudioBus *> (pBus);
-					if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
-						m_ui.AudioBusNameComboBox->addItem(icon, pAudioBus->busName());
-				}
-			}
+	if (pAuxSendPlugin == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	for (qtractorBus *pBus = pAudioEngine->buses().first();
+			pBus; pBus = pBus->next()) {
+		if (pBus->busMode() & qtractorBus::Output) {
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (pBus);
+			if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
+				m_ui.AudioBusNameComboBox->addItem(icon, pAudioBus->busName());
 		}
-		const QString& sAudioBusName = pAuxSendPlugin->audioBusName();
-		int iIndex = m_ui.AudioBusNameComboBox->findText(sAudioBusName);
-		if (iIndex >= 0)
-			m_ui.AudioBusNameComboBox->setCurrentIndex(iIndex);
 	}
+
+	const QString& sAudioBusName = pAuxSendPlugin->audioBusName();
+	int iIndex = m_ui.AudioBusNameComboBox->findText(sAudioBusName);
+	if (iIndex < 0)
+		iIndex = 0;
+	m_ui.AudioBusNameComboBox->setCurrentIndex(iIndex);
 }
 
 
@@ -816,8 +818,38 @@ void qtractorPluginForm::clickAudioBusNameSlot (void)
 }
 
 
-// Direct access parameter slot
-void qtractorPluginForm::changeDirectAccessParamSlot ( int iIndex )
+// Direct access parameter slots
+void qtractorPluginForm::updateDirectAccessParamSlot (void)
+{
+	m_pDirectAccessParamMenu->clear();
+
+	if (m_pPlugin == NULL)
+		return;
+
+	QAction *pAction;
+	int iDirectAccessParamIndex = m_pPlugin->directAccessParamIndex();
+	const qtractorPlugin::Params& params = m_pPlugin->params();
+	qtractorPlugin::Params::ConstIterator param = params.constBegin();
+	for ( ; param != params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
+		int iParamIndex = int(param.key());
+		pAction = m_pDirectAccessParamMenu->addAction(
+			pParam->name(), this, SLOT(changeDirectAccessParamSlot()));
+		pAction->setCheckable(true);
+		pAction->setChecked(iDirectAccessParamIndex == iParamIndex);
+		pAction->setData(iParamIndex);
+	}
+	if (!params.isEmpty())
+		m_pDirectAccessParamMenu->addSeparator();
+	pAction = m_pDirectAccessParamMenu->addAction(
+		tr("&None"), this, SLOT(changeDirectAccessParamSlot()));
+	pAction->setCheckable(true);
+	pAction->setChecked(iDirectAccessParamIndex < 0);
+	pAction->setData(int(-1));	
+}
+
+
+void qtractorPluginForm::changeDirectAccessParamSlot (void)
 {
 	if (m_pPlugin == NULL)
 		return;
@@ -825,12 +857,12 @@ void qtractorPluginForm::changeDirectAccessParamSlot ( int iIndex )
 	if (m_iUpdate > 0)
 		return;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginForm[%p]::changeDirectAccessParamSlot(%d)", this, iIndex);
-#endif
+	// Retrieve direct access parameter index from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction == NULL)
+		return;
 
-	long iDirectAccessParamIndex
-		= long(m_ui.DirectAccessParamComboBox->itemData(iIndex).toInt());
+	int iDirectAccessParamIndex = pAction->data().toInt();
 
 	++m_iUpdate;
 
@@ -842,6 +874,7 @@ void qtractorPluginForm::changeDirectAccessParamSlot ( int iIndex )
 
 	--m_iUpdate;
 }
+
 
 // Activation slot.
 void qtractorPluginForm::activateSlot ( bool bOn )
@@ -945,6 +978,8 @@ void qtractorPluginForm::clear (void)
 
 	qDeleteAll(m_paramWidgets);
 	m_paramWidgets.clear();
+
+	m_pDirectAccessParamMenu->clear();	
 }
 
 
