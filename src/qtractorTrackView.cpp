@@ -466,7 +466,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		y1  = y2;
 		y2 += pTrack->zoomHeight();
 		qtractorCurve *pCurve = pTrack->currentCurve();
-		if (pCurve) {
+		if (pCurve && y2 > cy) {
 			const int h = y2 - y1 - 2;
 			const QRect trackRect(x, y1 - cy + 1, w, h);
 			if (iTrackStart == 0)
