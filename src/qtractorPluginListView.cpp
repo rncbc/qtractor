@@ -1397,8 +1397,6 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	QMenu *pDirectAccessParamMenu = menu.addMenu("Dire&ct Access");
-	pDirectAccessParamMenu->setEnabled(pPlugin != NULL);
-
 	if (pPlugin) {
 		int iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
 		const qtractorPlugin::Params& params = pPlugin->params();
@@ -1412,14 +1410,18 @@ void qtractorPluginListView::contextMenuEvent (
 			pAction->setChecked(iDirectAccessParamIndex == iParamIndex);
 			pAction->setData(iParamIndex);
 		}
-		if (!params.isEmpty())
+		bool bParams = (params.count() > 0);
+		if (bParams) {
 			pDirectAccessParamMenu->addSeparator();
-		pAction = pDirectAccessParamMenu->addAction(
-			tr("&None"), this, SLOT(directAccessPlugin()));
-		pAction->setCheckable(true);
-		pAction->setChecked(iDirectAccessParamIndex < 0);
-		pAction->setData(int(-1));
+			pAction = pDirectAccessParamMenu->addAction(
+				tr("&None"), this, SLOT(directAccessPlugin()));
+			pAction->setCheckable(true);
+			pAction->setChecked(iDirectAccessParamIndex < 0);
+			pAction->setData(int(-1));
+		}
+		pDirectAccessParamMenu->setEnabled(bParams);
 	}
+	else pDirectAccessParamMenu->setEnabled(false);
 
 	menu.addSeparator();
 

@@ -252,9 +252,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
-	bool bParams = (iRows > 0 && iRows < 101);
+	bool bParams = (params.count() > 0);
 	m_ui.ParamsToolButton->setVisible(bParams);
 	m_ui.ParamsToolButton->setChecked(bParams);
+	m_ui.DirectAccessParamPushButton->setVisible(bParams);
 	paramsSlot(bParams);
 
 	// Clear any initial param update.
@@ -839,6 +840,7 @@ void qtractorPluginForm::updateDirectAccessParamSlot (void)
 		pAction->setChecked(iDirectAccessParamIndex == iParamIndex);
 		pAction->setData(iParamIndex);
 	}
+
 	if (!params.isEmpty())
 		m_pDirectAccessParamMenu->addSeparator();
 	pAction = m_pDirectAccessParamMenu->addAction(
