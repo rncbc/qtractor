@@ -28,6 +28,8 @@
 // #define VST_2_4_EXTENSIONS 0
 // #define VST_FORCE_DEPRECATED 1
 
+#include <stdint.h>
+
 #if !defined(__WIN32__) && !defined(_WIN32) && !defined(WIN32)
 #define __cdecl
 #endif

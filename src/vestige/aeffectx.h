@@ -26,6 +26,10 @@
 #ifndef _AEFFECTX_H
 #define _AEFFECTX_H
 
+#define CCONST(a, b, c, d)( ( ( (int) a ) << 24 ) |		\
+				( ( (int) b ) << 16 ) |		\
+				( ( (int) c ) << 8 ) |		\
+				( ( (int) d ) << 0 ) )
 
 const int audioMasterAutomate = 0;
 const int audioMasterVersion = 1;
@@ -96,6 +100,7 @@ const int effEditGetRect = 13;
 const int effEditOpen = 14;
 const int effEditClose = 15;
 const int effEditIdle = 19;
+const int effEditTop = 20;
 const int effProcessEvents = 25;
 const int effGetEffectName = 45;
 const int effGetParameterProperties = 47; // missing
@@ -105,20 +110,26 @@ const int effGetVendorVersion = 49;
 const int effCanDo = 51; // currently unused
 const int effGetVstVersion = 58; // currently unused
 
-const int kEffectMagic =
-#ifdef WORDS_BIGENDIAN
-	0x50747356; // "VstP"
-#else
-	0x56737450; // "PtsV"
-#endif
+const int kEffectMagic = CCONST( 'V', 's', 't', 'P' );
 const int kVstLangEnglish = 1;
-const int kVstMidiType = 1;
-const int kVstParameterUsesFloatStep = 1 << 2;
-const int kVstTempoValid = 1 << 10;
+const int kVstMidiType = 1;;
 const int kVstTransportPlaying = 1 << 1;
 
+/* validity flags for a VstTimeInfo structure, this info comes from the web */
 
-class VSTPlugin;
+const int kVstNanosValid (1 << 8);
+const int kVstPpqPosValid (1 << 9);
+const int kVstTempoValid (1 << 10);
+const int kVstBarsValid (1 << 11);
+const int kVstCyclePosValid (1 << 12);
+const int kVstTimeSigValid (1 << 13);
+const int kVstSmpteValid (1 << 14);
+const int kVstClockValid (1 << 15);
+
+const int kVstTransportChanged = 1;
+
+
+class RemoteVstPlugin;
 
 
 class VstMidiEvent
@@ -167,7 +178,7 @@ public:
 	// 00
 	int numEvents;
 	// 04
-	int reserved;
+	void *reserved;
 	// 08
 	VstEvent * events[];
 
@@ -176,22 +187,53 @@ public:
 
 
 
-// Not finished, neither really used
-class VstParameterProperties
+/* constants from http://www.rawmaterialsoftware.com/juceforum/viewtopic.php?t=3740&sid=183f74631fee71a493316735e2b9f28b */
+enum Vestige2StringConstants
 {
-public:
-	float stepFloat;
-	char label[64];
-	int flags;
-	int minInteger;
-	int maxInteger;
-	int stepInteger;
-	char shortLabel[8];
-	int category;
-	char categoryLabel[24];
-	char empty[128];
+        VestigeMaxNameLen       = 64,
+        VestigeMaxLabelLen      = 64,
+        VestigeMaxShortLabelLen = 8,
+        VestigeMaxCategLabelLen = 24,
+        VestigeMaxFileNameLen   = 100
+};
 
-} ;
+
+
+
+/* this struct taken from http://asseca.com/vst-24-specs/efGetParameterProperties.html */
+struct VstParameterProperties
+{
+    float stepFloat;              /* float step */
+    float smallStepFloat;         /* small float step */
+    float largeStepFloat;         /* large float step */
+    char label[VestigeMaxLabelLen];  /* parameter label */
+    int32_t flags;               /* @see VstParameterFlags */
+    int32_t minInteger;          /* integer minimum */
+    int32_t maxInteger;          /* integer maximum */
+    int32_t stepInteger;         /* integer step */
+    int32_t largeStepInteger;    /* large integer step */
+    char shortLabel[VestigeMaxShortLabelLen]; /* short label, recommended: 6 + delimiter */
+    int16_t displayIndex;        /* index where this parameter should be displayed (starting with 0) */
+    int16_t category;            /* 0: no category, else group index + 1 */
+    int16_t numParametersInCategory; /* number of parameters in category */
+    int16_t reserved;            /* zero */
+    char categoryLabel[VestigeMaxCategLabelLen]; /* category label, e.g. "Osc 1"  */
+    char future[16];              /* reserved for future use */
+};
+
+
+
+/* this enum taken from http://asseca.com/vst-24-specs/efGetParameterProperties.html */
+enum VstParameterFlags
+{
+        kVstParameterIsSwitch                = 1 << 0,  /* parameter is a switch (on/off) */
+        kVstParameterUsesIntegerMinMax       = 1 << 1,  /* minInteger, maxInteger valid */
+        kVstParameterUsesFloatStep           = 1 << 2,  /* stepFloat, smallStepFloat, largeStepFloat valid */
+        kVstParameterUsesIntStep             = 1 << 3,  /* stepInteger, largeStepInteger valid */
+        kVstParameterSupportsDisplayIndex    = 1 << 4,  /* displayIndex valid */
+        kVstParameterSupportsDisplayCategory = 1 << 5,  /* category, etc. valid */
+        kVstParameterCanRamp                 = 1 << 6   /* set if parameter value can ramp up/down */
+};
 
 
 
@@ -203,7 +245,7 @@ public:
 	// 00-03
 	int magic;
 	// dispatcher 04-07
-	int (* dispatcher)( AEffect * , int , int , int , void * , float );
+	intptr_t (* dispatcher)( AEffect * , int , int , intptr_t, void * , float );
 	// process, quite sure 08-0b
 	void (* process)( AEffect * , float * * , float * * , int );
 	// setParameter 0c-0f
@@ -221,17 +263,18 @@ public:
 	// flags 24-27
 	int flags;
 	// Fill somewhere 28-2b
-	VSTPlugin * user;
+	void *ptr1;
+	void *ptr2;
 	// Zeroes 2c-2f 30-33 34-37 38-3b
-	char empty3[4 + 4 + 4 + 4];
+	char empty3[4 + 4 + 4];
 	// 1.0f 3c-3f
 	float unkown_float;
 	// An object? pointer 40-43
-	char empty4[4];
+	void *ptr3;
 	// Zeroes 44-47
-	char empty5[4];
+	void *user;
 	// Id 48-4b
-	char unused_id[4];
+	int32_t uniqueID;
 	// Don't know 4c-4f
 	char unknown1[4];
 	// processReplacing 50-53
@@ -242,39 +285,31 @@ public:
 
 
 
-class VstTimeInfo
+typedef struct VstTimeInfo
 {
-public:
-	// 00
-	double samplePos;
-	// 08
-	double sampleRate;
-	// unconfirmed 10 18
-	char empty1[8 + 8];
-	// 20?
-	double tempo;
-	// unconfirmed 28 30 38
-	char empty2[8 + 8 + 8];
-	// 40?
-	int timeSigNumerator;
-	// 44?
-	int timeSigDenominator;
-	// unconfirmed 48 4c 50
-	char empty3[4 + 4 + 4];
-	// 54
-	int flags;
+    /* info from online documentation of VST provided by Steinberg */
 
-} ;
+    double samplePos;
+    double sampleRate;
+    double nanoSeconds;
+    double ppqPos;
+    double tempo;
+    double barStartPos;
+    double cycleStartPos;
+    double cycleEndPos;
+    double timeSigNumerator;
+    double timeSigDenominator;
+    int32_t   smpteOffset;
+    int32_t   smpteFrameRate;
+    int32_t   samplesToNextClock;
+    int32_t   flags;
+
+} VstTimeInfo;
 
 
 
 
-typedef long int (* audioMasterCallback)( AEffect * , long int , long int ,
-						long int , void * , float );
-// we don't use it, may be noise
-#define VSTCALLBACK
-
-
+typedef intptr_t (* audioMasterCallback)( AEffect * , int32_t, int32_t, intptr_t, void * , float );
 
 
 #endif
