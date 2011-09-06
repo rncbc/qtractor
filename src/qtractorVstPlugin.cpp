@@ -55,8 +55,8 @@ typedef void (*XEventProc)(XEvent *);
 #endif
 
 #if !defined(VST_2_3_EXTENSIONS) 
-typedef long VstInt32;
-typedef long VstIntPtr;
+typedef int32_t  VstInt32;
+typedef intptr_t VstIntPtr;
 #define VSTCALLBACK
 #endif
 
