@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Long overdue implementation of a dedicated MIDI file
+  player is now accessible from the MIDI files widget;
+  one can play the whole SMF or just a single track or
+  channel. (EXPERIMENTAL)
+
 - Update to a newer VeSTige header, probably fixing an
   old 32 vs. 64 bit mismatch.
 

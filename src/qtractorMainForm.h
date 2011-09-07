@@ -359,6 +359,7 @@ protected:
 	void updateMidiControlModes();
 	void updateAudioPlayer();
 	void updateMidiQueueTimer();
+	void updateMidiPlayer();
 	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();

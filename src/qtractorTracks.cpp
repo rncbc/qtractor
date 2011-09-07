@@ -1711,7 +1711,7 @@ bool qtractorTracks::addTrack (void)
 
 	// Create a new track right away...
 	const int iTrack = pSession->tracks().count() + 1;
-	const QColor color = qtractorTrack::trackColor(iTrack);
+	const QColor& color = qtractorTrack::trackColor(iTrack);
 	qtractorTrack *pTrack = new qtractorTrack(pSession);
 	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 	pTrack->setMidiChannel(pSession->midiTag() % 16);
