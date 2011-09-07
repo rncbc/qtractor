@@ -146,12 +146,6 @@ public:
 	int vst_dispatch(unsigned short iInstance,
 		long opcode, long index, long value, void *ptr, float opt) const;
 
-	// Idle timer flag accessor.
-	void setIdleTimer(bool bIdleTimer)
-		{ m_bIdleTimer = bIdleTimer; }
-	bool isIdleTimer() const
-		{ return m_bIdleTimer; }
-
 	// Our own editor widget accessor.
 	QWidget *editorWidget() const;
 
@@ -160,11 +154,6 @@ public:
 
 	// Idle editor (static).
 	static void idleEditorAll();
-
-#if 0 // !VST_FORCE_DEPRECATED
-	// Idle timer (static).
-	static void idleTimerAll();
-#endif
 
 	// Editor widget forward decls.
 	class EditorWidget;
@@ -182,9 +171,6 @@ private:
 	// Audio I/O buffer pointers.
 	float **m_ppIBuffer;
 	float **m_ppOBuffer;
-
-	// Idle timer flag.
-	bool m_bIdleTimer;
 
 	// Our own editor widget (parent frame).
 	EditorWidget *m_pEditorWidget;

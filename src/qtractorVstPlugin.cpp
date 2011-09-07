@@ -396,7 +396,7 @@ bool qtractorVstPluginType::open (void)
 	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 
 	// Retrieve plugin unique identifier.
-#ifdef CONFIG_VESTIGE
+#ifdef CONFIG_VESTIGE_OLD
 	m_iUniqueID = qHash(file()->filename());
 #else
 	m_iUniqueID = pVstEffect->uniqueID;
@@ -524,8 +524,7 @@ static QList<qtractorVstPlugin *> g_vstPlugins;
 qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
 	qtractorVstPluginType *pVstType )
 	: qtractorPlugin(pList, pVstType), m_ppEffects(NULL),
-		m_ppIBuffer(NULL), m_ppOBuffer(NULL),
-		m_bIdleTimer(false), m_pEditorWidget(NULL)
+		m_ppIBuffer(NULL), m_ppOBuffer(NULL), m_pEditorWidget(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -835,7 +834,7 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
 	}
-#endif
+#endif	// !CONFIG_VESTIGE
 }
 
 
@@ -998,32 +997,6 @@ void qtractorVstPlugin::idleEditorAll (void)
 }
 
 
-#if 0 // !VST_FORCE_DEPRECATED
-// Idle editor (static).
-void qtractorVstPlugin::idleTimerAll (void)
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorVstPlugin::idleTimerAll()");
-#endif
-	QListIterator<qtractorVstPlugin *> iter(g_vstPlugins);
-	while (iter.hasNext()) {
-		qtractorVstPlugin *pVstPlugin = iter.next();
-		if (pVstPlugin->isIdleTimer()) {
-			// Dispatch idleness for all instances...
-			unsigned short iBusyTimer = 0;
-			for (unsigned short i = 0; pVstPlugin->instances(); ++i) {
-				if (!pVstPlugin->vst_dispatch(0, effIdle, 0, 0, NULL, 0.0f))
-					++iBusyTimer;
-			}
-			// Are we into idleness still?
-			if (iBusyTimer > 0)
-				pVstPlugin->setIdleTimer(false);
-		}
-	}
-}
-#endif
-
-
 // Our own editor widget accessor.
 QWidget *qtractorVstPlugin::editorWidget (void) const
 {
@@ -1104,7 +1077,7 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 		qDebug("    .maxInteger              = %d", int(m_props.maxInteger));
 		qDebug("    .stepInteger             = %d", int(m_props.stepInteger));
 		qDebug("    .stepFloat               = %g", m_props.stepFloat);
-	#ifndef CONFIG_VESTIGE
+	#ifndef CONFIG_VESTIGE_OLD
 		qDebug("    .smallStepFloat          = %g", m_props.smallStepFloat);
 		qDebug("    .largeStepFloat          = %g", m_props.largeStepFloat);
 		qDebug("    .largeStepInteger        = %d", int(m_props.largeStepInteger));
@@ -1150,7 +1123,7 @@ qtractorVstPluginParam::~qtractorVstPluginParam (void)
 // Port range hints predicate methods.
 bool qtractorVstPluginParam::isBoundedBelow (void) const
 {
-#ifdef CONFIG_VESTIGE
+#ifdef CONFIG_VESTIGE_OLD
 	return false;
 #else
 	return (m_props.flags & kVstParameterUsesIntegerMinMax);
@@ -1159,7 +1132,7 @@ bool qtractorVstPluginParam::isBoundedBelow (void) const
 
 bool qtractorVstPluginParam::isBoundedAbove (void) const
 {
-#ifdef CONFIG_VESTIGE
+#ifdef CONFIG_VESTIGE_OLD
 	return false;
 #else
 	return (m_props.flags & kVstParameterUsesIntegerMinMax);
@@ -1183,7 +1156,7 @@ bool qtractorVstPluginParam::isSampleRate (void) const
 
 bool qtractorVstPluginParam::isInteger (void) const
 {
-#ifdef CONFIG_VESTIGE
+#ifdef CONFIG_VESTIGE_OLD
 	return false;
 #else
 	return (m_props.flags & kVstParameterUsesIntStep);
@@ -1192,7 +1165,7 @@ bool qtractorVstPluginParam::isInteger (void) const
 
 bool qtractorVstPluginParam::isToggled (void) const
 {
-#ifdef CONFIG_VESTIGE
+#ifdef CONFIG_VESTIGE_OLD
 	return false;
 #else
 	return (m_props.flags & kVstParameterIsSwitch);
@@ -1201,7 +1174,7 @@ bool qtractorVstPluginParam::isToggled (void) const
 
 bool qtractorVstPluginParam::isDisplay (void) const
 {
-#ifdef CONFIG_VESTIGE
+#ifdef CONFIG_VESTIGE_OLD
 	return false;
 #else
 	return true;
@@ -1516,11 +1489,6 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 
 	case audioMasterNeedIdle:
 		VST_HC_DEBUG("audioMasterNeedIdle");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin && !pVstPlugin->isIdleTimer()) {
-			effect->dispatcher(effect, effIdle, 0, 0, NULL, 0.0f);
-			pVstPlugin->setIdleTimer(true);
-		}
 		break;
 
 	case audioMasterGetPreviousPlug:
