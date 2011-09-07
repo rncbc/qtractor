@@ -963,6 +963,9 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	}
 
 	snd_seq_event_output(m_pMidiEngine->alsaSeq(), &ev);
+
+	if (m_pMidiBus->midiMonitor_out())
+		m_pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), pEvent->value(), iTime);
 }
 
 

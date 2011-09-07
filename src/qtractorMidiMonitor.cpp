@@ -100,7 +100,7 @@ float qtractorMidiMonitor::value (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && g_iFrameSlot > 0) {
 		// Sweep the queue until current time...
-		unsigned long iFramePos = pSession->framePos();
+		unsigned long iFramePos = pSession->audioEngine()->jackFrame();
 		while (m_iFrameStart < iFramePos) {
 			QueueItem& item = m_pQueue[m_iQueueIndex];
 			if (val < item.value)
@@ -158,7 +158,7 @@ void qtractorMidiMonitor::reset (void)
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
-		m_iFrameStart = pSession->framePos();
+		m_iFrameStart = pSession->audioEngine()->jackFrame();
 }
 
 
