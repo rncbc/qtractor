@@ -6075,14 +6075,15 @@ void qtractorMainForm::timerSlot (void)
 		if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
 			m_iPlayerTimer = 0;
 			if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
-				if (m_pFiles && m_pFiles->isPlayState()) {
+				if (m_pFiles && m_pFiles->isPlayState())
 					m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
-				} else {
-					if (m_pFiles) m_pFiles->setPlayState(false);
-					appendMessages(tr("Playing ended."));
-					pAudioEngine->closePlayer();
-					pMidiEngine->closePlayer();
-				}
+			}
+			if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
+				if (m_pFiles && m_pFiles->isPlayState())
+					m_pFiles->setPlayState(false);
+				appendMessages(tr("Playing ended."));
+				pAudioEngine->closePlayer();
+				pMidiEngine->closePlayer();
 			}
 		}
 	}
@@ -6607,13 +6608,8 @@ void qtractorMainForm::activateMidiFile (
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine && pMidiEngine->openPlayer(sFilename, iTrackChannel)) {
 		if (m_pFiles) m_pFiles->setPlayState(true);
-		if (iTrackChannel >= 0) {
-			appendMessages(tr("Playing \"%1\" (track/channel %2)...")
-				.arg(QFileInfo(sFilename).fileName()).arg(iTrackChannel + 1));
-		} else {
-			appendMessages(tr("Playing \"%1\"...")
-				.arg(QFileInfo(sFilename).fileName()));
-		}
+		appendMessages(tr("Playing \"%1\"...")
+			.arg(QFileInfo(sFilename).fileName()));
 	}
 
 	// Try updating player status anyway...
