@@ -146,6 +146,7 @@ void qtractorOptions::loadOptions (void)
 	iMidiCaptureFormat = m_settings.value("/CaptureFormat", 1).toInt();
 	iMidiCaptureQuantize = m_settings.value("/CaptureQuantize", 0).toInt();
 	iMidiQueueTimer    = m_settings.value("/QueueTimer", 0).toInt();
+	bMidiPlayerBus     = m_settings.value("/PlayerBus", false).toBool();
 	bMidiControlBus    = m_settings.value("/ControlBus", false).toBool();
 	bMidiMetroBus      = m_settings.value("/MetroBus", false).toBool();
 	bMidiMetronome     = m_settings.value("/Metronome", true).toBool();
@@ -371,6 +372,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/CaptureFormat", iMidiCaptureFormat);
 	m_settings.setValue("/CaptureQuantize", iMidiCaptureQuantize);
 	m_settings.setValue("/QueueTimer", iMidiQueueTimer);
+	m_settings.setValue("/PlayerBus", bMidiPlayerBus);
 	m_settings.setValue("/ControlBus", bMidiControlBus);
 	m_settings.setValue("/MetroBus", bMidiMetroBus);
 	m_settings.setValue("/Metronome", bMidiMetronome);

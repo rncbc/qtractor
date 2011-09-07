@@ -87,6 +87,9 @@ public:
 	// Remove current group/file item(s).
 	void deleteItem();
 
+	// Emit actiovation signal for given item...
+	void activateItem(QTreeWidgetItem *pItem = NULL);
+
 	// Master clean-up.
 	void clear();
 

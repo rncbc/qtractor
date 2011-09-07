@@ -419,8 +419,7 @@ void qtractorFiles::stabilizeSlot (void)
 		m_pDeleteItemAction->setEnabled(
 			pItem && pItem->type() != qtractorFileListView::ChannelItem);
 		bool bPlayEnabled = (
-			pItem && pItem->type() == qtractorFileListView::FileItem
-			&& m_pTabWidget->currentIndex() == qtractorFiles::Audio);
+			pItem && pItem->type() != qtractorFileListView::GroupItem);
 		m_pPlayItemAction->setEnabled(bPlayEnabled);
 		m_pPlayButton->setEnabled(bPlayEnabled);
 	}
@@ -440,18 +439,18 @@ void qtractorFiles::playSlot ( bool bOn )
 
 	setPlayState(bOn);
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	QString sFilename;
-	if (bOn && m_pTabWidget->currentIndex() == qtractorFiles::Audio) {
-		qtractorFileListItem *pFileItem = m_pAudioListView->currentFileItem();
-		if (pFileItem)
-			sFilename = pFileItem->path();
+	if (bOn) {
+		switch (m_pTabWidget->currentIndex()) {
+		case qtractorFiles::Audio:
+			m_pAudioListView->activateItem();
+			break;
+		case qtractorFiles::Midi:
+			m_pMidiListView->activateItem();
+			break;
+		default:
+			break;
+		}
 	}
-
-	pMainForm->activateAudioFile(sFilename);
 }
 
 

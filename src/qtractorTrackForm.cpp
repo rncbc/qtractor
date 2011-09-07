@@ -129,8 +129,8 @@ qtractorTrackForm::qtractorTrackForm (
 	m_ui.ForegroundColorComboBox->clear();
 	m_ui.BackgroundColorComboBox->clear();
 	for (int i = 1; i < 28; ++i) {
-		const QColor rgbBack = qtractorTrack::trackColor(i);
-		const QColor rgbFore = rgbBack.darker();
+		const QColor& rgbBack = qtractorTrack::trackColor(i);
+		const QColor& rgbFore = rgbBack.darker();
 		m_ui.ForegroundColorComboBox->addItem(rgbFore.name());
 		m_ui.BackgroundColorComboBox->addItem(rgbBack.name());
 	}

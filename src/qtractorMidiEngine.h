@@ -39,6 +39,7 @@ class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
 class qtractorMidiMonitor;
 class qtractorMidiSysexList;
+class qtractorMidiPlayer;
 class qtractorPluginList;
 class qtractorCurveList;
 
@@ -187,6 +188,15 @@ public:
 	qtractorMidiBus *controlBus_in() const;
 	qtractorMidiBus *controlBus_out() const;
 
+	// Audition/pre-listening bus mode accessors.
+	void setPlayerBus(bool bPlayerBus);
+	bool isPlayerBus() const;
+	void resetPlayerBus();
+
+	bool isPlayerOpen() const;
+	bool openPlayer(const QString& sFilename, int iTrackChannel = -1);
+	void closePlayer();
+
 	// MMC dispatch special commands.
 	void sendMmcLocate(unsigned long iLocate) const;
 	void sendMmcMaskedWrite(qtractorMmcEvent::SubCommand scmd,
@@ -262,6 +272,12 @@ protected:
 	void closeControlBus();
 	void deleteControlBus();
 
+	// Player (de)activation methods.
+	void createPlayerBus();
+	bool openPlayerBus();
+	void closePlayerBus();
+	void deletePlayerBus();
+
 private:
 
 	// Special event notifier proxy object.
@@ -311,6 +327,11 @@ private:
 
 	// Track down tempo changes.
 	float m_fMetroTempo;
+
+	// SMF player enablement.
+	bool             m_bPlayerBus;
+	qtractorMidiBus *m_pPlayerBus;
+	qtractorMidiPlayer *m_pPlayer;
 
 	// Input quantization (aka. record snap-per-beat).
 	unsigned short m_iCaptureQuantize;

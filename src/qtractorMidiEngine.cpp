@@ -172,6 +172,95 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiPlayerThread -- MIDI player thread.
+//
+
+class qtractorMidiPlayer;
+
+class qtractorMidiPlayerThread : public QThread
+{
+public:
+
+	// Constructor.
+	qtractorMidiPlayerThread(qtractorMidiPlayer *pMidiPlayer);
+
+	// Destructor.
+	~qtractorMidiPlayerThread();
+
+protected:
+
+	// The main thread executive.
+	void run();
+
+private:
+
+	// Instance variables.
+	qtractorMidiPlayer *m_pMidiPlayer;
+
+	bool m_bRunState;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiPlayer -- Simple MIDI player.
+//
+
+class qtractorMidiPlayer
+{
+public:
+
+	// Constructor.
+	qtractorMidiPlayer(qtractorMidiBus *pMidiBus);
+
+	// Destructor.
+	~qtractorMidiPlayer();
+
+	// Open and start playing.
+	bool open(const QString& sFilename, int iTrackChannel = -1);
+
+	// Close and stop playing.
+	void close();
+
+	// Process playing executive.
+	bool process(unsigned long iFrameStart, unsigned long iFrameEnd);
+
+	// Open status predicate.
+	bool isOpen() const;
+
+	// Sample-rate accessor.
+	unsigned int sampleRate() const;
+
+	// Queue time (ticks) accessor.
+	unsigned long queueTime() const;
+
+	// Queue time (frames) accessor.
+	unsigned long queueFrame() const;
+
+protected:
+
+	// Enqueue process event.
+	void enqueue(unsigned short iMidiChannel,
+		qtractorMidiEvent *pEvent, unsigned long iTime, float fGain);
+
+private:
+
+	// Instance variables.
+	qtractorMidiBus           *m_pMidiBus;
+	qtractorMidiEngine        *m_pMidiEngine;
+
+	unsigned short             m_iSeqs;
+	qtractorMidiSequence     **m_ppSeqs;
+	qtractorMidiCursor       **m_ppSeqCursors;
+	qtractorTimeScale         *m_pTimeScale;
+
+	qtractorTimeScale::Cursor *m_pCursor;
+	float                      m_fTempo;
+
+	qtractorMidiPlayerThread  *m_pPlayerThread;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiInputThread -- MIDI input thread (singleton).
 //
 
@@ -548,6 +637,381 @@ void qtractorMidiOutputThread::sync (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiPlayerThread -- MIDI player thread.
+//
+
+// Constructor.
+qtractorMidiPlayerThread::qtractorMidiPlayerThread (
+	qtractorMidiPlayer *pMidiPlayer ) : QThread(),
+		m_pMidiPlayer(pMidiPlayer), m_bRunState(false)
+{
+}
+
+
+// Destructor.
+qtractorMidiPlayerThread::~qtractorMidiPlayerThread (void)
+{
+	if (isRunning()) do {
+		m_bRunState = false;
+	//	terminate();
+	} while (!wait(200));
+}
+
+
+// The main thread executive.
+void qtractorMidiPlayerThread::run (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiPlayerThread[%p]::run(): started...", this);
+#endif
+
+	const unsigned int iSampleRate = m_pMidiPlayer->sampleRate();
+	const unsigned long iReadAhead = (iSampleRate >> 2);
+
+	unsigned long iFrameStart = 0;
+	unsigned long iFrameEnd = 0;
+
+	m_bRunState = true;
+
+	while (m_bRunState) {
+		iFrameEnd += iReadAhead;
+		if (m_pMidiPlayer->process(iFrameStart, iFrameEnd)) {
+			const unsigned long iQueueFrame = m_pMidiPlayer->queueFrame();
+			const long iDelta = long(iFrameStart) - long(iQueueFrame);
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorMidiPlayer::process(%lu, %lu) iQueueFrame=%lu (%ld)",
+				iFrameStart, iFrameEnd, iQueueFrame, iDelta);
+		#endif
+			unsigned long iSleep = iReadAhead;
+			if (iSleep +  iDelta > 0)
+			    iSleep += iDelta;
+			msleep((1000 * iSleep) / iSampleRate);
+			iFrameStart = iFrameEnd;
+		}
+		else m_bRunState = false;
+	}
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiPlayerThread[%p]::run(): stopped.", this);
+#endif
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiPlayer -- Simple MIDI player.
+//
+
+// Constructor.
+qtractorMidiPlayer::qtractorMidiPlayer (qtractorMidiBus *pMidiBus )
+	: m_pMidiBus(pMidiBus),
+		m_pMidiEngine(static_cast<qtractorMidiEngine *> (pMidiBus->engine())),
+		m_iSeqs(0), m_ppSeqs(NULL), m_ppSeqCursors(NULL), m_pTimeScale(NULL), 
+		m_pCursor(NULL), m_fTempo(0.0f), m_pPlayerThread(NULL)
+{
+}
+
+
+// Destructor.
+qtractorMidiPlayer::~qtractorMidiPlayer (void)
+{
+	close();
+}
+
+
+// Open and start playing.
+bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
+{
+	close();
+
+	if (m_pMidiBus == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
+	snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
+		return false;
+
+	qtractorMidiFile file;
+	if (!file.open(sFilename))
+		return false;
+
+	m_pTimeScale = new qtractorTimeScale(*pTimeScale);
+	m_pTimeScale->setTicksPerBeat(file.ticksPerBeat());
+
+	if (iTrackChannel < 0) {
+		m_iSeqs = (file.format() == 1 ? file.tracks() : 16);
+		iTrackChannel = 0;
+	}
+	else m_iSeqs = 1;
+
+	m_ppSeqs = new qtractorMidiSequence * [m_iSeqs];
+	m_ppSeqCursors = new qtractorMidiCursor * [m_iSeqs];
+	for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
+		m_ppSeqs[iSeq] = new qtractorMidiSequence(
+			QString(), iSeq, m_pTimeScale->ticksPerBeat());
+		m_ppSeqCursors[iSeq] = new qtractorMidiCursor();
+	}
+
+	if (file.readTracks(m_ppSeqs, m_iSeqs, iTrackChannel) && file.tempoMap())
+		file.tempoMap()->intoTimeScale(m_pTimeScale);
+
+	file.close();
+
+	m_pCursor = new qtractorTimeScale::Cursor(m_pTimeScale);
+	m_fTempo = m_pTimeScale->tempo();
+
+	int iAlsaQueue = m_pMidiEngine->alsaQueue();
+
+	snd_seq_queue_tempo_t *tempo;
+	snd_seq_queue_tempo_alloca(&tempo);
+	snd_seq_get_queue_tempo(pAlsaSeq, iAlsaQueue, tempo);
+	snd_seq_queue_tempo_set_ppq(tempo, (int) m_pTimeScale->ticksPerBeat());
+	snd_seq_queue_tempo_set_tempo(tempo,
+		(unsigned int) (60000000.0f / m_fTempo));
+	snd_seq_set_queue_tempo(pAlsaSeq, iAlsaQueue, tempo);
+
+	snd_seq_start_queue(pAlsaSeq, iAlsaQueue, NULL);
+	snd_seq_drain_output(pAlsaSeq);
+
+	m_pPlayerThread = new qtractorMidiPlayerThread(this);
+	m_pPlayerThread->start(QThread::HighPriority);
+
+	return true;
+}
+
+
+// Close and stop playing.
+void qtractorMidiPlayer::close (void)
+{
+
+	if (m_pPlayerThread) {
+		delete m_pPlayerThread;
+		m_pPlayerThread = NULL;
+	}
+
+	if (m_ppSeqs && m_pMidiBus) {
+		snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
+		if (pAlsaSeq) {
+			snd_seq_drop_output(pAlsaSeq);
+			int iAlsaQueue = m_pMidiEngine->alsaQueue();
+			if (iAlsaQueue >= 0)
+				snd_seq_stop_queue(pAlsaSeq, iAlsaQueue, NULL);
+			for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
+				unsigned short iChannel = m_ppSeqs[iSeq]->channel();
+				m_pMidiBus->setController(iChannel, ALL_SOUND_OFF);
+				m_pMidiBus->setController(iChannel, ALL_NOTES_OFF);
+				m_pMidiBus->setController(iChannel, ALL_CONTROLLERS_OFF);
+			}
+			snd_seq_drain_output(pAlsaSeq);
+		}
+	}
+	
+	if (m_pCursor) {
+		delete m_pCursor;
+		m_pCursor = NULL;
+	}
+
+	m_fTempo = 0.0f;
+
+	for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
+		if (m_ppSeqCursors && m_ppSeqCursors[iSeq])
+			delete m_ppSeqCursors[iSeq];
+		if (m_ppSeqs && m_ppSeqs[iSeq])
+			delete m_ppSeqs[iSeq];
+	}
+
+	if (m_ppSeqCursors) {
+		delete [] m_ppSeqCursors;
+		m_ppSeqCursors = NULL;
+	}
+
+	if (m_ppSeqs) {
+		delete [] m_ppSeqs;
+		m_ppSeqs = NULL;
+	}
+
+	m_iSeqs = 0;
+
+	if (m_pTimeScale) {
+		delete m_pTimeScale;
+		m_pTimeScale = NULL;
+	}
+}
+
+
+// Process playing executive.
+bool qtractorMidiPlayer::process (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	if (m_pMidiBus == NULL)
+		return false;
+
+	if (m_pCursor == NULL)
+		return false;
+
+	snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
+		return false;
+
+	int iAlsaQueue = m_pMidiEngine->alsaQueue();
+	if (iAlsaQueue < 0)
+		return false;
+
+	qtractorTimeScale::Node *pNode
+		= m_pCursor->seekFrame(iFrameEnd);
+	if (pNode->tempo != m_fTempo) {
+		unsigned long iTime = (pNode->frame < iFrameStart
+			? pNode->tickFromFrame(iFrameStart) : pNode->tick);
+		snd_seq_event_t ev;
+		snd_seq_ev_clear(&ev);
+		snd_seq_ev_schedule_tick(&ev, iAlsaQueue, 0, iTime);
+		ev.type = SND_SEQ_EVENT_TEMPO;
+		ev.data.queue.queue = iAlsaQueue;
+		ev.data.queue.param.value
+			= (unsigned int) (60000000.0f / pNode->tempo);
+		ev.dest.client = SND_SEQ_CLIENT_SYSTEM;
+		ev.dest.port = SND_SEQ_PORT_SYSTEM_TIMER;
+		snd_seq_event_output(pAlsaSeq, &ev);
+		m_fTempo = pNode->tempo;
+	}
+
+	unsigned long iTimeStart = m_pTimeScale->tickFromFrame(iFrameStart);
+	unsigned long iTimeEnd   = m_pTimeScale->tickFromFrame(iFrameEnd);
+
+	unsigned int iProcess = 0;
+	for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
+		qtractorMidiSequence *pSeq = m_ppSeqs[iSeq];
+		qtractorMidiCursor *pSeqCursor = m_ppSeqCursors[iSeq];
+		qtractorMidiEvent *pEvent = pSeqCursor->seek(pSeq, iTimeStart);
+		while (pEvent) {
+			unsigned long iTime = pEvent->time(); // + iTimeOffset?
+			if (iTime >= iTimeEnd)
+				break;
+			if (iTime >= iTimeStart)
+				enqueue(pSeq->channel(), pEvent, iTime, 1.0f);
+			pEvent = pEvent->next();
+		}
+		if (iTimeEnd < pSeq->duration()) ++iProcess;
+	}
+
+	snd_seq_drain_output(pAlsaSeq);
+
+	return (iProcess > 0);
+}
+
+
+// Enqueue process event.
+void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
+	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain )
+{
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	snd_seq_ev_set_source(&ev, m_pMidiBus->alsaPort());
+	snd_seq_ev_set_subs(&ev);
+
+	snd_seq_ev_schedule_tick(&ev, m_pMidiEngine->alsaQueue(), 0, iTime);
+
+	switch (pEvent->type()) {
+	case qtractorMidiEvent::NOTEON:
+		ev.type = SND_SEQ_EVENT_NOTE;
+		ev.data.note.channel    = iMidiChannel;
+		ev.data.note.note       = pEvent->note();
+		ev.data.note.velocity   = int(fGain * float(pEvent->value())) & 0x7f;
+		ev.data.note.duration   = pEvent->duration();
+		break;
+	case qtractorMidiEvent::KEYPRESS:
+		ev.type = SND_SEQ_EVENT_KEYPRESS;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.param   = pEvent->note();
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::CONTROLLER:
+		ev.type = SND_SEQ_EVENT_CONTROLLER;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.param   = pEvent->controller();
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::PGMCHANGE:
+		ev.type = SND_SEQ_EVENT_PGMCHANGE;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.value = pEvent->value();
+		break;
+	case qtractorMidiEvent::CHANPRESS:
+		ev.type = SND_SEQ_EVENT_CHANPRESS;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::PITCHBEND:
+		ev.type = SND_SEQ_EVENT_PITCHBEND;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.value   = pEvent->pitchBend();
+		break;
+	case qtractorMidiEvent::SYSEX:
+		ev.type = SND_SEQ_EVENT_SYSEX;
+		snd_seq_ev_set_sysex(&ev, pEvent->sysex_len(), pEvent->sysex());
+		break;
+	default:
+		break;
+	}
+
+	snd_seq_event_output(m_pMidiEngine->alsaSeq(), &ev);
+}
+
+
+// Open status predicate.
+bool qtractorMidiPlayer::isOpen (void) const
+{
+	return (m_pPlayerThread && m_pPlayerThread->isRunning());
+}
+
+
+// Sample-rate accessor.
+unsigned int qtractorMidiPlayer::sampleRate (void) const
+{
+	return (m_pTimeScale ? m_pTimeScale->sampleRate() : 44100);
+}
+
+
+// Queue time (ticks) accessor.
+unsigned long qtractorMidiPlayer::queueTime (void) const
+{
+	snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
+		return 0;
+
+	int iAlsaQueue = m_pMidiEngine->alsaQueue();
+	if (iAlsaQueue < 0)
+		return 0;
+
+	unsigned long iQueueTime = 0;
+	
+	snd_seq_queue_status_t *pQueueStatus;
+	snd_seq_queue_status_alloca(&pQueueStatus);
+	if (snd_seq_get_queue_status(
+			pAlsaSeq, iAlsaQueue, pQueueStatus) >= 0) {
+		iQueueTime = snd_seq_queue_status_get_tick_time(pQueueStatus);
+	}
+
+	return iQueueTime;
+}
+
+
+// Queue time (frames) accessor.
+unsigned long qtractorMidiPlayer::queueFrame (void) const
+{
+	return (m_pTimeScale ? m_pTimeScale->frameFromTick(queueTime()) : 0);
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiEngine -- ALSA sequencer client instance (singleton).
 //
 
@@ -592,6 +1056,11 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	// Track down tempo changes.
 	m_fMetroTempo = 0.0f;
+
+	// SMF player stuff.
+	m_bPlayerBus = false;
+	m_pPlayerBus = NULL;
+	m_pPlayer    = NULL;
 
 	// No input/capture quantization (default).
 	m_iCaptureQuantize = 0;
@@ -1386,6 +1855,9 @@ bool qtractorMidiEngine::init (void)
 	// Time-scale cursor (tempo/time-signature map)
 	m_pMetroCursor = new qtractorTimeScale::Cursor(pSession->timeScale());
 
+	// Open SMF player to last...
+	openPlayerBus();
+
 	// Open control/metronome buses, at least try...
 	openControlBus();
 	openMetroBus();
@@ -1435,6 +1907,9 @@ bool qtractorMidiEngine::start (void)
 	if (m_pOutputThread == NULL)
 		return false;
 
+	// Close any SMF player out there...
+	closePlayer();
+
 	// Initial output thread bumping...
 	qtractorSessionCursor *pMidiCursor
 		= m_pOutputThread->midiCursorSync(true);
@@ -1456,6 +1931,7 @@ bool qtractorMidiEngine::start (void)
 	
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
+	snd_seq_drain_output(m_pAlsaSeq);
 
 	// Carry on...
 	m_pOutputThread->processSync();
@@ -1476,6 +1952,7 @@ void qtractorMidiEngine::stop (void)
 
 	// Stop queue timer...
 	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
+	snd_seq_drain_output(m_pAlsaSeq);
 
 	// Shut-off all MIDI buses...
 	for (qtractorBus *pBus = qtractorEngine::buses().first();
@@ -1507,6 +1984,9 @@ void qtractorMidiEngine::clean (void)
 	// Clean control/metronome buses...
 	deleteControlBus();
 	deleteMetroBus();
+
+	// Close SMF player last...
+	deletePlayerBus();
 
 	// Delete output thread...
 	if (m_pOutputThread) {
@@ -1801,6 +2281,133 @@ qtractorMidiBus *qtractorMidiEngine::controlBus_in() const
 qtractorMidiBus *qtractorMidiEngine::controlBus_out() const
 {
 	return m_pOControlBus;
+}
+
+
+// Player bus accessors.
+void qtractorMidiEngine::setPlayerBus ( bool bPlayerBus )
+{
+	deletePlayerBus();
+
+	m_bPlayerBus = bPlayerBus;
+
+	createPlayerBus();
+
+	if (isActivated())
+		openPlayerBus();
+}
+
+bool qtractorMidiEngine::isPlayerBus (void) const
+{
+	return m_bPlayerBus;
+}
+
+void qtractorMidiEngine::resetPlayerBus (void)
+{
+	if (m_bPlayerBus && m_pPlayerBus)
+		return;
+
+	createPlayerBus();
+}
+
+
+// Player bus simple management.
+void qtractorMidiEngine::createPlayerBus (void)
+{
+	deletePlayerBus();
+
+	// Whether metronome bus is here owned, or...
+	if (m_bPlayerBus) {
+		m_pPlayerBus = new qtractorMidiBus(this, "Player",
+			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
+	} else {
+		// Find first available output buses...
+		for (qtractorBus *pBus = qtractorEngine::buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				m_pPlayerBus = static_cast<qtractorMidiBus *> (pBus);
+				break;
+			}
+		}
+	}
+}
+
+
+// Open MIDI player stuff...
+bool qtractorMidiEngine::openPlayerBus (void)
+{
+	closePlayerBus();
+
+	// Is there any?
+	if (m_pPlayerBus == NULL)
+		createPlayerBus();
+	if (m_pPlayerBus == NULL)
+		return false;
+
+	// This is it, when dedicated...
+	if (m_bPlayerBus) {
+		addBusEx(m_pPlayerBus);
+		m_pPlayerBus->open();
+	}
+
+	// Time to create our player...
+	m_pPlayer = new qtractorMidiPlayer(m_pPlayerBus);
+
+	return true;
+}
+
+
+// Close MIDI player stuff.
+void qtractorMidiEngine::closePlayerBus (void)
+{
+	if (m_pPlayer)
+		m_pPlayer->close();
+
+	if (m_pPlayerBus && m_bPlayerBus) {
+		m_pPlayerBus->close();
+		removeBusEx(m_pPlayerBus);
+	}
+}
+
+
+// Destroy MIDI player stuff.
+void qtractorMidiEngine::deletePlayerBus (void)
+{
+	closePlayerBus();
+
+	if (m_pPlayer) {
+		delete m_pPlayer;
+		m_pPlayer = NULL;
+	}
+
+	if (m_pPlayerBus && m_bPlayerBus)
+		delete m_pPlayerBus;
+
+	m_pPlayerBus = NULL;
+}
+
+
+// Tell whether audition/pre-listening is active...
+bool qtractorMidiEngine::isPlayerOpen (void) const
+{
+	return (m_pPlayer ? m_pPlayer->isOpen() : false);
+}
+
+
+// Open and start audition/pre-listening...
+bool qtractorMidiEngine::openPlayer ( const QString& sFilename, int iTrackChannel )
+{
+	if (isPlaying())
+		return false;
+
+	return (m_pPlayer ? m_pPlayer->open(sFilename, iTrackChannel) : false);
+}
+
+
+// Stop and close audition/pre-listening...
+void qtractorMidiEngine::closePlayer (void)
+{
+	if (m_pPlayer) m_pPlayer->close();
 }
 
 

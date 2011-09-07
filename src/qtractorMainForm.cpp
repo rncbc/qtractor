@@ -1185,6 +1185,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateAudioMetronome();
 	updateMidiControlModes();
 	updateMidiQueueTimer();
+	updateMidiPlayer();
 	updateMidiControl();
 	updateMidiMetronome();
 
@@ -3935,6 +3936,7 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldMidiClockMode      = m_pOptions->iMidiClockMode;
 	int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
 	int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
+	bool    bOldMidiPlayerBus      = m_pOptions->bMidiPlayerBus;
 	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
 	QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
@@ -4051,6 +4053,10 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
 			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus))
 			updateAudioPlayer();
+		// MIDI engine player options...
+		if (( bOldMidiPlayerBus && !m_pOptions->bMidiPlayerBus) ||
+			(!bOldMidiPlayerBus &&  m_pOptions->bMidiPlayerBus))
+			updateMidiPlayer();
 		// MIDI engine control options...
 		if (( bOldMidiControlBus && !m_pOptions->bMidiControlBus) ||
 			(!bOldMidiControlBus &&  m_pOptions->bMidiControlBus))
@@ -5317,13 +5323,28 @@ void qtractorMainForm::updateMidiQueueTimer (void)
 }
 
 
+// Update MIDI player parameters.
+void qtractorMainForm::updateMidiPlayer (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Configure the MIDI engine player handling...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	pMidiEngine->setPlayerBus(m_pOptions->bMidiPlayerBus);
+}
+
+
 // Update MIDI control parameters.
 void qtractorMainForm::updateMidiControl (void)
 {
 	if (m_pOptions == NULL)
 		return;
 
-	// Configure the MIDI engine player handling...
+	// Configure the MIDI engine control handling...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine == NULL)
 		return;
@@ -6053,18 +6074,14 @@ void qtractorMainForm::timerSlot (void)
 		m_iPlayerTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
 			m_iPlayerTimer = 0;
-			if (m_pFiles) {
-				if (m_pFiles->isPlayState()) {
-					if (pAudioEngine->isPlayerOpen()) {
-						m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
-					} else {
-						appendMessages(tr("Playing ended."));
-						m_pFiles->setPlayState(false);
-					}
-				}
-				else if (pAudioEngine->isPlayerOpen()) {
+			if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
+				if (m_pFiles && m_pFiles->isPlayState()) {
 					m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
-					m_pFiles->setPlayState(true);
+				} else {
+					if (m_pFiles) m_pFiles->setPlayState(false);
+					appendMessages(tr("Playing ended."));
+					pAudioEngine->closePlayer();
+					pMidiEngine->closePlayer();
 				}
 			}
 		}
@@ -6530,6 +6547,7 @@ void qtractorMainForm::activateAudioFile (
 	// the player is stopped (eg. empty filename)...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine && pAudioEngine->openPlayer(sFilename)) {
+		if (m_pFiles) m_pFiles->setPlayState(true);
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
 	}
@@ -6581,9 +6599,26 @@ void qtractorMainForm::activateMidiFile (
 		sFilename.toUtf8().constData(), iTrackChannel);
 #endif
 
-	//
-	// TODO: Activate the MIDI file track/channel...
-	//
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// We'll start playing if the file is valid, otherwise
+	// the player is stopped (eg. empty filename)...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine && pMidiEngine->openPlayer(sFilename, iTrackChannel)) {
+		if (m_pFiles) m_pFiles->setPlayState(true);
+		if (iTrackChannel >= 0) {
+			appendMessages(tr("Playing \"%1\" (track/channel %2)...")
+				.arg(QFileInfo(sFilename).fileName()).arg(iTrackChannel + 1));
+		} else {
+			appendMessages(tr("Playing \"%1\"...")
+				.arg(QFileInfo(sFilename).fileName()));
+		}
+	}
+
+	// Try updating player status anyway...
+	if (m_iPlayerTimer  < QTRACTOR_TIMER_DELAY)
+		m_iPlayerTimer += QTRACTOR_TIMER_DELAY;
 
 	stabilizeForm();
 }
