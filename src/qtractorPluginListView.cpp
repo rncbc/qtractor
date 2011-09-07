@@ -821,7 +821,7 @@ void qtractorPluginListView::editPlugin (void)
 	if (pPlugin->isEditorVisible())
 		pPlugin->closeEditor();
 	else
-		pPlugin->openEditor(pPlugin->form());
+		pPlugin->openEditor(this);
 }
 
 
@@ -924,7 +924,17 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 	if (pPlugin == NULL)
 		return;
 
-	(pPlugin->form())->activateForm();
+	if ((pPlugin->type())->isEditor()) {
+		if (pPlugin->isEditorVisible())
+			pPlugin->closeEditor();
+		else
+			pPlugin->openEditor(this);
+	} else {
+		if (pPlugin->isFormVisible())
+			(pPlugin->form())->hide();
+		else
+			(pPlugin->form())->activateForm();
+	}
 }
 
 

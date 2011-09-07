@@ -1335,7 +1335,7 @@ void qtractorLv2Plugin::process (
 #ifdef CONFIG_LV2_UI
 
 // Open editor.
-void qtractorLv2Plugin::openEditor ( QWidget * /*pParent*/ )
+void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 {
 	if (m_lv2_ui_widget) {
 		setEditorVisible(true);
