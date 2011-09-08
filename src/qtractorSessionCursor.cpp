@@ -144,7 +144,7 @@ unsigned long qtractorSessionCursor::frameTime (void) const
 	return m_iFrameTime;
 }
 
-unsigned long qtractorSessionCursor::framePos (void) const
+unsigned long qtractorSessionCursor::frameTimeEx (void) const
 {
 	return m_iFrameTime + m_iFrameDelta;
 }

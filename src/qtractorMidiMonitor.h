@@ -26,7 +26,7 @@
 #include "qtractorMidiEvent.h"
 
 // Forwrad decalarations.
-class qtractorSession;
+class qtractorTimeScale;
 
 
 //----------------------------------------------------------------------------
@@ -56,10 +56,10 @@ public:
 	void reset();
 
 	// Singleton time base reset.
-	static void resetTime(qtractorSession *pSession);
+	static void resetTime(qtractorTimeScale *pTimeScale, unsigned long iFrame);
 
 	// Singleton time base split (scheduled tempo change)
-	static void splitTime(qtractorSession *pSession,
+	static void splitTime(qtractorTimeScale *pTimeScale,
 		unsigned long iFrame, unsigned long iTime);
 
 protected:

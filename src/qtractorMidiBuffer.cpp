@@ -208,9 +208,8 @@ unsigned int               qtractorMidiManager::g_iSyncThreadRefCount = 0;
 bool qtractorMidiManager::g_bAudioOutputBus = false;
 
 // Constructor.
-qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
+qtractorMidiManager::qtractorMidiManager (
 	qtractorPluginList *pPluginList, unsigned int iBufferSize ) :
-	m_pSession(pSession),
 	m_pPluginList(pPluginList),
 	m_directBuffer(iBufferSize >> 2),
 	m_queuedBuffer(iBufferSize),
@@ -331,24 +330,22 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 	else if (pEvent->type == SND_SEQ_EVENT_PGMCHANGE)
 		m_iPendingProg = pEvent->data.control.value;
 
-	if (m_pSession->isPlaying())
-		return queued(pEvent);
-	else
-		return m_directBuffer.push(pEvent);
+	return m_directBuffer.push(pEvent);
 }
 
 
 // Queued buffering.
-bool qtractorMidiManager::queued ( snd_seq_event_t *pEvent )
+bool qtractorMidiManager::queued (
+	qtractorTimeScale *pTimeScale, snd_seq_event_t *pEvent )
 {
-	unsigned long iTick = m_pSession->frameFromTick(pEvent->time.tick);
+	unsigned long iTick = pTimeScale->frameFromTick(pEvent->time.tick);
 
 	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
 		snd_seq_event_t ev = *pEvent;
 		ev.type = SND_SEQ_EVENT_NOTEON;
 		if (!m_queuedBuffer.insert(&ev, iTick))
 			return false;
-		iTick += m_pSession->frameFromTick(ev.data.note.duration - 1);
+		iTick += pTimeScale->frameFromTick(ev.data.note.duration - 1);
 		ev.type = SND_SEQ_EVENT_NOTEOFF;
 		ev.data.note.velocity = 0;
 		ev.data.note.duration = 0;
@@ -564,7 +561,11 @@ void qtractorMidiManager::processSync (void)
 // Resets all buffering.
 void qtractorMidiManager::reset (void)
 {
-	m_pSession->lock();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->lock();
 
 	m_directBuffer.clear();
 	m_queuedBuffer.clear();
@@ -585,7 +586,7 @@ void qtractorMidiManager::reset (void)
 	m_iPendingBankLSB = -1;
 	m_iPendingProg    = -1;
 
-	m_pSession->unlock();
+	pSession->unlock();
 }
 
 
@@ -610,7 +611,7 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 		return NULL;
 
 	qtractorMidiManager *pMidiManager
-		= new qtractorMidiManager(pSession, pPluginList);
+		= new qtractorMidiManager(pPluginList);
 	pSession->addMidiManager(pMidiManager);
 
 #ifdef CONFIG_DEBUG_0
@@ -655,27 +656,39 @@ bool qtractorMidiManager::isDefaultAudioOutputBus (void)
 // Output bus mode accessors.
 void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 {
-	m_pSession->lock();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->lock();
 	deleteAudioOutputBus();
 
 	m_bAudioOutputBus = bAudioOutputBus;
 
 	createAudioOutputBus();
-	m_pSession->unlock();
+	pSession->unlock();
 }
 
 void qtractorMidiManager::resetAudioOutputBus (void)
 {
-	m_pSession->lock();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->lock();
 	createAudioOutputBus();
-	m_pSession->unlock();
+	pSession->unlock();
 }
 
 
 // Create audio output stuff...
 void qtractorMidiManager::createAudioOutputBus (void)
 {
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine == NULL)
 		return;
 

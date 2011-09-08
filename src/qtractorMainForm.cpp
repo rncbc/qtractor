@@ -4687,7 +4687,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 			= new qtractorClipCommand(tr("record clip"));
 		// Arrange for formal clip length...
 		unsigned long iClipEnd = (m_pSession->isPunching()
-			? m_pSession->punchOut() : m_pSession->framePos());
+			? m_pSession->punchOut() : m_pSession->frameTimeEx());
 		// For all non-empty clip on record...
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {

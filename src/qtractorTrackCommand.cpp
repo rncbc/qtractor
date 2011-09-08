@@ -569,7 +569,7 @@ bool qtractorTrackStateCommand::redo (void)
 			m_pClipCommand = new qtractorClipCommand(QString());
 			// Do all the record stuffing here...
 			unsigned long iClipEnd = (pSession->isPunching()
-				? pSession->punchOut() : pSession->framePos());
+				? pSession->punchOut() : pSession->frameTimeEx());
 			if (m_pClipCommand->addClipRecord(pTrack, iClipEnd)) {
 				// Yes, we've recorded something...
 				setRefresh(true);
