@@ -1458,11 +1458,17 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		VST_HC_DEBUGX("audioMasterCanDo");
 		if (::strcmp("receiveVstMidiEvent", (char *) ptr) == 0 ||
 		//	::strcmp("sendVstMidiEvent",    (char *) ptr) == 0 ||
-		//	::strcmp("midiProgramNames",    (char *) ptr) == 0 ||
-			::strcmp("openFileSelector",    (char *) ptr) == 0 ||
+			::strcmp("sendVstTimeInfo",     (char *) ptr) == 0 ||
+			::strcmp("midiProgramNames",    (char *) ptr) == 0) {
+			ret = 1;
+		}
+	#ifndef CONFIG_VESTIGE
+		else
+		if (::strcmp("openFileSelector",    (char *) ptr) == 0 ||
 			::strcmp("closeFileSelector",   (char *) ptr) == 0) {
 			ret = 1;
 		}
+	#endif
 		break;
 
 	case audioMasterGetLanguage:

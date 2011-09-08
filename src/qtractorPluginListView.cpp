@@ -478,7 +478,10 @@ void qtractorPluginListView::addPlugin (void)
 			pPlugin->setActivated(selectForm.isPluginActivated());
 			pAddPluginCommand->addPlugin(pPlugin);
 			// Show the plugin form right away...
-			(pPlugin->form())->activateForm();
+			if ((pPlugin->type())->isEditor())
+				pPlugin->openEditor(this);
+			else
+				(pPlugin->form())->activateForm();
 		}
 	}
 

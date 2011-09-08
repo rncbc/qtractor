@@ -773,9 +773,7 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	m_fTempo = m_pTimeScale->tempo();
 
 	qtractorMidiMonitor::resetTime(m_pTimeScale, 0);
-	if (m_pMidiBus->midiMonitor_out())
-		m_pMidiBus->midiMonitor_out()->reset();
-	
+
 	int iAlsaQueue = m_pMidiEngine->alsaQueue();
 
 	snd_seq_queue_tempo_t *tempo;
