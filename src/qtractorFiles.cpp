@@ -454,6 +454,18 @@ void qtractorFiles::playSlot ( bool bOn )
 }
 
 
+// Tab page switch slots.
+void qtractorFiles::pageAudioSlot (void)
+{
+	m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
+}
+
+void qtractorFiles::pageMidiSlot (void)
+{
+	m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
+}
+
+
 // Context menu request event handler.
 void qtractorFiles::contextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
@@ -473,6 +485,22 @@ void qtractorFiles::contextMenuEvent (
 	menu.addSeparator();
 	menu.addAction(m_pPlayItemAction);
 
+	menu.addSeparator();
+
+	// Switch page options...
+	switch (m_pTabWidget->currentIndex()) {
+	case qtractorFiles::Audio:
+		menu.addAction(QIcon(":/images/trackMidi.png"),
+			tr("MIDI Files"), this, SLOT(pageMidiSlot()));
+		break;
+	case qtractorFiles::Midi:
+		menu.addAction(QIcon(":/images/trackAudio.png"),
+			tr("Audio Files"), this, SLOT(pageAudioSlot()));
+		break;
+	default:
+		break;
+	}
+	
 	menu.exec(pContextMenuEvent->globalPos());
 }
 
