@@ -1365,9 +1365,21 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		VST_HC_DEBUG("audioMasterGetTime");
 		if (pSession) {
 			::memset(&s_vstTimeInfo, 0, sizeof(s_vstTimeInfo));
-			s_vstTimeInfo.samplePos  = pSession->playHead();
+			unsigned long iPlayHead = pSession->playHead();
+			qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+			qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+			s_vstTimeInfo.samplePos = iPlayHead;
 			s_vstTimeInfo.sampleRate = pSession->sampleRate();
-			ret = (long) &s_vstTimeInfo;
+			s_vstTimeInfo.flags = 0;
+			if (pSession->isPlaying())
+				s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
+			if (pNode) {
+				s_vstTimeInfo.tempo = pNode->tempo;
+				s_vstTimeInfo.timeSigNumerator = pNode->beatsPerBar;
+				s_vstTimeInfo.timeSigDenominator = (1 << pNode->beatDivisor);
+				s_vstTimeInfo.flags |= (kVstTempoValid | kVstTimeSigValid);
+			}
+			ret = (VstIntPtr) &s_vstTimeInfo;
 		}
 		break;
 
@@ -1455,7 +1467,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 
 	case audioMasterGetLanguage:
 		VST_HC_DEBUG("audioMasterGetLanguage");
-		ret = kVstLangEnglish;
+		ret = (VstIntPtr) kVstLangEnglish;
 		break;
 
 #if 0 // !VST_FORCE_DEPRECATED
@@ -1475,7 +1487,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	case audioMasterTempoAt:
 		VST_HC_DEBUG("audioMasterTempoAt");
 		if (pSession)
-			ret = (long) (pSession->tempo() * 10000.0f);
+			ret = (VstIntPtr) (pSession->tempo() * 10000.0f);
 		break;
 
 	case audioMasterGetNumAutomatableParameters:
