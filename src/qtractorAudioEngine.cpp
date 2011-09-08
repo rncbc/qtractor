@@ -842,6 +842,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				pAudioBus->process_commit(nframes);
 		}
 		// Done as idle...
+		pAudioCursor->process(nframes);
 		pSession->release();
 		return 0;
 	}

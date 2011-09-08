@@ -54,7 +54,7 @@ public:
 	// Absolute frame-time posiion accessors.
 	void setFrameTime(unsigned long iFrameTime);
 	unsigned long frameTime() const;
-	unsigned long framePos() const;
+	unsigned long frameTimeEx() const;
 
 	// Clip sync flag accessor.
 	void setSyncType(qtractorTrack::TrackType syncType);

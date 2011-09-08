@@ -256,6 +256,9 @@ public:
 		Cursor(qtractorTimeScale *pTimeScale)
 			: ts(pTimeScale), node(0) {}
 
+		// Time scale accessor.
+		qtractorTimeScale *timeScale() const { return ts; }
+
 		// Reset method.
 		void reset(Node *pNode = 0);
 

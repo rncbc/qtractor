@@ -266,7 +266,7 @@ public:
 
 	// Absolute frame time and offset.
 	unsigned long frameTime() const;
-	unsigned long framePos() const;
+	unsigned long frameTimeEx() const;
 
 	// Sanitize a given name.
 	static QString sanitize(const QString& s); 

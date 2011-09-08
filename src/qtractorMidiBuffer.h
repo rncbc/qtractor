@@ -50,7 +50,7 @@
 
 
 // Forward declarations.
-class qtractorSession;
+class qtractorTimeScale;
 class qtractorPluginList;
 class qtractorPlugin;
 class qtractorAudioBus;
@@ -192,15 +192,13 @@ class qtractorMidiManager : public qtractorList<qtractorMidiManager>::Link
 public:
 
 	// Constructor.
-	qtractorMidiManager(qtractorSession *pSession, qtractorPluginList *pPluginList,
+	qtractorMidiManager(qtractorPluginList *pPluginList,
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize);
 
 	// Destructor.
 	~qtractorMidiManager();
 
 	// Implementation properties.
-	qtractorSession *session() const
-		{ return m_pSession; }
 	qtractorPluginList *pluginList() const
 		{ return m_pPluginList; }
 
@@ -220,7 +218,7 @@ public:
 	bool direct(snd_seq_event_t *pEvent);
 
 	// Queued buffering.
-	bool queued(snd_seq_event_t *pEvent);
+	bool queued(qtractorTimeScale *pTimeScale, snd_seq_event_t *pEvent);
 
 	// Process buffers.
 	void process(unsigned long iTimeStart, unsigned long iTimeEnd);
@@ -302,7 +300,6 @@ protected:
 private:
 
 	// Instance variables
-	qtractorSession    *m_pSession;
 	qtractorPluginList *m_pPluginList;
 
 	qtractorMidiBuffer  m_directBuffer;

@@ -726,8 +726,13 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	if (m_pMidiBus == NULL)
 		return false;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorSession *pSession = m_pMidiEngine->session();
 	if (pSession == NULL)
+		return false;
+
+	qtractorSessionCursor *pAudioCursor
+		= pSession->audioEngine()->sessionCursor();
+	if (pAudioCursor == NULL)
 		return false;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
@@ -767,6 +772,10 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	m_pCursor = new qtractorTimeScale::Cursor(m_pTimeScale);
 	m_fTempo = m_pTimeScale->tempo();
 
+	qtractorMidiMonitor::resetTime(m_pTimeScale, 0);
+	if (m_pMidiBus->midiMonitor_out())
+		m_pMidiBus->midiMonitor_out()->reset();
+	
 	int iAlsaQueue = m_pMidiEngine->alsaQueue();
 
 	snd_seq_queue_tempo_t *tempo;
@@ -779,6 +788,8 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 
 	snd_seq_start_queue(pAlsaSeq, iAlsaQueue, NULL);
 	snd_seq_drain_output(pAlsaSeq);
+
+	pAudioCursor->setFrameTime(0);
 
 	m_pPlayerThread = new qtractorMidiPlayerThread(this);
 	m_pPlayerThread->start(QThread::HighPriority);
@@ -811,6 +822,9 @@ void qtractorMidiPlayer::close (void)
 			}
 			snd_seq_drain_output(pAlsaSeq);
 		}
+		if (m_pMidiBus->pluginList_out()
+			&& (m_pMidiBus->pluginList_out())->midiManager())
+			(m_pMidiBus->pluginList_out())->midiManager()->reset();
 	}
 	
 	if (m_pCursor) {
@@ -880,6 +894,8 @@ bool qtractorMidiPlayer::process (
 		ev.dest.port = SND_SEQ_PORT_SYSTEM_TIMER;
 		snd_seq_event_output(pAlsaSeq, &ev);
 		m_fTempo = pNode->tempo;
+		qtractorMidiMonitor::splitTime(
+			m_pCursor->timeScale(), pNode->frame, iTime);
 	}
 
 	unsigned long iTimeStart = m_pTimeScale->tickFromFrame(iFrameStart);
@@ -963,6 +979,13 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	}
 
 	snd_seq_event_output(m_pMidiEngine->alsaSeq(), &ev);
+
+	if (m_pMidiBus->midiMonitor_out())
+		m_pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), pEvent->value(), iTime);
+
+	if (m_pMidiBus->pluginList_out()
+		&& (m_pMidiBus->pluginList_out())->midiManager())
+		((m_pMidiBus->pluginList_out())->midiManager())->queued(m_pTimeScale, &ev);
 }
 
 
@@ -1203,7 +1226,8 @@ void qtractorMidiEngine::resetAllMonitors (void)
 		return;
 
 	// Reset common MIDI monitor stuff...
-	qtractorMidiMonitor::resetTime(pSession);
+	qtractorMidiMonitor::resetTime(
+		pSession->timeScale(), pSession->playHead());
 
 	// Reset all MIDI bus monitors...
 	for (qtractorBus *pBus = buses().first();
@@ -1497,7 +1521,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						pMidiBus->midiMonitor_out()->enqueue(type, data2);
 						// Do it for the MIDI plugins too...
 						if ((pTrack->pluginList())->midiManager())
-							(pTrack->pluginList())->midiManager()->direct(pEv);
+							(pTrack->pluginList())->midiManager()->queued(
+								pSession->timeScale(), pEv);
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
 					}
@@ -1517,20 +1542,21 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			// Do it for the MIDI input plugins too...
 			if (pMidiBus->pluginList_in()
 				&& (pMidiBus->pluginList_in())->midiManager())
-				((pMidiBus->pluginList_in())->midiManager())->direct(pEv);
+				((pMidiBus->pluginList_in())->midiManager())->queued(
+					pSession->timeScale(), pEv);
 			// Output monitoring on passthru...
 			if (pMidiBus->isMonitor()) {
 				// Do it for the MIDI output plugins too...
 				if (pMidiBus->pluginList_out()
 					&& (pMidiBus->pluginList_out())->midiManager())
-					((pMidiBus->pluginList_out())->midiManager())->direct(pEv);
+					((pMidiBus->pluginList_out())->midiManager())->queued(
+						pSession->timeScale(), pEv);
 				if (pMidiBus->midiMonitor_out()) {
 					// MIDI-thru: same event redirected...
 					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
 					snd_seq_ev_set_subs(pEv);
 					snd_seq_ev_set_direct(pEv);
 					snd_seq_event_output_direct(m_pAlsaSeq, pEv);
-				//	++iDrainOutput;
 					// Done with MIDI-thru.
 					pMidiBus->midiMonitor_out()->enqueue(type, data2);
 				}
@@ -1694,19 +1720,18 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 	if (pMidiMonitor)
 		pMidiMonitor->enqueue(pEvent->type(), pEvent->value(), tick);
-
 	// MIDI bus monitoring...
 	if (pMidiBus->midiMonitor_out())
 		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), pEvent->value(), tick);
 
 	// Do it for the MIDI track plugins too...
+	qtractorTimeScale *pTimeScale = session()->timeScale();
 	if ((pTrack->pluginList())->midiManager())
-		(pTrack->pluginList())->midiManager()->queued(&ev);
-
+		(pTrack->pluginList())->midiManager()->queued(pTimeScale, &ev);
 	// And for the MIDI output plugins as well...
 	if (pMidiBus->pluginList_out()
 		&& (pMidiBus->pluginList_out())->midiManager())
-		((pMidiBus->pluginList_out())->midiManager())->queued(&ev);
+		((pMidiBus->pluginList_out())->midiManager())->queued(pTimeScale, &ev);
 }
 
 
@@ -2735,7 +2760,8 @@ void qtractorMidiEngine::processMetro (
 		// Save for next change.
 		m_fMetroTempo = pNode->tempo;
 		// Update MIDI monitor slot stuff...
-		qtractorMidiMonitor::splitTime(session(), pNode->frame, tick);
+		qtractorMidiMonitor::splitTime(
+			m_pMetroCursor->timeScale(), pNode->frame, tick);
 	}
 
 	// Get on with the actual metronome/clock stuff...
