@@ -80,23 +80,29 @@ public:
 
 public slots:
 
-	// Add a new group item below the current one.
-	void newGroupSlot();
-	// Add a new file item below the current group one.
-	void openFileSlot();
 	// Cut current file item(s) to clipboard.
 	void cutItemSlot();
 	// Copy current file item(s) to clipboard.
 	void copyItemSlot();
 	// Paste file item(s) from clipboard.
 	void pasteItemSlot();
-	// Rename current group/file item.
-	void renameItemSlot();
 	// Remove current group/file item(s).
 	void deleteItemSlot();
+	
+protected slots:
 
+	// Add a new group item below the current one.
+	void newGroupSlot();
+	// Add a new file item below the current group one.
+	void openFileSlot();
+	// Rename current group/file item.
+	void renameItemSlot();
 	// Audition/pre-listening player slots.
 	void playSlot(bool bOn);
+
+	// Tab page switch slots.
+	void pageAudioSlot();
+	void pageMidiSlot();
 
 	// Usual stabilizing slot.
 	void stabilizeSlot();
