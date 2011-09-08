@@ -967,10 +967,10 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Whether to have separate MIDI player ports</string>
+             <string>Whether to have separate MIDI player output ports</string>
             </property>
             <property name="text" >
-             <string>Dedicated MIDI p&amp;layer input/output</string>
+             <string>Dedicated MIDI p&amp;layer outputs</string>
             </property>
             <property name="shortcut" >
              <string>Alt+L</string>
