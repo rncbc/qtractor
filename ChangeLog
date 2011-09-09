@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- All plugin's provided GUI editors are now honored by
+  being popped up first, instead of the usual but good
+  old generic plugin form. (EXPERIMENTAL)
+
 - Long overdue implementation of a dedicated MIDI file
   player is now accessible from the MIDI files widget;
   one can play the whole SMF or just a single track or
