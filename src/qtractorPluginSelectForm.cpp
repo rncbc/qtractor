@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -201,23 +201,22 @@ bool qtractorPluginSelectForm::isMidi (void) const
 // Final selection accessors..
 int qtractorPluginSelectForm::pluginCount (void) const
 {
-	return m_ui.PluginListView->selectedItems().count();
+	return m_selectedItems.count();
 }
 
 QString qtractorPluginSelectForm::pluginFilename ( int iPlugin ) const
 {
-	return m_ui.PluginListView->selectedItems().at(iPlugin)->text(5);
+	return m_selectedItems.at(iPlugin)->text(5);
 }
 
 unsigned long qtractorPluginSelectForm::pluginIndex ( int iPlugin ) const
 {
-	return m_ui.PluginListView->selectedItems().at(iPlugin)->text(6).toULong();
+	return m_selectedItems.at(iPlugin)->text(6).toULong();
 }
 
 qtractorPluginType::Hint qtractorPluginSelectForm::pluginTypeHint ( int iPlugin ) const
 {
-	const QString& sText
-		= m_ui.PluginListView->selectedItems().at(iPlugin)->text(8);
+	const QString& sText = m_selectedItems.at(iPlugin)->text(8);
 	return qtractorPluginType::hintFromText(sText);
 }
 
@@ -394,7 +393,8 @@ void qtractorPluginSelectForm::stabilize (void)
 void qtractorPluginSelectForm::accept (void)
 {
 	// Are we done?
-	if (!m_ui.PluginListView->selectedItems().isEmpty())
+	m_selectedItems = m_ui.PluginListView->selectedItems();
+	if (!m_selectedItems.isEmpty())
 		QDialog::accept();
 }
 

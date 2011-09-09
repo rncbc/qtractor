@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -67,6 +67,8 @@ private:
 
 	unsigned short m_iChannels;
 	bool m_bMidi;
+
+	QList<QTreeWidgetItem *> m_selectedItems;
 };
 
 
