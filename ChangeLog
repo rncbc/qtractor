@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- VST plugin parameter value display on generic form
+  is now back in business (were dead regarding value
+  changes).
+
 - All plugin's provided GUI editors are now honored by
   being popped up first, instead of the usual but good
   old generic plugin form. (EXPERIMENTAL)

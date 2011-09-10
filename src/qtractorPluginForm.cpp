@@ -148,9 +148,6 @@ qtractorPluginForm::qtractorPluginForm (
 		SLOT(updateDirectAccessParamSlot()));
 
 	QObject::connect(this,
-		SIGNAL(updateParamSignal(unsigned long, float, bool)),
-		SLOT(updateParamSlot(unsigned long, float, bool)));
-	QObject::connect(this,
 		SIGNAL(changeParamSignal(unsigned long)),
 		SLOT(changeParamSlot(unsigned long)));
 }
@@ -247,8 +244,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
 	
-	// Set plugin name as title...
-	updateCaption();
+	// Set plugin name as title,
+	// maybe redundant but necessary...
+	m_pPlugin->updateEditorTitle();
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
@@ -333,24 +331,6 @@ QString qtractorPluginForm::preset (void) const
 }
 
 
-// Update form caption.
-void qtractorPluginForm::updateCaption (void)
-{
-	if (m_pPlugin == NULL)
-		return;
-
-	QString sCaption = (m_pPlugin->type())->name();
-
-	qtractorPluginList *pPluginList = m_pPlugin->list();
-	if (pPluginList && !pPluginList->name().isEmpty())
-		sCaption += " - " + pPluginList->name();
-
-	setWindowTitle(sCaption);
-
-	m_pPlugin->setEditorTitle(sCaption);
-}
-
-
 // Update activation state.
 void qtractorPluginForm::updateActivated (void)
 {
@@ -363,30 +343,6 @@ void qtractorPluginForm::updateActivated (void)
 	++m_iUpdate;
 	m_ui.ActivateToolButton->setChecked(m_pPlugin->isActivated());
 	--m_iUpdate;
-}
-
-
-// Update parameter value state.
-void qtractorPluginForm::updateParamValue (
-	unsigned long iIndex, float fValue, bool bUpdate )
-{
-	emit updateParamSignal(iIndex, fValue, bUpdate);
-}
-
-void qtractorPluginForm::updateParamSlot (
-	unsigned long iIndex, float fValue, bool bUpdate )
-{
-	if (m_pPlugin == NULL)
-		return;
-
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm[%p]::updateParamSlot(%lu, %g, %d)",
-		this, iIndex, fValue, int(bUpdate));
-#endif
-
-	qtractorPluginParam *pParam = m_pPlugin->findParam(iIndex);
-	if (pParam)
-		pParam->updateValue(fValue, bUpdate);
 }
 
 
@@ -1027,6 +983,53 @@ void qtractorPluginForm::midiControlMenuSlot ( const QPoint& pos )
 
 
 //----------------------------------------------------------------------
+// class qtractorPluginParamDisplay -- Observer display label.
+//
+
+class qtractorPluginParamDisplay : public QLabel
+{
+public:
+
+	// Local observer.
+	class Observer : public qtractorObserver
+	{
+	public:
+
+		// Constructor.
+		Observer(qtractorSubject *pSubject, qtractorPluginParamDisplay *pDisplay)
+			: qtractorObserver(pSubject), m_pDisplay(pDisplay) {}
+
+		// Observer updater.
+		void update() { m_pDisplay->updateDisplay(); }
+
+	private:
+
+		// Members.
+		qtractorPluginParamDisplay *m_pDisplay;
+	};
+
+	// Constructor.
+	qtractorPluginParamDisplay(qtractorPluginParam *pParam)
+		: QLabel(), m_pParam(pParam), m_observer(pParam->subject(), this) {}
+
+	// Observer accessor.
+	Observer *observer() { return &m_observer; }
+
+protected:
+
+	void updateDisplay() { QLabel::setText(m_pParam->display()); }
+
+private:
+
+	// Parameter reference.
+	qtractorPluginParam *m_pParam;
+
+	// Observer instance.
+	Observer m_observer;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorPluginParamWidget::SliderInterface -- Observer interface.
 //
 
@@ -1071,11 +1074,12 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	m_pGridLayout->setSpacing(4);
 
 	m_pLabel    = NULL;
-	m_pDisplay  = NULL;
 
 	m_pSlider   = NULL;
 	m_pSpinBox  = NULL;
 	m_pCheckBox = NULL;
+
+	m_pDisplay  = NULL;
 
 	if (m_pParam->isToggled()) {
 		m_pCheckBox = new qtractorObserverCheckBox(/*this*/);
@@ -1103,9 +1107,9 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	//	m_pSpinBox->setValue(int(m_pParam->value()));
 		if (m_pParam->isDisplay()) {
 			m_pGridLayout->addWidget(m_pSpinBox, 0, 1);
-			m_pDisplay = new QLabel(/*this*/);
+			m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
 			m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-			m_pDisplay->setText(m_pParam->display());
+		//	m_pDisplay->setText(m_pParam->display());
 		//	m_pDisplay->setFixedWidth(72);
 			m_pDisplay->setMinimumWidth(64);
 			m_pGridLayout->addWidget(m_pDisplay, 0, 2);
@@ -1138,9 +1142,9 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
 		if (m_pParam->isDisplay()) {
 			m_pGridLayout->addWidget(m_pSlider, 0, 1);
-			m_pDisplay = new QLabel(/*this*/);
+			m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
 			m_pDisplay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			m_pDisplay->setText(m_pParam->display());
+		//	m_pDisplay->setText(m_pParam->display());
 		//	m_pDisplay->setFixedWidth(72);
 			m_pDisplay->setMinimumWidth(64);
 			m_pGridLayout->addWidget(m_pDisplay, 0, 2);
@@ -1200,9 +1204,8 @@ void qtractorPluginParamWidget::refresh (void)
 		m_pSpinBox->observer()->update();
 	if (m_pSlider)
 		m_pSlider->observer()->update();
-
 	if (m_pDisplay)
-		m_pDisplay->setText(m_pParam->display());
+		m_pDisplay->observer()->update();
 }
 
 

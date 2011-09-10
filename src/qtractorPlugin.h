@@ -463,6 +463,8 @@ public:
 	const QString& editorTitle() const
 		{ return m_sEditorTitle; }
 
+	void updateEditorTitle();
+
 	// An accessible list of observers.
 	const QList<qtractorPluginListItem *>& items() const
 		{ return m_items; }
@@ -574,6 +576,9 @@ public:
 	long directAccessParamIndex() const;
 	bool isDirectAccessParam() const;
 	void updateDirectAccessParam();
+
+	// Parameter update executive.
+	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
 
 protected:
 

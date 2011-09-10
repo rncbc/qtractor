@@ -1344,9 +1344,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	//	effect->setParameter(effect, index, opt);
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 		if (pVstPlugin) {
-			qtractorPluginForm *pForm = pVstPlugin->form();
-			if (pForm)
-				pForm->updateParamValue(index, opt, false);
+			pVstPlugin->updateParamValue(index, opt, false);
 		//	QApplication::processEvents();
 		}
 		break;
@@ -1563,11 +1561,8 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	#if 0
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 		if (pVstPlugin) {
-			qtractorPluginForm *pForm = pVstPlugin->form();
-			if (pForm) {
-				pForm->updateParamValue(index,
-					effect->getParameter(effect, index), false);
-			}
+			pVstPlugin->updateParamValue(index,
+				effect->getParameter(effect, index), false);
 		//	QApplication::processEvents();
 		}
 	#endif
