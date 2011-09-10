@@ -435,9 +435,7 @@ static void qtractor_lv2_ui_write (
 #endif
 
 	// FIXME: Update plugin params...
-	qtractorPluginForm *pForm = pLv2Plugin->form();
-	if (pForm)
-		pForm->updateParamValue(port_index, val, false);
+	pLv2Plugin->updateParamValue(port_index, val, false);
 }
 
 

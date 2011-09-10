@@ -717,6 +717,21 @@ void qtractorPlugin::reset (void)
 }
 
 
+// Update editor title.
+void qtractorPlugin::updateEditorTitle (void)
+{
+	QString sEditorTitle = m_pType->name();
+
+	if (m_pList && !m_pList->name().isEmpty())
+		sEditorTitle += " - " + m_pList->name();
+
+	setEditorTitle(sEditorTitle);
+
+	if (m_pForm)
+		m_pForm->setWindowTitle(sEditorTitle);
+}
+
+
 // List of observers management.
 void qtractorPlugin::addItem ( qtractorPluginListItem *pItem )
 {
@@ -1084,6 +1099,16 @@ void qtractorPlugin::saveValues (
 }
 
 
+// Parameter update executive.
+void qtractorPlugin::updateParamValue (
+	unsigned long iIndex, float fValue, bool bUpdate )
+{
+	qtractorPluginParam *pParam = findParam(iIndex);
+	if (pParam)
+		pParam->updateValue(fValue, bUpdate);
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorPluginList -- Plugin chain list instance.
 //
@@ -1124,8 +1149,7 @@ void qtractorPluginList::setName ( const QString& sName )
 
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		if (pPlugin->isFormVisible())
-			(pPlugin->form())->updateCaption();
+		pPlugin->updateEditorTitle();
 	}
 
 	if (m_pMidiManager)

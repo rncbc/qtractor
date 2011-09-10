@@ -39,6 +39,8 @@ class qtractorObserverCheckBox;
 class qtractorObserverSlider;
 class qtractorObserverSpinBox;
 
+class qtractorPluginParamDisplay;
+
 class QGridLayout;
 class QLabel;
 
@@ -64,10 +66,8 @@ public:
 	void setPreset(const QString& sPreset);
 	QString preset() const;
 
-	void updateCaption();
 	void updateActivated();
 
-	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
 	void changeParamValue(unsigned long iIndex);
 
 	void updateAudioBusName();
@@ -81,7 +81,6 @@ public:
 
 signals:
 
-	void updateParamSignal(unsigned long iIndex, float fValue, bool bUpdate);
 	void changeParamSignal(unsigned long iIndex);
 
 protected slots:
@@ -100,7 +99,6 @@ protected slots:
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
 
-	void updateParamSlot(unsigned long iIndex, float fValue, bool bUpdate);
 	void changeParamSlot(unsigned long iIndex);
 
 	void changeAudioBusNameSlot(const QString& sAudioBusName);
@@ -186,11 +184,12 @@ private:
 
 	// Some possible managed widgets.
 	QLabel *m_pLabel;
-	QLabel *m_pDisplay;
 
 	qtractorObserverCheckBox *m_pCheckBox;
 	qtractorObserverSlider   *m_pSlider;
 	qtractorObserverSpinBox  *m_pSpinBox;
+
+	qtractorPluginParamDisplay *m_pDisplay;
 };
 
 
