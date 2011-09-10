@@ -555,6 +555,10 @@ void qtractorMidiManager::processSync (void)
 		}
 		pEv = m_controllerBuffer.next();
 	}
+
+	m_controllerBuffer.clear();
+
+	setWaitSync(false);
 }
 
 

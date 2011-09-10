@@ -758,11 +758,12 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 
 	// HACK: We don't change program-preset when
 	// we're supposed to be multi-timbral...
-	if (list()->flags() & qtractorPluginList::MidiBus)
+	if ((list()->flags() & qtractorPluginList::MidiBus)
+		== qtractorPluginList::MidiBus)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::selectprogram(%d, %d)", this, iBank, iProg);
+	qDebug("qtractorVstPlugin[%p]::selectProgram(%d, %d)", this, iBank, iProg);
 #endif
 
 	int iIndex = 0;
@@ -1360,7 +1361,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		break;
 
 	case audioMasterGetTime:
-		VST_HC_DEBUG("audioMasterGetTime");
+	//	VST_HC_DEBUG("audioMasterGetTime");
 		if (pSession) {
 			::memset(&s_vstTimeInfo, 0, sizeof(s_vstTimeInfo));
 			unsigned long iPlayHead = pSession->playHead();

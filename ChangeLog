@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Instrument plugin bank/program selection was found
+  broken or dead in the water, specially on VSTi, now
+  finally fixed again.
+
 - VST plugin parameter value display on generic form
   is now back in business (were dead regarding value
   changes).
