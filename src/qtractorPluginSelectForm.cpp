@@ -354,10 +354,11 @@ void qtractorPluginSelectForm::refresh (void)
 			if (iInstances < 1) {
 				pItem->setFlags(pItem->flags() & ~Qt::ItemIsSelectable);
 				int iColumnCount = m_ui.PluginListView->columnCount();
-				for (int i = 0; i < iColumnCount; ++i) {
-					pItem->setForeground(i,
-						m_ui.PluginListView->palette().mid().color());
-				}
+				const QPalette& pal = m_ui.PluginListView->palette();
+				const QColor& rgbForeground
+					= pal.color(QPalette::Disabled, QPalette::WindowText);
+				for (int i = 0; i < iColumnCount; ++i)
+					pItem->setForeground(i, rgbForeground);
 			}
 			pItem->setTextAlignment(1, Qt::AlignHCenter);	// Audio
 			pItem->setTextAlignment(2, Qt::AlignHCenter);	// MIDI
