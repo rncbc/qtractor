@@ -451,8 +451,7 @@ void qtractorPluginListView::addPlugin (void)
 		return;
 
 	qtractorPluginSelectForm selectForm(this);
-	selectForm.setChannels(m_pPluginList->channels(),
-		(m_pPluginList->flags() & qtractorPluginList::Midi));
+	selectForm.setChannels(m_pPluginList->channels(), m_pPluginList->isMidi());
 	if (!selectForm.exec())
 		return;
 
@@ -1130,8 +1129,8 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 		return false;
 
 	// All that to check whether it will get properly instantiated.
-	// FIXME: We don't care whether it's a MIDI chain at this time...
-	if ((pPlugin->type())->instances(m_pPluginList->channels(), false) < 1)
+	if ((pPlugin->type())->instances(
+			m_pPluginList->channels(), m_pPluginList->isMidi()) < 1)
 		return false;
 
 	// This is the place we'll drop something
