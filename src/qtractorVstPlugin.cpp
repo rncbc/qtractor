@@ -684,7 +684,9 @@ void qtractorVstPlugin::process (
 
 	// To process MIDI events, if any...
 	qtractorMidiManager *pMidiManager = NULL;
-	if (type()->isMidi())
+	unsigned short iMidiIns  = type()->midiIns();
+	unsigned short iMidiOuts = type()->midiOuts();
+	if (iMidiIns > 0)
 		pMidiManager = list()->midiManager();
 
 	// We'll cross channels over instances...
@@ -712,10 +714,10 @@ void qtractorVstPlugin::process (
 			if (++iOChannel >= iChannels)
 				iOChannel = 0;
 		}
-		// Make it run MIDI,if applicable...
+		// Make it run MIDI, if applicable...
 		if (pMidiManager) {
 			pVstEffect->dispatcher(pVstEffect,
-				effProcessEvents, 0, 0, pMidiManager->vst_events(), 0.0f);
+				effProcessEvents, 0, 0, pMidiManager->vst_events_in(), 0.0f);
 		}
 		// Make it run audio...
 		if (pVstEffect->flags & effFlagsCanReplacing) {
@@ -728,6 +730,8 @@ void qtractorVstPlugin::process (
 				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
 		}
 	#endif
+		if (pMidiManager && iMidiOuts > 0)
+			pMidiManager->vst_events_swap();
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
 			++iIChannel;
@@ -1384,6 +1388,15 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 
 	case audioMasterProcessEvents:
 		VST_HC_DEBUG("audioMasterProcessEvents");
+		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
+		if (pVstPlugin) {
+			qtractorMidiManager *pMidiManager = NULL;
+			qtractorPluginList *pPluginList = pVstPlugin->list();
+			if (pPluginList)
+				pMidiManager = pPluginList->midiManager();
+			if (pMidiManager)
+				pMidiManager->vst_events_copy((VstEvents *) ptr);
+		}
 		break;
 
 	case audioMasterIOChanged:
@@ -1456,7 +1469,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	case audioMasterCanDo:
 		VST_HC_DEBUGX("audioMasterCanDo");
 		if (::strcmp("receiveVstMidiEvent", (char *) ptr) == 0 ||
-		//	::strcmp("sendVstMidiEvent",    (char *) ptr) == 0 ||
+			::strcmp("sendVstMidiEvent",    (char *) ptr) == 0 ||
 			::strcmp("sendVstTimeInfo",     (char *) ptr) == 0 ||
 			::strcmp("midiProgramNames",    (char *) ptr) == 0) {
 			ret = 1;
