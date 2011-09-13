@@ -244,11 +244,25 @@ public:
 	static bool isDefaultAudioOutputBus();
 
 #ifdef CONFIG_VST
-	VstEvents *vst_events() const { return (VstEvents *) m_pVstBuffer; }
+	// VST event buffer accessors...
+	VstEvents *vst_events_in() const
+		{ return (VstEvents *) m_ppVstBuffers[m_iEventBuffer & 1]; }
+	VstEvents *vst_events_out() const
+		{ return (VstEvents *) m_ppVstBuffers[(m_iEventBuffer + 1) & 1]; }
+	// Copy VST event buffer (output)...
+	void vst_events_copy(VstEvents *pVstBuffer);
+	// Swap VST event buffers...
+	void vst_events_swap();
 #endif
 
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer *lv2_buffer() const { return m_pLv2Buffer; }
+	// LV2 event buffer accessors...
+	LV2_Event_Buffer *lv2_events_in() const
+		{ return m_ppLv2Buffers[m_iEventBuffer & 1]; }
+	LV2_Event_Buffer *lv2_events_out() const
+		{ return m_ppLv2Buffers[(m_iEventBuffer + 1) & 1]; }
+	// Swap LV2 event buffers...
+	void lv2_events_swap();
 #endif
 
 	// Audio output bus mode accessors.
@@ -293,9 +307,12 @@ public:
 
 protected:
 
-	// Audiop output (de)activation methods.
+	// Audio output (de)activation methods.
 	void createAudioOutputBus();
 	void deleteAudioOutputBus();
+
+	// Swap event buffers (in for out and vice-versa)
+	void swapEventBuffers();
 
 private:
 
@@ -317,13 +334,15 @@ private:
 	snd_midi_event_t   *m_pMidiParser;
 #endif
 
+	unsigned short      m_iEventBuffer;
+
 #ifdef CONFIG_VST
-	VstMidiEvent       *m_pVstMidiBuffer;
-	unsigned char      *m_pVstBuffer;
+	VstMidiEvent       *m_ppVstMidiBuffers[2];
+	unsigned char      *m_ppVstBuffers[2];
 #endif
 
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer   *m_pLv2Buffer;
+	LV2_Event_Buffer   *m_ppLv2Buffers[2];
 #endif
 
 	bool                m_bAudioOutputBus;
