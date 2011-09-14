@@ -104,7 +104,7 @@ public:
 	bool           isRealtime()  const { return m_bRealtime;    }
 	bool           isConfigure() const { return m_bConfigure;   }
 	bool           isEditor()    const { return m_bEditor;      }
-	bool           isMidi()      const { return m_iMidiIns > 0; }
+	bool           isMidi()      const { return m_iMidiIns + m_iMidiOuts > 0; }
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.

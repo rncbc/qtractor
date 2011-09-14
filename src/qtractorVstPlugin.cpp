@@ -583,9 +583,9 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		
 	// Estimate the (new) number of instances...
 	unsigned short iInstances
-		= pVstType->instances(iChannels, pVstType->isMidi());
+		= pVstType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
-	if (iInstances == instances() && !pVstType->isMidi())
+	if (iInstances == instances())
 		return;
 
 	// Gotta go for a while...
@@ -1059,10 +1059,11 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 	qtractorVstPluginType *pVstType
 		= static_cast<qtractorVstPluginType *> (pVstPlugin->type());
 	
-	char szName[64];
-	::snprintf(szName, sizeof(szName), "Param #%lu", iIndex); // Default dummy name.
+	char szName[64]; szName[0] = (char) 0;
 	if (pVstType)
 		pVstType->vst_dispatch(effGetParamName, iIndex, 0, (void *) szName, 0.0f);
+	if (!szName[0])
+		::snprintf(szName, sizeof(szName), "Param #%lu", iIndex); // Default dummy name.
 	setName(szName);
 
 	setMinValue(0.0f);
