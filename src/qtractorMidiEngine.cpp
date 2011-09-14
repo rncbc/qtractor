@@ -772,8 +772,6 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	m_pCursor = new qtractorTimeScale::Cursor(m_pTimeScale);
 	m_fTempo = m_pTimeScale->tempo();
 
-	qtractorMidiMonitor::resetTime(m_pTimeScale, 0);
-
 	int iAlsaQueue = m_pMidiEngine->alsaQueue();
 
 	snd_seq_queue_tempo_t *tempo;
@@ -788,6 +786,11 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	snd_seq_drain_output(pAlsaSeq);
 
 	pAudioCursor->setFrameTime(0);
+
+	qtractorMidiMonitor::resetTime(m_pTimeScale, 0);
+
+	if (m_pMidiBus->midiMonitor_out())
+		m_pMidiBus->midiMonitor_out()->reset();
 
 	m_pPlayerThread = new qtractorMidiPlayerThread(this);
 	m_pPlayerThread->start(QThread::HighPriority);

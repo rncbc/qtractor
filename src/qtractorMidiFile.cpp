@@ -381,9 +381,11 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 						break;
 					case qtractorMidiEvent::TIME:
 						// Beats per bar is the numerator of time signature...
-						m_pTempoMap->addNodeTime(iTime,
-							(unsigned short) data[0],
-							(unsigned short) data[1]);
+						if ((unsigned short) data[0] > 0) {
+							m_pTempoMap->addNodeTime(iTime,
+								(unsigned short) data[0],
+								(unsigned short) data[1]);
+						}
 						break;
 					default:
 						// Ignore all others...
