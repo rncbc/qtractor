@@ -1116,9 +1116,9 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Estimate the (new) number of instances...
 	unsigned short iInstances
-		= pType->instances(iChannels, pType->isMidi());
+		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
-	if (iInstances == instances() && !pType->isMidi())
+	if (iInstances == instances())
 		return;
 
 	const SLV2Plugin plugin = slv2_plugin();

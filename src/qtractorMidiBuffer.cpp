@@ -755,6 +755,11 @@ void qtractorMidiManager::lv2_events_swap (void)
 		long iMidiData = pLv2Event->size;
 		if (iMidiData < 1)
 			break;
+	#ifdef CONFIG_VST
+		VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iMidiEvents];
+		if (iMidiData >= long(sizeof(pVstMidiEvent->midiData)))
+			break;
+	#endif
 	#ifdef CONFIG_MIDI_PARSER
 		if (m_pMidiParser) {
 			snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
@@ -767,7 +772,6 @@ void qtractorMidiManager::lv2_events_swap (void)
 		}
 	#endif
 	#ifdef CONFIG_VST
-		VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iMidiEvents];
 		::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
 		pVstMidiEvent->type = kVstMidiType;
 		pVstMidiEvent->byteSize = sizeof(VstMidiEvent);

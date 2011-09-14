@@ -6,7 +6,7 @@ ChangeLog
 SVN TRUNK
 
 - Support for MIDI-fx plugins (native VST and/or LV2)
-  is under way. (HIGHLY EXPERIMENTAL)
+  is now implemented and functional. (EXPERIMENTAL)
 
 - Instrument plugin bank/program selection was found
   broken or dead in the water, specially on VSTi, now
