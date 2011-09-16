@@ -718,7 +718,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return true;
 	}
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioBuffer[%p]::seek(%lu) pending(%d, %lu) wo=%lu ro=%lu",
 		this, iFrame, ATOMIC_GET(&m_seekPending), m_iSeekOffset,
 		m_iWriteOffset, m_iReadOffset);
@@ -851,7 +851,7 @@ bool qtractorAudioBuffer::inSync (
 		return false;
 
 	if (!isSyncFlag(ReadSync)) {
-	#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",
 			this, iFrameStart, iFrameEnd,
 			(long) m_iReadOffset - (iFrameStart + m_iOffset));

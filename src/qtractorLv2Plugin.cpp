@@ -1115,10 +1115,11 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Estimate the (new) number of instances...
+	unsigned short iOldInstances = instances();
 	unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	if (iInstances == iOldInstances)
 		return;
 
 	const SLV2Plugin plugin = slv2_plugin();
@@ -1129,8 +1130,12 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	bool bActivated = isActivated();
 	setActivated(false);
 
+	// Set new instance number...
+	setInstances(iInstances);
+
+	// Close old instances, all the way...
 	if (m_pInstances) {
-		for (unsigned short i = 0; i < instances(); ++i) {
+		for (unsigned short i = 0; i < iOldInstances; ++i) {
 			SLV2Instance instance = m_pInstances[i];
 			if (instance)
 				slv2_instance_free(instance);
@@ -1139,8 +1144,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		m_pInstances = NULL;
 	}
 
-	// Set new instance number...
-	setInstances(iInstances);
+	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
 		setActivated(bActivated);
 		return;

@@ -638,10 +638,8 @@ unsigned short qtractorPlugin::channels (void) const
 // Set the internal instance count...
 void qtractorPlugin::setInstances ( unsigned short iInstances )
 {
-	m_iInstances = iInstances;
-
 	// Some sanity required here...
-	if (m_iInstances < 1) {
+	if (iInstances < 1) {
 		// We're sorry but dialogs must also go now...
 		closeEditor();
 		if (m_pForm) {
@@ -650,6 +648,8 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 			m_pForm = NULL;
 		}
 	}
+
+	m_iInstances = iInstances;
 }
 
 
@@ -961,7 +961,7 @@ void qtractorPlugin::updateDirectAccessParam (void)
 // Plugin parameter/state snapshot.
 void qtractorPlugin::freezeValues (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPlugin[%p]::freezeValues()", this);
 #endif
 
@@ -977,7 +977,7 @@ void qtractorPlugin::freezeValues (void)
 
 void qtractorPlugin::releaseValues (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPlugin[%p]::releaseValues()", this);
 #endif
 
@@ -988,7 +988,7 @@ void qtractorPlugin::releaseValues (void)
 // Plugin configure realization.
 void qtractorPlugin::realizeConfigs (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPlugin[%p]::realizeConfigs()", this);
 #endif
 
@@ -1007,7 +1007,7 @@ void qtractorPlugin::realizeConfigs (void)
 // Plugin parameter realization.
 void qtractorPlugin::realizeValues (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPlugin[%p]::realizeValues()", this);
 #endif
 
@@ -1123,6 +1123,8 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 		m_iMidiBank(-1), m_iMidiProg(-1), m_bAudioOutputBus(false)
 		
 {
+	setAutoDelete(true);
+
 	m_pppBuffers[0] = NULL;
 	m_pppBuffers[1] = NULL;
 

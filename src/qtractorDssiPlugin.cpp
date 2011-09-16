@@ -1192,7 +1192,7 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorDssiPlugin[%p]::selectprogram(%d, %d)", this, iBank, iProg);
+	qDebug("qtractorDssiPlugin[%p]::selectProgram(%d, %d)", this, iBank, iProg);
 #endif
 
 	// For each plugin instance...
