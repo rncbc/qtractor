@@ -158,6 +158,8 @@ public:
 	{
 		m_pVstPlugin = pVstPlugin;
 
+		setWindowTitle(m_pVstPlugin->editorTitle());
+		
 		// Start the proper (child) editor...
 		long  value = 0;
 		void *ptr = (void *) winId();
@@ -197,9 +199,11 @@ public:
 	// Close the editor widget.
 	void close()
 	{
+		QWidget::close();
+
 		if (m_pVstPlugin) {
 			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
-			m_pVstPlugin->setEditorVisible(false);
+		//	m_pVstPlugin->setEditorVisible(false);
 		}
 
 		int iIndex = g_vstEditors.indexOf(this);
@@ -582,19 +586,23 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		return;
 		
 	// Estimate the (new) number of instances...
+	unsigned short iOldInstances = instances();
 	unsigned short iInstances
 		= pVstType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	if (iInstances == iOldInstances)
 		return;
 
 	// Gotta go for a while...
 	bool bActivated = isActivated();
 	setActivated(false);
 
-	// Close instances, all the way...
+	// Set new instance number...
+	setInstances(iInstances);
+	
+	// Close old instances, all the way...
 	if (m_ppEffects) {
-		for (unsigned short i = 1; i < instances(); ++i) {
+		for (unsigned short i = 1; i < iOldInstances; ++i) {
 			m_ppEffects[i]->close();
 			delete m_ppEffects[i];
 		}
@@ -602,8 +610,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		m_ppEffects = NULL;
 	}
 
-	// Set new instance number...
-	setInstances(iInstances);
+	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
 		setActivated(bActivated);
 		return;
@@ -935,7 +942,6 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 
 	m_pEditorWidget = new EditorWidget(NULL, wflags);
 	m_pEditorWidget->open(this);
-	m_pEditorWidget->setWindowTitle(editorTitle());
 }
 
 
@@ -1006,6 +1012,13 @@ void qtractorVstPlugin::idleEditorAll (void)
 QWidget *qtractorVstPlugin::editorWidget (void) const
 {
 	return static_cast<QWidget *> (m_pEditorWidget);
+}
+
+
+// Our own editor widget size accessor.
+void qtractorVstPlugin::resizeEditorWidget ( int w, int h )
+{
+	if (m_pEditorWidget) m_pEditorWidget->resize(w, h);
 }
 
 
@@ -1406,6 +1419,11 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 
 	case audioMasterSizeWindow:
 		VST_HC_DEBUG("audioMasterSizeWindow");
+		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
+		if (pVstPlugin) {
+			pVstPlugin->resizeEditorWidget(int(index), int(value));
+			ret = 1;
+		}
 		break;
 
 	case audioMasterGetSampleRate:
@@ -1472,7 +1490,8 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		if (::strcmp("receiveVstMidiEvent", (char *) ptr) == 0 ||
 			::strcmp("sendVstMidiEvent",    (char *) ptr) == 0 ||
 			::strcmp("sendVstTimeInfo",     (char *) ptr) == 0 ||
-			::strcmp("midiProgramNames",    (char *) ptr) == 0) {
+			::strcmp("midiProgramNames",    (char *) ptr) == 0 ||
+			::strcmp("sizeWindow",          (char *) ptr) == 0) {
 			ret = 1;
 		}
 	#ifndef CONFIG_VESTIGE

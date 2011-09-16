@@ -218,10 +218,11 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		return;
 		
 	// Estimate the (new) number of instances...
+	unsigned short iOldInstances = instances();
 	unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	if (iInstances == iOldInstances)
 		return;
 
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
@@ -232,17 +233,19 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	bool bActivated = isActivated();
 	setActivated(false);
 
+	// Set new instance number...
+	setInstances(iInstances);
+
 	if (m_phInstances) {
 		if (pLadspaDescriptor->cleanup) {
-			for (unsigned short i = 0; i < instances(); ++i)
+			for (unsigned short i = 0; i < iOldInstances; ++i)
 				(*pLadspaDescriptor->cleanup)(m_phInstances[i]);
 		}
 		delete [] m_phInstances;
 		m_phInstances = NULL;
 	}
 
-	// Set new instance number...
-	setInstances(iInstances);
+	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
 		setActivated(bActivated);
 		return;

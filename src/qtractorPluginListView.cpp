@@ -303,10 +303,8 @@ void qtractorPluginListView::setPluginList ( qtractorPluginList *pPluginList )
 
 	m_pPluginList = pPluginList;
 
-	if (m_pPluginList) {
-		m_pPluginList->setAutoDelete(true);
+	if (m_pPluginList)
 		m_pPluginList->addView(this);
-	}
 
 	refresh();
 }

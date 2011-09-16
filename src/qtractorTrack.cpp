@@ -315,6 +315,9 @@ void qtractorTrack::clear (void)
 
 	m_clips.clear();
 
+	m_pPluginList->clear();
+	m_pCurveFile->clear();
+
 	m_props.midiBankSelMethod = -1;
 	m_props.midiBank          = -1;
 	m_props.midiProgram       = -1;
