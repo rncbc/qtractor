@@ -254,7 +254,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		// Smoothing...
 		float y0 = (pPrev ? pPrev->value : m_tail.value);
 		float y1 = fValue;
-		float y2 = (pNext ? pNext->value : m_tail.value);
+		float y2 = (pNext ? pNext->value : fValue);
 		if (m_mode == Hold || m_observer.isToggled()) {
 			const float fThreshold
 				= (m_bLogarithmic ? 0.1f * fabs(y1) : 0.01f)
