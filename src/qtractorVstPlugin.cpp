@@ -599,6 +599,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 			m_ppEffects[i]->close();
 			delete m_ppEffects[i];
 		}
+		g_vstPlugins.remove(m_ppEffects[0]->vst_effect());
 		delete [] m_ppEffects;
 		m_ppEffects = NULL;
 	}
