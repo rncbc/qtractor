@@ -177,8 +177,8 @@ class qtractorPluginFile : public QLibrary
 public:
 
 	// Constructor.
-	qtractorPluginFile(const QString& sFilename)
-		: QLibrary(sFilename) {}
+	qtractorPluginFile(const QString& sFilename, bool bAutoUnload = true)
+		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload) {}
 
 	// Destructor.
 	~qtractorPluginFile()
@@ -191,6 +191,12 @@ public:
 	bool open();
 	void close();
 
+	// Auto-unload flag accessors.
+	void setAutoUnload(bool bAutoUnload)
+		{ m_bAutoUnload = bAutoUnload; }
+	bool isAutoUnload() const
+		{ return m_bAutoUnload; }
+	
 	// Plugin type listing.
 	bool getTypes(qtractorPluginPath& path,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
@@ -199,6 +205,11 @@ public:
 	static qtractorPlugin *createPlugin(qtractorPluginList *pList,
 		const QString& sFilename, unsigned long iIndex = 0,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
+
+private:
+
+	// Instance variables.
+	bool m_bAutoUnload;
 };
 
 

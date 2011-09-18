@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Special hack/fix for JUCE based native VST plugins,
+  which are the most actually found with a GUI editor,
+  skipping explicit shared library unloading and thus
+  avoiding some mysterious crashes on session close
+  and/or application exit. (EXPERIMENTAL)
+
 - Support for MIDI-fx plugins (native VST and/or LV2)
   is now implemented and functional. (EXPERIMENTAL)
 
