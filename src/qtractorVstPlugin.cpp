@@ -1390,7 +1390,6 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	case audioMasterProcessEvents:
 		VST_HC_DEBUG("audioMasterProcessEvents");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		qDebug("DEBUG> pVstPlugin=%p", pVstPlugin);
 		if (pVstPlugin) {
 			qtractorMidiManager *pMidiManager = NULL;
 			qtractorPluginList *pPluginList = pVstPlugin->list();
