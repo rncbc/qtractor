@@ -232,7 +232,7 @@ void qtractorPluginFile::close (void)
 		(*pfnFini)();
 #endif
 
-	QLibrary::unload();
+	if (m_bAutoUnload) QLibrary::unload();
 }
 
 

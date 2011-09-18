@@ -430,11 +430,16 @@ bool qtractorVstPluginType::open (void)
 	m_iMidiOuts    = ((m_iFlagsEx & effFlagsExCanSendVstMidiEvents) ? 1 : 0);
 
 	// Cache flags.
-	m_bRealtime  = true;
+	m_bRealtime = true;
 #ifndef CONFIG_VESTIGE
 	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
 #endif
-	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
+	m_bEditor = (pVstEffect->flags & effFlagsHasEditor);
+
+	// HACK: JUCE based VST plugins, which are the most found
+	// with a GUI editor, need to skip explicit shared library
+	// unloading, to avoid mysterious crashes later...
+	if (m_bEditor) file()->setAutoUnload(false);
 
 	return true;
 }
