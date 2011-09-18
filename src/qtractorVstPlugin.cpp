@@ -522,7 +522,7 @@ bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 //
 
 // Dynamic singleton list of VST plugins.
-static QList<qtractorVstPlugin *> g_vstPlugins;
+static QHash<AEffect *, qtractorVstPlugin *> g_vstPlugins;
 
 // Constructors.
 qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
@@ -551,9 +551,6 @@ qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
 
 	// Instantiate each instance properly...
 	setChannels(channels());
-
-	// Add to global list, now.
-	g_vstPlugins.append(this);
 }
 
 
@@ -562,11 +559,6 @@ qtractorVstPlugin::~qtractorVstPlugin (void)
 {
 	// Cleanup all plugin instances...
 	setChannels(0);
-
-	// Remove from global list, now.
-	int iVstPlugin = g_vstPlugins.indexOf(this);
-	if (iVstPlugin >= 0)
-		g_vstPlugins.removeAt(iVstPlugin);
 
 	// Deallocate I/O audio buffer pointers.
 	if (m_ppIBuffer)
@@ -599,10 +591,11 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Set new instance number...
 	setInstances(iInstances);
-	
+
 	// Close old instances, all the way...
 	if (m_ppEffects) {
 		for (unsigned short i = 1; i < iOldInstances; ++i) {
+			g_vstPlugins.remove(m_ppEffects[i]->vst_effect());
 			m_ppEffects[i]->close();
 			delete m_ppEffects[i];
 		}
@@ -622,11 +615,13 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 #endif
 
 	// Allocate new instances...
-	m_ppEffects = new  qtractorVstPluginType::Effect * [iInstances];
+	m_ppEffects = new qtractorVstPluginType::Effect * [iInstances];
 	m_ppEffects[0] = pVstType->effect();
+	g_vstPlugins.insert(m_ppEffects[0]->vst_effect(), this);
 	for (unsigned short i = 1; i < iInstances; ++i) {
 		m_ppEffects[i] = new qtractorVstPluginType::Effect();
 		m_ppEffects[i]->open(pVstType->file());
+		g_vstPlugins.insert(m_ppEffects[i]->vst_effect(), this);
 	}
 
 	// (Re)issue all configuration as needed...
@@ -1002,9 +997,10 @@ void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
 // Idle editor (static).
 void qtractorVstPlugin::idleEditorAll (void)
 {
-	QListIterator<qtractorVstPlugin *> iter(g_vstPlugins);
-	while (iter.hasNext())
-		iter.next()->idleEditor();
+	QHash<AEffect *, qtractorVstPlugin *>::ConstIterator iter
+		= g_vstPlugins.constBegin();
+	for (; iter != g_vstPlugins.constEnd(); ++iter)
+		iter.value()->idleEditor();
 }
 
 
@@ -1025,16 +1021,7 @@ void qtractorVstPlugin::resizeEditorWidget ( int w, int h )
 // Global VST plugin lookup.
 qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
 {
-	QListIterator<qtractorVstPlugin *> iter(g_vstPlugins);
-	while (iter.hasNext()) {
-		qtractorVstPlugin *pVstPlugin = iter.next();
-		for (unsigned short i = 0; i < pVstPlugin->instances(); ++i) {
-			if (pVstPlugin->vst_effect(i) == pVstEffect)
-				return pVstPlugin;
-		}
-	}
-
-	return NULL;
+	return g_vstPlugins.value(pVstEffect, NULL);
 }
 
 
@@ -1342,7 +1329,7 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 #define VST_HC_DEBUGX(s)
 #endif
 
-static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
+static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	VstInt32 opcode, VstInt32 index, VstIntPtr value, void *ptr, float opt )
 {
 	VstIntPtr ret = 0;
@@ -1403,6 +1390,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	case audioMasterProcessEvents:
 		VST_HC_DEBUG("audioMasterProcessEvents");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
+		qDebug("DEBUG> pVstPlugin=%p", pVstPlugin);
 		if (pVstPlugin) {
 			qtractorMidiManager *pMidiManager = NULL;
 			qtractorPluginList *pPluginList = pVstPlugin->list();
