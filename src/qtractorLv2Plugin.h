@@ -288,7 +288,6 @@ protected:
 	LV2_Feature    m_lv2_data_access_feature;
 	LV2_Feature    m_lv2_instance_access_feature;
 
-	LV2_Feature    m_lv2_ui_feature;
 	LV2_Feature  **m_lv2_ui_features;
 
 #ifdef CONFIG_LIBSUIL
@@ -303,8 +302,12 @@ protected:
 #endif
 	
 #ifdef CONFIG_LV2_EXTERNAL_UI
-	// Our own external UI host context.
-	lv2_external_ui_host m_lv2_ui_external;
+	LV2_Feature          m_lv2_ui_external_feature;
+	lv2_external_ui_host m_lv2_ui_external_host;
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+	LV2_Feature          m_lv2_ui_external_deprecated_feature;
+	lv2_external_ui_host m_lv2_ui_external_deprecated_host;
+#endif
 #endif
 
 #ifdef CONFIG_LIBSLV2

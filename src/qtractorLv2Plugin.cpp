@@ -1411,7 +1411,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	int iFeatures = 0;
 	while (m_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_ui_features = new LV2_Feature * [iFeatures + 4];
+	m_lv2_ui_features = new LV2_Feature * [iFeatures + 5];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
 
@@ -1425,11 +1425,18 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_lv2_ui_features[iFeatures++] = &m_lv2_instance_access_feature;
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
-	m_lv2_ui_external.ui_closed = qtractor_lv2_ui_closed;
-	m_lv2_ui_external.plugin_human_id = m_aEditorTitle.constData();
-	m_lv2_ui_feature.URI = LV2_EXTERNAL_UI_URI;
-	m_lv2_ui_feature.data = &m_lv2_ui_external;
-	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_feature;
+	m_lv2_ui_external_host.ui_closed = qtractor_lv2_ui_closed;
+	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
+	m_lv2_ui_external_feature.URI = LV2_EXTERNAL_UI_URI;
+	m_lv2_ui_external_feature.data = &m_lv2_ui_external_host;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_feature;
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+	m_lv2_ui_external_deprecated_host.ui_closed = qtractor_lv2_ui_closed;
+	m_lv2_ui_external_deprecated_host.plugin_human_id = m_aEditorTitle.constData();
+	m_lv2_ui_external_deprecated_feature.URI = LV2_EXTERNAL_UI_DEPRECATED_URI;
+	m_lv2_ui_external_deprecated_feature.data = &m_lv2_ui_external_deprecated_host;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_deprecated_feature;
+#endif
 #endif
 
 	m_lv2_ui_features[iFeatures] = NULL;
@@ -1768,7 +1775,10 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 	if (m_lv2_ui_features) {
 		m_aEditorTitle = sTitle.toUtf8();
 	#ifdef CONFIG_LV2_EXTERNAL_UI
-		m_lv2_ui_external.plugin_human_id = m_aEditorTitle.constData();
+		m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
+	#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+		m_lv2_ui_external_deprecated_host.plugin_human_id = m_aEditorTitle.constData();
+	#endif
 	#endif
 	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
