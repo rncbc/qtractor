@@ -40,6 +40,7 @@
 #include "qtractorEngine.h"
 
 #include <QMessageBox>
+#include <QTabWidget>
 #include <QGridLayout>
 #include <QValidator>
 #include <QLineEdit>
@@ -73,7 +74,6 @@ qtractorPluginForm::qtractorPluginForm (
 	QWidget::setFont(QFont(font.family(), font.pointSize() - 1));
 
 	m_pPlugin     = NULL;
-	m_pGridLayout = NULL;
 	m_iDirtyCount = 0;
 	m_iUpdate     = 0;
 
@@ -167,13 +167,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 {
 	clear();
 
-	// Just in those cases where
-	// we've been around before...
-	if (m_pGridLayout) {
-		delete m_pGridLayout;
-		m_pGridLayout = NULL;
-	}
-
 	// Set the new reference...
 	m_pPlugin = pPlugin;
 
@@ -183,47 +176,101 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// Dispatch any pending updates.
 	qtractorSubject::flushQueue();
 
+	const qtractorPlugin::Params& params
+		= m_pPlugin->params();
+	int iParams = params.count();
+	int iParamsPerPage = iParams;
+	if (iParamsPerPage > 72) {
+		iParamsPerPage = 72;
+		while ((iParams % iParamsPerPage) < (iParamsPerPage >> 1))
+			iParamsPerPage -= (iParamsPerPage >> 2);
+	}
+
+	int iPages = 1;
+	int iRowsPerPage = 0;
+	int iColumnsPerPage = 0;
+	if (iParamsPerPage > 0) {
+		iPages = (iParams / iParamsPerPage);
+		if (iParams % iParamsPerPage)
+			++iPages;
+		iRowsPerPage = iParamsPerPage;
+		iColumnsPerPage = 1;
+		while (iRowsPerPage > 12 && iColumnsPerPage < 3)
+			iRowsPerPage = (iParamsPerPage / ++iColumnsPerPage);
+		if (iParamsPerPage % iColumnsPerPage) // Adjust to balance.
+			++iRowsPerPage;
+	}
+
+	// Maybe we need a tabbed widget...
+	QTabWidget  *pTabWidget = NULL;
+	QVBoxLayout *pVBoxLayout = NULL;
+
+	if (iPages > 1) {
+		pTabWidget  = new QTabWidget();
+		pVBoxLayout = new QVBoxLayout();
+		pVBoxLayout->setMargin(4);
+		pVBoxLayout->setSpacing(4);
+	}
+
+	QGridLayout *pGridLayout = new QGridLayout();
+	pGridLayout->setMargin(4);
+	pGridLayout->setSpacing(4);
+
+	int iPage = 0;
+	const QString sPage = tr("Page %1");
+	QWidget *pPageWidget = NULL;
+	if (pTabWidget) {	
+		pPageWidget = new QWidget();
+		pPageWidget->setLayout(pGridLayout);
+		pTabWidget->addTab(pPageWidget, sPage.arg(++iPage));
+	}
+
 	// Plugin might not have its own editor...
-	m_pGridLayout = new QGridLayout();
-	m_pGridLayout->setMargin(4);
-	m_pGridLayout->setSpacing(4);
 #if QT_VERSION >= 0x040300
-	m_pGridLayout->setHorizontalSpacing(16);
+	pGridLayout->setHorizontalSpacing(16);
 #endif
-	const qtractorPlugin::Params& params = m_pPlugin->params();
-	int iRows = params.count();
-	bool bEditor = (m_pPlugin->type())->isEditor();
 	// FIXME: Couldn't stand more than a hundred widgets?
 	// or do we have one dedicated editor GUI?
-	if (!bEditor || iRows < 101) {
-		int iCols = 1;
-		while (iRows > 12 && iCols < 4)
-			iRows = (params.count() / ++iCols);
-		if (params.count() % iCols)	// Adjust to balance.
-			++iRows;
-		int iRow = 0;
-		int iCol = 0;
-		qtractorPlugin::Params::ConstIterator param = params.constBegin();
-		for ( ; param != params.constEnd(); ++param) {
-			qtractorPluginParam *pParam = param.value();
-			qtractorPluginParamWidget *pParamWidget
-				= new qtractorPluginParamWidget(pParam, this);
-			m_paramWidgets.insert(pParam->index(), pParamWidget);
-			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
-			qtractorMidiControlObserver *pMidiObserver = pParam->observer();
-			if (pMidiObserver) {
-				pMidiObserver->setCurveList(pPlugin->list()->curveList());
-				addMidiControlAction(pParamWidget, pMidiObserver);
-			}
-			if (++iRow >= iRows) {
-				iRow = 0;
-				++iCol;
+	int iRow = 0;
+	int iColumn = 0;
+
+	qtractorPlugin::Params::ConstIterator param = params.constBegin();
+	for ( ; param != params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
+		qtractorPluginParamWidget *pParamWidget
+			= new qtractorPluginParamWidget(pParam, this);
+		m_paramWidgets.insert(pParam->index(), pParamWidget);
+		pGridLayout->addWidget(pParamWidget, iRow, iColumn);
+		qtractorMidiControlObserver *pMidiObserver = pParam->observer();
+		if (pMidiObserver) {
+			pMidiObserver->setCurveList(pPlugin->list()->curveList());
+			addMidiControlAction(pParamWidget, pMidiObserver);
+		}
+		if (++iRow >= iRowsPerPage) {
+			iRow = 0;
+			if (++iColumn >= iColumnsPerPage) {
+				iColumn = 0;
+				if (pTabWidget) {
+					pGridLayout = new QGridLayout();
+					pGridLayout->setMargin(4);
+					pGridLayout->setSpacing(4);
+					pPageWidget = new QWidget();
+					pPageWidget->setLayout(pGridLayout);
+					pTabWidget->addTab(pPageWidget, sPage.arg(++iPage));
+				}
 			}
 		}
 	}
-	m_ui.ParamsGridWidget->setLayout(m_pGridLayout);
+
+	if (pVBoxLayout && pTabWidget) {
+		pVBoxLayout->addWidget(pTabWidget);
+		m_ui.ParamsGridWidget->setLayout(pVBoxLayout);
+	} else {
+		m_ui.ParamsGridWidget->setLayout(pGridLayout);
+	}
 
 	// Show editor button if available?
+	bool bEditor = (m_pPlugin->type())->isEditor();
 	m_ui.EditToolButton->setVisible(bEditor);
 	if (bEditor)
 		toggleEditor(m_pPlugin->isEditorVisible());
@@ -1069,33 +1116,30 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	qtractorPluginParam *pParam, QWidget *pParent )
 	: QFrame(pParent), m_pParam(pParam)
 {
-	m_pGridLayout = new QGridLayout();
-	m_pGridLayout->setMargin(0);
-	m_pGridLayout->setSpacing(4);
-
-	m_pLabel    = NULL;
-
 	m_pSlider   = NULL;
 	m_pSpinBox  = NULL;
 	m_pCheckBox = NULL;
-
 	m_pDisplay  = NULL;
+
+	QGridLayout *pGridLayout = new QGridLayout();
+	pGridLayout->setMargin(0);
+	pGridLayout->setSpacing(4);
 
 	if (m_pParam->isToggled()) {
 		m_pCheckBox = new qtractorObserverCheckBox(/*this*/);
 		m_pCheckBox->setText(m_pParam->name());
 		m_pCheckBox->setSubject(m_pParam->subject());
 	//	m_pCheckBox->setChecked(m_pParam->value() > 0.1f);
-		m_pGridLayout->addWidget(m_pCheckBox, 0, 0);
+		pGridLayout->addWidget(m_pCheckBox, 0, 0);
 	} else if (m_pParam->isInteger()) {
-		m_pGridLayout->setColumnMinimumWidth(0, 120);
-		m_pLabel = new QLabel(/*this*/);
-		m_pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		m_pLabel->setText(m_pParam->name() + ':');
+		pGridLayout->setColumnMinimumWidth(0, 120);
+		QLabel *pLabel = new QLabel(/*this*/);
+		pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+		pLabel->setText(m_pParam->name() + ':');
 		if (m_pParam->isDisplay()) {
-			m_pGridLayout->addWidget(m_pLabel, 0, 0);
+			pGridLayout->addWidget(pLabel, 0, 0);
 		} else {
-			m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 2);
+			pGridLayout->addWidget(pLabel, 0, 0, 1, 2);
 		}
 		m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 		m_pSpinBox->setMaximumWidth(64);
@@ -1106,28 +1150,28 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pSpinBox->setSubject(m_pParam->subject());
 	//	m_pSpinBox->setValue(int(m_pParam->value()));
 		if (m_pParam->isDisplay()) {
-			m_pGridLayout->addWidget(m_pSpinBox, 0, 1);
+			pGridLayout->addWidget(m_pSpinBox, 0, 1);
 			m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
 			m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 		//	m_pDisplay->setText(m_pParam->display());
 		//	m_pDisplay->setFixedWidth(72);
 			m_pDisplay->setMinimumWidth(64);
-			m_pGridLayout->addWidget(m_pDisplay, 0, 2);
+			pGridLayout->addWidget(m_pDisplay, 0, 2);
 		} else {
-			m_pGridLayout->addWidget(m_pSpinBox, 0, 2);
+			pGridLayout->addWidget(m_pSpinBox, 0, 2);
 		}
 	} else {
-		m_pLabel = new QLabel(/*this*/);
+		QLabel *pLabel = new QLabel(/*this*/);
 		if (m_pParam->isDisplay()) {
-			m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-		//	m_pLabel->setFixedWidth(72);
-			m_pLabel->setMinimumWidth(64);
-			m_pLabel->setText(m_pParam->name());
-			m_pGridLayout->addWidget(m_pLabel, 0, 0);
+			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+		//	pLabel->setFixedWidth(72);
+			pLabel->setMinimumWidth(64);
+			pLabel->setText(m_pParam->name());
+			pGridLayout->addWidget(pLabel, 0, 0);
 		} else {
-			m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-			m_pLabel->setText(m_pParam->name() + ':');
-			m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 3);
+			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+			pLabel->setText(m_pParam->name() + ':');
+			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
 		}
 		m_pSlider = new qtractorObserverSlider(/*this*/);
 		m_pSlider->setInterface(new SliderInterface(m_pSlider, m_pParam));
@@ -1141,15 +1185,15 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pSlider->setSubject(m_pParam->subject());
 	//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
 		if (m_pParam->isDisplay()) {
-			m_pGridLayout->addWidget(m_pSlider, 0, 1);
+			pGridLayout->addWidget(m_pSlider, 0, 1);
 			m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
-			m_pDisplay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 		//	m_pDisplay->setText(m_pParam->display());
 		//	m_pDisplay->setFixedWidth(72);
 			m_pDisplay->setMinimumWidth(64);
-			m_pGridLayout->addWidget(m_pDisplay, 0, 2);
+			pGridLayout->addWidget(m_pDisplay, 0, 2);
 		} else {
-			m_pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
+			pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
 			int iDecimals = paramDecimals();
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 			m_pSpinBox->setMaximumWidth(64);
@@ -1162,7 +1206,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		#endif
 			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(m_pParam->value());
-			m_pGridLayout->addWidget(m_pSpinBox, 1, 2);
+			pGridLayout->addWidget(m_pSpinBox, 1, 2);
 		}
 	}
 
@@ -1184,7 +1228,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			SLOT(updateValue(float)));
 	}
 
-	QFrame::setLayout(m_pGridLayout);
+	QFrame::setLayout(pGridLayout);
 //	QFrame::setFrameShape(QFrame::StyledPanel);
 //	QFrame::setFrameShadow(QFrame::Raised);
 	QFrame::setToolTip(m_pParam->name());
