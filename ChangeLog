@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Finally, after a pitiful large braind-dead period,
+  generic plugin forms are now showing all possble
+  controllable plugin parameters, featuring a paged,
+  tabbed dialog, when applicable. (EXPERIMENTAL)
+
 - Special hack/fix for JUCE based native VST plugins,
   which are the most actually found with a GUI editor,
   skipping explicit shared library unloading and thus

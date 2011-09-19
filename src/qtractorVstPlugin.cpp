@@ -1069,7 +1069,7 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 	if (pVstType)
 		pVstType->vst_dispatch(effGetParamName, iIndex, 0, (void *) szName, 0.0f);
 	if (!szName[0])
-		::snprintf(szName, sizeof(szName), "Param #%lu", iIndex); // Default dummy name.
+		::snprintf(szName, sizeof(szName), "Param #%lu", iIndex + 1); // Default dummy name.
 	setName(szName);
 
 	setMinValue(0.0f);

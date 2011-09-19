@@ -41,9 +41,6 @@ class qtractorObserverSpinBox;
 
 class qtractorPluginParamDisplay;
 
-class QGridLayout;
-class QLabel;
-
 
 //----------------------------------------------------------------------------
 // qtractorPluginForm -- UI wrapper form.
@@ -128,7 +125,6 @@ private:
 
 	// Instance variables...
 	qtractorPlugin *m_pPlugin;
-	QGridLayout *m_pGridLayout;
 
 	typedef QHash<unsigned long, qtractorPluginParamWidget *> ParamWidgets;
 	ParamWidgets m_paramWidgets;
@@ -179,12 +175,7 @@ private:
 	// Instance variables.
 	qtractorPluginParam *m_pParam;
 
-	// Some basic layout managers.
-	QGridLayout *m_pGridLayout;
-
 	// Some possible managed widgets.
-	QLabel *m_pLabel;
-
 	qtractorObserverCheckBox *m_pCheckBox;
 	qtractorObserverSlider   *m_pSlider;
 	qtractorObserverSpinBox  *m_pSpinBox;
