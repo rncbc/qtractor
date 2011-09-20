@@ -178,24 +178,32 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	const qtractorPlugin::Params& params
 		= m_pPlugin->params();
+
 	int iParams = params.count();
+
+	const int MaxRowsPerPage    = 12;
+	const int MaxColumnsPerPage = 3;
+	const int MaxParamsPerPage  = MaxRowsPerPage * MaxColumnsPerPage;
+
 	int iParamsPerPage = iParams;
-	if (iParamsPerPage > 72) {
-		iParamsPerPage = 36;
-		while ((iParams % iParamsPerPage) < ((iParamsPerPage << 1) / 3))
-			--iParamsPerPage;
+	int iParamsOnLastPage = 0;
+	if (iParamsPerPage > MaxParamsPerPage) {
+		iParamsPerPage = MaxParamsPerPage;
+		iParamsOnLastPage = (iParams % iParamsPerPage);
+		while (iParamsOnLastPage > 0
+			&& iParamsOnLastPage < ((3 * iParamsPerPage) >> 2))
+			iParamsOnLastPage = (iParams % --iParamsPerPage);
 	}
 
 	int iPages = 1;
-	int iRowsPerPage = 0;
-	int iColumnsPerPage = 0;
-	if (iParamsPerPage > 0) {
+	int iRowsPerPage = iParamsPerPage;
+	int iColumnsPerPage = 1;
+	if (iRowsPerPage > MaxRowsPerPage) {
 		iPages = (iParams / iParamsPerPage);
-		if (iParams % iParamsPerPage)
+		if (iParamsOnLastPage > 0)
 			++iPages;
-		iRowsPerPage = iParamsPerPage;
-		iColumnsPerPage = 1;
-		while (iRowsPerPage > 12 && iColumnsPerPage < 3)
+		while (iRowsPerPage > MaxRowsPerPage
+			&& iColumnsPerPage < MaxColumnsPerPage)
 			iRowsPerPage = (iParamsPerPage / ++iColumnsPerPage);
 		if (iParamsPerPage % iColumnsPerPage) // Adjust to balance.
 			++iRowsPerPage;
