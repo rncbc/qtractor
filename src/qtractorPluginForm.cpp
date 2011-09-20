@@ -181,9 +181,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iParams = params.count();
 	int iParamsPerPage = iParams;
 	if (iParamsPerPage > 72) {
-		iParamsPerPage = 72;
-		while ((iParams % iParamsPerPage) < (iParamsPerPage >> 1))
-			iParamsPerPage -= (iParamsPerPage >> 2);
+		iParamsPerPage = 36;
+		while ((iParams % iParamsPerPage) < ((iParamsPerPage << 1) / 3))
+			--iParamsPerPage;
 	}
 
 	int iPages = 1;
