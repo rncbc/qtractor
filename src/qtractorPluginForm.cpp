@@ -181,7 +181,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	int iParams = params.count();
 
-	const int MaxRowsPerPage    = 12;
+	const int MaxRowsPerPage    = 8;
 	const int MaxColumnsPerPage = 3;
 	const int MaxParamsPerPage  = MaxRowsPerPage * MaxColumnsPerPage;
 
@@ -216,12 +216,12 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	if (iPages > 1) {
 		pTabWidget  = new QTabWidget();
 		pVBoxLayout = new QVBoxLayout();
-		pVBoxLayout->setMargin(4);
+		pVBoxLayout->setMargin(0);
 		pVBoxLayout->setSpacing(4);
 	}
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(4);
+	pGridLayout->setMargin(8);
 	pGridLayout->setSpacing(4);
 
 	int iPage = 0;
@@ -258,9 +258,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			iRow = 0;
 			if (++iColumn >= iColumnsPerPage) {
 				iColumn = 0;
-				if (pTabWidget) {
+				if (pTabWidget && iPage < iPages) {
 					pGridLayout = new QGridLayout();
-					pGridLayout->setMargin(4);
+					pGridLayout->setMargin(8);
 					pGridLayout->setSpacing(4);
 					pPageWidget = new QWidget();
 					pPageWidget->setLayout(pGridLayout);
