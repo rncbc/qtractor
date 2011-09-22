@@ -180,7 +180,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
 	const int MaxRowsPerPage    = (bVstPlugin ? 12 : 8);
-	const int MaxColumnsPerPage = 3;
+	const int MaxColumnsPerPage = (bVstPlugin ?  2 : 3);
 	const int MaxParamsPerPage  = MaxRowsPerPage * MaxColumnsPerPage;
 
 	const qtractorPlugin::Params& params
