@@ -1190,6 +1190,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateDisplayFormat();
 	updatePluginPaths();
 	updateTransportMode();
+	updateAudioMaster();
 	updateAudioPlayer();
 	updateAudioMetronome();
 	updateMidiControlModes();
@@ -1210,6 +1211,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Set default MIDI (plugin) instrument audio output mode.
 	qtractorMidiManager::setDefaultAudioOutputBus(
 		m_pOptions->bAudioOutputBus);
+	qtractorMidiManager::setDefaultAudioOutputAutoConnect(
+		m_pOptions->bAudioOutputAutoConnect);
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
 	qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioWsolaTimeStretch);
@@ -1386,6 +1389,10 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->iBeatDivisor = m_pTempoSpinBox->beatDivisor();
 			// Save the dock windows state.
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
+			// Audio master bus auto-connection option...
+			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+			if (pAudioEngine)
+				m_pOptions->bAudioMasterAutoConnect = pAudioEngine->isMasterAutoConnect();
 			// And the main windows state.
 			m_pOptions->saveWidgetGeometry(m_pConnections);
 			m_pOptions->saveWidgetGeometry(m_pMixer);
@@ -3936,6 +3943,8 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldResampleType       = m_pOptions->iAudioResampleType;
 	bool    bOldWsolaTimeStretch   = m_pOptions->bAudioWsolaTimeStretch;
 	bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
+	bool    bOldAudioMasterAutoConnect = m_pOptions->bAudioMasterAutoConnect;
+	bool    bOldAudioPlayerAutoConnect = m_pOptions->bAudioPlayerAutoConnect;
 	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
 	int     iOldTransportMode      = m_pOptions->iTransportMode;
@@ -3950,6 +3959,7 @@ void qtractorMainForm::viewOptions (void)
 	QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
 	float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
+	bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
 	bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
 	bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
 	bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
@@ -4043,6 +4053,8 @@ void qtractorMainForm::viewOptions (void)
 		// Set default MIDI (plugin) instrument audio output mode.
 		qtractorMidiManager::setDefaultAudioOutputBus(
 			m_pOptions->bAudioOutputBus);
+		qtractorMidiManager::setDefaultAudioOutputAutoConnect(
+			m_pOptions->bAudioOutputAutoConnect);
 		// Auto time-stretching global mode...
 		if (m_pSession)
 			m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
@@ -4058,9 +4070,17 @@ void qtractorMainForm::viewOptions (void)
 			++m_iDirtyCount; // Fake session properties change.
 			updateMidiControlModes();
 		}
+		// Audio engine master options...
+		if (( bOldAudioMasterAutoConnect && !m_pOptions->bAudioMasterAutoConnect) ||
+			(!bOldAudioMasterAutoConnect &&  m_pOptions->bAudioMasterAutoConnect)) {
+			updateAudioMaster();
+			iNeedRestart |= RestartSession;
+		}
 		// Audio engine audition/pre-listening player options...
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
-			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus))
+			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus) ||
+			( bOldAudioPlayerAutoConnect && !m_pOptions->bAudioPlayerAutoConnect) ||
+			(!bOldAudioPlayerAutoConnect &&  m_pOptions->bAudioPlayerAutoConnect))
 			updateAudioPlayer();
 		// MIDI engine player options...
 		if (( bOldMidiPlayerBus && !m_pOptions->bMidiPlayerBus) ||
@@ -4078,7 +4098,9 @@ void qtractorMainForm::viewOptions (void)
 			(fOldMetroBarGain      != m_pOptions->fMetroBarGain)      ||
 			(fOldMetroBeatGain     != m_pOptions->fMetroBeatGain)     ||
 			( bOldAudioMetroBus    && !m_pOptions->bAudioMetroBus)    ||
-			(!bOldAudioMetroBus    &&  m_pOptions->bAudioMetroBus))
+			(!bOldAudioMetroBus    &&  m_pOptions->bAudioMetroBus)    ||
+			( bOldAudioMetroAutoConnect && !m_pOptions->bAudioMetroAutoConnect) ||
+			(!bOldAudioMetroAutoConnect &&  m_pOptions->bAudioMetroAutoConnect))
 			updateAudioMetronome();
 		// MIDI engine metronome options...
 		if (( bOldMidiMetronome    && !m_pOptions->bMidiMetronome)    ||
@@ -5266,6 +5288,21 @@ void qtractorMainForm::updatePluginPaths (void)
 }
 
 
+// Update audio master parameters.
+void qtractorMainForm::updateAudioMaster (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Configure the Audio engine master handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
+}
+
+
 // Update audio player parameters.
 void qtractorMainForm::updateAudioPlayer (void)
 {
@@ -5277,6 +5314,7 @@ void qtractorMainForm::updateAudioPlayer (void)
 	if (pAudioEngine == NULL)
 		return;
 
+	pAudioEngine->setPlayerAutoConnect(m_pOptions->bAudioPlayerAutoConnect);
 	pAudioEngine->setPlayerBus(m_pOptions->bAudioPlayerBus);
 }
 
@@ -5380,6 +5418,7 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
 
 	bool bAudioMetronome = m_pOptions->bAudioMetronome;
+	pAudioEngine->setMetroAutoConnect(m_pOptions->bAudioMetroAutoConnect);
 	pAudioEngine->setMetroBus(
 		bAudioMetronome && m_pOptions->bAudioMetroBus);
 	pAudioEngine->setMetroEnabled(bAudioMetronome);

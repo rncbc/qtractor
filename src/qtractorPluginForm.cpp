@@ -176,14 +176,16 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// Dispatch any pending updates.
 	qtractorSubject::flushQueue();
 
-	const qtractorPlugin::Params& params
-		= m_pPlugin->params();
+	qtractorPluginType *pType = m_pPlugin->type();
 
-	int iParams = params.count();
-
-	const int MaxRowsPerPage    = 8;
+	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
+	const int MaxRowsPerPage    = (bVstPlugin ? 12 : 8);
 	const int MaxColumnsPerPage = 3;
 	const int MaxParamsPerPage  = MaxRowsPerPage * MaxColumnsPerPage;
+
+	const qtractorPlugin::Params& params
+		= m_pPlugin->params();
+	int iParams = params.count();
 
 	int iParamsPerPage = iParams;
 	int iParamsOnLastPage = 0;
@@ -278,20 +280,18 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	}
 
 	// Show editor button if available?
-	bool bEditor = (m_pPlugin->type())->isEditor();
+	bool bEditor = pType->isEditor();
 	m_ui.EditToolButton->setVisible(bEditor);
 	if (bEditor)
 		toggleEditor(m_pPlugin->isEditorVisible());
 
 	// Show insert tool options...
-	bool bInsertPlugin
-		= ((m_pPlugin->type())->typeHint() == qtractorPluginType::Insert);
+	bool bInsertPlugin = (pType->typeHint() == qtractorPluginType::Insert);
 	m_ui.SendsToolButton->setVisible(bInsertPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 
 	// Show aux-send tool options...
-	bool bAuxSendPlugin
-		= ((m_pPlugin->type())->typeHint() == qtractorPluginType::AuxSend );
+	bool bAuxSendPlugin	= (pType->typeHint() == qtractorPluginType::AuxSend );
 	m_ui.AudioBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AudioBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AudioBusNameToolButton->setVisible(bAuxSendPlugin);
@@ -305,11 +305,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
-	bool bParams = (params.count() > 0);
-	m_ui.ParamsToolButton->setVisible(bParams);
-	m_ui.ParamsToolButton->setChecked(bParams);
-	m_ui.DirectAccessParamPushButton->setVisible(bParams);
-	paramsSlot(bParams);
+	m_ui.ParamsToolButton->setVisible(iParams > 0);
+	m_ui.ParamsToolButton->setChecked(iParams > 0);
+	m_ui.DirectAccessParamPushButton->setVisible(iParams > 0);
+	paramsSlot(iParams > 0);
 
 	// Clear any initial param update.
 	qtractorSubject::resetQueue();
@@ -318,10 +317,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	refresh();
 	stabilize();
 	show();
-
-	// Do we have a dedicated editor GUI?
-	if (!bParams && bEditor)
-		m_pPlugin->openEditor(this);
 }
 
 

@@ -159,14 +159,19 @@ bool qtractorSession::open (void)
 
 	// A default MIDI master bus is always in order...
 	const QString sMaster("Master");
-	if (m_pMidiEngine->buses().count() == 0)
-		m_pMidiEngine->addBus(
-			new qtractorMidiBus(m_pMidiEngine, sMaster, qtractorBus::Duplex));
+	if (m_pMidiEngine->buses().count() == 0) {
+		qtractorMidiBus *pMidiMasterBus
+			= new qtractorMidiBus(m_pMidiEngine, sMaster, qtractorBus::Duplex);
+		m_pMidiEngine->addBus(pMidiMasterBus);
+	}
 
 	// Get over the stereo playback default master bus...
-	if (m_pAudioEngine->buses().count() == 0)
-		m_pAudioEngine->addBus(
-			new qtractorAudioBus(m_pAudioEngine, sMaster, qtractorBus::Duplex));
+	if (m_pAudioEngine->buses().count() == 0) {
+		qtractorAudioBus *pAudioMasterBus
+			= new qtractorAudioBus(m_pAudioEngine, sMaster, qtractorBus::Duplex);
+		pAudioMasterBus->setAutoConnect(m_pAudioEngine->isMasterAutoConnect());
+		m_pAudioEngine->addBus(pAudioMasterBus);
+	}
 
 	//  Actually open session device engines...
 	if (!m_pAudioEngine->open() || !m_pMidiEngine->open()) {

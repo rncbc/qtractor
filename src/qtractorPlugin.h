@@ -747,6 +747,11 @@ public:
 	bool isAudioOutputBus() const
 		{ return m_bAudioOutputBus; }
 
+	void setAudioOutputAutoConnect(bool bAudioOutputAutoConnect)
+		{ m_bAudioOutputAutoConnect = bAudioOutputAutoConnect; }
+	bool isAudioOutputAutoConnect() const
+		{ return m_bAudioOutputAutoConnect; }
+
 private:
 
 	// Instance variables.
@@ -774,6 +779,7 @@ private:
 	int  m_iMidiProg;
 
 	bool m_bAudioOutputBus;
+	bool m_bAudioOutputAutoConnect;
 
 	qtractorBus::ConnectList m_audioOutputs;
 

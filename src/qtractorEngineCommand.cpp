@@ -101,8 +101,8 @@ bool qtractorBusCommand::createBus (void)
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
 			pAudioBus = new qtractorAudioBus(pAudioEngine,
-				m_sBusName, m_busMode, m_bMonitor,
-				m_iChannels, m_bAutoConnect);
+				m_sBusName, m_busMode, m_bMonitor, m_iChannels);
+			pAudioBus->setAutoConnect(m_bAutoConnect);
 			pAudioEngine->addBus(pAudioBus);
 			pAudioEngine->resetPlayerBus();
 			pAudioEngine->resetMetroBus();

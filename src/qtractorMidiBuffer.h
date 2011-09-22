@@ -243,6 +243,9 @@ public:
 	static void setDefaultAudioOutputBus(bool bAudioOutputBus);
 	static bool isDefaultAudioOutputBus();
 
+	static void setDefaultAudioOutputAutoConnect(bool bAudioOutputAutoConnect);
+	static bool isDefaultAudioOutputAutoConnect();
+
 #ifdef CONFIG_VST
 	// VST event buffer accessors...
 	VstEvents *vst_events_in() const
@@ -272,6 +275,12 @@ public:
 	qtractorAudioBus *audioOutputBus() const
 		{ return m_pAudioOutputBus; }
 	void resetAudioOutputBus();
+
+	// Audio output bus defaults accessors.
+	void setAudioOutputAutoConnect(bool bAudioOutputAutoConnect)
+		{ m_bAudioOutputAutoConnect = bAudioOutputAutoConnect; }
+	bool isAudioOutputAutoConnect() const
+		{ return m_bAudioOutputAutoConnect; }
 
 	// Current bank selection accessors.
 	void setCurrentBank(int iBank)
@@ -346,6 +355,7 @@ private:
 #endif
 
 	bool                m_bAudioOutputBus;
+	bool                m_bAudioOutputAutoConnect;
 	qtractorAudioBus   *m_pAudioOutputBus;
 
 	int m_iCurrentBank;
@@ -363,6 +373,7 @@ private:
 
 	// Global factory options.
 	static bool g_bAudioOutputBus;
+	static bool g_bAudioOutputAutoConnect;
 };
 
 

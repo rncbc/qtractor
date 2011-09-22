@@ -1120,8 +1120,8 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
 	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
 		m_iFlags(0), m_iActivated(0), m_pMidiManager(NULL),
-		m_iMidiBank(-1), m_iMidiProg(-1), m_bAudioOutputBus(false)
-		
+		m_iMidiBank(-1), m_iMidiProg(-1), m_bAudioOutputBus(false),
+		m_bAudioOutputAutoConnect(true)
 {
 	setAutoDelete(true);
 
@@ -1178,6 +1178,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	// Destroy any MIDI manager still there...
 	if (m_pMidiManager) {
 		m_bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
+		m_bAudioOutputAutoConnect = m_pMidiManager->isAudioOutputAutoConnect();
 		qtractorMidiManager::deleteMidiManager(m_pMidiManager);
 		m_pMidiManager = NULL;
 	}
@@ -1209,6 +1210,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		// Set loaded/cached properties properly...
 		m_pMidiManager->setCurrentBank(m_iMidiBank);
 		m_pMidiManager->setCurrentProg(m_iMidiProg);
+		m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
 		if (m_pMidiManager->isAudioOutputBus()) {
 			qtractorAudioBus *pAudioOutputBus
@@ -1598,6 +1600,11 @@ bool qtractorPluginList::loadElement (
 			setAudioOutputBus(qtractorDocument::boolFromText(ePlugin.text()));
 		}
 		else
+		// Load audio output auto-connect flag...
+		if (ePlugin.tagName() == "audio-output-auto-connect") {
+			setAudioOutputAutoConnect(qtractorDocument::boolFromText(ePlugin.text()));
+		}
+		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
 			qtractorBus::loadConnects(m_audioOutputs, pDocument, &ePlugin);
@@ -1684,6 +1691,9 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pDocument->saveTextElement("audio-output-bus",
 			qtractorDocument::textFromBool(
 				m_pMidiManager->isAudioOutputBus()), pElement);
+		pDocument->saveTextElement("audio-output-auto-connect",
+			qtractorDocument::textFromBool(
+				m_pMidiManager->isAudioOutputAutoConnect()), pElement);
 		if (m_pMidiManager->isAudioOutputBus()) {
 			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
 			if (pAudioBus) {
