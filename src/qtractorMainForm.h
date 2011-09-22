@@ -356,7 +356,6 @@ protected:
 	void updatePluginPaths();
 	void updateTransportMode();
 	void updateMidiControlModes();
-	void updateAudioMaster();
 	void updateAudioPlayer();
 	void updateMidiQueueTimer();
 	void updateMidiPlayer();

@@ -1181,7 +1181,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateDisplayFormat();
 	updatePluginPaths();
 	updateTransportMode();
-	updateAudioMaster();
 	updateAudioPlayer();
 	updateAudioMetronome();
 	updateMidiControlModes();
@@ -1215,14 +1214,16 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Initial thumb-view background (empty)
 	m_pThumbView->updateContents();
 
+	// Some special defaults...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine)
+		pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
+	
 	// Is any session identification to get loaded?
 	bool bSessionId = !m_pOptions->sSessionId.isEmpty();
-	if (bSessionId) {
-		qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-		if (pAudioEngine) {
-			pAudioEngine->setSessionId(m_pOptions->sSessionId);
-			m_pOptions->sSessionId.clear();
-		}
+	if (bSessionId && pAudioEngine) {
+		pAudioEngine->setSessionId(m_pOptions->sSessionId);
+		m_pOptions->sSessionId.clear();
 	}
 
 	// Is any session pending to be loaded?
@@ -1234,7 +1235,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			// some foreign session manager (eg. JACK session)...
 			if (bSessionId) {
 				// JACK session manager will take care of audio connections...
-				qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 				if (pAudioEngine)
 					pAudioEngine->clearConnects();
 				// LADISH session manager will take care of MIDI connections...
@@ -3934,7 +3934,6 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldResampleType       = m_pOptions->iAudioResampleType;
 	bool    bOldWsolaTimeStretch   = m_pOptions->bAudioWsolaTimeStretch;
 	bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
-	bool    bOldAudioMasterAutoConnect = m_pOptions->bAudioMasterAutoConnect;
 	bool    bOldAudioPlayerAutoConnect = m_pOptions->bAudioPlayerAutoConnect;
 	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
@@ -4060,12 +4059,6 @@ void qtractorMainForm::viewOptions (void)
 			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)) {
 			++m_iDirtyCount; // Fake session properties change.
 			updateMidiControlModes();
-		}
-		// Audio engine master options...
-		if (( bOldAudioMasterAutoConnect && !m_pOptions->bAudioMasterAutoConnect) ||
-			(!bOldAudioMasterAutoConnect &&  m_pOptions->bAudioMasterAutoConnect)) {
-			updateAudioMaster();
-			iNeedRestart |= RestartSession;
 		}
 		// Audio engine audition/pre-listening player options...
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
@@ -5276,21 +5269,6 @@ void qtractorMainForm::updatePluginPaths (void)
 	path.setPaths(m_pOptions->lv2Paths);
 	path.open();
 #endif
-}
-
-
-// Update audio master parameters.
-void qtractorMainForm::updateAudioMaster (void)
-{
-	if (m_pOptions == NULL)
-		return;
-
-	// Configure the Audio engine master handling...
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine == NULL)
-		return;
-
-	pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
 }
 
 
