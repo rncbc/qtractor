@@ -162,6 +162,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioPlayerBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioPlayerAutoConnectCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMetronomeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -184,6 +187,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
 	QObject::connect(m_ui.AudioMetroBusCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.AudioMetroAutoConnectCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
@@ -324,6 +330,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioOutputBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioOutputAutoConnectCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DummyVstScanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -402,6 +411,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 #endif
 	m_ui.AudioWsolaQuickSeekCheckBox->setChecked(m_pOptions->bAudioWsolaQuickSeek);
 	m_ui.AudioPlayerBusCheckBox->setChecked(m_pOptions->bAudioPlayerBus);
+	m_ui.AudioPlayerAutoConnectCheckBox->setChecked(m_pOptions->bAudioPlayerAutoConnect);
 
 #ifndef CONFIG_LIBSAMPLERATE
 	m_ui.AudioResampleTypeTextLabel->setEnabled(false);
@@ -415,6 +425,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MetroBeatFilenameComboBox->setEditText(m_pOptions->sMetroBeatFilename);
 	m_ui.MetroBeatGainSpinBox->setValue(log10f2(m_pOptions->fMetroBeatGain));
 	m_ui.AudioMetroBusCheckBox->setChecked(m_pOptions->bAudioMetroBus);
+	m_ui.AudioMetroAutoConnectCheckBox->setChecked(m_pOptions->bAudioMetroAutoConnect);
 
 	// MIDI capture/export options.
 	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
@@ -508,6 +519,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// Plugin instruments options.
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
+	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
 	m_ui.DummyVstScanCheckBox->setChecked(m_pOptions->bDummyVstScan);
 
 	int iPluginType = m_pOptions->iPluginType - 1;
@@ -555,6 +567,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bAudioWsolaTimeStretch = m_ui.AudioWsolaTimeStretchCheckBox->isChecked();
 		m_pOptions->bAudioWsolaQuickSeek = m_ui.AudioWsolaQuickSeekCheckBox->isChecked();
 		m_pOptions->bAudioPlayerBus      = m_ui.AudioPlayerBusCheckBox->isChecked();
+		m_pOptions->bAudioPlayerAutoConnect = m_ui.AudioPlayerAutoConnectCheckBox->isChecked();
 		// Audio metronome options.
 		m_pOptions->bAudioMetronome      = m_ui.AudioMetronomeCheckBox->isChecked();
 		m_pOptions->sMetroBarFilename    = m_ui.MetroBarFilenameComboBox->currentText();
@@ -562,6 +575,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->sMetroBeatFilename   = m_ui.MetroBeatFilenameComboBox->currentText();
 		m_pOptions->fMetroBeatGain       = pow10f2(m_ui.MetroBeatGainSpinBox->value());
 		m_pOptions->bAudioMetroBus       = m_ui.AudioMetroBusCheckBox->isChecked();
+		m_pOptions->bAudioMetroAutoConnect = m_ui.AudioMetroAutoConnectCheckBox->isChecked();
 		// MIDI options...
 		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
 		m_pOptions->iMidiCaptureQuantize = m_ui.MidiCaptureQuantizeComboBox->currentIndex();
@@ -601,6 +615,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->lv2Paths             = m_lv2Paths;
 		// Plugin instruments options.
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
+		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
 		m_pOptions->bDummyVstScan        = m_ui.DummyVstScanCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
@@ -1219,6 +1234,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.AudioWsolaQuickSeekCheckBox->setEnabled(
 		m_ui.AudioWsolaTimeStretchCheckBox->isChecked());
 
+	m_ui.AudioPlayerAutoConnectCheckBox->setEnabled(
+		m_ui.AudioPlayerBusCheckBox->isChecked());
+
 	bool bAudioMetronome = m_ui.AudioMetronomeCheckBox->isChecked();
 	m_ui.MetroBarFilenameTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBarFilenameComboBox->setEnabled(bAudioMetronome);
@@ -1231,6 +1249,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatGainTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatGainSpinBox->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
+
+	m_ui.AudioMetroAutoConnectCheckBox->setEnabled(
+		bAudioMetronome && m_ui.AudioMetroBusCheckBox->isChecked());
 
 	bool bMmcMode =(m_ui.MidiMmcModeComboBox->currentIndex() > 0);
 	m_ui.MidiMmcDeviceTextLabel->setEnabled(bMmcMode);
@@ -1275,6 +1296,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 		&& m_ui.PluginPathListWidget->findItems(
 			sPluginPath, Qt::MatchExactly).isEmpty());
 		
+	m_ui.AudioOutputAutoConnectCheckBox->setEnabled(
+		m_ui.AudioOutputBusCheckBox->isChecked());
+
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 

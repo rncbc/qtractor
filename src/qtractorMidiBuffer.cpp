@@ -206,6 +206,7 @@ qtractorMidiManagerThread *qtractorMidiManager::g_pSyncThread = NULL;
 unsigned int               qtractorMidiManager::g_iSyncThreadRefCount = 0;
 
 bool qtractorMidiManager::g_bAudioOutputBus = false;
+bool qtractorMidiManager::g_bAudioOutputAutoConnect = true;
 
 // Constructor.
 qtractorMidiManager::qtractorMidiManager (
@@ -221,6 +222,7 @@ qtractorMidiManager::qtractorMidiManager (
 #endif
 	m_iEventBuffer(0),
 	m_bAudioOutputBus(g_bAudioOutputBus),
+	m_bAudioOutputAutoConnect(g_bAudioOutputAutoConnect),
 	m_pAudioOutputBus(NULL),
 	m_iCurrentBank(-1),
 	m_iCurrentProg(-1),
@@ -804,6 +806,18 @@ bool qtractorMidiManager::isDefaultAudioOutputBus (void)
 }
 
 
+void qtractorMidiManager::setDefaultAudioOutputAutoConnect (
+	bool bAudioOutputAutoConnect )
+{
+	g_bAudioOutputAutoConnect = bAudioOutputAutoConnect;
+}
+
+bool qtractorMidiManager::isDefaultAudioOutputAutoConnect (void)
+{
+	return g_bAudioOutputAutoConnect;
+}
+
+
 // Output bus mode accessors.
 void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 {
@@ -851,7 +865,8 @@ void qtractorMidiManager::createAudioOutputBus (void)
 		m_pAudioOutputBus
 			= new qtractorAudioBus(pAudioEngine, m_pPluginList->name(),
 				qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex),
-				false, m_pPluginList->channels(), true);
+				false, m_pPluginList->channels());
+		m_pAudioOutputBus->setAutoConnect(m_bAudioOutputAutoConnect);
 		if (pAudioEngine->isActivated()) {
 			if (m_pAudioOutputBus->open())
 				m_pAudioOutputBus->autoConnect();

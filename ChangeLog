@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Auto-connection of dedicated audio outputs is now
+  optional for default audio master bus, metronome,
+  player and MIDI instrument plugin dedicated audio
+  outputs.
+
 - Finally, after a pitiful large braind-dead period,
   generic plugin forms are now showing all possible
   controllable plugin parameters featuring a paged,

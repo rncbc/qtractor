@@ -898,7 +898,28 @@ void qtractorPluginListView::audioOutputBus (void)
 
 	pSession->execute(
 		new qtractorAudioOutputBusCommand(pMidiManager,
-			!pMidiManager->isAudioOutputBus()));
+			!pMidiManager->isAudioOutputBus(), // Toggle!
+			pMidiManager->isAudioOutputAutoConnect()));
+
+	emit contentsChanged();
+}
+
+
+void qtractorPluginListView::audioOutputAutoConnect (void)
+{
+	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager == NULL)
+		return;
+
+	// Make it an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->execute(
+		new qtractorAudioOutputBusCommand(pMidiManager,
+			pMidiManager->isAudioOutputBus(),
+			!pMidiManager->isAudioOutputAutoConnect())); // Toggle!
 
 	emit contentsChanged();
 }
@@ -1461,6 +1482,11 @@ void qtractorPluginListView::contextMenuEvent (
 			tr("&Dedicated"), this, SLOT(audioOutputBus()));
 		pAction->setCheckable(true);
 		pAction->setChecked(pMidiManager->isAudioOutputBus());
+		pAction = pAudioMenu->addAction(
+			tr("&Auto-connect"), this, SLOT(audioOutputAutoConnect()));
+		pAction->setCheckable(true);
+		pAction->setChecked(pMidiManager->isAudioOutputAutoConnect());
+		pAction->setEnabled(pMidiManager->isAudioOutputBus());
 	}
 
 	menu.exec(pContextMenuEvent->globalPos());

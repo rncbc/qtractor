@@ -321,6 +321,8 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	m_iBufferOffset = 0;
 
+	m_bMasterAutoConnect = true;
+
 	// Audio-export freewheeling (internal) state.
 	m_bFreewheel = false;
 
@@ -339,6 +341,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_bMetronome      = false;
 	m_bMetroBus       = false;
 	m_pMetroBus       = NULL;
+	m_bMetroAutoConnect = true;
 	m_pMetroBarBuff   = NULL;
 	m_pMetroBeatBuff  = NULL;
 	m_fMetroBarGain   = 1.0f;
@@ -351,6 +354,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	ATOMIC_SET(&m_playerLock, 0);
 	m_bPlayerOpen  = false;
 	m_bPlayerBus   = false;
+	m_bPlayerAutoConnect = true;
 	m_pPlayerBus   = NULL;
 	m_pPlayerBuff  = NULL;
 	m_iPlayerFrame = 0;
@@ -427,6 +431,18 @@ unsigned int qtractorAudioEngine::bufferSize (void) const
 unsigned int qtractorAudioEngine::bufferOffset (void) const
 {
 	return m_iBufferOffset;
+}
+
+
+// Audio (Master) bus defaults accessors.
+void qtractorAudioEngine::setMasterAutoConnect ( bool bMasterAutoConnect )
+{
+	m_bMasterAutoConnect = bMasterAutoConnect;
+}
+
+bool qtractorAudioEngine::isMasterAutoConnect (void) const
+{
+	return m_bMasterAutoConnect;
 }
 
 
@@ -637,6 +653,11 @@ void qtractorAudioEngine::deactivate (void)
 // Device engine cleanup method.
 void qtractorAudioEngine::clean (void)
 {
+	// Audio master bus auto-connection option...
+	qtractorAudioBus *pMasterBus
+		= static_cast<qtractorAudioBus *> (buses().first());
+	if (pMasterBus) m_bMasterAutoConnect = pMasterBus->isAutoConnect();
+
 	// Clean player/metronome buses...
 	deletePlayerBus();
 	deleteMetroBus();
@@ -1327,6 +1348,19 @@ void qtractorAudioEngine::resetMetroBus (void)
 }
 
 
+// Metronome bus defaults accessors.
+void qtractorAudioEngine::setMetroAutoConnect ( bool bMetroAutoConnect )
+{
+	m_bMetroAutoConnect = bMetroAutoConnect;
+}
+
+bool qtractorAudioEngine::isMetroAutoConnect (void) const
+{
+	return m_bMetroAutoConnect;
+}
+
+
+
 // Metronome bar audio sample.
 void qtractorAudioEngine::setMetroBarFilename ( const QString& sFilename )
 {
@@ -1387,6 +1421,7 @@ void qtractorAudioEngine::createMetroBus (void)
 	if (m_bMetroBus) {
 		m_pMetroBus = new qtractorAudioBus(this, "Metronome",
 			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
+		m_pMetroBus->setAutoConnect(m_bMetroAutoConnect);
 	} else {
 		// Metronome bus gets to be the first available output bus...
 		for (qtractorBus *pBus = qtractorEngine::buses().first();
@@ -1561,6 +1596,18 @@ void qtractorAudioEngine::resetPlayerBus (void)
 }
 
 
+// Audition/pre-listening bus defaults accessors.
+void qtractorAudioEngine::setPlayerAutoConnect ( bool bPlayerAutoConnect )
+{
+	m_bPlayerAutoConnect = bPlayerAutoConnect;
+}
+
+bool qtractorAudioEngine::isPlayerAutoConnect (void) const
+{
+	return m_bPlayerAutoConnect;
+}
+
+
 // Create audition/pre-listening stuff...
 void qtractorAudioEngine::createPlayerBus (void)
 {
@@ -1570,6 +1617,7 @@ void qtractorAudioEngine::createPlayerBus (void)
 	if (m_bPlayerBus) {
 		m_pPlayerBus = new qtractorAudioBus(this, "Player",
 			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
+		m_pPlayerBus->setAutoConnect(m_bPlayerAutoConnect);
 	} else {
 		// Audition/pre-listening bus gets to be
 		// the first available output bus...
@@ -1792,7 +1840,7 @@ void qtractorAudioEngine::resetAllMonitors (void)
 // Constructor.
 qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 	const QString& sBusName, BusMode busMode, bool bMonitor,
-	unsigned short iChannels, bool bAutoConnect )
+	unsigned short iChannels )
 	: qtractorBus(pAudioEngine, sBusName, busMode, bMonitor)
 {
 	m_iChannels = iChannels;
@@ -1817,7 +1865,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 		m_pOCurveFile    = NULL;
 	}
 
-	m_bAutoConnect = bAutoConnect;
+	m_bAutoConnect = false;
 
 	m_ppIPorts  = NULL;
 	m_ppOPorts  = NULL;

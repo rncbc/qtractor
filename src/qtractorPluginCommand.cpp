@@ -586,10 +586,11 @@ bool qtractorPluginParamCommand::undo (void)
 
 // Constructor.
 qtractorAudioOutputBusCommand::qtractorAudioOutputBusCommand (
-	qtractorMidiManager *pMidiManager, bool bAudioOutputBus )
+	qtractorMidiManager *pMidiManager, bool bAudioOutputBus,
+	bool bAudioOutputAutoConnect )
 	: qtractorCommand(QObject::tr("dedicated audio outputs")),
-		m_pMidiManager(pMidiManager),
-		m_bAudioOutputBus(bAudioOutputBus)
+		m_pMidiManager(pMidiManager), m_bAudioOutputBus(bAudioOutputBus),
+		m_bAudioOutputAutoConnect(bAudioOutputAutoConnect)
 {
 }
 
@@ -601,7 +602,10 @@ bool qtractorAudioOutputBusCommand::redo (void)
 		return false;
 
 	bool bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
+	bool bAudioOutputAutoConnect = m_pMidiManager->isAudioOutputAutoConnect();
+	m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 	m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
+	m_bAudioOutputAutoConnect = bAudioOutputAutoConnect;
 	m_bAudioOutputBus = bAudioOutputBus;
 
 	return true;

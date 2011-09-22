@@ -139,6 +139,9 @@ void qtractorOptions::loadOptions (void)
 	bAudioPlayerBus      = m_settings.value("/PlayerBus", false).toBool();
 	bAudioMetroBus       = m_settings.value("/MetroBus", false).toBool();
 	bAudioMetronome      = m_settings.value("/Metronome", false).toBool();
+	bAudioMasterAutoConnect = m_settings.value("/MasterAutoConnect", true).toBool();
+	bAudioPlayerAutoConnect = m_settings.value("/PlayerAutoConnect", true).toBool();
+	bAudioMetroAutoConnect = m_settings.value("/MetroAutoConnect", true).toBool();
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
@@ -206,6 +209,7 @@ void qtractorOptions::loadOptions (void)
 	vstPaths    = m_settings.value("/VstPaths").toStringList();
 	lv2Paths    = m_settings.value("/Lv2Paths").toStringList();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
+	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	m_settings.endGroup();
 
@@ -365,6 +369,9 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/PlayerBus", bAudioPlayerBus);
 	m_settings.setValue("/MetroBus", bAudioMetroBus);
 	m_settings.setValue("/Metronome", bAudioMetronome);
+	m_settings.setValue("/MasterAutoConnect", bAudioMasterAutoConnect);
+	m_settings.setValue("/PlayerAutoConnect", bAudioPlayerAutoConnect);
+	m_settings.setValue("/MetroAutoConnect", bAudioMetroAutoConnect);
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
@@ -432,6 +439,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/VstPaths", vstPaths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
+	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.endGroup();
 

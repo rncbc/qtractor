@@ -122,6 +122,10 @@ public:
 	// Buffer offset accessor.
 	unsigned int bufferOffset() const;
 
+	// Audio (Master) bus defaults accessors.
+	void setMasterAutoConnect(bool bMasterAutoConnect);
+	bool isMasterAutoConnect() const;
+
 	// Audio-export freewheeling (internal) state.
 	void setFreewheel(bool bFreewheel);
 	bool isFreewheel() const;
@@ -154,6 +158,10 @@ public:
 	bool isMetroBus() const;
 	void resetMetroBus();
 
+	// Metronome bus defaults accessors.
+	void setMetroAutoConnect(bool bMetroAutoConnect);
+	bool isMetroAutoConnect() const;
+
 	// Metronome bar audio sample.
 	void setMetroBarFilename(const QString& sFilename);
 	const QString& metroBarFilename() const;
@@ -175,7 +183,12 @@ public:
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
 	bool isPlayerBus() const;
+
 	void resetPlayerBus();
+
+	// Audition/pre-listening bus defaults accessors.
+	void setPlayerAutoConnect(bool bPlayerAutoConnect);
+	bool isPlayerAutoConnect() const;
 
 	bool isPlayerOpen() const;
 	bool openPlayer(const QString& sFilename);
@@ -236,6 +249,9 @@ private:
 	unsigned int m_iSampleRate;
 	unsigned int m_iBufferSize;
 
+	// Audio (Master) bus defaults.
+	bool m_bMasterAutoConnect;
+
 	// Partial buffer offset state;
 	// careful for proper loop concatenation.
 	unsigned int m_iBufferOffset;
@@ -258,6 +274,7 @@ private:
 	bool                 m_bMetronome;
 	bool                 m_bMetroBus;
 	qtractorAudioBus    *m_pMetroBus;
+	bool                 m_bMetroAutoConnect;
 	qtractorAudioBuffer *m_pMetroBarBuff;
 	qtractorAudioBuffer *m_pMetroBeatBuff;
 	QString              m_sMetroBarFilename;
@@ -273,6 +290,7 @@ private:
 	bool                 m_bPlayerOpen;
 	bool                 m_bPlayerBus;
 	qtractorAudioBus    *m_pPlayerBus;
+	bool                 m_bPlayerAutoConnect;
 	qtractorAudioBuffer *m_pPlayerBuff;
 	unsigned long        m_iPlayerFrame;
 
@@ -296,7 +314,7 @@ public:
 	// Constructor.
 	qtractorAudioBus(qtractorAudioEngine *pAudioEngine,
 		const QString& sBusName, BusMode busMode, bool bMonitor = false,
-		unsigned short iChannels = 2, bool bAutoConnect = true);
+		unsigned short iChannels = 2);
 
 	// Destructor.
 	~qtractorAudioBus();

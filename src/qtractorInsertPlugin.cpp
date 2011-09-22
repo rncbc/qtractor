@@ -317,7 +317,7 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 	// Create the private audio bus...
 	m_pAudioBus = new qtractorAudioBus(pAudioEngine, sBusName,
 		qtractorBus::BusMode(qtractorBus::Duplex | qtractorBus::Ex),
-		false, iChannels, false);
+		false, iChannels);
 
 	// Add this one to the engine's exo-bus list,
 	// for conection persistence purposes...

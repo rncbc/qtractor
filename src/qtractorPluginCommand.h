@@ -330,7 +330,7 @@ public:
 
 	// Constructor.
 	qtractorAudioOutputBusCommand(qtractorMidiManager *pMidiManager,
-		bool bAudioOutputBus);
+		bool bAudioOutputBus, bool bAudioOutputAutoConnect);
 
 	// Plugin audio ouput bus command methods.
 	bool redo();
@@ -342,6 +342,7 @@ private:
 	qtractorMidiManager *m_pMidiManager;
 
 	bool m_bAudioOutputBus;
+	bool m_bAudioOutputAutoConnect;
 };
 
 

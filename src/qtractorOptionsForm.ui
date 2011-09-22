@@ -331,15 +331,18 @@
               <bold>false</bold>
              </font>
             </property>
-            <property name="text" >
+			<property name="text" >
              <string>Tran&amp;sport mode:</string>
             </property>
-            <property name="buddy" >
+			<property name="alignment" >
+			 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+			</property>
+			<property name="buddy" >
              <cstring>TransportModeComboBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="4" >
+		  <item row="0" column="4" >
            <widget class="QComboBox" name="TransportModeComboBox" >
             <property name="font" >
              <font>
@@ -410,7 +413,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="3" >
+		  <item row="3" column="0" colspan="3" >
            <widget class="QCheckBox" name="AudioWsolaQuickSeekCheckBox" >
             <property name="font" >
              <font>
@@ -429,7 +432,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="3" >
+		  <item row="4" column="0" colspan="2" >
            <widget class="QCheckBox" name="AudioPlayerBusCheckBox" >
             <property name="font" >
              <font>
@@ -441,14 +444,33 @@
              <string>Whether to have separate audition/pre-listening player output ports</string>
             </property>
             <property name="text" >
-             <string>Dedicated au&amp;dition/pre-listening player outputs</string>
+			 <string>Dedicated au&amp;dition/pre-listening player outputs:</string>
             </property>
             <property name="shortcut" >
              <string>Alt+D</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="3" >
+		  <item row="4" column="2" >
+		   <widget class="QCheckBox" name="AudioPlayerAutoConnectCheckBox" >
+			<property name="font" >
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip" >
+			 <string>Whether to auto-connect dedicated audio player outputs</string>
+			</property>
+			<property name="text" >
+			 <string>Auto-&amp;connect</string>
+			</property>
+			<property name="shortcut" >
+			 <string>Alt+C</string>
+			</property>
+		   </widget>
+		  </item>
+		  <item row="5" column="0" colspan="5" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -520,7 +542,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
+		  <item row="1" column="1" colspan="3" >
            <widget class="QComboBox" name="MetroBarFilenameComboBox" >
             <property name="sizePolicy" >
              <sizepolicy>
@@ -544,7 +566,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+		  <item row="1" column="4">
            <widget class="QToolButton" name="MetroBarFilenameToolButton" >
             <property name="font" >
              <font>
@@ -575,7 +597,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="3" >
+		  <item row="1" column="5" >
            <widget class="QLabel" name="MetroBarGainTextLabel" >
             <property name="font" >
              <font>
@@ -591,7 +613,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="4" >
+		  <item row="1" column="6" >
            <widget class="QDoubleSpinBox" name="MetroBarGainSpinBox" >
             <property name="font" >
              <font>
@@ -623,7 +645,7 @@
             <property name="value" >
              <double>0.0</double>
             </property>
-           </widget>
+		   </widget>
           </item>
           <item row="2" column="0" >
            <widget class="QLabel" name="MetroBeatFilenameTextLabel" >
@@ -641,7 +663,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
+		  <item row="2" column="1" colspan="3" >
            <widget class="QComboBox" name="MetroBeatFilenameComboBox" >
             <property name="sizePolicy" >
              <sizepolicy>
@@ -665,7 +687,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+		  <item row="2" column="4" >
            <widget class="QToolButton" name="MetroBeatFilenameToolButton" >
             <property name="font" >
              <font>
@@ -696,7 +718,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="3" >
+		  <item row="2" column="5" >
            <widget class="QLabel" name="MetroBeatGainTextLabel" >
             <property name="font" >
              <font>
@@ -712,7 +734,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="4" >
+		  <item row="2" column="6" >
            <widget class="QDoubleSpinBox" name="MetroBeatGainSpinBox" >
             <property name="font" >
              <font>
@@ -746,7 +768,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="5" >
+		  <item row="3" column="0" colspan="2" >
            <widget class="QCheckBox" name="AudioMetroBusCheckBox" >
             <property name="font" >
              <font>
@@ -758,14 +780,33 @@
              <string>Whether to have separate audio metronome output ports</string>
             </property>
             <property name="text" >
-             <string>Dedicated a&amp;udio metronome outputs</string>
+			 <string>Dedicated a&amp;udio metronome outputs:</string>
             </property>
             <property name="shortcut" >
              <string>Alt+U</string>
             </property>
            </widget>
           </item>
-         </layout>
+		  <item row="3" column="2" >
+		   <widget class="QCheckBox" name="AudioMetroAutoConnectCheckBox" >
+			<property name="font" >
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip" >
+			 <string>Whether to auto-connect dedicated audio metronome outputs</string>
+			</property>
+			<property name="text" >
+			 <string>Auto-co&amp;nnect</string>
+			</property>
+			<property name="shortcut" >
+			 <string>Alt+N</string>
+			</property>
+		   </widget>
+		  </item>
+		 </layout>
         </widget>
        </item>
      </layout>
@@ -2851,7 +2892,7 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="0" colspan="3" >
+		  <item row="0" column="0" >
            <widget class="QCheckBox" name="AudioOutputBusCheckBox" >
             <property name="font" >
              <font>
@@ -2863,14 +2904,46 @@
              <string>Whether to have separate audio output ports</string>
             </property>
             <property name="text" >
-             <string>Dedicated audi&amp;o outputs</string>
+			 <string>Dedicated audi&amp;o outputs:</string>
             </property>
             <property name="shortcut" >
              <string>Alt+O</string>
             </property>
            </widget>
           </item>
-         </layout>
+		  <item row="0" column="1" >
+		   <widget class="QCheckBox" name="AudioOutputAutoConnectCheckBox" >
+			<property name="font" >
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip" >
+			 <string>Whether to auto-connect dedicated audio output ports</string>
+			</property>
+			<property name="text" >
+			 <string>Au&amp;to-connect</string>
+			</property>
+			<property name="shortcut" >
+			 <string>Alt+T</string>
+			</property>
+		   </widget>
+		  </item>
+		  <item row="0" column="2" >
+		   <spacer>
+			<property name="orientation" >
+			 <enum>Qt::Horizontal</enum>
+			</property>
+			<property name="sizeHint" >
+			 <size>
+			  <width>20</width>
+			  <height>20</height>
+			 </size>
+			</property>
+		   </spacer>
+		  </item>
+		 </layout>
         </widget>
        </item>
        <item>
@@ -2957,6 +3030,7 @@
   <tabstop>AudioWsolaTimeStretchCheckBox</tabstop>
   <tabstop>AudioWsolaQuickSeekCheckBox</tabstop>
   <tabstop>AudioPlayerBusCheckBox</tabstop>
+  <tabstop>AudioPlayerAutoConnectCheckBox</tabstop>
   <tabstop>AudioMetronomeCheckBox</tabstop>
   <tabstop>MetroBarFilenameComboBox</tabstop>
   <tabstop>MetroBarFilenameToolButton</tabstop>
@@ -2965,6 +3039,7 @@
   <tabstop>MetroBeatFilenameToolButton</tabstop>
   <tabstop>MetroBeatGainSpinBox</tabstop>
   <tabstop>AudioMetroBusCheckBox</tabstop>
+  <tabstop>AudioMetroAutoConnectCheckBox</tabstop>
   <tabstop>MidiCaptureFormatComboBox</tabstop>
   <tabstop>MidiCaptureQuantizeComboBox</tabstop>
   <tabstop>MidiQueueTimerComboBox</tabstop>
@@ -3017,6 +3092,7 @@
   <tabstop>PluginPathUpToolButton</tabstop>
   <tabstop>PluginPathDownToolButton</tabstop>
   <tabstop>AudioOutputBusCheckBox</tabstop>
+  <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>DummyVstScanCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>

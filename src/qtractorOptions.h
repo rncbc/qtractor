@@ -111,6 +111,10 @@ public:
 	bool    bAudioMetroBus;
 	bool    bAudioMetronome;
 
+	bool    bAudioMasterAutoConnect;
+	bool    bAudioPlayerAutoConnect;
+	bool    bAudioMetroAutoConnect;
+
 	// Audio metronome parameters.
 	QString sMetroBarFilename;
 	float   fMetroBarGain;
@@ -177,6 +181,7 @@ public:
 
 	// Plug-in instrument options.
 	bool bAudioOutputBus;
+	bool bAudioOutputAutoConnect;
 
 	// VST dummy plugin scan option.
 	bool bDummyVstScan;
