@@ -82,6 +82,12 @@ enum qtractorVstPluginFlagsEx
 	effFlagsExCanMidiProgramNames       = 1 << 10
 };
 
+// Uh-oh.
+#ifdef CONFIG_VESTIGE
+#define effGetChunk 23
+#define effSetChunk 24
+#define effFlagsProgramChunks 32
+#endif
 
 //---------------------------------------------------------------------
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
@@ -430,11 +436,9 @@ bool qtractorVstPluginType::open (void)
 	m_iMidiOuts    = ((m_iFlagsEx & effFlagsExCanSendVstMidiEvents) ? 1 : 0);
 
 	// Cache flags.
-	m_bRealtime = true;
-#ifndef CONFIG_VESTIGE
+	m_bRealtime  = true;
 	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
-#endif
-	m_bEditor = (pVstEffect->flags & effFlagsHasEditor);
+	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
 
 	// HACK: JUCE based VST plugins, which are the most found
 	// with a GUI editor, need to skip explicit shared library
@@ -834,7 +838,6 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 // Configuration (CLOB) stuff.
 void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 {
-#ifndef CONFIG_VESTIGE
 	if (sKey == "chunk") {
 		// Load the BLOB (base64 encoded)...
 		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toAscii()));
@@ -847,15 +850,12 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
 	}
-#endif	// !CONFIG_VESTIGE
 }
 
 
 // Plugin configuration/state snapshot.
 void qtractorVstPlugin::freezeConfigs (void)
 {
-#ifndef CONFIG_VESTIGE
-
 	if (!type()->isConfigure())
 		return;
 
@@ -879,8 +879,6 @@ void qtractorVstPlugin::freezeConfigs (void)
 	for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
 		data.insert(i, "\n       "); // Indentation.
 	setConfig("chunk", data.constData());
-
-#endif	// !CONFIG_VESTIGE
 }
 
 void qtractorVstPlugin::releaseConfigs (void)
