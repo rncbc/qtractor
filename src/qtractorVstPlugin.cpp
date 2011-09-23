@@ -82,7 +82,7 @@ enum qtractorVstPluginFlagsEx
 	effFlagsExCanMidiProgramNames       = 1 << 10
 };
 
-// Uh-oh.
+// Uh-oh!
 #ifdef CONFIG_VESTIGE
 #define effGetChunk 23
 #define effSetChunk 24
@@ -183,9 +183,10 @@ public:
 		} *pRect;
 
 		if (m_pVstPlugin->vst_dispatch(0, effEditGetRect, 0, 0, &pRect, 0.0f)) {
-			QWidget::setFixedSize(
-				pRect->right - pRect->left,
-				pRect->bottom - pRect->top);
+			int w = pRect->right - pRect->left;
+			int h = pRect->bottom - pRect->top;
+			if (w > 0 && h > 0)
+				QWidget::setFixedSize(w, h);
 		}
 
 	#if defined(Q_WS_X11)
@@ -1018,7 +1019,8 @@ QWidget *qtractorVstPlugin::editorWidget (void) const
 // Our own editor widget size accessor.
 void qtractorVstPlugin::resizeEditorWidget ( int w, int h )
 {
-	if (m_pEditorWidget) m_pEditorWidget->resize(w, h);
+	if (m_pEditorWidget && w > 0 && h > 0)
+		m_pEditorWidget->resize(w, h);
 }
 
 
@@ -1268,7 +1270,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		if (!sFilename.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
 				pvfs->returnPath = new char [sFilename.length() + 1];
-				pvfs->reserved   = 1;
+				pvfs->reserved = 1;
 			}
 			::strcpy(pvfs->returnPath, sFilename.toUtf8().constData());
 			pvfs->nbReturnPath = 1;
@@ -1284,7 +1286,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		if (!sDirectory.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
 				pvfs->returnPath = new char [sDirectory.length() + 1];
-				pvfs->reserved   = 1;
+				pvfs->reserved = 1;
 			}
 			::strcpy(pvfs->returnPath, sDirectory.toUtf8().constData());
 			pvfs->nbReturnPath = 1;
@@ -1310,7 +1312,7 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 	if (pvfs->reserved == 1 && pvfs->returnPath) {
 		delete [] pvfs->returnPath;
 		pvfs->returnPath = NULL;
-		pvfs->reserved   = 0;
+		pvfs->reserved = 0;
 	}
 
 	return 1;
