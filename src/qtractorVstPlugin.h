@@ -150,7 +150,7 @@ public:
 	QWidget *editorWidget() const;
 
 	// Our own editor widget size accessor.
-	bool resizeEditor(int w, int h);
+	void resizeEditor(int w, int h);
 
 	// Global VST plugin lookup.
 	static qtractorVstPlugin *findPlugin(AEffect *pVstEffect);
