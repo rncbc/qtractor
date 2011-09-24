@@ -82,12 +82,16 @@ enum qtractorVstPluginFlagsEx
 	effFlagsExCanMidiProgramNames       = 1 << 10
 };
 
-// Uh-oh!
+
+// Some VeSTige missing opcodes and flags.
 #ifdef CONFIG_VESTIGE
-#define effGetChunk 23
-#define effSetChunk 24
-#define effFlagsProgramChunks 32
+const int effGetParamLabel = 6;
+const int effGetParamDisplay = 7;
+const int effGetChunk = 23;
+const int effSetChunk = 24;
+const int effFlagsProgramChunks = 32;
 #endif
+
 
 //---------------------------------------------------------------------
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
@@ -1017,10 +1021,14 @@ QWidget *qtractorVstPlugin::editorWidget (void) const
 
 
 // Our own editor widget size accessor.
-void qtractorVstPlugin::resizeEditorWidget ( int w, int h )
+bool qtractorVstPlugin::resizeEditor ( int w, int h )
 {
-	if (m_pEditorWidget && w > 0 && h > 0)
+	if (m_pEditorWidget && w > 0 && h > 0) {
 		m_pEditorWidget->resize(w, h);
+		return true;
+	}
+
+	return false;
 }
 
 
@@ -1197,7 +1205,6 @@ bool qtractorVstPluginParam::isDisplay (void) const
 // Current display value.
 QString qtractorVstPluginParam::display (void) const
 {
-#ifndef CONFIG_VESTIGE
 	qtractorVstPluginType *pVstType = NULL;
 	if (plugin())
 		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
@@ -1221,7 +1228,6 @@ QString qtractorVstPluginParam::display (void) const
 			return sDisplay;
 		}
 	}
-#endif	// !CONFIG_VESTIGE
 
 	// Default parameter display value...
 	return qtractorPluginParam::display();
@@ -1413,8 +1419,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	case audioMasterSizeWindow:
 		VST_HC_DEBUG("audioMasterSizeWindow");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			pVstPlugin->resizeEditorWidget(int(index), int(value));
+		if (pVstPlugin && pVstPlugin->resizeEditor(int(index), int(value))) {
 			ret = 1;
 		}
 		break;
@@ -1472,6 +1477,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 	case audioMasterGetVendorVersion:
 		VST_HC_DEBUG("audioMasterGetVendorVersion");
+		::strcpy((char *) ptr, QTRACTOR_VERSION);
 		break;
 
 	case audioMasterVendorSpecific:
@@ -1571,10 +1577,8 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	case audioMasterUpdateDisplay:
 		VST_HC_DEBUG("audioMasterUpdateDisplay");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			qtractorPluginForm *pForm = pVstPlugin->form();
-			if (pForm)
-				pForm->refresh();
+		if (pVstPlugin && pVstPlugin->isFormVisible()) {
+			(pVstPlugin->form())->refresh();
 		//	QApplication::processEvents();
 		}
 		break;
