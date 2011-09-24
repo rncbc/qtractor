@@ -195,12 +195,11 @@ public:
 
 	#if defined(Q_WS_X11)
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) winId());
-		if (m_wVstEditor) {
+		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
-			if (m_pVstEventProc)
-				g_vstEditors.append(this);
-		}
 	#endif
+
+		g_vstEditors.append(this);
 
 		// Final stabilization...
 		m_pVstPlugin->setEditorVisible(true);
@@ -215,6 +214,7 @@ public:
 		if (m_pVstPlugin) {
 			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
 		//	m_pVstPlugin->setEditorVisible(false);
+			m_pVstPlugin = NULL;
 		}
 
 		int iIndex = g_vstEditors.indexOf(this);
@@ -252,6 +252,9 @@ public:
 	}
 
 #endif
+
+	qtractorVstPlugin *plugin() const
+		{ return m_pVstPlugin; }
 
 protected:
 
@@ -1006,10 +1009,12 @@ void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
 // Idle editor (static).
 void qtractorVstPlugin::idleEditorAll (void)
 {
-	QHash<AEffect *, qtractorVstPlugin *>::ConstIterator iter
-		= g_vstPlugins.constBegin();
-	for (; iter != g_vstPlugins.constEnd(); ++iter)
-		iter.value()->idleEditor();
+	QListIterator<EditorWidget *> iter(g_vstEditors);
+	while (iter.hasNext()) {
+		qtractorVstPlugin *pVstPlugin = iter.next()->plugin();
+		if (pVstPlugin)
+			pVstPlugin->idleEditor();
+	}
 }
 
 
@@ -1021,14 +1026,10 @@ QWidget *qtractorVstPlugin::editorWidget (void) const
 
 
 // Our own editor widget size accessor.
-bool qtractorVstPlugin::resizeEditor ( int w, int h )
+void qtractorVstPlugin::resizeEditor ( int w, int h )
 {
-	if (m_pEditorWidget && w > 0 && h > 0) {
+	if (m_pEditorWidget && w > 0 && h > 0)
 		m_pEditorWidget->resize(w, h);
-		return true;
-	}
-
-	return false;
 }
 
 
@@ -1354,7 +1355,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	// VST 1.0 opcodes...
 	case audioMasterVersion:
 		VST_HC_DEBUG("audioMasterVersion");
-		ret = 2;
+		ret = 2; // vst2.x
 		break;
 
 	case audioMasterAutomate:
@@ -1407,8 +1408,10 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 			qtractorPluginList *pPluginList = pVstPlugin->list();
 			if (pPluginList)
 				pMidiManager = pPluginList->midiManager();
-			if (pMidiManager)
+			if (pMidiManager) {
 				pMidiManager->vst_events_copy((VstEvents *) ptr);
+				ret = 1; // supported and processed.
+			}
 		}
 		break;
 
@@ -1419,27 +1422,24 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	case audioMasterSizeWindow:
 		VST_HC_DEBUG("audioMasterSizeWindow");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin && pVstPlugin->resizeEditor(int(index), int(value))) {
-			ret = 1;
+		if (pVstPlugin) {
+			pVstPlugin->resizeEditor(int(index), int(value));
+			ret = 1; // supported.
 		}
 		break;
 
 	case audioMasterGetSampleRate:
 		VST_HC_DEBUG("audioMasterGetSampleRate");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			effect->dispatcher(effect,
-				effSetSampleRate, 0, 0, NULL, float(pVstPlugin->sampleRate()));
-		}
+		if (pVstPlugin)
+			ret = (VstIntPtr) pVstPlugin->sampleRate();
 		break;
 
 	case audioMasterGetBlockSize:
 		VST_HC_DEBUG("audioMasterGetBlockSize");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			effect->dispatcher(effect,
-				effSetBlockSize, 0, pVstPlugin->bufferSize(), NULL, 0.0f);
-		}
+		if (pVstPlugin)
+			ret = (VstIntPtr) pVstPlugin->bufferSize();
 		break;
 
 	case audioMasterGetInputLatency:
@@ -1456,7 +1456,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 	case audioMasterGetAutomationState:
 		VST_HC_DEBUG("audioMasterGetAutomationState");
-		ret = 1; // off
+		ret = 1; // off.
 		break;
 
 #if !defined(VST_2_3_EXTENSIONS) 
@@ -1468,16 +1468,17 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	case audioMasterGetVendorString:
 		VST_HC_DEBUG("audioMasterGetVendorString");
 		::strcpy((char *) ptr, QTRACTOR_DOMAIN);
+		ret = 1; // ok.
 		break;
 
 	case audioMasterGetProductString:
 		VST_HC_DEBUG("audioMasterGetProductString");
 		::strcpy((char *) ptr, QTRACTOR_TITLE);
+		ret = 1; // ok.
 		break;
 
 	case audioMasterGetVendorVersion:
 		VST_HC_DEBUG("audioMasterGetVendorVersion");
-		::strcpy((char *) ptr, QTRACTOR_VERSION);
 		break;
 
 	case audioMasterVendorSpecific:
@@ -1491,13 +1492,13 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 			::strcmp("sendVstTimeInfo",     (char *) ptr) == 0 ||
 			::strcmp("midiProgramNames",    (char *) ptr) == 0 ||
 			::strcmp("sizeWindow",          (char *) ptr) == 0) {
-			ret = 1;
+			ret = 1; // can do.
 		}
 	#ifndef CONFIG_VESTIGE
 		else
 		if (::strcmp("openFileSelector",    (char *) ptr) == 0 ||
 			::strcmp("closeFileSelector",   (char *) ptr) == 0) {
-			ret = 1;
+			ret = 1; // can do.
 		}
 	#endif
 		break;
@@ -1580,6 +1581,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 		if (pVstPlugin && pVstPlugin->isFormVisible()) {
 			(pVstPlugin->form())->refresh();
 		//	QApplication::processEvents();
+			ret = 1; // supported.
 		}
 		break;
 
@@ -1589,14 +1591,6 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 	case audioMasterEndEdit:
 		VST_HC_DEBUG("audioMasterEndEdit");
-	#if 0
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			pVstPlugin->updateParamValue(index,
-				effect->getParameter(effect, index), false);
-		//	QApplication::processEvents();
-		}
-	#endif
 		break;
 
 #ifndef CONFIG_VESTIGE
