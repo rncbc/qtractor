@@ -28,10 +28,10 @@
 
 
 // Forward declarations.
-class qtractorClipCommand;
-
 class qtractorSessionLoopCommand;
 class qtractorSessionPunchCommand;
+
+class qtractorTimeScaleUpdateNodeCommand;
 
 
 //----------------------------------------------------------------------
@@ -56,45 +56,6 @@ private:
 
 	// Instance variables.
 	qtractorSession *m_pSession;
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorSessionTempoCommand - declaration.
-//
-
-class qtractorSessionTempoCommand : public qtractorSessionCommand
-{
-public:
-
-	// Constructor.
-	qtractorSessionTempoCommand(qtractorSession *pSession,
-		float fTempo, unsigned short iBeatType = 0,
-		unsigned short iBeatsPerBar = 0, unsigned short iBeatDivisor = 0,
-		unsigned short iTicksPerBeat = 0);
-
-	// Desstructor.
-	~qtractorSessionTempoCommand();
-	
-	// Session-tempo command methods.
-	bool redo();
-	bool undo();
-
-protected:
-
-	// Common executive method.
-	bool execute(bool bRedo);
-
-private:
-
-	// Instance variables.
-	float                m_fTempo;
-	unsigned short       m_iBeatType;
-	unsigned short       m_iBeatsPerBar;
-	unsigned short       m_iBeatDivisor;
-	unsigned short       m_iTicksPerBeat;
-
-	qtractorClipCommand *m_pClipCommand;
 };
 
 
@@ -162,8 +123,7 @@ private:
 // class qtractorSessionEditCommand - declaration.
 //
 
-class qtractorSessionEditCommand
-	: public qtractorPropertyCommand<qtractorSession::Properties>
+class qtractorSessionEditCommand : public qtractorSessionCommand
 {
 public:
 
@@ -182,7 +142,8 @@ private:
 
 	// Instance variables.
 	qtractorPropertyCommand<qtractorSession::Properties> *m_pPropertiesCommand;
-	qtractorSessionTempoCommand *m_pTempoCommand;
+	qtractorTimeScaleUpdateNodeCommand *m_pTempoCommand;
+	unsigned short m_iTicksPerBeat;
 };
 
 

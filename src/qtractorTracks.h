@@ -85,6 +85,7 @@ public:
 	bool normalizeClip(qtractorClip *pClip = NULL);
 	bool rangeClip(qtractorClip *pClip = NULL);
 	bool loopClip(qtractorClip *pClip = NULL);
+	bool tempoClip(qtractorClip *pClip = NULL);
 	bool executeClipTool(int iTool, qtractorClip *pClip = NULL);
 	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();

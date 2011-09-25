@@ -32,6 +32,7 @@
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
 #include "qtractorMidiEditCommand.h"
+#include "qtractorTimeScaleCommand.h"
 
 #include "qtractorTrackButton.h"
 
@@ -51,6 +52,7 @@
 #include "qtractorClipForm.h"
 
 #include "qtractorPasteRepeatForm.h"
+#include "qtractorTempoAdjustForm.h"
 
 #include "qtractorMidiEditorForm.h"
 
@@ -1601,6 +1603,46 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 		return pSession->execute(
 			new qtractorSessionLoopCommand(pSession, iEditHead, iEditTail));
 	}
+
+	selectionChangeNotify();
+	return true;
+}
+
+
+// Adjust current tempo from clip selection or interactive tapping...
+bool qtractorTracks::tempoClip ( qtractorClip *pClip )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	unsigned long iRangeStart  = pSession->editHead();
+	unsigned long iRangeLength = pSession->editTail() - iRangeStart;
+
+	if (pClip == NULL)
+		pClip = currentClip();
+	if (pClip) {
+		if (pClip->isClipSelected()) {
+			iRangeStart  = pClip->clipSelectStart();
+			iRangeLength = pClip->clipSelectEnd() - iRangeStart;
+		} else {
+			iRangeStart  = pClip->clipStart();
+			iRangeLength = pClip->clipLength();
+		}
+	}
+
+	qtractorTempoAdjustForm form(this);
+	form.setRangeStart(iRangeStart);
+	form.setRangeLength(iRangeLength);
+	if (!form.exec())
+		return false;
+
+	pSession->execute(
+		new qtractorTimeScaleClipTempoCommand(
+			pClip, form.rangeStart(), form.tempo(),
+			form.beatsPerBar(), form.beatDivisor()));
+
+	pSession->setEditTail(pSession->editHead() + form.rangeLength());
 
 	selectionChangeNotify();
 	return true;

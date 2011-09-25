@@ -176,7 +176,6 @@ public:
 	#if defined(Q_WS_X11)
 		value = (long) m_pDisplay;
 	#endif
-		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
 
 		// Make it the right size
 		struct ERect {
@@ -193,6 +192,8 @@ public:
 				QWidget::setFixedSize(w, h);
 		}
 
+		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
+		
 	#if defined(Q_WS_X11)
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) winId());
 		if (m_wVstEditor)
