@@ -23,7 +23,10 @@
 #include "qtractorTimeScaleCommand.h"
 
 #include "qtractorClipCommand.h"
+
 #include "qtractorSession.h"
+#include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 
 #include "qtractorAudioClip.h"
 
@@ -56,8 +59,17 @@ qtractorTimeScaleCommand::~qtractorTimeScaleCommand (void)
 // Add time-scale node command method.
 bool qtractorTimeScaleCommand::addNode (void)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
 	if (m_pNode)
 		return false;
+
+	// If currently playing, we need to do a stop and go...
+	bool bPlaying = pSession->isPlaying();
+	if (bPlaying)
+		pSession->lock();
 
 	if (m_pClipCommand)
 		m_pClipCommand->undo();
@@ -82,6 +94,17 @@ bool qtractorTimeScaleCommand::addNode (void)
 			m_pClipCommand->redo();
 	}
 
+	// Restore playback state, if needed...
+	if (bPlaying) {
+		// The Audio engine too...
+		if (pSession->audioEngine())
+			pSession->audioEngine()->resetMetro();
+		// The MIDI engine queue needs a reset...
+		if (pSession->midiEngine())
+			pSession->midiEngine()->resetTempo();
+		pSession->unlock();
+	}
+
 	return (m_pNode != NULL);
 }
 
@@ -89,11 +112,20 @@ bool qtractorTimeScaleCommand::addNode (void)
 // Update time-scale node command method.
 bool qtractorTimeScaleCommand::updateNode (void)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
 	m_pNode = qtractorTimeScale::Cursor(m_pTimeScale).seekFrame(m_iFrame);
 	if (m_pNode == NULL)
 		return false;
 	if (m_pNode->frame != m_iFrame)
 		return false;
+
+	// If currently playing, we need to do a stop and go...
+	bool bPlaying = pSession->isPlaying();
+	if (bPlaying)
+		pSession->lock();
 
 	float          fTempo       = m_pNode->tempo;
 	unsigned short iBeatType    = m_pNode->beatType;
@@ -126,6 +158,17 @@ bool qtractorTimeScaleCommand::updateNode (void)
 	if (m_pClipCommand)
 		m_pClipCommand->redo();
 
+	// Restore playback state, if needed...
+	if (bPlaying) {
+		// The Audio engine too...
+		if (pSession->audioEngine())
+			pSession->audioEngine()->resetMetro();
+		// The MIDI engine queue needs a reset...
+		if (pSession->midiEngine())
+			pSession->midiEngine()->resetTempo();
+		pSession->unlock();
+	}
+
 	return true;
 }
 
@@ -133,8 +176,17 @@ bool qtractorTimeScaleCommand::updateNode (void)
 // Remove time-scale node command method.
 bool qtractorTimeScaleCommand::removeNode (void)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
 	if (m_pNode == NULL)
 		return false;
+
+	// If currently playing, we need to do a stop and go...
+	bool bPlaying = pSession->isPlaying();
+	if (bPlaying)
+		pSession->lock();
 
 	if (m_pClipCommand) {
 		m_pClipCommand->undo();
@@ -160,6 +212,17 @@ bool qtractorTimeScaleCommand::removeNode (void)
 
 	if (m_pClipCommand)
 		m_pClipCommand->redo();
+
+	// Restore playback state, if needed...
+	if (bPlaying) {
+		// The Audio engine too...
+		if (pSession->audioEngine())
+			pSession->audioEngine()->resetMetro();
+		// The MIDI engine queue needs a reset...
+		if (pSession->midiEngine())
+			pSession->midiEngine()->resetTempo();
+		pSession->unlock();
+	}
 
 	return true;
 }
@@ -271,6 +334,62 @@ qtractorTimeScaleRemoveNodeCommand::qtractorTimeScaleRemoveNodeCommand (
 // Time-scale command methods.
 bool qtractorTimeScaleRemoveNodeCommand::redo (void) { return removeNode(); }
 bool qtractorTimeScaleRemoveNodeCommand::undo (void) { return addNode(); }
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleClipTempoCommand - implementation
+//
+
+// Constructor.
+qtractorTimeScaleClipTempoCommand::qtractorTimeScaleClipTempoCommand (
+	qtractorClip *pClip, unsigned long iFrame,
+	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+	: qtractorCommand(QObject::tr("clip tempo")),
+		m_pTempoCommand(NULL), m_pClip(pClip)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		// Avoid automatic time stretching option for audio clips...
+		bool bAutoTimeStretch = pSession->isAutoTimeStretch();
+		pSession->setAutoTimeStretch(false);
+		// Find appropriate node...
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+		// Now, express the change as a undoable command...
+		m_pTempoCommand = new qtractorTimeScaleUpdateNodeCommand(
+			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor);
+		// Done.
+		pSession->setAutoTimeStretch(bAutoTimeStretch);
+	}
+}
+
+// Desstructor.
+qtractorTimeScaleClipTempoCommand::~qtractorTimeScaleClipTempoCommand (void)
+{
+	if (m_pTempoCommand)
+		delete m_pTempoCommand;
+}
+
+
+// Session-edit command methods.
+bool qtractorTimeScaleClipTempoCommand::redo (void)
+{
+	bool bResult = false;
+
+	if (m_pTempoCommand)
+		bResult = m_pTempoCommand->redo();
+
+	if (bResult && m_pClip)
+		m_pClip->setClipLength(m_pClip->clipLength());
+
+	return bResult;
+}
+
+bool qtractorTimeScaleClipTempoCommand::undo (void)
+{
+	return redo();
+}
 
 
 // end of qtractorTimeScaleCommand.cpp

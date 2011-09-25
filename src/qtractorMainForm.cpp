@@ -64,9 +64,8 @@
 #include "qtractorShortcutForm.h"
 #include "qtractorMidiControlForm.h"
 #include "qtractorInstrumentForm.h"
-#include "qtractorBusForm.h"
 #include "qtractorTimeScaleForm.h"
-#include "qtractorTempoAdjustForm.h"
+#include "qtractorBusForm.h"
 
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
@@ -3354,35 +3353,8 @@ void qtractorMainForm::clipTempo (void)
 	qDebug("qtractorMainForm::clipTempo()");
 #endif
 
-	qtractorTempoAdjustForm form(this);
-	unsigned long iRangeStart  = m_pSession->editHead();
-	unsigned long iRangeLength = m_pSession->editTail() - iRangeStart;
-	if (m_pTracks) {
-		qtractorClip *pClip = m_pTracks->currentClip();
-		if (pClip) {
-			if (m_pTracks->isClipSelected()) {
-				iRangeStart  = pClip->clipSelectStart();
-				iRangeLength = pClip->clipSelectEnd() - iRangeStart;
-			} else {
-				iRangeStart  = pClip->clipStart();
-				iRangeLength = pClip->clipLength();
-			}
-		}
-	}
-	form.setRangeStart(iRangeStart);
-	form.setRangeLength(iRangeLength);
-	if (form.exec()) {
-		bool bAutoTimeStretch = m_pSession->isAutoTimeStretch();
-		m_pSession->setAutoTimeStretch(false);
-		transportTempoChanged (
-			form.tempo(),
-			form.beatsPerBar(),
-			form.beatDivisor());
-		m_pSession->setEditTail(
-			m_pSession->editHead() + form.rangeLength());
-		m_pSession->setAutoTimeStretch(bAutoTimeStretch);
-		selectionNotifySlot(NULL);
-	}
+	if (m_pTracks)
+		m_pTracks->tempoClip();
 }
 
 
@@ -6836,15 +6808,8 @@ void qtractorMainForm::transportTempoChanged (
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
 
 	// Now, express the change as a undoable command...
-	if (pNode->prev()) {
-		m_pSession->execute(
-			new qtractorTimeScaleUpdateNodeCommand(pTimeScale, pNode->frame,
-				fTempo, 2, iBeatsPerBar, iBeatDivisor));
-	} else {
-		m_pSession->execute(
-			new qtractorSessionTempoCommand(m_pSession,
-				fTempo, 2, iBeatsPerBar, iBeatDivisor));
-	}
+	m_pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
+		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
 
 	++m_iTransportUpdate;
 }
