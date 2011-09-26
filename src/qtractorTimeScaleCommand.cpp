@@ -242,9 +242,6 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 	if (pSession == NULL)
 		return NULL;
 
-	if (!pSession->isAutoTimeStretch())
-		return NULL;
-
 	qtractorTimeScale::Node *pNext = pNode->next();
 	unsigned long iFrameStart = pNode->frame;
 	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionLength());
@@ -264,9 +261,13 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 				if (pAudioClip) {
 					if (pClipCommand == NULL)
 						pClipCommand = new qtractorClipCommand(sName);
-					float fTimeStretch
-						= (fOldTempo * pAudioClip->timeStretch()) / fNewTempo;
-					pClipCommand->timeStretchClip(pClip, fTimeStretch);
+					if (pSession->isAutoTimeStretch()) {
+						float fTimeStretch
+							= (fOldTempo * pAudioClip->timeStretch()) / fNewTempo;
+						pClipCommand->timeStretchClip(pClip, fTimeStretch);
+					} else {
+						pClipCommand->resetClip(pClip);
+					}
 				}
 			}
 		}
@@ -334,62 +335,6 @@ qtractorTimeScaleRemoveNodeCommand::qtractorTimeScaleRemoveNodeCommand (
 // Time-scale command methods.
 bool qtractorTimeScaleRemoveNodeCommand::redo (void) { return removeNode(); }
 bool qtractorTimeScaleRemoveNodeCommand::undo (void) { return addNode(); }
-
-
-//----------------------------------------------------------------------
-// class qtractorTimeScaleClipTempoCommand - implementation
-//
-
-// Constructor.
-qtractorTimeScaleClipTempoCommand::qtractorTimeScaleClipTempoCommand (
-	qtractorClip *pClip, unsigned long iFrame,
-	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
-	: qtractorCommand(QObject::tr("clip tempo")),
-		m_pTempoCommand(NULL), m_pClip(pClip)
-{
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		// Avoid automatic time stretching option for audio clips...
-		bool bAutoTimeStretch = pSession->isAutoTimeStretch();
-		pSession->setAutoTimeStretch(false);
-		// Find appropriate node...
-		qtractorTimeScale *pTimeScale = pSession->timeScale();
-		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
-		// Now, express the change as a undoable command...
-		m_pTempoCommand = new qtractorTimeScaleUpdateNodeCommand(
-			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor);
-		// Done.
-		pSession->setAutoTimeStretch(bAutoTimeStretch);
-	}
-}
-
-// Desstructor.
-qtractorTimeScaleClipTempoCommand::~qtractorTimeScaleClipTempoCommand (void)
-{
-	if (m_pTempoCommand)
-		delete m_pTempoCommand;
-}
-
-
-// Session-edit command methods.
-bool qtractorTimeScaleClipTempoCommand::redo (void)
-{
-	bool bResult = false;
-
-	if (m_pTempoCommand)
-		bResult = m_pTempoCommand->redo();
-
-	if (bResult && m_pClip)
-		m_pClip->setClipLength(m_pClip->clipLength());
-
-	return bResult;
-}
-
-bool qtractorTimeScaleClipTempoCommand::undo (void)
-{
-	return redo();
-}
 
 
 // end of qtractorTimeScaleCommand.cpp

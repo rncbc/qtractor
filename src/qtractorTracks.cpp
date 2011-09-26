@@ -1637,11 +1637,22 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	if (!form.exec())
 		return false;
 
-	pSession->execute(
-		new qtractorTimeScaleClipTempoCommand(
-			pClip, form.rangeStart(), form.tempo(),
-			form.beatsPerBar(), form.beatDivisor()));
+	// Avoid automatic time stretching option for audio clips...
+	bool bAutoTimeStretch = pSession->isAutoTimeStretch();
+	pSession->setAutoTimeStretch(false);
 
+	// Find appropriate node...
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(form.rangeStart());
+
+	// Now, express the change as a undoable command...
+	pSession->execute(
+		new qtractorTimeScaleUpdateNodeCommand(pTimeScale, pNode->frame,
+			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor()));
+
+	// Done.
+	pSession->setAutoTimeStretch(bAutoTimeStretch);	
 	pSession->setEditTail(pSession->editHead() + form.rangeLength());
 
 	selectionChangeNotify();

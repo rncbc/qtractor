@@ -139,34 +139,6 @@ public:
 };
 
 
-//----------------------------------------------------------------------
-// class qtractorTimeScaleClipTempoCommand - declaration.
-//
-
-class qtractorTimeScaleClipTempoCommand : public qtractorCommand
-{
-public:
-
-	// Constructor.
-	qtractorTimeScaleClipTempoCommand(qtractorClip *pClip, unsigned long iFrame,
-		float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
-
-	// Desstructor.
-	~qtractorTimeScaleClipTempoCommand();
-	
-	// Session-tempo command methods.
-	bool redo();
-	bool undo();
-
-private:
-
-	// Instance variables.
-	qtractorTimeScaleUpdateNodeCommand *m_pTempoCommand;
-
-	qtractorClip *m_pClip;
-};
-
-
 #endif	// __qtractorTimeScaleCommand_h
 
 // end of qtractorTimeScaleCommand.h

@@ -205,6 +205,14 @@ void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
 }
 
 
+void qtractorClipCommand::resetClip ( qtractorClip *pClip )
+{
+	Item *pItem = new Item(ResetClip, pClip, pClip->track());
+	pItem->clipLength = pClip->clipLength();
+	m_items.append(pItem);
+}
+
+
 void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 {
 	QHash<qtractorClip *, bool>::ConstIterator iter
@@ -552,6 +560,14 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			//--pAudioClip->open();
 				pItem->pitchShift = fOldPitchShift;
 			}
+			break;
+		}
+		case ResetClip: {
+			unsigned long iClipStartTime  = pClip->clipStartTime();
+			unsigned long iClipLengthTime = pClip->clipLengthTime();
+			pClip->setClipLength(pItem->clipLength);
+			pItem->clipLength =	pSession->frameFromTickRange(
+				iClipStartTime, iClipStartTime + iClipLengthTime);
 			break;
 		}
 		default:
