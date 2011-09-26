@@ -54,16 +54,16 @@ public:
 	qtractorTimeScale *timeScale() const
 		{ return m_pTimeScale; }
 
-	// Make it automatic clip time-stretching command (static).
-	static qtractorClipCommand *createClipCommand(const QString& sName,
-		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
-
 protected:
 
 	// Executive commands.
 	bool addNode();
 	bool updateNode();
 	bool removeNode();
+
+	// Make it automatic clip time-stretching command (static).
+	qtractorClipCommand *createClipCommand(const QString& sName,
+		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
 
 private:
 
@@ -79,6 +79,8 @@ private:
 	unsigned short m_iBeatDivisor;
 
 	qtractorClipCommand *m_pClipCommand;
+
+	bool m_bAutoTimeStretch;
 };
 
 
