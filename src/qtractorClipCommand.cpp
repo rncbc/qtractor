@@ -235,14 +235,15 @@ bool qtractorClipCommand::addClipRecord (
 		return false;
 
 	// Time to close the clip...
-	pClip->setClipLength(iClipEnd - iClipStart);
 	pClip->close();
 
 	// Actual clip length might have changed on close.
-	unsigned long iClipLength = pClip->clipLength();
-	if (iClipLength < 1)
+	if (pClip->clipLength() < 1)
 		return false;
 
+	// Recorded clip length...
+	unsigned long iClipLength = iClipEnd - iClipStart;
+	
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 
