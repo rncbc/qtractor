@@ -101,7 +101,8 @@ private:
 		AddClip, RemoveClip, FileClip,
 		RenameClip, MoveClip, ResizeClip,
 		GainClip, FadeInClip, FadeOutClip,
-		TimeStretchClip, PitchShiftClip
+		TimeStretchClip, PitchShiftClip,
+		ResetClip
 	};
 
 	// Clip item struct.
