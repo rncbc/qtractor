@@ -43,8 +43,11 @@ qtractorTimeScaleCommand::qtractorTimeScaleCommand ( const QString& sName,
 	: qtractorCommand(sName), m_pTimeScale(pTimeScale), m_pNode(pNode),
 		m_iFrame(iFrame), m_fTempo(fTempo), m_iBeatType(iBeatType),
 		m_iBeatsPerBar(iBeatsPerBar), m_iBeatDivisor(iBeatDivisor),
-		m_pClipCommand(NULL)
+		m_pClipCommand(NULL), m_bAutoTimeStretch(false)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		m_bAutoTimeStretch = pSession->isAutoTimeStretch();
 }
 
 
@@ -261,7 +264,7 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 				if (pAudioClip) {
 					if (pClipCommand == NULL)
 						pClipCommand = new qtractorClipCommand(sName);
-					if (pSession->isAutoTimeStretch()) {
+					if (m_bAutoTimeStretch) {
 						float fTimeStretch
 							= (fOldTempo * pAudioClip->timeStretch()) / fNewTempo;
 						pClipCommand->timeStretchClip(pClip, fTimeStretch);
