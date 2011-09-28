@@ -195,10 +195,10 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 		m_pCurveButton->setMenu(pMainForm->trackCurveMenu());
 
 //	pHBoxLayout->addStretch();
-	pHBoxLayout->addWidget(m_pCurveButton);
 	pHBoxLayout->addWidget(m_pRecordButton);
 	pHBoxLayout->addWidget(m_pMuteButton);
 	pHBoxLayout->addWidget(m_pSoloButton);
+	pHBoxLayout->addWidget(m_pCurveButton);
 	QWidget::setLayout(pHBoxLayout);
 }
 
