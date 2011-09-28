@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Such a simple change of mind with a visual twist:
+  the "A" track automation button/menu has now been
+  moved to the right-most, as it belongs ;)
+
 - Auto-connection of dedicated audio outputs is now
   optional for default audio master bus, metronome,
   player and MIDI instrument plugin dedicated audio
@@ -13,16 +17,16 @@ SVN TRUNK
 - Finally, after a pitiful large braind-dead period,
   generic plugin forms are now showing all possible
   controllable plugin parameters featuring a paged,
-  tabbed dialog, whenever applicable. (EXPERIMENTAL)
+  tabbed dialog, whenever applicable.
 
 - Special hack/fix for JUCE based native VST plugins,
   which are the most actually found with a GUI editor,
   skipping explicit shared library unloading and thus
   avoiding some mysterious crashes on session close
-  and/or application exit. (EXPERIMENTAL)
+  and/or application exit.
 
 - Support for MIDI-fx plugins (native VST and/or LV2)
-  is now implemented and functional. (EXPERIMENTAL)
+  is now implemented and functional.
 
 - Instrument plugin bank/program selection was found
   broken or dead in the water, specially on VSTi, now
@@ -34,12 +38,12 @@ SVN TRUNK
 
 - All plugin's provided GUI editors are now honored by
   being popped up first, instead of the usual but good
-  old generic plugin form. (EXPERIMENTAL)
+  old generic plugin form.
 
 - Long overdue implementation of a dedicated MIDI file
   player is now accessible from the MIDI files widget;
   one can play the whole SMF or just a single track or
-  channel. (EXPERIMENTAL)
+  channel.
 
 - Update to a newer VeSTige header, probably fixing an
   old 32 vs. 64 bit mismatch.
@@ -61,7 +65,7 @@ SVN TRUNK
   been slightly improved, hopefully fixed.
 
 - Bold attempt to get linked (aka. ref-counted) audio
-  and MIDI clips into practice (HIGHLY EXPERIMENTAL).
+  and MIDI clips into practice (EXPERIMENTAL).
 
 - Main track view now showing all clips above the grid.
 
@@ -73,7 +77,7 @@ SVN TRUNK
   aux-send insert plugin, thanks again, the so-called
   direct access control option is now featured for any
   plugin parameter right from plugin listings eg. mixer
-  strips. (EXPERIMENTAL).
+  strips.
 
 - General resource consumption and management has been
   slightly improved, due to internal buses allocation
@@ -90,7 +94,6 @@ SVN TRUNK
   allowing to route any track audio output to any other
   audio output bus besides the nominal one -- thanks to
   an original implementation from Holger Dehnhardt.
-  (EXPERIMENTAL)
 
 - New immediate edit/loop-range settings from current
   clip extents, accessible on the main menu (Clip/Range
