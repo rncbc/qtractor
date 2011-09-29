@@ -280,7 +280,7 @@ public:
 	// Constructor.
 	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
 		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_subject(0.0f), m_observer(&m_subject) {}
+			m_subject(0.0f), m_observer(this) {}
 
 	// Main properties accessors.
 	qtractorPlugin *plugin() const { return m_pPlugin; }
@@ -352,7 +352,24 @@ private:
 	qtractorSubject m_subject;
 
 	// Port observer manager.
-	qtractorMidiControlObserver m_observer;
+	class Observer : public qtractorMidiControlObserver
+	{
+	public:
+
+		// Constructor.
+		Observer(qtractorPluginParam *pParam);
+
+	protected:
+
+		// Virtual observer updater.
+		void update();
+
+	private:
+
+		// Instance members.
+		qtractorPluginParam *m_pParam;
+
+	} m_observer;
 };
 
 
