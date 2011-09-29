@@ -1,5 +1,7 @@
 prefix  = @ac_prefix@
 qmake   = @ac_qmake@
+lupdate = @ac_lupdate@
+lrelease = @ac_lrelease@
 
 name    = qtractor
 
@@ -257,8 +259,13 @@ forms = \
 resources = \
 	src/qtractor.qrc
 
+translations_sources = \
+	src/translations/qtractor_cs.ts
 
-all:	$(target)
+translations_targets = \
+	src/translations/qtractor_cs.qm
+
+all:	$(target) $(translations_targets)
 
 
 $(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
@@ -268,14 +275,26 @@ $(name).mak:	$(name).pro
 	@$(qmake) -o $(name).mak $(name).pro
 
 
-install:	$(target)
+%.ts:	$(name).pro $(resources) ${forms} $(sources) $(headers)
+	@$(lupdate) -verbose $(name).pro
+
+%.qm:	%.ts
+	@$(lrelease) -verbose $< -qm $@
+
+
+install:	$(target) $(translations_targets)
 	@make INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
+	@install -d -v -m 0755 $(DESTDIR)$(prefix)/share/locale
+	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(prefix)/share/locale
 
 uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 	@make INSTALL_ROOT=$(DESTDIR) -f $(name).mak uninstall
+	@rm -vf $(DESTDIR)$(prefix)/share/locale/$(translations_targets)
+	@for x in $(translations_targets); do \
+		rm -vf $(DESTDIR)$(prefix)/share/locale/`basename $$x`; done
 
 
 clean:	$(name).mak
 	@make -f $(name).mak clean
 	@rm -f $(target) $(target).mak $(name).mak
-	@rm -rf *.cache *.log *.status
+	@rm -rf *.cache *.log *.status $(translations_targets)

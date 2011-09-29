@@ -414,6 +414,20 @@ if test "x$ac_uic" = "xno"; then
 fi
 AC_SUBST(ac_uic)
 
+# Check for Qt lupdate utility.
+AC_PATH_PROG(ac_lupdate, lupdate, [no], $ac_path)
+if test "x$ac_lupdate" = "xno"; then
+   AC_MSG_ERROR([lupdate $ac_errmsg])
+fi
+AC_SUBST(ac_lupdate)
+
+# Check for Qt lrelease utility.
+AC_PATH_PROG(ac_lrelease, lrelease, [no], $ac_path)
+if test "x$ac_release" = "xno"; then
+   AC_MSG_ERROR([lrelease $ac_errmsg])
+fi
+AC_SUBST(ac_lrelease)
+
 
 # Check for pkg-config utility (needed for LV2 GTK UI support).
 AC_PATH_PROG(ac_pkg_config, pkg-config, [no], $ac_path)
