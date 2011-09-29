@@ -270,6 +270,9 @@ FORMS += \
 RESOURCES += \
 	qtractor.qrc
 
+TRANSLATIONS += \
+	translations/qtractor_cs.ts
+
 unix {
 
 	#VARIABLES
