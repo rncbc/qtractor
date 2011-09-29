@@ -563,9 +563,6 @@ bool qtractorPluginParamCommand::redo (void)
 	if (pPlugin->isFormVisible())
 		(pPlugin->form())->changeParamValue(m_pParam->index());
 
-	if (pPlugin->directAccessParamIndex() == long(m_pParam->index()))
-		pPlugin->updateDirectAccessParam();
-
 	// Update any GUI editor...
 	// pPlugin->idleEditor();
 

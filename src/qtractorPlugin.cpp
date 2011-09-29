@@ -1896,6 +1896,9 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 
 	// Update specifics.
 	if (bUpdate) m_pPlugin->updateParam(this, fValue);
+
+	if (m_pPlugin->directAccessParamIndex() == long(m_iIndex))
+		m_pPlugin->updateDirectAccessParam();
 }
 
 
@@ -1911,6 +1914,24 @@ void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
 		pSession->execute(
 			new qtractorPluginParamCommand(this, fValue, bUpdate));
 	}
+}
+
+
+// Constructor.
+qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
+	: qtractorMidiControlObserver(pParam->subject()), m_pParam(pParam)
+{
+}
+
+
+// Virtual observer updater.
+void qtractorPluginParam::Observer::update (void)
+{
+	qtractorMidiControlObserver::update();
+
+	qtractorPlugin *pPlugin = m_pParam->plugin();
+	if (pPlugin->directAccessParamIndex() == long(m_pParam->index()))
+		pPlugin->updateDirectAccessParam();
 }
 
 
