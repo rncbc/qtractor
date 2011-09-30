@@ -7,6 +7,9 @@ SVN TRUNK
 
 - Czech (cs) translation added, by Pavel Fric.
 
+- Added a few snap-to-beat divisors (unusual Beat/5,
+  Beat/7, Beat/9 and Beat/10) for completeness sake.
+
 - Such a simple change of mind with a visual twist:
   the "A" track automation button/menu has now been
   moved to the right-most, as it belongs ;)

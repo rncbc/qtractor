@@ -4889,6 +4889,10 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.clipNewAction->setEnabled(bEnabled);
 	m_ui.clipEditAction->setEnabled(pClip != NULL);
 
+	// Top-level menu/toolbar items stabilization...
+	updateTrackMenu();
+	updateClipMenu();
+
 	// Update view menu state...
 	m_ui.viewFilesAction->setChecked(
 		m_pFiles && m_pFiles->isVisible());
