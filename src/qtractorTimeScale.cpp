@@ -599,10 +599,10 @@ QString qtractorTimeScale::textFromTick (
 
 // Beat divisor (snap index) map.
 static int s_aiSnapPerBeat[] = {
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 24, 32, 48, 64, 96
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 24, 32, 48, 64, 96, 128
 };
 
-const int c_iSnapItems = sizeof(s_aiSnapPerBeat) / sizeof(int);
+const int c_iSnapItemCount = sizeof(s_aiSnapPerBeat) / sizeof(int);
 
 // Beat divisor (snap index) accessors.
 unsigned short qtractorTimeScale::snapFromIndex ( int iSnap )
@@ -614,7 +614,7 @@ unsigned short qtractorTimeScale::snapFromIndex ( int iSnap )
 // Beat divisor (snap index) accessors.
 int qtractorTimeScale::indexFromSnap ( unsigned short iSnapPerBeat )
 {
-	for (int iSnap = 0; iSnap < c_iSnapItems; ++iSnap) {
+	for (int iSnap = 0; iSnap < c_iSnapItemCount; ++iSnap) {
 		if (s_aiSnapPerBeat[iSnap] == iSnapPerBeat)
 			return iSnap;
 	}
@@ -640,7 +640,7 @@ QStringList qtractorTimeScale::snapItems ( int iSnap )
 	}
 
 	sPrefix += "/%1";
-	while (iSnap < c_iSnapItems)
+	while (iSnap < c_iSnapItemCount)
 		items.append(sPrefix.arg(s_aiSnapPerBeat[iSnap++]));
 
 	return items;
