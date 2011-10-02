@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Improved paste-repeat snap precision when dealing
+  large repeat counts.
+
 - Czech (cs) translation added, by Pavel Fric.
 
 - Added a few snap-to-beat divisors (unusual Beat/5,

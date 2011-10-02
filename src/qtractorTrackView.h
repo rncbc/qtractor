@@ -424,11 +424,11 @@ private:
 	static struct ClipBoard
 	{
 		// Clipboard constructor.
-		ClipBoard() : singleTrack(NULL) {}
+		ClipBoard() : singleTrack(NULL), frames(0) {}
 		// Destructor.
 		~ClipBoard() { clear(); }
 		// Clipboard stuffer method.
-		void addItem(qtractorClip *pClip, const QRect& rect,
+		void addItem(qtractorClip *pClip, const QRect& clipRect,
 			unsigned long iClipStart, unsigned long iClipOffset,
 			unsigned long iClipLength);
 		// Clipboard reset method.
@@ -436,7 +436,7 @@ private:
 		// Clipboard members.
 		QList<ClipItem *> items;
 		qtractorTrack    *singleTrack;
-		QRect             rect;
+		unsigned long     frames;
 
 	} g_clipboard;
 
