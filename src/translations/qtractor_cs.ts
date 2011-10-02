@@ -11926,27 +11926,27 @@ Délka:	%3</translation>
         <translation>Změnit velikost ukázky</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3339"/>
+        <location filename="../qtractorTrackView.cpp" line="3340"/>
         <source>%1 clip</source>
         <translation>%1 ukázka</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3339"/>
+        <location filename="../qtractorTrackView.cpp" line="3340"/>
         <source>cut</source>
         <translation>Vyjmout</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3339"/>
+        <location filename="../qtractorTrackView.cpp" line="3340"/>
         <source>delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3565"/>
+        <location filename="../qtractorTrackView.cpp" line="3568"/>
         <source>move clip</source>
         <translation>Přesunout ukázku</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3686"/>
+        <location filename="../qtractorTrackView.cpp" line="3689"/>
         <source>paste clip</source>
         <translation>Vložit ukázku</translation>
     </message>
