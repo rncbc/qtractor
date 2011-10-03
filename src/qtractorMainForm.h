@@ -309,6 +309,7 @@ public slots:
 	void transportTempoContextMenu(const QPoint& pos);
 
 	void handle_sigusr1();
+	void handle_sigterm();
 
 protected:
 
@@ -389,6 +390,7 @@ private:
 	int m_iUntitled;
 	int m_iDirtyCount;
 	QSocketNotifier *m_pUsr1Notifier;
+	QSocketNotifier *m_pTermNotifier;
 	QActionGroup *m_pSelectModeActionGroup;
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;

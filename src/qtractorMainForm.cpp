@@ -160,6 +160,17 @@ static void qtractor_sigusr1_handler ( int /* signo */ )
 	(::write(g_fdUsr1[0], &c, sizeof(c)) > 0);
 }
 
+// File descriptor for SIGTERM notifier.
+static int g_fdTerm[2];
+
+// Unix SIGTERM signal handler.
+static void qtractor_sigterm_handler ( int /* signo */ )
+{
+	char c = 1;
+
+	(::write(g_fdTerm[0], &c, sizeof(c)) > 0);
+}
+
 #endif	// HANDLE_SIGNAL_H
 
 
@@ -335,9 +346,28 @@ qtractorMainForm::qtractorMainForm (
     usr1.sa_flags |= SA_RESTART;
     ::sigaction(SIGUSR1, &usr1, NULL);
 
+	// LADISH termination suport.
+	// Initialize file descriptors for SIGTERM socket notifier.
+	::socketpair(AF_UNIX, SOCK_STREAM, 0, g_fdTerm);
+	m_pTermNotifier
+		= new QSocketNotifier(g_fdTerm[1], QSocketNotifier::Read, this);
+
+	QObject::connect(m_pTermNotifier,
+		SIGNAL(activated(int)),
+		SLOT(handle_sigterm()));
+
+	// Install SIGUSR1 signal handler.
+    struct sigaction term;
+    term.sa_handler = qtractor_sigterm_handler;
+    ::sigemptyset(&term.sa_mask);
+    term.sa_flags = 0;
+    term.sa_flags |= SA_RESTART;
+    ::sigaction(SIGTERM, &term, NULL);
+
 #else	// HAVE_SIGNAL_H
 
 	m_pUsr1Notifier = NULL;
+	m_pTermNotifier = NULL;
 	
 #endif	// !HAVE_SIGNAL_H
 
@@ -1325,6 +1355,20 @@ void qtractorMainForm::handle_sigusr1 (void)
 
 	if (::read(g_fdUsr1[1], &c, sizeof(c)) > 0)
 		saveSession(false);
+
+#endif
+}
+
+
+// LADISH termination -- SIGTERM signal handler.
+void qtractorMainForm::handle_sigterm (void)
+{
+#ifdef HAVE_SIGNAL_H
+
+	char c;
+
+	if (::read(g_fdTerm[1], &c, sizeof(c)) > 0)
+		close();
 
 #endif
 }
