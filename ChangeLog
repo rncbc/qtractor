@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- More LADISH support: SIGTERM signal is now trapped
+  for graceful application close.
+
 - Improved paste-repeat snap precision when dealing
   large repeat counts.
 
