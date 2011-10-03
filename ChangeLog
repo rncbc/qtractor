@@ -9,7 +9,7 @@ SVN TRUNK
   for graceful application close.
 
 - Improved paste-repeat snap precision when dealing
-  large repeat counts.
+  with large repeat counts.
 
 - Czech (cs) translation added, by Pavel Fric.
 
@@ -25,7 +25,7 @@ SVN TRUNK
   player and MIDI instrument plugin dedicated audio
   outputs.
 
-- Finally, after a pitiful large braind-dead period,
+- Finally, after a pitiful large brain-dead period,
   generic plugin forms are now showing all possible
   controllable plugin parameters featuring a paged,
   tabbed dialog, whenever applicable.
@@ -37,7 +37,7 @@ SVN TRUNK
   and/or application exit.
 
 - Support for MIDI-fx plugins (native VST and/or LV2)
-  is now implemented and functional.
+  is now implemented and functional (intra-chain only).
 
 - Instrument plugin bank/program selection was found
   broken or dead in the water, specially on VSTi, now
