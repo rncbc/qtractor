@@ -356,13 +356,21 @@ qtractorMainForm::qtractorMainForm (
 		SIGNAL(activated(int)),
 		SLOT(handle_sigterm()));
 
-	// Install SIGUSR1 signal handler.
+	// Install SIGTERM signal handler.
     struct sigaction term;
     term.sa_handler = qtractor_sigterm_handler;
     ::sigemptyset(&term.sa_mask);
     term.sa_flags = 0;
     term.sa_flags |= SA_RESTART;
     ::sigaction(SIGTERM, &term, NULL);
+
+	// Ignore SIGHUP signal.
+	struct sigaction hup;
+	hup.sa_handler = SIG_IGN;
+	::sigemptyset(&hup.sa_mask);
+	hup.sa_flags = 0;
+	hup.sa_flags |= SA_RESTART;
+	::sigaction(SIGHUP, &hup, NULL);
 
 #else	// HAVE_SIGNAL_H
 
