@@ -21,7 +21,7 @@ Weblog:
   http://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
-the GNU General Public License (GPL) [16] version 2 or later.
+the GNU General Public License (GPL) [17] version 2 or later.
 
 
 Features
@@ -46,7 +46,7 @@ Features
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
-  (a-la QjackCtl [15]).
+  (a-la QjackCtl [16]).
 - LADSPA [5], DSSI [12], native VST [13] and LV2 [14] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support.
@@ -62,7 +62,7 @@ Features
 - Audio/MIDI metronome bar/beat clicks.
 - Unlimited tempo/time-signature map.
 - MIDI clip editor (matrix/piano roll).
-- MIDI instrument definitions (a-la Cakewalk(tm) [17]).
+- MIDI instrument definitions (a-la Cakewalk(tm) [18]).
 - MIDI controller mapping/learn/assignment (mixer and plug-in parameters).
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master/slave.
@@ -117,7 +117,7 @@ The software requirements for build and runtime are listed as follows:
         http://liblo.sourceforge.net/
 
   [11] libslv2, Simple C library for LV2 hosts
-        (needed for LV2 support)
+        (needed for LV2 support; now deprecated, see liblilv [15])
         http://drobilla.net/software/slv2/
 
   [12] DSSI, An API for soft synth plugins with custom user interfaces
@@ -128,6 +128,13 @@ The software requirements for build and runtime are listed as follows:
 
   [14] LV2, Audio Plugin Standard, the extensible successor of LADSPA
         http://lv2plug.in/
+
+  [15] liblilv, Lightweight LV2 implementation stack
+       (alternative to deprecated libslv2 [11])
+        http://drobilla.net/software/lilv/
+        http://drobilla.net/software/suil/
+        http://drobilla.net/software/sord/
+        http://drobilla.net/software/serd/
 
 
 Installation
@@ -238,8 +245,8 @@ References
      http://liblo.sourceforge.net/
 
 [11] libslv2, Simple C library for LV2 hosts
-	 (needed for LV2 support)
-	  http://drobilla.net/software/slv2/
+     (needed for LV2 support; now deprecated. see linliv [15])
+     http://drobilla.net/software/slv2/
 
 [12] DSSI, an API for soft synth plugins with custom user interfaces
      http://dssi.sourceforge.net/
@@ -247,13 +254,23 @@ References
 [13] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
      http://www.steinberg.net/
 
-[15] QjackCtl - JACK Qt GUI Interface
+[14] LV2, Audio Plugin Standard, the extensible successor of LADSPA
+     http://lv2plug.in/
+
+[15] liblilv, Lightweight LV2 implementation stack
+     (alternative to deprecated libslv2 [11])
+     http://drobilla.net/software/lilv/
+     http://drobilla.net/software/suil/
+     http://drobilla.net/software/sord/
+     http://drobilla.net/software/serd/
+
+[16] QjackCtl - JACK Qt GUI Interface
      http://qjackctl.sourceforge.net
 
-[16] GNU General Public License
+[17] GNU General Public License
      http://www.gnu.org/copyleft/gpl.html
 
-[17] Cakewalk (by Roland), powerful and easy-to-use tools
+[18] Cakewalk (by Roland), powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
 
