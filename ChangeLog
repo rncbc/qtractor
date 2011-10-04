@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.1  2011-10-05  Bravo Yankee
 
 - More LADISH support: SIGTERM signal is now trapped
   for graceful application close.
