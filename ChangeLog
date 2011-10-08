@@ -3,6 +3,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Fixed VST GUI editor window title on first show.
+
+- Fixed build for ancient VST-SDK 2.3 (32bit only).
+
+
 0.5.1  2011-10-05  Bravo Yankee
 
 - More LADISH support: SIGTERM signal is now trapped
