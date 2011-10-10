@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Temporary session archive directory now (pre)fixed
+  whith program name (eg. /tmp/qtractor).
+
 - Fixed VST GUI editor window title on first show.
 
 - Fixed build for ancient VST-SDK 2.3 (32bit only).

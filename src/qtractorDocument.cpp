@@ -179,10 +179,14 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
 		// ATTN: Always move to session file's directory first...
-		if (!info.isWritable() || isTemporary()) // Read-only media?
-			QDir::setCurrent(QDir::temp().path());
-		else
-			QDir::setCurrent(info.path());	
+		if (!info.isWritable() || isTemporary()) {
+			// Read-only/temporary media?
+			const QString& sPath
+				= QDir::temp().path() + QDir::separator() + PACKAGE_TARNAME;
+			QDir dir(sPath); if (!dir.exists()) dir.mkpath(sPath);
+			QDir::setCurrent(sPath);
+		}
+		else QDir::setCurrent(info.path());
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
 		if (!m_pZipFile->isReadable()) {
 			delete m_pZipFile;
