@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Tiny audio peak file cache optimization.
+
 - Temporary session archive directory now (pre)fixed
   whith program name (eg. /tmp/qtractor).
 

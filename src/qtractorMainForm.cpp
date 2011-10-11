@@ -1892,7 +1892,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		if (bUpdate) {
 			sPath = info.path();
 		} else {
-			sPath = QDir::temp().path() + QDir::separator() + PACKAGE_TARNAME;
+			sPath = QDir::temp().path() + QDir::separator() + QTRACTOR_TITLE;
 			iFlags |= qtractorDocument::Temporary;
 		}
 		info.setFile(sPath + QDir::separator() + info.completeBaseName());

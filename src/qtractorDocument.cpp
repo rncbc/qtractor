@@ -182,7 +182,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 		if (!info.isWritable() || isTemporary()) {
 			// Read-only/temporary media?
 			const QString& sPath
-				= QDir::temp().path() + QDir::separator() + PACKAGE_TARNAME;
+				= QDir::temp().path() + QDir::separator() + QTRACTOR_TITLE;
 			QDir dir(sPath); if (!dir.exists()) dir.mkpath(sPath);
 			QDir::setCurrent(sPath);
 		}
