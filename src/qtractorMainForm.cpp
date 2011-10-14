@@ -792,6 +792,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipEditAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipEdit()));
+	QObject::connect(m_ui.clipUnlinkAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipUnlink()));
 	QObject::connect(m_ui.clipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipSplit()));
@@ -3350,6 +3353,19 @@ void qtractorMainForm::clipEdit (void)
 }
 
 
+// Unlink a (MIDI) linked clip.
+void qtractorMainForm::clipUnlink (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipUnlink()");
+#endif
+
+	// Unlink the current clip, if any...
+	if (m_pTracks)
+		m_pTracks->unlinkClip();
+}
+
+
 // Split current clip at playhead.
 void qtractorMainForm::clipSplit (void)
 {
@@ -4929,9 +4945,6 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
-	m_ui.clipNewAction->setEnabled(bEnabled);
-	m_ui.clipEditAction->setEnabled(pClip != NULL);
-
 	// Top-level menu/toolbar items stabilization...
 	updateTrackMenu();
 	updateClipMenu();
@@ -5735,15 +5748,22 @@ void qtractorMainForm::updateClipMenu (void)
 		pClip  = m_pTracks->currentClip();
 	}
 
-//	bool bEnabled    = (pTrack != NULL);
+	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 
 	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
 		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
 
-//	m_ui.clipNewAction->setEnabled(bEnabled);
-//	m_ui.clipEditAction->setEnabled(pClip != NULL);
+	m_ui.clipNewAction->setEnabled(bEnabled);
+	m_ui.clipEditAction->setEnabled(pClip != NULL);
+
+	// Special unlink (MIDI) clip...
+	qtractorMidiClip *pMidiClip = NULL;
+	if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
+		pMidiClip = static_cast<qtractorMidiClip *> (pClip);
+	m_ui.clipUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
+
 	m_ui.clipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());

@@ -414,7 +414,9 @@
      </property>
      <addaction name="clipNewAction" />
      <addaction name="clipEditAction" />
-     <addaction name="separator" />
+	 <addaction name="separator" />
+	 <addaction name="clipUnlinkAction" />
+	 <addaction name="separator" />
      <addaction name="clipSplitAction" />
      <addaction name="clipMergeAction" />
      <addaction name="clipNormalizeAction" />
@@ -934,6 +936,20 @@
    </property>
    <property name="shortcut" >
     <string>F4</string>
+   </property>
+  </action>
+  <action name="clipUnlinkAction" >
+   <property name="text" >
+	<string>&amp;Unlink</string>
+   </property>
+   <property name="iconText" >
+	<string>Unlink Clip</string>
+   </property>
+   <property name="toolTip" >
+	<string>Unlink clip</string>
+   </property>
+   <property name="statusTip" >
+	<string>Unlink current clip</string>
    </property>
   </action>
   <action name="clipSplitAction" >

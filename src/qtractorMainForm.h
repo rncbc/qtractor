@@ -184,6 +184,7 @@ public slots:
 
 	void clipNew();
 	void clipEdit();
+	void clipUnlink();
 	void clipSplit();
 	void clipMerge();
 	void clipNormalize();

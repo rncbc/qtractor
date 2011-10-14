@@ -81,6 +81,7 @@ public:
 
 	bool newClip();
 	bool editClip(qtractorClip *pClip = NULL);
+	bool unlinkClip(qtractorClip *pClip = NULL);
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
 	bool rangeClip(qtractorClip *pClip = NULL);

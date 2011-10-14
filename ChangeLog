@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Clip/Unlink action is now available for detaching
+  linked/ref-counted MIDI clips, renaming and saving
+  into auto-incremental SMF filenames.
+
 - Tiny audio peak file cache optimization.
 
 - Temporary session archive directory now (pre)fixed
