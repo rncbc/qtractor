@@ -9,8 +9,6 @@ SVN TRUNK
   linked/ref-counted MIDI clips, renaming and saving
   into auto-incremental SMF filenames.
 
-- Tiny audio peak file cache optimization.
-
 - Temporary session archive directory now (pre)fixed
   whith program name (eg. /tmp/qtractor).
 
