@@ -248,30 +248,46 @@ bool qtractorClipCommand::addClipRecord (
 #ifdef QTRACTOR_LOOP_RECORDING_TAKES
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->isLooping()) {
+		// Take parameters...
 		unsigned long iTakeStart = pSession->loopStart();
 		unsigned long iTakeEnd   = pSession->loopEnd();
-		unsigned long iTakeWidth = iTakeEnd - iTakeStart;
+		int iTake = -1; // Default to last take (=iTakeCount).
+		// Take determination...
+		unsigned long iTakeLength = iTakeEnd - iTakeStart;
 		if (iClipStart < iTakeStart) {
-			unsigned long iTakeLength = iClipEnd - iTakeStart;
-			unsigned int  iTakeCount  = iTakeLength / iTakeWidth;
-			if (iTakeCount > 0) {
+			int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
+			if (iTake < 0 || iTake > iTakeCount)
+				iTake = iTakeCount;
+			if (iTake > 0) {
 				iClipLength = iTakeStart - iClipStart;
 				addClipRecordTake(pTrack, iClipStart, iClipOffset, iClipLength);
-				iClipOffset = iClipLength + iTakeCount * iTakeWidth;
-				iClipLength = (iClipEnd - iTakeStart) % iTakeWidth;
-				iClipStart  = iTakeStart;
+				iClipOffset = iClipLength + iTake * iTakeLength;
+				if (iTake < iTakeCount)
+					iClipLength = iTakeLength;
+				else
+					iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
+				iClipStart = iTakeStart;
 			}
+			else
+			if (iTake < iTakeCount)
+				iClipLength = iTakeEnd - iClipStart;
 		}
 		else
 		if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
-			unsigned long iTakeLength = iClipLength;
-			unsigned int  iTakeCount  = iTakeLength / iTakeWidth;
-			if (iTakeCount > 0) {
-				iClipLength = iTakeEnd - iClipStart;
-				iClipOffset = iClipLength + (iTakeCount - 1) * iTakeWidth;
-				iClipLength = (iClipEnd - iTakeStart) % iTakeWidth;
-				iClipStart  = iTakeStart;
+			int iTakeCount = iClipLength / iTakeLength;
+			if (iTake < 0 || iTake > iTakeCount)
+				iTake = iTakeCount;
+			if (iTake > 0 || iTakeCount < 1) {
+				iClipOffset = (iTakeEnd - iClipStart);
+				if (iTake > 0)
+					iClipOffset += (iTake - 1) * iTakeLength;
+				if (iTake < iTakeCount)
+					iClipLength = iTakeLength;
+				else
+					iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
+				iClipStart = iTakeStart;
 			}
+			else iClipLength = iTakeEnd - iClipStart;
 		}
 	}
 #endif	// QTRACTOR_LOOP_RECORDING_TAKES

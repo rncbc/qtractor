@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Improved single-track clip selection status logic,
+  (possibly fixing bug #3419141).
+
 - Clip/Unlink action is now available for detaching
   linked/ref-counted MIDI clips, renaming and saving
   into auto-incremental SMF filenames.

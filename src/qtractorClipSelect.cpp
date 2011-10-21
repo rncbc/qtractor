@@ -73,9 +73,12 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 			m_items.insert(pClip, new Item(rect));
 		// Special optimization: no need to recache
 		// our single track reference if we add some outsider clip...
-		if (m_bTrackSingle && m_pTrackSingle
-			&& m_pTrackSingle != pClip->track())
-			m_pTrackSingle = NULL;
+		if (m_bTrackSingle) {
+			if (m_pTrackSingle == NULL)
+				m_pTrackSingle = pClip->track();
+			else if (m_pTrackSingle != pClip->track())
+				m_pTrackSingle = NULL;
+		}
 		// Unite whole selection reactangular area...
 		m_rect = m_rect.united(rect);
 	}
