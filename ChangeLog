@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Improved robustness in face of disabled audio buses
+  when global maximum number of JACK (audio) ports is
+  surpassed (mitigating bug #3421911).
+
 - Improved single-track clip selection status logic,
   (possibly fixing bug #3419141).
 
