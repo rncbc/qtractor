@@ -74,9 +74,9 @@ public:
 
 	// Special clip record methods.
 	bool addClipRecord(qtractorTrack *pTrack, unsigned long iClipEnd);
-	bool addClipRecordTake(qtractorTrack *pTrack,
+	bool addClipRecordTake(qtractorTrack *pTrack, qtractorClip *pClip,
 		unsigned long iClipStart, unsigned long iClipOffset,
-		unsigned long iClipLength);
+		unsigned long iClipLength, qtractorClip::TakePart *pTakePart = NULL);
 
 	// When new tracks are needed.
 	void addTrack(qtractorTrack *pTrack);

@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Loop-recording/takes infrastructure integration is
+  sneaking in, although not ready for the masses as
+  there's no user interface accessibility as of yet
+  (EXPERIMENTAL).
+
 - Improved robustness in face of disabled audio buses
   when global maximum number of JACK (audio) ports is
   surpassed (mitigating bug #3421911).

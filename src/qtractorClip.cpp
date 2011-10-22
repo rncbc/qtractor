@@ -26,6 +26,13 @@
 
 #include "qtractorDocument.h"
 
+#include "qtractorClipCommand.h"
+
+#include "qtractorAudioEngine.h"
+#include "qtractorAudioClip.h"
+#include "qtractorMidiClip.h"
+
+#include "qtractorMainForm.h"
 #include "qtractorClipForm.h"
 
 #include <QFileInfo>
@@ -53,6 +60,8 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 {
 	m_pTrack = pTrack;
 
+	m_pTakeInfo = NULL;
+
 	m_pFadeInFunctor  = NULL;
 	m_pFadeOutFunctor = NULL;
 
@@ -63,6 +72,9 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 // Default constructor.
 qtractorClip::~qtractorClip (void)
 {
+	if (m_pTakeInfo)
+		m_pTakeInfo->releaseRef();
+
 	if (m_pFadeInFunctor)
 		delete m_pFadeInFunctor;
 	if (m_pFadeOutFunctor)
@@ -747,6 +759,166 @@ QString qtractorClip::textFromFadeType ( FadeType fadeType )
 	}
 
 	return sText;
+}
+
+
+// Estimate total number of takes.
+int qtractorClip::TakeInfo::takeCount (void) const
+{
+	int iTakeCount = -1;
+
+	unsigned long iClipEnd = m_iClipStart + m_iClipLength;
+	unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+
+	if (m_iClipStart < m_iTakeStart)
+		iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
+	else
+	if (m_iClipStart < m_iTakeEnd && iClipEnd > m_iTakeEnd)
+		iTakeCount = m_iClipLength / iTakeLength;
+
+	return iTakeCount + 1;
+}
+
+
+// Brainfull method.
+void qtractorClip::TakeInfo::select (
+	qtractorClipCommand *pClipCommand, qtractorTrack *pTrack, int iTake )
+{
+	unsigned long iClipStart  = m_iClipStart;
+	unsigned long iClipOffset = m_iClipOffset;
+	unsigned long iClipLength = m_iClipLength;
+
+	unsigned long iClipEnd    = iClipStart + iClipLength;
+
+	unsigned long iTakeStart  = m_iTakeStart;
+	unsigned long iTakeEnd    = m_iTakeEnd;
+	unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClip::TakeInfo[%p]::select(%d, %lu, %lu, %lu, %lu, %lu)",
+		this, iTake, iClipStart, iClipOffset, iClipLength, iTakeStart, iTakeEnd);
+#endif
+
+	ClipPart cpart = ClipTake;
+
+	if (iClipStart < iTakeStart) {
+		int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
+		if (iTake < 0 || iTake > iTakeCount)
+			iTake = iTakeCount;
+		if (iTake > 0) {
+			iClipLength = iTakeStart - iClipStart;
+			selectClipPart(pClipCommand, pTrack, cpart,
+				iClipStart, iClipOffset, iClipLength);
+			// Head clip from now on...
+			cpart = ClipHead;
+			iClipOffset = iClipLength + iTake * iTakeLength;
+			if (iTake < iTakeCount)
+				iClipLength = iTakeLength;
+			else
+				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
+			iClipStart = iTakeStart;
+		} else {
+			// The head clip for sure (iTake == 0)...
+			cpart = ClipHead;
+			if (iTake < iTakeCount)
+				iClipLength = iTakeEnd - iClipStart;
+		}
+	}
+	else
+	if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
+		int iTakeCount = iClipLength / iTakeLength;
+		if (iTake < 0 || iTake > iTakeCount)
+			iTake = iTakeCount;
+		if (iTake > 0 || iTakeCount < 1) {
+			iClipOffset = (iTakeEnd - iClipStart);
+			if (iTake > 0)
+				iClipOffset += (iTake - 1) * iTakeLength;
+			if (iTake < iTakeCount)
+				iClipLength = iTakeLength;
+			else
+				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
+			iClipStart = iTakeStart;
+		}
+		else iClipLength = iTakeEnd - iClipStart;
+	}
+
+	selectClipPart(pClipCommand, pTrack, cpart,
+		iClipStart, iClipOffset, iClipLength);
+
+	m_iCurrentTake = iTake;
+}
+
+
+// Sub-brainfull method.
+void qtractorClip::TakeInfo::selectClipPart (
+	qtractorClipCommand *pClipCommand, qtractorTrack *pTrack,
+	ClipPart cpart, unsigned long iClipStart, unsigned long iClipOffset,
+	unsigned long iClipLength )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClip::TakeInfo[%p]::selectClipPart(%d, %lu, %lu, %lu)",
+		this, int(cpart), iClipStart, iClipOffset, iClipLength);
+#endif
+
+	qtractorClip *pClip = (pTrack ? pTrack->clipRecord() : NULL);
+	if (pClip) {
+		// About to be taken...
+		pClipCommand->addClipRecordTake(pTrack, pClip,
+			iClipStart, iClipOffset, iClipLength, &TakePart(this, cpart));
+	} else {
+		// Already taken...
+		pClip = clipPart(cpart);
+		if (pClip) {
+			pClipCommand->resizeClip(pClip,
+				iClipStart, iClipOffset, iClipLength);
+		}
+	}
+}
+
+
+void qtractorClip::TakeInfo::unfold ( qtractorClipCommand *pClipCommand )
+{
+	unsigned long iClipStart  = m_iClipStart;
+	unsigned long iClipOffset = m_iClipOffset;
+	unsigned long iClipLength = m_iClipLength;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClip::TakeInfo[%p]::unfold(%lu, %lu, %lu)",
+		this, iClipStart, iClipOffset, iClipLength);
+#endif
+
+	qtractorClip *pClip = clipPart(ClipHead);
+	if (pClip) {
+		pClipCommand->removeClip(pClip);
+		setClipPart(ClipHead, NULL);
+	}
+
+	pClip = clipPart(ClipTake);
+	if (pClip) {
+		pClipCommand->resizeClip(pClip,
+			iClipStart, iClipOffset, iClipLength);
+		setClipPart(ClipTake, NULL);
+	}
+
+	m_iCurrentTake = -1;
+}
+
+
+// Take(record) descriptor accessors.
+void qtractorClip::setTakeInfo ( qtractorClip::TakeInfo *pTakeInfo )
+{
+	if (m_pTakeInfo)
+		m_pTakeInfo->releaseRef();
+
+	m_pTakeInfo = pTakeInfo;
+
+	if (m_pTakeInfo)
+		m_pTakeInfo->addRef();
+}
+
+qtractorClip::TakeInfo *qtractorClip::takeInfo (void) const
+{
+	return m_pTakeInfo;
 }
 
 

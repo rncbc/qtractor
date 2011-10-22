@@ -248,51 +248,16 @@ bool qtractorClipCommand::addClipRecord (
 #ifdef QTRACTOR_LOOP_RECORDING_TAKES
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->isLooping()) {
-		// Take parameters...
-		unsigned long iTakeStart = pSession->loopStart();
-		unsigned long iTakeEnd   = pSession->loopEnd();
-		int iTake = -1; // Default to last take (=iTakeCount).
-		// Take determination...
-		unsigned long iTakeLength = iTakeEnd - iTakeStart;
-		if (iClipStart < iTakeStart) {
-			int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
-			if (iTake < 0 || iTake > iTakeCount)
-				iTake = iTakeCount;
-			if (iTake > 0) {
-				iClipLength = iTakeStart - iClipStart;
-				addClipRecordTake(pTrack, iClipStart, iClipOffset, iClipLength);
-				iClipOffset = iClipLength + iTake * iTakeLength;
-				if (iTake < iTakeCount)
-					iClipLength = iTakeLength;
-				else
-					iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
-				iClipStart = iTakeStart;
-			}
-			else
-			if (iTake < iTakeCount)
-				iClipLength = iTakeEnd - iClipStart;
-		}
-		else
-		if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
-			int iTakeCount = iClipLength / iTakeLength;
-			if (iTake < 0 || iTake > iTakeCount)
-				iTake = iTakeCount;
-			if (iTake > 0 || iTakeCount < 1) {
-				iClipOffset = (iTakeEnd - iClipStart);
-				if (iTake > 0)
-					iClipOffset += (iTake - 1) * iTakeLength;
-				if (iTake < iTakeCount)
-					iClipLength = iTakeLength;
-				else
-					iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
-				iClipStart = iTakeStart;
-			}
-			else iClipLength = iTakeEnd - iClipStart;
-		}
+		qtractorClip::TakeInfo *pTakeInfo
+			= new qtractorClip::TakeInfo(
+				iClipStart, iClipOffset, iClipLength,
+				pSession->loopStart(),
+				pSession->loopEnd());
+		pTakeInfo->select(this, pTrack /*, iTake = -1 */);
 	}
+	else
 #endif	// QTRACTOR_LOOP_RECORDING_TAKES
-
-	addClipRecordTake(pTrack, iClipStart, iClipOffset, iClipLength);
+	addClipRecordTake(pTrack, pClip, iClipStart, iClipOffset, iClipLength);
 
 	// Can get rid of the recorded clip.
 	pTrack->setClipRecord(NULL);
@@ -303,16 +268,12 @@ bool qtractorClipCommand::addClipRecord (
 
 
 bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
-	unsigned long iClipStart, unsigned long iClipOffset,
-	unsigned long iClipLength )
+	qtractorClip *pClip, unsigned long iClipStart, unsigned long iClipOffset,
+	unsigned long iClipLength, qtractorClip::TakePart *pTakePart )
 {
-	qtractorClip *pClip = pTrack->clipRecord();
-	if (pClip == NULL)
-		return false;
-
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorClipCommand[%p]::addClipRecordTake(%p, %lu, %lu, %lu)",
-		this, pTrack, iClipStart, iClipOffset, iClipLength);
+	qDebug("qtractorClipCommand[%p]::addClipRecordTake(%p, %p, %lu, %lu, %lu, %p)",
+		this, pTrack, pClip, iClipStart, iClipOffset, iClipLength, pTakePart);
 #endif
 
 	// Reference for immediate file addition...
@@ -333,6 +294,8 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 				iClipOffset += pAudioBus->latency_in();
 			pAudioClip->setClipOffset(iClipOffset);
 			addClip(pAudioClip, pTrack);
+			if (pTakePart)
+				pTakePart->setClip(pAudioClip);
 			if (pMainForm)
 				pMainForm->addAudioFile(pAudioClip->filename());
 		}
@@ -347,6 +310,8 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 			pMidiClip->setClipLength(iClipLength);
 			pMidiClip->setClipOffset(iClipOffset);
 			addClip(pMidiClip, pTrack);
+			if (pTakePart)
+				pTakePart->setClip(pMidiClip);
 			if (pMainForm)
 				pMainForm->addMidiFile(pMidiClip->filename());
 		}
