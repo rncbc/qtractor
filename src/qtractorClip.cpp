@@ -28,11 +28,6 @@
 
 #include "qtractorClipCommand.h"
 
-#include "qtractorAudioEngine.h"
-#include "qtractorAudioClip.h"
-#include "qtractorMidiClip.h"
-
-#include "qtractorMainForm.h"
 #include "qtractorClipForm.h"
 
 #include <QFileInfo>
@@ -863,8 +858,9 @@ void qtractorClip::TakeInfo::selectClipPart (
 	qtractorClip *pClip = (pTrack ? pTrack->clipRecord() : NULL);
 	if (pClip) {
 		// About to be taken...
+		TakePart part(this, cpart);
 		pClipCommand->addClipRecordTake(pTrack, pClip,
-			iClipStart, iClipOffset, iClipLength, &TakePart(this, cpart));
+			iClipStart, iClipOffset, iClipLength, &part);
 	} else {
 		// Already taken...
 		pClip = clipPart(cpart);
