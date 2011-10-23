@@ -1547,6 +1547,10 @@ bool qtractorTrack::saveElement (
 		QDomElement eClips = pDocument->document()->createElement("clips");
 		for (qtractorClip *pClip = qtractorTrack::clips().first();
 				pClip; pClip = pClip->next()) {
+			// Avoid clip-head take(record) parts...
+			qtractorClip::TakeInfo *pTakeInfo = pClip->takeInfo();
+			if (pTakeInfo && pTakeInfo->isClipHead(pClip))
+				continue;
 			// Create the new clip element...
 			QDomElement eClip = pDocument->document()->createElement("clip");
 			if (!pClip->saveElement(pDocument, &eClip))

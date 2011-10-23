@@ -26,6 +26,9 @@
 
 #include "qtractorDocument.h"
 
+#include "qtractorAudioClip.h"
+#include "qtractorMidiClip.h"
+
 #include "qtractorClipCommand.h"
 
 #include "qtractorClipForm.h"
@@ -582,6 +585,11 @@ bool qtractorClip::loadElement (
 {
 	qtractorClip::setClipName(pElement->attribute("name"));
 
+	// Cache clip properties...
+	unsigned long iClipStart  = 0;
+	unsigned long iClipOffset = 0;
+	unsigned long iClipLength = 0;
+	
 	// Load clip children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -603,12 +611,18 @@ bool qtractorClip::loadElement (
 					continue;
 				if (eProp.tagName() == "name")
 					qtractorClip::setClipName(eProp.text());
-				else if (eProp.tagName() == "start")
-					qtractorClip::setClipStart(eProp.text().toULong());
-				else if (eProp.tagName() == "offset")
-					qtractorClip::setClipOffset(eProp.text().toULong());
-				else if (eProp.tagName() == "length")
-					qtractorClip::setClipLength(eProp.text().toULong());
+				else if (eProp.tagName() == "start") {
+					iClipStart = eProp.text().toULong();
+					qtractorClip::setClipStart(iClipStart);
+				}
+				else if (eProp.tagName() == "offset") {
+					iClipOffset = eProp.text().toULong();
+					qtractorClip::setClipOffset(iClipOffset);
+				}
+				else if (eProp.tagName() == "length") {
+					iClipLength = eProp.text().toULong();
+					qtractorClip::setClipLength(iClipLength);
+				}
 				else if (eProp.tagName() == "gain")
 					qtractorClip::setClipGain(eProp.text().toFloat());
 				else if (eProp.tagName() == "fade-in") {
@@ -630,6 +644,38 @@ bool qtractorClip::loadElement (
 			if (!loadClipElement(pDocument, &eChild))
 				return false;
 		}
+		else
+		if (eChild.tagName() == "take-info") {
+			unsigned long iTakeStart = 0;
+			unsigned long iTakeEnd   = 0;
+			int iCurrentTake = -1;		
+			// Load clip children...
+			for (QDomNode nProp = eChild.firstChild();
+					!nProp.isNull();
+						nProp = nProp.nextSibling()) {
+				// Convert node to element...
+				QDomElement eProp = nProp.toElement();
+				if (eProp.isNull())
+					continue;
+				// Load take-info properties...
+				if (eProp.tagName() == "take-start")
+					iTakeStart = eProp.text().toULong();
+				else
+				if (eProp.tagName() == "take-end")
+					iTakeEnd = eProp.text().toULong();
+				else
+				if (eProp.tagName() == "current-take")
+					iCurrentTake = eProp.text().toInt();
+			}
+			// Create and assign the take(record) descriptor...
+			if (iTakeStart < iTakeEnd) {
+				qtractorClip::TakeInfo *pTakeInfo = new qtractorClip::TakeInfo(
+					iClipStart, iClipOffset, iClipLength, iTakeStart, iTakeEnd);
+				pTakeInfo->setClipPart(TakeInfo::ClipTake, this);
+				if (iCurrentTake >= 0)
+					pTakeInfo->select(NULL, qtractorClip::track(), iCurrentTake);
+			}
+		}
 	}
 
 	return true;
@@ -642,14 +688,24 @@ bool qtractorClip::saveElement (
 	pElement->setAttribute("name", qtractorClip::clipName());
 
 	// Save clip properties...
+	unsigned long iClipStart  = qtractorClip::clipStart();
+	unsigned long iClipOffset = qtractorClip::clipOffset();
+	unsigned long iClipLength = qtractorClip::clipLength();
+
+	// Override clip take(record) properties, if any...
+	qtractorClip::TakeInfo *pTakeInfo = qtractorClip::takeInfo();
+	if (pTakeInfo && pTakeInfo->isClipTake(this)) {
+		iClipStart  = pTakeInfo->clipStart();
+		iClipOffset = pTakeInfo->clipOffset();
+		iClipLength = pTakeInfo->clipLength();
+	}
+	
+	// Save clip properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	pDocument->saveTextElement("name", qtractorClip::clipName(), &eProps);
-	pDocument->saveTextElement("start",
-		QString::number(qtractorClip::clipStart()), &eProps);
-	pDocument->saveTextElement("offset",
-		QString::number(qtractorClip::clipOffset()), &eProps);
-	pDocument->saveTextElement("length",
-		QString::number(qtractorClip::clipLength()), &eProps);
+	pDocument->saveTextElement("start", QString::number(iClipStart), &eProps);
+	pDocument->saveTextElement("offset", QString::number(iClipOffset), &eProps);
+	pDocument->saveTextElement("length", QString::number(iClipLength), &eProps);
 	pDocument->saveTextElement("gain",
 		QString::number(qtractorClip::clipGain()), &eProps);
 
@@ -670,7 +726,25 @@ bool qtractorClip::saveElement (
 	pElement->appendChild(eProps);
 
 	// Save clip derivative properties...
-	return saveClipElement(pDocument, pElement);
+	if (!saveClipElement(pDocument, pElement))
+		return false;
+
+	// At last, save clip take(record) properties, if any...
+	if (pTakeInfo) {
+		QDomElement eTakeInfo
+			= pDocument->document()->createElement("take-info");
+		pDocument->saveTextElement("take-start", 
+			QString::number(pTakeInfo->takeStart()), &eTakeInfo);
+		pDocument->saveTextElement("take-end", 
+			QString::number(pTakeInfo->takeEnd()), &eTakeInfo);
+		pDocument->saveTextElement("current-take",
+			QString::number(pTakeInfo->currentTake()), &eTakeInfo);
+		// Add this take(record) descriptor...
+		pElement->appendChild(eTakeInfo);
+	}
+
+	// Successs.
+	return true;
 }
 
 
@@ -801,11 +875,11 @@ void qtractorClip::TakeInfo::select (
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
 		if (iTake > 0) {
+			// Clip-head from now on...
 			iClipLength = iTakeStart - iClipStart;
-			selectClipPart(pClipCommand, pTrack, cpart,
+			selectClipPart(pClipCommand, pTrack, ClipHead,
 				iClipStart, iClipOffset, iClipLength);
-			// Head clip from now on...
-			cpart = ClipHead;
+			// Clip-take from now on...
 			iClipOffset = iClipLength + iTake * iTakeLength;
 			if (iTake < iTakeCount)
 				iClipLength = iTakeLength;
@@ -813,7 +887,7 @@ void qtractorClip::TakeInfo::select (
 				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
 			iClipStart = iTakeStart;
 		} else {
-			// The head clip for sure (iTake == 0)...
+			// Clip-head for sure (iTake == 0)...
 			cpart = ClipHead;
 			if (iTake < iTakeCount)
 				iClipLength = iTakeEnd - iClipStart;
@@ -856,17 +930,38 @@ void qtractorClip::TakeInfo::selectClipPart (
 #endif
 
 	qtractorClip *pClip = (pTrack ? pTrack->clipRecord() : NULL);
-	if (pClip) {
-		// About to be taken...
-		TakePart part(this, cpart);
-		pClipCommand->addClipRecordTake(pTrack, pClip,
-			iClipStart, iClipOffset, iClipLength, &part);
-	} else {
-		// Already taken...
+
+	// Is clip already taken?...
+	if (pClip == NULL) {
 		pClip = clipPart(cpart);
 		if (pClip) {
-			pClipCommand->resizeClip(pClip,
-				iClipStart, iClipOffset, iClipLength);
+			if (pClipCommand) {
+				pClipCommand->resizeClip(pClip,
+					iClipStart, iClipOffset, iClipLength);
+			} else {
+				pClip->setClipStart(iClipStart);
+				pClip->setClipOffset(iClipOffset);
+				pClip->setClipLength(iClipLength);
+			}
+			pClip = NULL; // All done.
+		}
+		else if (cpart == ClipHead)
+			pClip = clipPart(ClipTake);
+	}
+
+	// Is clip about to be taken (as new)?...
+	if (pClip) {
+		if (pClipCommand) {
+			TakePart part(this, cpart);
+			pClipCommand->addClipRecordTake(pTrack, pClip,
+				iClipStart, iClipOffset, iClipLength, &part);
+		} else {
+			qtractorClip *pClipHead = qtractorClip::clone(
+				pClip, iClipStart, iClipOffset, iClipLength);
+			if (pClipHead) {
+				pTrack->addClip(pClipHead);
+				setClipPart(ClipHead, pClipHead);
+			}
 		}
 	}
 }
@@ -893,7 +988,7 @@ void qtractorClip::TakeInfo::unfold ( qtractorClipCommand *pClipCommand )
 	if (pClip) {
 		pClipCommand->resizeClip(pClip,
 			iClipStart, iClipOffset, iClipLength);
-		setClipPart(ClipTake, NULL);
+	//	setClipPart(ClipTake, NULL);
 	}
 
 	m_iCurrentTake = -1;
@@ -915,6 +1010,50 @@ void qtractorClip::setTakeInfo ( qtractorClip::TakeInfo *pTakeInfo )
 qtractorClip::TakeInfo *qtractorClip::takeInfo (void) const
 {
 	return m_pTakeInfo;
+}
+
+
+// A cloning clip factory method.
+qtractorClip *qtractorClip::clone (
+	qtractorClip *pClip, unsigned long iClipStart,
+	unsigned long iClipOffset, unsigned long iClipLength )
+{
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return NULL;
+
+	// Now, its imperative to make a proper copy of those clips...
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip) {
+			pAudioClip = new qtractorAudioClip(*pAudioClip);
+			pAudioClip->setClipStart(iClipStart);
+			pAudioClip->setClipOffset(iClipOffset);
+			pAudioClip->setClipLength(iClipLength);
+			return pAudioClip;
+		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			pMidiClip = new qtractorMidiClip(*pMidiClip);
+			pMidiClip->setClipStart(iClipStart);
+			pMidiClip->setClipOffset(iClipOffset);
+			pMidiClip->setClipLength(iClipLength);
+			return pMidiClip;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+
+	return NULL;
+	
 }
 
 

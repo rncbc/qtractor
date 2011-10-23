@@ -265,12 +265,19 @@ public:
 			qtractorTrack *pTrack, ClipPart cpart, unsigned long iClipStart,
 			unsigned long iClipOffset, unsigned long iClipLength);
 
+		// Sub-part query methods.
+		bool isClipHead(const qtractorClip *pClip) const
+			{ return (m_apClipParts[ClipHead] == pClip); }
+		bool isClipTake(const qtractorClip *pClip) const
+			{ return (m_apClipParts[ClipTake] == pClip); }
+
 	private:
 
 		// Instance variables.
 		unsigned long m_iClipStart;
 		unsigned long m_iClipOffset;
 		unsigned long m_iClipLength;
+
 		unsigned long m_iTakeStart;
 		unsigned long m_iTakeEnd;
 
@@ -312,6 +319,11 @@ public:
 		TakeInfo *m_pTakeInfo;
 		TakeInfo::ClipPart m_cpart;
 	};
+
+	// A cloning clip factory method.
+	static qtractorClip *clone(qtractorClip *pClip,
+		unsigned long iClipStart, unsigned long iClipOffset,
+		unsigned long iClipLength);
 
 protected:
 

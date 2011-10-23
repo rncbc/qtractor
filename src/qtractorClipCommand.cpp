@@ -245,15 +245,23 @@ bool qtractorClipCommand::addClipRecord (
 	unsigned long iClipLength = iClipEnd - iClipStart;
 	unsigned long iClipOffset = 0;
 
+	// Attend to audio clip record latency compensation...
+	if (pTrack->trackType() == qtractorTrack::Audio) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+		if (pAudioBus)
+			iClipOffset += pAudioBus->latency_in();
+	}
+
 #ifdef QTRACTOR_LOOP_RECORDING_TAKES
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->isLooping()) {
+	if (pSession && pSession->isLooping() && iClipEnd > pSession->loopEnd()) {
 		qtractorClip::TakeInfo *pTakeInfo
 			= new qtractorClip::TakeInfo(
 				iClipStart, iClipOffset, iClipLength,
 				pSession->loopStart(),
 				pSession->loopEnd());
-		pTakeInfo->select(this, pTrack /*, iTake = -1 */);
+		pTakeInfo->select(this, pTrack /*, iCurrentTake = -1 */);
 	}
 	else
 #endif	// QTRACTOR_LOOP_RECORDING_TAKES
@@ -276,49 +284,30 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 		this, pTrack, pClip, iClipStart, iClipOffset, iClipLength, pTakePart);
 #endif
 
+	// Now, its imperative to make a proper copy of those clips...
+	qtractorClip *pClipRecordTake
+		= qtractorClip::clone(pClip, iClipStart, iClipOffset, iClipLength);
+	if (pClipRecordTake == NULL)
+		return false;
+	
+	addClip(pClipRecordTake, pTrack);
+
+	if (pTakePart)
+		pTakePart->setClip(pClipRecordTake);
+
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-
-	// Now, its imperative to make a proper copy of those clips...
-	switch (pTrack->trackType()) {
-	case qtractorTrack::Audio: {
-		qtractorAudioClip *pAudioClip
-			= static_cast<qtractorAudioClip *> (pClip);
-		if (pAudioClip) {
-			pAudioClip = new qtractorAudioClip(*pAudioClip);
-			pAudioClip->setClipStart(iClipStart);
-			pAudioClip->setClipLength(iClipLength);
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-			if (pAudioBus)
-				iClipOffset += pAudioBus->latency_in();
-			pAudioClip->setClipOffset(iClipOffset);
-			addClip(pAudioClip, pTrack);
-			if (pTakePart)
-				pTakePart->setClip(pAudioClip);
-			if (pMainForm)
-				pMainForm->addAudioFile(pAudioClip->filename());
+	if (pMainForm) {
+		switch (pTrack->trackType()) {
+		case qtractorTrack::Audio:
+			pMainForm->addAudioFile(pClipRecordTake->filename());
+			break;
+		case qtractorTrack::Midi:
+			pMainForm->addMidiFile(pClipRecordTake->filename());
+			break;
+		default:
+			break;
 		}
-		break;
-	}
-	case qtractorTrack::Midi: {
-		qtractorMidiClip *pMidiClip
-			= static_cast<qtractorMidiClip *> (pClip);
-		if (pMidiClip) {
-			pMidiClip = new qtractorMidiClip(*pMidiClip);
-			pMidiClip->setClipStart(iClipStart);
-			pMidiClip->setClipLength(iClipLength);
-			pMidiClip->setClipOffset(iClipOffset);
-			addClip(pMidiClip, pTrack);
-			if (pTakePart)
-				pTakePart->setClip(pMidiClip);
-			if (pMainForm)
-				pMainForm->addMidiFile(pMidiClip->filename());
-		}
-		break;
-	}
-	default:
-		return false;
 	}
 
 	return true;
