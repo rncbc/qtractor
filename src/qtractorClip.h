@@ -235,6 +235,8 @@ public:
 		unsigned long takeEnd() const
 			{ return m_iTakeEnd; }
 
+		void setCurrentTake(int iCurrentTake)
+			{ m_iCurrentTake = iCurrentTake; }
 		int currentTake() const
 			{ return m_iCurrentTake; }
 
@@ -259,17 +261,13 @@ public:
 			{ m_apClipParts[cpart] = pClip; if (pClip) pClip->setTakeInfo(this); }
 		qtractorClip *clipPart(ClipPart cpart) const
 			{ return m_apClipParts[cpart]; }
+		ClipPart partClip(const qtractorClip *pClip) const
+			{ return (m_apClipParts[ClipHead] == pClip ? ClipHead : ClipTake); }
 
 		// Sub-brainfull method.
 		void selectClipPart(qtractorClipCommand *pClipCommand,
 			qtractorTrack *pTrack, ClipPart cpart, unsigned long iClipStart,
 			unsigned long iClipOffset, unsigned long iClipLength);
-
-		// Sub-part query methods.
-		bool isClipHead(const qtractorClip *pClip) const
-			{ return (m_apClipParts[ClipHead] == pClip); }
-		bool isClipTake(const qtractorClip *pClip) const
-			{ return (m_apClipParts[ClipTake] == pClip); }
 
 	private:
 
@@ -319,11 +317,6 @@ public:
 		TakeInfo *m_pTakeInfo;
 		TakeInfo::ClipPart m_cpart;
 	};
-
-	// A cloning clip factory method.
-	static qtractorClip *clone(qtractorClip *pClip,
-		unsigned long iClipStart, unsigned long iClipOffset,
-		unsigned long iClipLength);
 
 protected:
 
@@ -394,6 +387,11 @@ private:
 	// Local dirty flag.
 	bool m_bDirty;
 };
+
+
+// Stub declarations.
+class qtractorTrack::TakeInfo : public qtractorClip::TakeInfo {};
+
 
 #endif  // __qtractorClip_h
 

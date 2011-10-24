@@ -1045,7 +1045,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="414"/>
-        <location filename="../qtractorTrack.cpp" line="549"/>
+        <location filename="../qtractorTrack.cpp" line="591"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
     </message>
@@ -1071,17 +1071,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit ovladač znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="550"/>
+        <location filename="../qtractorTrack.cpp" line="592"/>
         <source>%1 Record</source>
         <translation>%1 Nahrát</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="551"/>
+        <location filename="../qtractorTrack.cpp" line="593"/>
         <source>%1 Mute</source>
         <translation>%1 Ztlumit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="552"/>
+        <location filename="../qtractorTrack.cpp" line="594"/>
         <source>%1 Solo</source>
         <translation>%1 Sólo</translation>
     </message>

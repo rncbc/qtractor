@@ -285,29 +285,46 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 #endif
 
 	// Now, its imperative to make a proper copy of those clips...
-	qtractorClip *pClipRecordTake
-		= qtractorClip::clone(pClip, iClipStart, iClipOffset, iClipLength);
-	if (pClipRecordTake == NULL)
-		return false;
+	// -- formerly a cloning clip factory method.
 	
-	addClip(pClipRecordTake, pTrack);
-
-	if (pTakePart)
-		pTakePart->setClip(pClipRecordTake);
-
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		switch (pTrack->trackType()) {
-		case qtractorTrack::Audio:
-			pMainForm->addAudioFile(pClipRecordTake->filename());
-			break;
-		case qtractorTrack::Midi:
-			pMainForm->addMidiFile(pClipRecordTake->filename());
-			break;
-		default:
-			break;
+
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip) {
+			pAudioClip = new qtractorAudioClip(*pAudioClip);
+			pAudioClip->setClipStart(iClipStart);
+			pAudioClip->setClipOffset(iClipOffset);
+			pAudioClip->setClipLength(iClipLength);
+			addClip(pAudioClip, pTrack);
+			if (pTakePart)
+				pTakePart->setClip(pAudioClip);
+			if (pMainForm)	
+				pMainForm->addAudioFile(pAudioClip->filename());
 		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			pMidiClip = new qtractorMidiClip(*pMidiClip);
+			pMidiClip->setClipStart(iClipStart);
+			pMidiClip->setClipOffset(iClipOffset);
+			pMidiClip->setClipLength(iClipLength);
+			addClip(pMidiClip, pTrack);
+			if (pTakePart)
+				pTakePart->setClip(pMidiClip);
+			if (pMainForm)	
+				pMainForm->addMidiFile(pMidiClip->filename());
+		}
+		break;
+	}
+	default:
+		return false;
 	}
 
 	return true;
