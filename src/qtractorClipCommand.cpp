@@ -253,18 +253,19 @@ bool qtractorClipCommand::addClipRecord (
 			iClipOffset += pAudioBus->latency_in();
 	}
 
-#ifdef QTRACTOR_LOOP_RECORDING_TAKES
+	// Check whether in loop-recording/takes mode....
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->isLooping() && iClipEnd > pSession->loopEnd()) {
+	if (pSession && pSession->isLoopRecording()
+		&& iClipEnd > pSession->loopEnd()) {
+		int iCurrentTake = (pSession->loopRecordingMode() == 1 ? 0 : -1);
 		qtractorClip::TakeInfo *pTakeInfo
 			= new qtractorClip::TakeInfo(
 				iClipStart, iClipOffset, iClipLength,
 				pSession->loopStart(),
 				pSession->loopEnd());
-		pTakeInfo->select(this, pTrack /*, iCurrentTake = -1 */);
+		pTakeInfo->select(this, pTrack, iCurrentTake);
 	}
 	else
-#endif	// QTRACTOR_LOOP_RECORDING_TAKES
 	addClipRecordTake(pTrack, pClip, iClipStart, iClipOffset, iClipLength);
 
 	// Can get rid of the recorded clip.

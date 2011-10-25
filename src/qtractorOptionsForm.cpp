@@ -264,6 +264,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.TrackViewDropSpanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.LoopRecordingModeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DisplayFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -501,6 +504,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
+	m_ui.LoopRecordingModeComboBox->setCurrentIndex(m_pOptions->iLoopRecordingMode);
 	m_ui.DisplayFormatComboBox->setCurrentIndex(m_pOptions->iDisplayFormat);
 	if (m_pOptions->iBaseFontSize > 0)
 		m_ui.BaseFontSizeComboBox->setEditText(QString::number(m_pOptions->iBaseFontSize));
@@ -605,6 +609,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bKeepToolsOnTop      = m_ui.KeepToolsOnTopCheckBox->isChecked();
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
+		m_pOptions->iLoopRecordingMode   = m_ui.LoopRecordingModeComboBox->currentIndex();
 		m_pOptions->iDisplayFormat       = m_ui.DisplayFormatComboBox->currentIndex();
 		m_pOptions->iBaseFontSize        = m_ui.BaseFontSizeComboBox->currentText().toInt();
 		// Plugin paths...

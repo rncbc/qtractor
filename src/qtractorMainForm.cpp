@@ -1142,8 +1142,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
 
-	// Initial auto time-stretching mode...
+	// Initial auto time-stretching, loop-recording modes...
 	m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
+	m_pSession->setLoopRecordingMode(m_pOptions->iLoopRecordingMode);
 
 	// Initial decorations toggle state.
 	m_ui.editSelectModeCurveAction->setChecked(pOptions->bTrackViewCurveEdit);
@@ -4085,9 +4086,11 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->bAudioOutputBus);
 		qtractorMidiManager::setDefaultAudioOutputAutoConnect(
 			m_pOptions->bAudioOutputAutoConnect);
-		// Auto time-stretching global mode...
-		if (m_pSession)
+		// Auto time-stretching, loop-recording global modes...
+		if (m_pSession) {
 			m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
+			m_pSession->setLoopRecordingMode(m_pOptions->iLoopRecordingMode);
+		}
 		// Special track-view drop-span mode...
 		if (m_pTracks)
 			m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);

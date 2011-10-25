@@ -6,9 +6,16 @@ ChangeLog
 SVN TRUNK
 
 - Loop-recording/takes infrastructure integration is
-  sneaking in, although not ready for the masses as
-  there's no user interface accessibility as of yet
-  (EXPERIMENTAL).
+  sneaking in: all clips recorded under a loop/cycle
+  range may now get split (folded) into one or more
+  so-called takes. A new option is now provided, as
+  to select which take is about to retain after the
+  recording ends, either the First or the Last one.
+  Just turn this mode off (None) and keep with the
+  old recording behavior, where clips are laid out
+  unfolded through the timeline, as usual (see menu
+  View/Options.../Display/Loop recording mode).
+  (EXPERIMENTAL)
 
 - Improved robustness in face of disabled audio buses
   when global maximum number of JACK (audio) ports is
@@ -1682,6 +1689,7 @@ SVN TRUNK
   the clip edges, giving a much smoother rendering and thus
   mitigating the nasty click-and-pop artifacts that were in
   fact due to some early design optimization with a poor and
+
   sloppy implementation.
 
 
