@@ -1822,7 +1822,7 @@
 			 </font>
 			</property>
 			<property name="text" >
-			 <string>Loop recording mode:</string>
+			 <string>L&amp;oop recording mode:</string>
 			</property>
 			<property name="alignment" >
 			 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

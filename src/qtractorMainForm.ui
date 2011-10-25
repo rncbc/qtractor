@@ -163,6 +163,69 @@
      <height>30</height>
     </rect>
    </property>
+   <widget class="QMenu" name="fileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="fileOpenRecentMenu" >
+     <property name="title" >
+      <string>Open &amp;Recent</string>
+     </property>
+    </widget>
+    <addaction name="fileNewAction" />
+    <addaction name="separator" />
+    <addaction name="fileOpenAction" />
+    <addaction name="fileOpenRecentMenu" />
+    <addaction name="separator" />
+    <addaction name="fileSaveAction" />
+    <addaction name="fileSaveAsAction" />
+    <addaction name="separator" />
+    <addaction name="filePropertiesAction" />
+    <addaction name="separator" />
+    <addaction name="fileExitAction" />
+   </widget>
+   <widget class="QMenu" name="editMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <widget class="QMenu" name="editSelectModeMenu" >
+     <property name="title" >
+      <string>Select &amp;Mode</string>
+     </property>
+     <addaction name="editSelectModeClipAction" />
+     <addaction name="editSelectModeRangeAction" />
+     <addaction name="editSelectModeRectAction" />
+     <addaction name="separator" />
+     <addaction name="editSelectModeCurveAction" />
+    </widget>
+    <widget class="QMenu" name="editSelectMenu" >
+     <property name="title" >
+      <string>&amp;Select</string>
+     </property>
+     <addaction name="editSelectAllAction" />
+     <addaction name="editSelectNoneAction" />
+     <addaction name="editSelectInvertAction" />
+     <addaction name="separator" />
+     <addaction name="editSelectTrackAction" />
+     <addaction name="editSelectTrackRangeAction" />
+     <addaction name="editSelectRangeAction" />
+    </widget>
+    <addaction name="editUndoAction" />
+    <addaction name="editRedoAction" />
+    <addaction name="separator" />
+    <addaction name="editCutAction" />
+    <addaction name="editCopyAction" />
+    <addaction name="editPasteAction" />
+    <addaction name="editPasteRepeatAction" />
+    <addaction name="separator" />
+    <addaction name="editDeleteAction" />
+    <addaction name="separator" />
+    <addaction name="editSelectModeMenu" />
+    <addaction name="editSelectMenu" />
+    <addaction name="separator" />
+    <addaction name="trackMenu" />
+    <addaction name="clipMenu" />
+   </widget>
    <widget class="QMenu" name="trackMenu" >
     <property name="title" >
      <string>&amp;Track</string>
@@ -270,6 +333,54 @@
     <addaction name="separator" />
     <addaction name="trackCurveMenu" />
    </widget>
+   <widget class="QMenu" name="clipMenu" >
+    <property name="title" >
+     <string>Cl&amp;ip</string>
+    </property>
+	<widget class="QMenu" name="clipToolsMenu" >
+     <property name="title" >
+      <string>T&amp;ools</string>
+     </property>
+     <addaction name="clipToolsQuantizeAction" />
+     <addaction name="clipToolsTransposeAction" />
+     <addaction name="clipToolsNormalizeAction" />
+     <addaction name="clipToolsRandomizeAction" />
+     <addaction name="clipToolsResizeAction" />
+     <addaction name="clipToolsRescaleAction" />
+     <addaction name="clipToolsTimeshiftAction" />
+    </widget>
+	<widget class="QMenu" name="clipTakeMenu" >
+     <property name="title" >
+      <string>Ta&amp;ke</string>
+     </property>
+	 <widget class="QMenu" name="clipTakeSelectMenu" >
+      <property name="title" >
+       <string>&amp;Select</string>
+      </property>
+     </widget>
+     <addaction name="clipTakeSelectMenu" />
+     <addaction name="clipTakeUnfoldAction" />
+    </widget>
+    <addaction name="clipNewAction" />
+    <addaction name="clipEditAction" />
+    <addaction name="separator" />
+    <addaction name="clipTakeMenu" />
+    <addaction name="clipUnlinkAction" />
+    <addaction name="separator" />
+    <addaction name="clipSplitAction" />
+    <addaction name="clipMergeAction" />
+    <addaction name="clipNormalizeAction" />
+    <addaction name="separator" />
+    <addaction name="clipTempoAction" />
+    <addaction name="separator" />
+    <addaction name="clipRangeSetAction" />
+    <addaction name="clipLoopSetAction" />
+    <addaction name="separator" />
+    <addaction name="clipImportAction" />
+    <addaction name="clipExportAction" />
+    <addaction name="separator" />
+    <addaction name="clipToolsMenu" />
+   </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
      <string>&amp;View</string>
@@ -369,104 +480,6 @@
     <addaction name="separator" />
     <addaction name="helpAboutAction" />
     <addaction name="helpAboutQtAction" />
-   </widget>
-   <widget class="QMenu" name="editMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <widget class="QMenu" name="editSelectModeMenu" >
-     <property name="title" >
-      <string>Select &amp;Mode</string>
-     </property>
-     <addaction name="editSelectModeClipAction" />
-     <addaction name="editSelectModeRangeAction" />
-     <addaction name="editSelectModeRectAction" />
-     <addaction name="separator" />
-     <addaction name="editSelectModeCurveAction" />
-    </widget>
-    <widget class="QMenu" name="editSelectMenu" >
-     <property name="title" >
-      <string>&amp;Select</string>
-     </property>
-     <addaction name="editSelectAllAction" />
-     <addaction name="editSelectNoneAction" />
-     <addaction name="editSelectInvertAction" />
-     <addaction name="separator" />
-     <addaction name="editSelectTrackAction" />
-     <addaction name="editSelectTrackRangeAction" />
-     <addaction name="editSelectRangeAction" />
-    </widget>
-    <widget class="QMenu" name="clipToolsMenu" >
-     <property name="title" >
-      <string>T&amp;ools</string>
-     </property>
-     <addaction name="clipToolsQuantizeAction" />
-     <addaction name="clipToolsTransposeAction" />
-     <addaction name="clipToolsNormalizeAction" />
-     <addaction name="clipToolsRandomizeAction" />
-     <addaction name="clipToolsResizeAction" />
-     <addaction name="clipToolsRescaleAction" />
-     <addaction name="clipToolsTimeshiftAction" />
-    </widget>
-    <widget class="QMenu" name="clipMenu" >
-     <property name="title" >
-      <string>Cl&amp;ip</string>
-     </property>
-     <addaction name="clipNewAction" />
-     <addaction name="clipEditAction" />
-	 <addaction name="separator" />
-	 <addaction name="clipUnlinkAction" />
-	 <addaction name="separator" />
-     <addaction name="clipSplitAction" />
-     <addaction name="clipMergeAction" />
-     <addaction name="clipNormalizeAction" />
-	 <addaction name="separator" />
-     <addaction name="clipTempoAction" />
-	 <addaction name="separator" />
-	 <addaction name="clipRangeSetAction" />
-	 <addaction name="clipLoopSetAction" />
-	 <addaction name="separator" />
-     <addaction name="clipImportAction" />
-     <addaction name="clipExportAction" />
-     <addaction name="separator" />
-     <addaction name="clipToolsMenu" />
-    </widget>
-    <addaction name="editUndoAction" />
-    <addaction name="editRedoAction" />
-    <addaction name="separator" />
-    <addaction name="editCutAction" />
-    <addaction name="editCopyAction" />
-    <addaction name="editPasteAction" />
-    <addaction name="editPasteRepeatAction" />
-    <addaction name="separator" />
-    <addaction name="editDeleteAction" />
-    <addaction name="separator" />
-    <addaction name="editSelectModeMenu" />
-    <addaction name="editSelectMenu" />
-    <addaction name="separator" />
-    <addaction name="trackMenu" />
-    <addaction name="clipMenu" />
-   </widget>
-   <widget class="QMenu" name="fileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="fileOpenRecentMenu" >
-     <property name="title" >
-      <string>Open &amp;Recent</string>
-     </property>
-    </widget>
-    <addaction name="fileNewAction" />
-    <addaction name="separator" />
-    <addaction name="fileOpenAction" />
-    <addaction name="fileOpenRecentMenu" />
-    <addaction name="separator" />
-    <addaction name="fileSaveAction" />
-    <addaction name="fileSaveAsAction" />
-    <addaction name="separator" />
-    <addaction name="filePropertiesAction" />
-    <addaction name="separator" />
-    <addaction name="fileExitAction" />
    </widget>
    <addaction name="fileMenu" />
    <addaction name="editMenu" />
@@ -899,270 +912,6 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+R</string>
-   </property>
-  </action>
-  <action name="clipNewAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/clipNew.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;New...</string>
-   </property>
-   <property name="iconText" >
-    <string>New Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>New clip</string>
-   </property>
-   <property name="statusTip" >
-    <string>Create new clip</string>
-   </property>
-  </action>
-  <action name="clipEditAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/clipEdit.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;Edit...</string>
-   </property>
-   <property name="iconText" >
-    <string>Edit Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Edit clip</string>
-   </property>
-   <property name="statusTip" >
-    <string>Edit current clip</string>
-   </property>
-   <property name="shortcut" >
-    <string>F4</string>
-   </property>
-  </action>
-  <action name="clipUnlinkAction" >
-   <property name="text" >
-	<string>&amp;Unlink</string>
-   </property>
-   <property name="iconText" >
-	<string>Unlink Clip</string>
-   </property>
-   <property name="toolTip" >
-	<string>Unlink clip</string>
-   </property>
-   <property name="statusTip" >
-	<string>Unlink current clip</string>
-   </property>
-  </action>
-  <action name="clipSplitAction" >
-   <property name="text" >
-    <string>&amp;Split</string>
-   </property>
-   <property name="iconText" >
-    <string>Split Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Split clip</string>
-   </property>
-   <property name="statusTip" >
-    <string>Split current clip at playhead</string>
-   </property>
-  </action>
-  <action name="clipMergeAction" >
-   <property name="text" >
-    <string>&amp;Merge...</string>
-   </property>
-   <property name="iconText" >
-    <string>Merge Clips</string>
-   </property>
-   <property name="toolTip" >
-    <string>Merge clips</string>
-   </property>
-   <property name="statusTip" >
-    <string>Merge selected clips</string>
-   </property>
-  </action>
-  <action name="clipNormalizeAction" >
-   <property name="text" >
-	<string>N&amp;ormalize</string>
-   </property>
-   <property name="iconText" >
-    <string>Normalize Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Normalize clip</string>
-   </property>
-   <property name="statusTip" >
-    <string>Normalize current clip (gain/volume)</string>
-   </property>
-  </action>
-  <action name="clipToolsQuantizeAction" >
-   <property name="text" >
-    <string>&amp;Quantize...</string>
-   </property>
-   <property name="iconText" >
-    <string>Quantize Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Quantize clip events</string>
-   </property>
-   <property name="statusTip" >
-    <string>Quantize current MIDI clip events</string>
-   </property>
-  </action>
-  <action name="clipToolsTransposeAction" >
-   <property name="text" >
-    <string>&amp;Transpose...</string>
-   </property>
-   <property name="iconText" >
-    <string>Transpose Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Transpose clip events</string>
-   </property>
-   <property name="statusTip" >
-    <string>Transpose current MIDI clip events</string>
-   </property>
-  </action>
-  <action name="clipToolsNormalizeAction" >
-   <property name="text" >
-    <string>&amp;Normalize...</string>
-   </property>
-   <property name="iconText" >
-    <string>Normalize Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Normalize clip events</string>
-   </property>
-   <property name="statusTip" >
-    <string>Normalize current MIDI clip events</string>
-   </property>
-  </action>
-  <action name="clipToolsRandomizeAction" >
-   <property name="text" >
-    <string>&amp;Randomize...</string>
-   </property>
-   <property name="iconText" >
-    <string>Randomize Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Randomize clip events</string>
-   </property>
-   <property name="statusTip" >
-    <string>Randomize current MIDI clip events</string>
-   </property>
-  </action>
-  <action name="clipToolsResizeAction" >
-   <property name="text" >
-    <string>Resi&amp;ze...</string>
-   </property>
-   <property name="iconText" >
-    <string>Resize Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Resize clip events</string>
-   </property>
-   <property name="statusTip" >
-    <string>Resize current MIDI clip events</string>
-   </property>
-  </action>
-  <action name="clipToolsRescaleAction" >
-   <property name="text" >
-    <string>Re&amp;scale...</string>
-   </property>
-   <property name="iconText" >
-    <string>Rescale Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Rescale clip events</string>
-   </property>
-   <property name="statusTip" >
-    <string>Rescale current MIDI clip events</string>
-   </property>
-  </action>
-  <action name="clipToolsTimeshiftAction" >
-   <property name="text" >
-    <string>T&amp;imeshift...</string>
-   </property>
-   <property name="iconText" >
-    <string>Timeshift Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Timeshift clip events</string>
-   </property>
-   <property name="statusTip" >
-    <string>Timeshift current MIDI clip events</string>
-   </property>
-  </action>
-  <action name="clipTempoAction" >
-   <property name="text" >
-    <string>&amp;Tempo...</string>
-   </property>
-   <property name="iconText" >
-    <string>Tempo Adjust</string>
-   </property>
-   <property name="toolTip" >
-    <string>Tempo Adjust</string>
-   </property>
-   <property name="statusTip" >
-    <string>Adjust session tempo from current clip selection</string>
-   </property>
-   <property name="shortcut" >
-    <string>F7</string>
-   </property>
-  </action>
-  <action name="clipRangeSetAction" >
-   <property name="text" >
-	<string>&amp;Range Set</string>
-   </property>
-   <property name="iconText" >
-	<string>Clip Range</string>
-   </property>
-   <property name="toolTip" >
-	<string>Clip range</string>
-   </property>
-   <property name="statusTip" >
-	<string>Set edit-range from current clip extents</string>
-   </property>
-  </action>
-  <action name="clipLoopSetAction" >
-   <property name="text" >
-	<string>&amp;Loop Set</string>
-   </property>
-   <property name="iconText" >
-	<string>Clip Loop</string>
-   </property>
-   <property name="toolTip" >
-	<string>Clip loop</string>
-   </property>
-   <property name="statusTip" >
-	<string>Set loop-range from current clip extents</string>
-   </property>
-  </action>
-  <action name="clipImportAction" >
-   <property name="text" >
-    <string>&amp;Import...</string>
-   </property>
-   <property name="iconText" >
-    <string>Import Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Import clip</string>
-   </property>
-   <property name="statusTip" >
-    <string>Import clip from file(s)</string>
-   </property>
-  </action>
-  <action name="clipExportAction" >
-   <property name="text" >
-    <string>E&amp;xport...</string>
-   </property>
-   <property name="iconText" >
-    <string>Export Clip</string>
-   </property>
-   <property name="toolTip" >
-    <string>Export clip</string>
-   </property>
-   <property name="statusTip" >
-    <string>Export current clip to file</string>
    </property>
   </action>
   <action name="trackAddAction" >
@@ -1759,6 +1508,284 @@
    </property>
    <property name="statusTip" >
     <string>Clear all automation curves</string>
+   </property>
+  </action>
+  <action name="clipNewAction" >
+   <property name="icon" >
+    <iconset resource="qtractor.qrc" >:/images/clipNew.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;New...</string>
+   </property>
+   <property name="iconText" >
+    <string>New Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>New clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Create new clip</string>
+   </property>
+  </action>
+  <action name="clipEditAction" >
+   <property name="icon" >
+    <iconset resource="qtractor.qrc" >:/images/clipEdit.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Edit...</string>
+   </property>
+   <property name="iconText" >
+    <string>Edit Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Edit clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Edit current clip</string>
+   </property>
+   <property name="shortcut" >
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="clipUnlinkAction" >
+   <property name="text" >
+	<string>&amp;Unlink</string>
+   </property>
+   <property name="iconText" >
+	<string>Unlink Clip</string>
+   </property>
+   <property name="toolTip" >
+	<string>Unlink clip</string>
+   </property>
+   <property name="statusTip" >
+	<string>Unlink current clip</string>
+   </property>
+  </action>
+  <action name="clipSplitAction" >
+   <property name="text" >
+    <string>&amp;Split</string>
+   </property>
+   <property name="iconText" >
+    <string>Split Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Split clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Split current clip at playhead</string>
+   </property>
+  </action>
+  <action name="clipMergeAction" >
+   <property name="text" >
+    <string>&amp;Merge...</string>
+   </property>
+   <property name="iconText" >
+    <string>Merge Clips</string>
+   </property>
+   <property name="toolTip" >
+    <string>Merge clips</string>
+   </property>
+   <property name="statusTip" >
+    <string>Merge selected clips</string>
+   </property>
+  </action>
+  <action name="clipNormalizeAction" >
+   <property name="text" >
+	<string>N&amp;ormalize</string>
+   </property>
+   <property name="iconText" >
+    <string>Normalize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Normalize clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Normalize current clip (gain/volume)</string>
+   </property>
+  </action>
+  <action name="clipToolsQuantizeAction" >
+   <property name="text" >
+    <string>&amp;Quantize...</string>
+   </property>
+   <property name="iconText" >
+    <string>Quantize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Quantize clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Quantize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipToolsTransposeAction" >
+   <property name="text" >
+    <string>&amp;Transpose...</string>
+   </property>
+   <property name="iconText" >
+    <string>Transpose Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Transpose clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transpose current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipToolsNormalizeAction" >
+   <property name="text" >
+    <string>&amp;Normalize...</string>
+   </property>
+   <property name="iconText" >
+    <string>Normalize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Normalize clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Normalize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipToolsRandomizeAction" >
+   <property name="text" >
+    <string>&amp;Randomize...</string>
+   </property>
+   <property name="iconText" >
+    <string>Randomize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Randomize clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Randomize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipToolsResizeAction" >
+   <property name="text" >
+    <string>Resi&amp;ze...</string>
+   </property>
+   <property name="iconText" >
+    <string>Resize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Resize clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Resize current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipToolsRescaleAction" >
+   <property name="text" >
+    <string>Re&amp;scale...</string>
+   </property>
+   <property name="iconText" >
+    <string>Rescale Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Rescale clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Rescale current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipToolsTimeshiftAction" >
+   <property name="text" >
+    <string>T&amp;imeshift...</string>
+   </property>
+   <property name="iconText" >
+    <string>Timeshift Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Timeshift clip events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Timeshift current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipTempoAction" >
+   <property name="text" >
+    <string>&amp;Tempo...</string>
+   </property>
+   <property name="iconText" >
+    <string>Tempo Adjust</string>
+   </property>
+   <property name="toolTip" >
+    <string>Tempo Adjust</string>
+   </property>
+   <property name="statusTip" >
+    <string>Adjust session tempo from current clip selection</string>
+   </property>
+   <property name="shortcut" >
+    <string>F7</string>
+   </property>
+  </action>
+  <action name="clipRangeSetAction" >
+   <property name="text" >
+	<string>&amp;Range Set</string>
+   </property>
+   <property name="iconText" >
+	<string>Clip Range</string>
+   </property>
+   <property name="toolTip" >
+	<string>Clip range</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set edit-range from current clip extents</string>
+   </property>
+  </action>
+  <action name="clipLoopSetAction" >
+   <property name="text" >
+	<string>&amp;Loop Set</string>
+   </property>
+   <property name="iconText" >
+	<string>Clip Loop</string>
+   </property>
+   <property name="toolTip" >
+	<string>Clip loop</string>
+   </property>
+   <property name="statusTip" >
+	<string>Set loop-range from current clip extents</string>
+   </property>
+  </action>
+  <action name="clipImportAction" >
+   <property name="text" >
+    <string>&amp;Import...</string>
+   </property>
+   <property name="iconText" >
+    <string>Import Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Import clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Import clip from file(s)</string>
+   </property>
+  </action>
+  <action name="clipExportAction" >
+   <property name="text" >
+    <string>E&amp;xport...</string>
+   </property>
+   <property name="iconText" >
+    <string>Export Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Export clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Export current clip to file</string>
+   </property>
+  </action>
+  <action name="clipTakeUnfoldAction" >
+   <property name="text" >
+    <string>&amp;Unfold</string>
+   </property>
+   <property name="iconText" >
+    <string>Unfold Takes</string>
+   </property>
+   <property name="toolTip" >
+    <string>Unfold takes</string>
+   </property>
+   <property name="statusTip" >
+    <string>Unfold current clip takes</string>
    </property>
   </action>
   <action name="viewMenubarAction" >
