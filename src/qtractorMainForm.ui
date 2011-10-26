@@ -359,12 +359,17 @@
       </property>
      </widget>
      <addaction name="clipTakeSelectMenu" />
-     <addaction name="clipTakeUnfoldAction" />
+	 <addaction name="separator" />
+     <addaction name="clipTakeFirstAction" />
+     <addaction name="clipTakePrevAction" />
+     <addaction name="clipTakeNextAction" />
+     <addaction name="clipTakeLastAction" />
+	 <addaction name="separator" />
+     <addaction name="clipTakeResetAction" />
     </widget>
     <addaction name="clipNewAction" />
     <addaction name="clipEditAction" />
     <addaction name="separator" />
-    <addaction name="clipTakeMenu" />
     <addaction name="clipUnlinkAction" />
     <addaction name="separator" />
     <addaction name="clipSplitAction" />
@@ -380,6 +385,7 @@
     <addaction name="clipExportAction" />
     <addaction name="separator" />
     <addaction name="clipToolsMenu" />
+    <addaction name="clipTakeMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -1774,18 +1780,74 @@
     <string>Export current clip to file</string>
    </property>
   </action>
-  <action name="clipTakeUnfoldAction" >
+  <action name="clipTakeFirstAction" >
    <property name="text" >
-    <string>&amp;Unfold</string>
+    <string>&amp;First</string>
    </property>
    <property name="iconText" >
-    <string>Unfold Takes</string>
+    <string>First Take</string>
    </property>
    <property name="toolTip" >
-    <string>Unfold takes</string>
+    <string>First take</string>
    </property>
    <property name="statusTip" >
-    <string>Unfold current clip takes</string>
+    <string>Select current clip first take</string>
+   </property>
+  </action>
+  <action name="clipTakePrevAction" >
+   <property name="text" >
+    <string>&amp;Previous</string>
+   </property>
+   <property name="iconText" >
+    <string>Previous Take</string>
+   </property>
+   <property name="toolTip" >
+    <string>Previous take</string>
+   </property>
+   <property name="statusTip" >
+    <string>Select current clip previous take</string>
+   </property>
+  </action>
+  <action name="clipTakeNextAction" >
+   <property name="text" >
+    <string>&amp;Next</string>
+   </property>
+   <property name="iconText" >
+    <string>Next Take</string>
+   </property>
+   <property name="toolTip" >
+    <string>Next take</string>
+   </property>
+   <property name="statusTip" >
+    <string>Select current clip next take</string>
+   </property>
+  </action>
+  <action name="clipTakeLastAction" >
+   <property name="text" >
+    <string>&amp;Last</string>
+   </property>
+   <property name="iconText" >
+    <string>Last Take</string>
+   </property>
+   <property name="toolTip" >
+    <string>Last take</string>
+   </property>
+   <property name="statusTip" >
+    <string>Select current clip last take</string>
+   </property>
+  </action>
+  <action name="clipTakeResetAction" >
+   <property name="text" >
+    <string>&amp;Reset</string>
+   </property>
+   <property name="iconText" >
+    <string>Reset Takes</string>
+   </property>
+   <property name="toolTip" >
+    <string>Reset takes</string>
+   </property>
+   <property name="statusTip" >
+    <string>Reset (unfold) current clip takes</string>
    </property>
   </action>
   <action name="viewMenubarAction" >

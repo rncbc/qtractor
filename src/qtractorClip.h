@@ -243,18 +243,19 @@ public:
 		// Estimate number of takes.
 		int takeCount() const;
 
-		// Brainfull methods (actually useful).
+		// Select current take set.
 		void select(qtractorClipCommand *pClipCommand,
 			qtractorTrack *pTrack, int iTake = -1);
 
-		void unfold(qtractorClipCommand *pClipCommand);
+		// Reset(unfold) whole take set.
+		void reset(qtractorClipCommand *pClipCommand);
 
 		// Reference counting methods.
 		void addRef() { ++m_iRefCount; }
 		void releaseRef()
 			{ if (--m_iRefCount < 1) delete this; }
 
-		// Clip-take types (parts).
+		// Sub-clip take parts.
 		enum ClipPart { ClipHead = 0, ClipTake = 1, ClipParts };
 
 		void setClipPart(ClipPart cpart, qtractorClip *pClip)
@@ -263,6 +264,8 @@ public:
 			{ return m_apClipParts[cpart]; }
 		ClipPart partClip(const qtractorClip *pClip) const
 			{ return (m_apClipParts[ClipHead] == pClip ? ClipHead : ClipTake); }
+
+	protected:
 
 		// Sub-brainfull method.
 		void selectClipPart(qtractorClipCommand *pClipCommand,

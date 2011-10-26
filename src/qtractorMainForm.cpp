@@ -843,9 +843,21 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipTakeSelectMenu,
 		SIGNAL(triggered(QAction *)),
 		SLOT(clipTakeSelect(QAction *)));
-	QObject::connect(m_ui.clipTakeUnfoldAction,
+	QObject::connect(m_ui.clipTakeFirstAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipTakeUnfold()));
+		SLOT(clipTakeFirst()));
+	QObject::connect(m_ui.clipTakePrevAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakePrev()));
+	QObject::connect(m_ui.clipTakeNextAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeNext()));
+	QObject::connect(m_ui.clipTakeLastAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeLast()));
+	QObject::connect(m_ui.clipTakeResetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeReset()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -997,6 +1009,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateClipMenu()));
+	QObject::connect(m_ui.clipTakeMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateTakeMenu()));
 	QObject::connect(m_ui.clipTakeSelectMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateTakeSelectMenu()));
@@ -3594,33 +3609,123 @@ void qtractorMainForm::clipTakeSelect ( QAction *pAction )
 	qtractorClip *pClip = NULL;
 	if (m_pTracks)
 		pClip = m_pTracks->currentClip();
-	
+
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	if (pTakeInfo && pTakeInfo->currentTake() != iTake) {
 		qtractorClipCommand *pClipCommand
-			= new qtractorClipCommand(tr("select take %1").arg(iTake + 1));
+			= new qtractorClipCommand(tr("take %1").arg(iTake + 1));
 		pTakeInfo->select(pClipCommand, pClip->track(), iTake);
 		m_pSession->execute(pClipCommand);
 	}
 }
 
 
-// Unfold current clip takes.
-void qtractorMainForm::clipTakeUnfold (void)
+// Select first clip take.
+void qtractorMainForm::clipTakeFirst (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipTakeUnfold()");
+	qDebug("qtractorMainForm::clipTakeFirst()");
 #endif
 
 	qtractorClip *pClip = NULL;
 	if (m_pTracks)
 		pClip = m_pTracks->currentClip();
-	
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		qtractorClipCommand *pClipCommand
+			= new qtractorClipCommand(tr("first take"));
+		pTakeInfo->select(pClipCommand, pClip->track(), 0);
+		m_pSession->execute(pClipCommand);
+	}
+}
+
+
+// Select previous clip take.
+void qtractorMainForm::clipTakePrev (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakePrev()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		int iCurrentTake = pTakeInfo->currentTake() - 1;
+		if (iCurrentTake < 0)
+			iCurrentTake = -1; // Wrap to last take.
+		qtractorClipCommand *pClipCommand
+			= new qtractorClipCommand(tr("previous take"));
+		pTakeInfo->select(pClipCommand, pClip->track(), iCurrentTake);
+		m_pSession->execute(pClipCommand);
+	}
+}
+
+
+// Select next clip take.
+void qtractorMainForm::clipTakeNext (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeNext()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		int iCurrentTake = pTakeInfo->currentTake() + 1;
+		if (iCurrentTake > pTakeInfo->takeCount() - 1)
+			iCurrentTake = 0; // Wrap to first take.
+		qtractorClipCommand *pClipCommand
+			= new qtractorClipCommand(tr("next take"));
+		pTakeInfo->select(pClipCommand, pClip->track(), iCurrentTake);
+		m_pSession->execute(pClipCommand);
+	}
+}
+
+
+// Select last clip take.
+void qtractorMainForm::clipTakeLast (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeLast()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		qtractorClipCommand *pClipCommand
+			= new qtractorClipCommand(tr("last take"));
+		pTakeInfo->select(pClipCommand, pClip->track(), -1);
+		m_pSession->execute(pClipCommand);
+	}
+}
+
+
+// Unfold current clip takes.
+void qtractorMainForm::clipTakeReset (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeReset()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	if (pTakeInfo && pTakeInfo->currentTake() >= 0) {
 		qtractorClipCommand *pClipCommand
-			= new qtractorClipCommand(tr("unfold takes"));
-		pTakeInfo->unfold(pClipCommand);
+			= new qtractorClipCommand(tr("reset takes"));
+		pTakeInfo->reset(pClipCommand);
 		m_pSession->execute(pClipCommand);
 	}
 }
@@ -5836,13 +5941,31 @@ void qtractorMainForm::updateClipMenu (void)
 
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	m_ui.clipTakeMenu->setEnabled(pTakeInfo != NULL);
-	m_ui.clipTakeSelectMenu->setEnabled(pTakeInfo != NULL);
-	m_ui.clipTakeUnfoldAction->setEnabled(
-		pTakeInfo && pTakeInfo->currentTake() >= 0);
 }
 
 
-// Take menu stabilizer.
+// Take menu stabilizers.
+void qtractorMainForm::updateTakeMenu (void)
+{
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	int iCurrentTake = (pTakeInfo ? pTakeInfo->currentTake() : -1);
+	int iTakeCount = (pTakeInfo ? pTakeInfo->takeCount() : 0);
+
+//	m_ui.clipTakeMenu->setEnabled(pTakeInfo != NULL);
+	m_ui.clipTakeSelectMenu->setEnabled(iTakeCount > 0);
+	m_ui.clipTakeFirstAction->setEnabled(iCurrentTake != 0 && iTakeCount > 0);
+	m_ui.clipTakePrevAction->setEnabled(iTakeCount > 0);
+	m_ui.clipTakeNextAction->setEnabled(iTakeCount > 0);
+	m_ui.clipTakeLastAction->setEnabled(iCurrentTake < iTakeCount - 1);
+	m_ui.clipTakeResetAction->setEnabled(iCurrentTake >= 0);
+}
+
+
+// Take selection menu stabilizer.
 void qtractorMainForm::updateTakeSelectMenu (void)
 {
 	m_ui.clipTakeSelectMenu->clear();

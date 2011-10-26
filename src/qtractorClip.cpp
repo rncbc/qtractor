@@ -867,7 +867,7 @@ int qtractorClip::TakeInfo::takeCount (void) const
 }
 
 
-// Brainfull method.
+// Select current take set.
 void qtractorClip::TakeInfo::select (
 	qtractorClipCommand *pClipCommand, qtractorTrack *pTrack, int iTake )
 {
@@ -886,36 +886,30 @@ void qtractorClip::TakeInfo::select (
 		this, iTake, iClipStart, iClipOffset, iClipLength, iTakeStart, iTakeEnd);
 #endif
 
-	ClipPart cpart = ClipTake;
-
 	if (iClipStart < iTakeStart) {
 		int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
-		if (iTake > 0) {
-			// Clip-head from now on...
-			iClipLength = iTakeStart - iClipStart;
-			selectClipPart(pClipCommand, pTrack, ClipHead,
-				iClipStart, iClipOffset, iClipLength);
-			// Clip-take from now on...
-			iClipOffset += iClipLength + iTake * iTakeLength;
-			if (iTake < iTakeCount)
-				iClipLength = iTakeLength;
-			else
-				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
-			iClipStart = iTakeStart;
-		} else {
-			// Clip-head for sure (iTake == 0)...
-			cpart = ClipHead;
-			if (iTake < iTakeCount)
-				iClipLength = iTakeEnd - iClipStart;
-		}
+		// Clip-head for sure...
+		iClipLength = iTakeStart - iClipStart;
+		selectClipPart(pClipCommand, pTrack, ClipHead,
+			iClipStart, iClipOffset, iClipLength);
+		// Clip-take from now on...
+		iClipOffset += iClipLength;
+		if (iTake > 0)
+			iClipOffset += iTake * iTakeLength;
+		if (iTake < iTakeCount)
+			iClipLength = iTakeLength;
+		else
+			iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
+		iClipStart = iTakeStart;
 	}
 	else
 	if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
 		int iTakeCount = iClipLength / iTakeLength;
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
+		// Clip-take for sure...
 		if (iTake > 0 || iTakeCount < 1) {
 			iClipOffset += (iTakeEnd - iClipStart);
 			if (iTake > 0)
@@ -929,14 +923,14 @@ void qtractorClip::TakeInfo::select (
 		else iClipLength = iTakeEnd - iClipStart;
 	}
 
-	selectClipPart(pClipCommand, pTrack, cpart,
+	selectClipPart(pClipCommand, pTrack, ClipTake,
 		iClipStart, iClipOffset, iClipLength);
 
 	m_iCurrentTake = iTake;
 }
 
 
-// Sub-brainfull method.
+// Select current take sub-clip part.
 void qtractorClip::TakeInfo::selectClipPart (
 	qtractorClipCommand *pClipCommand, qtractorTrack *pTrack,
 	ClipPart cpart, unsigned long iClipStart, unsigned long iClipOffset,
@@ -947,31 +941,45 @@ void qtractorClip::TakeInfo::selectClipPart (
 		this, int(cpart), iClipStart, iClipOffset, iClipLength);
 #endif
 
+	// Priority to recording clip...
 	qtractorClip *pClip = (pTrack ? pTrack->clipRecord() : NULL);
+
+	// Clip already taken?...
+	if (pClip == NULL) {
+		pClip = clipPart(cpart);
+		if (pClip) {
+			// Don't change what hasn't change...
+			if (iClipStart  != pClip->clipStart()  ||
+				iClipOffset != pClip->clipOffset() ||
+				iClipLength != pClip->clipLength()) {
+				pClipCommand->resizeClip(pClip,
+					iClipStart, iClipOffset, iClipLength);
+			}
+			return; // Done.
+		}
+		// Take clip-take clone...
+		if (cpart == ClipHead)
+			pClip = clipPart(ClipTake);
+	}
+
+	// Clip about to be taken (as new)?...
 	if (pClip) {
-		// Clip about to be taken (as new)?...
 		TakePart part(this, cpart);
 		pClipCommand->addClipRecordTake(pTrack, pClip,
 			iClipStart, iClipOffset, iClipLength, &part);
-	} else {
-		// Clip already taken?...
-		pClip = clipPart(cpart);
-		if (pClip) {
-			pClipCommand->resizeClip(pClip,
-				iClipStart, iClipOffset, iClipLength);
-		}
 	}
 }
 
 
-void qtractorClip::TakeInfo::unfold ( qtractorClipCommand *pClipCommand )
+// Reset(unfold) whole take set.
+void qtractorClip::TakeInfo::reset ( qtractorClipCommand *pClipCommand )
 {
 	unsigned long iClipStart  = m_iClipStart;
 	unsigned long iClipOffset = m_iClipOffset;
 	unsigned long iClipLength = m_iClipLength;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorClip::TakeInfo[%p]::unfold(%lu, %lu, %lu)",
+	qDebug("qtractorClip::TakeInfo[%p]::reset(%lu, %lu, %lu)",
 		this, iClipStart, iClipOffset, iClipLength);
 #endif
 
