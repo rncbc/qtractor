@@ -366,6 +366,8 @@
      <addaction name="clipTakeLastAction" />
 	 <addaction name="separator" />
      <addaction name="clipTakeResetAction" />
+	 <addaction name="separator" />
+     <addaction name="clipTakeRangeAction" />
     </widget>
     <addaction name="clipNewAction" />
     <addaction name="clipEditAction" />
@@ -1848,6 +1850,20 @@
    </property>
    <property name="statusTip" >
     <string>Reset (unfold) current clip takes</string>
+   </property>
+  </action>
+  <action name="clipTakeRangeAction" >
+   <property name="text" >
+    <string>R&amp;ange...</string>
+   </property>
+   <property name="iconText" >
+    <string>Take Range</string>
+   </property>
+   <property name="toolTip" >
+    <string>Take range</string>
+   </property>
+   <property name="statusTip" >
+    <string>Set range (fold) current clip into takes</string>
    </property>
   </action>
   <action name="viewMenubarAction" >

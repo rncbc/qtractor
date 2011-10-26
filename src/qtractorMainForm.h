@@ -206,6 +206,7 @@ public slots:
 	void clipTakeNext();
 	void clipTakeLast();
 	void clipTakeReset();
+	void clipTakeRange();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);

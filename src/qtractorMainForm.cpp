@@ -67,6 +67,8 @@
 #include "qtractorTimeScaleForm.h"
 #include "qtractorBusForm.h"
 
+#include "qtractorTakeRangeForm.h"
+
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
 
@@ -858,6 +860,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipTakeResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipTakeReset()));
+	QObject::connect(m_ui.clipTakeRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeRange()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -3731,6 +3736,36 @@ void qtractorMainForm::clipTakeReset (void)
 }
 
 
+// Fold current clip into takes.
+void qtractorMainForm::clipTakeRange (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeRange()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pClip && pTakeInfo == NULL) {
+		unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
+		qtractorTakeRangeForm form(this);
+		if (form.exec() && form.takeEnd() < iClipEnd) {
+			int iCurrentTake = (m_pSession->loopRecordingMode() == 1 ? 0 : -1);
+			qtractorClipCommand *pClipCommand
+				= new qtractorClipCommand(tr("range takes"));
+			pTakeInfo = new qtractorClip::TakeInfo(
+				pClip->clipStart(), pClip->clipOffset(), pClip->clipLength(),
+				form.takeStart(), form.takeEnd());
+			pTakeInfo->setClipPart(qtractorClip::TakeInfo::ClipTake, pClip);
+			pTakeInfo->select(pClipCommand, pClip->track(), iCurrentTake);
+			m_pSession->execute(pClipCommand);
+		}
+	}
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- View Action slots.
 
@@ -5938,9 +5973,7 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipExportAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipToolsMenu->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
-
-	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
-	m_ui.clipTakeMenu->setEnabled(pTakeInfo != NULL);
+	m_ui.clipTakeMenu->setEnabled(pClip != NULL);
 }
 
 
@@ -5962,6 +5995,7 @@ void qtractorMainForm::updateTakeMenu (void)
 	m_ui.clipTakeNextAction->setEnabled(iTakeCount > 0);
 	m_ui.clipTakeLastAction->setEnabled(iCurrentTake < iTakeCount - 1);
 	m_ui.clipTakeResetAction->setEnabled(iCurrentTake >= 0);
+	m_ui.clipTakeRangeAction->setEnabled(pTakeInfo == NULL);
 }
 
 
