@@ -858,11 +858,13 @@ int qtractorClip::TakeInfo::takeCount (void) const
 	unsigned long iClipEnd = m_iClipStart + m_iClipLength;
 	unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
 
-	if (m_iClipStart < m_iTakeStart)
-		iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
-	else
-	if (m_iClipStart < m_iTakeEnd && iClipEnd > m_iTakeEnd)
-		iTakeCount = m_iClipLength / iTakeLength;
+	if (iTakeLength > 0) {
+		if (m_iClipStart < m_iTakeStart)
+			iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
+		else
+		if (m_iClipStart < m_iTakeEnd && iClipEnd > m_iTakeEnd)
+			iTakeCount = m_iClipLength / iTakeLength;
+	}
 
 	return iTakeCount + 1;
 }

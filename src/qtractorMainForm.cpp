@@ -3739,6 +3739,7 @@ void qtractorMainForm::clipTakeRange (void)
 	if (pClip && pTakeInfo == NULL) {
 		unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
 		qtractorTakeRangeForm form(this);
+		form.setClip(pClip);
 		if (form.exec() && form.takeEnd() < iClipEnd) {
 			pTakeInfo = new qtractorClip::TakeInfo(
 				pClip->clipStart(), pClip->clipOffset(), pClip->clipLength(),
@@ -3747,7 +3748,7 @@ void qtractorMainForm::clipTakeRange (void)
 				= new qtractorClipCommand(tr("take range"));
 			pClipCommand->takeInfoClip(pClip, pTakeInfo);
 			pTakeInfo->setClipPart(qtractorClip::TakeInfo::ClipTake, pClip);
-			int iTake = (m_pSession->loopRecordingMode() == 1 ? 0 : -1);
+			int iTake = form.currentTake();
 			iTake = pTakeInfo->select(pClipCommand, pClip->track(), iTake);
 			pTakeInfo->setCurrentTake(iTake);
 			m_pSession->execute(pClipCommand);

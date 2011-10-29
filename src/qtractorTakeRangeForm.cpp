@@ -24,6 +24,8 @@
 #include "qtractorAbout.h"
 #include "qtractorSession.h"
 
+#include "qtractorClip.h"
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -82,6 +84,9 @@ qtractorTakeRangeForm::qtractorTakeRangeForm (
 	adjustSize();
 
 	// UI signal/slot connections...
+	QObject::connect(m_ui.SelectionRangeRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(rangeChanged()));
 	QObject::connect(m_ui.LoopRangeRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(rangeChanged()));
@@ -127,6 +132,39 @@ qtractorTakeRangeForm::~qtractorTakeRangeForm (void)
 }
 
 
+// Setup accessors.
+void qtractorTakeRangeForm::setClip ( qtractorClip *pClip )
+{
+	m_pClip = pClip;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		// Populate range options...
+		if (m_pClip && m_pClip->isClipSelected())
+			m_ui.SelectionRangeRadioButton->setChecked(true);
+		else
+		if (pSession->isLooping())
+			m_ui.LoopRangeRadioButton->setChecked(true);
+		else
+		if (pSession->isPunching())
+			m_ui.PunchRangeRadioButton->setChecked(true);
+		else
+		if (pSession->editHead() < pSession->editTail())
+			m_ui.EditRangeRadioButton->setChecked(true);
+		else
+			m_ui.CustomRangeRadioButton->setChecked(true);
+		// Populate range values...
+		rangeChanged();
+	}
+}
+
+
+qtractorClip *qtractorTakeRangeForm::clip (void) const
+{
+	return m_pClip;
+}
+
+
 // Retrieve the current take-range, if the case arises.
 unsigned long qtractorTakeRangeForm::takeStart (void) const
 {
@@ -139,6 +177,12 @@ unsigned long qtractorTakeRangeForm::takeEnd (void) const
 }
 
 
+int qtractorTakeRangeForm::currentTake (void) const
+{
+	return m_ui.CurrentTakeComboBox->currentIndex();
+}
+
+
 // Display format has changed.
 void qtractorTakeRangeForm::rangeChanged (void)
 {
@@ -146,6 +190,11 @@ void qtractorTakeRangeForm::rangeChanged (void)
 	if (pSession == NULL)
 		return;
 
+	if (m_ui.SelectionRangeRadioButton->isChecked() && m_pClip) {
+		m_ui.TakeStartSpinBox->setValue(m_pClip->clipSelectStart(), false);
+		m_ui.TakeEndSpinBox->setValue(m_pClip->clipSelectEnd(), false);
+	}
+	else
 	if (m_ui.LoopRangeRadioButton->isChecked()) {
 		m_ui.TakeStartSpinBox->setValue(pSession->loopStart(), false);
 		m_ui.TakeEndSpinBox->setValue(pSession->loopEnd(), false);
@@ -161,6 +210,7 @@ void qtractorTakeRangeForm::rangeChanged (void)
 		m_ui.TakeEndSpinBox->setValue(pSession->editTail(), false);
 	}
 
+	updateCurrentTake();
 	stabilizeForm();
 }
 
@@ -170,6 +220,7 @@ void qtractorTakeRangeForm::valueChanged (void)
 {
 	m_ui.CustomRangeRadioButton->setChecked(true);
 
+	updateCurrentTake();
 	stabilizeForm();
 }
 
@@ -196,6 +247,30 @@ void qtractorTakeRangeForm::formatChanged (void)
 }
 
 
+// Populate current take list.
+void qtractorTakeRangeForm::updateCurrentTake (void)
+{
+	int iCurrentTake = m_ui.CurrentTakeComboBox->currentIndex();
+	m_ui.CurrentTakeComboBox->clear();
+	if (m_pClip) {
+		int iTakeCount = qtractorClip::TakeInfo(
+			m_pClip->clipStart(),
+			m_pClip->clipOffset(),
+			m_pClip->clipLength(),
+			m_ui.TakeStartSpinBox->value(),
+			m_ui.TakeEndSpinBox->value()).takeCount();
+		for (int iTake = 0; iTake < iTakeCount; ++iTake)
+			m_ui.CurrentTakeComboBox->addItem(tr("Take %1").arg(iTake + 1));
+		if (iCurrentTake < 0)
+			iCurrentTake = 0;
+		else
+		if (iCurrentTake > iTakeCount - 1)
+			iCurrentTake = iTakeCount - 1;
+	}
+	m_ui.CurrentTakeComboBox->setCurrentIndex(iCurrentTake);
+}
+
+
 // Stabilize current form state.
 void qtractorTakeRangeForm::stabilizeForm (void)
 {
@@ -203,6 +278,8 @@ void qtractorTakeRangeForm::stabilizeForm (void)
 	if (pSession == NULL)
 		return;
 
+	m_ui.SelectionRangeRadioButton->setEnabled(
+		m_pClip && m_pClip->isClipSelected());
 	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
 	m_ui.PunchRangeRadioButton->setEnabled(pSession->isPunching());
 	m_ui.EditRangeRadioButton->setEnabled(

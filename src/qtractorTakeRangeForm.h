@@ -25,6 +25,11 @@
 #include "ui_qtractorTakeRangeForm.h"
 
 
+// Forward declarations.
+class qtractorTimeScale;
+class qtractorClip;
+
+
 //----------------------------------------------------------------------------
 // qtractorTakeRangeForm -- UI wrapper form.
 
@@ -39,14 +44,22 @@ public:
 	// Destructor.
 	~qtractorTakeRangeForm();
 
+	// Setup accessors.
+	void setClip(qtractorClip *pClip);
+	qtractorClip *clip() const;
+
+	// Result accessors.
 	unsigned long takeStart() const;
 	unsigned long takeEnd() const;
+
+	int currentTake() const;
 
 protected slots:
 
 	void rangeChanged();
 	void formatChanged();
 	void valueChanged();
+	void updateCurrentTake();
 	void stabilizeForm();
 
 private:
@@ -56,6 +69,7 @@ private:
 
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
+	qtractorClip *m_pClip;
 };
 
 
