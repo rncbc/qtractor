@@ -244,22 +244,21 @@ public:
 		int takeCount() const;
 
 		// Select current take set.
-		void select(qtractorClipCommand *pClipCommand,
+		int select(qtractorClipCommand *pClipCommand,
 			qtractorTrack *pTrack, int iTake = -1);
 
 		// Reset(unfold) whole take set.
-		void reset(qtractorClipCommand *pClipCommand);
+		void reset(qtractorClipCommand *pClipCommand, bool bClear = false);
 
 		// Reference counting methods.
 		void addRef() { ++m_iRefCount; }
-		void releaseRef()
-			{ if (--m_iRefCount < 1) delete this; }
+		void releaseRef() { if (--m_iRefCount < 1) delete this; }
 
 		// Sub-clip take parts.
 		enum ClipPart { ClipHead = 0, ClipTake = 1, ClipParts };
 
 		void setClipPart(ClipPart cpart, qtractorClip *pClip)
-			{ m_apClipParts[cpart] = pClip; if (pClip) pClip->setTakeInfo(this); }
+			{ m_apClipParts[cpart] = pClip; }
 		qtractorClip *clipPart(ClipPart cpart) const
 			{ return m_apClipParts[cpart]; }
 		ClipPart partClip(const qtractorClip *pClip) const

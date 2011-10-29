@@ -309,10 +309,10 @@ public:
 	TakeInfo *takeInfo(int iTakeID) const;
 	int takeInfoId(TakeInfo *pTakeInfo) const;
 
-	int takeInfoNew(TakeInfo *pTakeInfo);
-	void takeInfoAdd(int iTakeID, TakeInfo *pTakeInfo);
+	int takeInfoNew(TakeInfo *pTakeInfo) const;
+	void takeInfoAdd(int iTakeID, TakeInfo *pTakeInfo) const;
 
-	void clearTakeInfo();
+	void clearTakeInfo() const;
 
 private:
 
@@ -365,8 +365,8 @@ private:
 	qtractorCurveFile *m_pCurveFile;
 
 	// Take(record) descriptor/id registry.
-	QHash<int, TakeInfo *> m_idtakes;
-	QHash<TakeInfo *, int> m_takeids;
+	mutable QHash<int, TakeInfo *> m_idtakes;
+	mutable QHash<TakeInfo *, int> m_takeids;
 };
 
 

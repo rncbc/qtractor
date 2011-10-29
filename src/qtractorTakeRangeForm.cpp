@@ -63,11 +63,20 @@ qtractorTakeRangeForm::qtractorTakeRangeForm (
 			m_ui.FramesRadioButton->setChecked(true);
 			break;
 		}
+		// Populate range options...
+		if (pSession->isLooping())
+			m_ui.LoopRangeRadioButton->setChecked(true);
+		else
+		if (pSession->isPunching())
+			m_ui.PunchRangeRadioButton->setChecked(true);
+		else
+		if (pSession->editHead() < pSession->editTail())
+			m_ui.EditRangeRadioButton->setChecked(true);
+		else
+			m_ui.CustomRangeRadioButton->setChecked(true);
+		// Populate range values...
+		rangeChanged();
 	}
-
-	// Populate range values...
-	m_ui.LoopRangeRadioButton->setChecked(true);
-//	rangeChanged();
 
 	// Try to restore old window positioning.
 	adjustSize();

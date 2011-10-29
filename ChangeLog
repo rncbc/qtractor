@@ -5,13 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
-- Loop-recording/takes functionality now accessible
-  from brand new Clip/Take menu (cf. Select, First,
-  Previous, Next, Last, Reset, Range...; the latter
-  is actually being provided as a bonus feature ;)
-  as to fold any given clip into so-called takes,
-  simulating loop-recording mode over an arbitrary 
-  range). (HIGHLY EXPERIMENTAL)
+- Loop-recording/takes functionality is now ready for
+  the masses and accessible from brand new Clip/Take
+  menu (Select, First, Previous, Next, Last, Reset
+  and Range...; the latter is actually being provided
+  as bonus feature :) as to fold any given clip into
+  so-called takes, simulating loop-recording mode over
+  an arbitrary range). (HIGHLY EXPERIMENTAL)
 
 - Loop-recording/takes infrastructure integration is
   sneaking in: all clips recorded under a loop/cycle

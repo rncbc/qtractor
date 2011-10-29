@@ -68,6 +68,7 @@ public:
 		qtractorClip::FadeType fadeOutType);
 	void timeStretchClip(qtractorClip *pClip, float fTimeStretch);
 	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
+	void takeInfoClip(qtractorClip *pClip, qtractorClip::TakeInfo *pTakeInfo);
 	void resetClip(qtractorClip *pClip);
 
 	void reopenClip(qtractorClip *pClip, bool bClose = false);
@@ -95,7 +96,7 @@ public:
 protected:
 
 	// Common executive method.
-	bool execute(bool bRedo);
+	virtual bool execute(bool bRedo);
 
 private:
 
@@ -105,7 +106,7 @@ private:
 		RenameClip, MoveClip, ResizeClip,
 		GainClip, FadeInClip, FadeOutClip,
 		TimeStretchClip, PitchShiftClip,
-		ResetClip
+		TakeInfoClip, ResetClip
 	};
 
 	// Clip item struct.
@@ -118,7 +119,8 @@ private:
 				clipStart(0), clipOffset(0), clipLength(0), clipGain(0.0f),
 				fadeInLength(0), fadeInType(qtractorClip::InQuad), 
 				fadeOutLength(0), fadeOutType(qtractorClip::OutQuad),
-				timeStretch(0.0f), pitchShift(0.0f), editCommand(NULL) {}
+				timeStretch(0.0f), pitchShift(0.0f),
+				editCommand(NULL), takeInfo(NULL) {}
 		// Item members.
 		CommandType    command;
 		qtractorClip  *clip;
@@ -139,6 +141,8 @@ private:
 		float          pitchShift;
 		// When MIDI clips are time-stretched...
 		qtractorMidiEditCommand *editCommand;
+		// When clips have take(record) descriptors...
+		qtractorClip::TakeInfo *takeInfo;
 	};
 
 	// Instance variables.
@@ -149,6 +153,32 @@ private:
 
 	// When clips need to reopem.
 	QHash<qtractorClip *, bool> m_clips;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorClipTakeCommand - declaration.
+//
+
+class qtractorClipTakeCommand : public qtractorClipCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipTakeCommand(qtractorClip::TakeInfo *pTakeInfo,
+		qtractorTrack *pTrack = NULL, int iCurrentTake = -1);
+
+protected:
+
+	// Executive override.
+	bool execute(bool bRedo);
+
+private:
+
+	// Instance variables.
+	qtractorClip::TakeInfo *m_pTakeInfo;
+
+	int m_iCurrentTake;
 };
 
 

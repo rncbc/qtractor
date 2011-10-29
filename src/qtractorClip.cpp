@@ -682,6 +682,7 @@ bool qtractorClip::loadElement (
 					pTrack->takeInfoAdd(iTakeID, pTakeInfo);
 			}
 			if (pTakeInfo) {
+				qtractorClip::setTakeInfo(pTakeInfo);
 				pTakeInfo->setClipPart(cpart, this);
 				if (iCurrentTake >= 0)
 					pTakeInfo->setCurrentTake(iCurrentTake);
@@ -868,7 +869,7 @@ int qtractorClip::TakeInfo::takeCount (void) const
 
 
 // Select current take set.
-void qtractorClip::TakeInfo::select (
+int qtractorClip::TakeInfo::select (
 	qtractorClipCommand *pClipCommand, qtractorTrack *pTrack, int iTake )
 {
 	unsigned long iClipStart  = m_iClipStart;
@@ -922,11 +923,13 @@ void qtractorClip::TakeInfo::select (
 		}
 		else iClipLength = iTakeEnd - iClipStart;
 	}
+	else iTake = -1;
 
 	selectClipPart(pClipCommand, pTrack, ClipTake,
 		iClipStart, iClipOffset, iClipLength);
 
-	m_iCurrentTake = iTake;
+//	m_iCurrentTake = iTake;
+	return iTake;
 }
 
 
@@ -972,20 +975,22 @@ void qtractorClip::TakeInfo::selectClipPart (
 
 
 // Reset(unfold) whole take set.
-void qtractorClip::TakeInfo::reset ( qtractorClipCommand *pClipCommand )
+void qtractorClip::TakeInfo::reset (
+	qtractorClipCommand *pClipCommand, bool bClear )
 {
 	unsigned long iClipStart  = m_iClipStart;
 	unsigned long iClipOffset = m_iClipOffset;
 	unsigned long iClipLength = m_iClipLength;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorClip::TakeInfo[%p]::reset(%lu, %lu, %lu)",
-		this, iClipStart, iClipOffset, iClipLength);
+	qDebug("qtractorClip::TakeInfo[%p]::reset(%lu, %lu, %lu, %d)",
+		this, iClipStart, iClipOffset, iClipLength, int(bClear));
 #endif
 
 	qtractorClip *pClip = clipPart(ClipHead);
 	if (pClip) {
 		pClipCommand->removeClip(pClip);
+		pClipCommand->takeInfoClip(pClip, NULL);
 		setClipPart(ClipHead, NULL);
 	}
 
@@ -993,10 +998,13 @@ void qtractorClip::TakeInfo::reset ( qtractorClipCommand *pClipCommand )
 	if (pClip) {
 		pClipCommand->resizeClip(pClip,
 			iClipStart, iClipOffset, iClipLength);
-	//	setClipPart(ClipTake, NULL);
+		if (bClear) {
+			pClipCommand->takeInfoClip(pClip, NULL);
+		//	setClipPart(ClipTake, NULL);
+		}
 	}
 
-	m_iCurrentTake = -1;
+//	m_iCurrentTake = -1;
 }
 
 

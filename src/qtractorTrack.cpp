@@ -220,7 +220,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 
 
 // Take(record) descriptor/id registry methods.
-void qtractorTrack::clearTakeInfo (void)
+void qtractorTrack::clearTakeInfo (void) const
 {
 	m_idtakes.clear();
 	m_takeids.clear();
@@ -240,7 +240,7 @@ int qtractorTrack::takeInfoId ( qtractorTrack::TakeInfo *pTakeInfo ) const
 
 
 // Add/new take(record) descriptor/id to registry.
-int qtractorTrack::takeInfoNew ( qtractorTrack::TakeInfo *pTakeInfo )
+int qtractorTrack::takeInfoNew ( qtractorTrack::TakeInfo *pTakeInfo ) const
 {
 	QHash<TakeInfo *, int>::ConstIterator iter
 		= m_takeids.constFind(pTakeInfo);
@@ -253,7 +253,8 @@ int qtractorTrack::takeInfoNew ( qtractorTrack::TakeInfo *pTakeInfo )
 	}
 }
 
-void qtractorTrack::takeInfoAdd ( int iTakeID, qtractorTrack::TakeInfo *pTakeInfo )
+void qtractorTrack::takeInfoAdd (
+	int iTakeID, qtractorTrack::TakeInfo *pTakeInfo ) const
 {
 	m_idtakes.insert(iTakeID, pTakeInfo);
 	m_takeids.insert(pTakeInfo, iTakeID);
@@ -1373,6 +1374,9 @@ bool qtractorTrack::loadElement (
 	qtractorTrack::setTrackType(
 		qtractorTrack::trackTypeFromText(pElement->attribute("type")));
 
+	// Reset take(record) descriptor/id registry.
+	clearTakeInfo();
+
 	// Load track children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -1518,6 +1522,9 @@ bool qtractorTrack::saveElement (
 	pElement->setAttribute("type",
 		qtractorTrack::textFromTrackType(qtractorTrack::trackType()));
 
+	// Reset take(record) descriptor/id registry.
+	clearTakeInfo();
+
 	// Save track properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	pDocument->saveTextElement("input-bus",
@@ -1606,6 +1613,9 @@ bool qtractorTrack::saveElement (
 	QDomElement ePlugins = pDocument->document()->createElement("plugins");
 	m_pPluginList->saveElement(pDocument, &ePlugins);
 	pElement->appendChild(ePlugins);
+
+	// Reset take(record) descriptor/id registry.
+	clearTakeInfo();
 
 	return true;
 }

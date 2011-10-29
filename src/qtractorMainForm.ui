@@ -372,8 +372,9 @@
     <addaction name="clipNewAction" />
     <addaction name="clipEditAction" />
     <addaction name="separator" />
-    <addaction name="clipUnlinkAction" />
-    <addaction name="separator" />
+	<addaction name="clipTakeMenu" />
+	<addaction name="clipUnlinkAction" />
+	<addaction name="separator" />
     <addaction name="clipSplitAction" />
     <addaction name="clipMergeAction" />
     <addaction name="clipNormalizeAction" />
@@ -387,7 +388,6 @@
     <addaction name="clipExportAction" />
     <addaction name="separator" />
     <addaction name="clipToolsMenu" />
-    <addaction name="clipTakeMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -1863,7 +1863,7 @@
     <string>Take range</string>
    </property>
    <property name="statusTip" >
-    <string>Set range (fold) current clip into takes</string>
+	<string>Range (fold) current clip into takes</string>
    </property>
   </action>
   <action name="viewMenubarAction" >
