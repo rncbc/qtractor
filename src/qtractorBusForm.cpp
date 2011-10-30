@@ -445,7 +445,7 @@ void qtractorBusForm::selectBus (void)
 			"Do you want to apply the changes?"),
 			buttons)) {
 		case QMessageBox::Apply:
-			if (updateBusEx(m_pBus)) {
+			if (updateBus(m_pBus)) {
 				++m_iDirtyTotal;
 				refreshBuses();
 			}
@@ -502,9 +502,10 @@ unsigned int qtractorBusForm::flags (void) const
 
 	// Is there one already?
 	qtractorBus *pBus = pEngine->findBus(sBusName);
-	if (pBus == NULL)
+	qtractorBus *pBusEx = pEngine->findBusEx(sBusName);
+	if (pBus == NULL && pBusEx == NULL)
 		iFlags |= Create;
-	if ((pBus == NULL || pBus == m_pBus)
+	if ((pBus == NULL  || pBus == m_pBus) && (pBusEx == NULL)
 		&& (m_pBus->prev() || m_ui.BusModeComboBox->currentIndex() == 2))
 		iFlags |= Update;
 
@@ -513,7 +514,7 @@ unsigned int qtractorBusForm::flags (void) const
 
 
 // Update bus method.
-bool qtractorBusForm::updateBusEx ( qtractorBus *pBus )
+bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 {
 	if (pBus == NULL)
 		return false;
@@ -653,7 +654,7 @@ void qtractorBusForm::createBus (void)
 void qtractorBusForm::updateBus (void)
 {
 	// That's it...
-	if (updateBusEx(m_pBus)) {
+	if (updateBus(m_pBus)) {
 		++m_iDirtyTotal;
 		refreshBuses();
 	}

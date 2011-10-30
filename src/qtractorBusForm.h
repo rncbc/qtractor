@@ -77,8 +77,7 @@ protected:
 	unsigned int flags() const;
 
 	void showBus(qtractorBus *pBus);
-
-	bool updateBusEx(qtractorBus *pBus);
+	bool updateBus(qtractorBus *pBus);
 
 	void updateMidiInstruments();
 	void updateMidiSysex();
