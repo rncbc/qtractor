@@ -556,6 +556,9 @@ QString qtractorClip::toolTip (void) const
 {
 	QString sToolTip = QObject::tr("Name:\t%1").arg(m_sClipName);
 
+	if (m_pTakeInfo && m_pTakeInfo->currentTake() >= 0)
+		sToolTip += QObject::tr(" (Take %1)").arg(m_pTakeInfo->currentTake() + 1);
+
 	qtractorSession *pSession = NULL;
 	if (m_pTrack)
 		pSession = m_pTrack->session();

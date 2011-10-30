@@ -669,7 +669,7 @@ bool qtractorClipCommand::undo (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorClipTakeSelectCommand - declaration.
+// class qtractorClipTakeCommand - declaration.
 //
 
 // Constructor.
