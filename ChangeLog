@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Creating new or updating existing buses with exact
+  same names of any current dedicated inputs/outputs
+  (which are implemented as special covert buses) is
+  now disallowed (preventing bug #3430406).
+
 - Loop-recording/takes functionality is now ready for
   the masses and accessible from brand new Clip/Take
   menu (Select, First, Previous, Next, Last, Reset
