@@ -54,9 +54,14 @@ const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 typedef void (*XEventProc)(XEvent *);
 #endif
 
-#if !defined(VST_2_3_EXTENSIONS) 
+#if !defined(VST_2_3_EXTENSIONS)
+#ifdef CONFIG_VESTIGE
 typedef int32_t  VstInt32;
 typedef intptr_t VstIntPtr;
+#else
+typedef long     VstInt32;
+typedef long     VstIntPtr;
+#endif
 #define VSTCALLBACK
 #endif
 
@@ -167,8 +172,6 @@ public:
 	void open(qtractorVstPlugin *pVstPlugin)
 	{
 		m_pVstPlugin = pVstPlugin;
-
-		setWindowTitle(m_pVstPlugin->editorTitle());
 		
 		// Start the proper (child) editor...
 		long  value = 0;
@@ -203,6 +206,7 @@ public:
 		g_vstEditors.append(this);
 
 		// Final stabilization...
+		m_pVstPlugin->updateEditorTitle();
 		m_pVstPlugin->setEditorVisible(true);
 		m_pVstPlugin->idleEditor();
 	}

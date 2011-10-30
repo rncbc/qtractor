@@ -279,6 +279,13 @@ public:
 	void setRecording(bool bRecording);
 	bool isRecording() const;
 
+	// Loop-recording/take mode.
+	void setLoopRecordingMode(int iLoopRecordingMode);
+	int loopRecordingMode() const;
+
+	// Loop-recording/take state.
+	bool isLoopRecording() const;
+
 	// Track recording specifics.
 	unsigned short audioRecord() const;
 	unsigned short midiRecord() const;
@@ -434,6 +441,9 @@ private:
 
 	// Consolidated record state.
 	bool m_bRecording;
+
+	// Loop-recording/take mode.
+	int m_iLoopRecordingMode;
 
 	// Auto time-stretching global flag (when tempo changes)
 	bool m_bAutoTimeStretch;

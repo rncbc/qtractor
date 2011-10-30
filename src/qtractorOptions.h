@@ -74,7 +74,7 @@ public:
 	int     iDisplayFormat;
 	int     iBaseFontSize;
 
-	// Loggin options...
+	// Logging options...
 	bool    bMessagesLog;
 	QString sMessagesLogPath;
 
@@ -160,6 +160,7 @@ public:
 	float   fTempo;
 	int     iBeatsPerBar;
 	int     iBeatDivisor;
+	int     iLoopRecordingMode;
 
 	// Paste-repeat convenient defaults.
 	int     iPasteRepeatCount;

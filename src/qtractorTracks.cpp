@@ -532,6 +532,55 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 }
 
 
+// Unlink given(current) clip.
+bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
+{
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+	qtractorMidiClip *pMidiClip
+		= static_cast<qtractorMidiClip *> (pClip);
+	if (pMidiClip == NULL)
+		return false;
+
+	if (!pMidiClip->isHashLinked())
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// Have a new filename revision...
+	const QString& sFilename
+		= pMidiClip->createFilePathRevision();
+
+	// Save/replace the clip track...
+	qtractorMidiFile::saveCopyFile(sFilename,
+		pMidiClip->filename(),
+		pMidiClip->trackChannel(),
+		pMidiClip->format(),
+		pMidiClip->sequence(),
+		pSession->timeScale(),
+		pSession->tickFromFrame(pMidiClip->clipStart()));
+
+	// Now, we avoid the linked/ref-counted instances...
+	pMidiClip->setFilename(sFilename);
+	pMidiClip->setDirty(false);
+	pMidiClip->updateHashData();
+	pMidiClip->updateEditor(true);
+
+	// HACK: This operation is so important that
+	// it surely deserves being in the front page...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->addMidiFile(sFilename);
+
+	return true;
+}
+
+
 // Split given(current) clip.
 bool qtractorTracks::splitClip ( qtractorClip *pClip )
 {

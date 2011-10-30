@@ -219,6 +219,48 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 }
 
 
+// Take(record) descriptor/id registry methods.
+void qtractorTrack::clearTakeInfo (void) const
+{
+	m_idtakes.clear();
+	m_takeids.clear();
+}
+
+
+// Retrieve take(record) descriptor/id from registry.
+qtractorTrack::TakeInfo *qtractorTrack::takeInfo ( int iTakeID ) const
+{
+	return m_idtakes.value(iTakeID, NULL);
+}
+
+int qtractorTrack::takeInfoId ( qtractorTrack::TakeInfo *pTakeInfo ) const
+{
+	return m_takeids.value(pTakeInfo, -1);
+}
+
+
+// Add/new take(record) descriptor/id to registry.
+int qtractorTrack::takeInfoNew ( qtractorTrack::TakeInfo *pTakeInfo ) const
+{
+	QHash<TakeInfo *, int>::ConstIterator iter
+		= m_takeids.constFind(pTakeInfo);
+	if (iter != m_takeids.constEnd()) {
+		return iter.value();
+	} else {
+		int iTakeID = m_takeids.count();
+		takeInfoAdd(iTakeID, pTakeInfo);
+		return iTakeID;
+	}
+}
+
+void qtractorTrack::takeInfoAdd (
+	int iTakeID, qtractorTrack::TakeInfo *pTakeInfo ) const
+{
+	m_idtakes.insert(iTakeID, pTakeInfo);
+	m_takeids.insert(pTakeInfo, iTakeID);
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorTrack -- Track container.
 
@@ -313,6 +355,7 @@ void qtractorTrack::clear (void)
 {
 	setClipRecord(NULL);
 
+	clearTakeInfo();
 	m_clips.clear();
 
 	m_pPluginList->clear();
@@ -1331,6 +1374,9 @@ bool qtractorTrack::loadElement (
 	qtractorTrack::setTrackType(
 		qtractorTrack::trackTypeFromText(pElement->attribute("type")));
 
+	// Reset take(record) descriptor/id registry.
+	clearTakeInfo();
+
 	// Load track children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -1462,6 +1508,9 @@ bool qtractorTrack::loadElement (
 			m_pPluginList->loadElement(pDocument, &eChild);
 	}
 
+	// Reset take(record) descriptor/id registry.
+	clearTakeInfo();
+	
 	return true;
 }
 
@@ -1472,6 +1521,9 @@ bool qtractorTrack::saveElement (
 	pElement->setAttribute("name", qtractorTrack::trackName());
 	pElement->setAttribute("type",
 		qtractorTrack::textFromTrackType(qtractorTrack::trackType()));
+
+	// Reset take(record) descriptor/id registry.
+	clearTakeInfo();
 
 	// Save track properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
@@ -1561,6 +1613,9 @@ bool qtractorTrack::saveElement (
 	QDomElement ePlugins = pDocument->document()->createElement("plugins");
 	m_pPluginList->saveElement(pDocument, &ePlugins);
 	pElement->appendChild(ePlugins);
+
+	// Reset take(record) descriptor/id registry.
+	clearTakeInfo();
 
 	return true;
 }

@@ -303,6 +303,17 @@ public:
 	static TrackType trackTypeFromText (const QString& sText);
 	static QString   textFromTrackType (TrackType trackType);
 
+	// Take(record) descriptor/id registry methods.
+	class TakeInfo;
+
+	TakeInfo *takeInfo(int iTakeID) const;
+	int takeInfoId(TakeInfo *pTakeInfo) const;
+
+	int takeInfoNew(TakeInfo *pTakeInfo) const;
+	void takeInfoAdd(int iTakeID, TakeInfo *pTakeInfo) const;
+
+	void clearTakeInfo() const;
+
 private:
 
 	qtractorSession *m_pSession;    // Session reference.
@@ -352,6 +363,10 @@ private:
 	qtractorMidiControl::Controllers m_controllers;
 
 	qtractorCurveFile *m_pCurveFile;
+
+	// Take(record) descriptor/id registry.
+	mutable QHash<int, TakeInfo *> m_idtakes;
+	mutable QHash<TakeInfo *, int> m_takeids;
 };
 
 

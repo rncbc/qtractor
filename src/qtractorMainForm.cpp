@@ -67,6 +67,8 @@
 #include "qtractorTimeScaleForm.h"
 #include "qtractorBusForm.h"
 
+#include "qtractorTakeRangeForm.h"
+
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
 
@@ -797,6 +799,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipEditAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipEdit()));
+	QObject::connect(m_ui.clipUnlinkAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipUnlink()));
 	QObject::connect(m_ui.clipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipSplit()));
@@ -842,6 +847,27 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipToolsTimeshiftAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipToolsTimeshift()));
+	QObject::connect(m_ui.clipTakeSelectMenu,
+		SIGNAL(triggered(QAction *)),
+		SLOT(clipTakeSelect(QAction *)));
+	QObject::connect(m_ui.clipTakeFirstAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeFirst()));
+	QObject::connect(m_ui.clipTakePrevAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakePrev()));
+	QObject::connect(m_ui.clipTakeNextAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeNext()));
+	QObject::connect(m_ui.clipTakeLastAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeLast()));
+	QObject::connect(m_ui.clipTakeResetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeReset()));
+	QObject::connect(m_ui.clipTakeRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipTakeRange()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -993,6 +1019,12 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateClipMenu()));
+	QObject::connect(m_ui.clipTakeMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateTakeMenu()));
+	QObject::connect(m_ui.clipTakeSelectMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateTakeSelectMenu()));
 	QObject::connect(m_ui.trackExportMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateExportMenu()));
@@ -1148,8 +1180,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
 
-	// Initial auto time-stretching mode...
+	// Initial auto time-stretching, loop-recording modes...
 	m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
+	m_pSession->setLoopRecordingMode(m_pOptions->iLoopRecordingMode);
 
 	// Initial decorations toggle state.
 	m_ui.editSelectModeCurveAction->setChecked(pOptions->bTrackViewCurveEdit);
@@ -1901,7 +1934,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		if (bUpdate) {
 			sPath = info.path();
 		} else {
-			sPath = QDir::temp().path();
+			sPath = QDir::temp().path() + QDir::separator() + QTRACTOR_TITLE;
 			iFlags |= qtractorDocument::Temporary;
 		}
 		info.setFile(sPath + QDir::separator() + info.completeBaseName());
@@ -3359,6 +3392,19 @@ void qtractorMainForm::clipEdit (void)
 }
 
 
+// Unlink a (MIDI) linked clip.
+void qtractorMainForm::clipUnlink (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipUnlink()");
+#endif
+
+	// Unlink the current clip, if any...
+	if (m_pTracks)
+		m_pTracks->unlinkClip();
+}
+
+
 // Split current clip at playhead.
 void qtractorMainForm::clipSplit (void)
 {
@@ -3562,6 +3608,161 @@ void qtractorMainForm::clipToolsTimeshift (void)
 	// Timeshift current clip events, if any...
 	if (m_pTracks)
 		m_pTracks->executeClipTool(qtractorMidiEditor::Timeshift);
+}
+
+
+// Select current clip take.
+void qtractorMainForm::clipTakeSelect ( QAction *pAction )
+{
+	int iTake = pAction->data().toInt();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeSelect(%d)", iTake);
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo && pTakeInfo->currentTake() != iTake) {
+		m_pSession->execute(
+			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), iTake));
+	}
+}
+
+
+// Select first clip take.
+void qtractorMainForm::clipTakeFirst (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeFirst()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		m_pSession->execute(
+			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), 0));
+	}
+}
+
+
+// Select previous clip take.
+void qtractorMainForm::clipTakePrev (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakePrev()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		int iTake = pTakeInfo->currentTake() - 1;
+		if (iTake < 0)
+			iTake = -1; // Wrap to last take.
+		m_pSession->execute(
+			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), iTake));
+	}
+}
+
+
+// Select next clip take.
+void qtractorMainForm::clipTakeNext (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeNext()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		int iTake = pTakeInfo->currentTake() + 1;
+		if (iTake > pTakeInfo->takeCount() - 1)
+			iTake = 0; // Wrap to first take.
+		m_pSession->execute(
+			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), iTake));
+	}
+}
+
+
+// Select last clip take.
+void qtractorMainForm::clipTakeLast (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeLast()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		m_pSession->execute(
+			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), -1));
+	}
+}
+
+
+// Unfold current clip takes.
+void qtractorMainForm::clipTakeReset (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeReset()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		m_pSession->execute(
+			new qtractorClipTakeCommand(pTakeInfo));
+	}
+}
+
+
+// Fold current clip into takes.
+void qtractorMainForm::clipTakeRange (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipTakeRange()");
+#endif
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pClip && pTakeInfo == NULL) {
+		unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
+		qtractorTakeRangeForm form(this);
+		form.setClip(pClip);
+		if (form.exec() && form.takeEnd() < iClipEnd) {
+			pTakeInfo = new qtractorClip::TakeInfo(
+				pClip->clipStart(), pClip->clipOffset(), pClip->clipLength(),
+				form.takeStart(), form.takeEnd());
+			qtractorClipCommand *pClipCommand
+				= new qtractorClipCommand(tr("take range"));
+			pClipCommand->takeInfoClip(pClip, pTakeInfo);
+			pTakeInfo->setClipPart(qtractorClip::TakeInfo::ClipTake, pClip);
+			int iTake = form.currentTake();
+			iTake = pTakeInfo->select(pClipCommand, pClip->track(), iTake);
+			pTakeInfo->setCurrentTake(iTake);
+			m_pSession->execute(pClipCommand);
+		}
+	}
 }
 
 
@@ -4078,9 +4279,11 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->bAudioOutputBus);
 		qtractorMidiManager::setDefaultAudioOutputAutoConnect(
 			m_pOptions->bAudioOutputAutoConnect);
-		// Auto time-stretching global mode...
-		if (m_pSession)
+		// Auto time-stretching, loop-recording global modes...
+		if (m_pSession) {
 			m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
+			m_pSession->setLoopRecordingMode(m_pOptions->iLoopRecordingMode);
+		}
 		// Special track-view drop-span mode...
 		if (m_pTracks)
 			m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
@@ -4938,9 +5141,6 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
-	m_ui.clipNewAction->setEnabled(bEnabled);
-	m_ui.clipEditAction->setEnabled(pClip != NULL);
-
 	// Top-level menu/toolbar items stabilization...
 	updateTrackMenu();
 	updateClipMenu();
@@ -5744,15 +5944,22 @@ void qtractorMainForm::updateClipMenu (void)
 		pClip  = m_pTracks->currentClip();
 	}
 
-//	bool bEnabled    = (pTrack != NULL);
+	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 
 	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
 		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
 
-//	m_ui.clipNewAction->setEnabled(bEnabled);
-//	m_ui.clipEditAction->setEnabled(pClip != NULL);
+	m_ui.clipNewAction->setEnabled(bEnabled);
+	m_ui.clipEditAction->setEnabled(pClip != NULL);
+
+	// Special unlink (MIDI) clip...
+	qtractorMidiClip *pMidiClip = NULL;
+	if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
+		pMidiClip = static_cast<qtractorMidiClip *> (pClip);
+	m_ui.clipUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
+
 	m_ui.clipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
@@ -5766,6 +5973,61 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipExportAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipToolsMenu->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
+	m_ui.clipTakeMenu->setEnabled(pClip != NULL);
+}
+
+
+// Take menu stabilizers.
+void qtractorMainForm::updateTakeMenu (void)
+{
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	int iCurrentTake = (pTakeInfo ? pTakeInfo->currentTake() : -1);
+	int iTakeCount = (pTakeInfo ? pTakeInfo->takeCount() : 0);
+
+//	m_ui.clipTakeMenu->setEnabled(pTakeInfo != NULL);
+	m_ui.clipTakeSelectMenu->setEnabled(iTakeCount > 0);
+	m_ui.clipTakeFirstAction->setEnabled(iCurrentTake != 0 && iTakeCount > 0);
+	m_ui.clipTakePrevAction->setEnabled(iTakeCount > 0);
+	m_ui.clipTakeNextAction->setEnabled(iTakeCount > 0);
+	m_ui.clipTakeLastAction->setEnabled(iCurrentTake < iTakeCount - 1);
+	m_ui.clipTakeResetAction->setEnabled(iCurrentTake >= 0);
+	m_ui.clipTakeRangeAction->setEnabled(pTakeInfo == NULL);
+}
+
+
+// Take selection menu stabilizer.
+void qtractorMainForm::updateTakeSelectMenu (void)
+{
+	m_ui.clipTakeSelectMenu->clear();
+
+	qtractorClip *pClip = NULL;
+	if (m_pTracks)
+		pClip = m_pTracks->currentClip();
+	
+	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
+	if (pTakeInfo) {
+		QAction *pAction;
+		int iCurrentTake = pTakeInfo->currentTake();
+		int iTakeCount = pTakeInfo->takeCount();
+		for (int iTake = 0; iTake < iTakeCount; ++iTake) {
+			pAction = m_ui.clipTakeSelectMenu->addAction(
+				tr("Take %1").arg(iTake + 1));
+			pAction->setCheckable(true);
+			pAction->setChecked(iTake == iCurrentTake);
+			pAction->setData(iTake);
+		}
+		if (iTakeCount > 0)
+			m_ui.clipTakeSelectMenu->addSeparator();
+		pAction = m_ui.clipTakeSelectMenu->addAction(
+			tr("None"));
+		pAction->setCheckable(true);
+		pAction->setChecked(iCurrentTake < 0);
+		pAction->setData(-1);
+	}
 }
 
 

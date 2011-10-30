@@ -185,6 +185,7 @@ public slots:
 
 	void clipNew();
 	void clipEdit();
+	void clipUnlink();
 	void clipSplit();
 	void clipMerge();
 	void clipNormalize();
@@ -200,6 +201,13 @@ public slots:
 	void clipToolsResize();
 	void clipToolsRescale();
 	void clipToolsTimeshift();
+	void clipTakeSelect(QAction *pAction);
+	void clipTakeFirst();
+	void clipTakePrev();
+	void clipTakeNext();
+	void clipTakeLast();
+	void clipTakeReset();
+	void clipTakeRange();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);
@@ -275,6 +283,8 @@ public slots:
 	void updateCurveMenu();
 	void updateCurveModeMenu();
 	void updateClipMenu();
+	void updateTakeMenu();
+	void updateTakeSelectMenu();
 	void updateExportMenu();
 	void updateZoomMenu();
 	void updateSnapMenu();

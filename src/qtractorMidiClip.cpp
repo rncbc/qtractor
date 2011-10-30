@@ -629,6 +629,13 @@ void qtractorMidiClip::updateHashData (void)
 }
 
 
+// Whether local hash is being shared.
+bool qtractorMidiClip::isHashLinked (void) const
+{
+	return (m_pData && m_pData->count() > 1);
+}
+
+
 // Make sure the clip hash-table gets reset.
 void qtractorMidiClip::clearHashTable (void)
 {

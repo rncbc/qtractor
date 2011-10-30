@@ -26,6 +26,8 @@
 
 
 // Forward declarations.
+class qtractorClipCommand;
+
 class QWidget;
 
 
@@ -198,6 +200,126 @@ public:
 	static FadeType fadeOutTypeFromText(const QString& sText);
 	static QString textFromFadeType(FadeType fadeType);
 
+	// Take(record) descriptor.
+	//
+	class TakeInfo
+	{
+	public:
+
+		// Constructor.
+		TakeInfo(
+			unsigned long iClipStart,
+			unsigned long iClipOffset,
+			unsigned long iClipLength,
+			unsigned long iTakeStart,
+			unsigned long iTakeEnd)
+		:	m_iClipStart(iClipStart),
+			m_iClipOffset(iClipOffset),
+			m_iClipLength(iClipLength),
+			m_iTakeStart(iTakeStart),
+			m_iTakeEnd(iTakeEnd),
+			m_iCurrentTake(-1),
+			m_iRefCount(0)
+			{ m_apClipParts[ClipHead] = NULL; m_apClipParts[ClipTake] = NULL; }
+
+		// Brainless accessors (maybe useless).
+		unsigned long clipStart() const
+			{ return m_iClipStart; }
+		unsigned long clipOffset() const
+			{ return m_iClipOffset; }
+		unsigned long clipLength() const
+			{ return m_iClipLength; }
+
+		unsigned long takeStart() const
+			{ return m_iTakeStart; }
+		unsigned long takeEnd() const
+			{ return m_iTakeEnd; }
+
+		void setCurrentTake(int iCurrentTake)
+			{ m_iCurrentTake = iCurrentTake; }
+		int currentTake() const
+			{ return m_iCurrentTake; }
+
+		// Estimate number of takes.
+		int takeCount() const;
+
+		// Select current take set.
+		int select(qtractorClipCommand *pClipCommand,
+			qtractorTrack *pTrack, int iTake = -1);
+
+		// Reset(unfold) whole take set.
+		void reset(qtractorClipCommand *pClipCommand, bool bClear = false);
+
+		// Reference counting methods.
+		void addRef() { ++m_iRefCount; }
+		void releaseRef() { if (--m_iRefCount < 1) delete this; }
+
+		// Sub-clip take parts.
+		enum ClipPart { ClipHead = 0, ClipTake = 1, ClipParts };
+
+		void setClipPart(ClipPart cpart, qtractorClip *pClip)
+			{ m_apClipParts[cpart] = pClip; }
+		qtractorClip *clipPart(ClipPart cpart) const
+			{ return m_apClipParts[cpart]; }
+		ClipPart partClip(const qtractorClip *pClip) const
+			{ return (m_apClipParts[ClipHead] == pClip ? ClipHead : ClipTake); }
+
+	protected:
+
+		// Sub-brainfull method.
+		void selectClipPart(qtractorClipCommand *pClipCommand,
+			qtractorTrack *pTrack, ClipPart cpart, unsigned long iClipStart,
+			unsigned long iClipOffset, unsigned long iClipLength);
+
+	private:
+
+		// Instance variables.
+		unsigned long m_iClipStart;
+		unsigned long m_iClipOffset;
+		unsigned long m_iClipLength;
+
+		unsigned long m_iTakeStart;
+		unsigned long m_iTakeEnd;
+
+		int m_iCurrentTake;
+		int m_iRefCount;
+
+		qtractorClip *m_apClipParts[ClipParts];
+	};
+
+	// Take(record) descriptor accessors.
+	void setTakeInfo(TakeInfo *pTakeInfo);
+	TakeInfo *takeInfo() const;
+
+	// Take(record) part clip-descriptor.
+	//
+	class TakePart
+	{
+	public:
+
+		// Constructor.
+		TakePart(TakeInfo *pTakeInfo, TakeInfo::ClipPart cpart)
+			: m_pTakeInfo(pTakeInfo), m_cpart(cpart) {}
+
+		// Direct accessors.
+		TakeInfo *takeInfo() const
+			{ return m_pTakeInfo; }
+		TakeInfo::ClipPart cpart() const
+			{ return m_cpart; }
+
+		// Delegated accessors.
+		void setClip(qtractorClip *pClip)
+			{ m_pTakeInfo->setClipPart(m_cpart, pClip); }
+		qtractorClip *clip() const
+			{ return m_pTakeInfo->clipPart(m_cpart); }
+		
+	private:
+
+		// Member variables.
+		TakeInfo *m_pTakeInfo;
+		TakeInfo::ClipPart m_cpart;
+	};
+
 protected:
 
 	// Fade functor (pure abstract) class.
@@ -247,6 +369,9 @@ private:
 	// Clip gain/volume.
 	float m_fGain;
 
+	// Take(record) descriptor.
+	TakeInfo *m_pTakeInfo;
+
 	// Fade-in/out stuff.
 	unsigned long m_iFadeInLength;  // Fade-in length (in frames).
 	unsigned long m_iFadeOutLength; // Fade-out length (in frames).
@@ -264,6 +389,11 @@ private:
 	// Local dirty flag.
 	bool m_bDirty;
 };
+
+
+// Stub declarations.
+class qtractorTrack::TakeInfo : public qtractorClip::TakeInfo {};
+
 
 #endif  // __qtractorClip_h
 

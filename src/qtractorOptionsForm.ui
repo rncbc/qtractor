@@ -1813,7 +1813,54 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2" >
+		  <item row="2" column="3" >
+		   <widget class="QLabel" name="LoopRecordingModeTextLabel" >
+			<property name="font" >
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="text" >
+			 <string>L&amp;oop recording mode:</string>
+			</property>
+			<property name="alignment" >
+			 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+			</property>
+			<property name="buddy" >
+			 <cstring>LoopRecordingModeComboBox</cstring>
+			</property>
+		   </widget>
+		  </item>
+		  <item row="2" column="4" colspan="3" >
+		   <widget class="QComboBox" name="LoopRecordingModeComboBox" >
+			<property name="font" >
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip" >
+			 <string>Loop recording mode (takes)</string>
+			</property>
+			<item>
+			 <property name="text" >
+			  <string>None</string>
+			 </property>
+			</item>
+			<item>
+			 <property name="text" >
+			  <string>First</string>
+			 </property>
+			</item>
+			<item>
+			 <property name="text" >
+			  <string>Last</string>
+			 </property>
+			</item>
+		   </widget>
+		  </item>
+		  <item row="3" column="0" colspan="2" >
            <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
             <property name="font" >
              <font>
@@ -3065,6 +3112,7 @@
   <tabstop>KeepToolsOnTopCheckBox</tabstop>
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
+  <tabstop>LoopRecordingModeComboBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>BaseFontSizeComboBox</tabstop>
   <tabstop>SessionTemplateCheckBox</tabstop>

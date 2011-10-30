@@ -1961,6 +1961,7 @@ bool qtractorAudioBus::open (void)
 		return false;
 
 	unsigned short i;
+	unsigned short iDisabled = 0;
 
 	if (busMode() & qtractorBus::Input) {
 		// Register and allocate input port buffers...
@@ -1974,6 +1975,7 @@ bool qtractorAudioBus::open (void)
 				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsInput, 0);
 			m_ppIBuffer[i] = NULL;
+			if (m_ppIPorts[i] == NULL) ++iDisabled;
 		}
 	}
 
@@ -1989,6 +1991,7 @@ bool qtractorAudioBus::open (void)
 				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsOutput, 0);
 			m_ppOBuffer[i] = NULL;
+			if (m_ppOPorts[i] == NULL) ++iDisabled;
 		}
 	}
 
@@ -2008,7 +2011,7 @@ bool qtractorAudioBus::open (void)
 		updatePluginList(m_pOPluginList, qtractorPluginList::AudioOutBus);
 
 	// Finally, open for biz...
-	m_bEnabled = true;
+	m_bEnabled = (iDisabled == 0);
 
 	return true;
 }
@@ -2237,6 +2240,9 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 // Process cycle fade in/out ramp (+1/-1).
 void qtractorAudioBus::process_ramp ( unsigned int nframes, float fRamp )
 {
+	if (!m_bEnabled)
+		return;
+
 	float fStep = fRamp / float(nframes);
 
 	for (unsigned short i = 0; i < m_iChannels; ++i) {

@@ -3,6 +3,47 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Loop-recording/takes functionality is now ready for
+  the masses and accessible from brand new Clip/Take
+  menu (Select, First, Previous, Next, Last, Reset
+  and Range...; the latter is actually being provided
+  as bonus feature :) as to fold any given clip into
+  so-called takes, simulating loop-recording mode over
+  an arbitrary range). (HIGHLY EXPERIMENTAL)
+
+- Loop-recording/takes infrastructure integration is
+  sneaking in: all clips recorded under a loop/cycle
+  range may now get split (folded) into one or more
+  so-called takes. A new option is now provided, as
+  to select which take is about to retain after the
+  recording ends, either the First or the Last one.
+  Just turn this mode off (None) and keep with the
+  old recording behavior, where clips are laid out
+  unfolded through the timeline, as usual (see menu
+  View/Options.../Display/Loop recording mode).
+  (EXPERIMENTAL)
+
+- Improved robustness in face of disabled audio buses
+  when global maximum number of JACK (audio) ports is
+  surpassed (mitigating bug #3421911).
+
+- Improved single-track clip selection status logic,
+  (possibly fixing bug #3419141).
+
+- Clip/Unlink action is now available for detaching
+  linked/ref-counted MIDI clips, renaming and saving
+  into auto-incremental SMF filenames.
+
+- Temporary session archive directory now (pre)fixed
+  whith program name (eg. /tmp/qtractor).
+
+- Fixed VST GUI editor window title on first show.
+
+- Fixed build for ancient VST-SDK 2.3 (32bit only).
+
+
 0.5.1  2011-10-05  Bravo Yankee
 
 - More LADISH support: SIGTERM signal is now trapped
@@ -1656,6 +1697,7 @@ ChangeLog
   the clip edges, giving a much smoother rendering and thus
   mitigating the nasty click-and-pop artifacts that were in
   fact due to some early design optimization with a poor and
+
   sloppy implementation.
 
 

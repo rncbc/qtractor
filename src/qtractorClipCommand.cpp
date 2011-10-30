@@ -50,6 +50,8 @@ qtractorClipCommand::~qtractorClipCommand (void)
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
+		if (pItem->takeInfo)
+			pItem->takeInfo->releaseRef();
 		if (pItem->editCommand)
 			delete pItem->editCommand;
 		if (pItem->autoDelete)
@@ -205,6 +207,18 @@ void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
 }
 
 
+void qtractorClipCommand::takeInfoClip ( qtractorClip *pClip,
+	qtractorClip::TakeInfo *pTakeInfo )
+{
+	Item *pItem = new Item(TakeInfoClip, pClip, pClip->track());
+	pItem->takeInfo = pTakeInfo;
+	m_items.append(pItem);
+
+	if (pTakeInfo)
+		pTakeInfo->addRef();
+}
+
+
 void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 {
 	Item *pItem = new Item(ResetClip, pClip, pClip->track());
@@ -222,7 +236,7 @@ void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 }
 
 
-// Special clip record nethod.
+// Special clip record nethods.
 bool qtractorClipCommand::addClipRecord (
 	qtractorTrack *pTrack, unsigned long iClipEnd )
 {
@@ -241,13 +255,57 @@ bool qtractorClipCommand::addClipRecord (
 	if (pClip->clipLength() < 1)
 		return false;
 
-	// Recorded clip length...
+	// Recorded clip length and offset...
 	unsigned long iClipLength = iClipEnd - iClipStart;
+	unsigned long iClipOffset = 0;
+
+	// Attend to audio clip record latency compensation...
+	if (pTrack->trackType() == qtractorTrack::Audio) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+		if (pAudioBus)
+			iClipOffset += pAudioBus->latency_in();
+	}
+
+	// Check whether in loop-recording/takes mode....
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && pSession->isLoopRecording()
+		&& iClipEnd > pSession->loopEnd()) {
+		qtractorClip::TakeInfo *pTakeInfo
+			= new qtractorClip::TakeInfo(
+				iClipStart, iClipOffset, iClipLength,
+				pSession->loopStart(),
+				pSession->loopEnd());
+		int iTake = (pSession->loopRecordingMode() == 1 ? 0 : -1);
+		iTake = pTakeInfo->select(this, pTrack, iTake);
+		pTakeInfo->setCurrentTake(iTake);
+	}
+	else
+	addClipRecordTake(pTrack, pClip, iClipStart, iClipOffset, iClipLength);
+
+	// Can get rid of the recorded clip.
+	pTrack->setClipRecord(NULL);
+
+	// Done.
+	return true;
+}
+
+
+bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
+	qtractorClip *pClip, unsigned long iClipStart, unsigned long iClipOffset,
+	unsigned long iClipLength, qtractorClip::TakePart *pTakePart )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClipCommand[%p]::addClipRecordTake(%p, %p, %lu, %lu, %lu, %p)",
+		this, pTrack, pClip, iClipStart, iClipOffset, iClipLength, pTakePart);
+#endif
+
+	// Now, its imperative to make a proper copy of those clips...
+	// -- formerly a cloning clip factory method.
 	
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 
-	// Now, its imperative to make a proper copy of those clips...
 	switch (pTrack->trackType()) {
 	case qtractorTrack::Audio: {
 		qtractorAudioClip *pAudioClip
@@ -255,13 +313,14 @@ bool qtractorClipCommand::addClipRecord (
 		if (pAudioClip) {
 			pAudioClip = new qtractorAudioClip(*pAudioClip);
 			pAudioClip->setClipStart(iClipStart);
+			pAudioClip->setClipOffset(iClipOffset);
 			pAudioClip->setClipLength(iClipLength);
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-			if (pAudioBus)
-				pAudioClip->setClipOffset(pAudioBus->latency_in());
 			addClip(pAudioClip, pTrack);
-			if (pMainForm)
+			if (pTakePart) {
+				takeInfoClip(pAudioClip, pTakePart->takeInfo());
+				pTakePart->setClip(pAudioClip);
+			}
+			if (pMainForm)	
 				pMainForm->addAudioFile(pAudioClip->filename());
 		}
 		break;
@@ -272,9 +331,14 @@ bool qtractorClipCommand::addClipRecord (
 		if (pMidiClip) {
 			pMidiClip = new qtractorMidiClip(*pMidiClip);
 			pMidiClip->setClipStart(iClipStart);
+			pMidiClip->setClipOffset(iClipOffset);
 			pMidiClip->setClipLength(iClipLength);
 			addClip(pMidiClip, pTrack);
-			if (pMainForm)
+			if (pTakePart) {
+				takeInfoClip(pMidiClip, pTakePart->takeInfo());
+				pTakePart->setClip(pMidiClip);
+			}
+			if (pMainForm)	
 				pMainForm->addMidiFile(pMidiClip->filename());
 		}
 		break;
@@ -283,10 +347,6 @@ bool qtractorClipCommand::addClipRecord (
 		return false;
 	}
 
-	// Can get rid of the recorded clip.
-	pTrack->setClipRecord(NULL);
-
-	// Done.
 	return true;
 }
 
@@ -563,6 +623,16 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			}
 			break;
 		}
+		case TakeInfoClip: {
+			qtractorClip::TakeInfo *pTakeInfo = pClip->takeInfo();
+			if (pTakeInfo)
+				pTakeInfo->addRef();
+			pClip->setTakeInfo(pItem->takeInfo);
+			if (pItem->takeInfo)
+				pItem->takeInfo->releaseRef();
+			pItem->takeInfo = pTakeInfo;
+			break;
+		}
 		case ResetClip: {
 			unsigned long iClipStartTime  = pClip->clipStartTime();
 			unsigned long iClipLengthTime = pClip->clipLengthTime();
@@ -595,6 +665,39 @@ bool qtractorClipCommand::redo (void)
 bool qtractorClipCommand::undo (void)
 {
 	return execute(false);
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorClipTakeSelectCommand - declaration.
+//
+
+// Constructor.
+qtractorClipTakeCommand::qtractorClipTakeCommand (
+	qtractorClip::TakeInfo *pTakeInfo, qtractorTrack *pTrack, int iCurrentTake )
+	: qtractorClipCommand(QString()),
+		m_pTakeInfo(pTakeInfo), m_iCurrentTake(iCurrentTake)
+{
+	if (pTrack)
+		qtractorCommand::setName(QObject::tr("take %1").arg(iCurrentTake + 1));
+	else
+		qtractorCommand::setName(QObject::tr("reset takes"));
+
+	if (pTrack && iCurrentTake >= 0)
+		m_pTakeInfo->select(this, pTrack, iCurrentTake);
+	else
+		m_pTakeInfo->reset(this, pTrack == NULL);
+}
+
+
+// Executive override.
+bool qtractorClipTakeCommand::execute ( bool bRedo )
+{
+	int iCurrentTake = m_pTakeInfo->currentTake();
+	m_pTakeInfo->setCurrentTake(m_iCurrentTake);
+	m_iCurrentTake = iCurrentTake;;
+
+	return qtractorClipCommand::execute(bRedo);
 }
 
 

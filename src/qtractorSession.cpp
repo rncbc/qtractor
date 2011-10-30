@@ -132,6 +132,8 @@ qtractorSession::qtractorSession (void)
 
 	m_bAutoTimeStretch  = false;
 
+	m_iLoopRecordingMode = 0;
+
 	clear();
 }
 
@@ -1427,6 +1429,24 @@ void qtractorSession::setRecording ( bool bRecording )
 bool qtractorSession::isRecording (void) const
 {
 	return m_bRecording;
+}
+
+
+// Loop-recording/take mode.
+void qtractorSession::setLoopRecordingMode ( int iLoopRecordingMode )
+{
+	m_iLoopRecordingMode = iLoopRecordingMode;
+}
+
+int qtractorSession::loopRecordingMode (void) const
+{
+	return m_iLoopRecordingMode;
+}
+
+// Loop-recording/take state.
+bool qtractorSession::isLoopRecording (void) const
+{
+	return isLooping() && (m_iLoopRecordingMode > 0);
 }
 
 
