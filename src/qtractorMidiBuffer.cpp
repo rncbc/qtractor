@@ -868,6 +868,7 @@ void qtractorMidiManager::createAudioOutputBus (void)
 				false, m_pPluginList->channels());
 		m_pAudioOutputBus->setAutoConnect(m_bAudioOutputAutoConnect);
 		if (pAudioEngine->isActivated()) {
+			pAudioEngine->addBusEx(m_pAudioOutputBus);
 			if (m_pAudioOutputBus->open())
 				m_pAudioOutputBus->autoConnect();
 		}
@@ -889,8 +890,16 @@ void qtractorMidiManager::createAudioOutputBus (void)
 void qtractorMidiManager::deleteAudioOutputBus (void)
 {
 	// Owned, not part of audio engine...
-	if (m_bAudioOutputBus && m_pAudioOutputBus)
+	if (m_bAudioOutputBus && m_pAudioOutputBus) {
+		m_pAudioOutputBus->close();
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+			if (pAudioEngine)
+				pAudioEngine->removeBusEx(m_pAudioOutputBus);
+		}
 		delete m_pAudioOutputBus;
+	}
 
 	// Done.
 	m_pAudioOutputBus = NULL;
