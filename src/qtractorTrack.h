@@ -153,7 +153,7 @@ public:
 	qtractorPluginList *pluginList() const;
 
 	// Base height (in pixels).
-	enum { HeightMin = 24, HeightBase = 48 };
+	enum { HeightMin = 24, HeightBase = 72 };
 
 	// Normalized view height accessors.
 	void updateHeight();
