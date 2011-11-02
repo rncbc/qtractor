@@ -3657,7 +3657,7 @@ void qtractorMainForm::clipTakePrev (void)
 	if (pTakeInfo) {
 		int iTake = pTakeInfo->currentTake() - 1;
 		if (iTake < 0)
-			iTake = -1; // Wrap to last take.
+			iTake = pTakeInfo->takeCount() - 1; // Wrap to last take.
 		m_pSession->execute(
 			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), iTake));
 	}
@@ -3678,7 +3678,7 @@ void qtractorMainForm::clipTakeNext (void)
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	if (pTakeInfo) {
 		int iTake = pTakeInfo->currentTake() + 1;
-		if (iTake > pTakeInfo->takeCount() - 1)
+		if (iTake >= pTakeInfo->takeCount())
 			iTake = 0; // Wrap to first take.
 		m_pSession->execute(
 			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), iTake));
@@ -3699,8 +3699,9 @@ void qtractorMainForm::clipTakeLast (void)
 
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	if (pTakeInfo) {
+		int iTake = pTakeInfo->takeCount() - 1;
 		m_pSession->execute(
-			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), -1));
+			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), iTake));
 	}
 }
 
