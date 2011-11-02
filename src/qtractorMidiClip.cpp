@@ -132,27 +132,25 @@ class qtractorMidiClip::FileKey
 public:
 
 	// Constructor.
-	FileKey(const QString& sFilename, unsigned short iTrackChannel)
-		: m_sFilename(sFilename), m_iTrackChannel(iTrackChannel) {}
+	FileKey(qtractorMidiClip::Key *pKey) : m_pKey(pKey) {}
 
 	// Key accessors.
 	const QString& filename() const
-		{ return m_sFilename; }
+		{ return m_pKey->filename(); }
 	unsigned short trackChannel() const
-		{ return m_iTrackChannel; }
+		{ return m_pKey->trackChannel(); }
 
 	// Match descriminator.
 	bool operator== (const FileKey& other) const
 	{
-		return m_sFilename     == other.filename()
-			&& m_iTrackChannel == other.trackChannel();
+		return filename()     == other.filename()
+			&& trackChannel() == other.trackChannel();
 	}
 
 private:
 
 	// Interesting variables.
-	QString        m_sFilename;
-	unsigned short m_iTrackChannel;
+	qtractorMidiClip::Key *m_pKey;
 };
 
 
@@ -536,10 +534,12 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	QString sFilename = filename();
 
 	// Check file-hash reference...
-	FileKey fkey(sFilename, trackChannel());
-	FileHash::ConstIterator fiter = g_hashFiles.constFind(fkey);
-	if (fiter != g_hashFiles.constEnd() && fiter.value() > 1)
-		m_iRevision = 0;
+	if (m_iRevision > 0 && m_pKey) {
+		FileKey fkey(m_pKey);
+		FileHash::ConstIterator fiter = g_hashFiles.constFind(fkey);
+		if (fiter != g_hashFiles.constEnd() && fiter.value() > 1)
+			m_iRevision = 0;
+	}
 
 	if (m_iRevision == 0 || bForce) {
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -637,7 +637,7 @@ void qtractorMidiClip::insertHashKey (void)
 {
 	if (m_pKey) {
 		// Increment file-hash reference...
-		FileKey fkey(m_pKey->filename(), m_pKey->trackChannel());
+		FileKey fkey(m_pKey);
 		FileHash::Iterator fiter = g_hashFiles.find(fkey);
 		if (fiter == g_hashFiles.end())
 			fiter =  g_hashFiles.insert(fkey, 0);
@@ -658,7 +658,7 @@ void qtractorMidiClip::removeHashKey (void)
 {
 	if (m_pKey) {
 		// Decrement file-hash reference...
-		FileKey fkey(m_pKey->filename(), m_pKey->trackChannel());
+		FileKey fkey(m_pKey);
 		FileHash::Iterator fiter = g_hashFiles.find(fkey);
 		if (fiter != g_hashFiles.end()) {
 			if (--fiter.value() < 1)
