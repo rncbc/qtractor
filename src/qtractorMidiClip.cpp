@@ -132,25 +132,28 @@ class qtractorMidiClip::FileKey
 public:
 
 	// Constructor.
-	FileKey(qtractorMidiClip::Key *pKey) : m_pKey(pKey) {}
+	FileKey(qtractorMidiClip::Key *pKey) :
+		m_sFilename(pKey->filename()),
+		m_iTrackChannel(pKey->trackChannel()) {}
 
 	// Key accessors.
 	const QString& filename() const
-		{ return m_pKey->filename(); }
+		{ return m_sFilename; }
 	unsigned short trackChannel() const
-		{ return m_pKey->trackChannel(); }
+		{ return m_iTrackChannel; }
 
 	// Match descriminator.
 	bool operator== (const FileKey& other) const
 	{
-		return filename()     == other.filename()
-			&& trackChannel() == other.trackChannel();
+		return m_sFilename     == other.filename()
+			&& m_iTrackChannel == other.trackChannel();
 	}
 
 private:
 
 	// Interesting variables.
-	qtractorMidiClip::Key *m_pKey;
+	QString        m_sFilename;
+	unsigned short m_iTrackChannel;
 };
 
 
