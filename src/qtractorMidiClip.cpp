@@ -125,6 +125,45 @@ qtractorMidiClip::Hash qtractorMidiClip::g_hashTable;
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiClip::FileKey -- MIDI file hash key.
+//
+class qtractorMidiClip::FileKey
+{
+public:
+
+	// Constructor.
+	FileKey(qtractorMidiClip::Key *pKey) : m_pKey(pKey) {}
+
+	// Key accessors.
+	const QString& filename() const
+		{ return m_pKey->filename(); }
+	unsigned short trackChannel() const
+		{ return m_pKey->trackChannel(); }
+
+	// Match descriminator.
+	bool operator== (const FileKey& other) const
+	{
+		return filename()     == other.filename()
+			&& trackChannel() == other.trackChannel();
+	}
+
+private:
+
+	// Interesting variables.
+	qtractorMidiClip::Key *m_pKey;
+};
+
+
+uint qHash ( const qtractorMidiClip::FileKey& key )
+{
+	return qHash(key.filename()) ^ qHash(key.trackChannel());
+}
+
+
+qtractorMidiClip::FileHash qtractorMidiClip::g_hashFiles;
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiClip -- MIDI sequence clip.
 //
 
@@ -231,7 +270,7 @@ bool qtractorMidiClip::createMidiFile (
 	m_pData->attach(this);
 
 	// Right on then...
-	g_hashTable.insert(*m_pKey, m_pData);
+	insertHashKey();
 
 	qtractorMidiSequence *pSeq = m_pData->sequence();
 
@@ -451,8 +490,8 @@ bool qtractorMidiClip::openMidiFile (
 
 	// Something might have changed...
 	if (m_pKey) {
-		m_pKey->update(this);
-		g_hashTable.insert(*m_pKey, m_pData);
+		updateHashKey();
+		insertHashKey();
 	}
 
 	return true;
@@ -471,7 +510,7 @@ void qtractorMidiClip::closeMidiFile (void)
 	if (m_pData) {
 		m_pData->detach(this);
 		if (m_pData->count() < 1) {
-			if (m_pKey) g_hashTable.remove(*m_pKey);
+			removeHashKey();
 			delete m_pData;
 		}
 		m_pData = NULL;
@@ -493,6 +532,14 @@ void qtractorMidiClip::closeMidiFile (void)
 QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 {
 	QString sFilename = filename();
+
+	// Check file-hash reference...
+	if (m_iRevision > 0 && m_pKey) {
+		FileKey fkey(m_pKey);
+		FileHash::ConstIterator fiter = g_hashFiles.constFind(fkey);
+		if (fiter != g_hashFiles.constEnd() && fiter.value() > 1)
+			m_iRevision = 0;
+	}
 
 	if (m_iRevision == 0 || bForce) {
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -517,7 +564,7 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 	if (m_pData == NULL)
 		return;
 
-	if (m_pKey) g_hashTable.remove(*m_pKey);
+	removeHashKey();
 
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
@@ -528,7 +575,7 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 		pMidiClip->updateEditor(true);
 	}
 
-	if (m_pKey) g_hashTable.insert(*m_pKey, m_pData);
+	insertHashKey();
 }
 
 
@@ -538,7 +585,7 @@ void qtractorMidiClip::setClipLengthEx ( unsigned long iClipLength )
 	if (m_pData == NULL)
 		return;
 
-	if (m_pKey) g_hashTable.remove(*m_pKey);
+	removeHashKey();
 
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
@@ -547,7 +594,7 @@ void qtractorMidiClip::setClipLengthEx ( unsigned long iClipLength )
 		pMidiClip->updateHashKey();
 	}
 
-	if (m_pKey) g_hashTable.insert(*m_pKey, m_pData);
+	insertHashKey();
 }
 
 
@@ -585,10 +632,41 @@ void qtractorMidiClip::setDirtyEx ( bool bDirty )
 }
 
 
-// Update local hash key.
+// Manage local hash key.
+void qtractorMidiClip::insertHashKey (void)
+{
+	if (m_pKey) {
+		// Increment file-hash reference...
+		FileKey fkey(m_pKey);
+		FileHash::Iterator fiter = g_hashFiles.find(fkey);
+		if (fiter == g_hashFiles.end())
+			fiter =  g_hashFiles.insert(fkey, 0);
+		++fiter.value();
+		// Insert actual clip-hash reference....
+		g_hashTable.insert(*m_pKey, m_pData);
+	}
+}
+
+
 void qtractorMidiClip::updateHashKey (void)
 {
 	if (m_pKey) m_pKey->update(this);
+}
+
+
+void qtractorMidiClip::removeHashKey (void)
+{
+	if (m_pKey) {
+		// Decrement file-hash reference...
+		FileKey fkey(m_pKey);
+		FileHash::Iterator fiter = g_hashFiles.find(fkey);
+		if (fiter != g_hashFiles.end()) {
+			if (--fiter.value() < 1)
+				g_hashFiles.remove(fkey);
+		}
+		// Remove actual clip-hash reference....
+		g_hashTable.remove(*m_pKey);
+	}
 }
 
 
@@ -622,10 +700,8 @@ void qtractorMidiClip::updateHashData (void)
 	m_pData = pNewData;
 	m_pData->attach(this);
 
-	if (m_pKey) {
-		m_pKey->update(this);
-		g_hashTable.insert(*m_pKey, m_pData);
-	}
+	updateHashKey();
+	insertHashKey();
 }
 
 
@@ -640,6 +716,7 @@ bool qtractorMidiClip::isHashLinked (void) const
 void qtractorMidiClip::clearHashTable (void)
 {
 	g_hashTable.clear();
+	g_hashFiles.clear();
 }
 
 

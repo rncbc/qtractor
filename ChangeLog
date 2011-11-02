@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip revision (re)numbering paranoia has been
+  improved as much to avoid MIDI file clashes as much
+  as possible while editing multiple MIDI clips which
+  reference the same SMF and track/channel.
+
 - Creating new or updating existing buses with exact
   same names of any current dedicated inputs/outputs
   (which are implemented as special covert buses) is

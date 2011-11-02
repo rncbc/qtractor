@@ -138,6 +138,11 @@ public:
 	static void setDefaultFormat(unsigned short iFormat);
 	static unsigned short defaultFormat();
 
+	// MIDI file hash key.
+	class FileKey;
+
+	typedef QHash<FileKey, int> FileHash;
+
 	// Most interesting key/data (ref-counted?)...
 	class Key;
 	class Data
@@ -207,8 +212,10 @@ public:
 	// Sync all ref-counted clip-dirtyness.
 	void setDirtyEx(bool bDirty);
 
-	// Update local hash key.
+	// Manage local hash key.
+	void insertHashKey();
 	void updateHashKey();
+	void removeHashKey();
 
 	// Update (clone) local hash data.
 	void updateHashData();
@@ -249,6 +256,9 @@ private:
 	Data *m_pData;
 
 	static Hash g_hashTable;
+
+	// MIDI file hash key.
+	static FileHash g_hashFiles;
 
 	// To optimize and keep track of current playback
 	// position, mostly like an sequence cursor/iterator.
