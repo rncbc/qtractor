@@ -4774,6 +4774,7 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("Debugging option enabled.");
 #endif
 #ifndef CONFIG_LIBVORBIS
+
 	list << tr("Ogg Vorbis (libvorbis) file support disabled.");
 #endif
 #ifndef CONFIG_LIBMAD
@@ -5937,12 +5938,12 @@ void qtractorMainForm::updateClipMenu (void)
 {
 	unsigned long iPlayHead = m_pSession->playHead();
 
-	qtractorTrack *pTrack = NULL;
 	qtractorClip  *pClip  = NULL;
+	qtractorTrack *pTrack = NULL;
 	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
 	if (bTracks) {
-		pTrack = m_pTracks->currentTrack();
 		pClip  = m_pTracks->currentClip();
+		pTrack = (pClip ? pClip->track() : m_pTracks->currentTrack());
 	}
 
 	bool bEnabled    = (pTrack != NULL);
@@ -5950,7 +5951,7 @@ void qtractorMainForm::updateClipMenu (void)
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 
 	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
-		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
+		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack));
 
 	m_ui.clipNewAction->setEnabled(bEnabled);
 	m_ui.clipEditAction->setEnabled(pClip != NULL);
@@ -5969,8 +5970,7 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipTempoAction->setEnabled(pClip != NULL || bSelectable);
 	m_ui.clipRangeSetAction->setEnabled(pClip != NULL || bSelected);
 	m_ui.clipLoopSetAction->setEnabled(pClip != NULL || bSelected);
-	m_ui.clipImportAction->setEnabled(bTracks);
-		// pTrack && pTrack->trackType() == qtractorTrack::Audio);
+//	m_ui.clipImportAction->setEnabled(bTracks);
 	m_ui.clipExportAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipToolsMenu->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
