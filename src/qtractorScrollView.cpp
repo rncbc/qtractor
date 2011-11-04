@@ -164,7 +164,7 @@ void qtractorScrollView::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorScrollView::paintEvent ( QPaintEvent *pPaintEvent )
 {
 	QPainter painter(QAbstractScrollArea::viewport());
-	drawContents(&painter, pPaintEvent->rect());
+	drawContents(&painter, pPaintEvent->rect().adjusted(0, 0, 1, 1));
 }
 
 
