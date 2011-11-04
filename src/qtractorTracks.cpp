@@ -606,7 +606,7 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 
 	// Shorten old right...
 	unsigned long iClipOffset = pClip->clipOffset();
-	pClipCommand->moveClip(pClip, pClip->track(),
+	pClipCommand->resizeClip(pClip,
 		iClipStart, iClipOffset, iPlayHead - iClipStart);
 	// Add left clone...
 	qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
