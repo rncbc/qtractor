@@ -3376,14 +3376,14 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 							iClipOffset,
 							iSelectOffset);
 						// Right-clip...
-						qtractorClip *pClipEx = cloneClip(pClip);
-						if (pClipEx) {
-							pClipEx->setClipStart(iSelectEnd);
-							pClipEx->setClipOffset(iClipOffset
+						qtractorClip *pClipRight = cloneClip(pClip);
+						if (pClipRight) {
+							pClipRight->setClipStart(iSelectEnd);
+							pClipRight->setClipOffset(iClipOffset
 								+ iSelectOffset + iSelectLength);
-							pClipEx->setClipLength(iClipEnd - iSelectEnd);
-							pClipEx->setFadeOutLength(pClip->fadeOutLength());
-							pClipCommand->addClip(pClipEx, pTrack);
+							pClipRight->setClipLength(iClipEnd - iSelectEnd);
+							pClipRight->setFadeOutLength(pClip->fadeOutLength());
+							pClipCommand->addClip(pClipRight, pTrack);
 						}
 					}
 					// Done, middle region.

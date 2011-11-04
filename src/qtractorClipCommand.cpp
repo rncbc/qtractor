@@ -117,6 +117,17 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
 		pItem->fadeOutLength = pClip->fadeOutLength();
 	m_items.append(pItem);
+
+	// ATTN: Implies all take(record) description reset...
+	qtractorClip::TakeInfo *pTakeInfo = pClip->takeInfo();
+	if (pTakeInfo) {
+		pClip = pTakeInfo->clipPart(qtractorClip::TakeInfo::ClipHead);
+		if (pClip)
+			takeInfoClip(pClip, NULL);
+		pClip = pTakeInfo->clipPart(qtractorClip::TakeInfo::ClipTake);
+		if (pClip)
+			takeInfoClip(pClip, NULL);
+	}
 }
 
 
