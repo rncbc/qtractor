@@ -355,7 +355,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 
 	// Draw track clip selection...
 	if (isClipSelected()) {
-		const QRect rectView(qtractorScrollView::viewport()->rect());
+		const QRect& rectView = qtractorScrollView::viewport()->rect();
 		const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 		for ( ; iter != items.constEnd(); ++iter) {
@@ -458,8 +458,13 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	// Automation curve drawing...
 	pPainter->setRenderHint(QPainter::Antialiasing, true);
 
-	x = rect.left()  - 1;
-	w = rect.width() + 2;
+	x = rect.left();
+	w = rect.width();
+
+	if (w < 8) {
+		x -= 4; if (x < 0) x = 0;
+		w += 8;
+	}
 
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack && y2 < ch) {
@@ -470,9 +475,9 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			const int h = y2 - y1 - 2;
 			const QRect trackRect(x, y1 - cy + 1, w, h);
 			if (iTrackStart == 0)
-				iTrackStart = pSession->frameFromPixel(cx + rect.x());
+				iTrackStart = pSession->frameFromPixel(cx + x);
 			if (iTrackEnd == 0)
-				iTrackEnd = pSession->frameFromPixel(cx + rect.right());
+				iTrackEnd = pSession->frameFromPixel(cx + x + w);
 			unsigned long frame = iTrackStart;
 			qtractorCurve::Cursor cursor(pCurve);
 			qtractorCurve::Node *pNode = cursor.seek(frame);
@@ -1206,7 +1211,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 		return NULL;
 	}
 
-	// Ok, sure we're into some drag state...
+	// Ok, sure we're into some drag&drop state...
 	m_dragState = DragDrop;
 	m_iDraggingX = 0;	
 

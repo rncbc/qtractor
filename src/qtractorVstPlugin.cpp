@@ -1397,9 +1397,12 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 				s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
 			if (pNode) {
 				s_vstTimeInfo.tempo = pNode->tempo;
+				s_vstTimeInfo.flags |= kVstTempoValid;
 				s_vstTimeInfo.timeSigNumerator = pNode->beatsPerBar;
 				s_vstTimeInfo.timeSigDenominator = (1 << pNode->beatDivisor);
-				s_vstTimeInfo.flags |= (kVstTempoValid | kVstTimeSigValid);
+				s_vstTimeInfo.flags |= kVstTimeSigValid;
+				s_vstTimeInfo.ppqPos = pNode->tickFromFrame(iPlayHead);
+				s_vstTimeInfo.flags |= kVstPpqPosValid;
 			}
 			ret = (VstIntPtr) &s_vstTimeInfo;
 		}
