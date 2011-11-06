@@ -11479,7 +11479,7 @@ Chcete použít tyto změny?</translation>
         <translation type="unfinished">&amp;TDT</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.cpp" line="263"/>
+        <location filename="../qtractorTakeRangeForm.cpp" line="251"/>
         <source>Take %1</source>
         <translation type="unfinished"></translation>
     </message>

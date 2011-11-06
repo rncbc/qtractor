@@ -46,6 +46,7 @@ qtractorTakeRangeForm::qtractorTakeRangeForm (
 
 	// Initialize dirty control state.
 	m_pTimeScale = NULL;
+	m_pClip = NULL;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -65,19 +66,6 @@ qtractorTakeRangeForm::qtractorTakeRangeForm (
 			m_ui.FramesRadioButton->setChecked(true);
 			break;
 		}
-		// Populate range options...
-		if (pSession->isLooping())
-			m_ui.LoopRangeRadioButton->setChecked(true);
-		else
-		if (pSession->isPunching())
-			m_ui.PunchRangeRadioButton->setChecked(true);
-		else
-		if (pSession->editHead() < pSession->editTail())
-			m_ui.EditRangeRadioButton->setChecked(true);
-		else
-			m_ui.CustomRangeRadioButton->setChecked(true);
-		// Populate range values...
-		rangeChanged();
 	}
 
 	// Try to restore old window positioning.
