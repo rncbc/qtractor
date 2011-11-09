@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Possible attempt to improve in-flight recording clip
+  display, especially when looping and MIDI clips are
+  involved.
+
 - MIDI clip revision (re)numbering paranoia has been
   improved as much to avoid MIDI file clashes as much
   as possible while editing multiple MIDI clips which
