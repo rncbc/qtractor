@@ -93,9 +93,6 @@ void qtractorClip::clear (void)
 	m_iSelectStart    = 0;
 	m_iSelectEnd      = 0;
 
-	m_iLoopStart      = 0;
-	m_iLoopEnd        = 0;
-
 	m_fGain           = 1.0f;
 
 	// Gain fractionalizer(tm)...
@@ -225,22 +222,6 @@ void qtractorClip::setClipSelect ( unsigned long iSelectStart,
 		m_iSelectStart = 0;
 		m_iSelectEnd   = 0;
 	}
-}
-
-
-// Clip-loop points accessors.
-void qtractorClip::setClipLoop ( unsigned long iLoopStart,
-	unsigned long iLoopEnd )
-{
-	if (iLoopStart < iLoopEnd) {
-		m_iLoopStart = iLoopStart;
-		m_iLoopEnd   = iLoopEnd;
-	} else {
-		m_iLoopStart = 0;
-		m_iLoopEnd   = 0;
-	}
-
-	set_loop(m_iLoopStart, m_iLoopEnd);
 }
 
 

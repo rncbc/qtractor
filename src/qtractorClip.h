@@ -97,13 +97,6 @@ public:
 	unsigned long clipSelectEnd() const
 		{ return m_iSelectEnd; }
 
-	// Clip loop point accessors.
-	void setClipLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
-	unsigned long clipLoopStart() const
-		{ return m_iLoopStart; }
-	unsigned long clipLoopEnd() const
-		{ return m_iLoopEnd; }
-
 	// Clip gain/volume accessors.
 	void setClipGain(float fGain);
 	float clipGain() const
@@ -161,7 +154,7 @@ public:
 	virtual void reset(bool bLooping) = 0;
 
 	// Clip loop-point methods.
-	virtual void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
+	virtual void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
 
 	// Clip close-commit (record specific)
 	virtual void close() = 0;
@@ -362,9 +355,6 @@ private:
 
 	unsigned long m_iSelectStart;   // Clip loop start frame-offset.
 	unsigned long m_iSelectEnd;     // Clip loop end frame-offset.
-
-	unsigned long m_iLoopStart;     // Clip loop start frame-offset.
-	unsigned long m_iLoopEnd;       // Clip loop end frame-offset.
 
 	// Clip gain/volume.
 	float m_fGain;
