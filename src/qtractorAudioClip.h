@@ -77,7 +77,7 @@ public:
 	void reset(bool bLooping);
 
 	// Loop positioning.
-	void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd);
+	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
 
 	// Clip close-commit (record specific)
 	void close();

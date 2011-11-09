@@ -1221,8 +1221,8 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 
 
 // Track loop point setler.
-void qtractorTrack::setLoop ( unsigned long iLoopStart,
-	unsigned long iLoopEnd )
+void qtractorTrack::setLoop (
+	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
 	qtractorClip *pClip = m_clips.first();
 	while (pClip) {
@@ -1231,12 +1231,12 @@ void qtractorTrack::setLoop ( unsigned long iLoopStart,
 		unsigned long iClipEnd   = iClipStart + pClip->clipLength();
 		if (iLoopStart < iClipEnd && iLoopEnd > iClipStart) {
 			// Set clip inner-loop...
-			pClip->setClipLoop(
+			pClip->setLoop(
 				(iLoopStart > iClipStart ? iLoopStart - iClipStart : 0),
-				(iLoopEnd < iClipEnd ? iLoopEnd : iClipEnd) - iClipStart) ;
+				(iLoopEnd < iClipEnd ? iLoopEnd : iClipEnd) - iClipStart);
 		} else {
 			// Clear/reaet clip-loop...
-			pClip->setClipLoop(0, 0);
+			pClip->setLoop(0, 0);
 		}
 		pClip = pClip->next();
 	}

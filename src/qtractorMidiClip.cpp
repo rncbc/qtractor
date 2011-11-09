@@ -545,9 +545,10 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	}
 
 	if (m_iRevision == 0 || bForce) {
+		qtractorTrack *pTrack = track();
 		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession && track())
-			sFilename = pSession->createFilePath(track()->trackName(), "mid");
+		if (pTrack && pSession)
+			sFilename = pSession->createFilePath(pTrack->trackName(), "mid");
 		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorMidiClip::createFilePathRevision(\"%s\")",
@@ -751,28 +752,20 @@ void qtractorMidiClip::seek ( unsigned long iFrame )
 
 
 // Reset clip state.
-void qtractorMidiClip::reset ( bool bLooping )
+void qtractorMidiClip::reset ( bool /* bLooping */ )
 {
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiClip[%p]::reset(%d)", this, (int) bLooping);
-#endif
-
 	qtractorMidiSequence *pSeq = sequence();
 	if (pSeq == NULL)
 		return;
 
 	// Reset to the first sequence event...
 	m_playCursor.reset(pSeq);
-
-	// Take the time from loop-start?
-	if (bLooping && clipLoopStart() < clipLoopEnd())
-		seek(clipLoopStart());
 }
 
 
 // Loop positioning.
-void qtractorMidiClip::set_loop ( unsigned long /* iLoopStart */,
-	unsigned long /* iLoopEnd */ )
+void qtractorMidiClip::setLoop (
+	unsigned long /* iLoopStart */, unsigned long /* iLoopEnd */ )
 {
 	// Do nothing?
 }
@@ -906,8 +899,8 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 
 	// Check maximum note span...
 	int iNoteSpan = (pSeq->noteMax() - pSeq->noteMin()) + 1;
-	if (iNoteSpan < 4)
-		iNoteSpan = 4;
+	if (iNoteSpan < 6)
+		iNoteSpan = 6;
 
 	unsigned long iFrameStart = clipStart() + iClipOffset;
 	int cx = pSession->pixelFromFrame(iFrameStart);
@@ -921,11 +914,11 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	pNode = cursor.seekPixel(cx + clipRect.width());	
 	unsigned long iTimeEnd = pNode->tickFromPixel(cx + clipRect.width());
 
-	const QColor& fg = track()->foreground();
+	const QColor& fg = pTrack->foreground();
 	pPainter->setPen(fg);
 	pPainter->setBrush(fg.lighter());
 
-	bool bClipRecord = (track()->clipRecord() == this);
+	bool bClipRecord = (pTrack->clipRecord() == this);
 	int h1 = clipRect.height() - 3;
 	int h  = h1 / iNoteSpan;
 	if (h < 3) h = 3;

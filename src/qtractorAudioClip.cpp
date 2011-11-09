@@ -368,8 +368,8 @@ void qtractorAudioClip::reset ( bool bLooping )
 
 
 // Loop positioning.
-void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
-	unsigned long iLoopEnd )
+void qtractorAudioClip::setLoop (
+	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
 	if (m_pData) m_pData->setLoop(iLoopStart, iLoopEnd);
 }
