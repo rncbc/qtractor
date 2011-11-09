@@ -320,27 +320,19 @@ void qtractorTrackView::updateContentsRecord (void)
 	const int cx = qtractorScrollView::contentsX();
 	int w = m_iPlayHeadX - cx;
 	if (w > 0 && w < pViewport->width()) {
-		int d, x = 0;
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession && pSession->midiRecord() > 0) {
-			// Recording MIDI clip(s), any... 
-			if (m_iPlayHeadX < m_iLastRecordX)
-				w = m_iLastRecordX - cx;
-			d = (w >> 3);
-		} else {
-			// Recording audio clip(s), only...
-			if (m_iLastRecordX > cx)
-				x = m_iLastRecordX - cx;
-			if (m_iPlayHeadX > m_iLastRecordX)
-				w = m_iPlayHeadX - m_iLastRecordX;
-			else
-				w = m_iLastRecordX - cx;
-			d = (w >> 1);
+		int x = 0, dx = 8;
+		if (m_iPlayHeadX > m_iLastRecordX) {
+			dx += (m_iPlayHeadX - m_iLastRecordX);
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession && pSession->midiRecord() < 1) {
+				w = dx;
+				if (m_iLastRecordX > cx + dx)
+					x = m_iLastRecordX - (cx + dx);
+			}
 		}
-		// Give it the slack...
-		if (x > d) x -= d; w += d;
+		else w = m_iLastRecordX - cx + dx;
 		m_iLastRecordX = m_iPlayHeadX;
-		pViewport->update(QRect(x, 0, w, pViewport->height()));
+		pViewport->update(QRect(x, 0, w + dx, pViewport->height()));
 	}
 }
 
