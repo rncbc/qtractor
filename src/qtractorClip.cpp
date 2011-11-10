@@ -847,7 +847,7 @@ int qtractorClip::TakeInfo::takeCount (void) const
 			iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
 		else
 		if (m_iClipStart < m_iTakeEnd && iClipEnd > m_iTakeEnd)
-			iTakeCount = m_iClipLength / iTakeLength;
+			iTakeCount = (iClipEnd - m_iTakeEnd) / iTakeLength + 1;
 	}
 
 	return iTakeCount + 1;
@@ -893,7 +893,7 @@ int qtractorClip::TakeInfo::select (
 	}
 	else
 	if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
-		int iTakeCount = iClipLength / iTakeLength;
+		int iTakeCount = (iClipEnd - iTakeEnd) / iTakeLength + 1;
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
 		// Clip-take for sure...
