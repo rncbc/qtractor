@@ -400,35 +400,42 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					const QRect trackRect(
 						rect.left() - 1, y1 - cy + 1, rect.width() + 2, h);
 					unsigned long iClipStart  = pClipRecord->clipStart();
-					unsigned long iClipOffset = iFrameOffset;
+					unsigned long iClipOffset = 0;
 					if (iLoopStart < iLoopEnd) { // aka. pSession->isLooping()
 						// Clip recording started within loop range:
 						// -- adjust turn-around clip offset...
 						if (iClipStart > iLoopStart && iClipStart < iLoopEnd) {
-							if (iFrameTime > iLoopEnd) {
-								iClipOffset -= iClipStart - iLoopStart;
+							unsigned long iHeadLength = (iLoopEnd - iClipStart);
+							unsigned long iLoopLength = (iLoopEnd - iLoopStart);
+							unsigned long iClipLength
+								= (iFrameTime - pTrack->clipRecordStart());
+							if (iClipLength > iHeadLength) {
+								unsigned long iLoopCount
+									= (iClipLength - iHeadLength) / iLoopLength;
+								iClipOffset += iHeadLength + iLoopCount * iLoopLength;
 								iClipStart = iLoopStart;
 							}
 						}
 						else
 						// Clip recording is within loop range:
-						// -- redraw leading clip segment...
+						// -- redraw leading/head clip segment...
 						if (iFrameTime > iLoopStart) {
-							unsigned long iLeadOffset = 0;
+							unsigned long iHeadOffset = 0;
 							if (iClipStart < iTrackStart)
-								iLeadOffset += iTrackStart - iClipStart;
+								iHeadOffset += iTrackStart - iClipStart;
 							x = pSession->pixelFromFrame(iClipStart) - cx;
 							w = 0;
 							if (iClipStart < iLoopStart) {
 								w += pSession->pixelFromFrame(iLoopStart - iClipStart);
 								iClipOffset += iLoopStart - iClipStart;
 							}
-							const QRect& leadRect
+							const QRect& headRect
 								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
-							if (!leadRect.isEmpty()) {
-								pClipRecord->drawClip(pPainter, leadRect, iLeadOffset);
-								pPainter->fillRect(leadRect, QColor(255, 0, 0, 120));
+							if (!headRect.isEmpty()) {
+								pClipRecord->drawClip(pPainter, headRect, iHeadOffset);
+								pPainter->fillRect(headRect, QColor(255, 0, 0, 120));
 							}
+							iClipOffset += iFrameOffset;
 							iClipStart = iLoopStart;
 						}
 					}

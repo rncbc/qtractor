@@ -248,13 +248,13 @@ void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 
 
 // Special clip record nethods.
-bool qtractorClipCommand::addClipRecord (
-	qtractorTrack *pTrack, unsigned long iClipEnd )
+bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 {
 	qtractorClip *pClip = pTrack->clipRecord();
 	if (pClip == NULL)
 		return false;
 
+	unsigned long iClipEnd = pTrack->clipRecordEnd();
 	unsigned long iClipStart = pClip->clipStart();
 	if (iClipStart >= iClipEnd)
 		return false;

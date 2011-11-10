@@ -177,6 +177,11 @@ public:
 	void setClipRecord(qtractorClip *pClipRecord);
 	qtractorClip *clipRecord() const;
 
+	// Current clip on record absolute start frame (capture).
+	void setClipRecordStart(unsigned long iClipRecordStart);
+	unsigned long clipRecordStart() const;
+	unsigned long clipRecordEnd() const;
+
 	// Background color accessors.
 	void setBackground(const QColor& bg);
 	const QColor& background() const;
@@ -333,6 +338,7 @@ private:
 	qtractorList<qtractorClip> m_clips; // List of clips.
 
 	qtractorClip *m_pClipRecord;        // Current clip on record (capture).
+	unsigned long m_iClipRecordStart;   // Current clip on record start frame.
 
 	qtractorPluginList *m_pPluginList;	// Plugin chain (audio).
 
