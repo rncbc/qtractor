@@ -118,15 +118,18 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 		pItem->fadeOutLength = pClip->fadeOutLength();
 	m_items.append(pItem);
 
-	// ATTN: Implies all take(record) description reset...
-	qtractorClip::TakeInfo *pTakeInfo = pClip->takeInfo();
-	if (pTakeInfo) {
-		pClip = pTakeInfo->clipPart(qtractorClip::TakeInfo::ClipHead);
-		if (pClip)
-			takeInfoClip(pClip, NULL);
-		pClip = pTakeInfo->clipPart(qtractorClip::TakeInfo::ClipTake);
-		if (pClip)
-			takeInfoClip(pClip, NULL);
+	// ATTN: when moving across tracks:
+	// reset all take(record) descriptors...
+	if (pTrack != pClip->track()) {
+		qtractorClip::TakeInfo *pTakeInfo = pClip->takeInfo();
+		if (pTakeInfo) {
+			pClip = pTakeInfo->clipPart(qtractorClip::TakeInfo::ClipHead);
+			if (pClip)
+				takeInfoClip(pClip, NULL);
+			pClip = pTakeInfo->clipPart(qtractorClip::TakeInfo::ClipTake);
+			if (pClip)
+				takeInfoClip(pClip, NULL);
+		}
 	}
 }
 
