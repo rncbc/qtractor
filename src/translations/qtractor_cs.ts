@@ -1152,12 +1152,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="693"/>
+        <location filename="../qtractorClipCommand.cpp" line="696"/>
         <source>take %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="695"/>
+        <location filename="../qtractorClipCommand.cpp" line="698"/>
         <source>reset takes</source>
         <translation type="unfinished"></translation>
     </message>
