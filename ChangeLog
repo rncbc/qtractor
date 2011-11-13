@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 State extension support added (will replace old
+  LV2 Persist extension interface in near future).
+
 - Possible attempt to improve in-flight recording clip
   display, especially when looping and MIDI clips are
   involved.
