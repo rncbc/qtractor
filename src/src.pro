@@ -285,11 +285,10 @@ unix {
 		PREFIX = /usr/local
 	}
 
-	BINDIR = $(bindir)
-	DATADIR = $(datadir)
+	BINDIR = $$PREFIX/bin
+	DATADIR = $$PREFIX/share
 	LOCALEDIR = $(localedir)
 
-	DEFINES += BINDIR=\"$$BINDIR\"
 	DEFINES += DATADIR=\"$$DATADIR\"
 	DEFINES += LOCALEDIR=\"$$LOCALEDIR\"
 

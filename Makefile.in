@@ -269,11 +269,6 @@ translations_targets = \
 	src/translations/qtractor_cs.qm
 
 
-exec_prefix = @exec_prefix@
-datarootdir = @datarootdir@
-
-export bindir = @bindir@
-export datadir = @datadir@
 export localedir = @localedir@
 
 
@@ -299,7 +294,7 @@ install:	$(target) $(translations_targets)
 	@install -d -v -m 0755 $(DESTDIR)$(localedir)
 	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(localedir)
 
-uninstall:	$(DESTDIR)$(bindir)/$(name)
+uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 	@make INSTALL_ROOT=$(DESTDIR) -f $(name).mak uninstall
 	@rm -vf $(DESTDIR)$(localedir)/$(translations_targets)
 	@for x in $(translations_targets); do \
