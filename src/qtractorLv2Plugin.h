@@ -74,6 +74,11 @@
 #include "lv2_persist.h"
 #endif
 
+#ifdef CONFIG_LV2_STATE
+// LV2 State support.
+#include "lv2_state.h"
+#endif
+
 #ifdef CONFIG_LV2_FILES
 // LV2 Files support.
 #include "lv2_files.h"
@@ -244,6 +249,18 @@ public:
 
 #endif
 
+#ifdef CONFIG_LV2_STATE
+
+	// LV2 State extension data descriptor accessor.
+	const LV2_State_Interface *lv2_state_descriptor(unsigned short iInstance) const;
+
+	int lv2_state_store(
+		uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags);
+	const void *lv2_state_retrieve(
+		uint32_t key, size_t *size, uint32_t *type, uint32_t *flags);
+
+#endif
+
 	// URI map helpers.
 	static uint32_t    lv2_uri_to_id(const char *uri);
 	static const char *lv2_id_to_uri(uint32_t id);
@@ -331,6 +348,11 @@ protected:
 #ifdef CONFIG_LV2_PERSIST
 	QHash<QString, QByteArray> m_lv2_persist_configs;
 	QHash<QString, uint32_t>   m_lv2_persist_ctypes;
+#endif
+
+#ifdef CONFIG_LV2_STATE
+	QHash<QString, QByteArray> m_lv2_state_configs;
+	QHash<QString, uint32_t>   m_lv2_state_ctypes;
 #endif
 
 #ifdef CONFIG_LV2_FILES
