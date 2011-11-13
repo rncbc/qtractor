@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed Makefile.in handling installation directories
+  to the configure script eg. --bindir, --datadir and
+  --localedir.
+
 - LV2 State extension support added (will replace old
   LV2 Persist extension interface in near future).
 
