@@ -138,7 +138,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
 		qtractorCurve *pCurve = (pItem->subject)->curve();
-		if (pCurve) {
+		if (pCurve && !pCurve->isEmpty()) {
 			qtractorMidiSequence *pSeq = ppSeqs[iSeq];
 			pCurve->writeMidiSequence(pSeq,
 				pItem->ctype,
