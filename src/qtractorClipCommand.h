@@ -74,7 +74,7 @@ public:
 	void reopenClip(qtractorClip *pClip, bool bClose = false);
 
 	// Special clip record methods.
-	bool addClipRecord(qtractorTrack *pTrack);
+	bool addClipRecord(qtractorTrack *pTrack, unsigned long iFrameTime);
 	bool addClipRecordTake(qtractorTrack *pTrack, qtractorClip *pClip,
 		unsigned long iClipStart, unsigned long iClipOffset,
 		unsigned long iClipLength, qtractorClip::TakePart *pTakePart = NULL);

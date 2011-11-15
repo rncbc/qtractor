@@ -5,9 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- Once again, make sure all recorded clips start and
+  end at the very same position when multiple track
+  recording is turned on/off, while playback is still
+  rolling. (EXPERIMENTAL)
+
 - Fixed Makefile.in handling installation directories
-  to the configure script eg. --bindir, --datadir and
-  --localedir.
+  to the configure script eg. --datadir, --localedir.
 
 - LV2 State extension support added (will replace old
   LV2 Persist extension interface in near future).
@@ -32,7 +36,7 @@ SVN TRUNK
   and Range...; the latter is actually being provided
   as bonus feature :) as to fold any given clip into
   so-called takes, simulating loop-recording mode over
-  an arbitrary range). (HIGHLY EXPERIMENTAL)
+  an arbitrary range). (EXPERIMENTAL)
 
 - Loop-recording/takes infrastructure integration is
   sneaking in: all clips recorded under a loop/cycle
@@ -44,7 +48,6 @@ SVN TRUNK
   old recording behavior, where clips are laid out
   unfolded through the timeline, as usual (see menu
   View/Options.../Display/Loop recording mode).
-  (EXPERIMENTAL)
 
 - Improved robustness in face of disabled audio buses
   when global maximum number of JACK (audio) ports is

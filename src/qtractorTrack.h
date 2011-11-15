@@ -174,13 +174,13 @@ public:
 	void removeClip(qtractorClip *pClip);
 
 	// Current clip on record (capture).
-	void setClipRecord(qtractorClip *pClipRecord);
+	void setClipRecord(qtractorClip *pClipRecord,
+		unsigned long iClipRecordStart = 0);
 	qtractorClip *clipRecord() const;
 
 	// Current clip on record absolute start frame (capture).
-	void setClipRecordStart(unsigned long iClipRecordStart);
 	unsigned long clipRecordStart() const;
-	unsigned long clipRecordEnd() const;
+	unsigned long clipRecordEnd(unsigned long iFrameTime) const;
 
 	// Background color accessors.
 	void setBackground(const QColor& bg);

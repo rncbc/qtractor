@@ -4930,9 +4930,10 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(tr("record clip"));
 		// For all non-empty clip on record...
+		unsigned long iFrameTime = m_pSession->frameTimeEx();
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
-			if (pClipCommand->addClipRecord(pTrack))
+			if (pClipCommand->addClipRecord(pTrack, iFrameTime))
 				++iUpdate;
 		}
 		// Put it in the form of an undoable command...

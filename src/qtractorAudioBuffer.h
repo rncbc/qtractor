@@ -168,8 +168,8 @@ public:
 	bool isPitchShift() const;
 
 	// Sync thread state flags accessors.
-	enum SyncFlag { InitSync = 1, ReadSync = 2, WaitSync = 4 };
-	
+	enum SyncFlag { InitSync = 1, ReadSync = 2, WaitSync = 4, CloseSync = 8 };
+
 	void setSyncFlag(SyncFlag flag, bool bOn = true);
 	bool isSyncFlag(SyncFlag flag) const;
 

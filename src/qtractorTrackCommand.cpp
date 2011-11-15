@@ -417,7 +417,7 @@ bool qtractorEditTrackCommand::redo (void)
 	// Howdy, maybe we're already have a name on recording...
 	bool bRecord = m_pTrack->isRecord();
 	if (bRecord)
-		pSession->trackRecord(m_pTrack, false, 0);
+		pSession->trackRecord(m_pTrack, false, 0, 0);
 
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
@@ -441,7 +441,8 @@ bool qtractorEditTrackCommand::redo (void)
 			if (iClipStart < iPunchIn)
 				iClipStart = iPunchIn;
 		}
-		pSession->trackRecord(m_pTrack, true, iClipStart);
+		unsigned long iFrameTime = pSession->frameTimeEx();
+		pSession->trackRecord(m_pTrack, true, iClipStart, iFrameTime);
 	}
 
 	// Refresh track item, at least the names...
@@ -568,7 +569,8 @@ bool qtractorTrackStateCommand::redo (void)
 			&& m_pClipCommand == NULL && m_iRecordCount == 0) {
 			m_pClipCommand = new qtractorClipCommand(QString());
 			// Do all the record stuffing here...
-			if (m_pClipCommand->addClipRecord(pTrack)) {
+			unsigned long iFrameTime = pSession->frameTimeEx();
+			if (m_pClipCommand->addClipRecord(pTrack, iFrameTime)) {
 				// Yes, we've recorded something...
 				setRefresh(true);
 			} else {
