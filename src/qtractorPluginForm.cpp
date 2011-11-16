@@ -146,10 +146,6 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_pDirectAccessParamMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateDirectAccessParamSlot()));
-
-	QObject::connect(this,
-		SIGNAL(changeParamSignal(unsigned long)),
-		SLOT(changeParamSlot(unsigned long)));
 }
 
 
@@ -442,14 +438,8 @@ void qtractorPluginForm::updateAudioBusName (void)
 // Update port widget state.
 void qtractorPluginForm::changeParamValue ( unsigned long iIndex )
 {
-	emit changeParamSignal(iIndex);
-}
-
-
-void qtractorPluginForm::changeParamSlot ( unsigned long iIndex )
-{
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm[%p]::changeParamSlot(%lu)", this, iIndex);
+	qDebug("qtractorPluginForm[%p]::changeParamValue(%lu)", this, iIndex);
 #endif
 
 #if 0
