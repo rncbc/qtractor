@@ -76,10 +76,6 @@ public:
 
 	void toggleEditor(bool bOn);
 
-signals:
-
-	void changeParamSignal(unsigned long iIndex);
-
 protected slots:
 
 	void changePresetSlot(const QString& sPreset);
@@ -95,8 +91,6 @@ protected slots:
 
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
-
-	void changeParamSlot(unsigned long iIndex);
 
 	void changeAudioBusNameSlot(const QString& sAudioBusName);
 	void clickAudioBusNameSlot();
