@@ -660,7 +660,8 @@ void qtractorTrack::setRecord ( bool bRecord )
 			if (iClipStart < iPunchIn)
 				iClipStart = iPunchIn;
 		}
-		m_pSession->trackRecord(this, bRecord, iClipStart);
+		unsigned long iFrameTime = m_pSession->frameTimeEx();
+		m_pSession->trackRecord(this, bRecord, iClipStart, iFrameTime);
 	}
 }
 
@@ -1003,20 +1004,14 @@ void qtractorTrack::removeClip ( qtractorClip *pClip )
 
 
 // Current clip on record (capture).
-void qtractorTrack::setClipRecord ( qtractorClip *pClipRecord )
+void qtractorTrack::setClipRecord (
+	qtractorClip *pClipRecord, unsigned long iClipRecordStart )
 {
 	if (m_pClipRecord)
 		delete m_pClipRecord;
 
 	m_pClipRecord = pClipRecord;
-
-	if (m_pClipRecord) {
-		if (m_pSession && m_pSession->isPlaying())
-			m_iClipRecordStart = m_pSession->frameTimeEx();
-		else
-			m_iClipRecordStart = m_pClipRecord->clipStart();
-	}
-	else m_iClipRecordStart = 0;
+	m_iClipRecordStart = iClipRecordStart;
 }
 
 qtractorClip *qtractorTrack::clipRecord (void) const
@@ -1026,30 +1021,23 @@ qtractorClip *qtractorTrack::clipRecord (void) const
 
 
 // Current clip on record absolute start frame (capture).
-void qtractorTrack::setClipRecordStart ( unsigned long iClipRecordStart )
-{
-	m_iClipRecordStart = iClipRecordStart;
-}
-
 unsigned long qtractorTrack::clipRecordStart (void) const
 {
 	return m_iClipRecordStart;
 }
 
-unsigned long qtractorTrack::clipRecordEnd (void) const
+unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 {
 	unsigned long iClipRecordEnd = 0;
 
-	if (m_pSession) {
-		if (m_pSession->isPunching()) {
-			iClipRecordEnd += m_pSession->punchOut();
-		} else {
-			iClipRecordEnd += m_pSession->frameTimeEx();
-			if (iClipRecordEnd  > m_iClipRecordStart)
-				iClipRecordEnd -= m_iClipRecordStart;
-			if (m_pClipRecord)
-				iClipRecordEnd += m_pClipRecord->clipStart();
-		}
+	if (m_pSession && m_pSession->isPunching()) {
+		iClipRecordEnd += m_pSession->punchOut();
+	} else {
+		iClipRecordEnd += iFrameTime;
+		if (iClipRecordEnd  > m_iClipRecordStart)
+			iClipRecordEnd -= m_iClipRecordStart;
+		if (m_pClipRecord)
+			iClipRecordEnd += m_pClipRecord->clipStart();
 	}
 	
 	return iClipRecordEnd;

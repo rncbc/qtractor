@@ -1419,10 +1419,11 @@ void qtractorSession::setRecording ( bool bRecording )
 			iClipStart = iPunchIn;
 	}
 
+	unsigned long iFrameTime = frameTimeEx();
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->isRecord())
-			trackRecord(pTrack, bRecording, iClipStart);
+			trackRecord(pTrack, bRecording, iClipStart, iFrameTime);
 	}
 }
 
@@ -1452,11 +1453,13 @@ bool qtractorSession::isLoopRecording (void) const
 
 // Immediate track record-arming.
 void qtractorSession::trackRecord (
-	qtractorTrack *pTrack, bool bRecord, unsigned long iClipStart )
+	qtractorTrack *pTrack, bool bRecord,
+	unsigned long iClipStart, unsigned long iFrameTime )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorSession::trackRecord(\"%s\", %d, %lu)",
-		pTrack->trackName().toUtf8().constData(), int(bRecord), iClipStart);
+	qDebug("qtractorSession::trackRecord(\"%s\", %d, %lu, %lu)",
+		pTrack->trackName().toUtf8().constData(), int(bRecord),
+		iClipStart, iFrameTime);
 #endif
 
 	// Just ditch the in-record clip...
@@ -1494,7 +1497,7 @@ void qtractorSession::trackRecord (
 			createFilePath(pTrack->trackName(),
 				qtractorAudioFileFactory::defaultExt()),
 			qtractorAudioFile::Write);
-		pTrack->setClipRecord(pAudioClip);
+		pTrack->setClipRecord(pAudioClip, iFrameTime);
 		// One-up audio tracks in record mode.
 		++m_iAudioRecord;
 		break;
@@ -1507,7 +1510,7 @@ void qtractorSession::trackRecord (
 			createFilePath(pTrack->trackName(), "mid"),
 			qtractorMidiClip::defaultFormat(),
 			qtractorMidiFile::Write);
-		pTrack->setClipRecord(pMidiClip);
+		pTrack->setClipRecord(pMidiClip, iFrameTime);
 		// MIDI adjust to playing queue start
 		// iif armed while already playing ...
 		if (isPlaying()) {

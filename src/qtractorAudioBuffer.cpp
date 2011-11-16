@@ -25,6 +25,9 @@
 
 #include "qtractorTimeStretcher.h"
 
+#include "qtractorSession.h"
+
+
 // Glitch, click, pop-free ramp length (in frames).
 #define QTRACTOR_RAMP_LENGTH	32
 
@@ -382,6 +385,8 @@ void qtractorAudioBuffer::close (void)
 	if (m_pFile == NULL)
 		return;
 
+#if 0	// QTRACTOR_AUDIO_BUFFER_CLOSE_OLD
+
 	// Avoid any other interference (ought to be atomic)...
 	while (m_pSyncThread && isSyncFlag(WaitSync))
 		m_pSyncThread->syncExport();
@@ -398,6 +403,26 @@ void qtractorAudioBuffer::close (void)
 
 	// Time to close it good.
 	m_pFile->close();
+
+#else	// QTRACTOR_AUDIO_BUFFER_CLOSE_NEW
+
+	// Wait for regular file close...
+	if (m_pSyncThread) {
+		setSyncFlag(CloseSync);
+		m_pSyncThread->sync(this);
+		do qtractorSession::stabilize();
+		while (isSyncFlag(CloseSync));
+	}
+
+	// Close on-the-fly peak file, if applicable...
+	if (m_pFile->mode() & qtractorAudioFile::Write) {
+		if (m_pPeak) {
+			m_pPeak->closeWrite();
+			m_pPeak = NULL;
+		}
+	}
+
+#endif
 
 	// Deallocate any buffer stuff...
 	if (m_pTimeStretcher) {
@@ -830,6 +855,13 @@ void qtractorAudioBuffer::sync (void)
 	if (!isSyncFlag(WaitSync))
 		return;
 
+	if (isSyncFlag(CloseSync)) {
+		if (m_pFile->mode() & qtractorAudioFile::Write)
+			writeSync();
+		m_pFile->close();
+		setSyncFlag(CloseSync, false);
+	}
+	else
 	if (!initSync()) {
 		int mode = m_pFile->mode();
 		if (mode & qtractorAudioFile::Read)
