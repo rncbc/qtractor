@@ -763,15 +763,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// buses needs monitoring while idle...
 	int iOutputBus = 0;
 
-	// Prepare all extra audio buses...
-	for (qtractorBus *pBusEx = busesEx().first();
-			pBusEx; pBusEx = pBusEx->next()) {
-		qtractorAudioBus *pAudioBusEx
-			= static_cast<qtractorAudioBus *> (pBusEx);
-		if (pAudioBusEx)
-			pAudioBusEx->process_prepare(nframes);
-	}
-
 	// Prepare all current audio buses...
 	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
@@ -779,6 +770,15 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus)
 			pAudioBus->process_prepare(nframes);
+	}
+
+	// Prepare all extra audio buses...
+	for (qtractorBus *pBusEx = busesEx().first();
+			pBusEx; pBusEx = pBusEx->next()) {
+		qtractorAudioBus *pAudioBusEx
+			= static_cast<qtractorAudioBus *> (pBusEx);
+		if (pAudioBusEx)
+			pAudioBusEx->process_prepare(nframes);
 	}
 
 	// The owned buses too, if any...
