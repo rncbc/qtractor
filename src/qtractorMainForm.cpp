@@ -1501,7 +1501,7 @@ void qtractorMainForm::closeEvent ( QCloseEvent *pCloseEvent )
 
 
 // Window drag-n-drop event handlers.
-void qtractorMainForm::dragEnterEvent ( QDragEnterEvent* pDragEnterEvent )
+void qtractorMainForm::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 {
 	// Accept external drags only...
 	if (pDragEnterEvent->source() == NULL
@@ -1513,7 +1513,7 @@ void qtractorMainForm::dragEnterEvent ( QDragEnterEvent* pDragEnterEvent )
 }
 
 
-void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
+void qtractorMainForm::dropEvent ( QDropEvent *pDropEvent )
 {
 	// Accept externally originated drops only...
 	if (pDropEvent->source())
@@ -5107,12 +5107,9 @@ void qtractorMainForm::stabilizeForm (void)
 	unsigned long iSessionLength = m_pSession->sessionLength();
 
 	qtractorTrack *pTrack = NULL;
-	qtractorClip  *pClip  = NULL;
 	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
-	if (bTracks) {
+	if (bTracks)
 		pTrack = m_pTracks->currentTrack();
-		pClip  = m_pTracks->currentClip();
-	}
 
 	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
