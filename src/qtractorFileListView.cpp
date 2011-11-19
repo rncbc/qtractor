@@ -231,6 +231,7 @@ void qtractorFileChannelDrag::encode ( QMimeData *pMimeData,
 		iSize += sizeof(unsigned short);
 		iSize += item.path.length() + 1;
 	}
+
 	// Allocate the data array...
 	QByteArray data(iSize, (char) 0);
 	char *pData = data.data();
@@ -246,9 +247,8 @@ void qtractorFileChannelDrag::encode ( QMimeData *pMimeData,
 		const Item& item = iter.next();
 		::memcpy(pData, &item.channel, sizeof(unsigned short));
 		pData += sizeof(unsigned short);
-		const char  *pszPath = item.path.toUtf8().constData();
-		unsigned int cchPath = ::strlen(pszPath) + 1;
-		::memcpy(pData, pszPath, cchPath);
+		unsigned int cchPath = item.path.length() + 1;
+		::memcpy(pData, item.path.toUtf8().constData(), cchPath);
 		pData += cchPath;
 	}
 
@@ -283,7 +283,7 @@ qtractorFileChannelDrag::List qtractorFileChannelDrag::decode (
 		::memcpy(&item.channel, pData, sizeof(unsigned short));
 		pData += sizeof(unsigned short);
 		item.path = pData;
-		pData += ::strlen(pData) + 1;
+		pData += item.path.length() + 1;
 		items.append(item);
 	}
 
