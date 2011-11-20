@@ -925,37 +925,37 @@ MIDI:	</translation>
         <translation>Rytmus</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="160"/>
+        <location filename="../qtractorTrackCommand.cpp" line="161"/>
         <source>add track</source>
         <translation>Přidat stopu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="183"/>
+        <location filename="../qtractorTrackCommand.cpp" line="184"/>
         <source>remove track</source>
         <translation>Odstratit stopu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="207"/>
+        <location filename="../qtractorTrackCommand.cpp" line="208"/>
         <source>move track</source>
         <translation>Přesunout stopu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="281"/>
+        <location filename="../qtractorTrackCommand.cpp" line="282"/>
         <source>resize track</source>
         <translation>Změnit velikost stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="315"/>
+        <location filename="../qtractorTrackCommand.cpp" line="316"/>
         <source>import track</source>
         <translation>Zavést stopu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="396"/>
+        <location filename="../qtractorTrackCommand.cpp" line="397"/>
         <source>track properties</source>
         <translation>Vlastnosti stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="430"/>
+        <location filename="../qtractorTrackCommand.cpp" line="460"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -964,32 +964,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="504"/>
+        <location filename="../qtractorTrackCommand.cpp" line="534"/>
         <source>track record</source>
         <translation>Nahrání stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="507"/>
+        <location filename="../qtractorTrackCommand.cpp" line="537"/>
         <source>track mute</source>
         <translation>Ztlumení stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="510"/>
+        <location filename="../qtractorTrackCommand.cpp" line="540"/>
         <source>track solo</source>
         <translation>Sólo pro stopu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="679"/>
+        <location filename="../qtractorTrackCommand.cpp" line="709"/>
         <source>track monitor</source>
         <translation>Sledování stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="778"/>
+        <location filename="../qtractorTrackCommand.cpp" line="808"/>
         <source>track gain</source>
         <translation>Zesílení stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="868"/>
+        <location filename="../qtractorTrackCommand.cpp" line="898"/>
         <source>track pan</source>
         <translation>Vyváženost stopy</translation>
     </message>
@@ -11849,7 +11849,7 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="512"/>
+        <location filename="../qtractorTrackForm.cpp" line="515"/>
         <source>(No instrument)</source>
         <translation>(Žádný nástroj)</translation>
     </message>
@@ -11866,8 +11866,8 @@ Chcete použít tyto změny?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="691"/>
-        <location filename="../qtractorTrackForm.cpp" line="801"/>
+        <location filename="../qtractorTrackForm.cpp" line="694"/>
+        <location filename="../qtractorTrackForm.cpp" line="804"/>
         <source>(None)</source>
         <translation>(Žádný)</translation>
     </message>

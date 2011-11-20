@@ -30,6 +30,7 @@
 #include "qtractorTrackView.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiControl.h"
+#include "qtractorMidiClip.h"
 #include "qtractorMixer.h"
 
 
@@ -418,6 +419,35 @@ bool qtractorEditTrackCommand::redo (void)
 	bool bRecord = m_pTrack->isRecord();
 	if (bRecord)
 		pSession->trackRecord(m_pTrack, false, 0, 0);
+
+	// Trap dirty clips (only MIDI at this time...)
+	if (m_pTrack->trackType() == qtractorTrack::Midi) {
+		for (qtractorClip *pClip = m_pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			// Are any dirty changes pending commit?
+			if (pClip->isDirty()) {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pClip);
+				if (pMidiClip) {
+					// Have a new filename revision...
+					const QString& sFilename
+						= pMidiClip->createFilePathRevision();
+					// Save/replace the clip track...
+					qtractorMidiFile::saveCopyFile(sFilename,
+						pMidiClip->filename(),
+						pMidiClip->trackChannel(),
+						pMidiClip->format(),
+						pMidiClip->sequence(),
+						pSession->timeScale(),
+						pSession->tickFromFrame(pMidiClip->clipStart()));
+					// Pre-commit dirty changes...
+					pMidiClip->setFilenameEx(sFilename);
+					// Reference for immediate file addition...
+					pMainForm->addMidiFile(sFilename);
+				}
+			}
+		}
+	}
 
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
