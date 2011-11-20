@@ -379,7 +379,6 @@ QString qtractorMidiEventListModel::itemDisplay (
 QString qtractorMidiEventListModel::itemToolTip (
 	const QModelIndex& index ) const
 {
-//	qDebug("itemToolTip(%d, %d)", index.row(), index.column());
 	qtractorMidiEvent *pEvent = eventOfIndex(index);
 	if (pEvent)
 		return m_pEditor->eventToolTip(pEvent);

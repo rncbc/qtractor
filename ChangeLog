@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI SysEx event list editing is now fixed.
+
 - Once again, make sure all recorded clips start and
   end at the very same position when multiple track
   recording is turned on/off, while playback is still

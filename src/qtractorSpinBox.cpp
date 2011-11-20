@@ -275,6 +275,11 @@ QAbstractSpinBox::StepEnabled qtractorTimeSpinBox::stepEnabled (void) const
 
 
 // Value/text format converters.
+unsigned long qtractorTimeSpinBox::valueFromText (void)
+{
+	return valueFromText(QAbstractSpinBox::text());
+}
+
 unsigned long qtractorTimeSpinBox::valueFromText ( const QString& sText ) const
 {
 	return (m_pTimeScale
@@ -300,7 +305,7 @@ void qtractorTimeSpinBox::editingFinishedSlot (void)
 #endif
 
 	// Kind of final fixup.
-	setValue(valueFromText(QAbstractSpinBox::text()));
+	setValue(valueFromText());
 }
 
 

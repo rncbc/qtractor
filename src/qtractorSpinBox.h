@@ -70,6 +70,9 @@ public:
 	bool isDeltaValue() const;
 	unsigned long deltaValue() const;
 
+	// Editing stabilizer.
+	unsigned long valueFromText();
+
 signals:
 
 	// Common value change notification.

@@ -305,7 +305,7 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 			= qobject_cast<qtractorTimeSpinBox *> (pEditor);
 		if (pTimeSpinBox) {
 			unsigned long iTime
-				= pTimeScale->tickFromFrame(pTimeSpinBox->value());
+				= pTimeScale->tickFromFrame(pTimeSpinBox->valueFromText());
 			if (iTime > pMidiEditor->timeOffset())
 				iTime -= pMidiEditor->timeOffset();
 			else
