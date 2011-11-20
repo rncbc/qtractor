@@ -160,7 +160,8 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			unsigned long iOldDuration = pEvent->duration();
 			pSeq->unlinkEvent(pEvent);
 			pEvent->setTime(pItem->time);
-			pEvent->setDuration(pItem->duration);
+			if (pEvent->type() == qtractorMidiEvent::NOTEON)
+				pEvent->setDuration(pItem->duration);
 			pSeq->insertEvent(pEvent);
 			pItem->time = iOldTime;
 			pItem->duration = iOldDuration;
