@@ -408,6 +408,9 @@ void qtractorTrackForm::reject (void)
 					m_iOldBankSelMethod, m_iOldBank, m_iOldProg, m_pTrack);
 			}
 		}
+		// Reset plugin list, before too late...
+		m_ui.PluginListView->setPluginList(NULL);
+		// Just go away.
 		QDialog::reject();
 	}
 }

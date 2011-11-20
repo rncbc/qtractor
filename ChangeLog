@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Dirty MIDI clips are now auto-saved when MIDI track
+  properties get changed through its own dialog.
+
+- Fixed one probable too old crash when cancelling a
+  new/add track dialog.
+
 - MIDI SysEx event list editing is now fixed.
 
 - Once again, make sure all recorded clips start and
