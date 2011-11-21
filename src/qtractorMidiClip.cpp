@@ -1035,32 +1035,13 @@ bool qtractorMidiClip::queryEditor (void)
 	if (m_pMidiEditorForm)
 		return m_pMidiEditorForm->queryClose();
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	bool bQueryEditor = qtractorClip::queryEditor();
-
 	// Are any dirty changes pending commit?
+	bool bQueryEditor = qtractorClip::queryEditor();
 	if (!bQueryEditor) {
 		switch (qtractorMidiEditorForm::querySave(filename())) {
 		case QMessageBox::Save:	{
-			// Have a new filename revision...
-			const QString& sFilename = createFilePathRevision();
 			// Save/replace the clip track...
-			bQueryEditor = qtractorMidiFile::saveCopyFile(
-				sFilename, filename(), trackChannel(), format(),
-				sequence(),	pSession->timeScale(),
-				pSession->tickFromFrame(clipStart()));
-			if (bQueryEditor) {
-				// Pre-commit dirty changes...
-				setFilenameEx(sFilename);
-				// Reference for immediate file addition...
-				qtractorMainForm *pMainForm
-					= qtractorMainForm::getInstance();
-				if (pMainForm)
-					pMainForm->addMidiFile(sFilename);
-			}
+			bQueryEditor = saveCopyFile();
 			break;
 		}
 		case QMessageBox::Discard:
@@ -1098,6 +1079,34 @@ QString qtractorMidiClip::toolTip (void) const
 			.arg(100.0f * clipGain(), 0, 'g', 3);
 
 	return sToolTip;
+}
+
+
+// Auto-save to (possible) new file revision.
+bool qtractorMidiClip::saveCopyFile (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// Have a new filename revision...
+	const QString& sFilename = createFilePathRevision();
+
+	// Save/replace the clip track...
+	if (!qtractorMidiFile::saveCopyFile(
+			sFilename, filename(), trackChannel(), format(), sequence(),
+			pSession->timeScale(), pSession->tickFromFrame(clipStart())))
+		return false;
+
+	// Pre-commit dirty changes...
+	setFilenameEx(sFilename);
+
+	// Reference for immediate file addition...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->addMidiFile(sFilename);
+
+	return true;
 }
 
 

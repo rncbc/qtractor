@@ -2051,23 +2051,8 @@ bool qtractorMainForm::saveSessionFileEx (
 			if (pClip->isDirty()) {
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pClip);
-				if (pMidiClip) {
-					// Have a new filename revision...
-					const QString& sFilename
-						= pMidiClip->createFilePathRevision();
-					// Save/replace the clip track...
-					qtractorMidiFile::saveCopyFile(sFilename,
-						pMidiClip->filename(),
-						pMidiClip->trackChannel(),
-						pMidiClip->format(),
-						pMidiClip->sequence(),
-						m_pSession->timeScale(),
-						m_pSession->tickFromFrame(pMidiClip->clipStart()));
-					// Pre-commit dirty changes...
-					pMidiClip->setFilenameEx(sFilename);
-					// Reference for immediate file addition...
-					addMidiFile(sFilename);
-				}
+				if (pMidiClip)
+					pMidiClip->saveCopyFile();
 			}
 		}
 	}

@@ -127,6 +127,9 @@ public:
 	// MIDI clip tool-tip.
 	QString toolTip() const;
 
+	// Auto-save to (possible) new file revision.
+	bool saveCopyFile();
+
 	// MIDI clip export method.
 	typedef void (*ClipExport)(qtractorMidiSequence *, void *);
 
