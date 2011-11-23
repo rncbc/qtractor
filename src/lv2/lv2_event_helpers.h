@@ -51,7 +51,9 @@ lv2_event_pad_size(uint16_t size)
  * The contents of buf are ignored entirely and overwritten, except capacity
  * which is unmodified. */
 static inline void
-lv2_event_buffer_reset(LV2_Event_Buffer* buf, uint16_t stamp_type, uint8_t *data)
+lv2_event_buffer_reset(LV2_Event_Buffer*  buf,
+                       uint16_t           stamp_type,
+                       uint8_t           *data)
 {
 	buf->data = data;
 	buf->header_size = sizeof(LV2_Event_Buffer);
@@ -65,7 +67,8 @@ lv2_event_buffer_reset(LV2_Event_Buffer* buf, uint16_t stamp_type, uint8_t *data
 static inline LV2_Event_Buffer*
 lv2_event_buffer_new(uint32_t capacity, uint16_t stamp_type)
 {
-	LV2_Event_Buffer* buf = (LV2_Event_Buffer*)malloc(sizeof(LV2_Event_Buffer) + capacity);
+	const size_t      size = sizeof(LV2_Event_Buffer) + capacity;
+	LV2_Event_Buffer* buf  = (LV2_Event_Buffer*)malloc(size);
 	if (buf != NULL) {
 		buf->capacity = capacity;
 		lv2_event_buffer_reset(buf, stamp_type, (uint8_t *)(buf + 1));
