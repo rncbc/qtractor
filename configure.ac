@@ -1055,7 +1055,7 @@ echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
 echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
-echo "  JACK Latency support (NEW) . . . . . . . . . . . .: $ac_jack_latency"
+echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
