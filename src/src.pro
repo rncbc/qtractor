@@ -290,7 +290,10 @@ unix {
 	LOCALEDIR = $(localedir)
 
 	DEFINES += DATADIR=\"$$DATADIR\"
-	DEFINES += LOCALEDIR=\"$$LOCALEDIR\"
+
+	!isEmpty(LOCALEDIR) {
+		DEFINES += LOCALEDIR=\"$$LOCALEDIR\"
+	}
 
 	# make install
 	INSTALLS += target desktop icon

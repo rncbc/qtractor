@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.1.33, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.1.34, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -154,11 +154,6 @@ AC_ARG_ENABLE(lv2-state,
   AC_HELP_STRING([--enable-lv2-state], [enable LV2 plug-in state support (default=yes)]),
   [ac_lv2_state="$enableval"],
   [ac_lv2_state="yes"])
-
-AC_ARG_ENABLE(lv2-files,
-  AC_HELP_STRING([--enable-lv2-files], [enable LV2 plug-in files support (default=no)]),
-  [ac_lv2_files="$enableval"],
-  [ac_lv2_files="no"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -624,7 +619,6 @@ if test "x$ac_slv2" = "xyes"; then
       ac_lv2_saverestore="no"
       ac_lv2_persist="no"
       ac_lv2_state="no"
-      ac_lv2_files="no"
    fi
 fi
 
@@ -659,7 +653,6 @@ if test "x$ac_slv2" = "xno" -a "x$ac_lilv" = "xno"; then
    ac_lv2_saverestore="no"
    ac_lv2_persist="no"
    ac_lv2_state="no"
-   ac_lv2_files="no"
 fi
 
 # Check for JACK session event callback availability.
@@ -914,7 +907,6 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_saverestore="no"
       ac_lv2_persist="no"
       ac_lv2_state="no"
-      ac_lv2_files="no"
    fi
 fi
 if test "x$ac_lv2_event" = "xyes"; then
@@ -980,14 +972,6 @@ if test "x$ac_lv2_state" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_STATE, 1, [Define if LV2 state extension is available.])
    else
       AC_MSG_WARN([*** LV2 state extension will be disabled.])
-   fi
-fi
-if test "x$ac_lv2_files" = "xyes"; then
-   AC_CHECK_HEADER(lv2_files.h, [ac_lv2_files="yes"], [ac_lv2_files="no"])
-   if test "x$ac_lv2_files" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_FILES, 1, [Define if LV2 files extension is available.])
-   else
-      AC_MSG_WARN([*** LV2 files extension will be disabled.])
    fi
 fi
 
@@ -1069,7 +1053,6 @@ echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
 echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
-echo "  LV2 Plug-in Files support (EXPERIMENTAL) . . . . .: $ac_lv2_files"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support (NEW) . . . . . . . . . . . .: $ac_jack_latency"

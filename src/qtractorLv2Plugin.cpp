@@ -284,14 +284,14 @@ const char *qtractorLv2Plugin::lv2_id_to_uri ( uint32_t id )
 }
 
 
-#ifdef CONFIG_LV2_FILES
+#ifdef CONFIG_LV2_STATE
 
 #include "qtractorSession.h"
 
 #include <QFileInfo>
 #include <QDir>
 
-static QString qtractor_lv2_files_prefix ( qtractorLv2Plugin *pLv2Plugin )
+static QString qtractor_lv2_state_prefix ( qtractorLv2Plugin *pLv2Plugin )
 {
 	QString sPrefix;
 	
@@ -324,38 +324,38 @@ static QString qtractor_lv2_files_prefix ( qtractorLv2Plugin *pLv2Plugin )
 	return sPrefix;
 }
 
-static char *qtractor_lv2_files_abstract_path (
-    LV2_Files_Host_Data host_data, const char *absolute_path )
+static char *qtractor_lv2_state_abstract_path (
+	LV2_State_Map_Path_Handle handle, const char *absolute_path )
 {
 	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (host_data);
+		= static_cast<qtractorLv2Plugin *> (handle);
 	if (pLv2Plugin == NULL)
 		return NULL;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_files_abstract_path(%p, \"%s\"", pLv2Plugin, absolute_path);
+	qDebug("qtractor_lv2_state_abstract_path(%p, \"%s\"", pLv2Plugin, absolute_path);
 #endif
 
 	QFileInfo fi(absolute_path);
 
 	const QString& sFileName
-		= qtractor_lv2_files_prefix(pLv2Plugin) + fi.fileName();
+		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
 	
 	// abstract_path...
 	const QString& sAbstractPath = QFileInfo(sFileName).filePath();
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
-static char *qtractor_lv2_files_absolute_path (
-    LV2_Files_Host_Data host_data, const char *abstract_path )
+static char *qtractor_lv2_state_absolute_path (
+    LV2_State_Map_Path_Handle handle, const char *abstract_path )
 {
 	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (host_data);
+		= static_cast<qtractorLv2Plugin *> (handle);
 	if (pLv2Plugin == NULL)
 		return NULL;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_files_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
+	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -372,7 +372,7 @@ static char *qtractor_lv2_files_absolute_path (
 
 	const QString& sFilePath = fi.path();
 	const QString& sFileName
-		= qtractor_lv2_files_prefix(pLv2Plugin) + fi.fileName();
+		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
 	
 	// absolute_path...
 	const QString& sAbsolutePath
@@ -380,16 +380,16 @@ static char *qtractor_lv2_files_absolute_path (
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
-static char *qtractor_lv2_files_new_file_path (
-    LV2_Files_Host_Data host_data, const char *relative_path )
+static char *qtractor_lv2_state_make_path (
+    LV2_State_Make_Path_Handle handle, const char *relative_path )
 {
 	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (host_data);
+		= static_cast<qtractorLv2Plugin *> (handle);
 	if (pLv2Plugin == NULL)
 		return NULL;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_files_new_file_path(%p, \"%s\"", pLv2Plugin, relative_path);
+	qDebug("qtractor_lv2_state_make_path(%p, \"%s\"", pLv2Plugin, relative_path);
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -409,15 +409,15 @@ static char *qtractor_lv2_files_new_file_path (
 		dir.mkpath(sFilePath);
 
 	const QString& sFileName
-		= qtractor_lv2_files_prefix(pLv2Plugin) + fi.fileName();
+		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
 	
-	// new_file_path...
+	// make_path...
 	const QString& sNewFilePath
 		= QFileInfo(sFilePath, sFileName).canonicalFilePath();
 	return ::strdup(sNewFilePath.toUtf8().constData());
 }
 
-#endif	// CONFIG_LV2_FILES
+#endif	// CONFIG_LV2_STATE
 
 
 static const LV2_Feature *g_lv2_features[] =
@@ -1045,22 +1045,22 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
-#ifdef CONFIG_LV2_FILES
+#ifdef CONFIG_LV2_STATE
 
-	m_lv2_files_path_support.host_data = this;
-	m_lv2_files_path_support.abstract_path = &qtractor_lv2_files_abstract_path;
-	m_lv2_files_path_support.absolute_path = &qtractor_lv2_files_absolute_path;
+	m_lv2_state_map_path.handle = this;
+	m_lv2_state_map_path.abstract_path = &qtractor_lv2_state_abstract_path;
+	m_lv2_state_map_path.absolute_path = &qtractor_lv2_state_absolute_path;
 
-	m_lv2_files_path_feature.URI = LV2_FILES_PATH_SUPPORT_URI;
-	m_lv2_files_path_feature.data = &m_lv2_files_path_support;
-	m_lv2_features[iFeatures++] = &m_lv2_files_path_feature;
+	m_lv2_state_map_path_feature.URI = LV2_STATE_MAP_PATH_URI;
+	m_lv2_state_map_path_feature.data = &m_lv2_state_map_path;
+	m_lv2_features[iFeatures++] = &m_lv2_state_map_path_feature;
 
-	m_lv2_files_new_file_support.host_data = this;
-	m_lv2_files_new_file_support.new_file_path = &qtractor_lv2_files_new_file_path;
+	m_lv2_state_make_path.handle = this;
+	m_lv2_state_make_path.path = &qtractor_lv2_state_make_path;
 
-	m_lv2_files_new_file_feature.URI = LV2_FILES_NEW_FILE_SUPPORT_URI;
-	m_lv2_files_new_file_feature.data = &m_lv2_files_new_file_support;
-	m_lv2_features[iFeatures++] = &m_lv2_files_new_file_feature;
+	m_lv2_state_make_path_feature.URI = LV2_STATE_MAKE_PATH_URI;
+	m_lv2_state_make_path_feature.data = &m_lv2_state_make_path;
+	m_lv2_features[iFeatures++] = &m_lv2_state_make_path_feature;
 	
 #endif
 

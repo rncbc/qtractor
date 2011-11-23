@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 State extension support has been added, which
+  shall replace old LV2 Persist extension interface
+  in the near future. It also replaces the LV2 Files
+  extension from now on (thanks to Dave Robillard).
+
 - Dirty MIDI clips are now auto-saved when MIDI track
   properties get changed through its own dialog.
 
@@ -20,9 +25,6 @@ SVN TRUNK
 
 - Fixed Makefile.in handling installation directories
   to the configure script eg. --datadir, --localedir.
-
-- LV2 State extension support added (will replace old
-  LV2 Persist extension interface in near future).
 
 - Possible attempt to improve in-flight recording clip
   display, especially when looping and MIDI clips are
