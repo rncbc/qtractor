@@ -79,11 +79,6 @@
 #include "lv2_state.h"
 #endif
 
-#ifdef CONFIG_LV2_FILES
-// LV2 Files support.
-#include "lv2_files.h"
-#endif
-
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -353,13 +348,10 @@ protected:
 #ifdef CONFIG_LV2_STATE
 	QHash<QString, QByteArray> m_lv2_state_configs;
 	QHash<QString, uint32_t>   m_lv2_state_ctypes;
-#endif
-
-#ifdef CONFIG_LV2_FILES
-	LV2_Feature                m_lv2_files_path_feature;
-	LV2_Files_Path_Support     m_lv2_files_path_support;
-	LV2_Feature                m_lv2_files_new_file_feature;
-	LV2_Files_New_File_Support m_lv2_files_new_file_support;
+	LV2_Feature                m_lv2_state_map_path_feature;
+	LV2_State_Map_Path         m_lv2_state_map_path;
+	LV2_Feature                m_lv2_state_make_path_feature;
+	LV2_State_Make_Path        m_lv2_state_make_path;
 #endif
 };
 
