@@ -269,6 +269,7 @@ translations_targets = \
 	src/translations/qtractor_cs.qm
 
 
+export datarootdir = @datarootdir@
 export localedir = @localedir@
 
 
