@@ -1011,7 +1011,11 @@ void qtractorTrack::setClipRecord (
 		delete m_pClipRecord;
 
 	m_pClipRecord = pClipRecord;
-	m_iClipRecordStart = iClipRecordStart;
+
+	if (m_pSession && m_pSession->isPlaying())
+		m_iClipRecordStart = iClipRecordStart;
+	else
+		m_iClipRecordStart = (m_pClipRecord ? m_pClipRecord->clipStart() : 0);
 }
 
 qtractorClip *qtractorTrack::clipRecord (void) const
@@ -1034,14 +1038,12 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 		iClipRecordEnd += m_pSession->punchOut();
 	} else {
 		iClipRecordEnd += iFrameTime;
-		if (m_pSession && m_pSession->isLoopRecording()) {
-			if (iClipRecordEnd  > m_iClipRecordStart)
-				iClipRecordEnd -= m_iClipRecordStart;
-			if (m_pClipRecord)
-				iClipRecordEnd += m_pClipRecord->clipStart();
-		}
+		if (iClipRecordEnd  > m_iClipRecordStart)
+			iClipRecordEnd -= m_iClipRecordStart;
+		if (m_pClipRecord)
+			iClipRecordEnd += m_pClipRecord->clipStart();
 	}
-	
+
 	return iClipRecordEnd;
 }
 
