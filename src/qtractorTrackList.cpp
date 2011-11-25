@@ -67,6 +67,7 @@
 
 class qtractorCurveButton : public QPushButton
 {
+//	Q_OBJECT
 
 public:
 

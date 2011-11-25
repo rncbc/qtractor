@@ -1392,6 +1392,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	pPlugin->freezeValues();
 	pPlugin->freezeConfigs();
 
+#if 0
 	// MIDI bank program whether necessary...
 	int iBank = 0;
 	int iProg = 0;
@@ -1399,6 +1400,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		iBank = m_pMidiManager->currentBank();
 	if (m_pMidiManager && m_pMidiManager->currentProg() >= 0)
 		iProg = m_pMidiManager->currentProg();
+#endif
 
 	// Filename is empty for insert pseudo-plugins.
 	QString sFilename = pType->filename();

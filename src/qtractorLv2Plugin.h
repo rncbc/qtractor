@@ -348,6 +348,9 @@ protected:
 #ifdef CONFIG_LV2_STATE
 	QHash<QString, QByteArray> m_lv2_state_configs;
 	QHash<QString, uint32_t>   m_lv2_state_ctypes;
+#endif
+
+#ifdef CONFIG_LV2_STATE_FILES
 	LV2_Feature                m_lv2_state_map_path_feature;
 	LV2_State_Map_Path         m_lv2_state_map_path;
 	LV2_Feature                m_lv2_state_make_path_feature;
