@@ -994,17 +994,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Vyváženost stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="354"/>
+        <location filename="../qtractorTrackList.cpp" line="355"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="367"/>
+        <location filename="../qtractorTrackList.cpp" line="368"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="424"/>
+        <location filename="../qtractorTrackList.cpp" line="425"/>
         <source>Unknown</source>
         <translation>Neznámý</translation>
     </message>
@@ -2042,12 +2042,12 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorCurveButton</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="94"/>
+        <location filename="../qtractorTrackList.cpp" line="95"/>
         <source>Automation (%1)</source>
         <translation>Automatizace (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="102"/>
+        <location filename="../qtractorTrackList.cpp" line="103"/>
         <source>none</source>
         <translation>Žádná</translation>
     </message>
@@ -12131,7 +12131,7 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTrackItemWidget</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="191"/>
+        <location filename="../qtractorTrackList.cpp" line="192"/>
         <source>Automation</source>
         <translation>Automatizace</translation>
     </message>
@@ -12139,32 +12139,32 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTrackListHeaderModel</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="137"/>
+        <location filename="../qtractorTrackList.cpp" line="138"/>
         <source>Nr</source>
         <translation>Číslo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="138"/>
+        <location filename="../qtractorTrackList.cpp" line="139"/>
         <source>Track Name</source>
         <translation>Název stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="139"/>
+        <location filename="../qtractorTrackList.cpp" line="140"/>
         <source>Bus</source>
         <translation>Sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="140"/>
+        <location filename="../qtractorTrackList.cpp" line="141"/>
         <source>Ch</source>
         <translation>Kanál</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="141"/>
+        <location filename="../qtractorTrackList.cpp" line="142"/>
         <source>Patch</source>
         <translation>Políčko</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="142"/>
+        <location filename="../qtractorTrackList.cpp" line="143"/>
         <source>Instrument</source>
         <translation>Nástroj</translation>
     </message>

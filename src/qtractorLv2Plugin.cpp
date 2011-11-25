@@ -218,8 +218,6 @@ static const void *qtractor_lv2_persist_retrieve ( void *callback_data,
 
 #ifdef CONFIG_LV2_STATE
 
-#define LV2_STATE_INTERFACE_URI LV2_STATE_URI "#Interface"
-
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, NULL };
 
@@ -284,7 +282,7 @@ const char *qtractorLv2Plugin::lv2_id_to_uri ( uint32_t id )
 }
 
 
-#ifdef CONFIG_LV2_STATE
+#ifdef CONFIG_LV2_STATE_FILES
 
 #include "qtractorSession.h"
 
@@ -417,7 +415,7 @@ static char *qtractor_lv2_state_make_path (
 	return ::strdup(sNewFilePath.toUtf8().constData());
 }
 
-#endif	// CONFIG_LV2_STATE
+#endif	// CONFIG_LV2_STATE_FILES
 
 
 static const LV2_Feature *g_lv2_features[] =
@@ -1045,7 +1043,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
-#ifdef CONFIG_LV2_STATE
+#ifdef CONFIG_LV2_STATE_FILES
 
 	m_lv2_state_map_path.handle = this;
 	m_lv2_state_map_path.abstract_path = &qtractor_lv2_state_abstract_path;
