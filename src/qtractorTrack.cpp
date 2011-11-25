@@ -1034,10 +1034,12 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 		iClipRecordEnd += m_pSession->punchOut();
 	} else {
 		iClipRecordEnd += iFrameTime;
-		if (iClipRecordEnd  > m_iClipRecordStart)
-			iClipRecordEnd -= m_iClipRecordStart;
-		if (m_pClipRecord)
-			iClipRecordEnd += m_pClipRecord->clipStart();
+		if (m_pSession && m_pSession->isLoopRecording()) {
+			if (iClipRecordEnd  > m_iClipRecordStart)
+				iClipRecordEnd -= m_iClipRecordStart;
+			if (m_pClipRecord)
+				iClipRecordEnd += m_pClipRecord->clipStart();
+		}
 	}
 	
 	return iClipRecordEnd;
