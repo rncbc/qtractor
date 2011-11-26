@@ -29,6 +29,7 @@
 
 #define SLV2World						LilvWorld*
 #define SLV2Value						LilvNode*
+#define SLV2Values						LilvNodes*
 #define SLV2Plugins						LilvPlugins*
 #define SLV2Port						LilvPort*
 #define SLV2ScalePoints					LilvScalePoints*
@@ -52,13 +53,16 @@
 #define slv2_value_as_string			lilv_node_as_string
 #define slv2_value_as_float				lilv_node_as_float
 #define slv2_value_new_uri				lilv_new_uri
+#define slv2_value_equals				lilv_node_equals
 #define slv2_value_free					lilv_node_free
+#define slv2_values_get_at				lilv_nodes_get
 #define slv2_plugin_has_feature			lilv_plugin_has_feature
 #define slv2_plugin_get_name			lilv_plugin_get_name
 #define slv2_plugin_get_uri				lilv_plugin_get_uri
 #define slv2_plugin_get_uis				lilv_plugin_get_uis
 #define slv2_plugin_get_num_ports		lilv_plugin_get_num_ports
 #define slv2_plugin_get_port_by_index	lilv_plugin_get_port_by_index
+#define slv2_plugin_get_value			lilv_plugin_get_value
 #define slv2_plugin_instantiate			lilv_plugin_instantiate
 #define slv2_plugins_get_by_uri			lilv_plugins_get_by_uri
 #define slv2_plugins_get				lilv_plugins_get
@@ -566,14 +570,14 @@ static SLV2World   g_slv2_world   = NULL;
 static SLV2Plugins g_slv2_plugins = NULL;
 
 // Supported port classes.
-static SLV2Value g_slv2_input_class       = NULL;
-static SLV2Value g_slv2_output_class      = NULL;
-static SLV2Value g_slv2_control_class     = NULL;
-static SLV2Value g_slv2_audio_class       = NULL;
+static SLV2Value g_slv2_input_class   = NULL;
+static SLV2Value g_slv2_output_class  = NULL;
+static SLV2Value g_slv2_control_class = NULL;
+static SLV2Value g_slv2_audio_class   = NULL;
 
 #ifdef CONFIG_LV2_EVENT
-static SLV2Value g_slv2_event_class       = NULL;
-static SLV2Value g_slv2_midi_class        = NULL;
+static SLV2Value g_slv2_event_class = NULL;
+static SLV2Value g_slv2_midi_class  = NULL;
 #endif
 
 #ifdef CONFIG_LV2_UI
@@ -583,30 +587,31 @@ static SLV2Value g_slv2_external_ui_class = NULL;
 static SLV2Value g_slv2_external_ui_deprecated_class = NULL;
 #endif
 #endif
-static SLV2Value g_slv2_gtk_ui_class      = NULL;
-static SLV2Value g_slv2_qt4_ui_class      = NULL;
+static SLV2Value g_slv2_gtk_ui_class = NULL;
+static SLV2Value g_slv2_qt4_ui_class = NULL;
 #endif
 
 // Supported plugin features.
-static SLV2Value g_slv2_realtime_hint     = NULL;
+static SLV2Value g_slv2_realtime_hint = NULL;
+static SLV2Value g_slv2_extension_data_hint = NULL;
 
 #ifdef CONFIG_LV2_SAVERESTORE
-static SLV2Value g_slv2_saverestore_hint  = NULL;
+static SLV2Value g_slv2_saverestore_hint = NULL;
 #endif
 
 #ifdef CONFIG_LV2_PERSIST
-static SLV2Value g_slv2_persist_hint      = NULL;
+static SLV2Value g_slv2_persist_hint = NULL;
 #endif
 
 #ifdef CONFIG_LV2_STATE
-static SLV2Value g_slv2_state_hint        = NULL;
+static SLV2Value g_slv2_state_interface_hint = NULL;
 #endif
 
 // Supported port properties (hints).
-static SLV2Value g_slv2_toggled_prop      = NULL;
-static SLV2Value g_slv2_integer_prop      = NULL;
-static SLV2Value g_slv2_sample_rate_prop  = NULL;
-static SLV2Value g_slv2_logarithmic_prop  = NULL;
+static SLV2Value g_slv2_toggled_prop     = NULL;
+static SLV2Value g_slv2_integer_prop     = NULL;
+static SLV2Value g_slv2_sample_rate_prop = NULL;
+static SLV2Value g_slv2_logarithmic_prop = NULL;
 
 
 //----------------------------------------------------------------------------
@@ -699,8 +704,23 @@ bool qtractorLv2PluginType::open (void)
 		slv2_plugin_has_feature(m_slv2_plugin, g_slv2_persist_hint);
 #endif
 #ifdef CONFIG_LV2_STATE
-	m_bConfigure = m_bConfigure ||
-		slv2_plugin_has_feature(m_slv2_plugin, g_slv2_state_hint);
+	if (!m_bConfigure) {
+		// Query for state interface extension data...
+		SLV2Values nodes = slv2_plugin_get_value(m_slv2_plugin,
+			g_slv2_extension_data_hint);
+	#ifdef CONFIG_LIBLILV
+		LILV_FOREACH(nodes, i, nodes) {
+	#else
+		int iNumNodes = slv2_values_size(nodes);
+		for (int i = 0; i < iNumNodes; ++i) {
+	#endif
+			const SLV2Value node = slv2_values_get_at(nodes, i);
+			if (slv2_value_equals(node, g_slv2_state_interface_hint)) {
+				m_bConfigure = true;
+				break;
+			}
+		}
+	}
 #endif
 #ifdef CONFIG_LV2_UI
 	// Check the UI inventory...
@@ -842,6 +862,8 @@ void qtractorLv2PluginType::slv2_open (void)
 	// Set up the feature we may want to know (as hints).
 	g_slv2_realtime_hint = slv2_value_new_uri(g_slv2_world,
 		SLV2_NAMESPACE_LV2 "hardRtCapable");
+	g_slv2_extension_data_hint = slv2_value_new_uri(g_slv2_world,
+		SLV2_NAMESPACE_LV2 "extensionData");
 
 #ifdef CONFIG_LV2_SAVERESTORE
 	g_slv2_saverestore_hint = slv2_value_new_uri(g_slv2_world,
@@ -852,7 +874,7 @@ void qtractorLv2PluginType::slv2_open (void)
 		LV2_PERSIST_URI);
 #endif
 #ifdef CONFIG_LV2_STATE
-	g_slv2_state_hint = slv2_value_new_uri(g_slv2_world,
+	g_slv2_state_interface_hint = slv2_value_new_uri(g_slv2_world,
 		LV2_STATE_INTERFACE_URI);
 #endif
 
@@ -884,7 +906,7 @@ void qtractorLv2PluginType::slv2_close (void)
 	slv2_value_free(g_slv2_logarithmic_prop);
 
 #ifdef CONFIG_LV2_STATE
-	slv2_value_free(g_slv2_state_hint);
+	slv2_value_free(g_slv2_state_interface_hint);
 #endif
 #ifdef CONFIG_LV2_PERSIST
 	slv2_value_free(g_slv2_persist_hint);
@@ -893,6 +915,7 @@ void qtractorLv2PluginType::slv2_close (void)
 	slv2_value_free(g_slv2_saverestore_hint);
 #endif
 
+	slv2_value_free(g_slv2_extension_data_hint);
 	slv2_value_free(g_slv2_realtime_hint);
 
 	slv2_value_free(g_slv2_input_class);
