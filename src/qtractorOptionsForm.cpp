@@ -63,9 +63,9 @@ static struct
 
 } g_aSessionFormats[] = {
 
-	{ _TR("Default session file (*.%1)"), "qtr" },
-	{ _TR("Regular session file (*.%1)"), "qts" },
-	{ _TR("Archive session file (*.%1)"), "qtz" },
+	{ _TR("XML Default (*.%1)"), "qtr" },
+	{ _TR("XML Regular (*.%1)"), "qts" },
+	{ _TR("ZIP Archive (*.%1)"), "qtz" },
 
 	{ NULL, NULL }
 };
