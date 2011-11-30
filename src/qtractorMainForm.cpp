@@ -1644,6 +1644,7 @@ bool qtractorMainForm::openSession (void)
 	filters.append(tr("Archive files (*.%1)")
 		.arg(qtractorDocument::archiveExt()));
 #endif
+	sExt = m_pOptions->sSessionExt; // Default session  file format...
 	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
 #if QT_VERSION < 0x040400
@@ -1658,6 +1659,11 @@ bool qtractorMainForm::openSession (void)
 	fileDialog.setFileMode(QFileDialog::ExistingFile);
 	fileDialog.setHistory(m_pOptions->recentFiles);
 	fileDialog.setDefaultSuffix(sExt);
+#ifdef CONFIG_LIBZ
+	// Special case for archive by default...
+	if (sExt == qtractorDocument::archiveExt())
+		fileDialog.setNameFilter(filters.last());
+#endif
 	// Stuff sidebar...
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
@@ -1720,6 +1726,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		filters.append(tr("Archive files (*.%1)")
 			.arg(qtractorDocument::archiveExt()));
 	#endif
+		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = filters.join(";;");
 	#if QT_VERSION < 0x040400
@@ -1734,6 +1741,11 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		fileDialog.setFileMode(QFileDialog::AnyFile);
 		fileDialog.setHistory(m_pOptions->recentFiles);
 		fileDialog.setDefaultSuffix(sExt);
+	#ifdef CONFIG_LIBZ
+		// Special case for archive by default...
+		if (sExt == qtractorDocument::archiveExt())
+			fileDialog.setNameFilter(filters.last());
+	#endif
 		// Stuff sidebar...
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
@@ -6486,6 +6498,9 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 {
 #ifdef CONFIG_JACK_SESSION
 
+	if (m_pOptions == NULL)
+		return;
+
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine == NULL)
 		return;
@@ -6519,10 +6534,10 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	
 	const QString sSessionDir
 		= QString::fromUtf8(pJackSessionEvent->session_dir);
-	const QString sSessionFile = sSessionName + '.'
-		+ (bTemplate
-			? qtractorDocument::templateExt()
-			: qtractorDocument::archiveExt());
+	const QString sSessionExt = (bTemplate
+		? qtractorDocument::templateExt()
+		: m_pOptions->sSessionExt);
+	const QString sSessionFile = sSessionName + '.' + sSessionExt;
 
 	QStringList args;
 	args << QApplication::applicationFilePath();

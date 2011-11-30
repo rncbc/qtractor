@@ -180,6 +180,7 @@ void qtractorOptions::loadOptions (void)
 
 	// Last but not least, get the defaults.
 	m_settings.beginGroup("/Default");
+	sSessionExt = m_settings.value("/SessionExt", "qtr").toString();
 	bSessionTemplate = m_settings.value("/SessionTemplate", false).toBool();
 	sSessionTemplatePath = m_settings.value("/SessionTemplatePath").toString();
 	sSessionDir    = m_settings.value("/SessionDir").toString();
@@ -411,6 +412,7 @@ void qtractorOptions::saveOptions (void)
 
 	// Default directories.
 	m_settings.beginGroup("/Default");
+	m_settings.setValue("/SessionExt", sSessionExt);
 	m_settings.setValue("/SessionTemplate", bSessionTemplate);
 	m_settings.setValue("/SessionTemplatePath", sSessionTemplatePath);
 	m_settings.setValue("/SessionDir", sSessionDir);
