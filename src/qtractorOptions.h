@@ -153,6 +153,7 @@ public:
 	QString sMidiSysexDir;
 
 	// Session options.
+	QString sSessionExt;
 	bool    bSessionTemplate;
 	QString sSessionTemplatePath;
 	bool	bAutoMonitor;

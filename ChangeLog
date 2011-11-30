@@ -5,6 +5,17 @@ ChangeLog
 
 SVN TRUNK
 
+- Default session file format option now promoted
+  (see View/Options.../General/Session) in the way
+  of whether file suffix gets honored upon session
+  open or save (.qtr, .qts or .qtz). This brand new
+  option also applies for default state file format
+  on a JACK-session saolvagecontext. (EXPERIMENTAL)
+
+- The View/Options... (aka. user preferences) dialog
+  sees a new arranjement in layout, with some options
+  moving into this brand new tab page called General.
+
 - LV2 State extension support has been added, which
   shall replace old LV2 Persist extension interface
   in the near future. It also replaces the LV2 Files

@@ -51,6 +51,26 @@ static inline float pow10f2 ( float x )
 	{ return ::powf(10.0f, 0.05f * x); }
 
 
+// Translatable macro contextualizer.
+#undef  _TR
+#define _TR(x) QT_TR_NOOP(x)
+
+// Available session formats/ext-suffixes.
+static struct
+{
+	const char *name;
+	const char *ext;
+
+} g_aSessionFormats[] = {
+
+	{ _TR("Default session file (*.%1)"), "qtr" },
+	{ _TR("Regular session file (*.%1)"), "qts" },
+	{ _TR("Archive session file (*.%1)"), "qtz" },
+
+	{ NULL, NULL }
+};
+
+
 //----------------------------------------------------------------------------
 // qtractorOptionsForm -- UI wrapper form.
 
@@ -67,6 +87,13 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// No settings descriptor initially (the caller will set it).
 	m_pOptions = NULL;
+
+	// Populate the session format combo-box.
+	m_ui.SessionFormatComboBox->clear();
+	for (int i = 0; g_aSessionFormats[i].ext; ++i) {
+		m_ui.SessionFormatComboBox->addItem(
+			tr(g_aSessionFormats[i].name).arg(g_aSessionFormats[i].ext));
+	}
 
 	// Populate the capture file type combo-box.
 	m_ui.AudioCaptureTypeComboBox->clear();
@@ -275,6 +302,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.BaseFontSizeComboBox,
 		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.SessionFormatComboBox,
+		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.SessionTemplateCheckBox,
 		SIGNAL(stateChanged(int)),
@@ -512,6 +542,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		m_ui.BaseFontSizeComboBox->setCurrentIndex(0);
 
 	// Session options...
+	m_ui.SessionFormatComboBox->setCurrentIndex(
+		sessionFormatFromExt(m_pOptions->sSessionExt));
 	m_ui.SessionTemplateCheckBox->setChecked(m_pOptions->bSessionTemplate);
 	m_ui.SessionTemplatePathComboBox->setEditText(m_pOptions->sSessionTemplatePath);
 
@@ -632,6 +664,8 @@ void qtractorOptionsForm::accept (void)
 		// Session options...
 		m_pOptions->bSessionTemplate     = m_ui.SessionTemplateCheckBox->isChecked();
 		m_pOptions->sSessionTemplatePath = m_ui.SessionTemplatePathComboBox->currentText();
+		m_pOptions->sSessionExt = sessionExtFromFormat(
+			m_ui.SessionFormatComboBox->currentIndex());
 		// Custom colors.
 		int iColor;
 		for (iColor = 0; iColor < AudioMeterColors; ++iColor)
@@ -1337,6 +1371,30 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 #endif
 
 	return sAudioFile;
+}
+
+
+// Session format ext/suffix helpers.
+int qtractorOptionsForm::sessionFormatFromExt ( const QString& sSessionExt ) const
+{
+	int iSessionFormat = 0;
+
+	for (int i = 1; g_aSessionFormats[i].ext; ++i) {
+		if (g_aSessionFormats[i].ext == sSessionExt) {
+			iSessionFormat = i;
+			break;
+		}
+	}
+
+	return iSessionFormat;
+}
+
+QString qtractorOptionsForm::sessionExtFromFormat ( int iSessionFormat ) const
+{
+	if (iSessionFormat < 0 || iSessionFormat > 2)
+		iSessionFormat = 0;
+
+	return g_aSessionFormats[iSessionFormat].ext;
 }
 
 

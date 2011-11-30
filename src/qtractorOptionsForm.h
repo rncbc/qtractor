@@ -83,6 +83,10 @@ protected:
 	// Special combo-box color item helpers.
 	void updateColorText(QLineEdit *pLineEdit, const QColor& color);
 
+	// Session format ext/suffix helpers.
+	int sessionFormatFromExt(const QString& sSessionExt) const;
+	QString sessionExtFromFormat(int iSessionFormat) const;
+
 private:
 
 	// The Qt-designer UI struct...
