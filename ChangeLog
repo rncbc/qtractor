@@ -10,7 +10,7 @@ SVN TRUNK
   of whether file suffix gets honored upon session
   open or save (.qtr, .qts or .qtz). This brand new
   option also applies for default state file format
-  on a JACK-session saolvagecontext. (EXPERIMENTAL)
+  on a JACK-session salvage context. (EXPERIMENTAL)
 
 - The View/Options... (aka. user preferences) dialog
   sees a new arranjement in layout, with some options
