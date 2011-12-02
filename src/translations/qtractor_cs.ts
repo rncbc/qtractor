@@ -625,7 +625,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorClip.cpp" line="541"/>
         <source> (take %1)</source>
-        <translation type="unfinished"></translation>
+        <translation> (záběr %1)</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="549"/>
@@ -1154,12 +1154,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorClipCommand.cpp" line="697"/>
         <source>take %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Záběr %1</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="699"/>
         <source>reset takes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit záběry znovu</translation>
     </message>
 </context>
 <context>
@@ -1812,7 +1812,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="303"/>
         <source>&amp;Time</source>
-        <translation>&amp;Čas</translation>
+        <translation>Č&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="310"/>
@@ -2199,12 +2199,12 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="150"/>
         <source>Punch range</source>
-        <translation>Rozsah důrazu</translation>
+        <translation>Rozsah přepsání</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="153"/>
         <source>&amp;Punch</source>
-        <translation>&amp;Důraz</translation>
+        <translation>&amp;Přepsání</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="163"/>
@@ -2219,12 +2219,12 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="176"/>
         <source>Custom range</source>
-        <translation>Rozsah dělaný na zakázku</translation>
+        <translation>Vlastní rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="179"/>
         <source>&amp;Custom</source>
-        <translation>&amp;Dělaný na zakázku</translation>
+        <translation>&amp;Vlastní</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="205"/>
@@ -2283,7 +2283,7 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="304"/>
         <source>&amp;Time</source>
-        <translation>&amp;Čas</translation>
+        <translation>Č&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="311"/>
@@ -3013,12 +3013,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6002"/>
         <source>Take %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Záběr %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6010"/>
         <source>None</source>
-        <translation type="unfinished">Žádný</translation>
+        <translation>Žádný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6450"/>
@@ -3277,7 +3277,7 @@ Promiňte.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="3746"/>
         <source>take range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozsah záběru</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4331"/>
@@ -3506,7 +3506,7 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7205"/>
         <source>&amp;Time</source>
-        <translation>&amp;Čas</translation>
+        <translation>Č&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7210"/>
@@ -4980,82 +4980,82 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1790"/>
         <source>First Take</source>
-        <translation type="unfinished"></translation>
+        <translation>První záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1793"/>
         <source>First take</source>
-        <translation type="unfinished"></translation>
+        <translation>První záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1796"/>
         <source>Select current clip first take</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat první záběr nynější ukázky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1804"/>
         <source>Previous Take</source>
-        <translation type="unfinished"></translation>
+        <translation>Předchozí záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1807"/>
         <source>Previous take</source>
-        <translation type="unfinished"></translation>
+        <translation>Předchozí záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1810"/>
         <source>Select current clip previous take</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat předchozí záběr nynější ukázky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1818"/>
         <source>Next Take</source>
-        <translation type="unfinished"></translation>
+        <translation>Další záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1821"/>
         <source>Next take</source>
-        <translation type="unfinished"></translation>
+        <translation>Další záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1824"/>
         <source>Select current clip next take</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat další záběr nynější ukázky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1832"/>
         <source>Last Take</source>
-        <translation type="unfinished"></translation>
+        <translation>Poslední záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1835"/>
         <source>Last take</source>
-        <translation type="unfinished"></translation>
+        <translation>Poslední záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1838"/>
         <source>Select current clip last take</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat poslední záběr nynější ukázky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1846"/>
         <source>Reset Takes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1849"/>
         <source>Reset takes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1852"/>
         <source>Reset (unfold) current clip takes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit (zrušit složení) záběry nynější ukázky znovu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1866"/>
         <source>Range (fold) current clip into takes</source>
-        <translation type="unfinished"></translation>
+        <translation>Řadit (složit) nynější ukázku do záběrů</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1874"/>
@@ -5355,22 +5355,22 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1560"/>
         <source>&amp;Unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zrušit odkaz</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1563"/>
         <source>Unlink Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpojit ukázku</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1566"/>
         <source>Unlink clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpojit ukázku</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1569"/>
         <source>Unlink current clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpojit nynější ukázku</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1209"/>
@@ -5380,7 +5380,7 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="354"/>
         <source>Ta&amp;ke</source>
-        <translation type="unfinished"></translation>
+        <translation>Zá&amp;běr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1212"/>
@@ -5605,17 +5605,17 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1857"/>
         <source>R&amp;ange...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rozsah...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1860"/>
         <source>Take Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozsah záběru</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1863"/>
         <source>Take range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozsah záběru</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2173"/>
@@ -8940,7 +8940,7 @@ Jste si jistý?</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="699"/>
         <location filename="../qtractorMidiToolsForm.ui" line="977"/>
         <source>&amp;Time:</source>
-        <translation>&amp;Čas:</translation>
+        <translation>Č&amp;as:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="169"/>
@@ -9899,57 +9899,57 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="59"/>
         <source>&amp;General</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Obecné</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="237"/>
         <source>Number of &amp;recent files:</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet &amp;naposledy otevřených souborů:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="306"/>
         <source>S&amp;how complete path of session files</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat úplnou &amp;cestu souborů se sezením</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="357"/>
         <source>Keep tool &amp;windows always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Držet všechna nástrojová &amp;okna vždy navrchu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="376"/>
         <source>&amp;Drop multiple audio files into the same track</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Upustit mnohonásobné zvukové soubory do stejné stopy</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="86"/>
         <source>Default session &amp;file format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí formát &amp;souboru se sezením:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="102"/>
         <source>Default session file format (suffix)</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí formát souboru se sezením (přípona)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="131"/>
         <source>&amp;New session template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Předloha pro &amp;nové sezení:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="408"/>
         <source>Transport</source>
-        <translation type="unfinished"></translation>
+        <translation>Přesun</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="423"/>
         <source>Transport &amp;mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Režim přesunu:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="488"/>
         <source>&amp;Loop recording mode (takes):</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim nahrávání &amp;smyčky (záběry):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="848"/>
@@ -10101,7 +10101,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2572"/>
         <source>M&amp;essages limit:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejvyšší počet &amp;zpráv:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="203"/>
@@ -10154,17 +10154,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="507"/>
         <source>Loop recording mode (takes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim nahrávání &amp;smyčky (záběry)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="516"/>
         <source>First</source>
-        <translation type="unfinished"></translation>
+        <translation>První</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="521"/>
         <source>Last</source>
-        <translation type="unfinished"></translation>
+        <translation>Poslední</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="335"/>
@@ -10300,12 +10300,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2052"/>
         <source>Defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2067"/>
         <source>&amp;Time display format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát zobrazení č&amp;asu:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2202"/>
@@ -11413,132 +11413,132 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="37"/>
         <source>Take - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Záběr - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="53"/>
         <source>Range</source>
-        <translation type="unfinished">Rozsah</translation>
+        <translation>Rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="59"/>
         <source>Selection range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozsah výběru</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="62"/>
         <source>&amp;Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Výběr</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="72"/>
         <source>Loop range</source>
-        <translation type="unfinished">Rozsah smyčky</translation>
+        <translation>Rozsah smyčky</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="75"/>
         <source>&amp;Loop</source>
-        <translation type="unfinished">&amp;Smyčka</translation>
+        <translation>&amp;Smyčka</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="85"/>
         <source>Punch range</source>
-        <translation type="unfinished">Rozsah důrazu</translation>
+        <translation>Rozsah přepsání</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="88"/>
         <source>&amp;Punch</source>
-        <translation type="unfinished">&amp;Důraz</translation>
+        <translation>&amp;Přepsání</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="98"/>
         <source>Edit range</source>
-        <translation type="unfinished">Rozsah úprav</translation>
+        <translation>Rozsah úprav</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="101"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Úpravy</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="111"/>
         <source>Custom range</source>
-        <translation type="unfinished">Rozsah dělaný na zakázku</translation>
+        <translation>Vlastní rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="114"/>
         <source>&amp;Custom</source>
-        <translation type="unfinished">&amp;Dělaný na zakázku</translation>
+        <translation>&amp;Vlastní</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="140"/>
         <source>St&amp;art:</source>
-        <translation type="unfinished">Za&amp;čátek:</translation>
+        <translation>Za&amp;čátek:</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="156"/>
         <source>Clip start</source>
-        <translation type="unfinished">Začátek ukázky</translation>
+        <translation>Začátek ukázky</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="163"/>
         <source>En&amp;d:</source>
-        <translation type="unfinished">Ko&amp;nec:</translation>
+        <translation>Ko&amp;nec:</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="179"/>
         <source>Clip offset</source>
-        <translation type="unfinished">Posun ukázky</translation>
+        <translation>Posun ukázky</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="189"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="195"/>
         <source>Current take</source>
-        <translation type="unfinished"></translation>
+        <translation>Nynější záběr</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="205"/>
         <source>Format</source>
-        <translation type="unfinished">Formát</translation>
+        <translation>Formát</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="211"/>
         <source>Frames</source>
-        <translation type="unfinished">Snímky</translation>
+        <translation>Snímky</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="214"/>
         <source>&amp;Frames</source>
-        <translation type="unfinished">&amp;Snímky</translation>
+        <translation>&amp;Snímky</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="224"/>
         <source>Time (hh:mm:ss.zzz)</source>
-        <translation type="unfinished">Čas (hh:mm:ss.zzz)</translation>
+        <translation>Čas (hh:mm:ss.zzz)</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="227"/>
         <source>&amp;Time</source>
-        <translation type="unfinished">&amp;Čas</translation>
+        <translation>Č&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="234"/>
         <source>BBT (bars.beats.ticks)</source>
-        <translation type="unfinished"></translation>
+        <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="237"/>
         <source>&amp;BBT</source>
-        <translation type="unfinished">&amp;TDT</translation>
+        <translation>&amp;TDT</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.cpp" line="251"/>
         <source>Take %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Záběr %1</translation>
     </message>
 </context>
 <context>
@@ -11631,7 +11631,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="242"/>
         <source>&amp;Time</source>
-        <translation>&amp;Čas</translation>
+        <translation>Č&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="249"/>
