@@ -5,10 +5,6 @@ ChangeLog
 
 SVN TRUNK
 
-- Fixed extraordinary shadow playback of audio clips
-  which extent were longer than the respective audio
-  file length. (TESTING)
-
 - Default session file format option now promoted
   (see View/Options.../General/Session) in the way
   of whether file suffix gets honored upon session
