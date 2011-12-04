@@ -971,11 +971,9 @@ void qtractorAudioBuffer::readSync (void)
 			// Think of end-of-file...
 			nahead = 0;
 			// But we can re-cache, if not an integral fit...
-			if (m_iFileLength >= m_iOffset + m_pRingBuffer->bufferSize() - 1) {
-				unsigned long offset = (bLooping ? ls : m_iOffset);
-				if (seekSync(offset))
-					m_iWriteOffset = offset;
-			}
+			if (m_iFileLength >= m_iOffset + m_pRingBuffer->bufferSize() - 1
+				&& bLooping && seekSync(ls))
+				m_iWriteOffset = ls;
 		}
 	}
 
