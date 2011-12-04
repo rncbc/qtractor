@@ -201,10 +201,6 @@ public:
 	static void setWsolaQuickSeek(bool bWsolaQuickSeek);
 	static bool isWsolaQuickSeek();
 
-#ifdef DEBUG
-	void dump_state(const QString& sPrefix) const;
-#endif
-
 protected:
 
 	// Read-sync mode methods (playback).

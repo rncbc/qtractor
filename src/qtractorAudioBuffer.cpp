@@ -471,10 +471,6 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 	if (m_pRingBuffer == NULL)
 		return -1;
 
-#ifdef DEBUG_0
-	dump_state(QString("+read(%1)").arg(iFrames));
-#endif
-
 	int nread;
 
 	// Are we off decoded file limits (EoS)?
@@ -519,10 +515,6 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 		setSyncFlag(ReadSync, false);
 	}
 
-#ifdef DEBUG_0
-	dump_state(QString("-read(%1)").arg(nread));
-#endif
-
 	// Time to sync()?
 	if (!m_bIntegral &&
 		m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
@@ -542,10 +534,6 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 	unsigned short iBuffers = m_pRingBuffer->channels();
 	if (iChannels < 1)
 		iChannels = iBuffers;
-
-#ifdef DEBUG_0
-	dump_state(QString("+write(%1)").arg(iFrames));
-#endif
 
 	unsigned int nwrite = iFrames;
 
@@ -603,10 +591,6 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 	// Make it statiscally correct...
 	m_iWriteOffset += nwrite;
 
-#ifdef DEBUG_0
-	dump_state(QString("-write(%1)").arg(nwrite));
-#endif
-
 	// Time to sync()?
 	if (m_pSyncThread && m_pRingBuffer->readable() > m_iThreshold)
 		m_pSyncThread->sync(this);
@@ -621,10 +605,6 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 {
 	if (m_pRingBuffer == NULL)
 		return -1;
-
-#ifdef DEBUG_0
-	dump_state(QString("+readMix(%1)").arg(iFrames));
-#endif
 
 	int nread;
 
@@ -672,10 +652,6 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 		setSyncFlag(ReadSync, false);
 	}
 
-#ifdef DEBUG_0
-	dump_state(QString("-readMix(%1)").arg(nread));
-#endif
-
 	// Time to sync()?
 	if (!m_bIntegral &&
 		m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
@@ -722,10 +698,6 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		setSyncFlag(ReadSync);
 		return true;
 	}
-
-#ifdef DEBUG
-	dump_state(QString(">seek(%1)").arg(iFrame));
-#endif
 
 	// Adjust to logical offset...
 	iFrame += m_iOffset;
@@ -909,10 +881,6 @@ void qtractorAudioBuffer::syncExport (void)
 // Read-mode sync executive.
 void qtractorAudioBuffer::readSync (void)
 {
-#ifdef DEBUG
-	dump_state("+readSyncIn()");
-#endif
-
 	// Check whether we have some hard-seek pending...
 	if (ATOMIC_TAZ(&m_seekPending)) {
 		// Do it...
@@ -971,25 +939,19 @@ void qtractorAudioBuffer::readSync (void)
 			// Think of end-of-file...
 			nahead = 0;
 			// But we can re-cache, if not an integral fit...
-			if (m_iFileLength >= m_iOffset + m_pRingBuffer->bufferSize() - 1
-				&& bLooping && seekSync(ls))
-				m_iWriteOffset = ls;
+			if (m_iFileLength >= m_iOffset + m_pRingBuffer->bufferSize() - 1) {
+				unsigned long offset = (bLooping ? ls : m_iOffset);
+				if (seekSync(offset))
+					m_iWriteOffset = offset;
+			}
 		}
 	}
-
-#ifdef DEBUG
-	dump_state("-readSyncIn()");
-#endif
 }
 
 
 // Write-mode sync executive.
 void qtractorAudioBuffer::writeSync (void)
 {
-#ifdef DEBUG
-	dump_state("+writeSync()");
-#endif
-
 	unsigned int rs = m_pRingBuffer->readable();
 	if (rs == 0)
 		return;
@@ -1018,10 +980,6 @@ void qtractorAudioBuffer::writeSync (void)
 			nbehind = rs - ntotal;
 		}
 	}
-
-#ifdef DEBUG
-	dump_state("-writeSync()");
-#endif
 }
 
 
@@ -1365,10 +1323,6 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 	if (m_pRingBuffer == NULL)
 		return;
 
-#ifdef DEBUG
-	dump_state("+reset()");
-#endif
-
 	unsigned long iFrame = 0;
 
 	// If looping, we'll reset to loop-start point,
@@ -1382,10 +1336,6 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 	}
 
 	seek(iFrame);
-
-#ifdef DEBUG
-	dump_state("-reset()");
-#endif
 }
 
 
@@ -1577,24 +1527,6 @@ bool qtractorAudioBuffer::isWsolaQuickSeek (void)
 {
 	return g_bWsolaQuickSeek;
 }
-
-
-#ifdef DEBUG
-void qtractorAudioBuffer::dump_state ( const QString& sPrefix ) const
-{
-	unsigned int  rs  = m_pRingBuffer->readable();
-	unsigned int  ws  = m_pRingBuffer->writable();
-	unsigned int  ri  = m_pRingBuffer->readIndex();
-	unsigned int  wi  = m_pRingBuffer->writeIndex();
-	unsigned long wo  = m_iWriteOffset;
-	unsigned long ro  = m_iReadOffset;
-	unsigned long ofs = m_iOffset;
-	unsigned long len = m_iLength;
-
-	qDebug("%s rs=%u ws=%u ri=%u wi=%u wo=%lu ro=%lu ofs=%lu len=%lu",
-		sPrefix.toUtf8().constData(), rs, ws, ri, wi, wo, ro, ofs, len);
-}
-#endif
 
 
 // end of qtractorAudioBuffer.cpp
