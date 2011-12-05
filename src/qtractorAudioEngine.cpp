@@ -1478,6 +1478,18 @@ bool qtractorAudioEngine::openMetroBus (void)
 // Close audio metronome stuff.
 void qtractorAudioEngine::closeMetroBus (void)
 {
+	if (m_pMetroBeatBuff) {
+		m_pMetroBeatBuff->close();
+		delete m_pMetroBeatBuff;
+		m_pMetroBeatBuff = NULL;
+	}
+
+	if (m_pMetroBarBuff) {
+		m_pMetroBarBuff->close();
+		delete m_pMetroBarBuff;
+		m_pMetroBarBuff = NULL;
+	}
+
 	if (m_bMetroBus && m_pMetroBus) {
 		m_pMetroBus->close();
 		removeBusEx(m_pMetroBus);
@@ -1492,18 +1504,6 @@ void qtractorAudioEngine::closeMetroBus (void)
 void qtractorAudioEngine::deleteMetroBus (void)
 {
 	closeMetroBus();
-
-	if (m_pMetroBarBuff) {
-		m_pMetroBarBuff->close();
-		delete m_pMetroBarBuff;
-		m_pMetroBarBuff = NULL;
-	}
-
-	if (m_pMetroBeatBuff) {
-		m_pMetroBeatBuff->close();
-		delete m_pMetroBeatBuff;
-		m_pMetroBeatBuff = NULL;
-	}
 
 	if (m_bMetroBus && m_pMetroBus)
 		delete m_pMetroBus;
