@@ -473,17 +473,36 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 
 	int nread;
 
-	// Are we off decoded file limits (EoS)?
 	unsigned long ro = m_iReadOffset;
-	if (ro >= m_iFileLength && !isSyncFlag(InitSync)) {
-		// Force out-of-sync...
-		setSyncFlag(ReadSync, false);
-		return 0;
-	}
-
-	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
+
+	// Are we off decoded file limits (EoS)?
+	if (ro >= m_iFileLength) {
+		nread = iFrames;
+		if (ls < le) {
+			if (m_bIntegral) {
+				unsigned int ri = m_pRingBuffer->readIndex();
+				while (ri < le && ri + nread >= le) {
+					nread -= le - ri;
+					ro = m_iOffset + ls;
+					m_pRingBuffer->setReadIndex(ls);
+				}
+			} else {
+				ls += m_iOffset;
+				le += m_iOffset;
+				while (ro < le && ro + nread >= le) {
+					nread -= le - ro;
+					ro = ls;
+				}
+			}
+		}
+		m_iReadOffset = (ro + nread);
+		// Force out-of-sync...
+		setSyncFlag(ReadSync, false);
+		return nread;
+	}
+
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
@@ -608,17 +627,36 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 
 	int nread;
 
-	// Are we off decoded file limits (EoS)?
 	unsigned long ro = m_iReadOffset;
-	if (ro >= m_iFileLength && !isSyncFlag(InitSync)) {
-		// Force out-of-sync...
-		setSyncFlag(ReadSync, false);
-		return 0;
-	}
-
-	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
+
+	// Are we off decoded file limits (EoS)?
+	if (ro >= m_iFileLength) {
+		nread = iFrames;
+		if (ls < le) {
+			if (m_bIntegral) {
+				unsigned int ri = m_pRingBuffer->readIndex();
+				while (ri < le && ri + nread >= le) {
+					nread -= le - ri;
+					ro = m_iOffset + ls;
+					m_pRingBuffer->setReadIndex(ls);
+				}
+			} else {
+				ls += m_iOffset;
+				le += m_iOffset;
+				while (ro < le && ro + nread >= le) {
+					nread -= le - ro;
+					ro = ls;
+				}
+			}
+		}
+		m_iReadOffset = (ro + nread);
+		// Force out-of-sync...
+		setSyncFlag(ReadSync, false);
+		return nread;
+	}
+
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
