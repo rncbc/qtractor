@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Force audio file closing to occur on the very same
+  disk-write (sync)thread, possibly mitigating an old
+  random crash issue lurking in the vorbis reference
+  encoder (recording) re. the non thread-safetyness
+  of the vorbis_analysis() final call.
+
 - Fixed extraordinary shadow playback of audio clips
   which extent were longer than the respective audio
   file length. (EXPERIMENTAL)

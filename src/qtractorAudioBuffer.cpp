@@ -385,44 +385,28 @@ void qtractorAudioBuffer::close (void)
 	if (m_pFile == NULL)
 		return;
 
-#if 0	// QTRACTOR_AUDIO_BUFFER_CLOSE_OLD
-
-	// Avoid any other interference (ought to be atomic)...
-	while (m_pSyncThread && isSyncFlag(WaitSync))
-		m_pSyncThread->syncExport();
-	//setSyncFlag(WaitSync, false);
-
 	// Write-behind any remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write) {
-		writeSync();
+		// Wait for regular file close...
+		if (m_pSyncThread) {
+			setSyncFlag(CloseSync);
+			m_pSyncThread->sync(this);
+			do qtractorSession::stabilize();
+			while (isSyncFlag(CloseSync));
+		}
+		// Close on-the-fly peak file, if applicable...
 		if (m_pPeak) {
 			m_pPeak->closeWrite();
 			m_pPeak = NULL;
 		}
+	} else {
+		// Avoid any other interference (ought to be atomic)...
+		while (m_pSyncThread && isSyncFlag(WaitSync))
+			m_pSyncThread->syncExport();
+		//setSyncFlag(WaitSync, false);
+		// Time to close it good.
+		m_pFile->close();
 	}
-
-	// Time to close it good.
-	m_pFile->close();
-
-#else	// QTRACTOR_AUDIO_BUFFER_CLOSE_NEW
-
-	// Wait for regular file close...
-	if (m_pSyncThread) {
-		setSyncFlag(CloseSync);
-		m_pSyncThread->sync(this);
-		do qtractorSession::stabilize();
-		while (isSyncFlag(CloseSync));
-	}
-
-	// Close on-the-fly peak file, if applicable...
-	if (m_pFile->mode() & qtractorAudioFile::Write) {
-		if (m_pPeak) {
-			m_pPeak->closeWrite();
-			m_pPeak = NULL;
-		}
-	}
-
-#endif
 
 	// Deallocate any buffer stuff...
 	if (m_pTimeStretcher) {
