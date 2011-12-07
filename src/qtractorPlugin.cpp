@@ -65,39 +65,50 @@ const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 #endif
 
 
-typedef void (*qtractorPluginFile_Function)(void);
-
+// A common scheme for (a default) plugin serach paths...
+//
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 #define PATH_SEP ";"
 #else
 #define PATH_SEP ":"
 #endif
 
+static QString default_paths ( const QString& suffix )
+{
+	const QString& sep  = QDir::separator();
+	const QString& home = QDir::homePath();
+
+	const QString& pre1 = sep + "usr";
+	const QString& pre2 = pre1 + sep + "local";
+
+	const QString& lib0 = "lib";
+	const QString& lib1 = pre1 + sep + lib0;
+	const QString& lib2 = pre2 + sep + lib0;
+
 #if defined(__x86_64__)
-#define PATH_LIB "/lib64"
-#else
-#define PATH_LIB "/lib"
+	const QString& x64  = "64";
+	const QString& lib3 = lib1 + x64;
+	const QString& lib4 = lib2 + x64;
 #endif
 
-#define PATH_PRE1 "/usr/local" PATH_LIB
-#define PATH_PRE2 "/usr" PATH_LIB
+	QStringList paths;
 
-// Default plugin paths...
-#ifdef CONFIG_LADSPA
-#define LADSPA_PATH PATH_PRE1 "/ladspa" PATH_SEP PATH_PRE2 "/ladspa"
+#if defined(Q_OS_UNIX)
+	paths << home + sep + '.' + suffix;
 #endif
 
-#ifdef CONFIG_DSSI
-#define DSSI_PATH PATH_PRE1 "/dssi" PATH_SEP PATH_PRE2 "/dssi"
+#if defined(__x86_64__)
+//	paths << home + sep + lib0 + x64 + sep + suffix;
+	paths << lib4 + sep + suffix;
+	paths << lib3 + sep + suffix;
 #endif
 
-#ifdef CONFIG_VST
-#define VST_PATH PATH_PRE1 "/vst" PATH_SEP PATH_PRE2 "/vst"
-#endif
+//	paths << home + sep + lib0 + sep + suffix;
+	paths << lib2 + sep + suffix;
+	paths << lib1 + sep + suffix;
 
-#ifdef CONFIG_LV2
-#define LV2_PATH PATH_PRE1 "/lv2" PATH_SEP PATH_PRE2 "/lv2"
-#endif
+	return paths.join(PATH_SEP);
+}
 
 
 //----------------------------------------------------------------------------
@@ -117,7 +128,7 @@ bool qtractorPluginPath::open (void)
 		(m_typeHint == qtractorPluginType::Ladspa && m_paths.isEmpty())) {
 		sPaths = ::getenv("LADSPA_PATH");
 		if (sPaths.isEmpty())
-			sPaths = LADSPA_PATH;
+			sPaths = default_paths("ladspa");
 		if (!sPaths.isEmpty())
 			m_paths << sPaths.split(PATH_SEP);
 	}
@@ -128,7 +139,7 @@ bool qtractorPluginPath::open (void)
 		(m_typeHint == qtractorPluginType::Dssi && m_paths.isEmpty())) {
 		sPaths = ::getenv("DSSI_PATH");
 		if (sPaths.isEmpty())
-			sPaths = DSSI_PATH;
+			sPaths = default_paths("dssi");
 		if (!sPaths.isEmpty())
 			m_paths << sPaths.split(PATH_SEP);
 	}
@@ -139,7 +150,7 @@ bool qtractorPluginPath::open (void)
 		(m_typeHint == qtractorPluginType::Vst && m_paths.isEmpty())) {
 		sPaths = ::getenv("VST_PATH");
 		if (sPaths.isEmpty())
-			sPaths = VST_PATH;
+			sPaths = default_paths("vst");
 		if (!sPaths.isEmpty())
 			m_paths << sPaths.split(PATH_SEP);
 	}
@@ -150,7 +161,7 @@ bool qtractorPluginPath::open (void)
 		(m_typeHint == qtractorPluginType::Lv2 && m_paths.isEmpty())) {
 		sPaths = ::getenv("LV2_PATH");
 		if (sPaths.isEmpty())
-			sPaths = LV2_PATH;
+			sPaths = default_paths("lv2");
 		if (!sPaths.isEmpty())
 			m_paths << sPaths.split(PATH_SEP);
 		// Must do this before anything related to LV2 plugins...

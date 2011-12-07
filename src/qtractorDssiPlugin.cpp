@@ -819,7 +819,7 @@ bool qtractorDssiPluginType::open (void)
 
 #ifdef CONFIG_LIBLO
 	// Check for GUI editor exacutable...
-	QFileInfo fi(file()->filename());
+	QFileInfo fi(filename());
 	QFileInfo gi(fi.dir(), fi.baseName());
 	if (gi.isDir()) {
 		QDir dir(gi.absoluteFilePath());

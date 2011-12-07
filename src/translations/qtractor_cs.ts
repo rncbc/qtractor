@@ -820,7 +820,7 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="528"/>
+        <location filename="../qtractorPlugin.cpp" line="539"/>
         <source>(Any)</source>
         <translation>(Jakýkoli)</translation>
     </message>
