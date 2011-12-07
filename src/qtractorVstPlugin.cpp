@@ -406,7 +406,7 @@ bool qtractorVstPluginType::open (void)
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPluginType[%p]::open() filename=\"%s\" index=%lu",
-		this, file()->filename().toUtf8().constData(), index());
+		this, filename().toUtf8().constData(), index());
 #endif
 
 	// Retrieve plugin type names.
@@ -414,13 +414,13 @@ bool qtractorVstPluginType::open (void)
 	if (vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f))
 		m_sName = szName;
 	else
-		m_sName = QFileInfo(file()->filename()).baseName();
+		m_sName = QFileInfo(filename()).baseName();
 	// Sanitize plugin label.
 	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 
 	// Retrieve plugin unique identifier.
 #ifdef CONFIG_VESTIGE_OLD
-	m_iUniqueID = qHash(file()->filename());
+	m_iUniqueID = qHash(filename());
 #else
 	m_iUniqueID = pVstEffect->uniqueID;
 #endif
