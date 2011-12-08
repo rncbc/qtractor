@@ -320,6 +320,9 @@ void qtractorAudioClip::closeAudioFile (void)
 		if (m_pData->count() < 1) {
 			if (m_pKey) g_hashTable.remove(*m_pKey);
 			delete m_pData;
+			// ATTN: If proven empty, remove the file...
+			if (clipLength() < 1)
+				QFile::remove(filename());
 		}
 		m_pData = NULL;
 	}
@@ -383,14 +386,11 @@ void qtractorAudioClip::close (void)
 #endif
 
 	// Take pretended clip-length...
-	unsigned long iClipLength = clipLength();
 	qtractorAudioBuffer *pBuff = buffer();
 	if (pBuff) {
 		// Commit the final clip length (record specific)...
-		if (iClipLength < 1) {
-			iClipLength = pBuff->fileLength();
-			setClipLength(iClipLength);
-		}
+		if (clipLength() < 1)
+			setClipLength(pBuff->fileLength());
 		else
 		// Shall we ditch the current peak file?
 		// (don't if closing from recording)
@@ -402,10 +402,6 @@ void qtractorAudioClip::close (void)
 
 	// Close and ditch stuff...
 	closeAudioFile();
-
-	// If proven empty, remove the file.
-	if (iClipLength < 1)
-		QFile::remove(filename());
 }
 
 
