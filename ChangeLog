@@ -5,13 +5,19 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed a probably old lurking destructive bug, which
+  was incidental to when an invalid or non audio file
+  is imported, intentionally or by mistake, into new
+  or existing audio clips (eg. importing a MIDI file
+  where an audio file is expected).
+
 - Force audio file closing to occur on the very same
   disk-write (sync)thread, possibly mitigating an old
   random crash issue lurking in the vorbis reference
   encoder (recording) re. the non thread-safetyness
   of the vorbis_analysis() final call.
 
-- Fixed extraordinary shadow playback of audio clips
+- Fixed extraordinary shadow-playback of audio clips
   which extent were longer than the respective audio
   file length. (EXPERIMENTAL)
 
