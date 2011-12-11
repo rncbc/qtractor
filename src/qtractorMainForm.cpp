@@ -5721,6 +5721,9 @@ void qtractorMainForm::updateCurveMenu (void)
 	m_ui.trackCurveMenu->setEnabled(bEnabled);
 	m_ui.trackCurveSelectMenu->setEnabled(bEnabled);
 
+	if (bEnabled)
+		bEnabled = (pCurveList && !pCurveList->isEmpty());
+
 	bool bCurveEnabled = bEnabled && pCurrentCurve != NULL;
 
 	m_ui.trackCurveModeMenu->setEnabled(bCurveEnabled);
