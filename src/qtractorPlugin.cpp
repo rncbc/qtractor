@@ -76,8 +76,9 @@ const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 static QString default_paths ( const QString& suffix )
 {
 	const QString& sep  = QDir::separator();
+#if defined(Q_OS_UNIX)
 	const QString& home = QDir::homePath();
-
+#endif
 	const QString& pre1 = sep + "usr";
 	const QString& pre2 = pre1 + sep + "local";
 
@@ -98,17 +99,28 @@ static QString default_paths ( const QString& suffix )
 #endif
 
 #if defined(__x86_64__)
+//#if defined(Q_OS_UNIX)
 //	paths << home + sep + lib0 + x64 + sep + suffix;
+//#endif
 	paths << lib4 + sep + suffix;
 	paths << lib3 + sep + suffix;
 #endif
 
+//#if defined(Q_OS_UNIX)
 //	paths << home + sep + lib0 + sep + suffix;
+//#endif
 	paths << lib2 + sep + suffix;
 	paths << lib1 + sep + suffix;
 
 	return paths.join(PATH_SEP);
 }
+
+
+// A common function for special platforms...
+//
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+typedef void (*qtractorPluginFile_Function)(void);
+#endif
 
 
 //----------------------------------------------------------------------------
