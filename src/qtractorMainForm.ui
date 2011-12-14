@@ -1823,6 +1823,9 @@
    <property name="statusTip" >
     <string>Select current clip next take</string>
    </property>
+   <property name="shortcut" >
+	<string>Shift+T</string>
+   </property>
   </action>
   <action name="clipTakeLastAction" >
    <property name="text" >
