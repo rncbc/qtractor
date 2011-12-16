@@ -8,7 +8,9 @@ find critical in the application field. All is not lost,
 as the following are among the ones planned to be worked
 on in the times to come (not in any particular order):
 
-- Audio clip cross-fading.
+- MIDI step-recording.
+- Audio/MIDI files resource management.
+- Audio clip auto-crossfading.
 - Clip locking, muting and plug-ins.
 - JACK MIDI support.
 - OSC interface.
