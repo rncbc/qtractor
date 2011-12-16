@@ -3,102 +3,86 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.2  2011-12-16  Charlie X-ray
 
-- Fixed a probably old lurking destructive bug, which
-  was incidental to when an invalid or non audio file
-  is imported, intentionally or by mistake, into new
-  or existing audio clips (eg. importing a MIDI file
+- Fixed a probably old lurking destructive bug, which was incidental to
+  when an invalid or non audio file is imported, intentionally or by
+  mistake, into new or existing audio clips (eg. importing a MIDI file
   where an audio file is expected).
 
-- Force audio file closing to occur on the very same
-  disk-write (sync)thread, possibly mitigating an old
-  random crash issue lurking in the vorbis reference
-  encoder (recording) re. the non thread-safetyness
-  of the vorbis_analysis() final call.
+- Force audio file closing to occur on the very same disk-write (sync)
+  thread, possibly mitigating an old random crash issue lurking in the
+  vorbis reference encoder (recording) re. the non thread-safeness of
+  the vorbis_analysis() final call.
 
-- Fixed extraordinary shadow-playback of audio clips
-  which extent were longer than the respective audio
-  file length. (EXPERIMENTAL)
+- Fixed extraordinary shadow-playback of audio clips which extent were
+  longer than the respective audio file length.
 
-- Default session file format option now promoted
-  (see View/Options.../General/Session) in the way
-  of whether file suffix gets honored upon session
-  open or save (.qtr, .qts or .qtz). This brand new
-  option also applies for default state file format
-  on a JACK-session salvage context. (EXPERIMENTAL)
+- Default session file format option now promoted (see
+  View/Options.../General/Session) in the way of whether file suffix gets
+  honored upon session open or save (.qtr, .qts or .qtz). This brand new
+  option also applies for default state file format on a JACK-session
+  salvage context.
 
-- The View/Options... (aka. user preferences) dialog
-  sees a new arranjement in layout, with some options
-  moving into this brand new tab page called General.
+- The View/Options... (aka. user preferences) dialog sees a new
+  arranjement in layout, with some options moving into this brand new tab
+  page called General.
 
-- LV2 State extension support has been added, which
-  shall replace old LV2 Persist extension interface
-  in the near future. It also replaces the LV2 Files
-  extension from now on (thanks to Dave Robillard).
+- LV2 State extension support has been added, which shall replace old LV2
+  Persist extension interface in the near future. It also replaces the LV2
+  Files extension from now on (thanks to Dave Robillard).
 
-- Dirty MIDI clips are now auto-saved when MIDI track
-  properties get changed through its own dialog.
+- Dirty MIDI clips are now auto-saved when MIDI track properties get
+  changed through its own dialog.
 
-- Fixed one probable too old crash when cancelling a
-  new/add track dialog.
+- Fixed one probable too old crash when canceling a new/add track dialog.
 
 - MIDI SysEx event list editing is now fixed.
 
-- Once again, make sure all recorded clips start and
-  end at the very same position when multiple track
-  recording is turned on/off, while playback is still
-  rolling. (EXPERIMENTAL)
+- Once again, make sure all recorded clips start and end at the very same
+  position when multiple track recording is turned on/off, while playback
+  is still rolling.
 
-- Fixed Makefile.in handling installation directories
-  to the configure script eg. --datadir, --localedir.
+- Fixed Makefile.in handling installation directories to the configure
+  script eg. --datadir, --localedir.
 
-- Possible attempt to improve in-flight recording clip
-  display, especially when looping and MIDI clips are
-  involved.
+- Possible attempt to improve in-flight recording clip display, especially
+  when looping and MIDI clips are involved.
 
-- MIDI clip revision (re)numbering paranoia has been
-  improved as much to avoid MIDI file clashes as much
-  as possible while editing multiple MIDI clips which
-  reference the same SMF and track/channel.
+- MIDI clip revision (re)numbering paranoia has been improved as much to
+  avoid MIDI file clashes as much as possible while editing multiple MIDI
+  clips which reference the same SMF and track/channel.
 
-- Creating new or updating existing buses with exact
-  same names of any current dedicated inputs/outputs
-  (which are implemented as special covert buses) is
-  now disallowed (preventing bug #3430406).
+- Creating new or updating existing buses with exact same names of any
+  current dedicated inputs/outputs (which are implemented as special
+  covert buses) is now disallowed (preventing bug #3430406).
 
-- Loop-recording/takes functionality is now ready for
-  the masses and accessible from brand new Clip/Take
-  menu (Select, First, Previous, Next, Last, Reset
-  and Range...; the latter is actually being provided
-  as bonus feature :) as to fold any given clip into
-  so-called takes, simulating loop-recording mode over
-  an arbitrary range). (EXPERIMENTAL)
+- Loop-recording/takes functionality is now ready for the masses and
+  accessible from brand new Clip/Take menu (Select, First, Previous, Next,
+  Last, Reset and Range...; the latter is actually being provided as bonus
+  feature :) as to fold any given clip into so-called takes, simulating
+  loop-recording mode over an arbitrary range).
 
-- Loop-recording/takes infrastructure integration is
-  sneaking in: all clips recorded under a loop/cycle
-  range may now get split (folded) into one or more
-  so-called takes. A new option is now provided, as
-  to select which take is about to retain after the
-  recording ends, either the First or the Last one.
-  Just turn this mode off (None) and keep with the
-  old recording behavior, where clips are laid out
-  unfolded through the timeline, as usual (see menu
-  View/Options.../Display/Loop recording mode).
+- Loop-recording/takes infrastructure integration is sneaking in: all
+  clips recorded under a loop/cycle range may now get split (folded) into
+  one or more so-called takes. A new option is now provided, as to select
+  which take is about to retain after the recording ends, either the First
+  or the Last one. Just turn this mode off (None) and keep with the old
+  recording behavior, where clips are laid out unfolded through the
+  timeline, as usual (see menu View/Options.../Display/Loop recording
+  mode).
 
-- Improved robustness in face of disabled audio buses
-  when global maximum number of JACK (audio) ports is
-  surpassed (mitigating bug #3421911).
+- Improved robustness in face of disabled audio buses when global maximum
+  number of JACK (audio) ports is surpassed (mitigating bug #3421911).
 
-- Improved single-track clip selection status logic,
-  (possibly fixing bug #3419141).
+- Improved single-track clip selection status logic, (possibly fixing bug
+  #3419141).
 
-- Clip/Unlink action is now available for detaching
-  linked/ref-counted MIDI clips, renaming and saving
-  into auto-incremental SMF filenames.
+- Clip/Unlink action is now available for detaching linked/ref-counted
+  MIDI clips, renaming and saving into auto-incremental SMF filenames.
 
-- Temporary session archive directory now (pre)fixed
-  whith program name (eg. /tmp/qtractor).
+- Temporary session archive directory now (pre)fixed with program name
+  (eg. /tmp/qtractor).
 
 - Fixed VST GUI editor window title on first show.
 
@@ -107,856 +91,756 @@ SVN TRUNK
 
 0.5.1  2011-10-05  Bravo Yankee
 
-- More LADISH support: SIGTERM signal is now trapped
-  for graceful application close.
+- More LADISH support: SIGTERM signal is nowrapped for graceful
+  application close.
 
-- Improved paste-repeat snap precision when dealing
-  with large repeat counts.
+- Improved paste-repeat snap precision when dealing with large repeat
+  counts.
 
 - Czech (cs) translation added, by Pavel Fric.
 
-- Added a few snap-to-beat divisors (unusual Beat/5,
-  Beat/7, Beat/9 and Beat/10) for completeness sake.
+- Added a few snap-to-beat divisors (unusual Beat/5, Beat/7, Beat/9 and
+  Beat/10) for completeness sake.
 
-- Such a simple change of mind with a visual twist:
-  the "A" track automation button/menu has now been
-  moved to the right-most, as it belongs ;)
+- Such a simple change of mind with a visual twist: the "A" track
+  automation button/menu has now been moved to the right-most, as it
+  belongs ;)
 
-- Auto-connection of dedicated audio outputs is now
-  optional for default audio master bus, metronome,
-  player and MIDI instrument plugin dedicated audio
-  outputs.
+- Auto-connection of dedicated audio outputs is now optional for default
+  audio master bus, metronome, player and MIDI instrument plugin dedicated
+  audio outputs.
 
-- Finally, after a pitiful large brain-dead period,
-  generic plugin forms are now showing all possible
-  controllable plugin parameters featuring a paged,
-  tabbed dialog, whenever applicable.
+- Finally, after a pitiful large brain-dead period, generic plugin forms
+  are now showing all possible controllable plugin parameters featuring a
+  paged, tabbed dialog, whenever applicable.
 
-- Special hack/fix for JUCE based native VST plugins,
-  which are the most actually found with a GUI editor,
-  skipping explicit shared library unloading and thus
-  avoiding some mysterious crashes on session close
+- Special hack/fix for JUCE based native VST plugins, which are the most
+  actually found with a GUI editor, skipping explicit shared library
+  unloading and thus avoiding some mysterious crashes on session close
   and/or application exit.
 
-- Support for MIDI-fx plugins (native VST and/or LV2)
-  is now implemented and functional (intra-chain only).
+- Support for MIDI-fx plugins (native VST and/or LV2) is now implemented
+  and functional (intra-chain only).Instrument plugin bank/program
+  selection  was found broken or dead in the water, specially on VSTi, now
+  finally  fixed again.
 
-- Instrument plugin bank/program selection was found
-  broken or dead in the water, specially on VSTi, now
-  finally fixed again.
+- VST plugin parameter value display on generic form is now back in
+  business (were dead regarding value changes).
 
-- VST plugin parameter value display on generic form
-  is now back in business (were dead regarding value
-  changes).
+- All plugin's provided GUI editors are now honored by being popped up
+  first, instead of the usual but good old generic plugin form.
 
-- All plugin's provided GUI editors are now honored by
-  being popped up first, instead of the usual but good
-  old generic plugin form.
+- Long overdue implementation of a dedicated MIDI file player is now
+  accessible from the MIDI files widget; one can play the whole SMF or
+  just a single track or channel.
 
-- Long overdue implementation of a dedicated MIDI file
-  player is now accessible from the MIDI files widget;
-  one can play the whole SMF or just a single track or
-  channel.
+- Update to a newer VeSTige header, probably fixing an old 32 vs. 64 bit
+  mismatch.
 
-- Update to a newer VeSTige header, probably fixing an
-  old 32 vs. 64 bit mismatch.
+- Avoid JACK session filenames/paths to be ever shown; also avoid all
+  buses ports (re)connections when JACK sessions are (re)loaded, given the
+  fact that session management will take care of just that; more also,
+  untitled/default session names are now also picked up to match current
+  LADISH project name, obviously given by LADISH_PROJECT_NAME environment
+  variable, whenever present (as suggested by Nedko Ardaunov).
 
-- Avoid JACK session filenames/paths to be ever shown;
-  also avoid all buses ports (re)connections when JACK
-  sessions are (re)loaded, given the fact that session
-  management will take care of just that; more also,
-  untitled/default session names are now also picked
-  up to match current LADISH project name, obviously
-  given by LADISH_PROJECT_NAME environment variable,
-  whenever present (as suggested by Nedko Ardaunov).
+- Paste-repeat floating selection has been fixed (was showing only the
+  last repeated selection).
 
-- Paste-repeat floating selection has been fixed (was
-  showing only the last repeated selection).
+- Coherence of tempo changes on audio and MIDI clips, whether automatic
+  time-stretching is in effect, has been slightly improved, hopefully
+  fixed.
 
-- Coherence of tempo changes on audio and MIDI clips,
-  whether automatic time-stretching is in effect, has
-  been slightly improved, hopefully fixed.
-
-- Bold attempt to get linked (aka. ref-counted) audio
-  and MIDI clips into practice (EXPERIMENTAL).
+- Bold attempt to get linked (aka. ref-counted) audio and MIDI clips into
+  practice.
 
 - Main track view now showing all clips above the grid.
 
-- Added support for both new and older (deprecated uri)
-  lv2_external_ui extension (by Nedko Ardaunov).
+- Added support for both new and older (deprecated uri) lv2_external_ui
+  extension (by Nedko Ardaunov).
 
-- Following yet another great idea, and implementation,
-  by Holger Dehnhardt, who already brought us the new
-  aux-send insert plugin, thanks again, the so-called
-  direct access control option is now featured for any
-  plugin parameter right from plugin listings eg. mixer
-  strips.
+- Following yet another great idea, and implementation, by Holger
+  Dehnhardt, who already brought us the new aux-send insert plugin, thanks
+  again, the so-called direct access control option is now featured for
+  any plugin parameter right from plugin listings eg. mixer strips.
 
-- General resource consumption and management has been
-  slightly improved, due to internal buses allocation
-  optimization.
+- General resource consumption and management has been slightly improved,
+  due to internal buses allocation optimization.
 
-- Fixed nasty crash-bug that was severely affecting all
-  sessions that had at least one insert (pseudo-)plugin
-  on any audio input bus.
+- Fixed nasty crash-bug that was severely affecting all sessions that had
+  at least one insert (pseudo-)plugin on any audio input bus.
 
-- All automation curve nodes are now relocated whenever
-  disparate session sample-rate is detected on load.
+- All automation curve nodes are now relocated whenever disparate session
+  sample-rate is detected on load.
 
-- New aux-send/insert pseudo-plugin is now introduced,
-  allowing to route any track audio output to any other
-  audio output bus besides the nominal one -- thanks to
-  an original implementation from Holger Dehnhardt.
+- New aux-send/insert pseudo-plugin is now introduced, allowing to route
+  any track audio output to any other audio output bus besides the nominal
+  one -- thanks to an original implementation from Holger Dehnhardt.
 
-- New immediate edit/loop-range settings from current
-  clip extents, accessible on the main menu (Clip/Range
-  Set, Loop Set) and from MIDI clip editor menu as well
-  (File/Range Set, Loop Set).
+- New immediate edit/loop-range settings from current clip extents,
+  accessible on the main menu (Clip/Range Set, Loop Set) and from MIDI
+  clip editor menu as well (File/Range Set, Loop Set).
 
-- MIDI Names XML files (*.midnam) may now be imported
-  into MIDI instrument definitions. (EXPERIMENTAL)
+- MIDI Names XML files (*.midnam) may now be imported into MIDI instrument
+  definitions.
 
-- Avoid cursor reset while editing MIDI events list
-  (fixes bug #3380259, reported by Frank Neumann).
+- Avoid cursor reset while editing MIDI events list (fixes bug #3380259,
+  reported by Frank Neumann).
 
 - Just some typos fixing (patch #3378382 by c-korn).
 
-- Track view automation curve editing mode has been
-  slightly fixed, now allowing for other previously
-  existing point-and-click mouse operations.
+- Track view automation curve editing mode has been slightly fixed, now
+  allowing for other previously existing point-and-click mouse operations.
 
-- Default automation curve mode is now preserved
-  (following a suggestion by Alexandre Prokoudine,
-  thanks).
+- Default automation curve mode is now preserved (following a suggestion
+  by Alexandre Prokoudine, thanks).
 
 
 0.5.0  2011-07-22  Alpha Zulu (TYOQA)
 
-- MIDI controller learn/catch-up sees the way in:
-  MIDI controller changes are now only effective
-  after catching-up with their respective program
-  parameters, avoiding abrupt jumps and keeping a
-  safe and continuous behavior. (EXPERIMENTAL)
+- MIDI controller learn/catch-up sees the way in: MIDI controller changes
+  are now only effective after catching-up with their respective program
+  parameters, avoiding abrupt jumps and keeping a safe and continuous
+  behavior.
 
-- Track/Height menu is now featured, giving access
-  to Increase, Decrease or Reset the current track
-  height.
+- Track/Height menu is now featured, giving access to Increase, Decrease
+  or Reset the current track height.
 
-- All changes to audio gain and panning on tracks
-  and buses are now applied following a piece-wise
-  linear ramp, reducing the old nasty clicks, pops
-  or zipper artifacts that might be awfully audible
-  on some situations, most specially on automation.
+- All changes to audio gain and panning on tracks and buses are now
+  applied following a piece-wise linear ramp, reducing the old nasty
+  clicks, pops or zipper artifacts that might be awfully audible on some
+  situations, most specially on automation.
 
-- All zooming in/out is now relative to either the
-  viewport center or current mouse cursor position
-  if found laying inside.
+- All zooming in/out is now relative to either the viewport center or
+  current mouse cursor position if found laying inside.
 
-- TYOQA! the underground sources have emerged:...
-  after years in the making, track automation, or
-  dynamic curves as some like to call, is finally
-  a reality, tricky but real ;)
+- TYOQA! the underground sources have emerged:... after years in the
+  making, track automation, or dynamic curves as some like to call, is
+  finally a reality, tricky but real ;)
 
-- Audio clip anti-glitch/ramp-smoothing effect is
-  now slightly independent of current buffer-size
-  period (mitigating bug #3338113 effect).
+- Audio clip anti-glitch/ramp-smoothing effect is now slightly independent
+  of current buffer-size period (mitigating bug #3338113 effect).
 
-- Once buried under the Edit menu, Clip menu has
-  been finally promoted to top main menu.
+- Once buried under the Edit menu, Clip menu has been finally promoted to
+  top main menu.
 
-- Debugging stacktrace now applies to all working
-  threads.
+- Debugging stacktrace now applies to all working threads.
 
-- Fixed muted loop playback on audio clips ending
-  coincidentally with the loop-turn/end point.
+- Fixed muted loop playback on audio clips ending coincidentally with the
+  loop-turn/end point.
 
-- Old/deprecated JACK port latency support added
-  to audio recording latency compensation.
+- Old/deprecated JACK port latency support added to audio recording
+  latency compensation.
 
-- Audio clip merge/export lock-ups now untangled
-  (fixes bug #3308998).
+- Audio clip merge/export lock-ups now untangled (fixes bug #3308998).
 
 - LV2 extension headers update.
 
-- Fixed configure of newer LV2 host implementation
-  stack (LILV) when older (SLV2) is not present.
+- Fixed configure of newer LV2 host implementation stack (LILV) when older
+  (SLV2) is not present.
 
 
 0.4.9  2011-05-26  The Final Dudette
 
-- Session file format saved on JACK session has
-  been reverted to archive/zip bundle one (.qtz)
-  now using temporary extraction directory when
-  loading an existing JACK session.
+- Session file format saved on JACK session has been reverted to
+  archive/zip bundle one (.qtz) now using temporary extraction directory
+  when loading an existing JACK session.
 
-- Main toolbar time and tempo widgets get their
-  visual extents a bit more theme-friendlier ;).
+- Main toolbar time and tempo widgets get their visual extents a bit more
+  theme-friendlier ;).
 
-- Some current working directory trickery is now
-  in place avoiding JACK session directories to
-  ever be picked as default, as much as possible.
+- Some current working directory trickery is now in place avoiding JACK
+  session directories to ever be picked as default, as much as possible.
 
-- Ghost-playbacks are now avoided on audio clips
-  that are artificially extended beyond their own
-  audio file lengths.
+- Ghost-playbacks are now avoided on audio clips that are artificially
+  extended beyond their own audio file lengths.
 
-- Recording clips now shown in a reddish shade;
-  also, it's all now shown a bit more correctly,
-  regarding the lead and within looping range.
+- Recording clips now shown in a reddish shade; also, it's all now shown
+  a bit more correctly, regarding the lead and within looping range.
 
-- Custom tempo spin-box widgets now honoring the
-  decimal point cursor positioning for integral
-  up/down tempo value stepping.
+- Custom tempo spin-box widgets now honoring the decimal point cursor
+  positioning for integral up/down tempo value stepping.
 
-- Audio recording latency is now compensated via
-  automatic clip offsetting.
+- Audio recording latency is now compensated via automatic clip
+  offsetting.
 
-- Audio peak file generation is now pipelined on
-  a single unique thread, instead of old one per
-  audio clip file basis.
+- Audio peak file generation is now pipelined on a single unique thread,
+  instead of old one per audio clip file basis.
 
-- MIDI tempo/time-signature map import problem
-  has been hopefully fixed (bug #329791).
+- MIDI tempo/time-signature map import problem has been hopefully fixed
+  (bug #329791).
 
-- Session and track names are now sanitized from
-  slashes (bug# 625798@bugs.debian.org).
+- Session and track names are now sanitized from slashes (bug#
+  625798@bugs.debian.org).
 
 - Mouse wheel effect to sliders is now reversed.
 
-- An appropriate export filename is now suggested
-  as default (Track/export Tracks...).
+- An appropriate export filename is now suggested as default (Track/export
+  Tracks...).
 
-- Follow-playhead automatism is now temporarily
-  suspended while mouse cursor hovering prompts
-  for any editing action (applies to main track-
+- Follow-playhead automatism is now temporarily suspended while mouse
+  cursor hovering prompts for any editing action (applies to main track-
   view and MIDI clip editor/piano-roll).
 
-- Audio vs. MIDI time drift correction now takes
-  jack_frame_time() as audio time reference.
+- Audio vs. MIDI time drift correction now takes jack_frame_time() as
+  audio time reference.
 
-- Audio buffering internal synchronization logic
-  gets it bartered: three bools for a single byte
-  flag.
+- Audio buffering internal synchronization logic gets it bartered: three
+  bools for a single byte flag.
 
-- Connections are now preserved as possible when
-  changing bus properties (View/Buses.../Update).
+- Connections are now preserved as possible when changing bus properties
+  (View/Buses.../Update).
 
-- A rare audio clip looping out-of-sync condition
-  got squared, hopefully the last ;)
+- A rare audio clip looping out-of-sync condition got squared, hopefully
+  the last ;)
 
-- Yet again, the audio clip buffer/disk-streaming
-  optimization has been almost completely redrawn:
-  now there's one thread per audio track.
+- Yet again, the audio clip buffer/disk-streaming optimization has been
+  almost completely redrawn: now there's one thread per audio track.
 
-- Not replacing a session directory that already
-  exists on loading an archive file (.qtz) is now
-  fixed with an usable brand new untitled session.
+- Not replacing a session directory that already exists on loading an
+  archive file (.qtz) is now fixed with an usable brand new untitled
+  session.
 
-- The major thread optimization has been slightly
-  improved: the audio clip buffer/disk-streaming
-  thread is now served in a FIFO manner (was LIFO).
+- The major thread optimization has been slightly improved: the audio clip
+  buffer/disk-streaming thread is now served in a FIFO manner (was LIFO).
 
 - Custom time/tempo spin-box widget change fixup.
 
 - Audio clip filename change segfault/crash fixed.
 
-- Make sure all clips in multiple recording tracks
-  start and end at the very same position whenever
-  recording is already engaged and rolling.
+- Make sure all clips in multiple recording tracks start and end at the
+  very same position whenever recording is already engaged and rolling.
 
-- Hopeful fix to a potential audio buffering race
-  condition, which was a probable cause of random
-  muted clips (maybe fixing bug #3290178).
+- Hopeful fix to a potential audio buffering race condition, which was a
+  probable cause of random muted clips (maybe fixing bug #3290178).
 
 - Avoid recursive observer widget value updates.
 
-- Almost complete rewrite of the main track-view
-  selection and redrawing logic, taking advantage
-  of the fundamentally static graphical backstore.
+- Almost complete rewrite of the main track-view selection and redrawing
+  logic, taking advantage of the fundamentally static graphical backstore.
 
 - Autonomic resizing of mixer bus splitter sizes.
 
-- Improved timing for monitored MIDI events being
-  buffered though MIDI instrument plugins, while 
-  playback/transport is rolling.
+- Improved timing for monitored MIDI events being buffered though MIDI
+  instrument plugins, while playback/transport is rolling.
 
-- Audio peak/waveform is now slightly tweaked from
-  the early optimization days (master C++ guru has
-  always said that was root of all evil anyway :).
+- Audio peak/waveform is now slightly tweaked from the early optimization
+  days (master C++ guru has always said that was root of all evil anyway :).
 
-- MIDI controller mapping now with "Invert" value
-  option. Also, new "Inputs" and "Outputs" buttons
-  have been added as helpers for MIDI control port
-  connections access.
+- MIDI controller mapping now with "Invert" value option. Also, new
+  "Inputs" and "Outputs" buttons have been added as helpers for MIDI
+  control port connections access.
 
-- Main left pane vertical splitter resize hack, 
-  avoiding some track list update re-entrancy.
+- Main left pane vertical splitter resize hack,  avoiding some track list
+  update re-entrancy.
 
-- Inserting a LV2 instrument/synth plugin on an
-  audio track or bus were causing immediate crash,
-  now fixed (give or take some event buffer stub).
+- Inserting a LV2 instrument/synth plugin on an audio track or bus were
+  causing immediate crash, now fixed (give or take some event buffer stub).
 
 - Plugin Activate All/Deactivate All menu fixing.
 
-- Make sure given session directory has all the
-  necessary access permission (read/write) while
-  on session properties dialog.
+- Make sure given session directory has all the necessary access
+  permission (read/write) while on session properties dialog.
 
-- Dedicated audio outputs setting for instrument
-  plugins inserted on the MIDI track properties
-  dialog were not being honored, now fixed.
+- Dedicated audio outputs setting for instrument plugins inserted on the
+  MIDI track properties dialog were not being honored, now fixed.
 
-- Force update/close of all MIDI clips and their
-  respective editors (piano-roll) if open, when
-  changing the global session tempo (BPM).
+- Force update/close of all MIDI clips and their respective editors
+  (piano-roll) if open, when changing the global session tempo (BPM).
 
-- Removed the misleading "(Any)" special channel
-  value while on MIDI controllers/learn dialog.
+- Removed the misleading "(Any)" special channel value while on MIDI
+  controllers/learn dialog.
 
-- Floating tool-tips now being shown also while
-  on mouse rubber-banding (drag-select).
+- Floating tool-tips now being shown also while on mouse rubber-banding
+  (drag-select).
 
-- Audio clip pitch-shifting change fixing; also,
-  tooltips now showing semitones units instead of
-  a clueless percentage.
+- Audio clip pitch-shifting change fixing; also, tooltips now showing
+  semitones units instead of a clueless percentage.
 
-- Rendering audio wave-forms while recording is
-  now a little bit smoother than before.
+- Rendering audio wave-forms while recording is now a little bit smoother
+  than before.
 
-- New main track-view clip selection tool: invert
-  current selection (Edit/Select/Invert). The MIDI
-  clip editor (piano-roll) also gets proper range
-  selection tool (Edit/Select/Range).
+- New main track-view clip selection tool: invert current selection
+  (Edit/Select/Invert). The MIDI clip editor (piano-roll) also gets proper
+  range selection tool (Edit/Select/Range).
 
-- More eye-candy: muted/non-soloed tracks are now
-  slightly shaded on the main track-view.
+- More eye-candy: muted/non-soloed tracks are now slightly shaded on the
+  main track-view.
 
-- A major hidden optimization has been implanted:
-  all audio clip buffer/disk-streaming threads are
-  finally merged into a single multiplexing thread
-  (was one thread per audio clip longer than 3 sec.
+- A major hidden optimization has been implanted: all audio clip
+  buffer/disk-streaming threads are finally merged into a single
+  multiplexing thread (was one thread per audio clip longer than 3 sec.
   which was quite wasteful and creepy;).
 
-- All plugin list view changes are now properly
-  signaled to track properties and bus manager
-  dialogs and enable their respective acceptance.
+- All plugin list view changes are now properly signaled to track
+  properties and bus manager dialogs and enable their respective
+  acceptance.
 
-- Two brand new MIDI tools make their appearance:
-  Scale-Quantize and Snap-to-Scale. The later may
-  be readily accessible from the MIDI clip editor
-  toolbar and menu (check View/Toolbars/Scale and
-  View/Scale).
+- Two brand new MIDI tools make their appearance: Scale-Quantize and
+  Snap-to-Scale. The later may be readily accessible from the MIDI clip
+  editor toolbar and menu (check View/Toolbars/Scale and View/Scale).
 
-- Mixer track strips are now completely redone
-  whenever a track gets moved or re-ordered on
-  main track list-view.
+- Mixer track strips are now completely redone whenever a track gets moved
+  or re-ordered on main track list-view.
 
-- Transport auto-backward option is now honored
-  whenever a new session gets loaded.
+- Transport auto-backward option is now honored whenever a new session
+  gets loaded.
 
 - LV2 extension headers update.
 
-- Got rid of recent QX11EmbedContainer bloating,
-  while introducing gtk_init() as for LV2 GTK UI
-  support stabilization.
+- Got rid of recent QX11EmbedContainer bloating, while introducing
+  gtk_init() as for LV2 GTK UI support stabilization.
 
-- Tempo tap helper button was added to View/Tempo
-  Map... dialog.
+- Tempo tap helper button was added to View/Tempo Map... dialog.
 
 - Executable DSSI plug-in GUI detection fixed.
 
-- Backout default session directory after cleaning
-  up extracted archive/zip bundle session (.qtz).
+- Backout default session directory after cleaning up extracted
+  archive/zip bundle session (.qtz).
 
 - Files widget item selection feedback/focus fix.
 
 - MIDI editor anchor event floating tool-tip fix.
 
-- Probable fix for GtkStyle usage detection (might
-  be gentoo specific).
+- Probable fix for GtkStyle usage detection (might be gentoo specific).
 
 
 0.4.8  2011-01-18  The Fiery Demigoddess
 
-- MIDI controller mapping/learn is now possible
-  on all mixer controls (monitor, gain, panning,
-  record, mute, solo).
+- MIDI controller mapping/learn is now possible on all mixer controls
+  (monitor, gain, panning, record, mute, solo).
 
-- An internal rewrite (aka. refactoring) have been
-  carried out, making sure that all track state
-  action buttons (R, M, S) are now all under the
+- An internal rewrite (aka. refactoring) have been carried out, making
+  sure that all track state action buttons (R, M, S) are now all under the
   observer pattern umbrella.
 
-- Single track range selection is now available
-  on main menu (Edit/Select/Track Range; default
-  keyboard shortcut: Ctrl+Shift+R); additionally
-  to vertical range and horizontal track actions
-  (Edit/Select/Range, Track) all these operations
-  can now toggle over the previous selection.
+- Single track range selection is now available on main menu
+  (Edit/Select/Track Range; default keyboard shortcut: Ctrl+Shift+R);
+  additionally to vertical range and horizontal track actions
+  (Edit/Select/Range, Track) all these operations can now toggle over the
+  previous selection.
 
-- Direct clip selection from Files list item has
-  been brute-forcefully implemented (after being
-  challenged by Jiri Prochaszka aka Anchakor:).
+- Direct clip selection from Files list item has been brute-forcefully
+  implemented (after being challenged by Jiri Prochaszka aka Anchakor:).
 
 - Files tree widget sticky "New Group" item fixed.
 
-- A new menu option has been added (View/Tool Tips)
-  to show/hide a floating tool-tip while dragging,
-  moving, resizing or pasting selected clips or
-  events over the main tracks view and MIDI clip
-  editor (piano-roll) respectively, displaying
-  current target position and status.
+- A new menu option has been added (View/Tool Tips) to show/hide a
+  floating tool-tip while dragging, moving, resizing or pasting selected
+  clips or events over the main tracks view and MIDI clip editor
+  (piano-roll) respectively, displaying current target position and
+  status.
 
-- Attempt to reset audio/MIDI time drift compensator
-  on every engine start and loop turnaround.
+- Attempt to reset audio/MIDI time drift compensator on every engine start
+  and loop turnaround.
 
-- Moving the punch-out marker over the main track
-  time ruler was failing to shrink the punch-in/out
-  range, now it does (not).
+- Moving the punch-out marker over the main track time ruler was failing
+  to shrink the punch-in/out range, now it does (not).
 
-- MIDI clip tools (quantize, transpose, normalize,
-  randomize, resize, rescale and the new timeshift)
-  are now all accessible from the main tracks view
-  (Edit/Clip/Tools menu) and apply to all events on
-  current selected clip(s).
+- MIDI clip tools (quantize, transpose, normalize, randomize, resize,
+  rescale and the new timeshift) are now all accessible from the main
+  tracks view (Edit/Clip/Tools menu) and apply to all events on current
+  selected  clip(s).
 
 - LV2 Persist extension support is being introduced.
 
-- A new timeshift MIDI tool has been added, after
-  an awesome patch by Jiri Prochaszka aka Anchakor;
-  applies to selected events between edit markers,
-  distorting their time and duration (optionally),
-  either slowing down and accelerating, based on
-  a given parameter P value.
+- A new timeshift MIDI tool has been added, after an awesome patch by
+  Jiri Prochaszka aka Anchakor; applies to selected events between edit
+  markers,  distorting their time and duration (optionally), either
+  slowing down and accelerating, based on a given parameter P value.
 
-- Audio clip/buffer pitch-shifting fixes with regard
-  to latency correction due on the RubberBand library
-  one-pass (real-time) processing mode.
+- Audio clip/buffer pitch-shifting fixes with regard to latency correction
+  due on the RubberBand library one-pass (real-time) processing mode.
 
-- New Send Gain and Dry/Wet control parameters have
-  been implemented for audio Inserts pseudo-plugins.
+- New Send Gain and Dry/Wet control parameters have been implemented for
+  audio Inserts pseudo-plugins.
 
-- MIDI channel/master volume enqueued events are now
-  affected by the current track/bus volume (0-100%).
+- MIDI channel/master volume enqueued events are now affected by the
+  current track/bus volume (0-100%).
 
-- Prevent old rounding error when resetting to plugin
-  parameter default value with the mouse middle-button
-  click while hovering a slider widget (observer).
+- Prevent old rounding error when resetting to plugin parameter default
+  value with the mouse middle-button click while hovering a slider widget
+  (observer).
 
-- A quantize percentage has been added to MIDI clip
-  editor quantize tool (Tool/Quantize...) for time
-  and duration quantization (0% for none; 100% for
-  full regular quantization).
+- A quantize percentage has been added to MIDI clip editor quantize tool
+  (Tool/Quantize...) for time and duration quantization (0% for none; 100%
+  for full regular quantization).
 
-- Metronome bus/ports are now created at engine start
-  and not when user switches it on anymore.
+- Metronome bus/ports are now created at engine start and not when user
+  switches it on anymore.
 
-- Make sure all audio clip buffers are in sync upon
-  smooth-ramping going off and playback is rolling.
+- Make sure all audio clip buffers are in sync upon smooth-ramping going
+  off and playback is rolling.
 
-- Copy-pasting across controller event types is now
-  possible on the MIDI clip editor (aka piano-roll).
+- Copy-pasting across controller event types is now possible on the MIDI
+  clip editor (aka piano-roll).
 
-- Finally indulged, the genuine transport stop button
-  makes its appearance on main toolbar and menu.
+- Finally indulged, the genuine transport stop button makes its appearance
+  on main toolbar and menu.
 
 - Main tracks grid visibility option (View/Snap/Grid).
 
-- Yet another off-by-one (frame) audio buffer bug got
-  squashed away: rare symptom was that some audio clips
-  were being left dead silent right after playback of
-  their first looping period.
+- Yet another off-by-one (frame) audio buffer bug got squashed away: rare
+  symptom was that some audio clips were being left dead silent right
+  after playback of their first looping period.
 
-- Plugin parameter name/label now a proper attribute
-  of its respective MIDI Controller observer instance,
-  allowing to be shown on dialog title (MIDI learn).
+- Plugin parameter name/label now a proper attribute of its respective
+  MIDI Controller observer instance, allowing to be shown on dialog title
+  (MIDI learn).
 
-- Default session file format saved on JACK session
-  demand is now the bundle archive/zip one (.qtz).
+- Default session file format saved on JACK session demand is now the
+  bundle archive/zip one (.qtz).
 
-- Plugin selection dialog now shows whether a plugin
-  features its own editor (GUI) and/or external state
-  configuration (EXT).
+- Plugin selection dialog now shows whether a plugin features its own
+  editor (GUI) and/or external state configuration (EXT).
 
-- Help/Shortcuts... window positioning and sizing are
-  now preserved.
+- Help/Shortcuts... window positioning and sizing are now preserved.
 
-- All plugin chain changes over the track properties
-  dialog now sure counts as a dirty action (possibly
-  fixing bug #3104129).
+- All plugin chain changes over the track properties dialog now sure
+  counts as a dirty action (possibly fixing bug #3104129).
 
-- Newly extracted archive/zip session directories are
-  now removed automatically from the file-system on
-  session close, prompting the user for confirmation
-  (cf. View/Options.../Display/Confirm Removals).
+- Newly extracted archive/zip session directories are now removed
+  automatically from the file-system on session close, prompting the user
+  for confirmation (cf. View/Options.../Display/Confirm Removals).
 
-- Ctrl+mouse-wheel is now set for zooming in/out, on
-  main track-view and all applicable MIDI clip editor
-  views (piano-roll), according to current zoom mode
-  (see View/Zoom Horizontal, Vertical or All for both
-  ways simultaneously).
+- Ctrl+mouse-wheel is now set for zooming in/out, on main track-view and
+  all applicable MIDI clip editor views (piano-roll), according to current
+  zoom mode (see View/Zoom Horizontal, Vertical or All for both ways
+  simultaneously).
 
-- New MIDI clip editor (piano-roll) mouse hovering
-  effect (eye-candy++).
+- New MIDI clip editor (piano-roll) mouse hovering effect (eye-candy++).
 
-- After too many a user request, a brand new session
-  archive file type is being introduced (.qtz) which
-  tries to bundle in one single zip archive all the
-  media and contents of a session.
+- After too many a user request, a brand new session archive file type is
+  being introduced (.qtz) which tries to bundle in one single zip archive
+  all the media and contents of a session.
 
-- Add that to eye-candy: either loop or punch-in/out
-  outer ranges are now shaded on the main track-view,
-  thumb-view and MIDI clip editor (piano-roll) views.
+- Add that to eye-candy: either loop or punch-in/out outer ranges are now
+  shaded on the main track-view, thumb-view and MIDI clip editor
+  (piano-roll) views.
 
-- LV2 GTK UI plug-in hosting is now roaring its ugly
-  head (EXPERIMENTAL).
+- LV2 GTK UI plug-in hosting is now roaring its ugly head.
 
-- Ignore all initial and decremental notifications of
-  audio engine's buffer-size changes.
+- Ignore all initial and decremental notifications of audio engine's
+  buffer-size changes.
 
-- Internal audio buffer loop points were not being set
-  properly for non-zero clip offsets, leaving some as
-  severely out-of-sync while rolling over loop turns.
-  Now fixed again, hopefully.
+- Internal audio buffer loop points were not being set properly for
+  non-zero clip offsets, leaving some as severely out-of-sync while
+  rolling over loop turns. Now fixed again, hopefully.
 
-- Avoid audio peak file clashing when deriving from
-  audio sample files with distinct absolute paths but
-  the very same file (base)name.
+- Avoid audio peak file clashing when deriving from audio sample files
+  with distinct absolute paths but the very same file (base)name.
 
-- A new MIDI editor (piano-roll) tool has been added:
-  Rescale event times, durations and/or values by a
-  percentage between 1 and 1000% (adapted thanks to
-  patch #3081954, by Jesse Lucas).
+- A new MIDI editor (piano-roll) tool has been added: Rescale event times,
+  durations and/or values by a percentage between 1 and 1000% (adapted
+  thanks to patch #3081954, by Jesse Lucas).
 
-- Attempt to mitigate audio clip sequencing glitches
-  on single-core/single-thread machines.
+- Attempt to mitigate audio clip sequencing glitches on
+  single-core/single-thread machines.
 
 
 0.4.7  2010-09-30  The Furious Desertrix
 
-- While moving multi-selected MIDI events around the
-  clip editor (aka piano-roll), with help of keyboard
-  arrow keys, that is, was not clear which one was the
-  so-called "anchor" event, the one which positioning
-  gets honored for snap-to-beat business. Not anymore:
-  the anchor event now defaults to the earliest in time
-  or the one the user's last point(-click)ed.
+- While moving multi-selected MIDI events around the clip editor (aka
+  piano-roll), with help of keyboard arrow keys, that is, was not clear
+  which one was the so-called "anchor" event, the one which positioning
+  gets honored for snap-to-beat business. Not anymore: the anchor event
+  now defaults to the earliest in time or the one the user's last
+  point(-click)ed.
 
-- MIDI control observer pattern implementation has
-  sneaked in, making it ready for the so-called and
-  long-awaited "MIDI Learn" feature and arbitrary
-  MIDI controller assignment, for plugin parameters
-  in particular.
+- MIDI control observer pattern implementation has sneaked in, making it
+  ready for the so-called and long-awaited "MIDI Learn" feature and
+  arbitrary MIDI controller assignment, for plugin parameters in
+  particular.
 
-- MMC DEFERRED PLAY doesn't cause transport state to
-  stop if currently rolling (mitigating bug #3067264).
+- MMC DEFERRED PLAY doesn't cause transport state to stop if currently
+  rolling (mitigating bug #3067264).
 
-- Audio clip merge processing might have been skipping 
-  a few initial frame blocks, now fixed.
+- Audio clip merge processing might have been skipping  a few initial
+  frame blocks, now fixed.
 
 - Clip selection and plugin parameter hash optimization.
 
 - Anti-glitch audio clip macro fade-in/out fixed again.
 
-- New clip fade-in/out slopes (curves) are introduced,
-  partially adapted and refactored from those easing
-  equations of Robert Penner's fame.
+- New clip fade-in/out slopes (curves) are introduced, partially adapted
+  and refactored from those easing equations of Robert Penner's fame.
 
-- Clip fade-in/out non-linear slopes are now shown as
-  actual WYSIWYG curves.
+- Clip fade-in/out non-linear slopes are now shown as actual WYSIWYG
+  curves.
 
-- Escape key now closes generic plugin widgets as ever
-  found usual elsewhere.
+- Escape key now closes generic plugin widgets as ever found usual
+  elsewhere.
 
-- Picking nits: unselect current track when clicking
-  on any gray empty area, also accessible from a new
-  menu item: Track/Navigate/None.
+- Picking nits: unselect current track when clicking on any gray empty
+  area, also accessible from a new menu item: Track/Navigate/None.
 
-- A nasty and deadly MIDI resolution overflow has been
-  finally fixed, allowing for long MIDI sequences (1h+)
-  to load correctly on 32bit machines from now on (was
-  perfectly fine on 64bit though).
+- A nasty and deadly MIDI resolution overflow has been finally fixed,
+  allowing for long MIDI sequences (1h+) to load correctly on 32bit
+  machines from now on (was perfectly fine on 64bit though).
 
-- MIDI editor selection hash optimization in face of
-  reasonably huge event sequences.
+- MIDI editor selection hash optimization in face of reasonably huge event
+  sequences.
 
-- MIDI controller mapping finally refactored to support
-  some other MIDI event types than just CC (0xBn) ones.
+- MIDI controller mapping finally refactored to support some other MIDI
+  event types than just CC (0xBn) ones.
 
-- Nitpicking fix: corrected main track-list (left pane)
-  display when no track is currently selected.
+- Nitpicking fix: corrected main track-list (left pane) display when no
+  track is currently selected.
 
-- libX11 is now being added explicitly to the build link
-  phase, as seen necessary on some bleeding-edge distros
-  eg. Fedora 13, Debian 6. (fixing bug #3050944).
+- libX11 is now being added explicitly to the build link phase, as seen
+  necessary on some bleeding-edge distros eg. Fedora 13, Debian 6. (fixing
+  bug #3050944).
 
 - New audio metronome bar and beat sample gain options.
 
-- Progressively, the observer pattern is being finally
-  introduced, targeting all potentially automation
-  controls and widgets as plain ground-zero for the
-  (ultra-)long overdue automation feature.
+- Progressively, the observer pattern is being finally introduced,
+  targeting all potentially automation controls and widgets as plain
+  ground-zero for the (ultra-)long overdue automation feature.
 
-- MIDI controller mapping of still non-existing tracks
-  were being implicitly assigned to the last, highly
-  numbered, existing track. Now fixed.
+- MIDI controller mapping of still non-existing tracks were being
+  implicitly assigned to the last, highly numbered, existing track. Now
+  fixed.
 
-- Moving from old deprecated Qt3'ish custom event post
-  handling into regular asynchronous signal/slot strategy.
+- Moving from old deprecated Qt3'ish custom event post handling into
+  regular asynchronous signal/slot strategy.
 
-- Muting/soloing tracks while playback is looping was
-  leaving current audio clip out-of-sync whenever that
-  same track is later un-muted on any other preceding
-  clip. Now hopefully fixed.
+- Muting/soloing tracks while playback is looping was leaving current
+  audio clip out-of-sync whenever that same track is later un-muted on any
+  other preceding clip. Now hopefully fixed.
 
 - MIDI Clock support makes its first appearance.
 
-- All tempo (BPM) calculations are now compliant to the
-  MIDI conventional equivalence between beat and quarter
-  note (1/4, crotchet) as common standard time division.
+- All tempo (BPM) calculations are now compliant to the MIDI conventional
+  equivalence between beat and quarter note (1/4, crotchet) as common
+  standard time division.
 
-- Automatic audio time-stretch option is not enabled by
-  default anymore.
+- Automatic audio time-stretch option is not enabled by default anymore.
 
-- Standard warning Apply button is now only shown when
-  dismissing dialog changes are actually valid.
+- Standard warning Apply button is now only shown when dismissing dialog
+  changes are actually valid.
 
-- Make sure non-dedicated metronome and player buses are
-  properly reset and reopen when changing regular audio
-  buses (hopefully fixing bug item #3021645 - Crash after
-  changing audio bus).
+- Make sure non-dedicated metronome and player buses are properly reset
+  and reopen when changing regular audio buses (hopefully fixing bug item
+  #3021645 - Crash after changing audio bus).
 
-- Hopefully, an outrageously old bug got squashed away,
-  which was causing random impromptu crashes, most often
-  when importing audio clips while looping and play-head
-  is any near the loop end point.
+- Hopefully, an outrageously old bug got squashed away, which was causing
+  random impromptu crashes, most often when importing audio clips while
+  looping and play-head is any near the loop end point.
 
 - General standard dialog buttons layout is now in place.
 
 - Fixed main track view off-limits play-head positioning.
 
-- Main tool-bar Time and Tempo spin-boxes, may now have
-  their colors correct, as for most non-Qt based theme
-  engines (ie. Gnome). Green text on black background has
-  been and still is the the intended aspect design ;)
+- Main tool-bar Time and Tempo spin-boxes, may now have their colors
+  correct, as for most non-Qt based theme engines (ie. Gnome). Green text
+  on black background has been and still is the the intended aspect design
+  ;)
 
-- MIDI file import and internal sequence representation has
-  been changed to be inclusive on all bank-select (CC#0,32)
-  and program-change events which were previously discarded
-  while honoring MIDI track properties. Interleaved SysEx
-  events are now also preserved on their original sequence
-  positions instead of squashing a duplicate into the MIDI
-  bus SysEx setup.
+- MIDI file import and internal sequence representation has been changed
+  to be inclusive on all bank-select (CC#0,32) and program-change events
+  which were previously discarded while honoring MIDI track properties.
+  Interleaved SysEx events are now also preserved on their original
+  sequence positions instead of squashing a duplicate into the MIDI bus
+  SysEx setup.
 
-- Attempt to include the VeSTige header by default, as for
-  minimal VST plugin support.
+- Attempt to include the VeSTige header by default, as for minimal VST
+  plugin support.
 
-- JACK transport support has been slightly rewritten, in
-  fact the sync callback is now in effect for repositioning.
+- JACK transport support has been slightly rewritten, in fact the sync
+  callback is now in effect for repositioning.
 
-- The MIDI clip editor (piano roll) widget won't be flagged
-  as a tool window anymore.
+- The MIDI clip editor (piano roll) widget won't be flagged as a tool
+  window anymore.
 
-- A tempo adjustment tool is making inroads from the menu,
-  as Edit/Clip/Tempo... (factory shortcut: F7).
+- A tempo adjustment tool is making inroads from the menu, as
+  Edit/Clip/Tempo... (factory shortcut: F7).
 
 - Audio tracks auto-monitoring is now effective on playback.
 
-- Make sure to ask whether a dirty MIDI clip should be saved,
-  upon resizing or stretching its edges (fixes bug #3017723).
+- Make sure to ask whether a dirty MIDI clip should be saved, upon
+  resizing or stretching its edges (fixes bug #3017723).
 
-- Backward and Forward transport commands are now taking
-  additional stops on loop points.
+- Backward and Forward transport commands are now taking additional stops
+  on loop points.
 
-- Attempt to optimize track solo/mute redundant transactions,
-  in special regard to MIDI track events which were being
-  duplicated on soloing and temporarily muted on unsoloing.
+- Attempt to optimize track solo/mute redundant transactions, in special
+  regard to MIDI track events which were being duplicated on soloing and
+  temporarily muted on unsoloing.
 
 
 0.4.6  2010-05-21  The Funky Deviless
 
-- Introducing a non-painting edit sub-mode on the MIDI clip
-  editor's piano-roll (see Edit/Select Mode/Edit Draw menu).
+- Introducing a non-painting edit sub-mode on the MIDI clip editor's
+  piano-roll (see Edit/Select Mode/Edit Draw menu).
 
-- The MIDI clip editor (aka piano-roll) is now a lot more
-  quiet about saving its own dirty content, delegating all
-  salvage questions to main session control.
+- The MIDI clip editor (aka piano-roll) is now a lot more quiet about
+  saving its own dirty content, delegating all salvage questions to main
+  session control.
 
-- Don't show session restart message box when changing JACK
-  transport mode option anymore.
+- Don't show session restart message box when changing JACK transport mode
+  option anymore.
 
-- Dedicated MIDI control bus switching fixed. Was closing
-  the wrong bus eventually and crashing the whole show with
-  it (fixes bug #2989590).
+- Dedicated MIDI control bus switching fixed. Was closing the wrong bus
+  eventually and crashing the whole show with it (fixes bug #2989590).
 
-- MIDI bank/program backout has been corrected on MIDI track
-  properties dialog rejection (ie. user cancellation).
+- MIDI bank/program backout has been corrected on MIDI track properties
+  dialog rejection (ie. user cancellation).
 
-- MIDI bank select method has been corrected for tracks with
-  no instrument defined (probably fixing bug #2987071).
+- MIDI bank select method has been corrected for tracks with no instrument
+  defined (probably fixing bug #2987071).
 
-- LV2 UI Instance and Data Access extension support added;
-  reduce LV2 external UI parameter value update flickering.
+- LV2 UI Instance and Data Access extension support added; reduce LV2
+  external UI parameter value update flickering.
 
 - JACK session infrastructure support.
 
-- Initial widget geometry and visibility persistence logic
-  has been slightly revised as much to avoid crash failures
-  due to wrong main widget hidden state.
+- Initial widget geometry and visibility persistence logic has been
+  slightly revised as much to avoid crash failures due to wrong main
+  widget hidden state.
 
 - Initial mixer widget extents are now set reasonably larger.
 
 - General source tree layout and build configuration change.
 
-- Ever since smooth-ramping introduction that having at least
-  one input-only buses were causing immediate playback crashes,
-  now hopefully fixed.
+- Ever since smooth-ramping introduction that having at least one
+  input-only buses were causing immediate playback crashes, now hopefully
+  fixed.
 
-- Refactored for common engine client nomenclature, primarily
-  provided by JACK, then secondarily passed to ALSA Sequencer,
-  getting rid of the JackUseExactName requirement and lifting
-  the unique/single instance restriction in the process.
+- Refactored for common engine client nomenclature, primarily provided by
+  JACK, then secondarily passed to ALSA Sequencer, getting rid of the
+  JackUseExactName requirement and lifting the unique/single instance
+  restriction in the process.
 
-- Current JACK Transport, MMC Device, and MIDI Song Position
-  pointer (SPP) control modes are now saved/loaded as part of
-  session option properties.
+- Current JACK Transport, MMC Device, and MIDI Song Position pointer (SPP)
+  control modes are now saved/loaded as part of session option properties.
 
-- MIDI clip editor's context menu crash on Qt >= 4.6 has been
-  fixed (resolving bug #2972603).
+- MIDI clip editor's context menu crash on Qt >= 4.6 has been fixed
+  (resolving bug #2972603).
 
-- An ancient double-free corruption has been finally fixed
-  at the audio/MIDI bus connection persistence logic. 
+- An ancient double-free corruption has been finally fixed at the
+  audio/MIDI bus connection persistence logic.
 
-- Improved visibility of track state buttons text (R, M, S)
-  when turned on dark colored themes.
+- Improved visibility of track state buttons text (R, M, S) when turned on
+  dark colored themes.
 
 - LV2 Save/Restore extension support kicks off.
 
-- MIDI engine read-ahead period has been shortened to half
-  than it was since inception--now it's a 500msec cycle.
+- MIDI engine read-ahead period has been shortened to half than it was
+  since inception--now it's a 500msec cycle.
 
-- MIDI clip editor event list gets its due inline editing,
-  for time, note, value/velocity and duration columns, just
-  one double-click away over the target cell ;)
+- MIDI clip editor event list gets its due inline editing, for time, note,
+  value/velocity and duration columns, just one double-click away over the
+  target cell ;)
 
-- Add-plugin selection dialog position and extent are now
-  remembered across invocations and application sessions
-  (tipping by Frank Neumann).
+- Add-plugin selection dialog position and extent are now remembered
+  across invocations and application sessions (tipping by Frank Neumann).
 
-- MIDI clip time-stretching is now made available through
-  the same gestures as audio ones, by just shift+dragging
-  either of the clip edges.
+- MIDI clip time-stretching is now made available through the same
+  gestures as audio ones, by just shift+dragging either of the clip edges.
 
-- Drag-and-copying plug-in instances (cloning) is now fixed
-  with regard to parameter value replication.
+- Drag-and-copying plug-in instances (cloning) is now fixed with regard to
+  parameter value replication.
 
-- MIDI clip editor snap-per-beat setting is now independent
-  from main multi-track view; File/Save As... dialog fixed;
-  the current event selection is now kept floating as long
-  as it's possible after editing command actions; finally,
-  edit mode has been extended to free-hand event drawing,
-  chalking off (piano roll) draw mode from the TODO list.
+- MIDI clip editor snap-per-beat setting is now independent from main
+  multi-track view; File/Save As... dialog fixed; the current event
+  selection is now kept floating as long as it's possible after editing
+  command actions; finally, edit mode has been extended to free-hand event
+  drawing, chalking off (piano roll) draw mode from the TODO list.
 
-- Swing-quantize has finally made its overdue debut as an
-  additional MIDI clip editor tool (see Tools/Quantize...).
+- Swing-quantize has finally made its overdue debut as an additional MIDI
+  clip editor tool (see Tools/Quantize...).
 
-- Almost since its inception, audio inserts were injecting
-  garbage random noise when not being activated, now fixed.
+- Almost since its inception, audio inserts were injecting garbage random
+  noise when not being activated, now fixed.
 
-- Dedicated audio output ports for MIDI track plugins, now
-  have their connection persistence back in business due on
-  session load.
+- Dedicated audio output ports for MIDI track plugins, now have their
+  connection persistence back in business due on session load.
 
 
 0.4.5  2010-01-23  A Friskier Demivierge ;)
 
-- Changing loop points while playback is rolling, with the
-  play-head any near, was leaving audio clips out-of-sync.
+- Changing loop points while playback is rolling, with the play-head any
+  near, was leaving audio clips out-of-sync.
 
-- MIDI event list view was missing some selected items with
-  the very same onset time, now fixed.
+- MIDI event list view was missing some selected items with the very same
+  onset time, now fixed.
 
-- When failing to detect a SSE enabled build, the CFLAGS
-  variables are now properly restored to their previous
-  sane state, preventing all subsequent dependency tests
-  from false positives (bug# 565860@bugs.debian.org). 
+- When failing to detect a SSE enabled build, the CFLAGS variables are
+  now properly restored to their previous sane state, preventing all
+  subsequent dependency tests from false positives (bug #565860
+  @bugs.debian.org).
 
-- MIDI clip editor (aka piano-roll) multiple selection has
-  been fixed (again) re. move/paste-snapping consistency.
+- MIDI clip editor (aka piano-roll) multiple selection has been fixed
+  (again) re. move/paste-snapping consistency.
 
 
 0.4.4  2010-01-16  The Frisky Demivierge
 
-- For all the DSSI plugins that have output control ports,
-  a host feedback/update process cycle is now being finally
-  provided: all output control ports are now marshaled to
-  their respective GUI process, rather often and when found
-  open/visible.
+- For all the DSSI plugins that have output control ports, a host
+  feedback/update process cycle is now being finally provided: all output
+  control ports are now marshaled to their respective GUI process, rather
+  often and when found open/visible.
 
-- MIDI clip editor (aka piano-roll) snap-to-beat behavior on
-  edit mode is now kind of more like 'filling-in-the-blanks'
-  (as Frank Neumann et al. wishes ;)
+- MIDI clip editor (aka piano-roll) snap-to-beat behavior on edit mode is
+  now kind of more like 'filling-in-the-blanks' (as Frank Neumann et al.
+  wishes ;)
 
-- Fixed MIDI clip editor mistake when reverting to initial
-  clip length, before closing and discard changes (thanks
-  to Frank Neumann, for spotting this one).
+- Fixed MIDI clip editor mistake when reverting to initial clip length,
+  before closing and discard changes (thanks to Frank Neumann, for
+  spotting this one).
 
-- LADISH Level 1 support has been added: SIGUSR1 signal trap
-  just makes it a shortcut to File/Save.
+- LADISH Level 1 support has been added: SIGUSR1 signal trap just makes it
+  a shortcut to File/Save.
 
-- Avoid parameter value flickering, due to duplicate command
-  invocation, most evident when changing values massively on
-  native Linux VSTi plugin editor GUIs (thanks to a detailed
-  report on this odd behavior, from Mike of linuxDSP.co.uk).
+- Avoid parameter value flickering, due to duplicate command invocation,
+  most evident when changing values massively on native Linux VSTi plugin
+  editor GUIs (thanks to a detailed report on this odd behavior, from Mike
+  of linuxDSP.co.uk).
 
-- Another TODO item bites the dust: MIDI event list editor,
-  now acessible from the MIDI clip editor menu (View/Events) 
+- Another TODO item bites the dust: MIDI event list editor, now acessible
+  from the MIDI clip editor menu (View/Events)
 
-- Last used session directory is now made current on startup
-  only when no filename is given on the command line (solving
-  bug #2920244).
+- Last used session directory is now made current on startup only when no
+  filename is given on the command line (solving bug #2920244).
 
-- Current snap-to-beat setting (time quantization) now affects
-  the anchor event only, while dragging, moving and/or pasting
-  multiple events over the MIDI clip editor (aka piano-roll).
+- Current snap-to-beat setting (time quantization) now affects the anchor
+  event only, while dragging, moving and/or pasting multiple events over
+  the MIDI clip editor (aka piano-roll).
 
-- Make anti-glitch audio clip micro fade-in/outs independent
-  from current buffer size as much as possible.
+- Make anti-glitch audio clip micro fade-in/outs independent from current
+  buffer size as much as possible.
 
-- Audio/MIDI engine drift correction gets really sophisticated,
-  with the help of (now old) ALSA MIDI tempo skew facility.
+- Audio/MIDI engine drift correction gets really sophisticated, with the
+  help of (now old) ALSA MIDI tempo skew facility.
 
-- Edit/Clip/Import... menu option is now available for expedite
-  clip insertion from audio and MIDI file requesters.
+- Edit/Clip/Import... menu option is now available for expedite clip
+  insertion from audio and MIDI file requesters.
 
 - Set default session directory effective to file's location.
 
 - Audio track/clip recording process has been target to special
   refactorization across the internal audio engine process cycle,
-  in a late attempt to get self-bounce/recording effective and
-  working consistently for all track layouts.
+  in a late attempt to get self-bounce/recording effective and working
+  consistently for all track layouts.
 
-- All session related dialogs are now set to window modality,
-  (were set to default application modality before) allowing
-  for continued input focus and interaction on all plugin/tool
-  windows.
+- All session related dialogs are now set to window modality, (were set to
+  default application modality before) allowing for continued input focus
+  and interaction on all plugin/tool windows.
 
-- An off-by-one nasty old bug fixed in audio clip drawing, was
-  causing instant crashes on certain zoom levels of the main
-  track view.
+- An off-by-one nasty old bug fixed in audio clip drawing, was causing
+  instant crashes on certain zoom levels of the main track view.
 
-- Graphical MIDI clip representation regarding note/pitch range is
-  now kept as much as possible across clip edits (cut, copy, paste,
-  drag, move, delete, etc.)
+- Graphical MIDI clip representation regarding note/pitch range is now
+  kept as much as possible across clip edits (cut, copy, paste, drag,
+  move, delete, etc.)
 
-- LV2 plug-in hosting has finally come into actual implementation;
-  only some and the most basic LV2 plug-in features are supported
-  at the moment; probably there's no big advantage against the old
-  LADSPA ones; there's some support for external UIs though; also,
-  LV2 MIDI/Event bare-bones support is included but chances are it
-  won't build nor work right on most of the setups out there. It's
-  a WIP host implementation anyways, as is the whole LV2 spec. for
-  that matter ;)
+- LV2 plug-in hosting has finally come into actual implementation; only
+  some and the most basic LV2 plug-in features are supported at the
+  moment; probably there's no big advantage against the old LADSPA ones;
+  there's some support for external UIs though; also, LV2 MIDI/Event
+  bare-bones support is included but chances are it won't build nor work
+  right on most of the setups out there. It's a WIP host implementation
+  anyways, as is the  whole LV2 spec. for that matter ;)
 
 - Connections filter is now reset when widget is shown through the
   View/Connections main menu or toolbar button.
@@ -964,500 +848,479 @@ SVN TRUNK
 - Audio bus auto-connection option is now applied when creating or
   updating, newer or existing buses, respectively.
 
-- Global configuration state is now explicitly saved/committed to
-  disk whenever View/Options... dialog changes are applied or when
-  a session is loaded or saved.
+- Global configuration state is now explicitly saved/committed to disk
+  whenever View/Options... dialog changes are applied or when a session is
+  loaded or saved.
 
-- Audio ramping spin-locking makes its smooth stuff, in an attempt
-  to reduce glitching and crackling when editing (due to its own
-  pseudo spin-locking) and toggling playback states.
+- Audio ramping spin-locking makes its smooth stuff, in an attempt to
+  reduce glitching and crackling when editing (due to its own pseudo
+  spin-locking) and toggling playback states.
 
 - JACK Transport, MMC Device, and MIDI Song Position pointer (SPP)
-  control modes are now made optional (View/Options...), allowing
-  for discretionary configuration: None/Disabled, Slave/Input,
-  Master/Output or Full/Duplex (default).
+  control modes are now made optional (View/Options...), allowing for
+  discretionary configuration: None/Disabled, Slave/Input, Master/Output
+  or Full/Duplex  (default).
 
-- Session files may now be dragged and dropped over the main track
-  view and get loaded for business as usual (once quietly ignored).
+- Session files may now be dragged and dropped over the main track view
+  and get loaded for business as usual (once quietly ignored).
 
-- In an attempt to mitigate potential stack corruption and sudden
-  crashes, old commented out session pseudo-locks are now back in
-  business while executing clip editing commands (cut, paste, drag,
-  move, insert, delete) and playback is currently rolling.
+- In an attempt to mitigate potential stack corruption and sudden crashes,
+  old commented out session pseudo-locks are now back in business while
+  executing clip editing commands (cut, paste, drag, move, insert, delete)
+  and playback is currently rolling.
 
-- Adjusted first-time application window size to fit into 800x600
-  screen size and with reasonable initial dockables layout.
+- Adjusted first-time application window size to fit into 800x600 screen
+  size and with reasonable initial dockables layout.
 
-- Avoid duplicate snap-to-grid effect when changing the length of
-  MIDI clip editor events across non-zero clip offsets (after a
-  glitch reported by Ralf Mardorf).
+- Avoid duplicate snap-to-grid effect when changing the length of MIDI
+  clip editor events across non-zero clip offsets (after a glitch reported
+  by Ralf Mardorf).
 
-- Late audio track processing optimization, suppressing all plugin,
-  mixer and monitor pass-through activity when given track is muted,
-  either explicitly or implicitly (ie. other track is in solo state).
+- Late audio track processing optimization, suppressing all plugin, mixer
+  and monitor pass-through activity when given track is muted, either
+  explicitly or implicitly (ie. other track is in solo state).
 
-- Entering System Exclusive events (SysEx) on the MIDI clip editor
-  (aka matrix/piano-roll widget), yet something not fully supported
-  anyway, even though allowed in edit mode, doesn't crash the whole
-  damn thing anymore, while saving the clip to a file.
+- Entering System Exclusive events (SysEx) on the MIDI clip editor (aka
+  matrix/piano-roll widget), yet something not fully supported anyway,
+  even though allowed in edit mode, doesn't crash the whole damn thing
+  anymore, while saving the clip to a file.
 
-- Strict aliasing avoidance, with plain and demanded use of 'union',
-  as much as to stop nagging warnings from gcc >= 4.4.1 (last seen
-  on src/qtractorMidiEvent.h hackery).
+- Strict aliasing avoidance, with plain and demanded use of 'union', as
+  much as to stop nagging warnings from gcc >= 4.4.1 (last seen on
+  src/qtractorMidiEvent.h hackery).
 
-- Visual correct play-head position while changing zoom levels,
-  applicable to both main track and MIDI clip editor views.
+- Visual correct play-head position while changing zoom levels, applicable
+  to both main track and MIDI clip editor views.
 
 
 0.4.3  2009-10-05  The Fussy Doula
 
-- External preset files are not removed nor deleted from the
-  file-system anymore.
+- External preset files are not removed nor deleted from the file-system
+  anymore.
 
 - Connections support for UTF-8 encoded client/port names.
 
-- Force track and clip properties dialog widget to be modal
-  as it should from their beginning dawn.
+- Force track and clip properties dialog widget to be modal as it should
+  from their beginning dawn.
 
-- Audio effect send/return aux. inserts are implemented as
-  special pseudo-plugins (Plugins/Inserts).
+- Audio effect send/return aux. inserts are implemented as special
+  pseudo-plugins (Plugins/Inserts).
 
-- Reset play-head position on auto-backward and keep playback
-  rolling when continue past end transport option is not set.
+- Reset play-head position on auto-backward and keep playback rolling when
+  continue past end transport option is not set.
 
-- MIDI clip editor (aka piano-roll/matrix aditor) gets better
-  on the virtual piano keyboard eye-candy side of things ;).
+- MIDI clip editor (aka piano-roll/matrix aditor) gets better on the
+  virtual piano keyboard eye-candy side of things ;).
 
-- Plugins are now also referenced by label, avoiding plugin
-  index clash/misses eg. when plugin object file/path changes
-  or is moved externally.
+- Plugins are now also referenced by label, avoiding plugin index
+  clash/misses eg. when plugin object file/path changes or is moved
+  externally.
 
-- Keyboard focus is now cleared/reset from the main toolbar
-  time and tempo spin-boxes when editing gets finished (eg.
-  Enter key is pressed).
+- Keyboard focus is now cleared/reset from the main toolbar time and tempo
+  spin-boxes when editing gets finished (eg. Enter key is pressed).
 
-- First audio metronome beat/bar now played back correctly
-  (fixes bug #2841437).
+- First audio metronome beat/bar now played back correctly (fixes bug
+  #2841437).
 
-- Client to/from port (dis)connections now found consistent
-  as good ol'QjackCtl behavior (fixes bug #2834657).
+- Client to/from port (dis)connections now found consistent as good
+  ol'QjackCtl behavior (fixes bug #2834657).
 
-- All dirty open MIDI clip editors are now prompted to save
-  before the main application closes (fixes bug #2835516).
+- All dirty open MIDI clip editors are now prompted to save before the
+  main application closes (fixes bug #2835516).
 
 - Mixer level meters get their long deserved gradient look.
 
-- Fixed any ghost clip selections that were haunting the
-  main track view, specially after undo/redo.
+- Fixed any ghost clip selections that were haunting the main track view,
+  specially after undo/redo.
 
 - Increased tolerance on reading corrupt MIDI files (SMF).
 
-- A MIDI SysEx manager is being finally introduced, in some
-  primordial rather basic form though. MIDI System Exclusive
-  (SysEx) event strings may now be freely assigned to MIDI
-  output buses only, allowing for proper setup of external
-  outboard MIDI equipment. Each bus may have an unlimited
-  SysEx queue that gets sent out on every connection change
+- A MIDI SysEx manager is being finally introduced, in some primordial
+  rather basic form though. MIDI System Exclusive (SysEx) event strings
+  may now be freely assigned to MIDI output buses only, allowing for
+  proper setup of external outboard MIDI equipment. Each bus may have
+  an unlimited SysEx queue that gets sent out on every connection change
   (see View/Buses.../MIDI/SysEx...).
 
-- A default MIDI instrument name may now be assigned to any
-  MIDI output bus (see View/Buses.../MIDI).
+- A default MIDI instrument name may now be assigned to any MIDI output
+  bus (see View/Buses.../MIDI).
 
-- More legacy headers, stdio.h and stdlib.h, are yet again
-  necessary to build with gcc/g++ >= 4.4 (as patch noted by
-  Alexis Ballier on Gentoo bug report #274168, thanks).
+- More legacy headers, stdio.h and stdlib.h, are yet again necessary to
+  build with gcc/g++ >= 4.4 (as patch noted by Alexis Ballier on Gentoo
+  bug report #274168, thanks).
 
-- Bus manager dialog (View/Buses...) gets new columns on the
-  left pane buses list as for displaying number of channels
-  and bus mode.
+- Bus manager dialog (View/Buses...) gets new columns on the left pane
+  buses list as for displaying number of channels and bus mode.
 
 - Crash when updating bus probably fixed (bug #2811630).
 
-- Fixed glitch displaying beat snap/grid lines on MIDI clip
-  editor, incidental to clips located at absolute zero time.
+- Fixed glitch displaying beat snap/grid lines on MIDI clip editor,
+  incidental to clips located at absolute zero time.
 
-- Overlapped MIDI clips were rendering garbled note events
-  to DSSI/VSTi plugins, now fixed.
+- Overlapped MIDI clips were rendering garbled note events to DSSI/VSTi
+  plugins, now fixed.
 
-- New MIDI Playback/Queue timer (resolution) option is now
-  available (see View/Options.../MIDI).
+- New MIDI Playback/Queue timer (resolution) option is now available (see
+  View/Options.../MIDI).
 
-- MIDI instrument definitions may now be imported from plain
-  SoundFont files.
+- MIDI instrument definitions may now be imported from plain SoundFont
+  files.
 
 
 0.4.2  2009-06-04  The Flaunty Demoness
 
-- The MIDI clip editor (piano-roll/matrix editor), the main
-  track view as well, have been subject to usability fixing,
-  the most notable avoids clearing current selection as much
-  as possible when updating view contents (eg. changing zoom
-  levels does not reset current selection anymore).
+- The MIDI clip editor (piano-roll/matrix editor), the main track view as
+  well, have been subject to usability fixing, the most notable avoids
+  clearing current selection as much as possible when updating view
+  contents (eg. changing zoom levels does not reset current selection
+  anymore).
 
-- MIDI tracks channel bank/program and controller stuff are
-  now only issued when the respective bus connections have
-  changed, seldom on every playback start.
+- MIDI tracks channel bank/program and controller stuff are now only
+  issued when the respective bus connections have changed, seldom on every
+  playback start.
 
-- MIDI controller mapping infrastructure, with file based
-  configuration management (see View/Controllers...), is now
-  in place, following an original contribution from gizzmo
-  aka Mathias Krause.
+- MIDI controller mapping infrastructure, with file based configuration
+  management (see View/Controllers...), is now in place, following an
+  original contribution from gizzmo aka Mathias Krause.
 
-- Plugin chain buffer reset on playback start/stop is not
-  guarded by a momentary plugin de/activation anymore.
+- Plugin chain buffer reset on playback start/stop is not guarded by a
+  momentary plugin de/activation anymore.
 
-- Clip export may now be applied to multiple clips, sharing
-  common refactored code and same semantics as merging of
-  current selected clips.
+- Clip export may now be applied to multiple clips, sharing common
+  refactored code and same semantics as merging of current selected clips.
 
 - Improved, may be just fixed yet again, audio track export
   synchronization and reliability.
 
-- Clip merge is now featured both for audio and MIDI tracks
-  (see Edit/Clip/Merge...).
+- Clip merge is now featured both for audio and MIDI tracks (see
+  Edit/Clip/Merge...).
 
-- Improved, or better said, fixed (again) the precision of
-  multi-clip final positioning as result of drag/move and
-  paste operations in main track view (as in bug #2741611).
+- Improved, or better said, fixed (again) the precision of multi-clip
+  final positioning as result of drag/move and paste operations in main
+  track view (as in bug #2741611).
 
-- MIDI track program number is now listed in 1-128 range,
-  in an attempt to be consistent with corresponding MIDI
-  track dialog drop-down list.
+- MIDI track program number is now listed in 1-128 range, in an attempt to
+  be consistent with corresponding MIDI track dialog drop-down list.
 
-- MIDI editor snap grid lines get slight different color
-  then regular beat divisions.
+- MIDI editor snap grid lines get slight different color then regular beat
+  divisions.
 
-- Reset local tempo map cursor on newer MIDI file imports
-  in a tentative to fix incidental but random crashes.
+- Reset local tempo map cursor on newer MIDI file imports in a tentative
+  to fix incidental but random crashes.
 
 
 0.4.1  2009-04-04  The Funky Dominatrix
 
-- MIDI editor command item execution order has been fixed,
-  correcting the redo/undo adjustment of overlapping note
-  events (probably fixing bug #2723861).
+- MIDI editor command item execution order has been fixed, correcting the
+  redo/undo adjustment of overlapping note events (probably fixing bug
+  #2723861).
 
-- MIDI clip editor (aka. piano-roll/matrix editor) sees one
-  of its most wanted features introduced: visual snap grid,
-  now accessible through View/Snap/Grid option toggle.
+- MIDI clip editor (aka. piano-roll/matrix editor) sees one of its most
+  wanted features introduced: visual snap grid, now accessible through
+  View/Snap/Grid option toggle.
 
-- Actual non-zero session length gets back to status bar of
-  main application window.
+- Actual non-zero session length gets back to status bar of main
+  application window.
 
-- One potential buffer-overflow/memory-corruption crash bug
-  has been fixed, long due on most audio (down) sample-rate
-  conversions and affecting audio export in particular.
+- One potential buffer-overflow/memory-corruption crash bug has been
+  fixed, long due on most audio (down) sample-rate conversions and
+  affecting audio export in particular.
 
-- MIDI track/channel patch information, ie. bank-select and
-  program-change events, are now being properly set on MIDI
-  track/clip export.
+- MIDI track/channel patch information, ie. bank-select and program-change
+  events, are now being properly set on MIDI track/clip export.
 
-- SSE optimization is back in town after being mysteriously
-  disabled since its dawn :/
+- SSE optimization is back in town after being mysteriously disabled since
+  its dawn :/
 
-- Looping and punch-recording now actively mutual exclusive
-  states: setting either one unsets the other off and vice-
-  versa. Also, punch-in/out is now made an undoable command.
+- Looping and punch-recording now actively mutual exclusive states:
+  setting either one unsets the other off and vice- versa. Also,
+  punch-in/out is now made an undoable command.
 
-- Moving tracks, any track, up or down, were leaving MIDI
-  playback and meter monitoring completely out-of-sync, now
-  fixed.
+- Moving tracks, any track, up or down, were leaving MIDI playback and
+  meter monitoring completely out-of-sync, now fixed.
 
-- Automatic crash-dump reports, debugger stack-traces (gdb),
-  back-traces, whatever, are being introduced as a brand new
-  configure option (--enable-stacktrace) and default enabled
-  on debug build targets (--enable-debug).
+- Automatic crash-dump reports, debugger stack-traces (gdb), back-traces,
+  whatever, are being introduced as a brand new configure option
+  (--enable-stacktrace) and default enabled on debug build targets
+  (--enable-debug).
 
-- Audio/MIDI drift correction is now progressive, taking a
-  least significant differential approach, on every read-
-  ahead cycle and swallowed on loop turn-arounds, as before.
+- Audio/MIDI drift correction is now progressive, taking a least
+  significant differential approach, on every read- ahead cycle and
+  swallowed on loop turn-arounds, as before.
 
-- Improved Edit/Clip/Normalize and Quantize commands, now
-  affecting the whole extended multi-clip selection.
+- Improved Edit/Clip/Normalize and Quantize commands, now affecting the
+  whole extended multi-clip selection.
 
-- Playback is now being temporarily suspended while either
-  transport rewind or fast-forward rolling is engaged.
+- Playback is now being temporarily suspended while either transport
+  rewind or fast-forward rolling is engaged.
 
-- A bad and shame-on-me bug was fixed: this was hideously
-  affecting any track/clip playback synchronization, most
-  noticeable after toggling solo/mute track states while
-  playback is rolling and skipping the play-head backward 
-  over more than one clip under the same track.
+- A bad and shame-on-me bug was fixed: this was hideously affecting any
+  track/clip playback synchronization, most noticeable after toggling
+  solo/mute track states while playback is rolling and skipping the
+  play-head backward over more than one clip under the same track.
 
-- A floating-rectangle flip that showed while dragging new
-  files beyond the left of main track view is now gone.
+- A floating-rectangle flip that showed while dragging new files beyond
+  the left of main track view is now gone.
 
-- MIDI note event truncation on both track and clip export
-  has been fixed.
+- MIDI note event truncation on both track and clip export has been fixed.
 
 
 0.4.0  2009-03-13  The Foxy Dryad
 
-- MIDI (re)connections fix; now caring for the ALSA client
-  and port textual names only, avoiding as much as possible,
-  any reliance on those volatile client and port numbers.
+- MIDI (re)connections fix; now caring for the ALSA client and port
+  textual names only, avoiding as much as possible, any reliance on those
+  volatile client and port numbers.
 
-- Transport/Backward and Forward commands may now reset to
-  immediate full start or end of session locations, by just
-  pressing the Shift or Ctrl keyboard modifiers and clicking
-  their respective toolbar buttons.
+- Transport/Backward and Forward commands may now reset to immediate full
+  start or end of session locations, by just pressing the Shift or Ctrl
+  keyboard modifiers and clicking their respective toolbar buttons.
 
-- Default session/MIDI resolution has been set to 960 ticks
-  per beat (960 TPQN, where a beat equals a quarter-note);
-  it is worth of note that the previous default resolution
-  was set to one order of magnitude lower, ie. 96 TPQN ;).
+- Default session/MIDI resolution has been set to 960 ticks per beat (960
+  TPQN, where a beat equals a quarter-note); it is worth of note that the
+  previous default resolution was set to one order of magnitude lower, ie.
+  96 TPQN ;).
 
 - Making (dis)connections now also flags session as dirty.
 
-- Internal Audio/MIDI engines queue/time drift correction
-  takes a brand new approach, specially adapted to rolling
-  tempo/time-signature changes.
+- Internal Audio/MIDI engines queue/time drift correction takes a brand
+  new approach, specially adapted to rolling tempo/time-signature changes.
 
 - MIDI monitor refresh-cycle slight internal optimization.
 
 - Converted obsolete QMessageBox forms to standard buttons.
 
-- Transport/Rewind and Fast-forward commands may now be set
-  to double-speed, by pressing the Shift or Ctrl modifiers
-  while clicking their respective tool buttons.
+- Transport/Rewind and Fast-forward commands may now be set to double
+  -speed, by pressing the Shift or Ctrl modifiers while clicking their
+  respective tool buttons.
 
-- MIDI clip editor zoom ratios are now saved and preserved
-  across sessions.
+- MIDI clip editor zoom ratios are now saved and preserved across
+  sessions.
 
-- Time-signature is now directly accessible from the main
-  tempo spin-box which also reflects current tempo status.
+- Time-signature is now directly accessible from the main tempo spin-box
+  which also reflects current tempo status.
 
-- Time/frame spin-boxes now allow to step change each field
-  individually, depending on the cursor beam position.
+- Time/frame spin-boxes now allow to step change each field individually,
+  depending on the cursor beam position.
 
-- Make sure that Transport/Follow playhead option is only
-  effective when playback is actually rolling.
+- Make sure that Transport/Follow playhead option is only effective when
+  playback is actually rolling.
 
-- Primordial attempt to include MIDI Song Position Pointer
-  (SPP), Song Start, Stop and Continue sequencing support.
+- Primordial attempt to include MIDI Song Position Pointer (SPP), Song
+  Start, Stop and Continue sequencing support.
 
-- A completely new time-scale infrastructure is now in place,
-  with full support for session tempo and time-signature map;
-  this long due feature is primarily accessible through the
-  main menu, View/Tempo Map...; also by double-clicking on
-  the the main window and MIDI clip editor time rulers and
-  left-clicking on the main toolbar tempo/signature spin-box.
+- A completely new time-scale infrastructure is now in place, with full
+  support for session tempo and time-signature map; this long due feature
+  is primarily accessible through the main menu, View/Tempo Map...; also
+  by double-clicking on the the main window and MIDI clip editor time
+  rulers and left-clicking on the main toolbar tempo/signature spin-box.
 
-- Moving and resizing individual clips now cares for track
-  proper ordering and overlapping changes, avoiding nasty
-  out of sequence clips and other unpredictable effects.
+- Moving and resizing individual clips now cares for track proper ordering
+  and overlapping changes, avoiding nasty out of sequence clips and other
+  unpredictable effects.
 
-- An expedite MIDI clip quantize command is now available
-  from the main track view menu (Edit/Clip/Quantize), which
-  simply applies the current snap-to-beat setting to a MIDI
-  clip range selection.
+- An expedite MIDI clip quantize command is now available from the main
+  track view menu (Edit/Clip/Quantize), which simply applies the current
+  snap-to-beat setting to a MIDI clip range selection.
 
-- Fixed that hideous bug affecting overlapped audio clips
-  when playhead gets moved backward, causing the playback
-  of those audio clips in particular, go out of sync.
+- Fixed that hideous bug affecting overlapped audio clips when playhead
+  gets moved backward, causing the playback of those audio clips in
+  particular, go out of sync.
 
-- Tracks are now limited to their minimum height, specially
-  effective in face of vertical zooming.
+- Tracks are now limited to their minimum height, specially effective in
+  face of vertical zooming.
 
-- Zoom mode option introduced (on menu View/Zoom/Horizontal,
-  Vertical, All).
+- Zoom mode option introduced (on menu View/Zoom/Horizontal, Vertical,
+  All).
 
-- Tempo beat type is a new session property; however it is
-  not yet user modifiable and currently disabled to default
-  MIDI quarter note (1/4).
+- Tempo beat type is a new session property; however it is not yet user
+  modifiable and currently disabled to default MIDI quarter note (1/4).
 
-- All open MIDI clip editor time-scales are now updated and
-  corrected when the main session time base changes (tempo,
-  time-signature, resolution, etc.)
+- All open MIDI clip editor time-scales are now updated and corrected when
+  the main session time base changes (tempo, time-signature, resolution,
+  etc.)
 
 - MIDI metronome fixed, preventing duplicate click events.
 
-- MP3 audio file decoding was broken for way too long and
-  falling short for every file with custom frames, ID3 tags
-  and comments. Got shamefully fixed.
+- MP3 audio file decoding was broken for way too long and falling short
+  for every file with custom frames, ID3 tags and comments. Got shamefully
+  fixed.
 
-- Time signature denominator (ie. beat divisor) is now an
-  accessible and effective session property.
+- Time signature denominator (ie. beat divisor) is now an accessible and
+  effective session property.
 
-- Attempt to retain original size (clip length) of all audio
-  clips when changing the global session tempo and automatic
-  time-stretching is not an option.
+- Attempt to retain original size (clip length) of all audio clips when
+  changing the global session tempo and automatic time-stretching is not
+  an option.
 
 
 0.3.0  2008-12-25  The Fluffy Doll
 
-- Almost complete rewrite of the plugin configuration and
-  parameter initialization logic.
+- Almost complete rewrite of the plugin configuration and parameter
+  initialization logic.
 
-- MIDI bank/program selection is now taken into account on
-  plugins initialization and replication.
+- MIDI bank/program selection is now taken into account on plugins
+  initialization and replication.
 
 - Fixed initial parameter values for native VST plugins.
 
-- Track form plugin lists are now properly (re)initialized
-  when track type changes.
+- Track form plugin lists are now properly (re)initialized when track type
+  changes.
 
-- Generic plugin forms now have the option to show/hide the
-  parameter widgets through the new "Params" button.
+- Generic plugin forms now have the option to show/hide the parameter
+  widgets through the new "Params" button.
 
-- New auto-monitor toggle option (menu Track/Auto Monitor):
-  the current selected track is now set on monitor and MIDI
-  channel omni-mode automagically, as a convenient workflow
-  feature (kindly suggested by Holborn).
+- New auto-monitor toggle option (menu Track/Auto Monitor): the current
+  selected track is now set on monitor and MIDI channel omni-mode
+  automagically, as a convenient workflow feature (kindly suggested by
+  Holborn).
 
-- MIDI clip editor Tools menu is not disabled anymore when
-  there's no selection, drop-down menu items are instead.
+- MIDI clip editor Tools menu is not disabled anymore when there's no
+  selection, drop-down menu items are instead.
 
-- Make all recorded clips to honor either the punch-out or
-  play-head accumulated position; resolve all pending MIDI
-  sequence note events on record stop/close.
+- Make all recorded clips to honor either the punch-out or play-head
+  accumulated position; resolve all pending MIDI sequence note events on
+  record stop/close.
 
-- Major silent move: audio plugins chain are now applied
-  in a pre-fader/meter basis as is usually implied from
-  the mixer strip layout ie. signal flows from the top to
-  the bottom.
+- Major silent move: audio plugins chain are now applied in a
+  pre-fader/meter basis as is usually implied from the mixer strip layout
+  ie. signal flows from the top to the bottom.
 
-- All MIDI buses may now have plugins inserted so that 
-  multi-timbral synth/sampler plugins get driven to their
-  fullness.
+- All MIDI buses may now have plugins inserted so that  multi-timbral
+  synth/sampler plugins get driven to their fullness.
 
-- MIDI track plugin's dedicated audio output bus may now
-  be effective, as it seems, good old master audio output
-  bus was being used, no matter what.
+- MIDI track plugin's dedicated audio output bus may now be effective, as
+  it seems, good old master audio output bus was being used, no matter
+  what.
 
-- Paste-repeat command has been introduced, now allowing to
-  replicate and concatenate the clipboard contents over the
-  time-line, with a given repeat-count and optional period
-  (see menu Edit/Paste Repeat... on the main and MIDI clip
-  editor windows).
+- Paste-repeat command has been introduced, now allowing to replicate and
+  concatenate the clipboard contents over the time-line, with a given
+  repeat-count and optional period (see menu Edit/Paste Repeat... on the
+  main and MIDI clip editor windows).
 
-- Normalize tool on MIDI clip editor got rewritten from its
-  previous brain-dead, useless and utterly wrong operation.
+- Normalize tool on MIDI clip editor got rewritten from its previous
+  brain-dead, useless and utterly wrong operation.
 
-- All time offsets and lengths are now zero-bar/beat based
-  when displayed in the BBT (bar.beat.ticks) format.
+- All time offsets and lengths are now zero-bar/beat based when displayed
+  in the BBT (bar.beat.ticks) format.
 
 - MMC STEP gets adjusted to current snap-per-beat setting.
 
-- Fixed broken initial buffering that was randomly crippling
-  those audio clips that fit integrally in cached and while
-  on playback.
+- Fixed broken initial buffering that was randomly crippling those audio
+  clips that fit integrally in cached and while on playback.
 
-- Fix initialization of multiple instances of DSSI plugins
-  which implement run_multiple_synths (eg. fluidsynth-dssi),
-  preventing an instant crash on activation.
+- Fix initialization of multiple instances of DSSI plugins which implement
+  run_multiple_synths (eg. fluidsynth-dssi), preventing an instant crash
+  on activation.
 
 - Exclude deprecated VST elements from compilation.
 
 - Export tracks dialog has new punch in/out range option.
 
-- Somehow realized that looping and punch-recording are two
-  mutually exclusive states, at least until loop recording
-  (ie. takes) gets real.
+- Somehow realized that looping and punch-recording are two mutually
+  exclusive states, at least until loop recording (ie. takes) gets real.
 
-- Fixed bug #2249291 - Crash on tempo change; affecting the
-  WSOLA based time-stretching on all non-stereo audio clips.
+- Fixed bug #2249291 - Crash on tempo change; affecting the WSOLA based
+  time-stretching on all non-stereo audio clips.
 
 - Incomplete audio peaks were being cached prematurely, fixed.
 
-- Make way for paste/dropping items from the system clipboard
-  over the main track view. Cut/Copy/Paste/Delete of file items
-  have now this workaround fixed, wrt. Files widget keyboard
-  shortcuts, respectively.
+- Make way for paste/dropping items from the system clipboard over the
+  main track view. Cut/Copy/Paste/Delete of file items have now this
+  workaround fixed, wrt. Files widget keyboard shortcuts, respectively.
 
-- Clip gain/volume propriety is now in place and reflected in
-  audio clip waveform drawing in particular.
+- Clip gain/volume propriety is now in place and reflected in audio clip
+  waveform drawing in particular.
 
-- A new hideous progress bar is now lurking in the main status
-  line, as found convenient to display progress of the also new
-  clip tools (normalize, export, etc.).
+- A new hideous progress bar is now lurking in the main status line, as
+  found convenient to display progress of the also new clip tools
+  (normalize, export, etc.).
 
 - Clip normalize tool is now available (Edit/Clip/Normalize).
 
-- Audio and MIDI clip file export is now available as a tool
-  (see Edit/Clip/Export...).
+- Audio and MIDI clip file export is now available as a tool (see
+  Edit/Clip/Export...).
 
-- Punch in/out (range) recording is now in experimental shape,
-  with minimal settings and functionality, already accessible
-  through the main menus, transport toolbars and visible on main
-  tracks view and MIDI editors as magenta colored line markers.
+- Punch in/out (range) recording is now in experimental shape, with
+  minimal settings and functionality, already accessible through the
+  main menus, transport toolbars and visible on main tracks view and
+  MIDI editors as magenta colored line markers.
 
-- External MIDI control events for channel volume (7) and channel
-  panning (10) are now handled properly through session tracks.
+- External MIDI control events for channel volume (7) and channel panning
+  (10) are now handled properly through session tracks.
 
-- Session file templates make its debut with new usability option,
-  on whether new sessions are created based on existing template
-  file (see View/Options.../Display/Session/New session template;
-  nb. session templates are just regular session files but loaded
-  and saved with no media content (no clips nor files).
+- Session file templates make its debut with new usability option, on
+  whether new sessions are created based on existing template file (see
+  View/Options.../Display/Session/New session template; nb. session
+  templates are just regular session files but loaded and saved with no
+  media content (no clips nor files).
 
 - Grayed/disabled palette color group fix for dark color themes.
 
-- Implicit attempt to flush all pending notes for some, if not
-  most plugin instruments (eg. VSTi), on playback stop.
+- Implicit attempt to flush all pending notes for some, if not most plugin
+  instruments (eg. VSTi), on playback stop.
 
 - Fait-divers: desktop menu file touched to openSUSE conventions.
 
-- Internal refactoring alert: Session and Options instances are
-  now being redesigned as singletons, preparing to get out of the
-  way from the master GUI/MainForm instance.
+- Internal refactoring alert: Session and Options instances are now being
+  redesigned as singletons, preparing to get out of the way from the
+  master GUI/MainForm instance.
 
-- Clip drawing methods refactored so let the fade-in/out handles
-  get seen with transparency over the clip graphics content.
+- Clip drawing methods refactored so let the fade-in/out handles get seen
+  with transparency over the clip graphics content.
 
-- Reset and continue looping even still when continue past end
-  transport option is not set and playback is rolling.
+- Reset and continue looping even still when continue past end transport
+  option is not set and playback is rolling.
 
 
 0.2.2  2008-10-05  The Flirty Ditz
 
 - Slight optimization in audio and MIDI meters refresh rate.
 
-- Another ancient bug has been squashed: MIDI events were being
-  recorded even though recording wasn't rolling; spurious event
-  times were being recorded due to an absent started queue.
+- Another ancient bug has been squashed: MIDI events were being recorded
+  even though recording wasn't rolling; spurious event times were being
+  recorded due to an absent started queue.
 
-- Major fix applied to audio track monitor metering, and most
-  importantly to plugin processing, correcting tentatively all
-  audio buffer offsetting and slicing due on loop turnarounds.
+- Major fix applied to audio track monitor metering, and most importantly
+  to plugin processing, correcting tentatively all audio buffer offsetting
+  and slicing due on loop turnarounds.
 
-- Fixed a potential crash and/or simple record dismissal when
-  changing properties of a track already armed for recording;
-  prevent record engaged tracks from editing or removal.
+- Fixed a potential crash and/or simple record dismissal when changing
+  properties of a track already armed for recording; prevent record
+engaged  tracks from editing or removal.
 
-- Lighten up the connections line and highlight colors, as seen
-  to fit best on some darker background themes.
+- Lighten up the connections line and highlight colors, as seen to fit
+  best on some darker background themes.
 
 - Several icons refined with slight transparent shadowing.
 
-- Send/reset all MIDI buses and track controllers (ie. volume
-  and panning) only when main transport playback is started,
-  avoiding the pouring on eg. loop, playhead or tempo changes.
+- Send/reset all MIDI buses and track controllers (ie. volume and panning)
+  only when main transport playback is started, avoiding the pouring on
+  eg. loop, playhead or tempo changes.
 
-- Pressing the Escape key also clears current selection in the
-  main track-view and MIDI clip editor; resizing multiple events
-  at once doesn't need help from Shift or Ctrl modifiers anymore.
+- Pressing the Escape key also clears current selection in the main
+  track-view and MIDI clip editor; resizing multiple events at once
+  doesn't need help from Shift or Ctrl modifiers anymore.
 
-- DSSI and VSTi plugins get all their default parameters values
-  reset on MIDI program change.
+- DSSI and VSTi plugins get all their default parameters values reset on
+  MIDI program change.
 
-- Several major fixes have been applied to the MIDI clip editor,
-  regarding snap precision and correctness, most specially due
-  on clips which weren't located on exact bar boundaries.
+- Several major fixes have been applied to the MIDI clip editor, regarding
+  snap precision and correctness, most specially due on clips which
+  weren't located on exact bar boundaries.
 
-- Brand new usability feature introduced: mute, solo and monitor
-  toggling may now be applied to all tracks in session at once,
-  when issued with either the Shift or Ctrl keyboard modifiers,
-  which will set or reverse respectively all other tracks state.
+- Brand new usability feature introduced: mute, solo and monitor toggling
+  may now be applied to all tracks in session at once, when issued with
+  either the Shift or Ctrl keyboard modifiers, which will set or reverse
+  respectively all other tracks state.
 
-- Audio buses plugin chain may be also accessed and edited from
-  the extended bus management dialog (View/Buses...).
+- Audio buses plugin chain may be also accessed and edited from the
+  extended bus management dialog (View/Buses...).
 
 - MIDI meter level default color is now set distinct from the old
   lime-green one as in audio level meters.
 
-- MIDI clip editor is now a genuine top-level window, fixing all
-  keyboard shortcut ambiguities with main application window.
+- MIDI clip editor is now a genuine top-level window, fixing all keyboard
+  shortcut ambiguities with main application window.
 
 - Mixer splitter panes are now collapsible and optionally hidden.
 
@@ -1465,23 +1328,23 @@ SVN TRUNK
   preventing the accidental insertion of blank instrument names and
   automatic default bank/program selection in track properties.
 
-- All connections are now based exclusively on the textual client
-  and port names, effective in particular to match MIDI bus ports
-  with disregard to their volatile numerical identification.
+- All connections are now based exclusively on the textual client and port
+  names, effective in particular to match MIDI bus ports with disregard to
+  their volatile numerical identification.
 
 - MIDI file (SMF) header endianess fix (PPC users rejoyce:))
 
-- Record armed tracks aren't muted for playback anymore, as this
-  was a severe crippling nuisance regarding input monitoring and
-  all mighty user experience after recording a simple take; for
-  instance, as the bottom line goes, there's no need to un-arm a
-  track from its record-enabled state anymore, for just recorded
-  material get heard on immediate playback; kick on the jam!
+- Record armed tracks aren't muted for playback anymore, as this was a
+  severe crippling nuisance regarding input monitoring and all mighty
+  user experience after recording a simple take; for instance, as the
+  bottom line goes, there's no need to un-arm a track from its record
+  -enabled state anymore, for just recorded material get heard on
+  immediate playback; kick  on the jam!
 
 - Playhead position overflow fixed on negative MMC STEP commands.
 
-- Thumb-view width proportions now based on minimal slack session
-  length instead of the auto-extending track-view contents width.
+- Thumb-view width proportions now based on minimal slack session length
+  instead of the auto-extending track-view contents width.
 
 - Optimize audio clip drawing, most specially on zoomed-out levels.
 
@@ -1494,59 +1357,59 @@ SVN TRUNK
 - Gradient eye-candy now featured for clips, tracks and mixer strips
   widget backgrounds, disabled on configure time (--disable-gradient).
 
-- MIDI pitch-bend/wheel events are now captured/recorded properly;
-  in fact, there was this ancient bug, now squashed, as all MIDI
-  clips weren't being stored at all if there weren't a single note
-  event captured.
+- MIDI pitch-bend/wheel events are now captured/recorded properly; in
+  fact, there was this ancient bug, now squashed, as all MIDI clips
+  weren't being stored at all if there weren't a single note event
+  captured.
 
 - MIDI channel translation is finally in effect on monitored tracks,
   specially the ones set in omni-channel input mode.
 
 - MIDI open files dialog gets a few more file filter types now.
 
-- Playhead position is now shown, updated and can be also set on the
-  main toolbar session thumb-view (shift-click to set the playhead).
+- Playhead position is now shown, updated and can be also set on the main
+  toolbar session thumb-view (shift-click to set the playhead).
 
-- The floating selection, as shown for a clipboard pasting operation,
-  has been corrected regarding time scale (horizontal zoom) changes,
-  while in the main track-view. Also fixed final position snapping
-  precision (spotted in bug #2055846).
+- The floating selection, as shown for a clipboard pasting operation, has
+  been corrected regarding time scale (horizontal zoom) changes, while in
+  the main track-view. Also fixed final position snapping precision
+  (spotted in bug #2055846).
 
 - Current tempo and snap-per-beat setting now survive session cycling.
 
-- DSSI plugins implementing run_multiple_synths (eg. fluidsynth-dssi)
-  are now formally supported according to the DSSI spec (hopefully);
-  note that previously one could only have one DSSI plugin instance
-  loaded in session in any given time, otherwise a sudden crash was
-  in sure demand when either plugin got activated (fixes bug #2048198).
+- DSSI plugins implementing run_multiple_synths (eg. fluidsynth-dssi) are
+  now formally supported according to the DSSI spec (hopefully); note that
+  previously one could only have one DSSI plugin instance loaded in
+  session in any given time, otherwise a sudden crash was in sure demand
+  when either  plugin got activated (fixes bug #2048198).
 
-- Audio plugin outputs now overrides each other when the number
-  of output ports does not match the number of mix-down audio
-  channels and thus fixing a nasty crash bug in the process.
+- Audio plugin outputs now overrides each other when the number of output
+  ports does not match the number of mix-down audio channels and thus
+  fixing a nasty crash bug in the process.
 
 - All custom font sizes are now set relative to default global font.
 
-- Changing loop points by dragging on the time rulers is now mapped
-  as undoable/redoable commands as it ought to be ever since.
+- Changing loop points by dragging on the time rulers is now mapped as
+  undoable/redoable commands as it ought to be ever since.
 
-- Drop-span option (View/Options.../Drop multiple audio files
-  into the same track) now takes into effect the current session
-  snap-per-beat setting when concatenating multiple audio clips.
+- Drop-span option (View/Options.../Drop multiple audio files into the
+  same track) now takes into effect the current session snap-per-beat
+  setting when concatenating multiple audio clips.
 
 - All plugins get their default bank/program selected on insertion.
 
-- Make record armed tracks muted for playback, a needed regression
-  to let both audio and MIDI tracks behave consistently regarding
-  input monitor switching through output.
+- Make record armed tracks muted for playback, a needed regression to let
+  both audio and MIDI tracks behave consistently regarding input monitor
+  switching through output.
 
-- Fixed a pretty old and shameless bug regarding MIDI clip recording,
-  in which cases the queue start time offset was not taken into account,
-  with captured events being recorded with erratic long delays.
+- Fixed a pretty old and shameless bug regarding MIDI clip recording, in
+  which cases the queue start time offset was not taken into account, with
+  captured events being recorded with erratic long delays.
 
 - Almost complete refactoring of the clumsy audio peak file classes,
   possibly making it even clumsier but straight neverthless, with the
-  noble and final aim to build it in-flight and draw the waveforms
-  while recording is rolling.
+  noble and final aim to build it in-flight and draw the waveforms while
+  recording  is rolling.
 
 - Recording clips get their initial name labels drawn while fade-in/out
   handles are dropped as found pretty useless while recording.
@@ -1556,37 +1419,36 @@ SVN TRUNK
 
 0.2.0  2008-07-18  The Frolic Demoiselle
 
-- MIDI clip filename revision logic is now introduced, thus avoiding
-  the proliferation of several numbered SMF's on each edit/save; some
-  lurking bugs were exposed in the MIDI clip externalization method
-  but promptly squashed.
+- MIDI clip filename revision logic is now introduced, thus avoiding the
+  proliferation of several numbered SMF's on each edit/save; some lurking
+  bugs were exposed in the MIDI clip externalization method but promptly
+  squashed.
 
-- Fixed a mouse release event glitch while in drag-and-drop items in
-  the Files tree list widget.
+- Fixed a mouse release event glitch while in drag-and-drop items in the
+  Files tree list widget.
 
 - A dummy plugin type option has been devised, just to bear with some
   troubled behavior of the lovely JUCETICE plugins (View/Options.../
-  Plugins/Experimental/Dummy VST plugin scan). Bad news are that all,
-  yes all as in every native VST plugins, are indistinguishable from
-  being just pure audio effects, either mono or stereo, whatever, and
-  thus all being considered full-blown stereo VSTi instruments (which
-  are the vast mainstream and rather interesting majority, nevertheless:).
+  Plugins/Experimental/Dummy VST plugin scan). Bad news are that all, yes
+  all as in every native VST plugins, are indistinguishable from being
+  just pure audio effects, either mono or stereo, whatever, and thus all
+  being considered full-blown stereo VSTi instruments (which are the vast
+  mainstream and rather interesting majority, nevertheless:).
 
 - The plugin selection dialog (Add Plugin...) now features the option
   whether the selected plugins should be activated on insert.
 
-- Mixer strip titles now have distinguishable type icons, either for
-  audio or MIDI, and shown on all buses and track strips.
+- Mixer strip titles now have distinguishable type icons, either for audio
+  or MIDI, and shown on all buses and track strips.
 
-- Major optimization breakthrough: muted audio tracks aren't streamed
-  any longer, saving precious CPU cycles from decoding, resampling,
+- Major optimization breakthrough: muted audio tracks aren't streamed any
+  longer, saving precious CPU cycles from decoding, resampling,
   pitch-shifting, time-stretching, plugin effects, whatever.
 
-- Incredible as it might be, audio/MIDI track record monitoring is
-  now mixed (or merged) with rolling playback content, thus not as
-  mutually exclusive between record and playback states anymore;
-  also, track mute/solo states doesn't apply to recording material
-  anymore.
+- Incredible as it might be, audio/MIDI track record monitoring is now
+  mixed (or merged) with rolling playback content, thus not as mutually
+  exclusive between record and playback states anymore; also, track
+  mute/solo states doesn't apply to recording material anymore.
 
 - Main form timer slot gets corrected and now independent of current
   process buffer-size in regard to JACK transport synchronization.
@@ -1594,114 +1456,112 @@ SVN TRUNK
 - All file references in session state file are now stored as relative
   paths to main session directory.
 
-- DSSI/VSTi plugin presets can now be explicitly recalled from file
-  (ie. Open/load preset) through this new tool button whether visible
-  while in the generic plugin form.
+- DSSI/VSTi plugin presets can now be explicitly recalled from file (ie.
+  Open/load preset) through this new tool button whether visible while in
+  the generic plugin form.
 
 - Due to some trouble with newer Qt >= 4.4 applications regarding font
   size configuration, a new global user option is now available to the
   rescue: View/Options... /Display/Base font size (default is no-op).
 
-- Logarithmic scale is now taken into effect by control parameter
-  sliders, in the generic plugin editor dialog as provided by LADSPA
-  and DSSI plugin types.
+- Logarithmic scale is now taken into effect by control parameter sliders,
+  in the generic plugin editor dialog as provided by LADSPA and DSSI
+  plugin types.
 
 - MIDI track bank/program does not default to zero (PC#0) anymore.
 
-- Second attempt for Qt4.4 build support, regarding the bundled
-  atomic primitives, now corrected and way more seriously :).
+- Second attempt for Qt4.4 build support, regarding the bundled atomic
+  primitives, now corrected and way more seriously :).
 
-- Long due DSSI/VSTi plugin host implementation has taken shape for
-  MIDI instruments (eg. soft-synth plugins); DSSI reached its full
-  host implementation and VSTi is already kicking as well.
+- Long due DSSI/VSTi plugin host implementation has taken shape for MIDI
+  instruments (eg. soft-synth plugins); DSSI reached its full host
+  implementation and VSTi is already kicking as well.
 
-- DSSI/VSTi plugin presets may now be stored to external XML files,
-  which should include all parameter values and configuration data
-  chunks, taken as proper state snapshot and subject for recall.
+- DSSI/VSTi plugin presets may now be stored to external XML files, which
+  should include all parameter values and configuration data chunks, taken
+  as proper state snapshot and subject for recall.
 
-- Dedicated audio output bus option is now also accessible for all
-  MIDI instrument plugins, either set globally as a default mode in
-  View/Options.../Plugins/Instruments or in the plugin context menu
-  for MIDI tracks, as an undoable command.
+- Dedicated audio output bus option is now also accessible for all MIDI
+  instrument plugins, either set globally as a default mode in
+  View/Options.../Plugins/Instruments or in the plugin context menu for
+  MIDI tracks, as an undoable command.
 
-- Fixed a potential crash-exception due to freeing a null-pointer,
-  raised on some ever stringent platforms and while adding tracks
-  to empty sessions, which is the same to say this was crashing more
-  than always:).
+- Fixed a potential crash-exception due to freeing a null-pointer, raised
+  on some ever stringent platforms and while adding tracks to empty
+  sessions, which is the same to say this was crashing more than always:).
 
-- Loop turn-around is now taken care of, as this has been found
-  missing and causing noticeable gapping when un-muting or changing
-  MIDI track events while in playback.
+- Loop turn-around is now taken care of, as this has been found missing
+  and causing noticeable gapping when un-muting or changing MIDI track
+  events while in playback.
 
-- An off-by-one bug was fixed while inside MIDI cursor backward
-  seek method, which was missing all other events that have the
-  same exact onset timing.
+- An off-by-one bug was fixed while inside MIDI cursor backward seek
+  method, which was missing all other events that have the same exact
+  onset timing.
 
-- Attempt to load Qt's own translation support and get rid of
-  the ever warning startup message, unless built in debug mode.
-  (transaction by Guido Scholz, while on qsynth-devel, thanks).
+- Attempt to load Qt's own translation support and get rid of the ever
+  warning startup message, unless built in debug mode. (transaction by
+  Guido Scholz, while on qsynth-devel, thanks).
 
-- Only one application instance is now allowed to be up and running,
-  with immediate but graceful termination upon startup iif an already
-  running instance is detected, which will see its main widget shown
-  up automatically (Qt/X11 platform only).
+- Only one application instance is now allowed to be up and running, with
+  immediate but graceful termination upon startup iif an already running
+  instance is detected, which will see its main widget shown up
+  automatically (Qt/X11 platform only).
 
 - Clip fades have now a slight transparency.
 
 - Avoid loop read-ahead on initial audio clip loading.
 
-- Messages file logging makes its first long overdue appearance,
-  with user configurable settings in View/Options.../Logging;
-  options dialog was slightly rearranged and moved the Plugins
-  section into a new tab page.
+- Messages file logging makes its first long overdue appearance, with user
+  configurable settings in View/Options.../Logging; options dialog was
+  slightly rearranged and moved the Plugins section into a new tab page.
 
-- Audio/MIDI drifting correction was missing its own correct and
-  due (re)initialization whenever playback is (re)started; also,
-  MIDI metering synchronization has been fixed once again.
+- Audio/MIDI drifting correction was missing its own correct and due
+  (re)initialization whenever playback is (re)started; also, MIDI metering
+  synchronization has been fixed once again.
 
-- Fixed session cursor backward seeking, specially applicable
-  when playback passes the end of overlapped clips.
+- Fixed session cursor backward seeking, specially applicable when
+  playback passes the end of overlapped clips.
 
 - Fixed potential crash when opening bogus audio files.
 
-- Time-stretch FIFO buffer implementation is now made generic,
-  as template, fixing a destructor memory leak in the process.
+- Time-stretch FIFO buffer implementation is now made generic, as
+  template, fixing a destructor memory leak in the process.
 
-- Include legacy headers, stdlib.h and string.h, where necessary
-  to build with stricter gcc/g++ >= 4.3.
+- Include legacy headers, stdlib.h and string.h, where necessary to build
+  with stricter gcc/g++ >= 4.3.
 
 
 0.1.3  2008-05-02  The Frugal Damsel
 
-- As one may find convenient sometimes, the global time display
-  format (frames, time or BBT) may now be changed on the main
-  transport time spin-box context menu.
+- As one may find convenient sometimes, the global time display format
+  (frames, time or BBT) may now be changed on the main transport time
+  spin-box context menu.
 
-- Left-clicking on the track list number column now toggles all
-  track content clip selection.
+- Left-clicking on the track list number column now toggles all track
+  content clip selection.
 
-- Prevent audio-buffer initialization mashups when editing short
-  audio clips while playback is rolling and within clip region.
+- Prevent audio-buffer initialization mashups when editing short audio
+  clips while playback is rolling and within clip region.
 
-- Audio peak files gets a bit simplified, dropping the peak frame
-  count from its header; peak waveform graphics are now rendered
-  as straight lines when over the end of audio file.
+- Audio peak files gets a bit simplified, dropping the peak frame count
+  from its header; peak waveform graphics are now rendered as straight
+  lines when over the end of audio file.
 
-- The drop-span option (View/Options.../Drop multiple audio files
-  into the same track) now also applies when importing tracks (as
-  in Track/Import Tracks/Audio...) to concatenate multiple audio
-  clips into one and the same new track.
+- The drop-span option (View/Options.../Drop multiple audio files into the
+  same track) now also applies when importing tracks (as in Track/Import
+  Tracks/Audio...) to concatenate multiple audio clips into one and the
+  same new track.
 
-- Audio and MIDI meter level colors are now user configurable (as
-  global configuration options, View/Options.../Display/Meters) 
+- Audio and MIDI meter level colors are now user configurable (as global
+  configuration options, View/Options.../Display/Meters)
 
-- First attempt for Qt4.4 build support, regarding the bundled
-  atomic primitives, which have changed upstream as advertised
-  (thanks to Paul Thomas, for spotting this one first time).
+- First attempt for Qt4.4 build support, regarding the bundled atomic
+  primitives, which have changed upstream as advertised (thanks to Paul
+  Thomas, for spotting this one first time).
 
-- Record monitor switch is now an accessible button option on all
-  track mixer strips; for visual consistency, the old bus "thru"
-  switch button has been renamed to "monitor".
+- Record monitor switch is now an accessible button option on all track
+  mixer strips; for visual consistency, the old bus "thru" switch button
+  has been renamed to "monitor".
 
 - Force track-view position reset to origin on session close.
 
@@ -1709,137 +1569,125 @@ SVN TRUNK
 
 - Mixer splitter sizes are now better saved/restored when closed.
 
-- Track record monitoring is now a state option, being toggled
-  from the Track/State/Monitor menu; applies both to audio end
-  MIDI tracks: when set all input will be pass-through to the
-  current assigned output bus, including track plug-ins chain.
+- Track record monitoring is now a state option, being toggled from the
+  Track/State/Monitor menu; applies both to audio end MIDI tracks: when
+  set all input will be pass-through to the current assigned output bus,
+  including track plug-ins chain.
 
 - Session dialog gets split in its own tab components, between
   descriptive, time and view configuration ones.
 
-- Drifting correction among audio and MIDI engines is now back,
-  but avoided while recording or should it be while looping?
+- Drifting correction among audio and MIDI engines is now back, but
+  avoided while recording or should it be while looping?
 
-- Time-stretching percent value gets its semantics inverted,
-  as thought consistent with ones general sense for relative
-  stretching ie., lower to shrink and higher to make longer.
-  this is a major up-side-down change and should affect all
-  sessions saved with time-stretched audio clips.
+- Time-stretching percent value gets its semantics inverted, as thought
+  consistent with ones general sense for relative stretching ie., lower to
+  shrink and higher to make longer. this is a major up-side-down change
+  and should affect all sessions saved with time-stretched audio clips.
 
 - Slack space in main tracks and MIDI clip editor views are now
-  proportional to viewport width, leaving enough room for drag
-  and moving content past the current session length, specially
-  at the lower zoom levels.
+  proportional to viewport width, leaving enough room for drag and moving
+  content past the current session length, specially at the lower zoom
+  levels.
 
 - Clip end time is now also shown on tool-tip.
 
-- When armed for recording, MIDI tracks are now monitored and
-  filtered through their own output bus, thus having the same
-  behavior as audio tracks; this also implies that all record
-  armed tracks won't playback their current content material
-  when recording is engaged and rolling; track mute and solo
-  states are now honored on record monitoring.
+- When armed for recording, MIDI tracks are now monitored and filtered
+  through their own output bus, thus having the same behavior as audio
+  tracks; this also implies that all record armed tracks won't playback
+  their current content material when recording is engaged and rolling;
+  track mute and solo states are now honored on record monitoring.
 
-- Audio clip pitch-shifting makes its first appearance, with
-  the optional help from Chris Cannam's RubberBand library.
+- Audio clip pitch-shifting makes its first appearance, with the optional
+  help from Chris Cannam's RubberBand library.
 
 - A new MIDI editor tool is available: note/pitch randomize.
 
-- Avoid (re)setting the default session directory if a session
-  cannot be open or loaded for some reason.
+- Avoid (re)setting the default session directory if a session cannot be
+  open or loaded for some reason.
 
-- Another nastiness bites the dust: a subtle but progressive
-  drifting has been swept away from the audio buffer looping;
-  zero buffer flushing is now also taken into account, which
-  was the cause for serious drifting on time-stretched clips.
+- Another nastiness bites the dust: a subtle but progressive drifting has
+  been swept away from the audio buffer looping; zero buffer flushing is
+  now also taken into account, which was the cause for serious drifting
+  on time-stretched clips.
 
-- A major digital audio processing bug was tamed: audio clip
-  fade-in/outs are now linearly piece-wise applied, even at
-  the clip edges, giving a much smoother rendering and thus
-  mitigating the nasty click-and-pop artifacts that were in
-  fact due to some early design optimization with a poor and
-
-  sloppy implementation.
+- A major digital audio processing bug was tamed: audio clip fade-in/outs
+  are now linearly piece-wise applied, even at the clip edges, giving a
+  much smoother rendering and thus mitigating the nasty click-and-pop
+  artifacts that were in fact due to some early design optimization with a
+  poor and sloppy implementation.
 
 
 0.1.2  2008-03-23  The Frantic Dame
 
-- Session length fixed (yet again) while extend recording; also
-  improved follow-playhead switching while playback/recording.
+- Session length fixed (yet again) while extend recording; also improved
+  follow-playhead switching while playback/recording.
 
 - Whitespace sanitization gets leaner for all recorded filenames.
 
 - Run-time SSE optimization detection has been improved while on
-  configure; additionally, IEEE 32bit float specific optimizations
-  have also sneaked in.
+  configure; additionally, IEEE 32bit float specific optimizations have
+  also sneaked in.
 
-- SSE optimization is now featured over all audio monitoring, and
-  most specially on audio bus buffering, lowering the CPU burden a
-  bit while doing track and bus gain, pan, metering and mix-down.
+- SSE optimization is now featured over all audio monitoring, and most
+  specially on audio bus buffering, lowering the CPU burden a bit while
+  doing track and bus gain, pan, metering and mix-down.
 
-- Fixed MIDI clip move into new track, preserving the original
-  channel, bank and program whenever possible.
+- Fixed MIDI clip move into new track, preserving the original channel,
+  bank and program whenever possible.
 
-- Fixed session cursor seeking, specially regarding overlapped
-  clips, once gain.
+- Fixed session cursor seeking, specially regarding overlapped clips, once
+  gain.
 
-- The MIDI editor gets new menu access to current MIDI clip track
-  (see File/Track/Inputs, Outputs, Properties); selection of MIDI
-  events has also been improved, specially regarding overlapped
-  note events.
+- The MIDI editor gets new menu access to current MIDI clip track (see
+  File/Track/Inputs, Outputs, Properties); selection of MIDI events has
+  also been improved, specially regarding overlapped note events.
 
 - Clip split command enters the stage (see Edit/Clip/Split) about
-  splitting the current (selected) clip at the current playhead
-  position (red cursor line).
+  splitting the current (selected) clip at the current playhead position
+  (red cursor line).
 
 - Creating new clips from scratch is now finally permitted (see
-  Edit/Clip/New...); additionally, the clip properties dialog is
-  now also allowing for changing the filename (and track/channel
-  as special to MIDI clips).
+  Edit/Clip/New...); additionally, the clip properties dialog is now also
+  allowing for changing the filename (and track/channel as special to MIDI
+  clips).
 
-- Record armed tracks are now properly monitored and fed through
-  their own output audio bus on mix-down, which includes plug-in
-  effects processing.
+- Record armed tracks are now properly monitored and fed through their own
+  output audio bus on mix-down, which includes plug-in effects processing.
 
 - The files widget get alternating coloured rows.
 
-- VST plug-in preset values are now being restored properly;
-  individual parameter changes are now being queued for the
-  also convenient undo/redo command pattern.
+- VST plug-in preset values are now being restored properly; individual
+  parameter changes are now being queued for the also convenient undo/redo
+  command pattern.
 
-- Some audio clip buffer-sync tweaks have sneaked in, improving
-  and fixing the rendering of full-overlapped, integrally cached
-  and/or offset clips altogether.
+- Some audio clip buffer-sync tweaks have sneaked in, improving and fixing
+  the rendering of full-overlapped, integrally cached and/or offset clips
+  altogether.
 
-- Stuffed one primordial shot on XInitThreads() at the main head,
-  and let native VST plug-ins start behaving as they should, or
-  not; this might be in fact problematic and dangerous for people
-  who won't ever try the JUCE based plugins as from JUCETICE
-  (http://www.anticore.org/jucetice), due to some broken locking
-  mechanism in xcb; thanks anyway to mighty kRAkEn/gORe@JUCETICE
-  for this precious hint and from who knows best.
+- Stuffed one primordial shot on XInitThreads() at the main head, and let
+  native VST plug-ins start behaving as they should, or not; this might be
+  in fact problematic and dangerous for people who won't ever try the JUCE
+  based plugins as from JUCETICE (http://www.anticore.org/jucetice), due
+  to some broken locking mechanism in xcb; thanks anyway to mighty
+  kRAkEn/gORe@JUCETICE for this precious hint and from who knows best.
 
 - True deterministic session length update has due fixed.
 
-- Track menu has new accessible actions:
-  Track/Inputs - show current track input bus connections;
-  Track/Outputs - show current track output bus connections;
-  Track/State/Record - arm current track for recording;
-  Track/State/Mute - mute current track;
-  Track/State/Solo - solo current track;
-  Track/Navigate/First - make current the first track;
+- Track menu has new accessible actions: Track/Inputs - show current track
+  input bus connections; Track/Outputs - show current track output bus
+  connections; Track/State/Record - arm current track for recording;
+  Track/State/Mute - mute current track; Track/State/Solo - solo current
+  track; Track/Navigate/First - make current the first track;
   Track/Navigate/Previous - make current the previous track;
-  Track/Navigate/Next - make current the next track;
-  Track/Navigate/Last - make current the last track;
-  Track/Move/Top - move current track to top;
-  Track/Move/Up - move current track up;
-  Track/Move/Down - move current track down;
-  Track/Move/Bottom - move current track to bottom;
+  Track/Navigate/Next - make current the next track; Track/Navigate/Last -
+  make current the last track; Track/Move/Top - move current track to top;
+  Track/Move/Up - move current track up; Track/Move/Down - move current
+  track down; Track/Move/Bottom - move current track to bottom;
 
-- View menus have new accessible actions:
-  View/Zoom/In - horizontal and vertical zoom-in (Ctrl +);
-  View/Zoom/Out - horizontal and vertical zoom-out (Ctrl -);
-  View/Zoom/Reset - reset both zoom levels to default;
+- View menus have new accessible actions: View/Zoom/In - horizontal and
+  vertical zoom-in (Ctrl +); View/Zoom/Out - horizontal and vertical
+  zoom-out (Ctrl -); View/Zoom/Reset - reset both zoom levels to default;
   View/Snap - select current snap-per-beat setting;
 
 - Plug-in forms don't auto-open on session reload anymore.
@@ -1850,54 +1698,54 @@ SVN TRUNK
 0.1.1   2008-02-16  The Futile Duchess
 
 - After some great user demand, keyboard shortcuts are finally
-  configurable, as found provisionally under Help/Shortcuts...,
-  for the main application menu and for the MIDI editor as well.
+  configurable, as found provisionally under Help/Shortcuts..., for the
+  main application menu and for the MIDI editor as well.
 
 - Debian package gets SSE optimization disabled as default.
 
-- At least some transport actions get to be non auto-repeatable
-  when pressed for much too long, as Play and Record, avoiding
-  the tumbling imposed from the keyboard.
+- At least some transport actions get to be non auto-repeatable when
+  pressed for much too long, as Play and Record, avoiding the tumbling
+  imposed from the keyboard.
 
 - For the first time ever, jackd auto-start is now allowed (!).
 
-- OSC service support through liblo gets optional at configure
-  time, now leading the way to proper DSSI plug-in hosting.
+- OSC service support through liblo gets optional at configure time, now
+  leading the way to proper DSSI plug-in hosting.
 
 - All plug-in widget controls count are now capped to one hundred.
 
 - Plugin paths setup is now made available on the options dialog,
-  overriding each of respective default settings, as implicit from
-  the LADSPA_PATH, DSSI_PATH and VST_PATH environment variables
-  (see View/Options.../Display/Plugin Paths).
+  overriding each of respective default settings, as implicit from the
+  LADSPA_PATH, DSSI_PATH and VST_PATH environment variables (see
+  View/Options.../Display/Plugin Paths).
 
-- Clip fade-in/out lengths are now kept relative to tempo changes
-  and also to clip offset and length changes (clip resizes).
+- Clip fade-in/out lengths are now kept relative to tempo changes and also
+  to clip offset and length changes (clip resizes).
 
 - Automatic time-stretching for all audio clips when session tempo
-  changes, may now be disabled/enabled as a global session option
-  (see View/Options.../Audio/Playback/Automatic time-stretching).
+  changes, may now be disabled/enabled as a global session option (see
+  View/Options.../Audio/Playback/Automatic time-stretching).
 
 - Double-clicking on an empty area (de)selects all clips on track.
 
-- MIDI capture (record) quantization is now an option, possibly
-  handy for some jerky performance musicians, as the one found
-  in myself ;) (see View/Options.../MIDI/Capture/Quantize).
+- MIDI capture (record) quantization is now an option, possibly handy for
+  some jerky performance musicians, as the one found in myself ;) (see
+  View/Options.../MIDI/Capture/Quantize).
 
-- The global options dialog (View/Options...) has seen its Display
-  tab page being moved back and to the right.
+- The global options dialog (View/Options...) has seen its Display tab
+  page being moved back and to the right.
 
-- Major rewrite of the plug-in infrastructure, adding primordial
-  support for DSSI and native VST plug-in flavors.
+- Major rewrite of the plug-in infrastructure, adding primordial support
+  for DSSI and native VST plug-in flavors.
 
 - Drag-and-drop of plug-in instances are now allowed intra- and
   inter-mixer strip chains, either on tracks or buses.
 
-- Turning track record off while recording is rolling was leaving
-  the session in a inconsistent recording status, now fixed.
+- Turning track record off while recording is rolling was leaving the
+  session in a inconsistent recording status, now fixed.
 
-- A random but instant crash upon audition/pre-listening player
-  onset was hopefully fixed.
+- A random but instant crash upon audition/pre-listening player onset was
+  hopefully fixed.
 
 
 0.1.0   2008-01-05  The Frivolous Debutante.
@@ -1906,21 +1754,21 @@ SVN TRUNK
   refactored from the SoundTouch library, under the (L)GPL umbrella.
 
 - New "Options.../Audio/Playback/Quick seek time-stretching" global
-  option, providing a quick seek mode (hierarchical search) while
-  doing all audio buffer time-stretching.
+  option, providing a quick seek mode (hierarchical search) while doing
+  all audio buffer time-stretching.
 
 - Changing session tempo will automatically apply the corresponding
-  time-stretch percent factor to all in-place audio clips. Audio
-  clip dialog also includes a new time-stretch property setting.
+  time-stretch percent factor to all in-place audio clips. Audio clip
+  dialog also includes a new time-stretch property setting.
 
-- Tempo changes are now affecting clip offsets correctly, keeping
-  the clip offset constant in time units (ticks), as are clip start
-  and length properties already.
+- Tempo changes are now affecting clip offsets correctly, keeping the clip
+  offset constant in time units (ticks), as are clip start and length
+  properties already.
 
 - Mixer splitter sizes are now properly saved/restored when hidden.
 
-- Extended multi-selection is now featured on the files widget; all
-  drag and drop functionality has been almost completely rewritten.
+- Extended multi-selection is now featured on the files widget; all drag
+  and drop functionality has been almost completely rewritten.
 
 - SSE optimization is now enabled where available (via configure).
 
@@ -1928,342 +1776,333 @@ SVN TRUNK
   listening player output, audio metronome output, MIDI control
   input/output and MIDI metronome output, are now in place.
 
-- A brand new subtle option sneaks in, affecting the drag-and-drop
-  of the main track-view: View/Options.../Drop multiple audio files
-  into the same track, whether to drop multiple external files into
-  new or existing track as concatenated audio clips.
+- A brand new subtle option sneaks in, affecting the drag-and-drop of the
+  main track-view: View/Options.../Drop multiple audio files into the same
+  track, whether to drop multiple external files into new or existing
+  track as concatenated audio clips.
 
 - The audio metronome makes its debut as an alternative to the MIDI
   existing one; parameters include bar and beat audio sample files,
   accessible from the View/Options.../Audio/Metronome dialog.
 
-- Files widget action refactorization; the files context menu gets
-  its due item icons and a new menu item for direct audio player
-  accessibility.
+- Files widget action refactorization; the files context menu gets its due
+  item icons and a new menu item for direct audio player accessibility.
 
-- MIDI time resolution changes (ppqn, ticks per beat) now tries to
-  keep all session MIDI clip times unchanged as far as possible.
+- MIDI time resolution changes (ppqn, ticks per beat) now tries to keep
+  all session MIDI clip times unchanged as far as possible.
 
-- MIDI channel volume and panning control change events, CC#7 and
-  CC#10 respectively, are now rendered unfiltered on playback.
+- MIDI channel volume and panning control change events, CC#7 and CC#10
+  respectively, are now rendered unfiltered on playback.
 
 - First rendition of the long due implementation of an audition or
-  pre-listening audio player is now in place; the files window got
-  this new play/stop control button on its lower-right corner.
+  pre-listening audio player is now in place; the files window got this
+  new play/stop control button on its lower-right corner.
 
-- Actual instrument definition note (keys) and controller names are
-  now in effect on the MIDI editor, whenever applicable.
+- Actual instrument definition note (keys) and controller names are now in
+  effect on the MIDI editor, whenever applicable.
 
-- Fixed instrument bank selection method, "Bank MSB" (2), which was
-  broken enough to never send the correct bank number.
+- Fixed instrument bank selection method, "Bank MSB" (2), which was broken
+  enough to never send the correct bank number.
 
-- Mouse-wheel horizontal scrolling is now accessible on every view,
-  while pressing a modifier key (Shift or Ctrl).
+- Mouse-wheel horizontal scrolling is now accessible on every view, while
+  pressing a modifier key (Shift or Ctrl).
 
-- New auto-backward transport option: when enabled the playhead will
-  be reset backward automatically whenever transport stops playing.
+- New auto-backward transport option: when enabled the playhead will be
+  reset backward automatically whenever transport stops playing.
 
-- A suicide-crash has been fixed while invoking the bus dialog from
-  the respective mixer bus strip context menu.
+- A suicide-crash has been fixed while invoking the bus dialog from the
+  respective mixer bus strip context menu.
 
-- Master (default) buses are always set to Duplex mode, being now
-  an enforced update policy while on the Buses dialog.
+- Master (default) buses are always set to Duplex mode, being now an
+  enforced update policy while on the Buses dialog.
 
 - A stupid lockup bug (infinite loop) was spotted on the track bus
   assignment method and squashed (thanks, lexridge).
 
-- New keyboard shortcuts for toggling the Connections tool (F8) and
-  the mighty Mixer tool (F9) windows.
+- New keyboard shortcuts for toggling the Connections tool (F8) and the
+  mighty Mixer tool (F9) windows.
 
 - Avoid showing a context menu while right-clicking on time rulers.
 
 - Audio clip waveform drawing gets additional closing points.
 
-- It is now possible to change the length/size of a clip by dragging
-  its left or right edges, while in the main track-view. Shift+drag
-  will also time-stretch to the resulting audio clip length.
+- It is now possible to change the length/size of a clip by dragging its
+  left or right edges, while in the main track-view. Shift+drag will also
+  time-stretch to the resulting audio clip length.
 
-- Another off-by-one mistake was corrected, which was causing audio
-  clips to go out-of-sync on loop turnover boundary; also changed
-  the loop turnaround strategy, now honoring already cached periods.
+- Another off-by-one mistake was corrected, which was causing audio clips
+  to go out-of-sync on loop turnover boundary; also changed the loop
+  turnaround strategy, now honoring already cached periods.
 
-- A race-condition has been mitigated in the audio-buffer thread,
-  that was exposed and lead to sudden application freezing upon
-  changing some composite audio clip commands.
+- A race-condition has been mitigated in the audio-buffer thread, that was
+  exposed and lead to sudden application freezing upon changing some
+  composite audio clip commands.
 
-- Take absolute audio peak values only, making peak files a little
-  bit shorter and hopefully faster to load and draw as waveforms.
+- Take absolute audio peak values only, making peak files a little bit
+  shorter and hopefully faster to load and draw as waveforms.
 
 
 0.0.9   2007-11-30  The Adolescence Prime
 
-- Drag-and-dropping of MIDI files without specific track or channel,
-  into existing tracks, is now rejected. The drop operation is now
-  allowed on the track-view blank area only, meaning the same as the
-  complete MIDI file import into session.
+- Drag-and-dropping of MIDI files without specific track or channel, into
+  existing tracks, is now rejected. The drop operation is now allowed on
+  the track-view blank area only, meaning the same as the complete MIDI
+  file import into session.
 
-- Record actual MIDI clip length to last play-head position,
-  instead of time of last event in the recorded sequence.
+- Record actual MIDI clip length to last play-head position, instead of
+  time of last event in the recorded sequence.
 
 - Connections item lists gets properly sorted, as intended.
 
-- Clear connection persistance once an explicit discconnection is
-  issued on any of the (intrinsic) bus ports.
+- Clear connection persistance once an explicit discconnection is issued
+  on any of the (intrinsic) bus ports.
 
-- MIDI output buses now get the panning slider to spit out some
-  GM system master balance (sysex) messages, being now enabled.
+- MIDI output buses now get the panning slider to spit out some GM system
+  master balance (sysex) messages, being now enabled.
 
-- Mouse hovering on the clip fade-in/out handles, while in the
-  main track-view, gets its long due cursor pointer feedback.
+- Mouse hovering on the clip fade-in/out handles, while in the main
+  track-view, gets its long due cursor pointer feedback.
 
-- Fixed a off-by-one boundary issue on MIDI clip event playback,
-  which were enqueuing duplicated MIDI events on every read-ahead
-  output thread processing cycle (1 sec).
+- Fixed a off-by-one boundary issue on MIDI clip event playback, which
+  were enqueuing duplicated MIDI events on every read-ahead output thread
+  processing cycle (1 sec).
 
 - Transport menu and toolbar are now featured on the MIDI Editor.
 
 - Use actual session name when asking to save changed session.
 
-- Transport loop setting keyboard shortcuts swapped: Ctrl+L will
-  set the loop immediately, and Shift+Ctrl+L will toggle on/off.
+- Transport loop setting keyboard shortcuts swapped: Ctrl+L will set the
+  loop immediately, and Shift+Ctrl+L will toggle on/off.
 
 - Changing MIDI event duration may now affect MIDI clip duration.
 
-- Alternate sharp-note color lines have returned to MIDI Editor
-  canvas, as was the shadow color marking the end of MIDI clip.
+- Alternate sharp-note color lines have returned to MIDI Editor canvas, as
+  was the shadow color marking the end of MIDI clip.
 
 
 0.0.8   2007-11-12  The Twelfth Tight
 
 - Bus context menu is now accessible from respective mixer strip.
 
-- Fixed a subtle crash-suicide issue when invoking the bus dialog
-  with a double-click over the corresponding mixer bus strip; also
-  fixed the sloppy ganguing mistake when changing mixer bus gain
-  (volume) and panning values.
+- Fixed a subtle crash-suicide issue when invoking the bus dialog with a
+  double-click over the corresponding mixer bus strip; also fixed the
+  sloppy ganguing mistake when changing mixer bus gain (volume) and panning
+  values.
 
 - MIDI Omni mode (sort of) makes its entrance as a new MIDI track
-  property, meaning that is now finally possible for the capture of
-  any unfiltered MIDI channel event, without regard to the current
-  channel assignment, which still applies for playback purposes.
+  property, meaning that is now finally possible for the capture of any
+  unfiltered MIDI channel event, without regard to the current channel
+  assignment, which still applies for playback purposes.
 
-- Audio (pass-)through has been also implemented, now being a common
-  and consistent property of both audio and MIDI buses, provided
-  those are set in duplex mode (input and output).
+- Audio (pass-)through has been also implemented, now being a common and
+  consistent property of both audio and MIDI buses, provided those are set
+  in duplex mode (input and output).
 
-- Re-touched follow-playhead and continue-past-end tool icons, again
-  to be a bit softer and not so bright as to hurt someones eyes.
+- Re-touched follow-playhead and continue-past-end tool icons, again to be
+  a bit softer and not so bright as to hurt someones eyes.
 
 
 0.0.7   2007-10-31  The Eleventh Tower
 
-- Suspend auto-follow-playhead while dragging or moving content over
-  the main track and midi editor views; re-touched follow-playhead
-  and new continue-past-end tool icons.
+- Suspend auto-follow-playhead while dragging or moving content over the
+  main track and midi editor views; re-touched follow-playhead and new
+  continue-past-end tool icons.
 
-- Playback is now forced complete full-stop whenever play-head goes
-  behind the current session length and/or loop-end and the newer
-  "continue past end" option is enabled from transport menu.
+- Playback is now forced complete full-stop whenever play-head goes behind
+  the current session length and/or loop-end and the newer "continue past
+  end" option is enabled from transport menu.
 
 - Tool/child windows position and size preservation fixed.
 
-- MIDI (pass-)through has been finally implemented, after several
-  kind requests, it applies as a property of duplex-mode MIDI buses;
-  this new setting is configurable from the View/Buses... dialog;
-  also from respective new input bus mixer-strip button; when enabled,
-  implies all incoming MIDI events at the input bus will pass-through
-  unchanged to the corresponding output bus, as found useful just for
-  direct monitoring one's performance without the help of any extra
-  circumvent or kludgy connections.
+- MIDI (pass-)through has been finally implemented, after several kind
+  requests, it applies as a property of duplex-mode MIDI buses; this new
+  setting is configurable from the View/Buses... dialog; also from
+  respective new input bus mixer-strip button; when enabled, implies all
+  incoming MIDI events at the input bus will pass-through unchanged to the
+  corresponding output bus, as found useful just for direct monitoring
+  one's performance without the help of any extra circumvent or kludgy
+  connections.
 
 - Mouse cursor shape changes accordingly while hovering in header
   time-scale rulers, both in main track-view and MIDI editor.
 
-- Track-view clipboard paste action has been refactored, with the
-  user interface consistent with the same functionality featured on
-  the MIDI editor: the clipboard selection being pasted now floats
-  at the mouse pointer and can be moved around before placed into
-  its final position, either with the mouse or keyboard arrow keys.
+- Track-view clipboard paste action has been refactored, with the user
+  interface consistent with the same functionality featured on the MIDI
+  editor: the clipboard selection being pasted now floats at the mouse
+  pointer and can be moved around before placed into its final position,
+  either with the mouse or keyboard arrow keys.
 
-- A unitialized member variable bug affecting all MIDI clips has
-  been discovered and squashed; this one has been lurking for quite
-  some time and was causing wrong clip editing results, specially
-  when tempo or meter differs between session and the MIDI file.
+- A unitialized member variable bug affecting all MIDI clips has been
+  discovered and squashed; this one has been lurking for quite some time
+  and was causing wrong clip editing results, specially when tempo or meter
+  differs between session and the MIDI file.
 
 - Keyboard step-moving is now allowed while pasting in MIDI editor.
 
-- Track-view clip selection can now be drag-moved into the void
-  (bottom) view area creating brand new tracks automagically.
+- Track-view clip selection can now be drag-moved into the void (bottom)
+  view area creating brand new tracks automagically.
 
 - Losing focus resets all current keyboard step-moves in progress,
   affecting the main track-view and all MIDI editor as well.
 
-- As done before on the MIDI editor, the main track-view current
-  selection may be step-wise moved using the keyboard arrow keys
-  and the enter/insert keys for final placement; horizontal step
-  movement is quantized according to current snap setting; vertical
-  key-step movement is only allowed to selected clips belonging to
-  one single and the same track.
+- As done before on the MIDI editor, the main track-view current selection
+  may be step-wise moved using the keyboard arrow keys and the enter
+  /insert keys for final placement; horizontal step movement is quantized
+  according to current snap setting; vertical key-step movement is only
+  allowed to selected clips belonging to one single and the same track.
 
 - Immediate session loop setting, accessible from the main menu.
 
 - Track properties dialog gets fixed again in its auto-size treat.
 
-- Another audio-buffer thread bug was scrubbed off, which was
-  causing spurious and audible garbage on certain loop workloads.
+- Another audio-buffer thread bug was scrubbed off, which was causing
+  spurious and audible garbage on certain loop workloads.
 
 
 0.0.6   2007-10-09  The Tenth Commencement
 
-- A bit more of precision is achieved over the metronome regular
-  ticking and both the audio and MIDI monitor meters.
+- A bit more of precision is achieved over the metronome regular ticking
+  and both the audio and MIDI monitor meters.
 
-- A rudimentary MIDI metronome is now in place; parameters, like
-  MIDI channel, bar and beat accent note, velocity and duration,
-  are readily configurable from the main menu, View/Options...
-  /MIDI/Metronome dialog.
+- A rudimentary MIDI metronome is now in place; parameters, like MIDI
+  channel, bar and beat accent note, velocity and duration, are readily
+  configurable from the main menu, View/Options... /MIDI/Metronome dialog.
 
-- Track properties dialog now gets tightly auto-sized, depending
-  whether its an audio or a MIDI track.
+- Track properties dialog now gets tightly auto-sized, depending whether
+  its an audio or a MIDI track.
 
-- MIDI clips are now auto-extendable when adding or moving events
-  beyond the clip length and while in the MIDI Editor, of course.
+- MIDI clips are now auto-extendable when adding or moving events beyond
+  the clip length and while in the MIDI Editor, of course.
 
-- MIDI editor current selection can now be step-wise moved using
-  the keyboard arrow keys and the enter/insert keys as for final
-  placement; horizontal step movement is subordinated to current
-  snap per beat setting, no less than unity; vertical step moves
-  are obviously quantized to the next semitone.
+- MIDI editor current selection can now be step-wise moved using the
+  keyboard arrow keys and the enter/insert keys as for final placement;
+  horizontal step movement is subordinated to current snap per beat
+  setting, no less than unity; vertical step moves are obviously quantized
+  to the next semitone.
 
-- Get configure to try and detect the correct qmake location and
-  insert it the search order, so let the qt4 tools take precedence
-  when --with-qt option is given and older qt3 ones coexist and
-  are found located ahead in the PATH.
+- Get configure to try and detect the correct qmake location and insert it
+  the search order, so let the qt4 tools take precedence when --with-qt
+  option is given and older qt3 ones coexist and are found located ahead
+  in the PATH.
 
-- Drifting correction on audio and MIDI engines was seriously
-  infected in some kind of snafu conception, as evidence lead
-  to even worse drifting being detected to much of great despair,
-  specially after recording and/or bouncing audio tracks from
-  MIDI sequenced material. Credit must certainly go to Christian
-  Schoenebeck on splatting this sloppy one on the face.
+- Drifting correction on audio and MIDI engines was seriously infected in
+  some kind of snafu conception, as evidence lead to even worse drifting
+  being detected to much of great despair, specially after recording
+  and/or bouncing audio tracks from MIDI sequenced material. Credit must
+  certainly go to Christian Schoenebeck on splatting this sloppy one on the
+  face.
 
-- MIDI editing actions while playing now get immediate feedback;
-  this was possible to some internal interface redesign of all
-  MIDI editor accessory classes, making the MIDI clip now being
-  the main editing target object instead of just the MIDI event
-  sequence as it was previously.
+- MIDI editing actions while playing now get immediate feedback; this was
+  possible to some internal interface redesign of all MIDI editor accessory
+  classes, making the MIDI clip now being the main editing target object
+  instead of just the MIDI event sequence as it was previously.
 
-- Simple as it could ever be, the build executive summary report
-  is now given on configure.
+- Simple as it could ever be, the build executive summary report is now
+  given on configure.
 
-- The internal decoded frame list for MPEG 1Audio Layer III (mp3)
-  audio files (ie. via libmad) has been made one-time cached as
-  global shared objects, benefitting from the fact that the list
-  is always completely (re)built during the peak file computation,
-  and thus speeding up all frame accurate access operations (seek)
-  over this specific audio file format.
+- The internal decoded frame list for MPEG 1Audio Layer III (mp3) audio
+  files (ie. via libmad) has been made one-time cached as global shared
+  objects, benefitting from the fact that the list is always completely
+  (re)built during the peak file computation, and thus speeding up all
+  frame accurate access operations (seek) over this specific audio file
+  format.
 
-- More eye-candy is sneaking in the MIDI editor: there's new view
-  options on the View menu: Note Color and Value Color, affecting
-  note event colors according to pitch and/or velocity.
+- More eye-candy is sneaking in the MIDI editor: there's new view options
+  on the View menu: Note Color and Value Color, affecting note event
+  colors according to pitch and/or velocity.
 
-- New view option on the MIDI editor: on menu View/Note Duration
-  switches whether events are shown proportional to their durations
-  or as simple vertical candlesticks.
+- New view option on the MIDI editor: on menu View/Note Duration switches
+  whether events are shown proportional to their durations or as simple
+  vertical candlesticks.
 
-- New snap-per-beat divisors are now available (Beat/3, 6, 12, 24
-  and 48), giving support for triplets for the very first time
-  (after a heads-up suggested  patch from Marko, thanks).
+- New snap-per-beat divisors are now available (Beat/3, 6, 12, 24 and 48),
+  giving support for triplets for the very first time (after a heads-up
+  suggested  patch from Marko, thanks).
 
 
 0.0.5   2007-09-08  The Ninth Hitch Nail
 
-- MIDI edit tools (quantize, transpose, normalize, randomize,
-  resize) are all functional and ready for experimentalism;
-  gets in its own top-level menu and form with named preset
-  store and recall functionality.
+- MIDI edit tools (quantize, transpose, normalize, randomize, resize) are
+  all functional and ready for experimentalism; gets in its own top-level
+  menu and form with named preset store and recall functionality.
 
 - Main form backward and rewind transport actions are now being
-  immediately enabled when playing from the session (zero-time)
-  start position.
+  immediately enabled when playing from the session (zero-time) start
+  position.
 
-- Audio and MIDI export sneaks in and in form and accessible
-  from the main Track menu.
+- Audio and MIDI export sneaks in and in form and accessible from the main
+  Track menu.
 
-- MIDI track channel is now properly set on session (re)load;
-  track background color changes was missing the alpha setting.
+- MIDI track channel is now properly set on session (re)load; track
+  background color changes was missing the alpha setting.
 
 - The mix-down buffering was fixed again, now taking multi-track
-  overlapping clips into consideration (was a lot more broken
-  since the recent glitch-looping fix).
+  overlapping clips into consideration (was a lot more broken since the
+  recent glitch-looping fix).
 
-- Dirty MIDI clip editing control has been fixed but still
-  somewhat hacky nevertheless.
+- Dirty MIDI clip editing control has been fixed but still somewhat hacky
+  nevertheless.
 
-- First attempt on solving a nasty MIDI editor bug, which was
-  quietly and severely crippling MIDI files while saving offset
-  edited clips.
+- First attempt on solving a nasty MIDI editor bug, which was quietly and
+  severely crippling MIDI files while saving offset edited clips.
 
 - Session loop (re)setting is finally now an undoable command.
 
-- Yet another insidious bug has been swept away from under the
-  carpet: once again on audio looping, some astonishing old and
-  crappy session cursor seek-backward statement was lurking to
-  be laid off. Gone now, simply as it is, growing old on this :)
+- Yet another insidious bug has been swept away from under the carpet:
+  once again on audio looping, some astonishing old and crappy session
+  cursor seek-backward statement was lurking to be laid off. Gone now,
+  simply as it is, growing old on this :)
 
-- A tremendous bug has been fixed: audio looping is now a little
-  more glitch-free as the mix-down buffering was badly broken
-  even since its primordial implementation. Rejoice.
+- A tremendous bug has been fixed: audio looping is now a little more
+  glitch-free as the mix-down buffering was badly broken even since its
+  primordial implementation. Rejoice.
 
-- Minor improvements on track-view cursor updates and visual
-  tracking while recording.
+- Minor improvements on track-view cursor updates and visual tracking
+  while recording.
 
-- MIDI editor windows get their keyboard accelerator/shortcuts
-  back in business, whether opted as tools always on top or not.
+- MIDI editor windows get their keyboard accelerator/shortcuts back in
+  business, whether opted as tools always on top or not.
 
-- The infamous "Keep tool windows always on top" global option
-  is now infecting the Connections, Mixer, Plugin and MIDI Editor
-  window instances with no probable regrets. To be used with
-  discretion, of course.
+- The infamous "Keep tool windows always on top" global option is now
+  infecting the Connections, Mixer, Plugin and MIDI Editor window
+  instances with no probable regrets. To be used with discretion, of
+  course.
 
 - Session update/initialization gets it clean on startup.
 
-- Range selection action (Ctrl+R) is now back in business with
-  the added bonus of being accessible from all MIDI editor
-  instances too.
+- Range selection action (Ctrl+R) is now back in business with the added
+  bonus of being accessible from all MIDI editor instances too.
 
-- Common edit-head and tail cursor positions are now under common
-  control and display from all MIDI editor instances; the session
-  loop-start/end points are now also shown on every time-line and
-  share the same control behavior across all MIDI editor instances.
+- Common edit-head and tail cursor positions are now under common control
+  and display from all MIDI editor instances; the session loop-start/end
+  points are now also shown on every time-line and share the same control
+  behavior across all MIDI editor instances.
 
 
 0.0.4   2007-07-19  The Eighth Wanderer
 
-- Main toolbar tempo spin-box gets loose from keyboard change
-  tracking (Qt >= 4.3); custom spin-box compilation fix for
-  Qt 4.1.
+- Main toolbar tempo spin-box gets loose from keyboard change tracking (Qt
+  >= 4.3); custom spin-box compilation fix for Qt 4.1.
 
-- Illusive but nasty Connections/Patchbay item tooltip crash bug
-  has been hopefully fixed (Qt >= 4.3); QComboBox::editTextChanged()
-  signal replaces old QComboBox::textChanged().
+- Illusive but nasty Connections/Patchbay item tooltip crash bug has been
+  hopefully fixed (Qt >= 4.3); QComboBox::editTextChanged() signal
+  replaces old QComboBox::textChanged().
 
-- Combo-box setup history has been corrected on restore, which
-  was discarding the very initial default (factory) contents.
+- Combo-box setup history has been corrected on restore, which was
+  discarding the very initial default (factory) contents.
 
-- Make debian package build depend on libqt4-dev; win32 console
-  flag is back to qmake project file.
+- Make debian package build depend on libqt4-dev; win32 console flag is
+  back to qmake project file.
 
-- MIDI instrument selection (e.g. on track form) gets fixed and
-  improved.
+- MIDI instrument selection (e.g. on track form) gets fixed and improved.
 
 - Sorting method for the connections port list has been refactored;
   potential crash bug fix on connections sorting method.
 
 - Messages class accessor methods constness fix.
 
-- Got rid of some autoconf redundand thingies on configure;
-  late debian changelog update.
+- Got rid of some autoconf redundand thingies on configure; late debian
+  changelog update.
 
 - Desktop categories update: AudioVideo.
 
@@ -2272,67 +2111,64 @@ SVN TRUNK
 
 0.0.3   2007-06-23  The Seventh Draught
 
-- Crash fix on the connections widget, was a matter of refactoring
-  the refresh/clear slots.
+- Crash fix on the connections widget, was a matter of refactoring the
+  refresh/clear slots.
 
-- Help menu added to MIDI editor form (redirected and same to main
-  form anyway).
+- Help menu added to MIDI editor form (redirected and same to main form
+  anyway).
 
-- Clip properties form gets its proper sanity check, querying any
-  existing clip editor whether its safe to apply the new settings.
+- Clip properties form gets its proper sanity check, querying any existing
+  clip editor whether its safe to apply the new settings.
 
 - Mixer sliders get their long due valued correction, hopefully.
 
-- Transport backward and play/stop are now made accessible from
-  the MIDI editor widget, through their keyboard accelerator
-  shortcuts (backspace and space, respectively).
+- Transport backward and play/stop are now made accessible from the MIDI
+  editor widget, through their keyboard accelerator shortcuts (backspace
+  and space, respectively).
 
-- Transport actions (play, rec, rew and ffwd) are now kept stable
-  on a single point, instead of being scattered all over the main
-  form code; transport visual feedback might get affected,
-  specially regarding the MMC processing.
+- Transport actions (play, rec, rew and ffwd) are now kept stable on a
+  single point, instead of being scattered all over the main form code;
+  transport visual feedback might get affected, specially regarding the
+  MMC processing.
 
-- Application icon is now officially installed
-  into ${prefix}/share/pixmaps.
+- Application icon is now officially installed into
+  ${prefix}/share/pixmaps.
 
 - Spec file is now a bit more openSUSE compliant; just made RPM
   requirements as exigent as the new debian ones.
 
-- Paste cursor is now properly preserved after leaving MIDI editor
-  views.
+- Paste cursor is now properly preserved after leaving MIDI editor views.
 
 - Amazingly why this was not spotted before, the main application
-  logo-icon has been downscaled to the 32x32 pixel standard icon
-  size.
+  logo-icon has been downscaled to the 32x32 pixel standard icon size.
 
-- MIDI clip editor clipboard gets singleton status and is now
-  shared on all MIDI editor instances. Similarly to the main
-  track-view, shift/ctrl-left-clicking on the MIDI editor views
-  sets the current session play-head position.
+- MIDI clip editor clipboard gets singleton status and is now shared on
+  all MIDI editor instances. Similarly to the main track-view,
+  shift/ctrl-left-clicking on the MIDI editor views sets the current
+  session play-head position.
 
 - A desktop entry file has been included on install, at last.
 
 - Clips in main track-view get more info in the form of tooltips.
 
-- Major rounding fix to time-scaling and most specially on all
-  those internal MIDI I/O methods.
+- Major rounding fix to time-scaling and most specially on all those
+  internal MIDI I/O methods.
 
-- Extended range selection from the time-ruler and key-list
-  headers is now possible by click-and-drag the mouse pointer.
+- Extended range selection from the time-ruler and key-list headers is now
+  possible by click-and-drag the mouse pointer.
 
-- Play-head cursor is now also displayed and/or set position
-  on all open MIDI clip editors time line view. As in the main
-  application form, a new local follow play-head option is also
-  featured on the MIDI editor view menu and toolbar.
+- Play-head cursor is now also displayed and/or set position on all open
+  MIDI clip editors time line view. As in the main application form, a new
+  local follow play-head option is also featured on the MIDI editor view
+  menu and toolbar.
 
-- All MIDI file save operations are now logged to main messages
-  and files are added to the main files list view.
+- All MIDI file save operations are now logged to main messages and files
+  are added to the main files list view.
 
 - Initial debianization.
 
-- MIDI capture/record file format (SMF Format 0 or 1) is now
-  an user option, introducing the new MIDI tab on the global
-  View/Options dialog.
+- MIDI capture/record file format (SMF Format 0 or 1) is now an user
+  option, introducing the new MIDI tab on the global View/Options dialog.
 
 - A bad old-time session cursor glitch has been apparently fixed.
 
@@ -2342,82 +2178,77 @@ SVN TRUNK
   making its way for a brand new command instance: the session-tempo
   command.
 
-- Changing the snap-per-beat combobox value on the main window
-  toolbar does not make it as an undoable command anymore.
+- Changing the snap-per-beat combobox value on the main window toolbar
+  does not make it as an undoable command anymore.
 
 - Long due MIDI clip editor integration has come to reality.
 
-- Major rewrite on the MIDI sequence file read/write methods,
-  in preparation to the coming MIDI clip editor.
+- Major rewrite on the MIDI sequence file read/write methods, in
+  preparation to the coming MIDI clip editor.
 
-- Status-bar session length label now gets rightly updated,
-  while extended recording, of course.
+- Status-bar session length label now gets rightly updated, while extended
+  recording, of course.
 
-- Clip properties fade-in/out lengths, gets their old due
-  constraints.
+- Clip properties fade-in/out lengths, gets their old due constraints.
 
-- Main transport time display is now an editable custom spin-box;
-  the Tempo (BPM) spin-box has seen new colors (green on black).
+- Main transport time display is now an editable custom spin-box; the
+  Tempo (BPM) spin-box has seen new colors (green on black).
 
-- Transport time display format option adds the new choice of
-  absolute frame number, alternative to previous time and BBT.
+- Transport time display format option adds the new choice of absolute
+  frame number, alternative to previous time and BBT.
 
-- The frame-time based spin-boxes, on the clip properties form,
-  were replaced with a new custom one, allowing for alternate
-  frame, time and bbt input/display formats.
+- The frame-time based spin-boxes, on the clip properties form, were
+  replaced with a new custom one, allowing for alternate frame, time and
+  bbt input/display formats.
 
 - Time-scale helper class has been introduced.
 
 
 0.0.2   2007-05-26  The Sixth Lord
 
-- Audio/MIDI connections gets slightly refactored, contributing
-  for whole robustness, specially in case of incidental engine
-  shutdown.
+- Audio/MIDI connections gets slightly refactored, contributing for whole
+  robustness, specially in case of incidental engine shutdown.
 
 - Mixer window gets a minimum default height bump.
 
 - Clip fade-in/out type changes have been properly fixed.
 
-- Complete refactoring of the command class pattern, making it
-  now derived from QObject and not having a reference to the
-  main form anymore.
+- Complete refactoring of the command class pattern, making it now derived
+  from QObject and not having a reference to the main form anymore.
 
-- Inoperative context menu event handler has been removed from
-  the track-view.
+- Inoperative context menu event handler has been removed from the
+  track-view.
 
-- MIDI sequence note-on event tracking now uses faster QHash
-  class, instead of original QMap.
+- MIDI sequence note-on event tracking now uses faster QHash class,
+  instead of original QMap.
 
-- Off-by-one bug fix on MIDI track write method, while parsing
-  co-incident note-on/off events in the wrong order and thus
-  leaving note events with an invalid (zero) duration; obviously
-  affecting MIDI recording in very special circumstances.
+- Off-by-one bug fix on MIDI track write method, while parsing co-incident
+  note-on/off events in the wrong order and thus leaving note events with
+  an invalid (zero) duration; obviously affecting MIDI recording in very
+  special circumstances.
 
-- Minor and rather innocuous drop at this time in the MIDI event
-  class structure: the flags member field.
+- Minor and rather innocuous drop at this time in the MIDI event class
+  structure: the flags member field.
 
-- Port connections now get their lines correctly drawn; strangely
-  enough, the connection lines were being painted only for the
-  parent client items, probably since the Qt4 migration (aka.
-  Halloween files).
+- Port connections now get their lines correctly drawn; strangely enough,
+  the connection lines were being painted only for the parent client
+  items, probably since the Qt4 migration (aka. Halloween files).
 
-- Early clip editing is in place (clip name, start, offset and
-  length parameters, fade in/out length and type).
+- Early clip editing is in place (clip name, start, offset and length
+  parameters, fade in/out length and type).
 
-- Some menu item text capitalizations.
+- Some menu item text capitalization.
 
 
 0.0.1   2007-05-07  The Filthy Fifth
 
-- Newer JACK 0.105.0 seems to bitch, probably correctly, about the
-  return value of the process callback. Make it to bitch no more by
-  ensuring the JACK client is always issuing the innocuous 0 (zero)
-  return value.
+- Newer JACK 0.105.0 seems to bitch, probably correctly, about the return
+  value of the process callback. Make it to bitch no more by ensuring the
+  JACK client is always issuing the innocuous 0 (zero) return value.
 
 - Important fixes have been issued, affecting MIDI recording: MIDI
   sequence zero-time event insertion; MIDI file pending note-off
-  processing on write-track method.
+  processing  on write-track method.
 
 - Qt4 migration complete.
 

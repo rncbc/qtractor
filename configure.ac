@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.1.48, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.2, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -83,7 +83,7 @@ AC_ARG_ENABLE(lilv,
 AC_ARG_ENABLE(suil,
   AC_HELP_STRING([--enable-suil], [enable SUIL interface support (default=no)]),
   [ac_suil="$enableval"],
-  [ac_suil="no"])
+  [ac_suil="yes"])
 
 # Enable SSE optimization.
 AC_ARG_ENABLE(sse,
@@ -194,6 +194,17 @@ AC_ARG_ENABLE(gradient,
 AC_ARG_ENABLE(stacktrace,
   AC_HELP_STRING([--enable-stacktrace], [enable debugger stack-trace (default=no)]),
   [ac_stacktrace="$enableval"])
+
+
+# Check for new alternative to SLV2 is disabled.
+if test "x$ac_lv2" = "xno"; then
+   ac_slv2="no"
+   ac_lilv="no"
+   ac_suil="no"
+elif test "x$ac_slv2" = "xno"; then
+   ac_lilv="yes"
+   ac_suil="yes"
+fi
 
 
 # Standard installation base dirs.
@@ -592,7 +603,6 @@ if test "x$ac_lilv" = "xyes"; then
       ac_libs="$ac_libs $ac_lilv_libs"
       AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
       ac_slv2="no"
-	  ac_suil="yes"
    else
       AC_MSG_WARN([*** lilv library not found.])
       ac_slv2="yes"
@@ -612,6 +622,8 @@ if test "x$ac_slv2" = "xyes"; then
    if test -n "$ac_slv2_libs"; then
       ac_libs="$ac_libs $ac_slv2_libs"
       AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
+      ac_lilv="no"
+      ac_suil="no"
    else
       AC_MSG_WARN([*** slv2 library not found.])
       AC_MSG_WARN([*** LV2 plugin support will be disabled.])

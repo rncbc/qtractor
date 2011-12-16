@@ -51,6 +51,7 @@ Features
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support.
 - Unlimited audio effect send/return inserts per track or bus.
+- Loop-recording/takes.
 - Audio/MIDI clip fade-in/out (linear, quadratic, cubic).
 - Audio/MIDI clip gain/volume, normalize, export.
 - Audio/MIDI track and plugin parameter automation (dynamic curves,
