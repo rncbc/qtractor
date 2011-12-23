@@ -3,6 +3,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- All plugin parameters automation and selection were left inaccessible
+  until the generic native plugin dialog is eventually shown, now fixed
+  (re. bug #3463916).
+
+
 0.5.2  2011-12-16  Charlie X-ray
 
 - Fixed a probably old lurking destructive bug, which was incidental to
