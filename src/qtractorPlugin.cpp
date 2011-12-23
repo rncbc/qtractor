@@ -1958,6 +1958,8 @@ void qtractorPluginParam::Observer::update (void)
 	qtractorPlugin *pPlugin = m_pParam->plugin();
 	if (pPlugin->directAccessParamIndex() == long(m_pParam->index()))
 		pPlugin->updateDirectAccessParam();
+
+	pPlugin->updateParam(m_pParam, qtractorMidiControlObserver::value());
 }
 
 
