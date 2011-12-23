@@ -1041,7 +1041,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_slv2_ui_instance(NULL)
 	#endif
 		, m_lv2_ui_widget(NULL)
-    #ifdef CONFIG_LIBSLV2
+	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
 		, m_pGtkWindow(NULL)
 	#endif

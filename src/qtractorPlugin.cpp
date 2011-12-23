@@ -1946,6 +1946,7 @@ void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
 qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
 	: qtractorMidiControlObserver(pParam->subject()), m_pParam(pParam)
 {
+	setCurveList((pParam->plugin())->list()->curveList());
 }
 
 

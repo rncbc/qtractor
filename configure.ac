@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.2, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.2.1, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -655,10 +655,16 @@ if test "x$ac_suil" = "xyes"; then
    else
       AC_MSG_WARN([*** suil library not found.])
       ac_suil="no"
-      ac_lv2_qt4_ui="no"
+	  ac_lv2_gtk_ui="no"
+	  ac_lv2_qt4_ui="no"
+	  ac_lv2_external_ui="no"
    fi
 else
    ac_lv2_qt4_ui="no"
+   if test "x$ac_lilv" = "xyes"; then
+	  ac_lv2_gtk_ui="no"
+	  ac_lv2_external_ui="no"
+   fi
 fi
 
 # Check for either LV2 host library (libslv2 or liblilv).
