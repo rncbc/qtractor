@@ -124,7 +124,7 @@ static XEventProc getXEventProc ( Display *pDisplay, Window w )
 	XGetWindowProperty(pDisplay, w, aName, 0, 1, false,
 		AnyPropertyType, &aType,  &iSize, &iCount, &iBytes, &pData);
 	if (g_bXError == false && iCount == 1)
-		eventProc = (XEventProc) (*(int *) pData);
+		eventProc = (XEventProc) (pData);
 	XSetErrorHandler(oldErrorHandler);
 
 	return eventProc;
