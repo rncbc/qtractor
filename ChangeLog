@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Get maximum and minimum peak values back when drawing audio waveforms.
+
 - Automation play/feedback has been missed to show on those plugins that
   provide their own GUI, now on par with all the rest 'homebrew' widgets
   (eg. generic plugin properties dialog).

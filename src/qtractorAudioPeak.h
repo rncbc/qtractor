@@ -66,6 +66,7 @@ public:
 	struct Frame
 	{
 		unsigned char max;
+		unsigned char min;
 		unsigned char rms;
 	};
 
@@ -119,6 +120,7 @@ private:
 	unsigned long  m_iWriteOffset;
 
 	float         *m_peakMax;
+	float         *m_peakMin;
 	float         *m_peakRms;
 	unsigned short m_iPeakPeriod;
 	unsigned short m_iPeak;
