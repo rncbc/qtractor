@@ -2286,14 +2286,12 @@ qtractorClip *qtractorTrackView::currentClip (void) const
 	if (pClip == NULL && isClipSelected())
 		pClip = m_pClipSelect->items().constBegin().key();
 
-	if (pClip == NULL && m_pSessionCursor) {
-		int iTrack = m_pTracks->trackList()->currentTrackRow();
-		if (iTrack >= 0) {
-			qtractorSession *pSession = qtractorSession::getInstance();
-			if (pSession) {
-				m_pSessionCursor->seek(pSession->playHead());
-				pClip = m_pSessionCursor->clip(iTrack);
-			}
+	if (pClip == NULL) {
+		qtractorTrack *pTrack = m_pTracks->trackList()->currentTrack();
+		if (pTrack) {
+			pClip = pTrack->clips().first();
+			while (pClip && m_iPlayHead > pClip->clipStart() + pClip->clipLength())
+				pClip = pClip->next();
 		}
 	}
 
