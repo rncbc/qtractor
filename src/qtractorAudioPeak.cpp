@@ -50,11 +50,6 @@ static const unsigned short c_iPeakPeriod = 1024;
 // Default peak filename extension.
 static const QString c_sPeakFileExt = ".peak";
 
-#ifdef QTRACTOR_PEAK_SMOOTHED
-// Fixed peak smoothing coeficient (exponential average).
-static const float c_fPeakExpCoef = 0.5f;
-#endif
-
 
 //----------------------------------------------------------------------
 // class qtractorAudioPeakThread -- Audio Peak file thread.
@@ -379,6 +374,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	m_iWriteOffset = 0;
 
 	m_peakMax      = NULL;
+	m_peakMin      = NULL;
 	m_peakRms      = NULL;
 	m_iPeakPeriod  = 0;
 	m_iPeak        = 0;
@@ -671,19 +667,11 @@ bool qtractorAudioPeakFile::openWrite (
 	//	Go ahead, it's already open.
 	m_iWriteOffset = 0;
 
-#ifdef QTRACTOR_PEAK_SMOOTHED
-	m_peakMax = new float [2 * m_peakHeader.channels];
-	m_peakRms = new float [2 * m_peakHeader.channels];
-	for (unsigned short i = 0; i < m_peakHeader.channels; ++i) {
-		m_peakMax[i] = m_peakMax[i + m_peakHeader.channels] = 0.0f;
-		m_peakRms[i] = m_peakRms[i + m_peakHeader.channels] = 0.0f;
-	}
-#else
 	m_peakMax = new float [m_peakHeader.channels];
+	m_peakMin = new float [m_peakHeader.channels];
 	m_peakRms = new float [m_peakHeader.channels];
 	for (unsigned short i = 0; i < m_peakHeader.channels; ++i)
-		m_peakMax[i] = m_peakRms[i] = 0.0f;
-#endif
+		m_peakMax[i] = m_peakMin[i] = m_peakRms[i] = 0.0f;
 
 	m_iPeakPeriod = c_iPeakPeriod;
 	m_iPeak = 0;
@@ -720,6 +708,10 @@ void qtractorAudioPeakFile::closeWrite (void)
 		delete [] m_peakMax;
 	m_peakMax = NULL;
 
+	if (m_peakMin)
+		delete [] m_peakMin;
+	m_peakMin = NULL;
+
 	if (m_peakRms)
 		delete [] m_peakRms;
 	m_peakRms = NULL;
@@ -743,10 +735,10 @@ void qtractorAudioPeakFile::write (
 		// Accumulate for this sample frame...
 		for (unsigned short i = 0; i < m_peakHeader.channels; ++i) {
 			float fSample = ppAudioFrames[i][n];
-			if (fSample < 0.0f) // Take absolute value...
-				fSample = -(fSample);
 			if (m_peakMax[i] < fSample)
 				m_peakMax[i] = fSample;
+			if (m_peakMin[i] > fSample)
+				m_peakMin[i] = fSample;
 			m_peakRms[i] += (fSample * fSample);
 		}
 		// Have we reached the peak accumulative period?
@@ -763,25 +755,15 @@ void qtractorAudioPeakFile::writeFrame (void)
 
 	for (unsigned short i = 0; i < m_peakHeader.channels; ++i) {
 		Frame frame;
-#ifdef QTRACTOR_PEAK_SMOOTHED
-		// Write the smoothed peak maximum and RMS value...
-		unsigned short k = i + m_peakHeader.channels;
-		m_peakMax[k] = (1.0f - c_fPeakExpCoef) * m_peakMax[k]
-			+ c_fPeakExpCoef * 255.0f * m_peakMax[i];
-		frame.max = (unsigned char) (m_peakMax[k] > 255.0f ? 255 : m_peakMax[k]);
-		m_peakRms[k] = (1.0f - c_fPeakExpCoef) * m_peakRms[k]
-			+ c_fPeakExpCoef * 255.0f * (::sqrtf(m_peakRms[i] / float(m_iPeak)));
-		frame.rms = (unsigned char) (m_peakRms[k] > 255.0f ? 255 : m_peakRms[k]);
-#else
 		// Write the denormalized peak values...
-		m_peakMax[i] = 255.0f * m_peakMax[i];
+		m_peakMax[i] = 255.0f * ::fabs(m_peakMax[i]);
+		m_peakMin[i] = 255.0f * ::fabs(m_peakMin[i]);
 		m_peakRms[i] = 255.0f * ::sqrtf(m_peakRms[i] / float(m_iPeak));
 		frame.max = (unsigned char) (m_peakMax[i] > 255.0f ? 255 : m_peakMax[i]);
+		frame.min = (unsigned char) (m_peakMin[i] > 255.0f ? 255 : m_peakMin[i]);
 		frame.rms = (unsigned char) (m_peakRms[i] > 255.0f ? 255 : m_peakRms[i]);
-#endif
 		// Reset peak period accumulators...
-		m_peakMax[i] = 0.0f;
-		m_peakRms[i] = 0.0f;
+		m_peakMax[i] = m_peakMin[i] = m_peakRms[i] = 0.0f;
 		// Bail out?...
 		m_iWriteOffset += m_peakFile.write((const char *) &frame, sizeof(Frame));
 	}

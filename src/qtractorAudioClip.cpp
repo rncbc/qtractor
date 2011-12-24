@@ -499,7 +499,7 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	int h1 = (clipRect.height() / iChannels);
 	int h2 = (h1 >> 1);
 	int h2gain = (h2 * m_fractGain.num); 
-	int ymax, yrms;
+	int ymax, ymin, yrms;
 	unsigned int n, n2;
 	int x, y;
 
@@ -513,9 +513,10 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 			y = clipRect.y() + h2;
 			for (i = 0; i < iChannels; ++i) {
 				ymax = (h2gain * pframes->max) >> m_fractGain.den;
+				ymin = (h2gain * pframes->min) >> m_fractGain.den;
 				yrms = (h2gain * pframes->rms) >> m_fractGain.den;
 				pPolyMax[i]->setPoint(n, x, y + ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
+				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymin);
 				pPolyRms[i]->setPoint(n, x, y + yrms);
 				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
 				y += h1; ++pframes;
@@ -526,26 +527,31 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 		// - trade (2) pixels for peak-frames (expensiver).
 		int x2, k = 0;
 		unsigned int n0 = 0;
-		unsigned char v, vmax, vrms;
+		unsigned char v, vmax, vmin, vrms;
 		for (x2 = 0; x2 < clipRect.width(); x2 += 2) {
 			x = clipRect.x() + x2;
 			y = clipRect.y() + h2;
 			n = (iChannels * x2 * nframes) / clipRect.width();
 			for (i = 0; i < iChannels; ++i) {
 				vmax = pframes[n + i].max;
+				vmin = pframes[n + i].min;
 				vrms = pframes[n + i].rms;;
 				for (n2 = n0 + i; n2 < n + i; n2 += iChannels) {
 					v = pframes[n2].max;
 					if (vmax < v)
 						vmax = v;
+					v = pframes[n2].min;
+					if (vmin < v)
+						vmin = v;
 					v = pframes[n2].rms;
 					if (vrms < v)
 						vrms = v;
 				}
 				ymax = (h2gain * vmax) >> m_fractGain.den;
+				ymin = (h2gain * vmin) >> m_fractGain.den;
 				yrms = (h2gain * vrms) >> m_fractGain.den;
 				pPolyMax[i]->setPoint(k, x, y + ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - k - 1, x, y - ymax);
+				pPolyMax[i]->setPoint(iPolyPoints - k - 1, x, y - ymin);
 				pPolyRms[i]->setPoint(k, x, y + yrms);
 				pPolyRms[i]->setPoint(iPolyPoints - k - 1, x, y - yrms);
 				y += h1;
