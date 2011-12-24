@@ -3761,14 +3761,16 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	else
 	// Determine horizontal step...
 	if (iKey == Qt::Key_Left || iKey == Qt::Key_Right)  {
-		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
-		if (iSnapPerBeat < 1)
-			iSnapPerBeat = 1;
+		int iHorizontalStep = 0;
 		int x0 = m_posDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
 		int x1 = x0 + m_posStep.x();
 		qtractorTimeScale::Cursor cursor(m_pTimeScale);
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
-		int iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
+		if (iSnapPerBeat > 0)
+			iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		if (iHorizontalStep < 1)
+			iHorizontalStep = 1;
 		if (iKey == Qt::Key_Left)
 			x1 -= iHorizontalStep;
 		else

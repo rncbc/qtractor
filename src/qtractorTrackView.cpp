@@ -2286,6 +2286,17 @@ qtractorClip *qtractorTrackView::currentClip (void) const
 	if (pClip == NULL && isClipSelected())
 		pClip = m_pClipSelect->items().constBegin().key();
 
+	if (pClip == NULL && m_pSessionCursor) {
+		int iTrack = m_pTracks->trackList()->currentTrackRow();
+		if (iTrack >= 0) {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				m_pSessionCursor->seek(pSession->playHead());
+				pClip = m_pSessionCursor->clip(iTrack);
+			}
+		}
+	}
+
 	return pClip;
 }
 
@@ -3055,14 +3066,16 @@ bool qtractorTrackView::keyStep ( int iKey )
 	else
 	// Determine horizontal step...
 	if (iKey == Qt::Key_Left || iKey == Qt::Key_Right)  {
-		unsigned short iSnapPerBeat = pSession->snapPerBeat();
-		if (iSnapPerBeat < 1)
-			iSnapPerBeat = 1;
+		int iHorizontalStep = 0;
 		int x0 = m_posDrag.x();
 		int x1 = x0 + m_posStep.x();
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
-		int iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		unsigned short iSnapPerBeat = pSession->snapPerBeat();
+		if (iSnapPerBeat > 0)
+			iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		if (iHorizontalStep < 1)
+			iHorizontalStep = 1;
 		if (iKey == Qt::Key_Left)
 			x1 -= iHorizontalStep;
 		else
