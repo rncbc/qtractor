@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Attempt to get any brand new LV2 plugins Qt4 enabled UI's working on
+  either slv2 and lilv build modes ;) (nailed by falkTX, thanks).
+
 - Current clip is ultimately inferred from the one under the play-head
   position and current selected track; the last one clicked over and/or
   selected still has precedence (following request by Loiugi Verona).
