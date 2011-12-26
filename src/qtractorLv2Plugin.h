@@ -329,13 +329,11 @@ protected:
 #endif
 #endif
 
-#ifdef CONFIG_LIBSUIL
 #ifdef CONFIG_LV2_QT4_UI
-	// Our own Qt4 UI widget (QX11EmebedContainer).
+	// Our own Qt4 UI widget (native).
 	class EventFilter;
 	EventFilter *m_pQt4Filter;
 	QWidget     *m_pQt4Widget;
-#endif
 #endif
 
 #endif	// CONFIG_LV2_UI
