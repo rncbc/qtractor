@@ -1461,7 +1461,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (descriptor == NULL)
 		return;
 
-	m_aEditorTitle = editorTitle().toUtf8();
+	updateEditorTitle();
 
 	int iFeatures = 0;
 	while (m_lv2_features[iFeatures]) { ++iFeatures; }
@@ -1765,7 +1765,9 @@ void qtractorLv2Plugin::closeEditorEx (void)
 #ifdef CONFIG_LV2_QT4_UI
 	if (m_pQt4Widget) {
 		m_pQt4Widget = NULL;	
+	#ifdef CONFIG_LIBSUIL
 		lv2_ui_cleanup();
+	#endif
 		setEditorClosed(true);
 	}
 #endif
@@ -1827,28 +1829,27 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 {
 	qtractorPlugin::setEditorTitle(sTitle);
 
-	if (m_lv2_ui_features) {
-		m_aEditorTitle = sTitle.toUtf8();
-	#ifdef CONFIG_LV2_EXTERNAL_UI
-		m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
-	#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
-		m_lv2_ui_external_deprecated_host.plugin_human_id = m_aEditorTitle.constData();
-	#endif
-	#endif
-	#ifdef CONFIG_LIBSLV2
-	#ifdef CONFIG_LV2_GTK_UI
-		if (m_pGtkWindow) {
-			gtk_window_set_title(
-				GTK_WINDOW(m_pGtkWindow),
-				m_aEditorTitle.constData());
-		}
-	#endif
-	#endif
-	#ifdef CONFIG_LV2_QT4_UI
-		if (m_pQt4Widget)
-			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
-	#endif
+	m_aEditorTitle = editorTitle().toUtf8();
+
+#ifdef CONFIG_LV2_EXTERNAL_UI
+	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+	m_lv2_ui_external_deprecated_host.plugin_human_id = m_aEditorTitle.constData();
+#endif
+#endif
+#ifdef CONFIG_LIBSLV2
+#ifdef CONFIG_LV2_GTK_UI
+	if (m_pGtkWindow) {
+		gtk_window_set_title(
+			GTK_WINDOW(m_pGtkWindow),
+			m_aEditorTitle.constData());
 	}
+#endif
+#endif
+#ifdef CONFIG_LV2_QT4_UI
+	if (m_pQt4Widget)
+		m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
+#endif
 }
 
 

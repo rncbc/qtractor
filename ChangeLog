@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed initial LV2 plugin UI widget/window titles.
+
 - Attempt to get any brand new LV2 plugins Qt4 enabled UI's working on
   either slv2 and lilv build modes ;) (nailed by falkTX, thanks).
 
