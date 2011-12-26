@@ -60,9 +60,11 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#ifdef CONFIG_LIBSLV2
 #ifdef CONFIG_LV2_GTK_UI
 #undef signals // Collides with GTK symbology
 #include <gtk/gtk.h>
+#endif
 #endif
 
 #ifdef CONFIG_XUNIQUE
@@ -355,8 +357,10 @@ int main ( int argc, char **argv )
 	}
 #endif
 #endif
+#ifdef CONFIG_LIBSLV2
 #ifdef CONFIG_LV2_GTK_UI
 	gtk_init(&argc, &argv);
+#endif
 #endif
 #endif
 	qtractorApplication app(argc, argv);

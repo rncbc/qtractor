@@ -942,17 +942,19 @@ fi
 if test "x$ac_lv2_qt4_ui" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_QT4_UI, 1, [Define if LV2 QT4 UI support is available.])
 fi
-if test "x$ac_lv2_gtk_ui" = "xyes"; then
+if test "x$ac_lv2_gtk_ui" = "xyes" -a "x$ac_suil" = "xno"; then
    ac_gtk_cflags=`$ac_pkg_config --cflags gtk+-2.0 2>/dev/null`
    ac_gtk_libs=`$ac_pkg_config --libs gtk+-2.0 2>/dev/null`
    if test -n "$ac_gtk_cflags" -a -n "$ac_gtk_libs"; then
       ac_cflags="$ac_cflags $ac_gtk_cflags"
       ac_libs="$ac_libs $ac_gtk_libs"
-	  AC_DEFINE(CONFIG_LV2_GTK_UI, 1, [Define if LV2 GTK UI support is available.])
    else
-      AC_MSG_WARN([*** LV2 GTK UI extension will be disabled.])
+      AC_MSG_WARN([*** LV2 GTK UI support will be disabled.])
       ac_lv2_gtk_ui="no"
    fi
+fi
+if test "x$ac_lv2_gtk_ui" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_GTK_UI, 1, [Define if LV2 GTK UI support is available.])
 fi
 if test "x$ac_lv2_external_ui" = "xyes"; then
    AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h lv2_data_access.h lv2_instance_access.h,
