@@ -1765,9 +1765,7 @@ void qtractorLv2Plugin::closeEditorEx (void)
 #ifdef CONFIG_LV2_QT4_UI
 	if (m_pQt4Widget) {
 		m_pQt4Widget = NULL;	
-	#ifdef CONFIG_LIBSUIL
-		lv2_ui_cleanup();
-	#endif
+	//	lv2_ui_cleanup();
 		setEditorClosed(true);
 	}
 #endif
@@ -1928,14 +1926,12 @@ void qtractorLv2Plugin::lv2_ui_cleanup (void) const
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_cleanup()", this);
 #endif
 
-#ifdef CONFIG_LIBSLV2
 	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
 	if (ui_descriptor && ui_descriptor->cleanup) {
 		LV2UI_Handle ui_handle = lv2_ui_handle();
 		if (ui_handle)
 			(*ui_descriptor->cleanup)(ui_handle);
 	}
-#endif
 }
 
 #endif	// CONFIG_LV2_UI
