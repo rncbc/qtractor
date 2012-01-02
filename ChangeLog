@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- MIDI Tools/Resize value ramp mode has been added (mocking the 'resize
+  to range' feature request #3467894, by Daniel MacDonald aka. danboid).
+
+
 0.5.3  2011-12-28  Delta Whisky
 
 - Fixed initial LV2 plugin UI widget/window titles.

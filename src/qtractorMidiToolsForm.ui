@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -791,7 +791,7 @@
        <string>Resi&amp;ze</string>
       </attribute>
       <layout class="QGridLayout">
-       <item row="0" column="0" colspan="6">
+	   <item row="0" column="0" colspan="7">
         <widget class="QCheckBox" name="ResizeCheckBox">
          <property name="font">
           <font>
@@ -843,7 +843,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="4">
+	   <item row="1" column="4" colspan="2">
         <widget class="QComboBox" name="ResizeFormatComboBox">
          <property name="toolTip">
           <string>Resize duration format</string>
@@ -870,7 +870,7 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="5">
+	   <item row="1" column="6">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -890,7 +890,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
+	   <item row="2" column="2">
         <widget class="QSpinBox" name="ResizeValueSpinBox">
          <property name="minimumSize">
           <size>
@@ -899,18 +899,51 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Resize value</string>
+		  <string>Resize value</string>
          </property>
          <property name="maximum">
           <number>127</number>
          </property>
         </widget>
        </item>
-       <item row="2" column="3" colspan="3">
+	   <item row="2" column="3">
+		<widget class="QComboBox" name="ResizeValue2ComboBox">
+		 <property name="toolTip">
+		  <string>Resize value mode</string>
+		 </property>
+		 <item>
+		  <property name="text">
+		   <string>Flat</string>
+		  </property>
+		 </item>
+		 <item>
+		  <property name="text">
+		   <string>Ramp</string>
+		  </property>
+		 </item>
+		</widget>
+	   </item>
+	   <item row="2" column="4">
+        <widget class="QSpinBox" name="ResizeValue2SpinBox">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip">
+		  <string>Resize final value</string>
+         </property>
+         <property name="maximum">
+          <number>127</number>
+         </property>
+        </widget>
+       </item>
+	   <item row="2" column="5" colspan="2">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
+		 </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>16</width>
@@ -1100,7 +1133,7 @@
        <string>T&amp;imeshift</string>
       </attribute>
       <layout class="QGridLayout">
-       <item row="0" column="0" colspan="3">
+	   <item row="0" column="0" colspan="5">
         <widget class="QCheckBox" name="TimeshiftCheckBox">
          <property name="font">
           <font>
@@ -1319,6 +1352,8 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>ResizeFormatComboBox</tabstop>
   <tabstop>ResizeValueCheckBox</tabstop>
   <tabstop>ResizeValueSpinBox</tabstop>
+  <tabstop>ResizeValue2ComboBox</tabstop>
+  <tabstop>ResizeValue2SpinBox</tabstop>
   <tabstop>RescaleCheckBox</tabstop>
   <tabstop>RescaleTimeCheckBox</tabstop>
   <tabstop>RescaleTimeSpinBox</tabstop>
