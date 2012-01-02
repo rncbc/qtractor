@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -339,6 +339,12 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	QObject::connect(m_ui.ResizeValueSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ResizeValue2ComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeValue2SpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 
 	QObject::connect(m_ui.RescaleCheckBox,
 		SIGNAL(toggled(bool)),
@@ -515,6 +521,11 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.ResizeDurationCheckBox->setChecked(vlist[3].toBool());
 			m_ui.ResizeDurationSpinBox->setValue(vlist[4].toUInt());
 		}
+		// Resize value mode tool...
+		if (vlist.count() > 6) {
+			m_ui.ResizeValue2ComboBox->setCurrentIndex(vlist[5].toInt());
+			m_ui.ResizeValue2SpinBox->setValue(vlist[6].toInt());
+		}
 		// Rescale tool...
 		vlist = settings.value("/Rescale").toList();
 		if (vlist.count() > 6) {
@@ -604,6 +615,8 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.ResizeValueSpinBox->value());
 		vlist.append(m_ui.ResizeDurationCheckBox->isChecked());
 		vlist.append((unsigned int) m_ui.ResizeDurationSpinBox->value());
+		vlist.append(m_ui.ResizeValue2ComboBox->currentIndex());
+		vlist.append(m_ui.ResizeValue2SpinBox->value());
 		settings.setValue("/Resize", vlist);
 		// Rescale tool...
 		vlist.clear();
@@ -753,15 +766,32 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	const qtractorMidiEditSelect::ItemList& items = pSelect->items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 
-	// First scan pass for the normalize tool:
-	// find maximum value from the selection...
+	// Seed time range with a value from the list of selected events.
+	long iMinTime = 0;
+	long iMaxTime = 0;
+	if (pSelect->anchorEvent())
+		iMinTime = iMaxTime = pSelect->anchorEvent()->time();
+
+	// First scan pass for the normalize and resize value ramp tools:
+	// find maximum and minimum times and values from the selection...
 	int iMaxValue = 0;
-	if (m_ui.NormalizeCheckBox->isChecked()) {
+	int iMinValue = 0;
+	if (m_ui.NormalizeCheckBox->isChecked()
+		|| (m_ui.ResizeCheckBox->isChecked() &&
+			m_ui.ResizeValueCheckBox->isChecked() &&
+			m_ui.ResizeValue2ComboBox->currentIndex() > 0)) {
 		// Make it through one time...
-		for ( ; iter != items.constEnd(); ++iter) {
+		for (int i = 0 ; iter != items.constEnd(); ++i, ++iter) {
 			qtractorMidiEvent *pEvent = iter.key();
+			long iTime = pEvent->time();
+			if (iMinTime > iTime || i == 0)
+				iMinTime = iTime;
+			if (iMaxTime < iTime)
+				iMaxTime = iTime;
 			bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
 			int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
+			if (iMinValue > iValue || i == 0)
+				iMinValue = iValue;
 			if (iMaxValue < iValue)
 				iMaxValue = iValue;
 		}
@@ -769,11 +799,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		iter = items.constBegin();
 	}
 
-	// Seed minimum-time with a value from the list of selected events.
-	long iMinTime = 0;
-	if (pSelect->anchorEvent())
-		iMinTime = pSelect->anchorEvent()->time();
-
+	// Go for the main pass...
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 
 	for ( ; iter != items.constEnd(); ++iter) {
@@ -967,6 +993,14 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			if (m_ui.ResizeValueCheckBox->isChecked()) {
 				iValue = m_ui.ResizeValueSpinBox->value();
 				if (bPitchBend) iValue <<= 6; // WTF?
+				if (m_ui.ResizeValue2ComboBox->currentIndex() > 0) {
+					int iValue2 = m_ui.ResizeValue2SpinBox->value();
+					if (bPitchBend) iValue2 <<= 6;
+					int iDeltaValue = iValue2 - iValue;
+					long iDeltaTime = iMaxTime - iMinTime;
+					if (iDeltaTime > 0)
+						iValue += iDeltaValue * (iTime - iMinTime) / iDeltaTime;
+				}
 				pEditCommand->resizeEventValue(pEvent, iValue);
 			}
 		}
@@ -1013,7 +1047,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				= pSession->tickFromFrame(pSession->editHead()) - iTimeOffset;
 			unsigned long iEditTailTime
 				= pSession->tickFromFrame(pSession->editTail()) - iTimeOffset;
-			float d = float(iEditTailTime - iEditHeadTime);
+					float d = float(iEditTailTime - iEditHeadTime);
 			float p = float(m_ui.TimeshiftSpinBox->value());
 			if ((p < -1e-6f || p > 1e-6f) && (d > 0.0f)) {
 				float t  = float(iTime - iEditHeadTime);
@@ -1217,6 +1251,9 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		++iEnabled;
 	m_ui.ResizeValueSpinBox->setEnabled(bEnabled2);
+	if (bEnabled2)
+		bEnabled2 = (m_ui.ResizeValue2ComboBox->currentIndex() > 0);
+	m_ui.ResizeValue2SpinBox->setEnabled(bEnabled2);
 
 	// Rescale tool...
 
