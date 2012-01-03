@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip overlapping detection off-by-one(-frame) fix.
+
 - MIDI Tools/Resize value ramp mode has been added (mocking the 'resize
   to range' feature request #3467894, by Daniel MacDonald aka. danboid).
 
