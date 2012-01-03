@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1428,7 +1428,7 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 		return;
 
 	// Buffer-looping magic check!
-	if (iLoopStart < iLoopEnd && m_iLength >= m_iLoopEnd) {
+	if (iLoopStart < iLoopEnd && m_iLength >= iLoopEnd) {
 		m_iLoopStart = iLoopStart;
 		m_iLoopEnd   = iLoopEnd;
 	} else {
