@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Looping across multiple linked/ref-counted audio clips was incredibly
+  broken with complete out-of-sync playback. Hopefully fixed now, with
+  auto-unlinking/cloning the affected audio clip buffers.
+
 - Audio clip overlapping detection off-by-one(-frame) fix.
 
 - MIDI Tools/Resize value ramp mode has been added (mocking the 'resize

@@ -1421,12 +1421,9 @@ unsigned long qtractorAudioBuffer::fileLength (void) const
 
 
 // Loop points accessors.
-void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
-	unsigned long iLoopEnd )
+void qtractorAudioBuffer::setLoop (
+	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
-	if (iLoopStart == m_iLoopStart && iLoopEnd == m_iLoopEnd)
-		return;
-
 	// Buffer-looping magic check!
 	if (iLoopStart < iLoopEnd && m_iLength >= iLoopEnd) {
 		m_iLoopStart = iLoopStart;

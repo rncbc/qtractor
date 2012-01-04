@@ -334,6 +334,66 @@ void qtractorAudioClip::closeAudioFile (void)
 }
 
 
+// Manage local hash key.
+void qtractorAudioClip::insertHashKey (void)
+{
+	if (m_pKey) g_hashTable.insert(*m_pKey, m_pData);
+}
+
+
+void qtractorAudioClip::updateHashKey (void)
+{
+	if (m_pKey) m_pKey->update(this);
+}
+
+
+void qtractorAudioClip::removeHashKey (void)
+{
+	if (m_pKey) g_hashTable.remove(*m_pKey);
+}
+
+
+// Update (clone) local hash data.
+void qtractorAudioClip::updateHashData (void)
+{
+	if (m_pData == NULL)
+		return;
+	if (m_pData->count() < 2)
+		return;
+
+	m_pData->detach(this);
+
+	qtractorAudioBuffer *pBuff = m_pData->buffer();
+
+	Data *pNewData = new Data(track(), pBuff->channels(), pBuff->sampleRate());
+
+	qtractorAudioBuffer *pNewBuff = pNewData->buffer();
+
+	pNewBuff->setOffset(pBuff->offset());
+	pNewBuff->setLength(pBuff->length());
+	pNewBuff->setTimeStretch(pBuff->timeStretch());
+	pNewBuff->setPitchShift(pBuff->pitchShift());
+
+	if (pNewBuff->open(filename())) {
+		m_pData = pNewData;
+	} else {
+		delete pNewData;
+	}
+
+	m_pData->attach(this);
+
+	updateHashKey();
+	insertHashKey();
+}
+
+
+// Whether local hash is being shared.
+bool qtractorAudioClip::isHashLinked (void) const
+{
+	return (m_pData && m_pData->count() > 1);
+}
+
+
 // Make sure the clip hash-table gets reset.
 void qtractorAudioClip::clearHashTable (void)
 {
@@ -374,7 +434,26 @@ void qtractorAudioClip::reset ( bool bLooping )
 void qtractorAudioClip::setLoop (
 	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
-	if (m_pData) m_pData->setLoop(iLoopStart, iLoopEnd);
+	if (m_pData == NULL)
+		return;
+
+	qtractorAudioBuffer *pBuff = m_pData->buffer();
+	if (pBuff == NULL)
+		return;
+
+	if (iLoopStart == pBuff->loopStart() && iLoopEnd == pBuff->loopEnd())
+		return;
+
+	// Check if buffer data has been hash-linked,
+	// unlink (clone) it for proper loop isolation...
+	if (m_pData->count() > 1) {
+		// Unlink (clone) buffer data...
+		updateHashData();
+		// A brand new one is up!
+		pBuff = m_pData->buffer();
+	}
+
+	pBuff->setLoop(iLoopStart, iLoopEnd);
 }
 
 

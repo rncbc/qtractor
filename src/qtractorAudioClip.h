@@ -165,6 +165,17 @@ public:
 
 	typedef QHash<Key, Data *> Hash;
 
+	// Manage local hash key.
+	void insertHashKey();
+	void updateHashKey();
+	void removeHashKey();
+
+	// Update (clone) local hash data.
+	void updateHashData();
+
+	// Whether local hash is being shared.
+	bool isHashLinked() const;
+
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
 
