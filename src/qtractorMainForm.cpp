@@ -1303,13 +1303,13 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			m_pOptions->sSessionFile.clear();
 			// Take appropriate action when session is loaded from
 			// some foreign session manager (eg. JACK session)...
-			if (bSessionId) {
+			bool bLadishApp = !QString(::getenv("LADISH_APP_NAME")).isEmpty();
+			if (bSessionId || bLadishApp) {
 				// JACK session manager will take care of audio connections...
 				if (pAudioEngine)
 					pAudioEngine->clearConnects();
 				// LADISH session manager will take care of MIDI connections...
-				const QString sLadishApp = ::getenv("LADISH_APP_NAME");
-				if (!sLadishApp.isEmpty()) {
+				if (bLadishApp) {
 					qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 					if (pMidiEngine)
 						pMidiEngine->clearConnects();
@@ -6173,7 +6173,6 @@ void qtractorMainForm::timerSlot (void)
 
 	// Playhead status...
 	if (iPlayHead != long(m_iPlayHead)) {
-		m_iPlayHead = iPlayHead;
 		if (m_pTracks) {
 			// Update tracks-view play-head...
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
@@ -6194,6 +6193,15 @@ void qtractorMainForm::timerSlot (void)
 					m_pSession->songPosFromFrame(iPlayHead));
 			}
 		}
+		else
+		if (iPlayHead < long(m_iPlayHead) && m_pSession->isLooping()) {
+			// On probable loop turn-around:
+			// Send MMC LOCATE command...
+			pMidiEngine->sendMmcLocate(
+				m_pSession->locateFromFrame(iPlayHead));
+		}
+		// Current position update...
+		m_iPlayHead = iPlayHead;
 	}
 
 	// Transport status...
