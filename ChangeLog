@@ -5,7 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- MMC Locate time-code hour bit-field patch fix (thanks to Albert Graef).
+- MMC Locate time-code hour bit-field fix; MMC Locate now also on loop
+  turnarounds (patches by Albert Graef, thanks).
 
 - Looping across multiple linked/ref-counted audio clips was incredibly
   broken with complete out-of-sync playback. Hopefully fixed now, with
