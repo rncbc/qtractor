@@ -568,7 +568,7 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	// Now, we avoid the linked/ref-counted instances...
 	pMidiClip->setFilename(sFilename);
 	pMidiClip->setDirty(false);
-	pMidiClip->updateHashData();
+	pMidiClip->unlinkHashData();
 	pMidiClip->updateEditor(true);
 
 	// HACK: This operation is so important that
