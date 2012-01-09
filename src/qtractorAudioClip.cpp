@@ -303,10 +303,8 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		setClipName(shortClipName(QFileInfo(filename()).baseName()));
 
 	// Something might have changed...
-	if (m_pKey) {
-		m_pKey->update(this);
-		g_hashTable.insert(*m_pKey, m_pData);
-	}
+	updateHashKey();
+	insertHashKey();
 
 	return true;
 }
@@ -318,7 +316,7 @@ void qtractorAudioClip::closeAudioFile (void)
 	if (m_pData) {
 		m_pData->detach(this);
 		if (m_pData->count() < 1) {
-			if (m_pKey) g_hashTable.remove(*m_pKey);
+			removeHashKey();
 			delete m_pData;
 			// ATTN: If proven empty, remove the file...
 			if (clipLength() < 1)
@@ -353,8 +351,8 @@ void qtractorAudioClip::removeHashKey (void)
 }
 
 
-// Update (clone) local hash data.
-void qtractorAudioClip::updateHashData (void)
+// Unlink (clone) local hash data.
+void qtractorAudioClip::unlinkHashData (void)
 {
 	if (m_pData == NULL)
 		return;
@@ -384,6 +382,29 @@ void qtractorAudioClip::updateHashData (void)
 
 	updateHashKey();
 	insertHashKey();
+}
+
+
+// Relink local hash data.
+void qtractorAudioClip::relinkHashData (void)
+{
+	if (m_pData == NULL)
+		return;
+	if (m_pData->count() > 1)
+		return;
+
+	if (m_pKey == NULL)
+		m_pKey = new Key(this);
+
+	Data *pNewData = g_hashTable.value(*m_pKey, NULL);
+	if (pNewData == NULL) {
+		delete m_pKey;
+		m_pKey = NULL;
+	} else {
+		m_pData->detach(this);
+		m_pData = pNewData;
+		m_pData->attach(this);
+	}
 }
 
 
@@ -446,13 +467,16 @@ void qtractorAudioClip::setLoop (
 
 	// Check if buffer data has been hash-linked,
 	// unlink (clone) it for proper loop isolation...
-	if (m_pData->count() > 1) {
+	if (iLoopStart < iLoopEnd) {
 		// Unlink (clone) buffer data...
-		updateHashData();
-		// A brand new one is up!
-		pBuff = m_pData->buffer();
+		unlinkHashData();
+	} else {
+		// Relink buffer data...
+		relinkHashData();
 	}
 
+	// A brand new one is up!
+	pBuff = m_pData->buffer();
 	pBuff->setLoop(iLoopStart, iLoopEnd);
 }
 

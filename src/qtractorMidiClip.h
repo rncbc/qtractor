@@ -220,8 +220,9 @@ public:
 	void updateHashKey();
 	void removeHashKey();
 
-	// Update (clone) local hash data.
-	void updateHashData();
+	// Un/relink (de/clone) local hash data.
+	void unlinkHashData();
+	void relinkHashData();
 
 	// Whether local hash is being shared.
 	bool isHashLinked() const;

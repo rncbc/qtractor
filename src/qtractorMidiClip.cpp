@@ -492,10 +492,8 @@ bool qtractorMidiClip::openMidiFile (
 	m_drawCursor.reset(pSeq);
 
 	// Something might have changed...
-	if (m_pKey) {
-		updateHashKey();
-		insertHashKey();
-	}
+	updateHashKey();
+	insertHashKey();
 
 	return true;
 }
@@ -674,8 +672,8 @@ void qtractorMidiClip::removeHashKey (void)
 }
 
 
-// Update (clone) local hash data.
-void qtractorMidiClip::updateHashData (void)
+// Unlink (clone) local hash data.
+void qtractorMidiClip::unlinkHashData (void)
 {
 	if (m_pData == NULL)
 		return;
@@ -706,6 +704,29 @@ void qtractorMidiClip::updateHashData (void)
 
 	updateHashKey();
 	insertHashKey();
+}
+
+
+// Relink local hash data.
+void qtractorMidiClip::relinkHashData (void)
+{
+	if (m_pData == NULL)
+		return;
+	if (m_pData->count() > 1)
+		return;
+
+	if (m_pKey == NULL)
+		m_pKey = new Key(this);
+
+	Data *pNewData = g_hashTable.value(*m_pKey, NULL);
+	if (pNewData == NULL) {
+		delete m_pKey;
+		m_pKey = NULL;
+	} else {
+		m_pData->detach(this);
+		m_pData = pNewData;
+		m_pData->attach(this);
+	}
 }
 
 
