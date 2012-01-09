@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- MMC Locate time-code hour bit-field patch fix (thanks to Albert Graef).
+
 - Looping across multiple linked/ref-counted audio clips was incredibly
   broken with complete out-of-sync playback. Hopefully fixed now, with
   auto-unlinking/cloning the affected audio clip buffers.

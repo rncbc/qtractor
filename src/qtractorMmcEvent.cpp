@@ -33,10 +33,10 @@ unsigned long qtractorMmcEvent::locate (void) const
 	unsigned char *data = (unsigned char *) m_data.constData();
 
 	if (m_cmd == LOCATE && m_data.length() > 4 && data[0] == 0x01) {
-		iLocate = (3600 * 30) * (int) data[1]	// hh - hours    [0..23]
-				+ (  60 * 30) * (int) data[2]	// mm - minutes  [0..59]
-				+ (       30) * (int) data[3]	// ss - seconds  [0..59]
-				+               (int) data[4];	// ff - frames   [0..29]
+		iLocate = (3600 * 30) * int(data[1] & 0x1f)	// hh - hours    [0..23]
+				+ (  60 * 30) * int(data[2])		// mm - minutes  [0..59]
+				+ (       30) * int(data[3])		// ss - seconds  [0..59]
+				+               int(data[4]);		// ff - frames   [0..29]
 	}
 
 	return iLocate;
