@@ -393,6 +393,9 @@ void qtractorAudioClip::relinkHashData (void)
 	if (m_pData->count() > 1)
 		return;
 
+	removeHashKey();
+	updateHashKey();
+
 	if (m_pKey == NULL)
 		m_pKey = new Key(this);
 
@@ -402,9 +405,12 @@ void qtractorAudioClip::relinkHashData (void)
 		m_pKey = NULL;
 	} else {
 		m_pData->detach(this);
+		delete m_pData;
 		m_pData = pNewData;
 		m_pData->attach(this);
 	}
+
+	insertHashKey();
 }
 
 

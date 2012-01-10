@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Single-track clip selection logic corrected again, fixing multi-clip
+  selection drag/move across an odd number of distinct tracks (after a
+  bug report by Lougi Verona, on linux-audio-dev, thanks).
+
 - MMC Locate time-code hour bit-field fix; MMC Locate now also on loop
   turnarounds (patches by Albert Graef, thanks).
 

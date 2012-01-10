@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -715,6 +715,9 @@ void qtractorMidiClip::relinkHashData (void)
 	if (m_pData->count() > 1)
 		return;
 
+	removeHashKey();
+	updateHashKey();
+
 	if (m_pKey == NULL)
 		m_pKey = new Key(this);
 
@@ -724,9 +727,12 @@ void qtractorMidiClip::relinkHashData (void)
 		m_pKey = NULL;
 	} else {
 		m_pData->detach(this);
+		delete m_pData;
 		m_pData = pNewData;
 		m_pData->attach(this);
 	}
+
+	insertHashKey();
 }
 
 
