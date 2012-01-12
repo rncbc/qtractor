@@ -652,7 +652,10 @@ void qtractorMidiClip::insertHashKey (void)
 
 void qtractorMidiClip::updateHashKey (void)
 {
-	if (m_pKey) m_pKey->update(this);
+	if (m_pKey == NULL)
+		m_pKey = new Key(this);
+	else
+		m_pKey->update(this);
 }
 
 
@@ -717,9 +720,6 @@ void qtractorMidiClip::relinkHashData (void)
 
 	removeHashKey();
 	updateHashKey();
-
-	if (m_pKey == NULL)
-		m_pKey = new Key(this);
 
 	Data *pNewData = g_hashTable.value(*m_pKey, NULL);
 	if (pNewData == NULL) {
