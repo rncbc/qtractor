@@ -341,7 +341,10 @@ void qtractorAudioClip::insertHashKey (void)
 
 void qtractorAudioClip::updateHashKey (void)
 {
-	if (m_pKey) m_pKey->update(this);
+	if (m_pKey == NULL)
+		m_pKey = new Key(this);
+	else
+		m_pKey->update(this);
 }
 
 
@@ -359,8 +362,6 @@ void qtractorAudioClip::unlinkHashData (void)
 	if (m_pData->count() < 2)
 		return;
 
-	m_pData->detach(this);
-
 	qtractorAudioBuffer *pBuff = m_pData->buffer();
 
 	Data *pNewData = new Data(track(), pBuff->channels(), pBuff->sampleRate());
@@ -373,15 +374,16 @@ void qtractorAudioClip::unlinkHashData (void)
 	pNewBuff->setPitchShift(pBuff->pitchShift());
 
 	if (pNewBuff->open(filename())) {
+		m_pData->detach(this);
 		m_pData = pNewData;
+		if (m_pKey) {
+			delete m_pKey;
+			m_pKey = NULL;
+		}
+		m_pData->attach(this);
 	} else {
 		delete pNewData;
 	}
-
-	m_pData->attach(this);
-
-	updateHashKey();
-	insertHashKey();
 }
 
 
@@ -395,9 +397,6 @@ void qtractorAudioClip::relinkHashData (void)
 
 	removeHashKey();
 	updateHashKey();
-
-	if (m_pKey == NULL)
-		m_pKey = new Key(this);
 
 	Data *pNewData = g_hashTable.value(*m_pKey, NULL);
 	if (pNewData == NULL) {
