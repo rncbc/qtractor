@@ -341,6 +341,7 @@ void qtractorOscClient::sendData ( const QString& sPath, const QVariant& v )
 
 #include "qtractorSession.h"
 #include "qtractorSessionCommand.h"
+#include "qtractorTimeScaleCommand.h"
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
 #include "qtractorAudioClip.h"
@@ -592,9 +593,14 @@ void qtractorOscControl::setGlobalTempoSlot ( const QVariant& v )
 	if (pSession == NULL)
 		return;
 
-	qtractorSessionTempoCommand *pTempoCommand
-		= new qtractorSessionTempoCommand(pSession, fTempo, 0, iBeatsPerBar);
-	pSession->execute(pTempoCommand);
+	// Find appropriate node...
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(pSession->playHead());
+
+	// Now, express the change as a undoable command...
+	pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
+		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, pNode->beatDivisor));
 }
 
 
@@ -611,7 +617,7 @@ void qtractorOscControl::advanceLoopRangeSlot ( const QVariant& v )
 	unsigned long iEditTail = args.at(1).toULongLong();
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorOscControl::advanceLoopRangeSlot(%ul, %ul)", iEditHead, iEditTail);
+	qDebug("qtractorOscControl::advanceLoopRangeSlot(%lu, %lu)", iEditHead, iEditTail);
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
