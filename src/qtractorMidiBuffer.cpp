@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -749,7 +749,8 @@ void qtractorMidiManager::lv2_events_swap (void)
 	lv2_event_begin(&iter, pLv2Buffer);
 	unsigned int iMidiEvents = 0;
 	const unsigned int MaxMidiEvents = (bufferSize() << 1);
-	while (iMidiEvents < MaxMidiEvents) {
+	while (iMidiEvents < MaxMidiEvents
+			&& lv2_event_is_valid(&iter)) {
 		unsigned char *pMidiData;
 		LV2_Event *pLv2Event = lv2_event_get(&iter, &pMidiData);
 		if (pLv2Event == NULL)
