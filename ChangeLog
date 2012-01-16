@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 MIDI-fx plugin support has been repaired.
+
 - Single-track clip selection logic corrected again, fixing multi-clip
   selection drag/move across an odd number of distinct tracks (after a
   bug report by Louigi Verona, on linux-audio-dev, thanks).
