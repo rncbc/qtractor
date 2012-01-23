@@ -343,7 +343,8 @@ bool qtractorMidiManager::queued (
 		ev.type = SND_SEQ_EVENT_NOTEON;
 		if (!m_queuedBuffer.insert(&ev, iTick))
 			return false;
-		iTick += pTimeScale->frameFromTick(ev.data.note.duration - 1);
+		if (ev.data.note.duration > 0)
+			iTick += pTimeScale->frameFromTick(ev.data.note.duration - 1);
 		ev.type = SND_SEQ_EVENT_NOTEOFF;
 		ev.data.note.velocity = 0;
 		ev.data.note.duration = 0;
