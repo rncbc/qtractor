@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -708,6 +708,8 @@ void qtractorMidiControl::loadControllers (
 				else
 				if (eProp.tagName() == "invert")
 					pController->invert = qtractorDocument::boolFromText(eProp.text());
+				if (eProp.tagName() == "hook")
+					pController->hook = qtractorDocument::boolFromText(eProp.text());
 			}
 			controllers.append(pController);
 		}
@@ -736,6 +738,8 @@ void qtractorMidiControl::saveControllers ( qtractorDocument *pDocument,
 			qtractorDocument::textFromBool(pController->feedback), &eController);
 		pDocument->saveTextElement("invert",
 			qtractorDocument::textFromBool(pController->invert), &eController);
+		pDocument->saveTextElement("hook",
+			qtractorDocument::textFromBool(pController->hook), &eController);
 		pElement->appendChild(eController);
 	}
 }

@@ -6603,22 +6603,27 @@ Chcete použít soubory s ovladači?</translation>
         <translation>&amp;Obrátit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="136"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="134"/>
+        <source>&amp;Hook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="143"/>
         <source>Control input connections</source>
         <translation>Ovládat spojení vstupů</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="139"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="146"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="149"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="156"/>
         <source>Control output connections</source>
         <translation>Ovládat spojení výstupů</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="152"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="159"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
@@ -6647,12 +6652,12 @@ Chcete použít soubory s ovladači?</translation>
         <translation>&amp;Zpětná vazba</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="170"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="173"/>
         <source>MIDI Controller</source>
         <translation>Ovladač MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="363"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="370"/>
         <source>MIDI controller is already assigned.
 
 Do you want to replace the mapping?</source>
@@ -6661,7 +6666,7 @@ Do you want to replace the mapping?</source>
 Chcete nahradit přiřazení?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="406"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="414"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -6670,32 +6675,32 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="525"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="533"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Ovladač &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="631"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="639"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="645"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="653"/>
         <source>&amp;Lock</source>
         <translation>&amp;Zamknout</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="663"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="671"/>
         <source>&amp;Play</source>
         <translation>&amp;Přehrát</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="679"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="687"/>
         <source>&amp;Record</source>
         <translation>&amp;Nahrávat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="689"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="697"/>
         <source>&amp;Clear</source>
         <translation>&amp;Smazat</translation>
     </message>

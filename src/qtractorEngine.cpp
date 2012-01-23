@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -531,6 +531,7 @@ void qtractorBus::saveControllers (
 		pController->logarithmic = m_pMonitorObserver->isLogarithmic();
 		pController->feedback = m_pMonitorObserver->isFeedback();
 		pController->invert = m_pMonitorObserver->isInvert();
+		pController->hook = m_pMonitorObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -547,6 +548,7 @@ void qtractorBus::saveControllers (
 		pController->logarithmic = pPanObserver->isLogarithmic();
 		pController->feedback = pPanObserver->isFeedback();
 		pController->invert = pPanObserver->isInvert();
+		pController->hook = pPanObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -563,6 +565,7 @@ void qtractorBus::saveControllers (
 		pController->logarithmic = pGainObserver->isLogarithmic();
 		pController->feedback = pGainObserver->isFeedback();
 		pController->invert = pGainObserver->isInvert();
+		pController->hook = pGainObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -629,6 +632,7 @@ void qtractorBus::mapControllers ( BusMode busMode )
 			pObserver->setLogarithmic(pController->logarithmic);
 			pObserver->setFeedback(pController->feedback);
 			pObserver->setInvert(pController->invert);
+			pObserver->setHook(pController->hook);
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}

@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI Controller Auto-Hook patch by Alessandro Preziosi, thanks.
+
 - Make sure all MIDI note-off are always queued after their respective
   note-on events when buffering for MIDI input of instrument plugins,
   event though for zero duration MIDI note events (hopefully fixing the

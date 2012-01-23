@@ -419,7 +419,7 @@ void qtractorMidiManager::process (
 		}
 	}
 
-#ifdef CONFIG_DEBUG//_0
+#ifdef CONFIG_DEBUG_0
 	for (unsigned int i = 0; i < m_iBuffer; ++i) {
 		snd_seq_event_t *pEv = &m_pBuffer[i];
 		// - show event for debug purposes...
@@ -479,7 +479,7 @@ void qtractorMidiManager::process (
 			// - show event for debug purposes...
 			unsigned long iTime = pEv->time.tick;
 			fprintf(stderr, "MIDI Raw %06lu {", iTime);
-			for (unsigned int i = 0; i < iMidiData; ++i)
+			for (long i = 0; i < iMidiData; ++i)
 				fprintf(stderr, " %02x", pMidiData[i]);
 			fprintf(stderr, " }\n");
 		#endif
