@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed audible glitch/pop at the beginning of an audio clip with long
+  quadratic or cubic shaped fade-in (reported by Lougi Verona, thanks).
+
 - MIDI Controller Auto-Hook patch by Alessandro Preziosi, thanks.
 
 - Make sure all MIDI note-off are always queued after their respective
