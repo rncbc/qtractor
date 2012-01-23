@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1771,6 +1771,8 @@ void qtractorPlugin::saveControllers (
 			pController->param = pObserver->param();
 			pController->logarithmic = pObserver->isLogarithmic();
 			pController->feedback = pObserver->isFeedback();
+			pController->invert = pObserver->isInvert();
+			pController->hook = pObserver->isHook();
 			controllers.append(pController);
 		}
 	}
@@ -1799,6 +1801,8 @@ void qtractorPlugin::mapControllers (
 			pObserver->setParam(pController->param);
 			pObserver->setLogarithmic(pController->logarithmic);
 			pObserver->setFeedback(pController->feedback);
+			pObserver->setInvert(pController->invert);
+			pObserver->setHook(pController->hook);
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}

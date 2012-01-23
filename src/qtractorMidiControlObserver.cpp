@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ static inline float cubef2 ( float x )
 qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
-		m_bLogarithmic(false), m_bFeedback(false), m_bInvert(false),
+		m_bLogarithmic(false), m_bFeedback(false), m_bInvert(false), m_bHook(false),
 		m_bMidiValueInit(false), m_bMidiValueSync(false), m_fMidiValue(0.0f),
 		m_pCurveList(NULL)
 {
@@ -79,6 +79,9 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 //	setScaleValue(float(iValue) / float(iRatio));
 	float fScale = float(m_bInvert ? iRatio - iValue : iValue) / float(iRatio);
 	float fValue = valueFromScale(fScale, m_bLogarithmic);
+
+	if (m_bHook) 
+		m_bMidiValueSync = true;
 
 	if (m_bMidiValueInit && !m_bMidiValueSync) {
 		const float v0 = m_fMidiValue;
