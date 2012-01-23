@@ -1204,7 +1204,7 @@ int qtractorAudioBuffer::readMixFrames (
 	m_fNextGain = fGain;
 
 	// HACK: Case of clip ramp out-set...
-	if (m_fNextGain < 1E-6f && fPrevGain > (1.0f - 1E-6f)) {
+	if (m_fNextGain < 1E-9f && fPrevGain > (1.0f - 1E-9f)) {
 		// Final micro fade-out...
 		// (anti-glitch out-set ramp)
 		m_fNextGain = 1.0f;
