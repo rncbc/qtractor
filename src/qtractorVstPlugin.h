@@ -166,6 +166,9 @@ public:
 	static bool x11EventFilter(void *pvEvent);
 #endif
 
+	// Parameter update method.
+	void updateParamValues(bool bUpdate);
+
 private:
 
 	// Instance variables.

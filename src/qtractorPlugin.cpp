@@ -902,6 +902,8 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 // Save plugin preset to xml file.
 bool qtractorPlugin::savePreset ( const QString& sFilename )
 {
+	freezeConfigs();
+
 	QFileInfo fi(sFilename);
 
 	QDomDocument doc("qtractorPlugin");
@@ -930,6 +932,8 @@ bool qtractorPlugin::savePreset ( const QString& sFilename )
 	QTextStream ts(&file);
 	ts << doc.toString() << endl;
 	file.close();
+
+	releaseConfigs();
 
 	return true;
 }
@@ -1088,8 +1092,6 @@ void qtractorPlugin::loadValues ( QDomElement *pElement, Values& values )
 void qtractorPlugin::saveConfigs (
 	QDomDocument *pDocument, QDomElement *pElement )
 {
-	freezeConfigs();
-
 	// Save plugin configs...
 	Configs::ConstIterator iter = m_configs.constBegin();
 	for (; iter != m_configs.constEnd(); ++iter) {
@@ -1102,8 +1104,6 @@ void qtractorPlugin::saveConfigs (
 			pDocument->createTextNode(iter.value()));
 		pElement->appendChild(eConfig);
 	}
-
-	releaseConfigs();
 }
 
 
