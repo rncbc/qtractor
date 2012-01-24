@@ -84,6 +84,8 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 			qtractorMidiEvent *pNoteEvent = *iter;
 			unsigned long iTime = pNoteEvent->time();
 			unsigned long iDuration = pEvent->time() - iTime;
+			if (iDuration < 1 && pEvent->type() == qtractorMidiEvent::NOTEOFF)
+				break;
 			pNoteEvent->setDuration(iDuration);
 			iDuration += iTime;
 			if (m_duration < iDuration)

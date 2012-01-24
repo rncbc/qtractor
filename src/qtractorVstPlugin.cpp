@@ -869,6 +869,11 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 // Plugin configuration/state snapshot.
 void qtractorVstPlugin::freezeConfigs (void)
 {
+	// HACK: Make sure all parameter values are in sync,
+	// provided freezeConfigs() are always called when
+	// saving plugin's state and before parameter values.
+	updateParamValues(false);
+
 	if (!type()->isConfigure())
 		return;
 
@@ -1062,6 +1067,29 @@ bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
 }
 
 #endif
+
+
+// Parameter update method.
+void qtractorVstPlugin::updateParamValues ( bool bUpdate )
+{
+	// Make sure all cached parameter values are in sync
+	// with plugin parameter values; update cache otherwise.
+	AEffect *pVstEffect = vst_effect(0);
+	if (pVstEffect) {
+		const qtractorPlugin::Params& params = qtractorPlugin::params();
+		qtractorPlugin::Params::ConstIterator param = params.constBegin();
+		for ( ; param != params.constEnd(); ++param) {
+			qtractorPluginParam *pParam = param.value();
+			float fValue = pVstEffect->getParameter(pVstEffect, pParam->index());
+			if (pParam->value() != fValue) {
+				pParam->setValue(fValue, bUpdate);
+				if (isFormVisible())
+					form()->changeParamValue(pParam->index());
+			}
+		}
+	}
+}
+
 
 //----------------------------------------------------------------------------
 // qtractorVstPluginParam -- VST plugin control input port instance.
@@ -1379,8 +1407,12 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 	case audioMasterIdle:
 		VST_HC_DEBUG("audioMasterIdle");
-		qtractorVstPlugin::idleEditorAll();
-		QApplication::processEvents();
+		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
+		if (pVstPlugin) {
+			pVstPlugin->updateParamValues(false);
+			pVstPlugin->idleEditor();
+		//	QApplication::processEvents();
+		}
 		break;
 
 	case audioMasterGetTime:
@@ -1586,8 +1618,8 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	case audioMasterUpdateDisplay:
 		VST_HC_DEBUG("audioMasterUpdateDisplay");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin && pVstPlugin->isFormVisible()) {
-			(pVstPlugin->form())->refresh();
+		if (pVstPlugin) {
+			pVstPlugin->updateParamValues(false);
 		//	QApplication::processEvents();
 			ret = 1; // supported.
 		}
