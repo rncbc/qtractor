@@ -1,7 +1,7 @@
 // qtractorMidiSequence.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 #include "qtractorMidiEvent.h"
 
 #include <QString>
-#include <QHash>
+#include <QMultiHash>
 
 // typedef unsigned long long uint64_t;
 #include <stdint.h>
@@ -119,7 +119,7 @@ public:
 	void close();
 
 	// Typed hash table to track note-ons.
-	typedef QHash<unsigned char, qtractorMidiEvent *> NoteMap;
+	typedef QMultiHash<unsigned char, qtractorMidiEvent *> NoteMap;
 
 private:
 

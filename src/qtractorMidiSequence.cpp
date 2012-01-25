@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -76,30 +76,32 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 	pEvent->adjustTime(m_iTimeOffset);
 
 	// NOTE: Find previous note event and compute duration...
-	if (pEvent->type() == qtractorMidiEvent::NOTEOFF ||
-		pEvent->type() == qtractorMidiEvent::NOTEON) {
+	if (pEvent->type() == qtractorMidiEvent::NOTEOFF) {
 		unsigned char note = pEvent->note();
 		NoteMap::Iterator iter = m_notes.find(note);
-		while (iter != m_notes.end() && iter.key() == note) {
-			qtractorMidiEvent *pNoteEvent = *iter;
+		NoteMap::Iterator iter_last;
+		qtractorMidiEvent *pNoteEvent = NULL;
+		for (; iter != m_notes.end() && iter.key() == note; ++iter) {
+			pNoteEvent = iter.value();
+			iter_last = iter;
+		}
+		if (pNoteEvent) {
 			unsigned long iTime = pNoteEvent->time();
 			unsigned long iDuration = pEvent->time() - iTime;
-			if (iDuration < 1 && pEvent->type() == qtractorMidiEvent::NOTEOFF)
-				break;
 			pNoteEvent->setDuration(iDuration);
 			iDuration += iTime;
 			if (m_duration < iDuration)
 				m_duration = iDuration;
-			iter = m_notes.erase(iter);
+			m_notes.erase(iter_last);
 		}
-		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			// NOTEON: Add to lingering notes...
-			m_notes[note] = pEvent;
-		} else {
-			// NOTEOFF: Won't own this any longer...
-			delete pEvent;
-			return;
-		}
+		// NOTEOFF: Won't own this any longer...
+		delete pEvent;
+		return;
+	}
+	else
+	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+		// NOTEON: Just add to lingering notes...
+		m_notes.insert(pEvent->note(), pEvent);
 	}
 
 	// Add it...
