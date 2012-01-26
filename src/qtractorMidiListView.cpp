@@ -1,7 +1,7 @@
 // qtractorMidiListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -129,7 +129,7 @@ qtractorMidiListView::qtractorMidiListView ( QWidget *pParent )
 	pHeaderItem->setText(qtractorMidiListView::Name, tr("Name"));	
 	pHeaderItem->setText(qtractorMidiListView::Format, tr("Fmt"));	
 	pHeaderItem->setText(qtractorMidiListView::Tracks, tr("Tracks"));	
-	pHeaderItem->setText(qtractorMidiListView::Resolution, tr("tpb"));	
+	pHeaderItem->setText(qtractorMidiListView::Resolution, tr("tpqn"));
 	pHeaderItem->setText(qtractorMidiListView::Path, tr("Path"));	
 	pHeaderItem->setText(qtractorMidiListView::LastColumn, QString::null);
 
