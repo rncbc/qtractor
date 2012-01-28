@@ -3375,7 +3375,7 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			updateContents();
 		}
 	}
-
+	else
 	if (m_pEditList)
 		m_pEditList->dragNoteOn(-1);
 
