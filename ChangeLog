@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Session properties dialog now asks to create a new session directory
+  if the given one does not currently exist.
+
+- MIDI note names and their respective octave numbers are now compliant
+  with the ISO standard where middle C (60) is now C4 (was C3).
+
 - Fixed audible glitch/pop at the beginning of an audio clip with long
   quadratic or cubic shaped fade-in (reported by Lougi Verona, thanks).
 

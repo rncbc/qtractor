@@ -8524,8 +8524,12 @@ Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="132"/>
+        <source>tpqn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>tpb</source>
-        <translation>tpb</translation>
+        <translation type="obsolete">tpb</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="133"/>
@@ -11165,12 +11169,22 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorSessionForm</name>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="216"/>
+        <location filename="../qtractorSessionForm.cpp" line="176"/>
+        <location filename="../qtractorSessionForm.cpp" line="232"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="217"/>
+        <location filename="../qtractorSessionForm.cpp" line="177"/>
+        <source>Session directory does not exist:
+
+&quot;%1&quot;
+
+Do you want to create it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionForm.cpp" line="233"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11191,7 +11205,7 @@ Chcete použít tyto změny?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="259"/>
+        <location filename="../qtractorSessionForm.cpp" line="274"/>
         <source>Session Directory</source>
         <translation>Adresář sezení</translation>
     </message>
@@ -11296,6 +11310,11 @@ Chcete použít tyto změny?</translation>
         <translation>Tempo (ÚZM)/Taktové označení</translation>
     </message>
     <message>
+        <location filename="../qtractorSessionForm.ui" line="257"/>
+        <source>Resolution (ticks/beat; tpqn)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Tempo (BPM)</source>
         <translation type="obsolete">Tempo (počet úderů za minutu)</translation>
     </message>
@@ -11317,9 +11336,8 @@ Chcete použít tyto změny?</translation>
         <translation>T&amp;iky/doby:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="257"/>
         <source>Resolution (ticks/beat; TPQN)</source>
-        <translation>Rozvedení (akordu) (tiky/doby; TPQN)</translation>
+        <translation type="obsolete">Rozvedení (akordu) (tiky/doby; TPQN)</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="292"/>

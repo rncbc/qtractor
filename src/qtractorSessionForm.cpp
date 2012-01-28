@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -167,6 +167,22 @@ const qtractorSession::Properties& qtractorSessionForm::properties (void)
 // Accept settings (OK button slot).
 void qtractorSessionForm::accept (void)
 {
+	// Check if session directory is new...
+	QDir dir;
+	const QString& sSessionDir = m_ui.SessionDirComboBox->currentText();
+	while (!dir.exists(sSessionDir)) {
+		// Ask user...
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Session directory does not exist:\n\n"
+			"\"%1\"\n\n"
+			"Do you want to create it?").arg(sSessionDir),
+			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+			return;
+		// Proceed...
+		dir.mkdir(sSessionDir);
+	}
+
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
@@ -243,10 +259,9 @@ void qtractorSessionForm::changed (void)
 // Stabilize current form state.
 void qtractorSessionForm::stabilizeForm (void)
 {
-	QFileInfo fi(m_ui.SessionDirComboBox->currentText());
+	QFileInfo fi(QFileInfo(m_ui.SessionDirComboBox->currentText()).path());
 
-	bool bValid = (m_iDirtyCount > 0);
-	bValid = bValid && !m_ui.SessionNameLineEdit->text().isEmpty();
+	bool bValid = !m_ui.SessionNameLineEdit->text().isEmpty();
 	bValid = bValid && fi.isDir() && fi.isReadable() && fi.isWritable();
 //	bValid = bValid && !m_ui.DescriptionTextEdit->text().isEmpty();
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);

@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -159,7 +159,7 @@ const QString qtractorMidiEditor::defaultNoteName (
 	}
 
 	return QObject::tr(g_aNoteNames[note % 12].name, "noteName")
-		+ QString::number((note / 12) - 2);
+		+ QString::number((note / 12) - 1);
 }
 
 
@@ -3375,7 +3375,7 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			updateContents();
 		}
 	}
-
+	else
 	if (m_pEditList)
 		m_pEditList->dragNoteOn(-1);
 
