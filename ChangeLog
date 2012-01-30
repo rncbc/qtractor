@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Plugin path settings have been fixed again, with special regards to
+  an effective LV2_PATH environment variable settlement.
+
 - Session properties dialog now asks to create a new session directory
   if the given one does not currently exist.
 

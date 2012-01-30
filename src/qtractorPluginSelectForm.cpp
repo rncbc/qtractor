@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,6 +116,10 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 			pOptions->sPluginSearch);
 		m_ui.PluginTypeComboBox->setCurrentIndex(pOptions->iPluginType);
 		m_ui.PluginActivateCheckBox->setChecked(pOptions->bPluginActivate);
+		g_pluginPath.setPaths(qtractorPluginType::Ladspa, pOptions->ladspaPaths);
+		g_pluginPath.setPaths(qtractorPluginType::Dssi, pOptions->dssiPaths);
+		g_pluginPath.setPaths(qtractorPluginType::Vst, pOptions->vstPaths);
+		g_pluginPath.setPaths(qtractorPluginType::Lv2, pOptions->lv2Paths);
 	}
 
 	// Let the search begin...
@@ -229,30 +233,11 @@ bool qtractorPluginSelectForm::isPluginActivated (void) const
 // Plugin type hint change slot.
 void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 {
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
-		return;
-
 	qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
-	if (g_pluginPath.paths().isEmpty() ||
-		g_pluginPath.typeHint() != typeHint) {
+	if (g_pluginPath.typeHint() != typeHint) {
 		g_pluginPath.setTypeHint(typeHint);
-		QStringList paths;
-		if (typeHint == qtractorPluginType::Any ||
-			typeHint == qtractorPluginType::Vst)
-			paths += pOptions->vstPaths;
-	//	if (typeHint == qtractorPluginType::Any ||
-	//		typeHint == qtractorPluginType::Lv2)
-	//		paths += pOptions->lv2Paths;
-		if (typeHint == qtractorPluginType::Any ||
-			typeHint == qtractorPluginType::Dssi)
-			paths += pOptions->dssiPaths;
-		if (typeHint == qtractorPluginType::Any ||
-			typeHint == qtractorPluginType::Ladspa)
-			paths += pOptions->ladspaPaths;
-		g_pluginPath.setPaths(paths);
 		g_pluginPath.open();
 		g_pluginPath.clear();
 	}

@@ -4229,6 +4229,8 @@ void qtractorMainForm::viewOptions (void)
 		}
 	#ifdef CONFIG_LV2
 		if (sOldLv2Path != m_pOptions->lv2Paths.join(sPathSep)) {
+			// HACK: reset special environment for LV2...
+			if (m_pOptions->lv2Paths.isEmpty())	::unsetenv("LV2_PATH");
 			updatePluginPaths();
 			iNeedRestart |= RestartSession;
 		}
@@ -5497,7 +5499,7 @@ void qtractorMainForm::updatePluginPaths (void)
 
 #ifdef CONFIG_LV2
 	qtractorPluginPath path(qtractorPluginType::Lv2);
-	path.setPaths(m_pOptions->lv2Paths);
+	path.setPaths(qtractorPluginType::Lv2, m_pOptions->lv2Paths);
 	path.open();
 #endif
 }
