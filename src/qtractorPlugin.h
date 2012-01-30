@@ -231,23 +231,23 @@ public:
 
 	// Type-hint accessors...
 	void setTypeHint(qtractorPluginType::Hint typeHint)
-		{ m_typeHint = typeHint; m_paths.clear(); }
-	qtractorPluginType::Hint typeHint() const { return m_typeHint; }
+		{ m_typeHint = typeHint; }
+	qtractorPluginType::Hint typeHint() const
+		{ return m_typeHint; }
 
 	// Main properties accessors.
-	void setPaths(const QString& sPaths);
-	void setPaths(const QStringList& paths)
-		{ m_paths = paths; }
-	const QStringList& paths() const { return m_paths; }
+	void setPaths(qtractorPluginType::Hint typeHint, const QString& sPaths);
+	void setPaths(qtractorPluginType::Hint typeHint, const QStringList& paths)
+		{ m_paths.insert(typeHint, paths); }
+	QStringList paths(qtractorPluginType::Hint typeHint) const
+		{ return m_paths.value(typeHint); }
 
 	// Executive methods.
 	bool open();
 	void close();
 
-	// Plugin files list.
+	// Plugin file/types list.
 	const QList<qtractorPluginFile *>& files() const { return m_files; }
-
-	// Plugin types list accessor.
 	const QList<qtractorPluginType *>& types() const { return m_types; }
 
 	// Plugin type adder.
@@ -261,7 +261,7 @@ private:
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
 
-	QStringList m_paths;
+	QHash<qtractorPluginType::Hint, QStringList> m_paths;
 	
 	// Internal plugin file/type list.
 	QList<qtractorPluginFile *> m_files;

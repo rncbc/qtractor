@@ -134,65 +134,91 @@ bool qtractorPluginPath::open (void)
 
 	// Get paths based on hints...	
 	QString sPaths;
+	QStringList paths;
+	QStringList path_list;
 #ifdef CONFIG_LADSPA
 	// LADSPA default path...
 	if (m_typeHint == qtractorPluginType::Any ||
-		(m_typeHint == qtractorPluginType::Ladspa && m_paths.isEmpty())) {
-		sPaths = ::getenv("LADSPA_PATH");
-		if (sPaths.isEmpty())
-			sPaths = default_paths("ladspa");
-		if (!sPaths.isEmpty())
-			m_paths << sPaths.split(PATH_SEP);
+		m_typeHint == qtractorPluginType::Ladspa) {
+		paths = m_paths.value(qtractorPluginType::Ladspa);
+		if (paths.isEmpty()) {
+			sPaths = ::getenv("LADSPA_PATH");
+			if (sPaths.isEmpty())
+				sPaths = default_paths("ladspa");
+			if (!sPaths.isEmpty()) {
+				paths = sPaths.split(PATH_SEP);
+				m_paths.insert(qtractorPluginType::Ladspa, paths);
+			}
+		}
+		path_list.append(paths);
 	}
 #endif
 #ifdef CONFIG_DSSI
 	// DSSI default path...
 	if (m_typeHint == qtractorPluginType::Any ||
-		(m_typeHint == qtractorPluginType::Dssi && m_paths.isEmpty())) {
-		sPaths = ::getenv("DSSI_PATH");
-		if (sPaths.isEmpty())
-			sPaths = default_paths("dssi");
-		if (!sPaths.isEmpty())
-			m_paths << sPaths.split(PATH_SEP);
+		m_typeHint == qtractorPluginType::Dssi) {
+		paths = m_paths.value(qtractorPluginType::Dssi);
+		if (paths.isEmpty()) {
+			sPaths = ::getenv("DSSI_PATH");
+			if (sPaths.isEmpty())
+				sPaths = default_paths("dssi");
+			if (!sPaths.isEmpty()) {
+				paths = sPaths.split(PATH_SEP);
+				m_paths.insert(qtractorPluginType::Dssi, paths);
+			}
+		}
+		path_list.append(paths);
 	}
 #endif
 #ifdef CONFIG_VST
 	// VST default path...
 	if (m_typeHint == qtractorPluginType::Any ||
-		(m_typeHint == qtractorPluginType::Vst && m_paths.isEmpty())) {
-		sPaths = ::getenv("VST_PATH");
-		if (sPaths.isEmpty())
-			sPaths = default_paths("vst");
-		if (!sPaths.isEmpty())
-			m_paths << sPaths.split(PATH_SEP);
+		m_typeHint == qtractorPluginType::Vst) {
+		paths = m_paths.value(qtractorPluginType::Vst);
+		if (paths.isEmpty()) {
+			sPaths = ::getenv("VST_PATH");
+			if (sPaths.isEmpty())
+				sPaths = default_paths("vst");
+			if (!sPaths.isEmpty()) {
+				paths = sPaths.split(PATH_SEP);
+				m_paths.insert(qtractorPluginType::Vst, paths);
+			}
+		}
+		path_list.append(paths);
 	}
 #endif
 #ifdef CONFIG_LV2
 	// LV2 default path...
 	if (m_typeHint == qtractorPluginType::Any ||
-		(m_typeHint == qtractorPluginType::Lv2 && m_paths.isEmpty())) {
-		sPaths = ::getenv("LV2_PATH");
-		if (sPaths.isEmpty())
-			sPaths = default_paths("lv2");
-		if (!sPaths.isEmpty())
-			m_paths << sPaths.split(PATH_SEP);
-		// Must do this before anything related to LV2 plugins...
-		::setenv("LV2_PATH", sPaths.toUtf8().constData(), 1);
+		m_typeHint == qtractorPluginType::Lv2) {
+		paths = m_paths.value(qtractorPluginType::Lv2);
+		if (paths.isEmpty()) {
+			sPaths = ::getenv("LV2_PATH");
+			if (sPaths.isEmpty())
+				sPaths = default_paths("lv2");
+			if (!sPaths.isEmpty()) {
+				paths = sPaths.split(PATH_SEP);
+				m_paths.insert(qtractorPluginType::Lv2, paths);
+			}
+		}
+		path_list.append(paths);
+		// HACK: set special environment for LV2...
+		::setenv("LV2_PATH", paths.join(PATH_SEP).toUtf8().constData(), 1);
 	}
 #endif
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginPath[%p]::open() paths=\"%s\" typeHint=%d",
-		this, m_paths.join(PATH_SEP).toUtf8().constData(), int(m_typeHint));
+		this, path_list.join(PATH_SEP).toUtf8().constData(), int(m_typeHint));
 #endif
 
-	QStringListIterator ipath(m_paths);
-	while (ipath.hasNext()) {
-		const QDir dir(ipath.next());
-		const QStringList& list = dir.entryList(QDir::Files);
-		QStringListIterator iter(list);
-		while (iter.hasNext()) {
-			const QString& sPath = dir.absoluteFilePath(iter.next());
+	QStringListIterator path_iter(path_list);
+	while (path_iter.hasNext()) {
+		const QDir dir(path_iter.next());
+		const QStringList& file_list = dir.entryList(QDir::Files);
+		QStringListIterator file_iter(file_list);
+		while (file_iter.hasNext()) {
+			const QString& sPath = dir.absoluteFilePath(file_iter.next());
 			if (QLibrary::isLibrary(sPath))
 				m_files.append(new qtractorPluginFile(sPath));
 		}
@@ -210,9 +236,10 @@ void qtractorPluginPath::close (void)
 
 
 // Helper methods.
-void qtractorPluginPath::setPaths ( const QString& sPaths )
+void qtractorPluginPath::setPaths (
+	qtractorPluginType::Hint typeHint, const QString& sPaths )
 {
-	m_paths = sPaths.split(PATH_SEP);
+	m_paths.insert(typeHint, sPaths.split(PATH_SEP));
 }
 
 
