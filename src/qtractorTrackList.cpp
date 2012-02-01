@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -92,7 +92,7 @@ public:
 				pal.setColor(QPalette::ButtonText, Qt::green);
 			}
 			QPushButton::setPalette(pal);
-			QString sToolTip(tr("Automation (%1)"));
+			QString sToolTip(QObject::tr("Automation (%1)"));
 			qtractorSubject *pSubject = NULL;
 			qtractorCurve *pCurrentCurve = pCurveList->currentCurve();
 			if (pCurrentCurve)
@@ -100,7 +100,7 @@ public:
 			if (pSubject)
 				QPushButton::setToolTip(sToolTip.arg(pSubject->name()));
 			else
-				QPushButton::setToolTip(sToolTip.arg(tr("none")));
+				QPushButton::setToolTip(sToolTip.arg(QObject::tr("none")));
 		}
 	}
 
@@ -189,7 +189,7 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	m_pCurveButton->setFixedSize(QSize(32, 16));
 	m_pCurveButton->setFont(m_pRecordButton->font());
 	m_pCurveButton->setText("A");
-	m_pCurveButton->setToolTip(tr("Automation"));
+	m_pCurveButton->setToolTip(QObject::tr("Automation"));
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)

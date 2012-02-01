@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1780,7 +1780,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	if (m_lv2_ui_widget == NULL)
 		return;
 
-	if (!m_bEditorVisible && bVisible) {
+	if (/*!m_bEditorVisible && */bVisible) {
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_SHOW((lv2_external_ui *) m_lv2_ui_widget);
@@ -1791,12 +1791,16 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	#endif
 	#endif
 	#ifdef CONFIG_LV2_QT4_UI
-		if (m_pQt4Widget) m_pQt4Widget->show();
+		if (m_pQt4Widget) {
+			m_pQt4Widget->show();
+			m_pQt4Widget->raise();
+			m_pQt4Widget->activateWindow();
+		}
 	#endif
 		m_bEditorVisible = true;
 	}
 	else
-	if (m_bEditorVisible && !bVisible) {
+	if (/*m_bEditorVisible && */!bVisible) {
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_HIDE((lv2_external_ui *) m_lv2_ui_widget);

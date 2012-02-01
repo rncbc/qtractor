@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -818,6 +818,7 @@ void qtractorPluginListView::editPlugin (void)
 	if (pPlugin == NULL)
 		return;
 
+
 	if (pPlugin->isEditorVisible())
 		pPlugin->closeEditor();
 	else
@@ -945,17 +946,10 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 	if (pPlugin == NULL)
 		return;
 
-	if ((pPlugin->type())->isEditor()) {
-		if (pPlugin->isEditorVisible())
-			pPlugin->closeEditor();
-		else
-			pPlugin->openEditor(this);
-	} else {
-		if (pPlugin->isFormVisible())
-			(pPlugin->form())->hide();
-		else
-			(pPlugin->form())->activateForm();
-	}
+	if ((pPlugin->type())->isEditor())
+		pPlugin->openEditor(this);
+	else
+		(pPlugin->form())->activateForm();
 }
 
 

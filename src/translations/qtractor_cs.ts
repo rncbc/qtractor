@@ -994,6 +994,21 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Vyváženost stopy</translation>
     </message>
     <message>
+        <location filename="../qtractorTrackList.cpp" line="95"/>
+        <source>Automation (%1)</source>
+        <translation type="unfinished">Automatizace (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackList.cpp" line="103"/>
+        <source>none</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackList.cpp" line="192"/>
+        <source>Automation</source>
+        <translation type="unfinished">Automatizace</translation>
+    </message>
+    <message>
         <location filename="../qtractorTrackList.cpp" line="355"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
@@ -2042,14 +2057,12 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorCurveButton</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="95"/>
         <source>Automation (%1)</source>
-        <translation>Automatizace (%1)</translation>
+        <translation type="obsolete">Automatizace (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="103"/>
         <source>none</source>
-        <translation>Žádná</translation>
+        <translation type="obsolete">Žádná</translation>
     </message>
 </context>
 <context>
@@ -10931,72 +10944,72 @@ Jste si jistý?</translation>
         <translation>Odstranit všechny přídavné moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1265"/>
+        <location filename="../qtractorPluginListView.cpp" line="1259"/>
         <source>&amp;Move Here</source>
         <translation>&amp;Přesunout na toto místo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1266"/>
+        <location filename="../qtractorPluginListView.cpp" line="1260"/>
         <source>&amp;Copy Here</source>
         <translation>&amp;Kopírovat na toto místo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1269"/>
+        <location filename="../qtractorPluginListView.cpp" line="1263"/>
         <source>C&amp;ancel</source>
         <translation>Z&amp;rušit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1359"/>
+        <location filename="../qtractorPluginListView.cpp" line="1353"/>
         <source>&amp;Add Plugin...</source>
         <translation>&amp;Přidat přídavný modul...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1365"/>
+        <location filename="../qtractorPluginListView.cpp" line="1359"/>
         <source>Add &amp;Insert</source>
         <translation>Přidat &amp;vložku</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1369"/>
+        <location filename="../qtractorPluginListView.cpp" line="1363"/>
         <source>Add &amp;Aux Send</source>
         <translation>Přidat &amp;aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1376"/>
+        <location filename="../qtractorPluginListView.cpp" line="1370"/>
         <source>&amp;Sends</source>
         <translation>&amp;Poslání</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1380"/>
+        <location filename="../qtractorPluginListView.cpp" line="1374"/>
         <source>&amp;Returns</source>
         <translation>&amp;Navrácení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1386"/>
+        <location filename="../qtractorPluginListView.cpp" line="1380"/>
         <source>Ac&amp;tivate</source>
         <translation>&amp;Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1409"/>
+        <location filename="../qtractorPluginListView.cpp" line="1403"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1448"/>
+        <location filename="../qtractorPluginListView.cpp" line="1442"/>
         <source>&amp;None</source>
         <translation>&amp;Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1461"/>
+        <location filename="../qtractorPluginListView.cpp" line="1455"/>
         <source>&amp;Properties...</source>
         <translation>Vlastnosti&amp;...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1468"/>
+        <location filename="../qtractorPluginListView.cpp" line="1462"/>
         <source>&amp;Edit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1486"/>
+        <location filename="../qtractorPluginListView.cpp" line="1480"/>
         <source>&amp;Auto-connect</source>
         <translation>&amp;Připojit automaticky</translation>
     </message>
@@ -11005,27 +11018,27 @@ Jste si jistý?</translation>
         <translation type="obsolete">Za&amp;pnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1393"/>
+        <location filename="../qtractorPluginListView.cpp" line="1387"/>
         <source>Acti&amp;vate All</source>
         <translation>Z&amp;apnout vše</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1400"/>
+        <location filename="../qtractorPluginListView.cpp" line="1394"/>
         <source>Deactivate Al&amp;l</source>
         <translation>Vypnout v&amp;še</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1413"/>
+        <location filename="../qtractorPluginListView.cpp" line="1407"/>
         <source>Re&amp;move All</source>
         <translation>Od&amp;stranit vše</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1420"/>
+        <location filename="../qtractorPluginListView.cpp" line="1414"/>
         <source>Move &amp;Up</source>
         <translation>Posunout &amp;nahoru</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1425"/>
+        <location filename="../qtractorPluginListView.cpp" line="1419"/>
         <source>Move &amp;Down</source>
         <translation>Posunout &amp;dolů</translation>
     </message>
@@ -11034,12 +11047,12 @@ Jste si jistý?</translation>
         <translation type="obsolete">&amp;Upravit přídavný modul...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1479"/>
+        <location filename="../qtractorPluginListView.cpp" line="1473"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1482"/>
+        <location filename="../qtractorPluginListView.cpp" line="1476"/>
         <source>&amp;Dedicated</source>
         <translation>&amp;Jednoúčelové</translation>
     </message>
@@ -12236,9 +12249,8 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTrackItemWidget</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="192"/>
         <source>Automation</source>
-        <translation>Automatizace</translation>
+        <translation type="obsolete">Automatizace</translation>
     </message>
 </context>
 <context>

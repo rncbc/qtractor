@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Double-clicking in plugin list item now show/activates the plugin's
+  editor window (was toggling visibility/activation).
+
 - Plugin path settings have been fixed again, with special regards to
   an effective LV2_PATH environment variable settlement.
 
