@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -509,7 +509,7 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 	qtractorPluginParam *pParam, float fValue, bool bUpdate )
 	: qtractorCommand(QString(pParam->name()).toLower()),
 		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
-		m_fPrevValue(pParam->prevValue())
+		m_fPrevValue(pParam->value())
 {
 	setRefresh(false);
 
@@ -531,7 +531,7 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 				float fLastValue = pLastParamCommand->value();
 				int   iPrevSign  = (fPrevValue > fLastValue ? +1 : -1);
 				int   iCurrSign  = (fPrevValue < m_fValue   ? +1 : -1); 
-				if (iPrevSign == iCurrSign) {
+				if (iPrevSign == iCurrSign || m_fValue == m_fPrevValue) {
 					m_fPrevValue = fLastValue;
 					(pSession->commands())->removeLastCommand();
 				}
