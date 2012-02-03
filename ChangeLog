@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Plugin parameter value redo/undo command aliasing fix.
+
 - Double-clicking in plugin list item now show/activates the plugin's
   editor window (was toggling visibility/activation).
 
