@@ -914,7 +914,7 @@ if test "x$ac_lv2" = "xyes"; then
       CPPFLAGS="$CPPFLAGS -Isrc/lv2"
       ac_incpath="$ac_incpath lv2"
    fi
-   AC_CHECK_HEADERS(lv2.h lv2_uri_map.h lv2_uri_unmap.h, [ac_lv2="yes"], [ac_lv2="no"])
+   AC_CHECK_HEADERS(lv2.h lv2_urid.h lv2_uri_map.h lv2_uri_unmap.h, [ac_lv2="yes"], [ac_lv2="no"])
    if test "x$ac_lv2" = "xyes"; then
       AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
    else
