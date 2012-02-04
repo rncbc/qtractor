@@ -1756,7 +1756,7 @@ void qtractorLv2Plugin::closeEditorEx (void)
 #ifdef CONFIG_LV2_GTK_UI
 	if (m_pGtkWindow) {
 		m_pGtkWindow = NULL;	
-		lv2_ui_cleanup();
+	//	lv2_ui_cleanup();
 		setEditorClosed(true);
 	}
 #endif

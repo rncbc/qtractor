@@ -6408,17 +6408,17 @@ void qtractorMainForm::timerSlot (void)
 	// Asynchronous observer update...
 	qtractorSubject::flushQueue();
 
+#ifdef CONFIG_DSSI
+#ifdef CONFIG_LIBLO
 	if ((m_iIdleTimer += QTRACTOR_TIMER_MSECS) >= QTRACTOR_TIMER_DELAY) {
 		m_iIdleTimer = 0;
-	#ifdef CONFIG_DSSI
-	#ifdef CONFIG_LIBLO
 		qtractorDssiPlugin::idleEditorAll();
-	#endif
-	#endif
-	#ifdef CONFIG_LV2_EXTERNAL_UI
-		qtractorLv2Plugin::idleEditorAll();
-	#endif
 	}
+#endif
+#endif
+#ifdef CONFIG_LV2_UI
+	qtractorLv2Plugin::idleEditorAll();
+#endif
 
 	// Register the next timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
