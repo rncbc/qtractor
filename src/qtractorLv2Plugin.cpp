@@ -101,25 +101,64 @@
 #include "qtractorMidiBuffer.h"
 #endif
 
-// URI map (uri_to_id) feature.
-#include "lv2_uri_map.h"
 
 #define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
 //undef LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
 
+
+// URI map/unmap features.
+#include "lv2_urid.h"
+
 static QHash<QString, uint32_t>    g_uri_map;
 static QHash<uint32_t, QByteArray> g_ids_map;
+
+
+static uint32_t qtractor_lv2_urid_map (
+	LV2_URID_Map_Handle /*handle*/, const char *uri )
+{
+#ifdef CONFIG_LV2_EVENT
+	if (strcmp(uri, SLV2_EVENT_CLASS_MIDI) == 0)
+	    return QTRACTOR_LV2_MIDI_EVENT_ID;
+#endif
+
+	return qtractorLv2Plugin::lv2_urid_map(uri);
+}
+
+static LV2_URID_Map g_lv2_urid_map =
+	{ NULL, qtractor_lv2_urid_map };
+static const LV2_Feature g_lv2_urid_map_feature =
+	{ LV2_URID_MAP_URI, &g_lv2_urid_map };
+
+
+static const char *qtractor_lv2_urid_unmap (
+	LV2_URID_Unmap_Handle /*handle*/, uint32_t id )
+{
+#ifdef CONFIG_LV2_EVENT
+	if (id == QTRACTOR_LV2_MIDI_EVENT_ID)
+	    return SLV2_EVENT_CLASS_MIDI;
+#endif
+
+	return qtractorLv2Plugin::lv2_urid_unmap(id);
+}
+
+static LV2_URID_Unmap g_lv2_urid_unmap =
+	{ NULL, qtractor_lv2_urid_unmap };
+static const LV2_Feature g_lv2_urid_unmap_feature =
+	{ LV2_URID_UNMAP_URI, &g_lv2_urid_unmap };
+
+
+// URI map (uri_to_id) feature (DEPRECATED)
+#include "lv2_uri_map.h"
 
 static uint32_t qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
 {
 #ifdef CONFIG_LV2_EVENT
 	if ((map && strcmp(map, LV2_EVENT_URI) == 0) &&
-	    strcmp(uri, SLV2_EVENT_CLASS_MIDI) == 0)
-	    return QTRACTOR_LV2_MIDI_EVENT_ID;
+		strcmp(uri, SLV2_EVENT_CLASS_MIDI) == 0)
+		return QTRACTOR_LV2_MIDI_EVENT_ID;
 #endif
-
-	return qtractorLv2Plugin::lv2_uri_to_id(uri);
+	return qtractorLv2Plugin::lv2_urid_map(uri);
 }
 
 static LV2_URI_Map_Feature g_lv2_uri_map =
@@ -128,7 +167,7 @@ static const LV2_Feature g_lv2_uri_map_feature =
 	{ LV2_URI_MAP_URI, &g_lv2_uri_map };
 
 
-// URI unmap (id_to_uri) feature.
+// URI unmap (id_to_uri) feature. (DEPRECATED)
 #include "lv2_uri_unmap.h"
 
 static const char *qtractor_lv2_id_to_uri (
@@ -136,11 +175,10 @@ static const char *qtractor_lv2_id_to_uri (
 {
 #ifdef CONFIG_LV2_EVENT
 	if ((map && strcmp(map, LV2_EVENT_URI) == 0)
-	    && id == QTRACTOR_LV2_MIDI_EVENT_ID)
-	    return SLV2_EVENT_CLASS_MIDI;
+		&& id == QTRACTOR_LV2_MIDI_EVENT_ID)
+		return SLV2_EVENT_CLASS_MIDI;
 #endif
-
-	return qtractorLv2Plugin::lv2_id_to_uri(id);
+	return qtractorLv2Plugin::lv2_urid_unmap(id);
 }
 
 static LV2_URI_Unmap_Feature g_lv2_uri_unmap =
@@ -260,7 +298,7 @@ static const void *qtractor_lv2_state_retrieve ( LV2_State_Handle handle,
 
 
 // URI map helpers (static).
-uint32_t qtractorLv2Plugin::lv2_uri_to_id ( const char *uri )
+uint32_t qtractorLv2Plugin::lv2_urid_map ( const char *uri )
 {
 	const QString sUri(uri);
 
@@ -275,7 +313,7 @@ uint32_t qtractorLv2Plugin::lv2_uri_to_id ( const char *uri )
 	return iter.value();
 }
 
-const char *qtractorLv2Plugin::lv2_id_to_uri ( uint32_t id )
+const char *qtractorLv2Plugin::lv2_urid_unmap ( uint32_t id )
 {
 	QHash<uint32_t, QByteArray>::ConstIterator iter
 		= g_ids_map.constFind(id);
@@ -424,8 +462,10 @@ static char *qtractor_lv2_state_make_path (
 
 static const LV2_Feature *g_lv2_features[] =
 {
-	&g_lv2_uri_map_feature,
-	&g_lv2_uri_unmap_feature,
+	&g_lv2_urid_map_feature,
+	&g_lv2_urid_unmap_feature,
+	&g_lv2_uri_map_feature,		// deprecated
+	&g_lv2_uri_unmap_feature,	// deprecated
 #ifdef CONFIG_LV2_EVENT
 	&g_lv2_event_ref_feature,
 #endif
@@ -2103,7 +2143,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		} else {
 			m_lv2_state_configs.insert(sKey, qUncompress(
 				QByteArray::fromBase64(state_config.value().toUtf8())));
-			m_lv2_state_ctypes.insert(sKey, lv2_uri_to_id(pszType));
+			m_lv2_state_ctypes.insert(sKey, lv2_urid_map(pszType));
 		}
 	}
 
@@ -2138,7 +2178,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		} else {
 			m_lv2_persist_configs.insert(sKey, qUncompress(
 				QByteArray::fromBase64(persist_config.value().toUtf8())));
-			m_lv2_persist_ctypes.insert(sKey, lv2_uri_to_id(pszType));
+			m_lv2_persist_ctypes.insert(sKey, lv2_urid_map(pszType));
 		}
 	}
 
@@ -2278,11 +2318,11 @@ int qtractorLv2Plugin::lv2_persist_store (
 	if ((flags & (LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE)) == 0)
 		return 1;
 
-	const char *pszKey = lv2_id_to_uri(key);
+	const char *pszKey = lv2_urid_unmap(key);
 	if (pszKey == NULL)
 		return 1;
 
-	const char *pszType = lv2_id_to_uri(type);
+	const char *pszType = lv2_urid_unmap(type);
 	if (pszType == NULL)
 		return 1;
 
@@ -2304,7 +2344,7 @@ int qtractorLv2Plugin::lv2_persist_store (
 const void *qtractorLv2Plugin::lv2_persist_retrieve (
 	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
 {
-	const char *pszKey = lv2_id_to_uri(key);
+	const char *pszKey = lv2_urid_unmap(key);
 	if (pszKey == NULL)
 		return NULL;
 
@@ -2327,7 +2367,7 @@ const void *qtractorLv2Plugin::lv2_persist_retrieve (
 		if (ctype != m_lv2_persist_ctypes.constEnd())
 			*type = ctype.value();
 		else
-			*type = lv2_uri_to_id(LV2_ATOM_STRING_URI);
+			*type = lv2_urid_map(LV2_ATOM_STRING_URI);
 	}
 	if (flags)
 		*flags = LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE;
@@ -2369,11 +2409,11 @@ int qtractorLv2Plugin::lv2_state_store (
 	if ((flags & (LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE)) == 0)
 		return 1;
 
-	const char *pszKey = lv2_id_to_uri(key);
+	const char *pszKey = lv2_urid_unmap(key);
 	if (pszKey == NULL)
 		return 1;
 
-	const char *pszType = lv2_id_to_uri(type);
+	const char *pszType = lv2_urid_unmap(type);
 	if (pszType == NULL)
 		return 1;
 
@@ -2395,7 +2435,7 @@ int qtractorLv2Plugin::lv2_state_store (
 const void *qtractorLv2Plugin::lv2_state_retrieve (
 	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
 {
-	const char *pszKey = lv2_id_to_uri(key);
+	const char *pszKey = lv2_urid_unmap(key);
 	if (pszKey == NULL)
 		return NULL;
 
@@ -2418,7 +2458,7 @@ const void *qtractorLv2Plugin::lv2_state_retrieve (
 		if (ctype != m_lv2_state_ctypes.constEnd())
 			*type = ctype.value();
 		else
-			*type = lv2_uri_to_id(LV2_ATOM_STRING_URI);
+			*type = lv2_urid_map(LV2_ATOM_STRING_URI);
 	}
 	if (flags)
 		*flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;

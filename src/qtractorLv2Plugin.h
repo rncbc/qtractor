@@ -256,9 +256,9 @@ public:
 
 #endif
 
-	// URI map helpers.
-	static uint32_t    lv2_uri_to_id(const char *uri);
-	static const char *lv2_id_to_uri(uint32_t id);
+	// URID map/unmap helpers.
+	static uint32_t    lv2_urid_map(const char *uri);
+	static const char *lv2_urid_unmap(uint32_t id);
 
 protected:
 
