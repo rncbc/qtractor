@@ -609,7 +609,7 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 				float fLastGain = pLastGainCommand->gain();
 				int   iPrevSign = (fPrevGain > fLastGain ? +1 : -1);
 				int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1); 
-				if (iPrevSign == iCurrSign) {
+				if (iPrevSign == iCurrSign || m_fGain == m_fPrevGain) {
 					m_fPrevGain = fLastGain;
 					(pSession->commands())->removeLastCommand();
 				}
@@ -686,7 +686,7 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 				float fLastPanning = pLastPanningCommand->panning();
 				int   iPrevSign    = (fPrevPanning > fLastPanning ? +1 : -1);
 				int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1); 
-				if (iPrevSign == iCurrSign) {
+				if (iPrevSign == iCurrSign || m_fPanning == m_fPrevPanning) {
 					m_fPrevPanning = fLastPanning;
 					(pSession->commands())->removeLastCommand();
 				}
