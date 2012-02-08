@@ -587,13 +587,13 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2509"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3992"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3995"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2509"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3992"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3995"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -712,7 +712,7 @@ Délka:	%4</translation>
         <translation>%1 Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="924"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="928"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banka %2</translation>
     </message>
@@ -8667,7 +8667,7 @@ Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="155"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="414"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="416"/>
         <source>Open SysEx</source>
         <translation>Otevřít SysEx</translation>
     </message>
@@ -8678,7 +8678,7 @@ Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="184"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="479"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="481"/>
         <source>Save SysEx</source>
         <translation>Uložit SysEx</translation>
     </message>
@@ -8749,37 +8749,37 @@ Chcete uložit změny?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="207"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="281"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="415"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="209"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="283"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="417"/>
         <source>SysEx files (*.%1)</source>
         <translation>Soubory SysEx (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="208"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="210"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
         <translation>Soubory MIDI (*.mid *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="209"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="211"/>
         <source>Import SysEx Files</source>
         <translation>Zavést soubory SysEx</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="280"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="282"/>
         <source>Export SysEx File</source>
         <translation>Vyvést do souboru SysEx</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="313"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="506"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="550"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="738"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="315"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="508"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="552"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="745"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="314"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="316"/>
         <source>The SysEx file already exists:
 
 &quot;%1&quot;
@@ -8792,12 +8792,12 @@ Do you want to replace it?</source>
 Chcete jej nahradit?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="480"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="482"/>
         <source>Sysex files (*.%1)</source>
         <translation>Soubory SysEx (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="507"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="509"/>
         <source>About to replace SysEx:
 
 &quot;%1&quot;
@@ -8810,7 +8810,7 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="551"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="553"/>
         <source>About to delete SysEx:
 
 &quot;%1&quot;
@@ -8823,7 +8823,7 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="739"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="746"/>
         <source>SysEx settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -8832,12 +8832,12 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="1011"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1018"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="1012"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1019"/>
         <source>SysEx could not be loaded:
 
 &quot;%1&quot;.

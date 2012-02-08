@@ -208,6 +208,9 @@ unsigned int               qtractorMidiManager::g_iSyncThreadRefCount = 0;
 bool qtractorMidiManager::g_bAudioOutputBus = false;
 bool qtractorMidiManager::g_bAudioOutputAutoConnect = true;
 
+// AG: Buffer size large enough to hold some sysex events.
+const long c_iMaxMidiData = 512;
+
 // Constructor.
 qtractorMidiManager::qtractorMidiManager (
 	qtractorPluginList *pPluginList, unsigned int iBufferSize ) :
@@ -235,7 +238,7 @@ qtractorMidiManager::qtractorMidiManager (
 	m_pBuffer = new snd_seq_event_t [MaxMidiEvents];
 
 #ifdef CONFIG_MIDI_PARSER
-	if (snd_midi_event_new(4, &m_pMidiParser) == 0)
+	if (snd_midi_event_new(c_iMaxMidiData, &m_pMidiParser) == 0)
 		snd_midi_event_no_status(m_pMidiParser, 1);
 #endif
 
@@ -452,26 +455,18 @@ void qtractorMidiManager::process (
 	#endif
 		const unsigned int MaxMidiEvents = (bufferSize() << 1);
 		unsigned int iMidiEvents = 0;
+		// AG: Untangle treatment of VST and LV2 plugins,
+		// so that we can use a larger buffer for the latter...
+	#ifdef CONFIG_VST
+		unsigned int iVstMidiEvents = 0;
+	#endif
 		unsigned char *pMidiData;
 		long iMidiData;
 		for (unsigned int i = 0; i < m_iBuffer; ++i) {
 			snd_seq_event_t *pEv = &m_pBuffer[i];
-		#ifdef CONFIG_VST
-			VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[m_iEventBuffer & 1];
-			VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iMidiEvents];
-			::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
-			pVstMidiEvent->type = kVstMidiType;
-			pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
-			pVstMidiEvent->deltaFrames = pEv->time.tick;
-			pMidiData = (unsigned char *) &pVstMidiEvent->midiData[0];
-			iMidiData = sizeof(pVstMidiEvent->midiData);
-		#else
-		#ifdef CONFIG_LV2_EVENT
-			unsigned char midiData[4];
+			unsigned char midiData[c_iMaxMidiData];
 			pMidiData = &midiData[0];
 			iMidiData = sizeof(midiData);
-		#endif
-		#endif
 			iMidiData = snd_midi_event_decode(m_pMidiParser,
 				pMidiData, iMidiData, pEv);
 			if (iMidiData < 0)
@@ -484,18 +479,27 @@ void qtractorMidiManager::process (
 				fprintf(stderr, " %02x", pMidiData[i]);
 			fprintf(stderr, " }\n");
 		#endif
-		#ifdef CONFIG_VST
-			pVstEvents->events[iMidiEvents] = (VstEvent *) pVstMidiEvent;
-		#endif
 		#ifdef CONFIG_LV2_EVENT
 			lv2_event_write(&iter, pEv->time.tick, 0,
 				QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+		#endif
+		#ifdef CONFIG_VST
+			VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[m_iEventBuffer & 1];
+			VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iVstMidiEvents];
+			if (iMidiData < long(pVstMidiEvent->midiData)) {
+				::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
+				pVstMidiEvent->type = kVstMidiType;
+				pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
+				pVstMidiEvent->deltaFrames = pEv->time.tick;
+				::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
+				pVstEvents->events[iVstMidiEvents++] = (VstEvent *) pVstMidiEvent;
+			}
 		#endif
 			if (++iMidiEvents >= MaxMidiEvents)
 				break;
 		}
 	#ifdef CONFIG_VST
-		pVstEvents->numEvents = iMidiEvents;
+		pVstEvents->numEvents = iVstMidiEvents;
 	//	pVstEvents->reserved = 0;
 	#endif
 	}
