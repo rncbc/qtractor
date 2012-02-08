@@ -22,6 +22,8 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiSysexForm.h"
 #include "qtractorMidiSysex.h"
+#include "qtractorMidiEngine.h"
+#include "qtractorSession.h"
 
 #include "qtractorMidiFile.h"
 
@@ -717,6 +719,11 @@ void qtractorMidiSysexForm::accept (void)
 				new qtractorMidiSysex(*(pSysexItem->sysex())));
 		}
 	}
+
+	// AG: Reset the controllers so that changes take effect immediately...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && pSession->midiEngine())
+		pSession->midiEngine()->resetAllControllers(true);
 
 	// Just go with dialog acceptance.
 	QDialog::accept();

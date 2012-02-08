@@ -3904,6 +3904,9 @@ void qtractorMidiBus::sendSysexList (void) const
 		ev.type = SND_SEQ_EVENT_SYSEX;
 		snd_seq_ev_set_sysex(&ev, pSysex->size(), pSysex->data());
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+		// AG: Do it for the MIDI plugins too...
+		if (pluginList_out() && pluginList_out()->midiManager())
+			(pluginList_out()->midiManager())->direct(&ev);
 	}
 
 	pMidiEngine->flush();
