@@ -3576,7 +3576,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::PITCHBEND:
-		sToolTip = tr("Pich Bend (%d)")
+		sToolTip += tr("Pitch Bend (%1)")
 			.arg(int(pEvent->pitchBend() + iValueDelta));
 		break;
 	case qtractorMidiEvent::SYSEX:

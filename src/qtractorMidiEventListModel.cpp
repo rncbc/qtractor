@@ -310,7 +310,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::CHANPRESS:
 				return tr("Chan Press");
 			case qtractorMidiEvent::PITCHBEND:
-				return tr("Pich Bend");
+				return tr("Pitch Bend");
 			case qtractorMidiEvent::SYSEX:
 				return tr("SysEx");
 			case qtractorMidiEvent::META:
