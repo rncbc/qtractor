@@ -6843,8 +6843,12 @@ Hodnota:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3579"/>
+        <source>Pitch Bend (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Pich Bend (%d)</source>
-        <translation>Ohyb výšky tónu (%d)</translation>
+        <translation type="obsolete">Ohyb výšky tónu (%d)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3586"/>
@@ -8499,8 +8503,12 @@ Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventListModel.cpp" line="313"/>
+        <source>Pitch Bend</source>
+        <translation type="unfinished">Ohyb výšky tónu</translation>
+    </message>
+    <message>
         <source>Pich Bend</source>
-        <translation>Ohyb výšky tónu</translation>
+        <translation type="obsolete">Ohyb výšky tónu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventListModel.cpp" line="315"/>
