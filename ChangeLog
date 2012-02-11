@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Auto-monitored MIDI events are now merged/queued correctly into the
+  instrument plugin playback queue, avoiding sudden crashes, hopefully.
+  (EXPERIMENTAL)
+
 - Awesome patch from Albert Graef, thanks, which makes most MIDI SysEx  
   to get through MIDI instrument pluginsi at last; applies to DSSI and
   LV2 only. (EXPERIMENTAL)

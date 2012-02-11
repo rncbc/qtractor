@@ -354,7 +354,10 @@ bool qtractorMidiManager::queued (
 		return m_postedBuffer.insert(&ev, iTick);
 	}
 
-	return m_queuedBuffer.push(pEvent, iTick);
+	if (pEvent->type == SND_SEQ_EVENT_NOTEOFF)
+		return m_postedBuffer.insert(pEvent, iTick);
+	else
+		return m_queuedBuffer.insert(pEvent, iTick);
 }
 
 
