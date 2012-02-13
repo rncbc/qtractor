@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
+#include "qtractorClip.h"
 
 #include <QDomDocument>
 
@@ -45,6 +46,100 @@
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDropEvent>
+
+
+//----------------------------------------------------------------------
+// class qtractorFileList -- file path registry.
+//
+
+// File path registry management.
+qtractorFileListItem *qtractorFileList::findFileItem (
+	const QString& sPath ) const
+{
+	Item *pItem = findItem(sPath);
+	return (pItem ? pItem->fileItem() : NULL);
+}
+
+
+void qtractorFileList::addFileItem (
+	qtractorFileListItem *pFileItem )
+{
+	Item *pItem = addItem(pFileItem->path());
+	if (pItem)
+		pItem->setFileItem(pFileItem);
+}
+
+
+void qtractorFileList::removeFileItem (
+	qtractorFileListItem *pFileItem )
+{
+	Item *pItem = findItem(pFileItem->path());
+	if (pItem) {
+		pItem->setFileItem(NULL);
+		removeItem(pItem);
+	}
+}
+
+
+// Clip/path registry management.
+void qtractorFileList::addClipItem ( qtractorClip *pClip )
+{
+	Item *pItem = addItem(pClip->filename());
+	if (pItem)
+		pItem->addClip(pClip);
+}
+
+
+void qtractorFileList::removeClipItem ( qtractorClip *pClip )
+{
+	Item *pItem = findItem(pClip->filename());
+	if (pItem) {
+		pItem->removeClip(pClip);
+		removeItem(pItem);
+	}
+}
+
+
+// File hash table management.
+qtractorFileList::Item *qtractorFileList::findItem ( const QString& sPath ) const
+{
+	return m_items.value(sPath, NULL);
+}
+
+
+qtractorFileList::Item *qtractorFileList::addItem ( const QString& sPath )
+{
+	Item *pItem = NULL;
+
+	Hash::ConstIterator iter = m_items.constFind(sPath);
+	if (iter == m_items.constEnd()) {
+		pItem = new Item(sPath);
+		m_items.insert(sPath, pItem);
+	}
+	else pItem = iter.value();
+
+	pItem->addRef();
+
+	return pItem;
+}
+
+
+void qtractorFileList::removeItem ( qtractorFileList::Item *pItem )
+{
+	pItem->removeRef();
+
+	if (pItem->refCount() < 1) {
+		m_items.remove(pItem->path());
+		delete pItem;
+	}
+}
+
+
+void qtractorFileList::clear (void)
+{
+	qDeleteAll(m_items);
+	m_items.clear();
+}
 
 
 //----------------------------------------------------------------------
@@ -369,6 +464,8 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 	if (pFileItem == NULL) {
 		pFileItem = createFileItem(sPath);
 		if (pFileItem) {
+			// Add to file/path registry...
+			m_files.addFileItem(pFileItem);
 			// Insert the new file item in place...
 			if (pParentItem) {
 				if (pParentItem->type() == GroupItem) {
@@ -634,6 +731,13 @@ void qtractorFileListView::deleteItem (void)
 		QListIterator<QTreeWidgetItem *> iter(items);
 		while (iter.hasNext()) {
 			QTreeWidgetItem *pItem = iter.next();
+			// Remove from file registry, when applicable...
+			if (pItem->type() == FileItem) {
+				qtractorFileListItem *pFileItem
+					= static_cast<qtractorFileListItem *> (pItem);
+				if (pFileItem) m_files.removeFileItem(pFileItem);
+			}
+			// Scrap view item...
 			delete pItem;
 			++iUpdate;
 		}
@@ -653,7 +757,15 @@ void qtractorFileListView::deleteItem (void)
 					== QMessageBox::Cancel)
 					return;
 			}
-			// Definite single-delete...
+			// Remove from file registry, when applicable...
+			if (pItem->type() == FileItem) {
+				if (pItem->type() == FileItem) {
+					qtractorFileListItem *pFileItem
+						= static_cast<qtractorFileListItem *> (pItem);
+					if (pFileItem) m_files.removeFileItem(pFileItem);
+				}
+			}
+			// Scrap view item...
 			delete pItem;
 			++iUpdate;
 		}
@@ -694,6 +806,8 @@ void qtractorFileListView::clear (void)
 	dragLeaveEvent(NULL);
 	m_pDragItem = NULL;
 
+	m_files.clear();
+
 	QTreeWidget::clear();
 }
 
@@ -710,7 +824,8 @@ qtractorFileGroupItem *qtractorFileListView::findGroupItem (
 qtractorFileListItem *qtractorFileListView::findFileItem (
 	const QString& sPath ) const
 {
-	return static_cast<qtractorFileListItem *> (findItem(sPath, FileItem));
+//	return static_cast<qtractorFileListItem *> (findItem(sPath, FileItem));
+	return m_files.findFileItem(sPath);
 }
 
 
@@ -1320,6 +1435,7 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 					pParentItem->addChild(pFileItem);
 				else
 					QTreeWidget::addTopLevelItem(pFileItem);
+				m_files.addFileItem(pFileItem);
 			}
 		}
 	}
