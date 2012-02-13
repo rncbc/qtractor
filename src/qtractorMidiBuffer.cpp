@@ -215,7 +215,7 @@ const long c_iMaxMidiData = 512;
 qtractorMidiManager::qtractorMidiManager (
 	qtractorPluginList *pPluginList, unsigned int iBufferSize ) :
 	m_pPluginList(pPluginList),
-	m_directBuffer(iBufferSize >> 2),
+	m_directBuffer(iBufferSize >> 1),
 	m_queuedBuffer(iBufferSize),
 	m_postedBuffer(iBufferSize),
 	m_controllerBuffer(iBufferSize >> 2),
@@ -249,7 +249,7 @@ qtractorMidiManager::qtractorMidiManager (
 #endif
 #ifdef CONFIG_LV2_EVENT
 	const unsigned int Lv2BufferSize
-		= sizeof(LV2_Event)	* MaxMidiEvents;
+		= (sizeof(LV2_Event) + 4) * MaxMidiEvents;
 #endif
 	for (unsigned short i = 0; i < 2; ++i) {
 	#ifdef CONFIG_VST
