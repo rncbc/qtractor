@@ -201,7 +201,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 			p.drawRect(QRectF(x, yk, wk, hk));
 			if (k == 0) {
 				int y1 = y + m_iItemHeight;
-				p.drawText(2, y1 - 2, tr("C%1").arg((n / 12) - 2));
+				p.drawText(2, y1 - 2, tr("C%1").arg((n / 12) - 1));
 			//	p.drawLine(0, y1, x, y1);
 			}
 		}
