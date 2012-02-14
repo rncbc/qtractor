@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.3.27, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.3.28, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -139,16 +139,6 @@ AC_ARG_ENABLE(lv2-external-ui,
   AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
   [ac_lv2_external_ui="$enableval"],
   [ac_lv2_external_ui="yes"])
-
-AC_ARG_ENABLE(lv2-saverestore,
-  AC_HELP_STRING([--enable-lv2-saverestore], [enable LV2 plug-in save/restore support (default=yes)]),
-  [ac_lv2_saverestore="$enableval"],
-  [ac_lv2_saverestore="yes"])
-
-AC_ARG_ENABLE(lv2-persist,
-  AC_HELP_STRING([--enable-lv2-persist], [enable LV2 plug-in persistence support (default=yes)]),
-  [ac_lv2_persist="$enableval"],
-  [ac_lv2_persist="yes"])
 
 AC_ARG_ENABLE(lv2-state,
   AC_HELP_STRING([--enable-lv2-state], [enable LV2 plug-in state support (default=yes)]),
@@ -633,8 +623,6 @@ if test "x$ac_slv2" = "xyes"; then
       ac_lv2_gtk_ui="no"
       ac_lv2_qt4_ui="no"
       ac_lv2_external_ui="no"
-      ac_lv2_saverestore="no"
-      ac_lv2_persist="no"
       ac_lv2_state="no"
       ac_lv2_state_files="no"
    fi
@@ -669,8 +657,6 @@ if test "x$ac_slv2" = "xno" -a "x$ac_lilv" = "xno"; then
    ac_lv2_gtk_ui="no"
    ac_lv2_qt4_ui="no"
    ac_lv2_external_ui="no"
-   ac_lv2_saverestore="no"
-   ac_lv2_persist="no"
    ac_lv2_state="no"
    ac_lv2_state_files="no"
 fi
@@ -924,8 +910,6 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_gtk_ui="no"
       ac_lv2_qt4_ui="no"
       ac_lv2_external_ui="no"
-      ac_lv2_saverestore="no"
-      ac_lv2_persist="no"
       ac_lv2_state="no"
       ac_lv2_state_files="no"
    fi
@@ -968,25 +952,6 @@ if test "x$ac_lv2_external_ui" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 external UI extension is available.])
    else
       AC_MSG_WARN([*** LV2 external UI extension will be disabled.])
-   fi
-fi
-if test "x$ac_lv2_saverestore" = "xyes"; then
-   AC_CHECK_HEADER(lv2_saverestore.h, [ac_lv2_saverestore="yes"], [ac_lv2_saverestore="no"])
-   if test "x$ac_lv2_saverestore" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_SAVERESTORE, 1, [Define if LV2 save/restore extension is available.])
-   else
-      AC_MSG_WARN([*** LV2 save/restore extension will be disabled.])
-   fi
-fi
-if test "x$ac_lv2_persist" = "xyes"; then
-   AC_CHECK_HEADER(lv2_persist.h, [ac_lv2_persist="yes"], [ac_lv2_persist="no"],
-      [[#include <stdlib.h>
-        #include <lv2.h>
-      ]])
-   if test "x$ac_lv2_persist" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_PERSIST, 1, [Define if LV2 persist extension is available.])
-   else
-      AC_MSG_WARN([*** LV2 persist extension will be disabled.])
    fi
 fi
 if test "x$ac_lv2_state" = "xyes"; then
@@ -1084,8 +1049,6 @@ echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
-echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
-echo "  LV2 Plug-in Persist support  . . . . . . . . . . .: $ac_lv2_persist"
 echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 Plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
 echo

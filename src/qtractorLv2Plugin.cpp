@@ -204,60 +204,6 @@ static const LV2_Feature g_lv2_event_ref_feature =
 #endif	// CONFIG_LV2_EVENT
 
 
-#ifdef CONFIG_LV2_SAVERESTORE
-
-#include "qtractorSession.h"
-
-#include <QByteArray>
-#include <QFileInfo>
-#include <QFile>
-#include <QDir>
-
-static const LV2_Feature g_lv2_saverestore_feature =
-	{ LV2_SAVERESTORE_URI, NULL };
-
-#endif	// CONFIG_LV2_SAVERESTORE
-
-
-#ifdef CONFIG_LV2_PERSIST
-
-static const LV2_Feature g_lv2_persist_feature =
-	{ LV2_PERSIST_URI, NULL };
-
-static int qtractor_lv2_persist_store ( void *callback_data,
-	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
-{
-	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (callback_data);
-	if (pLv2Plugin == NULL)
-		return 1;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_persist_store(%p, %d, %d, %d, %d)", pLv2Plugin,
-		int(key), int(size), int(type), int(flags));
-#endif
-
-	return pLv2Plugin->lv2_persist_store(key, value, size, type, flags);
-}
-
-static const void *qtractor_lv2_persist_retrieve ( void *callback_data,
-	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
-{
-	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (callback_data);
-	if (pLv2Plugin == NULL)
-		return NULL;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_persist_retrieve(%p, %d)", pLv2Plugin, int(key));
-#endif
-
-	return pLv2Plugin->lv2_persist_retrieve(key, size, type, flags);
-}
-
-#endif	// CONFIG_LV2_PERSIST
-
-
 #ifdef CONFIG_LV2_STATE
 
 static const LV2_Feature g_lv2_state_feature =
@@ -469,12 +415,6 @@ static const LV2_Feature *g_lv2_features[] =
 #ifdef CONFIG_LV2_EVENT
 	&g_lv2_event_ref_feature,
 #endif
-#ifdef CONFIG_LV2_SAVERESTORE
-	&g_lv2_saverestore_feature,
-#endif
-#ifdef CONFIG_LV2_PERSIST
-	&g_lv2_persist_feature,
-#endif
 #ifdef CONFIG_LV2_STATE
 	&g_lv2_state_feature,
 #endif
@@ -635,14 +575,6 @@ static SLV2Value g_slv2_qt4_ui_class = NULL;
 static SLV2Value g_slv2_realtime_hint = NULL;
 static SLV2Value g_slv2_extension_data_hint = NULL;
 
-#ifdef CONFIG_LV2_SAVERESTORE
-static SLV2Value g_slv2_saverestore_hint = NULL;
-#endif
-
-#ifdef CONFIG_LV2_PERSIST
-static SLV2Value g_slv2_persist_hint = NULL;
-#endif
-
 #ifdef CONFIG_LV2_STATE
 static SLV2Value g_slv2_state_interface_hint = NULL;
 #endif
@@ -735,30 +667,20 @@ bool qtractorLv2PluginType::open (void)
 	m_bRealtime = slv2_plugin_has_feature(m_slv2_plugin, g_slv2_realtime_hint);
 
 	m_bConfigure = false;
-#ifdef CONFIG_LV2_SAVERESTORE
-	m_bConfigure = m_bConfigure ||
-		slv2_plugin_has_feature(m_slv2_plugin, g_slv2_saverestore_hint);
-#endif
-#ifdef CONFIG_LV2_PERSIST
-	m_bConfigure = m_bConfigure ||
-		slv2_plugin_has_feature(m_slv2_plugin, g_slv2_persist_hint);
-#endif
 #ifdef CONFIG_LV2_STATE
-	if (!m_bConfigure) {
-		// Query for state interface extension data...
-		SLV2Values nodes = slv2_plugin_get_value(m_slv2_plugin,
-			g_slv2_extension_data_hint);
-	#ifdef CONFIG_LIBLILV
-		LILV_FOREACH(nodes, i, nodes) {
-	#else
-		int iNumNodes = slv2_values_size(nodes);
-		for (int i = 0; i < iNumNodes; ++i) {
-	#endif
-			const SLV2Value node = slv2_values_get_at(nodes, i);
-			if (slv2_value_equals(node, g_slv2_state_interface_hint)) {
-				m_bConfigure = true;
-				break;
-			}
+	// Query for state interface extension data...
+	SLV2Values nodes = slv2_plugin_get_value(m_slv2_plugin,
+		g_slv2_extension_data_hint);
+#ifdef CONFIG_LIBLILV
+	LILV_FOREACH(nodes, i, nodes) {
+#else
+	int iNumNodes = slv2_values_size(nodes);
+	for (int i = 0; i < iNumNodes; ++i) {
+#endif
+		const SLV2Value node = slv2_values_get_at(nodes, i);
+		if (slv2_value_equals(node, g_slv2_state_interface_hint)) {
+			m_bConfigure = true;
+			break;
 		}
 	}
 #endif
@@ -895,14 +817,6 @@ void qtractorLv2PluginType::slv2_open (void)
 	g_slv2_extension_data_hint = slv2_value_new_uri(g_slv2_world,
 		SLV2_NAMESPACE_LV2 "extensionData");
 
-#ifdef CONFIG_LV2_SAVERESTORE
-	g_slv2_saverestore_hint = slv2_value_new_uri(g_slv2_world,
-		LV2_SAVERESTORE_URI);
-#endif
-#ifdef CONFIG_LV2_PERSIST
-	g_slv2_persist_hint = slv2_value_new_uri(g_slv2_world,
-		LV2_PERSIST_URI);
-#endif
 #ifdef CONFIG_LV2_STATE
 	g_slv2_state_interface_hint = slv2_value_new_uri(g_slv2_world,
 		LV2_STATE_INTERFACE_URI);
@@ -937,12 +851,6 @@ void qtractorLv2PluginType::slv2_close (void)
 
 #ifdef CONFIG_LV2_STATE
 	slv2_value_free(g_slv2_state_interface_hint);
-#endif
-#ifdef CONFIG_LV2_PERSIST
-	slv2_value_free(g_slv2_persist_hint);
-#endif
-#ifdef CONFIG_LV2_SAVERESTORE
-	slv2_value_free(g_slv2_saverestore_hint);
 #endif
 
 	slv2_value_free(g_slv2_extension_data_hint);
@@ -1981,45 +1889,6 @@ void qtractorLv2Plugin::lv2_ui_cleanup (void) const
 #endif	// CONFIG_LV2_UI
 
 
-// Configuration (restore) stuff.
-void qtractorLv2Plugin::configure ( const QString& sKey, const QString& sValue )
-{
-	if (!type()->isConfigure())
-		return;
-
-#ifdef CONFIG_LV2_SAVERESTORE
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	const QDir dir(pSession->sessionDir());
-
-	if (sKey.section(':', 0, 0) == "saverestore") {
-		QFileInfo fi(dir, sValue);
-		if (fi.exists() && fi.isReadable()) {
-			const QByteArray aName = sKey.section(':', 1).toUtf8();
-			const QByteArray aPath = fi.absoluteFilePath().toUtf8();
-			LV2SR_File sr_file;
-			sr_file.name = (char *) aName.constData();
-			sr_file.path = (char *) aPath.constData();
-			sr_file.must_copy = 0;
-		#ifdef CONFIG_DEBUG
-			qDebug("qtractorLv2Plugin[%p]::configure() name=\"%s\" path=\"%s\"",
-				this, sr_file.name, sr_file.path);
-		#endif
-			const LV2SR_File *ppFiles[2];
-			ppFiles[0] = &sr_file;
-			ppFiles[1] = NULL;
-			for (unsigned short i = 0; i < instances(); ++i)
-				lv2_sr_restore(i, ppFiles);
-		}
-	}
-
-#endif	// CONFIG_LV2_SAVERESTORE
-}
-
-
 // Plugin configuration/state (save) snapshot.
 void qtractorLv2Plugin::freezeConfigs (void)
 {
@@ -2039,83 +1908,6 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	}
 
 #endif	// CONFIG_LV2_STATE
-
-#ifdef CONFIG_LV2_PERSIST
-
-	for (unsigned short i = 0; i < instances(); ++i) {
-		const LV2_Persist *persist = lv2_persist_descriptor(i);
-		if (persist) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*persist->save)(handle, qtractor_lv2_persist_store, this);
-		}
-	}
-
-#endif	// CONFIG_LV2_PERSIST
-
-#ifdef CONFIG_LV2_SAVERESTORE
-	
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	const QDir dir(pSession->sessionDir());
-	
-	LV2SR_File **ppFiles = NULL;
-	if (!lv2_sr_save(0, dir.absolutePath().toUtf8().constData(), &ppFiles))
-		return;
-	if (ppFiles == NULL)
-		return;
-
-	for (int i = 0; ppFiles[i]; ++i) {
-		LV2SR_File *pFile = ppFiles[i];
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorLv2Plugin[%p]::freezeConfigs(%d) name=\"%s\" path=\"%s\"",
-			this, i, pFile->name, pFile->path);
-	#endif
-		const QString sName = pFile->name;
-		const QString sPath = pFile->path;
-		QFile file(sPath);
-		if (file.exists()) {
-			// Always copy/rename the damn file...
-			QString sNewFile;
-			const QString& sPreset = preset();
-			if (sPreset.isEmpty()) {
-				const QString& sSessionName = pSession->sessionName();
-				if (!sSessionName.isEmpty()) {
-					sNewFile += qtractorSession::sanitize(sSessionName);
-					sNewFile += '-';
-				}
-				const QString& sListName = list()->name();
-				if (!sListName.isEmpty()) {
-					sNewFile += qtractorSession::sanitize(sListName);
-					sNewFile += '-';
-				}
-			}
-			sNewFile += type()->label();
-			sNewFile += '-';
-			if (sPreset.isEmpty()) {
-				sNewFile += QString::number(type()->uniqueID(), 16);
-			} else {
-				sNewFile += qtractorSession::sanitize(sPreset);
-			}
-			const QFileInfo fi(dir, sNewFile + "-lv2.sav");
-			const QString sNewPath = fi.absoluteFilePath();
-			if (fi.exists()) QFile::remove(sNewPath);
-			if (pFile->must_copy) {
-				file.copy(sNewPath);
-			} else {
-				file.rename(sNewPath);
-			}
-			setConfig("saverestore:" + sName, fi.fileName());
-		}
-		::free(pFile->path);
-		::free(pFile->name);
-		::free(pFile);
-	}
-	::free(ppFiles);
-
-#endif	// CONFIG_LV2_SAVERESTORE
 }
 
 // Plugin configuration/state (load) realization.
@@ -2159,40 +1951,6 @@ void qtractorLv2Plugin::realizeConfigs (void)
 
 #endif	// CONFIG_LV2_STATE
 
-#ifdef CONFIG_LV2_PERSIST
-
-	m_lv2_persist_configs.clear();
-	m_lv2_persist_ctypes.clear();
-
-	const ConfigTypes& persist_ctypes = configTypes();
-	Configs::ConstIterator persist_config = configs().constBegin();
-	for (; persist_config != configs().constEnd(); ++persist_config) {
-		const QString& sKey = persist_config.key();
-		QByteArray aType;
-		ConfigTypes::ConstIterator ctype = persist_ctypes.constFind(sKey);
-		if (ctype != persist_ctypes.constEnd())
-			aType = ctype.value().toUtf8();
-		const char *pszType = aType.constData();
-		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
-			m_lv2_persist_configs.insert(sKey, persist_config.value().toUtf8());
-		} else {
-			m_lv2_persist_configs.insert(sKey, qUncompress(
-				QByteArray::fromBase64(persist_config.value().toUtf8())));
-			m_lv2_persist_ctypes.insert(sKey, lv2_urid_map(pszType));
-		}
-	}
-
-	for (unsigned short i = 0; i < instances(); ++i) {
-		const LV2_Persist *persist = lv2_persist_descriptor(i);
-		if (persist) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*persist->restore)(handle, qtractor_lv2_persist_retrieve, this);
-		}
-	}
-
-#endif	// CONFIG_LV2_PERSIST
-
 	qtractorPlugin::realizeConfigs();
 }
 
@@ -2208,175 +1966,8 @@ void qtractorLv2Plugin::releaseConfigs (void)
 	m_lv2_state_ctypes.clear();
 #endif
 
-#ifdef CONFIG_LV2_PERSIST
-	m_lv2_persist_configs.clear();
-	m_lv2_persist_ctypes.clear();
-#endif
-
 	qtractorPlugin::releaseConfigs();
 }
-
-
-#ifdef CONFIG_LV2_SAVERESTORE
-
-// LV2 Save/Restore extension data descriptor accessor.
-const LV2SR_Descriptor *qtractorLv2Plugin::lv2_sr_descriptor (
-	unsigned short iInstance ) const
-{
-	const SLV2Instance instance = slv2_instance(iInstance);
-	if (instance == NULL)
-		return NULL;
-
-	const LV2_Descriptor *descriptor = slv2_instance_get_descriptor(instance);
-	if (descriptor == NULL)
-		return NULL;
-	if (descriptor->extension_data == NULL)
-		return NULL;
-
-	return (const LV2SR_Descriptor *)
-		(*descriptor->extension_data)(LV2_SAVERESTORE_URI);
-}
-
-
-bool qtractorLv2Plugin::lv2_sr_save ( unsigned short iInstance,
-	const char *pszDirectory, LV2SR_File ***pppFiles )
-{
-	const LV2SR_Descriptor *sr_descriptor = lv2_sr_descriptor(iInstance);
-	if (sr_descriptor == NULL)
-		return false;
-	if (sr_descriptor->save == NULL)
-		return false;
-
-	LV2_Handle handle = lv2_handle(iInstance);
-	if (handle == NULL)
-		return false;
-
-	char *pszError = (*sr_descriptor->save)(handle, pszDirectory, pppFiles);
-	if (pszError) {
-		qDebug("lv2_sr_save: Failed to save plugin state: %s", pszError);
-		::free(pszError);
-		return false;
-	}
-
-	return true;
-}
-
-
-bool qtractorLv2Plugin::lv2_sr_restore ( unsigned short iInstance,
-	const LV2SR_File **ppFiles )
-{
-	const LV2SR_Descriptor *sr_descriptor = lv2_sr_descriptor(iInstance);
-	if (sr_descriptor == NULL)
-		return false;
-	if (sr_descriptor->restore == NULL)
-		return false;
-
-	LV2_Handle handle = lv2_handle(iInstance);
-	if (handle == NULL)
-		return false;
-
-	char *pszError = (*sr_descriptor->restore)(handle, ppFiles);
-	if (pszError) {
-		qDebug("lv2_sr_restore: Failed to restore plugin state: %s", pszError);
-		::free(pszError);
-		return false;
-	}
-
-	return true;
-}
-
-#endif	// CONFIG_LV2_SAVERESTORE
-
-
-#ifdef CONFIG_LV2_PERSIST
-
-// LV2 Persist extension data descriptor accessor.
-const LV2_Persist *qtractorLv2Plugin::lv2_persist_descriptor (
-	unsigned short iInstance ) const
-{
-	const SLV2Instance instance = slv2_instance(iInstance);
-	if (instance == NULL)
-		return NULL;
-
-	const LV2_Descriptor *descriptor = slv2_instance_get_descriptor(instance);
-	if (descriptor == NULL)
-		return NULL;
-	if (descriptor->extension_data == NULL)
-		return NULL;
-
-	return (const LV2_Persist *)
-		(*descriptor->extension_data)(LV2_PERSIST_URI);
-}
-
-
-int qtractorLv2Plugin::lv2_persist_store (
-	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
-{
-	if (value == NULL)
-		return 1;
-
-	if ((flags & (LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE)) == 0)
-		return 1;
-
-	const char *pszKey = lv2_urid_unmap(key);
-	if (pszKey == NULL)
-		return 1;
-
-	const char *pszType = lv2_urid_unmap(type);
-	if (pszType == NULL)
-		return 1;
-
-	const QString& sKey = QString::fromUtf8(pszKey);
-	if (::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
-		setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
-	} else {
-		QByteArray data = qCompress(
-			QByteArray((const char *) value, size)).toBase64();
-		for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
-			data.insert(i, "\n       "); // Indentation.
-		setConfig(sKey, data.constData());
-		setConfigType(sKey, QString::fromUtf8(pszType));
-	}
-	return 0;
-}
-
-
-const void *qtractorLv2Plugin::lv2_persist_retrieve (
-	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
-{
-	const char *pszKey = lv2_urid_unmap(key);
-	if (pszKey == NULL)
-		return NULL;
-
-	const QString& sKey = QString::fromUtf8(pszKey);
-	if (sKey.isEmpty())
-		return NULL;
-
-	QHash<QString, QByteArray>::ConstIterator iter
-		= m_lv2_persist_configs.constFind(sKey);
-	if (iter == m_lv2_persist_configs.constEnd())
-		return NULL;
-
-	const QByteArray& data = iter.value();
-
-	if (size)
-		*size = data.size();
-	if (type) {
-		QHash<QString, uint32_t>::ConstIterator ctype
-			= m_lv2_persist_ctypes.constFind(sKey);
-		if (ctype != m_lv2_persist_ctypes.constEnd())
-			*type = ctype.value();
-		else
-			*type = lv2_urid_map(LV2_ATOM_STRING_URI);
-	}
-	if (flags)
-		*flags = LV2_PERSIST_IS_POD | LV2_PERSIST_IS_PORTABLE;
-
-	return data.constData();
-}
-
-
-#endif	// CONFIG_LV2_PERSIST
 
 
 #ifdef CONFIG_LV2_STATE

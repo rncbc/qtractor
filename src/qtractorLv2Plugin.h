@@ -64,16 +64,6 @@
 #include "lv2_external_ui.h"
 #endif
 
-#ifdef CONFIG_LV2_SAVERESTORE
-// LV2 Save/Restore support.
-#include "lv2_saverestore.h"
-#endif
-
-#ifdef CONFIG_LV2_PERSIST
-// LV2 Persist support.
-#include "lv2_persist.h"
-#endif
-
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
 #include "lv2_state.h"
@@ -208,9 +198,6 @@ public:
 
 #endif
 
-	// Configuration (restore) stuff.
-	void configure(const QString& sKey, const QString& sValue);
-
 	// Plugin configuration/state (save) snapshot.
 	void freezeConfigs();
 
@@ -219,30 +206,6 @@ public:
 
 	// Plugin configuration/state release.
 	void releaseConfigs();
-
-#ifdef CONFIG_LV2_SAVERESTORE
-
-	// LV2 Save/Restore extension data descriptor accessor.
-	const LV2SR_Descriptor *lv2_sr_descriptor(unsigned short iInstance) const;
-
-	bool lv2_sr_save(unsigned short iInstance,
-		const char *pszDirectory, LV2SR_File ***pppFiles);
-	bool lv2_sr_restore(unsigned short iInstance,
-		const LV2SR_File **ppFiles);
-
-#endif
-
-#ifdef CONFIG_LV2_PERSIST
-
-	// LV2 Persist extension data descriptor accessor.
-	const LV2_Persist *lv2_persist_descriptor(unsigned short iInstance) const;
-
-	int lv2_persist_store(
-		uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags);
-	const void *lv2_persist_retrieve(
-		uint32_t key, size_t *size, uint32_t *type, uint32_t *flags);
-
-#endif
 
 #ifdef CONFIG_LV2_STATE
 
@@ -337,11 +300,6 @@ protected:
 #endif
 
 #endif	// CONFIG_LV2_UI
-
-#ifdef CONFIG_LV2_PERSIST
-	QHash<QString, QByteArray> m_lv2_persist_configs;
-	QHash<QString, uint32_t>   m_lv2_persist_ctypes;
-#endif
 
 #ifdef CONFIG_LV2_STATE
 	QHash<QString, QByteArray> m_lv2_state_configs;
