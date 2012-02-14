@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Killed the old and entirely deprecated LV2 Save/Restore and Persist
+  feature/extensions support.
+
 - Auto-monitored MIDI events are now merged/queued correctly into the
   instrument plugin playback queue, avoiding sudden crashes, hopefully.
   (EXPERIMENTAL)
