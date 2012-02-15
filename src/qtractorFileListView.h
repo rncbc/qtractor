@@ -22,111 +22,18 @@
 #ifndef __qtractorFileListView_h
 #define __qtractorFileListView_h
 
+#include "qtractorFileList.h"
+
 #include <QTreeWidget>
 
 
 // Forward declarations.
 class qtractorFileListView;
 class qtractorFileGroupItem;
-class qtractorFileListItem;
 class qtractorRubberBand;
 class qtractorDocument;
-class qtractorClip;
 
 class QDomElement;
-
-
-//----------------------------------------------------------------------
-// class qtractorFileList -- file path registry.
-//
-class qtractorFileList
-{
-public:
-
-	// Constructor.
-	qtractorFileList() {}
-
-	// Destructor.
-	~qtractorFileList() { clear(); }
-
-	class Item
-	{
-	public:
-
-		// Constructor.
-		Item(const QString& sPath)
-			: m_sPath(sPath), m_iRefCount(0), m_pFileItem(0) {}
-
-		// Key accessors.
-		const QString& path() const
-			{ return m_sPath; }
-
-		// Payload accessors.
-		void setFileItem(qtractorFileListItem *pFileItem)
-			{ m_pFileItem = pFileItem; }
-		qtractorFileListItem *fileItem() const
-			{ return m_pFileItem; }
-
-		void addClip(qtractorClip *pClip)
-			{ m_clips.append(pClip); }
-		void removeClip(qtractorClip *pClip)
-			{ m_clips.removeAll(pClip); }
-
-		const QList<qtractorClip *>& clips() const
-			{ return m_clips; }
-
-		// Ref-counting accesor.
-		unsigned int refCount() const
-			{ return m_iRefCount; }
-
-		// Ref-counting methods.
-		void addRef()
-			{ ++m_iRefCount; }
-		void removeRef()
-			{ --m_iRefCount; }
-
-	private:
-
-		// Most interesting variables.
-		QString m_sPath;
-
-		unsigned int m_iRefCount;
-
-		// Payload variables.
-		qtractorFileListItem *m_pFileItem;
-
-		QList<qtractorClip *> m_clips;
-	};
-
-
-	typedef QHash<QString, Item *> Hash;
-
-	// File/path registry management.
-	qtractorFileListItem *findFileItem (const QString& sPath) const;
-
-	void addFileItem(qtractorFileListItem *pFileItem);
-	void removeFileItem(qtractorFileListItem *pFileItem);
-
-	// Clip/path registry management.
-	void addClipItem(qtractorClip *pClip);
-	void removeClipItem(qtractorClip *pClip);
-
-	// Cleanup (dtor).
-	void clear();
-
-	// File hash table management.
-	Item *findItem(const QString& sPath) const;
-
-protected:
-
-	Item *addItem(const QString& sPath);
-	void removeItem(Item *pItem);
-
-private:
-
-	// File hash table.
-	Hash m_items;
-};
 
 
 //----------------------------------------------------------------------------

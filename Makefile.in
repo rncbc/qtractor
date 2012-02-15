@@ -39,6 +39,7 @@ headers = \
 	src/qtractorEngine.h \
 	src/qtractorEngineCommand.h \
 	src/qtractorFifoBuffer.h \
+	src/qtractorFileList.h \
 	src/qtractorFileListView.h \
 	src/qtractorFiles.h \
 	src/qtractorInsertPlugin.h \
@@ -156,6 +157,7 @@ sources = \
 	src/qtractorDssiPlugin.cpp \
 	src/qtractorEngine.cpp \
 	src/qtractorEngineCommand.cpp \
+	src/qtractorFileList.cpp \
 	src/qtractorFileListView.cpp \
 	src/qtractorFiles.cpp \
 	src/qtractorInsertPlugin.cpp \
