@@ -114,10 +114,10 @@ public:
 	// Cleanup (dtor).
 	void clear();
 
-protected:
-
 	// File hash table management.
 	Item *findItem(const QString& sPath) const;
+
+protected:
 
 	Item *addItem(const QString& sPath);
 	void removeItem(Item *pItem);

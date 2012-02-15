@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.3.28, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.3.29, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1042,7 +1042,7 @@ echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_slv2"
+echo "  LV2 Plug-in support (libslv2) (OLD)  . . . . . . .: $ac_slv2"
 echo "  LV2 Plug-in support (liblilv) (NEW)  . . . . . . .: $ac_lilv"
 echo "  LV2 Plug-in UI instantiation (libsuil) (NEW) . . .: $ac_suil"
 echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
