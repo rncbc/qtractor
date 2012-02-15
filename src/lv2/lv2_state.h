@@ -1,5 +1,5 @@
 /*
-  Copyright 2010-2011 David Robillard <http://drobilla.net>
+  Copyright 2010-2012 David Robillard <http://drobilla.net>
   Copyright 2010 Leonard Ritter <paniq@paniq.org>
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -23,20 +23,23 @@
 #ifndef LV2_STATE_H
 #define LV2_STATE_H
 
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
+#include "lv2.h"
+
 #ifdef __cplusplus
 extern "C" {
+#else
+#    include <stdbool.h>
 #endif
 
 #define LV2_STATE_URI "http://lv2plug.in/ns/ext/state"
 
 #define LV2_STATE_INTERFACE_URI LV2_STATE_URI "#Interface"
 #define LV2_STATE_PATH_URI      LV2_STATE_URI "#Path"
-#define LV2_STATE_MAP_PATH_URI  LV2_STATE_URI "#pathMap"
-#define LV2_STATE_MAKE_PATH_URI LV2_STATE_URI "#newPath"
+#define LV2_STATE_MAP_PATH_URI  LV2_STATE_URI "#mapPath"
+#define LV2_STATE_MAKE_PATH_URI LV2_STATE_URI "#makePath"
 
 typedef void* LV2_State_Handle;
 typedef void* LV2_State_Map_Path_Handle;
@@ -53,7 +56,7 @@ typedef enum {
 	/**
 	   Plain Old Data.
 
-	   Values with this flag contain no references to non-stateent or
+	   Values with this flag contain no references to non-persistent or
 	   non-global resources (e.g. pointers, handles, local paths, etc.). It is
 	   safe to copy POD values with a simple memcpy and store them for use at
 	   any time in the future on a machine with a compatible architecture
@@ -96,16 +99,21 @@ typedef enum {
    @param flags LV2_State_Flags for @c value.
    @return 0 on success, otherwise a non-zero error code.
 
-   The host passes a callback of this type to LV2_State_Interface.save(). This callback
-   is called repeatedly by the plugin within LV2_State_Interface.save() to store all
-   the statements that describe its current state.
+   The host passes a callback of this type to LV2_State_Interface.save(). This
+   callback is called repeatedly by the plugin within
+   LV2_State_Interface.save() to store all the statements that describe its
+   current state.
 
-   The host MAY fail to store a property if the type is not understood and is
-   not LV2_STATE_IS_POD and/or LV2_STATE_IS_PORTABLE. Implementations are
-   encouraged to use POD and portable values (e.g. string literals) wherever
-   possible, and use common types (e.g. types from
-   http://lv2plug.in/ns/ext/atom) regardless, since hosts are likely to already
-   contain the necessary implementation.
+   DO NOT INVENT NONSENSE URI SCHEMES FOR THE KEY.  Best is to use keys from
+   existing vocabularies.  If nothing appropriate is available, use http URIs
+   that point to somewhere you can host documents, so you can make
+   documentation resolvable.  If this is not possible, invent a URN scheme,
+   e.g. urn:myproj:whatever.  The plugin MUST NOT pass an invalid URI key.
+
+   The host MAY fail to store a property for whatever reason, but SHOULD
+   store any property that is LV2_STATE_IS_POD and LV2_STATE_IS_PORTABLE.
+   Implementations SHOULD use the types from the LV2 Atom extension
+   (http://lv2plug.in/ns/ext/atom) wherever possible.
 
    Note that @c size MUST be > 0, and @c value MUST point to a valid region of
    memory @c size bytes long (this is required to make restore unambiguous).
@@ -219,7 +227,6 @@ typedef struct _LV2_State_Interface {
 	             uint32_t                   flags,
 	             const LV2_Feature *const * features);
 
-
 	/**
 	   Restore plugin state using a host-provided @c retrieve callback.
 
@@ -255,7 +262,7 @@ typedef struct _LV2_State_Interface {
 } LV2_State_Interface;
 
 /**
-   Feature data for state:pathMap (LV2_STATE_MAP_PATH_URI).
+   Feature data for state:mapPath (LV2_STATE_MAP_PATH_URI).
 */
 typedef struct {
 
