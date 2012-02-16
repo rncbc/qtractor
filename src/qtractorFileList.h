@@ -86,14 +86,21 @@ public:
 	public:
 
 		// Constructor.
-		Item(const Key& key)
-			: m_key(key), m_iRefCount(0), m_pFileItem(0) {}
+		Item(const Key& key, bool bAutoRemove = false)
+			: m_key(key), m_bAutoRemove(bAutoRemove),
+				m_iRefCount(0), m_pFileItem(0) {}
 
 		// Key accessors.
 		Type type() const
 			{ return m_key.type(); }
 		const QString& path() const
 			{ return m_key.path(); }
+
+		// Auto-destruction flag accessor.
+		void setAutoRemove(bool bAutoRemove)
+			{ m_bAutoRemove = bAutoRemove; }
+		bool isAutoRemove() const
+			{ return m_bAutoRemove; }
 
 		// Payload accessors.
 		void setFileItem(qtractorFileListItem *pFileItem)
@@ -123,7 +130,7 @@ public:
 
 		// Most interesting variables.
 		Key m_key;
-
+		bool m_bAutoRemove;
 		unsigned int m_iRefCount;
 
 		// Payload variables.
@@ -140,7 +147,7 @@ public:
 	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
 
 	// Clip/path registry management.
-	void addClipItem(Type iType, qtractorClip *pClip);
+	void addClipItem(Type iType, qtractorClip *pClip, bool bAutoRemove);
 	void removeClipItem(Type iType, qtractorClip *pClip);
 
 	// Cleanup (dtor).
@@ -151,7 +158,7 @@ public:
 
 protected:
 
-	Item *addItem(Type iType, const QString& sPath);
+	Item *addItem(Type iType, const QString& sPath, bool bAutoRemove);
 	void removeItem(Item *pItem);
 
 private:

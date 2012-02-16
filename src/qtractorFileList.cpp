@@ -53,13 +53,14 @@ qtractorFileListItem *qtractorFileList::findFileItem (
 void qtractorFileList::addFileItem (
 	qtractorFileList::Type iType, qtractorFileListItem *pFileItem )
 {
-	Item *pItem = addItem(iType, pFileItem->path());
+	Item *pItem = addItem(iType, pFileItem->path(), false);
 	if (pItem) {
 		pItem->setFileItem(pFileItem);
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorFileList::addFileItem(%d, \"%s\") refCount=%d clips=%d",
+		qDebug("qtractorFileList::addFileItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount(), pItem->clips().count());
+			pItem->refCount(), pItem->clips().count(),
+			int(pItem->isAutoRemove()));
 	#endif
 	}
 }
@@ -72,9 +73,10 @@ void qtractorFileList::removeFileItem (
 	if (pItem) {
 		pItem->setFileItem(NULL);
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorFileList::removeFileItem(%d, \"%s\") refCount=%d clips=%d",
+		qDebug("qtractorFileList::removeFileItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount() - 1, pItem->clips().count());
+			pItem->refCount() - 1, pItem->clips().count(),
+			int(pItem->isAutoRemove()));
 	#endif
 		removeItem(pItem);
 	}
@@ -83,15 +85,16 @@ void qtractorFileList::removeFileItem (
 
 // Clip/path registry management.
 void qtractorFileList::addClipItem (
-	qtractorFileList::Type iType, qtractorClip *pClip )
+	qtractorFileList::Type iType, qtractorClip *pClip, bool bAutoRemove )
 {
-	Item *pItem = addItem(iType, pClip->filename());
+	Item *pItem = addItem(iType, pClip->filename(), bAutoRemove);
 	if (pItem) {
 		pItem->addClip(pClip);
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorFileList::addClipItem(%d, \"%s\") refCount=%d clips=%d",
+		qDebug("qtractorFileList::addClipItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount(), pItem->clips().count());
+			pItem->refCount(), pItem->clips().count(),
+			int(pItem->isAutoRemove()));
 	#endif
 	}
 }
@@ -104,9 +107,10 @@ void qtractorFileList::removeClipItem (
 	if (pItem) {
 		pItem->removeClip(pClip);
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorFileList::removeClipItem(%d, \"%s\") refCount=%d clips=%d",
+		qDebug("qtractorFileList::removeClipItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount() - 1, pItem->clips().count());
+			pItem->refCount() - 1, pItem->clips().count(),
+			int(pItem->isAutoRemove()));
 	#endif
 		removeItem(pItem);
 	}
@@ -122,15 +126,17 @@ qtractorFileList::Item *qtractorFileList::findItem (
 
 
 qtractorFileList::Item *qtractorFileList::addItem (
-	qtractorFileList::Type iType, const QString& sPath )
+	qtractorFileList::Type iType, const QString& sPath, bool bAutoRemove )
 {
 	Item *pItem = NULL;
 
 	Key key(iType, sPath);
 	Hash::ConstIterator iter = m_items.constFind(key);
 	if (iter == m_items.constEnd()) {
-		pItem = new Item(key);
+		pItem = new Item(key, bAutoRemove);
 		m_items.insert(key, pItem);
+		if (bAutoRemove) // HACK!
+			pItem->addRef();
 	}
 	else pItem = iter.value();
 
