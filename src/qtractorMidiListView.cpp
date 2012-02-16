@@ -29,6 +29,7 @@
 #include <QFileDialog>
 #include <QUrl>
 
+
 //----------------------------------------------------------------------
 // class qtractorMidiFileItem -- audio file list view item.
 //
@@ -121,7 +122,7 @@ QString qtractorMidiChannelItem::toolTip (void) const
 
 // Constructor.
 qtractorMidiListView::qtractorMidiListView ( QWidget *pParent )
-	: qtractorFileListView(pParent)
+	: qtractorFileListView(qtractorFileList::Midi, pParent)
 {
 	QTreeWidget::setColumnCount(qtractorMidiListView::LastColumn + 1);
 

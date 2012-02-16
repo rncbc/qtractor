@@ -24,6 +24,7 @@
 #include "qtractorMidiEngine.h"
 
 #include "qtractorSession.h"
+#include "qtractorFileList.h"
 
 #include "qtractorDocument.h"
 
@@ -350,6 +351,9 @@ bool qtractorMidiClip::openMidiFile (
 	setTrackChannel(iTrackChannel);
 	setDirty(false);
 
+	// Register file path...
+	pSession->files()->addClipItem(qtractorFileList::Midi, this);
+
 	// New key-data sequence...
 	if (m_pFile->mode() == qtractorMidiFile::Read) {
 		m_pKey  = new Key(this);
@@ -515,6 +519,11 @@ void qtractorMidiClip::closeMidiFile (void)
 			delete m_pData;
 		}
 		m_pData = NULL;
+		// Unregister file path...
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pSession->files()->removeClipItem(qtractorFileList::Midi, this);
+
 	}
 
 	if (m_pKey) {

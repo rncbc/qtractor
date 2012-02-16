@@ -29,6 +29,7 @@
 
 // Forward declarations.
 class qtractorFileListView;
+class qtractorFileListItem;
 class qtractorFileGroupItem;
 class qtractorRubberBand;
 class qtractorDocument;
@@ -47,9 +48,14 @@ class qtractorFileListView : public QTreeWidget
 public:
 
 	// Constructor.
-	qtractorFileListView(QWidget *pParent = 0);
+	qtractorFileListView(qtractorFileList::Type iFileType, QWidget *pParent = 0);
+
 	// Default destructor.
 	virtual ~qtractorFileListView();
+
+	// File list type property.
+	void setFileType(qtractorFileList::Type iFileType);
+	qtractorFileList::Type fileType() const;
 
 	// QListViewItem::type() return values.
 	enum ItemType { GroupItem = 1001, FileItem = 1002, ChannelItem = 1003 };
@@ -187,6 +193,9 @@ protected:
 
 private:
 
+	// Major file type property.
+	qtractorFileList::Type m_iFileType;
+
 	// Auto-open timer.
 	int     m_iAutoOpenTimeout;
 	QTimer *m_pAutoOpenTimer;
@@ -203,9 +212,6 @@ private:
 
 	// Last recently used directory.
 	QString m_sRecentDir;
-
-	// Local file item/path registry.
-	qtractorFileList m_files;
 };
 
 
