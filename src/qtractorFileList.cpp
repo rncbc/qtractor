@@ -27,73 +27,110 @@
 #include "qtractorClip.h"
 
 
+//---------------------------------------------------------------------
+// class qtractorFileList::Key -- file hash key.
+//
+
+uint qHash ( const qtractorFileList::Key& key )
+{
+	return qHash(key.type()) ^ qHash(key.path());
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorFileList -- file path registry.
 //
 
 // File path registry management.
 qtractorFileListItem *qtractorFileList::findFileItem (
-	const QString& sPath ) const
+	qtractorFileList::Type iType, const QString& sPath ) const
 {
-	Item *pItem = findItem(sPath);
+	Item *pItem = findItem(iType, sPath);
 	return (pItem ? pItem->fileItem() : NULL);
 }
 
 
 void qtractorFileList::addFileItem (
-	qtractorFileListItem *pFileItem )
+	qtractorFileList::Type iType, qtractorFileListItem *pFileItem )
 {
-	Item *pItem = addItem(pFileItem->path());
-	if (pItem)
+	Item *pItem = addItem(iType, pFileItem->path());
+	if (pItem) {
 		pItem->setFileItem(pFileItem);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorFileList::addFileItem(%d, \"%s\") refCount=%d clips=%d",
+			int(pItem->type()), pItem->path().toUtf8().constData(),
+			pItem->refCount(), pItem->clips().count());
+	#endif
+	}
 }
 
 
 void qtractorFileList::removeFileItem (
-	qtractorFileListItem *pFileItem )
+	qtractorFileList::Type iType, qtractorFileListItem *pFileItem )
 {
-	Item *pItem = findItem(pFileItem->path());
+	Item *pItem = findItem(iType, pFileItem->path());
 	if (pItem) {
 		pItem->setFileItem(NULL);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorFileList::removeFileItem(%d, \"%s\") refCount=%d clips=%d",
+			int(pItem->type()), pItem->path().toUtf8().constData(),
+			pItem->refCount() - 1, pItem->clips().count());
+	#endif
 		removeItem(pItem);
 	}
 }
 
 
 // Clip/path registry management.
-void qtractorFileList::addClipItem ( qtractorClip *pClip )
+void qtractorFileList::addClipItem (
+	qtractorFileList::Type iType, qtractorClip *pClip )
 {
-	Item *pItem = addItem(pClip->filename());
-	if (pItem)
+	Item *pItem = addItem(iType, pClip->filename());
+	if (pItem) {
 		pItem->addClip(pClip);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorFileList::addClipItem(%d, \"%s\") refCount=%d clips=%d",
+			int(pItem->type()), pItem->path().toUtf8().constData(),
+			pItem->refCount(), pItem->clips().count());
+	#endif
+	}
 }
 
 
-void qtractorFileList::removeClipItem ( qtractorClip *pClip )
+void qtractorFileList::removeClipItem (
+	qtractorFileList::Type iType, qtractorClip *pClip )
 {
-	Item *pItem = findItem(pClip->filename());
+	Item *pItem = findItem(iType, pClip->filename());
 	if (pItem) {
 		pItem->removeClip(pClip);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorFileList::removeClipItem(%d, \"%s\") refCount=%d clips=%d",
+			int(pItem->type()), pItem->path().toUtf8().constData(),
+			pItem->refCount() - 1, pItem->clips().count());
+	#endif
 		removeItem(pItem);
 	}
 }
 
 
 // File hash table management.
-qtractorFileList::Item *qtractorFileList::findItem ( const QString& sPath ) const
+qtractorFileList::Item *qtractorFileList::findItem (
+	qtractorFileList::Type iType, const QString& sPath ) const
 {
-	return m_items.value(sPath, NULL);
+	return m_items.value(Key(iType, sPath), NULL);
 }
 
 
-qtractorFileList::Item *qtractorFileList::addItem ( const QString& sPath )
+qtractorFileList::Item *qtractorFileList::addItem (
+	qtractorFileList::Type iType, const QString& sPath )
 {
 	Item *pItem = NULL;
 
-	Hash::ConstIterator iter = m_items.constFind(sPath);
+	Key key(iType, sPath);
+	Hash::ConstIterator iter = m_items.constFind(key);
 	if (iter == m_items.constEnd()) {
-		pItem = new Item(sPath);
-		m_items.insert(sPath, pItem);
+		pItem = new Item(key);
+		m_items.insert(key, pItem);
 	}
 	else pItem = iter.value();
 
@@ -108,7 +145,7 @@ void qtractorFileList::removeItem ( qtractorFileList::Item *pItem )
 	pItem->removeRef();
 
 	if (pItem->refCount() < 1) {
-		m_items.remove(pItem->path());
+		m_items.remove(Key(pItem->type(), pItem->path()));
 		delete pItem;
 	}
 }

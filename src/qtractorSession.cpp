@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,6 +40,7 @@
 #include "qtractorInstrument.h"
 #include "qtractorCommand.h"
 
+#include "qtractorFileList.h"
 #include "qtractorFiles.h"
 
 #include <QApplication>
@@ -122,6 +123,7 @@ qtractorSession::qtractorSession (void)
 	m_sClientName = QTRACTOR_TITLE;
 
 	// Singleton ownings.
+	m_pFiles       = new qtractorFileList();
 	m_pCommands    = new qtractorCommandList();
 	m_pInstruments = new qtractorInstrumentList();
 
@@ -150,6 +152,8 @@ qtractorSession::~qtractorSession (void)
 
 	delete m_pInstruments;
 	delete m_pCommands;
+
+	delete m_pFiles;
 }
 
 
@@ -244,6 +248,8 @@ void qtractorSession::clear (void)
 	m_pMidiEngine->clear();
 
 	m_pCommands->clear();
+
+	m_pFiles->clear();
 
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
@@ -1716,6 +1722,13 @@ void qtractorSession::process_curve ( unsigned long iFrame )
 qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) const
 {
 	return m_curves.value(pCurveList, NULL);
+}
+
+
+// Session files registry accessor.
+qtractorFileList *qtractorSession::files (void) const
+{
+	return m_pFiles;
 }
 
 

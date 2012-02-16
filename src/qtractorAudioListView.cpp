@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +28,7 @@
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QUrl>
+
 
 //----------------------------------------------------------------------
 // class qtractorAudioFileItem -- audio file list view item.
@@ -99,7 +100,7 @@ QString qtractorAudioFileItem::toolTip (void) const
 
 // Constructor.
 qtractorAudioListView::qtractorAudioListView ( QWidget *pParent )
-	: qtractorFileListView(pParent)
+	: qtractorFileListView(qtractorFileList::Audio, pParent)
 {
 	QTreeWidget::setColumnCount(qtractorAudioListView::LastColumn + 1);
 	

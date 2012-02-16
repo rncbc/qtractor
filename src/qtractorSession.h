@@ -1,7 +1,7 @@
 // qtractorSession.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,6 +40,7 @@ class qtractorMidiManager;
 class qtractorInstrumentList;
 class qtractorCommandList;
 class qtractorCommand;
+class qtractorFileList;
 
 class QDomElement;
 
@@ -371,6 +372,9 @@ public:
 	// Find track of specific curve-list.
 	qtractorTrack *findTrack(qtractorCurveList *pCurveList) const;
 
+	// Session files registry accessor.
+	qtractorFileList *files() const;
+
 	// Singleton instance accessor.
 	static qtractorSession *getInstance();
 
@@ -466,6 +470,9 @@ private:
 
 	// Curve-to-track mapping.
 	QHash<qtractorCurveList *, qtractorTrack *> m_curves;
+
+	// File registry.
+	qtractorFileList *m_pFiles;
 
 	// The singleton instance.
 	static qtractorSession *g_pSession;

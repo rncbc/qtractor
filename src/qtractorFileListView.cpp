@@ -297,8 +297,9 @@ qtractorFileChannelDrag::List qtractorFileChannelDrag::decode (
 //
 
 // Constructor.
-qtractorFileListView::qtractorFileListView ( QWidget *pParent )
-	: QTreeWidget(pParent)
+qtractorFileListView::qtractorFileListView (
+	qtractorFileList::Type iFileType, QWidget *pParent )
+	: QTreeWidget(pParent), m_iFileType(iFileType)
 {
 	m_pAutoOpenTimer   = NULL;
 	m_iAutoOpenTimeout = 0;
@@ -362,16 +363,32 @@ qtractorFileListView::~qtractorFileListView (void)
 }
 
 
+// File list type property.
+void qtractorFileListView::setFileType ( qtractorFileList::Type iFileType )
+{
+	m_iFileType = iFileType;
+}
+
+qtractorFileList::Type qtractorFileListView::fileType (void) const
+{
+	return m_iFileType;
+}
+
+
 // Add a new file item, optionally under a given group.
 qtractorFileListItem *qtractorFileListView::addFileItem (
 	const QString& sPath, qtractorFileGroupItem *pParentItem )
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return NULL;
+
 	qtractorFileListItem *pFileItem = findFileItem(sPath);
 	if (pFileItem == NULL) {
 		pFileItem = createFileItem(sPath);
 		if (pFileItem) {
 			// Add to file/path registry...
-			m_files.addFileItem(pFileItem);
+			pSession->files()->addFileItem(m_iFileType, pFileItem);
 			// Insert the new file item in place...
 			if (pParentItem) {
 				if (pParentItem->type() == GroupItem) {
@@ -615,6 +632,10 @@ void qtractorFileListView::renameItem (void)
 // Remove current group/file item.
 void qtractorFileListView::deleteItem (void)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
@@ -641,7 +662,8 @@ void qtractorFileListView::deleteItem (void)
 			if (pItem->type() == FileItem) {
 				qtractorFileListItem *pFileItem
 					= static_cast<qtractorFileListItem *> (pItem);
-				if (pFileItem) m_files.removeFileItem(pFileItem);
+				if (pFileItem)
+					pSession->files()->removeFileItem(m_iFileType, pFileItem);
 			}
 			// Scrap view item...
 			delete pItem;
@@ -668,7 +690,8 @@ void qtractorFileListView::deleteItem (void)
 				if (pItem->type() == FileItem) {
 					qtractorFileListItem *pFileItem
 						= static_cast<qtractorFileListItem *> (pItem);
-					if (pFileItem) m_files.removeFileItem(pFileItem);
+					if (pFileItem)
+						pSession->files()->removeFileItem(m_iFileType, pFileItem);
 				}
 			}
 			// Scrap view item...
@@ -712,8 +735,6 @@ void qtractorFileListView::clear (void)
 	dragLeaveEvent(NULL);
 	m_pDragItem = NULL;
 
-	m_files.clear();
-
 	QTreeWidget::clear();
 }
 
@@ -730,8 +751,11 @@ qtractorFileGroupItem *qtractorFileListView::findGroupItem (
 qtractorFileListItem *qtractorFileListView::findFileItem (
 	const QString& sPath ) const
 {
-//	return static_cast<qtractorFileListItem *> (findItem(sPath, FileItem));
-	return m_files.findFileItem(sPath);
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return static_cast<qtractorFileListItem *> (findItem(sPath, FileItem));
+	else
+		return pSession->files()->findFileItem(m_iFileType, sPath);
 }
 
 
@@ -1341,7 +1365,8 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 					pParentItem->addChild(pFileItem);
 				else
 					QTreeWidget::addTopLevelItem(pFileItem);
-				m_files.addFileItem(pFileItem);
+				if (pSession)
+					pSession->files()->addFileItem(m_iFileType, pFileItem);
 			}
 		}
 	}

@@ -555,25 +555,25 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="698"/>
+        <location filename="../qtractorAudioClip.cpp" line="706"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>Audio:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="703"/>
+        <location filename="../qtractorAudioClip.cpp" line="711"/>
         <source> (%1 dB)</source>
         <translation>(%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="706"/>
+        <location filename="../qtractorAudioClip.cpp" line="714"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% natažení času)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="709"/>
+        <location filename="../qtractorAudioClip.cpp" line="717"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
@@ -609,7 +609,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="85"/>
+        <location filename="../qtractorAudioListView.cpp" line="86"/>
         <source>%1 (%2)
 %3 channels, %4 frames, %5 Hz
 %6</source>
@@ -717,27 +717,27 @@ Délka:	%4</translation>
         <translation>%1 - Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1092"/>
+        <location filename="../qtractorMidiClip.cpp" line="1101"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formát %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1094"/>
-        <location filename="../qtractorMidiListView.cpp" line="70"/>
+        <location filename="../qtractorMidiClip.cpp" line="1103"/>
+        <location filename="../qtractorMidiListView.cpp" line="71"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1096"/>
+        <location filename="../qtractorMidiClip.cpp" line="1105"/>
         <location filename="../qtractorMidiFile.cpp" line="1015"/>
-        <location filename="../qtractorMidiListView.cpp" line="64"/>
+        <location filename="../qtractorMidiListView.cpp" line="65"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1099"/>
+        <location filename="../qtractorMidiClip.cpp" line="1108"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 stopy, %2 tpqn</translation>
     </message>
@@ -746,7 +746,7 @@ MIDI:	</translation>
         <translation type="obsolete">, %1 stopy, %2 tpb</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1105"/>
+        <location filename="../qtractorMidiClip.cpp" line="1114"/>
         <source> (%1% vol)</source>
         <translation> (%1% hlasitost)</translation>
     </message>
@@ -759,7 +759,7 @@ MIDI:	</translation>
 %5</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="79"/>
+        <location filename="../qtractorMidiListView.cpp" line="80"/>
         <source>%1 (format %2)
 %3 tracks, %4 tpqn
 %5</source>
@@ -768,7 +768,7 @@ MIDI:	</translation>
 %5</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="111"/>
+        <location filename="../qtractorMidiListView.cpp" line="112"/>
         <source>%1 (format %2)
 %3</source>
         <translation>%1 (formát %2)
@@ -1180,37 +1180,37 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
 <context>
     <name>qtractorAudioListView</name>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="107"/>
+        <location filename="../qtractorAudioListView.cpp" line="108"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="108"/>
+        <location filename="../qtractorAudioListView.cpp" line="109"/>
         <source>Ch</source>
         <translation>Kanál</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="109"/>
+        <location filename="../qtractorAudioListView.cpp" line="110"/>
         <source>Frames</source>
         <translation>Snímky</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="110"/>
+        <location filename="../qtractorAudioListView.cpp" line="111"/>
         <source>Rate</source>
         <translation>Frekvence</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="111"/>
+        <location filename="../qtractorAudioListView.cpp" line="112"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="112"/>
+        <location filename="../qtractorAudioListView.cpp" line="113"/>
         <source>Path</source>
         <translation>Cesta</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioListView.cpp" line="137"/>
+        <location filename="../qtractorAudioListView.cpp" line="138"/>
         <source>Open Audio Files</source>
         <translation>Otevřít zvukové soubory</translation>
     </message>
@@ -2316,18 +2316,18 @@ selhalo.</translation>
 <context>
     <name>qtractorFileListView</name>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="530"/>
+        <location filename="../qtractorFileListView.cpp" line="547"/>
         <source>New Group</source>
         <translation>Nová skupina</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="628"/>
-        <location filename="../qtractorFileListView.cpp" line="656"/>
+        <location filename="../qtractorFileListView.cpp" line="649"/>
+        <location filename="../qtractorFileListView.cpp" line="678"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="629"/>
+        <location filename="../qtractorFileListView.cpp" line="650"/>
         <source>About to remove %1 file items.
 
 Are you sure?</source>
@@ -2344,7 +2344,7 @@ Jste si jistý?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="657"/>
+        <location filename="../qtractorFileListView.cpp" line="679"/>
         <source>About to remove %1 item:
 
 &quot;%2&quot;
@@ -2357,12 +2357,12 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="660"/>
+        <location filename="../qtractorFileListView.cpp" line="682"/>
         <source>group</source>
         <translation>Skupina</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="660"/>
+        <location filename="../qtractorFileListView.cpp" line="682"/>
         <source>file</source>
         <translation>Soubor</translation>
     </message>
@@ -8532,22 +8532,22 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiListView</name>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="129"/>
+        <location filename="../qtractorMidiListView.cpp" line="130"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="130"/>
+        <location filename="../qtractorMidiListView.cpp" line="131"/>
         <source>Fmt</source>
         <translation>Fmt</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="131"/>
+        <location filename="../qtractorMidiListView.cpp" line="132"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="132"/>
+        <location filename="../qtractorMidiListView.cpp" line="133"/>
         <source>tpqn</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8556,17 +8556,17 @@ Chcete uložit změny?</translation>
         <translation type="obsolete">tpb</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="133"/>
+        <location filename="../qtractorMidiListView.cpp" line="134"/>
         <source>Path</source>
         <translation>Cesta</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="174"/>
+        <location filename="../qtractorMidiListView.cpp" line="175"/>
         <source>Open MIDI Files</source>
         <translation>Otevřít soubory MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="175"/>
+        <location filename="../qtractorMidiListView.cpp" line="176"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Soubory MIDI (*.%1 *.smf *.midi)</translation>
     </message>

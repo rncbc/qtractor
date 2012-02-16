@@ -44,17 +44,56 @@ public:
 	// Destructor.
 	~qtractorFileList() { clear(); }
 
+	// File types.
+	enum Type { Audio = 0, Midi = 1 };
+
+	// File hash key.
+	//
+	class Key
+	{
+	public:
+
+		// Constructors.
+		Key(Type iType, const QString& sPath)
+			: m_iType(iType), m_sPath(sPath) {}
+		Key(const Key& key)
+			: m_iType(key.type()), m_sPath(key.path()) {}
+
+		// Key accessors.
+		Type type() const
+			{ return m_iType; }
+		const QString& path() const
+			{ return m_sPath; }
+
+		// Match descriminator.
+		bool operator== (const Key& other) const
+		{
+			return m_iType == other.type()
+				&& m_sPath == other.path();
+		}
+
+	private:
+
+		// Interesting variables.
+		Type    m_iType;
+		QString m_sPath;
+	};
+
+	// File hash item.
+	//
 	class Item
 	{
 	public:
 
 		// Constructor.
-		Item(const QString& sPath)
-			: m_sPath(sPath), m_iRefCount(0), m_pFileItem(0) {}
+		Item(const Key& key)
+			: m_key(key), m_iRefCount(0), m_pFileItem(0) {}
 
 		// Key accessors.
+		Type type() const
+			{ return m_key.type(); }
 		const QString& path() const
-			{ return m_sPath; }
+			{ return m_key.path(); }
 
 		// Payload accessors.
 		void setFileItem(qtractorFileListItem *pFileItem)
@@ -83,38 +122,36 @@ public:
 	private:
 
 		// Most interesting variables.
-		QString m_sPath;
+		Key m_key;
 
 		unsigned int m_iRefCount;
 
 		// Payload variables.
 		qtractorFileListItem *m_pFileItem;
-
 		QList<qtractorClip *> m_clips;
 	};
 
-
-	typedef QHash<QString, Item *> Hash;
+	typedef QHash<Key, Item *> Hash;
 
 	// File/path registry management.
-	qtractorFileListItem *findFileItem (const QString& sPath) const;
+	qtractorFileListItem *findFileItem (Type iType, const QString& sPath) const;
 
-	void addFileItem(qtractorFileListItem *pFileItem);
-	void removeFileItem(qtractorFileListItem *pFileItem);
+	void addFileItem(Type iType, qtractorFileListItem *pFileItem);
+	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
 
 	// Clip/path registry management.
-	void addClipItem(qtractorClip *pClip);
-	void removeClipItem(qtractorClip *pClip);
+	void addClipItem(Type iType, qtractorClip *pClip);
+	void removeClipItem(Type iType, qtractorClip *pClip);
 
 	// Cleanup (dtor).
 	void clear();
 
 	// File hash table management.
-	Item *findItem(const QString& sPath) const;
+	Item *findItem(Type iType, const QString& sPath) const;
 
 protected:
 
-	Item *addItem(const QString& sPath);
+	Item *addItem(Type iType, const QString& sPath);
 	void removeItem(Item *pItem);
 
 private:

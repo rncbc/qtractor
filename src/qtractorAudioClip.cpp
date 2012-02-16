@@ -27,6 +27,7 @@
 #include "qtractorDocument.h"
 
 #include "qtractorSession.h"
+#include "qtractorFileList.h"
 
 #include <QFileInfo>
 #include <QPainter>
@@ -225,6 +226,9 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	setFilename(sFilename);
 	setDirty(false);
 
+	// Register file path...
+	pSession->files()->addClipItem(qtractorFileList::Audio, this);
+
 	// New key-data sequence...
 	if (!bWrite) {
 		m_pKey  = new Key(this);
@@ -323,6 +327,10 @@ void qtractorAudioClip::closeAudioFile (void)
 				QFile::remove(filename());
 		}
 		m_pData = NULL;
+		// Unregister file path...
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pSession->files()->removeClipItem(qtractorFileList::Audio, this);
 	}
 
 	if (m_pKey) {
