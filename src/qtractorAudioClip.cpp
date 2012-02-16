@@ -227,7 +227,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	setDirty(false);
 
 	// Register file path...
-	pSession->files()->addClipItem(qtractorFileList::Audio, this);
+	pSession->files()->addClipItem(qtractorFileList::Audio, this, bWrite);
 
 	// New key-data sequence...
 	if (!bWrite) {

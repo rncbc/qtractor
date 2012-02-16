@@ -338,24 +338,19 @@ bool qtractorMidiClip::openMidiFile (
 		sFilename.toUtf8().constData(), iTrackChannel, iMode);
 #endif
 
-	// Create and open up the MIDI file...
-	m_pFile = new qtractorMidiFile();
-	if (!m_pFile->open(sFilename, iMode)) {
-		delete m_pFile;
-		m_pFile = NULL;
-		return false;
-	}
+	// Check file primordial state...
+	bool bWrite = (iMode & qtractorMidiFile::Write);
 
 	// Set local properties...
-	setFilename(m_pFile->filename());
+	setFilename(sFilename);
 	setTrackChannel(iTrackChannel);
 	setDirty(false);
 
 	// Register file path...
-	pSession->files()->addClipItem(qtractorFileList::Midi, this);
+	pSession->files()->addClipItem(qtractorFileList::Midi, this, bWrite);
 
 	// New key-data sequence...
-	if (m_pFile->mode() == qtractorMidiFile::Read) {
+	if (!bWrite) {
 		m_pKey  = new Key(this);
 		m_pData = g_hashTable.value(*m_pKey, NULL);
 		if (m_pData) {
@@ -371,6 +366,14 @@ bool qtractorMidiClip::openMidiFile (
 			m_drawCursor.reset(pSeq);
 			return true;
 		}
+	}
+
+	// Create and open up the real MIDI file...
+	m_pFile = new qtractorMidiFile();
+	if (!m_pFile->open(sFilename, iMode)) {
+		delete m_pFile;
+		m_pFile = NULL;
+		return false;
 	}
 
 	// Initialize MIDI event container...
@@ -404,7 +407,7 @@ bool qtractorMidiClip::openMidiFile (
 	pSeq->setNoteMax(m_noteMax);
 
 	// Are we on a pre-writing status?
-	if (m_pFile->mode() == qtractorMidiFile::Write) {
+	if (bWrite) {
 		// On write mode, iTrackChannel holds the SMF format,
 		// so we'll convert it here as properly.
 		unsigned short iFormat = 0;
