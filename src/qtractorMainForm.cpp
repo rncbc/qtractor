@@ -2057,6 +2057,14 @@ bool qtractorMainForm::saveSessionFileEx (
 				if (pMidiClip)
 					pMidiClip->saveCopyFile();
 			}
+			// Make any file reference permanent...
+			qtractorFileList::Item *pItem
+				= m_pSession->files()->findClipItem(
+					qtractorFileList::Midi, pClip);
+			if (pItem && pItem->isAutoRemove()) {
+				pItem->setAutoRemove(false);
+				pItem->removeRef();
+			}
 		}
 	}
 

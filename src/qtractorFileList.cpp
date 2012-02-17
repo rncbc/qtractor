@@ -26,6 +26,8 @@
 
 #include "qtractorClip.h"
 
+#include <QFile>
+
 
 //---------------------------------------------------------------------
 // class qtractorFileList::Key -- file hash key.
@@ -84,6 +86,14 @@ void qtractorFileList::removeFileItem (
 
 
 // Clip/path registry management.
+qtractorFileList::Item *qtractorFileList::findClipItem (
+	qtractorFileList::Type iType, qtractorClip *pClip ) const
+{
+	Item *pItem = findItem(iType, pClip->filename());
+	return (pItem && pItem->clips().contains(pClip) ? pItem : NULL);
+}
+
+
 void qtractorFileList::addClipItem (
 	qtractorFileList::Type iType, qtractorClip *pClip, bool bAutoRemove )
 {
@@ -153,6 +163,26 @@ void qtractorFileList::removeItem ( qtractorFileList::Item *pItem )
 	if (pItem->refCount() < 1) {
 		m_items.remove(Key(pItem->type(), pItem->path()));
 		delete pItem;
+	}
+}
+
+
+void qtractorFileList::cleanup (void)
+{
+	Hash::ConstIterator iter = m_items.begin();
+	for (; iter != m_items.constEnd(); ++iter) {
+		Item *pItem = iter.value();
+		if (pItem->isAutoRemove()) {
+			const QString& sPath = pItem->path();
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorFileList::cleanup(%d, \"%s\") refCount=%d clips=%d",
+				int(pItem->type()), pItem->path().toUtf8().constData(),
+				pItem->refCount(), pItem->clips().count());
+		#endif
+			QFile::remove(sPath); // kill!
+			pItem->setAutoRemove(false);
+			pItem->removeRef();
+		}
 	}
 }
 

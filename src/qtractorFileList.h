@@ -141,23 +141,23 @@ public:
 	typedef QHash<Key, Item *> Hash;
 
 	// File/path registry management.
-	qtractorFileListItem *findFileItem (Type iType, const QString& sPath) const;
-
+	qtractorFileListItem *findFileItem(Type iType, const QString& sPath) const;
 	void addFileItem(Type iType, qtractorFileListItem *pFileItem);
 	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
 
 	// Clip/path registry management.
+	Item *findClipItem(Type iType, qtractorClip *pClip) const;
 	void addClipItem(Type iType, qtractorClip *pClip, bool bAutoRemove = false);
 	void removeClipItem(Type iType, qtractorClip *pClip);
 
-	// Cleanup (dtor).
+	// Cleanup (dtors).
+	void cleanup();
 	void clear();
-
-	// File hash table management.
-	Item *findItem(Type iType, const QString& sPath) const;
 
 protected:
 
+	// File hash table management.
+	Item *findItem(Type iType, const QString& sPath) const;
 	Item *addItem(Type iType, const QString& sPath, bool bAutoRemove);
 	void removeItem(Item *pItem);
 
