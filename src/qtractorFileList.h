@@ -147,7 +147,7 @@ public:
 	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
 
 	// Clip/path registry management.
-	void addClipItem(Type iType, qtractorClip *pClip, bool bAutoRemove);
+	void addClipItem(Type iType, qtractorClip *pClip, bool bAutoRemove = false);
 	void removeClipItem(Type iType, qtractorClip *pClip);
 
 	// Cleanup (dtor).

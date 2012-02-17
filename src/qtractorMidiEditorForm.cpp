@@ -45,6 +45,8 @@
 
 #include "qtractorMidiEventList.h"
 
+#include "qtractorFileList.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QActionGroup>
@@ -847,13 +849,21 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	if (pMidiClip == NULL)
 		return false;
 
-	// Suggest a filename, if there's none...
+	qtractorTrack *pTrack = pMidiClip->track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return false;
+
+	// Suggest a brand new filename, if there's none...
 	QString sFilename = pMidiClip->createFilePathRevision(bPrompt);
 
+	// Ask for the file to save...
 	if (sFilename.isEmpty())
 		bPrompt = true;
 
-	// Ask for the file to save...
 	if (bPrompt) {
 		// If none is given, assume default directory.
 		const QString sExt("mid");
@@ -905,10 +915,12 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		// Now, we avoid the linked/ref-counted instances
 		// if we're doing a prompted save (ie. Save As...)
 		if (bPrompt) {
+			pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
 			pMidiClip->setFilename(sFilename);
 			pMidiClip->setDirty(false);
 			pMidiClip->unlinkHashData();
 			pMidiClip->updateEditor(true);
+			pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip);
 		} else {
 			pMidiClip->setFilenameEx(sFilename);
 		}
