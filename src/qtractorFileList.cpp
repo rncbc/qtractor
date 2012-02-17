@@ -167,7 +167,7 @@ void qtractorFileList::removeItem ( qtractorFileList::Item *pItem )
 }
 
 
-void qtractorFileList::cleanup (void)
+void qtractorFileList::cleanup ( bool bForce )
 {
 	Hash::ConstIterator iter = m_items.begin();
 	for (; iter != m_items.constEnd(); ++iter) {
@@ -179,9 +179,12 @@ void qtractorFileList::cleanup (void)
 				int(pItem->type()), pItem->path().toUtf8().constData(),
 				pItem->refCount(), pItem->clips().count());
 		#endif
-			QFile::remove(sPath); // kill!
-			pItem->setAutoRemove(false);
-			pItem->removeRef();
+			if (!bForce && !pItem->clips().isEmpty()) {
+				pItem->setAutoRemove(false);
+				pItem->removeRef();
+			}
+			// Time for the kill...?
+			if (bForce) QFile::remove(sPath);
 		}
 	}
 }
