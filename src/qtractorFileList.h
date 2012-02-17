@@ -151,7 +151,7 @@ public:
 	void removeClipItem(Type iType, qtractorClip *pClip);
 
 	// Cleanup (dtors).
-	void cleanup();
+	void cleanup(bool bForce);
 	void clear();
 
 protected:

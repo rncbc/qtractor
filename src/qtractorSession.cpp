@@ -221,7 +221,7 @@ void qtractorSession::close (void)
 
 	unlock();
 
-	m_pFiles->cleanup();
+	m_pFiles->cleanup(true);
 
 //	clear();
 }
