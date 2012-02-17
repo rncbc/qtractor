@@ -920,7 +920,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			pMidiClip->setDirty(false);
 			pMidiClip->unlinkHashData();
 			pMidiClip->updateEditor(true);
-			pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip);
+			pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 		} else {
 			pMidiClip->setFilenameEx(sFilename);
 		}

@@ -573,7 +573,7 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	pMidiClip->setDirty(false);
 	pMidiClip->unlinkHashData();
 	pMidiClip->updateEditor(true);
-	pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip);
+	pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 
 	// HACK: This operation is so important that
 	// it surely deserves being in the front page...
