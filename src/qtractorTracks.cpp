@@ -59,6 +59,8 @@
 #include "qtractorMidiToolsForm.h"
 #include "qtractorMidiEditSelect.h"
 
+#include "qtractorFileList.h"
+
 #include <QVBoxLayout>
 #include <QProgressBar>
 #include <QMessageBox>
@@ -554,7 +556,7 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 
 	// Have a new filename revision...
 	const QString& sFilename
-		= pMidiClip->createFilePathRevision();
+		= pMidiClip->createFilePathRevision(true);
 
 	// Save/replace the clip track...
 	qtractorMidiFile::saveCopyFile(sFilename,
@@ -566,10 +568,12 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 		pSession->tickFromFrame(pMidiClip->clipStart()));
 
 	// Now, we avoid the linked/ref-counted instances...
+	pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
 	pMidiClip->setFilename(sFilename);
 	pMidiClip->setDirty(false);
 	pMidiClip->unlinkHashData();
 	pMidiClip->updateEditor(true);
+	pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip);
 
 	// HACK: This operation is so important that
 	// it surely deserves being in the front page...

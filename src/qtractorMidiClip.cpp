@@ -204,7 +204,7 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 
 	m_iFormat = clip.format();
 	m_bSessionFlag = false;
-	m_iRevision = 0;
+	m_iRevision = clip.revision();
 
 	m_noteMin = clip.noteMin();
 	m_noteMax = clip.noteMax();
@@ -241,14 +241,6 @@ bool qtractorMidiClip::createMidiFile (
 		sFilename.toUtf8().constData(), iTrackChannel);
 #endif
 
-	// Create and open up the MIDI file...
-	m_pFile = new qtractorMidiFile();
-	if (!m_pFile->open(sFilename, qtractorMidiFile::Write)) {
-		delete m_pFile;
-		m_pFile = NULL;
-		return false;
-	}
-
 	// Self holds the SMF format,
 	unsigned short iFormat = format();
 	unsigned short iTracks = 1;
@@ -264,9 +256,20 @@ bool qtractorMidiClip::createMidiFile (
 	}
 
 	// Set local properties...
-	setFilename(m_pFile->filename());
+	setFilename(sFilename);
 	setTrackChannel(iTrackChannel);
 	setDirty(false);
+
+	// Register file path...
+	pSession->files()->addClipItem(qtractorFileList::Midi, this, true);
+
+	// Create and open up the MIDI file...
+	m_pFile = new qtractorMidiFile();
+	if (!m_pFile->open(sFilename, qtractorMidiFile::Write)) {
+		delete m_pFile;
+		m_pFile = NULL;
+		return false;
+	}
 
 	// Initialize MIDI event container...
 	m_pKey  = new Key(this);
@@ -280,7 +283,7 @@ bool qtractorMidiClip::createMidiFile (
 
 	pSeq->clear();
 	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
-	pSeq->setName(shortClipName(QFileInfo(m_pFile->filename()).baseName()));
+	pSeq->setName(shortClipName(QFileInfo(sFilename).baseName()));
 	pSeq->setChannel(pTrack->midiChannel());
 
 	// Make it a brand new revision...
@@ -481,6 +484,9 @@ bool qtractorMidiClip::openMidiFile (
 		//	return false;
 	}
 
+	// Make it a brand new revision...
+	// setRevision(1);
+
 	// Default clip length will be whole sequence duration.
 	if (clipLength() == 0 && pSeq->timeLength() > pSeq->timeOffset()) {
 		unsigned long t1 = t0 + (pSeq->timeLength() - pSeq->timeOffset());
@@ -561,12 +567,13 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 			sFilename = pSession->createFilePath(pTrack->trackName(), "mid");
 		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorMidiClip::createFilePathRevision(\"%s\")",
-			sFilename.toUtf8().constData());
+		qDebug("qtractorMidiClip::createFilePathRevision(%d): \"%s\" (%d)",
+			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
 	#endif
+		m_iRevision = 0;
 	}
 
-	if (!bForce) ++m_iRevision;
+	++m_iRevision;
 
 	return sFilename;
 }
@@ -575,6 +582,14 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 // Sync all ref-counted filenames.
 void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 {
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
 	if (m_pData == NULL)
 		return;
 
@@ -583,10 +598,12 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
 		qtractorMidiClip *pMidiClip = iter.next();
+		pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
 		pMidiClip->setFilename(sFilename);
 		pMidiClip->setDirty(false);
 		pMidiClip->updateHashKey();
 		pMidiClip->updateEditor(true);
+		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip);
 	}
 
 	insertHashKey();
