@@ -228,6 +228,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.fileSaveAsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileSaveAs()));
+	QObject::connect(m_ui.fileUnlinkAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileUnlink()));
 	QObject::connect(m_ui.fileTrackInputsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileTrackInputs()));
@@ -958,6 +961,18 @@ void qtractorMidiEditorForm::fileSaveAs (void)
 }
 
 
+// Unlink current clip.
+void qtractorMidiEditorForm::fileUnlink (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->unlinkClip(m_pMidiEditor->midiClip());
+	}
+}
+
+
 // File properties dialog.
 void qtractorMidiEditorForm::fileProperties (void)
 {
@@ -1550,6 +1565,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		pTrack = pMidiClip->track();
 	
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
+	m_ui.fileUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
 	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != NULL);
 	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != NULL);

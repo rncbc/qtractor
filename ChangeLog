@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- A new File/Unlink menu action is now made available from the MIDI
+  clip editor (aka. piano-roll) for detaching the current linked/ref-
+  counted MIDI clip into a new auto-incremented SMF filename.
+
 - Some audio/MIDI content/media-file resource management is entering
   the scene, taking care of some file-system house-keeping, this gets
   evident on unsaved/dead recorded files being automaticaly removed

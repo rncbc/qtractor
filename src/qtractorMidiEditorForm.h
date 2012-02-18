@@ -96,6 +96,7 @@ protected slots:
 
 	void fileSave();
 	void fileSaveAs();
+	void fileUnlink();
 	void fileTrackInputs();
 	void fileTrackOutputs();
 	void fileTrackProperties();

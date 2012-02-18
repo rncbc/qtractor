@@ -59,13 +59,14 @@
     </property>
     <addaction name="fileSaveAction" />
     <addaction name="fileSaveAsAction" />
-    <addaction name="separator" />
-    <addaction name="filePropertiesAction" />
+	<addaction name="fileUnlinkAction" />
+	<addaction name="separator" />
+	<addaction name="filePropertiesAction" />
 	<addaction name="separator" />
 	<addaction name="fileRangeSetAction" />
 	<addaction name="fileLoopSetAction" />
 	<addaction name="separator" />
-    <addaction name="fileTrackMenu" />
+	<addaction name="fileTrackMenu" />
     <addaction name="separator" />
     <addaction name="fileCloseAction" />
    </widget>
@@ -344,6 +345,20 @@
    </property>
    <property name="statusTip" >
     <string>Save current MIDI clip with another file name</string>
+   </property>
+  </action>
+  <action name="fileUnlinkAction" >
+   <property name="text" >
+	<string>&amp;Unlink</string>
+   </property>
+   <property name="iconText" >
+	<string>Unlink</string>
+   </property>
+   <property name="toolTip" >
+	<string>Unlink</string>
+   </property>
+   <property name="statusTip" >
+	<string>Unlink current MIDI clip</string>
    </property>
   </action>
   <action name="fileTrackInputsAction" >
