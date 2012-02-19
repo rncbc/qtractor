@@ -61,7 +61,7 @@ void qtractorFileList::addFileItem (
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorFileList::addFileItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount(), pItem->clips().count(),
+			pItem->refCount(), pItem->clipRefCount(),
 			int(pItem->isAutoRemove()));
 	#endif
 	}
@@ -77,7 +77,7 @@ void qtractorFileList::removeFileItem (
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorFileList::removeFileItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount() - 1, pItem->clips().count(),
+			pItem->refCount() - 1, pItem->clipRefCount(),
 			int(pItem->isAutoRemove()));
 	#endif
 		removeItem(pItem);
@@ -86,24 +86,16 @@ void qtractorFileList::removeFileItem (
 
 
 // Clip/path registry management.
-qtractorFileList::Item *qtractorFileList::findClipItem (
-	qtractorFileList::Type iType, qtractorClip *pClip ) const
-{
-	Item *pItem = findItem(iType, pClip->filename());
-	return (pItem && pItem->clips().contains(pClip) ? pItem : NULL);
-}
-
-
 void qtractorFileList::addClipItem (
 	qtractorFileList::Type iType, qtractorClip *pClip, bool bAutoRemove )
 {
 	Item *pItem = addItem(iType, pClip->filename(), bAutoRemove);
 	if (pItem) {
-		pItem->addClip(pClip);
+		pItem->addClipRef();
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorFileList::addClipItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount(), pItem->clips().count(),
+			pItem->refCount(), pItem->clipRefCount(),
 			int(pItem->isAutoRemove()));
 	#endif
 	}
@@ -115,11 +107,11 @@ void qtractorFileList::removeClipItem (
 {
 	Item *pItem = findItem(iType, pClip->filename());
 	if (pItem) {
-		pItem->removeClip(pClip);
+		pItem->removeClipRef();
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorFileList::removeClipItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
-			pItem->refCount() - 1, pItem->clips().count(),
+			pItem->refCount() - 1, pItem->clipRefCount(),
 			int(pItem->isAutoRemove()));
 	#endif
 		removeItem(pItem);
@@ -177,9 +169,9 @@ void qtractorFileList::cleanup ( bool bForce )
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorFileList::cleanup(%d, \"%s\") refCount=%d clips=%d",
 				int(pItem->type()), pItem->path().toUtf8().constData(),
-				pItem->refCount(), pItem->clips().count());
+				pItem->refCount(), pItem->clipRefCount());
 		#endif
-			if (!bForce && !pItem->clips().isEmpty()) {
+			if (!bForce && pItem->clipRefCount() > 0) {
 				pItem->setAutoRemove(false);
 				pItem->removeRef();
 			}
