@@ -87,8 +87,8 @@ public:
 
 		// Constructor.
 		Item(const Key& key, bool bAutoRemove = false)
-			: m_key(key), m_bAutoRemove(bAutoRemove),
-				m_iRefCount(0), m_pFileItem(0) {}
+			: m_key(key), m_bAutoRemove(bAutoRemove), m_pFileItem(0),
+				m_iClipRefCount(0), m_iRefCount(0) {}
 
 		// Key accessors.
 		Type type() const
@@ -108,19 +108,19 @@ public:
 		qtractorFileListItem *fileItem() const
 			{ return m_pFileItem; }
 
-		void addClip(qtractorClip *pClip)
-			{ m_clips.append(pClip); }
-		void removeClip(qtractorClip *pClip)
-			{ m_clips.removeAll(pClip); }
+		// Clip ref-counting methods.
+		void addClipRef()
+			{ ++m_iClipRefCount; }
+		void removeClipRef()
+			{ --m_iClipRefCount; }
 
-		const QList<qtractorClip *>& clips() const
-			{ return m_clips; }
+		unsigned int clipRefCount() const
+			{ return m_iClipRefCount; }
 
-		// Ref-counting accesor.
+		// Ref-counting methods.
 		unsigned int refCount() const
 			{ return m_iRefCount; }
 
-		// Ref-counting methods.
 		void addRef()
 			{ ++m_iRefCount; }
 		void removeRef()
@@ -131,11 +131,9 @@ public:
 		// Most interesting variables.
 		Key m_key;
 		bool m_bAutoRemove;
-		unsigned int m_iRefCount;
-
-		// Payload variables.
 		qtractorFileListItem *m_pFileItem;
-		QList<qtractorClip *> m_clips;
+		unsigned int m_iClipRefCount;
+		unsigned int m_iRefCount;
 	};
 
 	typedef QHash<Key, Item *> Hash;
@@ -146,7 +144,6 @@ public:
 	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
 
 	// Clip/path registry management.
-	Item *findClipItem(Type iType, qtractorClip *pClip) const;
 	void addClipItem(Type iType, qtractorClip *pClip, bool bAutoRemove = false);
 	void removeClipItem(Type iType, qtractorClip *pClip);
 

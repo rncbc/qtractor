@@ -603,7 +603,7 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 		pMidiClip->setDirty(false);
 		pMidiClip->updateHashKey();
 		pMidiClip->updateEditor(true);
-		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip);
+		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 	}
 
 	insertHashKey();
