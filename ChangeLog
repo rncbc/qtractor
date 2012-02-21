@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI editor command redo/undo adjustment now effective on all other
+  channel events besides notes, which overlap at the same event time.
+
 - A new File/Unlink menu action is now made available from the MIDI
   clip editor (aka. piano-roll) for detaching the current linked/ref-
   counted MIDI clip into a new auto-incremented SMF filename.
