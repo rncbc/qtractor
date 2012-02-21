@@ -3521,10 +3521,6 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	const QString& sInstrumentName, int iBankSelMethod,
 	int iBank, int iProg, qtractorTrack *pTrack )
 {
-	// Sanity check.
-	if (iProg < 0)
-		return;
-
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
@@ -3537,14 +3533,19 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		iBankSelMethod, iBank, iProg);
 #endif
 
+	// Sanity check.
+	if (sInstrumentName.isEmpty())
+		m_patches.remove(iChannel & 0x0f);
+
+	if (iProg < 0)
+		return;
+
 	// Update patch mapping...
-	if (!sInstrumentName.isEmpty()) {
-		Patch& patch = m_patches[iChannel & 0x0f];
-		patch.instrumentName = sInstrumentName;
-		patch.bankSelMethod  = iBankSelMethod;
-		patch.bank = iBank;
-		patch.prog = iProg;
-	}
+	Patch& patch = m_patches[iChannel & 0x0f];
+	patch.instrumentName = sInstrumentName;
+	patch.bankSelMethod  = iBankSelMethod;
+	patch.bank = iBank;
+	patch.prog = iProg;
 
 	// Don't do anything else if engine
 	// has not been activated...

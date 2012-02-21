@@ -235,87 +235,113 @@ bool qtractorMidiEditCommand::adjust (void)
 		return false;
 
 	// HACK: What we're going to do here is about checking the
-	// whole sequence, fixing any overlapping note events and
+	// whole sequence, fixing any overlapping (note) events and
 	// adjusting the issued command for proper undo/redo...
-	qtractorMidiSequence::NoteMap notes;
+	QHash<int, qtractorMidiEvent *> events;
 
 	// For each event, do rescan...
 	qtractorMidiEvent *pEvent = pSeq->events().first();
 	while (pEvent) {
-		unsigned long iTime = pEvent->time();
-		unsigned long iTimeEnd = iTime + pEvent->duration();
 		qtractorMidiEvent *pNextEvent = pEvent->next();
-		// NOTEON: Find previous note event and check overlaps...
-		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+		// Whether event is (time) adjustable...
+		int key = int(pEvent->type()) << 7;
+		switch (pEvent->type()) {
+		case qtractorMidiEvent::NOTEON:
+		case qtractorMidiEvent::NOTEOFF:
+		case qtractorMidiEvent::KEYPRESS:
+			key += int(pEvent->note());
+			break;
+		case qtractorMidiEvent::CONTROLLER:
+			key += int(pEvent->controller());
+			break;
+		case qtractorMidiEvent::CHANPRESS:
+		case qtractorMidiEvent::PITCHBEND:
+			break;
+		default:
+			key = 0; // Non adjustable!
+			break;
+		}
+		// Adjustable?
+		if (key) {
 			// Already there?
-			unsigned char note = pEvent->note();
-			qtractorMidiSequence::NoteMap::Iterator iter = notes.find(note);
-			if (iter != notes.end()) {
-				qtractorMidiEvent *pPrevEvent = *iter;
+			qtractorMidiEvent *pPrevEvent = events.value(key, NULL);
+			if (pPrevEvent) {
+				unsigned long iTime = pEvent->time();
 				unsigned long iPrevTime = pPrevEvent->time();
-				unsigned long iPrevTimeEnd = iPrevTime + pPrevEvent->duration();
-				// Inner operlap...
-				if (iTime > iPrevTime && iTime < iPrevTimeEnd) {
-					// Left-side outer event...
-					unsigned long iDuration = pPrevEvent->duration();
-					pPrevEvent->setDuration(iTime - iPrevTime);
-					if (!findEvent(pPrevEvent, ResizeEventTime))
-						resizeEventTime(pPrevEvent, iPrevTime, iDuration);
-					// Right-side outer event...
-					if (iTimeEnd < iPrevTimeEnd) {
-						qtractorMidiEvent *pNewEvent
-							= new qtractorMidiEvent(*pPrevEvent);
-						pNewEvent->setTime(iTimeEnd);
-						pNewEvent->setDuration(iPrevTimeEnd - iTimeEnd);
-						insertEvent(pNewEvent);
-						pSeq->insertEvent(pNewEvent);
-						pNextEvent = pNewEvent->next();
-						// Keep or set as last note...
-						pEvent = pNewEvent;
+				// NOTEON: Find previous note event and check overlaps...
+				if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+					unsigned long iTimeEnd = iTime + pEvent->duration();
+					unsigned long iPrevTimeEnd = iPrevTime + pPrevEvent->duration();
+					// Inner operlap...
+					if (iTime > iPrevTime && iTime < iPrevTimeEnd) {
+						// Left-side outer event...
+						unsigned long iDuration = pPrevEvent->duration();
+						pPrevEvent->setDuration(iTime - iPrevTime);
+						if (!findEvent(pPrevEvent, ResizeEventTime))
+							resizeEventTime(pPrevEvent, iPrevTime, iDuration);
+						// Right-side outer event...
+						if (iTimeEnd < iPrevTimeEnd) {
+							qtractorMidiEvent *pNewEvent
+								= new qtractorMidiEvent(*pPrevEvent);
+							pNewEvent->setTime(iTimeEnd);
+							pNewEvent->setDuration(iPrevTimeEnd - iTimeEnd);
+							insertEvent(pNewEvent);
+							pSeq->insertEvent(pNewEvent);
+							pNextEvent = pNewEvent->next();
+							// Keep or set as last note...
+							pEvent = pNewEvent;
+						}
+					}
+					else
+					// Loose overlap?...
+					if (iTime == iPrevTime) {
+						// Exact overlap...
+						if (iTimeEnd == iPrevTimeEnd) {
+							pSeq->unlinkEvent(pPrevEvent);
+							if (!findEvent(pPrevEvent, RemoveEvent))
+								removeEvent(pPrevEvent);
+						} else {
+							// Partial overlap...
+							if (iTimeEnd < iPrevTimeEnd) {
+								// Short over large...
+								unsigned long iDuration = pPrevEvent->duration();
+								pPrevEvent->setDuration(pEvent->duration());
+								if (!findEvent(pPrevEvent, ResizeEventTime))
+									resizeEventTime(pPrevEvent, iPrevTime, iDuration);
+								iDuration = pEvent->duration();
+								pSeq->unlinkEvent(pEvent);
+								pEvent->setTime(iTimeEnd);
+								pEvent->setDuration(iPrevTimeEnd - iTimeEnd);
+								pSeq->insertEvent(pEvent);
+								if (!findEvent(pEvent, ResizeEventTime)) {
+									resizeEventTime(pEvent, iTime, iDuration);
+								}
+							} else {
+								// Large over short...
+								unsigned long iDuration = pEvent->duration();
+								pSeq->unlinkEvent(pEvent);
+								pEvent->setTime(iPrevTimeEnd);
+								pEvent->setDuration(iTimeEnd - iPrevTimeEnd);
+								pSeq->insertEvent(pEvent);
+								if (!findEvent(pEvent, ResizeEventTime)) {
+									resizeEventTime(pEvent, iTime, iDuration);
+								}
+							}
+							// We've move it ahead...
+							pEvent = pPrevEvent;
+						}
 					}
 				}
 				else
-				// Loose overlap?...
+				// All other channel events...
 				if (iTime == iPrevTime) {
-					// Exact overlap...
-					if (iTimeEnd == iPrevTimeEnd) {
-						pSeq->unlinkEvent(pPrevEvent);
-						if (!findEvent(pPrevEvent, RemoveEvent))
-							removeEvent(pPrevEvent);
-					} else {
-						// Partial overlap...
-						if (iTimeEnd < iPrevTimeEnd) {
-							// Short over large...
-							unsigned long iDuration = pPrevEvent->duration();
-							pPrevEvent->setDuration(pEvent->duration());
-							if (!findEvent(pPrevEvent, ResizeEventTime))
-								resizeEventTime(pPrevEvent, iPrevTime, iDuration);
-							iDuration = pEvent->duration();
-							pSeq->unlinkEvent(pEvent);
-							pEvent->setTime(iTimeEnd);
-							pEvent->setDuration(iPrevTimeEnd - iTimeEnd);
-							pSeq->insertEvent(pEvent);
-							if (!findEvent(pEvent, ResizeEventTime)) {
-								resizeEventTime(pEvent, iTime, iDuration);
-							}
-						} else {
-							// Large over short...
-							unsigned long iDuration = pEvent->duration();
-							pSeq->unlinkEvent(pEvent);
-							pEvent->setTime(iPrevTimeEnd);
-							pEvent->setDuration(iTimeEnd - iPrevTimeEnd);
-							pSeq->insertEvent(pEvent);
-							if (!findEvent(pEvent, ResizeEventTime)) {
-								resizeEventTime(pEvent, iTime, iDuration);
-							}
-						}
-						// We've move it ahead...
-						pEvent = pPrevEvent;
-					}					
+					pSeq->unlinkEvent(pPrevEvent);
+					if (!findEvent(pPrevEvent, RemoveEvent))
+						removeEvent(pPrevEvent);
 				}
 			}
-			// Set as last note...
-			notes.replace(note, pEvent);
+			// Remember last one...
+			events.insert(key, pEvent);
 		}
 		// Iterate next...
 		pEvent = pNextEvent;
