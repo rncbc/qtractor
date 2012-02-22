@@ -120,6 +120,9 @@ public:
 	void resetAllControllers(bool bForceImmediate);
 	bool isResetAllControllers() const;
 
+	// Shut-off all MIDI tracks (panic)...
+	void shutOffAllTracks() const;
+
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
 

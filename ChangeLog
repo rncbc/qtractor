@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- A Transport/Panic action enters the scene, in a nostalgic attempt
+  to emulate the all-MIDI-track-shut-off command of those drop-dead
+  and primordial MIDI sequencers of all time. Now finally a keyboard
+  shortcut and mouse click-away ;)
+
 - MIDI editor command redo/undo adjustment now effective on all other
   channel events besides notes, which overlap at the same event time.
 

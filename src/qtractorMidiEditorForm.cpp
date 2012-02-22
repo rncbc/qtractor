@@ -540,6 +540,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportPunchSetAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportPunchSet()));
+		QObject::connect(m_ui.transportPanicAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportPanic()));
 	}
 
 	eventTypeChanged(0);
