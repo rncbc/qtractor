@@ -254,6 +254,7 @@ public slots:
 	void transportFollow();
 	void transportAutoBackward();
 	void transportContinue();
+	void transportPanic();
 
 	void helpShortcuts();
 	void helpAbout();

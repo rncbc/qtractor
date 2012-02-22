@@ -999,6 +999,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportContinueAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportContinue()));
+	QObject::connect(m_ui.transportPanicAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportPanic()));
 
 	QObject::connect(m_ui.helpShortcutsAction,
 		SIGNAL(triggered(bool)),
@@ -4753,6 +4756,22 @@ void qtractorMainForm::transportContinue (void)
 }
 
 
+// All tracks shut-off (panic).
+void qtractorMainForm::transportPanic (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportPanic()");
+#endif
+
+	// All (MIDI) tracks shut-off (panic)...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine)
+		pMidiEngine->shutOffAllTracks();
+
+	stabilizeForm();
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Help Action slots.
 
@@ -5225,6 +5244,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportPunchSetAction->setEnabled(bSelectable);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
+	m_ui.transportPanicAction->setEnabled(bTracks);
 
 	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);
 	m_ui.transportFastForwardAction->setChecked(m_iTransportRolling > 0);

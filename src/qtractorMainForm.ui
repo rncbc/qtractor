@@ -117,6 +117,8 @@
    <addaction name="transportFollowAction" />
    <addaction name="transportAutoBackwardAction" />
    <addaction name="transportContinueAction" />
+   <addaction name="separator" />
+   <addaction name="transportPanicAction" />
   </widget>
   <widget class="QToolBar" name="transportToolbar" >
    <property name="orientation" >
@@ -479,6 +481,8 @@
     <addaction name="transportFollowAction" />
     <addaction name="transportAutoBackwardAction" />
     <addaction name="transportContinueAction" />
+	<addaction name="separator" />
+	<addaction name="transportPanicAction" />
    </widget>
    <widget class="QMenu" name="helpMenu" >
     <property name="title" >
@@ -2661,6 +2665,23 @@
    </property>
    <property name="statusTip" >
     <string>Continue past end</string>
+   </property>
+  </action>
+  <action name="transportPanicAction" >
+   <property name="icon" >
+	<iconset resource="qtractor.qrc" >:/images/transportPanic.png</iconset>
+   </property>
+   <property name="text" >
+	<string>Pa&amp;nic</string>
+   </property>
+   <property name="iconText" >
+	<string>Panic</string>
+   </property>
+   <property name="toolTip" >
+	<string>Panic</string>
+   </property>
+   <property name="statusTip" >
+	<string>All MIDI tracks shut off (panic)</string>
    </property>
   </action>
   <action name="helpShortcutsAction" >

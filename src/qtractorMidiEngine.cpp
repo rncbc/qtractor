@@ -1328,6 +1328,40 @@ bool qtractorMidiEngine::isResetAllControllers (void) const
 }
 
 
+// Shut-off all MIDI tracks (panic)...
+void qtractorMidiEngine::shutOffAllTracks (void) const
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiEngine::shutOffAllTracks()");
+#endif
+
+	QHash<qtractorMidiBus *, unsigned short> channels;
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+			if (pMidiBus) {
+				unsigned short iChannel = pTrack->midiChannel();
+				unsigned short iChannelMask = (1 << iChannel);
+				unsigned short iChannelFlags = channels.value(pMidiBus, 0);
+				if ((iChannelFlags & iChannelMask) == 0) {
+					pMidiBus->setController(pTrack, ALL_SOUND_OFF);
+					pMidiBus->setController(pTrack, ALL_NOTES_OFF);
+					pMidiBus->setController(pTrack, ALL_CONTROLLERS_OFF);
+					channels.insert(pMidiBus, iChannelFlags | iChannelMask);
+				}
+			}
+		}
+	}
+}
+
+
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
