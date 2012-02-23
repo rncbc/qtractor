@@ -1321,11 +1321,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 				if (pAudioEngine)
 					pAudioEngine->clearConnects();
 				// LADISH session manager will take care of MIDI connections...
-				if (bLadishApp) {
-					qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-					if (pMidiEngine)
-						pMidiEngine->clearConnects();
-				}
+				if (bLadishApp)
+					m_pSession->midiEngine()->clearConnects();
 			}
 		}
 	} else {
@@ -4764,9 +4761,7 @@ void qtractorMainForm::transportPanic (void)
 #endif
 
 	// All (MIDI) tracks shut-off (panic)...
-	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine)
-		pMidiEngine->shutOffAllTracks();
+	m_pSession->midiEngine()->shutOffAllTracks();
 
 	stabilizeForm();
 }
@@ -5584,11 +5579,7 @@ void qtractorMainForm::updateMidiQueueTimer (void)
 		return;
 
 	// Configure the MIDI engine player handling...
-	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine == NULL)
-		return;
-
-	pMidiEngine->setAlsaTimer(m_pOptions->iMidiQueueTimer);
+	m_pSession->midiEngine()->setAlsaTimer(m_pOptions->iMidiQueueTimer);
 }
 
 
@@ -5599,11 +5590,7 @@ void qtractorMainForm::updateMidiPlayer (void)
 		return;
 
 	// Configure the MIDI engine player handling...
-	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine == NULL)
-		return;
-
-	pMidiEngine->setPlayerBus(m_pOptions->bMidiPlayerBus);
+	m_pSession->midiEngine()->setPlayerBus(m_pOptions->bMidiPlayerBus);
 }
 
 
@@ -5614,11 +5601,7 @@ void qtractorMainForm::updateMidiControl (void)
 		return;
 
 	// Configure the MIDI engine control handling...
-	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine == NULL)
-		return;
-
-	pMidiEngine->setControlBus(m_pOptions->bMidiControlBus);
+	m_pSession->midiEngine()->setControlBus(m_pOptions->bMidiControlBus);
 }
 
 
