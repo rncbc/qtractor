@@ -1903,7 +1903,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 			LV2_Handle handle = lv2_handle(i);
 			if (handle)
 				(*state->save)(handle, qtractor_lv2_state_store, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, NULL);
+					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
 		}
 	}
 
@@ -1945,7 +1945,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 			LV2_Handle handle = lv2_handle(i);
 			if (handle)
 				(*state->restore)(handle, qtractor_lv2_state_retrieve, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, NULL);
+					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
 		}
 	}
 
