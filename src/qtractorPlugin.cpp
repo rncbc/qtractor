@@ -55,6 +55,9 @@
 
 #include <QDomDocument>
 
+#include <math.h>
+
+
 #if QT_VERSION < 0x040500
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
@@ -1970,6 +1973,28 @@ void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
 		pSession->execute(
 			new qtractorPluginParamCommand(this, fValue, bUpdate));
 	}
+}
+
+
+// Parameter decimals helper.
+int qtractorPluginParam::decimals (void) const
+{
+	int iDecimals = 0;
+
+	float fDecimals = ::log10f(maxValue() - minValue());
+	if (fDecimals < -3.0f)
+		iDecimals = 6;
+	else if (fDecimals < 0.0f)
+		iDecimals = 3;
+	else if (fDecimals < 1.0f)
+		iDecimals = 2;
+	else if (fDecimals < 6.0f)
+		iDecimals = 1;
+
+	if (isLogarithmic())
+		++iDecimals;
+
+	return iDecimals;
 }
 
 

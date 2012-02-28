@@ -304,7 +304,7 @@ public:
 
 	// Current display value.
 	virtual QString display() const
-		{ return QString::number(value()); }
+		{ return QString::number(value(), 'f', decimals()); }
 	
 	// Bounding range values.
 	void setMinValue(float fMinValue)
@@ -332,6 +332,9 @@ public:
 
 	// Parameter update method.
 	void updateValue(float fValue, bool bUpdate);
+
+	// Parameter decimals helper.
+	int decimals() const;
 
 	// Reset-to-default method.
 	void reset() { setValue(defaultValue(), true); }

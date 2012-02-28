@@ -820,7 +820,7 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="578"/>
+        <location filename="../qtractorPlugin.cpp" line="581"/>
         <source>(Any)</source>
         <translation>(Jakýkoli)</translation>
     </message>
@@ -10798,38 +10798,38 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="106"/>
+        <location filename="../qtractorPluginForm.cpp" line="107"/>
         <source>(default)</source>
         <translation>(výchozí)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="226"/>
+        <location filename="../qtractorPluginForm.cpp" line="227"/>
         <source>Page %1</source>
         <translation>Strana %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="404"/>
+        <location filename="../qtractorPluginForm.cpp" line="405"/>
         <source>(none)</source>
         <translation>(Žádné)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="537"/>
+        <location filename="../qtractorPluginForm.cpp" line="538"/>
         <source>Open Preset</source>
         <translation>Otevřít přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="538"/>
-        <location filename="../qtractorPluginForm.cpp" line="613"/>
+        <location filename="../qtractorPluginForm.cpp" line="539"/>
+        <location filename="../qtractorPluginForm.cpp" line="614"/>
         <source>Preset files (*.%1)</source>
         <translation>Soubory s přednastaveními (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="571"/>
+        <location filename="../qtractorPluginForm.cpp" line="572"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="572"/>
+        <location filename="../qtractorPluginForm.cpp" line="573"/>
         <source>Preset could not be loaded
 from &quot;%1&quot;.
 
@@ -10840,7 +10840,7 @@ z &quot;%1&quot;.
 Promiňte.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="843"/>
+        <location filename="../qtractorPluginForm.cpp" line="844"/>
         <source>&amp;None</source>
         <translation>&amp;Žádné</translation>
     </message>
@@ -10853,17 +10853,17 @@ Promiňte.</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="612"/>
+        <location filename="../qtractorPluginForm.cpp" line="613"/>
         <source>Save Preset</source>
         <translation>Uložit přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="674"/>
+        <location filename="../qtractorPluginForm.cpp" line="675"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="675"/>
+        <location filename="../qtractorPluginForm.cpp" line="676"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
