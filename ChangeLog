@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Direct access plugin/insert parameter changing tool-tip added.
+
 - A Transport/Panic action enters the scene, in a nostalgic attempt
   to emulate the all-MIDI-track-shut-off command of those drop-dead
   and primordial MIDI sequencers of all time. Now finally a keyboard
@@ -20,7 +22,7 @@ SVN TRUNK
 - Some audio/MIDI content/media-file resource management is entering
   the scene, taking care of some file-system house-keeping, this gets
   evident on unsaved/dead recorded files being automaticaly removed
-  from the file-system, on session close. (HIGHLY EXPERIMENTAL)
+  from the file-system, on session close. (EXPERIMENTAL)
 
 - Killed the old and entirely deprecated LV2 Save/Restore and Persist
   feature/extensions support.
@@ -31,7 +33,7 @@ SVN TRUNK
 
 - Awesome patch from Albert Graef, thanks, which makes most MIDI SysEx  
   to get through MIDI instrument pluginsi at last; applies to DSSI and
-  LV2 only. (EXPERIMENTAL)
+  LV2 only.
 
 - LV2 URID map/unmap feature support added.
 
