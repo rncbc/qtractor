@@ -975,7 +975,7 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 						if (pDirectAccessParam) {
 							sToolTip.append(QString("\n(%1: %2)")
 								.arg(pDirectAccessParam->name())
-								.arg(pDirectAccessParam->value(), 0, 'g', 3));
+								.arg(pDirectAccessParam->display()));
 						}
 					}
 					QToolTip::showText(pHelpEvent->globalPos(),
@@ -1574,7 +1574,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 		QToolTip::showText(pViewport->mapToGlobal(pos),
 			QString("%1: %2")
 				.arg(pDirectAccessParam->name())
-				.arg(fValue, 0, 'g', 3), pViewport);
+				.arg(pDirectAccessParam->display()), pViewport);
 	}
 }
 

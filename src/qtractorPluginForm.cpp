@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -53,7 +53,8 @@
 #include <QMenu>
 #include <QKeyEvent>
 
-#include <math.h>
+#include "math.h"
+
 
 // This shall hold the default preset name.
 static QString g_sDefPreset;
@@ -1187,7 +1188,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			pGridLayout->addWidget(m_pDisplay, 0, 2);
 		} else {
 			pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
-			int iDecimals = paramDecimals();
+			int iDecimals = m_pParam->decimals();
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 			m_pSpinBox->setMaximumWidth(64);
 			m_pSpinBox->setDecimals(iDecimals);
@@ -1243,28 +1244,6 @@ void qtractorPluginParamWidget::refresh (void)
 		m_pSlider->observer()->update();
 	if (m_pDisplay)
 		m_pDisplay->observer()->update();
-}
-
-
-// Spin-box decimals helper.
-int qtractorPluginParamWidget::paramDecimals (void) const
-{
-	int iDecimals = 0;
-
-	float fDecimals = ::log10f(m_pParam->maxValue() - m_pParam->minValue());
-	if (fDecimals < -3.0f)
-		iDecimals = 6;
-	else if (fDecimals < 0.0f)
-		iDecimals = 3;
-	else if (fDecimals < 1.0f)
-		iDecimals = 2;
-	else if (fDecimals < 6.0f)
-		iDecimals = 1;
-
-	if (m_pParam->isLogarithmic())
-		++iDecimals;
-
-	return iDecimals;
 }
 
 
