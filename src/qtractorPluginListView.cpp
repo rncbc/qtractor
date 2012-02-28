@@ -1570,6 +1570,11 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 		float fScale = float(pos.x() - rectItem.x()) / float(iDirectAccessWidth);
 		float fValue = pDirectAccessObserver->valueFromScale(fScale, bLogarithmic);
 		pDirectAccessParam->updateValue(fValue, true);
+		QWidget *pViewport = QListWidget::viewport();
+		QToolTip::showText(pViewport->mapToGlobal(pos),
+			QString("%1: %2")
+				.arg(pDirectAccessParam->name())
+				.arg(fValue, 0, 'g', 3), pViewport);
 	}
 }
 
