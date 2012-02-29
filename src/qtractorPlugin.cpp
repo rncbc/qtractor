@@ -1945,6 +1945,25 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 // Current port value.
 void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 {
+	// Decimals caching....
+	if (m_iDecimals < 0) {
+		m_iDecimals = 0;
+		if (!isInteger()) {
+			float fDecs = ::log10f(maxValue() - minValue());
+			if (fDecs < -3.0f)
+				m_iDecimals = 6;
+			else if (fDecs < 0.0f)
+				m_iDecimals = 3;
+			else if (fDecs < 1.0f)
+				m_iDecimals = 2;
+			else if (fDecs < 6.0f)
+				m_iDecimals = 1;
+			if (isLogarithmic())
+				++m_iDecimals;
+		}
+	}
+
+	// Sanitize value...
 	if (isBoundedAbove() && fValue > maxValue())
 		fValue = maxValue();
 	else
@@ -1973,28 +1992,6 @@ void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
 		pSession->execute(
 			new qtractorPluginParamCommand(this, fValue, bUpdate));
 	}
-}
-
-
-// Parameter decimals helper.
-int qtractorPluginParam::decimals (void) const
-{
-	int iDecimals = 0;
-
-	float fDecimals = ::log10f(maxValue() - minValue());
-	if (fDecimals < -3.0f)
-		iDecimals = 6;
-	else if (fDecimals < 0.0f)
-		iDecimals = 3;
-	else if (fDecimals < 1.0f)
-		iDecimals = 2;
-	else if (fDecimals < 6.0f)
-		iDecimals = 1;
-
-	if (isLogarithmic())
-		++iDecimals;
-
-	return iDecimals;
 }
 
 

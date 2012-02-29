@@ -280,7 +280,7 @@ public:
 	// Constructor.
 	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
 		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_subject(0.0f), m_observer(this) {}
+			m_subject(0.0f), m_observer(this), m_iDecimals(-1) {}
 
 	// Main properties accessors.
 	qtractorPlugin *plugin() const { return m_pPlugin; }
@@ -333,9 +333,6 @@ public:
 	// Parameter update method.
 	void updateValue(float fValue, bool bUpdate);
 
-	// Parameter decimals helper.
-	int decimals() const;
-
 	// Reset-to-default method.
 	void reset() { setValue(defaultValue(), true); }
 
@@ -344,6 +341,10 @@ public:
 
 	// Specialized observer value.
 	qtractorMidiControlObserver *observer() { return &m_observer; }
+
+	// Parameter decimals helper (cached).
+	int decimals() const
+		{ return m_iDecimals; }
 
 private:
 
@@ -373,6 +374,9 @@ private:
 		qtractorPluginParam *m_pParam;
 
 	} m_observer;
+
+	// Decimals cache.
+	int m_iDecimals;
 };
 
 

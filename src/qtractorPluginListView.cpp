@@ -1572,7 +1572,8 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 		pDirectAccessParam->updateValue(fValue, true);
 		QWidget *pViewport = QListWidget::viewport();
 		QToolTip::showText(pViewport->mapToGlobal(pos),
-			QString("%1: %2")
+			QString("%1\n(%2: %3)")
+				.arg(pItem->text()) // (pPlugin->type())->name();
 				.arg(pDirectAccessParam->name())
 				.arg(pDirectAccessParam->display()), pViewport);
 	}
