@@ -22,18 +22,17 @@ SVN TRUNK
 - Some audio/MIDI content/media-file resource management is entering
   the scene, taking care of some file-system house-keeping, this gets
   evident on unsaved/dead recorded files being automaticaly removed
-  from the file-system, on session close. (EXPERIMENTAL)
+  from the file-system, on session close.
 
 - Killed the old and entirely deprecated LV2 Save/Restore and Persist
   feature/extensions support.
 
 - Auto-monitored MIDI events are now merged/queued correctly into the
   instrument plugin playback queue, avoiding sudden crashes, hopefully.
-  (EXPERIMENTAL)
 
 - Awesome patch from Albert Graef, thanks, which makes most MIDI SysEx  
-  to get through MIDI instrument pluginsi at last; applies to DSSI and
-  LV2 only.
+  to get through MIDI instrument plugins at last; applies to DSSI and
+  LV2 plugins only.
 
 - LV2 URID map/unmap feature support added.
 
