@@ -101,6 +101,8 @@
 #include "qtractorMidiBuffer.h"
 #endif
 
+#include <math.h>
+
 
 #define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
 //undef LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
@@ -2185,7 +2187,10 @@ QString qtractorLv2PluginParam::display (void) const
 {
 	// Check if current value is mapped...
 	if (isDisplay()) {
-		const QString& sValue = QString::number(value());
+		float fValue = value();
+		if (isInteger())
+			fValue = ::rintf(fValue);
+		const QString& sValue = QString::number(fValue);
 		if (m_display.contains(sValue))
 			return m_display.value(sValue);
 	}

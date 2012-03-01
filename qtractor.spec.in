@@ -68,6 +68,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
+* Thu Mar 01 2012 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.4
+- Echo Victor release.
 * Wed Dec 28 2011 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.3
 - Delta Whisky release.
 * Fri Dec 16 2011 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.2
