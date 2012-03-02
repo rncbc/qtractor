@@ -996,17 +996,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorTrackList.cpp" line="95"/>
         <source>Automation (%1)</source>
-        <translation type="unfinished">Automatizace (%1)</translation>
+        <translation>Automatizace (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="103"/>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>Žádná</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="192"/>
         <source>Automation</source>
-        <translation type="unfinished">Automatizace</translation>
+        <translation>Automatizace</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="355"/>
@@ -2981,7 +2981,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4818"/>
         <source>LV2 Plug-in support (libslv2) enabled. (OLD)</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro přídavný modul LV2 (llibslv2) byla povolena. (STARÉ)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4821"/>
@@ -5621,7 +5621,7 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1831"/>
         <source>Shift+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+T</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1864"/>
@@ -5953,7 +5953,7 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2675"/>
         <source>Pa&amp;nic</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nouzové zastavení</translation>
     </message>
     <message>
         <source>Shift+Ctrl+L</source>
@@ -6146,12 +6146,12 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
         <location filename="../qtractorMainForm.ui" line="2678"/>
         <location filename="../qtractorMainForm.ui" line="2681"/>
         <source>Panic</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouzové zastavení</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2684"/>
         <source>All MIDI tracks shut off (panic)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnout všechny stopy MIDI (nouzové zastavení)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2692"/>
@@ -6637,7 +6637,7 @@ Chcete použít soubory s ovladači?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="134"/>
         <source>&amp;Hook</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hák</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="143"/>
@@ -6863,7 +6863,7 @@ Hodnota:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3579"/>
         <source>Pitch Bend (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna výšky tónu (%1)</translation>
     </message>
     <message>
         <source>Pich Bend (%d)</source>
@@ -6934,7 +6934,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="128"/>
         <source>Pitch Bend</source>
-        <translation>Ohyb výšky tónu</translation>
+        <translation>Změna výšky tónu</translation>
     </message>
     <message>
         <source>System Exclusive</source>
@@ -7668,18 +7668,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="356"/>
         <source>&amp;Unlink</source>
-        <translation type="unfinished">&amp;Zrušit odkaz</translation>
+        <translation>&amp;Zrušit odkaz</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="359"/>
         <location filename="../qtractorMidiEditorForm.ui" line="362"/>
         <source>Unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit odkaz</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="365"/>
         <source>Unlink current MIDI clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit odkaz na nynější ukázku MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="438"/>
@@ -8406,18 +8406,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1485"/>
         <source>Pa&amp;nic</source>
-        <translation type="unfinished"></translation>
+        <translation>No&amp;uzové zastavení</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1488"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1491"/>
         <source>Panic</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouzové zastavení</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1494"/>
         <source>All MIDI tracks shut off (panic)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnout všechny stopy MIDI (nouzové zastavení)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1502"/>
@@ -8555,7 +8555,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEventListModel.cpp" line="313"/>
         <source>Pitch Bend</source>
-        <translation type="unfinished">Ohyb výšky tónu</translation>
+        <translation>Změna výšky tónu</translation>
     </message>
     <message>
         <source>Pich Bend</source>
@@ -8597,7 +8597,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="133"/>
         <source>tpqn</source>
-        <translation type="unfinished"></translation>
+        <translation>tpqn</translation>
     </message>
     <message>
         <source>tpb</source>
@@ -9185,22 +9185,22 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="912"/>
         <source>Resize value mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim změny velikosti hodnoty</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="916"/>
         <source>Flat</source>
-        <translation type="unfinished"></translation>
+        <translation>Rovný</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="921"/>
         <source>Ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Nájezd</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="935"/>
         <source>Resize final value</source>
-        <translation type="unfinished"></translation>
+        <translation>Změnit konečnou velikost</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="972"/>
@@ -9370,7 +9370,7 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="902"/>
         <source>Resize value</source>
-        <translation type="unfinished">Změnit velikost hodnoty</translation>
+        <translation>Změnit velikost hodnoty</translation>
     </message>
 </context>
 <context>
@@ -11253,7 +11253,11 @@ Jste si jistý?</translation>
 &quot;%1&quot;
 
 Do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář se sezením neexistuje:
+
+&quot;%1&quot;
+
+Chcete jej vytvořit?</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.cpp" line="233"/>
@@ -11384,7 +11388,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="257"/>
         <source>Resolution (ticks/beat; tpqn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozlišení (tiky/doby; tpqn)</translation>
     </message>
     <message>
         <source>Tempo (BPM)</source>
