@@ -211,13 +211,13 @@ static const LV2_Feature g_lv2_event_ref_feature =
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, NULL };
 
-static int qtractor_lv2_state_store ( LV2_State_Handle handle,
+static LV2_State_Status qtractor_lv2_state_store ( LV2_State_Handle handle,
 	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
 	if (pLv2Plugin == NULL)
-		return 1;
+		return LV2_STATE_ERR_UNKNOWN;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractor_lv2_state_store(%p, %d, %d, %d, %d)", pLv2Plugin,
@@ -821,7 +821,7 @@ void qtractorLv2PluginType::slv2_open (void)
 
 #ifdef CONFIG_LV2_STATE
 	g_slv2_state_interface_hint = slv2_value_new_uri(g_slv2_world,
-		LV2_STATE_INTERFACE_URI);
+		LV2_STATE__Interface);
 #endif
 
 	// Set up the port properties we support (as hints).
@@ -1010,14 +1010,14 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_state_map_path.abstract_path = &qtractor_lv2_state_abstract_path;
 	m_lv2_state_map_path.absolute_path = &qtractor_lv2_state_absolute_path;
 
-	m_lv2_state_map_path_feature.URI = LV2_STATE_MAP_PATH_URI;
+	m_lv2_state_map_path_feature.URI = LV2_STATE__mapPath;
 	m_lv2_state_map_path_feature.data = &m_lv2_state_map_path;
 	m_lv2_features[iFeatures++] = &m_lv2_state_map_path_feature;
 
 	m_lv2_state_make_path.handle = this;
 	m_lv2_state_make_path.path = &qtractor_lv2_state_make_path;
 
-	m_lv2_state_make_path_feature.URI = LV2_STATE_MAKE_PATH_URI;
+	m_lv2_state_make_path_feature.URI = LV2_STATE__makePath;
 	m_lv2_state_make_path_feature.data = &m_lv2_state_make_path;
 	m_lv2_features[iFeatures++] = &m_lv2_state_make_path_feature;
 	
@@ -1989,26 +1989,26 @@ const LV2_State_Interface *qtractorLv2Plugin::lv2_state_descriptor (
 		return NULL;
 
 	return (const LV2_State_Interface *)
-		(*descriptor->extension_data)(LV2_STATE_INTERFACE_URI);
+		(*descriptor->extension_data)(LV2_STATE__Interface);
 }
 
 
-int qtractorLv2Plugin::lv2_state_store (
+LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
 	if (value == NULL)
-		return 1;
+		return LV2_STATE_ERR_UNKNOWN;
 
 	if ((flags & (LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE)) == 0)
-		return 1;
+		return LV2_STATE_ERR_BAD_FLAGS;
 
 	const char *pszKey = lv2_urid_unmap(key);
 	if (pszKey == NULL)
-		return 1;
+		return LV2_STATE_ERR_UNKNOWN;
 
 	const char *pszType = lv2_urid_unmap(type);
 	if (pszType == NULL)
-		return 1;
+		return LV2_STATE_ERR_BAD_TYPE;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
 	if (::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
@@ -2021,7 +2021,7 @@ int qtractorLv2Plugin::lv2_state_store (
 		setConfig(sKey, data.constData());
 		setConfigType(sKey, QString::fromUtf8(pszType));
 	}
-	return 0;
+	return LV2_STATE_SUCCESS;
 }
 
 

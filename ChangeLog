@@ -3,6 +3,17 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Dropped a dumb optimization for short full-cached multiple linked
+  /ref-counted audio clips which were incidentally out-of-sync after
+  rewind/backward playback. Once again and uncertain to be the last
+  take on this, got fixed (probably related to some oddity reported
+  by Louigi Verona, thanks).
+
+- Upadted to latest LV2 STate extension header spec.
+
+
 0.5.4  2012-03-01  Echo Victor
 
 - Direct access plugin/insert parameter changing tool-tip added.
