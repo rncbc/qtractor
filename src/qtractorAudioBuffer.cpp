@@ -717,7 +717,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	//	m_iWriteOffset = m_iOffset + iFrame;
 		m_iReadOffset  = m_iOffset + iFrame;
 		// Maybe (always) in-sync...
-		setSyncFlag(ReadSync);
+		//setSyncFlag(ReadSync);
 		return true;
 	}
 
@@ -733,7 +733,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;
 		// Maybe (late) in-sync...
-		setSyncFlag(ReadSync);
+		//setSyncFlag(ReadSync);
 		return true;
 	}
 

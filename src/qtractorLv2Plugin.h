@@ -212,7 +212,7 @@ public:
 	// LV2 State extension data descriptor accessor.
 	const LV2_State_Interface *lv2_state_descriptor(unsigned short iInstance) const;
 
-	int lv2_state_store(
+	LV2_State_Status lv2_state_store(
 		uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags);
 	const void *lv2_state_retrieve(
 		uint32_t key, size_t *size, uint32_t *type, uint32_t *flags);
