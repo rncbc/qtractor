@@ -1018,16 +1018,9 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 			float fValue = pDirectAccessObserver->value();
 			float fScale = pDirectAccessObserver->scaleFromValue(
 				fValue, bLogarithmic);
-			float fStep = (pWheelEvent->delta() < 0 ? -1.0f : +1.0f);
-			if (!pDirectAccessParam->isInteger()) {
-				int iDecimals = pDirectAccessParam->decimals();
-				if (bLogarithmic)
-					--iDecimals;
-				if (iDecimals > 0)
-					fStep *= ::powf(10.0f, - float(iDecimals));
-			}
+			fScale += (pWheelEvent->delta() < 0 ? -0.05f : +0.05f);
 			fValue = pDirectAccessObserver->valueFromScale(
-				fScale + fStep, bLogarithmic);
+				fScale, bLogarithmic);
 			pDirectAccessParam->updateValue(fValue, true);
 		}
 	}
