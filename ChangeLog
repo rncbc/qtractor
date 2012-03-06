@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Finer granularity for direct access parameter mouse wheel changes.
+
 - Dropped a dumb optimization for short full-cached multiple linked
   /ref-counted audio clips which were incidentally out-of-sync after
   rewind/backward playback. Once again and uncertain to be the last
