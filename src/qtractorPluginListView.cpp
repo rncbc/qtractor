@@ -55,8 +55,6 @@
 #define darker(x)	dark(x)
 #endif
 
-#include <math.h>
-
 
 //----------------------------------------------------------------------------
 // qtractorTinyScrollBarStyle -- Custom style to have some tiny scrollbars
@@ -1018,9 +1016,11 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 			float fValue = pDirectAccessObserver->value();
 			float fScale = pDirectAccessObserver->scaleFromValue(
 				fValue, bLogarithmic);
-			fScale += (pWheelEvent->delta() < 0 ? -0.05f : +0.05f);
+			float fDelta = (pWheelEvent->delta() < 0 ? -0.1f : +0.1f);
+			if (!pDirectAccessParam->isInteger())
+				fDelta *= 0.5f;
 			fValue = pDirectAccessObserver->valueFromScale(
-				fScale, bLogarithmic);
+				fScale + fDelta, bLogarithmic);
 			pDirectAccessParam->updateValue(fValue, true);
 		}
 	}
