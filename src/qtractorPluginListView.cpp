@@ -55,6 +55,8 @@
 #define darker(x)	dark(x)
 #endif
 
+#include <math.h>
+
 
 //----------------------------------------------------------------------------
 // qtractorTinyScrollBarStyle -- Custom style to have some tiny scrollbars
@@ -1017,11 +1019,11 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 			float fScale = pDirectAccessObserver->scaleFromValue(
 				fValue, bLogarithmic);
 			float fStep = (pWheelEvent->delta() > 0 ? 1.0f : -1.0f);
-			if (!pDirectAccessParam->isInteger())
-				fStep *= 0.1f;
-			fScale += fStep;
+			int iDecimals = pDirectAccessParam->decimals();
+			if (iDecimals > 0)
+				fStep *= ::powf(10.0f, - float(iDecimals));
 			fValue = pDirectAccessObserver->valueFromScale(
-				fScale, bLogarithmic);
+				fScale + fStep, bLogarithmic);
 			pDirectAccessParam->updateValue(fValue, true);
 		}
 	}
@@ -1557,7 +1559,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 		float fValue = pDirectAccessParam->value();
 		float fScale = pDirectAccessObserver->scaleFromValue(fValue, bLogarithmic);
 		int x = rectItem.x() + int(fScale * float(iDirectAccessWidth));
-		if (pos.x() > x - 4 && pos.x() < x + 4) {
+		if (pos.x() > x - 5 && pos.x() < x + 5) {
 			m_dragCursor = DragDirectAccess;
 			QListWidget::setCursor(QCursor(Qt::PointingHandCursor));
 		} else {
