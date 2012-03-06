@@ -65,7 +65,7 @@
 
 class qtractorTinyScrollBarStyle : public QCDEStyle
 {
-public:
+protected:
 
 	// Custom virtual override.
 	int pixelMetric( PixelMetric pm,
@@ -1018,10 +1018,14 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 			float fValue = pDirectAccessObserver->value();
 			float fScale = pDirectAccessObserver->scaleFromValue(
 				fValue, bLogarithmic);
-			float fStep = (pWheelEvent->delta() > 0 ? 1.0f : -1.0f);
-			int iDecimals = pDirectAccessParam->decimals();
-			if (iDecimals > 0)
-				fStep *= ::powf(10.0f, - float(iDecimals));
+			float fStep = (pWheelEvent->delta() < 0 ? -1.0f : +1.0f);
+			if (!pDirectAccessParam->isInteger()) {
+				int iDecimals = pDirectAccessParam->decimals();
+				if (bLogarithmic)
+					--iDecimals;
+				if (iDecimals > 0)
+					fStep *= ::powf(10.0f, - float(iDecimals));
+			}
 			fValue = pDirectAccessObserver->valueFromScale(
 				fScale + fStep, bLogarithmic);
 			pDirectAccessParam->updateValue(fValue, true);
