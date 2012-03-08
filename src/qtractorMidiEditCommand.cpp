@@ -119,9 +119,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	qtractorTrack *pTrack = m_pMidiClip->track();
 	if (pTrack)
 		pSession = pTrack->session();
+#if 0
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, true);
-
+#endif
 	// Track sequence duration changes...
 	unsigned long iOldDuration = pSeq->duration();
 	int iSelectClear = 0;
@@ -208,15 +209,17 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	// Or are we changing something more durable?
 	if (pSeq->duration() != iOldDuration) {
 		pSeq->setTimeLength(pSeq->duration());
-		m_pMidiClip->setClipLengthEx(
-			pSession->frameFromTick(pSession->tickFromFrame(
-				m_pMidiClip->clipStart()) + pSeq->duration())
-			- m_pMidiClip->clipStart());
+		if (pSession) {
+			m_pMidiClip->setClipLengthEx(
+				pSession->frameFromTick(pSession->tickFromFrame(
+					m_pMidiClip->clipStart()) + pSeq->duration())
+				- m_pMidiClip->clipStart());
+		}
 		m_pMidiClip->updateEditorEx(iSelectClear > 0);
 	}	// Just reset editor internals...
 	else m_pMidiClip->resetEditorEx(iSelectClear > 0);
 
-	// Renqueue dropped events...
+	// Re-enqueue dropped events...
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, false);
 

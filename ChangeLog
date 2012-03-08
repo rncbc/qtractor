@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Editing MIDI while playback is rolling, doesn't mute the track any
+  more, adding a point to the live editing experience. (EXPERIMENTAL)
+
 - Finer granularity for direct access parameter mouse wheel changes.
 
 - Dropped a dumb optimization for short full-cached multiple linked
