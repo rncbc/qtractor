@@ -28,19 +28,20 @@
 
 #include "lv2.h"
 
+#define LV2_STATE_URI    "http://lv2plug.in/ns/ext/state"
+#define LV2_STATE_PREFIX LV2_STATE_URI "#"
+
+#define LV2_STATE__Interface LV2_STATE_PREFIX "Interface"
+#define LV2_STATE__State     LV2_STATE_PREFIX "State"
+#define LV2_STATE__makePath  LV2_STATE_PREFIX "makePath"
+#define LV2_STATE__mapPath   LV2_STATE_PREFIX "mapPath"
+#define LV2_STATE__state     LV2_STATE_PREFIX "state"
+
 #ifdef __cplusplus
 extern "C" {
 #else
 #    include <stdbool.h>
 #endif
-
-#define LV2_STATE_URI "http://lv2plug.in/ns/ext/state"
-
-#define LV2_STATE__Interface LV2_STATE_URI "#Interface"
-#define LV2_STATE__State     LV2_STATE_URI "#State"
-#define LV2_STATE__makePath  LV2_STATE_URI "#makePath"
-#define LV2_STATE__mapPath   LV2_STATE_URI "#mapPath"
-#define LV2_STATE__state     LV2_STATE_URI "#state"
 
 typedef void* LV2_State_Handle;
 typedef void* LV2_State_Map_Path_Handle;
@@ -57,11 +58,11 @@ typedef enum {
 	/**
 	   Plain Old Data.
 
-	   Values with this flag contain no references to non-persistent or
-	   non-global resources (e.g. pointers, filenames, etc.).  It is safe to
-	   copy POD values with a simple memcpy and store them for use at any time
-	   in the future on a machine with a compatible architecture (e.g. the same
-	   endianness and alignment).
+	   Values with this flag contain no pointers or references to other areas
+	   of memory.  It is safe to copy POD values with a simple memcpy and store
+	   them for the duration of the process.  A POD value is not necessarily
+	   safe to trasmit between processes or machines (e.g. filenames are POD),
+	   see LV2_STATE_IS_PORTABLE for details.
 
 	   Implementations MUST NOT attempt to copy or serialise a non-POD value if
 	   they do not understand its type (and thus know how to correctly do so).
@@ -72,8 +73,10 @@ typedef enum {
 	   Portable (architecture independent) data.
 
 	   Values with this flag are in a format that is usable on any
-	   architecture, i.e. if the value is saved on one machine it can safely be
-	   restored on another machine regardless of endianness, alignment, etc.
+	   architecture.  A portable value saved on one machine can be restored on
+	   another machine regardless of architecture.  The format of portable
+	   values MUST NOT depend on architecture-specific properties like
+	   endianness or alignment.  Portable values MUST NOT contain filenames.
 	*/
 	LV2_STATE_IS_PORTABLE = 1 << 1,
 
@@ -115,8 +118,9 @@ typedef enum {
    DO NOT INVENT NONSENSE URI SCHEMES FOR THE KEY.  Best is to use keys from
    existing vocabularies.  If nothing appropriate is available, use http URIs
    that point to somewhere you can host documents so documentation can be made
-   resolvable.  If this is not possible, invent a URN scheme,
-   e.g. urn:myproj:whatever.  The plugin MUST NOT pass an invalid URI key.
+   resolvable (e.g. a child of the plugin or project URI).  If this is not
+   possible, invent a URN scheme, e.g. urn:myproj:whatever.  The plugin MUST
+   NOT pass an invalid URI key.
 
    The host MAY fail to store a property for whatever reason, but SHOULD
    store any property that is LV2_STATE_IS_POD and LV2_STATE_IS_PORTABLE.
@@ -164,7 +168,7 @@ typedef const void* (*LV2_State_Retrieve_Function)(
 	uint32_t*        flags);
 
 /**
-   State Interface (Extension Data).
+   LV2 Plugin State Interface.
 
    When the plugin's extension_data is called with argument
    LV2_STATE__Interface, the plugin MUST return an LV2_State_Interface
@@ -179,7 +183,7 @@ typedef const void* (*LV2_State_Retrieve_Function)(
    when restoring state saved by a previous version of that plugin, the plugin
    URI MUST change just as it must when ports change incompatibly).  Plugin
    authors should consider this possibility, and always store sensible data
-   with meaningful types to avoid such compatibility issues in the future.
+   with meaningful types to avoid such problems in the future.
 */
 typedef struct _LV2_State_Interface {
 

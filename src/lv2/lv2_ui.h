@@ -24,6 +24,8 @@
 #ifndef LV2_UI_H
 #define LV2_UI_H
 
+#include "lv2.h"
+
 #define LV2_UI_URI "http://lv2plug.in/ns/extensions/ui"
 
 #ifdef __cplusplus
