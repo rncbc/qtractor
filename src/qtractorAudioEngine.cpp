@@ -913,7 +913,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		unsigned long iLoopEnd = pSession->loopEnd();
 		 if (iFrameStart < iLoopEnd) {
 			// Loop-length might be shorter than the buffer-period...
-			while (iFrameEnd >= iLoopEnd) {
+			while (iFrameEnd >= iLoopEnd + nframes) {
 				// Process the remaining until end-of-loop...
 				pSession->process(pAudioCursor, iFrameStart, iLoopEnd);
 				m_iBufferOffset += (iLoopEnd - iFrameStart);
