@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- A one buffer period slack on audio engine's loop turn-around logic
+  might just have fixed an illusive report on loop-recording/takes
+  going progressively out-of-sync, most notably when recording under
+  large audio buffer period sizes (>= 1024 frames/buffer).
+
 - Editing MIDI while playback is rolling, doesn't mute the track any
   more, adding a point to the live editing experience. (EXPERIMENTAL)
 
