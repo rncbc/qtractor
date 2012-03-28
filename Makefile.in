@@ -279,7 +279,7 @@ all:	$(target) $(translations_targets)
 
 
 $(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
-	@make -f $(name).mak
+	@$(MAKE) -f $(name).mak
 
 $(name).mak:	$(name).pro
 	@$(qmake) -o $(name).mak $(name).pro
@@ -293,18 +293,18 @@ $(name).mak:	$(name).pro
 
 
 install:	$(target) $(translations_targets)
-	@make INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
+	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
 	@install -d -v -m 0755 $(DESTDIR)$(localedir)
 	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(localedir)
 
 uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
-	@make INSTALL_ROOT=$(DESTDIR) -f $(name).mak uninstall
+	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak uninstall
 	@rm -vf $(DESTDIR)$(localedir)/$(translations_targets)
 	@for x in $(translations_targets); do \
 		rm -vf $(DESTDIR)$(localedir)/`basename $$x`; done
 
 
 clean:	$(name).mak
-	@make -f $(name).mak clean
+	@$(MAKE) -f $(name).mak clean
 	@rm -f $(target) $(target).mak $(name).mak
 	@rm -rf *.cache *.log *.status $(translations_targets)
