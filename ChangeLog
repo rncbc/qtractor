@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Loop-recording/take number displayed on clip title, respectively.
+
+- Make(ing) -jN parallel builds now available for the masses.
+
 - A one buffer period slack on audio engine's loop turn-around logic
   might just have fixed an illusive report on loop-recording/takes
   going progressively out-of-sync, most notably when recording under

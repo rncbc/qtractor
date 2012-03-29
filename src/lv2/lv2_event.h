@@ -1,5 +1,4 @@
 /*
-  LV2 Event Extension
   Copyright 2008-2011 David Robillard <http://drobilla.net>
   Copyright 2006-2007 Lars Luthman <lars.luthman@gmail.com>
 
@@ -16,14 +15,6 @@
   OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef LV2_EVENT_H
-#define LV2_EVENT_H
-
-#define LV2_EVENT_URI "http://lv2plug.in/ns/ext/event"
-#define LV2_EVENT_AUDIO_STAMP 0
-
-#include <stdint.h>
-
 /**
    @file event.h
    C API for the LV2 Event extension <http://lv2plug.in/ns/ext/event>.
@@ -38,6 +29,14 @@
    the LV2 URI Map uri_to_id function with the URI of this extension as the
    'map' argument returns a value within the range of uint16_t.
 */
+
+#ifndef LV2_EVENT_H
+#define LV2_EVENT_H
+
+#define LV2_EVENT_URI "http://lv2plug.in/ns/ext/event"
+#define LV2_EVENT_AUDIO_STAMP 0
+
+#include <stdint.h>
 
 /**
    The best Pulses Per Quarter Note for tempo-based uint32_t timestamps.
