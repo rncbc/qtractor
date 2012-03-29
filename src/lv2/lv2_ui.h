@@ -1,7 +1,7 @@
 /*
   LV2 UI Extension
-  Copyright 2009-2011 David Robillard <d@drobilla.net>
-  Copyright 2006-2008 Lars Luthman <lars.luthman@gmail.com>
+  Copyright 2009-2012 David Robillard <d@drobilla.net>
+  Copyright 2006-2011 Lars Luthman <lars.luthman@gmail.com>
 
   Permission to use, copy, modify, and/or distribute this software for any
   purpose with or without fee is hereby granted, provided that the above
@@ -17,33 +17,56 @@
 */
 
 /**
- * @file
- * C header for the LV2 UI extension <http://lv2plug.in/ns/extensions/ui>.
- */
+   @file ui.h
+   C header for the LV2 UI extension <http://lv2plug.in/ns/extensions/ui>.
+*/
 
 #ifndef LV2_UI_H
 #define LV2_UI_H
 
+#include <stdint.h>
+
 #include "lv2.h"
 
-#define LV2_UI_URI "http://lv2plug.in/ns/extensions/ui"
+#define LV2_UI_URI    "http://lv2plug.in/ns/extensions/ui"
+#define LV2_UI_PREFIX LV2_UI_URI "#"
+
+#define LV2_UI__GtkUI            LV2_UI_PREFIX "GtkUI"
+#define LV2_UI__PortNotification LV2_UI_PREFIX "PortNotification"
+#define LV2_UI__Qt4UI            LV2_UI_PREFIX "Qt4UI"
+#define LV2_UI__UI               LV2_UI_PREFIX "UI"
+#define LV2_UI__X11UI            LV2_UI_PREFIX "X11UI"
+#define LV2_UI__fixedSize        LV2_UI_PREFIX "fixedSize"
+#define LV2_UI__noUserResize     LV2_UI_PREFIX "noUserResize"
+#define LV2_UI__notifyType       LV2_UI_PREFIX "notifyType"
+#define LV2_UI__parent           LV2_UI_PREFIX "parent"
+#define LV2_UI__plugin           LV2_UI_PREFIX "plugin"
+#define LV2_UI__portIndex        LV2_UI_PREFIX "portIndex"
+#define LV2_UI__portMap          LV2_UI_PREFIX "portMap"
+#define LV2_UI__portNotification LV2_UI_PREFIX "portNotification"
+#define LV2_UI__resize           LV2_UI_PREFIX "resize"
+#define LV2_UI__touch            LV2_UI_PREFIX "touch"
+
+/**
+   The index returned by LV2_UI_Port_Port::port_index() for unknown ports.
+*/
+#define LV2UI_INVALID_PORT_INDEX ((uint32_t)-1)
 
 #ifdef __cplusplus
 extern "C" {
+#else
+#    include <stdbool.h>
 #endif
 
 /**
    A pointer to some widget or other type of UI handle.
 
-   The actual type is defined by the type URI of the UI.  All the functionality
-   provided by this extension is toolkit independent, the host only needs to
-   pass the necessary callbacks and display the widget, if possible.  Plugins
-   may have several UIs, in various toolkits.
+   The actual type is defined by the type of the UI.
 */
 typedef void* LV2UI_Widget;
 
 /**
-   A pointer to a particular instance of a UI.
+   A pointer to an instance of a UI.
 
    It is valid to compare this to NULL (0 for C++) but otherwise the host MUST
    not attempt to interpret it.  The UI plugin may use it to reference internal
@@ -52,7 +75,7 @@ typedef void* LV2UI_Widget;
 typedef void* LV2UI_Handle;
 
 /**
-   A pointer to a particular plugin controller, provided by the host.
+   A pointer to a controller provided by the host.
 
    It is valid to compare this to NULL (0 for C++) but otherwise the UI plugin
    MUST NOT attempt to interpret it.  The host may use it to reference internal
@@ -61,45 +84,32 @@ typedef void* LV2UI_Handle;
 typedef void* LV2UI_Controller;
 
 /**
+   A pointer to opaque data for a feature.
+*/
+typedef void* LV2UI_Feature_Handle;
+
+/**
    The type of the host-provided function that the UI can use to
    send data to a plugin's input ports.
 
    The @c buffer parameter must point to a block of data, @c buffer_size bytes
-   large.  The contents of this buffer and what the host should do with it
-   depends on the value of the @c format parameter.
+   large.  The format of this data and how the host should use it is defined by
+   the @c port_protocol.  This buffer is owned by the UI and is only valid for
+   the duration of this call.
 
-   The @c format parameter should either be 0 or a numeric ID for a "Transfer
-   mechanism".  Transfer mechanisms are Features and may be defined in
-   meta-extensions.  They specify how to translate the data buffers passed to
-   this function to input data for the plugin ports.  If a UI wishes to write
-   data to an input port, it must list a transfer mechanism Feature for that
-   port's class as an optional or required feature (depending on whether the UI
-   will work without being able to write to that port or not).  The only
-   exception is when the UI wants to write single float values to input ports
-   of the class lv2:ControlPort, in which case @c buffer_size should always be
-   4, the buffer should always contain a single IEEE-754 float, and @c format
-   should be 0.
+   The @c port_protocol parameter should either be 0 or the URID for a
+   ui:PortProtocol.  If it is 0, the protocol is implicitly ui:floatProtocol,
+   the port must be an lv2:ControlPort input, @c buffer must point to a single
+   float value, and @c buffer_size must be sizeof(float).
 
-   The numeric IDs for the transfer mechanisms are provided by a URI-to-integer
-   mapping function provided by the host, using the URI Map feature
-   <http://lv2plug.in/ns/ext/uri-map> with the map URI
-   "http://lv2plug.in/ns/extensions/ui".  Thus a UI that requires transfer
-   mechanism features also requires the URI Map feature, but this is implicit -
-   the UI does not have to list the URI map feature as a required or optional
-   feature in it's RDF data.
-
-   An UI MUST NOT pass a @c format parameter value (except 0) that has not been
-   returned by the host-provided URI mapping function for a host-supported
-   transfer mechanism feature URI.
-
-   The UI MUST NOT try to write to a port for which there is no specified
-   transfer mechanism, or to an output port.  The UI is responsible for
-   allocating the buffer and deallocating it after the call.
+   The UI SHOULD NOT use a PortProtocol not supported by the host (i.e. one not
+   passed by the host as a feature), but the host MUST gracefully ignore any
+   port_protocol it does not understand.
 */
 typedef void (*LV2UI_Write_Function)(LV2UI_Controller controller,
                                      uint32_t         port_index,
                                      uint32_t         buffer_size,
-                                     uint32_t         format,
+                                     uint32_t         port_protocol,
                                      const void*      buffer);
 
 /**
@@ -217,16 +227,158 @@ typedef struct _LV2UI_Descriptor {
      similar to the extension_data() member in LV2_Descriptor.
   */
   const void* (*extension_data)(const char* uri);
-
 } LV2UI_Descriptor;
+
+/**
+   UI Resize Feature (LV2_UI__resize)
+
+   This structure may be used in two ways: as a feature passed by the host via
+   LV2UI_Descriptor::instantiate(), or as extension data provided by a UI via
+   LV2UI_Descriptor::extension_data()).
+*/
+typedef struct _LV2UI_Resize {
+	/**
+	   Pointer to opaque data which must be passed to ui_resize().
+	*/
+	LV2UI_Feature_Handle handle;
+
+	/**
+	   Request or advertise a size change.
+
+	   When this struct is provided by the host, the UI may call this
+	   function to inform the host about the size of the UI.
+
+	   When this struct is provided by the UI, the host may call this
+	   function to notify the UI that it should change its size accordingly.
+
+	   @return 0 on success.
+	*/
+	int (*ui_resize)(LV2UI_Feature_Handle handle, int width, int height);
+} LV2UI_Resize;
+
+/**
+   Port Map Feature (LV2_UI__portMap).
+
+   This feature can be used by the UI to get the index for a port with the
+   given symbol.  This makes it possible to implement and distribute a UI
+   separately from the plugin (since symbol is a guaranteed stable port
+   identifier while index is not).
+*/
+typedef struct _LV2UI_Port_Map {
+	/**
+	   Pointer to opaque data which must be passed to ui_resize().
+	*/
+	LV2UI_Feature_Handle handle;
+
+	/**
+	   Get the index for the port with the given @p symbol.
+
+	   @return The index of the port, or LV2_UI_INVALID_PORT_INDEX if no such
+	   port is found.
+	*/
+	uint32_t (*port_index)(LV2UI_Feature_Handle handle, const char* symbol);
+} LV2UI_Port_Map;
+
+/**
+   Port subscription feature (LV2_UI__portSubscribe);
+*/
+typedef struct _LV2UI_Port_Subscribe {
+	/**
+	   Pointer to opaque data which must be passed to ui_resize().
+	*/
+	LV2UI_Feature_Handle handle;
+
+	/**
+	   Subscribe to updates for a port.
+
+	   This means that the host will call the UI's port_event() function when
+	   the port value changes (as defined by protocol).
+
+	   Calling this function with the same @c port_index and @c port_protocol
+	   as an already active subscription has no effect.
+
+	   @param handle The handle field of this struct.
+	   @param port_index The index of the port.
+	   @param port_protocol The URID of the ui:PortProtocol.
+	   @param data Extra data as defined by the port protocol, or NULL.
+	*/
+	void (*subscribe)(LV2UI_Feature_Handle handle,
+	                  uint32_t             port_index,
+	                  uint32_t             port_protocol,
+	                  const void*          options);
+
+	/**
+	   Unsubscribe from updates for a port.
+
+	   This means that the host will cease calling calling port_event() when
+	   the port value changes.
+
+	   Calling this function with a @c port_index and @c port_protocol that
+	   does not refer to an active port subscription has no effect.
+
+	   @param handle The handle field of this struct.
+	   @param port_index The index of the port.
+	   @param port_protocol The URID of the ui:PortProtocol.
+	   @param data Extra data as defined by the port protocol, or NULL.
+	*/
+	void (*unsubscribe)(LV2UI_Feature_Handle handle,
+	                    uint32_t             port_index,
+	                    uint32_t             port_protocol,
+	                    const void*          options);
+} LV2UI_Port_Subscribe;
+
+/**
+   A feature to notify the host the user has grabbed a UI control.
+*/
+typedef struct _LV2UI_Touch {
+	/**
+	   Pointer to opaque data which must be passed to ui_resize().
+	*/
+	LV2UI_Feature_Handle handle;
+
+	/**
+	   Notify the host that a control has been grabbed or released.
+
+	   @param handle The handle field of this struct.
+	   @param port_index The index of the port associated with the control.
+	   @param grabbed If true, the control has been grabbed, otherwise the
+	   control has been released.
+	*/
+	void (*touch)(LV2UI_Feature_Handle handle,
+	              uint32_t             port_index,
+	              bool                 grabbed);
+} LV2UI_Touch;
+
+/**
+   Peak data for a slice of time, the update format for ui:peakProtocol.
+*/
+typedef struct _LV2UI_Peak_Data {
+	/**
+	   The start of the measurement period.  This is just a running counter
+	   that is only meaningful in comparison to previous values and must not be
+	   interpreted as an absolute time.
+	*/
+	uint32_t period_start;
+
+	/**
+	   The size of the measurement period, in the same units as period_start.
+	*/
+	uint32_t period_size;
+
+	/**
+	   The peak value for the measurement period. This should be the maximal
+	   value for abs(sample) over all the samples in the period.
+	*/
+	float peak;
+} LV2UI_Peak_Data;
 
 /**
    A plugin UI programmer must include a function called "lv2ui_descriptor"
    with the following function prototype within the shared object file.  This
    function will have C-style linkage (if you are using C++ this is taken care
-   of by the 'extern "C"' clause at the top of the file).  This function will
-   be accessed by the UI host using the @c dlsym() function and called to get a
-   LV2UI_UIDescriptor for the wanted plugin.
+   of by the 'extern "C"' clause at the top of the file).  This function is
+   loaded from the library by the UI host and called to get a
+   LV2UI_Descriptor for the wanted plugin.
 
    Just like lv2_descriptor(), this function takes an index parameter.  The
    index should only be used for enumeration and not as any sort of ID number -

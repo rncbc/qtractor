@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -924,11 +924,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				if (m_transportMode & qtractorBus::Output)
 					jack_transport_locate(m_pJackClient, iFrameStart);
 				pAudioCursor->seek(iFrameStart);
-				// Take special care on metronome too...
-				if (m_bMetronome) {
-					m_iMetroBeat = pSession->beatFromFrame(iFrameStart);
-					m_iMetroBeatStart = pSession->frameFromBeat(m_iMetroBeat);
-				}
 			}
 		}
 	}
@@ -972,6 +967,11 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		// Set to new transport location...
 		if (m_transportMode & qtractorBus::Output)
 			jack_transport_locate(m_pJackClient, iFrameEnd);
+		// Take special care on metronome too...
+		if (m_bMetronome) {
+			m_iMetroBeat = pSession->beatFromFrame(iFrameEnd);
+			m_iMetroBeatStart = pSession->frameFromBeat(m_iMetroBeat);
+		}
 	}
 
 	// Prepare advance for next cycle...

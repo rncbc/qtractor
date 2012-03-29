@@ -618,17 +618,17 @@ Audio:	%1 channels, %2 Hz</source>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="538"/>
+        <location filename="../qtractorClip.cpp" line="551"/>
         <source>Name:	%1</source>
         <translation>Název:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="541"/>
+        <location filename="../qtractorClip.cpp" line="166"/>
         <source> (take %1)</source>
         <translation> (záběr %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="549"/>
+        <location filename="../qtractorClip.cpp" line="559"/>
         <source>Start / End:	%1 / %2
 Offs. / Len.:	%3 / %4</source>
         <translation>Začátek/Konec:	%1 / %2
@@ -657,7 +657,7 @@ Vyrovnání:	%3
 Délka:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="557"/>
+        <location filename="../qtractorClip.cpp" line="567"/>
         <source>File:	%1</source>
         <translation>Soubor:	%1</translation>
     </message>

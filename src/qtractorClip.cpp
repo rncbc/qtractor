@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -155,6 +155,19 @@ QString qtractorClip::shortClipName ( const QString& sClipName ) const
 	}
 
 	return sShortClipName;
+}
+
+
+QString qtractorClip::clipTitle (void) const
+{
+	QString sClipTitle(m_sClipName);
+
+	if (m_pTakeInfo && m_pTakeInfo->currentTake() >= 0) {
+		sClipTitle += QObject::tr(" (take %1)")
+			.arg(m_pTakeInfo->currentTake() + 1);
+	}
+
+	return sClipTitle;
 }
 
 
@@ -364,7 +377,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Draw clip name label...
 	pPainter->drawText(rect,
-		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, m_sClipName);
+		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipTitle());
 
 	// Draw clip contents (virtual)
 	draw(pPainter, clipRect, iClipOffset);
@@ -535,10 +548,7 @@ bool qtractorClip::queryEditor (void)
 // Clip tool-tip.
 QString qtractorClip::toolTip (void) const
 {
-	QString sToolTip = QObject::tr("Name:\t%1").arg(m_sClipName);
-
-	if (m_pTakeInfo && m_pTakeInfo->currentTake() >= 0)
-		sToolTip += QObject::tr(" (take %1)").arg(m_pTakeInfo->currentTake() + 1);
+	QString sToolTip = QObject::tr("Name:\t%1").arg(clipTitle());
 
 	qtractorSession *pSession = NULL;
 	if (m_pTrack)
