@@ -31,8 +31,8 @@
 #define LV2_STATE_URI    "http://lv2plug.in/ns/ext/state"
 #define LV2_STATE_PREFIX LV2_STATE_URI "#"
 
-#define LV2_STATE__Interface LV2_STATE_PREFIX "Interface"
 #define LV2_STATE__State     LV2_STATE_PREFIX "State"
+#define LV2_STATE__interface LV2_STATE_PREFIX "interface"
 #define LV2_STATE__makePath  LV2_STATE_PREFIX "makePath"
 #define LV2_STATE__mapPath   LV2_STATE_PREFIX "mapPath"
 #define LV2_STATE__state     LV2_STATE_PREFIX "state"
@@ -95,10 +95,12 @@ typedef enum {
 
 /** A status code for state functions. */
 typedef enum {
-	LV2_STATE_SUCCESS       = 0,  /**< Completed successfully. */
-	LV2_STATE_ERR_UNKNOWN   = 1,  /**< Unknown error. */
-	LV2_STATE_ERR_BAD_TYPE  = 2,  /**< Failed due to unsupported type. */
-	LV2_STATE_ERR_BAD_FLAGS = 3   /**< Failed due to unsupported flags. */
+	LV2_STATE_SUCCESS         = 0, /**< Completed successfully. */
+	LV2_STATE_ERR_UNKNOWN     = 1, /**< Unknown error. */
+	LV2_STATE_ERR_BAD_TYPE    = 2, /**< Failed due to unsupported type. */
+	LV2_STATE_ERR_BAD_FLAGS   = 3, /**< Failed due to unsupported flags. */
+	LV2_STATE_ERR_NO_FEATURE  = 4, /**< Failed due to missing features. */
+	LV2_STATE_ERR_NO_PROPERTY = 5  /**< Failed due to missing property. */
 } LV2_State_Status;
 
 /**
@@ -171,7 +173,7 @@ typedef const void* (*LV2_State_Retrieve_Function)(
    LV2 Plugin State Interface.
 
    When the plugin's extension_data is called with argument
-   LV2_STATE__Interface, the plugin MUST return an LV2_State_Interface
+   LV2_STATE__interface, the plugin MUST return an LV2_State_Interface
    structure, which remains valid for the lifetime of the plugin.
 
    The host can use the contained function pointers to save and restore the
@@ -223,11 +225,11 @@ typedef struct _LV2_State_Interface {
 	   care to do so in such a way that a concurrent call to save() will save a
 	   consistent representation of plugin state for a single instant in time.
 	*/
-	void (*save)(LV2_Handle                 instance,
-	             LV2_State_Store_Function   store,
-	             LV2_State_Handle           handle,
-	             uint32_t                   flags,
-	             const LV2_Feature *const * features);
+	LV2_State_Status (*save)(LV2_Handle                 instance,
+	                         LV2_State_Store_Function   store,
+	                         LV2_State_Handle           handle,
+	                         uint32_t                   flags,
+	                         const LV2_Feature *const * features);
 
 	/**
 	   Restore plugin state using a host-provided @p retrieve callback.
@@ -254,11 +256,11 @@ typedef struct _LV2_State_Interface {
 	   LV2. This means it MUST NOT be called concurrently with any other
 	   function on the same plugin instance.
 	*/
-	void (*restore)(LV2_Handle                  instance,
-	                LV2_State_Retrieve_Function retrieve,
-	                LV2_State_Handle            handle,
-	                uint32_t                    flags,
-	                const LV2_Feature *const *  features);
+	LV2_State_Status (*restore)(LV2_Handle                  instance,
+	                            LV2_State_Retrieve_Function retrieve,
+	                            LV2_State_Handle            handle,
+	                            uint32_t                    flags,
+	                            const LV2_Feature *const *  features);
 
 } LV2_State_Interface;
 

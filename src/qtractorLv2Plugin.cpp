@@ -821,7 +821,7 @@ void qtractorLv2PluginType::slv2_open (void)
 
 #ifdef CONFIG_LV2_STATE
 	g_slv2_state_interface_hint = slv2_value_new_uri(g_slv2_world,
-		LV2_STATE__Interface);
+		LV2_STATE__interface);
 #endif
 
 	// Set up the port properties we support (as hints).
@@ -1989,7 +1989,7 @@ const LV2_State_Interface *qtractorLv2Plugin::lv2_state_descriptor (
 		return NULL;
 
 	return (const LV2_State_Interface *)
-		(*descriptor->extension_data)(LV2_STATE__Interface);
+		(*descriptor->extension_data)(LV2_STATE__interface);
 }
 
 
