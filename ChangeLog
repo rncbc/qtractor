@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Another approach avoiding recursive observer widget updates.
+
 - Update to latest LV2 state extension (by David Robillard, thanks).
 
 - Loop-recording/take number displayed on clip title, respectively.

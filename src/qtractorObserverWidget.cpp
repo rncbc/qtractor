@@ -1,7 +1,7 @@
 // qtractorObserverWidget.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,26 +46,20 @@ void qtractorObserverCheckBox::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverCheckBox[%p]::updateValue(%g)", this, fValue);
 #endif
-	++m_iUpdateValue;
+	bool bBlockSignals = QCheckBox::blockSignals(true);
 	QCheckBox::setChecked(bool(scaleFromValue(fValue)));
-//	--m_iUpdateValue;
+	QCheckBox::blockSignals(bBlockSignals);
 }
 
 
 // Protected slot.
 void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 {
-	if (m_iUpdateValue > 0) {
-		m_iUpdateValue = 0;
-		return;
-	}
-
 	float fValue = valueFromScale(bValue ? 1.0f : 0.0f);
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverCheckBox[%p]::checkBoxChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
-
 	emit valueChanged(fValue);
 }
 
@@ -90,26 +84,20 @@ void qtractorObserverSpinBox::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSpinBox[%p]::updateValue(%g)", this, fValue);
 #endif
-	++m_iUpdateValue;
+	bool bBlockSignals = QDoubleSpinBox::blockSignals(true);
 	QDoubleSpinBox::setValue(scaleFromValue(fValue));
-//	--m_iUpdateValue;
+	QDoubleSpinBox::blockSignals(bBlockSignals);
 }
 
 
 // Protected slot.
 void qtractorObserverSpinBox::spinBoxChanged ( double value )
 {
-	if (m_iUpdateValue > 0) {
-		m_iUpdateValue = 0;
-		return;
-	}
-
 	float fValue = valueFromScale(float(value));
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
-
 	emit valueChanged(fValue);
 }
 
@@ -162,26 +150,20 @@ void qtractorObserverSlider::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSlider[%p]::updateValue(%g)", this, fValue);
 #endif
-	++m_iUpdateValue;
+	bool bBlockSignals = QSlider::blockSignals(true);
 	QSlider::setValue(int(scaleFromValue(fValue)));
-//	--m_iUpdateValue;
+	QSlider::blockSignals(bBlockSignals);
 }
 
 
 // Protected slot.
 void qtractorObserverSlider::sliderChanged ( int iValue )
 {
-	if (m_iUpdateValue > 0) {
-		m_iUpdateValue = 0;
-		return;
-	}
-
 	float fValue = valueFromScale(float(iValue));
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSlider[%p]::sliderChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
-
 	emit valueChanged(fValue);
 };
 
