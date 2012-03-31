@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Update to latest LV2 state extension (by David Robillard, thanks).
+
 - Loop-recording/take number displayed on clip title, respectively.
 
 - Make(ing) -jN parallel builds now available for the masses.
