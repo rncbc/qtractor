@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -96,8 +96,6 @@ qtractorMonitorButton::qtractorMonitorButton (
 // Common initializer.
 void qtractorMonitorButton::initMonitorButton (void)
 {
-	m_iUpdate = 0;
-
 	QIcon icons;
 	icons.addPixmap(QPixmap(":/images/itemLedOff.png"),
 		QIcon::Normal, QIcon::Off);
@@ -147,19 +145,16 @@ qtractorBus *qtractorMonitorButton::bus (void) const
 // Visitors overload.
 void qtractorMonitorButton::updateValue ( float fValue )
 {
-	++m_iUpdate;
+	// Avoid self-triggering...
+	bool bBlockSignals = QPushButton::blockSignals(true);
 	QPushButton::setChecked(fValue > 0.0f);
-	--m_iUpdate;
+	QPushButton::blockSignals(bBlockSignals);
 }
 
 
 // Special toggle slot.
 void qtractorMonitorButton::toggledSlot ( bool bOn )
 {
-	// Avoid self-triggering...
-	if (m_iUpdate > 0)
-		return;
-
 	// Just emit proper signal...
 	if (m_pTrack)
 		m_pTrack->monitorChangeNotify(bOn);

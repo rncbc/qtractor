@@ -339,10 +339,7 @@ void qtractorPluginForm::toggleEditor ( bool bOn )
 		return;
 
 	++m_iUpdate;
-
-	// Set the toggle button anyway...
 	m_ui.EditToolButton->setChecked(bOn);
-
 	--m_iUpdate;
 }
 
