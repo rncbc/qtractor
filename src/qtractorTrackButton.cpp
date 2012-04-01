@@ -1,7 +1,7 @@
 // qtractorTrackButton.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -84,7 +84,6 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
-	m_iUpdate  = 0;
 
 	QPushButton::setFixedSize(fixedSize);
 	QPushButton::setFont(
@@ -120,7 +119,7 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 // Visitors overload.
 void qtractorTrackButton::updateValue ( float fValue )
 {
-	++m_iUpdate;
+	bool bBlockSignals = QPushButton::blockSignals(true);
 
 	bool bOn = (fValue > 0.0f);
 
@@ -131,17 +130,13 @@ void qtractorTrackButton::updateValue ( float fValue )
 
 	QPushButton::setChecked(bOn);
 
-	--m_iUpdate;
+	QPushButton::blockSignals(bBlockSignals);
 }
 
 
 // Special toggle slot.
 void qtractorTrackButton::toggledSlot ( bool bOn )
 {
-	// Avoid self-triggering...
-	if (m_iUpdate > 0)
-		return;
-
 	// Just emit proper signal...
 	m_pTrack->stateChangeNotify(m_toolType, bOn);
 }
