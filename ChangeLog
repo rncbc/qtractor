@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Added include <unistd.h> to shut up gcc 4.7 build failures (patch
+  by Alessio Treglia, closes bug #3514794).
+
 - Another approach avoiding recursive observer widget updates. Also
   applies to mixer, monitor and track state buttons.
 
