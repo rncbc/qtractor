@@ -285,6 +285,7 @@ private:
 #include <stdio.h>
 #include <errno.h>
 #include <signal.h>
+#include <unistd.h>
 #include <sys/wait.h>
 
 void stacktrace ( int signo )
