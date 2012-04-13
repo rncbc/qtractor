@@ -191,12 +191,11 @@ lv2_event_write(LV2_Event_Iterator* iter,
     is not enough room in the buffer. */
 static inline uint8_t*
 lv2_event_reserve(LV2_Event_Iterator* iter,
-		  uint32_t frames,
-		  uint32_t subframes,
-		  uint16_t type,
-		  uint16_t size)
+                  uint32_t frames,
+                  uint32_t subframes,
+                  uint16_t type,
+                  uint16_t size)
 {
-	size = lv2_event_pad_size(size);
 	if (iter->buf->capacity - iter->buf->size < sizeof(LV2_Event) + size)
 		return NULL;
 
