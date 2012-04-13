@@ -284,8 +284,7 @@ $(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
 $(name).mak:	$(name).pro
 	@$(qmake) -o $(name).mak $(name).pro
 
-
-%.ts:	$(name).pro $(resources) ${forms} $(sources) $(headers)
+$(translation_targets):	$(name).pro
 	@$(lupdate) -verbose $(name).pro
 
 %.qm:	%.ts
