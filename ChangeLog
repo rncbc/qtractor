@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Tim Westbrook (aka. iondiode) brings this patch for only listing
+  those LV2 plugins which features are strictly supported by the
+  host (applies to --enable-lilv builds only); thanks.
+
 - Added include <unistd.h> to shut up gcc 4.7 build failures (patch
   by Alessio Treglia, closes bug #3514794).
 

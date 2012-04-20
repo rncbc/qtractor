@@ -768,6 +768,30 @@ SLV2Plugin qtractorLv2PluginType::slv2_plugin ( const QString& sUri )
 	SLV2Plugin plugin = const_cast<SLV2Plugin> (
 		slv2_plugins_get_by_uri(g_slv2_plugins, uri));
 
+#ifdef CONFIG_LIBLILV
+	LilvNodes *list = lilv_plugin_get_required_features(
+		static_cast<LilvPlugin *> (plugin));
+	if (list) {
+		LILV_FOREACH(nodes, iter, list) {
+			const LilvNode *node = lilv_nodes_get(list, iter);
+			bool bSupported = false;
+			for (int i = 0; !bSupported && g_lv2_features[i]; ++i) {
+				const LilvNode *impl
+					= lilv_new_uri(g_slv2_world, g_lv2_features[i]->URI);
+				bSupported = lilv_node_equals(impl, node);
+			}
+			if (!bSupported) {
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorLv2PluginType::slv2_plugin: node %s not supported.",
+					lilv_node_as_string(lilv_nodes_get(node, iter)));
+			#endif
+				plugin = NULL;
+				break;
+			}
+		}
+	}
+#endif // CONFIG_LIBLILV
+
 	slv2_value_free(uri);
 	return plugin;
 }
