@@ -775,15 +775,15 @@ SLV2Plugin qtractorLv2PluginType::slv2_plugin ( const QString& sUri )
 		LILV_FOREACH(nodes, iter, list) {
 			const LilvNode *node = lilv_nodes_get(list, iter);
 			bool bSupported = false;
-			const int iFeatures = sizeof(g_lv2_features) / sizeof(LV2_Feature *);
-			for (int i = 0; !bSupported && i < iFeatures; ++i) {
-				LilvNode *impl =  lilv_new_uri(g_slv2_world, g_lv2_features[i]->URI);
+			for (int i = 0; !bSupported && g_lv2_features[i]; ++i) {
+				const LilvNode *impl
+					= lilv_new_uri(g_slv2_world, g_lv2_features[i]->URI);
 				bSupported = lilv_node_equals(impl, node);
 			}
 			if (!bSupported) {
 			#ifdef CONFIG_DEBUG
-				qDebug(" slv2_plugin: node %s not supported",
-						lilv_node_as_string(lilv_nodes_get(node,iter)));
+				qDebug("qtractorLv2PluginType::slv2_plugin: node %s not supported.",
+					lilv_node_as_string(lilv_nodes_get(node, iter)));
 			#endif
 				plugin = NULL;
 				break;
