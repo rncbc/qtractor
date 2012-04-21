@@ -4814,17 +4814,19 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_EVENT
 	list << tr("LV2 Plug-in MIDI/Event support disabled.");
 #endif
-#ifdef  CONFIG_LIBSLV2
-	list << tr("LV2 Plug-in support (libslv2) enabled. (OLD)");
+#ifdef CONFIG_LIBSLV2
+	list << tr("LV2 Plug-in support (libslv2) enabled. (DEPRECATED)");
+#else
+#ifndef CONFIG_LIBLILV
+	list << tr("LV2 Plug-in support (liblilv) disabled.");
+#else
+#ifndef  CONFIG_LIBSUIL
+	list << tr("LV2 Plug-in UI instantiation support (libsuil) disabled.");
 #endif
-#ifdef  CONFIG_LIBLILV
-	list << tr("LV2 Plug-in support (liblilv) enabled. (NEW)");
-#endif
-#ifdef  CONFIG_LIBSUIL
-	list << tr("LV2 Plug-in UI instantiation support (libsuil) enabled. (NEW)");
+#endif // CONFIG_LILV
+#endif // CONFIG_SLV2
 #ifndef CONFIG_LV2_QT4_UI
 	list << tr("LV2 Plug-in QT4 UI support disabled.");
-#endif
 #endif
 #ifndef CONFIG_LV2_GTK_UI
 	list << tr("LV2 Plug-in GTK UI support disabled.");
