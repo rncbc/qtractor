@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.4.14, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.4.15, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -69,19 +69,19 @@ AC_ARG_ENABLE(libz,
 
 # Enable SLV2 support.
 AC_ARG_ENABLE(slv2,
-  AC_HELP_STRING([--enable-slv2], [enable SLV2 interface support (default=yes)]),
+  AC_HELP_STRING([--enable-slv2], [enable SLV2 interface support (default=no)]),
   [ac_slv2="$enableval"],
-  [ac_slv2="yes"])
+  [ac_slv2="no"])
 
 # Enable LILV support.
 AC_ARG_ENABLE(lilv,
-  AC_HELP_STRING([--enable-lilv], [enable LILV interface support (default=no)]),
+  AC_HELP_STRING([--enable-lilv], [enable LILV interface support (default=yes)]),
   [ac_lilv="$enableval"],
-  [ac_lilv="no"])
+  [ac_lilv="yes"])
 
 # Enable SUIL support.
 AC_ARG_ENABLE(suil,
-  AC_HELP_STRING([--enable-suil], [enable SUIL interface support (default=no)]),
+  AC_HELP_STRING([--enable-suil], [enable SUIL interface support (default=yes)]),
   [ac_suil="$enableval"],
   [ac_suil="yes"])
 
@@ -190,6 +190,9 @@ AC_ARG_ENABLE(stacktrace,
 if test "x$ac_lv2" = "xno"; then
    ac_slv2="no"
    ac_lilv="no"
+   ac_suil="no"
+elif test "x$ac_lilv" = "xno"; then
+   ac_slv2="yes"
    ac_suil="no"
 elif test "x$ac_slv2" = "xno"; then
    ac_lilv="yes"
@@ -1042,9 +1045,9 @@ echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in support (libslv2) (OLD)  . . . . . . .: $ac_slv2"
-echo "  LV2 Plug-in support (liblilv) (NEW)  . . . . . . .: $ac_lilv"
-echo "  LV2 Plug-in UI instantiation (libsuil) (NEW) . . .: $ac_suil"
+echo "  LV2 Plug-in support (libslv2) (DEPRECATED) . . . .: $ac_slv2"
+echo "  LV2 Plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
+echo "  LV2 Plug-in UI instantiation (libsuil) . . . . . .: $ac_suil"
 echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
