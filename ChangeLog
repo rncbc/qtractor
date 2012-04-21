@@ -7,6 +7,8 @@ SVN TRUNK
 
 - SLV2 deprecation process started, effective now at configure time.
 
+- Always force a MIDI note-off at looping end turns.
+
 - Tim Westbrook (aka. iondiode) brings this patch for only listing
   those LV2 plugins which features are strictly supported by the
   host (applies to --enable-lilv builds only); thanks.

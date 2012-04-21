@@ -1620,6 +1620,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain )
 {
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
 	// Target MIDI bus...
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
@@ -1677,6 +1681,11 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.note.note       = pEvent->note();
 			ev.data.note.velocity   = int(fGain * float(pEvent->value())) & 0x7f;
 			ev.data.note.duration   = pEvent->duration();
+			if (pSession->isLooping()) {
+				unsigned long le = pSession->tickFromFrame(pSession->loopEnd());
+				if (le < iTime + ev.data.note.duration)
+					ev.data.note.duration = le - iTime;
+			}
 			break;
 		case qtractorMidiEvent::KEYPRESS:
 			ev.type = SND_SEQ_EVENT_KEYPRESS;
@@ -1760,7 +1769,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), pEvent->value(), tick);
 
 	// Do it for the MIDI track plugins too...
-	qtractorTimeScale *pTimeScale = session()->timeScale();
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
 	if ((pTrack->pluginList())->midiManager())
 		(pTrack->pluginList())->midiManager()->queued(pTimeScale, &ev);
 	// And for the MIDI output plugins as well...
