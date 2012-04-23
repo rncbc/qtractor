@@ -265,10 +265,12 @@ resources = \
 	src/qtractor.qrc
 
 translations_sources = \
-	src/translations/qtractor_cs.ts
+	src/translations/qtractor_cs.ts \
+	src/translations/qtractor_ru.ts
 
 translations_targets = \
-	src/translations/qtractor_cs.qm
+	src/translations/qtractor_cs.qm \
+	src/translations/qtractor_ru.qm
 
 
 export datarootdir = @datarootdir@

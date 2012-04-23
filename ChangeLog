@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Russian (ru) translation added (by Alexandre Prokoudine, thanks).
+
 - SLV2 deprecation process started, effective now at configure time.
 
 - Always force a MIDI note-off at looping end turns.
