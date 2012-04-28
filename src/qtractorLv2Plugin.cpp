@@ -169,43 +169,6 @@ static const LV2_Feature g_lv2_uri_map_feature =
 	{ LV2_URI_MAP_URI, &g_lv2_uri_map };
 
 
-// URI unmap (id_to_uri) feature. (DEPRECATED)
-#include "lv2_uri_unmap.h"
-
-static const char *qtractor_lv2_id_to_uri (
-	LV2_URI_Unmap_Callback_Data /*data*/, const char *map, uint32_t id )
-{
-#ifdef CONFIG_LV2_EVENT
-	if ((map && strcmp(map, LV2_EVENT_URI) == 0)
-		&& id == QTRACTOR_LV2_MIDI_EVENT_ID)
-		return SLV2_EVENT_CLASS_MIDI;
-#endif
-	return qtractorLv2Plugin::lv2_urid_unmap(id);
-}
-
-static LV2_URI_Unmap_Feature g_lv2_uri_unmap =
-	{ NULL, qtractor_lv2_id_to_uri };
-static const LV2_Feature g_lv2_uri_unmap_feature =
-	{ LV2_URI_UNMAP_URI, &g_lv2_uri_unmap };
-
-
-#ifdef CONFIG_LV2_EVENT
-
-// LV2 type 0 events (not supported anyway).
-static uint32_t qtractor_lv2_event_ref (
-	LV2_Event_Callback_Data /*data*/, LV2_Event */*event*/ )
-{
-	return 0;
-}
-
-static LV2_Event_Feature g_lv2_event_ref =
-	{ NULL, qtractor_lv2_event_ref, qtractor_lv2_event_ref };
-static const LV2_Feature g_lv2_event_ref_feature =
-	{ LV2_EVENT_URI, &g_lv2_event_ref };
-
-#endif	// CONFIG_LV2_EVENT
-
-
 #ifdef CONFIG_LV2_STATE
 
 static const LV2_Feature g_lv2_state_feature =
@@ -412,11 +375,7 @@ static const LV2_Feature *g_lv2_features[] =
 {
 	&g_lv2_urid_map_feature,
 	&g_lv2_urid_unmap_feature,
-	&g_lv2_uri_map_feature,		// deprecated
-	&g_lv2_uri_unmap_feature,	// deprecated
-#ifdef CONFIG_LV2_EVENT
-	&g_lv2_event_ref_feature,
-#endif
+	&g_lv2_uri_map_feature,	// deprecated
 #ifdef CONFIG_LV2_STATE
 	&g_lv2_state_feature,
 #endif

@@ -434,7 +434,7 @@ void qtractorPluginForm::updateAudioBusName (void)
 
 
 // Update port widget state.
-void qtractorPluginForm::changeParamValue ( unsigned long iIndex )
+void qtractorPluginForm::changeParamValue ( unsigned long /*iIndex*/ )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginForm[%p]::changeParamValue(%lu)", this, iIndex);
