@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.4.16, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.4.17, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -903,7 +903,7 @@ if test "x$ac_lv2" = "xyes"; then
       CPPFLAGS="$CPPFLAGS -Isrc/lv2"
       ac_incpath="$ac_incpath lv2"
    fi
-   AC_CHECK_HEADERS(lv2.h lv2_urid.h lv2_uri_map.h lv2_uri_unmap.h, [ac_lv2="yes"], [ac_lv2="no"])
+   AC_CHECK_HEADERS(lv2.h lv2_urid.h lv2_uri_map.h, [ac_lv2="yes"], [ac_lv2="no"])
    if test "x$ac_lv2" = "xyes"; then
       AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
    else

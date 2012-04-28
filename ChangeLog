@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Dropped the old but entirely useless LV2 URI-unmap feature, now
+  superceded by official LV2 URID (un)mapper.
+
 - Russian (ru) translation added (by Alexandre Prokoudine, thanks).
 
 - SLV2 deprecation process started, effective now at configure time.
@@ -42,8 +45,6 @@ SVN TRUNK
   rewind/backward playback. Once again and uncertain to be the last
   take on this, got fixed (probably related to some oddity reported
   by Louigi Verona, thanks).
-
-- Updated to latest LV2 State extension/feature header spec.
 
 
 0.5.4  2012-03-01  Echo Victor
