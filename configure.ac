@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.4.17, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.4.18, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -149,6 +149,11 @@ AC_ARG_ENABLE(lv2-state-files,
   AC_HELP_STRING([--enable-lv2-state-files], [enable LV2 plug-in state files support (default=no)]),
   [ac_lv2_state_files="$enableval"],
   [ac_lv2_state_files="no"])
+
+AC_ARG_ENABLE(lv2-programs,
+  AC_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in programs support (default=yes)]),
+  [ac_lv2_programs="$enableval"],
+  [ac_lv2_programs="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -628,6 +633,7 @@ if test "x$ac_slv2" = "xyes"; then
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
       ac_lv2_state_files="no"
+      ac_lv2_programs="no"
    fi
 fi
 
@@ -662,6 +668,7 @@ if test "x$ac_slv2" = "xno" -a "x$ac_lilv" = "xno"; then
    ac_lv2_external_ui="no"
    ac_lv2_state="no"
    ac_lv2_state_files="no"
+   ac_lv2_programs="no"
 fi
 
 # Check for JACK session event callback availability.
@@ -915,6 +922,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
       ac_lv2_state_files="no"
+      ac_lv2_programs="no"
    fi
 fi
 if test "x$ac_lv2_event" = "xyes"; then
@@ -947,7 +955,9 @@ if test "x$ac_lv2_external_ui" = "xyes"; then
    AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h lv2_data_access.h lv2_instance_access.h,
       [ac_lv2_external_ui="yes"],
       [ac_lv2_external_ui="no"],
-      [[#ifdef HAVE_LV2_UI_H
+      [[#include <stdint.h>
+        #include <lv2.h>
+        #ifdef HAVE_LV2_UI_H
         # include <lv2_ui.h>
         #endif
       ]])
@@ -975,6 +985,22 @@ if test "x$ac_lv2_state_files" = "xyes"; then
     AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 state files feature is available.])
 else
     AC_MSG_WARN([*** LV2 state files feature will be disabled.])
+fi
+if test "x$ac_lv2_programs" = "xyes"; then
+   AC_CHECK_HEADERS(lv2_ui.h lv2_programs.h,
+      [ac_lv2_programs="yes"],
+      [ac_lv2_programs="no"],
+      [[#include <stdint.h>
+        #include <lv2.h>
+        #ifdef HAVE_LV2_UI_H
+        # include <lv2_ui.h>
+        #endif
+      ]])
+   if test "x$ac_lv2_programs" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_PROGRAMS, 1, [Define if LV2 programs extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 programs extension will be disabled.])
+   fi
 fi
 
 # Check for JACK session headers availability.
@@ -1054,6 +1080,7 @@ echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 Plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
+echo "  LV2 Plug-in Programs support (EXPERIMENTAL)  . . .: $ac_lv2_programs"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"

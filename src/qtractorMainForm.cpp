@@ -4843,6 +4843,12 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_EXTERNAL_UI
 	list << tr("LV2 Plug-in External UI support disabled.");
 #endif
+#ifndef CONFIG_LV2_STATE
+	list << tr("LV2 Plug-in State support disabled.");
+#endif
+#ifndef CONFIG_LV2_PROGRAMS
+	list << tr("LV2 Plug-in Programs support disabled.");
+#endif
 #endif // CONFIG_LV2
 #ifndef CONFIG_JACK_SESSION
 	list << tr("JACK Session support disabled.");
