@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Programs interface is getting initial experimental status, to
+  let LV2 instrument plugins get on par with the DSSI and VST crowd
+  for MIDI bank/program instrument inventory and selection support
+  (a sidetrack complot with Filipe Coelho aka. falktx, thanks:).
+
 - Dropped the old but entirely useless LV2 URI-unmap feature, now
   superceded by official LV2 URID (un)mapper.
 

@@ -69,6 +69,11 @@
 #include "lv2_state.h"
 #endif
 
+#ifdef CONFIG_LV2_PROGRAMS
+// LV2 Programs support.
+#include "lv2_programs.h"
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -222,6 +227,19 @@ public:
 	// URID map/unmap helpers.
 	static uint32_t    lv2_urid_map(const char *uri);
 	static const char *lv2_urid_unmap(uint32_t id);
+
+#ifdef CONFIG_LV2_PROGRAMS
+
+	// LV2 Programs extension data descriptor accessor.
+	const LV2_Programs_Interface *lv2_programs_descriptor(unsigned short iInstance) const;
+	
+	// Bank/program selector override.
+	void selectProgram(int iBank, int iProg);
+
+	// Provisional program/patch accessor.
+	bool getProgram(int iIndex, Program& program) const;
+
+#endif
 
 protected:
 
