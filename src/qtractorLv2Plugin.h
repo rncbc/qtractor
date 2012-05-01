@@ -232,7 +232,12 @@ public:
 
 	// LV2 Programs extension data descriptor accessor.
 	const LV2_Programs_Interface *lv2_programs_descriptor(unsigned short iInstance) const;
-	
+
+#ifdef CONFIG_LV2_UI
+	// LV2 Programs UI descriptor accessor.
+	const LV2_Programs_UI_Interface *lv2_ui_programs_descriptor (void) const;
+#endif
+
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
 

@@ -2063,8 +2063,27 @@ const LV2_Programs_Interface *qtractorLv2Plugin::lv2_programs_descriptor (
 		return NULL;
 
 	return (const LV2_Programs_Interface *)
-		(*descriptor->extension_data)(LV2_PROGRAMS_INTERFACE);
+		(*descriptor->extension_data)(LV2_PROGRAMS__Interface);
 }
+
+
+#ifdef CONFIG_LV2_UI
+
+const LV2_Programs_UI_Interface *qtractorLv2Plugin::lv2_ui_programs_descriptor (void) const
+{
+	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+	if (ui_descriptor == NULL)
+		return NULL;
+
+	if (ui_descriptor->extension_data == NULL)
+		return NULL;
+
+	return (const LV2_Programs_UI_Interface *)
+		(*ui_descriptor->extension_data)(LV2_PROGRAMS__UIInterface);
+}
+
+#endif	// CONFIG_LV2_UI
+
 
 // Bank/program selector.
 void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
@@ -2079,9 +2098,24 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 	// For each plugin instance...
 	for (unsigned short i = 0; i < instances(); ++i) {
 		const LV2_Programs_Interface *programs = lv2_programs_descriptor(i);
-		if (programs && programs->select_program)
-			(*programs->select_program)(programs->handle, iBank, iProg);
+		if (programs && programs->select_program) {
+			LV2_Handle handle = lv2_handle(i);
+			if (handle) {
+				(*programs->select_program)(handle, iBank, iProg);
+			}
+		}
 	}
+
+#ifdef CONFIG_LV2_UI
+	// For the UI as well...
+	const LV2_Programs_UI_Interface *ui_programs = lv2_ui_programs_descriptor();
+	if (ui_programs && ui_programs->select_program) {
+		LV2UI_Handle ui_handle = lv2_ui_handle();
+		if (ui_handle) {
+			(*ui_programs->select_program)(ui_handle, iBank, iProg);
+		}
+	}
+#endif
 
 	// Reset parameters default value...
 	const qtractorPlugin::Params& params = qtractorPlugin::params();
@@ -2103,15 +2137,19 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 	if (programs->get_program == NULL)
 		return false;
 
+	LV2_Handle handle = lv2_handle(0);
+	if (handle == NULL)
+		return false;
+
 	const LV2_Program_Descriptor *pLv2Program
-		= (*programs->get_program)(programs->handle, iIndex);
+		= (*programs->get_program)(handle, iIndex);
 	if (pLv2Program == NULL)
 		return false;
 
 	// Map this to that...
-	program.bank = pLv2Program->Bank;
-	program.prog = pLv2Program->Program;
-	program.name = pLv2Program->Name;
+	program.bank = pLv2Program->bank;
+	program.prog = pLv2Program->program;
+	program.name = pLv2Program->name;
 
 	return true;
 }

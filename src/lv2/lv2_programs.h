@@ -23,19 +23,18 @@
 #ifndef LV2_PROGRAMS_H
 #define LV2_PROGRAMS_H
 
-#include <stdint.h>
+#include "lv2.h"
+#include "lv2_ui.h"
 
-#define LV2_PROGRAMS_URI       "http://kxstudio.sf.net/ns/lv2ext/programs"
-#define LV2_PROGRAMS_PREFIX    LV2_PROGRAMS_URI "#"
+#define LV2_PROGRAMS_URI    "http://kxstudio.sf.net/ns/lv2ext/programs"
+#define LV2_PROGRAMS_PREFIX LV2_PROGRAMS_URI "#"
 
-#define LV2_PROGRAMS_INTERFACE LV2_PROGRAMS_PREFIX "Interface"
-
+#define LV2_PROGRAMS__Interface   LV2_PROGRAMS_PREFIX "Interface"
+#define LV2_PROGRAMS__UIInterface LV2_PROGRAMS_PREFIX "UIInterface"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef void* LV2_Programs_Handle;
 
 typedef struct _LV2_Program_Descriptor {
 
@@ -43,59 +42,48 @@ typedef struct _LV2_Program_Descriptor {
         support MIDI-style separation of bank LSB and MSB values. There is
         no restriction on the set of available banks: the numbers do not
         need to be contiguous, there does not need to be a bank 0, etc. */
-    uint32_t Bank;
+    uint32_t bank;
 
     /** Program number (unique within its bank) for this program.
         There is no restriction on the set of available programs: the
         numbers do not need to be contiguous, there does not need to
         be a program 0, etc. */
-    uint32_t Program;
+    uint32_t program;
 
     /** Name of the program. */
-    const char * Name;
+    const char * name;
 
 } LV2_Program_Descriptor;
 
 /**
-   LV2 Programs interface.
+   Programs extension, plugin data.
 
-   When the plugin's extension_data is called with argument
-   LV2_PROGRAMS_INTERFACE, the plugin MUST return an LV2_Programs_Interface
-   structure, which remains valid for the lifetime of the plugin.
-
-   The host can use the contained function pointers to enumerate and select
-   programs of a plugin instance at any time.
+   When the plugin's extension_data is called with argument LV2_PROGRAMS__Interface,
+   the plugin MUST return an LV2_Programs_Instance structure, which remains
+   valid for the lifetime of the plugin.
 */
 typedef struct _LV2_Programs_Interface {
-    /**
-        Opaque pointer to host data.
-
-        The plugin MUST pass this to any call to functions in this struct.
-        Otherwise, it must not be interpreted in any way.
-    */
-    LV2_Programs_Handle handle;
-
     /**
      * get_program()
      *
      * This member is a function pointer that provides a description
      * of a program (named preset sound) available on this plugin.
      *
-     * The Index argument is an index into the plugin's list of
+     * The index argument is an index into the plugin's list of
      * programs, not a program number as represented by the Program
      * field of the LV2_Program_Descriptor. (This distinction is
      * needed to support plugins that use non-contiguous program or
      * bank numbers.)
      *
      * This function returns a LV2_Program_Descriptor pointer that is
-     * guaranteed to be valid only until the next call to get_program,
-     * deactivate, or configure, on the same plugin instance. This
-     * function must return NULL if passed an Index argument out of
-     * range, so that the host can use it to query the number of
-     * programs as well as their properties.
+     * guaranteed to be valid only until the next call to get_program
+     * or deactivate, on the same plugin instance. This function must
+     * return NULL if passed an Index argument out of range, so that
+     * the host can use it to query the number of programs as well as
+     * their properties.
      */
-    const LV2_Program_Descriptor *(*get_program)(LV2_Programs_Handle handle,
-                                                 uint32_t Index);
+    const LV2_Program_Descriptor *(*get_program)(LV2_Handle handle,
+                                                 uint32_t index);
 
     /**
      * select_program()
@@ -122,11 +110,31 @@ typedef struct _LV2_Programs_Interface {
      * records appropriately. (This is the only circumstance in which
      * a LV2 plugin is allowed to modify its own control-input ports.)
      */
-    void (*select_program)(LV2_Programs_Handle handle,
-                           uint32_t Bank,
-                           uint32_t Program);
+    void (*select_program)(LV2_Handle handle,
+                           uint32_t bank,
+                           uint32_t program);
 
 } LV2_Programs_Interface;
+
+/**
+   Programs extension, UI data.
+
+   When the UI's extension_data is called with argument LV2_PROGRAMS__UIInterface,
+   the UI MUST return an LV2_Programs_UI_Interface structure, which remains valid
+   for the lifetime of the UI.
+*/
+typedef struct _LV2_Programs_UI_Interface {
+    /**
+     * select_program()
+     *
+     * This is exactly the same as select_program in LV2_Programs_Instance,
+     * but this struct relates to the UI instead of the plugin.
+     */
+    void (*select_program)(LV2UI_Handle handle,
+                           uint32_t bank,
+                           uint32_t program);
+
+} LV2_Programs_UI_Interface;
 
 #ifdef __cplusplus
 }

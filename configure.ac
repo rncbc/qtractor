@@ -1069,7 +1069,7 @@ echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
-echo "  LV2 Plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
+echo "  LV2 Plug-in State Files support (BROKEN) . . . . .: $ac_lv2_state_files"
 echo "  LV2 Plug-in Programs support (EXPERIMENTAL)  . . .: $ac_lv2_programs"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
