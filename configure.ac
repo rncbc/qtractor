@@ -955,7 +955,9 @@ if test "x$ac_lv2_external_ui" = "xyes"; then
    AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h lv2_data_access.h lv2_instance_access.h,
       [ac_lv2_external_ui="yes"],
       [ac_lv2_external_ui="no"],
-      [[#ifdef HAVE_LV2_UI_H
+      [[#include <stdint.h>
+        #include <lv2.h>
+        #ifdef HAVE_LV2_UI_H
         # include <lv2_ui.h>
         #endif
       ]])
@@ -985,7 +987,15 @@ else
     AC_MSG_WARN([*** LV2 state files feature will be disabled.])
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
-   AC_CHECK_HEADER(lv2_programs.h, [ac_lv2_programs="yes"], [ac_lv2_programs="no"])
+   AC_CHECK_HEADERS(lv2_ui.h lv2_programs.h,
+      [ac_lv2_programs="yes"],
+      [ac_lv2_programs="no"],
+      [[#include <stdint.h>
+        #include <lv2.h>
+        #ifdef HAVE_LV2_UI_H
+        # include <lv2_ui.h>
+        #endif
+      ]])
    if test "x$ac_lv2_programs" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PROGRAMS, 1, [Define if LV2 programs extension is available.])
    else
@@ -1069,7 +1079,7 @@ echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
-echo "  LV2 Plug-in State Files support (BROKEN) . . . . .: $ac_lv2_state_files"
+echo "  LV2 Plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
 echo "  LV2 Plug-in Programs support (EXPERIMENTAL)  . . .: $ac_lv2_programs"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
