@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip wave-forms phase were being displayed in inverse phase
+  all this time ever since day one. What a shame! :)
+
 - LV2 Programs interface is getting initial experimental status, to
   let LV2 instrument plugins get on par with the DSSI and VST crowd
   for MIDI bank/program instrument inventory and selection support

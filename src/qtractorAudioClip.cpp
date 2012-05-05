@@ -631,10 +631,10 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 				ymax = (h2gain * pframes->max) >> m_fractGain.den;
 				ymin = (h2gain * pframes->min) >> m_fractGain.den;
 				yrms = (h2gain * pframes->rms) >> m_fractGain.den;
-				pPolyMax[i]->setPoint(n, x, y + ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymin);
-				pPolyRms[i]->setPoint(n, x, y + yrms);
-				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
+				pPolyMax[i]->setPoint(n, x, y - ymax);
+				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y + ymin);
+				pPolyRms[i]->setPoint(n, x, y - yrms);
+				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y + yrms);
 				y += h1; ++pframes;
 			}
 		}
@@ -666,10 +666,10 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 				ymax = (h2gain * vmax) >> m_fractGain.den;
 				ymin = (h2gain * vmin) >> m_fractGain.den;
 				yrms = (h2gain * vrms) >> m_fractGain.den;
-				pPolyMax[i]->setPoint(k, x, y + ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - k - 1, x, y - ymin);
-				pPolyRms[i]->setPoint(k, x, y + yrms);
-				pPolyRms[i]->setPoint(iPolyPoints - k - 1, x, y - yrms);
+				pPolyMax[i]->setPoint(k, x, y - ymax);
+				pPolyMax[i]->setPoint(iPolyPoints - k - 1, x, y + ymin);
+				pPolyRms[i]->setPoint(k, x, y - yrms);
+				pPolyRms[i]->setPoint(iPolyPoints - k - 1, x, y + yrms);
 				y += h1;
 			}
 			n0 = n + iChannels;
