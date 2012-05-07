@@ -5,8 +5,15 @@ ChangeLog
 
 SVN TRUNK
 
-- Audio clip wave-forms phase were being displayed in inverse phase
-  all this time ever since day one. What a shame! :)
+- Honor tempo/timing over MIDI instrument plugins. Sad regression
+  from a recent fix to force MIDI note-offs at looping end turns,
+  but a necessary bum for MIDI plugins to play nice in face artful
+  tempo changes, whenever playback gets started from anywhere but
+  the beginning of the time-line (ie. frame zero; thanks to rvega
+  aka. Rafael Vega, for the perseverance).
+
+- Audio clip wave-forms were being displayed in inverted phase (ie.
+  upside-down) all this time ever since day one. What a shame! :)
 
 - LV2 Programs interface is getting initial experimental status, to
   let LV2 instrument plugins get on par with the DSSI and VST crowd
@@ -19,8 +26,6 @@ SVN TRUNK
 - Russian (ru) translation added (by Alexandre Prokoudine, thanks).
 
 - SLV2 deprecation process started, effective now at configure time.
-
-- Always force a MIDI note-off at looping end turns.
 
 - Tim Westbrook (aka. iondiode) brings this patch for only listing
   those LV2 plugins which features are strictly supported by the
