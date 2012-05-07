@@ -218,7 +218,8 @@ public:
 	bool direct(snd_seq_event_t *pEvent);
 
 	// Queued buffering.
-	bool queued(qtractorTimeScale *pTimeScale, snd_seq_event_t *pEvent);
+	bool queued(qtractorTimeScale *pTimeScale,
+		snd_seq_event_t *pEvent, unsigned long iTime);
 
 	// Process buffers.
 	void process(unsigned long iTimeStart, unsigned long iTimeEnd);

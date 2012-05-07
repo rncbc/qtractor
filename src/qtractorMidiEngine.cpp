@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -982,11 +982,13 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	snd_seq_event_output(m_pMidiEngine->alsaSeq(), &ev);
 
 	if (m_pMidiBus->midiMonitor_out())
-		m_pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), pEvent->value(), iTime);
+		m_pMidiBus->midiMonitor_out()->enqueue(
+			pEvent->type(), pEvent->value(), iTime);
 
 	if (m_pMidiBus->pluginList_out()
 		&& (m_pMidiBus->pluginList_out())->midiManager())
-		((m_pMidiBus->pluginList_out())->midiManager())->queued(m_pTimeScale, &ev);
+		((m_pMidiBus->pluginList_out())->midiManager())->queued(
+			m_pTimeScale, &ev, iTime);
 }
 
 
@@ -1507,7 +1509,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// Now check which bus and track we're into...
 	bool bRecording = (pSession->isRecording() && isPlaying());
-	unsigned long tick = m_iTimeStart + pEv->time.tick;
+	unsigned long iTime = m_iTimeStart + pEv->time.tick;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru
@@ -1525,8 +1527,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 					if (pMidiClip // && tick >= pMidiClip->clipStartTime()
 						&& (!pSession->isPunching()
-							|| ((tick >= pSession->punchInTime())
-							&&  (tick <  pSession->punchOutTime())))) {
+							|| ((iTime >= pSession->punchInTime())
+							&&  (iTime <  pSession->punchOutTime())))) {
 						// Yep, we got a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, data1, data2, duration);
@@ -1557,7 +1559,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						if ((pTrack->pluginList())->midiManager())
 							(pTrack->pluginList())->midiManager()->queued(
-								pSession->timeScale(), pEv);
+								pSession->timeScale(), pEv, iTime);
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
 					}
@@ -1578,14 +1580,14 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus->pluginList_in()
 				&& (pMidiBus->pluginList_in())->midiManager())
 				((pMidiBus->pluginList_in())->midiManager())->queued(
-					pSession->timeScale(), pEv);
+					pSession->timeScale(), pEv, iTime);
 			// Output monitoring on passthru...
 			if (pMidiBus->isMonitor()) {
 				// Do it for the MIDI output plugins too...
 				if (pMidiBus->pluginList_out()
 					&& (pMidiBus->pluginList_out())->midiManager())
 					((pMidiBus->pluginList_out())->midiManager())->queued(
-						pSession->timeScale(), pEv);
+						pSession->timeScale(), pEv, iTime);
 				if (pMidiBus->midiMonitor_out()) {
 					// MIDI-thru: same event redirected...
 					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
@@ -1681,11 +1683,13 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.note.note       = pEvent->note();
 			ev.data.note.velocity   = int(fGain * float(pEvent->value())) & 0x7f;
 			ev.data.note.duration   = pEvent->duration();
+		#if 0
 			if (pSession->isLooping()) {
 				unsigned long le = pSession->tickFromFrame(pSession->loopEnd());
 				if (le < iTime + ev.data.note.duration)
 					ev.data.note.duration = le - iTime;
 			}
+		#endif
 			break;
 		case qtractorMidiEvent::KEYPRESS:
 			ev.type = SND_SEQ_EVENT_KEYPRESS;
@@ -1766,16 +1770,20 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		pMidiMonitor->enqueue(pEvent->type(), pEvent->value(), tick);
 	// MIDI bus monitoring...
 	if (pMidiBus->midiMonitor_out())
-		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), pEvent->value(), tick);
+		pMidiBus->midiMonitor_out()->enqueue(
+			pEvent->type(), pEvent->value(), tick);
 
 	// Do it for the MIDI track plugins too...
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
 	if ((pTrack->pluginList())->midiManager())
-		(pTrack->pluginList())->midiManager()->queued(pTimeScale, &ev);
+		(pTrack->pluginList())->midiManager()->queued(
+			pTimeScale, &ev, iTime);
 	// And for the MIDI output plugins as well...
 	if (pMidiBus->pluginList_out()
-		&& (pMidiBus->pluginList_out())->midiManager())
-		((pMidiBus->pluginList_out())->midiManager())->queued(pTimeScale, &ev);
+		&& (pMidiBus->pluginList_out())->midiManager()) {
+		((pMidiBus->pluginList_out())->midiManager())->queued(
+			pTimeScale, &ev, iTime);
+	}
 }
 
 

@@ -336,10 +336,12 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 
 
 // Queued buffering.
-bool qtractorMidiManager::queued (
-	qtractorTimeScale *pTimeScale, snd_seq_event_t *pEvent )
+bool qtractorMidiManager::queued ( qtractorTimeScale *pTimeScale,
+	snd_seq_event_t *pEvent, unsigned long iTime )
 {
-	unsigned long iTick = pTimeScale->frameFromTick(pEvent->time.tick);
+	qtractorTimeScale::Node *pNode
+		= pTimeScale->cursor().seekTick(iTime);
+	unsigned long iTick = pNode->frameFromTick(iTime/*pEvent->time.tick*/);
 
 	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
 		snd_seq_event_t ev = *pEvent;
@@ -347,7 +349,7 @@ bool qtractorMidiManager::queued (
 		if (!m_queuedBuffer.insert(&ev, iTick))
 			return false;
 		if (ev.data.note.duration > 0)
-			iTick += pTimeScale->frameFromTick(ev.data.note.duration - 1);
+			iTick += pNode->frameFromTick(ev.data.note.duration - 1);
 		ev.type = SND_SEQ_EVENT_NOTEOFF;
 		ev.data.note.velocity = 0;
 		ev.data.note.duration = 0;
