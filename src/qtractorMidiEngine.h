@@ -139,9 +139,12 @@ public:
 	// Special rewind method, on queue loop.
 	void restartLoop();
 
-	// The delta-time accessors.
+	// The delta-time/frame accessors.
 	void setTimeStart(long iTimeStart);
 	long timeStart() const;
+
+	void setFrameStart(long iFrameStart);
+	long frameStart() const;
 
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
@@ -301,11 +304,12 @@ private:
 	qtractorMidiInputThread  *m_pInputThread;
 	qtractorMidiOutputThread *m_pOutputThread;
 
-	// The delta-time when playback started .
+	// The delta-time/frame when playback started .
 	long m_iTimeStart;
 	long m_iTimeDrift;
 
 	long m_iFrameStart;
+	long m_iFrameTime;
 
 	// The assigned control buses.
 	bool             m_bControlBus;

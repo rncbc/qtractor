@@ -334,14 +334,17 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 	return m_directBuffer.push(pEvent);
 }
 
+#include "qtractorMidiEngine.h"
 
 // Queued buffering.
 bool qtractorMidiManager::queued ( qtractorTimeScale *pTimeScale,
-	snd_seq_event_t *pEvent, unsigned long iTime )
+	snd_seq_event_t *pEvent, unsigned long iTime, long iFrameStart )
 {
 	qtractorTimeScale::Node *pNode
 		= pTimeScale->cursor().seekTick(iTime);
-	unsigned long iTick = pNode->frameFromTick(iTime/*pEvent->time.tick*/);
+	unsigned long iTick = pNode->frameFromTick(iTime);
+	if (long(iTick) > iFrameStart)
+		iTick -= iFrameStart;
 
 	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
 		snd_seq_event_t ev = *pEvent;

@@ -988,7 +988,7 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	if (m_pMidiBus->pluginList_out()
 		&& (m_pMidiBus->pluginList_out())->midiManager())
 		((m_pMidiBus->pluginList_out())->midiManager())->queued(
-			m_pTimeScale, &ev, iTime);
+			m_pTimeScale, &ev, iTime, 0);
 }
 
 
@@ -1060,6 +1060,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iTimeStart     = 0;
 	m_iTimeDrift     = 0;
 	m_iFrameStart    = 0;
+	m_iFrameTime     = 0;
 
 	m_bControlBus    = false;
 	m_pIControlBus   = NULL;
@@ -1559,7 +1560,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						if ((pTrack->pluginList())->midiManager())
 							(pTrack->pluginList())->midiManager()->queued(
-								pSession->timeScale(), pEv, iTime);
+								pSession->timeScale(), pEv, iTime, m_iFrameStart);
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
 					}
@@ -1580,14 +1581,14 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus->pluginList_in()
 				&& (pMidiBus->pluginList_in())->midiManager())
 				((pMidiBus->pluginList_in())->midiManager())->queued(
-					pSession->timeScale(), pEv, iTime);
+					pSession->timeScale(), pEv, iTime, m_iFrameStart);
 			// Output monitoring on passthru...
 			if (pMidiBus->isMonitor()) {
 				// Do it for the MIDI output plugins too...
 				if (pMidiBus->pluginList_out()
 					&& (pMidiBus->pluginList_out())->midiManager())
 					((pMidiBus->pluginList_out())->midiManager())->queued(
-						pSession->timeScale(), pEv, iTime);
+						pSession->timeScale(), pEv, iTime, m_iFrameStart);
 				if (pMidiBus->midiMonitor_out()) {
 					// MIDI-thru: same event redirected...
 					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
@@ -1642,7 +1643,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	// Scheduled delivery: take into account
 	// the time playback/queue started...
 	unsigned long tick
-		= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
 
 #ifdef CONFIG_DEBUG_0
 	// - show event for debug purposes...
@@ -1683,13 +1684,11 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.note.note       = pEvent->note();
 			ev.data.note.velocity   = int(fGain * float(pEvent->value())) & 0x7f;
 			ev.data.note.duration   = pEvent->duration();
-		#if 0
 			if (pSession->isLooping()) {
 				unsigned long le = pSession->tickFromFrame(pSession->loopEnd());
 				if (le < iTime + ev.data.note.duration)
 					ev.data.note.duration = le - iTime;
 			}
-		#endif
 			break;
 		case qtractorMidiEvent::KEYPRESS:
 			ev.type = SND_SEQ_EVENT_KEYPRESS;
@@ -1777,12 +1776,12 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
 	if ((pTrack->pluginList())->midiManager())
 		(pTrack->pluginList())->midiManager()->queued(
-			pTimeScale, &ev, iTime);
+			pTimeScale, &ev, iTime, m_iFrameStart);
 	// And for the MIDI output plugins as well...
 	if (pMidiBus->pluginList_out()
 		&& (pMidiBus->pluginList_out())->midiManager()) {
 		((pMidiBus->pluginList_out())->midiManager())->queued(
-			pTimeScale, &ev, iTime);
+			pTimeScale, &ev, iTime, m_iFrameStart);
 	}
 }
 
@@ -1826,7 +1825,7 @@ void qtractorMidiEngine::drift (void)
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
 	//	unsigned long iAudioFrame = pSession->playHead();
 		unsigned long iAudioFrame
-			= pSession->audioEngine()->jackFrame() - m_iFrameStart;
+			= pSession->audioEngine()->jackFrame() - m_iFrameTime;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		long iAudioTime = long(pNode->tickFromFrame(iAudioFrame));
 		long iMidiTime = m_iTimeStart
@@ -2001,10 +2000,9 @@ bool qtractorMidiEngine::start (void)
 	resetDrift();
 
 	// Start queue timer...
-	unsigned long iFrame = pMidiCursor->frame();
-
-	m_iTimeStart  = long(pSession->tickFromFrame(iFrame));
-	m_iFrameStart = long(pSession->audioEngine()->jackFrame()) - long(iFrame);
+	m_iFrameStart = long(pMidiCursor->frame());
+	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
+	m_iFrameTime  = long(pSession->audioEngine()->jackFrame()) - m_iFrameStart;
 	
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -2131,8 +2129,10 @@ void qtractorMidiEngine::restartLoop (void)
 	if (pSession && pSession->isLooping()) {
 		unsigned long iLoopStart = pSession->loopStart();
 		unsigned long iLoopEnd = pSession->loopEnd();
-		m_iFrameStart += long(iLoopEnd) - long(iLoopStart);
-		m_iTimeStart -= long(pSession->tickFromFrame(iLoopEnd)
+		long iLoopLength = long(iLoopEnd - iLoopStart);
+		m_iFrameTime  += iLoopLength;
+		m_iFrameStart -= iLoopLength;
+		m_iTimeStart  -= long(pSession->tickFromFrame(iLoopEnd)
 			- pSession->tickFromFrame(iLoopStart));
 	//	m_iTimeStart += m_iTimeDrift; -- Drift correction?
 		resetDrift();
@@ -2140,15 +2140,28 @@ void qtractorMidiEngine::restartLoop (void)
 }
 
 
-// The delta-time accessors.
+// The delta-time/frame accessors.
 void qtractorMidiEngine::setTimeStart ( long iTimeStart )
 {
-	m_iTimeStart = iTimeStart;
+	m_iTimeStart  = iTimeStart;
+	m_iFrameStart = long(session()->frameFromTick(m_iTimeStart));
 }
 
 long qtractorMidiEngine::timeStart (void) const
 {
 	return m_iTimeStart;
+}
+
+
+void qtractorMidiEngine::setFrameStart ( long iFrameStart )
+{
+	m_iFrameStart = iFrameStart;
+	m_iTimeStart  = long(session()->tickFromFrame(m_iFrameStart));
+}
+
+long qtractorMidiEngine::frameStart (void) const
+{
+	return m_iFrameStart;
 }
 
 
