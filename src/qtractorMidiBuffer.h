@@ -219,7 +219,7 @@ public:
 
 	// Queued buffering.
 	bool queued(qtractorTimeScale *pTimeScale,
-		snd_seq_event_t *pEvent, unsigned long iTime);
+		snd_seq_event_t *pEvent, unsigned long iTime, long iFrameStart);
 
 	// Process buffers.
 	void process(unsigned long iTimeStart, unsigned long iTimeEnd);

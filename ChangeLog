@@ -5,12 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
-- Honor tempo/timing over MIDI instrument plugins. Sad regression
-  from a recent fix to force MIDI note-offs at looping end turns,
-  but a necessary bum for MIDI plugins to play nice in face artful
-  tempo changes, whenever playback gets started from anywhere but
-  the beginning of the time-line (ie. frame zero; thanks to rvega
-  aka. Rafael Vega, for the perseverance).
+- Honor tempo/timing on MIDI instrument plugins. Happy regression
+  fix on getting MIDI note-offs at looping ends back in business;
+  all the necessary bumming for MIDI plugins to play nice in face
+  of tempo changes and whenever playback is started from anywhere
+  but the beginning of the time-line (ie. frame zero; thanks a lot
+  to rvega aka. Rafael Vega, for the heads-up). (EXPERIMENTAL)
 
 - Audio clip wave-forms were being displayed in inverted phase (ie.
   upside-down) all this time ever since day one. What a shame! :)
