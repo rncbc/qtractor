@@ -5,12 +5,15 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio vs. MIDI time drift correction has been slightly improved
+  against rougue tempo changes across looping cycles.
+
 - Honor tempo/timing on MIDI instrument plugins. Happy regression
   fix on getting MIDI note-offs at looping ends back in business;
   all the necessary bumming for MIDI plugins to play nice in face
   of tempo changes and whenever playback is started from anywhere
-  but the beginning of the time-line (ie. frame zero; thanks a lot
-  to rvega aka. Rafael Vega, for the heads-up). (EXPERIMENTAL)
+  but the beginning of the time-line (ie. frame zero); thanks to
+  rvega aka. Rafael Vega, for the heads-up). (EXPERIMENTAL)
 
 - Audio clip wave-forms were being displayed in inverted phase (ie.
   upside-down) all this time ever since day one. What a shame! :)
