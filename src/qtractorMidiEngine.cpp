@@ -70,6 +70,10 @@
 #define CHANNEL_PANNING		0x0a
 
 
+// Audio vs. MIDI time drift cycle
+#define DRIFT_CHECK 8
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiInputThread -- MIDI input thread (singleton).
 //
@@ -165,9 +169,6 @@ private:
 	// Thread synchronization objects.
 	QMutex m_mutex;
 	QWaitCondition m_cond;
-
-	// The number of time we check for time drift.
-	unsigned int m_iDriftCheck; 
 };
 
 
@@ -349,8 +350,6 @@ qtractorMidiOutputThread::qtractorMidiOutputThread (
 	m_pMidiEngine = pMidiEngine;
 	m_bRunState   = false;
 	m_iReadAhead  = iReadAhead;
-
-	m_iDriftCheck = 0;
 }
 
 
@@ -413,7 +412,6 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 	if (bStart) {
 		pMidiCursor->seek(pAudioCursor->frame());
 	//	pMidiCursor->setFrameTime(pAudioCursor->frameTime());
-		m_iDriftCheck = 0;
 	}
 	else // No, it cannot be behind more than the read-ahead period...
 	if (pMidiCursor->frameTime() > pAudioCursor->frameTime() + m_iReadAhead)
@@ -516,11 +514,9 @@ void qtractorMidiOutputThread::process (void)
 	// Flush the MIDI engine output queue...
 	m_pMidiEngine->flush();
 
-	// Always do the queue drift stats abottom of the pack...
-	if (++m_iDriftCheck > 8) {
-		m_pMidiEngine->drift();
-		m_iDriftCheck = 0;
-	}
+	// Always do the queue drift stats
+	// at the bottom of the pack...
+	m_pMidiEngine->drift();
 }
 
 
@@ -1056,6 +1052,8 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	m_pInputThread   = NULL;
 	m_pOutputThread  = NULL;
+
+	m_iDriftCheck    = 0;
 
 	m_iTimeStart     = 0;
 	m_iTimeDrift     = 0;
@@ -1789,9 +1787,11 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 // Reset ouput queue drift stats (audio vs. MIDI)...
 void qtractorMidiEngine::resetDrift (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEngine::resetDrift()");
 #endif
+
+	m_iDriftCheck = 0;
 
 //--DRIFT-SKEW-BEGIN--
 	snd_seq_queue_tempo_t *pAlsaTempo;
@@ -1809,6 +1809,9 @@ void qtractorMidiEngine::resetDrift (void)
 // Do ouput queue status (audio vs. MIDI)...
 void qtractorMidiEngine::drift (void)
 {
+	if (++m_iDriftCheck < DRIFT_CHECK)
+		return;
+
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
@@ -1855,6 +1858,9 @@ void qtractorMidiEngine::drift (void)
 		#endif
 		}
 	}
+
+	// Restart counting...
+	m_iDriftCheck = 0;
 }
 
 
