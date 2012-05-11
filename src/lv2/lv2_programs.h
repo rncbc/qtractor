@@ -29,12 +29,15 @@
 #define LV2_PROGRAMS_URI    "http://kxstudio.sf.net/ns/lv2ext/programs"
 #define LV2_PROGRAMS_PREFIX LV2_PROGRAMS_URI "#"
 
+#define LV2_PROGRAMS__Host        LV2_PROGRAMS_PREFIX "Host"
 #define LV2_PROGRAMS__Interface   LV2_PROGRAMS_PREFIX "Interface"
 #define LV2_PROGRAMS__UIInterface LV2_PROGRAMS_PREFIX "UIInterface"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef void* LV2_Programs_Handle;
 
 typedef struct _LV2_Program_Descriptor {
 
@@ -44,10 +47,9 @@ typedef struct _LV2_Program_Descriptor {
         need to be contiguous, there does not need to be a bank 0, etc. */
     uint32_t bank;
 
-    /** Program number (unique within its bank) for this program.
-        There is no restriction on the set of available programs: the
-        numbers do not need to be contiguous, there does not need to
-        be a program 0, etc. */
+    /** Program number (unique within its bank) for this program. There is
+        no restriction on the set of available programs: the numbers do not
+        need to be contiguous, there does not need to be a program 0, etc. */
     uint32_t program;
 
     /** Name of the program. */
@@ -59,8 +61,8 @@ typedef struct _LV2_Program_Descriptor {
    Programs extension, plugin data.
 
    When the plugin's extension_data is called with argument LV2_PROGRAMS__Interface,
-   the plugin MUST return an LV2_Programs_Instance structure, which remains
-   valid for the lifetime of the plugin.
+   the plugin MUST return an LV2_Programs_Instance structure, which remains valid
+   for the lifetime of the plugin.
 */
 typedef struct _LV2_Programs_Interface {
     /**
@@ -78,7 +80,7 @@ typedef struct _LV2_Programs_Interface {
      * This function returns a LV2_Program_Descriptor pointer that is
      * guaranteed to be valid only until the next call to get_program
      * or deactivate, on the same plugin instance. This function must
-     * return NULL if passed an Index argument out of range, so that
+     * return NULL if passed an index argument out of range, so that
      * the host can use it to query the number of programs as well as
      * their properties.
      */
@@ -129,6 +131,8 @@ typedef struct _LV2_Programs_UI_Interface {
      *
      * This is exactly the same as select_program in LV2_Programs_Instance,
      * but this struct relates to the UI instead of the plugin.
+     *
+     * When called, UIs should update their state to match the selected program.
      */
     void (*select_program)(LV2UI_Handle handle,
                            uint32_t bank,
@@ -136,8 +140,32 @@ typedef struct _LV2_Programs_UI_Interface {
 
 } LV2_Programs_UI_Interface;
 
+/**
+    Feature data for LV2_PROGRAMS__Host.
+*/
+typedef struct _LV2_Programs_Host {
+    /**
+     *  Opaque host data.
+     */
+    LV2_Programs_Handle handle;
+
+    /**
+     * program_changed()
+     *
+     * Tell the host to reload a plugin's program.
+     * Parameter handle MUST be the 'handle' member of this struct.
+     * Parameter index is program index to change.
+     * When index is -1, host should reload all the programs.
+     *
+     * NOTE: The plugin MUST NEVER call this function on a RT context or during run().
+     */
+    void (*program_changed)(LV2_Programs_Handle handle,
+                            int32_t index);
+
+} LV2_Programs_Host;
+
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 #endif /* LV2_PROGRAMS_H */

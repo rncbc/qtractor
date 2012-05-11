@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 38
+%define release 39
 
 %define _prefix	@ac_prefix@
 
@@ -27,8 +27,9 @@ BuildRequires:	librubberband-devel >= 1.0.1
 BuildRequires:	liblo-devel
 BuildRequires:	ladspa-devel
 BuildRequires:	dssi-devel
-BuildRequires:	lv2core-devel
-#BuildRequires:	libslv2-devel
+BuildRequires:	lv2-devel
+BuildRequires:	liblilv-devel
+BuildRequires:	libsuil-devel
 
 
 %description
