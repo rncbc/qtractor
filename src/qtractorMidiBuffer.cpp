@@ -351,7 +351,7 @@ bool qtractorMidiManager::queued ( qtractorTimeScale *pTimeScale,
 		if (!m_queuedBuffer.insert(&ev, t1))
 			return false;
 		if (ev.data.note.duration > 0) {
-			iTime += ev.data.note.duration;
+			iTime += (ev.data.note.duration - 1);
 			pNode = cursor.seekTick(iTime);
 			t1 += (pNode->frameFromTick(iTime) - t0);
 		}
