@@ -196,12 +196,12 @@ if test "x$ac_lv2" = "xno"; then
    ac_slv2="no"
    ac_lilv="no"
    ac_suil="no"
+elif test "x$ac_slv2" = "xyes"; then
+   ac_lilv="no"
+   ac_suil="no"
 elif test "x$ac_lilv" = "xno"; then
    ac_slv2="yes"
    ac_suil="no"
-elif test "x$ac_slv2" = "xno"; then
-   ac_lilv="yes"
-   ac_suil="yes"
 fi
 
 
