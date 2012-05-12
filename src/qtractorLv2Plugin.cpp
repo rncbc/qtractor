@@ -726,7 +726,7 @@ SLV2Plugin qtractorLv2PluginType::slv2_plugin ( const QString& sUri )
 
 	SLV2Plugin plugin = const_cast<SLV2Plugin> (
 		slv2_plugins_get_by_uri(g_slv2_plugins, uri));
-
+#if 0
 #ifdef CONFIG_LIBLILV
 	LilvNodes *list = lilv_plugin_get_required_features(
 		static_cast<LilvPlugin *> (plugin));
@@ -750,7 +750,7 @@ SLV2Plugin qtractorLv2PluginType::slv2_plugin ( const QString& sUri )
 		}
 	}
 #endif // CONFIG_LIBLILV
-
+#endif
 	slv2_value_free(uri);
 	return plugin;
 }
