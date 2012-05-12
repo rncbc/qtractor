@@ -340,29 +340,31 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 bool qtractorMidiManager::queued ( qtractorTimeScale *pTimeScale,
 	snd_seq_event_t *pEvent, unsigned long iTime, long iFrameStart )
 {
-	qtractorTimeScale::Node *pNode
-		= pTimeScale->cursor().seekTick(iTime);
-	unsigned long iTick = pNode->frameFromTick(iTime);
-	if (long(iTick) > iFrameStart)
-		iTick -= iFrameStart;
+	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
+	unsigned long t0 = pNode->frameFromTick(iTime);
+	unsigned long t1 = (long(t0) > iFrameStart ? t0 - iFrameStart : t0);
 
 	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
 		snd_seq_event_t ev = *pEvent;
 		ev.type = SND_SEQ_EVENT_NOTEON;
-		if (!m_queuedBuffer.insert(&ev, iTick))
+		if (!m_queuedBuffer.insert(&ev, t1))
 			return false;
-		if (ev.data.note.duration > 0)
-			iTick += pNode->frameFromTick(ev.data.note.duration - 1);
+		if (ev.data.note.duration > 0) {
+			iTime += ev.data.note.duration;
+			pNode = cursor.seekTick(iTime);
+			t1 += (pNode->frameFromTick(iTime) - t0);
+		}
 		ev.type = SND_SEQ_EVENT_NOTEOFF;
 		ev.data.note.velocity = 0;
 		ev.data.note.duration = 0;
-		return m_postedBuffer.insert(&ev, iTick);
+		return m_postedBuffer.insert(&ev, t1);
 	}
 
 	if (pEvent->type == SND_SEQ_EVENT_NOTEOFF)
-		return m_postedBuffer.insert(pEvent, iTick);
+		return m_postedBuffer.insert(pEvent, t1);
 	else
-		return m_queuedBuffer.insert(pEvent, iTick);
+		return m_queuedBuffer.insert(pEvent, t1);
 }
 
 
