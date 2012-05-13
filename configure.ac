@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.4.23, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.4.24, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -154,6 +154,11 @@ AC_ARG_ENABLE(lv2-programs,
   AC_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in programs support (default=yes)]),
   [ac_lv2_programs="$enableval"],
   [ac_lv2_programs="yes"])
+
+AC_ARG_ENABLE(lv2-time,
+  AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in time/position support (default=yes)]),
+  [ac_lv2_time="$enableval"],
+  [ac_lv2_time="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -398,7 +403,7 @@ if test "x$ac_sse" = "xyes"; then
    if test "x$ac_sse" = "xyes"; then
       ac_cflags="$ac_sse_cflags $ac_cflags"
    else
-	  CPPFLAGS=$ac_old_cppflags
+      CPPFLAGS=$ac_old_cppflags
       CFLAGS=$ac_old_cflags
    fi
 fi
@@ -606,9 +611,11 @@ if test "x$ac_lilv" = "xyes"; then
       ac_slv2="yes"
       ac_lilv="no"
       ac_suil="no"
+      ac_lv2_time="no"
    fi
 else
    ac_suil="no"
+   ac_lv2_time="no"
 fi
 
 # Check for optional libslv2 library.
@@ -622,6 +629,7 @@ if test "x$ac_slv2" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
       ac_lilv="no"
       ac_suil="no"
+      ac_lv2_time="no"
    else
       AC_MSG_WARN([*** slv2 library not found.])
       AC_MSG_WARN([*** LV2 plugin support will be disabled.])
@@ -634,6 +642,7 @@ if test "x$ac_slv2" = "xyes"; then
       ac_lv2_state="no"
       ac_lv2_state_files="no"
       ac_lv2_programs="no"
+      ac_lv2_time="no"
    fi
 fi
 
@@ -649,9 +658,9 @@ if test "x$ac_suil" = "xyes"; then
    else
       AC_MSG_WARN([*** suil library not found.])
       ac_suil="no"
-	  ac_lv2_gtk_ui="no"
-	  ac_lv2_qt4_ui="no"
-	  ac_lv2_external_ui="no"
+      ac_lv2_gtk_ui="no"
+      ac_lv2_qt4_ui="no"
+      ac_lv2_external_ui="no"
    fi
 elif test "x$ac_lilv" = "xyes"; then
   ac_lv2_gtk_ui="no"
@@ -669,6 +678,7 @@ if test "x$ac_slv2" = "xno" -a "x$ac_lilv" = "xno"; then
    ac_lv2_state="no"
    ac_lv2_state_files="no"
    ac_lv2_programs="no"
+   ac_lv2_time="no"
 fi
 
 # Check for JACK session event callback availability.
@@ -773,8 +783,8 @@ fi
 if test "x$ac_slv2" = "xyes"; then
    ac_slv2_cflags=`$ac_pkg_config --cflags slv2 2>/dev/null`
    if test -n "$ac_slv2_cflags"; then
-	  CFLAGS="$ac_slv2_cflags $CFLAGS"
-	  CPPFLAGS="$ac_slv2_cflags $CPPFLAGS"
+      CFLAGS="$ac_slv2_cflags $CFLAGS"
+      CPPFLAGS="$ac_slv2_cflags $CPPFLAGS"
    fi
    AC_CHECK_HEADER(slv2/slv2.h, [ac_slv2_h="yes"], [ac_slv2_h="no"])
    if test "x$ac_slv2_h" = "xno"; then
@@ -788,8 +798,8 @@ fi
 if test "x$ac_lilv" = "xyes"; then
    ac_lilv_cflags=`$ac_pkg_config --cflags lilv-0 2>/dev/null`
    if test -n "$ac_lilv_cflags"; then
-	  CFLAGS="$ac_lilv_cflags $CFLAGS"
-	  CPPFLAGS="$ac_lilv_cflags $CPPFLAGS"
+      CFLAGS="$ac_lilv_cflags $CFLAGS"
+      CPPFLAGS="$ac_lilv_cflags $CPPFLAGS"
    fi
    AC_CHECK_HEADER(lilv/lilv.h, [ac_lilv_h="yes"], [ac_lilv_h="no"])
    if test "x$ac_lilv_h" = "xno"; then
@@ -803,8 +813,8 @@ fi
 if test "x$ac_suil" = "xyes"; then
    ac_suil_cflags=`$ac_pkg_config --cflags suil-0 2>/dev/null`
    if test -n "$ac_suil_cflags"; then
-	  CFLAGS="$ac_suil_cflags $CFLAGS"
-	  CPPFLAGS="$ac_suil_cflags $CPPFLAGS"
+      CFLAGS="$ac_suil_cflags $CFLAGS"
+      CPPFLAGS="$ac_suil_cflags $CPPFLAGS"
    fi
    AC_CHECK_HEADER(suil/suil.h, [ac_suil_h="yes"], [ac_suil_h="no"])
    if test "x$ac_suil_h" = "xno"; then
@@ -923,15 +933,16 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_state="no"
       ac_lv2_state_files="no"
       ac_lv2_programs="no"
+      ac_lv2_time="no"
    fi
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h,
       [ac_lv2_event="yes"], [ac_lv2_event="no"])
    if test "x$ac_lv2_event" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event/MIDI extension is available.])
+      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 Event/MIDI extension is available.])
    else
-      AC_MSG_WARN([*** LV2 event extension will be disabled.])
+      AC_MSG_WARN([*** LV2 Event extension will be disabled.])
    fi
 fi
 if test "x$ac_lv2_qt4_ui" = "xyes"; then
@@ -962,9 +973,9 @@ if test "x$ac_lv2_external_ui" = "xyes"; then
         #endif
       ]])
    if test "x$ac_lv2_external_ui" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 external UI extension is available.])
+      AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 External UI extension is available.])
    else
-      AC_MSG_WARN([*** LV2 external UI extension will be disabled.])
+      AC_MSG_WARN([*** LV2 External UI extension will be disabled.])
    fi
 fi
 if test "x$ac_lv2_state" = "xyes"; then
@@ -973,18 +984,18 @@ if test "x$ac_lv2_state" = "xyes"; then
         #include <lv2.h>
       ]])
    if test "x$ac_lv2_state" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_STATE, 1, [Define if LV2 state extension is available.])
+      AC_DEFINE(CONFIG_LV2_STATE, 1, [Define if LV2 State extension is available.])
    else
-      AC_MSG_WARN([*** LV2 state extension will be disabled.])
+      AC_MSG_WARN([*** LV2 State extension will be disabled.])
       ac_lv2_state_files="no"
    fi
 else
    ac_lv2_state_files="no"
 fi
 if test "x$ac_lv2_state_files" = "xyes"; then
-    AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 state files feature is available.])
+    AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 State Files feature is available.])
 else
-    AC_MSG_WARN([*** LV2 state files feature will be disabled.])
+    AC_MSG_WARN([*** LV2 State Files feature will be disabled.])
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
    AC_CHECK_HEADERS(lv2_ui.h lv2_programs.h,
@@ -997,9 +1008,17 @@ if test "x$ac_lv2_programs" = "xyes"; then
         #endif
       ]])
    if test "x$ac_lv2_programs" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_PROGRAMS, 1, [Define if LV2 programs extension is available.])
+      AC_DEFINE(CONFIG_LV2_PROGRAMS, 1, [Define if LV2 Programs extension is available.])
    else
-      AC_MSG_WARN([*** LV2 programs extension will be disabled.])
+      AC_MSG_WARN([*** LV2 Programs extension will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_time" = "xyes"; then
+   AC_CHECK_HEADER(lv2_time.h, [ac_lv2_time="yes"], [ac_lv2_time="no"])
+   if test "x$ac_lv2_time" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_TIME, 1, [Define if LV2 Time extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 Time extension will be disabled.])
    fi
 fi
 
@@ -1081,6 +1100,7 @@ echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 Plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
 echo "  LV2 Plug-in Programs support (EXPERIMENTAL)  . . .: $ac_lv2_programs"
+echo "  LV2 Plug-in Time support (EXPERIMENTAL)  . . . . .: $ac_lv2_time"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
