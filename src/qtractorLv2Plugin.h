@@ -74,6 +74,15 @@
 #include "lv2_programs.h"
 #endif
 
+#ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_TIME
+// LV2 Time support.
+#include "lv2_time.h"
+// JACK Transport position support.
+#include <jack/transport.h>
+#endif
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -246,6 +255,13 @@ public:
 
 #endif
 
+#ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_TIME
+	// Update LV2 Time from JACK transport position.
+	static void updateTime(const jack_position_t *pPos);
+#endif
+#endif
+
 protected:
 
 	// Instance variables.
@@ -334,6 +350,13 @@ protected:
 	LV2_State_Map_Path         m_lv2_state_map_path;
 	LV2_Feature                m_lv2_state_make_path_feature;
 	LV2_State_Make_Path        m_lv2_state_make_path;
+#endif
+
+#ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_TIME
+	// LV2 Time designated ports map.
+	QHash<int, unsigned long>  m_lv2_time_ports;
+#endif
 #endif
 };
 

@@ -547,6 +547,46 @@ static SLV2Value g_slv2_sample_rate_prop = NULL;
 static SLV2Value g_slv2_logarithmic_prop = NULL;
 
 
+#ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_TIME
+
+// LV2 Time-position control structure.
+static struct qtractorLv2Time
+{
+	enum Index {
+
+		position = 0,
+		bar,
+		beat,
+		beatUnit,
+		beatsPerBar,
+		beatsPerMinute,
+		frame,
+		framesPerSecond,
+
+		numOfMembers
+	};
+
+	const char *uri;
+	LilvNode   *node;
+	float       data;
+
+} g_lv2_time[] = {
+
+	{ LV2_TIME__position,        NULL, 0.0f },
+	{ LV2_TIME__bar,             NULL, 0.0f },
+	{ LV2_TIME__beat,            NULL, 0.0f },
+	{ LV2_TIME__beatUnit,        NULL, 0.0f },
+	{ LV2_TIME__beatsPerBar,     NULL, 0.0f },
+	{ LV2_TIME__beatsPerMinute,  NULL, 0.0f },
+	{ LV2_TIME__frame,           NULL, 0.0f },
+	{ LV2_TIME__framesPerSecond, NULL, 0.0f }
+};
+
+#endif	// CONFIG_LV2_TIME
+#endif
+
+
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
 //
@@ -816,6 +856,17 @@ void qtractorLv2PluginType::slv2_open (void)
 		SLV2_NAMESPACE_LV2 "sampleRate");
 	g_slv2_logarithmic_prop = slv2_value_new_uri(g_slv2_world,
 		"http://lv2plug.in/ns/dev/extportinfo#logarithmic");
+
+#ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_TIME
+	// Set up supported port designations...
+	for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
+		qtractorLv2Time& member = g_lv2_time[i];
+		member.node = lilv_new_uri(g_slv2_world, member.uri);
+		member.data = 0.0f;
+	}
+#endif
+#endif
 }
 
 
@@ -826,6 +877,17 @@ void qtractorLv2PluginType::slv2_close (void)
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2PluginType::slv2_close()");
+#endif
+
+#ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_TIME
+	for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
+		qtractorLv2Time& member = g_lv2_time[i];
+		lilv_node_free(member.node);
+		member.node = NULL;
+		member.data = 0.0f;
+	}
+#endif
 #endif
 
 	// Clean up.
@@ -1070,6 +1132,22 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				}
 			}
 		}
+	#ifdef CONFIG_LIBLILV
+	#ifdef CONFIG_LV2_TIME
+		// Set up time-pos designated port indexes, if any...
+		for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
+			qtractorLv2Time& member = g_lv2_time[i];
+			if (member.node) {
+				LilvPort *port = lilv_plugin_get_port_by_designation(
+					plugin, g_slv2_input_class, member.node);
+				if (port) {
+					unsigned long index = lilv_port_get_index(plugin, port);
+					m_lv2_time_ports.insert(i, index);
+				}
+			}
+		}
+	#endif
+	#endif
 		// FIXME: instantiate each instance properly...
 		qtractorLv2Plugin::setChannels(channels());
 	}
@@ -1181,6 +1259,17 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 					m_piControlOuts[j], &m_pfControlOuts[j]);
 			}
 		}
+	#ifdef CONFIG_LIBLILV
+	#ifdef CONFIG_LV2_TIME
+		// Connect time-pos designated ports, if any...
+		QHash<int, unsigned long>::ConstIterator iter
+			= m_lv2_time_ports.constBegin();
+		for ( ; iter != m_lv2_time_ports.constEnd(); ++iter) {
+			lilv_instance_connect_port(instance,
+				iter.value(), &(g_lv2_time[iter.key()].data));
+		}
+	#endif
+	#endif
 		// This is it...
 		m_pInstances[i] = instance;
 	}
@@ -2155,6 +2244,26 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 }
 
 #endif	// CONFIG_LV2_PROGRAMS
+
+
+#ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_TIME
+
+// Update LV2 Time from JACK transport position. (static)
+void qtractorLv2Plugin::updateTime ( const jack_position_t *pPos )
+{
+	g_lv2_time[qtractorLv2Time::position].data = float(pPos->tick);
+	g_lv2_time[qtractorLv2Time::bar].data = float(pPos->bar);
+	g_lv2_time[qtractorLv2Time::beat].data = float(pPos->beat);
+	g_lv2_time[qtractorLv2Time::beatUnit].data = float(pPos->beat_type);
+	g_lv2_time[qtractorLv2Time::beatsPerBar].data = float(pPos->beats_per_bar);
+	g_lv2_time[qtractorLv2Time::beatsPerMinute].data = float(pPos->beats_per_minute);
+	g_lv2_time[qtractorLv2Time::frame].data = float(pPos->frame);
+	g_lv2_time[qtractorLv2Time::framesPerSecond].data = float(pPos->frame_rate);
+}
+
+#endif	// CONFIG_LV2_TIME
+#endif
 
 
 //----------------------------------------------------------------------------
