@@ -7,7 +7,8 @@ SVN TRUNK
 
 - LV2 Time/position information is now supported through special
   designated plugin input ports (after suggestion by Filipe Coelho
-  aka. falktx). (EXPERIMENTAL)
+  aka. falktx). Additionally time/position information report has
+  been corrected and complemented for VST plugins. (EXPERIMENTAL)
 
 - Audio vs. MIDI time drift correction has been slightly improved
   against rougue tempo changes across looping cycles.

@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -135,7 +135,7 @@ public:
 
 		// Frame/bar convertors.
 		unsigned short barFromFrame(unsigned long iFrame) const
-			{ return bar + uroundf(
+			{ return bar + (unsigned long) (
 				(beatRate * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
 		unsigned long frameFromBar(unsigned short iBar) const
 			{ return frame + uroundf(
@@ -143,7 +143,7 @@ public:
 
 		// Frame/beat convertors.
 		unsigned int beatFromFrame(unsigned long iFrame) const
-			{ return beat + uroundf(
+			{ return beat + (unsigned long) (
 				(beatRate * (iFrame - frame)) / ts->frameRate()); }
 		unsigned long frameFromBeat(unsigned int iBeat) const
 			{ return frame + uroundf(
@@ -182,7 +182,7 @@ public:
 			{ return beat + (unsigned long) (
 				(beatRate * (x - pixel)) / ts->pixelRate()); }
 		int pixelFromBeat(unsigned int iBeat) const
-			{ return pixel + (unsigned long) (
+			{ return pixel + uroundf(
 				(ts->pixelRate() * (iBeat - beat)) / beatRate); }
 
 		// Pixel/beat rate convertor.
@@ -194,7 +194,7 @@ public:
 			{ return bar + (unsigned long) (
 				(beatRate * (x - pixel)) / (ts->pixelRate() * beatsPerBar)); }
 		int pixelFromBar(unsigned short iBar) const
-			{ return pixel + (unsigned long) (
+			{ return pixel + uroundf(
 				(ts->pixelRate() * beatsPerBar * (iBar - bar)) / beatRate); }
 
 		// Bar/beat convertors.
