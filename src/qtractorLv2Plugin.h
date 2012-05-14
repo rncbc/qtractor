@@ -258,7 +258,8 @@ public:
 #ifdef CONFIG_LIBLILV
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
-	static void updateTime(const jack_position_t *pPos);
+	static void updateTime(
+		const jack_transport_state_t state, const jack_position_t *pPos);
 #endif
 #endif
 

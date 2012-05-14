@@ -563,6 +563,7 @@ static struct qtractorLv2Time
 		beatsPerMinute,
 		frame,
 		framesPerSecond,
+		speed,
 
 		numOfMembers
 	};
@@ -580,7 +581,8 @@ static struct qtractorLv2Time
 	{ LV2_TIME__beatsPerBar,     NULL, 0.0f },
 	{ LV2_TIME__beatsPerMinute,  NULL, 0.0f },
 	{ LV2_TIME__frame,           NULL, 0.0f },
-	{ LV2_TIME__framesPerSecond, NULL, 0.0f }
+	{ LV2_TIME__framesPerSecond, NULL, 0.0f },
+	{ LV2_TIME__speed,           NULL, 0.0f }
 };
 
 #endif	// CONFIG_LV2_TIME
@@ -2250,7 +2252,8 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 #ifdef CONFIG_LV2_TIME
 
 // Update LV2 Time from JACK transport position. (static)
-void qtractorLv2Plugin::updateTime ( const jack_position_t *pPos )
+void qtractorLv2Plugin::updateTime (
+	const jack_transport_state_t state, const jack_position_t *pPos )
 {
 	g_lv2_time[qtractorLv2Time::position].data = float(pPos->tick);
 	g_lv2_time[qtractorLv2Time::bar].data = float(pPos->bar);
@@ -2260,6 +2263,7 @@ void qtractorLv2Plugin::updateTime ( const jack_position_t *pPos )
 	g_lv2_time[qtractorLv2Time::beatsPerMinute].data = float(pPos->beats_per_minute);
 	g_lv2_time[qtractorLv2Time::frame].data = float(pPos->frame);
 	g_lv2_time[qtractorLv2Time::framesPerSecond].data = float(pPos->frame_rate);
+	g_lv2_time[qtractorLv2Time::speed].data = (state == JackTransportRolling ? 1.0f : 0.0f);
 }
 
 #endif	// CONFIG_LV2_TIME

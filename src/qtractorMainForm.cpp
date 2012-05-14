@@ -6287,7 +6287,7 @@ void qtractorMainForm::timerSlot (void)
 		#ifdef CONFIG_LIBLILV
 		#ifdef CONFIG_LV2_TIME
 			// Update LV2 Time from JACK transport position...
-			qtractorLv2Plugin::updateTime(&pos);
+			qtractorLv2Plugin::updateTime(state, &pos);
 		#endif
 		#endif
 		}
