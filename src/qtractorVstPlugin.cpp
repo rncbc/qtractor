@@ -1422,19 +1422,41 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 			unsigned long iPlayHead = pSession->playHead();
 			qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-			s_vstTimeInfo.samplePos = iPlayHead;
-			s_vstTimeInfo.sampleRate = pSession->sampleRate();
+			s_vstTimeInfo.samplePos = double(iPlayHead);
+			s_vstTimeInfo.sampleRate = double(pSession->sampleRate());
 			s_vstTimeInfo.flags = 0;
 			if (pSession->isPlaying())
 				s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
 			if (pNode) {
-				s_vstTimeInfo.tempo = pNode->tempo;
+				unsigned short bars  = 0;
+				unsigned int   beats = 0;
+				unsigned long  ticks = pNode->tickFromFrame(iPlayHead) - pNode->tick;
+				if (ticks >= (unsigned long) pNode->ticksPerBeat) {
+					beats += (unsigned int)  (ticks / pNode->ticksPerBeat);
+					ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
+				}
+				if (beats >= (unsigned int) pNode->beatsPerBar) {
+					bars  += (unsigned short) (beats / pNode->beatsPerBar);
+				//	beats -= (unsigned int) (bars * pNode->beatsPerBar);
+				}
+				s_vstTimeInfo.ppqPos = double(pNode->beat + beats)
+					+ (double(ticks) / double(pNode->ticksPerBeat));
+				s_vstTimeInfo.flags |= kVstPpqPosValid;
+				s_vstTimeInfo.tempo  = double(pNode->tempo);
 				s_vstTimeInfo.flags |= kVstTempoValid;
+				s_vstTimeInfo.barStartPos = double(pNode->beat)
+					+ double(bars * pNode->beatsPerBar);
+				s_vstTimeInfo.flags |= kVstBarsValid;
+				if (pSession->isLooping()) {
+					s_vstTimeInfo.cycleStartPos
+						= double(pNode->beatFromFrame(pSession->loopStart()));
+					s_vstTimeInfo.cycleEndPos
+						= double(pNode->beatFromFrame(pSession->loopEnd()));
+					s_vstTimeInfo.flags |= kVstCyclePosValid;
+				}
 				s_vstTimeInfo.timeSigNumerator = pNode->beatsPerBar;
 				s_vstTimeInfo.timeSigDenominator = (1 << pNode->beatDivisor);
 				s_vstTimeInfo.flags |= kVstTimeSigValid;
-				s_vstTimeInfo.ppqPos = pNode->tickFromFrame(iPlayHead);
-				s_vstTimeInfo.flags |= kVstPpqPosValid;
 			}
 			ret = (VstIntPtr) &s_vstTimeInfo;
 		}
