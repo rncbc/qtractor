@@ -531,7 +531,7 @@ QString qtractorTimeScale::textFromFrame (
 				++bars;
 				++beats;
 			}
-			sText.sprintf("%u.%02u.%03lu", bars, beats, ticks);
+			sText.sprintf("%u.%u.%03lu", bars, beats, ticks);
 			break;
 		}
 
