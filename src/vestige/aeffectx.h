@@ -297,8 +297,8 @@ typedef struct VstTimeInfo
     double barStartPos;
     double cycleStartPos;
     double cycleEndPos;
-    double timeSigNumerator;
-    double timeSigDenominator;
+    int32_t   timeSigNumerator;
+    int32_t   timeSigDenominator;
     int32_t   smpteOffset;
     int32_t   smpteFrameRate;
     int32_t   samplesToNextClock;
