@@ -1,7 +1,7 @@
 // qtractorTrackView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -189,6 +189,10 @@ public:
 	// Snap-to-beat grid mode.
 	void setSnapGrid(bool bSnapGrid);
 	bool isSnapGrid() const;
+
+	// Snap-to-bar zebra mode.
+	void setSnapZebra(bool bSnapZebra);
+	bool isSnapZebra() const;
 
 	// Floating tool-tips mode.
 	void setToolTips(bool bToolTips);
@@ -391,8 +395,9 @@ private:
 	// The multi-item drop mode.
 	bool m_bDropSpan;
 
-	// Snap-to-beat grid mode.
+	// Snap-to-beat/bar grid/zebra view mode.
 	bool m_bSnapGrid;
+	bool m_bSnapZebra;
 
 	// Floating tool-tips mode.
 	bool m_bToolTips;

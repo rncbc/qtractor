@@ -2257,6 +2257,23 @@
     <string>Snap grid view mode</string>
    </property>
   </action>
+  <action name="viewSnapZebraAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>&amp;Zebra</string>
+   </property>
+   <property name="iconText" >
+	<string>Zebra</string>
+   </property>
+   <property name="toolTip" >
+	<string>Zebra</string>
+   </property>
+   <property name="statusTip" >
+	<string>Bar zebra view mode</string>
+   </property>
+  </action>
   <action name="viewToolTipsAction" >
    <property name="checkable" >
     <bool>true</bool>

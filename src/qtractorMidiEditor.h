@@ -91,6 +91,10 @@ public:
 	void setSnapGrid(bool bSnapGrid);
 	bool isSnapGrid() const;
 
+	// Snap-to-bar zebra mode.
+	void setSnapZebra(bool bSnapZebra);
+	bool isSnapZebra() const;
+
 	// Floating tool-tips mode.
 	void setToolTips(bool bToolTips);
 	bool isToolTips() const;
@@ -531,8 +535,9 @@ private:
 
 	bool m_bEventDragEdit;
 
-	// Snap-to-beat grid mode.
+	// Snap-to-beat/bar grid/zebra mode.
 	bool m_bSnapGrid;
+	bool m_bSnapZebra;
 
 	// Floating tool-tips mode.
 	bool m_bToolTips;

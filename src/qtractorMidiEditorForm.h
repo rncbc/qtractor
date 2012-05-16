@@ -151,6 +151,7 @@ protected slots:
 	void viewScaleKey();
 	void viewScaleType();
 	void viewSnapGrid(bool bOn);
+	void viewSnapZebra(bool bOn);
 	void viewToolTips(bool bOn);
 	void viewRefresh();
 
