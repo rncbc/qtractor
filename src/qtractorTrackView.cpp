@@ -2572,7 +2572,8 @@ void qtractorTrackView::dragFadeMove ( const QPoint& pos )
 		return;
 
 	// Always change horizontally wise...
-	int dx = (pos.x() - m_posDrag.x());
+	int x0 = pSession->pixelSnap(pos.x());
+	int dx = (x0 - m_posDrag.x());
 	if (m_rectHandle.left() + dx < m_rectDrag.left())
 		dx = m_rectDrag.left() - m_rectHandle.left();
 	else if (m_rectHandle.right() + dx > m_rectDrag.right())

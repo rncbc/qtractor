@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Clip fade-in/out dragging now follows snap-to-beat setting.
+
 - Late modern eye-candy indulgence: alternate shaded stripes, on
   every other bar as in a "zebra" background option for the main
   tracks and MIDI clip editor views (cf. View/Snap/Zebra).
