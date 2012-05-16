@@ -229,6 +229,7 @@ public slots:
 	void viewZoomVertical();
 	void viewZoomAll();
 	void viewSnapGrid(bool bOn);
+	void viewSnapZebra(bool bOn);
 	void viewToolTips(bool bOn);
 	void viewSnap();
 	void viewRefresh();

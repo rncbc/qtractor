@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -260,6 +260,7 @@ void qtractorOptions::loadOptions (void)
 	iTrackViewSelectMode = m_settings.value("/TrackViewSelectMode", 0).toInt();
 	bTrackViewDropSpan   = m_settings.value("/TrackViewDropSpan", false).toBool();
 	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
+	bTrackViewSnapZebra  = m_settings.value("/TrackViewSnapZebra", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
 	m_settings.endGroup();
@@ -287,6 +288,7 @@ void qtractorOptions::loadOptions (void)
 	iMidiVerticalZoom = m_settings.value("/VerticalZoom", 100).toInt();
 	iMidiSnapPerBeat = m_settings.value("/SnapPerBeat", 4).toInt();
 	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
+	bMidiSnapZebra   = m_settings.value("/SnapZebra", false).toBool();
 	bMidiToolTips    = m_settings.value("/ToolTips", true).toBool();
 	iMidiSnapToScaleKey = m_settings.value("/SnapToScaleKey", 0).toInt();
 	iMidiSnapToScaleType = m_settings.value("/SnapToScaleType", 0).toInt();
@@ -483,6 +485,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TrackViewSelectMode", iTrackViewSelectMode);
 	m_settings.setValue("/TrackViewDropSpan", bTrackViewDropSpan);
 	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
+	m_settings.setValue("/TrackViewSnapZebra", bTrackViewSnapZebra);
 	m_settings.setValue("/TrackViewToolTips", bTrackViewToolTips);
 	m_settings.setValue("/TrackViewCurveEdit", bTrackViewCurveEdit);
 	m_settings.endGroup();
@@ -510,6 +513,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/VerticalZoom", iMidiVerticalZoom);
 	m_settings.setValue("/SnapPerBeat", iMidiSnapPerBeat);
 	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
+	m_settings.setValue("/SnapZebra", bMidiSnapZebra);
 	m_settings.setValue("/ToolTips", bMidiToolTips);
 	m_settings.setValue("/SnapToScaleKey", iMidiSnapToScaleKey);
 	m_settings.setValue("/SnapToScaleType", iMidiSnapToScaleType);

@@ -378,6 +378,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewSnapGridAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewSnapGrid(bool)));
+	QObject::connect(m_ui.viewSnapZebraAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewSnapZebra(bool)));
 	QObject::connect(m_ui.viewToolTipsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolTips(bool)));
@@ -455,6 +458,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewPreviewAction->setChecked(pOptions->bMidiPreview);
 		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollow);
 		m_ui.viewSnapGridAction->setChecked(pOptions->bMidiSnapGrid);
+		m_ui.viewSnapZebraAction->setChecked(pOptions->bMidiSnapZebra);
 		m_ui.viewToolTipsAction->setChecked(pOptions->bMidiToolTips);
 		if (pOptions->bMidiEditMode)
 			m_ui.editModeOnAction->setChecked(true);
@@ -473,6 +477,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pMidiEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
 		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
 		m_pMidiEditor->setSnapGrid(pOptions->bMidiSnapGrid);
+		m_pMidiEditor->setSnapZebra(pOptions->bMidiSnapZebra);
 		m_pMidiEditor->setToolTips(pOptions->bMidiToolTips);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
 		m_pMidiEditor->setEditModeDraw(pOptions->bMidiEditModeDraw);
@@ -634,6 +639,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
 		pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
 		pOptions->bMidiSnapGrid = m_pMidiEditor->isSnapGrid();
+		pOptions->bMidiSnapZebra = m_pMidiEditor->isSnapZebra();
 		pOptions->bMidiToolTips = m_pMidiEditor->isToolTips();
 		pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
 		pOptions->bMidiEditModeDraw = m_pMidiEditor->isEditModeDraw();
@@ -1438,6 +1444,14 @@ void qtractorMidiEditorForm::viewSnapGrid ( bool bOn )
 }
 
 
+// Set zebra mode
+void qtractorMidiEditorForm::viewSnapZebra ( bool bOn )
+{
+	m_pMidiEditor->setSnapZebra(bOn);
+	m_pMidiEditor->updateContents();
+}
+
+
 // Set floating tool-tips view mode
 void qtractorMidiEditorForm::viewToolTips ( bool bOn )
 {
@@ -1744,6 +1758,7 @@ void qtractorMidiEditorForm::updateSnapMenu (void)
 
 	m_ui.viewSnapMenu->addSeparator();
 	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapZebraAction);
 }
 
 
@@ -1794,7 +1809,7 @@ void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 	pTimeScale->setSnapPerBeat(iSnapPerBeat);
 
 	// If showing grid, it changed a bit for sure...
-	if (m_pMidiEditor->isSnapGrid())
+	if (m_pMidiEditor->isSnapGrid() || m_pMidiEditor->isSnapZebra())
 		m_pMidiEditor->updateContents();
 
 	m_pMidiEditor->editView()->setFocus();

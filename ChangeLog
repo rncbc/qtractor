@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Late modern eye-candy indulgence: alternate shaded stripes, on
+  every other bar as in a "zebra" background option for the main
+  tracks and MIDI clip editor views (cf. View/Snap/Zebra).
+
 - LV2 Time/position information is now supported through special
   designated plugin input ports (after suggestion by Filipe Coelho
   aka. falktx). Additionally time/position information report has

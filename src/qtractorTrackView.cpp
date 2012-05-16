@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -89,9 +89,10 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 	m_selectMode = SelectClip;
 
-	m_bDropSpan = true;
-	m_bSnapGrid = true;
-	m_bToolTips = true;
+	m_bDropSpan  = true;
+	m_bSnapGrid  = true;
+	m_bSnapZebra = true;
+	m_bToolTips  = true;
 
 	m_bCurveEdit = false;
 
@@ -700,26 +701,34 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 	const QColor& rgbLight = pal.midlight().color();
 	const QColor& rgbDark  = rgbMid.darker(120);
-	
+
 	// Draw vertical grid lines...
 	int x;
-	if (m_bSnapGrid) {
+	if (m_bSnapGrid || m_bSnapZebra) {
+		const QBrush zebra(QColor(0, 0, 0, 20));
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
 		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 		unsigned int iBeat = pNode->beatFromPixel(cx);
-		int x0 = x = pNode->pixelFromBeat(iBeat) - cx;
+		unsigned short iBar = pNode->barFromBeat(iBeat);
+		int x1 = x = pNode->pixelFromBeat(iBeat) - cx;
+		int x2 = x;
 		while (x < w) {
 			if (x >= 0) {
-				bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
+				bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x1);
 				if (bBeatIsBar) {
-					painter.setPen(rgbLight);
-					painter.drawLine(x, 0, x, h);
-					x0 = x + 16;
+					if (m_bSnapZebra && (x > x2) && (++iBar & 1))
+						painter.fillRect(QRect(x2, 0, x - x2, h), zebra);
+					if (m_bSnapGrid) {
+						painter.setPen(rgbLight);
+						painter.drawLine(x, 0, x, h);
+					}
+					x1 = x + 16;
+					x2 = x;
 					if (iBeat == pNode->beat)
 						iPixelsPerBeat = pNode->pixelsPerBeat();
 				}
-				if (bBeatIsBar || iPixelsPerBeat > 16) {
+				if (m_bSnapGrid && (bBeatIsBar || iPixelsPerBeat > 16)) {
 					painter.setPen(rgbDark);
 					painter.drawLine(x - 1, 0, x - 1, h);
 				}
@@ -727,6 +736,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			pNode = cursor.seekBeat(++iBeat);
 			x = pNode->pixelFromBeat(iBeat) - cx;
 		}
+		if (m_bSnapZebra && (x > x2) && (++iBar & 1))
+			painter.fillRect(QRect(x2, 0, x - x2, h), zebra);
 	}
 
 	// Draw track and horizontal lines...
@@ -3846,6 +3857,20 @@ void qtractorTrackView::setSnapGrid ( bool bSnapGrid )
 bool qtractorTrackView::isSnapGrid (void) const
 {
 	return m_bSnapGrid;
+}
+
+
+// Snap-to-bar zebra mode.
+void qtractorTrackView::setSnapZebra ( bool bSnapZebra )
+{
+	m_bSnapZebra = bSnapZebra;
+
+	updateContents();
+}
+
+bool qtractorTrackView::isSnapZebra (void) const
+{
+	return m_bSnapZebra;
 }
 
 

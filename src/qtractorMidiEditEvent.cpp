@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -325,18 +325,25 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	int dx = x0 + cx;
 
 	// Draw vertical grid lines...
+	const QBrush zebra(QColor(0, 0, 0, 20));
 	pNode = cursor.seekPixel(dx);
 	unsigned short iSnapPerBeat
 		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
+	unsigned short iBar
+		= (m_pEditor->isSnapZebra() ? pNode->barFromBeat(iBeat) : 0);
 	int x = pNode->pixelFromBeat(iBeat) - dx;
+	int x1 = x;
 	while (x < w) {
 		if (x >= 0) {
 			bool bBeatIsBar = pNode->beatIsBar(iBeat);
 			if (bBeatIsBar) {
+				if (m_pEditor->isSnapZebra() && (x > x1) && (++iBar & 1))
+					p.fillRect(QRect(x1, 0, x - x1, h), zebra);
 				p.setPen(rgbLight);
 				p.drawLine(x, 0, x, h);
+				x1 = x;
 				if (iBeat == pNode->beat)
 					iPixelsPerBeat = pNode->pixelsPerBeat();
 			}
@@ -359,6 +366,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		pNode = cursor.seekBeat(++iBeat);
 		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
+	if (m_pEditor->isSnapZebra() && (x > x1) && (++iBar & 1))
+		p.fillRect(QRect(x1, 0, x - x1, h), zebra);
 
 	//
 	// Draw the sequence events...
