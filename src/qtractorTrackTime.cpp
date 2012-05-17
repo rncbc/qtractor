@@ -436,7 +436,8 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_rectDrag.setRight(pos.x());
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->selectRect(m_rectDrag,
-				qtractorTrackView::SelectRange);
+				qtractorTrackView::SelectRange,
+				qtractorTrackView::EditBoth);
 			break;
 		case DragPlayHead:
 			// Play-head positioning...
@@ -501,7 +502,8 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragSelect:
 			// Do the final range selection...
 			m_pTracks->trackView()->selectRect(m_rectDrag,
-				qtractorTrackView::SelectRange);
+				qtractorTrackView::SelectRange,
+				qtractorTrackView::EditBoth);
 			// For immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
