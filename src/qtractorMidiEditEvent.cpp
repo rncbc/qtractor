@@ -334,16 +334,16 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	unsigned short iBar
 		= (m_pEditor->isSnapZebra() ? pNode->barFromBeat(iBeat) : 0);
 	int x = pNode->pixelFromBeat(iBeat) - dx;
-	int x1 = x;
+	int x2 = x;
 	while (x < w) {
 		if (x >= 0) {
 			bool bBeatIsBar = pNode->beatIsBar(iBeat);
 			if (bBeatIsBar) {
-				if (m_pEditor->isSnapZebra() && (x > x1) && (++iBar & 1))
-					p.fillRect(QRect(x1, 0, x - x1, h), zebra);
 				p.setPen(rgbLight);
 				p.drawLine(x, 0, x, h);
-				x1 = x;
+				if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
+					p.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
+				x2 = x;
 				if (iBeat == pNode->beat)
 					iPixelsPerBeat = pNode->pixelsPerBeat();
 			}
@@ -366,8 +366,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		pNode = cursor.seekBeat(++iBeat);
 		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
-	if (m_pEditor->isSnapZebra() && (x > x1) && (++iBar & 1))
-		p.fillRect(QRect(x1, 0, x - x1, h), zebra);
+	if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
+		p.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 
 	//
 	// Draw the sequence events...

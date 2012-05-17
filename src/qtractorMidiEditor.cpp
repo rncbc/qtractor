@@ -537,8 +537,8 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_bEditModeDraw = false;
 
 	// Snap-to-beat/bar grid/zebra mode.
-	m_bSnapGrid  = false;
 	m_bSnapZebra = false;
+	m_bSnapGrid  = false;
 
 	// Floating tool-tips mode.
 	m_bToolTips = true;
@@ -849,20 +849,6 @@ bool qtractorMidiEditor::isEditModeDraw (void) const
 }
 
 
-// Snap-to-beat grid mode.
-void qtractorMidiEditor::setSnapGrid ( bool bSnapGrid )
-{
-	m_bSnapGrid = bSnapGrid;
-
-//	updateContents();
-}
-
-bool qtractorMidiEditor::isSnapGrid (void) const
-{
-	return m_bSnapGrid;
-}
-
-
 // Snap-to-bar zebra mode.
 void qtractorMidiEditor::setSnapZebra ( bool bSnapZebra )
 {
@@ -874,6 +860,20 @@ void qtractorMidiEditor::setSnapZebra ( bool bSnapZebra )
 bool qtractorMidiEditor::isSnapZebra (void) const
 {
 	return m_bSnapZebra;
+}
+
+
+// Snap-to-beat grid mode.
+void qtractorMidiEditor::setSnapGrid ( bool bSnapGrid )
+{
+	m_bSnapGrid = bSnapGrid;
+
+//	updateContents();
+}
+
+bool qtractorMidiEditor::isSnapGrid (void) const
+{
+	return m_bSnapGrid;
 }
 
 

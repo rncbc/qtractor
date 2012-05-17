@@ -87,13 +87,13 @@ public:
 	void setBackground(const QColor& back);
 	const QColor& background() const;
 
-	// Snap-to-beat grid mode.
-	void setSnapGrid(bool bSnapGrid);
-	bool isSnapGrid() const;
-
 	// Snap-to-bar zebra mode.
 	void setSnapZebra(bool bSnapZebra);
 	bool isSnapZebra() const;
+
+	// Snap-to-beat grid mode.
+	void setSnapGrid(bool bSnapGrid);
+	bool isSnapGrid() const;
 
 	// Floating tool-tips mode.
 	void setToolTips(bool bToolTips);
@@ -536,8 +536,8 @@ private:
 	bool m_bEventDragEdit;
 
 	// Snap-to-beat/bar grid/zebra mode.
-	bool m_bSnapGrid;
 	bool m_bSnapZebra;
+	bool m_bSnapGrid;
 
 	// Floating tool-tips mode.
 	bool m_bToolTips;
