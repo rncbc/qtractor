@@ -201,8 +201,8 @@ public:
 	// Tracks view options...
 	int  iTrackViewSelectMode;
 	bool bTrackViewDropSpan;
-	bool bTrackViewSnapGrid;
 	bool bTrackViewSnapZebra;
+	bool bTrackViewSnapGrid;
 	bool bTrackViewToolTips;
 	bool bTrackViewCurveEdit;
 
@@ -225,8 +225,8 @@ public:
 	int  iMidiHorizontalZoom;
 	int  iMidiVerticalZoom;
 	int  iMidiSnapPerBeat;
-	bool bMidiSnapGrid;
 	bool bMidiSnapZebra;
+	bool bMidiSnapGrid;
 	bool bMidiToolTips;
 	int  iMidiSnapToScaleKey;
 	int  iMidiSnapToScaleType;

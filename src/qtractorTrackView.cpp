@@ -90,8 +90,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_selectMode = SelectClip;
 
 	m_bDropSpan  = true;
-	m_bSnapGrid  = true;
 	m_bSnapZebra = true;
+	m_bSnapGrid  = true;
 	m_bToolTips  = true;
 
 	m_bCurveEdit = false;
@@ -717,12 +717,12 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			if (x >= 0) {
 				bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x1);
 				if (bBeatIsBar) {
-					if (m_bSnapZebra && (x > x2) && (++iBar & 1))
-						painter.fillRect(QRect(x2, 0, x - x2, h), zebra);
 					if (m_bSnapGrid) {
 						painter.setPen(rgbLight);
 						painter.drawLine(x, 0, x, h);
 					}
+					if (m_bSnapZebra && (x > x2) && (++iBar & 1))
+						painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 					x1 = x + 16;
 					x2 = x;
 					if (iBeat == pNode->beat)
@@ -737,7 +737,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			x = pNode->pixelFromBeat(iBeat) - cx;
 		}
 		if (m_bSnapZebra && (x > x2) && (++iBar & 1))
-			painter.fillRect(QRect(x2, 0, x - x2, h), zebra);
+			painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 	}
 
 	// Draw track and horizontal lines...
@@ -3847,20 +3847,6 @@ bool qtractorTrackView::isDropSpan (void) const
 }
 
 
-// Snap-to-beat grid mode.
-void qtractorTrackView::setSnapGrid ( bool bSnapGrid )
-{
-	m_bSnapGrid = bSnapGrid;
-
-	updateContents();
-}
-
-bool qtractorTrackView::isSnapGrid (void) const
-{
-	return m_bSnapGrid;
-}
-
-
 // Snap-to-bar zebra mode.
 void qtractorTrackView::setSnapZebra ( bool bSnapZebra )
 {
@@ -3872,6 +3858,20 @@ void qtractorTrackView::setSnapZebra ( bool bSnapZebra )
 bool qtractorTrackView::isSnapZebra (void) const
 {
 	return m_bSnapZebra;
+}
+
+
+// Snap-to-beat grid mode.
+void qtractorTrackView::setSnapGrid ( bool bSnapGrid )
+{
+	m_bSnapGrid = bSnapGrid;
+
+	updateContents();
+}
+
+bool qtractorTrackView::isSnapGrid (void) const
+{
+	return m_bSnapGrid;
 }
 
 

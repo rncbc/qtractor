@@ -929,12 +929,12 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewZoomAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomAll()));
-	QObject::connect(m_ui.viewSnapGridAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewSnapGrid(bool)));
 	QObject::connect(m_ui.viewSnapZebraAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewSnapZebra(bool)));
+	QObject::connect(m_ui.viewSnapGridAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewSnapGrid(bool)));
 	QObject::connect(m_ui.viewToolTipsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolTips(bool)));
@@ -1203,8 +1203,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.viewToolbarTransportAction->setChecked(m_pOptions->bTransportToolbar);
 	m_ui.viewToolbarTimeAction->setChecked(m_pOptions->bTimeToolbar);
 	m_ui.viewToolbarThumbAction->setChecked(m_pOptions->bThumbToolbar);
-	m_ui.viewSnapGridAction->setChecked(pOptions->bTrackViewSnapGrid);
 	m_ui.viewSnapZebraAction->setChecked(pOptions->bTrackViewSnapZebra);
+	m_ui.viewSnapGridAction->setChecked(pOptions->bTrackViewSnapGrid);
 	m_ui.viewToolTipsAction->setChecked(pOptions->bTrackViewToolTips);
 
 	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
@@ -1447,8 +1447,8 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
 			m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
 			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
-			m_pOptions->bTrackViewSnapGrid = m_ui.viewSnapGridAction->isChecked();
 			m_pOptions->bTrackViewSnapZebra = m_ui.viewSnapZebraAction->isChecked();
+			m_pOptions->bTrackViewSnapGrid = m_ui.viewSnapGridAction->isChecked();
 			m_pOptions->bTrackViewToolTips = m_ui.viewToolTipsAction->isChecked();
 			m_pOptions->bTrackViewCurveEdit = m_ui.editSelectModeCurveAction->isChecked();
 			m_pOptions->bMetronome = m_ui.transportMetroAction->isChecked();
@@ -4037,19 +4037,19 @@ void qtractorMainForm::viewZoomAll (void)
 }
 
 
-// Set grid mode
-void qtractorMainForm::viewSnapGrid ( bool bOn )
-{
-	if (m_pTracks)
-		m_pTracks->trackView()->setSnapGrid(bOn);
-}
-
-
 // Set zebra mode
 void qtractorMainForm::viewSnapZebra ( bool bOn )
 {
 	if (m_pTracks)
 		m_pTracks->trackView()->setSnapZebra(bOn);
+}
+
+
+// Set grid mode
+void qtractorMainForm::viewSnapGrid ( bool bOn )
+{
+	if (m_pTracks)
+		m_pTracks->trackView()->setSnapGrid(bOn);
 }
 
 
@@ -6088,8 +6088,8 @@ void qtractorMainForm::updateSnapMenu (void)
 	}
 
 	m_ui.viewSnapMenu->addSeparator();
-	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
 	m_ui.viewSnapMenu->addAction(m_ui.viewSnapZebraAction);
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
 }
 
 

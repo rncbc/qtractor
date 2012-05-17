@@ -259,8 +259,8 @@ void qtractorOptions::loadOptions (void)
 	m_settings.beginGroup("/Tracks");
 	iTrackViewSelectMode = m_settings.value("/TrackViewSelectMode", 0).toInt();
 	bTrackViewDropSpan   = m_settings.value("/TrackViewDropSpan", false).toBool();
-	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewSnapZebra  = m_settings.value("/TrackViewSnapZebra", true).toBool();
+	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
 	m_settings.endGroup();
@@ -287,8 +287,8 @@ void qtractorOptions::loadOptions (void)
 	iMidiHorizontalZoom = m_settings.value("/HorizontalZoom", 100).toInt();
 	iMidiVerticalZoom = m_settings.value("/VerticalZoom", 100).toInt();
 	iMidiSnapPerBeat = m_settings.value("/SnapPerBeat", 4).toInt();
-	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	bMidiSnapZebra   = m_settings.value("/SnapZebra", false).toBool();
+	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	bMidiToolTips    = m_settings.value("/ToolTips", true).toBool();
 	iMidiSnapToScaleKey = m_settings.value("/SnapToScaleKey", 0).toInt();
 	iMidiSnapToScaleType = m_settings.value("/SnapToScaleType", 0).toInt();
@@ -484,8 +484,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.beginGroup("/Tracks");
 	m_settings.setValue("/TrackViewSelectMode", iTrackViewSelectMode);
 	m_settings.setValue("/TrackViewDropSpan", bTrackViewDropSpan);
-	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.setValue("/TrackViewSnapZebra", bTrackViewSnapZebra);
+	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.setValue("/TrackViewToolTips", bTrackViewToolTips);
 	m_settings.setValue("/TrackViewCurveEdit", bTrackViewCurveEdit);
 	m_settings.endGroup();
@@ -512,8 +512,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/HorizontalZoom", iMidiHorizontalZoom);
 	m_settings.setValue("/VerticalZoom", iMidiVerticalZoom);
 	m_settings.setValue("/SnapPerBeat", iMidiSnapPerBeat);
-	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
 	m_settings.setValue("/SnapZebra", bMidiSnapZebra);
+	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
 	m_settings.setValue("/ToolTips", bMidiToolTips);
 	m_settings.setValue("/SnapToScaleKey", iMidiSnapToScaleKey);
 	m_settings.setValue("/SnapToScaleType", iMidiSnapToScaleType);
