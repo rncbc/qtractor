@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Drag(-rubber-band)-selection on main track-view canvas doesn't
+  change the edit-head and -tail positions anymore.
+
 - Clip fade-in/out dragging now follows snap-to-beat setting.
 
 - Late modern eye-candy indulgence: alternate shaded stripes, on
