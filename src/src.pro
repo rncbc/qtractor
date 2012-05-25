@@ -275,6 +275,7 @@ RESOURCES += \
 
 TRANSLATIONS += \
 	translations/qtractor_cs.ts \
+	translations/qtractor_it.ts \
 	translations/qtractor_ru.ts
 
 unix {
