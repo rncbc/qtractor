@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Presets support now lurking, but not operational yet.
+
 - Italian (it) translation added (by Massimo Callegari, thanks).
 
 - Drag(-rubber-band)-selection on main track-view canvas doesn't

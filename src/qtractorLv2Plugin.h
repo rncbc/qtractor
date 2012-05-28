@@ -75,13 +75,23 @@
 #endif
 
 #ifdef CONFIG_LIBLILV
+
+#ifdef CONFIG_LV2_PRESETS
+// LV2 Presets support.
+#include "lv2_atom.h"
+#include "lv2_presets.h"
+// Standard directory access.
+#include <QDir>
+#endif
+
 #ifdef CONFIG_LV2_TIME
 // LV2 Time support.
 #include "lv2_time.h"
 // JACK Transport position support.
 #include <jack/transport.h>
 #endif
-#endif
+
+#endif	// CONFIG_LIBLILV
 
 
 //----------------------------------------------------------------------------
@@ -256,12 +266,19 @@ public:
 #endif
 
 #ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_PRESETS
+	// Refresh and load preset labels listing.
+	QStringList lv2_list_presets();
+	// Load/Save plugin state from/into a named preset.
+	bool lv2_load_preset(const QString& sPreset);
+	bool lv2_save_preset(const QString& sPreset);
+#endif
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
 	static void updateTime(
 		const jack_transport_state_t state, const jack_position_t *pPos);
 #endif
-#endif
+#endif	// CONFIG_LIBLILV
 
 protected:
 
@@ -354,11 +371,15 @@ protected:
 #endif
 
 #ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_PRESETS
+	// LV2 Presets label-to-uri map.
+	QHash<QString, QString> m_lv2_presets;
+#endif
 #ifdef CONFIG_LV2_TIME
 	// LV2 Time designated ports map.
 	QHash<int, unsigned long>  m_lv2_time_ports;
 #endif
-#endif
+#endif	// CONFIG_LIBLILV
 };
 
 

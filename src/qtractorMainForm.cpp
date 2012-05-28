@@ -4853,6 +4853,12 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_PROGRAMS
 	list << tr("LV2 Plug-in Programs support disabled.");
 #endif
+#ifndef CONFIG_LV2_PRESETS
+	list << tr("LV2 Plug-in Presets support disabled.");
+#endif
+#ifndef CONFIG_LV2_TIME
+	list << tr("LV2 Plug-in Time/position support disabled.");
+#endif
 #endif // CONFIG_LV2
 #ifndef CONFIG_JACK_SESSION
 	list << tr("JACK Session support disabled.");
