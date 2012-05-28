@@ -493,7 +493,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 		// Should it be load from known file?...
 		if ((m_pPlugin->type())->isConfigure()) {
 			settings.beginGroup(m_pPlugin->presetGroup());
-			m_pPlugin->loadPreset(settings.value(sPreset).toString());
+			m_pPlugin->loadPresetFile(settings.value(sPreset).toString());
 			settings.endGroup();
 			refresh();
 		} else {
@@ -557,7 +557,7 @@ void qtractorPluginForm::openPresetSlot (void)
 #endif
 	// Have we a filename to load a preset from?
 	if (!sFilename.isEmpty()) {
-		if (m_pPlugin->loadPreset(sFilename)) {
+		if (m_pPlugin->loadPresetFile(sFilename)) {
 			// Got it loaded alright...
 			QFileInfo fi(sFilename);
 			setPreset(fi.baseName()
@@ -637,7 +637,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		if (!sFilename.isEmpty()) {
 			if (QFileInfo(sFilename).suffix().isEmpty())
 				sFilename += '.' + sExt;
-			if (m_pPlugin->savePreset(sFilename)) {
+			if (m_pPlugin->savePresetFile(sFilename)) {
 				settings.setValue(sPreset, sFilename);
 				pOptions->sPresetDir = QFileInfo(sFilename).absolutePath();
 			}

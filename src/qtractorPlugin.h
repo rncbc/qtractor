@@ -522,8 +522,8 @@ public:
 	QString presetPrefix() const;
 
 	// Plugin configuration from/to xml file.
-	bool loadPreset(const QString& sFilename);
-	bool savePreset(const QString& sFilename);
+	bool loadPresetFile(const QString& sFilename);
+	bool savePresetFile(const QString& sFilename);
 
 	// Plugin parameter lookup.
 	qtractorPluginParam *findParam(unsigned long iIndex) const;

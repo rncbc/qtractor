@@ -871,7 +871,7 @@ QString qtractorPlugin::presetPrefix (void) const
 
 
 // Load plugin preset from xml file.
-bool qtractorPlugin::loadPreset ( const QString& sFilename )
+bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 {
 	// Open file...
 	QFile file(sFilename);
@@ -930,7 +930,7 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 
 
 // Save plugin preset to xml file.
-bool qtractorPlugin::savePreset ( const QString& sFilename )
+bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 {
 	freezeConfigs();
 
