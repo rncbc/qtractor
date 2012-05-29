@@ -513,6 +513,14 @@ public:
 	bool isFormVisible() const;
 	qtractorPluginForm *form();
 
+	// Provisional preset accessors.
+	virtual QStringList presetList() const;
+
+	virtual bool loadPreset(const QString& /*sPreset*/)
+		{ return false; }
+	virtual bool savePreset(const QString& /*sPreset*/)
+		{ return false; }
+
 	// Plugin default preset name accessor (informational)
 	void setPreset(const QString& sPreset);
 	const QString& preset() const;
@@ -522,8 +530,8 @@ public:
 	QString presetPrefix() const;
 
 	// Plugin configuration from/to xml file.
-	bool loadPreset(const QString& sFilename);
-	bool savePreset(const QString& sFilename);
+	bool loadPresetFile(const QString& sFilename);
+	bool savePresetFile(const QString& sFilename);
 
 	// Plugin parameter lookup.
 	qtractorPluginParam *findParam(unsigned long iIndex) const;

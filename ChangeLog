@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Presets support now entering effective operational status.
+  (EXPERIMENTAL)
+
+- Dropped XInitThreads() head call as it was never useful but on
+  those early days of JUSE VST plugins.
+
 - Italian (it) translation added (by Massimo Callegari, thanks).
 
 - Drag(-rubber-band)-selection on main track-view canvas doesn't

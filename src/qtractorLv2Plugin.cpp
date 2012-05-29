@@ -101,11 +101,13 @@
 #include "qtractorMidiBuffer.h"
 #endif
 
+#ifdef CONFIG_LV2_PRESETS
+// LV" Presets: standard directory access.
+#include "qtractorOptions.h"
+#include <QDir>
+#endif
+
 #include <math.h>
-
-
-#define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
-//undef LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
 
 
 // URI map/unmap features.
@@ -538,6 +540,7 @@ static SLV2Value g_slv2_extension_data_hint = NULL;
 
 #ifdef CONFIG_LV2_STATE
 static SLV2Value g_slv2_state_interface_hint = NULL;
+static uint32_t  g_slv2_atom_string_type = 0;
 #endif
 
 // Supported port properties (hints).
@@ -548,6 +551,82 @@ static SLV2Value g_slv2_logarithmic_prop = NULL;
 
 
 #ifdef CONFIG_LIBLILV
+
+#ifdef CONFIG_LV2_PRESETS
+
+// LV2 Presets reference types.
+static uint32_t g_slv2_atom_float_type = 0;
+
+// LV2 Presets: port value setter.
+static void qtractor_lv2_set_port_value ( const char *port_symbol,
+	void *user_data, const void *value, uint32_t size, uint32_t type )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (user_data);
+	if (pLv2Plugin == NULL)
+		return;
+
+	const LilvPlugin *plugin = pLv2Plugin->slv2_plugin();
+	if (plugin == NULL)
+		return;
+
+	if (size != sizeof(float) || type != g_slv2_atom_float_type)
+		return;
+
+	LilvNode *symbol = lilv_new_string(g_slv2_world, port_symbol);
+
+	const LilvPort *port
+		= lilv_plugin_get_port_by_symbol(plugin, symbol);
+	if (port) {
+		const float fValue = *(float *) value;
+		qtractor_lv2_ui_write(pLv2Plugin,
+			lilv_port_get_index(plugin, port),
+			sizeof(fValue), 0, &fValue);
+	}
+
+	lilv_node_free(symbol);
+}
+
+
+// LV2 Presets: port value getter.
+static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
+	void *user_data, uint32_t *size, uint32_t *type )
+{
+	const void *retv = NULL;
+
+	*size = 0;
+	*type = 0;
+
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (user_data);
+	if (pLv2Plugin == NULL)
+		return retv;
+
+	const LilvPlugin *plugin = pLv2Plugin->slv2_plugin();
+	if (plugin == NULL)
+		return retv;
+
+	LilvNode *symbol = lilv_new_string(g_slv2_world, port_symbol);
+
+	const LilvPort *port
+		= lilv_plugin_get_port_by_symbol(plugin, symbol);
+	if (port) {
+		unsigned long iIndex = lilv_port_get_index(plugin, port);
+		qtractorPluginParam *pParam = pLv2Plugin->findParam(iIndex);
+		if (pParam) {
+			*size = sizeof(float);
+			*type = g_slv2_atom_float_type;
+			retv = (const void *) (pParam->subject())->data();
+		}
+	}
+
+	lilv_node_free(symbol);
+
+	return retv;
+}
+
+#endif	// CONFIG_LV2_PRESETS
+
 #ifdef CONFIG_LV2_TIME
 
 // LV2 Time-position control structure.
@@ -586,7 +665,8 @@ static struct qtractorLv2Time
 };
 
 #endif	// CONFIG_LV2_TIME
-#endif
+
+#endif	// CONFIG_LIBLILV
 
 
 //----------------------------------------------------------------------------
@@ -845,8 +925,10 @@ void qtractorLv2PluginType::slv2_open (void)
 		SLV2_NAMESPACE_LV2 "extensionData");
 
 #ifdef CONFIG_LV2_STATE
+	// LV2 State: set up supported interface and types...
 	g_slv2_state_interface_hint = slv2_value_new_uri(g_slv2_world,
 		LV2_STATE__interface);
+	g_slv2_atom_string_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 #endif
 
 	// Set up the port properties we support (as hints).
@@ -860,15 +942,19 @@ void qtractorLv2PluginType::slv2_open (void)
 		"http://lv2plug.in/ns/dev/extportinfo#logarithmic");
 
 #ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_PRESETS
+	// LV2 Presets: set up supported port value types...
+	g_slv2_atom_float_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Float);
+#endif
 #ifdef CONFIG_LV2_TIME
-	// Set up supported port designations...
+	// LV2 Time: set up supported port designations...
 	for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
 		qtractorLv2Time& member = g_lv2_time[i];
 		member.node = lilv_new_uri(g_slv2_world, member.uri);
 		member.data = 0.0f;
 	}
 #endif
-#endif
+#endif	// CONFIG_LIBLILV
 }
 
 
@@ -882,6 +968,9 @@ void qtractorLv2PluginType::slv2_close (void)
 #endif
 
 #ifdef CONFIG_LIBLILV
+#ifdef CONFIG_LV2_PRESETS
+	g_slv2_atom_float_type = 0;
+#endif
 #ifdef CONFIG_LV2_TIME
 	for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
 		qtractorLv2Time& member = g_lv2_time[i];
@@ -890,7 +979,7 @@ void qtractorLv2PluginType::slv2_close (void)
 		member.data = 0.0f;
 	}
 #endif
-#endif
+#endif	// CONFIG_LIBLILV
 
 	// Clean up.
 	slv2_value_free(g_slv2_toggled_prop);
@@ -900,6 +989,7 @@ void qtractorLv2PluginType::slv2_close (void)
 
 #ifdef CONFIG_LV2_STATE
 	slv2_value_free(g_slv2_state_interface_hint);
+	g_slv2_atom_string_type = 0;
 #endif
 
 	slv2_value_free(g_slv2_extension_data_hint);
@@ -1135,6 +1225,29 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			}
 		}
 	#ifdef CONFIG_LIBLILV
+	#ifdef CONFIG_LV2_PRESETS
+		LilvNode *label_uri  = lilv_new_uri(g_slv2_world, LILV_NS_RDFS "label");
+		LilvNode *preset_uri = lilv_new_uri(g_slv2_world, LV2_PRESETS__Preset);
+		LilvNodes *presets = lilv_plugin_get_related(slv2_plugin(), preset_uri);
+		if (presets) {
+			LILV_FOREACH(nodes, i, presets) {
+				const LilvNode *preset = lilv_nodes_get(presets, i);
+				lilv_world_load_resource(g_slv2_world, preset);
+				LilvNodes *labels = lilv_world_find_nodes(
+					g_slv2_world, preset, label_uri, NULL);
+				if (labels) {
+					const LilvNode *label = lilv_nodes_get_first(labels);
+					const QString sPreset(lilv_node_as_string(label));
+					const QString sUri(lilv_node_as_string(preset));
+					m_lv2_presets.insert(sPreset, sUri);
+					lilv_nodes_free(labels);
+				}
+			}
+			lilv_nodes_free(presets);
+		}
+		lilv_node_free(preset_uri);
+		lilv_node_free(label_uri);
+	#endif	// CONFIG_LV2_PRESETS
 	#ifdef CONFIG_LV2_TIME
 		// Set up time-pos designated port indexes, if any...
 		for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
@@ -1148,8 +1261,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				}
 			}
 		}
-	#endif
-	#endif
+	#endif	// CONFIG_LV2_TIME
+	#endif	// CONFIG_LIBLILV
 		// FIXME: instantiate each instance properly...
 		qtractorLv2Plugin::setChannels(channels());
 	}
@@ -2006,7 +2119,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		if (ctype != state_ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
-		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
+		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM__String) == 0) {
 			m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
 		} else {
 			m_lv2_state_configs.insert(sKey, qUncompress(
@@ -2085,7 +2198,7 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 		return LV2_STATE_ERR_BAD_TYPE;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
-	if (::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
+	if (::strcmp(pszType, LV2_ATOM__String) == 0) {
 		setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
 	} else {
 		QByteArray data = qCompress(
@@ -2125,7 +2238,7 @@ const void *qtractorLv2Plugin::lv2_state_retrieve (
 		if (ctype != m_lv2_state_ctypes.constEnd())
 			*type = ctype.value();
 		else
-			*type = lv2_urid_map(LV2_ATOM_STRING_URI);
+			*type = g_slv2_atom_string_type;
 	}
 	if (flags)
 		*flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
@@ -2249,6 +2362,7 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 
 
 #ifdef CONFIG_LIBLILV
+
 #ifdef CONFIG_LV2_TIME
 
 // Update LV2 Time from JACK transport position. (static)
@@ -2267,7 +2381,88 @@ void qtractorLv2Plugin::updateTime (
 }
 
 #endif	// CONFIG_LV2_TIME
-#endif
+
+#ifdef CONFIG_LV2_PRESETS
+
+// Refresh and load preset labels listing. (virtual)
+QStringList qtractorLv2Plugin::presetList (void) const
+{
+	QStringList list(qtractorPlugin::presetList());
+
+	QHash<QString, QString>::ConstIterator iter = m_lv2_presets.constBegin();
+	for ( ; iter != m_lv2_presets.constEnd(); ++iter)
+		list.append(iter.key());
+
+	return list;
+}
+
+// Load plugin state from a named preset.
+bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
+{
+	const QString& sUri = m_lv2_presets.value(sPreset);
+	if (sUri.isEmpty())
+		return false;
+
+	LilvNode *preset
+		= lilv_new_uri(g_slv2_world, sUri.toUtf8().constData());
+
+	LilvState *state
+		= lilv_state_new_from_world(g_slv2_world, &g_lv2_urid_map, preset);
+	if (state == NULL) {
+		lilv_node_free(preset);
+		return false;
+	}
+
+	for (unsigned short i = 0; i < instances(); ++i) {
+		lilv_state_restore(state, m_pInstances[i],
+			qtractor_lv2_set_port_value, this, 0, NULL);
+	}
+
+	lilv_state_free(state);
+	lilv_node_free(preset);
+
+	return true;
+}
+
+// Save current plugin state as a named preset.
+bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
+{
+	LilvState *state = lilv_state_new_from_instance(
+		slv2_plugin(), m_pInstances[0], &g_lv2_urid_map,
+		NULL, NULL, NULL, NULL,
+		qtractor_lv2_get_port_value, this,
+		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+
+	if (state == NULL)
+		return false;
+
+	lilv_state_set_label(state, sPreset.toUtf8().constData());
+
+	const QString sDotLv2(".lv2");
+	const QString& sep = QDir::separator();
+
+	QString sDir;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		sDir = pOptions->sLv2PresetDir;
+	if (sDir.isEmpty())
+		sDir = QDir::homePath() + sep + sDotLv2;
+	sDir += sep + sPreset + sDotLv2;
+
+	const QString& sFile = sPreset + ".ttl";
+
+	int ret = lilv_state_save(g_slv2_world,
+		&g_lv2_urid_map, &g_lv2_urid_unmap, state, NULL,
+		sDir.toUtf8().constData(), sFile.toUtf8().constData());
+
+	lilv_state_free(state);
+
+	return (ret == 0);
+}
+
+#endif	// CONFIG_LV2_PRESETS
+
+#endif	// CONFIG_LIBLILV
 
 
 //----------------------------------------------------------------------------
