@@ -4236,8 +4236,6 @@ void qtractorMainForm::viewOptions (void)
 		}
 	#ifdef CONFIG_LV2
 		if (sOldLv2Path != m_pOptions->lv2Paths.join(sPathSep)) {
-			// HACK: reset special environment for LV2...
-			if (m_pOptions->lv2Paths.isEmpty())	::unsetenv("LV2_PATH");
 			updatePluginPaths();
 			iNeedRestart |= RestartSession;
 		}
@@ -4849,6 +4847,9 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #ifndef CONFIG_LV2_STATE
 	list << tr("LV2 Plug-in State support disabled.");
+#endif
+#ifdef CONFIG_LV2_STATE_FILES
+	list << tr("LV2 Plug-in State Files support enabled. (FUBAR)");
 #endif
 #ifndef CONFIG_LV2_PROGRAMS
 	list << tr("LV2 Plug-in Programs support disabled.");
@@ -5531,6 +5532,8 @@ void qtractorMainForm::updatePluginPaths (void)
 		return;
 
 #ifdef CONFIG_LV2
+	// HACK: reset special environment for LV2...
+	if (m_pOptions->lv2Paths.isEmpty())	::unsetenv("LV2_PATH");
 	qtractorPluginPath path(qtractorPluginType::Lv2);
 	path.setPaths(qtractorPluginType::Lv2, m_pOptions->lv2Paths);
 	path.open();

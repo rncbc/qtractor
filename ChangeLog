@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Dropped XInitThreads() head call as it was never useful but on
+  those early days of JUSE VST plugins.
+
 - LV2 Presets support now lurking, but not operational yet.
 
 - Italian (it) translation added (by Massimo Callegari, thanks).

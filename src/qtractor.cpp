@@ -1,7 +1,7 @@
 // qtractor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -350,14 +350,6 @@ int main ( int argc, char **argv )
 #endif
 #endif
 #if defined(Q_WS_X11)
-#ifdef CONFIG_VST
-#ifdef CONFIG_XINITTHREADS
-	if (!XInitThreads()) {
-		qFatal("Error: XInitThreads() failed. Stop.");
-		return 1;
-	}
-#endif
-#endif
 #ifdef CONFIG_LIBSLV2
 #ifdef CONFIG_LV2_GTK_UI
 	gtk_init(&argc, &argv);

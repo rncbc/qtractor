@@ -66,6 +66,7 @@
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
+#include "lv2_atom.h"
 #include "lv2_state.h"
 #endif
 
@@ -78,10 +79,7 @@
 
 #ifdef CONFIG_LV2_PRESETS
 // LV2 Presets support.
-#include "lv2_atom.h"
 #include "lv2_presets.h"
-// Standard directory access.
-#include <QDir>
 #endif
 
 #ifdef CONFIG_LV2_TIME
@@ -268,10 +266,10 @@ public:
 #ifdef CONFIG_LIBLILV
 #ifdef CONFIG_LV2_PRESETS
 	// Refresh and load preset labels listing.
-	QStringList lv2_list_presets();
+	QStringList presetList();
 	// Load/Save plugin state from/into a named preset.
-	bool lv2_load_preset(const QString& sPreset);
-	bool lv2_save_preset(const QString& sPreset);
+	bool loadPreset(const QString& sPreset);
+	bool savePreset(const QString& sPreset);
 #endif
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.

@@ -79,10 +79,10 @@ const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 static QString default_paths ( const QString& suffix )
 {
 	const QString& sep  = QDir::separator();
-#if defined(Q_OS_UNIX)
+
 	const QString& home = QDir::homePath();
-#endif
-	const QString& pre1 = sep + "usr";
+
+	const QString& pre1 = QDir::rootPath() + "usr";
 	const QString& pre2 = pre1 + sep + "local";
 
 	const QString& lib0 = "lib";
@@ -97,21 +97,15 @@ static QString default_paths ( const QString& suffix )
 
 	QStringList paths;
 
-#if defined(Q_OS_UNIX)
 	paths << home + sep + '.' + suffix;
-#endif
 
 #if defined(__x86_64__)
-//#if defined(Q_OS_UNIX)
 //	paths << home + sep + lib0 + x64 + sep + suffix;
-//#endif
 	paths << lib4 + sep + suffix;
 	paths << lib3 + sep + suffix;
 #endif
 
-//#if defined(Q_OS_UNIX)
 //	paths << home + sep + lib0 + sep + suffix;
-//#endif
 	paths << lib2 + sep + suffix;
 	paths << lib1 + sep + suffix;
 
@@ -205,6 +199,16 @@ bool qtractorPluginPath::open (void)
 			}
 		}
 		path_list.append(paths);
+	#ifdef CONFIG_LV2_PRESETS
+		QString sPresetDir;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions)
+			sPresetDir = pOptions->sLv2PresetDir;
+		if (sPresetDir.isEmpty())
+			sPresetDir = QDir::homePath() + QDir::separator() + ".lv2";
+		if (!paths.contains(sPresetDir))
+			paths.append(sPresetDir);
+	#endif
 		// HACK: set special environment for LV2...
 		::setenv("LV2_PATH", paths.join(PATH_SEP).toUtf8().constData(), 1);
 	}
@@ -839,6 +843,22 @@ qtractorPluginForm *qtractorPlugin::form (void)
 	}
 
 	return m_pForm;
+}
+
+
+// Provisional preset accessors.
+QStringList qtractorPlugin::presetList (void)
+{
+	QStringList list;
+
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->settings().beginGroup(presetGroup());
+		list.append(pOptions->settings().childKeys());
+		pOptions->settings().endGroup();
+	}
+
+	return list;
 }
 
 

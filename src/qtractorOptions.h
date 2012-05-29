@@ -181,6 +181,8 @@ public:
 	QStringList vstPaths;
 	QStringList lv2Paths;
 
+	QString sLv2PresetDir;
+
 	// Plug-in instrument options.
 	bool bAudioOutputBus;
 	bool bAudioOutputAutoConnect;

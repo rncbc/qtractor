@@ -101,11 +101,13 @@
 #include "qtractorMidiBuffer.h"
 #endif
 
+#ifdef CONFIG_LV2_PRESETS
+// LV" Presets: standard directory access.
+#include "qtractorOptions.h"
+#include <QDir>
+#endif
+
 #include <math.h>
-
-
-#define LV2_ATOM_STRING_URI "http://lv2plug.in/ns/ext/atom#String"
-//undef LV2_XMLS_STRING_URI "http://www.w3.org/2001/XMLSchema#string"
 
 
 // URI map/unmap features.
@@ -538,6 +540,7 @@ static SLV2Value g_slv2_extension_data_hint = NULL;
 
 #ifdef CONFIG_LV2_STATE
 static SLV2Value g_slv2_state_interface_hint = NULL;
+static uint32_t  g_slv2_atom_string_type = 0;
 #endif
 
 // Supported port properties (hints).
@@ -922,8 +925,10 @@ void qtractorLv2PluginType::slv2_open (void)
 		SLV2_NAMESPACE_LV2 "extensionData");
 
 #ifdef CONFIG_LV2_STATE
+	// LV2 State: set up supported interface and types...
 	g_slv2_state_interface_hint = slv2_value_new_uri(g_slv2_world,
 		LV2_STATE__interface);
+	g_slv2_atom_string_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 #endif
 
 	// Set up the port properties we support (as hints).
@@ -984,6 +989,7 @@ void qtractorLv2PluginType::slv2_close (void)
 
 #ifdef CONFIG_LV2_STATE
 	slv2_value_free(g_slv2_state_interface_hint);
+	g_slv2_atom_string_type = 0;
 #endif
 
 	slv2_value_free(g_slv2_extension_data_hint);
@@ -2090,7 +2096,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		if (ctype != state_ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
-		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
+		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM__String) == 0) {
 			m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
 		} else {
 			m_lv2_state_configs.insert(sKey, qUncompress(
@@ -2169,7 +2175,7 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 		return LV2_STATE_ERR_BAD_TYPE;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
-	if (::strcmp(pszType, LV2_ATOM_STRING_URI) == 0) {
+	if (::strcmp(pszType, LV2_ATOM__String) == 0) {
 		setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
 	} else {
 		QByteArray data = qCompress(
@@ -2209,7 +2215,7 @@ const void *qtractorLv2Plugin::lv2_state_retrieve (
 		if (ctype != m_lv2_state_ctypes.constEnd())
 			*type = ctype.value();
 		else
-			*type = lv2_urid_map(LV2_ATOM_STRING_URI);
+			*type = g_slv2_atom_string_type;
 	}
 	if (flags)
 		*flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
@@ -2355,8 +2361,8 @@ void qtractorLv2Plugin::updateTime (
 
 #ifdef CONFIG_LV2_PRESETS
 
-// Refresh and load preset labels listing.
-QStringList qtractorLv2Plugin::lv2_list_presets (void)
+// Refresh and load preset labels listing. (virtual)
+QStringList qtractorLv2Plugin::presetList (void)
 {
 	if (m_lv2_presets.isEmpty()) {
 		LilvNode *label_pred   = lilv_new_uri(g_slv2_world, LILV_NS_RDFS "label");
@@ -2382,7 +2388,7 @@ QStringList qtractorLv2Plugin::lv2_list_presets (void)
 		lilv_node_free(label_pred);
 	}
 
-	QStringList list;
+	QStringList list(qtractorPlugin::presetList());
 
 	QHash<QString, QString>::ConstIterator iter = m_lv2_presets.constBegin();
 	for ( ; iter != m_lv2_presets.constEnd(); ++iter)
@@ -2392,7 +2398,7 @@ QStringList qtractorLv2Plugin::lv2_list_presets (void)
 }
 
 // Load plugin state from a named preset.
-bool qtractorLv2Plugin::lv2_load_preset ( const QString& sPreset )
+bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 {
 	const QString& sUri = m_lv2_presets.value(sPreset);
 	if (sUri.isEmpty())
@@ -2420,7 +2426,7 @@ bool qtractorLv2Plugin::lv2_load_preset ( const QString& sPreset )
 }
 
 // Save current plugin state as a named preset.
-bool qtractorLv2Plugin::lv2_save_preset ( const QString& sPreset )
+bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 {
 	LilvState *state = lilv_state_new_from_instance(
 		slv2_plugin(), m_pInstances[0], &g_lv2_urid_map,
@@ -2433,8 +2439,19 @@ bool qtractorLv2Plugin::lv2_save_preset ( const QString& sPreset )
 
 	lilv_state_set_label(state, sPreset.toUtf8().constData());
 
-	const QString sDir = QDir::homePath() + "/.lv2/" + sPreset + ".lv2";
-	const QString sFilename = sDir + '/' + sPreset + ".ttl";
+	const QString sDotLv2(".lv2");
+	const QString sDotTtl(".ttl");
+	const QString& sep = QDir::separator();
+
+	QString sDir;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions )
+		sDir = pOptions->sLv2PresetDir;
+	if (sDir.isEmpty())
+		sDir = QDir::homePath() + sep + sDotLv2;
+	sDir += sep + sPreset + sDotLv2;
+
+	const QString sFilename = sDir + sep + sPreset + sDotTtl;
 
 	int ret = lilv_state_save(g_slv2_world,
 		&g_lv2_urid_map, &g_lv2_urid_unmap, state, NULL,

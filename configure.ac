@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.4.29, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.4.30, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -182,12 +182,6 @@ AC_ARG_ENABLE(xunique,
   AC_HELP_STRING([--enable-xunique], [enable X11 unique/single instance (default=no)]),
   [ac_xunique="$enableval"],
   [ac_xunique="no"])
-
-# Enable XInitThreads() support.
-AC_ARG_ENABLE(xinitthreads,
-  AC_HELP_STRING([--enable-xinitthreads], [enable XInitThreads() support (default=no)]),
-  [ac_xinitthreads="$enableval"],
-  [ac_xinitthreads="no"])
 
 # Enable gradient eye-candy.
 AC_ARG_ENABLE(gradient,
@@ -903,11 +897,9 @@ if test "x$ac_vst" = "xyes"; then
    else
       AC_MSG_WARN([*** aeffectx.h header file not found.])
       AC_MSG_WARN([*** VST plug-in support will be disabled.])
-      ac_xinitthreads="no"
       ac_vestige="no"
    fi
 else
-   ac_xinitthreads="no"
    ac_vestige="no"
 fi
 
@@ -990,7 +982,7 @@ if test "x$ac_lv2_external_ui" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_state" = "xyes"; then
-   AC_CHECK_HEADER(lv2_state.h, [ac_lv2_state="yes"], [ac_lv2_state="no"],
+   AC_CHECK_HEADERS(lv2_atom.h lv2_state.h, [ac_lv2_state="yes"], [ac_lv2_state="no"],
       [[#include <stdlib.h>
         #include <lv2.h>
       ]])
@@ -999,9 +991,11 @@ if test "x$ac_lv2_state" = "xyes"; then
    else
       AC_MSG_WARN([*** LV2 State extension will be disabled.])
       ac_lv2_state_files="no"
+      ac_lv2_presets="no"
    fi
 else
    ac_lv2_state_files="no"
+   ac_lv2_presets="no"
 fi
 if test "x$ac_lv2_state_files" = "xyes"; then
     AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 State Files feature is available.])
@@ -1025,7 +1019,7 @@ if test "x$ac_lv2_programs" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_presets" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_atom.h lv2_presets.h, [ac_lv2_presets="yes"], [ac_lv2_presets="no"])
+   AC_CHECK_HEADERS(lv2_presets.h, [ac_lv2_presets="yes"], [ac_lv2_presets="no"])
    if test "x$ac_lv2_presets" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PRESETS, 1, [Define if LV2 Presets are supported.])
    else
@@ -1055,11 +1049,6 @@ fi
 # Check for X11 unique/single instance.
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
-fi
-
-# Check for XInitThreads() support.
-if test "x$ac_xinitthreads" = "xyes"; then
-   AC_DEFINE(CONFIG_XINITTHREADS, 1, [Define if XInitThreads() is supported.])
 fi
 
 # Check for gradient eye-candy.
@@ -1116,7 +1105,7 @@ echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
-echo "  LV2 Plug-in State support (NEW)  . . . . . . . . .: $ac_lv2_state"
+echo "  LV2 Plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 Plug-in State Files support (FUBAR)  . . . . .: $ac_lv2_state_files"
 echo "  LV2 Plug-in Programs support (EXPERIMENTAL)  . . .: $ac_lv2_programs"
 echo "  LV2 Plug-in Presets support (EXPERIMENTAL) . . . .: $ac_lv2_presets"
@@ -1126,7 +1115,6 @@ echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
-echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
 echo "  Debugger stack-trace (gdb) . . . . . . . . . . . .: $ac_stacktrace"

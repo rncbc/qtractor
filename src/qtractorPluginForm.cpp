@@ -912,13 +912,7 @@ void qtractorPluginForm::refresh (void)
 
 	const QString sOldPreset = m_ui.PresetComboBox->currentText();
 	m_ui.PresetComboBox->clear();
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
-		pOptions->settings().beginGroup(m_pPlugin->presetGroup());
-		m_ui.PresetComboBox->insertItems(0,
-			pOptions->settings().childKeys());
-		pOptions->settings().endGroup();
-	}
+	m_ui.PresetComboBox->insertItems(0, m_pPlugin->presetList());
 	m_ui.PresetComboBox->addItem(g_sDefPreset);
 	m_ui.PresetComboBox->setEditText(sOldPreset);
 

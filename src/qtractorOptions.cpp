@@ -210,6 +210,7 @@ void qtractorOptions::loadOptions (void)
 	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
 	vstPaths    = m_settings.value("/VstPaths").toStringList();
 	lv2Paths    = m_settings.value("/Lv2Paths").toStringList();
+	sLv2PresetDir = m_settings.value("/Lv2PresetDir").toString();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
@@ -444,6 +445,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/DssiPaths", dssiPaths);
 	m_settings.setValue("/VstPaths", vstPaths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
+	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
