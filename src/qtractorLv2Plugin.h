@@ -266,7 +266,7 @@ public:
 #ifdef CONFIG_LIBLILV
 #ifdef CONFIG_LV2_PRESETS
 	// Refresh and load preset labels listing.
-	QStringList presetList();
+	QStringList presetList() const;
 	// Load/Save plugin state from/into a named preset.
 	bool loadPreset(const QString& sPreset);
 	bool savePreset(const QString& sPreset);

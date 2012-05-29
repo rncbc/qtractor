@@ -847,7 +847,7 @@ qtractorPluginForm *qtractorPlugin::form (void)
 
 
 // Provisional preset accessors.
-QStringList qtractorPlugin::presetList (void)
+QStringList qtractorPlugin::presetList (void) const
 {
 	QStringList list;
 

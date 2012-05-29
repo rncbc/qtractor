@@ -573,7 +573,7 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	if (size != sizeof(float) || type != g_slv2_atom_float_type)
 		return;
 
-	LilvNode *symbol = lilv_new_uri(g_slv2_world, port_symbol);
+	LilvNode *symbol = lilv_new_string(g_slv2_world, port_symbol);
 
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
@@ -606,7 +606,7 @@ static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
 	if (plugin == NULL)
 		return retv;
 
-	LilvNode *symbol = lilv_new_uri(g_slv2_world, port_symbol);
+	LilvNode *symbol = lilv_new_string(g_slv2_world, port_symbol);
 
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
@@ -1225,6 +1225,29 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			}
 		}
 	#ifdef CONFIG_LIBLILV
+	#ifdef CONFIG_LV2_PRESETS
+		LilvNode *label_uri  = lilv_new_uri(g_slv2_world, LILV_NS_RDFS "label");
+		LilvNode *preset_uri = lilv_new_uri(g_slv2_world, LV2_PRESETS__Preset);
+		LilvNodes *presets = lilv_plugin_get_related(slv2_plugin(), preset_uri);
+		if (presets) {
+			LILV_FOREACH(nodes, i, presets) {
+				const LilvNode *preset = lilv_nodes_get(presets, i);
+				lilv_world_load_resource(g_slv2_world, preset);
+				LilvNodes *labels = lilv_world_find_nodes(
+					g_slv2_world, preset, label_uri, NULL);
+				if (labels) {
+					const LilvNode *label = lilv_nodes_get_first(labels);
+					const QString sPreset(lilv_node_as_string(label));
+					const QString sUri(lilv_node_as_string(preset));
+					m_lv2_presets.insert(sPreset, sUri);
+					lilv_nodes_free(labels);
+				}
+			}
+			lilv_nodes_free(presets);
+		}
+		lilv_node_free(preset_uri);
+		lilv_node_free(label_uri);
+	#endif	// CONFIG_LV2_PRESETS
 	#ifdef CONFIG_LV2_TIME
 		// Set up time-pos designated port indexes, if any...
 		for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
@@ -1238,8 +1261,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				}
 			}
 		}
-	#endif
-	#endif
+	#endif	// CONFIG_LV2_TIME
+	#endif	// CONFIG_LIBLILV
 		// FIXME: instantiate each instance properly...
 		qtractorLv2Plugin::setChannels(channels());
 	}
@@ -2362,37 +2385,13 @@ void qtractorLv2Plugin::updateTime (
 #ifdef CONFIG_LV2_PRESETS
 
 // Refresh and load preset labels listing. (virtual)
-QStringList qtractorLv2Plugin::presetList (void)
+QStringList qtractorLv2Plugin::presetList (void) const
 {
-	if (m_lv2_presets.isEmpty()) {
-		LilvNode *label_pred   = lilv_new_uri(g_slv2_world, LILV_NS_RDFS "label");
-		LilvNode *preset_class = lilv_new_uri(g_slv2_world, LV2_PRESETS__Preset);
-		LilvNodes *presets = lilv_plugin_get_related(slv2_plugin(), preset_class);
-		if (presets) {
-			LILV_FOREACH(nodes, i, presets) {
-				const LilvNode *preset = lilv_nodes_get(presets, i);
-				lilv_world_load_resource(g_slv2_world, preset);
-				LilvNodes *labels = lilv_world_find_nodes(
-					g_slv2_world, preset, label_pred, NULL);
-				if (labels) {
-					const LilvNode *label = lilv_nodes_get_first(labels);
-					const QString sPreset(lilv_node_as_string(label));
-					const QString sUri(lilv_node_as_string(preset));
-					m_lv2_presets.insert(sPreset, sUri);
-					lilv_nodes_free(labels);
-				}
-			}
-			lilv_nodes_free(presets);
-		}
-		lilv_node_free(preset_class);
-		lilv_node_free(label_pred);
-	}
-
 	QStringList list(qtractorPlugin::presetList());
 
 	QHash<QString, QString>::ConstIterator iter = m_lv2_presets.constBegin();
 	for ( ; iter != m_lv2_presets.constEnd(); ++iter)
-		list.append(iter.value());
+		list.append(iter.key());
 
 	return list;
 }
@@ -2440,27 +2439,23 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 	lilv_state_set_label(state, sPreset.toUtf8().constData());
 
 	const QString sDotLv2(".lv2");
-	const QString sDotTtl(".ttl");
 	const QString& sep = QDir::separator();
 
 	QString sDir;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions )
+	if (pOptions)
 		sDir = pOptions->sLv2PresetDir;
 	if (sDir.isEmpty())
 		sDir = QDir::homePath() + sep + sDotLv2;
 	sDir += sep + sPreset + sDotLv2;
 
-	const QString sFilename = sDir + sep + sPreset + sDotTtl;
+	const QString& sFile = sPreset + ".ttl";
 
 	int ret = lilv_state_save(g_slv2_world,
 		&g_lv2_urid_map, &g_lv2_urid_unmap, state, NULL,
-		sDir.toUtf8().constData(), sFilename.toUtf8().constData());
+		sDir.toUtf8().constData(), sFile.toUtf8().constData());
 
 	lilv_state_free(state);
-
-	if (ret == 0)
-		m_lv2_presets.clear();
 
 	return (ret == 0);
 }

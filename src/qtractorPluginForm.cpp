@@ -487,7 +487,9 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 		// Reset to default...
 		pSession->execute(
 			new qtractorResetPluginCommand(m_pPlugin));
-	} else {
+	}
+	else
+	if (!m_pPlugin->loadPreset(sPreset)) {
 		// An existing preset is about to be loaded...
 		QSettings& settings = pOptions->settings();
 		// Should it be load from known file?...
@@ -594,59 +596,61 @@ void qtractorPluginForm::savePresetSlot (void)
 		return;
 
 	// The current state preset is about to be saved...
-	// this is where we'll make it...
-	QSettings& settings = pOptions->settings();
-	settings.beginGroup(m_pPlugin->presetGroup());
-	// Which mode of preset?
-	if ((m_pPlugin->type())->isConfigure()) {
-		// Sure, we'll have something complex enough
-		// to make it save into an external file...
-		const QString sExt("qtx");
-		QFileInfo fi(QDir(pOptions->sPresetDir),
-			(m_pPlugin->type())->label() + '-' + sPreset + '.' + sExt);
-		QString sFilename = fi.absoluteFilePath();
-		// Prompt if file does not currently exist...
-		if (!fi.exists()) {
-			const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
-			const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
-		#if QT_VERSION < 0x040400
-			// Ask for the filename to save...
-			sFilename = QFileDialog::getSaveFileName(this,
-				sTitle, sFilename, sFilter);
-		#else
-			// Construct save-file dialog...
-			QFileDialog fileDialog(this,
-				sTitle, sFilename, sFilter);
-			// Set proper open-file modes...
-			fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-			fileDialog.setFileMode(QFileDialog::AnyFile);
-			fileDialog.setDefaultSuffix(sExt);
-			// Stuff sidebar...
-			QList<QUrl> urls(fileDialog.sidebarUrls());
-			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
-			urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
-			fileDialog.setSidebarUrls(urls);
-			// Show dialog...
-			if (fileDialog.exec())
-				sFilename = fileDialog.selectedFiles().first();
-			else
-				sFilename.clear();
-		#endif
-		}
-		// We've a filename to save the preset
-		if (!sFilename.isEmpty()) {
-			if (QFileInfo(sFilename).suffix().isEmpty())
-				sFilename += '.' + sExt;
-			if (m_pPlugin->savePresetFile(sFilename)) {
-				settings.setValue(sPreset, sFilename);
-				pOptions->sPresetDir = QFileInfo(sFilename).absolutePath();
+	// this is where we'll make it!
+	if (!m_pPlugin->savePreset(sPreset)) {
+		QSettings& settings = pOptions->settings();
+		settings.beginGroup(m_pPlugin->presetGroup());
+		// Which mode of preset?
+		if ((m_pPlugin->type())->isConfigure()) {
+			// Sure, we'll have something complex enough
+			// to make it save into an external file...
+			const QString sExt("qtx");
+			QFileInfo fi(QDir(pOptions->sPresetDir),
+				(m_pPlugin->type())->label() + '-' + sPreset + '.' + sExt);
+			QString sFilename = fi.absoluteFilePath();
+			// Prompt if file does not currently exist...
+			if (!fi.exists()) {
+				const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
+				const QString& sFilter = tr("Preset files (*.%1)").arg(sExt);
+			#if QT_VERSION < 0x040400
+				// Ask for the filename to save...
+				sFilename = QFileDialog::getSaveFileName(this,
+					sTitle, sFilename, sFilter);
+			#else
+				// Construct save-file dialog...
+				QFileDialog fileDialog(this,
+					sTitle, sFilename, sFilter);
+				// Set proper open-file modes...
+				fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+				fileDialog.setFileMode(QFileDialog::AnyFile);
+				fileDialog.setDefaultSuffix(sExt);
+				// Stuff sidebar...
+				QList<QUrl> urls(fileDialog.sidebarUrls());
+				urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+				urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
+				fileDialog.setSidebarUrls(urls);
+				// Show dialog...
+				if (fileDialog.exec())
+					sFilename = fileDialog.selectedFiles().first();
+				else
+					sFilename.clear();
+			#endif
 			}
-		}
-	}	// Just leave it to simple parameter value list...
-	else settings.setValue(sPreset, m_pPlugin->valueList());
-	settings.endGroup();
-	refresh();
+			// We've a filename to save the preset
+			if (!sFilename.isEmpty()) {
+				if (QFileInfo(sFilename).suffix().isEmpty())
+					sFilename += '.' + sExt;
+				if (m_pPlugin->savePresetFile(sFilename)) {
+					settings.setValue(sPreset, sFilename);
+					pOptions->sPresetDir = QFileInfo(sFilename).absolutePath();
+				}
+			}
+		}	// Just leave it to simple parameter value list...
+		else settings.setValue(sPreset, m_pPlugin->valueList());
+		settings.endGroup();
+	}
 
+	refresh();
 	stabilize();
 }
 

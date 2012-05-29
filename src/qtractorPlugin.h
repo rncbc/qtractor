@@ -514,7 +514,7 @@ public:
 	qtractorPluginForm *form();
 
 	// Provisional preset accessors.
-	virtual QStringList presetList();
+	virtual QStringList presetList() const;
 
 	virtual bool loadPreset(const QString& /*sPreset*/)
 		{ return false; }
