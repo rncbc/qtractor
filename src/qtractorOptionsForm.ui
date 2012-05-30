@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2978,7 +2978,80 @@
             </property>
            </widget>
           </item>
-         </layout>
+		  <item row="4" column="0">
+		   <layout class="QHBoxLayout">
+			<item>
+			 <widget class="QLabel" name="Lv2PresetDirLabel">
+			  <property name="font">
+			   <font>
+				<weight>50</weight>
+				<bold>false</bold>
+			   </font>
+			  </property>
+			  <property name="text">
+			   <string>&amp;LV2 Presets directory:</string>
+			  </property>
+			  <property name="buddy">
+			   <cstring>Lv2PresetDirComboBox</cstring>
+			  </property>
+			 </widget>
+			</item>
+			<item>
+			 <widget class="QComboBox" name="Lv2PresetDirComboBox">
+			  <property name="minimumSize">
+			   <size>
+				<width>320</width>
+				<height>0</height>
+			   </size>
+			  </property>
+			  <property name="font">
+			   <font>
+				<weight>50</weight>
+				<bold>false</bold>
+			   </font>
+			  </property>
+			  <property name="toolTip">
+			   <string>LV2 Presets directory</string>
+			  </property>
+			  <property name="editable">
+			   <bool>true</bool>
+			  </property>
+			 </widget>
+			</item>
+			<item>
+			 <widget class="QToolButton" name="Lv2PresetDirToolButton">
+			  <property name="minimumSize">
+			   <size>
+				<width>22</width>
+				<height>22</height>
+			   </size>
+			  </property>
+			  <property name="maximumSize">
+			   <size>
+				<width>24</width>
+				<height>24</height>
+			   </size>
+			  </property>
+			  <property name="font">
+			   <font>
+				<weight>50</weight>
+				<bold>false</bold>
+			   </font>
+			  </property>
+			  <property name="toolTip">
+			   <string>Browse LV2 Presets directory</string>
+			  </property>
+			  <property name="text">
+			   <string>...</string>
+			  </property>
+			  <property name="icon">
+			   <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+			  </property>
+			 </widget>
+			</item>
+		   </layout>
+		  </item>
+		 </layout>
         </widget>
        </item>
        <item>
@@ -3203,6 +3276,8 @@
   <tabstop>PluginPathRemoveToolButton</tabstop>
   <tabstop>PluginPathUpToolButton</tabstop>
   <tabstop>PluginPathDownToolButton</tabstop>
+  <tabstop>Lv2PresetDirComboBox</tabstop>
+  <tabstop>Lv2PresetDirToolButton</tabstop>
   <tabstop>AudioOutputBusCheckBox</tabstop>
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>DummyVstScanCheckBox</tabstop>
