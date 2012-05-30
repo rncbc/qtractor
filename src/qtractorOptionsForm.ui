@@ -3000,7 +3000,7 @@
 			 <widget class="QComboBox" name="Lv2PresetDirComboBox">
 			  <property name="minimumSize">
 			   <size>
-				<width>320</width>
+				<width>360</width>
 				<height>0</height>
 			   </size>
 			  </property>
@@ -3011,7 +3011,7 @@
 			   </font>
 			  </property>
 			  <property name="toolTip">
-			   <string>LV2 Presets directory</string>
+			   <string>LV2 Presets directory (default: ~/.lv2)</string>
 			  </property>
 			  <property name="editable">
 			   <bool>true</bool>
