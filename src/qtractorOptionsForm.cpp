@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -153,6 +153,12 @@ qtractorOptionsForm::qtractorOptionsForm (
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Lv2));
+#endif
+
+#ifndef CONFIG_LV2_PRESETS
+	m_ui.Lv2PresetDirLabel->hide();
+	m_ui.Lv2PresetDirComboBox->hide();
+	m_ui.Lv2PresetDirToolButton->hide();
 #endif
 
 	// Initialize dirty control state.
@@ -360,6 +366,12 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.PluginPathDownToolButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownPluginPath()));
+	QObject::connect(m_ui.Lv2PresetDirComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.Lv2PresetDirToolButton,
+		SIGNAL(clicked()),
+		SLOT(chooseLv2PresetDir()));
 	QObject::connect(m_ui.AudioOutputBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -414,6 +426,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.SessionTemplatePathComboBox);
+	m_pOptions->loadComboBoxHistory(m_ui.Lv2PresetDirComboBox);
 
 	// Audio options.
 	int iIndex  = 0;
@@ -553,6 +566,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_vstPaths    = m_pOptions->vstPaths;
 	m_lv2Paths    = m_pOptions->lv2Paths;
 
+	m_ui.Lv2PresetDirComboBox->setEditText(m_pOptions->sLv2PresetDir);
+
 	// Plugin instruments options.
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
@@ -650,6 +665,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->dssiPaths            = m_dssiPaths;
 		m_pOptions->vstPaths             = m_vstPaths;
 		m_pOptions->lv2Paths             = m_lv2Paths;
+		m_pOptions->sLv2PresetDir        = m_ui.Lv2PresetDirComboBox->currentText();
 		// Plugin instruments options.
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
@@ -682,6 +698,7 @@ void qtractorOptionsForm::accept (void)
 	m_pOptions->saveComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.SessionTemplatePathComboBox);
+	m_pOptions->saveComboBoxHistory(m_ui.Lv2PresetDirComboBox);
 
 	// Save/commit to disk.
 	m_pOptions->saveOptions();
@@ -884,6 +901,7 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 	qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iPluginType));
+	bool bLv2Enabled = false;
 	switch (typeHint) {
 	case qtractorPluginType::Ladspa:
 		paths = m_ladspaPaths;
@@ -896,6 +914,7 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 		break;
 	case qtractorPluginType::Lv2:
 		paths = m_lv2Paths;
+		bLv2Enabled = true;
 		break;
 	default:
 		break;
@@ -905,6 +924,12 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 	QStringListIterator iter(paths);
 	while (iter.hasNext())
 		m_ui.PluginPathListWidget->addItem(iter.next());
+
+#ifdef CONFIG_LV2_PRESETS
+	m_ui.Lv2PresetDirLabel->setEnabled(bLv2Enabled);
+	m_ui.Lv2PresetDirComboBox->setEnabled(bLv2Enabled);
+	m_ui.Lv2PresetDirToolButton->setEnabled(bLv2Enabled);
+#endif
 
 	selectPluginPath();
 	stabilizeForm();
@@ -1156,6 +1181,43 @@ void qtractorOptionsForm::moveDownPluginPath (void)
 }
 
 
+// Browse for LV2 Presets directory.
+void qtractorOptionsForm::chooseLv2PresetDir (void)
+{
+	QString sLv2PresetDir = m_ui.Lv2PresetDirComboBox->currentText();
+	if (sLv2PresetDir.isEmpty())
+		sLv2PresetDir = QDir::homePath() + QDir::separator() + ".lv2";
+
+	const QString& sTitle = tr("LV2 Preset Directory") + " - " QTRACTOR_TITLE;
+#if 1 // QT_VERSION < 0x040400
+	// Ask for the directory...
+	sLv2PresetDir = QFileDialog::getExistingDirectory(this,
+		sTitle, sLv2PresetDir);
+#else
+	// Construct open-directory dialog...
+	QFileDialog fileDialog(this,
+		sTitle, sLv2PresetDir);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::DirectoryOnly);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sLv2PresetDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		sLv2PresetDir = fileDialog.selectedFiles().first();
+#endif
+
+	if (!sLv2PresetDir.isEmpty()) {
+		m_ui.Lv2PresetDirComboBox->setEditText(sLv2PresetDir);
+		m_ui.Lv2PresetDirComboBox->setFocus();
+	}
+
+	changed();
+}
+
+
 // The messages font selection dialog.
 void qtractorOptionsForm::chooseMessagesFont (void)
 {
@@ -1334,7 +1396,12 @@ void qtractorOptionsForm::stabilizeForm (void)
 		!sPluginPath.isEmpty() && QDir(sPluginPath).exists()
 		&& m_ui.PluginPathListWidget->findItems(
 			sPluginPath, Qt::MatchExactly).isEmpty());
-		
+
+	if (bValid) {
+		const QString& sLv2PresetDir = m_ui.Lv2PresetDirComboBox->currentText();
+		bValid = !sLv2PresetDir.isEmpty() && QDir(sLv2PresetDir).exists();
+	}
+
 	m_ui.AudioOutputAutoConnectCheckBox->setEnabled(
 		m_ui.AudioOutputBusCheckBox->isChecked());
 

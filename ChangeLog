@@ -5,8 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
-- LV2 Presets support now entering effective operational status.
-  (EXPERIMENTAL)
+- LV2 Presets support now entering effective operational status;
+  a new local option has been added (cf. View/Options.../Plugins
+  /Paths/LV2 Presets directory; default: ~/.lv2). (EXPERIMENTAL)
 
 - Dropped XInitThreads() head call as it was never useful but on
   those early days of JUSE VST plugins.

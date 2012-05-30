@@ -102,9 +102,11 @@
 #endif
 
 #ifdef CONFIG_LV2_PRESETS
-// LV" Presets: standard directory access.
+// LV2 Presets: standard directory access.
 #include "qtractorOptions.h"
+// For local file vs. URI manipulations.
 #include <QDir>
+#include <QUrl>
 #endif
 
 #include <math.h>
@@ -2456,6 +2458,11 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 		sDir.toUtf8().constData(), sFile.toUtf8().constData());
 
 	lilv_state_free(state);
+
+	if (ret == 0) {
+		m_lv2_presets.insert(sPreset,
+			QUrl::fromLocalFile(sDir + sep + sFile).toString());
+	}
 
 	return (ret == 0);
 }
