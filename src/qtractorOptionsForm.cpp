@@ -1188,7 +1188,7 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 	if (sLv2PresetDir.isEmpty())
 		sLv2PresetDir = QDir::homePath() + QDir::separator() + ".lv2";
 
-	const QString& sTitle = tr("LV2 Preset Directory") + " - " QTRACTOR_TITLE;
+	const QString& sTitle = tr("LV2 Presets Directory") + " - " QTRACTOR_TITLE;
 #if 1 // QT_VERSION < 0x040400
 	// Ask for the directory...
 	sLv2PresetDir = QFileDialog::getExistingDirectory(this,
@@ -1399,7 +1399,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 
 	if (bValid) {
 		const QString& sLv2PresetDir = m_ui.Lv2PresetDirComboBox->currentText();
-		bValid = !sLv2PresetDir.isEmpty() && QDir(sLv2PresetDir).exists();
+		bValid = sLv2PresetDir.isEmpty() || QDir(sLv2PresetDir).exists();
 	}
 
 	m_ui.AudioOutputAutoConnectCheckBox->setEnabled(
