@@ -5,6 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI Clip editor (aka. piano-roll) and MIDI Tools fix: avoid
+  note-on events of zero velocity, which conventionally equates
+  to a dangling note-off event and dropped into oblivion sooner
+  or later. Also there's no more need for Shift/Ctrl keyboard
+  modifier to change in one single step all the MIDI events that
+  are currently selected (consistent with drag-move).
+
 - LV2 Presets support now entering effective operational status;
   a new local option has been added (cf. View/Options.../Plugins
   /Paths/LV2 Presets directory; default: ~/.lv2). (EXPERIMENTAL)
