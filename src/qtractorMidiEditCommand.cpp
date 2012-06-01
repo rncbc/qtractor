@@ -79,6 +79,9 @@ void qtractorMidiEditCommand::resizeEventTime ( qtractorMidiEvent *pEvent,
 void qtractorMidiEditCommand::resizeEventValue ( qtractorMidiEvent *pEvent,
 	int iValue )
 {
+	if (pEvent->type() == qtractorMidiEvent::NOTEON && iValue < 1)
+		iValue = 1;	// Avoid zero velocity (aka. NOTEOFF)
+
 	m_items.append(new Item(ResizeEventValue, pEvent, 0, 0, 0, iValue));
 }
 

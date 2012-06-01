@@ -2380,9 +2380,11 @@ void qtractorMidiEditor::dragMoveUpdate (
 		if ((pos - m_posDrag).manhattanLength()
 			< QApplication::startDragDistance())
 			break;
+	#if 0
 		// Take care of selection modifier...
 		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
 			flags |= SelectClear;
+	#endif
 		// Are we about to move something around?
 		if (m_pEventDrag) {
 			if (m_resizeMode == ResizeNone) {
