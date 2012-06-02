@@ -44,7 +44,18 @@
 // LV2 Event/MIDI support.
 #include "lv2_event.h"
 #include "lv2_event_helpers.h"
-#define  QTRACTOR_LV2_MIDI_EVENT_ID 1
+#ifndef QTRACTOR_LV2_MIDI_EVENT_ID
+#define QTRACTOR_LV2_MIDI_EVENT_ID 1
+#endif
+#endif
+
+#ifdef CONFIG_LV2_ATOM
+// LV2 Atom/MIDI support.
+#include "lv2_atom.h"
+#include "lv2_atom_helpers.h"
+#ifndef QTRACTOR_LV2_MIDI_EVENT_ID
+#define QTRACTOR_LV2_MIDI_EVENT_ID 1
+#endif
 #endif
 
 #if defined(CONFIG_LV2_GTK_UI) || defined(CONFIG_LV2_QT4_UI) || defined(CONFIG_LV2_EXTERNAL_UI)
@@ -135,6 +146,15 @@ public:
 	// Plugin type listing (static).
 	static bool getTypes(qtractorPluginPath& path);
 
+#ifdef CONFIG_LV2_EVENT
+	unsigned short midiEventIns()  const { return m_iMidiEventIns;  }
+	unsigned short midiEventOuts() const { return m_iMidiEventOuts; }
+#endif
+#ifdef CONFIG_LV2_ATOM
+	unsigned short midiAtomIns()   const { return m_iMidiAtomIns;   }
+	unsigned short midiAtomOuts()  const { return m_iMidiAtomOuts;  }
+#endif
+
 protected:
 
 	// LV2 plgin URI.
@@ -142,6 +162,15 @@ protected:
 
 	// LV2 descriptor itself.
 	SLV2Plugin m_slv2_plugin;
+
+#ifdef CONFIG_LV2_EVENT
+	unsigned short m_iMidiEventIns;
+	unsigned short m_iMidiEventOuts;
+#endif
+#ifdef CONFIG_LV2_ATOM
+	unsigned short m_iMidiAtomIns;
+	unsigned short m_iMidiAtomOuts;
+#endif
 };
 
 
@@ -293,9 +322,15 @@ protected:
 	unsigned long *m_piAudioOuts;
 
 #ifdef CONFIG_LV2_EVENT
-	// List of MIDI port indexes.
-	unsigned long *m_piMidiIns;
-	unsigned long *m_piMidiOuts;
+	// List of LV2 Event/MIDI port indexes.
+	unsigned long *m_piMidiEventIns;
+	unsigned long *m_piMidiEventOuts;
+#endif
+
+#ifdef CONFIG_LV2_ATOM
+	// List of LV2 Atom/MIDI port indexes.
+	unsigned long *m_piMidiAtomIns;
+	unsigned long *m_piMidiAtomOuts;
 #endif
 
 	// Local copy of features array.
