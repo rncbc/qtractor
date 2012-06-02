@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.4.32, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.4.33, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -121,9 +121,14 @@ AC_ARG_ENABLE(lv2,
   [ac_lv2="yes"])
 
 AC_ARG_ENABLE(lv2-event,
-  AC_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in event/MIDI support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in MIDI/Event support (default=yes)]),
   [ac_lv2_event="$enableval"],
   [ac_lv2_event="yes"])
+
+AC_ARG_ENABLE(lv2-atom,
+  AC_HELP_STRING([--enable-lv2-atom], [enable LV2 plug-in MIDI/Atom support (default=no)]),
+  [ac_lv2_atom="$enableval"],
+  [ac_lv2_atom="no"])
 
 AC_ARG_ENABLE(lv2-gtk-ui,
   AC_HELP_STRING([--enable-lv2-gtk-ui], [enable LV2 plug-in GTK UI support (default=yes)]),
@@ -638,7 +643,8 @@ if test "x$ac_slv2" = "xyes"; then
       ac_slv2="no"
       ac_lv2="no"
       ac_lv2_event="no"
-      ac_lv2_gtk_ui="no"
+	  ac_lv2_atom="no"
+	  ac_lv2_gtk_ui="no"
       ac_lv2_qt4_ui="no"
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
@@ -675,6 +681,7 @@ fi
 if test "x$ac_slv2" = "xno" -a "x$ac_lilv" = "xno"; then
    ac_lv2="no"
    ac_lv2_event="no"
+   ac_lv2_atom="no"
    ac_lv2_gtk_ui="no"
    ac_lv2_qt4_ui="no"
    ac_lv2_external_ui="no"
@@ -929,7 +936,8 @@ if test "x$ac_lv2" = "xyes"; then
       AC_MSG_WARN([*** LV2 header files not found.])
       AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
       ac_lv2_event="no"
-      ac_lv2_gtk_ui="no"
+	  ac_lv2_atom="no"
+	  ac_lv2_gtk_ui="no"
       ac_lv2_qt4_ui="no"
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
@@ -943,9 +951,18 @@ if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h,
       [ac_lv2_event="yes"], [ac_lv2_event="no"])
    if test "x$ac_lv2_event" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 Event/MIDI extension is available.])
+	  AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 Event/MIDI support is available.])
    else
-      AC_MSG_WARN([*** LV2 Event extension will be disabled.])
+	  AC_MSG_WARN([*** LV2 Event/MIDI support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_atom" = "xyes"; then
+   AC_CHECK_HEADERS(lv2_atom.h lv2_atom_helpers.h,
+	  [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
+   if test "x$ac_lv2_atom" = "xyes"; then
+	  AC_DEFINE(CONFIG_LV2_ATOM, 1, [Define if LV2 Atom/MIDI aupport is available.])
+   else
+	  AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
    fi
 fi
 if test "x$ac_lv2_qt4_ui" = "xyes"; then
@@ -1104,7 +1121,8 @@ echo "  LV2 Plug-in UI instantiation (libsuil) . . . . . .: $ac_suil"
 echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
-echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 Plug-in MIDI/Atom support (FUBAR)  . . . . . .: $ac_lv2_atom"
 echo "  LV2 Plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 Plug-in State Files support (FUBAR)  . . . . .: $ac_lv2_state_files"
 echo "  LV2 Plug-in Programs support (EXPERIMENTAL)  . . .: $ac_lv2_programs"

@@ -32,7 +32,7 @@
 #endif
 #endif
 
-#ifdef CONFIG_LV2_EVENT
+#if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 #include "qtractorLv2Plugin.h"
 #ifndef CONFIG_MIDI_PARSER
 #define CONFIG_MIDI_PARSER 1
@@ -262,11 +262,21 @@ public:
 #ifdef CONFIG_LV2_EVENT
 	// LV2 event buffer accessors...
 	LV2_Event_Buffer *lv2_events_in() const
-		{ return m_ppLv2Buffers[m_iEventBuffer & 1]; }
+		{ return m_ppLv2EventBuffers[m_iEventBuffer & 1]; }
 	LV2_Event_Buffer *lv2_events_out() const
-		{ return m_ppLv2Buffers[(m_iEventBuffer + 1) & 1]; }
+		{ return m_ppLv2EventBuffers[(m_iEventBuffer + 1) & 1]; }
 	// Swap LV2 event buffers...
 	void lv2_events_swap();
+#endif
+
+#ifdef CONFIG_LV2_ATOM
+	// LV2 atom buffer accessors...
+	LV2_Atom_Buffer *lv2_atoms_in() const
+		{ return m_ppLv2AtomBuffers[m_iEventBuffer & 1]; }
+	LV2_Atom_Buffer *lv2_atoms_out() const
+		{ return m_ppLv2AtomBuffers[(m_iEventBuffer + 1) & 1]; }
+	// Swap LV2 atom buffers...
+	void lv2_atoms_swap();
 #endif
 
 	// Audio output bus mode accessors.
@@ -352,7 +362,10 @@ private:
 #endif
 
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer   *m_ppLv2Buffers[2];
+	LV2_Event_Buffer   *m_ppLv2EventBuffers[2];
+#endif
+#ifdef CONFIG_LV2_ATOM
+	LV2_Atom_Buffer    *m_ppLv2AtomBuffers[2];
 #endif
 
 	bool                m_bAudioOutputBus;

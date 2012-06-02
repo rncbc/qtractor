@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Atom/MIDI buffering support is entering the scene (FUBAR).
+
 - MIDI Clip editor (aka. piano-roll) and MIDI Tools fix: avoid
   note-on events of zero velocity, which conventionally equates
   to a dangling note-off event and dropped into oblivion sooner
