@@ -48,7 +48,6 @@ typedef
 struct _LV2_Atom_Buffer
 {
 	uint32_t capacity;
-	uint32_t chunk_type;
 	uint32_t sequence_type;
 	LV2_Atom_Sequence atoms;
 
@@ -67,15 +66,10 @@ uint32_t lv2_atom_buffer_pad_size ( uint32_t size )
 // Clear and initialize an existing LV2 atom:Sequenece buffer.
 //
 static inline
-void lv2_atom_buffer_reset ( LV2_Atom_Buffer *buf, bool input )
+void lv2_atom_buffer_reset ( LV2_Atom_Buffer *buf )
 {
-	if (input) {
-		buf->atoms.atom.size = sizeof(LV2_Atom_Sequence_Body);
-		buf->atoms.atom.type = buf->sequence_type;
-	} else {
-		buf->atoms.atom.size = buf->capacity;
-		buf->atoms.atom.type = buf->chunk_type;
-	}
+	buf->atoms.atom.size = sizeof(LV2_Atom_Sequence_Body);
+	buf->atoms.atom.type = buf->sequence_type;
 }
 
 
@@ -83,18 +77,15 @@ void lv2_atom_buffer_reset ( LV2_Atom_Buffer *buf, bool input )
 //
 static inline
 LV2_Atom_Buffer *lv2_atom_buffer_new (
-	uint32_t capacity,
-	uint32_t chunk_type,
-	uint32_t sequence_type )
+	uint32_t capacity, uint32_t sequence_type )
 {
 	LV2_Atom_Buffer *buf = (LV2_Atom_Buffer *)
 		malloc(sizeof(LV2_Atom_Buffer) + sizeof(LV2_Atom_Sequence) + capacity);
 
 	buf->capacity = capacity;
-	buf->chunk_type = chunk_type;
 	buf->sequence_type = sequence_type;
 
-	lv2_atom_buffer_reset(buf, true);
+	lv2_atom_buffer_reset(buf);
 
 	return buf;
 }

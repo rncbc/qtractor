@@ -266,7 +266,6 @@ qtractorMidiManager::qtractorMidiManager (
 	#endif
 	#ifdef CONFIG_LV2_ATOM
 		m_ppLv2AtomBuffers[i] = lv2_atom_buffer_new(Lv2AtomBufferSize,
-			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk),
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence));
 	#endif
 	}
@@ -398,7 +397,7 @@ void qtractorMidiManager::clear (void)
 	#endif
 	#ifdef CONFIG_LV2_ATOM
 		LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[i];
-		lv2_atom_buffer_reset(pLv2AtomBuffer, true);
+		lv2_atom_buffer_reset(pLv2AtomBuffer);
 	#endif
 	}
 
@@ -703,7 +702,7 @@ void qtractorMidiManager::swapEventBuffers (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[m_iEventBuffer & 1];
-	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
+	lv2_atom_buffer_reset(pLv2AtomBuffer);
 #endif
 
 	++m_iEventBuffer;
@@ -748,7 +747,7 @@ void qtractorMidiManager::vst_events_swap (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
-	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
+	lv2_atom_buffer_reset(pLv2AtomBuffer);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
 #endif
@@ -801,7 +800,7 @@ void qtractorMidiManager::lv2_events_swap (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
-	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
+	lv2_atom_buffer_reset(pLv2AtomBuffer);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
 #endif
