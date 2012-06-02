@@ -50,7 +50,7 @@ struct _LV2_Atom_Buffer
 	uint32_t capacity;
 	uint32_t chunk_type;
 	uint32_t sequence_type;
-	LV2_Atom_Sequence aseq;
+	LV2_Atom_Sequence atoms;
 
 } LV2_Atom_Buffer;
 
@@ -70,11 +70,11 @@ static inline
 void lv2_atom_buffer_reset ( LV2_Atom_Buffer *buf, bool input )
 {
 	if (input) {
-		buf->aseq.atom.size = sizeof(LV2_Atom_Sequence_Body);
-		buf->aseq.atom.type = buf->sequence_type;
+		buf->atoms.atom.size = sizeof(LV2_Atom_Sequence_Body);
+		buf->atoms.atom.type = buf->sequence_type;
 	} else {
-		buf->aseq.atom.size = buf->capacity;
-		buf->aseq.atom.type = buf->chunk_type;
+		buf->atoms.atom.size = buf->capacity;
+		buf->atoms.atom.type = buf->chunk_type;
 	}
 }
 
@@ -114,8 +114,8 @@ void lv2_atom_buffer_free ( LV2_Atom_Buffer *buf )
 static inline
 uint32_t lv2_atom_buffer_get_size ( LV2_Atom_Buffer *buf )
 {
-	return buf->aseq.atom.type == buf->sequence_type
-		? buf->aseq.atom.size - sizeof(LV2_Atom_Sequence_Body) : 0;
+	return buf->atoms.atom.type == buf->sequence_type
+		? buf->atoms.atom.size - sizeof(LV2_Atom_Sequence_Body) : 0;
 }
 
 
@@ -124,7 +124,7 @@ uint32_t lv2_atom_buffer_get_size ( LV2_Atom_Buffer *buf )
 static inline
 LV2_Atom_Sequence *lv2_atom_buffer_get_sequence ( LV2_Atom_Buffer *buf )
 {
-	return &buf->aseq;
+	return &buf->atoms;
 }
 
 
@@ -148,7 +148,7 @@ bool lv2_atom_buffer_begin (
 	iter->buf = buf;
 	iter->offset = 0;
 
-	return (buf->aseq.atom.size > 0);
+	return (buf->atoms.atom.size > 0);
 }
 
 
@@ -170,9 +170,9 @@ bool lv2_atom_buffer_increment ( LV2_Atom_Buffer_Iterator *iter )
 		return false;
 
 	LV2_Atom_Buffer *buf = iter->buf;
-	LV2_Atom_Sequence *aseq = &buf->aseq;
+	LV2_Atom_Sequence *atoms = &buf->atoms;
 	uint32_t size = ((LV2_Atom_Event *) ((char *)
-		LV2_ATOM_CONTENTS(LV2_Atom_Sequence, aseq) + iter->offset))->body.size;
+		LV2_ATOM_CONTENTS(LV2_Atom_Sequence, atoms) + iter->offset))->body.size;
 	iter->offset += lv2_atom_buffer_pad_size(sizeof(LV2_Atom_Event) + size);
 
 	return true;
@@ -189,9 +189,9 @@ LV2_Atom_Event *lv2_atom_buffer_get (
 		return NULL;
 
 	LV2_Atom_Buffer *buf = iter->buf;
-	LV2_Atom_Sequence *aseq = &buf->aseq;
+	LV2_Atom_Sequence *atoms = &buf->atoms;
 	LV2_Atom_Event *ev = (LV2_Atom_Event *) ((char *)
-		LV2_ATOM_CONTENTS(LV2_Atom_Sequence, aseq) + iter->offset);
+		LV2_ATOM_CONTENTS(LV2_Atom_Sequence, atoms) + iter->offset);
 
 	*data = (uint8_t *) LV2_ATOM_BODY(&ev->body);
 
@@ -211,13 +211,13 @@ bool lv2_atom_buffer_write (
 	const uint8_t *data )
 {
 	LV2_Atom_Buffer *buf = iter->buf;
-	LV2_Atom_Sequence *aseq = &buf->aseq;
-	if  (buf->capacity - sizeof(LV2_Atom) - aseq->atom.size
+	LV2_Atom_Sequence *atoms = &buf->atoms;
+	if  (buf->capacity - sizeof(LV2_Atom) - atoms->atom.size
 		< sizeof(LV2_Atom_Event) + size)
 		return false;
 
 	LV2_Atom_Event *ev = (LV2_Atom_Event*) ((char *)
-		LV2_ATOM_CONTENTS(LV2_Atom_Sequence, aseq) + iter->offset);
+		LV2_ATOM_CONTENTS(LV2_Atom_Sequence, atoms) + iter->offset);
 
 	ev->time.frames = frames;
 	ev->body.type = type;
@@ -226,7 +226,7 @@ bool lv2_atom_buffer_write (
 	memcpy(LV2_ATOM_BODY(&ev->body), data, size);
 
 	size = lv2_atom_buffer_pad_size(sizeof(LV2_Atom_Event) + size);
-	aseq->atom.size += size;
+	atoms->atom.size += size;
 	iter->offset += size;
 
 	return true;

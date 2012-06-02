@@ -126,9 +126,9 @@ AC_ARG_ENABLE(lv2-event,
   [ac_lv2_event="yes"])
 
 AC_ARG_ENABLE(lv2-atom,
-  AC_HELP_STRING([--enable-lv2-atom], [enable LV2 plug-in MIDI/Atom support (default=no)]),
+  AC_HELP_STRING([--enable-lv2-atom], [enable LV2 plug-in MIDI/Atom support (default=yes)]),
   [ac_lv2_atom="$enableval"],
-  [ac_lv2_atom="no"])
+  [ac_lv2_atom="yes"])
 
 AC_ARG_ENABLE(lv2-gtk-ui,
   AC_HELP_STRING([--enable-lv2-gtk-ui], [enable LV2 plug-in GTK UI support (default=yes)]),
@@ -1122,7 +1122,7 @@ echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
 echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
-echo "  LV2 Plug-in MIDI/Atom support (FUBAR)  . . . . . .: $ac_lv2_atom"
+echo "  LV2 Plug-in MIDI/Atom support (EXPERIMENTAL) . . .: $ac_lv2_atom"
 echo "  LV2 Plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 Plug-in State Files support (FUBAR)  . . . . .: $ac_lv2_state_files"
 echo "  LV2 Plug-in Programs support (EXPERIMENTAL)  . . .: $ac_lv2_programs"
