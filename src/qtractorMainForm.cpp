@@ -4836,8 +4836,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_EVENT
 	list << tr("LV2 Plug-in MIDI/Event support disabled.");
 #endif
-#ifdef CONFIG_LV2_ATOM
-	list << tr("LV2 Plug-in MIDI/Atom support enabled. (FUBAR)");
+#ifndef CONFIG_LV2_ATOM
+	list << tr("LV2 Plug-in MIDI/Atom support disabled.");
 #endif
 #ifdef CONFIG_LIBSLV2
 	list << tr("LV2 Plug-in support (libslv2) enabled. (DEPRECATED)");

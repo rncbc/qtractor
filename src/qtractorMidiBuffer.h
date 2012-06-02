@@ -271,10 +271,10 @@ public:
 
 #ifdef CONFIG_LV2_ATOM
 	// LV2 atom buffer accessors...
-	LV2_Atom_Buffer *lv2_atoms_in() const
-		{ return m_ppLv2AtomBuffers[m_iEventBuffer & 1]; }
-	LV2_Atom_Buffer *lv2_atoms_out() const
-		{ return m_ppLv2AtomBuffers[(m_iEventBuffer + 1) & 1]; }
+	LV2_Atom_Sequence *lv2_atoms_in() const
+		{ return &m_ppLv2AtomBuffers[m_iEventBuffer & 1]->atoms; }
+	LV2_Atom_Sequence *lv2_atoms_out() const
+		{ return &m_ppLv2AtomBuffers[(m_iEventBuffer + 1) & 1]->atoms; }
 	// Swap LV2 atom buffers...
 	void lv2_atoms_swap();
 #endif
