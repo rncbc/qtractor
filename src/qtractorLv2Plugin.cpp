@@ -1444,17 +1444,21 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 				slv2_instance_connect_port(instance,
 					m_piControlOuts[j], &m_pfControlOuts[j]);
 			}
+		#ifdef CONFIG_LIBLILV
+		#ifdef CONFIG_LV2_TIME
+			// Connect time-pos designated ports, if any...
+			QHash<int, unsigned long>::ConstIterator iter
+				= m_lv2_time_ports.constBegin();
+			for ( ; iter != m_lv2_time_ports.constEnd(); ++iter) {
+				lilv_instance_connect_port(instance,
+					iter.value(), &(g_lv2_time[iter.key()].data));
+			}
+		#endif
+		#endif
 		}
-	#ifdef CONFIG_LIBLILV
-	#ifdef CONFIG_LV2_TIME
-		// Connect time-pos designated ports, if any...
-		QHash<int, unsigned long>::ConstIterator iter
-			= m_lv2_time_ports.constBegin();
-		for ( ; iter != m_lv2_time_ports.constEnd(); ++iter) {
-			lilv_instance_connect_port(instance,
-				iter.value(), &(g_lv2_time[iter.key()].data));
-		}
-	#endif
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorLv2Plugin[%p]::setChannels(%u) instance[%u]=%p",
+			this, iChannels, i, instance);
 	#endif
 		// This is it...
 		m_pInstances[i] = instance;
