@@ -1172,6 +1172,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_piMidiAtomOuts(NULL)
 	#endif
 		, m_lv2_features(NULL)
+	#ifdef CONFIG_LV2_WORKER
+		, m_lv2_worker_interfaces(NULL)
+	#endif
 	#ifdef CONFIG_LV2_UI
 		, m_lv2_ui_type(LV2_UI_TYPE_NONE)
 		, m_bEditorVisible(false)
@@ -1431,6 +1434,12 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	setInstances(iInstances);
 
 	// Close old instances, all the way...
+#ifdef CONFIG_LV2_WORKER
+	if (m_lv2_worker_interfaces) {
+		delete [] m_lv2_worker_interfaces;
+		m_lv2_worker_interfaces = NULL;
+	}
+#endif
 	if (m_pInstances) {
 		for (unsigned short i = 0; i < iOldInstances; ++i) {
 			SLV2Instance instance = m_pInstances[i];
@@ -1497,6 +1506,16 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		// This is it...
 		m_pInstances[i] = instance;
 	}
+
+#ifdef CONFIG_LV2_WORKER
+	const LV2_Worker_Interface *worker = lv2_worker_interface(0);
+	if (worker) {
+		m_lv2_worker_interfaces = new const LV2_Worker_Interface * [iInstances];
+		m_lv2_worker_interfaces[0] = worker;
+		for (unsigned short i = 1; i < iInstances; ++i)
+			m_lv2_worker_interfaces[i] = lv2_worker_interface(i);
+	}
+#endif
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
@@ -1641,6 +1660,18 @@ void qtractorLv2Plugin::process (
 		#endif
 			// Make it run...
 			slv2_instance_run(instance, nframes);
+			// Done.
+		#ifdef CONFIG_LV2_WORKER
+			if (m_lv2_worker_interfaces) {
+				const LV2_Worker_Interface *worker
+					= m_lv2_worker_interfaces[i];
+				if (worker && worker->end_run) {
+					LV2_Handle handle = lv2_handle(i);
+					if (handle)
+						(*worker->end_run)(handle);
+				}
+			}
+		#endif
 		#ifdef CONFIG_LV2_EVENT
 			if (pMidiManager && iMidiEventOuts > 0)
 				pMidiManager->lv2_events_swap();
@@ -2220,7 +2251,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 #ifdef CONFIG_LV2_STATE
 
 	for (unsigned short i = 0; i < instances(); ++i) {
-		const LV2_State_Interface *state = lv2_state_descriptor(i);
+		const LV2_State_Interface *state = lv2_state_interface(i);
 		if (state) {
 			LV2_Handle handle = lv2_handle(i);
 			if (handle)
@@ -2262,7 +2293,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 	}
 
 	for (unsigned short i = 0; i < instances(); ++i) {
-		const LV2_State_Interface *state = lv2_state_descriptor(i);
+		const LV2_State_Interface *state = lv2_state_interface(i);
 		if (state) {
 			LV2_Handle handle = lv2_handle(i);
 			if (handle)
@@ -2292,10 +2323,33 @@ void qtractorLv2Plugin::releaseConfigs (void)
 }
 
 
+#ifdef CONFIG_LV2_WORKER
+
+// LV2 Worker/Schedule extension data interface accessor.
+const LV2_Worker_Interface *qtractorLv2Plugin::lv2_worker_interface (
+	unsigned short iInstance ) const
+{
+	const SLV2Instance instance = slv2_instance(iInstance);
+	if (instance == NULL)
+		return NULL;
+
+	const LV2_Descriptor *descriptor = slv2_instance_get_descriptor(instance);
+	if (descriptor == NULL)
+		return NULL;
+	if (descriptor->extension_data == NULL)
+		return NULL;
+
+	return (const LV2_Worker_Interface *)
+		(*descriptor->extension_data)(LV2_WORKER__interface);
+}
+
+#endif	// CONFIG_LV2_WORKER
+
+
 #ifdef CONFIG_LV2_STATE
 
 // LV2 State extension data descriptor accessor.
-const LV2_State_Interface *qtractorLv2Plugin::lv2_state_descriptor (
+const LV2_State_Interface *qtractorLv2Plugin::lv2_state_interface (
 	unsigned short iInstance ) const
 {
 	const SLV2Instance instance = slv2_instance(iInstance);
