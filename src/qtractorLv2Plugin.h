@@ -58,6 +58,11 @@
 #endif
 #endif
 
+#ifdef CONFIG_LV2_WORKER
+// LV2 Worker/Schedule support.
+#include "lv2_worker.h"
+#endif
+
 #if defined(CONFIG_LV2_GTK_UI) || defined(CONFIG_LV2_QT4_UI) || defined(CONFIG_LV2_EXTERNAL_UI)
 #define CONFIG_LV2_UI 1
 #endif
@@ -335,6 +340,11 @@ protected:
 
 	// Local copy of features array.
 	LV2_Feature  **m_lv2_features;
+
+#ifdef CONFIG_LV2_WORKER
+	LV2_Feature         m_lv2_worker_schedule_feature;
+	LV2_Worker_Schedule m_lv2_worker_schedule;
+#endif
 
 #ifdef CONFIG_LV2_UI
 
