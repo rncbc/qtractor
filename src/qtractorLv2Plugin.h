@@ -263,10 +263,17 @@ public:
 	// Plugin configuration/state release.
 	void releaseConfigs();
 
+#ifdef CONFIG_LV2_WORKER
+
+	// LV2 Worker/Schedule extension data interface accessor.
+	const LV2_Worker_Interface *lv2_worker_interface(unsigned short iInstance) const;
+
+#endif
+
 #ifdef CONFIG_LV2_STATE
 
-	// LV2 State extension data descriptor accessor.
-	const LV2_State_Interface *lv2_state_descriptor(unsigned short iInstance) const;
+	// LV2 State extension data interface accessor.
+	const LV2_State_Interface *lv2_state_interface(unsigned short iInstance) const;
 
 	LV2_State_Status lv2_state_store(
 		uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags);
@@ -312,7 +319,7 @@ public:
 #endif
 #endif	// CONFIG_LIBLILV
 
-protected:
+private:
 
 	// Instance variables.
 	SLV2Instance  *m_pInstances;
@@ -342,8 +349,10 @@ protected:
 	LV2_Feature  **m_lv2_features;
 
 #ifdef CONFIG_LV2_WORKER
-	LV2_Feature         m_lv2_worker_schedule_feature;
-	LV2_Worker_Schedule m_lv2_worker_schedule;
+	// LV2 Worker/Schedule feature and interface.
+	LV2_Feature                  m_lv2_worker_schedule_feature;
+	LV2_Worker_Schedule          m_lv2_worker_schedule;
+	const LV2_Worker_Interface **m_lv2_worker_interfaces;
 #endif
 
 #ifdef CONFIG_LV2_UI
