@@ -814,39 +814,41 @@ void qtractorMidiManager::lv2_events_swap (void)
 		LV2_Event *pLv2Event = lv2_event_get(&eiter, &pMidiData);
 		if (pLv2Event == NULL)
 			break;
-		long iMidiData = pLv2Event->size;
-		if (iMidiData < 1)
-			break;
-	#ifdef CONFIG_VST
-		VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iMidiEvents];
-		if (iMidiData >= long(sizeof(pVstMidiEvent->midiData)))
-			break;
-	#endif
-	#ifdef CONFIG_MIDI_PARSER
-		if (m_pMidiParser) {
-			snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
-		//	snd_seq_ev_clear(pEv);
-			iMidiData = snd_midi_event_encode(m_pMidiParser,
-				pMidiData, iMidiData, pEv);
-			if (iMidiData < 1 || pEv->type == SND_SEQ_EVENT_NONE)
+		if (pLv2Event->type == QTRACTOR_LV2_MIDI_EVENT_ID) {
+			long iMidiData = pLv2Event->size;
+			if (iMidiData < 1)
 				break;
-			pEv->time.tick = pLv2Event->frames;
+		#ifdef CONFIG_VST
+			VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iMidiEvents];
+			if (iMidiData >= long(sizeof(pVstMidiEvent->midiData)))
+				break;
+		#endif
+		#ifdef CONFIG_MIDI_PARSER
+			if (m_pMidiParser) {
+				snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
+			//	snd_seq_ev_clear(pEv);
+				iMidiData = snd_midi_event_encode(m_pMidiParser,
+					pMidiData, iMidiData, pEv);
+				if (iMidiData < 1 || pEv->type == SND_SEQ_EVENT_NONE)
+					break;
+				pEv->time.tick = pLv2Event->frames;
+			}
+		#endif
+		#ifdef CONFIG_VST
+			::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
+			pVstMidiEvent->type = kVstMidiType;
+			pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
+			pVstMidiEvent->deltaFrames = pLv2Event->frames;
+			::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
+			pVstEvents->events[iMidiEvents] = (VstEvent *) pVstMidiEvent;
+		#endif
+		#ifdef CONFIG_LV2_ATOM
+			lv2_atom_buffer_write(&aiter, pLv2Event->frames, 0,
+				QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+		#endif
+			++iMidiEvents;
 		}
-	#endif
-	#ifdef CONFIG_VST
-		::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
-		pVstMidiEvent->type = kVstMidiType;
-		pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
-		pVstMidiEvent->deltaFrames = pLv2Event->frames;
-		::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
-		pVstEvents->events[iMidiEvents] = (VstEvent *) pVstMidiEvent;
-	#endif
-	#ifdef CONFIG_LV2_ATOM
-		lv2_atom_buffer_write(&aiter, pLv2Event->frames, 0,
-			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
-	#endif
 		lv2_event_increment(&eiter);
-		++iMidiEvents;
 	}
 #ifdef CONFIG_VST
 	pVstEvents->numEvents = iMidiEvents;
@@ -887,39 +889,41 @@ void qtractorMidiManager::lv2_atoms_swap (void)
 		LV2_Atom_Event *pLv2AtomEvent = lv2_atom_buffer_get(&aiter, &pMidiData);
 		if (pLv2AtomEvent == NULL)
 			break;
-		long iMidiData = pLv2AtomEvent->body.size;
-		if (iMidiData < 1)
-			break;
-	#ifdef CONFIG_VST
-		VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iMidiEvents];
-		if (iMidiData >= long(sizeof(pVstMidiEvent->midiData)))
-			break;
-	#endif
-	#ifdef CONFIG_MIDI_PARSER
-		if (m_pMidiParser) {
-			snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
-		//	snd_seq_ev_clear(pEv);
-			iMidiData = snd_midi_event_encode(m_pMidiParser,
-				pMidiData, iMidiData, pEv);
-			if (iMidiData < 1 || pEv->type == SND_SEQ_EVENT_NONE)
+		if (pLv2AtomEvent->body.type == QTRACTOR_LV2_MIDI_EVENT_ID) {
+			long iMidiData = pLv2AtomEvent->body.size;
+			if (iMidiData < 1)
 				break;
-			pEv->time.tick = pLv2AtomEvent->time.frames;
+		#ifdef CONFIG_VST
+			VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iMidiEvents];
+			if (iMidiData >= long(sizeof(pVstMidiEvent->midiData)))
+				break;
+		#endif
+		#ifdef CONFIG_MIDI_PARSER
+			if (m_pMidiParser) {
+				snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
+			//	snd_seq_ev_clear(pEv);
+				iMidiData = snd_midi_event_encode(m_pMidiParser,
+					pMidiData, iMidiData, pEv);
+				if (iMidiData < 1 || pEv->type == SND_SEQ_EVENT_NONE)
+					break;
+				pEv->time.tick = pLv2AtomEvent->time.frames;
+			}
+		#endif
+		#ifdef CONFIG_VST
+			::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
+			pVstMidiEvent->type = kVstMidiType;
+			pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
+			pVstMidiEvent->deltaFrames = pLv2AtomEvent->time.frames;
+			::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
+			pVstEvents->events[iMidiEvents] = (VstEvent *) pVstMidiEvent;
+		#endif
+		#ifdef CONFIG_LV2_EVENT
+			lv2_event_write(&eiter, pLv2AtomEvent->time.frames, 0,
+				QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+		#endif
+			++iMidiEvents;
 		}
-	#endif
-	#ifdef CONFIG_VST
-		::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
-		pVstMidiEvent->type = kVstMidiType;
-		pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
-		pVstMidiEvent->deltaFrames = pLv2AtomEvent->time.frames;
-		::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
-		pVstEvents->events[iMidiEvents] = (VstEvent *) pVstMidiEvent;
-	#endif
-	#ifdef CONFIG_LV2_EVENT
-		lv2_event_write(&eiter, pLv2AtomEvent->time.frames, 0,
-			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
-	#endif
 		lv2_atom_buffer_increment(&aiter);
-		++iMidiEvents;
 	}
 #ifdef CONFIG_VST
 	pVstEvents->numEvents = iMidiEvents;
