@@ -239,6 +239,29 @@ const char *qtractorLv2Plugin::lv2_urid_unmap ( uint32_t id )
 }
 
 
+#ifdef CONFIG_LV2_WORKER
+
+// LV2 Worker/Scheule support.
+static LV2_Worker_Status qtractor_lv2_worker_schedule (
+	LV2_Worker_Schedule_Handle handle, uint32_t size, const void *data )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (handle);
+	if (pLv2Plugin == NULL)
+		return LV2_WORKER_ERR_UNKNOWN;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_worker_schedule(%p, %u, %p)", pLv2Plugin, size, data);
+#endif
+
+	// TODO: schedule_work ...
+	//
+	return LV2_WORKER_SUCCESS;
+}
+
+#endif	// CONFIG_LV2_WORKER
+
+
 #ifdef CONFIG_LV2_STATE_FILES
 
 #include "qtractorSession.h"
@@ -1183,9 +1206,20 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 3];
+	m_lv2_features = new LV2_Feature * [iFeatures + 4];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
+
+#ifdef CONFIG_LV2_WORKER
+
+	m_lv2_worker_schedule.handle = this;
+	m_lv2_worker_schedule.schedule_work = &qtractor_lv2_worker_schedule;
+
+	m_lv2_worker_schedule_feature.URI  = LV2_WORKER__schedule;
+	m_lv2_worker_schedule_feature.data = &m_lv2_worker_schedule;
+	m_lv2_features[iFeatures++] = &m_lv2_worker_schedule_feature;
+
+#endif
 
 #ifdef CONFIG_LV2_STATE_FILES
 
