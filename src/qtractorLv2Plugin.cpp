@@ -241,22 +241,388 @@ const char *qtractorLv2Plugin::lv2_urid_unmap ( uint32_t id )
 
 #ifdef CONFIG_LV2_WORKER
 
-// LV2 Worker/Scheule support.
+// LV2 Worker/Schedule support.
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
+
+#include <jack/ringbuffer.h>
+
+
+//----------------------------------------------------------------------
+// class qtractorLv2Worker -- LV2 Worker/Schedule item decl.
+//
+class qtractorLv2WorkerThread;
+
+class qtractorLv2Worker
+{
+public:
+
+	// Constructor.
+	qtractorLv2Worker(qtractorLv2Plugin *pLv2Plugin,
+		unsigned short iInstance, const LV2_Feature *const *features);
+	// Destructor.
+	~qtractorLv2Worker();
+
+	// Instance copy of worker schedule feature.
+	LV2_Feature **lv2_features() const
+		{ return m_lv2_features; }
+
+	// Schedule work.
+	void schedule(uint32_t size, const void *data);
+
+	// Respond work.
+	void respond(uint32_t size, const void *data);
+
+	// Commit work.
+	void commit();
+
+	// Process work.
+	void process();
+
+	// Sync thread state flags accessors.
+	void setWaitSync(bool bWaitSync)
+		{ m_bWaitSync = bWaitSync; }
+	bool isWaitSync() const
+		{ return m_bWaitSync; }
+
+private:
+
+	// Instance members.
+	qtractorLv2Plugin  *m_pLv2Plugin;
+	unsigned short      m_iInstance;
+
+	LV2_Feature       **m_lv2_features;
+
+	LV2_Feature         m_lv2_schedule_feature;
+	LV2_Worker_Schedule m_lv2_schedule;
+
+	volatile bool       m_bWaitSync;
+
+	jack_ringbuffer_t  *m_pRequests;
+	jack_ringbuffer_t  *m_pResponses;
+	void               *m_pResponse;
+
+	static qtractorLv2WorkerThread *g_pWorkerThread;
+	static unsigned int             g_iWorkerRefCount;
+};
+
 static LV2_Worker_Status qtractor_lv2_worker_schedule (
 	LV2_Worker_Schedule_Handle handle, uint32_t size, const void *data )
 {
-	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (handle);
-	if (pLv2Plugin == NULL)
+	qtractorLv2Worker *pLv2Worker
+		= static_cast<qtractorLv2Worker *> (handle);
+	if (pLv2Worker == NULL)
 		return LV2_WORKER_ERR_UNKNOWN;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_worker_schedule(%p, %u, %p)", pLv2Plugin, size, data);
+	qDebug("qtractor_lv2_worker_schedule(%p, %u, %p)", pLv2Worker, size, data);
 #endif
 
-	// TODO: schedule_work ...
-	//
+	pLv2Worker->schedule(size, data);
 	return LV2_WORKER_SUCCESS;
+}
+
+static LV2_Worker_Status qtractor_lv2_worker_respond (
+	LV2_Worker_Respond_Handle handle, uint32_t size, const void *data )
+{
+	qtractorLv2Worker *pLv2Worker
+		= static_cast<qtractorLv2Worker *> (handle);
+	if (pLv2Worker == NULL)
+		return LV2_WORKER_ERR_UNKNOWN;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_worker_respond(%p, %u, %p)", pLv2Worker, size, data);
+#endif
+
+	pLv2Worker->respond(size, data);
+	return LV2_WORKER_SUCCESS;
+}
+
+//----------------------------------------------------------------------
+// class qtractorLv2WorkerThread -- LV2 Worker/Schedule thread.
+//
+class qtractorLv2WorkerThread : public QThread
+{
+public:
+
+	// Constructor.
+	qtractorLv2WorkerThread(unsigned int iSyncSize = 128);
+	// Destructor.
+	~qtractorLv2WorkerThread();
+
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
+	// Wake from executive wait condition.
+	void sync(qtractorLv2Worker *pLv2Worker = NULL);
+
+protected:
+
+	// The main thread executive.
+	void run();
+
+private:
+
+	// The peak file queue instance reference.
+	unsigned int          m_iSyncSize;
+	unsigned int          m_iSyncMask;
+	qtractorLv2Worker   **m_ppSyncItems;
+
+	volatile unsigned int m_iSyncRead;
+	volatile unsigned int m_iSyncWrite;
+
+	// Whether the thread is logically running.
+	bool m_bRunState;
+
+	// Thread synchronization objects.
+	QMutex m_mutex;
+	QWaitCondition m_cond;
+};
+
+// Constructor.
+qtractorLv2WorkerThread::qtractorLv2WorkerThread ( unsigned int iSyncSize )
+{
+	m_iSyncSize = (64 << 1);
+	while (m_iSyncSize < iSyncSize)
+		m_iSyncSize <<= 1;
+	m_iSyncMask = (m_iSyncSize - 1);
+	m_ppSyncItems = new qtractorLv2Worker * [m_iSyncSize];
+	m_iSyncRead   = 0;
+	m_iSyncWrite  = 0;
+
+	::memset(m_ppSyncItems, 0, m_iSyncSize * sizeof(qtractorLv2Worker *));
+
+	m_bRunState = false;
+}
+
+// Destructor.
+qtractorLv2WorkerThread::~qtractorLv2WorkerThread (void)
+{
+	delete [] m_ppSyncItems;
+}
+
+// Run state accessor.
+void qtractorLv2WorkerThread::setRunState ( bool bRunState )
+{
+	QMutexLocker locker(&m_mutex);
+
+	m_bRunState = bRunState;
+}
+
+bool qtractorLv2WorkerThread::runState (void) const
+{
+	return m_bRunState;
+}
+
+// Wake from executive wait condition.
+void qtractorLv2WorkerThread::sync ( qtractorLv2Worker *pLv2Worker )
+{
+	if (pLv2Worker == NULL) {
+		unsigned int r = m_iSyncRead;
+		while (r != m_iSyncWrite) {
+			qtractorLv2Worker *pSyncItem = m_ppSyncItems[r];
+			if (pSyncItem)
+				pSyncItem->setWaitSync(false);
+			++r &= m_iSyncMask;
+		}
+	//	m_iSyncRead = r;
+	} else if (!pLv2Worker->isWaitSync()) {
+		unsigned int n;
+		unsigned int w = m_iSyncWrite;
+		unsigned int r = m_iSyncRead;
+		if (w > r) {
+			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
+		} else if (r > w) {
+			n = (r - w) - 1;
+		} else {
+			n = m_iSyncSize - 1;
+		}
+		if (n > 0) {
+			pLv2Worker->setWaitSync(true);
+			m_ppSyncItems[m_iSyncWrite] = pLv2Worker;
+			++m_iSyncWrite &= m_iSyncMask;
+		}
+	}
+
+	if (m_mutex.tryLock()) {
+		m_cond.wakeAll();
+		m_mutex.unlock();
+	}
+#ifdef CONFIG_DEBUG_0
+	else qDebug("qtractorLv2WorkerThread[%p]::sync(): tryLock() failed.", this);
+#endif
+}
+
+// The main thread executive cycle.
+void qtractorLv2WorkerThread::run (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2WorkerThread[%p]::run(): started...", this);
+#endif
+
+	m_bRunState = true;
+
+	m_mutex.lock();
+	while (m_bRunState) {
+		// Do whatever we must, then wait for more...
+		//m_mutex.unlock();
+		unsigned int r = m_iSyncRead;
+		while (r != m_iSyncWrite) {
+			m_ppSyncItems[r]->process();
+			++r &= m_iSyncMask;
+		}
+		m_iSyncRead = r;
+		//m_mutex.lock();
+		m_cond.wait(&m_mutex);
+	}
+	m_mutex.unlock();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2WorkerThread[%p]::run(): stopped.\n", this);
+#endif
+}
+
+//----------------------------------------------------------------------
+// class qtractorLv2Worker -- LV2 Worker/Schedule item impl.
+//
+qtractorLv2WorkerThread *qtractorLv2Worker::g_pWorkerThread   = NULL;
+unsigned int             qtractorLv2Worker::g_iWorkerRefCount = 0;
+
+// Constructor.
+qtractorLv2Worker::qtractorLv2Worker ( qtractorLv2Plugin *pLv2Plugin,
+	unsigned short iInstance, const LV2_Feature *const *features )
+{
+	m_pLv2Plugin = pLv2Plugin;
+	m_iInstance  = iInstance;
+
+	int iFeatures = 0;
+	while (features && features[iFeatures]) { ++iFeatures; }
+
+	m_lv2_features = new LV2_Feature * [iFeatures + 2];
+	for (int i = 0; i < iFeatures; ++i)
+		m_lv2_features[i] = (LV2_Feature *) features[i];
+
+	m_lv2_schedule.handle = this;
+	m_lv2_schedule.schedule_work = &qtractor_lv2_worker_schedule;
+
+	m_lv2_schedule_feature.URI  = LV2_WORKER__schedule;
+	m_lv2_schedule_feature.data = &m_lv2_schedule;
+	m_lv2_features[iFeatures++] = &m_lv2_schedule_feature;
+
+	m_lv2_features[iFeatures] = NULL;
+
+	m_bWaitSync  = false;
+
+	m_pRequests  = ::jack_ringbuffer_create(1024);
+	m_pResponses = ::jack_ringbuffer_create(1024);
+	m_pResponse  = (void *) ::malloc(1024);
+
+	if (++g_iWorkerRefCount == 1) {
+		g_pWorkerThread = new qtractorLv2WorkerThread();
+		g_pWorkerThread->start();
+	}
+}
+
+// Destructor.
+qtractorLv2Worker::~qtractorLv2Worker (void)
+{
+	m_bWaitSync = false;
+
+	if (--g_iWorkerRefCount == 0) {
+		if (g_pWorkerThread->isRunning()) do {
+			g_pWorkerThread->setRunState(false);
+		//	g_pWorkerThread->terminate();
+			g_pWorkerThread->sync();
+		} while (!g_pWorkerThread->wait(100));
+		delete g_pWorkerThread;
+		g_pWorkerThread = NULL;
+	}
+
+	::jack_ringbuffer_free(m_pRequests);
+	::jack_ringbuffer_free(m_pResponses);
+	::free(m_pResponse);
+
+	delete [] m_lv2_features;
+}
+
+// Schedule work.
+void qtractorLv2Worker::schedule ( uint32_t size, const void *data )
+{
+	::jack_ringbuffer_write(m_pRequests, (const char *) &size, sizeof(size));
+	::jack_ringbuffer_write(m_pRequests, (const char *) data, size);
+
+	if (g_pWorkerThread)
+		g_pWorkerThread->sync(this);
+}
+
+// Response work.
+void qtractorLv2Worker::respond ( uint32_t size, const void *data )
+{
+	::jack_ringbuffer_write(m_pResponses, (const char *) &size, sizeof(size));
+	::jack_ringbuffer_write(m_pResponses, (const char *) data, size);
+}
+
+// Commit work.
+void qtractorLv2Worker::commit (void)
+{
+	const LV2_Worker_Interface *worker
+		= m_pLv2Plugin->lv2_worker_interface(m_iInstance);
+	if (worker == NULL)
+		return;
+
+	LV2_Handle handle = m_pLv2Plugin->lv2_handle(m_iInstance);
+	if (handle == NULL)
+		return;
+
+	uint32_t read_space = ::jack_ringbuffer_read_space(m_pResponses);
+	while (read_space > 0) {
+		uint32_t size = 0;
+		::jack_ringbuffer_read(m_pResponses, (char *) &size, sizeof(size));
+		::jack_ringbuffer_read(m_pResponses, (char *) m_pResponse, size);
+		if (worker->work_response)
+			(*worker->work_response)(handle, size, m_pResponse);
+		read_space -= sizeof(size) + size;
+	}
+
+	if (worker->end_run)
+		(*worker->end_run)(handle);
+}
+
+// Process work.
+void qtractorLv2Worker::process (void)
+{
+	if (!m_bWaitSync)
+		return;
+
+	const LV2_Worker_Interface *worker
+		= m_pLv2Plugin->lv2_worker_interface(m_iInstance);
+	if (worker == NULL)
+		return;
+
+	LV2_Handle handle = m_pLv2Plugin->lv2_handle(m_iInstance);
+	if (handle == NULL)
+		return;
+
+	void *buf = NULL;
+	uint32_t size = 0;
+
+	uint32_t read_space = ::jack_ringbuffer_read_space(m_pRequests);
+	if (read_space > 0)
+		buf = ::malloc(read_space);
+
+	while (read_space > 0) {
+		::jack_ringbuffer_read(m_pRequests, (char *) &size, sizeof(size));
+		::jack_ringbuffer_read(m_pRequests, (char *) buf, size);
+		if (worker->work)
+			(*worker->work)(handle, qtractor_lv2_worker_respond, this, size, buf);
+		read_space -= sizeof(size) + size;
+	}
+
+	if (buf) ::free(buf);
+
+	m_bWaitSync = false;
 }
 
 #endif	// CONFIG_LV2_WORKER
@@ -566,6 +932,10 @@ static SLV2Value g_slv2_qt4_ui_class = NULL;
 // Supported plugin features.
 static SLV2Value g_slv2_realtime_hint = NULL;
 static SLV2Value g_slv2_extension_data_hint = NULL;
+
+#ifdef CONFIG_LV2_WORKER
+static SLV2Value g_slv2_worker_schedule_hint = NULL;
+#endif
 
 #ifdef CONFIG_LV2_STATE
 static SLV2Value g_slv2_state_interface_hint = NULL;
@@ -983,6 +1353,12 @@ void qtractorLv2PluginType::slv2_open (void)
 	g_slv2_extension_data_hint = slv2_value_new_uri(g_slv2_world,
 		SLV2_NAMESPACE_LV2 "extensionData");
 
+#ifdef CONFIG_LV2_WORKER
+	// LV2 Worker/Schedule support hints...
+	g_slv2_worker_schedule_hint = slv2_value_new_uri(g_slv2_world,
+		LV2_WORKER__schedule);
+#endif
+
 #ifdef CONFIG_LV2_STATE
 	// LV2 State: set up supported interface and types...
 	g_slv2_state_interface_hint = slv2_value_new_uri(g_slv2_world,
@@ -1049,6 +1425,10 @@ void qtractorLv2PluginType::slv2_close (void)
 #ifdef CONFIG_LV2_STATE
 	slv2_value_free(g_slv2_state_interface_hint);
 	g_slv2_atom_string_type = 0;
+#endif
+
+#ifdef CONFIG_LV2_WORKER
+	slv2_value_free(g_slv2_worker_schedule_hint);
 #endif
 
 	slv2_value_free(g_slv2_extension_data_hint);
@@ -1173,7 +1553,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 		, m_lv2_features(NULL)
 	#ifdef CONFIG_LV2_WORKER
-		, m_lv2_worker_interfaces(NULL)
+		, m_lv2_workers(NULL)
 	#endif
 	#ifdef CONFIG_LV2_UI
 		, m_lv2_ui_type(LV2_UI_TYPE_NONE)
@@ -1209,20 +1589,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 4];
+	m_lv2_features = new LV2_Feature * [iFeatures + 3];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
-
-#ifdef CONFIG_LV2_WORKER
-
-	m_lv2_worker_schedule.handle = this;
-	m_lv2_worker_schedule.schedule_work = &qtractor_lv2_worker_schedule;
-
-	m_lv2_worker_schedule_feature.URI  = LV2_WORKER__schedule;
-	m_lv2_worker_schedule_feature.data = &m_lv2_worker_schedule;
-	m_lv2_features[iFeatures++] = &m_lv2_worker_schedule_feature;
-
-#endif
 
 #ifdef CONFIG_LV2_STATE_FILES
 
@@ -1435,9 +1804,11 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Close old instances, all the way...
 #ifdef CONFIG_LV2_WORKER
-	if (m_lv2_worker_interfaces) {
-		delete [] m_lv2_worker_interfaces;
-		m_lv2_worker_interfaces = NULL;
+	if (m_lv2_workers) {
+		for (unsigned short i = 0; i < iOldInstances; ++i)
+			delete m_lv2_workers[i];
+		delete [] m_lv2_workers;
+		m_lv2_workers = NULL;
 	}
 #endif
 	if (m_pInstances) {
@@ -1461,14 +1832,27 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
+#ifdef CONFIG_LV2_WORKER
+	if (slv2_plugin_has_feature(slv2_plugin(), g_slv2_worker_schedule_hint)) {
+		m_lv2_workers = new qtractorLv2Worker * [iInstances];
+		for (unsigned short i = 0; i < iInstances; ++i)
+			m_lv2_workers[i] = new qtractorLv2Worker(this, i, m_lv2_features);
+	}
+#endif
+
 	// We'll need output control (not dummy anymore) port indexes...
 	unsigned short iControlOuts = pType->controlOuts();
 	// Allocate new instances...
 	m_pInstances = new SLV2Instance [iInstances];
 	for (unsigned short i = 0; i < iInstances; ++i) {
+		LV2_Feature **features = m_lv2_features;
+	#ifdef CONFIG_LV2_WORKER
+		if (m_lv2_workers && m_lv2_workers[i])
+			features = m_lv2_workers[i]->lv2_features();
+	#endif
 		// Instantiate them properly first...
 		SLV2Instance instance
-			= slv2_plugin_instantiate(plugin, sampleRate(), m_lv2_features);
+			= slv2_plugin_instantiate(plugin, sampleRate(), features);
 		if (instance) {
 			// (Dis)connect all ports...
 			unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
@@ -1506,16 +1890,6 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		// This is it...
 		m_pInstances[i] = instance;
 	}
-
-#ifdef CONFIG_LV2_WORKER
-	const LV2_Worker_Interface *worker = lv2_worker_interface(0);
-	if (worker) {
-		m_lv2_worker_interfaces = new const LV2_Worker_Interface * [iInstances];
-		m_lv2_worker_interfaces[0] = worker;
-		for (unsigned short i = 1; i < iInstances; ++i)
-			m_lv2_worker_interfaces[i] = lv2_worker_interface(i);
-	}
-#endif
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
@@ -1662,15 +2036,8 @@ void qtractorLv2Plugin::process (
 			slv2_instance_run(instance, nframes);
 			// Done.
 		#ifdef CONFIG_LV2_WORKER
-			if (m_lv2_worker_interfaces) {
-				const LV2_Worker_Interface *worker
-					= m_lv2_worker_interfaces[i];
-				if (worker && worker->end_run) {
-					LV2_Handle handle = lv2_handle(i);
-					if (handle)
-						(*worker->end_run)(handle);
-				}
-			}
+			if (m_lv2_workers && m_lv2_workers[i])
+				m_lv2_workers[i]->commit();
 		#endif
 		#ifdef CONFIG_LV2_EVENT
 			if (pMidiManager && iMidiEventOuts > 0)
