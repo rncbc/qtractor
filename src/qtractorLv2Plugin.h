@@ -61,6 +61,8 @@
 #ifdef CONFIG_LV2_WORKER
 // LV2 Worker/Schedule support.
 #include "lv2_worker.h"
+// Forward declarations.
+class qtractorLv2Worker;
 #endif
 
 #if defined(CONFIG_LV2_GTK_UI) || defined(CONFIG_LV2_QT4_UI) || defined(CONFIG_LV2_EXTERNAL_UI)
@@ -264,10 +266,8 @@ public:
 	void releaseConfigs();
 
 #ifdef CONFIG_LV2_WORKER
-
 	// LV2 Worker/Schedule extension data interface accessor.
 	const LV2_Worker_Interface *lv2_worker_interface(unsigned short iInstance) const;
-
 #endif
 
 #ifdef CONFIG_LV2_STATE
@@ -349,10 +349,8 @@ private:
 	LV2_Feature  **m_lv2_features;
 
 #ifdef CONFIG_LV2_WORKER
-	// LV2 Worker/Schedule feature and interface.
-	LV2_Feature                  m_lv2_worker_schedule_feature;
-	LV2_Worker_Schedule          m_lv2_worker_schedule;
-	const LV2_Worker_Interface **m_lv2_worker_interfaces;
+	// LV2 Worker/Schedule support.
+	qtractorLv2Worker **m_lv2_workers;
 #endif
 
 #ifdef CONFIG_LV2_UI
