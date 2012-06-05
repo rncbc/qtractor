@@ -266,7 +266,7 @@ qtractorMidiManager::qtractorMidiManager (
 	#endif
 	#ifdef CONFIG_LV2_ATOM
 		m_ppLv2AtomBuffers[i] = lv2_atom_buffer_new(Lv2AtomBufferSize,
-			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence));
+			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence), (i & 1) == 0);
 	#endif
 	}
 
@@ -396,8 +396,7 @@ void qtractorMidiManager::clear (void)
 			(unsigned char *) (pLv2EventBuffer + 1));
 	#endif
 	#ifdef CONFIG_LV2_ATOM
-		LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[i];
-		lv2_atom_buffer_reset(pLv2AtomBuffer);
+		lv2_atom_buffer_reset(m_ppLv2AtomBuffers[i], (i & 1) == 0);
 	#endif
 	}
 
@@ -701,8 +700,7 @@ void qtractorMidiManager::swapEventBuffers (void)
 		(unsigned char *) (pLv2EventBuffer + 1));
 #endif
 #ifdef CONFIG_LV2_ATOM
-	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[m_iEventBuffer & 1];
-	lv2_atom_buffer_reset(pLv2AtomBuffer);
+	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[m_iEventBuffer & 1], false);
 #endif
 
 	++m_iEventBuffer;
@@ -747,7 +745,7 @@ void qtractorMidiManager::vst_events_swap (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
-	lv2_atom_buffer_reset(pLv2AtomBuffer);
+	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
 #endif
@@ -800,7 +798,7 @@ void qtractorMidiManager::lv2_events_swap (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
-	lv2_atom_buffer_reset(pLv2AtomBuffer);
+	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
 #endif
@@ -883,8 +881,7 @@ void qtractorMidiManager::lv2_atoms_swap (void)
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
 	unsigned int iMidiEvents = 0;
 	const unsigned int MaxMidiEvents = (bufferSize() << 1);
-	while (iMidiEvents < MaxMidiEvents
-			&& lv2_atom_buffer_is_valid(&aiter)) {
+	while (iMidiEvents < MaxMidiEvents) {
 		unsigned char *pMidiData;
 		LV2_Atom_Event *pLv2AtomEvent = lv2_atom_buffer_get(&aiter, &pMidiData);
 		if (pLv2AtomEvent == NULL)

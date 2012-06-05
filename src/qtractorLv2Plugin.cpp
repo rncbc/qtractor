@@ -2009,11 +2009,11 @@ void qtractorLv2Plugin::process (
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input event/MIDI ports...
 			if (pMidiManager) {
-				for (unsigned short j = 0; j < iMidiEventIns; ++j) {
+				for (j = 0; j < iMidiEventIns; ++j) {
 					slv2_instance_connect_port(instance,
 						m_piMidiEventIns[j], pMidiManager->lv2_events_in());
 				}
-				for (unsigned short j = 0; j < iMidiEventOuts; ++j) {
+				for (j = 0; j < iMidiEventOuts; ++j) {
 					slv2_instance_connect_port(instance,
 						m_piMidiEventOuts[j], pMidiManager->lv2_events_out());
 				}
@@ -2022,11 +2022,11 @@ void qtractorLv2Plugin::process (
 		#ifdef CONFIG_LV2_ATOM
 			// Connect all existing input atom/MIDI ports...
 			if (pMidiManager) {
-				for (unsigned short j = 0; j < iMidiAtomIns; ++j) {
+				for (j = 0; j < iMidiAtomIns; ++j) {
 					slv2_instance_connect_port(instance,
 						m_piMidiAtomIns[j], pMidiManager->lv2_atoms_in());
 				}
-				for (unsigned short j = 0; j < iMidiAtomOuts; ++j) {
+				for (j = 0; j < iMidiAtomOuts; ++j) {
 					slv2_instance_connect_port(instance,
 						m_piMidiAtomOuts[j], pMidiManager->lv2_atoms_out());
 				}
