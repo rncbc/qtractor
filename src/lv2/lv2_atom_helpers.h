@@ -48,6 +48,7 @@ typedef
 struct _LV2_Atom_Buffer
 {
 	uint32_t capacity;
+	uint32_t chunk_type;
 	uint32_t sequence_type;
 	LV2_Atom_Sequence atoms;
 
@@ -66,9 +67,13 @@ uint32_t lv2_atom_buffer_pad_size ( uint32_t size )
 // Clear and initialize an existing LV2 atom:Sequenece buffer.
 //
 static inline
-void lv2_atom_buffer_reset ( LV2_Atom_Buffer *buf )
+void lv2_atom_buffer_reset ( LV2_Atom_Buffer *buf, bool input )
 {
-	buf->atoms.atom.size = sizeof(LV2_Atom_Sequence_Body);
+	if (input)
+		buf->atoms.atom.size = sizeof(LV2_Atom_Sequence_Body);
+	else
+		buf->atoms.atom.size = buf->capacity;
+
 	buf->atoms.atom.type = buf->sequence_type;
 }
 
@@ -77,7 +82,7 @@ void lv2_atom_buffer_reset ( LV2_Atom_Buffer *buf )
 //
 static inline
 LV2_Atom_Buffer *lv2_atom_buffer_new (
-	uint32_t capacity, uint32_t sequence_type )
+	uint32_t capacity, uint32_t sequence_type, bool input )
 {
 	LV2_Atom_Buffer *buf = (LV2_Atom_Buffer *)
 		malloc(sizeof(LV2_Atom_Buffer) + sizeof(LV2_Atom_Sequence) + capacity);
@@ -85,7 +90,7 @@ LV2_Atom_Buffer *lv2_atom_buffer_new (
 	buf->capacity = capacity;
 	buf->sequence_type = sequence_type;
 
-	lv2_atom_buffer_reset(buf);
+	lv2_atom_buffer_reset(buf, input);
 
 	return buf;
 }
@@ -105,8 +110,7 @@ void lv2_atom_buffer_free ( LV2_Atom_Buffer *buf )
 static inline
 uint32_t lv2_atom_buffer_get_size ( LV2_Atom_Buffer *buf )
 {
-	return buf->atoms.atom.type == buf->sequence_type
-		? buf->atoms.atom.size - sizeof(LV2_Atom_Sequence_Body) : 0;
+	return buf->atoms.atom.size - sizeof(LV2_Atom_Sequence_Body);
 }
 
 
@@ -140,6 +144,19 @@ bool lv2_atom_buffer_begin (
 	iter->offset = 0;
 
 	return (buf->atoms.atom.size > 0);
+}
+
+
+// Reset an iterator to point to the end of an LV2 atom:Sequence buffer.
+//
+static inline
+bool lv2_atom_buffer_end (
+	LV2_Atom_Buffer_Iterator *iter, LV2_Atom_Buffer *buf )
+{
+	iter->buf = buf;
+	iter->offset = lv2_atom_buffer_pad_size(lv2_atom_buffer_get_size(buf));
+
+	return (iter->offset < buf->capacity - sizeof(LV2_Atom_Event));
 }
 
 
