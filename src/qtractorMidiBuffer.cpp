@@ -233,7 +233,7 @@ qtractorMidiManager::qtractorMidiManager (
 	m_iPendingBankLSB(-1),
 	m_iPendingProg(-1)
 {
-	const unsigned int MaxMidiEvents = (bufferSize() << 1);
+	const unsigned int MaxMidiEvents = bufferSize();
 
 	m_pBuffer = new snd_seq_event_t [MaxMidiEvents];
 
@@ -861,7 +861,7 @@ void qtractorMidiManager::lv2_events_swap (void)
 #ifdef CONFIG_LV2_ATOM
 
 // Swap LV2 atom buffers...
-void qtractorMidiManager::lv2_atoms_swap (void)
+void qtractorMidiManager::lv2_atom_buffer_swap (void)
 {
 	unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
