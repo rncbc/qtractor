@@ -906,11 +906,11 @@ static SLV2Value g_slv2_midi_class  = NULL;
 
 #ifdef CONFIG_LV2_ATOM
 static SLV2Value g_slv2_atom_port_class = NULL;
+static uint32_t g_slv2_atom_sequence_type = 0;
 #endif
 
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_ATOM
-static uint32_t g_slv2_atom_sequence_type = 0;
 static uint32_t g_slv2_atom_event_type = 0;
 #endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -971,10 +971,9 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
-		const float fValue = *(float *) value;
-		qtractor_lv2_ui_write(pLv2Plugin,
-			lilv_port_get_index(plugin, port),
-			sizeof(fValue), 0, &fValue);
+		const float val = *(float *) value;
+		unsigned long port_index = lilv_port_get_index(plugin, port);
+		pLv2Plugin->updateParamValue(port_index, val, false);
 	}
 
 	lilv_node_free(symbol);
@@ -1327,11 +1326,11 @@ void qtractorLv2PluginType::slv2_open (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	g_slv2_atom_port_class = slv2_value_new_uri(g_slv2_world, LV2_ATOM__AtomPort);
+	g_slv2_atom_sequence_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
 #endif
 
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_ATOM
-	g_slv2_atom_sequence_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
 	g_slv2_atom_event_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__eventTransfer);
 #endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -1442,12 +1441,12 @@ void qtractorLv2PluginType::slv2_close (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	slv2_value_free(g_slv2_atom_port_class);
+	g_slv2_atom_sequence_type = 0;
 #endif
 
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_ATOM
 	g_slv2_atom_event_type = 0;
-	g_slv2_atom_sequence_type = 0;
 #endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	slv2_value_free(g_slv2_external_ui_class);
