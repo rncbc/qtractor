@@ -75,6 +75,9 @@ class qtractorLv2Worker;
 // LV2 UI data/instance access support.
 #include "lv2_data_access.h"
 #include "lv2_instance_access.h"
+#ifdef CONFIG_LV2_ATOM
+#include <jack/ringbuffer.h>
+#endif
 #endif
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -243,6 +246,10 @@ public:
 	// LV2 UI handle accessor.
 	LV2UI_Handle lv2_ui_handle() const;
 
+	// LV2 UI control change method.
+	void lv2_ui_write(uint32_t port_index,
+		uint32_t buffer_size, uint32_t protocol, const void *buffer);
+
 	// LV2 UI cleanup method.
 	void lv2_ui_cleanup() const;
 
@@ -340,9 +347,17 @@ private:
 #endif
 
 #ifdef CONFIG_LV2_ATOM
-	// List of LV2 Atom/MIDI port indexes.
+
+	// List of LV2 Atom/MIDI port indexes and buffers.
 	unsigned long *m_piMidiAtomIns;
 	unsigned long *m_piMidiAtomOuts;
+
+	LV2_Atom_Buffer  *m_lv2_atom_buffer_in;
+	LV2_Atom_Buffer **m_lv2_atom_buffer_ins;
+
+	LV2_Atom_Buffer  *m_lv2_atom_buffer_out;
+	LV2_Atom_Buffer **m_lv2_atom_buffer_outs;
+
 #endif
 
 	// Local copy of features array.
@@ -383,6 +398,22 @@ private:
 	LV2UI_Widget   m_lv2_ui_widget;
 #endif
 	
+#ifdef CONFIG_LV2_ATOM
+
+	// LV2 Atom control (ring)buffers for UI updates.
+	struct ControlEvent
+	{
+		uint32_t index;
+		uint32_t protocol;
+		uint32_t size;
+		uint8_t  body[];
+	};
+
+	jack_ringbuffer_t *m_ui_events;
+	jack_ringbuffer_t *m_plugin_events;
+
+#endif
+
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	LV2_Feature          m_lv2_ui_external_feature;
 	lv2_external_ui_host m_lv2_ui_external_host;

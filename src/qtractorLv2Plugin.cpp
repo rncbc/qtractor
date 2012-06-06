@@ -796,26 +796,16 @@ static void qtractor_lv2_ui_write (
 #endif
 	uint32_t port_index,
 	uint32_t buffer_size,
-	uint32_t format,
+	uint32_t protocol,
 	const void *buffer )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (ui_controller);
 	if (pLv2Plugin == NULL)
 		return;
-	if (buffer_size != sizeof(float) || format != 0)
-		return;
 
-	float val = *(float *) buffer;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_ui_write(%p, %u, %g)", pLv2Plugin,	port_index, val);
-#endif
-
-	// FIXME: Update plugin params...
-	pLv2Plugin->updateParamValue(port_index, val, false);
+	pLv2Plugin->lv2_ui_write(port_index, buffer_size, protocol, buffer);
 }
-
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 
@@ -916,9 +906,13 @@ static SLV2Value g_slv2_midi_class  = NULL;
 
 #ifdef CONFIG_LV2_ATOM
 static SLV2Value g_slv2_atom_port_class = NULL;
+static uint32_t g_slv2_atom_sequence_type = 0;
 #endif
 
 #ifdef CONFIG_LV2_UI
+#ifdef CONFIG_LV2_ATOM
+static uint32_t g_slv2_atom_event_type = 0;
+#endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
 static SLV2Value g_slv2_external_ui_class = NULL;
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
@@ -927,7 +921,7 @@ static SLV2Value g_slv2_external_ui_deprecated_class = NULL;
 #endif
 static SLV2Value g_slv2_gtk_ui_class = NULL;
 static SLV2Value g_slv2_qt4_ui_class = NULL;
-#endif
+#endif	// CONFIG_LV2_UI
 
 // Supported plugin features.
 static SLV2Value g_slv2_realtime_hint = NULL;
@@ -977,10 +971,9 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
-		const float fValue = *(float *) value;
-		qtractor_lv2_ui_write(pLv2Plugin,
-			lilv_port_get_index(plugin, port),
-			sizeof(fValue), 0, &fValue);
+		const float val = *(float *) value;
+		unsigned long port_index = lilv_port_get_index(plugin, port);
+		pLv2Plugin->updateParamValue(port_index, val, false);
 	}
 
 	lilv_node_free(symbol);
@@ -1333,9 +1326,13 @@ void qtractorLv2PluginType::slv2_open (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	g_slv2_atom_port_class = slv2_value_new_uri(g_slv2_world, LV2_ATOM__AtomPort);
+	g_slv2_atom_sequence_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
 #endif
 
 #ifdef CONFIG_LV2_UI
+#ifdef CONFIG_LV2_ATOM
+	g_slv2_atom_event_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__eventTransfer);
+#endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	g_slv2_external_ui_class = slv2_value_new_uri(g_slv2_world,	LV2_EXTERNAL_UI_URI);
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
@@ -1345,7 +1342,7 @@ void qtractorLv2PluginType::slv2_open (void)
 #endif
 	g_slv2_gtk_ui_class = slv2_value_new_uri(g_slv2_world, LV2_GTK_UI_URI);
 	g_slv2_qt4_ui_class = slv2_value_new_uri(g_slv2_world, LV2_QT4_UI_URI);
-#endif
+#endif	// CONFIG_LV2_UI
 
 	// Set up the feature we may want to know (as hints).
 	g_slv2_realtime_hint = slv2_value_new_uri(g_slv2_world,
@@ -1444,9 +1441,13 @@ void qtractorLv2PluginType::slv2_close (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	slv2_value_free(g_slv2_atom_port_class);
+	g_slv2_atom_sequence_type = 0;
 #endif
 
 #ifdef CONFIG_LV2_UI
+#ifdef CONFIG_LV2_ATOM
+	g_slv2_atom_event_type = 0;
+#endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	slv2_value_free(g_slv2_external_ui_class);
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
@@ -1455,7 +1456,7 @@ void qtractorLv2PluginType::slv2_close (void)
 #endif
 	slv2_value_free(g_slv2_gtk_ui_class);
 	slv2_value_free(g_slv2_qt4_ui_class);
-#endif
+#endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LIBSLV2
 	slv2_plugins_free(g_slv2_world, g_slv2_plugins);
@@ -1550,6 +1551,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_ATOM
 		, m_piMidiAtomIns(NULL)
 		, m_piMidiAtomOuts(NULL)
+		, m_lv2_atom_buffer_in(NULL)
+		, m_lv2_atom_buffer_ins(NULL)
+		, m_lv2_atom_buffer_out(NULL)
+		, m_lv2_atom_buffer_outs(NULL)
 	#endif
 		, m_lv2_features(NULL)
 	#ifdef CONFIG_LV2_WORKER
@@ -1570,6 +1575,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_slv2_ui_instance(NULL)
 	#endif
 		, m_lv2_ui_widget(NULL)
+	#ifdef CONFIG_LV2_ATOM
+		, m_ui_events(NULL)
+		, m_plugin_events(NULL)
+	#endif
 	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
 		, m_pGtkWindow(NULL)
@@ -1638,16 +1647,33 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		if (iMidiEventOuts > 0)
 			m_piMidiEventOuts = new unsigned long [iMidiEventOuts];
 		iMidiEventIns = iMidiEventOuts = 0;
-	#endif
+	#endif	// CONFIG_LV2_EVENT
 	#ifdef CONFIG_LV2_ATOM
+		const unsigned int MaxBufferCapacity = 2048;
 		unsigned short iMidiAtomIns  = pLv2Type->midiAtomIns();
 		unsigned short iMidiAtomOuts = pLv2Type->midiAtomOuts();
-		if (iMidiAtomIns > 0)
+		if (iMidiAtomIns > 0) {
 			m_piMidiAtomIns = new unsigned long [iMidiAtomIns];
-		if (iMidiAtomOuts > 0)
+			m_lv2_atom_buffer_in = lv2_atom_buffer_new(MaxBufferCapacity,
+				g_slv2_atom_sequence_type, true);
+			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
+			for (unsigned long j = 0; j < iMidiAtomIns; ++j)
+				m_lv2_atom_buffer_ins[j] = m_lv2_atom_buffer_in;
+		}
+		if (iMidiAtomOuts > 0) {
 			m_piMidiAtomOuts = new unsigned long [iMidiAtomOuts];
-		iMidiAtomIns = iMidiAtomOuts = 0;
+			m_lv2_atom_buffer_out = lv2_atom_buffer_new(MaxBufferCapacity,
+				g_slv2_atom_sequence_type, false);
+			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
+			for (unsigned long j = 0; j < iMidiAtomOuts; ++j)
+				m_lv2_atom_buffer_outs[j] = m_lv2_atom_buffer_out;
+		}
+	#ifdef CONFIG_LV2_UI
+		m_ui_events = ::jack_ringbuffer_create(MaxBufferCapacity);
+		m_plugin_events = ::jack_ringbuffer_create(MaxBufferCapacity);
 	#endif
+		iMidiAtomIns = iMidiAtomOuts = 0;
+	#endif	// CONFIG_LV2_ATOM
 		unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
 		for (unsigned long i = 0; i < iNumPorts; ++i) {
 			const SLV2Port port = slv2_plugin_get_port_by_index(plugin, i);
@@ -1748,17 +1774,31 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 
 	// Free up all the rest...
 #ifdef CONFIG_LV2_ATOM
+	if (m_lv2_atom_buffer_outs)
+		delete [] m_lv2_atom_buffer_outs;
+	if (m_lv2_atom_buffer_ins)
+		delete [] m_lv2_atom_buffer_ins;
+	if (m_lv2_atom_buffer_out)
+		lv2_atom_buffer_free(m_lv2_atom_buffer_out);
+	if (m_lv2_atom_buffer_in)
+		lv2_atom_buffer_free(m_lv2_atom_buffer_in);
+#ifdef CONFIG_LV2_UI
+	if (m_plugin_events)
+		::jack_ringbuffer_free(m_plugin_events);
+	if (m_ui_events)
+		::jack_ringbuffer_free(m_ui_events);
+#endif
 	if (m_piMidiAtomOuts)
 		delete [] m_piMidiAtomOuts;
 	if (m_piMidiAtomIns)
 		delete [] m_piMidiAtomIns;
-#endif
+#endif	// CONFIG_LV2_ATOM
 #ifdef CONFIG_LV2_EVENT
 	if (m_piMidiEventOuts)
 		delete [] m_piMidiEventOuts;
 	if (m_piMidiEventIns)
 		delete [] m_piMidiEventIns;
-#endif
+#endif	// CONFIG_LV2_EVENT
 	if (m_piAudioOuts)
 		delete [] m_piAudioOuts;
 	if (m_piAudioIns)
@@ -2021,20 +2061,87 @@ void qtractorLv2Plugin::process (
 		#endif
 		#ifdef CONFIG_LV2_ATOM
 			// Connect all existing input atom/MIDI ports...
-			if (pMidiManager) {
-				for (j = 0; j < iMidiAtomIns; ++j) {
-					slv2_instance_connect_port(instance,
-						m_piMidiAtomIns[j], pMidiManager->lv2_atoms_in());
-				}
-				for (j = 0; j < iMidiAtomOuts; ++j) {
-					slv2_instance_connect_port(instance,
-						m_piMidiAtomOuts[j], pMidiManager->lv2_atoms_out());
+			for (j = 0; j < iMidiAtomIns; ++j) {
+				if (pMidiManager)
+					m_lv2_atom_buffer_ins[j] = pMidiManager->lv2_atom_buffer_in();
+				else
+					lv2_atom_buffer_reset(m_lv2_atom_buffer_ins[j], true);
+				slv2_instance_connect_port(instance,
+					m_piMidiAtomIns[j], &m_lv2_atom_buffer_ins[j]->atoms);
+			}
+			for (j = 0; j < iMidiAtomOuts; ++j) {
+				if (pMidiManager)
+					m_lv2_atom_buffer_outs[j] = pMidiManager->lv2_atom_buffer_out();
+				else
+					lv2_atom_buffer_reset(m_lv2_atom_buffer_outs[j], false);
+				slv2_instance_connect_port(instance,
+					m_piMidiAtomOuts[j], &m_lv2_atom_buffer_outs[j]->atoms);
+			}
+		#ifdef CONFIG_LV2_UI
+			// Read and apply control change events from UI...
+			if (m_lv2_ui_widget) {
+				ControlEvent ev;
+				const size_t read_space = ::jack_ringbuffer_read_space(m_ui_events);
+				for (size_t i = 0; i < read_space; i += sizeof(ev) + ev.size) {
+					::jack_ringbuffer_read(m_ui_events, (char *) &ev, sizeof(ev));
+					char buf[ev.size];
+					if (::jack_ringbuffer_read(m_ui_events, buf, ev.size) == ev.size) {
+						if (ev.protocol == g_slv2_atom_event_type) {
+							for (j = 0; j < iMidiAtomIns; ++j) {
+								if (m_piMidiAtomIns[j] == ev.index) {
+									LV2_Atom_Buffer_Iterator aiter;
+									lv2_atom_buffer_end(&aiter, m_lv2_atom_buffer_ins[j]);
+									const LV2_Atom *atom = (const LV2_Atom *) buf;
+									lv2_atom_buffer_write(&aiter, nframes, 0,
+										atom->type, atom->size,
+										(const uint8_t *) LV2_ATOM_BODY(atom));
+									break;
+								}
+							}
+						}
+					}
 				}
 			}
-		#endif
+		#endif	// CONFIG_LV2_UI
+		#endif	// CONFIG_LV2_ATOM
 			// Make it run...
 			slv2_instance_run(instance, nframes);
 			// Done.
+		#ifdef CONFIG_LV2_ATOM
+		#ifdef CONFIG_LV2_UI
+			for (j = 0; j < iMidiAtomOuts; ++j) {
+				LV2_Atom_Buffer_Iterator aiter;
+				lv2_atom_buffer_begin(&aiter, m_lv2_atom_buffer_outs[j]);
+				while (true) {
+					uint8_t *data;
+					LV2_Atom_Event *pLv2AtomEvent
+						= lv2_atom_buffer_get(&aiter, &data);
+					if (pLv2AtomEvent == NULL)
+						break;
+					if (pLv2AtomEvent->body.type == g_slv2_atom_event_type) {
+						char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
+						const uint32_t type = pLv2AtomEvent->body.type;
+						const uint32_t size = pLv2AtomEvent->body.size;
+						ControlEvent *ev = (ControlEvent *) buf;
+						ev->index    = m_piMidiAtomOuts[j];
+						ev->protocol = g_slv2_atom_event_type;
+						ev->size     = sizeof(LV2_Atom) + size;
+						LV2_Atom *atom = (LV2_Atom *) ev->body;
+						atom->type = type;
+						atom->size = size;
+						if (::jack_ringbuffer_write_space(m_plugin_events)
+							< sizeof(buf) + size)
+							break;
+						::jack_ringbuffer_write(m_plugin_events,
+							(const char *) buf, sizeof(buf));
+						::jack_ringbuffer_write(m_plugin_events,
+							(const char *) data, size);
+					}
+					lv2_atom_buffer_increment(&aiter);
+				}
+			}
+		#endif	// CONFIG_LV2_UI
+		#endif	// CONFIG_LV2_ATOM
 		#ifdef CONFIG_LV2_WORKER
 			if (m_lv2_workers && m_lv2_workers[i])
 				m_lv2_workers[i]->commit();
@@ -2045,7 +2152,7 @@ void qtractorLv2Plugin::process (
 		#endif
 		#ifdef CONFIG_LV2_ATOM
 			if (pMidiManager && iMidiAtomOuts > 0)
-				pMidiManager->lv2_atoms_swap();
+				pMidiManager->lv2_atom_buffer_swap();
 		#endif
 			// Wrap channels?...
 			if (iIChannel < iChannels - 1)
@@ -2409,10 +2516,36 @@ void qtractorLv2Plugin::idleEditor (void)
 	if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 		LV2_EXTERNAL_UI_RUN((lv2_external_ui *) m_lv2_ui_widget);
 #endif
+
+#ifdef CONFIG_LV2_ATOM
+
+	ControlEvent ev;
+	const size_t read_space = ::jack_ringbuffer_read_space(m_plugin_events);
+	for (size_t i = 0; i < read_space; i += sizeof(ev) + ev.size) {
+		::jack_ringbuffer_read(m_plugin_events, (char *) &ev, sizeof(ev));
+		char buf[ev.size];
+		::jack_ringbuffer_read(m_plugin_events, buf, ev.size);
+	#ifdef CONFIG_LIBLILV
+		if (m_suil_instance) {
+			suil_instance_port_event(m_suil_instance,
+				ev.index, ev.size, ev.protocol, buf);
+		}
+	#endif
+	#ifdef CONFIG_LIBSLV2
+		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+		if (ui_descriptor && ui_descriptor->port_event) {
+			LV2UI_Handle ui_handle = lv2_ui_handle();
+			if (ui_handle) {
+				(*ui_descriptor->port_event)(ui_handle,
+					ev.index, ev.size, ev.protocol, buf);
+			}
+		}
+	#endif
+	}
+
+#endif	// CONFIG_LV2_ATOM
 }
 
-
-#ifdef CONFIG_LV2_UI
 
 void qtractorLv2Plugin::closeEditorEx (void)
 {
@@ -2438,8 +2571,6 @@ void qtractorLv2Plugin::closeEditorEx (void)
 	}
 #endif
 }
-
-#endif	// CONFIG_LV2_UI
 
 
 // GUI editor visibility state.
@@ -2588,6 +2719,38 @@ LV2UI_Handle qtractorLv2Plugin::lv2_ui_handle (void) const
 	else
 #endif
 	return NULL;
+}
+
+
+// LV2 UI control change method.
+void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
+	uint32_t buffer_size, uint32_t protocol, const void *buffer )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_write(%u, %u, %u, %p)",
+		this, port_index, buffer_size, protocol, buffer);
+#endif
+
+#ifdef CONFIG_LV2_ATOM
+	if (protocol == g_slv2_atom_event_type) {
+		char buf[sizeof(ControlEvent) + buffer_size];
+		ControlEvent* ev = (ControlEvent *) buf;
+		ev->index    = port_index;
+		ev->protocol = protocol;
+		ev->size     = buffer_size;
+		::memcpy(ev->body, buffer, buffer_size);
+		::jack_ringbuffer_write(m_ui_events, buf, sizeof(buf));
+		return;
+	}
+#endif
+
+	if (buffer_size != sizeof(float) || protocol != 0)
+		return;
+
+	float val = *(float *) buffer;
+
+	// FIXME: Update plugin params...
+	updateParamValue(port_index, val, false);
 }
 
 
