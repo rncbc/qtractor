@@ -315,7 +315,6 @@ public:
 	};
 
 	typedef QMap<int, Bank> Banks;
-
 	typedef QMap<QString, Banks> Instruments;
 
 	// Instrument map builder.
