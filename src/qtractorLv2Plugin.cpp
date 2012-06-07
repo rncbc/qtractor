@@ -2107,6 +2107,10 @@ void qtractorLv2Plugin::process (
 			// Make it run...
 			slv2_instance_run(instance, nframes);
 			// Done.
+		#ifdef CONFIG_LV2_WORKER
+			if (m_lv2_workers && m_lv2_workers[i])
+				m_lv2_workers[i]->commit();
+		#endif
 		#ifdef CONFIG_LV2_ATOM
 		#ifdef CONFIG_LV2_UI
 			for (j = 0; j < iMidiAtomOuts; ++j) {
@@ -2118,7 +2122,7 @@ void qtractorLv2Plugin::process (
 						= lv2_atom_buffer_get(&aiter, &data);
 					if (pLv2AtomEvent == NULL)
 						break;
-					if (pLv2AtomEvent->body.type == g_slv2_atom_event_type) {
+					if (pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
 						char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
 						const uint32_t type = pLv2AtomEvent->body.type;
 						const uint32_t size = pLv2AtomEvent->body.size;
@@ -2142,10 +2146,6 @@ void qtractorLv2Plugin::process (
 			}
 		#endif	// CONFIG_LV2_UI
 		#endif	// CONFIG_LV2_ATOM
-		#ifdef CONFIG_LV2_WORKER
-			if (m_lv2_workers && m_lv2_workers[i])
-				m_lv2_workers[i]->commit();
-		#endif
 		#ifdef CONFIG_LV2_EVENT
 			if (pMidiManager && iMidiEventOuts > 0)
 				pMidiManager->lv2_events_swap();
