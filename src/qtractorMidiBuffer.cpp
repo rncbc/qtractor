@@ -233,7 +233,7 @@ qtractorMidiManager::qtractorMidiManager (
 	m_iPendingBankLSB(-1),
 	m_iPendingProg(-1)
 {
-	const unsigned int MaxMidiEvents = bufferSize();
+	const unsigned int MaxMidiEvents = (bufferSize() >> 1);
 
 	m_pBuffer = new snd_seq_event_t [MaxMidiEvents];
 

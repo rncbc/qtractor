@@ -1649,7 +1649,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		iMidiEventIns = iMidiEventOuts = 0;
 	#endif	// CONFIG_LV2_EVENT
 	#ifdef CONFIG_LV2_ATOM
-		const unsigned int MaxBufferCapacity = 2048;
+		const unsigned int MaxBufferCapacity = 1024;
 		unsigned short iMidiAtomIns  = pLv2Type->midiAtomIns();
 		unsigned short iMidiAtomOuts = pLv2Type->midiAtomOuts();
 		if (iMidiAtomIns > 0) {
@@ -2146,14 +2146,6 @@ void qtractorLv2Plugin::process (
 			}
 		#endif	// CONFIG_LV2_UI
 		#endif	// CONFIG_LV2_ATOM
-		#ifdef CONFIG_LV2_EVENT
-			if (pMidiManager && iMidiEventOuts > 0)
-				pMidiManager->lv2_events_swap();
-		#endif
-		#ifdef CONFIG_LV2_ATOM
-			if (pMidiManager && iMidiAtomOuts > 0)
-				pMidiManager->lv2_atom_buffer_swap();
-		#endif
 			// Wrap channels?...
 			if (iIChannel < iChannels - 1)
 				++iIChannel;
@@ -2161,6 +2153,15 @@ void qtractorLv2Plugin::process (
 				++iOChannel;
 		}
 	}
+
+#ifdef CONFIG_LV2_EVENT
+	if (pMidiManager && iMidiEventOuts > 0)
+		pMidiManager->lv2_events_swap();
+#endif
+#ifdef CONFIG_LV2_ATOM
+	if (pMidiManager && iMidiAtomOuts > 0)
+		pMidiManager->lv2_atom_buffer_swap();
+#endif
 }
 
 

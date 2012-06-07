@@ -755,14 +755,15 @@ void qtractorVstPlugin::process (
 				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
 		}
 	#endif
-		if (pMidiManager && iMidiOuts > 0)
-			pMidiManager->vst_events_swap();
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
 			++iIChannel;
 		if (iOChannel < iChannels - 1)
 			++iOChannel;
 	}
+
+	if (pMidiManager && iMidiOuts > 0)
+		pMidiManager->vst_events_swap();
 }
 
 
