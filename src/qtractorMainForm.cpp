@@ -4824,12 +4824,6 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");
 #else
-#ifndef CONFIG_LV2_EVENT
-	list << tr("LV2 Plug-in MIDI/Event support disabled.");
-#endif
-#ifndef CONFIG_LV2_ATOM
-	list << tr("LV2 Plug-in MIDI/Atom support disabled.");
-#endif
 #ifdef CONFIG_LIBSLV2
 	list << tr("LV2 Plug-in support (libslv2) enabled. (DEPRECATED)");
 #else
@@ -4849,6 +4843,15 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #ifndef CONFIG_LV2_EXTERNAL_UI
 	list << tr("LV2 Plug-in External UI support disabled.");
+#endif
+#ifndef CONFIG_LV2_EVENT
+	list << tr("LV2 Plug-in MIDI/Event support disabled.");
+#endif
+#ifndef CONFIG_LV2_ATOM
+	list << tr("LV2 Plug-in MIDI/Atom support disabled.");
+#endif
+#ifndef CONFIG_LV2_WORKER
+	list << tr("LV2 Plug-in Worker/Schedule support disabled.");
 #endif
 #ifndef CONFIG_LV2_STATE
 	list << tr("LV2 Plug-in State support disabled.");

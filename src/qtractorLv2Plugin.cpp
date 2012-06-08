@@ -2010,20 +2010,21 @@ void qtractorLv2Plugin::process (
 	if (pLv2Type->midiIns() > 0)
 		pMidiManager = list()->midiManager();
 #ifdef CONFIG_LV2_EVENT
-	unsigned short iMidiEventIns  = pLv2Type->midiEventIns();
-	unsigned short iMidiEventOuts = pLv2Type->midiEventOuts();
+	const unsigned short iMidiEventIns  = pLv2Type->midiEventIns();
+	const unsigned short iMidiEventOuts = pLv2Type->midiEventOuts();
 #endif
 #ifdef CONFIG_LV2_ATOM
-	unsigned short iMidiAtomIns  = pLv2Type->midiAtomIns();
-	unsigned short iMidiAtomOuts = pLv2Type->midiAtomOuts();
+	const unsigned short iMidiAtomIns  = pLv2Type->midiAtomIns();
+	const unsigned short iMidiAtomOuts = pLv2Type->midiAtomOuts();
 #endif
 #endif
 
 	// We'll cross channels over instances...
-	unsigned short iInstances = instances();
-	unsigned short iChannels  = channels();
-	unsigned short iAudioIns  = audioIns();
-	unsigned short iAudioOuts = audioOuts();
+	const unsigned short iInstances = instances();
+	const unsigned short iChannels  = channels();
+	const unsigned short iAudioIns  = audioIns();
+	const unsigned short iAudioOuts = audioOuts();
+
 	unsigned short iIChannel  = 0;
 	unsigned short iOChannel  = 0;
 	unsigned short i, j;
@@ -2080,26 +2081,27 @@ void qtractorLv2Plugin::process (
 		#ifdef CONFIG_LV2_UI
 			// Read and apply control change events from UI...
 			if (m_lv2_ui_widget) {
-				ControlEvent ev;
-				const size_t read_space = ::jack_ringbuffer_read_space(m_ui_events);
-				for (size_t i = 0; i < read_space; i += sizeof(ev) + ev.size) {
+				uint32_t read_space = ::jack_ringbuffer_read_space(m_ui_events);
+				while (read_space > 0) {
+					ControlEvent ev;
 					::jack_ringbuffer_read(m_ui_events, (char *) &ev, sizeof(ev));
 					char buf[ev.size];
-					if (::jack_ringbuffer_read(m_ui_events, buf, ev.size) == ev.size) {
-						if (ev.protocol == g_slv2_atom_event_type) {
-							for (j = 0; j < iMidiAtomIns; ++j) {
-								if (m_piMidiAtomIns[j] == ev.index) {
-									LV2_Atom_Buffer_Iterator aiter;
-									lv2_atom_buffer_end(&aiter, m_lv2_atom_buffer_ins[j]);
-									const LV2_Atom *atom = (const LV2_Atom *) buf;
-									lv2_atom_buffer_write(&aiter, nframes, 0,
-										atom->type, atom->size,
-										(const uint8_t *) LV2_ATOM_BODY(atom));
-									break;
-								}
+					if (::jack_ringbuffer_read(m_ui_events, buf, ev.size) < ev.size)
+						break;
+					if (ev.protocol == g_slv2_atom_event_type) {
+						for (j = 0; j < iMidiAtomIns; ++j) {
+							if (m_piMidiAtomIns[j] == ev.index) {
+								LV2_Atom_Buffer_Iterator aiter;
+								lv2_atom_buffer_end(&aiter, m_lv2_atom_buffer_ins[j]);
+								const LV2_Atom *atom = (const LV2_Atom *) buf;
+								lv2_atom_buffer_write(&aiter, nframes, 0,
+									atom->type, atom->size,
+									(const uint8_t *) LV2_ATOM_BODY(atom));
+								break;
 							}
 						}
 					}
+					read_space -= sizeof(ev) + ev.size
 				}
 			}
 		#endif	// CONFIG_LV2_UI
@@ -2111,41 +2113,6 @@ void qtractorLv2Plugin::process (
 			if (m_lv2_workers && m_lv2_workers[i])
 				m_lv2_workers[i]->commit();
 		#endif
-		#ifdef CONFIG_LV2_ATOM
-		#ifdef CONFIG_LV2_UI
-			for (j = 0; j < iMidiAtomOuts; ++j) {
-				LV2_Atom_Buffer_Iterator aiter;
-				lv2_atom_buffer_begin(&aiter, m_lv2_atom_buffer_outs[j]);
-				while (true) {
-					uint8_t *data;
-					LV2_Atom_Event *pLv2AtomEvent
-						= lv2_atom_buffer_get(&aiter, &data);
-					if (pLv2AtomEvent == NULL)
-						break;
-					if (pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
-						char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
-						const uint32_t type = pLv2AtomEvent->body.type;
-						const uint32_t size = pLv2AtomEvent->body.size;
-						ControlEvent *ev = (ControlEvent *) buf;
-						ev->index    = m_piMidiAtomOuts[j];
-						ev->protocol = g_slv2_atom_event_type;
-						ev->size     = sizeof(LV2_Atom) + size;
-						LV2_Atom *atom = (LV2_Atom *) ev->body;
-						atom->type = type;
-						atom->size = size;
-						if (::jack_ringbuffer_write_space(m_plugin_events)
-							< sizeof(buf) + size)
-							break;
-						::jack_ringbuffer_write(m_plugin_events,
-							(const char *) buf, sizeof(buf));
-						::jack_ringbuffer_write(m_plugin_events,
-							(const char *) data, size);
-					}
-					lv2_atom_buffer_increment(&aiter);
-				}
-			}
-		#endif	// CONFIG_LV2_UI
-		#endif	// CONFIG_LV2_ATOM
 			// Wrap channels?...
 			if (iIChannel < iChannels - 1)
 				++iIChannel;
@@ -2153,6 +2120,42 @@ void qtractorLv2Plugin::process (
 				++iOChannel;
 		}
 	}
+
+#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_UI
+	for (j = 0; j < iMidiAtomOuts; ++j) {
+		LV2_Atom_Buffer_Iterator aiter;
+		lv2_atom_buffer_begin(&aiter, m_lv2_atom_buffer_outs[j]);
+		while (true) {
+			uint8_t *data;
+			LV2_Atom_Event *pLv2AtomEvent
+				= lv2_atom_buffer_get(&aiter, &data);
+			if (pLv2AtomEvent == NULL)
+				break;
+			if (pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
+				char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
+				const uint32_t type = pLv2AtomEvent->body.type;
+				const uint32_t size = pLv2AtomEvent->body.size;
+				ControlEvent *ev = (ControlEvent *) buf;
+				ev->index    = m_piMidiAtomOuts[j];
+				ev->protocol = g_slv2_atom_event_type;
+				ev->size     = sizeof(LV2_Atom) + size;
+				LV2_Atom *atom = (LV2_Atom *) ev->body;
+				atom->type = type;
+				atom->size = size;
+				if (::jack_ringbuffer_write_space(m_plugin_events)
+					< sizeof(buf) + size)
+					break;
+				::jack_ringbuffer_write(m_plugin_events,
+					(const char *) buf, sizeof(buf));
+				::jack_ringbuffer_write(m_plugin_events,
+					(const char *) data, size);
+			}
+			lv2_atom_buffer_increment(&aiter);
+		}
+	}
+#endif	// CONFIG_LV2_UI
+#endif	// CONFIG_LV2_ATOM
 
 #ifdef CONFIG_LV2_EVENT
 	if (pMidiManager && iMidiEventOuts > 0)
@@ -2520,12 +2523,13 @@ void qtractorLv2Plugin::idleEditor (void)
 
 #ifdef CONFIG_LV2_ATOM
 
-	ControlEvent ev;
-	const size_t read_space = ::jack_ringbuffer_read_space(m_plugin_events);
-	for (size_t i = 0; i < read_space; i += sizeof(ev) + ev.size) {
+	uint32_t read_space = ::jack_ringbuffer_read_space(m_plugin_events);
+	while (read_space > 0) {
+		ControlEvent ev;
 		::jack_ringbuffer_read(m_plugin_events, (char *) &ev, sizeof(ev));
 		char buf[ev.size];
-		::jack_ringbuffer_read(m_plugin_events, buf, ev.size);
+		if (::jack_ringbuffer_read(m_plugin_events, buf, ev.size) < ev.size)
+			break;
 	#ifdef CONFIG_LIBLILV
 		if (m_suil_instance) {
 			suil_instance_port_event(m_suil_instance,
@@ -2542,6 +2546,7 @@ void qtractorLv2Plugin::idleEditor (void)
 			}
 		}
 	#endif
+		read_space -= sizeof(ev) + ev.size;
 	}
 
 #endif	// CONFIG_LV2_ATOM
