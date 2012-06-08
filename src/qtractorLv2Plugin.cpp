@@ -2101,7 +2101,7 @@ void qtractorLv2Plugin::process (
 							}
 						}
 					}
-					read_space -= sizeof(ev) + ev.size
+					read_space -= sizeof(ev) + ev.size;
 				}
 			}
 		#endif	// CONFIG_LV2_UI
