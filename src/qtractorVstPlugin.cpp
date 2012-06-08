@@ -709,16 +709,17 @@ void qtractorVstPlugin::process (
 
 	// To process MIDI events, if any...
 	qtractorMidiManager *pMidiManager = NULL;
-	unsigned short iMidiIns  = type()->midiIns();
-	unsigned short iMidiOuts = type()->midiOuts();
+	const unsigned short iMidiIns  = type()->midiIns();
+	const unsigned short iMidiOuts = type()->midiOuts();
 	if (iMidiIns > 0)
 		pMidiManager = list()->midiManager();
 
 	// We'll cross channels over instances...
-	unsigned short iInstances = instances();
-	unsigned short iChannels  = channels();
-	unsigned short iAudioIns  = audioIns();
-	unsigned short iAudioOuts = audioOuts();
+	const unsigned short iInstances = instances();
+	const unsigned short iChannels  = channels();
+	const unsigned short iAudioIns  = audioIns();
+	const unsigned short iAudioOuts = audioOuts();
+
 	unsigned short iIChannel  = 0;
 	unsigned short iOChannel  = 0;
 	unsigned short i, j;

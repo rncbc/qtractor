@@ -356,10 +356,11 @@ void qtractorLadspaPlugin::process (
 		return;
 
 	// We'll cross channels over instances...
-	unsigned short iInstances = instances();
-	unsigned short iChannels  = channels();
-	unsigned short iAudioIns  = audioIns();
-	unsigned short iAudioOuts = audioOuts();
+	const unsigned short iInstances = instances();
+	const unsigned short iChannels  = channels();
+	const unsigned short iAudioIns  = audioIns();
+	const unsigned short iAudioOuts = audioOuts();
+
 	unsigned short iIChannel  = 0;
 	unsigned short iOChannel  = 0;
 	unsigned short i, j;
