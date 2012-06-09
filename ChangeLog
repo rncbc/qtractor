@@ -5,68 +5,70 @@ ChangeLog
 
 SVN TRUNK
 
-- LV2 Atom/MIDI buffering support is finally entering the scene;
-  LV2 Worker/Schedule support is also included in a bold attempt
-  to convey non-MIDI event transfers between plugin and its UI.
-  (EXPERIMENTAL)
+- Backward and Forward transport commands now have an additional stop
+  at first clip start point.
 
-- MIDI Clip editor (aka. piano-roll) and MIDI Tools fix: avoid
-  note-on events of zero velocity, which conventionally equates
-  to a dangling note-off event and dropped into oblivion sooner
-  or later. Also there's no more need for Shift/Ctrl keyboard
-  modifier to change in one single step all the MIDI events that
-  are currently selected (consistent with drag-move).
+- LV2 Atom/MIDI buffering support is finally entering the scene; LV2
+  Worker/Schedule support is also included in a bold attempt to convey
+  non-MIDI event transfers between plugin and its UI. (EXPERIMENTAL)
 
-- LV2 Presets support now entering effective operational status;
-  a new local option has been added (cf. View/Options.../Plugins
-  /Paths/LV2 Presets directory; default: ~/.lv2). (EXPERIMENTAL)
+- MIDI Clip editor (aka. piano-roll) and MIDI Tools fix: avoid note-on
+  events of zero velocity, which conventionally equates to a dangling
+  note-off event and dropped into oblivion sooner or later. There's no
+  more need for Shift/Ctrl keyboard modifier to change in one single
+  step all the MIDI events that are currently selected (now consistent
+  with drag-move).
 
-- Dropped XInitThreads() head call as it was never useful but on
-  those early days of JUSE VST plugins.
+- LV2 Presets support now entering effective operational status; a new
+  local option has been added (cf. View/Options.../Plugins/Paths/LV2
+  Presets directory; default is ~/.lv2). (EXPERIMENTAL)
+
+- Dropped XInitThreads() head call as it was never useful but on those
+  early days of JUCE VST plugins.
 
 - Italian (it) translation added (by Massimo Callegari, thanks).
 
-- Drag(-rubber-band)-selection on main track-view canvas doesn't
-  change the edit-head and -tail positions anymore.
+- Drag(-rubber-band)-selection on main track-view canvas doesn't change
+  the edit-head and -tail positions anymore.
 
 - Clip fade-in/out dragging now follows snap-to-beat setting.
 
-- Late modern eye-candy indulgence: alternate shaded stripes, on
-  every other bar as in a "zebra" background option for the main
-  tracks and MIDI clip editor views (cf. View/Snap/Zebra).
+- Late modern eye-candy indulgence: alternate shaded stripes, on every
+  other bar as in a "zebra" background option for the main tracks and
+  MIDI clip editor views (cf. View/Snap/Zebra).
 
-- LV2 Time/position information is now supported through special
-  designated plugin input ports (after suggestion by Filipe Coelho
-  aka. falktx). Additionally time/position information report has
-  been corrected and complemented for VST plugins. (EXPERIMENTAL)
+- LV2 Time/position information is now being supported through special
+  designated plugin input ports (after suggestion by Filipe Coelho aka.
+  falktx). Additionally, the time/position information report has been
+  corrected and complemented for VST plugins. (EXPERIMENTAL)
 
 - Audio vs. MIDI time drift correction has been slightly improved
   against rougue tempo changes across looping cycles.
 
-- Honor tempo/timing on MIDI instrument plugins. Happy regression
-  fix on getting MIDI note-offs at looping ends back in business;
-  all the necessary bumming for MIDI plugins to play nice in face
-  of tempo changes and whenever playback is started from anywhere
-  but the beginning of the time-line (ie. frame zero); thanks to
-  rvega aka. Rafael Vega, for the heads-up). (EXPERIMENTAL)
+- Honor tempo/timing on MIDI instrument plugins. Happy regression fix
+  on getting MIDI note-offs at looping ends back in business; all the
+  necessary bumming for MIDI plugins to play nice in face of tempo
+  changes and whenever playback is started from anywhere but the
+  beginning of the time-line (ie. frame zero); thanks to rvega aka.
+  Rafael Vega, for the heads-up). (EXPERIMENTAL)
 
 - Audio clip wave-forms were being displayed in inverted phase (ie.
   upside-down) all this time ever since day one. What a shame! :)
 
-- LV2 Programs interface is getting initial experimental status, to
-  let LV2 instrument plugins get on par with the DSSI and VST crowd
-  for MIDI bank/program instrument inventory and selection support
-  (a sidetrack complot with Filipe Coelho aka. falktx, thanks:).
+- LV2 Programs interface is getting initial experimental status, to let
+  LV2 instrument plugins get on par with the DSSI and VST crowd for MIDI
+  bank/program instrument inventory and selection support (a sidetrack
+  complot with Filipe Coelho aka. falktx, thanks:).
 
-- Dropped the old but entirely useless LV2 URI-unmap feature, now
+- Dropped the old but entirely useless LV2 URI-unmap feature, now being
   superceded by official LV2 URID (un)mapper.
 
 - Russian (ru) translation added (by Alexandre Prokoudine, thanks).
 
 - SLV2 deprecation process started, effective now at configure time.
 
-- Added include <unistd.h> to shut up gcc 4.7 build failures (patch
-  by Alessio Treglia, closes bug #3514794).
+- Added include <unistd.h> to shut up gcc 4.7 build failures (patch by
+  Alessio Treglia, closing bug #3514794).
 
 - Another approach avoiding recursive observer widget updates. Also
   applies to mixer, monitor and track state buttons.

@@ -74,9 +74,11 @@ public:
 	void setDescription(const QString& sDescription);
 	const QString& description() const;
 
-	// Session length mod-accessors.
-	void updateSessionLength(unsigned long iSessionLength = 0);
-	unsigned long sessionLength() const;
+	// Session startlength mod-accessors.
+	void updateSession(
+		unsigned long iSessionStart = 0, unsigned long iSessionEnd = 0);
+	unsigned long sessionStart() const;
+	unsigned long sessionEnd() const;
 
 	// Time-scale helper accessors.
 	qtractorTimeScale *timeScale();
@@ -390,7 +392,8 @@ private:
 
 	Properties     m_props;             // Session properties.
 
-	unsigned long  m_iSessionLength;    // Session length in frames.
+	unsigned long  m_iSessionStart;     // Session start in frames.
+	unsigned long  m_iSessionEnd;		// Session end in frames.
 
 	unsigned int   m_iRecordTracks;     // Current number of record-armed tracks.
 	unsigned int   m_iMuteTracks;       // Current number of muted tracks.

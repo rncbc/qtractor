@@ -4079,7 +4079,7 @@ void qtractorMainForm::viewRefresh (void)
 
 	// Update the whole session view dependables...
 	m_pSession->updateTimeScale();
-	m_pSession->updateSessionLength();
+	m_pSession->updateSession();
 
 	if (m_pTracks)
 		m_pTracks->updateContents(true);
@@ -4406,8 +4406,10 @@ void qtractorMainForm::transportBackward (void)
 		//	if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
 		//		list.append(m_pSession->loopEnd());
 		}
-		if (iPlayHead > m_pSession->sessionLength() && !m_pSession->isPlaying())
-			list.append(m_pSession->sessionLength());
+		if (iPlayHead > m_pSession->sessionStart())
+			list.append(m_pSession->sessionStart());
+		if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
+			list.append(m_pSession->sessionEnd());
 		qSort(list.begin(), list.end());
 		iPlayHead = list.last();
 	#endif
@@ -4496,7 +4498,7 @@ void qtractorMainForm::transportForward (void)
 	// Move playhead to edit-head, tail or full session-end.
 	if (QApplication::keyboardModifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier)) {
-		m_pSession->setPlayHead(m_pSession->sessionLength());
+		m_pSession->setPlayHead(m_pSession->sessionEnd());
 	} else {
 		unsigned long iPlayHead = m_pSession->playHead();
 	#if 0
@@ -4519,8 +4521,10 @@ void qtractorMainForm::transportForward (void)
 			if (iPlayHead < m_pSession->loopEnd())
 				list.append(m_pSession->loopEnd());
 		}
-		if (iPlayHead < m_pSession->sessionLength())
-			list.append(m_pSession->sessionLength());
+		if (iPlayHead < m_pSession->sessionStart())
+			list.append(m_pSession->sessionStart());
+		if (iPlayHead < m_pSession->sessionEnd())
+			list.append(m_pSession->sessionEnd());
 		qSort(list.begin(), list.end());
 		iPlayHead = list.first();
 	#endif
@@ -5144,7 +5148,7 @@ void qtractorMainForm::stabilizeForm (void)
 	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
 
 	unsigned long iPlayHead = m_pSession->playHead();
-	unsigned long iSessionLength = m_pSession->sessionLength();
+	unsigned long iSessionEnd = m_pSession->sessionEnd();
 
 	qtractorTrack *pTrack = NULL;
 	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
@@ -5171,11 +5175,11 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
 	m_ui.editDeleteAction->setEnabled(bSelected);
 
-	m_ui.editSelectAllAction->setEnabled(iSessionLength > 0);
-	m_ui.editSelectInvertAction->setEnabled(iSessionLength > 0);
+	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);
+	m_ui.editSelectInvertAction->setEnabled(iSessionEnd > 0);
 	m_ui.editSelectTrackRangeAction->setEnabled(bEnabled && bSelectable);
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
-	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
+	m_ui.editSelectRangeAction->setEnabled(iSessionEnd > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	// Top-level menu/toolbar items stabilization...
@@ -5233,7 +5237,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_statusItems[StatusLoop]->clear();
 
 	m_statusItems[StatusTime]->setText(
-		m_pSession->timeScale()->textFromFrame(0, true, iSessionLength));
+		m_pSession->timeScale()->textFromFrame(0, true, iSessionEnd));
 
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
@@ -5252,7 +5256,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportRewindAction->setEnabled(bBumped);
 	m_ui.transportFastForwardAction->setEnabled(!bRolling);
 	m_ui.transportForwardAction->setEnabled(
-		!bRolling && (iPlayHead < iSessionLength
+		!bRolling && (iPlayHead < iSessionEnd
 			|| iPlayHead < m_pSession->editHead()
 			|| iPlayHead < m_pSession->editTail()));
 	m_ui.transportLoopAction->setEnabled(
@@ -5318,7 +5322,7 @@ bool qtractorMainForm::startSession (void)
 		// HACK: Special treatment for disparate sample rates,
 		// and only for (just loaded) non empty sessions...
 		if (m_pSession->sampleRate() != iOldSampleRate
-			&& m_pSession->sessionLength() > 0) {
+			&& m_pSession->sessionEnd() > 0) {
 			appendMessagesError(
 				tr("The original session sample rate (%1 Hz)\n"
 				"is not the same of the current audio engine (%2 Hz).\n\n"
@@ -6341,16 +6345,16 @@ void qtractorMainForm::timerSlot (void)
 						}
 					} else {
 						m_pTracks->trackView()->updateContentsRecord();
-						m_pSession->updateSessionLength(iPlayHead);
+						m_pSession->updateSession(0, iPlayHead);
 						m_statusItems[StatusTime]->setText(
 							m_pSession->timeScale()->textFromFrame(
-								0, true, m_pSession->sessionLength()));
+								0, true, m_pSession->sessionEnd()));
 					}
 				}
 				else
 				// Whether to continue past end...
 				if (!m_ui.transportContinueAction->isChecked()
-					&& m_iPlayHead > m_pSession->sessionLength()
+					&& m_iPlayHead > m_pSession->sessionEnd()
 					&& m_iPlayHead > m_pSession->loopEnd()) {
 					if (m_pSession->isLooping()) {
 						// Maybe it's better go on with looping, eh?
@@ -7101,7 +7105,7 @@ void qtractorMainForm::updateContents (
 {
 	// Maybe, just maybe, we've made things larger...
 	m_pSession->updateTimeScale();
-	m_pSession->updateSessionLength();
+	m_pSession->updateSession();
 
 	// Refresh track-view?
 	if (m_pTracks)

@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -426,8 +426,8 @@ void qtractorExportForm::rangeChanged (void)
 		return;
 
 	if (m_ui.SessionRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(0, false);
-		m_ui.ExportEndSpinBox->setValue(pSession->sessionLength(), false);
+		m_ui.ExportStartSpinBox->setValue(pSession->sessionStart(), false);
+		m_ui.ExportEndSpinBox->setValue(pSession->sessionEnd(), false);
 	}
 	else
 	if (m_ui.LoopRangeRadioButton->isChecked()) {

@@ -257,7 +257,8 @@ void qtractorSession::clear (void)
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
 
-	m_iSessionLength = 0;
+	m_iSessionStart  = 0;
+	m_iSessionEnd    = 0;
 
 	m_iRecordTracks  = 0;
 	m_iMuteTracks    = 0;
@@ -366,36 +367,50 @@ const QString& qtractorSession::description (void) const
 
 
 // Adjust session length to the latest and/or longer clip.
-void qtractorSession::updateSessionLength ( unsigned long iSessionLength )
+void qtractorSession::updateSession (
+	unsigned long iSessionStart, unsigned long iSessionEnd )
 {
 	// Maybe we just don't need to know more...
 	// (recording ongoing?)
-	if (iSessionLength > 0) {
-		if (m_iSessionLength < iSessionLength)
-			m_iSessionLength = iSessionLength;
+	if (iSessionEnd > 0) {
+		if (m_iSessionEnd < iSessionEnd)
+			m_iSessionEnd = iSessionEnd;
 		// Enough!
 		return;
 	}
 
 	// Set initial one...
-	m_iSessionLength = iSessionLength;
+	m_iSessionStart = iSessionStart;
+	m_iSessionEnd   = iSessionEnd;
 
 	// Find the last and longest clip frame position...
+	int i = 0;
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-			if (m_iSessionLength < pClip->clipStart() + pClip->clipLength())
-				m_iSessionLength = pClip->clipStart() + pClip->clipLength();
+			const unsigned long iClipStart = pClip->clipStart();
+			const unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+			if (m_iSessionStart > iClipStart || i == 0)
+				m_iSessionStart = iClipStart;
+			if (m_iSessionEnd < iClipEnd)
+				m_iSessionEnd = iClipEnd;
+			++i;
 		}
 	}
 }
 
 
-// Session length accessors.
-unsigned long qtractorSession::sessionLength (void) const
+// Session start/end accessors.
+unsigned long qtractorSession::sessionStart (void) const
 {
-	return m_iSessionLength;
+	return m_iSessionStart;
+}
+
+
+unsigned long qtractorSession::sessionEnd (void) const
+{
+	return m_iSessionEnd;
 }
 
 
@@ -1959,7 +1974,7 @@ bool qtractorSession::loadElement (
 	}
 
 	// Just stabilize things around.
-	qtractorSession::updateSessionLength();
+	qtractorSession::updateSession();
 
 	// Check whether some deferred state needs to be set...
 	if (iLoopStart < iLoopEnd)

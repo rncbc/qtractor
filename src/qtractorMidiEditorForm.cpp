@@ -1674,7 +1674,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_ui.transportRewindAction->setEnabled(bBumped);
 		m_ui.transportFastForwardAction->setEnabled(!bRolling);
 		m_ui.transportForwardAction->setEnabled(
-			!bRolling && (iPlayHead < pSession->sessionLength()
+			!bRolling && (iPlayHead < pSession->sessionEnd()
 				|| iPlayHead < pSession->editHead()
 				|| iPlayHead < pSession->editTail()));
 		m_ui.transportLoopAction->setEnabled(

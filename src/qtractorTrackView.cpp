@@ -262,7 +262,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
-		int iSessionWidth = pSession->pixelFromFrame(pSession->sessionLength());
+		int iSessionWidth = pSession->pixelFromFrame(pSession->sessionEnd());
 		if (iContentsWidth < iSessionWidth)
 			iContentsWidth = iSessionWidth;
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
