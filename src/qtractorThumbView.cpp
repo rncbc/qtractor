@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -105,7 +105,7 @@ void qtractorThumbView::updateContents (void)
 		return;
 
 	// Local contents length (in frames).
-	m_iContentsLength = pSession->sessionLength();
+	m_iContentsLength = pSession->sessionEnd();
 	if (m_iContentsLength > 0) {
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iContentsLength);

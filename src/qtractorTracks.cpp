@@ -181,7 +181,7 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	// Fix the ssession time scale zoom determinant.
 	pSession->setHorizontalZoom(iHorizontalZoom);
 	pSession->updateTimeScale();
-	pSession->updateSessionLength();
+	pSession->updateSession();
 }
 
 
@@ -1212,8 +1212,8 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 
 	// Multi-selection extents (in frames)...
 	QList<audioClipBufferItem *> list;
-	unsigned long iSelectStart = pSession->sessionLength();
-	unsigned long iSelectEnd = 0;
+	unsigned long iSelectStart = pSession->sessionEnd();
+	unsigned long iSelectEnd = pSession->sessionStart();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorClip *pClip = iter.key();
 		qtractorTrack *pTrack = pClip->track();
@@ -1469,8 +1469,8 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 
 	// Multi-selection extents (in frames)...
-	unsigned long iSelectStart = pSession->sessionLength();
-	unsigned long iSelectEnd = 0;
+	unsigned long iSelectStart = pSession->sessionEnd();
+	unsigned long iSelectEnd = pSession->sessionStart();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorClip *pClip = iter.key();
 		// Make sure it's a legal selection...
@@ -1624,7 +1624,8 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 	// Multiple clip selection...
 	if (pClip == NULL && isClipSelected()) {
 		// Multi-selection extents (in frames)...
-		iEditHead = pSession->sessionLength();
+		iEditHead = pSession->sessionEnd();
+		iEditTail = pSession->sessionStart();
 		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();

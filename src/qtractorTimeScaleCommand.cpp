@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -247,7 +247,7 @@ qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
 
 	qtractorTimeScale::Node *pNext = pNode->next();
 	unsigned long iFrameStart = pNode->frame;
-	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionLength());
+	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionEnd());
 
 	qtractorClipCommand *pClipCommand = NULL;
 

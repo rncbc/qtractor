@@ -3086,7 +3086,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 
 	// Cannot have exports longer than current session.
 	if (iExportStart >= iExportEnd)
-		iExportEnd = pSession->sessionLength();
+		iExportEnd = pSession->sessionEnd();
 	if (iExportStart >= iExportEnd)
 		return false;
 
