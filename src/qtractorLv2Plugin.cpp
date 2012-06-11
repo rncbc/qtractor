@@ -2732,7 +2732,7 @@ LV2UI_Handle qtractorLv2Plugin::lv2_ui_handle (void) const
 void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 	uint32_t buffer_size, uint32_t protocol, const void *buffer )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_write(%u, %u, %u, %p)",
 		this, port_index, buffer_size, protocol, buffer);
 #endif

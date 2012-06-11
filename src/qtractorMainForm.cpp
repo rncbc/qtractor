@@ -5988,12 +5988,14 @@ void qtractorMainForm::updateClipMenu (void)
 		pTrack = (pClip ? pClip->track() : m_pTracks->currentTrack());
 	}
 
-	bool bEnabled    = (pTrack != NULL);
-	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
-	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
+	bool bEnabled = (pTrack != NULL);
+	bool bSelected = (pClip != NULL)
+		|| (m_pTracks && m_pTracks->isClipSelected());
+	bool bSelectable = (pClip != NULL)
+		|| (m_pSession->editHead() < m_pSession->editTail());
 
-	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
-		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack));
+	bool bSingleTrackSelected = bSelected
+		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack);
 
 	m_ui.clipNewAction->setEnabled(bEnabled);
 	m_ui.clipEditAction->setEnabled(pClip != NULL);
@@ -6008,14 +6010,14 @@ void qtractorMainForm::updateClipMenu (void)
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
-	m_ui.clipNormalizeAction->setEnabled(pClip != NULL || bSelected);
-	m_ui.clipTempoAction->setEnabled(pClip != NULL || bSelectable);
-	m_ui.clipRangeSetAction->setEnabled(pClip != NULL || bSelected);
-	m_ui.clipLoopSetAction->setEnabled(pClip != NULL || bSelected);
+	m_ui.clipNormalizeAction->setEnabled(bSelected);
+	m_ui.clipTempoAction->setEnabled(bSelectable);
+	m_ui.clipRangeSetAction->setEnabled(bSelected);
+	m_ui.clipLoopSetAction->setEnabled(bSelected);
 //	m_ui.clipImportAction->setEnabled(bTracks);
 	m_ui.clipExportAction->setEnabled(bSingleTrackSelected);
-	m_ui.clipToolsMenu->setEnabled((pClip != NULL || bSelected)
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
+	m_ui.clipToolsMenu->setEnabled(
+		bSelected && pTrack && pTrack->trackType() == qtractorTrack::Midi);
 	m_ui.clipTakeMenu->setEnabled(pClip != NULL);
 }
 
