@@ -153,7 +153,8 @@ public:
 	enum Command { Cut, Copy, Delete };
 	
 	// Clip selection executive method.
-	void executeClipSelect(qtractorTrackView::Command cmd);
+	void executeClipSelect(
+		qtractorTrackView::Command cmd, qtractorClip *pClip = NULL);
 
 	// Intra-drag-n-drop clip move method.
 	void moveClipSelect(qtractorTrack *pTrack);
@@ -268,7 +269,7 @@ protected:
 	void selectClipFile(bool bReset);
 
 	// Clip selection sanity check method.
-	bool queryClipSelect();
+	bool queryClipSelect(qtractorClip *pClip = NULL);
 
 	// Update whole clip selection.
 	void updateClipSelect();

@@ -2305,15 +2305,6 @@ qtractorClip *qtractorTrackView::currentClip (void) const
 	if (pClip == NULL && isClipSelected())
 		pClip = m_pClipSelect->items().constBegin().key();
 
-	if (pClip == NULL) {
-		qtractorTrack *pTrack = m_pTracks->trackList()->currentTrack();
-		if (pTrack) {
-			pClip = pTrack->clips().first();
-			while (pClip && m_iPlayHead > pClip->clipStart() + pClip->clipLength())
-				pClip = pClip->next();
-		}
-	}
-
 	return pClip;
 }
 
@@ -3335,11 +3326,11 @@ void qtractorTrackView::ClipBoard::clear (void)
 
 
 // Clip selection sanity check method.
-bool qtractorTrackView::queryClipSelect (void)
+bool qtractorTrackView::queryClipSelect ( qtractorClip *pClip )
 {
 	// Check if anything is really selected...
 	if (m_pClipSelect->items().count() < 1)
-		return false;
+		return (pClip && pClip->queryEditor());
 
 	// Just ask whether any target clips have pending editors...
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
@@ -3357,10 +3348,18 @@ bool qtractorTrackView::queryClipSelect (void)
 
 
 // Clip selection executive method.
-void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
+void qtractorTrackView::executeClipSelect (
+	qtractorTrackView::Command cmd, qtractorClip *pClipEx )
 {
+	// Check if it's all about a single clip target...
+	if (m_pClipSelect->items().count() < 1) {
+		if (pClipEx == NULL)
+			pClipEx = currentClip();
+	}
+	else pClipEx = NULL;	// Selection always takes precedence...
+
 	// Check if anything is really selected and sane...
-	if (!queryClipSelect())
+	if (!queryClipSelect(pClipEx))
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -3381,6 +3380,22 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	if (cmd == Cut || cmd == Delete) {
 		pClipCommand = new qtractorClipCommand(
 			tr("%1 clip").arg(cmd == Cut ? tr("cut") : tr("delete")));
+	}
+
+	if (pClipEx) {
+		// -- Single clip...
+		if (bClipboard) {
+			QRect rectClip;
+			clipInfo(pClipEx, &rectClip);
+			g_clipboard.addItem(pClipEx,
+				rectClip,
+				pClipEx->clipStart(),
+				pClipEx->clipOffset(),
+				pClipEx->clipLength());
+		}
+		if (pClipCommand)
+			pClipCommand->removeClip(pClipEx);
+		// Done, single clip.
 	}
 
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
@@ -3483,7 +3498,8 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	}
 
 	// Hint from the whole selection rectangle...
-	g_clipboard.frames = pSession->frameFromPixel(m_pClipSelect->rect().width());
+	g_clipboard.frames = (pClipEx ? pClipEx->clipLength()
+		: pSession->frameFromPixel(m_pClipSelect->rect().width()));
 
 	// Reset selection on cut or delete;
 	// put it in the form of an undoable command...
