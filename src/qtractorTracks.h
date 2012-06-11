@@ -82,6 +82,7 @@ public:
 	bool newClip();
 	bool editClip(qtractorClip *pClip = NULL);
 	bool unlinkClip(qtractorClip *pClip = NULL);
+	void deleteClip(qtractorClip *pClip = NULL);
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
 	bool rangeClip(qtractorClip *pClip = NULL);
@@ -105,9 +106,6 @@ public:
 
 	// Special paste/repeat prompt.
 	void pasteRepeatClipboard();
-
-	// Delete selection method.
-	void deleteClipSelect();
 
 	// Selection methods.
 	void selectEditRange(bool bReset = false);

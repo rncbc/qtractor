@@ -585,6 +585,13 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 }
 
 
+// Delete current selection.
+void qtractorTracks::deleteClip ( qtractorClip *pClip )
+{
+	m_pTrackView->executeClipSelect(qtractorTrackView::Delete, pClip);
+}
+
+
 // Split given(current) clip.
 bool qtractorTracks::splitClip ( qtractorClip *pClip )
 {
@@ -592,12 +599,22 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 	if (pSession == NULL)
 		return false;
 
+	unsigned long iPlayHead  = pSession->playHead();
+
 	if (pClip == NULL)
 		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL) {
+		qtractorTrack *pTrack = m_pTrackList->currentTrack();
+		if (pTrack) {
+			pClip = pTrack->clips().first();
+			while (pClip && iPlayHead > pClip->clipStart() + pClip->clipLength())
+				pClip = pClip->next();
+		}
+	}
+
 	if (pClip == NULL)
 		return false;
 
-	unsigned long iPlayHead  = pSession->playHead();
 	unsigned long iClipStart = pClip->clipStart();
 	unsigned long iClipEnd   = iClipStart + pClip->clipLength();
 	if (iClipStart >= iPlayHead || iPlayHead >= iClipEnd)
@@ -1757,13 +1774,6 @@ void qtractorTracks::pasteRepeatClipboard (void)
 	}
 }
 
-
-
-// Delete current selection.
-void qtractorTracks::deleteClipSelect (void)
-{
-	m_pTrackView->executeClipSelect(qtractorTrackView::Delete);
-}
 
 
 // Select range interval between edit head and tail.

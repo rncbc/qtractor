@@ -2308,7 +2308,7 @@ void qtractorMainForm::editDelete (void)
 	else
 	// Delete selection...
 	if (m_pTracks)
-		m_pTracks->deleteClipSelect();
+		m_pTracks->deleteClip();
 }
 
 
@@ -5168,12 +5168,12 @@ void qtractorMainForm::stabilizeForm (void)
 	if (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected())
 		bSelected = true;
 
-	m_ui.editCutAction->setEnabled(bSelected);
-	m_ui.editCopyAction->setEnabled(bSelected);
+//	m_ui.editCutAction->setEnabled(bSelected);
+//	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
 		|| QApplication::clipboard()->mimeData()->hasUrls());
 	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
-	m_ui.editDeleteAction->setEnabled(bSelected);
+//	m_ui.editDeleteAction->setEnabled(bSelected);
 
 	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);
 	m_ui.editSelectInvertAction->setEnabled(iSessionEnd > 0);
@@ -5987,6 +5987,10 @@ void qtractorMainForm::updateClipMenu (void)
 
 	bool bSingleTrackSelected = bSelected
 		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack);
+
+	m_ui.editCutAction->setEnabled(bSelected);
+	m_ui.editCopyAction->setEnabled(bSelected);
+	m_ui.editDeleteAction->setEnabled(bSelected);
 
 	m_ui.clipNewAction->setEnabled(bEnabled);
 	m_ui.clipEditAction->setEnabled(pClip != NULL);
