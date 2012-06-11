@@ -1545,9 +1545,11 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// We need a session and a location...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
+	#if 0
 		// Direct snap positioning...
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+	#endif
 		// Which button is being pressed?
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
@@ -1575,21 +1577,25 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		case Qt::MidButton:
 			// Mid-button positioning...
 			selectAll(false);
+		#if 0
 			// Edit cursor positioning...
 			setEditHead(iFrame);
 			setEditTail(iFrame);
+		#endif
 			// Not quite a selection, but some visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
 		case Qt::RightButton:
-			// Have no sense if pointer falls over a clip...
+			// Have sense if pointer falls over a clip...
 			m_pClipDrag = clipAt(pos, true);
+		#if 0
 			if (m_pClipDrag == NULL) {
 				// Right-button edit-tail positioning...
 				setEditTail(iFrame);
 				// Not quite a selection, but some visual feedback...
 				m_pTracks->selectionChangeNotify();
 			}
+		#endif
 			// Fall thru...
 		default:
 			break;
@@ -1747,9 +1753,11 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					// Play-head positioning...
 					setPlayHead(iFrame);
 					// Done with (deferred) play-head positioning.
+				#if 0
 				} else {
 					// Deferred left-button edit-head positioning...
 					setEditHead(iFrame);
+				#endif
 				}
 				// Not quite a selection, but for
 				// immediate visual feedback...

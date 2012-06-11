@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Clicking and/or dragging for rubber-band selection on main track-view
+  canvas doesn't change the edit-head and -tail positions anymore.
+
 - Backward and Forward transport commands now have an additional stop
   at first clip start point.
 
@@ -27,9 +30,6 @@ SVN TRUNK
   early days of JUCE VST plugins.
 
 - Italian (it) translation added (by Massimo Callegari, thanks).
-
-- Drag(-rubber-band)-selection on main track-view canvas doesn't change
-  the edit-head and -tail positions anymore.
 
 - Clip fade-in/out dragging now follows snap-to-beat setting.
 
