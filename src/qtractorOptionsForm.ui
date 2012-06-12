@@ -3054,95 +3054,138 @@
 		 </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QGroupBox" name="PluginInstrumentsGroupBox">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="title">
-          <string>Instruments</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>9</number>
-          </property>
-          <property name="spacing">
-           <number>6</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="AudioOutputBusCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to have separate audio output ports</string>
-            </property>
-            <property name="text">
-             <string>Dedicated audi&amp;o outputs:</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+O</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="AudioOutputAutoConnectCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to auto-connect dedicated audio output ports</string>
-            </property>
-            <property name="text">
-             <string>Au&amp;to-connect</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+T</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint">
-          <size>
-           <width>20</width>
-           <height>4</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
+	   <item>
+		<widget class="QGroupBox" name="PluginInstrumentsGroupBox">
+		 <property name="font">
+		  <font>
+		   <weight>75</weight>
+		   <bold>true</bold>
+		  </font>
+		 </property>
+		 <property name="title">
+		  <string>Instruments</string>
+		 </property>
+		 <property name="flat">
+		  <bool>true</bool>
+		 </property>
+		 <layout class="QGridLayout">
+		  <property name="margin">
+		   <number>9</number>
+		  </property>
+		  <property name="spacing">
+		   <number>6</number>
+		  </property>
+		  <item row="0" column="0">
+		   <widget class="QCheckBox" name="AudioOutputBusCheckBox">
+			<property name="font">
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip">
+			 <string>Whether to have separate audio output ports</string>
+			</property>
+			<property name="text">
+			 <string>Dedicated audi&amp;o outputs:</string>
+			</property>
+			<property name="shortcut">
+			 <string>Alt+O</string>
+			</property>
+		   </widget>
+		  </item>
+		  <item row="0" column="1">
+		   <widget class="QCheckBox" name="AudioOutputAutoConnectCheckBox">
+			<property name="font">
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip">
+			 <string>Whether to auto-connect dedicated audio output ports</string>
+			</property>
+			<property name="text">
+			 <string>Au&amp;to-connect</string>
+			</property>
+			<property name="shortcut">
+			 <string>Alt+T</string>
+			</property>
+		   </widget>
+		  </item>
+		  <item row="0" column="2">
+		   <spacer>
+			<property name="orientation">
+			 <enum>Qt::Horizontal</enum>
+			</property>
+			<property name="sizeHint">
+			 <size>
+			  <width>20</width>
+			  <height>20</height>
+			 </size>
+			</property>
+		   </spacer>
+		  </item>
+		 </layout>
+		</widget>
+	   </item>
+	   <item>
+		<spacer>
+		 <property name="orientation">
+		  <enum>Qt::Vertical</enum>
+		 </property>
+		 <property name="sizeHint">
+		  <size>
+		   <width>20</width>
+		   <height>4</height>
+		  </size>
+		 </property>
+		</spacer>
+	   </item>
+	   <item>
+		<widget class="QGroupBox" name="PluginEditorGroupBox">
+		 <property name="font">
+		  <font>
+		   <weight>75</weight>
+		   <bold>true</bold>
+		  </font>
+		 </property>
+		 <property name="title">
+		  <string>Editor</string>
+		 </property>
+		 <property name="flat">
+		  <bool>true</bool>
+		 </property>
+		 <layout class="QGridLayout">
+		  <property name="margin">
+		   <number>9</number>
+		  </property>
+		  <property name="spacing">
+		   <number>6</number>
+		  </property>
+		  <item row="0" column="0" colspan="3">
+		   <widget class="QCheckBox" name="OpenEditorCheckBox">
+			<property name="font">
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip">
+			 <string>Whether to open plugin's editor (GUI) by default</string>
+			</property>
+			<property name="text">
+			 <string>Open plugin's &amp;editor (GUI) by default</string>
+			</property>
+			<property name="shortcut">
+			 <string>Alt+G</string>
+			</property>
+		   </widget>
+		  </item>
+		 </layout>
+		</widget>
+	   </item>
+	   <item>
         <widget class="QGroupBox" name="PluginExperimentalGroupBox">
          <property name="font">
           <font>
@@ -3280,6 +3323,7 @@
   <tabstop>Lv2PresetDirToolButton</tabstop>
   <tabstop>AudioOutputBusCheckBox</tabstop>
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
+  <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>DummyVstScanCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>

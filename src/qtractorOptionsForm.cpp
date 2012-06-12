@@ -378,6 +378,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioOutputAutoConnectCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.OpenEditorCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DummyVstScanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -571,6 +574,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Plugin instruments options.
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
+	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
 	m_ui.DummyVstScanCheckBox->setChecked(m_pOptions->bDummyVstScan);
 
 	int iPluginType = m_pOptions->iPluginType - 1;
@@ -669,6 +673,7 @@ void qtractorOptionsForm::accept (void)
 		// Plugin instruments options.
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
+		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
 		m_pOptions->bDummyVstScan        = m_ui.DummyVstScanCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();

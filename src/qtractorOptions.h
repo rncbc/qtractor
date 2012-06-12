@@ -187,6 +187,9 @@ public:
 	bool bAudioOutputBus;
 	bool bAudioOutputAutoConnect;
 
+	// Plug-in GUI options.
+	bool bOpenEditor;
+
 	// VST dummy plugin scan option.
 	bool bDummyVstScan;
 
