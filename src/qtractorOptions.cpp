@@ -213,6 +213,7 @@ void qtractorOptions::loadOptions (void)
 	sLv2PresetDir = m_settings.value("/Lv2PresetDir").toString();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
+	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	m_settings.endGroup();
 
@@ -448,6 +449,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
+	m_settings.setValue("/OpenEditor", bOpenEditor);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.endGroup();
 

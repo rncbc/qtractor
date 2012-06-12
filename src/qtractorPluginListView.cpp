@@ -37,6 +37,8 @@
 
 #include "qtractorInsertPlugin.h"
 
+#include "qtractorOptions.h"
+
 #include <QItemDelegate>
 #include <QPainter>
 #include <QMenu>
@@ -464,6 +466,11 @@ void qtractorPluginListView::addPlugin (void)
 	qtractorAddPluginCommand *pAddPluginCommand
 		= new qtractorAddPluginCommand();
 
+	bool bOpenEditor = false;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		bOpenEditor = pOptions->bOpenEditor;
+
 	for (int i = 0; i < selectForm.pluginCount(); ++i) {
 		// Add an actual plugin item...
 		qtractorPlugin *pPlugin
@@ -475,7 +482,7 @@ void qtractorPluginListView::addPlugin (void)
 			pPlugin->setActivated(selectForm.isPluginActivated());
 			pAddPluginCommand->addPlugin(pPlugin);
 			// Show the plugin form right away...
-			if ((pPlugin->type())->isEditor())
+			if (bOpenEditor && (pPlugin->type())->isEditor())
 				pPlugin->openEditor(this);
 			else
 				(pPlugin->form())->activateForm();
@@ -946,7 +953,12 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 	if (pPlugin == NULL)
 		return;
 
-	if ((pPlugin->type())->isEditor())
+	bool bOpenEditor = false;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		bOpenEditor = pOptions->bOpenEditor;
+
+	if (bOpenEditor && (pPlugin->type())->isEditor())
 		pPlugin->openEditor(this);
 	else
 		(pPlugin->form())->activateForm();

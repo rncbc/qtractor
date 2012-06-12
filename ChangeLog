@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- New user option/preferece to whether to open a plugin's editor (GUI)
+  by default, when available (cf. View/Options.../Plugins/Editor).
+
 - Clicking and/or dragging for rubber-band selection on main track-view
   canvas doesn't change the edit-head and -tail positions anymore.
 
