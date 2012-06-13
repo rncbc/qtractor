@@ -1556,6 +1556,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Done with MIDI-thru.
 						pMidiBus->midiMonitor_out()->enqueue(type, data2);
 						// Do it for the MIDI plugins too...
+						if (!pMidiBus->isMonitor()
+							&& pMidiBus->pluginList_out()
+							&& (pMidiBus->pluginList_out())->midiManager())
+							((pMidiBus->pluginList_out())->midiManager())->queued(
+								pSession->timeScale(), pEv, iTime, m_iFrameStart);
+						// Do it for the MIDI plugins too...
 						if ((pTrack->pluginList())->midiManager())
 							(pTrack->pluginList())->midiManager()->queued(
 								pSession->timeScale(), pEv, iTime, m_iFrameStart);
