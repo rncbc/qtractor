@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Auto-monitored MIDI tracks were missing their pass-through to their
+  respective MIDI output bus plugin chains, now fixed and letting any
+  multi-timbral instrument plugin to get a peek from auto-monitoring.
+
 - New user option/preferece to whether to open a plugin's editor (GUI)
   by default, when available (cf. View/Options.../Plugins/Editor).
 
