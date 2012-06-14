@@ -2981,37 +2981,37 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4855"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro MIDI/Atom přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4858"/>
         <source>LV2 Plug-in Worker/Schedule support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro pracovník/rozvrh přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4861"/>
         <source>LV2 Plug-in State support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro stav přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4864"/>
         <source>LV2 Plug-in State Files support enabled. (FUBAR)</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro přídavných modulů LV2 stav souborů byla povolena.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4867"/>
         <source>LV2 Plug-in Programs support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro programy přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4870"/>
         <source>LV2 Plug-in Presets support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro přednastavení přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4873"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro čas/poloha přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <source>LV2 Plug-in support (libslv2) enabled. (OLD)</source>
@@ -3422,17 +3422,17 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4832"/>
         <source>LV2 Plug-in support (libslv2) enabled. (DEPRECATED)</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro přídavný modul LV2 (libslv2) byla povolena. (ODMÍTNUTÉ)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4835"/>
         <source>LV2 Plug-in support (liblilv) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora přídavných modulů LV2 (liblilv) byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4838"/>
         <source>LV2 Plug-in UI instantiation support (libsuil) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro instanciaci rozhraní přídavných modulů LV2 (libsuil) byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4852"/>
@@ -5775,18 +5775,18 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2265"/>
         <source>&amp;Zebra</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zebra</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2268"/>
         <location filename="../qtractorMainForm.ui" line="2271"/>
         <source>Zebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Zebra</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2274"/>
         <source>Bar zebra view mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Pohledový režim se zebrovými pruhy</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2282"/>
@@ -8182,18 +8182,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1205"/>
         <source>&amp;Zebra</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zebra</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1208"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1211"/>
         <source>Zebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Zebra</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1214"/>
         <source>Bar zebra view mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Pohledový režim se zebrovými pruhy</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1374"/>
@@ -9676,7 +9676,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1196"/>
         <source>LV2 Presets Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář s přednastaveními LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1247"/>
@@ -10740,17 +10740,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2992"/>
         <source>&amp;LV2 Presets directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář s přednastaveními &amp;LV2:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3014"/>
         <source>LV2 Presets directory (default: ~/.lv2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář s přednastaveními LV2 (výchozí: ~/.lv2)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3042"/>
         <source>Browse LV2 Presets directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Procházet adresář s přednastaveními LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3066"/>
@@ -10786,22 +10786,22 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3154"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3175"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda ve výchozím nastavení otevřít editor (rozhraní) přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3178"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít editor (rozhraní) přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3181"/>
         <source>Alt+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+G</translation>
     </message>
     <message>
         <source>Dedicated audi&amp;o outputs</source>
