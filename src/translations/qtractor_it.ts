@@ -5135,12 +5135,12 @@ al prossimo avvio di questo %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4855"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto MIDI/Atom plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4858"/>
         <source>LV2 Plug-in Worker/Schedule support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto Worker/Schedule plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4861"/>
@@ -5150,7 +5150,7 @@ al prossimo avvio di questo %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4864"/>
         <source>LV2 Plug-in State Files support enabled. (FUBAR)</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto Stato File plugin LV2 abilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4867"/>
@@ -5160,12 +5160,12 @@ al prossimo avvio di questo %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4870"/>
         <source>LV2 Plug-in Presets support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto preset plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4873"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto Tempo/posizione plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4877"/>
@@ -9636,17 +9636,17 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2992"/>
         <source>&amp;LV2 Presets directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Directory preset &amp;LV2:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3014"/>
         <source>LV2 Presets directory (default: ~/.lv2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Directory preset LV2 (default: ~/.lv2)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3042"/>
         <source>Browse LV2 Presets directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Sfoglia directory preset LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3066"/>
@@ -9681,22 +9681,22 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3154"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3175"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri di default la GUI dell&apos;editor delle plugin</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3178"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri di default la GUI dell&apos;editor delle plugin</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3181"/>
         <source>Alt+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+G</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3197"/>
@@ -9790,7 +9790,7 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1196"/>
         <source>LV2 Presets Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directory dei Preset LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1247"/>

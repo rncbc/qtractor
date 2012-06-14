@@ -9,7 +9,7 @@ SVN TRUNK
   respective MIDI output bus plugin chains, now fixed and letting any
   multi-timbral instrument plugin to get a peek from auto-monitoring.
 
-- New user option/preferece to whether to open a plugin's editor (GUI)
+- New user option/preference to whether to open a plugin's editor (GUI)
   by default, when available (cf. View/Options.../Plugins/Editor).
 
 - Clicking and/or dragging for rubber-band selection on main track-view
@@ -20,7 +20,7 @@ SVN TRUNK
 
 - LV2 Atom/MIDI buffering support is finally entering the scene; LV2
   Worker/Schedule support is also included in a bold attempt to convey
-  non-MIDI event transfers between plugin and its UI. (EXPERIMENTAL)
+  non-MIDI event transfers between plugin and its UI.
 
 - MIDI Clip editor (aka. piano-roll) and MIDI Tools fix: avoid note-on
   events of zero velocity, which conventionally equates to a dangling
@@ -31,7 +31,7 @@ SVN TRUNK
 
 - LV2 Presets support now entering effective operational status; a new
   local option has been added (cf. View/Options.../Plugins/Paths/LV2
-  Presets directory; default is ~/.lv2). (EXPERIMENTAL)
+  Presets directory; default is ~/.lv2).
 
 - Dropped XInitThreads() head call as it was never useful but on those
   early days of JUCE VST plugins.
@@ -47,17 +47,17 @@ SVN TRUNK
 - LV2 Time/position information is now being supported through special
   designated plugin input ports (after suggestion by Filipe Coelho aka.
   falktx). Additionally, the time/position information report has been
-  corrected and complemented for VST plugins. (EXPERIMENTAL)
+  corrected and complemented for VST plugins.
 
 - Audio vs. MIDI time drift correction has been slightly improved
-  against rougue tempo changes across looping cycles.
+  against rogue tempo changes across looping cycles.
 
 - Honor tempo/timing on MIDI instrument plugins. Happy regression fix
   on getting MIDI note-offs at looping ends back in business; all the
   necessary bumming for MIDI plugins to play nice in face of tempo
   changes and whenever playback is started from anywhere but the
   beginning of the time-line (ie. frame zero); thanks to rvega aka.
-  Rafael Vega, for the heads-up). (EXPERIMENTAL)
+  Rafael Vega, for the heads-up).
 
 - Audio clip wave-forms were being displayed in inverted phase (ie.
   upside-down) all this time ever since day one. What a shame! :)
@@ -68,7 +68,7 @@ SVN TRUNK
   complot with Filipe Coelho aka. falktx, thanks:).
 
 - Dropped the old but entirely useless LV2 URI-unmap feature, now being
-  superceded by official LV2 URID (un)mapper.
+  superseded by official LV2 URID (un)mapper.
 
 - Russian (ru) translation added (by Alexandre Prokoudine, thanks).
 
@@ -92,7 +92,7 @@ SVN TRUNK
   large audio buffer period sizes (>= 1024 frames/buffer).
 
 - Editing MIDI while playback is rolling, doesn't mute the track any
-  more, adding a point to the live editing experience. (EXPERIMENTAL)
+  more, adding a point to the live editing experience.
 
 - Finer granularity for direct access parameter mouse wheel changes.
 
