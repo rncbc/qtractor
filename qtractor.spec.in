@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 39
+%define release 40
 
 %define _prefix	@ac_prefix@
 
@@ -69,6 +69,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
+* Fri Jun 15 2012 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.5
+- Foxtrot Uniform release.
 * Thu Mar 01 2012 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.4
 - Echo Victor release.
 * Wed Dec 28 2011 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.3

@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.5  2012-06-15  Foxtrot Uniform
 
 - Auto-monitored MIDI tracks were missing their pass-through to their
   respective MIDI output bus plugin chains, now fixed and letting any
