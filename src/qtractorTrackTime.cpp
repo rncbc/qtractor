@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -113,20 +113,20 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(cx);
-	int x0 = x = pNode->pixelFromBeat(iBeat) - cx;
+	int x1 = x = pNode->pixelFromBeat(iBeat) - cx;
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
+		bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x1);
 		if (bBeatIsBar) {
 			y1 = 0;
 			painter.setPen(pal.windowText().color());
 			painter.drawText(x + 2, y1 + fm.ascent(),
 				QString::number(pNode->barFromBeat(iBeat) + 1));
-			x0 = x + 16;
+			x1 = x + 16;
 			if (iBeat == pNode->beat) {
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 				painter.setPen(pal.base().color().value() < 0x7f
 					? pal.light().color() : pal.dark().color()); 
-				painter.drawText(x0, y1 + fm.ascent(),
+				painter.drawText(x1, y1 + fm.ascent(),
 					QString("%1 %2/%3")
 					.arg(pNode->tempo, 0, 'g', 3)
 					.arg(pNode->beatsPerBar)
