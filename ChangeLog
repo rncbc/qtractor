@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- New French (fr) translation added (by Yann Collette, thanks).
+
 - Slight late optimization on vertical zebra/grid lines drawing. 
 
 
