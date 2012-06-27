@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Added some more snap-to-beat divisors (Beat/14, /21 and /28) due on
+  feature request #3537961, while dropping highest, probably useless
+  one (/128).
+
 - New French (fr) translation added (by Yann Collette, thanks).
 
 - Slight late optimization on vertical zebra/grid lines drawing. 

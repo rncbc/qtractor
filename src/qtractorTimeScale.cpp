@@ -599,7 +599,7 @@ QString qtractorTimeScale::textFromTick (
 
 // Beat divisor (snap index) map.
 static int s_aiSnapPerBeat[] = {
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 24, 32, 48, 64, 96, 128
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 21, 24, 28, 32, 48, 64, 96
 };
 
 const int c_iSnapItemCount = sizeof(s_aiSnapPerBeat) / sizeof(int);
