@@ -413,18 +413,23 @@ public:
 	bool isActivated() const
 		{ return m_bActivated; }
 
+	// An accessible list of parameters.
+	typedef QHash<unsigned long, qtractorPluginParam *> Params;
+	const Params& params() const
+		{ return m_params; }
+
+	typedef QHash<QString, qtractorPluginParam *> ParamNames;
+	const ParamNames& paramNames() const
+		{ return m_paramNames; }
+
 	// Parameter list accessor.
 	void addParam(qtractorPluginParam *pParam)
 	{
 		if (pParam->isLogarithmic())
 			pParam->observer()->setLogarithmic(true);
 		m_params.insert(pParam->index(), pParam);
+		m_paramNames.insert(pParam->name(), pParam);
 	}
-
-	// An accessible list of parameters.
-	typedef QHash<unsigned long, qtractorPluginParam *> Params;
-	const Params& params() const
-		{ return m_params; }
 
 	// Instance capped number of audio ports.
 	unsigned short audioIns() const
@@ -535,6 +540,7 @@ public:
 
 	// Plugin parameter lookup.
 	qtractorPluginParam *findParam(unsigned long iIndex) const;
+	qtractorPluginParam *findParamName(const QString& sName) const;
 
 	// Plugin configuration (CLOB) stuff.
 	typedef QHash<QString, QString> Configs;
@@ -563,7 +569,15 @@ public:
 		{ return m_ctypes[sKey]; }
 
 	// Plugin parameter values stuff.
-	typedef QHash<unsigned long, float> Values;
+	typedef QHash<unsigned long, QString> ValueNames;
+	typedef QHash<unsigned long, float>   ValueIndex;
+
+	typedef struct
+	{
+		ValueNames names;
+		ValueIndex index;
+
+	} Values;
 
 	// Plugin parameter/state snapshot.
 	void freezeValues();
@@ -577,16 +591,11 @@ public:
 	const Values& values() const
 		{ return m_values; }
 
-	void setValue(unsigned long iIndex, float fValue)
-		{ m_values[iIndex] = fValue; }
-	float value(unsigned long iIndex) const
-		{ return m_values[iIndex]; }
-
 	// Plugin configure clearance.
 	void clearConfigs()
 		{ m_configs.clear(); m_ctypes.clear(); }
 	void clearValues()
-		{ m_values.clear(); }
+		{ m_values.names.clear(); m_values.index.clear(); }
 
 	// Load plugin configuration/parameter values stuff.
 	static void loadConfigs(
@@ -640,6 +649,9 @@ private:
 
 	// List of input control ports (parameters).
 	Params m_params;
+
+	// List of parameters (by name).
+	ParamNames m_paramNames;
 
 	// An accessible list of observers.
 	QList<qtractorPluginListItem *> m_items;

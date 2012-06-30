@@ -3,6 +3,23 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Improved plugin state resilience, now finally with parameter name
+  matching, specifically targeted on loading old sessions or plugin
+  preset files (.qtx), preserving old saved plugin states as much as
+  possible in face of rogue or discrete parameter index renumbering,
+  due naturally on any plugin's life cycle ie. upgrades etc.;)
+
+- Added some more snap-to-beat divisors (Beat/14, /21 and /28) due on
+  feature request #3537961, while dropping highest, probably useless
+  one (/128).
+
+- New French (fr) translation added (by Yann Collette, thanks).
+
+- Slight late optimization on vertical zebra/grid lines drawing. 
+
+
 0.5.5  2012-06-15  Foxtrot Uniform
 
 - Auto-monitored MIDI tracks were missing their pass-through to their
