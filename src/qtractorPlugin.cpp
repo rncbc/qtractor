@@ -745,11 +745,11 @@ void qtractorPlugin::setValueList ( const QStringList& vlist )
 		params.insert(param.key(), param.value());
 
 	// Split it up...
-	m_values.clear();
+	clearValues();
 	QStringListIterator val(vlist);
 	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
 	while (val.hasNext() && iter.hasNext())
-		m_values[iter.next().key()] = val.next().toFloat();
+		m_values.index[iter.next().key()] = val.next().toFloat();
 }
 
 QStringList qtractorPlugin::valueList (void) const
@@ -998,6 +998,12 @@ qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 	return m_params.value(iIndex, NULL);
 }
 
+qtractorPluginParam *qtractorPlugin::findParamName ( const QString& sName ) const
+{
+	return m_paramNames.value(sName);
+}
+
+
 
 // Direct access parameter
 qtractorPluginParam *qtractorPlugin::directAccessParam (void) const
@@ -1050,7 +1056,9 @@ void qtractorPlugin::freezeValues (void)
 	Params::ConstIterator param = m_params.constBegin();
 	for ( ; param != m_params.constEnd(); ++param) {
 		qtractorPluginParam *pParam = param.value();
-		setValue(pParam->index(), pParam->value());
+		unsigned long iIndex = pParam->index();
+		m_values.names[iIndex] = pParam->name();
+		m_values.index[iIndex] = pParam->value();
 	}
 }
 
@@ -1092,11 +1100,17 @@ void qtractorPlugin::realizeValues (void)
 #endif
 
 	// (Re)set parameter values (initial)...
-	Values::ConstIterator param = m_values.constBegin();
-	for (; param != m_values.constEnd(); ++param) {
-		qtractorPluginParam *pParam = findParam(param.key());
-		if (pParam)
-			pParam->setValue(param.value(), true);
+	ValueIndex::ConstIterator param = m_values.index.constBegin();
+	for (; param != m_values.index.constEnd(); ++param) {
+		unsigned long iIndex = param.key();
+		qtractorPluginParam *pParam = findParam(iIndex);
+		if (pParam) {
+			const QString& sName = m_values.names.value(iIndex);
+			if (!sName.isEmpty() && sName != pParam->name())
+				pParam = findParamName(sName);
+			if (pParam)
+				pParam->setValue(param.value(), true);
+		}
 	}
 }
 
@@ -1135,8 +1149,13 @@ void qtractorPlugin::loadValues ( QDomElement *pElement, Values& values )
 		if (eParam.isNull())
 			continue;
 		// Check for config item...
-		if (eParam.tagName() == "param")
-			values[eParam.attribute("index").toULong()] = eParam.text().toFloat();
+		if (eParam.tagName() == "param") {
+			unsigned long iIndex = eParam.attribute("index").toULong();
+			const QString& sName = eParam.attribute("name");
+			if (!sName.isEmpty())
+				values.names.insert(iIndex, sName);
+			values.index.insert(iIndex, eParam.text().toFloat());
+		}
 	}
 }
 
@@ -1660,7 +1679,7 @@ bool qtractorPluginList::loadElement (
 				pPlugin->setConfigTypes(ctypes);
 				if (!vlist.isEmpty())
 					pPlugin->setValueList(vlist);
-				if (!values.isEmpty())
+				if (!values.index.isEmpty())
 					pPlugin->setValues(values);
 				append(pPlugin);
 				pPlugin->mapControllers(controllers);
