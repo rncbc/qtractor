@@ -323,6 +323,7 @@ protected:
 	{
 	public:
 
+		virtual ~FadeFunctor() {}
 		virtual float operator() (float t) const = 0;
 	};
 
