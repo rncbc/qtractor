@@ -703,7 +703,7 @@ fi
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])
 else
-   AC_MSG_WARN([*** JACK latency support will be disabled.])
+   AC_MSG_WARN([*** JACK session support will be disabled.])
 fi
 
 # Check for (new) JACK latency support availability.
