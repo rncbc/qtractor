@@ -282,6 +282,9 @@ public:
 		: m_pPlugin(pPlugin), m_iIndex(iIndex),
 			m_subject(0.0f), m_observer(this), m_iDecimals(-1) {}
 
+	// Virtual destructor.
+	virtual ~qtractorPluginParam() {}
+
 	// Main properties accessors.
 	qtractorPlugin *plugin() const { return m_pPlugin; }
 	unsigned long   index()  const { return m_iIndex;  }

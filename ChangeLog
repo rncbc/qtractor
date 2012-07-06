@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Added some virtual destructor stubs to shut up gcc 4.7 warnings.
+
 - Improved plugin state resilience, now finally with parameter name
   matching, specifically targeted on loading old sessions or plugin
   preset files (.qtx), preserving old saved plugin states as much as

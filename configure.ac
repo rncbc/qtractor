@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.5.4, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.5.5, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -703,7 +703,7 @@ fi
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])
 else
-   AC_MSG_WARN([*** JACK latency support will be disabled.])
+   AC_MSG_WARN([*** JACK session support will be disabled.])
 fi
 
 # Check for (new) JACK latency support availability.
