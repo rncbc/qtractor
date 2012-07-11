@@ -2814,7 +2814,9 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		if (ctype != state_ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
-		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM__String) == 0) {
+		if (aType.isEmpty()
+			|| ::strcmp(pszType, LV2_ATOM__String) == 0
+			|| ::strcmp(pszType, LV2_ATOM__Path) == 0) {
 			m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
 		} else {
 			m_lv2_state_configs.insert(sKey, qUncompress(
@@ -2916,8 +2918,11 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 		return LV2_STATE_ERR_BAD_TYPE;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
-	if (::strcmp(pszType, LV2_ATOM__String) == 0) {
-		setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
+	if (::strcmp(pszType, LV2_ATOM__Path) == 0 ||
+		::strcmp(pszType, LV2_ATOM__String) == 0) {
+		const char *pszValue = (const char *) value;
+		int cchValue = ::strlen(pszValue);
+		setConfig(sKey, QString::fromUtf8(pszValue, cchValue));
 	} else {
 		QByteArray data = qCompress(
 			QByteArray((const char *) value, size)).toBase64();
