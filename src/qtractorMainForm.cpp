@@ -4869,8 +4869,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_STATE
 	list << tr("LV2 Plug-in State support disabled.");
 #endif
-#ifdef CONFIG_LV2_STATE_FILES
-	list << tr("LV2 Plug-in State Files support enabled. (FUBAR)");
+#ifndef CONFIG_LV2_STATE_FILES
+	list << tr("LV2 Plug-in State Files support disabled.");
 #endif
 #ifndef CONFIG_LV2_PROGRAMS
 	list << tr("LV2 Plug-in Programs support disabled.");

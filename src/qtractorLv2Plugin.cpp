@@ -676,17 +676,17 @@ static char *qtractor_lv2_state_abstract_path (
 	if (pLv2Plugin == NULL)
 		return NULL;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return NULL;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractor_lv2_state_abstract_path(%p, \"%s\"", pLv2Plugin, absolute_path);
 #endif
 
-	QFileInfo fi(absolute_path);
-
-	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
-	
 	// abstract_path...
-	const QString& sAbstractPath = QFileInfo(sFileName).filePath();
+	const QString& sAbstractPath
+		= QDir(pSession->sessionDir()).relativeFilePath(absolute_path);
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
@@ -698,13 +698,13 @@ static char *qtractor_lv2_state_absolute_path (
 	if (pLv2Plugin == NULL)
 		return NULL;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
-#endif
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return NULL;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
+#endif
 
 	QFileInfo fi(abstract_path);
 
@@ -714,13 +714,8 @@ static char *qtractor_lv2_state_absolute_path (
 	else
 		fi.setFile(dir, fi.filePath());
 
-	const QString& sFilePath = fi.path();
-	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
-	
 	// absolute_path...
-	const QString& sAbsolutePath
-		= QFileInfo(sFilePath, sFileName).canonicalFilePath();
+	const QString& sAbsolutePath = fi.canonicalFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
@@ -732,13 +727,13 @@ static char *qtractor_lv2_state_make_path (
 	if (pLv2Plugin == NULL)
 		return NULL;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_make_path(%p, \"%s\"", pLv2Plugin, relative_path);
-#endif
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return NULL;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_state_make_path(%p, \"%s\")", pLv2Plugin, relative_path);
+#endif
 
 	QFileInfo fi(relative_path);
 
@@ -2819,7 +2814,9 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		if (ctype != state_ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
-		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM__String) == 0) {
+		if (aType.isEmpty()
+			|| ::strcmp(pszType, LV2_ATOM__String) == 0
+			|| ::strcmp(pszType, LV2_ATOM__Path) == 0) {
 			m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
 		} else {
 			m_lv2_state_configs.insert(sKey, qUncompress(
@@ -2921,8 +2918,11 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 		return LV2_STATE_ERR_BAD_TYPE;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
-	if (::strcmp(pszType, LV2_ATOM__String) == 0) {
-		setConfig(sKey, QString::fromUtf8((const char *) value, (int) size - 1));
+	if (::strcmp(pszType, LV2_ATOM__Path) == 0 ||
+		::strcmp(pszType, LV2_ATOM__String) == 0) {
+		const char *pszValue = (const char *) value;
+		int cchValue = ::strlen(pszValue);
+		setConfig(sKey, QString::fromUtf8(pszValue, cchValue));
 	} else {
 		QByteArray data = qCompress(
 			QByteArray((const char *) value, size)).toBase64();

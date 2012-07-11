@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.5.5, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.5.6, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -156,9 +156,9 @@ AC_ARG_ENABLE(lv2-state,
   [ac_lv2_state="yes"])
 
 AC_ARG_ENABLE(lv2-state-files,
-  AC_HELP_STRING([--enable-lv2-state-files], [enable LV2 plug-in state files support (default=no)]),
+  AC_HELP_STRING([--enable-lv2-state-files], [enable LV2 plug-in state files support (default=yes)]),
   [ac_lv2_state_files="$enableval"],
-  [ac_lv2_state_files="no"])
+  [ac_lv2_state_files="yes"])
 
 AC_ARG_ENABLE(lv2-programs,
   AC_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in programs support (default=yes)]),
@@ -1141,7 +1141,7 @@ echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
 echo "  LV2 Plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
 echo "  LV2 Plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
-echo "  LV2 Plug-in State Files support (FUBAR)  . . . . .: $ac_lv2_state_files"
+echo "  LV2 Plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
 echo "  LV2 Plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
 echo "  LV2 Plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
 echo "  LV2 Plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"

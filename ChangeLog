@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 State Files feature support is shamelessly getting some trials
+  (might well be FUBAR still; HIGHLY EXPERIMENTAL & DANGEROUS).
+
 - Added some virtual destructor stubs to shut up gcc 4.7 warnings.
 
 - Improved plugin state resilience, now finally with parameter name
