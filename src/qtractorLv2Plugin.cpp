@@ -676,17 +676,17 @@ static char *qtractor_lv2_state_abstract_path (
 	if (pLv2Plugin == NULL)
 		return NULL;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return NULL;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractor_lv2_state_abstract_path(%p, \"%s\"", pLv2Plugin, absolute_path);
 #endif
 
-	QFileInfo fi(absolute_path);
-
-	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
-	
 	// abstract_path...
-	const QString& sAbstractPath = QFileInfo(sFileName).filePath();
+	const QString& sAbstractPath
+		= QDir(pSession->sessionDir()).relativeFilePath(absolute_path);
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
@@ -698,13 +698,13 @@ static char *qtractor_lv2_state_absolute_path (
 	if (pLv2Plugin == NULL)
 		return NULL;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
-#endif
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return NULL;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
+#endif
 
 	QFileInfo fi(abstract_path);
 
@@ -714,13 +714,8 @@ static char *qtractor_lv2_state_absolute_path (
 	else
 		fi.setFile(dir, fi.filePath());
 
-	const QString& sFilePath = fi.path();
-	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
-	
 	// absolute_path...
-	const QString& sAbsolutePath
-		= QFileInfo(sFilePath, sFileName).canonicalFilePath();
+	const QString& sAbsolutePath = fi.canonicalFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
@@ -732,13 +727,13 @@ static char *qtractor_lv2_state_make_path (
 	if (pLv2Plugin == NULL)
 		return NULL;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_make_path(%p, \"%s\"", pLv2Plugin, relative_path);
-#endif
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return NULL;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_state_make_path(%p, \"%s\")", pLv2Plugin, relative_path);
+#endif
 
 	QFileInfo fi(relative_path);
 
