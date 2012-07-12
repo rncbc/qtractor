@@ -1,7 +1,7 @@
 // qtractorDocument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -92,6 +92,10 @@ public:
 	static const QStringList& extractedArchives();
 	static void clearExtractedArchives(bool bRemove = false);
 
+	// Extra-ordinary archive files management.
+	static void addExtraArchiveFile(const QString& sFilename);
+	static void clearExtraArchiveFiles();
+
 private:
 
 	// Instance variables.
@@ -112,6 +116,9 @@ private:
 
 	// Extracted archive paths.
 	static QStringList g_extractedArchives;
+
+	// Extra-ordinary archive files.
+	static QStringList g_extraArchiveFiles;
 };
 
 
