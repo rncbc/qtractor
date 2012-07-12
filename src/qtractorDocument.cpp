@@ -82,7 +82,7 @@ QString qtractorDocument::g_sArchiveExt  = "qtz";
 QStringList qtractorDocument::g_extractedArchives;
 
 // Extra-ordinary archive files (static).
-QStringList qtractorDocument::g_extraArchiveFiles;
+qtractorDocument *qtractorDocument::g_pArchive = NULL;
 
 
 // Constructor.
@@ -170,6 +170,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	if (m_pZipFile) {
 		delete m_pZipFile;
 		m_pZipFile = NULL;
+		g_pArchive = NULL;
 	}
 #endif
 
@@ -245,6 +246,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	if (m_pZipFile) {
 		delete m_pZipFile;
 		m_pZipFile = NULL;
+		g_pArchive = NULL;
 	}
 #endif
 
@@ -263,6 +265,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 			return false;
 		}
 		sDocname = m_sName + '.' + g_sDefaultExt;
+		g_pArchive = this;
 	}
 #endif
 
@@ -286,19 +289,13 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 #ifdef CONFIG_LIBZ
 	// Commit to archive.
 	if (m_pZipFile) {
-		// Add extra-ordinary files, if any...
-		QStringListIterator iter(g_extraArchiveFiles);
-		while (iter.hasNext()) {
-			const QString& sFilename = iter.next();
-			const QString& sAlias = m_pZipFile->alias(sFilename);
-			m_pZipFile->addFile(sFilename, m_sName + '/' + sAlias);
-		}
 		// The session document itself, at last...
 		m_pZipFile->addFile(sDocname, m_sName + '/' + sDocname);
 		m_pZipFile->processAll();
 		m_pZipFile->close();
 		delete m_pZipFile;
 		m_pZipFile = NULL;
+		g_pArchive = NULL;
 		// Kill temporary, if didn't exist...
 		if (bRemove) file.remove();
 	}
@@ -399,16 +396,11 @@ void qtractorDocument::clearExtractedArchives ( bool bRemove )
 // qtractorDocument -- extra-ordinary archive files management.
 //
 
-void qtractorDocument::addExtraArchiveFile ( const QString& sFilename )
+QString qtractorDocument::addArchiveFile ( const QString& sFilename )
 {
-	if (g_extraArchiveFiles.indexOf(sFilename) < 0)
-		g_extraArchiveFiles.append(sFilename);
+	return (g_pArchive ? g_pArchive->addFile(sFilename) : sFilename);
 }
 
-void qtractorDocument::clearExtraArchiveFiles (void)
-{
-	g_extraArchiveFiles.clear();
-}
 
 
 // end of qtractorDocument.cpp

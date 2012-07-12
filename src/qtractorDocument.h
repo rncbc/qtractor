@@ -93,8 +93,7 @@ public:
 	static void clearExtractedArchives(bool bRemove = false);
 
 	// Extra-ordinary archive files management.
-	static void addExtraArchiveFile(const QString& sFilename);
-	static void clearExtraArchiveFiles();
+	static QString addArchiveFile(const QString& sFilename);
 
 private:
 
@@ -118,7 +117,7 @@ private:
 	static QStringList g_extractedArchives;
 
 	// Extra-ordinary archive files.
-	static QStringList g_extraArchiveFiles;
+	static qtractorDocument *g_pArchive;
 };
 
 
