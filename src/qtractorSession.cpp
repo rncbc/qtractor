@@ -257,6 +257,8 @@ void qtractorSession::clear (void)
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
 
+	qtractorDocument::clearExtraArchiveFiles();
+
 	m_iSessionStart  = 0;
 	m_iSessionEnd    = 0;
 

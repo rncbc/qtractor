@@ -631,6 +631,7 @@ void qtractorLv2Worker::process (void)
 #ifdef CONFIG_LV2_STATE_FILES
 
 #include "qtractorSession.h"
+#include "qtractorDocument.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -684,8 +685,11 @@ static char *qtractor_lv2_state_abstract_path (
 	qDebug("qtractor_lv2_state_abstract_path(%p, \"%s\"", pLv2Plugin, absolute_path);
 #endif
 
+	// absolute path...
+	qtractorDocument::addExtraArchiveFile(absolute_path);
+
 	// abstract_path...
-	const QString& sAbstractPath
+	const QString sAbstractPath
 		= QDir(pSession->sessionDir()).relativeFilePath(absolute_path);
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
@@ -715,7 +719,8 @@ static char *qtractor_lv2_state_absolute_path (
 		fi.setFile(dir, fi.filePath());
 
 	// absolute_path...
-	const QString& sAbsolutePath = fi.canonicalFilePath();
+	const QString sAbsolutePath = fi.canonicalFilePath();
+	qtractorDocument::addExtraArchiveFile(sAbsolutePath);
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
@@ -751,9 +756,10 @@ static char *qtractor_lv2_state_make_path (
 		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
 	
 	// make_path...
-	const QString& sNewFilePath
+	const QString sMakePath
 		= QFileInfo(sFilePath, sFileName).canonicalFilePath();
-	return ::strdup(sNewFilePath.toUtf8().constData());
+	qtractorDocument::addExtraArchiveFile(sMakePath);
+	return ::strdup(sMakePath.toUtf8().constData());
 }
 
 #endif	// CONFIG_LV2_STATE_FILES
