@@ -708,12 +708,8 @@ static char *qtractor_lv2_state_absolute_path (
 #endif
 
 	QFileInfo fi(abstract_path);
-
-	const QDir dir(pSession->sessionDir());
-	if (fi.isAbsolute())
-		fi.setFile(dir, fi.fileName());
-	else
-		fi.setFile(dir, fi.filePath());
+	if (fi.isRelative())
+		fi.setFile(QDir(pSession->sessionDir()), fi.filePath());
 
 	// absolute_path from abstract_path...
 	const QString& sAbsolutePath = fi.canonicalFilePath();

@@ -6,7 +6,9 @@ ChangeLog
 SVN TRUNK
 
 - LV2 State Files feature support is shamelessly getting some trials
-  (HIGHLY EXPERIMENTAL).
+  now letting files referenced in designated LV2 plugin states to be
+  seamlessly included when saving to a zip/archive file bundle (.qtz
+  suffix) (EXPERIMENTAL).
 
 - Added some virtual destructor stubs to shut up gcc 4.7 warnings.
 
