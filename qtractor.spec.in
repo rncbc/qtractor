@@ -31,7 +31,9 @@ BuildRequires:	lv2-devel
 BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 
-BuildRequires:	desktop-file-utils
+Requires(post):		desktop-file-utils
+Requires(postun):	desktop-file-utils
+
 Requires(post):		shared-mime-info
 Requires(postun):	shared-mime-info
 
