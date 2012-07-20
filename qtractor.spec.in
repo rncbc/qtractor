@@ -31,7 +31,9 @@ BuildRequires:	lv2-devel
 BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 
-BuildRequires:	desktop-file-utils
+Requires(post):		desktop-file-utils
+Requires(postun):	desktop-file-utils
+
 Requires(post):		shared-mime-info
 Requires(postun):	shared-mime-info
 
@@ -56,7 +58,6 @@ specially dedicated to the personal home-studio.
 
 %install
 %__make DESTDIR=%{buildroot} install
-%suse_update_desktop_file
 
 %post
 %mime_database_post
