@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-qtractor-session">
+    <sub-class-of type="text/xml"/>
+    <comment>Qtractor session</comment>
+    <glob pattern="*.qtr"/>
+    <glob pattern="*.qts"/>
+  </mime-type>
+  <mime-type type="application/x-qtractor-template">
+    <sub-class-of type="text/xml"/>
+    <comment>Qtractor template</comment>
+    <glob pattern="*.qtt"/>
+  </mime-type>
+  <mime-type type="application/x-qtractor-archive">
+    <sub-class-of type="text/xml"/>
+    <comment>Qtractor archive</comment>
+    <glob pattern="*.qtz"/>
+  </mime-type>
+</mime-info>

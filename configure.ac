@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.5.8, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.5.9, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1026,14 +1026,14 @@ if test "x$ac_lv2_state" = "xyes"; then
       ac_lv2_state_files="no"
       ac_lv2_presets="no"
    fi
+   if test "x$ac_lv2_state_files" = "xyes"; then
+       AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 State Files feature is available.])
+   else
+       AC_MSG_WARN([*** LV2 State Files feature will be disabled.])
+   fi
 else
    ac_lv2_state_files="no"
    ac_lv2_presets="no"
-fi
-if test "x$ac_lv2_state_files" = "xyes"; then
-    AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 State Files feature is available.])
-else
-    AC_MSG_WARN([*** LV2 State Files feature will be disabled.])
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
    AC_CHECK_HEADERS(lv2_ui.h lv2_programs.h,
