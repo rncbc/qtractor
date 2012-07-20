@@ -56,7 +56,6 @@ specially dedicated to the personal home-studio.
 
 %install
 %__make DESTDIR=%{buildroot} install
-%suse_update_desktop_file
 
 %post
 %mime_database_post
