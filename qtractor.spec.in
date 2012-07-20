@@ -31,6 +31,10 @@ BuildRequires:	lv2-devel
 BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 
+BuildRequires:	desktop-file-utils
+Requires(post):		shared-mime-info
+Requires(postun):	shared-mime-info
+
 
 %description
 Qtractor is an Audio/MIDI multi-track sequencer application
@@ -52,6 +56,15 @@ specially dedicated to the personal home-studio.
 
 %install
 %__make DESTDIR=%{buildroot} install
+%suse_update_desktop_file
+
+%post
+%mime_database_post
+%desktop_database_post
+
+%postun
+%mime_database_postun
+%desktop_database_postun
 
 %clean
 [ -d %{buildroot} -a "%{buildroot}" != "" ] && %__rm -rf %{buildroot}
@@ -59,13 +72,17 @@ specially dedicated to the personal home-studio.
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog README TODO
-#dir %{_datadir}/applications
+%dir %{_datadir}/mime
+%dir %{_datadir}/mime/packages
+%dir %{_datadir}/applications
 %dir %{_datadir}/icons/hicolor
 %dir %{_datadir}/icons/hicolor/32x32
 %dir %{_datadir}/icons/hicolor/32x32/apps
+%dir %{_datadir}/icons/hicolor/32x32/mimetypes
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
+%{_datadir}/icons/hicolor/32x32/mimetypes/application-x-%{name}*.png
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog

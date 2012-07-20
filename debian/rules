@@ -73,7 +73,7 @@ binary-arch: build install
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
-#	dh_installmime
+	dh_installmime
 #	dh_python
 #	dh_installinit
 #	dh_installcron

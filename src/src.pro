@@ -303,7 +303,7 @@ unix {
 	}
 
 	# make install
-	INSTALLS += target desktop icon
+	INSTALLS += target desktop icon mimeinfo mimetypes
 
 	target.path = $$BINDIR
 
@@ -312,6 +312,14 @@ unix {
 
 	icon.path = $$DATADIR/icons/hicolor/32x32/apps
 	icon.files += images/$${TARGET}.png 
+
+	mimeinfo.path = $$DATADIR/mime/packages
+	mimeinfo.files += mimetypes/$${TARGET}.xml
+
+	mimetypes.path = $$DATADIR/icons/hicolor/32x32/mimetypes
+	mimetypes.files += mimetypes/application-x-$${TARGET}-session.png \
+		mimetypes/application-x-$${TARGET}-template.png \
+		mimetypes/application-x-$${TARGET}-archive.png
 }
 
 # XML/DOM support

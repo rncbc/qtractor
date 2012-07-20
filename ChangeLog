@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIME type icons support for session (*.qtr *.qtr), template (*.qtt)
+  and zip/archive (*.qtz) are now being introduced (EXPERIMENTAL).
+
 - LV2 State Files feature support is shamelessly getting some trials
   now letting files referenced in designated LV2 plugin states to be
   seamlessly included when saving to a zip/archive file bundle (.qtz
