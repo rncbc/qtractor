@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 plugins with a Qt4 GUI (guess what or whom?) are now guaranteed
+  to some reasonable window type like Qt::Widget but not Qt::Dialog
+  nor Qt::Popup, preventing those from standing always on top while
+  on some window managers or desktop environments (a simple addition
+  by Jiri Prochaszka aka. Anchakor, thanks).
+
 - MIME type icons support for session (*.qtr *.qtr), template (*.qtt)
   and zip/archive (*.qtz) are now being introduced (EXPERIMENTAL).
 
