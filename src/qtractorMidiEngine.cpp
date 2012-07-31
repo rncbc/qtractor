@@ -2502,6 +2502,8 @@ bool qtractorMidiEngine::openPlayer ( const QString& sFilename, int iTrackChanne
 	if (isPlaying())
 		return false;
 
+	setFrameStart(0);
+
 	return (m_pPlayer ? m_pPlayer->open(sFilename, iTrackChannel) : false);
 }
 
