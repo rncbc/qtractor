@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip editor now hopefully rid of random but persistent muting.
+
 - A MIDI file player's bug, evident while transport rolling in looped
   mode, has been fixed with yet another oneliner patch (kind by Jiri
   Prochaszka aka. Anchakor, thanks again).
