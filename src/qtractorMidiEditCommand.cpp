@@ -226,6 +226,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, false);
 
+	// Reset all current running event cursors,
+	// make them play it right and sound again...
+	m_pMidiClip->reset(false);
+
 	return true;
 }
 
