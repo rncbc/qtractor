@@ -2661,7 +2661,7 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 void qtractorLv2Plugin::updateParam (
 	qtractorPluginParam *pParam, float fValue )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::updateParam(%lu, %g)",
 		this, pParam->index(), fValue); 
 #endif
