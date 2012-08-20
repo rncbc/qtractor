@@ -305,6 +305,7 @@ private:
 	qtractorMidiOutputThread *m_pOutputThread;
 
 	// The number of times we check for time drift.
+	unsigned int m_iDriftCount;
 	unsigned int m_iDriftCheck;
 
 	// The delta-time/frame when playback started .

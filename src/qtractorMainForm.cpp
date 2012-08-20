@@ -7144,7 +7144,7 @@ void qtractorMainForm::updateContents (
 // Tracks view contents change slot.
 void qtractorMainForm::contentsChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::contentsChanged()");
 #endif
 
