@@ -2024,7 +2024,7 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 
 void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginParam[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
 #endif
 
