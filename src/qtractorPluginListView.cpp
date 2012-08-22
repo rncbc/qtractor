@@ -459,17 +459,18 @@ void qtractorPluginListView::addPlugin (void)
 	if (pSession == NULL)
 		return;
 
-	// Tell the world we'll take some time...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-	// Make it a undoable command...
-	qtractorAddPluginCommand *pAddPluginCommand
-		= new qtractorAddPluginCommand();
-
 	bool bOpenEditor = false;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions)
 		bOpenEditor = pOptions->bOpenEditor;
+
+	// Tell the world we'll take some time, iif...
+	if (!bOpenEditor)
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Make it a undoable command...
+	qtractorAddPluginCommand *pAddPluginCommand
+		= new qtractorAddPluginCommand();
 
 	for (int i = 0; i < selectForm.pluginCount(); ++i) {
 		// Add an actual plugin item...
@@ -492,7 +493,8 @@ void qtractorPluginListView::addPlugin (void)
 	pSession->execute(pAddPluginCommand);
 
 	// We're formerly done.
-	QApplication::restoreOverrideCursor();
+	if (!bOpenEditor)
+		QApplication::restoreOverrideCursor();
 
 	emit contentsChanged();
 }
