@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Don't show the waiting cursor anymore when loading any plugins which
+  might have a nice native editor (GUI) and options are set to show it.
+
 - MIDI clip editor now hopefully rid of random but persistent muting,
   a slight regression to editing while playback is rolling.
 
