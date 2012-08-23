@@ -28,6 +28,9 @@ BuildRequires:	liblo-devel
 BuildRequires:	ladspa-devel
 BuildRequires:	dssi-devel
 BuildRequires:	lv2-devel
+BuildRequires:	libserd-devel
+BuildRequires:	libsord-devel
+BuildRequires:	libsratom-devel
 BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 
