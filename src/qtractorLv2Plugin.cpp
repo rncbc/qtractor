@@ -2825,15 +2825,13 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		if (ctype != state_ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
-		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM__String) == 0) {
+		if (aType.isEmpty()
+			|| ::strcmp(pszType, LV2_ATOM__Path)   == 0
+			|| ::strcmp(pszType, LV2_ATOM__String) == 0) {
 			m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
 		} else {
-			if (::strcmp(pszType, LV2_ATOM__Path) == 0) {
-				m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
-			} else {
-				m_lv2_state_configs.insert(sKey, qUncompress(
-					QByteArray::fromBase64(state_config.value().toUtf8())));
-			}
+			m_lv2_state_configs.insert(sKey, qUncompress(
+				QByteArray::fromBase64(state_config.value().toUtf8())));
 			m_lv2_state_ctypes.insert(sKey, lv2_urid_map(pszType));
 		}
 	}
@@ -2932,18 +2930,15 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 		return LV2_STATE_ERR_UNKNOWN;
 
 	const QString& sKey = QString::fromUtf8(pszKey);
-	if (::strcmp(pszType, LV2_ATOM__String) == 0) {
+	if (::strcmp(pszType, LV2_ATOM__Path)   == 0 ||
+		::strcmp(pszType, LV2_ATOM__String) == 0) {
 		setConfig(sKey, QString::fromUtf8(pchValue, ::strlen(pchValue)));
 	} else {
-		if (::strcmp(pszType, LV2_ATOM__Path) == 0) {
-			setConfig(sKey, QString::fromUtf8(pchValue, ::strlen(pchValue)));
-		} else {
-			QByteArray data = qCompress(
-				QByteArray(pchValue, size)).toBase64();
-			for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
-				data.insert(i, "\n       "); // Indentation.
-			setConfig(sKey, data.constData());
-		}
+		QByteArray data = qCompress(
+			QByteArray(pchValue, size)).toBase64();
+		for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
+			data.insert(i, "\n       "); // Indentation.
+		setConfig(sKey, data.constData());
 		setConfigType(sKey, QString::fromUtf8(pszType));
 	}
 	return LV2_STATE_SUCCESS;
