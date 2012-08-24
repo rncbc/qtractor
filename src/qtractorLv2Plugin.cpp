@@ -682,7 +682,7 @@ static char *qtractor_lv2_state_abstract_path (
 		return NULL;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_abstract_path(%p, \"%s\"", pLv2Plugin, absolute_path);
+	qDebug("qtractor_lv2_state_abstract_path(%p, \"%s\")", pLv2Plugin, absolute_path);
 #endif
 
 	// abstract_path from absolute_path...
@@ -704,7 +704,7 @@ static char *qtractor_lv2_state_absolute_path (
 		return NULL;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\"", pLv2Plugin, abstract_path);
+	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\")", pLv2Plugin, abstract_path);
 #endif
 
 	QFileInfo fi(abstract_path);
@@ -712,7 +712,7 @@ static char *qtractor_lv2_state_absolute_path (
 		fi.setFile(QDir(pSession->sessionDir()), fi.filePath());
 
 	// absolute_path from abstract_path...
-	const QString& sAbsolutePath = fi.canonicalFilePath();
+	const QString& sAbsolutePath = fi.absoluteFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
@@ -740,16 +740,16 @@ static char *qtractor_lv2_state_make_path (
 	else
 		fi.setFile(dir, fi.filePath());
 
-	const QString& sFilePath = fi.path();
+	const QString& sFilePath = fi.filePath();
 	if (!QDir(sFilePath).exists())
 		dir.mkpath(sFilePath);
 
 	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin) + fi.fileName();
-	
+		= qtractor_lv2_state_prefix(pLv2Plugin) + '.' + fi.fileName();
+
 	// make_path...
-	const QString& sMakePath = qtractorDocument::addArchiveFile(
-		QFileInfo(sFilePath, sFileName).canonicalFilePath());
+	const QString& sMakePath
+		= QFileInfo(QDir(sFilePath), sFileName).filePath();
 	return ::strdup(sMakePath.toUtf8().constData());
 }
 
@@ -2816,13 +2816,15 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		if (ctype != state_ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
-		if (aType.isEmpty()
-			|| ::strcmp(pszType, LV2_ATOM__String) == 0
-			|| ::strcmp(pszType, LV2_ATOM__Path) == 0) {
+		if (aType.isEmpty() || ::strcmp(pszType, LV2_ATOM__String) == 0) {
 			m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
 		} else {
-			m_lv2_state_configs.insert(sKey, qUncompress(
-				QByteArray::fromBase64(state_config.value().toUtf8())));
+			if (::strcmp(pszType, LV2_ATOM__Path) == 0) {
+				m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
+			} else {
+				m_lv2_state_configs.insert(sKey, qUncompress(
+					QByteArray::fromBase64(state_config.value().toUtf8())));
+			}
 			m_lv2_state_ctypes.insert(sKey, lv2_urid_map(pszType));
 		}
 	}
@@ -2905,9 +2907,6 @@ const LV2_State_Interface *qtractorLv2Plugin::lv2_state_interface (
 LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
-	if (value == NULL)
-		return LV2_STATE_ERR_UNKNOWN;
-
 	if ((flags & (LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE)) == 0)
 		return LV2_STATE_ERR_BAD_FLAGS;
 
@@ -2919,18 +2918,23 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 	if (pszType == NULL)
 		return LV2_STATE_ERR_BAD_TYPE;
 
+	const char *pchValue = (const char *) value;
+	if (pchValue == NULL)
+		return LV2_STATE_ERR_UNKNOWN;
+
 	const QString& sKey = QString::fromUtf8(pszKey);
-	if (::strcmp(pszType, LV2_ATOM__Path) == 0 ||
-		::strcmp(pszType, LV2_ATOM__String) == 0) {
-		const char *pszValue = (const char *) value;
-		int cchValue = ::strlen(pszValue);
-		setConfig(sKey, QString::fromUtf8(pszValue, cchValue));
+	if (::strcmp(pszType, LV2_ATOM__String) == 0) {
+		setConfig(sKey, QString::fromUtf8(pchValue, ::strlen(pchValue)));
 	} else {
-		QByteArray data = qCompress(
-			QByteArray((const char *) value, size)).toBase64();
-		for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
-			data.insert(i, "\n       "); // Indentation.
-		setConfig(sKey, data.constData());
+		if (::strcmp(pszType, LV2_ATOM__Path) == 0) {
+			setConfig(sKey, QString::fromUtf8(pchValue, ::strlen(pchValue)));
+		} else {
+			QByteArray data = qCompress(
+				QByteArray(pchValue, size)).toBase64();
+			for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
+				data.insert(i, "\n       "); // Indentation.
+			setConfig(sKey, data.constData());
+		}
 		setConfigType(sKey, QString::fromUtf8(pszType));
 	}
 	return LV2_STATE_SUCCESS;
