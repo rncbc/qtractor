@@ -636,39 +636,6 @@ void qtractorLv2Worker::process (void)
 #include <QFileInfo>
 #include <QDir>
 
-static QString qtractor_lv2_state_prefix ( qtractorLv2Plugin *pLv2Plugin )
-{
-	QString sPrefix;
-	
-	const QString& sPresetName = pLv2Plugin->preset();
-	if (sPresetName.isEmpty()) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession) {
-			const QString& sSessionName = pSession->sessionName();
-			if (!sSessionName.isEmpty()) {
-				sPrefix += qtractorSession::sanitize(sSessionName);
-				sPrefix += '-';
-			}
-		}
-		const QString& sListName = pLv2Plugin->list()->name();
-		if (!sListName.isEmpty()) {
-			sPrefix += qtractorSession::sanitize(sListName);
-			sPrefix += '-';
-		}
-	}
-
-	sPrefix += pLv2Plugin->type()->label();
-	sPrefix += '-';
-
-	if (sPresetName.isEmpty()) {
-		sPrefix += QString::number(pLv2Plugin->type()->uniqueID(), 16);
-	} else {
-		sPrefix += qtractorSession::sanitize(sPresetName);
-	}
-
-	return sPrefix;
-}
-
 static char *qtractor_lv2_state_abstract_path (
 	LV2_State_Map_Path_Handle handle, const char *absolute_path )
 {
@@ -716,6 +683,41 @@ static char *qtractor_lv2_state_absolute_path (
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
+#ifdef CONFIG_LV2_STATE_MAKE_PATH
+
+static QString qtractor_lv2_state_prefix ( qtractorLv2Plugin *pLv2Plugin )
+{
+	QString sPrefix;
+
+	const QString& sPresetName = pLv2Plugin->preset();
+	if (sPresetName.isEmpty()) {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			const QString& sSessionName = pSession->sessionName();
+			if (!sSessionName.isEmpty()) {
+				sPrefix += qtractorSession::sanitize(sSessionName);
+				sPrefix += '-';
+			}
+		}
+		const QString& sListName = pLv2Plugin->list()->name();
+		if (!sListName.isEmpty()) {
+			sPrefix += qtractorSession::sanitize(sListName);
+			sPrefix += '-';
+		}
+	}
+
+	sPrefix += pLv2Plugin->type()->label();
+	sPrefix += '-';
+
+	if (sPresetName.isEmpty()) {
+		sPrefix += QString::number(pLv2Plugin->type()->uniqueID(), 16);
+	} else {
+		sPrefix += qtractorSession::sanitize(sPresetName);
+	}
+
+	return sPrefix;
+}
+
 static char *qtractor_lv2_state_make_path (
     LV2_State_Make_Path_Handle handle, const char *relative_path )
 {
@@ -745,13 +747,16 @@ static char *qtractor_lv2_state_make_path (
 		dir.mkpath(sFilePath);
 
 	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin) + '.' + fi.fileName();
+		= qtractor_lv2_state_prefix(pLv2Plugin)
+		+ ".lv2_state";	// '.' + fi.fileName();
 
 	// make_path...
 	const QString& sMakePath
 		= QFileInfo(QDir(sFilePath), sFileName).filePath();
 	return ::strdup(sMakePath.toUtf8().constData());
 }
+
+#endif	// CONFIG_LV2_STATE_MAKE_PATH
 
 #endif	// CONFIG_LV2_STATE_FILES
 
@@ -1604,14 +1609,18 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_state_map_path_feature.data = &m_lv2_state_map_path;
 	m_lv2_features[iFeatures++] = &m_lv2_state_map_path_feature;
 
+#ifdef CONFIG_LV2_STATE_MAKE_PATH
+
 	m_lv2_state_make_path.handle = this;
 	m_lv2_state_make_path.path = &qtractor_lv2_state_make_path;
 
 	m_lv2_state_make_path_feature.URI = LV2_STATE__makePath;
 	m_lv2_state_make_path_feature.data = &m_lv2_state_make_path;
 	m_lv2_features[iFeatures++] = &m_lv2_state_make_path_feature;
-	
-#endif
+
+#endif	// CONFIG_LV2_STATE_MAKE_PATH
+
+#endif	// CONFIG_LV2_STATE_FILES
 
 	m_lv2_features[iFeatures] = NULL;
 
