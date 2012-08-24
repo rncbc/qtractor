@@ -447,8 +447,10 @@ private:
 #ifdef CONFIG_LV2_STATE_FILES
 	LV2_Feature                m_lv2_state_map_path_feature;
 	LV2_State_Map_Path         m_lv2_state_map_path;
+#ifdef CONFIG_LV2_STATE_MAKE_PATH
 	LV2_Feature                m_lv2_state_make_path_feature;
 	LV2_State_Make_Path        m_lv2_state_make_path;
+#endif
 #endif
 
 #ifdef CONFIG_LIBLILV
