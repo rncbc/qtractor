@@ -6756,7 +6756,8 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 		.arg(ctle.value()));
 
 #ifdef CONFIG_DEBUG
-	qDebug(sCtlText.toUtf8().constData());
+	qDebug("qtractorMainForm::midiCtlNotify() %s.",
+		sCtlText.toUtf8().constData());
 #endif
 
 	// Check if controller is used as MIDI controller...
