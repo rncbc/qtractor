@@ -1053,8 +1053,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pInputThread   = NULL;
 	m_pOutputThread  = NULL;
 
-	m_iDriftCheck    = DRIFT_CHECK;
-	m_iDriftCount    = 0;
+	m_iDriftCheck    = 0;
 
 	m_iTimeStart     = 0;
 	m_iTimeDrift     = 0;
@@ -1798,7 +1797,7 @@ void qtractorMidiEngine::resetDrift (void)
 	qDebug("qtractorMidiEngine::resetDrift()");
 #endif
 
-	m_iDriftCount = 0;
+	m_iDriftCheck = 0;
 
 //--DRIFT-SKEW-BEGIN--
 	snd_seq_queue_tempo_t *pAlsaTempo;
@@ -1816,7 +1815,7 @@ void qtractorMidiEngine::resetDrift (void)
 // Do ouput queue status (audio vs. MIDI)...
 void qtractorMidiEngine::drift (void)
 {
-	if (++m_iDriftCount < m_iDriftCheck)
+	if (++m_iDriftCheck < DRIFT_CHECK)
 		return;
 
 	qtractorSession *pSession = session();
@@ -1867,7 +1866,7 @@ void qtractorMidiEngine::drift (void)
 	}
 
 	// Restart counting...
-	m_iDriftCount = 0;
+	m_iDriftCheck = 0;
 }
 
 

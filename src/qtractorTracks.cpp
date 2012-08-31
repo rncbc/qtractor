@@ -1815,6 +1815,95 @@ void qtractorTracks::selectInvert (void)
 }
 
 
+// Insertion method.
+bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	unsigned long iInsertStart = pSession->editHead();
+	unsigned long iInsertEnd   = pSession->editTail();
+
+	if (iInsertStart >= iInsertEnd) {
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		unsigned short iBar = pTimeScale->barFromFrame(iInsertStart);
+		iInsertEnd = pTimeScale->frameFromBar(iBar + 1);
+	}
+
+	int iUpdate = 0;
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("insert range"));
+
+	if (pTrack) {
+		iUpdate += insertEditRangeEx(pClipCommand,
+			pTrack, iInsertStart, iInsertEnd);
+	} else {
+		pTrack = pSession->tracks().first();
+		while (pTrack) {
+			iUpdate += insertEditRangeEx(pClipCommand,
+				pTrack, iInsertStart, iInsertEnd);
+			pTrack = pTrack->next();
+		}
+	}
+
+	if (iUpdate < 1) {
+		delete pClipCommand;
+		return false;
+	}
+
+	return pSession->execute(pClipCommand);
+}
+
+
+// Insertion method (track).
+int qtractorTracks::insertEditRangeEx (
+	qtractorClipCommand *pClipCommand, qtractorTrack *pTrack,
+	unsigned long iInsertStart, unsigned long iInsertEnd ) const
+{
+	unsigned long iInsertLength = iInsertEnd - iInsertStart;
+
+	int iUpdate = 0;
+	qtractorClip *pClip = pTrack->clips().first();
+	while (pClip) {
+		unsigned long iClipStart  = pClip->clipStart();
+		unsigned long iClipOffset = pClip->clipOffset();
+		unsigned long iClipLength = pClip->clipLength();
+		unsigned long iClipEnd    = iClipStart + iClipLength;
+		if (iClipEnd > iInsertStart) {
+			// Slip/move clip...
+			if (iClipStart < iInsertStart) {
+				// Left-clip...
+				pClipCommand->resizeClip(pClip,
+					iClipStart,
+					iClipOffset,
+					iInsertStart - iClipStart);
+				// Right-clip...
+				qtractorClip *pClipEx = m_pTrackView->cloneClip(pClip);
+				if (pClipEx) {
+					iClipOffset += iInsertStart - iClipStart;
+					pClipEx->setClipStart(iInsertEnd);
+					pClipEx->setClipOffset(iClipOffset);
+					pClipEx->setClipLength(iClipEnd - iInsertStart);
+					pClipEx->setFadeOutLength(pClip->fadeOutLength());
+					pClipCommand->addClip(pClipEx, pTrack);
+				}
+			} else {
+				// Whole-clip...
+				pClipCommand->moveClip(pClip, pTrack,
+					iClipStart + iInsertLength,
+					iClipOffset,
+					iClipLength);
+			}
+			++iUpdate;
+		}
+		pClip = pClip->next();
+	}
+
+	return iUpdate;
+}
+
+
 // Adds a new track into session.
 bool qtractorTracks::addTrack (void)
 {

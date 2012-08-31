@@ -89,6 +89,12 @@
     <addaction name="separator" />
     <addaction name="editSelectRangeAction" />
    </widget>
+   <widget class="QMenu" name="editInsertMenu" >
+	<property name="title" >
+	 <string>I&amp;nsert</string>
+	</property>
+	<addaction name="editInsertRangeAction" />
+   </widget>
    <widget class="QMenu" name="toolsMenu" >
     <property name="title" >
      <string>&amp;Tools</string>
@@ -117,6 +123,8 @@
     <addaction name="separator" />
     <addaction name="editModeMenu" />
     <addaction name="editSelectMenu" />
+	<addaction name="separator" />
+	<addaction name="editInsertMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -738,6 +746,23 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="editInsertRangeAction" >
+   <property name="text" >
+	<string>&amp;Range</string>
+   </property>
+   <property name="iconText" >
+	<string>Insert Range</string>
+   </property>
+   <property name="toolTip" >
+	<string>Insert range</string>
+   </property>
+   <property name="statusTip" >
+	<string>Insert range as selected</string>
+   </property>
+   <property name="shortcut" >
+	<string>Ctrl+Ins</string>
    </property>
   </action>
   <action name="toolsQuantizeAction" >

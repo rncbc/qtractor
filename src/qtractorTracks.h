@@ -114,6 +114,9 @@ public:
 	void selectAll(bool bSelect = true);
 	void selectInvert();
 
+	// Insertion method.
+	bool insertEditRange(qtractorTrack *pTrack = NULL);
+
 	// Simple main-form redirectors.
 	void selectionChangeNotify();
 	void contentsChangeNotify();
@@ -171,6 +174,11 @@ protected:
 	bool mergeExportMidiClips(qtractorClipCommand *pClipCommand);
 
 	bool rangeClipEx(qtractorClip *pClip, bool bLoopSet);
+
+	// Insertion method (track).
+	int insertEditRangeEx(
+		qtractorClipCommand *pClipCommand, qtractorTrack *pTrack,
+		unsigned long iInsertStart, unsigned long iInsertEnd) const;
 
 public slots:
 

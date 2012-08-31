@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Brand new editing tool: empty range insertion, split/moving clips
+  or events forward the specified edit-head/tail interval, defaults
+  to next measure or bar (cf. menu Edit/Insert/Range, Track Range).
+  (EXPERIMENTAL)
+
 - Don't show the waiting cursor anymore when loading any plugins which
   might have a nice native editor (GUI) and options are set to show it.
 
@@ -24,10 +29,10 @@ SVN TRUNK
 - MIME type icons support for session (*.qtr *.qtr), template (*.qtt)
   and zip/archive (*.qtz) are now being introduced (EXPERIMENTAL).
 
-- LV2 State Files feature support is shamelessly getting some trials
-  now letting files referenced in designated LV2 plugin states to be
-  seamlessly included when saving to a zip/archive file bundle (.qtz
-  suffix) (EXPERIMENTAL).
+- LV2 State Files feature support is shamelessly getting real trial,
+  now letting files referenced in LV2 plugin states to be seamlessly
+  included when saving to a zip/archive file bundle (.qtz suffix).
+  (EXPERIMENTAL)
 
 - Added some virtual destructor stubs to shut up gcc 4.7 warnings.
 
@@ -39,7 +44,7 @@ SVN TRUNK
 
 - Added some more snap-to-beat divisors (Beat/14, /21 and /28) due on
   feature request #3537961, while dropping highest, probably useless
-  one (/128).
+  one (Beat/128).
 
 - New French (fr) translation added (by Yann Collette, thanks).
 

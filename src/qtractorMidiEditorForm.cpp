@@ -295,6 +295,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.editSelectRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectRange()));
+	QObject::connect(m_ui.editInsertRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editInsertRange()));
 
 	QObject::connect(m_ui.toolsQuantizeAction,
 		SIGNAL(triggered(bool)),
@@ -1199,6 +1202,13 @@ void qtractorMidiEditorForm::editSelectRange (void)
 }
 
 
+// Insert range.
+void qtractorMidiEditorForm::editInsertRange (void)
+{
+	m_pMidiEditor->insertEditRange();
+}
+
+
 // Quantize tool.
 void qtractorMidiEditorForm::toolsQuantize (void)
 {
@@ -1602,6 +1612,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+	m_ui.editInsertRangeAction->setEnabled(m_pMidiEditor->isInsertable());
 
 #if 0
 	m_ui.toolsMenu->setEnabled(bSelected);

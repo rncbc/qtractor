@@ -212,7 +212,14 @@
      <addaction name="editSelectTrackRangeAction" />
      <addaction name="editSelectRangeAction" />
     </widget>
-    <addaction name="editUndoAction" />
+	<widget class="QMenu" name="editInsertMenu" >
+	 <property name="title" >
+	  <string>I&amp;nsert</string>
+	 </property>
+	 <addaction name="editInsertRangeAction" />
+	 <addaction name="editInsertTrackRangeAction" />
+	</widget>
+	<addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
     <addaction name="separator" />
     <addaction name="editCutAction" />
@@ -225,7 +232,9 @@
     <addaction name="editSelectModeMenu" />
     <addaction name="editSelectMenu" />
     <addaction name="separator" />
-    <addaction name="trackMenu" />
+	<addaction name="editInsertMenu" />
+	<addaction name="separator" />
+	<addaction name="trackMenu" />
     <addaction name="clipMenu" />
    </widget>
    <widget class="QMenu" name="trackMenu" >
@@ -924,6 +933,40 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="editInsertRangeAction" >
+   <property name="text" >
+	<string>&amp;Range</string>
+   </property>
+   <property name="iconText" >
+	<string>Insert Range</string>
+   </property>
+   <property name="toolTip" >
+	<string>Insert range</string>
+   </property>
+   <property name="statusTip" >
+	<string>Insert range as selected</string>
+   </property>
+   <property name="shortcut" >
+	<string>Ctrl+Ins</string>
+   </property>
+  </action>
+  <action name="editInsertTrackRangeAction" >
+   <property name="text" >
+	<string>Trac&amp;k Range</string>
+   </property>
+   <property name="iconText" >
+	<string>Insert Track Range</string>
+   </property>
+   <property name="toolTip" >
+	<string>Insert track range</string>
+   </property>
+   <property name="statusTip" >
+	<string>Insert track range as selected</string>
+   </property>
+   <property name="shortcut" >
+	<string>Ctrl+Shift+Ins</string>
    </property>
   </action>
   <action name="trackAddAction" >
