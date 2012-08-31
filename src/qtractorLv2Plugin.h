@@ -416,10 +416,10 @@ private:
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	LV2_Feature          m_lv2_ui_external_feature;
-	lv2_external_ui_host m_lv2_ui_external_host;
+	LV2_External_UI_Host m_lv2_ui_external_host;
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 	LV2_Feature          m_lv2_ui_external_deprecated_feature;
-	lv2_external_ui_host m_lv2_ui_external_deprecated_host;
+	LV2_External_UI_Host m_lv2_ui_external_deprecated_host;
 #endif
 #endif
 

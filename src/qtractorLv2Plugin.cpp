@@ -2519,7 +2519,7 @@ void qtractorLv2Plugin::idleEditor (void)
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
-		LV2_EXTERNAL_UI_RUN((lv2_external_ui *) m_lv2_ui_widget);
+		LV2_EXTERNAL_UI_RUN((LV2_External_UI_Widget *) m_lv2_ui_widget);
 #endif
 
 #ifdef CONFIG_LV2_ATOM
@@ -2589,7 +2589,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	if (/*!m_bEditorVisible && */bVisible) {
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
-			LV2_EXTERNAL_UI_SHOW((lv2_external_ui *) m_lv2_ui_widget);
+			LV2_EXTERNAL_UI_SHOW((LV2_External_UI_Widget *) m_lv2_ui_widget);
 	#endif
 	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
@@ -2614,7 +2614,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	if (/*m_bEditorVisible && */!bVisible) {
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
-			LV2_EXTERNAL_UI_HIDE((lv2_external_ui *) m_lv2_ui_widget);
+			LV2_EXTERNAL_UI_HIDE((LV2_External_UI_Widget *) m_lv2_ui_widget);
 	#endif
 	#ifdef CONFIG_LIBSLV2
 	#ifdef CONFIG_LV2_GTK_UI
