@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Updated to newer LV2 External UI extension support (now maintained
+  by Filipe Coelho aka. falktx).
+
 - Brand new editing tool: empty range insertion, split/moving clips
   or events forward the specified edit-head/tail interval, defaults
   to next measure or bar (cf. menu Edit/Insert/Range, Track Range).
