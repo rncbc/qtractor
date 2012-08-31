@@ -243,6 +243,12 @@ public:
 	// Selectable event predicate.
 	bool isEventSelectable(qtractorMidiEvent *pEvent) const;
 
+	// Whether there's any events beyond the insertion point (edit-tail).
+	bool isInsertable() const;
+
+	// Insert edit range.
+	void insertEditRange();
+
 	// Update/sync integral contents.
 	void updateContents();
 	

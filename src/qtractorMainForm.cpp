@@ -669,6 +669,12 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editSelectRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectRange()));
+	QObject::connect(m_ui.editInsertRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editInsertRange()));
+	QObject::connect(m_ui.editInsertTrackRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editInsertTrackRange()));
 	QObject::connect(m_ui.editSelectModeCurveAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectModeCurve(bool)));
@@ -2456,6 +2462,36 @@ void qtractorMainForm::editSelectRange (void)
 	// Select edit-range...
 	if (m_pTracks)
 		m_pTracks->selectEditRange();
+
+	stabilizeForm();
+}
+
+
+// Insert range as selected.
+void qtractorMainForm::editInsertRange (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editInsertRange()");
+#endif
+
+	// Insert edit-range...
+	if (m_pTracks)
+		m_pTracks->insertEditRange();
+
+	stabilizeForm();
+}
+
+
+// Insert track-range as selected.
+void qtractorMainForm::editInsertTrackRange (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editInsertTrackRange()");
+#endif
+
+	// Select track-range...
+	if (m_pTracks)
+		m_pTracks->insertEditRange(m_pTracks->currentTrack());
 
 	stabilizeForm();
 }
@@ -5181,6 +5217,10 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	m_ui.editSelectRangeAction->setEnabled(iSessionEnd > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+
+	bool bInsertable = m_pSession->editHead() < iSessionEnd;
+	m_ui.editInsertTrackRangeAction->setEnabled(bEnabled && bInsertable);
+	m_ui.editInsertRangeAction->setEnabled(bInsertable);
 
 	// Top-level menu/toolbar items stabilization...
 	updateTrackMenu();

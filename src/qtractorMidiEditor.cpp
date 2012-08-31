@@ -1805,6 +1805,86 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 }
 
 
+// Whether there's any events beyond the insertion point (edit-head).
+bool qtractorMidiEditor::isInsertable (void) const
+{
+	if (m_pMidiClip == NULL)
+		return false;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
+		return false;
+
+	return m_pTimeScale->tickFromFrame(m_iEditHead)
+		 < m_pTimeScale->tickFromFrame(m_iOffset) + pSeq->duration();
+}
+
+
+// Insert edit range.
+void qtractorMidiEditor::insertEditRange (void)
+{
+	if (m_pMidiClip == NULL)
+		return;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
+		return;
+
+	unsigned long iInsertStart = m_pTimeScale->tickFromFrame(m_iEditHead);
+	unsigned long iInsertEnd   = 0;
+
+	if (m_iEditHead < m_iEditTail) {
+		iInsertEnd = m_pTimeScale->tickFromFrame(m_iEditTail);
+	} else {
+		unsigned short iBar = m_pTimeScale->barFromFrame(m_iEditHead);
+		iInsertEnd = m_pTimeScale->tickFromFrame(m_pTimeScale->frameFromBar(iBar + 1));
+	}
+
+	unsigned long iInsertDuration = iInsertEnd - iInsertStart;
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+
+	int iUpdate = 0;
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("insert range"));
+
+	qtractorMidiEvent *pEvent = pSeq->events().first();
+	while (pEvent) {
+		unsigned long iTime = pEvent->time();
+		unsigned long iDuration = pEvent->duration();
+		unsigned long iEventStart = t0 + iTime;
+		unsigned long iEventEnd = iEventStart + iDuration;
+		// Slip/move event...
+		if (iEventEnd >= iInsertStart) {
+			if (iEventStart < iInsertStart) {
+				if (iEventEnd > iInsertStart) {
+					// Resize left-event...
+					pEditCommand->resizeEventTime(pEvent,
+						iTime, iInsertStart - iEventStart);
+					// Insert right-event...
+					qtractorMidiEvent *pEventEx
+						= new qtractorMidiEvent(*pEvent);
+					pEventEx->setTime(iInsertEnd - t0);
+					pEventEx->setDuration(iEventEnd - iInsertStart);
+					pEditCommand->insertEvent(pEventEx);
+					++iUpdate;
+				}
+			} else {
+				// Move whole-event...
+				pEditCommand->resizeEventTime(pEvent,
+					iTime + iInsertDuration, iDuration);
+				++iUpdate;
+			}
+		}
+		pEvent = pEvent->next();
+	}
+
+	if (iUpdate > 0)
+		m_pCommands->exec(pEditCommand);
+	else
+		delete pEditCommand;
+}
+
+
 // Update/sync integral contents.
 void qtractorMidiEditor::updateContents (void)
 {
