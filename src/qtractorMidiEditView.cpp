@@ -465,11 +465,25 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 
 	m_pEditor->paintDragState(this, pPainter);
 
-	// Draw special play-head header...
+	// Draw special play-head line...
 	int cx = qtractorScrollView::contentsX();
 	int x  = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::red);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+	}
+
+	// Draw edit-head line...
+	x = m_pEditor->editHeadX() - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::blue);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+	}
+
+	// Draw edit-tail line...
+	x = m_pEditor->editTailX() - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::blue);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 }
