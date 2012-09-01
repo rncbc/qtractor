@@ -1331,7 +1331,8 @@ void qtractorLv2PluginType::slv2_open (void)
 	g_slv2_atom_event_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__eventTransfer);
 #endif
 #ifdef CONFIG_LV2_EXTERNAL_UI
-	g_slv2_external_ui_class = slv2_value_new_uri(g_slv2_world,	LV2_EXTERNAL_UI_URI);
+	g_slv2_external_ui_class
+		= slv2_value_new_uri(g_slv2_world, LV2_EXTERNAL_UI__Widget);
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 	g_slv2_external_ui_deprecated_class
 		= slv2_value_new_uri(g_slv2_world, LV2_EXTERNAL_UI_DEPRECATED_URI);
@@ -2262,7 +2263,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	m_lv2_ui_external_host.ui_closed = qtractor_lv2_ui_closed;
 	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
-	m_lv2_ui_external_feature.URI = LV2_EXTERNAL_UI_URI;
+	m_lv2_ui_external_feature.URI = LV2_EXTERNAL_UI__Host;
 	m_lv2_ui_external_feature.data = &m_lv2_ui_external_host;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_feature;
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
@@ -2280,7 +2281,12 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
 	case LV2_UI_TYPE_EXTERNAL:
-		ui_type_uri = LV2_EXTERNAL_UI_URI;
+	#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+		if (slv2_ui_is_a(m_slv2_ui, g_slv2_external_ui_deprecated_class))
+			ui_type_uri = LV2_EXTERNAL_UI_DEPRECATED_URI;
+		else
+	#endif
+		ui_type_uri = LV2_EXTERNAL_UI__Widget;
 		break;
 	case LV2_UI_TYPE_GTK:
 		ui_type_uri = LV2_GTK_UI_URI;
