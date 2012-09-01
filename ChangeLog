@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 1.0.0 compliance phase II (EXPERIMENTAL).
+
 - Updated to newer LV2 External UI extension support (now maintained
   by Filipe Coelho aka. falktx).
 

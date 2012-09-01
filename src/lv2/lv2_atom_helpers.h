@@ -39,7 +39,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "lv2_atom.h"
+
+#include "lv2/lv2plug.in/ns/ext/atom/atom.h"
 
 
 // An abstract/opaque LV2 atom:Sequence buffer.

@@ -113,7 +113,7 @@
 
 
 // URI map/unmap features.
-#include "lv2_urid.h"
+#include "lv2/lv2plug.in/ns/ext/urid/urid.h"
 
 static QHash<QString, uint32_t>    g_uri_map;
 static QHash<uint32_t, QByteArray> g_ids_map;
@@ -154,7 +154,7 @@ static const LV2_Feature g_lv2_urid_unmap_feature =
 
 
 // URI map (uri_to_id) feature (DEPRECATED)
-#include "lv2_uri_map.h"
+#include "lv2/lv2plug.in/ns/ext/uri-map/uri-map.h"
 
 static uint32_t qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )

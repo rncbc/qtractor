@@ -42,8 +42,8 @@
 
 #ifdef CONFIG_LV2_EVENT
 // LV2 Event/MIDI support.
-#include "lv2_event.h"
-#include "lv2_event_helpers.h"
+#include "lv2/lv2plug.in/ns/ext/event/event.h"
+#include "lv2/lv2plug.in/ns/ext/event/event-helpers.h"
 #ifndef QTRACTOR_LV2_MIDI_EVENT_ID
 #define QTRACTOR_LV2_MIDI_EVENT_ID 1
 #endif
@@ -51,7 +51,6 @@
 
 #ifdef CONFIG_LV2_ATOM
 // LV2 Atom/MIDI support.
-#include "lv2_atom.h"
 #include "lv2_atom_helpers.h"
 #ifndef QTRACTOR_LV2_MIDI_EVENT_ID
 #define QTRACTOR_LV2_MIDI_EVENT_ID 1
@@ -60,7 +59,7 @@
 
 #ifdef CONFIG_LV2_WORKER
 // LV2 Worker/Schedule support.
-#include "lv2_worker.h"
+#include "lv2/lv2plug.in/ns/ext/worker/worker.h"
 // Forward declarations.
 class qtractorLv2Worker;
 #endif
@@ -71,10 +70,10 @@ class qtractorLv2Worker;
 
 #ifdef CONFIG_LV2_UI
 // LV2 UI support.
-#include "lv2_ui.h"
+#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
 // LV2 UI data/instance access support.
-#include "lv2_data_access.h"
-#include "lv2_instance_access.h"
+#include "lv2/lv2plug.in/ns/ext/data-access/data-access.h"
+#include "lv2/lv2plug.in/ns/ext/instance-access/instance-access.h"
 #ifdef CONFIG_LV2_ATOM
 #include <jack/ringbuffer.h>
 #endif
@@ -87,8 +86,8 @@ class qtractorLv2Worker;
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
-#include "lv2_atom.h"
-#include "lv2_state.h"
+#include "lv2/lv2plug.in/ns/ext/atom/atom.h"
+#include "lv2/lv2plug.in/ns/ext/state/state.h"
 #endif
 
 #ifdef CONFIG_LV2_PROGRAMS
@@ -100,12 +99,12 @@ class qtractorLv2Worker;
 
 #ifdef CONFIG_LV2_PRESETS
 // LV2 Presets support.
-#include "lv2_presets.h"
+#include "lv2/lv2plug.in/ns/ext/presets/presets.h"
 #endif
 
 #ifdef CONFIG_LV2_TIME
 // LV2 Time support.
-#include "lv2_time.h"
+#include "lv2/lv2plug.in/ns/ext/time/time.h"
 // JACK Transport position support.
 #include <jack/transport.h>
 #endif
