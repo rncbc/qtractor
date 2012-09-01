@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.5.18, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.5.19, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -936,7 +936,13 @@ if test "x$ac_lv2" = "xyes"; then
       CPPFLAGS="$CPPFLAGS -Isrc/lv2"
       ac_incpath="$ac_incpath lv2"
    fi
-   AC_CHECK_HEADERS(lv2.h lv2_urid.h lv2_uri_map.h, [ac_lv2="yes"], [ac_lv2="no"])
+   AC_CHECK_HEADER(lv2.h, [ac_lv2="yes"], [ac_lv2="no"])
+   if test "x$ac_lv2" = "xyes"; then
+      AC_CHECK_HEADERS(
+         lv2/lv2plug.in/ns/ext/urid/urid.h \
+         lv2/lv2plug.in/ns/ext/uri-map/uri-map.h,
+         [ac_lv2="yes"], [ac_lv2="no"])
+   fi
    if test "x$ac_lv2" = "xyes"; then
       AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
    else
@@ -956,7 +962,9 @@ if test "x$ac_lv2" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_event" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h,
+   AC_CHECK_HEADERS(
+      lv2/lv2plug.in/ns/ext/event/event.h \
+      lv2/lv2plug.in/ns/ext/event/event-helpers.h,
       [ac_lv2_event="yes"], [ac_lv2_event="no"])
    if test "x$ac_lv2_event" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 Event/MIDI support is available.])
@@ -965,8 +973,7 @@ if test "x$ac_lv2_event" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_atom" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_atom.h lv2_atom_helpers.h,
-      [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
+   AC_CHECK_HEADERS(lv2_atom_helpers.h, [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
    if test "x$ac_lv2_atom" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_ATOM, 1, [Define if LV2 Atom/MIDI aupport is available.])
    else
@@ -974,7 +981,9 @@ if test "x$ac_lv2_atom" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_worker" = "xyes"; then
-   AC_CHECK_HEADER(lv2_worker.h, [ac_lv2_worker="yes"], [ac_lv2_worker="no"])
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/worker/worker.h,
+      [ac_lv2_worker="yes"], [ac_lv2_worker="no"])
    if test "x$ac_lv2_worker" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_WORKER, 1, [Define if LV2 Worker/Schedule aupport is available.])
    else
@@ -999,15 +1008,13 @@ if test "x$ac_lv2_gtk_ui" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_GTK_UI, 1, [Define if LV2 GTK UI support is available.])
 fi
 if test "x$ac_lv2_external_ui" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h lv2_data_access.h lv2_instance_access.h,
-      [ac_lv2_external_ui="yes"],
-      [ac_lv2_external_ui="no"],
-      [[#include <stdint.h>
-        #include <lv2.h>
-        #ifdef HAVE_LV2_UI_H
-        # include <lv2_ui.h>
-        #endif
-      ]])
+   AC_CHECK_HEADER(lv2_external_ui.h, [ac_lv2_external_ui="yes"], [ac_lv2_external_ui="no"])
+   if test "x$ac_lv2_external_ui" = "xyes"; then
+      AC_CHECK_HEADERS(
+         lv2/lv2plug.in/ns/ext/data-access/data-access.h \
+         lv2/lv2plug.in/ns/ext/instance-access/instance-access.h,
+         [ac_lv2_external_ui="yes"], [ac_lv2_external_ui="no"])
+   fi
    if test "x$ac_lv2_external_ui" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 External UI extension is available.])
    else
@@ -1015,10 +1022,10 @@ if test "x$ac_lv2_external_ui" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_state" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_atom.h lv2_state.h, [ac_lv2_state="yes"], [ac_lv2_state="no"],
-      [[#include <stdlib.h>
-        #include <lv2.h>
-      ]])
+   AC_CHECK_HEADERS(
+      lv2/lv2plug.in/ns/ext/atom/atom.h \
+      lv2/lv2plug.in/ns/ext/state/state.h,
+      [ac_lv2_state="yes"], [ac_lv2_state="no"])
    if test "x$ac_lv2_state" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_STATE, 1, [Define if LV2 State extension is available.])
    else
@@ -1036,15 +1043,7 @@ else
    ac_lv2_presets="no"
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_ui.h lv2_programs.h,
-      [ac_lv2_programs="yes"],
-      [ac_lv2_programs="no"],
-      [[#include <stdint.h>
-        #include <lv2.h>
-        #ifdef HAVE_LV2_UI_H
-        # include <lv2_ui.h>
-        #endif
-      ]])
+   AC_CHECK_HEADER(lv2_programs.h, [ac_lv2_programs="yes"], [ac_lv2_programs="no"])
    if test "x$ac_lv2_programs" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PROGRAMS, 1, [Define if LV2 Programs extension is available.])
    else
@@ -1052,7 +1051,9 @@ if test "x$ac_lv2_programs" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_presets" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_presets.h, [ac_lv2_presets="yes"], [ac_lv2_presets="no"])
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/presets/presets.h,
+      [ac_lv2_presets="yes"], [ac_lv2_presets="no"])
    if test "x$ac_lv2_presets" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PRESETS, 1, [Define if LV2 Presets are supported.])
    else
@@ -1060,7 +1061,9 @@ if test "x$ac_lv2_presets" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_time" = "xyes"; then
-   AC_CHECK_HEADER(lv2_time.h, [ac_lv2_time="yes"], [ac_lv2_time="no"])
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/time/time.h,
+      [ac_lv2_time="yes"], [ac_lv2_time="no"])
    if test "x$ac_lv2_time" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_TIME, 1, [Define if LV2 Time/position is supported.])
    else
