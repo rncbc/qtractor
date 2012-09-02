@@ -5,10 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- After a long absence, edit(blue) cursor vertical lines are back on
+  the MIDI clip editor views (aka. piano-roll). (EXPERIMENTAL)
+
 - LV2 1.0.0 compliance phase II (EXPERIMENTAL).
 
 - Updated to newer LV2 External UI extension support (now maintained
-  by Filipe Coelho aka. falktx).
+  by Filipe Coelho aka. falktx). (EXPERIMENTAL)
 
 - Brand new editing tool: empty range insertion, split/moving clips
   or events forward the specified edit-head/tail interval, defaults
@@ -32,12 +35,11 @@ SVN TRUNK
   by Jiri Prochaszka aka. Anchakor, thanks).
 
 - MIME type icons support for session (*.qtr *.qtr), template (*.qtt)
-  and zip/archive (*.qtz) are now being introduced (EXPERIMENTAL).
+  and zip/archive (*.qtz) are now being introduced.
 
 - LV2 State Files feature support is shamelessly getting real trial,
   now letting files referenced in LV2 plugin states to be seamlessly
   included when saving to a zip/archive file bundle (.qtz suffix).
-  (EXPERIMENTAL)
 
 - Added some virtual destructor stubs to shut up gcc 4.7 warnings.
 
