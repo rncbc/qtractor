@@ -3145,8 +3145,16 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 	LilvNode *preset
 		= lilv_new_uri(g_slv2_world, sUri.toUtf8().constData());
 
-	LilvState *state
-		= lilv_state_new_from_world(g_slv2_world, &g_lv2_urid_map, preset);
+	LilvState *state = NULL;
+	const QString& sPath = QUrl(sUri).toLocalFile();
+	if (!sPath.isEmpty() && QFileInfo(sPath).exists()) {
+		state = lilv_state_new_from_file(g_slv2_world,
+			&g_lv2_urid_map, preset,
+			sPath.toUtf8().constData());
+	} else {
+		state = lilv_state_new_from_world(g_slv2_world,
+			&g_lv2_urid_map, preset);
+	}
 	if (state == NULL) {
 		lilv_node_free(preset);
 		return false;

@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed re-loading of LV2 Presets that are newly created/saved during
+  current session (reported by Jiri Prochaszka aka. Anchakor, thanks).
+
+- Preset drop-down list is now sorted, on plugin properties dialog.
+
 - After a long absence, edit(blue) cursor vertical lines are back on
   the MIDI clip editor views (aka. piano-roll). (EXPERIMENTAL)
 
