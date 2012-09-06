@@ -531,7 +531,7 @@ public:
 	virtual bool deletePreset(const QString& /*sPreset*/)
 		{ return false; }
 
-	virtual bool isReadOnlyPreset(const QString& /*sPreset*/)
+	virtual bool isReadOnlyPreset(const QString& /*sPreset*/) const
 		{ return false; }
 
 	// Plugin default preset name accessor (informational)

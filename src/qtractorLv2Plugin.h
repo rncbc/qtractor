@@ -319,6 +319,8 @@ public:
 	bool savePreset(const QString& sPreset);
 	// Delete plugin state preset (from file-system).
 	bool deletePreset(const QString& sPreset);
+	// Whether given preset is internal/read-only.
+	bool isReadOnlyPreset(const QString& sPreset) const;
 #endif
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.

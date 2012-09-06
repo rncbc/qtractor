@@ -3265,7 +3265,7 @@ bool qtractorLv2Plugin::deletePreset ( const QString& sPreset )
 }
 
 // Whether given preset is internal/read-only.
-bool qtractorLv2Plugin::isReadOnlyPreset ( const QString& sPreset )
+bool qtractorLv2Plugin::isReadOnlyPreset ( const QString& sPreset ) const
 {
 	const QString& sUri = m_lv2_presets.value(sPreset);
 	if (sUri.isEmpty())
