@@ -3258,8 +3258,13 @@ bool qtractorLv2Plugin::deletePreset ( const QString& sPreset )
 		return false;
 
 	const QString& sPath = QUrl(sUri).toLocalFile();
-	if (!sPath.isEmpty())
-		qtractor_lv2_remove_file(QFileInfo(sPath));
+	if (!sPath.isEmpty()) {
+		QFileInfo info(sPath);
+		if (!info.isDir())
+			info.setFile(info.absolutePath());
+		qtractor_lv2_remove_file(info);
+		m_lv2_presets.remove(sPreset);
+	}
 
 	return true;
 }
