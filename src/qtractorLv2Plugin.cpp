@@ -1014,6 +1014,44 @@ static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
 	return retv;
 }
 
+// Remove specific dir/file path.
+static void qtractor_lv2_remove_dir(const QString& sDir);
+
+static void qtractor_lv2_remove_file ( const QFileInfo& info )
+{
+	if (info.exists()) {
+		const QString& sPath = info.absoluteFilePath();
+		if (info.isDir()) {
+			qtractor_lv2_remove_dir(sPath);
+		} else {
+			QFile::remove(sPath);
+		}
+	}
+}
+
+static void qtractor_lv2_remove_dir_list ( const QList<QFileInfo>& list )
+{
+	QListIterator<QFileInfo> iter(list);
+	while (iter.hasNext())
+		qtractor_lv2_remove_file(iter.next());
+}
+
+static void qtractor_lv2_remove_dir ( const QString& sDir )
+{
+	const QDir dir(sDir);
+
+	qtractor_lv2_remove_dir_list(
+		dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot));
+
+	QDir cwd = QDir::current();
+	if (cwd.absolutePath() == dir.absolutePath()) {
+		cwd.cdUp();
+		QDir::setCurrent(cwd.path());
+	}
+
+	dir.rmdir(sDir);
+}
+
 #endif	// CONFIG_LV2_PRESETS
 
 #ifdef CONFIG_LV2_TIME
@@ -3145,8 +3183,16 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 	LilvNode *preset
 		= lilv_new_uri(g_slv2_world, sUri.toUtf8().constData());
 
-	LilvState *state
-		= lilv_state_new_from_world(g_slv2_world, &g_lv2_urid_map, preset);
+	LilvState *state = NULL;
+	const QString& sPath = QUrl(sUri).toLocalFile();
+	if (!sPath.isEmpty() && QFileInfo(sPath).exists()) {
+		state = lilv_state_new_from_file(g_slv2_world,
+			&g_lv2_urid_map, preset,
+			sPath.toUtf8().constData());
+	} else {
+		state = lilv_state_new_from_world(g_slv2_world,
+			&g_lv2_urid_map, preset);
+	}
 	if (state == NULL) {
 		lilv_node_free(preset);
 		return false;
@@ -3202,6 +3248,40 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 	}
 
 	return (ret == 0);
+}
+
+// Delete plugin state preset (from file-system).
+bool qtractorLv2Plugin::deletePreset ( const QString& sPreset )
+{
+	const QString& sUri = m_lv2_presets.value(sPreset);
+	if (sUri.isEmpty())
+		return false;
+
+	const QString& sPath = QUrl(sUri).toLocalFile();
+	if (!sPath.isEmpty()) {
+		QFileInfo info(sPath);
+		if (!info.isDir())
+			info.setFile(info.absolutePath());
+		qtractor_lv2_remove_file(info);
+		m_lv2_presets.remove(sPreset);
+	}
+
+	return true;
+}
+
+// Whether given preset is internal/read-only.
+bool qtractorLv2Plugin::isReadOnlyPreset ( const QString& sPreset ) const
+{
+	const QString& sUri = m_lv2_presets.value(sPreset);
+	if (sUri.isEmpty())
+		return false;
+
+	const QString& sPath = QUrl(sUri).toLocalFile();
+	if (sPath.isEmpty())
+		return true;
+
+	const QFileInfo info(sPath);
+	return !info.exists() || !info.isWritable();
 }
 
 #endif	// CONFIG_LV2_PRESETS

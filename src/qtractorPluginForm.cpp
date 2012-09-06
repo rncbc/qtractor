@@ -683,20 +683,23 @@ void qtractorPluginForm::deletePresetSlot (void)
 			== QMessageBox::Cancel)
 			return;
 	}
-	// Go ahead...
-	QSettings& settings = pOptions->settings();
-	settings.beginGroup(m_pPlugin->presetGroup());
-#ifdef QTRACTOR_REMOVE_PRESET_FILES
-	if ((m_pPlugin->type())->isConfigure()) {
-		const QString& sFilename = settings.value(sPreset).toString();
-		if (QFileInfo(sFilename).exists())
-			QFile(sFilename).remove();
-	}
-#endif
-	settings.remove(sPreset);
-	settings.endGroup();
-	refresh();
 
+	// Go ahead...
+	if (!m_pPlugin->deletePreset(sPreset)) {
+		QSettings& settings = pOptions->settings();
+		settings.beginGroup(m_pPlugin->presetGroup());
+	#ifdef QTRACTOR_REMOVE_PRESET_FILES
+		if ((m_pPlugin->type())->isConfigure()) {
+			const QString& sFilename = settings.value(sPreset).toString();
+			if (QFileInfo(sFilename).exists())
+				QFile(sFilename).remove();
+		}
+	#endif
+		settings.remove(sPreset);
+		settings.endGroup();
+	}
+
+	refresh();
 	stabilize();
 }
 
@@ -917,6 +920,7 @@ void qtractorPluginForm::refresh (void)
 	const QString sOldPreset = m_ui.PresetComboBox->currentText();
 	m_ui.PresetComboBox->clear();
 	m_ui.PresetComboBox->insertItems(0, m_pPlugin->presetList());
+	m_ui.PresetComboBox->model()->sort(0);
 	m_ui.PresetComboBox->addItem(g_sDefPreset);
 	m_ui.PresetComboBox->setEditText(sOldPreset);
 
@@ -953,8 +957,10 @@ void qtractorPluginForm::stabilize (void)
 
 	if (bEnabled) {
 		const QString& sPreset = m_ui.PresetComboBox->currentText();
-		bEnabled = (!sPreset.isEmpty() && sPreset != g_sDefPreset);
-	    bExists  = (m_ui.PresetComboBox->findText(sPreset) >= 0);
+		bEnabled = !sPreset.isEmpty()
+			&& sPreset != g_sDefPreset
+			&& !m_pPlugin->isReadOnlyPreset(sPreset);
+		bExists	= (m_ui.PresetComboBox->findText(sPreset) >= 0);
 	}
 
 	m_ui.SavePresetToolButton->setEnabled(
