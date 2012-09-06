@@ -957,8 +957,10 @@ void qtractorPluginForm::stabilize (void)
 
 	if (bEnabled) {
 		const QString& sPreset = m_ui.PresetComboBox->currentText();
-		bEnabled = (!sPreset.isEmpty() && sPreset != g_sDefPreset);
-	    bExists  = (m_ui.PresetComboBox->findText(sPreset) >= 0);
+		bEnabled = !sPreset.isEmpty()
+			&& sPreset != g_sDefPreset
+			&& !m_pPlugin->isReadOnlyPreset(sPreset);
+		bExists	= (m_ui.PresetComboBox->findText(sPreset) >= 0);
 	}
 
 	m_ui.SavePresetToolButton->setEnabled(

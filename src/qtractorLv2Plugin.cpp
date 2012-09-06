@@ -3264,6 +3264,21 @@ bool qtractorLv2Plugin::deletePreset ( const QString& sPreset )
 	return true;
 }
 
+// Whether given preset is internal/read-only.
+bool qtractorLv2Plugin::isReadOnlyPreset ( const QString& sPreset )
+{
+	const QString& sUri = m_lv2_presets.value(sPreset);
+	if (sUri.isEmpty())
+		return false;
+
+	const QString& sPath = QUrl(sUri).toLocalFile();
+	if (sPath.isEmpty())
+		return true;
+
+	const QFileInfo info(sPath);
+	return !info.exists() || !info.isWritable();
+}
+
 #endif	// CONFIG_LV2_PRESETS
 
 #endif	// CONFIG_LIBLILV
