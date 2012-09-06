@@ -317,6 +317,8 @@ public:
 	// Load/Save plugin state from/into a named preset.
 	bool loadPreset(const QString& sPreset);
 	bool savePreset(const QString& sPreset);
+	// Delete plugin state preset (from file-system).
+	bool deletePreset(const QString& sPreset);
 #endif
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.

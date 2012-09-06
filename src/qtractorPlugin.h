@@ -529,6 +529,9 @@ public:
 	virtual bool savePreset(const QString& /*sPreset*/)
 		{ return false; }
 
+	virtual bool deletePreset(const QString& /*sPreset*/)
+		{ return false; }
+
 	// Plugin default preset name accessor (informational)
 	void setPreset(const QString& sPreset);
 	const QString& preset() const;

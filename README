@@ -133,7 +133,8 @@ The software requirements for build and runtime are listed as follows:
   [15] liblilv, Lightweight LV2 implementation stack
        (alternative to deprecated libslv2 [11])
         http://drobilla.net/software/lilv/
-        http://drobilla.net/software/suil/
+		http://drobilla.net/software/suil/
+		http://drobilla.net/software/sratom/
         http://drobilla.net/software/sord/
         http://drobilla.net/software/serd/
 

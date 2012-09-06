@@ -6,7 +6,9 @@ ChangeLog
 SVN TRUNK
 
 - Fixed re-loading of LV2 Presets that are newly created/saved during
-  current session (reported by Jiri Prochaszka aka. Anchakor, thanks).
+  current session; actually delete and remove a LV2 Preset if found
+  in the file-system (as suggested by Jiri Prochaszka aka. Anchakor,
+  thanks again). (EXPERIMENTAL)
 
 - Preset drop-down list is now sorted, on plugin properties dialog.
 
