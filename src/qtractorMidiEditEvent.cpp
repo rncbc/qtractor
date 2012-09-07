@@ -336,25 +336,24 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	int x = pNode->pixelFromBeat(iBeat) - dx;
 	int x2 = x;
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat);
-		if (bBeatIsBar) {
-			p.setPen(rgbLight);
-			p.drawLine(x, 0, x, h);
+		if (pNode->beatIsBar(iBeat)) {
+			p.setPen(rgbDark);
+			p.drawLine(x - 1, 0, x - 1, h);
 			if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
 				p.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 			x2 = x;
 			if (iBeat == pNode->beat)
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 		}
-		if (bBeatIsBar || iPixelsPerBeat > 8) {
-			p.setPen(rgbDark);
-			p.drawLine(x - 1, 0, x - 1, h);
+		if (iPixelsPerBeat > 8) {
+			p.setPen(rgbLight);
+			p.drawLine(x, 0, x, h);
 		}
 		if (iSnapPerBeat > 1) {
 			int q = iPixelsPerBeat / iSnapPerBeat;
 			if (q > 4) {  
 				p.setPen(rgbBase.value() < 0x7f
-					? rgbDark.darker(105) : rgbLight.lighter(120));
+					? rgbLight.darker(105) : rgbLight.lighter(120));
 				for (int i = 1; i < iSnapPerBeat; ++i) {
 					x = pTimeScale->pixelSnap(x + dx + q) - dx - 1;
 					p.drawLine(x, 0, x, h);
