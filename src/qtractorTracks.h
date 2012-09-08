@@ -176,7 +176,7 @@ protected:
 	bool rangeClipEx(qtractorClip *pClip, bool bLoopSet);
 
 	// Insertion method (track).
-	int insertEditRangeEx(
+	int insertEditRangeTrack(
 		qtractorClipCommand *pClipCommand, qtractorTrack *pTrack,
 		unsigned long iInsertStart, unsigned long iInsertEnd) const;
 

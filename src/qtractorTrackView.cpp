@@ -703,7 +703,6 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	const QColor& rgbDark  = rgbMid.darker(120);
 
 	// Draw vertical grid lines...
-	int x;
 	if (m_bSnapGrid || m_bSnapZebra) {
 		const QBrush zebra(QColor(0, 0, 0, 20));
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
@@ -711,7 +710,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 		unsigned int iBeat = pNode->beatFromPixel(cx);
 		unsigned short iBar = pNode->barFromBeat(iBeat);
-		int x1 = x = pNode->pixelFromBeat(iBeat) - cx;
+		int x = pNode->pixelFromBeat(iBeat) - cx;
 		int x2 = x;
 		while (x < w) {
 			bool bBeatIsBar = pNode->beatIsBar(iBeat);
@@ -722,7 +721,6 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 				}
 				if (m_bSnapZebra && (x > x2) && (++iBar & 1))
 					painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
-				x1 = x + 16;
 				x2 = x;
 				if (iBeat == pNode->beat)
 					iPixelsPerBeat = pNode->pixelsPerBeat();
@@ -774,7 +772,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (pSession->isLooping()) {
 		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkCyan);
-		x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
+		int x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
 		if (x >= w)
 			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
@@ -796,7 +794,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (pSession->isPunching()) {
 		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkMagenta);
-		x = pSession->pixelFromFrame(pSession->punchIn()) - cx;
+		int x = pSession->pixelFromFrame(pSession->punchIn()) - cx;
 		if (x >= w)
 			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
