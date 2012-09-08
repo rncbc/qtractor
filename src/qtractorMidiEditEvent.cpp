@@ -336,7 +336,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	int x = pNode->pixelFromBeat(iBeat) - dx;
 	int x2 = x;
 	while (x < w) {
-		if (pNode->beatIsBar(iBeat)) {
+		bool bBeatIsBar = pNode->beatIsBar(iBeat);
+		if (bBeatIsBar) {
 			p.setPen(rgbDark);
 			p.drawLine(x - 1, 0, x - 1, h);
 			if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
@@ -345,7 +346,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			if (iBeat == pNode->beat)
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 		}
-		if (iPixelsPerBeat > 8) {
+		if (bBeatIsBar || iPixelsPerBeat > 8) {
 			p.setPen(rgbLight);
 			p.drawLine(x, 0, x, h);
 		}
