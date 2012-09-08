@@ -1836,12 +1836,12 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 		= new qtractorClipCommand(tr("insert range"));
 
 	if (pTrack) {
-		iUpdate += insertEditRangeEx(pClipCommand,
+		iUpdate += insertEditRangeTrack(pClipCommand,
 			pTrack, iInsertStart, iInsertEnd);
 	} else {
 		pTrack = pSession->tracks().first();
 		while (pTrack) {
-			iUpdate += insertEditRangeEx(pClipCommand,
+			iUpdate += insertEditRangeTrack(pClipCommand,
 				pTrack, iInsertStart, iInsertEnd);
 			pTrack = pTrack->next();
 		}
@@ -1857,7 +1857,7 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 
 
 // Insertion method (track).
-int qtractorTracks::insertEditRangeEx (
+int qtractorTracks::insertEditRangeTrack (
 	qtractorClipCommand *pClipCommand, qtractorTrack *pTrack,
 	unsigned long iInsertStart, unsigned long iInsertEnd ) const
 {
