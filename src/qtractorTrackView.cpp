@@ -716,8 +716,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			bool bBeatIsBar = pNode->beatIsBar(iBeat);
 			if (bBeatIsBar) {
 				if (m_bSnapGrid) {
-					painter.setPen(rgbDark);
-					painter.drawLine(x - 1, 0, x - 1, h);
+					painter.setPen(rgbLight);
+					painter.drawLine(x, 0, x, h);
 				}
 				if (m_bSnapZebra && (x > x2) && (++iBar & 1))
 					painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
@@ -726,8 +726,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 					iPixelsPerBeat = pNode->pixelsPerBeat();
 			}
 			if (m_bSnapGrid && (bBeatIsBar || iPixelsPerBeat > 16)) {
-				painter.setPen(rgbLight);
-				painter.drawLine(x, 0, x, h);
+				painter.setPen(rgbDark);
+				painter.drawLine(x - 1, 0, x - 1, h);
 			}
 			pNode = cursor.seekBeat(++iBeat);
 			x = pNode->pixelFromBeat(iBeat) - cx;
