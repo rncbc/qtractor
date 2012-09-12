@@ -655,6 +655,7 @@ void qtractorMidiToolsForm::refreshPresets (void)
 		QSettings& settings = pOptions->settings();
 		settings.beginGroup("/MidiTools");
 		m_ui.PresetNameComboBox->insertItems(0, settings.childGroups());
+		m_ui.PresetNameComboBox->model()->sort(0);
 		settings.endGroup();
 	}
 	m_ui.PresetNameComboBox->addItem(g_sDefPreset);
@@ -991,12 +992,13 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 			}
 			if (m_ui.ResizeValueCheckBox->isChecked()) {
-				iValue = m_ui.ResizeValueSpinBox->value();
-				if (bPitchBend) iValue <<= 6; // WTF?
+				int p = (bPitchBend && iValue < 0 ? -1 : 1); // sign
+				iValue = p * m_ui.ResizeValueSpinBox->value();
+				if (bPitchBend) iValue <<= 6; // *128
 				if (m_ui.ResizeValue2ComboBox->currentIndex() > 0) {
-					int iValue2 = m_ui.ResizeValue2SpinBox->value();
-					if (bPitchBend) iValue2 <<= 6;
-					int iDeltaValue = iValue2 - iValue;
+					int iValue2 = p * m_ui.ResizeValue2SpinBox->value();
+					if (bPitchBend) iValue2 <<= 6; // *128
+					int iDeltaValue = (iValue2 - iValue);
 					long iDeltaTime = iMaxTime - iMinTime;
 					if (iDeltaTime > 0)
 						iValue += iDeltaValue * (iTime - iMinTime) / iDeltaTime;
@@ -1306,7 +1308,7 @@ void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
 	else
 	if (p < -0.001)
 		i = - int(2000.0f * ::log10f(1000.0f * float(- p)));
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiToolsForm::timeshiftSpinBoxChanged(%g) i=%d", float(p), i);
 #endif
 	m_ui.TimeshiftSlider->setValue(i);
