@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed MIDI resize tool, now applying symmetric proportional changes
+  to pitch-bend event values [-8191, +8191].
+
 - Fixed re-loading of LV2 Presets that are newly created/saved during
   current session; actually delete and remove a LV2 Preset if found
   in the file-system (as suggested by Jiri Prochaszka aka. Anchakor,

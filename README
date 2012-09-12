@@ -82,7 +82,7 @@ The software requirements for build and runtime are listed as follows:
 
   [1] Qt4 (core, gui, xml), C++ class library and tools for
         crossplatform development and internationalization
-        http://qt.nokia.com/products/
+        http://qt-project.org/
 
   [2] JACK Audio Connection Kit
         http://jackaudio.org/
@@ -213,7 +213,7 @@ References
 
 [1] Qt4 (core, gui, xml), C++ class library and tools
      for crossplatform development and internationalization
-     http://qt.nokia.com/products/
+     http://qt-project.org/
 
 [2] JACK Audio Connection Kit
      http://jackaudio.org/
@@ -263,6 +263,7 @@ References
      (alternative to deprecated libslv2 [11])
      http://drobilla.net/software/lilv/
      http://drobilla.net/software/suil/
+     http://drobilla.net/software/sratom/
      http://drobilla.net/software/sord/
      http://drobilla.net/software/serd/
 
