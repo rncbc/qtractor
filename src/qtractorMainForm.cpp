@@ -2965,7 +2965,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 		pCurve = pSubject->curve();
 		if (pCurve == NULL) {
 			qtractorCurve::Mode mode = qtractorCurve::Hold;
-			if (m_pOptions)
+			if (m_pOptions && !pSubject->isToggled())
 				mode = qtractorCurve::Mode(m_pOptions->iCurveMode);
 			pCurve = new qtractorCurve(pCurveList, pSubject, mode);
 			pCurve->setLogarithmic(pMidiObserver->isLogarithmic());
