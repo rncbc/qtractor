@@ -1,7 +1,7 @@
 // qtractorShortcutForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -62,9 +62,12 @@ signals:
 
 	void editingFinished();
 
-protected slots:
+public slots:
 
 	void clear();
+
+protected slots:
+
 	void finish();
 
 private:
@@ -78,6 +81,7 @@ private:
 
 //-------------------------------------------------------------------------
 // qtractorShortcutTableItemDelegate
+class qtractorShortcutForm;
 
 class qtractorShortcutTableItemDelegate : public QItemDelegate
 {
@@ -86,7 +90,7 @@ class qtractorShortcutTableItemDelegate : public QItemDelegate
 public:
 
 	// Constructor.
-	qtractorShortcutTableItemDelegate(QTableWidget *pTableWidget);
+	qtractorShortcutTableItemDelegate(qtractorShortcutForm *pShortcutForm);
 
 protected:
 
@@ -110,7 +114,7 @@ protected slots:
 
 private:
 
-	QTableWidget *m_pTableWidget;
+	qtractorShortcutForm *m_pShortcutForm;
 };
 
 
@@ -127,8 +131,13 @@ public:
 	qtractorShortcutForm(QList<QAction *> actions, QWidget *pParent = NULL);
 	
 	// Destructor.
-	
 	~qtractorShortcutForm();
+
+	// Shortcut table widget accessor.
+	QTableWidget *tableWidget() const;
+
+	// Shortcut action finder.
+	QAction *findAction(const QString& sShortcutText) const;
 
 protected slots:
 

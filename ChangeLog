@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Keyboard shortcuts configuration (Help/Shortcuts...) now checks and
+  warns for already assigned key sequences. (EXPERIMENTAL)
+
 - The View/Snap menu is now listed as fully accessible actions, making
   each snap-per-beat setting assignable to a keyboard shortcut (after
   a feature request by danboid aka. Daniel MacDonald, thanks).
@@ -64,8 +67,8 @@ SVN TRUNK
   due naturally on any plugin's life cycle ie. upgrades etc.;)
 
 - Added some more snap-to-beat divisors (Beat/14, /21 and /28) due on
-  feature request #3537961, while dropping highest, probably useless
-  one (Beat/128).
+  feature request ticket, while dropping highest, probably useless one
+  (Beat/128).
 
 - New French (fr) translation added (by Yann Collette, thanks).
 
@@ -144,7 +147,7 @@ SVN TRUNK
 - SLV2 deprecation process started, effective now at configure time.
 
 - Added include <unistd.h> to shut up gcc 4.7 build failures (patch by
-  Alessio Treglia, closing bug #3514794).
+  Alessio Treglia).
 
 - Another approach avoiding recursive observer widget updates. Also
   applies to mixer, monitor and track state buttons.
@@ -227,7 +230,7 @@ SVN TRUNK
 - Make sure all MIDI note-off are always queued after their respective
   note-on events when buffering for MIDI input of instrument plugins,
   event though for zero duration MIDI note events (hopefully fixing the
-  hanging notes bug #3476124, as reported by Albert Graef, thanks).
+  hanging notes bug reported by Albert Graef, thanks).
 
 - LV2 MIDI-fx plugin support has been repaired.
 
@@ -245,7 +248,7 @@ SVN TRUNK
 - Audio clip overlapping detection off-by-one(-frame) fix.
 
 - MIDI Tools/Resize value ramp mode has been added (mocking the 'resize
-  to range' feature request #3467894, by Daniel MacDonald aka. danboid).
+  to range' feature request by Daniel MacDonald aka. danboid).
 
 
 0.5.3  2011-12-28  Delta Whisky
@@ -271,8 +274,7 @@ SVN TRUNK
   (eg. generic plugin properties dialog).
 
 - All plugin parameters automation and selection were left inaccessible
-  until the generic native plugin dialog is eventually shown, now fixed
-  (re. bug #3463916).
+  until the generic native plugin dialog is eventually shown, now fixed.
 
 
 0.5.2  2011-12-16  Charlie X-ray
@@ -327,7 +329,7 @@ SVN TRUNK
 
 - Creating new or updating existing buses with exact same names of any
   current dedicated inputs/outputs (which are implemented as special
-  covert buses) is now disallowed (preventing bug #3430406).
+  covert buses) is now disallowed.
 
 - Loop-recording/takes functionality is now ready for the masses and
   accessible from brand new Clip/Take menu (Select, First, Previous, Next,
@@ -345,10 +347,9 @@ SVN TRUNK
   mode).
 
 - Improved robustness in face of disabled audio buses when global maximum
-  number of JACK (audio) ports is surpassed (mitigating bug #3421911).
+  number of JACK (audio) ports is surpassed.
 
-- Improved single-track clip selection status logic, (possibly fixing bug
-  #3419141).
+- Improved single-track clip selection status logic.
 
 - Clip/Unlink action is now available for detaching linked/ref-counted
   MIDI clips, renaming and saving into auto-incremental SMF filenames.
@@ -456,10 +457,10 @@ SVN TRUNK
 - MIDI Names XML files (*.midnam) may now be imported into MIDI instrument
   definitions.
 
-- Avoid cursor reset while editing MIDI events list (fixes bug #3380259,
-  reported by Frank Neumann).
+- Avoid cursor reset while editing MIDI events list (fixes bug reported by
+  Frank Neumann).
 
-- Just some typos fixing (patch #3378382 by c-korn).
+- Just some typos fixing (patch by c-korn).
 
 - Track view automation curve editing mode has been slightly fixed, now
   allowing for other previously existing point-and-click mouse operations.
@@ -491,7 +492,7 @@ SVN TRUNK
   finally a reality, tricky but real ;)
 
 - Audio clip anti-glitch/ramp-smoothing effect is now slightly independent
-  of current buffer-size period (mitigating bug #3338113 effect).
+  of current buffer-size period.
 
 - Once buried under the Edit menu, Clip menu has been finally promoted to
   top main menu.
@@ -504,7 +505,7 @@ SVN TRUNK
 - Old/deprecated JACK port latency support added to audio recording
   latency compensation.
 
-- Audio clip merge/export lock-ups now untangled (fixes bug #3308998).
+- Audio clip merge/export lock-ups now untangled.
 
 - LV2 extension headers update.
 
@@ -539,10 +540,9 @@ SVN TRUNK
 - Audio peak file generation is now pipelined on a single unique thread,
   instead of old one per audio clip file basis.
 
-- MIDI tempo/time-signature map import problem has been hopefully fixed
-  (bug #329791).
+- MIDI tempo/time-signature map import problem has been hopefully fixed.
 
-- Session and track names are now sanitized from slashes (bug#
+- Session and track names are now sanitized from slashes (fixes bug#
   625798@bugs.debian.org).
 
 - Mouse wheel effect to sliders is now reversed.
@@ -584,7 +584,7 @@ SVN TRUNK
   very same position whenever recording is already engaged and rolling.
 
 - Hopeful fix to a potential audio buffering race condition, which was a
-  probable cause of random muted clips (maybe fixing bug #3290178).
+  probable cause of random muted clips.
 
 - Avoid recursive observer widget value updates.
 
@@ -769,7 +769,7 @@ SVN TRUNK
 - Help/Shortcuts... window positioning and sizing are now preserved.
 
 - All plugin chain changes over the track properties dialog now sure
-  counts as a dirty action (possibly fixing bug #3104129).
+  counts as a dirty action.
 
 - Newly extracted archive/zip session directories are now removed
   automatically from the file-system on session close, prompting the user
@@ -804,7 +804,7 @@ SVN TRUNK
 
 - A new MIDI editor (piano-roll) tool has been added: Rescale event times,
   durations and/or values by a percentage between 1 and 1000% (adapted
-  thanks to patch #3081954, by Jesse Lucas).
+  thanks to patch by Jesse Lucas).
 
 - Attempt to mitigate audio clip sequencing glitches on
   single-core/single-thread machines.
@@ -825,7 +825,7 @@ SVN TRUNK
   particular.
 
 - MMC DEFERRED PLAY doesn't cause transport state to stop if currently
-  rolling (mitigating bug #3067264).
+  rolling.
 
 - Audio clip merge processing might have been skipping  a few initial
   frame blocks, now fixed.
@@ -860,8 +860,7 @@ SVN TRUNK
   track is currently selected.
 
 - libX11 is now being added explicitly to the build link phase, as seen
-  necessary on some bleeding-edge distros eg. Fedora 13, Debian 6. (fixing
-  bug #3050944).
+  necessary on some bleeding-edge distros eg. Fedora 13, Debian 6.
 
 - New audio metronome bar and beat sample gain options.
 
@@ -892,8 +891,8 @@ SVN TRUNK
   changes are actually valid.
 
 - Make sure non-dedicated metronome and player buses are properly reset
-  and reopen when changing regular audio buses (hopefully fixing bug item
-  #3021645 - Crash after changing audio bus).
+  and reopen when changing regular audio buses (hopefully fixing bug re.
+  crash after changing audio bus).
 
 - Hopefully, an outrageously old bug got squashed away, which was causing
   random impromptu crashes, most often when importing audio clips while
@@ -930,7 +929,7 @@ SVN TRUNK
 - Audio tracks auto-monitoring is now effective on playback.
 
 - Make sure to ask whether a dirty MIDI clip should be saved, upon
-  resizing or stretching its edges (fixes bug #3017723).
+  resizing or stretching its edges.
 
 - Backward and Forward transport commands are now taking additional stops
   on loop points.
@@ -953,13 +952,13 @@ SVN TRUNK
   option anymore.
 
 - Dedicated MIDI control bus switching fixed. Was closing the wrong bus
-  eventually and crashing the whole show with it (fixes bug #2989590).
+  eventually and crashing the whole show with it.
 
 - MIDI bank/program backout has been corrected on MIDI track properties
   dialog rejection (ie. user cancellation).
 
 - MIDI bank select method has been corrected for tracks with no instrument
-  defined (probably fixing bug #2987071).
+  defined.
 
 - LV2 UI Instance and Data Access extension support added; reduce LV2
   external UI parameter value update flickering.
@@ -986,8 +985,7 @@ SVN TRUNK
 - Current JACK Transport, MMC Device, and MIDI Song Position pointer (SPP)
   control modes are now saved/loaded as part of session option properties.
 
-- MIDI clip editor's context menu crash on Qt >= 4.6 has been fixed
-  (resolving bug #2972603).
+- MIDI clip editor's context menu crash on Qt >= 4.6 has been fixed.
 
 - An ancient double-free corruption has been finally fixed at the
   audio/MIDI bus connection persistence logic.
@@ -1039,7 +1037,7 @@ SVN TRUNK
 
 - When failing to detect a SSE enabled build, the CFLAGS variables are
   now properly restored to their previous sane state, preventing all
-  subsequent dependency tests from false positives (bug #565860
+  subsequent dependency tests from false positives (bug# 565860
   @bugs.debian.org).
 
 - MIDI clip editor (aka piano-roll) multiple selection has been fixed
@@ -1073,7 +1071,7 @@ SVN TRUNK
   from the MIDI clip editor menu (View/Events)
 
 - Last used session directory is now made current on startup only when no
-  filename is given on the command line (solving bug #2920244).
+  filename is given on the command line.
 
 - Current snap-to-beat setting (time quantization) now affects the anchor
   event only, while dragging, moving and/or pasting multiple events over
@@ -1191,14 +1189,13 @@ SVN TRUNK
 - Keyboard focus is now cleared/reset from the main toolbar time and tempo
   spin-boxes when editing gets finished (eg. Enter key is pressed).
 
-- First audio metronome beat/bar now played back correctly (fixes bug
-  #2841437).
+- First audio metronome beat/bar now played back correctly.
 
 - Client to/from port (dis)connections now found consistent as good
-  ol'QjackCtl behavior (fixes bug #2834657).
+  ol'QjackCtl behavior.
 
 - All dirty open MIDI clip editors are now prompted to save before the
-  main application closes (fixes bug #2835516).
+  main application closes.
 
 - Mixer level meters get their long deserved gradient look.
 
@@ -1224,7 +1221,7 @@ SVN TRUNK
 - Bus manager dialog (View/Buses...) gets new columns on the left pane
   buses list as for displaying number of channels and bus mode.
 
-- Crash when updating bus probably fixed (bug #2811630).
+- Crash when updating bus probably fixed.
 
 - Fixed glitch displaying beat snap/grid lines on MIDI clip editor,
   incidental to clips located at absolute zero time.
@@ -1269,7 +1266,7 @@ SVN TRUNK
 
 - Improved, or better said, fixed (again) the precision of multi-clip
   final positioning as result of drag/move and paste operations in main
-  track view (as in bug #2741611).
+  track view.
 
 - MIDI track program number is now listed in 1-128 range, in an attempt to
   be consistent with corresponding MIDI track dialog drop-down list.
@@ -1284,8 +1281,7 @@ SVN TRUNK
 0.4.1  2009-04-04  The Funky Dominatrix
 
 - MIDI editor command item execution order has been fixed, correcting the
-  redo/undo adjustment of overlapping note events (probably fixing bug
-  #2723861).
+  redo/undo adjustment of overlapping note events.
 
 - MIDI clip editor (aka. piano-roll/matrix editor) sees one of its most
   wanted features introduced: visual snap grid, now accessible through
@@ -1491,8 +1487,8 @@ SVN TRUNK
 - Somehow realized that looping and punch-recording are two mutually
   exclusive states, at least until loop recording (ie. takes) gets real.
 
-- Fixed bug #2249291 - Crash on tempo change; affecting the WSOLA based
-  time-stretching on all non-stereo audio clips.
+- Fixed crash on tempo change; affecting the WSOLA based time-stretching
+  on all non-stereo audio clips.
 
 - Incomplete audio peaks were being cached prematurely, fixed.
 
@@ -1644,8 +1640,7 @@ engaged  tracks from editing or removal.
 
 - The floating selection, as shown for a clipboard pasting operation, has
   been corrected regarding time scale (horizontal zoom) changes, while in
-  the main track-view. Also fixed final position snapping precision
-  (spotted in bug #2055846).
+  the main track-view. Also fixed final position snapping precision.
 
 - Current tempo and snap-per-beat setting now survive session cycling.
 
@@ -1653,7 +1648,7 @@ engaged  tracks from editing or removal.
   now formally supported according to the DSSI spec (hopefully); note that
   previously one could only have one DSSI plugin instance loaded in
   session in any given time, otherwise a sudden crash was in sure demand
-  when either  plugin got activated (fixes bug #2048198).
+  when either  plugin got activated.
 
 - Audio plugin outputs now overrides each other when the number of output
   ports does not match the number of mix-down audio channels and thus

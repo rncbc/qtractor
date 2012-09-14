@@ -1,7 +1,7 @@
 // qtractorShortcutForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorShortcutForm.h"
 
 #include "qtractorOptions.h"
@@ -153,7 +154,9 @@ void qtractorShortcutTableItemEditor::clear (void)
 // Shortcut text finish notification.
 void qtractorShortcutTableItemEditor::finish (void)
 {
+	bool bBlockSignals = m_pLineEdit->blockSignals(true);
 	emit editingFinished();
+	m_pLineEdit->blockSignals(bBlockSignals);
 }
 
 
@@ -161,8 +164,8 @@ void qtractorShortcutTableItemEditor::finish (void)
 // qtractorShortcutTableItemDelegate
 
 qtractorShortcutTableItemDelegate::qtractorShortcutTableItemDelegate (
-	QTableWidget *pTableWidget )
-	: QItemDelegate(pTableWidget), m_pTableWidget(pTableWidget)
+	qtractorShortcutForm *pShortcutForm )
+	: QItemDelegate(pShortcutForm->tableWidget()), m_pShortcutForm(pShortcutForm)
 {
 }
 
@@ -173,7 +176,8 @@ void qtractorShortcutTableItemDelegate::paint ( QPainter *pPainter,
 {
 	// Special treatment for action icon+text...
 	if (index.column() == 0) {
-		QTableWidgetItem *pItem = m_pTableWidget->item(index.row(), 0);
+		QTableWidget *pTableWidget = m_pShortcutForm->tableWidget();
+		QTableWidgetItem *pItem	= pTableWidget->item(index.row(), 0);
 		pPainter->save();
 		if (option.state & QStyle::State_Selected) {
 			const QPalette& pal = option.palette;
@@ -182,7 +186,7 @@ void qtractorShortcutTableItemDelegate::paint ( QPainter *pPainter,
 		}
 		// Draw the icon...
 		QRect rect = option.rect;
-		const QSize& iconSize = m_pTableWidget->iconSize();
+		const QSize& iconSize = pTableWidget->iconSize();
 		pPainter->drawPixmap(1,
 			rect.top() + ((rect.height() - iconSize.height()) >> 1),
 			pItem->icon().pixmap(iconSize));
@@ -236,6 +240,19 @@ void qtractorShortcutTableItemDelegate::commitEditor (void)
 {
 	qtractorShortcutTableItemEditor *pItemEditor
 		= qobject_cast<qtractorShortcutTableItemEditor *> (sender());
+
+	const QString& sText = pItemEditor->text();
+	if (!sText.isEmpty() && sText != pItemEditor->defaultText()) {
+		if (m_pShortcutForm->findAction(sText)) {
+			QMessageBox::warning(m_pShortcutForm,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Keyboard shortcut (%1) already assigned.").arg(sText),
+				QMessageBox::Cancel);
+			pItemEditor->clear();
+			return;
+		}
+	}
+
 	emit commitData(pItemEditor);
 	emit closeEditor(pItemEditor);
 }
@@ -258,7 +275,7 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 //	m_ui.qtractorShortcutTable = new QTableWidget(0, 3, this);
 	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
 	m_ui.ShortcutTable->setItemDelegate(
-		new qtractorShortcutTableItemDelegate(m_ui.ShortcutTable));
+		new qtractorShortcutTableItemDelegate(this));
 //	m_ui.ShortcutTable->setSelectionMode(QAbstractItemView::SingleSelection);
 //	m_ui.ShortcutTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 //	m_ui.ShortcutTable->setAlternatingRowColors(true);
@@ -323,6 +340,26 @@ qtractorShortcutForm::~qtractorShortcutForm (void)
 }
 
 
+QTableWidget *qtractorShortcutForm::tableWidget (void) const
+{
+	return m_ui.ShortcutTable;
+}
+
+
+// Shortcut action finder.
+QAction *qtractorShortcutForm::findAction(const QString& sShortcutText) const
+{
+	QListIterator<QAction *> iter(m_actions);
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		if (QString(pAction->shortcut()) == sShortcutText)
+			return pAction;
+	}
+
+	return NULL;
+}
+
+
 void qtractorShortcutForm::actionActivated ( QTableWidgetItem *pItem )
 {
 	m_ui.ShortcutTable->editItem(m_ui.ShortcutTable->item(pItem->row(), 2));
@@ -340,7 +377,7 @@ void qtractorShortcutForm::accept (void)
 {
 	if (m_iDirtyCount > 0) {
 		for (int iRow = 0; iRow < m_actions.count(); ++iRow) {
-			QAction *pAction = m_actions[iRow];
+			QAction *pAction = m_actions.at(iRow);
 			pAction->setShortcut(
 				QKeySequence(m_ui.ShortcutTable->item(iRow, 2)->text()));
 		}
@@ -361,7 +398,7 @@ void qtractorShortcutForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning"), // + " - " QTRACTOR_TITLE,
+			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Keyboard shortcuts have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
