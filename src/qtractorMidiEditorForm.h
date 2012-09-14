@@ -207,6 +207,9 @@ private:
 	// Edit-mode action group up.
 	QActionGroup *m_pEditModeActionGroup;
 
+	// View/Snap-to-beat actions (for shortcuts access)
+	QList<QAction *> m_snapPerBeatActions;
+
 	// Edit snap mode.
 	QComboBox *m_pSnapPerBeatComboBox;
 

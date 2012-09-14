@@ -998,7 +998,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				if (m_ui.ResizeValue2ComboBox->currentIndex() > 0) {
 					int iValue2 = p * m_ui.ResizeValue2SpinBox->value();
 					if (bPitchBend) iValue2 <<= 6; // *128
-					int iDeltaValue = (iValue2 - iValue);
+					int iDeltaValue = iValue2 - iValue;
 					long iDeltaTime = iMaxTime - iMinTime;
 					if (iDeltaTime > 0)
 						iValue += iDeltaValue * (iTime - iMinTime) / iDeltaTime;

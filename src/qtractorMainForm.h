@@ -455,6 +455,9 @@ private:
 
 	QPalette *m_paletteItems[PaletteItems];
 
+	// View/Snap-to-beat actions (for shortcuts access)
+	QList<QAction *> m_snapPerBeatActions;
+
 	// Name says it all...
 	QList<qtractorMidiEditorForm *> m_editors;
 
