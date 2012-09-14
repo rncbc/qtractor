@@ -104,8 +104,27 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pSnapToScaleTypeComboBox = new QComboBox(m_ui.snapToScaleToolbar);
 	m_pSnapToScaleKeyComboBox->setEditable(false);
 
+	// View/Snap-to-beat actions initialization...
+	int iSnap = 0;
+	const QString sSnapObjectName("viewSnapPerBeat%1");
+	const QString sSnapStatusTip(tr("Set current snap to %1"));
+	const QStringList& snapItems = qtractorTimeScale::snapItems();
+	QStringListIterator snapIter(snapItems);
+	while (snapIter.hasNext()) {
+		const QString& sSnapText = snapIter.next();
+		QAction *pAction = new QAction(sSnapText, this);
+		pAction->setObjectName(sSnapObjectName.arg(iSnap));
+		pAction->setStatusTip(sSnapStatusTip.arg(sSnapText));
+		pAction->setCheckable(true);
+		pAction->setData(iSnap++);
+		QObject::connect(pAction,
+			SIGNAL(triggered(bool)),
+			SLOT(viewSnap()));
+		m_snapPerBeatActions.append(pAction);
+	}
+
 	// Pre-fill the combo-boxes...
-	m_pSnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
+	m_pSnapPerBeatComboBox->insertItems(0, snapItems);
 
 	const QIcon icon(":/images/itemProperty.png");
 
@@ -560,6 +579,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 // Destructor.
 qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 {
+	// View/Snap-to-beat actions termination...
+	qDeleteAll(m_snapPerBeatActions);
+	m_snapPerBeatActions.clear();
+
 	// Drop any widgets around (not really necessary)...
 	if (m_pMidiEventList)
 		delete m_pMidiEventList;
@@ -1758,13 +1781,12 @@ void qtractorMidiEditorForm::updateSnapMenu (void)
 		= qtractorTimeScale::indexFromSnap(pTimeScale->snapPerBeat());
 
 	int iSnap = 0;
-	QStringListIterator iter(qtractorTimeScale::snapItems());
+	QListIterator<QAction *> iter(m_snapPerBeatActions);
 	while (iter.hasNext()) {
-		QAction *pAction = m_ui.viewSnapMenu->addAction(
-			iter.next(), this, SLOT(viewSnap()));
-		pAction->setCheckable(true);
+		QAction *pAction = iter.next();
 		pAction->setChecked(iSnap == iSnapCurrent);
-		pAction->setData(iSnap++);
+		m_ui.viewSnapMenu->addAction(pAction);
+		++iSnap;
 	}
 
 	m_ui.viewSnapMenu->addSeparator();

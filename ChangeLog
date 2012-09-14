@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- The View/Snap menu is now listed as fully accessible actions, making
+  each snap-per-beat setting assignable to a keyboard shortcut (after
+  a feature request by danboid aka. Daniel MacDonald, thanks).
+
 - Fixed MIDI resize tool, now applying symmetric proportional changes
   to pitch-bend event values [-8191, +8191].
 

@@ -394,6 +394,25 @@ qtractorMainForm::qtractorMainForm (
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
 
+	// View/Snap-to-beat actions initialization...
+	int iSnap = 0;
+	const QString sSnapObjectName("viewSnapPerBeat%1");
+	const QString sSnapStatusTip(tr("Set current snap to %1"));
+	const QStringList& snapItems = qtractorTimeScale::snapItems();
+	QStringListIterator snapIter(snapItems);
+	while (snapIter.hasNext()) {
+		const QString& sSnapText = snapIter.next();
+		QAction *pAction = new QAction(sSnapText, this);
+		pAction->setObjectName(sSnapObjectName.arg(iSnap));
+		pAction->setStatusTip(sSnapStatusTip.arg(sSnapText));
+		pAction->setCheckable(true);
+		pAction->setData(iSnap++);
+		QObject::connect(pAction,
+			SIGNAL(triggered(bool)),
+			SLOT(viewSnap()));
+		m_snapPerBeatActions.append(pAction);
+	}
+
 	// Editable toolbar widgets special palette.
 	QPalette pal;
 	// Outrageous HACK: GTK+ ppl won't see green on black thing...
@@ -447,7 +466,7 @@ qtractorMainForm::qtractorMainForm (
 	// Snap-per-beat combo-box.
 	m_pSnapPerBeatComboBox = new QComboBox();
 	m_pSnapPerBeatComboBox->setEditable(false);
-	m_pSnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
+	m_pSnapPerBeatComboBox->insertItems(0, snapItems);
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
 	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
 
@@ -1071,6 +1090,10 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pUsr1Notifier)
 		delete m_pUsr1Notifier;
 #endif
+
+	// View/Snap-to-beat actions termination...
+	qDeleteAll(m_snapPerBeatActions);
+	m_snapPerBeatActions.clear();
 
 	// Drop any widgets around (not really necessary)...
 	if (m_pMixer)
@@ -6145,13 +6168,12 @@ void qtractorMainForm::updateSnapMenu (void)
 		= qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat());
 
 	int iSnap = 0;
-	QStringListIterator iter(qtractorTimeScale::snapItems());
+	QListIterator<QAction *> iter(m_snapPerBeatActions);
 	while (iter.hasNext()) {
-		QAction *pAction = m_ui.viewSnapMenu->addAction(
-			iter.next(), this, SLOT(viewSnap()));
-		pAction->setCheckable(true);
+		QAction *pAction = iter.next();
 		pAction->setChecked(iSnap == iSnapCurrent);
-		pAction->setData(iSnap++);
+		m_ui.viewSnapMenu->addAction(pAction);
+		++iSnap;
 	}
 
 	m_ui.viewSnapMenu->addSeparator();
