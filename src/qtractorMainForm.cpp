@@ -411,6 +411,7 @@ qtractorMainForm::qtractorMainForm (
 			SIGNAL(triggered(bool)),
 			SLOT(viewSnap()));
 		m_snapPerBeatActions.append(pAction);
+		addAction(pAction);
 	}
 
 	// Editable toolbar widgets special palette.

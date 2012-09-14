@@ -121,6 +121,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			SIGNAL(triggered(bool)),
 			SLOT(viewSnap()));
 		m_snapPerBeatActions.append(pAction);
+		addAction(pAction);
 	}
 
 	// Pre-fill the combo-boxes...
