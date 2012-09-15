@@ -50,49 +50,44 @@ public:
 		: QTableWidgetItem(sText)
 		{ setFlags(flags() & ~Qt::ItemIsEditable); }
 	qtractorShortcutTableItem(const QKeySequence& shortcut)
-		: QTableWidgetItem(QString(shortcut)) {}
+		: QTableWidgetItem(shortcut.toString()) {}
 };
 
 
 //-------------------------------------------------------------------------
 // qtractorShortcutTableItemEdit
 
-class qtractorShortcutTableItemEdit : public QLineEdit
+// Shortcut key to text event translation.
+void qtractorShortcutTableItemEdit::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-public:
+	int iKey = pKeyEvent->key();
+	Qt::KeyboardModifiers modifiers = pKeyEvent->modifiers();
 
-	// Constructor.
-	qtractorShortcutTableItemEdit(QWidget *pParent = NULL)
-		: QLineEdit(pParent) {}
-
-protected:
-
-	// Shortcut key to text event translation.
-	void keyPressEvent(QKeyEvent *pKeyEvent)
-	{
-		int iKey = pKeyEvent->key();
-		Qt::KeyboardModifiers modifiers = pKeyEvent->modifiers();
-
-		if (iKey == Qt::Key_Return && modifiers == Qt::NoModifier) {
+	if (modifiers == Qt::NoModifier) {
+		switch (iKey) {
+		case Qt::Key_Return:
 			emit editingFinished();
 			return;
-		}
-	
-		if (iKey >= Qt::Key_Shift && iKey < Qt::Key_F1) {
-			QLineEdit::keyPressEvent(pKeyEvent);
+		case Qt::Key_Escape:
+			emit editingCanceled();
 			return;
 		}
-
-		if (modifiers & Qt::ShiftModifier)
-			iKey |= Qt::SHIFT;
-		if (modifiers & Qt::ControlModifier)
-			iKey |= Qt::CTRL;
-		if (modifiers & Qt::AltModifier)
-			iKey |= Qt::ALT;
-
-		QLineEdit::setText(QString(QKeySequence(iKey)));
 	}
-};
+
+	if (iKey >= Qt::Key_Shift && iKey < Qt::Key_F1) {
+		QLineEdit::keyPressEvent(pKeyEvent);
+		return;
+	}
+
+	if (modifiers & Qt::ShiftModifier)
+		iKey |= Qt::SHIFT;
+	if (modifiers & Qt::ControlModifier)
+		iKey |= Qt::CTRL;
+	if (modifiers & Qt::AltModifier)
+		iKey |= Qt::ALT;
+
+	QLineEdit::setText(QString(QKeySequence(iKey)));
+}
 
 
 //-------------------------------------------------------------------------
@@ -101,7 +96,7 @@ protected:
 qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	QWidget *pParent ) : QWidget(pParent)
 {
-	m_pLineEdit = new qtractorShortcutTableItemEdit(/*this*/);
+	m_pItemEdit = new qtractorShortcutTableItemEdit(/*this*/);
 
 	m_pToolButton = new QToolButton(/*this*/);
 	m_pToolButton->setFixedWidth(18);
@@ -110,16 +105,19 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	QHBoxLayout *pLayout = new QHBoxLayout();
 	pLayout->setSpacing(0);
 	pLayout->setMargin(0);
-	pLayout->addWidget(m_pLineEdit);
+	pLayout->addWidget(m_pItemEdit);
 	pLayout->addWidget(m_pToolButton);
 	QWidget::setLayout(pLayout);
 	
 	QWidget::setFocusPolicy(Qt::StrongFocus);
-	QWidget::setFocusProxy(m_pLineEdit);
+	QWidget::setFocusProxy(m_pItemEdit);
 
-	QObject::connect(m_pLineEdit,
+	QObject::connect(m_pItemEdit,
 		SIGNAL(editingFinished()),
 		SLOT(finish()));
+	QObject::connect(m_pItemEdit,
+		SIGNAL(editingCanceled()),
+		SLOT(cancel()));
 	QObject::connect(m_pToolButton,
 		SIGNAL(clicked()),
 		SLOT(clear()));
@@ -129,34 +127,47 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 // Shortcut text accessors.
 void qtractorShortcutTableItemEditor::setText ( const QString& sText )
 {
-	m_pLineEdit->setText(sText);
+	m_pItemEdit->setText(sText);
 }
 
 
 QString qtractorShortcutTableItemEditor::text (void) const
 {
-	return m_pLineEdit->text();
+	return m_pItemEdit->text();
 }
 
 
 // Shortcut text clear/toggler.
 void qtractorShortcutTableItemEditor::clear (void)
 {
-	if (m_pLineEdit->text() == m_sDefaultText)
-		m_pLineEdit->clear();
+	if (m_pItemEdit->text() == m_sDefaultText)
+		m_pItemEdit->clear();
 	else
-		m_pLineEdit->setText(m_sDefaultText);
+		m_pItemEdit->setText(m_sDefaultText);
 
-	m_pLineEdit->setFocus();
+	m_pItemEdit->setFocus();
 }
 
 
 // Shortcut text finish notification.
 void qtractorShortcutTableItemEditor::finish (void)
 {
-	bool bBlockSignals = m_pLineEdit->blockSignals(true);
+	bool bBlockSignals = m_pItemEdit->blockSignals(true);
 	emit editingFinished();
-	m_pLineEdit->blockSignals(bBlockSignals);
+	m_index = QModelIndex();
+	m_sDefaultText.clear();
+	m_pItemEdit->blockSignals(bBlockSignals);
+}
+
+
+// Shortcut text cancel notification.
+void qtractorShortcutTableItemEditor::cancel (void)
+{
+	bool bBlockSignals = m_pItemEdit->blockSignals(true);
+	m_index = QModelIndex();
+	m_sDefaultText.clear();
+	emit editingFinished();
+	m_pItemEdit->blockSignals(bBlockSignals);
 }
 
 
@@ -208,6 +219,7 @@ QWidget *qtractorShortcutTableItemDelegate::createEditor ( QWidget *pParent,
 {
 	qtractorShortcutTableItemEditor *pItemEditor
 		= new qtractorShortcutTableItemEditor(pParent);
+	pItemEditor->setIndex(index);
 	pItemEditor->setDefaultText(
 		index.model()->data(index, Qt::DisplayRole).toString());
 	QObject::connect(pItemEditor,
@@ -241,19 +253,9 @@ void qtractorShortcutTableItemDelegate::commitEditor (void)
 	qtractorShortcutTableItemEditor *pItemEditor
 		= qobject_cast<qtractorShortcutTableItemEditor *> (sender());
 
-	const QString& sText = pItemEditor->text();
-	if (!sText.isEmpty() && sText != pItemEditor->defaultText()) {
-		if (m_pShortcutForm->findAction(sText)) {
-			QMessageBox::warning(m_pShortcutForm,
-				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("Keyboard shortcut (%1) already assigned.").arg(sText),
-				QMessageBox::Cancel);
-			pItemEditor->clear();
-			return;
-		}
-	}
+	if (m_pShortcutForm->commitEditor(pItemEditor))
+		emit commitData(pItemEditor);
 
-	emit commitData(pItemEditor);
 	emit closeEditor(pItemEditor);
 }
 
@@ -261,8 +263,8 @@ void qtractorShortcutTableItemDelegate::commitEditor (void)
 //-------------------------------------------------------------------------
 // qtractorShortcutForm
 
-qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
-	QWidget *pParent ) : QDialog(pParent)
+qtractorShortcutForm::qtractorShortcutForm (
+	const QList<QAction *>& actions, QWidget *pParent ) : QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -303,9 +305,13 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 			new qtractorShortcutTableItem(pAction->icon(), pAction->text()));
 		m_ui.ShortcutTable->setItem(iRow, 1,
 			new qtractorShortcutTableItem(pAction->statusTip()));
+		const QKeySequence& shortcut = pAction->shortcut();
+		const QString& sShortcutText = shortcut.toString();
 		m_ui.ShortcutTable->setItem(iRow, 2,
-			new qtractorShortcutTableItem(pAction->shortcut()));
-		m_actions.append(pAction);
+			new qtractorShortcutTableItem(shortcut));
+		m_actions.insert(pAction, iRow);
+		if (!sShortcutText.isEmpty())
+			m_shortcuts.insert(sShortcutText, iRow);
 		++iRow;
 	}
 
@@ -346,17 +352,37 @@ QTableWidget *qtractorShortcutForm::tableWidget (void) const
 }
 
 
-// Shortcut action finder.
-QAction *qtractorShortcutForm::findAction(const QString& sShortcutText) const
+// Shortcut action finder & settler.
+bool qtractorShortcutForm::commitEditor (
+	qtractorShortcutTableItemEditor *pItemEditor )
 {
-	QListIterator<QAction *> iter(m_actions);
-	while (iter.hasNext()) {
-		QAction *pAction = iter.next();
-		if (QString(pAction->shortcut()) == sShortcutText)
-			return pAction;
+	const QModelIndex& index = pItemEditor->index();
+	if (!index.isValid())
+		return false;
+
+	const QString& sShortcutText = pItemEditor->text();
+	const QString& sDefaultText = pItemEditor->defaultText();
+
+	if (sShortcutText == sDefaultText)
+		return false;
+
+	if (!sShortcutText.isEmpty()) {
+		if (m_shortcuts.contains(sShortcutText)) {
+			QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Keyboard shortcut (%1) already assigned.")
+					.arg(sShortcutText),
+				QMessageBox::Cancel);
+			pItemEditor->clear();
+			return false;
+		}
+		m_shortcuts.insert(sShortcutText, index.row());
 	}
 
-	return NULL;
+	if (!sDefaultText.isEmpty())
+		m_shortcuts.remove(sDefaultText);
+
+	return true;
 }
 
 
@@ -368,7 +394,9 @@ void qtractorShortcutForm::actionActivated ( QTableWidgetItem *pItem )
 
 void qtractorShortcutForm::actionChanged ( QTableWidgetItem *pItem )
 {
-	pItem->setText(QString(QKeySequence(pItem->text().trimmed())));
+	const QString& sShortcutText
+		= QKeySequence(pItem->text().trimmed()).toString();
+	pItem->setText(sShortcutText);
 	++m_iDirtyCount;
 }
 
@@ -376,10 +404,11 @@ void qtractorShortcutForm::actionChanged ( QTableWidgetItem *pItem )
 void qtractorShortcutForm::accept (void)
 {
 	if (m_iDirtyCount > 0) {
-		for (int iRow = 0; iRow < m_actions.count(); ++iRow) {
-			QAction *pAction = m_actions.at(iRow);
-			pAction->setShortcut(
-				QKeySequence(m_ui.ShortcutTable->item(iRow, 2)->text()));
+		QHash<QAction *, int>::ConstIterator iter = m_actions.constBegin();
+		for ( ; iter != m_actions.constEnd(); ++iter) {
+			const QString& sShortcutText
+				= m_ui.ShortcutTable->item(iter.value(), 2)->text();
+			iter.key()->setShortcut(QKeySequence(sShortcutText));
 		}
 	}
 

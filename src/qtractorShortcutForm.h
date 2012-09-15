@@ -25,7 +25,7 @@
 #include "ui_qtractorShortcutForm.h"
 
 
-#include <QList>
+#include <QHash>
 #include <QItemDelegate>
 #include <QLineEdit>
 
@@ -33,7 +33,30 @@
 class QAction;
 class QToolButton;
 
-class qtractorShortcutTableItemEdit;
+
+//-------------------------------------------------------------------------
+// qtractorShortcutTableItemEdit
+
+class qtractorShortcutTableItemEdit : public QLineEdit
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorShortcutTableItemEdit(QWidget *pParent = NULL)
+		: QLineEdit(pParent) {}
+
+signals:
+
+	// Custom cancel signal.
+	void editingCanceled();
+
+protected:
+
+	// Shortcut key to text event translation.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
+};
 
 
 //-------------------------------------------------------------------------
@@ -52,6 +75,12 @@ public:
 	void setText(const QString& sText);
 	QString text() const;
 
+	// Index model row accessors.
+	void setIndex(const QModelIndex& index)
+		{ m_index = index; }
+	const QModelIndex& index() const
+		{ return m_index; }
+
 	// Default (initial) shortcut text accessors.
 	void setDefaultText(const QString& sDefaultText)
 		{ m_sDefaultText = sDefaultText; }
@@ -61,6 +90,7 @@ public:
 signals:
 
 	void editingFinished();
+	void editingCanceled();
 
 public slots:
 
@@ -69,13 +99,15 @@ public slots:
 protected slots:
 
 	void finish();
+	void cancel();
 
 private:
 
 	// Instance variables.
-	qtractorShortcutTableItemEdit *m_pLineEdit;
+	qtractorShortcutTableItemEdit *m_pItemEdit;
 	QToolButton *m_pToolButton;
 	QString m_sDefaultText;
+	QModelIndex m_index;
 };
 
 
@@ -128,7 +160,7 @@ class qtractorShortcutForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorShortcutForm(QList<QAction *> actions, QWidget *pParent = NULL);
+	qtractorShortcutForm(const QList<QAction *>& actions, QWidget *pParent = NULL);
 	
 	// Destructor.
 	~qtractorShortcutForm();
@@ -136,8 +168,8 @@ public:
 	// Shortcut table widget accessor.
 	QTableWidget *tableWidget() const;
 
-	// Shortcut action finder.
-	QAction *findAction(const QString& sShortcutText) const;
+	// Shortcut action finder & settler.
+	bool commitEditor(qtractorShortcutTableItemEditor *pItemEditor);
 
 protected slots:
 
@@ -152,7 +184,8 @@ private:
 	// The Qt-designer UI struct...
 	Ui::qtractorShortcutForm m_ui;
 
-	QList<QAction *> m_actions;
+	QHash<QAction *, int> m_actions;
+	QHash<QString, int> m_shortcuts;
 
 	int m_iDirtyCount;
 };
