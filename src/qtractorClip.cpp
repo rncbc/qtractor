@@ -1026,4 +1026,4 @@ qtractorClip::TakeInfo *qtractorClip::takeInfo (void) const
 }
 
 
-// end of qtractorClip.h
+// end of qtractorClip.cpp

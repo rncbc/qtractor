@@ -164,4 +164,4 @@ void qtractorClipSelect::clear (void)
 }
 
 
-// end of qtractorClipSelect.h
+// end of qtractorClipSelect.cpp

@@ -1,7 +1,7 @@
 // qtractorMidiEventList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,14 +22,168 @@
 #ifndef __qtractorMidiEventList_h
 #define __qtractorMidiEventList_h
 
+#include <QAbstractItemModel>
+#include <QItemDelegate>
+#include <QTreeView>
 #include <QDockWidget>
+
 
 // Forwards.
 class qtractorMidiEditor;
-class qtractorMidiEventListView;
+class qtractorMidiSequence;
+class qtractorMidiEvent;
 
-class QModelIndex;
-class QItemSelection;
+
+//----------------------------------------------------------------------------
+// qtractorMidiEventListModel -- List model.
+
+class qtractorMidiEventListModel : public QAbstractItemModel
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiEventListModel(qtractorMidiEditor *pEditor, QObject *pParent = 0);
+
+	// Concretizers (virtual).
+	int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const;
+
+	QVariant headerData(int section, Qt::Orientation orient, int role) const;
+	QVariant data(const QModelIndex& index, int role) const;
+
+	Qt::ItemFlags flags(const QModelIndex& index ) const;
+
+	QModelIndex index(int row, int column,
+		const QModelIndex& parent = QModelIndex()) const;
+
+	QModelIndex parent(const QModelIndex&) const;
+
+	void reset();
+
+	// Specifics.
+	qtractorMidiEvent *eventOfIndex(const QModelIndex& index) const;
+	QModelIndex indexOfEvent(qtractorMidiEvent *pEvent) const;
+
+	QModelIndex indexFromTick(unsigned long iTick) const;
+	unsigned long tickFromIndex(const QModelIndex& index) const;
+
+	QModelIndex indexFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromIndex(const QModelIndex& index) const;
+
+	qtractorMidiEditor *editor() const;
+
+protected:
+
+	qtractorMidiEvent *eventAt(int i) const;
+
+	QString itemDisplay(const QModelIndex& index) const;
+	QString itemToolTip(const QModelIndex& index) const;
+
+	int columnAlignment(int column) const;
+
+private:
+
+	// Model variables.
+	QStringList m_headers;
+
+	qtractorMidiEditor   *m_pEditor;
+	qtractorMidiSequence *m_pSeq;
+
+	unsigned long m_iTimeOffset;
+
+	mutable qtractorMidiEvent *m_pEvent;
+	mutable int m_iEvent;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiEventItemDelegate -- Custom (tree) list item delegate.
+
+class qtractorMidiEventItemDelegate : public QItemDelegate
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiEventItemDelegate(QObject *pParent = NULL);
+
+	// Destructor.
+	~qtractorMidiEventItemDelegate();
+
+	// Keyboard event hook.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
+	// QItemDelegate Interface...
+
+	void paint(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	QSize sizeHint(
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	QWidget *createEditor(QWidget *pParent,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	void setEditorData(QWidget *pEditor,
+		const QModelIndex& index) const;
+
+	void setModelData(QWidget *pEditor,
+		QAbstractItemModel *pModel,
+		const QModelIndex& index) const;
+
+	void updateEditorGeometry(QWidget *pEditor,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiEventListView -- Custom (tree) list view.
+
+class qtractorMidiEventListView : public QTreeView
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiEventListView(QWidget *pParent = 0);
+
+	// Destructor.
+	~qtractorMidiEventListView();
+
+	// Settlers.
+	void setEditor(qtractorMidiEditor *pEditor);
+	qtractorMidiEditor *editor() const;
+
+	// Refreshener.
+	void refresh();
+
+	// Locators.
+	qtractorMidiEvent *eventOfIndex(const QModelIndex& index) const;
+	QModelIndex indexOfEvent(qtractorMidiEvent *pEvent) const;
+
+	QModelIndex indexFromTick(unsigned long iTick) const;
+	unsigned long tickFromIndex(const QModelIndex& index) const;
+
+	QModelIndex indexFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromIndex(const QModelIndex& index) const;
+
+	// Selections.
+	void selectEvent(qtractorMidiEvent *pEvent, bool bSelect = true);
+
+private:
+
+	// Instance variables.
+	qtractorMidiEventListModel    *m_pListModel;
+	qtractorMidiEventItemDelegate *m_pItemDelegate;
+};
 
 
 //----------------------------------------------------------------------------
@@ -86,6 +240,5 @@ private:
 
 
 #endif  // __qtractorMidiEventList_h
-
 
 // end of qtractorMidiEventList.h
