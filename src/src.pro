@@ -67,10 +67,7 @@ HEADERS += config.h \
 	qtractorMidiEditView.h \
 	qtractorMidiEngine.h \
 	qtractorMidiEvent.h \
-	qtractorMidiEventItemDelegate.h \
 	qtractorMidiEventList.h \
-	qtractorMidiEventListModel.h \
-	qtractorMidiEventListView.h \
 	qtractorMidiFile.h \
 	qtractorMidiFileTempo.h \
 	qtractorMidiListView.h \
@@ -185,10 +182,7 @@ SOURCES += \
 	qtractorMidiEditTime.cpp \
 	qtractorMidiEditView.cpp \
 	qtractorMidiEngine.cpp \
-	qtractorMidiEventItemDelegate.cpp \
 	qtractorMidiEventList.cpp \
-	qtractorMidiEventListModel.cpp \
-	qtractorMidiEventListView.cpp \
 	qtractorMidiFile.cpp \
 	qtractorMidiFileTempo.cpp \
 	qtractorMidiListView.cpp \

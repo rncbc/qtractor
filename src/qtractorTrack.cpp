@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2104,4 +2104,4 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 }
 
 
-// end of qtractorTrack.h
+// end of qtractorTrack.cpp
