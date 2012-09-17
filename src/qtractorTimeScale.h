@@ -135,7 +135,7 @@ public:
 
 		// Frame/bar convertors.
 		unsigned short barFromFrame(unsigned long iFrame) const
-			{ return bar + (unsigned long) (
+			{ return bar + uroundf(
 				(beatRate * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
 		unsigned long frameFromBar(unsigned short iBar) const
 			{ return frame + uroundf(
@@ -143,7 +143,7 @@ public:
 
 		// Frame/beat convertors.
 		unsigned int beatFromFrame(unsigned long iFrame) const
-			{ return beat + (unsigned long) (
+			{ return beat + uroundf(
 				(beatRate * (iFrame - frame)) / ts->frameRate()); }
 		unsigned long frameFromBeat(unsigned int iBeat) const
 			{ return frame + uroundf(
@@ -179,7 +179,7 @@ public:
 
 		// Beat/pixel convertors.
 		unsigned int beatFromPixel(int x) const
-			{ return beat + (unsigned long) (
+			{ return beat + uroundf(
 				(beatRate * (x - pixel)) / ts->pixelRate()); }
 		int pixelFromBeat(unsigned int iBeat) const
 			{ return pixel + uroundf(
@@ -191,7 +191,7 @@ public:
 
 		// Bar/pixel convertors.
 		unsigned short barFromPixel(int x) const
-			{ return bar + (unsigned long) (
+			{ return bar + uroundf(
 				(beatRate * (x - pixel)) / (ts->pixelRate() * beatsPerBar)); }
 		int pixelFromBar(unsigned short iBar) const
 			{ return pixel + uroundf(
