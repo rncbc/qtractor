@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Japanese (ja) translation added (by Takashi Sakamoto).
+
 - General time-scale bar, beat and tempo rounding fixing.
 
 - Keyboard shortcuts configuration (Help/Shortcuts...) now checks and
