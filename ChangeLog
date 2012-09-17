@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- General time-scale bar, beat and tempo rounding fixing.
+
 - Keyboard shortcuts configuration (Help/Shortcuts...) now checks and
   warns for already assigned key sequences. (EXPERIMENTAL)
 
@@ -23,7 +25,7 @@ SVN TRUNK
 - Preset drop-down list is now sorted, on plugin properties dialog.
 
 - After a long absence, edit(blue) cursor vertical lines are back on
-  the MIDI clip editor views (aka. piano-roll). (EXPERIMENTAL)
+  the MIDI clip editor views (aka. piano-roll).
 
 - LV2 1.0.0 compliance phase II (EXPERIMENTAL).
 
