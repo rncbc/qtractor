@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Apologies due on this one: shift/ctrl keyboard modifiers are back
+  in business to change MIDI events currently selected in one single
+  step while on MIDI clip editor (aka. piano-roll). Sorry.
+
 - Japanese (ja) translation added (by Takashi Sakamoto).
 
 - General time-scale bar, beat and tempo rounding fixing.
