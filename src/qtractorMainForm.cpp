@@ -2334,7 +2334,7 @@ void qtractorMainForm::editDelete (void)
 
 	// Delete from files...
 	if (m_pFiles && m_pFiles->hasFocus())
-		m_pFiles->deleteItemSlot();
+		m_pFiles->removeItemSlot();
 	else
 	// Delete selection...
 	if (m_pTracks)

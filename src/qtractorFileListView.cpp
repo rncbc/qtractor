@@ -751,11 +751,7 @@ qtractorFileGroupItem *qtractorFileListView::findGroupItem (
 qtractorFileListItem *qtractorFileListView::findFileItem (
 	const QString& sPath ) const
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return static_cast<qtractorFileListItem *> (findItem(sPath, FileItem));
-	else
-		return pSession->files()->findFileItem(m_iFileType, sPath);
+	return static_cast<qtractorFileListItem *> (findItem(sPath, FileItem));
 }
 
 
