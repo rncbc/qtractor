@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -99,7 +99,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 
 	// Common file list-view actions...
 	m_pNewGroupAction = new QAction(
-		QIcon(":/images/itemGroup.png"), tr("New &Group"), this);
+		QIcon(":/images/itemGroup.png"), tr("New &Group..."), this);
 	m_pOpenFileAction = new QAction(
 		QIcon(":/images/itemFile.png"), tr("Add &Files..."), this);
 	m_pCutItemAction = new QAction(
@@ -107,35 +107,36 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pCopyItemAction = new QAction(
 		QIcon(":/images/editCopy.png"), tr("&Copy"), NULL);
 	m_pPasteItemAction = new QAction(
-		QIcon(":/images/editPaste.png"), tr("P&aste"), NULL);
+		QIcon(":/images/editPaste.png"), tr("&Paste"), NULL);
 	m_pRenameItemAction = new QAction(
-		QIcon(":/images/formEdit.png"), tr("R&ename"), this);
-	m_pDeleteItemAction = new QAction(
-		QIcon(":/images/formRemove.png"), tr("&Delete"), NULL);
+		QIcon(":/images/formEdit.png"), tr("Re&name"), this);
+	m_pRemoveItemAction = new QAction(
+		QIcon(":/images/formRemove.png"), tr("&Remove"), NULL);
 	m_pPlayItemAction = new QAction(
-		QIcon(":/images/transportPlay.png"), tr("Play"), this);
+		QIcon(":/images/transportPlay.png"), tr("Pla&y"), this);
 	m_pPlayItemAction->setCheckable(true);
 
-	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
-	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
+//	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
+//	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
 	m_pCutItemAction->setShortcut(tr("Ctrl+X"));
 	m_pCopyItemAction->setShortcut(tr("Ctrl+C"));
 	m_pPasteItemAction->setShortcut(tr("Ctrl+V"));
-	m_pRenameItemAction->setShortcut(tr("Ctrl+E"));
-	m_pDeleteItemAction->setShortcut(tr("Del"));
-//	m_pPlayItemAction->setShortcut(tr("Ctrl+P"));
+//	m_pRenameItemAction->setShortcut(tr("Ctrl+N"));
+	m_pRemoveItemAction->setShortcut(tr("Del"));
+//	m_pPlayItemAction->setShortcut(tr("Ctrl+Y"));
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
+#if 0
 	QDockWidget::addAction(m_pNewGroupAction);
 	QDockWidget::addAction(m_pOpenFileAction);
-//	QDockWidget::addAction(m_pCutItemAction);
-//	QDockWidget::addAction(m_pCopyItemAction);
-//	QDockWidget::addAction(m_pPasteItemAction);
+	QDockWidget::addAction(m_pCutItemAction);
+	QDockWidget::addAction(m_pCopyItemAction);
+	QDockWidget::addAction(m_pPasteItemAction);
 	QDockWidget::addAction(m_pRenameItemAction);
-//	QDockWidget::addAction(m_pDeleteItemAction);
+	QDockWidget::addAction(m_pRemoveItemAction);
 	QDockWidget::addAction(m_pPlayItemAction);
-
+#endif
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pTabWidget);
 	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -187,9 +188,9 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QObject::connect(m_pRenameItemAction,
 		SIGNAL(triggered(bool)),
 		SLOT(renameItemSlot()));
-	QObject::connect(m_pDeleteItemAction,
+	QObject::connect(m_pRemoveItemAction,
 		SIGNAL(triggered(bool)),
-		SLOT(deleteItemSlot()));
+		SLOT(removeItemSlot()));
 	QObject::connect(m_pPlayItemAction,
 		SIGNAL(triggered(bool)),
 		SLOT(playSlot(bool)));
@@ -212,7 +213,7 @@ qtractorFiles::~qtractorFiles (void)
 	delete m_pCopyItemAction;
 	delete m_pPasteItemAction;
 	delete m_pRenameItemAction;
-	delete m_pDeleteItemAction;
+	delete m_pRemoveItemAction;
 	delete m_pPlayItemAction;
 
 	// No need to delete child widgets, Qt does it all for us.
@@ -394,7 +395,7 @@ void qtractorFiles::renameItemSlot (void)
 
 
 // Remove current group/file item.
-void qtractorFiles::deleteItemSlot (void)
+void qtractorFiles::removeItemSlot (void)
 {
 	qtractorFileListView *pFileListView = currentFileListView();
 	if (pFileListView)
@@ -416,7 +417,7 @@ void qtractorFiles::stabilizeSlot (void)
 			(QApplication::clipboard()->mimeData())->hasUrls());
 		m_pRenameItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::GroupItem);
-		m_pDeleteItemAction->setEnabled(
+		m_pRemoveItemAction->setEnabled(
 			pItem && pItem->type() != qtractorFileListView::ChannelItem);
 		bool bPlayEnabled = (
 			pItem && pItem->type() != qtractorFileListView::GroupItem);
@@ -481,7 +482,7 @@ void qtractorFiles::contextMenuEvent (
 	menu.addAction(m_pPasteItemAction);
 	menu.addSeparator();
 	menu.addAction(m_pRenameItemAction);
-	menu.addAction(m_pDeleteItemAction);
+	menu.addAction(m_pRemoveItemAction);
 	menu.addSeparator();
 	menu.addAction(m_pPlayItemAction);
 

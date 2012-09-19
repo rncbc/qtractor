@@ -1,7 +1,7 @@
 // qtractorFiles.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -87,7 +87,7 @@ public slots:
 	// Paste file item(s) from clipboard.
 	void pasteItemSlot();
 	// Remove current group/file item(s).
-	void deleteItemSlot();
+	void removeItemSlot();
 	
 protected slots:
 
@@ -140,7 +140,7 @@ private:
 	QAction *m_pCopyItemAction;
 	QAction *m_pPasteItemAction;
 	QAction *m_pRenameItemAction;
-	QAction *m_pDeleteItemAction;
+	QAction *m_pRemoveItemAction;
 	QAction *m_pPlayItemAction;
 };
 

@@ -122,9 +122,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	qtractorTrack *pTrack = m_pMidiClip->track();
 	if (pTrack)
 		pSession = pTrack->session();
+#if 0
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, true);
-
+#endif
 	// Track sequence duration changes...
 	unsigned long iOldDuration = pSeq->duration();
 	int iSelectClear = 0;
