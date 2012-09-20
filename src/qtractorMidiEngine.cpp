@@ -555,8 +555,15 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 		this, pTrack, iFrameStart, iFrameEnd);
 #endif
 
+	// Reset all current running event cursors,
+	// make them play it right and sound again...
+	bool bLooping = pSession->isLooping();
+	qtractorClip *pClip = pTrack->clips().first();
+	for	( ; pClip; pClip = pClip->next())
+		pClip->reset(bLooping);
+
 	// Split processing, in case we've been caught looping...
-	if (pSession->isLooping() && iFrameEnd < iFrameStart) {
+	if (bLooping && iFrameEnd < iFrameStart) {
 		unsigned long ls = pSession->loopStart();
 		unsigned long le = pSession->loopEnd();
 		if (iFrameStart < le) {

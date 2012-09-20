@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI track (un)solo/mute reset clip event sequence fixing.
+
 - Apologies due on this one: shift/ctrl keyboard modifiers are back
   in business to change MIDI events currently selected in one single
   step while on MIDI clip editor (aka. piano-roll). Sorry.
