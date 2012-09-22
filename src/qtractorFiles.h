@@ -99,6 +99,8 @@ protected slots:
 	void renameItemSlot();
 	// Audition/pre-listening player slots.
 	void playSlot(bool bOn);
+	// Clean-up unused file items.
+	void cleanupSlot();
 
 	// Tab page switch slots.
 	void pageAudioSlot();
@@ -142,6 +144,7 @@ private:
 	QAction *m_pRenameItemAction;
 	QAction *m_pRemoveItemAction;
 	QAction *m_pPlayItemAction;
+	QAction *m_pCleanupAction;
 };
 
 

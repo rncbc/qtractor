@@ -147,6 +147,8 @@ public:
 	void addClipItem(Type iType, qtractorClip *pClip, bool bAutoRemove = false);
 	void removeClipItem(Type iType, qtractorClip *pClip);
 
+	Item *findItem(Type iType, const QString& sPath) const;
+
 	// Cleanup (dtors).
 	void cleanup(bool bForce);
 	void clear();
@@ -154,7 +156,6 @@ public:
 protected:
 
 	// File hash table management.
-	Item *findItem(Type iType, const QString& sPath) const;
 	Item *addItem(Type iType, const QString& sPath, bool bAutoRemove);
 	void removeItem(Item *pItem);
 
