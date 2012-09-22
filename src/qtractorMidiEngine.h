@@ -140,10 +140,8 @@ public:
 	void restartLoop();
 
 	// The delta-time/frame accessors.
-	void setTimeStart(long iTimeStart);
 	long timeStart() const;
 
-	void setFrameStart(long iFrameStart);
 	long frameStart() const;
 
 	// Special track-immediate methods.

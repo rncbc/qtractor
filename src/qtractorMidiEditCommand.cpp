@@ -223,8 +223,13 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	else m_pMidiClip->resetEditorEx(iSelectClear > 0);
 
 	// Re-enqueue dropped events...
-	if (pSession && pSession->isPlaying())
+	if (pSession && pSession->isPlaying()) {
+		// Reset all current running event cursors,
+		// make them play it right and sound again...
+		m_pMidiClip->reset(pSession->isLooping());
+		// Re-enqueueing in proper sense...
 		pSession->midiEngine()->trackMute(pTrack, false);
+	}
 
 	return true;
 }

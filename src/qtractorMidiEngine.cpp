@@ -555,27 +555,11 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 		this, pTrack, iFrameStart, iFrameEnd);
 #endif
 
-	// Reset all current running event cursors,
-	// make them play it right and sound again...
-	bool bLooping = pSession->isLooping();
-	qtractorClip *pClip = pTrack->clips().first();
-	for	( ; pClip; pClip = pClip->next())
-		pClip->reset(bLooping);
-
 	// Split processing, in case we've been caught looping...
-	if (bLooping && iFrameEnd < iFrameStart) {
-		unsigned long ls = pSession->loopStart();
-		unsigned long le = pSession->loopEnd();
-		if (iFrameStart < le) {
-			long iTimeStart = m_pMidiEngine->timeStart();
-			m_pMidiEngine->setTimeStart(iTimeStart
-				+ pSession->tickFromFrame(le)
-				- pSession->tickFromFrame(ls));
-			trackClipSync(pTrack, iFrameStart, le);
-			m_pMidiEngine->setTimeStart(iTimeStart);
-			iFrameStart = ls;
-		}
-	}
+	if (pSession->isLooping()
+		&& iFrameEnd < iFrameStart
+		&& iFrameStart < pSession->loopEnd())
+		iFrameStart = pSession->loopStart();
 
 	// Do normal sequence...
 	trackClipSync(pTrack, iFrameStart, iFrameEnd);
@@ -2160,23 +2144,11 @@ void qtractorMidiEngine::restartLoop (void)
 
 
 // The delta-time/frame accessors.
-void qtractorMidiEngine::setTimeStart ( long iTimeStart )
-{
-	m_iTimeStart  = iTimeStart;
-	m_iFrameStart = long(session()->frameFromTick(m_iTimeStart));
-}
-
 long qtractorMidiEngine::timeStart (void) const
 {
 	return m_iTimeStart;
 }
 
-
-void qtractorMidiEngine::setFrameStart ( long iFrameStart )
-{
-	m_iFrameStart = iFrameStart;
-	m_iTimeStart  = long(session()->tickFromFrame(m_iFrameStart));
-}
 
 long qtractorMidiEngine::frameStart (void) const
 {
@@ -2509,7 +2481,8 @@ bool qtractorMidiEngine::openPlayer ( const QString& sFilename, int iTrackChanne
 	if (isPlaying())
 		return false;
 
-	setFrameStart(0);
+	m_iFrameStart = 0;
+	m_iTimeStart  = 0;
 
 	return (m_pPlayer ? m_pPlayer->open(sFilename, iTrackChannel) : false);
 }
