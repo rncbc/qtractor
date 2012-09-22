@@ -92,7 +92,11 @@ public:
 	// Rename current group/file item.
 	void renameItem();
 	// Remove current group/file item(s).
-	void deleteItem();
+	void removeItem();
+
+	// Clean-up unused file items.
+	void cleanupItem(QTreeWidgetItem *pItem);
+	void cleanup();
 
 	// Emit actiovation signal for given item...
 	void activateItem(QTreeWidgetItem *pItem = NULL);

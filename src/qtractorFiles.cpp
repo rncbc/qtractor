@@ -115,6 +115,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pPlayItemAction = new QAction(
 		QIcon(":/images/transportPlay.png"), tr("Pla&y"), this);
 	m_pPlayItemAction->setCheckable(true);
+	m_pCleanupAction = new QAction(tr("Cl&eanup"), this);
 
 //	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
 //	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
@@ -124,6 +125,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 //	m_pRenameItemAction->setShortcut(tr("Ctrl+N"));
 	m_pRemoveItemAction->setShortcut(tr("Del"));
 //	m_pPlayItemAction->setShortcut(tr("Ctrl+Y"));
+//	m_pCleanupAction->setShortcut(tr("Ctrl+E"));
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
@@ -136,6 +138,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QDockWidget::addAction(m_pRenameItemAction);
 	QDockWidget::addAction(m_pRemoveItemAction);
 	QDockWidget::addAction(m_pPlayItemAction);
+	QDockWidget::addAction(m_pCleanupAction);
 #endif
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pTabWidget);
@@ -194,6 +197,10 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QObject::connect(m_pPlayItemAction,
 		SIGNAL(triggered(bool)),
 		SLOT(playSlot(bool)));
+	QObject::connect(m_pCleanupAction,
+		SIGNAL(triggered(bool)),
+		SLOT(cleanupSlot()));
+
 	QObject::connect(m_pPlayButton,
 		SIGNAL(toggled(bool)),
 		SLOT(playSlot(bool)));
@@ -214,6 +221,7 @@ qtractorFiles::~qtractorFiles (void)
 	delete m_pPasteItemAction;
 	delete m_pRenameItemAction;
 	delete m_pRemoveItemAction;
+	delete m_pCleanupAction;
 	delete m_pPlayItemAction;
 
 	// No need to delete child widgets, Qt does it all for us.
@@ -399,7 +407,7 @@ void qtractorFiles::removeItemSlot (void)
 {
 	qtractorFileListView *pFileListView = currentFileListView();
 	if (pFileListView)
-		pFileListView->deleteItem();	
+		pFileListView->removeItem();
 }
 
 
@@ -419,6 +427,7 @@ void qtractorFiles::stabilizeSlot (void)
 			pItem && pItem->type() == qtractorFileListView::GroupItem);
 		m_pRemoveItemAction->setEnabled(
 			pItem && pItem->type() != qtractorFileListView::ChannelItem);
+		m_pCleanupAction->setEnabled(pFileListView->topLevelItemCount() > 0);
 		bool bPlayEnabled = (
 			pItem && pItem->type() != qtractorFileListView::GroupItem);
 		m_pPlayItemAction->setEnabled(bPlayEnabled);
@@ -441,17 +450,19 @@ void qtractorFiles::playSlot ( bool bOn )
 	setPlayState(bOn);
 
 	if (bOn) {
-		switch (m_pTabWidget->currentIndex()) {
-		case qtractorFiles::Audio:
-			m_pAudioListView->activateItem();
-			break;
-		case qtractorFiles::Midi:
-			m_pMidiListView->activateItem();
-			break;
-		default:
-			break;
-		}
+		qtractorFileListView *pFileListView = currentFileListView();
+		if (pFileListView)
+			pFileListView->activateItem();
 	}
+}
+
+
+// Clean-up unused file items.
+void qtractorFiles::cleanupSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->cleanup();
 }
 
 
@@ -482,7 +493,9 @@ void qtractorFiles::contextMenuEvent (
 	menu.addAction(m_pPasteItemAction);
 	menu.addSeparator();
 	menu.addAction(m_pRenameItemAction);
+	menu.addSeparator();
 	menu.addAction(m_pRemoveItemAction);
+	menu.addAction(m_pCleanupAction);
 	menu.addSeparator();
 	menu.addAction(m_pPlayItemAction);
 

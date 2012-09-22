@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- An immediate  Files widget cleanup option is now made available, as
+  to select and remove all unused file entries (EXPERIMENTAL).
+
 - MIDI track (un)solo/mute reset clip event sequence fixing; definite
   regression to MIDI track's occasional muting bug while clip editing
   and playback is rolling.

@@ -630,7 +630,7 @@ void qtractorFileListView::renameItem (void)
 
 
 // Remove current group/file item.
-void qtractorFileListView::deleteItem (void)
+void qtractorFileListView::removeItem (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -726,6 +726,51 @@ void qtractorFileListView::activateItem ( QTreeWidgetItem *pItem )
 		if (pChannelItem)
 			emit activated(pChannelItem->path(), pChannelItem->channel());
 	}
+}
+
+
+// Clean-up unused file items.
+void qtractorFileListView::cleanupItem ( QTreeWidgetItem *pItem )
+{
+	if (pItem == NULL)
+		return;
+
+	switch (pItem->type()) {
+	case GroupItem: {
+		int iChildCount = pItem->childCount();
+		for (int i = 0; i < iChildCount; ++i)
+			cleanupItem(pItem->child(i));
+		break;
+	}
+	case FileItem: {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		qtractorFileListItem *pFileItem
+			= static_cast<qtractorFileListItem *> (pItem);
+		if (pSession && pFileItem) {
+			const QString& sPath = pFileItem->path();
+			qtractorFileList::Item *pFileListItem
+				= pSession->files()->findItem(m_iFileType, sPath);
+			if (pFileListItem && pFileListItem->clipRefCount() < 1)
+				pItem->setSelected(true);
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+
+void qtractorFileListView::cleanup (void)
+{
+	QTreeWidget::setCurrentItem(NULL);
+	QTreeWidget::selectionModel()->clearSelection();
+
+	int iItemCount = QTreeWidget::topLevelItemCount();
+	for (int i = 0; i < iItemCount; ++i)
+		cleanupItem(QTreeWidget::topLevelItem(i));
+
+	removeItem();
 }
 
 
