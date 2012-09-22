@@ -642,12 +642,12 @@ void qtractorFileListView::removeItem (void)
 
 	int iUpdate = 0;
 	QList<QTreeWidgetItem *> items = selectedItems();
-	if (items.count() > 1) {
+	if (items.count() > 0) {
 		// Prompt user if he/she's sure about this...
 		if (pOptions->bConfirmRemove) {
 			if (QMessageBox::warning(this,
 				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("About to remove %1 file items.\n\n"
+				tr("About to remove %1 file item(s).\n\n"
 				"Are you sure?")
 				.arg(items.count()),
 				QMessageBox::Ok | QMessageBox::Cancel)
