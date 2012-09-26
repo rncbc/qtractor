@@ -340,13 +340,13 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2509"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4074"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4043"/>
         <source>%1 In</source>
         <translation>Вход %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2509"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4074"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4043"/>
         <source>%1 Out</source>
         <translation>Выход %1</translation>
     </message>
@@ -2014,13 +2014,19 @@ failed.</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="650"/>
         <source>About to remove %1 file items.
 
 Are you sure?</source>
-        <translation>Будет удалено файлов: %1.
+        <translation type="obsolete">Будет удалено файлов: %1.
 
 Вы уверены?</translation>
+    </message>
+    <message>
+        <location filename="../qtractorFileListView.cpp" line="650"/>
+        <source>About to remove %1 file item(s).
+
+Are you sure?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorFileListView.cpp" line="679"/>
@@ -2064,9 +2070,8 @@ Are you sure?</source>
         <translation>Воспроизвести файл</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="102"/>
         <source>New &amp;Group</source>
-        <translation>&amp;Создать группу</translation>
+        <translation type="obsolete">&amp;Создать группу</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="104"/>
@@ -2084,72 +2089,95 @@ Are you sure?</source>
         <translation>&amp;Копировать</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="110"/>
         <source>P&amp;aste</source>
-        <translation>Вст&amp;авить</translation>
+        <translation type="obsolete">Вст&amp;авить</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="112"/>
         <source>R&amp;ename</source>
-        <translation>&amp;Переименовать</translation>
+        <translation type="obsolete">&amp;Переименовать</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="114"/>
         <source>&amp;Delete</source>
-        <translation>&amp;Удалить</translation>
+        <translation type="obsolete">&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="116"/>
         <source>Play</source>
-        <translation>В&amp;оспроизвести</translation>
+        <translation type="obsolete">В&amp;оспроизвести</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="119"/>
         <source>Ctrl+G</source>
-        <translation>Ctrl+G</translation>
+        <translation type="obsolete">Ctrl+G</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="120"/>
         <source>Ctrl+F</source>
-        <translation>Ctrl+F</translation>
+        <translation type="obsolete">Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="121"/>
+        <location filename="../qtractorFiles.cpp" line="122"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="122"/>
+        <location filename="../qtractorFiles.cpp" line="123"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="123"/>
+        <location filename="../qtractorFiles.cpp" line="124"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="124"/>
         <source>Ctrl+E</source>
-        <translation>Ctrl+E</translation>
+        <translation type="obsolete">Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="125"/>
+        <location filename="../qtractorFiles.cpp" line="102"/>
+        <source>New &amp;Group...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="110"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished">Вст&amp;авить</translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="112"/>
+        <source>Re&amp;name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="114"/>
+        <source>&amp;Remove</source>
+        <translation type="unfinished">&amp;Удалить</translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="116"/>
+        <source>Pla&amp;y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="118"/>
+        <source>Cl&amp;eanup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="126"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="148"/>
+        <location filename="../qtractorFiles.cpp" line="152"/>
         <source>Files</source>
         <translation>Файлы</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="494"/>
+        <location filename="../qtractorFiles.cpp" line="508"/>
         <source>MIDI Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="498"/>
+        <location filename="../qtractorFiles.cpp" line="512"/>
         <source>Audio Files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6526,34 +6554,34 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3229"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3227"/>
         <source>move</source>
         <translation>перемещение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3266"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3264"/>
         <source>edit</source>
         <translation>правка</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3266"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3264"/>
         <source>resize</source>
         <translation>смена размера</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3306"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3304"/>
         <source>paste</source>
         <translation>вставка</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3640"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3638"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Время:	%1
 Тип:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3649"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3647"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration:	%4</source>
@@ -6562,13 +6590,13 @@ Duration:	%4</source>
 Длительность:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3656"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3654"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3662"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3660"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -6577,36 +6605,36 @@ Value:	%3</source>
 Значение:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3668"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3666"/>
         <source>Pgm Change (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3672"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3670"/>
         <source>Chan Press (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3676"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3674"/>
         <source>Pitch Bend (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3944"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3942"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3683"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3681"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 байтов)
 Данные: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3695"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3693"/>
         <source>Unknown (%1)</source>
         <translation>Неизвестно (%1)</translation>
     </message>

@@ -1215,8 +1215,7 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
 	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
 		m_iFlags(0), m_iActivated(0), m_pMidiManager(NULL),
-		m_iMidiBank(-1), m_iMidiProg(-1), m_bAudioOutputBus(false),
-		m_bAudioOutputAutoConnect(true)
+		m_iMidiBank(-1), m_iMidiProg(-1)
 {
 	setAutoDelete(true);
 
@@ -1224,6 +1223,11 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	m_pppBuffers[1] = NULL;
 
 	m_pCurveList = new qtractorCurveList();
+
+	m_bAudioOutputBus
+		= qtractorMidiManager::isDefaultAudioOutputBus();
+	m_bAudioOutputAutoConnect
+		= qtractorMidiManager::isDefaultAudioOutputAutoConnect();
 
 	setBuffer(iChannels, iBufferSize, iSampleRate, iFlags);
 }
