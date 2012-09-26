@@ -247,8 +247,8 @@ void qtractorSession::clear (void)
 	m_midiTags.clear();
 //	m_midiManagers.clear();
 
-	m_pAudioEngine->clear();
 	m_pMidiEngine->clear();
+	m_pAudioEngine->clear();
 
 	m_pCommands->clear();
 

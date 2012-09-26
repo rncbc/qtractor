@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- The dedicated audio outputs setting for instrument plugins was not
+  in effect as default global option for new MIDI tracks, now fixed,
+  hopefully (thanks to danboid aka. Daniel MacDonald persistence).
+
 - An immediate  Files widget cleanup option is now made available, as
   to select and remove all unused file entries (EXPERIMENTAL).
 
