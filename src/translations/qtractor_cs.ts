@@ -587,13 +587,13 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2509"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4074"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4043"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2509"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4074"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4043"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -2327,11 +2327,10 @@ selhalo.</translation>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="650"/>
         <source>About to remove %1 file items.
 
 Are you sure?</source>
-        <translation>Chystáte se odstranit %1 položek souborů:
+        <translation type="obsolete">Chystáte se odstranit %1 položek souborů:
 
 Jste si jistý?</translation>
     </message>
@@ -2342,6 +2341,13 @@ Jste si jistý?</translation>
     <message>
         <source>Cancel</source>
         <translation type="obsolete">Zrušit</translation>
+    </message>
+    <message>
+        <location filename="../qtractorFileListView.cpp" line="650"/>
+        <source>About to remove %1 file item(s).
+
+Are you sure?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorFileListView.cpp" line="679"/>
@@ -2385,9 +2391,8 @@ Jste si jistý?</translation>
         <translation>Přehrát soubor</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="102"/>
         <source>New &amp;Group</source>
-        <translation>Nová &amp;skupina</translation>
+        <translation type="obsolete">Nová &amp;skupina</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="104"/>
@@ -2405,72 +2410,95 @@ Jste si jistý?</translation>
         <translation>&amp;Kopírovat</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="110"/>
         <source>P&amp;aste</source>
-        <translation>V&amp;ložit</translation>
+        <translation type="obsolete">V&amp;ložit</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="112"/>
         <source>R&amp;ename</source>
-        <translation>P&amp;řejmenovat</translation>
+        <translation type="obsolete">P&amp;řejmenovat</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="114"/>
         <source>&amp;Delete</source>
-        <translation>&amp;Smazat</translation>
+        <translation type="obsolete">&amp;Smazat</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="116"/>
         <source>Play</source>
-        <translation>Přehrát</translation>
+        <translation type="obsolete">Přehrát</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="119"/>
         <source>Ctrl+G</source>
-        <translation>Ctrl+G</translation>
+        <translation type="obsolete">Ctrl+G</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="120"/>
         <source>Ctrl+F</source>
-        <translation>Ctrl+F</translation>
+        <translation type="obsolete">Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="121"/>
+        <location filename="../qtractorFiles.cpp" line="122"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="122"/>
+        <location filename="../qtractorFiles.cpp" line="123"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="123"/>
+        <location filename="../qtractorFiles.cpp" line="124"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="124"/>
         <source>Ctrl+E</source>
-        <translation>Ctrl+E</translation>
+        <translation type="obsolete">Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="125"/>
+        <location filename="../qtractorFiles.cpp" line="102"/>
+        <source>New &amp;Group...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="110"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished">&amp;Vložit</translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="112"/>
+        <source>Re&amp;name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="114"/>
+        <source>&amp;Remove</source>
+        <translation type="unfinished">&amp;Odstranit</translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="116"/>
+        <source>Pla&amp;y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="118"/>
+        <source>Cl&amp;eanup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorFiles.cpp" line="126"/>
         <source>Del</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="148"/>
+        <location filename="../qtractorFiles.cpp" line="152"/>
         <source>Files</source>
         <translation>Soubory</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="494"/>
+        <location filename="../qtractorFiles.cpp" line="508"/>
         <source>MIDI Files</source>
         <translation>Soubory MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="498"/>
+        <location filename="../qtractorFiles.cpp" line="512"/>
         <source>Audio Files</source>
         <translation>Zvukové soubory</translation>
     </message>
@@ -2804,7 +2832,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="466"/>
         <source>Snap/beat</source>
-        <translation>Klapnout/doba</translation>
+        <translation>Zapadnout/doba</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="521"/>
@@ -2996,7 +3024,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4924"/>
         <source>LV2 Plug-in State Files support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro soubory stavu přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <source>LV2 Plug-in State Files support enabled. (FUBAR)</source>
@@ -3381,7 +3409,7 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="395"/>
         <source>Set current snap to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit nynější zapadnutí na %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4862"/>
@@ -5454,7 +5482,7 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="217"/>
         <source>I&amp;nsert</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vložit</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="365"/>
@@ -5464,42 +5492,42 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="943"/>
         <source>Insert Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="946"/>
         <source>Insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="949"/>
         <source>Insert range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah jako vybraný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="952"/>
         <source>Ctrl+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Ins</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="960"/>
         <source>Insert Track Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah stopy</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="963"/>
         <source>Insert track range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah stopy</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="966"/>
         <source>Insert track range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah stopy jako vybraný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="969"/>
         <source>Ctrl+Shift+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Ins</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1259"/>
@@ -6920,37 +6948,37 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="1848"/>
         <source>insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3229"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3227"/>
         <source>move</source>
         <translation>Přesunout</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3266"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3264"/>
         <source>edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3266"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3264"/>
         <source>resize</source>
         <translation>Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3306"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3304"/>
         <source>paste</source>
         <translation>Vložit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3640"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3638"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Čas:	%1
 Typ:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3649"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3647"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration:	%4</source>
@@ -6959,14 +6987,14 @@ Rychlost:	%3
 Doba trvání:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3656"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3654"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>Zmáčknout klávesu (%1) %2
 Hodnota:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3662"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3660"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -6975,17 +7003,17 @@ Název:	%2
 Hodnota:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3668"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3666"/>
         <source>Pgm Change (%1)</source>
         <translation>Změnit Pgm (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3672"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3670"/>
         <source>Chan Press (%1)</source>
         <translation>Stisknout kanál (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3676"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3674"/>
         <source>Pitch Bend (%1)</source>
         <translation>Změna výšky tónu (%1)</translation>
     </message>
@@ -6994,19 +7022,19 @@ Hodnota:	%3</translation>
         <translation type="obsolete">Ohyb výšky tónu (%d)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3683"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3681"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bajtů)
 Data: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3695"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3693"/>
         <source>Unknown (%1)</source>
         <translation>Neznámý (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3944"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3942"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -7030,7 +7058,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="110"/>
         <source>Set current snap to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit nynější zapadnutí na %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="135"/>
@@ -7264,7 +7292,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="167"/>
         <source>S&amp;nap</source>
-        <translation>P&amp;řichytit</translation>
+        <translation>Př&amp;ichytit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="197"/>
@@ -7793,7 +7821,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="94"/>
         <source>I&amp;nsert</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vložka</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="172"/>
@@ -7869,22 +7897,22 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="756"/>
         <source>Insert Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="759"/>
         <source>Insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="762"/>
         <source>Insert range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah jako vybraný</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="765"/>
         <source>Ctrl+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Ins</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="826"/>
@@ -11635,12 +11663,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="298"/>
         <source>&amp;Snap/Beat:</source>
-        <translation>&amp;Klapnout/doba:</translation>
+        <translation>&amp;Zapadnout/doba:</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="311"/>
         <source>Snap/beat</source>
-        <translation>Klapnout/doba</translation>
+        <translation>Zapadnout/doba</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="321"/>
@@ -11694,7 +11722,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="373"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klávesová zkratka (%1) již přiřazena.</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="431"/>
@@ -12874,7 +12902,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="1836"/>
         <source>insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit rozsah</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2200"/>
