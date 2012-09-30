@@ -2122,7 +2122,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="217"/>
         <source>I&amp;nsert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">挿入(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="242"/>
@@ -2730,42 +2730,42 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="943"/>
         <source>Insert Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">範囲の挿入</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="946"/>
         <source>Insert range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">範囲を挿入</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="949"/>
         <source>Insert range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選択範囲を挿入します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="952"/>
         <source>Ctrl+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="960"/>
         <source>Insert Track Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">トラック範囲の挿入</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="963"/>
         <source>Insert track range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">トラック範囲を挿入</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="966"/>
         <source>Insert track range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選択したトラック範囲を挿入します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="969"/>
         <source>Ctrl+Shift+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="977"/>
@@ -5177,7 +5177,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4924"/>
         <source>LV2 Plug-in State Files support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">LV2プラグインの状態保存サポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4892"/>
@@ -5187,7 +5187,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="395"/>
         <source>Set current snap to %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 にスナップする</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4895"/>
@@ -6221,7 +6221,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="94"/>
         <source>I&amp;nsert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">挿入(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="100"/>
@@ -6686,7 +6686,7 @@ Length:	%3</source>
         <location filename="../qtractorMidiEditorForm.ui" line="691"/>
         <location filename="../qtractorMidiEditorForm.ui" line="694"/>
         <source>Select all</source>
-        <translation type="unfinished">すべてを編集</translation>
+        <translation>すべてを編集</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="697"/>
@@ -6764,22 +6764,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="756"/>
         <source>Insert Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">範囲の挿入</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="759"/>
         <source>Insert range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">範囲を挿入</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="762"/>
         <source>Insert range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選択済みの範囲を挿入します</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="765"/>
         <source>Ctrl+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="770"/>
@@ -7603,7 +7603,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="110"/>
         <source>Set current snap to %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 にスナップ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="133"/>
@@ -8285,17 +8285,17 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="296"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="301"/>
         <source>Quadratic</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="306"/>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="327"/>
