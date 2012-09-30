@@ -2112,7 +2112,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="217"/>
         <source>I&amp;nsert</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;nsérer</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="242"/>
@@ -2720,42 +2720,42 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="943"/>
         <source>Insert Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer Plage</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="946"/>
         <source>Insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="949"/>
         <source>Insert range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage comme sélectionnée</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="952"/>
         <source>Ctrl+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Ins</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="960"/>
         <source>Insert Track Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer Plage de Piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="963"/>
         <source>Insert track range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage de piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="966"/>
         <source>Insert track range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage de piste comme sélectionné</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="969"/>
         <source>Ctrl+Shift+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Ins</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="977"/>
@@ -5172,7 +5172,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4924"/>
         <source>LV2 Plug-in State Files support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support fichiers état gréffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4892"/>
@@ -6089,7 +6089,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="1848"/>
         <source>insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3227"/>
@@ -6212,7 +6212,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="94"/>
         <source>I&amp;nsert</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;nsérer</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="100"/>
@@ -6755,22 +6755,22 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="756"/>
         <source>Insert Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer Plage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="759"/>
         <source>Insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="762"/>
         <source>Insert range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage comme sélectionnée</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="765"/>
         <source>Ctrl+Ins</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Ins</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="770"/>
@@ -11665,7 +11665,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="1836"/>
         <source>insert range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1965"/>
