@@ -2318,6 +2318,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LIBSUIL
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
+#ifdef CONFIG_LV2_EXTERNAL_UI
 	case LV2_UI_TYPE_EXTERNAL:
 	#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 		if (slv2_ui_is_a(m_slv2_ui, g_slv2_external_ui_deprecated_class))
@@ -2326,6 +2327,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	#endif
 		ui_type_uri = LV2_EXTERNAL_UI__Widget;
 		break;
+#endif
 	case LV2_UI_TYPE_GTK:
 		ui_type_uri = LV2_GTK_UI_URI;
 		break;
