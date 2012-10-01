@@ -3,14 +3,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.6  2012-10-01  Golf Tango
 
 - The dedicated audio outputs setting for instrument plugins was not
   in effect as default global option for new MIDI tracks, now fixed,
   hopefully (thanks to danboid aka. Daniel MacDonald persistence).
 
 - An immediate  Files widget cleanup option is now made available, as
-  to select and remove all unused file entries (EXPERIMENTAL).
+  to select and remove all unused file entries.
 
 - MIDI track (un)solo/mute reset clip event sequence fixing; definite
   regression to MIDI track's occasional muting bug while clip editing
@@ -25,7 +25,7 @@ SVN TRUNK
 - General time-scale bar, beat and tempo rounding fixing.
 
 - Keyboard shortcuts configuration (Help/Shortcuts...) now checks and
-  warns for already assigned key sequences. (EXPERIMENTAL)
+  warns for already assigned key sequences.
 
 - The View/Snap menu is now listed as fully accessible actions, making
   each snap-per-beat setting assignable to a keyboard shortcut (after
@@ -37,22 +37,21 @@ SVN TRUNK
 - Fixed re-loading of LV2 Presets that are newly created/saved during
   current session; actually delete and remove a LV2 Preset if found
   in the file-system (as suggested by Jiri Prochaszka aka. Anchakor,
-  thanks again). (EXPERIMENTAL)
+  thanks again).
 
 - Preset drop-down list is now sorted, on plugin properties dialog.
 
 - After a long absence, edit(blue) cursor vertical lines are back on
   the MIDI clip editor views (aka. piano-roll).
 
-- LV2 1.0.0 compliance phase II (EXPERIMENTAL).
+- LV2 1.0.0 compliance phase II: LV2 State Files support completed.
 
 - Updated to newer LV2 External UI extension support (now maintained
-  by Filipe Coelho aka. falktx). (EXPERIMENTAL)
+  by Filipe Coelho aka. falktx).
 
 - Brand new editing tool: empty range insertion, split/moving clips
   or events forward the specified edit-head/tail interval, defaults
   to next measure or bar (cf. menu Edit/Insert/Range, Track Range).
-  (EXPERIMENTAL)
 
 - Don't show the waiting cursor anymore when loading any plugins which
   might have a nice native editor (GUI) and options are set to show it.

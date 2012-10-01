@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 40
+%define release 5
 
 %define _prefix	@ac_prefix@
 
@@ -87,6 +87,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
+* Mon Oct 01 2012 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.6
+- Golf Tango release.
 * Fri Jun 15 2012 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.5
 - Foxtrot Uniform release.
 * Thu Mar 01 2012 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.4
