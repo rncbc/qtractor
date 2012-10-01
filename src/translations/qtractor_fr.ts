@@ -1663,7 +1663,9 @@ Etes-vous sur?</translation>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sur le point de supprimer %1 élément(s) de type fichier
+
+Etes-vous sur?</translation>
     </message>
     <message>
         <location filename="../qtractorFileListView.cpp" line="679"/>
@@ -1759,32 +1761,32 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorFiles.cpp" line="102"/>
         <source>New &amp;Group...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau &amp;Groupe...</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="110"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">Co&amp;ller</translation>
+        <translation>Co&amp;ller</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="112"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished"></translation>
+        <translation>Re&amp;nommer</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="114"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">&amp;Supprimer</translation>
+        <translation>&amp;Supprimer</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="116"/>
         <source>Pla&amp;y</source>
-        <translation type="unfinished"></translation>
+        <translation>J&amp;ouer</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="118"/>
         <source>Cl&amp;eanup</source>
-        <translation type="unfinished"></translation>
+        <translation>N&amp;ettoyer</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="126"/>
@@ -5182,7 +5184,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="395"/>
         <source>Set current snap to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Placer l&apos;accroche courante sur %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4895"/>
@@ -7594,7 +7596,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="110"/>
         <source>Set current snap to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Placer l&apos;accrocher courante sur %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="133"/>
@@ -10629,7 +10631,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="373"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le raccourci clavier (%1) est déjà affecté.</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="431"/>
