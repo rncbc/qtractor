@@ -379,7 +379,7 @@ void qtractorThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	QFrame::mousePressEvent(pMouseEvent);
+//	QFrame::mousePressEvent(pMouseEvent);
 }
 
 
@@ -396,13 +396,13 @@ void qtractorThumbView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			updateThumb(pos.x() - m_posDrag.x());
 	}
 
-	QFrame::mouseMoveEvent(pMouseEvent);
+//	QFrame::mouseMoveEvent(pMouseEvent);
 }
 
 
 void qtractorThumbView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	QFrame::mouseReleaseEvent(pMouseEvent);
+//	QFrame::mouseReleaseEvent(pMouseEvent);
 
 	// Only expected behavior with left-button pressed...
 	if (pMouseEvent->button() == Qt::LeftButton) {

@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Override all sub-classed widgets mouse-pointer event handlers to be
+  isolated from base widget style and/or window management.
+
+
 0.5.6  2012-10-02  Golf Tango
 
 - Day 1 post-release fix: LV2 plugins with a GTK GUI were not shown

@@ -950,7 +950,7 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Probably this would be done ahead,
 	// just 'coz we're using ruberbands, which are
 	// in fact based on real widgets (WM entities)...
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
 
@@ -1029,14 +1029,14 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle item selection/dragging -- mouse button release.
 void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	// We'll need a reference for issuing commands...
 	qtractorSession *pSession = qtractorSession::getInstance();

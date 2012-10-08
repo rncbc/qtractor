@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -899,7 +899,7 @@ void qtractorClientListView::dropEvent( QDropEvent *pDropEvent )
 // Handle mouse events for drag-and-drop stuff.
 void qtractorClientListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	QTreeWidget::mousePressEvent(pMouseEvent);
+//	QTreeWidget::mousePressEvent(pMouseEvent);
 
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		m_posDrag   = pMouseEvent->pos();
@@ -910,7 +910,7 @@ void qtractorClientListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 void qtractorClientListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-	QTreeWidget::mouseMoveEvent(pMouseEvent);
+//	QTreeWidget::mouseMoveEvent(pMouseEvent);
 
 	if ((pMouseEvent->buttons() & Qt::LeftButton) && m_pDragItem
 		&& ((pMouseEvent->pos() - m_posDrag).manhattanLength()

@@ -553,7 +553,7 @@ void qtractorMidiEditEvent::keyPressEvent ( QKeyEvent *pKeyEvent )
 void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse press...
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	// Only the left-mouse-button is meaningful atm...
 	if (pMouseEvent->button() != Qt::LeftButton)
@@ -572,7 +572,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditEvent::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse move...
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 
 	// Are we already moving/dragging something?
 	const QPoint& pos

@@ -1504,7 +1504,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		// Fall thru...
 	case DragPaste:
 	case DragDropPaste:
-		qtractorScrollView::mousePressEvent(pMouseEvent);
+	//	qtractorScrollView::mousePressEvent(pMouseEvent);
 		return;
 	default:
 		break;
@@ -1529,7 +1529,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (m_dragCursor == DragCurveNode) {
 			if (m_pDragCurve && m_pDragCurveNode)
 				m_dragState = DragCurveNode;
-			qtractorScrollView::mousePressEvent(pMouseEvent);
+		//	qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
 		}
 	}
@@ -1598,7 +1598,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
 
@@ -1688,14 +1688,14 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle item selection/dragging -- mouse button release.
 void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {

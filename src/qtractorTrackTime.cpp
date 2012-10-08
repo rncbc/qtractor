@@ -411,7 +411,7 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
 
@@ -480,14 +480,14 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle selection/dragging -- mouse button release.
 void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
