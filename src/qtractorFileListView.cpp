@@ -998,13 +998,13 @@ void qtractorFileListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 #endif
 	}
 
-//	QTreeWidget::mousePressEvent(pMouseEvent);
+	QTreeWidget::mousePressEvent(pMouseEvent);
 }
 
 
 void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-//	QTreeWidget::mouseMoveEvent(pMouseEvent);
+	QTreeWidget::mouseMoveEvent(pMouseEvent);
 
 	if ((pMouseEvent->buttons() & Qt::LeftButton) && m_pDragItem
 		&& ((pMouseEvent->pos() - m_posDrag).manhattanLength()
@@ -1077,9 +1077,9 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 }
 
 
-void qtractorFileListView::mouseReleaseEvent ( QMouseEvent */*pMouseEvent*/ )
+void qtractorFileListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-//	QTreeWidget::mouseReleaseEvent(pMouseEvent);
+	QTreeWidget::mouseReleaseEvent(pMouseEvent);
 
 	dragLeaveEvent(NULL);
 	m_pDragItem = NULL;
