@@ -1060,13 +1060,13 @@ void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		dragDirectAccess(pos);
 	}
 
-//	QListWidget::mousePressEvent(pMouseEvent);
+	QListWidget::mousePressEvent(pMouseEvent);
 }
 
 
 void qtractorPluginListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-//	QListWidget::mouseMoveEvent(pMouseEvent);
+	QListWidget::mouseMoveEvent(pMouseEvent);
 
 	const QPoint& pos = pMouseEvent->pos();
 	if ((pMouseEvent->buttons() & Qt::LeftButton) && m_pDragItem) {
@@ -1098,7 +1098,7 @@ void qtractorPluginListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 
 void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-//	QListWidget::mouseReleaseEvent(pMouseEvent);
+	QListWidget::mouseReleaseEvent(pMouseEvent);
 	
 	const QPoint& pos = pMouseEvent->pos();
 	qtractorPluginListItem *pItem
