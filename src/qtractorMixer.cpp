@@ -777,9 +777,9 @@ int qtractorMixerStrip::mark (void) const
 }
 
 // Mouse selection event handlers.
-void qtractorMixerStrip::mousePressEvent ( QMouseEvent */*pMouseEvent*/ )
+void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-//	QFrame::mousePressEvent(pMouseEvent);
+	QFrame::mousePressEvent(pMouseEvent);
 
 	m_pRack->setSelectedStrip(this);
 }
@@ -1181,7 +1181,7 @@ void qtractorMixerRack::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (!m_pWorkspace->rect().contains(pMouseEvent->pos()))
 		setSelectedStrip(NULL);
 
-//	QScrollArea::mousePressEvent(pMouseEvent);
+	QScrollArea::mousePressEvent(pMouseEvent);
 }
 
 
