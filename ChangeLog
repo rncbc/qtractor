@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Formerly protected, class qtractorClip::FadeFunctor is now public
+  in an shot-in-the-dark attempt to fix clang builds (as reported by
+  Jekyll Wu, thanks).
+
 - Override all sub-classed widgets mouse-pointer event handlers to be
   isolated from base widget style and/or window management.
 

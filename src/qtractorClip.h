@@ -315,8 +315,6 @@ public:
 		TakeInfo::ClipPart m_cpart;
 	};
 
-protected:
-
 	// Fade functor (pure abstract) class.
 	//
 	class FadeFunctor
@@ -326,6 +324,8 @@ protected:
 		virtual ~FadeFunctor() {}
 		virtual float operator() (float t) const = 0;
 	};
+
+protected:
 
 	// Fade functor factory method.
 	//
