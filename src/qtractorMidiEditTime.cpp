@@ -411,9 +411,15 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 		break;
 	case Qt::MidButton:
-		// Edit-head/tail positioning...
-		m_pEditor->setEditHead(iFrame);
-		m_pEditor->setEditTail(iFrame);
+		if (bModifier) {
+			// Edit-head/tail (merged) positioning...
+			m_pEditor->setEditHead(iFrame);
+			m_pEditor->setEditTail(iFrame);
+		} else {
+			// Play-head positioning...
+			m_pEditor->setPlayHead(iFrame);
+			pSession->setPlayHead(m_pEditor->playHead());
+		}
 		// Logical contents changed, just for visual feedback...
 		m_pEditor->selectionChangeNotify();
 		break;

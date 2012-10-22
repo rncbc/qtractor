@@ -382,6 +382,9 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+		// Which mouse state?
+		const bool bModifier = (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier));
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
 			// Remember what and where we'll be dragging/selecting...
@@ -394,9 +397,15 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		case Qt::MidButton:
 			// Mid-button direct positioning...
 			m_pTracks->trackView()->selectAll(false);
-			// Edit-tail positioning...
-			m_pTracks->trackView()->setEditHead(iFrame);
-			m_pTracks->trackView()->setEditTail(iFrame);
+			if (bModifier) {
+				// Edit cursor (merge) positioning...
+				m_pTracks->trackView()->setEditHead(iFrame);
+				m_pTracks->trackView()->setEditTail(iFrame);
+			} else {
+				// Play-head positioning commit...
+				m_pTracks->trackView()->setPlayHead(iFrame);
+				pSession->setPlayHead(m_pTracks->trackView()->playHead());
+			}
 			// Logical contents changed, just for visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;

@@ -1541,11 +1541,9 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// We need a session and a location...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
-	#if 0
 		// Direct snap positioning...
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-	#endif
 		// Which button is being pressed?
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
@@ -1573,11 +1571,15 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		case Qt::MidButton:
 			// Mid-button positioning...
 			selectAll(false);
-		#if 0
-			// Edit cursor positioning...
-			setEditHead(iFrame);
-			setEditTail(iFrame);
-		#endif
+			if (bModifier) {
+				// Edit cursor (merge) positioning...
+				setEditHead(iFrame);
+				setEditTail(iFrame);
+			} else {
+				// Play-head positioning...
+				pSession->setPlayHead(iFrame);
+				setPlayHead(iFrame);
+			}
 			// Not quite a selection, but some visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
