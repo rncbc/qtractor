@@ -214,7 +214,7 @@ void qtractorMidiEditEvent::setEventType (
 {
 	m_eventType = eventType;
 
-	m_pEditor->selectAll(false);
+	m_pEditor->selectAll(this, false);
 //	m_pEditor->updateContents();
 }
 
@@ -228,7 +228,7 @@ void qtractorMidiEditEvent::setController ( unsigned char controller )
 {
 	m_controller = controller;
 
-	m_pEditor->selectAll(false);
+	m_pEditor->selectAll(this, false);
 //	m_pEditor->updateContents();
 }
 
@@ -576,7 +576,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case Qt::MidButton:
 		// Mid-button direct positioning...
-		m_pEditor->selectAll(false);
+		m_pEditor->selectAll(this, false);
 		// Which mouse state?
 		if (bModifier) {
 			// Edit cursor (merge) positioning...

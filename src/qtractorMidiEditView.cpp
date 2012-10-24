@@ -168,11 +168,11 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 
 	// Force an update on other views too...
 	m_pEditor->editTime()->resizeContents(
-		iContentsWidth + 100, m_pEditor->editTime()->contentsHeight());
+		iContentsWidth + 100, m_pEditor->editTime()->height());
 //	m_pEditor->editTime()->updateContents();
 
 	m_pEditor->editEvent()->resizeContents(
-		iContentsWidth, m_pEditor->editEvent()->contentsHeight());
+		iContentsWidth, m_pEditor->editEvent()->height());
 //	m_pEditor->editEvent()->updateContents();
 }
 
@@ -549,7 +549,7 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case Qt::MidButton:
 		// Mid-button direct positioning...
-		m_pEditor->selectAll(false);
+		m_pEditor->selectAll(this, false);
 		// Which mouse state?
 		if (bModifier) {
 			// Edit cursor (merge) positioning...

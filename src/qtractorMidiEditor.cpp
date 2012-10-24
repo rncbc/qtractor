@@ -1636,14 +1636,15 @@ void qtractorMidiEditor::deleteSelect (void)
 
 
 // Select all/none contents.
-void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
+void qtractorMidiEditor::selectAll (
+	qtractorScrollView *pScrollView, bool bSelect, bool bToggle )
 {
 	// Select all/none view contents.
 	if (bSelect) {
 		const QRect rect(0, 0,
-			m_pEditView->contentsWidth(),
-			m_pEditView->contentsHeight());
-		selectRect(rect, bToggle, true);
+			pScrollView->contentsWidth(),
+			pScrollView->contentsHeight());
+		selectRect(pScrollView,	rect, bToggle, true);
 	} else {
 		m_select.clear();
 		updateContents();
@@ -1652,24 +1653,25 @@ void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
 
 	// Make sure main view keeps focus...
 	QWidget::activateWindow();
-	m_pEditView->setFocus();
+	pScrollView->setFocus();
 }
 
 
 // Select range view contents.
-void qtractorMidiEditor::selectRange ( bool bToggle, bool bCommit )
+void qtractorMidiEditor::selectRange (
+	qtractorScrollView *pScrollView, bool bToggle, bool bCommit )
 {
 	int x = m_iEditHeadX;
 	int y = 0;
 	int w = m_iEditTailX - m_iEditHeadX;
-	int h = m_pEditView->contentsHeight();
+	int h = pScrollView->contentsHeight();
 
-	selectRect(QRect(x, y, w, h), bToggle, bCommit);
+	selectRect(pScrollView, QRect(x, y, w, h), bToggle, bCommit);
 }
 
 
 // Select everything between a given view rectangle.
-void qtractorMidiEditor::selectRect (
+void qtractorMidiEditor::selectRect ( qtractorScrollView *pScrollView,
 	const QRect& rect, bool bToggle, bool bCommit )
 {
 	int flags = SelectNone;
@@ -1677,8 +1679,8 @@ void qtractorMidiEditor::selectRect (
 		flags |= SelectToggle;
 	if (bCommit)
 		flags |= SelectCommit;
-	updateDragSelect(m_pEditView, rect.normalized(), flags);
-	resetDragState(m_pEditView);
+	updateDragSelect(pScrollView, rect.normalized(), flags);
+	resetDragState(pScrollView);
 	selectionChangeNotify();
 }
 

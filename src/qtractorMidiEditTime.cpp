@@ -388,7 +388,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		& (Qt::ShiftModifier | Qt::ControlModifier));
 	// Make sure we'll reset selection...
 	if (!bModifier)
-		m_pEditor->selectAll(false);
+		m_pEditor->selectAll(m_pEditor->editView(), false);
 
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
@@ -459,7 +459,7 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Rubber-band selection...
 		m_rectDrag.setRight(pos.x());
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
-		m_pEditor->selectRect(m_rectDrag,
+		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
 		// Edit-tail positioning...
 		m_pEditor->setEditTail(iFrame);
@@ -528,7 +528,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragSelect:
 		// Do the final range selection...
-		m_pEditor->selectRect(m_rectDrag,
+		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, true);
 		// Edit-tail positioning...
 		m_pEditor->setEditTail(iFrame);

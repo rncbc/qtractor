@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- The MIDI clip editor now senses which target view pane has focus for
+  general selection commands (cf. Edit/Select/None, All, Invert, Range)
+  whether the main piano-roll or the event value (velocities) view.
+
 - Mouse middle-button clicking is back in business on main track-view
   and on MIDI clip editor views (piano-roll) as an immediate play-head
   (re)positioning command or merge/reset the edit-head/tail cursors if

@@ -225,13 +225,15 @@ public:
 	void deleteSelect();
 
 	// Select all/none contents.
-	void selectAll(bool bSelect = true, bool bToggle = false);
+	void selectAll(qtractorScrollView *pScrollView,
+		bool bSelect = true, bool bToggle = false);
 
 	// Select range view contents.
-	void selectRange(bool bToggle = false, bool bCommit = false);
+	void selectRange(qtractorScrollView *pScrollView,
+		bool bToggle = false, bool bCommit = false);
 
 	// Select everything between a given view rectangle.
-	void selectRect(
+	void selectRect(qtractorScrollView *pScrollView,
 		const QRect& rect, bool bToggle = false, bool bCommit = false);
 
 	// Add/remove one single event to current selection.
