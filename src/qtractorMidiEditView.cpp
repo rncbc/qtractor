@@ -168,11 +168,11 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 
 	// Force an update on other views too...
 	m_pEditor->editTime()->resizeContents(
-		iContentsWidth + 100, m_pEditor->editTime()->height());
+		iContentsWidth + 100, m_pEditor->editTime()->viewport()->height());
 //	m_pEditor->editTime()->updateContents();
 
 	m_pEditor->editEvent()->resizeContents(
-		iContentsWidth, m_pEditor->editEvent()->height());
+		iContentsWidth, m_pEditor->editEvent()->viewport()->height());
 //	m_pEditor->editEvent()->updateContents();
 }
 

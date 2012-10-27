@@ -2524,6 +2524,10 @@ void qtractorMidiEditor::dragMoveUpdate (
 			}
 		}
 		break;
+	case DragEventResize:
+		// Drag(draw) resizing...
+		updateDragEventResize(pos);
+		break;
 	case DragStep:
 	case DragNone:
 	default:
@@ -2588,6 +2592,10 @@ void qtractorMidiEditor::dragMoveCommit (
 	case DragResize:
 		// Resize it...
 		executeDragResize(pScrollView, pos);
+		break;
+	case DragEventResize:
+		// Resize(by drawing) it...
+		executeDragEventResize(pos);
 		break;
 	case DragStep:
 	case DragNone:
@@ -3213,6 +3221,66 @@ void qtractorMidiEditor::updateDragResize (
 }
 
 
+// Drag(draw) event value-resize to current selection...
+void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
+{
+	m_pEditEvent->ensureVisible(pos.x(), 0, 16, 0);
+
+	const QPoint delta(pos - m_posDrag);
+	if (delta.manhattanLength() < 4)
+		return;
+
+	int y0 = (m_pEditEvent->viewport())->height();
+	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
+		y0 = ((y0 >> 3) << 2);
+
+	if (y0 < 1)
+		return;
+
+	QRect rectUpdateEvent(m_select.rectEvent());
+
+	const int x1 = (delta.x() < 0 ? pos.x() : m_posDrag.x());
+	const int x2 = (delta.x() > 0 ? pos.x() : m_posDrag.x());
+
+	const int y1 = 1;
+	const int y2 = (y0 << 1) - 1;
+
+	const float m = float(delta.y()) / float(delta.x());
+	const float b = float(pos.y()) - m * float(pos.x());
+
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		if (pEvent->type() != m_pEditEvent->eventType())
+			continue;
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		const QRect& rectEvent = pItem->rectEvent;
+		if (rectEvent.x() < x1 || rectEvent.x() > x2)
+			continue;
+		int y = int(m * float(rectEvent.x()) + b);
+		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
+			if (y < y1) y = y1; else if (y > y2) y = y2;
+			if (y > y0) {
+				pItem->rectEvent.setBottom(y);
+				y = y0;
+			} else {
+				pItem->rectEvent.setBottom(y0);
+			}
+		}
+		pItem->rectEvent.setTop(y);
+		m_select.updateItem(pItem);
+	}
+
+	rectUpdateEvent = rectUpdateEvent.united(m_select.rectEvent());
+	m_pEditEvent->viewport()->update(QRect(
+		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
+		rectUpdateEvent.size()));
+
+	m_posDrag = pos;
+}
+
+
 // Finalize the event drag-move.
 void qtractorMidiEditor::executeDragMove (
 	qtractorScrollView *pScrollView, const QPoint& pos )
@@ -3326,6 +3394,51 @@ void qtractorMidiEditor::executeDragPaste (
 		if (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER)
 			pEvent->setController(m_pEditEvent->controller());
 		pEditCommand->insertEvent(pEvent);
+	}
+
+	// Make it as an undoable command...
+	m_pCommands->exec(pEditCommand);
+}
+
+
+// Apply drag(draw) event value-resize to current selection.
+void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
+{
+	if (m_pMidiClip == NULL)
+		return;
+
+	updateDragEventResize(pos);
+
+	int y0 = (m_pEditEvent->viewport())->height();
+	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
+		y0 = ((y0 >> 3) << 2);
+
+	if (y0 < 1)
+		return;
+
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("resize"));
+
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		if (pEvent->type() != m_pEditEvent->eventType())
+			continue;
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		int iValue = 0;
+		int y = pItem->rectEvent.top();
+		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
+			if (y >= y0)
+				y = pItem->rectEvent.bottom() + 1;
+			iValue = (8192 * (y0 - y)) / y0;
+			pEditCommand->resizeEventValue(pEvent, iValue);
+			m_last.pitchBend = iValue;
+		} else {
+			iValue = (128 * (y0 - y)) / y0;
+			pEditCommand->resizeEventValue(pEvent, iValue);
+			m_last.value = iValue;
+		}
 	}
 
 	// Make it as an undoable command...

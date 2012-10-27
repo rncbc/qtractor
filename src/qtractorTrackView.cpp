@@ -289,7 +289,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(
-		iContentsWidth + 100, m_pTracks->trackTime()->contentsHeight());
+		iContentsWidth + 100, m_pTracks->trackTime()->viewport()->height());
 	m_pTracks->trackTime()->updateContents();
 }
 

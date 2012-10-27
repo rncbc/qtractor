@@ -443,6 +443,11 @@ protected:
 	// Finalize the event drag-paste.
 	void executeDragPaste(qtractorScrollView *pScrollView, const QPoint& pos);
 
+	// Drag(draw) event value-resize to current selection...
+	void updateDragEventResize(const QPoint& pos);
+	// Apply drag(draw) event value-resize to current selection.
+	void executeDragEventResize(const QPoint& pos);
+
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
 
@@ -507,7 +512,7 @@ private:
 
 	// Common drag state.
 	enum DragState { 
-		DragNone = 0, DragStart, DragSelect,
+		DragNone = 0, DragStart, DragSelect, DragEventResize,
 		DragMove, DragResize, DragPaste, DragStep
 	} m_dragState, m_dragCursor;
 
