@@ -443,6 +443,8 @@ protected:
 	// Finalize the event drag-paste.
 	void executeDragPaste(qtractorScrollView *pScrollView, const QPoint& pos);
 
+	// Drag(draw) event value-resize check.
+	bool isDragEventResize() const;
 	// Drag(draw) event value-resize to current selection...
 	void updateDragEventResize(const QPoint& pos);
 	// Apply drag(draw) event value-resize to current selection.
