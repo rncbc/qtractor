@@ -3241,6 +3241,11 @@ bool qtractorMidiEditor::isDragEventResize (void) const
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
+		if ((pItem->flags & 1) == 0)
+			continue;
 		if (pEvent->type() == etype)
 			return true;
 	}
@@ -3281,9 +3286,11 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
 		if (pEvent->type() != etype)
 			continue;
-		qtractorMidiEditSelect::Item *pItem = iter.value();
 		const QRect& rectEvent = pItem->rectEvent;
 		if (rectEvent.x() < x1 || rectEvent.x() > x2)
 			continue;
@@ -3330,6 +3337,8 @@ void qtractorMidiEditor::executeDragMove (
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
 		int iNote = int(pEvent->note()) + iNoteDelta;
 		if (iNote < 0)
 			iNote = 0;
@@ -3366,6 +3375,9 @@ void qtractorMidiEditor::executeDragResize (
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
 		if (!m_bEventDragEdit || m_pEventDrag == pEvent)
 			resizeEvent(pEvent, iTimeDelta, iValueDelta, pEditCommand);
 		else
@@ -3407,6 +3419,8 @@ void qtractorMidiEditor::executeDragPaste (
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*iter.key());
 		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
 		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
@@ -3448,14 +3462,16 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("resize"));
 
-	const qtractorMidiEvent::EventType eventType = m_pEditEvent->eventType();
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
-		if (pEvent->type() != eventType)
-			continue;
 		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
+		if (pEvent->type() != etype)
+			continue;
 		int iValue = 0;
 		int y = pItem->rectEvent.top();
 		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
