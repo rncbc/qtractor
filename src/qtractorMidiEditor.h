@@ -391,6 +391,9 @@ protected:
 	void zoomCenterPre(ZoomCenter& zc) const;
 	void zoomCenterPost(const ZoomCenter& zc);
 
+	// Ensuere point visibility depending on view.
+	void ensureVisible(qtractorScrollView *pScrollView, const QPoint& pos);
+
 	// Selection flags
 	enum { 
 		SelectNone   = 0,

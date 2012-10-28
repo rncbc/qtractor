@@ -1741,6 +1741,17 @@ bool qtractorMidiEditor::isEventSelectable ( qtractorMidiEvent *pEvent ) const
 }
 
 
+// Ensuere point visibility depending on view.
+void qtractorMidiEditor::ensureVisible (
+	qtractorScrollView *pScrollView, const QPoint& pos )
+{
+	if (static_cast<qtractorMidiEditEvent *> (pScrollView) == m_pEditEvent)
+		pScrollView->ensureVisible(pos.x(), 0, 16, 0);
+	else
+		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+}
+
+
 // Update all selection rectangular areas.
 void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 {
@@ -2172,19 +2183,26 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Must be inside the visible event canvas and
 	// not about to drag(draw) event-value resizing...
-	int y0 = (m_pEditEvent->viewport())->height();
 	if (!bEditView) {
-		if (pos.y() < 0 || pos.y() > y0)
-			return NULL;
 		if (!m_bEventDragEdit && m_pEventDrag == NULL
 			&& m_bEditModeDraw && isDragEventResize())
 			return NULL;
 	}
 
+	int y0 = (m_pEditEvent->viewport())->height();
+	if (etype == qtractorMidiEvent::PITCHBEND)
+		y0 = ((y0 >> 3) << 2);
+
+	int y1 = 1;
+	int y2 = (y0 << 1);
+
+	int y  = pos.y();
+
+	if (y < y1) y = y1; else if (y > y2) y = y2;
+
 	// Compute onset time from given horizontal position...
 	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 	int x1 = x0 + pos.x();
-	int y1 = 0;
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
@@ -2252,7 +2270,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		} else {
 			pEvent->setNote(m_last.note);
 			if (y0 > 0)
-				pEvent->setVelocity((127 * (y0 - pos.y())) / y0);
+				pEvent->setVelocity((128 * (y0 - y)) / y0);
 			else
 				pEvent->setVelocity(m_last.value);
 		}
@@ -2269,9 +2287,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		// Set pitchbend event value...
-		y0 = ((y0 >> 3) << 2);
 		if (y0 > 0)
-			pEvent->setPitchBend((8191 * (y0 - pos.y())) / y0);
+			pEvent->setPitchBend((8192 * (y0 - y)) / y0);
 		else
 			pEvent->setPitchBend(m_last.pitchBend);
 		break;
@@ -2282,7 +2299,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	default:
 		// Set generic event value...
 		if (y0 > 0)
-			pEvent->setValue((127 * (y0 - pos.y())) / y0);
+			pEvent->setValue((128 * (y0 - y)) / y0);
 		else
 			pEvent->setValue(m_last.value);
 		break;
@@ -2507,10 +2524,10 @@ void qtractorMidiEditor::dragMoveUpdate (
 		// Fall thru...
 	case DragSelect: {
 		// Set new rubber-band extents...
-		const QRect& rect = QRect(m_posDrag, pos).normalized();
-		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+		ensureVisible(pScrollView, pos);
 		if (modifiers & Qt::ControlModifier)
 			flags |= SelectToggle;
+		const QRect& rect = QRect(m_posDrag, pos).normalized();
 		updateDragSelect(pScrollView, rect, flags);
 		showToolTip(pScrollView, rect);
 		break;
@@ -2587,7 +2604,7 @@ void qtractorMidiEditor::dragMoveCommit (
 		// Fall thru...
 	case DragSelect:
 		// Terminate selection...
-		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+		ensureVisible(pScrollView, pos);
 		if (modifiers & Qt::ControlModifier)
 			flags |= SelectToggle;
 		updateDragSelect(pScrollView, QRect(m_posDrag, pos).normalized(), flags);
@@ -3079,7 +3096,7 @@ void qtractorMidiEditor::updateEventRects (
 void qtractorMidiEditor::updateDragMove (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
-	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+	ensureVisible(pScrollView, pos);
 
 	bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
@@ -3158,7 +3175,7 @@ void qtractorMidiEditor::updateDragMove (
 void qtractorMidiEditor::updateDragResize (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
-	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+	ensureVisible(pScrollView, pos);
 
 	QRect rectUpdateView(m_select.rectView().translated(m_posDelta.x(), 0));
 	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
