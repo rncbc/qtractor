@@ -275,8 +275,8 @@ void qtractorMidiEditEvent::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height() & ~1; // always even.
 
 	if (w < 1 || h < 1)
 		return;
@@ -381,9 +381,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	unsigned long iTickEnd = pNode->tickFromPixel(x);
 
 	// This is the zero-line...
-	int y0 = h;
-	if (m_eventType == qtractorMidiEvent::PITCHBEND)
-		y0 = (dy << 2);
+	const int y0 = (m_eventType == qtractorMidiEvent::PITCHBEND ? h >> 1 : h);
 
 	p.setPen(rgbLight);
 	p.drawLine(0, y0 - 1, w, y0 - 1);
