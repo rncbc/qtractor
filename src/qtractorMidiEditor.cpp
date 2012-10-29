@@ -2920,13 +2920,13 @@ int qtractorMidiEditor::valueDelta ( qtractorScrollView *pScrollView ) const
 	int iValueDelta = 0;
 
 	if (pScrollView == static_cast<qtractorScrollView *> (m_pEditEvent)) {
-		int h = (m_pEditEvent->viewport())->height();
-		if (h > 0) {
+		const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+		if (h0 > 1) {
 			if (m_resizeMode == ResizePitchBendTop ||
 				m_resizeMode == ResizePitchBendBottom)
-				iValueDelta = -(m_posDelta.y() * 8192 * 2) / h;
+				iValueDelta = -(m_posDelta.y() * 8192) / (h0 >> 1);
 			else
-				iValueDelta = -(m_posDelta.y() * 128) / h;
+				iValueDelta = -(m_posDelta.y() * 128) / h0;
 		}
 	}
 
@@ -3279,7 +3279,7 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
 	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
-	if (y0 < 2)
+	if (y0 < 1)
 		return;
 
 	QRect rectUpdateEvent(m_select.rectEvent());
@@ -3316,6 +3316,7 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 			}
 		}
 		pItem->rectEvent.setTop(y);
+		pItem->flags |= 4;
 		m_select.updateItem(pItem);
 	}
 
@@ -3467,7 +3468,7 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
 	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
-	if (y0 < 2)
+	if (y0 < 1)
 		return;
 
 	qtractorMidiEditCommand *pEditCommand
@@ -3480,14 +3481,16 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
 			continue;
+		if ((pItem->flags & 4) == 0)
+			continue;
 		if (pEvent->type() != etype)
 			continue;
 		int iValue = 0;
 		int y = pItem->rectEvent.top();
 		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
 			if (y >= y0)
-				y  = pItem->rectEvent.bottom() + 1;
-			iValue = (8192 * (y0 - y)) / (y0 - 1);
+				y  = pItem->rectEvent.bottom();
+			iValue = (8192 * (y0 - y)) / y0;
 			pEditCommand->resizeEventValue(pEvent, iValue);
 			m_last.pitchBend = iValue;
 		} else {
@@ -3495,6 +3498,7 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 			pEditCommand->resizeEventValue(pEvent, iValue);
 			m_last.value = iValue;
 		}
+		pItem->flags &= ~4;
 	}
 
 	// Make it as an undoable command...
