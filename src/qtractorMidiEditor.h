@@ -402,6 +402,9 @@ protected:
 		SelectCommit = 4
 	};
 
+	// Clear all selection.
+	void clearSelect();
+
 	// Update all selection rectangular areas.
 	void updateSelect(bool bSelectReset);
 

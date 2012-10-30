@@ -1495,7 +1495,7 @@ void qtractorMidiEditor::pasteClipboard (
 		return;
 
 	// Reset any current selection, whatsoever...
-	m_select.clear();
+	clearSelect();
 	resetDragState(NULL);
 
 	// Multi-paste period...
@@ -1587,7 +1587,7 @@ void qtractorMidiEditor::pasteClipboard (
 	// That's right :)
 	if (pScrollView == NULL) {
 		m_dragState = DragStep; // HACK: Force selection clearance!
-		m_select.clear();
+		clearSelect();
 		resetDragState(NULL);
 		return;
 	}
@@ -1646,8 +1646,8 @@ void qtractorMidiEditor::selectAll (
 			pScrollView->contentsHeight());
 		selectRect(pScrollView,	rect, bToggle, true);
 	} else {
-		m_select.clear();
-		updateContents();
+		clearSelect();
+		resetDragState(pScrollView);
 		selectionChangeNotify();
 	}
 
@@ -1749,6 +1749,24 @@ void qtractorMidiEditor::ensureVisible (
 		pScrollView->ensureVisible(pos.x(), 0, 16, 0);
 	else
 		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+}
+
+
+// Clear all selection.
+void qtractorMidiEditor::clearSelect (void)
+{
+	const QRect rectUpdateView(m_select.rectView());
+	const QRect rectUpdateEvent(m_select.rectEvent());
+
+	m_select.clear();
+
+	m_pEditView->viewport()->update(QRect(
+		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
+		rectUpdateView.size()));
+
+	m_pEditEvent->viewport()->update(QRect(
+		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
+		rectUpdateEvent.size()));
 }
 
 
@@ -2350,7 +2368,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Just add this one the selection...
 	if (!m_bEventDragEdit || m_pEventDrag == NULL)
-		m_select.clear();
+		clearSelect();
+
 	m_select.selectItem(pEvent, rectEvent, rectView, true, false);
 
 	// Set the proper resize-mode...
