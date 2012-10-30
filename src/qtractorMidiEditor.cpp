@@ -3282,7 +3282,8 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 	if (y0 < 1)
 		return;
 
-	QRect rectUpdateEvent(m_select.rectEvent());
+	const QRect& rectDrag = QRect(m_posDrag, m_posDragEventResize).normalized();
+	QRect rectUpdateEvent(m_select.rectEvent().united(rectDrag));
 
 	const int xmin = (delta.x() < 0 ? pos.x() : m_posDrag.x());
 	const int xmax = (delta.x() > 0 ? pos.x() : m_posDrag.x());
@@ -3325,7 +3326,7 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
 
-//	m_posDrag = pos; -- complete free-hand drawing! (TESTING)
+	m_posDragEventResize = pos;
 }
 
 
@@ -3604,6 +3605,16 @@ void qtractorMidiEditor::paintDragState (
 			pScrollView->contentsToViewport(rect.topLeft()),
 			rect.size()), QColor(c, 0, 255 - c, 120));
 	}
+
+	// Paint drag(draw) event-value line...
+	if (!bEditView && m_dragState == DragEventResize) {
+		QPen pen(Qt::DotLine);
+		pen.setColor(Qt::blue);
+		pPainter->setPen(pen);
+		pPainter->drawLine(
+			pScrollView->contentsToViewport(m_posDrag),
+			pScrollView->contentsToViewport(m_posDragEventResize));
+	}
 }
 
 
@@ -3623,6 +3634,8 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 
 	m_posDelta = QPoint(0, 0);
 	m_posStep  = QPoint(0, 0);
+
+	m_posDragEventResize = QPoint(0, 0);
 
 	m_pEditPaste = NULL;
 

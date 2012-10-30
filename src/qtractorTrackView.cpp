@@ -595,7 +595,9 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		rectHandle.moveTopLeft(contentsToViewport(rectHandle.topLeft()));
 		// Draw envelope line...
 		QPoint vpos;
-		pPainter->setPen(QColor(0, 0, 255, 120));
+		QPen pen(Qt::DotLine);
+		pen.setColor(Qt::blue);
+		pPainter->setPen(pen);
 		if (m_dragState == DragFadeIn) {
 			vpos = contentsToViewport(m_rectDrag.bottomLeft());
 			pPainter->drawLine(

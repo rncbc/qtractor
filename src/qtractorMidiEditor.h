@@ -538,6 +538,9 @@ private:
 	// Step (keyboard) drag-move position
 	QPoint m_posStep;
 
+	// Drag(draw) event-value position.
+	QPoint m_posDragEventResize;
+
 	// Which widget holds focus on drag-paste?
 	qtractorScrollView *m_pEditPaste;
 

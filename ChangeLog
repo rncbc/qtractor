@@ -5,8 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- Free-hand retouch of event values, while on the MIDI clip editor's
-  view pane below the main piano-roll (eg. velocities or controllers),
+- Free-hand/linear retouching of event values, while on the MIDI clip
+  editor's view pane below the main piano-roll (eg. note velocities),
   is now possible provided the target events are selected, otherwise
   the usual painting edit sub-mode applies (cf. menu Edit/Select Mode/
   Edit Draw). (EXPERIMENTAL)
