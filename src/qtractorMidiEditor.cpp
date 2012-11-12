@@ -2437,10 +2437,12 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 				m_resizeMode = ResizeValueTop;
 				shape = Qt::SplitVCursor;
 			}
+			if (m_resizeMode == ResizeNone
+				&& isDragEventResize(modifiers)) {
+				shape = Qt::ArrowCursor;
+				pEvent = NULL;
+			}
 		}
-		if (m_resizeMode == ResizeNone
-			&& isDragEventResize(modifiers))
-			return NULL;
 		m_dragCursor = DragResize;
 		pScrollView->setCursor(QCursor(shape));
 	}
