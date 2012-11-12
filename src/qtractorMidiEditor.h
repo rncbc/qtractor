@@ -450,7 +450,7 @@ protected:
 	void executeDragPaste(qtractorScrollView *pScrollView, const QPoint& pos);
 
 	// Drag(draw) event value-resize check.
-	bool isDragEventResize() const;
+	bool isDragEventResize(Qt::KeyboardModifiers modifiers) const;
 	// Drag(draw) event value-resize to current selection...
 	void updateDragEventResize(const QPoint& pos);
 	// Apply drag(draw) event value-resize to current selection.

@@ -2202,8 +2202,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// Must be inside the visible event canvas and
 	// not about to drag(draw) event-value resizing...
 	if (!bEditView && !m_bEventDragEdit && m_pEventDrag == NULL
-		&& (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0
-		&& isDragEventResize())
+		&& isDragEventResize(modifiers))
 		return NULL;
 
 	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
@@ -2387,7 +2386,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 // Track drag-move-select cursor and mode...
 qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers /*modifiers*/ )
+	Qt::KeyboardModifiers modifiers )
 {
 	qtractorMidiEvent *pEvent = eventAt(pScrollView, pos, &m_rectDrag);
 
@@ -2439,7 +2438,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 				shape = Qt::SplitVCursor;
 			}
 		}
-		if (m_resizeMode == ResizeNone && isDragEventResize())
+		if (m_resizeMode == ResizeNone
+			&& isDragEventResize(modifiers))
 			return NULL;
 		m_dragCursor = DragResize;
 		pScrollView->setCursor(QCursor(shape));
@@ -2546,8 +2546,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 		}
 		// About to drag(draw) event-value reszing...
 		if (static_cast<qtractorMidiEditEvent *> (pScrollView) == m_pEditEvent
-			&& (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0
-			&& isDragEventResize()) {
+			&& isDragEventResize(modifiers)) {
 			m_dragState = DragEventResize;
 			updateDragEventResize(pos);
 			break;
@@ -3283,9 +3282,11 @@ void qtractorMidiEditor::updateDragResize (
 
 
 // Drag(draw) event value-resize check.
-bool qtractorMidiEditor::isDragEventResize (void) const
+bool qtractorMidiEditor::isDragEventResize ( Qt::KeyboardModifiers modifiers ) const
 {
 	if (!m_bEditMode || !m_bEditModeDraw)
+		return false;
+	if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier))
 		return false;
 
 	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
