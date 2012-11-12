@@ -1216,7 +1216,7 @@ void qtractorFileListView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 }
 
 
-void qtractorFileListView::dragLeaveEvent ( QDragLeaveEvent * )
+void qtractorFileListView::dragLeaveEvent ( QDragLeaveEvent */*pDragLeaveEvent*/ )
 {
 	if (m_pRubberBand)
 		delete m_pRubberBand;

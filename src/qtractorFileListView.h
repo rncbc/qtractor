@@ -171,7 +171,7 @@ protected:
 
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
-	void dragLeaveEvent(QDragLeaveEvent *);
+	void dragLeaveEvent(QDragLeaveEvent *pDragLeaveEvent);
 	void dropEvent(QDropEvent *pDropEvent);
 
 	// Drag-n-drop stuff.

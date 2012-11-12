@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -388,7 +388,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		& (Qt::ShiftModifier | Qt::ControlModifier));
 	// Make sure we'll reset selection...
 	if (!bModifier)
-		m_pEditor->selectAll(false);
+		m_pEditor->selectAll(m_pEditor->editView(), false);
 
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
@@ -411,9 +411,15 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 		break;
 	case Qt::MidButton:
-		// Edit-head/tail positioning...
-		m_pEditor->setEditHead(iFrame);
-		m_pEditor->setEditTail(iFrame);
+		if (bModifier) {
+			// Edit-head/tail (merged) positioning...
+			m_pEditor->setEditHead(iFrame);
+			m_pEditor->setEditTail(iFrame);
+		} else {
+			// Play-head positioning...
+			m_pEditor->setPlayHead(iFrame);
+			pSession->setPlayHead(m_pEditor->playHead());
+		}
 		// Logical contents changed, just for visual feedback...
 		m_pEditor->selectionChangeNotify();
 		break;
@@ -427,7 +433,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
 
@@ -453,7 +459,7 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Rubber-band selection...
 		m_rectDrag.setRight(pos.x());
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
-		m_pEditor->selectRect(m_rectDrag,
+		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
 		// Edit-tail positioning...
 		m_pEditor->setEditTail(iFrame);
@@ -497,14 +503,14 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle item selection/dragging -- mouse button release.
 void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -522,7 +528,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragSelect:
 		// Do the final range selection...
-		m_pEditor->selectRect(m_rectDrag,
+		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, true);
 		// Edit-tail positioning...
 		m_pEditor->setEditTail(iFrame);

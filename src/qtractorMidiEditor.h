@@ -225,13 +225,15 @@ public:
 	void deleteSelect();
 
 	// Select all/none contents.
-	void selectAll(bool bSelect = true, bool bToggle = false);
+	void selectAll(qtractorScrollView *pScrollView,
+		bool bSelect = true, bool bToggle = false);
 
 	// Select range view contents.
-	void selectRange(bool bToggle = false, bool bCommit = false);
+	void selectRange(qtractorScrollView *pScrollView,
+		bool bToggle = false, bool bCommit = false);
 
 	// Select everything between a given view rectangle.
-	void selectRect(
+	void selectRect(qtractorScrollView *pScrollView,
 		const QRect& rect, bool bToggle = false, bool bCommit = false);
 
 	// Add/remove one single event to current selection.
@@ -389,6 +391,9 @@ protected:
 	void zoomCenterPre(ZoomCenter& zc) const;
 	void zoomCenterPost(const ZoomCenter& zc);
 
+	// Ensuere point visibility depending on view.
+	void ensureVisible(qtractorScrollView *pScrollView, const QPoint& pos);
+
 	// Selection flags
 	enum { 
 		SelectNone   = 0,
@@ -396,6 +401,9 @@ protected:
 		SelectToggle = 2,
 		SelectCommit = 4
 	};
+
+	// Clear all selection.
+	void clearSelect();
 
 	// Update all selection rectangular areas.
 	void updateSelect(bool bSelectReset);
@@ -440,6 +448,13 @@ protected:
 
 	// Finalize the event drag-paste.
 	void executeDragPaste(qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Drag(draw) event value-resize check.
+	bool isDragEventResize(Qt::KeyboardModifiers modifiers) const;
+	// Drag(draw) event value-resize to current selection...
+	void updateDragEventResize(const QPoint& pos);
+	// Apply drag(draw) event value-resize to current selection.
+	void executeDragEventResize(const QPoint& pos);
 
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
@@ -505,7 +520,7 @@ private:
 
 	// Common drag state.
 	enum DragState { 
-		DragNone = 0, DragStart, DragSelect,
+		DragNone = 0, DragStart, DragSelect, DragEventResize,
 		DragMove, DragResize, DragPaste, DragStep
 	} m_dragState, m_dragCursor;
 
@@ -525,6 +540,9 @@ private:
 
 	// Step (keyboard) drag-move position
 	QPoint m_posStep;
+
+	// Drag(draw) event-value position.
+	QPoint m_posDragEventResize;
 
 	// Which widget holds focus on drag-paste?
 	qtractorScrollView *m_pEditPaste;

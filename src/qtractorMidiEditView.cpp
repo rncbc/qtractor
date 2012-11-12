@@ -168,11 +168,11 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 
 	// Force an update on other views too...
 	m_pEditor->editTime()->resizeContents(
-		iContentsWidth + 100, m_pEditor->editTime()->contentsHeight());
+		iContentsWidth + 100, m_pEditor->editTime()->viewport()->height());
 //	m_pEditor->editTime()->updateContents();
 
 	m_pEditor->editEvent()->resizeContents(
-		iContentsWidth, m_pEditor->editEvent()->contentsHeight());
+		iContentsWidth, m_pEditor->editEvent()->viewport()->height());
 //	m_pEditor->editEvent()->updateContents();
 }
 
@@ -526,15 +526,46 @@ void qtractorMidiEditView::keyPressEvent ( QKeyEvent *pKeyEvent )
 void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse press...
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 
-	// Only the left-mouse-button is meaningful atm...
-	if (pMouseEvent->button() != Qt::LeftButton)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
+
+	// Which mouse state?
+	const bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Maybe start the drag-move-selection dance?
 	const QPoint& pos
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+
+	switch (pMouseEvent->button()) {
+	case Qt::LeftButton:
+		// Only the left-mouse-button was meaningful...
+		break;
+	case Qt::MidButton:
+		// Mid-button direct positioning...
+		m_pEditor->selectAll(this, false);
+		// Which mouse state?
+		if (bModifier) {
+			// Edit cursor (merge) positioning...
+			m_pEditor->setEditHead(iFrame);
+			m_pEditor->setEditTail(iFrame);
+		} else {
+			// Play-head positioning commit...
+			m_pEditor->setPlayHead(iFrame);
+			pSession->setPlayHead(m_pEditor->playHead());
+		}
+		// Logical contents changed, just for visual feedback...
+		m_pEditor->selectionChangeNotify();
+		// Fall thru...
+	default:
+		return;
+	}
 
 	// Remember what and where we'll be dragging/selecting...
 	m_pEditor->dragMoveStart(this, pos, pMouseEvent->modifiers());
@@ -545,7 +576,7 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse move...
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 
 	// Are we already moving/dragging something?
 	const QPoint& pos
@@ -559,7 +590,7 @@ void qtractorMidiEditView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse release...
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	// Were we moving/dragging something?
 	const QPoint& pos

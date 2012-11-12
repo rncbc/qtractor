@@ -289,7 +289,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(
-		iContentsWidth + 100, m_pTracks->trackTime()->contentsHeight());
+		iContentsWidth + 100, m_pTracks->trackTime()->viewport()->height());
 	m_pTracks->trackTime()->updateContents();
 }
 
@@ -595,7 +595,9 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		rectHandle.moveTopLeft(contentsToViewport(rectHandle.topLeft()));
 		// Draw envelope line...
 		QPoint vpos;
-		pPainter->setPen(QColor(0, 0, 255, 120));
+		QPen pen(Qt::DotLine);
+		pen.setColor(Qt::blue);
+		pPainter->setPen(pen);
 		if (m_dragState == DragFadeIn) {
 			vpos = contentsToViewport(m_rectDrag.bottomLeft());
 			pPainter->drawLine(
@@ -1504,7 +1506,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		// Fall thru...
 	case DragPaste:
 	case DragDropPaste:
-		qtractorScrollView::mousePressEvent(pMouseEvent);
+	//	qtractorScrollView::mousePressEvent(pMouseEvent);
 		return;
 	default:
 		break;
@@ -1529,7 +1531,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (m_dragCursor == DragCurveNode) {
 			if (m_pDragCurve && m_pDragCurveNode)
 				m_dragState = DragCurveNode;
-			qtractorScrollView::mousePressEvent(pMouseEvent);
+		//	qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
 		}
 	}
@@ -1541,11 +1543,9 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// We need a session and a location...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
-	#if 0
 		// Direct snap positioning...
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-	#endif
 		// Which button is being pressed?
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
@@ -1573,11 +1573,15 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		case Qt::MidButton:
 			// Mid-button positioning...
 			selectAll(false);
-		#if 0
-			// Edit cursor positioning...
-			setEditHead(iFrame);
-			setEditTail(iFrame);
-		#endif
+			if (bModifier) {
+				// Edit cursor (merge) positioning...
+				setEditHead(iFrame);
+				setEditTail(iFrame);
+			} else {
+				// Play-head positioning...
+				pSession->setPlayHead(iFrame);
+				setPlayHead(iFrame);
+			}
 			// Not quite a selection, but some visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
@@ -1598,7 +1602,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
 
@@ -1688,14 +1692,14 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle item selection/dragging -- mouse button release.
 void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {

@@ -1201,28 +1201,44 @@ void qtractorMidiEditorForm::editModeDraw ( bool bOn )
 // Select none contents.
 void qtractorMidiEditorForm::editSelectNone (void)
 {
-	m_pMidiEditor->selectAll(false, false);
+	qtractorScrollView *pScrollView = m_pMidiEditor->editView();
+	if (m_pMidiEditor->editEvent()->hasFocus())
+		pScrollView = m_pMidiEditor->editEvent();
+
+	m_pMidiEditor->selectAll(pScrollView, false, false);
 }
 
 
 // Select invert contents.
 void qtractorMidiEditorForm::editSelectInvert (void)
 {
-	m_pMidiEditor->selectAll(true, true);
+	qtractorScrollView *pScrollView = m_pMidiEditor->editView();
+	if (m_pMidiEditor->editEvent()->hasFocus())
+		pScrollView = m_pMidiEditor->editEvent();
+
+	m_pMidiEditor->selectAll(pScrollView, true, true);
 }
 
 
 // Select all contents.
 void qtractorMidiEditorForm::editSelectAll (void)
 {
-	m_pMidiEditor->selectAll(true, false);
+	qtractorScrollView *pScrollView = m_pMidiEditor->editView();
+	if (m_pMidiEditor->editEvent()->hasFocus())
+		pScrollView = m_pMidiEditor->editEvent();
+
+	m_pMidiEditor->selectAll(pScrollView, true, false);
 }
 
 
 // Select contents range.
 void qtractorMidiEditorForm::editSelectRange (void)
 {
-	m_pMidiEditor->selectRange(true, true);
+	qtractorScrollView *pScrollView = m_pMidiEditor->editView();
+	if (m_pMidiEditor->editEvent()->hasFocus())
+		pScrollView = m_pMidiEditor->editEvent();
+
+	m_pMidiEditor->selectRange(pScrollView, true, true);
 }
 
 

@@ -214,7 +214,7 @@ void qtractorMidiEditEvent::setEventType (
 {
 	m_eventType = eventType;
 
-	m_pEditor->selectAll(false);
+	m_pEditor->selectAll(this, false);
 //	m_pEditor->updateContents();
 }
 
@@ -228,7 +228,7 @@ void qtractorMidiEditEvent::setController ( unsigned char controller )
 {
 	m_controller = controller;
 
-	m_pEditor->selectAll(false);
+	m_pEditor->selectAll(this, false);
 //	m_pEditor->updateContents();
 }
 
@@ -275,8 +275,8 @@ void qtractorMidiEditEvent::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height() & ~1; // always even.
 
 	if (w < 1 || h < 1)
 		return;
@@ -381,9 +381,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	unsigned long iTickEnd = pNode->tickFromPixel(x);
 
 	// This is the zero-line...
-	int y0 = h;
-	if (m_eventType == qtractorMidiEvent::PITCHBEND)
-		y0 = (dy << 2);
+	const int y0 = (m_eventType == qtractorMidiEvent::PITCHBEND ? h >> 1 : h);
 
 	p.setPen(rgbLight);
 	p.drawLine(0, y0 - 1, w, y0 - 1);
@@ -553,15 +551,47 @@ void qtractorMidiEditEvent::keyPressEvent ( QKeyEvent *pKeyEvent )
 void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse press...
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 
-	// Only the left-mouse-button is meaningful atm...
-	if (pMouseEvent->button() != Qt::LeftButton)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
+
+	// Which mouse state?
+	const bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Maybe start the drag-move-selection dance?
 	const QPoint& pos
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+
+	switch (pMouseEvent->button()) {
+	case Qt::LeftButton:
+		// Only the left-mouse-button was meaningful...
+		break;
+	case Qt::MidButton:
+		// Mid-button direct positioning...
+		m_pEditor->selectAll(this, false);
+		// Which mouse state?
+		if (bModifier) {
+			// Edit cursor (merge) positioning...
+			m_pEditor->setEditHead(iFrame);
+			m_pEditor->setEditTail(iFrame);
+		} else {
+			// Play-head positioning commit...
+			m_pEditor->setPlayHead(iFrame);
+			pSession->setPlayHead(m_pEditor->playHead());
+		}
+		// Logical contents changed, just for visual feedback...
+		m_pEditor->selectionChangeNotify();
+		// Fall thru...
+	default:
+		return;
+	}
+
 
 	// Remember what and where we'll be dragging/selecting...
 	m_pEditor->dragMoveStart(this, pos, pMouseEvent->modifiers());
@@ -572,7 +602,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditEvent::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse move...
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 
 	// Are we already moving/dragging something?
 	const QPoint& pos

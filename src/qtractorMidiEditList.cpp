@@ -335,7 +335,7 @@ void qtractorMidiEditList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		& (Qt::ShiftModifier | Qt::ControlModifier));
 	// Make sure we'll reset selection...
 	if (!bModifier)
-		m_pEditor->selectAll(false);
+		m_pEditor->selectAll(m_pEditor->editView(), false);
 
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
@@ -351,7 +351,7 @@ void qtractorMidiEditList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+//	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
 
@@ -366,7 +366,7 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Rubber-band selection...
 		m_rectDrag.setBottom(pos.y());
 		m_pEditor->editView()->ensureVisible(x, pos.y(), 0, 16);
-		m_pEditor->selectRect(m_rectDrag,
+		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
 		// Are we keying in some keyboard?
 		dragNoteOn(pos);
@@ -392,20 +392,20 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle item selection/dragging -- mouse button release.
 void qtractorMidiEditList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	// Direct snap positioning...
 	switch (m_dragState) {
 	case DragSelect:
 		// Do the final range selection...
-		m_pEditor->selectRect(m_rectDrag,
+		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, true);
 		// Keyboard notes are reset later anyway...
 		break;

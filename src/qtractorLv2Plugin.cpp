@@ -2646,9 +2646,11 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_pQt4Widget) {
 			// guaranteeing a reasonable window type:
 			// ie. not Qt::Dialog or Qt::Popup from the seemingly good choices.
-			const Qt::WindowFlags wflags
-				= m_pQt4Widget->windowFlags() & ~Qt::WindowType_Mask;
-			m_pQt4Widget->setWindowFlags(wflags | Qt::Widget);
+			if (m_lv2_ui_type == LV2_UI_TYPE_QT4) {
+				const Qt::WindowFlags wflags
+					= m_pQt4Widget->windowFlags() & ~Qt::WindowType_Mask;
+				m_pQt4Widget->setWindowFlags(wflags | Qt::Widget);
+			}
 			m_pQt4Widget->show();
 			m_pQt4Widget->raise();
 			m_pQt4Widget->activateWindow();

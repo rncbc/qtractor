@@ -1060,7 +1060,7 @@ void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		dragDirectAccess(pos);
 	}
 
-	QListWidget::mousePressEvent(pMouseEvent);	
+	QListWidget::mousePressEvent(pMouseEvent);
 }
 
 

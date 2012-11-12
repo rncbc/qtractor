@@ -1495,7 +1495,7 @@ void qtractorMidiEditor::pasteClipboard (
 		return;
 
 	// Reset any current selection, whatsoever...
-	m_select.clear();
+	clearSelect();
 	resetDragState(NULL);
 
 	// Multi-paste period...
@@ -1513,9 +1513,9 @@ void qtractorMidiEditor::pasteClipboard (
 	int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
-	int y0 = (m_pEditEvent->viewport())->height();
-	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
-		y0 = ((y0 >> 3) << 2);
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
 	int k, x1;
 	unsigned long d0 = t0;
@@ -1587,7 +1587,7 @@ void qtractorMidiEditor::pasteClipboard (
 	// That's right :)
 	if (pScrollView == NULL) {
 		m_dragState = DragStep; // HACK: Force selection clearance!
-		m_select.clear();
+		clearSelect();
 		resetDragState(NULL);
 		return;
 	}
@@ -1636,40 +1636,42 @@ void qtractorMidiEditor::deleteSelect (void)
 
 
 // Select all/none contents.
-void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
+void qtractorMidiEditor::selectAll (
+	qtractorScrollView *pScrollView, bool bSelect, bool bToggle )
 {
 	// Select all/none view contents.
 	if (bSelect) {
 		const QRect rect(0, 0,
-			m_pEditView->contentsWidth(),
-			m_pEditView->contentsHeight());
-		selectRect(rect, bToggle, true);
+			pScrollView->contentsWidth(),
+			pScrollView->contentsHeight());
+		selectRect(pScrollView,	rect, bToggle, true);
 	} else {
-		m_select.clear();
-		updateContents();
+		clearSelect();
+		resetDragState(pScrollView);
 		selectionChangeNotify();
 	}
 
 	// Make sure main view keeps focus...
 	QWidget::activateWindow();
-	m_pEditView->setFocus();
+	pScrollView->setFocus();
 }
 
 
 // Select range view contents.
-void qtractorMidiEditor::selectRange ( bool bToggle, bool bCommit )
+void qtractorMidiEditor::selectRange (
+	qtractorScrollView *pScrollView, bool bToggle, bool bCommit )
 {
 	int x = m_iEditHeadX;
 	int y = 0;
 	int w = m_iEditTailX - m_iEditHeadX;
-	int h = m_pEditView->contentsHeight();
+	int h = pScrollView->contentsHeight();
 
-	selectRect(QRect(x, y, w, h), bToggle, bCommit);
+	selectRect(pScrollView, QRect(x, y, w, h), bToggle, bCommit);
 }
 
 
 // Select everything between a given view rectangle.
-void qtractorMidiEditor::selectRect (
+void qtractorMidiEditor::selectRect ( qtractorScrollView *pScrollView,
 	const QRect& rect, bool bToggle, bool bCommit )
 {
 	int flags = SelectNone;
@@ -1677,8 +1679,8 @@ void qtractorMidiEditor::selectRect (
 		flags |= SelectToggle;
 	if (bCommit)
 		flags |= SelectCommit;
-	updateDragSelect(m_pEditView, rect.normalized(), flags);
-	resetDragState(m_pEditView);
+	updateDragSelect(pScrollView, rect.normalized(), flags);
+	resetDragState(pScrollView);
 	selectionChangeNotify();
 }
 
@@ -1739,6 +1741,35 @@ bool qtractorMidiEditor::isEventSelectable ( qtractorMidiEvent *pEvent ) const
 }
 
 
+// Ensuere point visibility depending on view.
+void qtractorMidiEditor::ensureVisible (
+	qtractorScrollView *pScrollView, const QPoint& pos )
+{
+	if (static_cast<qtractorMidiEditEvent *> (pScrollView) == m_pEditEvent)
+		pScrollView->ensureVisible(pos.x(), 0, 16, 0);
+	else
+		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+}
+
+
+// Clear all selection.
+void qtractorMidiEditor::clearSelect (void)
+{
+	const QRect rectUpdateView(m_select.rectView());
+	const QRect rectUpdateEvent(m_select.rectEvent());
+
+	m_select.clear();
+
+	m_pEditView->viewport()->update(QRect(
+		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
+		rectUpdateView.size()));
+
+	m_pEditEvent->viewport()->update(QRect(
+		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
+		rectUpdateEvent.size()));
+}
+
+
 // Update all selection rectangular areas.
 void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 {
@@ -1752,9 +1783,9 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 	int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
-	int y0 = (m_pEditEvent->viewport())->height();
-	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
-		y0 = ((y0 >> 3) << 2);
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
@@ -2063,7 +2094,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 	if (pSeq == NULL)
 		return NULL;
 
-	bool bEditView
+	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
@@ -2080,9 +2111,9 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 	int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
-	int y0 = (m_pEditEvent->viewport())->height();
-	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
-		y0 = ((y0 >> 3) << 2);
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
 	bool bController
 		= (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER);
@@ -2141,7 +2172,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 // Start immediate some drag-edit mode...
 qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers /*modifiers*/ )
+	Qt::KeyboardModifiers modifiers )
 {
 	if (m_pMidiClip == NULL)
 		return NULL;
@@ -2150,7 +2181,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	if (pSeq == NULL)
 		return NULL;
 
-	bool bEditView
+	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 	qtractorMidiEvent::EventType etype
 		= (bEditView ? m_pEditView->eventType() : m_pEditEvent->eventType());
@@ -2162,17 +2193,27 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
 
 	// Check for note/pitch changes...
-	if (m_bEventDragEdit && m_pEventDrag
-		&& bEditView
+	if (bEditView && m_bEventDragEdit && m_pEventDrag
 		&& (etype == qtractorMidiEvent::NOTEON ||
 			etype == qtractorMidiEvent::KEYPRESS)
 		&& m_pEventDrag->note() == note)
 		return NULL;
 
-	// Must be inside the visible event canvas...
-	int y0 = (m_pEditEvent->viewport())->height();
-	if (!bEditView && (pos.y() < 0 || pos.y() > y0))
+	// Must be inside the visible event canvas and
+	// not about to drag(draw) event-value resizing...
+	if (!bEditView && !m_bEventDragEdit && m_pEventDrag == NULL
+		&& isDragEventResize(modifiers))
 		return NULL;
+
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
+
+	const int ymin = 1;
+	const int ymax = h0;
+
+	int y = pos.y();
+
+	if (y < ymin) y = ymin; else if (y > ymax) y = ymax;
 
 	// Compute onset time from given horizontal position...
 	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
@@ -2245,7 +2286,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		} else {
 			pEvent->setNote(m_last.note);
 			if (y0 > 0)
-				pEvent->setVelocity((127 * (y0 - pos.y())) / y0);
+				pEvent->setVelocity((128 * (y0 - y)) / y0);
 			else
 				pEvent->setVelocity(m_last.value);
 		}
@@ -2262,9 +2303,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		// Set pitchbend event value...
-		y0 = ((y0 >> 3) << 2);
 		if (y0 > 0)
-			pEvent->setPitchBend((8191 * (y0 - pos.y())) / y0);
+			pEvent->setPitchBend((8192 * (y0 - y)) / y0);
 		else
 			pEvent->setPitchBend(m_last.pitchBend);
 		break;
@@ -2275,7 +2315,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	default:
 		// Set generic event value...
 		if (y0 > 0)
-			pEvent->setValue((127 * (y0 - pos.y())) / y0);
+			pEvent->setValue((128 * (y0 - y)) / y0);
 		else
 			pEvent->setValue(m_last.value);
 		break;
@@ -2325,7 +2365,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Just add this one the selection...
 	if (!m_bEventDragEdit || m_pEventDrag == NULL)
-		m_select.clear();
+		clearSelect();
+
 	m_select.selectItem(pEvent, rectEvent, rectView, true, false);
 
 	// Set the proper resize-mode...
@@ -2345,21 +2386,18 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 // Track drag-move-select cursor and mode...
 qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers /*modifiers*/ )
+	Qt::KeyboardModifiers modifiers )
 {
 	qtractorMidiEvent *pEvent = eventAt(pScrollView, pos, &m_rectDrag);
 
 	// Make the anchor event, if any, visible yet...
 	m_resizeMode = ResizeNone;
 	if (pEvent) {
-		bool bEditView
+		const bool bEditView
 			= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 		Qt::CursorShape shape = Qt::PointingHandCursor;
-		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			if (!bEditView && pos.y() < m_rectDrag.top() + 4) {
-				m_resizeMode = ResizeValueTop;
-				shape = Qt::SplitVCursor;
-			} else if (bEditView || m_bNoteDuration) {
+		if (bEditView) {
+			if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 				if (pos.x() > m_rectDrag.right() - 4) {
 					m_resizeMode = ResizeNoteRight;
 					shape = Qt::SplitHCursor;
@@ -2368,9 +2406,24 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 					shape = Qt::SplitHCursor;
 				}
 			}
-		} else if (!bEditView) {
+		} else {
+			if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+				if (pos.y() < m_rectDrag.top() + 4) {
+					m_resizeMode = ResizeValueTop;
+					shape = Qt::SplitVCursor;
+				} else if (m_bNoteDuration) {
+					if (pos.x() > m_rectDrag.right() - 4) {
+						m_resizeMode = ResizeNoteRight;
+						shape = Qt::SplitHCursor;
+					} else if (pos.x() < m_rectDrag.left() + 4) {
+						m_resizeMode = ResizeNoteLeft;
+						shape = Qt::SplitHCursor;
+					}
+				}
+			}
+			else
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
-				int y0 = (((m_pEditEvent->viewport())->height() >> 3) << 2);
+				const int y0 = (((m_pEditEvent->viewport())->height() & ~1) >> 1);
 				if (pos.y() > y0 && pos.y() > m_rectDrag.bottom() - 4) {
 					m_resizeMode = ResizePitchBendBottom;
 					shape = Qt::SplitVCursor;
@@ -2378,14 +2431,23 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 					m_resizeMode = ResizePitchBendTop;
 					shape = Qt::SplitVCursor;
 				}
-			} else if (pos.y() < m_rectDrag.top() + 4) {
+			}
+			else
+			if (pos.y() < m_rectDrag.top() + 4) {
 				m_resizeMode = ResizeValueTop;
 				shape = Qt::SplitVCursor;
+			}
+			if (m_resizeMode == ResizeNone
+				&& isDragEventResize(modifiers)) {
+				shape = Qt::ArrowCursor;
+				pEvent = NULL;
 			}
 		}
 		m_dragCursor = DragResize;
 		pScrollView->setCursor(QCursor(shape));
-	} else if (m_dragState == DragNone) {
+	}
+	else
+	if (m_dragState == DragNone) {
 		m_dragCursor = DragNone;
 		pScrollView->unsetCursor();
 	}
@@ -2467,12 +2529,8 @@ void qtractorMidiEditor::dragMoveUpdate (
 		if (m_pEventDrag) {
 			if (m_resizeMode == ResizeNone) {
 				// Start moving... take care of yet initial selection...
-				qtractorMidiEditSelect::Item *pItem
-					= m_select.findItem(m_pEventDrag);
-				if	(pItem == NULL || (pItem->flags & 1) == 0) {
-					updateDragSelect(pScrollView,
-						QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
-				}
+				updateDragSelect(pScrollView,
+					QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
 				// Start drag-moving...
 				m_dragState = DragMove;
 				updateDragMove(pScrollView, pos + m_posStep);
@@ -2488,15 +2546,22 @@ void qtractorMidiEditor::dragMoveUpdate (
 			}
 			break;
 		}
+		// About to drag(draw) event-value reszing...
+		if (static_cast<qtractorMidiEditEvent *> (pScrollView) == m_pEditEvent
+			&& isDragEventResize(modifiers)) {
+			m_dragState = DragEventResize;
+			updateDragEventResize(pos);
+			break;
+		}
 		// Just about to start rubber-banding...
 		m_dragState = DragSelect;
 		// Fall thru...
 	case DragSelect: {
 		// Set new rubber-band extents...
-		const QRect& rect = QRect(m_posDrag, pos).normalized();
-		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+		ensureVisible(pScrollView, pos);
 		if (modifiers & Qt::ControlModifier)
 			flags |= SelectToggle;
+		const QRect& rect = QRect(m_posDrag, pos).normalized();
 		updateDragSelect(pScrollView, rect, flags);
 		showToolTip(pScrollView, rect);
 		break;
@@ -2521,6 +2586,10 @@ void qtractorMidiEditor::dragMoveUpdate (
 				m_pEventDrag = pEvent;
 			}
 		}
+		break;
+	case DragEventResize:
+		// Drag(draw) resizing...
+		updateDragEventResize(pos);
 		break;
 	case DragStep:
 	case DragNone:
@@ -2569,7 +2638,7 @@ void qtractorMidiEditor::dragMoveCommit (
 		// Fall thru...
 	case DragSelect:
 		// Terminate selection...
-		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+		ensureVisible(pScrollView, pos);
 		if (modifiers & Qt::ControlModifier)
 			flags |= SelectToggle;
 		updateDragSelect(pScrollView, QRect(m_posDrag, pos).normalized(), flags);
@@ -2586,6 +2655,10 @@ void qtractorMidiEditor::dragMoveCommit (
 	case DragResize:
 		// Resize it...
 		executeDragResize(pScrollView, pos);
+		break;
+	case DragEventResize:
+		// Resize(by drawing) it...
+		executeDragEventResize(pos);
 		break;
 	case DragStep:
 	case DragNone:
@@ -2675,7 +2748,7 @@ void qtractorMidiEditor::updateDragSelect (
 	}
 
 	// Do the drag-select update properly...
-	bool bEditView
+	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	QRect rectUpdateView(m_select.rectView());
@@ -2718,12 +2791,11 @@ void qtractorMidiEditor::updateDragSelect (
 	int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
-	int y0 = (m_pEditEvent->viewport())->height();
-	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
-		y0 = ((y0 >> 3) << 2);
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
-	bool bController
-		= (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER);
+	bool bController = (etype == qtractorMidiEvent::CONTROLLER);
 	unsigned char controller = m_pEditEvent->controller();
 
 	qtractorMidiEvent *pEvent = m_cursorAt.seek(pSeq, iTickStart);
@@ -2884,13 +2956,13 @@ int qtractorMidiEditor::valueDelta ( qtractorScrollView *pScrollView ) const
 	int iValueDelta = 0;
 
 	if (pScrollView == static_cast<qtractorScrollView *> (m_pEditEvent)) {
-		int h = (m_pEditEvent->viewport())->height();
-		if (h > 0) {
+		const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+		if (h0 > 1) {
 			if (m_resizeMode == ResizePitchBendTop ||
 				m_resizeMode == ResizePitchBendBottom)
-				iValueDelta = -(m_posDelta.y() * 8192 * 2) / h;
+				iValueDelta = -(m_posDelta.y() * 8192) / (h0 >> 1);
 			else
-				iValueDelta = -(m_posDelta.y() * 128) / h;
+				iValueDelta = -(m_posDelta.y() * 128) / h0;
 		}
 	}
 
@@ -3013,9 +3085,9 @@ void qtractorMidiEditor::updateEventRects (
 	int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
-	int y0 = (m_pEditEvent->viewport())->height();
-	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
-		y0 = ((y0 >> 3) << 2);
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
 	// Common event coords...
 	unsigned long t1 = t0 + pEvent->time();
@@ -3057,9 +3129,9 @@ void qtractorMidiEditor::updateEventRects (
 void qtractorMidiEditor::updateDragMove (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
-	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+	ensureVisible(pScrollView, pos);
 
-	bool bEditView
+	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	QRect rectUpdateView(m_select.rectView().translated(m_posDelta));
@@ -3136,7 +3208,7 @@ void qtractorMidiEditor::updateDragMove (
 void qtractorMidiEditor::updateDragResize (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
-	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+	ensureVisible(pScrollView, pos);
 
 	QRect rectUpdateView(m_select.rectView().translated(m_posDelta.x(), 0));
 	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
@@ -3211,6 +3283,94 @@ void qtractorMidiEditor::updateDragResize (
 }
 
 
+// Drag(draw) event value-resize check.
+bool qtractorMidiEditor::isDragEventResize ( Qt::KeyboardModifiers modifiers ) const
+{
+	if (!m_bEditMode || !m_bEditModeDraw)
+		return false;
+	if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier))
+		return false;
+
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
+		if (pEvent->type() == etype)
+			return true;
+	}
+
+	return false;
+}
+
+
+// Drag(draw) event value-resize to current selection...
+void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
+{
+	m_pEditEvent->ensureVisible(pos.x(), 0, 16, 0);
+
+	const QPoint delta(pos - m_posDrag);
+	if (delta.manhattanLength() < 4)
+		return;
+
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
+
+	if (y0 < 1)
+		return;
+
+	const QRect& rectDrag = QRect(m_posDrag, m_posDragEventResize).normalized();
+	QRect rectUpdateEvent(m_select.rectEvent().united(rectDrag));
+
+	const int xmin = (delta.x() < 0 ? pos.x() : m_posDrag.x());
+	const int xmax = (delta.x() > 0 ? pos.x() : m_posDrag.x());
+
+	const int ymin = 1;
+	const int ymax = h0;
+
+	const float m = float(delta.y()) / float(delta.x());
+	const float b = float(pos.y()) - m * float(pos.x());
+
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
+		if (pEvent->type() != etype)
+			continue;
+		const QRect& rectEvent = pItem->rectEvent;
+		if (rectEvent.right() < xmin || rectEvent.left() > xmax)
+			continue;
+		int y = int(m * float(rectEvent.x()) + b);
+		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
+			if (y < ymin) y = ymin; else if (y > ymax) y = ymax;
+			if (y > y0) {
+				pItem->rectEvent.setBottom(y);
+				y = y0;
+			} else {
+				pItem->rectEvent.setBottom(y0);
+			}
+		}
+		pItem->rectEvent.setTop(y);
+		pItem->flags |= 4;
+		m_select.updateItem(pItem);
+	}
+
+	rectUpdateEvent = rectUpdateEvent.united(m_select.rectEvent());
+	m_pEditEvent->viewport()->update(QRect(
+		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
+		rectUpdateEvent.size()));
+
+	m_posDragEventResize = pos;
+}
+
+
 // Finalize the event drag-move.
 void qtractorMidiEditor::executeDragMove (
 	qtractorScrollView *pScrollView, const QPoint& pos )
@@ -3231,6 +3391,8 @@ void qtractorMidiEditor::executeDragMove (
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
 		int iNote = int(pEvent->note()) + iNoteDelta;
 		if (iNote < 0)
 			iNote = 0;
@@ -3267,6 +3429,9 @@ void qtractorMidiEditor::executeDragResize (
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
 		if (!m_bEventDragEdit || m_pEventDrag == pEvent)
 			resizeEvent(pEvent, iTimeDelta, iValueDelta, pEditCommand);
 		else
@@ -3294,7 +3459,7 @@ void qtractorMidiEditor::executeDragPaste (
 
 	updateDragMove(pScrollView, pos + m_posStep);
 
-	bool bEditView
+	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	long iTimeDelta = timeDelta(pScrollView);
@@ -3308,6 +3473,8 @@ void qtractorMidiEditor::executeDragPaste (
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*iter.key());
 		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
 		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
@@ -3331,6 +3498,56 @@ void qtractorMidiEditor::executeDragPaste (
 }
 
 
+// Apply drag(draw) event value-resize to current selection.
+void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
+{
+	if (m_pMidiClip == NULL)
+		return;
+
+	updateDragEventResize(pos);
+
+	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
+	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
+	const int y0 = (etype == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
+
+	if (y0 < 1)
+		return;
+
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("resize"));
+
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
+		if ((pItem->flags & 4) == 0)
+			continue;
+		if (pEvent->type() != etype)
+			continue;
+		int iValue = 0;
+		int y = pItem->rectEvent.top();
+		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
+			if (y >= y0)
+				y  = pItem->rectEvent.bottom();
+			iValue = (8192 * (y0 - y)) / y0;
+			pEditCommand->resizeEventValue(pEvent, iValue);
+			m_last.pitchBend = iValue;
+		} else {
+			iValue = (128 * (y0 - y)) / y0;
+			pEditCommand->resizeEventValue(pEvent, iValue);
+			m_last.value = iValue;
+		}
+		pItem->flags &= ~4;
+	}
+
+	// Make it as an undoable command...
+	m_pCommands->exec(pEditCommand);
+}
+
+
 // Visualize the event selection drag-move.
 void qtractorMidiEditor::paintDragState (
 	qtractorScrollView *pScrollView, QPainter *pPainter )
@@ -3345,7 +3562,7 @@ void qtractorMidiEditor::paintDragState (
 	}
 #endif
 
-	bool bEditView
+	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	int x1, y1;
@@ -3429,6 +3646,16 @@ void qtractorMidiEditor::paintDragState (
 			pScrollView->contentsToViewport(rect.topLeft()),
 			rect.size()), QColor(c, 0, 255 - c, 120));
 	}
+
+	// Paint drag(draw) event-value line...
+	if (!bEditView && m_dragState == DragEventResize) {
+		QPen pen(Qt::DotLine);
+		pen.setColor(Qt::blue);
+		pPainter->setPen(pen);
+		pPainter->drawLine(
+			pScrollView->contentsToViewport(m_posDrag),
+			pScrollView->contentsToViewport(m_posDragEventResize));
+	}
 }
 
 
@@ -3448,6 +3675,8 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 
 	m_posDelta = QPoint(0, 0);
 	m_posStep  = QPoint(0, 0);
+
+	m_posDragEventResize = QPoint(0, 0);
 
 	m_pEditPaste = NULL;
 
