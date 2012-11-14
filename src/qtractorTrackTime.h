@@ -46,8 +46,6 @@ public:
 
 	// Constructor.
 	qtractorTrackTime(qtractorTracks *pTracks, QWidget *pParent = 0);
-	// Destructor.
-	~qtractorTrackTime();
 
 	// Rectangular contents update.
 	void updateContents(const QRect& rect);

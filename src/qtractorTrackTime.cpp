@@ -68,16 +68,10 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
-	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 2));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
-}
-
-
-// Destructor.
-qtractorTrackTime::~qtractorTrackTime (void)
-{
 }
 
 
