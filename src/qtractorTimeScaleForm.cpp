@@ -72,23 +72,24 @@ protected:
 	}
 };
 
+
 //----------------------------------------------------------------------
-// class qtractorTimeScaleListItem -- Custom time-scale list item.
+// class qtractorTimeScaleNodeItem -- Custom time-scale tempo node item.
 //
 
-class qtractorTimeScaleListItem : public QTreeWidgetItem
+class qtractorTimeScaleNodeItem : public QTreeWidgetItem
 {
 public:
 
 	// Constructors.
-	qtractorTimeScaleListItem(QTreeWidget *pTreeWidget,
+	qtractorTimeScaleNodeItem(QTreeWidget *pTreeWidget,
 		qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode)
 		: QTreeWidgetItem(pTreeWidget), m_pNode(pNode)
 	{
 		QTreeWidgetItem::setText(0, QString::number(m_pNode->bar + 1));
 		QTreeWidgetItem::setText(1, pTimeScale->textFromTick(m_pNode->tick));
 		QTreeWidgetItem::setText(2, QString("%1 %2/%3")
-			.arg(m_pNode->tempo)
+			.arg(m_pNode->tempo, 0, 'f', 1)
 			.arg(m_pNode->beatsPerBar)
 			.arg(1 << m_pNode->beatDivisor));
 		QTreeWidgetItem::setText(3, "-");
@@ -265,7 +266,7 @@ void qtractorTimeScaleForm::refreshNodes (void)
 	qtractorTimeScale::Node *pNode
 		= m_pTimeScale->nodes().first();
 	while (pNode) {
-		new qtractorTimeScaleListItem(
+		new qtractorTimeScaleNodeItem(
 			m_ui.TimeScaleListView, m_pTimeScale, pNode);
 		pNode = pNode->next();
 	}
@@ -287,8 +288,8 @@ void qtractorTimeScaleForm::setCurrentNode ( qtractorTimeScale::Node *pNode )
 
 	int iItemCount = m_ui.TimeScaleListView->topLevelItemCount();
 	for (int i = 0; i < iItemCount; ++i) {
-		qtractorTimeScaleListItem *pNodeItem
-			= static_cast<qtractorTimeScaleListItem *> (
+		qtractorTimeScaleNodeItem *pNodeItem
+			= static_cast<qtractorTimeScaleNodeItem *> (
 				m_ui.TimeScaleListView->topLevelItem(i));
 		if (pNodeItem && pNodeItem->node() == pNode) {
 			m_ui.TimeScaleListView->setCurrentItem(pNodeItem);
@@ -308,8 +309,8 @@ qtractorTimeScale::Node *qtractorTimeScaleForm::currentNode (void) const
 		return NULL;
 
 	// Just make it in current view...
-	qtractorTimeScaleListItem *pNodeItem
-		= static_cast<qtractorTimeScaleListItem *> (pItem);
+	qtractorTimeScaleNodeItem *pNodeItem
+		= static_cast<qtractorTimeScaleNodeItem *> (pItem);
 	if (pNodeItem == NULL)
 		return NULL;
 
@@ -496,7 +497,7 @@ void qtractorTimeScaleForm::removeNode (void)
 			"Are you sure?")
 			.arg(pNode->bar + 1)
 			.arg(m_pTimeScale->textFromTick(pNode->tick))
-			.arg(pNode->tempo)
+			.arg(pNode->tempo, 0, 'f', 1)
 			.arg(pNode->beatsPerBar)
 			.arg(1 << pNode->beatDivisor),
 			QMessageBox::Ok | QMessageBox::Cancel)
