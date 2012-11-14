@@ -25,6 +25,7 @@
 #include "qtractorList.h"
 
 #include <QStringList>
+#include <QColor>
 
 
 //----------------------------------------------------------------------
@@ -39,12 +40,12 @@ public:
 	enum DisplayFormat { Frames = 0, Time, BBT };
 
 	// Default constructor.
-	qtractorTimeScale() : m_displayFormat(Frames), m_cursor(this)
-		{ clear(); }
+	qtractorTimeScale() : m_displayFormat(Frames),
+		m_cursor(this), m_markerCursor(this) { clear(); }
 
 	// Copy constructor.
-	qtractorTimeScale(const qtractorTimeScale& ts) : m_cursor(this)
-		{ copy(ts); }
+	qtractorTimeScale(const qtractorTimeScale& ts)
+		: m_cursor(this), m_markerCursor(this) { copy(ts); }
 
 	// Assignment operator,
 	qtractorTimeScale& operator=(const qtractorTimeScale& ts)
@@ -478,6 +479,70 @@ public:
 	unsigned long tickFromFrameRange(
 	    unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Location marker declaration.
+	class Marker : public qtractorList<Marker>::Link
+	{
+	public:
+
+		// Constructor.
+		Marker(unsigned long iFrame, const QString& sText,
+			const QColor& rgbColor = Qt::darkGray)
+			: frame(iFrame), text(sText), color(rgbColor) {}
+
+		// Copy constructor.
+		Marker(const Marker& marker)
+			: frame(marker.frame), text(marker.text), color(marker.color) {}
+
+		// Marker key.
+		unsigned long frame;
+
+		// Marker payload.
+		QString text;
+		QColor  color;
+	};
+
+	// Markers list accessor.
+	const qtractorList<Marker>& markers() const { return m_markers; }
+
+	// To optimize and keep track of current frame
+	// position, mostly like an sequence cursor/iterator.
+	class MarkerCursor
+	{
+	public:
+
+		// Constructor.
+		MarkerCursor(qtractorTimeScale *pTimeScale)
+			: ts(pTimeScale), marker(0) {}
+
+		// Time scale accessor.
+		qtractorTimeScale *timeScale() const { return ts; }
+
+		// Reset method.
+		void reset(Marker *pMarker = 0);
+
+		// Seek methods.
+		Marker *seekFrame(unsigned long iFrame);
+		Marker *seekTick(unsigned long iTick);
+		Marker *seekPixel(int x);
+
+	protected:
+
+		// Member variables.
+		qtractorTimeScale *ts;
+		Marker *marker;
+	};
+
+	// Internal marker cursor accessor.
+	MarkerCursor& markerCursor() { return m_markerCursor; }
+
+	// Marker list specifics.
+	Marker *addMarker(
+		unsigned long iFrame,
+		const QString& sText,
+		const QColor& rgbColor = Qt::darkGray);
+	void updateMarker(Marker *pMarker);
+	void removeMarker(Marker *pMarker);
+
 protected:
 
 	// Tempo-map independent coefficients.
@@ -505,6 +570,12 @@ private:
 	// Tempo-map independent coefficients.
 	float m_fPixelRate;
 	float m_fFrameRate;
+
+	// Location marker list.
+	qtractorList<Marker> m_markers;
+
+	// Internal node cursor.
+	MarkerCursor m_markerCursor;
 };
 
 #endif	// __qtractorTimeScale_h

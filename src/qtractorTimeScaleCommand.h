@@ -33,22 +33,22 @@ class qtractorClip;
 
 
 //----------------------------------------------------------------------
-// class qtractorTimeScaleCommand - declaration.
+// class qtractorTimeScaleNodeCommand - declaration.
 //
 
-class qtractorTimeScaleCommand : public qtractorCommand
+class qtractorTimeScaleNodeCommand : public qtractorCommand
 {
 public:
 
 	// Constructor.
-	qtractorTimeScaleCommand(const QString& sName,
-		qtractorTimeScale *pTimeScale,
+	qtractorTimeScaleNodeCommand(
+		const QString& sName, qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Node *pNode = NULL, unsigned long iFrame = 0,
 		float fTempo = 120.0f, unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2);
 
 	// Destructor.
-	virtual ~qtractorTimeScaleCommand();
+	virtual ~qtractorTimeScaleNodeCommand();
 	
 	// Time-scale accessor.
 	qtractorTimeScale *timeScale() const
@@ -88,7 +88,7 @@ private:
 // class qtractorTimeScaleAddNodeCommand - declaration.
 //
 
-class qtractorTimeScaleAddNodeCommand : public qtractorTimeScaleCommand
+class qtractorTimeScaleAddNodeCommand : public qtractorTimeScaleNodeCommand
 {
 public:
 
@@ -108,7 +108,7 @@ public:
 // class qtractorTimeScaleUpdateNodeCommand - declaration.
 //
 
-class qtractorTimeScaleUpdateNodeCommand : public qtractorTimeScaleCommand
+class qtractorTimeScaleUpdateNodeCommand : public qtractorTimeScaleNodeCommand
 {
 public:
 
@@ -127,7 +127,7 @@ public:
 // class qtractorTimeScaleRemoveNodeCommand - declaration.
 //
 
-class qtractorTimeScaleRemoveNodeCommand : public qtractorTimeScaleCommand
+class qtractorTimeScaleRemoveNodeCommand : public qtractorTimeScaleNodeCommand
 {
 public:
 
@@ -135,6 +135,99 @@ public:
 	qtractorTimeScaleRemoveNodeCommand(qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Node *pNode);
 	
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleMarkerCommand - declaration.
+//
+
+class qtractorTimeScaleMarkerCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleMarkerCommand(
+		const QString& sName, qtractorTimeScale *pTimeScale,
+		qtractorTimeScale::Marker *pMarker = NULL, unsigned long iFrame = 0,
+		const QString& sText = QString(), const QColor& rgbColor = Qt::darkGray);
+
+	// Time-scale accessor.
+	qtractorTimeScale *timeScale() const
+		{ return m_pTimeScale; }
+
+protected:
+
+	// Executive commands.
+	bool addMarker();
+	bool updateMarker();
+	bool removeMarker();
+
+private:
+
+	// Instance variables.
+	qtractorTimeScale *m_pTimeScale;
+
+	qtractorTimeScale::Marker *m_pMarker;
+
+	unsigned long m_iFrame;
+	QString       m_sText;
+	QColor        m_rgbColor;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleAddMarkerCommand - declaration.
+//
+
+class qtractorTimeScaleAddMarkerCommand : public qtractorTimeScaleMarkerCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleAddMarkerCommand(
+		qtractorTimeScale *pTimeScale, unsigned long iFrame,
+		const QString& sText, const QColor& rgbColor = Qt::darkGray);
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleUpdateNodeCommand - declaration.
+//
+
+class qtractorTimeScaleUpdateMarkerCommand : public qtractorTimeScaleMarkerCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleUpdateMarkerCommand(qtractorTimeScale *pTimeScale,
+		unsigned long iFrame, const QString& sText, const QColor& rgbColor);
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleRemoveMarkerCommand - declaration.
+//
+
+class qtractorTimeScaleRemoveMarkerCommand : public qtractorTimeScaleMarkerCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleRemoveMarkerCommand(qtractorTimeScale *pTimeScale,
+		qtractorTimeScale::Marker *pMarker);
+
 	// Time-scale command methods.
 	bool redo();
 	bool undo();

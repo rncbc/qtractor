@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,7 +63,7 @@ protected:
 		case 2: // Tempo
 			opt.displayAlignment = Qt::AlignHCenter;
 			break;
-		case 3: // Signature
+		case 3: // Marker
 		default:
 			opt.displayAlignment = Qt::AlignLeft;
 			break;
@@ -80,16 +80,18 @@ class qtractorTimeScaleListItem : public QTreeWidgetItem
 {
 public:
 
-	// Constructor.
+	// Constructors.
 	qtractorTimeScaleListItem(QTreeWidget *pTreeWidget,
 		qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode)
 		: QTreeWidgetItem(pTreeWidget), m_pNode(pNode)
 	{
 		QTreeWidgetItem::setText(0, QString::number(m_pNode->bar + 1));
 		QTreeWidgetItem::setText(1, pTimeScale->textFromTick(m_pNode->tick));
-		QTreeWidgetItem::setText(2, QString::number(m_pNode->tempo));
-		QTreeWidgetItem::setText(3, QString("%1 / %2")
-			.arg(m_pNode->beatsPerBar).arg(1 << m_pNode->beatDivisor));
+		QTreeWidgetItem::setText(2, QString("%1 %2/%3")
+			.arg(m_pNode->tempo)
+			.arg(m_pNode->beatsPerBar)
+			.arg(1 << m_pNode->beatDivisor));
+		QTreeWidgetItem::setText(3, "-");
 	}
 
 	// Node accessors.

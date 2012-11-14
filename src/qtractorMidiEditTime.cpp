@@ -93,6 +93,10 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	if (pTimeScale == NULL)
 		return;
@@ -115,20 +119,22 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
-	int x0 = x = pNode->pixelFromBeat(iBeat) - dx;
+	if (iBeat > 0)
+		pNode = cursor.seekBeat(--iBeat);
+	x = pNode->pixelFromBeat(iBeat) - dx;
+
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
+		bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
 			y1 = 0;
 			p.setPen(pal.windowText().color());
 			p.drawText(x + 2, y1 + fm.ascent(),
 				QString::number(pNode->barFromBeat(iBeat) + 1));
-			x0 = x + 16;
 			if (iBeat == pNode->beat) {
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 				p.setPen(pal.base().color().value() < 0x7f
 					? pal.light().color() : pal.dark().color()); 
-				p.drawText(x0, y1 + fm.ascent(),
+				p.drawText(x + 16, y1 + fm.ascent(),
 					QString("%1 %2/%3")
 					.arg(pNode->tempo, 0, 'g', 3)
 					.arg(pNode->beatsPerBar)
@@ -147,10 +153,18 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-	
+	// Draw location markers, if any...
+	qtractorTimeScale::MarkerCursor markers(pTimeScale);
+	qtractorTimeScale::Marker *pMarker = markers.seekPixel(dx);
+
+	while (pMarker) {
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx;
+		if (x > w) break;
+		p.setPen(pMarker->color);
+		p.drawText(x + 2, y2 - fm.ascent(), pMarker->text);
+		pMarker = pMarker->next();
+	}
+
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
 		QPolygon polyg(3);

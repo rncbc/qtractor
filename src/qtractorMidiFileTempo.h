@@ -1,7 +1,7 @@
 // qtractorMidiFileTempo.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,6 +24,10 @@
 
 #include "qtractorList.h"
 
+#include <QString>
+
+
+// Forward decls.
 class qtractorMidiFile;
 class qtractorTimeScale;
 
@@ -41,7 +45,8 @@ public:
 		: m_pMidiFile(pMidiFile) { clear(); }
 
 	//	Destructor.
-	~qtractorMidiFileTempo() { m_nodes.clear(); }
+	~qtractorMidiFileTempo()
+		{ m_nodes.clear(); m_markers.clear(); }
 
 	// (Re)nitializer method.
 	void clear();
@@ -171,6 +176,34 @@ public:
 		return (pNode ? pNode->ticksPerBeat : 960);
 	}
 
+	// Location marker declaration.
+	class Marker : public qtractorList<Marker>::Link
+	{
+	public:
+
+		// Constructor.
+		Marker(unsigned long iTick, const QString& sText)
+			: tick(iTick), text(sText) {}
+
+		// Marker key.
+		unsigned long tick;
+
+		// Marker payload.
+		QString text;
+	};
+
+	// Marker list accessors.
+	const qtractorList<Marker>& markers() const { return m_markers; }
+
+	// Location marker seeker (by tick).
+	Marker *seekMarker(unsigned long iTick) const;
+
+	// Marker list specifics.
+	Marker *addMarker(
+		unsigned long iTick,
+		const QString& sText);
+	void removeMarker(Marker *pMarker);
+
 	// Time-scale sync methods.
 	void fromTimeScale(
 		qtractorTimeScale *pTimeScale, unsigned long iTimeOffset = 0);
@@ -184,6 +217,9 @@ private:
 
 	// Tempo-map node list.
 	qtractorList<Node> m_nodes;
+
+	// Location markers list.
+	qtractorList<Marker> m_markers;
 };
 
 

@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -387,6 +387,10 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 								(unsigned short) data[1]);
 						}
 						break;
+					case qtractorMidiEvent::MARKER:
+						m_pTempoMap->addMarker(iTime,
+							QString((const char *) data).simplified());
+						break;
 					default:
 						// Ignore all others...
 						break;
@@ -524,17 +528,28 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 			writeData((unsigned char *) aTrackName.constData(), aTrackName.length());
 		}
 
-		// Tempo/time-signature map...
+		// Tempo/time-signature map and location markers...
 		qtractorMidiFileTempo::Node *pNode = m_pTempoMap->nodes().first();
+		qtractorMidiFileTempo::Marker *pMarker = m_pTempoMap->markers().first();
 
 		// Tempo/time-signature map (track 0)
 		// - applicable to SMF format 1 files...
 		if (pSeq == NULL) {
 			unsigned long iNodeTime = 0;
 			while (pNode) {
+				while (pMarker && pMarker->tick < pNode->tick) {
+					writeMarker(pMarker, iNodeTime);
+					iNodeTime = pMarker->tick;
+					pMarker = pMarker->next();
+				}
 				writeNode(pNode, iNodeTime);
 				iNodeTime = pNode->tick;
 				pNode = pNode->next();
+			}
+			while (pMarker) {
+				writeMarker(pMarker, iNodeTime);
+				iNodeTime = pMarker->tick;
+				pMarker = pMarker->next();
 			}
 		}
 
@@ -682,10 +697,21 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 				// - applicable to SMF format 0 files...
 				if (iSeqs > 1 && iTrack == 0) {
 					while (pNode && iTime >= pNode->tick) {
+						while (pMarker && pMarker->tick < pNode->tick) {
+							writeMarker(pMarker, iLastTime);
+							iLastTime = pMarker->tick;
+							pMarker = pMarker->next();
+						}
 						writeNode(pNode, iLastTime);
 						iLastTime = pNode->tick;
 						iLastStatus = 0;
 						pNode = pNode->next();
+					}
+					while (pMarker && iTime >= pMarker->tick) {
+						writeMarker(pMarker, iLastTime);
+						iLastTime = pMarker->tick;
+						iLastStatus = 0;
+						pMarker = pMarker->next();
 					}
 				}
 
@@ -966,6 +992,27 @@ void qtractorMidiFile::writeNode (
 		writeInt(4, 1);                     // 32nd notes per quarter.
 	//	iDeltaTime = 0;
 	}
+}
+
+
+// Write location marker.
+void qtractorMidiFile::writeMarker (
+	qtractorMidiFileTempo::Marker *pMarker, unsigned long iLastTime )
+{
+	unsigned long iDeltaTime
+		= (pMarker->tick > iLastTime ? pMarker->tick - iLastTime : 0);
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiFile::writeMarker(%lu) time=%lu (\"%s\")",
+		iLastTime, iDeltaTime, pMarker->text.toUft8().constData());
+#endif
+
+	writeInt(iDeltaTime);
+	writeInt(qtractorMidiEvent::META, 1);
+	writeInt(qtractorMidiEvent::MARKER, 1);
+	writeInt(pMarker->text.length());
+	const QByteArray aMarker = pMarker->text.toUtf8();
+	writeData((unsigned char *) aMarker.constData(), aMarker.length());
 }
 
 

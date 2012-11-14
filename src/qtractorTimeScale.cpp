@@ -30,6 +30,11 @@
 void qtractorTimeScale::reset (void)
 {
 	m_nodes.setAutoDelete(true);
+	m_markers.setAutoDelete(true);
+
+	// Clear/reset location-markers...
+	m_markers.clear();
+	m_markerCursor.reset();
 
 	// Clear/reset tempo-map...
 	m_nodes.clear();
@@ -69,9 +74,18 @@ void qtractorTimeScale::sync ( const qtractorTimeScale& ts )
 	m_iTicksPerBeat  = ts.m_iTicksPerBeat;
 	m_iPixelsPerBeat = ts.m_iPixelsPerBeat;
 
+	// Copy location markers...
+	m_markers.clear();
+	Marker *pMarker = ts.markers().first();
+	while (pMarker) {
+		m_markers.append(new Marker(*pMarker));
+		pMarker = pMarker->next();
+	}
+	m_markerCursor.reset();
+
 	// Copy tempo-map nodes...
 	m_nodes.clear();
-	Node *pNode = ts.m_nodes.first();
+	Node *pNode = ts.nodes().first();
 	while (pNode) {
 		m_nodes.append(new Node(this, pNode->frame,
 			pNode->tempo, pNode->beatType,
@@ -90,6 +104,7 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 	if (&ts != this) {
 
 		m_nodes.setAutoDelete(true);
+		m_markers.setAutoDelete(true);
 
 		m_iSampleRate     = ts.m_iSampleRate;
 		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
@@ -667,6 +682,103 @@ unsigned long qtractorTimeScale::tickFromFrameRange (
 	pNode = m_cursor.seekFrame(iFrameEnd);
 	unsigned long iTickEnd = (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
 	return (iTickEnd > iTickStart ? iTickEnd - iTickStart : 0);
+}
+
+
+// Location marker reset method.
+void qtractorTimeScale::MarkerCursor::reset (
+	qtractorTimeScale::Marker *pMarker )
+{
+	marker = (pMarker ? pMarker : ts->markers().first());
+}
+
+
+// Location marker seek methods.
+qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekFrame (
+	unsigned long iFrame )
+{
+	if (marker == 0) {
+		marker = ts->markers().first();
+		if (marker == 0)
+			return 0;
+	}
+
+	if (iFrame > marker->frame) {
+		// Seek frame forward...
+		while (marker && marker->next() && iFrame >= (marker->next())->frame)
+			marker = marker->next();
+	}
+	else
+	if (iFrame < marker->frame) {
+		// Seek frame backward...
+		while (marker && marker->frame > iFrame)
+			marker = marker->prev();
+		if (marker == 0)
+			marker = ts->markers().first();
+	}
+
+	return marker;
+}
+
+qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekTick (
+	unsigned long iTick )
+{
+	return seekFrame(ts->frameFromTick(iTick));
+}
+
+qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekPixel (	int x )
+{
+	return seekFrame(ts->frameFromPixel(x));
+}
+
+
+
+// Location markers list specifics.
+qtractorTimeScale::Marker *qtractorTimeScale::addMarker (
+	unsigned long iFrame, const QString& sText, const QColor& rgbColor )
+{
+	Marker *pMarker	= 0;
+
+	// Snap to nearest bar...
+	Node *pNodePrev = m_cursor.seekFrame(iFrame);
+	if (pNodePrev)
+		iFrame = pNodePrev->frameSnapToBar(iFrame);
+
+	// Seek for the nearest preceding marker...
+	Marker *pMarkerPrev = m_markerCursor.seekFrame(iFrame);
+	// Either update existing marker or add new one...
+	if (pMarkerPrev && pMarkerPrev->frame == iFrame) {
+		// Update exact matching marker...
+		pMarker = pMarkerPrev;
+		pMarker->text = sText;
+		pMarker->color = rgbColor;
+	} else {
+		// Add/insert a new marker...
+		pMarker = new Marker(iFrame, sText, rgbColor);
+		if (pMarkerPrev)
+			m_markers.insertAfter(pMarker, pMarkerPrev);
+		else
+			m_markers.append(pMarker);
+	}
+
+	return pMarker;
+}
+
+
+void qtractorTimeScale::updateMarker ( qtractorTimeScale::Marker *pMarker )
+{
+	// Relocate internal cursor...
+	m_markerCursor.reset(pMarker);
+}
+
+
+void qtractorTimeScale::removeMarker ( qtractorTimeScale::Marker *pMarker )
+{
+	// Actually remove/unlink the marker
+	// and relocate internal cursor...
+	Marker *pMarkerPrev = pMarker->prev();
+	m_markers.remove(pMarker);
+	m_markerCursor.reset(pMarkerPrev);
 }
 
 
