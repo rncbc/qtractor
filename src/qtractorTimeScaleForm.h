@@ -26,6 +26,8 @@
 #include "ui_qtractorTimeScaleForm.h"
 
 // Forward declarations...
+class qtractorTimeScaleListItem;
+
 class QTime;
 
 
@@ -66,7 +68,6 @@ protected slots:
 	void timeChanged(unsigned long);
 	void tempoChanged(float, unsigned short, unsigned short);
 	void markerChanged(const QString&);
-
 	void changed();
 
 	void tempoTap();
@@ -83,8 +84,7 @@ protected:
 
 	void refreshItems();
 
-	void setCurrentNode(qtractorTimeScale::Node *pNode);
-	qtractorTimeScale::Node *currentNode() const;
+	void setCurrentItem(qtractorTimeScale::Node *pNode, unsigned long iFrame);
 
 	void ensureVisibleFrame(unsigned long iFrame);
 
