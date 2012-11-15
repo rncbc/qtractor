@@ -120,13 +120,13 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		if (bBeatIsBar) {
 			y1 = 0;
 			painter.setPen(pal.windowText().color());
-			painter.drawText(x + 2, y1 + fm.ascent(),
+			painter.drawText(x + 2, fm.ascent(),
 				QString::number(pNode->barFromBeat(iBeat) + 1));
 			if (iBeat == pNode->beat) {
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 				painter.setPen(pal.base().color().value() < 0x7f
-					? pal.light().color() : pal.dark().color()); 
-				painter.drawText(x + 16, y1 + fm.ascent(),
+					? pal.light().color() : pal.dark().color());
+				painter.drawText(x + 16, fm.ascent(),
 					QString("%1 %2/%3")
 					.arg(pNode->tempo, 0, 'g', 3)
 					.arg(pNode->beatsPerBar)
@@ -150,10 +150,10 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	qtractorTimeScale::Marker *pMarker = markers.seekPixel(cx);
 
 	while (pMarker) {
-		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx;
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx + 16;
 		if (x > w) break;
 		painter.setPen(pMarker->color);
-		painter.drawText(x + 2, y2, pMarker->text);
+		painter.drawText(x, y2, pMarker->text);
 		pMarker = pMarker->next();
 	}
 

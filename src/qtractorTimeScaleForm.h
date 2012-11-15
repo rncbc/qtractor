@@ -67,7 +67,6 @@ protected slots:
 	void barChanged(int);
 	void timeChanged(unsigned long);
 	void tempoChanged(float, unsigned short, unsigned short);
-	void markerChanged(const QString&);
 	void changed();
 
 	void tempoTap();
@@ -78,7 +77,16 @@ protected slots:
 
 protected:
 
-	enum { Add = 1, Update = 2, Remove = 4,	Node = 8, Marker = 16 };
+	enum {
+
+		AddNode      = (1 << 0),
+		UpdateNode   = (1 << 1),
+		RemoveNode   = (1 << 2),
+
+		AddMarker    = (1 << 3),
+		UpdateMarker = (1 << 4),
+		RemoveMarker = (1 << 5)
+	};
 
 	unsigned int flags() const;
 

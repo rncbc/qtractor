@@ -122,13 +122,13 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		if (bBeatIsBar) {
 			y1 = 0;
 			p.setPen(pal.windowText().color());
-			p.drawText(x + 2, y1 + fm.ascent(),
+			p.drawText(x + 2, fm.ascent(),
 				QString::number(pNode->barFromBeat(iBeat) + 1));
 			if (iBeat == pNode->beat) {
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 				p.setPen(pal.base().color().value() < 0x7f
 					? pal.light().color() : pal.dark().color()); 
-				p.drawText(x + 16, y1 + fm.ascent(),
+				p.drawText(x + 16, fm.ascent(),
 					QString("%1 %2/%3")
 					.arg(pNode->tempo, 0, 'g', 3)
 					.arg(pNode->beatsPerBar)
@@ -152,10 +152,10 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	qtractorTimeScale::Marker *pMarker = markers.seekPixel(dx);
 
 	while (pMarker) {
-		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx;
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx + 16;
 		if (x > w) break;
 		p.setPen(pMarker->color);
-		p.drawText(x + 2, y2, pMarker->text);
+		p.drawText(x, y2, pMarker->text);
 		pMarker = pMarker->next();
 	}
 
