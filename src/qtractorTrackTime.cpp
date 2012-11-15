@@ -153,7 +153,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx;
 		if (x > w) break;
 		painter.setPen(pMarker->color);
-		painter.drawText(x + 2, y2 - fm.ascent(), pMarker->text);
+		painter.drawText(x + 2, y2, pMarker->text);
 		pMarker = pMarker->next();
 	}
 

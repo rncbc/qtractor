@@ -56,15 +56,16 @@ protected slots:
 	void reject();
 	void refresh();
 
-	void selectNode();
+	void selectItem();
 
-	void addNode();
-	void updateNode();
-	void removeNode();
+	void addItem();
+	void updateItem();
+	void removeItem();
 
 	void barChanged(int);
-	void frameChanged(unsigned long);
+	void timeChanged(unsigned long);
 	void tempoChanged(float, unsigned short, unsigned short);
+	void markerChanged(const QString&);
 
 	void changed();
 
@@ -76,11 +77,11 @@ protected slots:
 
 protected:
 
-	enum { Add = 1, Update = 2, Remove = 4 };
+	enum { Add = 1, Update = 2, Remove = 4,	Node = 8, Marker = 16 };
 
 	unsigned int flags() const;
 
-	void refreshNodes();
+	void refreshItems();
 
 	void setCurrentNode(qtractorTimeScale::Node *pNode);
 	qtractorTimeScale::Node *currentNode() const;

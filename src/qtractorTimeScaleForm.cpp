@@ -151,7 +151,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TimeScaleListView,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-		SLOT(selectNode()));
+		SLOT(selectItem()));
 	QObject::connect(m_ui.TimeScaleListView,
 		SIGNAL(customContextMenuRequested(const QPoint&)),
 		SLOT(contextMenu(const QPoint&)));
@@ -159,28 +159,31 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	QObject::connect(m_ui.BarSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(barChanged(int)));
-	QObject::connect(m_ui.FrameSpinBox,
+	QObject::connect(m_ui.TimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
-		SLOT(frameChanged(unsigned long)));
+		SLOT(timeChanged(unsigned long)));
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
 		SLOT(tempoChanged(float, unsigned short, unsigned short)));
 	QObject::connect(m_ui.TempoPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoTap()));
+	QObject::connect(m_ui.MarkerLineEdit,
+		SIGNAL(textChanged(const QString&)),
+		SLOT(markerChanged(const QString&)));
 
 	QObject::connect(m_ui.RefreshPushButton,
 		SIGNAL(clicked()),
 		SLOT(refresh()));
 	QObject::connect(m_ui.AddPushButton,
 		SIGNAL(clicked()),
-		SLOT(addNode()));
+		SLOT(addItem()));
 	QObject::connect(m_ui.UpdatePushButton,
 		SIGNAL(clicked()),
-		SLOT(updateNode()));
+		SLOT(updateItem()));
 	QObject::connect(m_ui.RemovePushButton,
 		SIGNAL(clicked()),
-		SLOT(removeNode()));
+		SLOT(removeItem()));
 	QObject::connect(m_ui.ClosePushButton,
 		SIGNAL(clicked()),
 		SLOT(reject()));
@@ -194,9 +197,9 @@ void qtractorTimeScaleForm::setTimeScale ( qtractorTimeScale *pTimeScale )
 {
 	m_pTimeScale = pTimeScale;
 
-	m_ui.FrameSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.TimeSpinBox->setTimeScale(m_pTimeScale);
 
-	refreshNodes();
+	refreshItems();
 }
 
 qtractorTimeScale *qtractorTimeScaleForm::timeScale (void) const
@@ -222,7 +225,7 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 		++m_iDirtySetup;
 		// Make this into view...
 		m_ui.BarSpinBox->setValue(pNode->barFromFrame(iFrame) + 1);
-		m_ui.FrameSpinBox->setValue(iFrame);
+		m_ui.TimeSpinBox->setValue(iFrame);
 		m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 		m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
@@ -238,7 +241,7 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 
 unsigned long qtractorTimeScaleForm::frame (void) const
 {
-	return m_ui.FrameSpinBox->value();
+	return m_ui.TimeSpinBox->value();
 }
 
 
@@ -256,7 +259,7 @@ bool qtractorTimeScaleForm::isDirty (void)
 
 
 // Refresh all list and views.
-void qtractorTimeScaleForm::refreshNodes (void)
+void qtractorTimeScaleForm::refreshItems (void)
 {
 	if (m_pTimeScale == NULL)
 		return;
@@ -274,8 +277,8 @@ void qtractorTimeScaleForm::refreshNodes (void)
 
 void qtractorTimeScaleForm::refresh (void)
 {
-	refreshNodes();
-	frameChanged(frame());
+	refreshItems();
+	timeChanged(frame());
 
 	m_iDirtyCount = 0;
 }
@@ -329,7 +332,7 @@ void qtractorTimeScaleForm::ensureVisibleFrame ( unsigned long iFrame )
 
 
 // Time-scale node selection slot.
-void qtractorTimeScaleForm::selectNode (void)
+void qtractorTimeScaleForm::selectItem (void)
 {
 	if (m_iDirtySetup > 0)
 		return;
@@ -350,7 +353,7 @@ void qtractorTimeScaleForm::selectNode (void)
 			"Do you want to apply the changes?"),
 			buttons)) {
 		case QMessageBox::Apply:
-			updateNode();
+			updateItem();
 			// Fall thru...
 		case QMessageBox::Discard:
 			break;;
@@ -363,7 +366,7 @@ void qtractorTimeScaleForm::selectNode (void)
 	++m_iDirtySetup;
 
 	m_ui.BarSpinBox->setValue(pNode->bar + 1);
-	m_ui.FrameSpinBox->setValue(pNode->frame);
+	m_ui.TimeSpinBox->setValue(pNode->frame);
 	m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 	m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 	m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
@@ -383,17 +386,18 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	if (m_pTimeScale == NULL)
 		return 0;
 
-	unsigned short iBar = bar();
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
+	unsigned int iFlags = 0;
 
 	float fTempo = m_ui.TempoSpinBox->tempo();
 	unsigned short iBeatsPerBar = m_ui.TempoSpinBox->beatsPerBar();
 	unsigned short iBeatDivisor = m_ui.TempoSpinBox->beatDivisor();
 
-	unsigned int iFlags = 0;
+	unsigned short iBar = bar();
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
 
 	if (pNode && pNode->bar == iBar) {
+		iFlags |= Node;
 		iFlags |= Update;
 		if (pNode->prev())
 			iFlags |= Remove;
@@ -401,19 +405,47 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	if (pNode && pNode->tempo == fTempo
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
-		&& pNode->beatDivisor == iBeatDivisor)
-		iFlags &= ~Update;
-	else
+		&& pNode->beatDivisor == iBeatDivisor) {
+		if ((iFlags & (Node | Marker)) == Node)
+			iFlags &= ~Update;
+	} else {
+		iFlags |= Node;
 		iFlags |= Add;
-	if (pNode && pNode->bar == iBar)
-		iFlags &= ~Add;
+	}
+	if (pNode && pNode->bar == iBar) {
+		if ((iFlags & (Node | Marker)) == Node)
+			iFlags &= ~Add;
+	}
+
+	unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
+	qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
+	qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
+
+	const QString& sMarkerText = m_ui.MarkerLineEdit->text().simplified();
+
+	if (pMarker && pMarker->frame == iFrame) {
+		iFlags |= Marker;
+		iFlags |= Update;
+		iFlags |= Remove;
+	}
+	if (pMarker && pMarker->text == sMarkerText) {
+		if ((iFlags & (Node | Marker)) == Marker)
+			iFlags &= ~Update;
+	} else if (!sMarkerText.isEmpty()) {
+		iFlags |= Marker;
+		iFlags |= Add;
+	}
+	if (pMarker && pMarker->frame == iFrame) {
+		if ((iFlags & (Node | Marker)) == Marker)
+			iFlags &= ~Add;
+	}
 
 	return iFlags;
 }
 
 
 // Add node method.
-void qtractorTimeScaleForm::addNode (void)
+void qtractorTimeScaleForm::addItem (void)
 {
 	if (m_pTimeScale == NULL)
 		return;
@@ -423,12 +455,27 @@ void qtractorTimeScaleForm::addNode (void)
 	if (pSession == NULL)
 		return;
 
-	pSession->execute(
-		new qtractorTimeScaleAddNodeCommand(m_pTimeScale,
-			m_ui.FrameSpinBox->value(),
-			m_ui.TempoSpinBox->tempo(), 2,
-			m_ui.TempoSpinBox->beatsPerBar(),
-			m_ui.TempoSpinBox->beatDivisor()));
+	unsigned int  iFlags = flags();
+	unsigned long iFrame = frame();
+
+	if ((iFlags & Add) == 0)
+		return;
+
+	if (iFlags & Node) {
+		pSession->execute(
+			new qtractorTimeScaleAddNodeCommand(
+				m_pTimeScale, iFrame,
+				m_ui.TempoSpinBox->tempo(), 2,
+				m_ui.TempoSpinBox->beatsPerBar(),
+				m_ui.TempoSpinBox->beatDivisor()));
+	}
+
+	if (iFlags & Marker) {
+		pSession->execute(
+			new qtractorTimeScaleAddMarkerCommand(
+				m_pTimeScale, iFrame,
+				m_ui.MarkerLineEdit->text()));
+	}
 
 	refresh();
 
@@ -437,19 +484,9 @@ void qtractorTimeScaleForm::addNode (void)
 
 
 // Update current node.
-void qtractorTimeScaleForm::updateNode (void)
+void qtractorTimeScaleForm::updateItem (void)
 {
 	if (m_pTimeScale == NULL)
-		return;
-
-	unsigned short iBar = bar();
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
-	unsigned long iFrame = (pNode ? pNode->frameFromBar(iBar) : 0);
-
-	if (pNode == NULL)
-		return;
-	if (pNode->bar != iBar)
 		return;
 
 	// Make it as an undoable command...
@@ -457,65 +494,106 @@ void qtractorTimeScaleForm::updateNode (void)
 	if (pSession == NULL)
 		return;
 
-	pSession->execute(
-		new qtractorTimeScaleUpdateNodeCommand(m_pTimeScale, iFrame,
-			m_ui.TempoSpinBox->tempo(), 2,
-			m_ui.TempoSpinBox->beatsPerBar(),
-			m_ui.TempoSpinBox->beatDivisor()));
+	unsigned int   iFlags = flags();
+	unsigned short iBar   = bar();
+
+	if ((iFlags & Update) == 0)
+		return;
+
+	if (iFlags & Node) {
+		qtractorTimeScale::Cursor cursor(m_pTimeScale);
+		qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
+		if (pNode && pNode->bar == iBar) {
+			unsigned long iFrame = pNode->frameFromBar(iBar);
+			pSession->execute(
+				new qtractorTimeScaleUpdateNodeCommand(
+					m_pTimeScale, iFrame,
+					m_ui.TempoSpinBox->tempo(), 2,
+					m_ui.TempoSpinBox->beatsPerBar(),
+					m_ui.TempoSpinBox->beatDivisor()));
+			++m_iDirtyTotal;
+		}
+	}
+
+	if (iFlags & Marker) {
+		unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
+		qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
+		qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
+		if (pMarker && pMarker->frame == iFrame) {
+			pSession->execute(
+				new qtractorTimeScaleUpdateMarkerCommand(
+					m_pTimeScale, iFrame,
+					m_ui.MarkerLineEdit->text().simplified()));
+			++m_iDirtyTotal;
+
+		}
+	}
 
 	refresh();
-
-	++m_iDirtyTotal;
 }
 
 
 // Remove current node.
-void qtractorTimeScaleForm::removeNode (void)
+void qtractorTimeScaleForm::removeItem (void)
 {
 	if (m_pTimeScale == NULL)
 		return;
-
-	unsigned short iBar = bar();
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
-
-	if (pNode == NULL)
-		return;
-	if (pNode->bar != iBar)
-		return;
-	if (pNode->prev() == NULL)
-		return;
-
-	// Prompt user if he/she's sure about this...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bConfirmRemove) {
-		// Show the warning...
-		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("About to remove tempo node:\n\n"
-			"%1 (%2) %3  %4/%5\n\n"
-			"Are you sure?")
-			.arg(pNode->bar + 1)
-			.arg(m_pTimeScale->textFromTick(pNode->tick))
-			.arg(pNode->tempo, 0, 'f', 1)
-			.arg(pNode->beatsPerBar)
-			.arg(1 << pNode->beatDivisor),
-			QMessageBox::Ok | QMessageBox::Cancel)
-			== QMessageBox::Cancel)
-			return;
-	}
 
 	// Make it as an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
-	pSession->execute(
-		new qtractorTimeScaleRemoveNodeCommand(m_pTimeScale, pNode));
+	unsigned int   iFlags = flags();
+	unsigned short iBar   = bar();
+
+	if ((iFlags & Remove) == 0)
+		return;
+
+	if (iFlags & Node) {
+		qtractorTimeScale::Cursor cursor(m_pTimeScale);
+		qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
+		if (pNode && pNode->bar == iBar && pNode->prev()) {
+			// Prompt user if he/she's sure about this...
+			qtractorOptions *pOptions = qtractorOptions::getInstance();
+			if (pOptions && pOptions->bConfirmRemove) {
+				// Show the warning...
+				if (QMessageBox::warning(this,
+					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("About to remove tempo node:\n\n"
+					"%1 (%2) %3  %4/%5\n\n"
+					"Are you sure?")
+					.arg(pNode->bar + 1)
+					.arg(m_pTimeScale->textFromTick(pNode->tick))
+					.arg(pNode->tempo, 0, 'f', 1)
+					.arg(pNode->beatsPerBar)
+					.arg(1 << pNode->beatDivisor),
+					QMessageBox::Ok | QMessageBox::Cancel)
+					== QMessageBox::Cancel)
+					return;
+			}
+			// Go!...
+			pSession->execute(
+				new qtractorTimeScaleRemoveNodeCommand(m_pTimeScale, pNode));
+			++m_iDirtyTotal;
+		}
+	}
+
+	if (iFlags & Marker) {
+		unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
+		qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
+		qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
+		if (pMarker && pMarker->frame == iFrame) {
+			// Go! we just don't ask user about a thing...
+			pSession->execute(
+				new qtractorTimeScaleRemoveMarkerCommand(
+					m_pTimeScale, pMarker));
+			++m_iDirtyTotal;
+
+		}
+	}
 
 	refresh();
-
-	++m_iDirtyTotal;
 }
 
 
@@ -536,7 +614,7 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 	if (pNode) {
 		++m_iDirtySetup;
 		unsigned long iFrame = pNode->frameFromBar(iBar);
-		m_ui.FrameSpinBox->setValue(iFrame);
+		m_ui.TimeSpinBox->setValue(iFrame);
 		m_iDirtySetup = 0;
 		setCurrentNode(pNode);
 		ensureVisibleFrame(iFrame);
@@ -547,7 +625,7 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 }
 
 
-void qtractorTimeScaleForm::frameChanged ( unsigned long iFrame )
+void qtractorTimeScaleForm::timeChanged ( unsigned long iFrame )
 {
 	if (m_pTimeScale == NULL)
 		return;
@@ -582,7 +660,7 @@ void qtractorTimeScaleForm::tempoChanged (
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTeimeScaleForm::tempoChanged(%g, %u, %u)",
+	qDebug("qtractorTimeScaleForm::tempoChanged(%g, %u, %u)",
 		fTempo, iBeatsPerBar, iBeatDivisor);
 #endif
 
@@ -593,6 +671,23 @@ void qtractorTimeScaleForm::tempoChanged (
 }
 
 
+// Marker text has changed.
+void qtractorTimeScaleForm::markerChanged (
+	const QString& sText )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTimeScaleForm::markerChanged(\"%s\")",
+		sText.toUtf8().constData());
+#endif
+
+	changed();
+}
+
+
+// Something has changed.
 void qtractorTimeScaleForm::changed (void)
 {
 	if (m_iDirtySetup > 0)
@@ -669,17 +764,17 @@ void qtractorTimeScaleForm::contextMenu ( const QPoint& /*pos*/ )
 	
 	pAction = menu.addAction(
 		QIcon(":/images/formAdd.png"),
-		tr("&Add"), this, SLOT(addNode()));
+		tr("&Add"), this, SLOT(addItem()));
 	pAction->setEnabled(iFlags & Add);
 
 	pAction = menu.addAction(
 		QIcon(":/images/formAccept.png"),
-		tr("&Update"), this, SLOT(updateNode()));
+		tr("&Update"), this, SLOT(updateItem()));
 	pAction->setEnabled(iFlags & Update);
 
 	pAction = menu.addAction(
 		QIcon(":/images/formRemove.png"),
-		tr("&Remove"), this, SLOT(removeNode()));
+		tr("&Remove"), this, SLOT(removeItem()));
 	pAction->setEnabled(iFlags & Remove);
 
 	menu.addSeparator();

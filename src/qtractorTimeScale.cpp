@@ -720,6 +720,18 @@ qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekFrame (
 	return marker;
 }
 
+qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekBar (
+	unsigned short iBar )
+{
+	return seekFrame(ts->frameFromBar(iBar));
+}
+
+qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekBeat (
+	unsigned int iBeat )
+{
+	return seekFrame(ts->frameFromBeat(iBeat));
+}
+
 qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekTick (
 	unsigned long iTick )
 {

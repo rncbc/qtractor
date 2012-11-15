@@ -522,6 +522,8 @@ public:
 
 		// Seek methods.
 		Marker *seekFrame(unsigned long iFrame);
+		Marker *seekBar(unsigned short iBar);
+		Marker *seekBeat(unsigned int iBeat);
 		Marker *seekTick(unsigned long iTick);
 		Marker *seekPixel(int x);
 

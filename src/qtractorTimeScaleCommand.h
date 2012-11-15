@@ -207,8 +207,9 @@ class qtractorTimeScaleUpdateMarkerCommand : public qtractorTimeScaleMarkerComma
 public:
 
 	// Constructor.
-	qtractorTimeScaleUpdateMarkerCommand(qtractorTimeScale *pTimeScale,
-		unsigned long iFrame, const QString& sText, const QColor& rgbColor);
+	qtractorTimeScaleUpdateMarkerCommand(
+		qtractorTimeScale *pTimeScale, unsigned long iFrame,
+		const QString& sText, const QColor& rgbColor = Qt::darkGray);
 
 	// Time-scale command methods.
 	bool redo();
@@ -225,7 +226,8 @@ class qtractorTimeScaleRemoveMarkerCommand : public qtractorTimeScaleMarkerComma
 public:
 
 	// Constructor.
-	qtractorTimeScaleRemoveMarkerCommand(qtractorTimeScale *pTimeScale,
+	qtractorTimeScaleRemoveMarkerCommand(
+		qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Marker *pMarker);
 
 	// Time-scale command methods.

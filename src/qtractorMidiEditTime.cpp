@@ -155,7 +155,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx;
 		if (x > w) break;
 		p.setPen(pMarker->color);
-		p.drawText(x + 2, y2 - fm.ascent(), pMarker->text);
+		p.drawText(x + 2, y2, pMarker->text);
 		pMarker = pMarker->next();
 	}
 
