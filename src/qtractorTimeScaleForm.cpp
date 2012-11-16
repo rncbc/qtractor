@@ -83,10 +83,12 @@ public:
 
 	// Constructors.
 	qtractorTimeScaleListItem(QTreeWidget *pTreeWidget,
+		qtractorTimeScaleListItem *pListItem,
 		qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Node *pNode,
 		qtractorTimeScale::Marker *pMarker)
-		: QTreeWidgetItem(pTreeWidget), m_pNode(pNode), m_pMarker(pMarker)
+		: QTreeWidgetItem(pTreeWidget, pListItem),
+			m_pNode(pNode), m_pMarker(pMarker)
 	{
 		const QChar dash = '-';
 
@@ -252,9 +254,8 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 	}
 
-	qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
-
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
 		m_ui.MarkerLineEdit->setText(pMarker->text);
 	else
@@ -301,26 +302,27 @@ void qtractorTimeScaleForm::refreshItems (void)
 	qtractorTimeScale::Node *pNode = m_pTimeScale->nodes().first();
 	qtractorTimeScale::Marker *pMarker = m_pTimeScale->markers().first();
 
+	qtractorTimeScaleListItem *pListItem = NULL;
 	while (pNode) {
 		while (pMarker && pMarker->frame < pNode->frame) {
-			new qtractorTimeScaleListItem(
-				m_ui.TimeScaleListView, m_pTimeScale, NULL, pMarker);
+			pListItem = new qtractorTimeScaleListItem(
+				m_ui.TimeScaleListView, pListItem, m_pTimeScale, NULL, pMarker);
 			pMarker = pMarker->next();
 		}
 		if (pMarker && pMarker->frame == pNode->frame) {
-			new qtractorTimeScaleListItem(
-				m_ui.TimeScaleListView, m_pTimeScale, pNode, pMarker);
+			pListItem = new qtractorTimeScaleListItem(
+				m_ui.TimeScaleListView, pListItem, m_pTimeScale, pNode, pMarker);
 			pMarker = pMarker->next();
 		} else {
-			new qtractorTimeScaleListItem(
-				m_ui.TimeScaleListView, m_pTimeScale, pNode, NULL);
+			pListItem = new qtractorTimeScaleListItem(
+				m_ui.TimeScaleListView, pListItem, m_pTimeScale, pNode, NULL);
 		}
 		pNode = pNode->next();
 	}
 
 	while (pMarker) {
-		new qtractorTimeScaleListItem(
-			m_ui.TimeScaleListView, m_pTimeScale, NULL, pMarker);
+		pListItem = new qtractorTimeScaleListItem(
+			m_ui.TimeScaleListView, pListItem, m_pTimeScale, NULL, pMarker);
 		pMarker = pMarker->next();
 	}
 }
@@ -340,8 +342,8 @@ void qtractorTimeScaleForm::setCurrentItem (
 {
 	++m_iDirtySetup;
 
-	qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(iFrame);
 
 	int iItemCount = m_ui.TimeScaleListView->topLevelItemCount();
 	for (int i = iItemCount - 1; i >= 0; --i) {
@@ -473,8 +475,8 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		iFlags &= ~AddNode;
 
 	unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
-	qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(iFrame);
 
 	const QString& sMarkerText = m_ui.MarkerLineEdit->text().simplified();
 
@@ -560,8 +562,8 @@ void qtractorTimeScaleForm::updateItem (void)
 
 	if (iFlags & UpdateMarker) {
 		unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
-		qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
-		qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
+		qtractorTimeScale::Marker *pMarker
+			= m_pTimeScale->markers().seekFrame(iFrame);
 		if (pMarker && pMarker->frame == iFrame) {
 			pSession->execute(
 				new qtractorTimeScaleUpdateMarkerCommand(
@@ -620,8 +622,8 @@ void qtractorTimeScaleForm::removeItem (void)
 
 	if (iFlags & RemoveMarker) {
 		unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
-		qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
-		qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
+		qtractorTimeScale::Marker *pMarker
+			= m_pTimeScale->markers().seekFrame(iFrame);
 		if (pMarker && pMarker->frame == iFrame) {
 			// Go! we just don't ask user about a thing...
 			pSession->execute(
@@ -655,9 +657,8 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 
 	m_ui.TimeSpinBox->setValue(iFrame);
 
-	qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
-
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
 		m_ui.MarkerLineEdit->setText(pMarker->text);
 
@@ -693,9 +694,8 @@ void qtractorTimeScaleForm::timeChanged ( unsigned long iFrame )
 	if (pNode)
 		m_ui.BarSpinBox->setValue(pNode->barFromFrame(iFrame) + 1);
 
-	qtractorTimeScale::MarkerCursor markers(m_pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekFrame(iFrame);
-
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
 		m_ui.MarkerLineEdit->setText(pMarker->text);
 

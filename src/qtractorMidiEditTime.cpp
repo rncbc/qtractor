@@ -148,11 +148,11 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	}
 
 	// Draw location markers, if any...
-	qtractorTimeScale::MarkerCursor markers(pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekPixel(dx);
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(dx);
 
 	while (pMarker) {
-		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx + 16;
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx + 4;
 		if (x > w) break;
 		p.setPen(pMarker->color);
 		p.drawText(x, y2, pMarker->text);

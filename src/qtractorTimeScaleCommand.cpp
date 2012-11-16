@@ -374,7 +374,7 @@ bool qtractorTimeScaleMarkerCommand::addMarker (void)
 // Update time-scale marker command method.
 bool qtractorTimeScaleMarkerCommand::updateMarker (void)
 {
-	m_pMarker = qtractorTimeScale::MarkerCursor(m_pTimeScale).seekFrame(m_iFrame);
+	m_pMarker = m_pTimeScale->markers().seekFrame(m_iFrame);
 	if (m_pMarker == NULL)
 		return false;
 	if (m_pMarker->frame != m_iFrame)

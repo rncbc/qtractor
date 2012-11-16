@@ -146,11 +146,11 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	}
 
 	// Draw location markers, if any...
-	qtractorTimeScale::MarkerCursor markers(pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekPixel(cx);
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(cx);
 
 	while (pMarker) {
-		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx + 16;
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx + 4;
 		if (x > w) break;
 		painter.setPen(pMarker->color);
 		painter.drawText(x, y2, pMarker->text);

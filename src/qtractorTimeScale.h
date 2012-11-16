@@ -501,9 +501,6 @@ public:
 		QColor  color;
 	};
 
-	// Markers list accessor.
-	const qtractorList<Marker>& markers() const { return m_markers; }
-
 	// To optimize and keep track of current frame
 	// position, mostly like an sequence cursor/iterator.
 	class MarkerCursor
@@ -527,6 +524,10 @@ public:
 		Marker *seekTick(unsigned long iTick);
 		Marker *seekPixel(int x);
 
+		// Notable markers accessors
+		Marker *first() const { return ts->m_markers.first(); }
+		Marker *last()  const { return ts->m_markers.last();  }
+
 	protected:
 
 		// Member variables.
@@ -534,8 +535,8 @@ public:
 		Marker *marker;
 	};
 
-	// Internal marker cursor accessor.
-	MarkerCursor& markerCursor() { return m_markerCursor; }
+	// Markers list accessor.
+	MarkerCursor& markers() { return m_markerCursor; }
 
 	// Marker list specifics.
 	Marker *addMarker(

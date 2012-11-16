@@ -244,8 +244,8 @@ void qtractorMidiFileTempo::fromTimeScale (
 	// Copy location markers...
 	m_markers.clear();
 
-	qtractorTimeScale::MarkerCursor markers(pTimeScale);
-	qtractorTimeScale::Marker *pMarker = markers.seekTick(iTimeOffset);
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekTick(iTimeOffset);
 	while (pMarker) {
 		unsigned long iTick = pTimeScale->tickFromFrame(pMarker->frame);
 		unsigned long iTime = uint64_t(iTick) * p / q;

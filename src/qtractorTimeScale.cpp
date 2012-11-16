@@ -76,7 +76,7 @@ void qtractorTimeScale::sync ( const qtractorTimeScale& ts )
 
 	// Copy location markers...
 	m_markers.clear();
-	Marker *pMarker = ts.markers().first();
+	Marker *pMarker = ts.m_markers.first();
 	while (pMarker) {
 		m_markers.append(new Marker(*pMarker));
 		pMarker = pMarker->next();
@@ -738,7 +738,7 @@ qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekTick (
 	return seekFrame(ts->frameFromTick(iTick));
 }
 
-qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekPixel (	int x )
+qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekPixel ( int x )
 {
 	return seekFrame(ts->frameFromPixel(x));
 }
@@ -756,22 +756,28 @@ qtractorTimeScale::Marker *qtractorTimeScale::addMarker (
 	if (pNodePrev)
 		iFrame = pNodePrev->frameSnapToBar(iFrame);
 
-	// Seek for the nearest preceding marker...
-	Marker *pMarkerPrev = m_markerCursor.seekFrame(iFrame);
+	// Seek for the nearest marker...
+	Marker *pMarkerNear = m_markerCursor.seekFrame(iFrame);
 	// Either update existing marker or add new one...
-	if (pMarkerPrev && pMarkerPrev->frame == iFrame) {
+	if (pMarkerNear && pMarkerNear->frame == iFrame) {
 		// Update exact matching marker...
-		pMarker = pMarkerPrev;
+		pMarker = pMarkerNear;
 		pMarker->text = sText;
 		pMarker->color = rgbColor;
 	} else {
 		// Add/insert a new marker...
 		pMarker = new Marker(iFrame, sText, rgbColor);
-		if (pMarkerPrev)
-			m_markers.insertAfter(pMarker, pMarkerPrev);
+		if (pMarkerNear && pMarkerNear->frame > iFrame)
+			m_markers.insertBefore(pMarker, pMarkerNear);
+		else
+		if (pMarkerNear && pMarkerNear->frame < iFrame)
+			m_markers.insertAfter(pMarker, pMarkerNear);
 		else
 			m_markers.append(pMarker);
 	}
+
+	// Update positioning...
+	updateMarker(pMarker);
 
 	return pMarker;
 }
