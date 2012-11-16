@@ -37,6 +37,12 @@
 #include <QTime>
 #include <QMenu>
 
+#include <QColorDialog>
+
+#if QT_VERSION < 0x040200
+#define setForeground	setTextColor
+#endif
+
 
 //----------------------------------------------------------------------
 // class qtractorTimeScaleItemDelegate -- Custom time-scale item delegate.
@@ -109,6 +115,7 @@ public:
 				QTreeWidgetItem::setText(1, pTimeScale->textFromFrame(pMarker->frame));
 			}
 			QTreeWidgetItem::setText(3, pMarker->text);
+			QTreeWidgetItem::setForeground(3, pMarker->color);
 		}
 		else QTreeWidgetItem::setText(3, dash);
 	}
@@ -184,15 +191,21 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	QObject::connect(m_ui.TimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(timeChanged(unsigned long)));
+
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
 		SLOT(tempoChanged(float, unsigned short, unsigned short)));
 	QObject::connect(m_ui.TempoPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoTap()));
-	QObject::connect(m_ui.MarkerLineEdit,
+
+	QObject::connect(m_ui.MarkerTextLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MarkerColorToolButton,
+		SIGNAL(clicked()),
+		SLOT(markerColor()));
+
 
 	QObject::connect(m_ui.RefreshPushButton,
 		SIGNAL(clicked()),
@@ -257,9 +270,9 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 	qtractorTimeScale::Marker *pMarker
 		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
-		m_ui.MarkerLineEdit->setText(pMarker->text);
+		setCurrentMarker(pMarker);
 	else
-		m_ui.MarkerLineEdit->clear();
+		setCurrentMarker(NULL);
 
 	// Done.
 	m_iDirtySetup = 0;
@@ -361,6 +374,24 @@ void qtractorTimeScaleForm::setCurrentItem (
 }
 
 
+// Set current marker text & color...
+void qtractorTimeScaleForm::setCurrentMarker (
+	qtractorTimeScale::Marker *pMarker )
+{
+	QPalette pal;
+	if (pMarker)
+		pal.setColor(QPalette::Text, pMarker->color);
+	else
+		pal.setColor(QPalette::Text, Qt::darkGray);
+	m_ui.MarkerTextLineEdit->setPalette(pal);
+
+	if (pMarker)
+		m_ui.MarkerTextLineEdit->setText(pMarker->text);
+	else
+		m_ui.MarkerTextLineEdit->clear();
+}
+
+
 // Make given frame visble at the main tracks view.
 void qtractorTimeScaleForm::ensureVisibleFrame ( unsigned long iFrame )
 {
@@ -425,16 +456,14 @@ void qtractorTimeScaleForm::selectItem (void)
 		ensureVisibleFrame(pNode->frame);
 	}
 
-	if (pMarker) {
-		m_ui.MarkerLineEdit->setText(pMarker->text);
-		if (pNode == NULL) {
-			unsigned int iBar = m_pTimeScale->barFromFrame(pMarker->frame);
-			m_ui.BarSpinBox->setValue(iBar + 1);
-			m_ui.TimeSpinBox->setValue(pMarker->frame);
-			ensureVisibleFrame(pMarker->frame);
-		}
+	if (pMarker && pNode == NULL) {
+		unsigned int iBar = m_pTimeScale->barFromFrame(pMarker->frame);
+		m_ui.BarSpinBox->setValue(iBar + 1);
+		m_ui.TimeSpinBox->setValue(pMarker->frame);
+		ensureVisibleFrame(pMarker->frame);
 	}
-	else m_ui.MarkerLineEdit->clear();
+
+	setCurrentMarker(pMarker);
 
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
@@ -464,7 +493,8 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		if (pNode->prev())
 			iFlags |= RemoveNode;
 	}
-	if (pNode && pNode->tempo == fTempo
+	if (pNode
+		&& pNode->tempo == fTempo
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)
@@ -478,13 +508,18 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	qtractorTimeScale::Marker *pMarker
 		= m_pTimeScale->markers().seekFrame(iFrame);
 
-	const QString& sMarkerText = m_ui.MarkerLineEdit->text().simplified();
+	const QString& sMarkerText
+		= m_ui.MarkerTextLineEdit->text().simplified();
+	const QColor& rgbMarkerColor
+		= m_ui.MarkerTextLineEdit->palette().text().color();
 
 	if (pMarker && pMarker->frame == iFrame) {
 		iFlags |= UpdateMarker;
 		iFlags |= RemoveMarker;
 	}
-	if (pMarker && pMarker->text == sMarkerText)
+	if (pMarker
+		&& pMarker->text == sMarkerText
+		&& pMarker->color == rgbMarkerColor)
 		iFlags &= ~UpdateMarker;
 	else if (!sMarkerText.isEmpty())
 		iFlags |=  AddMarker;
@@ -522,7 +557,8 @@ void qtractorTimeScaleForm::addItem (void)
 		pSession->execute(
 			new qtractorTimeScaleAddMarkerCommand(
 				m_pTimeScale, iFrame,
-				m_ui.MarkerLineEdit->text()));
+				m_ui.MarkerTextLineEdit->text().simplified(),
+				m_ui.MarkerTextLineEdit->palette().text().color()));
 	}
 
 	refresh();
@@ -568,7 +604,8 @@ void qtractorTimeScaleForm::updateItem (void)
 			pSession->execute(
 				new qtractorTimeScaleUpdateMarkerCommand(
 					m_pTimeScale, iFrame,
-					m_ui.MarkerLineEdit->text().simplified()));
+					m_ui.MarkerTextLineEdit->text().simplified(),
+					m_ui.MarkerTextLineEdit->palette().text().color()));
 			++m_iDirtyTotal;
 		}
 	}
@@ -660,7 +697,7 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 	qtractorTimeScale::Marker *pMarker
 		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
-		m_ui.MarkerLineEdit->setText(pMarker->text);
+		setCurrentMarker(pMarker);
 
 	m_iDirtySetup = 0;
 
@@ -697,7 +734,7 @@ void qtractorTimeScaleForm::timeChanged ( unsigned long iFrame )
 	qtractorTimeScale::Marker *pMarker
 		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
-		m_ui.MarkerLineEdit->setText(pMarker->text);
+		setCurrentMarker(pMarker);
 
 	m_iDirtySetup = 0;
 
@@ -781,6 +818,24 @@ void qtractorTimeScaleForm::tempoTap (void)
 	} else {
 		m_iTempoTap = 0;
 		m_fTempoTap = 0.0f;
+	}
+}
+
+
+// Marker color selection.
+void qtractorTimeScaleForm::markerColor (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTimeScaleForm::markerColor()");
+#endif
+
+	QPalette pal(m_ui.MarkerTextLineEdit->palette());
+	const QColor& color
+		= QColorDialog::getColor(pal.text().color());
+	if (color.isValid()) {
+		pal.setColor(QPalette::Text, color);
+		m_ui.MarkerTextLineEdit->setPalette(pal);
+		changed();
 	}
 }
 

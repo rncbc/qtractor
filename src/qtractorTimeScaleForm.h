@@ -70,10 +70,11 @@ protected slots:
 	void changed();
 
 	void tempoTap();
-
-	void stabilizeForm();
+	void markerColor();
 
 	void contextMenu(const QPoint&);
+
+	void stabilizeForm();
 
 protected:
 
@@ -93,6 +94,8 @@ protected:
 	void refreshItems();
 
 	void setCurrentItem(qtractorTimeScale::Node *pNode, unsigned long iFrame);
+
+	void setCurrentMarker(qtractorTimeScale::Marker *pMarker);
 
 	void ensureVisibleFrame(unsigned long iFrame);
 
