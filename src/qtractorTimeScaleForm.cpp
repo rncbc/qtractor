@@ -503,6 +503,13 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		iFlags |=  AddNode;
 	if (pNode && pNode->bar == iBar)
 		iFlags &= ~AddNode;
+	if (pNode
+		&& (pNode = pNode->next())	// real assignment
+		&& pNode->tempo == fTempo
+	//	&& pNode->beatType == iBeatType
+		&& pNode->beatsPerBar == iBeatsPerBar
+		&& pNode->beatDivisor == iBeatDivisor)
+		iFlags &= ~AddNode;
 
 	unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
 	qtractorTimeScale::Marker *pMarker
@@ -698,6 +705,8 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
 		setCurrentMarker(pMarker);
+	else
+		setCurrentMarker(NULL);
 
 	m_iDirtySetup = 0;
 
@@ -735,6 +744,8 @@ void qtractorTimeScaleForm::timeChanged ( unsigned long iFrame )
 		= m_pTimeScale->markers().seekFrame(iFrame);
 	if (pMarker && pMarker->frame == iFrame)
 		setCurrentMarker(pMarker);
+	else
+		setCurrentMarker(NULL);
 
 	m_iDirtySetup = 0;
 
