@@ -148,7 +148,6 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	// Draw location markers, if any...
 	qtractorTimeScale::Marker *pMarker
 		= pTimeScale->markers().seekPixel(cx);
-
 	while (pMarker) {
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx + 4;
 		if (x > w) break;

@@ -354,6 +354,17 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	if (y > ch)
 		p.fillRect(0, ch, w, h - ch, rgbDark);
 
+	// Draw location marker lines...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(dx);
+	while (pMarker) {
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx;
+		if (x > w) break;
+		p.setPen(pMarker->color);
+		p.drawLine(x, 0, x, h);
+		pMarker = pMarker->next();
+	}
+
 	//
 	// Draw the sequence events...
 	//
