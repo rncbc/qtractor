@@ -4480,7 +4480,7 @@ void qtractorMainForm::transportBackward (void)
 		if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
 			list.append(m_pSession->sessionEnd());
 		qtractorTimeScale::Marker *pMarker
-			= m_pSession->timeScale()->markers().last();
+			= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
 		while (pMarker && pMarker->frame >= iPlayHead)
 			pMarker = pMarker->prev();
 		if (pMarker && iPlayHead > pMarker->frame)
