@@ -1,7 +1,7 @@
 // qtractorMidiFileTempo.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,9 +33,11 @@
 void qtractorMidiFileTempo::clear (void)
 {
 	m_nodes.setAutoDelete(true);
+	m_markers.setAutoDelete(true);
 
-	// Clear/reset tempo-map...
+	// Clear/reset tempo-map and location markers...
 	m_nodes.clear();
+	m_markers.clear();
 
 	// There must always be one node, always.
 	addNode(0);
@@ -162,6 +164,57 @@ void qtractorMidiFileTempo::removeNode ( qtractorMidiFileTempo::Node *pNode )
 }
 
 
+// Location marker seeker (by tick).
+qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::seekMarker ( unsigned long iTick ) const
+{
+	Marker *pMarker = m_markers.first();
+
+	// Seek tick forward...
+	while (pMarker && pMarker->next() && iTick >= (pMarker->next())->tick)
+		pMarker = pMarker->next();
+
+	return pMarker;
+}
+
+
+// Marker list specifics.
+qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::addMarker (
+	unsigned long iTick, const QString& sText )
+{
+	Marker *pMarker = 0;
+
+	// Snap to nearest bar...
+	Node *pNodePrev = seekNode(iTick);
+	if (pNodePrev)
+		iTick = pNodePrev->tickSnapToBar(iTick);
+
+	// Seek for the nearest preceding node...
+	Marker *pMarkerPrev = seekMarker(iTick);
+	// Either update existing marker or add new one...
+	if (pMarkerPrev && pMarkerPrev->tick == iTick) {
+		// Update exact matching node...
+		pMarker = pMarkerPrev;
+		pMarker->text = sText;
+	} else {
+		// Add/insert a new marker...
+		pMarker = new Marker(iTick, sText);
+		if (pMarkerPrev)
+			m_markers.insertAfter(pMarker, pMarkerPrev);
+		else
+			m_markers.append(pMarker);
+	}
+
+	return pMarker;
+}
+
+
+void qtractorMidiFileTempo::removeMarker ( qtractorMidiFileTempo::Marker *pMarker )
+{
+	// Actually remove/unlink the marker
+	m_markers.remove(pMarker);
+}
+
+
 // Time-scale sync methods.
 void qtractorMidiFileTempo::fromTimeScale (
 	qtractorTimeScale *pTimeScale, unsigned long iTimeOffset )
@@ -169,18 +222,36 @@ void qtractorMidiFileTempo::fromTimeScale (
 	if (pTimeScale == NULL)
 		return;
 
+	const unsigned short p = pTimeScale->ticksPerBeat();
+	const unsigned short q = m_pMidiFile->ticksPerBeat();
+
+	if (q < 1) return;
+
 	// Copy tempo-map nodes...
 	m_nodes.clear();
 
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTimeOffset);
 	while (pNode) {
-		unsigned long iTime
-			= (pNode->tick > iTimeOffset ? pNode->tick - iTimeOffset : 0);
+		unsigned long iTime = uint64_t(pNode->tick) * p / q;
+		iTime = (iTime > iTimeOffset ? iTime - iTimeOffset : 0);
 		addNode(iTime, pNode->tempo,
 			pNode->beatsPerBar,
 			pNode->beatDivisor);
 		pNode = pNode->next();
+	}
+
+	// Copy location markers...
+	m_markers.clear();
+
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekTick(iTimeOffset);
+	while (pMarker) {
+		unsigned long iTick = pTimeScale->tickFromFrame(pMarker->frame);
+		unsigned long iTime = uint64_t(iTick) * p / q;
+		iTime = (iTime > iTimeOffset ? iTime - iTimeOffset : 0);
+		addMarker(iTime, pMarker->text);
+		pMarker = pMarker->next();
 	}
 }
 
@@ -190,18 +261,33 @@ void qtractorMidiFileTempo::intoTimeScale (
 	if (pTimeScale == NULL)
 		return;
 
-	// Copy tempo-map nodes...
+	const unsigned short p = m_pMidiFile->ticksPerBeat();
+	const unsigned short q = pTimeScale->ticksPerBeat();
+
+	if (q < 1) return;
+
 	pTimeScale->reset();
 
+	// Copy tempo-map nodes...
 	qtractorMidiFileTempo::Node *pNode = m_nodes.first();
 	while (pNode) {
-		unsigned long iTime = pNode->tick + iTimeOffset;
+		unsigned long iTime	= uint64_t(pNode->tick) * p / q;
 		pTimeScale->addNode(
-			pTimeScale->frameFromTick(iTime),
+			pTimeScale->frameFromTick(iTime + iTimeOffset),
 			pNode->tempo, 2,
 			pNode->beatsPerBar,
 			pNode->beatDivisor);
 		pNode = pNode->next();
+	}
+
+	// Copy location markers...
+	qtractorMidiFileTempo::Marker *pMarker = m_markers.first();
+	while (pMarker) {
+		unsigned long iTime	= uint64_t(pMarker->tick) * p / q;
+		pTimeScale->addMarker(
+			pTimeScale->frameFromTick(iTime + iTimeOffset),
+			pMarker->text);
+		pMarker = pMarker->next();
 	}
 }
 

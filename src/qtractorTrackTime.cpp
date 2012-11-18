@@ -68,16 +68,10 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
-	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 2));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
-}
-
-
-// Destructor.
-qtractorTrackTime::~qtractorTrackTime (void)
-{
 }
 
 
@@ -100,6 +94,10 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	if (pSession == NULL)
 		return;
 
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return;
+	
 	QPainter painter(&m_pixmap);
 	painter.initFrom(this);
 
@@ -108,25 +106,27 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	const QFontMetrics& fm = painter.fontMetrics();
 	int x, y1, y2 = h - 1;
 
-	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
 
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(cx);
-	int x1 = x = pNode->pixelFromBeat(iBeat) - cx;
+	if (iBeat > 0)
+		pNode = cursor.seekBeat(--iBeat);
+	x = pNode->pixelFromBeat(iBeat) - cx;
+
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x1);
+		bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
 			y1 = 0;
 			painter.setPen(pal.windowText().color());
-			painter.drawText(x + 2, y1 + fm.ascent(),
+			painter.drawText(x + 2, fm.ascent(),
 				QString::number(pNode->barFromBeat(iBeat) + 1));
-			x1 = x + 16;
 			if (iBeat == pNode->beat) {
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 				painter.setPen(pal.base().color().value() < 0x7f
-					? pal.light().color() : pal.dark().color()); 
-				painter.drawText(x1, y1 + fm.ascent(),
+					? pal.light().color() : pal.dark().color());
+				painter.drawText(x + 16, fm.ascent(),
 					QString("%1 %2/%3")
 					.arg(pNode->tempo, 0, 'g', 3)
 					.arg(pNode->beatsPerBar)
@@ -145,6 +145,17 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		x = pNode->pixelFromBeat(iBeat) - cx;
 	}
 
+	// Draw location markers, if any...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(cx);
+	while (pMarker) {
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx + 4;
+		if (x > w) break;
+		painter.setPen(pMarker->color);
+		painter.drawText(x, y2, pMarker->text);
+		pMarker = pMarker->next();
+	}
+
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
 		QPolygon polyg(3);
@@ -152,7 +163,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		int d = (h >> 2);
 		painter.setPen(Qt::darkCyan);
 		painter.setBrush(Qt::cyan);
-		x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
+		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x + d, h - d,
@@ -160,7 +171,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x, h - d);
 			painter.drawPolygon(polyg);
 		}
-		x = pSession->pixelFromFrame(pSession->loopEnd()) - cx;
+		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x, h - d,
@@ -177,7 +188,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		int d = (h >> 2);
 		painter.setPen(Qt::darkMagenta);
 		painter.setBrush(Qt::magenta);
-		x = pSession->pixelFromFrame(pSession->punchIn()) - cx;
+		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x + d, h - d,
@@ -185,7 +196,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x, h - d);
 			painter.drawPolygon(polyg);
 		}
-		x = pSession->pixelFromFrame(pSession->punchOut()) - cx;
+		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x, h - d,

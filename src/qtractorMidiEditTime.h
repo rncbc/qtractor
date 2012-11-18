@@ -46,8 +46,6 @@ public:
 
 	// Constructor.
 	qtractorMidiEditTime(qtractorMidiEditor *pEditor, QWidget *pParent);
-	// Destructor.
-	~qtractorMidiEditTime();
 
 	// Rectangular contents update.
 	void updateContents(const QRect& rect);

@@ -687,13 +687,17 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (pSession == NULL)
 		return;
 
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
 	QPainter painter(&m_pixmap);
 	painter.initFrom(this);
 
 	// Update view session cursor location,
 	// so that we'll start drawing clips from there...
-	unsigned long iTrackStart = pSession->frameFromPixel(cx);
-	unsigned long iTrackEnd   = iTrackStart + pSession->frameFromPixel(w);
+	unsigned long iTrackStart = pTimeScale->frameFromPixel(cx);
+	unsigned long iTrackEnd   = iTrackStart + pTimeScale->frameFromPixel(w);
 	// Create cursor now if applicable...
 	if (m_pSessionCursor == NULL) {
 		m_pSessionCursor = pSession->createSessionCursor(iTrackStart);
@@ -707,7 +711,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	// Draw vertical grid lines...
 	if (m_bSnapGrid || m_bSnapZebra) {
 		const QBrush zebra(QColor(0, 0, 0, 20));
-		qtractorTimeScale::Cursor cursor(pSession->timeScale());
+		qtractorTimeScale::Cursor cursor(pTimeScale);
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
 		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 		unsigned int iBeat = pNode->beatFromPixel(cx);
@@ -763,6 +767,17 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		++iTrack;
 	}
 
+	// Draw location marker lines...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(cx);
+	while (pMarker) {
+		int x = pTimeScale->pixelFromFrame(pMarker->frame) - cx;
+		if (x > w) break;
+		painter.setPen(pMarker->color);
+		painter.drawLine(x, 0, x, y2);
+		pMarker = pMarker->next();
+	}
+
 	// Fill the empty area...
 	if (y2 < cy + h) {
 		painter.setPen(rgbMid);
@@ -774,7 +789,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (pSession->isLooping()) {
 		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkCyan);
-		int x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
+		int x = pTimeScale->pixelFromFrame(pSession->loopStart()) - cx;
 		if (x >= w)
 			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
@@ -782,7 +797,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			painter.fillRect(QRect(0, 0, x, h), shade);
 			painter.drawLine(x, 0, x, h);
 		}
-		x = pSession->pixelFromFrame(pSession->loopEnd()) - cx;
+		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - cx;
 		if (x < 0)
 			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
@@ -796,7 +811,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (pSession->isPunching()) {
 		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkMagenta);
-		int x = pSession->pixelFromFrame(pSession->punchIn()) - cx;
+		int x = pTimeScale->pixelFromFrame(pSession->punchIn()) - cx;
 		if (x >= w)
 			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
@@ -804,7 +819,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			painter.fillRect(QRect(0, 0, x, h), shade);
 			painter.drawLine(x, 0, x, h);
 		}
-		x = pSession->pixelFromFrame(pSession->punchOut()) - cx;
+		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - cx;
 		if (x < 0)
 			painter.fillRect(QRect(0, 0, w, h), shade);
 		else

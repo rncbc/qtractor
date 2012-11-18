@@ -4479,6 +4479,12 @@ void qtractorMainForm::transportBackward (void)
 			list.append(m_pSession->sessionStart());
 		if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
 			list.append(m_pSession->sessionEnd());
+		qtractorTimeScale::Marker *pMarker
+			= m_pSession->timeScale()->markers().last();
+		while (pMarker && pMarker->frame >= iPlayHead)
+			pMarker = pMarker->prev();
+		if (pMarker && iPlayHead > pMarker->frame)
+			list.append(pMarker->frame);
 		qSort(list.begin(), list.end());
 		iPlayHead = list.last();
 	#endif
@@ -4594,6 +4600,12 @@ void qtractorMainForm::transportForward (void)
 			list.append(m_pSession->sessionStart());
 		if (iPlayHead < m_pSession->sessionEnd())
 			list.append(m_pSession->sessionEnd());
+		qtractorTimeScale::Marker *pMarker
+			= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
+		while (pMarker && iPlayHead >= pMarker->frame)
+			pMarker = pMarker->next();
+		if (pMarker && iPlayHead < pMarker->frame)
+			list.append(pMarker->frame);
 		qSort(list.begin(), list.end());
 		iPlayHead = list.first();
 	#endif

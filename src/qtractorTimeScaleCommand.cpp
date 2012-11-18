@@ -32,13 +32,14 @@
 
 
 //----------------------------------------------------------------------
-// class qtractorTimeScaleCommand - implementation.
+// class qtractorTimeScaleNodeCommand - implementation.
 //
 
 // Constructor.
-qtractorTimeScaleCommand::qtractorTimeScaleCommand ( const QString& sName, 
-	qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode,
-	unsigned long iFrame, float fTempo, unsigned short iBeatType,
+qtractorTimeScaleNodeCommand::qtractorTimeScaleNodeCommand (
+	const QString& sName, qtractorTimeScale *pTimeScale,
+	qtractorTimeScale::Node *pNode, unsigned long iFrame,
+	float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor)
 	: qtractorCommand(sName), m_pTimeScale(pTimeScale), m_pNode(pNode),
 		m_iFrame(iFrame), m_fTempo(fTempo), m_iBeatType(iBeatType),
@@ -52,7 +53,7 @@ qtractorTimeScaleCommand::qtractorTimeScaleCommand ( const QString& sName,
 
 
 // Destructor.
-qtractorTimeScaleCommand::~qtractorTimeScaleCommand (void)
+qtractorTimeScaleNodeCommand::~qtractorTimeScaleNodeCommand (void)
 {
 	if (m_pClipCommand)
 		delete m_pClipCommand;
@@ -60,7 +61,7 @@ qtractorTimeScaleCommand::~qtractorTimeScaleCommand (void)
 
 
 // Add time-scale node command method.
-bool qtractorTimeScaleCommand::addNode (void)
+bool qtractorTimeScaleNodeCommand::addNode (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -113,7 +114,7 @@ bool qtractorTimeScaleCommand::addNode (void)
 
 
 // Update time-scale node command method.
-bool qtractorTimeScaleCommand::updateNode (void)
+bool qtractorTimeScaleNodeCommand::updateNode (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -177,7 +178,7 @@ bool qtractorTimeScaleCommand::updateNode (void)
 
 
 // Remove time-scale node command method.
-bool qtractorTimeScaleCommand::removeNode (void)
+bool qtractorTimeScaleNodeCommand::removeNode (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -232,7 +233,7 @@ bool qtractorTimeScaleCommand::removeNode (void)
 
 
 // Make it automatic clip time-stretching command (static).
-qtractorClipCommand *qtractorTimeScaleCommand::createClipCommand (
+qtractorClipCommand *qtractorTimeScaleNodeCommand::createClipCommand (
 	const QString& sName, qtractorTimeScale::Node *pNode,
 	float fNewTempo, float fOldTempo )
 {
@@ -295,12 +296,13 @@ qtractorTimeScaleAddNodeCommand::qtractorTimeScaleAddNodeCommand (
 	qtractorTimeScale *pTimeScale, unsigned long iFrame,
 	float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
-	: qtractorTimeScaleCommand(QObject::tr("add tempo node"), pTimeScale,
-		NULL, iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
+	: qtractorTimeScaleNodeCommand(
+		QObject::tr("add tempo node"), pTimeScale, NULL,
+		iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
 {
 }
 
-// Time-scale command methods.
+// Time-scale node command methods.
 bool qtractorTimeScaleAddNodeCommand::redo (void) { return addNode(); }
 bool qtractorTimeScaleAddNodeCommand::undo (void) { return removeNode(); }
 
@@ -314,12 +316,13 @@ qtractorTimeScaleUpdateNodeCommand::qtractorTimeScaleUpdateNodeCommand (
 	qtractorTimeScale *pTimeScale, unsigned long iFrame,
 	float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor)
-	: qtractorTimeScaleCommand(QObject::tr("update tempo node"), pTimeScale,
-		NULL, iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
+	: qtractorTimeScaleNodeCommand(
+		QObject::tr("update tempo node"), pTimeScale, NULL,
+		iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
 {
 }
 
-// Time-scale command methods.
+// Time-scale node command methods.
 bool qtractorTimeScaleUpdateNodeCommand::redo (void) { return updateNode(); }
 bool qtractorTimeScaleUpdateNodeCommand::undo (void) { return redo(); }
 
@@ -331,13 +334,139 @@ bool qtractorTimeScaleUpdateNodeCommand::undo (void) { return redo(); }
 // Constructor.
 qtractorTimeScaleRemoveNodeCommand::qtractorTimeScaleRemoveNodeCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode )
-	: qtractorTimeScaleCommand(QObject::tr("remove tempo node"), pTimeScale, pNode)
+	: qtractorTimeScaleNodeCommand(
+		QObject::tr("remove tempo node"), pTimeScale, pNode)
 {
 }
 
-// Time-scale command methods.
+// Time-scale node command methods.
 bool qtractorTimeScaleRemoveNodeCommand::redo (void) { return removeNode(); }
 bool qtractorTimeScaleRemoveNodeCommand::undo (void) { return addNode(); }
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleMarkerCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleMarkerCommand::qtractorTimeScaleMarkerCommand (
+	const QString& sName, qtractorTimeScale *pTimeScale,
+	qtractorTimeScale::Marker *pMarker, unsigned long iFrame,
+	const QString& sText, const QColor& rgbColor )
+	: qtractorCommand(sName), m_pTimeScale(pTimeScale), m_pMarker(pMarker),
+		m_iFrame(iFrame), m_sText(sText), m_rgbColor(rgbColor)
+{
+}
+
+
+// Add time-scale marker command method.
+bool qtractorTimeScaleMarkerCommand::addMarker (void)
+{
+	if (m_pMarker)
+		return false;
+
+	m_pMarker = m_pTimeScale->addMarker(m_iFrame, m_sText, m_rgbColor);
+
+	return (m_pMarker != NULL);
+}
+
+
+// Update time-scale marker command method.
+bool qtractorTimeScaleMarkerCommand::updateMarker (void)
+{
+	m_pMarker = m_pTimeScale->markers().seekFrame(m_iFrame);
+	if (m_pMarker == NULL)
+		return false;
+	if (m_pMarker->frame != m_iFrame)
+		return false;
+
+	QString sText    = m_pMarker->text;
+	QColor  rgbColor = m_pMarker->color;
+
+	m_pMarker->text  = m_sText;
+	m_pMarker->color = m_rgbColor;
+
+	m_pTimeScale->updateMarker(m_pMarker);
+
+	m_sText    = sText;
+	m_rgbColor = rgbColor;
+
+	return true;
+}
+
+
+// Remove time-scale marker command method.
+bool qtractorTimeScaleMarkerCommand::removeMarker (void)
+{
+	if (m_pMarker == NULL)
+		return false;
+
+	m_iFrame   = m_pMarker->frame;
+	m_sText    = m_pMarker->text;
+	m_rgbColor = m_pMarker->color;
+
+	m_pTimeScale->removeMarker(m_pMarker);
+
+	m_pMarker = NULL;
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleAddMarkerCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleAddMarkerCommand::qtractorTimeScaleAddMarkerCommand (
+	qtractorTimeScale *pTimeScale, unsigned long iFrame,
+	const QString& sText, const QColor& rgbColor )
+	: qtractorTimeScaleMarkerCommand(
+		QObject::tr("add marker"), pTimeScale, NULL,
+			iFrame, sText, rgbColor)
+{
+}
+
+// Time-scale marker command methods.
+bool qtractorTimeScaleAddMarkerCommand::redo (void) { return addMarker(); }
+bool qtractorTimeScaleAddMarkerCommand::undo (void) { return removeMarker(); }
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleUpdateMarkerCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleUpdateMarkerCommand::qtractorTimeScaleUpdateMarkerCommand (
+	qtractorTimeScale *pTimeScale, unsigned long iFrame,
+	const QString& sText, const QColor& rgbColor )
+	: qtractorTimeScaleMarkerCommand(
+		QObject::tr("update marker"), pTimeScale, NULL,
+			iFrame, sText, rgbColor)
+{
+}
+
+// Time-scale marker command methods.
+bool qtractorTimeScaleUpdateMarkerCommand::redo (void) { return updateMarker(); }
+bool qtractorTimeScaleUpdateMarkerCommand::undo (void) { return redo(); }
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleRemoveMarkerCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleRemoveMarkerCommand::qtractorTimeScaleRemoveMarkerCommand (
+	qtractorTimeScale *pTimeScale, qtractorTimeScale::Marker *pMarker )
+	: qtractorTimeScaleMarkerCommand(
+		QObject::tr("remove marker"), pTimeScale, pMarker)
+{
+}
+
+// Time-scale marker command methods.
+bool qtractorTimeScaleRemoveMarkerCommand::redo (void) { return removeMarker(); }
+bool qtractorTimeScaleRemoveMarkerCommand::undo (void) { return addMarker(); }
+
 
 
 // end of qtractorTimeScaleCommand.cpp

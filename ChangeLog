@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Ongoing integration of location markers infrastructure (time-scale
+  and MIDI-file support). (EXPERIMENTAL)
+
 - Free-hand/linear retouching of event values, while on the MIDI clip
   editor's view pane below the main piano-roll (eg. note velocities),
   is now possible provided the target events are selected, otherwise

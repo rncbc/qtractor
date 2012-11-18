@@ -367,6 +367,17 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
 		p.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 
+	// Draw location marker lines...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(dx);
+	while (pMarker) {
+		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx;
+		if (x > w) break;
+		p.setPen(pMarker->color);
+		p.drawLine(x, 0, x, h);
+		pMarker = pMarker->next();
+	}
+
 	//
 	// Draw the sequence events...
 	//

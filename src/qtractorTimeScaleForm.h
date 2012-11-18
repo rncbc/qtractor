@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,6 +26,8 @@
 #include "ui_qtractorTimeScaleForm.h"
 
 // Forward declarations...
+class qtractorTimeScaleListItem;
+
 class QTime;
 
 
@@ -56,34 +58,44 @@ protected slots:
 	void reject();
 	void refresh();
 
-	void selectNode();
+	void selectItem();
 
-	void addNode();
-	void updateNode();
-	void removeNode();
+	void addItem();
+	void updateItem();
+	void removeItem();
 
 	void barChanged(int);
-	void frameChanged(unsigned long);
+	void timeChanged(unsigned long);
 	void tempoChanged(float, unsigned short, unsigned short);
-
 	void changed();
 
 	void tempoTap();
-
-	void stabilizeForm();
+	void markerColor();
 
 	void contextMenu(const QPoint&);
 
+	void stabilizeForm();
+
 protected:
 
-	enum { Add = 1, Update = 2, Remove = 4 };
+	enum {
+
+		AddNode      = (1 << 0),
+		UpdateNode   = (1 << 1),
+		RemoveNode   = (1 << 2),
+
+		AddMarker    = (1 << 3),
+		UpdateMarker = (1 << 4),
+		RemoveMarker = (1 << 5)
+	};
 
 	unsigned int flags() const;
 
-	void refreshNodes();
+	void refreshItems();
 
-	void setCurrentNode(qtractorTimeScale::Node *pNode);
-	qtractorTimeScale::Node *currentNode() const;
+	void setCurrentItem(qtractorTimeScale::Node *pNode, unsigned long iFrame);
+
+	void setCurrentMarker(qtractorTimeScale::Marker *pMarker);
 
 	void ensureVisibleFrame(unsigned long iFrame);
 

@@ -1894,28 +1894,28 @@ bool qtractorSession::loadElement (
 				QDomElement eNode = nNode.toElement();
 				if (eNode.isNull())
 					continue;
-				// Load time-scale...
+				// Load tempo-map...
 				if (eNode.tagName() == "tempo-node") {
 					unsigned long iFrame = eNode.attribute("frame").toULong();
 					float fTempo = 120.0f;
 					unsigned short iBeatType = 2;
 					unsigned short iBeatsPerBar = 4;
 					unsigned short iBeatDivisor = 2;
-					for (QDomNode nTime = eNode.firstChild();
-							!nTime.isNull();
-								nTime = nTime.nextSibling()) {
+					for (QDomNode nItem = eNode.firstChild();
+							!nItem.isNull();
+								nItem = nItem.nextSibling()) {
 						// Convert node to element...
-						QDomElement eTime = nTime.toElement();
-						if (eTime.isNull())
+						QDomElement eItem = nItem.toElement();
+						if (eItem.isNull())
 							continue;
-						if (eTime.tagName() == "tempo")
-							fTempo = eTime.text().toFloat();
-						else if (eTime.tagName() == "beat-type")
-							iBeatType = eTime.text().toUShort();
-						else if (eTime.tagName() == "beats-per-bar")
-							iBeatsPerBar = eTime.text().toUShort();
-						else if (eTime.tagName() == "beat-divisor")
-							iBeatDivisor = eTime.text().toUShort();
+						if (eItem.tagName() == "tempo")
+							fTempo = eItem.text().toFloat();
+						else if (eItem.tagName() == "beat-type")
+							iBeatType = eItem.text().toUShort();
+						else if (eItem.tagName() == "beats-per-bar")
+							iBeatsPerBar = eItem.text().toUShort();
+						else if (eItem.tagName() == "beat-divisor")
+							iBeatDivisor = eItem.text().toUShort();
 					}
 					// Add new node to tempo/time-signature map...
 					qtractorSession::timeScale()->addNode(iFrame,
@@ -1925,6 +1925,42 @@ bool qtractorSession::loadElement (
 			// Again, make view/time scaling factors permanent.
 			qtractorSession::updateTimeScale();
 		}
+		else
+		// Load location markers...
+		if (eChild.tagName() == "markers") {
+			for (QDomNode nMarker = eChild.firstChild();
+					!nMarker.isNull();
+						nMarker = nMarker.nextSibling()) {
+				// Convert tempo node to element...
+				QDomElement eMarker = nMarker.toElement();
+				if (eMarker.isNull())
+					continue;
+				// Load markers...
+				if (eMarker.tagName() == "marker") {
+					unsigned long iFrame = eMarker.attribute("frame").toULong();
+					QString sText;
+					QColor rgbColor = Qt::darkGray;
+					for (QDomNode nItem = eMarker.firstChild();
+							!nItem.isNull();
+								nItem = nItem.nextSibling()) {
+						// Convert node to element...
+						QDomElement eItem = nItem.toElement();
+						if (eItem.isNull())
+							continue;
+						if (eItem.tagName() == "text")
+							sText = eItem.text();
+						else if (eItem.tagName() == "color")
+							rgbColor.setNamedColor(eItem.text());
+					}
+					// Add new marker...
+					if (!sText.isEmpty()) {
+						qtractorSession::timeScale()->addMarker(
+							iFrame, sText, rgbColor);
+					}
+				}
+			}
+		}
+		else
 		// Load tracks...
 		if (eChild.tagName() == "tracks") {
 			for (QDomNode nTrack = eChild.firstChild();
@@ -2079,7 +2115,7 @@ bool qtractorSession::saveElement (
 		= qtractorSession::timeScale()->nodes().first();
 	if (pNode) pNode = pNode->next(); // Skip first anchor node.
 	if (pNode) {
-		QDomElement eTimeScale = pDocument->document()->createElement("tempo-map");
+		QDomElement eTempoMap = pDocument->document()->createElement("tempo-map");
 		while (pNode) {
 			QDomElement eNode = pDocument->document()->createElement("tempo-node");
 			eNode.setAttribute("bar", QString::number(pNode->bar));
@@ -2092,10 +2128,26 @@ bool qtractorSession::saveElement (
 				QString::number(pNode->beatsPerBar), &eNode);
 			pDocument->saveTextElement("beat-divisor",
 				QString::number(pNode->beatDivisor), &eNode);
-			eTimeScale.appendChild(eNode);
+			eTempoMap.appendChild(eNode);
 			pNode = pNode->next();
 		}
-		pElement->appendChild(eTimeScale);
+		pElement->appendChild(eTempoMap);
+	}
+
+	// Save location markers, if any...
+	qtractorTimeScale::Marker *pMarker
+		= qtractorSession::timeScale()->markers().first();
+	if (pMarker) {
+		QDomElement eMarkers = pDocument->document()->createElement("markers");
+		while (pMarker) {
+			QDomElement eMarker = pDocument->document()->createElement("marker");
+			eMarker.setAttribute("frame", QString::number(pMarker->frame));
+			pDocument->saveTextElement("text", pMarker->text, &eMarker);
+			pDocument->saveTextElement("color", pMarker->color.name(), &eMarker);
+			eMarkers.appendChild(eMarker);
+			pMarker = pMarker->next();
+		}
+		pElement->appendChild(eMarkers);
 	}
 
 	// Save track view state...
