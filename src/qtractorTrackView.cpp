@@ -742,17 +742,6 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 	}
 
-	// Draw location marker lines...
-	qtractorTimeScale::Marker *pMarker
-		= pTimeScale->markers().seekPixel(cx);
-	while (pMarker) {
-		int x = pTimeScale->pixelFromFrame(pMarker->frame) - cx;
-		if (x > w) break;
-		painter.setPen(pMarker->color);
-		painter.drawLine(x, 0, x, h);
-		pMarker = pMarker->next();
-	}
-
 	// Draw track and horizontal lines...
 	int y1, y2;
 	y1 = y2 = 0;
@@ -776,6 +765,17 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		}
 		pTrack = pTrack->next();
 		++iTrack;
+	}
+
+	// Draw location marker lines...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(cx);
+	while (pMarker) {
+		int x = pTimeScale->pixelFromFrame(pMarker->frame) - cx;
+		if (x > w) break;
+		painter.setPen(pMarker->color);
+		painter.drawLine(x, 0, x, y2);
+		pMarker = pMarker->next();
 	}
 
 	// Fill the empty area...
