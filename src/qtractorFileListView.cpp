@@ -543,12 +543,16 @@ void qtractorFileListView::openFile (void)
 void qtractorFileListView::newGroup (void)
 {
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
+	if (!pParentItem->isOpen())
+		pParentItem = pParentItem->groupItem();
 	qtractorFileGroupItem *pGroupItem
 		= addGroupItem(tr("New Group"), pParentItem);
-	if (pParentItem)
-		pParentItem->setOpen(true);
-	if (pGroupItem)
+	if (pGroupItem) {
+		pParentItem = pGroupItem->groupItem();
+		if (pParentItem)
+			pParentItem->setOpen(true);
 		editItem(pGroupItem, 0);
+	}
 }
 
 
