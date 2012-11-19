@@ -62,6 +62,7 @@ Features
 - Audio/MIDI track export (mix-down, merge).
 - Audio/MIDI metronome bar/beat clicks.
 - Unlimited tempo/time-signature map.
+- Unlimited location/bar markers.
 - MIDI clip editor (matrix/piano roll).
 - MIDI instrument definitions (a-la Cakewalk(tm) [18]).
 - MIDI controller mapping/learn/assignment (mixer and plug-in parameters).

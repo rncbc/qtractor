@@ -34,7 +34,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Tempo Map - Qtractor</string>
+   <string>Tempo Map / Markers - Qtractor</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/qtractorTracks.png</iconset>
