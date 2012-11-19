@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- On saving as an archive/zip session file (suffix .qtz) include only
+  those files that are actually referenced by live clips arrangement.
+
 - Ongoing integration of location markers infrastructure (time-scale
   and MIDI-file support). (EXPERIMENTAL)
 
