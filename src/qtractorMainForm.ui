@@ -2401,16 +2401,16 @@
   </action>
   <action name="viewTempoMapAction" >
    <property name="text" >
-    <string>Tempo M&amp;ap...</string>
+	<string>Tempo M&amp;ap / Markers...</string>
    </property>
    <property name="iconText" >
-    <string>Tempo Map</string>
+	<string>Tempo Map / Markers</string>
    </property>
    <property name="toolTip" >
-    <string>Tempo map</string>
+	<string>Tempo map / markers</string>
    </property>
    <property name="statusTip" >
-    <string>Change session tempo map</string>
+	<string>Change session tempo map / markers</string>
    </property>
   </action>
   <action name="viewOptionsAction" >

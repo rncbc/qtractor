@@ -9,7 +9,6 @@ as the following are among the ones planned to be worked
 on in the times to come (not in any particular order):
 
 - MIDI step-recording.
-- Audio/MIDI files resource management.
 - Audio clip auto-crossfading.
 - Clip locking, muting and plug-ins.
 - JACK MIDI support.
