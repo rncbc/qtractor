@@ -543,12 +543,16 @@ void qtractorFileListView::openFile (void)
 void qtractorFileListView::newGroup (void)
 {
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
+	if (!pParentItem->isOpen())
+		pParentItem = pParentItem->groupItem();
 	qtractorFileGroupItem *pGroupItem
 		= addGroupItem(tr("New Group"), pParentItem);
-	if (pParentItem)
-		pParentItem->setOpen(true);
-	if (pGroupItem)
+	if (pGroupItem) {
+		pParentItem = pGroupItem->groupItem();
+		if (pParentItem)
+			pParentItem->setOpen(true);
 		editItem(pGroupItem, 0);
+	}
 }
 
 
@@ -1430,6 +1434,10 @@ bool qtractorFileListView::loadElement ( qtractorDocument *pDocument,
 bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 	QDomElement *pElement, QTreeWidgetItem *pItem )
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
 	// Create the new child element...
 	switch (pItem->type()) {
 	case GroupItem: {
@@ -1451,15 +1459,16 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 		QDomElement eFile = pDocument->document()->createElement("file");
 		eFile.setAttribute("name", pFileItem->text(0));
 		// Make it all relative to archive or session directory...
-		QString sPath;
+		QString sPath = pFileItem->path();
 		if (pDocument->isArchive()) {
-			sPath = pDocument->addFile(pFileItem->path());
+			qtractorFileList::Item *pFileListItem
+				= pSession->files()->findItem(m_iFileType, sPath);
+			if (pFileListItem && pFileListItem->clipRefCount() > 0)
+				sPath = pDocument->addFile(sPath);
 		} else {
 			QDir dir;
-			qtractorSession *pSession = qtractorSession::getInstance();
-			if (pSession)
-				dir.setPath(pSession->sessionDir());
-			sPath = dir.relativeFilePath(pFileItem->path());
+			dir.setPath(pSession->sessionDir());
+			sPath = dir.relativeFilePath(sPath);
 		}
 		eFile.appendChild(pDocument->document()->createTextNode(sPath));
 		pElement->appendChild(eFile);

@@ -1,7 +1,7 @@
 // qtractorList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -249,15 +249,18 @@ template <class Node>
 void qtractorList<Node>::clear (void)
 {
 	// Remove pending items.
-	while (m_pLast)
-		remove(m_pLast);
+	Node *pLast = m_pLast;
+	while (pLast) {
+		remove(pLast);
+		pLast = m_pLast;
+	}
 
 	// Free the free-list altogether...
-	while (m_pFreeList) {
-		Node *pFreeList = m_pFreeList;
+	Node *pFreeList = m_pFreeList;
+	while (pFreeList) {
 		Node *pNextFree = pFreeList->nextFree();
 		delete pFreeList;
-		m_pFreeList = pNextFree;
+		pFreeList = pNextFree;
 	}
 
 	// Force clen up.
