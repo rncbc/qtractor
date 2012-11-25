@@ -82,6 +82,9 @@ protected:
 	// Context menu request slot (dummy).
 	void contextMenuEvent(QContextMenuEvent *);
 
+	// Show dragging tooltip...
+	void showToolTip(unsigned long iFrame) const;
+
 protected slots:
 
 	// To have timeline in h-sync with main track view.
