@@ -413,6 +413,25 @@ bool qtractorTimeScaleMarkerCommand::removeMarker (void)
 }
 
 
+// Move time-scale marker command method.
+bool qtractorTimeScaleMarkerCommand::moveMarker (void)
+{
+	if (m_pMarker == NULL)
+		return false;
+
+	unsigned long iFrame = m_pMarker->frame;
+	QString sText = m_pMarker->text;
+	QColor rgbColor = m_pMarker->color;
+
+	m_pTimeScale->removeMarker(m_pMarker);
+	m_pMarker = m_pTimeScale->addMarker(m_iFrame, sText, rgbColor);
+
+	m_iFrame = iFrame;
+
+	return true;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorTimeScaleAddMarkerCommand - implementation.
 //
@@ -467,6 +486,23 @@ qtractorTimeScaleRemoveMarkerCommand::qtractorTimeScaleRemoveMarkerCommand (
 bool qtractorTimeScaleRemoveMarkerCommand::redo (void) { return removeMarker(); }
 bool qtractorTimeScaleRemoveMarkerCommand::undo (void) { return addMarker(); }
 
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleMoveMarkerCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleMoveMarkerCommand::qtractorTimeScaleMoveMarkerCommand (
+	qtractorTimeScale *pTimeScale, qtractorTimeScale::Marker *pMarker,
+	unsigned long iFrame ) : qtractorTimeScaleMarkerCommand(
+		QObject::tr("move marker"), pTimeScale, pMarker, iFrame)
+{
+}
+
+// Time-scale marker command methods.
+bool qtractorTimeScaleMoveMarkerCommand::redo (void) { return moveMarker(); }
+bool qtractorTimeScaleMoveMarkerCommand::undo (void) { return redo(); }
 
 
 // end of qtractorTimeScaleCommand.cpp

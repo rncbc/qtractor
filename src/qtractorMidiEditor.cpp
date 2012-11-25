@@ -39,7 +39,6 @@
 #include "qtractorTimeScale.h"
 
 #include "qtractorSession.h"
-#include "qtractorMainForm.h"
 
 #include <QApplication>
 #include <QVBoxLayout>

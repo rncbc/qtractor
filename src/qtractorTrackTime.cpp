@@ -26,6 +26,7 @@
 #include "qtractorTracks.h"
 
 #include "qtractorSessionCommand.h"
+#include "qtractorTimeScaleCommand.h"
 
 #include "qtractorMainForm.h"
 
@@ -54,6 +55,8 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
+
+	m_pDragMarker = NULL;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -304,6 +307,10 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	if (pSession == NULL)
 		return false;
 
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
 	// Try to catch mouse clicks over the
 	// play/edit-head/tail cursors...
 	int h = qtractorScrollView::height(); // - 4;
@@ -321,14 +328,14 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	// Check loop-point headers...
 	if (pSession->isLooping()) {
 		// Check loop-start header...
-		rect.moveLeft(pSession->pixelFromFrame(pSession->loopStart()) - d);
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - d);
 		if (rect.contains(pos)) {
 			m_dragCursor = DragLoopStart;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
 		// Check loop-end header...
-		rect.moveLeft(pSession->pixelFromFrame(pSession->loopEnd()) - d);
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - d);
 		if (rect.contains(pos)) {
 			m_dragCursor = DragLoopEnd;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
@@ -339,14 +346,14 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	// Check punch-point headers...
 	if (pSession->isPunching()) {
 		// Check punch-in header...
-		rect.moveLeft(pSession->pixelFromFrame(pSession->punchIn()) - d);
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchIn()) - d);
 		if (rect.contains(pos)) {
 			m_dragCursor = DragPunchIn;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
 		// Check punch-out header...
-		rect.moveLeft(pSession->pixelFromFrame(pSession->punchOut()) - d);
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchOut()) - d);
 		if (rect.contains(pos)) {
 			m_dragCursor = DragPunchOut;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
@@ -368,6 +375,19 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 		m_dragCursor = DragEditTail;
 		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
+	}
+
+	// Check location marker headers...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(pos.x());
+	if (pMarker) {
+		rect.moveLeft(pTimeScale->pixelFromFrame(pMarker->frame) - d);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragMarker;
+			m_pDragMarker = pMarker;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			return true;
+		}
 	}
 
 	// Reset cursor if any persist around.
@@ -481,6 +501,10 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->setEditTail(iFrame);
 			break;
+		case DragMarker:
+			// Marker positioning...
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
+			break;
 		case DragStart:
 			// Rubber-band starting...
 			if ((m_posDrag - pos).manhattanLength()
@@ -581,6 +605,15 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Not quite a contents change, but for visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
+		case DragMarker:
+			// Marker positioning commit...
+			if (m_pDragMarker) {
+				// Yep, new marker location...
+				pSession->execute(
+					new qtractorTimeScaleMoveMarkerCommand(
+						pSession->timeScale(), m_pDragMarker, iFrame));
+			}
+			break;
 		case DragStart:
 			// Left-button indirect positioning...
 			if (bModifier) {
@@ -666,7 +699,9 @@ void qtractorTrackTime::resetDragState (void)
 	// Force null state.
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
-	
+
+	m_pDragMarker = NULL;
+
 	// HACK: give focus to track-view... 
 	m_pTracks->trackView()->setFocus();
 }

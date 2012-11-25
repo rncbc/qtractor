@@ -100,6 +100,10 @@ void qtractorThumbView::updateContents (void)
 	if (pMainForm == NULL)
 		return;
 
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks == NULL)
 		return;
@@ -107,12 +111,12 @@ void qtractorThumbView::updateContents (void)
 	// Local contents length (in frames).
 	m_iContentsLength = pSession->sessionEnd();
 	if (m_iContentsLength > 0) {
-		qtractorTimeScale::Cursor cursor(pSession->timeScale());
+		qtractorTimeScale::Cursor cursor(pTimeScale);
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iContentsLength);
 		m_iContentsLength += pNode->frameFromBeat(
 			pNode->beat + 2 * pSession->beatsPerBar()) - pNode->frame;
 	} else {
-		m_iContentsLength += pSession->frameFromPixel(
+		m_iContentsLength += pTimeScale->frameFromPixel(
 			pTracks->trackView()->width());
 	}
 
@@ -137,6 +141,16 @@ void qtractorThumbView::updateContents (void)
 			y2 += h2;
 			pTrack = pTrack->next();
 		}
+	}
+
+	// Draw the location marker lines, if any...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().first();
+	while (pMarker) {
+		x2 = int(pMarker->frame / f2);
+		painter.setPen(pMarker->color);
+		painter.drawLine(x2, 0, x2, h);
+		pMarker = pMarker->next();
 	}
 
 	// Draw the loop-bound lines, if any...

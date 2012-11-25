@@ -165,6 +165,7 @@ protected:
 	bool addMarker();
 	bool updateMarker();
 	bool removeMarker();
+	bool moveMarker();
 
 private:
 
@@ -229,6 +230,24 @@ public:
 	qtractorTimeScaleRemoveMarkerCommand(
 		qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Marker *pMarker);
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleMoveMarkerCommand - declaration.
+//
+
+class qtractorTimeScaleMoveMarkerCommand : public qtractorTimeScaleMarkerCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleMoveMarkerCommand(qtractorTimeScale *pTimeScale,
+		qtractorTimeScale::Marker *pMarker, unsigned long iFrame);
 
 	// Time-scale command methods.
 	bool redo();
