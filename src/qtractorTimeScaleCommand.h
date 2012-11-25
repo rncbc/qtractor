@@ -159,13 +159,20 @@ public:
 	qtractorTimeScale *timeScale() const
 		{ return m_pTimeScale; }
 
+	// Marker properties accessor.
+	unsigned long frame() const
+		{ return m_iFrame; }
+	const QString& text() const
+		{ return m_sText; }
+	const QColor& color() const
+		{ return m_rgbColor; }
+
 protected:
 
 	// Executive commands.
 	bool addMarker();
 	bool updateMarker();
 	bool removeMarker();
-	bool moveMarker();
 
 private:
 
@@ -252,6 +259,17 @@ public:
 	// Time-scale command methods.
 	bool redo();
 	bool undo();
+
+private:
+
+	// The new location argument.
+	unsigned long m_iNewFrame;
+
+	// Replaced marker salvage.
+	bool          m_bOldMarker;
+	unsigned long m_iOldFrame;
+	QString       m_sOldText;
+	QColor        m_rgbOldColor;
 };
 
 
