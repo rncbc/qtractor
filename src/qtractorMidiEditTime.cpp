@@ -25,18 +25,21 @@
 #include "qtractorMidiEditView.h"
 
 #include "qtractorSessionCommand.h"
+#include "qtractorTimeScaleCommand.h"
 
 #include "qtractorMainForm.h"
 
 #include "qtractorTimeScaleForm.h"
 
 #include <QApplication>
+#include <QPainter>
+#include <QPalette>
 
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
-#include <QPainter>
-#include <QPalette>
+
+#include <QToolTip>
 
 
 //----------------------------------------------------------------------------
@@ -51,6 +54,8 @@ qtractorMidiEditTime::qtractorMidiEditTime (
 
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
+
+	m_pDragMarker = NULL;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -306,50 +311,49 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	rect.moveLeft(m_pEditor->playHeadX() - d);
 	if (rect.contains(pos)) {
 		m_dragCursor = DragPlayHead;
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
 	// Check loop and punch points...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		// Loop points...
-		if (pSession->isLooping()) {
-			qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-			int dx = d + pTimeScale->pixelFromFrame(m_pEditor->offset());
-			// Check loop-start header...
-			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - dx);
-			if (rect.contains(pos)) {
-				m_dragCursor = DragLoopStart;
-				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-				return true;
-			}
-			// Check loop-end header...
-			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx);
-			if (rect.contains(pos)) {
-				m_dragCursor = DragLoopEnd;
-				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-				return true;
-			}
+	if (pSession == NULL)
+		return false;
+
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
+	int dx = pTimeScale->pixelFromFrame(m_pEditor->offset()) + d;
+
+	// Loop points...
+	if (pSession->isLooping()) {
+		// Check loop-start header...
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - dx);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragLoopStart;
+			return true;
 		}
-		// Punch in/out points...
-		if (pSession->isPunching()) {
-			qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-			int dx = d + pTimeScale->pixelFromFrame(m_pEditor->offset());
-			// Check punch-in header...
-			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchIn()) - dx);
-			if (rect.contains(pos)) {
-				m_dragCursor = DragPunchIn;
-				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-				return true;
-			}
-			// Check punch-out header...
-			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchOut()) - dx);
-			if (rect.contains(pos)) {
-				m_dragCursor = DragPunchOut;
-				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-				return true;
-			}
+		// Check loop-end header...
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragLoopEnd;
+			return true;
+		}
+	}
+
+	// Punch in/out points...
+	if (pSession->isPunching()) {
+		// Check punch-in header...
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchIn()) - dx);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragPunchIn;
+			return true;
+		}
+		// Check punch-out header...
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchOut()) - dx);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragPunchOut;
+			return true;
 		}
 	}
 
@@ -357,7 +361,6 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	rect.moveLeft(m_pEditor->editHeadX() - d);
 	if (rect.contains(pos)) {
 		m_dragCursor = DragEditHead;
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
@@ -365,8 +368,20 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	rect.moveLeft(m_pEditor->editTailX() - d);
 	if (rect.contains(pos)) {
 		m_dragCursor = DragEditTail;
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
+	}
+
+	// Check location marker headers...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(pos.x() + dx);
+	if (pMarker) {
+		unsigned long iFrame = pMarker->frame;
+		rect.moveLeft(pTimeScale->pixelFromFrame(iFrame) - dx);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragMarker;
+			m_pDragMarker = pSession->timeScale()->markers().seekFrame(iFrame);
+			return true;
+		}
 	}
 
 	// Reset cursor if any persist around.
@@ -410,6 +425,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		// Try to catch mouse clicks over the cursor heads...
 		if (dragHeadStart(m_posDrag)) {
 			m_dragState = m_dragCursor;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		} else if (!bModifier) {
 			// Edit-head positioning...
 			m_pEditor->setEditHead(iFrame);
@@ -460,7 +476,8 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragNone:
 		// Try to catch mouse over the cursor heads...
-		dragHeadStart(pos);
+		if (dragHeadStart(pos))
+			qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 		break;
 	case DragSelect:
 		// Rubber-band selection...
@@ -477,6 +494,7 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		m_pEditor->setPlayHead(iFrame);
 		// Let the change get some immediate visual feedback...
 		pMainForm->updateTransportTime(iFrame);
+		showToolTip(iFrame);
 		break;
 	case DragEditHead:
 	case DragPunchIn:
@@ -484,6 +502,7 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Edit-head positioning...
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->setEditHead(iFrame);
+		showToolTip(iFrame);
 		break;
 	case DragEditTail:
 	case DragPunchOut:
@@ -491,6 +510,12 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Edit-head positioning...
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->setEditTail(iFrame);
+		showToolTip(iFrame);
+		break;
+	case DragMarker:
+		// Marker positioning...
+		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
+		showToolTip(iFrame);
 		break;
 	case DragStart:
 		// Rubber-band starting...
@@ -590,6 +615,15 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->punchIn(), pSession->editTail()));
 		}
 		break;
+	case DragMarker:
+		// Marker positioning commit...
+		if (m_pDragMarker) {
+			// Yep, new marker location...
+			pSession->execute(
+				new qtractorTimeScaleMoveMarkerCommand(
+					pSession->timeScale(), m_pDragMarker, iFrame));
+		}
+		break;
 	case DragStart:
 		// Left-button indirect positioning...
 		if (bModifier) {
@@ -667,6 +701,8 @@ void qtractorMidiEditTime::resetDragState (void)
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
 
+	m_pDragMarker = NULL;
+
 	// HACK: give focus to track-view... 
 	m_pEditor->editView()->setFocus();
 }
@@ -676,6 +712,23 @@ void qtractorMidiEditTime::resetDragState (void)
 void qtractorMidiEditTime::contextMenuEvent (
 	QContextMenuEvent */*pContextMenuEvent*/ )
 {
+}
+
+
+// Show dragging tooltip...
+void qtractorMidiEditTime::showToolTip ( unsigned long iFrame ) const
+{
+	if (!m_pEditor->isToolTips())
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
+	QToolTip::showText(
+		QCursor::pos(),
+		pTimeScale->textFromFrame(iFrame),
+		qtractorScrollView::viewport());
 }
 
 

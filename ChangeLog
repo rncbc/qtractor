@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Show proper pointing cursor and location tool-tip while dragging any
+  of the time ruler markers (including latest location markers/bar).
+
 - On saving as an archive/zip session file (suffix .qtz) include only
   those files that are actually referenced by live clips arrangement.
 

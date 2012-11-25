@@ -24,6 +24,8 @@
 
 #include "qtractorScrollView.h"
 
+#include "qtractorTimeScale.h"
+
 #include <QPixmap>
 
 
@@ -80,6 +82,9 @@ protected:
 	// Context menu request slot (dummy).
 	void contextMenuEvent(QContextMenuEvent *);
 
+	// Show dragging tooltip...
+	void showToolTip(unsigned long iFrame) const;
+
 protected slots:
 
 	// To have timeline in h-sync with main track view.
@@ -99,13 +104,16 @@ private:
 	// The current selecting/dragging head stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect,
-		DragPlayHead, DragEditHead, DragEditTail,
+		DragPlayHead, DragMarker,
+		DragEditHead, DragEditTail,
 		DragLoopStart, DragLoopEnd,
 		DragPunchIn, DragPunchOut
 	} m_dragState, m_dragCursor;
 
 	QRect  m_rectDrag;
 	QPoint m_posDrag;
+
+	qtractorTimeScale::Marker *m_pDragMarker;
 };
 
 

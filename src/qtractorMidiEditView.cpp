@@ -268,6 +268,10 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(rgbBase);
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	if (pTimeScale == NULL)
 		return;
@@ -417,10 +421,6 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		}
 		pEvent = pEvent->next();
 	}
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {

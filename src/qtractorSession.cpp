@@ -398,6 +398,13 @@ void qtractorSession::updateSession (
 			++i;
 		}
 	}
+
+	// Account for the last marker
+	qtractorTimeScale::Marker *pMarker
+		= m_props.timeScale.markers().last();
+	if (pMarker &&
+		m_iSessionEnd < pMarker->frame)
+		m_iSessionEnd = pMarker->frame;
 }
 
 
