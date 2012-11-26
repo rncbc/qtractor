@@ -194,7 +194,10 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
-		SLOT(tempoChanged(float, unsigned short, unsigned short)));
+		SLOT(tempoChanged()));
+	QObject::connect(m_ui.TempoSpinBox,
+		SIGNAL(valueChanged(const QString&)),
+		SLOT(tempoChanged()));
 	QObject::connect(m_ui.TempoPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoTap()));
@@ -760,15 +763,13 @@ void qtractorTimeScaleForm::timeChanged ( unsigned long iFrame )
 
 
 // Tempo signature has changed.
-void qtractorTimeScaleForm::tempoChanged (
-	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+void qtractorTimeScaleForm::tempoChanged (void)
 {
 	if (m_iDirtySetup > 0)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTimeScaleForm::tempoChanged(%g, %u, %u)",
-		fTempo, iBeatsPerBar, iBeatDivisor);
+	qDebug("qtractorTimeScaleForm::tempoChanged()");
 #endif
 
 	m_iTempoTap = 0;

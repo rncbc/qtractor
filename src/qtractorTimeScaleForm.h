@@ -66,7 +66,7 @@ protected slots:
 
 	void barChanged(int);
 	void timeChanged(unsigned long);
-	void tempoChanged(float, unsigned short, unsigned short);
+	void tempoChanged();
 	void changed();
 
 	void tempoTap();

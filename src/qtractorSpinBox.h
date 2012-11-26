@@ -1,7 +1,7 @@
 // qtractorSpinBox.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -163,11 +163,17 @@ protected:
 	QString textFromValue(float fTempo,
 		unsigned short iBeatsPerBar, unsigned short iBeatDivisor) const;
 
+	// Common value/text setlers.
+	bool updateValue(float fTempo, unsigned short iBeatsPerBar,
+		unsigned short iBeatDivisor, bool bNotifyChange);
+
+	void updateText();
+
 protected slots:
 
 	// Pseudo-fixup slot.
-	void editingFinishedSlot();
 	void valueChangedSlot(const QString&);
+	void editingFinishedSlot();
 
 private:
 
@@ -175,6 +181,8 @@ private:
 	float          m_fTempo;
 	unsigned short m_iBeatsPerBar;
 	unsigned short m_iBeatDivisor;
+
+	int m_iValueChanged;
 };
 
 
