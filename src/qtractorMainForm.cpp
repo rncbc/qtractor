@@ -7277,19 +7277,15 @@ void qtractorMainForm::transportTempoChanged (
 
 void qtractorMainForm::transportTempoFinished (void)
 {
-	static int s_iTempoFinished = 0;
-	if (s_iTempoFinished > 0)
-		return;
-
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::transportTempoFinished()");
 #endif
 
-	++s_iTempoFinished;
+	bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
 	m_pTempoSpinBox->clearFocus();
 //	if (m_pTracks)
 //		m_pTracks->trackView()->setFocus();
-	--s_iTempoFinished;
+	m_pTempoSpinBox->blockSignals(bBlockSignals);
 }
 
 

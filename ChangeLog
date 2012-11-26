@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Make sure LV2 UI parameters (input control ports) get updated when
+  loading a genuine LV2 state preset.
+
+- Improved the (custom) tempo spin-box widget signal(ing) processing
+  and dispatching. (EXPERIMENTAL)
+
 - Show proper pointing cursor and location tool-tip while dragging any
   of the time ruler markers (including latest location markers/bar).
 

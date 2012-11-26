@@ -970,7 +970,7 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	if (port) {
 		const float val = *(float *) value;
 		unsigned long port_index = lilv_port_get_index(plugin, port);
-		pLv2Plugin->updateParamValue(port_index, val, false);
+		pLv2Plugin->updateParamValue(port_index, val, true);
 	}
 
 	lilv_node_free(symbol);
