@@ -150,10 +150,10 @@ class qtractorTimeScaleMarkerCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorTimeScaleMarkerCommand(
-		const QString& sName, qtractorTimeScale *pTimeScale,
-		qtractorTimeScale::Marker *pMarker = NULL, unsigned long iFrame = 0,
-		const QString& sText = QString(), const QColor& rgbColor = Qt::darkGray);
+	qtractorTimeScaleMarkerCommand(const QString& sName,
+		qtractorTimeScale *pTimeScale, unsigned long iFrame = 0,
+		const QString& sText = QString(),
+		const QColor& rgbColor = Qt::darkGray);
 
 	// Time-scale accessor.
 	qtractorTimeScale *timeScale() const
@@ -178,8 +178,6 @@ private:
 
 	// Instance variables.
 	qtractorTimeScale *m_pTimeScale;
-
-	qtractorTimeScale::Marker *m_pMarker;
 
 	unsigned long m_iFrame;
 	QString       m_sText;

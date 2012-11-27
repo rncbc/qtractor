@@ -546,6 +546,9 @@ public:
 	void updateMarker(Marker *pMarker);
 	void removeMarker(Marker *pMarker);
 
+	// Update markers from given node position.
+	void updateMarkers(Node *pNode);
+
 protected:
 
 	// Tempo-map independent coefficients.
