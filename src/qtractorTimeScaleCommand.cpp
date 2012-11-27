@@ -475,19 +475,19 @@ qtractorTimeScaleMoveMarkerCommand::qtractorTimeScaleMoveMarkerCommand (
 		pMarker->frame, pMarker->text, pMarker->color)
 {
 	// The new location.
-	unsigned short iBar = pTimeScale->barFromFrame(iFrame);
-	m_iNewFrame = pTimeScale->frameFromBar(iBar);
+	iFrame = pTimeScale->frameFromBar(pTimeScale->barFromFrame(iFrame));
+
+	m_iNewFrame = iFrame;
 	m_iOldFrame = pMarker->frame;
 
 	// Replaced marker salvage.
-	m_bOldMarker = false;
-
-	qtractorTimeScale::Marker *pOldMarker
-		= pTimeScale->markers().seekFrame(iFrame);
-	if (pOldMarker && pOldMarker->frame == iFrame) {
+	pMarker	= pTimeScale->markers().seekFrame(iFrame);
+	if (pMarker && pMarker->frame == iFrame) {
 		m_bOldMarker  = true;
-		m_sOldText    = pOldMarker->text;
-		m_rgbOldColor = pOldMarker->color;
+		m_sOldText    = pMarker->text;
+		m_rgbOldColor = pMarker->color;
+	} else {
+		m_bOldMarker  = false;
 	}
 }
 
