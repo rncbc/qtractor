@@ -351,9 +351,8 @@ bool qtractorTimeScaleRemoveNodeCommand::undo (void) { return addNode(); }
 // Constructor.
 qtractorTimeScaleMarkerCommand::qtractorTimeScaleMarkerCommand (
 	const QString& sName, qtractorTimeScale *pTimeScale,
-	qtractorTimeScale::Marker *pMarker, unsigned long iFrame,
-	const QString& sText, const QColor& rgbColor )
-	: qtractorCommand(sName), m_pTimeScale(pTimeScale), m_pMarker(pMarker),
+	unsigned long iFrame, const QString& sText, const QColor& rgbColor )
+	: qtractorCommand(sName), m_pTimeScale(pTimeScale),
 		m_iFrame(iFrame), m_sText(sText), m_rgbColor(rgbColor)
 {
 }
@@ -362,31 +361,27 @@ qtractorTimeScaleMarkerCommand::qtractorTimeScaleMarkerCommand (
 // Add time-scale marker command method.
 bool qtractorTimeScaleMarkerCommand::addMarker (void)
 {
-	if (m_pMarker)
-		return false;
-
-	m_pMarker = m_pTimeScale->addMarker(m_iFrame, m_sText, m_rgbColor);
-
-	return (m_pMarker != NULL);
+	return (m_pTimeScale->addMarker(m_iFrame, m_sText, m_rgbColor) != NULL);
 }
 
 
 // Update time-scale marker command method.
 bool qtractorTimeScaleMarkerCommand::updateMarker (void)
 {
-	m_pMarker = m_pTimeScale->markers().seekFrame(m_iFrame);
-	if (m_pMarker == NULL)
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(m_iFrame);
+	if (pMarker == NULL)
 		return false;
-	if (m_pMarker->frame != m_iFrame)
+	if (pMarker->frame != m_iFrame)
 		return false;
 
-	QString sText    = m_pMarker->text;
-	QColor  rgbColor = m_pMarker->color;
+	QString sText    = pMarker->text;
+	QColor  rgbColor = pMarker->color;
 
-	m_pMarker->text  = m_sText;
-	m_pMarker->color = m_rgbColor;
+	pMarker->text  = m_sText;
+	pMarker->color = m_rgbColor;
 
-	m_pTimeScale->updateMarker(m_pMarker);
+	m_pTimeScale->updateMarker(pMarker);
 
 	m_sText    = sText;
 	m_rgbColor = rgbColor;
@@ -398,16 +393,14 @@ bool qtractorTimeScaleMarkerCommand::updateMarker (void)
 // Remove time-scale marker command method.
 bool qtractorTimeScaleMarkerCommand::removeMarker (void)
 {
-	if (m_pMarker == NULL)
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(m_iFrame);
+	if (pMarker == NULL)
+		return false;
+	if (pMarker->frame != m_iFrame)
 		return false;
 
-	m_iFrame   = m_pMarker->frame;
-	m_sText    = m_pMarker->text;
-	m_rgbColor = m_pMarker->color;
-
-	m_pTimeScale->removeMarker(m_pMarker);
-
-	m_pMarker = NULL;
+	m_pTimeScale->removeMarker(pMarker);
 
 	return true;
 }
@@ -422,7 +415,7 @@ qtractorTimeScaleAddMarkerCommand::qtractorTimeScaleAddMarkerCommand (
 	qtractorTimeScale *pTimeScale, unsigned long iFrame,
 	const QString& sText, const QColor& rgbColor )
 	: qtractorTimeScaleMarkerCommand(
-		QObject::tr("add marker"), pTimeScale, NULL,
+		QObject::tr("add marker"), pTimeScale,
 			iFrame, sText, rgbColor)
 {
 }
@@ -441,7 +434,7 @@ qtractorTimeScaleUpdateMarkerCommand::qtractorTimeScaleUpdateMarkerCommand (
 	qtractorTimeScale *pTimeScale, unsigned long iFrame,
 	const QString& sText, const QColor& rgbColor )
 	: qtractorTimeScaleMarkerCommand(
-		QObject::tr("update marker"), pTimeScale, NULL,
+		QObject::tr("update marker"), pTimeScale,
 			iFrame, sText, rgbColor)
 {
 }
@@ -459,7 +452,8 @@ bool qtractorTimeScaleUpdateMarkerCommand::undo (void) { return redo(); }
 qtractorTimeScaleRemoveMarkerCommand::qtractorTimeScaleRemoveMarkerCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Marker *pMarker )
 	: qtractorTimeScaleMarkerCommand(
-		QObject::tr("remove marker"), pTimeScale, pMarker)
+		QObject::tr("remove marker"), pTimeScale,
+			pMarker->frame, pMarker->text, pMarker->color)
 {
 }
 
@@ -477,11 +471,12 @@ bool qtractorTimeScaleRemoveMarkerCommand::undo (void) { return addMarker(); }
 qtractorTimeScaleMoveMarkerCommand::qtractorTimeScaleMoveMarkerCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Marker *pMarker,
 	unsigned long iFrame ) : qtractorTimeScaleMarkerCommand(
-		QObject::tr("move marker"), pTimeScale, NULL,
+		QObject::tr("move marker"), pTimeScale,
 		pMarker->frame, pMarker->text, pMarker->color)
 {
 	// The new location.
-	m_iNewFrame = iFrame;
+	unsigned short iBar = pTimeScale->barFromFrame(iFrame);
+	m_iNewFrame = pTimeScale->frameFromBar(iBar);
 	m_iOldFrame = pMarker->frame;
 
 	// Replaced marker salvage.
