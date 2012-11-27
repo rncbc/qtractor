@@ -400,26 +400,31 @@ void qtractorTimeScale::updateNode ( qtractorTimeScale::Node *pNode )
 	m_cursor.reset(pNode);
 
 	// Update positioning on all nodes thereafter...
-	Node *pPrev = pNode->prev();
-	while (pNode) {
-		if (pPrev) pNode->reset(pPrev);
-		pPrev = pNode;
-		pNode = pNode->next();
+	Node *pNext = pNode;
+	Node *pPrev = pNext->prev();
+	while (pNext) {
+		if (pPrev) pNext->reset(pPrev);
+		pPrev = pNext;
+		pNext = pNext->next();
 	}
+
+	// And update marker/bar positions too...
+	updateMarkers(pNode);
 }
 
 
 void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 {
 	// Don't ever remove the very first node... 
-	Node *pPrev = pNode->prev();
-	if (pPrev == 0)
+	Node *pNodePrev = pNode->prev();
+	if (pNodePrev == 0)
 		return;
 
 	// Relocate internal cursor...
-	m_cursor.reset(pPrev);
+	m_cursor.reset(pNodePrev);
 
 	// Update positioning on all nodes thereafter...
+	Node *pPrev = pNodePrev;
 	Node *pNext = pNode->next();
 	while (pNext) {
 		if (pPrev) pNext->reset(pPrev);
@@ -429,6 +434,9 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 
 	// Actually remove/unlink the node...
 	m_nodes.remove(pNode);
+
+	// Then update marker/bar positions too...
+	updateMarkers(pNodePrev);
 }
 
 
@@ -441,15 +449,17 @@ void qtractorTimeScale::updateScale (void)
 	m_fFrameRate = 60.0f * float(m_iSampleRate);
 
 	// Update all nodes thereafter...
-	Node *pNode = m_nodes.first();
-	while (pNode) {
-		pNode->update();
-		Node *pPrev = pNode->prev();
-		if (pPrev) pNode->reset(pPrev);
-		//	pNode->pixel = pPrev->pixelFromFrame(pNode->frame);
-		pPrev = pNode;
-		pNode = pNode->next();
+	Node *pPrev = 0;
+	Node *pNext = m_nodes.first();
+	while (pNext) {
+		pNext->update();
+		if (pPrev) pNext->reset(pPrev);
+		pPrev = pNext;
+		pNext = pNext->next();
 	}
+
+	// Also update all marker/bar positions too...
+	updateMarkers(m_nodes.first());
 }
 
 
@@ -797,6 +807,20 @@ void qtractorTimeScale::removeMarker ( qtractorTimeScale::Marker *pMarker )
 	Marker *pMarkerPrev = pMarker->prev();
 	m_markers.remove(pMarker);
 	m_markerCursor.reset(pMarkerPrev);
+}
+
+
+// Update markers from given node position.
+void qtractorTimeScale::updateMarkers ( qtractorTimeScale::Node *pNode )
+{
+	Marker *pMarker = m_markerCursor.seekFrame(pNode->frame);
+	while (pMarker) {
+		if (pMarker->frame >= pNode->frame)
+			pMarker->frame  = pNode->frameSnapToBar(pMarker->frame);
+		if (pNode->next() && pMarker->frame >= pNode->next()->frame)
+			pNode = pNode->next();
+		pMarker = pMarker->next();
+	}
 }
 
 
