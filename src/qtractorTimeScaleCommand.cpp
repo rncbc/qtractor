@@ -38,10 +38,9 @@
 // Constructor.
 qtractorTimeScaleNodeCommand::qtractorTimeScaleNodeCommand (
 	const QString& sName, qtractorTimeScale *pTimeScale,
-	qtractorTimeScale::Node *pNode, unsigned long iFrame,
-	float fTempo, unsigned short iBeatType,
+	unsigned long iFrame, float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor)
-	: qtractorCommand(sName), m_pTimeScale(pTimeScale), m_pNode(pNode),
+	: qtractorCommand(sName), m_pTimeScale(pTimeScale),
 		m_iFrame(iFrame), m_fTempo(fTempo), m_iBeatType(iBeatType),
 		m_iBeatsPerBar(iBeatsPerBar), m_iBeatDivisor(iBeatDivisor),
 		m_pClipCommand(NULL), m_bAutoTimeStretch(false)
@@ -67,9 +66,6 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 	if (pSession == NULL)
 		return false;
 
-	if (m_pNode)
-		return false;
-
 	// If currently playing, we need to do a stop and go...
 	bool bPlaying = pSession->isPlaying();
 	if (bPlaying)
@@ -78,22 +74,18 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 	if (m_pClipCommand)
 		m_pClipCommand->undo();
 	
-	m_pNode = m_pTimeScale->addNode(
-		m_iFrame,
-		m_fTempo,
-		m_iBeatType,
-		m_iBeatsPerBar,
-		m_iBeatDivisor);
+	qtractorTimeScale::Node *pNode = m_pTimeScale->addNode(
+		m_iFrame, m_fTempo, m_iBeatType, m_iBeatsPerBar, m_iBeatDivisor);
 
 	if (m_pClipCommand) {
 		delete m_pClipCommand;
 		m_pClipCommand = NULL;
 	} else {
-		qtractorTimeScale::Node *pPrev = m_pNode->prev();
+		qtractorTimeScale::Node *pPrev = pNode->prev();
 		float fOldTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
-		float fNewTempo = m_pNode->tempo;
+		float fNewTempo = pNode->tempo;
 		m_pClipCommand = createClipCommand(name(),
-			m_pNode, fNewTempo, fOldTempo);
+			pNode, fNewTempo, fOldTempo);
 		if (m_pClipCommand)
 			m_pClipCommand->redo();
 	}
@@ -109,7 +101,7 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 		pSession->unlock();
 	}
 
-	return (m_pNode != NULL);
+	return true;
 }
 
 
@@ -120,10 +112,11 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 	if (pSession == NULL)
 		return false;
 
-	m_pNode = qtractorTimeScale::Cursor(m_pTimeScale).seekFrame(m_iFrame);
-	if (m_pNode == NULL)
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iFrame);
+	if (pNode == NULL)
 		return false;
-	if (m_pNode->frame != m_iFrame)
+	if (pNode->frame != m_iFrame)
 		return false;
 
 	// If currently playing, we need to do a stop and go...
@@ -131,28 +124,28 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 	if (bPlaying)
 		pSession->lock();
 
-	float          fTempo       = m_pNode->tempo;
-	unsigned short iBeatType    = m_pNode->beatType;
-	unsigned short iBeatsPerBar = m_pNode->beatsPerBar;
-	unsigned short iBeatDivisor = m_pNode->beatDivisor;
+	float          fTempo       = pNode->tempo;
+	unsigned short iBeatType    = pNode->beatType;
+	unsigned short iBeatsPerBar = pNode->beatsPerBar;
+	unsigned short iBeatDivisor = pNode->beatDivisor;
 
 	if (m_pClipCommand) {
 		m_pClipCommand->undo();
 		delete m_pClipCommand;
 		m_pClipCommand = NULL;
 	} else {
-		float fOldTempo = m_pNode->tempo;
+		float fOldTempo = pNode->tempo;
 		float fNewTempo = m_fTempo;
 		m_pClipCommand = createClipCommand(name(),
-			m_pNode, fNewTempo, fOldTempo);
+			pNode, fNewTempo, fOldTempo);
 	}
 
-	m_pNode->tempo       = m_fTempo;
-	m_pNode->beatType    = m_iBeatType;
-	m_pNode->beatsPerBar = m_iBeatsPerBar;
-	m_pNode->beatDivisor = m_iBeatDivisor;
+	pNode->tempo       = m_fTempo;
+	pNode->beatType    = m_iBeatType;
+	pNode->beatsPerBar = m_iBeatsPerBar;
+	pNode->beatDivisor = m_iBeatDivisor;
 
-	m_pTimeScale->updateNode(m_pNode);
+	m_pTimeScale->updateNode(pNode);
 
 	m_fTempo       = fTempo;
 	m_iBeatType    = iBeatType;
@@ -184,7 +177,11 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 	if (pSession == NULL)
 		return false;
 
-	if (m_pNode == NULL)
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iFrame);
+	if (pNode == NULL)
+		return false;
+	if (pNode->frame != m_iFrame)
 		return false;
 
 	// If currently playing, we need to do a stop and go...
@@ -197,22 +194,20 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 		delete m_pClipCommand;
 		m_pClipCommand = NULL;
 	} else {
-		qtractorTimeScale::Node *pPrev = m_pNode->prev();
-		float fOldTempo = m_pNode->tempo;
+		qtractorTimeScale::Node *pPrev = pNode->prev();
+		float fOldTempo = pNode->tempo;
 		float fNewTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
 		m_pClipCommand = createClipCommand(name(),
-			m_pNode, fNewTempo, fOldTempo);
+			pNode, fNewTempo, fOldTempo);
 	}
 
-	m_iFrame       = m_pNode->frame;
-	m_fTempo       = m_pNode->tempo;
-	m_iBeatType    = m_pNode->beatType;
-	m_iBeatsPerBar = m_pNode->beatsPerBar;
-	m_iBeatDivisor = m_pNode->beatDivisor;
+//	m_iFrame       = pNode->frame;
+	m_fTempo       = pNode->tempo;
+	m_iBeatType    = pNode->beatType;
+	m_iBeatsPerBar = pNode->beatsPerBar;
+	m_iBeatDivisor = pNode->beatDivisor;
 
-	m_pTimeScale->removeNode(m_pNode);
-
-	m_pNode = NULL;
+	m_pTimeScale->removeNode(pNode);
 
 	if (m_pClipCommand)
 		m_pClipCommand->redo();
@@ -297,7 +292,7 @@ qtractorTimeScaleAddNodeCommand::qtractorTimeScaleAddNodeCommand (
 	float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
 	: qtractorTimeScaleNodeCommand(
-		QObject::tr("add tempo node"), pTimeScale, NULL,
+		QObject::tr("add tempo node"), pTimeScale,
 		iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
 {
 }
@@ -317,7 +312,7 @@ qtractorTimeScaleUpdateNodeCommand::qtractorTimeScaleUpdateNodeCommand (
 	float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor)
 	: qtractorTimeScaleNodeCommand(
-		QObject::tr("update tempo node"), pTimeScale, NULL,
+		QObject::tr("update tempo node"), pTimeScale,
 		iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
 {
 }
@@ -335,7 +330,7 @@ bool qtractorTimeScaleUpdateNodeCommand::undo (void) { return redo(); }
 qtractorTimeScaleRemoveNodeCommand::qtractorTimeScaleRemoveNodeCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode )
 	: qtractorTimeScaleNodeCommand(
-		QObject::tr("remove tempo node"), pTimeScale, pNode)
+		QObject::tr("remove tempo node"), pTimeScale, pNode->frame)
 {
 }
 
@@ -400,6 +395,10 @@ bool qtractorTimeScaleMarkerCommand::removeMarker (void)
 	if (pMarker->frame != m_iFrame)
 		return false;
 
+//	m_iFrame   = pMarker->frame;
+	m_sText    = pMarker->text;
+	m_rgbColor = pMarker->color;
+
 	m_pTimeScale->removeMarker(pMarker);
 
 	return true;
@@ -452,8 +451,7 @@ bool qtractorTimeScaleUpdateMarkerCommand::undo (void) { return redo(); }
 qtractorTimeScaleRemoveMarkerCommand::qtractorTimeScaleRemoveMarkerCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Marker *pMarker )
 	: qtractorTimeScaleMarkerCommand(
-		QObject::tr("remove marker"), pTimeScale,
-			pMarker->frame, pMarker->text, pMarker->color)
+		QObject::tr("remove marker"), pTimeScale, pMarker->frame)
 {
 }
 

@@ -485,16 +485,17 @@ public:
 	public:
 
 		// Constructor.
-		Marker(unsigned long iFrame, const QString& sText,
-			const QColor& rgbColor = Qt::darkGray)
-			: frame(iFrame), text(sText), color(rgbColor) {}
+		Marker(unsigned long iFrame, unsigned short iBar,
+			const QString& sText, const QColor& rgbColor = Qt::darkGray)
+			: frame(iFrame), bar(iBar), text(sText), color(rgbColor) {}
 
 		// Copy constructor.
-		Marker(const Marker& marker)
-			: frame(marker.frame), text(marker.text), color(marker.color) {}
+		Marker(const Marker& marker) : frame(marker.frame),
+			bar(marker.bar), text(marker.text), color(marker.color) {}
 
-		// Marker key.
-		unsigned long frame;
+		// Marker keys.
+		unsigned long  frame;
+		unsigned short bar;
 
 		// Marker payload.
 		QString text;

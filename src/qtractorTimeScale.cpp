@@ -409,7 +409,7 @@ void qtractorTimeScale::updateNode ( qtractorTimeScale::Node *pNode )
 	}
 
 	// And update marker/bar positions too...
-	updateMarkers(pNode);
+	updateMarkers(pNode->prev());
 }
 
 
@@ -762,9 +762,13 @@ qtractorTimeScale::Marker *qtractorTimeScale::addMarker (
 	Marker *pMarker	= 0;
 
 	// Snap to nearest bar...
+	unsigned short iBar = 0;
+
 	Node *pNodePrev = m_cursor.seekFrame(iFrame);
-	if (pNodePrev)
-		iFrame = pNodePrev->frameSnapToBar(iFrame);
+	if (pNodePrev) {
+		iBar = pNodePrev->barFromFrame(iFrame);
+		iFrame = pNodePrev->frameFromBar(iBar);
+	}
 
 	// Seek for the nearest marker...
 	Marker *pMarkerNear = m_markerCursor.seekFrame(iFrame);
@@ -772,11 +776,12 @@ qtractorTimeScale::Marker *qtractorTimeScale::addMarker (
 	if (pMarkerNear && pMarkerNear->frame == iFrame) {
 		// Update exact matching marker...
 		pMarker = pMarkerNear;
+		pMarker->bar = iBar;
 		pMarker->text = sText;
 		pMarker->color = rgbColor;
 	} else {
 		// Add/insert a new marker...
-		pMarker = new Marker(iFrame, sText, rgbColor);
+		pMarker = new Marker(iFrame, iBar, sText, rgbColor);
 		if (pMarkerNear && pMarkerNear->frame > iFrame)
 			m_markers.insertBefore(pMarker, pMarkerNear);
 		else
@@ -813,12 +818,17 @@ void qtractorTimeScale::removeMarker ( qtractorTimeScale::Marker *pMarker )
 // Update markers from given node position.
 void qtractorTimeScale::updateMarkers ( qtractorTimeScale::Node *pNode )
 {
+	if (pNode == 0)
+		pNode = m_nodes.first();
+	if (pNode == 0)
+		return;
+
 	Marker *pMarker = m_markerCursor.seekFrame(pNode->frame);
 	while (pMarker) {
-		if (pMarker->frame >= pNode->frame)
-			pMarker->frame  = pNode->frameSnapToBar(pMarker->frame);
-		if (pNode->next() && pMarker->frame >= pNode->next()->frame)
+		while (pNode->next() && pMarker->frame > pNode->next()->frame)
 			pNode = pNode->next();
+		if (pMarker->frame >= pNode->frame)
+			pMarker->frame  = pNode->frameFromBar(pMarker->bar);
 		pMarker = pMarker->next();
 	}
 }
