@@ -41,9 +41,8 @@ class qtractorTimeScaleNodeCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorTimeScaleNodeCommand(
-		const QString& sName, qtractorTimeScale *pTimeScale,
-		qtractorTimeScale::Node *pNode = NULL, unsigned long iFrame = 0,
+	qtractorTimeScaleNodeCommand(const QString& sName,
+		qtractorTimeScale *pTimeScale, unsigned long iFrame = 0,
 		float fTempo = 120.0f, unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2);
 
@@ -69,8 +68,6 @@ private:
 
 	// Instance variables.
 	qtractorTimeScale *m_pTimeScale;
-
-	qtractorTimeScale::Node *m_pNode;
 
 	unsigned long  m_iFrame;
 	float          m_fTempo;
