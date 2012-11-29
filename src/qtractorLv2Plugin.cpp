@@ -2597,6 +2597,19 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 
 #endif	// CONFIG_LV2_ATOM
+
+#ifdef CONFIG_LV2_UI
+
+	if (m_ui_params.count() > 0) {
+		QHash<uint32_t, float>::ConstIterator iter
+			= m_ui_params.constBegin();
+		for ( ; iter != m_ui_params.constEnd(); ++iter)
+			updateParamValue(iter.key(), iter.value(), false);
+		m_ui_params.clear();
+	}
+
+#endif	// CONFIG_LV2_UI
+
 }
 
 
@@ -2810,7 +2823,8 @@ void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 	float val = *(float *) buffer;
 
 	// FIXME: Update plugin params...
-	updateParamValue(port_index, val, false);
+	// updateParamValue(port_index, val, false);
+	m_ui_params.insert(port_index, val);
 }
 
 

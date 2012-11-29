@@ -440,6 +440,9 @@ private:
 	QWidget     *m_pQt4Widget;
 #endif
 
+	// Changed UI params hash-queue.
+	QHash<uint32_t, float> m_ui_params;
+
 #endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LV2_STATE
