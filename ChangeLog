@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 UI parameter updates are now asynchronously detached from the
+  source GUI widget thread, in attempt to improve cross-GUI-toolkit
+  responsiveness, specially focused on LV2 plugins with a GTK based
+  UI (eg. amsynth, triceratops, etc.). (EXPERIMENTAL)
+
 - Make sure LV2 UI parameters (input control ports) get updated when
   loading a genuine LV2 state preset.
 
