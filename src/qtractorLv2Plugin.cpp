@@ -867,8 +867,11 @@ public:
 	{
 		if (pObject == static_cast<QObject *> (m_pQt4Widget)
 			&& pEvent->type() == QEvent::Close) {
+			// Defer widget close!
 			m_pQt4Widget = NULL;
 			m_pLv2Plugin->closeEditorEx();
+			pEvent->ignore();
+			return true;
 		}
 
 		return QObject::eventFilter(pObject, pEvent);
