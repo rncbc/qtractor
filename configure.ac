@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.6.25, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.6.26, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -66,12 +66,6 @@ AC_ARG_ENABLE(libz,
   AC_HELP_STRING([--enable-libz], [enable libz interface (default=yes)]),
   [ac_libz="$enableval"],
   [ac_libz="yes"])
-
-# Enable SLV2 support.
-AC_ARG_ENABLE(slv2,
-  AC_HELP_STRING([--enable-slv2], [enable SLV2 interface support (default=no)]),
-  [ac_slv2="$enableval"],
-  [ac_slv2="no"])
 
 # Enable LILV support.
 AC_ARG_ENABLE(lilv,
@@ -205,20 +199,6 @@ AC_ARG_ENABLE(stacktrace,
   [ac_stacktrace="$enableval"])
 
 
-# Check for new alternative to SLV2 is disabled.
-if test "x$ac_lv2" = "xno"; then
-   ac_slv2="no"
-   ac_lilv="no"
-   ac_suil="no"
-elif test "x$ac_slv2" = "xyes"; then
-   ac_lilv="no"
-   ac_suil="no"
-elif test "x$ac_lilv" = "xno"; then
-   ac_slv2="yes"
-   ac_suil="no"
-fi
-
-
 # Standard installation base dirs.
 ac_with_paths="/usr /usr/local"
 
@@ -279,11 +259,6 @@ AC_ARG_WITH(liblo,
 # Set for alternate libz installation dir.
 AC_ARG_WITH(libz,
   AC_HELP_STRING([--with-libz=PATH], [use alternate libz path]),
-  [ac_with_paths="$ac_with_paths $withval"])
-
-# Set for alternate libslv2 installation dir.
-AC_ARG_WITH(libslv2,
-  AC_HELP_STRING([--with-libslv2=PATH], [use alternate libslv2 path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate liblilv installation dir.
@@ -461,7 +436,6 @@ AC_SUBST(ac_lrelease)
 AC_PATH_PROG(ac_pkg_config, pkg-config, [no], $ac_path)
 if test "x$ac_pkg_config" = "xno"; then
    ac_lv2="no"
-   ac_slv2="no"
    ac_lilv="no"
    ac_suil="no"
 fi
@@ -614,51 +588,13 @@ if test "x$ac_lilv" = "xyes"; then
    if test -n "$ac_lilv_libs"; then
       ac_libs="$ac_libs $ac_lilv_libs"
       AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
-      ac_slv2="no"
    else
       AC_MSG_WARN([*** lilv library not found.])
-      ac_slv2="yes"
       ac_lilv="no"
       ac_suil="no"
-      ac_lv2_presets="no"
-      ac_lv2_time="no"
    fi
 else
    ac_suil="no"
-   ac_lv2_presets="no"
-   ac_lv2_time="no"
-fi
-
-# Check for optional libslv2 library.
-if test "x$ac_slv2" = "xyes"; then
-   AC_CHECK_LIB(slv2, main, [ac_slv2="yes"], [ac_slv2="no"])
-fi
-if test "x$ac_slv2" = "xyes"; then
-   ac_slv2_libs=`$ac_pkg_config --libs slv2 2>/dev/null`
-   if test -n "$ac_slv2_libs"; then
-      ac_libs="$ac_libs $ac_slv2_libs"
-      AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
-      ac_lilv="no"
-      ac_suil="no"
-      ac_lv2_presets="no"
-      ac_lv2_time="no"
-   else
-      AC_MSG_WARN([*** slv2 library not found.])
-      AC_MSG_WARN([*** LV2 plugin support will be disabled.])
-      ac_slv2="no"
-      ac_lv2="no"
-      ac_lv2_event="no"
-      ac_lv2_atom="no"
-      ac_lv2_worker="no"
-      ac_lv2_gtk_ui="no"
-      ac_lv2_qt4_ui="no"
-      ac_lv2_external_ui="no"
-      ac_lv2_state="no"
-      ac_lv2_state_files="no"
-      ac_lv2_programs="no"
-      ac_lv2_presets="no"
-      ac_lv2_time="no"
-   fi
 fi
 
 # Check for LV2 new UI instantiation availability (libsuil).
@@ -683,8 +619,8 @@ elif test "x$ac_lilv" = "xyes"; then
   ac_lv2_external_ui="no"
 fi
 
-# Check for either LV2 host library (libslv2 or liblilv).
-if test "x$ac_slv2" = "xno" -a "x$ac_lilv" = "xno"; then
+# Check for LV2 host library (liblilv).
+if test "x$ac_lilv" = "xno"; then
    ac_lv2="no"
    ac_lv2_event="no"
    ac_lv2_atom="no"
@@ -794,21 +730,6 @@ if test "x$ac_libz" = "xyes"; then
    AC_CHECK_HEADER(zlib.h, [ac_zlib_h="yes"], [ac_zlib_h="no"])
    if test "x$ac_zlib_h" = "xno"; then
       AC_MSG_ERROR([zlib.h header file not found.])
-   fi
-fi
-
-# Check for slv2 headers.
-if test "x$ac_slv2" = "xyes"; then
-   ac_slv2_cflags=`$ac_pkg_config --cflags slv2 2>/dev/null`
-   if test -n "$ac_slv2_cflags"; then
-      CFLAGS="$ac_slv2_cflags $CFLAGS"
-      CPPFLAGS="$ac_slv2_cflags $CPPFLAGS"
-   fi
-   AC_CHECK_HEADER(slv2/slv2.h, [ac_slv2_h="yes"], [ac_slv2_h="no"])
-   if test "x$ac_slv2_h" = "xno"; then
-      AC_MSG_ERROR([slv2.h header file not found.])
-   else
-      ac_cflags="$ac_slv2_cflags $ac_cflags"
    fi
 fi
 
@@ -1134,7 +1055,6 @@ echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in support (libslv2) (DEPRECATED) . . . .: $ac_slv2"
 echo "  LV2 Plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
 echo "  LV2 Plug-in UI instantiation (libsuil) . . . . . .: $ac_suil"
 echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"

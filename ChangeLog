@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Good old SLV2 library support for LV2 plug-ins (libslv2) is now
+  irrevocably deprecated, or better said, completely wiped-out from
+  the LV2 host code, now considered extinct.
+
 - LV2 UI parameter updates are now asynchronously detached from the
   source GUI widget thread, in attempt to improve cross-GUI-toolkit
   responsiveness, specially focused on LV2 plugins with a GTK based

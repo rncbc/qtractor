@@ -1640,7 +1640,7 @@ bool qtractorMainForm::newSession (void)
 		return false;
 
 #ifdef CONFIG_LV2
-	qtractorLv2PluginType::slv2_open();
+	qtractorLv2PluginType::lilv_open();
 #endif
 
 	// Check whether we start new session
@@ -1917,7 +1917,7 @@ bool qtractorMainForm::closeSession (void)
 		// Reset playhead.
 		m_iPlayHead = 0;
 	#ifdef CONFIG_LV2
-		qtractorLv2PluginType::slv2_close();
+		qtractorLv2PluginType::lilv_close();
 	#endif
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
@@ -2007,7 +2007,7 @@ bool qtractorMainForm::loadSessionFileEx (
 	appendMessages(tr("Opening \"%1\"...").arg(sFilename));
 
 #ifdef CONFIG_LV2
-	qtractorLv2PluginType::slv2_open();
+	qtractorLv2PluginType::lilv_open();
 #endif
 		
 	// Read the file.
@@ -4909,17 +4909,12 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");
 #else
-#ifdef CONFIG_LIBSLV2
-	list << tr("LV2 Plug-in support (libslv2) enabled. (DEPRECATED)");
-#else
 #ifndef CONFIG_LIBLILV
 	list << tr("LV2 Plug-in support (liblilv) disabled.");
-#else
+#endif
 #ifndef  CONFIG_LIBSUIL
 	list << tr("LV2 Plug-in UI instantiation support (libsuil) disabled.");
 #endif
-#endif // CONFIG_LILV
-#endif // CONFIG_SLV2
 #ifndef CONFIG_LV2_QT4_UI
 	list << tr("LV2 Plug-in QT4 UI support disabled.");
 #endif

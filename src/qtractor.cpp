@@ -60,13 +60,6 @@
 #include "qtractorVstPlugin.h"
 #endif
 
-#ifdef CONFIG_LIBSLV2
-#ifdef CONFIG_LV2_GTK_UI
-#undef signals // Collides with GTK symbology
-#include <gtk/gtk.h>
-#endif
-#endif
-
 #ifdef CONFIG_XUNIQUE
 
 #include <QX11Info>
@@ -76,8 +69,8 @@
 
 #define QTRACTOR_XUNIQUE "qtractorApplication"
 
-#endif
-#endif
+#endif	// CONFIG_XUNIQUE
+#endif	// Q_WS_X11
 
 class qtractorApplication : public QApplication
 {
@@ -347,13 +340,6 @@ int main ( int argc, char **argv )
 	signal(SIGSEGV, stacktrace);
 	signal(SIGABRT, stacktrace);
 	signal(SIGBUS,  stacktrace);
-#endif
-#endif
-#if defined(Q_WS_X11)
-#ifdef CONFIG_LIBSLV2
-#ifdef CONFIG_LV2_GTK_UI
-	gtk_init(&argc, &argv);
-#endif
 #endif
 #endif
 	qtractorApplication app(argc, argv);

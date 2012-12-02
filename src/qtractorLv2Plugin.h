@@ -24,16 +24,8 @@
 
 #include "qtractorPlugin.h"
 
-#ifdef CONFIG_LIBSLV2
-#include <slv2/slv2.h>
-#endif
-
 #ifdef CONFIG_LIBLILV
 #include <lilv/lilv.h>
-#define SLV2Plugin   LilvPlugin*
-#define SLV2Instance LilvInstance*
-#define SLV2UIs      LilvUIs*
-#define SLV2UI       LilvUI*
 #endif
 
 #ifdef CONFIG_LIBSUIL
@@ -95,8 +87,6 @@ class qtractorLv2Worker;
 #include "lv2_programs.h"
 #endif
 
-#ifdef CONFIG_LIBLILV
-
 #ifdef CONFIG_LV2_PRESETS
 // LV2 Presets support.
 #include "lv2/lv2plug.in/ns/ext/presets/presets.h"
@@ -109,8 +99,6 @@ class qtractorLv2Worker;
 #include <jack/transport.h>
 #endif
 
-#endif	// CONFIG_LIBLILV
-
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -121,9 +109,9 @@ class qtractorLv2PluginType : public qtractorPluginType
 public:
 
 	// Constructor.
-	qtractorLv2PluginType(const QString& sUri, SLV2Plugin plugin = NULL)
+	qtractorLv2PluginType(const QString& sUri, LilvPlugin *plugin = NULL)
 		: qtractorPluginType(NULL, 0, qtractorPluginType::Lv2),
-			m_sUri(sUri), m_slv2_plugin(plugin)	{}
+			m_sUri(sUri), m_lilv_plugin(plugin)	{}
 
 	// Destructor.
 	~qtractorLv2PluginType()
@@ -135,22 +123,22 @@ public:
 
 	// Factory method (static)
 	static qtractorLv2PluginType *createType(
-		const QString& sUri, SLV2Plugin plugin = NULL);
+		const QString& sUri, LilvPlugin *plugin = NULL);
 
 	// LV2 plugin URI (virtual override).
 	QString filename() const
 		{ return m_sUri; }
 
 	// LV2 descriptor method (static)
-	static SLV2Plugin slv2_plugin(const QString& sUri);
+	static LilvPlugin *lilv_plugin(const QString& sUri);
 
 	// Specific accessors.
-	SLV2Plugin slv2_plugin() const
-		{ return m_slv2_plugin; }
+	LilvPlugin *lilv_plugin() const
+		{ return m_lilv_plugin; }
 
 	// LV2 World stuff (ref. counted).
-	static void slv2_open();
-	static void slv2_close();
+	static void lilv_open();
+	static void lilv_close();
 
 	// Plugin type listing (static).
 	static bool getTypes(qtractorPluginPath& path);
@@ -170,7 +158,7 @@ protected:
 	QString    m_sUri;
 
 	// LV2 descriptor itself.
-	SLV2Plugin m_slv2_plugin;
+	LilvPlugin *m_lilv_plugin;
 
 #ifdef CONFIG_LV2_EVENT
 	unsigned short m_iMidiEventIns;
@@ -209,8 +197,8 @@ public:
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Specific accessors.
-	SLV2Plugin slv2_plugin() const;
-	SLV2Instance slv2_instance(unsigned short iInstance) const;
+	LilvPlugin *lilv_plugin() const;
+	LilvInstance *lilv_instance(unsigned short iInstance) const;
 
 	LV2_Handle lv2_handle(unsigned short iInstance) const;
 
@@ -239,18 +227,9 @@ public:
 	// Idle editor (static).
 	static void idleEditorAll();
 
-	// LV2 UI descriptor accessor.
-	const LV2UI_Descriptor *lv2_ui_descriptor() const;
-
-	// LV2 UI handle accessor.
-	LV2UI_Handle lv2_ui_handle() const;
-
 	// LV2 UI control change method.
 	void lv2_ui_write(uint32_t port_index,
 		uint32_t buffer_size, uint32_t protocol, const void *buffer);
-
-	// LV2 UI cleanup method.
-	void lv2_ui_cleanup() const;
 
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
@@ -297,11 +276,6 @@ public:
 	// LV2 Programs extension data descriptor accessor.
 	const LV2_Programs_Interface *lv2_programs_descriptor(unsigned short iInstance) const;
 
-#ifdef CONFIG_LV2_UI
-	// LV2 Programs UI descriptor accessor.
-	const LV2_Programs_UI_Interface *lv2_ui_programs_descriptor (void) const;
-#endif
-
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
 
@@ -310,7 +284,6 @@ public:
 
 #endif
 
-#ifdef CONFIG_LIBLILV
 #ifdef CONFIG_LV2_PRESETS
 	// Refresh and load preset labels listing.
 	QStringList presetList() const;
@@ -327,12 +300,11 @@ public:
 	static void updateTime(
 		const jack_transport_state_t state, const jack_position_t *pPos);
 #endif
-#endif	// CONFIG_LIBLILV
 
 private:
 
 	// Instance variables.
-	SLV2Instance  *m_pInstances;
+	LilvInstance **m_ppInstances;
 
 	// List of output control port indexes and data.
 	unsigned long *m_piControlOuts;
@@ -380,8 +352,8 @@ private:
 
 	volatile bool  m_bEditorClosed;
 
-	SLV2UIs        m_slv2_uis;
-	SLV2UI         m_slv2_ui;
+	LilvUIs       *m_lilv_uis;
+	LilvUI        *m_lilv_ui;
 
 	LV2_Extension_Data_Feature m_lv2_data_access;
 
@@ -396,11 +368,6 @@ private:
 	SuilWidget     m_lv2_ui_widget;
 #endif
 
-#if CONFIG_LIBSLV2
-	SLV2UIInstance m_slv2_ui_instance;
-	LV2UI_Widget   m_lv2_ui_widget;
-#endif
-	
 #ifdef CONFIG_LV2_ATOM
 
 	// LV2 Atom control (ring)buffers for UI updates.
@@ -423,13 +390,6 @@ private:
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 	LV2_Feature          m_lv2_ui_external_deprecated_feature;
 	LV2_External_UI_Host m_lv2_ui_external_deprecated_host;
-#endif
-#endif
-
-#ifdef CONFIG_LIBSLV2
-#ifdef CONFIG_LV2_GTK_UI
-	// Our own GTK UI widget (parent frame).
-	struct _GtkWidget *m_pGtkWindow;
 #endif
 #endif
 
@@ -459,7 +419,6 @@ private:
 #endif
 #endif
 
-#ifdef CONFIG_LIBLILV
 #ifdef CONFIG_LV2_PRESETS
 	// LV2 Presets label-to-uri map.
 	QHash<QString, QString> m_lv2_presets;
@@ -468,7 +427,6 @@ private:
 	// LV2 Time designated ports map.
 	QHash<int, unsigned long>  m_lv2_time_ports;
 #endif
-#endif	// CONFIG_LIBLILV
 };
 
 
