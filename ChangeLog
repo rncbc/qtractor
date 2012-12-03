@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed off-by-one-tick bug on MIDI file input which was leaving
+  spurious zero-length runt notes at the end of a MIDI clip if a
+  note-on coincides with the split point. (EXPERIMENTAL)
+
 - Good old SLV2 library support for LV2 plug-ins (libslv2) is now
   irrevocably deprecated, or better said, completely wiped-out from
   the LV2 host code, now considered extinct.

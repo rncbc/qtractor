@@ -246,7 +246,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 
 			// Check for sequence time length, if any...
 			if (pSeq->timeLength() > 0
-				&& iTime > pSeq->timeOffset() + pSeq->timeLength())
+				&& iTime >= pSeq->timeOffset() + pSeq->timeLength())
 				break;
 
 			// Check whether it won't be channel filtered...

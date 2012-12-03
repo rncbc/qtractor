@@ -128,11 +128,11 @@ The software requirements for build and runtime are listed as follows:
         http://lv2plug.in/
 
   [14] liblilv, Lightweight LV2 host implementation stack
-		http://drobilla.net/software/lilv/
-		http://drobilla.net/software/suil/
-		http://drobilla.net/software/sratom/
-		http://drobilla.net/software/sord/
-		http://drobilla.net/software/serd/
+        http://drobilla.net/software/lilv/
+        http://drobilla.net/software/suil/
+        http://drobilla.net/software/sratom/
+        http://drobilla.net/software/sord/
+        http://drobilla.net/software/serd/
 
 
 Installation
@@ -252,7 +252,7 @@ References
      http://lv2plug.in/
 
 [14] liblilv, Lightweight LV2 host implementation stack
-	 (needed for LV2 support)
+     (needed for LV2 support)
      http://drobilla.net/software/lilv/
      http://drobilla.net/software/suil/
      http://drobilla.net/software/sratom/
