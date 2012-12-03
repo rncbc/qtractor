@@ -615,6 +615,9 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 	if (pClip == NULL)
 		return false;
 
+	if (!pClip->queryEditor())
+		return false;
+
 	unsigned long iClipStart = pClip->clipStart();
 	unsigned long iClipEnd   = iClipStart + pClip->clipLength();
 	if (iClipStart >= iPlayHead || iPlayHead >= iClipEnd)
