@@ -99,6 +99,11 @@ class qtractorLv2Worker;
 #include <jack/transport.h>
 #endif
 
+#ifdef CONFIG_LV2_OPTIONS
+// LV2 Options support.
+#include "lv2/lv2plug.in/ns/ext/options/options.h"
+#endif	// CONFIG_LV2_OPTIONS
+
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -111,7 +116,7 @@ public:
 	// Constructor.
 	qtractorLv2PluginType(const QString& sUri, LilvPlugin *plugin = NULL)
 		: qtractorPluginType(NULL, 0, qtractorPluginType::Lv2),
-			m_sUri(sUri), m_lilv_plugin(plugin)	{}
+			m_sUri(sUri), m_lv2_plugin(plugin)	{}
 
 	// Destructor.
 	~qtractorLv2PluginType()
@@ -130,15 +135,15 @@ public:
 		{ return m_sUri; }
 
 	// LV2 descriptor method (static)
-	static LilvPlugin *lilv_plugin(const QString& sUri);
+	static LilvPlugin *lv2_plugin(const QString& sUri);
 
 	// Specific accessors.
-	LilvPlugin *lilv_plugin() const
-		{ return m_lilv_plugin; }
+	LilvPlugin *lv2_plugin() const
+		{ return m_lv2_plugin; }
 
 	// LV2 World stuff (ref. counted).
-	static void lilv_open();
-	static void lilv_close();
+	static void lv2_open();
+	static void lv2_close();
 
 	// Plugin type listing (static).
 	static bool getTypes(qtractorPluginPath& path);
@@ -158,7 +163,7 @@ protected:
 	QString    m_sUri;
 
 	// LV2 descriptor itself.
-	LilvPlugin *m_lilv_plugin;
+	LilvPlugin *m_lv2_plugin;
 
 #ifdef CONFIG_LV2_EVENT
 	unsigned short m_iMidiEventIns;
@@ -197,8 +202,8 @@ public:
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Specific accessors.
-	LilvPlugin *lilv_plugin() const;
-	LilvInstance *lilv_instance(unsigned short iInstance) const;
+	LilvPlugin *lv2_plugin() const;
+	LilvInstance *lv2_instance(unsigned short iInstance) const;
 
 	LV2_Handle lv2_handle(unsigned short iInstance) const;
 
@@ -352,8 +357,8 @@ private:
 
 	volatile bool  m_bEditorClosed;
 
-	LilvUIs       *m_lilv_uis;
-	LilvUI        *m_lilv_ui;
+	LilvUIs       *m_lv2_uis;
+	LilvUI        *m_lv2_ui;
 
 	LV2_Extension_Data_Feature m_lv2_data_access;
 
@@ -423,9 +428,23 @@ private:
 	// LV2 Presets label-to-uri map.
 	QHash<QString, QString> m_lv2_presets;
 #endif
+
 #ifdef CONFIG_LV2_TIME
 	// LV2 Time designated ports map.
 	QHash<int, unsigned long>  m_lv2_time_ports;
+#endif
+
+#ifdef CONFIG_LV2_OPTIONS
+
+	LV2_Feature        m_lv2_options_feature;
+	LV2_Options_Option m_lv2_options[5];
+
+	float    m_fSampleRate;
+#ifdef CONFIG_LV2_BUF_SIZE
+	uint32_t m_iMinBlockLength;
+	uint32_t m_iMaxBlockLength;
+	uint32_t m_iSequenceSize;
+#endif
 #endif
 };
 
