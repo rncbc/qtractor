@@ -1631,7 +1631,7 @@ bool qtractorMainForm::newSession (void)
 		return false;
 
 #ifdef CONFIG_LV2
-	qtractorLv2PluginType::lilv_open();
+	qtractorLv2PluginType::lv2_open();
 #endif
 
 	// Check whether we start new session
@@ -1908,7 +1908,7 @@ bool qtractorMainForm::closeSession (void)
 		// Reset playhead.
 		m_iPlayHead = 0;
 	#ifdef CONFIG_LV2
-		qtractorLv2PluginType::lilv_close();
+		qtractorLv2PluginType::lv2_close();
 	#endif
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
@@ -1998,7 +1998,7 @@ bool qtractorMainForm::loadSessionFileEx (
 	appendMessages(tr("Opening \"%1\"...").arg(sFilename));
 
 #ifdef CONFIG_LV2
-	qtractorLv2PluginType::lilv_open();
+	qtractorLv2PluginType::lv2_open();
 #endif
 		
 	// Read the file.

@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.6.27, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.6.28, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -125,7 +125,7 @@ AC_ARG_ENABLE(lv2-atom,
   [ac_lv2_atom="yes"])
 
 AC_ARG_ENABLE(lv2-worker,
-  AC_HELP_STRING([--enable-lv2-worker], [enable LV2 plug-in worker/schedule support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-worker], [enable LV2 plug-in Worker/schedule support (default=yes)]),
   [ac_lv2_worker="$enableval"],
   [ac_lv2_worker="yes"])
 
@@ -140,34 +140,44 @@ AC_ARG_ENABLE(lv2-qt4-ui,
   [ac_lv2_qt4_ui="yes"])
 
 AC_ARG_ENABLE(lv2-external-ui,
-  AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in External UI support (default=yes)]),
   [ac_lv2_external_ui="$enableval"],
   [ac_lv2_external_ui="yes"])
 
 AC_ARG_ENABLE(lv2-state,
-  AC_HELP_STRING([--enable-lv2-state], [enable LV2 plug-in state support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-state], [enable LV2 plug-in State support (default=yes)]),
   [ac_lv2_state="$enableval"],
   [ac_lv2_state="yes"])
 
 AC_ARG_ENABLE(lv2-state-files,
-  AC_HELP_STRING([--enable-lv2-state-files], [enable LV2 plug-in state files support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-state-files], [enable LV2 plug-in State Files support (default=yes)]),
   [ac_lv2_state_files="$enableval"],
   [ac_lv2_state_files="yes"])
 
 AC_ARG_ENABLE(lv2-programs,
-  AC_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in programs support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in Programs support (default=yes)]),
   [ac_lv2_programs="$enableval"],
   [ac_lv2_programs="yes"])
 
 AC_ARG_ENABLE(lv2-presets,
-  AC_HELP_STRING([--enable-lv2-presets], [enable LV2 plug-in presets support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-presets], [enable LV2 plug-in Presets support (default=yes)]),
   [ac_lv2_presets="$enableval"],
   [ac_lv2_presets="yes"])
 
 AC_ARG_ENABLE(lv2-time,
-  AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in time/position support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time/position support (default=yes)]),
   [ac_lv2_time="$enableval"],
   [ac_lv2_time="yes"])
+
+AC_ARG_ENABLE(lv2-options,
+  AC_HELP_STRING([--enable-lv2-options], [enable LV2 plug-in Options support (default=yes)]),
+  [ac_lv2_options="$enableval"],
+  [ac_lv2_options="yes"])
+
+AC_ARG_ENABLE(lv2-buf-size,
+  AC_HELP_STRING([--enable-lv2-buf-size], [enable LV2 plug-in Buf-size support (default=yes)]),
+  [ac_lv2_buf_size="$enableval"],
+  [ac_lv2_buf_size="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -633,6 +643,8 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_programs="no"
    ac_lv2_presets="no"
    ac_lv2_time="no"
+   ac_lv2_options="no"
+   ac_lv2_buf_size="no"
 fi
 
 # Check for JACK session event callback availability.
@@ -880,6 +892,8 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_programs="no"
       ac_lv2_presets="no"
       ac_lv2_time="no"
+      ac_lv2_options="no"
+      ac_lv2_buf_size="no"
    fi
 fi
 if test "x$ac_lv2_event" = "xyes"; then
@@ -899,7 +913,12 @@ if test "x$ac_lv2_atom" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_ATOM, 1, [Define if LV2 Atom/MIDI aupport is available.])
    else
       AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
+      ac_lv2_options="no"
+      ac_lv2_buf_size="no"
    fi
+else
+   ac_options="no"
+   ac_buf_size="no"
 fi
 if test "x$ac_lv2_worker" = "xyes"; then
    AC_CHECK_HEADER(
@@ -991,6 +1010,29 @@ if test "x$ac_lv2_time" = "xyes"; then
       AC_MSG_WARN([*** LV2 Time support will be disabled.])
    fi
 fi
+if test "x$ac_lv2_options" = "xyes"; then
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/options/options.h,
+      [ac_lv2_options="yes"], [ac_lv2_options="no"])
+   if test "x$ac_lv2_options" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_OPTIONS, 1, [Define if LV2 Options is supported.])
+   else
+      AC_MSG_WARN([*** LV2 Options support will be disabled.])
+      ac_lv2_buf_size="no"
+   fi
+else
+   ac_lv2_buf_size="no"
+fi
+if test "x$ac_lv2_buf_size" = "xyes"; then
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/buf-size/buf-size.h,
+      [ac_lv2_buf_size="yes"], [ac_lv2_buf_size="no"])
+   if test "x$ac_lv2_buf_size" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_BUF_SIZE, 1, [Define if LV2 Buf-size is supported.])
+   else
+      AC_MSG_WARN([*** LV2 Buf-size support will be disabled.])
+   fi
+fi
 
 # Check for JACK session headers availability.
 if test "x$ac_jack_session" = "xyes"; then
@@ -1051,23 +1093,25 @@ echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
 echo "  Archive/Zip file support (zlib)  . . . . . . . . .: $ac_libz"
 echo "  IEEE 32bit float optimizations . . . . . . . . . .: $ac_float32"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
-echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
-echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
-echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
-echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
-echo "  LV2 Plug-in UI instantiation (libsuil) . . . . . .: $ac_suil"
-echo "  LV2 Plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
-echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
-echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
-echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
-echo "  LV2 Plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
-echo "  LV2 Plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
-echo "  LV2 Plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
-echo "  LV2 Plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
-echo "  LV2 Plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
-echo "  LV2 Plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
-echo "  LV2 Plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
+echo "  LADSPA plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
+echo "  DSSI plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
+echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
+echo "  LV2 plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
+echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
+echo "  LV2 plug-in UI instantiation (libsuil) . . . . . .: $ac_suil"
+echo "  LV2 plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
+echo "  LV2 plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
+echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
+echo "  LV2 plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
+echo "  LV2 plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
+echo "  LV2 plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
+echo "  LV2 plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
+echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
+echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
+echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
+echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
+echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
