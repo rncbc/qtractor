@@ -1010,10 +1010,9 @@ static struct qtractorLv2Time
 
 
 #ifdef CONFIG_LV2_OPTIONS
-static uint32_t g_lv2_params_sample_rate     = 0;
 #ifdef CONFIG_LV2_BUF_SIZE
-static uint32_t g_lv2_bufsz_max_block_length = 0;
 static uint32_t g_lv2_bufsz_min_block_length = 0;
+static uint32_t g_lv2_bufsz_max_block_length = 0;
 static uint32_t g_lv2_bufsz_sequence_size    = 0;
 #endif
 #endif
@@ -1307,7 +1306,6 @@ void qtractorLv2PluginType::lv2_open (void)
 	// LV2 State: set up supported interface and types...
 	g_lv2_state_interface_hint = lilv_new_uri(g_lv2_world,
 		LV2_STATE__interface);
-	g_lv2_atom_string_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 #endif
 
 	// Set up the port properties we support (as hints).
@@ -1328,6 +1326,17 @@ void qtractorLv2PluginType::lv2_open (void)
 		member.data = 0.0f;
 	}
 #endif
+
+#ifdef CONFIG_LV2_OPTIONS
+#ifdef CONFIG_LV2_BUF_SIZE
+	g_lv2_bufsz_min_block_length
+		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__minBlockLength);
+	g_lv2_bufsz_max_block_length
+		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__maxBlockLength);
+	g_lv2_bufsz_sequence_size
+		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__sequenceSize);
+#endif
+#endif
 }
 
 
@@ -1338,6 +1347,15 @@ void qtractorLv2PluginType::lv2_close (void)
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2PluginType::lv2_close()");
+#endif
+
+
+#ifdef CONFIG_LV2_OPTIONS
+#ifdef CONFIG_LV2_BUF_SIZE
+	g_lv2_bufsz_min_block_length = 0;
+	g_lv2_bufsz_max_block_length = 0;
+	g_lv2_bufsz_sequence_size    = 0;
+#endif
 #endif
 
 #ifdef CONFIG_LV2_TIME
@@ -1508,7 +1526,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
     #endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_OPTIONS
-		, m_fSampleRate(0.0f)
 	#ifdef CONFIG_LV2_BUF_SIZE
 		, m_iMinBlockLength(0)
 		, m_iMaxBlockLength(0)
@@ -1552,9 +1569,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 #endif	// CONFIG_LV2_STATE_FILES
 
 #ifdef CONFIG_LV2_OPTIONS
-
-	m_fSampleRate     = float(sampleRate());
-
 #ifdef CONFIG_LV2_BUF_SIZE
 
 	m_iMinBlockLength = 0;
@@ -1585,20 +1599,14 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	}
 
-#endif	// CONFIG_LV2_BUF_SIZE
-
 	// Build options array to pass to plugin
 	const LV2_Options_Option options[] = {
-		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_params_sample_rate,
-		  sizeof(float), g_lv2_atom_float_type, &m_fSampleRate },
-#ifdef CONFIG_LV2_BUF_SIZE
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_bufsz_min_block_length,
 		  sizeof(int32_t), g_lv2_atom_int_type, &m_iMinBlockLength },
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_bufsz_max_block_length,
 		  sizeof(int32_t), g_lv2_atom_int_type, &m_iMaxBlockLength },
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_bufsz_sequence_size,
 		  sizeof(int32_t), g_lv2_atom_int_type, &m_iSequenceSize },
-#endif	// CONFIG_LV2_BUF_SIZE
 		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
 	};
 
@@ -1608,6 +1616,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_options_feature.data  = &m_lv2_options;
 	m_lv2_features[iFeatures++] = &m_lv2_options_feature;
 
+#endif	// CONFIG_LV2_BUF_SIZE
 #endif	// CONFIG_LV2_OPTIONS
 
 	m_lv2_features[iFeatures] = NULL;
