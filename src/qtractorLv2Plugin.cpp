@@ -1394,11 +1394,6 @@ void qtractorLv2PluginType::lv2_close (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	lilv_node_free(g_lv2_atom_port_class);
-	g_lv2_atom_event_type    = 0;
-	g_lv2_atom_sequence_type = 0;
-	g_lv2_atom_string_type   = 0;
-	g_lv2_atom_float_type    = 0;
-	g_lv2_atom_int_type      = 0;
 #endif
 
 #ifdef CONFIG_LV2_UI
@@ -1423,7 +1418,20 @@ void qtractorLv2PluginType::lv2_close (void)
 	g_lv2_midi_class    = NULL;
 #endif
 #ifdef CONFIG_LV2_ATOM
-	g_lv2_atom_port_class = NULL;
+	g_lv2_atom_port_class    = NULL;
+	g_lv2_atom_event_type    = 0;
+	g_lv2_atom_sequence_type = 0;
+	g_lv2_atom_string_type   = 0;
+	g_lv2_atom_float_type    = 0;
+	g_lv2_atom_int_type      = 0;
+#endif
+
+#ifdef CONFIG_LV2_OPTIONS
+#ifdef CONFIG_LV2_BUF_SIZE
+	g_lv2_bufsz_min_block_length = 0;
+	g_lv2_bufsz_max_block_length = 0;
+	g_lv2_bufsz_sequence_size    = 0;
+#endif
 #endif
 
 #ifdef CONFIG_LV2_UI
