@@ -496,24 +496,25 @@ qtractorMainForm::qtractorMainForm (
 
 	// Create some statusbar labels...
 	QStatusBar *pStatusBar = statusBar();
+	const QPalette& spal = pStatusBar->palette();
 
 	QLabel *pLabel;
-	QPalette *pPalette = new QPalette(statusBar()->palette());
+	QPalette *pPalette = new QPalette(spal);
 	m_paletteItems[PaletteNone] = pPalette;
 
-	pPalette = new QPalette(pStatusBar->palette());
+	pPalette = new QPalette(spal);
 	pPalette->setColor(QPalette::Window, Qt::red);
 	m_paletteItems[PaletteRed] = pPalette;
 
-	pPalette = new QPalette(pStatusBar->palette());
+	pPalette = new QPalette(spal);
 	pPalette->setColor(QPalette::Window, Qt::yellow);
 	m_paletteItems[PaletteYellow] = pPalette;
 
-	pPalette = new QPalette(pStatusBar->palette());
+	pPalette = new QPalette(spal);
 	pPalette->setColor(QPalette::Window, Qt::cyan);
 	m_paletteItems[PaletteCyan] = pPalette;
 
-	pPalette = new QPalette(pStatusBar->palette());
+	pPalette = new QPalette(spal);
 	pPalette->setColor(QPalette::Window, Qt::green);
 	m_paletteItems[PaletteGreen] = pPalette;
 
