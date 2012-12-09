@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Worker/Schedule now supporting multi-instance vs. single-UI
+  scenarios. (EXPERIMENTAL)
+
 - LV2 Options and Buf-size extension support added. (EXPERIMENTAL)
 
 - Fixed an off-by-one-tick bug on MIDI file input which was leaving
