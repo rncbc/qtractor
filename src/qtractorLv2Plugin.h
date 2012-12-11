@@ -345,7 +345,7 @@ private:
 
 #ifdef CONFIG_LV2_WORKER
 	// LV2 Worker/Schedule support.
-	qtractorLv2Worker **m_lv2_workers;
+	qtractorLv2Worker *m_lv2_worker;
 #endif
 
 #ifdef CONFIG_LV2_UI

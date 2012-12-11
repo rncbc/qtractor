@@ -685,8 +685,9 @@ void qtractorAudioEngine::clean (void)
 		m_pJackClient = NULL;
 	}
 
-	// Null period.
-	m_iBufferSize = 0;
+	// Null sample-rate/period.
+	// m_iSampleRate = 0;
+	// m_iBufferSize = 0;
 	
 	// Ramping playback spin-lock off.
 	ATOMIC_SET(&m_ramping, 0);

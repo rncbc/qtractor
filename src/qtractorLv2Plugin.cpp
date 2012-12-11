@@ -188,7 +188,8 @@ public:
 
 	// Constructor.
 	qtractorLv2Worker(qtractorLv2Plugin *pLv2Plugin,
-		unsigned short iInstance, const LV2_Feature *const *features);
+		const LV2_Feature *const *features);
+
 	// Destructor.
 	~qtractorLv2Worker();
 
@@ -218,7 +219,6 @@ private:
 
 	// Instance members.
 	qtractorLv2Plugin  *m_pLv2Plugin;
-	unsigned short      m_iInstance;
 
 	LV2_Feature       **m_lv2_features;
 
@@ -419,11 +419,10 @@ qtractorLv2WorkerThread *qtractorLv2Worker::g_pWorkerThread   = NULL;
 unsigned int             qtractorLv2Worker::g_iWorkerRefCount = 0;
 
 // Constructor.
-qtractorLv2Worker::qtractorLv2Worker ( qtractorLv2Plugin *pLv2Plugin,
-	unsigned short iInstance, const LV2_Feature *const *features )
+qtractorLv2Worker::qtractorLv2Worker (
+	qtractorLv2Plugin *pLv2Plugin, const LV2_Feature *const *features )
 {
 	m_pLv2Plugin = pLv2Plugin;
-	m_iInstance  = iInstance;
 
 	int iFeatures = 0;
 	while (features && features[iFeatures]) { ++iFeatures; }
@@ -496,26 +495,34 @@ void qtractorLv2Worker::respond ( uint32_t size, const void *data )
 void qtractorLv2Worker::commit (void)
 {
 	const LV2_Worker_Interface *worker
-		= m_pLv2Plugin->lv2_worker_interface(m_iInstance);
+		= m_pLv2Plugin->lv2_worker_interface(0);
 	if (worker == NULL)
 		return;
 
-	LV2_Handle handle = m_pLv2Plugin->lv2_handle(m_iInstance);
-	if (handle == NULL)
-		return;
+	unsigned short i, iInstances = m_pLv2Plugin->instances();
 
 	uint32_t read_space = ::jack_ringbuffer_read_space(m_pResponses);
 	while (read_space > 0) {
 		uint32_t size = 0;
 		::jack_ringbuffer_read(m_pResponses, (char *) &size, sizeof(size));
 		::jack_ringbuffer_read(m_pResponses, (char *) m_pResponse, size);
-		if (worker->work_response)
-			(*worker->work_response)(handle, size, m_pResponse);
+		if (worker->work_response) {
+			for (i = 0; i < iInstances; ++i) {
+				LV2_Handle handle = m_pLv2Plugin->lv2_handle(i);
+				if (handle)
+					(*worker->work_response)(handle, size, m_pResponse);
+			}
+		}
 		read_space -= sizeof(size) + size;
 	}
 
-	if (worker->end_run)
-		(*worker->end_run)(handle);
+	if (worker->end_run) {
+		for (i = 0; i < iInstances; ++i) {
+			LV2_Handle handle = m_pLv2Plugin->lv2_handle(i);
+			if (handle)
+				(*worker->end_run)(handle);
+		}
+	}
 }
 
 // Process work.
@@ -525,13 +532,11 @@ void qtractorLv2Worker::process (void)
 		return;
 
 	const LV2_Worker_Interface *worker
-		= m_pLv2Plugin->lv2_worker_interface(m_iInstance);
+		= m_pLv2Plugin->lv2_worker_interface(0);
 	if (worker == NULL)
 		return;
 
-	LV2_Handle handle = m_pLv2Plugin->lv2_handle(m_iInstance);
-	if (handle == NULL)
-		return;
+	unsigned short i, iInstances = m_pLv2Plugin->instances();
 
 	void *buf = NULL;
 	uint32_t size = 0;
@@ -543,8 +548,14 @@ void qtractorLv2Worker::process (void)
 	while (read_space > 0) {
 		::jack_ringbuffer_read(m_pRequests, (char *) &size, sizeof(size));
 		::jack_ringbuffer_read(m_pRequests, (char *) buf, size);
-		if (worker->work)
-			(*worker->work)(handle, qtractor_lv2_worker_respond, this, size, buf);
+		if (worker->work) {
+			for (i = 0; i < iInstances; ++i) {
+				LV2_Handle handle = m_pLv2Plugin->lv2_handle(i);
+				if (handle)
+					(*worker->work)(handle,
+						qtractor_lv2_worker_respond, this, size, buf);
+			}
+		}
 		read_space -= sizeof(size) + size;
 	}
 
@@ -1510,7 +1521,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 		, m_lv2_features(NULL)
 	#ifdef CONFIG_LV2_WORKER
-		, m_lv2_workers(NULL)
+		, m_lv2_worker(NULL)
 	#endif
 	#ifdef CONFIG_LV2_UI
 		, m_lv2_ui_type(LV2_UI_TYPE_NONE)
@@ -1848,11 +1859,9 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Close old instances, all the way...
 #ifdef CONFIG_LV2_WORKER
-	if (m_lv2_workers) {
-		for (unsigned short i = 0; i < iOldInstances; ++i)
-			delete m_lv2_workers[i];
-		delete [] m_lv2_workers;
-		m_lv2_workers = NULL;
+	if (m_lv2_worker) {
+		delete m_lv2_worker;
+		m_lv2_worker = NULL;
 	}
 #endif
 	if (m_ppInstances) {
@@ -1877,11 +1886,14 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 #endif
 
 #ifdef CONFIG_LV2_WORKER
-	if (lilv_plugin_has_feature(lv2_plugin(), g_lv2_worker_schedule_hint)) {
-		m_lv2_workers = new qtractorLv2Worker * [iInstances];
-		for (unsigned short i = 0; i < iInstances; ++i)
-			m_lv2_workers[i] = new qtractorLv2Worker(this, i, m_lv2_features);
-	}
+	if (lilv_plugin_has_feature(lv2_plugin(), g_lv2_worker_schedule_hint))
+		m_lv2_worker = new qtractorLv2Worker(this, m_lv2_features);
+#endif
+
+	LV2_Feature **features = m_lv2_features;
+#ifdef CONFIG_LV2_WORKER
+	if (m_lv2_worker)
+		features = m_lv2_worker->lv2_features();
 #endif
 
 	// We'll need output control (not dummy anymore) port indexes...
@@ -1889,11 +1901,6 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	// Allocate new instances...
 	m_ppInstances = new LilvInstance * [iInstances];
 	for (unsigned short i = 0; i < iInstances; ++i) {
-		LV2_Feature **features = m_lv2_features;
-	#ifdef CONFIG_LV2_WORKER
-		if (m_lv2_workers && m_lv2_workers[i])
-			features = m_lv2_workers[i]->lv2_features();
-	#endif
 		// Instantiate them properly first...
 		LilvInstance *instance
 			= lilv_plugin_instantiate(plugin, sampleRate(), features);
@@ -2111,10 +2118,6 @@ void qtractorLv2Plugin::process (
 			// Make it run...
 			lilv_instance_run(instance, nframes);
 			// Done.
-		#ifdef CONFIG_LV2_WORKER
-			if (m_lv2_workers && m_lv2_workers[i])
-				m_lv2_workers[i]->commit();
-		#endif
 			// Wrap channels?...
 			if (iIChannel < iChannels - 1)
 				++iIChannel;
@@ -2122,6 +2125,11 @@ void qtractorLv2Plugin::process (
 				++iOChannel;
 		}
 	}
+
+#ifdef CONFIG_LV2_WORKER
+	if (m_lv2_worker)
+		m_lv2_worker->commit();
+#endif
 
 #ifdef CONFIG_LV2_ATOM
 #ifdef CONFIG_LV2_UI
