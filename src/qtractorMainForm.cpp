@@ -1649,6 +1649,9 @@ bool qtractorMainForm::newSession (void)
 	if (m_pOptions && m_pOptions->bSessionTemplate)
 		return loadSessionFileEx(m_pOptions->sSessionTemplatePath, true, false);
 
+	// Prepare the session engines...
+	updateSessionPre();
+
 	// Ok, increment untitled count.
 	++m_iUntitled;
 
@@ -1658,7 +1661,7 @@ bool qtractorMainForm::newSession (void)
 	appendMessages(tr("New session: \"%1\".").arg(sessionName(m_sFilename)));
 
 	// Give us what we got, right now...
-	updateSession();
+	updateSessionPost();
 
 	return true;
 }
@@ -1965,6 +1968,9 @@ bool qtractorMainForm::loadSessionFileEx (
 		sFilename.toUtf8().constData(), int(bTemplate), int(bUpdate));
 #endif
 
+	// Warm-up the session engines...
+	updateSessionPre();
+
 	// Flag whether we're about to save as template or archive...
 	QFileInfo info(sFilename);
 	int iFlags = qtractorDocument::Default;
@@ -1996,7 +2002,7 @@ bool qtractorMainForm::loadSessionFileEx (
 				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
 				++m_iUntitled;
 				m_sFilename.clear();
-				updateSession();
+				updateSessionPost();
 				return false;
 			}
 		}
@@ -2050,7 +2056,7 @@ bool qtractorMainForm::loadSessionFileEx (
 	appendMessages(tr("Open session: \"%1\".").arg(sessionName(sFilename)));
 
 	// Now we'll try to create (update) the whole GUI session.
-	updateSession();
+	updateSessionPost();
 
 	return bResult;
 }
@@ -5452,11 +5458,11 @@ bool qtractorMainForm::checkRestartSession (void)
 }
 
 
-// Grab and restore current sampler channels session.
-void qtractorMainForm::updateSession (void)
+// Prepare session start.
+void qtractorMainForm::updateSessionPre (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::updateSession()");
+	qDebug("qtractorMainForm::updateSessionPre()");
 #endif
 
 	// Initialize toolbar widgets...
@@ -5487,6 +5493,15 @@ void qtractorMainForm::updateSession (void)
 				SLOT(alsaNotify()));			
 		}
 	}
+}
+
+
+// Finalize session start.
+void qtractorMainForm::updateSessionPost (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::updateSessionPost()");
+#endif
 
 	// Update the session views...
 	viewRefresh();

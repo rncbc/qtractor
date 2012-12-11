@@ -362,7 +362,9 @@ protected:
 
 	void setSongPos(unsigned short iSongPos);
 
-	void updateSession();
+	void updateSessionPre();
+	void updateSessionPost();
+
 	void updateRecentFiles(const QString& sFilename);
 	void updatePeakAutoRemove();
 	void updateMessagesFont();
