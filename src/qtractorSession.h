@@ -56,6 +56,7 @@ public:
 	~qtractorSession();
 
 	// Open/close session engine(s).
+	bool init();
 	bool open();
 	void close();
 

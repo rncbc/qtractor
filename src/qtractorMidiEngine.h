@@ -91,6 +91,9 @@ public:
 	// Constructor.
 	qtractorMidiEngine(qtractorSession *pSession);
 
+	// Engine initialization.
+	bool init();
+
 	// Special event notifier proxy object.
 	const qtractorMidiEngineProxy *proxy() const;
 
@@ -254,7 +257,6 @@ public:
 protected:
 
 	// Concrete device (de)activation methods.
-	bool init();
 	bool activate();
 	bool start();
 	void stop();
