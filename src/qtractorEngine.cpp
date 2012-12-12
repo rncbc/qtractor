@@ -212,16 +212,6 @@ qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName ) const
 // Device engine activation method.
 bool qtractorEngine::open (void)
 {
-//	close();
-
-	// Damn it.
-	if (m_pSession == NULL)
-		return false;
-
-	// Call derived initialization...
-	if (!init())
-		return false;
-
 	// Update the session cursor tracks...
 	m_pSessionCursor->resetClips();
 	m_pSessionCursor->reset();
@@ -229,18 +219,14 @@ bool qtractorEngine::open (void)
 	// Open all buses (allocated and register ports...)
 	qtractorBus *pBus = m_buses.first();
 	while (pBus) {
-		if (!pBus->open()) {
-			close();
+		if (!pBus->open())
 			return false;
-		}
 		pBus = pBus->next();
 	}
 
 	// Nows time to activate...
-	if (!activate()) {
-		close();
+	if (!activate())
 		return false;
-	}
 
 	// We're now ready and running...
 	m_bActivated = true;

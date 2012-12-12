@@ -157,6 +157,22 @@ qtractorSession::~qtractorSession (void)
 }
 
 
+// Initialize session engine(s).
+bool qtractorSession::init (void)
+{
+	// Lock it up...
+	lock();
+
+	//  Actually init session device engines...
+	bool bResult = (m_pAudioEngine->init() && m_pMidiEngine->init());
+
+	// Done.
+	unlock();
+
+	return bResult;
+}
+
+
 // Open session engine(s).
 bool qtractorSession::open (void)
 {

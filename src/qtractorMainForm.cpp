@@ -5392,7 +5392,7 @@ bool qtractorMainForm::startSession (void)
 	unsigned int iOldSampleRate = m_pSession->sampleRate();
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-	bool bResult = m_pSession->open();
+	bool bResult = m_pSession->init();
 	QApplication::restoreOverrideCursor();
 
 	if (bResult) {
@@ -5441,6 +5441,10 @@ bool qtractorMainForm::checkRestartSession (void)
 			stabilizeForm();
 			return false;
 		}
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		m_pSession->close();
+		m_pSession->open();
+		QApplication::restoreOverrideCursor();
 		// Restore previous playhead position...
 		m_pSession->setPlayHead(iPlayHead);
 	}
@@ -5493,6 +5497,10 @@ void qtractorMainForm::updateSessionPost (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::updateSessionPost()");
 #endif
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	m_pSession->open();
+	QApplication::restoreOverrideCursor();
 
 	// Update the session views...
 	viewRefresh();
