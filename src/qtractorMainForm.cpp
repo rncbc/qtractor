@@ -5435,6 +5435,9 @@ bool qtractorMainForm::checkRestartSession (void)
 	if (!m_pSession->isActivated()) {
 		// Save current playhead position, if any...
 		unsigned long iPlayHead = m_pSession->playHead();
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		m_pSession->close();
+		QApplication::restoreOverrideCursor();
 		// Bail out if can't start it...
 		if (!startSession()) {
 			// Can go on with no-business...
@@ -5442,7 +5445,6 @@ bool qtractorMainForm::checkRestartSession (void)
 			return false;
 		}
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		m_pSession->close();
 		m_pSession->open();
 		QApplication::restoreOverrideCursor();
 		// Restore previous playhead position...
