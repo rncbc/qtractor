@@ -1923,13 +1923,6 @@ bool qtractorMidiEngine::init (void)
 	// Time-scale cursor (tempo/time-signature map)
 	m_pMetroCursor = new qtractorTimeScale::Cursor(pSession->timeScale());
 
-	// Open SMF player to last...
-	openPlayerBus();
-
-	// Open control/metronome buses, at least try...
-	openControlBus();
-	openMetroBus();
-
 	return true;
 }
 
@@ -1937,6 +1930,13 @@ bool qtractorMidiEngine::init (void)
 // Device engine activation method.
 bool qtractorMidiEngine::activate (void)
 {
+	// Open SMF player to last...
+	openPlayerBus();
+
+	// Open control/metronome buses, at least try...
+	openControlBus();
+	openMetroBus();
+
 	// Create and start our own MIDI input queue thread...
 	m_pInputThread = new qtractorMidiInputThread(this);
 	m_pInputThread->start(QThread::TimeCriticalPriority);
@@ -2370,14 +2370,6 @@ void qtractorMidiEngine::setPlayerBus ( bool bPlayerBus )
 bool qtractorMidiEngine::isPlayerBus (void) const
 {
 	return m_bPlayerBus;
-}
-
-void qtractorMidiEngine::resetPlayerBus (void)
-{
-	if (m_bPlayerBus && m_pPlayerBus)
-		return;
-
-	createPlayerBus();
 }
 
 

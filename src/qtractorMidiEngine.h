@@ -198,7 +198,6 @@ public:
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
 	bool isPlayerBus() const;
-	void resetPlayerBus();
 
 	bool isPlayerOpen() const;
 	bool openPlayer(const QString& sFilename, int iTrackChannel = -1);
