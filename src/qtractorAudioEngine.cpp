@@ -495,7 +495,19 @@ bool qtractorAudioEngine::init (void)
 	m_pSyncThread = new qtractorAudioBufferThread();
 	m_pSyncThread->start(QThread::HighPriority);
 
-	// Open player/metronome buses, at least try...
+	return true;
+}
+
+
+// Device engine activation method.
+bool qtractorAudioEngine::activate (void)
+{
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
+	// Let remaining buses get a life...
 	openPlayerBus();
 	openMetroBus();
 
@@ -509,13 +521,6 @@ bool qtractorAudioEngine::init (void)
 		pMidiManager = pMidiManager->next();
 	}
 
-	return true;
-}
-
-
-// Device engine activation method.
-bool qtractorAudioEngine::activate (void)
-{
 	// Ensure (not) freewheeling state...
 	jack_set_freewheel(m_pJackClient, 0);
 
@@ -582,8 +587,7 @@ bool qtractorAudioEngine::activate (void)
 	}
 
 	// MIDI plugin managers output buses...
-	qtractorMidiManager *pMidiManager
-		= session()->midiManagers().first();
+	pMidiManager = session()->midiManagers().first();
 	while (pMidiManager) {
 		qtractorAudioBus *pAudioBus = pMidiManager->audioOutputBus();
 		if (pAudioBus && pMidiManager->isAudioOutputBus())
