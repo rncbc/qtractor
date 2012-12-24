@@ -28,9 +28,6 @@
 
 
 // Forward declarations.
-class qtractorSessionLoopCommand;
-class qtractorSessionPunchCommand;
-
 class qtractorTimeScaleUpdateNodeCommand;
 
 
@@ -71,9 +68,6 @@ public:
 	qtractorSessionLoopCommand(qtractorSession *pSession,
 		unsigned long iLoopStart, unsigned long iLoopEnd);
 
-	// Destructor.
-	~qtractorSessionLoopCommand();
-
 	// Session-loop command methods.
 	bool redo();
 	bool undo();
@@ -83,9 +77,6 @@ private:
 	// Instance variables.
 	unsigned long m_iLoopStart;
 	unsigned long m_iLoopEnd;
-
-	// Mutual-exclusive cross-command.
-	qtractorSessionPunchCommand *m_pPunchCommand;
 };
 
 
@@ -101,9 +92,6 @@ public:
 	qtractorSessionPunchCommand(qtractorSession *pSession,
 		unsigned long iPunchIn, unsigned long iPunchOut);
 
-	// Destructor.
-	~qtractorSessionPunchCommand();
-
 	// Session-punch command methods.
 	bool redo();
 	bool undo();
@@ -113,9 +101,6 @@ private:
 	// Instance variables.
 	unsigned long m_iPunchIn;
 	unsigned long m_iPunchOut;
-
-	// Mutual-exclusive cross-command.
-	qtractorSessionLoopCommand *m_pLoopCommand;
 };
 
 
