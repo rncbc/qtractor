@@ -82,6 +82,9 @@ protected:
 	// Context menu request slot (dummy).
 	void contextMenuEvent(QContextMenuEvent *);
 
+	// Trap for help/tool-tip events.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
 	// Show dragging tooltip...
 	void showToolTip(unsigned long iFrame) const;
 

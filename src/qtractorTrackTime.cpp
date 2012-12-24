@@ -75,6 +75,9 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
+
+	// Trap for help/tool-tips events.
+	qtractorScrollView::viewport()->installEventFilter(this);
 }
 
 
@@ -356,6 +359,18 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 		}
 	}
 
+	// Check location marker headers...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(pos.x());
+	if (pMarker) {
+		rect.moveLeft(pTimeScale->pixelFromFrame(pMarker->frame) - d);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragMarker;
+			m_pDragMarker = pMarker;
+			return true;
+		}
+	}
+
 	// Check edit-head header...
 	rect.moveLeft(m_pTracks->trackView()->editHeadX() - d);
 	if (rect.contains(pos)) {
@@ -368,18 +383,6 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	if (rect.contains(pos)) {
 		m_dragCursor = DragEditTail;
 		return true;
-	}
-
-	// Check location marker headers...
-	qtractorTimeScale::Marker *pMarker
-		= pTimeScale->markers().seekPixel(pos.x());
-	if (pMarker) {
-		rect.moveLeft(pTimeScale->pixelFromFrame(pMarker->frame) - d);
-		if (rect.contains(pos)) {
-			m_dragCursor = DragMarker;
-			m_pDragMarker = pMarker;
-			return true;
-		}
 	}
 
 	// Reset cursor if any persist around.
@@ -713,6 +716,64 @@ void qtractorTrackTime::contextMenuEvent (
 }
 
 
+// Trap for help/tool-tip events.
+bool qtractorTrackTime::eventFilter ( QObject *pObject, QEvent *pEvent )
+{
+	QWidget *pViewport = qtractorScrollView::viewport();
+	if (static_cast<QWidget *> (pObject) == pViewport) {
+		if (pEvent->type() == QEvent::ToolTip
+			&& m_dragCursor != DragNone
+			&& (m_pTracks->trackView())->isToolTips()) {
+			QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
+			if (pHelpEvent) {
+				qtractorSession *pSession = qtractorSession::getInstance();
+				if (pSession) {
+					unsigned long iFrame = 0;
+					switch (m_dragCursor) {
+					case DragMarker:
+						if (m_pDragMarker) iFrame = m_pDragMarker->frame;
+						break;
+					case DragPlayHead:
+						iFrame = pSession->playHead();
+						break;
+					case DragEditHead:
+						iFrame = pSession->editHead();
+						break;
+					case DragEditTail:
+						iFrame = pSession->editTail();
+						break;
+					case DragLoopStart:
+						iFrame = pSession->loopStart();
+						break;
+					case DragLoopEnd:
+						iFrame = pSession->loopEnd();
+						break;
+					case DragPunchIn:
+						iFrame = pSession->punchIn();
+						break;
+					case DragPunchOut:
+						iFrame = pSession->punchOut();
+						break;
+					default:
+						break;
+					}
+					showToolTip(iFrame);
+				}
+			}
+		}
+		else
+		if (pEvent->type() == QEvent::Leave
+			&& m_dragState != DragNone) {
+			qtractorScrollView::unsetCursor();
+			return true;
+		}
+	}
+
+	// Not handled here.
+	return qtractorScrollView::eventFilter(pObject, pEvent);
+}
+
+
 // Show dragging tooltip...
 void qtractorTrackTime::showToolTip ( unsigned long iFrame ) const
 {
@@ -727,10 +788,43 @@ void qtractorTrackTime::showToolTip ( unsigned long iFrame ) const
 	if (pTimeScale == NULL)
 		return;
 
-	QToolTip::showText(
-		QCursor::pos(),
-		pTimeScale->textFromFrame(iFrame),
-		qtractorScrollView::viewport());
+	QString sToolTip;
+
+	switch (m_dragCursor) {
+	case DragMarker:
+		if (m_pDragMarker) sToolTip += m_pDragMarker->text;
+		break;
+	case DragPlayHead:
+		sToolTip += tr("Play-head");
+		break;
+	case DragEditHead:
+		sToolTip += tr("Edit-head");
+		break;
+	case DragEditTail:
+		sToolTip += tr("Edit-tail");
+		break;
+	case DragLoopStart:
+		sToolTip += tr("Loop-start");
+		break;
+	case DragLoopEnd:
+		sToolTip += tr("Loop-end");
+		break;
+	case DragPunchIn:
+		sToolTip += tr("Punch-in");
+		break;
+	case DragPunchOut:
+		sToolTip += tr("Punch-out");
+		break;
+	default:
+		break;
+	}
+
+	if (!sToolTip.isEmpty()) sToolTip += '\n';
+
+	sToolTip += pTimeScale->textFromFrame(iFrame);
+
+	QToolTip::showText(QCursor::pos(),
+		sToolTip, qtractorScrollView::viewport());
 }
 
 

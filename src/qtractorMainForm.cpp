@@ -439,7 +439,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTimeSpinBox->setMinimumSize(QSize(fm.width(sTime) + d, d) + pad);
 	m_pTimeSpinBox->setPalette(pal);
 //	m_pTimeSpinBox->setAutoFillBackground(true);
-	m_pTimeSpinBox->setToolTip(tr("Current time (playhead)"));
+	m_pTimeSpinBox->setToolTip(tr("Current time (play-head)"));
 	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTimeSpinBox);
 //	m_ui.timeToolbar->addSeparator();
