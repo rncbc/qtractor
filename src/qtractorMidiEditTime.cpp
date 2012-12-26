@@ -490,6 +490,7 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
 		// Edit-tail positioning...
 		m_pEditor->setEditTail(iFrame);
+		showToolTip(m_rectDrag.normalized());
 		break;
 	case DragPlayHead:
 		// Play-head positioning...
@@ -820,8 +821,31 @@ void qtractorMidiEditTime::showToolTip ( unsigned long iFrame ) const
 
 	sToolTip += pTimeScale->textFromFrame(iFrame);
 
+	QToolTip::showText(QCursor::pos(), sToolTip,
+		qtractorScrollView::viewport());
+}
+
+
+void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
+{
+	if (!m_pEditor->isToolTips())
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
+	unsigned long iFrameStart = pTimeScale->frameSnap(
+		pTimeScale->frameFromPixel(rect.left()));
+	unsigned long iFrameEnd = pTimeScale->frameSnap(
+		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
+
 	QToolTip::showText(QCursor::pos(),
-		sToolTip, qtractorScrollView::viewport());
+		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
+			.arg(pTimeScale->textFromFrame(iFrameStart))
+			.arg(pTimeScale->textFromFrame(iFrameEnd))
+			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
+		qtractorScrollView::viewport());
 }
 
 

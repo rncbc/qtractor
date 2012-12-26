@@ -2378,9 +2378,9 @@ void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
 	if (pTimeScale == NULL)
 		return;
 
-	unsigned long iFrameStart = pSession->frameSnap(
+	unsigned long iFrameStart = pTimeScale->frameSnap(
 		pTimeScale->frameFromPixel(rect.left() + dx));
-	unsigned long iFrameEnd = pSession->frameSnap(
+	unsigned long iFrameEnd = pTimeScale->frameSnap(
 		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(

@@ -87,6 +87,7 @@ protected:
 
 	// Show dragging tooltip...
 	void showToolTip(unsigned long iFrame) const;
+	void showToolTip(const QRect& rect) const;
 
 protected slots:
 
