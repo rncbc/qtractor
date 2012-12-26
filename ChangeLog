@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Loop and punch in/out ranges may now get set simultaneously, may
+  even overlap each other. However, punch in/out range recording
+  will always prevail over any loop recording takes. (EXPERIMENTAL)
+
 - LV2 Worker/Schedule now supporting multi-instance vs. single-UI
   scenarios. (EXPERIMENTAL)
 

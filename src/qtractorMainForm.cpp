@@ -444,7 +444,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTimeSpinBox->setMinimumSize(QSize(fm.width(sTime) + d, d) + pad);
 	m_pTimeSpinBox->setPalette(pal);
 //	m_pTimeSpinBox->setAutoFillBackground(true);
-	m_pTimeSpinBox->setToolTip(tr("Current time (playhead)"));
+	m_pTimeSpinBox->setToolTip(tr("Current time (play-head)"));
 	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTimeSpinBox);
 //	m_ui.timeToolbar->addSeparator();
@@ -5351,8 +5351,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportLoopSetAction->setEnabled(
 		!bRolling && bSelectable);
 	m_ui.transportStopAction->setEnabled(bPlaying);
-	m_ui.transportRecordAction->setEnabled(
-		(!bLooping || !bPunching) && m_pSession->recordTracks() > 0);
+	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 	m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
 	m_ui.transportPunchSetAction->setEnabled(bSelectable);
 	m_ui.transportMetroAction->setEnabled(
@@ -6446,21 +6445,26 @@ void qtractorMainForm::timerSlot (void)
 				// If recording update track view and session length, anyway...
 				if (m_pTracks && m_pSession->isRecording()) {
 					// HACK: Care of punch-out...
-					if (m_pSession->isPunching()
-						&& iPlayHead > long(m_pSession->punchOut())) {
-						if (setRecording(false)) {
+					if (m_pSession->isPunching()) {
+						unsigned long iPunchOut  = m_pSession->punchOut();
+						unsigned long iLoopStart = m_pSession->loopStart();
+						unsigned long iLoopEnd   = m_pSession->loopEnd();
+						if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
+							iPunchOut = iLoopEnd;
+						unsigned long iFrameTime = m_pSession->frameTimeEx();
+						if (iFrameTime >= iPunchOut && setRecording(false)) {
 							// Send MMC RECORD_EXIT command...
 							pMidiEngine->sendMmcCommand(
 								qtractorMmcEvent::RECORD_EXIT);
 							++m_iTransportUpdate;
 						}
-					} else {
-						m_pTracks->trackView()->updateContentsRecord();
-						m_pSession->updateSession(0, iPlayHead);
-						m_statusItems[StatusTime]->setText(
-							m_pSession->timeScale()->textFromFrame(
-								0, true, m_pSession->sessionEnd()));
 					}
+					// Recording visual feedback...
+					m_pTracks->trackView()->updateContentsRecord();
+					m_pSession->updateSession(0, iPlayHead);
+					m_statusItems[StatusTime]->setText(
+						m_pSession->timeScale()->textFromFrame(
+							0, true, m_pSession->sessionEnd()));
 				}
 				else
 				// Whether to continue past end...

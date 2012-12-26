@@ -402,7 +402,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						rect.left() - 1, y1 - cy + 1, rect.width() + 2, h);
 					unsigned long iClipStart  = pClipRecord->clipStart();
 					unsigned long iClipOffset = 0;
-					if (iLoopStart < iLoopEnd) { // aka. pSession->isLooping()
+					if (iLoopStart < iLoopEnd && !pSession->isPunching()) {
 						// Clip recording started within loop range:
 						// -- adjust turn-around clip offset...
 						if (iClipStart > iLoopStart && iClipStart < iLoopEnd) {
@@ -2378,9 +2378,9 @@ void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
 	if (pTimeScale == NULL)
 		return;
 
-	unsigned long iFrameStart = pSession->frameSnap(
+	unsigned long iFrameStart = pTimeScale->frameSnap(
 		pTimeScale->frameFromPixel(rect.left() + dx));
-	unsigned long iFrameEnd = pSession->frameSnap(
+	unsigned long iFrameEnd = pTimeScale->frameSnap(
 		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(
