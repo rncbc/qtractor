@@ -6957,39 +6957,48 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="795"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="796"/>
         <source>Play-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="798"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="799"/>
         <source>Edit-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="801"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="802"/>
         <source>Edit-tail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="804"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="805"/>
         <source>Loop-start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="807"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="808"/>
         <source>Loop-end</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="810"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="811"/>
         <source>Punch-in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="813"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="814"/>
         <source>Punch-out</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="844"/>
+        <source>Start:	%1
+End:	%2
+Length:	%3</source>
+        <translation type="unfinished">Začátek:	%1
+Konec:	%2
+Délka:	%3</translation>
     </message>
 </context>
 <context>
@@ -12718,39 +12727,48 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="798"/>
+        <location filename="../qtractorTrackTime.cpp" line="799"/>
         <source>Play-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="801"/>
+        <location filename="../qtractorTrackTime.cpp" line="802"/>
         <source>Edit-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="804"/>
+        <location filename="../qtractorTrackTime.cpp" line="805"/>
         <source>Edit-tail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="807"/>
+        <location filename="../qtractorTrackTime.cpp" line="808"/>
         <source>Loop-start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="810"/>
+        <location filename="../qtractorTrackTime.cpp" line="811"/>
         <source>Loop-end</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="813"/>
+        <location filename="../qtractorTrackTime.cpp" line="814"/>
         <source>Punch-in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="816"/>
+        <location filename="../qtractorTrackTime.cpp" line="817"/>
         <source>Punch-out</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackTime.cpp" line="851"/>
+        <source>Start:	%1
+End:	%2
+Length:	%3</source>
+        <translation type="unfinished">Začátek:	%1
+Konec:	%2
+Délka:	%3</translation>
     </message>
 </context>
 <context>
