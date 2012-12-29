@@ -814,7 +814,7 @@ void qtractorOptions::saveActionShortcuts ( QObject *pObject )
 		if (pAction->objectName().isEmpty())
 			continue;
 		const QString& sKey = '/' + pAction->objectName();
-		const QString& sValue = QString(pAction->shortcut());
+		const QString& sValue = pAction->shortcut().toString();
 		if (!sValue.isEmpty())
 			m_settings.setValue(sKey, sValue);
 		else

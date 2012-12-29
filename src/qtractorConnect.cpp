@@ -40,6 +40,11 @@
 #include <QDropEvent>
 #include <QContextMenuEvent>
 
+#if QT_VERSION >= 0x050000
+#include <QMimeData>
+#include <QDrag>
+#endif
+
 #if QT_VERSION < 0x040200
 #define setForeground	setTextColor
 #endif
@@ -447,8 +452,10 @@ qtractorClientListView::qtractorClientListView ( QWidget *pParent )
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 //	pHeader->setDefaultSectionSize(120);
+#if QT_VERSION < 0x050000
 	pHeader->setMovable(false);
 	pHeader->setClickable(true);
+#endif
 	pHeader->setSortIndicatorShown(true);
 	pHeader->setStretchLastSection(true);
 

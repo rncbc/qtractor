@@ -855,7 +855,7 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 {
 	if (sKey == "chunk") {
 		// Load the BLOB (base64 encoded)...
-		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toAscii()));
+		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
 		const char *pData = data.constData();
 		int iData = data.size();
 	#ifdef CONFIG_DEBUG

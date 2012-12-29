@@ -3,6 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Preparations for Qt5 migration. (TESTING)
+
+
 0.5.7  2012-12-27  Hotel Sierra
 
 - Loop and punch in/out ranges may now get set simultaneously, may

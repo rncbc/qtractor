@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,22 +80,28 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 	m_iDirtyCount = 0;
 
 	QHeaderView *pHeader = m_ui.InstrumentsListView->header();
+#if QT_VERSION < 0x050000
+	pHeader->setMovable(false);
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+#endif
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-	pHeader->setMovable(false);
 
 	pHeader = m_ui.FilesListView->header();
+#if QT_VERSION < 0x050000
+	pHeader->setMovable(false);
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+#endif
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-	pHeader->setMovable(false);
 
 	pHeader = m_ui.NamesListView->header();
+#if QT_VERSION < 0x050000
+	pHeader->setMovable(false);
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+#endif
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-	pHeader->setMovable(false);
 
 	refreshForm();
 	stabilizeForm();

@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -125,10 +125,12 @@ qtractorBusForm::qtractorBusForm (
 	QHeaderView *pHeader = m_ui.BusListView->header();
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->resizeSection(0, 160);
- 	pHeader->setResizeMode(1, QHeaderView::ResizeToContents);
- 	pHeader->setResizeMode(2, QHeaderView::ResizeToContents);
-	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION < 0x050000
 	pHeader->setMovable(false);
+	pHeader->setResizeMode(1, QHeaderView::ResizeToContents);
+	pHeader->setResizeMode(2, QHeaderView::ResizeToContents);
+#endif
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
 
 	m_ui.BusListView->setContextMenuPolicy(Qt::CustomContextMenu);
 

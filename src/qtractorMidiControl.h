@@ -25,6 +25,7 @@
 
 #include "qtractorCtlEvent.h"
 
+#include <QString>
 #include <QHash>
 
 // Forward declarations.

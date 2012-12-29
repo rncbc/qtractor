@@ -47,6 +47,11 @@
 #include <QDragMoveEvent>
 #include <QDropEvent>
 
+#if QT_VERSION >= 0x050000
+#include <QMimeData>
+#include <QDrag>
+#endif
+
 
 //----------------------------------------------------------------------
 // class qtractorFileGroupItem -- custom group list view item.
@@ -326,8 +331,9 @@ qtractorFileListView::qtractorFileListView (
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 //	pHeader->setDefaultSectionSize(160);
 	pHeader->setStretchLastSection(true);
+#if QT_VERSION < 0x050000
 	pHeader->setMovable(false);
-
+#endif
 	// Trap for help/tool-tips events.
 	QTreeWidget::viewport()->installEventFilter(this);
 

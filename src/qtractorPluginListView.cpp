@@ -52,6 +52,11 @@
 #include <QDropEvent>
 #include <QContextMenuEvent>
 
+#if QT_VERSION >= 0x050000
+#include <QMimeData>
+#include <QDrag>
+#endif
+
 #if QT_VERSION < 0x040300
 #define lighter(x)	light(x)
 #define darker(x)	dark(x)
@@ -61,7 +66,12 @@
 //----------------------------------------------------------------------------
 // qtractorTinyScrollBarStyle -- Custom style to have some tiny scrollbars
 //
+#if QT_VERSION < 0x050000
 #include <QCDEStyle>
+#else
+#include <QCommonStyle>
+class QCDEStyle : public QCommonStyle {};
+#endif
 
 class qtractorTinyScrollBarStyle : public QCDEStyle
 {
@@ -74,7 +84,7 @@ protected:
 		if (pm == QStyle::PM_ScrollBarExtent)
 			return 8;
 
-		return QCDEStyle::pixelMetric(pm, option, pWidget);
+		return QCommonStyle::pixelMetric(pm, option, pWidget);
 	}
 };
 
