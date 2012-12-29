@@ -80,28 +80,40 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 	m_iDirtyCount = 0;
 
 	QHeaderView *pHeader = m_ui.InstrumentsListView->header();
-#if QT_VERSION < 0x050000
-	pHeader->setMovable(false);
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setMovable(false);
 #endif
-	pHeader->setDefaultAlignment(Qt::AlignLeft);
 
 	pHeader = m_ui.FilesListView->header();
-#if QT_VERSION < 0x050000
-	pHeader->setMovable(false);
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setMovable(false);
 #endif
-	pHeader->setDefaultAlignment(Qt::AlignLeft);
 
 	pHeader = m_ui.NamesListView->header();
-#if QT_VERSION < 0x050000
-	pHeader->setMovable(false);
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setMovable(false);
 #endif
-	pHeader->setDefaultAlignment(Qt::AlignLeft);
 
 	refreshForm();
 	stabilizeForm();

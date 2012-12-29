@@ -160,11 +160,16 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	m_iDirtyTotal = 0;
 
 	QHeaderView *pHeader = m_ui.TimeScaleListView->header();
-#if QT_VERSION < 0x050000
-	pHeader->setMovable(false);
-	pHeader->setResizeMode(QHeaderView::ResizeToContents);
-#endif
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
+//	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setMovable(false);
+#endif
 
 	m_ui.TimeScaleListView->setItemDelegate(
 		new qtractorTimeScaleItemDelegate(m_ui.TimeScaleListView));

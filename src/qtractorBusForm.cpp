@@ -123,14 +123,19 @@ qtractorBusForm::qtractorBusForm (
 	m_iDirtyTotal = 0;
 
 	QHeaderView *pHeader = m_ui.BusListView->header();
-//	pHeader->setResizeMode(QHeaderView::Custom);
-	pHeader->resizeSection(0, 160);
-#if QT_VERSION < 0x050000
-	pHeader->setMovable(false);
-	pHeader->setResizeMode(1, QHeaderView::ResizeToContents);
-	pHeader->setResizeMode(2, QHeaderView::ResizeToContents);
-#endif
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
+	pHeader->resizeSection(0, 160);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	pHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
+//	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(1, QHeaderView::ResizeToContents);
+ 	pHeader->setResizeMode(2, QHeaderView::ResizeToContents);
+	pHeader->setMovable(false);
+#endif
 
 	m_ui.BusListView->setContextMenuPolicy(Qt::CustomContextMenu);
 

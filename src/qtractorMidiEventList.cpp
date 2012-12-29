@@ -165,7 +165,7 @@ void qtractorMidiEventListModel::reset (void)
 	m_pEvent = NULL;
 	m_iEvent = 0;
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION >= 0x050000
 	QAbstractItemModel::reset();
 #else
 	QAbstractItemModel::beginResetModel();
@@ -784,11 +784,19 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 	QTreeView::setAlternatingRowColors(true);
 
 	QHeaderView *pHeader = QTreeView::header();
-//	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+//	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setDefaultSectionSize(80);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
+//	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setMovable(false);
+#endif
 	pHeader->resizeSection(2, 60); // Name
 	pHeader->resizeSection(3, 40); // Value
-//	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setStretchLastSection(true);
 }
 

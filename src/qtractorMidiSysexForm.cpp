@@ -103,12 +103,16 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 	m_iUpdateSysex = 0;
 
 	QHeaderView *pHeader = m_ui.SysexListView->header();
-#if QT_VERSION < 0x050000
-	pHeader->setMovable(false);
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(1, QHeaderView::ResizeToContents);
+	pHeader->setMovable(false);
 #endif
-	pHeader->setDefaultAlignment(Qt::AlignLeft);
 
 	m_ui.NameComboBox->setInsertPolicy(QComboBox::NoInsert);
 #if QT_VERSION >= 0x040200

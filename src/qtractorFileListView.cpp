@@ -327,13 +327,17 @@ qtractorFileListView::qtractorFileListView (
 	QTreeWidget::setSortingEnabled(false);
 
 	QHeaderView *pHeader = QTreeWidget::header();
-//	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 //	pHeader->setDefaultSectionSize(160);
-	pHeader->setStretchLastSection(true);
-#if QT_VERSION < 0x050000
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionsMovable(false);
+#else
+//	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setMovable(false);
 #endif
+	pHeader->setStretchLastSection(true);
+
 	// Trap for help/tool-tips events.
 	QTreeWidget::viewport()->installEventFilter(this);
 
