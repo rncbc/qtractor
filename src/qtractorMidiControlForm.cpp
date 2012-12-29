@@ -53,15 +53,28 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	m_iUpdating = 0;
 
 	QHeaderView *pHeader = m_ui.FilesListView->header();
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
-	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
+#endif
 
 	pHeader = m_ui.ControlMapListView->header();
-	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setSectionsMovable(false);
+#else
+//	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setMovable(false);
+#endif
 
 	const QIcon iconControlType(":/images/itemProperty.png");
 //	m_ui.ControlTypeComboBox->clear();

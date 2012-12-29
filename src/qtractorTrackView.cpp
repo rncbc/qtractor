@@ -61,6 +61,11 @@
 #include <QUrl>
 #include <QFileInfo>
 
+#if QT_VERSION >= 0x050000
+#include <QMimeData>
+#include <QDrag>
+#endif
+
 #if QT_VERSION < 0x040300
 #define lighter(x)	light(x)
 #define darker(x)	dark(x)

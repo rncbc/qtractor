@@ -5,14 +5,19 @@ ChangeLog
 
 SVN TRUNK
 
+- Preparations for Qt5 migration. (TESTING)
+
+
+0.5.7  2012-12-27  Hotel Sierra
+
 - Loop and punch in/out ranges may now get set simultaneously, may
   even overlap each other. However, punch in/out range recording
-  will always prevail over any loop recording takes. (EXPERIMENTAL)
+  will always prevail over any loop recording takes.
 
 - LV2 Worker/Schedule now supporting multi-instance vs. single-UI
-  scenarios. (EXPERIMENTAL)
+  scenarios.
 
-- LV2 Options and Buf-size extension support added. (EXPERIMENTAL)
+- LV2 Options and Buf-size extension support added.
 
 - Fixed an off-by-one-tick bug on MIDI file input which was leaving
   spurious zero-length runt notes at the end of a MIDI clip, if a
@@ -26,13 +31,13 @@ SVN TRUNK
 - LV2 UI parameter updates are now asynchronously detached from the
   source GUI widget thread, in attempt to improve cross-GUI-toolkit
   responsiveness, specially focused on LV2 plugins with a GTK based
-  UI (eg. amsynth, triceratops, etc.). (EXPERIMENTAL)
+  UI (eg. amsynth, triceratops, etc.).
 
 - Make sure LV2 UI parameters (input control ports) get updated when
   loading a genuine LV2 state preset.
 
 - Improved the (custom) tempo spin-box widget signal(ing) processing
-  and dispatching. (EXPERIMENTAL)
+  and dispatching.
 
 - Show proper pointing cursor and location tool-tip while dragging any
   of the time ruler markers (including latest location markers/bar).
@@ -41,13 +46,13 @@ SVN TRUNK
   those files that are actually referenced by live clips arrangement.
 
 - Ongoing integration of location markers infrastructure (time-scale
-  and MIDI-file support). (EXPERIMENTAL)
+  and MIDI-file support).
 
 - Free-hand/linear retouching of event values, while on the MIDI clip
   editor's view pane below the main piano-roll (eg. note velocities),
   is now possible provided the target events are selected, otherwise
   the usual painting edit sub-mode applies (cf. menu Edit/Select Mode/
-  Edit Draw). (EXPERIMENTAL)
+  Edit Draw).
 
 - The MIDI clip editor now senses which target view pane has focus for
   general selection commands (cf. Edit/Select/None, All, Invert, Range)

@@ -33,6 +33,11 @@
 
 #include <QContextMenuEvent>
 
+#if QT_VERSION >= 0x050000
+#include <QMimeData>
+#include <QDrag>
+#endif
+
 
 //-------------------------------------------------------------------------
 // qtractorFilesTabWidget - File/Groups dockable child window.

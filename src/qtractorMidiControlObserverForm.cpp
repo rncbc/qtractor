@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -557,7 +557,7 @@ void qtractorMidiControlObserverForm::midiControlAction (
 		return;
 
 	qtractorMidiControlObserver *pMidiObserver
-		= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+		= pAction->data().value<qtractorMidiControlObserver *> ();
 	if (pMidiObserver)
 		qtractorMidiControlObserverForm::showInstance(pMidiObserver, pParent);
 }
@@ -575,7 +575,7 @@ void qtractorMidiControlObserverForm::midiControlMenu (
 	while (iter.hasNext()) {
 		QAction *pAction = iter.next();
 		pMidiObserver
-			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+			= pAction->data().value<qtractorMidiControlObserver *> ();
 		if (pMidiObserver) {
 			pMidiControlAction = pAction;
 			break;

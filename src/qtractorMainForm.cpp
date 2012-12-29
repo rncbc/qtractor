@@ -121,8 +121,14 @@
 #include <QCloseEvent>
 #include <QDropEvent>
 
+#if QT_VERSION >= 0x050000
+#include <QMimeData>
+#endif
+
+#if QT_VERSION < 0x050000
 #if !defined(QT_NO_STYLE_GTK)
 #include <QGtkStyle>
+#endif
 #endif
 
 #if QT_VERSION < 0x040500
@@ -417,16 +423,20 @@ qtractorMainForm::qtractorMainForm (
 	// Editable toolbar widgets special palette.
 	QPalette pal;
 	// Outrageous HACK: GTK+ ppl won't see green on black thing...
+#if QT_VERSION < 0x050000
 #if !defined(QT_NO_STYLE_GTK)
 	if (qobject_cast<QGtkStyle *> (style()) == NULL) {
+#endif
 #endif
 	//	pal.setColor(QPalette::Window, Qt::black);
 		pal.setColor(QPalette::Base, Qt::black);
 		pal.setColor(QPalette::Text, Qt::green);
 	//	pal.setColor(QPalette::Button, Qt::darkGray);
 	//	pal.setColor(QPalette::ButtonText, Qt::green);
+#if QT_VERSION < 0x050000
 #if !defined(QT_NO_STYLE_GTK)
 	}
+#endif
 #endif
 
 	const QSize  pad(4, 0);
@@ -2985,7 +2995,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 	qtractorSubject *pSubject = NULL;
 	qtractorCurveList *pCurveList = NULL;
 	qtractorMidiControlObserver *pMidiObserver
-		= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+		= pAction->data().value<qtractorMidiControlObserver *> ();
 	if (pMidiObserver) {
 		pCurveList = pMidiObserver->curveList();
 		pSubject = pMidiObserver->subject();

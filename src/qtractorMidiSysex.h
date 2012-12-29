@@ -1,7 +1,7 @@
 // qtractorMidiSysex.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,7 +78,7 @@ public:
 	// Text(hex) data accessors.
 	void setText(const QString& sText)
 	{
-		const QByteArray& data = QByteArray::fromHex(sText.toAscii());
+		const QByteArray& data = QByteArray::fromHex(sText.toLatin1());
 		setData((unsigned char *) data.data(), data.size());
 	}
 

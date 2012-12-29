@@ -80,9 +80,14 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 #endif
 
 	QHeaderView *pHeader = m_ui.PluginListView->header();
-//	pHeader->setResizeMode(QHeaderView::Custom);
 //	pHeader->setDefaultSectionSize(240);
+#if QT_VERSION >= 0x050000
+//	pHeader->setSectionResizeMode(QHeaderView::Custom);
+	pHeader->setSectionsMovable(false);
+#else
+//	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setMovable(false);
+#endif
 	pHeader->setStretchLastSection(true);
 
 	QTreeWidgetItem *pHeaderItem = m_ui.PluginListView->headerItem();

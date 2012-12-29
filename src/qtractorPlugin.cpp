@@ -608,7 +608,7 @@ bool qtractorDummyPluginType::open (void)
 
 	m_iUniqueID = 0;
 	for (int i = 0; i < m_sLabel.length(); ++i)
-		m_iUniqueID += int(m_sLabel[i].toAscii());
+		m_iUniqueID += int(m_sLabel[i].toLatin1());
 
 	// Fake the rest...
 	m_iAudioIns  = 2;
