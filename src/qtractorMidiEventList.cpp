@@ -166,10 +166,10 @@ void qtractorMidiEventListModel::reset (void)
 	m_iEvent = 0;
 
 #if QT_VERSION >= 0x050000
-	QAbstractItemModel::reset();
-#else
 	QAbstractItemModel::beginResetModel();
 	QAbstractItemModel::endResetModel();
+#else
+	QAbstractItemModel::reset();
 #endif
 }
 
