@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed an immediate null pointer crash on creating a parentless new
+  group while on the files organizer widget.
 - Preparations for Qt5 migration. (TESTING)
 
 
