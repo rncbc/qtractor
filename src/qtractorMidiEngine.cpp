@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3996,29 +3996,9 @@ qtractorPluginList *qtractorMidiBus::createPluginList ( int iFlags ) const
 	if (pSession == NULL)
 		return NULL;
 
-	// Get audio bus as for the plugin list...
-	// Output bus gets to be the first available output bus...
-	qtractorAudioBus    *pAudioBus    = NULL;
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine) {
-		for (qtractorBus *pBus = (pAudioEngine->buses()).first();
-				pBus; pBus = pBus->next()) {
-			if (pBus->busMode() & qtractorBus::Output) {
-				pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-				break;
-			}
-		}
-	}
-
 	// Create plugin-list alright...
-	qtractorPluginList *pPluginList = NULL;
-	unsigned int iSampleRate = pSession->sampleRate();
-	if (pAudioBus) {
-	 	pPluginList = new qtractorPluginList(pAudioBus->channels(),
-			pAudioEngine->bufferSize(), iSampleRate, iFlags);
-	} else {
-		pPluginList = new qtractorPluginList(0, 0, iSampleRate, iFlags);
-	}
+	qtractorPluginList *pPluginList
+		= new qtractorPluginList(0, 0, pSession->sampleRate(), iFlags);
 
 	// Set plugin-list title name...
 	updatePluginListName(pPluginList, iFlags);
