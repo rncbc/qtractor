@@ -5,8 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 State is now properly restored for  plugins inserted on buses,
+  probably solving the Calf Fluidsynth Soundfont information missing
+  on buses ticket, reported by Albert Graef, thanks.
+
 - Fixed an immediate null pointer crash on creating a parentless new
   group while on the files organizer widget.
+
 - Preparations for Qt5 migration. (TESTING)
 
 

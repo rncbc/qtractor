@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2486,18 +2486,13 @@ unsigned int qtractorAudioBus::latency_out (void) const
 // Create plugin-list properly.
 qtractorPluginList *qtractorAudioBus::createPluginList ( int iFlags ) const
 {
-	qtractorAudioEngine *pAudioEngine
-		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
-		return NULL;
-
-	qtractorSession *pSession = pAudioEngine->session();
+	qtractorSession *pSession = engine()->session();
 	if (pSession == NULL)
 		return NULL;
 
 	// Create plugin-list alright...
-	qtractorPluginList *pPluginList = new qtractorPluginList(m_iChannels,
-		pAudioEngine->bufferSize(), pSession->sampleRate(), iFlags);
+	qtractorPluginList *pPluginList
+		= new qtractorPluginList(0, 0, pSession->sampleRate(), iFlags);
 
 	// Set plugin-list title name...
 	updatePluginListName(pPluginList, iFlags);
