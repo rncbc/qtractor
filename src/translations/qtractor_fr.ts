@@ -95,7 +95,8 @@ Audio:	%1 canaux, %2 Hz</translation>
         <location filename="../qtractorClip.cpp" line="559"/>
         <source>Start / End:	%1 / %2
 Offset / Length:	%3 / %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Début / Fin:	%1 / %2
+Décalage / Longueur:	%3 / %4</translation>
     </message>
     <message>
         <source>Start / End:	%1 / %2
@@ -462,22 +463,22 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="417"/>
         <source>add marker</source>
-        <translation type="unfinished"></translation>
+        <translation>ajouter un marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="436"/>
         <source>update marker</source>
-        <translation type="unfinished"></translation>
+        <translation>mettre à jour un marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="454"/>
         <source>remove marker</source>
-        <translation type="unfinished"></translation>
+        <translation>supprimer un marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="472"/>
         <source>move marker</source>
-        <translation type="unfinished"></translation>
+        <translation>déplacer un marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="594"/>
@@ -4436,22 +4437,22 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2404"/>
         <source>Tempo M&amp;ap / Markers...</source>
-        <translation type="unfinished"></translation>
+        <translation>C&amp;arte de Tempo / Marqueurs...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2407"/>
         <source>Tempo Map / Markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de Tempo / Marqueurs</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2410"/>
         <source>Tempo map / markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de tempo / marqueurs</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2413"/>
         <source>Change session tempo map / markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer la carte de tempo de la session / marqueurs</translation>
     </message>
     <message>
         <source>Tempo M&amp;ap...</source>
@@ -5228,7 +5229,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="452"/>
         <source>Current time (play-head)</source>
-        <translation type="unfinished"></translation>
+        <translation>Temps courant (tête de lecture)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4921"/>
@@ -6102,44 +6103,44 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="796"/>
         <source>Play-head</source>
-        <translation type="unfinished"></translation>
+        <translation>Jouer le début</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="799"/>
         <source>Edit-head</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer le début</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="802"/>
         <source>Edit-tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer la fin</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="805"/>
         <source>Loop-start</source>
-        <translation type="unfinished"></translation>
+        <translation>Boucle-début</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="808"/>
         <source>Loop-end</source>
-        <translation type="unfinished"></translation>
+        <translation>Boucle-fin</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="811"/>
         <source>Punch-in</source>
-        <translation type="unfinished"></translation>
+        <translation>Punch-in</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="814"/>
         <source>Punch-out</source>
-        <translation type="unfinished"></translation>
+        <translation>Punch-out</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="844"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
-        <translation type="unfinished">Début:	%1
+        <translation>Début:	%1
 Fin:	%2
 Longueur:	%3</translation>
     </message>
@@ -11032,23 +11033,23 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="37"/>
         <source>Tempo Map / Markers - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de tempo / marqueurs - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="87"/>
         <location filename="../qtractorTimeScaleForm.ui" line="259"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="96"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Position</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="121"/>
         <source>Bar location</source>
-        <translation type="unfinished"></translation>
+        <translation>Position de la mesure</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="143"/>
@@ -11062,7 +11063,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="162"/>
         <source>Time/frame location</source>
-        <translation type="unfinished"></translation>
+        <translation>Position du temps / cadre</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="197"/>
@@ -11082,17 +11083,17 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="265"/>
         <source>Marker text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte du marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="278"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="281"/>
         <source>Marker color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur du marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="303"/>
@@ -11563,44 +11564,44 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="799"/>
         <source>Play-head</source>
-        <translation type="unfinished"></translation>
+        <translation>Jouer le début</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="802"/>
         <source>Edit-head</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer le début</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="805"/>
         <source>Edit-tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer la fin</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="808"/>
         <source>Loop-start</source>
-        <translation type="unfinished"></translation>
+        <translation>Boucle-début</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="811"/>
         <source>Loop-end</source>
-        <translation type="unfinished"></translation>
+        <translation>Boucle-fin</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="814"/>
         <source>Punch-in</source>
-        <translation type="unfinished"></translation>
+        <translation>Punch-in</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="817"/>
         <source>Punch-out</source>
-        <translation type="unfinished"></translation>
+        <translation>Punch-out</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="851"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
-        <translation type="unfinished">Début:	%1
+        <translation>Début:	%1
 Fin:	%2
 Longueur:	%3</translation>
     </message>
