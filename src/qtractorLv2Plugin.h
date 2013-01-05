@@ -406,7 +406,7 @@ private:
 #endif
 
 	// Changed UI params hash-queue.
-	QHash<uint32_t, float> m_ui_params;
+	QHash<unsigned long, float> m_ui_params;
 
 #endif	// CONFIG_LV2_UI
 
@@ -431,7 +431,7 @@ private:
 
 #ifdef CONFIG_LV2_TIME
 	// LV2 Time designated ports map.
-	QHash<int, unsigned long>  m_lv2_time_ports;
+	QHash<unsigned long, int>  m_lv2_time_ports;
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS

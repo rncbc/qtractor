@@ -1002,19 +1002,21 @@ static struct qtractorLv2Time
 
 	const char *uri;
 	LilvNode   *node;
-	float       data;
+	float       value;
+
+	QList<qtractorLv2PluginParam *> *params;
 
 } g_lv2_time[] = {
 
-	{ LV2_TIME__position,        NULL, 0.0f },
-	{ LV2_TIME__bar,             NULL, 0.0f },
-	{ LV2_TIME__beat,            NULL, 0.0f },
-	{ LV2_TIME__beatUnit,        NULL, 0.0f },
-	{ LV2_TIME__beatsPerBar,     NULL, 0.0f },
-	{ LV2_TIME__beatsPerMinute,  NULL, 0.0f },
-	{ LV2_TIME__frame,           NULL, 0.0f },
-	{ LV2_TIME__framesPerSecond, NULL, 0.0f },
-	{ LV2_TIME__speed,           NULL, 0.0f }
+	{ LV2_TIME__position,        NULL, 0.0f, NULL },
+	{ LV2_TIME__bar,             NULL, 0.0f, NULL },
+	{ LV2_TIME__beat,            NULL, 0.0f, NULL },
+	{ LV2_TIME__beatUnit,        NULL, 0.0f, NULL },
+	{ LV2_TIME__beatsPerBar,     NULL, 0.0f, NULL },
+	{ LV2_TIME__beatsPerMinute,  NULL, 0.0f, NULL },
+	{ LV2_TIME__frame,           NULL, 0.0f, NULL },
+	{ LV2_TIME__framesPerSecond, NULL, 0.0f, NULL },
+	{ LV2_TIME__speed,           NULL, 0.0f, NULL }
 };
 
 #endif	// CONFIG_LV2_TIME
@@ -1334,7 +1336,8 @@ void qtractorLv2PluginType::lv2_open (void)
 	for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
 		qtractorLv2Time& member = g_lv2_time[i];
 		member.node = lilv_new_uri(g_lv2_world, member.uri);
-		member.data = 0.0f;
+		member.value = 0.0f;
+		member.params = new QList<qtractorLv2PluginParam *> ();
 	}
 #endif
 
@@ -1374,7 +1377,9 @@ void qtractorLv2PluginType::lv2_close (void)
 		qtractorLv2Time& member = g_lv2_time[i];
 		lilv_node_free(member.node);
 		member.node = NULL;
-		member.data = 0.0f;
+		member.value = 0.0f;
+		delete member.params;
+		member.params = NULL;
 	}
 #endif
 
@@ -1770,7 +1775,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					plugin, g_lv2_input_class, member.node);
 				if (port) {
 					unsigned long index = lilv_port_get_index(plugin, port);
-					m_lv2_time_ports.insert(i, index);
+					qtractorLv2PluginParam *pParam
+						= static_cast<qtractorLv2PluginParam *> (findParam(index));
+					if (pParam) {
+						m_lv2_time_ports.insert(index, i);
+						member.params->append(pParam);
+					}
 				}
 			}
 		}
@@ -1786,6 +1796,18 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 {
 	// Cleanup all plugin instances...
 	setChannels(0);
+
+#ifdef CONFIG_LV2_TIME
+	// Unsubscribe mapped params...
+	QHash<unsigned long, int>::ConstIterator iter
+		= m_lv2_time_ports.constBegin();
+	for ( ; iter != m_lv2_time_ports.constEnd(); ++iter) {
+		qtractorLv2PluginParam *pParam
+			= static_cast<qtractorLv2PluginParam *> (findParam(iter.key()));
+		if (pParam)
+			g_lv2_time[iter.value()].params->removeAll(pParam);
+	}
+#endif	// CONFIG_LV2_TIME
 
 	// Free up all the rest...
 #ifdef CONFIG_LV2_ATOM
@@ -1922,13 +1944,13 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 				lilv_instance_connect_port(instance,
 					m_piControlOuts[j], &m_pfControlOuts[j]);
 			}
-		#ifdef CONFIG_LV2_TIME
+		#if 0// CONFIG_LV2_TIME
 			// Connect time-pos designated ports, if any...
-			QHash<int, unsigned long>::ConstIterator iter
+			QHash<unsigned long, int>::ConstIterator iter
 				= m_lv2_time_ports.constBegin();
 			for ( ; iter != m_lv2_time_ports.constEnd(); ++iter) {
 				lilv_instance_connect_port(instance,
-					iter.value(), &(g_lv2_time[iter.key()].data));
+					iter.key(), &(g_lv2_time[iter.value()].data));
 			}
 		#endif
 		}
@@ -2466,10 +2488,17 @@ void qtractorLv2Plugin::idleEditor (void)
 #ifdef CONFIG_LV2_UI
 
 	if (m_ui_params.count() > 0) {
-		QHash<uint32_t, float>::ConstIterator iter
+		QHash<unsigned long, float>::ConstIterator iter
 			= m_ui_params.constBegin();
-		for ( ; iter != m_ui_params.constEnd(); ++iter)
-			updateParamValue(iter.key(), iter.value(), false);
+		for ( ; iter != m_ui_params.constEnd(); ++iter) {
+			unsigned long iIndex = iter.key();
+			float fValue = iter.value();
+		#ifdef CONFIG_LV2_TIME
+			int i = m_lv2_time_ports.value(iIndex, -1);
+			if (i >= 0) g_lv2_time[i].value = fValue;
+		#endif
+			updateParamValue(iIndex, fValue, false);
+		}
 		m_ui_params.clear();
 	}
 
@@ -2908,18 +2937,48 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 #ifdef CONFIG_LV2_TIME
 
 // Update LV2 Time from JACK transport position. (static)
+inline void qtractor_lv2_time_update ( int i, float fValue )
+{
+	qtractorLv2Time& member = g_lv2_time[i];
+
+	if (member.value != fValue && member.params->count() > 0) {
+		member.value  = fValue;
+		QListIterator<qtractorLv2PluginParam *> iter(*member.params);
+		while (iter.hasNext())
+			iter.next()->updateValue(fValue, true);
+	}
+}
+
 void qtractorLv2Plugin::updateTime (
 	const jack_transport_state_t state, const jack_position_t *pPos )
 {
-	g_lv2_time[qtractorLv2Time::position].data = float(pPos->tick);
-	g_lv2_time[qtractorLv2Time::bar].data = float(pPos->bar);
-	g_lv2_time[qtractorLv2Time::beat].data = float(pPos->beat);
-	g_lv2_time[qtractorLv2Time::beatUnit].data = float(pPos->beat_type);
-	g_lv2_time[qtractorLv2Time::beatsPerBar].data = float(pPos->beats_per_bar);
-	g_lv2_time[qtractorLv2Time::beatsPerMinute].data = float(pPos->beats_per_minute);
-	g_lv2_time[qtractorLv2Time::frame].data = float(pPos->frame);
-	g_lv2_time[qtractorLv2Time::framesPerSecond].data = float(pPos->frame_rate);
-	g_lv2_time[qtractorLv2Time::speed].data = (state == JackTransportRolling ? 1.0f : 0.0f);
+	qtractor_lv2_time_update(
+		qtractorLv2Time::position,
+		float(pPos->tick));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::bar,
+		float(pPos->bar));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beat,
+		float(pPos->beat));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beatUnit,
+		float(pPos->beat_type));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beatsPerBar,
+		float(pPos->beats_per_bar));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beatsPerMinute,
+		float(pPos->beats_per_minute));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::frame,
+		float(pPos->frame));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::framesPerSecond,
+		float(pPos->frame_rate));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::speed,
+		float(state == JackTransportRolling));
 }
 
 #endif	// CONFIG_LV2_TIME

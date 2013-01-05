@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Time/position information is now continuous and asynchronously
+  fed back into their designated parameter (control input) ports.
+
 - LV2 State is now properly restored for  plugins inserted on buses,
   probably solving the Calf Fluidsynth Soundfont information missing
   on buses ticket, reported by Albert Graef, thanks.
