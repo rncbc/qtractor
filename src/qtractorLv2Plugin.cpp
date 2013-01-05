@@ -1944,7 +1944,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 				lilv_instance_connect_port(instance,
 					m_piControlOuts[j], &m_pfControlOuts[j]);
 			}
-		#if 0// CONFIG_LV2_TIME
+		#if 0//def CONFIG_LV2_TIME
 			// Connect time-pos designated ports, if any...
 			QHash<unsigned long, int>::ConstIterator iter
 				= m_lv2_time_ports.constBegin();
@@ -2493,7 +2493,7 @@ void qtractorLv2Plugin::idleEditor (void)
 		for ( ; iter != m_ui_params.constEnd(); ++iter) {
 			unsigned long iIndex = iter.key();
 			float fValue = iter.value();
-		#ifdef CONFIG_LV2_TIME
+		#if 0//def CONFIG_LV2_TIME
 			int i = m_lv2_time_ports.value(iIndex, -1);
 			if (i >= 0) g_lv2_time[i].value = fValue;
 		#endif
