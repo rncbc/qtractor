@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -747,10 +747,11 @@ void qtractorMidiControlForm::refreshControlMap (void)
 	QList<QTreeWidgetItem *> items;
 	const qtractorMidiControl::ControlMap& controlMap = pMidiControl->controlMap();
 	qtractorMidiControl::ControlMap::ConstIterator it = controlMap.constBegin();
+	const qtractorMidiControl::ControlMap::ConstIterator& it_end = controlMap.constEnd();
 	const QIcon	iconControlType(":/images/itemProperty.png");
 	const QIcon	iconParam(":/images/itemControllers.png");
 	const QIcon	iconCommand(":/images/itemChannel.png");
-	for ( ; it != controlMap.constEnd(); ++it) {
+	for ( ; it != it_end; ++it) {
 		const qtractorMidiControl::MapKey& key = it.key();
 		const qtractorMidiControl::MapVal& val = it.value();
 		QTreeWidgetItem *pItem = new QTreeWidgetItem();

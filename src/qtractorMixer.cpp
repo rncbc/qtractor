@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1031,7 +1031,8 @@ QWidget *qtractorMixerRack::workspace (void) const
 void qtractorMixerRack::refresh (void)
 {
 	Strips::ConstIterator strip = m_strips.constBegin();
-	for ( ; strip != m_strips.constEnd(); ++strip)
+	const Strips::ConstIterator& strip_end = m_strips.constEnd();
+	for ( ; strip != strip_end; ++strip)
 		strip.value()->refresh();
 }
 
@@ -1089,7 +1090,8 @@ void qtractorMixerRack::markStrips ( int iMark )
 	m_pWorkspace->setUpdatesEnabled(false);
 
 	Strips::ConstIterator strip = m_strips.constBegin();
-	for ( ; strip != m_strips.constEnd(); ++strip)
+	const Strips::ConstIterator& strip_end = m_strips.constEnd();
+	for ( ; strip != strip_end; ++strip)
 		strip.value()->setMark(iMark);
 }
 

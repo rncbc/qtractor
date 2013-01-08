@@ -145,7 +145,8 @@ uint32_t qtractorLv2Plugin::lv2_urid_map ( const char *uri )
 {
 	const QString sUri(uri);
 
-	QHash<QString, uint32_t>::ConstIterator iter = g_uri_map.constFind(sUri);
+	QHash<QString, uint32_t>::ConstIterator iter
+		= g_uri_map.constFind(sUri);
 	if (iter == g_uri_map.constEnd()) {
 		uint32_t id = g_uri_map.size() + 1000;
 		g_uri_map.insert(sUri, id);
@@ -1801,7 +1802,9 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	// Unsubscribe mapped params...
 	QHash<unsigned long, int>::ConstIterator iter
 		= m_lv2_time_ports.constBegin();
-	for ( ; iter != m_lv2_time_ports.constEnd(); ++iter) {
+	const QHash<unsigned long, int>::ConstIterator& iter_end
+		= m_lv2_time_ports.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorLv2PluginParam *pParam
 			= static_cast<qtractorLv2PluginParam *> (findParam(iter.key()));
 		if (pParam)
@@ -1934,7 +1937,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			// Connect all existing input control ports...
 			const qtractorPlugin::Params& params = qtractorPlugin::params();
 			qtractorPlugin::Params::ConstIterator param = params.constBegin();
-			for ( ; param != params.constEnd(); ++param) {
+			const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+			for ( ; param != param_end; ++param) {
 				qtractorPluginParam *pParam = param.value();
 				lilv_instance_connect_port(instance,
 					pParam->index(), pParam->subject()->data());
@@ -1948,7 +1952,9 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			// Connect time-pos designated ports, if any...
 			QHash<unsigned long, int>::ConstIterator iter
 				= m_lv2_time_ports.constBegin();
-			for ( ; iter != m_lv2_time_ports.constEnd(); ++iter) {
+			const QHash<unsigned long, int>::ConstIterator& iter_end
+				= m_lv2_time_ports.constEnd();
+			for ( ; iter != iter_end; ++iter) {
 				lilv_instance_connect_port(instance,
 					iter.key(), &(g_lv2_time[iter.value()].data));
 			}
@@ -2336,7 +2342,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (m_suil_instance) {
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
-		for ( ; param != params.constEnd(); ++param) {
+		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+		for ( ; param != param_end; ++param) {
 			qtractorPluginParam *pParam = param.value();
 			float fValue = pParam->value();
 			suil_instance_port_event(m_suil_instance,
@@ -2490,7 +2497,9 @@ void qtractorLv2Plugin::idleEditor (void)
 	if (m_ui_params.count() > 0) {
 		QHash<unsigned long, float>::ConstIterator iter
 			= m_ui_params.constBegin();
-		for ( ; iter != m_ui_params.constEnd(); ++iter) {
+		const QHash<unsigned long, float>::ConstIterator& iter_end
+			= m_ui_params.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			unsigned long iIndex = iter.key();
 			float fValue = iter.value();
 		#if 0//def CONFIG_LV2_TIME
@@ -2685,22 +2694,25 @@ void qtractorLv2Plugin::realizeConfigs (void)
 	m_lv2_state_configs.clear();
 	m_lv2_state_ctypes.clear();
 
-	const ConfigTypes& state_ctypes = configTypes();
-	Configs::ConstIterator state_config = configs().constBegin();
-	for (; state_config != configs().constEnd(); ++state_config) {
-		const QString& sKey = state_config.key();
+	const Configs& configs = qtractorPlugin::configs();
+	const ConfigTypes& ctypes = qtractorPlugin::configTypes();
+
+	Configs::ConstIterator config = configs.constBegin();
+	const Configs::ConstIterator& config_end = configs.constEnd();
+	for ( ; config != config_end; ++config) {
+		const QString& sKey = config.key();
 		QByteArray aType;
-		ConfigTypes::ConstIterator ctype = state_ctypes.constFind(sKey);
-		if (ctype != state_ctypes.constEnd())
+		ConfigTypes::ConstIterator ctype = ctypes.constFind(sKey);
+		if (ctype != ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
 		if (aType.isEmpty()
 			|| ::strcmp(pszType, LV2_ATOM__Path)   == 0
 			|| ::strcmp(pszType, LV2_ATOM__String) == 0) {
-			m_lv2_state_configs.insert(sKey, state_config.value().toUtf8());
+			m_lv2_state_configs.insert(sKey, config.value().toUtf8());
 		} else {
 			m_lv2_state_configs.insert(sKey, qUncompress(
-				QByteArray::fromBase64(state_config.value().toUtf8())));
+				QByteArray::fromBase64(config.value().toUtf8())));
 			m_lv2_state_ctypes.insert(sKey, lv2_urid_map(pszType));
 		}
 	}
@@ -2897,7 +2909,8 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 	// Reset parameters default value...
 	const qtractorPlugin::Params& params = qtractorPlugin::params();
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
-	for ( ; param != params.constEnd(); ++param) {
+	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		pParam->setDefaultValue(pParam->value());
 	}
@@ -2990,8 +3003,11 @@ QStringList qtractorLv2Plugin::presetList (void) const
 {
 	QStringList list(qtractorPlugin::presetList());
 
-	QHash<QString, QString>::ConstIterator iter = m_lv2_presets.constBegin();
-	for ( ; iter != m_lv2_presets.constEnd(); ++iter)
+	QHash<QString, QString>::ConstIterator iter
+		= m_lv2_presets.constBegin();
+	const QHash<QString, QString>::ConstIterator& iter_end
+		= m_lv2_presets.constEnd();
+	for ( ; iter != iter_end; ++iter)
 		list.append(iter.key());
 
 	return list;

@@ -1,7 +1,7 @@
 // qtractorClipSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -109,7 +109,8 @@ qtractorTrack *qtractorClipSelect::singleTrack (void)
 	if (!m_bTrackSingle) {
 		m_pTrackSingle = NULL;
 		ItemList::ConstIterator iter = m_items.constBegin();
-		for ( ; iter != m_items.constEnd(); ++iter) {
+		const ItemList::ConstIterator& iter_end = m_items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			qtractorClip *pClip = iter.key();
 			if (m_pTrackSingle == NULL)
 				m_pTrackSingle = pClip->track();
@@ -157,7 +158,8 @@ void qtractorClipSelect::reset (void)
 void qtractorClipSelect::clear (void)
 {
 	ItemList::ConstIterator iter = m_items.constBegin();
-	for ( ; iter != m_items.constEnd(); ++iter)
+	const ItemList::ConstIterator& iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter)
 		iter.key()->setClipSelected(false);
 
 	reset();

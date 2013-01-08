@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -766,6 +766,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 
 	const qtractorMidiEditSelect::ItemList& items = pSelect->items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 
 	// Seed time range with a value from the list of selected events.
 	long iMinTime = 0;
@@ -782,7 +783,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			m_ui.ResizeValueCheckBox->isChecked() &&
 			m_ui.ResizeValue2ComboBox->currentIndex() > 0)) {
 		// Make it through one time...
-		for (int i = 0 ; iter != items.constEnd(); ++i, ++iter) {
+		for (int i = 0 ; iter != iter_end; ++i, ++iter) {
 			qtractorMidiEvent *pEvent = iter.key();
 			long iTime = pEvent->time();
 			if (iMinTime > iTime || i == 0)
@@ -803,7 +804,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	// Go for the main pass...
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 
-	for ( ; iter != items.constEnd(); ++iter) {
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		long iTime = pEvent->time();
 		long iDuration = pEvent->duration();

@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1427,7 +1427,8 @@ void qtractorMidiEditor::cutClipboard (void)
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		g_clipboard.items.append(new qtractorMidiEvent(*pEvent));
 		pEditCommand->removeEvent(pEvent);
@@ -1451,7 +1452,8 @@ void qtractorMidiEditor::copyClipboard (void)
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter)
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter)
 		g_clipboard.items.append(new qtractorMidiEvent(*iter.key()));
 
 	selectionChangeNotify();
@@ -1627,7 +1629,8 @@ void qtractorMidiEditor::deleteSelect (void)
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter)
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter)
 		pEditCommand->removeEvent(iter.key());
 
 	m_pCommands->exec(pEditCommand);
@@ -1723,7 +1726,8 @@ QList<qtractorMidiEvent *> qtractorMidiEditor::selectedEvents (void) const
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter)
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter)
 		list.append(iter.key());
 
 	return list;
@@ -1788,7 +1792,8 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		// Common event coords...
@@ -2231,7 +2236,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	if (m_bEventDragEdit && m_pEventDrag) {
 		const qtractorMidiEditSelect::ItemList& items = m_select.items();
 		qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter) {
+		const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			qtractorMidiEvent *pEvent = iter.key();
 			qtractorMidiEditSelect::Item *pItem = iter.value();
 			if (bEditView && pEvent->type() == qtractorMidiEvent::NOTEON) {
@@ -3293,7 +3299,8 @@ bool qtractorMidiEditor::isDragEventResize ( Qt::KeyboardModifiers modifiers ) c
 	const qtractorMidiEvent::EventType etype = m_pEditEvent->eventType();
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
@@ -3336,7 +3343,8 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
@@ -3387,7 +3395,8 @@ void qtractorMidiEditor::executeDragMove (
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
@@ -3426,7 +3435,8 @@ void qtractorMidiEditor::executeDragResize (
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
@@ -3469,7 +3479,8 @@ void qtractorMidiEditor::executeDragPaste (
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*iter.key());
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
@@ -3517,7 +3528,8 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
@@ -3567,7 +3579,8 @@ void qtractorMidiEditor::paintDragState (
 	int x1, y1;
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
@@ -3664,7 +3677,8 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 	if (m_bEventDragEdit) {
 		const qtractorMidiEditSelect::ItemList& items = m_select.items();
 		qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter)
+		const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter)
 			delete iter.key();
 		m_select.clear();
 	}
@@ -3776,19 +3790,22 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	}
 
 	// Finally, got instrument descriptor...
-	qtractorInstrumentData::ConstIterator iter;
 	const qtractorInstrument& instr = (*pInstruments)[sInstrument];
 
 	// Key note names...
 	const qtractorInstrumentData& notes
 		= instr.notes(pTrack->midiBank(), pTrack->midiProgram());
-	for (iter = notes.constBegin(); iter != notes.constEnd(); ++iter)
-		m_noteNames.insert(iter.key(), iter.value());
+	qtractorInstrumentData::ConstIterator nit = notes.constBegin();
+	const qtractorInstrumentData::ConstIterator& nit_end = notes.constEnd();
+	for ( ; nit != nit_end; ++nit)
+		m_noteNames.insert(nit.key(), nit.value());
 
 	// Controller names...
 	const qtractorInstrumentData& controllers = instr.control();
-	for (iter = controllers.constBegin(); iter != controllers.constEnd(); ++iter)
-		m_controllerNames.insert(iter.key(), iter.value());
+	qtractorInstrumentData::ConstIterator cit = controllers.constBegin();
+	const qtractorInstrumentData::ConstIterator& cit_end = controllers.constEnd();
+	for ( ; cit != cit_end; ++cit)
+		m_controllerNames.insert(cit.key(), cit.value());
 }
 
 

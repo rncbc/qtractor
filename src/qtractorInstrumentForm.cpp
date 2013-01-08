@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -504,9 +504,11 @@ void qtractorInstrumentForm::refreshForm (void)
 	// Instruments list view...
 	m_ui.InstrumentsListView->clear();
 	QList<QTreeWidgetItem *> instrs;
-	qtractorInstrumentList::ConstIterator iter;
-	for (iter = m_pInstruments->begin();
-			iter != m_pInstruments->end(); ++iter) {
+	qtractorInstrumentList::ConstIterator iter
+		= m_pInstruments->constBegin();
+	const qtractorInstrumentList::ConstIterator& iter_end
+		= m_pInstruments->constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		const qtractorInstrument& instr = iter.value();
 		// Instrument Name...
 		QTreeWidgetItem *pChildItem = NULL;
@@ -518,8 +520,11 @@ void qtractorInstrumentForm::refreshForm (void)
 		pChildItem->setText(0, tr("Patch Names for Banks"));
 		QTreeWidgetItem *pBankItem = NULL;
 		const qtractorInstrumentPatches& patches = instr.patches();
-		qtractorInstrumentPatches::ConstIterator pat = patches.constBegin();
-		for ( ; pat != patches.constEnd(); ++pat) {
+		qtractorInstrumentPatches::ConstIterator pat
+			= patches.constBegin();
+		const qtractorInstrumentPatches::ConstIterator& pat_end
+			= patches.constEnd();
+		for ( ; pat != pat_end; ++pat) {
 			pBankItem = new QTreeWidgetItem(pChildItem, pBankItem);
 			int iBank = pat.key();
 			const QString sBank = (iBank < 0
@@ -536,8 +541,11 @@ void qtractorInstrumentForm::refreshForm (void)
 				pProgItem->setText(0,
 					QString("Based On = %1").arg(patch.basedOn()));
 			}
-			qtractorInstrumentData::ConstIterator it = patch.constBegin();
-			for ( ; it != patch.constEnd(); ++it) {
+			qtractorInstrumentData::ConstIterator it
+				= patch.constBegin();
+			const qtractorInstrumentData::ConstIterator& it_end
+				= patch.constEnd();
+			for ( ; it != it_end; ++it) {
 				int iProg = it.key();
 				pProgItem = new QTreeWidgetItem(pBankItem, pProgItem);
 				pProgItem->setText(0,
@@ -663,8 +671,11 @@ void qtractorInstrumentForm::listInstrumentData (
 		pItem->setText(0,
 			tr("Based On = %1").arg(data.basedOn()));
 	}
-	qtractorInstrumentData::ConstIterator it = data.constBegin();
-	for ( ; it != data.constEnd(); ++it) {
+	qtractorInstrumentData::ConstIterator it
+		= data.constBegin();
+	const qtractorInstrumentData::ConstIterator& it_end
+		= data.constEnd();
+	for ( ; it != it_end; ++it) {
 		pItem = new QTreeWidgetItem(pParentItem, pItem);
 		pItem->setText(0,
 			QString("%1 = %2").arg(it.key()).arg(it.value()));
@@ -677,8 +688,11 @@ void qtractorInstrumentForm::listInstrumentDataList (
 	const QIcon& icon )
 {
 	QTreeWidgetItem *pItem = NULL;
-	qtractorInstrumentDataList::ConstIterator it = list.begin();
-	for ( ; it != list.end(); ++it) {
+	qtractorInstrumentDataList::ConstIterator it
+		= list.constBegin();
+	const qtractorInstrumentDataList::ConstIterator& it_end
+		= list.constEnd();
+	for ( ; it != it_end; ++it) {
 		pItem = new QTreeWidgetItem(pParentItem, pItem);
 		pItem->setIcon(0, icon);
 		pItem->setText(0, it.value().name());

@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -364,7 +364,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		const QRect& rectView = qtractorScrollView::viewport()->rect();
 		const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter) {
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			qtractorClip *pClip = iter.key();
 			// Make sure it's a legal selection...
 			if (pClip->track() && pClip->isClipSelected()) {
@@ -2403,7 +2404,8 @@ void qtractorTrackView::showClipSelect (void) const
 {
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorClipSelect::Item *pClipItem = iter.value();
 		QRect rectClip = pClipItem->rectClip;
 		if (m_bDragSingleTrack) {
@@ -2420,7 +2422,8 @@ void qtractorTrackView::hideClipSelect (void) const
 {
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorRubberBand *pRubberBand = iter.value()->rubberBand;
 		if (pRubberBand && pRubberBand->isVisible())
 			pRubberBand->hide();
@@ -3355,7 +3358,8 @@ bool qtractorTrackView::queryClipSelect ( qtractorClip *pClip )
 	// Just ask whether any target clips have pending editors...
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorClip *pClip = iter.key();
 		// Make sure it's a legal selection...
 		if (pClip->track() && pClip->isClipSelected() && !pClip->queryEditor())
@@ -3420,7 +3424,8 @@ void qtractorTrackView::executeClipSelect (
 
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorClip  *pClip  = iter.key();
 		qtractorTrack *pTrack = pClip->track();
 		// Make sure it's legal selection...
@@ -3675,7 +3680,8 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorClip *pClip = iter.key();
 		if (pSingleTrack == NULL)
 			pTrack = pClip->track();

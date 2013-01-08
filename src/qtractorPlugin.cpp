@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -741,7 +741,8 @@ void qtractorPlugin::setValueList ( const QStringList& vlist )
 //	qSort(m_params); -- does not work with QHash...
 	QMap<unsigned long, qtractorPluginParam *> params;
 	Params::ConstIterator param = m_params.constBegin();
-	for ( ; param != m_params.constEnd(); ++param)
+	const Params::ConstIterator& param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param)
 		params.insert(param.key(), param.value());
 
 	// Split it up...
@@ -757,7 +758,8 @@ QStringList qtractorPlugin::valueList (void) const
 //	qSort(m_params); -- does not work with QHash...
 	QMap<unsigned long, qtractorPluginParam *> params;
 	Params::ConstIterator param = m_params.constBegin();
-	for ( ; param != m_params.constEnd(); ++param)
+	const Params::ConstIterator& param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param)
 		params.insert(param.key(), param.value());
 
 	// Join it up...
@@ -774,7 +776,8 @@ QStringList qtractorPlugin::valueList (void) const
 void qtractorPlugin::reset (void)
 {
 	Params::ConstIterator param = m_params.constBegin();
-	for ( ; param != m_params.constEnd(); ++param)
+	const Params::ConstIterator& param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param)
 		param.value()->reset();
 }
 
@@ -1054,7 +1057,8 @@ void qtractorPlugin::freezeValues (void)
 	clearValues();
 
 	Params::ConstIterator param = m_params.constBegin();
-	for ( ; param != m_params.constEnd(); ++param) {
+	const Params::ConstIterator& param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		unsigned long iIndex = pParam->index();
 		m_values.names[iIndex] = pParam->name();
@@ -1082,7 +1086,8 @@ void qtractorPlugin::realizeConfigs (void)
 
 	// Set configuration (CLOBs)...
 	Configs::ConstIterator config = m_configs.constBegin();
-	for (; config != m_configs.constEnd(); ++config)
+	const Configs::ConstIterator& config_end = m_configs.constEnd();
+	for ( ; config != config_end; ++config)
 		configure(config.key(), config.value());
 
 	// Set proper bank/program selection...
@@ -1101,7 +1106,8 @@ void qtractorPlugin::realizeValues (void)
 
 	// (Re)set parameter values (initial)...
 	ValueIndex::ConstIterator param = m_values.index.constBegin();
-	for (; param != m_values.index.constEnd(); ++param) {
+	const ValueIndex::ConstIterator& param_end = m_values.index.constEnd();
+	for ( ; param != param_end; ++param) {
 		unsigned long iIndex = param.key();
 		qtractorPluginParam *pParam = findParam(iIndex);
 		if (pParam) {
@@ -1166,7 +1172,8 @@ void qtractorPlugin::saveConfigs (
 {
 	// Save plugin configs...
 	Configs::ConstIterator iter = m_configs.constBegin();
-	for (; iter != m_configs.constEnd(); ++iter) {
+	const Configs::ConstIterator& iter_end = m_configs.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		QDomElement eConfig = pDocument->createElement("config");
 		eConfig.setAttribute("key", iter.key());
 		ConfigTypes::ConstIterator ctype = m_ctypes.find(iter.key());
@@ -1184,7 +1191,8 @@ void qtractorPlugin::saveValues (
 	QDomDocument *pDocument, QDomElement *pElement )
 {
 	Params::ConstIterator param = m_params.constBegin();
-	for ( ; param != m_params.constEnd(); ++param) {
+	const Params::ConstIterator param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		QDomElement eParam = pDocument->createElement("param");
 		eParam.setAttribute("name", pParam->name());
@@ -1836,7 +1844,8 @@ void qtractorPlugin::saveControllers (
 
 	qtractorMidiControl::Controllers controllers;
 	Params::ConstIterator param = m_params.constBegin();
-	for ( ; param != m_params.constEnd(); ++param) {
+	const Params::ConstIterator param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		qtractorMidiControlObserver *pObserver = pParam->observer();
 		if (pMidiControl->isMidiObserverMapped(pObserver)) {
@@ -1915,7 +1924,8 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	
 	unsigned short iParam = 0;
 	Params::ConstIterator param = m_params.constBegin();
-	for ( ; param != m_params.constEnd(); ++param) {
+	const Params::ConstIterator param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		qtractorCurve *pCurve = pParam->subject()->curve();
 		if (pCurve) {

@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -720,7 +720,8 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter) {
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			// Make sure it's legal selection...
 			pClip = iter.key();
 			if (pClip->track() && pClip->isClipSelected())
@@ -847,7 +848,8 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter) {
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			// Make sure it's legal selection...
 			qtractorClip *pClip = iter.key();
 			if (pClip->track() && pClip->isClipSelected())
@@ -1226,6 +1228,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	// Multiple clip selection...
 	const qtractorClipSelect::ItemList& items = pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 
 	unsigned short iChannels = pAudioBus->channels();
 	unsigned int iSampleRate = pSession->sampleRate();
@@ -1234,7 +1237,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	QList<audioClipBufferItem *> list;
 	unsigned long iSelectStart = pSession->sessionEnd();
 	unsigned long iSelectEnd = pSession->sessionStart();
-	for ( ; iter != items.constEnd(); ++iter) {
+	for ( ; iter != iter_end; ++iter) {
 		qtractorClip *pClip = iter.key();
 		qtractorTrack *pTrack = pClip->track();
 		// Make sure it's a legal selection...
@@ -1362,7 +1365,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	// The resulting merge comands, if any...
 	if (pClipCommand) {
 		iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter) {
+		for ( ; iter != iter_end; ++iter) {
 			qtractorClip *pClip = iter.key();
 			// Clip parameters.
 			unsigned long iClipStart  = pClip->clipStart();
@@ -1487,11 +1490,12 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	// Multiple clip selection...
 	const qtractorClipSelect::ItemList& items = pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 
 	// Multi-selection extents (in frames)...
 	unsigned long iSelectStart = pSession->sessionEnd();
 	unsigned long iSelectEnd = pSession->sessionStart();
-	for ( ; iter != items.constEnd(); ++iter) {
+	for ( ; iter != iter_end; ++iter) {
 		qtractorClip *pClip = iter.key();
 		// Make sure it's a legal selection...
 		if (pClip->track() && pClip->isClipSelected()) {
@@ -1525,7 +1529,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 
 	// The merge...
 	iter = items.constBegin();
-	for ( ; iter != items.constEnd(); ++iter) {
+	for ( ; iter != iter_end; ++iter) {
 		qtractorClip *pClip = iter.key();
 		// Make sure it's a legal selection...
 		if (pClip->track() && pClip->isClipSelected()) {
@@ -1649,7 +1653,8 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 		const qtractorClipSelect::ItemList& items = pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-		for ( ; iter != items.constEnd(); ++iter) {
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			pClip = iter.key();
 			// Make sure it's a legal selection...
 			if (pClip->isClipSelected()) {
