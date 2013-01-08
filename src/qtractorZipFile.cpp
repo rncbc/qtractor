@@ -1,7 +1,7 @@
 // qtractorZipFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -598,8 +598,11 @@ bool qtractorZipDevice::extractAll (void)
 
 	int iExtracted = 0;
 
-	QHash<QString, FileHeader>::ConstIterator iter = file_headers.constBegin();
-	for ( ; iter != file_headers.constEnd(); ++iter) {
+	QHash<QString, FileHeader>::ConstIterator iter
+		= file_headers.constBegin();
+	const QHash<QString, FileHeader>::ConstIterator& iter_end
+		= file_headers.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		if (extractEntry(iter.key(), iter.value()))
 			++iExtracted;
 	}
@@ -979,7 +982,9 @@ void qtractorZipFile::close (void)
 	// Write new directory...
 	QHash<QString, FileHeader>::ConstIterator iter
 		= m_pZip->file_headers.constBegin();
-	for ( ; iter != m_pZip->file_headers.constEnd(); ++iter) {
+	const QHash<QString, FileHeader>::ConstIterator iter_end
+		= m_pZip->file_headers.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		const FileHeader& fh = iter.value();
 		m_pZip->device->write((const char *) &fh.h, sizeof(CentralFileHeader));
 		m_pZip->device->write(fh.file_name);

@@ -1,7 +1,7 @@
 // qtractorAudioFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -147,10 +147,12 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	// Finally, simply build the all (most commonly) supported files entry.
 	QRegExp rx("^(aif(|f)|fla(|c)|mp3|ogg|w(av|64))", Qt::CaseInsensitive);
 	QStringList exts;
-	for (FileTypes::ConstIterator iter = m_types.begin();
-			iter != m_types.end(); ++iter) {
-		if (rx.exactMatch(iter.key()))
-			exts.append(sExtMask.arg(iter.key()));
+	FileTypes::ConstIterator iter = m_types.constBegin();
+	const FileTypes::ConstIterator& iter_end = m_types.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		const QString& sExt = iter.key();
+		if (rx.exactMatch(sExt))
+			exts.append(sExtMask.arg(sExt));
 	}
 	m_filters.prepend(QObject::tr("Audio files (%1)").arg(exts.join(" ")));
 	m_filters.append(QObject::tr("All files (*.*)"));
@@ -181,8 +183,8 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 {
 	const QString sExt = QFileInfo(sFilename).suffix().toLower();
 	
-	FileTypes::ConstIterator iter = m_types.find(sExt);
-	if (iter == m_types.end())
+	FileTypes::ConstIterator iter = m_types.constFind(sExt);
+	if (iter == m_types.constEnd())
 		return NULL;
 
 	return newAudioFile(iter.value()->type, iChannels, iSampleRate, iBufferSize);

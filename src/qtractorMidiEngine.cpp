@@ -3525,8 +3525,11 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 	qDebug("qtractorMidiBus[%p]::shutOff(%d)", this, int(bClose));
 #endif
 
-	QHash<unsigned short, Patch>::ConstIterator iter;
-	for (iter = m_patches.constBegin(); iter != m_patches.constEnd(); ++iter) {
+	QHash<unsigned short, Patch>::ConstIterator iter
+		= m_patches.constBegin();
+	const QHash<unsigned short, Patch>::ConstIterator& iter_end
+		= m_patches.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		unsigned short iChannel = iter.key();
 		setControllerEx(iChannel, ALL_SOUND_OFF);
 		setControllerEx(iChannel, ALL_NOTES_OFF);
@@ -4533,8 +4536,11 @@ bool qtractorMidiBus::saveMidiMap (
 	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	// Save map items...
-	QHash<unsigned short, Patch>::ConstIterator iter;
-	for (iter = m_patches.constBegin(); iter != m_patches.constEnd(); ++iter) {
+	QHash<unsigned short, Patch>::ConstIterator iter
+		= m_patches.constBegin();
+	const QHash<unsigned short, Patch>::ConstIterator& iter_end
+		= m_patches.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		const Patch& patch = iter.value();
 		QDomElement ePatch = pDocument->document()->createElement("midi-patch");
 		ePatch.setAttribute("channel", QString::number(iter.key()));

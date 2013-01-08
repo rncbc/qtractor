@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -6003,7 +6003,9 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 				QMenu *pParamMenu = pMenu->addMenu(pPlugin->type()->name());
 				qtractorPlugin::Params::ConstIterator param
 					= params.constBegin();
-				for ( ; param != params.constEnd(); ++param) {
+				const qtractorPlugin::Params::ConstIterator& param_end
+					= params.constEnd();
+				for ( ; param != param_end; ++param) {
 					trackCurveSelectMenuAction(pParamMenu,
 						param.value()->observer(), pCurrentSubject);
 				}

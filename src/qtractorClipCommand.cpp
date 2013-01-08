@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -450,8 +450,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	}
 
 	// Pre-close needed clips once...
-	QHash<qtractorClip *, bool>::ConstIterator clip;
-	for (clip = m_clips.constBegin(); clip != m_clips.constEnd(); ++clip) {
+	QHash<qtractorClip *, bool>::ConstIterator clip = m_clips.constBegin();
+	const QHash<qtractorClip *, bool>::ConstIterator& clip_end = m_clips.constEnd();
+	for ( ; clip != clip_end; ++clip) {
 		if (clip.value()) // Scrap peak file (audio).
 			clip.key()->close();
 	}

@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -270,7 +270,8 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	// Update plugin configuration...
 	const qtractorPlugin::Configs& configs = pDssiPlugin->configs();
 	qtractorPlugin::Configs::ConstIterator iter = configs.constBegin();
-	for (; iter != configs.constEnd(); ++iter) {
+	const qtractorPlugin::Configs::ConstIterator& iter_end = configs.constEnd();
+	for (; iter != iter_end; ++iter) {
 		osc_send_configure(pDssiEditor,
 			iter.key().toUtf8().constData(),
 			iter.value().toUtf8().constData());
@@ -287,7 +288,8 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	// Update control params...
 	const qtractorPlugin::Params& params = pDssiPlugin->params();
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
-	for ( ; param != params.constEnd(); ++param) {
+	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		osc_send_control(pDssiEditor,
 			pParam->index(),
@@ -966,7 +968,8 @@ void qtractorDssiPlugin::resetChannels (void)
 		LADSPA_Handle handle = m_phInstances[0];
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
-		for ( ; param != params.constEnd(); ++param) {
+		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+		for ( ; param != param_end; ++param) {
 			qtractorPluginParam *pParam = param.value();
 			int iController
 				= (*pDssiDescriptor->get_midi_controller_for_port)(
@@ -1207,7 +1210,8 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 	// Reset parameters default value...
 	const qtractorPlugin::Params& params = qtractorPlugin::params();
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
-	for ( ; param != params.constEnd(); ++param) {
+	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		pParam->setDefaultValue(pParam->value());
 	}

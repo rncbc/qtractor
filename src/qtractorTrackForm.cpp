@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -526,7 +526,8 @@ void qtractorTrackForm::updateInstruments (void)
 
 	// Regular instrument names...
 	qtractorInstrumentList::ConstIterator iter = pInstruments->constBegin();
-	for ( ; iter != pInstruments->constEnd(); ++iter)
+	const qtractorInstrumentList::ConstIterator& iter_end = pInstruments->constEnd();
+	for ( ; iter != iter_end; ++iter)
 		m_ui.InstrumentComboBox->addItem(icon, iter.value().instrumentName());
 
 	// Done.
@@ -546,7 +547,8 @@ void qtractorTrackForm::updateInstrumentsAdd (
 	const qtractorMidiManager::Instruments& list
 		= pMidiManager->instruments();
 	qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
-	for ( ; iter != list.constEnd(); ++iter)
+	const qtractorMidiManager::Instruments::ConstIterator& iter_end = list.constEnd();
+	for ( ; iter != iter_end; ++iter)
 		m_ui.InstrumentComboBox->addItem(icon, iter.key());
 }
 
@@ -712,9 +714,10 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		if (iBankSelMethod < 0)
 			iBankSelMethod = instr.bankSelMethod();
 		// Refresh patch bank mapping...
-		qtractorInstrumentPatches::ConstIterator it
-			= instr.patches().constBegin();
-		for (; it != instr.patches().constEnd(); ++it) {
+		const qtractorInstrumentPatches& patches = instr.patches();
+		qtractorInstrumentPatches::ConstIterator it = patches.constBegin();
+		const qtractorInstrumentPatches::ConstIterator& it_end = patches.constEnd();
+		for (; it != it_end; ++it) {
 			if (it.key() >= 0) {
 				m_ui.BankComboBox->addItem(icon, it.value().name());
 				m_banks[iBankIndex++] = it.key();
@@ -822,7 +825,8 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		const qtractorInstrumentData& bank = instr.patch(iBank);
 		// Enumerate the explicit given program list...
 		qtractorInstrumentData::ConstIterator it = bank.constBegin();
-		for (; it != bank.constEnd(); ++it) {
+		const qtractorInstrumentData::ConstIterator& it_end = bank.constEnd();
+		for (; it != it_end; ++it) {
 			if (it.key() >= 0 && !it.value().isEmpty()) {
 				m_ui.ProgComboBox->addItem(icon, it.value());
 				m_progs[iProgIndex++] = it.key();
@@ -883,7 +887,8 @@ bool qtractorTrackForm::updateBanksAdd (
 	// Refresh bank mapping...
 	const qtractorMidiManager::Banks& banks = list[sInstrumentName];
 	qtractorMidiManager::Banks::ConstIterator iter = banks.constBegin();
-	for ( ; iter != banks.constEnd(); ++iter) {
+	const qtractorMidiManager::Banks::ConstIterator& iter_end = banks.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		m_ui.BankComboBox->addItem(icon, iter.value().name);
 		m_banks[iBankIndex++] = iter.key();
 	}
@@ -921,7 +926,8 @@ bool qtractorTrackForm::updateProgramsAdd (
 		// Refresh program mapping...
 		const QString sProg("%1 - %2");
 		qtractorMidiManager::Progs::ConstIterator iter = progs.constBegin();
-		for ( ; iter != progs.constEnd(); ++iter) {
+		const qtractorMidiManager::Progs::ConstIterator& iter_end = progs.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			m_ui.ProgComboBox->addItem(icon,
 				sProg.arg(iter.key()).arg(iter.value()));
 			m_progs[iProgIndex++] = iter.key();

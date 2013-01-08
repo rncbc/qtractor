@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,8 +116,9 @@ void qtractorInstrumentList::merge ( const qtractorInstrumentList& instruments )
 	mergeDataList(m_nrpns, instruments.nrpns());
 
 	// Instrument merge...
-	qtractorInstrumentList::ConstIterator it;
-	for (it = instruments.constBegin(); it != instruments.constEnd(); ++it) {
+	qtractorInstrumentList::ConstIterator it = instruments.constBegin();
+	const qtractorInstrumentList::ConstIterator& it_end = instruments.constEnd();
+	for ( ; it != it_end; ++it) {
 		qtractorInstrument& instr = (*this)[it.key()];
 		instr = it.value();
 	}
@@ -129,7 +130,8 @@ void qtractorInstrumentList::mergeDataList (
 	qtractorInstrumentDataList& dst, const qtractorInstrumentDataList& src )
 {
 	qtractorInstrumentDataList::ConstIterator it = src.constBegin();
-	for ( ; it != src.constEnd(); ++it)
+	const qtractorInstrumentDataList::ConstIterator& it_end = src.constEnd();
+	for ( ; it != it_end; ++it)
 		dst[it.key()] = it.value();
 }
 
@@ -450,8 +452,9 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
     ts << sepl << endl << endl;
 	ts << ".Instrument Definitions" << endl;
     ts << endl;
-	qtractorInstrumentList::ConstIterator iter;
-	for (iter = constBegin(); iter != constEnd(); ++iter) {
+	qtractorInstrumentList::ConstIterator iter = constBegin();
+	const qtractorInstrumentList::ConstIterator& iter_end = constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		const qtractorInstrument& instr = *iter;
 		ts << "[" << instr.instrumentName() << "]" << endl;
 		if (instr.bankSelMethod() > 0)
@@ -465,7 +468,8 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		// - Patches...
 		const qtractorInstrumentPatches& patches = instr.patches();
 		qtractorInstrumentPatches::ConstIterator pit = patches.constBegin();
-		for ( ;	pit != patches.constEnd(); ++pit) {
+		const qtractorInstrumentPatches::ConstIterator& pit_end = patches.constEnd();
+		for ( ;	pit != pit_end; ++pit) {
 			const QString& sPatch = pit.value().name();
 			if (!sPatch.isEmpty()) {
 				int iBank = pit.key();
@@ -478,13 +482,15 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		// - Keys...
 		const qtractorInstrumentKeys& keys = instr.keys();
 		qtractorInstrumentKeys::ConstIterator kit = keys.constBegin();
-		for ( ; kit != keys.constEnd(); ++kit) {
+		const qtractorInstrumentKeys::ConstIterator kit_end = keys.constEnd();
+		for ( ; kit != kit_end; ++kit) {
 			int iBank = kit.key();
 			const QString& sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
 			const qtractorInstrumentNotes& notes = kit.value();
 			qtractorInstrumentNotes::ConstIterator nit = notes.constBegin();
-			for ( ; nit != notes.constEnd(); ++nit) {
+			const qtractorInstrumentNotes::ConstIterator& nit_end = notes.constEnd();
+			for ( ; nit != nit_end; ++nit) {
 				const QString& sKey = nit.value().name();
 				if (!sKey.isEmpty()) {
 					int iProg = nit.key();
@@ -498,13 +504,15 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		// - Drums...
 		const qtractorInstrumentDrums& drums = instr.drums();
 		qtractorInstrumentDrums::ConstIterator dit = drums.constBegin();
-		for ( ; dit != drums.constEnd(); ++dit) {
+		const qtractorInstrumentDrums::ConstIterator& dit_end = drums.constEnd();
+		for ( ; dit != dit_end; ++dit) {
 			int iBank = dit.key();
 			const QString& sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
 			const qtractorInstrumentDrumFlags& flags = dit.value();
 			qtractorInstrumentDrumFlags::ConstIterator fit = flags.constBegin();
-			for ( ; fit != flags.constEnd(); ++fit) {
+			const qtractorInstrumentDrumFlags::ConstIterator& fit_end = flags.constEnd();
+			for ( ; fit != fit_end; ++fit) {
 				int iProg = fit.key();
 				const QString& sProg = (iProg < 0
 					? QString("*") : QString::number(iProg));
@@ -527,7 +535,8 @@ void qtractorInstrumentList::saveDataList ( QTextStream& ts,
 {
     ts << endl;
 	qtractorInstrumentDataList::ConstIterator it = list.constBegin(); 
-	for ( ; it != list.constEnd(); ++it) {
+	const qtractorInstrumentDataList::ConstIterator& it_end = list.constEnd();
+	for ( ; it != it_end; ++it) {
 		const QString& sName = it.value().name();
 		if (!sName.isEmpty()) {
 			ts << "[" << sName << "]" << endl;
@@ -542,8 +551,9 @@ void qtractorInstrumentList::saveData ( QTextStream& ts,
 {
 	if (!data.basedOn().isEmpty())
 	    ts << "BasedOn=" << data.basedOn() << endl;
-	qtractorInstrumentData::ConstIterator it;
-	for (it = data.constBegin(); it != data.constEnd(); ++it)
+	qtractorInstrumentData::ConstIterator it = data.constBegin();
+	const qtractorInstrumentData::ConstIterator& it_end = data.constEnd();
+	for ( ; it != it_end; ++it)
 		ts << it.key() << "=" << it.value() << endl;
 	ts << endl;
 }

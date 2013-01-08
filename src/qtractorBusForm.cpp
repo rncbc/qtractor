@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -947,14 +947,17 @@ void qtractorBusForm::updateMidiInstruments (void)
 			const qtractorMidiManager::Instruments& list
 				= pMidiManager->instruments();
 			qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
-			for ( ; iter != list.constEnd(); ++iter)
+			const qtractorMidiManager::Instruments::ConstIterator& iter_end
+				= list.constEnd();
+			for ( ; iter != iter_end; ++iter)
 				m_ui.MidiInstrumentComboBox->addItem(icon, iter.key());
 		}
 	}
 
 	// Regular instrument names...
 	qtractorInstrumentList::ConstIterator iter = pInstruments->constBegin();
-	for ( ; iter != pInstruments->constEnd(); ++iter)
+	const qtractorInstrumentList::ConstIterator& iter_end = pInstruments->constEnd();
+	for ( ; iter != iter_end; ++iter)
 		m_ui.MidiInstrumentComboBox->addItem(icon, iter.value().instrumentName());
 
 	// Done.

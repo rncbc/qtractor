@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -267,7 +267,8 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		// Connect all existing input control ports...
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
-		for ( ; param != params.constEnd(); ++param) {
+		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+		for ( ; param != param_end; ++param) {
 			qtractorPluginParam *pParam = param.value();
 			// Just in case the plugin decides
 			// to set the port value at this time...

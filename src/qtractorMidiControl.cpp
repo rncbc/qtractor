@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -175,7 +175,8 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 
 	// 1. Walk through midi controller map...
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
-	for ( ; it != m_controlMap.constEnd(); ++it) {
+	const ControlMap::ConstIterator& it_end = m_controlMap.constEnd();
+	for ( ; it != it_end; ++it) {
 		const MapVal& val = it.value();
 		if (val.isFeedback()) {
 			const MapKey& key = it.key();
@@ -207,7 +208,8 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 	// 2. Walk through midi observer map...
 	if (iFirstTrack == 0) {
 		ObserverMap::ConstIterator iter = m_observerMap.constBegin();
-		for ( ; iter != m_observerMap.constEnd(); ++iter) {
+		const ObserverMap::ConstIterator& iter_end = m_observerMap.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			qtractorMidiControlObserver *pMidiObserver = iter.value();
 			if (pMidiObserver->isFeedback()) {
 				sendController(
@@ -612,7 +614,8 @@ bool qtractorMidiControl::saveElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
-	for ( ; it != m_controlMap.constEnd(); ++it) {
+	const ControlMap::ConstIterator& it_end = m_controlMap.constEnd();
+	for ( ; it != it_end; ++it) {
 		const MapKey& key = it.key();
 		const MapVal& val = it.value();
 		QDomElement eItem = pDocument->document()->createElement("map");

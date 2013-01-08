@@ -1,7 +1,7 @@
 // qtractorShortcutForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -405,7 +405,8 @@ void qtractorShortcutForm::accept (void)
 {
 	if (m_iDirtyCount > 0) {
 		QHash<QAction *, int>::ConstIterator iter = m_actions.constBegin();
-		for ( ; iter != m_actions.constEnd(); ++iter) {
+		const QHash<QAction *, int>::ConstIterator& iter_end = m_actions.constEnd();
+		for ( ; iter != iter_end; ++iter) {
 			const QString& sShortcutText
 				= m_ui.ShortcutTable->item(iter.value(), 2)->text();
 			iter.key()->setShortcut(QKeySequence(sShortcutText));

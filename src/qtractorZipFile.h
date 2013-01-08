@@ -1,7 +1,7 @@
 // qtractorZipFile.h
 //
 /****************************************************************************
-   Copyright (C) 2010-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License

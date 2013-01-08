@@ -1,7 +1,7 @@
 // qtractorMidiEditSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -121,7 +121,8 @@ void qtractorMidiEditSelect::commit (void)
 	m_rectView.setRect(0, 0, 0, 0);
 
 	ItemList::ConstIterator iter = m_items.constBegin();
-	for ( ; iter != m_items.constEnd(); ++iter) {
+	const ItemList::ConstIterator iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		Item *pItem = iter.value();
 		m_rectEvent = m_rectEvent.united(pItem->rectEvent);
 		m_rectView = m_rectView.united(pItem->rectView);

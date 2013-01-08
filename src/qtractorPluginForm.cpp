@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -242,7 +242,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iColumn = 0;
 
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
-	for ( ; param != params.constEnd(); ++param) {
+	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		qtractorPluginParamWidget *pParamWidget
 			= new qtractorPluginParamWidget(pParam, this);
@@ -832,7 +833,8 @@ void qtractorPluginForm::updateDirectAccessParamSlot (void)
 	int iDirectAccessParamIndex = m_pPlugin->directAccessParamIndex();
 	const qtractorPlugin::Params& params = m_pPlugin->params();
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
-	for ( ; param != params.constEnd(); ++param) {
+	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
+	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
 		int iParamIndex = int(param.key());
 		pAction = m_pDirectAccessParamMenu->addAction(
@@ -925,7 +927,8 @@ void qtractorPluginForm::refresh (void)
 	m_ui.PresetComboBox->setEditText(sOldPreset);
 
 	ParamWidgets::ConstIterator iter = m_paramWidgets.constBegin();
-	for ( ; iter != m_paramWidgets.constEnd(); ++iter)
+	const ParamWidgets::ConstIterator& iter_end = m_paramWidgets.constEnd();
+	for ( ; iter != iter_end; ++iter)
 		iter.value()->refresh();
 
 	updateAudioBusName();
