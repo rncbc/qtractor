@@ -2694,8 +2694,8 @@ void qtractorLv2Plugin::realizeConfigs (void)
 	m_lv2_state_configs.clear();
 	m_lv2_state_ctypes.clear();
 
-	const Configs& configs = configs();
-	const ConfigTypes& ctypes = configTypes();
+	const Configs& configs = qtractorPlugin::configs();
+	const ConfigTypes& ctypes = qtractorPlugin::configTypes();
 
 	Configs::ConstIterator config = configs.constBegin();
 	const Configs::ConstIterator& config_end = configs.constEnd();
