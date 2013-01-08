@@ -82,6 +82,7 @@ HEADERS += config.h \
 	qtractorObserver.h \
 	qtractorObserverWidget.h \
 	qtractorOptions.h \
+	qtractorOscControl.h \
 	qtractorPlugin.h \
 	qtractorPluginCommand.h \
 	qtractorPluginListView.h \
@@ -195,6 +196,7 @@ SOURCES += \
 	qtractorObserver.cpp \
 	qtractorObserverWidget.cpp \
 	qtractorOptions.cpp \
+	qtractorOscControl.cpp \
 	qtractorPlugin.cpp \
 	qtractorPluginCommand.cpp \
 	qtractorPluginListView.cpp \
@@ -317,6 +319,9 @@ unix {
 
 # XML/DOM support
 QT += xml
+
+# TCP/UDP support 
+QT += network
 
 # QT5 support
 QT += widgets
