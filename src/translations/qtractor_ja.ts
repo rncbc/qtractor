@@ -8721,22 +8721,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1245"/>
+        <location filename="../qtractorMixer.cpp" line="1246"/>
         <source>Inputs</source>
         <translation>入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1246"/>
+        <location filename="../qtractorMixer.cpp" line="1247"/>
         <source>Tracks</source>
         <translation>トラック</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1248"/>
+        <location filename="../qtractorMixer.cpp" line="1249"/>
         <source>Outputs</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1265"/>
+        <location filename="../qtractorMixer.cpp" line="1266"/>
         <source>Mixer</source>
         <translation>ミキサー</translation>
     </message>
@@ -8744,22 +8744,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRack</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1155"/>
+        <location filename="../qtractorMixer.cpp" line="1156"/>
         <source>&amp;Inputs</source>
         <translation>入力(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1159"/>
+        <location filename="../qtractorMixer.cpp" line="1160"/>
         <source>&amp;Outputs</source>
         <translation>出力(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1165"/>
+        <location filename="../qtractorMixer.cpp" line="1166"/>
         <source>&amp;Monitor</source>
         <translation>モニター(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1174"/>
+        <location filename="../qtractorMixer.cpp" line="1175"/>
         <source>&amp;Buses...</source>
         <translation>バス(&amp;B)...</translation>
     </message>

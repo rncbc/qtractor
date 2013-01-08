@@ -9667,22 +9667,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1245"/>
+        <location filename="../qtractorMixer.cpp" line="1246"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1246"/>
+        <location filename="../qtractorMixer.cpp" line="1247"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1248"/>
+        <location filename="../qtractorMixer.cpp" line="1249"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1265"/>
+        <location filename="../qtractorMixer.cpp" line="1266"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>
@@ -9690,17 +9690,17 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerRack</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1155"/>
+        <location filename="../qtractorMixer.cpp" line="1156"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1159"/>
+        <location filename="../qtractorMixer.cpp" line="1160"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1165"/>
+        <location filename="../qtractorMixer.cpp" line="1166"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Sledování</translation>
     </message>
@@ -9709,7 +9709,7 @@ P &lt; 0 : zpomalení posunu.
         <translation type="obsolete">&amp;Průchodnost</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1174"/>
+        <location filename="../qtractorMixer.cpp" line="1175"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Sběrnice...</translation>
     </message>

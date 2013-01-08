@@ -62,7 +62,8 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 		m_bTrackSingle = false;
 		// Reset united selection rectangle...
 		m_rect.setRect(0, 0, 0, 0);
-		for (iter = m_items.begin(); iter != m_items.end(); ++iter)
+		const ItemList::Iterator& iter_end = m_items.end();
+		for (iter = m_items.begin(); iter != iter_end; ++iter)
 			m_rect = m_rect.united(iter.value()->rectClip);
 		// Done with clip deselection.
 	} else if (bSelect) {

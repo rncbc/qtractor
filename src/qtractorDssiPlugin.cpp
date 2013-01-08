@@ -772,7 +772,7 @@ void dssi_multi_destroy ( qtractorDssiPluginType *pDssiType )
 {
 	// Remove hash table entry...
 	const QString& sKey = dssi_multi_key(pDssiType);
-	QHash<QString, DssiMulti *>::iterator iter = g_dssiHash.find(sKey);
+	QHash<QString, DssiMulti *>::Iterator iter = g_dssiHash.find(sKey);
 	if (iter == g_dssiHash.end())
 		return;
 	iter.value()->removeRef();

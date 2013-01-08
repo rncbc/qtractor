@@ -91,7 +91,8 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 	int iUpdate = 0;
 
 	ItemList::Iterator iter = m_items.begin();
-	while (iter != m_items.end()) {
+	const ItemList::Iterator& iter_end = m_items.end();
+	while (iter != iter_end) {
 		Item *pItem = iter.value();
 		if (bCommit) {
 			if (pItem->flags & 1)
