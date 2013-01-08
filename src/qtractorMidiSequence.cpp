@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,9 +79,10 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 	if (pEvent->type() == qtractorMidiEvent::NOTEOFF) {
 		unsigned char note = pEvent->note();
 		NoteMap::Iterator iter = m_notes.find(note);
+		const NoteMap::Iterator& iter_end = m_notes.end();
 		NoteMap::Iterator iter_last;
 		qtractorMidiEvent *pNoteEvent = NULL;
-		for (; iter != m_notes.end() && iter.key() == note; ++iter) {
+		for (; iter != iter_end && iter.key() == note; ++iter) {
 			pNoteEvent = iter.value();
 			iter_last = iter;
 		}
@@ -162,8 +163,9 @@ void qtractorMidiSequence::close (void)
 		m_iTimeLength = m_duration;
 
 	// Finish all pending notes...
-	for (NoteMap::Iterator iter = m_notes.begin();
-			iter != m_notes.end(); ++iter) {
+	NoteMap::ConstIterator iter = m_notes.constBegin();
+	const NoteMap::ConstIterator& iter_end = m_notes.constEnd();
+	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = *iter;
 		pEvent->setDuration(m_duration - pEvent->time());
 	}

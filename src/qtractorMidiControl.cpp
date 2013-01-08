@@ -229,7 +229,8 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle )
 {
 	// Check if controller map includes this event...
 	ControlMap::Iterator it = m_controlMap.begin();
-	for ( ; it != m_controlMap.end(); ++it) {
+	const ControlMap::Iterator& it_end = m_controlMap.end();
+	for ( ; it != it_end; ++it) {
 		const MapKey& key = it.key();
 		if (key.match(ctle.type(), ctle.channel(), ctle.param()))
 			break;
@@ -382,7 +383,8 @@ void qtractorMidiControl::sendTrackController (
 {
 	// Search for the command and parameter in controller map...
 	ControlMap::Iterator it = m_controlMap.begin();
-	for ( ; it != m_controlMap.end(); ++it) {
+	const ControlMap::Iterator& it_end = m_controlMap.end();
+	for ( ; it != it_end; ++it) {
 		const MapKey& key = it.key();
 		MapVal& val = it.value();
 		if (val.command() == command) {

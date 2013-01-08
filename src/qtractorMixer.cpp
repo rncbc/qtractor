@@ -1098,7 +1098,8 @@ void qtractorMixerRack::markStrips ( int iMark )
 void qtractorMixerRack::cleanStrips ( int iMark )
 {
 	Strips::Iterator strip = m_strips.begin();
-	while (strip != m_strips.end()) {
+	const Strips::Iterator& strip_end = m_strips.end();
+	while (strip != strip_end) {
 		qtractorMixerStrip *pStrip = strip.value();
 		if (pStrip->mark() == iMark) {
 			// Remove from the workspace layout...

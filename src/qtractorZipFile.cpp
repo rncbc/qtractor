@@ -830,7 +830,8 @@ bool qtractorZipDevice::processAll (void)
 	int iProcessed = 0;
 
 	QHash<QString, FileHeader>::Iterator iter = file_headers.begin();
-	for ( ; iter != file_headers.end(); ++iter) {
+	const QHash<QString, FileHeader>::Iterator& iter_end = file_headers.end();
+	for ( ; iter != iter_end; ++iter) {
 		if (!processEntry(iter.key(), iter.value()))
 			break;
 		++iProcessed;
