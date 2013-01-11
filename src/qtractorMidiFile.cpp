@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1117,7 +1117,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 
 	// Free locally allocated track/sequence array.
 	if (ppSeqs) {
-		for (iSeq = 0; iSeq < iSeq; ++iSeq)
+		for (iSeq = 0; iSeq < iSeqs; ++iSeq)
 			delete ppSeqs[iSeq];
 		delete [] ppSeqs;
 	}

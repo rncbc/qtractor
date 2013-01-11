@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -214,6 +214,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
 	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
+	filters.append(tr("All files (*.*)"));
 	const QString& sTitle  = tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
 #if QT_VERSION < 0x040400
@@ -875,19 +876,23 @@ bool qtractorMidiSysexForm::loadSysexItems (
 	// Try on SMF files first...
 	qtractorMidiFile midifile;
 	if (midifile.open(sFilename)) {
-		qtractorMidiSequence seq;
-		if (midifile.readTrack(&seq, 0)) {
-			qtractorMidiEvent *pEvent = seq.events().first();
-			while (pEvent) {
-				if (pEvent->type() == qtractorMidiEvent::SYSEX) {
-					items.append(new qtractorMidiSysexItem(
-						new qtractorMidiSysex(
-							info.baseName()
-							+ '-' + QString::number(++iSysex),
-							pEvent->sysex(),
-							pEvent->sysex_len())));
+		unsigned short iTracks = midifile.tracks();
+		for (unsigned int iTrack = 0; iTrack < iTracks; ++iTrack) {
+			qtractorMidiSequence seq;
+			if (midifile.readTrack(&seq, iTrack)) {
+				qtractorMidiEvent *pEvent = seq.events().first();
+				while (pEvent) {
+					if (pEvent->type() == qtractorMidiEvent::SYSEX) {
+						items.append(new qtractorMidiSysexItem(
+							new qtractorMidiSysex(
+								info.baseName()
+								+ '-' + QString::number(iTrack)
+								+ '.' + QString::number(++iSysex),
+								pEvent->sysex(),
+								pEvent->sysex_len())));
+					}
+					pEvent = pEvent->next();
 				}
-				pEvent = pEvent->next();
 			}
 		}
 		midifile.close();

@@ -82,7 +82,7 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 		const NoteMap::Iterator& iter_end = m_notes.end();
 		NoteMap::Iterator iter_last;
 		qtractorMidiEvent *pNoteEvent = NULL;
-		for (; iter != iter_end && iter.key() == note; ++iter) {
+		for ( ; iter != iter_end && iter.key() == note; ++iter) {
 			pNoteEvent = iter.value();
 			iter_last = iter;
 		}
@@ -104,6 +104,14 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 		// NOTEON: Just add to lingering notes...
 		m_notes.insert(pEvent->note(), pEvent);
 	}
+	else
+	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
+		// SYSEX: add enough slack...
+		unsigned long iTime = pEvent->time() + (m_iTicksPerBeat >> 3);
+		if (m_duration < iTime)
+			m_duration = iTime;
+	}
+
 
 	// Add it...
 	insertEvent(pEvent);
