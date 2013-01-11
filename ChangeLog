@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- A convenient minimum slack duration has been fixed for MIDI SysEx
+  messages. (EXPERIMENTAL)
+
 - LV2 Time/position information is now asynchronously fed back into
   their parameter (control input) ports when designated.
 
