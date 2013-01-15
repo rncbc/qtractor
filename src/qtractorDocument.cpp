@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -206,7 +206,9 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 		if (QDir::setCurrent(m_sName))
 			g_extractedArchives.append(QDir::currentPath());
 	}
+	else
 #endif
+	QDir::setCurrent(info.absolutePath());
 
 	// Open file...
 	QFile file(sDocname);
