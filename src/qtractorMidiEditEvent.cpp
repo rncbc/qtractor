@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -435,10 +435,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				if (m_pEditor->isNoteColor()) {
 					hue = (128 - int(pEvent->note())) << 4;
 					if (m_pEditor->isValueColor())
-						sat = 64 + (int(pEvent->value()) >> 1);
+						sat = 64 + (int(pEvent->velocity()) >> 1);
 					rgbValue.setHsv(hue, sat, val);
 				} else if (m_pEditor->isValueColor()) {
-					hue = (128 - int(pEvent->value())) << 1;
+					hue = (128 - int(pEvent->velocity())) << 1;
 					rgbValue.setHsv(hue, sat, val);
 				}
 			}
