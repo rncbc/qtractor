@@ -915,16 +915,17 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	switch (pEvent->type()) {
 	case qtractorMidiEvent::NOTEON:
 		ev.type = SND_SEQ_EVENT_NOTE;
-		ev.data.note.channel    = iMidiChannel;
-		ev.data.note.note       = pEvent->note();
-		ev.data.note.velocity   = int(fGain * float(pEvent->value())) & 0x7f;
-		ev.data.note.duration   = pEvent->duration();
+		ev.data.note.channel  = iMidiChannel;
+		ev.data.note.note     = pEvent->note();
+		ev.data.note.velocity = int(fGain * float(pEvent->value())) & 0x7f;
+		ev.data.note.duration = pEvent->duration();
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		ev.type = SND_SEQ_EVENT_KEYPRESS;
-		ev.data.control.channel = iMidiChannel;
-		ev.data.control.param   = pEvent->note();
-		ev.data.control.value   = pEvent->value();
+		ev.data.note.channel  = iMidiChannel;
+		ev.data.note.note     = pEvent->note();
+		ev.data.note.velocity = pEvent->velocity();
+		ev.data.note.duration = 0;
 		break;
 	case qtractorMidiEvent::CONTROLLER:
 		ev.type = SND_SEQ_EVENT_CONTROLLER;
@@ -935,7 +936,7 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iMidiChannel;
-		ev.data.control.value = pEvent->value();
+		ev.data.control.value   = pEvent->value();
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -1406,9 +1407,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		break;
 	case SND_SEQ_EVENT_KEYPRESS:
 		type     = qtractorMidiEvent::KEYPRESS;
-		iChannel = pEv->data.control.channel;
-		data1    = pEv->data.control.param;
-		data2    = pEv->data.control.value;
+		iChannel = pEv->data.note.channel;
+		data1    = pEv->data.note.note;
+		data2    = pEv->data.note.velocity;
 		break;
 	case SND_SEQ_EVENT_CONTROLLER:
 		type     = qtractorMidiEvent::CONTROLLER;
@@ -1664,10 +1665,10 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	switch (pEvent->type()) {
 		case qtractorMidiEvent::NOTEON:
 			ev.type = SND_SEQ_EVENT_NOTE;
-			ev.data.note.channel    = pTrack->midiChannel();
-			ev.data.note.note       = pEvent->note();
-			ev.data.note.velocity   = int(fGain * float(pEvent->value())) & 0x7f;
-			ev.data.note.duration   = pEvent->duration();
+			ev.data.note.channel  = pTrack->midiChannel();
+			ev.data.note.note     = pEvent->note();
+			ev.data.note.velocity = int(fGain * float(pEvent->value())) & 0x7f;
+			ev.data.note.duration = pEvent->duration();
 			if (pSession->isLooping()) {
 				unsigned long le = pSession->tickFromFrame(pSession->loopEnd());
 				if (le < iTime + ev.data.note.duration)
@@ -1676,9 +1677,10 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			break;
 		case qtractorMidiEvent::KEYPRESS:
 			ev.type = SND_SEQ_EVENT_KEYPRESS;
-			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.param   = pEvent->note();
-			ev.data.control.value   = pEvent->value();
+			ev.data.note.channel  = pTrack->midiChannel();
+			ev.data.note.note     = pEvent->note();
+			ev.data.note.velocity = pEvent->velocity();
+			ev.data.note.duration = 0;
 			break;
 		case qtractorMidiEvent::CONTROLLER:
 			ev.type = SND_SEQ_EVENT_CONTROLLER;
@@ -3766,9 +3768,9 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		ev.type = SND_SEQ_EVENT_KEYPRESS;
-		ev.data.control.channel = iChannel;
-		ev.data.control.param   = iParam;
-		ev.data.control.value   = iValue;
+		ev.data.note.channel  = iChannel;
+		ev.data.note.note     = iParam;
+		ev.data.note.velocity = iValue;
 		break;
 	case qtractorMidiEvent::CONTROLLER:
 	default:

@@ -1,7 +1,7 @@
 // qtractorMidiEvent.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,8 +78,7 @@ public:
 
 	// Copy constructor.
 	qtractorMidiEvent(const qtractorMidiEvent& e)
-		: qtractorList<qtractorMidiEvent>::Link(),
-		m_time(e.m_time), m_type(e.m_type)
+		: m_time(e.m_time), m_type(e.m_type)
 	{
 		if (m_type == SYSEX) {
 			m_v.iSysex = e.m_v.iSysex;

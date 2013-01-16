@@ -3899,7 +3899,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 		sToolTip += tr("Key Press (%1) %2\nValue:\t%3")
 			.arg(int(pEvent->note() + iNoteDelta))
 			.arg(noteName(pEvent->note() + iNoteDelta))
-			.arg(int(pEvent->value() + iValueDelta));
+			.arg(int(pEvent->velocity() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CONTROLLER:
 		sToolTip += tr("Controller (%1)\nName:\t%2\nValue:\t%3")

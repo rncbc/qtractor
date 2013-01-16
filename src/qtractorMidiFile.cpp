@@ -755,7 +755,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 				case qtractorMidiEvent::KEYPRESS:
 				case qtractorMidiEvent::PITCHBEND:
 					writeInt(pEvent->note(), 1);
-					writeInt(pEvent->value(), 1);
+					writeInt(pEvent->velocity(), 1);
 					break;
 				case qtractorMidiEvent::PGMCHANGE:
 				case qtractorMidiEvent::CHANPRESS:
