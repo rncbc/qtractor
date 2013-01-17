@@ -2954,7 +2954,8 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 {
 	qtractorLv2Time& member = g_lv2_time[i];
 
-	if (member.value != fValue && member.params->count() > 0) {
+	if (member.value != fValue
+		&& member.params && member.params->count() > 0) {
 		member.value  = fValue;
 		QListIterator<qtractorLv2PluginParam *> iter(*member.params);
 		while (iter.hasNext())
