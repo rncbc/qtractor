@@ -1842,6 +1842,29 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			}
 		}
 	}
+	else
+	// Backup versioning?
+	if (m_pOptions->bSessionBackup) {
+		const QFileInfo f1(sFilename);
+		if (f1.exists()) {
+			int iBackupNo = 0;
+			const QDir& dir = f1.absoluteDir();
+			const QString sNameMask = f1.completeBaseName()
+				.remove(QRegExp("\\.[0-9]+$")) + ".%1." + f1.suffix();
+			QFileInfo f2(dir, sNameMask.arg(++iBackupNo));
+			while (f2.exists())
+				f2.setFile(dir, sNameMask.arg(++iBackupNo));
+			if (QFile(sFilename).rename(f2.absoluteFilePath())) {
+				appendMessages(
+					tr("Backup session: \"%1\" as \"%2\".")
+					.arg(sFilename).arg(f2.fileName()));
+			} else {
+				appendMessagesError(
+					tr("Could not backup existing session:\n\n"
+					"%1 as %2\n\nSorry.").arg(sFilename).arg(f2.fileName()));
+			}
+		}
+	}
 
 	// Save it right away.
 	return saveSessionFile(sFilename);

@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-	<width>840</width>
+    <width>840</width>
     <height>600</height>
    </rect>
   </property>
@@ -59,14 +59,14 @@
     </property>
     <addaction name="fileSaveAction" />
     <addaction name="fileSaveAsAction" />
-	<addaction name="fileUnlinkAction" />
-	<addaction name="separator" />
-	<addaction name="filePropertiesAction" />
-	<addaction name="separator" />
-	<addaction name="fileRangeSetAction" />
-	<addaction name="fileLoopSetAction" />
-	<addaction name="separator" />
-	<addaction name="fileTrackMenu" />
+    <addaction name="fileUnlinkAction" />
+    <addaction name="separator" />
+    <addaction name="filePropertiesAction" />
+    <addaction name="separator" />
+    <addaction name="fileRangeSetAction" />
+    <addaction name="fileLoopSetAction" />
+    <addaction name="separator" />
+    <addaction name="fileTrackMenu" />
     <addaction name="separator" />
     <addaction name="fileCloseAction" />
    </widget>
@@ -90,10 +90,10 @@
     <addaction name="editSelectRangeAction" />
    </widget>
    <widget class="QMenu" name="editInsertMenu" >
-	<property name="title" >
-	 <string>I&amp;nsert</string>
-	</property>
-	<addaction name="editInsertRangeAction" />
+    <property name="title" >
+     <string>I&amp;nsert</string>
+    </property>
+    <addaction name="editInsertRangeAction" />
    </widget>
    <widget class="QMenu" name="toolsMenu" >
     <property name="title" >
@@ -123,8 +123,8 @@
     <addaction name="separator" />
     <addaction name="editModeMenu" />
     <addaction name="editSelectMenu" />
-	<addaction name="separator" />
-	<addaction name="editInsertMenu" />
+    <addaction name="separator" />
+    <addaction name="editInsertMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -144,7 +144,7 @@
      <property name="title" >
       <string>&amp;Windows</string>
      </property>
-	 <addaction name="viewEventsAction" />
+     <addaction name="viewEventsAction" />
     </widget>
     <widget class="QMenu" name="viewZoomMenu" >
      <property name="icon" >
@@ -176,18 +176,18 @@
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
     <addaction name="viewWindowsMenu" />
-	<addaction name="separator" />
-	<addaction name="viewToolTipsAction" />
     <addaction name="separator" />
-	<addaction name="viewNoteDurationAction" />
+    <addaction name="viewToolTipsAction" />
+    <addaction name="separator" />
+    <addaction name="viewNoteDurationAction" />
     <addaction name="viewNoteColorAction" />
     <addaction name="viewValueColorAction" />
-	<addaction name="separator" />
-	<addaction name="viewZoomMenu" />
-	<addaction name="viewSnapMenu" />
-	<addaction name="viewScaleMenu" />
-	<addaction name="separator" />
-	<addaction name="viewRefreshAction" />
+    <addaction name="separator" />
+    <addaction name="viewZoomMenu" />
+    <addaction name="viewSnapMenu" />
+    <addaction name="viewScaleMenu" />
+    <addaction name="separator" />
+    <addaction name="viewRefreshAction" />
     <addaction name="separator" />
     <addaction name="viewPreviewAction" />
     <addaction name="viewFollowAction" />
@@ -204,14 +204,14 @@
     <addaction name="transportLoopAction" />
     <addaction name="transportLoopSetAction" />
     <addaction name="separator" />
-	<addaction name="transportStopAction" />
-	<addaction name="transportPlayAction" />
+    <addaction name="transportStopAction" />
+    <addaction name="transportPlayAction" />
     <addaction name="transportRecordAction" />
     <addaction name="separator" />
     <addaction name="transportPunchAction" />
     <addaction name="transportPunchSetAction" />
-	<addaction name="separator" />
-	<addaction name="transportPanicAction" />
+    <addaction name="separator" />
+    <addaction name="transportPanicAction" />
    </widget>
    <widget class="QMenu" name="helpMenu" >
     <property name="title" >
@@ -361,16 +361,16 @@
   </action>
   <action name="fileUnlinkAction" >
    <property name="text" >
-	<string>&amp;Unlink</string>
+    <string>&amp;Unlink</string>
    </property>
    <property name="iconText" >
-	<string>Unlink</string>
+    <string>Unlink</string>
    </property>
    <property name="toolTip" >
-	<string>Unlink</string>
+    <string>Unlink</string>
    </property>
    <property name="statusTip" >
-	<string>Unlink current MIDI clip</string>
+    <string>Unlink current MIDI clip</string>
    </property>
   </action>
   <action name="fileTrackInputsAction" >
@@ -443,30 +443,30 @@
   </action>
   <action name="fileRangeSetAction" >
    <property name="text" >
-	<string>&amp;Range Set</string>
+    <string>&amp;Range Set</string>
    </property>
    <property name="iconText" >
-	<string>Clip Range</string>
+    <string>Clip Range</string>
    </property>
    <property name="toolTip" >
-	<string>Clip range</string>
+    <string>Clip range</string>
    </property>
    <property name="statusTip" >
-	<string>Set edit-range from clip extents</string>
+    <string>Set edit-range from clip extents</string>
    </property>
   </action>
   <action name="fileLoopSetAction" >
    <property name="text" >
-	<string>&amp;Loop Set</string>
+    <string>&amp;Loop Set</string>
    </property>
    <property name="iconText" >
-	<string>Clip Loop</string>
+    <string>Clip Loop</string>
    </property>
    <property name="toolTip" >
-	<string>Clip loop</string>
+    <string>Clip loop</string>
    </property>
    <property name="statusTip" >
-	<string>Set loop-range from clip extents</string>
+    <string>Set loop-range from clip extents</string>
    </property>
   </action>
   <action name="fileCloseAction" >
@@ -622,62 +622,62 @@
   </action>
   <action name="editModeOffAction" >
    <property name="checkable" >
-	<bool>true</bool>
+    <bool>true</bool>
    </property>
    <property name="icon" >
-	<iconset resource="qtractor.qrc" >:/images/editModeOff.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editModeOff.png</iconset>
    </property>
    <property name="text" >
-	<string>Edit Of&amp;f</string>
+    <string>Edit Of&amp;f</string>
    </property>
    <property name="iconText" >
-	<string>Edit Off</string>
+    <string>Edit Off</string>
    </property>
    <property name="toolTip" >
-	<string>Edit off</string>
+    <string>Edit off</string>
    </property>
    <property name="statusTip" >
-	<string>Set edit mode off</string>
+    <string>Set edit mode off</string>
    </property>
   </action>
   <action name="editModeOnAction" >
    <property name="checkable" >
-	<bool>true</bool>
+    <bool>true</bool>
    </property>
    <property name="icon" >
-	<iconset resource="qtractor.qrc" >:/images/editModeOn.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editModeOn.png</iconset>
    </property>
    <property name="text" >
-	<string>Edit &amp;On</string>
+    <string>Edit &amp;On</string>
    </property>
    <property name="iconText" >
-	<string>Edit On</string>
+    <string>Edit On</string>
    </property>
    <property name="toolTip" >
-	<string>Edit on</string>
+    <string>Edit on</string>
    </property>
    <property name="statusTip" >
-	<string>Set edit mode on</string>
+    <string>Set edit mode on</string>
    </property>
   </action>
   <action name="editModeDrawAction" >
    <property name="checkable" >
-	<bool>true</bool>
+    <bool>true</bool>
    </property>
    <property name="icon" >
-	<iconset resource="qtractor.qrc" >:/images/editModeDraw.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editModeDraw.png</iconset>
    </property>
    <property name="text" >
-	<string>Edit &amp;Draw</string>
+    <string>Edit &amp;Draw</string>
    </property>
    <property name="iconText" >
-	<string>Edit draw mode</string>
+    <string>Edit draw mode</string>
    </property>
    <property name="statusTip" >
-	<string>Edit draw mode (notes)</string>
+    <string>Edit draw mode (notes)</string>
    </property>
    <property name="shortcut" >
-	<string/>
+    <string/>
    </property>
   </action>
   <action name="editSelectAllAction" >
@@ -750,19 +750,19 @@
   </action>
   <action name="editInsertRangeAction" >
    <property name="text" >
-	<string>&amp;Range</string>
+    <string>&amp;Range</string>
    </property>
    <property name="iconText" >
-	<string>Insert Range</string>
+    <string>Insert Range</string>
    </property>
    <property name="toolTip" >
-	<string>Insert range</string>
+    <string>Insert range</string>
    </property>
    <property name="statusTip" >
-	<string>Insert range as selected</string>
+    <string>Insert range as selected</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Ins</string>
+    <string>Ctrl+Ins</string>
    </property>
   </action>
   <action name="toolsQuantizeAction" >
@@ -1168,7 +1168,7 @@
     <string>Zoom reset</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+1</string>
+    <string>Ctrl+1</string>
    </property>
   </action>
   <action name="viewZoomHorizontalAction" >
@@ -1224,19 +1224,19 @@
   </action>
   <action name="viewSnapZebraAction" >
    <property name="checkable" >
-	<bool>true</bool>
+    <bool>true</bool>
    </property>
    <property name="text" >
-	<string>&amp;Zebra</string>
+    <string>&amp;Zebra</string>
    </property>
    <property name="iconText" >
-	<string>Zebra</string>
+    <string>Zebra</string>
    </property>
    <property name="toolTip" >
-	<string>Zebra</string>
+    <string>Zebra</string>
    </property>
    <property name="statusTip" >
-	<string>Bar zebra view mode</string>
+    <string>Bar zebra view mode</string>
    </property>
   </action>
   <action name="viewSnapGridAction" >
@@ -1253,24 +1253,24 @@
     <string>Grid</string>
    </property>
    <property name="statusTip" >
-	<string>Snap grid view mode</string>
+    <string>Snap grid view mode</string>
    </property>
   </action>
   <action name="viewToolTipsAction" >
    <property name="checkable" >
-	<bool>true</bool>
+    <bool>true</bool>
    </property>
    <property name="text" >
-	<string>Too&amp;l Tips</string>
+    <string>Too&amp;l Tips</string>
    </property>
    <property name="iconText" >
-	<string>Tool tips</string>
+    <string>Tool tips</string>
    </property>
    <property name="toolTip" >
-	<string>Tool tips</string>
+    <string>Tool tips</string>
    </property>
    <property name="statusTip" >
-	<string>Floating tool tips view mode</string>
+    <string>Floating tool tips view mode</string>
    </property>
   </action>
   <action name="viewRefreshAction" >
@@ -1396,7 +1396,7 @@
     <string>Transport loop</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Shift+L</string>
+    <string>Ctrl+Shift+L</string>
    </property>
   </action>
   <action name="transportLoopSetAction" >
@@ -1418,19 +1418,19 @@
   </action>
   <action name="transportStopAction" >
    <property name="icon" >
-	<iconset resource="qtractor.qrc" >:/images/transportStop.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportStop.png</iconset>
    </property>
    <property name="text" >
-	<string>&amp;Stop</string>
+    <string>&amp;Stop</string>
    </property>
    <property name="iconText" >
-	<string>Stop</string>
+    <string>Stop</string>
    </property>
    <property name="toolTip" >
-	<string>Stop</string>
+    <string>Stop</string>
    </property>
    <property name="statusTip" >
-	<string>Transport stop</string>
+    <string>Transport stop</string>
    </property>
   </action>
   <action name="transportPlayAction" >
@@ -1499,7 +1499,7 @@
     <string>Transport punch in/out</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Shift+P</string>
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="transportPunchSetAction" >
@@ -1521,19 +1521,19 @@
   </action>
   <action name="transportPanicAction" >
    <property name="icon" >
-	<iconset resource="qtractor.qrc" >:/images/transportPanic.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportPanic.png</iconset>
    </property>
    <property name="text" >
-	<string>Pa&amp;nic</string>
+    <string>Pa&amp;nic</string>
    </property>
    <property name="iconText" >
-	<string>Panic</string>
+    <string>Panic</string>
    </property>
    <property name="toolTip" >
-	<string>Panic</string>
+    <string>Panic</string>
    </property>
    <property name="statusTip" >
-	<string>All MIDI tracks shut off (panic)</string>
+    <string>All MIDI tracks shut off (panic)</string>
    </property>
   </action>
   <action name="helpShortcutsAction" >
