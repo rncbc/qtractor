@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -321,6 +321,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.SessionTemplatePathToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseSessionTemplatePath()));
+	QObject::connect(m_ui.SessionBackupCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -562,6 +565,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		sessionFormatFromExt(m_pOptions->sSessionExt));
 	m_ui.SessionTemplateCheckBox->setChecked(m_pOptions->bSessionTemplate);
 	m_ui.SessionTemplatePathComboBox->setEditText(m_pOptions->sSessionTemplatePath);
+	m_ui.SessionBackupCheckBox->setChecked(m_pOptions->bSessionBackup);
 
 	// Plugin path initialization...
 	m_ladspaPaths = m_pOptions->ladspaPaths;
@@ -687,6 +691,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->sSessionTemplatePath = m_ui.SessionTemplatePathComboBox->currentText();
 		m_pOptions->sSessionExt = sessionExtFromFormat(
 			m_ui.SessionFormatComboBox->currentIndex());
+		m_pOptions->bSessionBackup       = m_ui.SessionBackupCheckBox->isChecked();
 		// Custom colors.
 		int iColor;
 		for (iColor = 0; iColor < AudioMeterColors; ++iColor)

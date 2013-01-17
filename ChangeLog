@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- New user option: save backup versions of existing session files.
+
 - Default session directory now set to regular file's path on load.
 
 - A convenient minimum slack duration has been fixed for MIDI SysEx

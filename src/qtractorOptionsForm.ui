@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -136,7 +136,7 @@
            <widget class="QComboBox" name="SessionTemplatePathComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
+			  <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -185,6 +185,22 @@
             </property>
             <property name="icon">
              <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="3">
+           <widget class="QCheckBox" name="SessionBackupCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+			 <string>Whether to save backup versions of existing sessions</string>
+            </property>
+            <property name="text">
+			 <string>Save &amp;backup versions of existing sessions</string>
             </property>
            </widget>
           </item>
@@ -954,7 +970,7 @@
            <widget class="QComboBox" name="MetroBarFilenameComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
+			  <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -1079,7 +1095,7 @@
            <widget class="QComboBox" name="MetroBeatFilenameComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
+			  <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -2645,7 +2661,7 @@
            <widget class="QComboBox" name="MessagesLogPathComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
+			  <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -2978,214 +2994,214 @@
             </property>
            </widget>
           </item>
-		  <item row="4" column="0">
-		   <layout class="QHBoxLayout">
-			<item>
-			 <widget class="QLabel" name="Lv2PresetDirLabel">
-			  <property name="font">
-			   <font>
-				<weight>50</weight>
-				<bold>false</bold>
-			   </font>
-			  </property>
-			  <property name="text">
-			   <string>&amp;LV2 Presets directory:</string>
-			  </property>
-			  <property name="buddy">
-			   <cstring>Lv2PresetDirComboBox</cstring>
-			  </property>
-			 </widget>
-			</item>
-			<item>
-			 <widget class="QComboBox" name="Lv2PresetDirComboBox">
-			  <property name="minimumSize">
-			   <size>
-				<width>360</width>
-				<height>0</height>
-			   </size>
-			  </property>
-			  <property name="font">
-			   <font>
-				<weight>50</weight>
-				<bold>false</bold>
-			   </font>
-			  </property>
-			  <property name="toolTip">
-			   <string>LV2 Presets directory (default: ~/.lv2)</string>
-			  </property>
-			  <property name="editable">
-			   <bool>true</bool>
-			  </property>
-			 </widget>
-			</item>
-			<item>
-			 <widget class="QToolButton" name="Lv2PresetDirToolButton">
-			  <property name="minimumSize">
-			   <size>
-				<width>22</width>
-				<height>22</height>
-			   </size>
-			  </property>
-			  <property name="maximumSize">
-			   <size>
-				<width>24</width>
-				<height>24</height>
-			   </size>
-			  </property>
-			  <property name="font">
-			   <font>
-				<weight>50</weight>
-				<bold>false</bold>
-			   </font>
-			  </property>
-			  <property name="toolTip">
-			   <string>Browse LV2 Presets directory</string>
-			  </property>
-			  <property name="text">
-			   <string>...</string>
-			  </property>
-			  <property name="icon">
-			   <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
-			  </property>
-			 </widget>
-			</item>
-		   </layout>
-		  </item>
-		 </layout>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout">
+            <item>
+             <widget class="QLabel" name="Lv2PresetDirLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>&amp;LV2 Presets directory:</string>
+              </property>
+              <property name="buddy">
+               <cstring>Lv2PresetDirComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="Lv2PresetDirComboBox">
+              <property name="minimumSize">
+               <size>
+                <width>360</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>LV2 Presets directory (default: ~/.lv2)</string>
+              </property>
+              <property name="editable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="Lv2PresetDirToolButton">
+              <property name="minimumSize">
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Browse LV2 Presets directory</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
        </item>
-	   <item>
-		<widget class="QGroupBox" name="PluginInstrumentsGroupBox">
-		 <property name="font">
-		  <font>
-		   <weight>75</weight>
-		   <bold>true</bold>
-		  </font>
-		 </property>
-		 <property name="title">
-		  <string>Instruments</string>
-		 </property>
-		 <property name="flat">
-		  <bool>true</bool>
-		 </property>
-		 <layout class="QGridLayout">
-		  <property name="margin">
-		   <number>9</number>
-		  </property>
-		  <property name="spacing">
-		   <number>6</number>
-		  </property>
-		  <item row="0" column="0">
-		   <widget class="QCheckBox" name="AudioOutputBusCheckBox">
-			<property name="font">
-			 <font>
-			  <weight>50</weight>
-			  <bold>false</bold>
-			 </font>
-			</property>
-			<property name="toolTip">
-			 <string>Whether to have separate audio output ports</string>
-			</property>
-			<property name="text">
-			 <string>Dedicated audi&amp;o outputs:</string>
-			</property>
-			<property name="shortcut">
-			 <string>Alt+O</string>
-			</property>
-		   </widget>
-		  </item>
-		  <item row="0" column="1">
-		   <widget class="QCheckBox" name="AudioOutputAutoConnectCheckBox">
-			<property name="font">
-			 <font>
-			  <weight>50</weight>
-			  <bold>false</bold>
-			 </font>
-			</property>
-			<property name="toolTip">
-			 <string>Whether to auto-connect dedicated audio output ports</string>
-			</property>
-			<property name="text">
-			 <string>Au&amp;to-connect</string>
-			</property>
-			<property name="shortcut">
-			 <string>Alt+T</string>
-			</property>
-		   </widget>
-		  </item>
-		  <item row="0" column="2">
-		   <spacer>
-			<property name="orientation">
-			 <enum>Qt::Horizontal</enum>
-			</property>
-			<property name="sizeHint">
-			 <size>
-			  <width>20</width>
-			  <height>20</height>
-			 </size>
-			</property>
-		   </spacer>
-		  </item>
-		 </layout>
-		</widget>
-	   </item>
-	   <item>
-		<spacer>
-		 <property name="orientation">
-		  <enum>Qt::Vertical</enum>
-		 </property>
-		 <property name="sizeHint">
-		  <size>
-		   <width>20</width>
-		   <height>4</height>
-		  </size>
-		 </property>
-		</spacer>
-	   </item>
-	   <item>
-		<widget class="QGroupBox" name="PluginEditorGroupBox">
-		 <property name="font">
-		  <font>
-		   <weight>75</weight>
-		   <bold>true</bold>
-		  </font>
-		 </property>
-		 <property name="title">
-		  <string>Editor</string>
-		 </property>
-		 <property name="flat">
-		  <bool>true</bool>
-		 </property>
-		 <layout class="QGridLayout">
-		  <property name="margin">
-		   <number>9</number>
-		  </property>
-		  <property name="spacing">
-		   <number>6</number>
-		  </property>
-		  <item row="0" column="0" colspan="3">
-		   <widget class="QCheckBox" name="OpenEditorCheckBox">
-			<property name="font">
-			 <font>
-			  <weight>50</weight>
-			  <bold>false</bold>
-			 </font>
-			</property>
-			<property name="toolTip">
-			 <string>Whether to open plugin's editor (GUI) by default</string>
-			</property>
-			<property name="text">
-			 <string>Open plugin's &amp;editor (GUI) by default</string>
-			</property>
-			<property name="shortcut">
-			 <string>Alt+G</string>
-			</property>
-		   </widget>
-		  </item>
-		 </layout>
-		</widget>
-	   </item>
-	   <item>
+       <item>
+        <widget class="QGroupBox" name="PluginInstrumentsGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Instruments</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>9</number>
+          </property>
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="AudioOutputBusCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to have separate audio output ports</string>
+            </property>
+            <property name="text">
+             <string>Dedicated audi&amp;o outputs:</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+O</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="AudioOutputAutoConnectCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to auto-connect dedicated audio output ports</string>
+            </property>
+            <property name="text">
+             <string>Au&amp;to-connect</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+T</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>4</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="PluginEditorGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Editor</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>9</number>
+          </property>
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item row="0" column="0" colspan="3">
+           <widget class="QCheckBox" name="OpenEditorCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to open plugin's editor (GUI) by default</string>
+            </property>
+            <property name="text">
+             <string>Open plugin's &amp;editor (GUI) by default</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+G</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="PluginExperimentalGroupBox">
          <property name="font">
           <font>
@@ -3251,6 +3267,7 @@
   <tabstop>SessionTemplateCheckBox</tabstop>
   <tabstop>SessionTemplatePathComboBox</tabstop>
   <tabstop>SessionTemplatePathToolButton</tabstop>
+  <tabstop>SessionBackupCheckBox</tabstop>
   <tabstop>ConfirmRemoveCheckBox</tabstop>
   <tabstop>StdoutCaptureCheckBox</tabstop>
   <tabstop>CompletePathCheckBox</tabstop>
