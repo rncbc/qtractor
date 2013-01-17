@@ -202,8 +202,14 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 		delete m_pZipFile;
 		m_pZipFile = NULL;
 		// ATTN: Archived sub-directory must exist!
-		if (!QDir(m_sName).exists())
-			m_sName = info.baseName();
+		if (!QDir(m_sName).exists()) {
+			const QStringList& dirs
+				= QDir().entryList(
+					QStringList() << info.baseName() + '*',
+					QDir::Dirs | QDir::NoDotAndDotDot,
+					QDir::Time | QDir::Reversed);
+			if (!dirs.isEmpty()) m_sName = dirs.first();
+		}
 		sDocname = m_sName + '.' + g_sDefaultExt;
 		if (QDir::setCurrent(m_sName))
 			g_extractedArchives.append(QDir::currentPath());
