@@ -1841,7 +1841,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			int iBackupNo = 0;
 			const QDir& dir = f1.absoluteDir();
 			const QString sNameMask = f1.completeBaseName()
-				.remove(QRegExp("\\.[0-9]+$")) + ".%1." + f1.suffix();
+			//	.remove(QRegExp("\\.[0-9]+$"))
+				+ ".%1." + f1.suffix();
 			QFileInfo f2(dir, sNameMask.arg(++iBackupNo));
 			while (f2.exists())
 				f2.setFile(dir, sNameMask.arg(++iBackupNo));
