@@ -1833,7 +1833,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			}
 		}
 	}
-
+	else
 	// Backup versioning?
 	if (m_pOptions->bSessionBackup) {
 		const QFileInfo f1(sFilename);
