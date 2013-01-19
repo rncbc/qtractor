@@ -6348,7 +6348,7 @@ void qtractorMainForm::timerSlot (void)
 		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(timerSlot()));
 		return;
 	}
-		
+
 	// Currrent state...
 	bool bPlaying  = m_pSession->isPlaying();
 	long iPlayHead = long(m_pSession->playHead());

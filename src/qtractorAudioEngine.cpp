@@ -38,14 +38,15 @@
 
 #include "qtractorCurveFile.h"
 
+#include "qtractorMainForm.h"
+
 #ifdef CONFIG_JACK_SESSION
 #include <jack/session.h>
 #endif
 
 #include <QApplication>
-
+#include <QProgressBar>
 #include <QDomDocument>
-
 
 #if defined(__SSE__)
 
@@ -752,7 +753,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				// Prepare advance for next cycle...
 				pAudioCursor->seek(iFrameEnd);
 				// HACK! Freewheeling observers update (non RT safe!)...
-				qtractorSubject::flushQueue();
+				// qtractorSubject::flushQueue();
+				qtractorSubject::resetQueue();
 			}	// Are we trough?
 			else m_bExportDone = true;
 		}
@@ -1153,6 +1155,15 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	if (pSession == NULL)
 		return false;
 
+	// About to show some progress bar...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	QProgressBar *pProgressBar = pMainForm->progressBar();
+	if (pProgressBar == NULL)
+		return false;
+
 	// Cannot have exports longer than current session.
 	if (iExportStart >= iExportEnd)
 		iExportEnd = pSession->sessionEnd();
@@ -1193,6 +1204,11 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	m_iExportEnd   = iExportEnd;
 	m_bExportDone  = false;
 
+	// Prepare and show some progress...
+	pProgressBar->setRange(iExportStart, iExportEnd);
+	pProgressBar->reset();
+	pProgressBar->show();
+
 	// We'll have to save some session parameters...
 	unsigned long iPlayHead  = pSession->playHead();
 	unsigned long iLoopStart = pSession->loopStart();
@@ -1214,8 +1230,10 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	jack_set_freewheel(m_pJackClient, 1);
 
 	// Wait for the export to end.
-	while (m_bExporting && !m_bExportDone)
+	while (m_bExporting && !m_bExportDone) {
 		qtractorSession::stabilize(200);
+		pProgressBar->setValue(pSession->playHead());
+	}
 
 	// Stop export (freewheeling)...
 	jack_set_freewheel(m_pJackClient, 0);
@@ -1233,6 +1251,9 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 
 	// Free up things here.
 	delete m_pExportFile;	
+
+	// Made some progress...
+	pProgressBar->hide();
 
 	m_bExporting   = false;
 	m_pExportBus   = NULL;

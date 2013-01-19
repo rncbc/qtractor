@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Finally, some visual feedback is shown while audio track export
+  is running, in he form of a main status progress bar. 
+
 - New user option: save backup versions of existing session files.
 
 - Default session directory now set to regular file's path on load.
