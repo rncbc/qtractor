@@ -1916,7 +1916,12 @@ int qtractorTracks::insertEditRangeTrack (
 			int iCurveEditUpdate = 0;
 			qtractorCurveEditCommand *pCurveEditCommand
 				= new qtractorCurveEditCommand(QString(), pCurve);
-			// ...
+			qtractorCurve::Node *pNode = pCurve->seek(iInsertStart);
+			while (pNode) {
+				pCurveEditCommand->moveNode(pNode, pNode->frame + iInsertLength);
+				++iCurveEditUpdate;
+				pNode = pNode->next();
+			}
 			if (iCurveEditUpdate > 0) {
 				pClipRangeCommand->addCurveEditCommand(pCurveEditCommand);
 				iUpdate += iCurveEditUpdate;
