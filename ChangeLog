@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Track automation curves are now also affected by Edit/Insert/Range
+  commands. (EXPERIMENTAL)
+
 - Finally, some visual feedback is shown while audio track export
   is running, in he form of a main status progress bar. 
 

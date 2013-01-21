@@ -140,7 +140,7 @@ Offs. / Len.:	%3 / %4</source>
     </message>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="183"/>
-        <location filename="../qtractorCurveCommand.cpp" line="520"/>
+        <location filename="../qtractorCurveCommand.cpp" line="521"/>
         <source>automation record</source>
         <translation type="unfinished">オートメーションの記録</translation>
     </message>
@@ -170,17 +170,17 @@ Offs. / Len.:	%3 / %4</source>
         <translation type="unfinished">オートメーションの編集</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="391"/>
+        <location filename="../qtractorCurveCommand.cpp" line="392"/>
         <source>automation clear</source>
         <translation type="unfinished">オートメーションのクリア</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="408"/>
+        <location filename="../qtractorCurveCommand.cpp" line="409"/>
         <source>automation clear all</source>
         <translation type="unfinished">オートメーションをすべてクリア</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="461"/>
+        <location filename="../qtractorCurveCommand.cpp" line="462"/>
         <source>automation edit list</source>
         <translation type="unfinished">オートメーションの編集リスト</translation>
     </message>
@@ -11818,27 +11818,27 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="998"/>
-        <location filename="../qtractorTracks.cpp" line="2108"/>
+        <location filename="../qtractorTracks.cpp" line="2113"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation type="unfinished">音声ファイル &quot;%1&quot; を %2 %3 へインポート。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1003"/>
-        <location filename="../qtractorTracks.cpp" line="2113"/>
+        <location filename="../qtractorTracks.cpp" line="2118"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation type="unfinished">音声ファイルのインポート: &quot;%1&quot;。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1033"/>
-        <location filename="../qtractorTracks.cpp" line="2296"/>
+        <location filename="../qtractorTracks.cpp" line="2301"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation type="unfinished">MIDIファイル &quot;%1&quot; をトラックチャンネル %2 の%3 %4 へインポート。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1039"/>
-        <location filename="../qtractorTracks.cpp" line="2302"/>
+        <location filename="../qtractorTracks.cpp" line="2307"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation type="unfinished">MIDIファイルのインポート: &quot;%1&quot;, トラックチャンネル: %2。</translation>
     </message>
@@ -11888,12 +11888,12 @@ Length:	%3</source>
         <translation type="unfinished">MIDIクリップのマージ/エクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1991"/>
+        <location filename="../qtractorTracks.cpp" line="1996"/>
         <source>Warning</source>
         <translation type="unfinished">警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1992"/>
+        <location filename="../qtractorTracks.cpp" line="1997"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -11906,13 +11906,13 @@ Are you sure?</source>
 よろしいですか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2226"/>
+        <location filename="../qtractorTracks.cpp" line="2231"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation type="unfinished">MIDIファイル &quot;%1&quot; を %2 %3 へインポート。</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2231"/>
+        <location filename="../qtractorTracks.cpp" line="2236"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation type="unfinished">MIDIファイルをインポート: &quot;%1&quot;。</translation>
     </message>

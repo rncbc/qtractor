@@ -756,6 +756,7 @@ bool qtractorClipRangeCommand::execute ( bool bRedo )
 			pCurveEditCommand->redo();
 		else
 			pCurveEditCommand->undo();
+		pCurveEditCommand->curve()->update();
 	}
 
 	return qtractorClipCommand::execute(bRedo);

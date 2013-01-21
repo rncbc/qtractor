@@ -59,6 +59,9 @@ public:
 	// Constructor.
 	qtractorCurveCommand(const QString& sName, qtractorCurve *pCurve);
 
+	// Accessor.
+	qtractorCurve *curve() const { return m_pCurve; }
+
 protected:
 
 	// Instance variables.
