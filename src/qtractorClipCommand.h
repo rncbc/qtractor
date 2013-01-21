@@ -30,6 +30,7 @@
 
 // Forward declarations.
 class qtractorTrackCommand;
+class qtractorCurveEditCommand;
 class qtractorMidiEditCommand;
 class qtractorMidiClip;
 
@@ -179,6 +180,35 @@ private:
 	qtractorClip::TakeInfo *m_pTakeInfo;
 
 	int m_iCurrentTake;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorClipRangeCommand - declaration.
+//
+
+class qtractorClipRangeCommand : public qtractorClipCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipRangeCommand();
+
+	// Destructor.
+	~qtractorClipRangeCommand();
+
+	// When automation curves are needed.
+	void addCurveEditCommand(qtractorCurveEditCommand *pCurveEditCommand);
+
+protected:
+
+	// Executive override.
+	bool execute(bool bRedo);
+
+private:
+
+	// Instance variables.
+	QList<qtractorCurveEditCommand *> m_curveEditCommands;
 };
 
 

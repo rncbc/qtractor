@@ -1,7 +1,7 @@
 // qtractorCurve.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -359,9 +359,9 @@ public:
 
 	// List methods.
 	void addNode(qtractorCurve::Node *pNode)
-		{ m_items.append(new Item(AddNode, pNode)); }
-	void moveNode(qtractorCurve::Node *pNode)
-		{ m_items.append(new Item(MoveNode, pNode)); }
+		{ m_items.append(new Item(AddNode, pNode, pNode->frame)); }
+	void moveNode(qtractorCurve::Node *pNode, unsigned long iFrame)
+		{ m_items.append(new Item(MoveNode, pNode, iFrame)); }
 	void removeNode(qtractorCurve::Node *pNode)
 		{ m_items.append(new Item(RemoveNode, pNode)); }
 
@@ -401,10 +401,9 @@ protected:
 	struct Item
 	{
 		// Item constructor.
-		Item(Command cmd, qtractorCurve::Node *pNode)
-			: command(cmd), node(pNode),
-				frame(pNode->frame), value(pNode->value),
-				autoDelete(false) {}
+		Item(Command cmd, qtractorCurve::Node *pNode,
+			unsigned long iFrame = 0) : command(cmd), node(pNode),
+				frame(iFrame), value(pNode->value), autoDelete(false) {}
 
 		// Item copy constructor.
 		Item(const Item& item)

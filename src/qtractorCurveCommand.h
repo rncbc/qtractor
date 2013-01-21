@@ -1,7 +1,7 @@
 // qtractorCurveCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -58,6 +58,9 @@ public:
 
 	// Constructor.
 	qtractorCurveCommand(const QString& sName, qtractorCurve *pCurve);
+
+	// Accessor.
+	qtractorCurve *curve() const { return m_pCurve; }
 
 protected:
 
@@ -294,7 +297,7 @@ public:
 
 	// Primitive command methods.
 	void addNode(qtractorCurve::Node *pNode);
-	void moveNode(qtractorCurve::Node *pNode);
+	void moveNode(qtractorCurve::Node *pNode, unsigned long iFrame);
 	void removeNode(qtractorCurve::Node *pNode);
 
 	void addEditList(qtractorCurveEditList *pEditList);
@@ -381,7 +384,7 @@ protected:
 private:
 
 	// Instance variables.
-	QList<qtractorCurveEditCommand *> m_commands;
+	QList<qtractorCurveEditCommand *> m_curveEditCommands;
 };
 
 

@@ -34,6 +34,7 @@ class qtractorTrack;
 class qtractorSession;
 class qtractorClip;
 class qtractorClipCommand;
+class qtractorClipRangeCommand;
 class qtractorMidiClipCommand;
 class qtractorMidiToolsForm;
 
@@ -177,7 +178,7 @@ protected:
 
 	// Insertion method (track).
 	int insertEditRangeTrack(
-		qtractorClipCommand *pClipCommand, qtractorTrack *pTrack,
+		qtractorClipRangeCommand *pClipRangeCommand, qtractorTrack *pTrack,
 		unsigned long iInsertStart, unsigned long iInsertEnd) const;
 
 public slots:

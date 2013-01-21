@@ -1,7 +1,7 @@
 // qtractorCurveCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -347,9 +347,10 @@ void qtractorCurveEditCommand::addNode ( qtractorCurve::Node *pNode )
 }
 
 
-void qtractorCurveEditCommand::moveNode ( qtractorCurve::Node *pNode )
+void qtractorCurveEditCommand::moveNode ( qtractorCurve::Node *pNode,
+	unsigned long iFrame )
 {
-	m_edits.moveNode(pNode);
+	m_edits.moveNode(pNode, iFrame);
 }
 
 
@@ -463,13 +464,13 @@ qtractorCurveEditListCommand::qtractorCurveEditListCommand (
 	if (m_pCurveList) {
 		qtractorCurve *pCurve = m_pCurveList->first();
 		while (pCurve) {
-			qtractorCurveEditList *pEditList = pCurve->editList();
-			if (pEditList && !pEditList->isEmpty()) {
-				qtractorCurveEditCommand *pCommand
+			qtractorCurveEditList *pCurveEditList = pCurve->editList();
+			if (pCurveEditList && !pCurveEditList->isEmpty()) {
+				qtractorCurveEditCommand *pCurveEditCommand
 					= new qtractorCurveEditCommand(pCurve);
-				pCommand->addEditList(pEditList);
-				m_commands.append(pCommand);
-				pEditList->clear();
+				pCurveEditCommand->addEditList(pCurveEditList);
+				m_curveEditCommands.append(pCurveEditCommand);
+				pCurveEditList->clear();
 			}
 			pCurve = pCurve->next();
 		}
@@ -480,15 +481,15 @@ qtractorCurveEditListCommand::qtractorCurveEditListCommand (
 // Destructor.
 qtractorCurveEditListCommand::~qtractorCurveEditListCommand (void)
 {
-	qDeleteAll(m_commands);
-	m_commands.clear();
+	qDeleteAll(m_curveEditCommands);
+	m_curveEditCommands.clear();
 }
 
 
 // Composite predicate.
 bool qtractorCurveEditListCommand::isEmpty (void) const
 {
-	return m_commands.isEmpty();
+	return m_curveEditCommands.isEmpty();
 }
 
 
@@ -498,13 +499,13 @@ bool qtractorCurveEditListCommand::execute ( bool bRedo )
 	if (m_pCurveList == NULL)
 		return false;
 
-	QListIterator<qtractorCurveEditCommand *> iter(m_commands);
+	QListIterator<qtractorCurveEditCommand *> iter(m_curveEditCommands);
 	while (iter.hasNext()) {
-		qtractorCurveEditCommand *pCommand = iter.next();
+		qtractorCurveEditCommand *pCurveEditCommand = iter.next();
 		if (bRedo)
-			pCommand->redo();
+			pCurveEditCommand->redo();
 		else
-			pCommand->undo();
+			pCurveEditCommand->undo();
 	}
 
 	return true;

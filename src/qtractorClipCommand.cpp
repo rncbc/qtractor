@@ -32,6 +32,7 @@
 #include "qtractorFiles.h"
 
 #include "qtractorMidiEditCommand.h"
+#include "qtractorCurveCommand.h"
 
 
 //----------------------------------------------------------------------
@@ -712,6 +713,51 @@ bool qtractorClipTakeCommand::execute ( bool bRedo )
 	int iCurrentTake = m_pTakeInfo->currentTake();
 	m_pTakeInfo->setCurrentTake(m_iCurrentTake);
 	m_iCurrentTake = iCurrentTake;;
+
+	return qtractorClipCommand::execute(bRedo);
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorClipRangeCommand - declaration.
+//
+
+// Constructor.
+qtractorClipRangeCommand::qtractorClipRangeCommand (void)
+	: qtractorClipCommand(QObject::tr("insert range"))
+{
+}
+
+
+// Destructor.
+qtractorClipRangeCommand::~qtractorClipRangeCommand (void)
+{
+	qDeleteAll(m_curveEditCommands);
+	m_curveEditCommands.clear();
+}
+
+
+// When automation curves are needed.
+void qtractorClipRangeCommand::addCurveEditCommand (
+	qtractorCurveEditCommand *pCurveEditCommand )
+{
+	m_curveEditCommands.append(pCurveEditCommand);
+}
+
+
+
+// Executive override.
+bool qtractorClipRangeCommand::execute ( bool bRedo )
+{
+	QListIterator<qtractorCurveEditCommand *> iter(m_curveEditCommands);
+	while (iter.hasNext()) {
+		qtractorCurveEditCommand *pCurveEditCommand = iter.next();
+		if (bRedo)
+			pCurveEditCommand->redo();
+		else
+			pCurveEditCommand->undo();
+		pCurveEditCommand->curve()->update();
+	}
 
 	return qtractorClipCommand::execute(bRedo);
 }
