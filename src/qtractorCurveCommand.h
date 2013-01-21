@@ -381,7 +381,7 @@ protected:
 private:
 
 	// Instance variables.
-	QList<qtractorCurveEditCommand *> m_commands;
+	QList<qtractorCurveEditCommand *> m_curveEditCommands;
 };
 
 
