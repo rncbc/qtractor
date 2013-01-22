@@ -1202,9 +1202,14 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="727"/>
+        <location filename="../qtractorClipCommand.cpp" line="729"/>
         <source>insert range</source>
         <translation type="unfinished">Vložit rozsah</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipCommand.cpp" line="729"/>
+        <source>insert track range</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

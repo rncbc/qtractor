@@ -858,8 +858,13 @@ Offs/Length:	%3 / %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="727"/>
+        <location filename="../qtractorClipCommand.cpp" line="729"/>
         <source>insert range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipCommand.cpp" line="729"/>
+        <source>insert track range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
