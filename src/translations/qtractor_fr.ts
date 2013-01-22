@@ -120,9 +120,14 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>réinitialiser les prises</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="727"/>
+        <location filename="../qtractorClipCommand.cpp" line="729"/>
         <source>insert range</source>
         <translation type="unfinished">Insérer plage</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipCommand.cpp" line="729"/>
+        <source>insert track range</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="99"/>

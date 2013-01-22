@@ -192,7 +192,7 @@ class qtractorClipRangeCommand : public qtractorClipCommand
 public:
 
 	// Constructor.
-	qtractorClipRangeCommand();
+	qtractorClipRangeCommand(qtractorTrack *pTrack = NULL);
 
 	// Destructor.
 	~qtractorClipRangeCommand();

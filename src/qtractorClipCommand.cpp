@@ -723,8 +723,10 @@ bool qtractorClipTakeCommand::execute ( bool bRedo )
 //
 
 // Constructor.
-qtractorClipRangeCommand::qtractorClipRangeCommand (void)
-	: qtractorClipCommand(QObject::tr("insert range"))
+qtractorClipRangeCommand::qtractorClipRangeCommand (
+	qtractorTrack *pTrack )
+	: qtractorClipCommand(pTrack
+		? QObject::tr("insert range") : QObject::tr("insert track range"))
 {
 }
 

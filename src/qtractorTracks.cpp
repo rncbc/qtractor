@@ -1842,7 +1842,7 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 
 	int iUpdate = 0;
 	qtractorClipRangeCommand *pClipRangeCommand
-		= new qtractorClipRangeCommand();
+		= new qtractorClipRangeCommand(pTrack);
 
 	if (pTrack) {
 		iUpdate += insertEditRangeTrack(pClipRangeCommand,
