@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- One semi-colon typo was hiding proper descrimination of peak files
+  used to draw distinct waveforms of time-stretched audio clips.
+
 - Track automation curves are now also affected by Edit/Insert/Range
   commands. (EXPERIMENTAL)
 
