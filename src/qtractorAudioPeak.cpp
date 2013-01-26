@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -389,7 +389,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	if (pSession)
 		dir.setPath(pSession->sessionDir());
 	const QString sPeakFilePrefix
-		= QFileInfo(dir, QFileInfo(sFilename).fileName()).filePath();
+		= QFileInfo(dir, QFileInfo(sFilename).fileName()).filePath()
 		+ '_' + QString::number(fTimeStretch);
 	QFileInfo peakInfo(sPeakFilePrefix + c_sPeakFileExt);
 	// Avoid duplicates, as much as psssible...
@@ -657,8 +657,8 @@ bool qtractorAudioPeakFile::openWrite (
 	qDebug("name        = %s", m_peakFile.fileName().toUtf8().constData());
 	qDebug("filename    = %s", m_sFilename.toUtf8().constData());
 	qDebug("timeStretch = %g", m_fTimeStretch);
-	qDebug("header      = %lu", sizeof(Header));
-	qDebug("frame       = %lu", sizeof(Frame));
+	qDebug("header      = %u", sizeof(Header));
+	qDebug("frame       = %u", sizeof(Frame));
 	qDebug("period      = %d", m_peakHeader.period);
 	qDebug("channels    = %d", m_peakHeader.channels);
 	qDebug("---");
