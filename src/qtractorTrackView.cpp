@@ -2763,6 +2763,8 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		}
 		fTimeStretch = (float(iClipLength) * fOldTimeStretch)
 			/ float(m_pClipDrag->clipLength());
+		float fOffsetRatio = fTimeStretch / fOldTimeStretch;
+		iClipOffset = (unsigned long) (fOffsetRatio * float(iClipOffset));
 	}
 
 	// Declare the clip resize parcel...
