@@ -158,9 +158,22 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	}
 	if (fTimeStretch > 0.0f) {
 		pItem->timeStretch = fTimeStretch;
-		if ((pClip->track())->trackType() == qtractorTrack::Midi) {
-			pItem->editCommand = createMidiEditCommand(
-				static_cast<qtractorMidiClip *> (pClip), fTimeStretch);
+		switch ((pClip->track())->trackType()) {
+		case qtractorTrack::Audio: {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (pClip);
+			float fRatio = fTimeStretch / pAudioClip->timeStretch();
+			pItem->clipOffset = (unsigned long) (fRatio * float(iClipOffset));
+			break;
+		}
+		case qtractorTrack::Midi: {
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (pClip);
+			pItem->editCommand = createMidiEditCommand(pMidiClip, fTimeStretch);
+			break;
+		}
+		default:
+			break;
 		}
 	}
 	if (fPitchShift > 0.0f)
