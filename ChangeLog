@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip offsets are now properly corrected when time-stretching
+  is applied via Shift/Ctrl+dragging any of the clip edges.
+
 - One semi-colon typo was hiding proper descrimination of peak files
   used to draw distinct waveforms of time-stretched audio clips.
 
@@ -114,7 +117,7 @@ SVN TRUNK
   regression to MIDI track's occasional muting bug while clip editing
   and playback is rolling.
 
-- Apologies due on this one: shift/ctrl keyboard modifiers are back
+- Apologies due on this one: Shift/Ctrl keyboard modifiers are back
   in business to change MIDI events currently selected in one single
   step while on MIDI clip editor (aka. piano-roll). Sorry.
 
@@ -1752,7 +1755,7 @@ engaged  tracks from editing or removal.
 - MIDI open files dialog gets a few more file filter types now.
 
 - Playhead position is now shown, updated and can be also set on the main
-  toolbar session thumb-view (shift-click to set the playhead).
+  toolbar session thumb-view (Shift-click to set the playhead).
 
 - The floating selection, as shown for a clipboard pasting operation, has
   been corrected regarding time scale (horizontal zoom) changes, while in
@@ -2210,8 +2213,8 @@ engaged  tracks from editing or removal.
 - Audio clip waveform drawing gets additional closing points.
 
 - It is now possible to change the length/size of a clip by dragging its
-  left or right edges, while in the main track-view. Shift+drag will also
-  time-stretch to the resulting audio clip length.
+  left or right edges, while in the main track-view. Shift/Ctrl+drag will
+  also time-stretch to the resulting audio clip length.
 
 - Another off-by-one mistake was corrected, which was causing audio clips
   to go out-of-sync on loop turnover boundary; also changed the loop
@@ -2527,7 +2530,7 @@ engaged  tracks from editing or removal.
 
 - MIDI clip editor clipboard gets singleton status and is now shared on
   all MIDI editor instances. Similarly to the main track-view,
-  shift/ctrl-left-clicking on the MIDI editor views sets the current
+  Shift/Ctrl-left-clicking on the MIDI editor views sets the current
   session play-head position.
 
 - A desktop entry file has been included on install, at last.
