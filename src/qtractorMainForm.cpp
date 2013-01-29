@@ -4980,6 +4980,12 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_TIME
 	list << tr("LV2 Plug-in Time/position support disabled.");
 #endif
+#ifndef CONFIG_LV2_OPTIONS
+	list << tr("LV2 Plug-in Options support disabled.");
+#endif
+#ifndef CONFIG_LV2_BUF_SIZE
+	list << tr("LV2 Plug-in Buf-size support disabled.");
+#endif
 #endif // CONFIG_LV2
 #ifndef CONFIG_JACK_SESSION
 	list << tr("JACK Session support disabled.");
