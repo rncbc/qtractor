@@ -108,6 +108,9 @@ public:
 	// Special paste/repeat prompt.
 	void pasteRepeatClipboard();
 
+	// Split selection method.
+	void splitSelect();
+
 	// Selection methods.
 	void selectEditRange(bool bReset = false);
 	void selectCurrentTrack(bool bReset = false);

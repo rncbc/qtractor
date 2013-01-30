@@ -687,6 +687,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editSelectModeRectAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectModeRect()));
+	QObject::connect(m_ui.editSelectModeCurveAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectModeCurve(bool)));
 	QObject::connect(m_ui.editSelectAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
@@ -711,9 +714,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editInsertTrackRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editInsertTrackRange()));
-	QObject::connect(m_ui.editSelectModeCurveAction,
+	QObject::connect(m_ui.editSplitAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editSelectModeCurve(bool)));
+		SLOT(editSplit()));
 
 	QObject::connect(m_ui.trackAddAction,
 		SIGNAL(triggered(bool)),
@@ -2566,6 +2569,21 @@ void qtractorMainForm::editInsertTrackRange (void)
 	// Select track-range...
 	if (m_pTracks)
 		m_pTracks->insertEditRange(m_pTracks->currentTrack());
+
+	stabilizeForm();
+}
+
+
+// Split (clip) selection...
+void qtractorMainForm::editSplit (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editSplit()");
+#endif
+
+	// Split selection...
+	if (m_pTracks)
+		m_pTracks->splitSelect();
 
 	stabilizeForm();
 }
@@ -5308,6 +5326,8 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bInsertable = m_pSession->editHead() < iSessionEnd;
 	m_ui.editInsertTrackRangeAction->setEnabled(bEnabled && bInsertable);
 	m_ui.editInsertRangeAction->setEnabled(bInsertable);
+
+	m_ui.editSplitAction->setEnabled(bSelected);
 
 	// Top-level menu/toolbar items stabilization...
 	updateTrackMenu();
