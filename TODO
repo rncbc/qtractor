@@ -1,11 +1,11 @@
 Qtractor - An Audio/MIDI multi-track sequencer
 ----------------------------------------------
 
-Qtractor is still in some alpha stage of development,
-although already functional. It surely has a plenty of
-lurking bugs. It also lacks some features that some might
-find critical in the application field. All is not lost,
-as the following are among the ones planned to be worked
+Qtractor is still in some alpha stage of development, although already
+functional. It surely has a plenty of lurking bugs. It also lacks some
+features that some might find critical in the application field.
+
+All is not lost, the following are among the ones planned to be worked
 on in the times to come (not in any particular order):
 
 - MIDI step-recording.
