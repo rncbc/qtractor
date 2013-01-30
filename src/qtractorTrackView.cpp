@@ -3401,10 +3401,23 @@ void qtractorTrackView::executeClipSelect (
 
 	// We'll build a composite command...
 	qtractorClipCommand *pClipCommand = NULL;
-	if (cmd == Cut || cmd == Delete) {
-		pClipCommand = new qtractorClipCommand(
-			tr("%1 clip").arg(cmd == Cut ? tr("cut") : tr("delete")));
+	const QString& sCmdMask = tr("%1 clip");
+	QString sCmdName;
+	switch (cmd) {
+	case Cut:
+		sCmdName = sCmdMask.arg(tr("cut"));
+		break;
+	case Delete:
+		sCmdName = sCmdMask.arg(tr("delete"));
+		break;
+	case Split:
+		sCmdName = sCmdMask.arg(tr("split"));
+		break;
+	default:
+		break;
 	}
+	if (!sCmdName.isEmpty())
+		pClipCommand = new qtractorClipCommand(sCmdName);
 
 	if (pClipEx) {
 		// -- Single clip...
@@ -3417,8 +3430,9 @@ void qtractorTrackView::executeClipSelect (
 				pClipEx->clipOffset(),
 				pClipEx->clipLength());
 		}
-		if (pClipCommand)
+		if (pClipCommand && cmd != Split) {
 			pClipCommand->removeClip(pClipEx);
+		}
 		// Done, single clip.
 	}
 
@@ -3458,6 +3472,17 @@ void qtractorTrackView::executeClipSelect (
 							iClipStart,
 							iClipOffset,
 							iSelectOffset);
+						// Split(middle)-clip...
+						if (cmd == Split) {
+							qtractorClip *pClipSplit = cloneClip(pClip);
+							if (pClipSplit) {
+								pClipSplit->setClipStart(iSelectStart);
+								pClipSplit->setClipOffset(
+									iClipOffset + iSelectOffset);
+								pClipSplit->setClipLength(iSelectLength);
+								pClipCommand->addClip(pClipSplit, pTrack);
+							}
+						}
 						// Right-clip...
 						qtractorClip *pClipRight = cloneClip(pClip);
 						if (pClipRight) {
@@ -3480,10 +3505,22 @@ void qtractorTrackView::executeClipSelect (
 							iSelectLength);
 					}
 					if (pClipCommand) {
+						// Left-clip...
 						pClipCommand->resizeClip(pClip,
 							iClipStart,
 							iClipOffset,
 							iSelectOffset);
+						// Split(right)-clip...
+						if (cmd == Split) {
+							qtractorClip *pClipSplit = cloneClip(pClip);
+							if (pClipSplit) {
+								pClipSplit->setClipStart(iSelectStart);
+								pClipSplit->setClipOffset(
+									iClipOffset + iSelectOffset);
+								pClipSplit->setClipLength(iSelectLength);
+								pClipCommand->addClip(pClipSplit, pTrack);
+							}
+						}
 					}
 					// Done, right region.
 				}
@@ -3499,10 +3536,21 @@ void qtractorTrackView::executeClipSelect (
 						iSelectLength);
 				}
 				if (pClipCommand) {
+					// Right-clip...
 					pClipCommand->resizeClip(pClip,
 						iSelectEnd,
 						iClipOffset + iSelectLength,
 						iClipLength - iSelectLength);
+					// Split(left)-clip...
+					if (cmd == Split) {
+						qtractorClip *pClipSplit = cloneClip(pClip);
+						if (pClipSplit) {
+							pClipSplit->setClipStart(iClipStart);
+							pClipSplit->setClipOffset(iClipOffset);
+							pClipSplit->setClipLength(iSelectLength);
+							pClipCommand->addClip(pClipSplit, pTrack);
+						}
+					}
 				}
 				// Done, left region.
 			} else {
@@ -3514,7 +3562,7 @@ void qtractorTrackView::executeClipSelect (
 						iClipOffset,
 						iClipLength);
 				}
-				if (pClipCommand) {
+				if (pClipCommand && cmd != Split) {
 					pClipCommand->removeClip(pClip);
 				}
 				// Done, whole clip.

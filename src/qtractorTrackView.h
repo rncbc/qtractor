@@ -150,7 +150,7 @@ public:
 	unsigned long pastePeriod() const;
 
 	// Clip selection command types.
-	enum Command { Cut, Copy, Delete };
+	enum Command { Cut, Copy, Delete, Split };
 	
 	// Clip selection executive method.
 	void executeClipSelect(

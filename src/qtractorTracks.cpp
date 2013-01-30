@@ -1784,6 +1784,12 @@ void qtractorTracks::pasteRepeatClipboard (void)
 }
 
 
+// Split selection method.
+void qtractorTracks::splitSelect (void)
+{
+	m_pTrackView->executeClipSelect(qtractorTrackView::Split);
+}
+
 
 // Select range interval between edit head and tail.
 void qtractorTracks::selectEditRange ( bool bReset )

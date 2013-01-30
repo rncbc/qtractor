@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Splitting clips apart is now easier than ever: a brand new entry
+  enters the main menu scene: Edit/Split (Ctrl+Y) splits up clips
+  according to current range/rectangular selection. (EXPERIMENTAL)
+
 - Audio clip offsets are now properly corrected when time-stretching
   is applied via Shift/Ctrl+dragging any of the clip edges.
 
