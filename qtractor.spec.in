@@ -8,11 +8,11 @@ Summary:	An Audio/MIDI multi-track sequencer
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
-License:	GPL
+License:	GPL-2.0+
 Group:		Productivity/Multimedia/Sound/Midi
 Source0:	%{name}-%{version}.tar.gz
 URL:		http://qtractor.sourceforge.net/
-Packager:	rncbc.org
+#Packager:	rncbc.org
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -72,9 +72,9 @@ specially dedicated to the personal home-studio.
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog README TODO
-%dir %{_datadir}/mime
-%dir %{_datadir}/mime/packages
-%dir %{_datadir}/applications
+#dir %{_datadir}/mime
+#dir %{_datadir}/mime/packages
+#dir %{_datadir}/applications
 %dir %{_datadir}/icons/hicolor
 %dir %{_datadir}/icons/hicolor/32x32
 %dir %{_datadir}/icons/hicolor/32x32/apps
