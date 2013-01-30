@@ -122,12 +122,12 @@ Déc. / Long.:	%3 / %4</translation>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="742"/>
         <source>insert range</source>
-        <translation type="unfinished">Insérer plage</translation>
+        <translation>Insérer plage</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="742"/>
         <source>insert track range</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer plage de piste</translation>
     </message>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="99"/>
@@ -5016,7 +5016,7 @@ Voulez-vous le remplacer?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1851"/>
         <source>Backup session: &quot;%1&quot; as &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Session de sauvegarde: &quot;%1&quot; en &quot;%2&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1855"/>
@@ -5025,7 +5025,11 @@ Voulez-vous le remplacer?</translation>
 %1 as %2
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut pas sauvegarder la session existante:
+
+%1 en %2
+
+Désolé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1914"/>
@@ -5312,12 +5316,12 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4984"/>
         <source>LV2 Plug-in Options support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support pour les options du gréffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4987"/>
         <source>LV2 Plug-in Buf-size support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support du Buf-size pour les gréffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4991"/>
@@ -8211,7 +8215,7 @@ Voulez-vous sauvegarder les changements?</translation>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="217"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Tous les fichiers (*.*)</translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="218"/>
@@ -8923,12 +8927,12 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="200"/>
         <source>Whether to save backup versions of existing sessions</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;il faut sauvegarder des versions de sessions existantes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="203"/>
         <source>Save &amp;backup versions of existing sessions</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver des &amp;versions de sauvegarde de sessions existantes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="219"/>
