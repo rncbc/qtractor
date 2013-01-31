@@ -643,6 +643,9 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 		pClipCommand->addClip(pNewClip, pNewClip->track());
 	}
 
+	// Reset any track/clip selection...
+	m_pTrackView->clearClipSelect();
+
 	// That's it...
 	return pSession->execute(pClipCommand);
 }

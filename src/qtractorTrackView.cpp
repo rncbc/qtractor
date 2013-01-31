@@ -3430,9 +3430,8 @@ void qtractorTrackView::executeClipSelect (
 				pClipEx->clipOffset(),
 				pClipEx->clipLength());
 		}
-		if (pClipCommand && cmd != Split) {
+		if (pClipCommand && cmd != Split)
 			pClipCommand->removeClip(pClipEx);
-		}
 		// Done, single clip.
 	}
 
@@ -3468,21 +3467,26 @@ void qtractorTrackView::executeClipSelect (
 					}
 					if (pClipCommand) {
 						// Left-clip...
-						pClipCommand->resizeClip(pClip,
-							iClipStart,
-							iClipOffset,
-							iSelectOffset);
+						qtractorClip *pClipLeft = cloneClip(pClip);
+						if (pClipLeft) {
+							pClipLeft->setClipStart(iClipStart);
+							pClipLeft->setClipOffset(iClipOffset);
+							pClipLeft->setClipLength(iSelectOffset);
+							pClipLeft->setFadeInLength(pClip->fadeInLength());
+							pClipCommand->addClip(pClipLeft, pTrack);
+						}
 						// Split(middle)-clip...
 						if (cmd == Split) {
-							qtractorClip *pClipSplit = cloneClip(pClip);
-							if (pClipSplit) {
-								pClipSplit->setClipStart(iSelectStart);
-								pClipSplit->setClipOffset(
-									iClipOffset + iSelectOffset);
-								pClipSplit->setClipLength(iSelectLength);
-								pClipCommand->addClip(pClipSplit, pTrack);
-							}
+							// Middle-clip...
+							pClipCommand->resizeClip(pClip,
+								iSelectStart,
+								iClipOffset + iSelectOffset,
+								iSelectLength);
+							// Adjust middle-clip selection...
+							pClip->setClipSelect(
+								iSelectStart, iSelectStart + iSelectLength);
 						}
+						else pClipCommand->removeClip(pClip);
 						// Right-clip...
 						qtractorClip *pClipRight = cloneClip(pClip);
 						if (pClipRight) {
@@ -3506,21 +3510,26 @@ void qtractorTrackView::executeClipSelect (
 					}
 					if (pClipCommand) {
 						// Left-clip...
-						pClipCommand->resizeClip(pClip,
-							iClipStart,
-							iClipOffset,
-							iSelectOffset);
+						qtractorClip *pClipLeft = cloneClip(pClip);
+						if (pClipLeft) {
+							pClipLeft->setClipStart(iClipStart);
+							pClipLeft->setClipOffset(iClipOffset);
+							pClipLeft->setClipLength(iSelectOffset);
+							pClipLeft->setFadeInLength(pClip->fadeInLength());
+							pClipCommand->addClip(pClipLeft, pTrack);
+						}
 						// Split(right)-clip...
 						if (cmd == Split) {
-							qtractorClip *pClipSplit = cloneClip(pClip);
-							if (pClipSplit) {
-								pClipSplit->setClipStart(iSelectStart);
-								pClipSplit->setClipOffset(
-									iClipOffset + iSelectOffset);
-								pClipSplit->setClipLength(iSelectLength);
-								pClipCommand->addClip(pClipSplit, pTrack);
-							}
+							// Right-clip...
+							pClipCommand->resizeClip(pClip,
+								iSelectStart,
+								iClipOffset + iSelectOffset,
+								iSelectLength);
+							// Adjust middle-clip selection...
+							pClip->setClipSelect(
+								iSelectStart, iSelectStart + iSelectLength);
 						}
+						else pClipCommand->removeClip(pClip);
 					}
 					// Done, right region.
 				}
@@ -3536,20 +3545,26 @@ void qtractorTrackView::executeClipSelect (
 						iSelectLength);
 				}
 				if (pClipCommand) {
-					// Right-clip...
-					pClipCommand->resizeClip(pClip,
-						iSelectEnd,
-						iClipOffset + iSelectLength,
-						iClipLength - iSelectLength);
 					// Split(left)-clip...
 					if (cmd == Split) {
-						qtractorClip *pClipSplit = cloneClip(pClip);
-						if (pClipSplit) {
-							pClipSplit->setClipStart(iClipStart);
-							pClipSplit->setClipOffset(iClipOffset);
-							pClipSplit->setClipLength(iSelectLength);
-							pClipCommand->addClip(pClipSplit, pTrack);
-						}
+						// Left-clip...
+						pClipCommand->resizeClip(pClip,
+							iClipStart,
+							iClipOffset,
+							iSelectLength);
+						// Adjust middle-clip selection...
+						pClip->setClipSelect(
+							iClipStart, iClipStart + iSelectLength);
+					}
+					else pClipCommand->removeClip(pClip);
+					// Right-clip...
+					qtractorClip *pClipRight = cloneClip(pClip);
+					if (pClipRight) {
+						pClipRight->setClipStart(iSelectEnd);
+						pClipRight->setClipOffset(iClipOffset + iSelectLength);
+						pClipRight->setClipLength(iClipLength - iSelectLength);
+						pClipRight->setFadeOutLength(pClip->fadeOutLength());
+						pClipCommand->addClip(pClipRight, pTrack);
 					}
 				}
 				// Done, left region.
@@ -3562,9 +3577,8 @@ void qtractorTrackView::executeClipSelect (
 						iClipOffset,
 						iClipLength);
 				}
-				if (pClipCommand && cmd != Split) {
+				if (pClipCommand && cmd != Split)
 					pClipCommand->removeClip(pClip);
-				}
 				// Done, whole clip.
 			}
 		}
@@ -3577,7 +3591,8 @@ void qtractorTrackView::executeClipSelect (
 	// Reset selection on cut or delete;
 	// put it in the form of an undoable command...
 	if (pClipCommand) {
-		m_pClipSelect->clear();
+		if (cmd != Split)
+			m_pClipSelect->clear();
 		pSession->execute(pClipCommand);
 	}
 }
