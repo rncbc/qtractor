@@ -207,7 +207,7 @@ private:
 	bool m_bMidBufferDirty;
 
 	// Calculates the cross-correlation value over the overlap period.
-	double (*m_pfnCrossCorr)(const float *, const float *, unsigned int);
+	float (*m_pfnCrossCorr)(const float *, const float *, unsigned int);
 };
 
 

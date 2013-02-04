@@ -24,6 +24,8 @@
 
 #include "qtractorTimeStretch.h"
 
+#include <math.h>
+
 
 // Cross-correlation value calculation over the overlap period.
 //
@@ -59,11 +61,10 @@ static inline bool sse_enabled (void)
 
 
 // SSE enabled version.
-static inline double sse_cross_corr (
+static inline float sse_cross_corr (
 	const float *pV1, const float *pV2, unsigned int iOverlapLength )
 {
-	unsigned int i;
-	__m128 vSum, *pVec2;
+	__m128 vCorr, vNorm, vTemp, *pVec2;
 
 	// Note. It means a major slow-down if the routine needs to tolerate
 	// unaligned __m128 memory accesses. It's way faster if we can skip
@@ -71,50 +72,71 @@ static inline double sse_cross_corr (
 	// This can mean up to ~ 10-fold difference (incl. part of which is
 	// due to skipping every second round for stereo sound though).
 	//
-	// No cheating then allowed, use unaligned load & take the resulting
-	// performance hit.
+	// Little cheating allowed, return valid correlation only for
+	// aligned locations, meaning every second round for stereo sound.
+	//if (((unsigned long) pV1) & 15) return -1e38f; // Skip unaligned locations.
+	// No cheating allowed, use unaligned load & take the resulting
+	// performance hit. -- use _mm_loadu_ps() instead of _mm_load_ps();
 
 	// Ensure overlapLength is divisible by 8
 	// assert((m_iOverlapLength % 8) == 0);
-	iOverlapLength >>= 3;
+	iOverlapLength >>= 4;
 
 	// Calculates the cross-correlation value between 'pV1' and 'pV2' vectors
 	// Note: pV2 _must_ be aligned to 16-bit boundary, pV1 need not.
 	pVec2 = (__m128 *) pV2;
-	vSum = _mm_setzero_ps();
+	vCorr = _mm_setzero_ps();
+	vNorm = _mm_setzero_ps();
 
 	// Unroll the loop by factor of 4 * 4 operations
-	for (i = 0; i < iOverlapLength; ++i) {
-		// vSum += pV1[0..3] * pV2[0..3]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1), pVec2[0]));
-		// vSum += pV1[4..7] * pV2[4..7]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1 + 4), pVec2[1]));
-		// vSum += pV1[8..11] * pV2[8..11]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1 + 8), pVec2[2]));
-		// vSum += pV1[12..15] * pV2[12..15]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1 + 12), pVec2[3]));
+	for (unsigned int i = 0; i < iOverlapLength; ++i) {
+		// vCorr += pV1[0..3] * pV2[0..3]
+		vTemp = _mm_loadu_ps(pV1);
+		vCorr = _mm_add_ps(vCorr, _mm_mul_ps(vTemp, pVec2[0]));
+		vNorm = _mm_add_ps(vNorm, _mm_mul_ps(vTemp, vTemp));
+		// vCorr += pV1[4..7] * pV2[4..7]
+		vTemp = _mm_loadu_ps(pV1 + 4);
+		vCorr = _mm_add_ps(vCorr, _mm_mul_ps(vTemp, pVec2[1]));
+		vNorm = _mm_add_ps(vNorm, _mm_mul_ps(vTemp, vTemp));
+		// vCorr += pV1[8..11] * pV2[8..11]
+		vTemp = _mm_loadu_ps(pV1 + 8);
+		vCorr = _mm_add_ps(vCorr, _mm_mul_ps(vTemp, pVec2[2]));
+		vNorm = _mm_add_ps(vNorm, _mm_mul_ps(vTemp, vTemp));
+		// vCorr += pV1[12..15] * pV2[12..15]
+		vTemp = _mm_loadu_ps(pV1 + 12);
+		vCorr = _mm_add_ps(vCorr, _mm_mul_ps(vTemp, pVec2[3]));
+		vNorm = _mm_add_ps(vNorm, _mm_mul_ps(vTemp, vTemp));
 		pV1 += 16;
 		pVec2 += 4;
 	}
 
-	// return value = vSum[0] + vSum[1] + vSum[2] + vSum[3]
-	float *pvSum = (float *) &vSum;
-	return (double) (pvSum[0] + pvSum[1] + pvSum[2] + pvSum[3]);
+	float *pvNorm = (float *) &vNorm;
+	float fNorm = (pvNorm[0] + pvNorm[1] + pvNorm[2] + pvNorm[3]);
+
+	if (fNorm < 1e-9f) fNorm = 1.0f; // avoid div by zero
+
+	float *pvCorr = (float *) &vCorr;
+	return (pvCorr[0] + pvCorr[1] + pvCorr[2] + pvCorr[3]) / ::sqrtf(fNorm);
 }
 
 #endif
 
 
 // Standard (slow) version.
-static inline double std_cross_corr (
+static inline float std_cross_corr (
 	const float *pV1, const float *pV2, unsigned int iOverlapLength )
 {
-	double dCorr = 0.0;
+	float fCorr = 0.0f;
+	float fNorm = 0.0f;
 
-	for (unsigned int i = 1; i < iOverlapLength; ++i)
-		dCorr += pV1[i] * pV2[i];
+	for (unsigned int i = 0; i < iOverlapLength; ++i) {
+		fCorr += pV1[i] * pV2[i];
+		fNorm += pV1[i] * pV1[i];
+	}
 
-	return dCorr;
+	if (fNorm < 1e-9f) fNorm = 1.0f; // avoid div by zero
+
+	return fCorr / ::sqrtf(fNorm);
 }
 
 
@@ -326,7 +348,7 @@ void qtractorTimeStretch::clear (void)
 // the overlapping period.
 unsigned int qtractorTimeStretch::seekBestOverlapPosition (void) 
 {
-	double dBestCorr, dCorr;
+	float fBestCorr, fCorr;
 	unsigned int iBestOffs, iPrevBestOffs;
 	unsigned short i, iStep;
 	int iOffs, j, k;
@@ -334,7 +356,7 @@ unsigned int qtractorTimeStretch::seekBestOverlapPosition (void)
 	// Slopes the amplitude of the 'midBuffer' samples
 	calcCrossCorrReference();
 
-	dBestCorr = -1e50; // A reasonable lower limit.
+	fBestCorr = -1e38f; // A reasonable lower limit.
 
 	// Scans for the best correlation value by testing each
 	// possible position over the permitted range.
@@ -351,13 +373,13 @@ unsigned int qtractorTimeStretch::seekBestOverlapPosition (void)
 					for (i = 0; i < m_iChannels; ++i) {
 						// Calculates correlation value for the mixing
 						// position corresponding to iOffs.
-						dCorr = (*m_pfnCrossCorr)(
+						fCorr = (*m_pfnCrossCorr)(
 							m_inputBuffer.ptrBegin(i) + iOffs,
 							m_ppRefMidBuffer[i],
 							m_iOverlapLength);
 						// Checks for the highest correlation value.
-						if (dCorr > dBestCorr) {
-							dBestCorr = dCorr;
+						if (fCorr > fBestCorr) {
+							fBestCorr = fCorr;
 							iBestOffs = iOffs;
 						}
 					}
@@ -372,12 +394,12 @@ unsigned int qtractorTimeStretch::seekBestOverlapPosition (void)
 			for (i = 0; i < m_iChannels; ++i) {
 				// Calculates correlation value for the mixing
 				// position corresponding to iOffs.
-				dCorr = (*m_pfnCrossCorr)(
+				fCorr = (*m_pfnCrossCorr)(
 					m_inputBuffer.ptrBegin(i) + iOffs,
 					m_ppRefMidBuffer[i], m_iOverlapLength);
 				// Checks for the highest correlation value.
-				if (dCorr > dBestCorr) {
-					dBestCorr = dCorr;
+				if (fCorr > fBestCorr) {
+					fBestCorr = fCorr;
 					iBestOffs = iOffs;
 				}
 			}
