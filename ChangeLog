@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Something fishy has been detected in the (not so) SSE optimizated
+  code from SoundTouch's-inspired WSOLA time-stretching. (TESTING)
+
 - Splitting clips apart is now easier than ever: a brand new entry
   enters the main menu scene: Edit/Split (Ctrl+Y) splits up clips
   according to current range/rectangular selection. (EXPERIMENTAL)
