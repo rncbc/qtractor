@@ -1,10 +1,10 @@
 // qtractorTimeStretch.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
-   Copyright (C) 2001-2009, Olli Parviainen.
+   Copyright (C) 2001-2012, Olli Parviainen.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,15 +65,14 @@ static inline double sse_cross_corr (
 	unsigned int i;
 	__m128 vSum, *pVec2;
 
-	// Note. It means a major slow-down if the routine needs to tolerate 
-	// unaligned __m128 memory accesses. It's way faster if we can skip 
+	// Note. It means a major slow-down if the routine needs to tolerate
+	// unaligned __m128 memory accesses. It's way faster if we can skip
 	// unaligned slots and use _mm_load_ps instruction instead of _mm_loadu_ps.
 	// This can mean up to ~ 10-fold difference (incl. part of which is
 	// due to skipping every second round for stereo sound though).
 	//
-	// Little cheating allowed, return valid correlation only for 
-	// aligned locations, meaning every second round for stereo sound.
-	if (((unsigned long) pV1) & 15) return -1e50; // Skip unaligned locations.
+	// No cheating then allowed, use unaligned load & take the resulting
+	// performance hit.
 
 	// Ensure overlapLength is divisible by 8
 	// assert((m_iOverlapLength % 8) == 0);
@@ -87,13 +86,13 @@ static inline double sse_cross_corr (
 	// Unroll the loop by factor of 4 * 4 operations
 	for (i = 0; i < iOverlapLength; ++i) {
 		// vSum += pV1[0..3] * pV2[0..3]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1), pVec2[0]));
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1), pVec2[0]));
 		// vSum += pV1[4..7] * pV2[4..7]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 4), pVec2[1]));
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1 + 4), pVec2[1]));
 		// vSum += pV1[8..11] * pV2[8..11]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 8), pVec2[2]));
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1 + 8), pVec2[2]));
 		// vSum += pV1[12..15] * pV2[12..15]
-		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 12), pVec2[3]));
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_loadu_ps(pV1 + 12), pVec2[3]));
 		pV1 += 16;
 		pVec2 += 4;
 	}

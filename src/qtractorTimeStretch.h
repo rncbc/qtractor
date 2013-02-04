@@ -1,10 +1,10 @@
 // qtractorTimeStretch.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
-   Copyright (C) 2001-2009, Olli Parviainen.
+   Copyright (C) 2001-2012, Olli Parviainen.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,8 +75,7 @@ public:
 		// slowing down tempo, but worse when increasing tempo and vice versa.
 		//
 		// Increasing this value reduces computational burden and vice versa.
-		// DEFAULT_SEQUENCE_MS = 82,
-		// DEFAULT_SEQUENCE_MS = 130,
+		// DEFAULT_SEQUENCE_MS = 40
 
 		DEFAULT_SEQUENCE_MS = 0,
 
@@ -94,8 +93,7 @@ public:
 		// frequency was drifting around, try reducing this setting.
 		//
 		// Increasing this value increases computational burden and vice versa.
-		// DEFAULT_SEEKWINDOW_MS = 14,
-		// DEFAULT_SEEKWINDOW_MS = 25,
+		// DEFAULT_SEEKWINDOW_MS = 15
 
 		DEFAULT_SEEKWINDOW_MS = 0,
 
@@ -109,7 +107,6 @@ public:
 		// to try a smaller value on this.
 		//
 		// Increasing this value increases computational burden and vice versa.
-		// DEFAULT_OVERLAP_MS = 12
 
 		DEFAULT_OVERLAP_MS = 8
 	};
