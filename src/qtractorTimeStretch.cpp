@@ -609,15 +609,15 @@ void qtractorTimeStretch::calcSeekWindowLength (void)
 	#define AUTO_TEMPO_DIFF (AUTO_TEMPO_MAX - AUTO_TEMPO_MIN)
 
 	// iSequenceMs setting values at above low & top tempo.
-	#define AUTO_SEQ_MIN	125.0f
-	#define AUTO_SEQ_MAX	50.0f
+	#define AUTO_SEQ_MIN	40.0f
+	#define AUTO_SEQ_MAX	125.0f
 	#define AUTO_SEQ_DIFF	(AUTO_SEQ_MAX - AUTO_SEQ_MIN)
 	#define AUTO_SEQ_K		(AUTO_SEQ_DIFF / AUTO_TEMPO_DIFF)
 	#define AUTO_SEQ_C		(AUTO_SEQ_MIN - (AUTO_SEQ_K * AUTO_TEMPO_MIN))
 
 	// iSeekWindowMs setting values at above low & top tempo.
-	#define AUTO_SEEK_MIN	25.0f
-	#define AUTO_SEEK_MAX	15.0f
+	#define AUTO_SEEK_MIN	15.0f
+	#define AUTO_SEEK_MAX	25.0f
 	#define AUTO_SEEK_DIFF	(AUTO_SEEK_MAX - AUTO_SEEK_MIN)
 	#define AUTO_SEEK_K		(AUTO_SEEK_DIFF / AUTO_TEMPO_DIFF)
 	#define AUTO_SEEK_C		(AUTO_SEEK_MIN - (AUTO_SEEK_K * AUTO_TEMPO_MIN))
@@ -626,13 +626,13 @@ void qtractorTimeStretch::calcSeekWindowLength (void)
 
 	if (m_bAutoSequenceMs) {
 		float fSeq = AUTO_SEQ_C + AUTO_SEQ_K * m_fTempo;
-		fSeq = AUTO_LIMITS(fSeq, AUTO_SEQ_MAX, AUTO_SEQ_MIN);
+		fSeq = AUTO_LIMITS(fSeq, AUTO_SEQ_MIN, AUTO_SEQ_MAX);
 		m_iSequenceMs = (unsigned int) (fSeq + 0.5f);
 	}
 
 	if (m_bAutoSeekWindowMs) {
 		float fSeek = AUTO_SEEK_C + AUTO_SEEK_K * m_fTempo;
-		fSeek = AUTO_LIMITS(fSeek, AUTO_SEEK_MAX, AUTO_SEEK_MIN);
+		fSeek = AUTO_LIMITS(fSeek, AUTO_SEEK_MIN, AUTO_SEEK_MAX);
 		m_iSeekWindowMs = (unsigned int) (fSeek + 0.5f);
 	}
 
