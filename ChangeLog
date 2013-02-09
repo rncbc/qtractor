@@ -5,7 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
-- Something fishy has been detected in the (not so) SSE optimizated
+- Linked/ref-counted audio clips must not overlap and now must have
+  a buffer-size worth of a gap between each other. (EXPERIMENTAL)
+
+- Something fishy has been detected in the SSE (not so) optimized
   code from SoundTouch's-inspired WSOLA time-stretching. (TESTING)
 
 - Splitting clips apart is now easier than ever: a brand new entry

@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,6 +52,9 @@ public:
 	// Pitch-shifting.
 	void setPitchShift(float fPitchShift);
 	float pitchShift() const;
+
+	// Alternating overlap tag.
+	unsigned int overlap() const;
 
 	// Clip (re)open method.
 	void open();
@@ -189,6 +192,9 @@ protected:
 	// Private cleanup.
 	void closeAudioFile();
 
+	// Alternating overlap test.
+	bool isOverlap(unsigned int iBufferSize) const;
+
 private:
 
 	// Instance variables.
@@ -196,6 +202,9 @@ private:
 
 	float m_fTimeStretch;
 	float m_fPitchShift;
+
+	// Alternate overlap tag.
+	unsigned int m_iOverlap;
 
 	// Most interesting key/data (ref-counted?)...
 	Key  *m_pKey;

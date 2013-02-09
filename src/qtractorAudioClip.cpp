@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,6 +63,7 @@ public:
 		m_iClipLength = pAudioClip->clipLength();
 		m_fTimeStretch = pAudioClip->timeStretch();
 		m_fPitchShift = pAudioClip->pitchShift();
+		m_iOverlap = pAudioClip->overlap();
 	}
 
 	// Key accessors.
@@ -78,6 +79,8 @@ public:
 		{ return m_fTimeStretch; }
 	float pitchShift() const
 		{ return m_fPitchShift; }
+	unsigned int overlap() const
+		{ return m_iOverlap; }
 
 	// Match descriminator.
 	bool operator== (const Key& other) const
@@ -87,7 +90,8 @@ public:
 			&& m_iClipOffset  == other.clipOffset()
 			&& m_iClipLength  == other.clipLength()
 			&& m_fTimeStretch == other.timeStretch()
-			&& m_fPitchShift  == other.pitchShift();
+			&& m_fPitchShift  == other.pitchShift()
+			&& m_iOverlap     == other.overlap();
 	}
 
 private:
@@ -99,6 +103,7 @@ private:
 	unsigned long  m_iClipLength;
 	float          m_fTimeStretch;
 	float          m_fPitchShift;
+	unsigned int   m_iOverlap;
 };
 
 
@@ -109,7 +114,8 @@ uint qHash ( const qtractorAudioClip::Key& key )
 		 ^ qHash(key.clipOffset())
 		 ^ qHash(key.clipLength())
 		 ^ qHash(long(100.0f * key.timeStretch()))
-		 ^ qHash(long(100.0f * key.pitchShift()));
+		 ^ qHash(long(100.0f * key.pitchShift()))
+		 ^ qHash(key.overlap());
 }
 
 
@@ -130,6 +136,8 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 
 	m_fTimeStretch = 1.0f;
 	m_fPitchShift  = 1.0f;
+
+	m_iOverlap = 0;
 }
 
 // Copy constructor.
@@ -142,6 +150,8 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 
 	m_fTimeStretch = clip.timeStretch();
 	m_fPitchShift  = clip.pitchShift();
+
+	m_iOverlap = clip.overlap();
 
 	setFilename(clip.filename());
 	setClipGain(clip.clipGain());
@@ -183,6 +193,35 @@ void qtractorAudioClip::setPitchShift ( float fPitchShift )
 float qtractorAudioClip::pitchShift (void) const
 {
 	return m_fPitchShift;
+}
+
+
+// Alternate overlap tag.
+unsigned int qtractorAudioClip::overlap (void) const
+{
+	return m_iOverlap;
+}
+
+
+// Alternating overlap test.
+bool qtractorAudioClip::isOverlap ( unsigned int iBufferSize ) const
+{
+	if (m_pData == NULL)
+		return false;
+
+	unsigned long iClipStart = clipStart();
+	unsigned long iClipEnd = iClipStart + clipLength() + iBufferSize;
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorAudioClip *pClip = iter.next();
+		unsigned long iClipStart2 = pClip->clipStart();
+		unsigned long iClipEnd2 = iClipStart2 + pClip->clipLength() + iBufferSize;
+		if ((iClipStart >= iClipStart2 && iClipEnd2 >  iClipStart) ||
+			(iClipEnd   >  iClipStart2 && iClipEnd2 >= iClipEnd))
+			return true;
+	}
+
+	return false;
 }
 
 
@@ -235,23 +274,16 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pData = g_hashTable.value(*m_pKey, NULL);
 		if (m_pData) {
 			// Check if current clip overlaps any other...
-			bool bOverlap = false;
-			unsigned long iClipStart = clipStart();
-			unsigned long iClipEnd = iClipStart + clipLength();
-			QListIterator<qtractorAudioClip *> iter(m_pData->clips());
-			while (iter.hasNext() && !bOverlap) {
-				qtractorAudioClip *pClip = iter.next();
-				unsigned long iClipStart2 = pClip->clipStart();
-				unsigned long iClipEnd2 = iClipStart2 + pClip->clipLength();
-				if ((iClipStart >= iClipStart2 && iClipEnd2 >  iClipStart) ||
-					(iClipEnd   >  iClipStart2 && iClipEnd2 >= iClipEnd))
-					bOverlap = true;
+			unsigned int iBufferSize = pSession->audioEngine()->bufferSize();
+			bool bOverlap = isOverlap(iBufferSize);
+			while (bOverlap) {
+				++m_iOverlap;
+				m_pKey->update(this);
+				m_pData = g_hashTable.value(*m_pKey, NULL);
+				bOverlap = isOverlap(iBufferSize);
 			}
 			// Only if it doesn't overlap any...
-			if (bOverlap) {
-				delete m_pKey;
-				m_pKey = NULL;
-			} else {
+			if (m_pData && !bOverlap) {
 				m_pData->attach(this);
 				// Peak files should also be created on-the-fly...
 				qtractorAudioBuffer *pBuff = m_pData->buffer();
