@@ -4,25 +4,25 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="706"/>
+        <location filename="../qtractorAudioClip.cpp" line="757"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation type="unfinished">音声:	%1 チャンネル、%2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="711"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source> (%1 dB)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="714"/>
+        <location filename="../qtractorAudioClip.cpp" line="765"/>
         <source>
 	(%1% time stretch)</source>
         <translation type="unfinished">
 	(%1% タイムストレッチ)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="717"/>
+        <location filename="../qtractorAudioClip.cpp" line="768"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation type="unfinished">
