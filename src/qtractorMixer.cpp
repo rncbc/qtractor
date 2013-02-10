@@ -860,7 +860,7 @@ void qtractorMixerStrip::panningChangedSlot ( float fPanning )
 	if (m_pMeter == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMixerStrip[%p]::panningChangedSlot(%g)", this, fPanning);
 #endif
 
@@ -885,7 +885,7 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 	if (m_pMeter == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMixerStrip[%p]::gainChangedSlot(%g)", this, fGain);
 #endif
 

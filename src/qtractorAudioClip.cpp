@@ -204,18 +204,19 @@ unsigned int qtractorAudioClip::overlap (void) const
 
 
 // Alternating overlap test.
-bool qtractorAudioClip::isOverlap ( unsigned int iBufferSize ) const
+bool qtractorAudioClip::isOverlap ( unsigned int iOverlapSize ) const
 {
 	if (m_pData == NULL)
 		return false;
 
 	unsigned long iClipStart = clipStart();
-	unsigned long iClipEnd = iClipStart + clipLength() + iBufferSize;
+	unsigned long iClipEnd = iClipStart + clipLength() + iOverlapSize;
+
 	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
 		qtractorAudioClip *pClip = iter.next();
 		unsigned long iClipStart2 = pClip->clipStart();
-		unsigned long iClipEnd2 = iClipStart2 + pClip->clipLength() + iBufferSize;
+		unsigned long iClipEnd2 = iClipStart2 + pClip->clipLength() + iOverlapSize;
 		if ((iClipStart >= iClipStart2 && iClipEnd2 >  iClipStart) ||
 			(iClipEnd   >  iClipStart2 && iClipEnd2 >= iClipEnd))
 			return true;
@@ -274,13 +275,14 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pData = g_hashTable.value(*m_pKey, NULL);
 		if (m_pData) {
 			// Check if current clip overlaps any other...
-			unsigned int iBufferSize = pSession->audioEngine()->bufferSize();
-			bool bOverlap = isOverlap(iBufferSize);
+			unsigned int iOverlapSize
+				= pSession->audioEngine()->bufferSize() << 1;
+			bool bOverlap = isOverlap(iOverlapSize);
 			while (bOverlap) {
 				++m_iOverlap;
 				m_pKey->update(this);
 				m_pData = g_hashTable.value(*m_pKey, NULL);
-				bOverlap = isOverlap(iBufferSize);
+				bOverlap = isOverlap(iOverlapSize);
 			}
 			// Only if it doesn't overlap any...
 			if (m_pData && !bOverlap) {

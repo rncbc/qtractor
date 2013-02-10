@@ -193,7 +193,7 @@ protected:
 	void closeAudioFile();
 
 	// Alternating overlap test.
-	bool isOverlap(unsigned int iBufferSize) const;
+	bool isOverlap(unsigned int iOverlapSize) const;
 
 private:
 
