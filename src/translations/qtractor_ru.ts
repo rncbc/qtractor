@@ -315,25 +315,25 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="757"/>
+        <location filename="../qtractorAudioClip.cpp" line="740"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Звук:	каналов: %1, %2 Гц</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="762"/>
+        <location filename="../qtractorAudioClip.cpp" line="745"/>
         <source> (%1 dB)</source>
         <translation> (%1 Дб)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="765"/>
+        <location filename="../qtractorAudioClip.cpp" line="748"/>
         <source>
 	(%1% time stretch)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="768"/>
+        <location filename="../qtractorAudioClip.cpp" line="751"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation type="unfinished"></translation>
@@ -638,69 +638,69 @@ MIDI:	</translation>
         <translation>Такт</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="161"/>
+        <location filename="../qtractorTrackCommand.cpp" line="171"/>
         <source>add track</source>
         <translation>добавление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="184"/>
+        <location filename="../qtractorTrackCommand.cpp" line="194"/>
         <source>remove track</source>
         <translation>удаление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="208"/>
+        <location filename="../qtractorTrackCommand.cpp" line="218"/>
         <source>move track</source>
         <translation>перемещение дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="282"/>
+        <location filename="../qtractorTrackCommand.cpp" line="292"/>
         <source>resize track</source>
         <translation>смена размера дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="316"/>
+        <location filename="../qtractorTrackCommand.cpp" line="326"/>
         <source>import track</source>
         <translation>импорт дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="397"/>
+        <location filename="../qtractorTrackCommand.cpp" line="407"/>
         <source>track properties</source>
         <translation>свойства дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="445"/>
+        <location filename="../qtractorTrackCommand.cpp" line="455"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="519"/>
+        <location filename="../qtractorTrackCommand.cpp" line="534"/>
         <source>track record</source>
         <translation>запись дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="522"/>
+        <location filename="../qtractorTrackCommand.cpp" line="537"/>
         <source>track mute</source>
         <translation>приглушение дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="525"/>
+        <location filename="../qtractorTrackCommand.cpp" line="540"/>
         <source>track solo</source>
         <translation>солирование дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="694"/>
+        <location filename="../qtractorTrackCommand.cpp" line="709"/>
         <source>track monitor</source>
         <translation>мониторинг дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="793"/>
+        <location filename="../qtractorTrackCommand.cpp" line="808"/>
         <source>track gain</source>
         <translation>усиление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="883"/>
+        <location filename="../qtractorTrackCommand.cpp" line="898"/>
         <source>track pan</source>
         <translation>панорама дорожки</translation>
     </message>

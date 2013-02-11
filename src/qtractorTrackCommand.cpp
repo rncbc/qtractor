@@ -85,6 +85,11 @@ bool qtractorTrackCommand::addTrack (void)
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
 
+	// (Re)open all clips...
+	qtractorClip *pClip = m_pTrack->clips().first();
+	for ( ; pClip; pClip = pClip->next())
+		pClip->open();
+
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
@@ -127,6 +132,11 @@ bool qtractorTrackCommand::removeTrack (void)
 	int iTrack = pTracks->trackList()->trackRow(m_pTrack);
 	if (iTrack < 0)
 		return false;
+
+	// Close all clips...
+	qtractorClip *pClip = m_pTrack->clips().last();
+	for ( ; pClip; pClip = pClip->prev())
+		pClip->close();
 
 	// Second, remove from session...
 	pSession->unlinkTrack(m_pTrack);
@@ -464,8 +474,13 @@ bool qtractorEditTrackCommand::redo (void)
 	pTracks->trackList()->updateTrack(m_pTrack);
 
 	// Special MIDI track cases...
-	if (m_pTrack->trackType() == qtractorTrack::Midi)
+	if (m_pTrack->trackType() == qtractorTrack::Midi) {
 	    pTracks->updateMidiTrack(m_pTrack);
+		// Re-open all MIDI clips (channel might have changed?)...
+		qtractorClip *pClip = m_pTrack->clips().first();
+		for ( ; pClip; pClip = pClip->next())
+			pClip->open();
+	}
 
 	// Finally update any outstanding clip editors...
 	m_pTrack->updateClipEditors();
