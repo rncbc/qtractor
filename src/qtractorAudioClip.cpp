@@ -276,7 +276,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		if (m_pData) {
 			// Check if current clip overlaps any other...
 			unsigned int iOverlapSize
-				= pSession->audioEngine()->bufferSize() << 1;
+				= pSession->audioEngine()->bufferSize() << 2;
 			bool bOverlap = isOverlap(iOverlapSize);
 			while (bOverlap) {
 				++m_iOverlap;

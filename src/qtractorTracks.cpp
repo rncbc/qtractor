@@ -2351,12 +2351,12 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 		}
 	}
 
+#if 0
 	// Re-open all MIDI clips (channel might have changed?)...
 	qtractorClip *pClip = pMidiTrack->clips().first();
-	while (pClip) {
+	for ( ; pClip; pClip = pClip->next())
 		pClip->open();
-		pClip = pClip->next();
-	}
+#endif
 
 	// Update MIDI bus patch...
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
