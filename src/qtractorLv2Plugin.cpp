@@ -3053,6 +3053,11 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 // Save current plugin state as a named preset.
 bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 {
+	qtractorLv2PluginType *pLv2Type
+		= static_cast<qtractorLv2PluginType *> (type());
+	if (pLv2Type == NULL)
+		return false;
+
 	LilvState *state = lilv_state_new_from_instance(
 		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
 		NULL, NULL, NULL, NULL,
@@ -3073,7 +3078,7 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 		sDir = pOptions->sLv2PresetDir;
 	if (sDir.isEmpty())
 		sDir = QDir::homePath() + sep + sDotLv2;
-	sDir += sep + sPreset + sDotLv2;
+	sDir += sep + pLv2Type->label() + '_' + sPreset + sDotLv2;
 
 	const QString& sFile = sPreset + ".ttl";
 
