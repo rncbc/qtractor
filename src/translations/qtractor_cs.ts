@@ -697,22 +697,22 @@ Délka:	%4</translation>
         <translation>Vyvážení sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="409"/>
+        <location filename="../qtractorInstrument.cpp" line="410"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Soubor s Cakewalk definicí nástroje</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="419"/>
+        <location filename="../qtractorInstrument.cpp" line="420"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="421"/>
+        <location filename="../qtractorInstrument.cpp" line="422"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="643"/>
+        <location filename="../qtractorInstrument.cpp" line="644"/>
         <source>%1 Bank %2</source>
         <translation>%1 Banka %2</translation>
     </message>
