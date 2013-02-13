@@ -237,22 +237,22 @@ Offs. / Len.:	%3 / %4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="409"/>
+        <location filename="../qtractorInstrument.cpp" line="410"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation type="unfinished">Cakewalkのインストルメント定義ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="419"/>
+        <location filename="../qtractorInstrument.cpp" line="420"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="421"/>
+        <location filename="../qtractorInstrument.cpp" line="422"/>
         <source>Date</source>
         <translation type="unfinished">日付</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="643"/>
+        <location filename="../qtractorInstrument.cpp" line="644"/>
         <source>%1 Bank %2</source>
         <translation type="unfinished">%1 バンク %2</translation>
     </message>

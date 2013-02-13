@@ -30,6 +30,7 @@
 #include <QDomDocument>
 
 #include <stdlib.h>
+#include <stdint.h>
 
 
 //----------------------------------------------------------------------

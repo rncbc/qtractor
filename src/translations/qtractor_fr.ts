@@ -238,22 +238,22 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>Sec / Mouillé</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="409"/>
+        <location filename="../qtractorInstrument.cpp" line="410"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Fichier de définition d&apos;instrument Cakewalk</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="419"/>
+        <location filename="../qtractorInstrument.cpp" line="420"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="421"/>
+        <location filename="../qtractorInstrument.cpp" line="422"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="643"/>
+        <location filename="../qtractorInstrument.cpp" line="644"/>
         <source>%1 Bank %2</source>
         <translation>%1 Banque %2</translation>
     </message>
