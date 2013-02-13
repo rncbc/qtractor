@@ -275,6 +275,9 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QListWidget::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 //	QListWidget::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+	QListWidget::setFrameShape(QFrame::Panel);
+	QListWidget::setFrameShadow(QFrame::Sunken);
+
 	// Trap for help/tool-tips events.
 	QListWidget::viewport()->installEventFilter(this);
 

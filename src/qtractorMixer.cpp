@@ -482,7 +482,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 			SLOT(gainChangedSlot(float)));
 	}
 
-	QFrame::setFrameShape(QFrame::StyledPanel);
+	QFrame::setFrameShape(QFrame::Panel);
 	QFrame::setFrameShadow(QFrame::Raised);
 	QFrame::setFixedWidth(iFixedWidth);
 //	QFrame::setSizePolicy(
