@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,22 +45,21 @@
 
 // Constructor.
 qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
-	QWidget *pParent ) : QWidget(pParent)
+	QWidget *pParent ) : QFrame(pParent)
 {
 	m_pMeter = pMeter;
 	m_iLastY = 0;
 
-	QWidget::setMinimumWidth(16);
-//	QWidget::setBackgroundRole(QPalette::Mid);
+	QFrame::setFrameShape(QFrame::Panel);
+	QFrame::setFrameShadow(QFrame::Sunken);
 
-	const QFont& font = QWidget::font();
-	QWidget::setFont(QFont(font.family(), font.pointSize() - 2));
+	QFrame::setMinimumWidth(16);
+//	QFrame::setBackgroundRole(QPalette::Mid);
+
+	const QFont& font = QFrame::font();
+	QFrame::setFont(QFont(font.family(), font.pointSize() - 2));
 }
 
-// Default destructor.
-qtractorMeterScale::~qtractorMeterScale (void)
-{
-}
 
 // Meter accessor.
 qtractorMeter *qtractorMeterScale::meter (void) const

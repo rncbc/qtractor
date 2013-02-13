@@ -1,7 +1,7 @@
 // qtractorMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
 #ifndef __qtractorMeter_h
 #define __qtractorMeter_h
 
-#include <QWidget>
+#include <QFrame>
 
 
 // Forward declarations.
@@ -50,7 +50,7 @@ class QResizeEvent;
 //----------------------------------------------------------------------------
 // qtractorMeterScale -- Meter bridge scale widget.
 
-class qtractorMeterScale : public QWidget
+class qtractorMeterScale : public QFrame
 {
 	Q_OBJECT
 
@@ -58,9 +58,6 @@ public:
 
 	// Constructor.
 	qtractorMeterScale(qtractorMeter *pMeter, QWidget *pParent = 0);
-
-	// Default destructor.
-	~qtractorMeterScale();
 
 	// Meter accessor.
 	qtractorMeter *meter() const;
@@ -97,6 +94,7 @@ public:
 
 	// Constructor.
 	qtractorMeter(QWidget *pParent = 0);
+
 	// Default destructor.
 	virtual ~qtractorMeter();
 
