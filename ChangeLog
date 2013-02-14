@@ -5,8 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- LV2 Plugin State/Preset name discrimination fix (after ticket by
-  Jiri Prochaszka aka. Anchakor, thanks:) (TESTING)
+- LV2 Plugin State/Preset name discrimination fix (after a ticket
+  by Jiri Prochaszka aka. Anchakor, thanks:) (TESTING)
 
 - Linked/ref-counted audio clips must not overlap and now must have
   a buffer-size worth of a gap between each other. (EXPERIMENTAL)

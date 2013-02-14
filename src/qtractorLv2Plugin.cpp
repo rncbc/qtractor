@@ -3078,7 +3078,9 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 		sDir = pOptions->sLv2PresetDir;
 	if (sDir.isEmpty())
 		sDir = QDir::homePath() + sep + sDotLv2;
-	sDir += sep + pLv2Type->label() + '_' + sPreset + sDotLv2;
+	sDir += sep + pLv2Type->label();
+	sDir += '_' + QString::number(pLv2Type->uniqueID(), 16);
+	sDir += '-' + sPreset + sDotLv2;
 
 	const QString& sFile = sPreset + ".ttl";
 
