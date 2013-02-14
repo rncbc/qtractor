@@ -1772,7 +1772,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
 			qtractorLv2Time& member = g_lv2_time[i];
 			if (member.node) {
-				LilvPort *port = lilv_plugin_get_port_by_designation(
+				const LilvPort *port = lilv_plugin_get_port_by_designation(
 					plugin, g_lv2_input_class, member.node);
 				if (port) {
 					unsigned long index = lilv_port_get_index(plugin, port);
