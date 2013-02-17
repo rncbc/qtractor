@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Reinstated and fixed (old) warning and impending re-conversion on
+  loading session files which the original sample-rate differs from
+  current audio device engine (aka. JACK).
+
 - LV2 Plugin State/Preset name discrimination fix (after a ticket
   by Jiri Prochaszka aka. Anchakor, thanks:) (TESTING)
 
@@ -123,7 +127,7 @@ SVN TRUNK
   in effect as default global option for new MIDI tracks, now fixed,
   hopefully (thanks to danboid aka. Daniel MacDonald persistence).
 
-- An immediate  Files widget cleanup option is now made available, as
+- An immediate Files widget cleanup option is now made available, as
   to select and remove all unused file entries.
 
 - MIDI track (un)solo/mute reset clip event sequence fixing; definite

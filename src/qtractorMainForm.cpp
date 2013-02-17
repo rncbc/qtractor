@@ -5448,31 +5448,12 @@ bool qtractorMainForm::startSession (void)
 
 	m_iPlayerTimer = 0;
 
-	unsigned int iOldSampleRate = m_pSession->sampleRate();
-
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	bool bResult = m_pSession->init();
 	QApplication::restoreOverrideCursor();
 
 	if (bResult) {
 		appendMessages(tr("Session started."));
-		// HACK: Special treatment for disparate sample rates,
-		// and only for (just loaded) non empty sessions...
-		if (m_pSession->sampleRate() != iOldSampleRate
-			&& m_pSession->sessionEnd() > 0) {
-			appendMessagesError(
-				tr("The original session sample rate (%1 Hz)\n"
-				"is not the same of the current audio engine (%2 Hz).\n\n"
-				"Saving and reloading from a new session file\n"
-				"is highly recommended.")
-				.arg(iOldSampleRate)
-				.arg(m_pSession->sampleRate()));
-			// We'll doing the conversion right here and right now...
-			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-			m_pSession->updateSampleRate(iOldSampleRate);
-			QApplication::restoreOverrideCursor();
-			++m_iDirtyCount;
-		}
 	} else {
 		// Uh-oh, we can't go on like this...
 		appendMessagesError(
@@ -5562,6 +5543,25 @@ void qtractorMainForm::updateSessionPost (void)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	m_pSession->open();
 	QApplication::restoreOverrideCursor();
+
+	// HACK: Special treatment for disparate sample rates,
+	// and only for (just loaded) non empty sessions...
+	unsigned int iSampleRate = m_pSession->audioEngine()->sampleRate();
+
+	if (m_pSession->sampleRate() != iSampleRate) {
+		appendMessagesError(
+			tr("The original session sample rate (%1 Hz)\n"
+			"is not the same of the current audio engine (%2 Hz).\n\n"
+			"Saving and reloading from a new session file\n"
+			"is highly recommended.")
+			.arg(m_pSession->sampleRate())
+			.arg(iSampleRate));
+		// We'll doing the conversion right here and right now...
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		m_pSession->updateSampleRate(iSampleRate);
+		QApplication::restoreOverrideCursor();
+		++m_iDirtyCount;
+	}
 
 	// Update the session views...
 	viewRefresh();

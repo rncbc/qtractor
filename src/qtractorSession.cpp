@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -788,9 +788,9 @@ void qtractorSession::updateTimeResolution (void)
 
 
 // Update from disparate sample-rate.
-void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate ) 
+void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 {
-	if (iOldSampleRate == m_props.timeScale.sampleRate())
+	if (iSampleRate == m_props.timeScale.sampleRate())
 		return;
 
 	// Unfortunatelly we must close all clips first,
@@ -803,13 +803,16 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 		}
 	}
 
-	// Give it some room to just that...
+	// Set the conversion ratio...
+	float fRatio = float(m_props.timeScale.sampleRate()) / float(iSampleRate);
+
+	// Set actual sample-rate...
+	m_props.timeScale.setSampleRate(iSampleRate);
+
+	// Give it some room for just that...
 	stabilize();
 	updateTimeScale();
 	stabilize();
-
-	// Set the conversion ratio...
-	float fRatio = float(m_props.timeScale.sampleRate()) / float(iOldSampleRate);
 
 	// Adjust all tracks and clips (reopening all those...)
 	for (qtractorTrack *pTrack = m_tracks.first();
