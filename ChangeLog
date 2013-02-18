@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Improved precision tolerance on the Tempo Map / Markers dialog.
+
 - Reinstated and fixed (old) warning and impending re-conversion on
   loading session files which the original sample-rate differs from
   current audio device engine (aka. JACK).
