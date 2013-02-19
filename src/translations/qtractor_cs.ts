@@ -3590,12 +3590,12 @@ až při příštím spuštění %1.</translation>
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5458"/>
+        <location filename="../qtractorMainForm.cpp" line="5456"/>
         <source>Session started.</source>
         <translation>Sezení začalo.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5464"/>
+        <location filename="../qtractorMainForm.cpp" line="5553"/>
         <source>The original session sample rate (%1 Hz)
 is not the same of the current audio engine (%2 Hz).
 
@@ -3608,7 +3608,7 @@ Velmi se doporučuje uložit sezení
 a znovu nahrát z nového souboru sezení.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5479"/>
+        <location filename="../qtractorMainForm.cpp" line="5460"/>
         <source>The audio/MIDI engine could not be started.
 
 Make sure the JACK audio server (jackd) and/or
@@ -12209,9 +12209,8 @@ Chcete použít tyto změny?</translation>
         <translation type="obsolete">Zobrazení tempa - Qtractor</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="59"/>
         <source>Tempo map</source>
-        <translation>Zobrazení tempa</translation>
+        <translation type="obsolete">Zobrazení tempa</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="72"/>
@@ -12245,6 +12244,11 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="37"/>
         <source>Tempo Map / Markers - Qtractor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="59"/>
+        <source>Tempo map / Markers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12329,7 +12333,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="338"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="884"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="885"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
     </message>
@@ -12345,7 +12349,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="354"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="889"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="890"/>
         <source>&amp;Update</source>
         <translation>&amp;Obnovit</translation>
     </message>
@@ -12361,7 +12365,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="370"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="894"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="895"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
@@ -12381,14 +12385,14 @@ Chcete použít tyto změny?</translation>
         <translation>Zavřít</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="443"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="657"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="808"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="444"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="658"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="809"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="444"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="445"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12397,7 +12401,7 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="658"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="659"/>
         <source>About to remove tempo node:
 
 %1 (%2) %3  %4/%5
@@ -12410,7 +12414,7 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="809"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="810"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -12419,7 +12423,7 @@ Do you want to discard the changes?</source>
 Chcete zahodit tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="901"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="902"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Obnovit</translation>
     </message>

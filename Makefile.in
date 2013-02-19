@@ -277,7 +277,7 @@ export datarootdir = @datarootdir@
 export localedir = @localedir@
 
 
-all:	$(target) $(translations_targets)
+all:	$(target)
 
 
 $(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
@@ -286,14 +286,17 @@ $(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
 $(name).mak:	$(name).pro
 	@$(qmake) -o $(name).mak $(name).pro
 
-$(translation_targets):	$(name).pro
+
+translations_lupdate:	$(name).pro
 	@$(lupdate) -verbose $(name).pro
+
+translations_lrelease:	translations_lupdate $(translations_targets)
 
 %.qm:	%.ts
 	@$(lrelease) -verbose $< -qm $@
 
 
-install:	$(target) $(translations_targets)
+install:	$(target) translations_lrelease
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
 	@install -d -v -m 0755 $(DESTDIR)$(localedir)
 	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(localedir)

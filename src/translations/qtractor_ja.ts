@@ -5402,12 +5402,12 @@ next time you start this %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5458"/>
+        <location filename="../qtractorMainForm.cpp" line="5456"/>
         <source>Session started.</source>
         <translation type="unfinished">セッションは開始しました。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5464"/>
+        <location filename="../qtractorMainForm.cpp" line="5553"/>
         <source>The original session sample rate (%1 Hz)
 is not the same of the current audio engine (%2 Hz).
 
@@ -5419,7 +5419,7 @@ is highly recommended.</source>
 セッションを保存し、再度起動することをおすすめします。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5479"/>
+        <location filename="../qtractorMainForm.cpp" line="5460"/>
         <source>The audio/MIDI engine could not be started.
 
 Make sure the JACK audio server (jackd) and/or
@@ -11081,9 +11081,8 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">テンポマップ - QTractor</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="59"/>
         <source>Tempo map</source>
-        <translation type="unfinished">テンポマップ</translation>
+        <translation type="obsolete">テンポマップ</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="72"/>
@@ -11117,6 +11116,11 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="37"/>
         <source>Tempo Map / Markers - Qtractor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="59"/>
+        <source>Tempo map / Markers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11201,7 +11205,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="338"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="884"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="885"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
     </message>
@@ -11217,7 +11221,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="354"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="889"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="890"/>
         <source>&amp;Update</source>
         <translation>アップデート(&amp;U)</translation>
     </message>
@@ -11233,7 +11237,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="370"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="894"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="895"/>
         <source>&amp;Remove</source>
         <translation>削除(&amp;R)</translation>
     </message>
@@ -11253,14 +11257,14 @@ Do you want to apply the changes?</source>
         <translation>閉じる</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="443"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="657"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="808"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="444"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="658"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="809"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="444"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="445"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11269,7 +11273,7 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="658"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="659"/>
         <source>About to remove tempo node:
 
 %1 (%2) %3  %4/%5
@@ -11282,7 +11286,7 @@ Are you sure?</source>
 よろしいですか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="809"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="810"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -11291,7 +11295,7 @@ Do you want to discard the changes?</source>
 この変更を破棄しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="901"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="902"/>
         <source>&amp;Refresh</source>
         <translation>更新(&amp;R)</translation>
     </message>
