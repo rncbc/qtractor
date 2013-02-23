@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.7.28, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.7.29, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -129,15 +129,10 @@ AC_ARG_ENABLE(lv2-worker,
   [ac_lv2_worker="$enableval"],
   [ac_lv2_worker="yes"])
 
-AC_ARG_ENABLE(lv2-gtk-ui,
-  AC_HELP_STRING([--enable-lv2-gtk-ui], [enable LV2 plug-in GTK UI support (default=yes)]),
-  [ac_lv2_gtk_ui="$enableval"],
-  [ac_lv2_gtk_ui="yes"])
-
-AC_ARG_ENABLE(lv2-qt4-ui,
-  AC_HELP_STRING([--enable-lv2-qt4-ui], [enable LV2 plug-in QT4 UI support (default=yes)]),
-  [ac_lv2_qt4_ui="$enableval"],
-  [ac_lv2_qt4_ui="yes"])
+AC_ARG_ENABLE(lv2-ui,
+  AC_HELP_STRING([--enable-lv2-ui], [enable LV2 plug-in UI support (default=yes)]),
+  [ac_lv2_ui="$enableval"],
+  [ac_lv2_ui="yes"])
 
 AC_ARG_ENABLE(lv2-external-ui,
   AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in External UI support (default=yes)]),
@@ -607,6 +602,12 @@ else
    ac_suil="no"
 fi
 
+# Check for LV2 support.
+if test "x$ac_lv2_ui" = "xno"; then
+   ac_suil="no"
+   ac_lv2_external_ui="no"
+fi
+
 # Check for LV2 new UI instantiation availability (libsuil).
 if test "x$ac_suil" = "xyes"; then
    AC_CHECK_LIB(suil-0, main, [ac_suil="yes"], [ac_suil="no"])
@@ -619,24 +620,18 @@ if test "x$ac_suil" = "xyes"; then
    else
       AC_MSG_WARN([*** suil library not found.])
       ac_suil="no"
-      ac_lv2_gtk_ui="no"
-      ac_lv2_qt4_ui="no"
+      ac_lv2_ui="no"
       ac_lv2_external_ui="no"
    fi
-elif test "x$ac_lilv" = "xyes"; then
-  ac_lv2_gtk_ui="no"
-  ac_lv2_qt4_ui="no"
-  ac_lv2_external_ui="no"
 fi
 
 # Check for LV2 host library (liblilv).
 if test "x$ac_lilv" = "xno"; then
    ac_lv2="no"
+   ac_lv2_ui="no"
    ac_lv2_event="no"
    ac_lv2_atom="no"
    ac_lv2_worker="no"
-   ac_lv2_gtk_ui="no"
-   ac_lv2_qt4_ui="no"
    ac_lv2_external_ui="no"
    ac_lv2_state="no"
    ac_lv2_state_files="no"
@@ -881,11 +876,10 @@ if test "x$ac_lv2" = "xyes"; then
    else
       AC_MSG_WARN([*** LV2 header files not found.])
       AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
+      ac_lv2_ui="no"
       ac_lv2_event="no"
       ac_lv2_atom="no"
       ac_lv2_worker="no"
-      ac_lv2_gtk_ui="no"
-      ac_lv2_qt4_ui="no"
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
       ac_lv2_state_files="no"
@@ -895,6 +889,19 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
    fi
+fi
+if test "x$ac_lv2_ui" = "xyes"; then
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/extensions/ui/ui.h,
+      [ac_lv2_ui="yes"], [ac_lv2_ui="no"])
+   if test "x$ac_lv2_ui" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI, 1, [Define if LV2 UI support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI support will be disabled.])
+      ac_lv2_external_ui="no"
+   fi
+else
+   ac_lv2_external_ui="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(
@@ -929,23 +936,6 @@ if test "x$ac_lv2_worker" = "xyes"; then
    else
       AC_MSG_WARN([*** LV2 Worker/Schedule support will be disabled.])
    fi
-fi
-if test "x$ac_lv2_qt4_ui" = "xyes"; then
-   AC_DEFINE(CONFIG_LV2_QT4_UI, 1, [Define if LV2 QT4 UI support is available.])
-fi
-if test "x$ac_lv2_gtk_ui" = "xyes" -a "x$ac_suil" = "xno"; then
-   ac_gtk_cflags=`$ac_pkg_config --cflags gtk+-2.0 2>/dev/null`
-   ac_gtk_libs=`$ac_pkg_config --libs gtk+-2.0 2>/dev/null`
-   if test -n "$ac_gtk_cflags" -a -n "$ac_gtk_libs"; then
-      ac_cflags="$ac_cflags $ac_gtk_cflags"
-      ac_libs="$ac_libs $ac_gtk_libs"
-   else
-      AC_MSG_WARN([*** LV2 GTK UI support will be disabled.])
-      ac_lv2_gtk_ui="no"
-   fi
-fi
-if test "x$ac_lv2_gtk_ui" = "xyes"; then
-   AC_DEFINE(CONFIG_LV2_GTK_UI, 1, [Define if LV2 GTK UI support is available.])
 fi
 if test "x$ac_lv2_external_ui" = "xyes"; then
    AC_CHECK_HEADER(lv2_external_ui.h, [ac_lv2_external_ui="yes"], [ac_lv2_external_ui="no"])
@@ -1098,9 +1088,8 @@ echo "  DSSI plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
 echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
-echo "  LV2 plug-in UI instantiation (libsuil) . . . . . .: $ac_suil"
-echo "  LV2 plug-in QT4 UI support . . . . . . . . . . . .: $ac_lv2_qt4_ui"
-echo "  LV2 plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
+echo "  LV2 plug-in UI support . . . . . . . . . . . . . .: $ac_lv2_ui"
+echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_suil"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
