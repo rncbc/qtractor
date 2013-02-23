@@ -56,10 +56,6 @@
 class qtractorLv2Worker;
 #endif
 
-#if defined(CONFIG_LV2_GTK_UI) || defined(CONFIG_LV2_QT4_UI) || defined(CONFIG_LV2_EXTERNAL_UI)
-#define CONFIG_LV2_UI 1
-#endif
-
 #ifdef CONFIG_LV2_UI
 // LV2 UI support.
 #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
@@ -398,12 +394,10 @@ private:
 #endif
 #endif
 
-#ifdef CONFIG_LV2_QT4_UI
 	// Our own Qt4 UI widget (native).
 	class EventFilter;
 	EventFilter *m_pQt4Filter;
 	QWidget     *m_pQt4Widget;
-#endif
 
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;

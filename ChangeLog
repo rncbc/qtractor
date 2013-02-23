@@ -5,15 +5,21 @@ ChangeLog
 
 SVN TRUNK
 
+- Basic LV2 X11 UI support has been added through libSUIL but only
+  really effective if plugins doesn't support the LV2 External UI
+  extension in addition which takes precedence on any case.
+
+- Improved precision tolerance on the Tempo Map / Markers dialog.
+
 - Reinstated and fixed (old) warning and impending re-conversion on
   loading session files which the original sample-rate differs from
   current audio device engine (aka. JACK).
 
 - LV2 Plugin State/Preset name discrimination fix (after a ticket
-  by Jiri Prochaszka aka. Anchakor, thanks:) (TESTING)
+  by Jiri Prochaszka aka. Anchakor, thanks:)
 
 - Linked/ref-counted audio clips must not overlap and now must have
-  a buffer-size worth of a gap between each other. (EXPERIMENTAL)
+  a buffer-size worth of a gap between each other.
 
 - Something fishy has been detected in the SSE (not so) optimized
   code from SoundTouch's-inspired WSOLA time-stretching.
@@ -51,7 +57,7 @@ SVN TRUNK
 - Fixed an immediate null pointer crash on creating a parentless new
   group while on the files organizer widget.
 
-- Preparations for Qt5 migration.
+- Preparations for future Qt5 migration.
 
 
 0.5.7  2012-12-27  Hotel Sierra

@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,6 +38,8 @@
 #include <QMenu>
 
 #include <QColorDialog>
+
+#include <math.h>
 
 #if QT_VERSION < 0x040200
 #define setForeground	setTextColor
@@ -215,7 +217,6 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	QObject::connect(m_ui.MarkerColorToolButton,
 		SIGNAL(clicked()),
 		SLOT(markerColor()));
-
 
 	QObject::connect(m_ui.RefreshPushButton,
 		SIGNAL(clicked()),
@@ -504,7 +505,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 			iFlags |= RemoveNode;
 	}
 	if (pNode
-		&& pNode->tempo == fTempo
+		&& ::fabs(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)
@@ -515,7 +516,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		iFlags &= ~AddNode;
 	if (pNode
 		&& (pNode = pNode->next())	// real assignment
-		&& pNode->tempo == fTempo
+		&& ::fabs(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)

@@ -1315,7 +1315,7 @@ void qtractorDssiPlugin::updateControlOuts ( bool bForce )
 	if (m_pDssiEditor && m_piControlOuts && m_pfControlOuts) {
 		unsigned long iControlOuts = type()->controlOuts();
 		for (unsigned long j = 0; j < iControlOuts; ++j) {
-		//	if (::fabs(m_pfControlOuts[j] - m_pfControlOutsLast[j]) > 1E-6f) {
+		//	if (::fabs(m_pfControlOuts[j] - m_pfControlOutsLast[j]) > 1e-6f) {
 			if (m_pfControlOutsLast[j] != m_pfControlOuts[j] || bForce) {
 				osc_send_control(m_pDssiEditor,
 					m_piControlOuts[j],
