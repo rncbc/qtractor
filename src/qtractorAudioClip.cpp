@@ -509,6 +509,9 @@ void qtractorAudioClip::setLoop (
 	if (pBuff == NULL)
 		return;
 
+	if (iLoopStart == 0 && iLoopEnd >= pBuff->length())
+		iLoopStart = iLoopEnd = 0;
+
 	if (iLoopStart == pBuff->loopStart() && iLoopEnd == pBuff->loopEnd())
 		return;
 
