@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -72,7 +72,7 @@ bool qtractorAudioBufferThread::runState (void) const
 
 
 // Wake from executive wait condition (RT-safe).
-void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
+void qtractorAudioBufferThread::syncBuffer ( qtractorAudioBuffer *pAudioBuffer )
 {
 	if (pAudioBuffer == NULL) {
 		unsigned int r = m_iSyncRead;
@@ -81,9 +81,9 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 			++r &= m_iSyncMask;
 		}
 		m_iSyncRead = r;
-	} else if (pAudioBuffer->isSyncFlag(qtractorAudioBuffer::WaitSync)) {
-		return;
-	} else {
+	}
+	else
+	if (!pAudioBuffer->isSyncFlag(qtractorAudioBuffer::WaitSync)) {
 		unsigned int n;
 		unsigned int w = m_iSyncWrite;
 		unsigned int r = m_iSyncRead;
@@ -373,7 +373,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 
 	// Make it sync-managed...
 	if (m_pSyncThread)
-		m_pSyncThread->sync(this);
+		m_pSyncThread->syncBuffer(this);
 	
 	return true;
 }
@@ -390,7 +390,7 @@ void qtractorAudioBuffer::close (void)
 		// Wait for regular file close...
 		if (m_pSyncThread) {
 			setSyncFlag(CloseSync);
-			m_pSyncThread->sync(this);
+			m_pSyncThread->syncBuffer(this);
 			do qtractorSession::stabilize();
 			while (isSyncFlag(CloseSync));
 		}
@@ -521,7 +521,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 	// Time to sync()?
 	if (!m_bIntegral &&
 		m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
-		m_pSyncThread->sync(this);
+		m_pSyncThread->syncBuffer(this);
 
 	return nread;
 }
@@ -596,7 +596,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 
 	// Time to sync()?
 	if (m_pSyncThread && m_pRingBuffer->readable() > m_iThreshold)
-		m_pSyncThread->sync(this);
+		m_pSyncThread->syncBuffer(this);
 
 	return nwrite;
 }
@@ -677,7 +677,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	// Time to sync()?
 	if (!m_bIntegral &&
 		m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
-		m_pSyncThread->sync(this);
+		m_pSyncThread->syncBuffer(this);
 
 	return nread;
 }
@@ -755,7 +755,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 
 	// readSync();
 	if (m_pSyncThread)
-		m_pSyncThread->sync(this);
+		m_pSyncThread->syncBuffer(this);
 
 	return true;
 }
@@ -1425,7 +1425,7 @@ void qtractorAudioBuffer::setLoop (
 	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
 	// Buffer-looping magic check!
-	if (iLoopStart < iLoopEnd && m_iLength >= iLoopEnd) {
+	if (iLoopStart < iLoopEnd) {
 		m_iLoopStart = iLoopStart;
 		m_iLoopEnd   = iLoopEnd;
 	} else {
