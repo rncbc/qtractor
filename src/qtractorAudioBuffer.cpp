@@ -106,7 +106,7 @@ void qtractorAudioBufferThread::syncBuffer ( qtractorAudioBuffer *pAudioBuffer )
 		m_mutex.unlock();
 	}
 #ifdef CONFIG_DEBUG_0
-	else qDebug("qtractorAudioBufferThread[%p]::sync(): tryLock() failed.", this);
+	else qDebug("qtractorAudioBufferThread[%p]::syncBuffer(): tryLock() failed.", this);
 #endif
 }
 
@@ -876,20 +876,22 @@ bool qtractorAudioBuffer::inSync (
 	if (!isSyncFlag(InitSync))
 		return false;
 
-	if (!isSyncFlag(ReadSync)) {
-	#ifdef CONFIG_DEBUG_0
-		qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",
-			this, iFrameStart, iFrameEnd,
-			(long) m_iReadOffset - (iFrameStart + m_iOffset));
-	#endif
-		if (m_iReadOffset == iFrameStart + m_iOffset) {
-			setSyncFlag(ReadSync);
-		} else {
-			seek(iFrameEnd);
-		}
+	if (isSyncFlag(ReadSync))
+		return true;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",
+		this, iFrameStart, iFrameEnd,
+		(long) m_iReadOffset - (iFrameStart + m_iOffset));
+#endif
+
+	if (m_iReadOffset == iFrameStart + m_iOffset) {
+		setSyncFlag(ReadSync);
+		return true;
 	}
 
-	return isSyncFlag(ReadSync);
+	seek(iFrameEnd);
+	return false;
 }
 
 
