@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio bus and track gain may now be set for amplification again,
+  from +0dB up to +6dB, while using the Mixer strip sliders/faders
+  (an old function found missing ever since pre-TYOQA).
+
 - Basic LV2 X11 UI support has been added through libSUIL but only
   really effective if plugins doesn't support the LV2 External UI
   extension in addition which takes precedence on any case.
