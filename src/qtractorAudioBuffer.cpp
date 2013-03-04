@@ -76,17 +76,19 @@ void qtractorAudioBufferThread::syncBuffer ( qtractorAudioBuffer *pAudioBuffer )
 {
 	if (pAudioBuffer == NULL) {
 		unsigned int r = m_iSyncRead;
-		while (r != m_iSyncWrite) {
+		unsigned int w = m_iSyncWrite;
+		while (r != w) {
 			m_ppSyncItems[r]->setSyncFlag(qtractorAudioBuffer::WaitSync, false);
 			++r &= m_iSyncMask;
+			w = m_iSyncWrite;
 		}
 		m_iSyncRead = r;
 	}
 	else
 	if (!pAudioBuffer->isSyncFlag(qtractorAudioBuffer::WaitSync)) {
 		unsigned int n;
-		unsigned int w = m_iSyncWrite;
 		unsigned int r = m_iSyncRead;
+		unsigned int w = m_iSyncWrite;
 		if (w > r) {
 			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
 		} else if (r > w) {
@@ -130,13 +132,14 @@ void qtractorAudioBufferThread::run (void)
 	m_bRunState = true;
 
 	m_mutex.lock();
+
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
-		//m_mutex.unlock();
 		process();
-		//m_mutex.lock();
+		// Wait for sync...
 		m_cond.wait(&m_mutex);
 	}
+
 	m_mutex.unlock();
 
 #ifdef CONFIG_DEBUG_0
@@ -149,10 +152,14 @@ void qtractorAudioBufferThread::run (void)
 void qtractorAudioBufferThread::process (void)
 {
 	unsigned int r = m_iSyncRead;
-	while (r != m_iSyncWrite) {
+	unsigned int w = m_iSyncWrite;
+
+	while (r != w) {
 		m_ppSyncItems[r]->sync();
 		++r &= m_iSyncMask;
+		w = m_iSyncWrite;
 	}
+
 	m_iSyncRead = r;
 }
 
@@ -843,10 +850,12 @@ bool qtractorAudioBuffer::initSync (void)
 // Base-mode sync executive.
 void qtractorAudioBuffer::sync (void)
 {
-	if (m_pFile == NULL)
+	if (!isSyncFlag(WaitSync))
 		return;
 
-	if (!isSyncFlag(WaitSync))
+	setSyncFlag(WaitSync, false);
+
+	if (m_pFile == NULL)
 		return;
 
 	if (isSyncFlag(CloseSync)) {
@@ -864,8 +873,6 @@ void qtractorAudioBuffer::sync (void)
 		if (mode & qtractorAudioFile::Write)
 			writeSync();
 	}
-
-	setSyncFlag(WaitSync, false);
 }
 
 
@@ -924,7 +931,7 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned int nahead = ws;
 	unsigned int ntotal = 0;
 
-	while (nahead > 0 && isSyncFlag(WaitSync) && !ATOMIC_GET(&m_seekPending)) {
+	while (nahead > 0 && !ATOMIC_GET(&m_seekPending)) {
 		// Take looping into account, if any...
 		unsigned long ls = m_iOffset + m_iLoopStart;
 		unsigned long le = m_iOffset + m_iLoopEnd;

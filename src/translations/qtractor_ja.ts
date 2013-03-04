@@ -30,13 +30,13 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2530"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4020"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4019"/>
         <source>%1 In</source>
         <translation type="unfinished">%1 入力</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2530"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4020"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4019"/>
         <source>%1 Out</source>
         <translation type="unfinished">%1 出力</translation>
     </message>
@@ -257,7 +257,7 @@ Offs. / Len.:	%3 / %4</source>
         <translation type="unfinished">%1 バンク %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1060"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1065"/>
         <source>%1 - Bank %2</source>
         <translation type="unfinished">%1 - バンク %2</translation>
     </message>

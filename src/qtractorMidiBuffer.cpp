@@ -142,14 +142,14 @@ void qtractorMidiManagerThread::run (void)
 		qDebug("qtractorMidiManagerThread[%p]::run(): waked.", this);
 #endif
 		// Call control process cycle.
-		//m_mutex.unlock();
 		unsigned int r = m_iSyncRead;
-		while (r != m_iSyncWrite) {
+		unsigned int w = m_iSyncWrite;
+		while (r != w) {
 			m_ppSyncItems[r]->processSync();
 			++r &= m_iSyncMask;
+			w = m_iSyncWrite;
 		}
 		m_iSyncRead = r;
-		//m_mutex.lock();
 	}
 	m_mutex.unlock();
 
@@ -164,17 +164,19 @@ void qtractorMidiManagerThread::sync ( qtractorMidiManager *pMidiManager )
 {
 	if (pMidiManager == NULL) {
 		unsigned int r = m_iSyncRead;
-		while (r != m_iSyncWrite) {
+		unsigned int w = m_iSyncWrite;
+		while (r != w) {
 			qtractorMidiManager *pSyncItem = m_ppSyncItems[r];
 			if (pSyncItem)
 				pSyncItem->setWaitSync(false);
 			++r &= m_iSyncMask;
+			w = m_iSyncWrite;
 		}
 		m_iSyncRead = r;
 	} else if (!pMidiManager->isWaitSync()) {
 		unsigned int n;
-		unsigned int w = m_iSyncWrite;
 		unsigned int r = m_iSyncRead;
+		unsigned int w = m_iSyncWrite;
 		if (w > r) {
 			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
 		} else if (r > w) {
@@ -557,6 +559,11 @@ void qtractorMidiManager::process (
 // Process buffers (in asynchronous controller thread).
 void qtractorMidiManager::processSync (void)
 {
+	if (!m_bWaitSync)
+		return;
+
+	m_bWaitSync = false;
+
 	// Check for programn change...
 	if (m_iPendingProg >= 0) {
 		m_iCurrentBank = 0;
@@ -598,8 +605,6 @@ void qtractorMidiManager::processSync (void)
 	}
 
 	m_controllerBuffer.clear();
-
-	setWaitSync(false);
 }
 
 
