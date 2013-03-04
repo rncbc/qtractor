@@ -350,17 +350,19 @@ void qtractorLv2WorkerThread::sync ( qtractorLv2Worker *pLv2Worker )
 {
 	if (pLv2Worker == NULL) {
 		unsigned int r = m_iSyncRead;
-		while (r != m_iSyncWrite) {
+		unsigned int w = m_iSyncWrite;
+		while (r != w) {
 			qtractorLv2Worker *pSyncItem = m_ppSyncItems[r];
 			if (pSyncItem)
 				pSyncItem->setWaitSync(false);
 			++r &= m_iSyncMask;
+			w = m_iSyncWrite;
 		}
 	//	m_iSyncRead = r;
 	} else if (!pLv2Worker->isWaitSync()) {
 		unsigned int n;
-		unsigned int w = m_iSyncWrite;
 		unsigned int r = m_iSyncRead;
+		unsigned int w = m_iSyncWrite;
 		if (w > r) {
 			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
 		} else if (r > w) {
@@ -394,18 +396,21 @@ void qtractorLv2WorkerThread::run (void)
 	m_bRunState = true;
 
 	m_mutex.lock();
+
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
-		//m_mutex.unlock();
 		unsigned int r = m_iSyncRead;
-		while (r != m_iSyncWrite) {
+		unsigned int w = m_iSyncWrite;
+		while (r != w) {
 			m_ppSyncItems[r]->process();
 			++r &= m_iSyncMask;
+			w = m_iSyncWrite;
 		}
 		m_iSyncRead = r;
-		//m_mutex.lock();
+		// Wait for sync...
 		m_cond.wait(&m_mutex);
 	}
+
 	m_mutex.unlock();
 
 #ifdef CONFIG_DEBUG_0
@@ -532,6 +537,8 @@ void qtractorLv2Worker::process (void)
 	if (!m_bWaitSync)
 		return;
 
+	m_bWaitSync = false;
+
 	const LV2_Worker_Interface *worker
 		= m_pLv2Plugin->lv2_worker_interface(0);
 	if (worker == NULL)
@@ -561,8 +568,6 @@ void qtractorLv2Worker::process (void)
 	}
 
 	if (buf) ::free(buf);
-
-	m_bWaitSync = false;
 }
 
 #endif	// CONFIG_LV2_WORKER

@@ -430,6 +430,7 @@ void qtractorMidiOutputThread::run (void)
 	m_bRunState = true;
 
 	m_mutex.lock();
+
 	while (m_bRunState) {
 		// Wait for sync...
 		m_cond.wait(&m_mutex);
@@ -437,12 +438,10 @@ void qtractorMidiOutputThread::run (void)
 		qDebug("qtractorMidiOutputThread[%p]::run(): waked.", this);
 #endif
 		// Only if playing, the output process cycle.
-		if (m_pMidiEngine->isPlaying()) {
-			//m_mutex.unlock();
+		if (m_pMidiEngine->isPlaying())
 			process();
-			//m_mutex.lock();
-		}
 	}
+
 	m_mutex.unlock();
 
 #ifdef CONFIG_DEBUG_0
