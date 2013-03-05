@@ -850,13 +850,13 @@ bool qtractorAudioBuffer::initSync (void)
 // Base-mode sync executive.
 void qtractorAudioBuffer::sync (void)
 {
+	if (m_pFile == NULL)
+		return;
+
 	if (!isSyncFlag(WaitSync))
 		return;
 
 	setSyncFlag(WaitSync, false);
-
-	if (m_pFile == NULL)
-		return;
 
 	if (isSyncFlag(CloseSync)) {
 		if (m_pFile->mode() & qtractorAudioFile::Write)
