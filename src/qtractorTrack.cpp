@@ -377,7 +377,7 @@ void qtractorTrack::clear (void)
 		if (m_pSyncThread->isRunning()) do {
 			m_pSyncThread->setRunState(false);
 		//	m_pSyncThread->terminate();
-			m_pSyncThread->syncBuffer();
+			m_pSyncThread->sync();
 		} while (!m_pSyncThread->wait(100));
 		delete m_pSyncThread;
 		m_pSyncThread = NULL;
