@@ -317,7 +317,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 {
 	m_pJackClient = NULL;
 
-	m_iSampleRate = 0;
+	m_iSampleRate = 44100;	// A sensible default, always.
 	m_iBufferSize = 0;
 
 	m_iBufferOffset = 0;
