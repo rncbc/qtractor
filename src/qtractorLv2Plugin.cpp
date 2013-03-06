@@ -2960,7 +2960,7 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 		member.value  = fValue;
 		QListIterator<qtractorLv2PluginParam *> iter(*member.params);
 		while (iter.hasNext())
-			iter.next()->updateValue(fValue, true);
+			iter.next()->setValue(fValue, true);
 	}
 }
 
