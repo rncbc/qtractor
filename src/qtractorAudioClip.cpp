@@ -356,9 +356,11 @@ void qtractorAudioClip::closeAudioFile (void)
 		if (m_pData->count() < 1) {
 			removeHashKey();
 			delete m_pData;
+		#if 0
 			// ATTN: If proven empty, remove the file...
 			if (clipLength() < 1)
 				QFile::remove(filename());
+		#endif
 		}
 		m_pData = NULL;
 		// Unregister file path...
