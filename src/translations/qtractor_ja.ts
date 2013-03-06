@@ -257,7 +257,7 @@ Offs. / Len.:	%3 / %4</source>
         <translation type="unfinished">%1 バンク %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1065"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1066"/>
         <source>%1 - Bank %2</source>
         <translation type="unfinished">%1 - バンク %2</translation>
     </message>

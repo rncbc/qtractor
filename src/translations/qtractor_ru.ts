@@ -442,7 +442,7 @@ Offset / Length:	%3 / %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1065"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1066"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Банк %2</translation>
     </message>

@@ -61,7 +61,7 @@ public:
 	bool runState() const;
 
 	// Wake from executive wait condition (RT-safe).
-	void syncBuffer(qtractorAudioBuffer *pAudioBuffer = NULL);
+	void sync(qtractorAudioBuffer *pAudioBuffer = NULL);
 
 	// Bypass executive wait condition (non RT-safe).
 	void syncExport();
