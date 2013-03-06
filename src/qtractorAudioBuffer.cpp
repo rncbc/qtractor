@@ -856,8 +856,6 @@ void qtractorAudioBuffer::sync (void)
 	if (!isSyncFlag(WaitSync))
 		return;
 
-	setSyncFlag(WaitSync, false);
-
 	if (isSyncFlag(CloseSync)) {
 		if (m_pFile->mode() & qtractorAudioFile::Write)
 			writeSync();
@@ -873,6 +871,8 @@ void qtractorAudioBuffer::sync (void)
 		if (mode & qtractorAudioFile::Write)
 			writeSync();
 	}
+
+	setSyncFlag(WaitSync, false);
 }
 
 
@@ -931,7 +931,7 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned int nahead = ws;
 	unsigned int ntotal = 0;
 
-	while (nahead > 0 && !ATOMIC_GET(&m_seekPending)) {
+	while (nahead > 0 && isSyncFlag(WaitSync) && !ATOMIC_GET(&m_seekPending)) {
 		// Take looping into account, if any...
 		unsigned long ls = m_iOffset + m_iLoopStart;
 		unsigned long le = m_iOffset + m_iLoopEnd;
