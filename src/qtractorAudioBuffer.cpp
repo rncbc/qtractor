@@ -757,7 +757,6 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	//	if (!seekSync(iFrame))
 	//		return false;
 	// Force (late) out-of-sync...
-	//	m_bReadSync = false;
 	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
 
 	m_iSeekOffset = iFrame;
@@ -796,11 +795,11 @@ void qtractorAudioBuffer::initSync (void)
 	// Initialization is only valid on read-only mode.
 	if (m_pFile == NULL)
 		return;
+
 	if (m_pFile->mode() & qtractorAudioFile::Write)
 		return;
 
 	// Reset all relevant state variables.
-	// m_bReadSync = false;
 	setSyncFlag(ReadSync, false);
 
 	m_iReadOffset  = 0;
@@ -847,30 +846,30 @@ void qtractorAudioBuffer::initSync (void)
 // Base-mode sync executive.
 void qtractorAudioBuffer::sync (void)
 {
-	if (m_pFile == NULL)
-		return;
+	if (!isSyncFlag(InitSync)) {
+		initSync();
+		setSyncFlag(WaitSync, false);
+	}
 
 	if (!isSyncFlag(WaitSync))
 		return;
 
 	setSyncFlag(WaitSync, false);
 
+	if (m_pFile == NULL)
+		return;
+
+	int mode = m_pFile->mode();
+	if (mode & qtractorAudioFile::Write)
+		writeSync();
+
 	if (isSyncFlag(CloseSync)) {
-		if (m_pFile->mode() & qtractorAudioFile::Write)
-			writeSync();
 		m_pFile->close();
 		setSyncFlag(CloseSync, false);
 	}
 	else
-	if (isSyncFlag(InitSync)) {
-		int mode = m_pFile->mode();
-		if (mode & qtractorAudioFile::Read)
-			readSync();
-		else
-		if (mode & qtractorAudioFile::Write)
-			writeSync();
-	}
-	else initSync();
+	if (mode & qtractorAudioFile::Read)
+		readSync();
 }
 
 
