@@ -175,7 +175,7 @@ public:
 
 	// Initial thread-sync executive (if file is on read mode,
 	// check whether it can be cache-loaded integrally).
-	bool initSync();
+	void initSync();
 
 	// Base sync method.
 	void sync();
