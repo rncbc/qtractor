@@ -846,6 +846,9 @@ void qtractorAudioBuffer::initSync (void)
 // Base-mode sync executive.
 void qtractorAudioBuffer::sync (void)
 {
+	if (m_pFile == NULL)
+		return;
+
 	if (!isSyncFlag(InitSync)) {
 		initSync();
 		setSyncFlag(WaitSync, false);
@@ -856,10 +859,11 @@ void qtractorAudioBuffer::sync (void)
 
 	setSyncFlag(WaitSync, false);
 
-	if (m_pFile == NULL)
-		return;
+	const int mode = m_pFile->mode();
 
-	int mode = m_pFile->mode();
+	if (mode & qtractorAudioFile::Read)
+		readSync();
+	else
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
 
@@ -867,9 +871,6 @@ void qtractorAudioBuffer::sync (void)
 		m_pFile->close();
 		setSyncFlag(CloseSync, false);
 	}
-	else
-	if (mode & qtractorAudioFile::Read)
-		readSync();
 }
 
 
@@ -909,6 +910,9 @@ void qtractorAudioBuffer::syncExport (void)
 // Read-mode sync executive.
 void qtractorAudioBuffer::readSync (void)
 {
+	if (isSyncFlag(CloseSync))
+		return;
+
 	// Check whether we have some hard-seek pending...
 	if (ATOMIC_TAZ(&m_seekPending)) {
 		// Do it...
@@ -928,7 +932,7 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned int nahead = ws;
 	unsigned int ntotal = 0;
 
-	while (nahead > 0 && !ATOMIC_GET(&m_seekPending) && !isSyncFlag(CloseSync)) {
+	while (nahead > 0 && !ATOMIC_GET(&m_seekPending)) {
 		// Take looping into account, if any...
 		unsigned long ls = m_iOffset + m_iLoopStart;
 		unsigned long le = m_iOffset + m_iLoopEnd;
@@ -988,7 +992,7 @@ void qtractorAudioBuffer::writeSync (void)
 	unsigned int nbehind = rs;
 	unsigned int ntotal  = 0;
 
-	while (nbehind > 0 && !isSyncFlag(CloseSync)) {
+	while (nbehind > 0) {
 		// Adjust request for sane size...
 		if (nbehind > m_iBufferSize)
 			nbehind = m_iBufferSize;
