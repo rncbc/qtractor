@@ -377,6 +377,10 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	}
 #endif
 
+	// Consider it done when recording...
+	if (m_pFile->mode() & qtractorAudioFile::Write)
+		setSyncFlag(InitSync);
+
 	// Make it sync-managed...
 	if (m_pSyncThread)
 		m_pSyncThread->sync(this);
@@ -784,19 +788,16 @@ bool qtractorAudioBuffer::isSyncFlag ( SyncFlag flag ) const
 
 // Initial thread-sync executive (if file is on read mode,
 // check whether it can be cache-loaded integrally).
-bool qtractorAudioBuffer::initSync (void)
+void qtractorAudioBuffer::initSync (void)
 {
 	if (m_pRingBuffer == NULL)
-		return false;
+		return;
 
 	// Initialization is only valid on read-only mode.
 	if (m_pFile == NULL)
-		return false;
+		return;
 	if (m_pFile->mode() & qtractorAudioFile::Write)
-		return false;
-
-	if (isSyncFlag(InitSync))
-		return false;
+		return;
 
 	// Reset all relevant state variables.
 	// m_bReadSync = false;
@@ -840,9 +841,6 @@ bool qtractorAudioBuffer::initSync (void)
 		// Initial buffer re-read in...
 		readSync();
 	}
-
-	// Done.
-	return isSyncFlag(InitSync);
 }
 
 
@@ -855,6 +853,8 @@ void qtractorAudioBuffer::sync (void)
 	if (!isSyncFlag(WaitSync))
 		return;
 
+	setSyncFlag(WaitSync, false);
+
 	if (isSyncFlag(CloseSync)) {
 		if (m_pFile->mode() & qtractorAudioFile::Write)
 			writeSync();
@@ -862,7 +862,7 @@ void qtractorAudioBuffer::sync (void)
 		setSyncFlag(CloseSync, false);
 	}
 	else
-	if (!initSync()) {
+	if (isSyncFlag(InitSync)) {
 		int mode = m_pFile->mode();
 		if (mode & qtractorAudioFile::Read)
 			readSync();
@@ -870,8 +870,7 @@ void qtractorAudioBuffer::sync (void)
 		if (mode & qtractorAudioFile::Write)
 			writeSync();
 	}
-
-	setSyncFlag(WaitSync, false);
+	else initSync();
 }
 
 
@@ -930,7 +929,7 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned int nahead = ws;
 	unsigned int ntotal = 0;
 
-	while (nahead > 0 && isSyncFlag(WaitSync) && !ATOMIC_GET(&m_seekPending)) {
+	while (nahead > 0 && !ATOMIC_GET(&m_seekPending) && !isSyncFlag(CloseSync)) {
 		// Take looping into account, if any...
 		unsigned long ls = m_iOffset + m_iLoopStart;
 		unsigned long le = m_iOffset + m_iLoopEnd;
@@ -990,7 +989,7 @@ void qtractorAudioBuffer::writeSync (void)
 	unsigned int nbehind = rs;
 	unsigned int ntotal  = 0;
 
-	while (nbehind > 0 && isSyncFlag(WaitSync)) {
+	while (nbehind > 0 && !isSyncFlag(CloseSync)) {
 		// Adjust request for sane size...
 		if (nbehind > m_iBufferSize)
 			nbehind = m_iBufferSize;
