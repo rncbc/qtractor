@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,7 +75,7 @@ private:
 	volatile unsigned int  m_iSyncWrite;
 
 	// Whether the thread is logically running.
-	bool m_bRunState;
+	volatile bool m_bRunState;
 
 	// Thread synchronization objects.
 	QMutex         m_mutex;
@@ -132,9 +132,10 @@ void qtractorMidiManagerThread::run (void)
 	qDebug("qtractorMidiManagerThread[%p]::run(): started...", this);
 #endif
 
+	m_mutex.lock();
+
 	m_bRunState = true;
 
-	m_mutex.lock();
 	while (m_bRunState) {
 		// Wait for sync...
 		m_cond.wait(&m_mutex);
@@ -151,6 +152,7 @@ void qtractorMidiManagerThread::run (void)
 		}
 		m_iSyncRead = r;
 	}
+
 	m_mutex.unlock();
 
 #ifdef CONFIG_DEBUG_0
@@ -187,8 +189,8 @@ void qtractorMidiManagerThread::sync ( qtractorMidiManager *pMidiManager )
 		}
 		if (n > 0) {
 			pMidiManager->setWaitSync(true);
-			m_ppSyncItems[m_iSyncWrite] = pMidiManager;
-			++m_iSyncWrite &= m_iSyncMask;
+			m_ppSyncItems[w] = pMidiManager;
+			m_iSyncWrite = (w + 1) & m_iSyncMask;
 		}
 	}
 
@@ -563,8 +565,6 @@ void qtractorMidiManager::processSync (void)
 	if (!m_bWaitSync)
 		return;
 
-	m_bWaitSync = false;
-
 	// Check for programn change...
 	if (m_iPendingProg >= 0) {
 		m_iCurrentBank = 0;
@@ -606,6 +606,8 @@ void qtractorMidiManager::processSync (void)
 	}
 
 	m_controllerBuffer.clear();
+
+	m_bWaitSync = false;
 }
 
 

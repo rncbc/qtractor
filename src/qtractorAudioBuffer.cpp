@@ -97,8 +97,8 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 		}
 		if (n > 0) {
 			pAudioBuffer->setSyncFlag(qtractorAudioBuffer::WaitSync);
-			m_ppSyncItems[m_iSyncWrite] = pAudioBuffer;
-			++m_iSyncWrite &= m_iSyncMask;
+			m_ppSyncItems[w] = pAudioBuffer;
+			m_iSyncWrite = (w + 1) & m_iSyncMask;
 		}
 	}
 
@@ -128,9 +128,9 @@ void qtractorAudioBufferThread::run (void)
 	qDebug("qtractorAudioBufferThread[%p]::run(): started.", this);
 #endif
 
-	m_bRunState = true;
-
 	m_mutex.lock();
+
+	m_bRunState = true;
 
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
@@ -849,28 +849,24 @@ void qtractorAudioBuffer::sync (void)
 	if (m_pFile == NULL)
 		return;
 
-	if (!isSyncFlag(InitSync)) {
-		initSync();
-		setSyncFlag(WaitSync, false);
-	}
-
 	if (!isSyncFlag(WaitSync))
 		return;
 
-	setSyncFlag(WaitSync, false);
-
-	const int mode = m_pFile->mode();
-
-	if (mode & qtractorAudioFile::Read)
-		readSync();
-	else
-	if (mode & qtractorAudioFile::Write)
-		writeSync();
-
-	if (isSyncFlag(CloseSync)) {
-		m_pFile->close();
-		setSyncFlag(CloseSync, false);
+	if (isSyncFlag(InitSync)) {
+		const int mode = m_pFile->mode();
+		if (mode & qtractorAudioFile::Read)
+			readSync();
+		else
+		if (mode & qtractorAudioFile::Write)
+			writeSync();
+		if (isSyncFlag(CloseSync)) {
+			m_pFile->close();
+			setSyncFlag(CloseSync, false);
+		}
 	}
+	else initSync();
+
+	setSyncFlag(WaitSync, false);
 }
 
 
@@ -932,7 +928,7 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned int nahead = ws;
 	unsigned int ntotal = 0;
 
-	while (nahead > 0 && !ATOMIC_GET(&m_seekPending)) {
+	while (nahead > 0 && isSyncFlag(WaitSync) && !ATOMIC_GET(&m_seekPending)) {
 		// Take looping into account, if any...
 		unsigned long ls = m_iOffset + m_iLoopStart;
 		unsigned long le = m_iOffset + m_iLoopEnd;
@@ -992,7 +988,7 @@ void qtractorAudioBuffer::writeSync (void)
 	unsigned int nbehind = rs;
 	unsigned int ntotal  = 0;
 
-	while (nbehind > 0) {
+	while (nbehind > 0 && isSyncFlag(WaitSync)) {
 		// Adjust request for sane size...
 		if (nbehind > m_iBufferSize)
 			nbehind = m_iBufferSize;
