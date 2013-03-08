@@ -81,6 +81,7 @@ HEADERS += config.h \
 	qtractorMonitor.h \
 	qtractorObserver.h \
 	qtractorObserverWidget.h \
+	qtractorOscControl.h \
 	qtractorOptions.h \
 	qtractorPlugin.h \
 	qtractorPluginCommand.h \
@@ -194,6 +195,7 @@ SOURCES += \
 	qtractorMmcEvent.cpp \
 	qtractorObserver.cpp \
 	qtractorObserverWidget.cpp \
+	qtractorOscControl.cpp \
 	qtractorOptions.cpp \
 	qtractorPlugin.cpp \
 	qtractorPluginCommand.cpp \
@@ -318,6 +320,8 @@ unix {
 # XML/DOM support
 QT += xml
 
+# OSC/UDP support
+QT += network
 
 # QT5 support
 !lessThan(QT_MAJOR_VERSION, 5) {
