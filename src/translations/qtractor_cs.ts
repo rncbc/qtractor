@@ -718,7 +718,7 @@ Délka:	%4</translation>
         <translation>%1 Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1068"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1067"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banka %2</translation>
     </message>
