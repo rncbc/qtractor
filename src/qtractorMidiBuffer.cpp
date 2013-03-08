@@ -175,8 +175,7 @@ void qtractorMidiManagerThread::sync ( qtractorMidiManager *pMidiManager )
 			w = m_iSyncWrite;
 		}
 		m_iSyncRead = r;
-	} else {
-		// !pMidiManager->isWaitSync())
+	} else if (!pMidiManager->isWaitSync()) {
 		unsigned int n;
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
