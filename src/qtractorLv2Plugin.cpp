@@ -303,7 +303,7 @@ private:
 	volatile unsigned int m_iSyncWrite;
 
 	// Whether the thread is logically running.
-	bool m_bRunState;
+	volatile bool m_bRunState;
 
 	// Thread synchronization objects.
 	QMutex m_mutex;
@@ -373,8 +373,8 @@ void qtractorLv2WorkerThread::sync ( qtractorLv2Worker *pLv2Worker )
 		}
 		if (n > 0) {
 			pLv2Worker->setWaitSync(true);
-			m_ppSyncItems[m_iSyncWrite] = pLv2Worker;
-			++m_iSyncWrite &= m_iSyncMask;
+			m_ppSyncItems[w] = pLv2Worker;
+			m_iSyncWrite = (w + 1) & m_iSyncMask;
 		}
 	}
 
@@ -394,9 +394,9 @@ void qtractorLv2WorkerThread::run (void)
 	qDebug("qtractorLv2WorkerThread[%p]::run(): started...", this);
 #endif
 
-	m_bRunState = true;
-
 	m_mutex.lock();
+
+	m_bRunState = true;
 
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
@@ -538,8 +538,6 @@ void qtractorLv2Worker::process (void)
 	if (!m_bWaitSync)
 		return;
 
-	m_bWaitSync = false;
-
 	const LV2_Worker_Interface *worker
 		= m_pLv2Plugin->lv2_worker_interface(0);
 	if (worker == NULL)
@@ -569,6 +567,8 @@ void qtractorLv2Worker::process (void)
 	}
 
 	if (buf) ::free(buf);
+
+	m_bWaitSync = false;
 }
 
 #endif	// CONFIG_LV2_WORKER

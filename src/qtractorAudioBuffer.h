@@ -83,7 +83,7 @@ private:
 	volatile unsigned int m_iSyncWrite;
 
 	// Whether the thread is logically running.
-	bool m_bRunState;
+	volatile bool m_bRunState;
 
 	// Thread synchronization objects.
 	QMutex m_mutex;

@@ -95,7 +95,7 @@ private:
 	volatile unsigned int  m_iSyncWrite;
 
 	// Whether the thread is logically running.
-	bool m_bRunState;
+	volatile bool m_bRunState;
 
 	// Thread synchronization objects.
 	QMutex m_mutex;
@@ -181,8 +181,8 @@ void qtractorAudioPeakThread::sync ( qtractorAudioPeakFile *pPeakFile )
 		}
 		if (n > 0) {
 			pPeakFile->setWaitSync(true);
-			m_ppSyncItems[m_iSyncWrite] = new qtractorAudioPeak(pPeakFile);
-			++m_iSyncWrite &= m_iSyncMask;
+			m_ppSyncItems[w] = new qtractorAudioPeak(pPeakFile);
+			m_iSyncWrite = (w + 1) & m_iSyncMask;
 		}
 	}
 
@@ -203,9 +203,9 @@ void qtractorAudioPeakThread::run (void)
 	qDebug("qtractorAudioPeakThread[%p]::run(): started...", this);
 #endif
 
-	m_bRunState = true;
-
 	m_mutex.lock();
+
+	m_bRunState = true;
 
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
@@ -215,7 +215,6 @@ void qtractorAudioPeakThread::run (void)
 			qtractorAudioPeak *pSyncItem = m_ppSyncItems[r];
 			m_pPeakFile = pSyncItem->peakFile();
 			if (m_pPeakFile->isWaitSync()) {
-				m_pPeakFile->setWaitSync(false);
 				if (openPeakFile()) {
 					// Go ahead with the whole bunch...
 					while (writePeakFile())
@@ -223,6 +222,7 @@ void qtractorAudioPeakThread::run (void)
 					// We're done.
 					closePeakFile();
 				}
+				m_pPeakFile->setWaitSync(false);
 			}
 			delete pSyncItem;
 			m_ppSyncItems[r] = NULL;
