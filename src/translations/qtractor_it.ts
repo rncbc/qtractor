@@ -4,26 +4,26 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="745"/>
+        <location filename="../qtractorAudioClip.cpp" line="755"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Audio:	%1 canali, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="750"/>
+        <location filename="../qtractorAudioClip.cpp" line="760"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="753"/>
+        <location filename="../qtractorAudioClip.cpp" line="763"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% allarga tempo)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="756"/>
+        <location filename="../qtractorAudioClip.cpp" line="766"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
@@ -258,7 +258,7 @@ Posiz./Durata:	%3 / %4</translation>
         <translation>%1 Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1067"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1068"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banco %2</translation>
     </message>

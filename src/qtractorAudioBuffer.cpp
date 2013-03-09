@@ -83,7 +83,8 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 			w = m_iSyncWrite;
 		}
 		m_iSyncRead = r;
-	} else if (!pAudioBuffer->isSyncFlag(qtractorAudioBuffer::WaitSync)) {
+	} else {
+		// !pAudioBuffer->isSyncFlag(qtractorAudioBuffer::WaitSync)
 		unsigned int n;
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
