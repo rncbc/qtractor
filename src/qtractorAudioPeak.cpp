@@ -168,7 +168,8 @@ void qtractorAudioPeakThread::sync ( qtractorAudioPeakFile *pPeakFile )
 			w = m_iSyncWrite;
 		}
 	//	m_iSyncRead = r;
-	} else if (!pPeakFile->isWaitSync()) {
+	} else {
+		// !pPeakFile->isWaitSync()
 		unsigned int n;
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;

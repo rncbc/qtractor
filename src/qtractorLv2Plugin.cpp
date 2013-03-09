@@ -359,7 +359,8 @@ void qtractorLv2WorkerThread::sync ( qtractorLv2Worker *pLv2Worker )
 			w = m_iSyncWrite;
 		}
 	//	m_iSyncRead = r;
-	} else if (!pLv2Worker->isWaitSync()) {
+	} else {
+		// !pLv2Worker->isWaitSync()
 		unsigned int n;
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;

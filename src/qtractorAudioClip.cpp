@@ -582,20 +582,30 @@ void qtractorAudioClip::process (
 
 	// Get the next bunch from the clip...
 	unsigned long iClipStart = clipStart();
-	unsigned long iClipEnd   = iClipStart + clipLength();
-	if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
-		unsigned long iOffset = iFrameEnd - iClipStart;
+	if (iClipStart > iFrameEnd)
+		return;
+
+	unsigned long iClipEnd = iClipStart + clipLength();
+	if (iClipEnd < iFrameStart)
+		return;
+
+	unsigned long iOffset = iFrameEnd - iClipStart;
+	if (iClipStart > iFrameStart) {
 		if (pBuff->inSync(0, iOffset)) {
-			pBuff->readMix(pAudioBus->buffer(), iOffset,
-				pAudioBus->channels(), iClipStart - iFrameStart, gain(iOffset));
+			pBuff->readMix(pAudioBus->buffer(),
+				iOffset,
+				pAudioBus->channels(),
+				iClipStart - iFrameStart,
+				gain(iOffset));
 		}
-	}
-	else
-	if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
-		unsigned long iOffset = iFrameEnd - iClipStart;
+	} else {
 		if (pBuff->inSync(iFrameStart - iClipStart, iOffset)) {
-			pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
-				pAudioBus->channels(), 0, gain(iOffset));
+			pBuff->readMix(
+				pAudioBus->buffer(),
+				(iFrameEnd < iClipEnd ? iFrameEnd : iClipEnd) - iFrameStart,
+				pAudioBus->channels(),
+				0,
+				gain(iOffset));
 		}
 	}
 }
