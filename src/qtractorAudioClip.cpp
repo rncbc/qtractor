@@ -589,10 +589,13 @@ void qtractorAudioClip::process (
 	if (iClipEnd < iFrameStart)
 		return;
 
-	unsigned long iOffset = iFrameEnd - iClipStart;
+	unsigned long iOffset
+		= (iFrameEnd < iClipEnd ? iFrameEnd : iClipEnd) - iClipStart;
+
 	if (iClipStart > iFrameStart) {
 		if (pBuff->inSync(0, iOffset)) {
-			pBuff->readMix(pAudioBus->buffer(),
+			pBuff->readMix(
+				pAudioBus->buffer(),
 				iOffset,
 				pAudioBus->channels(),
 				iClipStart - iFrameStart,
