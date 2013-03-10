@@ -651,6 +651,10 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 		return nread;
 	}
 
+	// Take care of end-of-stream...
+	if (ro + iFrames >= m_iFileLength)
+		fGain = 0.0f;
+
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
@@ -1207,7 +1211,7 @@ int qtractorAudioBuffer::readMixFrames (
 	m_fNextGain = fGain;
 
 	// HACK: Case of clip ramp out-set...
-	if (m_fNextGain < 1E-9f && fPrevGain > (1.0f - 1E-9f)) {
+	if (m_fNextGain < 1e-9f && fPrevGain > (1.0f - 1e-9f)) {
 		// Final micro fade-out...
 		// (anti-glitch out-set ramp)
 		m_fNextGain = 1.0f;
