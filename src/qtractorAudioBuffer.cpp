@@ -395,27 +395,21 @@ void qtractorAudioBuffer::close (void)
 	if (m_pFile == NULL)
 		return;
 
-	// Write-behind any remains, if applicable...
+	// Wait for regular file close...
+	if (m_pSyncThread) {
+		setSyncFlag(CloseSync);
+		m_pSyncThread->sync(this);
+		do QThread::yieldCurrentThread(); // qtractorSession::stabilize();
+		while (isSyncFlag(CloseSync));
+	}
+
+	// Take careof remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write) {
-		// Wait for regular file close...
-		if (m_pSyncThread) {
-			setSyncFlag(CloseSync);
-			m_pSyncThread->sync(this);
-			do qtractorSession::stabilize();
-			while (isSyncFlag(CloseSync));
-		}
 		// Close on-the-fly peak file, if applicable...
 		if (m_pPeak) {
 			m_pPeak->closeWrite();
 			m_pPeak = NULL;
 		}
-	} else {
-		// Avoid any other interference (ought to be atomic)...
-		while (m_pSyncThread && isSyncFlag(WaitSync))
-			m_pSyncThread->syncExport();
-		//setSyncFlag(WaitSync, false);
-		// Time to close it good.
-		m_pFile->close();
 	}
 
 	// Deallocate any buffer stuff...
@@ -796,6 +790,9 @@ void qtractorAudioBuffer::initSync (void)
 	if (m_pRingBuffer == NULL)
 		return;
 
+	if (isSyncFlag(CloseSync))
+		return;
+
 	// Initialization is only valid on read-only mode.
 	if (m_pFile == NULL)
 		return;
@@ -844,16 +841,27 @@ void qtractorAudioBuffer::initSync (void)
 		// Initial buffer re-read in...
 		readSync();
 	}
+
+	// Make sure we're not closing anymore,
+	// of course, don't be ridiculous...
+	setSyncFlag(CloseSync, false);
 }
 
 
 // Base-mode sync executive.
 void qtractorAudioBuffer::sync (void)
 {
+	if (m_pFile == NULL)
+		return;
+
 	if (!isSyncFlag(WaitSync))
 		return;
 
-	if (isSyncFlag(InitSync) && m_pFile) {
+	if (!isSyncFlag(InitSync)) {
+		initSync();
+		setSyncFlag(WaitSync, false);
+	} else {
+		setSyncFlag(WaitSync, false);
 		const int mode = m_pFile->mode();
 		if (mode & qtractorAudioFile::Read)
 			readSync();
@@ -865,9 +873,6 @@ void qtractorAudioBuffer::sync (void)
 			setSyncFlag(CloseSync, false);
 		}
 	}
-	else initSync();
-
-	setSyncFlag(WaitSync, false);
 }
 
 
@@ -907,6 +912,9 @@ void qtractorAudioBuffer::syncExport (void)
 // Read-mode sync executive.
 void qtractorAudioBuffer::readSync (void)
 {
+	if (m_pRingBuffer == NULL)
+		return;
+
 	if (isSyncFlag(CloseSync))
 		return;
 
@@ -981,6 +989,9 @@ void qtractorAudioBuffer::readSync (void)
 // Write-mode sync executive.
 void qtractorAudioBuffer::writeSync (void)
 {
+	if (m_pRingBuffer == NULL)
+		return;
+
 	unsigned int rs = m_pRingBuffer->readable();
 	if (rs == 0)
 		return;
