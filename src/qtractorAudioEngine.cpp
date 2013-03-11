@@ -1807,7 +1807,7 @@ void qtractorAudioEngine::setRamping ( int iRamping )
 	if (isPlaying()) {
 		ATOMIC_SET(&m_ramping_off, 0);
 		ATOMIC_SET(&m_ramping, iRamping);
-		do { qtractorSession::stabilize(); }
+		do QThread::yieldCurrentThread(); // qtractorSession::stabilize();
 		while (ATOMIC_GET(&m_ramping));
 	}
 }
