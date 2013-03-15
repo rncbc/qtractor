@@ -2344,7 +2344,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		lilv_uri_to_path(lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui))),
 		lilv_uri_to_path(lilv_node_as_uri(lilv_ui_get_binary_uri(m_lv2_ui))),
 		m_lv2_ui_features);
-qDebug("DEBUG> openEditor() ui_type_uri=\"%s\" suil_instance=%p", ui_type_uri, m_suil_instance);
 #else
 	m_lv2_ui_instance = lilv_ui_instantiate(pLv2Type->lv2_plugin(),
 		m_lv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);

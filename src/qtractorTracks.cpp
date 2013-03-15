@@ -1870,6 +1870,8 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 		return false;
 	}
 
+	m_pTrackView->clearClipSelect();
+
 	return pSession->execute(pClipRangeCommand);
 }
 
