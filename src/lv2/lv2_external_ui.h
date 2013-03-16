@@ -60,6 +60,7 @@ typedef struct _LV2_External_UI_Widget {
    * @param _this_ the UI context
    */
   void (*hide)(struct _LV2_External_UI_Widget * _this_);
+
 } LV2_External_UI_Widget;
 
 #define LV2_EXTERNAL_UI_RUN(ptr)  (ptr)->run(ptr)
@@ -96,6 +97,7 @@ typedef struct _LV2_External_UI_Host {
    * LV2UI_Descriptor::instantiate()
    */
   const char * plugin_human_id;
+
 } LV2_External_UI_Host;
 
 #ifdef __cplusplus
