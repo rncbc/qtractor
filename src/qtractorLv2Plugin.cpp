@@ -2304,10 +2304,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_lv2_ui_external_feature.data = &m_lv2_ui_external_host;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_feature;
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
-	m_lv2_ui_external_deprecated_host.ui_closed = qtractor_lv2_ui_closed;
-	m_lv2_ui_external_deprecated_host.plugin_human_id = m_aEditorTitle.constData();
 	m_lv2_ui_external_deprecated_feature.URI = LV2_EXTERNAL_UI_DEPRECATED_URI;
-	m_lv2_ui_external_deprecated_feature.data = &m_lv2_ui_external_deprecated_host;
+	m_lv2_ui_external_deprecated_feature.data = &m_lv2_ui_external_host;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_deprecated_feature;
 #endif
 #endif
@@ -2592,10 +2590,8 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
-#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
-	m_lv2_ui_external_deprecated_host.plugin_human_id = m_aEditorTitle.constData();
 #endif
-#endif
+
 	if (m_pQt4Widget)
 		m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
 }

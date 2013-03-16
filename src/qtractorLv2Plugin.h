@@ -390,7 +390,6 @@ private:
 	LV2_External_UI_Host m_lv2_ui_external_host;
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 	LV2_Feature          m_lv2_ui_external_deprecated_feature;
-	LV2_External_UI_Host m_lv2_ui_external_deprecated_host;
 #endif
 #endif
 
