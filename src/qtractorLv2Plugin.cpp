@@ -744,9 +744,11 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_TYPE_GTK        3
 #define LV2_UI_TYPE_QT4        4
 
-#define LV2_X11_UI_URI "http://lv2plug.in/ns/extensions/ui#X11UI"
-#define LV2_GTK_UI_URI "http://lv2plug.in/ns/extensions/ui#GtkUI"
-#define LV2_QT4_UI_URI "http://lv2plug.in/ns/extensions/ui#Qt4UI"
+#if QT_VERSION < 0x050000
+#define LV2_UI_HOST_URI	LV2_UI__Qt4UI
+#else
+#define LV2_UI_HOST_URI	LV2_UI_PREFIX "Qt5UI"
+#endif
 
 static void qtractor_lv2_ui_write (
 #ifdef CONFIG_LIBSUIL
@@ -786,6 +788,7 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 
 #endif	// CONFIG_LV2_EXTERNAL_UI
 
+#if QT_VERSION < 0x050000
 
 class qtractorLv2Plugin::EventFilter : public QObject
 {
@@ -817,6 +820,8 @@ private:
 	qtractorLv2Plugin *m_pLv2Plugin;
 	QWidget           *m_pQt4Widget;
 };
+
+#endif
 
 #endif	// CONFIG_LV2_UI
 
@@ -852,9 +857,11 @@ static LilvNode *g_lv2_external_ui_class = NULL;
 static LilvNode *g_lv2_external_ui_deprecated_class = NULL;
 #endif
 #endif
+#if QT_VERSION < 0x050000
 static LilvNode *g_lv2_x11_ui_class = NULL;
 static LilvNode *g_lv2_gtk_ui_class = NULL;
 static LilvNode *g_lv2_qt4_ui_class = NULL;
+#endif
 #endif	// CONFIG_LV2_UI
 
 // Supported plugin features.
@@ -1173,22 +1180,21 @@ bool qtractorLv2PluginType::open (void)
 				m_bEditor = true;
 				break;
 			}
-			else
 		#endif
+		#if QT_VERSION < 0x050000
 			if (lilv_ui_is_a(ui, g_lv2_x11_ui_class)) {
 				m_bEditor = true;
 				break;
 			}
-			else
 			if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class)) {
 				m_bEditor = true;
 				break;
 			}
-			else
 			if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class)) {
 				m_bEditor = true;
 				break;
 			}
+		#endif
 		}
 		lilv_uis_free(uis);
 	}
@@ -1308,9 +1314,11 @@ void qtractorLv2PluginType::lv2_open (void)
 		= lilv_new_uri(g_lv2_world, LV2_EXTERNAL_UI_DEPRECATED_URI);
 #endif
 #endif
-	g_lv2_x11_ui_class = lilv_new_uri(g_lv2_world, LV2_X11_UI_URI);
-	g_lv2_gtk_ui_class = lilv_new_uri(g_lv2_world, LV2_GTK_UI_URI);
-	g_lv2_qt4_ui_class = lilv_new_uri(g_lv2_world, LV2_QT4_UI_URI);
+#if QT_VERSION < 0x050000
+	g_lv2_x11_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__X11UI);
+	g_lv2_gtk_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__GtkUI);
+	g_lv2_qt4_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__Qt4UI);
+#endif
 #endif	// CONFIG_LV2_UI
 
 	// Set up the feature we may want to know (as hints).
@@ -1429,9 +1437,11 @@ void qtractorLv2PluginType::lv2_close (void)
 	lilv_node_free(g_lv2_external_ui_deprecated_class);
 #endif
 #endif
+#if QT_VERSION < 0x050000
 	lilv_node_free(g_lv2_x11_ui_class);
 	lilv_node_free(g_lv2_gtk_ui_class);
 	lilv_node_free(g_lv2_qt4_ui_class);
+#endif
 #endif	// CONFIG_LV2_UI
 
 	lilv_world_free(g_lv2_world);
@@ -1468,9 +1478,11 @@ void qtractorLv2PluginType::lv2_close (void)
 	g_lv2_external_ui_deprecated_class = NULL;
 #endif
 #endif
+#if QT_VERSION < 0x050000
 	g_lv2_x11_ui_class = NULL;
 	g_lv2_gtk_ui_class = NULL;
 	g_lv2_qt4_ui_class = NULL;
+#endif
 #endif
 
 	g_lv2_plugins = NULL;
@@ -1556,8 +1568,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_ui_events(NULL)
 		, m_plugin_events(NULL)
 	#endif
+	#if QT_VERSION < 0x050000
 		, m_pQt4Filter(NULL)
 		, m_pQt4Widget(NULL)
+	#endif
     #endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_OPTIONS
 	#ifdef CONFIG_LV2_BUF_SIZE
@@ -2249,18 +2263,25 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 			|| lilv_ui_is_a(ui, g_lv2_external_ui_deprecated_class)
 		#endif
-		)
+		) {
 			m_lv2_ui_type = LV2_UI_TYPE_EXTERNAL;
-		else
+			break;
+		}
 	#endif
-		if (lilv_ui_is_a(ui, g_lv2_x11_ui_class))
+	#if QT_VERSION < 0x050000
+		if (lilv_ui_is_a(ui, g_lv2_x11_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_X11;
-		else
-		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
+			break;
+		}
+		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_GTK;
-		else
-		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
+			break;
+		}
+		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_QT4;
+			break;
+		}
+	#endif
 		// Have we a verdict?
 		if (m_lv2_ui_type != LV2_UI_TYPE_NONE) {
 			m_lv2_ui = const_cast<LilvUI *> (ui);
@@ -2325,18 +2346,22 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		ui_type_uri = LV2_EXTERNAL_UI__Widget;
 		break;
 #endif
+#if QT_VERSION < 0x050000
 	case LV2_UI_TYPE_X11:
-		ui_type_uri = LV2_X11_UI_URI;
+		ui_type_uri = LV2_UI__X11UI;
 		break;
 	case LV2_UI_TYPE_GTK:
-		ui_type_uri = LV2_GTK_UI_URI;
+		ui_type_uri = LV2_UI__GtkUI;
 		break;
 	case LV2_UI_TYPE_QT4:
-		ui_type_uri = LV2_QT4_UI_URI;
+		ui_type_uri = LV2_UI__Qt4UI;
+		break;
+#endif
+	default:
 		break;
 	}
 	m_suil_host = suil_host_new(qtractor_lv2_ui_write, NULL, NULL, NULL);
-	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_QT4_UI_URI,
+	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_UI_HOST_URI,
 		lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin())),
 		lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui)), ui_type_uri,
 		lilv_uri_to_path(lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui))),
@@ -2369,12 +2394,14 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LIBSUIL
 	if (m_suil_instance) {
 		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
+	#if QT_VERSION < 0x050000
 		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
 			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
 			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);
 		//	m_pQt4Widget->show();
 		}
+	#endif
 		g_lv2Plugins.append(this);
 	}
 #endif
@@ -2399,15 +2426,16 @@ void qtractorLv2Plugin::closeEditor (void)
 
 	m_ui_params.clear();
 
+#if QT_VERSION < 0x050000
 	if (m_pQt4Filter) {
 		delete m_pQt4Filter;
 		m_pQt4Filter = NULL;
 	}
-
 	if (m_pQt4Widget) {
 	//	delete m_pQt4Widget;
 		m_pQt4Widget = NULL;
 	}
+#endif
 
 	m_lv2_ui_type = LV2_UI_TYPE_NONE;
 	
@@ -2528,10 +2556,12 @@ void qtractorLv2Plugin::closeEditorEx (void)
 	qDebug("qtractorLv2Plugin[%p]::closeEditorEx()", this);
 #endif
 
+#if QT_VERSION < 0x050000
 	if (m_pQt4Widget) {
 		m_pQt4Widget = NULL;
 		setEditorClosed(true);
 	}
+#endif
 }
 
 
@@ -2546,6 +2576,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_SHOW((LV2_External_UI_Widget *) m_lv2_ui_widget);
 	#endif
+	#if QT_VERSION < 0x050000
 		if (m_pQt4Widget) {
 			// guaranteeing a reasonable window type:
 			// ie. not Qt::Dialog or Qt::Popup from the seemingly good choices.
@@ -2558,6 +2589,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 			m_pQt4Widget->raise();
 			m_pQt4Widget->activateWindow();
 		}
+	#endif
 		m_bEditorVisible = true;
 	}
 	else
@@ -2566,8 +2598,10 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_HIDE((LV2_External_UI_Widget *) m_lv2_ui_widget);
 	#endif
+	#if QT_VERSION < 0x050000
 		if (m_pQt4Widget)
 			m_pQt4Widget->hide();
+	#endif
 		m_bEditorVisible = false;
 	}
 
@@ -2591,9 +2625,10 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
 #endif
-
+#if QT_VERSION < 0x050000
 	if (m_pQt4Widget)
 		m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
+#endif
 }
 
 
