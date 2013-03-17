@@ -2265,28 +2265,27 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		#endif
 		) {
 			m_lv2_ui_type = LV2_UI_TYPE_EXTERNAL;
+			m_lv2_ui = const_cast<LilvUI *> (ui);
 			break;
 		}
 	#endif
 	#if QT_VERSION < 0x050000
 		if (lilv_ui_is_a(ui, g_lv2_x11_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_X11;
+			m_lv2_ui = const_cast<LilvUI *> (ui);
 			break;
 		}
 		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_GTK;
+			m_lv2_ui = const_cast<LilvUI *> (ui);
 			break;
 		}
 		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class)) {
 			m_lv2_ui_type = LV2_UI_TYPE_QT4;
-			break;
-		}
-	#endif
-		// Have we a verdict?
-		if (m_lv2_ui_type != LV2_UI_TYPE_NONE) {
 			m_lv2_ui = const_cast<LilvUI *> (ui);
 			break;
 		}
+	#endif
 	}
 
 	if (m_lv2_ui == NULL)
@@ -2334,6 +2333,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_lv2_ui_features[iFeatures] = NULL;
 
 #ifdef CONFIG_LIBSUIL
+
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -2360,6 +2360,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	default:
 		break;
 	}
+
 	m_suil_host = suil_host_new(qtractor_lv2_ui_write, NULL, NULL, NULL);
 	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_UI_HOST_URI,
 		lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin())),
@@ -2367,12 +2368,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		lilv_uri_to_path(lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui))),
 		lilv_uri_to_path(lilv_node_as_uri(lilv_ui_get_binary_uri(m_lv2_ui))),
 		m_lv2_ui_features);
-#else
-	m_lv2_ui_instance = lilv_ui_instantiate(pLv2Type->lv2_plugin(),
-		m_lv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);
-#endif
 
-#ifdef CONFIG_LIBSUIL
 	if (m_suil_instance) {
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
@@ -2388,11 +2384,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			suil_instance_port_event(m_suil_instance,
 				m_piControlOuts[j], sizeof(float), 0, &m_pfControlOuts[j]);
 		}
-	}
-#endif
 
-#ifdef CONFIG_LIBSUIL
-	if (m_suil_instance) {
 		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
 	#if QT_VERSION < 0x050000
 		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
@@ -2402,9 +2394,11 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		//	m_pQt4Widget->show();
 		}
 	#endif
+
 		g_lv2Plugins.append(this);
 	}
-#endif
+
+#endif	// CONFIG_LIBSUIL
 
 	setEditorVisible(true);
 
@@ -2546,7 +2540,6 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 
 #endif	// CONFIG_LV2_UI
-
 }
 
 
