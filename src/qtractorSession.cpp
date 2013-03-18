@@ -1129,8 +1129,10 @@ void qtractorSession::stabilize ( int msecs )
 	// Wait a litle bit before continue...
 	QTime t;
 	t.start();
-	while (t.elapsed() < msecs)
+	while (t.elapsed() < msecs) {
+		QThread::yieldCurrentThread();
 		QApplication::processEvents(/* QEventLoop::ExcludeUserInputEvents */);
+	}
 }
 
 
@@ -1186,16 +1188,10 @@ void qtractorSession::setPlaying ( bool bPlaying )
 			pMidiManager = pMidiManager->next();
 		}
 	}
-	else if (!ATOMIC_GET(&m_locks))
-		m_pAudioEngine->setRamping(-1);
 
 	// Do it.
 	m_pAudioEngine->setPlaying(bPlaying);
 	m_pMidiEngine->setPlaying(bPlaying);
-
-	// Do ramping up...
-	if (bPlaying && !ATOMIC_GET(&m_locks))
-		m_pAudioEngine->setRamping(+1);
 
 	ATOMIC_DEC(&m_busy);
 }
@@ -1248,7 +1244,6 @@ void qtractorSession::lock (void)
 	// Wind up as pending lock...
 	if (ATOMIC_INC(&m_locks) == 1) {
 		// Get lost for a while...
-		m_pAudioEngine->setRamping(-1);
 		while (!acquire())
 			stabilize();
 	}
@@ -1264,7 +1259,6 @@ void qtractorSession::unlock (void)
 	if (ATOMIC_DEC(&m_locks) < 1) {
 		ATOMIC_SET(&m_locks, 0);
 		release();
-		m_pAudioEngine->setRamping(+1);
 	}
 
 	ATOMIC_DEC(&m_busy);

@@ -88,7 +88,7 @@ static inline void sse_process_ramp ( float *pFrames, unsigned int iFrames,
 
 	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames)
 		*pFrames++ *= fGainIter;
-	
+
 	for (; iFrames >= 4; iFrames -= 4) {
 		v2 = _mm_mul_ps(_mm_loadu_ps(pFrames), _mm_load_ps1(&fGainIter));
 		v1 = _mm_max_ps(v2, v1);

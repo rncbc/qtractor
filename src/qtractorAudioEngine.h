@@ -205,10 +205,6 @@ public:
 	void setTransportMode(qtractorBus::BusMode transportMode);
 	qtractorBus::BusMode transportMode() const;
 
-	// Ramping playback spin-lock.
-	void setRamping(int iRamping);
-	int ramping() const;
-
 	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrame() const;
 
@@ -298,10 +294,6 @@ private:
 
 	// JACK Transport mode.
 	qtractorBus::BusMode m_transportMode;
-
-	// Ramping hacky spin-lock.
-	qtractorAtomic m_ramping;
-	qtractorAtomic m_ramping_off;
 };
 
 
@@ -339,9 +331,6 @@ public:
 	// Process cycle (preparator only).
 	void process_prepare(unsigned int nframes);
 	void process_commit(unsigned int nframes);
-
-	// Process cycle fade in/out ramp (+1/-1).
-	void process_ramp(unsigned int nframes, float fRamp);
 
 	// Bus-buffering methods.
 	void buffer_prepare(unsigned int nframes,

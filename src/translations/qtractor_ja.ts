@@ -28,13 +28,13 @@ Audio:	%1 channels, %2 Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2530"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2466"/>
         <location filename="../qtractorMidiEngine.cpp" line="4019"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2530"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2466"/>
         <location filename="../qtractorMidiEngine.cpp" line="4019"/>
         <source>%1 Out</source>
         <translation>%1 出力</translation>

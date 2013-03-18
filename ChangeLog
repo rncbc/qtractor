@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Dropped old audio ramping spin-locks as its glitching reduction
+  weren't that effective anymore.
+
 - Audio bus and track gain may now be set for amplification again,
   from +0dB up to +6dB, while using the Mixer strip sliders/faders
   (an old function found missing ever since pre-TYOQA).

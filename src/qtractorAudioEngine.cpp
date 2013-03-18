@@ -362,10 +362,6 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// JACK transport mode.
 	m_transportMode = qtractorBus::Duplex;
-
-	// Ramping playback spin-lock.
-	ATOMIC_SET(&m_ramping, 0);
-	ATOMIC_SET(&m_ramping_off, 0);
 }
 
 
@@ -693,10 +689,6 @@ void qtractorAudioEngine::clean (void)
 	// Null sample-rate/period.
 	// m_iSampleRate = 0;
 	// m_iBufferSize = 0;
-	
-	// Ramping playback spin-lock off.
-	ATOMIC_SET(&m_ramping, 0);
-	ATOMIC_SET(&m_ramping_off, 0);
 }
 
 
@@ -907,14 +899,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			m_pMetroBus->process_commit(nframes);
 	}
 
-	// Had ramping been turned off.
-	if (ATOMIC_GET(&m_ramping_off)) {
-		pAudioCursor->seek(iFrameEnd, true);
-		pAudioCursor->process(nframes);
-		pSession->release();
-		return 0;
-	}
-
 	// Split processing, in case we're looping...
 	if (pSession->isLooping()) {
 		unsigned long iLoopEnd = pSession->loopEnd();
@@ -946,20 +930,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus)
 			pAudioBus->process_commit(nframes);
-	}
-
-	// Playback ramp spin-locking?
-	int iRamping = ATOMIC_TAZ(&m_ramping);
-	if (iRamping) {
-		for (qtractorBus *pBus = buses().first();
-				pBus; pBus = pBus->next()) {
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus && (pAudioBus->busMode() & qtractorBus::Output))
-				pAudioBus->process_ramp(nframes, float(iRamping));
-		}
-		if (iRamping < 0)
-			ATOMIC_SET(&m_ramping_off, 1);
 	}
 
 	// Regular range recording (if and when applicable)...
@@ -1801,23 +1771,6 @@ qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const
 }
 
 
-// Ramping playback spin-lock.
-void qtractorAudioEngine::setRamping ( int iRamping )
-{
-	if (isPlaying()) {
-		ATOMIC_SET(&m_ramping_off, 0);
-		ATOMIC_SET(&m_ramping, iRamping);
-		do QThread::yieldCurrentThread(); // qtractorSession::stabilize();
-		while (ATOMIC_GET(&m_ramping));
-	}
-}
-
-int qtractorAudioEngine::ramping (void) const
-{
-	return (ATOMIC_GET(&m_ramping_off) ? -1 : ATOMIC_GET(&m_ramping));
-}
-
-
 // Absolute number of frames elapsed since engine start.
 unsigned long qtractorAudioEngine::jackFrame (void) const
 {
@@ -2260,23 +2213,6 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 		m_pOPluginList->process(m_ppOBuffer, nframes);
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
-}
-
-
-// Process cycle fade in/out ramp (+1/-1).
-void qtractorAudioBus::process_ramp ( unsigned int nframes, float fRamp )
-{
-	if (!m_bEnabled)
-		return;
-
-	float fStep = fRamp / float(nframes);
-
-	for (unsigned short i = 0; i < m_iChannels; ++i) {
-		float *pFrames = m_ppOBuffer[i];
-		float  fGain   = (fRamp < 0.0f ? 1.0f : 0.0f);
-		for (unsigned int n = 0; n < nframes; ++n, fGain += fStep)
-			*pFrames++ *= fGain;
-	}
 }
 
 
