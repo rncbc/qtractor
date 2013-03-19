@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.8  2013-03-19  India Romeo
 
 - Dropped old audio ramping spin-locks as its glitching reduction
   weren't that effective anymore.
@@ -58,7 +58,7 @@ SVN TRUNK
   their parameter (control input) ports when designated.
 
 - LV2 State is now properly restored for  plugins inserted on buses,
-  probably solving the Calf Fluidsynth Soundfont information missing
+  probably solving the Calf Fluidsynth SoundFont information missing
   on buses ticket, reported by Albert Graef, thanks.
 
 - Fixed an immediate null pointer crash on creating a parentless new
