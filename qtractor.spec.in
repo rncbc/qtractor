@@ -87,7 +87,7 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
-* tue Mar 19 2013 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.8
+* Tue Mar 19 2013 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.8
 - India Romeo release.
 * Thu Dec 27 2012 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.5.7
 - Hotel Sierra release.
