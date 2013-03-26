@@ -3,6 +3,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Hard-wired LV2 UI selection order for plugins which supply more
+  than one option (lv2_external_ui gets always honored first then,
+  as provided via libsuil, X11, GTK and last but not least, Qt4).
+  (EXPERIMENTAL)
+
+
 0.5.8  2013-03-19  India Romeo
 
 - Dropped old audio ramping spin-locks as its glitching reduction

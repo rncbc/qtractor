@@ -2244,52 +2244,39 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (pLv2Type == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorLv2Plugin[%p]::openEditor()", this);
-#endif
-
 	// Check the UI inventory...
 	m_lv2_uis = lilv_plugin_get_uis(pLv2Type->lv2_plugin());
 	if (m_lv2_uis == NULL)
 		return;
 
-	m_lv2_ui_type = LV2_UI_TYPE_NONE;
+	QMap<int, LilvUI *> ui_map;
 
 	LILV_FOREACH(uis, i, m_lv2_uis) {
-		LilvUI *ui = const_cast<LilvUI *> (
-			lilv_uis_get(m_lv2_uis, i));
+		LilvUI *ui = const_cast<LilvUI *> (lilv_uis_get(m_lv2_uis, i));
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (lilv_ui_is_a(ui, g_lv2_external_ui_class)
 		#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 			|| lilv_ui_is_a(ui, g_lv2_external_ui_deprecated_class)
 		#endif
-		) {
-			m_lv2_ui_type = LV2_UI_TYPE_EXTERNAL;
-			m_lv2_ui = const_cast<LilvUI *> (ui);
-			break;
-		}
+		)	ui_map.insert(LV2_UI_TYPE_EXTERNAL, ui);
 	#endif
 	#if QT_VERSION < 0x050000
-		if (lilv_ui_is_a(ui, g_lv2_x11_ui_class)) {
-			m_lv2_ui_type = LV2_UI_TYPE_X11;
-			m_lv2_ui = const_cast<LilvUI *> (ui);
-			break;
-		}
-		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class)) {
-			m_lv2_ui_type = LV2_UI_TYPE_GTK;
-			m_lv2_ui = const_cast<LilvUI *> (ui);
-			break;
-		}
-		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class)) {
-			m_lv2_ui_type = LV2_UI_TYPE_QT4;
-			m_lv2_ui = const_cast<LilvUI *> (ui);
-			break;
-		}
+		if (lilv_ui_is_a(ui, g_lv2_x11_ui_class))
+			ui_map.insert(LV2_UI_TYPE_X11, ui);
+		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
+			ui_map.insert(LV2_UI_TYPE_GTK, ui);
+		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
+			ui_map.insert(LV2_UI_TYPE_QT4, ui);
 	#endif
 	}
 
-	if (m_lv2_ui == NULL)
+	if (ui_map.isEmpty())
 		return;
+
+	QMap<int, LilvUI *>::ConstIterator ui_iter = ui_map.constBegin();
+
+	m_lv2_ui_type = ui_iter.key();
+	m_lv2_ui = ui_iter.value();
 
 	const LilvInstance *instance = lv2_instance(0);
 	if (instance == NULL)
@@ -2360,6 +2347,10 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	default:
 		break;
 	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
+#endif
 
 	m_suil_host = suil_host_new(qtractor_lv2_ui_write, NULL, NULL, NULL);
 	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_UI_HOST_URI,
