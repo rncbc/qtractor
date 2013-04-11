@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- VST plugin (GUI) idle timer makes a comeback. (EXPERIMENTAL)
+
 - Hard-wired LV2 UI selection order for plugins which supply more
   than one option (lv2_external_ui gets always honored first then,
   as provided via libsuil, X11, GTK and last but not least, Qt4).
