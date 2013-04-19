@@ -441,6 +441,11 @@ protected:
 	// Finalize the event drag-move.
 	void executeDragMove(qtractorScrollView *pScrollView, const QPoint& pos);
 
+	// Drag-rescale current selection.
+	void updateDragRescale(qtractorScrollView *pScrollView, const QPoint& pos);
+	// Finalize the event drag-rescale.
+	void executeDragRescale(qtractorScrollView *pScrollView, const QPoint& pos);
+
 	// Drag-resize current selection (also editing).
 	void updateDragResize(qtractorScrollView *pScrollView, const QPoint& pos);
 	// Finalize the event drag-resize (also editing).
@@ -521,7 +526,7 @@ private:
 	// Common drag state.
 	enum DragState { 
 		DragNone = 0, DragStart, DragSelect, DragEventResize,
-		DragMove, DragResize, DragPaste, DragStep
+		DragMove, DragRescale, DragResize, DragPaste, DragStep
 	} m_dragState, m_dragCursor;
 
 	// Common drag-resize mode.
