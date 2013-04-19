@@ -2448,7 +2448,11 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 				pEvent = NULL;
 			}
 		}
-		m_dragCursor = DragResize;
+		if (m_resizeMode == ResizeNoteRight
+			&& (modifiers & Qt::ControlModifier))
+			m_dragCursor = DragRescale;
+		else
+			m_dragCursor = DragResize;
 		pScrollView->setCursor(QCursor(shape));
 	}
 	else
@@ -2545,9 +2549,15 @@ void qtractorMidiEditor::dragMoveUpdate (
 					updateDragSelect(pScrollView,
 						QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
 				}
-				// Start drag-resizing...
-				m_dragState = DragResize;
-				updateDragResize(pScrollView, pos);
+				// Start drag-resizing/rescaling...
+				if (m_resizeMode == ResizeNoteRight
+					&& (modifiers & Qt::ControlModifier)) {
+					m_dragState = DragRescale;
+					updateDragRescale(pScrollView, pos);
+				} else {
+					m_dragState = DragResize;
+					updateDragResize(pScrollView, pos);
+				}
 			}
 			break;
 		}
@@ -2575,6 +2585,10 @@ void qtractorMidiEditor::dragMoveUpdate (
 	case DragPaste:
 		// Drag-moving...
 		updateDragMove(pScrollView, pos + m_posStep);
+		break;
+	case DragRescale:
+		// Drag-rescaling...
+		updateDragRescale(pScrollView, pos);
 		break;
 	case DragResize:
 		// Drag-resizing...
@@ -2656,6 +2670,10 @@ void qtractorMidiEditor::dragMoveCommit (
 	case DragPaste:
 		// Paste it...
 		executeDragPaste(pScrollView, pos);
+		break;
+	case DragRescale:
+		// Rescale it...
+		executeDragRescale(pScrollView, pos);
 		break;
 	case DragResize:
 		// Resize it...
@@ -2999,8 +3017,10 @@ void qtractorMidiEditor::resizeEvent (
 		else
 		if (pEditCommand)
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
-		m_last.note = pEvent->note();
-	//	m_last.duration = iDuration;
+		if (pEvent == m_pEventDrag) {
+			m_last.note = pEvent->note();
+			m_last.duration = iDuration;
+		}
 		break;
 	case ResizeNoteRight:
 		iTime = pEvent->time();
@@ -3016,8 +3036,10 @@ void qtractorMidiEditor::resizeEvent (
 		else
 		if (pEditCommand)
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
-		m_last.note = pEvent->note();
-	//	m_last.duration = iDuration;
+		if (pEvent == m_pEventDrag) {
+			m_last.note = pEvent->note();
+			m_last.duration = iDuration;
+		}
 		break;
 	case ResizeValueTop:
 		iValue = int(pEvent->value()) + iValueDelta;
@@ -3034,7 +3056,8 @@ void qtractorMidiEditor::resizeEvent (
 		else
 		if (pEditCommand)
 			pEditCommand->resizeEventValue(pEvent, iValue);
-		m_last.value = iValue;
+		if (pEvent == m_pEventDrag)
+			m_last.value = iValue;
 		break;
 	case ResizePitchBendTop:
 	case ResizePitchBendBottom:
@@ -3052,7 +3075,8 @@ void qtractorMidiEditor::resizeEvent (
 		else
 		if (pEditCommand)
 			pEditCommand->resizeEventValue(pEvent, iValue);
-		m_last.pitchBend = iValue;
+		if (pEvent == m_pEventDrag)
+			m_last.pitchBend = iValue;
 		break;
 	default:
 		break;
@@ -3209,6 +3233,59 @@ void qtractorMidiEditor::updateDragMove (
 }
 
 
+// Drag-rescale current selection.
+void qtractorMidiEditor::updateDragRescale (
+	qtractorScrollView *pScrollView, const QPoint& pos )
+{
+	ensureVisible(pScrollView, pos);
+
+	QRect rectUpdateView(m_select.rectView().translated(m_posDelta.x(), 0));
+	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
+
+	QPoint delta(pos - m_posDrag);
+
+	int dx = delta.x();
+	int x0 = m_rectDrag.right() + m_pTimeScale->pixelFromFrame(m_iOffset);
+	int x1 = m_rectDrag.right() + dx;
+	if (x1 < m_rectDrag.left())
+		dx = -(m_rectDrag.width());
+	dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
+
+	int d1 = (m_rectDrag.width() + dx) / m_rectDrag.width();
+	int xe = m_select.rectView().width() * d1;
+	int xv = m_select.rectEvent().width() * d1;
+
+	m_posDelta.setX(dx);
+	m_posDelta.setY(0);
+
+	rectUpdateView = rectUpdateView.united(
+		m_select.rectView().translated(dx + xv, 0));
+	m_pEditView->viewport()->update(QRect(
+		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
+		rectUpdateView.size()));
+
+	rectUpdateEvent = rectUpdateEvent.united(
+		m_select.rectEvent().translated(dx + xe, 0));
+	m_pEditEvent->viewport()->update(QRect(
+		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
+		rectUpdateEvent.size()));
+
+	// Show anchor event tooltip...
+	if (m_bToolTips) {
+		qtractorMidiEvent *pEvent = m_pEventDrag;
+		if (pEvent == NULL)
+			pEvent = m_select.anchorEvent();
+		if (pEvent) {
+			QToolTip::showText(
+				QCursor::pos(),
+				eventToolTip(pEvent,
+					timeDelta(pScrollView), 0, valueDelta(pScrollView)),
+				pScrollView->viewport());
+		}
+	}
+}
+
+
 // Drag-resize current selection (also editing).
 void qtractorMidiEditor::updateDragResize (
 	qtractorScrollView *pScrollView, const QPoint& pos )
@@ -3261,13 +3338,13 @@ void qtractorMidiEditor::updateDragResize (
 	m_posDelta.setY(dy);
 
 	rectUpdateView = rectUpdateView.united(
-		m_select.rectView().translated(m_posDelta.x(), 0));
+		m_select.rectView().translated(dx, 0));
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
 		rectUpdateView.size()));
 
 	rectUpdateEvent = rectUpdateEvent.united(
-		m_select.rectEvent().translated(m_posDelta));
+		m_select.rectEvent().translated(dx, dy));
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
@@ -3459,6 +3536,67 @@ void qtractorMidiEditor::executeDragResize (
 }
 
 
+// Finalize the event drag-rescale.
+void qtractorMidiEditor::executeDragRescale (
+	qtractorScrollView *pScrollView, const QPoint& pos )
+{
+	if (m_pMidiClip == NULL)
+		return;
+	if (m_pEventDrag == NULL)
+		return;
+
+	updateDragRescale(pScrollView, pos);
+
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
+	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+
+	int x1, x2;
+	unsigned long t1, t2;
+	unsigned long d1, d2;
+
+	t1 = t0 + m_pEventDrag->time();
+	pNode = cursor.seekTick(t1);
+	x1 = pNode->pixelFromTick(t1);
+	d1 = m_pEventDrag->duration();
+
+	x2 = x1 + m_posDelta.x();
+	pNode = cursor.seekPixel(x2);
+	t2 = pNode->tickFromPixel(x2);
+
+	long iTimeDelta = long(pNode->tickSnap(t2)) - long(t1);
+
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("rescale"));
+
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		if ((pItem->flags & 1) == 0)
+			continue;
+		d2 = pEvent->duration() * (d1 + iTimeDelta) / d1;
+		if (d2 < 1)
+			d2 = 1;
+		t2 = t0 + pEvent->time();
+		if (t2 > t1)
+			t2 = t1 + (t2 - t1) * (d1 + iTimeDelta) / d1;
+		if (t2 < t0)
+			t2 = t0;
+		pEditCommand->resizeEventTime(pEvent, t2 - t0, d2);
+		if (pEvent == m_pEventDrag) {
+			m_last.note = pEvent->note();
+			m_last.duration = d2;
+		}
+	}
+
+	// Make it as an undoable command...
+	m_pCommands->exec(pEditCommand);
+}
+
+
 // Finalize the event drag-paste.
 void qtractorMidiEditor::executeDragPaste (
 	qtractorScrollView *pScrollView, const QPoint& pos )
@@ -3545,11 +3683,13 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 				y  = pItem->rectEvent.bottom();
 			iValue = (8192 * (y0 - y)) / y0;
 			pEditCommand->resizeEventValue(pEvent, iValue);
-			m_last.pitchBend = iValue;
+			if (pEvent == m_pEventDrag)
+				m_last.pitchBend = iValue;
 		} else {
 			iValue = (128 * (y0 - y)) / y0;
 			pEditCommand->resizeEventValue(pEvent, iValue);
-			m_last.value = iValue;
+			if (pEvent == m_pEventDrag)
+				m_last.value = iValue;
 		}
 		pItem->flags &= ~4;
 	}
@@ -3577,6 +3717,32 @@ void qtractorMidiEditor::paintDragState (
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	int x1, y1;
+
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
+	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+
+	unsigned long t1, t2;
+	unsigned long d1, d2;
+	if (m_pEventDrag) {
+		t1 = t0 + m_pEventDrag->time();
+		pNode = cursor.seekTick(t1);
+		x1 = pNode->pixelFromTick(t1);
+		d1 = m_pEventDrag->duration();
+	} else {
+		x1 = x0 + (bEditView ? m_select.rectView().x() : m_select.rectEvent().x());
+		pNode = cursor.seekPixel(x1);
+		t1 = pNode->tickFromPixel(x1);
+		d1 = 0;
+	}
+
+	int x2 = x1 + m_posDelta.x();
+	pNode = cursor.seekPixel(x2);
+	t2 = pNode->tickFromPixel(x2);
+
+	long iTimeDelta = long(pNode->tickSnap(t2)) - long(t1);
+
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
@@ -3588,6 +3754,24 @@ void qtractorMidiEditor::paintDragState (
 		int c = (pEvent == m_pEventDrag ? 64 : 0);
 		QRect rect = (bEditView ? pItem->rectView : pItem->rectEvent);
 		if (!m_bEventDragEdit || pEvent == m_pEventDrag) {
+			if (m_dragState == DragRescale) {
+				if (bEditView || m_bNoteDuration) {
+					if (d1 > 0) {
+						d2 = pEvent->duration() * (d1 + iTimeDelta) / d1;
+						if (d2 < 1)
+							d2 = 1;
+						t2 = t0 + pEvent->time();
+						if (t2 > t1)
+							t2 = t1 + (t2 - t1) * (d1 + iTimeDelta) / d1;
+						if (t2 < t0)
+							t2 = t0;
+						pNode = cursor.seekTick(t2);
+						rect.setLeft(pNode->pixelFromTick(t2) - x0);
+						rect.setRight(pNode->pixelFromTick(t2 + d2) - x0);
+					}
+				}
+			}
+			else
 			if (m_dragState == DragResize) {
 				switch (m_resizeMode) {
 				case ResizeNoteLeft:
@@ -3704,9 +3888,10 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			m_dragCursor = DragNone;
 			pScrollView->unsetCursor();
 		}
-		if (m_dragState == DragMove   ||
-			m_dragState == DragResize ||
-			m_dragState == DragPaste  ||
+		if (m_dragState == DragMove    ||
+			m_dragState == DragResize  ||
+			m_dragState == DragRescale ||
+			m_dragState == DragPaste   ||
 			m_dragState == DragStep) {
 		//	m_select.clear();
 			updateContents();
