@@ -504,6 +504,26 @@ qtractorMidiEditor::ClipBoard qtractorMidiEditor::g_clipboard;
 
 
 //----------------------------------------------------------------------------
+// qtractorMidiEdit::DragTimeScale - Specialized drag/time-scale (draft)...
+
+struct qtractorMidiEditor::DragTimeScale
+{
+	DragTimeScale(qtractorTimeScale *ts, unsigned long offset)
+		: cursor(ts)
+	{
+		node = cursor.seekFrame(offset);
+		t0 = node->tickFromFrame(offset);
+		x0 = ts->pixelFromFrame(offset);
+	}
+
+	qtractorTimeScale::Cursor cursor;
+	qtractorTimeScale::Node *node;
+	unsigned long t0;
+	int x0;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorMidiEditor -- The main MIDI sequence editor widget.
 
 
@@ -2929,31 +2949,28 @@ long qtractorMidiEditor::timeSnap ( long iTime ) const
 // Compute current drag time delta (in ticks).
 long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView ) const
 {
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	DragTimeScale dts(m_pTimeScale, m_iOffset);
 
 	int x1, x2;
 	unsigned long t1, t2;
 
 	if (m_pEventDrag) {
-		t1 = t0 + m_pEventDrag->time();
-		pNode = cursor.seekTick(t1);
-		x1 = pNode->pixelFromTick(t1);
+		t1 = dts.t0 + m_pEventDrag->time();
+		dts.node = dts.cursor.seekTick(t1);
+		x1 = dts.node->pixelFromTick(t1);
 	} else {
-		x1 = x0 + (
+		x1 = dts.x0 + (
 			static_cast<qtractorScrollView *> (m_pEditView) == pScrollView
 			? m_select.rectView().x() : m_select.rectEvent().x());
-		pNode = cursor.seekPixel(x1);
-		t1 = pNode->tickFromPixel(x1);
+		dts.node = dts.cursor.seekPixel(x1);
+		t1 = dts.node->tickFromPixel(x1);
 	}
 
 	x2 = x1 + m_posDelta.x();
-	pNode = cursor.seekPixel(x2);
-	t2 = pNode->tickFromPixel(x2);
+	dts.node = dts.cursor.seekPixel(x2);
+	t2 = dts.node->tickFromPixel(x2);
 
-	return long(pNode->tickSnap(t2)) - long(t1);
+	return long(dts.node->tickSnap(t2)) - long(t1);
 //	return long(t2) - long(t1);
 }
 
@@ -3547,24 +3564,22 @@ void qtractorMidiEditor::executeDragRescale (
 
 	updateDragRescale(pScrollView, pos);
 
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	DragTimeScale dts(m_pTimeScale, m_iOffset);
 
 	int x1, x2;
 	unsigned long t1, t2;
 	unsigned long d1, d2;
 
-	t1 = t0 + m_pEventDrag->time();
-	pNode = cursor.seekTick(t1);
-	x1 = pNode->pixelFromTick(t1);
+	t1 = dts.t0 + m_pEventDrag->time();
+	dts.node = dts.cursor.seekTick(t1);
+	x1 = dts.node->pixelFromTick(t1);
 	d1 = m_pEventDrag->duration();
 
 	x2 = x1 + m_posDelta.x();
-	pNode = cursor.seekPixel(x2);
-	t2 = pNode->tickFromPixel(x2);
+	dts.node = dts.cursor.seekPixel(x2);
+	t2 = dts.node->tickFromPixel(x2);
 
-	long iTimeDelta = long(pNode->tickSnap(t2)) - long(t1);
+	long iTimeDelta = long(dts.node->tickSnap(t2)) - long(t1);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("rescale"));
@@ -3580,12 +3595,12 @@ void qtractorMidiEditor::executeDragRescale (
 		d2 = pEvent->duration() * (d1 + iTimeDelta) / d1;
 		if (d2 < 1)
 			d2 = 1;
-		t2 = t0 + pEvent->time();
+		t2 = dts.t0 + pEvent->time();
 		if (t2 > t1)
 			t2 = t1 + (t2 - t1) * (d1 + iTimeDelta) / d1;
-		if (t2 < t0)
-			t2 = t0;
-		pEditCommand->resizeEventTime(pEvent, t2 - t0, d2);
+		if (t2 < dts.t0)
+			t2 = dts.t0;
+		pEditCommand->resizeEventTime(pEvent, t2 - dts.t0, d2);
 		if (pEvent == m_pEventDrag) {
 			m_last.note = pEvent->note();
 			m_last.duration = d2;
@@ -3718,30 +3733,25 @@ void qtractorMidiEditor::paintDragState (
 
 	int x1, y1;
 
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	DragTimeScale *pDts = NULL;
 
-	unsigned long t1, t2;
-	unsigned long d1, d2;
-	if (m_pEventDrag) {
-		t1 = t0 + m_pEventDrag->time();
-		pNode = cursor.seekTick(t1);
-		x1 = pNode->pixelFromTick(t1);
-		d1 = m_pEventDrag->duration();
-	} else {
-		x1 = x0 + (bEditView ? m_select.rectView().x() : m_select.rectEvent().x());
-		pNode = cursor.seekPixel(x1);
-		t1 = pNode->tickFromPixel(x1);
-		d1 = 0;
+	unsigned long t1 = 0, t2;
+	unsigned long d1 = 0, d2;
+	long iTimeDelta = 0;
+
+	if (m_dragState == DragRescale) {
+		pDts = new DragTimeScale(m_pTimeScale, m_iOffset);
+		if (m_pEventDrag) {
+			t1 = pDts->t0 + m_pEventDrag->time();
+			pDts->node = pDts->cursor.seekTick(t1);
+			x1 = pDts->node->pixelFromTick(t1);
+			d1 = m_pEventDrag->duration();
+			x1 += m_posDelta.x();
+			pDts->node = pDts->cursor.seekPixel(x1);
+			t2 = pDts->node->tickFromPixel(x1);
+			iTimeDelta = long(pDts->node->tickSnap(t2)) - long(t1);
+		}
 	}
-
-	int x2 = x1 + m_posDelta.x();
-	pNode = cursor.seekPixel(x2);
-	t2 = pNode->tickFromPixel(x2);
-
-	long iTimeDelta = long(pNode->tickSnap(t2)) - long(t1);
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
@@ -3754,21 +3764,19 @@ void qtractorMidiEditor::paintDragState (
 		int c = (pEvent == m_pEventDrag ? 64 : 0);
 		QRect rect = (bEditView ? pItem->rectView : pItem->rectEvent);
 		if (!m_bEventDragEdit || pEvent == m_pEventDrag) {
-			if (m_dragState == DragRescale) {
-				if (bEditView || m_bNoteDuration) {
-					if (d1 > 0) {
-						d2 = pEvent->duration() * (d1 + iTimeDelta) / d1;
-						if (d2 < 1)
-							d2 = 1;
-						t2 = t0 + pEvent->time();
-						if (t2 > t1)
-							t2 = t1 + (t2 - t1) * (d1 + iTimeDelta) / d1;
-						if (t2 < t0)
-							t2 = t0;
-						pNode = cursor.seekTick(t2);
-						rect.setLeft(pNode->pixelFromTick(t2) - x0);
-						rect.setRight(pNode->pixelFromTick(t2 + d2) - x0);
-					}
+			if (pDts /*m_dragState == DragRescale*/) {
+				if ((bEditView || m_bNoteDuration) && (d1 > 0)) {
+					d2 = pEvent->duration() * (d1 + iTimeDelta) / d1;
+					if (d2 < 1)
+						d2 = 1;
+					t2 = pDts->t0 + pEvent->time();
+					if (t2 > t1)
+						t2 = t1 + (t2 - t1) * (d1 + iTimeDelta) / d1;
+					if (t2 < pDts->t0)
+						t2 = pDts->t0;
+					pDts->node = pDts->cursor.seekTick(t2);
+					rect.setLeft(pDts->node->pixelFromTick(t2) - pDts->x0);
+					rect.setRight(pDts->node->pixelFromTick(t2 + d2) - pDts->x0);
 				}
 			}
 			else
@@ -3842,6 +3850,9 @@ void qtractorMidiEditor::paintDragState (
 			pScrollView->contentsToViewport(rect.topLeft()),
 			rect.size()), QColor(c, 0, 255 - c, 120));
 	}
+
+	// Cleanup.
+	if (pDts) delete pDts;
 
 	// Paint drag(draw) event-value line...
 	if (!bEditView && m_dragState == DragEventResize) {
