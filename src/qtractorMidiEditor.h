@@ -464,6 +464,9 @@ protected:
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
 
+	// Specialized drag/time-scale (draft)...
+	struct DragTimeScale;
+
 protected slots:
 
 	// Horizontal zoom view slots.
