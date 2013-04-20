@@ -6264,40 +6264,40 @@ Length:	%3</source>
         <translation>レンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3488"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3517"/>
         <source>move</source>
         <translation>移動</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3528"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3557"/>
         <source>edit</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3528"/>
-        <location filename="../qtractorMidiEditor.cpp" line="3680"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3557"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3746"/>
         <source>resize</source>
         <translation>リサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3585"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3627"/>
         <source>rescale</source>
         <translation type="unfinished">リスケール</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3631"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3697"/>
         <source>paste</source>
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4079"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4173"/>
         <source>Time:	%1
 Type:	</source>
         <translation>時間:	%1
 種類:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4088"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4182"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration:	%4</source>
@@ -6306,14 +6306,14 @@ Duration:	%4</source>
 デュレーション	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4095"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4189"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>キープレス (%1) %2
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4101"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4195"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -6322,34 +6322,34 @@ Value:	%3</source>
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4107"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4201"/>
         <source>Pgm Change (%1)</source>
         <translation>Pgmチェンジ (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4111"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4205"/>
         <source>Chan Press (%1)</source>
         <translation>チャンネルプレス (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4115"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4209"/>
         <source>Pitch Bend (%1)</source>
         <translation>ピッチベンド (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4122"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4216"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1バイト)
 データ: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4134"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4228"/>
         <source>Unknown (%1)</source>
         <translation>不明 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4383"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4477"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
