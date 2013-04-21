@@ -7115,40 +7115,40 @@ Délka:	%3</translation>
         <translation>Vložit rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3512"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3514"/>
         <source>move</source>
         <translation>Přesunout</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3552"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3554"/>
         <source>edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3552"/>
-        <location filename="../qtractorMidiEditor.cpp" line="3741"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3554"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3760"/>
         <source>resize</source>
         <translation>Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3622"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3628"/>
         <source>rescale</source>
         <translation type="unfinished">Změnit měřítko</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3692"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3711"/>
         <source>paste</source>
         <translation>Vložit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4171"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4224"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Čas:	%1
 Typ:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4180"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4233"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration:	%4</source>
@@ -7157,14 +7157,14 @@ Rychlost:	%3
 Doba trvání:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4187"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4240"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>Zmáčknout klávesu (%1) %2
 Hodnota:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4193"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4246"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -7173,17 +7173,17 @@ Název:	%2
 Hodnota:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4199"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4252"/>
         <source>Pgm Change (%1)</source>
         <translation>Změnit Pgm (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4203"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4256"/>
         <source>Chan Press (%1)</source>
         <translation>Stisknout kanál (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4207"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4260"/>
         <source>Pitch Bend (%1)</source>
         <translation>Změna výšky tónu (%1)</translation>
     </message>
@@ -7192,19 +7192,19 @@ Hodnota:	%3</translation>
         <translation type="obsolete">Ohyb výšky tónu (%d)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4214"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4267"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bajtů)
 Data: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4226"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4279"/>
         <source>Unknown (%1)</source>
         <translation>Neznámý (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4475"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4528"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
