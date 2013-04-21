@@ -2448,9 +2448,10 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			}
 			else
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
-				const int y0 = (((m_pEditEvent->viewport())->height() & ~1) >> 1);
-				if ((pos.y() > y0 && pos.y() > m_rectDrag.bottom() - 4) ||
-					(pos.y() < y0 && pos.y() < m_rectDrag.top() + 4)) {
+				const int y0
+					= (((m_pEditEvent->viewport())->height() & ~1) >> 1);
+				if ((pos.y() < y0 && pos.y() < m_rectDrag.top()    + 4) ||
+					(pos.y() > y0 && pos.y() > m_rectDrag.bottom() - 4)) {
 					m_resizeMode = ResizePitchBend;
 					shape = Qt::SplitVCursor;
 				}
@@ -2467,6 +2468,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			}
 		}
 		if ((m_resizeMode == ResizeNoteRight ||
+			 m_resizeMode == ResizePitchBend ||
 			 m_resizeMode == ResizeValue)
 			&& (modifiers & Qt::ControlModifier))
 			m_dragCursor = DragRescale;
@@ -2570,6 +2572,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 				}
 				// Start drag-resizing/rescaling...
 				if ((m_resizeMode == ResizeNoteRight ||
+					 m_resizeMode == ResizePitchBend ||
 					 m_resizeMode == ResizeValue)
 					&& (modifiers & Qt::ControlModifier)) {
 					m_dragState = DragRescale;
@@ -3255,20 +3258,24 @@ void qtractorMidiEditor::updateDragRescale (
 	ensureVisible(pScrollView, pos);
 
 	QRect rectUpdateView(m_select.rectView().translated(m_posDelta.x(), 0));
-	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
+	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta.x(), 0));
+
+	const QRect& rectEvent = (m_pEditEvent->viewport())->rect();
+	rectUpdateEvent.setTop(rectEvent.top());
+	rectUpdateEvent.setBottom(rectEvent.bottom());
 
 	QPoint delta(pos - m_posDrag);
 
 	int x0, x1;
 	int y0, y1;
 
-	int d1, v1;
+	int d1;
+
 	int dx = 0;
 	int dy = 0;
 
 	int xv = 0;
 	int xe = 0;
-	int ye = 0;
 
 	switch (m_resizeMode) {
 	case ResizeNoteRight:
@@ -3283,14 +3290,11 @@ void qtractorMidiEditor::updateDragRescale (
 		xe = m_select.rectView().width() * d1;
 		break;
 	case ResizeValue:
+	case ResizePitchBend:
 		dy = delta.y();
-		v1 = (m_rectDrag.height() + dy) / m_rectDrag.height();
 		y0 = m_rectDrag.bottom();
 		y1 = y0 + dy;
-		if (y1 < 0)
-			y1 = 0;
 		dy = y1 - y0;
-		ye = m_select.rectEvent().height() * v1;
 		// Fall thru...
 	default:
 		break;
@@ -3306,7 +3310,7 @@ void qtractorMidiEditor::updateDragRescale (
 		rectUpdateView.size()));
 
 	rectUpdateEvent = rectUpdateEvent.united(
-		m_select.rectEvent().translated(dx + xe, dy - ye));
+		m_select.rectEvent().translated(dx + xe, 0));
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
@@ -3367,8 +3371,6 @@ void qtractorMidiEditor::updateDragResize (
 		dy = delta.y();
 		y0 = m_rectDrag.bottom();
 		y1 = y0 + dy;
-		if (y1 < 0)
-			y1 = 0;
 		dy = y1 - y0;
 		// Fall thru...
 	default:
@@ -3613,6 +3615,10 @@ void qtractorMidiEditor::executeDragRescale (
 	case ResizeValue:
 		v1 = m_pEventDrag->value();
 		iValueDelta = valueDelta(pScrollView);
+		break;
+	case ResizePitchBend:
+		v1 = m_pEventDrag->pitchBend();
+		iValueDelta = valueDelta(pScrollView);
 		// Fall thru...
 	default:
 		break;
@@ -3658,6 +3664,19 @@ void qtractorMidiEditor::executeDragRescale (
 				pEditCommand->resizeEventValue(pEvent, v2);
 				if (pEvent == m_pEventDrag)
 					m_last.value = v2;
+			}
+			break;
+		case ResizePitchBend:
+			if (v1) {
+				v2 = pEvent->pitchBend() * (v1 + iValueDelta) / v1;
+				if (v2 < -8191)
+					v2 = -8191;
+				else
+				if (v2 > +8191)
+					v2 = +8191;
+				pEditCommand->resizeEventValue(pEvent, v2);
+				if (pEvent == m_pEventDrag)
+					m_last.pitchBend = v2;
 			}
 			// Fall thru...
 		default:
@@ -3819,6 +3838,10 @@ void qtractorMidiEditor::paintDragState (
 		case ResizeValue:
 			v1 = m_pEventDrag->value();
 			iValueDelta = valueDelta(pScrollView);
+			break;
+		case ResizePitchBend:
+			v1 = m_pEventDrag->pitchBend();
+			iValueDelta = valueDelta(pScrollView);
 			// Fall thru...
 		default:
 			break;
@@ -3862,6 +3885,36 @@ void qtractorMidiEditor::paintDragState (
 						if (y1 < 0)
 							y1 = 0;
 						rect.setTop(y1);
+					}
+					break;
+				case ResizePitchBend:
+					if (v1) {
+						const int y0
+							= ((m_pEditEvent->viewport())->height() & ~1) >> 1;
+						y1 = rect.height() * (v1 + iValueDelta) / v1;
+						if (y0 > rect.top()) {
+							y1 = rect.bottom() - y1;
+							if (y1 < 0)
+								y1 = 0;
+							if (y1 > rect.bottom()) {
+								rect.setTop(rect.bottom());
+								rect.setBottom(y1);
+							} else {
+								rect.setTop(y1);
+							}
+						}
+						else
+						if (y0 < rect.bottom()) {
+							y1 = rect.top() + y1;
+							if (y1 < 0)
+								y1 = 0;
+							if (y1 < rect.top()) {
+								rect.setBottom(rect.top());
+								rect.setTop(y1);
+							} else {
+								rect.setBottom(y1);
+							}
+						}
 					}
 					// Fall thru...
 				default:

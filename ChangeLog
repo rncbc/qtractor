@@ -11,8 +11,8 @@ SVN TRUNK
   an interesting idea/ticket by Joel Leclerc, thanks);
 
 - The new MIDI clip editor rescale mode also applicable to event
-  values (eg. note velocities), while ctrl+dragging the top edge
-  of an event vertical bar.
+  values (eg. note velocities, pitch-bend), while ctrl+dragging
+  the edges of an event vertical bar.
 
 - VST plugin (GUI) idle timer makes a comeback. (EXPERIMENTAL)
 

@@ -71,10 +71,12 @@ struct DssiEditor
 };
 
 
-static lo_server_thread    g_oscThread;
-static QString             g_sOscPath;
-static QList<DssiEditor *> g_dssiEditors;
-static QMutex              g_oscMutex;
+static lo_server_thread g_oscThread;
+
+static QString g_sOscPath;
+static QMutex  g_oscMutex;
+
+static QHash<QString, DssiEditor *> g_dssiEditors;
 
 
 static QString osc_label ( qtractorDssiPlugin *pDssiPlugin )
@@ -90,15 +92,7 @@ static DssiEditor *osc_find_editor ( const QString& sOscLabel )
 	qDebug("osc_find_editor(\"%s\")", sOscLabel.toUtf8().constData());
 #endif
 
-	QListIterator<DssiEditor *> iter(g_dssiEditors);
-	while (iter.hasNext()) {
-		DssiEditor *pDssiEditor = iter.next();
-		qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin; 
-		if (pDssiPlugin && osc_label(pDssiPlugin) == sOscLabel)
-			return pDssiEditor;
-	}
-
-	return NULL;
+	return g_dssiEditors.value(sOscLabel, NULL);
 }
 
 
@@ -422,11 +416,8 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 
 	pDssiEditor->plugin = NULL;
 
-	int iDssiEditor = g_dssiEditors.indexOf(pDssiEditor);
-	if (iDssiEditor >= 0) {
-		g_dssiEditors.removeAt(iDssiEditor);
+	if (g_dssiEditors.remove(osc_label(pDssiPlugin)) > 0)
 		delete pDssiEditor;
-	}
 
 	return 0;
 }
@@ -529,7 +520,7 @@ static DssiEditor *osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
 		osc_start();
 
 	DssiEditor *pDssiEditor = new DssiEditor(pDssiPlugin);
-	g_dssiEditors.append(pDssiEditor);
+	g_dssiEditors.insert(osc_label(pDssiPlugin), pDssiEditor);
 
 	return pDssiEditor;
 }
@@ -1343,10 +1334,12 @@ void qtractorDssiPlugin::clearEditor (void)
 void qtractorDssiPlugin::idleEditorAll (void)
 {
 #ifdef CONFIG_LIBLO
-	QListIterator<DssiEditor *> iter(g_dssiEditors);
-	while (iter.hasNext()) {
-		DssiEditor *pDssiEditor = iter.next();
-		qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
+	QHash<QString, DssiEditor *>::ConstIterator iter
+		= g_dssiEditors.constBegin();
+	const QHash<QString, DssiEditor *>::ConstIterator& iter_end
+		= g_dssiEditors.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorDssiPlugin *pDssiPlugin = iter.value()->plugin;
 		if (pDssiPlugin)
 			pDssiPlugin->updateControlOuts();
 	}
