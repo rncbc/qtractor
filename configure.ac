@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.8.5, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.8.6, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -185,6 +185,12 @@ AC_ARG_ENABLE(jack-latency,
   AC_HELP_STRING([--enable-jack-latency], [enable JACK latency support (default=yes)]),
   [ac_jack_latency="$enableval"],
   [ac_jack_latency="yes"])
+
+# Enable NSM support.
+AC_ARG_ENABLE(nsm,
+  AC_HELP_STRING([--enable-nsm], [enable NSM support (default=yes)]),
+  [ac_nsm="$enableval"],
+  [ac_nsm="yes"])
 
 # Enable X11 unique/single instance.
 AC_ARG_ENABLE(xunique,
@@ -569,7 +575,10 @@ if test "x$ac_liblo" = "xyes"; then
    else
       AC_MSG_WARN([*** lo library not found.])
       AC_MSG_WARN([*** OSC service support will be disabled.])
+      ac_nsm="no"
    fi
+else
+   ac_nsm="no"
 fi
 
 # Check for optional libz library.
@@ -729,6 +738,7 @@ if test "x$ac_liblo" = "xyes"; then
    AC_CHECK_HEADER(lo/lo.h, [ac_lo_h="yes"], [ac_lo_h="no"])
    if test "x$ac_lo_h" = "xno"; then
       AC_MSG_ERROR([lo.h header file not found.])
+      ac_nsm="no"
    fi
 fi
 
@@ -1035,6 +1045,11 @@ if test "x$ac_jack_session" = "xyes"; then
    fi
 fi
 
+# Check for NSM support.
+if test "x$ac_nsm" = "xyes"; then
+   AC_DEFINE(CONFIG_NSM, 1, [Define if NSM support is available.])
+fi
+
 # Check for X11 unique/single instance.
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
@@ -1104,6 +1119,8 @@ echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
+echo
+echo "  NSM support (EXPERIMENTAL) . . . . . . . . . . . .: $ac_nsm"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
