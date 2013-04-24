@@ -1665,14 +1665,19 @@ bool qtractorMainForm::newSession (void)
 	if (!closeSession())
 		return false;
 
+	// Something always takes some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 #ifdef CONFIG_LV2
 	qtractorLv2PluginType::lv2_open();
 #endif
 
-	// Check whether we start new session
+	// Check whether we start the new session
 	// based on existing template...
-	if (m_pOptions && m_pOptions->bSessionTemplate)
+	if (m_pOptions && m_pOptions->bSessionTemplate) {
+		QApplication::restoreOverrideCursor();
 		return loadSessionFileEx(m_pOptions->sSessionTemplatePath, true, false);
+	}
 
 	// Prepare the session engines...
 	updateSessionPre();
@@ -1684,6 +1689,9 @@ bool qtractorMainForm::newSession (void)
 	m_sFilename.clear();
 //	m_iDirtyCount = 0;
 	appendMessages(tr("New session: \"%1\".").arg(sessionName(m_sFilename)));
+
+	// Almost done...
+	QApplication::restoreOverrideCursor();
 
 	// Give us what we got, right now...
 	updateSessionPost();
@@ -2017,9 +2025,6 @@ bool qtractorMainForm::loadSessionFileEx (
 		sFilename.toUtf8().constData(), int(bTemplate), int(bUpdate));
 #endif
 
-	// Warm-up the session engines...
-	updateSessionPre();
-
 	// Flag whether we're about to save as template or archive...
 	QFileInfo info(sFilename);
 	int iFlags = qtractorDocument::Default;
@@ -2049,8 +2054,15 @@ bool qtractorMainForm::loadSessionFileEx (
 				"Do you want to replace it?")
 				.arg(info.filePath()),
 				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
+				// Restarting...
+				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+			#ifdef CONFIG_LV2
+				qtractorLv2PluginType::lv2_open();
+			#endif
+				updateSessionPre();
 				++m_iUntitled;
 				m_sFilename.clear();
+				QApplication::restoreOverrideCursor();
 				updateSessionPost();
 				return false;
 			}
@@ -2065,7 +2077,10 @@ bool qtractorMainForm::loadSessionFileEx (
 #ifdef CONFIG_LV2
 	qtractorLv2PluginType::lv2_open();
 #endif
-		
+
+	// Warm-up the session engines...
+	updateSessionPre();
+
 	// Read the file.
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
@@ -2095,11 +2110,11 @@ bool qtractorMainForm::loadSessionFileEx (
 	}
 
 	// Stabilize form title...
-	if (!bTemplate && bUpdate) {
-		m_sFilename = sFilename;
-	} else {
+	if (bTemplate) {
 		++m_iUntitled;
 		m_sFilename.clear();
+	} else if (bUpdate) {
+		m_sFilename = sFilename;
 	}
 
 	appendMessages(tr("Open session: \"%1\".").arg(sessionName(sFilename)));
@@ -2242,29 +2257,35 @@ void qtractorMainForm::openNsmSession (void)
 	qDebug("qtractorMainForm::openNsmSession()");
 #endif
 
+	m_iDirtyCount = 0;
+
 	const QString& path_name    = m_pNsmClient->path_name();
 	const QString& display_name = m_pNsmClient->display_name();
 	const QString& client_id    = m_pNsmClient->client_id();
 
 	bool bOpen = false;
 
-	m_iDirtyCount = 0;
-
 	if (closeSession()) {
+		m_pSession->setSessionDir(path_name);
 		m_pSession->setSessionName(display_name);
 		m_pSession->setClientName(client_id);
 		const QFileInfo fi(path_name, display_name
 			+ '.' + qtractorDocument::defaultExt());
-		m_sFilename = fi.absoluteFilePath();
+		const QString& sFilename = fi.absoluteFilePath();
 		if (fi.exists()) {
-			bOpen = loadSessionFileEx(m_sFilename, false, false);
+			bOpen = loadSessionFileEx(sFilename, false, false);
 		} else {
+			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 			updateSessionPre();
 			QDir dir(path_name);
 			if (!dir.exists())
 				dir.mkpath(path_name);
+		#ifdef CONFIG_LV2
+			qtractorLv2PluginType::lv2_open();
+		#endif
 			appendMessages(tr("New session: \"%1\".")
-				.arg(sessionName(m_sFilename)));
+				.arg(sessionName(sFilename)));
+			QApplication::restoreOverrideCursor();
 			updateSessionPost();
 			bOpen = true;
 		}
@@ -2288,12 +2309,20 @@ void qtractorMainForm::saveNsmSession (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::openNsmSession()");
+	qDebug("qtractorMainForm::saveNsmSession()");
 #endif
 
-	bool bSave = saveSessionFileEx(m_sFilename, false, false);
-
 	m_iDirtyCount = 0;
+
+	const QString& path_name    = m_pNsmClient->path_name();
+	const QString& display_name = m_pNsmClient->display_name();
+//	const QString& client_id    = m_pNsmClient->client_id();
+
+	const QFileInfo fi(path_name, display_name
+		+ '.' + qtractorDocument::defaultExt());
+	const QString& sFilename = fi.absoluteFilePath();
+
+	bool bSave = saveSessionFileEx(sFilename, false, false);
 
 	m_pNsmClient->save_reply(bSave
 		? qtractorNsmClient::ERR_OK
@@ -2342,6 +2371,13 @@ void qtractorMainForm::fileOpenRecent (void)
 // Save current sampler session.
 void qtractorMainForm::fileSave (void)
 {
+#ifdef CONFIG_NSM
+	if (m_pNsmClient) {
+		saveNsmSession();
+		return;
+	}
+#endif
+
 	// Save it right away.
 	saveSession(false);
 }
@@ -2350,6 +2386,13 @@ void qtractorMainForm::fileSave (void)
 // Save current sampler session with another name.
 void qtractorMainForm::fileSaveAs (void)
 {
+#ifdef CONFIG_NSM
+	if (m_pNsmClient) {
+	//	saveNsmSession();
+		return;
+	}
+#endif
+
 	// Save it right away, maybe with another name.
 	saveSession(true);
 }
@@ -5370,6 +5413,9 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Update the main menu state...
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
+#ifdef CONFIG_NSM
+	m_ui.fileSaveAsAction->setEnabled(m_pNsmClient == NULL);
+#endif
 
 	// Update edit menu state...
 	qtractorCommandList *pCommands = m_pSession->commands();
