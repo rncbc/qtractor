@@ -75,6 +75,7 @@ headers = \
 	src/qtractorMidiTimer.h \
 	src/qtractorMixer.h \
 	src/qtractorMonitor.h \
+	src/qtractorNsmClient.h \
 	src/qtractorObserver.h \
 	src/qtractorObserverWidget.h \
 	src/qtractorOscControl.h \
@@ -186,6 +187,7 @@ sources = \
 	src/qtractorMidiSequence.cpp \
 	src/qtractorMidiTimer.cpp \
 	src/qtractorMixer.cpp \
+	src/qtractorNsmClient.cpp \
 	src/qtractorObserver.cpp \
 	src/qtractorObserverWidget.cpp \
 	src/qtractorOscControl.cpp \

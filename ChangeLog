@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- NSM support is being introduced. (EXPERIMENTAL)
+
 - The MIDI clip editor (aka. piano-roll) gets a brand new rescale
   mode: ctrl+dragging the right edge of a note now rescales all
   times and duration of all the subsequent selected notes (after
