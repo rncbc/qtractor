@@ -26,6 +26,7 @@
 #include "qtractorNsmClient.h"
 
 #include <QApplication>
+#include <QFileInfo>
 
 #define NSM_API_VERSION_MAJOR 1
 #define NSM_API_VERSION_MINOR 0
@@ -170,12 +171,13 @@ void qtractorNsmClient::announce (
 {
 #ifdef CONFIG_LIBLO
 	if (m_address && m_server) {
+		const QFileInfo fi(QApplication::applicationFilePath());
 		lo_send_from(m_address,
 			m_server, LO_TT_IMMEDIATE,
 			"/nsm/server/announce", "sssiii",
 			app_name.toUtf8().constData(),
 			capabilities.toUtf8().constData(),
-			QApplication::applicationFilePath().toUtf8().constData(),
+			fi.fileName().toUtf8().constData(),
 			NSM_API_VERSION_MAJOR,
 			NSM_API_VERSION_MINOR,
 			int(QApplication::applicationPid()));

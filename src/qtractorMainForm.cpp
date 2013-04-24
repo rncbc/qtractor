@@ -2266,9 +2266,8 @@ void qtractorMainForm::openNsmSession (void)
 	bool bOpen = false;
 
 	if (closeSession()) {
-		m_pSession->setSessionDir(path_name);
-		m_pSession->setSessionName(display_name);
 		m_pSession->setClientName(client_id);
+		m_pSession->setSessionName(display_name);
 		const QFileInfo fi(path_name, display_name
 			+ '.' + qtractorDocument::defaultExt());
 		const QString& sFilename = fi.absoluteFilePath();
@@ -2276,10 +2275,11 @@ void qtractorMainForm::openNsmSession (void)
 			bOpen = loadSessionFileEx(sFilename, false, false);
 		} else {
 			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-			updateSessionPre();
 			QDir dir(path_name);
 			if (!dir.exists())
 				dir.mkpath(path_name);
+			m_pSession->setSessionDir(path_name);
+			updateSessionPre();
 		#ifdef CONFIG_LV2
 			qtractorLv2PluginType::lv2_open();
 		#endif
