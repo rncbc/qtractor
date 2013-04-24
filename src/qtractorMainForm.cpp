@@ -91,6 +91,10 @@
 #include <jack/session.h>
 #endif
 
+#ifdef CONFIG_NSM
+#include "qtractorNsmClient.h"
+#endif
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -1354,7 +1358,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			m_pOptions->sSessionFile.clear();
 			// Take appropriate action when session is loaded from
 			// some foreign session manager (eg. JACK session)...
-			bool bLadishApp = !QString(::getenv("LADISH_APP_NAME")).isEmpty();
+			const QString& sLadishAppName
+				= QString::fromLatin1(::getenv("LADISH_APP_NAME"));
+			bool bLadishApp = !sLadishAppName.isEmpty();
 			if (bSessionId || bLadishApp) {
 				// JACK session manager will take care of audio connections...
 				if (pAudioEngine)
@@ -1365,6 +1371,21 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			}
 		}
 	} else {
+	#ifdef CONFIG_NSM
+		// Check whether to participate into a NSM session...
+		const QString& sNsmUrl
+			= QString::fromLatin1(::getenv("NSM_URL"));
+		if (!sNsmUrl.isEmpty()) {
+			m_pNsmClient = new qtractorNsmClient(sNsmUrl);
+			QObject::connect(m_pNsmClient,
+				SIGNAL(open()),
+				SLOT(openNsmSession()));
+			QObject::connect(m_pNsmClient,
+				SIGNAL(save()),
+				SLOT(saveNsmSession()));
+			m_pNsmClient->announce(QTRACTOR_TITLE, ":switch:dirty:");
+		}
+	#endif
 		// Change to last known session dir...
 		if (!m_pOptions->sSessionDir.isEmpty()) {
 			if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
@@ -2201,6 +2222,84 @@ bool qtractorMainForm::saveSessionFileEx (
 bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 {
 	return saveSessionFileEx(sFilename, false, true);
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorMainForm -- NSM client slots.
+
+void qtractorMainForm::openNsmSession (void)
+{
+#ifdef CONFIG_NSM
+
+	if (m_pNsmClient == NULL)
+		return;
+
+	if (!m_pNsmClient->is_active())
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::openNsmSession()");
+#endif
+
+	const QString& path_name    = m_pNsmClient->path_name();
+	const QString& display_name = m_pNsmClient->display_name();
+	const QString& client_id    = m_pNsmClient->client_id();
+
+	bool bOpen = false;
+
+	m_iDirtyCount = 0;
+
+	if (closeSession()) {
+		m_pSession->setSessionName(display_name);
+		m_pSession->setClientName(client_id);
+		const QFileInfo fi(path_name, display_name
+			+ '.' + qtractorDocument::defaultExt());
+		m_sFilename = fi.absoluteFilePath();
+		if (fi.exists()) {
+			bOpen = loadSessionFileEx(m_sFilename, false, false);
+		} else {
+			updateSessionPre();
+			QDir dir(path_name);
+			if (!dir.exists())
+				dir.mkpath(path_name);
+			appendMessages(tr("New session: \"%1\".")
+				.arg(sessionName(m_sFilename)));
+			updateSessionPost();
+			bOpen = true;
+		}
+	}
+
+	m_pNsmClient->open_reply(bOpen
+		? qtractorNsmClient::ERR_OK
+		: qtractorNsmClient::ERR_GENERAL);
+
+#endif	// CONFIG_NSM
+}
+
+void qtractorMainForm::saveNsmSession (void)
+{
+#ifdef CONFIG_NSM
+
+	if (m_pNsmClient == NULL)
+		return;
+
+	if (!m_pNsmClient->is_active())
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::openNsmSession()");
+#endif
+
+	bool bSave = saveSessionFileEx(m_sFilename, false, false);
+
+	m_iDirtyCount = 0;
+
+	m_pNsmClient->save_reply(bSave
+		? qtractorNsmClient::ERR_OK
+		: qtractorNsmClient::ERR_GENERAL);
+
+#endif	// CONFIG_NSM
 }
 
 

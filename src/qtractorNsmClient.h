@@ -23,7 +23,6 @@
 #define __qtractorNsmClient_h
 
 #include <QObject>
-#include <QString>
 
 #ifdef CONFIG_LIBLO
 #include <lo/lo.h>
@@ -59,8 +58,7 @@ public:
 
 	// Session client methods.
 	void announce(const QString& app_name, const QString& capabilities);
-	void is_dirty();
-	void is_clean();
+	void dirty(bool is_dirty);
 	void progress(float percent);
 	void message(int priority, const QString& mesg);
 

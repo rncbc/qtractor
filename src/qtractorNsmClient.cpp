@@ -224,25 +224,16 @@ const QString& qtractorNsmClient::client_id (void) const
 
 
 // Session client methods.
-void qtractorNsmClient::is_dirty (void)
+void qtractorNsmClient::dirty ( bool is_dirty )
 {
 #ifdef CONFIG_LIBLO
 	if (m_address && m_server && m_active) {
+		const char *path = is_dirty
+			? "/nsm/client/is_dirty"
+			: "/nsm/client/is_clean";
 		lo_send_from(m_address,
 			m_server, LO_TT_IMMEDIATE,
-			"/nsm/client/is_dirty", "");
-	}
-#endif
-}
-
-
-void qtractorNsmClient::is_clean (void)
-{
-#ifdef CONFIG_LIBLO
-	if (m_address && m_server && m_active) {
-		lo_send_from(m_address,
-			m_server, LO_TT_IMMEDIATE,
-			"/nsm/client/is_clean", "");
+			path, "");
 	}
 #endif
 }

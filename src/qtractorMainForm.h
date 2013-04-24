@@ -52,6 +52,8 @@ class qtractorMidiEditor;
 class qtractorMidiControlObserver;
 class qtractorSubject;
 
+class qtractorNsmClient;
+
 class QLabel;
 class QComboBox;
 class QProgressBar;
@@ -325,6 +327,9 @@ public slots:
 	void handle_sigusr1();
 	void handle_sigterm();
 
+	void openNsmSession();
+	void saveNsmSession();
+
 protected:
 
 	void closeEvent(QCloseEvent *pCloseEvent);
@@ -415,6 +420,7 @@ private:
 	qtractorThumbView *m_pThumbView;
 	qtractorTempoCursor *m_pTempoCursor;
 	qtractorMidiControl *m_pMidiControl;
+	qtractorNsmClient *m_pNsmClient;
 	unsigned long m_iPlayHead;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
