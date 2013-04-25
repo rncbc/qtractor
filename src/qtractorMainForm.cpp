@@ -1384,6 +1384,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 				SIGNAL(save()),
 				SLOT(saveNsmSession()));
 			m_pNsmClient->announce(QTRACTOR_TITLE, ":switch:dirty:");
+			m_sNsmExt = m_pOptions->sSessionExt;
+			if (m_sNsmExt.isEmpty())
+				m_sNsmExt = qtractorDocument::defaultExt();
 		}
 	#endif
 		// Change to last known session dir...
@@ -2145,6 +2148,7 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
 		m_pSession->setSessionName(m_pNsmClient->display_name());
 		m_pSession->setSessionDir(m_pNsmClient->path_name());
+		m_sNsmExt = QFileInfo(sFilename).suffix();
 	}
 #endif
 
@@ -2286,19 +2290,32 @@ void qtractorMainForm::openNsmSession (void)
 	bool bOpen = false;
 
 	if (closeSession()) {
+		QDir dir(path_name);
+		if (!dir.exists()) {
+			dir.mkpath(path_name);
+		} else {
+			const QString& prefix_dot = display_name + "*.";
+			QStringList filters;
+			filters << prefix_dot + qtractorDocument::defaultExt();
+			filters << prefix_dot + qtractorDocument::templateExt();
+			filters << prefix_dot + qtractorDocument::archiveExt();
+			filters << prefix_dot + "qtr";
+			const QStringList& files
+				= dir.entryList(filters,
+					QDir::Files | QDir::NoSymLinks | QDir::Readable,
+					QDir::Time);
+			if (!files.isEmpty())
+				m_sNsmExt = QFileInfo(files.first()).suffix();
+		}
 		m_pSession->setClientName(client_id);
 		m_pSession->setSessionName(display_name);
-		const QFileInfo fi(path_name, display_name
-			+ '.' + qtractorDocument::defaultExt());
+		m_pSession->setSessionDir(path_name);
+		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
 		const QString& sFilename = fi.absoluteFilePath();
 		if (fi.exists()) {
 			bOpen = loadSessionFileEx(sFilename, false, false);
 		} else {
 			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-			QDir dir(path_name);
-			if (!dir.exists())
-				dir.mkpath(path_name);
-			m_pSession->setSessionDir(path_name);
 			updateSessionPre();
 		#ifdef CONFIG_LV2
 			qtractorLv2PluginType::lv2_open();
@@ -2338,9 +2355,12 @@ void qtractorMainForm::saveNsmSession (void)
 	const QString& display_name = m_pNsmClient->display_name();
 //	const QString& client_id    = m_pNsmClient->client_id();
 
-	const QFileInfo fi(path_name, display_name
-		+ '.' + qtractorDocument::defaultExt());
+	const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
 	const QString& sFilename = fi.absoluteFilePath();
+
+//	m_pSession->setClientName(client_id);
+	m_pSession->setSessionName(display_name);
+	m_pSession->setSessionDir(path_name);
 
 	bool bSave = saveSessionFileEx(sFilename, false, false);
 
