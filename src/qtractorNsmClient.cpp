@@ -283,16 +283,16 @@ void qtractorNsmClient::reply ( const QString& path, ReplyCode reply_code )
 {
 	const char *reply_mesg;
 	switch (reply_code) {
-		case ERR_OK:			    reply_mesg = "ERR_OK";               break;
-		case ERR_GENERAL:		    reply_mesg = "ERR_GENERAL";	         break;
-		case ERR_INCOMPATIBLE_API:  reply_mesg = "ERR_INCOMPATIBLE_API"; break;
-		case ERR_BLACKLISTED:	    reply_mesg = "ERR_BLACKLISTED";	     break;
-		case ERR_LAUNCH_FAILED:	    reply_mesg = "ERR_LAUNCH_FAILED";	 break;
-		case ERR_NO_SUCH_FILE:	    reply_mesg = "ERR_NO_SUCH_FILE";	 break;
-		case ERR_NO_SESSION_OPEN:   reply_mesg = "ERR_NO_SESSION_OPEN";	 break;
-		case ERR_UNSAVED_CHANGES:   reply_mesg = "ERR_UNSAVED_CHANGES";	 break;
-		case ERR_NOT_NOW:		    reply_mesg = "ERR_NOT_NOW";          break;
-		default:				    reply_mesg = "ERR_UNKNOWN";          break;
+		case ERR_OK:               reply_mesg = "OK";                   break;
+		case ERR_GENERAL:          reply_mesg = "ERR_GENERAL";          break;
+		case ERR_INCOMPATIBLE_API: reply_mesg = "ERR_INCOMPATIBLE_API"; break;
+		case ERR_BLACKLISTED:      reply_mesg = "ERR_BLACKLISTED";      break;
+		case ERR_LAUNCH_FAILED:    reply_mesg = "ERR_LAUNCH_FAILED";    break;
+		case ERR_NO_SUCH_FILE:     reply_mesg = "ERR_NO_SUCH_FILE";     break;
+		case ERR_NO_SESSION_OPEN:  reply_mesg = "ERR_NO_SESSION_OPEN";  break;
+		case ERR_UNSAVED_CHANGES:  reply_mesg = "ERR_UNSAVED_CHANGES";  break;
+		case ERR_NOT_NOW:          reply_mesg = "ERR_NOT_NOW";          break;
+		default:                   reply_mesg = "(UNKNOWN)";            break;
 	}
 
 #ifdef CONFIG_LIBLO
