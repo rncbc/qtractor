@@ -394,6 +394,8 @@ protected:
 	bool trackCurveSelectMenuReset(QMenu *pMenu) const;
 	bool trackCurveModeMenuReset(QMenu *pMenu) const;
 
+	void saveNsmSessionEx(bool bSaveReply);
+
 private:
 
 	// The Qt-designer UI struct...

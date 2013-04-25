@@ -2288,19 +2288,18 @@ void qtractorMainForm::openNsmSession (void)
 
 	m_iDirtyCount = 0;
 
-	const QString& path_name    = m_pNsmClient->path_name();
-	const QString& display_name = m_pNsmClient->display_name();
-	const QString& client_id    = m_pNsmClient->client_id();
-
-	bool bOpen = false;
+	bool bLoaded = false;
 
 	if (closeSession()) {
-		QDir dir(path_name);
+		const QString& path_name = m_pNsmClient->path_name();
+		const QString& display_name = m_pNsmClient->display_name();
+		const QString& client_id = m_pNsmClient->client_id();
+		const QDir dir(path_name);
 		if (!dir.exists()) {
 			dir.mkpath(path_name);
 		} else {
-			const QString& prefix_dot = display_name + "*.";
 			QStringList filters;
+			const QString& prefix_dot = display_name + "*.";
 			filters << prefix_dot + qtractorDocument::defaultExt();
 			filters << prefix_dot + qtractorDocument::templateExt();
 			filters << prefix_dot + qtractorDocument::archiveExt();
@@ -2318,7 +2317,7 @@ void qtractorMainForm::openNsmSession (void)
 		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
 		const QString& sFilename = fi.absoluteFilePath();
 		if (fi.exists()) {
-			bOpen = loadSessionFileEx(sFilename, false, false);
+			bLoaded = loadSessionFileEx(sFilename, false, false);
 		} else {
 			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 			updateSessionPre();
@@ -2329,16 +2328,17 @@ void qtractorMainForm::openNsmSession (void)
 				.arg(sessionName(sFilename)));
 			QApplication::restoreOverrideCursor();
 			updateSessionPost();
-			bOpen = true;
+			bLoaded = true;
 		}
 	}
 
-	m_pNsmClient->open_reply(bOpen
+	m_pNsmClient->open_reply(bLoaded
 		? qtractorNsmClient::ERR_OK
 		: qtractorNsmClient::ERR_GENERAL);
 
 #endif	// CONFIG_NSM
 }
+
 
 void qtractorMainForm::saveNsmSession (void)
 {
@@ -2354,24 +2354,35 @@ void qtractorMainForm::saveNsmSession (void)
 	qDebug("qtractorMainForm::saveNsmSession()");
 #endif
 
-	m_iDirtyCount = 0;
+	saveNsmSessionEx(true);
 
-	const QString& path_name    = m_pNsmClient->path_name();
-	const QString& display_name = m_pNsmClient->display_name();
-//	const QString& client_id    = m_pNsmClient->client_id();
+#endif	// CONFIG_NSM
+}
 
-	const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
-	const QString& sFilename = fi.absoluteFilePath();
 
-//	m_pSession->setClientName(client_id);
-	m_pSession->setSessionName(display_name);
-	m_pSession->setSessionDir(path_name);
+void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
+{
+#ifdef CONFIG_NSM
 
-	bool bSave = saveSessionFileEx(sFilename, false, false);
+	bool bSaved = true;
 
-	m_pNsmClient->save_reply(bSave
-		? qtractorNsmClient::ERR_OK
-		: qtractorNsmClient::ERR_GENERAL);
+	if (!bSaveReply || m_iDirtyCount > 0) {
+		m_iDirtyCount = 0;
+		const QString& path_name = m_pNsmClient->path_name();
+		const QString& display_name = m_pNsmClient->display_name();
+	//	const QString& client_id = m_pNsmClient->client_id();
+	//	m_pSession->setClientName(client_id);
+		m_pSession->setSessionName(display_name);
+		m_pSession->setSessionDir(path_name);
+		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
+		bSaved = saveSessionFileEx(fi.absoluteFilePath(), false, false);
+	}
+
+	if (bSaveReply) {
+		m_pNsmClient->save_reply(bSaved
+			? qtractorNsmClient::ERR_OK
+			: qtractorNsmClient::ERR_GENERAL);
+	}
 
 #endif	// CONFIG_NSM
 }
@@ -2418,7 +2429,7 @@ void qtractorMainForm::fileSave (void)
 {
 #ifdef CONFIG_NSM
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
-		saveNsmSession();
+		saveNsmSessionEx(false);
 		return;
 	}
 #endif
@@ -2433,7 +2444,7 @@ void qtractorMainForm::fileSaveAs (void)
 {
 #ifdef CONFIG_NSM
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
-	//	saveNsmSession();
+	//	saveNsmSessionEx(false);
 		return;
 	}
 #endif
