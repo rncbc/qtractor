@@ -1487,6 +1487,11 @@ void qtractorMainForm::handle_sigterm (void)
 // Window close event handlers.
 bool qtractorMainForm::queryClose (void)
 {
+#ifdef CONFIG_NSM
+	if (m_pNsmClient && m_pNsmClient->is_active())
+		m_iDirtyCount = 0;
+#endif
+
 	bool bQueryClose = closeSession();
 
 	// Try to save current general state...
@@ -2046,34 +2051,31 @@ bool qtractorMainForm::loadSessionFileEx (
 	if (sSuffix == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
 		// Take special precaution for already
-		// existing archive directory...
-		QString sPath;
-		if (bUpdate) {
-			sPath = info.path();
-		} else {
-			sPath = QDir::temp().path() + QDir::separator() + QTRACTOR_TITLE;
+		// existing non-temporary archive directory...
+		if (!bUpdate) {
 			iFlags |= qtractorDocument::Temporary;
-		}
-		info.setFile(sPath + QDir::separator() + info.completeBaseName());
-		if (info.exists() && info.isDir()) {
-			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("The directory already exists:\n\n"
-				"\"%1\"\n\n"
-				"Do you want to replace it?")
-				.arg(info.filePath()),
-				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
-				// Restarting...
-				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-			#ifdef CONFIG_LV2
-				qtractorLv2PluginType::lv2_open();
-			#endif
-				updateSessionPre();
-				++m_iUntitled;
-				m_sFilename.clear();
-				QApplication::restoreOverrideCursor();
-				updateSessionPost();
-				return false;
+		} else {
+			info.setFile(info.path() + QDir::separator() + info.completeBaseName());
+			if (info.exists() && info.isDir()) {
+				if (QMessageBox::warning(this,
+					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("The directory already exists:\n\n"
+					"\"%1\"\n\n"
+					"Do you want to replace it?")
+					.arg(info.filePath()),
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
+					// Restarting...
+					QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+				#ifdef CONFIG_LV2
+					qtractorLv2PluginType::lv2_open();
+				#endif
+					updateSessionPre();
+					++m_iUntitled;
+					m_sFilename.clear();
+					QApplication::restoreOverrideCursor();
+					updateSessionPost();
+					return false;
+				}
 			}
 		}
 	}
@@ -2137,7 +2139,25 @@ bool qtractorMainForm::loadSessionFileEx (
 
 bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 {
-	return loadSessionFileEx(sFilename, false, true);
+	bool bUpdate = true;
+
+#ifdef CONFIG_NSM
+	if (m_pNsmClient && m_pNsmClient->is_active()) {
+		m_pSession->setClientName(m_pNsmClient->client_id());
+		bUpdate = false;
+	}
+#endif
+
+	bool bLoadSessionFile = loadSessionFileEx(sFilename, false, bUpdate);
+
+#ifdef CONFIG_NSM
+	if (m_pNsmClient && m_pNsmClient->is_active()) {
+		m_pSession->setSessionName(m_pNsmClient->display_name());
+		m_pSession->setSessionDir(m_pNsmClient->path_name());
+	}
+#endif
+
+	return bLoadSessionFile;
 }
 
 
@@ -2381,7 +2401,7 @@ void qtractorMainForm::fileOpenRecent (void)
 void qtractorMainForm::fileSave (void)
 {
 #ifdef CONFIG_NSM
-	if (m_pNsmClient) {
+	if (m_pNsmClient && m_pNsmClient->is_active()) {
 		saveNsmSession();
 		return;
 	}
@@ -2396,7 +2416,7 @@ void qtractorMainForm::fileSave (void)
 void qtractorMainForm::fileSaveAs (void)
 {
 #ifdef CONFIG_NSM
-	if (m_pNsmClient) {
+	if (m_pNsmClient && m_pNsmClient->is_active()) {
 	//	saveNsmSession();
 		return;
 	}
@@ -5159,6 +5179,9 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #ifndef CONFIG_JACK_LATENCY
 	list << tr("JACK Latency support disabled.");
+#endif
+#ifndef CONFIG_NSM
+	list << tr("NSM support disabled.");
 #endif
 
 	// Stuff the about box text...
