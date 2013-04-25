@@ -2001,18 +2001,23 @@ bool qtractorMainForm::closeSession (void)
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();
 		if (!paths.isEmpty()) {
-			bool bRemove = true;
-			if (m_pOptions && m_pOptions->bConfirmRemove) {
-				if (QMessageBox::warning(this,
+			bool bArchiveRemove = true;
+			bool bConfirmRemove = (m_pOptions && m_pOptions->bConfirmRemove);
+		#ifdef CONFIG_NSM
+			if (m_pNsmClient && m_pNsmClient->is_active())
+				bConfirmRemove = false;
+		#endif
+			if (bConfirmRemove &&
+				QMessageBox::warning(this,
 					tr("Warning") + " - " QTRACTOR_TITLE,
 					tr("About to remove archive directory:\n\n"
 					"\"%1\"\n\n"
 					"Are you sure?")
 					.arg(paths.join("\",\n\"")),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-					bRemove = false;
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No) {
+				bArchiveRemove = false;
 			}
-			qtractorDocument::clearExtractedArchives(bRemove);
+			qtractorDocument::clearExtractedArchives(bArchiveRemove);
 		}
 	#endif
 		// Some defaults are due...
@@ -6832,6 +6837,15 @@ void qtractorMainForm::timerSlot (void)
 	#endif
 	#ifdef CONFIG_VST
 		qtractorVstPlugin::idleEditorAll();
+	#endif
+	#ifdef CONFIG_NSM
+		if (m_pNsmClient && m_pNsmClient->is_active()) {
+			static bool s_bNsmDirty = false;
+			if (s_bNsmDirty != (m_iDirtyCount > 0)) {
+				s_bNsmDirty  = (m_iDirtyCount > 0);
+				m_pNsmClient->dirty(s_bNsmDirty);
+			}
+		}
 	#endif
 	}
 #ifdef CONFIG_LV2_UI
