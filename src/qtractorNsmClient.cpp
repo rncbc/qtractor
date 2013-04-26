@@ -21,8 +21,6 @@
 
 #include "qtractorAbout.h"
 
-#ifdef CONFIG_NSM
-
 #include "qtractorNsmClient.h"
 
 #include <QApplication>
@@ -403,7 +401,5 @@ void qtractorNsmClient::nsm_loaded (void)
 	emit loaded();
 }
 
-
-#endif	// CONFIG_NSM
 
 // end of qtractorNsmClient.cpp

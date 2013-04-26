@@ -1362,6 +1362,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
+		// We're supposedly clean...
+		m_iDirtyCount = 0;
 		// Just load the prabable startup session...
 		if (loadSessionFileEx(m_pOptions->sSessionFile, false, !bSessionId)) {
 			m_pOptions->sSessionFile.clear();
@@ -1688,6 +1690,9 @@ bool qtractorMainForm::newSession (void)
 #ifdef CONFIG_LV2
 	qtractorLv2PluginType::lv2_open();
 #endif
+
+	// We're supposedly clean...
+	m_iDirtyCount = 0;
 
 	// Check whether we start the new session
 	// based on existing template...
@@ -2149,10 +2154,14 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 {
 	bool bUpdate = true;
 
+	// We're supposedly clean...
+	m_iDirtyCount = 0;
+
 #ifdef CONFIG_NSM
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
 		m_pSession->setClientName(m_pNsmClient->client_id());
 		bUpdate = false;
+		++m_iDirtyCount;
 	}
 #endif
 
@@ -2295,6 +2304,7 @@ void qtractorMainForm::openNsmSession (void)
 	qDebug("qtractorMainForm::openNsmSession()");
 #endif
 
+	// We're supposedly clean...
 	m_iDirtyCount = 0;
 
 	bool bLoaded = false;
@@ -5719,9 +5729,6 @@ void qtractorMainForm::updateSessionPre (void)
 //	m_pTempoSpinBox->setBeatDivisor(m_pSession->beatDivisor(), false);
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
-
-	// We're supposedly clean...
-	m_iDirtyCount = 0;
 
 	//  Actually (re)start session engines...
 	if (startSession()) {
