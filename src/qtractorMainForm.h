@@ -423,6 +423,7 @@ private:
 	qtractorTempoCursor *m_pTempoCursor;
 	qtractorMidiControl *m_pMidiControl;
 	qtractorNsmClient *m_pNsmClient;
+	bool m_bNsmDirty;
 	QString m_sNsmExt;
 	unsigned long m_iPlayHead;
 	int m_iPeakTimer;

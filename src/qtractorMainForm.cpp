@@ -278,6 +278,9 @@ qtractorMainForm::qtractorMainForm (
 
 	m_iPlayerTimer = 0;
 
+	m_pNsmClient = NULL;
+	m_bNsmDirty  = false;
+
 	// Configure the audio file peak factory...
 	if (m_pSession->audioPeakFactory()) {
 		QObject::connect(m_pSession->audioPeakFactory(),
@@ -6849,10 +6852,9 @@ void qtractorMainForm::timerSlot (void)
 	#endif
 	#ifdef CONFIG_NSM
 		if (m_pNsmClient && m_pNsmClient->is_active()) {
-			static bool s_bNsmDirty = false;
-			if (s_bNsmDirty != (m_iDirtyCount > 0)) {
-				s_bNsmDirty  = (m_iDirtyCount > 0);
-				m_pNsmClient->dirty(s_bNsmDirty);
+			if (m_bNsmDirty != (m_iDirtyCount > 0)) {
+				m_bNsmDirty  = (m_iDirtyCount > 0);
+				m_pNsmClient->dirty(m_bNsmDirty);
 			}
 		}
 	#endif
