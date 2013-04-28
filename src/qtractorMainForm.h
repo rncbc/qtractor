@@ -390,6 +390,7 @@ protected:
 	void updateMidiMetronome();
 
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
+	void updateDirtyCount(bool bDirtyCount);
 
 	void trackCurveSelectMenuAction(QMenu *pMenu,
 		qtractorMidiControlObserver *pObserver, qtractorSubject *pCurrentSubject) const;
