@@ -73,7 +73,9 @@ public:
 		ERR_NO_SUCH_FILE     = -5,
 		ERR_NO_SESSION_OPEN  = -6,
 		ERR_UNSAVED_CHANGES  = -7,
-		ERR_NOT_NOW          = -8
+		ERR_NOT_NOW          = -8,
+		ERR_BAD_PROJECT      = -9,
+		ERR_CREATE_FAILED    = -10
 	};
 
 	// Session client reply methods.

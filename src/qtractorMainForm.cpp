@@ -2309,6 +2309,7 @@ void qtractorMainForm::openNsmSession (void)
 
 	// We're supposedly clean...
 	m_iDirtyCount = 0;
+	m_sNsmFile.clear();
 
 	bool bLoaded = false;
 
@@ -2340,6 +2341,7 @@ void qtractorMainForm::openNsmSession (void)
 		const QString& sFilename = fi.absoluteFilePath();
 		if (fi.exists()) {
 			bLoaded = loadSessionFileEx(sFilename, false, false);
+			if (bLoaded) m_sNsmFile = sFilename;
 		} else {
 			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 			updateSessionPre();
@@ -2388,6 +2390,14 @@ void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
 
 	bool bSaved = true;
 
+	if (!m_sNsmFile.isEmpty()) {
+		const QFileInfo fi(m_sNsmFile);
+		if (fi.exists() && fi.suffix() != m_sNsmExt) {
+			QFile(m_sNsmFile).remove();
+			m_sNsmFile.clear();
+		}
+	}
+
 	if (!bSaveReply || m_iDirtyCount > 0) {
 		m_iDirtyCount = 0;
 		const QString& path_name = m_pNsmClient->path_name();
@@ -2397,7 +2407,9 @@ void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
 		m_pSession->setSessionName(display_name);
 		m_pSession->setSessionDir(path_name);
 		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
-		bSaved = saveSessionFileEx(fi.absoluteFilePath(), false, false);
+		const QString& sFilename = fi.absoluteFilePath();
+		bSaved = saveSessionFileEx(sFilename, false, false);
+		if (bSaved) m_sNsmFile = sFilename;
 	}
 
 	if (bSaveReply) {
