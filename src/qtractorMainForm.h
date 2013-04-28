@@ -267,6 +267,16 @@ public slots:
 
 	void stabilizeForm();
 
+	void addAudioFile(const QString& sFilename);
+	void addMidiFile(const QString& sFilename);
+
+	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
+	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
+	void updateNotifySlot(bool bRefresh);
+	void dirtyNotifySlot();
+
+protected slots:
+
 	void timerSlot();
 
 	void peakNotify();
@@ -295,21 +305,14 @@ public slots:
 	void updateZoomMenu();
 	void updateSnapMenu();
 
-	void addAudioFile(const QString& sFilename);
 	void selectAudioFile(const QString& sFilename, int iTrackChannel, bool bSelect);
 	void activateAudioFile(const QString& sFilename, int iTrackChannel = -1);
 
-	void addMidiFile(const QString& sFilename);
 	void selectMidiFile(const QString& sFilename, int iTrackChannel, bool bSelect);
 	void activateMidiFile(const QString& sFilename, int iTrackChannel = -1);
 
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
-
-	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
-	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
-	void updateNotifySlot(bool bRefresh);
-	void dirtyNotifySlot();
 
 	void transportTimeChanged(unsigned long iPlayHead);
 	void transportTimeFinished();
@@ -423,8 +426,9 @@ private:
 	qtractorTempoCursor *m_pTempoCursor;
 	qtractorMidiControl *m_pMidiControl;
 	qtractorNsmClient *m_pNsmClient;
-	bool m_bNsmDirty;
+	QString m_sNsmFile;
 	QString m_sNsmExt;
+	bool m_bNsmDirty;
 	unsigned long m_iPlayHead;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
