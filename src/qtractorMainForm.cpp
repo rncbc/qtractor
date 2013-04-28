@@ -1701,7 +1701,13 @@ bool qtractorMainForm::newSession (void)
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate) {
 		QApplication::restoreOverrideCursor();
-		return loadSessionFileEx(m_pOptions->sSessionTemplatePath, true, false);
+		const bool bNewSession
+			= loadSessionFileEx(m_pOptions->sSessionTemplatePath, true, false);
+	#ifdef CONFIG_NSM
+		if (m_pNsmClient && m_pNsmClient->is_active())
+			updateDirtyCount(true);
+	#endif
+		return bNewSession;
 	}
 
 	// Prepare the session engines...
@@ -2164,7 +2170,6 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
 		m_pSession->setClientName(m_pNsmClient->client_id());
 		bUpdate = false;
-		++m_iDirtyCount;
 	}
 #endif
 
@@ -2175,6 +2180,8 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 		m_pSession->setSessionName(m_pNsmClient->display_name());
 		m_pSession->setSessionDir(m_pNsmClient->path_name());
 		m_sNsmExt = QFileInfo(sFilename).suffix();
+		updateDirtyCount(true);
+		stabilizeForm();
 	}
 #endif
 
@@ -2309,6 +2316,7 @@ void qtractorMainForm::openNsmSession (void)
 
 	// We're supposedly clean...
 	m_iDirtyCount = 0;
+	m_bNsmDirty = false;
 	m_sNsmFile.clear();
 
 	bool bLoaded = false;
@@ -2360,6 +2368,9 @@ void qtractorMainForm::openNsmSession (void)
 		? qtractorNsmClient::ERR_OK
 		: qtractorNsmClient::ERR_GENERAL);
 
+	if (bLoaded)
+		m_pNsmClient->dirty(false);
+
 #endif	// CONFIG_NSM
 }
 
@@ -2398,8 +2409,9 @@ void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
 		}
 	}
 
-	if (!bSaveReply || m_iDirtyCount > 0) {
+	if (!bSaveReply || m_bNsmDirty) {
 		m_iDirtyCount = 0;
+		m_bNsmDirty = false;
 		const QString& path_name = m_pNsmClient->path_name();
 		const QString& display_name = m_pNsmClient->display_name();
 	//	const QString& client_id = m_pNsmClient->client_id();
@@ -2417,6 +2429,9 @@ void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
 			? qtractorNsmClient::ERR_OK
 			: qtractorNsmClient::ERR_GENERAL);
 	}
+
+	if (bSaved)
+		m_pNsmClient->dirty(false);
 
 #endif	// CONFIG_NSM
 }
@@ -3302,7 +3317,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveSelectCommand(pCurveList, pCurve));
@@ -3353,7 +3368,7 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveModeCommand(pCurrentCurve, mode));
@@ -3382,7 +3397,7 @@ void qtractorMainForm::trackCurveLocked ( bool bOn )
 
 	m_pTracks->updateTrackView();
 
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 }
 
@@ -3413,7 +3428,7 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 
 	m_pTracks->updateTrackList();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveProcessCommand(pCurrentCurve, bOn));
@@ -3447,7 +3462,7 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 
 	m_pTracks->updateTrackList();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveCaptureCommand(pCurrentCurve, bOn));
@@ -3477,7 +3492,7 @@ void qtractorMainForm::trackCurveLogarithmic ( bool bOn )
 
 	m_pTracks->updateTrackView();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveLogarithmicCommand(pCurrentCurve, bOn));
@@ -3513,7 +3528,7 @@ void qtractorMainForm::trackCurveColor (void)
 
 	m_pTracks->updateTrackView();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveColorCommand(pCurrentCurve, color));
@@ -3560,7 +3575,7 @@ void qtractorMainForm::trackCurveClear (void)
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveClearCommand(pCurrentCurve));
@@ -3589,7 +3604,7 @@ void qtractorMainForm::trackCurveLockedAll ( bool bOn )
 
 	m_pTracks->updateTrackView();
 
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 }
 
@@ -3620,7 +3635,7 @@ void qtractorMainForm::trackCurveProcessAll ( bool bOn )
 
 	m_pTracks->updateTrackList();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveProcessAllCommand(pCurveList, bOn));
@@ -3654,7 +3669,7 @@ void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
 
 	m_pTracks->updateTrackList();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveCaptureAllCommand(pCurveList, bOn));
@@ -3698,7 +3713,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 	m_pTracks->updateTrackList();
 	m_pTracks->updateTrackView();
 	
-	++m_iDirtyCount;
+	updateDirtyCount(true);
 	stabilizeForm();
 #else
 	m_pSession->execute(new qtractorCurveClearAllCommand(pCurveList));
@@ -5793,7 +5808,7 @@ void qtractorMainForm::updateSessionPost (void)
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		m_pSession->updateSampleRate(iSampleRate);
 		QApplication::restoreOverrideCursor();
-		++m_iDirtyCount;
+		updateDirtyCount(true);
 	}
 
 	// Update the session views...
@@ -6871,14 +6886,6 @@ void qtractorMainForm::timerSlot (void)
 	#ifdef CONFIG_VST
 		qtractorVstPlugin::idleEditorAll();
 	#endif
-	#ifdef CONFIG_NSM
-		if (m_pNsmClient && m_pNsmClient->is_active()) {
-			if (m_bNsmDirty != (m_iDirtyCount > 0)) {
-				m_bNsmDirty  = (m_iDirtyCount > 0);
-				m_pNsmClient->dirty(m_bNsmDirty);
-			}
-		}
-	#endif
 	}
 #ifdef CONFIG_LV2_UI
 	qtractorLv2Plugin::idleEditorAll();
@@ -7541,6 +7548,25 @@ void qtractorMainForm::updateContents (
 }
 
 
+void qtractorMainForm::updateDirtyCount ( bool bDirtyCount )
+{
+	if (bDirtyCount) {
+		++m_iDirtyCount;
+	} else {
+		m_iDirtyCount = 0;
+	}
+
+#ifdef CONFIG_NSM
+	if (m_pNsmClient && m_pNsmClient->is_active()) {
+		if (!m_bNsmDirty/* && bDirtyCount*/) {
+			m_pNsmClient->dirty(true);
+			m_bNsmDirty = true;
+		}
+	}
+#endif
+}
+
+
 // Tracks view contents change slot.
 void qtractorMainForm::contentsChanged (void)
 {
@@ -7572,8 +7598,7 @@ void qtractorMainForm::dirtyNotifySlot (void)
 	qDebug("qtractorMainForm::dirtyNotifySlot()");
 #endif
 
-	++m_iDirtyCount;
-
+	updateDirtyCount(true);
 	selectionNotifySlot(NULL);
 }
 
