@@ -1903,10 +1903,12 @@ void qtractorAudioBus::setChannels ( unsigned short iChannels )
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->setChannels(iChannels);
 
+#if 0
 	if (m_pIPluginList)
 		updatePluginList(m_pIPluginList, qtractorPluginList::AudioInBus);
 	if (m_pOPluginList)
 		updatePluginList(m_pOPluginList, qtractorPluginList::AudioOutBus);
+#endif
 }
 
 unsigned short qtractorAudioBus::channels (void) const
