@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio buses plugin state's persistance were found AWOL: while
+  being properly saved as usual, were being restored to default
+  on every session reload (as noticed by yuba, thanks).
+
 - NSM support is being introduced. (EXPERIMENTAL)
 
 - The MIDI clip editor (aka. piano-roll) gets a brand new rescale
