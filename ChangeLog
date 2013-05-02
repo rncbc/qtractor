@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Track Properties dialog now dirty after any plugin related
+  change (another head-up by yuba, thanks again).
+
+- Tempo Map/Markers dialog is not set initially dirty anymore.
+
 - Audio buses plugin state's persistance were found AWOL: while
   being properly saved as usual, were being restored to default
   on every session reload (as noticed by yuba, thanks).
