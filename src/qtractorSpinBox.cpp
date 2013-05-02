@@ -64,8 +64,11 @@ qtractorTimeSpinBox::~qtractorTimeSpinBox (void)
 // Mark that we got actual value.
 void qtractorTimeSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 {
-	QAbstractSpinBox::lineEdit()->setText(textFromValue(m_iValue));
+	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+	bool bBlockSignals = pLineEdit->blockSignals(true);
+	pLineEdit->setText(textFromValue(m_iValue));
 	QAbstractSpinBox::interpretText();
+	pLineEdit->blockSignals(bBlockSignals);
 }
 
 
@@ -98,7 +101,8 @@ void qtractorTimeSpinBox::updateDisplayFormat (void)
 // Nominal value (in frames) accessors.
 void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 {
-	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+	int iCursorPos = pLineEdit->cursorPosition();
 
 	if (iValue < m_iMinimumValue)
 		iValue = m_iMinimumValue;
@@ -110,13 +114,15 @@ void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 	m_iValue = iValue;
 
 	if (QAbstractSpinBox::isVisible()) {
-		QAbstractSpinBox::lineEdit()->setText(textFromValue(iValue));
+		bool bBlockSignals = pLineEdit->blockSignals(true);
+		pLineEdit->setText(textFromValue(iValue));
 		QAbstractSpinBox::interpretText();
 		if (bNotifyChange && bValueChanged)
 			emit valueChanged(iValue);
+		pLineEdit->blockSignals(bBlockSignals);
 	}
 
-	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
+	pLineEdit->setCursorPosition(iCursorPos);
 }
 
 unsigned long qtractorTimeSpinBox::value (void) const
@@ -218,7 +224,8 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 	qDebug("qtractorTimeSpinBox[%p]::stepBy(%d)", this, iSteps);
 #endif
 
-	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+	int iCursorPos = pLineEdit->cursorPosition();
 	
 	long iValue = long(value());
 
@@ -228,7 +235,7 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 			qtractorTimeScale::Cursor cursor(m_pTimeScale);
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(iValue);
 			unsigned long iFrame = pNode->frame;
-			const QString& sText = QAbstractSpinBox::lineEdit()->text();
+			const QString& sText = pLineEdit->text();
 			int iPos = sText.section('.', 0, 0).length() + 1;
 			if (iCursorPos < iPos)
 				iFrame = pNode->frameFromBar(pNode->bar + 1);
@@ -240,7 +247,7 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 			break;
 		}
 		case qtractorTimeScale::Time: {
-			const QString& sText = QAbstractSpinBox::lineEdit()->text();
+			const QString& sText = pLineEdit->text();
 			int iPos = sText.section(':', 0, 0).length() + 1;
 			if (iCursorPos < iPos)
 				iSteps *= int(3600 * m_pTimeScale->sampleRate());
@@ -261,7 +268,7 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 		iValue = 0;
 	setValue(iValue);
 
-	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
+	pLineEdit->setCursorPosition(iCursorPos);
 }
 
 
@@ -352,8 +359,10 @@ qtractorTempoSpinBox::~qtractorTempoSpinBox (void)
 // Mark that we got actual value.
 void qtractorTempoSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 {
-	QAbstractSpinBox::lineEdit()->setText(
-		textFromValue(m_fTempo, m_iBeatsPerBar, m_iBeatDivisor));
+	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+	bool bBlockSignals = pLineEdit->blockSignals(true);
+	pLineEdit->setText(textFromValue(m_fTempo, m_iBeatsPerBar, m_iBeatDivisor));
+	pLineEdit->blockSignals(bBlockSignals);
 //	QAbstractSpinBox::interpretText();
 }
 
@@ -500,8 +509,9 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	qDebug("qtractorTempoSpinBox[%p]::stepBy(%d)", this, iSteps);
 #endif
 
-	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
-	const QString& sText = QAbstractSpinBox::lineEdit()->text();
+	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+	int iCursorPos = pLineEdit->cursorPosition();
+	const QString& sText = pLineEdit->text();
 	if (iCursorPos < sText.section(' ', 0, 0).length() + 1) {
 		const QChar& decp = QLocale().decimalPoint();
 		if (iCursorPos > sText.section(decp, 0, 0).length())

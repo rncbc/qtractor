@@ -248,7 +248,8 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_props = m_pTrack->properties();
 
 	// Get reference of the last acceptable command...
-	m_pLastCommand = ((m_pTrack->session())->commands())->lastCommand();
+	qtractorCommandList *pCommands = (m_pTrack->session())->commands();
+	m_pLastCommand = pCommands->lastCommand();
 
 	// Set plugin list...
 	m_ui.PluginListView->setPluginList(m_pTrack->pluginList());
@@ -303,6 +304,11 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	// Cannot change track type, if track is already chained in session..
 	m_ui.AudioRadioButton->setEnabled(m_props.trackType != qtractorTrack::Midi);
 	m_ui.MidiRadioButton->setEnabled(m_props.trackType != qtractorTrack::Audio);
+
+	// A bit of parental control...
+	QObject::connect(pCommands,
+		SIGNAL(updateNotifySignal(bool)),
+		SLOT(changed()));
 
 	// Backup clean.
 	m_iDirtyCount = 0;
