@@ -987,7 +987,17 @@ void qtractorMidiManager::resetAudioOutputBus (void)
 		return;
 
 	pSession->lock();
+
+	qtractorBus::ConnectList outputs;
+
+	if (m_bAudioOutputBus && m_pAudioOutputBus)
+		outputs.copy(m_pAudioOutputBus->outputs());
+
 	createAudioOutputBus();
+
+	if (m_bAudioOutputBus && m_pAudioOutputBus)
+		m_pAudioOutputBus->outputs().copy(outputs);
+
 	pSession->unlock();
 }
 

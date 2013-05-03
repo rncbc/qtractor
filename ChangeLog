@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Custom connections for dedicated audio outputs from all plugin
+  chains in MIDI tracks or buses are back in business, hopefuly
+  restored gain on session load (ticket by yuba, thanks).
+
 - Track Properties dialog now dirty after any plugin related
   change (another head-up by yuba, thanks again).
 
