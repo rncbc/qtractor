@@ -62,8 +62,8 @@ public:
 	int bank() const { return m_iBank; }
 
 	// Sequence/track prog accessors (optional).
-	void setProgram(int iProgram) { m_iProgram = iProgram; }
-	int program() const { return m_iProgram; }
+	void setProg(int iProg) { m_iProg = iProg; }
+	int prog() const { return m_iProg; }
 
 	// Sequence/track resolution accessors.
 	void setTicksPerBeat(unsigned short iTicksPerBeat)
@@ -134,7 +134,7 @@ private:
 
 	// Sequence/track optional properties.
 	int            m_iBank;
-	int            m_iProgram;
+	int            m_iProg;
 
 	// Statistical helper variables.
 	unsigned char  m_noteMin;

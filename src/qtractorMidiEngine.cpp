@@ -1707,8 +1707,8 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.control.channel = pTrack->midiChannel();
 			ev.data.control.value = pEvent->value();
 			// HACK: Track properties override...
-			if (pTrack->midiProgram() >= 0)
-				ev.data.control.value = pTrack->midiProgram();
+			if (pTrack->midiProg() >= 0)
+				ev.data.control.value = pTrack->midiProg();
 			break;
 		case qtractorMidiEvent::CHANPRESS:
 			ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -3121,8 +3121,8 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 		// Make this track setup...
 		if (pSeq->bank() < 0)
 			pSeq->setBank(pTrack->midiBank());
-		if (pSeq->program() < 0)
-			pSeq->setProgram(pTrack->midiProgram());
+		if (pSeq->prog() < 0)
+			pSeq->setProg(pTrack->midiProg());
 		// Now, for every clip...
 		qtractorClip *pClip = pTrack->clips().first();
 		while (pClip && pClip->clipStart()

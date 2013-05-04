@@ -3730,7 +3730,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			if (pSingleTrack->trackType() == qtractorTrack::Midi) {
 				pTrack->setMidiChannel(pSingleTrack->midiChannel());
 				pTrack->setMidiBank(pSingleTrack->midiBank());
-				pTrack->setMidiProgram(pSingleTrack->midiProgram());
+				pTrack->setMidiProg(pSingleTrack->midiProg());
 			}
 			pClipCommand->addTrack(pTrack);
 		}

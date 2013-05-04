@@ -314,7 +314,7 @@ bool qtractorTrackList::Item::updateBankProgram (
 	if (banks.contains(iBank)) {
 		const qtractorMidiManager::Bank& bank
 			= banks[iBank];
-		int iProg = track->midiProgram();
+		int iProg = track->midiProg();
 		if (bank.progs.contains(iProg)) {
 			sProgram = QString("%1 - %2").arg(iProg)
 				.arg(bank.progs[iProg]);
@@ -376,10 +376,10 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			text << sOmni + QString::number(iChannel + 1);
 			// Care of MIDI instrument, program and bank numbers vs.names...
 			QString sInstrument = s;
-			QString sProgram = s;
+			QString sProg = s;
 			QString sBank;
-			if (track->midiProgram() >= 0)
-				sProgram = QString::number(track->midiProgram() + 1) + s;
+			if (track->midiProg() >= 0)
+				sProg = QString::number(track->midiProg() + 1) + s;
 			if (track->midiBank() >= 0)
 				sBank = QString::number(track->midiBank());
 			if (pMidiBus) {
@@ -389,11 +389,11 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 					sInstrument = patch.instrumentName;
 					bool bMidiManager = updateBankProgram(
 						(track->pluginList())->midiManager(),
-						sInstrument, sBank, sProgram);
+						sInstrument, sBank, sProg);
 					if (!bMidiManager && pMidiBus->pluginList_out()) {
 						bMidiManager = updateBankProgram(
 							(pMidiBus->pluginList_out())->midiManager(),
-							sInstrument, sBank, sProgram);
+							sInstrument, sBank, sProg);
 					}
 					if (!bMidiManager) {
 						qtractorInstrumentList *pInstruments = NULL;
@@ -407,8 +407,8 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 								= (*pInstruments)[sInstrument];
 							const qtractorInstrumentData& bank
 								= instr.patch(track->midiBank());
-							if (bank.contains(track->midiProgram())) {
-								sProgram = bank[track->midiProgram()];
+							if (bank.contains(track->midiProg())) {
+								sProg = bank[track->midiProg()];
 								sBank = bank.name();
 							}
 						}
@@ -416,7 +416,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 				}
 			}
 			// This is it, MIDI Patch/Bank...
-			text << sProgram + '\n' + sBank << sInstrument;
+			text << sProg + '\n' + sBank << sInstrument;
 			break;
 		}
 

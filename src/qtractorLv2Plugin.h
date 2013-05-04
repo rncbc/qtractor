@@ -283,6 +283,9 @@ public:
 	// Provisional program/patch accessor.
 	bool getProgram(int iIndex, Program& program) const;
 
+	// Program/patch notification.
+	void lv2_program_changed(int iIndex);
+
 #endif
 
 #ifdef CONFIG_LV2_PRESETS
@@ -417,6 +420,11 @@ private:
 	LV2_Feature                m_lv2_state_make_path_feature;
 	LV2_State_Make_Path        m_lv2_state_make_path;
 #endif
+#endif
+
+#ifdef CONFIG_LV2_PROGRAMS
+	LV2_Feature                m_lv2_programs_host_feature;
+	LV2_Programs_Host          m_lv2_programs_host;
 #endif
 
 #ifdef CONFIG_LV2_PRESETS

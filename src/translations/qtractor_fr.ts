@@ -192,7 +192,7 @@ Déc. / Long.:	%3 / %4</translation>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="400"/>
-        <location filename="../qtractorTrack.cpp" line="593"/>
+        <location filename="../qtractorTrack.cpp" line="636"/>
         <source>%1 Monitor</source>
         <translation>%1 Moniteur</translation>
     </message>
@@ -491,17 +491,17 @@ MIDI:	</translation>
         <translation>déplacer un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="594"/>
+        <location filename="../qtractorTrack.cpp" line="637"/>
         <source>%1 Record</source>
         <translation>%1 Enregistrer</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="595"/>
+        <location filename="../qtractorTrack.cpp" line="638"/>
         <source>%1 Mute</source>
         <translation>%1 Muet</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="596"/>
+        <location filename="../qtractorTrack.cpp" line="639"/>
         <source>%1 Solo</source>
         <translation>%1 Solo</translation>
     </message>
@@ -11583,32 +11583,32 @@ Voulez-vous abandonner ces changements?</translation>
         <translation>Alt+B</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="119"/>
+        <location filename="../qtractorTrackForm.cpp" line="148"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="120"/>
+        <location filename="../qtractorTrackForm.cpp" line="149"/>
         <source>Bank MSB</source>
         <translation>Banque MSB</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="121"/>
+        <location filename="../qtractorTrackForm.cpp" line="150"/>
         <source>Bank LSB</source>
         <translation>Banque LSB</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="122"/>
+        <location filename="../qtractorTrackForm.cpp" line="151"/>
         <source>Patch</source>
         <translation>Patch</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="392"/>
+        <location filename="../qtractorTrackForm.cpp" line="427"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="393"/>
+        <location filename="../qtractorTrackForm.cpp" line="428"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11617,13 +11617,13 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="521"/>
+        <location filename="../qtractorTrackForm.cpp" line="556"/>
         <source>(No instrument)</source>
         <translation>(Pas d&apos;instrument)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="702"/>
-        <location filename="../qtractorTrackForm.cpp" line="813"/>
+        <location filename="../qtractorTrackForm.cpp" line="748"/>
+        <location filename="../qtractorTrackForm.cpp" line="859"/>
         <source>(None)</source>
         <translation>(Rien)</translation>
     </message>

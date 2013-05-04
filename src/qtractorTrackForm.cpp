@@ -90,6 +90,35 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorTrackForm::MidiProgramObserver -- Local dedicated observer.
+
+class qtractorTrackForm::MidiProgramObserver : public qtractorObserver
+{
+public:
+
+	// Constructor.
+	MidiProgramObserver(qtractorTrackForm *pTrackForm, qtractorSubject *pSubject)
+		: qtractorObserver(pSubject), m_pTrackForm(pTrackForm) {}
+
+protected:
+
+	// Update feedback.
+	void update()
+	{
+		const int iValue = int(value());
+		const int iBank = (iValue >> 7) & 0x3fff;
+		const int iProg = (iValue & 0x7f);
+		m_pTrackForm->setMidiProgram(iBank, iProg);
+	}
+
+private:
+
+	// Members.
+	qtractorTrackForm *m_pTrackForm;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorTrackForm -- UI wrapper form.
 
 // Constructor.
@@ -145,6 +174,9 @@ qtractorTrackForm::qtractorTrackForm (
 
 	// No last acceptable command yet.
 	m_pLastCommand = NULL;
+
+	// MIDI ban/program observer.
+	m_pMidiProgramObserver = NULL;
 
 	// Initialize dirty control state.
 	m_iDirtySetup = 0;
@@ -232,6 +264,9 @@ qtractorTrackForm::qtractorTrackForm (
 // Destructor.
 qtractorTrackForm::~qtractorTrackForm (void)
 {
+	// Free up the MIDI bank/program observer...
+	if (m_pMidiProgramObserver)
+		delete m_pMidiProgramObserver;
 }
 
 
@@ -287,7 +322,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 //	m_sOldInstrumentName initially blank...
 	m_iOldBankSelMethod  = m_props.midiBankSelMethod;
 	m_iOldBank = m_props.midiBank;
-	m_iOldProg = m_props.midiProgram;
+	m_iOldProg = m_props.midiProg;
 
 	// Already time for instrument cacheing...
 	updateInstruments();
@@ -295,7 +330,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_ui.OmniCheckBox->setChecked(m_props.midiOmni);
 	m_ui.ChannelSpinBox->setValue(m_props.midiChannel + 1);
 	updateChannel(m_ui.ChannelSpinBox->value(),
-		m_props.midiBankSelMethod, m_props.midiBank, m_props.midiProgram);
+		m_props.midiBankSelMethod, m_props.midiBank, m_props.midiProg);
 
 	// Update colors...
 	updateColorItem(m_ui.ForegroundColorComboBox, m_props.foreground);
@@ -359,11 +394,11 @@ void qtractorTrackForm::accept (void)
 		m_props.inputBusName  = m_ui.InputBusNameComboBox->currentText();
 		m_props.outputBusName = m_ui.OutputBusNameComboBox->currentText();
 		// Special case for MIDI settings...
-		m_props.midiOmni    = m_ui.OmniCheckBox->isChecked();
+		m_props.midiOmni = m_ui.OmniCheckBox->isChecked();
 		m_props.midiChannel = (m_ui.ChannelSpinBox->value() - 1);
 		m_props.midiBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
-		m_props.midiBank    = midiBank();
-		m_props.midiProgram = midiProgram();
+		m_props.midiBank = midiBank();
+		m_props.midiProg = midiProg();
 		// View colors...
 		m_props.foreground = colorItem(m_ui.ForegroundColorComboBox);
 		m_props.background = colorItem(m_ui.BackgroundColorComboBox);
@@ -488,7 +523,7 @@ int qtractorTrackForm::midiBank (void) const
 
 
 // Retrieve currently selected MIDI program number.
-int qtractorTrackForm::midiProgram (void) const
+int qtractorTrackForm::midiProg (void) const
 {
 	const QString& sProgText = m_ui.ProgComboBox->currentText();
 	int iProgIndex = m_ui.ProgComboBox->findText(sProgText);
@@ -565,6 +600,12 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	// Avoid superfluos change notifications...
 	++m_iDirtySetup;
 
+	// Renew the MIDI bank/program observer.
+	if (m_pMidiProgramObserver) {
+		delete m_pMidiProgramObserver;
+		m_pMidiProgramObserver = NULL;
+	}
+
 	// Make changes due to track type change.
 	qtractorEngine *pEngine = NULL;
 	QIcon icon;
@@ -584,6 +625,11 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 		m_ui.MidiGroupBox->setEnabled(true);
 		m_ui.InputBusNameComboBox->setEnabled(true);
 		m_ui.OutputBusNameComboBox->setEnabled(true);
+		if (m_pTrack->pluginList()
+			&& (m_pTrack->pluginList())->midiProgramSubject()) {
+			m_pMidiProgramObserver = new MidiProgramObserver(this,
+				(m_pTrack->pluginList())->midiProgramSubject());
+		}
 		break;
 	case qtractorTrack::None:
 	default:
@@ -1188,7 +1234,7 @@ void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 	updateBanks(sInstrumentName,
 		-1, // m_ui.BankSelMethodComboBox->currentItem(),
 		midiBank(),
-		midiProgram());
+		midiProg());
 
 	progChanged();
 }
@@ -1216,7 +1262,7 @@ void qtractorTrackForm::bankChanged (void)
 
 	updatePrograms(sInstrumentName,
 		midiBank(),
-		midiProgram());
+		midiProg());
 
 	progChanged();
 }
@@ -1237,7 +1283,7 @@ void qtractorTrackForm::progChanged (void)
 			sInstrumentName = m_ui.InstrumentComboBox->currentText();
 		int iBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
 		int iBank = midiBank();
-		int iProg = midiProgram();
+		int iProg = midiProg();
 		// Keep old bus/channel patching consistency.
 		if (m_pMidiBus != m_pOldMidiBus || iChannel != m_iOldChannel) {
 			// Restore previously saved patch...
@@ -1311,6 +1357,18 @@ void qtractorTrackForm::moveUpPlugin (void)
 void qtractorTrackForm::moveDownPlugin (void)
 {
 	m_ui.PluginListView->moveDownPlugin();
+}
+
+
+// MIDI bank/program settlers.
+void qtractorTrackForm::setMidiProgram ( int iBank, int iProg )
+{
+	updateChannel(
+		m_ui.ChannelSpinBox->value(),
+		m_ui.BankSelMethodComboBox->currentIndex(),
+		iBank,
+		iProg
+	);
 }
 
 

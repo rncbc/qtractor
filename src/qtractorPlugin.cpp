@@ -1223,7 +1223,7 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
 	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
 		m_iFlags(0), m_iActivated(0), m_pMidiManager(NULL),
-		m_iMidiBank(-1), m_iMidiProg(-1)
+		m_iMidiBank(-1), m_iMidiProg(-1), m_pMidiProgramSubject(NULL)
 {
 	setAutoDelete(true);
 
@@ -1290,6 +1290,11 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pMidiManager = NULL;
 	}
 
+	if (m_pMidiProgramSubject) {
+		delete m_pMidiProgramSubject;
+		m_pMidiProgramSubject = NULL;
+	}
+
 	// Set proper sample-rate and flags at once.
 	m_iSampleRate = iSampleRate;
 	m_iFlags = iFlags;
@@ -1313,6 +1318,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 
     // Allocate new MIDI manager, if applicable...
 	if (m_iFlags & Midi) {
+		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
 		// Set loaded/cached properties properly...
 		m_pMidiManager->setCurrentBank(m_iMidiBank);
@@ -1326,7 +1332,6 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 				pAudioOutputBus->outputs().copy(m_audioOutputs);
 		}
 	}
-
 
 	// Reset all plugin chain channels...
 	for (qtractorPlugin *pPlugin = first();
