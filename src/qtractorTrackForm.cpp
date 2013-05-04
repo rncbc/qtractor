@@ -1363,9 +1363,13 @@ void qtractorTrackForm::moveDownPlugin (void)
 // MIDI bank/program settlers.
 void qtractorTrackForm::setMidiProgram ( int iBank, int iProg )
 {
-	updateChannel(
-		m_ui.ChannelSpinBox->value(),
-		m_ui.BankSelMethodComboBox->currentIndex(),
+	QString sInstrumentName;
+	if (m_ui.InstrumentComboBox->currentIndex() > 0)
+		sInstrumentName = m_ui.InstrumentComboBox->currentText();
+
+	updateBanks(
+		sInstrumentName,
+		-1, // m_ui.BankSelMethodComboBox->currentIndex()
 		iBank,
 		iProg
 	);
