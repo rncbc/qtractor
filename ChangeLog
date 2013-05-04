@@ -6,7 +6,7 @@ ChangeLog
 SVN TRUNK
 
 - MIDI track instrument bank/program selection, from plugin UIs
-  that support it, is now effective complete. (EXPERIMENTAL)
+  that support it, is now effectively complete. (EXPERIMENTAL)
 
 - Custom connections for dedicated audio outputs from all plugin
   chains in MIDI tracks or buses are back in business, hopefuly

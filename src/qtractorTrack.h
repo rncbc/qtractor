@@ -319,6 +319,9 @@ public:
 
 	void clearTakeInfo() const;
 
+	// Update tracks/list-view.
+	void updateTracks();
+
 private:
 
 	qtractorSession *m_pSession;    // Session reference.

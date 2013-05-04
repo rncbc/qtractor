@@ -961,7 +961,7 @@ MIDI:	</translation>
         <translation>Vlastnosti stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="455"/>
+        <location filename="../qtractorTrackCommand.cpp" line="451"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -970,32 +970,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="534"/>
+        <location filename="../qtractorTrackCommand.cpp" line="529"/>
         <source>track record</source>
         <translation>Nahrání stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="537"/>
+        <location filename="../qtractorTrackCommand.cpp" line="532"/>
         <source>track mute</source>
         <translation>Ztlumení stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="540"/>
+        <location filename="../qtractorTrackCommand.cpp" line="535"/>
         <source>track solo</source>
         <translation>Sólo pro stopu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="709"/>
+        <location filename="../qtractorTrackCommand.cpp" line="704"/>
         <source>track monitor</source>
         <translation>Sledování stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="808"/>
+        <location filename="../qtractorTrackCommand.cpp" line="803"/>
         <source>track gain</source>
         <translation>Zesílení stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="898"/>
+        <location filename="../qtractorTrackCommand.cpp" line="893"/>
         <source>track pan</source>
         <translation>Vyváženost stopy</translation>
     </message>
@@ -1091,7 +1091,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="400"/>
-        <location filename="../qtractorTrack.cpp" line="636"/>
+        <location filename="../qtractorTrack.cpp" line="639"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
     </message>
@@ -1117,17 +1117,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit ovladač znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="637"/>
+        <location filename="../qtractorTrack.cpp" line="640"/>
         <source>%1 Record</source>
         <translation>%1 Nahrát</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="638"/>
+        <location filename="../qtractorTrack.cpp" line="641"/>
         <source>%1 Mute</source>
         <translation>%1 Ztlumit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="639"/>
+        <location filename="../qtractorTrack.cpp" line="642"/>
         <source>%1 Solo</source>
         <translation>%1 Sólo</translation>
     </message>

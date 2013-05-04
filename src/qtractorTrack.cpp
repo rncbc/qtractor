@@ -188,6 +188,9 @@ protected:
 		const int iProg = (iValue & 0x7f);
 		m_pTrack->setMidiBank(iBank);
 		m_pTrack->setMidiProg(iProg);
+		// Refresh track item, at least the names...
+		m_pTrack->updateTracks();
+
 	}
 
 private:
@@ -2150,6 +2153,21 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	}
 
 	pCurveFile->apply(pSession->timeScale());
+}
+
+
+// Update tracks/list-view.
+void qtractorTrack::updateTracks (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == NULL)
+		return;
+
+	pTracks->updateTrack(this);
 }
 
 

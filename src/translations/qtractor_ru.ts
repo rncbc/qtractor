@@ -668,39 +668,39 @@ MIDI:	</translation>
         <translation>свойства дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="455"/>
+        <location filename="../qtractorTrackCommand.cpp" line="451"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="534"/>
+        <location filename="../qtractorTrackCommand.cpp" line="529"/>
         <source>track record</source>
         <translation>запись дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="537"/>
+        <location filename="../qtractorTrackCommand.cpp" line="532"/>
         <source>track mute</source>
         <translation>приглушение дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="540"/>
+        <location filename="../qtractorTrackCommand.cpp" line="535"/>
         <source>track solo</source>
         <translation>солирование дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="709"/>
+        <location filename="../qtractorTrackCommand.cpp" line="704"/>
         <source>track monitor</source>
         <translation>мониторинг дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="808"/>
+        <location filename="../qtractorTrackCommand.cpp" line="803"/>
         <source>track gain</source>
         <translation>усиление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="898"/>
+        <location filename="../qtractorTrackCommand.cpp" line="893"/>
         <source>track pan</source>
         <translation>панорама дорожки</translation>
     </message>
@@ -787,7 +787,7 @@ Offs/Length:	%3 / %4</source>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="400"/>
-        <location filename="../qtractorTrack.cpp" line="636"/>
+        <location filename="../qtractorTrack.cpp" line="639"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -833,17 +833,17 @@ Offs/Length:	%3 / %4</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="637"/>
+        <location filename="../qtractorTrack.cpp" line="640"/>
         <source>%1 Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="638"/>
+        <location filename="../qtractorTrack.cpp" line="641"/>
         <source>%1 Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="639"/>
+        <location filename="../qtractorTrack.cpp" line="642"/>
         <source>%1 Solo</source>
         <translation type="unfinished"></translation>
     </message>

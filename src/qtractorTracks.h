@@ -74,6 +74,8 @@ public:
 	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,
 		unsigned long iClipStart = 0);
 
+	// Track-list active maintenance update.
+	void updateTrack(qtractorTrack *pTrack);
 	// MIDI track/bus/channel alias active maintenance method.
 	void updateMidiTrack(qtractorTrack *pMidiTrack);
 
