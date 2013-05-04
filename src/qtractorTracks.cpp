@@ -2327,6 +2327,16 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 }
 
 
+// Track-list active maintenance update.
+void qtractorTracks::updateTrack ( qtractorTrack *pTrack )
+{
+	m_pTrackList->updateTrack(pTrack);
+
+	if (pTrack->trackType() == qtractorTrack::Midi)
+		updateMidiTrack(pTrack);
+}
+
+
 // MIDI track/bus/channel alias active maintenance method.
 void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 {

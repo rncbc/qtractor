@@ -421,10 +421,6 @@ bool qtractorEditTrackCommand::redo (void)
 	if (pMainForm == NULL)
 		return false;
 
-	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
-		return false;
-
 	// Howdy, maybe we're already have a name on recording...
 	bool bRecord = m_pTrack->isRecord();
 	if (bRecord)
@@ -471,11 +467,10 @@ bool qtractorEditTrackCommand::redo (void)
 	}
 
 	// Refresh track item, at least the names...
-	pTracks->trackList()->updateTrack(m_pTrack);
+	m_pTrack->updateTracks();
 
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi) {
-	    pTracks->updateMidiTrack(m_pTrack);
 		// Re-open all MIDI clips (channel might have changed?)...
 		qtractorClip *pClip = m_pTrack->clips().first();
 		for ( ; pClip; pClip = pClip->next())
