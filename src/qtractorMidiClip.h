@@ -90,8 +90,8 @@ public:
 		{ return (m_pData ? m_pData->channel() : 0); }
 	int bank() const
 		{ return (m_pData ? m_pData->bank() : -1); }
-	int program() const
-		{ return (m_pData ? m_pData->program() : -1); }
+	int prog() const
+		{ return (m_pData ? m_pData->prog() : -1); }
 
 	// Statistical cached accessors.
 	unsigned char noteMin() const
@@ -165,10 +165,11 @@ public:
 		// Sequence properties accessors.
 		unsigned short channel() const
 			{ return m_pSeq->channel(); }
+
 		int bank() const
 			{ return m_pSeq->bank(); }
-		int program() const
-			{ return m_pSeq->program(); }
+		int prog() const
+			{ return m_pSeq->prog(); }
 
 		unsigned char noteMin() const
 		   { return m_pSeq->noteMin(); }

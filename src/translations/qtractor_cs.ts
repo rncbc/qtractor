@@ -1091,7 +1091,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="400"/>
-        <location filename="../qtractorTrack.cpp" line="593"/>
+        <location filename="../qtractorTrack.cpp" line="636"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
     </message>
@@ -1117,17 +1117,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit ovladač znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="594"/>
+        <location filename="../qtractorTrack.cpp" line="637"/>
         <source>%1 Record</source>
         <translation>%1 Nahrát</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="595"/>
+        <location filename="../qtractorTrack.cpp" line="638"/>
         <source>%1 Mute</source>
         <translation>%1 Ztlumit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="596"/>
+        <location filename="../qtractorTrack.cpp" line="639"/>
         <source>%1 Solo</source>
         <translation>%1 Sólo</translation>
     </message>
@@ -12474,32 +12474,32 @@ Chcete zahodit tyto změny?</translation>
 <context>
     <name>qtractorTrackForm</name>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="119"/>
+        <location filename="../qtractorTrackForm.cpp" line="148"/>
         <source>Normal</source>
         <translation>Normální</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="120"/>
+        <location filename="../qtractorTrackForm.cpp" line="149"/>
         <source>Bank MSB</source>
         <translation>Banka MSB</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="121"/>
+        <location filename="../qtractorTrackForm.cpp" line="150"/>
         <source>Bank LSB</source>
         <translation>Banka LSB</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="122"/>
+        <location filename="../qtractorTrackForm.cpp" line="151"/>
         <source>Patch</source>
         <translation>Políčko</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="392"/>
+        <location filename="../qtractorTrackForm.cpp" line="427"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="393"/>
+        <location filename="../qtractorTrackForm.cpp" line="428"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12508,7 +12508,7 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="521"/>
+        <location filename="../qtractorTrackForm.cpp" line="556"/>
         <source>(No instrument)</source>
         <translation>(Žádný nástroj)</translation>
     </message>
@@ -12525,8 +12525,8 @@ Chcete použít tyto změny?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="702"/>
-        <location filename="../qtractorTrackForm.cpp" line="813"/>
+        <location filename="../qtractorTrackForm.cpp" line="748"/>
+        <location filename="../qtractorTrackForm.cpp" line="859"/>
         <source>(None)</source>
         <translation>(Žádný)</translation>
     </message>

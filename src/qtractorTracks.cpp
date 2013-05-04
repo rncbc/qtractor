@@ -1529,7 +1529,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	qtractorMidiSequence seq(pTrack->trackName(), 1, iTicksPerBeat);
 	seq.setChannel(pTrack->midiChannel());
 	seq.setBank(pTrack->midiBank());
-	seq.setProgram(pTrack->midiProgram());
+	seq.setProg(pTrack->midiProg());
 
 	// The merge...
 	iter = items.constBegin();
@@ -2347,7 +2347,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 			// Make else tracks MIDI attributes the same....
 			pTrack->setMidiBankSelMethod(pMidiTrack->midiBankSelMethod());
 			pTrack->setMidiBank(pMidiTrack->midiBank());
-			pTrack->setMidiProgram(pMidiTrack->midiProgram());
+			pTrack->setMidiProg(pMidiTrack->midiProg());
 			// Update the track list view, immediately...
 			m_pTrackList->updateTrack(pTrack);
 		}
@@ -2374,7 +2374,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 	pMidiBus->setPatch(iChannel, patch.instrumentName,
 		pMidiTrack->midiBankSelMethod(),
 		pMidiTrack->midiBank(),
-		pMidiTrack->midiProgram(),
+		pMidiTrack->midiProg(),
 		pMidiTrack);
 }
 

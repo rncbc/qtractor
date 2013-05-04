@@ -133,8 +133,8 @@ public:
 	int midiBank() const;
 
 	// MIDI specific: program acessors (optional).
-	void setMidiProgram(int iMidiProgram);
-	int midiProgram() const;
+	void setMidiProg(int iMidiProg);
+	int midiProg() const;
 
 	// Assigned bus name accessors.
 	void setInputBusName(const QString& sBusName);
@@ -296,7 +296,7 @@ public:
 		unsigned short midiChannel;
 		int            midiBankSelMethod;
 		int            midiBank;
-		int            midiProgram;
+		int            midiProg;
 		QColor         foreground;
 		QColor         background;
 	};
@@ -373,6 +373,11 @@ private:
 	// Take(record) descriptor/id registry.
 	mutable QHash<int, TakeInfo *> m_idtakes;
 	mutable QHash<TakeInfo *, int> m_takeids;
+
+	// MIDI bank/program observer.
+	class MidiProgramObserver;
+
+	MidiProgramObserver  *m_pMidiProgramObserver;
 };
 
 

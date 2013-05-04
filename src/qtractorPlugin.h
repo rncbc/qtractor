@@ -804,6 +804,43 @@ public:
 	bool isAudioOutputAutoConnect() const
 		{ return m_bAudioOutputAutoConnect; }
 
+	// MIDI bank/program observable subject.
+	class MidiProgramSubject : public qtractorSubject
+	{
+	public:
+
+		// Constructor.
+		MidiProgramSubject(int iBank, int iProg)
+			: qtractorSubject(valueFromProgram(iBank, iProg))
+			{ setMaxValue(valueFromProgram(0x3fff, 0x7f)); }
+
+		// Bank/program setter.
+		void setProgram(int iBank, int iProg)
+			{ setValue(valueFromProgram(iBank, iProg)); }
+
+		// Bank/program getters.
+		int bank() const { return bankFromValue(value()); }
+		int prog() const { return progFromValue(value()); }
+
+	protected:
+
+		// Bank/program value helpers.
+		static float valueFromProgram(int iBank, int iProg)
+		{
+			if (iBank < 0) iBank = 0;
+			if (iProg < 0) iProg = 0;
+			return float((iBank << 7) | (iProg & 0x7f));
+		}
+
+		static int bankFromValue(float fValue)
+			{ return ((int(fValue) >> 7) & 0x3fff); }
+		static int progFromValue(float fValue)
+			{ return (int(fValue) & 0x7f); }
+	};
+
+	MidiProgramSubject *midiProgramSubject() const
+		{ return m_pMidiProgramSubject; }
+
 private:
 
 	// Instance variables.
@@ -837,6 +874,9 @@ private:
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];
+
+	// MIDI bank/program observable subject.
+	MidiProgramSubject *m_pMidiProgramSubject;
 };
 
 

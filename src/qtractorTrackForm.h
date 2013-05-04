@@ -56,6 +56,8 @@ public:
 
 	qtractorTrack::TrackType trackType() const;
 
+	void setMidiProgram(int iBank, int iProg);
+
 protected slots:
 
 	void accept();
@@ -92,7 +94,7 @@ protected:
 	qtractorMidiBus *midiBus() const;
 
 	int midiBank() const;
-	int midiProgram() const;
+	int midiProg() const;
 
 	void updateInstruments();
 	void updateInstrumentsAdd(
@@ -137,6 +139,11 @@ private:
 
 	// Keep last acceptable command.
 	qtractorCommand *m_pLastCommand;
+
+	// MIDI bank/program observer.
+	class MidiProgramObserver;
+
+	MidiProgramObserver *m_pMidiProgramObserver;
 };
 
 

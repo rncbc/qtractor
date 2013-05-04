@@ -882,6 +882,24 @@ static LilvNode *g_lv2_integer_prop     = NULL;
 static LilvNode *g_lv2_sample_rate_prop = NULL;
 static LilvNode *g_lv2_logarithmic_prop = NULL;
 
+#ifdef CONFIG_LV2_PROGRAMS
+
+void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (handle);
+	if (pLv2Plugin == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_program_changed(%p, %d)", pLv2Plugin, index);
+#endif
+
+	pLv2Plugin->lv2_program_changed(index);
+}
+
+#endif	// CONFIG_LV2_PROGRAMS
+
 
 #ifdef CONFIG_LV2_PRESETS
 
@@ -1589,7 +1607,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 4];
+	m_lv2_features = new LV2_Feature * [iFeatures + 5];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
@@ -1615,6 +1633,17 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 #endif	// CONFIG_LV2_STATE_MAKE_PATH
 
 #endif	// CONFIG_LV2_STATE_FILES
+
+#ifdef CONFIG_LV2_PROGRAMS
+
+	m_lv2_programs_host.handle = this;
+	m_lv2_programs_host.program_changed = &qtractor_lv2_program_changed;
+
+	m_lv2_programs_host_feature.URI = LV2_PROGRAMS__Host;
+	m_lv2_programs_host_feature.data = &m_lv2_programs_host;
+	m_lv2_features[iFeatures++] = &m_lv2_programs_host_feature;
+
+#endif	// CONFIG_LV2_PROGRAMS
 
 #ifdef CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_BUF_SIZE
@@ -2838,6 +2867,7 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 		setConfig(sKey, data.constData());
 		setConfigType(sKey, QString::fromUtf8(pszType));
 	}
+
 	return LV2_STATE_SUCCESS;
 }
 
@@ -2922,6 +2952,34 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 		}
 	}
 
+#ifdef CONFIG_LIBSUIL
+	if (m_suil_instance) {
+		const LV2_Programs_UI_Interface *ui_programs
+			= (const LV2_Programs_UI_Interface *)
+				suil_instance_extension_data(
+					m_suil_instance, LV2_PROGRAMS__UIInterface);
+		if (ui_programs && ui_programs->select_program) {
+		#if 0
+			LV2UI_Handle ui_handle = suil_instance_get_handle(m_suil_instance);
+		#else
+			struct SuilInstanceHead {	// HACK!
+				void                   *ui_lib_handle;
+				const LV2UI_Descriptor *ui_descriptor;
+				LV2UI_Handle            ui_handle;
+			} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
+			LV2UI_Handle ui_handle = suil_instance_head->ui_handle;
+		#endif
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorLv2Plugin[%p]::selectProgram(%d, %d)"
+				" LV2UI_Handle=%p", this, iBank, iProg, ui_handle);
+		#endif
+			if (ui_handle) {
+				(*ui_programs->select_program)(ui_handle, iBank, iProg);
+			}
+		}
+	}
+#endif
+
 	// Reset parameters default value...
 	const qtractorPlugin::Params& params = qtractorPlugin::params();
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
@@ -2958,6 +3016,27 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 	program.name = pLv2Program->name;
 
 	return true;
+}
+
+
+// Program/patch notification.
+void qtractorLv2Plugin::lv2_program_changed ( int iIndex )
+{
+	qtractorPluginList *pList = list();
+
+	if (iIndex < 0) {
+		qtractorMidiManager *pMidiManager = pList->midiManager();
+		if (pMidiManager)
+			pMidiManager->updateInstruments();
+	} else {
+		qtractorPlugin::Program program;
+		if (getProgram(iIndex, program)) {
+			qtractorPluginList::MidiProgramSubject *pMidiProgramSubject
+				= pList->midiProgramSubject();
+			if (pMidiProgramSubject)
+				pMidiProgramSubject->setProgram(program.bank, program.prog);
+		}
+	}
 }
 
 #endif	// CONFIG_LV2_PROGRAMS

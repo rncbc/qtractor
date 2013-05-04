@@ -167,6 +167,36 @@ private:
 };
 
 
+//----------------------------------------------------------------------------
+// qtractorTrack::MidiProgramObserver -- Local dedicated observer.
+
+class qtractorTrack::MidiProgramObserver : public qtractorObserver
+{
+public:
+
+	// Constructor.
+	MidiProgramObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
+		: qtractorObserver(pSubject), m_pTrack(pTrack) {}
+
+protected:
+
+	// Update feedback.
+	void update()
+	{
+		const int iValue = int(value());
+		const int iBank = (iValue >> 7) & 0x3fff;
+		const int iProg = (iValue & 0x7f);
+		m_pTrack->setMidiBank(iBank);
+		m_pTrack->setMidiProg(iProg);
+	}
+
+private:
+
+	// Members.
+	qtractorTrack *m_pTrack;
+};
+
+
 //-------------------------------------------------------------------------
 // qtractorTrack::Properties -- Track properties structure.
 
@@ -187,7 +217,7 @@ void qtractorTrack::Properties::clear (void)
 	midiChannel = 0;
 	midiBankSelMethod = -1;
 	midiBank    = -1;
-	midiProgram = -1;
+	midiProg    = -1;
 	foreground  = Qt::yellow;
 	background  = Qt::darkBlue;
 }
@@ -211,7 +241,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 		midiChannel = props.midiChannel;
 		midiBankSelMethod = props.midiBankSelMethod;
 		midiBank    = props.midiBank;
-		midiProgram = props.midiProgram;
+		midiProg    = props.midiProg;
 		foreground  = props.foreground;
 		background  = props.background;
 	}
@@ -311,11 +341,14 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pCurveFile = new qtractorCurveFile(m_pPluginList->curveList());
 
+	m_pMidiProgramObserver = NULL;
+
 	setHeight(HeightBase);	// Default track height.
 	clear();
 }
 
-// Default constructor.
+
+// Default desstructor.
 qtractorTrack::~qtractorTrack (void)
 {
 	close();
@@ -363,8 +396,8 @@ void qtractorTrack::clear (void)
 	m_pCurveFile->clear();
 
 	m_props.midiBankSelMethod = -1;
-	m_props.midiBank          = -1;
-	m_props.midiProgram       = -1;
+	m_props.midiBank = -1;
+	m_props.midiProg = -1;
 
 	m_props.monitor = false;
 	m_props.record  = false;
@@ -500,6 +533,11 @@ bool qtractorTrack::open (void)
 				pAudioEngine->bufferSize(), m_pSession->sampleRate(),
 				qtractorPluginList::MidiTrack);
 		}
+		// Set MIDI bank/program observer...
+		if (m_pPluginList->midiProgramSubject()) {
+			m_pMidiProgramObserver = new MidiProgramObserver(this,
+				m_pPluginList->midiProgramSubject());
+		}
 		break;
 	}
 	default:
@@ -557,6 +595,11 @@ void qtractorTrack::close (void)
 	if (m_pMidiPanningObserver) {
 		delete m_pMidiPanningObserver;
 		m_pMidiPanningObserver = NULL;
+	}
+
+	if (m_pMidiProgramObserver) {
+		delete m_pMidiProgramObserver;
+		m_pMidiProgramObserver = NULL;
 	}
 
 #if 0
@@ -836,14 +879,14 @@ int qtractorTrack::midiBank (void) const
 
 
 // MIDI specific: program accessors.
-void qtractorTrack::setMidiProgram ( int iMidiProgram )
+void qtractorTrack::setMidiProg ( int iMidiProg )
 {
-	m_props.midiProgram = iMidiProgram;
+	m_props.midiProg = iMidiProg;
 }
 
-int qtractorTrack::midiProgram (void) const
+int qtractorTrack::midiProg (void) const
 {
-	return m_props.midiProgram;
+	return m_props.midiProg;
 }
 
 
@@ -968,8 +1011,8 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 		if (pMidiClip) {
 			if (midiBank() < 0)
 				setMidiBank(pMidiClip->bank());
-			if (midiProgram() < 0)
-				setMidiProgram(pMidiClip->program());
+			if (midiProg() < 0)
+				setMidiProg(pMidiClip->prog());
 		}
 	}
 
@@ -1284,7 +1327,7 @@ void qtractorTrack::setLoop (
 // MIDI track instrument patching.
 void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 {
-	int iProg = midiProgram();
+	int iProg = midiProg();
 	if (iProg < 0)
 		return;
 
@@ -1448,7 +1491,7 @@ bool qtractorTrack::loadElement (
 				else if (eProp.tagName() == "midi-bank")
 					qtractorTrack::setMidiBank(eProp.text().toInt());
 				else if (eProp.tagName() == "midi-program")
-					qtractorTrack::setMidiProgram(eProp.text().toInt());
+					qtractorTrack::setMidiProg(eProp.text().toInt());
 			}
 		}
 		else
@@ -1582,9 +1625,9 @@ bool qtractorTrack::saveElement (
 			pDocument->saveTextElement("midi-bank",
 				QString::number(qtractorTrack::midiBank()), &eProps);
 		}
-		if (qtractorTrack::midiProgram() >= 0) {
+		if (qtractorTrack::midiProg() >= 0) {
 			pDocument->saveTextElement("midi-program",
-				QString::number(qtractorTrack::midiProgram()), &eProps);
+				QString::number(qtractorTrack::midiProg()), &eProps);
 		}
 	}
 	pElement->appendChild(eProps);

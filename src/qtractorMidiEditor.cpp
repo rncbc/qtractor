@@ -4137,7 +4137,7 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 
 	// Key note names...
 	const qtractorInstrumentData& notes
-		= instr.notes(pTrack->midiBank(), pTrack->midiProgram());
+		= instr.notes(pTrack->midiBank(), pTrack->midiProg());
 	qtractorInstrumentData::ConstIterator nit = notes.constBegin();
 	const qtractorInstrumentData::ConstIterator& nit_end = notes.constEnd();
 	for ( ; nit != nit_end; ++nit)

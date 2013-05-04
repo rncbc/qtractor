@@ -319,8 +319,8 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					pSeq->addEvent(pEvent);
 					pSeq->setChannel(iChannel);
 					// Set the primordial program patch...
-					if (pSeq->program() < 0)
-						pSeq->setProgram(data2);
+					if (pSeq->prog() < 0)
+						pSeq->setProg(data2);
 				}
 				break;
 			case qtractorMidiEvent::CHANPRESS:
@@ -611,10 +611,10 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 			}
 
 			// Track/channel program change...
-			if (pSeq->program() >= 0) {
+			if (pSeq->prog() >= 0) {
 				writeInt(0); // delta-time=0
 				writeInt(qtractorMidiEvent::PGMCHANGE, 1);
-				writeInt((pSeq->program() & 0x007f), 1);
+				writeInt((pSeq->prog() & 0x007f), 1);
 			}
 
 			// Lets-a go, down to event merge loop...

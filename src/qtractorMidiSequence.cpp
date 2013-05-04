@@ -56,11 +56,11 @@ qtractorMidiSequence::~qtractorMidiSequence (void)
 // Sequencer reset method.
 void qtractorMidiSequence::clear (void)
 {
-	m_iBank    = -1;
-	m_iProgram = -1;
+	m_iBank = -1;
+	m_iProg = -1;
 
-//	m_noteMax  = 0;
-//	m_noteMin  = 0;
+//	m_noteMax = 0;
+//	m_noteMin = 0;
 
 	m_duration = 0;
 

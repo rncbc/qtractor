@@ -722,7 +722,7 @@ void qtractorMidiClip::unlinkHashData (void)
 	pNewSeq->setName(pOldSeq->name());
 	pNewSeq->setChannel(pOldSeq->channel());
 	pNewSeq->setBank(pOldSeq->bank());
-	pNewSeq->setProgram(pOldSeq->program());
+	pNewSeq->setProg(pOldSeq->prog());
 	pNewSeq->setTicksPerBeat(pOldSeq->ticksPerBeat());
 	pNewSeq->setTimeOffset(pOldSeq->timeOffset());
 	pNewSeq->setTimeLength(pOldSeq->timeLength());
@@ -1244,7 +1244,7 @@ bool qtractorMidiClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	qtractorMidiSequence seq(pSeq->name(), pSeq->channel(), iTicksPerBeat);
 
 	seq.setBank(pTrack->midiBank());
-	seq.setProgram(pTrack->midiProgram());
+	seq.setProg(pTrack->midiProg());
 
 	for (qtractorMidiEvent *pEvent = pSeq->events().first();
 			pEvent; pEvent = pEvent->next()) {
