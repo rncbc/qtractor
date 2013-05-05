@@ -1373,6 +1373,8 @@ void qtractorTrackForm::setMidiProgram ( int iBank, int iProg )
 		iBank,
 		iProg
 	);
+
+	changed();
 }
 
 
