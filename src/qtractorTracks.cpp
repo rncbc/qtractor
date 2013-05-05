@@ -1405,6 +1405,12 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		pNewClip->setClipLength(iSelectEnd - iSelectStart);
 		pNewClip->setFilename(sFilename);
 		pClipCommand->addClip(pNewClip, pTrack);
+		// The new file should only remain
+		// iif session is eventually saved...
+		qtractorFileList::Item *pItem
+			= pSession->files()->findItem(qtractorFileList::Audio, sFilename);
+		if (pItem)
+			pItem->setAutoRemove(true);
 	}
 
 	// Almost done with it...
@@ -1619,6 +1625,12 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		pNewClip->setFilename(sFilename);
 		pNewClip->setTrackChannel(1);
 		pClipCommand->addClip(pNewClip, pTrack);
+		// The new file should only remain
+		// iif session is eventually saved...
+		qtractorFileList::Item *pItem
+			= pSession->files()->findItem(qtractorFileList::Midi, sFilename);
+		if (pItem)
+			pItem->setAutoRemove(true);
 	}
 
 	// Almost done with it...
