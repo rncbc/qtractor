@@ -140,7 +140,7 @@ public:
 
 	// File/path registry management.
 	qtractorFileListItem *findFileItem(Type iType, const QString& sPath) const;
-	void addFileItem(Type iType, qtractorFileListItem *pFileItem);
+	void addFileItem(Type iType, qtractorFileListItem *pFileItem, bool bAutoRemove);
 	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
 
 	// Clip/path registry management.

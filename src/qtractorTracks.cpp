@@ -1360,7 +1360,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 
 	// Stop logging...
 	if (pMainForm) {
-		pMainForm->addAudioFile(sFilename);
+		pMainForm->addAudioFile(sFilename, true);
 		pMainForm->appendMessages(
 			tr("Audio clip merge/export: \"%1\" complete.")
 			.arg(sFilename));
@@ -1405,12 +1405,6 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		pNewClip->setClipLength(iSelectEnd - iSelectStart);
 		pNewClip->setFilename(sFilename);
 		pClipCommand->addClip(pNewClip, pTrack);
-		// The new file should only remain
-		// iif session is eventually saved...
-		qtractorFileList::Item *pItem
-			= pSession->files()->findItem(qtractorFileList::Audio, sFilename);
-		if (pItem)
-			pItem->setAutoRemove(true);
 	}
 
 	// Almost done with it...
@@ -1611,7 +1605,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 
 	// Stop logging...
 	if (pMainForm) {
-		pMainForm->addMidiFile(sFilename);
+		pMainForm->addMidiFile(sFilename, true);
 		pMainForm->appendMessages(
 			tr("MIDI clip merge/export: \"%1\" complete.")
 			.arg(sFilename));
@@ -1625,12 +1619,6 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		pNewClip->setFilename(sFilename);
 		pNewClip->setTrackChannel(1);
 		pClipCommand->addClip(pNewClip, pTrack);
-		// The new file should only remain
-		// iif session is eventually saved...
-		qtractorFileList::Item *pItem
-			= pSession->files()->findItem(qtractorFileList::Midi, sFilename);
-		if (pItem)
-			pItem->setAutoRemove(true);
 	}
 
 	// Almost done with it...

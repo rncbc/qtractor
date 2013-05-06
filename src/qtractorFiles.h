@@ -67,8 +67,8 @@ public:
 	bool isFileSelected() const;
 
 	// File addition Convenience helper methods.
-	void addAudioFile (const QString& sFilename);
-	void addMidiFile  (const QString& sFilename);
+	void addAudioFile (const QString& sFilename, bool bAutoRemove);
+	void addMidiFile  (const QString& sFilename, bool bAutoRemove);
 
 	// File selection Convenience helper methods.
 	void selectAudioFile (const QString& sFilename);
