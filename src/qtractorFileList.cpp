@@ -53,9 +53,9 @@ qtractorFileListItem *qtractorFileList::findFileItem (
 
 
 void qtractorFileList::addFileItem (
-	qtractorFileList::Type iType, qtractorFileListItem *pFileItem )
+	qtractorFileList::Type iType, qtractorFileListItem *pFileItem, bool bAutoRemove )
 {
-	Item *pItem = addItem(iType, pFileItem->path(), false);
+	Item *pItem = addItem(iType, pFileItem->path(), bAutoRemove);
 	if (pItem) {
 		pItem->setFileItem(pFileItem);
 	#ifdef CONFIG_DEBUG_0

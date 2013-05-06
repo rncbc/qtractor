@@ -292,18 +292,18 @@ bool qtractorFiles::isFileSelected (void) const
 
 
 // Audio file addition convenience method.
-void qtractorFiles::addAudioFile ( const QString& sFilename )
+void qtractorFiles::addAudioFile ( const QString& sFilename, bool bAutoRemove )
 {
 	m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
-	m_pAudioListView->addFileItem(sFilename);
+	m_pAudioListView->addFileItem(sFilename, bAutoRemove);
 }
 
 
 // MIDI file addition convenience method.
-void qtractorFiles::addMidiFile ( const QString& sFilename )
+void qtractorFiles::addMidiFile ( const QString& sFilename, bool bAutoRemove )
 {
 	m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
-	m_pMidiListView->addFileItem(sFilename);
+	m_pMidiListView->addFileItem(sFilename, bAutoRemove);
 }
 
 

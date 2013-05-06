@@ -67,7 +67,7 @@ public:
 	qtractorFileGroupItem *addGroupItem(const QString& sName,
 		qtractorFileGroupItem *pParentItem = NULL);
 	qtractorFileListItem *addFileItem(const QString& sPath,
-		qtractorFileGroupItem *pParentItem = NULL);
+		bool bAutoRemove, qtractorFileGroupItem *pParentItem = NULL);
 
 	// Current group/file item accessors...
 	qtractorFileGroupItem *currentGroupItem() const;

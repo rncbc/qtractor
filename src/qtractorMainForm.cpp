@@ -7282,11 +7282,12 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 // qtractorMainForm -- General contents change stuff.
 
 // Audio file addition slot funtion.
-void qtractorMainForm::addAudioFile ( const QString& sFilename )
+void qtractorMainForm::addAudioFile (
+	const QString& sFilename, bool bAutoRemove )
 {
 	// Add the just dropped audio file...
 	if (m_pFiles)
-		m_pFiles->addAudioFile(sFilename);
+		m_pFiles->addAudioFile(sFilename, bAutoRemove);
 
 	stabilizeForm();
 }
@@ -7341,11 +7342,12 @@ void qtractorMainForm::activateAudioFile (
 
 
 // MIDI file addition slot funtion.
-void qtractorMainForm::addMidiFile ( const QString& sFilename )
+void qtractorMainForm::addMidiFile (
+	const QString& sFilename, bool bAutoRemove )
 {
 	// Add the just dropped MIDI file...
 	if (m_pFiles)
-		m_pFiles->addMidiFile(sFilename);
+		m_pFiles->addMidiFile(sFilename, bAutoRemove);
 
 	stabilizeForm();
 }

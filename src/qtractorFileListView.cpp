@@ -387,7 +387,7 @@ qtractorFileList::Type qtractorFileListView::fileType (void) const
 
 // Add a new file item, optionally under a given group.
 qtractorFileListItem *qtractorFileListView::addFileItem (
-	const QString& sPath, qtractorFileGroupItem *pParentItem )
+	const QString& sPath, bool bAutoRemove, qtractorFileGroupItem *pParentItem )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -398,7 +398,7 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 		pFileItem = createFileItem(sPath);
 		if (pFileItem) {
 			// Add to file/path registry...
-			pSession->files()->addFileItem(m_iFileType, pFileItem);
+			pSession->files()->addFileItem(m_iFileType, pFileItem, bAutoRemove);
 			// Insert the new file item in place...
 			if (pParentItem) {
 				if (pParentItem->type() == GroupItem) {
@@ -1421,7 +1421,7 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 				else
 					QTreeWidget::addTopLevelItem(pFileItem);
 				if (pSession)
-					pSession->files()->addFileItem(m_iFileType, pFileItem);
+					pSession->files()->addFileItem(m_iFileType, pFileItem, false);
 			}
 		}
 	}
