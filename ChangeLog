@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Now accepting JACK transport tempo and time-tignature changes
+  while in slave transport mode. (HIGHLY EXPERIMENTAL)
+
 - Fix ref-count and auto-removal of created files that result
   from clip merge/export when session is closed but not saved.
 
