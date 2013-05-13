@@ -263,7 +263,7 @@ qtractorMainForm::qtractorMainForm (
 	m_iPlayTimer = 0;
 	m_iIdleTimer = 0;
 
-	m_iTransportUpdate  = 0; 
+	m_iTransportUpdate  = 0;
 	m_iTransportRolling = 0;
 	m_bTransportPlaying = false;
 	m_fTransportShuttle = 0.0f;
@@ -6720,7 +6720,37 @@ void qtractorMainForm::timerSlot (void)
 				transportPlay(); // Toggle playing!
 			//	if (bPlaying)
 			//		m_pSession->seek(iPlayHead, true);
-			}			
+			}
+			// 2. Watch for temp/time-sig changes on JACK transport...
+			if (bPlaying) {
+				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
+				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+				qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+				if (pNode && (
+					::fabs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
+					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
+					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
+				#ifdef CONFIG_DEBUG
+					qDebug("qtractorMainForm::timerSlot() tempo=%g %u/%u",
+						pos.beats_per_minute,
+						(unsigned short) pos.beats_per_bar,
+						(unsigned short) pos.beat_type);
+				#endif
+					m_pSession->lock();
+					pNode->tempo = pos.beats_per_minute;
+					pNode->beatsPerBar = pos.beats_per_bar;
+					pNode->beatDivisor = 0;
+					unsigned short i = pos.beat_type;
+					while (i > 1) {	++(pNode->beatDivisor); i >>= 1; }
+					pTimeScale->updateNode(pNode);
+					m_pTempoSpinBox->setTempo(pNode->tempo, false);
+					m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+					m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+					pAudioEngine->resetMetro();
+					pMidiEngine->resetTempo();
+					m_pSession->unlock();
+				}
+			}
 		#ifdef CONFIG_LIBLILV
 		#ifdef CONFIG_LV2_TIME
 			// Update LV2 Time from JACK transport position...
