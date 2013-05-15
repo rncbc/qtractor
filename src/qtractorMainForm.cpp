@@ -6731,7 +6731,7 @@ void qtractorMainForm::timerSlot (void)
 			//		m_pSession->seek(iPlayHead, true);
 			}
 			// 2. Watch for temp/time-sig changes on JACK transport...
-			if (bPlaying) {
+			if (bPlaying && (pos.valid & JackPositionBBT)) {
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
