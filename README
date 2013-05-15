@@ -70,6 +70,7 @@ Features
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master/slave.
 - JACK session support.
+- NSM support [15].
 - MMC control surface enabled.
 - MIDI Song Position cueing support.
 - Configurable keyboard shortcuts.
@@ -135,6 +136,8 @@ The software requirements for build and runtime are listed as follows:
         http://drobilla.net/software/sord/
         http://drobilla.net/software/serd/
 
+  [15] Non Session Management (NSM)
+        http://non.tuxfamily.org/nsm/
 
 Installation
 ------------

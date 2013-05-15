@@ -271,6 +271,7 @@ RESOURCES += \
 
 TRANSLATIONS += \
 	translations/qtractor_cs.ts \
+	translations/qtractor_de.ts \
 	translations/qtractor_fr.ts \
 	translations/qtractor_it.ts \
 	translations/qtractor_ja.ts \
