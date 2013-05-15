@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- New German (de) translation added (by Guido Scholz, thanks).
+
 - Now accepting JACK transport tempo and time-tignature changes
   while in slave transport mode. (EXPERIMENTAL)
 
