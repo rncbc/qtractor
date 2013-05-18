@@ -2474,6 +2474,8 @@ void qtractorMainForm::showNsmSession (void)
 #endif
 
 	QMainWindow::show();
+	QMainWindow::raise();
+	QMainWindow::activateWindow();
 
 #endif	// CONFIG_NSM
 }
