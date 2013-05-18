@@ -333,10 +333,16 @@ protected slots:
 	void openNsmSession();
 	void saveNsmSession();
 
+	void showNsmSession();
+	void hideNsmSession();
+
 protected:
 
 	void closeEvent(QCloseEvent *pCloseEvent);
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
+
+	void showEvent(QShowEvent *pShowEvent);
+	void hideEvent(QHideEvent *pHideEvent);
 
 	bool queryClose();
 
