@@ -59,6 +59,7 @@ public:
 	// Session client methods.
 	void announce(const QString& app_name, const QString& capabilities);
 	void dirty(bool is_dirty);
+	void visible(bool is_visible);
 	void progress(float percent);
 	void message(int priority, const QString& mesg);
 
@@ -98,6 +99,8 @@ public:
 
 	void nsm_save();
 	void nsm_loaded();
+	void nsm_show();
+	void nsm_hide();
 
 protected:
 
@@ -110,6 +113,8 @@ signals:
 	void open();
 	void save();
 	void loaded();
+	void show();
+	void hide();
 
 private:
 

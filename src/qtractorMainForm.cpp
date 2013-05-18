@@ -1388,7 +1388,13 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			QObject::connect(m_pNsmClient,
 				SIGNAL(save()),
 				SLOT(saveNsmSession()));
-			m_pNsmClient->announce(QTRACTOR_TITLE, ":switch:dirty:");
+			QObject::connect(m_pNsmClient,
+				SIGNAL(show()),
+				SLOT(showNsmSession()));
+			QObject::connect(m_pNsmClient,
+				SIGNAL(hide()),
+				SLOT(hideNsmSession()));
+			m_pNsmClient->announce(QTRACTOR_TITLE, ":switch:dirty:optional-gui:");
 			m_sNsmExt = m_pOptions->sSessionExt;
 			if (m_sNsmExt.isEmpty())
 				m_sNsmExt = qtractorDocument::defaultExt();
@@ -1610,6 +1616,29 @@ void qtractorMainForm::contextMenuEvent( QContextMenuEvent *pEvent )
 
 	// Primordial edit menu should be available...
 	m_ui.editMenu->exec(pEvent->globalPos());
+}
+
+
+// Optional main widget visibility handler.
+void qtractorMainForm::showEvent ( QShowEvent *pShowEvent )
+{
+	QMainWindow::showEvent(pShowEvent);
+
+#ifdef CONFIG_NSM
+	if (m_pNsmClient)
+		m_pNsmClient->visible(true);
+#endif
+}
+
+
+void qtractorMainForm::hideEvent ( QHideEvent *pHideEvent )
+{
+#ifdef CONFIG_NSM
+	if (m_pNsmClient)
+		m_pNsmClient->visible(false);
+#endif
+
+	QMainWindow::hideEvent(pHideEvent);
 }
 
 
@@ -2362,6 +2391,8 @@ void qtractorMainForm::openNsmSession (void)
 	if (bLoaded)
 		m_pNsmClient->dirty(false);
 
+	m_pNsmClient->visible(QMainWindow::isVisible());
+
 #endif	// CONFIG_NSM
 }
 
@@ -2423,6 +2454,46 @@ void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
 
 	if (bSaved)
 		m_pNsmClient->dirty(false);
+
+#endif	// CONFIG_NSM
+}
+
+
+void qtractorMainForm::showNsmSession (void)
+{
+#ifdef CONFIG_NSM
+
+	if (m_pNsmClient == NULL)
+		return;
+
+	if (!m_pNsmClient->is_active())
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::showNsmSession()");
+#endif
+
+	QMainWindow::show();
+
+#endif	// CONFIG_NSM
+}
+
+
+void qtractorMainForm::hideNsmSession (void)
+{
+#ifdef CONFIG_NSM
+
+	if (m_pNsmClient == NULL)
+		return;
+
+	if (!m_pNsmClient->is_active())
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::hideNsmSession()");
+#endif
+
+	QMainWindow::hide();
 
 #endif	// CONFIG_NSM
 }
