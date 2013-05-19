@@ -583,12 +583,12 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorTrackList.cpp" line="355"/>
         <source>Audio</source>
-        <translation>Audio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="368"/>
         <source>MIDI</source>
-        <translation>JACK-MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="425"/>
@@ -792,7 +792,7 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <location filename="../qtractorBusForm.cpp" line="411"/>
         <location filename="../qtractorBusForm.cpp" line="694"/>
         <source>MIDI</source>
-        <translation>JACK-MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="290"/>
@@ -1278,7 +1278,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorClipForm.cpp" line="643"/>
         <source>MIDI</source>
-        <translation>JACK-MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="645"/>
@@ -1413,7 +1413,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorConnectForm.ui" line="217"/>
         <source>MIDI</source>
-        <translation>JACK-MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.cpp" line="366"/>
@@ -1579,7 +1579,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="144"/>
         <source>MIDI</source>
-        <translation>JACK-MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="173"/>
@@ -1711,7 +1711,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFiles.cpp" line="81"/>
         <source>MIDI</source>
-        <translation>JACK-MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="99"/>
@@ -8962,7 +8962,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="549"/>
         <source>&amp;Audio</source>
-        <translation>JACK-&amp;Audio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="561"/>
@@ -9212,7 +9212,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1248"/>
         <source>&amp;MIDI</source>
-        <translation>JACK-&amp;MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1275"/>
@@ -10332,7 +10332,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="156"/>
         <source>MIDI</source>
-        <translation>JACK-MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="161"/>
@@ -11148,7 +11148,7 @@ Wollen Sie diese verwerfen?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="107"/>
         <source>&amp;Audio</source>
-        <translation>JACK-&amp;Audio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="110"/>
@@ -11164,7 +11164,7 @@ Wollen Sie diese verwerfen?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="120"/>
         <source>&amp;MIDI</source>
-        <translation>JACK-&amp;MIDI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="123"/>
