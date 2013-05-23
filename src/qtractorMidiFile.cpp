@@ -600,20 +600,24 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 
 			// Track/channel bank-select...
 			if (pSeq->bank() >= 0) {
+				iChannel = pSeq->channel();
+				iStatus  = (qtractorMidiEvent::CONTROLLER | iChannel) & 0xff;
 				writeInt(0); // delta-time=0
-				writeInt(qtractorMidiEvent::CONTROLLER, 1);
+				writeInt(iStatus, 1);
 				writeInt(0x00, 1);	// Bank MSB.
 				writeInt((pSeq->bank() & 0x3f80) >> 7, 1);
 				writeInt(0); // delta-time=0
-				writeInt(qtractorMidiEvent::CONTROLLER, 1);
+				writeInt(iStatus, 1);
 				writeInt(0x20, 1);	// Bank LSB.
 				writeInt((pSeq->bank() & 0x007f), 1);
 			}
 
 			// Track/channel program change...
 			if (pSeq->prog() >= 0) {
+				iChannel = pSeq->channel();
+				iStatus  = (qtractorMidiEvent::PGMCHANGE | iChannel) & 0xff;
 				writeInt(0); // delta-time=0
-				writeInt(qtractorMidiEvent::PGMCHANGE, 1);
+				writeInt(iStatus, 1);
 				writeInt((pSeq->prog() & 0x007f), 1);
 			}
 

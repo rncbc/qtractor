@@ -28,14 +28,14 @@ Audio:	%1 channels, %2 Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2468"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4019"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2473"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4024"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2468"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4019"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2473"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4024"/>
         <source>%1 Out</source>
         <translation>%1 出力</translation>
     </message>
@@ -191,7 +191,7 @@ Offs. / Len.:	%3 / %4</source>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="400"/>
-        <location filename="../qtractorTrack.cpp" line="639"/>
+        <location filename="../qtractorTrack.cpp" line="644"/>
         <source>%1 Monitor</source>
         <translation>%1 モニター</translation>
     </message>
@@ -276,7 +276,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1125"/>
-        <location filename="../qtractorMidiFile.cpp" line="1062"/>
+        <location filename="../qtractorMidiFile.cpp" line="1066"/>
         <location filename="../qtractorMidiListView.cpp" line="65"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
@@ -489,17 +489,17 @@ MIDI:	</translation>
         <translation>マーカーの異動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="640"/>
+        <location filename="../qtractorTrack.cpp" line="645"/>
         <source>%1 Record</source>
         <translation>%1 記録</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="641"/>
+        <location filename="../qtractorTrack.cpp" line="646"/>
         <source>%1 Mute</source>
         <translation>%1 ミュート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="642"/>
+        <location filename="../qtractorTrack.cpp" line="647"/>
         <source>%1 Solo</source>
         <translation>%1 ソロ</translation>
     </message>
