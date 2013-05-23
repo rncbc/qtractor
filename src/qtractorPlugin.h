@@ -397,7 +397,7 @@ public:
 	// Destructor.
 	virtual ~qtractorPlugin();
 
-	// DANGER: This one should be use by qtractorPluginList class!
+	// DANGER: This one should be used by qtractorPluginList class only!
 	void setPluginList(qtractorPluginList *pList) { m_pList = pList; }
 
 	// Main properties accessors.

@@ -1145,7 +1145,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 		// must set plugin-list channel buffers...
 		if (pAudioBus) {
 			m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pSession->sampleRate(),
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
 				trackType == qtractorTrack::Audio
 					? qtractorPluginList::AudioTrack
 					: qtractorPluginList::MidiTrack);

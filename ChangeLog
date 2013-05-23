@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed initial sample-rate settlement on plugin chains for all
+  tracks and buses whenever a session file original sample-rate
+  differs from the current audio device engine (ie. JACK).
+
 - New German (de) translation added (by Guido Scholz, thanks).
 
 - Now accepting JACK transport tempo and time-tignature changes
