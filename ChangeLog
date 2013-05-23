@@ -5,11 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
-- Fixed long as ever MIDI file export bug, which completetely
-  ignored the respective MIDI channel status of stuffed MIDI
-  bank-select (CC#0, CC#32) and program-change (PC#) events,
-  while giving them a MIDI channel 1 (zero address status) on
-  all export occasions.
+- Fixed one long as ever MIDI file export bug, which was about
+  washing all self-induced MIDI bank-select (CC#0, CC#32) and
+  program-change (PC#) events into MIDI channel 1, regardless
+  of the source track/channel.
 
 - Fixed initial sample-rate settlement on plugin chains for all
   tracks and buses whenever a session file original sample-rate
