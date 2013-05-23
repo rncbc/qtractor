@@ -586,14 +586,14 @@ Audio:	%1 channels, %2 Hz</source>
 	(%1% posunutí výšky tónu)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2468"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4019"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2473"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4024"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2468"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4019"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2473"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4024"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -737,7 +737,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1125"/>
-        <location filename="../qtractorMidiFile.cpp" line="1062"/>
+        <location filename="../qtractorMidiFile.cpp" line="1066"/>
         <location filename="../qtractorMidiListView.cpp" line="65"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
@@ -1091,7 +1091,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="400"/>
-        <location filename="../qtractorTrack.cpp" line="639"/>
+        <location filename="../qtractorTrack.cpp" line="644"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
     </message>
@@ -1117,17 +1117,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit ovladač znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="640"/>
+        <location filename="../qtractorTrack.cpp" line="645"/>
         <source>%1 Record</source>
         <translation>%1 Nahrát</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="641"/>
+        <location filename="../qtractorTrack.cpp" line="646"/>
         <source>%1 Mute</source>
         <translation>%1 Ztlumit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="642"/>
+        <location filename="../qtractorTrack.cpp" line="647"/>
         <source>%1 Solo</source>
         <translation>%1 Sólo</translation>
     </message>

@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed one long as ever MIDI file export bug, which was about
+  washing all self-induced MIDI bank-select (CC#0, CC#32) and
+  program-change (PC#) events into MIDI channel 1, regardless
+  of the source track/channel.
+
 - Fixed initial sample-rate settlement on plugin chains for all
   tracks and buses whenever a session file original sample-rate
   differs from the current audio device engine (ie. JACK).
