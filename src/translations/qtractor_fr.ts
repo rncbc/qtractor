@@ -403,27 +403,27 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="225"/>
         <source>remove plugin</source>
-        <translation>enlever le gréffon</translation>
+        <translation>enlever le greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="331"/>
         <source>move plugin</source>
-        <translation>déplacer le gréffon</translation>
+        <translation>déplacer le greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="384"/>
         <source>activate plugin</source>
-        <translation>activer le gréffon</translation>
+        <translation>activer le greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="419"/>
         <source>preset plugin</source>
-        <translation>pré-réglage du gréffon</translation>
+        <translation>pré-réglage du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="463"/>
         <source>reset plugin</source>
-        <translation>réinitialiser le gréffon</translation>
+        <translation>réinitialiser le greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="588"/>
@@ -821,17 +821,17 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="334"/>
         <source>Input Plugins</source>
-        <translation>Gréffons d&apos;entrée</translation>
+        <translation>Greffons d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="343"/>
         <source>Input bus plugins</source>
-        <translation>Bus d&apos;entrée gréffons</translation>
+        <translation>Bus d&apos;entrée greffons</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="358"/>
         <source>Add input plugin</source>
-        <translation>Ajouter un gréffon d&apos;entrée</translation>
+        <translation>Ajouter un greffon d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="361"/>
@@ -842,7 +842,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="383"/>
         <source>Remove input plugin</source>
-        <translation>Enlever le gréffon d&apos;entrée</translation>
+        <translation>Enlever le greffon d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="386"/>
@@ -860,7 +860,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="421"/>
         <source>Move input plugin up</source>
-        <translation>Déplacer le gréffon d&apos;entrée vers le haut</translation>
+        <translation>Déplacer le greffon d&apos;entrée vers le haut</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="424"/>
@@ -878,7 +878,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="446"/>
         <source>Move input plugin down</source>
-        <translation>Déplacer le gréffon d&apos;entrée vers le bas</translation>
+        <translation>Déplacer le greffon d&apos;entrée vers le bas</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="449"/>
@@ -896,43 +896,43 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="468"/>
         <source>Output Plugins</source>
-        <translation>Gréffons de sortie</translation>
+        <translation>Greffons de sortie</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="477"/>
         <source>Output bus plugins</source>
-        <translation>Bus de sortie gréffons</translation>
+        <translation>Bus de sortie greffons</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="492"/>
         <source>Add output plugin</source>
-        <translation>Ajouter un gréffon de sortie</translation>
+        <translation>Ajouter un greffon de sortie</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="517"/>
         <source>Remove output plugin</source>
-        <translation>Enlever un gréffon de sortie</translation>
+        <translation>Enlever un greffon de sortie</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="555"/>
         <source>Move output plugin up</source>
-        <translation>Déplacer le gréffon de sortie vers le haut</translation>
+        <translation>Déplacer le greffon de sortie vers le haut</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="580"/>
         <source>Move output plugin down</source>
-        <translation>Déplacer le gréffon de sortie vers le bas</translation>
+        <translation>Déplacer le greffon de sortie vers le bas</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="617"/>
         <source>Refresh bus list view</source>
-        <translation>Raffraichir la vue de liste des bus</translation>
+        <translation>Rafraichir la vue de liste des bus</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="620"/>
         <location filename="../qtractorBusForm.cpp" line="877"/>
         <source>&amp;Refresh</source>
-        <translation>&amp;Raffraichir</translation>
+        <translation>&amp;Rafraichir</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="646"/>
@@ -948,7 +948,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="655"/>
         <source>Alt+C</source>
-        <translation></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="662"/>
@@ -1099,7 +1099,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="143"/>
         <source>&amp;Gain/Volume:</source>
-        <translation></translation>
+        <translation>&amp;Gain/Volume:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="159"/>
@@ -1144,7 +1144,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="281"/>
         <source>Format</source>
-        <translation></translation>
+        <translation>Format</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="287"/>
@@ -1174,7 +1174,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="313"/>
         <source>&amp;BBT</source>
-        <translation></translation>
+        <translation>&amp;BBT</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="336"/>
@@ -1215,7 +1215,7 @@ Voulez-vous abandonner les changements?</translation>
         <location filename="../qtractorClipForm.ui" line="430"/>
         <location filename="../qtractorClipForm.cpp" line="638"/>
         <source>Audio</source>
-        <translation></translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="455"/>
@@ -1231,7 +1231,7 @@ Voulez-vous abandonner les changements?</translation>
         <location filename="../qtractorClipForm.ui" line="474"/>
         <location filename="../qtractorClipForm.cpp" line="291"/>
         <source> %</source>
-        <translation></translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="493"/>
@@ -1246,22 +1246,22 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="515"/>
         <source> semitones</source>
-        <translation> demi-tones</translation>
+        <translation> demi-tons</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="267"/>
         <source>&amp;Gain:</source>
-        <translation></translation>
+        <translation>&amp;Gain:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="268"/>
         <source> dB</source>
-        <translation></translation>
+        <translation> dB</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="290"/>
         <source>&amp;Volume:</source>
-        <translation></translation>
+        <translation>&amp;Volume:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="388"/>
@@ -1290,7 +1290,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.cpp" line="643"/>
         <source>MIDI</source>
-        <translation></translation>
+        <translation>MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="645"/>
@@ -1323,7 +1323,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorConnect.cpp" line="1827"/>
         <source>Refresh</source>
-        <translation>Raffraichir</translation>
+        <translation>Rafraichir</translation>
     </message>
 </context>
 <context>
@@ -1408,13 +1408,13 @@ Voulez vous appliquer les changements?</translation>
         <location filename="../qtractorConnectForm.ui" line="198"/>
         <location filename="../qtractorConnectForm.ui" line="357"/>
         <source>Refresh current connections view</source>
-        <translation>Raffraichir la vue courante des connections</translation>
+        <translation>Rafraichir la vue courante des connections</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="201"/>
         <location filename="../qtractorConnectForm.ui" line="360"/>
         <source>&amp;Refresh</source>
-        <translation>&amp;Raffraichir</translation>
+        <translation>&amp;Rafraichir</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="207"/>
@@ -1619,7 +1619,7 @@ Voulez-vous le remplacer?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="259"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
-        <translation>Exportation du fichier audio: &quot;%1&quot; commencé...</translation>
+        <translation>Exportation du fichier audio: &quot;%1&quot; commencée...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="273"/>
@@ -1642,12 +1642,12 @@ failed.</source>
     <message>
         <location filename="../qtractorExportForm.cpp" line="295"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
-        <translation>Exportation du fichier MIDI: &quot;%1&quot; commencé...</translation>
+        <translation>Exportation du fichier MIDI: &quot;%1&quot; commencée...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="309"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
-        <translation>Exportation du fichier MIDI: &quot;%1&quot; terminé.</translation>
+        <translation>Exportation du fichier MIDI: &quot;%1&quot; terminée.</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="314"/>
@@ -4403,18 +4403,18 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2357"/>
         <source>&amp;Refresh</source>
-        <translation>&amp;Raffraichir</translation>
+        <translation>&amp;Rafraichir</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2360"/>
         <location filename="../qtractorMainForm.ui" line="2363"/>
         <source>Refresh</source>
-        <translation>Raffraichir</translation>
+        <translation>Rafraichir</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2366"/>
         <source>Refresh views</source>
-        <translation>Raffraichir les vues</translation>
+        <translation>Rafraichir les vues</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2369"/>
@@ -5234,17 +5234,17 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5259"/>
         <source>LADSPA Plug-in support disabled.</source>
-        <translation>Support des gréffons LADSPA désactivé.</translation>
+        <translation>Support des greffons LADSPA désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5262"/>
         <source>DSSI Plug-in support disabled.</source>
-        <translation>Support des gréffons DSSI désactivé.</translation>
+        <translation>Support des greffons DSSI désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5265"/>
         <source>VST Plug-in support disabled.</source>
-        <translation>Support des gréffons VST désactivé.</translation>
+        <translation>Support des greffons VST désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5268"/>
@@ -5254,32 +5254,32 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5271"/>
         <source>LV2 Plug-in support disabled.</source>
-        <translation>Support du gréffon LV2 désactivé.</translation>
+        <translation>Support du greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5277"/>
         <source>LV2 Plug-in UI support disabled.</source>
-        <translation>Support du GUI des gréffons LV2 désactivé.</translation>
+        <translation>Support du GUI des greffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5280"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
-        <translation>Support du GUI des gréffons (libsuil) LV2 désactivé.</translation>
+        <translation>Support du GUI des greffons (libsuil) LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5287"/>
         <source>LV2 Plug-in MIDI/Event support disabled.</source>
-        <translation>Support MIDI/évènement gréffon LV2 désactivé.</translation>
+        <translation>Support MIDI/évènement greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5290"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
-        <translation>Suppor MIDI/Atom gréffon LV2 désactivé.</translation>
+        <translation>Suppor MIDI/Atom greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5299"/>
         <source>LV2 Plug-in State Files support disabled.</source>
-        <translation>Support fichiers état gréffon LV2 désactivé.</translation>
+        <translation>Support fichiers état greffon LV2 désactivé.</translation>
     </message>
     <message>
         <source>LV2 Plug-in support (libslv2) enabled. (DEPRECATED)</source>
@@ -5298,7 +5298,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5274"/>
         <source>LV2 Plug-in support (liblilv) disabled.</source>
-        <translation>Support gréffon LV2 (liblilv) désactivé.</translation>
+        <translation>Support greffon LV2 (liblilv) désactivé.</translation>
     </message>
     <message>
         <source>LV2 Plug-in UI instantiation support (libsuil) disabled.</source>
@@ -5315,17 +5315,17 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5283"/>
         <source>LV2 Plug-in External UI support disabled.</source>
-        <translation>Support UI externe gréffon LV2 désactivé.</translation>
+        <translation>Support UI externe greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5293"/>
         <source>LV2 Plug-in Worker/Schedule support disabled.</source>
-        <translation>Support Worker/Schedule gréffon LV2 désactivé.</translation>
+        <translation>Support Worker/Schedule greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5296"/>
         <source>LV2 Plug-in State support disabled.</source>
-        <translation>Support état gréffon LV2 désactivé.</translation>
+        <translation>Support état greffon LV2 désactivé.</translation>
     </message>
     <message>
         <source>LV2 Plug-in State Files support enabled. (FUBAR)</source>
@@ -5334,27 +5334,27 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5302"/>
         <source>LV2 Plug-in Programs support disabled.</source>
-        <translation>Support des programmes gréffon LV2 désactivé.</translation>
+        <translation>Support des programmes greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5305"/>
         <source>LV2 Plug-in Presets support disabled.</source>
-        <translation>Support réglages gréffon LV2 désactivé.</translation>
+        <translation>Support réglages greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5308"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
-        <translation>Support Temps/position gréffon LV2 désactivé.</translation>
+        <translation>Support Temps/position greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5311"/>
         <source>LV2 Plug-in Options support disabled.</source>
-        <translation>Support pour les options du gréffon LV2 désactivé.</translation>
+        <translation>Support pour les options du greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5314"/>
         <source>LV2 Plug-in Buf-size support disabled.</source>
-        <translation>Support du Buf-size pour les gréffons LV2 désactivé.</translation>
+        <translation>Support du Buf-size pour les greffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5318"/>
@@ -5374,7 +5374,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5332"/>
         <source>Build</source>
-        <translation>Build</translation>
+        <translation>Compilation</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5340"/>
@@ -5440,7 +5440,7 @@ est près et en fonctionnement puis redémarrer la session.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5324"/>
         <source>NSM support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support de NSM désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6404"/>
@@ -6130,7 +6130,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="653"/>
         <source>&amp;Lock</source>
-        <translation>Véroui&amp;ller</translation>
+        <translation>Verroui&amp;ller</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="671"/>
@@ -6280,7 +6280,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3627"/>
         <source>rescale</source>
-        <translation type="unfinished">remise à l&apos;échelle</translation>
+        <translation>remise à l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3710"/>
@@ -6538,7 +6538,7 @@ Longueur:	%3</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="409"/>
         <location filename="../qtractorMidiEditorForm.ui" line="429"/>
         <source>&amp;Properties...</source>
-        <translation>&amp;Propriétées...</translation>
+        <translation>&amp;Propriétés...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="412"/>
@@ -7421,12 +7421,12 @@ Longueur:	%3</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="1233"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1236"/>
         <source>Zebra</source>
-        <translation>Zébrures</translation>
+        <translation>Zèbrures</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1239"/>
         <source>Bar zebra view mode</source>
-        <translation>Mode de visualisation barres zébrées</translation>
+        <translation>Mode de visualisation barres zèbrées</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1247"/>
@@ -7463,18 +7463,18 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1278"/>
         <source>&amp;Refresh</source>
-        <translation>&amp;Raffraichier</translation>
+        <translation>&amp;Rafraichier</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1281"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1284"/>
         <source>Refresh</source>
-        <translation>Raffraichir</translation>
+        <translation>Rafraichir</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1287"/>
         <source>Refresh views</source>
-        <translation>Raffraichir les vues</translation>
+        <translation>Rafraichir les vues</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1290"/>
@@ -7941,7 +7941,7 @@ Voulez-vous sauvegarder les changements?</translation>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="913"/>
         <source>Events</source>
-        <translation>Evénements</translation>
+        <translation>Evènements</translation>
     </message>
 </context>
 <context>
@@ -9039,8 +9039,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="325"/>
         <source>Alt+P</source>
-        <translatorcomment>Alt+H ??</translatorcomment>
-        <translation>Alt+P</translation>
+        <translation>Alt+H</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="351"/>
@@ -9082,8 +9081,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="395"/>
         <source>Alt+S</source>
-        <translatorcomment>Alt+D??</translatorcomment>
-        <translation>Alt+S</translation>
+        <translation>Alt+D</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="424"/>
@@ -9432,7 +9430,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1418"/>
         <source>Whether to have separate MIDI player output ports</source>
-        <translation>If on doit avoir des ports de sorties séparés pour le lecteur MIDI</translation>
+        <translation>Si on doit avoir des ports de sorties séparés pour le lecteur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1421"/>
@@ -9870,7 +9868,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2745"/>
         <source>&amp;Plugins</source>
-        <translation>&amp;Gréffons</translation>
+        <translation>&amp;Greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2763"/>
@@ -9880,22 +9878,22 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2786"/>
         <source>Plugin type</source>
-        <translation>Type de gréffon</translation>
+        <translation>Type de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2805"/>
         <source>Plugin path</source>
-        <translation>Chemin gréffon</translation>
+        <translation>Chemin greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2833"/>
         <source>Browse plugin path</source>
-        <translation>Parcourir le chemin du gréffon</translation>
+        <translation>Parcourir le chemin du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2864"/>
         <source>Add plugin path</source>
-        <translation>Ajouter un chemin de gréffon</translation>
+        <translation>Ajouter un chemin de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2867"/>
@@ -9905,12 +9903,12 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2891"/>
         <source>Plugin paths</source>
-        <translation>Chemins de gréffons</translation>
+        <translation>Chemins de greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2925"/>
         <source>Remove plugin path</source>
-        <translation>Supprimer un chemin de gréffon</translation>
+        <translation>Supprimer un chemin de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2928"/>
@@ -9986,12 +9984,12 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3191"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
-        <translation>Si on doit ouvrir l&apos;éditeur (GUI) du gréffon par défaut</translation>
+        <translation>Si on doit ouvrir l&apos;éditeur (GUI) du greffon par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3194"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Ouvrir l&apos;édit&amp;eur (GUI) du gréffon par défaut</translation>
+        <translation>Ouvrir l&apos;édit&amp;eur (GUI) du greffon par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3197"/>
@@ -10006,12 +10004,12 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3234"/>
         <source>Whether to use a dummy plugin type when scanning for VST plugins</source>
-        <translation>Si on doit utiliser un type de gréffon factice lors du scan des gréffons VST</translation>
+        <translation>Si on doit utiliser un type de greffon factice lors du scan des greffons VST</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3237"/>
         <source>Dummy &amp;VST plugin scan (RECOMMENDED)</source>
-        <translation>Scan factice des gréffons &amp;VST (RECOMMENDE)</translation>
+        <translation>Scan factice des greffons &amp;VST (RECOMMENDE)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3240"/>
@@ -10021,27 +10019,27 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="113"/>
         <source>Signed 16-Bit</source>
-        <translation>16-Bit signé</translation>
+        <translation>16-Bits signé</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="114"/>
         <source>Signed 24-Bit</source>
-        <translation>24-Bit signé</translation>
+        <translation>24-Bits signé</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="115"/>
         <source>Signed 32-Bit</source>
-        <translation>32-Bit signé</translation>
+        <translation>32-Bits signé</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="116"/>
         <source>Float  32-Bit</source>
-        <translation>Flottant  32-Bit</translation>
+        <translation>Flottant  32-Bits</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="117"/>
         <source>Float  64-Bit</source>
-        <translation>Flottant  64-Bit</translation>
+        <translation>Flottant  64-Bits</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="121"/>
@@ -10085,7 +10083,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="962"/>
         <source>Plug-in Directory</source>
-        <translation>Répertoire Gréffon</translation>
+        <translation>Répertoire Greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1201"/>
@@ -10210,7 +10208,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="145"/>
         <source>Plugin parameters</source>
-        <translation>Paramètres gréffon</translation>
+        <translation>Paramètres greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="148"/>
@@ -10220,7 +10218,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="167"/>
         <source>Edit plugin</source>
-        <translation>Editer gréffon</translation>
+        <translation>Editer greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="170"/>
@@ -10230,7 +10228,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="189"/>
         <source>Activate plugin</source>
-        <translation>Activer gréffon</translation>
+        <translation>Activer greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="192"/>
@@ -10358,22 +10356,22 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="454"/>
         <source>copy plugin</source>
-        <translation>copie gréffon</translation>
+        <translation>copie greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="651"/>
         <source>activate all plugins</source>
-        <translation>activer tous les gréffons</translation>
+        <translation>activer tous les greffons</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="682"/>
         <source>deactivate all plugins</source>
-        <translation>désactiver tous les gréffons</translation>
+        <translation>désactiver tous les greffons</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="713"/>
         <source>remove all plugins</source>
-        <translation>supprimer tous les gréffons</translation>
+        <translation>supprimer tous les greffons</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1285"/>
@@ -10393,7 +10391,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1379"/>
         <source>&amp;Add Plugin...</source>
-        <translation>&amp;Ajouter Gréffon...</translation>
+        <translation>&amp;Ajouter Greffon...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1385"/>
@@ -10486,7 +10484,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="33"/>
         <source>Plugins - Qtractor</source>
-        <translation>Gréffons - Qtractor</translation>
+        <translation>Greffons - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="71"/>
@@ -10501,17 +10499,17 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="87"/>
         <source>Plugin search string (regular expression)</source>
-        <translation>Chaîne de recherche de gréffon (expression régulière)</translation>
+        <translation>Chaîne de recherche de greffon (expression régulière)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="103"/>
         <source>Plugin type</source>
-        <translation>Type de gréffon</translation>
+        <translation>Type de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="121"/>
         <source>Available plugins</source>
-        <translation>Gréffons disponibles</translation>
+        <translation>Greffons disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="146"/>
@@ -10566,7 +10564,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>Activate plugin on insert</source>
-        <translation>Activer le gréffon à l&apos;insertion</translation>
+        <translation>Activer le greffon à l&apos;insertion</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="208"/>
@@ -10576,7 +10574,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="221"/>
         <source>Plugin scanning in progress...</source>
-        <translation>Scan des gréffons en cours...</translation>
+        <translation>Scan des greffons en cours...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="330"/>
@@ -10599,7 +10597,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="36"/>
         <source>Session - Qtractor</source>
-        <translation></translation>
+        <translation>Session - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="49"/>
@@ -11200,12 +11198,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="303"/>
         <source>Refresh tempo map</source>
-        <translation>Raffraichir la carte tempo</translation>
+        <translation>Rafraichir la carte tempo</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="306"/>
         <source>Re&amp;fresh</source>
-        <translation>Ra&amp;ffraichir</translation>
+        <translation>Ra&amp;fraichir</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="312"/>
@@ -11311,7 +11309,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="902"/>
         <source>&amp;Refresh</source>
-        <translation>&amp;Raffraichir</translation>
+        <translation>&amp;Rafraichir</translation>
     </message>
 </context>
 <context>
@@ -11388,7 +11386,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="123"/>
         <source>Alt+M</source>
-        <translation></translation>
+        <translation>Alt+M</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="133"/>
@@ -11450,7 +11448,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="265"/>
         <source>Alt+O</source>
-        <translation></translation>
+        <translation>Alt+O</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="272"/>
@@ -11520,17 +11518,17 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="483"/>
         <source>Plugins</source>
-        <translation>Gréffons</translation>
+        <translation>Greffons</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="492"/>
         <source>Track plugins</source>
-        <translation>Gréffons Piste</translation>
+        <translation>Greffons Piste</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="507"/>
         <source>Add plugin</source>
-        <translation>Ajouter gréffon</translation>
+        <translation>Ajouter greffon</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="510"/>
@@ -11540,7 +11538,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="532"/>
         <source>Remove plugin</source>
-        <translation>Supprimer gréffon</translation>
+        <translation>Supprimer greffon</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="535"/>
@@ -11555,7 +11553,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="570"/>
         <source>Move plugin up</source>
-        <translation>Déplacer le gréffon vers le haut</translation>
+        <translation>Déplacer le greffon vers le haut</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="573"/>
@@ -11570,7 +11568,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="595"/>
         <source>Move plugin down</source>
-        <translation>Déplacer le gréffon vers le bas</translation>
+        <translation>Déplacer le greffon vers le bas</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="598"/>
@@ -11713,7 +11711,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTrackView.cpp" line="130"/>
         <source>Zoom in (horizontal)</source>
-        <translation>Zoom avant (horizontal)</translation>
+        <translation type="unfinished">Zoom avant (horizontal)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="131"/>
