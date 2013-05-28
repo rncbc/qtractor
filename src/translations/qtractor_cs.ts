@@ -3152,7 +3152,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5324"/>
         <source>NSM support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro NSM byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6404"/>
@@ -7139,7 +7139,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3627"/>
         <source>rescale</source>
-        <translation type="unfinished">Změnit měřítko</translation>
+        <translation>Změnit měřítko</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3710"/>
