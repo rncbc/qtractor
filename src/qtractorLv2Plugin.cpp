@@ -739,10 +739,10 @@ static const LV2_Feature *g_lv2_features[] =
 #include "qtractorPluginForm.h"
 
 #define LV2_UI_TYPE_NONE       0
-#define LV2_UI_TYPE_EXTERNAL   1
-#define LV2_UI_TYPE_X11        2
+#define LV2_UI_TYPE_QT4        1
+#define LV2_UI_TYPE_EXTERNAL   2
 #define LV2_UI_TYPE_GTK        3
-#define LV2_UI_TYPE_QT4        4
+#define LV2_UI_TYPE_X11        4
 
 #if QT_VERSION < 0x050000
 #define LV2_UI_HOST_URI	LV2_UI__Qt4UI
@@ -2288,12 +2288,17 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			|| lilv_ui_is_a(ui, g_lv2_external_ui_deprecated_class)
 		#endif
 		)	ui_map.insert(LV2_UI_TYPE_EXTERNAL, ui);
+	#if QT_VERSION < 0x050000
+		else
+	#endif
 	#endif
 	#if QT_VERSION < 0x050000
 		if (lilv_ui_is_a(ui, g_lv2_x11_ui_class))
 			ui_map.insert(LV2_UI_TYPE_X11, ui);
+		else
 		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
 			ui_map.insert(LV2_UI_TYPE_GTK, ui);
+		else
 		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
 			ui_map.insert(LV2_UI_TYPE_QT4, ui);
 	#endif
