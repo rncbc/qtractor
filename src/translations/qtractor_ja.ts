@@ -5448,7 +5448,7 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
     <message>
         <location filename="../qtractorMainForm.cpp" line="5324"/>
         <source>NSM support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">NSMサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6404"/>
@@ -6288,7 +6288,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3627"/>
         <source>rescale</source>
-        <translation type="unfinished">リスケール</translation>
+        <translation>リスケール</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3710"/>
