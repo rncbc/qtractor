@@ -21,7 +21,7 @@ Weblog:
   http://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
-the GNU General Public License (GPL) [16] version 2 or later.
+the GNU General Public License (GPL) [17] version 2 or later.
 
 
 Features
@@ -46,7 +46,7 @@ Features
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
-  (a-la QjackCtl [15]).
+  (a-la QjackCtl [16]).
 - LADSPA [5], DSSI [11], native VST [12] and LV2 [13] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support.
@@ -64,13 +64,13 @@ Features
 - Unlimited tempo/time-signature map.
 - Unlimited location/bar markers.
 - MIDI clip editor (matrix/piano roll).
-- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [17]);
+- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [18]);
   SoundFont (*.sf2) and MIDI Names XML (*.midnam) files also supported.
 - MIDI controller mapping/learn/assignment (mixer and plug-in parameters).
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master/slave.
 - JACK session support.
-- NSM support [15].
+- NSM (Non Session Management) support [15].
 - MMC control surface enabled.
 - MIDI Song Position cueing support.
 - Configurable keyboard shortcuts.
@@ -117,7 +117,7 @@ The software requirements for build and runtime are listed as follows:
         http://breakfastquay.com/rubberband/
 
   [10] liblo, Lightweight OSC implementation
-        (needed for DSSI GUI support)
+        (needed for DSSI GUI [11] and/or NSM support [15])
         http://liblo.sourceforge.net/
 
   [11] DSSI, An API for soft synth plugins with custom user interfaces
@@ -263,13 +263,16 @@ References
      http://drobilla.net/software/sord/
      http://drobilla.net/software/serd/
 
-[15] QjackCtl - JACK Qt GUI Interface
+[15] Non Session Management (NSM)
+     http://non.tuxfamily.org/nsm/
+
+[16] QjackCtl - JACK Qt GUI Interface
      http://qjackctl.sourceforge.net
 
-[16] GNU General Public License
+[17] GNU General Public License
      http://www.gnu.org/copyleft/gpl.html
 
-[17] Cakewalk (by Roland), powerful and easy-to-use tools
+[18] Cakewalk (by Roland), powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
 
