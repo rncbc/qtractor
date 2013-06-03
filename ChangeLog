@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Auto-incremental version numbering of backup session files.
+  (EXPERIMENTAL)
+
 - Fixed one long as ever MIDI file export bug, which was about
   washing all self-induced MIDI bank-select (CC#0, CC#32) and
   program-change (PC#) events into MIDI channel 1, regardless
@@ -17,13 +20,13 @@ SVN TRUNK
 - New German (de) translation added (by Guido Scholz, thanks).
 
 - Now accepting JACK transport tempo and time-tignature changes
-  while in slave transport mode. (EXPERIMENTAL)
+  while in slave transport mode.
 
 - Fix ref-count and auto-removal of created files that result
   from clip merge/export when session is closed but not saved.
 
 - MIDI track instrument bank/program selection, from plugin UIs
-  that support it, is now effectively and complete. (EXPERIMENTAL)
+  that support it, is now effectively and complete.
 
 - Custom connections for dedicated audio outputs from all plugin
   chains in MIDI tracks or buses are back in business, hopefuly
@@ -38,7 +41,7 @@ SVN TRUNK
   being properly saved as usual, were being restored to default
   on every session reload (as noticed by yuba, thanks).
 
-- NSM support is being introduced. (EXPERIMENTAL)
+- NSM (Non Session Management) support is being introduced.
 
 - The MIDI clip editor (aka. piano-roll) gets a brand new rescale
   mode: ctrl+dragging the right edge of a note now rescales all
@@ -49,12 +52,11 @@ SVN TRUNK
   values (eg. note velocities, pitch-bend), while ctrl+dragging
   the edges of an event vertical bar.
 
-- VST plugin (GUI) idle timer makes a comeback. (EXPERIMENTAL)
+- VST plugin (GUI) idle timer makes a comeback.
 
 - Hard-wired LV2 UI selection order for plugins which supply more
   than one option (lv2_external_ui gets always honored first then,
   as provided via libsuil, X11, GTK and last but not least, Qt4).
-  (EXPERIMENTAL)
 
 
 0.5.8  2013-03-19  India Romeo
