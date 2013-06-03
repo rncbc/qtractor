@@ -1932,12 +1932,26 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (f1.exists()) {
 			int iBackupNo = 0;
 			const QDir& dir = f1.absoluteDir();
-			const QString sNameMask = f1.completeBaseName()
-			//	.remove(QRegExp("\\.[0-9]+$"))
-				+ ".%1." + f1.suffix();
+			QString sNameMask = f1.completeBaseName();
+			QRegExp rxBackupNo("\\.([0-9]+)$");
+			if (rxBackupNo.indexIn(sNameMask) >= 0) {
+				iBackupNo = rxBackupNo.cap(1).toInt();
+				sNameMask.remove(rxBackupNo);
+			}
+			sNameMask += ".%1." + f1.suffix();
+			const bool bBackupNo = (iBackupNo > 0);
 			QFileInfo f2(dir, sNameMask.arg(++iBackupNo));
 			while (f2.exists())
 				f2.setFile(dir, sNameMask.arg(++iBackupNo));
+			if (bBackupNo) {
+				// Remove from recent files list...
+				int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
+				if (iIndex >= 0)
+					m_pOptions->recentFiles.removeAt(iIndex);
+				// Make it a brand new one...
+				sFilename = f2.absoluteFilePath();
+			}
+			else
 			if (QFile(sFilename).rename(f2.absoluteFilePath())) {
 				appendMessages(
 					tr("Backup session: \"%1\" as \"%2\".")
