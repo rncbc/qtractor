@@ -184,6 +184,7 @@ void qtractorOptions::loadOptions (void)
 	bSessionTemplate = m_settings.value("/SessionTemplate", false).toBool();
 	sSessionTemplatePath = m_settings.value("/SessionTemplatePath").toString();
 	bSessionBackup = m_settings.value("/SessionBackup", false).toBool();
+	iSessionBackupMode = m_settings.value("/SessionBackupMode", 0).toInt();
 	sSessionDir    = m_settings.value("/SessionDir").toString();
 	sAudioDir      = m_settings.value("/AudioDir").toString();
 	sMidiDir       = m_settings.value("/MidiDir").toString();
@@ -421,6 +422,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/SessionTemplate", bSessionTemplate);
 	m_settings.setValue("/SessionTemplatePath", sSessionTemplatePath);
 	m_settings.setValue("/SessionBackup", bSessionBackup);
+	m_settings.setValue("/SessionBackupMode", iSessionBackupMode);
 	m_settings.setValue("/SessionDir", sSessionDir);
 	m_settings.setValue("/AudioDir", sAudioDir);
 	m_settings.setValue("/MidiDir", sMidiDir);

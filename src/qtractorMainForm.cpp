@@ -1933,17 +1933,18 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			int iBackupNo = 0;
 			const QDir& dir = f1.absoluteDir();
 			QString sNameMask = f1.completeBaseName();
-			QRegExp rxBackupNo("\\.([0-9]+)$");
-			if (rxBackupNo.indexIn(sNameMask) >= 0) {
-				iBackupNo = rxBackupNo.cap(1).toInt();
-				sNameMask.remove(rxBackupNo);
+			if (m_pOptions->iSessionBackupMode > 0) {
+				QRegExp rxBackupNo("\\.([0-9]+)$");
+				if (rxBackupNo.indexIn(sNameMask) >= 0) {
+					iBackupNo = rxBackupNo.cap(1).toInt();
+					sNameMask.remove(rxBackupNo);
+				}
 			}
 			sNameMask += ".%1." + f1.suffix();
-			const bool bBackupNo = (iBackupNo > 0);
 			QFileInfo f2(dir, sNameMask.arg(++iBackupNo));
 			while (f2.exists())
 				f2.setFile(dir, sNameMask.arg(++iBackupNo));
-			if (bBackupNo) {
+			if (m_pOptions->iSessionBackupMode > 0) {
 				// Remove from recent files list...
 				int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
 				if (iIndex >= 0)
