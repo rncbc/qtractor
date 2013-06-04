@@ -157,6 +157,7 @@ public:
 	bool    bSessionTemplate;
 	QString sSessionTemplatePath;
 	bool    bSessionBackup;
+	int     iSessionBackupMode;
 	bool	bAutoMonitor;
 	int     iSnapPerBeat;
 	float   fTempo;

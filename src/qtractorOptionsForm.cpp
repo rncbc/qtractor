@@ -324,6 +324,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.SessionBackupCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.SessionBackupModeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -566,6 +569,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.SessionTemplateCheckBox->setChecked(m_pOptions->bSessionTemplate);
 	m_ui.SessionTemplatePathComboBox->setEditText(m_pOptions->sSessionTemplatePath);
 	m_ui.SessionBackupCheckBox->setChecked(m_pOptions->bSessionBackup);
+	m_ui.SessionBackupModeComboBox->setCurrentIndex(m_pOptions->iSessionBackupMode);
 
 	// Plugin path initialization...
 	m_ladspaPaths = m_pOptions->ladspaPaths;
@@ -692,6 +696,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->sSessionExt = sessionExtFromFormat(
 			m_ui.SessionFormatComboBox->currentIndex());
 		m_pOptions->bSessionBackup       = m_ui.SessionBackupCheckBox->isChecked();
+		m_pOptions->iSessionBackupMode   = m_ui.SessionBackupModeComboBox->currentIndex();
 		// Custom colors.
 		int iColor;
 		for (iColor = 0; iColor < AudioMeterColors; ++iColor)
@@ -1400,6 +1405,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 		const QString& sPath = m_ui.SessionTemplatePathComboBox->currentText();
 		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
 	}
+
+	m_ui.SessionBackupModeComboBox->setEnabled(
+		m_ui.SessionBackupCheckBox->isChecked());
 
 	const QString& sPluginPath = m_ui.PluginPathComboBox->currentText();
 	m_ui.PluginPathAddToolButton->setEnabled(

@@ -5,8 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- Auto-incremental version numbering of backup session files.
-  (EXPERIMENTAL)
+- Auto-incremental version numbering of backup session files;
+  brand new versioning mode option added. (EXPERIMENTAL)
 
 - Fixed one long as ever MIDI file export bug, which was about
   washing all self-induced MIDI bank-select (CC#0, CC#32) and
