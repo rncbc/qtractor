@@ -52,6 +52,8 @@ class qtractorMidiEditor;
 class qtractorMidiControlObserver;
 class qtractorSubject;
 
+class qtractorOscControl;
+
 class qtractorNsmClient;
 
 class QLabel;
@@ -432,6 +434,7 @@ private:
 	qtractorThumbView *m_pThumbView;
 	qtractorTempoCursor *m_pTempoCursor;
 	qtractorMidiControl *m_pMidiControl;
+	qtractorOscControl *m_pOscControl;
 	qtractorNsmClient *m_pNsmClient;
 	QString m_sNsmFile;
 	QString m_sNsmExt;
