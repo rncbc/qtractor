@@ -9519,11 +9519,6 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="216"/>
-        <source>Which mode to rename versions of existing sessions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="220"/>
         <source>Increment previous version (default)</source>
         <translation type="unfinished"></translation>
@@ -10187,6 +10182,11 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="200"/>
         <source>Whether to save backup versions of existing sessions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="216"/>
+        <source>Which mode to rename existing session files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

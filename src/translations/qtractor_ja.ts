@@ -8992,7 +8992,7 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="216"/>
-        <source>Which mode to rename versions of existing sessions</source>
+        <source>Which mode to rename existing session files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

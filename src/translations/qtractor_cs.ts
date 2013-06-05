@@ -10005,6 +10005,11 @@ Chcete použít tyto změny?</translation>
         <translation>Volby - Qtractor</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="216"/>
+        <source>Which mode to rename existing session files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="572"/>
         <source>&amp;Audio</source>
         <translation>&amp;Zvuk</translation>
@@ -10430,11 +10435,6 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="203"/>
         <source>Save &amp;backup versions of existing sessions:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="216"/>
-        <source>Which mode to rename versions of existing sessions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
