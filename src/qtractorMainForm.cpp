@@ -1716,11 +1716,10 @@ bool qtractorMainForm::newSession (void)
 	if (!closeSession())
 		return false;
 
-	// Something always takes some time...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
 #ifdef CONFIG_LV2
-	qtractorLv2PluginType::lv2_open();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    qtractorLv2PluginType::lv2_open();
+    QApplication::restoreOverrideCursor();
 #endif
 
 	// We're supposedly clean...
@@ -1729,7 +1728,6 @@ bool qtractorMainForm::newSession (void)
 	// Check whether we start the new session
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate) {
-		QApplication::restoreOverrideCursor();
 		const bool bNewSession
 			= loadSessionFileEx(m_pOptions->sSessionTemplatePath, true, false);
 	#ifdef CONFIG_NSM
@@ -1749,9 +1747,6 @@ bool qtractorMainForm::newSession (void)
 	m_sFilename.clear();
 //	m_iDirtyCount = 0;
 	appendMessages(tr("New session: \"%1\".").arg(sessionName(m_sFilename)));
-
-	// Almost done...
-	QApplication::restoreOverrideCursor();
 
 	// Give us what we got, right now...
 	updateSessionPost();
@@ -2131,14 +2126,14 @@ bool qtractorMainForm::loadSessionFileEx (
 					.arg(info.filePath()),
 					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
 					// Restarting...
-					QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 				#ifdef CONFIG_LV2
-					qtractorLv2PluginType::lv2_open();
-				#endif
-					updateSessionPre();
+                    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+                    qtractorLv2PluginType::lv2_open();
+                    QApplication::restoreOverrideCursor();
+                #endif
+                    updateSessionPre();
 					++m_iUntitled;
 					m_sFilename.clear();
-					QApplication::restoreOverrideCursor();
 					updateSessionPost();
 					return false;
 				}
@@ -2148,17 +2143,21 @@ bool qtractorMainForm::loadSessionFileEx (
 #endif
 
 	// Tell the world we'll take some time...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	appendMessages(tr("Opening \"%1\"...").arg(sFilename));
 
 #ifdef CONFIG_LV2
-	qtractorLv2PluginType::lv2_open();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    qtractorLv2PluginType::lv2_open();
+    QApplication::restoreOverrideCursor();
 #endif
 
 	// Warm-up the session engines...
 	updateSessionPre();
 
-	// Read the file.
+    // We'll take some time anyhow...
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+    // Read the file.
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
 		.load(sFilename, qtractorDocument::Flags(iFlags));
@@ -2395,14 +2394,14 @@ void qtractorMainForm::openNsmSession (void)
 			bLoaded = loadSessionFileEx(sFilename, false, false);
 			if (bLoaded) m_sNsmFile = sFilename;
 		} else {
-			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 			updateSessionPre();
 		#ifdef CONFIG_LV2
-			qtractorLv2PluginType::lv2_open();
-		#endif
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+            qtractorLv2PluginType::lv2_open();
+            QApplication::restoreOverrideCursor();
+        #endif
 			appendMessages(tr("New session: \"%1\".")
 				.arg(sessionName(sFilename)));
-			QApplication::restoreOverrideCursor();
 			updateSessionPost();
 			bLoaded = true;
 		}
