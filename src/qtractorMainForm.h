@@ -424,6 +424,7 @@ private:
 	QString m_sFilename;
 	int m_iUntitled;
 	int m_iDirtyCount;
+	int m_iBackupCount;
 	QSocketNotifier *m_pUsr1Notifier;
 	QSocketNotifier *m_pTermNotifier;
 	QActionGroup *m_pSelectModeActionGroup;
