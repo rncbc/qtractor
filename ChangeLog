@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed non-zero clip offsets upon tempo/time-scale changes. 
+
 - Some sympathy to extreme dark color (read black) schemes is
   now indulged on empty backgrounds.
 
