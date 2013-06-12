@@ -28,6 +28,9 @@
 // Forward declarations...
 class qtractorTimeScaleListItem;
 
+class qtractorTimeScaleNodeCommand;
+class qtractorTimeScaleMarkerCommand;
+
 class QTime;
 
 
@@ -98,6 +101,12 @@ protected:
 	void setCurrentMarker(qtractorTimeScale::Marker *pMarker);
 
 	void ensureVisibleFrame(unsigned long iFrame);
+
+	// Execute specific commands.
+	bool executeNodeCommand(
+		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand);
+	bool executeMarkerCommand(
+		qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand);
 
 private:
 

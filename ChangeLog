@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Make sure all main track-view selection is cleared prior to
+  any tempo/time-scale change commands.
+
 - Try keeping the original session file in most recent files
   menu list, despite current version auto-incremental backup
   mode is in effect.
