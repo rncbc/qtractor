@@ -342,7 +342,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 
 	// A bit of parental control...
 	QObject::connect(pCommands,
-		SIGNAL(updateNotifySignal(bool)),
+		SIGNAL(updateNotifySignal(unsigned int)),
 		SLOT(changed()));
 
 	// Backup clean.

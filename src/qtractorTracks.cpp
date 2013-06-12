@@ -643,9 +643,6 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 		pClipCommand->addClip(pNewClip, pNewClip->track());
 	}
 
-	// Reset any track/clip selection...
-	m_pTrackView->clearClipSelect();
-
 	// That's it...
 	return pSession->execute(pClipCommand);
 }
@@ -1720,9 +1717,6 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	if (!form.exec())
 		return false;
 
-	// Reset any track/clip selection...
-	m_pTrackView->clearClipSelect();
-
 	// Avoid automatic time stretching option for audio clips...
 	bool bAutoTimeStretch = pSession->isAutoTimeStretch();
 	pSession->setAutoTimeStretch(false);
@@ -1872,8 +1866,6 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 		delete pClipRangeCommand;
 		return false;
 	}
-
-	m_pTrackView->clearClipSelect();
 
 	return pSession->execute(pClipRangeCommand);
 }

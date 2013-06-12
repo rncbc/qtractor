@@ -74,12 +74,16 @@ void qtractorClipCommand::addClip ( qtractorClip *pClip,
 	qtractorTrack *pTrack )
 {
 	m_items.append(new Item(AddClip, pClip, pTrack));
+
+	setClearSelect(true);
 }
 
 
 void qtractorClipCommand::removeClip ( qtractorClip *pClip )
 {
 	m_items.append(new Item(RemoveClip, pClip, pClip->track()));
+
+	setClearSelect(true);
 }
 
 
@@ -132,6 +136,8 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 				takeInfoClip(pClip, NULL);
 		}
 	}
+
+	setClearSelect(true);
 }
 
 
@@ -182,6 +188,8 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 
 	if (pItem->editCommand == NULL)
 		reopenClip(pClip, fTimeStretch > 0.0f);
+	else
+		setClearSelect(true);
 }
 
 
@@ -253,6 +261,8 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 	pItem->clipOffset = pClip->clipOffset();
 	pItem->clipLength = pClip->clipLength();
 	m_items.append(pItem);
+
+	setClearSelect(true);
 }
 
 
@@ -262,6 +272,8 @@ void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 		= m_clips.constFind(pClip);
 	if (iter == m_clips.constEnd())
 		m_clips.insert(pClip, bClose);
+
+	setClearSelect(true);
 }
 
 

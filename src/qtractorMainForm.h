@@ -272,7 +272,7 @@ public slots:
 
 	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
-	void updateNotifySlot(bool bRefresh);
+	void updateNotifySlot(unsigned int flags);
 	void dirtyNotifySlot();
 
 protected slots:

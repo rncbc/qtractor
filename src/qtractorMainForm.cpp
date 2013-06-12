@@ -1092,8 +1092,8 @@ qtractorMainForm::qtractorMainForm (
 		SLOT(updateSnapMenu()));
 
 	QObject::connect(m_pSession->commands(),
-		SIGNAL(updateNotifySignal(bool)),
-		SLOT(updateNotifySlot(bool)));
+		SIGNAL(updateNotifySignal(unsigned int)),
+		SLOT(updateNotifySlot(unsigned int)));
 
 //	Already handled in files widget...
 //	QObject::connect(QApplication::clipboard(),
@@ -7627,21 +7627,19 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 
 
 // Command update helper.
-void qtractorMainForm::updateNotifySlot ( bool bRefresh )
+void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::updateNotifySlot(%d)", int(bRefresh));
 #endif
 
-#if 0
 	// Always reset any track view selection...
 	// (avoid change/update notifications, again)
-	if (m_pTracks)
+	if (m_pTracks && (flags & qtractorCommand::ClearSelect))
 		m_pTracks->trackView()->clearClipSelect();
-#endif
 
 	// Proceed as usual...
-	updateContents(NULL, bRefresh);
+	updateContents(NULL, (flags & qtractorCommand::Refresh));
 }
 
 
@@ -7735,9 +7733,6 @@ void qtractorMainForm::transportTempoChanged (
 	qDebug("qtractorMainForm::transportTempoChanged(%g, %u, %u)",
 		fTempo, iBeatsPerBar, iBeatDivisor);
 #endif
-
-	if (m_pTracks)
-		m_pTracks->trackView()->clearClipSelect();
 
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();

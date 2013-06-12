@@ -412,38 +412,6 @@ void qtractorTimeScaleForm::ensureVisibleFrame ( unsigned long iFrame )
 }
 
 
-// Execute specific commands.
-bool qtractorTimeScaleForm::executeNodeCommand (
-	qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand )
-{
-	// Make it as an undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorTracks *pTracks = pMainForm->tracks();
-		if (pTracks)
-			pTracks->trackView()->clearClipSelect();
-	}
-
-	return pSession->execute(pTimeScaleNodeCommand);
-}
-
-
-bool qtractorTimeScaleForm::executeMarkerCommand (
-	qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand )
-{
-	// Make it as an undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	return pSession->execute(pTimeScaleMarkerCommand);
-}
-
-
 // Time-scale node selection slot.
 void qtractorTimeScaleForm::selectItem (void)
 {
@@ -586,11 +554,16 @@ void qtractorTimeScaleForm::addItem (void)
 	if (m_pTimeScale == NULL)
 		return;
 
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	unsigned int  iFlags = flags();
 	unsigned long iFrame = frame();
 
 	if (iFlags & AddNode) {
-		executeNodeCommand(
+		pSession->execute(
 			new qtractorTimeScaleAddNodeCommand(
 				m_pTimeScale, iFrame,
 				m_ui.TempoSpinBox->tempo(), 2,
@@ -600,7 +573,7 @@ void qtractorTimeScaleForm::addItem (void)
 	}
 
 	if (iFlags & AddMarker) {
-		executeMarkerCommand(
+		pSession->execute(
 			new qtractorTimeScaleAddMarkerCommand(
 				m_pTimeScale, iFrame,
 				m_ui.MarkerTextLineEdit->text().simplified(),
@@ -618,6 +591,11 @@ void qtractorTimeScaleForm::updateItem (void)
 	if (m_pTimeScale == NULL)
 		return;
 
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	unsigned int   iFlags = flags();
 	unsigned short iBar   = bar();
 
@@ -626,7 +604,7 @@ void qtractorTimeScaleForm::updateItem (void)
 		qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
 		if (pNode && pNode->bar == iBar) {
 			unsigned long iFrame = pNode->frameFromBar(iBar);
-			executeNodeCommand(
+			pSession->execute(
 				new qtractorTimeScaleUpdateNodeCommand(
 					m_pTimeScale, iFrame,
 					m_ui.TempoSpinBox->tempo(), 2,
@@ -641,7 +619,7 @@ void qtractorTimeScaleForm::updateItem (void)
 		qtractorTimeScale::Marker *pMarker
 			= m_pTimeScale->markers().seekFrame(iFrame);
 		if (pMarker && pMarker->frame == iFrame) {
-			executeMarkerCommand(
+			pSession->execute(
 				new qtractorTimeScaleUpdateMarkerCommand(
 					m_pTimeScale, iFrame,
 					m_ui.MarkerTextLineEdit->text().simplified(),
@@ -658,6 +636,11 @@ void qtractorTimeScaleForm::updateItem (void)
 void qtractorTimeScaleForm::removeItem (void)
 {
 	if (m_pTimeScale == NULL)
+		return;
+
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	unsigned int   iFlags = flags();
@@ -686,7 +669,7 @@ void qtractorTimeScaleForm::removeItem (void)
 					return;
 			}
 			// Go!...
-			executeNodeCommand(
+			pSession->execute(
 				new qtractorTimeScaleRemoveNodeCommand(m_pTimeScale, pNode));
 			++m_iDirtyTotal;
 		}
@@ -698,7 +681,7 @@ void qtractorTimeScaleForm::removeItem (void)
 			= m_pTimeScale->markers().seekFrame(iFrame);
 		if (pMarker && pMarker->frame == iFrame) {
 			// Go! we just don't ask user about a thing...
-			executeMarkerCommand(
+			pSession->execute(
 				new qtractorTimeScaleRemoveMarkerCommand(
 					m_pTimeScale, pMarker));
 			++m_iDirtyTotal;
