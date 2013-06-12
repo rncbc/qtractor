@@ -480,7 +480,7 @@ protected slots:
 	void verticalZoomResetSlot();
 
 	// Command execution notification slot.
-	void updateNotifySlot(bool bRefresh);
+	void updateNotifySlot(unsigned int flags);
 
 signals:
 

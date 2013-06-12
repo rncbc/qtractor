@@ -1,7 +1,7 @@
 // qtractorCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,25 +23,6 @@
 
 #include <QAction>
 #include <QRegExp>
-
-
-//----------------------------------------------------------------------
-// class qtractorCommand - implementation.
-//
-
-// Constructor.
-qtractorCommand::qtractorCommand ( const QString& sName )
-{
-	m_sName       = sName;
-	m_bAutoDelete = false;
-	m_bRefresh    = true;
-}
-
-
-// Destructor.
-qtractorCommand::~qtractorCommand (void)
-{
-}
 
 
 //----------------------------------------------------------------------
@@ -102,19 +83,18 @@ void qtractorCommandList::removeLastCommand (void)
 // Special backout method (EXPERIMENTAL).
 void qtractorCommandList::backout ( qtractorCommand *pCommand )
 {
-	int iUpdate  = 0;
-	int iRefresh = 0;
+	int iUpdate = 0;
 
+	unsigned int flags = qtractorCommand::None;
 	while (m_pLastCommand && m_pLastCommand != pCommand) {
-		if (m_pLastCommand->isRefresh())
-			++iRefresh;
+		flags |= m_pLastCommand->flags();
 		m_pLastCommand->undo();
 		removeLastCommand();
 		++iUpdate;
 	}
 
 	if (iUpdate > 0)
-		emit updateNotifySignal(iRefresh > 0);
+		emit updateNotifySignal(flags);
 }
 
 
@@ -148,7 +128,7 @@ bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 		// Execute operation...
 		bResult = m_pLastCommand->redo();
 		// Notify commanders...
-		emit updateNotifySignal(m_pLastCommand->isRefresh());
+		emit updateNotifySignal(m_pLastCommand->flags());
 	}
 
 	return bResult;
@@ -162,10 +142,10 @@ bool qtractorCommandList::undo (void)
 		// Undo operation...
 		bResult = m_pLastCommand->undo();
 		// Backward one command...
-		bool bRefresh  = m_pLastCommand->isRefresh();
+		unsigned int flags = m_pLastCommand->flags();
 		m_pLastCommand = m_pLastCommand->prev();
 		// Notify commanders...
-		emit updateNotifySignal(bRefresh);
+		emit updateNotifySignal(flags);
 	}
 
 	return bResult;
@@ -181,7 +161,7 @@ bool qtractorCommandList::redo (void)
 		// Redo operation...
 		bResult = m_pLastCommand->redo();
 		// Notify commanders...
-		emit updateNotifySignal(m_pLastCommand->isRefresh());
+		emit updateNotifySignal(m_pLastCommand->flags());
 	}
 
 	return bResult;

@@ -677,8 +677,8 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 		m_pEditView, SLOT(contentsXMovingSlot(int,int)));
 
 	QObject::connect(m_pCommands,
-		SIGNAL(updateNotifySignal(bool)),
-		SLOT(updateNotifySlot(bool)));
+		SIGNAL(updateNotifySignal(unsigned int)),
+		SLOT(updateNotifySlot(unsigned int)));
 
 	// FIXME: Initial horizontal splitter sizes.
 	QList<int> sizes;
@@ -4177,9 +4177,9 @@ const QString& qtractorMidiEditor::controllerName ( unsigned char controller ) c
 
 
 // Command execution notification slot.
-void qtractorMidiEditor::updateNotifySlot ( bool bRefresh )
+void qtractorMidiEditor::updateNotifySlot ( unsigned int flags )
 {
-	if (bRefresh)
+	if (flags & qtractorCommand::Refresh)
 		updateContents();
 
 	contentsChangeNotify();

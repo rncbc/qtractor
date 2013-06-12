@@ -1,7 +1,7 @@
 // qtractorCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,17 +40,39 @@ class qtractorCommand : public qtractorList<qtractorCommand>::Link
 public:
 
 	// Constructor.
-	qtractorCommand(const QString& sName);
-	// Destructor.
-	virtual ~qtractorCommand();
+	qtractorCommand(const QString& sName)
+		: m_sName(sName), m_flags(Refresh) {}
+
+	// Virtual destructor.
+	virtual ~qtractorCommand() {}
 
 	// Descriptive command name accessors.
 	void setName(const QString& sName) { m_sName = sName; }
 	const QString& name() const { return m_sName; }
 
-	// Contents-refresh accessor.
-	void setRefresh(bool bRefresh) { m_bRefresh = bRefresh; }
-	bool isRefresh() const { return m_bRefresh; }
+	// Command flags.
+	enum Flag { None = 0, AutoDelete = 1, Refresh = 2, ClearSelect = 4 };
+
+	// Command flags accessor.
+	unsigned int flags() const { return m_flags; }
+
+	// Auto-removal/deletion flag accessors.
+	void setAutoDelete(bool bAutoDelete)
+		{ setFlag(AutoDelete, bAutoDelete); }
+	bool isAutoDelete() const
+		{ return isFlag(AutoDelete); }
+
+	// Contents-refresh accessors.
+	void setRefresh(bool bRefresh)
+		{ setFlag(Refresh, bRefresh); }
+	bool isRefresh() const
+		{ return isFlag(Refresh); }
+
+	// Selection-reset accessors.
+	void setClearSelect(bool bClearSelect)
+		{ setFlag(ClearSelect, bClearSelect); }
+	bool isClearSelect() const
+		{ return isFlag(ClearSelect); }
 
 	// Cannonical command methods.
 	virtual bool redo() = 0;
@@ -58,16 +80,23 @@ public:
 
 protected:
 
-	// Auto-removal/deletion flag accessor.
-	void setAutoDelete(bool bAutoDelete) { m_bAutoDelete = bAutoDelete; }
-	bool isAutoDelete() const { return m_bAutoDelete; }
+	// Discrete flag accessors.
+	void setFlag(Flag flag, bool bOn = true)
+	{
+		if (bOn)
+			m_flags |=  (unsigned int) (flag);
+		else
+			m_flags &= ~(unsigned int) (flag);
+	}
+
+	bool isFlag(Flag flag) const
+		{ return (m_flags & (unsigned int) (flag)); }
 
 private:
 
 	// Instance variables.
-	QString m_sName;
-	bool    m_bAutoDelete;
-	bool    m_bRefresh;
+	QString      m_sName;
+	unsigned int m_flags;
 };
 
 
@@ -113,7 +142,7 @@ public:
 signals:
 
 	// Command update notification.
-	void updateNotifySignal(bool);
+	void updateNotifySignal(unsigned int);
 
 private:
 

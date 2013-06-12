@@ -3591,8 +3591,8 @@ void qtractorTrackView::executeClipSelect (
 	// Reset selection on cut or delete;
 	// put it in the form of an undoable command...
 	if (pClipCommand) {
-		if (cmd != Split)
-			m_pClipSelect->clear();
+		if (cmd == Split)
+			pClipCommand->setClearSelect(false);
 		pSession->execute(pClipCommand);
 	}
 }
