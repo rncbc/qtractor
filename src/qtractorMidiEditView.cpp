@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -261,8 +261,8 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	const QColor& rgbBase  = pal.base().color();
 	const QColor& rgbFore  = m_pEditor->foreground();
 	const QColor& rgbBack  = m_pEditor->background();
-	const QColor& rgbDark  = pal.dark().color();
-	const QColor& rgbLight = pal.mid().color();
+	const QColor& rgbDark  = pal.mid().color();
+	const QColor& rgbLight = pal.midlight().color();
 	const QColor& rgbSharp = rgbBase.darker(110);
 
 	m_pixmap = QPixmap(w, h);

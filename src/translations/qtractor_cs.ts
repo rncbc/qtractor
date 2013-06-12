@@ -1193,22 +1193,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="712"/>
+        <location filename="../qtractorClipCommand.cpp" line="717"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="714"/>
+        <location filename="../qtractorClipCommand.cpp" line="719"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="742"/>
+        <location filename="../qtractorClipCommand.cpp" line="747"/>
         <source>insert range</source>
         <translation>Vložit rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="742"/>
+        <location filename="../qtractorClipCommand.cpp" line="747"/>
         <source>insert track range</source>
         <translation>Vložit rozsah stopy</translation>
     </message>
