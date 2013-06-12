@@ -5627,17 +5627,17 @@ est près et en fonctionnement puis redémarrez la session.</translation>
         <translation>Joue &quot;%1&quot;...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7819"/>
+        <location filename="../qtractorMainForm.cpp" line="7822"/>
         <source>&amp;Frames</source>
         <translation>&amp;Trames</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7824"/>
+        <location filename="../qtractorMainForm.cpp" line="7827"/>
         <source>&amp;Time</source>
         <translation>T&amp;emps</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7829"/>
+        <location filename="../qtractorMainForm.cpp" line="7832"/>
         <source>&amp;BBT</source>
         <translation>&amp;BBT</translation>
     </message>
@@ -11236,7 +11236,7 @@ Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="338"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="885"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="901"/>
         <source>&amp;Add</source>
         <translation>&amp;Ajouter</translation>
     </message>
@@ -11252,7 +11252,7 @@ Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="354"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="890"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="906"/>
         <source>&amp;Update</source>
         <translation>&amp;Mettre à jour</translation>
     </message>
@@ -11268,7 +11268,7 @@ Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="370"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="895"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="911"/>
         <source>&amp;Remove</source>
         <translation>&amp;Supprimer</translation>
     </message>
@@ -11288,14 +11288,14 @@ Voulez-vous appliquer les changements?</translation>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="444"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="658"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="809"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="476"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="675"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="825"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="445"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="477"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11304,7 +11304,7 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="659"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="676"/>
         <source>About to remove tempo node:
 
 %1 (%2) %3  %4/%5
@@ -11317,7 +11317,7 @@ Are you sure?</source>
 Etes-vous sur?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="810"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="826"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -11326,7 +11326,7 @@ Do you want to discard the changes?</source>
 Voulez-vous abandonner ces changements?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="902"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="918"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Rafraichir</translation>
     </message>
@@ -11891,7 +11891,7 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1001"/>
-        <location filename="../qtractorTracks.cpp" line="2124"/>
+        <location filename="../qtractorTracks.cpp" line="2127"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importation fichier audio&quot;%1&quot; sur %2 %3.
@@ -11899,13 +11899,13 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1006"/>
-        <location filename="../qtractorTracks.cpp" line="2129"/>
+        <location filename="../qtractorTracks.cpp" line="2132"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Importation fichier audio: &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1036"/>
-        <location filename="../qtractorTracks.cpp" line="2312"/>
+        <location filename="../qtractorTracks.cpp" line="2315"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Importation fichier MIDI &quot;%1&quot; piste-canal %2 sur %3 %4.
@@ -11913,7 +11913,7 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1042"/>
-        <location filename="../qtractorTracks.cpp" line="2318"/>
+        <location filename="../qtractorTracks.cpp" line="2321"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Importation fichier MIDI: &quot;%1&quot;, piste-canal: %2.</translation>
     </message>
@@ -11967,12 +11967,12 @@ Longueur:	%3</translation>
         <translation type="obsolete">Insérer plage</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2007"/>
+        <location filename="../qtractorTracks.cpp" line="2010"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2008"/>
+        <location filename="../qtractorTracks.cpp" line="2011"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -11985,14 +11985,14 @@ Are you sure?</source>
 Etes-vous sur?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2242"/>
+        <location filename="../qtractorTracks.cpp" line="2245"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importation fichier MIDI &quot;%1&quot; sur %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2247"/>
+        <location filename="../qtractorTracks.cpp" line="2250"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Importation fichier MIDI: &quot;%1&quot;.</translation>
     </message>

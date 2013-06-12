@@ -7739,6 +7739,9 @@ void qtractorMainForm::transportTempoChanged (
 		fTempo, iBeatsPerBar, iBeatDivisor);
 #endif
 
+	if (m_pTracks)
+		m_pTracks->trackView()->clearClipSelect();
+
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();

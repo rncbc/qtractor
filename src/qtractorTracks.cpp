@@ -1720,6 +1720,9 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	if (!form.exec())
 		return false;
 
+	// Reset any track/clip selection...
+	m_pTrackView->clearClipSelect();
+
 	// Avoid automatic time stretching option for audio clips...
 	bool bAutoTimeStretch = pSession->isAutoTimeStretch();
 	pSession->setAutoTimeStretch(false);
