@@ -360,19 +360,17 @@ int main ( int argc, char **argv )
 	// Dark themes grayed/disabled color group fix...
 	QPalette pal(app.palette());
 	if (pal.base().color().value() < 0x7f) {
-	#if QT_VERSION >= 0x050000
 		const QColor& color = pal.window().color();
 		const int iGroups = int(QPalette::Active | QPalette::Inactive) + 1;
 		for (int i = 0; i < iGroups; ++i) {
 			const QPalette::ColorGroup group = QPalette::ColorGroup(i);
-			pal.setBrush(group, QPalette::Light,    color.lighter(150));
-			pal.setBrush(group, QPalette::Midlight, color.lighter(120));
-			pal.setBrush(group, QPalette::Dark,     color.darker(150));
-			pal.setBrush(group, QPalette::Mid,      color.darker(120));
-			pal.setBrush(group, QPalette::Shadow,   color.darker(200));
+			pal.setBrush(group, QPalette::Light,    color.lighter(140));
+			pal.setBrush(group, QPalette::Midlight, color.lighter(100));
+			pal.setBrush(group, QPalette::Mid,      color.lighter(90));
+			pal.setBrush(group, QPalette::Dark,     color.darker(160));
+			pal.setBrush(group, QPalette::Shadow,   color.darker(180));
 		}
 	//	pal.setColor(QPalette::Disabled, QPalette::ButtonText, pal.mid().color());
-	#endif
 		pal.setColorGroup(QPalette::Disabled,
 			pal.windowText().color().darker(),
 			pal.button(),

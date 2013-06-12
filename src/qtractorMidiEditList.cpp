@@ -1,7 +1,7 @@
 // qtractorMidiEditList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -166,7 +166,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	p.initFrom(this);
 
 	// Draw horizontal key-lines...
-	p.setPen(pal.mid().color());
+	p.setPen(pal.midlight().color());
 	p.setBrush(pal.shadow().color());
 
 	int ch = qtractorScrollView::contentsHeight() - cy;
@@ -180,11 +180,11 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	int n, y, x = w - wk;
 
-	p.setPen(pal.mid().color());
+	p.setPen(pal.midlight().color());
 
 #ifdef CONFIG_GRADIENT
 	QLinearGradient litegrad(x, 0, w, 0);
-	litegrad.setColorAt(0.0f, pal.mid().color());
+	litegrad.setColorAt(0.0f, pal.midlight().color());
 	litegrad.setColorAt(0.1f, pal.base().color());
 	p.setBrush(litegrad);
 #else
@@ -211,7 +211,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 #ifdef CONFIG_GRADIENT
 	QLinearGradient darkgrad(x, 0, x + wk, 0);
-	darkgrad.setColorAt(0.0f, pal.mid().color());
+	darkgrad.setColorAt(0.0f, pal.midlight().color());
 	darkgrad.setColorAt(0.3f, pal.shadow().color());
 	p.setBrush(darkgrad);
 #else

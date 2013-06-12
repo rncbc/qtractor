@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Some sympathy to extreme dark color (read black) schemes is
+  now indulged on empty backgrounds.
+
+
 0.5.9  2013-06-06  Juliet Quebec
 
 - Auto-incremental version numbering of backup session files;

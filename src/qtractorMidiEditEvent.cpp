@@ -286,8 +286,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	const QColor& rgbBase  = pal.base().color();
 	const QColor& rgbFore  = m_pEditor->foreground();
 	const QColor& rgbBack  = m_pEditor->background();
-	const QColor& rgbDark  = pal.dark().color();
-	const QColor& rgbLight = pal.mid().color();
+	const QColor& rgbDark  = pal.mid().color();
+	const QColor& rgbLight = pal.midlight().color();
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(rgbBase);
