@@ -6831,6 +6831,8 @@ void qtractorMainForm::timerSlot (void)
 						(unsigned short) pos.beats_per_bar,
 						(unsigned short) pos.beat_type);
 				#endif
+					if (m_pTracks)
+						m_pTracks->trackView()->clearClipSelect();
 					m_pSession->lock();
 					pNode->tempo = pos.beats_per_minute;
 					pNode->beatsPerBar = pos.beats_per_bar;
@@ -6844,6 +6846,7 @@ void qtractorMainForm::timerSlot (void)
 					pAudioEngine->resetMetro();
 					pMidiEngine->resetTempo();
 					m_pSession->unlock();
+					updateContents(NULL, true);
 				}
 			}
 		#ifdef CONFIG_LIBLILV
@@ -7383,6 +7386,9 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	QString sClkText("MIDI CLK: ");
 	sClkText += tr("%1 BPM").arg(fTempo);
 	appendMessages(sClkText);
+
+	if (m_pTracks)
+		m_pTracks->trackView()->clearClipSelect();
 
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
