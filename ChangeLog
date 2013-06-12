@@ -5,7 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
-- Fixed non-zero clip offsets upon tempo/time-scale changes. 
+- Try keeping the original session file in most recent files
+  menu list, despite current version auto-incremental backup
+  mode is in effect.
+
+- Fixed non-zero clip offsets upon tempo/time-scale changes.
 
 - Some sympathy to extreme dark color (read black) schemes is
   now indulged on empty backgrounds.

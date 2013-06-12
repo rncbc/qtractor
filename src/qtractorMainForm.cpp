@@ -259,6 +259,8 @@ qtractorMainForm::qtractorMainForm (
 	m_iUntitled   = 0;
 	m_iDirtyCount = 0;
 
+	m_iBackupCount = 0;
+
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
 	m_iIdleTimer = 0;
@@ -1910,6 +1912,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 					return false;
 			}
 		}
+		// Reset backup count, anyway...
+		m_iBackupCount = 0;
 	}
 	else
 	// Backup versioning?
@@ -1924,6 +1928,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 				if (rxBackupNo.indexIn(sNameMask) >= 0) {
 					iBackupNo = rxBackupNo.cap(1).toInt();
 					sNameMask.remove(rxBackupNo);
+					++m_iBackupCount;
 				}
 			}
 			sNameMask += ".%1." + f1.suffix();
@@ -1932,9 +1937,11 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 				f2.setFile(dir, sNameMask.arg(++iBackupNo));
 			if (m_pOptions->iSessionBackupMode > 0) {
 				// Remove from recent files list...
-				int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
-				if (iIndex >= 0)
-					m_pOptions->recentFiles.removeAt(iIndex);
+				if (m_iBackupCount > 0) {
+					int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
+					if (iIndex >= 0)
+						m_pOptions->recentFiles.removeAt(iIndex);
+				}
 				// Make it a brand new one...
 				sFilename = f2.absoluteFilePath();
 			}
@@ -2075,6 +2082,7 @@ bool qtractorMainForm::closeSession (void)
 		}
 		// We're now clean, for sure.
 		m_iDirtyCount = 0;
+		m_iBackupCount = 0;
 		appendMessages(tr("Session closed."));
 	}
 
