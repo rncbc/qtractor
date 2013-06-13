@@ -212,14 +212,14 @@
      <addaction name="editSelectTrackRangeAction" />
      <addaction name="editSelectRangeAction" />
     </widget>
-	<widget class="QMenu" name="editInsertMenu" >
-	 <property name="title" >
-	  <string>I&amp;nsert</string>
-	 </property>
-	 <addaction name="editInsertRangeAction" />
-	 <addaction name="editInsertTrackRangeAction" />
-	</widget>
-	<addaction name="editUndoAction" />
+    <widget class="QMenu" name="editInsertMenu" >
+     <property name="title" >
+      <string>I&amp;nsert</string>
+     </property>
+     <addaction name="editInsertRangeAction" />
+     <addaction name="editInsertTrackRangeAction" />
+    </widget>
+    <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
     <addaction name="separator" />
     <addaction name="editCutAction" />
@@ -232,10 +232,10 @@
     <addaction name="editSelectModeMenu" />
     <addaction name="editSelectMenu" />
     <addaction name="separator" />
-	<addaction name="editInsertMenu" />
-	<addaction name="editSplitAction" />
-	<addaction name="separator" />
-	<addaction name="trackMenu" />
+    <addaction name="editInsertMenu" />
+    <addaction name="editSplitAction" />
+    <addaction name="separator" />
+    <addaction name="trackMenu" />
     <addaction name="clipMenu" />
    </widget>
    <widget class="QMenu" name="trackMenu" >
@@ -272,16 +272,16 @@
      <addaction name="trackMoveDownAction" />
      <addaction name="trackMoveBottomAction" />
     </widget>
-	<widget class="QMenu" name="trackHeightMenu" >
-	 <property name="title" >
-	  <string>&amp;Height</string>
-	 </property>
-	 <addaction name="trackHeightUpAction" />
-	 <addaction name="trackHeightDownAction" />
-	 <addaction name="separator" />
-	 <addaction name="trackHeightResetAction" />
-	</widget>
-	<widget class="QMenu" name="trackImportMenu" >
+    <widget class="QMenu" name="trackHeightMenu" >
+     <property name="title" >
+      <string>&amp;Height</string>
+     </property>
+     <addaction name="trackHeightUpAction" />
+     <addaction name="trackHeightDownAction" />
+     <addaction name="separator" />
+     <addaction name="trackHeightResetAction" />
+    </widget>
+    <widget class="QMenu" name="trackImportMenu" >
      <property name="title" >
       <string>Impor&amp;t Tracks</string>
      </property>
@@ -336,8 +336,8 @@
     <addaction name="trackStateMenu" />
     <addaction name="trackNavigateMenu" />
     <addaction name="trackMoveMenu" />
-	<addaction name="trackHeightMenu" />
-	<addaction name="separator" />
+    <addaction name="trackHeightMenu" />
+    <addaction name="separator" />
     <addaction name="trackAutoMonitorAction" />
     <addaction name="separator" />
     <addaction name="trackImportMenu" />
@@ -349,7 +349,7 @@
     <property name="title" >
      <string>Cl&amp;ip</string>
     </property>
-	<widget class="QMenu" name="clipToolsMenu" >
+    <widget class="QMenu" name="clipToolsMenu" >
      <property name="title" >
       <string>T&amp;ools</string>
      </property>
@@ -361,32 +361,32 @@
      <addaction name="clipToolsRescaleAction" />
      <addaction name="clipToolsTimeshiftAction" />
     </widget>
-	<widget class="QMenu" name="clipTakeMenu" >
+    <widget class="QMenu" name="clipTakeMenu" >
      <property name="title" >
       <string>Ta&amp;ke</string>
      </property>
-	 <widget class="QMenu" name="clipTakeSelectMenu" >
+     <widget class="QMenu" name="clipTakeSelectMenu" >
       <property name="title" >
        <string>&amp;Select</string>
       </property>
      </widget>
      <addaction name="clipTakeSelectMenu" />
-	 <addaction name="separator" />
+     <addaction name="separator" />
      <addaction name="clipTakeFirstAction" />
      <addaction name="clipTakePrevAction" />
      <addaction name="clipTakeNextAction" />
      <addaction name="clipTakeLastAction" />
-	 <addaction name="separator" />
+     <addaction name="separator" />
      <addaction name="clipTakeResetAction" />
-	 <addaction name="separator" />
+     <addaction name="separator" />
      <addaction name="clipTakeRangeAction" />
     </widget>
     <addaction name="clipNewAction" />
     <addaction name="clipEditAction" />
     <addaction name="separator" />
-	<addaction name="clipTakeMenu" />
-	<addaction name="clipUnlinkAction" />
-	<addaction name="separator" />
+    <addaction name="clipTakeMenu" />
+    <addaction name="clipUnlinkAction" />
+    <addaction name="separator" />
     <addaction name="clipSplitAction" />
     <addaction name="clipMergeAction" />
     <addaction name="clipNormalizeAction" />
@@ -491,8 +491,8 @@
     <addaction name="transportFollowAction" />
     <addaction name="transportAutoBackwardAction" />
     <addaction name="transportContinueAction" />
-	<addaction name="separator" />
-	<addaction name="transportPanicAction" />
+    <addaction name="separator" />
+    <addaction name="transportPanicAction" />
    </widget>
    <widget class="QMenu" name="helpMenu" >
     <property name="title" >
@@ -938,53 +938,53 @@
   </action>
   <action name="editInsertRangeAction" >
    <property name="text" >
-	<string>&amp;Range</string>
+    <string>&amp;Range</string>
    </property>
    <property name="iconText" >
-	<string>Insert Range</string>
+    <string>Insert Range</string>
    </property>
    <property name="toolTip" >
-	<string>Insert range</string>
+    <string>Insert range</string>
    </property>
    <property name="statusTip" >
-	<string>Insert range as selected</string>
+    <string>Insert range as selected</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Ins</string>
+    <string>Ctrl+Ins</string>
    </property>
   </action>
   <action name="editInsertTrackRangeAction" >
    <property name="text" >
-	<string>Trac&amp;k Range</string>
+    <string>Trac&amp;k Range</string>
    </property>
    <property name="iconText" >
-	<string>Insert Track Range</string>
+    <string>Insert Track Range</string>
    </property>
    <property name="toolTip" >
-	<string>Insert track range</string>
+    <string>Insert track range</string>
    </property>
    <property name="statusTip" >
-	<string>Insert track range as selected</string>
+    <string>Insert track range as selected</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Shift+Ins</string>
+    <string>Ctrl+Shift+Ins</string>
    </property>
   </action>
   <action name="editSplitAction" >
    <property name="text" >
-	<string>Sp&amp;lit</string>
+    <string>Sp&amp;lit</string>
    </property>
    <property name="iconText" >
-	<string>Split Selection</string>
+    <string>Split Selection</string>
    </property>
    <property name="toolTip" >
-	<string>Split selection</string>
+    <string>Split selection</string>
    </property>
    <property name="statusTip" >
-	<string>Split current selection</string>
+    <string>Split current selection</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Y</string>
+    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="trackAddAction" >
@@ -1271,53 +1271,53 @@
   </action>
   <action name="trackHeightUpAction" >
    <property name="text" >
-	<string>&amp;Increase</string>
+    <string>&amp;Increase</string>
    </property>
    <property name="iconText" >
-	<string>Increase Height</string>
+    <string>Increase Height</string>
    </property>
    <property name="toolTip" >
-	<string>Increase height</string>
+    <string>Increase height</string>
    </property>
    <property name="statusTip" >
-	<string>Increase track height</string>
+    <string>Increase track height</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Shift++</string>
+    <string>Ctrl+Shift++</string>
    </property>
   </action>
   <action name="trackHeightDownAction" >
    <property name="text" >
-	<string>&amp;Decrease</string>
+    <string>&amp;Decrease</string>
    </property>
    <property name="iconText" >
-	<string>Decrease Height</string>
+    <string>Decrease Height</string>
    </property>
    <property name="toolTip" >
-	<string>Decrease height</string>
+    <string>Decrease height</string>
    </property>
    <property name="statusTip" >
-	<string>Decrease track height</string>
+    <string>Decrease track height</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Shift+-</string>
+    <string>Ctrl+Shift+-</string>
    </property>
   </action>
   <action name="trackHeightResetAction" >
    <property name="text" >
-	<string>&amp;Reset</string>
+    <string>&amp;Reset</string>
    </property>
    <property name="iconText" >
-	<string>Height Reset</string>
+    <string>Height Reset</string>
    </property>
    <property name="toolTip" >
-	<string>Height reset</string>
+    <string>Height reset</string>
    </property>
    <property name="statusTip" >
-	<string>Reset track height</string>
+    <string>Reset track height</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+Shift+1</string>
+    <string>Ctrl+Shift+1</string>
    </property>
   </action>
   <action name="trackAutoMonitorAction" >
@@ -1426,6 +1426,9 @@
    </property>
   </action>
   <action name="trackCurveColorAction" >
+   <property name="icon" >
+    <iconset resource="qtractor.qrc" >:/images/formColor.png</iconset>
+   </property>
    <property name="text" >
     <string>C&amp;olor...</string>
    </property>
@@ -1622,16 +1625,16 @@
   </action>
   <action name="clipUnlinkAction" >
    <property name="text" >
-	<string>&amp;Unlink</string>
+    <string>&amp;Unlink</string>
    </property>
    <property name="iconText" >
-	<string>Unlink Clip</string>
+    <string>Unlink Clip</string>
    </property>
    <property name="toolTip" >
-	<string>Unlink clip</string>
+    <string>Unlink clip</string>
    </property>
    <property name="statusTip" >
-	<string>Unlink current clip</string>
+    <string>Unlink current clip</string>
    </property>
   </action>
   <action name="clipSplitAction" >
@@ -1664,7 +1667,7 @@
   </action>
   <action name="clipNormalizeAction" >
    <property name="text" >
-	<string>N&amp;ormalize</string>
+    <string>N&amp;ormalize</string>
    </property>
    <property name="iconText" >
     <string>Normalize Clip</string>
@@ -1793,30 +1796,30 @@
   </action>
   <action name="clipRangeSetAction" >
    <property name="text" >
-	<string>&amp;Range Set</string>
+    <string>&amp;Range Set</string>
    </property>
    <property name="iconText" >
-	<string>Clip Range</string>
+    <string>Clip Range</string>
    </property>
    <property name="toolTip" >
-	<string>Clip range</string>
+    <string>Clip range</string>
    </property>
    <property name="statusTip" >
-	<string>Set edit-range from current clip extents</string>
+    <string>Set edit-range from current clip extents</string>
    </property>
   </action>
   <action name="clipLoopSetAction" >
    <property name="text" >
-	<string>&amp;Loop Set</string>
+    <string>&amp;Loop Set</string>
    </property>
    <property name="iconText" >
-	<string>Clip Loop</string>
+    <string>Clip Loop</string>
    </property>
    <property name="toolTip" >
-	<string>Clip loop</string>
+    <string>Clip loop</string>
    </property>
    <property name="statusTip" >
-	<string>Set loop-range from current clip extents</string>
+    <string>Set loop-range from current clip extents</string>
    </property>
   </action>
   <action name="clipImportAction" >
@@ -1889,7 +1892,7 @@
     <string>Select current clip next take</string>
    </property>
    <property name="shortcut" >
-	<string>Shift+T</string>
+    <string>Shift+T</string>
    </property>
   </action>
   <action name="clipTakeLastAction" >
@@ -1931,7 +1934,7 @@
     <string>Take range</string>
    </property>
    <property name="statusTip" >
-	<string>Range (fold) current clip into takes</string>
+    <string>Range (fold) current clip into takes</string>
    </property>
   </action>
   <action name="viewMenubarAction" >
@@ -2247,7 +2250,7 @@
     <string>Zoom reset</string>
    </property>
    <property name="shortcut" >
-	<string>Ctrl+1</string>
+    <string>Ctrl+1</string>
    </property>
   </action>
   <action name="viewZoomHorizontalAction" >
@@ -2320,19 +2323,19 @@
   </action>
   <action name="viewSnapZebraAction" >
    <property name="checkable" >
-	<bool>true</bool>
+    <bool>true</bool>
    </property>
    <property name="text" >
-	<string>&amp;Zebra</string>
+    <string>&amp;Zebra</string>
    </property>
    <property name="iconText" >
-	<string>Zebra</string>
+    <string>Zebra</string>
    </property>
    <property name="toolTip" >
-	<string>Zebra</string>
+    <string>Zebra</string>
    </property>
    <property name="statusTip" >
-	<string>Bar zebra view mode</string>
+    <string>Bar zebra view mode</string>
    </property>
   </action>
   <action name="viewToolTipsAction" >
@@ -2419,16 +2422,16 @@
   </action>
   <action name="viewTempoMapAction" >
    <property name="text" >
-	<string>Tempo M&amp;ap / Markers...</string>
+    <string>Tempo M&amp;ap / Markers...</string>
    </property>
    <property name="iconText" >
-	<string>Tempo Map / Markers</string>
+    <string>Tempo Map / Markers</string>
    </property>
    <property name="toolTip" >
-	<string>Tempo map / markers</string>
+    <string>Tempo map / markers</string>
    </property>
    <property name="statusTip" >
-	<string>Change session tempo map / markers</string>
+    <string>Change session tempo map / markers</string>
    </property>
   </action>
   <action name="viewOptionsAction" >
@@ -2747,19 +2750,19 @@
   </action>
   <action name="transportPanicAction" >
    <property name="icon" >
-	<iconset resource="qtractor.qrc" >:/images/transportPanic.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportPanic.png</iconset>
    </property>
    <property name="text" >
-	<string>Pa&amp;nic</string>
+    <string>Pa&amp;nic</string>
    </property>
    <property name="iconText" >
-	<string>Panic</string>
+    <string>Panic</string>
    </property>
    <property name="toolTip" >
-	<string>Panic</string>
+    <string>Panic</string>
    </property>
    <property name="statusTip" >
-	<string>All MIDI tracks shut off (panic)</string>
+    <string>All MIDI tracks shut off (panic)</string>
    </property>
   </action>
   <action name="helpShortcutsAction" >

@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Color selection actions now have a brand new palette icon.
+
 - Try to make sure all main track-view selection is cleared
   only on some specific and discrete commands. (EXPERIMENTAL)
 
