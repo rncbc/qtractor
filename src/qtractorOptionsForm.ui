@@ -90,7 +90,7 @@
             </property>
            </widget>
           </item>
-		  <item row="0" column="1" colspan="2">
+          <item row="0" column="1" colspan="2">
            <widget class="QComboBox" name="SessionFormatComboBox">
             <property name="font">
              <font>
@@ -132,11 +132,11 @@
             </property>
            </widget>
           </item>
-		  <item row="1" column="1" colspan="4">
+          <item row="1" column="1" colspan="4">
            <widget class="QComboBox" name="SessionTemplatePathComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-			  <horstretch>1</horstretch>
+              <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -160,7 +160,7 @@
             </property>
            </widget>
           </item>
-		  <item row="1" column="5">
+          <item row="1" column="5">
            <widget class="QToolButton" name="SessionTemplatePathToolButton">
             <property name="minimumSize">
              <size>
@@ -188,7 +188,7 @@
             </property>
            </widget>
           </item>
-		  <item row="2" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="SessionBackupCheckBox">
             <property name="font">
              <font>
@@ -197,37 +197,37 @@
              </font>
             </property>
             <property name="toolTip">
-			 <string>Whether to save backup versions of existing sessions</string>
+             <string>Whether to save backup versions of existing sessions</string>
             </property>
             <property name="text">
-			 <string>Save &amp;backup versions of existing sessions:</string>
+             <string>Save &amp;backup versions of existing sessions:</string>
             </property>
            </widget>
           </item>
-		  <item row="2" column="2" colspan="3">
-		   <widget class="QComboBox" name="SessionBackupModeComboBox">
-			<property name="font">
-			 <font>
-			  <weight>50</weight>
-			  <bold>false</bold>
-			 </font>
-			</property>
-			<property name="toolTip">
-			 <string>Which mode to rename existing session files</string>
-			</property>
-			<item>
-			 <property name="text">
-			  <string>Increment previous version (default)</string>
-			 </property>
-			</item>
-			<item>
-			 <property name="text">
-			  <string>Increment current version</string>
-			 </property>
-			</item>
-		   </widget>
-		  </item>
-		 </layout>
+          <item row="2" column="2" colspan="3">
+           <widget class="QComboBox" name="SessionBackupModeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Which mode to rename existing session files</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Increment previous version (default)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Increment current version</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -993,7 +993,7 @@
            <widget class="QComboBox" name="MetroBarFilenameComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-			  <horstretch>1</horstretch>
+              <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -1118,7 +1118,7 @@
            <widget class="QComboBox" name="MetroBeatFilenameComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-			  <horstretch>1</horstretch>
+              <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -2349,6 +2349,9 @@
             <property name="toolTip">
              <string>Select custom audio meter color</string>
             </property>
+            <property name="icon">
+             <iconset resource="qtractor.qrc" >:/images/formColor.png</iconset>
+            </property>
             <property name="text">
              <string>...</string>
             </property>
@@ -2459,6 +2462,9 @@
             </property>
             <property name="toolTip">
              <string>Select custom MIDI meter color</string>
+            </property>
+            <property name="icon">
+             <iconset resource="qtractor.qrc" >:/images/formColor.png</iconset>
             </property>
             <property name="text">
              <string>...</string>
@@ -2684,7 +2690,7 @@
            <widget class="QComboBox" name="MessagesLogPathComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-			  <horstretch>1</horstretch>
+              <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>

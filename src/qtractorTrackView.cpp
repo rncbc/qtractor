@@ -2883,7 +2883,7 @@ void qtractorTrackView::resetDragState (void)
 		m_dragState == DragDropPaste   ||
 		m_dragState == DragPaste       ||
 		m_dragState == DragStep) {
-		m_pClipSelect->clear();
+	//	m_pClipSelect->clear();
 		updateContents();
 	}
 
