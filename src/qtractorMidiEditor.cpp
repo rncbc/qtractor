@@ -3709,6 +3709,8 @@ void qtractorMidiEditor::executeDragPaste (
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("paste"));
 
+	QList<qtractorMidiEvent *> events;
+
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
@@ -3733,10 +3735,25 @@ void qtractorMidiEditor::executeDragPaste (
 		if (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER)
 			pEvent->setController(m_pEditEvent->controller());
 		pEditCommand->insertEvent(pEvent);
+		events.append(pEvent);
 	}
 
 	// Make it as an undoable command...
 	m_pCommands->exec(pEditCommand);
+
+	// Remake current selection alright...
+	if (!events.isEmpty()) {
+		m_select.clear();
+		QListIterator<qtractorMidiEvent *> event_iter(events);
+		while (event_iter.hasNext()) {
+			qtractorMidiEvent *pEvent = event_iter.next();
+			if (pEvent) {
+				QRect rectEvent, rectView;
+				updateEventRects(pEvent, rectEvent, rectView);
+				m_select.addItem(pEvent, rectEvent, rectView);
+			}
+		}
+	}
 }
 
 
@@ -4304,7 +4321,8 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 			else if (m_dragState == DragPaste)
 				executeDragPaste(pScrollView, pos);
 		}
-		// Fall thru...
+		resetDragState(pScrollView);
+		break;
 	case Qt::Key_Escape:
 		m_dragState = DragStep; // HACK: Force selection clearance!
 		m_select.clear();
