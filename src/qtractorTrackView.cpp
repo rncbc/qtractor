@@ -3809,9 +3809,6 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 		}
 	}
 
-	// May reset selection, yep.
-	m_pClipSelect->clear();
-
 	// Put it in the form of an undoable command...
 	pSession->execute(pClipCommand);
 }
@@ -3904,9 +3901,6 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		// Set to repeat...
 		iClipDelta += iPastePeriod;
 	}
-
-	// May reset selection, yep.
-	m_pClipSelect->clear();
 
 	// Put it in the form of an undoable command...
 	pSession->execute(pClipCommand);

@@ -11837,7 +11837,7 @@ Length:	%3</source>
         <translation>クリップの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3837"/>
+        <location filename="../qtractorTrackView.cpp" line="3834"/>
         <source>paste clip</source>
         <translation>クリップの貼り付け</translation>
     </message>

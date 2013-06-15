@@ -12379,7 +12379,7 @@ Length:	%3</source>
         <translation type="unfinished">перемещение клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3837"/>
+        <location filename="../qtractorTrackView.cpp" line="3834"/>
         <source>paste clip</source>
         <translation type="unfinished">вставка клипа</translation>
     </message>
