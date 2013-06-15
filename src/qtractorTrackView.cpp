@@ -1428,6 +1428,8 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 	}
 
 	// We'll build a composite command...
+	QList<qtractorClip *> clips;
+
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("add clip"));
 
@@ -1458,6 +1460,7 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 				pAudioClip->setFilename(pDropItem->path);
 				pAudioClip->setClipStart(iClipStart);
 				pClipCommand->addClip(pAudioClip, pTrack);
+				clips.append(pAudioClip);
 				// Don't forget to add this one to local repository.
 				if (pMainForm)
 					pMainForm->addAudioFile(pDropItem->path);
@@ -1471,6 +1474,7 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 				pMidiClip->setTrackChannel(pDropItem->channel);
 				pMidiClip->setClipStart(iClipStart);
 				pClipCommand->addClip(pMidiClip, pTrack);
+				clips.append(pMidiClip);
 				// Don't forget to add this one to local repository.
 				if (pMainForm)
 					pMainForm->addMidiFile(pDropItem->path);
@@ -1494,7 +1498,17 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 	resetDragState();
 
 	// Put it in the form of an undoable command...
-	return pSession->execute(pClipCommand);
+	bool bResult = pSession->execute(pClipCommand);
+
+	// Redo selection as new...
+	if (!clips.isEmpty()) {
+		QListIterator<qtractorClip *> clip_iter(clips);
+		while (clip_iter.hasNext())
+			clip_iter.next()->setClipSelected(true);
+		updateClipSelect();
+	}
+
+	return bResult;
 }
 
 
@@ -3740,6 +3754,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 	}
 
 	// We'll build a composite command...
+	QList<qtractorClip *> clips;
 
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
@@ -3802,6 +3817,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 				iClipStart,
 				iClipOffset + iSelectOffset,
 				iSelectLength);
+			clips.append(pClip);
 			// If track's new it will need a name...
 			if (bAddTrack && iTrackClip == 0)
 				pTrack->setTrackName(pClip->clipName());
@@ -3811,6 +3827,14 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 
 	// Put it in the form of an undoable command...
 	pSession->execute(pClipCommand);
+
+	// Redo selection as new...
+	if (!clips.isEmpty()) {
+		QListIterator<qtractorClip *> clip_iter(clips);
+		while (clip_iter.hasNext())
+			clip_iter.next()->setClipSelected(true);
+		updateClipSelect();
+	}
 }
 
 
@@ -3862,6 +3886,8 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		iClipDelta = + pSession->frameFromPixel(+ m_iDraggingX);
 	
 	// We'll build a composite command...
+	QList<qtractorClip *> clips;
+
 	QListIterator<ClipItem *> iter(g_clipboard.items);
 	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
 		// Paste iteration...
@@ -3892,6 +3918,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 				pNewClip->setFadeInLength(pClipItem->fadeInLength);
 				pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
 				pClipCommand->addClip(pNewClip, pTrack);
+				clips.append(pNewClip);
 				// If track's new it will need a name...
 				if (bAddTrack && iTrackClip == 0)
 					pTrack->setTrackName(pClip->clipName());
@@ -3904,6 +3931,14 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 
 	// Put it in the form of an undoable command...
 	pSession->execute(pClipCommand);
+
+	// Redo selection as new...
+	if (!clips.isEmpty()) {
+		QListIterator<qtractorClip *> clip_iter(clips);
+		while (clip_iter.hasNext())
+			clip_iter.next()->setClipSelected(true);
+		updateClipSelect();
+	}
 }
 
 
