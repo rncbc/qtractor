@@ -11817,7 +11817,7 @@ Longueur:	%3</translation>
         <translation>déplacer clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3837"/>
+        <location filename="../qtractorTrackView.cpp" line="3834"/>
         <source>paste clip</source>
         <translation>coller clip</translation>
     </message>

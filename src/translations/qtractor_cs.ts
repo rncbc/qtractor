@@ -12985,7 +12985,7 @@ Délka:	%3</translation>
         <translation>Přesunout záznam</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3837"/>
+        <location filename="../qtractorTrackView.cpp" line="3834"/>
         <source>paste clip</source>
         <translation>Vložit záznam</translation>
     </message>

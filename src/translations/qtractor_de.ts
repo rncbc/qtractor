@@ -11595,7 +11595,7 @@ Länge:	%3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3837"/>
+        <location filename="../qtractorTrackView.cpp" line="3834"/>
         <source>paste clip</source>
         <translation type="unfinished"></translation>
     </message>
