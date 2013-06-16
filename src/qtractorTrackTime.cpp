@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -426,13 +426,13 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			// Mid-button direct positioning...
 			m_pTracks->trackView()->selectAll(false);
 			if (bModifier) {
-				// Edit cursor (merge) positioning...
-				m_pTracks->trackView()->setEditHead(iFrame);
-				m_pTracks->trackView()->setEditTail(iFrame);
-			} else {
 				// Play-head positioning commit...
 				m_pTracks->trackView()->setPlayHead(iFrame);
 				pSession->setPlayHead(m_pTracks->trackView()->playHead());
+			} else {
+				// Edit cursor (merge) positioning...
+				m_pTracks->trackView()->setEditHead(iFrame);
+				m_pTracks->trackView()->setEditTail(iFrame);
 			}
 			// Logical contents changed, just for visual feedback...
 			m_pTracks->selectionChangeNotify();

@@ -1609,13 +1609,13 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			// Mid-button positioning...
 			selectAll(false);
 			if (bModifier) {
-				// Edit cursor (merge) positioning...
-				setEditHead(iFrame);
-				setEditTail(iFrame);
-			} else {
 				// Play-head positioning...
 				pSession->setPlayHead(iFrame);
 				setPlayHead(iFrame);
+			} else {
+				// Edit cursor (merge) positioning...
+				setEditHead(iFrame);
+				setEditTail(iFrame);
 			}
 			// Not quite a selection, but some visual feedback...
 			m_pTracks->selectionChangeNotify();
