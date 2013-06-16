@@ -588,13 +588,13 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_pEditor->selectAll(this, false);
 		// Which mouse state?
 		if (bModifier) {
-			// Edit cursor (merge) positioning...
-			m_pEditor->setEditHead(iFrame);
-			m_pEditor->setEditTail(iFrame);
-		} else {
 			// Play-head positioning commit...
 			m_pEditor->setPlayHead(iFrame);
 			pSession->setPlayHead(m_pEditor->playHead());
+		} else {
+			// Edit cursor (merge) positioning...
+			m_pEditor->setEditHead(iFrame);
+			m_pEditor->setEditTail(iFrame);
 		}
 		// Logical contents changed, just for visual feedback...
 		m_pEditor->selectionChangeNotify();

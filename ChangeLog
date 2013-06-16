@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Reversed shift/ctrl keyboard modifier roles on middle-button
+  clicking over the main track and MIDI clip editor views (aka.
+  piano-roll) in regression to original old semantics.
+
 - Color selection actions now have a brand new palette icon.
 
 - Make sure main track-view and MIDI clip editor selection is
