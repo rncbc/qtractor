@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -391,6 +391,13 @@ void qtractorThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			m_dragState = DragClick;
 			QFrame::setCursor(QCursor(Qt::PointingHandCursor));
 		}
+	}
+	else
+	if (pMouseEvent->button() == Qt::MidButton) {
+		// Make it change playhead?...
+		if (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier))
+			setPlayHeadX(pMouseEvent->pos().x());
 	}
 
 	QFrame::mousePressEvent(pMouseEvent);
