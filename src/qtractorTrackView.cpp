@@ -1506,6 +1506,7 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 		while (clip_iter.hasNext())
 			clip_iter.next()->setClipSelected(true);
 		updateClipSelect();
+		m_pTracks->selectionChangeNotify();
 	}
 
 	return bResult;
@@ -3834,6 +3835,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 		while (clip_iter.hasNext())
 			clip_iter.next()->setClipSelected(true);
 		updateClipSelect();
+		m_pTracks->selectionChangeNotify();
 	}
 }
 
@@ -3938,6 +3940,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		while (clip_iter.hasNext())
 			clip_iter.next()->setClipSelected(true);
 		updateClipSelect();
+		m_pTracks->selectionChangeNotify();
 	}
 }
 

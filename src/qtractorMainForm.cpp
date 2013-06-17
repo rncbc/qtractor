@@ -1937,7 +1937,6 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 				if (rxBackupNo.indexIn(sNameMask) >= 0) {
 					iBackupNo = rxBackupNo.cap(1).toInt();
 					sNameMask.remove(rxBackupNo);
-					++m_iBackupCount;
 				}
 			}
 			sNameMask += ".%1." + f1.suffix();
@@ -1950,9 +1949,12 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 					int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
 					if (iIndex >= 0)
 						m_pOptions->recentFiles.removeAt(iIndex);
+					// Also remove from sile system...?
+					QFile::remove(sFilename);
 				}
 				// Make it a brand new one...
 				sFilename = f2.absoluteFilePath();
+				++m_iBackupCount;
 			}
 			else
 			if (QFile(sFilename).rename(f2.absoluteFilePath())) {
