@@ -745,7 +745,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				// Prepare advance for next cycle...
 				pAudioCursor->seek(iFrameEnd);
 				// HACK! Freewheeling observers update (non RT safe!)...
-				qtractorSubject::flushQueue();
+				//qtractorSubject::flushQueue();
+				qtractorSubject::resetQueue();
 			}	// Are we trough?
 			else m_bExportDone = true;
 		}
