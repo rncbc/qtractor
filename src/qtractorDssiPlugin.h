@@ -100,7 +100,7 @@ public:
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Parameter update method.
-	void updateParam(qtractorPluginParam *pParam, float fValue);
+	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
 
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);

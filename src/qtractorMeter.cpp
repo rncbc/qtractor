@@ -141,12 +141,12 @@ public:
 protected:
 
 	// Update feedback.
-	void update()
+	void update(bool bUpdate)
 	{
 		m_pMeter->monitor()->update();
-		m_pMeter->updatePanning();
-
-		qtractorMidiControlObserver::update();
+		if (bUpdate)
+			m_pMeter->updatePanning();
+		qtractorMidiControlObserver::update(bUpdate);
 	}
 
 private:
@@ -170,12 +170,12 @@ public:
 protected:
 
 	// Update feedback.
-	void update()
+	void update(bool bUpdate)
 	{
 		m_pMeter->monitor()->update();
-		m_pMeter->updateGain();
-
-		qtractorMidiControlObserver::update();
+		if (bUpdate)
+			m_pMeter->updateGain();
+		qtractorMidiControlObserver::update(bUpdate);
 	}
 
 private:
@@ -325,8 +325,8 @@ void qtractorMeter::setPanningSubject ( qtractorSubject *pSubject )
 
 	m_pPanObserver->setSubject(pSubject);
 
-	m_pPanSpinBox->observer()->update();
-	m_pPanSlider->observer()->update();
+	m_pPanSpinBox->observer()->update(true);
+	m_pPanSlider->observer()->update(true);
 }
 
 qtractorSubject *qtractorMeter::panningSubject (void) const
@@ -367,8 +367,8 @@ void qtractorMeter::setGainSubject ( qtractorSubject *pSubject )
 
 	m_pGainObserver->setSubject(pSubject);
 
-	m_pGainSpinBox->observer()->update();
-	m_pGainSlider->observer()->update();
+	m_pGainSpinBox->observer()->update(true);
+	m_pGainSlider->observer()->update(true);
 }
 
 qtractorSubject *qtractorMeter::gainSubject (void) const

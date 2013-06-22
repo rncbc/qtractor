@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -160,9 +160,9 @@ float qtractorMidiControlObserver::scaleFromValue (
 
 
 // Updater (feedback).
-void qtractorMidiControlObserver::update (void)
+void qtractorMidiControlObserver::update ( bool bUpdate )
 {
-	if (m_bFeedback) {
+	if (bUpdate && m_bFeedback) {
 		qtractorMidiControl *pMidiControl
 			= qtractorMidiControl::getInstance();
 		if (pMidiControl && pMidiControl->isMidiObserverMapped(this)) {

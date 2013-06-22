@@ -223,7 +223,7 @@ public:
 	void setEditorTitle(const QString& sTitle);
 
 	// Parameter update method.
-	void updateParam(qtractorPluginParam *pParam, float fValue);
+	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
 
 	// Idle editor (static).
 	static void idleEditorAll();

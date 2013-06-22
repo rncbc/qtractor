@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Automation's back in effect on Track/Export Tracks.../Audio.
+  (EXPERIMENTAL)
+
 - Reversed shift/ctrl keyboard modifier roles on middle-button
   clicking over the main track and MIDI clip editor views (aka.
   piano-roll) in regression to original old semantics.

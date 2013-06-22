@@ -187,7 +187,7 @@ void qtractorMonitorButton::updateMonitor (void)
 		}
 	}
 
-	observer()->update();
+	observer()->update(true);
 }
 
 
@@ -744,11 +744,11 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	QFrame::setPalette(pal);
 #ifdef CONFIG_GRADIENT
 	if (m_pRecordButton)
-		m_pRecordButton->observer()->update();
+		m_pRecordButton->observer()->update(true);
 	if (m_pMuteButton)
-		m_pMuteButton->observer()->update();
+		m_pMuteButton->observer()->update(true);
 	if (m_pSoloButton)
-		m_pSoloButton->observer()->update();
+		m_pSoloButton->observer()->update(true);
 #endif
 }
 

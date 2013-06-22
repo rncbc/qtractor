@@ -425,8 +425,8 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 }
 
 
-static int osc_message ( const char *path, const char *types,
-	lo_arg **argv, int argc, void *data, void *user_data )
+static int osc_message ( const char *path, const char * /*types*/,
+	lo_arg **argv, int /*argc*/, void *data, void * /*user_data*/ )
 {
 	QMutexLocker locker(&g_oscMutex);
 
@@ -1065,11 +1065,16 @@ void qtractorDssiPlugin::process (
 
 // Parameter update method.
 void qtractorDssiPlugin::updateParam (
-	qtractorPluginParam *pParam, float fValue )
+	qtractorPluginParam *pParam, float fValue, bool bUpdate )
 {
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorDssiPlugin[%p]::updateParam(%lu, %g, %d)",
+		this, pParam->index(), fValue, int(bUpdate));
+#endif
+
 #ifdef CONFIG_LIBLO
 	// And update the editor too...
-	if (m_pDssiEditor)
+	if (bUpdate && m_pDssiEditor)
 		osc_send_control(m_pDssiEditor, pParam->index(), fValue);
 #endif
 }

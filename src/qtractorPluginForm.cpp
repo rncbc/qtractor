@@ -171,7 +171,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		return;
 
 	// Dispatch any pending updates.
-	qtractorSubject::flushQueue();
+	qtractorSubject::flushQueue(true);
 
 	qtractorPluginType *pType = m_pPlugin->type();
 
@@ -917,7 +917,7 @@ void qtractorPluginForm::refresh (void)
 
 	++m_iUpdate;
 
-	qtractorSubject::flushQueue();
+	qtractorSubject::flushQueue(true);
 
 	const QString sOldPreset = m_ui.PresetComboBox->currentText();
 	m_ui.PresetComboBox->clear();
@@ -1045,7 +1045,8 @@ public:
 			: qtractorObserver(pSubject), m_pDisplay(pDisplay) {}
 
 		// Observer updater.
-		void update() { m_pDisplay->updateDisplay(); }
+		void update(bool bUpdate)
+			{ if (bUpdate) m_pDisplay->updateDisplay(); }
 
 	private:
 
@@ -1241,13 +1242,13 @@ void qtractorPluginParamWidget::refresh (void)
 #endif
 
 	if (m_pCheckBox)
-		m_pCheckBox->observer()->update();
+		m_pCheckBox->observer()->update(true);
 	if (m_pSpinBox)
-		m_pSpinBox->observer()->update();
+		m_pSpinBox->observer()->update(true);
 	if (m_pSlider)
-		m_pSlider->observer()->update();
+		m_pSlider->observer()->update(true);
 	if (m_pDisplay)
-		m_pDisplay->observer()->update();
+		m_pDisplay->observer()->update(true);
 }
 
 

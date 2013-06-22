@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -217,10 +217,10 @@ void qtractorTempoAdjustForm::changed (void)
 
 
 // Tempo signature has changed.
-void qtractorTempoAdjustForm::tempoChanged (
-	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+void qtractorTempoAdjustForm::tempoChanged ( float /*fTempo*/,
+	unsigned short /*iBeatsPerBar*/, unsigned short /*iBeatDivisor*/ )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTempoAdjustForm::tempoChanged(%g, %u, %u)",
 		fTempo, iBeatsPerBar, iBeatDivisor);
 #endif

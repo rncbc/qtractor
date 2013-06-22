@@ -6995,7 +6995,7 @@ void qtractorMainForm::timerSlot (void)
 		m_pMixer->refresh();
 
 	// Asynchronous observer update...
-	qtractorSubject::flushQueue();
+	qtractorSubject::flushQueue(true);
 
 	if ((m_iIdleTimer += QTRACTOR_TIMER_MSECS) >= QTRACTOR_TIMER_DELAY) {
 		m_iIdleTimer = 0;

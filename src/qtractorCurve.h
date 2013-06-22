@@ -265,7 +265,7 @@ protected:
 		    : qtractorObserver(pSubject), m_pCurve(pCurve) {}
 
 		// Capture updater.
-		void update() { m_pCurve->capture(); }
+		void update(bool) { m_pCurve->capture(); }
 
 	private:
 

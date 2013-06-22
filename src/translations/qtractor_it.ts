@@ -30,13 +30,13 @@ Audio:	%1 canali, %2 Hz</translation>
 	(%1 semitoni trasposti)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2473"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2472"/>
         <location filename="../qtractorMidiEngine.cpp" line="4024"/>
         <source>%1 In</source>
         <translation>%1 Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2473"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2472"/>
         <location filename="../qtractorMidiEngine.cpp" line="4024"/>
         <source>%1 Out</source>
         <translation>%1 Uscite</translation>
@@ -48,7 +48,7 @@ Audio:	%1 canali, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="158"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1302"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1307"/>
         <source>All files (*.*)</source>
         <translation>Tutti i file (*.*)</translation>
     </message>
@@ -192,7 +192,7 @@ Posiz./Durata:	%3 / %4</translation>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="400"/>
-        <location filename="../qtractorTrack.cpp" line="644"/>
+        <location filename="../qtractorTrack.cpp" line="646"/>
         <source>%1 Monitor</source>
         <translation>%1 Monitor</translation>
     </message>
@@ -491,17 +491,17 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="645"/>
+        <location filename="../qtractorTrack.cpp" line="647"/>
         <source>%1 Record</source>
         <translation>%1 Registrazione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="646"/>
+        <location filename="../qtractorTrack.cpp" line="648"/>
         <source>%1 Mute</source>
         <translation>%1 Muto</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="647"/>
+        <location filename="../qtractorTrack.cpp" line="649"/>
         <source>%1 Solo</source>
         <translation>%1 Solo</translation>
     </message>
@@ -605,7 +605,7 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Sconosciuto</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1299"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1304"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -11604,32 +11604,32 @@ Vuoi scartare le modifiche?</translation>
         <translation>Alt+D</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="148"/>
+        <location filename="../qtractorTrackForm.cpp" line="150"/>
         <source>Normal</source>
         <translation>Normale</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="149"/>
+        <location filename="../qtractorTrackForm.cpp" line="151"/>
         <source>Bank MSB</source>
         <translation>MSB Banco</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="150"/>
+        <location filename="../qtractorTrackForm.cpp" line="152"/>
         <source>Bank LSB</source>
         <translation>LSB Banco</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="151"/>
+        <location filename="../qtractorTrackForm.cpp" line="153"/>
         <source>Patch</source>
         <translation>Patch</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="427"/>
+        <location filename="../qtractorTrackForm.cpp" line="429"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="428"/>
+        <location filename="../qtractorTrackForm.cpp" line="430"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11638,13 +11638,13 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="556"/>
+        <location filename="../qtractorTrackForm.cpp" line="558"/>
         <source>(No instrument)</source>
         <translation>(Nessuno strumento)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="748"/>
-        <location filename="../qtractorTrackForm.cpp" line="859"/>
+        <location filename="../qtractorTrackForm.cpp" line="750"/>
+        <location filename="../qtractorTrackForm.cpp" line="861"/>
         <source>(None)</source>
         <translation>(Nessuno)</translation>
     </message>

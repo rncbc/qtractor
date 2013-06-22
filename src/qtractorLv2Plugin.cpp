@@ -2652,15 +2652,15 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 
 // Parameter update method.
 void qtractorLv2Plugin::updateParam (
-	qtractorPluginParam *pParam, float fValue )
+	qtractorPluginParam *pParam, float fValue, bool bUpdate )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorLv2Plugin[%p]::updateParam(%lu, %g)",
-		this, pParam->index(), fValue); 
+	qDebug("qtractorLv2Plugin[%p]::updateParam(%lu, %g, %d)",
+		this, pParam->index(), fValue, int(bUpdate));
 #endif
 
 #ifdef CONFIG_LIBSUIL
-	if (m_suil_instance) {
+	if (bUpdate && m_suil_instance) {
 		suil_instance_port_event(m_suil_instance,
 			pParam->index(), sizeof(float), 0, &fValue);
 	}

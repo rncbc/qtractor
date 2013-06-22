@@ -92,12 +92,12 @@ public:
 			} else {
 				delete m_pQtTranslator;
 				m_pQtTranslator = 0;
-		#ifdef CONFIG_DEBUG
+			#ifdef CONFIG_DEBUG
 				qWarning("Warning: no translation found for '%s' locale: %s/%s.qm",
 					loc.name().toUtf8().constData(),
 					sLocPath.toUtf8().constData(),
 					sLocName.toUtf8().constData());
-		#endif
+			#endif
 			}
 			// Try own application translation...
 			m_pMyTranslator = new QTranslator(this);
@@ -111,12 +111,12 @@ public:
 				} else {
 					delete m_pMyTranslator;
 					m_pMyTranslator = 0;
-		#ifdef CONFIG_DEBUG
+				#ifdef CONFIG_DEBUG
 					qWarning("Warning: no translation found for '%s' locale: %s/%s.qm",
 						loc.name().toUtf8().constData(),
 						sLocPath.toUtf8().constData(),
 						sLocName.toUtf8().constData());
-		#endif
+				#endif
 				}
 			}
 		}

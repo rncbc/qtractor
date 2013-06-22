@@ -2036,7 +2036,7 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 	m_observer.setValue(fValue);
 
 	// Update specifics.
-	if (bUpdate) m_pPlugin->updateParam(this, fValue);
+	if (bUpdate) m_pPlugin->updateParam(this, fValue, true);
 
 	if (m_pPlugin->directAccessParamIndex() == long(m_iIndex))
 		m_pPlugin->updateDirectAccessParam();
@@ -2067,15 +2067,14 @@ qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
 
 
 // Virtual observer updater.
-void qtractorPluginParam::Observer::update (void)
+void qtractorPluginParam::Observer::update ( bool bUpdate )
 {
-	qtractorMidiControlObserver::update();
+	qtractorMidiControlObserver::update(bUpdate);
 
 	qtractorPlugin *pPlugin = m_pParam->plugin();
-	if (pPlugin->directAccessParamIndex() == long(m_pParam->index()))
+	if (bUpdate && pPlugin->directAccessParamIndex() == long(m_pParam->index()))
 		pPlugin->updateDirectAccessParam();
-
-	pPlugin->updateParam(m_pParam, qtractorMidiControlObserver::value());
+	pPlugin->updateParam(m_pParam, qtractorMidiControlObserver::value(), bUpdate);
 }
 
 

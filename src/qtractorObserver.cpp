@@ -1,7 +1,7 @@
 // qtractorObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,19 +57,19 @@ public:
 		return true;
 	}
 
-	bool pop ()
+	bool pop (bool bUpdate)
 	{
 		if (m_iQueueIndex == 0)
 			return false;
 		QueueItem *pItem = &m_pQueueItems[--m_iQueueIndex];
 		qtractorSubject *pSubject = pItem->subject;
-		pSubject->notify(pItem->sender);
+		pSubject->notify(pItem->sender, bUpdate);
 		pSubject->setQueued(false);
 		return true;
 	}
 
-	void flush ()
-		{ while (pop()) ; }
+	void flush (bool bUpdate)
+		{ while (pop(bUpdate)) ; }
 
 	void reset ()
 	{
@@ -149,22 +149,22 @@ void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 
 
 // Observer/view updater.
-void qtractorSubject::notify ( qtractorObserver *pSender )
+void qtractorSubject::notify ( qtractorObserver *pSender, bool bUpdate )
 {
 	QListIterator<qtractorObserver *> iter(m_observers);
 	while (iter.hasNext()) {
 		qtractorObserver *pObserver = iter.next();
 		if (pSender && pSender == pObserver)
 			continue;
-		pObserver->update();
+		pObserver->update(bUpdate);
 	}
 }
 
 
 // Queue flush (singleton) -- notify all pending observers.
-void qtractorSubject::flushQueue (void)
+void qtractorSubject::flushQueue ( bool bUpdate )
 {
-	g_subjectQueue.flush();
+	g_subjectQueue.flush(bUpdate);
 }
 
 

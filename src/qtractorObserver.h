@@ -1,7 +1,7 @@
 // qtractorObserver.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,8 +52,8 @@ public:
 	float prevValue() const
 		{ return m_fPrevValue; }
 
-	// Observers notification
-	void notify(qtractorObserver *pSender = NULL);
+	// Observers notification.
+	void notify(qtractorObserver *pSender, bool bUpdate);
 
 	// Observer list accessors.
 	void attach(qtractorObserver *pObserver)
@@ -135,7 +135,7 @@ public:
 		{ return m_pCurve; }
 
 	// Queue flush (singleton) -- notify all pending observers.
-	static void flushQueue();
+	static void flushQueue(bool bUpdate);
 	
 	// Queue reset (clear).
 	static void resetQueue();
@@ -248,7 +248,7 @@ public:
 		{ return (m_pSubject ? m_pSubject->curve() : NULL); }
 
 	// Pure virtual view updater.
-	virtual void update() = 0;
+	virtual void update(bool bUpdate) = 0;
 
 private:
 

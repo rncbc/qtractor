@@ -66,7 +66,7 @@ public:
 protected:
 
 	// Update feedback.
-	void update()
+	void update(bool bUpdate)
 	{
 		bool bOn = (value() > 0.0f);
 		switch (m_toolType) {
@@ -80,11 +80,12 @@ protected:
 			m_pTrack->setSolo(bOn);
 			break;
 		}
-		qtractorMidiControlObserver::update();
-
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pMainForm->tracks()->updateContents(true);
+		qtractorMidiControlObserver::update(bUpdate);
+		if (bUpdate) {
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm)
+				pMainForm->tracks()->updateContents(true);
+		}
 	}
 
 private:
@@ -109,17 +110,18 @@ public:
 protected:
 
 	// Update feedback.
-	void update()
+	void update(bool bUpdate)
 	{
 		const float fVolume = value();
 		const unsigned char vol = int(127.0f * fVolume) & 0x7f;
 		if (m_volume != vol) {
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-			if (pMidiBus) {
-				pMidiBus->setVolume(m_pTrack, fVolume);
-				m_volume = vol;
+			if (bUpdate) {
+				qtractorMidiBus *pMidiBus
+					= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
+				if (pMidiBus)
+					pMidiBus->setVolume(m_pTrack, fVolume);
 			}
+			m_volume = vol;
 		}
 	}
 
@@ -145,17 +147,18 @@ public:
 protected:
 
 	// Update feedback.
-	void update()
+	void update(bool bUpdate)
 	{
 		const float fPanning = value();
 		const unsigned char pan = (0x40 + int(63.0f * fPanning)) & 0x7f;
 		if (m_panning != pan) {
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-			if (pMidiBus) {
-				pMidiBus->setPanning(m_pTrack, fPanning);
-				m_panning = pan;
+			if (bUpdate) {
+				qtractorMidiBus *pMidiBus
+					= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
+				if (pMidiBus)
+					pMidiBus->setPanning(m_pTrack, fPanning);
 			}
+			m_panning = pan;
 		}
 	}
 
@@ -181,7 +184,7 @@ public:
 protected:
 
 	// Update feedback.
-	void update()
+	void update(bool bUpdate)
 	{
 		const int iValue = int(value());
 		const int iBank = (iValue >> 7) & 0x3fff;
@@ -189,8 +192,7 @@ protected:
 		m_pTrack->setMidiBank(iBank);
 		m_pTrack->setMidiProg(iProg);
 		// Refresh track item, at least the names...
-		m_pTrack->updateTracks();
-
+		if (bUpdate) m_pTrack->updateTracks();
 	}
 
 private:
