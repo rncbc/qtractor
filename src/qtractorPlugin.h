@@ -369,7 +369,7 @@ private:
 	protected:
 
 		// Virtual observer updater.
-		void update();
+		void update(bool Update);
 
 	private:
 
@@ -460,7 +460,7 @@ public:
 
 	// Parameter update method.
 	virtual void updateParam(
-		qtractorPluginParam */*pParam*/, float /*fValue*/) {}
+		qtractorPluginParam */*pParam*/, float /*fValue*/, bool /*bUpdate*/) {}
 
 	// Specific MIDI instrument selector.
 	virtual void selectProgram(int /*iBank*/, int /*iProg*/) {}

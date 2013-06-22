@@ -103,12 +103,14 @@ public:
 protected:
 
 	// Update feedback.
-	void update()
+	void update(bool bUpdate)
 	{
-		const int iValue = int(value());
-		const int iBank = (iValue >> 7) & 0x3fff;
-		const int iProg = (iValue & 0x7f);
-		m_pTrackForm->setMidiProgram(iBank, iProg);
+		if (bUpdate) {
+			const int iValue = int(value());
+			const int iBank = (iValue >> 7) & 0x3fff;
+			const int iProg = (iValue & 0x7f);
+			m_pTrackForm->setMidiProgram(iBank, iProg);
+		}
 	}
 
 private:

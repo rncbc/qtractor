@@ -770,8 +770,13 @@ void qtractorVstPlugin::process (
 
 // Parameter update method.
 void qtractorVstPlugin::updateParam (
-	qtractorPluginParam *pParam, float fValue )
+	qtractorPluginParam *pParam, float fValue, bool /*bUpdate*/ )
 {
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorVstPlugin[%p]::updateParam(%lu, %g, %d)",
+		this, pParam->index(), fValue, int(bUpdate));
+#endif
+
 	// Maybe we're not pretty instantiated yet...
 	for (unsigned short i = 0; i < instances(); ++i) {
 		AEffect *pVstEffect = vst_effect(i);
