@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Andy Fitzsimon's original icon from opencliparts.org makes
+  it through as the default standard scalable format (SVG).
+
 - Automation's back in effect on Track/Export Tracks.../Audio.
   (EXPERIMENTAL)
 
