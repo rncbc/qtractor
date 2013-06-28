@@ -1,10 +1,9 @@
 # qtractor.pro
 #
-TARGET = qtractor
+NAME = qtractor
 
+TARGET = $${NAME}
 TEMPLATE = app
-DEPENDPATH += .
-INCLUDEPATH += .
 
 include(src.pri)
 
@@ -290,37 +289,45 @@ unix {
 		PREFIX = /usr/local
 	}
 
-	BINDIR = $$PREFIX/bin
-	DATADIR = $$PREFIX/share
+	BINDIR = $${PREFIX}/bin
+	DATADIR = $${PREFIX}/share
 	LOCALEDIR = $(localedir)
 
-	DEFINES += DATADIR=\"$$DATADIR\"
+	DEFINES += DATADIR=\"$${DATADIR}\"
 
 	!isEmpty(LOCALEDIR) {
-		DEFINES += LOCALEDIR=\"$$LOCALEDIR\"
+		DEFINES += LOCALEDIR=\"$${LOCALEDIR}\"
 	}
 
 	# make install
-	INSTALLS += target desktop icon icon_scalable mimeinfo mimetypes
+	INSTALLS += target desktop icon \
+		icon_scalable mimeinfo mimetypes mimetypes_scalable
 
-	target.path = $$BINDIR
+	target.path = $${BINDIR}
 
-	desktop.path = $$DATADIR/applications
-	desktop.files += $${TARGET}.desktop
+	desktop.path = $${DATADIR}/applications
+	desktop.files += $${NAME}.desktop
 
-	icon.path = $$DATADIR/icons/hicolor/32x32/apps
-	icon.files += images/$${TARGET}.png
+	icon.path = $${DATADIR}/icons/hicolor/32x32/apps
+	icon.files += images/$${NAME}.png
 
 	icon_scalable.path = $$DATADIR/icons/hicolor/scalable/apps
-	icon_scalable.files += images/$${TARGET}.svgz
+	icon_scalable.files += images/$${NAME}.svgz
 
-	mimeinfo.path = $$DATADIR/mime/packages
-	mimeinfo.files += mimetypes/$${TARGET}.xml
+	mimeinfo.path = $${DATADIR}/mime/packages
+	mimeinfo.files += mimetypes/$${NAME}.xml
 
-	mimetypes.path = $$DATADIR/icons/hicolor/32x32/mimetypes
-	mimetypes.files += mimetypes/application-x-$${TARGET}-session.png \
-		mimetypes/application-x-$${TARGET}-template.png \
-		mimetypes/application-x-$${TARGET}-archive.png
+	mimetypes.path = $${DATADIR}/icons/hicolor/32x32/mimetypes
+	mimetypes.files += \
+		mimetypes/application-x-$${NAME}-session.png \
+		mimetypes/application-x-$${NAME}-template.png \
+		mimetypes/application-x-$${NAME}-archive.png
+
+	mimetypes_scalable.path = $$DATADIR/icons/hicolor/scalable/mimetypes
+	mimetypes_scalable.files += \
+		mimetypes/application-x-$${NAME}-session.svgz \
+		mimetypes/application-x-$${NAME}-template.svgz \
+		mimetypes/application-x-$${NAME}-archive.svgz
 }
 
 # XML/DOM support
