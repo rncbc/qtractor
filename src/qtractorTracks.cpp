@@ -1941,6 +1941,131 @@ int qtractorTracks::insertEditRangeTrack (
 }
 
 
+// Removal method.
+bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	unsigned long iRemoveStart = pSession->editHead();
+	unsigned long iRemoveEnd   = pSession->editTail();
+
+	if (iRemoveStart >= iRemoveEnd)
+		return false;
+
+	int iUpdate = 0;
+	qtractorClipRangeCommand *pClipRangeCommand
+		= new qtractorClipRangeCommand(pTrack);
+
+	if (pTrack) {
+		iUpdate += removeEditRangeTrack(pClipRangeCommand,
+			pTrack, iRemoveStart, iRemoveEnd);
+	} else {
+		pTrack = pSession->tracks().first();
+		while (pTrack) {
+			iUpdate += removeEditRangeTrack(pClipRangeCommand,
+				pTrack, iRemoveStart, iRemoveEnd);
+			pTrack = pTrack->next();
+		}
+	}
+
+	if (iUpdate < 1) {
+		delete pClipRangeCommand;
+		return false;
+	}
+
+	m_pTrackView->clearClipSelect();
+
+	return pSession->execute(pClipRangeCommand);
+}
+
+
+// Removal method (track).
+int qtractorTracks::removeEditRangeTrack (
+	qtractorClipRangeCommand *pClipRangeCommand, qtractorTrack *pTrack,
+	unsigned long iRemoveStart, unsigned long iRemoveEnd ) const
+{
+	unsigned long iRemoveLength = iRemoveEnd - iRemoveStart;
+
+	int iUpdate = 0;
+	qtractorClip *pClip = pTrack->clips().first();
+	while (pClip) {
+		unsigned long iClipStart  = pClip->clipStart();
+		unsigned long iClipOffset = pClip->clipOffset();
+		unsigned long iClipLength = pClip->clipLength();
+		unsigned long iClipEnd    = iClipStart + iClipLength;
+		if (iClipEnd > iRemoveStart) {
+			// Slip/move clip...
+			if (iClipStart < iRemoveEnd) {
+				// Left-clip...
+				if (iClipStart < iRemoveStart) {
+					pClipRangeCommand->resizeClip(pClip,
+							iClipStart,
+							iClipOffset,
+							iRemoveStart - iClipStart);
+					// Right-clip...
+					if (iClipEnd > iRemoveEnd) {
+						qtractorClip *pClipEx = m_pTrackView->cloneClip(pClip);
+						if (pClipEx) {
+							iClipOffset += iRemoveEnd - iClipStart;
+							pClipEx->setClipStart(iRemoveStart);
+							pClipEx->setClipOffset(iClipOffset);
+							pClipEx->setClipLength(iClipEnd - iRemoveEnd);
+							pClipEx->setFadeOutLength(pClip->fadeOutLength());
+							pClipRangeCommand->addClip(pClipEx, pTrack);
+						}
+					}
+				}
+				else 
+				if (iClipEnd > iRemoveEnd)
+					pClipRangeCommand->resizeClip(pClip,
+						iRemoveStart,
+						iClipOffset + iRemoveEnd - iClipStart,
+						iClipEnd - iRemoveEnd);
+				else
+					pClipRangeCommand->removeClip(pClip);
+			} else {
+				// Whole-clip...
+				pClipRangeCommand->moveClip(pClip, pTrack,
+					iClipStart - iRemoveLength,
+					iClipOffset,
+					iClipLength);
+			}
+			++iUpdate;
+		}
+		pClip = pClip->next();
+	}
+
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	if (pCurveList) {
+		qtractorCurve *pCurve = pCurveList->first();
+		while (pCurve) {
+			int iCurveEditUpdate = 0;
+			qtractorCurveEditCommand *pCurveEditCommand
+				= new qtractorCurveEditCommand(QString(), pCurve);
+			qtractorCurve::Node *pNode = pCurve->seek(iRemoveStart);
+			while (pNode) {
+				if (pNode->frame < iRemoveEnd)
+				    pCurveEditCommand->removeNode(pNode);
+				else
+					pCurveEditCommand->moveNode(pNode, pNode->frame - iRemoveLength);
+				++iCurveEditUpdate;
+				pNode = pNode->next();
+			}
+			if (iCurveEditUpdate > 0) {
+				pClipRangeCommand->addCurveEditCommand(pCurveEditCommand);
+				iUpdate += iCurveEditUpdate;
+			}
+			else delete pCurveEditCommand;
+			pCurve = pCurve->next();
+		}
+	}
+
+	return iUpdate;
+}
+
+
 // Adds a new track into session.
 bool qtractorTracks::addTrack (void)
 {

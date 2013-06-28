@@ -219,6 +219,13 @@
      <addaction name="editInsertRangeAction" />
      <addaction name="editInsertTrackRangeAction" />
     </widget>
+    <widget class="QMenu" name="editRemoveMenu" >
+     <property name="title" >
+	  <string>Remo&amp;ve</string>
+     </property>
+     <addaction name="editRemoveRangeAction" />
+     <addaction name="editRemoveTrackRangeAction" />
+    </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
     <addaction name="separator" />
@@ -233,6 +240,8 @@
     <addaction name="editSelectMenu" />
     <addaction name="separator" />
     <addaction name="editInsertMenu" />
+    <addaction name="editRemoveMenu" />
+    <addaction name="separator" />
     <addaction name="editSplitAction" />
     <addaction name="separator" />
     <addaction name="trackMenu" />
@@ -934,6 +943,40 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="editRemoveRangeAction" >
+   <property name="text" >
+    <string>&amp;Range</string>
+   </property>
+   <property name="iconText" >
+    <string>Remove Range</string>
+   </property>
+   <property name="toolTip" >
+    <string>Remove range</string>
+   </property>
+   <property name="statusTip" >
+    <string>Remove range as selected</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Del</string>
+   </property>
+  </action>
+  <action name="editRemoveTrackRangeAction" >
+   <property name="text" >
+    <string>Trac&amp;k Range</string>
+   </property>
+   <property name="iconText" >
+    <string>Remove Track Range</string>
+   </property>
+   <property name="toolTip" >
+    <string>Remove track range</string>
+   </property>
+   <property name="statusTip" >
+    <string>Remove track range as selected</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+Del</string>
    </property>
   </action>
   <action name="editInsertRangeAction" >

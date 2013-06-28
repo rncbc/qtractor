@@ -718,6 +718,12 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editInsertTrackRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editInsertTrackRange()));
+	QObject::connect(m_ui.editRemoveRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editRemoveRange()));
+	QObject::connect(m_ui.editRemoveTrackRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editRemoveTrackRange()));
 	QObject::connect(m_ui.editSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSplit()));
@@ -2895,6 +2901,36 @@ void qtractorMainForm::editInsertTrackRange (void)
 	// Select track-range...
 	if (m_pTracks)
 		m_pTracks->insertEditRange(m_pTracks->currentTrack());
+
+	stabilizeForm();
+}
+
+
+// Remove range as selected.
+void qtractorMainForm::editRemoveRange (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editRemoveRange()");
+#endif
+
+	// Insert edit-range...
+	if (m_pTracks)
+		m_pTracks->removeEditRange();
+
+	stabilizeForm();
+}
+
+
+// Remove track-range as selected.
+void qtractorMainForm::editRemoveTrackRange (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editRemoveTrackRange()");
+#endif
+
+	// Select track-range...
+	if (m_pTracks)
+		m_pTracks->removeEditRange(m_pTracks->currentTrack());
 
 	stabilizeForm();
 }
@@ -5656,6 +5692,9 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bInsertable = m_pSession->editHead() < iSessionEnd;
 	m_ui.editInsertTrackRangeAction->setEnabled(bEnabled && bInsertable);
 	m_ui.editInsertRangeAction->setEnabled(bInsertable);
+
+	m_ui.editRemoveTrackRangeAction->setEnabled(bEnabled && bSelectable);
+	m_ui.editRemoveRangeAction->setEnabled(bSelectable);
 
 	m_ui.editSplitAction->setEnabled(bSelected);
 

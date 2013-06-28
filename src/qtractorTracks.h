@@ -120,8 +120,9 @@ public:
 	void selectAll(bool bSelect = true);
 	void selectInvert();
 
-	// Insertion method.
+	// Insertion and removal methods.
 	bool insertEditRange(qtractorTrack *pTrack = NULL);
+	bool removeEditRange(qtractorTrack *pTrack = NULL);
 
 	// Simple main-form redirectors.
 	void selectionChangeNotify();
@@ -181,10 +182,13 @@ protected:
 
 	bool rangeClipEx(qtractorClip *pClip, bool bLoopSet);
 
-	// Insertion method (track).
+	// Insertion and removal methods (track).
 	int insertEditRangeTrack(
 		qtractorClipRangeCommand *pClipRangeCommand, qtractorTrack *pTrack,
 		unsigned long iInsertStart, unsigned long iInsertEnd) const;
+	int removeEditRangeTrack(
+		qtractorClipRangeCommand *pClipRangeCommand, qtractorTrack *pTrack,
+		unsigned long iRemoveStart, unsigned long iRemoveEnd) const;
 
 public slots:
 

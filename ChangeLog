@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- New range removal editing tool, split/moving clips backward
+  at the specified edit-head/tail interval (Edit/Remove/Range,
+  Track Range)--by Tuomas Airaksinen, thanks.
+
 - Andy Fitzsimon's original icon from opencliparts.org makes
   it through as the default standard scalable format (SVG).
 
