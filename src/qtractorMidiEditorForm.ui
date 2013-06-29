@@ -95,6 +95,12 @@
     </property>
     <addaction name="editInsertRangeAction" />
    </widget>
+   <widget class="QMenu" name="editRemoveMenu" >
+	<property name="title" >
+	 <string>Remo&amp;ve</string>
+	</property>
+	<addaction name="editRemoveRangeAction" />
+   </widget>
    <widget class="QMenu" name="toolsMenu" >
     <property name="title" >
      <string>&amp;Tools</string>
@@ -125,6 +131,7 @@
     <addaction name="editSelectMenu" />
     <addaction name="separator" />
     <addaction name="editInsertMenu" />
+	<addaction name="editRemoveMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -763,6 +770,23 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+Ins</string>
+   </property>
+  </action>
+  <action name="editRemoveRangeAction" >
+   <property name="text" >
+	<string>&amp;Range</string>
+   </property>
+   <property name="iconText" >
+	<string>Remove Range</string>
+   </property>
+   <property name="toolTip" >
+	<string>Remove range</string>
+   </property>
+   <property name="statusTip" >
+	<string>Remove range as selected</string>
+   </property>
+   <property name="shortcut" >
+	<string>Ctrl+Del</string>
    </property>
   </action>
   <action name="toolsQuantizeAction" >

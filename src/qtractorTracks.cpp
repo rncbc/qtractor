@@ -2017,7 +2017,7 @@ int qtractorTracks::removeEditRangeTrack (
 						}
 					}
 				}
-				else 
+				else
 				if (iClipEnd > iRemoveEnd)
 					pClipRangeCommand->resizeClip(pClip,
 						iRemoveStart,
@@ -2047,7 +2047,7 @@ int qtractorTracks::removeEditRangeTrack (
 			qtractorCurve::Node *pNode = pCurve->seek(iRemoveStart);
 			while (pNode) {
 				if (pNode->frame < iRemoveEnd)
-				    pCurveEditCommand->removeNode(pNode);
+					pCurveEditCommand->removeNode(pNode);
 				else
 					pCurveEditCommand->moveNode(pNode, pNode->frame - iRemoveLength);
 				++iCurveEditUpdate;
