@@ -248,8 +248,12 @@ public:
 	// Whether there's any events beyond the insertion point (edit-tail).
 	bool isInsertable() const;
 
-	// Insert edit range.
+	// Whether there's any selected range (edit-head/tail).
+	bool isSelectable() const;
+
+	// Insert/remove edit range.
 	void insertEditRange();
+	void removeEditRange();
 
 	// Update/sync integral contents.
 	void updateContents();

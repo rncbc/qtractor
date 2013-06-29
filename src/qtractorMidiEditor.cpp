@@ -1875,6 +1875,13 @@ bool qtractorMidiEditor::isInsertable (void) const
 }
 
 
+// Whether there's any selected range (edit-head/tail).
+bool qtractorMidiEditor::isSelectable (void) const
+{
+	return (m_iEditHead < m_iEditTail);
+}
+
+
 // Insert edit range.
 void qtractorMidiEditor::insertEditRange (void)
 {
@@ -1929,6 +1936,73 @@ void qtractorMidiEditor::insertEditRange (void)
 					iTime + iInsertDuration, iDuration);
 				++iUpdate;
 			}
+		}
+		pEvent = pEvent->next();
+	}
+
+	if (iUpdate > 0)
+		m_pCommands->exec(pEditCommand);
+	else
+		delete pEditCommand;
+}
+
+
+// Remove edit range.
+void qtractorMidiEditor::removeEditRange (void)
+{
+	if (m_pMidiClip == NULL)
+		return;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
+		return;
+
+	unsigned long iRemoveStart = m_pTimeScale->tickFromFrame(m_iEditHead);
+	unsigned long iRemoveEnd   = m_pTimeScale->tickFromFrame(m_iEditTail);
+
+	if (iRemoveStart >= iRemoveEnd)
+		return;
+
+	unsigned long iRemoveDuration = iRemoveEnd - iRemoveStart;
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+
+	int iUpdate = 0;
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("remove range"));
+
+	qtractorMidiEvent *pEvent = pSeq->events().first();
+	while (pEvent) {
+		unsigned long iTime = pEvent->time();
+		unsigned long iDuration = pEvent->duration();
+		unsigned long iEventStart = t0 + iTime;
+		unsigned long iEventEnd = iEventStart + iDuration;
+		// Slip/move event...
+		if (iEventEnd >= iRemoveStart) {
+			if (iEventStart < iRemoveStart) {
+				// Resize left-event...
+				pEditCommand->resizeEventTime(pEvent,
+					iTime, iRemoveStart - iEventStart);
+				if (iEventEnd > iRemoveEnd) {
+					// Insert right-event...
+					qtractorMidiEvent *pEventEx
+						= new qtractorMidiEvent(*pEvent);
+					pEventEx->setTime(iRemoveStart - t0);
+					pEventEx->setDuration(iEventEnd - iRemoveEnd);
+					pEditCommand->insertEvent(pEventEx);
+				}
+			}
+			else
+			if (iEventEnd > iRemoveEnd) {
+				if (iEventStart < iRemoveEnd) {
+					pEditCommand->resizeEventTime(pEvent,
+						iRemoveStart - t0, iEventEnd - iRemoveEnd);
+				} else {
+					pEditCommand->resizeEventTime(pEvent,
+						iTime - iRemoveDuration, iDuration);
+				}
+			}
+			else pEditCommand->removeEvent(pEvent);
+			++iUpdate;
 		}
 		pEvent = pEvent->next();
 	}

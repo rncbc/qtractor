@@ -318,6 +318,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.editInsertRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editInsertRange()));
+	QObject::connect(m_ui.editRemoveRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editRemoveRange()));
 
 	QObject::connect(m_ui.toolsQuantizeAction,
 		SIGNAL(triggered(bool)),
@@ -1249,6 +1252,13 @@ void qtractorMidiEditorForm::editInsertRange (void)
 }
 
 
+// Remove range.
+void qtractorMidiEditorForm::editRemoveRange (void)
+{
+	m_pMidiEditor->removeEditRange();
+}
+
+
 // Quantize tool.
 void qtractorMidiEditorForm::toolsQuantize (void)
 {
@@ -1644,6 +1654,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
 
 	bool bSelected = m_pMidiEditor->isSelected();
+	bool bSelectable = m_pMidiEditor->isSelectable();
 	bool bClipboard = m_pMidiEditor->isClipboard();
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
@@ -1653,6 +1664,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 	m_ui.editInsertRangeAction->setEnabled(m_pMidiEditor->isInsertable());
+	m_ui.editRemoveRangeAction->setEnabled(bSelectable);
 
 #if 0
 	m_ui.toolsMenu->setEnabled(bSelected);
@@ -1713,13 +1725,12 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pSession && pMainForm) {
 		unsigned long iPlayHead = pSession->playHead();
-		bool bSelectable = (pSession->editHead() < pSession->editTail());
-		bool bPlaying    = pSession->isPlaying();
-		bool bRecording  = pSession->isRecording();
-		bool bPunching   = pSession->isPunching();
-		bool bLooping    = pSession->isLooping();
-		bool bRolling    = (bPlaying && bRecording);
-		bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
+		bool bPlaying   = pSession->isPlaying();
+		bool bRecording = pSession->isRecording();
+		bool bPunching  = pSession->isPunching();
+		bool bLooping   = pSession->isLooping();
+		bool bRolling   = (bPlaying && bRecording);
+		bool bBumped    = (!bRolling && (iPlayHead > 0 || bPlaying));
 		int iRolling = pMainForm->rolling();
 		m_ui.transportBackwardAction->setEnabled(bBumped);
 		m_ui.transportRewindAction->setEnabled(bBumped);

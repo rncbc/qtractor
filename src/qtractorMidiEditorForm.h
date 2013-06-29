@@ -120,6 +120,7 @@ protected slots:
 	void editSelectInvert();
 	void editSelectRange();
 	void editInsertRange();
+	void editRemoveRange();
 
 	void toolsQuantize();
 	void toolsTranspose();
