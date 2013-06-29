@@ -81,6 +81,7 @@ specially dedicated to the personal home-studio.
 %dir %{_datadir}/icons/hicolor/32x32/mimetypes
 %dir %{_datadir}/icons/hicolor/scalable
 %dir %{_datadir}/icons/hicolor/scalable/apps
+%dir %{_datadir}/icons/hicolor/scalable/mimetypes
 %{_bindir}/%{name}
 %{_datadir}/mime/packages/%{name}.xml
 %{_datadir}/applications/%{name}.desktop
