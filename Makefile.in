@@ -108,6 +108,7 @@ headers = \
 	src/qtractorBusForm.h \
 	src/qtractorClipForm.h \
 	src/qtractorConnectForm.h \
+	src/qtractorEditRangeForm.h \
 	src/qtractorExportForm.h \
 	src/qtractorInstrumentForm.h \
 	src/qtractorMainForm.h \
@@ -217,6 +218,7 @@ sources = \
 	src/qtractorBusForm.cpp \
 	src/qtractorClipForm.cpp \
 	src/qtractorConnectForm.cpp \
+	src/qtractorEditRangeForm.cpp \
 	src/qtractorExportForm.cpp \
 	src/qtractorInstrumentForm.cpp \
 	src/qtractorMainForm.cpp \
@@ -239,6 +241,7 @@ forms = \
 	src/qtractorBusForm.ui \
 	src/qtractorClipForm.ui \
 	src/qtractorConnectForm.ui \
+	src/qtractorEditRangeForm.ui \
 	src/qtractorExportForm.ui \
 	src/qtractorInstrumentForm.ui \
 	src/qtractorMainForm.ui \

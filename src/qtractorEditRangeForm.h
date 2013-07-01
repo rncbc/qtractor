@@ -1,4 +1,4 @@
-// qtractorTakeRangeForm.h
+// qtractorEditRangeForm.h
 //
 /****************************************************************************
    Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,61 +19,59 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorTakeRangeForm_h
-#define __qtractorTakeRangeForm_h
+#ifndef __qtractorEditRangeForm_h
+#define __qtractorEditRangeForm_h
 
-#include "ui_qtractorTakeRangeForm.h"
+#include "ui_qtractorEditRangeForm.h"
 
 
 // Forward declarations.
 class qtractorTimeScale;
-class qtractorClip;
 
 
 //----------------------------------------------------------------------------
-// qtractorTakeRangeForm -- UI wrapper form.
+// qtractorEditRangeForm -- UI wrapper form.
 
-class qtractorTakeRangeForm : public QDialog
+class qtractorEditRangeForm : public QDialog
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorTakeRangeForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorEditRangeForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
-	~qtractorTakeRangeForm();
+	~qtractorEditRangeForm();
 
-	// Setup accessors.
-	void setClip(qtractorClip *pClip);
-	qtractorClip *clip() const;
+	// Set the current initial selection range.
+	void setSelectionRange(unsigned long iSelectStart, unsigned long iSelectEnd);
 
-	// Result accessors.
-	unsigned long takeStart() const;
-	unsigned long takeEnd() const;
-
-	int currentTake() const;
+	// Retrieve the current range, if the case arises.
+	unsigned long rangeStart() const;
+	unsigned long rangeEnd() const;
 
 protected slots:
 
 	void rangeChanged();
 	void formatChanged();
 	void valueChanged();
-	void updateCurrentTake();
 	void stabilizeForm();
 
 private:
 
 	// The Qt-designer UI struct...
-	Ui::qtractorTakeRangeForm m_ui;
+	Ui::qtractorEditRangeForm m_ui;
 
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
-	qtractorClip *m_pClip;
+
+	// Initial static selection range.
+	unsigned long m_iSelectStart;
+	unsigned long m_iSelectEnd;
 };
 
 
-#endif	// __qtractorTakeRangeForm_h
+#endif	// __qtractorEditRangeForm_h
 
 
-// end of qtractorTakeRangeForm.h
+// end of qtractorEditRangeForm.h

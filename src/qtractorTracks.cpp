@@ -55,6 +55,8 @@
 #include "qtractorPasteRepeatForm.h"
 #include "qtractorTempoAdjustForm.h"
 
+#include "qtractorEditRangeForm.h"
+
 #include "qtractorMidiEditorForm.h"
 
 #include "qtractorMidiToolsForm.h"
@@ -1754,6 +1756,37 @@ qtractorTrack *qtractorTracks::singleTrackSelected (void)
 }
 
 
+// Retrieve actual clip selection range.
+void qtractorTracks::clipSelectedRange (
+	unsigned long& iSelectStart,
+	unsigned long& iSelectEnd ) const
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	iSelectStart = pSession->sessionEnd();
+	iSelectEnd = pSession->sessionStart();
+
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+	const qtractorClipSelect::ItemList& items = pClipSelect->items();
+	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+
+	for ( ; iter != iter_end; ++iter) {
+		qtractorClip *pClip = iter.key();
+		qtractorTrack *pTrack = pClip->track();
+		// Make sure it's a legal selection...
+		if (pTrack && pClip->isClipSelected()) {
+			if (iSelectStart > pClip->clipSelectStart())
+				iSelectStart = pClip->clipSelectStart();
+			if (iSelectEnd < pClip->clipSelectEnd())
+				iSelectEnd = pClip->clipSelectEnd();
+		}
+	}
+}
+
+
 // Clipboard methods.
 void qtractorTracks::cutClipboard (void)
 {
@@ -1845,6 +1878,21 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 		unsigned short iBar = pTimeScale->barFromFrame(iInsertStart);
 		iInsertEnd = pTimeScale->frameFromBar(iBar + 1);
 	}
+
+	if (pTrack == NULL) {
+		qtractorEditRangeForm rangeForm(this);
+		rangeForm.setWindowTitle(tr("Insert Range") + " - " QTRACTOR_TITLE);
+		if (isClipSelected())
+			clipSelectedRange(iInsertStart, iInsertEnd);
+		rangeForm.setSelectionRange(iInsertStart, iInsertEnd);
+		if (!rangeForm.exec())
+			return false;
+		iInsertStart = rangeForm.rangeStart();
+		iInsertEnd   = rangeForm.rangeEnd();
+	}
+
+	if (iInsertStart >= iInsertEnd)
+		return false;
 
 	int iUpdate = 0;
 	qtractorClipRangeCommand *pClipRangeCommand
@@ -1950,6 +1998,18 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 
 	unsigned long iRemoveStart = pSession->editHead();
 	unsigned long iRemoveEnd   = pSession->editTail();
+
+	if (pTrack == NULL) {
+		qtractorEditRangeForm rangeForm(this);
+		rangeForm.setWindowTitle(tr("Remove Range") + " - " QTRACTOR_TITLE);
+		if (isClipSelected())
+			clipSelectedRange(iRemoveStart, iRemoveEnd);
+		rangeForm.setSelectionRange(iRemoveStart, iRemoveEnd);
+		if (!rangeForm.exec())
+			return false;
+		iRemoveStart = rangeForm.rangeStart();
+		iRemoveEnd   = rangeForm.rangeEnd();
+	}
 
 	if (iRemoveStart >= iRemoveEnd)
 		return false;

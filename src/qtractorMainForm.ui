@@ -947,7 +947,7 @@
   </action>
   <action name="editRemoveRangeAction" >
    <property name="text" >
-    <string>&amp;Range</string>
+	<string>&amp;Range...</string>
    </property>
    <property name="iconText" >
     <string>Remove Range</string>
@@ -981,7 +981,7 @@
   </action>
   <action name="editInsertRangeAction" >
    <property name="text" >
-    <string>&amp;Range</string>
+	<string>&amp;Range...</string>
    </property>
    <property name="iconText" >
     <string>Insert Range</string>

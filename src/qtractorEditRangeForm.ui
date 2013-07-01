@@ -20,8 +20,8 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <class>qtractorTakeRangeForm</class>
- <widget class="QDialog" name="qtractorTakeRangeForm">
+ <class>qtractorEditRangeForm</class>
+ <widget class="QDialog" name="qtractorEditRangeForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -34,7 +34,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Take - Qtractor</string>
+   <string>Range - Qtractor</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/qtractor.png</iconset>
@@ -46,7 +46,7 @@
    <property name="spacing">
     <number>4</number>
    </property>
-   <item row="0" column="0" rowspan="2">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="RangeGroupBox">
      <property name="title">
       <string>Range</string>
@@ -134,17 +134,17 @@
        </spacer>
       </item>
       <item row="5" column="1">
-       <widget class="QLabel" name="TakeStartTextLLabel">
+       <widget class="QLabel" name="RangeStartTextLLabel">
         <property name="text">
          <string>St&amp;art:</string>
         </property>
         <property name="buddy">
-         <cstring>TakeStartSpinBox</cstring>
+         <cstring>RangeStartSpinBox</cstring>
         </property>
        </widget>
       </item>
       <item row="5" column="2">
-       <widget class="qtractorTimeSpinBox" name="TakeStartSpinBox">
+       <widget class="qtractorTimeSpinBox" name="RangeStartSpinBox">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -157,17 +157,17 @@
        </widget>
       </item>
       <item row="6" column="1">
-       <widget class="QLabel" name="TakeEndTextLLabel">
+       <widget class="QLabel" name="RangeEndTextLLabel">
         <property name="text">
          <string>En&amp;d:</string>
         </property>
         <property name="buddy">
-         <cstring>TakeEndSpinBox</cstring>
+         <cstring>RangeEndSpinBox</cstring>
         </property>
        </widget>
       </item>
       <item row="6" column="2">
-       <widget class="qtractorTimeSpinBox" name="TakeEndSpinBox">
+       <widget class="qtractorTimeSpinBox" name="RangeEndSpinBox">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -183,22 +183,6 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QGroupBox" name="SelectGroupBox">
-     <property name="title">
-      <string>Select</string>
-     </property>
-     <layout class="QVBoxLayout">
-      <item>
-       <widget class="QComboBox" name="CurrentTakeComboBox">
-        <property name="toolTip">
-         <string>Current take</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="1">
     <widget class="QGroupBox" name="FormatGroupBox">
      <property name="title">
       <string>Format</string>
@@ -279,9 +263,8 @@
   <tabstop>PunchRangeRadioButton</tabstop>
   <tabstop>EditRangeRadioButton</tabstop>
   <tabstop>CustomRangeRadioButton</tabstop>
-  <tabstop>TakeStartSpinBox</tabstop>
-  <tabstop>TakeEndSpinBox</tabstop>
-  <tabstop>CurrentTakeComboBox</tabstop>
+  <tabstop>RangeStartSpinBox</tabstop>
+  <tabstop>RangeEndSpinBox</tabstop>
   <tabstop>FramesRadioButton</tabstop>
   <tabstop>TimeRadioButton</tabstop>
   <tabstop>BbtRadioButton</tabstop>

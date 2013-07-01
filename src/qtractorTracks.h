@@ -102,6 +102,11 @@ public:
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
 
+	// Retrieve actual clip selection range.
+	void clipSelectedRange(
+		unsigned long& iSelectStart,
+		unsigned long& iSelectEnd) const;
+
 	// Clipboard methods.
 	void cutClipboard();
 	void copyClipboard();
