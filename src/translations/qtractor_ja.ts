@@ -1582,7 +1582,17 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="252"/>
-        <source>&amp;Clips</source>
+        <source>Cl&amp;ips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorEditRangeForm.ui" line="265"/>
+        <source>A&amp;utomation</source>
+        <translation type="unfinished">オートメーション(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorEditRangeForm.ui" line="278"/>
+        <source>Temp&amp;o Map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1591,18 +1601,12 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="265"/>
         <source>&amp;Automation</source>
-        <translation type="unfinished">オートメーション(&amp;A)</translation>
+        <translation type="obsolete">オートメーション(&amp;A)</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="275"/>
         <source>Apply to Tempo Map nodes in range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorEditRangeForm.ui" line="278"/>
-        <source>&amp;Tempo Map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

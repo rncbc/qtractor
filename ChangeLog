@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Main track-view Edit/Insert,Remove/Range dialog is now being
+  introduced with optional applicability to Clips, Automation,
+  Tempo Map and/or Markers. (HIGHLY EXPERIMENTAL)
+
 - New range removal editing tool, split/moving clips backward
   at the specified edit-head/tail interval (Edit/Remove/Range,
   Track Range)--by Tuomas Airaksinen, thanks.
