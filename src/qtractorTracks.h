@@ -190,10 +190,12 @@ protected:
 	// Insertion and removal methods (track).
 	int insertEditRangeTrack(
 		qtractorClipRangeCommand *pClipRangeCommand, qtractorTrack *pTrack,
-		unsigned long iInsertStart, unsigned long iInsertEnd) const;
+        unsigned long iInsertStart, unsigned long iInsertEnd,
+        unsigned int iInsertOptions) const;
 	int removeEditRangeTrack(
 		qtractorClipRangeCommand *pClipRangeCommand, qtractorTrack *pTrack,
-		unsigned long iRemoveStart, unsigned long iRemoveEnd) const;
+        unsigned long iRemoveStart, unsigned long iRemoveEnd,
+        unsigned int iRemoveOptions) const;
 
 public slots:
 

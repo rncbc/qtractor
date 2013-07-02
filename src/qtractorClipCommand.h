@@ -31,6 +31,8 @@
 // Forward declarations.
 class qtractorTrackCommand;
 class qtractorCurveEditCommand;
+class qtractorTimeScaleNodeCommand;
+class qtractorTimeScaleMarkerCommand;
 class qtractorMidiEditCommand;
 class qtractorMidiClip;
 
@@ -192,13 +194,22 @@ class qtractorClipRangeCommand : public qtractorClipCommand
 public:
 
 	// Constructor.
-	qtractorClipRangeCommand(qtractorTrack *pTrack = NULL);
+	qtractorClipRangeCommand(const QString& sName);
 
 	// Destructor.
 	~qtractorClipRangeCommand();
 
 	// When automation curves are needed.
-	void addCurveEditCommand(qtractorCurveEditCommand *pCurveEditCommand);
+	void addCurveEditCommand(
+		qtractorCurveEditCommand *pCurveEditCommand);
+
+	// When tempo-map/time-sig nodes are needed.
+	void addTimeScaleNodeCommand(
+		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand);
+
+	// When location markers are needed.
+	void addTimeScaleMarkerCommand(
+		qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand);
 
 protected:
 
@@ -208,7 +219,9 @@ protected:
 private:
 
 	// Instance variables.
-	QList<qtractorCurveEditCommand *> m_curveEditCommands;
+	QList<qtractorCurveEditCommand *>       m_curveEditCommands;
+	QList<qtractorTimeScaleNodeCommand *>   m_timeScaleNodeCommands;
+	QList<qtractorTimeScaleMarkerCommand *> m_timeScaleMarkerCommands;
 };
 
 

@@ -32,6 +32,7 @@
 #include "qtractorFiles.h"
 
 #include "qtractorMidiEditCommand.h"
+#include "qtractorTimeScaleCommand.h"
 #include "qtractorCurveCommand.h"
 
 
@@ -753,10 +754,8 @@ bool qtractorClipTakeCommand::execute ( bool bRedo )
 //
 
 // Constructor.
-qtractorClipRangeCommand::qtractorClipRangeCommand (
-	qtractorTrack *pTrack )
-	: qtractorClipCommand(pTrack
-		? QObject::tr("insert range") : QObject::tr("insert track range"))
+qtractorClipRangeCommand::qtractorClipRangeCommand ( const QString& sName )
+	: qtractorClipCommand(sName)
 {
 }
 
@@ -766,6 +765,12 @@ qtractorClipRangeCommand::~qtractorClipRangeCommand (void)
 {
 	qDeleteAll(m_curveEditCommands);
 	m_curveEditCommands.clear();
+
+	qDeleteAll(m_timeScaleNodeCommands);
+	m_timeScaleNodeCommands.clear();
+
+	qDeleteAll(m_timeScaleMarkerCommands);
+	m_timeScaleMarkerCommands.clear();
 }
 
 
@@ -777,20 +782,83 @@ void qtractorClipRangeCommand::addCurveEditCommand (
 }
 
 
+// When tempo-map/time-sig nodes are needed.
+void qtractorClipRangeCommand::addTimeScaleNodeCommand (
+	qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand )
+{
+	m_timeScaleNodeCommands.append(pTimeScaleNodeCommand);
+}
+
+
+// When location markers are needed.
+void qtractorClipRangeCommand::addTimeScaleMarkerCommand (
+	qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand )
+{
+	m_timeScaleMarkerCommands.append(pTimeScaleMarkerCommand);
+}
+
+
 
 // Executive override.
 bool qtractorClipRangeCommand::execute ( bool bRedo )
 {
-	QListIterator<qtractorCurveEditCommand *> iter(m_curveEditCommands);
-	while (iter.hasNext()) {
-		qtractorCurveEditCommand *pCurveEditCommand = iter.next();
-		if (bRedo)
+	// Automation...
+	QListIterator<qtractorCurveEditCommand *>
+		curve_iter(m_curveEditCommands);
+	if (bRedo) {
+		while (curve_iter.hasNext()) {
+			qtractorCurveEditCommand *pCurveEditCommand
+				= curve_iter.next();
 			pCurveEditCommand->redo();
-		else
+			pCurveEditCommand->curve()->update();
+		}
+	} else {
+		curve_iter.toBack();
+		while (curve_iter.hasPrevious()) {
+			qtractorCurveEditCommand *pCurveEditCommand
+				= curve_iter.previous();
 			pCurveEditCommand->undo();
-		pCurveEditCommand->curve()->update();
+			pCurveEditCommand->curve()->update();
+		}
 	}
 
+	// Time-map...
+	QListIterator<qtractorTimeScaleNodeCommand *>
+		node_iter(m_timeScaleNodeCommands);
+	if (bRedo) {
+		while (node_iter.hasNext()) {
+			qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
+				= node_iter.next();
+			pTimeScaleNodeCommand->redo();
+		}
+	} else {
+		node_iter.toBack();
+		while (node_iter.hasPrevious()) {
+			qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
+				= node_iter.previous();
+			pTimeScaleNodeCommand->undo();
+		}
+	}
+
+	// Markers...
+	QListIterator<qtractorTimeScaleMarkerCommand *>
+		marker_iter(m_timeScaleMarkerCommands);
+	if (bRedo) {
+		while (marker_iter.hasNext()) {
+			qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand
+				= marker_iter.next();
+			pTimeScaleMarkerCommand->redo();
+		}
+	} else {
+		marker_iter.toBack();
+		while (marker_iter.hasPrevious()) {
+			qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand
+				= marker_iter.previous();
+			pTimeScaleMarkerCommand->undo();
+		}
+	}
+
+	// Clips...
 	return qtractorClipCommand::execute(bRedo);
 }
 

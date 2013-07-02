@@ -53,6 +53,18 @@ public:
 	qtractorTimeScale *timeScale() const
 		{ return m_pTimeScale; }
 
+	// Node properties accessors.
+	unsigned long frame() const
+		{ return m_iFrame; }
+	float tempo() const
+		{ return m_fTempo; }
+	unsigned short beatType() const
+		{ return m_iBeatType; }
+	unsigned short beatsPerBar() const
+		{ return m_iBeatsPerBar; }
+	unsigned short beatDivisor() const
+		{ return m_iBeatDivisor; }
+
 protected:
 
 	// Executive commands.
@@ -139,6 +151,33 @@ public:
 
 
 //----------------------------------------------------------------------
+// class qtractorTimeScaleMoveNodeCommand - declaration.
+//
+
+class qtractorTimeScaleMoveNodeCommand : public qtractorTimeScaleNodeCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleMoveNodeCommand(qtractorTimeScale *pTimeScale,
+		qtractorTimeScale::Node *pNode, unsigned long iFrame);
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// The new location argument.
+	unsigned long m_iNewFrame;
+
+	// Replaced node salvage.
+	bool          m_bOldNode;
+	unsigned long m_iOldFrame;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorTimeScaleMarkerCommand - declaration.
 //
 
@@ -156,7 +195,7 @@ public:
 	qtractorTimeScale *timeScale() const
 		{ return m_pTimeScale; }
 
-	// Marker properties accessor.
+	// Marker properties accessors.
 	unsigned long frame() const
 		{ return m_iFrame; }
 	const QString& text() const
@@ -261,10 +300,8 @@ private:
 	unsigned long m_iNewFrame;
 
 	// Replaced marker salvage.
-	bool          m_bOldMarker;
 	unsigned long m_iOldFrame;
-	QString       m_sOldText;
-	QColor        m_rgbOldColor;
+	bool          m_bOldMarker;
 };
 
 

@@ -48,14 +48,38 @@ public:
 
 	// Retrieve the current range, if the case arises.
 	unsigned long rangeStart() const;
-	unsigned long rangeEnd() const;
+    unsigned long rangeEnd() const;
+
+    // Range option flags.
+    enum Option {
+        None       = 0,
+        Clips      = 1,
+        Automation = 2,
+        TempoMap   = 4,
+        Markers    = 8
+    };
+
+    // Retrieve range option flags.
+    unsigned int rangeOptions() const;
+
+protected:
+
+    // Option flags accessors.
+    void setOption(Option option, bool bOn);
+    bool isOption(Option option) const;
+
+    // Update options settings.
+    void updateOptions();
 
 protected slots:
 
-	void rangeChanged();
+    void optionsChanged();
+    void rangeChanged();
 	void formatChanged();
 	void valueChanged();
 	void stabilizeForm();
+
+    void accept();
 
 private:
 
@@ -68,6 +92,12 @@ private:
 	// Initial static selection range.
 	unsigned long m_iSelectStart;
 	unsigned long m_iSelectEnd;
+
+    // Applicable options;
+    unsigned int m_options;
+
+    // Pseudo-mutex.
+    unsigned int m_iUpdate;
 };
 
 

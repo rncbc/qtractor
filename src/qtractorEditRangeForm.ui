@@ -46,7 +46,7 @@
    <property name="spacing">
     <number>4</number>
    </property>
-   <item row="0" column="0">
+   <item row="0" column="0" rowspan="2">
     <widget class="QGroupBox" name="RangeGroupBox">
      <property name="title">
       <string>Range</string>
@@ -127,8 +127,8 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>16</width>
-          <height>16</height>
+		  <width>8</width>
+		  <height>8</height>
          </size>
         </property>
        </spacer>
@@ -182,7 +182,7 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item row="1" column="1">
     <widget class="QGroupBox" name="FormatGroupBox">
      <property name="title">
       <string>Format</string>
@@ -228,14 +228,75 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>16</width>
-          <height>16</height>
+		  <width>8</width>
+		  <height>8</height>
          </size>
         </property>
        </spacer>
       </item>
      </layout>
     </widget>
+   </item>
+   <item row="0" column="1">
+	<widget class="QGroupBox" name="OptionsGroupBox">
+	 <property name="title">
+	  <string>Options</string>
+	 </property>
+	 <layout class="QVBoxLayout">
+	  <item>
+	   <widget class="QCheckBox" name="ClipsCheckBox">
+		<property name="toolTip">
+		 <string>Apply to clips in range</string>
+		</property>
+		<property name="text">
+		 <string>&amp;Clips</string>
+		</property>
+		<property name="checked">
+		 <bool>true</bool>
+		</property>
+	   </widget>
+	  </item>
+	  <item>
+	   <widget class="QCheckBox" name="AutomationCheckBox">
+		<property name="toolTip">
+		 <string>Apply to Automation nodes in range</string>
+		</property>
+		<property name="text">
+		 <string>&amp;Automation</string>
+		</property>
+		<property name="checked">
+		 <bool>true</bool>
+		</property>
+	   </widget>
+	  </item>
+	  <item>
+	   <widget class="QCheckBox" name="TempoMapCheckBox">
+		<property name="toolTip">
+		 <string>Apply to Tempo Map nodes in range</string>
+		</property>
+		<property name="text">
+		 <string>&amp;Tempo Map</string>
+		</property>
+		<property name="checked">
+		 <bool>false</bool>
+		</property>
+	   </widget>
+	  </item>
+	  <item>
+	   <widget class="QCheckBox" name="MarkersCheckBox">
+		<property name="toolTip">
+		 <string>Apply to location Markers in range</string>
+		</property>
+		<property name="text">
+		 <string>&amp;Markers</string>
+		</property>
+		<property name="checked">
+		 <bool>false</bool>
+		</property>
+	   </widget>
+	  </item>
+	 </layout>
+	</widget>
    </item>
    <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="DialogButtonBox">
@@ -265,10 +326,14 @@
   <tabstop>CustomRangeRadioButton</tabstop>
   <tabstop>RangeStartSpinBox</tabstop>
   <tabstop>RangeEndSpinBox</tabstop>
+  <tabstop>ClipsCheckBox</tabstop>
+  <tabstop>AutomationCheckBox</tabstop>
+  <tabstop>TempoMapCheckBox</tabstop>
+  <tabstop>MarkersCheckBox</tabstop>
+  <tabstop>DialogButtonBox</tabstop>
   <tabstop>FramesRadioButton</tabstop>
   <tabstop>TimeRadioButton</tabstop>
   <tabstop>BbtRadioButton</tabstop>
-  <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc"/>

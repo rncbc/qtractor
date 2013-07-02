@@ -24,6 +24,8 @@
 #include "qtractorAbout.h"
 #include "qtractorSession.h"
 
+#include "qtractorOptions.h"
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -48,6 +50,9 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 	// Initial selection range (empty).
 	m_iSelectStart = 0;
 	m_iSelectEnd   = 0;
+
+    m_options = Clips | Automation;
+    m_iUpdate = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -83,6 +88,13 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 			m_ui.CustomRangeRadioButton->setChecked(true);
 	}
 
+    // Update options check-boxes.
+    qtractorOptions *pOptions = qtractorOptions::getInstance();
+    if (pOptions)
+        m_options = pOptions->iEditRangeOptions;
+
+    updateOptions();
+
 	// Try to restore old window positioning.
 	adjustSize();
 
@@ -114,7 +126,19 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 	QObject::connect(m_ui.RangeEndSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
-	QObject::connect(m_ui.DialogButtonBox,
+    QObject::connect(m_ui.ClipsCheckBox,
+        SIGNAL(toggled(bool)),
+        SLOT(optionsChanged()));
+    QObject::connect(m_ui.AutomationCheckBox,
+        SIGNAL(toggled(bool)),
+        SLOT(optionsChanged()));
+    QObject::connect(m_ui.TempoMapCheckBox,
+        SIGNAL(toggled(bool)),
+        SLOT(optionsChanged()));
+    QObject::connect(m_ui.MarkersCheckBox,
+        SIGNAL(toggled(bool)),
+        SLOT(optionsChanged()));
+    QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
 	QObject::connect(m_ui.DialogButtonBox,
@@ -163,7 +187,56 @@ unsigned long qtractorEditRangeForm::rangeEnd (void) const
 }
 
 
-// Display format has changed.
+// Retrieve range option flags.
+unsigned int qtractorEditRangeForm::rangeOptions (void) const
+{
+    return m_options;
+}
+
+
+// Option flags accessors.
+void qtractorEditRangeForm::setOption ( Option option, bool bOn )
+{
+    if (bOn)
+        m_options |=  (unsigned int) (option);
+    else
+        m_options &= ~(unsigned int) (option);
+}
+
+bool qtractorEditRangeForm::isOption ( Option option ) const
+{
+    return (m_options & (unsigned int) (option));
+}
+
+
+// Update options settings.
+void qtractorEditRangeForm::updateOptions (void)
+{
+    ++m_iUpdate;
+    m_ui.ClipsCheckBox->setChecked(m_options & Clips);
+    m_ui.AutomationCheckBox->setChecked(m_options & Automation);
+    m_ui.TempoMapCheckBox->setChecked(m_options & TempoMap);
+    m_ui.MarkersCheckBox->setChecked(m_options & Markers);
+    --m_iUpdate;
+}
+
+
+// Options changed.
+void qtractorEditRangeForm::optionsChanged (void)
+{
+    if (m_iUpdate > 0)
+        return;
+
+    setOption(Clips, m_ui.ClipsCheckBox->isChecked());
+    setOption(Automation, m_ui.AutomationCheckBox->isChecked());
+    setOption(TempoMap, m_ui.TempoMapCheckBox->isChecked());
+    setOption(Markers, m_ui.MarkersCheckBox->isChecked());
+
+    stabilizeForm();
+}
+
+
+// Range settings have changed.
 void qtractorEditRangeForm::rangeChanged (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -238,8 +311,24 @@ void qtractorEditRangeForm::stabilizeForm (void)
 	m_ui.EditRangeRadioButton->setEnabled(
 		pSession->editHead() < pSession->editTail());
 
+    qtractorTimeScale *pTimeScale = pSession->timeScale();
+    m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
+    m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != NULL);
+
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		m_ui.RangeStartSpinBox->value() < m_ui.RangeEndSpinBox->value());
+}
+
+
+// Dialog acceptance.
+void qtractorEditRangeForm::accept (void)
+{
+    // Update options check-boxes.
+    qtractorOptions *pOptions = qtractorOptions::getInstance();
+    if (pOptions)
+        pOptions->iEditRangeOptions = m_options;
+
+    QDialog::accept();
 }
 
 

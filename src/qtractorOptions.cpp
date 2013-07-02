@@ -204,6 +204,7 @@ void qtractorOptions::loadOptions (void)
 	iPluginType    = m_settings.value("/PluginType", 1).toInt();
 	bPluginActivate = m_settings.value("/PluginActivate", false).toBool();
 	iCurveMode     = m_settings.value("/CurveMode", 0).toInt();
+    iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
 	m_settings.endGroup();
 
 	// Plug-in paths.
@@ -442,7 +443,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/PluginType", iPluginType);
 	m_settings.setValue("/PluginActivate", bPluginActivate);
 	m_settings.setValue("/CurveMode", iCurveMode);
-	m_settings.endGroup();
+    m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
+    m_settings.endGroup();
 
 	// Plug-in paths.
 	m_settings.beginGroup("/Plugins");

@@ -342,6 +342,68 @@ bool qtractorTimeScaleRemoveNodeCommand::undo (void) { return addNode(); }
 
 
 //----------------------------------------------------------------------
+// class qtractorTimeScaleMoveNodeCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleMoveNodeCommand::qtractorTimeScaleMoveNodeCommand (
+	qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode,
+		unsigned long iFrame ) : qtractorTimeScaleNodeCommand(
+			QObject::tr("move tempo node"), pTimeScale, iFrame, pNode->tempo,
+				pNode->beatType, pNode->beatsPerBar, pNode->beatDivisor)
+{
+	// The new location.
+	m_iNewFrame = pTimeScale->frameFromBar(pTimeScale->barFromFrame(iFrame));
+	m_iOldFrame = frame();
+
+	// Replaced node salvage.
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	pNode = cursor.seekFrame(m_iNewFrame);
+	m_bOldNode = (pNode && pNode->frame == m_iNewFrame);
+}
+
+// Time-scale node command methods.
+bool qtractorTimeScaleMoveNodeCommand::redo (void)
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
+	unsigned long iNewFrame = m_iNewFrame;
+	unsigned long iOldFrame = m_iOldFrame;
+
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iOldFrame);
+	if (pNode && pNode->frame == iOldFrame)
+		pTimeScale->removeNode(pNode);
+
+	pTimeScale->addNode(iNewFrame,
+		tempo(), beatType(), beatsPerBar(), beatDivisor());
+
+	m_iNewFrame = iOldFrame;
+	m_iOldFrame = iNewFrame;
+
+	return true;
+}
+
+bool qtractorTimeScaleMoveNodeCommand::undo (void)
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
+	bool bResult = redo();
+
+	if (bResult && m_bOldNode) {
+		pTimeScale->addNode(m_iNewFrame,
+			tempo(), beatType(), beatsPerBar(), beatDivisor());
+	}
+
+	return bResult;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorTimeScaleMarkerCommand - implementation.
 //
 
@@ -475,20 +537,12 @@ qtractorTimeScaleMoveMarkerCommand::qtractorTimeScaleMoveMarkerCommand (
 		pMarker->frame, pMarker->text, pMarker->color)
 {
 	// The new location.
-	iFrame = pTimeScale->frameFromBar(pTimeScale->barFromFrame(iFrame));
-
-	m_iNewFrame = iFrame;
-	m_iOldFrame = pMarker->frame;
+	m_iNewFrame = pTimeScale->frameFromBar(pTimeScale->barFromFrame(iFrame));
+	m_iOldFrame = frame();
 
 	// Replaced marker salvage.
-	pMarker	= pTimeScale->markers().seekFrame(iFrame);
-	if (pMarker && pMarker->frame == iFrame) {
-		m_bOldMarker  = true;
-		m_sOldText    = pMarker->text;
-		m_rgbOldColor = pMarker->color;
-	} else {
-		m_bOldMarker  = false;
-	}
+	pMarker	= pTimeScale->markers().seekFrame(m_iNewFrame);
+	m_bOldMarker = (pMarker && pMarker->frame == m_iNewFrame);
 }
 
 // Time-scale marker command methods.
@@ -516,10 +570,14 @@ bool qtractorTimeScaleMoveMarkerCommand::redo (void)
 
 bool qtractorTimeScaleMoveMarkerCommand::undo (void)
 {
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
 	bool bResult = redo();
 
 	if (bResult && m_bOldMarker)
-		timeScale()->addMarker(m_iNewFrame, m_sOldText, m_rgbOldColor);
+		pTimeScale->addMarker(m_iNewFrame, text(), color());
 
 	return bResult;
 }
