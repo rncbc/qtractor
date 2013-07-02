@@ -472,22 +472,22 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="481"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="489"/>
         <source>add marker</source>
         <translation>マーカーの追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="500"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="508"/>
         <source>update marker</source>
         <translation>マーカーの更新</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="518"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="526"/>
         <source>remove marker</source>
         <translation>マーカーの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="536"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="544"/>
         <source>move marker</source>
         <translation>マーカーの異動</translation>
     </message>

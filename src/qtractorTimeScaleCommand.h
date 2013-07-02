@@ -169,11 +169,15 @@ public:
 private:
 
 	// The new location argument.
-	unsigned long m_iNewFrame;
+	unsigned long  m_iNewFrame;
 
 	// Replaced node salvage.
-	bool          m_bOldNode;
-	unsigned long m_iOldFrame;
+	bool           m_bOldNode;
+	unsigned long  m_iOldFrame;
+	float          m_fOldTempo;
+	unsigned short m_iOldBeatType;
+	unsigned short m_iOldBeatsPerBar;
+	unsigned short m_iOldBeatDivisor;
 };
 
 
@@ -300,8 +304,10 @@ private:
 	unsigned long m_iNewFrame;
 
 	// Replaced marker salvage.
-	unsigned long m_iOldFrame;
 	bool          m_bOldMarker;
+	unsigned long m_iOldFrame;
+	QString       m_sOldText;
+	QColor        m_rgbOldColor;
 };
 
 

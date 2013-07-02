@@ -1075,22 +1075,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="481"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="489"/>
         <source>add marker</source>
         <translation>Přidat značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="500"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="508"/>
         <source>update marker</source>
         <translation>Obnovit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="518"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="526"/>
         <source>remove marker</source>
         <translation>Odstranit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="536"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="544"/>
         <source>move marker</source>
         <translation>Přesunout značku</translation>
     </message>

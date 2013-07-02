@@ -760,22 +760,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="481"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="489"/>
         <source>add marker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="500"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="508"/>
         <source>update marker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="518"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="526"/>
         <source>remove marker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="536"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="544"/>
         <source>move marker</source>
         <translation type="unfinished"></translation>
     </message>

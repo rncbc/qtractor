@@ -474,22 +474,22 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="481"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="489"/>
         <source>add marker</source>
         <translation>ajouter un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="500"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="508"/>
         <source>update marker</source>
         <translation>mettre à jour un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="518"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="526"/>
         <source>remove marker</source>
         <translation>enlever un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="536"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="544"/>
         <source>move marker</source>
         <translation>déplacer un marqueur</translation>
     </message>
