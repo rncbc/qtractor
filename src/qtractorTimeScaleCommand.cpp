@@ -348,9 +348,10 @@ bool qtractorTimeScaleRemoveNodeCommand::undo (void) { return addNode(); }
 // Constructor.
 qtractorTimeScaleMoveNodeCommand::qtractorTimeScaleMoveNodeCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode,
-		unsigned long iFrame ) : qtractorTimeScaleNodeCommand(
-			QObject::tr("move tempo node"), pTimeScale, iFrame, pNode->tempo,
-				pNode->beatType, pNode->beatsPerBar, pNode->beatDivisor)
+	unsigned long iFrame ) : qtractorTimeScaleNodeCommand(
+		QObject::tr("move tempo node"), pTimeScale,
+			pNode->frame, pNode->tempo, pNode->beatType,
+			pNode->beatsPerBar, pNode->beatDivisor)
 {
 	// The new location.
 	m_iNewFrame = pTimeScale->frameFromBar(pTimeScale->barFromFrame(iFrame));
@@ -369,6 +370,7 @@ qtractorTimeScaleMoveNodeCommand::qtractorTimeScaleMoveNodeCommand (
 		m_bOldNode = false;
 	}
 }
+
 
 // Time-scale node command methods.
 bool qtractorTimeScaleMoveNodeCommand::redo (void)
@@ -393,6 +395,7 @@ bool qtractorTimeScaleMoveNodeCommand::redo (void)
 
 	return true;
 }
+
 
 bool qtractorTimeScaleMoveNodeCommand::undo (void)
 {
@@ -582,6 +585,7 @@ bool qtractorTimeScaleMoveMarkerCommand::redo (void)
 
 	return true;
 }
+
 
 bool qtractorTimeScaleMoveMarkerCommand::undo (void)
 {

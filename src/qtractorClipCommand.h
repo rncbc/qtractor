@@ -203,13 +203,13 @@ public:
 	void addCurveEditCommand(
 		qtractorCurveEditCommand *pCurveEditCommand);
 
-	// When tempo-map/time-sig nodes are needed.
-	void addTimeScaleNodeCommand(
-		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand);
-
 	// When location markers are needed.
 	void addTimeScaleMarkerCommand(
 		qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand);
+
+	// When tempo-map/time-sig nodes are needed.
+	void addTimeScaleNodeCommand(
+		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand);
 
 protected:
 
@@ -220,8 +220,8 @@ private:
 
 	// Instance variables.
 	QList<qtractorCurveEditCommand *>       m_curveEditCommands;
-	QList<qtractorTimeScaleNodeCommand *>   m_timeScaleNodeCommands;
 	QList<qtractorTimeScaleMarkerCommand *> m_timeScaleMarkerCommands;
+	QList<qtractorTimeScaleNodeCommand *>   m_timeScaleNodeCommands;
 };
 
 

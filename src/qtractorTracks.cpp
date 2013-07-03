@@ -1917,6 +1917,20 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 				pTrack, iInsertStart, iInsertEnd, iInsertOptions);
 			pTrack = pTrack->next();
 		}
+		// Markers...
+		if (iInsertOptions & qtractorEditRangeForm::Markers) {
+			unsigned long iInsertLength = iInsertEnd - iInsertStart;
+			qtractorTimeScale *pTimeScale = pSession->timeScale();
+			qtractorTimeScale::Marker *pMarker
+				= pTimeScale->markers().last();
+			while (pMarker && pMarker->frame > iInsertStart) {
+				pClipRangeCommand->addTimeScaleMarkerCommand(
+					new qtractorTimeScaleMoveMarkerCommand(pTimeScale,
+						pMarker, pMarker->frame + iInsertLength));
+				pMarker = pMarker->prev();
+				++iUpdate;
+			}
+		}
 		// Tempo-map...
 		if (iInsertOptions & qtractorEditRangeForm::TempoMap) {
 			unsigned long iInsertLength = iInsertEnd - iInsertStart;
@@ -1929,20 +1943,6 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 					new qtractorTimeScaleMoveNodeCommand(pTimeScale,
 						pNode, pNode->frame + iInsertLength));
 				pNode = pNode->prev();
-				++iUpdate;
-			}
-		}
-		// Markers...
-		if (iInsertOptions & qtractorEditRangeForm::Markers) {
-			unsigned long iInsertLength = iInsertEnd - iInsertStart;
-			qtractorTimeScale *pTimeScale = pSession->timeScale();
-			qtractorTimeScale::Marker *pMarker
-				= pTimeScale->markers().last();
-			while (pMarker && pMarker->frame > iInsertStart) {
-				pClipRangeCommand->addTimeScaleMarkerCommand(
-					new qtractorTimeScaleMoveMarkerCommand(pTimeScale,
-						pMarker, pMarker->frame + iInsertLength));
-				pMarker = pMarker->prev();
 				++iUpdate;
 			}
 		}
@@ -2082,6 +2082,31 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 				pTrack, iRemoveStart, iRemoveEnd, iRemoveOptions);
 			pTrack = pTrack->next();
 		}
+		// Markers...
+		if (iRemoveOptions & qtractorEditRangeForm::Markers) {
+			unsigned long iRemoveLength = iRemoveEnd - iRemoveStart;
+			qtractorTimeScale *pTimeScale = pSession->timeScale();
+			qtractorTimeScale::Marker *pMarker
+				= pTimeScale->markers().seekFrame(iRemoveStart);
+			while (pMarker) {
+				if (pMarker->frame > iRemoveStart) {
+					if (pMarker->frame < iRemoveEnd) {
+						pClipRangeCommand->addTimeScaleMarkerCommand(
+							new qtractorTimeScaleRemoveMarkerCommand(
+								pTimeScale, pMarker));
+						++iUpdate;
+					}
+					else
+					if (pMarker->frame > iRemoveEnd) {
+						pClipRangeCommand->addTimeScaleMarkerCommand(
+							new qtractorTimeScaleMoveMarkerCommand(pTimeScale,
+								pMarker, pMarker->frame - iRemoveLength));
+						++iUpdate;
+					}
+				}
+				pMarker = pMarker->next();
+			}
+		}
 		// Tempo-map...
 		if (iRemoveOptions & qtractorEditRangeForm::TempoMap) {
 			unsigned long iRemoveLength = iRemoveEnd - iRemoveStart;
@@ -2106,31 +2131,6 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 					}
 				}
 				pNode = pNode->next();
-			}
-		}
-		// Markers...
-		if (iRemoveOptions & qtractorEditRangeForm::Markers) {
-			unsigned long iRemoveLength = iRemoveEnd - iRemoveStart;
-			qtractorTimeScale *pTimeScale = pSession->timeScale();
-			qtractorTimeScale::Marker *pMarker
-				= pTimeScale->markers().seekFrame(iRemoveStart);
-			while (pMarker) {
-				if (pMarker->frame > iRemoveStart) {
-					if (pMarker->frame < iRemoveEnd) {
-						pClipRangeCommand->addTimeScaleMarkerCommand(
-							new qtractorTimeScaleRemoveMarkerCommand(
-								pTimeScale, pMarker));
-						++iUpdate;
-					}
-					else
-					if (pMarker->frame > iRemoveEnd) {
-						pClipRangeCommand->addTimeScaleMarkerCommand(
-							new qtractorTimeScaleMoveMarkerCommand(pTimeScale,
-								pMarker, pMarker->frame - iRemoveLength));
-						++iUpdate;
-					}
-				}
-				pMarker = pMarker->next();
 			}
 		}
 	}

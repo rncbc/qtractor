@@ -106,7 +106,7 @@ public:
 		qtractorTimeScale *pTimeScale, unsigned long iFrame,
 		float fTempo = 120.0f, unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2);
-	
+
 	// Time-scale command methods.
 	bool redo();
 	bool undo();
@@ -143,7 +143,7 @@ public:
 	// Constructor.
 	qtractorTimeScaleRemoveNodeCommand(qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Node *pNode);
-	
+
 	// Time-scale command methods.
 	bool redo();
 	bool undo();
@@ -314,4 +314,3 @@ private:
 #endif	// __qtractorTimeScaleCommand_h
 
 // end of qtractorTimeScaleCommand.h
-

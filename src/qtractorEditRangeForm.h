@@ -55,8 +55,8 @@ public:
         None       = 0,
         Clips      = 1,
         Automation = 2,
-        TempoMap   = 4,
-        Markers    = 8
+        Markers    = 4,
+        TempoMap   = 8
     };
 
     // Retrieve range option flags.

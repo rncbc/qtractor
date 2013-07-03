@@ -132,10 +132,10 @@ qtractorEditRangeForm::qtractorEditRangeForm (
     QObject::connect(m_ui.AutomationCheckBox,
         SIGNAL(toggled(bool)),
         SLOT(optionsChanged()));
-    QObject::connect(m_ui.TempoMapCheckBox,
+    QObject::connect(m_ui.MarkersCheckBox,
         SIGNAL(toggled(bool)),
         SLOT(optionsChanged()));
-    QObject::connect(m_ui.MarkersCheckBox,
+    QObject::connect(m_ui.TempoMapCheckBox,
         SIGNAL(toggled(bool)),
         SLOT(optionsChanged()));
     QObject::connect(m_ui.DialogButtonBox,
@@ -215,8 +215,8 @@ void qtractorEditRangeForm::updateOptions (void)
     ++m_iUpdate;
     m_ui.ClipsCheckBox->setChecked(m_options & Clips);
     m_ui.AutomationCheckBox->setChecked(m_options & Automation);
-    m_ui.TempoMapCheckBox->setChecked(m_options & TempoMap);
     m_ui.MarkersCheckBox->setChecked(m_options & Markers);
+    m_ui.TempoMapCheckBox->setChecked(m_options & TempoMap);
     --m_iUpdate;
 }
 
@@ -229,8 +229,8 @@ void qtractorEditRangeForm::optionsChanged (void)
 
     setOption(Clips, m_ui.ClipsCheckBox->isChecked());
     setOption(Automation, m_ui.AutomationCheckBox->isChecked());
-    setOption(TempoMap, m_ui.TempoMapCheckBox->isChecked());
     setOption(Markers, m_ui.MarkersCheckBox->isChecked());
+    setOption(TempoMap, m_ui.TempoMapCheckBox->isChecked());
 
     stabilizeForm();
 }
@@ -312,8 +312,8 @@ void qtractorEditRangeForm::stabilizeForm (void)
 		pSession->editHead() < pSession->editTail());
 
     qtractorTimeScale *pTimeScale = pSession->timeScale();
-    m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
     m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != NULL);
+    m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		m_ui.RangeStartSpinBox->value() < m_ui.RangeEndSpinBox->value());

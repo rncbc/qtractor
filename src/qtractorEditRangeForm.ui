@@ -270,12 +270,12 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="TempoMapCheckBox">
+       <widget class="QCheckBox" name="MarkersCheckBox">
         <property name="toolTip">
-         <string>Apply to Tempo Map nodes in range</string>
+         <string>Apply to location Markers in range</string>
         </property>
         <property name="text">
-         <string>Temp&amp;o Map</string>
+         <string>&amp;Markers</string>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -283,12 +283,12 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="MarkersCheckBox">
+       <widget class="QCheckBox" name="TempoMapCheckBox">
         <property name="toolTip">
-         <string>Apply to location Markers in range</string>
+         <string>Apply to Tempo Map nodes in range</string>
         </property>
         <property name="text">
-         <string>&amp;Markers</string>
+         <string>Temp&amp;o Map</string>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -328,8 +328,8 @@
   <tabstop>RangeEndSpinBox</tabstop>
   <tabstop>ClipsCheckBox</tabstop>
   <tabstop>AutomationCheckBox</tabstop>
-  <tabstop>TempoMapCheckBox</tabstop>
   <tabstop>MarkersCheckBox</tabstop>
+  <tabstop>TempoMapCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
   <tabstop>FramesRadioButton</tabstop>
   <tabstop>TimeRadioButton</tabstop>

@@ -1075,22 +1075,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="489"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="492"/>
         <source>add marker</source>
         <translation>Přidat značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="508"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="511"/>
         <source>update marker</source>
         <translation>Obnovit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="526"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="529"/>
         <source>remove marker</source>
         <translation>Odstranit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="544"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="547"/>
         <source>move marker</source>
         <translation>Přesunout značku</translation>
     </message>
@@ -1198,12 +1198,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="730"/>
+        <location filename="../qtractorClipCommand.cpp" line="731"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="732"/>
+        <location filename="../qtractorClipCommand.cpp" line="733"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
@@ -2242,7 +2242,7 @@ Chcete použít tyto změny?</translation>
         <translation type="unfinished">A&amp;utomatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="278"/>
+        <location filename="../qtractorEditRangeForm.ui" line="291"/>
         <source>Temp&amp;o Map</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2256,17 +2256,17 @@ Chcete použít tyto změny?</translation>
         <translation type="obsolete">&amp;Automatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="275"/>
+        <location filename="../qtractorEditRangeForm.ui" line="288"/>
         <source>Apply to Tempo Map nodes in range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="288"/>
+        <location filename="../qtractorEditRangeForm.ui" line="275"/>
         <source>Apply to location Markers in range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="291"/>
+        <location filename="../qtractorEditRangeForm.ui" line="278"/>
         <source>&amp;Markers</source>
         <translation type="unfinished"></translation>
     </message>

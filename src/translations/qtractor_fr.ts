@@ -110,12 +110,12 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>Fichier:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="730"/>
+        <location filename="../qtractorClipCommand.cpp" line="731"/>
         <source>take %1</source>
         <translation>prise %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="732"/>
+        <location filename="../qtractorClipCommand.cpp" line="733"/>
         <source>reset takes</source>
         <translation>réinitialiser les prises</translation>
     </message>
@@ -474,22 +474,22 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="489"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="492"/>
         <source>add marker</source>
         <translation>ajouter un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="508"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="511"/>
         <source>update marker</source>
         <translation>mettre à jour un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="526"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="529"/>
         <source>remove marker</source>
         <translation>enlever un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="544"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="547"/>
         <source>move marker</source>
         <translation>déplacer un marqueur</translation>
     </message>
@@ -1582,7 +1582,7 @@ Voulez vous appliquer les changements?</translation>
         <translation type="unfinished">A&amp;utomation</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="278"/>
+        <location filename="../qtractorEditRangeForm.ui" line="291"/>
         <source>Temp&amp;o Map</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1596,17 +1596,17 @@ Voulez vous appliquer les changements?</translation>
         <translation type="obsolete">&amp;Automation</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="275"/>
+        <location filename="../qtractorEditRangeForm.ui" line="288"/>
         <source>Apply to Tempo Map nodes in range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="288"/>
+        <location filename="../qtractorEditRangeForm.ui" line="275"/>
         <source>Apply to location Markers in range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="291"/>
+        <location filename="../qtractorEditRangeForm.ui" line="278"/>
         <source>&amp;Markers</source>
         <translation type="unfinished"></translation>
     </message>
