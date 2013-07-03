@@ -34,6 +34,7 @@
 
 #include "qtractorMidiEditCommand.h"
 #include "qtractorTimeScaleCommand.h"
+#include "qtractorSessionCommand.h"
 #include "qtractorCurveCommand.h"
 
 
@@ -764,6 +765,9 @@ qtractorClipRangeCommand::qtractorClipRangeCommand ( const QString& sName )
 // Destructor.
 qtractorClipRangeCommand::~qtractorClipRangeCommand (void)
 {
+	qDeleteAll(m_sessionCommands);
+	m_sessionCommands.clear();
+
 	qDeleteAll(m_curveEditCommands);
 	m_curveEditCommands.clear();
 
@@ -772,6 +776,14 @@ qtractorClipRangeCommand::~qtractorClipRangeCommand (void)
 
 	qDeleteAll(m_timeScaleNodeCommands);
 	m_timeScaleNodeCommands.clear();
+}
+
+
+// When Loop/Punch changes are needed.
+void qtractorClipRangeCommand::addSessionCommand (
+	qtractorSessionCommand *pSessionCommand )
+{
+	m_sessionCommands.append(pSessionCommand);
 }
 
 
@@ -805,6 +817,18 @@ bool qtractorClipRangeCommand::execute ( bool bRedo )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
+
+	// Loop/Punch...
+	if (!m_sessionCommands.isEmpty()) {
+		QListIterator<qtractorSessionCommand *> iter(m_sessionCommands);
+		while (iter.hasNext()) {
+			qtractorSessionCommand *pSessionCommand	= iter.next();
+			if (bRedo)
+				pSessionCommand->redo();
+			else
+				pSessionCommand->undo();
+		}
+	}
 
 	// Automation...
 	if (!m_curveEditCommands.isEmpty()) {

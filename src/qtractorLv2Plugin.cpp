@@ -1387,6 +1387,11 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__sequenceSize);
 #endif
 #endif
+
+	// Set dyn-manifest support option...
+	LilvNode *dyn_manifest = lilv_new_bool(g_lv2_world, true);
+	lilv_world_set_option(g_lv2_world, LILV_OPTION_DYN_MANIFEST, dyn_manifest);
+	lilv_node_free(dyn_manifest);
 }
 
 

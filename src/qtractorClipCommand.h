@@ -30,6 +30,7 @@
 
 // Forward declarations.
 class qtractorTrackCommand;
+class qtractorSessionCommand;
 class qtractorCurveEditCommand;
 class qtractorTimeScaleNodeCommand;
 class qtractorTimeScaleMarkerCommand;
@@ -199,6 +200,10 @@ public:
 	// Destructor.
 	~qtractorClipRangeCommand();
 
+	// When Loop/Punch changes are needed.
+	void addSessionCommand(
+		qtractorSessionCommand *pSessionCommand);
+
 	// When automation curves are needed.
 	void addCurveEditCommand(
 		qtractorCurveEditCommand *pCurveEditCommand);
@@ -219,6 +224,7 @@ protected:
 private:
 
 	// Instance variables.
+	QList<qtractorSessionCommand *>         m_sessionCommands;
 	QList<qtractorCurveEditCommand *>       m_curveEditCommands;
 	QList<qtractorTimeScaleMarkerCommand *> m_timeScaleMarkerCommands;
 	QList<qtractorTimeScaleNodeCommand *>   m_timeScaleNodeCommands;

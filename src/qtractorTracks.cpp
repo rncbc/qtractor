@@ -1870,11 +1870,14 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 	if (pSession == NULL)
 		return false;
 
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
 	unsigned long iInsertStart = pSession->editHead();
 	unsigned long iInsertEnd   = pSession->editTail();
 
 	if (iInsertStart >= iInsertEnd) {
-		qtractorTimeScale *pTimeScale = pSession->timeScale();
 		unsigned short iBar = pTimeScale->barFromFrame(iInsertStart);
 		iInsertEnd = pTimeScale->frameFromBar(iBar + 1);
 	}
@@ -1899,6 +1902,8 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 	if (iInsertStart >= iInsertEnd)
 		return false;
 
+	unsigned long iInsertLength = iInsertEnd - iInsertStart;
+
 	int iUpdate = 0;
 
 	qtractorClipRangeCommand *pClipRangeCommand
@@ -1917,10 +1922,52 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 				pTrack, iInsertStart, iInsertEnd, iInsertOptions);
 			pTrack = pTrack->next();
 		}
+		// Loop...
+		if (iInsertOptions & qtractorEditRangeForm::Loop) {
+			unsigned long iLoopStart = pSession->loopStart();
+			unsigned long iLoopEnd = pSession->loopEnd();
+			if (iLoopStart < iLoopEnd) {
+				int iLoopUpdate = 0;
+				if (iLoopStart  > iInsertStart) {
+					iLoopStart += iInsertLength;
+					++iLoopUpdate;
+				}
+				if (iLoopEnd  > iInsertStart) {
+					iLoopEnd += iInsertLength;
+					++iLoopUpdate;
+				}
+				if (iLoopUpdate > 0) {
+					pClipRangeCommand->addSessionCommand(
+						new qtractorSessionLoopCommand(pSession,
+							iLoopStart, iLoopEnd));
+					++iUpdate;
+				}
+			}
+		}
+		// Punch In/Out...
+		if (iInsertOptions & qtractorEditRangeForm::Punch) {
+			unsigned long iPunchIn = pSession->punchOut();
+			unsigned long iPunchOut = pSession->punchIn();
+			if (iPunchIn < iPunchOut) {
+				int iPunchUpdate = 0;
+				if (iPunchIn  > iInsertStart) {
+					iPunchIn += iInsertLength;
+					++iPunchUpdate;
+				}
+				if (iPunchOut  > iInsertStart) {
+					iPunchOut += iInsertLength;
+					++iPunchUpdate;
+				}
+				if (iPunchUpdate > 0) {
+					pClipRangeCommand->addSessionCommand(
+						new qtractorSessionPunchCommand(pSession,
+							iPunchIn, iPunchOut));
+					++iUpdate;
+				}
+			}
+		}
 		// Markers...
 		if (iInsertOptions & qtractorEditRangeForm::Markers) {
-			unsigned long iInsertLength = iInsertEnd - iInsertStart;
-			qtractorTimeScale *pTimeScale = pSession->timeScale();
 			qtractorTimeScale::Marker *pMarker
 				= pTimeScale->markers().last();
 			while (pMarker && pMarker->frame > iInsertStart) {
@@ -1933,8 +1980,6 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 		}
 		// Tempo-map...
 		if (iInsertOptions & qtractorEditRangeForm::TempoMap) {
-			unsigned long iInsertLength = iInsertEnd - iInsertStart;
-			qtractorTimeScale *pTimeScale = pSession->timeScale();
 			qtractorTimeScale::Cursor cursor(pTimeScale);
 			qtractorTimeScale::Node *pNode
 				= cursor.seekFrame(pSession->sessionEnd());
@@ -2041,8 +2086,17 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 	if (pSession == NULL)
 		return false;
 
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return false;
+
 	unsigned long iRemoveStart = pSession->editHead();
 	unsigned long iRemoveEnd   = pSession->editTail();
+
+	if (iRemoveStart >= iRemoveEnd) {
+		unsigned short iBar = pTimeScale->barFromFrame(iRemoveStart);
+		iRemoveEnd = pTimeScale->frameFromBar(iBar + 1);
+	}
 
 	unsigned int iRemoveOptions = qtractorEditRangeForm::None;
 	iRemoveOptions |= qtractorEditRangeForm::Clips;
@@ -2064,6 +2118,8 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 	if (iRemoveStart >= iRemoveEnd)
 		return false;
 
+	unsigned long iRemoveLength = iRemoveEnd - iRemoveStart;
+
 	int iUpdate = 0;
 
 	qtractorClipRangeCommand *pClipRangeCommand
@@ -2082,10 +2138,64 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 				pTrack, iRemoveStart, iRemoveEnd, iRemoveOptions);
 			pTrack = pTrack->next();
 		}
+		// Loop...
+		if (iRemoveOptions & qtractorEditRangeForm::Loop) {
+			unsigned long iLoopStart = pSession->loopStart();
+			unsigned long iLoopEnd = pSession->loopEnd();
+			if (iLoopStart < iLoopEnd) {
+				int iLoopUpdate = 0;
+				if (iLoopStart > iRemoveStart) {
+					if (iLoopStart  > iRemoveEnd)
+						iLoopStart  = iRemoveStart;
+					else
+						iLoopStart -= iRemoveLength;
+					++iLoopUpdate;
+				}
+				if (iLoopEnd > iRemoveStart) {
+					if (iLoopEnd  > iRemoveEnd)
+						iLoopEnd -= iRemoveLength;
+					else
+						iLoopEnd  = iRemoveEnd;
+					++iLoopUpdate;
+				}
+				if (iLoopUpdate > 0) {
+					pClipRangeCommand->addSessionCommand(
+						new qtractorSessionLoopCommand(pSession,
+							iLoopStart, iLoopEnd));
+					++iUpdate;
+				}
+			}
+		}
+		// Punch In/Out...
+		if (iRemoveOptions & qtractorEditRangeForm::Punch) {
+			unsigned long iPunchIn = pSession->punchOut();
+			unsigned long iPunchOut = pSession->punchIn();
+			if (iPunchIn < iPunchOut) {
+				int iPunchUpdate = 0;
+				if (iPunchIn > iRemoveStart) {
+					if (iPunchIn  > iRemoveEnd)
+						iPunchIn  = iRemoveStart;
+					else
+						iPunchIn -= iRemoveLength;
+					++iPunchUpdate;
+				}
+				if (iPunchOut > iRemoveStart) {
+					if (iPunchOut  > iRemoveEnd)
+						iPunchOut -= iRemoveLength;
+					else
+						iPunchOut  = iRemoveEnd;
+					++iPunchUpdate;
+				}
+				if (iPunchUpdate > 0) {
+					pClipRangeCommand->addSessionCommand(
+						new qtractorSessionPunchCommand(pSession,
+							iPunchIn, iPunchOut));
+					++iUpdate;
+				}
+			}
+		}
 		// Markers...
 		if (iRemoveOptions & qtractorEditRangeForm::Markers) {
-			unsigned long iRemoveLength = iRemoveEnd - iRemoveStart;
-			qtractorTimeScale *pTimeScale = pSession->timeScale();
 			qtractorTimeScale::Marker *pMarker
 				= pTimeScale->markers().seekFrame(iRemoveStart);
 			while (pMarker) {
@@ -2109,8 +2219,6 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 		}
 		// Tempo-map...
 		if (iRemoveOptions & qtractorEditRangeForm::TempoMap) {
-			unsigned long iRemoveLength = iRemoveEnd - iRemoveStart;
-			qtractorTimeScale *pTimeScale = pSession->timeScale();
 			qtractorTimeScale::Cursor cursor(pTimeScale);
 			qtractorTimeScale::Node *pNode
 				= cursor.seekFrame(iRemoveStart);

@@ -60,18 +60,8 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 		m_ui.RangeStartSpinBox->setTimeScale(m_pTimeScale);
 		m_ui.RangeEndSpinBox->setTimeScale(m_pTimeScale);
 		// Set proper time scales display format...
-		switch (m_pTimeScale->displayFormat()) {
-		case qtractorTimeScale::BBT:
-			m_ui.BbtRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Time:
-			m_ui.TimeRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Frames:
-		default:
-			m_ui.FramesRadioButton->setChecked(true);
-			break;
-		}
+		m_ui.FormatComboBox->setCurrentIndex(
+			int(m_pTimeScale->displayFormat()));
 		// Default selection is whole session...
 		m_iSelectStart = pSession->sessionStart();
 		m_iSelectEnd   = pSession->sessionEnd();
@@ -114,11 +104,8 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 	QObject::connect(m_ui.CustomRangeRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(rangeChanged()));
-	QObject::connect(m_ui.TimeRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
-	QObject::connect(m_ui.BbtRadioButton,
-		SIGNAL(toggled(bool)),
+	QObject::connect(m_ui.FormatComboBox,
+		SIGNAL(activated(int)),
 		SLOT(formatChanged()));
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
@@ -129,9 +116,15 @@ qtractorEditRangeForm::qtractorEditRangeForm (
     QObject::connect(m_ui.ClipsCheckBox,
         SIGNAL(toggled(bool)),
         SLOT(optionsChanged()));
-    QObject::connect(m_ui.AutomationCheckBox,
-        SIGNAL(toggled(bool)),
-        SLOT(optionsChanged()));
+	QObject::connect(m_ui.AutomationCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(optionsChanged()));
+	QObject::connect(m_ui.LoopCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(optionsChanged()));
+	QObject::connect(m_ui.PunchCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(optionsChanged()));
     QObject::connect(m_ui.MarkersCheckBox,
         SIGNAL(toggled(bool)),
         SLOT(optionsChanged()));
@@ -212,9 +205,11 @@ bool qtractorEditRangeForm::isOption ( Option option ) const
 // Update options settings.
 void qtractorEditRangeForm::updateOptions (void)
 {
-    ++m_iUpdate;
+	++m_iUpdate;
     m_ui.ClipsCheckBox->setChecked(m_options & Clips);
-    m_ui.AutomationCheckBox->setChecked(m_options & Automation);
+	m_ui.AutomationCheckBox->setChecked(m_options & Automation);
+	m_ui.LoopCheckBox->setChecked((m_options & Loop));
+	m_ui.PunchCheckBox->setChecked(m_options & Punch);
     m_ui.MarkersCheckBox->setChecked(m_options & Markers);
     m_ui.TempoMapCheckBox->setChecked(m_options & TempoMap);
     --m_iUpdate;
@@ -227,10 +222,12 @@ void qtractorEditRangeForm::optionsChanged (void)
     if (m_iUpdate > 0)
         return;
 
-    setOption(Clips, m_ui.ClipsCheckBox->isChecked());
-    setOption(Automation, m_ui.AutomationCheckBox->isChecked());
-    setOption(Markers, m_ui.MarkersCheckBox->isChecked());
-    setOption(TempoMap, m_ui.TempoMapCheckBox->isChecked());
+	setOption(Clips, m_ui.ClipsCheckBox->isChecked());
+	setOption(Automation, m_ui.AutomationCheckBox->isChecked());
+	setOption(Loop, m_ui.LoopCheckBox->isChecked());
+	setOption(Punch, m_ui.PunchCheckBox->isChecked());
+	setOption(Markers, m_ui.MarkersCheckBox->isChecked());
+	setOption(TempoMap, m_ui.TempoMapCheckBox->isChecked());
 
     stabilizeForm();
 }
@@ -279,13 +276,9 @@ void qtractorEditRangeForm::valueChanged (void)
 // Display format has changed.
 void qtractorEditRangeForm::formatChanged (void)
 {
-	qtractorTimeScale::DisplayFormat displayFormat = qtractorTimeScale::Frames;
-
-	if (m_ui.TimeRadioButton->isChecked())
-		displayFormat = qtractorTimeScale::Time;
-	else
-	if (m_ui.BbtRadioButton->isChecked())
-		displayFormat= qtractorTimeScale::BBT;
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(
+			m_ui.FormatComboBox->currentIndex());
 
 	if (m_pTimeScale) {
 		// Set from local time-scale instance...
@@ -305,14 +298,19 @@ void qtractorEditRangeForm::stabilizeForm (void)
 	if (pSession == NULL)
 		return;
 
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
 	m_ui.SelectionRangeRadioButton->setEnabled(m_iSelectStart < m_iSelectEnd);
 	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
 	m_ui.PunchRangeRadioButton->setEnabled(pSession->isPunching());
 	m_ui.EditRangeRadioButton->setEnabled(
 		pSession->editHead() < pSession->editTail());
 
-    qtractorTimeScale *pTimeScale = pSession->timeScale();
-    m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != NULL);
+	m_ui.LoopCheckBox->setEnabled(pSession->isLooping());
+	m_ui.PunchCheckBox->setEnabled(pSession->isPunching());
+	m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != NULL);
     m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(

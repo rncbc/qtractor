@@ -5,9 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Unconditional LV2 Dyn(amic)-manifest support has been added.
+  (EXPERIMENTAL)
+
 - Main track-view Edit/Insert,Remove/Range dialog is now being
-  introduced with optional applicability to Clips, Automation,
-  Tempo Map and/or Markers. (EXPERIMENTAL)
+  introduced with optional applicability to Clips, Loop, Punch
+  in/out, Automation, Tempo-map and/or Markers. (EXPERIMENTAL)
 
 - New range removal editing tool, split/moving clips backward
   at the specified edit-head/tail interval (Edit/Remove/Range,

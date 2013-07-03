@@ -52,11 +52,13 @@ public:
 
     // Range option flags.
     enum Option {
-        None       = 0,
-        Clips      = 1,
-        Automation = 2,
-        Markers    = 4,
-        TempoMap   = 8
+		None       = 0,
+		Clips      = 1,
+		Automation = 2,
+		Loop       = 4,
+		Punch      = 8,
+		Markers    = 16,
+		TempoMap   = 32
     };
 
     // Retrieve range option flags.
