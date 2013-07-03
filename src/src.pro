@@ -112,6 +112,7 @@ HEADERS += config.h \
 	qtractorBusForm.h \
 	qtractorClipForm.h \
 	qtractorConnectForm.h \
+	qtractorEditRangeForm.h \
 	qtractorExportForm.h \
 	qtractorInstrumentForm.h \
 	qtractorMainForm.h \
@@ -225,6 +226,7 @@ SOURCES += \
 	qtractorBusForm.cpp \
 	qtractorClipForm.cpp \
 	qtractorConnectForm.cpp \
+	qtractorEditRangeForm.cpp \
 	qtractorExportForm.cpp \
 	qtractorInstrumentForm.cpp \
 	qtractorMainForm.cpp \
@@ -248,6 +250,7 @@ FORMS += \
 	qtractorBusForm.ui \
 	qtractorClipForm.ui \
 	qtractorConnectForm.ui \
+	qtractorEditRangeForm.ui \
 	qtractorExportForm.ui \
 	qtractorInstrumentForm.ui \
 	qtractorMainForm.ui \
@@ -311,7 +314,7 @@ unix {
 	icon.path = $${DATADIR}/icons/hicolor/32x32/apps
 	icon.files += images/$${NAME}.png
 
-	icon_scalable.path = $$DATADIR/icons/hicolor/scalable/apps
+	icon_scalable.path = $${DATADIR}/icons/hicolor/scalable/apps
 	icon_scalable.files += images/$${NAME}.svgz
 
 	mimeinfo.path = $${DATADIR}/mime/packages
@@ -323,7 +326,7 @@ unix {
 		mimetypes/application-x-$${NAME}-template.png \
 		mimetypes/application-x-$${NAME}-archive.png
 
-	mimetypes_scalable.path = $$DATADIR/icons/hicolor/scalable/mimetypes
+	mimetypes_scalable.path = $${DATADIR}/icons/hicolor/scalable/mimetypes
 	mimetypes_scalable.files += \
 		mimetypes/application-x-$${NAME}-session.svgz \
 		mimetypes/application-x-$${NAME}-template.svgz \

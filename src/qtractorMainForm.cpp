@@ -5701,9 +5701,8 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bInsertable = m_pSession->editHead() < iSessionEnd;
 	m_ui.editInsertTrackRangeAction->setEnabled(bEnabled && bInsertable);
 	m_ui.editInsertRangeAction->setEnabled(bInsertable);
-
-	m_ui.editRemoveTrackRangeAction->setEnabled(bEnabled && bSelectable);
-	m_ui.editRemoveRangeAction->setEnabled(bSelectable);
+    m_ui.editRemoveTrackRangeAction->setEnabled(bEnabled && bInsertable);
+    m_ui.editRemoveRangeAction->setEnabled(bInsertable);
 
 	m_ui.editSplitAction->setEnabled(bSelected);
 

@@ -20,39 +20,34 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <class>qtractorTakeRangeForm</class>
- <widget class="QDialog" name="qtractorTakeRangeForm">
+ <class>qtractorEditRangeForm</class>
+ <widget class="QDialog" name="qtractorEditRangeForm">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>240</height>
+    <width>343</width>
+    <height>295</height>
    </rect>
   </property>
   <property name="focusPolicy">
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Take - Qtractor</string>
+   <string>Range - Qtractor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractor.png</iconset>
+   <iconset resource="qtractor.qrc">
+    <normaloff>:/images/qtractor.png</normaloff>:/images/qtractor.png</iconset>
   </property>
   <layout class="QGridLayout">
-   <property name="margin">
-    <number>8</number>
-   </property>
-   <property name="spacing">
-    <number>4</number>
-   </property>
    <item row="0" column="0" rowspan="2">
     <widget class="QGroupBox" name="RangeGroupBox">
      <property name="title">
       <string>Range</string>
      </property>
      <layout class="QGridLayout">
-      <item row="0" column="0" colspan="2">
+      <item row="0" column="0" colspan="3">
        <widget class="QRadioButton" name="SelectionRangeRadioButton">
         <property name="toolTip">
          <string>Selection range</string>
@@ -117,34 +112,18 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0" rowspan="2">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="5" column="1">
-       <widget class="QLabel" name="TakeStartTextLLabel">
+       <widget class="QLabel" name="RangeStartTextLabel">
         <property name="text">
          <string>St&amp;art:</string>
         </property>
         <property name="buddy">
-         <cstring>TakeStartSpinBox</cstring>
+         <cstring>RangeStartSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="5" column="2">
-       <widget class="qtractorTimeSpinBox" name="TakeStartSpinBox">
+      <item row="5" column="2" rowspan="2">
+       <widget class="qtractorTimeSpinBox" name="RangeStartSpinBox">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -156,18 +135,34 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="QLabel" name="TakeEndTextLLabel">
+      <item row="6" column="0" rowspan="2">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>14</width>
+          <height>14</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLabel" name="RangeEndTextLabel">
         <property name="text">
          <string>En&amp;d:</string>
         </property>
         <property name="buddy">
-         <cstring>TakeEndSpinBox</cstring>
+         <cstring>RangeEndSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
-       <widget class="qtractorTimeSpinBox" name="TakeEndSpinBox">
+      <item row="7" column="2">
+       <widget class="qtractorTimeSpinBox" name="RangeEndSpinBox">
         <property name="minimumSize">
          <size>
           <width>120</width>
@@ -179,19 +174,91 @@
         </property>
        </widget>
       </item>
+      <item row="8" column="0" colspan="3">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>8</width>
+          <height>8</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QGroupBox" name="SelectGroupBox">
+    <widget class="QGroupBox" name="OptionsGroupBox">
      <property name="title">
-      <string>Select</string>
+      <string>Options</string>
      </property>
      <layout class="QVBoxLayout">
       <item>
-       <widget class="QComboBox" name="CurrentTakeComboBox">
+       <widget class="QCheckBox" name="ClipsCheckBox">
         <property name="toolTip">
-         <string>Current take</string>
+         <string>Apply to clips in range</string>
+        </property>
+        <property name="text">
+         <string>Cl&amp;ips</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="AutomationCheckBox">
+        <property name="toolTip">
+         <string>Apply to Automation nodes in range</string>
+        </property>
+        <property name="text">
+         <string>A&amp;utomation</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="LoopCheckBox">
+        <property name="toolTip">
+         <string>Apply to Loop points in range</string>
+        </property>
+        <property name="text">
+         <string>L&amp;oop</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="PunchCheckBox">
+        <property name="toolTip">
+         <string>Apply to Punch In/Out points in range</string>
+        </property>
+        <property name="text">
+         <string>Pu&amp;nch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="MarkersCheckBox">
+        <property name="toolTip">
+         <string>Apply to location Markers in range</string>
+        </property>
+        <property name="text">
+         <string>Mar&amp;kers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="TempoMapCheckBox">
+        <property name="toolTip">
+         <string>Apply to Tempo Map nodes in range</string>
+        </property>
+        <property name="text">
+         <string>Te&amp;mpo Map</string>
         </property>
        </widget>
       </item>
@@ -201,54 +268,27 @@
    <item row="1" column="1">
     <widget class="QGroupBox" name="FormatGroupBox">
      <property name="title">
-      <string>Format</string>
+      <string>&amp;Format</string>
      </property>
      <layout class="QVBoxLayout">
       <item>
-       <widget class="QRadioButton" name="FramesRadioButton">
-        <property name="toolTip">
-         <string>Frames</string>
-        </property>
-        <property name="text">
-         <string>&amp;Frames</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
+       <widget class="QComboBox" name="FormatComboBox">
+        <item>
+         <property name="text">
+          <string>Frames</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Time</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>BBT</string>
+         </property>
+        </item>
        </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="TimeRadioButton">
-        <property name="toolTip">
-         <string>Time (hh:mm:ss.zzz)</string>
-        </property>
-        <property name="text">
-         <string>&amp;Time</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="BbtRadioButton">
-        <property name="toolTip">
-         <string>BBT (bars.beats.ticks)</string>
-        </property>
-        <property name="text">
-         <string>&amp;BBT</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -279,12 +319,15 @@
   <tabstop>PunchRangeRadioButton</tabstop>
   <tabstop>EditRangeRadioButton</tabstop>
   <tabstop>CustomRangeRadioButton</tabstop>
-  <tabstop>TakeStartSpinBox</tabstop>
-  <tabstop>TakeEndSpinBox</tabstop>
-  <tabstop>CurrentTakeComboBox</tabstop>
-  <tabstop>FramesRadioButton</tabstop>
-  <tabstop>TimeRadioButton</tabstop>
-  <tabstop>BbtRadioButton</tabstop>
+  <tabstop>RangeStartSpinBox</tabstop>
+  <tabstop>RangeEndSpinBox</tabstop>
+  <tabstop>ClipsCheckBox</tabstop>
+  <tabstop>AutomationCheckBox</tabstop>
+  <tabstop>LoopCheckBox</tabstop>
+  <tabstop>PunchCheckBox</tabstop>
+  <tabstop>MarkersCheckBox</tabstop>
+  <tabstop>TempoMapCheckBox</tabstop>
+  <tabstop>FormatComboBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

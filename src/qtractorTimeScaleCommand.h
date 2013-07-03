@@ -53,6 +53,18 @@ public:
 	qtractorTimeScale *timeScale() const
 		{ return m_pTimeScale; }
 
+	// Node properties accessors.
+	unsigned long frame() const
+		{ return m_iFrame; }
+	float tempo() const
+		{ return m_fTempo; }
+	unsigned short beatType() const
+		{ return m_iBeatType; }
+	unsigned short beatsPerBar() const
+		{ return m_iBeatsPerBar; }
+	unsigned short beatDivisor() const
+		{ return m_iBeatDivisor; }
+
 protected:
 
 	// Executive commands.
@@ -94,7 +106,7 @@ public:
 		qtractorTimeScale *pTimeScale, unsigned long iFrame,
 		float fTempo = 120.0f, unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2);
-	
+
 	// Time-scale command methods.
 	bool redo();
 	bool undo();
@@ -131,10 +143,41 @@ public:
 	// Constructor.
 	qtractorTimeScaleRemoveNodeCommand(qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Node *pNode);
-	
+
 	// Time-scale command methods.
 	bool redo();
 	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleMoveNodeCommand - declaration.
+//
+
+class qtractorTimeScaleMoveNodeCommand : public qtractorTimeScaleNodeCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleMoveNodeCommand(qtractorTimeScale *pTimeScale,
+		qtractorTimeScale::Node *pNode, unsigned long iFrame);
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// The new location argument.
+	unsigned long  m_iNewFrame;
+
+	// Replaced node salvage.
+	bool           m_bOldNode;
+	unsigned long  m_iOldFrame;
+	float          m_fOldTempo;
+	unsigned short m_iOldBeatType;
+	unsigned short m_iOldBeatsPerBar;
+	unsigned short m_iOldBeatDivisor;
 };
 
 
@@ -156,7 +199,7 @@ public:
 	qtractorTimeScale *timeScale() const
 		{ return m_pTimeScale; }
 
-	// Marker properties accessor.
+	// Marker properties accessors.
 	unsigned long frame() const
 		{ return m_iFrame; }
 	const QString& text() const
@@ -271,4 +314,3 @@ private:
 #endif	// __qtractorTimeScaleCommand_h
 
 // end of qtractorTimeScaleCommand.h
-

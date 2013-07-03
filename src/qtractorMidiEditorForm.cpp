@@ -1663,8 +1663,10 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
-	m_ui.editInsertRangeAction->setEnabled(m_pMidiEditor->isInsertable());
-	m_ui.editRemoveRangeAction->setEnabled(bSelectable);
+
+    bool bInsertable = m_pMidiEditor->isInsertable();
+    m_ui.editInsertRangeAction->setEnabled(bInsertable);
+    m_ui.editRemoveRangeAction->setEnabled(bInsertable);
 
 #if 0
 	m_ui.toolsMenu->setEnabled(bSelected);

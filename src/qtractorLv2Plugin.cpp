@@ -1298,8 +1298,14 @@ void qtractorLv2PluginType::lv2_open (void)
 	qDebug("qtractorLv2PluginType::lv2_open()");
 #endif
 
-	// Find all installed plugins.
 	g_lv2_world = lilv_world_new();
+
+	// Set dyn-manifest support option...
+	LilvNode *dyn_manifest = lilv_new_bool(g_lv2_world, true);
+	lilv_world_set_option(g_lv2_world, LILV_OPTION_DYN_MANIFEST, dyn_manifest);
+	lilv_node_free(dyn_manifest);
+
+	// Find all installed plugins.
 	lilv_world_load_all(g_lv2_world);
 
 	g_lv2_plugins = const_cast<LilvPlugins *> (

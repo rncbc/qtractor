@@ -28,10 +28,13 @@
 #include "qtractorSession.h"
 #include "qtractorAudioClip.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
 #include "qtractorFiles.h"
 
 #include "qtractorMidiEditCommand.h"
+#include "qtractorTimeScaleCommand.h"
+#include "qtractorSessionCommand.h"
 #include "qtractorCurveCommand.h"
 
 
@@ -753,10 +756,8 @@ bool qtractorClipTakeCommand::execute ( bool bRedo )
 //
 
 // Constructor.
-qtractorClipRangeCommand::qtractorClipRangeCommand (
-	qtractorTrack *pTrack )
-	: qtractorClipCommand(pTrack
-		? QObject::tr("insert range") : QObject::tr("insert track range"))
+qtractorClipRangeCommand::qtractorClipRangeCommand ( const QString& sName )
+	: qtractorClipCommand(sName)
 {
 }
 
@@ -764,8 +765,25 @@ qtractorClipRangeCommand::qtractorClipRangeCommand (
 // Destructor.
 qtractorClipRangeCommand::~qtractorClipRangeCommand (void)
 {
+	qDeleteAll(m_sessionCommands);
+	m_sessionCommands.clear();
+
 	qDeleteAll(m_curveEditCommands);
 	m_curveEditCommands.clear();
+
+	qDeleteAll(m_timeScaleMarkerCommands);
+	m_timeScaleMarkerCommands.clear();
+
+	qDeleteAll(m_timeScaleNodeCommands);
+	m_timeScaleNodeCommands.clear();
+}
+
+
+// When Loop/Punch changes are needed.
+void qtractorClipRangeCommand::addSessionCommand (
+	qtractorSessionCommand *pSessionCommand )
+{
+	m_sessionCommands.append(pSessionCommand);
 }
 
 
@@ -777,20 +795,118 @@ void qtractorClipRangeCommand::addCurveEditCommand (
 }
 
 
+// When location markers are needed.
+void qtractorClipRangeCommand::addTimeScaleMarkerCommand (
+	qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand )
+{
+	m_timeScaleMarkerCommands.append(pTimeScaleMarkerCommand);
+}
+
+
+// When tempo-map/time-sig nodes are needed.
+void qtractorClipRangeCommand::addTimeScaleNodeCommand (
+	qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand )
+{
+	m_timeScaleNodeCommands.append(pTimeScaleNodeCommand);
+}
+
 
 // Executive override.
 bool qtractorClipRangeCommand::execute ( bool bRedo )
 {
-	QListIterator<qtractorCurveEditCommand *> iter(m_curveEditCommands);
-	while (iter.hasNext()) {
-		qtractorCurveEditCommand *pCurveEditCommand = iter.next();
-		if (bRedo)
-			pCurveEditCommand->redo();
-		else
-			pCurveEditCommand->undo();
-		pCurveEditCommand->curve()->update();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// Loop/Punch...
+	if (!m_sessionCommands.isEmpty()) {
+		QListIterator<qtractorSessionCommand *> iter(m_sessionCommands);
+		while (iter.hasNext()) {
+			qtractorSessionCommand *pSessionCommand	= iter.next();
+			if (bRedo)
+				pSessionCommand->redo();
+			else
+				pSessionCommand->undo();
+		}
 	}
 
+	// Automation...
+	if (!m_curveEditCommands.isEmpty()) {
+		QListIterator<qtractorCurveEditCommand *>
+			curve_iter(m_curveEditCommands);
+		if (bRedo) {
+			while (curve_iter.hasNext()) {
+				qtractorCurveEditCommand *pCurveEditCommand
+					= curve_iter.next();
+				pCurveEditCommand->redo();
+				pCurveEditCommand->curve()->update();
+			}
+		} else {
+			curve_iter.toBack();
+			while (curve_iter.hasPrevious()) {
+				qtractorCurveEditCommand *pCurveEditCommand
+					= curve_iter.previous();
+				pCurveEditCommand->undo();
+				pCurveEditCommand->curve()->update();
+			}
+		}
+	}
+
+	// Markers...
+	if (!m_timeScaleMarkerCommands.isEmpty()) {
+		QListIterator<qtractorTimeScaleMarkerCommand *>
+			marker_iter(m_timeScaleMarkerCommands);
+		if (bRedo) {
+			while (marker_iter.hasNext()) {
+				qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand
+					= marker_iter.next();
+				pTimeScaleMarkerCommand->redo();
+			}
+		} else {
+			marker_iter.toBack();
+			while (marker_iter.hasPrevious()) {
+				qtractorTimeScaleMarkerCommand *pTimeScaleMarkerCommand
+					= marker_iter.previous();
+				pTimeScaleMarkerCommand->undo();
+			}
+		}
+	}
+
+	// Time-map...
+	if (!m_timeScaleNodeCommands.isEmpty()) {
+		// If currently playing, we need to do a stop and go...
+		bool bPlaying = pSession->isPlaying();
+		if (bPlaying)
+			pSession->lock();
+		QListIterator<qtractorTimeScaleNodeCommand *>
+			node_iter(m_timeScaleNodeCommands);
+		if (bRedo) {
+			while (node_iter.hasNext()) {
+				qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
+					= node_iter.next();
+				pTimeScaleNodeCommand->redo();
+			}
+		} else {
+			node_iter.toBack();
+			while (node_iter.hasPrevious()) {
+				qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
+					= node_iter.previous();
+				pTimeScaleNodeCommand->undo();
+			}
+		}
+		// Restore playback state, if needed...
+		if (bPlaying) {
+			// The Audio engine too...
+			if (pSession->audioEngine())
+				pSession->audioEngine()->resetMetro();
+			// The MIDI engine queue needs a reset...
+			if (pSession->midiEngine())
+				pSession->midiEngine()->resetTempo();
+			pSession->unlock();
+		}
+	}
+
+	// Clips...
 	return qtractorClipCommand::execute(bRedo);
 }
 

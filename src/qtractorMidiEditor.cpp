@@ -1902,6 +1902,9 @@ void qtractorMidiEditor::insertEditRange (void)
 		iInsertEnd = m_pTimeScale->tickFromFrame(m_pTimeScale->frameFromBar(iBar + 1));
 	}
 
+	if (iInsertStart >= iInsertEnd)
+		return;
+
 	unsigned long iInsertDuration = iInsertEnd - iInsertStart;
 	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
 
@@ -1958,7 +1961,14 @@ void qtractorMidiEditor::removeEditRange (void)
 		return;
 
 	unsigned long iRemoveStart = m_pTimeScale->tickFromFrame(m_iEditHead);
-	unsigned long iRemoveEnd   = m_pTimeScale->tickFromFrame(m_iEditTail);
+	unsigned long iRemoveEnd   = 0;
+
+	if (m_iEditHead < m_iEditTail) {
+		iRemoveEnd = m_pTimeScale->tickFromFrame(m_iEditTail);
+	} else {
+		unsigned short iBar = m_pTimeScale->barFromFrame(m_iEditHead);
+		iRemoveEnd = m_pTimeScale->tickFromFrame(m_pTimeScale->frameFromBar(iBar + 1));
+	}
 
 	if (iRemoveStart >= iRemoveEnd)
 		return;

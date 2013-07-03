@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -36,8 +36,7 @@
    <string>Paste Repeat - Qtractor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >
-    <normaloff>:/images/editPaste.png</normaloff>:/images/editPaste.png</iconset>
+   <iconset resource="qtractor.qrc" >:/images/editPaste.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>

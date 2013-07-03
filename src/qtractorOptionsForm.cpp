@@ -916,7 +916,9 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 	qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iPluginType));
-	bool bLv2Enabled = false;
+#ifdef CONFIG_LV2_PRESETS
+    bool bLv2Enabled = false;
+#endif
 	switch (typeHint) {
 	case qtractorPluginType::Ladspa:
 		paths = m_ladspaPaths;
@@ -929,7 +931,9 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 		break;
 	case qtractorPluginType::Lv2:
 		paths = m_lv2Paths;
-		bLv2Enabled = true;
+    #ifdef CONFIG_LV2_PRESETS
+        bLv2Enabled = true;
+    #endif
 		break;
 	default:
 		break;

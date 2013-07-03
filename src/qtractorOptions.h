@@ -177,6 +177,9 @@ public:
 	// Automation curve mode default.
 	int     iCurveMode;
 
+    // Edit-range options.
+    int     iEditRangeOptions;
+
 	// Plug-in paths.
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
