@@ -1,8 +1,9 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,178 +21,180 @@
 
   </comment>
  <class>qtractorExportForm</class>
- <widget class="QDialog" name="qtractorExportForm" >
-  <property name="geometry" >
+ <widget class="QDialog" name="qtractorExportForm">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
+    <width>360</width>
     <height>300</height>
    </rect>
   </property>
-  <property name="focusPolicy" >
+  <property name="focusPolicy">
    <enum>Qt::StrongFocus</enum>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Export - Qtractor</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/qtractor.png</iconset>
+  <property name="windowIcon">
+   <iconset resource="qtractor.qrc">
+    <normaloff>:/images/qtractor.png</normaloff>:/images/qtractor.png</iconset>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>8</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>4</number>
    </property>
-   <item row="0" column="0" colspan="2" >
-    <widget class="QLabel" name="ExportPathTextLabel" >
-     <property name="text" >
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="ExportPathTextLabel">
+     <property name="text">
       <string>&amp;File:</string>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>ExportPathComboBox</cstring>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>4</number>
      </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QComboBox" name="ExportPathComboBox" >
-       <property name="minimumSize" >
+      <widget class="QComboBox" name="ExportPathComboBox">
+       <property name="minimumSize">
         <size>
          <width>320</width>
          <height>0</height>
         </size>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Export file name</string>
        </property>
-       <property name="editable" >
+       <property name="editable">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="ExportPathToolButton" >
-       <property name="minimumSize" >
+      <widget class="QToolButton" name="ExportPathToolButton">
+       <property name="minimumSize">
         <size>
          <width>22</width>
          <height>22</height>
         </size>
        </property>
-       <property name="maximumSize" >
+       <property name="maximumSize">
         <size>
          <width>24</width>
          <height>24</height>
         </size>
        </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
-       </property>
-       <property name="focusPolicy" >
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Browse export file name</string>
+       </property>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/fileOpen.png</normaloff>:/images/fileOpen.png</iconset>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item rowspan="2" row="2" column="0" >
-    <widget class="QGroupBox" name="ExportRangeGroupBox" >
-     <property name="title" >
+   <item row="2" column="0" rowspan="2">
+    <widget class="QGroupBox" name="ExportRangeGroupBox">
+     <property name="title">
       <string>Range</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>8</number>
       </property>
-      <property name="spacing" >
+      <property name="spacing">
        <number>4</number>
       </property>
-      <item row="0" column="0" colspan="3" >
-       <widget class="QRadioButton" name="SessionRangeRadioButton" >
-        <property name="toolTip" >
+      <item row="0" column="0" colspan="3">
+       <widget class="QRadioButton" name="SessionRangeRadioButton">
+        <property name="toolTip">
          <string>Session range</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>&amp;Session</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="3" >
-       <widget class="QRadioButton" name="LoopRangeRadioButton" >
-        <property name="toolTip" >
+      <item row="1" column="0" colspan="3">
+       <widget class="QRadioButton" name="LoopRangeRadioButton">
+        <property name="toolTip">
          <string>Loop range</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>&amp;Loop</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="3" >
-       <widget class="QRadioButton" name="PunchRangeRadioButton" >
-        <property name="toolTip" >
+      <item row="2" column="0" colspan="3">
+       <widget class="QRadioButton" name="PunchRangeRadioButton">
+        <property name="toolTip">
          <string>Punch range</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>&amp;Punch</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3" >
-       <widget class="QRadioButton" name="EditRangeRadioButton" >
-        <property name="toolTip" >
+      <item row="3" column="0" colspan="3">
+       <widget class="QRadioButton" name="EditRangeRadioButton">
+        <property name="toolTip">
          <string>Edit range</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>&amp;Edit</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="3" >
-       <widget class="QRadioButton" name="CustomRangeRadioButton" >
-        <property name="toolTip" >
+      <item row="4" column="0" colspan="3">
+       <widget class="QRadioButton" name="CustomRangeRadioButton">
+        <property name="toolTip">
          <string>Custom range</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>&amp;Custom</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item rowspan="2" row="5" column="0" >
+      <item row="5" column="0" rowspan="2">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Fixed</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint">
          <size>
           <width>16</width>
           <height>16</height>
@@ -199,48 +202,48 @@
         </property>
        </spacer>
       </item>
-      <item row="5" column="1" >
-       <widget class="QLabel" name="ExportStartTextLLabel" >
-        <property name="text" >
+      <item row="5" column="1">
+       <widget class="QLabel" name="ExportStartTextLLabel">
+        <property name="text">
          <string>St&amp;art:</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>ExportStartSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="5" column="2" >
-       <widget class="qtractorTimeSpinBox" name="ExportStartSpinBox" >
-        <property name="minimumSize" >
+      <item row="5" column="2">
+       <widget class="qtractorTimeSpinBox" name="ExportStartSpinBox">
+        <property name="minimumSize">
          <size>
           <width>120</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
+        <property name="toolTip">
          <string>Clip start</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1" >
-       <widget class="QLabel" name="ExportEndTextLLabel" >
-        <property name="text" >
+      <item row="6" column="1">
+       <widget class="QLabel" name="ExportEndTextLLabel">
+        <property name="text">
          <string>En&amp;d:</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>ExportEndSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="6" column="2" >
-       <widget class="qtractorTimeSpinBox" name="ExportEndSpinBox" >
-        <property name="minimumSize" >
+      <item row="6" column="2">
+       <widget class="qtractorTimeSpinBox" name="ExportEndSpinBox">
+        <property name="minimumSize">
          <size>
           <width>120</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
+        <property name="toolTip">
          <string>Clip offset</string>
         </property>
        </widget>
@@ -248,21 +251,27 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="1" >
-    <widget class="QGroupBox" name="ExportBusGroupBox" >
-     <property name="title" >
+   <item row="2" column="1">
+    <widget class="QGroupBox" name="ExportBusGroupBox">
+     <property name="title">
       <string>Output</string>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>8</number>
-      </property>
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>4</number>
       </property>
+      <property name="margin">
+       <number>8</number>
+      </property>
       <item>
-       <widget class="QComboBox" name="ExportBusNameComboBox" >
-        <property name="toolTip" >
+       <widget class="QListWidget" name="ExportBusNameListBox">
+        <property name="maximumSize">
+         <size>
+          <width>130</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="toolTip">
          <string>Output bus name</string>
         </property>
        </widget>
@@ -270,68 +279,38 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="1" >
-    <widget class="QGroupBox" name="FormatGroupBox" >
-     <property name="title" >
+   <item row="3" column="1">
+    <widget class="QGroupBox" name="FormatGroupBox">
+     <property name="title">
       <string>Format</string>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
+     <layout class="QVBoxLayout">
       <item>
-       <widget class="QRadioButton" name="FramesRadioButton" >
-        <property name="toolTip" >
-         <string>Frames</string>
+       <widget class="QComboBox" name="FormatComboBox">
+        <property name="toolTip">
+         <string>Time display format</string>
         </property>
-        <property name="text" >
-         <string>&amp;Frames</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
-        </property>
+        <item>
+         <property name="text">
+          <string>Frames</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Time</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>BBT</string>
+         </property>
+        </item>
        </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="TimeRadioButton" >
-        <property name="toolTip" >
-         <string>Time (hh:mm:ss.zzz)</string>
-        </property>
-        <property name="text" >
-         <string>&amp;Time</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="BbtRadioButton" >
-        <property name="toolTip" >
-         <string>BBT (bars.beats.ticks)</string>
-        </property>
-        <property name="text" >
-         <string>&amp;BBT</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2" >
+   <item row="4" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="DialogButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -343,7 +322,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="4" margin="8" />
+ <layoutdefault spacing="4" margin="8"/>
  <customwidgets>
   <customwidget>
    <class>qtractorTimeSpinBox</class>
@@ -361,14 +340,11 @@
   <tabstop>CustomRangeRadioButton</tabstop>
   <tabstop>ExportStartSpinBox</tabstop>
   <tabstop>ExportEndSpinBox</tabstop>
-  <tabstop>ExportBusNameComboBox</tabstop>
-  <tabstop>FramesRadioButton</tabstop>
-  <tabstop>TimeRadioButton</tabstop>
-  <tabstop>BbtRadioButton</tabstop>
-  <tabstop>DialogButtonBox</tabstop>
+  <tabstop>ExportBusNameListBox</tabstop>
+  <tabstop>FormatComboBox</tabstop>
  </tabstops>
  <resources>
-  <include location="qtractor.qrc" />
+  <include location="qtractor.qrc"/>
  </resources>
  <connections/>
 </ui>

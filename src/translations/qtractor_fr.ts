@@ -1060,89 +1060,93 @@ Voulez-vous abandonner les changements?</translation>
 <context>
     <name>qtractorClipForm</name>
     <message>
-        <location filename="../qtractorClipForm.ui" line="36"/>
+        <location filename="../qtractorClipForm.ui" line="37"/>
         <source>Clip - Qtractor</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="45"/>
+        <location filename="../qtractorClipForm.ui" line="46"/>
         <source>&amp;Name:</source>
         <translation>&amp;Nom:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="55"/>
+        <location filename="../qtractorClipForm.ui" line="56"/>
         <source>Clip name</source>
         <translation>Nom du clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="62"/>
+        <location filename="../qtractorClipForm.ui" line="63"/>
         <source>&amp;File:</source>
         <translation>&amp;Fichier:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="72"/>
+        <location filename="../qtractorClipForm.ui" line="73"/>
         <source>Clip filename</source>
         <translation>Nom de fichier du clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="100"/>
+        <location filename="../qtractorClipForm.ui" line="98"/>
         <source>Browse for clip file</source>
         <translation>Parcourir les fichiers clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="107"/>
+        <location filename="../qtractorClipForm.ui" line="108"/>
         <source>Track/&amp;Channel:</source>
         <translation>Piste/&amp;Canal:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="123"/>
+        <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>Clip piste/canal</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="143"/>
         <source>&amp;Gain/Volume:</source>
-        <translation>&amp;Gain/Volume:</translation>
+        <translation type="obsolete">&amp;Gain/Volume:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="159"/>
+        <location filename="../qtractorClipForm.ui" line="265"/>
         <source>Clip gain/volume</source>
         <translation>Clip gain/volume</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="172"/>
+        <location filename="../qtractorClipForm.ui" line="144"/>
         <source>Parameters</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="197"/>
+        <location filename="../qtractorClipForm.ui" line="169"/>
         <source>Clip start</source>
         <translation>Début du clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="210"/>
+        <location filename="../qtractorClipForm.ui" line="182"/>
         <source>Clip offset</source>
         <translation>Décalage du clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="223"/>
+        <location filename="../qtractorClipForm.ui" line="195"/>
         <source>Clip length</source>
         <translation>Longueur du clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="236"/>
+        <location filename="../qtractorClipForm.ui" line="208"/>
         <source>Offs&amp;et:</source>
         <translation>Décalag&amp;e:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="252"/>
+        <location filename="../qtractorClipForm.ui" line="224"/>
         <source>&amp;Length:</source>
         <translation>&amp;Longueur:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="268"/>
+        <location filename="../qtractorClipForm.ui" line="240"/>
         <source>&amp;Start:</source>
         <translation>&amp;Début:</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="253"/>
+        <source>Gain/Volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="281"/>
@@ -1151,138 +1155,148 @@ Voulez-vous abandonner les changements?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="287"/>
+        <source>Time display format</source>
+        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="291"/>
         <source>Frames</source>
         <translation>Trames</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="290"/>
         <source>Fra&amp;mes</source>
-        <translation>Tra&amp;mes</translation>
+        <translation type="obsolete">Tra&amp;mes</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="300"/>
         <source>Time (hh:mm:ss.zzz)</source>
-        <translation>Temps (hh:mm:ss.zzz)</translation>
+        <translation type="obsolete">Temps (hh:mm:ss.zzz)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="303"/>
         <source>&amp;Time</source>
-        <translation>&amp;Temps</translation>
+        <translation type="obsolete">&amp;Temps</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="310"/>
         <source>BBT (bars.beats.ticks)</source>
-        <translation>BBT (barres.battements.clicks)</translation>
+        <translation type="obsolete">BBT (barres.battements.clicks)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="313"/>
         <source>&amp;BBT</source>
-        <translation>&amp;BBT</translation>
+        <translation type="obsolete">&amp;BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="336"/>
+        <location filename="../qtractorClipForm.ui" line="296"/>
+        <source>Time</source>
+        <translation type="unfinished">Temps</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="301"/>
+        <source>BBT</source>
+        <translation type="unfinished">BBT</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="312"/>
         <source>Fade In/Out</source>
         <translation>Fondu en ouverture/fermeture</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="348"/>
+        <location filename="../qtractorClipForm.ui" line="324"/>
         <source>Fade &amp;In:</source>
         <translation>Fondu en &amp;ouverture:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="364"/>
+        <location filename="../qtractorClipForm.ui" line="340"/>
         <source>Clip fade-in length</source>
         <translation>Clip longueur du fondu en ouverture</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="371"/>
+        <location filename="../qtractorClipForm.ui" line="347"/>
         <source>Clip fade-in type</source>
         <translation>Clip type de fondu en ouverture</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="397"/>
+        <location filename="../qtractorClipForm.ui" line="373"/>
         <source>Fade &amp;Out:</source>
         <translation>Fondu en &amp;fermeture:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="413"/>
+        <location filename="../qtractorClipForm.ui" line="389"/>
         <source>Clip fade-out length</source>
         <translation>Clip longueur du fondu en fermeture</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="420"/>
+        <location filename="../qtractorClipForm.ui" line="396"/>
         <source>Clip fade-out type</source>
         <translation>Clip type de fondu en fermeture</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="430"/>
-        <location filename="../qtractorClipForm.cpp" line="638"/>
+        <location filename="../qtractorClipForm.ui" line="406"/>
+        <location filename="../qtractorClipForm.cpp" line="618"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="455"/>
+        <location filename="../qtractorClipForm.ui" line="431"/>
         <source>Time St&amp;retch:</source>
         <translation>Eti&amp;rement temporel:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="471"/>
+        <location filename="../qtractorClipForm.ui" line="447"/>
         <source>Clip time-stretch percentage</source>
         <translation>Clip pourcentage d&apos;étirement temporel</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="474"/>
-        <location filename="../qtractorClipForm.cpp" line="291"/>
+        <location filename="../qtractorClipForm.ui" line="450"/>
+        <location filename="../qtractorClipForm.cpp" line="275"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="493"/>
+        <location filename="../qtractorClipForm.ui" line="469"/>
         <source>Pitch S&amp;hift:</source>
         <translation>Décalage de t&amp;onalité:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="512"/>
+        <location filename="../qtractorClipForm.ui" line="488"/>
         <source>Clip pitch-shift in semitones</source>
         <translation>Clip décalage de tonalité en demi-tons</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="515"/>
+        <location filename="../qtractorClipForm.ui" line="491"/>
         <source> semitones</source>
         <translation> demi-tons</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="267"/>
+        <location filename="../qtractorClipForm.cpp" line="251"/>
         <source>&amp;Gain:</source>
         <translation>&amp;Gain:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="268"/>
+        <location filename="../qtractorClipForm.cpp" line="252"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="290"/>
+        <location filename="../qtractorClipForm.cpp" line="274"/>
         <source>&amp;Volume:</source>
         <translation>&amp;Volume:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="388"/>
+        <location filename="../qtractorClipForm.cpp" line="372"/>
         <source>new clip</source>
         <translation>nouveau clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="434"/>
+        <location filename="../qtractorClipForm.cpp" line="418"/>
         <source>edit clip</source>
         <translation>éditer le clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="533"/>
+        <location filename="../qtractorClipForm.cpp" line="517"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="534"/>
+        <location filename="../qtractorClipForm.cpp" line="518"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -1291,17 +1305,17 @@ Do you want to apply the changes?</source>
 Voulez vous appliquer les changements?</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="643"/>
+        <location filename="../qtractorClipForm.cpp" line="623"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="645"/>
+        <location filename="../qtractorClipForm.cpp" line="625"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Fichiers MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="655"/>
+        <location filename="../qtractorClipForm.cpp" line="635"/>
         <source>%1 Clip File</source>
         <translation>%1 fichier clip</translation>
     </message>
@@ -1562,12 +1576,17 @@ Voulez vous appliquer les changements?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="283"/>
+        <location filename="../qtractorEditRangeForm.ui" line="277"/>
+        <source>Time display format</source>
+        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+    </message>
+    <message>
+        <location filename="../qtractorEditRangeForm.ui" line="286"/>
         <source>Time</source>
         <translation type="unfinished">Temps</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="288"/>
+        <location filename="../qtractorEditRangeForm.ui" line="291"/>
         <source>BBT</source>
         <translation type="unfinished">BBT</translation>
     </message>
@@ -1576,7 +1595,7 @@ Voulez vous appliquer les changements?</translation>
         <translation type="obsolete">Format</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="278"/>
+        <location filename="../qtractorEditRangeForm.ui" line="281"/>
         <source>Frames</source>
         <translation type="unfinished">Trames</translation>
     </message>
@@ -1635,167 +1654,177 @@ Voulez vous appliquer les changements?</translation>
 <context>
     <name>qtractorExportForm</name>
     <message>
-        <location filename="../qtractorExportForm.ui" line="36"/>
+        <location filename="../qtractorExportForm.ui" line="37"/>
         <source>Export - Qtractor</source>
         <translation>Exporter - Qtractor</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="51"/>
+        <location filename="../qtractorExportForm.ui" line="53"/>
         <source>&amp;File:</source>
         <translation>&amp;Fichier:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="75"/>
+        <location filename="../qtractorExportForm.ui" line="77"/>
         <source>Export file name</source>
         <translation>Nom de fichier d&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="103"/>
+        <location filename="../qtractorExportForm.ui" line="102"/>
         <source>Browse export file name</source>
         <translation>Parcourir les fichiers d&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="112"/>
+        <location filename="../qtractorExportForm.ui" line="115"/>
         <source>Range</source>
         <translation>Plage</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="124"/>
+        <location filename="../qtractorExportForm.ui" line="127"/>
         <source>Session range</source>
         <translation>Plage de session</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="127"/>
+        <location filename="../qtractorExportForm.ui" line="130"/>
         <source>&amp;Session</source>
         <translation>&amp;Session</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="137"/>
+        <location filename="../qtractorExportForm.ui" line="140"/>
         <source>Loop range</source>
         <translation>Plage de boucle</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="140"/>
+        <location filename="../qtractorExportForm.ui" line="143"/>
         <source>&amp;Loop</source>
         <translation>Bouc&amp;le</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="150"/>
+        <location filename="../qtractorExportForm.ui" line="153"/>
         <source>Punch range</source>
         <translation>Plage de Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="153"/>
+        <location filename="../qtractorExportForm.ui" line="156"/>
         <source>&amp;Punch</source>
         <translation>&amp;Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="163"/>
+        <location filename="../qtractorExportForm.ui" line="166"/>
         <source>Edit range</source>
         <translation>Editer la plage</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="166"/>
+        <location filename="../qtractorExportForm.ui" line="169"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editer</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="176"/>
+        <location filename="../qtractorExportForm.ui" line="179"/>
         <source>Custom range</source>
         <translation>Plage spéciale</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="179"/>
+        <location filename="../qtractorExportForm.ui" line="182"/>
         <source>&amp;Custom</source>
         <translation>&amp;Spéciale</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="205"/>
+        <location filename="../qtractorExportForm.ui" line="208"/>
         <source>St&amp;art:</source>
         <translation>&amp;Début:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="221"/>
+        <location filename="../qtractorExportForm.ui" line="224"/>
         <source>Clip start</source>
         <translation>Début du clip</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="228"/>
+        <location filename="../qtractorExportForm.ui" line="231"/>
         <source>En&amp;d:</source>
         <translation>F&amp;in:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="244"/>
+        <location filename="../qtractorExportForm.ui" line="247"/>
         <source>Clip offset</source>
         <translation>Décalage du clip</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="254"/>
+        <location filename="../qtractorExportForm.ui" line="257"/>
         <source>Output</source>
         <translation>Sortie</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="266"/>
+        <location filename="../qtractorExportForm.ui" line="275"/>
         <source>Output bus name</source>
         <translation>Nom du bus de sortie</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="276"/>
+        <location filename="../qtractorExportForm.ui" line="285"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="288"/>
+        <location filename="../qtractorExportForm.ui" line="291"/>
+        <source>Time display format</source>
+        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="295"/>
         <source>Frames</source>
         <translation>Trames</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="291"/>
+        <location filename="../qtractorExportForm.ui" line="300"/>
+        <source>Time</source>
+        <translation type="unfinished">Temps</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="305"/>
+        <source>BBT</source>
+        <translation type="unfinished">BBT</translation>
+    </message>
+    <message>
         <source>&amp;Frames</source>
-        <translation>&amp;Trames</translation>
+        <translation type="obsolete">&amp;Trames</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="301"/>
         <source>Time (hh:mm:ss.zzz)</source>
-        <translation>Temps (hh:mm:ss.zzz)</translation>
+        <translation type="obsolete">Temps (hh:mm:ss.zzz)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="304"/>
         <source>&amp;Time</source>
-        <translation>&amp;Temps</translation>
+        <translation type="obsolete">&amp;Temps</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="311"/>
         <source>BBT (bars.beats.ticks)</source>
-        <translation>BBT (barres.battements.clicks)</translation>
+        <translation type="obsolete">BBT (barres.battements.clicks)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="314"/>
         <source>&amp;BBT</source>
-        <translation>&amp;BBT</translation>
+        <translation type="obsolete">&amp;BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="138"/>
+        <location filename="../qtractorExportForm.cpp" line="135"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="144"/>
+        <location filename="../qtractorExportForm.cpp" line="141"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="173"/>
+        <location filename="../qtractorExportForm.cpp" line="170"/>
         <source>Export %1</source>
         <translation>Exporter %1</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="225"/>
+        <location filename="../qtractorExportForm.cpp" line="219"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="226"/>
+        <location filename="../qtractorExportForm.cpp" line="220"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -1808,17 +1837,17 @@ Do you want to replace it?</source>
 Voulez-vous le remplacer?</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="259"/>
+        <location filename="../qtractorExportForm.cpp" line="253"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>Exportation du fichier audio: &quot;%1&quot; commencée...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="273"/>
+        <location filename="../qtractorExportForm.cpp" line="267"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Exportation du fichier audio: &quot;%1&quot; terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="278"/>
+        <location filename="../qtractorExportForm.cpp" line="272"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -1831,17 +1860,17 @@ failed.</source>
 échec.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="295"/>
+        <location filename="../qtractorExportForm.cpp" line="289"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Exportation du fichier MIDI: &quot;%1&quot; commencée...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="309"/>
+        <location filename="../qtractorExportForm.cpp" line="303"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Exportation du fichier MIDI: &quot;%1&quot; terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="314"/>
+        <location filename="../qtractorExportForm.cpp" line="308"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -1854,12 +1883,12 @@ failed.</source>
 échec.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="368"/>
+        <location filename="../qtractorExportForm.cpp" line="362"/>
         <source>Export %1 File</source>
         <translation>Exporter %1 fichier</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="369"/>
+        <location filename="../qtractorExportForm.cpp" line="363"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 fichiers (*.%1)</translation>
     </message>
@@ -11132,127 +11161,137 @@ Voulez-vous appliquer les changements?</translation>
         <translation>Prise - Qtractor</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="52"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="47"/>
         <source>Range</source>
         <translation>Plage</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="58"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="63"/>
         <source>Selection range</source>
         <translation>Plage de sélection</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="61"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="66"/>
         <source>&amp;Selection</source>
         <translation>&amp;Sélection</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="71"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="118"/>
         <source>Loop range</source>
         <translation>Plage de boucle</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="74"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="121"/>
         <source>&amp;Loop</source>
         <translation>&amp;Boucle</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="84"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="167"/>
         <source>Punch range</source>
         <translation>Plage de punch</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="87"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="170"/>
         <source>&amp;Punch</source>
         <translation>&amp;Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="97"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="226"/>
+        <source>Time</source>
+        <translation type="unfinished">Temps</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTakeRangeForm.ui" line="231"/>
+        <source>BBT</source>
+        <translation type="unfinished">BBT</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTakeRangeForm.ui" line="92"/>
         <source>Edit range</source>
         <translation>Plage d&apos;édition</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="100"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="95"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edition</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="110"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="105"/>
         <source>Custom range</source>
         <translation>Plage personnalisée</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="113"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="108"/>
         <source>&amp;Custom</source>
         <translation>&amp;Personalisé</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="139"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="157"/>
         <source>St&amp;art:</source>
         <translation>&amp;Début:</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="155"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="137"/>
         <source>Clip start</source>
         <translation>Début clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="162"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="53"/>
         <source>En&amp;d:</source>
         <translation>&amp;Fin:</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="178"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="150"/>
         <source>Clip offset</source>
         <translation>Décalage clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="188"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="183"/>
         <source>Select</source>
         <translation>Sélection</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="194"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="201"/>
         <source>Current take</source>
         <translation>Prise courante</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="204"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="211"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="210"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="217"/>
+        <source>Time display format</source>
+        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTakeRangeForm.ui" line="221"/>
         <source>Frames</source>
         <translation>Trames</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="213"/>
         <source>&amp;Frames</source>
-        <translation>&amp;Trames</translation>
+        <translation type="obsolete">&amp;Trames</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="223"/>
         <source>Time (hh:mm:ss.zzz)</source>
-        <translation>Temps (hh:mm:ss.zzz)</translation>
+        <translation type="obsolete">Temps (hh:mm:ss.zzz)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="226"/>
         <source>&amp;Time</source>
-        <translation>&amp;Temps</translation>
+        <translation type="obsolete">&amp;Temps</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="233"/>
         <source>BBT (bars.beats.ticks)</source>
-        <translation>BBT (barres.battements.coches)</translation>
+        <translation type="obsolete">BBT (barres.battements.coches)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="236"/>
         <source>&amp;BBT</source>
-        <translation>&amp;BBT</translation>
+        <translation type="obsolete">&amp;BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.cpp" line="251"/>
+        <location filename="../qtractorTakeRangeForm.cpp" line="234"/>
         <source>Take %1</source>
         <translation>Prise %1</translation>
     </message>
