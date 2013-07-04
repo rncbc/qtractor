@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>343</width>
-    <height>295</height>
+    <width>340</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -273,6 +273,9 @@
      <layout class="QVBoxLayout">
       <item>
        <widget class="QComboBox" name="FormatComboBox">
+        <property name="toolTip">
+         <string>Time display format</string>
+        </property>
         <item>
          <property name="text">
           <string>Frames</string>

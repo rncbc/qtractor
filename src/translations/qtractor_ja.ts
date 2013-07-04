@@ -1058,89 +1058,93 @@ Do you want to discard the changes?</source>
 <context>
     <name>qtractorClipForm</name>
     <message>
-        <location filename="../qtractorClipForm.ui" line="36"/>
+        <location filename="../qtractorClipForm.ui" line="37"/>
         <source>Clip - Qtractor</source>
         <translation>クリップ - Qtractor</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="45"/>
+        <location filename="../qtractorClipForm.ui" line="46"/>
         <source>&amp;Name:</source>
         <translation>名前(&amp;N):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="55"/>
+        <location filename="../qtractorClipForm.ui" line="56"/>
         <source>Clip name</source>
         <translation>クリップの名前</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="62"/>
+        <location filename="../qtractorClipForm.ui" line="63"/>
         <source>&amp;File:</source>
         <translation>ファイル(&amp;F):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="72"/>
+        <location filename="../qtractorClipForm.ui" line="73"/>
         <source>Clip filename</source>
         <translation>クリップのファイル名</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="100"/>
+        <location filename="../qtractorClipForm.ui" line="98"/>
         <source>Browse for clip file</source>
         <translation>クリップファイルの選択</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="107"/>
+        <location filename="../qtractorClipForm.ui" line="108"/>
         <source>Track/&amp;Channel:</source>
         <translation>トラック/チャンネル(&amp;C):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="123"/>
+        <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>クリップのトラック/チャンネル</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="143"/>
         <source>&amp;Gain/Volume:</source>
-        <translation>ゲイン/ボリューム(&amp;G):</translation>
+        <translation type="obsolete">ゲイン/ボリューム(&amp;G):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="159"/>
+        <location filename="../qtractorClipForm.ui" line="265"/>
         <source>Clip gain/volume</source>
         <translation>クリップのゲイン/ボリューム</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="172"/>
+        <location filename="../qtractorClipForm.ui" line="144"/>
         <source>Parameters</source>
         <translation>パラメーター</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="197"/>
+        <location filename="../qtractorClipForm.ui" line="169"/>
         <source>Clip start</source>
         <translation>クリップの開始位置</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="210"/>
+        <location filename="../qtractorClipForm.ui" line="182"/>
         <source>Clip offset</source>
         <translation>クリップのオフセット位置</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="223"/>
+        <location filename="../qtractorClipForm.ui" line="195"/>
         <source>Clip length</source>
         <translation>クリップの長さ</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="236"/>
+        <location filename="../qtractorClipForm.ui" line="208"/>
         <source>Offs&amp;et:</source>
         <translation>オフセット(&amp;E):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="252"/>
+        <location filename="../qtractorClipForm.ui" line="224"/>
         <source>&amp;Length:</source>
         <translation>長さ(&amp;L):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="268"/>
+        <location filename="../qtractorClipForm.ui" line="240"/>
         <source>&amp;Start:</source>
         <translation>開始(&amp;S):</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="253"/>
+        <source>Gain/Volume</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="281"/>
@@ -1149,138 +1153,144 @@ Do you want to discard the changes?</source>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="287"/>
+        <source>Time display format</source>
+        <translation type="unfinished">時間表示フォーマット</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="291"/>
         <source>Frames</source>
         <translation>フレーム</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="290"/>
         <source>Fra&amp;mes</source>
-        <translation>フレーム(&amp;M)</translation>
+        <translation type="obsolete">フレーム(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="300"/>
         <source>Time (hh:mm:ss.zzz)</source>
-        <translation>時間 (hh:mm:ss.zzz)</translation>
+        <translation type="obsolete">時間 (hh:mm:ss.zzz)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="303"/>
         <source>&amp;Time</source>
-        <translation>時間(&amp;T)</translation>
+        <translation type="obsolete">時間(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="310"/>
         <source>BBT (bars.beats.ticks)</source>
-        <translation>BBT (バー ビート チック)</translation>
+        <translation type="obsolete">BBT (バー ビート チック)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="313"/>
-        <source>&amp;BBT</source>
-        <translation></translation>
+        <location filename="../qtractorClipForm.ui" line="296"/>
+        <source>Time</source>
+        <translation type="unfinished">時間</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="336"/>
+        <location filename="../qtractorClipForm.ui" line="301"/>
+        <source>BBT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="312"/>
         <source>Fade In/Out</source>
         <translation>フェードイン/アウト</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="348"/>
+        <location filename="../qtractorClipForm.ui" line="324"/>
         <source>Fade &amp;In:</source>
         <translation>フェードイン(&amp;I):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="364"/>
+        <location filename="../qtractorClipForm.ui" line="340"/>
         <source>Clip fade-in length</source>
         <translation>クリップのフェードインの長さ</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="371"/>
+        <location filename="../qtractorClipForm.ui" line="347"/>
         <source>Clip fade-in type</source>
         <translation>クリップのフェードインのタイプ</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="397"/>
+        <location filename="../qtractorClipForm.ui" line="373"/>
         <source>Fade &amp;Out:</source>
         <translation>フェードアウト(&amp;O):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="413"/>
+        <location filename="../qtractorClipForm.ui" line="389"/>
         <source>Clip fade-out length</source>
         <translation>クリップのフェードアウトの長さ</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="420"/>
+        <location filename="../qtractorClipForm.ui" line="396"/>
         <source>Clip fade-out type</source>
         <translation>クリップのフェードアウトのタイプ</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="430"/>
-        <location filename="../qtractorClipForm.cpp" line="638"/>
+        <location filename="../qtractorClipForm.ui" line="406"/>
+        <location filename="../qtractorClipForm.cpp" line="618"/>
         <source>Audio</source>
         <translation>音声</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="455"/>
+        <location filename="../qtractorClipForm.ui" line="431"/>
         <source>Time St&amp;retch:</source>
         <translation>タイムストレッチ(&amp;R):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="471"/>
+        <location filename="../qtractorClipForm.ui" line="447"/>
         <source>Clip time-stretch percentage</source>
         <translation>クリップのタイムストレッチのパーセンテージ</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="474"/>
-        <location filename="../qtractorClipForm.cpp" line="291"/>
+        <location filename="../qtractorClipForm.ui" line="450"/>
+        <location filename="../qtractorClipForm.cpp" line="275"/>
         <source> %</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="493"/>
+        <location filename="../qtractorClipForm.ui" line="469"/>
         <source>Pitch S&amp;hift:</source>
         <translation>ピッチシフト(&amp;H):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="512"/>
+        <location filename="../qtractorClipForm.ui" line="488"/>
         <source>Clip pitch-shift in semitones</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="515"/>
+        <location filename="../qtractorClipForm.ui" line="491"/>
         <source> semitones</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="267"/>
+        <location filename="../qtractorClipForm.cpp" line="251"/>
         <source>&amp;Gain:</source>
         <translation>ゲイン(&amp;G):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="268"/>
+        <location filename="../qtractorClipForm.cpp" line="252"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="290"/>
+        <location filename="../qtractorClipForm.cpp" line="274"/>
         <source>&amp;Volume:</source>
         <translation>音量(&amp;V):</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="388"/>
+        <location filename="../qtractorClipForm.cpp" line="372"/>
         <source>new clip</source>
         <translation>新しいクリップ</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="434"/>
+        <location filename="../qtractorClipForm.cpp" line="418"/>
         <source>edit clip</source>
         <translation>クリップを編集</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="533"/>
+        <location filename="../qtractorClipForm.cpp" line="517"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="534"/>
+        <location filename="../qtractorClipForm.cpp" line="518"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -1289,17 +1299,17 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="643"/>
+        <location filename="../qtractorClipForm.cpp" line="623"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="645"/>
+        <location filename="../qtractorClipForm.cpp" line="625"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>MIDIファイル (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="655"/>
+        <location filename="../qtractorClipForm.cpp" line="635"/>
         <source>%1 Clip File</source>
         <translation>%1 クリップファイル</translation>
     </message>
@@ -1571,12 +1581,17 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="283"/>
+        <location filename="../qtractorEditRangeForm.ui" line="277"/>
+        <source>Time display format</source>
+        <translation type="unfinished">時間表示フォーマット</translation>
+    </message>
+    <message>
+        <location filename="../qtractorEditRangeForm.ui" line="286"/>
         <source>Time</source>
         <translation type="unfinished">時間</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="288"/>
+        <location filename="../qtractorEditRangeForm.ui" line="291"/>
         <source>BBT</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1585,7 +1600,7 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">フォーマット</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="278"/>
+        <location filename="../qtractorEditRangeForm.ui" line="281"/>
         <source>Frames</source>
         <translation type="unfinished">フレーム</translation>
     </message>
@@ -1648,167 +1663,173 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorExportForm</name>
     <message>
-        <location filename="../qtractorExportForm.ui" line="36"/>
+        <location filename="../qtractorExportForm.ui" line="37"/>
         <source>Export - Qtractor</source>
         <translation>エクスポート - Qtractor</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="51"/>
+        <location filename="../qtractorExportForm.ui" line="53"/>
         <source>&amp;File:</source>
         <translation>ファイル(&amp;F):</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="75"/>
+        <location filename="../qtractorExportForm.ui" line="77"/>
         <source>Export file name</source>
         <translation>エクスポートするファイル名</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="103"/>
+        <location filename="../qtractorExportForm.ui" line="102"/>
         <source>Browse export file name</source>
         <translation>エクスポートするファイルを選択</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="112"/>
+        <location filename="../qtractorExportForm.ui" line="115"/>
         <source>Range</source>
         <translation>レンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="124"/>
+        <location filename="../qtractorExportForm.ui" line="127"/>
         <source>Session range</source>
         <translation>セッションレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="127"/>
+        <location filename="../qtractorExportForm.ui" line="130"/>
         <source>&amp;Session</source>
         <translation>セッション(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="137"/>
+        <location filename="../qtractorExportForm.ui" line="140"/>
         <source>Loop range</source>
         <translation>ループレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="140"/>
+        <location filename="../qtractorExportForm.ui" line="143"/>
         <source>&amp;Loop</source>
         <translation>ループ(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="150"/>
+        <location filename="../qtractorExportForm.ui" line="153"/>
         <source>Punch range</source>
         <translation>パンチレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="153"/>
+        <location filename="../qtractorExportForm.ui" line="156"/>
         <source>&amp;Punch</source>
         <translation>パンチ(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="163"/>
+        <location filename="../qtractorExportForm.ui" line="166"/>
         <source>Edit range</source>
         <translation>編集レンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="166"/>
+        <location filename="../qtractorExportForm.ui" line="169"/>
         <source>&amp;Edit</source>
         <translation>編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="176"/>
+        <location filename="../qtractorExportForm.ui" line="179"/>
         <source>Custom range</source>
         <translation>任意のレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="179"/>
+        <location filename="../qtractorExportForm.ui" line="182"/>
         <source>&amp;Custom</source>
         <translation>カスタム(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="205"/>
+        <location filename="../qtractorExportForm.ui" line="208"/>
         <source>St&amp;art:</source>
         <translation>開始(&amp;A):</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="221"/>
+        <location filename="../qtractorExportForm.ui" line="224"/>
         <source>Clip start</source>
         <translation>クリップの開始位置</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="228"/>
+        <location filename="../qtractorExportForm.ui" line="231"/>
         <source>En&amp;d:</source>
         <translation>終了(&amp;D):</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="244"/>
+        <location filename="../qtractorExportForm.ui" line="247"/>
         <source>Clip offset</source>
         <translation>クリップのオフセット</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="254"/>
+        <location filename="../qtractorExportForm.ui" line="257"/>
         <source>Output</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="266"/>
+        <location filename="../qtractorExportForm.ui" line="275"/>
         <source>Output bus name</source>
         <translation>出力バス名</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="276"/>
+        <location filename="../qtractorExportForm.ui" line="285"/>
         <source>Format</source>
         <translation>フォーマット</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="288"/>
+        <location filename="../qtractorExportForm.ui" line="291"/>
+        <source>Time display format</source>
+        <translation type="unfinished">時間表示フォーマット</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="295"/>
         <source>Frames</source>
         <translation>フレーム</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="291"/>
+        <location filename="../qtractorExportForm.ui" line="300"/>
+        <source>Time</source>
+        <translation type="unfinished">時間</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="305"/>
+        <source>BBT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Frames</source>
-        <translation>フレーム(&amp;F)</translation>
+        <translation type="obsolete">フレーム(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="301"/>
         <source>Time (hh:mm:ss.zzz)</source>
-        <translation>時間 (hh:mm:ss.zzz)</translation>
+        <translation type="obsolete">時間 (hh:mm:ss.zzz)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="304"/>
         <source>&amp;Time</source>
-        <translation>時間(&amp;T)</translation>
+        <translation type="obsolete">時間(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="311"/>
         <source>BBT (bars.beats.ticks)</source>
-        <translation>BBT (バー ビート チック)</translation>
+        <translation type="obsolete">BBT (バー ビート チック)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="314"/>
-        <source>&amp;BBT</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="138"/>
+        <location filename="../qtractorExportForm.cpp" line="135"/>
         <source>Audio</source>
         <translation>音声</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="144"/>
+        <location filename="../qtractorExportForm.cpp" line="141"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="173"/>
+        <location filename="../qtractorExportForm.cpp" line="170"/>
         <source>Export %1</source>
         <translation>%1のエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="225"/>
+        <location filename="../qtractorExportForm.cpp" line="219"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="226"/>
+        <location filename="../qtractorExportForm.cpp" line="220"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -1821,17 +1842,17 @@ Do you want to replace it?</source>
 置きかえますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="259"/>
+        <location filename="../qtractorExportForm.cpp" line="253"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="273"/>
+        <location filename="../qtractorExportForm.cpp" line="267"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="278"/>
+        <location filename="../qtractorExportForm.cpp" line="272"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -1844,17 +1865,17 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="295"/>
+        <location filename="../qtractorExportForm.cpp" line="289"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="309"/>
+        <location filename="../qtractorExportForm.cpp" line="303"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="314"/>
+        <location filename="../qtractorExportForm.cpp" line="308"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -1867,12 +1888,12 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="368"/>
+        <location filename="../qtractorExportForm.cpp" line="362"/>
         <source>Export %1 File</source>
         <translation>%1 ファイルのエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="369"/>
+        <location filename="../qtractorExportForm.cpp" line="363"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 ファイル (*.%1)</translation>
     </message>
@@ -11145,127 +11166,133 @@ Do you want to apply the changes?</source>
         <translation>テイク - QTractor</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="52"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="47"/>
         <source>Range</source>
         <translation>レンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="58"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="63"/>
         <source>Selection range</source>
         <translation>選択レンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="61"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="66"/>
         <source>&amp;Selection</source>
         <translation>選択(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="71"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="118"/>
         <source>Loop range</source>
         <translation>ループレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="74"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="121"/>
         <source>&amp;Loop</source>
         <translation>ループ(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="84"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="167"/>
         <source>Punch range</source>
         <translation>パンチレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="87"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="170"/>
         <source>&amp;Punch</source>
         <translation>パンチ(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="97"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="226"/>
+        <source>Time</source>
+        <translation type="unfinished">時間</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTakeRangeForm.ui" line="231"/>
+        <source>BBT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTakeRangeForm.ui" line="92"/>
         <source>Edit range</source>
         <translation>編集レンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="100"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="95"/>
         <source>&amp;Edit</source>
         <translation>編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="110"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="105"/>
         <source>Custom range</source>
         <translation>任意のレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="113"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="108"/>
         <source>&amp;Custom</source>
         <translation>カスタム(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="139"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="157"/>
         <source>St&amp;art:</source>
         <translation>開始(&amp;A):</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="155"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="137"/>
         <source>Clip start</source>
         <translation>クリップの開始時間</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="162"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="53"/>
         <source>En&amp;d:</source>
         <translation>終了(&amp;D):</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="178"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="150"/>
         <source>Clip offset</source>
         <translation>クリップのオフセット</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="188"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="183"/>
         <source>Select</source>
         <translation>テイクの選択</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="194"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="201"/>
         <source>Current take</source>
         <translation>現在のテイク</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="204"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="211"/>
         <source>Format</source>
         <translation>フォーマット</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="210"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="217"/>
+        <source>Time display format</source>
+        <translation type="unfinished">時間表示フォーマット</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTakeRangeForm.ui" line="221"/>
         <source>Frames</source>
         <translation>フレーム</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="213"/>
         <source>&amp;Frames</source>
-        <translation>フレーム(&amp;F)</translation>
+        <translation type="obsolete">フレーム(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="223"/>
         <source>Time (hh:mm:ss.zzz)</source>
-        <translation>時間 (hh:mm:ss.zzz)</translation>
+        <translation type="obsolete">時間 (hh:mm:ss.zzz)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="226"/>
         <source>&amp;Time</source>
-        <translation>時間(&amp;T)</translation>
+        <translation type="obsolete">時間(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="233"/>
         <source>BBT (bars.beats.ticks)</source>
-        <translation>BBT (バー ビート チック)</translation>
+        <translation type="obsolete">BBT (バー ビート チック)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="236"/>
-        <source>&amp;BBT</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTakeRangeForm.cpp" line="251"/>
+        <location filename="../qtractorTakeRangeForm.cpp" line="234"/>
         <source>Take %1</source>
         <translation>テイク %1</translation>
     </message>

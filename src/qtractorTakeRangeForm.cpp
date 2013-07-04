@@ -54,18 +54,8 @@ qtractorTakeRangeForm::qtractorTakeRangeForm (
 		m_ui.TakeStartSpinBox->setTimeScale(m_pTimeScale);
 		m_ui.TakeEndSpinBox->setTimeScale(m_pTimeScale);
 		// Set proper time scales display format...
-		switch (m_pTimeScale->displayFormat()) {
-		case qtractorTimeScale::BBT:
-			m_ui.BbtRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Time:
-			m_ui.TimeRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Frames:
-		default:
-			m_ui.FramesRadioButton->setChecked(true);
-			break;
-		}
+		m_ui.FormatComboBox->setCurrentIndex(
+			int(m_pTimeScale->displayFormat()));
 	}
 
 	// Try to restore old window positioning.
@@ -87,18 +77,15 @@ qtractorTakeRangeForm::qtractorTakeRangeForm (
 	QObject::connect(m_ui.CustomRangeRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(rangeChanged()));
-	QObject::connect(m_ui.TimeRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
-	QObject::connect(m_ui.BbtRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
 	QObject::connect(m_ui.TakeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
 	QObject::connect(m_ui.TakeEndSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
+	QObject::connect(m_ui.FormatComboBox,
+		SIGNAL(activated(int)),
+		SLOT(formatChanged()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -167,7 +154,7 @@ unsigned long qtractorTakeRangeForm::takeEnd (void) const
 
 int qtractorTakeRangeForm::currentTake (void) const
 {
-	return m_ui.CurrentTakeComboBox->currentIndex();
+	return m_ui.CurrentTakeListBox->currentRow();
 }
 
 
@@ -216,13 +203,9 @@ void qtractorTakeRangeForm::valueChanged (void)
 // Display format has changed.
 void qtractorTakeRangeForm::formatChanged (void)
 {
-	qtractorTimeScale::DisplayFormat displayFormat = qtractorTimeScale::Frames;
-
-	if (m_ui.TimeRadioButton->isChecked())
-		displayFormat = qtractorTimeScale::Time;
-	else
-	if (m_ui.BbtRadioButton->isChecked())
-		displayFormat= qtractorTimeScale::BBT;
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(
+			m_ui.FormatComboBox->currentIndex());
 
 	if (m_pTimeScale) {
 		// Set from local time-scale instance...
@@ -238,8 +221,8 @@ void qtractorTakeRangeForm::formatChanged (void)
 // Populate current take list.
 void qtractorTakeRangeForm::updateCurrentTake (void)
 {
-	int iCurrentTake = m_ui.CurrentTakeComboBox->currentIndex();
-	m_ui.CurrentTakeComboBox->clear();
+	int iCurrentTake = m_ui.CurrentTakeListBox->currentRow();
+	m_ui.CurrentTakeListBox->clear();
 	if (m_pClip) {
 		int iTakeCount = qtractorClip::TakeInfo(
 			m_pClip->clipStart(),
@@ -248,14 +231,14 @@ void qtractorTakeRangeForm::updateCurrentTake (void)
 			m_ui.TakeStartSpinBox->value(),
 			m_ui.TakeEndSpinBox->value()).takeCount();
 		for (int iTake = 0; iTake < iTakeCount; ++iTake)
-			m_ui.CurrentTakeComboBox->addItem(tr("Take %1").arg(iTake + 1));
+			m_ui.CurrentTakeListBox->addItem(tr("Take %1").arg(iTake + 1));
 		if (iCurrentTake < 0)
 			iCurrentTake = 0;
 		else
 		if (iCurrentTake > iTakeCount - 1)
 			iCurrentTake = iTakeCount - 1;
 	}
-	m_ui.CurrentTakeComboBox->setCurrentIndex(iCurrentTake);
+	m_ui.CurrentTakeListBox->setCurrentRow(iCurrentTake);
 }
 
 

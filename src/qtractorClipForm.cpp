@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -146,14 +146,8 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.TrackChannelSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(trackChannelChanged(int)));
-	QObject::connect(m_ui.FramesRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
-	QObject::connect(m_ui.TimeRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
-	QObject::connect(m_ui.BbtRadioButton,
-		SIGNAL(toggled(bool)),
+	QObject::connect(m_ui.FormatComboBox,
+		SIGNAL(activated(int)),
 		SLOT(formatChanged()));
 	QObject::connect(m_ui.ClipStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
@@ -246,25 +240,15 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		indexFromFadeType(m_pClip->fadeOutType()));
 
 	// Set proper time scales display format...
-	switch (m_pTimeScale->displayFormat()) {
-	case qtractorTimeScale::BBT:
-		m_ui.BbtRadioButton->setChecked(true);
-		break;
-	case qtractorTimeScale::Time:
-		m_ui.TimeRadioButton->setChecked(true);
-		break;
-	case qtractorTimeScale::Frames:
-	default:
-		m_ui.FramesRadioButton->setChecked(true);
-		break;
-	}
+	m_ui.FormatComboBox->setCurrentIndex(
+		int(m_pTimeScale->displayFormat()));
 
 	// Now those things specific on track type...
 	const QString sSuffix = m_ui.FilenameComboBox->objectName();
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
 		m_ui.FilenameComboBox->setObjectName("Audio" + sSuffix);
-		m_ui.ClipGainTextLabel->setText(tr("&Gain:"));
+		m_ui.GainVolumeGroupBox->setTitle(tr("&Gain:"));
 		m_ui.ClipGainSpinBox->setSuffix(tr(" dB"));
 		m_ui.ClipGainSpinBox->setRange(-60.0f, +24.0f);
 		m_ui.ClipGainSpinBox->setValue(log10f2(m_pClip->clipGain()));
@@ -287,7 +271,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	}
 	case qtractorTrack::Midi: {
 		m_ui.FilenameComboBox->setObjectName("Midi" + sSuffix);
-		m_ui.ClipGainTextLabel->setText(tr("&Volume:"));
+		m_ui.GainVolumeGroupBox->setTitle(tr("&Volume:"));
 		m_ui.ClipGainSpinBox->setSuffix(tr(" %"));
 		m_ui.ClipGainSpinBox->setRange(0.0f, 1200.0f);
 		m_ui.ClipGainSpinBox->setValue(100.0f * m_pClip->clipGain());
@@ -560,13 +544,9 @@ void qtractorClipForm::changed (void)
 // Display format has changed.
 void qtractorClipForm::formatChanged (void)
 {
-	qtractorTimeScale::DisplayFormat displayFormat = qtractorTimeScale::Frames;
-
-	if (m_ui.TimeRadioButton->isChecked())
-		displayFormat = qtractorTimeScale::Time;
-	else
-	if (m_ui.BbtRadioButton->isChecked())
-		displayFormat = qtractorTimeScale::BBT;
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(
+			m_ui.FormatComboBox->currentIndex());
 
 	if (m_pTimeScale) {
 		// Set from local time-scale instance...

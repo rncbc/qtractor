@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,21 +82,18 @@ qtractorExportForm::qtractorExportForm (
 	QObject::connect(m_ui.CustomRangeRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(rangeChanged()));
-	QObject::connect(m_ui.ExportBusNameComboBox,
-		SIGNAL(activated(const QString &)),
+	QObject::connect(m_ui.ExportBusNameListBox,
+		SIGNAL(currentRowChanged(int)),
 		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.TimeRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
-	QObject::connect(m_ui.BbtRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
 	QObject::connect(m_ui.ExportStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
 	QObject::connect(m_ui.ExportEndSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
+	QObject::connect(m_ui.FormatComboBox,
+		SIGNAL(activated(int)),
+		SLOT(formatChanged()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -166,7 +163,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	}
 
 	// Fill in the output bus names list...
-	m_ui.ExportBusNameComboBox->clear();
+	m_ui.ExportBusNameListBox->clear();
 	if (pEngine) {
 		QDialog::setWindowIcon(icon);
 		QDialog::setWindowTitle(
@@ -174,24 +171,15 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output)
-				m_ui.ExportBusNameComboBox->addItem(icon, pBus->busName());
+				m_ui.ExportBusNameListBox->addItem(
+					new QListWidgetItem(icon, pBus->busName()));
 		}
 	}
 	
 	// Set proper time scales display format...
 	if (m_pTimeScale) {
-		switch (m_pTimeScale->displayFormat()) {
-		case qtractorTimeScale::BBT:
-			m_ui.BbtRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Time:
-			m_ui.TimeRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Frames:
-		default:
-			m_ui.FramesRadioButton->setChecked(true);
-			break;
-		}
+		m_ui.FormatComboBox->setCurrentIndex(
+			int(m_pTimeScale->displayFormat()));
 	}
 
 	// Populate range values...
@@ -213,6 +201,12 @@ qtractorTrack::TrackType qtractorExportForm::exportType (void) const
 // Accept settings (OK button slot).
 void qtractorExportForm::accept (void)
 {
+	// Must always be a export bus target...
+	QListWidgetItem *pExportBusNameItem
+		= m_ui.ExportBusNameListBox->currentItem();
+	if (pExportBusNameItem == NULL)
+		return;
+
 	// Enforce (again) default file extension...
 	QString sExportPath = m_ui.ExportPathComboBox->currentText();
 
@@ -253,7 +247,7 @@ void qtractorExportForm::accept (void)
 				qtractorAudioBus *pExportBus
 					= static_cast<qtractorAudioBus *> (
 						pAudioEngine->findOutputBus(
-							m_ui.ExportBusNameComboBox->currentText()));
+							pExportBusNameItem->text()));
 				// Log this event...
 				pMainForm->appendMessages(
 					tr("Audio file export: \"%1\" started...")
@@ -289,7 +283,7 @@ void qtractorExportForm::accept (void)
 				qtractorMidiBus *pExportBus
 					= static_cast<qtractorMidiBus *> (
 						pMidiEngine->findOutputBus(
-							m_ui.ExportBusNameComboBox->currentText()));
+							pExportBusNameItem->text()));
 				// Log this event...
 				pMainForm->appendMessages(
 					tr("MIDI file export: \"%1\" started...")
@@ -461,13 +455,9 @@ void qtractorExportForm::valueChanged (void)
 // Display format has changed.
 void qtractorExportForm::formatChanged (void)
 {
-	qtractorTimeScale::DisplayFormat displayFormat = qtractorTimeScale::Frames;
-
-	if (m_ui.TimeRadioButton->isChecked())
-		displayFormat = qtractorTimeScale::Time;
-	else
-	if (m_ui.BbtRadioButton->isChecked())
-		displayFormat= qtractorTimeScale::BBT;
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(
+			m_ui.FormatComboBox->currentIndex());
 
 	if (m_pTimeScale) {
 		// Set from local time-scale instance...
@@ -494,6 +484,7 @@ void qtractorExportForm::stabilizeForm (void)
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		!m_ui.ExportPathComboBox->currentText().isEmpty() &&
+		m_ui.ExportBusNameListBox->currentItem() != NULL &&
 		m_ui.ExportStartSpinBox->value() < m_ui.ExportEndSpinBox->value());
 }
 
