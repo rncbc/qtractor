@@ -10077,7 +10077,7 @@ P &lt; 0 : zpomalení posunu.
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1266"/>
+        <location filename="../qtractorMixer.cpp" line="1273"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>

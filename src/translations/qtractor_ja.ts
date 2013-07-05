@@ -9123,7 +9123,7 @@ Are you sure?</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1266"/>
+        <location filename="../qtractorMixer.cpp" line="1273"/>
         <source>Mixer</source>
         <translation>ミキサー</translation>
     </message>

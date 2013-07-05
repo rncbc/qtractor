@@ -8899,7 +8899,7 @@ Are you sure?</source>
         <translation>Ausgänge</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1266"/>
+        <location filename="../qtractorMixer.cpp" line="1273"/>
         <source>Mixer</source>
         <translation>Mischer</translation>
     </message>

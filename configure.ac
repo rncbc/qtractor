@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.9.21, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.9.22, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
