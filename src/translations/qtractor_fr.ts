@@ -471,7 +471,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="352"/>
         <source>move tempo node</source>
-        <translation type="unfinished"></translation>
+        <translation>déplacer le noeud tempo</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="492"/>
@@ -1146,7 +1146,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="253"/>
         <source>Gain/Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Gain/Volume</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="281"/>
@@ -1156,7 +1156,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="287"/>
         <source>Time display format</source>
-        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+        <translation>Format d&apos;affichage du temps</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="291"/>
@@ -1186,12 +1186,12 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="296"/>
         <source>Time</source>
-        <translation type="unfinished">Temps</translation>
+        <translation>Temps</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="301"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="312"/>
@@ -1463,132 +1463,132 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="37"/>
         <source>Range - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Plage - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="47"/>
         <source>Range</source>
-        <translation type="unfinished">Plage</translation>
+        <translation>Plage</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="53"/>
         <source>Selection range</source>
-        <translation type="unfinished">Plage de sélection</translation>
+        <translation>Plage de sélection</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="56"/>
         <source>&amp;Selection</source>
-        <translation type="unfinished">&amp;Sélection</translation>
+        <translation>&amp;Sélection</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="66"/>
         <source>Loop range</source>
-        <translation type="unfinished">Plage de boucle</translation>
+        <translation>Plage de boucle</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="69"/>
         <source>&amp;Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Bouc&amp;le</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="79"/>
         <source>Punch range</source>
-        <translation type="unfinished"></translation>
+        <translation>Plage de punch</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="82"/>
         <source>&amp;Punch</source>
-        <translation type="unfinished">&amp;Punch</translation>
+        <translation>&amp;Punch</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="92"/>
         <source>Edit range</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer la plage</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="95"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editer</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="105"/>
         <source>Custom range</source>
-        <translation type="unfinished"></translation>
+        <translation>Plage spéciale</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="108"/>
         <source>&amp;Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Spéciale</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="118"/>
         <source>St&amp;art:</source>
-        <translation type="unfinished">&amp;Début:</translation>
+        <translation>&amp;Début:</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="134"/>
         <source>Clip start</source>
-        <translation type="unfinished"></translation>
+        <translation>Début du clip</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="157"/>
         <source>En&amp;d:</source>
-        <translation type="unfinished"></translation>
+        <translation>F&amp;in:</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="173"/>
         <source>Clip offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage du clip</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="228"/>
         <source>Apply to Loop points in range</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer aux points de la boucle dans la plage</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="231"/>
         <source>L&amp;oop</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;oucle</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="238"/>
         <source>Apply to Punch In/Out points in range</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer aux points Punch In/Out de la plage</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="241"/>
         <source>Pu&amp;nch</source>
-        <translation type="unfinished"></translation>
+        <translation>Pu&amp;nch</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="251"/>
         <source>Mar&amp;kers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mar&amp;queurs</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="261"/>
         <source>Te&amp;mpo Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de Te&amp;mpo</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="271"/>
         <source>&amp;Format</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Format</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="277"/>
         <source>Time display format</source>
-        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+        <translation>Format d&apos;affichage du temps</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="286"/>
         <source>Time</source>
-        <translation type="unfinished">Temps</translation>
+        <translation>Temps</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="291"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <source>Format</source>
@@ -1597,7 +1597,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="281"/>
         <source>Frames</source>
-        <translation type="unfinished">Trames</translation>
+        <translation>Trames</translation>
     </message>
     <message>
         <source>&amp;Frames</source>
@@ -1614,27 +1614,27 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="196"/>
         <source>Options</source>
-        <translation type="unfinished">Options</translation>
+        <translation>Options</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="202"/>
         <source>Apply to clips in range</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer aux clips de la plage</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="205"/>
         <source>Cl&amp;ips</source>
-        <translation type="unfinished"></translation>
+        <translation>Cl&amp;ips</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="218"/>
         <source>A&amp;utomation</source>
-        <translation type="unfinished">A&amp;utomation</translation>
+        <translation>A&amp;utomation</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="215"/>
         <source>Apply to Automation nodes in range</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer aux noeuds d&apos;Automation de la plage</translation>
     </message>
     <message>
         <source>&amp;Automation</source>
@@ -1643,12 +1643,12 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="258"/>
         <source>Apply to Tempo Map nodes in range</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer aux noeuds de carte de tempo de la plage</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="248"/>
         <source>Apply to location Markers in range</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer à la localisation des marqueurs de la plage</translation>
     </message>
 </context>
 <context>
@@ -1766,7 +1766,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="291"/>
         <source>Time display format</source>
-        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+        <translation>Format d&apos;affichage du temps</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="295"/>
@@ -1776,12 +1776,12 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="300"/>
         <source>Time</source>
-        <translation type="unfinished">Temps</translation>
+        <translation>Temps</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="305"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <source>&amp;Frames</source>
@@ -2375,7 +2375,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="224"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation>Enle&amp;ver</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="252"/>
@@ -2984,47 +2984,47 @@ Voulez-vous appliquer les changements?</translation>
         <location filename="../qtractorMainForm.ui" line="950"/>
         <location filename="../qtractorMainForm.ui" line="984"/>
         <source>&amp;Range...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Plage...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="953"/>
         <source>Remove Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever Plage</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="956"/>
         <source>Remove range</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever plage</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="959"/>
         <source>Remove range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever la plage sélectionnée</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="962"/>
         <source>Ctrl+Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Suppr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="970"/>
         <source>Remove Track Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever la Plage de Piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="973"/>
         <source>Remove track range</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever la plage de piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="976"/>
         <source>Remove track range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever la plage de piste sélectionnée</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="979"/>
         <source>Ctrl+Shift+Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Suppr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="987"/>
@@ -6535,7 +6535,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="1981"/>
         <source>remove range</source>
-        <translation type="unfinished"></translation>
+        <translation>enlever plage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="3597"/>
@@ -6669,7 +6669,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="100"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation>Enle&amp;ver</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="106"/>
@@ -7233,22 +7233,22 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="780"/>
         <source>Remove Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever Plage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="783"/>
         <source>Remove range</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever plage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="786"/>
         <source>Remove range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever la plage sélectionnée</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="789"/>
         <source>Ctrl+Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Suppr</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="794"/>
@@ -9281,22 +9281,23 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="203"/>
         <source>Save &amp;backup versions of existing sessions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver &amp;des versions de sauvegarde de sessions
+existantes:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="216"/>
         <source>Which mode to rename existing session files</source>
-        <translation type="unfinished"></translation>
+        <translation>Quel mode pour le renommage de fichiers de session existants</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="220"/>
         <source>Increment previous version (default)</source>
-        <translation type="unfinished"></translation>
+        <translation>Incrémente la version précédente (défaut)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="225"/>
         <source>Increment current version</source>
-        <translation type="unfinished"></translation>
+        <translation>Incrémente la version courante</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="242"/>
@@ -11198,12 +11199,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="226"/>
         <source>Time</source>
-        <translation type="unfinished">Temps</translation>
+        <translation>Temps</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="231"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="92"/>
@@ -11263,7 +11264,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="217"/>
         <source>Time display format</source>
-        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+        <translation>Format d&apos;affichage du temps</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="221"/>
@@ -12042,7 +12043,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTrackView.cpp" line="130"/>
         <source>Zoom in (horizontal)</source>
-        <translation type="unfinished">Zoom avant (horizontal)</translation>
+        <translation>Zoom avant (horizontal)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="131"/>
@@ -12277,32 +12278,32 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="1891"/>
         <source>Insert Range</source>
-        <translation type="unfinished">Insérer Plage</translation>
+        <translation>Insérer Plage</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1912"/>
         <source>insert track range</source>
-        <translation type="unfinished">Insérer plage de piste</translation>
+        <translation>Insérer plage de piste</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2107"/>
         <source>Remove Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever Plage</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1911"/>
         <source>insert range</source>
-        <translation type="unfinished">Insérer plage</translation>
+        <translation>Insérer plage</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2127"/>
         <source>remove range</source>
-        <translation type="unfinished"></translation>
+        <translation>enlever plage</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2128"/>
         <source>remove track range</source>
-        <translation type="unfinished"></translation>
+        <translation>enlever la plage de piste</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2407"/>
