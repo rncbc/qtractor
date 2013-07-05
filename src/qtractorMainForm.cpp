@@ -6858,10 +6858,11 @@ void qtractorMainForm::timerSlot (void)
 			}
 			// 2. Watch for temp/time-sig changes on JACK transport...
 			if (bPlaying && (pos.valid & JackPositionBBT)) {
+				unsigned int iBufferSize = (pAudioEngine->bufferSize() << 1);
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-				if (pNode && (
+				if (pNode && iPlayHead > long(pNode->frame + iBufferSize) && (
 					::fabs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
