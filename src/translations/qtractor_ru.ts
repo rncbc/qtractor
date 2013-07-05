@@ -9570,7 +9570,7 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation>Выходы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1266"/>
+        <location filename="../qtractorMixer.cpp" line="1273"/>
         <source>Mixer</source>
         <translation>Микшер</translation>
     </message>

@@ -1247,9 +1247,16 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	m_pTrackRack  = new qtractorMixerRack(this, tr("Tracks"));
 	m_pTrackRack->setSelectEnabled(true);
 	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"));
-
+#if 0
 	m_pSplitter->setStretchFactor(m_pSplitter->indexOf(m_pInputRack), 0);
+	m_pSplitter->setStretchFactor(m_pSplitter->indexOf(m_pTrackRack), 1);
 	m_pSplitter->setStretchFactor(m_pSplitter->indexOf(m_pOutputRack), 0);
+#else
+	QSizePolicy policy;
+	policy = m_pTrackRack->sizePolicy();
+	policy.setHorizontalStretch(1);
+	m_pTrackRack->setSizePolicy(policy);
+#endif
 
 	// Prepare the layout stuff.
 	QHBoxLayout *pLayout = new QHBoxLayout();

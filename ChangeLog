@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Mixer buses racks (ie. left/input and right/output panes) are
+  now both kept fixed-width when whole mixer window is resized.
+
 - Unconditional LV2 Dyn(amic)-manifest support has been added.
   (EXPERIMENTAL)
 

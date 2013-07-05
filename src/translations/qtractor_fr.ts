@@ -9118,7 +9118,7 @@ Etes-vous sur?</translation>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1266"/>
+        <location filename="../qtractorMixer.cpp" line="1273"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
