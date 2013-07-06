@@ -370,7 +370,6 @@ int main ( int argc, char **argv )
 			pal.setBrush(group, QPalette::Dark,     color.darker(160));
 			pal.setBrush(group, QPalette::Shadow,   color.darker(180));
 		}
-	//	pal.setColor(QPalette::Disabled, QPalette::ButtonText, pal.mid().color());
 		pal.setColorGroup(QPalette::Disabled,
 			pal.windowText().color().darker(),
 			pal.button(),
@@ -381,6 +380,12 @@ int main ( int argc, char **argv )
 			pal.text().color().lighter(),
 			pal.base(),
 			pal.window());
+	#if QT_VERSION >= 0x050000
+		pal.setColor(QPalette::Disabled,
+			QPalette::Highlight, pal.mid().color());
+		pal.setColor(QPalette::Disabled,
+			QPalette::ButtonText, pal.mid().color());
+	#endif
 		app.setPalette(pal);
 	}
 
