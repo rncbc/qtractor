@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 plugin support is now tightly tied to linlil; the same tie
+  applies to LV2 plugin UI support and libsuil and vice-versa.
+
 - Mixer buses racks (ie. left/input and right/output panes) are
   now both kept fixed-width when whole mixer window is resized.
 
@@ -23,7 +26,6 @@ SVN TRUNK
   it through as the default standard scalable format (SVG).
 
 - Automation's back in effect on Track/Export Tracks.../Audio.
-  (EXPERIMENTAL)
 
 - Reversed shift/ctrl keyboard modifier roles on middle-button
   clicking over the main track and MIDI clip editor views (aka.

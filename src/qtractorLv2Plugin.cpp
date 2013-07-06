@@ -751,11 +751,7 @@ static const LV2_Feature *g_lv2_features[] =
 #endif
 
 static void qtractor_lv2_ui_write (
-#ifdef CONFIG_LIBSUIL
 	SuilController ui_controller,
-#else
-	LV2UI_Controller ui_controller,
-#endif
 	uint32_t port_index,
 	uint32_t buffer_size,
 	uint32_t protocol,
@@ -1583,10 +1579,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_uis(NULL)
 		, m_lv2_ui(NULL)
 		, m_lv2_ui_features(NULL)
-	#ifdef CONFIG_LIBSUIL
 		, m_suil_host(NULL)
 		, m_suil_instance(NULL)
-	#endif
 		, m_lv2_ui_widget(NULL)
 	#ifdef CONFIG_LV2_ATOM
 		, m_ui_events(NULL)
@@ -2359,8 +2353,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 	m_lv2_ui_features[iFeatures] = NULL;
 
-#ifdef CONFIG_LIBSUIL
-
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -2429,8 +2421,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		g_lv2Plugins.append(this);
 	}
 
-#endif	// CONFIG_LIBSUIL
-
 	setEditorVisible(true);
 
 //	idleEditor();
@@ -2468,7 +2458,6 @@ void qtractorLv2Plugin::closeEditor (void)
 	if (iLv2Plugin >= 0)
 		g_lv2Plugins.removeAt(iLv2Plugin);
 
-#ifdef CONFIG_LIBSUIL
 	if (m_suil_instance) {
 		suil_instance_free(m_suil_instance);
 		m_suil_instance = NULL;
@@ -2477,7 +2466,6 @@ void qtractorLv2Plugin::closeEditor (void)
 		suil_host_free(m_suil_host);
 		m_suil_host = NULL;
 	}
-#endif
 
 	m_lv2_ui_widget = NULL;
 	
@@ -2512,7 +2500,6 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 
 	if (m_piControlOuts && m_pfControlOuts && m_pfControlOutsLast) {
-	#ifdef CONFIG_LIBSUIL
 		if (m_suil_instance) {
 			unsigned long iControlOuts = type()->controlOuts();
 			for (unsigned short j = 0; j < iControlOuts; ++j) {
@@ -2523,7 +2510,6 @@ void qtractorLv2Plugin::idleEditor (void)
 				}
 			}
 		}
-	#endif
 	}
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -2540,12 +2526,10 @@ void qtractorLv2Plugin::idleEditor (void)
 		char buf[ev.size];
 		if (::jack_ringbuffer_read(m_plugin_events, buf, ev.size) < ev.size)
 			break;
-	#ifdef CONFIG_LIBSUIL
 		if (m_suil_instance) {
 			suil_instance_port_event(m_suil_instance,
 				ev.index, ev.size, ev.protocol, buf);
 		}
-	#endif
 		read_space -= sizeof(ev) + ev.size;
 	}
 
@@ -2665,12 +2649,10 @@ void qtractorLv2Plugin::updateParam (
 		this, pParam->index(), fValue, int(bUpdate));
 #endif
 
-#ifdef CONFIG_LIBSUIL
 	if (bUpdate && m_suil_instance) {
 		suil_instance_port_event(m_suil_instance,
 			pParam->index(), sizeof(float), 0, &fValue);
 	}
-#endif
 }
 
 
@@ -2963,14 +2945,14 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 		}
 	}
 
-#ifdef CONFIG_LIBSUIL
+#ifdef CONFIG_LV2_UI
 	if (m_suil_instance) {
 		const LV2_Programs_UI_Interface *ui_programs
 			= (const LV2_Programs_UI_Interface *)
 				suil_instance_extension_data(
 					m_suil_instance, LV2_PROGRAMS__UIInterface);
 		if (ui_programs && ui_programs->select_program) {
-		#if 0
+		#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
 			LV2UI_Handle ui_handle = suil_instance_get_handle(m_suil_instance);
 		#else
 			struct SuilInstanceHead {	// HACK!
@@ -2979,7 +2961,7 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 				LV2UI_Handle            ui_handle;
 			} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
 			LV2UI_Handle ui_handle = suil_instance_head->ui_handle;
-		#endif
+		#endif	//  CONFIG_SUIL_INSTANCE_GET_HANDLE
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorLv2Plugin[%p]::selectProgram(%d, %d)"
 				" LV2UI_Handle=%p", this, iBank, iProg, ui_handle);
@@ -2989,7 +2971,7 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 			}
 		}
 	}
-#endif
+#endif	// CONFIG_LV2_UI
 
 	// Reset parameters default value...
 	const qtractorPlugin::Params& params = qtractorPlugin::params();

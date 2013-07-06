@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.9.23, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.9.24, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -633,6 +633,18 @@ if test "x$ac_suil" = "xyes"; then
       ac_lv2_external_ui="no"
    fi
 fi
+if test "x$ac_suil" = "xyes"; then
+   AC_CHECK_LIB(suil-0, suil_instance_get_handle,
+	  [ac_suil_instance_get_handle="yes"],
+	  [ac_suil_instance_get_handle="no"])
+   if test "x$ac_suil_instance_get_handle" = "xyes"; then
+	  AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
+   fi
+else
+   ac_suil="no"
+   ac_lv2_ui="no"
+   ac_lv2_external_ui="no"
+fi
 
 # Check for LV2 host library (liblilv).
 if test "x$ac_lilv" = "xno"; then
@@ -1101,16 +1113,14 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
-echo "  LV2 plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
-echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
-echo "  LV2 plug-in UI support . . . . . . . . . . . . . .: $ac_lv2_ui"
-echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_suil"
+echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lv2"
+echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_lv2_ui"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
 echo "  LV2 plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
 echo "  LV2 plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
-echo "  LV2 plug-in State Files support (EXPERIMENTAL) . .: $ac_lv2_state_files"
+echo "  LV2 plug-in State Files support  . . . . . . . . .: $ac_lv2_state_files"
 echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
 echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
@@ -1120,7 +1130,7 @@ echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
 echo
-echo "  NSM support (EXPERIMENTAL) . . . . . . . . . . . .: $ac_nsm"
+echo "  Non Session Management (NSM) support . . . . . . .: $ac_nsm"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"

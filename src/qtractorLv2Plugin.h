@@ -24,13 +24,7 @@
 
 #include "qtractorPlugin.h"
 
-#ifdef CONFIG_LIBLILV
 #include <lilv/lilv.h>
-#endif
-
-#ifdef CONFIG_LIBSUIL
-#include <suil/suil.h>
-#endif
 
 #ifdef CONFIG_LV2_EVENT
 // LV2 Event/MIDI support.
@@ -58,6 +52,7 @@ class qtractorLv2Worker;
 
 #ifdef CONFIG_LV2_UI
 // LV2 UI support.
+#include <suil/suil.h>
 #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
 // LV2 UI data/instance access support.
 #include "lv2/lv2plug.in/ns/ext/data-access/data-access.h"
@@ -65,12 +60,12 @@ class qtractorLv2Worker;
 #ifdef CONFIG_LV2_ATOM
 #include <jack/ringbuffer.h>
 #endif
-#endif
-
 #ifdef CONFIG_LV2_EXTERNAL_UI
 // LV2 External UI support.
 #include "lv2_external_ui.h"
 #endif
+#endif
+
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
@@ -366,11 +361,9 @@ private:
 
 	LV2_Feature  **m_lv2_ui_features;
 
-#ifdef CONFIG_LIBSUIL
 	SuilHost      *m_suil_host;
 	SuilInstance  *m_suil_instance;
 	SuilWidget     m_lv2_ui_widget;
-#endif
 
 #ifdef CONFIG_LV2_ATOM
 
