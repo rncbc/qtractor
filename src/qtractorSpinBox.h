@@ -50,7 +50,8 @@ public:
 	qtractorTimeScale *timeScale() const;
 
 	// Display-format accessors.
-	qtractorTimeScale::DisplayFormat displayFormat (void) const;
+	void setDisplayFormat(qtractorTimeScale::DisplayFormat displayFormat);
+	qtractorTimeScale::DisplayFormat displayFormat() const;
 	void updateDisplayFormat();
 
 	// Nominal value (in frames) accessors.
@@ -71,13 +72,16 @@ public:
 	unsigned long deltaValue() const;
 
 	// Editing stabilizer.
-	unsigned long valueFromText();
+	unsigned long valueFromText() const;
 
 signals:
 
 	// Common value change notification.
 	void valueChanged(unsigned long);
 	void valueChanged(const QString&);
+
+	// Display format change notification.
+	void displayFormatChanged(int);
 
 protected:
 
@@ -94,6 +98,9 @@ protected:
 	unsigned long valueFromText(const QString& sText) const;
 	QString textFromValue(unsigned long iValue) const;
 
+	// Local context menu handler.
+	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
+
 protected slots:
 
 	// Pseudo-fixup slot.
@@ -104,6 +111,8 @@ private:
 
 	// Instance variables.
 	qtractorTimeScale *m_pTimeScale;
+	qtractorTimeScale::DisplayFormat m_displayFormat;
+
 	unsigned long      m_iValue;
 	unsigned long      m_iMinimumValue;
 	unsigned long      m_iMaximumValue;

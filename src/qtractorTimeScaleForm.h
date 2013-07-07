@@ -64,6 +64,8 @@ protected slots:
 	void updateItem();
 	void removeItem();
 
+	void refreshItems();
+
 	void barChanged(int);
 	void timeChanged(unsigned long);
 	void tempoChanged();
@@ -90,8 +92,6 @@ protected:
 	};
 
 	unsigned int flags() const;
-
-	void refreshItems();
 
 	void setCurrentItem(qtractorTimeScale::Node *pNode, unsigned long iFrame);
 

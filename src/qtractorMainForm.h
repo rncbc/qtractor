@@ -318,6 +318,7 @@ protected slots:
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
 
+	void transportTimeFormatChanged(int iDisplayFormat);
 	void transportTimeChanged(unsigned long iPlayHead);
 	void transportTimeFinished();
 
@@ -328,7 +329,6 @@ protected slots:
 	void snapPerBeatChanged(int iSnap);
 	void contentsChanged();
 
-	void transportTimeContextMenu(const QPoint& pos);
 	void transportTempoContextMenu(const QPoint& pos);
 
 	void handle_sigusr1();

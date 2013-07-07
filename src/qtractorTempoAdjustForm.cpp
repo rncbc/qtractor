@@ -62,18 +62,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	m_fTempoTap = 0.0f;
 
 	// Set proper time scales display format...
-	switch (m_pTimeScale->displayFormat()) {
-	case qtractorTimeScale::BBT:
-		m_ui.BbtRadioButton->setChecked(true);
-		break;
-	case qtractorTimeScale::Time:
-		m_ui.TimeRadioButton->setChecked(true);
-		break;
-	case qtractorTimeScale::Frames:
-	default:
-		m_ui.FramesRadioButton->setChecked(true);
-		break;
-	}
+	m_ui.FormatComboBox->setCurrentIndex(int(m_pTimeScale->displayFormat()));
 
 	// Initialize dirty control state (nope).
 	m_iDirtySetup = 0;
@@ -89,24 +78,24 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(rangeStartChanged(unsigned long)));
+	QObject::connect(m_ui.RangeStartSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeLengthSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(rangeLengthChanged(unsigned long)));
+	QObject::connect(m_ui.RangeLengthSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeBeatsSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.AdjustPushButton,
 		SIGNAL(clicked()),
 		SLOT(adjust()));
-	QObject::connect(m_ui.FramesRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
-	QObject::connect(m_ui.TimeRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
-	QObject::connect(m_ui.BbtRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(formatChanged()));
+	QObject::connect(m_ui.FormatComboBox,
+		SIGNAL(activated(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.TempoPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoTap()));
@@ -306,22 +295,21 @@ void qtractorTempoAdjustForm::selectChanged (void)
 
 
 // Display format has changed.
-void qtractorTempoAdjustForm::formatChanged (void)
+void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 {
-	qtractorTimeScale::DisplayFormat displayFormat = qtractorTimeScale::Frames;
+	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	if (m_ui.TimeRadioButton->isChecked())
-		displayFormat = qtractorTimeScale::Time;
-	else
-	if (m_ui.BbtRadioButton->isChecked())
-		displayFormat = qtractorTimeScale::BBT;
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
-	if (m_pTimeScale) {
-		// Set from local time-scale instance...
+	m_ui.RangeStartSpinBox->setDisplayFormat(displayFormat);
+	m_ui.RangeLengthSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
 		m_pTimeScale->setDisplayFormat(displayFormat);
-		m_ui.RangeStartSpinBox->updateDisplayFormat();
-		m_ui.RangeLengthSpinBox->updateDisplayFormat();
-	}
+
+	m_ui.FormatComboBox->blockSignals(bBlockSignals);
 
 	stabilizeForm();
 }

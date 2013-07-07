@@ -106,16 +106,22 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 		SLOT(rangeChanged()));
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
-		SLOT(formatChanged()));
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
+	QObject::connect(m_ui.RangeStartSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeEndSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
-    QObject::connect(m_ui.ClipsCheckBox,
-        SIGNAL(toggled(bool)),
-        SLOT(optionsChanged()));
+	QObject::connect(m_ui.RangeEndSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
+	QObject::connect(m_ui.ClipsCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(optionsChanged()));
 	QObject::connect(m_ui.AutomationCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(optionsChanged()));
@@ -125,13 +131,13 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 	QObject::connect(m_ui.PunchCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(optionsChanged()));
-    QObject::connect(m_ui.MarkersCheckBox,
-        SIGNAL(toggled(bool)),
-        SLOT(optionsChanged()));
-    QObject::connect(m_ui.TempoMapCheckBox,
-        SIGNAL(toggled(bool)),
-        SLOT(optionsChanged()));
-    QObject::connect(m_ui.DialogButtonBox,
+	QObject::connect(m_ui.MarkersCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(optionsChanged()));
+	QObject::connect(m_ui.TempoMapCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(optionsChanged()));
+	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
 	QObject::connect(m_ui.DialogButtonBox,
@@ -274,18 +280,21 @@ void qtractorEditRangeForm::valueChanged (void)
 
 
 // Display format has changed.
-void qtractorEditRangeForm::formatChanged (void)
+void qtractorEditRangeForm::formatChanged ( int iDisplayFormat )
 {
-	qtractorTimeScale::DisplayFormat displayFormat
-		= qtractorTimeScale::DisplayFormat(
-			m_ui.FormatComboBox->currentIndex());
+	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	if (m_pTimeScale) {
-		// Set from local time-scale instance...
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
+
+	m_ui.RangeStartSpinBox->setDisplayFormat(displayFormat);
+	m_ui.RangeEndSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
 		m_pTimeScale->setDisplayFormat(displayFormat);
-		m_ui.RangeStartSpinBox->updateDisplayFormat();
-		m_ui.RangeEndSpinBox->updateDisplayFormat();
-	}
+
+	m_ui.FormatComboBox->blockSignals(bBlockSignals);
 
 	stabilizeForm();
 }

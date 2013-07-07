@@ -24,6 +24,9 @@
 
 #include <QLineEdit>
 #include <QLocale>
+#include <QMenu>
+
+#include <QContextMenuEvent>
 
 #include <math.h>
 
@@ -36,6 +39,7 @@ qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
 	: QAbstractSpinBox(pParent)
 {
 	m_pTimeScale    = NULL;
+	m_displayFormat = qtractorTimeScale::Frames;
 	m_iValue        = 0;
 	m_iMinimumValue = 0;
 	m_iMaximumValue = 0;
@@ -76,6 +80,10 @@ void qtractorTimeSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 void qtractorTimeSpinBox::setTimeScale ( qtractorTimeScale *pTimeScale )
 {
 	m_pTimeScale = pTimeScale;
+
+	setDisplayFormat(m_pTimeScale
+		? m_pTimeScale->displayFormat()
+		: qtractorTimeScale::Frames);
 }
 
 qtractorTimeScale *qtractorTimeSpinBox::timeScale (void) const
@@ -85,12 +93,18 @@ qtractorTimeScale *qtractorTimeSpinBox::timeScale (void) const
 
 
 // Display-format accessors.
+void qtractorTimeSpinBox::setDisplayFormat (
+	qtractorTimeScale::DisplayFormat displayFormat )
+{
+	m_displayFormat = displayFormat;
+	updateDisplayFormat();
+}
+
 qtractorTimeScale::DisplayFormat qtractorTimeSpinBox::displayFormat (void) const
 {
-	return (m_pTimeScale
-		? m_pTimeScale->displayFormat()
-		: qtractorTimeScale::Frames);
+	return m_displayFormat;
 }
+
 
 void qtractorTimeSpinBox::updateDisplayFormat (void)
 {
@@ -185,22 +199,20 @@ QValidator::State qtractorTimeSpinBox::validate ( QString& sText, int& iPos ) co
 		return QValidator::Acceptable;
 
 	const QChar& ch = sText[iPos - 1];
-	if (m_pTimeScale) {
-		switch (m_pTimeScale->displayFormat()) {
-		case qtractorTimeScale::Time:
-			if (ch == ':')
-				return QValidator::Acceptable;
-			// Fall thru.
-		case qtractorTimeScale::BBT:
-			if (ch == '.')
-				return QValidator::Acceptable;
-			// Fall thru.
-		case qtractorTimeScale::Frames:
-		default:
-			if (ch.isDigit())
-				return QValidator::Acceptable;
-			break;
-		}
+	switch (m_displayFormat) {
+	case qtractorTimeScale::Time:
+		if (ch == ':')
+			return QValidator::Acceptable;
+		// Fall thru.
+	case qtractorTimeScale::BBT:
+		if (ch == '.')
+			return QValidator::Acceptable;
+		// Fall thru.
+	case qtractorTimeScale::Frames:
+	default:
+		if (ch.isDigit())
+			return QValidator::Acceptable;
+		break;
 	}
 
 	return QValidator::Invalid;
@@ -230,7 +242,7 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 	long iValue = long(value());
 
 	if (m_pTimeScale) {
-		switch (m_pTimeScale->displayFormat()) {
+		switch (m_displayFormat) {
 		case qtractorTimeScale::BBT: {
 			qtractorTimeScale::Cursor cursor(m_pTimeScale);
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(iValue);
@@ -282,25 +294,72 @@ QAbstractSpinBox::StepEnabled qtractorTimeSpinBox::stepEnabled (void) const
 
 
 // Value/text format converters.
-unsigned long qtractorTimeSpinBox::valueFromText (void)
+unsigned long qtractorTimeSpinBox::valueFromText (void) const
 {
 	return valueFromText(QAbstractSpinBox::text());
 }
 
 unsigned long qtractorTimeSpinBox::valueFromText ( const QString& sText ) const
 {
-	return (m_pTimeScale
-		? m_pTimeScale->frameFromText(sText, m_bDeltaValue, m_iDeltaValue)
-		: sText.toULong());
+	if (m_pTimeScale == NULL)
+		return sText.toULong();
+
+	return m_pTimeScale->frameFromTextEx(
+		m_displayFormat, sText, m_bDeltaValue, m_iDeltaValue);
 }
 
 QString qtractorTimeSpinBox::textFromValue ( unsigned long iValue ) const
 {
-	return (m_pTimeScale
-		? (m_bDeltaValue
-			? m_pTimeScale->textFromFrame(m_iDeltaValue, true, iValue)
-			: m_pTimeScale->textFromFrame(iValue))
-		: QString::number(iValue));
+	if (m_pTimeScale == NULL)
+		return QString::number(iValue);
+
+	if (m_bDeltaValue) {
+		return m_pTimeScale->textFromFrameEx(
+			m_displayFormat, m_iDeltaValue, true, iValue);
+	} else {
+		return m_pTimeScale->textFromFrameEx(
+			m_displayFormat, iValue);
+	}
+}
+
+
+// Local context menu handler.
+void qtractorTimeSpinBox::contextMenuEvent (
+	QContextMenuEvent *pContextMenuEvent )
+{
+//	QAbstractSpinBox::contextMenuEvent(pContextMenuEvent);
+
+	if (m_pTimeScale == NULL)
+		return;
+
+	QMenu menu(this);
+	QAction *pAction;
+
+	pAction = menu.addAction(tr("&Frames"));
+	pAction->setCheckable(true);
+	pAction->setChecked(m_displayFormat == qtractorTimeScale::Frames);
+	pAction->setData(int(qtractorTimeScale::Frames));
+
+	pAction = menu.addAction(tr("&Time"));
+	pAction->setCheckable(true);
+	pAction->setChecked(m_displayFormat == qtractorTimeScale::Time);
+	pAction->setData(int(qtractorTimeScale::Time));
+
+	pAction = menu.addAction(tr("&BBT"));
+	pAction->setCheckable(true);
+	pAction->setChecked(m_displayFormat == qtractorTimeScale::BBT);
+	pAction->setData(int(qtractorTimeScale::BBT));
+
+	pAction = menu.exec(pContextMenuEvent->globalPos());
+	if (pAction == NULL)
+		return;
+
+	const qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(pAction->data().toInt());
+	if (displayFormat != m_displayFormat) {
+		setDisplayFormat(displayFormat);
+		emit displayFormatChanged(int(displayFormat));
+	}
 }
 
 

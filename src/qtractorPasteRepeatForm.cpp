@@ -79,6 +79,9 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 	QObject::connect(m_ui.RepeatPeriodSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
+	QObject::connect(m_ui.RepeatPeriodSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RepeatFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
@@ -186,14 +189,18 @@ void qtractorPasteRepeatForm::changed (void)
 // Display format has changed.
 void qtractorPasteRepeatForm::formatChanged ( int iDisplayFormat )
 {
+	bool bBlockSignals = m_ui.RepeatFormatComboBox->blockSignals(true);
+	m_ui.RepeatFormatComboBox->setCurrentIndex(iDisplayFormat);
+
 	qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
-	m_ui.RepeatFormatComboBox->setCurrentIndex(iDisplayFormat);
-	if (m_pTimeScale) {
+	m_ui.RepeatPeriodSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
 		m_pTimeScale->setDisplayFormat(displayFormat);
-		m_ui.RepeatPeriodSpinBox->updateDisplayFormat();
-	}
+
+	m_ui.RepeatFormatComboBox->blockSignals(bBlockSignals);
 
 	stabilizeForm();
 }

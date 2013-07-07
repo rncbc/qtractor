@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Time display format (frames, clock-time or BBT) may now be
+  changed from the context-menu on any time entry spin-box.
+  (EXPERIMENTAL)
+
 - LV2 plugin support is now tightly tied to linlil; the same tie
   applies to LV2 plugin UI support and libsuil and vice-versa.
 

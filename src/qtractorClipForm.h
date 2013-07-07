@@ -49,7 +49,7 @@ protected slots:
 	void accept();
 	void reject();
 	void changed();
-	void formatChanged();
+	void formatChanged(int);
 	void stabilizeForm();
     void browseFilename();
 

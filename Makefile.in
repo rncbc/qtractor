@@ -125,6 +125,7 @@ headers = \
 	src/qtractorSessionForm.h \
 	src/qtractorShortcutForm.h \
 	src/qtractorTakeRangeForm.h \
+	src/qtractorTempoAdjustForm.h \
 	src/qtractorTimeScaleForm.h \
 	src/qtractorTrackForm.h
 
@@ -236,6 +237,7 @@ sources = \
 	src/qtractorSessionForm.cpp \
 	src/qtractorShortcutForm.cpp \
 	src/qtractorTakeRangeForm.cpp \
+	src/qtractorTempoAdjustForm.cpp \
 	src/qtractorTimeScaleForm.cpp \
 	src/qtractorTrackForm.cpp
 
@@ -259,6 +261,7 @@ forms = \
 	src/qtractorSessionForm.ui \
 	src/qtractorShortcutForm.ui \
 	src/qtractorTakeRangeForm.ui \
+	src/qtractorTempoAdjustForm.ui \
 	src/qtractorTimeScaleForm.ui \
 	src/qtractorTrackForm.ui
 

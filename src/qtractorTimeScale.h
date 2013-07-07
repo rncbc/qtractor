@@ -397,8 +397,13 @@ public:
 		{ return m_displayFormat; }
 
 	// Convert frames to time string and vice-versa.
+	QString textFromFrameEx(DisplayFormat displayFormat,
+		unsigned long iFrame, bool bDelta = false, unsigned long iDelta = 0);
 	QString textFromFrame(
 		unsigned long iFrame, bool bDelta = false, unsigned long iDelta = 0);
+
+	unsigned long frameFromTextEx(DisplayFormat displayFormat,
+		const QString& sText, bool bDelta = false, unsigned long iFrame = 0);
 	unsigned long frameFromText(
 		const QString& sText, bool bDelta = false, unsigned long iFrame = 0);
 

@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@
     <x>0</x>
     <y>0</y>
     <width>340</width>
-    <height>259</height>
+    <height>260</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -80,7 +80,7 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0">
+        <property name="sizeHint">
          <size>
           <width>20</width>
           <height>20</height>
@@ -103,36 +103,7 @@
      <property name="title">
       <string>Range</string>
      </property>
-	 <layout class="QGridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="RangeStartTextLabel">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>&amp;Start:</string>
-        </property>
-        <property name="buddy">
-         <cstring>RangeStartSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="qtractorTimeSpinBox" name="RangeStartSpinBox">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Range start</string>
-        </property>
-       </widget>
-      </item>
+     <layout class="QGridLayout">
       <item row="1" column="0">
        <widget class="QLabel" name="RangeLengthTextLabel">
         <property name="minimumSize">
@@ -143,35 +114,6 @@
         </property>
         <property name="text">
          <string>&amp;Length:</string>
-        </property>
-        <property name="buddy">
-         <cstring>RangeLengthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="qtractorTimeSpinBox" name="RangeLengthSpinBox">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Range length</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="RangeBeatsTextLabel">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>B&amp;eats:</string>
         </property>
         <property name="buddy">
          <cstring>RangeLengthSpinBox</cstring>
@@ -198,18 +140,63 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
+      <item row="0" column="0">
+       <widget class="QLabel" name="RangeStartTextLabel">
+        <property name="minimumSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>60</width>
+          <height>0</height>
          </size>
         </property>
-       </spacer>
+        <property name="text">
+         <string>&amp;Start:</string>
+        </property>
+        <property name="buddy">
+         <cstring>RangeStartSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="RangeBeatsTextLabel">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>B&amp;eats:</string>
+        </property>
+        <property name="buddy">
+         <cstring>RangeLengthSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="qtractorTimeSpinBox" name="RangeLengthSpinBox">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Range length</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="qtractorTimeSpinBox" name="RangeStartSpinBox">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Range start</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -219,54 +206,43 @@
      <property name="title">
       <string>Format</string>
      </property>
-     <layout class="QVBoxLayout">
-      <item>
-       <widget class="QRadioButton" name="FramesRadioButton">
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QComboBox" name="FormatComboBox">
         <property name="toolTip">
+         <string>Time display format</string>
+        </property>
+        <item>
+        <property name="text">
          <string>Frames</string>
         </property>
+        </item>
+        <item>
         <property name="text">
-         <string>Fra&amp;mes</string>
+         <string>Time</string>
         </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="TimeRadioButton">
-        <property name="toolTip">
-         <string>Time (hh:mm:ss.zzz)</string>
-        </property>
+        </item>
+        <item>
         <property name="text">
-         <string>&amp;Time</string>
+         <string>BBT</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="BbtRadioButton">
-        <property name="toolTip">
-         <string>BBT (bars.beats.ticks)</string>
-        </property>
-        <property name="text">
-         <string>&amp;BBT</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
+        </item>
+      </widget>
+     </item>
+     <item>
+      <spacer>
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
+        <property name="sizeHint">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
         </property>
-       </spacer>
-      </item>
-     </layout>
+      </spacer>
+     </item>
+    </layout>
     </widget>
    </item>
    <item row="2" column="0" colspan="2">
@@ -301,9 +277,7 @@
   <tabstop>RangeLengthSpinBox</tabstop>
   <tabstop>RangeBeatsSpinBox</tabstop>
   <tabstop>AdjustPushButton</tabstop>
-  <tabstop>FramesRadioButton</tabstop>
-  <tabstop>TimeRadioButton</tabstop>
-  <tabstop>BbtRadioButton</tabstop>
+  <tabstop>FormatComboBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
