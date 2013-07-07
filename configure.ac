@@ -211,7 +211,7 @@ AC_ARG_ENABLE(stacktrace,
 
 
 # Standard installation base dirs.
-#ac_with_paths="/usr /usr/local"
+ac_with_paths="/usr /usr/local"
 
 # Some a-la-debian alternatives...
 for X in /usr/lib /usr/lib64 /usr/share; do
