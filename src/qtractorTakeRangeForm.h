@@ -57,7 +57,7 @@ public:
 protected slots:
 
 	void rangeChanged();
-	void formatChanged();
+	void formatChanged(int);
 	void valueChanged();
 	void updateCurrentTake();
 	void stabilizeForm();

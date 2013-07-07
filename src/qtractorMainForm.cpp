@@ -459,7 +459,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTimeSpinBox->setPalette(pal);
 //	m_pTimeSpinBox->setAutoFillBackground(true);
 	m_pTimeSpinBox->setToolTip(tr("Current time (play-head)"));
-	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
+//	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTimeSpinBox);
 //	m_ui.timeToolbar->addSeparator();
 
@@ -492,8 +492,8 @@ qtractorMainForm::qtractorMainForm (
 		Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
 	QObject::connect(m_pTimeSpinBox,
-		SIGNAL(customContextMenuRequested(const QPoint&)),
-		SLOT(transportTimeContextMenu(const QPoint&)));
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(transportTimeFormatChanged(int)));
 	QObject::connect(m_pTimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(transportTimeChanged(unsigned long)));
@@ -1618,7 +1618,7 @@ void qtractorMainForm::dropEvent ( QDropEvent *pDropEvent )
 
 
 // Context menu event handler.
-void qtractorMainForm::contextMenuEvent( QContextMenuEvent *pEvent )
+void qtractorMainForm::contextMenuEvent ( QContextMenuEvent *pEvent )
 {
 	stabilizeForm();
 
@@ -6063,7 +6063,7 @@ void qtractorMainForm::updateDisplayFormat (void)
 	}
 
 	m_pSession->timeScale()->setDisplayFormat(displayFormat);
-	m_pTimeSpinBox->updateDisplayFormat();
+	m_pTimeSpinBox->setDisplayFormat(displayFormat);
 }
 
 
@@ -7818,6 +7818,22 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 }
 
 
+// Time format custom context menu.
+void qtractorMainForm::transportTimeFormatChanged ( int iDisplayFormat )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportTimeFormatChanged(%d)", iDisplayFormat);
+#endif
+
+	if (m_pOptions) {
+		m_pOptions->iDisplayFormat = iDisplayFormat;
+		updateDisplayFormat();
+	}
+
+	stabilizeForm();
+}
+
+
 // Real thing: the playhead has been changed manually!
 void qtractorMainForm::transportTimeChanged ( unsigned long iPlayHead )
 {
@@ -7849,40 +7865,6 @@ void qtractorMainForm::transportTimeFinished (void)
 //	if (m_pTracks)
 //		m_pTracks->trackView()->setFocus();
 	--s_iTimeFinished;
-}
-
-
-// Time format custom context menu.
-void qtractorMainForm::transportTimeContextMenu ( const QPoint& pos )
-{
-	if (m_pOptions == NULL)
-		return;
-
-	QMenu menu(this);
-	QAction *pAction;
-
-	pAction = menu.addAction(tr("&Frames"));
-	pAction->setCheckable(true);
-	pAction->setChecked(m_pOptions->iDisplayFormat == 0);
-	pAction->setData(0);
-	
-	pAction = menu.addAction(tr("&Time"));
-	pAction->setCheckable(true);
-	pAction->setChecked(m_pOptions->iDisplayFormat == 1);
-	pAction->setData(1);
-
-	pAction = menu.addAction(tr("&BBT"));
-	pAction->setCheckable(true);
-	pAction->setChecked(m_pOptions->iDisplayFormat == 2);
-	pAction->setData(2);
-
-	pAction = menu.exec(m_pTimeSpinBox->mapToGlobal(pos));
-	if (pAction) {
-		m_pOptions->iDisplayFormat = pAction->data().toInt();
-		updateDisplayFormat();
-	}
-
-	stabilizeForm();
 }
 
 

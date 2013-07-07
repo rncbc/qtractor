@@ -56,7 +56,7 @@
        </size>
       </property>
       <property name="toolTip">
-	   <string>Tempo map / Markers</string>
+       <string>Tempo map / Markers</string>
       </property>
       <property name="rootIsDecorated">
        <bool>false</bool>
@@ -154,7 +154,7 @@
            <widget class="qtractorTimeSpinBox" name="TimeSpinBox">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>120</width>
               <height>0</height>
              </size>
             </property>

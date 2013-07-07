@@ -67,7 +67,7 @@ protected slots:
 	void rangeStartChanged(unsigned long);
 	void rangeLengthChanged(unsigned long);
 	void selectChanged();
-	void formatChanged();
+	void formatChanged(int);
 	void stabilizeForm();
 
 private:

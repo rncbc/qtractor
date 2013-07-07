@@ -148,25 +148,40 @@ qtractorClipForm::qtractorClipForm (
 		SLOT(trackChannelChanged(int)));
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
-		SLOT(formatChanged()));
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.ClipStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(clipStartChanged(unsigned long)));
+	QObject::connect(m_ui.ClipStartSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.ClipOffsetSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ClipOffsetSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.ClipLengthSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ClipOffsetSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.FadeInLengthSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
+	QObject::connect(m_ui.FadeInLengthSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.FadeInTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.FadeOutLengthSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
+	QObject::connect(m_ui.FadeOutLengthSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.FadeOutTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -542,21 +557,24 @@ void qtractorClipForm::changed (void)
 
 
 // Display format has changed.
-void qtractorClipForm::formatChanged (void)
+void qtractorClipForm::formatChanged ( int iDisplayFormat )
 {
-	qtractorTimeScale::DisplayFormat displayFormat
-		= qtractorTimeScale::DisplayFormat(
-			m_ui.FormatComboBox->currentIndex());
+	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	if (m_pTimeScale) {
-		// Set from local time-scale instance...
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
+
+	m_ui.ClipStartSpinBox->setDisplayFormat(displayFormat);
+	m_ui.ClipOffsetSpinBox->setDisplayFormat(displayFormat);
+	m_ui.ClipLengthSpinBox->setDisplayFormat(displayFormat);
+	m_ui.FadeInLengthSpinBox->setDisplayFormat(displayFormat);
+	m_ui.FadeOutLengthSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
 		m_pTimeScale->setDisplayFormat(displayFormat);
-		m_ui.ClipStartSpinBox->updateDisplayFormat();
-		m_ui.ClipOffsetSpinBox->updateDisplayFormat();
-		m_ui.ClipLengthSpinBox->updateDisplayFormat();
-		m_ui.FadeInLengthSpinBox->updateDisplayFormat();
-		m_ui.FadeOutLengthSpinBox->updateDisplayFormat();
-	}
+
+	m_ui.FormatComboBox->blockSignals(bBlockSignals);
 
 	stabilizeForm();
 }

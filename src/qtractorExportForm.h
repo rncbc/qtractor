@@ -50,7 +50,7 @@ protected slots:
 	void reject();
 	void browseExportPath();
 	void rangeChanged();
-	void formatChanged();
+	void formatChanged(int);
 	void valueChanged();
 	void stabilizeForm();
 

@@ -464,10 +464,11 @@ void qtractorTimeScale::updateScale (void)
 
 
 // Convert frames to time string and vice-versa.
-unsigned long qtractorTimeScale::frameFromText (
+unsigned long qtractorTimeScale::frameFromTextEx (
+	DisplayFormat displayFormat,
 	const QString& sText, bool bDelta, unsigned long iFrame )
 {
-	switch (m_displayFormat) {
+	switch (displayFormat) {
 
 		case BBT:
 		{
@@ -518,13 +519,20 @@ unsigned long qtractorTimeScale::frameFromText (
 	return iFrame;
 }
 
+unsigned long qtractorTimeScale::frameFromText (
+	const QString& sText, bool bDelta, unsigned long iFrame )
+{
+	return frameFromTextEx(m_displayFormat, sText, bDelta, iFrame);
+}
 
-QString qtractorTimeScale::textFromFrame (
+
+QString qtractorTimeScale::textFromFrameEx (
+	DisplayFormat displayFormat,
 	unsigned long iFrame, bool bDelta, unsigned long iDelta )
 {
 	QString sText;
 
-	switch (m_displayFormat) {
+	switch (displayFormat) {
 
 		case BBT:
 		{
@@ -592,6 +600,12 @@ QString qtractorTimeScale::textFromFrame (
 	}
 
 	return sText;
+}
+
+QString qtractorTimeScale::textFromFrame (
+	unsigned long iFrame, bool bDelta, unsigned long iDelta )
+{
+	return textFromFrameEx(m_displayFormat, iFrame, bDelta, iDelta);
 }
 
 

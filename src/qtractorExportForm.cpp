@@ -88,12 +88,18 @@ qtractorExportForm::qtractorExportForm (
 	QObject::connect(m_ui.ExportStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
+	QObject::connect(m_ui.ExportStartSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.ExportEndSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
+	QObject::connect(m_ui.ExportEndSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
-		SLOT(formatChanged()));
+		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -453,18 +459,21 @@ void qtractorExportForm::valueChanged (void)
 
 
 // Display format has changed.
-void qtractorExportForm::formatChanged (void)
+void qtractorExportForm::formatChanged ( int iDisplayFormat )
 {
-	qtractorTimeScale::DisplayFormat displayFormat
-		= qtractorTimeScale::DisplayFormat(
-			m_ui.FormatComboBox->currentIndex());
+	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	if (m_pTimeScale) {
-		// Set from local time-scale instance...
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
+
+	m_ui.ExportStartSpinBox->setDisplayFormat(displayFormat);
+	m_ui.ExportEndSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
 		m_pTimeScale->setDisplayFormat(displayFormat);
-		m_ui.ExportStartSpinBox->updateDisplayFormat();
-		m_ui.ExportEndSpinBox->updateDisplayFormat();
-	}
+
+	m_ui.FormatComboBox->blockSignals(bBlockSignals);
 
 	stabilizeForm();
 }

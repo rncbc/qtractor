@@ -77,7 +77,7 @@ protected slots:
 
     void optionsChanged();
     void rangeChanged();
-	void formatChanged();
+	void formatChanged(int);
 	void valueChanged();
 	void stabilizeForm();
 

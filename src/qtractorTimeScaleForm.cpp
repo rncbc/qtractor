@@ -94,7 +94,8 @@ public:
 		qtractorTimeScaleListItem *pListItem,
 		qtractorTimeScale *pTimeScale,
 		qtractorTimeScale::Node *pNode,
-		qtractorTimeScale::Marker *pMarker)
+		qtractorTimeScale::Marker *pMarker,
+		qtractorTimeScale::DisplayFormat displayFormat)
 		: QTreeWidgetItem(pTreeWidget, pListItem),
 			m_pNode(pNode), m_pMarker(pMarker)
 	{
@@ -102,7 +103,8 @@ public:
 
 		if (pNode) {
 			QTreeWidgetItem::setText(0, QString::number(m_pNode->bar + 1));
-			QTreeWidgetItem::setText(1, pTimeScale->textFromTick(m_pNode->tick));
+			QTreeWidgetItem::setText(1, pTimeScale->textFromFrameEx(
+				displayFormat, m_pNode->frame));
 			QTreeWidgetItem::setText(2, QString("%1 %2/%3")
 				.arg(m_pNode->tempo, 0, 'f', 1)
 				.arg(m_pNode->beatsPerBar)
@@ -114,7 +116,8 @@ public:
 			if (pNode == NULL) {
 				unsigned int iBar = pTimeScale->barFromFrame(pMarker->frame);
 				QTreeWidgetItem::setText(0, QString::number(iBar + 1));
-				QTreeWidgetItem::setText(1, pTimeScale->textFromFrame(pMarker->frame));
+				QTreeWidgetItem::setText(1, pTimeScale->textFromFrameEx(
+					displayFormat, pMarker->frame));
 			}
 			QTreeWidgetItem::setText(3, pMarker->text);
 			QTreeWidgetItem::setForeground(3, pMarker->color);
@@ -200,6 +203,9 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	QObject::connect(m_ui.TimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(timeChanged(unsigned long)));
+	QObject::connect(m_ui.TimeSpinBox,
+		SIGNAL(displayFormatChanged(int)),
+		SLOT(refreshItems()));
 
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
@@ -323,30 +329,33 @@ void qtractorTimeScaleForm::refreshItems (void)
 	// (Re)Load complete tempo-map listing ...
 	m_ui.TimeScaleListView->clear();
 
+	const qtractorTimeScale::DisplayFormat displayFormat
+		= m_ui.TimeSpinBox->displayFormat();
+
 	qtractorTimeScale::Node *pNode = m_pTimeScale->nodes().first();
 	qtractorTimeScale::Marker *pMarker = m_pTimeScale->markers().first();
 
 	qtractorTimeScaleListItem *pListItem = NULL;
 	while (pNode) {
 		while (pMarker && pMarker->frame < pNode->frame) {
-			pListItem = new qtractorTimeScaleListItem(
-				m_ui.TimeScaleListView, pListItem, m_pTimeScale, NULL, pMarker);
+			pListItem = new qtractorTimeScaleListItem(m_ui.TimeScaleListView,
+				pListItem, m_pTimeScale, NULL, pMarker, displayFormat);
 			pMarker = pMarker->next();
 		}
 		if (pMarker && pMarker->frame == pNode->frame) {
-			pListItem = new qtractorTimeScaleListItem(
-				m_ui.TimeScaleListView, pListItem, m_pTimeScale, pNode, pMarker);
+			pListItem = new qtractorTimeScaleListItem(m_ui.TimeScaleListView,
+				pListItem, m_pTimeScale, pNode, pMarker, displayFormat);
 			pMarker = pMarker->next();
 		} else {
-			pListItem = new qtractorTimeScaleListItem(
-				m_ui.TimeScaleListView, pListItem, m_pTimeScale, pNode, NULL);
+			pListItem = new qtractorTimeScaleListItem(m_ui.TimeScaleListView,
+				pListItem, m_pTimeScale, pNode, NULL, displayFormat);
 		}
 		pNode = pNode->next();
 	}
 
 	while (pMarker) {
-		pListItem = new qtractorTimeScaleListItem(
-			m_ui.TimeScaleListView, pListItem, m_pTimeScale, NULL, pMarker);
+		pListItem = new qtractorTimeScaleListItem(m_ui.TimeScaleListView,
+			pListItem, m_pTimeScale, NULL, pMarker, displayFormat);
 		pMarker = pMarker->next();
 	}
 }
