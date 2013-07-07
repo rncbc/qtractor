@@ -211,7 +211,7 @@ AC_ARG_ENABLE(stacktrace,
 
 
 # Standard installation base dirs.
-#ac_with_paths="/usr /usr/local"
+ac_with_paths="/usr /usr/local"
 
 # Some a-la-debian alternatives...
 for X in /usr/lib /usr/lib64 /usr/share; do
@@ -324,13 +324,13 @@ for X in $ac_with_paths; do
 #   ac_path="$X:$ac_path"
 # fi
   if test -d $X/include; then
-#   for Y in qt qt4; do
-#     if test -d $X/include/$Y; then
-#       CFLAGS="-I$X/include/$Y $CFLAGS"
-#       CPPFLAGS="-I$X/include/$Y $CPPFLAGS"
-#       ac_incpath="$X/include/$Y $ac_incpath"
-#     fi
-#   done
+    for Y in qt qt4; do
+      if test -d $X/include/$Y; then
+        CFLAGS="-I$X/include/$Y $CFLAGS"
+        CPPFLAGS="-I$X/include/$Y $CPPFLAGS"
+        ac_incpath="$X/include/$Y $ac_incpath"
+      fi
+    done
     CFLAGS="-I$X/include $CFLAGS"
     CPPFLAGS="-I$X/include $CPPFLAGS"
     ac_incpath="$X/include $ac_incpath"
