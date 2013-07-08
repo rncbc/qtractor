@@ -46,9 +46,7 @@ qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
 	m_iDeltaValue   = 0;
 	m_bDeltaValue   = false;
 
-#if QT_VERSION >= 0x040200
 	QAbstractSpinBox::setAccelerated(true);
-#endif
 
 	QObject::connect(this,
 		SIGNAL(editingFinished()),
@@ -396,9 +394,7 @@ qtractorTempoSpinBox::qtractorTempoSpinBox ( QWidget *pParent )
 	: QAbstractSpinBox(pParent), m_fTempo(120.0f),
 		m_iBeatsPerBar(4), m_iBeatDivisor(2), m_iValueChanged(0)
 {
-#if QT_VERSION >= 0x040200
 	QAbstractSpinBox::setAccelerated(true);
-#endif
 
 	QObject::connect(this,
 		SIGNAL(editingFinished()),

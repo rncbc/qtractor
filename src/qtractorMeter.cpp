@@ -209,9 +209,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSpinBox = new qtractorObserverSpinBox(/*this*/);
 	m_pPanSpinBox->setFont(font7);
 	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
-#if QT_VERSION >= 0x040300
 	m_pPanSpinBox->setKeyboardTracking(false);
-#endif
 	m_pVBoxLayout->addWidget(m_pPanSpinBox);
 
 	m_pTopWidget = new QWidget(/*this*/);
@@ -236,9 +234,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSpinBox = new qtractorObserverSpinBox(/*this*/);
 	m_pGainSpinBox->setFont(font7);
 	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
-#if QT_VERSION >= 0x040300
 	m_pGainSpinBox->setKeyboardTracking(false);
-#endif
 	m_pVBoxLayout->addWidget(m_pGainSpinBox);
 
 	m_pPanObserver  = new PanObserver(this);
@@ -259,9 +255,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSpinBox->setMaximum(+1.0f);
 	m_pPanSpinBox->setSingleStep(0.1f);
 	m_pPanSpinBox->setAlignment(Qt::AlignHCenter);
-#if QT_VERSION >= 0x040200
 	m_pPanSpinBox->setAccelerated(true);
-#endif
 	m_pPanSpinBox->setToolTip(tr("Pan"));
 
 	m_pGainSlider->setTickPosition(QSlider::NoTicks);
@@ -273,9 +267,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSpinBox->setDecimals(1);
 //	m_pGainSpinBox->setSingleStep(0.1f);
 	m_pGainSpinBox->setAlignment(Qt::AlignHCenter);
-#if QT_VERSION >= 0x040200
 	m_pGainSpinBox->setAccelerated(true);
-#endif
 	m_pGainSpinBox->setToolTip(tr("Gain"));
 
 	QWidget::setMinimumHeight(140);

@@ -57,11 +57,6 @@
 #include <QDrag>
 #endif
 
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
-
 
 //----------------------------------------------------------------------------
 // qtractorTinyScrollBarStyle -- Custom style to have some tiny scrollbars

@@ -2,7 +2,7 @@ Source: qtractor
 Section: sound
 Priority: extra
 Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
-Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.2), libjack-dev, libasound2-dev,
+Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.4), libjack-dev, libasound2-dev,
   libsndfile-dev, ladspa-sdk, libvorbis-dev, libsamplerate-dev, libmad0-dev,
   librubberband-dev, dssi-dev, liblo0-dev, libz-dev, libx11-dev, x11proto-core-dev,
   liblilv-dev, libsratom-dev, libsord-dev, libserd-dev, libsuil-dev, lv2-dev

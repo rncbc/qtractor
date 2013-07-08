@@ -74,11 +74,6 @@
 
 #include <QHeaderView>
 
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
-
 
 //----------------------------------------------------------------------------
 // qtractorTracks -- The main session track listview widget.
@@ -1172,7 +1167,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	const QString& sExt = qtractorAudioFileFactory::defaultExt();
 	const QString& sTitle  = tr("Merge/Export Audio Clip") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Audio files (*.%1)").arg(sExt); 
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
 		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
@@ -1433,7 +1428,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	const QString  sExt("mid");
 	const QString& sTitle  = tr("Merge/Export MIDI Clip") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
 		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);

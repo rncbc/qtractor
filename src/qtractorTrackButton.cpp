@@ -27,11 +27,6 @@
 #include "qtractorMidiControlObserver.h"
 
 
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
-
 
 //----------------------------------------------------------------------------
 // qtractorMidiControlButton -- MIDI controller observer tool button.

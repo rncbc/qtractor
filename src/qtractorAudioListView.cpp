@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -136,7 +136,7 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 	QStringList files;
 
 	const QString& sTitle = tr("Open Audio Files") + " - " QTRACTOR_TITLE;
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, recentDir(), qtractorAudioFileFactory::filters());

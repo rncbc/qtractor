@@ -28,11 +28,6 @@
 #include <QTranslator>
 #include <QLocale>
 
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
-
 
 #define CONFIG_QUOTE1(x) #x
 #define CONFIG_QUOTED(x) CONFIG_QUOTE1(x)

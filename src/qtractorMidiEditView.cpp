@@ -39,14 +39,7 @@
 #include <QScrollBar>
 #include <QToolButton>
 
-#if QT_VERSION >= 0x040201
 #include <QStyle>
-#endif
-
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
 
 
 //----------------------------------------------------------------------------
@@ -77,7 +70,6 @@ qtractorMidiEditView::qtractorMidiEditView (
 	m_pVzoomOut->setToolTip(tr("Zoom out (vertical)"));
 	m_pVzoomReset->setToolTip(tr("Zoom reset (vertical)"));
 
-#if QT_VERSION >= 0x040201
 	int iScrollBarExtent
 		= qtractorScrollView::style()->pixelMetric(QStyle::PM_ScrollBarExtent);
 	m_pVzoomReset->setFixedHeight(iScrollBarExtent);
@@ -86,7 +78,6 @@ qtractorMidiEditView::qtractorMidiEditView (
 	qtractorScrollView::addScrollBarWidget(m_pVzoomReset, Qt::AlignBottom);
 	qtractorScrollView::addScrollBarWidget(m_pVzoomOut,   Qt::AlignBottom);
 	qtractorScrollView::addScrollBarWidget(m_pVzoomIn,    Qt::AlignBottom);
-#endif
 
 	QObject::connect(m_pVzoomIn, SIGNAL(clicked()),
 		m_pEditor, SLOT(verticalZoomInSlot()));
@@ -223,20 +214,6 @@ void qtractorMidiEditView::resizeEvent ( QResizeEvent *pResizeEvent )
 	const QSize& size = qtractorScrollView::size();
 	QScrollBar *pVScrollBar = qtractorScrollView::verticalScrollBar();
 	int w = pVScrollBar->width(); 
-
-#if QT_VERSION < 0x040201
-	if (pVScrollBar->isVisible()) {
-		int h = size.height();
-		int x = size.width() - w - 1;
-		pVScrollBar->setFixedHeight(h - w * 3 - 2);
-		if (m_pVzoomIn)
-			m_pVzoomIn->setGeometry(x, h - w * 3, w, w);
-		if (m_pVzoomOut)
-			m_pVzoomOut->setGeometry(x, h - w * 2, w, w);
-		if (m_pVzoomReset)
-			m_pVzoomReset->setGeometry(x, h - w - 1, w, w);
-	}
-#endif
 
 	updateContents();
 

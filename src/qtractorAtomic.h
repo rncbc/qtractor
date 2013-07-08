@@ -1,7 +1,7 @@
 // qtractorAtomic.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,19 +33,7 @@
 extern "C" {
 #endif
 
-#if defined(HAVE_QATOMIC_H)
-
-#if QT_VERSION < 0x040400
-
-static inline int ATOMIC_CAS1 (
-	volatile int *pAddr, int iOldValue, int iNewValue )
-{
-	return q_atomic_test_and_set_int(pAddr, iOldValue, iNewValue);
-}
-
-#endif
-
-#elif defined(__GNUC__)
+#if defined(__GNUC__)
 
 #if defined(powerpc) || defined(__ppc__)
 
@@ -119,7 +107,7 @@ static inline int ATOMIC_CAS1 (
 #endif
 
 
-#if defined(HAVE_QATOMIC_H) && QT_VERSION >= 0x040400
+#if defined(HAVE_QATOMIC_H)
 
 typedef QAtomicInt qtractorAtomic;
 

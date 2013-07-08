@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.9.26, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.9.27, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -347,14 +347,14 @@ done
 
 
 # Check for proper Qt version.
-AC_CACHE_CHECK([for Qt library version >= 4.2],
+AC_CACHE_CHECK([for Qt library version >= 4.4],
    ac_cv_qtversion, [
    AC_TRY_LINK([#include "QtCore/qglobal.h"], [
-      #if QT_VERSION < 0x040200
-      #error Qt library 4.2 or greater required.
+      #if QT_VERSION < 0x040400
+      #error Qt library 4.4 or greater required.
       #endif
    ], ac_cv_qtversion="yes", [
-      echo "no; Qt 4.2 or greater is required"
+      echo "no; Qt 4.4 or greater is required"
       exit 1
    ])
 ])

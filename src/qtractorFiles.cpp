@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,9 +82,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	// Icons...
 	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon(":/images/trackAudio.png"));
 	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/images/trackMidi.png"));
-#if QT_VERSION >= 0x040201
 	m_pTabWidget->setUsesScrollButtons(false);
-#endif
 
 	// Player button (initially disabled)...
 	m_pPlayWidget = new QWidget(m_pTabWidget);

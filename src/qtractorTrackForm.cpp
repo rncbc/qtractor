@@ -42,11 +42,6 @@
 #include <QValidator>
 #include <QPainter>
 
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
-
 
 //----------------------------------------------------------------------
 // class qtractorColorItemDelegate -- Custom color view item delegate.

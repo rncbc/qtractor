@@ -1,7 +1,7 @@
 // qtractorRubberBand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,9 +21,7 @@
 
 #include "qtractorRubberBand.h"
 
-#if QT_VERSION >= 0x040201
 #include <QStyleHintReturnMask>
-#endif
 
 
 //----------------------------------------------------------------------------
@@ -63,7 +61,6 @@ int qtractorRubberBand::Style::styleHint ( StyleHint sh,
 	QStyleHintReturn *hint ) const
 {
 	int ret = QCommonStyle::styleHint(sh, opt, widget, hint);
-#if QT_VERSION >= 0x040201
 	if (sh == QStyle::SH_RubberBand_Mask) {
 		QStyleHintReturnMask *mask
 			= qstyleoption_cast<QStyleHintReturnMask *> (hint);
@@ -75,7 +72,6 @@ int qtractorRubberBand::Style::styleHint ( StyleHint sh,
 		rect.setHeight(rect.height() - thickness);
 		mask->region = regn.subtracted(QRegion(rect));
 	}
-#endif
 	return ret;
 }
 
