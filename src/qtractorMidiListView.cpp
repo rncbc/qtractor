@@ -1,7 +1,7 @@
 // qtractorMidiListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -174,7 +174,7 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 	const QString  sExt("mid");
 	const QString& sTitle  = tr("Open MIDI Files") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filenames to open...
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, recentDir(), sFilter);

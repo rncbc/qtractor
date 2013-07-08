@@ -37,14 +37,7 @@
 #include <QScrollBar>
 #include <QToolButton>
 
-#if QT_VERSION >= 0x040201
 #include <QStyle>
-#endif
-
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
 
 
 //----------------------------------------------------------------------------
@@ -135,7 +128,6 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	m_pHzoomIn->setIcon(QIcon(":/images/viewZoomIn.png"));
 	m_pHzoomReset->setIcon(QIcon(":/images/viewZoomTool.png"));
 
-#if QT_VERSION >= 0x040201
 	int iScrollBarExtent
 		= qtractorScrollView::style()->pixelMetric(QStyle::PM_ScrollBarExtent);
 	m_pHzoomReset->setFixedWidth(iScrollBarExtent);
@@ -144,7 +136,6 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	qtractorScrollView::addScrollBarWidget(m_pHzoomReset, Qt::AlignRight);
 	qtractorScrollView::addScrollBarWidget(m_pHzoomIn,    Qt::AlignRight);
 	qtractorScrollView::addScrollBarWidget(m_pHzoomOut,   Qt::AlignRight);
-#endif
 
 	m_pHzoomIn->setAutoRepeat(true);
 	m_pHzoomOut->setAutoRepeat(true);
@@ -242,24 +233,6 @@ unsigned char qtractorMidiEditEvent::controller (void) const
 void qtractorMidiEditEvent::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	qtractorScrollView::resizeEvent(pResizeEvent);
-
-	// Scrollbar/tools layout management.
-#if QT_VERSION < 0x040201
-	const QSize& size = qtractorScrollView::size();
-	QScrollBar *pHScrollBar = qtractorScrollView::horizontalScrollBar();
-	if (pHScrollBar->isVisible()) {
-		int w = size.width();
-		int h = pHScrollBar->height(); 
-		int y = size.height() - h - 1;
-		pHScrollBar->setFixedWidth(w - h * 3 - 2);
-		if (m_pHzoomIn)
-			m_pHzoomIn->setGeometry(w - h * 3, y, h, h);
-		if (m_pHzoomOut)
-			m_pHzoomOut->setGeometry(w - h * 2, y, h, h);
-		if (m_pHzoomReset)
-			m_pHzoomReset->setGeometry(w - h - 1, y, h, h);
-	}
-#endif
 
 	// FIXME: Prevent any overlay selection during resizing this,
 	// as the overlay rectangles will certainly be wrong...

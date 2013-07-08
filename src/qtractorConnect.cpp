@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,10 +43,6 @@
 #if QT_VERSION >= 0x050000
 #include <QMimeData>
 #include <QDrag>
-#endif
-
-#if QT_VERSION < 0x040200
-#define setForeground	setTextColor
 #endif
 
 
@@ -403,21 +399,13 @@ bool qtractorClientListItem::isHilite (void) const
 // Client item openness status.
 void qtractorClientListItem::setOpen ( bool bOpen )
 {
-#if QT_VERSION >= 0x040201
 	QTreeWidgetItem::setExpanded(bOpen);
-#else
-	QTreeWidgetItem::treeWidget()->setItemExpanded(this, bOpen);
-#endif
 }
 
 
 bool qtractorClientListItem::isOpen (void) const
 {
-#if QT_VERSION >= 0x040201
 	return QTreeWidgetItem::isExpanded();
-#else
-	return QTreeWidgetItem::treeWidget()->isItemExpanded(this);
-#endif
 }
 
 

@@ -41,10 +41,6 @@
 
 #include <math.h>
 
-#if QT_VERSION < 0x040200
-#define setForeground	setTextColor
-#endif
-
 
 //----------------------------------------------------------------------
 // class qtractorTimeScaleItemDelegate -- Custom time-scale item delegate.

@@ -138,9 +138,6 @@
 #if QT_VERSION < 0x040500
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
-#if QT_VERSION < 0x040200
-const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
-#endif
 }
 #endif
 
@@ -620,14 +617,12 @@ qtractorMainForm::qtractorMainForm (
 	m_statusItems[StatusRate] = pLabel;
 	pStatusBar->addPermanentWidget(pLabel);
 
-#if QT_VERSION >= 0x040200
 	m_ui.transportLoopAction->setAutoRepeat(false);
 	m_ui.transportLoopSetAction->setAutoRepeat(false);
 	m_ui.transportPlayAction->setAutoRepeat(false);
 	m_ui.transportRecordAction->setAutoRepeat(false);
 	m_ui.transportPunchAction->setAutoRepeat(false);
 	m_ui.transportPunchSetAction->setAutoRepeat(false);
-#endif
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
@@ -1791,7 +1786,7 @@ bool qtractorMainForm::openSession (void)
 	sExt = m_pOptions->sSessionExt; // Default session  file format...
 	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, m_pOptions->sSessionDir, sFilter);
 #else
@@ -1873,7 +1868,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = filters.join(";;");
-	#if QT_VERSION < 0x040400
+	#if 0//QT_VERSION < 0x040400
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter);
 	#else

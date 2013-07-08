@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,9 +35,6 @@
 #include <QRegExp>
 #include <QList>
 
-#if QT_VERSION < 0x040200
-#define setForeground	setTextColor
-#endif
 
 static qtractorPluginPath g_pluginPath;
 
@@ -106,9 +103,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	m_ui.PluginListView->resizeColumnToContents(6);		// Index
 	m_ui.PluginListView->resizeColumnToContents(7);		// Instances
 
-#if QT_VERSION >= 0x040200
 	m_ui.PluginListView->setSortingEnabled(true);
-#endif
 	m_ui.PluginListView->sortItems(0, Qt::AscendingOrder);
 
 	m_ui.PluginTypeProgressBar->hide();

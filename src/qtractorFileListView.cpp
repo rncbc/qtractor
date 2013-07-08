@@ -118,11 +118,7 @@ void qtractorFileGroupItem::setOpen ( bool bOpen )
 	}
 
 	// Open it up...
-#if QT_VERSION >= 0x040201
 	QTreeWidgetItem::setExpanded(bOpen);
-#else
-	QTreeWidgetItem::treeWidget()->setItemExpanded(this, bOpen);
-#endif
 
 	// All ancestors should be also visible.
 	if (bOpen) {
@@ -135,11 +131,7 @@ void qtractorFileGroupItem::setOpen ( bool bOpen )
 
 bool qtractorFileGroupItem::isOpen (void) const
 {
-#if QT_VERSION >= 0x040201
 	return QTreeWidgetItem::isExpanded();
-#else
-	return QTreeWidgetItem::treeWidget()->isItemExpanded(this);
-#endif
 }
 
 
@@ -1145,11 +1137,7 @@ void qtractorFileListView::ensureVisibleItem ( QTreeWidgetItem *pItem )
 			pItemAbove = QTreeWidget::topLevelItem(iItem - 1);
 			if (pItemAbove) {
 				int iItemCount = pItemAbove->childCount();
-#if QT_VERSION >= 0x040201
 				if (pItemAbove->isExpanded())
-#else
-				if (QTreeWidget::isItemExpanded(pItemAbove))
-#endif
 					pItemAbove = pItemAbove->child(iItemCount - 1);
 			}
 		}

@@ -40,11 +40,6 @@
 #include <QMessageBox>
 #include <QMenu>
 
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
-
 
 //----------------------------------------------------------------------
 // class qtractorBusListItem -- Custom bus listview item.
@@ -397,11 +392,7 @@ void qtractorBusForm::refreshBuses (void)
 		for (qtractorBus *pBus = pAudioEngine->buses().first();
 				pBus; pBus = pBus->next())
 			new qtractorBusListItem(m_pAudioRoot, pBus);
-#if QT_VERSION >= 0x040201
 		m_pAudioRoot->setExpanded(true);
-#else
-		m_ui.BusListView->setItemExpanded(m_pAudioRoot, true);
-#endif
 	}
 
 	// MIDI buses...
@@ -414,11 +405,7 @@ void qtractorBusForm::refreshBuses (void)
 		for (qtractorBus *pBus = pMidiEngine->buses().first();
 				pBus; pBus = pBus->next())
 			new qtractorBusListItem(m_pMidiRoot, pBus);
-#if QT_VERSION >= 0x040201
 		m_pMidiRoot->setExpanded(true);
-#else
-		m_ui.BusListView->setItemExpanded(m_pMidiRoot, true);
-#endif
 	}
 }
 

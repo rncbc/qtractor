@@ -969,7 +969,7 @@ void qtractorOptionsForm::choosePluginPath (void)
 	QString sPluginPath;
 
 	const QString& sTitle = tr("Plug-in Directory") + " - " QTRACTOR_TITLE;
-#if 1 // QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the directory...
     sPluginPath = QFileDialog::getExistingDirectory(this,
 		sTitle, m_ui.PluginPathComboBox->currentText());
@@ -1128,17 +1128,9 @@ void qtractorOptionsForm::moveUpPluginPath (void)
 
 	QListWidgetItem *pItem = m_ui.PluginPathListWidget->takeItem(iPluginPath);
 	if (pItem) {
-#if QT_VERSION >= 0x040200
 		pItem->setSelected(false);
-#else
-		m_ui.PluginPathListWidget->setItemSelected(pItem, false);
-#endif
 		m_ui.PluginPathListWidget->insertItem(iPluginPath - 1, pItem);
-#if QT_VERSION >= 0x040200
 		pItem->setSelected(true);
-#else
-		m_ui.PluginPathListWidget->setItemSelected(pItem, true);
-#endif
 		m_ui.PluginPathListWidget->setCurrentItem(pItem);
 	}
 
@@ -1181,17 +1173,9 @@ void qtractorOptionsForm::moveDownPluginPath (void)
 
 	QListWidgetItem *pItem = m_ui.PluginPathListWidget->takeItem(iPluginPath);
 	if (pItem) {
-#if QT_VERSION >= 0x040200
 		pItem->setSelected(false);
-#else
-		m_ui.PluginPathListWidget->setItemSelected(pItem, false);
-#endif
 		m_ui.PluginPathListWidget->insertItem(iPluginPath + 1, pItem);
-#if QT_VERSION >= 0x040200
 		pItem->setSelected(true);
-#else
-		m_ui.PluginPathListWidget->setItemSelected(pItem, true);
-#endif
 		m_ui.PluginPathListWidget->setCurrentItem(pItem);
 	}
 
@@ -1208,7 +1192,7 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 		sLv2PresetDir = QDir::homePath() + QDir::separator() + ".lv2";
 
 	const QString& sTitle = tr("LV2 Presets Directory") + " - " QTRACTOR_TITLE;
-#if 1 // QT_VERSION < 0x040400
+#if 1// QT_VERSION < 0x040400
 	// Ask for the directory...
 	sLv2PresetDir = QFileDialog::getExistingDirectory(this,
 		sTitle, sLv2PresetDir);
@@ -1260,7 +1244,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString  sExt("log");
 	const QString& sTitle  = tr("Messages Log") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Log files (*.%1)").arg(sExt); 
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getSaveFileName(this,
 		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter);
@@ -1293,7 +1277,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString  sExt("qtt");
 	const QString& sTitle  = tr("Session Template") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Session template files (*.qtr *.qts *.%1)").arg(sExt); 
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter);
@@ -1437,7 +1421,7 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 {
 	QString sAudioFile;
 
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sAudioFile = QFileDialog::getOpenFileName(this,
 		sTitle, sFilename, qtractorAudioFileFactory::filters());

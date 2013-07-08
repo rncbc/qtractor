@@ -367,7 +367,7 @@ void qtractorExportForm::browseExportPath (void)
 	// Actual browse for the file...
 	const QString& sTitle  = tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("%1 files (*.%1)").arg(m_sExportExt);
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	sExportPath = QFileDialog::getSaveFileName(this,
 		sTitle, sExportPath, sFilter);
 #else

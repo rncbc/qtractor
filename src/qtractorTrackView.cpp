@@ -66,11 +66,6 @@
 #include <QDrag>
 #endif
 
-#if QT_VERSION < 0x040300
-#define lighter(x)	light(x)
-#define darker(x)	dark(x)
-#endif
-
 
 //----------------------------------------------------------------------------
 // qtractorTrackView::ClipBoard - Local clipaboard singleton.
@@ -133,7 +128,6 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pVzoomOut->setToolTip(tr("Zoom out (vertical)"));
 	m_pXzoomReset->setToolTip(tr("Zoom reset"));
 
-#if QT_VERSION >= 0x040201
 	int iScrollBarExtent
 		= qtractorScrollView::style()->pixelMetric(QStyle::PM_ScrollBarExtent);
 	m_pHzoomIn->setFixedWidth(iScrollBarExtent);
@@ -144,7 +138,6 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pVzoomIn->setFixedHeight(iScrollBarExtent);
 	qtractorScrollView::addScrollBarWidget(m_pVzoomOut, Qt::AlignBottom);
 	qtractorScrollView::addScrollBarWidget(m_pVzoomIn,  Qt::AlignBottom);
-#endif
 
 	QObject::connect(m_pHzoomIn, SIGNAL(clicked()),
 		m_pTracks, SLOT(horizontalZoomInSlot()));
@@ -624,7 +617,6 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	qtractorScrollView::resizeEvent(pResizeEvent);
 
-#if QT_VERSION >= 0x040201
 	// Corner tool widget layout management...
 	if (m_pXzoomReset) {
 		const QSize& size = qtractorScrollView::size();
@@ -634,34 +626,6 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 		int x = size.width() - w - 2;
 		m_pXzoomReset->setGeometry(x, h - w - 2, w, w);
 	}
-#else
-	// Scrollbar/tools layout management.
-	const QSize& size = qtractorScrollView::size();
-	QScrollBar *pVScrollBar = qtractorScrollView::verticalScrollBar();
-	if (pVScrollBar->isVisible()) {
-		int h = size.height();
-		int w = pVScrollBar->width(); 
-		int x = size.width() - w - 1;
-		pVScrollBar->setFixedHeight(h - w * 3 - 2);
-		if (m_pVzoomIn)
-			m_pVzoomIn->setGeometry(x, h - w * 3, w, w);
-		if (m_pVzoomOut)
-			m_pVzoomOut->setGeometry(x, h - w * 2, w, w);
-		if (m_pXzoomReset)
-			m_pXzoomReset->setGeometry(x, h - w - 1, w, w);
-	}
-	QScrollBar *pHScrollBar = qtractorScrollView::horizontalScrollBar();
-	if (pHScrollBar->isVisible()) {
-		int w = size.width();
-		int h = pHScrollBar->height(); 
-		int y = size.height() - h - 1;
-		pHScrollBar->setFixedWidth(w - h * 3 - 2);
-		if (m_pHzoomOut)
-			m_pHzoomOut->setGeometry(w - h * 3, y, h, h);
-		if (m_pHzoomIn)
-			m_pHzoomIn->setGeometry(w - h * 2, y, h, h);
-	}
-#endif
 
 	updateContents();
 

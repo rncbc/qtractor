@@ -84,9 +84,7 @@ qtractorPluginForm::qtractorPluginForm (
     m_ui.PresetComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
-#if QT_VERSION >= 0x040200
 	m_ui.PresetComboBox->setCompleter(NULL);
-#endif
 
 	// Have some effective feedback when toggling on/off...
 	QIcon iconParams;
@@ -233,9 +231,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	}
 
 	// Plugin might not have its own editor...
-#if QT_VERSION >= 0x040300
 	pGridLayout->setHorizontalSpacing(16);
-#endif
+
 	// FIXME: Couldn't stand more than a hundred widgets?
 	// or do we have one dedicated editor GUI?
 	int iRow = 0;
@@ -537,7 +534,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString  sExt("qtx");
 	const QString& sTitle  = tr("Open Preset") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
-#if QT_VERSION < 0x040400
+#if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sPresetDir, sFilter);
@@ -613,7 +610,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			if (!fi.exists()) {
 				const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
 				const QString& sFilter = tr("Preset files (*.%1)").arg(sExt);
-			#if QT_VERSION < 0x040400
+			#if 0//QT_VERSION < 0x040400
 				// Ask for the filename to save...
 				sFilename = QFileDialog::getSaveFileName(this,
 					sTitle, sFilename, sFilter);
@@ -1200,9 +1197,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSpinBox->setMinimum(m_pParam->minValue());
 			m_pSpinBox->setMaximum(m_pParam->maxValue());
 			m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
-		#if QT_VERSION >= 0x040200
 			m_pSpinBox->setAccelerated(true);
-		#endif
 			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(m_pParam->value());
 			pGridLayout->addWidget(m_pSpinBox, 1, 2);
