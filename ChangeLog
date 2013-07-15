@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Default drum-key note names are now properly showing on MIDI
+  tracks that are assigned to known drum/percussive instrument
+  patches (eg. SoundFont 2 (.sf2) bank 128).
+
 - Time display format (frames, clock-time or BBT) may now be
   changed from the context-menu on any time entry spin-box.
   (EXPERIMENTAL)

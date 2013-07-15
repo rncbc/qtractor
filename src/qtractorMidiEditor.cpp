@@ -4192,6 +4192,15 @@ qtractorCommandList *qtractorMidiEditor::commands (void) const
 }
 
 
+// Update instrument default note names (nb. drum key names).
+void qtractorMidiEditor::updateDefaultDrumNoteNames (void)
+{
+	for (int i = 13; g_aNoteNames[i].name; ++i) {
+		m_noteNames.insert(g_aNoteNames[i].note,
+			tr(g_aNoteNames[i].name, "noteName"));
+	}
+}
+
 
 // Update instrument defined names for current clip/track.
 void qtractorMidiEditor::updateInstrumentNames (void)
@@ -4222,13 +4231,10 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 		sInstrument = pMidiBus->patch(pTrack->midiChannel()).instrumentName;
 	// Do we have any?...
 	if (sInstrument.isEmpty() || !pInstruments->contains(sInstrument)) {
-		// At least have a GM Drums (Channel 10) help...
-		if (pTrack->midiChannel() == 9) {
-			for (int i = 13; g_aNoteNames[i].name; ++i) {
-				m_noteNames.insert(g_aNoteNames[i].note,
-					tr(g_aNoteNames[i].name, "noteName"));
-			}
-		}
+		// Default drumk-key note names:
+		// at least have a GM Drums (Channel 10) help...
+		if (pTrack->midiChannel() == 9)
+			updateDefaultDrumNoteNames();
 		// No instrument definition...
 		return;
 	}
@@ -4236,13 +4242,21 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	// Finally, got instrument descriptor...
 	const qtractorInstrument& instr = (*pInstruments)[sInstrument];
 
+	const int iBank = pTrack->midiBank();
+	const int iProg = pTrack->midiProg();
+
 	// Key note names...
-	const qtractorInstrumentData& notes
-		= instr.notes(pTrack->midiBank(), pTrack->midiProg());
+	const qtractorInstrumentData& notes = instr.notes(iBank, iProg);
 	qtractorInstrumentData::ConstIterator nit = notes.constBegin();
 	const qtractorInstrumentData::ConstIterator& nit_end = notes.constEnd();
 	for ( ; nit != nit_end; ++nit)
 		m_noteNames.insert(nit.key(), nit.value());
+
+	// Default drumk-key note names:
+	// at least have a GM Drums (Channel 10) help...
+	if (m_noteNames.isEmpty()
+		&& (pTrack->midiChannel() == 9 || instr.isDrum(iBank, iProg)))
+		updateDefaultDrumNoteNames();
 
 	// Controller names...
 	const qtractorInstrumentData& controllers = instr.control();
