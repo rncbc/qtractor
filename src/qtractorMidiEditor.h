@@ -377,6 +377,9 @@ public slots:
 
 protected:
 
+	// Update instrument default note names (nb. drum key names).
+	void updateDefaultDrumNoteNames();
+
 	// Zoom factor constants.
 	enum { ZoomMin = 10, ZoomBase = 100, ZoomMax = 1000, ZoomStep = 10 };
 

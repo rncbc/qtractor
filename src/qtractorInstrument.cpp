@@ -78,8 +78,6 @@ bool qtractorInstrument::isDrum ( int iBank, int iProg ) const
 		return isDrum(-1, iProg);
 
 	return false;
-
-	return isDrum(-1, iProg);
 }
 
 
