@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.10  2013-07-18  Kilo Papa
 
 - Default drum-key note names are now properly showing on MIDI
   tracks that are assigned to known drum/percussive instrument
@@ -11,20 +11,18 @@ SVN TRUNK
 
 - Time display format (frames, clock-time or BBT) may now be
   changed from the context-menu on any time entry spin-box.
-  (EXPERIMENTAL)
 
-- LV2 plugin support is now tightly tied to linlil; the same tie
+- LV2 plugin support is now tightly tied to liblilv; the same tie
   applies to LV2 plugin UI support and libsuil and vice-versa.
 
 - Mixer buses racks (ie. left/input and right/output panes) are
   now both kept fixed-width when whole mixer window is resized.
 
 - Unconditional LV2 Dyn(amic)-manifest support has been added.
-  (EXPERIMENTAL)
 
 - Main track-view Edit/Insert,Remove/Range dialog is now being
   introduced with optional applicability to Clips, Loop, Punch
-  in/out, Automation, Tempo-map and/or Markers. (EXPERIMENTAL)
+  in/out, Automation, Tempo-map and/or Markers.
 
 - New range removal editing tool, split/moving clips backward
   at the specified edit-head/tail interval (Edit/Remove/Range,

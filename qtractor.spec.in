@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 6
+%define release 7
 
 %define _prefix	@ac_prefix@
 
@@ -92,6 +92,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
+* Thu Jul 18 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.10
+- Kilo Papa release.
 * Thu Jun  6 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.9
 - Juliet Quebec release.
 * Tue Mar 19 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.8
