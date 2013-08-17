@@ -3,6 +3,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- New user preference option added: reverse middle-button role to
+  shift/ctrl keyboard state, in special regard to edit-head/tail
+  vs. play-head positioning while on the main track and MIDI clip
+  editor (aka. piano-roll) views.
+
+
 0.5.10  2013-07-18  Kilo Papa
 
 - Default drum-key note names are now properly showing on MIDI

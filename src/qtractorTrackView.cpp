@@ -34,8 +34,10 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorFileListView.h"
 #include "qtractorClipSelect.h"
-#include "qtractorClipCommand.h"
 
+#include "qtractorOptions.h"
+
+#include "qtractorClipCommand.h"
 #include "qtractorCurveCommand.h"
 
 #include "qtractorMainForm.h"
@@ -1491,9 +1493,9 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Which mouse state?
-	const bool bModifier = (pMouseEvent->modifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier));
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
+	bool bModifier = (pMouseEvent->modifiers() &
+		(Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Are we already step-moving or pasting something?
 	switch (m_dragState) {
@@ -1540,6 +1542,9 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	m_pClipDrag = NULL;
 	resetDragState();
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	// We need a session and a location...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -1573,6 +1578,8 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		case Qt::MidButton:
 			// Mid-button positioning...
 			selectAll(false);
+			if (pOptions && pOptions->bMidButtonModifier)
+				bModifier = !bModifier;	// Reverse mid-button role...
 			if (bModifier) {
 				// Play-head positioning...
 				pSession->setPlayHead(iFrame);

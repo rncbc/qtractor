@@ -180,6 +180,9 @@ public:
     // Edit-range options.
     int     iEditRangeOptions;
 
+	// Mouse modifier options.
+	bool    bMidButtonModifier;
+
 	// Plug-in paths.
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
