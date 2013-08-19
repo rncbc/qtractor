@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed dedicated MIDI control and MIDI metronome port connection
+  restore conflit (thanks to jhammen catch & patch:).
+
 - New user preference option added: reverse middle-button role to
   shift/ctrl keyboard state, in special regard to edit-head/tail
   vs. play-head positioning while on the main track and MIDI clip

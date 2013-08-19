@@ -791,7 +791,7 @@ Offs/Length:	%3 / %4</source>
 Смещение/Длительность:	%3 / %4</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="400"/>
+        <location filename="../qtractorEngine.cpp" line="406"/>
         <location filename="../qtractorTrack.cpp" line="646"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>

@@ -188,7 +188,7 @@ Offs. / Len.:	%3 / %4</source>
         <translation>オートメーションの編集リスト</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="400"/>
+        <location filename="../qtractorEngine.cpp" line="406"/>
         <location filename="../qtractorTrack.cpp" line="646"/>
         <source>%1 Monitor</source>
         <translation>%1 モニター</translation>

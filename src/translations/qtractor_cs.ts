@@ -1095,7 +1095,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Přesunout značku</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="400"/>
+        <location filename="../qtractorEngine.cpp" line="406"/>
         <location filename="../qtractorTrack.cpp" line="646"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>

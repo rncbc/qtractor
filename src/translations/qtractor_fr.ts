@@ -189,7 +189,7 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>automation éditer la liste</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="400"/>
+        <location filename="../qtractorEngine.cpp" line="406"/>
         <location filename="../qtractorTrack.cpp" line="646"/>
         <source>%1 Monitor</source>
         <translation>%1 Moniteur</translation>
