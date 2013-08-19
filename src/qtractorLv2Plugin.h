@@ -227,6 +227,9 @@ public:
 	void lv2_ui_write(uint32_t port_index,
 		uint32_t buffer_size, uint32_t protocol, const void *buffer);
 
+	// LV2 UI resize support.
+	int lv2_ui_resize(int width, int height);
+
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
 		{ m_bEditorClosed = bClosed; }
@@ -358,6 +361,9 @@ private:
 
 	LV2_Feature    m_lv2_data_access_feature;
 	LV2_Feature    m_lv2_instance_access_feature;
+
+	LV2UI_Resize   m_lv2_ui_resize;
+	LV2_Feature    m_lv2_ui_resize_feature;
 
 	LV2_Feature  **m_lv2_ui_features;
 
