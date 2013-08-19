@@ -447,13 +447,13 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (pOptions && pOptions->bMidButtonModifier)
 			bModifier = !bModifier;	// Reverse mid-button role...
 		if (bModifier) {
-			// Edit-head/tail (merged) positioning...
-			m_pEditor->setEditHead(iFrame);
-			m_pEditor->setEditTail(iFrame);
-		} else {
 			// Play-head positioning...
 			m_pEditor->setPlayHead(iFrame);
 			pSession->setPlayHead(m_pEditor->playHead());
+		} else {
+			// Edit-head/tail (merged) positioning...
+			m_pEditor->setEditHead(iFrame);
+			m_pEditor->setEditTail(iFrame);
 		}
 		// Logical contents changed, just for visual feedback...
 		m_pEditor->selectionChangeNotify();
