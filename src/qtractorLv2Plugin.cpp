@@ -802,6 +802,8 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 
 #if QT_VERSION < 0x050000
 
+#include <QResizeEvent>
+
 class qtractorLv2Plugin::EventFilter : public QObject
 {
 public:
