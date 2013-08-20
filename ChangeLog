@@ -5,7 +5,7 @@ ChangeLog
 
 SVN TRUNK
 
-- LV2 UI resize feature supported added. (EXPERIMENTAL)
+- LV2 UI resize feature support/control added. (EXPERIMENTAL)
 
 - Fixed dedicated MIDI control and MIDI metronome port connection
   restore conflit (thanks to jhammen catch & patch:).

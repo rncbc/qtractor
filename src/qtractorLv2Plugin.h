@@ -227,8 +227,11 @@ public:
 	void lv2_ui_write(uint32_t port_index,
 		uint32_t buffer_size, uint32_t protocol, const void *buffer);
 
-	// LV2 UI resize support.
-	int lv2_ui_resize(int width, int height);
+	// LV2 UI resize support (ui->host).
+	void lv2_ui_resize(int width, int height);
+
+	// LV2 UI resize control (host->ui).
+	void resizeEditor(const QSize& size) const;
 
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
@@ -401,6 +404,10 @@ private:
 	EventFilter *m_pQt4Filter;
 	QWidget     *m_pQt4Widget;
 #endif
+
+	// LV2 UI resize control.
+	int m_lv2_ui_width;
+	int m_lv2_ui_height;
 
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;

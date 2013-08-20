@@ -775,7 +775,8 @@ static int qtractor_lv2_ui_resize (
 	if (pLv2Plugin == NULL)
 		return 1;
 
-	return pLv2Plugin->lv2_ui_resize(width, height);
+	pLv2Plugin->lv2_ui_resize(width, height);
+	return 0;
 }
 
 
@@ -812,14 +813,26 @@ public:
 
 	bool eventFilter(QObject *pObject, QEvent *pEvent)
 	{
-		if (pObject == static_cast<QObject *> (m_pQt4Widget)
-			&& pEvent->type() == QEvent::Close) {
-			// Defer widget close!
-			// m_pQt4Widget->removeEventFilter(this);
-			m_pQt4Widget = NULL;
-			m_pLv2Plugin->closeEditorEx();
-			pEvent->ignore();
-			return true;
+		if (pObject == static_cast<QObject *> (m_pQt4Widget)) {
+			switch (pEvent->type()) {
+			case QEvent::Close: {
+				// Defer widget close!
+				// m_pQt4Widget->removeEventFilter(this);
+				m_pQt4Widget = NULL;
+				m_pLv2Plugin->closeEditorEx();
+				pEvent->ignore();
+				return true;
+			}
+			case QEvent::Resize: {
+				// LV2 UI resize control...
+				QResizeEvent *pResizeEvent
+					= static_cast<QResizeEvent *> (pEvent);
+				if (pResizeEvent)
+					m_pLv2Plugin->resizeEditor(pResizeEvent->size());
+			}
+			default:
+				break;
+			}
 		}
 
 		return QObject::eventFilter(pObject, pEvent);
@@ -1605,7 +1618,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pQt4Filter(NULL)
 		, m_pQt4Widget(NULL)
 	#endif
-    #endif	// CONFIG_LV2_UI
+		, m_lv2_ui_width(0)
+		, m_lv2_ui_height(0)
+	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_OPTIONS
 	#ifdef CONFIG_LV2_BUF_SIZE
 		, m_iMinBlockLength(0)
@@ -2374,6 +2389,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 	m_lv2_ui_features[iFeatures] = NULL;
 
+	m_lv2_ui_width  = 0;
+	m_lv2_ui_height = 0;
+
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -2435,6 +2453,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
 			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);
+			// LV2 UI resize control...
+			resizeEditor(m_pQt4Widget->sizeHint());
 		//	m_pQt4Widget->show();
 		}
 	#endif
@@ -2607,7 +2627,13 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	#endif
 	#if QT_VERSION < 0x050000
 		if (m_pQt4Widget) {
-			// guaranteeing a reasonable window type:
+			// LV2 UI resize control...
+			if (m_lv2_ui_width > 0 && m_lv2_ui_height > 0) {
+				m_pQt4Widget->resize(m_lv2_ui_width, m_lv2_ui_height);
+				m_lv2_ui_width = 0;
+				m_lv2_ui_height = 0;
+			}
+			// Guaranteeing a reasonable window type:
 			// ie. not Qt::Dialog or Qt::Popup from the seemingly good choices.
 			if (m_lv2_ui_type == LV2_UI_TYPE_QT4) {
 				const Qt::WindowFlags wflags
@@ -2719,23 +2745,32 @@ void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 }
 
 
-// LV2 UI resize support.
-int qtractorLv2Plugin::lv2_ui_resize ( int width, int height )
+// LV2 UI resize support (ui->host).
+void qtractorLv2Plugin::lv2_ui_resize ( int width, int height )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_resize(%d, %d)",
 		this, width, height);
 #endif
 
-	if (m_lv2_ui_widget == NULL)
-		return 1;
-
-	if (m_pQt4Widget)
-		m_pQt4Widget->resize(width, height);
-
-	return 0;
+	m_lv2_ui_width  = width;
+	m_lv2_ui_height = height;
 }
 
+
+// LV2 UI resize control (host->ui).
+void qtractorLv2Plugin::resizeEditor ( const QSize& size ) const
+{
+	if (m_suil_instance) {
+		const LV2UI_Resize *resize
+			= (const LV2UI_Resize *) suil_instance_extension_data(
+				m_suil_instance, LV2_UI__resize);
+		if (resize && resize->ui_resize) {
+			(*resize->ui_resize)(resize->handle,
+				size.width(), size.height());
+		}
+	}
+}
 
 #endif	// CONFIG_LV2_UI
 
