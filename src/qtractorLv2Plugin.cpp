@@ -2370,9 +2370,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 	m_lv2_ui_features[iFeatures] = NULL;
 
-for (int i = 0; m_lv2_ui_features[i]; ++i)
-qDebug("DEBUG> m_lv2_ui_features[%d] .URI=%s .data=%p", i, m_lv2_ui_features[i]->URI, m_lv2_ui_features[i]->data);
-
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
 #ifdef CONFIG_LV2_EXTERNAL_UI
