@@ -227,9 +227,6 @@ public:
 	void lv2_ui_write(uint32_t port_index,
 		uint32_t buffer_size, uint32_t protocol, const void *buffer);
 
-	// LV2 UI resize support (ui->host).
-	void lv2_ui_resize(int width, int height);
-
 	// LV2 UI resize control (host->ui).
 	void resizeEditor(const QSize& size) const;
 
@@ -365,9 +362,6 @@ private:
 	LV2_Feature    m_lv2_data_access_feature;
 	LV2_Feature    m_lv2_instance_access_feature;
 
-	LV2UI_Resize   m_lv2_ui_resize;
-	LV2_Feature    m_lv2_ui_resize_feature;
-
 	LV2_Feature  **m_lv2_ui_features;
 
 	SuilHost      *m_suil_host;
@@ -404,10 +398,6 @@ private:
 	EventFilter *m_pQt4Filter;
 	QWidget     *m_pQt4Widget;
 #endif
-
-	// LV2 UI resize control.
-	int m_lv2_ui_width;
-	int m_lv2_ui_height;
 
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;
