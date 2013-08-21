@@ -167,15 +167,15 @@ void qtractorAudioBufferThread::process (void)
 void qtractorAudioBufferThread::checkSyncSize ( unsigned int iSyncSize )
 {
 	if (iSyncSize > (m_iSyncSize - 4)) {
+		QMutexLocker locker(&m_mutex);
 		unsigned int iNewSyncSize = (m_iSyncSize << 1);
 		while (iNewSyncSize < iSyncSize)
 			iNewSyncSize <<= 1;
 		qtractorAudioBuffer **ppNewSyncItems
 			= new qtractorAudioBuffer * [iNewSyncSize];
 		qtractorAudioBuffer **ppOldSyncItems = m_ppSyncItems;
-		const unsigned int iOldSyncSizeEx
-			= m_iSyncSize * sizeof(qtractorAudioBuffer *);
-		::memcpy(ppNewSyncItems, ppOldSyncItems, iOldSyncSizeEx);
+		::memcpy(ppNewSyncItems, ppOldSyncItems,
+			m_iSyncSize * sizeof(qtractorAudioBuffer *));
 		m_iSyncSize = iNewSyncSize;
 		m_iSyncMask = (iNewSyncSize - 1);
 		m_ppSyncItems = ppNewSyncItems;
