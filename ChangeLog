@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed some problematic playback/export muting and annoying
+  cleanup freezing, due on audio tracks with too many clips
+  eg. more than hundred clip splits (hopefully fixes an issue
+  reported by Louigi Verona, thanks). (EXPERIMENTAL)
+
 - LV2 UI resize feature support/control added. (EXPERIMENTAL)
 
 - Fixed dedicated MIDI control and MIDI metronome port connection

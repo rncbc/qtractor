@@ -1384,6 +1384,8 @@ qtractorAudioBufferThread *qtractorTrack::syncThread (void)
 	if (m_pSyncThread == NULL) {
 		m_pSyncThread = new qtractorAudioBufferThread();
 		m_pSyncThread->start(QThread::HighPriority);
+	} else {
+		m_pSyncThread->checkSyncSize(m_clips.count());
 	}
 
 	return m_pSyncThread;
