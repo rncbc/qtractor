@@ -806,7 +806,7 @@ public:
 			switch (pEvent->type()) {
 			case QEvent::Close: {
 				// Defer widget close!
-				// m_pQt4Widget->removeEventFilter(this);
+				m_pQt4Widget->removeEventFilter(this);
 				m_pQt4Widget = NULL;
 				m_pLv2Plugin->closeEditorEx();
 				pEvent->ignore();
@@ -818,6 +818,7 @@ public:
 					= static_cast<QResizeEvent *> (pEvent);
 				if (pResizeEvent)
 					m_pLv2Plugin->resizeEditor(pResizeEvent->size());
+				// Fall thru...
 			}
 			default:
 				break;
@@ -2720,6 +2721,11 @@ void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 // LV2 UI resize control (host->ui).
 void qtractorLv2Plugin::resizeEditor ( const QSize& size ) const
 {
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::resizeEditor(%d, %d)",
+		this, size.width(), size.height());
+#endif
+
 	if (m_suil_instance) {
 		const LV2UI_Resize *resize
 			= (const LV2UI_Resize *) suil_instance_extension_data(
@@ -2987,7 +2993,8 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 					m_suil_instance, LV2_PROGRAMS__UIInterface);
 		if (ui_programs && ui_programs->select_program) {
 		#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
-			LV2UI_Handle ui_handle = suil_instance_get_handle(m_suil_instance);
+			LV2UI_Handle ui_handle = (LV2UI_Handle)
+				suil_instance_get_handle(m_suil_instance);
 		#else
 			struct SuilInstanceHead {	// HACK!
 				void                   *ui_lib_handle;

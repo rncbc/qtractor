@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Allow to change the velocities/values of the current selected
+  events which have the exact same onset times and hide beyhond
+  each other on the MIDI clip editor's pane below the main view
+  piano-roll (ie. the one that represents MIDI event values as a
+  bar chart). (EXPERIMENTAL)
+
 - Fixed some problematic playback/export muting and annoying
   cleanup freezing, due on audio tracks with too many clips
   eg. more than hundred clip splits (hopefully fixes an issue
