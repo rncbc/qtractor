@@ -74,16 +74,12 @@ void qtractorMidiControlButton::midiControlMenuSlot ( const QPoint& pos )
 
 // Constructor.
 qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
-	qtractorTrack::ToolType toolType, const QSize& fixedSize,
-	QWidget *pParent ) : qtractorMidiControlButton(pParent)
+	qtractorTrack::ToolType toolType, QWidget *pParent )
+	: qtractorMidiControlButton(pParent)
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
 
-	QPushButton::setFixedSize(fixedSize);
-	QPushButton::setFont(
-		QFont(QPushButton::font().family(), (fixedSize.height() < 16 ? 5 : 6)));
-	
 	QPalette pal(QPushButton::palette());
 	m_rgbText = pal.buttonText().color();
 	m_rgbOff  = pal.button().color();

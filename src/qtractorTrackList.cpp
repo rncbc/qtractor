@@ -169,20 +169,30 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	QWidget::setBackgroundRole(QPalette::Window);
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-	pHBoxLayout->setMargin(4);
-	pHBoxLayout->setSpacing(4);
+	pHBoxLayout->setMargin(2);
+	pHBoxLayout->setSpacing(2);
 
-	const QSize buttonSize(22, 16);
-	m_pRecordButton = new qtractorTrackButton(pTrack,
-		qtractorTrack::Record, buttonSize, this);
-	m_pMuteButton   = new qtractorTrackButton(pTrack,
-		qtractorTrack::Mute, buttonSize, this);
-	m_pSoloButton   = new qtractorTrackButton(pTrack,
-		qtractorTrack::Solo, buttonSize, this);
+	const QFont& font = QWidget::font();
+	const QFont font2(font.family(), font.pointSize() - 2);
+	const int iFixedHeight = QFontMetrics(font).lineSpacing() + 2;
+
+	const QSize buttonSize(22, iFixedHeight);
+
+	m_pRecordButton = new qtractorTrackButton(pTrack, qtractorTrack::Record);
+	m_pRecordButton->setFixedSize(buttonSize);
+	m_pRecordButton->setFont(font2);
+
+	m_pMuteButton = new qtractorTrackButton(pTrack, qtractorTrack::Mute);
+	m_pMuteButton->setFixedSize(buttonSize);
+	m_pMuteButton->setFont(font2);
+
+	m_pSoloButton = new qtractorTrackButton(pTrack, qtractorTrack::Solo);
+	m_pSoloButton->setFixedSize(buttonSize);
+	m_pSoloButton->setFont(font2);
 
 	m_pCurveButton = new qtractorCurveButton(pTrack, this);
-	m_pCurveButton->setFixedSize(QSize(32, 16));
-	m_pCurveButton->setFont(m_pRecordButton->font());
+	m_pCurveButton->setFixedSize(QSize(32, iFixedHeight));
+	m_pCurveButton->setFont(font2);
 	m_pCurveButton->setText("A");
 	m_pCurveButton->setToolTip(QObject::tr("Automation"));
 
