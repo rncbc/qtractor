@@ -483,6 +483,8 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->selectRect(m_rectDrag,
 				qtractorTrackView::SelectRange,
+				(pMouseEvent->modifiers()
+					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
 				qtractorTrackView::EditBoth);
 			showToolTip(m_rectDrag.normalized());
 			break;
@@ -558,6 +560,8 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Do the final range selection...
 			m_pTracks->trackView()->selectRect(m_rectDrag,
 				qtractorTrackView::SelectRange,
+				(pMouseEvent->modifiers()
+					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
 				qtractorTrackView::EditBoth);
 			// For immediate visual feedback...
 			m_pTracks->selectionChangeNotify();

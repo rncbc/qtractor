@@ -105,7 +105,7 @@ public:
 
 	// Select everything under a given (rubber-band) rectangle.
 	void selectRect(const QRect& rectDrag,
-		SelectMode selectMode, SelectEdit = EditNone);
+		SelectMode selectMode, bool bClearSelect, SelectEdit = EditNone);
 
 	// Select every clip of a given track-range.
 	void selectTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);

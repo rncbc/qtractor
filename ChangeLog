@@ -5,8 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
-- Edit/Select Mode/Automation icon retouched to look a bit more
-  obvious and intuitive, hopefully ;)
+- Shift/Ctrl keyboard modifiers now set to extend current clip
+  selection while in main track view's Edit/Select Mode/Range,
+  Rectangle modes. (EXPERIMENTAL)
+
+- Main Edit/Select Mode/Automation icon retouched to look a bit
+  more obvious and intuitive, hopefully ;)
 
 - Allow to change the velocities/values of the current selected
   events which have the exact same onset times and hide beyhond
@@ -25,7 +29,7 @@ SVN TRUNK
   restore conflit (thanks to jhammen catch & patch:).
 
 - New user preference option added: reverse middle-button role to
-  shift/ctrl keyboard state, in special regard to edit-head/tail
+  Shift/Ctrl keyboard state, in special regard to edit-head/tail
   vs. play-head positioning while on the main track and MIDI clip
   editor (aka. piano-roll) views.
 
@@ -47,7 +51,7 @@ SVN TRUNK
 
 - Unconditional LV2 Dyn(amic)-manifest support has been added.
 
-- Main track-view Edit/Insert,Remove/Range dialog is now being
+- Main track-view Edit/Insert, Remove/Range dialog is now being
   introduced with optional applicability to Clips, Loop, Punch
   in/out, Automation, Tempo-map and/or Markers.
 
@@ -60,7 +64,7 @@ SVN TRUNK
 
 - Automation's back in effect on Track/Export Tracks.../Audio.
 
-- Reversed shift/ctrl keyboard modifier roles on middle-button
+- Reversed Shift/Ctrl keyboard modifier roles on middle-button
   clicking over the main track and MIDI clip editor views (aka.
   piano-roll) in regression to original old semantics.
 

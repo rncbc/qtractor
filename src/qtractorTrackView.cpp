@@ -1648,7 +1648,8 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		m_rectDrag.setBottomRight(pos);
 		moveRubberBand(&m_pRubberBand, m_rectDrag);
 		qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
-		selectRect(m_rectDrag, m_selectMode);
+		selectRect(m_rectDrag, m_selectMode, (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 		showToolTip(m_rectDrag.normalized(), m_iDraggingX);
 		break;
 	case DragStart:
@@ -1721,7 +1722,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragSelect:
 			// Here we're mainly supposed to select a few bunch
 			// of clips (all that fall inside the rubber-band...
-			selectRect(m_rectDrag, m_selectMode);
+			selectRect(m_rectDrag, m_selectMode, !bModifier);
 			// For immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
@@ -1938,7 +1939,7 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 
 // Select everything under a given (rubber-band) rectangle.
 void qtractorTrackView::selectRect ( const QRect& rectDrag,
-	qtractorTrackView::SelectMode selectMode,
+	qtractorTrackView::SelectMode selectMode, bool bClearSelect,
 	qtractorTrackView::SelectEdit selectEdit )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -1965,7 +1966,7 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 	// Reset all selected clips...
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
-	if (m_pClipSelect->items().count() > 0) {
+	if (bClearSelect && m_pClipSelect->items().count() > 0) {
 		m_pClipSelect->clear();
 		++iUpdate;
 	}
