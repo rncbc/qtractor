@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.10.10, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.10.11, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -314,6 +314,9 @@ AC_PROG_GCC_TRADITIONAL
 AC_LANG_C
 AC_LANG_CPLUSPLUS
 
+# Save some specified by the user.
+ac_cflags=$CFLAGS
+
 # Prepend alternate dependencies paths.
 ac_path=$PATH
 for X in $ac_with_paths; do
@@ -344,7 +347,6 @@ for X in $ac_with_paths; do
     ac_libs="-L$X/lib $ac_libs"
   fi
 done
-
 
 # Check for proper Qt version.
 AC_CACHE_CHECK([for Qt library version >= 4.4],
