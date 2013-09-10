@@ -34,6 +34,7 @@
 // Forward declarations.
 class qtractorTracks;
 class qtractorClipSelect;
+class qtractorCurveSelect;
 class qtractorMidiSequence;
 class qtractorSessionCursor;
 class qtractorTrackListItem;
@@ -387,8 +388,9 @@ private:
 	bool          m_bDragTimer;
 	QPoint        m_posStep;
 
-	qtractorRubberBand *m_pRubberBand;
-	qtractorClipSelect *m_pClipSelect;
+	qtractorRubberBand  *m_pRubberBand;
+	qtractorClipSelect  *m_pClipSelect;
+	qtractorCurveSelect *m_pCurveSelect;
 
 	// The clip select mode.
 	SelectMode m_selectMode;

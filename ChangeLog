@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Extended Edit/Select Mode/Automation implementation (DRAFT).
+
 - Allow the build system to include an user specified CFLAGS 
   (patch by Cristian Morales Vega, thanks).
 

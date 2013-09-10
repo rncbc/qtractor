@@ -34,6 +34,7 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorFileListView.h"
 #include "qtractorClipSelect.h"
+#include "qtractorCurveSelect.h"
 
 #include "qtractorOptions.h"
 
@@ -86,6 +87,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pTracks = pTracks;
 
 	m_pClipSelect    = new qtractorClipSelect();
+	m_pCurveSelect   = new qtractorCurveSelect();
+
 	m_pSessionCursor = NULL;
 	m_pRubberBand    = NULL;
 
@@ -177,6 +180,7 @@ qtractorTrackView::~qtractorTrackView (void)
 {
 	clear();
 
+	delete m_pCurveSelect;
 	delete m_pClipSelect;
 }
 
@@ -187,6 +191,7 @@ void qtractorTrackView::clear (void)
 	g_clipboard.clear();
 
 	m_pClipSelect->clear();
+	m_pCurveSelect->clear();
 
 	m_dropType   = qtractorTrack::None;
 	m_dragState  = DragNone;

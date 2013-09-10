@@ -35,6 +35,7 @@ HEADERS += config.h \
 	qtractorCurve.h \
 	qtractorCurveCommand.h \
 	qtractorCurveFile.h \
+	qtractorCurveSelect.h \
 	qtractorDocument.h \
 	qtractorDssiPlugin.h \
 	qtractorEngine.h \
@@ -156,6 +157,7 @@ SOURCES += \
 	qtractorCurve.cpp \
 	qtractorCurveCommand.cpp \
 	qtractorCurveFile.cpp \
+	qtractorCurveSelect.cpp \
 	qtractorDssiPlugin.cpp \
 	qtractorEngine.cpp \
 	qtractorEngineCommand.cpp \
