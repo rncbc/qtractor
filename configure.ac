@@ -303,6 +303,10 @@ AC_ARG_WITH(lv2,
   [ac_with_lv2="$withval"])
 
 
+# Honor user specified CFLAGS.
+ac_cflags=$CFLAGS
+
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
@@ -313,9 +317,6 @@ AC_PROG_GCC_TRADITIONAL
 # Checks for languages.
 AC_LANG_C
 AC_LANG_CPLUSPLUS
-
-# Save some specified by the user.
-ac_cflags=$CFLAGS
 
 # Prepend alternate dependencies paths.
 ac_path=$PATH
@@ -637,10 +638,10 @@ if test "x$ac_suil" = "xyes"; then
 fi
 if test "x$ac_suil" = "xyes"; then
    AC_CHECK_LIB(suil-0, suil_instance_get_handle,
-	  [ac_suil_instance_get_handle="yes"],
-	  [ac_suil_instance_get_handle="no"])
+      [ac_suil_instance_get_handle="yes"],
+      [ac_suil_instance_get_handle="no"])
    if test "x$ac_suil_instance_get_handle" = "xyes"; then
-	  AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
+      AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
    fi
 else
    ac_suil="no"
