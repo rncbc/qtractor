@@ -562,6 +562,25 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			path.lineTo(xc2, y2 - cy);
 			path.lineTo(xc1, y2 - cy);
 			pPainter->fillPath(path, rgbCurve);
+		#if 0//TEST_CURVE_SELECT
+			if (m_bCurveEdit && m_pCurveSelect->isCurrentCurve(pCurve)) {
+				const qtractorCurveSelect::ItemList& items
+					= m_pCurveSelect->items();
+				qtractorCurveSelect::ItemList::ConstIterator iter
+					= items.constBegin();
+				const qtractorCurveSelect::ItemList::ConstIterator iter_end
+					= items.constEnd();
+				for ( ; iter != iter_end; ++iter) {
+					qtractorCurveSelect::Item *pItem = iter.value();
+					if (pItem->flags & 1) {
+						QRect rectNode(pItem->rectNode);
+						rectNode.moveTopLeft(
+							contentsToViewport(rectNode.topLeft()));
+						pPainter->fillRect(rectNode, QColor(0, 0, 255, 60));
+					}
+				}
+			}
+		#endif
 		}
 		pTrack = pTrack->next();
 	}
@@ -1653,6 +1672,17 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		m_rectDrag.setBottomRight(pos);
 		moveRubberBand(&m_pRubberBand, m_rectDrag);
 		qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+	#if 0//TEST_CURVE_SELECT
+		if (m_bCurveEdit) {
+			const Qt::KeyboardModifiers modifiers
+				= pMouseEvent->modifiers();
+			const bool bClearSelect = ((modifiers
+				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
+			const bool bToggle = (modifiers & Qt::ControlModifier);
+			selectCurveRect(m_rectDrag, bClearSelect, bToggle);
+		}
+		else
+	#endif
 		selectRect(m_rectDrag, m_selectMode, (pMouseEvent->modifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 		showToolTip(m_rectDrag.normalized(), m_iDraggingX);
@@ -2344,6 +2374,7 @@ void qtractorTrackView::selectCurveRect (
 					if (rect.contains(x, y)) {
 						m_pCurveSelect->selectItem(pCurve, pNode,
 							QRect(x - 4, y - 4, 8, 8), true, bToggle);
+						++iUpdate;
 					}
 					pNode = pNode->next();
 				}
@@ -2355,6 +2386,7 @@ void qtractorTrackView::selectCurveRect (
 
 	// Update the screen real estate...
 	if (iUpdate > 0) {
+		m_pCurveSelect->update(true);
 		updateRect(rectUpdate.united(m_pClipSelect->rect()));
 	//	m_pTracks->selectionChangeNotify();
 	}
@@ -3291,7 +3323,7 @@ void qtractorTrackView::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		m_iPlayHead = iPlayHead;
-		int iPlayHeadX = pSession->pixelFromFrame(iPlayHead);
+		const int iPlayHeadX = pSession->pixelFromFrame(iPlayHead);
 		drawPositionX(m_iPlayHeadX, iPlayHeadX, bSyncView);
 	}
 }
@@ -3315,7 +3347,7 @@ void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 		if (iEditHead > pSession->editTail())
 			setEditTail(iEditHead);
 		pSession->setEditHead(iEditHead);
-		int iEditHeadX = pSession->pixelFromFrame(iEditHead);
+		const int iEditHeadX = pSession->pixelFromFrame(iEditHead);
 		drawPositionX(m_iEditHeadX, iEditHeadX);
 	}
 }
@@ -3334,7 +3366,7 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 		if (iEditTail < pSession->editHead())
 			setEditHead(iEditTail);
 		pSession->setEditTail(iEditTail);
-		int iEditTailX = pSession->pixelFromFrame(iEditTail);
+		const int iEditTailX = pSession->pixelFromFrame(iEditTail);
 		drawPositionX(m_iEditTailX, iEditTailX);
 	}
 }
@@ -3350,6 +3382,9 @@ void qtractorTrackView::clearClipSelect (void)
 {
 //	g_clipboard.clear();
 	m_pClipSelect->clear();
+#if 0//TEST_CURVE_SELECT
+	m_pCurveSelect->clear();
+#endif
 }
 
 
