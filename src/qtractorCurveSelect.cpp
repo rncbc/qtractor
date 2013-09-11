@@ -28,6 +28,7 @@
 // Constructor.
 qtractorCurveSelect::qtractorCurveSelect (void)
 {
+	m_pCurve = NULL;
 	m_pAnchorNode = NULL;
 }
 
@@ -49,9 +50,15 @@ qtractorCurveSelect::Item *qtractorCurveSelect::findItem (
 
 
 // Item insertion method.
-void qtractorCurveSelect::addItem (
+void qtractorCurveSelect::addItem ( qtractorCurve *pCurve,
 	qtractorCurve::Node *pNode, const QRect& rectNode )
 {
+	if (m_pCurve == NULL)
+		m_pCurve = pCurve;
+	else
+	if (m_pCurve != pCurve)
+		return;
+
 	m_items.insert(pNode, new Item(rectNode));
 
 	m_rect = m_rect.united(rectNode);
@@ -62,7 +69,7 @@ void qtractorCurveSelect::addItem (
 
 
 // Item selection method.
-void qtractorCurveSelect::selectItem (
+void qtractorCurveSelect::selectItem ( qtractorCurve *pCurve,
 	qtractorCurve::Node *pNode, const QRect& rectNode,
 	bool bSelect, bool bToggle )
 {
@@ -78,7 +85,7 @@ void qtractorCurveSelect::selectItem (
 			pItem->flags |=  1;
 	} 
 	else if (bSelect)
-		addItem(pNode, rectNode);
+		addItem(pCurve, pNode, rectNode);
 }
 
 
@@ -124,6 +131,11 @@ void qtractorCurveSelect::commit (void)
 		Item *pItem = iter.value();
 		m_rect = m_rect.united(pItem->rectNode);
 	}
+
+	if (m_items.isEmpty()) {
+		m_pAnchorNode = NULL;
+		m_pCurve = NULL;
+	}
 }
 
 
@@ -136,6 +148,7 @@ void qtractorCurveSelect::clear (void)
 	m_items.clear();
 
 	m_pAnchorNode = NULL;
+	m_pCurve = NULL;
 }
 
 

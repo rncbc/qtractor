@@ -58,17 +58,17 @@ public:
 	Item *findItem(qtractorCurve::Node *pNode);
 
 	// Event insertion method.
-	void addItem(qtractorCurve::Node *pNode, const QRect& rectNode);
+	void addItem(qtractorCurve *pCurve,
+		qtractorCurve::Node *pNode, const QRect& rectNode);
 
 	// Event selection method.
-	void selectItem(qtractorCurve::Node *pNode, const QRect& rectNode,
+	void selectItem(qtractorCurve *pCurve,
+		qtractorCurve::Node *pNode, const QRect& rectNode,
 		bool bSelect = true, bool bToggle = false);
 
 	// Item update method (visual rects).
 	void updateItem ( Item *pItem )
-	{
-		m_rect = m_rect.united(pItem->rectNode);
-	}
+		{ m_rect = m_rect.united(pItem->rectNode); }
 
 	// The united selection rectangle.
 	const QRect& rect() const { return m_rect; }
@@ -85,15 +85,27 @@ public:
 	// Reset event selection.
 	void clear();
 
-	qtractorCurve::Node *anchorNode() const { return m_pAnchorNode; }
-	
+	// Selection curve accessors.
+	qtractorCurve *curve() const
+		{ return m_pCurve; }
+
+	qtractorCurve::Node *anchorNode() const
+		{ return m_pAnchorNode; }
+
+	// Selection curve testimony.
+	bool isCurrentCurve ( qtractorCurve *pCurve ) const
+		{ return (m_pCurve == pCurve || m_pCurve == NULL); }
+
 private:
 
-	// The clip selection list.
+	// The node selection list.
 	ItemList m_items;
 
 	// The united selection rectangle.
 	QRect m_rect;
+
+	// There must be only one curve.
+	qtractorCurve *m_pCurve;
 
 	// The most probable anchor node.
 	qtractorCurve::Node *m_pAnchorNode;

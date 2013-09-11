@@ -2301,6 +2301,66 @@ void qtractorTrackView::selectFile ( qtractorTrack::TrackType trackType,
 }
 
 
+// Select curve nodes under a given (rubber-band) rectangle.
+void qtractorTrackView::selectCurveRect (
+	const QRect& rectDrag, bool bClearSelect, bool bToggle )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	QRect rect(rectDrag.normalized());
+
+	// Reset all selected nodes...
+	int iUpdate = 0;
+	QRect rectUpdate = m_pCurveSelect->rect();
+	if (bClearSelect && m_pCurveSelect->items().count() > 0) {
+		m_pCurveSelect->clear();
+		++iUpdate;
+	}
+
+	// Now find all the curve/nodes that fall
+	// in the given rectangular region...
+	int y1, y2 = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		y1  = y2;
+		y2 += pTrack->zoomHeight();
+		if (rect.bottom() < y1)
+			break;
+		if (y2 >= rect.top()) {
+			qtractorCurve *pCurve = pTrack->currentCurve();
+			if (pCurve && m_pCurveSelect->isCurrentCurve(pCurve)) {
+				const int h = y2 - y1 - 2;
+				const unsigned long iFrameStart
+					= pSession->frameFromPixel(rect.left());
+				const unsigned long iFrameEnd
+					= pSession->frameFromPixel(rect.right());
+				qtractorCurve::Cursor cursor(pCurve);
+				qtractorCurve::Node *pNode = cursor.seek(iFrameStart);
+				while (pNode && pNode->frame < iFrameEnd) {
+					const int x = pSession->pixelFromFrame(pNode->frame);
+					const int y = y2 - int(cursor.scale(pNode) * float(h));
+					if (rect.contains(x, y)) {
+						m_pCurveSelect->selectItem(pCurve, pNode,
+							QRect(x - 4, y - 4, 8, 8), true, bToggle);
+					}
+					pNode = pNode->next();
+				}
+				break;
+			}
+		}
+		pTrack = pTrack->next();
+	}
+
+	// Update the screen real estate...
+	if (iUpdate > 0) {
+		updateRect(rectUpdate.united(m_pClipSelect->rect()));
+	//	m_pTracks->selectionChangeNotify();
+	}
+}
+
+
 // Contents update overloaded methods.
 void qtractorTrackView::updateRect ( const QRect& rect )
 {

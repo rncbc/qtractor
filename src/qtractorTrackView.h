@@ -121,6 +121,10 @@ public:
 	void selectFile(qtractorTrack::TrackType trackType,
 		const QString& sFilename, int iTrackChannel, bool bSelect);
 
+	// Select curve nodes under a given (rubber-band) rectangle.
+	void selectCurveRect(
+		const QRect& rectDrag, bool bClearSelect, bool bToggle);
+
 	// Contents update overloaded methods.
 	void updateRect(const QRect& rect);
 
