@@ -174,7 +174,7 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 
 	const QFont& font = QWidget::font();
 	const QFont font2(font.family(), font.pointSize() - 2);
-	const int iFixedHeight = QFontMetrics(font).lineSpacing() + 2;
+	const int iFixedHeight = QFontMetrics(font).lineSpacing() + 4;
 
 	const QSize buttonSize(22, iFixedHeight);
 

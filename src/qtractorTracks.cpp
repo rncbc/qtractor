@@ -2243,7 +2243,7 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 		return false;
 	}
 
-	m_pTrackView->clearClipSelect();
+	m_pTrackView->clearSelect();
 
 	return pSession->execute(pClipRangeCommand);
 }

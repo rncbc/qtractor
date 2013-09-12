@@ -12106,12 +12106,12 @@ Length:	%3</source>
         <translation>ズームリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="1405"/>
+        <location filename="../qtractorTrackView.cpp" line="1424"/>
         <source>add clip</source>
         <translation>クリップを追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2386"/>
+        <location filename="../qtractorTrackView.cpp" line="2589"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12120,57 +12120,57 @@ Length:	%3</source>
 長さ:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2627"/>
+        <location filename="../qtractorTrackView.cpp" line="2830"/>
         <source>clip %1</source>
         <translation>クリップ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2628"/>
+        <location filename="../qtractorTrackView.cpp" line="2831"/>
         <source>fade-in</source>
         <translation>フェードイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2628"/>
+        <location filename="../qtractorTrackView.cpp" line="2831"/>
         <source>fade-out</source>
         <translation>フェードアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2703"/>
+        <location filename="../qtractorTrackView.cpp" line="2906"/>
         <source>clip stretch</source>
         <translation>クリップの伸長</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2703"/>
+        <location filename="../qtractorTrackView.cpp" line="2906"/>
         <source>clip resize</source>
         <translation>クリップリサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3396"/>
+        <location filename="../qtractorTrackView.cpp" line="3601"/>
         <source>%1 clip</source>
         <translation>%1 クリップ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3400"/>
+        <location filename="../qtractorTrackView.cpp" line="3605"/>
         <source>cut</source>
         <translation>切り取り</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3403"/>
+        <location filename="../qtractorTrackView.cpp" line="3608"/>
         <source>delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3406"/>
+        <location filename="../qtractorTrackView.cpp" line="3611"/>
         <source>split</source>
         <translation>分割</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3707"/>
+        <location filename="../qtractorTrackView.cpp" line="3914"/>
         <source>move clip</source>
         <translation>クリップの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3837"/>
+        <location filename="../qtractorTrackView.cpp" line="4044"/>
         <source>paste clip</source>
         <translation>クリップの貼り付け</translation>
     </message>

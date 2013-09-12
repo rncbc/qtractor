@@ -104,7 +104,7 @@ public:
 	void setSelectMode(SelectMode selectMode);
 	SelectMode selectMode() const;
 
-	// Select everything under a given (rubber-band) rectangle.
+	// Select every clip under a given (rubber-band) rectangle.
 	void selectRect(const QRect& rectDrag,
 		SelectMode selectMode, bool bClearSelect, SelectEdit = EditNone);
 
@@ -121,9 +121,16 @@ public:
 	void selectFile(qtractorTrack::TrackType trackType,
 		const QString& sFilename, int iTrackChannel, bool bSelect);
 
+	// Selection flags
+	enum {
+		SelectNone   = 0,
+		SelectClear  = 1,
+		SelectToggle = 2,
+		SelectCommit = 4
+	};
+
 	// Select curve nodes under a given (rubber-band) rectangle.
-	void selectCurveRect(
-		const QRect& rectDrag, bool bClearSelect, bool bToggle);
+	void selectCurveRect(const QRect& rectDrag, int flags);
 
 	// Contents update overloaded methods.
 	void updateRect(const QRect& rect);
@@ -135,7 +142,7 @@ public:
 	qtractorClipSelect *clipSelect() const;
 
 	// Clear current selection (no notify).
-	void clearClipSelect();
+	void clearSelect();
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;

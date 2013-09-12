@@ -45,7 +45,7 @@ qtractorClipSelect::~qtractorClipSelect (void)
 
 
 // Clip selection method.
-void qtractorClipSelect::selectClip ( qtractorClip *pClip,
+void qtractorClipSelect::selectItem ( qtractorClip *pClip,
 	const QRect& rect, bool bSelect )
 {
 	// Add/remove clip selection...
@@ -88,7 +88,7 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 
 
 // Clip addition (no actual selection).
-void qtractorClipSelect::addClip ( qtractorClip *pClip, const QRect& rect )
+void qtractorClipSelect::addItem ( qtractorClip *pClip, const QRect& rect )
 {
 	m_items.insert(pClip, new Item(rect));
 	m_rect = m_rect.united(rect);
@@ -136,7 +136,7 @@ const qtractorClipSelect::ItemList& qtractorClipSelect::items (void) const
 
 
 // Clip selection item lookup.
-qtractorClipSelect::Item *qtractorClipSelect::findClipItem ( qtractorClip *pClip ) const
+qtractorClipSelect::Item *qtractorClipSelect::findItem ( qtractorClip *pClip ) const
 {
 	return m_items.value(pClip, NULL);
 }

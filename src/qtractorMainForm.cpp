@@ -6868,7 +6868,7 @@ void qtractorMainForm::timerSlot (void)
 						(unsigned short) pos.beat_type);
 				#endif
 					if (m_pTracks)
-						m_pTracks->trackView()->clearClipSelect();
+						m_pTracks->trackView()->clearSelect();
 					m_pSession->lock();
 					pNode->tempo = pos.beats_per_minute;
 					pNode->beatsPerBar = pos.beats_per_bar;
@@ -7424,7 +7424,7 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	appendMessages(sClkText);
 
 	if (m_pTracks)
-		m_pTracks->trackView()->clearClipSelect();
+		m_pTracks->trackView()->clearSelect();
 
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
@@ -7633,7 +7633,7 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
 		if (pMidiEditor)
-			m_pTracks->trackView()->clearClipSelect();
+			m_pTracks->trackView()->clearSelect();
 	}
 
 	// Update editors edit-head/tails...
@@ -7672,7 +7672,7 @@ void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 	// Always reset any track view selection...
 	// (avoid change/update notifications, again)
 	if (m_pTracks && (flags & qtractorCommand::ClearSelect))
-		m_pTracks->trackView()->clearClipSelect();
+		m_pTracks->trackView()->clearSelect();
 
 	// Proceed as usual...
 	updateContents(NULL, (flags & qtractorCommand::Refresh));

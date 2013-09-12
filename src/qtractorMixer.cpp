@@ -281,7 +281,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	const QFont& font = QFrame::font();
 	const QFont font2(font.family(), font.pointSize() - 2);
-	const int iFixedHeight = QFontMetrics(font2).lineSpacing() + 2;
+	const int iFixedHeight = QFontMetrics(font2).lineSpacing() + 4;
 
 	m_pLayout = new QVBoxLayout(this);
 	m_pLayout->setMargin(4);
