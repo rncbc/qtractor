@@ -1555,21 +1555,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			&& (m_dragCursor == DragNone || m_dragCursor == DragCurveNode))
 			dragCurveNodeMove(pos, !bModifier);
 		if (m_dragCursor == DragCurveNode) {
-			int iUpdate = 0;
-			QRect rectUpdate = m_pClipSelect->rect();
-			if (m_pClipSelect->items().count() > 0) {
-				m_pClipSelect->clear();
-				++iUpdate;
-			}
-		#if 1//TEST_CURVE_SELECT
-			if (m_pCurveSelect->items().count() > 0) {
-				rectUpdate = rectUpdate.united(m_pCurveSelect->rect());
-				m_pCurveSelect->clear();
-				++iUpdate;
-			}
-		#endif
-			if (iUpdate > 0)
-				updateRect(rectUpdate);
+			clearSelect();
 			if (m_pDragCurve && m_pDragCurveNode)
 				m_dragState = DragCurveNode;
 		//	qtractorScrollView::mousePressEvent(pMouseEvent);
@@ -3484,8 +3470,22 @@ int qtractorTrackView::editTailX (void) const
 void qtractorTrackView::clearSelect (void)
 {
 //	g_clipboard.clear();
-	m_pClipSelect->clear();
-	m_pCurveSelect->clear();
+
+	int iUpdate = 0;
+	QRect rectUpdate = m_pClipSelect->rect();
+	if (m_pClipSelect->items().count() > 0) {
+		m_pClipSelect->clear();
+		++iUpdate;
+	}
+#if 1//TEST_CURVE_SELECT
+	if (m_pCurveSelect->items().count() > 0) {
+		rectUpdate = rectUpdate.united(m_pCurveSelect->rect());
+		m_pCurveSelect->clear();
+		++iUpdate;
+	}
+#endif
+	if (iUpdate > 0)
+		updateRect(rectUpdate);
 }
 
 

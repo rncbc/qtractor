@@ -2243,7 +2243,7 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 		return false;
 	}
 
-	m_pTrackView->clearSelect();
+	clearSelect();
 
 	return pSession->execute(pClipRangeCommand);
 }
@@ -2823,8 +2823,15 @@ void qtractorTracks::updateTrackView (void)
 }
 
 
+// Overall selection reset.
+void qtractorTracks::clearSelect (void)
+{
+	m_pTrackView->clearSelect();
+}
+
+
 // Overall contents reset.
-void qtractorTracks::clear(void)
+void qtractorTracks::clear (void)
 {
 	m_pTrackList->clear();
 	m_pTrackView->clear();

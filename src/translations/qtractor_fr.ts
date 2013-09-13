@@ -128,63 +128,63 @@ Déc. / Long.:	%3 / %4</translation>
         <translation type="obsolete">Insérer plage de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="99"/>
+        <location filename="../qtractorCurveCommand.cpp" line="104"/>
         <source>automation select</source>
         <translation>automation sélection</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="126"/>
+        <location filename="../qtractorCurveCommand.cpp" line="131"/>
         <source>automation mode</source>
         <translation>mode automation</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="154"/>
+        <location filename="../qtractorCurveCommand.cpp" line="159"/>
         <source>automation play</source>
         <translation>automation jouer</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="183"/>
-        <location filename="../qtractorCurveCommand.cpp" line="521"/>
+        <location filename="../qtractorCurveCommand.cpp" line="188"/>
+        <location filename="../qtractorCurveCommand.cpp" line="526"/>
         <source>automation record</source>
         <translation>automation enregistrer</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="212"/>
+        <location filename="../qtractorCurveCommand.cpp" line="217"/>
         <source>automation logarithmic</source>
         <translation>automation logarithmique</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="239"/>
+        <location filename="../qtractorCurveCommand.cpp" line="244"/>
         <source>automation color</source>
         <translation>automation couleur</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="266"/>
+        <location filename="../qtractorCurveCommand.cpp" line="271"/>
         <source>automation play all</source>
         <translation>automation tout jouer</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="295"/>
+        <location filename="../qtractorCurveCommand.cpp" line="300"/>
         <source>automation record all</source>
         <translation>automation tout enregistrer</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="330"/>
+        <location filename="../qtractorCurveCommand.cpp" line="335"/>
         <source>automation edit</source>
         <translation>automation éditer</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="392"/>
+        <location filename="../qtractorCurveCommand.cpp" line="397"/>
         <source>automation clear</source>
         <translation>automation nettoyer</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="409"/>
+        <location filename="../qtractorCurveCommand.cpp" line="414"/>
         <source>automation clear all</source>
         <translation>automation tout nettoyer</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="462"/>
+        <location filename="../qtractorCurveCommand.cpp" line="467"/>
         <source>automation edit list</source>
         <translation>automation éditer la liste</translation>
     </message>
@@ -12107,7 +12107,7 @@ Longueur:	%3</translation>
         <translation>ajouter un clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2580"/>
+        <location filename="../qtractorTrackView.cpp" line="2566"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12116,27 +12116,27 @@ Fin:	%2
 Longueur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2821"/>
+        <location filename="../qtractorTrackView.cpp" line="2807"/>
         <source>clip %1</source>
         <translation>clip %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2822"/>
+        <location filename="../qtractorTrackView.cpp" line="2808"/>
         <source>fade-in</source>
         <translation>fondu en ouverture</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2822"/>
+        <location filename="../qtractorTrackView.cpp" line="2808"/>
         <source>fade-out</source>
         <translation>fondu en fermeture</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2897"/>
+        <location filename="../qtractorTrackView.cpp" line="2883"/>
         <source>clip stretch</source>
         <translation>étirement clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2897"/>
+        <location filename="../qtractorTrackView.cpp" line="2883"/>
         <source>clip resize</source>
         <translation>redimensionnement clip</translation>
     </message>
