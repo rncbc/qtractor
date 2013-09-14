@@ -68,6 +68,18 @@ void qtractorCurveSelect::addItem ( qtractorCurve *pCurve,
 }
 
 
+// Item removal method.
+void qtractorCurveSelect::removeItem ( qtractorCurve::Node *pNode )
+{
+	ItemList::Iterator iter = m_items.find(pNode);
+	if (iter != m_items.end()) {
+		delete iter.value();
+		m_items.erase(iter);
+		commit();
+	}
+}
+
+
 // Item selection method.
 void qtractorCurveSelect::selectItem ( qtractorCurve *pCurve,
 	qtractorCurve::Node *pNode, const QRect& rectNode,

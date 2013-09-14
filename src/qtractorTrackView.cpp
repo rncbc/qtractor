@@ -1555,7 +1555,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			&& (m_dragCursor == DragNone || m_dragCursor == DragCurveNode))
 			dragCurveNodeMove(pos, !bModifier);
 		if (m_dragCursor == DragCurveNode) {
-			clearSelect();
+		//	clearSelect();
 			if (m_pDragCurve && m_pDragCurveNode)
 				m_dragState = DragCurveNode;
 		//	qtractorScrollView::mousePressEvent(pMouseEvent);
@@ -2979,6 +2979,9 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 	m_pDragCurveNode = NULL;
 
 	if (pNode) {
+	#if 1//TEST_CURVE_SELECT
+		m_pCurveSelect->removeItem(pNode);
+	#endif
 		m_pCurveEditCommand->removeNode(pNode);
 		pCurve->unlinkNode(pNode);
 	}
@@ -2995,10 +2998,10 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
     qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	qtractorCurveEditList edits(pCurve);
-	unsigned long frame = pSession->frameFromPixel(pos.x());
-	int y = tvi.trackRect.y();
-	int h = tvi.trackRect.height();
-	float value = pCurve->valueFromScale(float(y + h - pos.y()) / float(h));
+	const unsigned long frame = pSession->frameFromPixel(pos.x());
+	const int h  = tvi.trackRect.height();
+	const int y2 = tvi.trackRect.bottom();
+	const float value = pCurve->valueFromScale(float(y2 - pos.y()) / float(h));
 	pNode = pCurve->addNode(frame, value, &edits);
 	if (pNode) {
 		m_pDragCurveNode = pNode;
@@ -3007,7 +3010,14 @@ void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bAddNode )
 			QToolTip::showText(pViewport->mapToGlobal(contentsToViewport(pos)),
 				nodeToolTip(m_pDragCurve, m_pDragCurveNode), pViewport);
 		}
+	#if 1//TEST_CURVE_SELECT
+		const int x = pSession->pixelFromFrame(pNode->frame);
+		const int y = y2 - int(pCurve->scaleFromValue(pNode->value) * float(h));
+		m_pCurveSelect->selectItem(pCurve, pNode, QRect(x - 4, y - 4, 8, 8));
+		m_pCurveSelect->update(true);
+	#endif
 	}
+
 	m_pCurveEditCommand->addEditList(&edits);
 }
 

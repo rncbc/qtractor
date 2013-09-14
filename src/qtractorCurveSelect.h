@@ -66,9 +66,8 @@ public:
 		qtractorCurve::Node *pNode, const QRect& rectNode,
 		bool bSelect = true, bool bToggle = false);
 
-	// Item update method (visual rects).
-	void updateItem ( Item *pItem )
-		{ m_rect = m_rect.united(pItem->rectNode); }
+	// Event removal method.
+	void removeItem(qtractorCurve::Node *pNode);
 
 	// The united selection rectangle.
 	const QRect& rect() const { return m_rect; }

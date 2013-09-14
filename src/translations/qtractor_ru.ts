@@ -12698,32 +12698,32 @@ Length:	%3</source>
         <translation type="unfinished">смена размера клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3592"/>
+        <location filename="../qtractorTrackView.cpp" line="3602"/>
         <source>%1 clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3596"/>
+        <location filename="../qtractorTrackView.cpp" line="3606"/>
         <source>cut</source>
         <translation type="unfinished">вырезание</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3599"/>
+        <location filename="../qtractorTrackView.cpp" line="3609"/>
         <source>delete</source>
         <translation type="unfinished">удаление</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3602"/>
+        <location filename="../qtractorTrackView.cpp" line="3612"/>
         <source>split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3905"/>
+        <location filename="../qtractorTrackView.cpp" line="3915"/>
         <source>move clip</source>
         <translation type="unfinished">перемещение клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4035"/>
+        <location filename="../qtractorTrackView.cpp" line="4045"/>
         <source>paste clip</source>
         <translation type="unfinished">вставка клипа</translation>
     </message>

@@ -12141,32 +12141,32 @@ Longueur:	%3</translation>
         <translation>redimensionnement clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3592"/>
+        <location filename="../qtractorTrackView.cpp" line="3602"/>
         <source>%1 clip</source>
         <translation>%1 clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3596"/>
+        <location filename="../qtractorTrackView.cpp" line="3606"/>
         <source>cut</source>
         <translation>couper</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3599"/>
+        <location filename="../qtractorTrackView.cpp" line="3609"/>
         <source>delete</source>
         <translation>supprimer</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3602"/>
+        <location filename="../qtractorTrackView.cpp" line="3612"/>
         <source>split</source>
         <translation>diviser</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3905"/>
+        <location filename="../qtractorTrackView.cpp" line="3915"/>
         <source>move clip</source>
         <translation>déplacer clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4035"/>
+        <location filename="../qtractorTrackView.cpp" line="4045"/>
         <source>paste clip</source>
         <translation>coller clip</translation>
     </message>
