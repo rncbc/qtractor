@@ -1549,7 +1549,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 		}
-		if (m_bCurveEdit
+		if (m_bCurveEdit && !bModifier
 			&& (m_dragCursor == DragNone || m_dragCursor == DragCurveNode))
 			dragCurveNodeMove(pos);
 		if (m_dragCursor == DragCurveNode) {
