@@ -85,7 +85,6 @@ public:
 	bool newClip();
 	bool editClip(qtractorClip *pClip = NULL);
 	bool unlinkClip(qtractorClip *pClip = NULL);
-	void deleteClip(qtractorClip *pClip = NULL);
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
 	bool rangeClip(qtractorClip *pClip = NULL);
@@ -98,6 +97,9 @@ public:
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
+
+	// Whether there's any curve/automation currently selected.
+	bool isCurveSelected() const;
 
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
@@ -114,6 +116,9 @@ public:
 
 	// Special paste/repeat prompt.
 	void pasteRepeatClipboard();
+
+	// Delete selection method.
+	void deleteSelect();
 
 	// Split selection method.
 	void splitSelect();

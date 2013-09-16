@@ -415,8 +415,8 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		// Which mouse state?
-		bool bModifier = (pMouseEvent->modifiers() &
-			(Qt::ShiftModifier | Qt::ControlModifier));
+		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+		bool bModifier = (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
 			// Remember what and where we'll be dragging/selecting...
@@ -549,8 +549,10 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Which mouse state?
-		const bool bModifier = (pMouseEvent->modifiers()
-			& (Qt::ShiftModifier | Qt::ControlModifier));
+		const Qt::KeyboardModifiers& modifiers
+			= pMouseEvent->modifiers();
+		const bool bModifier
+			= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(

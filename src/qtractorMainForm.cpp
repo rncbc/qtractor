@@ -2718,7 +2718,7 @@ void qtractorMainForm::editDelete (void)
 	else
 	// Delete selection...
 	if (m_pTracks)
-		m_pTracks->deleteClip();
+		m_pTracks->deleteSelect();
 }
 
 
@@ -5675,7 +5675,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
 		|| QApplication::clipboard()->mimeData()->hasUrls());
 	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
-//	m_ui.editDeleteAction->setEnabled(bSelected);
+//	m_ui.editDeleteAction->setEnabled(bSelected
+//		|| (m_pTracks && m_pTracks->isCurveSelected()));
 
 	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);
 	m_ui.editSelectInvertAction->setEnabled(iSessionEnd > 0);
@@ -6517,7 +6518,8 @@ void qtractorMainForm::updateClipMenu (void)
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
-	m_ui.editDeleteAction->setEnabled(bSelected);
+	m_ui.editDeleteAction->setEnabled(bSelected
+		|| (m_pTracks && m_pTracks->isCurveSelected()));
 
 	m_ui.clipNewAction->setEnabled(bEnabled);
 	m_ui.clipEditAction->setEnabled(pClip != NULL);

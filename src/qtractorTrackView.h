@@ -147,6 +147,9 @@ public:
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
+	// Whether there's any curve/automation currently selected.
+	bool isCurveSelected() const;
+
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
 
@@ -173,6 +176,9 @@ public:
 
 	// Paste from clipboard (execute).
 	void pasteClipSelect(qtractorTrack *pTrack);
+
+	// Curve/automation selection executive method.
+	void executeCurveSelect(qtractorTrackView::Command cmd);
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
@@ -314,7 +320,7 @@ protected:
 	void dragResizeDrop(const QPoint& pos, bool bTimeStretch = false);
 
 	// Automation curve node drag-move methods.
-	void dragCurveNodeMove(const QPoint& pos, bool bAddNode = false);
+	void dragCurveNodeMove(const QPoint& pos);
 
 	// Common tool-tip builder for automation nodes.
 	QString nodeToolTip(qtractorCurve *pCurve, qtractorCurve::Node *pNode) const;
