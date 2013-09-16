@@ -192,17 +192,23 @@ void qtractorEngine::addBusEx ( qtractorBus *pBus )
 // Remove an exo-bus from a device.
 void qtractorEngine::removeBusEx ( qtractorBus *pBus )
 {
-	m_busesEx.remove(pBus);
+	for (qtractorBus *pBusEx = m_busesEx.first();
+			pBusEx; pBusEx = pBusEx->next()) {
+		if (pBusEx == pBus) {
+			m_busesEx.remove(pBus);
+			break;
+		}
+	}
 }
 
 
 // Find a exo-device bus by name
 qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName ) const
 {
-	for (qtractorBus *pBus = m_busesEx.first();
-			pBus; pBus = pBus->next()) {
-		if (pBus->busName() == sBusName)
-			return pBus;
+	for (qtractorBus *pBusEx = m_busesEx.first();
+			pBusEx; pBusEx = pBusEx->next()) {
+		if (pBusEx->busName() == sBusName)
+			return pBusEx;
 	}
 
 	return NULL;

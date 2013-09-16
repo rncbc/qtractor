@@ -70,8 +70,7 @@ public:
 
 	// Constructor.
 	qtractorTrackButton(qtractorTrack *pTrack,
-		qtractorTrack::ToolType toolType,
-		const QSize& fixedSize, QWidget *pParent = 0);
+		qtractorTrack::ToolType toolType, QWidget *pParent = 0);
 
 	// Specific accessors.
 	void setTrack(qtractorTrack *pTrack);

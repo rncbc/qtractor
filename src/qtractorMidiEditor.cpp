@@ -2267,6 +2267,9 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 				if (pRect)
 					*pRect = rect;
 				pEventAt = pEvent;
+				// Whether event is also selected...
+				if (m_select.findItem(pEventAt))
+					break;
 			}
 		}
 		// Maybe next one...
@@ -2650,7 +2653,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 				updateDragMove(pScrollView, pos + m_posStep);
 			} else {
 				// Start resizing... take care of yet initial selection...
-				if (!m_bEventDragEdit) {
+				if (!m_bEventDragEdit && !m_select.findItem(m_pEventDrag)) {
 					updateDragSelect(pScrollView,
 						QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
 				}

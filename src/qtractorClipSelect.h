@@ -63,11 +63,11 @@ public:
 	typedef QMultiHash<qtractorClip *, Item *> ItemList;
 
 	// Clip selection method.
-	void selectClip(qtractorClip *pClip,
+	void selectItem(qtractorClip *pClip,
 		const QRect& rect, bool bSelect = true);
 
 	// Clip addition (no actual selection).
-	void addClip(qtractorClip *pClip, const QRect& rect);
+	void addItem(qtractorClip *pClip, const QRect& rect);
 
 	// The united selection rectangle.
 	const QRect& rect() const;
@@ -80,7 +80,7 @@ public:
 	const ItemList& items() const;
 
 	// Clip selection item lookup.
-	Item *findClipItem(qtractorClip *pClip) const;
+	Item *findItem(qtractorClip *pClip) const;
 
 	// Reset clip selection.
 	void reset();

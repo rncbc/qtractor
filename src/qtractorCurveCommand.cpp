@@ -58,8 +58,13 @@ bool qtractorCurveBaseCommand::execute ( bool /*bRedo*/ )
 		pSession->process_curve(pSession->playHead());
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && pMainForm->tracks())
-		pMainForm->tracks()->updateTrackList();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks) {
+			pTracks->clearSelect();
+			pTracks->updateTrackList();
+		}
+	}
 
 	return true;
 }

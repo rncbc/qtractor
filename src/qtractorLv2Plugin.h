@@ -227,6 +227,9 @@ public:
 	void lv2_ui_write(uint32_t port_index,
 		uint32_t buffer_size, uint32_t protocol, const void *buffer);
 
+	// LV2 UI resize control (host->ui).
+	void resizeEditor(const QSize& size) const;
+
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
 		{ m_bEditorClosed = bClosed; }

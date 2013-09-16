@@ -34,6 +34,7 @@ headers = \
 	src/qtractorCurve.h \
 	src/qtractorCurveCommand.h \
 	src/qtractorCurveFile.h \
+	src/qtractorCurveSelect.h \
 	src/qtractorDocument.h \
 	src/qtractorDssiPlugin.h \
 	src/qtractorEngine.h \
@@ -153,6 +154,7 @@ sources = \
 	src/qtractorCurve.cpp \
 	src/qtractorCurveCommand.cpp \
 	src/qtractorCurveFile.cpp \
+	src/qtractorCurveSelect.cpp \
 	src/qtractorDocument.cpp \
 	src/qtractorDssiPlugin.cpp \
 	src/qtractorEngine.cpp \

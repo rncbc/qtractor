@@ -34,6 +34,7 @@
 // Forward declarations.
 class qtractorTracks;
 class qtractorClipSelect;
+class qtractorCurveSelect;
 class qtractorMidiSequence;
 class qtractorSessionCursor;
 class qtractorTrackListItem;
@@ -103,9 +104,9 @@ public:
 	void setSelectMode(SelectMode selectMode);
 	SelectMode selectMode() const;
 
-	// Select everything under a given (rubber-band) rectangle.
+	// Select every clip under a given (rubber-band) rectangle.
 	void selectRect(const QRect& rectDrag,
-		SelectMode selectMode, SelectEdit = EditNone);
+		SelectMode selectMode, bool bClearSelect, SelectEdit = EditNone);
 
 	// Select every clip of a given track-range.
 	void selectTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
@@ -120,6 +121,17 @@ public:
 	void selectFile(qtractorTrack::TrackType trackType,
 		const QString& sFilename, int iTrackChannel, bool bSelect);
 
+	// Selection flags
+	enum {
+		SelectNone   = 0,
+		SelectClear  = 1,
+		SelectToggle = 2,
+		SelectCommit = 4
+	};
+
+	// Select curve nodes under a given (rubber-band) rectangle.
+	void selectCurveRect(const QRect& rectDrag, int flags);
+
 	// Contents update overloaded methods.
 	void updateRect(const QRect& rect);
 
@@ -130,10 +142,13 @@ public:
 	qtractorClipSelect *clipSelect() const;
 
 	// Clear current selection (no notify).
-	void clearClipSelect();
+	void clearSelect();
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
+
+	// Whether there's any curve/automation currently selected.
+	bool isCurveSelected() const;
 
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
@@ -161,6 +176,9 @@ public:
 
 	// Paste from clipboard (execute).
 	void pasteClipSelect(qtractorTrack *pTrack);
+
+	// Curve/automation selection executive method.
+	void executeCurveSelect(qtractorTrackView::Command cmd);
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
@@ -302,7 +320,7 @@ protected:
 	void dragResizeDrop(const QPoint& pos, bool bTimeStretch = false);
 
 	// Automation curve node drag-move methods.
-	void dragCurveNodeMove(const QPoint& pos, bool bAddNode = false);
+	void dragCurveNodeMove(const QPoint& pos);
 
 	// Common tool-tip builder for automation nodes.
 	QString nodeToolTip(qtractorCurve *pCurve, qtractorCurve::Node *pNode) const;
@@ -387,8 +405,9 @@ private:
 	bool          m_bDragTimer;
 	QPoint        m_posStep;
 
-	qtractorRubberBand *m_pRubberBand;
-	qtractorClipSelect *m_pClipSelect;
+	qtractorRubberBand  *m_pRubberBand;
+	qtractorClipSelect  *m_pClipSelect;
+	qtractorCurveSelect *m_pCurveSelect;
 
 	// The clip select mode.
 	SelectMode m_selectMode;

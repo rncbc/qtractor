@@ -2727,7 +2727,7 @@ void qtractorMainForm::editDelete (void)
 	else
 	// Delete selection...
 	if (m_pTracks)
-		m_pTracks->deleteClip();
+		m_pTracks->deleteSelect();
 }
 
 
@@ -5684,7 +5684,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
 		|| QApplication::clipboard()->mimeData()->hasUrls());
 	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
-//	m_ui.editDeleteAction->setEnabled(bSelected);
+//	m_ui.editDeleteAction->setEnabled(bSelected
+//		|| (m_pTracks && m_pTracks->isCurveSelected()));
 
 	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);
 	m_ui.editSelectInvertAction->setEnabled(iSessionEnd > 0);
@@ -6526,7 +6527,8 @@ void qtractorMainForm::updateClipMenu (void)
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
-	m_ui.editDeleteAction->setEnabled(bSelected);
+	m_ui.editDeleteAction->setEnabled(bSelected
+		|| (m_pTracks && m_pTracks->isCurveSelected()));
 
 	m_ui.clipNewAction->setEnabled(bEnabled);
 	m_ui.clipEditAction->setEnabled(pClip != NULL);
@@ -6877,7 +6879,7 @@ void qtractorMainForm::timerSlot (void)
 						(unsigned short) pos.beat_type);
 				#endif
 					if (m_pTracks)
-						m_pTracks->trackView()->clearClipSelect();
+						m_pTracks->clearSelect();
 					m_pSession->lock();
 					pNode->tempo = pos.beats_per_minute;
 					pNode->beatsPerBar = pos.beats_per_bar;
@@ -7433,7 +7435,7 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	appendMessages(sClkText);
 
 	if (m_pTracks)
-		m_pTracks->trackView()->clearClipSelect();
+		m_pTracks->clearSelect();
 
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
@@ -7642,7 +7644,7 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
 		if (pMidiEditor)
-			m_pTracks->trackView()->clearClipSelect();
+			m_pTracks->clearSelect();
 	}
 
 	// Update editors edit-head/tails...
@@ -7681,7 +7683,7 @@ void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 	// Always reset any track view selection...
 	// (avoid change/update notifications, again)
 	if (m_pTracks && (flags & qtractorCommand::ClearSelect))
-		m_pTracks->trackView()->clearClipSelect();
+		m_pTracks->clearSelect();
 
 	// Proceed as usual...
 	updateContents(NULL, (flags & qtractorCommand::Refresh));

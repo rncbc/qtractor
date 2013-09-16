@@ -583,13 +583,6 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 }
 
 
-// Delete current selection.
-void qtractorTracks::deleteClip ( qtractorClip *pClip )
-{
-	m_pTrackView->executeClipSelect(qtractorTrackView::Delete, pClip);
-}
-
-
 // Split given(current) clip.
 bool qtractorTracks::splitClip ( qtractorClip *pClip )
 {
@@ -1744,6 +1737,13 @@ bool qtractorTracks::isClipSelected (void) const
 }
 
 
+// Whether there's any curve/automation currently selected.
+bool qtractorTracks::isCurveSelected (void) const
+{
+	return m_pTrackView->isCurveSelected();
+}
+
+
 // Whether there's a single track selection.
 qtractorTrack *qtractorTracks::singleTrackSelected (void)
 {
@@ -1809,6 +1809,18 @@ void qtractorTracks::pasteRepeatClipboard (void)
 			pasteForm.repeatCount(),
 			pasteForm.repeatPeriod());
 	}
+}
+
+
+// Delete current selection.
+void qtractorTracks::deleteSelect (void)
+{
+#if 1//TEST_CURVE_SELECT
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->executeCurveSelect(qtractorTrackView::Delete);
+	else
+#endif
+	m_pTrackView->executeClipSelect(qtractorTrackView::Delete);
 }
 
 
@@ -2243,7 +2255,7 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 		return false;
 	}
 
-	m_pTrackView->clearClipSelect();
+	clearSelect();
 
 	return pSession->execute(pClipRangeCommand);
 }
@@ -2823,8 +2835,15 @@ void qtractorTracks::updateTrackView (void)
 }
 
 
+// Overall selection reset.
+void qtractorTracks::clearSelect (void)
+{
+	m_pTrackView->clearSelect();
+}
+
+
 // Overall contents reset.
-void qtractorTracks::clear(void)
+void qtractorTracks::clear (void)
 {
 	m_pTrackList->clear();
 	m_pTrackView->clear();

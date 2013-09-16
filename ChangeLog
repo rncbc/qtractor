@@ -3,6 +3,46 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Extended Edit/Select Mode/Automation implementation (DRAFT).
+
+- Fixed a sure crash bug exposed when processing of aux-send
+  plugins when inserted too early on audio input buses chain
+  (after a ticket report by Holger Marzen, thanks).
+
+- Allow the build system to include an user specified CFLAGS 
+  (patch by Cristian Morales Vega, thanks).
+
+- Shift/Ctrl keyboard modifiers now set to extend current clip
+  selection while in main track view's Edit/Select Mode/Range,
+  Rectangle modes. (EXPERIMENTAL)
+
+- Main Edit/Select Mode/Automation icon retouched to look a bit
+  more obvious and intuitive, hopefully ;)
+
+- Allow to change the velocities/values of the current selected
+  events which have the exact same onset times and hide beyhond
+  each other on the MIDI clip editor's pane below the main view
+  piano-roll (ie. the one that represents MIDI event values as a
+  bar chart). (EXPERIMENTAL)
+
+- Fixed some problematic playback/export muting and annoying
+  cleanup freezing, due on audio tracks with too many clips
+  eg. more than hundred clip splits (hopefully fixes an issue
+  reported by Louigi Verona, thanks). (EXPERIMENTAL)
+
+- LV2 UI resize feature support/control added. (EXPERIMENTAL)
+
+- Fixed dedicated MIDI control and MIDI metronome port connection
+  restore conflit (thanks to jhammen catch & patch:).
+
+- New user preference option added: reverse middle-button role to
+  Shift/Ctrl keyboard state, in special regard to edit-head/tail
+  vs. play-head positioning while on the main track and MIDI clip
+  editor (aka. piano-roll) views.
+
+
 0.5.10  2013-07-18  Kilo Papa
 
 - Default drum-key note names are now properly showing on MIDI
@@ -20,7 +60,7 @@ ChangeLog
 
 - Unconditional LV2 Dyn(amic)-manifest support has been added.
 
-- Main track-view Edit/Insert,Remove/Range dialog is now being
+- Main track-view Edit/Insert, Remove/Range dialog is now being
   introduced with optional applicability to Clips, Loop, Punch
   in/out, Automation, Tempo-map and/or Markers.
 
@@ -33,7 +73,7 @@ ChangeLog
 
 - Automation's back in effect on Track/Export Tracks.../Audio.
 
-- Reversed shift/ctrl keyboard modifier roles on middle-button
+- Reversed Shift/Ctrl keyboard modifier roles on middle-button
   clicking over the main track and MIDI clip editor views (aka.
   piano-roll) in regression to original old semantics.
 

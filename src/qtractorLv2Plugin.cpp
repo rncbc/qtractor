@@ -750,6 +750,7 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_HOST_URI	LV2_UI_PREFIX "Qt5UI"
 #endif
 
+
 static void qtractor_lv2_ui_write (
 	SuilController ui_controller,
 	uint32_t port_index,
@@ -764,6 +765,7 @@ static void qtractor_lv2_ui_write (
 
 	pLv2Plugin->lv2_ui_write(port_index, buffer_size, protocol, buffer);
 }
+
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 
@@ -784,7 +786,10 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 
 #endif	// CONFIG_LV2_EXTERNAL_UI
 
+
 #if QT_VERSION < 0x050000
+
+#include <QResizeEvent>
 
 class qtractorLv2Plugin::EventFilter : public QObject
 {
@@ -797,14 +802,27 @@ public:
 
 	bool eventFilter(QObject *pObject, QEvent *pEvent)
 	{
-		if (pObject == static_cast<QObject *> (m_pQt4Widget)
-			&& pEvent->type() == QEvent::Close) {
-			// Defer widget close!
-			// m_pQt4Widget->removeEventFilter(this);
-			m_pQt4Widget = NULL;
-			m_pLv2Plugin->closeEditorEx();
-			pEvent->ignore();
-			return true;
+		if (pObject == static_cast<QObject *> (m_pQt4Widget)) {
+			switch (pEvent->type()) {
+			case QEvent::Close: {
+				// Defer widget close!
+				m_pQt4Widget->removeEventFilter(this);
+				m_pQt4Widget = NULL;
+				m_pLv2Plugin->closeEditorEx();
+				pEvent->ignore();
+				return true;
+			}
+			case QEvent::Resize: {
+				// LV2 UI resize control...
+				QResizeEvent *pResizeEvent
+					= static_cast<QResizeEvent *> (pEvent);
+				if (pResizeEvent)
+					m_pLv2Plugin->resizeEditor(pResizeEvent->size());
+				// Fall thru...
+			}
+			default:
+				break;
+			}
 		}
 
 		return QObject::eventFilter(pObject, pEvent);
@@ -1590,7 +1608,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pQt4Filter(NULL)
 		, m_pQt4Widget(NULL)
 	#endif
-    #endif	// CONFIG_LV2_UI
+	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_OPTIONS
 	#ifdef CONFIG_LV2_BUF_SIZE
 		, m_iMinBlockLength(0)
@@ -2414,6 +2432,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
 			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);
+			// LV2 UI resize control...
+			resizeEditor(m_pQt4Widget->sizeHint());
 		//	m_pQt4Widget->show();
 		}
 	#endif
@@ -2586,7 +2606,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	#endif
 	#if QT_VERSION < 0x050000
 		if (m_pQt4Widget) {
-			// guaranteeing a reasonable window type:
+			// Guaranteeing a reasonable window type:
 			// ie. not Qt::Dialog or Qt::Popup from the seemingly good choices.
 			if (m_lv2_ui_type == LV2_UI_TYPE_QT4) {
 				const Qt::WindowFlags wflags
@@ -2695,6 +2715,26 @@ void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 	// FIXME: Update plugin params...
 	// updateParamValue(port_index, val, false);
 	m_ui_params.insert(port_index, val);
+}
+
+
+// LV2 UI resize control (host->ui).
+void qtractorLv2Plugin::resizeEditor ( const QSize& size ) const
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::resizeEditor(%d, %d)",
+		this, size.width(), size.height());
+#endif
+
+	if (m_suil_instance) {
+		const LV2UI_Resize *resize
+			= (const LV2UI_Resize *) suil_instance_extension_data(
+				m_suil_instance, LV2_UI__resize);
+		if (resize && resize->ui_resize) {
+			(*resize->ui_resize)(resize->handle,
+				size.width(), size.height());
+		}
+	}
 }
 
 #endif	// CONFIG_LV2_UI
@@ -2953,7 +2993,8 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 					m_suil_instance, LV2_PROGRAMS__UIInterface);
 		if (ui_programs && ui_programs->select_program) {
 		#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
-			LV2UI_Handle ui_handle = suil_instance_get_handle(m_suil_instance);
+			LV2UI_Handle ui_handle = (LV2UI_Handle)
+				suil_instance_get_handle(m_suil_instance);
 		#else
 			struct SuilInstanceHead {	// HACK!
 				void                   *ui_lib_handle;

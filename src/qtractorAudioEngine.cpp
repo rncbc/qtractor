@@ -761,22 +761,28 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// buses needs monitoring while idle...
 	int iOutputBus = 0;
 
+	qtractorBus *pBus;
+	qtractorAudioBus *pAudioBus;
+
 	// Prepare all current audio buses...
-	for (qtractorBus *pBus = buses().first();
-			pBus; pBus = pBus->next()) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBus);
+	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
+		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus)
 			pAudioBus->process_prepare(nframes);
 	}
 
 	// Prepare all extra audio buses...
-	for (qtractorBus *pBusEx = busesEx().first();
-			pBusEx; pBusEx = pBusEx->next()) {
-		qtractorAudioBus *pAudioBusEx
-			= static_cast<qtractorAudioBus *> (pBusEx);
-		if (pAudioBusEx)
-			pAudioBusEx->process_prepare(nframes);
+	for (pBus = busesEx().first(); pBus; pBus = pBus->next()) {
+		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus)
+			pAudioBus->process_prepare(nframes);
+	}
+
+	// Monitor all current audio buses...
+	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
+		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus)
+			pAudioBus->process_monitor(nframes);
 	}
 
 	// The owned buses too, if any...
@@ -853,10 +859,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (m_bPlayerBus && m_pPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
 		// Pass-thru current audio buses...
-		for (qtractorBus *pBus = buses().first();
-				pBus; pBus = pBus->next()) {
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (pBus);
+		for (pBus = buses().first(); pBus; pBus = pBus->next()) {
+			pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 			if (pAudioBus && (iOutputBus > 0 || pAudioBus->isMonitor()))
 				pAudioBus->process_commit(nframes);
 		}
@@ -923,10 +927,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	m_iBufferOffset += (iFrameEnd - iFrameStart);
 
 	// Commit current audio buses...
-	for (qtractorBus *pBus = buses().first();
-			pBus; pBus = pBus->next()) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBus);
+	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
+		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus)
 			pAudioBus->process_commit(nframes);
 	}
@@ -2184,6 +2186,26 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 			m_ppIBuffer[i] = static_cast<float *>
 				(jack_port_get_buffer(m_ppIPorts[i], nframes));
 		}
+	}
+
+	if (busMode() & qtractorBus::Output) {
+		for (i = 0; i < m_iChannels; ++i) {
+			m_ppOBuffer[i] = static_cast<float *>
+				(jack_port_get_buffer(m_ppOPorts[i], nframes));
+		}
+	}
+}
+
+
+// Process cycle monitor.
+void qtractorAudioBus::process_monitor ( unsigned int nframes )
+{
+	if (!m_bEnabled)
+		return;
+
+	unsigned short i;
+
+	if (busMode() & qtractorBus::Input) {
 		if (m_pIPluginList && m_pIPluginList->activated())
 			m_pIPluginList->process(m_ppIBuffer, nframes);
 		if (m_pIAudioMonitor)
@@ -2192,8 +2214,6 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 
 	if (busMode() & qtractorBus::Output) {
 		for (i = 0; i < m_iChannels; ++i) {
-			m_ppOBuffer[i] = static_cast<float *>
-				(jack_port_get_buffer(m_ppOPorts[i], nframes));
 			if (isMonitor() && (busMode() & qtractorBus::Input)) {
 				::memcpy(m_ppOBuffer[i], m_ppIBuffer[i], nframes * sizeof(float));
 			} else {

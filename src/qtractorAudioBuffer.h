@@ -51,7 +51,7 @@ class qtractorAudioBufferThread : public QThread
 public:
 
 	// Constructor.
-	qtractorAudioBufferThread(unsigned int iSyncSize = 128);
+	qtractorAudioBufferThread(unsigned int iSyncSize = 8);
 
 	// Destructor.
 	~qtractorAudioBufferThread();
@@ -65,6 +65,9 @@ public:
 
 	// Bypass executive wait condition (non RT-safe).
 	void syncExport();
+
+	// Conditional resize check.
+	void checkSyncSize(unsigned int iSyncSize);
 
 protected:
 

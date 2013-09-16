@@ -330,6 +330,7 @@ public:
 
 	// Process cycle (preparator only).
 	void process_prepare(unsigned int nframes);
+	void process_monitor(unsigned int nframes);
 	void process_commit(unsigned int nframes);
 
 	// Bus-buffering methods.

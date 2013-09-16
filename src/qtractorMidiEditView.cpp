@@ -30,6 +30,7 @@
 #include "qtractorMidiSequence.h"
 
 #include "qtractorSession.h"
+#include "qtractorOptions.h"
 
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -521,8 +522,8 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		return;
 
 	// Which mouse state?
-	const bool bModifier = (pMouseEvent->modifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier));
+	bool bModifier = (pMouseEvent->modifiers() &
+		(Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Maybe start the drag-move-selection dance?
 	const QPoint& pos
@@ -531,6 +532,9 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	switch (pMouseEvent->button()) {
 	case Qt::LeftButton:
 		// Only the left-mouse-button was meaningful...
@@ -538,6 +542,8 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	case Qt::MidButton:
 		// Mid-button direct positioning...
 		m_pEditor->selectAll(this, false);
+		if (pOptions && pOptions->bMidButtonModifier)
+			bModifier = !bModifier;	// Reverse mid-button role...
 		// Which mouse state?
 		if (bModifier) {
 			// Play-head positioning commit...

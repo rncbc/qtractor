@@ -25,6 +25,8 @@
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
 
+#include "qtractorOptions.h"
+
 #include "qtractorSessionCommand.h"
 #include "qtractorTimeScaleCommand.h"
 
@@ -402,6 +404,10 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
+	// We need a session and a location...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Direct snap positioning...
@@ -409,8 +415,8 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		// Which mouse state?
-		const bool bModifier = (pMouseEvent->modifiers()
-			& (Qt::ShiftModifier | Qt::ControlModifier));
+		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+		bool bModifier = (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
 			// Remember what and where we'll be dragging/selecting...
@@ -425,6 +431,8 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		case Qt::MidButton:
 			// Mid-button direct positioning...
 			m_pTracks->trackView()->selectAll(false);
+			if (pOptions && pOptions->bMidButtonModifier)
+				bModifier = !bModifier;	// Reverse mid-button role...
 			if (bModifier) {
 				// Play-head positioning commit...
 				m_pTracks->trackView()->setPlayHead(iFrame);
@@ -475,6 +483,8 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->selectRect(m_rectDrag,
 				qtractorTrackView::SelectRange,
+				(pMouseEvent->modifiers()
+					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
 				qtractorTrackView::EditBoth);
 			showToolTip(m_rectDrag.normalized());
 			break;
@@ -539,8 +549,10 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Which mouse state?
-		const bool bModifier = (pMouseEvent->modifiers()
-			& (Qt::ShiftModifier | Qt::ControlModifier));
+		const Qt::KeyboardModifiers& modifiers
+			= pMouseEvent->modifiers();
+		const bool bModifier
+			= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(
@@ -550,6 +562,8 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Do the final range selection...
 			m_pTracks->trackView()->selectRect(m_rectDrag,
 				qtractorTrackView::SelectRange,
+				(pMouseEvent->modifiers()
+					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
 				qtractorTrackView::EditBoth);
 			// For immediate visual feedback...
 			m_pTracks->selectionChangeNotify();

@@ -40,7 +40,7 @@
 qtractorAudioBufferThread::qtractorAudioBufferThread (
 	unsigned int iSyncSize ) : QThread()
 {
-	m_iSyncSize = (64 << 1);
+	m_iSyncSize = (4 << 1);
 	while (m_iSyncSize < iSyncSize)
 		m_iSyncSize <<= 1;
 	m_iSyncMask = (m_iSyncSize - 1);
@@ -160,6 +160,27 @@ void qtractorAudioBufferThread::process (void)
 	}
 
 	m_iSyncRead = r;
+}
+
+
+// Conditional resize check.
+void qtractorAudioBufferThread::checkSyncSize ( unsigned int iSyncSize )
+{
+	if (iSyncSize > (m_iSyncSize - 4)) {
+		QMutexLocker locker(&m_mutex);
+		unsigned int iNewSyncSize = (m_iSyncSize << 1);
+		while (iNewSyncSize < iSyncSize)
+			iNewSyncSize <<= 1;
+		qtractorAudioBuffer **ppNewSyncItems
+			= new qtractorAudioBuffer * [iNewSyncSize];
+		qtractorAudioBuffer **ppOldSyncItems = m_ppSyncItems;
+		::memcpy(ppNewSyncItems, ppOldSyncItems,
+			m_iSyncSize * sizeof(qtractorAudioBuffer *));
+		m_iSyncSize = iNewSyncSize;
+		m_iSyncMask = (iNewSyncSize - 1);
+		m_ppSyncItems = ppNewSyncItems;
+		delete [] ppOldSyncItems;
+	}
 }
 
 

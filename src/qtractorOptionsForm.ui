@@ -419,6 +419,25 @@
             </property>
            </widget>
           </item>
+          <item row="6" column="0">
+           <widget class="QCheckBox" name="MidButtonModifierCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to reverse mouse middle-button role on keyboard modifiers (Shift/Ctrl)</string>
+            </property>
+            <property name="text">
+             <string>Re&amp;verse middle-button modifier role (Shift/Ctrl)</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+V</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -3304,6 +3323,7 @@
   <tabstop>PeakAutoRemoveCheckBox</tabstop>
   <tabstop>KeepToolsOnTopCheckBox</tabstop>
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
+  <tabstop>MidButtonModifierCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>TransportModeComboBox</tabstop>
   <tabstop>LoopRecordingModeComboBox</tabstop>

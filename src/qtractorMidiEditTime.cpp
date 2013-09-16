@@ -24,6 +24,8 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditView.h"
 
+#include "qtractorOptions.h"
+
 #include "qtractorSessionCommand.h"
 #include "qtractorTimeScaleCommand.h"
 
@@ -409,8 +411,9 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		return;
 
 	// Which mouse state?
-	const bool bModifier = (pMouseEvent->modifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier));
+	bool bModifier = (pMouseEvent->modifiers() &
+		(Qt::ShiftModifier | Qt::ControlModifier));
+
 	// Make sure we'll reset selection...
 	if (!bModifier)
 		m_pEditor->selectAll(m_pEditor->editView(), false);
@@ -420,6 +423,10 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	switch (pMouseEvent->button()) {
 	case Qt::LeftButton:
 		// Remember what and where we'll be dragging/selecting...
@@ -437,14 +444,16 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 		break;
 	case Qt::MidButton:
+		if (pOptions && pOptions->bMidButtonModifier)
+			bModifier = !bModifier;	// Reverse mid-button role...
 		if (bModifier) {
-			// Edit-head/tail (merged) positioning...
-			m_pEditor->setEditHead(iFrame);
-			m_pEditor->setEditTail(iFrame);
-		} else {
 			// Play-head positioning...
 			m_pEditor->setPlayHead(iFrame);
 			pSession->setPlayHead(m_pEditor->playHead());
+		} else {
+			// Edit-head/tail (merged) positioning...
+			m_pEditor->setEditHead(iFrame);
+			m_pEditor->setEditTail(iFrame);
 		}
 		// Logical contents changed, just for visual feedback...
 		m_pEditor->selectionChangeNotify();

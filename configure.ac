@@ -1,5 +1,5 @@
 # Process this file with utoconf to produce a configure script.
-AC_INIT(Qtractor, 0.5.10, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.5.10.18, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -303,6 +303,10 @@ AC_ARG_WITH(lv2,
   [ac_with_lv2="$withval"])
 
 
+# Honor user specified CFLAGS.
+ac_cflags=$CFLAGS
+
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
@@ -344,7 +348,6 @@ for X in $ac_with_paths; do
     ac_libs="-L$X/lib $ac_libs"
   fi
 done
-
 
 # Check for proper Qt version.
 AC_CACHE_CHECK([for Qt library version >= 4.4],
@@ -635,10 +638,10 @@ if test "x$ac_suil" = "xyes"; then
 fi
 if test "x$ac_suil" = "xyes"; then
    AC_CHECK_LIB(suil-0, suil_instance_get_handle,
-	  [ac_suil_instance_get_handle="yes"],
-	  [ac_suil_instance_get_handle="no"])
+      [ac_suil_instance_get_handle="yes"],
+      [ac_suil_instance_get_handle="no"])
    if test "x$ac_suil_instance_get_handle" = "xyes"; then
-	  AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
+      AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
    fi
 else
    ac_suil="no"
