@@ -497,18 +497,18 @@ qtractorCurve::Node *qtractorCurve::Cursor::seek ( unsigned long iFrame )
 {
 	Node *pNode = m_pNode;
 
-	if (iFrame < m_iFrame) {
-		// Seek backward...
-		if (pNode == NULL)
-			pNode = m_pCurve->nodes().last();
-		while (pNode && pNode->prev() && (pNode->prev())->frame > iFrame)
-			pNode = pNode->prev();
-	} else {
+	if (iFrame > m_iFrame) {
 		// Seek forward...
 		if (pNode == NULL)
 			pNode = m_pCurve->nodes().first();
 		while (pNode && pNode->frame < iFrame)
 			pNode = pNode->next();
+	} else {
+		// Seek backward...
+		if (pNode == NULL)
+			pNode = m_pCurve->nodes().last();
+		while (pNode && pNode->prev() && (pNode->prev())->frame > iFrame)
+			pNode = pNode->prev();
 	}
 
 	m_iFrame = iFrame;
@@ -521,10 +521,8 @@ qtractorCurve::Node *qtractorCurve::Cursor::seek ( unsigned long iFrame )
 // Intra-curve frame positioning reset.
 void qtractorCurve::Cursor::reset ( qtractorCurve::Node *pNode )
 {
-	if (m_pNode == pNode || pNode == NULL) {
-		m_pNode  = (pNode ? pNode->next() : NULL);
-		m_iFrame = (m_pNode ? m_pNode->frame : 0);
-	}
+	m_pNode  = (pNode ? pNode->next() : NULL);
+	m_iFrame = (m_pNode ? m_pNode->frame : 0);
 }
 
 

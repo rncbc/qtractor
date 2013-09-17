@@ -95,7 +95,7 @@ void qtractorCurveSelect::selectItem ( qtractorCurve *pCurve,
 		if ( ( bSelect && (flags & 2) == 0) ||
 			((!bSelect && (flags & 3) == 2) && bToggle))
 			pItem->flags |=  1;
-	} 
+	}
 	else if (bSelect)
 		addItem(pCurve, pNode, rectNode);
 }
