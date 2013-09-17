@@ -5683,7 +5683,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectTrackRangeAction->setEnabled(bEnabled && bSelectable);
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	m_ui.editSelectRangeAction->setEnabled(iSessionEnd > 0 && bSelectable);
-	m_ui.editSelectNoneAction->setEnabled(bSelected);
+	m_ui.editSelectNoneAction->setEnabled(bSelected
+		|| (m_pTracks && m_pTracks->isCurveSelected()));
 
 	bool bInsertable = m_pSession->editHead() < iSessionEnd;
 	m_ui.editInsertTrackRangeAction->setEnabled(bEnabled && bInsertable);
