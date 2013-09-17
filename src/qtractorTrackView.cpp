@@ -1705,7 +1705,9 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					// DragResize...
 					moveRubberBand(&m_pRubberBand, m_rectDrag, 3);					
 				}
-			} else {
+			}
+			else
+			if (!m_bCurveEdit || m_dragState != DragCurveNode) {
 				// We'll start dragging clip/regions alright...
 				qtractorSession *pSession = qtractorSession::getInstance();
 				qtractorClipSelect::Item *pClipItem = NULL;
@@ -1825,7 +1827,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				// immediate visual feedback...
 				m_pTracks->selectionChangeNotify();
 			}
-			break;
+			// Fall thru...
 		case DragCurveNode:
 		case DragStep:
 		case DragDrop:
