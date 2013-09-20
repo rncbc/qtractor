@@ -1834,7 +1834,10 @@ void qtractorTracks::splitSelect (void)
 // Select range interval between edit head and tail.
 void qtractorTracks::selectEditRange ( bool bReset )
 {
-	m_pTrackView->selectTrackRange(NULL, bReset);
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->selectCurveTrackRange(NULL, bReset);
+	else
+		m_pTrackView->selectClipTrackRange(NULL, bReset);
 }
 
 
@@ -1842,8 +1845,13 @@ void qtractorTracks::selectEditRange ( bool bReset )
 void qtractorTracks::selectCurrentTrack ( bool bReset )
 {
 	qtractorTrack *pTrack = currentTrack();
-	if (pTrack)
-		m_pTrackView->selectTrack(pTrack, bReset);
+	if (pTrack == NULL)
+		return;
+
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->selectCurveTrack(pTrack, bReset);
+	else
+		m_pTrackView->selectClipTrack(pTrack, bReset);
 }
 
 
@@ -1851,22 +1859,42 @@ void qtractorTracks::selectCurrentTrack ( bool bReset )
 void qtractorTracks::selectCurrentTrackRange ( bool bReset )
 {
 	qtractorTrack *pTrack = currentTrack();
-	if (pTrack)
-		m_pTrackView->selectTrackRange(pTrack, bReset);
+	if (pTrack == NULL)
+		return;
+
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->selectCurveTrackRange(pTrack, bReset);
+	else
+		m_pTrackView->selectClipTrackRange(pTrack, bReset);
 }
 
 
-// Select all clips on all tracks.
-void qtractorTracks::selectAll ( bool bSelect )
+// Select everything on all tracks.
+void qtractorTracks::selectAll (void)
 {
-	m_pTrackView->selectAll(bSelect);
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->selectCurveAll();
+	else
+		m_pTrackView->selectClipAll();
+}
+
+
+// Select nothing on all tracks.
+void qtractorTracks::selectNone (void)
+{
+	m_pTrackView->clearSelect();
+
+	selectionChangeNotify();
 }
 
 
 // Invert selection on all tracks and clips.
 void qtractorTracks::selectInvert (void)
 {
-	m_pTrackView->selectInvert();
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->selectCurveInvert();
+	else
+		m_pTrackView->selectClipInvert();
 }
 
 

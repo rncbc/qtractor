@@ -430,7 +430,7 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case Qt::MidButton:
 			// Mid-button direct positioning...
-			m_pTracks->trackView()->selectAll(false);
+			m_pTracks->selectNone();
 			if (pOptions && pOptions->bMidButtonModifier)
 				bModifier = !bModifier;	// Reverse mid-button role...
 			if (bModifier) {
@@ -481,7 +481,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Rubber-band selection...
 			m_rectDrag.setRight(pos.x());
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-			m_pTracks->trackView()->selectRect(m_rectDrag,
+			m_pTracks->trackView()->selectClipRect(m_rectDrag,
 				qtractorTrackView::SelectRange,
 				(pMouseEvent->modifiers()
 					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
@@ -560,7 +560,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		switch (m_dragState) {
 		case DragSelect:
 			// Do the final range selection...
-			m_pTracks->trackView()->selectRect(m_rectDrag,
+			m_pTracks->trackView()->selectClipRect(m_rectDrag,
 				qtractorTrackView::SelectRange,
 				(pMouseEvent->modifiers()
 					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,

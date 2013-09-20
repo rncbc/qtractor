@@ -2192,6 +2192,8 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 		for (i = 0; i < m_iChannels; ++i) {
 			m_ppOBuffer[i] = static_cast<float *>
 				(jack_port_get_buffer(m_ppOPorts[i], nframes));
+			// Zero-out output buffer...
+			::memset(m_ppOBuffer[i], 0, nframes * sizeof(float));
 		}
 	}
 }
@@ -2203,22 +2205,14 @@ void qtractorAudioBus::process_monitor ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	unsigned short i;
-
 	if (busMode() & qtractorBus::Input) {
 		if (m_pIPluginList && m_pIPluginList->activated())
 			m_pIPluginList->process(m_ppIBuffer, nframes);
 		if (m_pIAudioMonitor)
 			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
-	}
-
-	if (busMode() & qtractorBus::Output) {
-		for (i = 0; i < m_iChannels; ++i) {
-			if (isMonitor() && (busMode() & qtractorBus::Input)) {
-				::memcpy(m_ppOBuffer[i], m_ppIBuffer[i], nframes * sizeof(float));
-			} else {
-				::memset(m_ppOBuffer[i], 0, nframes * sizeof(float));
-			}
+		if (isMonitor() && (busMode() & qtractorBus::Output)) {
+			(*m_pfnBufferAdd)(m_ppOBuffer, m_ppIBuffer,
+				nframes, m_iChannels, m_iChannels, 0);
 		}
 	}
 }

@@ -105,20 +105,21 @@ public:
 	SelectMode selectMode() const;
 
 	// Select every clip under a given (rubber-band) rectangle.
-	void selectRect(const QRect& rectDrag,
+	void selectClipRect(const QRect& rectDrag,
 		SelectMode selectMode, bool bClearSelect, SelectEdit = EditNone);
 
 	// Select every clip of a given track-range.
-	void selectTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
+	void selectClipTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
 	// Select every clip of a given track.
-	void selectTrack(qtractorTrack *pTrackPtr, bool bReset = true);
-	// Select all contents.
-	void selectAll(bool bSelect = true);
+	void selectClipTrack(qtractorTrack *pTrackPtr, bool bReset = true);
+
+	// Select all clip contents.
+	void selectClipAll();
 	// Invert selection on all tracks and clips.
-	void selectInvert();
+	void selectClipInvert();
 
 	// Select all clips of given filename and track/channel.
-	void selectFile(qtractorTrack::TrackType trackType,
+	void selectClipFile(qtractorTrack::TrackType trackType,
 		const QString& sFilename, int iTrackChannel, bool bSelect);
 
 	// Selection flags
@@ -131,6 +132,16 @@ public:
 
 	// Select curve nodes under a given (rubber-band) rectangle.
 	void selectCurveRect(const QRect& rectDrag, int flags);
+
+	// Select every current curve/automation node of a given track-range.
+	void selectCurveTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
+	// Select every current curve/automation node of a given track.
+	void selectCurveTrack(qtractorTrack *pTrackPtr, bool bReset = true);
+
+	// Select all current track curve/automation nodes.
+	void selectCurveAll();
+	// Invert selection on current track curve/automation nodes.
+	void selectCurveInvert();
 
 	// Contents update overloaded methods.
 	void updateRect(const QRect& rect);

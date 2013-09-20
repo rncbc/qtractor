@@ -127,7 +127,8 @@ public:
 	void selectEditRange(bool bReset = false);
 	void selectCurrentTrack(bool bReset = false);
 	void selectCurrentTrackRange(bool bReset = false);
-	void selectAll(bool bSelect = true);
+	void selectAll();
+	void selectNone();
 	void selectInvert();
 
 	// Insertion and removal methods.
