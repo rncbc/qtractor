@@ -2805,7 +2805,7 @@ void qtractorMainForm::editSelectNone (void)
 
 	// Select nothing...
 	if (m_pTracks)
-		m_pTracks->selectAll(false);
+		m_pTracks->selectNone();
 
 	stabilizeForm();
 }
@@ -7474,7 +7474,7 @@ void qtractorMainForm::selectAudioFile (
 
 	// Select audio file...
 	if (m_pTracks) {
-		m_pTracks->trackView()->selectFile(
+		m_pTracks->trackView()->selectClipFile(
 			qtractorTrack::Audio, sFilename, iTrackChannel, bSelect);
 	}
 
@@ -7534,7 +7534,7 @@ void qtractorMainForm::selectMidiFile (
 
 	// Select MIDI file track/channel...
 	if (m_pTracks) {
-		m_pTracks->trackView()->selectFile(
+		m_pTracks->trackView()->selectClipFile(
 			qtractorTrack::Midi, sFilename, iTrackChannel, bSelect);
 	}
 
