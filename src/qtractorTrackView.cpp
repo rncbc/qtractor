@@ -2550,22 +2550,24 @@ void qtractorTrackView::selectCurveAll (void)
 	if (pSession == NULL)
 		return;
 
+	qtractorTrack *pCurrentTrack = m_pTracks->currentTrack();
+	if (pCurrentTrack == NULL)
+		return;
+
 	int iUpdate = 0;
 	QRect rectUpdate = m_pCurveSelect->rect();
-/*	if (m_pCurveSelect->items().count() > 0) {
+	if (m_pCurveSelect->items().count() > 0) {
 		m_pCurveSelect->clear();
 		++iUpdate;
-	}	*/
+	}
 
 	// Select all current track/curve automation nodes...
-	qtractorTrack *pCurrentTrack = m_pTracks->currentTrack();
-
 	int y1, y2 = 0;
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {
 		y1  = y2;
 		y2 += pTrack->zoomHeight();
-		if (pCurrentTrack == NULL || pCurrentTrack == pTrack) {
+		if (pCurrentTrack == pTrack) {
 			qtractorCurve *pCurve = pTrack->currentCurve();
 			if (pCurve && m_pCurveSelect->isCurrentCurve(pCurve)) {
 				const int h = y2 - y1 - 2;
