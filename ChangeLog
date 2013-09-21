@@ -7,6 +7,10 @@ SVN TRUNK
 
 - Extended Edit/Select Mode/Automation implementation (DRAFT).
 
+- Another old silent bug bites the dust: changing track names
+  were dropping any track gain/volume and panning automation
+  curves when saving the session.
+
 - A primeval processing bug has been sorted out: aux-sends to
   audio output buses that just appear to be after the input
   bus where they're inserted were being left muted and silent

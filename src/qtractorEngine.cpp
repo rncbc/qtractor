@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -504,7 +504,7 @@ void qtractorBus::saveControllers (
 		pMonitor = monitor_out();
 		pMixerRack = pMixer->outputRack();
 	}
-	
+
 	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
 	if (pMixerStrip == NULL)
 		return;
@@ -664,25 +664,17 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 	if (pMainForm == NULL)
 		return;
 
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
 	QString sBusName(busName());
 	qtractorMonitor *pMonitor = NULL;
-	qtractorMixerRack *pMixerRack = NULL;
 	if (busMode & Input) {
-		pMonitor = monitor_in();
-		pMixerRack = pMixer->inputRack();
+		pMonitor  = monitor_in();
 		sBusName += "_in";
 	} else {
-		pMonitor = monitor_out();
-		pMixerRack = pMixer->outputRack();
+		pMonitor  = monitor_out();
 		sBusName += "_out";
 	}
-	
-	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
-	if (pMixerStrip == NULL)
+
+	if (pMonitor == NULL)
 		return;
 
 	pCurveFile->clear();
@@ -709,7 +701,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}}
 
-	pCurve = pMixerStrip->meter()->panningSubject()->curve();
+	pCurve = pMonitor->panningSubject()->curve();
 	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -727,7 +719,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pMixerStrip->meter()->gainSubject()->curve();
+	pCurve = pMonitor->gainSubject()->curve();
 	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -779,22 +771,13 @@ void qtractorBus::applyCurveFile ( BusMode busMode, qtractorCurveFile *pCurveFil
 	if (pMainForm == NULL)
 		return;
 
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
 	qtractorMonitor *pMonitor = NULL;
-	qtractorMixerRack *pMixerRack = NULL;
-	if (busMode & Input) {
+	if (busMode & Input)
 		pMonitor = monitor_in();
-		pMixerRack = pMixer->inputRack();
-	} else {
+	else
 		pMonitor = monitor_out();
-		pMixerRack = pMixer->outputRack();
-	}
-	
-	qtractorMixerStrip *pMixerStrip = pMixerRack->findStrip(pMonitor);
-	if (pMixerStrip == NULL)
+
+	if (pMonitor == NULL)
 		return;
 
 	pCurveFile->setBaseDir(pSession->sessionDir());
@@ -807,10 +790,10 @@ void qtractorBus::applyCurveFile ( BusMode busMode, qtractorCurveFile *pCurveFil
 			pCurveItem->subject = monitorSubject();
 			break;
 		case 1: // 1=PanSubject
-			pCurveItem->subject = pMixerStrip->meter()->panningSubject();
+			pCurveItem->subject = pMonitor->panningSubject();
 			break;
 		case 2: // 2=GainSubject
-			pCurveItem->subject = pMixerStrip->meter()->gainSubject();
+			pCurveItem->subject = pMonitor->gainSubject();
 			break;
 		}
 	}

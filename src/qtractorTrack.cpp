@@ -554,9 +554,6 @@ bool qtractorTrack::open (void)
 		break;
 	}
 
-	// Ah, at least make new name feedback...
-	m_pPluginList->setName(trackName());
-
 	// Mixer turn, before we get rid of old monitor...
 	if (pMonitor) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -576,11 +573,15 @@ bool qtractorTrack::open (void)
 			while (pCurve) {
 				qtractorSubject *pSubject = pCurve->subject();
 				if (pSubject) {
-					if (pSubject == pMonitor->gainSubject())
+					if (pSubject == pMonitor->gainSubject()) {
 						pCurve->setSubject(m_pMonitor->gainSubject());
+						m_pMonitor->gainSubject()->setCurve(pCurve);
+					}
 					else
-					if (pSubject == pMonitor->panningSubject())
+					if (pSubject == pMonitor->panningSubject()) {
 						pCurve->setSubject(m_pMonitor->panningSubject());
+						m_pMonitor->panningSubject()->setCurve(pCurve);
+					}
 				}
 				pCurve = pCurve->next();
 			}
@@ -588,6 +589,9 @@ bool qtractorTrack::open (void)
 		// That's it...
 		delete pMonitor;
 	}
+
+	// Ah, at least make new name feedback...
+	updateTrackName();
 
 	// Done.
 	return (m_pMonitor != NULL);
@@ -642,11 +646,31 @@ const QString& qtractorTrack::trackName (void) const
 void qtractorTrack::setTrackName ( const QString& sTrackName )
 {
 	m_props.trackName = sTrackName;
+}
+
+
+void qtractorTrack::updateTrackName (void)
+{
+	const QString& sTrackName = m_props.trackName;
 
 	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sTrackName));
 	m_pRecordSubject->setName(QObject::tr("%1 Record").arg(sTrackName));
 	m_pMuteSubject->setName(QObject::tr("%1 Mute").arg(sTrackName));
 	m_pSoloSubject->setName(QObject::tr("%1 Solo").arg(sTrackName));
+
+	if (m_pMonitor) {
+		if (m_props.trackType == qtractorTrack::Midi) {
+			m_pMonitor->gainSubject()->setName(
+				QObject::tr("%1 Volume").arg(sTrackName));
+		} else {
+			m_pMonitor->gainSubject()->setName(
+				QObject::tr("%1 Gain").arg(sTrackName));
+		}
+		m_pMonitor->panningSubject()->setName(
+			QObject::tr("%1 Pan").arg(sTrackName));
+	}
+
+	m_pPluginList->setName(sTrackName);
 }
 
 
@@ -1962,6 +1986,9 @@ void qtractorTrack::loadCurveFile (
 void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
 {
+	if (m_pMonitor == NULL)
+		return;
+
 	if (pCurveFile == NULL)
 		return;
 
@@ -1975,15 +2002,6 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(m_pMonitor);
-	if (pMixerStrip == NULL)
 		return;
 
 	pCurveFile->clear();
@@ -2009,7 +2027,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pMixerStrip->meter()->panningSubject()->curve();
+	pCurve = m_pMonitor->panningSubject()->curve();
 	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -2027,7 +2045,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveFile->addItem(pCurveItem);
 	}
 
-	pCurve = pMixerStrip->meter()->gainSubject()->curve();
+	pCurve = m_pMonitor->gainSubject()->curve();
 	if (pCurve) {
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
@@ -2113,6 +2131,9 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 // Apply track automation curves (monitor, gain, pan, record, mute, solo).
 void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 {
+	if (m_pMonitor == NULL)
+		return;
+
 	if (pCurveFile == NULL)
 		return;
 	if (pCurveFile->items().isEmpty())
@@ -2130,15 +2151,6 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	if (pMainForm == NULL)
 		return;
 
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(m_pMonitor);
-	if (pMixerStrip == NULL)
-		return;
-
 	pCurveFile->setBaseDir(pSession->sessionDir());
 	
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
@@ -2149,10 +2161,10 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 			pCurveItem->subject = monitorSubject();
 			break;
 		case 1: // 1=PanSubject
-			pCurveItem->subject = pMixerStrip->meter()->panningSubject();
+			pCurveItem->subject = m_pMonitor->panningSubject();
 			break;
 		case 2: // 2=GainSubject
-			pCurveItem->subject = pMixerStrip->meter()->gainSubject();
+			pCurveItem->subject = m_pMonitor->gainSubject();
 			break;
 		case 3: // 3=RecordSubject
 			pCurveItem->subject = recordSubject();

@@ -81,6 +81,7 @@ public:
 	// Track name accessors.
 	void setTrackName(const QString& sTrackName);
 	const QString& trackName() const;
+	void updateTrackName();
 
 	// Track type accessors.
 	void setTrackType(TrackType trackType);

@@ -190,7 +190,7 @@ Déc. / Long.:	%3 / %4</translation>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="406"/>
-        <location filename="../qtractorTrack.cpp" line="646"/>
+        <location filename="../qtractorTrack.cpp" line="656"/>
         <source>%1 Monitor</source>
         <translation>%1 Moniteur</translation>
     </message>
@@ -494,19 +494,34 @@ MIDI:	</translation>
         <translation>déplacer un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="647"/>
+        <location filename="../qtractorTrack.cpp" line="657"/>
         <source>%1 Record</source>
         <translation>%1 Enregistrer</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="648"/>
+        <location filename="../qtractorTrack.cpp" line="658"/>
         <source>%1 Mute</source>
         <translation>%1 Muet</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="649"/>
+        <location filename="../qtractorTrack.cpp" line="659"/>
         <source>%1 Solo</source>
         <translation>%1 Solo</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="664"/>
+        <source>%1 Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="667"/>
+        <source>%1 Gain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="670"/>
+        <source>%1 Pan</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="172"/>
@@ -9100,22 +9115,22 @@ Etes-vous sur?</translation>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1248"/>
+        <location filename="../qtractorMixer.cpp" line="1237"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1249"/>
+        <location filename="../qtractorMixer.cpp" line="1238"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1251"/>
+        <location filename="../qtractorMixer.cpp" line="1240"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1275"/>
+        <location filename="../qtractorMixer.cpp" line="1264"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
@@ -9123,22 +9138,22 @@ Etes-vous sur?</translation>
 <context>
     <name>qtractorMixerRack</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1158"/>
+        <location filename="../qtractorMixer.cpp" line="1147"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1162"/>
+        <location filename="../qtractorMixer.cpp" line="1151"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1168"/>
+        <location filename="../qtractorMixer.cpp" line="1157"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Moniteur</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1177"/>
+        <location filename="../qtractorMixer.cpp" line="1166"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Bus...</translation>
     </message>
@@ -9171,34 +9186,31 @@ Etes-vous sur?</translation>
         <translation>%1 Sortie</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="544"/>
+        <location filename="../qtractorMixer.cpp" line="543"/>
         <source>(Audio)</source>
         <translation>(Audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="545"/>
         <source>Gain</source>
-        <translation>Gain</translation>
+        <translation type="obsolete">Gain</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="549"/>
+        <location filename="../qtractorMixer.cpp" line="547"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="550"/>
         <source>Volume</source>
-        <translation>Volume</translation>
+        <translation type="obsolete">Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="554"/>
+        <location filename="../qtractorMixer.cpp" line="551"/>
         <source>(None)</source>
         <translation>(Rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="563"/>
         <source>Pan</source>
-        <translation>Pan</translation>
+        <translation type="obsolete">Pan</translation>
     </message>
 </context>
 <context>
