@@ -315,11 +315,11 @@ bool qtractorTrackList::Item::updateBankProgram (
 
 	const qtractorMidiManager::Banks& banks
 		= list[sInstrument];
-	int iBank = track->midiBank();
+	const int iBank = track->midiBank();
 	if (banks.contains(iBank)) {
 		const qtractorMidiManager::Bank& bank
 			= banks[iBank];
-		int iProg = track->midiProg();
+		const int iProg = track->midiProg();
 		if (bank.progs.contains(iProg)) {
 			sProgram = QString("%1 - %2").arg(iProg)
 				.arg(bank.progs[iProg]);
@@ -377,7 +377,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			QString sOmni;
 			if (track->isMidiOmni())
 				sOmni += '*';
-			unsigned short iChannel = track->midiChannel();
+			const unsigned short iChannel = track->midiChannel();
 			text << sOmni + QString::number(iChannel + 1);
 			// Care of MIDI instrument, program and bank numbers vs.names...
 			QString sInstrument = s;
@@ -454,9 +454,9 @@ int qtractorTrackList::trackRow ( qtractorTrack *pTrack ) const
 // Find track row of given viewport point...
 int qtractorTrackList::trackRowAt ( const QPoint& pos )
 {
-	int cy = qtractorScrollView::contentsY();
-	int  y = cy + pos.y() - m_pHeader->sizeHint().height();
-	int  h = qtractorScrollView::viewport()->height();
+	const int cy = qtractorScrollView::contentsY();
+	const int  y = cy + pos.y() - m_pHeader->sizeHint().height();
+	const int  h = qtractorScrollView::viewport()->height();
 
 	int y1, y2;
 	y1 = y2 = 0;
@@ -477,15 +477,15 @@ int qtractorTrackList::trackRowAt ( const QPoint& pos )
 // Find track column of given viewport point...
 int qtractorTrackList::trackColumnAt ( const QPoint& pos )
 {
-	int cy = qtractorScrollView::contentsY();
-	int  y = cy + pos.y() - m_pHeader->sizeHint().height();
+	const int cy = qtractorScrollView::contentsY();
+	const int  y = cy + pos.y() - m_pHeader->sizeHint().height();
 
 	if (y > 0 && y < qtractorScrollView::contentsHeight()) {
-		int cx = qtractorScrollView::contentsX();
-		int  x = cx + pos.x();	
+		const int cx = qtractorScrollView::contentsX();
+		const int  x = cx + pos.x();
 		int x1, x2;
 		x1 = x2 = 0;
-		int iColCount = m_pHeader->count();
+		const int iColCount = m_pHeader->count();
 		for (int iCol = 0; iCol < iColCount; ++iCol) {
 			x1  = x2;
 			x2 += m_pHeader->sectionSize(iCol);
@@ -722,7 +722,7 @@ void qtractorTrackList::updateHeader (void)
 {
 	// Find out wich is the largest header width
 	// and enforce to let it know it like so...
-	int iColCount = m_pHeader->count() - 1;
+	const int iColCount = m_pHeader->count() - 1;
 	int iContentsWidth = (qtractorScrollView::viewport()->width() >> 1);
 	for (int iCol = 0; iCol < iColCount; ++iCol)
 		iContentsWidth += m_pHeader->sectionSize(iCol);
@@ -810,8 +810,8 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 void qtractorTrackList::updatePixmap ( int cx, int cy )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
 
 	if (w < 1 || h < 1)
 		return;
@@ -828,10 +828,10 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	m_pHeader->setOffset(cx);
 
 	// Draw all cells...
-	int iColCount = m_pHeader->count();
-	int hh = m_pHeader->sizeHint().height();
+	const int iColCount = m_pHeader->count();
+	const int hh = m_pHeader->sizeHint().height();
 	// Account for the item dropping headroom...
-	int ch = qtractorScrollView::contentsHeight()
+	const int ch = qtractorScrollView::contentsHeight()
 		- (qtractorTrack::HeightBase << 1);
 
 	int x, y1, y2, h1;
@@ -848,7 +848,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 			QRect rect(0, y1 - cy + hh, w, h1);
 			x = 0;
 			for (int iCol = 0; iCol < iColCount; ++iCol) {
-				int dx = m_pHeader->sectionSize(iCol);
+				const int dx = m_pHeader->sectionSize(iCol);
 				if (x + dx > cx && x < cx + w) {
 					rect.setX(x - cx);
 					rect.setWidth(dx);
@@ -927,7 +927,7 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	const bool bModifier = (pMouseEvent->modifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier));
 	const QPoint& pos = pMouseEvent->pos();
-	int iTrack = trackRowAt(pos);
+	const int iTrack = trackRowAt(pos);
 
 	// Select current track...
 	setCurrentTrackRow(iTrack);
@@ -967,7 +967,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragMove:
 		// Currently moving an item...
 		if (m_iDragTrack >= 0) {
-			int iTrack = trackRowAt(pMouseEvent->pos());
+			const int iTrack = trackRowAt(pMouseEvent->pos());
 			if (iTrack >= 0) {
 				const QRect& rect = trackRect(iTrack);
 				m_posDrag = rect.topLeft();
@@ -1053,7 +1053,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragMove:
 		if (m_iDragTrack >= 0) {
-			int iTrack = trackRowAt(pMouseEvent->pos());
+			const int iTrack = trackRowAt(pMouseEvent->pos());
 			if (iTrack >= 0) {
 				qtractorTrack *pTrackDrag = track(m_iDragTrack);
 				qtractorTrack *pTrackDrop = track(iTrack);
@@ -1095,7 +1095,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorTrackList::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
-		int delta = pWheelEvent->delta();
+		const int delta = pWheelEvent->delta();
 		if (delta > 0)
 			m_pTracks->zoomIn();
 		else
@@ -1134,9 +1134,9 @@ bool qtractorTrackList::ensureVisibleRect ( const QRect& rect )
 	if (!rect.isValid())
 		return false;
 		
-	int hh = m_pHeader->sizeHint().height();
-	int cx = qtractorScrollView::contentsX();
-	int cy = qtractorScrollView::contentsY();
+	const int hh = m_pHeader->sizeHint().height();
+	const int cx = qtractorScrollView::contentsX();
+	const int cy = qtractorScrollView::contentsY();
 
 	if (rect.top() < hh) {
 		qtractorScrollView::ensureVisible(cx, cy + rect.top(), 0, 24);
