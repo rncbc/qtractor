@@ -1723,9 +1723,11 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Check if we're pointing in some fade-in/out or resize handle...
 			if (dragMoveStart(m_posDrag)) {
 				m_dragState = m_dragCursor;
+			#if 0//TEST_DRAG_CURVE_MOVE
 				if (m_dragState == DragCurveMove)
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 				else
+			#endif
 				if (m_dragState == DragClipFadeIn  ||
 					m_dragState == DragClipFadeOut) {
 					// DragClipFade...
