@@ -611,7 +611,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Show/hide a moving clip fade in/out slope lines...
-	if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
+	if (m_dragState == DragClipFadeIn || m_dragState == DragClipFadeOut) {
 		QRect rectHandle(m_rectHandle);
 		// Horizontal adjust...
 		rectHandle.translate(m_iDraggingX, 0);
@@ -622,13 +622,13 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
 		pPainter->setPen(pen);
-		if (m_dragState == DragFadeIn) {
+		if (m_dragState == DragClipFadeIn) {
 			vpos = contentsToViewport(m_rectDrag.bottomLeft());
 			pPainter->drawLine(
 				vpos.x(), vpos.y(), rectHandle.left(), rectHandle.top());
 		} 
 		else 
-		if (m_dragState == DragFadeOut) {
+		if (m_dragState == DragClipFadeOut) {
 			vpos = contentsToViewport(m_rectDrag.bottomRight());
 			pPainter->drawLine(
 				rectHandle.right(), rectHandle.top(), vpos.x(), vpos.y());
@@ -1032,7 +1032,7 @@ bool qtractorTrackView::clipInfo ( qtractorClip *pClip,
 
 
 // Selection-dragging, following the current mouse position.
-qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
+qtractorTrack *qtractorTrackView::dragClipMove ( const QPoint& pos,
 	bool bKeyStep )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -1077,7 +1077,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 }
 
 
-qtractorTrack *qtractorTrackView::dragDropTrack (
+qtractorTrack *qtractorTrackView::dragClipDrop (
 	const QPoint& pos, bool bKeyStep, const QMimeData *pMimeData )
 {
 	// It must be a valid session...
@@ -1097,7 +1097,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 	// If we're already dragging something,
 	if (!m_dropItems.isEmpty()) {
 		// Adjust to target track...
-		updateDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
+		updateClipDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 		// Always change horizontally wise...
 		const int x = m_rectDrag.x();
 		int dx = (pos.x() - m_posDrag.x());
@@ -1237,30 +1237,30 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 	}
 
 	// Ok, sure we're into some drag&drop state...
-	m_dragState = DragDrop;
+	m_dragState = DragClipDrop;
 	m_iDraggingX = 0;	
 
 	// Finally, show it to the world...
-	updateDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
-//	showDropRects();
+	updateClipDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
+//	showClipDropRects();
 
 	// Done.
 	return pTrack;
 }
 
 
-qtractorTrack *qtractorTrackView::dragDropEvent ( QDropEvent *pDropEvent )
+qtractorTrack *qtractorTrackView::dragClipDropEvent ( QDropEvent *pDropEvent )
 {
-	return dragDropTrack(
+	return dragClipDrop(
 		viewportToContents(pDropEvent->pos()),
 		false, pDropEvent->mimeData());
 }
 
 
-bool qtractorTrackView::canDropEvent ( QDropEvent *pDropEvent )
+bool qtractorTrackView::canClipDropEvent ( QDropEvent *pDropEvent )
 {
 	// have one existing track on target?
-	qtractorTrack *pTrack = dragDropEvent(pDropEvent);
+	qtractorTrack *pTrack = dragClipDropEvent(pDropEvent);
 
 	// Can only drop if anything...
 	if (m_dropItems.isEmpty())
@@ -1310,8 +1310,8 @@ void qtractorTrackView::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 // Drag move event handler.
 void qtractorTrackView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 {
-	if (canDropEvent(pDragMoveEvent)) {
-		showDropRects();
+	if (canClipDropEvent(pDragMoveEvent)) {
+		showClipDropRects();
 		if (!pDragMoveEvent->isAccepted()) {
 			pDragMoveEvent->setDropAction(Qt::CopyAction);
 			pDragMoveEvent->accept();
@@ -1319,7 +1319,7 @@ void qtractorTrackView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 		}
 	} else {
 		pDragMoveEvent->ignore();
-		hideDropRects();
+		hideClipDropRects();
 	}
 
 	// Kind of auto-scroll...
@@ -1356,7 +1356,8 @@ void qtractorTrackView::dragTimeout (void)
 
 
 // Drop event handler.
-bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeData )
+bool qtractorTrackView::dropClip (
+	const QPoint& pos, const QMimeData *pMimeData )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1367,7 +1368,7 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 		pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX));
 
 	// Now check whether the drop is intra-track...
-	qtractorTrack *pTrack = dragDropTrack(pos, false, pMimeData);
+	qtractorTrack *pTrack = dragClipDrop(pos, false, pMimeData);
 	// And care if we're not spanning horizontally...
 	if (pTrack == NULL
 		&& (!m_bDropSpan || m_dropType == qtractorTrack::Midi)) {
@@ -1503,7 +1504,7 @@ bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 
 void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 {
-	if (!dropTrack(viewportToContents(pDropEvent->pos()), pDropEvent->mimeData())) {
+	if (!dropClip(viewportToContents(pDropEvent->pos()), pDropEvent->mimeData())) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
 			pMainForm->dropEvent(pDropEvent);
@@ -1521,15 +1522,15 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 	// Are we already step-moving or pasting something?
 	switch (m_dragState) {
-	case DragStep:
+	case DragClipStep:
 		// One-click change from drag-step to drag-move...
-		m_dragState = DragMove;
+		m_dragState = DragClipMove;
 		m_posDrag   = m_rectDrag.center();
 		m_posStep   = QPoint(0, 0);
-		dragMoveTrack(pos + m_posStep);
+		dragClipMove(pos + m_posStep);
 		// Fall thru...
-	case DragPaste:
-	case DragDropPaste:
+	case DragClipPaste:
+	case DragClipPasteDrop:
 	//	qtractorScrollView::mousePressEvent(pMouseEvent);
 		return;
 	default:
@@ -1654,21 +1655,21 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Try to catch mouse over the fade or resize handles...
 		dragMoveStart(pos);
 		break;
-	case DragMove:
-	case DragPaste:
-		dragMoveTrack(pos + m_posStep);
+	case DragClipMove:
+	case DragClipPaste:
+		dragClipMove(pos + m_posStep);
 		break;
-	case DragDropPaste:
-		dragDropTrack(pos + m_posStep);
-		showDropRects();
+	case DragClipPasteDrop:
+		dragClipDrop(pos + m_posStep);
+		showClipDropRects();
 		break;
-	case DragFadeIn:
-	case DragFadeOut:
-		dragFadeMove(pos);
+	case DragClipFadeIn:
+	case DragClipFadeOut:
+		dragClipFadeMove(pos);
 		break;
-	case DragResizeLeft:
-	case DragResizeRight:
-		dragResizeMove(pos);
+	case DragClipResizeLeft:
+	case DragClipResizeRight:
+		dragClipResizeMove(pos);
 		break;
 	case DragCurveNode:
 		dragCurveNodeMove(pos, modifiers & Qt::ControlModifier);
@@ -1696,13 +1697,14 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Check if we're pointing in some fade-in/out or resize handle...
 			if (dragMoveStart(m_posDrag)) {
 				m_dragState = m_dragCursor;
-				if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
-					// DragFade...
+				if (m_dragState == DragClipFadeIn  ||
+					m_dragState == DragClipFadeOut) {
+					// DragClipFade...
 					m_iDraggingX = (pos.x() - m_posDrag.x());
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 					moveRubberBand(&m_pRubberBand, m_rectHandle);					
 				} else if (m_pClipDrag) {
-					// DragResize...
+					// DragClipResize...
 					moveRubberBand(&m_pRubberBand, m_rectDrag, 3);					
 				}
 			}
@@ -1716,7 +1718,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				if (pClipItem && pClipItem->rectClip.contains(pos)) {
 					int x = pSession->pixelSnap(m_rectDrag.x());
 					m_iDraggingX = (x - m_rectDrag.x());
-					m_dragState = m_dragCursor = DragMove;
+					m_dragState = m_dragCursor = DragClipMove;
 					qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
 					showClipSelect();
 				} else {
@@ -1734,8 +1736,8 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			}
 		}
 		// Fall thru...
-	case DragStep:
-	case DragDrop:
+	case DragClipStep:
+	case DragClipDrop:
 	default:
 		break;
 	}
@@ -1779,25 +1781,25 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// For immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
-		case DragMove:
+		case DragClipMove:
 			// Let's move them...
-			moveClipSelect(dragMoveTrack(pos + m_posStep));
+			moveClipSelect(dragClipMove(pos + m_posStep));
 			break;
-		case DragPaste:
+		case DragClipPaste:
 			// Let's paste them...
-			pasteClipSelect(dragMoveTrack(pos + m_posStep));
+			pasteClipSelect(dragClipMove(pos + m_posStep));
 			break;
-		case DragDropPaste:
+		case DragClipPasteDrop:
 			// Let's drop-paste them...
-			dropTrack(pos + m_posStep);
+			dropClip(pos + m_posStep);
 			break;
-		case DragFadeIn:
-		case DragFadeOut:
-			dragFadeDrop(pos);
+		case DragClipFadeIn:
+		case DragClipFadeOut:
+			dragClipFadeDrop(pos);
 			break;
-		case DragResizeLeft:
-		case DragResizeRight:
-			dragResizeDrop(pos, bModifier);
+		case DragClipResizeLeft:
+		case DragClipResizeRight:
+			dragClipResizeDrop(pos, bModifier);
 			break;
 		case DragStart:
 			// Deferred left-button positioning...
@@ -1829,8 +1831,8 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			}
 			// Fall thru...
 		case DragCurveNode:
-		case DragStep:
-		case DragDrop:
+		case DragClipStep:
+		case DragClipDrop:
 		case DragNone:
 		default:
 			// Specially when editing curve nodes,
@@ -1880,7 +1882,9 @@ void qtractorTrackView::wheelEvent ( QWheelEvent *pWheelEvent )
 // Focus lost event.
 void qtractorTrackView::focusOutEvent ( QFocusEvent *pFocusEvent )
 {
-	if (m_dragState == DragStep || m_dragState == DragPaste || m_dragState == DragDropPaste)
+	if (m_dragState == DragClipStep  ||
+		m_dragState == DragClipPaste ||
+		m_dragState == DragClipPasteDrop)
 		resetDragState();
 
 	qtractorScrollView::focusOutEvent(pFocusEvent);
@@ -1918,9 +1922,9 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 		}
 		else
 		if (pEvent->type() == QEvent::Leave	&&
-			m_dragState != DragDropPaste &&
-			m_dragState != DragPaste &&
-			m_dragState != DragStep) {
+			m_dragState != DragClipPasteDrop &&
+			m_dragState != DragClipPaste &&
+			m_dragState != DragClipStep) {
 			m_dragCursor = DragNone;
 			qtractorScrollView::unsetCursor();
 			return true;
@@ -2767,7 +2771,7 @@ void qtractorTrackView::hideClipSelect (void) const
 
 
 // Draw/hide the whole drop rectagle list
-void qtractorTrackView::updateDropRects ( int y, int h ) const
+void qtractorTrackView::updateClipDropRects ( int y, int h ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -2793,7 +2797,7 @@ void qtractorTrackView::updateDropRects ( int y, int h ) const
 	}
 }
 
-void qtractorTrackView::showDropRects (void) const
+void qtractorTrackView::showClipDropRects (void) const
 {
 	QRect rect;
 
@@ -2807,7 +2811,7 @@ void qtractorTrackView::showDropRects (void) const
 	showToolTip(rect, m_iDraggingX);
 }
 
-void qtractorTrackView::hideDropRects (void) const
+void qtractorTrackView::hideClipDropRects (void) const
 {
 	QListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
@@ -2885,7 +2889,7 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 			+ pSession->pixelFromFrame(pClip->fadeInLength()),
 				rectClip.top() + 1, 8, 8);
 		if (m_rectHandle.contains(pos)) {
-			m_dragCursor = DragFadeIn;
+			m_dragCursor = DragClipFadeIn;
 			qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 			return true;
 		}
@@ -2894,19 +2898,19 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 			- pSession->pixelFromFrame(pClip->fadeOutLength()),
 				rectClip.top() + 1, 8, 8);
 		if (m_rectHandle.contains(pos)) {
-			m_dragCursor = DragFadeOut;
+			m_dragCursor = DragClipFadeOut;
 			qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 			return true;
 		}
 		// Resize-right check...
 		if (pos.x() >= rectClip.right() - 4) {
-			m_dragCursor = DragResizeRight;
+			m_dragCursor = DragClipResizeRight;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
 		// Resize-left check...
 		if (pos.x() < rectClip.left() + 4) {
-			m_dragCursor = DragResizeLeft;
+			m_dragCursor = DragClipResizeLeft;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
@@ -2923,7 +2927,7 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 
 
 // Clip fade-in/out handle drag-moving parts.
-void qtractorTrackView::dragFadeMove ( const QPoint& pos )
+void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -2945,17 +2949,17 @@ void qtractorTrackView::dragFadeMove ( const QPoint& pos )
 
 	// Show fade-in/out tooltip..
 	QRect rect(m_rectDrag);
-	if (m_dragState == DragFadeIn)
+	if (m_dragState == DragClipFadeIn)
 		rect.setRight(m_rectHandle.left() + m_iDraggingX);
 	else
-	if (m_dragState == DragFadeOut)
+	if (m_dragState == DragClipFadeOut)
 		rect.setLeft(m_rectHandle.right() + m_iDraggingX);
 	showToolTip(rect, 0);
 }
 
 
 // Clip fade-in/out handle settler.
-void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
+void qtractorTrackView::dragClipFadeDrop ( const QPoint& pos )
 {
 	if (m_pClipDrag == NULL)
 		return;
@@ -2964,21 +2968,21 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 	if (pSession == NULL)
 		return;
 
-	dragFadeMove(pos);
+	dragClipFadeMove(pos);
 
 	// We'll build a command...
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("clip %1").arg(
-			m_dragState == DragFadeIn ? tr("fade-in") : tr("fade-out")));
+			m_dragState == DragClipFadeIn ? tr("fade-in") : tr("fade-out")));
 
-	if (m_dragState == DragFadeIn) {
+	if (m_dragState == DragClipFadeIn) {
 		pClipCommand->fadeInClip(m_pClipDrag,
 			pSession->frameFromPixel(
 				m_rectHandle.left() + m_iDraggingX - m_rectDrag.left()),
 				m_pClipDrag->fadeInType());
 	} 
 	else
-	if (m_dragState == DragFadeOut) {
+	if (m_dragState == DragClipFadeOut) {
 		pClipCommand->fadeOutClip(m_pClipDrag,
 			pSession->frameFromPixel(
 				m_rectDrag.right() - m_iDraggingX - m_rectHandle.right()),
@@ -2994,7 +2998,7 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 
 
 // Clip resize handle drag-moving parts.
-void qtractorTrackView::dragResizeMove ( const QPoint& pos )
+void qtractorTrackView::dragClipResizeMove ( const QPoint& pos )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -3004,7 +3008,7 @@ void qtractorTrackView::dragResizeMove ( const QPoint& pos )
 	int x = 0;
 	const int dx = (pos.x() - m_posDrag.x());
 	QRect rect(m_rectDrag);
-	if (m_dragState == DragResizeLeft) {
+	if (m_dragState == DragClipResizeLeft) {
 		if (rect.left() > -(dx))
 			x = pSession->pixelSnap(rect.left() + dx);
 		if (x < 0)
@@ -3015,7 +3019,7 @@ void qtractorTrackView::dragResizeMove ( const QPoint& pos )
 		rect.setLeft(x);
 	}
 	else
-	if (m_dragState == DragResizeRight) {
+	if (m_dragState == DragClipResizeRight) {
 		if (rect.right() > -(dx))
 			x = pSession->pixelSnap(rect.right() + dx);
 		if (x < rect.left() + 8)
@@ -3030,7 +3034,8 @@ void qtractorTrackView::dragResizeMove ( const QPoint& pos )
 
 
 // Clip resize handle settler.
-void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
+void qtractorTrackView::dragClipResizeDrop (
+	const QPoint& pos, bool bTimeStretch )
 {
 	if (m_pClipDrag == NULL)
 		return;
@@ -3053,7 +3058,7 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 	// Always change horizontally wise...
 	int x = 0;
 	const int dx = (pos.x() - m_posDrag.x());
-	if (m_dragState == DragResizeLeft) {
+	if (m_dragState == DragClipResizeLeft) {
 		unsigned long iClipDelta;
 		x = m_rectDrag.left() + dx;
 		if (x < 0)
@@ -3079,7 +3084,7 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		}
 	}
 	else
-	if (m_dragState == DragResizeRight) {
+	if (m_dragState == DragClipResizeRight) {
 		x = m_rectDrag.right() + dx;
 		if (x < m_rectDrag.left() + 8)
 			x = m_rectDrag.left() + 8;
@@ -3226,12 +3231,12 @@ void qtractorTrackView::resetDragState (void)
 	// Should fallback mouse cursor...
 	if (m_dragCursor != DragNone)
 		qtractorScrollView::unsetCursor();
-	if (m_dragState == DragMove        ||
-		m_dragState == DragResizeLeft  ||
-		m_dragState == DragResizeRight ||
-		m_dragState == DragDropPaste   ||
-		m_dragState == DragPaste       ||
-		m_dragState == DragStep) {
+	if (m_dragState == DragClipMove        ||
+		m_dragState == DragClipResizeLeft  ||
+		m_dragState == DragClipResizeRight ||
+		m_dragState == DragClipPasteDrop   ||
+		m_dragState == DragClipPaste       ||
+		m_dragState == DragClipStep) {
 	//	m_pClipSelect->clear();
 	//	m_pCurveSelect->clear();
 		updateContents();
@@ -3274,7 +3279,7 @@ void qtractorTrackView::resetDragState (void)
 	}
 
 	// If we were dragging fade-slope lines, refresh...
-	if (dragState == DragFadeIn || dragState == DragFadeOut)
+	if (dragState == DragClipFadeIn || dragState == DragClipFadeOut)
 		updateRect(m_rectDrag);
 
 	// No dropping files, whatsoever.
@@ -3294,21 +3299,21 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 	switch (iKey) {
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
-		if (m_dragState == DragStep) {
-			moveClipSelect(dragMoveTrack(m_posDrag + m_posStep));
+		if (m_dragState == DragClipStep) {
+			moveClipSelect(dragClipMove(m_posDrag + m_posStep));
 		} else {
 			const QPoint& pos = qtractorScrollView::viewportToContents(
 				qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
-			if (m_dragState == DragMove)
-				moveClipSelect(dragMoveTrack(pos + m_posStep));
-			else if (m_dragState == DragPaste)
-				pasteClipSelect(dragMoveTrack(pos + m_posStep));
-			else if (m_dragState == DragDropPaste)
-				dropTrack(pos + m_posStep);
+			if (m_dragState == DragClipMove)
+				moveClipSelect(dragClipMove(pos + m_posStep));
+			else if (m_dragState == DragClipPaste)
+				pasteClipSelect(dragClipMove(pos + m_posStep));
+			else if (m_dragState == DragClipPasteDrop)
+				dropClip(pos + m_posStep);
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
-		m_dragState = DragStep; // HACK: Force selection clearance!
+		m_dragState = DragClipStep; // HACK: Force selection clearance!
 		resetDragState();
 		break;
 	case Qt::Key_Home:
@@ -3415,7 +3420,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 
 	// Set initial bound conditions...
 	if (m_dragState == DragNone) {
-		m_dragState  = m_dragCursor = DragStep;
+		m_dragState  = m_dragCursor = DragClipStep;
 		m_rectDrag   = m_pClipSelect->rect();
 		m_posDrag    = m_rectDrag.topLeft();
 		m_posStep    = QPoint(0, 0);
@@ -3425,10 +3430,10 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Now to say the truth...
-	if (m_dragState != DragMove &&
-		m_dragState != DragStep &&
-		m_dragState != DragPaste &&
-		m_dragState != DragDropPaste)
+	if (m_dragState != DragClipMove &&
+		m_dragState != DragClipStep &&
+		m_dragState != DragClipPaste &&
+		m_dragState != DragClipPasteDrop)
 		return false;
 
 	// Determine vertical step...
@@ -3467,16 +3472,16 @@ bool qtractorTrackView::keyStep ( int iKey )
 
 	// Early sanity check...
 	const QRect& rect
-		= (m_dragState == DragDropPaste ? m_rectDrag : m_pClipSelect->rect());
+		= (m_dragState == DragClipPasteDrop ? m_rectDrag : m_pClipSelect->rect());
 	QPoint pos = m_posDrag;
-	if (m_dragState != DragStep) {
+	if (m_dragState != DragClipStep) {
 		pos = qtractorScrollView::viewportToContents(
 			qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 	}
 
 	int x2 = - pos.x();
 	int y2 = - pos.y();
-	if (m_dragState != DragStep) {
+	if (m_dragState != DragClipStep) {
 		x2 += (m_posDrag.x() - rect.x());
 		y2 += (m_posDrag.y() - rect.y());
 	}
@@ -3498,11 +3503,11 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Do our deeds (flag we're key-steppin')...
-	if (m_dragState == DragDropPaste) {
-		dragDropTrack(pos + m_posStep, true);
-		showDropRects();
+	if (m_dragState == DragClipPasteDrop) {
+		dragClipDrop(pos + m_posStep, true);
+		showClipDropRects();
 	} else {
-		dragMoveTrack(pos + m_posStep, true);
+		dragClipMove(pos + m_posStep, true);
 	}
 
 	return true;
@@ -3690,12 +3695,12 @@ qtractorTrack *qtractorTrackView::singleTrackSelected (void)
 // Whether there's any clip on clipboard. (static)
 bool qtractorTrackView::isClipboard (void)
 {
-	return (g_clipboard.items.count() > 0);
+	return (g_clipboard.clips.count() > 0 || g_clipboard.nodes.count());
 }
 
 
-// Clipboard stuffer method.
-void qtractorTrackView::ClipBoard::addItem ( qtractorClip *pClip,
+// Clipboard stuffer methods.
+void qtractorTrackView::ClipBoard::addClip ( qtractorClip *pClip,
 	const QRect& clipRect, unsigned long iClipStart,
 	unsigned long iClipOffset, unsigned long iClipLength )
 {
@@ -3705,15 +3710,27 @@ void qtractorTrackView::ClipBoard::addItem ( qtractorClip *pClip,
 		pClipItem->fadeInLength = pClip->fadeInLength();
 	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
 		pClipItem->fadeOutLength = pClip->fadeOutLength();
-	items.append(pClipItem);
+	clips.append(pClipItem);
+}
+
+
+void qtractorTrackView::ClipBoard::addNode ( qtractorCurve::Node *pNode,
+	const QRect& nodeRect, unsigned long iFrame, float fValue )
+{
+	NodeItem *pNodeItem
+		= new NodeItem(pNode, nodeRect, iFrame, fValue);
+	nodes.append(pNodeItem);
 }
 
 
 // Clipboard reset method.
 void qtractorTrackView::ClipBoard::clear (void)
 {
-	qDeleteAll(items);
-	items.clear();
+	qDeleteAll(clips);
+	clips.clear();
+
+	qDeleteAll(nodes);
+	nodes.clear();
 
 	singleTrack = NULL;
 	frames = 0;
@@ -3842,7 +3859,7 @@ void qtractorTrackView::executeClipSelect (
 		if (bClipboard) {
 			QRect rectClip;
 			clipInfo(pClipEx, &rectClip);
-			g_clipboard.addItem(pClipEx,
+			g_clipboard.addClip(pClipEx,
 				rectClip,
 				pClipEx->clipStart(),
 				pClipEx->clipOffset(),
@@ -3877,7 +3894,7 @@ void qtractorTrackView::executeClipSelect (
 				if (iSelectEnd < iClipEnd) {
 					// -- Middle region...
 					if (bClipboard) {
-						g_clipboard.addItem(pClip,
+						g_clipboard.addClip(pClip,
 							pClipItem->rectClip,
 							iSelectStart,
 							iClipOffset + iSelectOffset,
@@ -3920,7 +3937,7 @@ void qtractorTrackView::executeClipSelect (
 				} else {
 					// -- Right region...
 					if (bClipboard) {
-						g_clipboard.addItem(pClip,
+						g_clipboard.addClip(pClip,
 							pClipItem->rectClip,
 							iSelectStart,
 							iClipOffset + iSelectOffset,
@@ -3956,7 +3973,7 @@ void qtractorTrackView::executeClipSelect (
 			if (iSelectEnd < iClipEnd) {
 				// -- Left region...
 				if (bClipboard) {
-					g_clipboard.addItem(pClip,
+					g_clipboard.addClip(pClip,
 						pClipItem->rectClip,
 						iClipStart,
 						iClipOffset,
@@ -3989,7 +4006,7 @@ void qtractorTrackView::executeClipSelect (
 			} else {
 				// -- Whole clip...
 				if (bClipboard) {
-					g_clipboard.addItem(pClip,
+					g_clipboard.addClip(pClip,
 						pClipItem->rectClip,
 						iClipStart,
 						iClipOffset,
@@ -4020,7 +4037,7 @@ void qtractorTrackView::executeClipSelect (
 // (as from current clipboard width)
 unsigned long qtractorTrackView::pastePeriod (void) const
 {
-	if (g_clipboard.items.count() < 1)
+	if (g_clipboard.clips.count() < 1)
 		return 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -4049,20 +4066,20 @@ void qtractorTrackView::pasteClipboard (
 		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Check if anythings really on clipboard...
-	if (g_clipboard.items.count() < 1) {
+	if (g_clipboard.clips.count() < 1) {
 		// System clipboard?
 		QClipboard *pClipboard = QApplication::clipboard();
 		if (pClipboard && (pClipboard->mimeData())->hasUrls()) {
-			dragDropTrack(pos, false, pClipboard->mimeData());
+			dragClipDrop(pos, false, pClipboard->mimeData());
 			// Make a proper out of this (new) state?
 			if (!m_dropItems.isEmpty()) {
-				m_dragState = m_dragCursor = DragDropPaste;
+				m_dragState = m_dragCursor = DragClipPasteDrop;
 				// It doesn't matter which one, both pasteable views are due...
 				qtractorScrollView::setFocus();
 				qtractorScrollView::setCursor(
 					QCursor(QPixmap(":/images/editPaste.png"), 12, 12));
 				// Update the pasted stuff
-				showDropRects();
+				showClipDropRects();
 			}
 		}
 		// Woot!
@@ -4088,7 +4105,7 @@ void qtractorTrackView::pasteClipboard (
 	// adjust clip widths/lengths just in case time
 	// scale (horizontal zoom) has been changed... 
 	//
-	QListIterator<ClipItem *> iter(g_clipboard.items);
+	QListIterator<ClipItem *> iter(g_clipboard.clips);
 	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
 		iter.toFront();
 		while (iter.hasNext()) {
@@ -4102,7 +4119,7 @@ void qtractorTrackView::pasteClipboard (
 	}
 
 	// We'll start a brand new floating state...
-	m_dragState = m_dragCursor = DragPaste;
+	m_dragState = m_dragCursor = DragClipPaste;
 	m_rectDrag  = m_pClipSelect->rect();
 	m_posDrag   = m_rectDrag.topLeft();
 	m_posStep   = QPoint(0, 0);
@@ -4114,7 +4131,7 @@ void qtractorTrackView::pasteClipboard (
 
 	// Let's-a go...
 	qtractorScrollView::update();
-	dragMoveTrack(pos + m_posStep);
+	dragClipMove(pos + m_posStep);
 }
 
 
@@ -4257,7 +4274,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		return;
 
 	// Check if there's anything really on clipboard...
-	if (g_clipboard.items.count() < 1)
+	if (g_clipboard.clips.count() < 1)
 		return;
 
 	// We'll need this...
@@ -4295,7 +4312,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 	// We'll build a composite command...
 	QList<qtractorClip *> clips;
 
-	QListIterator<ClipItem *> iter(g_clipboard.items);
+	QListIterator<ClipItem *> iter(g_clipboard.clips);
 	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
 		// Paste iteration...
 		int iTrackClip = 0;
@@ -4442,10 +4459,9 @@ void qtractorTrackView::setCurveEdit ( bool bCurveEdit )
 {
 	m_bCurveEdit = bCurveEdit;
 
-	m_pClipSelect->clear();
-	m_pCurveSelect->clear();
+	clearSelect();
 
-	updateContents();
+	m_pTracks->selectionChangeNotify();
 }
 
 bool qtractorTrackView::isCurveEdit (void) const
