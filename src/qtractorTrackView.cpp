@@ -1575,7 +1575,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (m_bCurveEdit
 			&& ((m_dragCursor == DragCurveNode)
 				|| (m_dragCursor == DragNone && !bModifier)))
-			dragCurveNodeMove(pos, modifiers & Qt::ControlModifier);
+			dragCurveNode(pos, modifiers & Qt::ControlModifier);
 		if (m_dragCursor == DragCurveNode) {
 		//	clearSelect();
 			if (m_pDragCurve && m_pDragCurveNode) {
@@ -1698,7 +1698,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		dragCurveMove(pos + m_posStep);
 		break;
 	case DragCurveNode:
-		dragCurveNodeMove(pos, modifiers & Qt::ControlModifier);
+		dragCurveNode(pos, modifiers & Qt::ControlModifier);
 		break;
 	case DragSelect:
 		m_rectDrag.setBottomRight(pos);
@@ -2906,10 +2906,13 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 
 	qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 	if (pNode) {
-		if (m_pCurveSelect->items().count() > 1)
+	#if 0//TEST_DRAG_CURVE_MOVE
+		if ((m_pCurveSelect->items().count() > 1)
+			&& m_pCurveSelect->findItem(pNode))
 			m_dragCursor = DragCurveMove;
 		else
-			m_dragCursor = DragCurveNode;
+	#endif
+		m_dragCursor = DragCurveNode;
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 		return true;
 	}
@@ -3153,7 +3156,7 @@ void qtractorTrackView::dragClipResizeDrop (
 
 
 // Automation curve node drag-move methods.
-void qtractorTrackView::dragCurveNodeMove ( const QPoint& pos, bool bToggle )
+void qtractorTrackView::dragCurveNode ( const QPoint& pos, bool bToggle )
 {
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);

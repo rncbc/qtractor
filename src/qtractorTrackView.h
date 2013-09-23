@@ -337,7 +337,7 @@ protected:
 	void dragClipResizeDrop(const QPoint& pos, bool bTimeStretch = false);
 
 	// Automation curve node drag-move methods.
-	void dragCurveNodeMove(const QPoint& pos, bool bToggle);
+	void dragCurveNode(const QPoint& pos, bool bToggle);
 
 	// Common tool-tip builder for automation nodes.
 	QString nodeToolTip(qtractorCurve *pCurve, qtractorCurve::Node *pNode) const;
