@@ -164,7 +164,7 @@ public:
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
 
-	// Whether there's any clip on clipboard.
+	// Whether there's anything on clipboard.
 	static bool isClipboard();
 
 	// Paste from clipboard (start).
@@ -190,6 +190,9 @@ public:
 
 	// Curve/automation selection executive method.
 	void executeCurveSelect(qtractorTrackView::Command cmd);
+
+	// Intra-drag-n-drop curve/automation node move method.
+	void moveCurveSelect(const QPoint& pos);
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
@@ -262,12 +265,15 @@ protected:
 	// Get contents rectangle from given clip.
 	bool clipInfo(qtractorClip *pClip, QRect *pClipRect) const;
 
-	// Drag-n-drop event stuffer.
-	qtractorTrack *dragMoveTrack(const QPoint& pos, bool bKeyStep = false);
-	qtractorTrack *dragDropTrack(const QPoint& pos, bool bKeyStep = false,
+	// Drag-n-drop event stuffers (for clips).
+	qtractorTrack *dragClipMove(const QPoint& pos, bool bKeyStep = false);
+	qtractorTrack *dragClipDrop(const QPoint& pos, bool bKeyStep = false,
 		const QMimeData *pMimeData = NULL);
-	qtractorTrack *dragDropEvent(QDropEvent *pDropEvent);
-	bool canDropEvent(QDropEvent *pDropEvent);
+	qtractorTrack *dragClipDropEvent(QDropEvent *pDropEvent);
+	bool canClipDropEvent(QDropEvent *pDropEvent);
+
+	// Drag-n-drop event stuffers (for curve/automation nodes).
+	void dragCurveMove(const QPoint& pos);
 
 	// Drag-n-drop event handlers.
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
@@ -275,7 +281,7 @@ protected:
 	void dragLeaveEvent(QDragLeaveEvent *pDragLeaveEvent);
 	void dropEvent(QDropEvent *pDropEvent);
 
-	bool dropTrack(const QPoint& pos, const QMimeData *pMimeData = NULL);
+	bool dropClip(const QPoint& pos, const QMimeData *pMimeData = NULL);
 
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
@@ -311,9 +317,9 @@ protected:
 	void showToolTip(const QRect& rect, int dx) const;
 
 	// Draw/hide the whole drop rectagle list
-	void updateDropRects(int y, int h) const;
-	void showDropRects() const;
-	void hideDropRects() const;
+	void updateClipDropRects(int y, int h) const;
+	void showClipDropRects() const;
+	void hideClipDropRects() const;
 
 	// Draw/hide a dragging rectangular selection.
 	void moveRubberBand(qtractorRubberBand **ppRubberBand,
@@ -323,15 +329,15 @@ protected:
 	bool dragMoveStart(const QPoint& pos);
 
 	// Clip fade-in/out handle drag-move methods.
-	void dragFadeMove(const QPoint& pos);
-	void dragFadeDrop(const QPoint& pos);
+	void dragClipFadeMove(const QPoint& pos);
+	void dragClipFadeDrop(const QPoint& pos);
 
 	// Clip resize drag-move methods.
-	void dragResizeMove(const QPoint& pos);
-	void dragResizeDrop(const QPoint& pos, bool bTimeStretch = false);
+	void dragClipResizeMove(const QPoint& pos);
+	void dragClipResizeDrop(const QPoint& pos, bool bTimeStretch = false);
 
 	// Automation curve node drag-move methods.
-	void dragCurveNodeMove(const QPoint& pos, bool bToggle);
+	void dragCurveNode(const QPoint& pos, bool bToggle);
 
 	// Common tool-tip builder for automation nodes.
 	QString nodeToolTip(qtractorCurve *pCurve, qtractorCurve::Node *pNode) const;
@@ -403,9 +409,12 @@ private:
 	// The current selecting/dragging clip stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect,
-		DragMove, DragDrop, DragDropPaste, DragStep,
-		DragPaste, DragFadeIn, DragFadeOut,
-		DragResizeLeft, DragResizeRight, DragCurveNode
+		DragClipMove, DragClipDrop, DragClipStep,
+		DragClipPaste, DragClipPasteDrop,
+		DragClipFadeIn, DragClipFadeOut,
+		DragClipResizeLeft, DragClipResizeRight,
+		DragCurveMove, DragCurveDrop, DragCurveStep,
+		DragCurvePaste, DragCurvePasteDrop, DragCurveNode
 	} m_dragState, m_dragCursor;
 
 	qtractorClip *m_pClipDrag;
@@ -436,7 +445,7 @@ private:
 	// Automation curve node editing mode.
 	bool m_bCurveEdit;
 
-	// The local clipboard item.
+	// The local clipboard items.
 	struct ClipItem
 	{
 		// Clipboard item constructor.
@@ -456,6 +465,19 @@ private:
 		unsigned long fadeOutLength;
 	};
 
+	struct NodeItem
+	{
+		// Clipboard item constructor.
+		NodeItem(qtractorCurve::Node *pNode, const QRect& nodeRect,
+			unsigned long iFrame, float fValue)
+			: node(pNode), rect(nodeRect), frame(iFrame), value(fValue) {}
+		// Clipboard item members.
+		qtractorCurve::Node *node;
+		QRect rect;
+		unsigned long frame;
+		float value;
+	};
+
 	// The local clipboard stuff (singleton).
 	static struct ClipBoard
 	{
@@ -463,14 +485,17 @@ private:
 		ClipBoard() : singleTrack(NULL), frames(0) {}
 		// Destructor.
 		~ClipBoard() { clear(); }
-		// Clipboard stuffer method.
-		void addItem(qtractorClip *pClip, const QRect& clipRect,
+		// Clipboard stuffer methods.
+		void addClip(qtractorClip *pClip, const QRect& clipRect,
 			unsigned long iClipStart, unsigned long iClipOffset,
 			unsigned long iClipLength);
+		void addNode(qtractorCurve::Node *pNode, const QRect& nodeRect,
+			unsigned long iFrame, float fValue);
 		// Clipboard reset method.
 		void clear();
 		// Clipboard members.
-		QList<ClipItem *> items;
+		QList<ClipItem *> clips;
+		QList<NodeItem *> nodes;
 		qtractorTrack    *singleTrack;
 		unsigned long     frames;
 

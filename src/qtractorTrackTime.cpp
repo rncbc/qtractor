@@ -87,8 +87,8 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
 
 	if (w < 1 || h < 1)
 		return;
@@ -124,7 +124,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	x = pNode->pixelFromBeat(iBeat) - cx;
 
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat);
+		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
 			y1 = 0;
 			painter.setPen(pal.windowText().color());
@@ -168,7 +168,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	if (pSession->isLooping()) {
 		QPolygon polyg(3);
 	//	h -= 4;
-		int d = (h >> 2);
+		const int d = (h >> 2);
 		painter.setPen(Qt::darkCyan);
 		painter.setBrush(Qt::cyan);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - cx;
@@ -193,7 +193,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	if (pSession->isPunching()) {
 		QPolygon polyg(3);
 	//	h -= 4;
-		int d = (h >> 2);
+		const int d = (h >> 2);
 		painter.setPen(Qt::darkMagenta);
 		painter.setBrush(Qt::magenta);
 		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - cx;
@@ -251,13 +251,12 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	// Headers a-head...
-	int cx = qtractorScrollView::contentsX();
-	int h = qtractorScrollView::height() - 4;
-	int d = (h >> 2);
-	int x;
+	const int cx = qtractorScrollView::contentsX();
+	const int h = qtractorScrollView::height() - 4;
+	const int d = (h >> 2);
 	
 	// Draw edit-head line...
-	x = (m_pTracks->trackView())->editHeadX() - cx;
+	int x = (m_pTracks->trackView())->editHeadX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -318,8 +317,8 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 
 	// Try to catch mouse clicks over the
 	// play/edit-head/tail cursors...
-	int h = qtractorScrollView::height(); // - 4;
-	int d = (h >> 1);
+	const int h = qtractorScrollView::height(); // - 4;
+	const int d = (h >> 1);
 	QRect rect(0, h - d, d << 1, d);
 
 	// Check play-head header...
@@ -468,9 +467,9 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		// Are we already moving/dragging something?
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
-		unsigned long iFrame = pSession->frameSnap(
+		const unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-		int y = m_pTracks->trackView()->contentsY();
+		const int y = m_pTracks->trackView()->contentsY();
 		switch (m_dragState) {
 		case DragNone:
 			// Try to catch mouse over the cursor heads...
@@ -555,7 +554,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
-		unsigned long iFrame = pSession->frameSnap(
+		const unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		switch (m_dragState) {
 		case DragSelect:
@@ -670,7 +669,7 @@ void qtractorTrackTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
-	unsigned long iFrame = pSession->frameSnap(
+	const unsigned long iFrame = pSession->frameSnap(
 		pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	// Show tempo map dialog.
@@ -856,9 +855,9 @@ void qtractorTrackTime::showToolTip ( const QRect& rect ) const
 	if (pTimeScale == NULL)
 		return;
 
-	unsigned long iFrameStart = pTimeScale->frameSnap(
+	const unsigned long iFrameStart = pTimeScale->frameSnap(
 		pTimeScale->frameFromPixel(rect.left()));
-	unsigned long iFrameEnd = pTimeScale->frameSnap(
+	const unsigned long iFrameEnd = pTimeScale->frameSnap(
 		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(QCursor::pos(),

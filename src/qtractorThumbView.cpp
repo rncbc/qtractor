@@ -79,8 +79,8 @@ qtractorThumbView::qtractorThumbView( QWidget *pParent )
 // (Re)create the complete view pixmap.
 void qtractorThumbView::updateContents (void)
 {
-	int w = QFrame::width();
-	int h = QFrame::height();
+	const int w = QFrame::width();
+	const int h = QFrame::height();
 	if (w < 1 || h < 1)
 		return;
 
@@ -120,8 +120,9 @@ void qtractorThumbView::updateContents (void)
 			pTracks->trackView()->width());
 	}
 
-	int ch = pTracks->trackView()->contentsHeight();
-	int f2 = 1 + (m_iContentsLength / w);
+	const int ch = pTracks->trackView()->contentsHeight();
+	const int f2 = 1 + (m_iContentsLength / w);
+
 	int x2, w2;
 
 	if (ch > 0) {
@@ -193,8 +194,8 @@ void qtractorThumbView::updateContents (void)
 // Update thumb-position.
 void qtractorThumbView::updateThumb ( int dx )
 {
-	int w = QFrame::width();
-	int h = QFrame::height();
+	const int w = QFrame::width();
+	const int h = QFrame::height();
 	if (w < 1 || h < 1)
 		return;
 
@@ -210,7 +211,8 @@ void qtractorThumbView::updateThumb ( int dx )
 	if (pTracks == NULL)
 		return;
 
-	int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
+	const int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
+
 	int x2 = dx + (w * pTracks->trackView()->contentsX()) / cw;
 	int w2 = (w * pTracks->trackView()->viewport()->width()) / cw;
 
@@ -233,8 +235,8 @@ void qtractorThumbView::updateThumb ( int dx )
 // Update playhead-position.
 void qtractorThumbView::updatePlayHead ( unsigned long iPlayHead )
 {
-	int w = QFrame::width();
-	int h = QFrame::height();
+	const int w = QFrame::width();
+	const int h = QFrame::height();
 	if (w < 1 || h < 1)
 		return;
 
@@ -250,10 +252,10 @@ void qtractorThumbView::updatePlayHead ( unsigned long iPlayHead )
 	if (pTracks == NULL)
 		return;
 
-	int f2 = 1 + (m_iContentsLength / w);
+	const int f2 = 1 + (m_iContentsLength / w);
 
 	// Extra: update current playhead position...
-	int x2 = int(iPlayHead / f2);
+	const int x2 = int(iPlayHead / f2);
 	if (m_iPlayHeadX != x2) {
 		// Override old playhead line...
 		update(QRect(m_iPlayHeadX, 0, 1, h));
@@ -268,7 +270,7 @@ void qtractorThumbView::updatePlayHead ( unsigned long iPlayHead )
 // Update view-position.
 void qtractorThumbView::updateView ( int dx )
 {
-	int w = QFrame::width();
+	const int w = QFrame::width();
 	if (w < 1)
 		return;
 
@@ -284,10 +286,10 @@ void qtractorThumbView::updateView ( int dx )
 	if (pTracks == NULL)
 		return;
 
-	int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
-	int cx = pTracks->trackView()->contentsX() + (dx * cw) / w;
-	int cy = pTracks->trackView()->contentsY();
+	const int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
+	const int cy = pTracks->trackView()->contentsY();
 
+	int cx = pTracks->trackView()->contentsX() + (dx * cw) / w;
 	if (cx < 0)
 		cx = 0;
 
@@ -298,7 +300,7 @@ void qtractorThumbView::updateView ( int dx )
 // Set playhead-position (indirect).
 void qtractorThumbView::setPlayHeadX ( int iPlayHeadX )
 {
-	int w = QFrame::width();
+	const int w = QFrame::width();
 	if (w < 1)
 		return;
 
@@ -314,7 +316,7 @@ void qtractorThumbView::setPlayHeadX ( int iPlayHeadX )
 	if (pTracks == NULL)
 		return;
 
-	int f2 = 1 + (m_iContentsLength / w);
+	const int f2 = 1 + (m_iContentsLength / w);
 	pSession->setPlayHead(f2 * iPlayHeadX);
 }
 
@@ -328,8 +330,8 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	const QRect& rect = pPaintEvent->rect();
 	painter.drawPixmap(rect, m_pixmap, rect);
 
-	int w = QFrame::width();
-	int h = QFrame::height();
+	const int w = QFrame::width();
+	const int h = QFrame::height();
 	if (w < 1 || h < 1)
 		return;
 	
@@ -345,7 +347,7 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (pTracks == NULL)
 		return;
 
-	int f2 = 1 + (m_iContentsLength / w);
+	const int f2 = 1 + (m_iContentsLength / w);
 	int x2;
 
 	// Draw current edit-bound lines...
