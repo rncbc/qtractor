@@ -191,6 +191,9 @@ public:
 	// Curve/automation selection executive method.
 	void executeCurveSelect(qtractorTrackView::Command cmd);
 
+	// Intra-drag-n-drop curve/automation node move method.
+	void moveCurveSelect(const QPoint& pos);
+
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
 	unsigned long playHead() const;
@@ -262,12 +265,15 @@ protected:
 	// Get contents rectangle from given clip.
 	bool clipInfo(qtractorClip *pClip, QRect *pClipRect) const;
 
-	// Drag-n-drop event stuffer.
+	// Drag-n-drop event stuffers (for clips).
 	qtractorTrack *dragClipMove(const QPoint& pos, bool bKeyStep = false);
 	qtractorTrack *dragClipDrop(const QPoint& pos, bool bKeyStep = false,
 		const QMimeData *pMimeData = NULL);
 	qtractorTrack *dragClipDropEvent(QDropEvent *pDropEvent);
 	bool canClipDropEvent(QDropEvent *pDropEvent);
+
+	// Drag-n-drop event stuffers (for curve/automation nodes).
+	void dragCurveMove(const QPoint& pos);
 
 	// Drag-n-drop event handlers.
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
@@ -407,7 +413,8 @@ private:
 		DragClipPaste, DragClipPasteDrop,
 		DragClipFadeIn, DragClipFadeOut,
 		DragClipResizeLeft, DragClipResizeRight,
-		DragCurveNode
+		DragCurveMove, DragCurveDrop, DragCurveStep,
+		DragCurvePaste, DragCurvePasteDrop, DragCurveNode
 	} m_dragState, m_dragCursor;
 
 	qtractorClip *m_pClipDrag;

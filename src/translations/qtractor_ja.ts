@@ -12118,12 +12118,12 @@ Length:	%3</source>
         <translation>ズームリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="1423"/>
+        <location filename="../qtractorTrackView.cpp" line="1445"/>
         <source>add clip</source>
         <translation>クリップを追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2733"/>
+        <location filename="../qtractorTrackView.cpp" line="2767"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12132,64 +12132,69 @@ Length:	%3</source>
 長さ:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2975"/>
+        <location filename="../qtractorTrackView.cpp" line="3012"/>
         <source>clip %1</source>
         <translation>クリップ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2976"/>
+        <location filename="../qtractorTrackView.cpp" line="3013"/>
         <source>fade-in</source>
         <translation>フェードイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2976"/>
+        <location filename="../qtractorTrackView.cpp" line="3013"/>
         <source>fade-out</source>
         <translation>フェードアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3052"/>
+        <location filename="../qtractorTrackView.cpp" line="3089"/>
         <source>clip stretch</source>
         <translation>クリップの伸長</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3052"/>
+        <location filename="../qtractorTrackView.cpp" line="3089"/>
         <source>clip resize</source>
         <translation>クリップリサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3776"/>
+        <location filename="../qtractorTrackView.cpp" line="3813"/>
         <source>%1 automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3839"/>
+        <location filename="../qtractorTrackView.cpp" line="3876"/>
         <source>%1 clip</source>
         <translation>%1 クリップ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3780"/>
-        <location filename="../qtractorTrackView.cpp" line="3843"/>
+        <location filename="../qtractorTrackView.cpp" line="3817"/>
+        <location filename="../qtractorTrackView.cpp" line="3880"/>
         <source>cut</source>
         <translation>切り取り</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3783"/>
-        <location filename="../qtractorTrackView.cpp" line="3846"/>
+        <location filename="../qtractorTrackView.cpp" line="3820"/>
+        <location filename="../qtractorTrackView.cpp" line="3883"/>
         <source>delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3849"/>
+        <location filename="../qtractorTrackView.cpp" line="3886"/>
         <source>split</source>
         <translation>分割</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4152"/>
+        <location filename="../qtractorTrackView.cpp" line="4189"/>
         <source>move clip</source>
         <translation>クリップの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4282"/>
+        <location filename="../qtractorTrackView.cpp" line="4326"/>
+        <source>automation move</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackView.cpp" line="4398"/>
         <source>paste clip</source>
         <translation>クリップの貼り付け</translation>
     </message>
