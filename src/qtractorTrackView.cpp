@@ -196,7 +196,7 @@ void qtractorTrackView::clear (void)
 	m_dropType   = qtractorTrack::None;
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
-	m_iDraggingX = 0;
+	m_iDragClipX = 0;
 	m_pClipDrag  = NULL;
 	m_bDragTimer = false;
 
@@ -228,6 +228,7 @@ void qtractorTrackView::clear (void)
 	m_iDragSingleTrackHeight = 0;
 
 	m_pDragCurveNode = NULL;
+	m_iDragCurveX = 0;
 
 	qtractorScrollView::setContentsPos(0, 0);
 }
@@ -575,7 +576,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					if (pItem->flags & 1) {
 						QRect rectNode(pItem->rectNode);
 						rectNode.moveTopLeft(contentsToViewport(
-							rectNode.topLeft() + QPoint(m_iDraggingX, 0)));
+							rectNode.topLeft() + QPoint(m_iDragCurveX, 0)));
 						pPainter->fillRect(rectNode, QColor(0, 0, 255, 80));
 					}
 				}
@@ -614,7 +615,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	if (m_dragState == DragClipFadeIn || m_dragState == DragClipFadeOut) {
 		QRect rectHandle(m_rectHandle);
 		// Horizontal adjust...
-		rectHandle.translate(m_iDraggingX, 0);
+		rectHandle.translate(m_iDragClipX, 0);
 		// Convert rectangle into view coordinates...
 		rectHandle.moveTopLeft(contentsToViewport(rectHandle.topLeft()));
 		// Draw envelope line...
@@ -1067,7 +1068,7 @@ qtractorTrack *qtractorTrackView::dragClipMove (
 	int dx = (pos.x() - m_posDrag.x());
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
-	m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
+	m_iDragClipX = (pSession->pixelSnap(x + dx) - x);
 	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	showClipSelect();
@@ -1103,7 +1104,7 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 		int dx = (pos.x() - m_posDrag.x());
 		if (x + dx < 0)
 			dx = -(x);	// Force to origin (x=0).
-		m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
+		m_iDragClipX = (pSession->pixelSnap(x + dx) - x);
 	//	showDropRects();
 		// OK, we've moved it...
 		return pTrack;
@@ -1237,8 +1238,8 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 	}
 
 	// Ok, sure we're into some drag&drop state...
-	m_dragState = DragClipDrop;
-	m_iDraggingX = 0;	
+	m_dragState  = DragClipDrop;
+	m_iDragClipX = 0;
 
 	// Finally, show it to the world...
 	updateClipDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
@@ -1291,17 +1292,17 @@ void qtractorTrackView::dragCurveMove ( const QPoint& pos )
 		return;
 
 	const QRect& rect = m_pCurveSelect->rect();
-	QRect rectUpdate(rect.translated(m_iDraggingX, 0));
+	QRect rectUpdate(rect.translated(m_iDragCurveX, 0));
 
 	// Always change horizontally wise...
 	const int x = rect.x();
 	int dx = (pos.x() - m_posDrag.x());
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
-	m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
+	m_iDragCurveX = (pSession->pixelSnap(x + dx) - x);
 	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 
-	updateRect(rectUpdate.united(rect.translated(m_iDraggingX, 0)));
+	updateRect(rectUpdate.united(rect.translated(m_iDragCurveX, 0)));
 }
 
 
@@ -1387,7 +1388,7 @@ bool qtractorTrackView::dropClip (
 
 	// Add new clips on proper and consecutive track locations...
 	unsigned long iClipStart = pSession->frameSnap(
-		pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX));
+		pSession->frameFromPixel(m_rectDrag.x() + m_iDragClipX));
 
 	// Now check whether the drop is intra-track...
 	qtractorTrack *pTrack = dragClipDrop(pos, false, pMimeData);
@@ -1572,12 +1573,14 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 		}
-		if (m_bCurveEdit
-			&& ((m_dragCursor == DragCurveNode)
-				|| (m_dragCursor == DragNone && !bModifier)))
-			dragCurveNode(pos, modifiers & Qt::ControlModifier);
+		if (m_bCurveEdit) {
+			if (!bModifier)
+				clearSelect();
+			if ((m_dragCursor == DragCurveNode) ||
+				(m_dragCursor == DragNone && !bModifier))
+				dragCurveNode(pos, modifiers & Qt::ControlModifier);
+		}
 		if (m_dragCursor == DragCurveNode) {
-		//	clearSelect();
 			if (m_pDragCurve && m_pDragCurveNode) {
 				m_dragState = DragStart;//DragCurveNode;
 				m_posDrag   = pos;
@@ -1614,16 +1617,14 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				m_dragCursor = m_dragState;
 				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 				// Make it (un)selected, right on the file view too...
-				if (!m_bCurveEdit
-					&& m_selectMode == SelectClip)
+				if (!m_bCurveEdit && m_selectMode == SelectClip)
 					selectClipFile(!bModifier);
 			}
 			// Something got it started?...
 			if (m_pClipDrag == NULL
 				|| (m_pClipDrag && !m_pClipDrag->isClipSelected())) {
 				// Clear any selection out there?
-				if (!m_bCurveEdit
-					&& (!bModifier /* || m_selectMode != SelectClip */))
+				if (!m_bCurveEdit && !bModifier)
 					clearSelect();
 			}
 			break;
@@ -1715,7 +1716,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			selectClipRect(m_rectDrag, m_selectMode,
 				(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 		}
-		showToolTip(m_rectDrag.normalized(), m_iDraggingX);
+		showToolTip(m_rectDrag.normalized(), m_iDragClipX);
 		break;
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()
@@ -1723,15 +1724,16 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Check if we're pointing in some fade-in/out or resize handle...
 			if (dragMoveStart(m_posDrag)) {
 				m_dragState = m_dragCursor;
-			#if 0//TEST_DRAG_CURVE_MOVE
-				if (m_dragState == DragCurveMove)
+				if (m_dragState == DragCurveMove) {
+					// DragCurveMove...
+					m_iDragCurveX = (pos.x() - m_posDrag.x());
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				}
 				else
-			#endif
 				if (m_dragState == DragClipFadeIn  ||
 					m_dragState == DragClipFadeOut) {
 					// DragClipFade...
-					m_iDraggingX = (pos.x() - m_posDrag.x());
+					m_iDragClipX = (pos.x() - m_posDrag.x());
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 					moveRubberBand(&m_pRubberBand, m_rectHandle);					
 				} else if (m_pClipDrag) {
@@ -1740,7 +1742,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 			else
-			if (!m_bCurveEdit || m_dragState != DragCurveNode) {
+			if (!m_bCurveEdit || m_dragCursor != DragCurveNode) {
 				// We'll start dragging clip/regions alright...
 				qtractorSession *pSession = qtractorSession::getInstance();
 				qtractorClipSelect::Item *pClipItem = NULL;
@@ -1748,7 +1750,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					pClipItem = m_pClipSelect->findItem(m_pClipDrag);
 				if (pClipItem && pClipItem->rectClip.contains(pos)) {
 					int x = pSession->pixelSnap(m_rectDrag.x());
-					m_iDraggingX = (x - m_rectDrag.x());
+					m_iDragClipX = (x - m_rectDrag.x());
 					m_dragState = m_dragCursor = DragClipMove;
 					qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
 					showClipSelect();
@@ -2790,7 +2792,7 @@ void qtractorTrackView::showClipSelect (void) const
 		moveRubberBand(&(pClipItem->rubberBand), rectClip, 3);
 	}
 
-	showToolTip(m_pClipSelect->rect(), m_iDraggingX);
+	showToolTip(m_pClipSelect->rect(), m_iDragClipX);
 }
 
 void qtractorTrackView::hideClipSelect (void) const
@@ -2844,7 +2846,7 @@ void qtractorTrackView::showClipDropRects (void) const
 		rect = rect.united(pDropItem->rect);
 	}
 	
-	showToolTip(rect, m_iDraggingX);
+	showToolTip(rect, m_iDragClipX);
 }
 
 void qtractorTrackView::hideClipDropRects (void) const
@@ -2866,7 +2868,7 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 	QRect rect(rectDrag.normalized());
 
 	// Horizontal adjust...
-	rect.translate(m_iDraggingX, 0);
+	rect.translate(m_iDragClipX, 0);
 	// Convert rectangle into view coordinates...
 	rect.moveTopLeft(qtractorScrollView::contentsToViewport(rect.topLeft()));
 	// Make sure the rectangle doesn't get too off view,
@@ -2908,13 +2910,12 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 
 	qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 	if (pNode) {
-	#if 0//TEST_DRAG_CURVE_MOVE
-		if ((m_pCurveSelect->items().count() > 1)
-			&& m_pCurveSelect->findItem(pNode))
+		if (m_bCurveEdit
+			&& (m_pCurveSelect->items().count() > 1)
+			&& (m_pCurveSelect->findItem(pNode)))
 			m_dragCursor = DragCurveMove;
 		else
-	#endif
-		m_dragCursor = DragCurveNode;
+			m_dragCursor = DragCurveNode;
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 		return true;
 	}
@@ -2982,7 +2983,7 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 		dx = m_rectDrag.left() - m_rectHandle.left();
 	else if (m_rectHandle.right() + dx > m_rectDrag.right())
 		dx = m_rectDrag.right() - m_rectHandle.right();
-	m_iDraggingX = dx;
+	m_iDragClipX = dx;
 	moveRubberBand(&m_pRubberBand, m_rectHandle);
 	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 	
@@ -2992,10 +2993,10 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 	// Show fade-in/out tooltip..
 	QRect rect(m_rectDrag);
 	if (m_dragState == DragClipFadeIn)
-		rect.setRight(m_rectHandle.left() + m_iDraggingX);
+		rect.setRight(m_rectHandle.left() + m_iDragClipX);
 	else
 	if (m_dragState == DragClipFadeOut)
-		rect.setLeft(m_rectHandle.right() + m_iDraggingX);
+		rect.setLeft(m_rectHandle.right() + m_iDragClipX);
 	showToolTip(rect, 0);
 }
 
@@ -3020,14 +3021,14 @@ void qtractorTrackView::dragClipFadeDrop ( const QPoint& pos )
 	if (m_dragState == DragClipFadeIn) {
 		pClipCommand->fadeInClip(m_pClipDrag,
 			pSession->frameFromPixel(
-				m_rectHandle.left() + m_iDraggingX - m_rectDrag.left()),
+				m_rectHandle.left() + m_iDragClipX - m_rectDrag.left()),
 				m_pClipDrag->fadeInType());
 	} 
 	else
 	if (m_dragState == DragClipFadeOut) {
 		pClipCommand->fadeOutClip(m_pClipDrag,
 			pSession->frameFromPixel(
-				m_rectDrag.right() - m_iDraggingX - m_rectHandle.right()),
+				m_rectDrag.right() - m_iDragClipX - m_rectHandle.right()),
 				m_pClipDrag->fadeOutType());
 	}
 
@@ -3287,7 +3288,7 @@ void qtractorTrackView::resetDragState (void)
 	// Force null state, now.
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
-	m_iDraggingX = 0;
+	m_iDragClipX = 0;
 //	m_pClipDrag  = NULL;
 
 	m_posStep = QPoint(0, 0);
@@ -3304,6 +3305,7 @@ void qtractorTrackView::resetDragState (void)
 	// Automation curve stuff reset.
 	m_pDragCurve = NULL;
 	m_pDragCurveNode = NULL;
+	m_iDragCurveX = 0;
 
 	if (m_pCurveEditCommand)
 		delete m_pCurveEditCommand;
@@ -3466,7 +3468,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 		m_rectDrag   = m_pClipSelect->rect();
 		m_posDrag    = m_rectDrag.topLeft();
 		m_posStep    = QPoint(0, 0);
-		m_iDraggingX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
+		m_iDragClipX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
 		qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
 	//	showClipSelect();
 	}
@@ -4267,7 +4269,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			// but only the first clip gets snapped...
 			unsigned long iClipStart2 = iSelectStart;
 			if (iTrackClip == 0) {
-				const int x = (pClipItem->rectClip.x() + m_iDraggingX);
+				const int x = (pClipItem->rectClip.x() + m_iDragClipX);
 				const unsigned long iFrameStart = pSession->frameSnap(
 					pSession->frameFromPixel(x > 0 ? x : 0));
 				iClipDelta  = long(iFrameStart) - long(iClipStart2);
@@ -4323,7 +4325,7 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 		return;
 
 	const int x0 = m_pCurveSelect->rect().x();
-	const int x1 = x0 + m_iDraggingX;
+	const int x1 = x0 + m_iDragCurveX;
 	const long delta = long(pSession->frameFromPixel(x1))
 		- long(pSession->frameFromPixel(x0));
 
@@ -4425,10 +4427,10 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		iPastePeriod = g_clipboard.frames;
 
 	long iClipDelta = 0;
-	if (m_iDraggingX < 0)
-		iClipDelta = - pSession->frameFromPixel(- m_iDraggingX);
+	if (m_iDragClipX < 0)
+		iClipDelta = - pSession->frameFromPixel(- m_iDragClipX);
 	else
-		iClipDelta = + pSession->frameFromPixel(+ m_iDraggingX);
+		iClipDelta = + pSession->frameFromPixel(+ m_iDragClipX);
 	
 	// We'll build a composite command...
 	QList<qtractorClip *> clips;
