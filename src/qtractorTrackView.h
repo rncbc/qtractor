@@ -421,7 +421,7 @@ private:
 	QPoint        m_posDrag;
 	QRect         m_rectDrag;
 	QRect         m_rectHandle;
-	int           m_iDraggingX;
+	int           m_iDragClipX;
 	bool          m_bDragTimer;
 	QPoint        m_posStep;
 
@@ -524,6 +524,8 @@ private:
 	// Automation curve editing node.
 	qtractorCurve       *m_pDragCurve;
 	qtractorCurve::Node *m_pDragCurveNode;
+
+	int m_iDragCurveX;
 
 	qtractorCurveEditCommand *m_pCurveEditCommand;
 };

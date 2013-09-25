@@ -95,6 +95,9 @@ public:
 	bool exportClips();
 	bool mergeClips();
 
+	// Whether there's anything currently selected.
+	bool isSelected() const;
+
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
