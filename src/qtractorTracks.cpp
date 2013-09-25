@@ -1730,6 +1730,13 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 }
 
 
+// Whether there's anything currently selected.
+bool qtractorTracks::isSelected (void) const
+{
+	return isClipSelected() || isCurveSelected();
+}
+
+
 // Whether there's any clip currently selected.
 bool qtractorTracks::isClipSelected (void) const
 {
@@ -1785,12 +1792,18 @@ void qtractorTracks::clipSelectedRange (
 // Clipboard methods.
 void qtractorTracks::cutClipboard (void)
 {
-	m_pTrackView->executeClipSelect(qtractorTrackView::Cut);
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->executeCurveSelect(qtractorTrackView::Cut);
+	else
+		m_pTrackView->executeClipSelect(qtractorTrackView::Cut);
 }
 
 void qtractorTracks::copyClipboard (void)
 {
-	m_pTrackView->executeClipSelect(qtractorTrackView::Copy);
+	if (m_pTrackView->isCurveEdit())
+		m_pTrackView->executeCurveSelect(qtractorTrackView::Copy);
+	else
+		m_pTrackView->executeClipSelect(qtractorTrackView::Copy);
 }
 
 void qtractorTracks::pasteClipboard (void)

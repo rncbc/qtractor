@@ -1578,7 +1578,8 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				clearSelect();
 			if ((m_dragCursor == DragCurveNode) ||
 				(m_dragCursor == DragNone && !bModifier))
-				dragCurveNode(pos, modifiers & Qt::ControlModifier);
+				if ((modifiers & Qt::ControlModifier) == 0)
+					dragCurveNode(pos, false);
 		}
 		if (m_dragCursor == DragCurveNode) {
 			if (m_pDragCurve && m_pDragCurveNode) {
@@ -1721,7 +1722,8 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()
 			> QApplication::startDragDistance()) {
-			// Check if we're pointing in some fade-in/out or resize handle...
+			// Check if we're pointing in some fade-in/out,
+			// resize handle or a automation curve node...
 			if (dragMoveStart(m_posDrag)) {
 				m_dragState = m_dragCursor;
 				if (m_dragState == DragCurveMove) {
@@ -1742,7 +1744,9 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 			else
-			if (!m_bCurveEdit || m_dragCursor != DragCurveNode) {
+			if (!m_bCurveEdit
+				|| (m_dragCursor != DragCurveNode
+				 && m_dragCursor != DragCurveMove)) {
 				// We'll start dragging clip/regions alright...
 				qtractorSession *pSession = qtractorSession::getInstance();
 				qtractorClipSelect::Item *pClipItem = NULL;
@@ -1847,7 +1851,12 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				// Nothing more has been deferred...
 			} else {
 				// As long we're not editing curve/automation...
-				if (!m_bCurveEdit || m_dragCursor != DragCurveNode) {
+				if (m_bCurveEdit
+					&& (m_dragCursor == DragCurveNode
+					 || m_dragCursor == DragCurveMove)) {
+					if (modifiers & Qt::ControlModifier)
+						dragCurveNode(pos, true);
+				} else {
 					// Direct play-head positioning...
 					if (bModifier) {
 						// First, set actual engine position...
@@ -1864,7 +1873,8 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				}
 				// Not quite a selection, but for
 				// immediate visual feedback...
-				m_pTracks->selectionChangeNotify();
+				if (m_pCurveEditCommand == NULL)
+					m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
 		case DragCurveNode:
@@ -2908,9 +2918,11 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 	if (pTrack == NULL)
 		return false;
 
-	qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
+	qtractorCurve::Node *pNode = m_pDragCurveNode;
+	if (pNode == NULL)
+		pNode = nodeAtTrack(pos, pTrack, &tvi);
 	if (pNode) {
-		if (m_bCurveEdit
+		if (m_bCurveEdit && m_dragState == DragStart
 			&& (m_pCurveSelect->items().count() > 1)
 			&& (m_pCurveSelect->findItem(pNode)))
 			m_dragCursor = DragCurveMove;
@@ -3815,6 +3827,14 @@ void qtractorTrackView::executeCurveSelect ( qtractorTrackView::Command cmd )
 	if (pCurve == NULL)
 		return;
 
+	// Reset clipboard...
+	const bool bClipboard = (cmd == Cut || cmd == Copy);
+	if (bClipboard) {
+		g_clipboard.clear();
+		g_clipboard.frames = pSession->frameFromPixel(m_pCurveSelect->rect().width());
+		QApplication::clipboard()->clear();
+	}
+
 	// We'll build a composite command...
 	qtractorCurveEditCommand *pCurveEditCommand = NULL;
 	const QString& sCmdMask = tr("%1 automation");
@@ -3832,8 +3852,6 @@ void qtractorTrackView::executeCurveSelect ( qtractorTrackView::Command cmd )
 
 	if (!sCmdName.isEmpty())
 		pCurveEditCommand = new qtractorCurveEditCommand(sCmdName, pCurve);
-	if (pCurveEditCommand == NULL)
-		return;
 
 	const qtractorCurveSelect::ItemList& items
 		= m_pCurveSelect->items();
@@ -3843,10 +3861,22 @@ void qtractorTrackView::executeCurveSelect ( qtractorTrackView::Command cmd )
 		= items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qtractorCurve::Node *pNode = iter.key();
-		pCurveEditCommand->removeNode(pNode);
+		if (bClipboard) {
+			g_clipboard.addNode(pNode,
+				iter.value()->rectNode,
+				pNode->frame,
+				pNode->value);
+		}
+		if (pCurveEditCommand)
+			pCurveEditCommand->removeNode(pNode);
 	}
 
-	pSession->execute(pCurveEditCommand);
+	// Hint from the whole selection rectangle...
+	g_clipboard.frames = pSession->frameFromPixel(m_pCurveSelect->rect().width());
+
+	// Put it in the form of an undoable command...
+	if (pCurveEditCommand)
+		pSession->execute(pCurveEditCommand);
 }
 
 
