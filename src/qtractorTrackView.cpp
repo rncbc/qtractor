@@ -1871,10 +1871,6 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					#endif
 					}
 				}
-				// Not quite a selection, but for
-				// immediate visual feedback...
-				if (m_pCurveEditCommand == NULL)
-					m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
 		case DragCurveNode:
@@ -1884,6 +1880,8 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				pSession->commands()->push(m_pCurveEditCommand);
 				m_pCurveEditCommand = NULL;
 				m_pTracks->dirtyChangeNotify();
+			} else {
+				m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
 		case DragClipStep:
@@ -3751,7 +3749,7 @@ qtractorTrack *qtractorTrackView::singleTrackSelected (void)
 // Whether there's any clip on clipboard. (static)
 bool qtractorTrackView::isClipboard (void)
 {
-	return (g_clipboard.clips.count() > 0 || g_clipboard.nodes.count());
+	return (g_clipboard.clips.count() > 0 || g_clipboard.nodes.count() > 0);
 }
 
 
@@ -3773,9 +3771,7 @@ void qtractorTrackView::ClipBoard::addClip ( qtractorClip *pClip,
 void qtractorTrackView::ClipBoard::addNode ( qtractorCurve::Node *pNode,
 	const QRect& nodeRect, unsigned long iFrame, float fValue )
 {
-	NodeItem *pNodeItem
-		= new NodeItem(pNode, nodeRect, iFrame, fValue);
-	nodes.append(pNodeItem);
+	nodes.append(new NodeItem(pNode, nodeRect, iFrame, fValue));
 }
 
 
@@ -4140,7 +4136,8 @@ void qtractorTrackView::pasteClipboard (
 		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Check if anythings really on clipboard...
-	if (g_clipboard.clips.count() < 1) {
+	if (g_clipboard.clips.count() < 1 &&
+		g_clipboard.nodes.count() < 1) {
 		// System clipboard?
 		QClipboard *pClipboard = QApplication::clipboard();
 		if (pClipboard && (pClipboard->mimeData())->hasUrls()) {
