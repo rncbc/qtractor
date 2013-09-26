@@ -194,6 +194,9 @@ public:
 	// Intra-drag-n-drop curve/automation node move method.
 	void moveCurveSelect(const QPoint& pos);
 
+	// Paste from clipboard (execute).
+	void pasteCurveSelect(const QPoint& pos);
+
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
 	unsigned long playHead() const;
@@ -267,13 +270,14 @@ protected:
 
 	// Drag-n-drop event stuffers (for clips).
 	qtractorTrack *dragClipMove(const QPoint& pos, bool bKeyStep = false);
+
 	qtractorTrack *dragClipDrop(const QPoint& pos, bool bKeyStep = false,
 		const QMimeData *pMimeData = NULL);
 	qtractorTrack *dragClipDropEvent(QDropEvent *pDropEvent);
 	bool canClipDropEvent(QDropEvent *pDropEvent);
 
 	// Drag-n-drop event stuffers (for curve/automation nodes).
-	void dragCurveMove(const QPoint& pos);
+	void dragCurveMove(const QPoint& pos, bool bKeyStep = false);
 
 	// Drag-n-drop event handlers.
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
@@ -414,7 +418,7 @@ private:
 		DragClipFadeIn, DragClipFadeOut,
 		DragClipResizeLeft, DragClipResizeRight,
 		DragCurveMove, DragCurveDrop, DragCurveStep,
-		DragCurvePaste, DragCurvePasteDrop, DragCurveNode
+		DragCurvePaste, DragCurveNode
 	} m_dragState, m_dragCursor;
 
 	qtractorClip *m_pClipDrag;
@@ -482,7 +486,7 @@ private:
 	static struct ClipBoard
 	{
 		// Clipboard constructor.
-		ClipBoard() : singleTrack(NULL), frames(0) {}
+		ClipBoard() : singleTrack(NULL), currentCurve(NULL), frames(0) {}
 		// Destructor.
 		~ClipBoard() { clear(); }
 		// Clipboard stuffer methods.
@@ -497,6 +501,7 @@ private:
 		QList<ClipItem *> clips;
 		QList<NodeItem *> nodes;
 		qtractorTrack    *singleTrack;
+		qtractorCurve    *currentCurve;
 		unsigned long     frames;
 
 	} g_clipboard;

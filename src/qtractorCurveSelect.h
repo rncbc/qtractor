@@ -58,16 +58,16 @@ public:
 	Item *findItem(qtractorCurve::Node *pNode);
 
 	// Event insertion method.
-	void addItem(qtractorCurve *pCurve,
+	void addItem(
 		qtractorCurve::Node *pNode, const QRect& rectNode);
+
+	// Event removal method.
+	void removeItem(qtractorCurve::Node *pNode);
 
 	// Event selection method.
 	void selectItem(qtractorCurve *pCurve,
 		qtractorCurve::Node *pNode, const QRect& rectNode,
 		bool bSelect = true, bool bToggle = false);
-
-	// Event removal method.
-	void removeItem(qtractorCurve::Node *pNode);
 
 	// The united selection rectangle.
 	const QRect& rect() const { return m_rect; }

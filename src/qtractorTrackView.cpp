@@ -914,8 +914,8 @@ qtractorClip *qtractorTrackView::clipAtTrack (
 }
 
 
-qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
-	bool bSelectTrack, QRect *pClipRect ) const
+qtractorClip *qtractorTrackView::clipAt (
+	const QPoint& pos, bool bSelectTrack, QRect *pClipRect ) const
 {
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
@@ -1285,7 +1285,7 @@ bool qtractorTrackView::canClipDropEvent ( QDropEvent *pDropEvent )
 
 
 // Selection-dragging, following the current mouse position.
-void qtractorTrackView::dragCurveMove ( const QPoint& pos )
+void qtractorTrackView::dragCurveMove ( const QPoint& pos, bool /*bKeyStep*/ )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1556,6 +1556,16 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	case DragClipPasteDrop:
 	//	qtractorScrollView::mousePressEvent(pMouseEvent);
 		return;
+	case DragCurveStep:
+		// One-click change from drag-step to drag-move...
+		m_dragState = DragCurveMove;
+		m_posDrag   = m_rectDrag.center();
+		m_posStep   = QPoint(0, 0);
+		dragCurveMove(pos + m_posStep);
+		// Fall thru...
+	case DragCurvePaste:
+	//	qtractorScrollView::mousePressEvent(pMouseEvent);
+		return;
 	default:
 		break;
 	}
@@ -1564,7 +1574,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		if (m_dragCursor == DragCurveNode) {
 			qtractorTrackViewInfo tvi;
-			qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+			qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 			if (pTrack) {
 				qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 				if (pNode) {
@@ -1842,6 +1852,9 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Let's move them...
 			moveCurveSelect(pos + m_posStep);
 			break;
+		case DragCurvePaste:
+			pasteCurveSelect(pos + m_posStep);
+			break;
 		case DragStart:
 			// Deferred left-button positioning...
 			if (m_pClipDrag) {
@@ -1884,6 +1897,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
+		case DragCurveStep:
 		case DragClipStep:
 		case DragClipDrop:
 		case DragNone:
@@ -1928,9 +1942,11 @@ void qtractorTrackView::wheelEvent ( QWheelEvent *pWheelEvent )
 // Focus lost event.
 void qtractorTrackView::focusOutEvent ( QFocusEvent *pFocusEvent )
 {
-	if (m_dragState == DragClipStep  ||
-		m_dragState == DragClipPaste ||
-		m_dragState == DragClipPasteDrop)
+	if (m_dragState == DragClipStep      ||
+		m_dragState == DragClipPaste     ||
+		m_dragState == DragClipPasteDrop ||
+		m_dragState == DragCurveStep     ||
+		m_dragState == DragCurvePaste)
 		resetDragState();
 
 	qtractorScrollView::focusOutEvent(pFocusEvent);
@@ -1967,9 +1983,11 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			}
 		}
 		else
-		if (pEvent->type() == QEvent::Leave	&&
+		if (pEvent->type() == QEvent::Leave  &&
+			m_dragState != DragCurvePaste    &&
+			m_dragState != DragCurveStep     &&
 			m_dragState != DragClipPasteDrop &&
-			m_dragState != DragClipPaste &&
+			m_dragState != DragClipPaste     &&
 			m_dragState != DragClipStep) {
 			m_dragCursor = DragNone;
 			qtractorScrollView::unsetCursor();
@@ -3284,12 +3302,15 @@ void qtractorTrackView::resetDragState (void)
 	// Should fallback mouse cursor...
 	if (m_dragCursor != DragNone)
 		qtractorScrollView::unsetCursor();
-	if (m_dragState == DragClipMove        ||
-		m_dragState == DragClipResizeLeft  ||
+	if (m_dragState == DragClipResizeLeft  ||
 		m_dragState == DragClipResizeRight ||
 		m_dragState == DragClipPasteDrop   ||
 		m_dragState == DragClipPaste       ||
-		m_dragState == DragClipStep) {
+		m_dragState == DragClipStep        ||
+		m_dragState == DragClipMove        ||
+		m_dragState == DragCurvePaste      ||
+		m_dragState == DragCurveStep       ||
+		m_dragState == DragCurveMove) {
 	//	m_pClipSelect->clear();
 	//	m_pCurveSelect->clear();
 		updateContents();
@@ -3353,9 +3374,12 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 	switch (iKey) {
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
-		if (m_dragState == DragClipStep) {
+		if (m_dragState == DragClipStep)
 			moveClipSelect(dragClipMove(m_posDrag + m_posStep));
-		} else {
+		else
+		if (m_dragState == DragCurveStep)
+			moveCurveSelect(m_posDrag + m_posStep);
+		else {
 			const QPoint& pos = qtractorScrollView::viewportToContents(
 				qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 			if (m_dragState == DragClipMove)
@@ -3364,10 +3388,15 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 				pasteClipSelect(dragClipMove(pos + m_posStep));
 			else if (m_dragState == DragClipPasteDrop)
 				dropClip(pos + m_posStep);
+			else if (m_dragState == DragCurveMove)
+				moveCurveSelect(pos + m_posStep);
+			else if (m_dragState == DragCurvePaste)
+				pasteCurveSelect(pos + m_posStep);
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
-		m_dragState = DragClipStep; // HACK: Force selection clearance!
+		// HACK: Force selection clearance!
+		m_dragState = (m_bCurveEdit ? DragCurveStep : DragClipStep);
 		resetDragState();
 		break;
 	case Qt::Key_Home:
@@ -3464,30 +3493,45 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 // Keyboard step handler.
 bool qtractorTrackView::keyStep ( int iKey )
 {
-	// Only applicable if something is selected...
-	if (!isClipSelected() && m_dropItems.isEmpty())
-		return false;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
 	// Set initial bound conditions...
 	if (m_dragState == DragNone) {
-		m_dragState  = m_dragCursor = DragClipStep;
-		m_rectDrag   = m_pClipSelect->rect();
-		m_posDrag    = m_rectDrag.topLeft();
-		m_posStep    = QPoint(0, 0);
-		m_iDragClipX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
-		qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
-	//	showClipSelect();
+		if (isClipSelected() || !m_dropItems.isEmpty()) {
+			m_dragState = m_dragCursor = DragClipStep;
+			m_rectDrag  = m_pClipSelect->rect();
+			m_posDrag   = m_rectDrag.topLeft();
+			m_posStep   = QPoint(0, 0);
+			m_iDragClipX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
+			qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
+		}
+		else
+		if (isCurveSelected() && m_bCurveEdit
+			&& iKey != Qt::Key_Up && iKey != Qt::Key_Down)  {
+			m_dragState = m_dragCursor = DragCurveStep;
+			m_rectDrag  = m_pCurveSelect->rect();
+			m_posDrag   = m_rectDrag.topLeft();
+			m_posStep   = QPoint(0, 0);
+			m_iDragCurveX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		}
 	}
 
 	// Now to say the truth...
-	if (m_dragState != DragClipMove &&
-		m_dragState != DragClipStep &&
-		m_dragState != DragClipPaste &&
-		m_dragState != DragClipPasteDrop)
+	const bool bClipStep =
+		m_dragState == DragClipMove  ||
+		m_dragState == DragClipStep  ||
+		m_dragState == DragClipPaste ||
+		m_dragState == DragClipPasteDrop;
+
+	const bool bCurveStep =
+		m_dragState == DragCurveMove ||
+		m_dragState == DragCurveStep ||
+		m_dragState == DragCurvePaste;
+
+	if (!bClipStep && !bCurveStep)
 		return false;
 
 	// Determine vertical step...
@@ -3512,7 +3556,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 		int x1 = x0 + m_posStep.x();
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
-		unsigned short iSnapPerBeat = pSession->snapPerBeat();
+		const unsigned short iSnapPerBeat = pSession->snapPerBeat();
 		if (iSnapPerBeat > 0)
 			iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
 		if (iHorizontalStep < 1)
@@ -3525,17 +3569,24 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Early sanity check...
-	const QRect& rect
-		= (m_dragState == DragClipPasteDrop ? m_rectDrag : m_pClipSelect->rect());
+	QRect rect = m_rectDrag;
+	if (bClipStep && m_dragState != DragClipPasteDrop)
+		rect = m_pClipSelect->rect();
+	else
+	if (bCurveStep)
+		rect = m_pCurveSelect->rect();
+
 	QPoint pos = m_posDrag;
-	if (m_dragState != DragClipStep) {
+	if (m_dragState != DragClipStep &&
+		m_dragState != DragCurveStep) {
 		pos = qtractorScrollView::viewportToContents(
 			qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 	}
 
 	int x2 = - pos.x();
 	int y2 = - pos.y();
-	if (m_dragState != DragClipStep) {
+	if (m_dragState != DragClipStep &&
+		m_dragState != DragCurveStep) {
 		x2 += (m_posDrag.x() - rect.x());
 		y2 += (m_posDrag.y() - rect.y());
 	}
@@ -3548,20 +3599,24 @@ bool qtractorTrackView::keyStep ( int iKey )
 			m_posStep.setX (x2);
 	}
 
-	if (m_posStep.y() < y2) {
-		m_posStep.setY (y2);
-	} else {
-		y2 += qtractorScrollView::contentsHeight() - (rect.height() >> 1);
-		if (m_posStep.y() > y2)
+	if (bClipStep) {
+		if (m_posStep.y() < y2) {
 			m_posStep.setY (y2);
+		} else {
+			y2 += qtractorScrollView::contentsHeight() - (rect.height() >> 1);
+			if (m_posStep.y() > y2)
+				m_posStep.setY (y2);
+		}
 	}
 
 	// Do our deeds (flag we're key-steppin')...
 	if (m_dragState == DragClipPasteDrop) {
 		dragClipDrop(pos + m_posStep, true);
 		showClipDropRects();
-	} else {
+	} else if (bClipStep) {
 		dragClipMove(pos + m_posStep, true);
+	} else if (bCurveStep) {
+		dragCurveMove(pos + m_posStep, true);
 	}
 
 	return true;
@@ -3785,6 +3840,7 @@ void qtractorTrackView::ClipBoard::clear (void)
 	nodes.clear();
 
 	singleTrack = NULL;
+	currentCurve = NULL;
 	frames = 0;
 }
 
@@ -3827,6 +3883,7 @@ void qtractorTrackView::executeCurveSelect ( qtractorTrackView::Command cmd )
 	const bool bClipboard = (cmd == Cut || cmd == Copy);
 	if (bClipboard) {
 		g_clipboard.clear();
+		g_clipboard.currentCurve = pCurve;
 		g_clipboard.frames = pSession->frameFromPixel(m_pCurveSelect->rect().width());
 		QApplication::clipboard()->clear();
 	}
@@ -4135,7 +4192,7 @@ void qtractorTrackView::pasteClipboard (
 	const QPoint& pos = qtractorScrollView::viewportToContents(
 		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 
-	// Check if anythings really on clipboard...
+	// Check if anything's really on clipboard...
 	if (g_clipboard.clips.count() < 1 &&
 		g_clipboard.nodes.count() < 1) {
 		// System clipboard?
@@ -4157,6 +4214,19 @@ void qtractorTrackView::pasteClipboard (
 		return;
 	}
 
+	// FIXME: While pasting automation/curve nodes
+	// maybe we can only doit over the original...
+	if (m_bCurveEdit) {
+		qtractorTrack *pTrack = trackAt(pos, true);
+		if (pTrack == NULL)
+			return;
+		qtractorCurve *pCurrentCurve = pTrack->currentCurve();
+		if (pCurrentCurve == NULL)
+			return;
+		if (pCurrentCurve != g_clipboard.currentCurve)
+			return;
+	}
+
 	// Reset any current selection, whatsoever...
 	m_pClipSelect->clear();
 	m_pCurveSelect->clear();
@@ -4170,30 +4240,50 @@ void qtractorTrackView::pasteClipboard (
 	if (m_iPastePeriod < 1)
 		m_iPastePeriod = pSession->frameSnap(g_clipboard.frames);
 
-	unsigned long iClipDelta = 0;
+	unsigned long iPasteDelta = 0;
 
 	// Copy clipboard items to floating selection;
-	// adjust clip widths/lengths just in case time
-	// scale (horizontal zoom) has been changed... 
-	//
-	QListIterator<ClipItem *> iter(g_clipboard.clips);
-	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
-		iter.toFront();
-		while (iter.hasNext()) {
-			ClipItem *pClipItem = iter.next();
-			QRect rect(pClipItem->rect);
-			rect.setX(pSession->pixelFromFrame(pClipItem->clipStart + iClipDelta));
-			rect.setWidth(pSession->pixelFromFrame(pClipItem->clipLength));
-			m_pClipSelect->addItem(pClipItem->clip, rect);
+	if (m_bCurveEdit) {
+		QListIterator<NodeItem *> iter(g_clipboard.nodes);
+		for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+			iter.toFront();
+			while (iter.hasNext()) {
+				NodeItem *pNodeItem = iter.next();
+				QRect rect(pNodeItem->rect);
+				rect.setX(pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta) - 4);
+				rect.setWidth(8);
+				m_pCurveSelect->addItem(pNodeItem->node, rect);
+			}
+			iPasteDelta += m_iPastePeriod;
 		}
-		iClipDelta += m_iPastePeriod;
+		m_pCurveSelect->update(true);
+		// We'll start a brand new floating state...
+		m_dragState = m_dragCursor = DragCurvePaste;
+		m_rectDrag  = m_pCurveSelect->rect();
+		m_posDrag   = m_rectDrag.topLeft();
+		m_posStep   = QPoint(0, 0);
+	} else {
+		// Copy clipboard items to floating selection;
+		// adjust clip widths/lengths just in case time
+		// scale (horizontal zoom) has been changed...
+		QListIterator<ClipItem *> iter(g_clipboard.clips);
+		for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+			iter.toFront();
+			while (iter.hasNext()) {
+				ClipItem *pClipItem = iter.next();
+				QRect rect(pClipItem->rect);
+				rect.setX(pSession->pixelFromFrame(pClipItem->clipStart + iPasteDelta));
+				rect.setWidth(pSession->pixelFromFrame(pClipItem->clipLength));
+				m_pClipSelect->addItem(pClipItem->clip, rect);
+			}
+			iPasteDelta += m_iPastePeriod;
+		}
+		// We'll start a brand new floating state...
+		m_dragState = m_dragCursor = DragClipPaste;
+		m_rectDrag  = m_pClipSelect->rect();
+		m_posDrag   = m_rectDrag.topLeft();
+		m_posStep   = QPoint(0, 0);
 	}
-
-	// We'll start a brand new floating state...
-	m_dragState = m_dragCursor = DragClipPaste;
-	m_rectDrag  = m_pClipSelect->rect();
-	m_posDrag   = m_rectDrag.topLeft();
-	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
 	qtractorScrollView::setFocus();
@@ -4202,9 +4292,12 @@ void qtractorTrackView::pasteClipboard (
 
 	// Let's-a go...
 	qtractorScrollView::update();
-	dragClipMove(pos + m_posStep);
-}
 
+	if (m_bCurveEdit)
+		dragCurveMove(pos + m_posStep);
+	else
+		dragClipMove(pos + m_posStep);
+}
 
 
 // Intra-drag-n-drop clip move method.
@@ -4333,6 +4426,111 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 }
 
 
+// Paste from clipboard (execute).
+void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
+{
+	// Check if there's anything really on clipboard...
+	if (g_clipboard.clips.count() < 1)
+		return;
+
+	// Check if anything is really selected and sane...
+	if (!queryClipSelect())
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// We'll need this...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("paste clip"));
+
+	// We can only move clips between tracks of the same type...
+	const bool bAddTrack = (pTrack == NULL);
+	qtractorTrack *pSingleTrack = g_clipboard.singleTrack;
+	if (pSingleTrack) {
+		if (bAddTrack) {
+			const int iTrack = pSession->tracks().count() + 1;
+			const QColor& color = qtractorTrack::trackColor(iTrack);
+			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
+		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
+			pTrack->setBackground(color);
+			pTrack->setForeground(color.darker());
+			pClipCommand->addTrack(pTrack);
+		}
+		else
+		if (pSingleTrack->trackType() != pTrack->trackType())
+			return;
+	}
+
+	unsigned long iPastePeriod = m_iPastePeriod;
+	if (iPastePeriod < 1)
+		iPastePeriod = g_clipboard.frames;
+
+	long iPasteDelta = 0;
+	if (m_iDragClipX < 0)
+		iPasteDelta = - pSession->frameFromPixel(- m_iDragClipX);
+	else
+		iPasteDelta = + pSession->frameFromPixel(+ m_iDragClipX);
+
+	// We'll build a composite command...
+	QList<qtractorClip *> clips;
+
+	QListIterator<ClipItem *> iter(g_clipboard.clips);
+	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+		// Paste iteration...
+		int iTrackClip = 0;
+		iter.toFront();
+		while (iter.hasNext()) {
+			ClipItem *pClipItem = iter.next();
+			qtractorClip *pClip = pClipItem->clip;
+			if (pSingleTrack == NULL)
+				pTrack = pClip->track();
+			// Convert to precise frame positioning,
+			// but only the first clip gets snapped...
+			unsigned long iClipStart = pClipItem->clipStart;
+			if (long(iClipStart) + iPasteDelta > 0)
+				iClipStart += iPasteDelta;
+			if (iTrackClip == 0) {
+				unsigned long iFrameStart = iClipStart;
+				iClipStart = pSession->frameSnap(iFrameStart);
+				iPasteDelta += long(iClipStart) - long(iFrameStart);
+			}
+			// Now, its imperative to make a proper copy of those clips...
+			qtractorClip *pNewClip = cloneClip(pClip);
+			// Add the new pasted clip...
+			if (pNewClip) {
+				pNewClip->setClipStart(iClipStart);
+				pNewClip->setClipOffset(pClipItem->clipOffset);
+				pNewClip->setClipLength(pClipItem->clipLength);
+				pNewClip->setFadeInLength(pClipItem->fadeInLength);
+				pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
+				pClipCommand->addClip(pNewClip, pTrack);
+				clips.append(pNewClip);
+				// If track's new it will need a name...
+				if (bAddTrack && iTrackClip == 0)
+					pTrack->setTrackName(pClip->clipName());
+				++iTrackClip;
+			}
+		}
+		// Set to repeat...
+		iPasteDelta += iPastePeriod;
+	}
+
+	// Put it in the form of an undoable command...
+	pSession->execute(pClipCommand);
+
+	// Redo selection as new...
+	if (!clips.isEmpty()) {
+		QListIterator<qtractorClip *> clip_iter(clips);
+		while (clip_iter.hasNext())
+			clip_iter.next()->setClipSelected(true);
+		updateClipSelect();
+		m_pTracks->selectionChangeNotify();
+	}
+}
+
+
 // Intra-drag-n-drop curve/automation node move method.
 void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 {
@@ -4343,7 +4541,7 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 	dragCurveMove(pos);
 
 	qtractorTrackViewInfo tvi;
-	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 	if (pTrack == NULL)
 		return;
 
@@ -4357,7 +4555,7 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 		- long(pSession->frameFromPixel(x0));
 
 	qtractorCurveEditCommand *pCurveEditCommand
-		= new qtractorCurveEditCommand(tr("automation move"), pCurve);
+		= new qtractorCurveEditCommand(tr("move automation"), pCurve);
 
 	// We'll build a composite command...
 	QList<qtractorCurve::Node *> nodes;
@@ -4413,105 +4611,100 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 
 
 // Paste from clipboard (execute).
-void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
+void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 {
-	// Check if anything is really selected and sane...
-	if (!queryClipSelect())
+	// Check if there's anything really on clipboard...
+	if (g_clipboard.nodes.count() < 1)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
-	// Check if there's anything really on clipboard...
-	if (g_clipboard.clips.count() < 1)
+	dragCurveMove(pos);
+
+	qtractorTrackViewInfo tvi;
+	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
+	if (pTrack == NULL)
+		return;
+
+	qtractorCurve *pCurve = pTrack->currentCurve();
+	if (pCurve == NULL)
+		return;
+	if (pCurve != g_clipboard.currentCurve)
 		return;
 
 	// We'll need this...
-	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(tr("paste clip"));
-
-	// We can only move clips between tracks of the same type...
-	const bool bAddTrack = (pTrack == NULL);
-	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
-	if (pSingleTrack) {
-		if (bAddTrack) {
-			const int iTrack = pSession->tracks().count() + 1;
-			const QColor& color = qtractorTrack::trackColor(iTrack);
-			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
-		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
-			pTrack->setBackground(color);
-			pTrack->setForeground(color.darker());
-			pClipCommand->addTrack(pTrack);
-		}
-		else
-		if (pSingleTrack->trackType() != pTrack->trackType())
-			return;
-	}
+	qtractorCurveEditCommand *pCurveEditCommand
+		= new qtractorCurveEditCommand(tr("paste automation"), pCurve);
 
 	unsigned long iPastePeriod = m_iPastePeriod;
 	if (iPastePeriod < 1)
 		iPastePeriod = g_clipboard.frames;
 
-	long iClipDelta = 0;
-	if (m_iDragClipX < 0)
-		iClipDelta = - pSession->frameFromPixel(- m_iDragClipX);
+	long iPasteDelta = 0;
+	if (m_iDragCurveX < 0)
+		iPasteDelta = - pSession->frameFromPixel(- m_iDragCurveX);
 	else
-		iClipDelta = + pSession->frameFromPixel(+ m_iDragClipX);
+		iPasteDelta = + pSession->frameFromPixel(+ m_iDragCurveX);
 	
 	// We'll build a composite command...
-	QList<qtractorClip *> clips;
+	QList<qtractorCurve::Node *> nodes;
+	qtractorCurveEditList edits(pCurve);
 
-	QListIterator<ClipItem *> iter(g_clipboard.clips);
+	QListIterator<NodeItem *> iter(g_clipboard.nodes);
 	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
 		// Paste iteration...
-		int iTrackClip = 0;
 		iter.toFront();
 		while (iter.hasNext()) {
-			ClipItem *pClipItem = iter.next();
-			qtractorClip *pClip = pClipItem->clip;
-			if (pSingleTrack == NULL)
-				pTrack = pClip->track();
+			NodeItem *pNodeItem = iter.next();
 			// Convert to precise frame positioning,
 			// but only the first clip gets snapped...
-			unsigned long iClipStart = pClipItem->clipStart;
-			if (long(iClipStart) + iClipDelta > 0)
-				iClipStart += iClipDelta;
-			if (iTrackClip == 0) {
-				unsigned long iFrameStart = iClipStart;
-				iClipStart  = pSession->frameSnap(iFrameStart);
-				iClipDelta += long(iClipStart) - long(iFrameStart);
+			unsigned long iNodeFrame = pNodeItem->frame;
+			if (long(iNodeFrame) + iPasteDelta > 0)
+				iNodeFrame += iPasteDelta;
+			if (nodes.isEmpty()) {
+				unsigned long iFrameStart = iNodeFrame;
+				iNodeFrame = pSession->frameSnap(iFrameStart);
+				iPasteDelta += long(iNodeFrame) - long(iFrameStart);
 			}
-			// Now, its imperative to make a proper copy of those clips...
-			qtractorClip *pNewClip = cloneClip(pClip);
-			// Add the new pasted clip...
-			if (pNewClip) {
-				pNewClip->setClipStart(iClipStart);
-				pNewClip->setClipOffset(pClipItem->clipOffset);
-				pNewClip->setClipLength(pClipItem->clipLength);
-				pNewClip->setFadeInLength(pClipItem->fadeInLength);
-				pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
-				pClipCommand->addClip(pNewClip, pTrack);
-				clips.append(pNewClip);
-				// If track's new it will need a name...
-				if (bAddTrack && iTrackClip == 0)
-					pTrack->setTrackName(pClip->clipName());
-				++iTrackClip;
-			}
+			// Now, its imperative to make a proper copy of those nodes...
+			qtractorCurve::Node *pNode
+				= pCurve->addNode(iNodeFrame, pNodeItem->value, &edits);
+			if (pNode)
+				nodes.append(pNode);
 		}
 		// Set to repeat...
-		iClipDelta += iPastePeriod;
+		iPasteDelta += iPastePeriod;
 	}
 
+	pCurveEditCommand->addEditList(&edits);
+
 	// Put it in the form of an undoable command...
-	pSession->execute(pClipCommand);
+	if (pCurveEditCommand->isEmpty()) {
+		delete pCurveEditCommand;
+	} else {
+		pSession->commands()->push(pCurveEditCommand);
+		m_pTracks->dirtyChangeNotify();
+	}
 
 	// Redo selection as new...
-	if (!clips.isEmpty()) {
-		QListIterator<qtractorClip *> clip_iter(clips);
-		while (clip_iter.hasNext())
-			clip_iter.next()->setClipSelected(true);
-		updateClipSelect();
+	if (!nodes.isEmpty()) {
+		QRect rectUpdate = m_pCurveSelect->rect();
+		m_pCurveSelect->clear();
+		const int h  = tvi.trackRect.height();
+		const int y2 = tvi.trackRect.bottom() + 1;
+		QListIterator<qtractorCurve::Node *> node_iter(nodes);
+		while (node_iter.hasNext()) {
+			qtractorCurve::Node *pNode = node_iter.next();
+			const float s = pCurve->scaleFromValue(pNode->value);
+			const int x = pSession->pixelFromFrame(pNode->frame);
+			const int y = y2 - int(s * float(h));
+			m_pCurveSelect->selectItem(pCurve, pNode,
+				QRect(x - 4, y - 4, 8, 8));
+		}
+		m_pCurveSelect->update(true);
+		updateRect(rectUpdate.united(m_pCurveSelect->rect()));
 		m_pTracks->selectionChangeNotify();
 	}
 }
