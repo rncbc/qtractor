@@ -12167,12 +12167,12 @@ Length:	%3</source>
         <translation>%1 クリップ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4569"/>
+        <location filename="../qtractorTrackView.cpp" line="4571"/>
         <source>move automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4652"/>
+        <location filename="../qtractorTrackView.cpp" line="4654"/>
         <source>paste automation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12194,12 +12194,12 @@ Length:	%3</source>
         <translation>分割</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4323"/>
+        <location filename="../qtractorTrackView.cpp" line="4325"/>
         <source>move clip</source>
         <translation>クリップの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4453"/>
+        <location filename="../qtractorTrackView.cpp" line="4455"/>
         <source>paste clip</source>
         <translation>クリップの貼り付け</translation>
     </message>

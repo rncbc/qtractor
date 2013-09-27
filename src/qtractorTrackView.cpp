@@ -4224,7 +4224,9 @@ void qtractorTrackView::pasteClipboard (
 	// FIXME: While pasting automation/curve nodes
 	// maybe we can only doit over the original...
 	if (m_bCurveEdit) {
-		qtractorTrack *pTrack = trackAt(pos, true);
+		qtractorTrack *pTrack = m_pTracks->currentTrack();
+		if (pTrack == NULL)
+			pTrack = trackAt(pos, true);
 		if (pTrack == NULL)
 			return;
 		qtractorCurve *pCurrentCurve = pTrack->currentCurve();

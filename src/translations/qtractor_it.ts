@@ -12164,12 +12164,12 @@ Lunghezza:   %3</translation>
         <translation>%1 clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4569"/>
+        <location filename="../qtractorTrackView.cpp" line="4571"/>
         <source>move automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4652"/>
+        <location filename="../qtractorTrackView.cpp" line="4654"/>
         <source>paste automation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12191,12 +12191,12 @@ Lunghezza:   %3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4323"/>
+        <location filename="../qtractorTrackView.cpp" line="4325"/>
         <source>move clip</source>
         <translation>sposta clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4453"/>
+        <location filename="../qtractorTrackView.cpp" line="4455"/>
         <source>paste clip</source>
         <translation>incolla clip</translation>
     </message>

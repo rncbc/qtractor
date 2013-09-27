@@ -12163,12 +12163,12 @@ Longueur:	%3</translation>
         <translation>%1 clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4569"/>
+        <location filename="../qtractorTrackView.cpp" line="4571"/>
         <source>move automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4652"/>
+        <location filename="../qtractorTrackView.cpp" line="4654"/>
         <source>paste automation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12190,12 +12190,12 @@ Longueur:	%3</translation>
         <translation>diviser</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4323"/>
+        <location filename="../qtractorTrackView.cpp" line="4325"/>
         <source>move clip</source>
         <translation>déplacer clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4453"/>
+        <location filename="../qtractorTrackView.cpp" line="4455"/>
         <source>paste clip</source>
         <translation>coller clip</translation>
     </message>
