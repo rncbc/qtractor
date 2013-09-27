@@ -56,14 +56,14 @@ protected:
 	struct TrackItem
 	{	// Constructor.
 		TrackItem(qtractorTrack *pTrack, bool bOn)
-			: track(pTrack), on(bOn) {};
+			: track(pTrack), on(bOn) {}
 		// Item members.
 		qtractorTrack *track;
 		bool on;
 	};
 
 	// Track command methods.
-	bool addTrack();
+	bool addTrack(qtractorTrack *pAfterTrack = NULL);
 	bool removeTrack();
 
 private:
@@ -82,11 +82,17 @@ class qtractorAddTrackCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorAddTrackCommand(qtractorTrack *pTrack);
+	qtractorAddTrackCommand(qtractorTrack *pTrack,
+		qtractorTrack *pAfterTrack = NULL);
 
 	// Track insertion command methods.
 	bool redo();
 	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorTrack *m_pAfterTrack;
 };
 
 
@@ -161,7 +167,7 @@ class qtractorImportTrackCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorImportTrackCommand();
+	qtractorImportTrackCommand(qtractorTrack *pAfterTrack);
 
 	// Destructor.
 	~qtractorImportTrackCommand();
@@ -176,6 +182,8 @@ public:
 private:
 
 	// Instance variables.
+	qtractorTrack *m_pAfterTrack;
+
 	QList<qtractorAddTrackCommand *> m_trackCommands;
 
 	// Session properties backup stuff.
