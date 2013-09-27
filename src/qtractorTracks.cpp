@@ -2428,7 +2428,7 @@ bool qtractorTracks::addTrack (void)
 
 	// Put it in the form of an undoable command...
 	return pSession->execute(
-		new qtractorAddTrackCommand(pTrack));
+		new qtractorAddTrackCommand(pTrack, currentTrack()));
 }
 
 
@@ -2521,7 +2521,7 @@ bool qtractorTracks::addAudioTracks (
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand();
+		= new qtractorImportTrackCommand(currentTrack());
 
 	// Increment this for suggestive track coloring...
 	int iTrack = pSession->tracks().count();
@@ -2615,7 +2615,7 @@ bool qtractorTracks::addMidiTracks (
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand();
+		= new qtractorImportTrackCommand(currentTrack());
 
 	// Increment this for suggestive track coloring...
 	int iTrack = pSession->tracks().count();
@@ -2730,7 +2730,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand();
+		= new qtractorImportTrackCommand(currentTrack());
 
 	// Increment this for suggestive track coloring...
 	int iTrack = pSession->tracks().count();

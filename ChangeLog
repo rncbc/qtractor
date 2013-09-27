@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Adding a track now inserts after the current track, if any.
+
 - Extended Edit/Select Mode/Automation: multi-selection mode,
   cut, copy, paste and delete of current track's automation
   curve nodes, is now approaching implemention ready status

@@ -27,7 +27,6 @@
 
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
-#include "qtractorTrackView.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiControl.h"
 #include "qtractorMidiClip.h"
@@ -55,13 +54,16 @@ qtractorTrackCommand::~qtractorTrackCommand (void)
 
 
 // Track command methods.
-bool qtractorTrackCommand::addTrack (void)
+bool qtractorTrackCommand::addTrack ( qtractorTrack *pAfterTrack )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTrackCommand::addTrack(%p)", m_pTrack);
+	qDebug("qtractorTrackCommand::addTrack(%p, %p)", m_pTrack, pAfterTrack);
 #endif
 
-	qtractorSession *pSession = qtractorSession::getInstance();
+	if (m_pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = m_pTrack->session();
 	if (pSession == NULL)
 		return false;
 
@@ -74,14 +76,16 @@ bool qtractorTrackCommand::addTrack (void)
 		return false;
 
 	// Guess which item we're adding after...
-	qtractorTrack *pAfterTrack = m_pTrack->prev();
-	if (pAfterTrack == NULL && m_pTrack->next() == NULL)
+	if (pAfterTrack == NULL)
+		pAfterTrack = m_pTrack->prev();
+	if (pAfterTrack == NULL)
 		pAfterTrack = pSession->tracks().last();
-	int iTrack = pTracks->trackList()->trackRow(m_pTrack->next());
+	int iTrack = pSession->tracks().find(pAfterTrack) + 1;
 	// Link the track into session...
 	pSession->insertTrack(m_pTrack, pAfterTrack);
 	// And the new track list view item too...
-	iTrack = pTracks->trackList()->insertTrack(iTrack, m_pTrack);
+	qtractorTrackList *pTrackList = pTracks->trackList();
+	iTrack = pTrackList->insertTrack(iTrack, m_pTrack);
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
@@ -94,10 +98,10 @@ bool qtractorTrackCommand::addTrack (void)
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
-		pMixer->updateTracks();
+		pMixer->updateTracks(true);
 
 	// Let the change get visible.
-	pTracks->trackList()->setCurrentTrackRow(iTrack);
+	pTrackList->setCurrentTrackRow(iTrack);
 
 	// ATTN: MIDI controller map feedback.
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
@@ -117,7 +121,10 @@ bool qtractorTrackCommand::removeTrack (void)
 	qDebug("qtractorTrackCommand::removeTrack(%p)", m_pTrack);
 #endif
 
-	qtractorSession *pSession = qtractorSession::getInstance();
+	if (m_pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = m_pTrack->session();
 	if (pSession == NULL)
 		return false;
 
@@ -130,7 +137,7 @@ bool qtractorTrackCommand::removeTrack (void)
 		return false;
 
 	// Get the list view item reference of the intended track...
-	int iTrack = pTracks->trackList()->trackRow(m_pTrack);
+	int iTrack = pSession->tracks().find(m_pTrack);
 	if (iTrack < 0)
 		return false;
 
@@ -141,10 +148,12 @@ bool qtractorTrackCommand::removeTrack (void)
 
 	// Second, remove from session...
 	pSession->unlinkTrack(m_pTrack);
+
 	// Third, remove track from list view...
-	iTrack = pTracks->trackList()->removeTrack(iTrack);
+	qtractorTrackList *pTrackList = pTracks->trackList();
+	iTrack = pTrackList->removeTrack(iTrack);
 	if (iTrack >= 0)
-		pTracks->trackList()->setCurrentTrackRow(iTrack);
+		pTrackList->setCurrentTrackRow(iTrack);
 
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
@@ -168,8 +177,10 @@ bool qtractorTrackCommand::removeTrack (void)
 //
 
 // Constructor.
-qtractorAddTrackCommand::qtractorAddTrackCommand ( qtractorTrack *pTrack )
-	: qtractorTrackCommand(QObject::tr("add track"), pTrack)
+qtractorAddTrackCommand::qtractorAddTrackCommand (
+	qtractorTrack *pTrack, qtractorTrack *pAfterTrack  )
+	: qtractorTrackCommand(QObject::tr("add track"), pTrack),
+		m_pAfterTrack(pAfterTrack)
 {
 }
 
@@ -177,7 +188,7 @@ qtractorAddTrackCommand::qtractorAddTrackCommand ( qtractorTrack *pTrack )
 // Track insertion command methods.
 bool qtractorAddTrackCommand::redo (void)
 {
-	return addTrack();
+	return addTrack(m_pAfterTrack);
 }
 
 bool qtractorAddTrackCommand::undo (void)
@@ -225,7 +236,11 @@ qtractorMoveTrackCommand::qtractorMoveTrackCommand (
 // Track-move command methods.
 bool qtractorMoveTrackCommand::redo (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return false;
 
@@ -237,25 +252,25 @@ bool qtractorMoveTrackCommand::redo (void)
 	if (pTracks == NULL)
 		return false;
 
-	int iTrack = pTracks->trackList()->trackRow(track());
+	int iTrack = pSession->tracks().find(pTrack);
 	if (iTrack < 0)
 	    return false;
 
 	// Save the next track alright...
-	qtractorTrack *pTrack = track();
 	qtractorTrack *pNextTrack = pTrack->next();
 
 	// Remove and insert back again...
-	pTracks->trackList()->removeTrack(iTrack);
+	qtractorTrackList *pTrackList = pTracks->trackList();
+	pTrackList->removeTrack(iTrack);
 	// Get actual index of new position...
-	int iNextTrack = pTracks->trackList()->trackRow(m_pNextTrack);
+	int iNextTrack = pTrackList->trackRow(m_pNextTrack);
 	// Make it all set back.
 	pSession->moveTrack(pTrack, m_pNextTrack);
 	// Just insert under the track list position...
 	// We'll renumber all items now...
-	iNextTrack = pTracks->trackList()->insertTrack(iNextTrack, pTrack);
+	iNextTrack = pTrackList->insertTrack(iNextTrack, pTrack);
 	if (iNextTrack >= 0)
-		pTracks->trackList()->setCurrentTrackRow(iNextTrack);
+		pTrackList->setCurrentTrackRow(iNextTrack);
 
 	// Swap it nice, finally.
 	m_pNextTrack = pNextTrack;
@@ -323,8 +338,10 @@ bool qtractorResizeTrackCommand::undo (void)
 //
 
 // Constructor.
-qtractorImportTrackCommand::qtractorImportTrackCommand (void)
-	: qtractorCommand(QObject::tr("import track"))
+qtractorImportTrackCommand::qtractorImportTrackCommand (
+	qtractorTrack *pAfterTrack )
+	: qtractorCommand(QObject::tr("import track")),
+		m_pAfterTrack(pAfterTrack)
 {
 	// Session properties backup preparation.
 	m_iSaveCount   = 0;
@@ -356,7 +373,9 @@ qtractorImportTrackCommand::~qtractorImportTrackCommand (void)
 void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
 {
 	m_trackCommands.append(
-		new qtractorAddTrackCommand(pTrack));
+		new qtractorAddTrackCommand(pTrack, m_pAfterTrack));
+
+	m_pAfterTrack = pTrack;
 }
 
 
@@ -386,8 +405,9 @@ bool qtractorImportTrackCommand::undo (void)
 	bool bResult = true;
 
 	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
-	while (iter.hasNext()) {
-	    qtractorAddTrackCommand *pTrackCommand = iter.next();
+	iter.toBack();
+	while (iter.hasPrevious()) {
+		qtractorAddTrackCommand *pTrackCommand = iter.previous();
 		if (!pTrackCommand->undo())
 		    bResult = false;
 	}
@@ -416,7 +436,10 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 // Overridden track-edit command methods.
 bool qtractorEditTrackCommand::redo (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
+	if (m_pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = m_pTrack->session();
 	if (pSession == NULL)
 		return false;
 
@@ -571,16 +594,16 @@ qtractorTrackStateCommand::~qtractorTrackStateCommand (void)
 // Track-button command method.
 bool qtractorTrackStateCommand::redo (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return false;
-
-	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
 		return false;
 
 	bool bOn = false;
@@ -632,9 +655,8 @@ bool qtractorTrackStateCommand::redo (void)
 	}
 
 	// Send MMC MASKED_WRITE command...
-	qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	int iTrack = pTrackList->trackRow(pTrack);
+	int iTrack = pSession->tracks().find(pTrack);
 	if (pMidiEngine)
 		pMidiEngine->sendMmcMaskedWrite(scmd, iTrack, m_bOn);
 
@@ -646,6 +668,7 @@ bool qtractorTrackStateCommand::redo (void)
 	}
 
 	// Update track list item...
+	qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
 	pTrackList->updateTrack(pTrack);
 
 	// Reset for undo.
@@ -737,16 +760,16 @@ qtractorTrackMonitorCommand::~qtractorTrackMonitorCommand (void)
 // Track-monitor command method.
 bool qtractorTrackMonitorCommand::redo (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return false;
-
-	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
 		return false;
 
 	// Save undo value...
@@ -759,8 +782,7 @@ bool qtractorTrackMonitorCommand::redo (void)
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		if (pMidiControl) {
-			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
-			int iTrack = pTrackList->trackRow(pTrack);
+			int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_MONITOR, iTrack, m_bMonitor);
 		}
@@ -772,7 +794,6 @@ bool qtractorTrackMonitorCommand::redo (void)
 	// Toggle/update all other?
 	if (!m_tracks.isEmpty()) {
 		// Exclusive mode.
-		qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		QListIterator<TrackItem *> iter(m_tracks);
 		while (iter.hasNext()) {
@@ -782,7 +803,7 @@ bool qtractorTrackMonitorCommand::redo (void)
 			pTrack->setMonitor(pTrackItem->on);
 			// Send MIDI controller command...
 			if (pMidiControl) {
-				int iTrack = pTrackList->trackRow(pTrack);
+				int iTrack = pSession->tracks().find(pTrack);
 				pMidiControl->processTrackCommand(
 					qtractorMidiControl::TRACK_MONITOR, iTrack, pTrackItem->on);
 			}
@@ -842,12 +863,12 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 // Track-gain command method.
 bool qtractorTrackGainCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
 		return false;
 
 	// Set undo value...
@@ -869,8 +890,7 @@ bool qtractorTrackGainCommand::redo (void)
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		if (pMidiControl) {
-			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
-			int iTrack = pTrackList->trackRow(pTrack);
+			int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_GAIN, iTrack, m_fGain,
 				pTrack->trackType() == qtractorTrack::Audio);
@@ -932,12 +952,12 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 // Track-panning command method.
 bool qtractorTrackPanningCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
 		return false;
 
 	// Set undo value...
@@ -959,8 +979,7 @@ bool qtractorTrackPanningCommand::redo (void)
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		if (pMidiControl) {
-			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
-			int iTrack = pTrackList->trackRow(pTrack);
+			int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_PANNING, iTrack, m_fPanning);
 		}
