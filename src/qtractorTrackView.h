@@ -263,7 +263,7 @@ protected:
 	qtractorCurve::Node *nodeAt(const QPoint& pos) const;
 
 	// Get contents visible rectangle from given track.
-	bool trackInfo(qtractorTrack *pTrackPtr,
+	bool trackInfo(qtractorTrack *pTrack,
 		qtractorTrackViewInfo *pTrackViewInfo) const;
 	// Get contents rectangle from given clip.
 	bool clipInfo(qtractorClip *pClip, QRect *pClipRect) const;
@@ -413,11 +413,11 @@ private:
 	// The current selecting/dragging clip stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect,
-		DragClipMove, DragClipDrop, DragClipStep,
+		DragClipMove, DragClipStep, DragClipDrop,
 		DragClipPaste, DragClipPasteDrop,
 		DragClipFadeIn, DragClipFadeOut,
 		DragClipResizeLeft, DragClipResizeRight,
-		DragCurveMove, DragCurveDrop, DragCurveStep,
+		DragCurveMove, DragCurveStep,
 		DragCurvePaste, DragCurveNode
 	} m_dragState, m_dragCursor;
 
@@ -486,7 +486,7 @@ private:
 	static struct ClipBoard
 	{
 		// Clipboard constructor.
-		ClipBoard() : singleTrack(NULL), currentCurve(NULL), frames(0) {}
+		ClipBoard() : singleTrack(NULL), frames(0) {}
 		// Destructor.
 		~ClipBoard() { clear(); }
 		// Clipboard stuffer methods.
@@ -501,7 +501,6 @@ private:
 		QList<ClipItem *> clips;
 		QList<NodeItem *> nodes;
 		qtractorTrack    *singleTrack;
-		qtractorCurve    *currentCurve;
 		unsigned long     frames;
 
 	} g_clipboard;

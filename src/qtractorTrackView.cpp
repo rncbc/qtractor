@@ -3847,7 +3847,6 @@ void qtractorTrackView::ClipBoard::clear (void)
 	nodes.clear();
 
 	singleTrack = NULL;
-	currentCurve = NULL;
 	frames = 0;
 }
 
@@ -3890,7 +3889,6 @@ void qtractorTrackView::executeCurveSelect ( qtractorTrackView::Command cmd )
 	const bool bClipboard = (cmd == Cut || cmd == Copy);
 	if (bClipboard) {
 		g_clipboard.clear();
-		g_clipboard.currentCurve = pCurve;
 		g_clipboard.frames = pSession->frameFromPixel(m_pCurveSelect->rect().width());
 		QApplication::clipboard()->clear();
 	}
@@ -4222,17 +4220,19 @@ void qtractorTrackView::pasteClipboard (
 	}
 
 	// FIXME: While pasting automation/curve nodes
-	// maybe we can only doit over the original...
+	// maybe we can only do it over the original...
+	qtractorTrackViewInfo tvi;
+	qtractorCurve *pCurve = NULL;
 	if (m_bCurveEdit) {
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
-		if (pTrack == NULL)
-			pTrack = trackAt(pos, true);
+		if (pTrack == NULL || !trackInfo(pTrack, &tvi))
+			pTrack = trackAt(pos, true, &tvi);
 		if (pTrack == NULL)
 			return;
-		qtractorCurve *pCurrentCurve = pTrack->currentCurve();
-		if (pCurrentCurve == NULL)
+		pCurve = pTrack->currentCurve();
+		if (pCurve == NULL)
 			return;
-		if (pCurrentCurve != g_clipboard.currentCurve)
+		if (pCurve->isLocked())
 			return;
 	}
 
@@ -4253,15 +4253,19 @@ void qtractorTrackView::pasteClipboard (
 
 	// Copy clipboard items to floating selection;
 	if (m_bCurveEdit) {
+		const int h = tvi.trackRect.height();
+		const int y2 = tvi.trackRect.bottom() + 1;
 		QListIterator<NodeItem *> iter(g_clipboard.nodes);
 		for (unsigned short i = 0; i < m_iPasteCount; ++i) {
 			iter.toFront();
 			while (iter.hasNext()) {
 				NodeItem *pNodeItem = iter.next();
-				QRect rect(pNodeItem->rect);
-				rect.setX(pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta) - 4);
-				rect.setWidth(8);
-				m_pCurveSelect->addItem(pNodeItem->node, rect);
+				const int x
+					= pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta);
+				const float s = pCurve->scaleFromValue(pNodeItem->value);
+				const int y = y2 - int(s * float(h));
+				m_pCurveSelect->addItem(pNodeItem->node,
+					QRect(x - 4, y - 4, 8, 8));
 			}
 			iPasteDelta += m_iPastePeriod;
 		}
@@ -4550,7 +4554,9 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 	dragCurveMove(pos);
 
 	qtractorTrackViewInfo tvi;
-	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
+	qtractorTrack *pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL || !trackInfo(pTrack, &tvi))
+		pTrack = trackAt(pos, true, &tvi);
 	if (pTrack == NULL)
 		return;
 
@@ -4637,16 +4643,14 @@ void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 	dragCurveMove(pos);
 
 	qtractorTrackViewInfo tvi;
-	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
-	if (pTrack == NULL)
+	qtractorTrack *pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL || !trackInfo(pTrack, &tvi))
 		return;
 
 	qtractorCurve *pCurve = pTrack->currentCurve();
 	if (pCurve == NULL)
 		return;
 	if (pCurve->isLocked())
-		return;
-	if (pCurve != g_clipboard.currentCurve)
 		return;
 
 	// We'll need this...
