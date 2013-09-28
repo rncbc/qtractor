@@ -811,16 +811,16 @@ void qtractorAudioBuffer::initSync (void)
 	if (m_pRingBuffer == NULL)
 		return;
 
-	if (isSyncFlag(CloseSync))
-		return;
-
 	// Initialization is only valid on read-only mode.
 	if (m_pFile == NULL)
 		return;
 
 	if (m_pFile->mode() & qtractorAudioFile::Write)
 		return;
-
+#if 0
+	if (isSyncFlag(CloseSync))
+		return;
+#endif
 	// Reset all relevant state variables.
 	setSyncFlag(ReadSync, false);
 
