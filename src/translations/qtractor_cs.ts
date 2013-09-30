@@ -1139,17 +1139,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorTrack.cpp" line="664"/>
         <source>%1 Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Hlasitost</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="667"/>
         <source>%1 Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Zesílení</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="670"/>
         <source>%1 Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Vyvážení (Pan)</translation>
     </message>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="104"/>
@@ -1284,7 +1284,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="598"/>
         <source>Pan: %1</source>
-        <translation>Vyváženost: %1</translation>
+        <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="607"/>
@@ -6776,7 +6776,7 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMeter.cpp" line="259"/>
         <source>Pan</source>
-        <translation>Vyváženost</translation>
+        <translation>Vyvážení</translation>
     </message>
     <message>
         <location filename="../qtractorMeter.cpp" line="271"/>
@@ -9327,7 +9327,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="453"/>
         <source>Pan: %1</source>
-        <translation>Panoráma: %1</translation>
+        <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="463"/>
@@ -10765,12 +10765,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="431"/>
         <source>Whether to reverse mouse middle-button role on keyboard modifiers (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda změnit úlohu prostředního tlačítka myši na modifikátory klávesnice (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="434"/>
         <source>Re&amp;verse middle-button modifier role (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Změnit úlohu prostřední tlačítka myši na modifikátor (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="466"/>
@@ -12502,12 +12502,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="222"/>
         <source>Time</source>
-        <translation type="unfinished">Čas</translation>
+        <translation>Čas</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="227"/>
         <source>BBT</source>
-        <translation type="unfinished"></translation>
+        <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="116"/>
@@ -12542,7 +12542,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>Time display format</source>
-        <translation type="unfinished">Formát zobrazení času</translation>
+        <translation>Formát zobrazení času</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="217"/>
@@ -12823,17 +12823,17 @@ Chcete zahodit tyto změny?</translation>
     <message>
         <location filename="../qtractorSpinBox.cpp" line="336"/>
         <source>&amp;Frames</source>
-        <translation type="unfinished">&amp;Snímky</translation>
+        <translation>&amp;Snímky</translation>
     </message>
     <message>
         <location filename="../qtractorSpinBox.cpp" line="341"/>
         <source>&amp;Time</source>
-        <translation type="unfinished">Č&amp;as</translation>
+        <translation>Č&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorSpinBox.cpp" line="346"/>
         <source>&amp;BBT</source>
-        <translation type="unfinished">&amp;TDT</translation>
+        <translation>&amp;TDT</translation>
     </message>
 </context>
 <context>
@@ -13326,7 +13326,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3898"/>
         <source>%1 automation</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 automatizace</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3971"/>
@@ -13336,12 +13336,12 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4577"/>
         <source>move automation</source>
-        <translation type="unfinished"></translation>
+        <translation>Přesunout automatizaci</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4658"/>
         <source>paste automation</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit automatizaci</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3902"/>

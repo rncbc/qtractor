@@ -9,7 +9,7 @@ SVN TRUNK
 
 - Extended Edit/Select Mode/Automation: multi-selection mode,
   cut, copy, paste and delete of current track's automation
-  curve nodes, is now approaching implemention ready status
+  curve nodes, is now approaching implementation ready status
   (EXPERIMENTAL)
 
 - Another old silent bug bites the dust: changing track names
