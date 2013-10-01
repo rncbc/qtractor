@@ -464,12 +464,15 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		// Which mouse state?
+		const Qt::KeyboardModifiers& modifiers
+			= pMouseEvent->modifiers();
 		// Are we already moving/dragging something?
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		const unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		const int y = m_pTracks->trackView()->contentsY();
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		switch (m_dragState) {
 		case DragNone:
 			// Try to catch mouse over the cursor heads...
@@ -480,11 +483,29 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Rubber-band selection...
 			m_rectDrag.setRight(pos.x());
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-			m_pTracks->trackView()->selectClipRect(m_rectDrag,
-				qtractorTrackView::SelectRange,
-				(pMouseEvent->modifiers()
-					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
-				qtractorTrackView::EditBoth);
+			if (m_pTracks->trackView()->isCurveEdit()) {
+				// The precise (snapped) selection frame points...
+				QRect rect(m_rectDrag.normalized());
+				rect.setTop(0);
+				rect.setBottom(m_pTracks->trackView()->contentsHeight());
+				const unsigned long iSelectStart
+					= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
+				const unsigned long iSelectEnd
+					= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
+				int flags = qtractorTrackView::SelectNone;
+				if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+					flags |= qtractorTrackView::SelectClear;
+				if (modifiers & Qt::ControlModifier)
+					flags |= qtractorTrackView::SelectToggle;
+				m_pTracks->trackView()->selectCurveRect(rect, flags);
+				m_pTracks->trackView()->setEditHead(iSelectStart);
+				m_pTracks->trackView()->setEditTail(iSelectEnd);
+			} else {
+				m_pTracks->trackView()->selectClipRect(m_rectDrag,
+					qtractorTrackView::SelectRange,
+					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
+					qtractorTrackView::EditBoth);
+			}
 			showToolTip(m_rectDrag.normalized());
 			break;
 		case DragPlayHead:
@@ -559,11 +580,29 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		switch (m_dragState) {
 		case DragSelect:
 			// Do the final range selection...
-			m_pTracks->trackView()->selectClipRect(m_rectDrag,
-				qtractorTrackView::SelectRange,
-				(pMouseEvent->modifiers()
-					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
-				qtractorTrackView::EditBoth);
+			if (m_pTracks->trackView()->isCurveEdit()) {
+				// The precise (snapped) selection frame points...
+				QRect rect(m_rectDrag.normalized());
+				rect.setTop(0);
+				rect.setBottom(m_pTracks->trackView()->contentsHeight());
+				const unsigned long iSelectStart
+					= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
+				const unsigned long iSelectEnd
+					= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
+				int flags = qtractorTrackView::SelectNone;
+				if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+					flags |= qtractorTrackView::SelectClear;
+				if (modifiers & Qt::ControlModifier)
+					flags |= qtractorTrackView::SelectToggle;
+				m_pTracks->trackView()->selectCurveRect(rect, flags);
+				m_pTracks->trackView()->setEditHead(iSelectStart);
+				m_pTracks->trackView()->setEditTail(iSelectEnd);
+			} else {
+				m_pTracks->trackView()->selectClipRect(m_rectDrag,
+					qtractorTrackView::SelectRange,
+					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
+					qtractorTrackView::EditBoth);
+			}
 			// For immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;

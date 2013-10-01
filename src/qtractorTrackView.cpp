@@ -2461,8 +2461,7 @@ void qtractorTrackView::selectCurveRect ( const QRect& rectDrag, int flags )
 			break;
 		if (y2 >= rect.top()) {
 			qtractorCurve *pCurve = pTrack->currentCurve();
-			if (pCurve && !pCurve->isLocked()
-				&& m_pCurveSelect->isCurrentCurve(pCurve)) {
+			if (pCurve && !pCurve->isLocked()) {
 				const int h = y2 - y1 - 2;
 				const unsigned long iFrameStart
 					= pSession->frameFromPixel(x1);
@@ -2479,7 +2478,8 @@ void qtractorTrackView::selectCurveRect ( const QRect& rectDrag, int flags )
 					++iUpdate;
 					pNode = pNode->next();
 				}
-				break;
+				if (m_pCurveSelect->isCurrentCurve(pCurve))
+					break;
 			}
 		}
 		pTrack = pTrack->next();
@@ -2526,8 +2526,7 @@ void qtractorTrackView::selectCurveTrackRange (
 		y2 += pTrack->zoomHeight();
 		if (pTrack == pTrackPtr || pTrackPtr == NULL) {
 			qtractorCurve *pCurve = pTrack->currentCurve();
-			if (pCurve && !pCurve->isLocked()
-				&& m_pCurveSelect->isCurrentCurve(pCurve)) {
+			if (pCurve && !pCurve->isLocked()) {
 				const int h = y2 - y1 - 2;
 				rect.setY(y1 + 1);
 				rect.setHeight(h);
@@ -2542,7 +2541,8 @@ void qtractorTrackView::selectCurveTrackRange (
 					++iUpdate;
 					pNode = pNode->next();
 				}
-				break;
+				if (m_pCurveSelect->isCurrentCurve(pCurve))
+					break;
 			}
 		}
 		pTrack = pTrack->next();
@@ -2583,8 +2583,7 @@ void qtractorTrackView::selectCurveTrack (
 		y2 += pTrack->zoomHeight();
 		if (pTrack == pTrackPtr) {
 			qtractorCurve *pCurve = pTrack->currentCurve();
-			if (pCurve && !pCurve->isLocked()
-				&& m_pCurveSelect->isCurrentCurve(pCurve)) {
+			if (pCurve && !pCurve->isLocked()) {
 				const int h = y2 - y1 - 2;
 				qtractorCurve::Node *pNode = pCurve->nodes().first();
 				while (pNode) {
@@ -2596,8 +2595,8 @@ void qtractorTrackView::selectCurveTrack (
 					++iUpdate;
 					pNode = pNode->next();
 				}
-				break;
 			}
+			break;
 		}
 		pTrack = pTrack->next();
 	}
@@ -2640,8 +2639,7 @@ void qtractorTrackView::selectCurveAll (void)
 		y2 += pTrack->zoomHeight();
 		if (pCurrentTrack == pTrack) {
 			qtractorCurve *pCurve = pTrack->currentCurve();
-			if (pCurve && !pCurve->isLocked()
-				&& m_pCurveSelect->isCurrentCurve(pCurve)) {
+			if (pCurve && !pCurve->isLocked()) {
 				const int h = y2 - y1 - 2;
 				qtractorCurve::Node *pNode = pCurve->nodes().first();
 				while (pNode) {
@@ -2653,8 +2651,8 @@ void qtractorTrackView::selectCurveAll (void)
 					++iUpdate;
 					pNode = pNode->next();
 				}
-				break;
 			}
+			break;
 		}
 		pTrack = pTrack->next();
 	}
@@ -2687,8 +2685,7 @@ void qtractorTrackView::selectCurveInvert (void)
 		y1  = y2;
 		y2 += pTrack->zoomHeight();
 		qtractorCurve *pCurve = pTrack->currentCurve();
-		if (pCurve && !pCurve->isLocked()
-			&& m_pCurveSelect->isCurrentCurve(pCurve)) {
+		if (pCurve && !pCurve->isLocked()) {
 			const int h = y2 - y1 - 2;
 			qtractorCurve::Node *pNode = pCurve->nodes().first();
 			while (pNode) {
@@ -2700,7 +2697,8 @@ void qtractorTrackView::selectCurveInvert (void)
 				++iUpdate;
 				pNode = pNode->next();
 			}
-			break;
+			if (m_pCurveSelect->isCurrentCurve(pCurve))
+				break;
 		}
 		pTrack = pTrack->next();
 	}

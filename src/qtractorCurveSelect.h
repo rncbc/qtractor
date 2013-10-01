@@ -93,7 +93,7 @@ public:
 
 	// Selection curve testimony.
 	bool isCurrentCurve ( qtractorCurve *pCurve ) const
-		{ return (m_pCurve == pCurve || m_pCurve == NULL); }
+		{ return (m_pCurve && m_pCurve == pCurve); }
 
 private:
 
