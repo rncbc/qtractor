@@ -3307,6 +3307,10 @@ void qtractorTrackView::resetDragState (void)
 	// Should fallback mouse cursor...
 	if (m_dragCursor != DragNone)
 		qtractorScrollView::unsetCursor();
+	if (m_dragState == DragClipStep)
+		m_pClipSelect->clear();
+	if (m_dragState == DragCurveStep)
+		m_pCurveSelect->clear();
 	if (m_dragState == DragClipResizeLeft  ||
 		m_dragState == DragClipResizeRight ||
 		m_dragState == DragClipPasteDrop   ||
@@ -3316,8 +3320,6 @@ void qtractorTrackView::resetDragState (void)
 		m_dragState == DragCurvePaste      ||
 		m_dragState == DragCurveStep       ||
 		m_dragState == DragCurveMove) {
-	//	m_pClipSelect->clear();
-	//	m_pCurveSelect->clear();
 		updateContents();
 	}
 

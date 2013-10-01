@@ -5686,6 +5686,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
 //	m_ui.editDeleteAction->setEnabled(bSelected);
 
+	m_pSelectModeActionGroup->setEnabled(
+		m_pTracks && !m_pTracks->trackView()->isCurveEdit());
+
 	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);
 	m_ui.editSelectInvertAction->setEnabled(iSessionEnd > 0);
 	m_ui.editSelectTrackRangeAction->setEnabled(bEnabled && bSelectable);
