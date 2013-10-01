@@ -511,17 +511,17 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTrack.cpp" line="664"/>
         <source>%1 Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Volume</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="667"/>
         <source>%1 Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Gain</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="670"/>
         <source>%1 Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Pan</translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="182"/>
@@ -9417,12 +9417,12 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="431"/>
         <source>Whether to reverse mouse middle-button role on keyboard modifiers (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit inverser le rôle du bouton du milieu avec les modificateur clavier (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="434"/>
         <source>Re&amp;verse middle-button modifier role (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>In&amp;verser le rôle du bouton du milieu avec le modificateur (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="466"/>
@@ -11362,12 +11362,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="222"/>
         <source>Time</source>
-        <translation type="unfinished">Temps</translation>
+        <translation>Temps</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="227"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="116"/>
@@ -11402,7 +11402,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>Time display format</source>
-        <translation type="unfinished">Format d&apos;affichage du temps</translation>
+        <translation>Format d&apos;affichage du temps</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="217"/>
@@ -11679,17 +11679,17 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorSpinBox.cpp" line="336"/>
         <source>&amp;Frames</source>
-        <translation type="unfinished">&amp;Trames</translation>
+        <translation>T&amp;rames</translation>
     </message>
     <message>
         <location filename="../qtractorSpinBox.cpp" line="341"/>
         <source>&amp;Time</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Temps</translation>
     </message>
     <message>
         <location filename="../qtractorSpinBox.cpp" line="346"/>
         <source>&amp;BBT</source>
-        <translation type="unfinished">&amp;BBT</translation>
+        <translation>&amp;BBT</translation>
     </message>
 </context>
 <context>
@@ -12155,7 +12155,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3898"/>
         <source>%1 automation</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 automation</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3971"/>
@@ -12165,12 +12165,12 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4577"/>
         <source>move automation</source>
-        <translation type="unfinished"></translation>
+        <translation>déplacer l&apos;automation</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4658"/>
         <source>paste automation</source>
-        <translation type="unfinished"></translation>
+        <translation>coller l&apos;automation</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3902"/>
