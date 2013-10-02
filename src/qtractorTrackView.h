@@ -100,13 +100,24 @@ public:
 	enum SelectMode { SelectClip, SelectRange, SelectRect };
 	enum SelectEdit { EditNone = 0, EditHead = 1, EditTail = 2, EditBoth = 3 };
 
+	// Selection flags
+	enum {
+		SelectNone   = 0,
+		SelectClear  = 1,
+		SelectToggle = 2,
+		SelectCommit = 4
+	};
+
+	// Convert selection flags from keyboard modifiers.
+	static int selectFlags(const Qt::KeyboardModifiers modifiers);
+
 	// Clip selection mode accessors.
 	void setSelectMode(SelectMode selectMode);
 	SelectMode selectMode() const;
 
 	// Select every clip under a given (rubber-band) rectangle.
 	void selectClipRect(const QRect& rectDrag,
-		SelectMode selectMode, bool bClearSelect, SelectEdit = EditNone);
+		SelectMode selectMode, int flags, SelectEdit selectEdit = EditNone);
 
 	// Select every clip of a given track-range.
 	void selectClipTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
@@ -122,16 +133,9 @@ public:
 	void selectClipFile(qtractorTrack::TrackType trackType,
 		const QString& sFilename, int iTrackChannel, bool bSelect);
 
-	// Selection flags
-	enum {
-		SelectNone   = 0,
-		SelectClear  = 1,
-		SelectToggle = 2,
-		SelectCommit = 4
-	};
-
 	// Select curve nodes under a given (rubber-band) rectangle.
-	void selectCurveRect(const QRect& rectDrag, int flags);
+	void selectCurveRect(const QRect& rectDrag,
+		SelectMode selectMode, int flags, SelectEdit selectEdit = EditNone);
 
 	// Select every current curve/automation node of a given track-range.
 	void selectCurveTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);

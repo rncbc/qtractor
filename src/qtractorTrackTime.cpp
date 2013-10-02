@@ -484,26 +484,18 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_rectDrag.setRight(pos.x());
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			if (m_pTracks->trackView()->isCurveEdit()) {
-				// The precise (snapped) selection frame points...
-				QRect rect(m_rectDrag.normalized());
-				rect.setTop(0);
-				rect.setBottom(m_pTracks->trackView()->contentsHeight());
-				const unsigned long iSelectStart
-					= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
-				const unsigned long iSelectEnd
-					= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
-				int flags = qtractorTrackView::SelectNone;
-				if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
-					flags |= qtractorTrackView::SelectClear;
-				if (modifiers & Qt::ControlModifier)
-					flags |= qtractorTrackView::SelectToggle;
-				m_pTracks->trackView()->selectCurveRect(rect, flags);
-				m_pTracks->trackView()->setEditHead(iSelectStart);
-				m_pTracks->trackView()->setEditTail(iSelectEnd);
+				// Select all current track curve/automation
+				// nodes that fall inside range...
+				m_pTracks->trackView()->selectCurveRect(m_rectDrag,
+					qtractorTrackView::SelectRange,
+					qtractorTrackView::selectFlags(modifiers),
+					qtractorTrackView::EditBoth);
 			} else {
+				// Here we're mainly supposed to select a few
+				// bunch of clips that fall inside range...
 				m_pTracks->trackView()->selectClipRect(m_rectDrag,
 					qtractorTrackView::SelectRange,
-					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
+					qtractorTrackView::selectFlags(modifiers),
 					qtractorTrackView::EditBoth);
 			}
 			showToolTip(m_rectDrag.normalized());
@@ -581,26 +573,20 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragSelect:
 			// Do the final range selection...
 			if (m_pTracks->trackView()->isCurveEdit()) {
-				// The precise (snapped) selection frame points...
-				QRect rect(m_rectDrag.normalized());
-				rect.setTop(0);
-				rect.setBottom(m_pTracks->trackView()->contentsHeight());
-				const unsigned long iSelectStart
-					= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
-				const unsigned long iSelectEnd
-					= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
-				int flags = qtractorTrackView::SelectNone;
-				if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
-					flags |= qtractorTrackView::SelectClear;
-				if (modifiers & Qt::ControlModifier)
-					flags |= qtractorTrackView::SelectToggle;
-				m_pTracks->trackView()->selectCurveRect(rect, flags);
-				m_pTracks->trackView()->setEditHead(iSelectStart);
-				m_pTracks->trackView()->setEditTail(iSelectEnd);
+				// Select all current track curve/automation
+				// nodes that fall inside range...
+				m_pTracks->trackView()->selectCurveRect(m_rectDrag,
+					qtractorTrackView::SelectRange,
+					qtractorTrackView::selectFlags(modifiers)
+						| qtractorTrackView::SelectCommit,
+					qtractorTrackView::EditBoth);
 			} else {
+				// Here we're mainly supposed to select a few
+				// bunch of clips that fall inside range...
 				m_pTracks->trackView()->selectClipRect(m_rectDrag,
 					qtractorTrackView::SelectRange,
-					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0,
+					qtractorTrackView::selectFlags(modifiers)
+						| qtractorTrackView::SelectCommit,
 					qtractorTrackView::EditBoth);
 			}
 			// For immediate visual feedback...
