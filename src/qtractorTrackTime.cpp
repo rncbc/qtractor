@@ -254,9 +254,11 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 	const int cx = qtractorScrollView::contentsX();
 	const int h = qtractorScrollView::height() - 4;
 	const int d = (h >> 2);
-	
+
+	qtractorTrackView *pTrackView = m_pTracks->trackView();
+
 	// Draw edit-head line...
-	int x = (m_pTracks->trackView())->editHeadX() - cx;
+	int x = pTrackView->editHeadX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -269,7 +271,7 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw edit-tail line...
-	x = (m_pTracks->trackView())->editTailX() - cx;
+	x = pTrackView->editTailX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -282,7 +284,7 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw special play-head header...
-	x = (m_pTracks->trackView())->playHeadX() - cx;
+	x = pTrackView->playHeadX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -321,8 +323,10 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	const int d = (h >> 1);
 	QRect rect(0, h - d, d << 1, d);
 
+	qtractorTrackView *pTrackView = m_pTracks->trackView();
+
 	// Check play-head header...
-	rect.moveLeft(m_pTracks->trackView()->playHeadX() - d);
+	rect.moveLeft(pTrackView->playHeadX() - d);
 	if (rect.contains(pos)) {
 		m_dragCursor = DragPlayHead;
 		return true;
@@ -373,14 +377,14 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	}
 
 	// Check edit-head header...
-	rect.moveLeft(m_pTracks->trackView()->editHeadX() - d);
+	rect.moveLeft(pTrackView->editHeadX() - d);
 	if (rect.contains(pos)) {
 		m_dragCursor = DragEditHead;
 		return true;
 	}
 
 	// Check edit-tail header...
-	rect.moveLeft(m_pTracks->trackView()->editTailX() - d);
+	rect.moveLeft(pTrackView->editTailX() - d);
 	if (rect.contains(pos)) {
 		m_dragCursor = DragEditTail;
 		return true;
@@ -402,6 +406,8 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Force null state.
 	m_dragState = DragNone;
+
+	qtractorTrackView *pTrackView = m_pTracks->trackView();
 
 	// We'll need options somehow...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -434,19 +440,19 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 				bModifier = !bModifier;	// Reverse mid-button role...
 			if (bModifier) {
 				// Play-head positioning commit...
-				m_pTracks->trackView()->setPlayHead(iFrame);
-				pSession->setPlayHead(m_pTracks->trackView()->playHead());
+				pTrackView->setPlayHead(iFrame);
+				pSession->setPlayHead(pTrackView->playHead());
 			} else {
 				// Edit cursor (merge) positioning...
-				m_pTracks->trackView()->setEditHead(iFrame);
-				m_pTracks->trackView()->setEditTail(iFrame);
+				pTrackView->setEditHead(iFrame);
+				pTrackView->setEditTail(iFrame);
 			}
 			// Logical contents changed, just for visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
 		case Qt::RightButton:
 			// Right-button direct positioning...
-			m_pTracks->trackView()->setEditTail(iFrame);
+			pTrackView->setEditTail(iFrame);
 			// Logical contents changed, just for visual feedback...
 			m_pTracks->selectionChangeNotify();
 			// Fall thru...
@@ -464,6 +470,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
 		// Which mouse state?
 		const Qt::KeyboardModifiers& modifiers
 			= pMouseEvent->modifiers();
@@ -471,7 +478,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		const unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-		const int y = m_pTracks->trackView()->contentsY();
+		const int y = pTrackView->contentsY();
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		switch (m_dragState) {
 		case DragNone:
@@ -482,18 +489,18 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragSelect:
 			// Rubber-band selection...
 			m_rectDrag.setRight(pos.x());
-			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-			if (m_pTracks->trackView()->isCurveEdit()) {
+			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			if (pTrackView->isCurveEdit()) {
 				// Select all current track curve/automation
 				// nodes that fall inside range...
-				m_pTracks->trackView()->selectCurveRect(m_rectDrag,
+				pTrackView->selectCurveRect(m_rectDrag,
 					qtractorTrackView::SelectRange,
 					qtractorTrackView::selectFlags(modifiers),
 					qtractorTrackView::EditBoth);
 			} else {
 				// Here we're mainly supposed to select a few
 				// bunch of clips that fall inside range...
-				m_pTracks->trackView()->selectClipRect(m_rectDrag,
+				pTrackView->selectClipRect(m_rectDrag,
 					qtractorTrackView::SelectRange,
 					qtractorTrackView::selectFlags(modifiers),
 					qtractorTrackView::EditBoth);
@@ -502,8 +509,8 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragPlayHead:
 			// Play-head positioning...
-			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-			m_pTracks->trackView()->setPlayHead(iFrame);
+			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->setPlayHead(iFrame);
 			// Let the change get some immediate visual feedback...
 			if (pMainForm)
 				pMainForm->updateTransportTime(iFrame);
@@ -513,21 +520,21 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragPunchIn:
 		case DragEditHead:
 			// Edit-head positioning...
-			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-			m_pTracks->trackView()->setEditHead(iFrame);
+			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->setEditHead(iFrame);
 			showToolTip(iFrame);
 			break;
 		case DragLoopEnd:
 		case DragPunchOut:
 		case DragEditTail:
 			// Edit-tail positioning...
-			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-			m_pTracks->trackView()->setEditTail(iFrame);
+			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->setEditTail(iFrame);
 			showToolTip(iFrame);
 			break;
 		case DragMarker:
 			// Marker positioning...
-			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->ensureVisible(pos.x(), y, 16, 0);
 			showToolTip(iFrame);
 			break;
 		case DragStart:
@@ -560,6 +567,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
 		// Which mouse state?
 		const Qt::KeyboardModifiers& modifiers
 			= pMouseEvent->modifiers();
@@ -572,10 +580,10 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		switch (m_dragState) {
 		case DragSelect:
 			// Do the final range selection...
-			if (m_pTracks->trackView()->isCurveEdit()) {
+			if (pTrackView->isCurveEdit()) {
 				// Select all current track curve/automation
 				// nodes that fall inside range...
-				m_pTracks->trackView()->selectCurveRect(m_rectDrag,
+				pTrackView->selectCurveRect(m_rectDrag,
 					qtractorTrackView::SelectRange,
 					qtractorTrackView::selectFlags(modifiers)
 						| qtractorTrackView::SelectCommit,
@@ -583,7 +591,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			} else {
 				// Here we're mainly supposed to select a few
 				// bunch of clips that fall inside range...
-				m_pTracks->trackView()->selectClipRect(m_rectDrag,
+				pTrackView->selectClipRect(m_rectDrag,
 					qtractorTrackView::SelectRange,
 					qtractorTrackView::selectFlags(modifiers)
 						| qtractorTrackView::SelectCommit,
@@ -594,8 +602,8 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragPlayHead:
 			// Play-head positioning commit...
-			m_pTracks->trackView()->setPlayHead(iFrame);
-			pSession->setPlayHead(m_pTracks->trackView()->playHead());
+			pTrackView->setPlayHead(iFrame);
+			pSession->setPlayHead(pTrackView->playHead());
 			// Not quite a selection, rather just
 			// for immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
@@ -659,12 +667,12 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Left-button indirect positioning...
 			if (bModifier) {
 				// Playhead positioning...
-				m_pTracks->trackView()->setPlayHead(iFrame);
+				pTrackView->setPlayHead(iFrame);
 				// Immediately commited...
 				pSession->setPlayHead(iFrame);
 			} else {
 				// Deferred left-button edit-head positioning...
-				m_pTracks->trackView()->setEditHead(iFrame);
+				pTrackView->setEditHead(iFrame);
 			}
 			// Not quite a selection, rather just
 			// for immediate visual feedback...
