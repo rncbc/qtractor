@@ -4862,6 +4862,10 @@ bool qtractorTrackView::isToolTips (void) const
 // Automation curve node editing mode.
 void qtractorTrackView::setCurveEdit ( bool bCurveEdit )
 {
+	if (( m_bCurveEdit &&  bCurveEdit) ||
+		(!m_bCurveEdit && !bCurveEdit))
+		return;
+
 	m_bCurveEdit = bCurveEdit;
 
 	clearSelect();

@@ -396,6 +396,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeClipAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeCurveAction);
 //	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
 
 	// Additional time-toolbar controls...
@@ -688,7 +689,7 @@ qtractorMainForm::qtractorMainForm (
 		SLOT(editSelectModeRect()));
 	QObject::connect(m_ui.editSelectModeCurveAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editSelectModeCurve(bool)));
+		SLOT(editSelectModeCurve()));
 	QObject::connect(m_ui.editSelectAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
@@ -1228,6 +1229,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	pTrackView->setToolTips(m_pOptions->bTrackViewToolTips);
 	pTrackView->setCurveEdit(m_pOptions->bTrackViewCurveEdit);
 
+	if (pTrackView->isCurveEdit())
+		m_ui.editSelectModeCurveAction->setChecked(true);
+
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
 
@@ -1236,8 +1240,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pSession->setLoopRecordingMode(m_pOptions->iLoopRecordingMode);
 
 	// Initial decorations toggle state.
-	m_ui.editSelectModeCurveAction->setChecked(pOptions->bTrackViewCurveEdit);
-
 	m_ui.viewMenubarAction->setChecked(m_pOptions->bMenubar);
 	m_ui.viewStatusbarAction->setChecked(m_pOptions->bStatusbar);
 	m_ui.viewToolbarFileAction->setChecked(m_pOptions->bFileToolbar);
@@ -2730,8 +2732,12 @@ void qtractorMainForm::editSelectModeClip (void)
 #endif
 
 	// Select clip mode...
-	if (m_pTracks)
-		m_pTracks->trackView()->setSelectMode(qtractorTrackView::SelectClip);
+	if (m_pTracks) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		pTrackView->setSelectMode(qtractorTrackView::SelectClip);
+		pTrackView->setCurveEdit(false);
+	}
+
 	if (m_pOptions)
 		m_pOptions->iTrackViewSelectMode = 0;
 
@@ -2747,8 +2753,12 @@ void qtractorMainForm::editSelectModeRange (void)
 #endif
 
 	// Select clip mode...
-	if (m_pTracks)
-		m_pTracks->trackView()->setSelectMode(qtractorTrackView::SelectRange);
+	if (m_pTracks) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		pTrackView->setSelectMode(qtractorTrackView::SelectRange);
+		pTrackView->setCurveEdit(false);
+	}
+
 	if (m_pOptions)
 		m_pOptions->iTrackViewSelectMode = 1;
 
@@ -2764,8 +2774,12 @@ void qtractorMainForm::editSelectModeRect (void)
 #endif
 
 	// Select clip mode...
-	if (m_pTracks)
-		m_pTracks->trackView()->setSelectMode(qtractorTrackView::SelectRect);
+	if (m_pTracks) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		pTrackView->setSelectMode(qtractorTrackView::SelectRect);
+		pTrackView->setCurveEdit(false);
+	}
+
 	if (m_pOptions)
 		m_pOptions->iTrackViewSelectMode = 2;
 
@@ -2774,10 +2788,14 @@ void qtractorMainForm::editSelectModeRect (void)
 
 
 // Special automation curve node edit mode.
-void qtractorMainForm::editSelectModeCurve ( bool bOn )
+void qtractorMainForm::editSelectModeCurve (void)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::editSelectModeCurve()");
+#endif
+
 	if (m_pTracks)
-		m_pTracks->trackView()->setCurveEdit(bOn);
+		m_pTracks->trackView()->setCurveEdit(true);
 }
 
 
@@ -5676,9 +5694,6 @@ void qtractorMainForm::stabilizeForm (void)
 		|| QApplication::clipboard()->mimeData()->hasUrls());
 	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
 //	m_ui.editDeleteAction->setEnabled(bSelected);
-
-	m_pSelectModeActionGroup->setEnabled(
-		m_pTracks && !m_pTracks->trackView()->isCurveEdit());
 
 	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);
 	m_ui.editSelectInvertAction->setEnabled(iSessionEnd > 0);

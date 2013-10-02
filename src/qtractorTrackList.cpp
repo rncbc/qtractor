@@ -667,8 +667,9 @@ void qtractorTrackList::updateContentsHeight (void)
 		qtractorScrollView::contentsWidth(), iContentsHeight);
 
 	// Update track view total contents height...
-	m_pTracks->trackView()->updateContentsHeight();
-	m_pTracks->trackView()->updateContents();
+	qtractorTrackView *pTrackView = m_pTracks->trackView();
+	pTrackView->updateContentsHeight();
+	pTrackView->updateContents();
 
 	updateContents();
 }
