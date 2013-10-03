@@ -1583,6 +1583,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 		}
+	#if 0//TEST_DRAG_CURVE_NODE
 		if (m_bCurveEdit) {
 			if (!bModifier)
 				clearSelect();
@@ -1591,12 +1592,24 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				if ((modifiers & Qt::ControlModifier) == 0)
 					dragCurveNode(pos, false);
 		}
+	#else
+		if (m_bCurveEdit && !bModifier)
+			clearSelect();
+	#endif
+	#if 0//TEST_DRAG_CURVE_NODE
 		if (m_dragCursor == DragCurveNode) {
 			if (m_pDragCurve && m_pDragCurveNode) {
 				m_dragState = DragStart;//DragCurveNode;
 				m_posDrag   = pos;
 				m_pClipDrag = NULL;
 			}
+	#else
+		if (m_dragCursor == DragCurveNode
+			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
+			m_dragState = DragStart;//DragCurveNode;
+			m_posDrag   = pos;
+			m_pClipDrag = NULL;
+	#endif
 		//	qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
 		}
@@ -1864,12 +1877,17 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					selectClipFile(!bModifier);
 				// Nothing more has been deferred...
 			} else {
-				// As long we're not editing curve/automation...
+				// As long we're editing curve/automation...
+			#if 0//TEST_DRAG_CURVE_NODE
 				if (m_bCurveEdit
 					&& (m_dragCursor == DragCurveNode
 					 || m_dragCursor == DragCurveMove)) {
 					if (modifiers & Qt::ControlModifier)
 						dragCurveNode(pos, true);
+			#else
+				if (m_bCurveEdit) {
+					dragCurveNode(pos, modifiers & Qt::ControlModifier);
+			#endif
 				} else {
 					// Direct play-head positioning...
 					if (bModifier) {
@@ -2254,8 +2272,8 @@ void qtractorTrackView::selectClipTrack (
 	// Reset selection (conditional)...
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
-	if (bReset && m_pClipSelect->items().count() > 0
-		&& m_pClipSelect->singleTrack() != pTrackPtr) {
+	if (bReset && m_pClipSelect->items().count() > 0) {
+	//	&& m_pClipSelect->singleTrack() != pTrackPtr) {
 		m_pClipSelect->clear();
 		++iUpdate;
 	}
@@ -2548,7 +2566,7 @@ void qtractorTrackView::selectCurveTrackRange (
 	rect.setRight(pSession->pixelFromFrame(iSelectEnd));
 
 	// Reset selection (unconditional)...
-	if (pTrackPtr)
+	if (pTrackPtr && !bReset)
 		bReset = !m_pCurveSelect->isCurrentCurve(pTrackPtr->currentCurve());
 
 	int iUpdate = 0;
@@ -2608,7 +2626,7 @@ void qtractorTrackView::selectCurveTrack (
 		return;
 
 	// Reset selection (conditional)...
-	if (pTrackPtr)
+	if (pTrackPtr && !bReset)
 		bReset = !m_pCurveSelect->isCurrentCurve(pTrackPtr->currentCurve());
 
 	int iUpdate = 0;

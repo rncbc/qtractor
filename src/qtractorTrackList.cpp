@@ -914,6 +914,9 @@ void qtractorTrackList::contextMenuEvent (
 // Handle mouse double-clicks.
 void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 {
+	// Avoid lingering mouse press/release states...
+	resetDragState();
+
 	// We'll need a reference for issuing commands...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
@@ -924,21 +927,20 @@ void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	// Which mouse state?
-	const bool bModifier = (pMouseEvent->modifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier));
 	const QPoint& pos = pMouseEvent->pos();
-	const int iTrack = trackRowAt(pos);
 
 	// Select current track...
+	const int iTrack = trackRowAt(pos);
 	setCurrentTrackRow(iTrack);
 
 	// Look for the mouse hovering around some item boundary...
 	if (iTrack >= 0) {
 		// Special attitude, only of interest on
 		// the first-left column (track-number)...
-		if (trackColumnAt(pos) == Number)
-			m_pTracks->selectCurrentTrack(!bModifier);
+		if (trackColumnAt(pos) == Number) {
+			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
+				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
+		}
 		if (pMouseEvent->button() == Qt::LeftButton) {
 			// Try for drag-resize...
 			m_posDrag = pos;
@@ -963,24 +965,30 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 // Handle item selection/dragging -- mouse pointer move.
 void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
+	const QPoint& pos = pMouseEvent->pos();
+
 	// We're already on some item dragging/resizing?...
 	switch (m_dragState) {
 	case DragMove:
 		// Currently moving an item...
 		if (m_iDragTrack >= 0) {
-			const int iTrack = trackRowAt(pMouseEvent->pos());
+			const int iTrack = trackRowAt(pos);
 			if (iTrack >= 0) {
 				const QRect& rect = trackRect(iTrack);
 				m_posDrag = rect.topLeft();
 				moveRubberBand(m_posDrag);
 				ensureVisibleRect(rect);
+			} else {
+				const QRect& rect = trackRect(m_items.count() - 1);
+				m_posDrag = rect.bottomLeft();
+				moveRubberBand(m_posDrag);
 			}
 		}
 		break;
 	case DragResize:
 		// Currently resizing an item...
 		if (m_iDragTrack >= 0) {
-			int y = pMouseEvent->y();
+			int y = pos.y();
 			if (y < m_iDragY + qtractorTrack::HeightMin)
 				y = m_iDragY + qtractorTrack::HeightMin;
 			m_posDrag.setY(y);
@@ -990,7 +998,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragStart:
 		// About to start dragging an item...
 		if (m_iDragTrack >= 0
-			&& (m_posDrag - pMouseEvent->pos()).manhattanLength()
+			&& (m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 			qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
 			m_dragState = DragMove;
@@ -1000,7 +1008,6 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case DragNone: {
 		// Look for the mouse hovering around first column item boundary...
-		const QPoint& pos = pMouseEvent->pos();
 		int iTrack = trackRowAt(pos);
 		if (iTrack >= 0 && trackColumnAt(pos) == Number) {
 			m_posDrag  = pos;
@@ -1049,27 +1056,30 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	if (pSession == NULL)
 		return;
 
+	const QPoint& pos = pMouseEvent->pos();
+
 	// If we were resizing, now's time to let
 	// things know that have changed somehow...
 	switch (m_dragState) {
 	case DragMove:
 		if (m_iDragTrack >= 0) {
-			const int iTrack = trackRowAt(pMouseEvent->pos());
-			if (iTrack >= 0) {
-				qtractorTrack *pTrackDrag = track(m_iDragTrack);
-				qtractorTrack *pTrackDrop = track(iTrack);
-				if (pTrackDrag && pTrackDrop
-					&& pTrackDrag != pTrackDrop
-					&& pTrackDrag != pTrackDrop->prev()) {
+			qtractorTrack *pTrack = track(m_iDragTrack);
+			if (pTrack) {
+				qtractorTrack *pTrackDrop = NULL;
+				const int iTrack = trackRowAt(pos);
+				if (iTrack >= 0)
+					pTrackDrop = track(iTrack);
+				if (pTrack != pTrackDrop
+					&& (pTrackDrop == NULL || pTrack != pTrackDrop->prev())) {
 					pSession->execute(
-						new qtractorMoveTrackCommand(pTrackDrag, pTrackDrop));
+						new qtractorMoveTrackCommand(pTrack, pTrackDrop));
 				}
 			}
 		}
 		break;
 	case DragResize:
 		if (m_iDragTrack >= 0) {
-			int iZoomHeight = pMouseEvent->y() - m_iDragY;
+			int iZoomHeight = pos.y() - m_iDragY;
 			// Check for minimum item height.
 			if (iZoomHeight < qtractorTrack::HeightMin)
 				iZoomHeight = qtractorTrack::HeightMin;
@@ -1096,8 +1106,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorTrackList::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
-		const int delta = pWheelEvent->delta();
-		if (delta > 0)
+		if (pWheelEvent->delta() > 0)
 			m_pTracks->zoomIn();
 		else
 			m_pTracks->zoomOut();
