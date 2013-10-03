@@ -50,9 +50,14 @@ qtractorCurveSelect::Item *qtractorCurveSelect::findItem (
 
 
 // Item insertion method.
-void qtractorCurveSelect::addItem (
+void qtractorCurveSelect::addItem ( qtractorCurve *pCurve,
 	qtractorCurve::Node *pNode, const QRect& rectNode )
 {
+	if (m_pCurve == NULL)
+		m_pCurve  = pCurve;
+	if (m_pCurve != pCurve)
+		return;
+
 	m_items.insert(pNode, new Item(rectNode));
 
 	m_rect = m_rect.united(rectNode);
@@ -91,12 +96,8 @@ void qtractorCurveSelect::selectItem ( qtractorCurve *pCurve,
 			pItem->flags |=  1;
 	}
 	else
-	if (bSelect) {
-		if (m_pCurve == NULL)
-			m_pCurve  = pCurve;
-		if (m_pCurve == pCurve)
-			addItem(pNode, rectNode);
-	}
+	if (bSelect)
+		addItem(pCurve, pNode, rectNode);
 }
 
 
