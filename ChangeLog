@@ -5,12 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
-- Adding a track now inserts after the current track, if any.
+- Adding a track now inserts it after the current one, if any.
 
 - Extended Edit/Select Mode/Automation: multi-selection mode,
   cut, copy, paste and delete of current track's automation
-  curve nodes, is now approaching implementation ready status
-  (EXPERIMENTAL)
+  curve nodes, now reached implementation ready status.
 
 - Another old silent bug bites the dust: changing track names
   were dropping any track gain/volume and panning automation
@@ -30,7 +29,7 @@ SVN TRUNK
 
 - Shift/Ctrl keyboard modifiers now set to extend current clip
   selection while in main track view's Edit/Select Mode/Range,
-  Rectangle modes. (EXPERIMENTAL)
+  Rectangle modes.
 
 - Main Edit/Select Mode/Automation icon retouched to look a bit
   more obvious and intuitive, hopefully ;)
@@ -39,17 +38,17 @@ SVN TRUNK
   events which have the exact same onset times and hide beyhond
   each other on the MIDI clip editor's pane below the main view
   piano-roll (ie. the one that represents MIDI event values as a
-  bar chart). (EXPERIMENTAL)
+  bar chart).
 
 - Fixed some problematic playback/export muting and annoying
   cleanup freezing, due on audio tracks with too many clips
   eg. more than hundred clip splits (hopefully fixes an issue
-  reported by Louigi Verona, thanks). (EXPERIMENTAL)
+  reported by Louigi Verona, thanks).
 
-- LV2 UI resize feature support/control added. (EXPERIMENTAL)
+- LV2 UI resize feature support/control added.
 
 - Fixed dedicated MIDI control and MIDI metronome port connection
-  restore conflit (thanks to jhammen catch & patch:).
+  restore conflict (thanks to jhammen catch & patch:).
 
 - New user preference option added: reverse middle-button role to
   Shift/Ctrl keyboard state, in special regard to edit-head/tail
