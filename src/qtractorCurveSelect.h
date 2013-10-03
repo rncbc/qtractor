@@ -58,7 +58,7 @@ public:
 	Item *findItem(qtractorCurve::Node *pNode);
 
 	// Event insertion method.
-	void addItem(
+	void addItem(qtractorCurve *pCurve,
 		qtractorCurve::Node *pNode, const QRect& rectNode);
 
 	// Event removal method.

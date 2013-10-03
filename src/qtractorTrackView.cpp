@@ -4325,8 +4325,8 @@ void qtractorTrackView::pasteClipboard (
 					= pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta);
 				const float s = pCurve->scaleFromValue(pNodeItem->value);
 				const int y = y2 - int(s * float(h));
-				m_pCurveSelect->addItem(pNodeItem->node,
-					QRect(x - 4, y - 4, 8, 8));
+				m_pCurveSelect->addItem(pCurve,
+					pNodeItem->node, QRect(x - 4, y - 4, 8, 8));
 			}
 			iPasteDelta += m_iPastePeriod;
 		}
@@ -4885,6 +4885,8 @@ void qtractorTrackView::setCurveEdit ( bool bCurveEdit )
 		return;
 
 	m_bCurveEdit = bCurveEdit;
+
+	g_clipboard.clear();
 
 	clearSelect();
 
