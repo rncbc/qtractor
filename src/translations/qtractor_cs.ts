@@ -13334,12 +13334,12 @@ Délka:	%3</translation>
         <translation>%1 záznam</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4638"/>
+        <location filename="../qtractorTrackView.cpp" line="4646"/>
         <source>move automation</source>
         <translation>Přesunout automatizaci</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4719"/>
+        <location filename="../qtractorTrackView.cpp" line="4727"/>
         <source>paste automation</source>
         <translation>Vložit automatizaci</translation>
     </message>
@@ -13361,12 +13361,12 @@ Délka:	%3</translation>
         <translation>Rozdělit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4390"/>
+        <location filename="../qtractorTrackView.cpp" line="4398"/>
         <source>move clip</source>
         <translation>Přesunout záznam</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4520"/>
+        <location filename="../qtractorTrackView.cpp" line="4528"/>
         <source>paste clip</source>
         <translation>Vložit záznam</translation>
     </message>
