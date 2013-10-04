@@ -1572,10 +1572,11 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 	// Automation curve editing modes...
 	if (pMouseEvent->button() == Qt::LeftButton) {
-		if (m_dragCursor == DragCurveNode) {
+		if (m_dragCursor == DragCurveNode
+			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
 			qtractorTrackViewInfo tvi;
 			qtractorTrack *pTrack = trackAt(pos, true, &tvi);
-			if (pTrack) {
+			if (pTrack && m_dragCursor == DragCurveNode) {
 				qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 				if (pNode) {
 					m_pDragCurve = pTrack->currentCurve();
@@ -1583,19 +1584,16 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 		}
-	#if 0//TEST_DRAG_CURVE_NODE
 		if (m_bCurveEdit) {
 			if (!bModifier)
 				clearSelect();
+	#if 0//TEST_DRAG_CURVE_NODE
 			if ((m_dragCursor == DragCurveNode) ||
 				(m_dragCursor == DragNone && !bModifier))
 				if ((modifiers & Qt::ControlModifier) == 0)
 					dragCurveNode(pos, false);
-		}
-	#else
-		if (m_bCurveEdit && !bModifier)
-			clearSelect();
 	#endif
+		}
 	#if 0//TEST_DRAG_CURVE_NODE
 		if (m_dragCursor == DragCurveNode) {
 			if (m_pDragCurve && m_pDragCurveNode) {
@@ -1888,7 +1886,9 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				if (m_bCurveEdit) {
 					dragCurveNode(pos, modifiers & Qt::ControlModifier);
 			#endif
-				} else {
+				}
+				// As long we're not editing anything...
+				if (m_dragCursor == DragNone) {
 					// Direct play-head positioning...
 					if (bModifier) {
 						// First, set actual engine position...
@@ -4259,8 +4259,8 @@ void qtractorTrackView::pasteClipboard (
 		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Check if anything's really on clipboard...
-	if (g_clipboard.clips.count() < 1 &&
-		g_clipboard.nodes.count() < 1) {
+	if (g_clipboard.clips.isEmpty() &&
+		g_clipboard.nodes.isEmpty()) {
 		// System clipboard?
 		QClipboard *pClipboard = QApplication::clipboard();
 		if (pClipboard && (pClipboard->mimeData())->hasUrls()) {
@@ -4285,6 +4285,8 @@ void qtractorTrackView::pasteClipboard (
 	qtractorTrackViewInfo tvi;
 	qtractorCurve *pCurve = NULL;
 	if (m_bCurveEdit) {
+		if (g_clipboard.nodes.isEmpty())
+			return;
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
 		if (pTrack == NULL || !trackInfo(pTrack, &tvi))
 			pTrack = trackAt(pos, true, &tvi);
@@ -4296,6 +4298,9 @@ void qtractorTrackView::pasteClipboard (
 		if (pCurve->isLocked())
 			return;
 	}
+	else
+	if (g_clipboard.clips.isEmpty())
+		return;
 
 	// Reset any current selection, whatsoever...
 	m_pClipSelect->clear();
@@ -4314,6 +4319,9 @@ void qtractorTrackView::pasteClipboard (
 
 	// Copy clipboard items to floating selection;
 	if (m_bCurveEdit) {
+		// Flag this as target current curve,
+		// otherwise nothing will be displayed...
+		m_pCurveSelect->setCurve(pCurve);
 		const int h = tvi.trackRect.height();
 		const int y2 = tvi.trackRect.bottom() + 1;
 		QListIterator<NodeItem *> iter(g_clipboard.nodes);
@@ -4325,8 +4333,8 @@ void qtractorTrackView::pasteClipboard (
 					= pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta);
 				const float s = pCurve->scaleFromValue(pNodeItem->value);
 				const int y = y2 - int(s * float(h));
-				m_pCurveSelect->addItem(pCurve,
-					pNodeItem->node, QRect(x - 4, y - 4, 8, 8));
+				m_pCurveSelect->addItem(pNodeItem->node,
+					QRect(x - 4, y - 4, 8, 8));
 			}
 			iPasteDelta += m_iPastePeriod;
 		}

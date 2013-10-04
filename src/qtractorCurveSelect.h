@@ -58,8 +58,7 @@ public:
 	Item *findItem(qtractorCurve::Node *pNode);
 
 	// Event insertion method.
-	void addItem(qtractorCurve *pCurve,
-		qtractorCurve::Node *pNode, const QRect& rectNode);
+	void addItem(qtractorCurve::Node *pNode, const QRect& rectNode);
 
 	// Event removal method.
 	void removeItem(qtractorCurve::Node *pNode);
@@ -85,6 +84,8 @@ public:
 	void clear();
 
 	// Selection curve accessors.
+	void setCurve ( qtractorCurve *pCurve )
+		{ m_pCurve = pCurve; }
 	qtractorCurve *curve() const
 		{ return m_pCurve; }
 
