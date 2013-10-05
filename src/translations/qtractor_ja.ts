@@ -509,17 +509,17 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTrack.cpp" line="664"/>
         <source>%1 Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ボリューム</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="667"/>
         <source>%1 Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ゲイン</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="670"/>
         <source>%1 Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 パニング</translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="182"/>
@@ -1200,7 +1200,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="301"/>
         <source>BBT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="312"/>
@@ -1608,7 +1608,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="291"/>
         <source>BBT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Format</source>
@@ -1805,7 +1805,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorExportForm.ui" line="305"/>
         <source>BBT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Frames</source>
@@ -3024,7 +3024,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="962"/>
         <source>Ctrl+Del</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="970"/>
@@ -3044,7 +3044,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="979"/>
         <source>Ctrl+Shift+Del</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="987"/>
@@ -7260,7 +7260,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="789"/>
         <source>Ctrl+Del</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="794"/>
@@ -9418,12 +9418,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="431"/>
         <source>Whether to reverse mouse middle-button role on keyboard modifiers (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>マウスのミドルボタンの役割を、キーボードの修飾キー（Shift/Ctl）で逆転させるかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="434"/>
         <source>Re&amp;verse middle-button modifier role (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>修飾キーでミドルボタンの役割を逆転(&amp;V)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="466"/>
@@ -11225,7 +11225,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="231"/>
         <source>BBT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="92"/>
@@ -11364,7 +11364,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="227"/>
         <source>BBT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="116"/>
@@ -11686,7 +11686,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorSpinBox.cpp" line="346"/>
         <source>&amp;BBT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -12048,17 +12048,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="845"/>
         <source>Play-head</source>
-        <translation type="unfinished"></translation>
+        <translation>再生先頭</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="848"/>
         <source>Edit-head</source>
-        <translation type="unfinished"></translation>
+        <translation>編集先頭</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="851"/>
         <source>Edit-tail</source>
-        <translation type="unfinished"></translation>
+        <translation>編集末尾</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="854"/>
@@ -12159,7 +12159,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3959"/>
         <source>%1 automation</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 オートメーション</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4032"/>
@@ -12169,12 +12169,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4646"/>
         <source>move automation</source>
-        <translation type="unfinished"></translation>
+        <translation>オートメーションの移動</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4727"/>
         <source>paste automation</source>
-        <translation type="unfinished"></translation>
+        <translation>オートメーションの貼り付け</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3963"/>
