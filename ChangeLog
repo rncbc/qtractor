@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.5.11  2013-10-07  Lima Oscar
 
 - Adding a track now inserts it after the current one, if any;
   one can also drag and move a track below the last one in the
