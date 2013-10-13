@@ -186,6 +186,10 @@ public:
 	// Destructor.
 	~qtractorMidiPlayerThread();
 
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
 protected:
 
 	// The main thread executive.
@@ -280,7 +284,7 @@ qtractorMidiInputThread::~qtractorMidiInputThread (void)
 	if (isRunning()) do {
 		setRunState(false);
 	//	terminate();
-	} while (wait(100));
+	} while (!wait(100));
 }
 
 
@@ -627,9 +631,21 @@ qtractorMidiPlayerThread::qtractorMidiPlayerThread (
 qtractorMidiPlayerThread::~qtractorMidiPlayerThread (void)
 {
 	if (isRunning()) do {
-		m_bRunState = false;
+		setRunState(false);
 	//	terminate();
-	} while (!wait(200));
+	} while (!wait(100));
+}
+
+
+// Thread run state accessors.
+void qtractorMidiPlayerThread::setRunState ( bool bRunState )
+{
+	m_bRunState = bRunState;
+}
+
+bool qtractorMidiPlayerThread::runState (void) const
+{
+	return m_bRunState;
 }
 
 
@@ -779,6 +795,10 @@ void qtractorMidiPlayer::close (void)
 {
 
 	if (m_pPlayerThread) {
+		if (m_pPlayerThread->isRunning()) do {
+			m_pPlayerThread->setRunState(false);
+		//	m_pPayerThread->terminate();
+		} while (!m_pPlayerThread->wait(100));
 		delete m_pPlayerThread;
 		m_pPlayerThread = NULL;
 	}
@@ -2059,10 +2079,11 @@ void qtractorMidiEngine::clean (void)
 	// Delete output thread...
 	if (m_pOutputThread) {
 		// Make it nicely...
-		if (m_pOutputThread->isRunning()) {
+		if (m_pOutputThread->isRunning()) do {
+			m_pOutputThread->setRunState(false);
 		//	m_pOutputThread->terminate();
-			m_pOutputThread->wait();
-		}
+			m_pOutputThread->sync();
+		} while (!m_pOutputThread->wait(100));
 		delete m_pOutputThread;
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
@@ -2072,10 +2093,10 @@ void qtractorMidiEngine::clean (void)
 	// Last but not least, delete input thread...
 	if (m_pInputThread) {
 		// Make it nicely...
-		if (m_pInputThread->isRunning()) {
+		if (m_pInputThread->isRunning()) do {
+			m_pInputThread->setRunState(false);
 		//	m_pInputThread->terminate();
-			m_pInputThread->wait();
-		}
+		} while (!m_pInputThread->wait(100));
 		delete m_pInputThread;
 		m_pInputThread = NULL;
 	}

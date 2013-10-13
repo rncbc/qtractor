@@ -54,6 +54,12 @@ qtractorAudioBufferThread::qtractorAudioBufferThread (
 // Destructor.
 qtractorAudioBufferThread::~qtractorAudioBufferThread (void)
 {
+	if (isRunning()) do {
+		setRunState(false);
+	//	terminate();
+		sync();
+	} while (!wait(100));
+
 	delete [] m_ppSyncItems;
 }
 

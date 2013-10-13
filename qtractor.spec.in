@@ -92,6 +92,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
+* Mon Oct  7 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.11
+- Lima Oscar release.
 * Thu Jul 18 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.10
 - Kilo Papa release.
 * Thu Jun  6 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.9
