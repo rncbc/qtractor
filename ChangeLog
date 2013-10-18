@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Primal refactoring into MIDI RPN/NRPN controllers support.
+  (EXPERIMENTAL)
+
 - Pretty innocent nitpick on most thread cleanup routines.
 
 

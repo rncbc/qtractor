@@ -1368,9 +1368,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
 	qtractorMidiEvent::EventType type;
 
-	unsigned short iChannel = 0;
-	unsigned char  data1    = 0;
-	unsigned char  data2    = 0;
+	unsigned char  channel  = 0;
+	unsigned short param    = 0;
+	unsigned short value    = 0;
 	unsigned long  duration = 0;
 
 	unsigned char *pSysex   = NULL;
@@ -1408,52 +1408,69 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	case SND_SEQ_EVENT_NOTE:
 	case SND_SEQ_EVENT_NOTEON:
 		type     = qtractorMidiEvent::NOTEON;
-		iChannel = pEv->data.note.channel;
-		data1    = pEv->data.note.note;
-		data2    = pEv->data.note.velocity;
+		channel  = pEv->data.note.channel;
+		param    = pEv->data.note.note;
+		value    = pEv->data.note.velocity;
 		duration = pEv->data.note.duration;
-		if (data2 == 0) {
+		if (value == 0) {
 			pEv->type = SND_SEQ_EVENT_NOTEOFF;
 			type = qtractorMidiEvent::NOTEOFF;
 		}
 		break;
 	case SND_SEQ_EVENT_NOTEOFF:
 		type     = qtractorMidiEvent::NOTEOFF;
-		iChannel = pEv->data.note.channel;
-		data1    = pEv->data.note.note;
-		data2    = pEv->data.note.velocity;
+		channel  = pEv->data.note.channel;
+		param    = pEv->data.note.note;
+		value    = pEv->data.note.velocity;
 		duration = pEv->data.note.duration;
 		break;
 	case SND_SEQ_EVENT_KEYPRESS:
 		type     = qtractorMidiEvent::KEYPRESS;
-		iChannel = pEv->data.note.channel;
-		data1    = pEv->data.note.note;
-		data2    = pEv->data.note.velocity;
+		channel  = pEv->data.note.channel;
+		param    = pEv->data.note.note;
+		value    = pEv->data.note.velocity;
 		break;
 	case SND_SEQ_EVENT_CONTROLLER:
 		type     = qtractorMidiEvent::CONTROLLER;
-		iChannel = pEv->data.control.channel;
-		data1    = pEv->data.control.param;
-		data2    = pEv->data.control.value;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_REGPARAM:
+		type     = qtractorMidiEvent::REGPARAM;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_NONREGPARAM:
+		type     = qtractorMidiEvent::NONREGPARAM;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_CONTROL14:
+		type     = qtractorMidiEvent::CONTROL14;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_PGMCHANGE:
 		type     = qtractorMidiEvent::PGMCHANGE;
-		iChannel = pEv->data.control.channel;
-		data1    = 0;
-		data2    = pEv->data.control.value;
+		channel  = pEv->data.control.channel;
+	//	param    = 0;
+		value    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_CHANPRESS:
 		type     = qtractorMidiEvent::CHANPRESS;
-		iChannel = pEv->data.control.channel;
-		data1    = 0;
-		data2    = pEv->data.control.value;
+		channel  = pEv->data.control.channel;
+	//	param    = 0;
+		value    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_PITCHBEND:
 		type     = qtractorMidiEvent::PITCHBEND;
-		iChannel = pEv->data.control.channel;
-		iSysex   = (unsigned short) (0x2000 + pEv->data.control.value); // aux.
-		data1    = (iSysex & 0x007f);
-		data2    = (iSysex & 0x3f80) >> 7;
+		channel  = pEv->data.control.channel;
+	//	param    = 0;
+		value    = (unsigned short) (0x2000 + pEv->data.control.value);
 		break;
 	case SND_SEQ_EVENT_START:
 	case SND_SEQ_EVENT_STOP:
@@ -1488,9 +1505,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		// Not handled any longer.
 		return;
 	case SND_SEQ_EVENT_SYSEX:
-		type     = qtractorMidiEvent::SYSEX;
-		pSysex   = (unsigned char *) pEv->data.ext.ptr;
-		iSysex   = (unsigned short)  pEv->data.ext.len;
+		type   = qtractorMidiEvent::SYSEX;
+		pSysex = (unsigned char *) pEv->data.ext.ptr;
+		iSysex = (unsigned short)  pEv->data.ext.len;
 		// Trap MMC commands...
 		if ((m_mmcMode & qtractorBus::Input)
 			&& pSysex[1] == 0x7f && pSysex[3] == 0x06 // MMC command mode.
@@ -1516,7 +1533,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pTrack->trackType() == qtractorTrack::Midi
 			&& (pTrack->isRecord() || pSession->isTrackMonitor(pTrack))
 		//	&& !pTrack->isMute() && (!pSession->soloTracks() || pTrack->isSolo())
-			&& pSession->isTrackMidiChannel(pTrack, iChannel)) {
+			&& pSession->isTrackMidiChannel(pTrack, channel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
@@ -1530,7 +1547,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							&&  (iTime <  pSession->punchOutTime())))) {
 						// Yep, we got a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
-							pEv->time.tick, type, data1, data2, duration);
+							pEv->time.tick, type, param, value, duration);
 						if (pSysex)
 							pEvent->setSysex(pSysex, iSysex);
 						(pMidiClip->sequence())->addEvent(pEvent);
@@ -1540,7 +1557,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				qtractorMidiMonitor *pMidiMonitor
 					= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 				if (pMidiMonitor)
-					pMidiMonitor->enqueue(type, data2);
+					pMidiMonitor->enqueue(type, value);
 				// Output monitoring on record...
 				if (pSession->isTrackMonitor(pTrack)) {
 					pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
@@ -1554,7 +1571,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						snd_seq_ev_set_direct(pEv);
 						snd_seq_event_output_direct(m_pAlsaSeq, pEv);
 						// Done with MIDI-thru.
-						pMidiBus->midiMonitor_out()->enqueue(type, data2);
+						pMidiBus->midiMonitor_out()->enqueue(type, value);
 						// Do it for the MIDI plugins too...
 						if (!pMidiBus->isMonitor()
 							&& pMidiBus->pluginList_out()
@@ -1580,7 +1597,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 			// Input monitoring...
 			if (pMidiBus->midiMonitor_in())
-				pMidiBus->midiMonitor_in()->enqueue(type, data2);
+				pMidiBus->midiMonitor_in()->enqueue(type, value);
 			// Do it for the MIDI input plugins too...
 			if (pMidiBus->pluginList_in()
 				&& (pMidiBus->pluginList_in())->midiManager())
@@ -1600,7 +1617,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					snd_seq_ev_set_direct(pEv);
 					snd_seq_event_output_direct(m_pAlsaSeq, pEv);
 					// Done with MIDI-thru.
-					pMidiBus->midiMonitor_out()->enqueue(type, data2);
+					pMidiBus->midiMonitor_out()->enqueue(type, value);
 				}
 			}
 		}
@@ -1612,13 +1629,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 		// Post the stuffed event...
-		if (type == qtractorMidiEvent::PITCHBEND) {
-			m_proxy.notifyCtlEvent(
-				qtractorCtlEvent(type, iChannel, 0, iSysex));
-		} else {
-			m_proxy.notifyCtlEvent(
-				qtractorCtlEvent(type, iChannel, data1, data2));			
-		}
+		m_proxy.notifyCtlEvent(
+			qtractorCtlEvent(type, channel, param, value));
 	}
 }
 
@@ -1721,6 +1733,24 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			default:
 				ev.data.control.value = pEvent->value();
 			}
+			break;
+		case qtractorMidiEvent::REGPARAM:
+			ev.type = SND_SEQ_EVENT_REGPARAM;
+			ev.data.control.channel = pTrack->midiChannel();
+			ev.data.control.param   = pEvent->param();
+			ev.data.control.value   = pEvent->value();
+			break;
+		case qtractorMidiEvent::NONREGPARAM:
+			ev.type = SND_SEQ_EVENT_NONREGPARAM;
+			ev.data.control.channel = pTrack->midiChannel();
+			ev.data.control.param   = pEvent->param();
+			ev.data.control.value   = pEvent->value();
+			break;
+		case qtractorMidiEvent::CONTROL14:
+			ev.type = SND_SEQ_EVENT_CONTROL14;
+			ev.data.control.channel = pTrack->midiChannel();
+			ev.data.control.param   = pEvent->param();
+			ev.data.control.value   = pEvent->value();
 			break;
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;
