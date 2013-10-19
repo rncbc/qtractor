@@ -37,6 +37,7 @@
 #include "qtractorMidiControl.h"
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiSysex.h"
+#include "qtractorMidiRpn.h"
 
 #include "qtractorPlugin.h"
 
@@ -72,6 +73,24 @@
 
 // Audio vs. MIDI time drift cycle
 #define DRIFT_CHECK 8
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiInputRpn -- MIDI RPN/NRPN input parser (singleton).
+//
+class qtractorMidiInputRpn : public qtractorMidiRpn
+{
+public:
+
+	// Constructor.
+	qtractorMidiInputRpn();
+
+	// Encoder.
+	bool process (const snd_seq_event_t *ev);
+
+	// Decoder.
+	bool dequeue (snd_seq_event_t *ev);
+};
 
 
 //----------------------------------------------------------------------
@@ -264,6 +283,72 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiInputRpn -- MIDI RPN/NRPN input parser.
+//
+
+// Constructor.
+qtractorMidiInputRpn::qtractorMidiInputRpn (void) : qtractorMidiRpn()
+{
+}
+
+
+// Encoder.
+bool qtractorMidiInputRpn::process ( const snd_seq_event_t *ev )
+{
+	if (ev->type != SND_SEQ_EVENT_CONTROLLER)
+		return false;
+
+	qtractorMidiRpn::Event event;
+
+	event.time   = ev->time.tick;
+	event.port   = ev->dest.port;
+	event.status = qtractorMidiRpn::CC | (ev->data.control.channel & 0x0f);
+	event.param  = ev->data.control.param;
+	event.value  = ev->data.control.value;
+
+	return qtractorMidiRpn::process(event);
+}
+
+
+// Decoder.
+bool qtractorMidiInputRpn::dequeue ( snd_seq_event_t *ev )
+{
+	qtractorMidiRpn::Event event;
+
+	if (!qtractorMidiRpn::dequeue(event))
+		return false;
+
+	snd_seq_ev_clear(ev);
+	snd_seq_ev_schedule_tick(ev, 0, 0, event.time);
+	snd_seq_ev_set_dest(ev, 0, event.port);
+	snd_seq_ev_set_fixed(ev);
+
+	switch (qtractorMidiRpn::Type(event.status & 0xf0)) {
+	case qtractorMidiRpn::RPN:	// 0x10
+		ev->type = SND_SEQ_EVENT_REGPARAM;
+		break;
+	case qtractorMidiRpn::NRPN:	// 0x20
+		ev->type = SND_SEQ_EVENT_NONREGPARAM;
+		break;
+	case qtractorMidiRpn::CC14:	// 0x30
+		ev->type = SND_SEQ_EVENT_CONTROL14;
+		break;
+	case qtractorMidiRpn::CC:	// 0xb0
+		ev->type = SND_SEQ_EVENT_CONTROLLER;
+		break;
+	default:
+		return false;
+	}
+
+	ev->data.control.channel = event.status & 0x0f;
+	ev->data.control.param   = event.param;
+	ev->data.control.value   = event.value;
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiInputThread -- MIDI input thread (singleton).
 //
 
@@ -318,20 +403,32 @@ void qtractorMidiInputThread::run (void)
 	pfds = (struct pollfd *) alloca(nfds * sizeof(struct pollfd));
 	snd_seq_poll_descriptors(pAlsaSeq, pfds, nfds, POLLIN);
 
+	qtractorMidiInputRpn xrpn;
+
 	m_bRunState = true;
 
 	int iPoll = 0;
 	while (m_bRunState && iPoll >= 0) {
 		// Wait for events...
 		iPoll = poll(pfds, nfds, 200);
+		// Timeout?
+		if (iPoll == 0)
+			xrpn.flush();
 		while (iPoll > 0) {
 			snd_seq_event_t *pEv = NULL;
 			snd_seq_event_input(pAlsaSeq, &pEv);
 			// Process input event - ...
 			// - enqueue to input track mapping;
-			m_pMidiEngine->capture(pEv);
+			if (!xrpn.process(pEv))
+				m_pMidiEngine->capture(pEv);
 		//	snd_seq_free_event(pEv);
 			iPoll = snd_seq_event_input_pending(pAlsaSeq, 0);
+		}
+		// Process pending events...
+		while (xrpn.isPending()) {
+			snd_seq_event_t ev;
+			if (xrpn.dequeue(&ev))
+				m_pMidiEngine->capture(&ev);
 		}
 	}
 
@@ -1368,9 +1465,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
 	qtractorMidiEvent::EventType type;
 
-	unsigned short iChannel = 0;
-	unsigned char  data1    = 0;
-	unsigned char  data2    = 0;
+	unsigned char  channel  = 0;
+	unsigned short param    = 0;
+	unsigned short value    = 0;
 	unsigned long  duration = 0;
 
 	unsigned char *pSysex   = NULL;
@@ -1408,52 +1505,69 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	case SND_SEQ_EVENT_NOTE:
 	case SND_SEQ_EVENT_NOTEON:
 		type     = qtractorMidiEvent::NOTEON;
-		iChannel = pEv->data.note.channel;
-		data1    = pEv->data.note.note;
-		data2    = pEv->data.note.velocity;
+		channel  = pEv->data.note.channel;
+		param    = pEv->data.note.note;
+		value    = pEv->data.note.velocity;
 		duration = pEv->data.note.duration;
-		if (data2 == 0) {
+		if (value == 0) {
 			pEv->type = SND_SEQ_EVENT_NOTEOFF;
 			type = qtractorMidiEvent::NOTEOFF;
 		}
 		break;
 	case SND_SEQ_EVENT_NOTEOFF:
 		type     = qtractorMidiEvent::NOTEOFF;
-		iChannel = pEv->data.note.channel;
-		data1    = pEv->data.note.note;
-		data2    = pEv->data.note.velocity;
+		channel  = pEv->data.note.channel;
+		param    = pEv->data.note.note;
+		value    = pEv->data.note.velocity;
 		duration = pEv->data.note.duration;
 		break;
 	case SND_SEQ_EVENT_KEYPRESS:
 		type     = qtractorMidiEvent::KEYPRESS;
-		iChannel = pEv->data.note.channel;
-		data1    = pEv->data.note.note;
-		data2    = pEv->data.note.velocity;
+		channel  = pEv->data.note.channel;
+		param    = pEv->data.note.note;
+		value    = pEv->data.note.velocity;
 		break;
 	case SND_SEQ_EVENT_CONTROLLER:
 		type     = qtractorMidiEvent::CONTROLLER;
-		iChannel = pEv->data.control.channel;
-		data1    = pEv->data.control.param;
-		data2    = pEv->data.control.value;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_REGPARAM:
+		type     = qtractorMidiEvent::REGPARAM;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_NONREGPARAM:
+		type     = qtractorMidiEvent::NONREGPARAM;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_CONTROL14:
+		type     = qtractorMidiEvent::CONTROL14;
+		channel  = pEv->data.control.channel;
+		param    = pEv->data.control.param;
+		value    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_PGMCHANGE:
 		type     = qtractorMidiEvent::PGMCHANGE;
-		iChannel = pEv->data.control.channel;
-		data1    = 0;
-		data2    = pEv->data.control.value;
+		channel  = pEv->data.control.channel;
+	//	param    = 0;
+		value    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_CHANPRESS:
 		type     = qtractorMidiEvent::CHANPRESS;
-		iChannel = pEv->data.control.channel;
-		data1    = 0;
-		data2    = pEv->data.control.value;
+		channel  = pEv->data.control.channel;
+	//	param    = 0;
+		value    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_PITCHBEND:
 		type     = qtractorMidiEvent::PITCHBEND;
-		iChannel = pEv->data.control.channel;
-		iSysex   = (unsigned short) (0x2000 + pEv->data.control.value); // aux.
-		data1    = (iSysex & 0x007f);
-		data2    = (iSysex & 0x3f80) >> 7;
+		channel  = pEv->data.control.channel;
+	//	param    = 0;
+		value    = (unsigned short) (0x2000 + pEv->data.control.value);
 		break;
 	case SND_SEQ_EVENT_START:
 	case SND_SEQ_EVENT_STOP:
@@ -1488,9 +1602,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		// Not handled any longer.
 		return;
 	case SND_SEQ_EVENT_SYSEX:
-		type     = qtractorMidiEvent::SYSEX;
-		pSysex   = (unsigned char *) pEv->data.ext.ptr;
-		iSysex   = (unsigned short)  pEv->data.ext.len;
+		type   = qtractorMidiEvent::SYSEX;
+		pSysex = (unsigned char *) pEv->data.ext.ptr;
+		iSysex = (unsigned short)  pEv->data.ext.len;
 		// Trap MMC commands...
 		if ((m_mmcMode & qtractorBus::Input)
 			&& pSysex[1] == 0x7f && pSysex[3] == 0x06 // MMC command mode.
@@ -1516,7 +1630,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pTrack->trackType() == qtractorTrack::Midi
 			&& (pTrack->isRecord() || pSession->isTrackMonitor(pTrack))
 		//	&& !pTrack->isMute() && (!pSession->soloTracks() || pTrack->isSolo())
-			&& pSession->isTrackMidiChannel(pTrack, iChannel)) {
+			&& pSession->isTrackMidiChannel(pTrack, channel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
@@ -1530,7 +1644,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							&&  (iTime <  pSession->punchOutTime())))) {
 						// Yep, we got a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
-							pEv->time.tick, type, data1, data2, duration);
+							pEv->time.tick, type, param, value, duration);
 						if (pSysex)
 							pEvent->setSysex(pSysex, iSysex);
 						(pMidiClip->sequence())->addEvent(pEvent);
@@ -1540,7 +1654,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				qtractorMidiMonitor *pMidiMonitor
 					= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 				if (pMidiMonitor)
-					pMidiMonitor->enqueue(type, data2);
+					pMidiMonitor->enqueue(type, value);
 				// Output monitoring on record...
 				if (pSession->isTrackMonitor(pTrack)) {
 					pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
@@ -1554,7 +1668,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						snd_seq_ev_set_direct(pEv);
 						snd_seq_event_output_direct(m_pAlsaSeq, pEv);
 						// Done with MIDI-thru.
-						pMidiBus->midiMonitor_out()->enqueue(type, data2);
+						pMidiBus->midiMonitor_out()->enqueue(type, value);
 						// Do it for the MIDI plugins too...
 						if (!pMidiBus->isMonitor()
 							&& pMidiBus->pluginList_out()
@@ -1580,7 +1694,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 			// Input monitoring...
 			if (pMidiBus->midiMonitor_in())
-				pMidiBus->midiMonitor_in()->enqueue(type, data2);
+				pMidiBus->midiMonitor_in()->enqueue(type, value);
 			// Do it for the MIDI input plugins too...
 			if (pMidiBus->pluginList_in()
 				&& (pMidiBus->pluginList_in())->midiManager())
@@ -1600,7 +1714,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					snd_seq_ev_set_direct(pEv);
 					snd_seq_event_output_direct(m_pAlsaSeq, pEv);
 					// Done with MIDI-thru.
-					pMidiBus->midiMonitor_out()->enqueue(type, data2);
+					pMidiBus->midiMonitor_out()->enqueue(type, value);
 				}
 			}
 		}
@@ -1612,13 +1726,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 		// Post the stuffed event...
-		if (type == qtractorMidiEvent::PITCHBEND) {
-			m_proxy.notifyCtlEvent(
-				qtractorCtlEvent(type, iChannel, 0, iSysex));
-		} else {
-			m_proxy.notifyCtlEvent(
-				qtractorCtlEvent(type, iChannel, data1, data2));			
-		}
+		m_proxy.notifyCtlEvent(
+			qtractorCtlEvent(type, channel, param, value));
 	}
 }
 
@@ -1721,6 +1830,24 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			default:
 				ev.data.control.value = pEvent->value();
 			}
+			break;
+		case qtractorMidiEvent::REGPARAM:
+			ev.type = SND_SEQ_EVENT_REGPARAM;
+			ev.data.control.channel = pTrack->midiChannel();
+			ev.data.control.param   = pEvent->param();
+			ev.data.control.value   = pEvent->value();
+			break;
+		case qtractorMidiEvent::NONREGPARAM:
+			ev.type = SND_SEQ_EVENT_NONREGPARAM;
+			ev.data.control.channel = pTrack->midiChannel();
+			ev.data.control.param   = pEvent->param();
+			ev.data.control.value   = pEvent->value();
+			break;
+		case qtractorMidiEvent::CONTROL14:
+			ev.type = SND_SEQ_EVENT_CONTROL14;
+			ev.data.control.channel = pTrack->midiChannel();
+			ev.data.control.param   = pEvent->param();
+			ev.data.control.value   = pEvent->value();
 			break;
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;

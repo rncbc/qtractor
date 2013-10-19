@@ -46,7 +46,11 @@ public:
 		CHANPRESS   = 0xd0,
 		PITCHBEND   = 0xe0,
 		SYSEX       = 0xf0,
-		META        = 0xff
+		META        = 0xff,
+		// Extra-ordinary event types...
+		REGPARAM    = 0x10,
+		NONREGPARAM = 0x20,
+		CONTROL14   = 0x30
 	};
 
 	// Meta event types.
@@ -71,10 +75,10 @@ public:
 
 	// Constructor.
 	qtractorMidiEvent(unsigned long time, EventType type,
-		unsigned char data1 = 0, unsigned char data2 = 0,
+		unsigned short param = 0, unsigned short value = 0,
 		unsigned long duration = 0)
 		: m_time(time), m_type(type)
-		{ m_v.data[0] = data1; m_v.data[1] = data2; m_u.duration = duration; }
+		{ m_v.param = param; m_v.value = value; m_u.duration = duration; }
 
 	// Copy constructor.
 	qtractorMidiEvent(const qtractorMidiEvent& e)
@@ -85,8 +89,8 @@ public:
 			m_u.pSysex = new unsigned char [m_v.iSysex];
 			::memcpy(m_u.pSysex, e.m_u.pSysex, m_v.iSysex);
 		} else {
-			m_v.data[0] = e.m_v.data[0];
-			m_v.data[1] = e.m_v.data[1]; 
+			m_v.param = e.m_v.param;
+			m_v.value = e.m_v.value;
 			m_u.duration = e.m_u.duration;
 		}
 	}
@@ -100,10 +104,14 @@ public:
 	EventType     type()       const { return m_type; }
 
 	// Underloaded accessors (getters).
-	unsigned char note()       const { return m_v.data[0]; }
-	unsigned char velocity()   const { return m_v.data[1]; }
-	unsigned char controller() const { return m_v.data[0]; }
-	unsigned char value()      const { return m_v.data[1]; }
+	unsigned char note()       const { return m_v.param; }
+	unsigned char velocity()   const { return m_v.value; }
+	unsigned char controller() const { return m_v.param; }
+
+	unsigned short param()     const { return m_v.param; }
+	unsigned short value()     const { return m_v.value; }
+
+	unsigned long  duration()  const { return m_u.duration; }
 
 	// Event properties accessors (setters).
 	void setTime(unsigned long time) { m_time = time; }
@@ -114,14 +122,15 @@ public:
 		{ m_time = (m_time > iOffset ? m_time - iOffset : 0); }
 
 	// Underloaded accessors (setters).
-	void setNote(unsigned char note)             { m_v.data[0] = note; }
-	void setVelocity(unsigned char velocity)     { m_v.data[1] = velocity; }
-	void setController(unsigned char controller) { m_v.data[0] = controller; }
-	void setValue(unsigned char value)           { m_v.data[1] = value; }
+	void setNote(unsigned char note)             { m_v.param = note; }
+	void setVelocity(unsigned char velocity)     { m_v.value = velocity; }
+	void setController(unsigned char controller) { m_v.param = controller; }
+
+	void setParam(unsigned short param)          { m_v.param = param; }
+	void setValue(unsigned short value)          { m_v.value = value; }
 
 	// Duration accessors (NOTEON).
-	void setDuration(unsigned long duration) { m_u.duration = duration; }
-	unsigned long duration()   const { return m_u.duration; }
+	void setDuration(unsigned long duration)     { m_u.duration = duration; }
 
 	// Sysex data accessors (SYSEX).
 	unsigned char *sysex()     const { return m_u.pSysex; }
@@ -138,17 +147,9 @@ public:
 
 	// Special accessors for pitch-bend event types.
 	int pitchBend() const
-	{
-		unsigned short val = ((unsigned short) m_v.data[1] << 7) | m_v.data[0];
-		return int(val) - 0x2000;
-	}
-	
+		{ return int(m_v.value) - 0x2000; }
 	void setPitchBend(int iPitchBend)
-	{
-		unsigned short val = (unsigned short) (0x2000 + iPitchBend);
-		m_v.data[0] = (val & 0x007f);
-		m_v.data[1] = (val & 0x3f80) >> 7;
-	}
+		{ m_v.value = (unsigned short) (0x2000 + iPitchBend); }
 
 private:
 
@@ -158,7 +159,10 @@ private:
 
 	// Nominal event data.
 	union {
-		unsigned char  data[2];		// type != SYSEX
+		struct {					// type != SYSEX
+			unsigned short param;
+			unsigned short value;
+		};
 		unsigned short iSysex;		// type == SYSEX
 	} m_v;
 

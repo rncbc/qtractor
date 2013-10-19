@@ -73,6 +73,7 @@ HEADERS += config.h \
 	qtractorMidiListView.h \
 	qtractorMidiMeter.h \
 	qtractorMidiMonitor.h \
+	qtractorMidiRpn.h \
 	qtractorMidiSequence.h \
 	qtractorMidiSysex.h \
 	qtractorMidiTimer.h \
@@ -192,6 +193,7 @@ SOURCES += \
 	qtractorMidiListView.cpp \
 	qtractorMidiMeter.cpp \
 	qtractorMidiMonitor.cpp \
+	qtractorMidiRpn.cpp \
 	qtractorMidiSequence.cpp \
 	qtractorMidiTimer.cpp \
 	qtractorMixer.cpp \

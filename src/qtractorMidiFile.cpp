@@ -24,6 +24,8 @@
 
 #include "qtractorTimeScale.h"
 
+#include "qtractorMidiRpn.h"
+
 #include <QFileInfo>
 #include <QDir>
 #include <QRegExp>
@@ -32,6 +34,79 @@
 // Symbolic header markers.
 #define SMF_MTHD "MThd"
 #define SMF_MTRK "MTrk"
+
+
+// - Bank-select (controller) types...
+#define BANK_MSB  0x00
+#define BANK_LSB  0x20
+
+// - Extra-ordinary (controller) types...
+#define RPN_MSB   0x65
+#define RPN_LSB   0x64
+
+#define NRPN_MSB  0x63
+#define NRPN_LSB  0x62
+
+#define DATA_MSB  0x06
+#define DATA_LSB  0x26
+
+//----------------------------------------------------------------------
+// class qtractorMidiFileRpn -- MIDI RPN/NRPN file parser.
+//
+class qtractorMidiFileRpn : public qtractorMidiRpn
+{
+public:
+
+	// Constructor.
+	qtractorMidiFileRpn() : qtractorMidiRpn() {}
+
+	// Encoder.
+	bool process ( unsigned long time, int port,
+		unsigned char status, unsigned short param, unsigned short value )
+	{
+		qtractorMidiRpn::Event event;
+
+		event.time   = time;
+		event.port   = port;
+		event.status = status;
+		event.param  = param;
+		event.value  = value;
+
+		return qtractorMidiRpn::process(event);
+	}
+
+	// Decoder.
+	void dequeue ( qtractorMidiSequence *pSeq )
+	{
+		while (qtractorMidiRpn::isPending()) {
+			qtractorMidiRpn::Event event;
+			if (qtractorMidiRpn::dequeue(event)) {
+				qtractorMidiEvent::EventType type;
+				switch (qtractorMidiRpn::Type(event.status & 0xf0)) {
+				case qtractorMidiRpn::CC:
+					type = qtractorMidiEvent::CONTROLLER;
+					break;
+				case qtractorMidiRpn::RPN:
+					type = qtractorMidiEvent::REGPARAM;
+					break;
+				case qtractorMidiRpn::NRPN:
+					type = qtractorMidiEvent::NONREGPARAM;
+					break;
+				case qtractorMidiRpn::CC14:
+					type = qtractorMidiEvent::CONTROL14;
+					break;
+				default:
+					continue;
+				}
+				qtractorMidiEvent *pEvent = new qtractorMidiEvent(
+					event.time, type, event.param, event.value);
+				pSeq->addEvent(pEvent);
+				pSeq->setChannel(event.status & 0x0f);
+			}
+		}
+	}
+};
+
 
 
 //----------------------------------------------------------------------
@@ -182,6 +257,9 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 	if (m_iMode != Read)
 		return false;
 
+	// Expedite RPN/NRPN controllers processor...
+	qtractorMidiFileRpn xrpn;
+
 	// So, how many tracks are we reading in a row?...
 	unsigned short iSeqTracks = (iSeqs > 1 ? m_iTracks : 1);
 
@@ -210,6 +288,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 		unsigned long iTrackTime  = 0;
 		unsigned long iTrackEnd   = m_iOffset + m_pTrackInfo[iTrack].length;
 		unsigned int  iLastStatus = 0;
+		unsigned long iTimeout    = 0;
 
 		// While this track lasts...
 		while (m_iOffset < iTrackEnd) {
@@ -229,6 +308,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				iLastStatus = iStatus;
 			}
 
+			qtractorMidiEvent *pEvent;
 			unsigned short iChannel = (iStatus & 0x0f);
 			qtractorMidiEvent::EventType type
 				= qtractorMidiEvent::EventType(iStatus & 0xf0);
@@ -246,14 +326,22 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 
 			// Check for sequence time length, if any...
 			if (pSeq->timeLength() > 0
-				&& iTime >= pSeq->timeOffset() + pSeq->timeLength())
+				&& iTime >= pSeq->timeOffset() + pSeq->timeLength()) {
+				xrpn.flush();
+				xrpn.dequeue(pSeq);
 				break;
+			}
+
+			// Flush/timeout RPN/NRPN stuff...
+			if (iTimeout < iTime || type != qtractorMidiEvent::CONTROLLER) {
+				iTimeout = iTime + (pSeq->ticksPerBeat() >> 2);
+				xrpn.flush();
+			}
 
 			// Check whether it won't be channel filtered...
 			bool bChannelEvent = (iTime >= pSeq->timeOffset()
 				&& ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)));
 
-			qtractorMidiEvent *pEvent;
 			unsigned char *data, data1, data2;
 			unsigned int len, meta, bank;
 
@@ -271,7 +359,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					pSeq->setChannel(iChannel);
 				}
 				break;
-			case qtractorMidiEvent::CONTROLLER:
+			case qtractorMidiEvent::KEYPRESS:
 				data1 = readInt(1);
 				data2 = readInt(1);
 				// Check if its channel filtered...
@@ -280,14 +368,31 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
 					pSeq->addEvent(pEvent);
 					pSeq->setChannel(iChannel);
+				}
+				break;
+			case qtractorMidiEvent::CONTROLLER:
+				data1 = readInt(1);
+				data2 = readInt(1);
+				// Check if its channel filtered...
+				if (bChannelEvent) {
+					// Check for RPN/NRPN stuff...
+					if (xrpn.process(iTime, iSeqTrack,
+						(qtractorMidiRpn::CC | iChannel), data1, data2)) {
+						iTimeout = iTime + (pSeq->ticksPerBeat() >> 2);
+						break;
+					}
+					// Create the new event...
+					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
+					pSeq->addEvent(pEvent);
+					pSeq->setChannel(iChannel);
 					// Set the primordial bank patch...
 					switch (data1) {
-					case 0x00:
+					case BANK_MSB:
 						// Bank MSB...
 						bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x007f));
 						pSeq->setBank(bank | (data2 << 7));
 						break;
-					case 0x20:
+					case BANK_LSB:
 						// Bank LSB...
 						bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x3f80));
 						pSeq->setBank(bank | data2);
@@ -295,18 +400,6 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					default:
 						break;
 					}
-				}
-				break;
-			case qtractorMidiEvent::KEYPRESS:
-			case qtractorMidiEvent::PITCHBEND:
-				data1 = readInt(1);
-				data2 = readInt(1);
-				// Check if its channel filtered...
-				if (bChannelEvent) {
-					// Create the new event...
-					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
-					pSeq->addEvent(pEvent);
-					pSeq->setChannel(iChannel);
 				}
 				break;
 			case qtractorMidiEvent::PGMCHANGE:
@@ -330,6 +423,18 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				if (bChannelEvent) {
 					// Create the new event...
 					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
+					pSeq->addEvent(pEvent);
+					pSeq->setChannel(iChannel);
+				}
+				break;
+			case qtractorMidiEvent::PITCHBEND:
+				data1 = readInt(1);
+				data2 = readInt(1);
+				// Check if its channel filtered...
+				if (bChannelEvent) {
+					const unsigned short value = (data2 << 7) | data1;
+					// Create the new event...
+					pEvent = new qtractorMidiEvent(iTime, type, 0, value);
 					pSeq->addEvent(pEvent);
 					pSeq->setChannel(iChannel);
 				}
@@ -401,6 +506,9 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 			default:
 				break;
 			}
+
+			// Flush/pending RPN/NRPN stuff...
+			xrpn.dequeue(pSeq);
 		}
 	}
 
@@ -604,11 +712,11 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 				iStatus  = (qtractorMidiEvent::CONTROLLER | iChannel) & 0xff;
 				writeInt(0); // delta-time=0
 				writeInt(iStatus, 1);
-				writeInt(0x00, 1);	// Bank MSB.
+				writeInt(BANK_MSB, 1);	// Bank MSB.
 				writeInt((pSeq->bank() & 0x3f80) >> 7, 1);
 				writeInt(0); // delta-time=0
-				writeInt(iStatus, 1);
-				writeInt(0x20, 1);	// Bank LSB.
+			//	writeInt(iStatus, 1);
+				writeInt(BANK_LSB, 1);	// Bank LSB.
 				writeInt((pSeq->bank() & 0x007f), 1);
 			}
 
@@ -724,9 +832,18 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 				// - Delta time...
 				writeInt(iTime > iLastTime ? iTime - iLastTime : 0);
 				iLastTime = iTime;
+
 				// - Status byte...
 				iChannel = pSeq->channel();
-				iStatus  = (pEvent->type() | iChannel) & 0xff;
+
+				// - Extra-ordinary (controller) types...
+				if (pEvent->type() == qtractorMidiEvent::REGPARAM ||
+					pEvent->type() == qtractorMidiEvent::NONREGPARAM) {
+					iStatus = (qtractorMidiEvent::CONTROLLER | iChannel) & 0xff;
+				} else {
+					iStatus = (pEvent->type() | iChannel) & 0xff;
+				}
+
 				// - Running status?
 				if (iStatus != iLastStatus) {
 					writeInt(iStatus, 1);
@@ -752,18 +869,53 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 					else
 						pEventItem->notesOff.prepend(pNoteOff);
 					break;
+				case qtractorMidiEvent::KEYPRESS:
+					writeInt(pEvent->note(), 1);
+					writeInt(pEvent->velocity(), 1);
+					break;
 				case qtractorMidiEvent::CONTROLLER:
 					writeInt(pEvent->controller(), 1);
 					writeInt(pEvent->value(), 1);
 					break;
-				case qtractorMidiEvent::KEYPRESS:
-				case qtractorMidiEvent::PITCHBEND:
-					writeInt(pEvent->note(), 1);
-					writeInt(pEvent->velocity(), 1);
+				case qtractorMidiEvent::REGPARAM:
+					writeInt(RPN_MSB, 1);
+					writeInt((pEvent->param() & 0x3f80) >> 7, 1);
+					writeInt(0); // delta-time=0
+				//	writeInt(iStatus, 1);
+					writeInt(RPN_LSB, 1);
+					writeInt((pEvent->param() & 0x007f), 1);
+					writeInt(0); // delta-time=0
+				//	writeInt(iStatus, 1);
+					writeInt(DATA_MSB, 1);
+					writeInt((pEvent->value() & 0x3f80) >> 7, 1);
+					writeInt(0); // delta-time=0
+				//	writeInt(iStatus, 1);
+					writeInt(DATA_LSB, 1);
+					writeInt((pEvent->value() & 0x007f), 1);
+					break;
+				case qtractorMidiEvent::NONREGPARAM:
+					writeInt(NRPN_MSB, 1);
+					writeInt((pEvent->param() & 0x3f80) >> 7, 1);
+					writeInt(0); // delta-time=0
+				//	writeInt(iStatus, 1);
+					writeInt(NRPN_LSB, 1);
+					writeInt((pEvent->param() & 0x007f), 1);
+					writeInt(0); // delta-time=0
+				//	writeInt(iStatus, 1);
+					writeInt(DATA_MSB, 1);
+					writeInt((pEvent->value() & 0x3f80) >> 7, 1);
+					writeInt(0); // delta-time=0
+				//	writeInt(iStatus, 1);
+					writeInt(DATA_LSB, 1);
+					writeInt((pEvent->value() & 0x007f), 1);
 					break;
 				case qtractorMidiEvent::PGMCHANGE:
 				case qtractorMidiEvent::CHANPRESS:
 					writeInt(pEvent->value(), 1);
+					break;
+				case qtractorMidiEvent::PITCHBEND:
+					writeInt((pEvent->value() & 0x007f), 1);
+					writeInt((pEvent->value() & 0x3f80) >> 7, 1);
 					break;
 				case qtractorMidiEvent::SYSEX:
 					if (pEvent->sysex() && pEvent->sysex_len() > 1) {
