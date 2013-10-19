@@ -37,6 +37,7 @@
 #include "qtractorMidiControl.h"
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiSysex.h"
+#include "qtractorMidiRpn.h"
 
 #include "qtractorPlugin.h"
 
@@ -72,6 +73,24 @@
 
 // Audio vs. MIDI time drift cycle
 #define DRIFT_CHECK 8
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiRpnInput -- MIDI input parser (singleton).
+//
+class qtractorMidiRpnInput : public qtractorMidiRpn
+{
+public:
+
+	// Constructor.
+	qtractorMidiRpnInput();
+
+	// Encoder.
+	bool process (const snd_seq_event_t *ev);
+
+	// Decoder.
+	bool dequeue (snd_seq_event_t *ev);
+};
 
 
 //----------------------------------------------------------------------
@@ -264,6 +283,72 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiRpnInput -- MIDI RPN/NRPN input parser.
+//
+
+// Constructor.
+qtractorMidiRpnInput::qtractorMidiRpnInput (void) : qtractorMidiRpn()
+{
+}
+
+
+// Encoder.
+bool qtractorMidiRpnInput::process ( const snd_seq_event_t *ev )
+{
+	if (ev->type != SND_SEQ_EVENT_CONTROLLER)
+		return false;
+
+	qtractorMidiRpn::Event event;
+
+	event.time   = ev->time.tick;
+	event.port   = ev->dest.port;
+	event.status = qtractorMidiRpn::CC | (ev->data.control.channel & 0x0f);
+	event.param  = ev->data.control.param;
+	event.value  = ev->data.control.value;
+
+	return qtractorMidiRpn::process(event);
+}
+
+
+// Decoder.
+bool qtractorMidiRpnInput::dequeue ( snd_seq_event_t *ev )
+{
+	qtractorMidiRpn::Event event;
+
+	if (!qtractorMidiRpn::dequeue(event))
+		return false;
+
+	snd_seq_ev_clear(ev);
+	snd_seq_ev_schedule_tick(ev, 0, 0, event.time);
+	snd_seq_ev_set_dest(ev, 0, event.port);
+	snd_seq_ev_set_fixed(ev);
+
+	switch (qtractorMidiRpn::Type(event.status & 0xf0)) {
+	case qtractorMidiRpn::RPN:		// 0x10
+		ev->type = SND_SEQ_EVENT_REGPARAM;
+		break;
+	case qtractorMidiRpn::NRPN:	// 0x20
+		ev->type = SND_SEQ_EVENT_NONREGPARAM;
+		break;
+	case qtractorMidiRpn::CC14:	// 0x30
+		ev->type = SND_SEQ_EVENT_CONTROL14;
+		break;
+	case qtractorMidiRpn::CC:		// 0xb0
+		ev->type = SND_SEQ_EVENT_CONTROLLER;
+		break;
+	default:
+		return false;
+	}
+
+	ev->data.control.channel = event.status & 0x0f;
+	ev->data.control.param   = event.param;
+	ev->data.control.value   = event.value;
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiInputThread -- MIDI input thread (singleton).
 //
 
@@ -318,20 +403,32 @@ void qtractorMidiInputThread::run (void)
 	pfds = (struct pollfd *) alloca(nfds * sizeof(struct pollfd));
 	snd_seq_poll_descriptors(pAlsaSeq, pfds, nfds, POLLIN);
 
+	qtractorMidiRpnInput xrpn;
+
 	m_bRunState = true;
 
 	int iPoll = 0;
 	while (m_bRunState && iPoll >= 0) {
 		// Wait for events...
 		iPoll = poll(pfds, nfds, 200);
+		// Timeout?
+		if (iPoll == 0)
+			xrpn.flush();
 		while (iPoll > 0) {
 			snd_seq_event_t *pEv = NULL;
 			snd_seq_event_input(pAlsaSeq, &pEv);
 			// Process input event - ...
 			// - enqueue to input track mapping;
-			m_pMidiEngine->capture(pEv);
+			if (!xrpn.process(pEv))
+				m_pMidiEngine->capture(pEv);
 		//	snd_seq_free_event(pEv);
 			iPoll = snd_seq_event_input_pending(pAlsaSeq, 0);
+		}
+		// Process pending events...
+		while (xrpn.isPending()) {
+			snd_seq_event_t ev;
+			if (xrpn.dequeue(&ev))
+				m_pMidiEngine->capture(&ev);
 		}
 	}
 
