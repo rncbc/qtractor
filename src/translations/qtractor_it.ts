@@ -267,7 +267,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1119"/>
-        <location filename="../qtractorMidiFile.cpp" line="1183"/>
+        <location filename="../qtractorMidiFile.cpp" line="1218"/>
         <location filename="../qtractorMidiListView.cpp" line="65"/>
         <source>Track %1</source>
         <translation>Traccia %1</translation>

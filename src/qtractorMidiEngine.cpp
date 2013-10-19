@@ -76,14 +76,14 @@
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiRpnInput -- MIDI input parser (singleton).
+// class qtractorMidiInputRpn -- MIDI RPN/NRPN input parser (singleton).
 //
-class qtractorMidiRpnInput : public qtractorMidiRpn
+class qtractorMidiInputRpn : public qtractorMidiRpn
 {
 public:
 
 	// Constructor.
-	qtractorMidiRpnInput();
+	qtractorMidiInputRpn();
 
 	// Encoder.
 	bool process (const snd_seq_event_t *ev);
@@ -283,17 +283,17 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiRpnInput -- MIDI RPN/NRPN input parser.
+// class qtractorMidiInputRpn -- MIDI RPN/NRPN input parser.
 //
 
 // Constructor.
-qtractorMidiRpnInput::qtractorMidiRpnInput (void) : qtractorMidiRpn()
+qtractorMidiInputRpn::qtractorMidiInputRpn (void) : qtractorMidiRpn()
 {
 }
 
 
 // Encoder.
-bool qtractorMidiRpnInput::process ( const snd_seq_event_t *ev )
+bool qtractorMidiInputRpn::process ( const snd_seq_event_t *ev )
 {
 	if (ev->type != SND_SEQ_EVENT_CONTROLLER)
 		return false;
@@ -311,7 +311,7 @@ bool qtractorMidiRpnInput::process ( const snd_seq_event_t *ev )
 
 
 // Decoder.
-bool qtractorMidiRpnInput::dequeue ( snd_seq_event_t *ev )
+bool qtractorMidiInputRpn::dequeue ( snd_seq_event_t *ev )
 {
 	qtractorMidiRpn::Event event;
 
@@ -403,7 +403,7 @@ void qtractorMidiInputThread::run (void)
 	pfds = (struct pollfd *) alloca(nfds * sizeof(struct pollfd));
 	snd_seq_poll_descriptors(pAlsaSeq, pfds, nfds, POLLIN);
 
-	qtractorMidiRpnInput xrpn;
+	qtractorMidiInputRpn xrpn;
 
 	m_bRunState = true;
 
