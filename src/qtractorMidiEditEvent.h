@@ -96,8 +96,8 @@ public:
 	void setEventType(qtractorMidiEvent::EventType eventType);
 	qtractorMidiEvent::EventType eventType() const;
 
-	void setController(unsigned char controller);
-	unsigned char controller() const;
+	void setEventParam(unsigned short param);
+	unsigned short eventParam() const;
 
 protected:
 
@@ -150,7 +150,7 @@ private:
 
 	// Current selection holders.
 	qtractorMidiEvent::EventType m_eventType;
-	unsigned char m_controller;
+	unsigned short m_eventParam;
 };
 
 

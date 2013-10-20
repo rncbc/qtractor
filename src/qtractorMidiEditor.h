@@ -344,17 +344,18 @@ public:
 	const QString noteName(unsigned char note) const;
 	// Controller name map accessor.
 	const QString& controllerName(unsigned char controller) const;
-	// RPN name map accessor.
-	const QString& rpnName(unsigned short param) const;
-	// NRPN name map accessor.
-	const QString& nrpnName(unsigned short param) const;
+
+	// RPN/NRPN map accessors.
+	const QHash<unsigned short, QString>& rpnNames() const;
+	const QHash<unsigned short, QString>& nrpnNames() const;
 
 	// Default note name map accessor.
 	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
 	// Default controller name accessor.
 	static const QString& defaultControllerName(unsigned char controller);
-	// Default RPN name accessor.
+	// Default RPN/RPN name accessors.
 	static const QString& defaultRpnName(unsigned short param);
+	static const QString& defaultNrpnName(unsigned short param);
 
 	// Default scale key/type names accessors.
 	static const QStringList& scaleKeyNames();
@@ -385,6 +386,9 @@ protected:
 
 	// Update instrument default note names (nb. drum key names).
 	void updateDefaultDrumNoteNames();
+	void updateDefaultControllerNames();
+	void updateDefaultRpnNames();
+	void updateDefaultNrpnNames();
 
 	// Zoom factor constants.
 	enum { ZoomMin = 10, ZoomBase = 100, ZoomMax = 1000, ZoomStep = 10 };
@@ -558,6 +562,7 @@ private:
 		ResizeNoteRight,
 		ResizeNoteLeft,
 		ResizeValue,
+		ResizeValue14,
 		ResizePitchBend
 	} m_resizeMode;
 
@@ -600,7 +605,7 @@ private:
 	// Last useful editing values.
 	struct {
 		unsigned char  note;
-		unsigned char  value;
+		unsigned short value;
 		unsigned long  duration;
 		unsigned short pitchBend;
 	} m_last;

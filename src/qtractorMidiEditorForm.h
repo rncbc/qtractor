@@ -173,7 +173,7 @@ protected slots:
 	// Event type selection slots.
 	void viewTypeChanged(int);
 	void eventTypeChanged(int);
-	void controllerChanged(int);
+	void eventParamChanged(int);
 
 	void snapToScaleKeyChanged(int iSnapToScaleKey);
 	void snapToScaleTypeChanged(int iSnapToScaleType);
@@ -217,7 +217,7 @@ private:
 	// Event type selection widgets...
 	QComboBox *m_pViewTypeComboBox;
 	QComboBox *m_pEventTypeComboBox;
-	QComboBox *m_pControllerComboBox;
+	QComboBox *m_pEventParamComboBox;
 
 	// Snap-to-scale/quantize selection widgets...
 	QComboBox *m_pSnapToScaleKeyComboBox;

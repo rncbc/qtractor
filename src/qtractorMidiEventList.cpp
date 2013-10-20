@@ -343,9 +343,9 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::CONTROLLER:
 				return m_pEditor->controllerName(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
-				return m_pEditor->rpnName(pEvent->param());
+				return m_pEditor->rpnNames().value(pEvent->param());
 			case qtractorMidiEvent::NONREGPARAM:
-				return m_pEditor->nrpnName(pEvent->param());
+				return m_pEditor->nrpnNames().value(pEvent->param());
 			default:
 				break;
 			}
