@@ -344,11 +344,17 @@ public:
 	const QString noteName(unsigned char note) const;
 	// Controller name map accessor.
 	const QString& controllerName(unsigned char controller) const;
+	// RPN name map accessor.
+	const QString& rpnName(unsigned short param) const;
+	// NRPN name map accessor.
+	const QString& nrpnName(unsigned short param) const;
 
 	// Default note name map accessor.
 	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
 	// Default controller name accessor.
 	static const QString& defaultControllerName(unsigned char controller);
+	// Default RPN name accessor.
+	static const QString& defaultRpnName(unsigned short param);
 
 	// Default scale key/type names accessors.
 	static const QStringList& scaleKeyNames();
@@ -639,8 +645,10 @@ private:
 	}	g_clipboard;
 
 	// Instrument defined names for current clip/track.
-	QHash<unsigned char, QString> m_controllerNames;
-	QHash<unsigned char, QString> m_noteNames;
+	QHash<unsigned char,  QString> m_noteNames;
+	QHash<unsigned char,  QString> m_controllerNames;
+	QHash<unsigned short, QString> m_rpnNames;
+	QHash<unsigned short, QString> m_nrpnNames;
 
 	// Snap-to-scale (aka.in-place scale-quantize) stuff.
 	int m_iSnapToScaleKey;

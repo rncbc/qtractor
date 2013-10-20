@@ -60,6 +60,10 @@
 #define _TR(x) QT_TR_NOOP(x)
 
 
+// An empty blank reference string .
+static QString g_sNoname;
+
+
 //----------------------------------------------------------------------------
 // MIDI Note Names - Default note names hash map.
 
@@ -256,7 +260,53 @@ const QString& qtractorMidiEditor::defaultControllerName ( unsigned char control
 		}
 	}
 
-	return g_controllerNames[controller];
+	QHash<unsigned char, QString>::ConstIterator iter
+		= g_controllerNames.constFind(controller);
+	if (iter == g_controllerNames.constEnd())
+		return g_sNoname;
+	else
+		return iter.value();
+}
+
+
+//----------------------------------------------------------------------------
+// MIDI RPN Names - Default RPN names hash map.
+
+static struct
+{
+	unsigned short param;
+	const char *name;
+
+} g_aRpnNames[] = {
+
+	{  0, _TR("Pitchbend Sensitivity") },
+	{  1, _TR("Fine Tune") },
+	{  2, _TR("Coarse Tune") },
+	{  3, _TR("Change Tuning Program") },
+	{  4, _TR("Change Tuning Bank") },
+
+	{  0, NULL }
+};
+
+static QHash<unsigned short, QString> g_rpnNames;
+
+// Default RPN name accessor.
+const QString& qtractorMidiEditor::defaultRpnName ( unsigned short param )
+{
+	if (g_rpnNames.isEmpty()) {
+		// Pre-load RPN-names hash table...
+		for (int i = 0; g_aRpnNames[i].name; ++i) {
+			g_rpnNames.insert(g_aRpnNames[i].param,
+				QObject::tr(g_aRpnNames[i].name, "rpnName"));
+		}
+	}
+
+	QHash<unsigned short, QString>::ConstIterator iter
+		= g_rpnNames.constFind(param);
+	if (iter == g_rpnNames.constEnd())
+		return g_sNoname;
+	else
+		return iter.value();
 }
 
 
@@ -4210,6 +4260,8 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 {
 	m_noteNames.clear();
 	m_controllerNames.clear();
+	m_rpnNames.clear();
+	m_nrpnNames.clear();
 
 	if (m_pMidiClip == NULL)
 		return;
@@ -4250,10 +4302,12 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 
 	// Key note names...
 	const qtractorInstrumentData& notes = instr.notes(iBank, iProg);
-	qtractorInstrumentData::ConstIterator nit = notes.constBegin();
-	const qtractorInstrumentData::ConstIterator& nit_end = notes.constEnd();
-	for ( ; nit != nit_end; ++nit)
-		m_noteNames.insert(nit.key(), nit.value());
+	qtractorInstrumentData::ConstIterator notes_iter
+		= notes.constBegin();
+	const qtractorInstrumentData::ConstIterator& notes_end
+		= notes.constEnd();
+	for ( ; notes_iter != notes_end; ++notes_iter)
+		m_noteNames.insert(notes_iter.key(), notes_iter.value());
 
 	// Default drumk-key note names:
 	// at least have a GM Drums (Channel 10) help...
@@ -4263,10 +4317,39 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 
 	// Controller names...
 	const qtractorInstrumentData& controllers = instr.control();
-	qtractorInstrumentData::ConstIterator cit = controllers.constBegin();
-	const qtractorInstrumentData::ConstIterator& cit_end = controllers.constEnd();
-	for ( ; cit != cit_end; ++cit)
-		m_controllerNames.insert(cit.key(), cit.value());
+	qtractorInstrumentData::ConstIterator controllers_iter
+		= controllers.constBegin();
+	const qtractorInstrumentData::ConstIterator& controllers_end
+		= controllers.constEnd();
+	for ( ; controllers_iter != controllers_end; ++controllers_iter) {
+		m_controllerNames.insert(
+			controllers_iter.key(),
+			controllers_iter.value());
+	}
+
+	// RPN names...
+	const qtractorInstrumentData& rpns = instr.rpn();
+	qtractorInstrumentData::ConstIterator rpns_iter
+		= rpns.constBegin();
+	const qtractorInstrumentData::ConstIterator& rpns_end
+		= rpns.constEnd();
+	for ( ; rpns_iter != rpns_end; ++rpns_iter) {
+		m_rpnNames.insert(
+			rpns_iter.key(),
+			rpns_iter.value());
+	}
+
+	// NRPN names...
+	const qtractorInstrumentData& nrpns = instr.nrpn();
+	qtractorInstrumentData::ConstIterator nrpns_iter
+		= nrpns.constBegin();
+	const qtractorInstrumentData::ConstIterator& nrpns_end
+		= nrpns.constEnd();
+	for ( ; nrpns_iter != nrpns_end; ++nrpns_iter) {
+		m_nrpnNames.insert(
+			nrpns_iter.key(),
+			nrpns_iter.value());
+	}
 }
 
 
@@ -4289,6 +4372,30 @@ const QString& qtractorMidiEditor::controllerName ( unsigned char controller ) c
 		= m_controllerNames.constFind(controller);
 	if (iter == m_controllerNames.constEnd())
 		return defaultControllerName(controller);
+	else
+		return iter.value();
+}
+
+
+// RPN name map accessor.
+const QString& qtractorMidiEditor::rpnName ( unsigned short param ) const
+{
+	QHash<unsigned short, QString>::ConstIterator iter
+		= m_rpnNames.constFind(param);
+	if (iter == m_rpnNames.constEnd())
+		return defaultRpnName(param);
+	else
+		return iter.value();
+}
+
+
+// NRPN name map accessor.
+const QString& qtractorMidiEditor::nrpnName ( unsigned short param ) const
+{
+	QHash<unsigned short, QString>::ConstIterator iter
+		= m_nrpnNames.constFind(param);
+	if (iter == m_nrpnNames.constEnd())
+		return g_sNoname;
 	else
 		return iter.value();
 }
