@@ -93,9 +93,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pViewTypeComboBox->setEditable(false);
 	m_pEventTypeComboBox = new QComboBox(m_ui.editEventToolbar);
 	m_pEventTypeComboBox->setEditable(false);
-	m_pControllerComboBox = new QComboBox(m_ui.editEventToolbar);
-	m_pControllerComboBox->setEditable(false);
-	m_pControllerComboBox->setMinimumWidth(220);
+	m_pEventParamComboBox = new QComboBox(m_ui.editEventToolbar);
+	m_pEventParamComboBox->setEditable(false);
+	m_pEventParamComboBox->setMinimumWidth(220);
 
 	// Snap-to-scale/quantize selection widgets...
 	m_pSnapToScaleKeyComboBox = new QComboBox(m_ui.snapToScaleToolbar);
@@ -147,6 +147,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pEventTypeComboBox->addItem(icon,
 		tr("Pitch Bend"), int(qtractorMidiEvent::PITCHBEND));
 	m_pEventTypeComboBox->addItem(icon,
+		tr("RPN"), int(qtractorMidiEvent::REGPARAM));
+	m_pEventTypeComboBox->addItem(icon,
+		tr("NRPN"), int(qtractorMidiEvent::NONREGPARAM));
+	m_pEventTypeComboBox->addItem(icon,
 		tr("Sys Ex"), int(qtractorMidiEvent::SYSEX));
 
 	// Snap-to-scale/quantize selection widgets...
@@ -162,7 +166,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
 	m_pViewTypeComboBox->setToolTip(tr("Note type"));
 	m_pEventTypeComboBox->setToolTip(tr("Value type"));
-	m_pControllerComboBox->setToolTip(tr("Controller type"));
+	m_pEventParamComboBox->setToolTip(tr("Parameter type"));
 	m_pSnapToScaleKeyComboBox->setToolTip(tr("Scale key"));
 	m_pSnapToScaleTypeComboBox->setToolTip(tr("Scale type"));
 
@@ -174,7 +178,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 
 	m_ui.editEventToolbar->addWidget(m_pEventTypeComboBox);
 	m_ui.editEventToolbar->addSeparator();
-	m_ui.editEventToolbar->addWidget(m_pControllerComboBox);
+	m_ui.editEventToolbar->addWidget(m_pEventParamComboBox);
 
 	m_ui.snapToScaleToolbar->addWidget(m_pSnapToScaleKeyComboBox);
 	m_ui.snapToScaleToolbar->addSeparator();
@@ -445,9 +449,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_pEventTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(eventTypeChanged(int)));
-	QObject::connect(m_pControllerComboBox,
+	QObject::connect(m_pEventParamComboBox,
 		SIGNAL(activated(int)),
-		SLOT(controllerChanged(int)));
+		SLOT(eventParamChanged(int)));
 
 	QObject::connect(m_pSnapToScaleKeyComboBox,
 		SIGNAL(activated(int)),
@@ -1767,17 +1771,58 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 	m_pMidiEditor->updateInstrumentNames();
 
 	// Update the controller names...
-	int iOldController = m_pControllerComboBox->currentIndex();
-	if (iOldController < 0)
-		iOldController = 0;
-	const QIcon iconController(":/images/itemControllers.png");
-	m_pControllerComboBox->clear();
-	for (int i = 0; i < 128; ++i) {
-		m_pControllerComboBox->addItem(iconController,
-			QString::number(i) + " - "
-			+ m_pMidiEditor->controllerName(i), i);
+	int iEventParam = m_pEventParamComboBox->currentIndex();
+	if (iEventParam < 0)
+		iEventParam = 0;
+
+	m_pEventParamComboBox->clear();
+
+	const int iEventType = m_pEventTypeComboBox->currentIndex();
+	const qtractorMidiEvent::EventType eventType
+		= qtractorMidiEvent::EventType(
+			m_pEventTypeComboBox->itemData(iEventType).toInt());
+
+	const QString sNameMask("%1 - %2");
+
+	if (eventType == qtractorMidiEvent::REGPARAM) {
+		const QIcon iconRpns(":/images/itemRpns.png");
+		const QHash<unsigned short, QString>& rpnNames
+			= m_pMidiEditor->rpnNames();
+		QHash<unsigned short, QString>::ConstIterator rpns_iter
+			= rpnNames.constBegin();
+		const QHash<unsigned short, QString>::ConstIterator rpns_end
+			= rpnNames.constEnd();
+		for ( ; rpns_iter != rpns_end; ++rpns_iter) {
+			const unsigned short param = rpns_iter.key();
+			m_pEventParamComboBox->addItem(iconRpns,
+				sNameMask.arg(param).arg(rpns_iter.value()), int(param));
+		}
 	}
-	m_pControllerComboBox->setCurrentIndex(iOldController);
+	else
+	if (eventType == qtractorMidiEvent::NONREGPARAM) {
+		const QIcon iconNrpns(":/images/itemNrpns.png");
+		const QHash<unsigned short, QString>& nrpnNames
+			= m_pMidiEditor->nrpnNames();
+		QHash<unsigned short, QString>::ConstIterator nrpns_iter
+			= nrpnNames.constBegin();
+		const QHash<unsigned short, QString>::ConstIterator nrpns_end
+			= nrpnNames.constEnd();
+		for ( ; nrpns_iter != nrpns_end; ++nrpns_iter) {
+			const unsigned short param = nrpns_iter.key();
+			m_pEventParamComboBox->addItem(iconNrpns,
+				sNameMask.arg(param).arg(nrpns_iter.value()), int(param));
+		}
+	}
+	else {
+//	if (eventType == qtractorMidiEvent::CONTROLLER) {
+		const QIcon iconControllers(":/images/itemControllers.png");
+		for (int i = 0; i < 128; ++i) {
+			m_pEventParamComboBox->addItem(iconControllers,
+				sNameMask.arg(i).arg(m_pMidiEditor->controllerName(i)), i);
+		}
+	}
+
+	m_pEventParamComboBox->setCurrentIndex(iEventParam);
 }
 
 
@@ -1895,8 +1940,9 @@ void qtractorMidiEditorForm::snapToScaleTypeChanged ( int iSnapToScaleType )
 // Tool selection handlers.
 void qtractorMidiEditorForm::viewTypeChanged ( int iIndex )
 {
-	qtractorMidiEvent::EventType eventType = qtractorMidiEvent::EventType(
-		m_pViewTypeComboBox->itemData(iIndex).toInt());
+	const qtractorMidiEvent::EventType eventType
+		= qtractorMidiEvent::EventType(
+			m_pViewTypeComboBox->itemData(iIndex).toInt());
 
 	m_pMidiEditor->editView()->setEventType(eventType);
 	m_pMidiEditor->updateContents();
@@ -1908,25 +1954,28 @@ void qtractorMidiEditorForm::viewTypeChanged ( int iIndex )
 
 void qtractorMidiEditorForm::eventTypeChanged ( int iIndex )
 {
-	qtractorMidiEvent::EventType eventType = qtractorMidiEvent::EventType(
-		m_pEventTypeComboBox->itemData(iIndex).toInt());
-	m_pControllerComboBox->setEnabled(
-		eventType == qtractorMidiEvent::CONTROLLER);
+	const qtractorMidiEvent::EventType eventType
+		= qtractorMidiEvent::EventType(
+			m_pEventTypeComboBox->itemData(iIndex).toInt());
+	m_pEventParamComboBox->setEnabled(
+		eventType == qtractorMidiEvent::CONTROLLER ||
+		eventType == qtractorMidiEvent::REGPARAM   ||
+		eventType == qtractorMidiEvent::NONREGPARAM);
+
+	updateInstrumentNames();
 
 	m_pMidiEditor->editEvent()->setEventType(eventType);
-	m_pMidiEditor->updateContents();
-	m_pMidiEventList->refresh();
 
-	stabilizeForm();
+	eventParamChanged(m_pEventParamComboBox->currentIndex());
 }
 
 
-void qtractorMidiEditorForm::controllerChanged ( int iIndex )
+void qtractorMidiEditorForm::eventParamChanged ( int iIndex )
 {
-	unsigned char controller = (unsigned char) (
-		m_pControllerComboBox->itemData(iIndex).toInt() & 0x7f);
+	const unsigned short param
+		= m_pEventParamComboBox->itemData(iIndex).toInt();
 
-	m_pMidiEditor->editEvent()->setController(controller);
+	m_pMidiEditor->editEvent()->setEventParam(param);
 	m_pMidiEditor->updateContents();
 	m_pMidiEventList->refresh();
 

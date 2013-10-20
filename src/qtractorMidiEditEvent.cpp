@@ -83,12 +83,20 @@ void qtractorMidiEditEventScale::paintEvent ( QPaintEvent * )
 	int y  = 2;
 	int y0 = y + 1;
 
-	int n  = 128;
-	int dn = (n >> 3);
+	int n, dn;
 
-	if (pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND) {
+	const qtractorMidiEvent::EventType eventType
+		= pEditEvent->eventType();
+	if (eventType == qtractorMidiEvent::PITCHBEND) {
 		n  = 8192;
 		dn = (n >> 2);
+	} else {
+		if (eventType == qtractorMidiEvent::REGPARAM ||
+			eventType == qtractorMidiEvent::NONREGPARAM)
+			n = 16384;
+		else
+			n = 128;
+		dn = (n >> 3);
 	}
 
 	while (y < h) {
@@ -117,7 +125,7 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	m_pEditor = pEditor;
 
 	m_eventType = qtractorMidiEvent::NOTEON;
-	m_controller = 0;
+	m_eventParam = 0;
 
 	// Zoom tool widgets
 	m_pHzoomOut   = new QToolButton(this);
@@ -206,6 +214,7 @@ void qtractorMidiEditEvent::setEventType (
 	m_eventType = eventType;
 
 	m_pEditor->selectAll(this, false);
+	m_pEditor->editEventScale()->update();
 //	m_pEditor->updateContents();
 }
 
@@ -215,17 +224,17 @@ qtractorMidiEvent::EventType qtractorMidiEditEvent::eventType (void) const
 }
 
 
-void qtractorMidiEditEvent::setController ( unsigned char controller )
+void qtractorMidiEditEvent::setEventParam ( unsigned short param )
 {
-	m_controller = controller;
+	m_eventParam = param;
 
 	m_pEditor->selectAll(this, false);
 //	m_pEditor->updateContents();
 }
 
-unsigned char qtractorMidiEditEvent::controller (void) const
+unsigned short qtractorMidiEditEvent::eventParam (void) const
 {
-	return m_controller;
+	return m_eventParam;
 }
 
 
@@ -383,7 +392,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	int hue, sat, val;
 	rgbValue.getHsv(&hue, &sat, &val); sat = 86;
 
-	bool bController = (m_eventType == qtractorMidiEvent::CONTROLLER);
+	const bool bEventParam
+		= (m_eventType == qtractorMidiEvent::CONTROLLER
+		|| m_eventType == qtractorMidiEvent::REGPARAM
+		|| m_eventType == qtractorMidiEvent::NONREGPARAM);
 	qtractorMidiEvent *pEvent
 		= m_pEditor->seekEvent(iTickStart > t0 ? iTickStart - t0 : 0);
 	while (pEvent) {
@@ -393,7 +405,11 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		unsigned long t2 = t1 + pEvent->duration();
 		// Filter event type!...
 		if (pEvent->type() == m_eventType && t2 >= iTickStart
-			&& (!bController || pEvent->controller() == m_controller)) {
+			&& (!bEventParam || pEvent->param() == m_eventParam)) {
+			if (m_eventType == qtractorMidiEvent::REGPARAM ||
+				m_eventType == qtractorMidiEvent::NONREGPARAM)
+				y = y0 - (y0 * pEvent->value()) / 16384;
+			else
 			if (m_eventType == qtractorMidiEvent::PITCHBEND)
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else

@@ -820,6 +820,12 @@ QString qtractorMidiControlForm::textFromParam (
 	case qtractorMidiEvent::CONTROLLER:
 		sText += " - "	+ qtractorMidiEditor::defaultControllerName(iParam);
 		break;
+	case qtractorMidiEvent::REGPARAM:
+		sText += " - "	+ qtractorMidiEditor::defaultRpnName(iParam);
+		break;
+	case qtractorMidiEvent::NONREGPARAM:
+		sText += " - "	+ qtractorMidiEditor::defaultNrpnName(iParam);
+		break;
 	default:
 		break;
 	}

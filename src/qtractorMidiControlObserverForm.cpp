@@ -272,6 +272,14 @@ void qtractorMidiControlObserverForm::activateControlType (
 				sText = QString("%1 - %2")
 					.arg(i).arg(qtractorMidiEditor::defaultControllerName(i));
 				break;
+			case qtractorMidiEvent::REGPARAM:
+				sText = QString("%1 - %2")
+					.arg(i).arg(qtractorMidiEditor::defaultRpnName(i));
+				break;
+			case qtractorMidiEvent::NONREGPARAM:
+				sText = QString("%1 - %2")
+					.arg(i).arg(qtractorMidiEditor::defaultNrpnName(i));
+				break;
 			default:
 				sText = QString::number(i);
 				break;
