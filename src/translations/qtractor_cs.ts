@@ -7297,17 +7297,17 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorMidiEditEvent</name>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="149"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="151"/>
         <source>Zoom in (horizontal)</source>
         <translation>Přiblížit (vodorovně)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="150"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="152"/>
         <source>Zoom out (horizontal)</source>
         <translation>Oddálit (vodorovně)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="151"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="153"/>
         <source>Zoom reset (horizontal)</source>
         <translation>Nastavit přibližování (vodorovné) znovu</translation>
     </message>
@@ -7571,7 +7571,7 @@ Délka:	%3</translation>
         <translation type="obsolete">Stisknutí kanálu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="152"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="148"/>
         <source>Pitch Bend</source>
         <translation>Změna výšky tónu</translation>
     </message>
@@ -7580,12 +7580,12 @@ Délka:	%3</translation>
         <translation type="obsolete">Exkluzivní zpráva systému</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="148"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="144"/>
         <source>Pgm Change</source>
         <translation>Změna Pgm</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="150"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="146"/>
         <source>Chan Press</source>
         <translation>Stisknutí kanálu</translation>
     </message>
@@ -7609,12 +7609,12 @@ Délka:	%3</translation>
         <translation type="obsolete">Typ ovladače</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="144"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="150"/>
         <source>RPN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="146"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="152"/>
         <source>NRPN</source>
         <translation type="unfinished"></translation>
     </message>

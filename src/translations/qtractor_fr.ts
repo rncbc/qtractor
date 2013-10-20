@@ -6434,17 +6434,17 @@ Voulez-vous appliquer les changements?</translation>
 <context>
     <name>qtractorMidiEditEvent</name>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="149"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="151"/>
         <source>Zoom in (horizontal)</source>
         <translation>Zoom - aggrandir (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="150"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="152"/>
         <source>Zoom out (horizontal)</source>
         <translation>Zoom - rétrécir (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="151"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="153"/>
         <source>Zoom reset (horizontal)</source>
         <translation>Zoom - réinitialiser (horizontal)</translation>
     </message>
@@ -8122,27 +8122,27 @@ Longueur:	%3</translation>
         <translation>Contrôleur</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="144"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="150"/>
         <source>RPN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="146"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="152"/>
         <source>NRPN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="148"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="144"/>
         <source>Pgm Change</source>
         <translation>Changement Pgm</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="150"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="146"/>
         <source>Chan Press</source>
         <translation>Can Appuyé</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="152"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="148"/>
         <source>Pitch Bend</source>
         <translation>Pitch Bend</translation>
     </message>

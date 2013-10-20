@@ -83,18 +83,20 @@ void qtractorMidiEditEventScale::paintEvent ( QPaintEvent * )
 	int y  = 2;
 	int y0 = y + 1;
 
-	int n  = 128;
-	int dn = (n >> 3);
+	int n, dn;
 
 	const qtractorMidiEvent::EventType eventType
 		= pEditEvent->eventType();
-	if (eventType == qtractorMidiEvent::REGPARAM ||
-		eventType == qtractorMidiEvent::NONREGPARAM)
-		n = 16384;
-	else
 	if (eventType == qtractorMidiEvent::PITCHBEND) {
 		n  = 8192;
 		dn = (n >> 2);
+	} else {
+		if (eventType == qtractorMidiEvent::REGPARAM ||
+			eventType == qtractorMidiEvent::NONREGPARAM)
+			n = 16384;
+		else
+			n = 128;
+		dn = (n >> 3);
 	}
 
 	while (y < h) {
@@ -212,6 +214,7 @@ void qtractorMidiEditEvent::setEventType (
 	m_eventType = eventType;
 
 	m_pEditor->selectAll(this, false);
+	m_pEditor->editEventScale()->update();
 //	m_pEditor->updateContents();
 }
 
