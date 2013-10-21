@@ -555,28 +555,28 @@ void qtractorInstrumentForm::refreshForm (void)
 			}
 		}
 		// - Controller Names...
-		if (instr.control().count() > 0) {
+		if (instr.controllers().count() > 0) {
 			pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
 			pChildItem->setIcon(0, QIcon(":/images/itemControllers.png"));
 			pChildItem->setText(0,
-				tr("Controller Names = %1").arg(instr.control().name()));
-			listInstrumentData(pChildItem, instr.control());
+				tr("Controller Names = %1").arg(instr.controllers().name()));
+			listInstrumentData(pChildItem, instr.controllers());
 		}
 		// - RPN Names...
-		if (instr.rpn().count() > 0) {
+		if (instr.rpns().count() > 0) {
 			pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
 			pChildItem->setIcon(0, QIcon(":/images/itemRpns.png"));
 			pChildItem->setText(0,
-				tr("RPN Names = %1").arg(instr.rpn().name()));
-			listInstrumentData(pChildItem, instr.rpn());
+				tr("RPN Names = %1").arg(instr.rpns().name()));
+			listInstrumentData(pChildItem, instr.rpns());
 		}
 		// - NRPN Names...
-		if (instr.nrpn().count() > 0) {
+		if (instr.nrpns().count() > 0) {
 			pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
 			pChildItem->setIcon(0, QIcon(":/images/itemNrpns.png"));
 			pChildItem->setText(0,
-				tr("NRPN Names = %1").arg(instr.nrpn().name()));
-			listInstrumentData(pChildItem, instr.nrpn());
+				tr("NRPN Names = %1").arg(instr.nrpns().name()));
+			listInstrumentData(pChildItem, instr.nrpns());
 		}
 		// - BankSelMethod...
 		pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
@@ -608,7 +608,7 @@ void qtractorInstrumentForm::refreshForm (void)
 		// - Controller Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Controller Names"));
-		listInstrumentDataList(pListItem, m_pInstruments->controls(),
+		listInstrumentDataList(pListItem, m_pInstruments->controllers(),
 			QIcon(":/images/itemControllers.png"));
 		names.append(pListItem);
 		// - RPN Names...

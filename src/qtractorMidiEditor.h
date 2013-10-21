@@ -29,6 +29,7 @@
 
 #include <QSplitter>
 #include <QHash>
+#include <QMap>
 
 
 // Forward declarations.
@@ -346,8 +347,8 @@ public:
 	const QString& controllerName(unsigned char controller) const;
 
 	// RPN/NRPN map accessors.
-	const QHash<unsigned short, QString>& rpnNames() const;
-	const QHash<unsigned short, QString>& nrpnNames() const;
+	const QMap<unsigned short, QString>& rpnNames() const;
+	const QMap<unsigned short, QString>& nrpnNames() const;
 
 	// Default note name map accessor.
 	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
@@ -355,8 +356,8 @@ public:
 	static const QString& defaultControllerName(unsigned char controller);
 
 	// Default RPN/NRPN map accessors.
-	static const QHash<unsigned short, QString>& defaultRpnNames();
-	static const QHash<unsigned short, QString>& defaultNrpnNames();
+	static const QMap<unsigned short, QString>& defaultRpnNames();
+	static const QMap<unsigned short, QString>& defaultNrpnNames();
 
 	// Default scale key/type names accessors.
 	static const QStringList& scaleKeyNames();
@@ -653,8 +654,9 @@ private:
 	// Instrument defined names for current clip/track.
 	QHash<unsigned char,  QString> m_noteNames;
 	QHash<unsigned char,  QString> m_controllerNames;
-	QHash<unsigned short, QString> m_rpnNames;
-	QHash<unsigned short, QString> m_nrpnNames;
+
+	QMap<unsigned short, QString> m_rpnNames;
+	QMap<unsigned short, QString> m_nrpnNames;
 
 	// Snap-to-scale (aka.in-place scale-quantize) stuff.
 	int m_iSnapToScaleKey;

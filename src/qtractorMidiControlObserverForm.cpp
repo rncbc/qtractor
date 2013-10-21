@@ -258,12 +258,12 @@ void qtractorMidiControlObserverForm::activateControlType (
 	case qtractorMidiEvent::REGPARAM: {
 		m_ui.ParamTextLabel->setEnabled(true);
 		m_ui.ParamComboBox->setEnabled(true);
-		const QHash<unsigned short, QString>& rpnNames
+		const QMap<unsigned short, QString>& rpns
 			= qtractorMidiEditor::defaultRpnNames();
-		QHash<unsigned short, QString>::ConstIterator rpns_iter
-			= rpnNames.constBegin();
-		const QHash<unsigned short, QString>::ConstIterator rpns_end
-			= rpnNames.constEnd();
+		QMap<unsigned short, QString>::ConstIterator rpns_iter
+			= rpns.constBegin();
+		const QMap<unsigned short, QString>::ConstIterator& rpns_end
+			= rpns.constEnd();
 		for (; rpns_iter != rpns_end; ++rpns_iter) {
 			m_ui.ParamComboBox->addItem(icon, sTextMask
 				.arg(rpns_iter.key()).arg(rpns_iter.value()));
@@ -273,12 +273,12 @@ void qtractorMidiControlObserverForm::activateControlType (
 	case qtractorMidiEvent::NONREGPARAM: {
 		m_ui.ParamTextLabel->setEnabled(true);
 		m_ui.ParamComboBox->setEnabled(true);
-		const QHash<unsigned short, QString>& nrpnNames
+		const QMap<unsigned short, QString>& nrpns
 			= qtractorMidiEditor::defaultNrpnNames();
-		QHash<unsigned short, QString>::ConstIterator nrpns_iter
-			= nrpnNames.constBegin();
-		const QHash<unsigned short, QString>::ConstIterator nrpns_end
-			= nrpnNames.constEnd();
+		QMap<unsigned short, QString>::ConstIterator nrpns_iter
+			= nrpns.constBegin();
+		const QMap<unsigned short, QString>::ConstIterator& nrpns_end
+			= nrpns.constEnd();
 		for (; nrpns_iter != nrpns_end; ++nrpns_iter) {
 			m_ui.ParamComboBox->addItem(icon, sTextMask
 				.arg(nrpns_iter.key()).arg(nrpns_iter.value()));
