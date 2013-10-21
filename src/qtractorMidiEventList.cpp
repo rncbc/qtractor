@@ -315,6 +315,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::KEYPRESS:
 				return tr("Key Press (%1)").arg(pEvent->note());
 			case qtractorMidiEvent::CONTROLLER:
+			case qtractorMidiEvent::CONTROL14:
 				return tr("Controller (%1)").arg(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
 				return tr("RPN (%1)").arg(pEvent->param());
@@ -341,6 +342,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::KEYPRESS:
 				return m_pEditor->noteName(pEvent->note());
 			case qtractorMidiEvent::CONTROLLER:
+			case qtractorMidiEvent::CONTROL14:
 				return m_pEditor->controllerName(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
 				return m_pEditor->rpnNames().value(pEvent->param());
@@ -357,6 +359,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::KEYPRESS:
 				return QString::number(pEvent->velocity());
 			case qtractorMidiEvent::CONTROLLER:
+			case qtractorMidiEvent::CONTROL14:
 			case qtractorMidiEvent::REGPARAM:
 			case qtractorMidiEvent::NONREGPARAM:
 			case qtractorMidiEvent::PGMCHANGE:
@@ -541,13 +544,15 @@ QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
 	case 3: // Value.
 	{
 		QSpinBox *pSpinBox = new QSpinBox(pParent);
-		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
+		const qtractorMidiEvent::EventType etype = pEvent->type();
+		if (etype == qtractorMidiEvent::PITCHBEND) {
 			pSpinBox->setMinimum(-8192);
 			pSpinBox->setMaximum(+8192);
 		}
 		else
-		if (pEvent->type() == qtractorMidiEvent::REGPARAM ||
-			pEvent->type() == qtractorMidiEvent::NONREGPARAM) {
+		if (etype == qtractorMidiEvent::REGPARAM    ||
+			etype == qtractorMidiEvent::NONREGPARAM ||
+			etype == qtractorMidiEvent::CONTROL14) {
 			pSpinBox->setMinimum(0);
 			pSpinBox->setMaximum(16383);
 		} else {

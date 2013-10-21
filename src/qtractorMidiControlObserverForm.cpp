@@ -243,18 +243,52 @@ void qtractorMidiControlObserverForm::activateControlType (
 	if (!ctype)
 		return;
 
-	const QIcon icon(":/images/itemControllers.png");
 	int iOldParam = m_ui.ParamComboBox->currentIndex();
+
 	m_ui.ParamComboBox->clear();
+
+	const QIcon icon(":/images/itemControllers.png");
+	const QString sTextMask("%1 - %2");
 	switch (ctype) {
 	case qtractorMidiEvent::CHANPRESS:
 	case qtractorMidiEvent::PITCHBEND:
 		m_ui.ParamTextLabel->setEnabled(false);
 		m_ui.ParamComboBox->setEnabled(false);
 		break;
+	case qtractorMidiEvent::REGPARAM: {
+		m_ui.ParamTextLabel->setEnabled(true);
+		m_ui.ParamComboBox->setEnabled(true);
+		const QHash<unsigned short, QString>& rpnNames
+			= qtractorMidiEditor::defaultRpnNames();
+		QHash<unsigned short, QString>::ConstIterator rpns_iter
+			= rpnNames.constBegin();
+		const QHash<unsigned short, QString>::ConstIterator rpns_end
+			= rpnNames.constEnd();
+		for (; rpns_iter != rpns_end; ++rpns_iter) {
+			m_ui.ParamComboBox->addItem(icon, sTextMask
+				.arg(rpns_iter.key()).arg(rpns_iter.value()));
+		}
+		break;
+	}
+	case qtractorMidiEvent::NONREGPARAM: {
+		m_ui.ParamTextLabel->setEnabled(true);
+		m_ui.ParamComboBox->setEnabled(true);
+		const QHash<unsigned short, QString>& nrpnNames
+			= qtractorMidiEditor::defaultNrpnNames();
+		QHash<unsigned short, QString>::ConstIterator nrpns_iter
+			= nrpnNames.constBegin();
+		const QHash<unsigned short, QString>::ConstIterator nrpns_end
+			= nrpnNames.constEnd();
+		for (; nrpns_iter != nrpns_end; ++nrpns_iter) {
+			m_ui.ParamComboBox->addItem(icon, sTextMask
+				.arg(nrpns_iter.key()).arg(nrpns_iter.value()));
+		}
+		break;
+	}
 	case qtractorMidiEvent::NOTEON:
 	case qtractorMidiEvent::NOTEOFF:
 	case qtractorMidiEvent::CONTROLLER:
+	case qtractorMidiEvent::CONTROL14:
 	case qtractorMidiEvent::KEYPRESS:
 	case qtractorMidiEvent::PGMCHANGE:
 		m_ui.ParamTextLabel->setEnabled(true);
@@ -265,23 +299,16 @@ void qtractorMidiControlObserverForm::activateControlType (
 			case qtractorMidiEvent::NOTEON:
 			case qtractorMidiEvent::NOTEOFF:
 			case qtractorMidiEvent::KEYPRESS:
-				sText = QString("%1 (%2)")
-					.arg(qtractorMidiEditor::defaultNoteName(i)).arg(i);
+				sText = sTextMask.arg(i)
+					.arg(qtractorMidiEditor::defaultNoteName(i));
 				break;
 			case qtractorMidiEvent::CONTROLLER:
-				sText = QString("%1 - %2")
-					.arg(i).arg(qtractorMidiEditor::defaultControllerName(i));
-				break;
-			case qtractorMidiEvent::REGPARAM:
-				sText = QString("%1 - %2")
-					.arg(i).arg(qtractorMidiEditor::defaultRpnName(i));
-				break;
-			case qtractorMidiEvent::NONREGPARAM:
-				sText = QString("%1 - %2")
-					.arg(i).arg(qtractorMidiEditor::defaultNrpnName(i));
+			case qtractorMidiEvent::CONTROL14:
+				sText = sTextMask.arg(i)
+					.arg(qtractorMidiEditor::defaultControllerName(i));
 				break;
 			default:
-				sText = QString::number(i);
+				sText = sTextMask.arg(i).arg(' ');
 				break;
 			}
 			m_ui.ParamComboBox->addItem(icon, sText);

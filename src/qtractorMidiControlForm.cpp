@@ -810,21 +810,28 @@ QString qtractorMidiControlForm::textFromParam (
 {
 	iParam &= qtractorMidiControl::TrackParamMask;
 
-	QString sText = QString::number(iParam);
+	QString sText;
+
+	const QString sTextMask("%1 - %2");
 	switch (ctype) {
 	case qtractorMidiEvent::NOTEON:
 	case qtractorMidiEvent::NOTEOFF:
 	case qtractorMidiEvent::KEYPRESS:
-		sText += " - "	+ qtractorMidiEditor::defaultNoteName(iParam);
+		sText = sTextMask.arg(iParam)
+			.arg(qtractorMidiEditor::defaultNoteName(iParam));
 		break;
 	case qtractorMidiEvent::CONTROLLER:
-		sText += " - "	+ qtractorMidiEditor::defaultControllerName(iParam);
+	case qtractorMidiEvent::CONTROL14:
+		sText = sTextMask.arg(iParam)
+			.arg(qtractorMidiEditor::defaultControllerName(iParam));
 		break;
 	case qtractorMidiEvent::REGPARAM:
-		sText += " - "	+ qtractorMidiEditor::defaultRpnName(iParam);
+		sText = sTextMask.arg(iParam)
+			.arg(qtractorMidiEditor::defaultRpnNames().value(iParam));
 		break;
 	case qtractorMidiEvent::NONREGPARAM:
-		sText += " - "	+ qtractorMidiEditor::defaultNrpnName(iParam);
+		sText = sTextMask.arg(iParam)
+			.arg(qtractorMidiEditor::defaultNrpnNames().value(iParam));
 		break;
 	default:
 		break;

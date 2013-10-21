@@ -1958,9 +1958,10 @@ void qtractorMidiEditorForm::eventTypeChanged ( int iIndex )
 		= qtractorMidiEvent::EventType(
 			m_pEventTypeComboBox->itemData(iIndex).toInt());
 	m_pEventParamComboBox->setEnabled(
-		eventType == qtractorMidiEvent::CONTROLLER ||
-		eventType == qtractorMidiEvent::REGPARAM   ||
-		eventType == qtractorMidiEvent::NONREGPARAM);
+		eventType == qtractorMidiEvent::CONTROLLER  ||
+		eventType == qtractorMidiEvent::REGPARAM    ||
+		eventType == qtractorMidiEvent::NONREGPARAM ||
+		eventType == qtractorMidiEvent::CONTROL14);
 
 	updateInstrumentNames();
 
