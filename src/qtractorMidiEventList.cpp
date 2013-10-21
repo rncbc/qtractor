@@ -544,6 +544,12 @@ QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
 		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
 			pSpinBox->setMinimum(-8192);
 			pSpinBox->setMaximum(+8192);
+		}
+		else
+		if (pEvent->type() == qtractorMidiEvent::REGPARAM ||
+			pEvent->type() == qtractorMidiEvent::NONREGPARAM) {
+			pSpinBox->setMinimum(0);
+			pSpinBox->setMaximum(16383);
 		} else {
 			pSpinBox->setMinimum(0);
 			pSpinBox->setMaximum(127);
@@ -688,7 +694,7 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 		if (pTimeSpinBox) {
 			unsigned long iTime
 				= pTimeScale->tickFromFrame(pTimeSpinBox->valueFromText());
-			if (iTime > pMidiEditor->timeOffset())
+			if (iTime  > pMidiEditor->timeOffset())
 				iTime -= pMidiEditor->timeOffset();
 			else
 				iTime = 0;
