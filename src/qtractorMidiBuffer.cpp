@@ -505,7 +505,7 @@ void qtractorMidiManager::process (
 				pMidiData, iMidiData, pEv);
 			if (iMidiData < 0)
 				break;
-		#ifdef CONFIG_DEBUG_0
+		#ifdef CONFIG_DEBUG//_0
 			// - show event for debug purposes...
 			unsigned long iTime = pEv->time.tick;
 			fprintf(stderr, "MIDI Raw %06lu {", iTime);

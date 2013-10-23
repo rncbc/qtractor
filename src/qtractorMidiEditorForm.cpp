@@ -1786,12 +1786,12 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 
 	if (eventType == qtractorMidiEvent::REGPARAM) {
 		const QIcon iconRpns(":/images/itemRpns.png");
-		const QHash<unsigned short, QString>& rpnNames
+		const QMap<unsigned short, QString>& rpns
 			= m_pMidiEditor->rpnNames();
-		QHash<unsigned short, QString>::ConstIterator rpns_iter
-			= rpnNames.constBegin();
-		const QHash<unsigned short, QString>::ConstIterator rpns_end
-			= rpnNames.constEnd();
+		QMap<unsigned short, QString>::ConstIterator rpns_iter
+			= rpns.constBegin();
+		const QMap<unsigned short, QString>::ConstIterator& rpns_end
+			= rpns.constEnd();
 		for ( ; rpns_iter != rpns_end; ++rpns_iter) {
 			const unsigned short param = rpns_iter.key();
 			m_pEventParamComboBox->addItem(iconRpns,
@@ -1801,12 +1801,12 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 	else
 	if (eventType == qtractorMidiEvent::NONREGPARAM) {
 		const QIcon iconNrpns(":/images/itemNrpns.png");
-		const QHash<unsigned short, QString>& nrpnNames
+		const QMap<unsigned short, QString>& nrpns
 			= m_pMidiEditor->nrpnNames();
-		QHash<unsigned short, QString>::ConstIterator nrpns_iter
-			= nrpnNames.constBegin();
-		const QHash<unsigned short, QString>::ConstIterator nrpns_end
-			= nrpnNames.constEnd();
+		QMap<unsigned short, QString>::ConstIterator nrpns_iter
+			= nrpns.constBegin();
+		const QMap<unsigned short, QString>::ConstIterator& nrpns_end
+			= nrpns.constEnd();
 		for ( ; nrpns_iter != nrpns_end; ++nrpns_iter) {
 			const unsigned short param = nrpns_iter.key();
 			m_pEventParamComboBox->addItem(iconNrpns,
@@ -1958,9 +1958,10 @@ void qtractorMidiEditorForm::eventTypeChanged ( int iIndex )
 		= qtractorMidiEvent::EventType(
 			m_pEventTypeComboBox->itemData(iIndex).toInt());
 	m_pEventParamComboBox->setEnabled(
-		eventType == qtractorMidiEvent::CONTROLLER ||
-		eventType == qtractorMidiEvent::REGPARAM   ||
-		eventType == qtractorMidiEvent::NONREGPARAM);
+		eventType == qtractorMidiEvent::CONTROLLER  ||
+		eventType == qtractorMidiEvent::REGPARAM    ||
+		eventType == qtractorMidiEvent::NONREGPARAM ||
+		eventType == qtractorMidiEvent::CONTROL14);
 
 	updateInstrumentNames();
 

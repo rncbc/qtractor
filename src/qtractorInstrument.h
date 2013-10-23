@@ -189,34 +189,34 @@ public:
 		{ m_pData->patches[iBank] = patch; }
 
 	// Control names accessors.
-	void setControlName(const QString& sControlName)
-		{ m_pData->control.setName(sControlName); }
-	const QString& controlName() const
-		{ return m_pData->control.name(); }
-	void setControl(const qtractorInstrumentData& control)
-		{ m_pData->control = control; }
-	const qtractorInstrumentData& control() const
-		{ return m_pData->control; }
+	void setControllersName(const QString& sControllersName)
+		{ m_pData->controllers.setName(sControllersName); }
+	const QString& controllersName() const
+		{ return m_pData->controllers.name(); }
+	void setControllers(const qtractorInstrumentData& controllers)
+		{ m_pData->controllers = controllers; }
+	const qtractorInstrumentData& controllers() const
+		{ return m_pData->controllers; }
 
 	// RPN names accessors.
-	void setRpnName(const QString& sRpnName)
-		{ m_pData->rpn.setName(sRpnName); }
-	const QString& rpnName() const
-		{ return m_pData->rpn.name(); }
-	void setRpn(const qtractorInstrumentData& rpn)
-		{ m_pData->rpn = rpn; }
-	const qtractorInstrumentData& rpn() const
-		{ return m_pData->rpn; }
+	void setRpnsName(const QString& sRpnName)
+		{ m_pData->rpns.setName(sRpnName); }
+	const QString& rpnsName() const
+		{ return m_pData->rpns.name(); }
+	void setRpns(const qtractorInstrumentData& rpns)
+		{ m_pData->rpns = rpns; }
+	const qtractorInstrumentData& rpns() const
+		{ return m_pData->rpns; }
 
 	// NRPN names accessors.
-	void setNrpnName(const QString& sNrpnName)
-		{ m_pData->nrpn.setName(sNrpnName); }
-	const QString& nrpnName() const
-		{ return m_pData->nrpn.name(); }
-	void setNrpn(const qtractorInstrumentData& nrpn)
-		{ m_pData->nrpn = nrpn; }
-	const qtractorInstrumentData& nrpn() const
-		{ return m_pData->nrpn; }
+	void setNrpnsName(const QString& sNrpnName)
+		{ m_pData->nrpns.setName(sNrpnName); }
+	const QString& nrpnsName() const
+		{ return m_pData->nrpns.name(); }
+	void setNrpns(const qtractorInstrumentData& nrpns)
+		{ m_pData->nrpns = nrpns; }
+	const qtractorInstrumentData& nrpns() const
+		{ return m_pData->nrpns; }
 
 	// Keys banks accessors.
 	const qtractorInstrumentData& notes(int iBank, int iProg) const;
@@ -256,9 +256,9 @@ private:
 		bool                      usesNotesAsControllers;
 		QString                   instrumentName;
 		qtractorInstrumentPatches patches;
-		qtractorInstrumentData    control;
-		qtractorInstrumentData    rpn;
-		qtractorInstrumentData    nrpn;
+		qtractorInstrumentData    controllers;
+		qtractorInstrumentData    rpns;
+		qtractorInstrumentData    nrpns;
 		qtractorInstrumentKeys    keys;
 		qtractorInstrumentDrums   drums;
 
@@ -305,10 +305,10 @@ public:
 		{ return m_notes[sName]; }
 
 	// Controller Names definition accessors.
-	const qtractorInstrumentDataList& controls() const
-		{ return m_controls; }
-	const qtractorInstrumentData& controls(const QString& sName)
-		{ return m_controls[sName]; }
+	const qtractorInstrumentDataList& controllers() const
+		{ return m_controllers; }
+	const qtractorInstrumentData& controllers(const QString& sName)
+		{ return m_controllers[sName]; }
 
 	// RPN Names definition accessors.
 	const qtractorInstrumentDataList& rpns() const
@@ -363,7 +363,7 @@ private:
 	// To hold the names definition lists.
 	qtractorInstrumentDataList m_patches;
 	qtractorInstrumentDataList m_notes;
-	qtractorInstrumentDataList m_controls;
+	qtractorInstrumentDataList m_controllers;
 	qtractorInstrumentDataList m_rpns;
 	qtractorInstrumentDataList m_nrpns;
 	

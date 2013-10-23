@@ -837,11 +837,13 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 				iChannel = pSeq->channel();
 
 				// - Extra-ordinary (controller) types...
-				if (pEvent->type() == qtractorMidiEvent::REGPARAM ||
-					pEvent->type() == qtractorMidiEvent::NONREGPARAM) {
+				const qtractorMidiEvent::EventType etype = pEvent->type();
+				if (etype == qtractorMidiEvent::REGPARAM    ||
+					etype == qtractorMidiEvent::NONREGPARAM ||
+					etype == qtractorMidiEvent::CONTROL14) {
 					iStatus = (qtractorMidiEvent::CONTROLLER | iChannel) & 0xff;
 				} else {
-					iStatus = (pEvent->type() | iChannel) & 0xff;
+					iStatus = (etype | iChannel) & 0xff;
 				}
 
 				// - Running status?
@@ -851,7 +853,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 				}
 
 				// - Data bytes...
-				switch (pEvent->type()) {
+				switch (etype) {
 				case qtractorMidiEvent::NOTEON:
 					writeInt(pEvent->note(), 1);
 					writeInt(pEvent->velocity(), 1);
@@ -876,6 +878,14 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 				case qtractorMidiEvent::CONTROLLER:
 					writeInt(pEvent->controller(), 1);
 					writeInt(pEvent->value(), 1);
+					break;
+				case qtractorMidiEvent::CONTROL14:
+					writeInt(pEvent->controller(), 1);
+					writeInt((pEvent->value() & 0x3f80) >> 7, 1);
+					writeInt(0); // delta-time=0
+				//	writeInt(iStatus, 1);
+					writeInt(pEvent->controller(), 1);
+					writeInt((pEvent->value() & 0x007f), 1);
 					break;
 				case qtractorMidiEvent::REGPARAM:
 					writeInt(RPN_MSB, 1);
