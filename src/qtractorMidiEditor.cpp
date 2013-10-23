@@ -4678,8 +4678,13 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 			.arg(int(pEvent->velocity() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CONTROLLER:
-	case qtractorMidiEvent::CONTROL14:
 		sToolTip += tr("Controller (%1)\nName:\t%2\nValue:\t%3")
+			.arg(int(pEvent->controller()))
+			.arg(controllerName(int(pEvent->controller())))
+			.arg(int(pEvent->value() + iValueDelta));
+		break;
+	case qtractorMidiEvent::CONTROL14:
+		sToolTip += tr("Control14 (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->controller()))
 			.arg(controllerName(int(pEvent->controller())))
 			.arg(int(pEvent->value() + iValueDelta));

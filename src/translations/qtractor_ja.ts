@@ -6599,7 +6599,7 @@ Value:	%3</source>
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4682"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4681"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -6608,48 +6608,55 @@ Value:	%3</source>
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4688"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4687"/>
+        <source>Control14 (%1)
+Name:	%2
+Value:	%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4693"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4694"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4699"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4700"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4705"/>
         <source>Pgm Change (%1)</source>
         <translation>Pgmチェンジ (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4704"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4709"/>
         <source>Chan Press (%1)</source>
         <translation>チャンネルプレス (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4708"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4713"/>
         <source>Pitch Bend (%1)</source>
         <translation>ピッチベンド (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4715"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4720"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1バイト)
 データ: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4727"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4732"/>
         <source>Unknown (%1)</source>
         <translation>不明 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4977"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4982"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -8274,7 +8281,7 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiEventItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="690"/>
+        <location filename="../qtractorMidiEventList.cpp" line="691"/>
         <source>edit %1</source>
         <translation>編集 %1</translation>
     </message>
@@ -8282,7 +8289,7 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="934"/>
+        <location filename="../qtractorMidiEventList.cpp" line="935"/>
         <source>Events</source>
         <translation>イベント</translation>
     </message>
@@ -8341,47 +8348,52 @@ Do you want to save the changes?</source>
         <translation>キープレス (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="319"/>
+        <location filename="../qtractorMidiEventList.cpp" line="318"/>
         <source>Controller (%1)</source>
         <translation>コントローラー (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="321"/>
+        <location filename="../qtractorMidiEventList.cpp" line="320"/>
+        <source>Control14 (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="322"/>
         <source>RPN (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="323"/>
+        <location filename="../qtractorMidiEventList.cpp" line="324"/>
         <source>NRPN (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="325"/>
+        <location filename="../qtractorMidiEventList.cpp" line="326"/>
         <source>Pgm Change</source>
         <translation>Pgmチェンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="327"/>
+        <location filename="../qtractorMidiEventList.cpp" line="328"/>
         <source>Chan Press</source>
         <translation>チャンネルプレス</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="329"/>
+        <location filename="../qtractorMidiEventList.cpp" line="330"/>
         <source>Pitch Bend</source>
         <translation>ピッチベンド</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="331"/>
+        <location filename="../qtractorMidiEventList.cpp" line="332"/>
         <source>SysEx</source>
         <translation>SysEx</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="333"/>
+        <location filename="../qtractorMidiEventList.cpp" line="334"/>
         <source>Meta (%1)</source>
         <translation>メタ (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="337"/>
+        <location filename="../qtractorMidiEventList.cpp" line="338"/>
         <source>Unknown (%1)</source>
         <translation>不明 (%1)</translation>
     </message>

@@ -315,8 +315,9 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::KEYPRESS:
 				return tr("Key Press (%1)").arg(pEvent->note());
 			case qtractorMidiEvent::CONTROLLER:
-			case qtractorMidiEvent::CONTROL14:
 				return tr("Controller (%1)").arg(pEvent->controller());
+			case qtractorMidiEvent::CONTROL14:
+				return tr("Control14 (%1)").arg(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
 				return tr("RPN (%1)").arg(pEvent->param());
 			case qtractorMidiEvent::NONREGPARAM:
