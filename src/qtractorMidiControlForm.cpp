@@ -92,7 +92,14 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
-	m_ui.ControlTypeComboBox->setCurrentIndex(3); // Controller.
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM));
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM));
+//	m_ui.ControlTypeComboBox->addItem(iconControlType,
+//		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14));
+
+	m_ui.ControlTypeComboBox->setCurrentIndex(3); // Controller (default).
 
 //	m_ui.ChannelComboBox->clear();
 	m_ui.ChannelComboBox->addItem("*");
@@ -336,22 +343,23 @@ void qtractorMidiControlForm::mapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMidiControl::ControlType ctype
+	const qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(
 			m_ui.ControlTypeComboBox->currentText());
-	unsigned short iChannel = channelFromText(
-		m_ui.ChannelComboBox->currentText());
-	unsigned short iParam = paramFromText(ctype,
-		m_ui.ParamComboBox->currentText());
+	const unsigned short iChannel
+		= channelFromText(m_ui.ChannelComboBox->currentText());
+
+	const int iParamIndex = m_ui.ParamComboBox->currentIndex();
+	unsigned short iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
-	qtractorMidiControl::Command command
+	const qtractorMidiControl::Command command
 		= qtractorMidiControl::commandFromName(
 			m_ui.CommandComboBox->currentText());
-	int iTrack = m_ui.TrackSpinBox->value();
-	bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
+	const int iTrack = m_ui.TrackSpinBox->value();
+	const bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 
 	pMidiControl->mapChannelParam(
 		ctype, iChannel, iParam, command, iTrack, bFeedback);
@@ -370,13 +378,14 @@ void qtractorMidiControlForm::unmapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMidiControl::ControlType ctype
+	const qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(
 			m_ui.ControlTypeComboBox->currentText());
-	unsigned short iChannel = channelFromText(
-		m_ui.ChannelComboBox->currentText());
-	unsigned short iParam = paramFromText(ctype,
-		m_ui.ParamComboBox->currentText());
+	const unsigned short iChannel
+		= channelFromText(m_ui.ChannelComboBox->currentText());
+
+	const int iParamIndex = m_ui.ParamComboBox->currentIndex();
+	unsigned short iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
@@ -539,9 +548,85 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 	qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(
 			m_ui.ControlTypeComboBox->currentText());
-	const QIcon iconParam(":/images/itemControllers.png");
-	for (unsigned short iParam = 0; iParam < 128; ++iParam)
-		m_ui.ParamComboBox->addItem(iconParam, textFromParam(ctype, iParam));
+
+	const QString sTextMask("%1 - %2");
+
+	switch (ctype) {
+	case qtractorMidiEvent::NOTEON:
+	case qtractorMidiEvent::NOTEOFF:
+	case qtractorMidiEvent::KEYPRESS: {
+		const QIcon iconNotes(":/images/itemNotes.png");
+		m_ui.ParamComboBox->setEnabled(true);
+		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
+			m_ui.ParamComboBox->addItem(iconNotes,
+				sTextMask.arg(iParam)
+					.arg(qtractorMidiEditor::defaultNoteName(iParam)),
+				int(iParam));
+		}
+		break;
+		break;
+	}
+//	case qtractorMidiEvent::CONTROL14:
+	case qtractorMidiEvent::CONTROLLER: {
+		const QIcon iconControllers(":/images/itemControllers.png");
+		m_ui.ParamComboBox->setEnabled(true);
+		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
+			m_ui.ParamComboBox->addItem(iconControllers,
+				sTextMask.arg(iParam)
+					.arg(qtractorMidiEditor::defaultControllerName(iParam)),
+				int(iParam));
+		}
+		break;
+	}
+	case qtractorMidiEvent::PGMCHANGE: {
+		const QIcon iconPatches(":/images/itemPatches.png");
+		m_ui.ParamComboBox->setEnabled(true);
+		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
+			m_ui.ParamComboBox->addItem(iconPatches,
+				sTextMask.arg(iParam).arg('-'), int(iParam));
+		}
+		break;
+	}
+	case qtractorMidiEvent::REGPARAM: {
+		const QIcon iconRpns(":/images/itemRpns.png");
+		m_ui.ParamComboBox->setEnabled(true);
+		const QMap<unsigned short, QString>& rpns
+			= qtractorMidiEditor::defaultRpnNames();
+		QMap<unsigned short, QString>::ConstIterator rpns_iter
+			= rpns.constBegin();
+		const QMap<unsigned short, QString>::ConstIterator& rpns_end
+			= rpns.constEnd();
+		for ( ; rpns_iter != rpns_end; ++rpns_iter) {
+			const unsigned short iParam = rpns_iter.key();
+			m_ui.ParamComboBox->addItem(iconRpns,
+				sTextMask.arg(iParam).arg(rpns_iter.value()),
+				int(iParam));
+		}
+		break;
+	}
+	case qtractorMidiEvent::NONREGPARAM: {
+		const QIcon iconNrpns(":/images/itemNrpns.png");
+		m_ui.ParamComboBox->setEnabled(true);
+		const QMap<unsigned short, QString>& nrpns
+			= qtractorMidiEditor::defaultNrpnNames();
+		QMap<unsigned short, QString>::ConstIterator nrpns_iter
+			= nrpns.constBegin();
+		const QMap<unsigned short, QString>::ConstIterator& nrpns_end
+			= nrpns.constEnd();
+		for ( ; nrpns_iter != nrpns_end; ++nrpns_iter) {
+			const unsigned short iParam = nrpns_iter.key();
+			m_ui.ParamComboBox->addItem(iconNrpns,
+				sTextMask.arg(iParam).arg(nrpns_iter.value()),
+				int(iParam));
+		}
+		break;
+	}
+	case qtractorMidiEvent::CHANPRESS:
+	case qtractorMidiEvent::PITCHBEND:
+	default:
+		m_ui.ParamComboBox->setEnabled(false);
+		break;
+	}
 }
 
 
@@ -566,10 +651,12 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	const QString& sChannel = m_ui.ChannelComboBox->currentText();
 	const QString& sParam   = m_ui.ParamComboBox->currentText();
 
-	qtractorMidiControl::ControlType ctype
+	const qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(sType);
-	unsigned short iChannel = channelFromText(sChannel);
-	unsigned short iParam = paramFromText(ctype, sParam);
+	const unsigned short iChannel = channelFromText(sChannel);
+
+	const int iParamIndex = m_ui.ParamComboBox->currentIndex();
+	unsigned short iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
@@ -621,12 +708,13 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 
 	const QString& sType    = m_ui.ControlTypeComboBox->currentText();
 	const QString& sChannel = m_ui.ChannelComboBox->currentText();
-	const QString& sParam   = m_ui.ParamComboBox->currentText();
 
-	qtractorMidiControl::ControlType ctype
+	const qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(sType);
-	unsigned short iChannel = channelFromText(sChannel);
-	unsigned short iParam = paramFromText(ctype, sParam);
+	const unsigned short iChannel = channelFromText(sChannel);
+
+	const int iParamIndex = m_ui.ParamComboBox->currentIndex();
+	unsigned short iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
@@ -820,8 +908,8 @@ QString qtractorMidiControlForm::textFromParam (
 		sText = sTextMask.arg(iParam)
 			.arg(qtractorMidiEditor::defaultNoteName(iParam));
 		break;
+//	case qtractorMidiEvent::CONTROL14:
 	case qtractorMidiEvent::CONTROLLER:
-	case qtractorMidiEvent::CONTROL14:
 		sText = sTextMask.arg(iParam)
 			.arg(qtractorMidiEditor::defaultControllerName(iParam));
 		break;
@@ -833,6 +921,11 @@ QString qtractorMidiControlForm::textFromParam (
 		sText = sTextMask.arg(iParam)
 			.arg(qtractorMidiEditor::defaultNrpnNames().value(iParam));
 		break;
+	case qtractorMidiEvent::PGMCHANGE:
+		sText = sTextMask.arg(iParam).arg('-');
+		// Fall thru...
+	case qtractorMidiEvent::CHANPRESS:
+	case qtractorMidiEvent::PITCHBEND:
 	default:
 		break;
 	}

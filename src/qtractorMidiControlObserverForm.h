@@ -84,6 +84,9 @@ protected:
 	// Pseudo-destructor.
 	void closeEvent(QCloseEvent *pCloseEvent);
 
+	// Find combo-box index from control parameter number.
+	int indexFromParam(unsigned short iParam) const;
+
 	// Add esquisite automation menu actions...
 	static void addMidiControlMenu(
 		QMenu *pMenu, qtractorMidiControlObserver *pMidiObserver);
