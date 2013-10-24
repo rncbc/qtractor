@@ -3926,6 +3926,24 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 		ev.data.control.param   = iParam;
 		ev.data.control.value   = iValue;
 		break;
+	case qtractorMidiEvent::REGPARAM:
+		ev.type = SND_SEQ_EVENT_REGPARAM;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = iParam;
+		ev.data.control.value   = iValue;
+		break;
+	case qtractorMidiEvent::NONREGPARAM:
+		ev.type = SND_SEQ_EVENT_NONREGPARAM;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = iParam;
+		ev.data.control.value   = iValue;
+		break;
+	case qtractorMidiEvent::CONTROL14:
+		ev.type = SND_SEQ_EVENT_CONTROL14;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = iParam;
+		ev.data.control.value   = iValue;
+		break;
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iChannel;

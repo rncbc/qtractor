@@ -6,8 +6,9 @@ ChangeLog
 SVN TRUNK
 
 - General MIDI RPN/NRPN controller support is now introduced
-  to real-time MIDI input parsing, standard MIDI file I/O and,
-  of course, on MIDI clip event/list editor. (EXPERIMENTAL)
+  on real-time MIDI input parsing, on standard MIDI file I/O,
+  on MIDI Controller options and, of course, on MIDI clip and
+  event list editor. (EXPERIMENTAL)
 
 - Pretty innocent nitpick on most thread cleanup routines.
 
