@@ -380,7 +380,7 @@ static struct
 
 } g_aControl14Names[] = {
 
-	{  1, _TR("Modulation Wheel 14b") },
+	{  1, _TR("Modulation Wheel (14bit)") },
 	{  2, _TR("Breath Controller (14bit)") },
 	{  4, _TR("Foot Pedal (14bit)") },
 	{  5, _TR("Portamento Time (14bit)") },
