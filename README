@@ -28,8 +28,7 @@ Features
 --------
 
 - Multi-track audio and MIDI sequencing and recording.
-- Developed on pure Qt4 C++ application framework [1]
-  (no Qt3 nor KDE dependencies).
+- Developed on pure Qt4 C++ application framework [1].
 - Uses JACK [2] for audio and ALSA [3] sequencer for MIDI
   as multimedia infrastructures.
 - Traditional multi-track tape recorder control paradigm.

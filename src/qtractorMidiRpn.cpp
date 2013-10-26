@@ -34,6 +34,13 @@
 #define DATA_LSB  0x26
 
 
+#define CC14_MSB_MIN    0x00
+#define CC14_MSB_MAX    0x20
+
+#define CC14_LSB_MIN    CC14_MSB_MAX
+#define CC14_LSB_MAX   (CC14_MSB_MAX << 1)
+
+
 //---------------------------------------------------------------------
 // xrpn_data14 - decl.
 //
@@ -172,6 +179,8 @@ public:
 		{ return m_value.data(); }
 
 	bool is_any() const
+		{ return m_param.is_any() || m_value.is_any(); }
+	bool is_ready() const
 		{ return m_param.is_any() && m_value.is_any(); }
 	bool is_7bit() const
 		{ return m_param.is_any() && m_value.is_7bit(); }
@@ -388,7 +397,9 @@ public:
 			xrpn_item& item = get_item(event.port, channel);
 			if (item.type() == qtractorMidiRpn::None)
 				return false;
-			if (item.is_value_msb()) {
+			if (item.is_value_msb()
+				|| (item.type() != qtractorMidiRpn::RPN
+				 && item.type() != qtractorMidiRpn::NRPN)) {
 				enqueue(item);
 				return false;
 			}
@@ -402,10 +413,50 @@ public:
 			xrpn_item& item = get_item(event.port, channel);
 			if (item.type() == qtractorMidiRpn::None)
 				return false;
-			if (item.is_value_lsb()) {
+			if (item.is_value_lsb()
+				|| (item.type() != qtractorMidiRpn::RPN
+				 && item.type() != qtractorMidiRpn::NRPN)) {
 				enqueue(item);
 				return false;
 			}
+			item.set_value_lsb(event.value);
+			if (item.is_14bit())
+				enqueue(item);
+			return true;
+		}
+		else
+		if (event.param > CC14_MSB_MIN && event.param < CC14_MSB_MAX) {
+			xrpn_item& item = get_item(event.port, channel);
+			if (item.is_param_msb() || item.is_value_msb()
+				|| (item.is_any() && item.type() != qtractorMidiRpn::CC14)
+				|| (item.type() == qtractorMidiRpn::CC14
+					&& item.param_lsb() != event.param + CC14_LSB_MIN))
+				enqueue(item);
+			if (item.type() == qtractorMidiRpn::None) {
+				item.set_time(event.time);
+				item.set_status(qtractorMidiRpn::CC14 | channel);
+				++m_count;
+			}
+			item.set_param_msb(event.param);
+			item.set_value_msb(event.value);
+			if (item.is_14bit())
+				enqueue(item);
+			return true;
+		}
+		else
+		if (event.param > CC14_LSB_MIN && event.param < CC14_LSB_MAX) {
+			xrpn_item& item = get_item(event.port, channel);
+			if (item.is_param_lsb() || item.is_value_lsb()
+				|| (item.is_any() && item.type() != qtractorMidiRpn::CC14)
+				|| (item.type() == qtractorMidiRpn::CC14
+					&& item.param_msb() != event.param - CC14_LSB_MIN))
+				enqueue(item);
+			if (item.type() == qtractorMidiRpn::None) {
+				item.set_time(event.time);
+				item.set_status(qtractorMidiRpn::CC14 | channel);
+				++m_count;
+			}
+			item.set_param_lsb(event.param);
 			item.set_value_lsb(event.value);
 			if (item.is_14bit())
 				enqueue(item);
@@ -428,7 +479,22 @@ protected:
 		const unsigned long time = item.time();
 		const int port = item.port();
 
-		if (item.is_any()) {
+		if (item.type() == qtractorMidiRpn::CC14) {
+			if (item.is_14bit()) {
+				m_queue.push(time, port, item.status(),
+					item.param_msb(), item.value());
+			} else  {
+				const unsigned char status = qtractorMidiRpn::CC | item.channel();
+				if (item.is_value_msb())
+					m_queue.push(time, port, status,
+						item.param_msb(), item.value_msb());
+				if (item.is_value_lsb())
+					m_queue.push(time, port, status,
+						item.param_lsb(), item.value_lsb());
+			}
+		}
+		else
+		if (item.is_ready()) {
 			m_queue.push(time, port, item.status(), item.param(), item.value());
 		} else {
 			const unsigned char status = qtractorMidiRpn::CC | item.channel();

@@ -766,7 +766,7 @@ static struct
 	{ qtractorMidiEvent::PITCHBEND,  "PITCHBEND",  _TR("Pitch Bend") },
 	{ qtractorMidiEvent::REGPARAM,   "REGPARAM",   _TR("RPN")        },
 	{ qtractorMidiEvent::NONREGPARAM,"NONREGPARAM",_TR("NRPN")       },
-	{ qtractorMidiEvent::CONTROL14,  "CONTROL14",  _TR("Control14")  },
+	{ qtractorMidiEvent::CONTROL14,  "CONTROL14",  _TR("Control 14") },
 
 	{ qtractorMidiControl::ControlType(0), NULL, NULL }
 };
