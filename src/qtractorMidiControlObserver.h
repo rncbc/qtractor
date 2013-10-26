@@ -107,6 +107,9 @@ protected:
 	// Updater.
 	virtual void update(bool bUpdate);
 
+	// MIDI scale type (7bit vs. 14bit).
+	unsigned short midiScale() const;
+
 private:
 
 	// Key members.

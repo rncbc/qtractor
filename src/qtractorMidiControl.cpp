@@ -286,10 +286,12 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	if (pTrack == NULL)
 		return bResult;
 
+	Scale scale(ctle.type());
+
 	float fValue;
 	switch (val.command()) {
 	case TRACK_GAIN:
-		fValue = float(ctle.value()) / 127.0f;
+		fValue = scale.valueFromMidi(ctle.value());
 		if (pTrack->trackType() == qtractorTrack::Audio)
 			fValue = ::cubef2(fValue);
 		if (val.sync(fValue, pTrack->gain())) {
@@ -298,21 +300,21 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		}
 		break;
 	case TRACK_PANNING:
-		fValue = (float(ctle.value()) - 64.0f) / 63.0f;
+		fValue = scale.valueSignedFromMidi(ctle.value());
 		if (val.sync(fValue, pTrack->panning())) {
 			bResult = pSession->execute(
 				new qtractorTrackPanningCommand(pTrack, val.value(), true));
 		}
 		break;
 	case TRACK_MONITOR:
-		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		fValue = scale.valueToggledFromMidi(ctle.value());
 		if (val.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackMonitorCommand(pTrack, val.value(), true));
 		}
 		break;
 	case TRACK_RECORD:
-		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		fValue = scale.valueToggledFromMidi(ctle.value());
 		if (val.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
@@ -320,7 +322,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		}
 		break;
 	case TRACK_MUTE:
-		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		fValue = scale.valueToggledFromMidi(ctle.value());
 		if (val.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
@@ -328,7 +330,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		}
 		break;
 	case TRACK_SOLO:
-		fValue = (ctle.value() > 0 ? 1.0f : 0.0f);
+		fValue = scale.valueToggledFromMidi(ctle.value());
 		if (val.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
@@ -347,39 +349,20 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 void qtractorMidiControl::processTrackCommand (
 	Command command, int iTrack, float fValue, bool bCubic )
 {
-	switch (command) {
-	case TRACK_GAIN:
-		if (bCubic) fValue = ::cbrtf2(fValue);
-		sendTrackController(iTrack, command, int(127.0f * fValue));
-		break;
-	case TRACK_PANNING:
-		sendTrackController(iTrack, command, 0x40 + int(63.0f * fValue));
-		break;
-	default:
-		break;
-	}
+	sendTrackController(iTrack, command, fValue, bCubic);
 }
 
 
 void qtractorMidiControl::processTrackCommand (
 	Command command, int iTrack, bool bValue )
 {
-	switch (command) {
-	case TRACK_MONITOR:
-	case TRACK_RECORD:
-	case TRACK_MUTE:
-	case TRACK_SOLO:
-		sendTrackController(iTrack, command, (bValue ? 127 : 0));
-		break;
-	default:
-		break;
-	}
+	sendTrackController(iTrack, command, (bValue ? 1.0f : 0.0f), false);
 }
 
 
 // Further processing of outgoing midi controller messages
 void qtractorMidiControl::sendTrackController (
-	int iTrack, Command command, int iValue )
+	int iTrack, Command command, float fValue, bool bCubic )
 {
 	// Search for the command and parameter in controller map...
 	ControlMap::Iterator it = m_controlMap.begin();
@@ -391,8 +374,29 @@ void qtractorMidiControl::sendTrackController (
 			val.syncReset();
 			if (!val.isFeedback())
 				continue;
+			// Convert/normalize value...
+			const ControlType ctype = key.type();
+			unsigned short iValue = 0;
+			Scale scale(ctype);
+			switch (command) {
+			case TRACK_GAIN:
+				if (bCubic) fValue = ::cbrtf2(fValue);
+				iValue = scale.midiFromValue(fValue);
+				break;
+			case TRACK_PANNING:
+				iValue = scale.midiFromValueSigned(fValue);
+				break;
+			case TRACK_MONITOR:
+			case TRACK_RECORD:
+			case TRACK_MUTE:
+			case TRACK_SOLO:
+				iValue = scale.midiFromValueToggled(fValue);
+				// Fall thru...
+			default:
+				break;
+			}
 			// Now send the message out...
-			unsigned short iParam = (key.param() & TrackParamMask);
+			const unsigned short iParam = (key.param() & TrackParamMask);
 			if (key.isChannelTrack())
 				sendController(key.type(), iTrack, iParam, iValue);
 			else
@@ -410,29 +414,31 @@ void qtractorMidiControl::sendTrackController (
 	ControlType ctype, qtractorTrack *pTrack,
 	Command command, unsigned short iChannel, unsigned short iParam ) const
 {
-	int iValue = 0;
+
+	unsigned short iValue = 0;
+	Scale scale(ctype);
 
 	switch (command) {
 	case TRACK_GAIN:
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			iValue = int(127.0f * ::cbrtf2(pTrack->gain()));
+			iValue = scale.midiFromValue(::cbrtf2(pTrack->gain()));
 		else
-			iValue = int(127.0f * pTrack->gain());
+			iValue = scale.midiFromValue(pTrack->gain());
 		break;
 	case TRACK_PANNING:
-		iValue = 0x40 + int(63.0f * pTrack->panning());
+		iValue = scale.midiFromValueSigned(pTrack->panning());
 		break;
 	case TRACK_MONITOR:
-		iValue = (pTrack->isMonitor() ? 127 : 0);
+		iValue = scale.midiFromValueToggled(pTrack->isMonitor());
 		break;
 	case TRACK_RECORD:
-		iValue = (pTrack->isRecord() ? 127 : 0);
+		iValue = scale.midiFromValueToggled(pTrack->isRecord());
 		break;
 	case TRACK_MUTE:
-		iValue = (pTrack->isMute() ? 127 : 0);
+		iValue = scale.midiFromValueToggled(pTrack->isMute());
 		break;
 	case TRACK_SOLO:
-		iValue = (pTrack->isSolo() ? 127 : 0);
+		iValue = scale.midiFromValueToggled(pTrack->isSolo());
 		break;
 	default:
 		break;
@@ -443,8 +449,9 @@ void qtractorMidiControl::sendTrackController (
 
 
 // Send this value out to midi bus.
-void qtractorMidiControl::sendController ( ControlType ctype,
-	unsigned short iChannel, unsigned short iParam, int iValue ) const
+void qtractorMidiControl::sendController (
+	ControlType ctype, unsigned short iChannel,
+	unsigned short iParam, unsigned short iValue ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -457,17 +464,6 @@ void qtractorMidiControl::sendController ( ControlType ctype,
 	qtractorMidiBus *pMidiBus = pMidiEngine->controlBus_out();
 	if (pMidiBus == NULL)
 		return;
-
-	if (iValue < 0)
-		iValue = 0;
-	else
-	if (ctype == qtractorMidiEvent::PITCHBEND) {
-		if (iValue > 0x3fff)
-			iValue = 0x3fff;
-	}
-	else
-	if (iValue > 0x7f)
-		iValue = 0x7f;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiControl::sendController(0x%02x, %u, %u, %d)",
@@ -765,12 +761,12 @@ static struct
 	{ qtractorMidiEvent::NOTEOFF,    "NOTEOFF",    _TR("Note Off")   },
 	{ qtractorMidiEvent::KEYPRESS,   "KEYPRESS",   _TR("Key Press")  },
 	{ qtractorMidiEvent::CONTROLLER, "CONTROLLER", _TR("Controller") },
-	{ qtractorMidiEvent::REGPARAM,   "REGPARAM",   _TR("RPN")        },
-	{ qtractorMidiEvent::NONREGPARAM,"NONREGPARAM",_TR("NRPN")       },
-	{ qtractorMidiEvent::CONTROL14,  "CONTROL14",  _TR("Control14")  },
 	{ qtractorMidiEvent::PGMCHANGE,  "PGMCHANGE",  _TR("Pgm Change") },
 	{ qtractorMidiEvent::CHANPRESS,  "CHANPRESS",  _TR("Chan Press") },
 	{ qtractorMidiEvent::PITCHBEND,  "PITCHBEND",  _TR("Pitch Bend") },
+	{ qtractorMidiEvent::REGPARAM,   "REGPARAM",   _TR("RPN")        },
+	{ qtractorMidiEvent::NONREGPARAM,"NONREGPARAM",_TR("NRPN")       },
+	{ qtractorMidiEvent::CONTROL14,  "CONTROL14",  _TR("Control14")  },
 
 	{ qtractorMidiControl::ControlType(0), NULL, NULL }
 };
