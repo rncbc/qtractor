@@ -371,6 +371,52 @@ const QMap<unsigned short, QString>& qtractorMidiEditor::defaultNrpnNames (void)
 
 
 //----------------------------------------------------------------------------
+// MIDI Control-14 Names - Default controller names hash map.
+
+static struct
+{
+	unsigned char controller;
+	const char *name;
+
+} g_aControl14Names[] = {
+
+	{  1, _TR("Modulation Wheel 14b") },
+	{  2, _TR("Breath Controller (14bit)") },
+	{  4, _TR("Foot Pedal (14bit)") },
+	{  5, _TR("Portamento Time (14bit)") },
+	{  7, _TR("Volume (14bit)") },
+	{  8, _TR("Balance (14bit)") },
+	{ 10, _TR("Pan Position (14bit)") },
+	{ 11, _TR("Expression (14bit)") },
+	{ 12, _TR("Effect Control 1 (14bit)") },
+	{ 13, _TR("Effect Control 2 (14bit)") },
+	{ 16, _TR("General Purpose Slider 1 (14bit)") },
+	{ 17, _TR("General Purpose Slider 2 (14bit)") },
+	{ 18, _TR("General Purpose Slider 3 (14bit)") },
+	{ 19, _TR("General Purpose Slider 4 (14bit)") },
+
+	{  0, NULL }
+};
+
+static QMap<unsigned char, QString> g_control14Names;
+
+// Default RPN map accessor.
+const QMap<unsigned char, QString>& qtractorMidiEditor::defaultControl14Names (void)
+{
+	if (g_control14Names.isEmpty()) {
+		// Pre-load Control14-names hash table...
+		for (int i = 0; g_aControl14Names[i].name; ++i) {
+			g_control14Names.insert(g_aControl14Names[i].controller,
+				QObject::tr(g_aControl14Names[i].name, "control14Name"));
+		}
+	}
+
+	return g_control14Names;
+}
+
+
+
+//----------------------------------------------------------------------------
 // MIDI Scale Names - Default scale names table.
 
 static struct
@@ -3439,7 +3485,7 @@ void qtractorMidiEditor::updateEventRects (
 	// Event item...
 	const qtractorMidiEvent::EventType etype = pEvent->type();
 	if (etype == eventType) {
-		if (etype == qtractorMidiEvent::REGPARAM ||
+		if (etype == qtractorMidiEvent::REGPARAM    ||
 			etype == qtractorMidiEvent::NONREGPARAM ||
 			etype == qtractorMidiEvent::CONTROL14)
 			y = y0 - (y0 * pEvent->value()) / 16384;
@@ -4609,6 +4655,13 @@ const QMap<unsigned short, QString>& qtractorMidiEditor::nrpnNames (void) const
 }
 
 
+// Control-14 map accessors.
+const QMap<unsigned char, QString>& qtractorMidiEditor::control14Names (void) const
+{
+	return defaultControl14Names();
+}
+
+
 // Command execution notification slot.
 void qtractorMidiEditor::updateNotifySlot ( unsigned int flags )
 {
@@ -4680,13 +4733,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 	case qtractorMidiEvent::CONTROLLER:
 		sToolTip += tr("Controller (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->controller()))
-			.arg(controllerName(int(pEvent->controller())))
-			.arg(int(pEvent->value() + iValueDelta));
-		break;
-	case qtractorMidiEvent::CONTROL14:
-		sToolTip += tr("Control14 (%1)\nName:\t%2\nValue:\t%3")
-			.arg(int(pEvent->controller()))
-			.arg(controllerName(int(pEvent->controller())))
+			.arg(controllerName(pEvent->controller()))
 			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::REGPARAM:
@@ -4699,6 +4746,12 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 		sToolTip += tr("NRPN (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->param()))
 			.arg(nrpnNames().value(pEvent->param()))
+			.arg(int(pEvent->value() + iValueDelta));
+		break;
+	case qtractorMidiEvent::CONTROL14:
+		sToolTip += tr("Control 14 (%1)\nName:\t%2\nValue:\t%3")
+			.arg(int(pEvent->controller()))
+			.arg(control14Names().value(pEvent->controller()))
 			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::PGMCHANGE:

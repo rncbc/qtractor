@@ -295,8 +295,10 @@ qtractorMidiInputRpn::qtractorMidiInputRpn (void) : qtractorMidiRpn()
 // Encoder.
 bool qtractorMidiInputRpn::process ( const snd_seq_event_t *ev )
 {
-	if (ev->type != SND_SEQ_EVENT_CONTROLLER)
+	if (ev->type != SND_SEQ_EVENT_CONTROLLER) {
+		qtractorMidiRpn::flush();
 		return false;
+	}
 
 	qtractorMidiRpn::Event event;
 

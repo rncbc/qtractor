@@ -82,8 +82,8 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM));
-//	m_ui.ControlTypeComboBox->addItem(iconControlType,
-//		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14));
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14));
 
 	// Start clean.
 	m_iDirtyCount = 0;
@@ -271,7 +271,6 @@ void qtractorMidiControlObserverForm::activateControlType (
 		}
 		break;
 	}
-//	case qtractorMidiEvent::CONTROL14:
 	case qtractorMidiEvent::CONTROLLER: {
 		const QIcon iconControllers(":/images/itemControllers.png");
 		m_ui.ParamTextLabel->setEnabled(true);
@@ -327,6 +326,24 @@ void qtractorMidiControlObserverForm::activateControlType (
 			m_ui.ParamComboBox->addItem(iconNrpns,
 				sTextMask.arg(iParam).arg(nrpns_iter.value()),
 				int(iParam));
+		}
+		break;
+	}
+	case qtractorMidiEvent::CONTROL14: {
+		const QIcon iconControllers(":/images/itemControllers.png");
+		m_ui.ParamTextLabel->setEnabled(true);
+		m_ui.ParamComboBox->setEnabled(true);
+		const QMap<unsigned char, QString>& control1ers
+			= qtractorMidiEditor::defaultControl14Names();
+		QMap<unsigned char, QString>::ConstIterator control1ers_iter
+			= control1ers.constBegin();
+		const QMap<unsigned char, QString>::ConstIterator& control1ers_end
+			= control1ers.constEnd();
+		for ( ; control1ers_iter != control1ers_end; ++control1ers_iter) {
+			const unsigned char controller = control1ers_iter.key();
+			m_ui.ParamComboBox->addItem(iconControllers,
+				sTextMask.arg(controller).arg(control1ers_iter.value()),
+				int(controller));
 		}
 		break;
 	}

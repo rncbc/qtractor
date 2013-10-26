@@ -317,7 +317,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::CONTROLLER:
 				return tr("Controller (%1)").arg(pEvent->controller());
 			case qtractorMidiEvent::CONTROL14:
-				return tr("Control14 (%1)").arg(pEvent->controller());
+				return tr("Control 14 (%1)").arg(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
 				return tr("RPN (%1)").arg(pEvent->param());
 			case qtractorMidiEvent::NONREGPARAM:
@@ -343,12 +343,13 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::KEYPRESS:
 				return m_pEditor->noteName(pEvent->note());
 			case qtractorMidiEvent::CONTROLLER:
-			case qtractorMidiEvent::CONTROL14:
 				return m_pEditor->controllerName(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
 				return m_pEditor->rpnNames().value(pEvent->param());
 			case qtractorMidiEvent::NONREGPARAM:
 				return m_pEditor->nrpnNames().value(pEvent->param());
+			case qtractorMidiEvent::CONTROL14:
+				return m_pEditor->control14Names().value(pEvent->controller());
 			default:
 				break;
 			}
@@ -360,9 +361,9 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::KEYPRESS:
 				return QString::number(pEvent->velocity());
 			case qtractorMidiEvent::CONTROLLER:
-			case qtractorMidiEvent::CONTROL14:
 			case qtractorMidiEvent::REGPARAM:
 			case qtractorMidiEvent::NONREGPARAM:
+			case qtractorMidiEvent::CONTROL14:
 			case qtractorMidiEvent::PGMCHANGE:
 			case qtractorMidiEvent::CHANPRESS:
 				return QString::number(pEvent->value());

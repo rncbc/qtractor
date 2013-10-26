@@ -96,8 +96,8 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM));
-//	m_ui.ControlTypeComboBox->addItem(iconControlType,
-//		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14));
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14));
 
 	m_ui.ControlTypeComboBox->setCurrentIndex(3); // Controller (default).
 
@@ -566,7 +566,6 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 		break;
 		break;
 	}
-//	case qtractorMidiEvent::CONTROL14:
 	case qtractorMidiEvent::CONTROLLER: {
 		const QIcon iconControllers(":/images/itemControllers.png");
 		m_ui.ParamComboBox->setEnabled(true);
@@ -618,6 +617,23 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 			m_ui.ParamComboBox->addItem(iconNrpns,
 				sTextMask.arg(iParam).arg(nrpns_iter.value()),
 				int(iParam));
+		}
+		break;
+	}
+	case qtractorMidiEvent::CONTROL14: {
+		const QIcon iconControllers(":/images/itemControllers.png");
+		m_ui.ParamComboBox->setEnabled(true);
+		const QMap<unsigned char, QString>& control1ers
+			= qtractorMidiEditor::defaultControl14Names();
+		QMap<unsigned char, QString>::ConstIterator control1ers_iter
+			= control1ers.constBegin();
+		const QMap<unsigned char, QString>::ConstIterator& control1ers_end
+			= control1ers.constEnd();
+		for ( ; control1ers_iter != control1ers_end; ++control1ers_iter) {
+			const unsigned char controller = control1ers_iter.key();
+			m_ui.ParamComboBox->addItem(iconControllers,
+				sTextMask.arg(controller).arg(control1ers_iter.value()),
+				int(controller));
 		}
 		break;
 	}
@@ -908,10 +924,12 @@ QString qtractorMidiControlForm::textFromParam (
 		sText = sTextMask.arg(iParam)
 			.arg(qtractorMidiEditor::defaultNoteName(iParam));
 		break;
-//	case qtractorMidiEvent::CONTROL14:
 	case qtractorMidiEvent::CONTROLLER:
 		sText = sTextMask.arg(iParam)
 			.arg(qtractorMidiEditor::defaultControllerName(iParam));
+		break;
+	case qtractorMidiEvent::PGMCHANGE:
+		sText = sTextMask.arg(iParam).arg('-');
 		break;
 	case qtractorMidiEvent::REGPARAM:
 		sText = sTextMask.arg(iParam)
@@ -921,9 +939,10 @@ QString qtractorMidiControlForm::textFromParam (
 		sText = sTextMask.arg(iParam)
 			.arg(qtractorMidiEditor::defaultNrpnNames().value(iParam));
 		break;
-	case qtractorMidiEvent::PGMCHANGE:
-		sText = sTextMask.arg(iParam).arg('-');
-		// Fall thru...
+	case qtractorMidiEvent::CONTROL14:
+		sText = sTextMask.arg(iParam)
+			.arg(qtractorMidiEditor::defaultControl14Names().value(iParam));
+		break;
 	case qtractorMidiEvent::CHANPRESS:
 	case qtractorMidiEvent::PITCHBEND:
 	default:

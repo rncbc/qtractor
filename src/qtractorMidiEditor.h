@@ -350,6 +350,9 @@ public:
 	const QMap<unsigned short, QString>& rpnNames() const;
 	const QMap<unsigned short, QString>& nrpnNames() const;
 
+	// Control-14 map accessors.
+	const QMap<unsigned char, QString>& control14Names() const;
+
 	// Default note name map accessor.
 	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
 	// Default controller name accessor.
@@ -358,6 +361,9 @@ public:
 	// Default RPN/NRPN map accessors.
 	static const QMap<unsigned short, QString>& defaultRpnNames();
 	static const QMap<unsigned short, QString>& defaultNrpnNames();
+
+	// Default Control-14 map accessors.
+	static const QMap<unsigned char, QString>& defaultControl14Names();
 
 	// Default scale key/type names accessors.
 	static const QStringList& scaleKeyNames();
