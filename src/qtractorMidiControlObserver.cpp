@@ -71,16 +71,30 @@ qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 }
 
 
+// MIDI scale type (7bit vs. 14bit).
+unsigned short qtractorMidiControlObserver::midiScale (void) const
+{
+	if (m_ctype == qtractorMidiEvent::PITCHBEND ||
+		m_ctype == qtractorMidiEvent::CONTROL14 ||
+		m_ctype == qtractorMidiEvent::REGPARAM  ||
+		m_ctype == qtractorMidiEvent::NONREGPARAM)
+		return 0x3fff;
+	else
+		return 0x7f;
+}
+
+
 // MIDI mapped value converters.
 void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 {
-	const unsigned short iRatio
-		= (m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
-//	setScaleValue(float(iValue) / float(iRatio));
-	float fScale = float(m_bInvert ? iRatio - iValue : iValue) / float(iRatio);
-	float fValue = valueFromScale(fScale, m_bLogarithmic);
+	const unsigned short iScale = midiScale();
+//	setScaleValue(float(iValue) / float(iScale));
+	const float fScale
+		= float(m_bInvert ? iScale - iValue : iValue) / float(iScale);
+	const float fValue
+		= valueFromScale(fScale, m_bLogarithmic);
 
-	if (m_bHook) 
+	if (m_bHook)
 		m_bMidiValueSync = true;
 
 	if (m_bMidiValueInit && !m_bMidiValueSync) {
@@ -88,7 +102,7 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		const float v1 = qtractorObserver::value();
 		if ((fValue > v0 && v1 >= v0 && fValue >= v1) ||
 			(fValue < v0 && v0 >= v1 && v1 >= fValue))
-             m_bMidiValueSync = true;
+			 m_bMidiValueSync = true;
 	}
 
 	if (m_bMidiValueSync)
@@ -101,10 +115,9 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 
 unsigned short qtractorMidiControlObserver::midiValue (void) const
 {
-	const unsigned short iRatio
-		= float(m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
-	unsigned short iValue = float(iRatio) * scaleValue();
-	return (m_bInvert ? iRatio - iValue : iValue);
+	const unsigned short iScale = midiScale();
+	const unsigned short iValue = float(iScale) * scaleValue();
+	return (m_bInvert ? iScale - iValue : iValue);
 }
 
 

@@ -223,11 +223,59 @@ public:
 	bool isChannelParamMapped(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam) const;
 
+	// MIDI control scale (7bit vs. 14bit).
+	class Scale
+	{
+	public:
+
+		// Constructor
+		Scale(ControlType ctype)
+		{
+			m_iMaxScale = (
+				ctype == qtractorMidiEvent::PITCHBEND   ||
+				ctype == qtractorMidiEvent::REGPARAM    ||
+				ctype == qtractorMidiEvent::NONREGPARAM ||
+				ctype == qtractorMidiEvent::CONTROL14
+				? 0x3fff : 0x7f);
+			m_fMaxScale = float(m_iMaxScale);
+			const unsigned short mid = (m_iMaxScale >> 1);
+			m_fMidScale = float(mid);
+			m_iMidScale = int(mid + 1);
+		}
+
+		// Scale value converters (unsigned).
+		float valueFromMidi(unsigned short iValue) const
+			{ return float(iValue) / m_fMaxScale; }
+		unsigned short midiFromValue(float fValue) const
+			{ return m_fMaxScale * fValue; }
+
+		// Scale value converters (signed).
+		float valueSignedFromMidi(unsigned short iValue) const
+			{ return float(int(iValue) - m_iMidScale) / m_fMidScale; }
+		unsigned short midiFromValueSigned(float fValue) const
+			{ return m_iMidScale + int(m_fMidScale * fValue); }
+
+		// Scale value converters (toggled).
+		float valueToggledFromMidi(unsigned short iValue) const
+			{ return (iValue > 0 ? 1.0f : 0.0f); }
+		unsigned short midiFromValueToggled(float fValue) const
+			{ return (fValue > 0.0f ? m_iMaxScale : 0); }
+
+	private:
+
+		// Scale helpers factors.
+		float m_fMaxScale;
+		float m_fMidScale;
+		int   m_iMaxScale;
+		int   m_iMidScale;
+	};
+
 	// Re-send all (track) controllers.
 	void sendAllControllers(int iFirstTrack = 0) const;
 
-	void sendController(ControlType ctype,
-		unsigned short iChannel, unsigned short iParam, int iValue) const;
+	void sendController(
+		ControlType ctype, unsigned short iChannel,
+		unsigned short iParam, unsigned short iValue) const;
 
 	// Process incoming controller messages.
 	bool processEvent(const qtractorCtlEvent& ctle);
@@ -313,7 +361,8 @@ protected:
 	void sendTrackController(
 		ControlType ctype, qtractorTrack *pTrack, Command command,
 		unsigned short iChannel, unsigned short iParam) const;
-	void sendTrackController(int iTrack, Command command, int iValue);
+	void sendTrackController(
+		int iTrack, Command command, float fValue, bool bCubic);
 
 private:
 
