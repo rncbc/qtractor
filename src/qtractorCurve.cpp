@@ -634,6 +634,11 @@ void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 				if (ctype == qtractorMidiEvent::PITCHBEND)
 					fScale = float(pEvent->pitchBend()) / float(0x3fff);
 				else
+				if (ctype == qtractorMidiEvent::REGPARAM    ||
+					ctype == qtractorMidiEvent::NONREGPARAM ||
+					ctype == qtractorMidiEvent::CONTROL14)
+					fScale = float(pEvent->value()) / float(0x3fff);
+				else
 					fScale = float(pEvent->value()) / float(0x7f);
 				float fValue = m_observer.valueFromScale(fScale);
 				m_nodes.append(new Node(iFrame, fValue));
@@ -676,6 +681,11 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 		float fScale = m_observer.scaleFromValue(pNode->value);
 		if (ctype == qtractorMidiEvent::PITCHBEND)
 			pEvent->setPitchBend(float(0x3fff) * fScale);
+		else
+		if (ctype == qtractorMidiEvent::REGPARAM    ||
+			ctype == qtractorMidiEvent::NONREGPARAM ||
+			ctype == qtractorMidiEvent::CONTROL14)
+			pEvent->setValue(float(0x3fff) * fScale);
 		else
 			pEvent->setValue(float(0x7f) * fScale);
 		pSeq->insertEvent(pEvent);
