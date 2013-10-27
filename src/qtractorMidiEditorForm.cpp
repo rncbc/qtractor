@@ -1832,16 +1832,9 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 	}
 	case qtractorMidiEvent::CONTROL14: {
 		const QIcon iconControllers(":/images/itemControllers.png");
-		const QMap<unsigned char, QString>& controllers
-			= m_pMidiEditor->control14Names();
-		QMap<unsigned char, QString>::ConstIterator controllers_iter
-			= controllers.constBegin();
-		const QMap<unsigned char, QString>::ConstIterator& controllers_end
-			= controllers.constEnd();
-		for ( ; controllers_iter != controllers_end; ++controllers_iter) {
-			const unsigned char param = controllers_iter.key();
+		for (int i = 1; i < 32; ++i) {
 			m_pEventParamComboBox->addItem(iconControllers,
-				sNameMask.arg(param).arg(controllers_iter.value()), int(param));
+				sNameMask.arg(i).arg(m_pMidiEditor->control14Name(i)), i);
 		}
 		break;
 	}
