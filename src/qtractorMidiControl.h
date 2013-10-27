@@ -31,7 +31,6 @@
 // Forward declarations.
 class qtractorTrack;
 class qtractorDocument;
-class qtractorCtlEvent;
 
 class qtractorMidiControlObserver;
 

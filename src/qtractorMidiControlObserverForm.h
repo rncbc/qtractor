@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,8 @@
 #define __qtractorMidiControlObserverForm_h
 
 #include "ui_qtractorMidiControlObserverForm.h"
+
+#include "qtractorMidiControl.h"
 
 // Forward declarartions.
 class qtractorMidiControlObserver;
@@ -62,7 +64,7 @@ public:
 
 protected slots:
 
-	void activateControlType(const QString&);
+	void activateControlType(int);
 
 	void change();
 
@@ -83,6 +85,9 @@ protected:
 
 	// Pseudo-destructor.
 	void closeEvent(QCloseEvent *pCloseEvent);
+
+	// Find combo-box index from control type.
+	int indexFromControlType(qtractorMidiControl::ControlType ctype) const;
 
 	// Find combo-box index from control parameter number.
 	int indexFromParam(unsigned short iParam) const;
