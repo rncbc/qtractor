@@ -880,11 +880,11 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 					writeInt(pEvent->value(), 1);
 					break;
 				case qtractorMidiEvent::CONTROL14:
-					writeInt(pEvent->controller(), 1);
+					writeInt((pEvent->controller() & 0x1f), 1);
 					writeInt((pEvent->value() & 0x3f80) >> 7, 1);
 					writeInt(0); // delta-time=0
 				//	writeInt(iStatus, 1);
-					writeInt(pEvent->controller(), 1);
+					writeInt((pEvent->controller() + 0x20) & 0x3f, 1);
 					writeInt((pEvent->value() & 0x007f), 1);
 					break;
 				case qtractorMidiEvent::REGPARAM:
