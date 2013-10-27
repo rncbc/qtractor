@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,40 +65,50 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	const QIcon iconControlType(":/images/itemProperty.png");
 //	m_ui.ControlTypeComboBox->clear();
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON),
+		int(qtractorMidiEvent::NOTEON));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEOFF));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEOFF),
+		int(qtractorMidiEvent::NOTEOFF));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS),
+		int(qtractorMidiEvent::KEYPRESS));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER),
+		int(qtractorMidiEvent::CONTROLLER));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE),
+		int(qtractorMidiEvent::PGMCHANGE));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS),
+		int(qtractorMidiEvent::CHANPRESS));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND),
+		int(qtractorMidiEvent::PITCHBEND));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM),
+		int(qtractorMidiEvent::REGPARAM));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM),
+		int(qtractorMidiEvent::NONREGPARAM));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14),
+		int(qtractorMidiEvent::CONTROL14));
 
 	// Start clean.
 	m_iDirtyCount = 0;
 	m_iDirtySetup = 0;
 
 	// Populate param list.
-	// activateControlType(m_ui.ControlTypeComboBox->currentText());
+	// activateControlType(m_ui.ControlTypeComboBox->currentIndex());
 
 	// Try to fix window geometry.
 	adjustSize();
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.ControlTypeComboBox,
-		SIGNAL(activated(const QString&)),
-		SLOT(activateControlType(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(activateControlType(int)));
 	QObject::connect(m_ui.ChannelSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(change()));
@@ -178,11 +188,9 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	QDialog::setWindowTitle(
 		m_pMidiObserver->subject()->name() + " - " + tr("MIDI Controller"));
 
-	const QString& sControlType
-		= qtractorMidiControl::nameFromType(m_pMidiObserver->type());
-	m_ui.ControlTypeComboBox->setCurrentIndex(
-		m_ui.ControlTypeComboBox->findText(sControlType));
-	activateControlType(sControlType);
+	const int iControlType = indexFromControlType(m_pMidiObserver->type());
+	m_ui.ControlTypeComboBox->setCurrentIndex(iControlType);
+	activateControlType(iControlType);
 	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
 	m_ui.ParamComboBox->setCurrentIndex(
 		indexFromParam(m_pMidiObserver->param()));
@@ -226,11 +234,9 @@ void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
 // Process incoming controller event.
 void qtractorMidiControlObserverForm::processEvent ( const qtractorCtlEvent& ctle )
 {
-	const QString& sControlType
-		= qtractorMidiControl::nameFromType(ctle.type());
-	m_ui.ControlTypeComboBox->setCurrentIndex(
-		m_ui.ControlTypeComboBox->findText(sControlType));
-	activateControlType(sControlType);
+	const int iControlType = indexFromControlType(ctle.type());
+	m_ui.ControlTypeComboBox->setCurrentIndex(iControlType);
+	activateControlType(iControlType);
 	m_ui.ChannelSpinBox->setValue(ctle.channel() + 1);
 	m_ui.ParamComboBox->setCurrentIndex(ctle.param());
 	m_ui.ParamComboBox->setCurrentIndex(indexFromParam(ctle.param()));
@@ -239,15 +245,17 @@ void qtractorMidiControlObserverForm::processEvent ( const qtractorCtlEvent& ctl
 
 // List view item activation.
 void qtractorMidiControlObserverForm::activateControlType (
-	const QString& sControlType )
+	int iControlType )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiControlObserverForm::activateControlType(\"%s\")",
-		sControlType.toUtf8().constData());
+	qDebug("qtractorMidiControlObserverForm::activateControlType(%d)",
+		iControlType);
 #endif
 
-	qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::typeFromName(sControlType);
+	const qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+
 	if (!ctype)
 		return;
 
@@ -256,6 +264,7 @@ void qtractorMidiControlObserverForm::activateControlType (
 	m_ui.ParamComboBox->clear();
 
 	const QString sTextMask("%1 - %2");
+
 	switch (ctype) {
 	case qtractorMidiEvent::NOTEON:
 	case qtractorMidiEvent::NOTEOFF:
@@ -411,17 +420,21 @@ void qtractorMidiControlObserverForm::accept (void)
 #endif
 
 	// Get map settings...
-	qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::typeFromName(
-			m_ui.ControlTypeComboBox->currentText());
+	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
+	const qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+
 	unsigned short iChannel = m_ui.ChannelSpinBox->value();
 	if (iChannel > 0)
 		--iChannel;
+
 	unsigned short iParam = 0;
 	if (m_ui.ParamComboBox->isEnabled()) {
 		const int iParamIndex = m_ui.ParamComboBox->currentIndex();
 		iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
 	}
+
 	bool bLogarithmic = false;
 	if (m_ui.LogarithmicCheckBox->isEnabled())
 		bLogarithmic = m_ui.LogarithmicCheckBox->isChecked();
@@ -595,17 +608,29 @@ void qtractorMidiControlObserverForm::stabilizeForm (void)
 }
 
 
+// Find combo-box index from control type.
+int qtractorMidiControlObserverForm::indexFromControlType (
+	qtractorMidiControl::ControlType ctype ) const
+{
+	const int iItemCount = m_ui.ControlTypeComboBox->count();
+	for (int iIndex = 0; iIndex < iItemCount; ++iIndex) {
+		if (qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iIndex).toInt()) == ctype)
+			return iIndex;
+	}
+	return (-1);
+}
+
+
 // Find combo-box index from control parameter number.
 int qtractorMidiControlObserverForm::indexFromParam (
 	unsigned short iParam ) const
 {
-	const int iParamCount = m_ui.ParamComboBox->count();
-
-	for (int iParamIndex = 0; iParamIndex < iParamCount; ++iParamIndex) {
-		if (m_ui.ParamComboBox->itemData(iParamIndex).toInt() == int(iParam))
-			return iParamIndex;
+	const int iItemCount = m_ui.ParamComboBox->count();
+	for (int iIndex = 0; iIndex < iItemCount; ++iIndex) {
+		if (m_ui.ParamComboBox->itemData(iIndex).toInt() == int(iParam))
+			return iIndex;
 	}
-
 	return (-1);
 }
 

@@ -130,29 +130,44 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	const QIcon icon(":/images/itemProperty.png");
 
 	m_pViewTypeComboBox->addItem(icon,
-		tr("Note On"), int(qtractorMidiEvent::NOTEON));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON),
+		int(qtractorMidiEvent::NOTEON));
 	m_pViewTypeComboBox->addItem(icon,
-		tr("Key Press"), int(qtractorMidiEvent::KEYPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS),
+		int(qtractorMidiEvent::KEYPRESS));
 
 	m_pEventTypeComboBox->addItem(icon,
-		tr("Note Velocity"), int(qtractorMidiEvent::NOTEON));
+		tr("Note Velocity"), // Special control event name.
+		int(qtractorMidiEvent::NOTEON));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("Key Press"), int(qtractorMidiEvent::KEYPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS),
+		int(qtractorMidiEvent::KEYPRESS));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("Controller"), int(qtractorMidiEvent::CONTROLLER));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER),
+		int(qtractorMidiEvent::CONTROLLER));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("Pgm Change"), int(qtractorMidiEvent::PGMCHANGE));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE),
+		int(qtractorMidiEvent::PGMCHANGE));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("Chan Press"), int(qtractorMidiEvent::CHANPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS),
+		int(qtractorMidiEvent::CHANPRESS));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("Pitch Bend"), int(qtractorMidiEvent::PITCHBEND));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND),
+		int(qtractorMidiEvent::PITCHBEND));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("RPN"), int(qtractorMidiEvent::REGPARAM));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM),
+		int(qtractorMidiEvent::REGPARAM));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("NRPN"), int(qtractorMidiEvent::NONREGPARAM));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM),
+		int(qtractorMidiEvent::NONREGPARAM));
 	m_pEventTypeComboBox->addItem(icon,
-		tr("Sys Ex"), int(qtractorMidiEvent::SYSEX));
-
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14),
+		int(qtractorMidiEvent::CONTROL14));
+#if 0
+	m_pEventTypeComboBox->addItem(icon,
+		tr("Sys Ex"), // Special control event legacy.
+		int(qtractorMidiEvent::SYSEX));
+#endif
 	// Snap-to-scale/quantize selection widgets...
 	QStringListIterator iter(qtractorMidiEditor::scaleKeyNames());
 	while (iter.hasNext())
@@ -1784,7 +1799,8 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 
 	const QString sNameMask("%1 - %2");
 
-	if (eventType == qtractorMidiEvent::REGPARAM) {
+	switch (eventType) {
+	case qtractorMidiEvent::REGPARAM: {
 		const QIcon iconRpns(":/images/itemRpns.png");
 		const QMap<unsigned short, QString>& rpns
 			= m_pMidiEditor->rpnNames();
@@ -1797,9 +1813,9 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 			m_pEventParamComboBox->addItem(iconRpns,
 				sNameMask.arg(param).arg(rpns_iter.value()), int(param));
 		}
+		break;
 	}
-	else
-	if (eventType == qtractorMidiEvent::NONREGPARAM) {
+	case qtractorMidiEvent::NONREGPARAM: {
 		const QIcon iconNrpns(":/images/itemNrpns.png");
 		const QMap<unsigned short, QString>& nrpns
 			= m_pMidiEditor->nrpnNames();
@@ -1812,15 +1828,32 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 			m_pEventParamComboBox->addItem(iconNrpns,
 				sNameMask.arg(param).arg(nrpns_iter.value()), int(param));
 		}
+		break;
 	}
-	else {
-//	if (eventType == qtractorMidiEvent::CONTROLLER) {
+	case qtractorMidiEvent::CONTROL14: {
+		const QIcon iconControllers(":/images/itemControllers.png");
+		const QMap<unsigned char, QString>& controllers
+			= m_pMidiEditor->control14Names();
+		QMap<unsigned char, QString>::ConstIterator controllers_iter
+			= controllers.constBegin();
+		const QMap<unsigned char, QString>::ConstIterator& controllers_end
+			= controllers.constEnd();
+		for ( ; controllers_iter != controllers_end; ++controllers_iter) {
+			const unsigned char param = controllers_iter.key();
+			m_pEventParamComboBox->addItem(iconControllers,
+				sNameMask.arg(param).arg(controllers_iter.value()), int(param));
+		}
+		break;
+	}
+	default:
+	case qtractorMidiEvent::CONTROLLER: {
 		const QIcon iconControllers(":/images/itemControllers.png");
 		for (int i = 0; i < 128; ++i) {
 			m_pEventParamComboBox->addItem(iconControllers,
 				sNameMask.arg(i).arg(m_pMidiEditor->controllerName(i)), i);
 		}
-	}
+		break;
+	}}
 
 	m_pEventParamComboBox->setCurrentIndex(iEventParam);
 }

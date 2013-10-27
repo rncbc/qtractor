@@ -2396,7 +2396,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 		|| eventType == qtractorMidiEvent::REGPARAM
 		|| eventType == qtractorMidiEvent::NONREGPARAM
 		|| eventType == qtractorMidiEvent::CONTROL14);
-	unsigned short eventParam = m_pEditEvent->eventParam();
+	const unsigned short eventParam = m_pEditEvent->eventParam();
 
 	qtractorMidiEvent *pEvent = m_cursorAt.reset(pSeq, iTime);
 	qtractorMidiEvent *pEventAt = NULL;
@@ -2600,6 +2600,13 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		else
 			pEvent->setValue(m_last.value);
 		break;
+	case qtractorMidiEvent::CONTROL14:
+		// Set Control-14 event...
+		pEvent->setController(m_pEditEvent->eventParam());
+		if (y0 > 0)
+			pEvent->setValue((16384 * (y0 - y)) / y0);
+		else
+			pEvent->setValue(m_last.value);
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		// Set pitchbend event value...
@@ -3144,7 +3151,7 @@ void qtractorMidiEditor::updateDragSelect (
 		|| eventType == qtractorMidiEvent::REGPARAM
 		|| eventType == qtractorMidiEvent::NONREGPARAM
 		|| eventType == qtractorMidiEvent::CONTROL14);
-	unsigned short eventParam = m_pEditEvent->eventParam();
+	const unsigned short eventParam = m_pEditEvent->eventParam();
 
 	qtractorMidiEvent *pEvent = m_cursorAt.seek(pSeq, iTickStart);
 

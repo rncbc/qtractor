@@ -79,25 +79,35 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	const QIcon iconControlType(":/images/itemProperty.png");
 //	m_ui.ControlTypeComboBox->clear();
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON),
+		int(qtractorMidiEvent::NOTEON));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEOFF));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEOFF),
+		int(qtractorMidiEvent::NOTEOFF));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS),
+		int(qtractorMidiEvent::KEYPRESS));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER),
+		int(qtractorMidiEvent::CONTROLLER));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE),
+		int(qtractorMidiEvent::PGMCHANGE));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS),
+		int(qtractorMidiEvent::CHANPRESS));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND),
+		int(qtractorMidiEvent::PITCHBEND));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM),
+		int(qtractorMidiEvent::REGPARAM));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM),
+		int(qtractorMidiEvent::NONREGPARAM));
 	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14),
+		int(qtractorMidiEvent::CONTROL14));
 
 	m_ui.ControlTypeComboBox->setCurrentIndex(3); // Controller (default).
 
@@ -343,9 +353,11 @@ void qtractorMidiControlForm::mapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
+	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
 	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::typeFromName(
-			m_ui.ControlTypeComboBox->currentText());
+		= qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+
 	const unsigned short iChannel
 		= channelFromText(m_ui.ChannelComboBox->currentText());
 
@@ -378,9 +390,11 @@ void qtractorMidiControlForm::unmapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
+	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
 	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::typeFromName(
-			m_ui.ControlTypeComboBox->currentText());
+		= qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+
 	const unsigned short iChannel
 		= channelFromText(m_ui.ChannelComboBox->currentText());
 
@@ -545,9 +559,11 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 {
 	m_ui.ParamComboBox->clear();
 //	m_ui.ParamComboBox->addItem("*");
-	qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::typeFromName(
-			m_ui.ControlTypeComboBox->currentText());
+
+	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
+	const qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
 
 	const QString sTextMask("%1 - %2");
 
@@ -667,8 +683,11 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	const QString& sChannel = m_ui.ChannelComboBox->currentText();
 	const QString& sParam   = m_ui.ParamComboBox->currentText();
 
+	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
 	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::typeFromName(sType);
+		= qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+
 	const unsigned short iChannel = channelFromText(sChannel);
 
 	const int iParamIndex = m_ui.ParamComboBox->currentIndex();
@@ -722,12 +741,13 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	if (pMidiControl == NULL)
 		return;
 
-	const QString& sType    = m_ui.ControlTypeComboBox->currentText();
-	const QString& sChannel = m_ui.ChannelComboBox->currentText();
-
+	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
 	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::typeFromName(sType);
-	const unsigned short iChannel = channelFromText(sChannel);
+		= qtractorMidiControl::ControlType(
+			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+
+	const unsigned short iChannel
+		= channelFromText(m_ui.ChannelComboBox->currentText());
 
 	const int iParamIndex = m_ui.ParamComboBox->currentIndex();
 	unsigned short iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
