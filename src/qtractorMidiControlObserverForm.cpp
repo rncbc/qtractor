@@ -342,17 +342,11 @@ void qtractorMidiControlObserverForm::activateControlType (
 		const QIcon iconControllers(":/images/itemControllers.png");
 		m_ui.ParamTextLabel->setEnabled(true);
 		m_ui.ParamComboBox->setEnabled(true);
-		const QMap<unsigned char, QString>& control1ers
-			= qtractorMidiEditor::defaultControl14Names();
-		QMap<unsigned char, QString>::ConstIterator control1ers_iter
-			= control1ers.constBegin();
-		const QMap<unsigned char, QString>::ConstIterator& control1ers_end
-			= control1ers.constEnd();
-		for ( ; control1ers_iter != control1ers_end; ++control1ers_iter) {
-			const unsigned char controller = control1ers_iter.key();
+		for (unsigned short iParam = 1; iParam < 32; ++iParam) {
 			m_ui.ParamComboBox->addItem(iconControllers,
-				sTextMask.arg(controller).arg(control1ers_iter.value()),
-				int(controller));
+				sTextMask.arg(iParam)
+					.arg(qtractorMidiEditor::defaultControl14Name(iParam)),
+				int(iParam));
 		}
 		break;
 	}

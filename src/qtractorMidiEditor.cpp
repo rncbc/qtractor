@@ -398,22 +398,26 @@ static struct
 	{  0, NULL }
 };
 
-static QMap<unsigned char, QString> g_control14Names;
+static QHash<unsigned char, QString> g_control14Names;
 
-// Default RPN map accessor.
-const QMap<unsigned char, QString>& qtractorMidiEditor::defaultControl14Names (void)
+// Default control-14 name accessor.
+const QString& qtractorMidiEditor::defaultControl14Name ( unsigned char controller )
 {
 	if (g_control14Names.isEmpty()) {
-		// Pre-load Control14-names hash table...
+		// Pre-load controller-names hash table...
 		for (int i = 0; g_aControl14Names[i].name; ++i) {
 			g_control14Names.insert(g_aControl14Names[i].controller,
 				QObject::tr(g_aControl14Names[i].name, "control14Name"));
 		}
 	}
 
-	return g_control14Names;
+	QHash<unsigned char, QString>::ConstIterator iter
+		= g_control14Names.constFind(controller);
+	if (iter == g_control14Names.constEnd())
+		return g_sNoname;
+	else
+		return iter.value();
 }
-
 
 
 //----------------------------------------------------------------------------
@@ -4663,9 +4667,9 @@ const QMap<unsigned short, QString>& qtractorMidiEditor::nrpnNames (void) const
 
 
 // Control-14 map accessors.
-const QMap<unsigned char, QString>& qtractorMidiEditor::control14Names (void) const
+const QString& qtractorMidiEditor::control14Name ( unsigned char controller ) const
 {
-	return defaultControl14Names();
+	return defaultControl14Name(controller);
 }
 
 
@@ -4758,7 +4762,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 	case qtractorMidiEvent::CONTROL14:
 		sToolTip += tr("Control 14 (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->controller()))
-			.arg(control14Names().value(pEvent->controller()))
+			.arg(control14Name(pEvent->controller()))
 			.arg(int(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::PGMCHANGE:
