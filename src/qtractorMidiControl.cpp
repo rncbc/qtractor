@@ -953,6 +953,7 @@ const QString& qtractorMidiControl::nameFromCommand ( Command command )
 // qtractorMidiControlTypeGroup - MIDI control type/param widget group.
 
 #include <QComboBox>
+#include <QLineEdit>
 #include <QLabel>
 
 // Constructor.
@@ -961,7 +962,8 @@ qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
 	QLabel *pControlParamTextLabel ) : QObject(),
 		m_pControlTypeComboBox(pControlTypeComboBox),
 		m_pControlParamComboBox(pControlParamComboBox),
-		m_pControlParamTextLabel(pControlParamTextLabel)
+		m_pControlParamTextLabel(pControlParamTextLabel),
+		m_iControlParamUpdate(0)
 {
 	const QIcon iconControlType(":/images/itemProperty.png");
 	m_pControlTypeComboBox->clear();
@@ -1004,9 +1006,6 @@ qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
 	QObject::connect(m_pControlParamComboBox,
 		SIGNAL(activated(int)),
 		SLOT(activateControlParam(int)));
-	QObject::connect(m_pControlParamComboBox,
-		SIGNAL(activated(const QString&)),
-		SLOT(activateControlParam(const QString&)));
 }
 
 
@@ -1031,14 +1030,23 @@ void qtractorMidiControlTypeGroup::setControlParam (
 	unsigned short iParam )
 {
 	const int iControlParam = indexFromControlParam(iParam);
-	m_pControlParamComboBox->setCurrentIndex(iControlParam);
-	activateControlParam(iControlParam);
+	if (iControlParam >= 0) {
+		m_pControlParamComboBox->setCurrentIndex(iControlParam);
+		activateControlParam(iControlParam);
+	} else {
+		const QString& sControlParam = QString::number(iParam);
+		m_pControlParamComboBox->setEditText(sControlParam);
+		editControlParamFinished();
+	}
 }
 
 unsigned short qtractorMidiControlTypeGroup::controlParam (void) const
 {
 	const int iControlParam = m_pControlParamComboBox->currentIndex();
-	return m_pControlParamComboBox->itemData(iControlParam).toInt();
+	if (iControlParam >= 0)
+		return m_pControlParamComboBox->itemData(iControlParam).toInt();
+	else
+		return m_pControlParamComboBox->currentText().toInt();
 }
 
 
@@ -1168,6 +1176,12 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 		break;
 	}
 
+	if (m_pControlParamComboBox->isEditable()) {
+		QObject::connect(m_pControlParamComboBox->lineEdit(),
+			SIGNAL(editingFinished()),
+			SLOT(editControlParamFinished()));
+	}
+
 	emit controlTypeChanged(int(ctype));
 
 	activateControlParam(m_pControlParamComboBox->currentIndex());
@@ -1182,11 +1196,21 @@ void qtractorMidiControlTypeGroup::activateControlParam ( int iControlParam )
 }
 
 
-void qtractorMidiControlTypeGroup::activateControlParam ( const QString& sControlParam )
+void qtractorMidiControlTypeGroup::editControlParamFinished (void)
 {
+	if (m_iControlParamUpdate > 0)
+		return;
+
+	++m_iControlParamUpdate;
+
+	const QString& sControlParam
+		= m_pControlParamComboBox->currentText();
+
 	bool bOk = false;
 	const unsigned short iParam = sControlParam.toInt(&bOk);
 	if (bOk) emit controlParamChanged(int(iParam));
+
+	--m_iControlParamUpdate;
 }
 
 

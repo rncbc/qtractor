@@ -6403,13 +6403,13 @@ Do you want to replace it?</source>
 Вы хотите заменить его?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="668"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="752"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="666"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="750"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="752"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="750"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
@@ -6815,14 +6815,14 @@ Are you sure?</source>
         <translation type="unfinished">Контроллер MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="293"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="289"/>
         <source>MIDI controller is already assigned.
 
 Do you want to replace the mapping?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="337"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="333"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -6831,32 +6831,32 @@ Do you want to apply the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="456"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="452"/>
         <source>&amp;MIDI Controller...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="562"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="558"/>
         <source>&amp;Automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="576"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
         <source>&amp;Lock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="594"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="590"/>
         <source>&amp;Play</source>
         <translation type="unfinished">В&amp;оспроизведение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="610"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="606"/>
         <source>&amp;Record</source>
         <translation type="unfinished">&amp;Запись</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="620"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="616"/>
         <source>&amp;Clear</source>
         <translation type="unfinished"></translation>
     </message>

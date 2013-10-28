@@ -427,7 +427,7 @@ protected slots:
 
 	void activateControlType(int);
 	void activateControlParam(int);
-	void activateControlParam(const QString&);
+	void editControlParamFinished();
 
 protected:
 
@@ -441,6 +441,8 @@ private:
 	QComboBox *m_pControlTypeComboBox;
 	QComboBox *m_pControlParamComboBox;
 	QLabel    *m_pControlParamTextLabel;
+
+	unsigned int m_iControlParamUpdate;
 };
 
 

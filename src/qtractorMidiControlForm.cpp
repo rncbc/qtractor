@@ -653,13 +653,11 @@ void qtractorMidiControlForm::stabilizeForm (void)
 	pItem = m_ui.ControlMapListView->currentItem();
 	if (pItem) {
 		++m_iUpdating;
-		m_ui.ControlTypeComboBox->setCurrentIndex(
-			m_ui.ControlTypeComboBox->findText(pItem->text(0)));
-		stabilizeTypeChange();
+		m_pControlTypeGroup->setControlType(
+			qtractorMidiControl::typeFromName(pItem->text(0)));
+		m_pControlTypeGroup->setControlParam(pItem->text(2).toInt());
 		m_ui.ChannelComboBox->setCurrentIndex(
 			m_ui.ChannelComboBox->findText(pItem->text(1)));
-		m_ui.ParamComboBox->setCurrentIndex(
-			m_ui.ParamComboBox->findText(pItem->text(2)));
 		const QString& sText = pItem->text(3);
 		m_ui.TrackCheckBox->setChecked(sText[0] == '+');
 		m_ui.TrackSpinBox->setValue(sText.toInt());

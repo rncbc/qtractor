@@ -256,20 +256,16 @@ void qtractorMidiControlObserverForm::accept (void)
 #endif
 
 	// Get map settings...
-	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
 	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::ControlType(
-			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+		= m_pControlTypeGroup->controlType();
 
 	unsigned short iChannel = m_ui.ChannelSpinBox->value();
 	if (iChannel > 0)
 		--iChannel;
 
 	unsigned short iParam = 0;
-	if (m_ui.ParamComboBox->isEnabled()) {
-		const int iParamIndex = m_ui.ParamComboBox->currentIndex();
-		iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
-	}
+	if (m_ui.ParamComboBox->isEnabled())
+		iParam = m_pControlTypeGroup->controlParam();
 
 	bool bLogarithmic = false;
 	if (m_ui.LogarithmicCheckBox->isEnabled())
