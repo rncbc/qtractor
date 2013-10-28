@@ -64,8 +64,6 @@ public:
 
 protected slots:
 
-	void activateControlType(int);
-
 	void change();
 
 	void click(QAbstractButton *);
@@ -83,14 +81,11 @@ protected:
 	// Constructor.
 	qtractorMidiControlObserverForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 
+	// Destructor.
+	~qtractorMidiControlObserverForm();
+
 	// Pseudo-destructor.
 	void closeEvent(QCloseEvent *pCloseEvent);
-
-	// Find combo-box index from control type.
-	int indexFromControlType(qtractorMidiControl::ControlType ctype) const;
-
-	// Find combo-box index from control parameter number.
-	int indexFromParam(unsigned short iParam) const;
 
 	// Add esquisite automation menu actions...
 	static void addMidiControlMenu(
@@ -107,6 +102,8 @@ private:
 	// Instance variables.
 	int m_iDirtyCount;
 	int m_iDirtySetup;
+
+	qtractorMidiControlTypeGroup *m_pControlTypeGroup;
 
 	// Pseudo-singleton instance.
 	static qtractorMidiControlObserverForm *g_pMidiObserverForm;

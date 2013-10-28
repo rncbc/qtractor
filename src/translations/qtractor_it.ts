@@ -6220,26 +6220,26 @@ sia avviato ed in esecuzione, poi riavvia la sessione.</translation>
         <translation>Chiudi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="225"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="196"/>
         <source>Import Controller Files</source>
         <translation>Importa File di Controller</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="226"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="431"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="197"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="396"/>
         <source>Controller files (*.%1)</source>
         <translation>File di controller (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="297"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="463"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="478"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="509"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="268"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="428"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="443"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="474"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="298"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="269"/>
         <source>About to remove controller file:
 
 &quot;%1&quot;
@@ -6252,12 +6252,12 @@ Are you sure?</source>
 Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="430"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="395"/>
         <source>Export Controller File</source>
         <translation>Esporta File di Controller</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="464"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="429"/>
         <source>The controller file already exists:
 
 &quot;%1&quot;
@@ -6270,7 +6270,7 @@ Do you want to replace it?</source>
 Vuoi sostituirlo?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="479"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="444"/>
         <source>Saved controller mappings may not be effective
 the next time you start this program.
 
@@ -6285,23 +6285,23 @@ al prossimo riavvio di questo programma.
 Vuoi applicarla ai file dei controller?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="510"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="475"/>
         <source>Controller mappings have been changed.</source>
         <translation>La mappa del controller è stata modificata.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="511"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="476"/>
         <source>Do you want to save the changes?</source>
         <translation>Vuoi salvare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="803"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="887"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="666"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="750"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="887"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="750"/>
         <source>No</source>
         <translation>No</translation>
     </message>
@@ -6384,12 +6384,12 @@ Vuoi applicarla ai file dei controller?</translation>
         <translation>Uscite</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="189"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="165"/>
         <source>MIDI Controller</source>
         <translation>Controller MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="451"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="289"/>
         <source>MIDI controller is already assigned.
 
 Do you want to replace the mapping?</source>
@@ -6398,7 +6398,7 @@ Do you want to replace the mapping?</source>
 Vuoi sostituire la mappatura?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="495"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="333"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -6407,32 +6407,32 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="641"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="452"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controller &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="747"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="558"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automazione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="761"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
         <source>&amp;Lock</source>
         <translation>B&amp;locca</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="779"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="590"/>
         <source>&amp;Play</source>
         <translation>Ri&amp;produci</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="795"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="606"/>
         <source>&amp;Record</source>
         <translation>&amp;Registra</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="805"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="616"/>
         <source>&amp;Clear</source>
         <translation>Pulis&amp;ci</translation>
     </message>
@@ -6673,7 +6673,7 @@ Durata:	%3</translation>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="33"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1705"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1684"/>
         <source>MIDI Editor</source>
         <translation>Editor MIDI</translation>
     </message>
@@ -8107,7 +8107,7 @@ Durata:	%3</translation>
         <translation>Mostra informazioni su Qt</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="110"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="114"/>
         <source>Set current snap to %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8120,7 +8120,7 @@ Durata:	%3</translation>
         <translation type="obsolete">Tasto premuto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="140"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="144"/>
         <source>Note Velocity</source>
         <translation>Intensità Nota</translation>
     </message>
@@ -8141,22 +8141,21 @@ Durata:	%3</translation>
         <translation type="obsolete">Pitch Bend</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="168"/>
         <source>Sys Ex</source>
-        <translation>Sys Ex</translation>
+        <translation type="obsolete">Sys Ex</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="181"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="157"/>
         <source>Snap/beat</source>
         <translation>Allineamento/Battito</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="182"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="158"/>
         <source>Note type</source>
         <translation>Tipo nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="183"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="159"/>
         <source>Value type</source>
         <translation>Tipo valore</translation>
     </message>
@@ -8165,63 +8164,63 @@ Durata:	%3</translation>
         <translation type="obsolete">Tipo controller</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="184"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="160"/>
         <source>Parameter type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="185"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="161"/>
         <source>Scale key</source>
         <translation>Chiave scala</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="186"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="162"/>
         <source>Scale type</source>
         <translation>Tipo scala</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="210"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="186"/>
         <source>MIDI clip name</source>
         <translation>Nome clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="217"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="193"/>
         <source>MIDI file name</source>
         <translation>Nome file MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="224"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="200"/>
         <source>MIDI track/channel</source>
         <translation>Traccia/Canale MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="229"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1737"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="205"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1716"/>
         <source>MOD</source>
         <translation>MOD</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="232"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="208"/>
         <source>MIDI modification state</source>
         <translation>Stato modifica MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="237"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="213"/>
         <source>00:00:00.000</source>
         <translation>00:00:00.000</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="240"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="216"/>
         <source>MIDI clip duration</source>
         <translation>Durata clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="652"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="631"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="653"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="632"/>
         <source>The current MIDI clip has been changed:
 
 &quot;%1&quot;
@@ -8234,32 +8233,32 @@ Do you want to save the changes?</source>
 Vuoi salvare i cambiamenti?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="931"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="910"/>
         <source>Save MIDI Clip</source>
         <translation>Salva Clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="932"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="911"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>File MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="993"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="972"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Salvataggio file MIDI: &quot;%1&quot;, traccia-canale: %2.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1718"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1697"/>
         <source>Channel %1</source>
         <translation>Canale %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1721"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1700"/>
         <source>Track %1</source>
         <translation>Traccia %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1728"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1707"/>
         <source>[modified]</source>
         <translation>[modificato]</translation>
     </message>

@@ -33,6 +33,8 @@ class qtractorTimeScale;
 
 class qtractorMidiEventList;
 
+class qtractorMidiControlTypeGroup;
+
 class QContextMenuEvent;
 class QActionGroup;
 class QComboBox;
@@ -218,6 +220,8 @@ private:
 	QComboBox *m_pViewTypeComboBox;
 	QComboBox *m_pEventTypeComboBox;
 	QComboBox *m_pEventParamComboBox;
+
+	qtractorMidiControlTypeGroup *m_pEventTypeGroup;
 
 	// Snap-to-scale/quantize selection widgets...
 	QComboBox *m_pSnapToScaleKeyComboBox;

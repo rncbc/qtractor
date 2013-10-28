@@ -62,8 +62,8 @@ protected slots:
 
 protected:
 
-    void stabilizeTypeChange();
-    void stabilizeKeyChange();
+	void stabilizeTypeChange();
+	void stabilizeKeyChange();
     void stabilizeValueChange();
 
     void refreshFiles();
@@ -86,6 +86,8 @@ private:
 	int m_iDirtyCount;
 	int m_iDirtyMap;
 	int m_iUpdating;
+
+	qtractorMidiControlTypeGroup *m_pControlTypeGroup;
 };
 
 

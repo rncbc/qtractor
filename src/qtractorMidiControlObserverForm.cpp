@@ -61,39 +61,8 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	// Make it auto-modeless dialog...
 	QDialog::setAttribute(Qt::WA_DeleteOnClose);
 
-	// Populate command list.
-	const QIcon iconControlType(":/images/itemProperty.png");
-//	m_ui.ControlTypeComboBox->clear();
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON),
-		int(qtractorMidiEvent::NOTEON));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEOFF),
-		int(qtractorMidiEvent::NOTEOFF));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS),
-		int(qtractorMidiEvent::KEYPRESS));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER),
-		int(qtractorMidiEvent::CONTROLLER));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE),
-		int(qtractorMidiEvent::PGMCHANGE));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS),
-		int(qtractorMidiEvent::CHANPRESS));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND),
-		int(qtractorMidiEvent::PITCHBEND));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM),
-		int(qtractorMidiEvent::REGPARAM));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM),
-		int(qtractorMidiEvent::NONREGPARAM));
-	m_ui.ControlTypeComboBox->addItem(iconControlType,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14),
-		int(qtractorMidiEvent::CONTROL14));
+	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(
+		m_ui.ControlTypeComboBox, m_ui.ParamComboBox, m_ui.ParamTextLabel);
 
 	// Start clean.
 	m_iDirtyCount = 0;
@@ -106,14 +75,14 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	adjustSize();
 
 	// UI signal/slot connections...
-	QObject::connect(m_ui.ControlTypeComboBox,
-		SIGNAL(activated(int)),
-		SLOT(activateControlType(int)));
+	QObject::connect(m_pControlTypeGroup,
+		SIGNAL(controlTypeChanged(int)),
+		SLOT(change()));
+	QObject::connect(m_pControlTypeGroup,
+		SIGNAL(controlParamChanged(int)),
+		SLOT(change()));
 	QObject::connect(m_ui.ChannelSpinBox,
 		SIGNAL(valueChanged(int)),
-		SLOT(change()));
-	QObject::connect(m_ui.ParamComboBox,
-		SIGNAL(activated(int)),
 		SLOT(change()));
 	QObject::connect(m_ui.LogarithmicCheckBox,
 		SIGNAL(toggled(bool)),
@@ -145,6 +114,13 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 
 	// Pseudo-singleton reference setup.
 	g_pMidiObserverForm = this;
+}
+
+
+// Destructor.
+qtractorMidiControlObserverForm::~qtractorMidiControlObserverForm (void)
+{
+	delete m_pControlTypeGroup;
 }
 
 
@@ -188,13 +164,10 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	QDialog::setWindowTitle(
 		m_pMidiObserver->subject()->name() + " - " + tr("MIDI Controller"));
 
-	const int iControlType = indexFromControlType(m_pMidiObserver->type());
-	m_ui.ControlTypeComboBox->setCurrentIndex(iControlType);
-	activateControlType(iControlType);
-	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
-	m_ui.ParamComboBox->setCurrentIndex(
-		indexFromParam(m_pMidiObserver->param()));
+	m_pControlTypeGroup->setControlType(m_pMidiObserver->type());
+	m_pControlTypeGroup->setControlParam(m_pMidiObserver->param());
 
+	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
@@ -234,141 +207,10 @@ void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
 // Process incoming controller event.
 void qtractorMidiControlObserverForm::processEvent ( const qtractorCtlEvent& ctle )
 {
-	const int iControlType = indexFromControlType(ctle.type());
-	m_ui.ControlTypeComboBox->setCurrentIndex(iControlType);
-	activateControlType(iControlType);
+	m_pControlTypeGroup->setControlType(ctle.type());
+	m_pControlTypeGroup->setControlParam(ctle.param());
+
 	m_ui.ChannelSpinBox->setValue(ctle.channel() + 1);
-	m_ui.ParamComboBox->setCurrentIndex(ctle.param());
-	m_ui.ParamComboBox->setCurrentIndex(indexFromParam(ctle.param()));
-}
-
-
-// List view item activation.
-void qtractorMidiControlObserverForm::activateControlType (
-	int iControlType )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiControlObserverForm::activateControlType(%d)",
-		iControlType);
-#endif
-
-	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::ControlType(
-			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
-
-	if (!ctype)
-		return;
-
-	const int iOldParam = m_ui.ParamComboBox->currentIndex();
-
-	m_ui.ParamComboBox->clear();
-
-	const QString sTextMask("%1 - %2");
-
-	switch (ctype) {
-	case qtractorMidiEvent::NOTEON:
-	case qtractorMidiEvent::NOTEOFF:
-	case qtractorMidiEvent::KEYPRESS: {
-		const QIcon iconNotes(":/images/itemNotes.png");
-		m_ui.ParamTextLabel->setEnabled(true);
-		m_ui.ParamComboBox->setEnabled(true);
-		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
-			m_ui.ParamComboBox->addItem(iconNotes,
-				sTextMask.arg(iParam)
-					.arg(qtractorMidiEditor::defaultNoteName(iParam)),
-				int(iParam));
-		}
-		break;
-	}
-	case qtractorMidiEvent::CONTROLLER: {
-		const QIcon iconControllers(":/images/itemControllers.png");
-		m_ui.ParamTextLabel->setEnabled(true);
-		m_ui.ParamComboBox->setEnabled(true);
-		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
-			m_ui.ParamComboBox->addItem(iconControllers,
-				sTextMask.arg(iParam)
-					.arg(qtractorMidiEditor::defaultControllerName(iParam)),
-				int(iParam));
-		}
-		break;
-	}
-	case qtractorMidiEvent::PGMCHANGE: {
-		const QIcon iconPatches(":/images/itemPatches.png");
-		m_ui.ParamTextLabel->setEnabled(true);
-		m_ui.ParamComboBox->setEnabled(true);
-		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
-			m_ui.ParamComboBox->addItem(iconPatches,
-				sTextMask.arg(iParam).arg('-'), int(iParam));
-		}
-		break;
-	}
-	case qtractorMidiEvent::REGPARAM: {
-		const QIcon iconRpns(":/images/itemRpns.png");
-		m_ui.ParamTextLabel->setEnabled(true);
-		m_ui.ParamComboBox->setEnabled(true);
-		const QMap<unsigned short, QString>& rpns
-			= qtractorMidiEditor::defaultRpnNames();
-		QMap<unsigned short, QString>::ConstIterator rpns_iter
-			= rpns.constBegin();
-		const QMap<unsigned short, QString>::ConstIterator& rpns_end
-			= rpns.constEnd();
-		for ( ; rpns_iter != rpns_end; ++rpns_iter) {
-			const unsigned short iParam = rpns_iter.key();
-			m_ui.ParamComboBox->addItem(iconRpns,
-				sTextMask.arg(iParam).arg(rpns_iter.value()),
-				int(iParam));
-		}
-		break;
-	}
-	case qtractorMidiEvent::NONREGPARAM: {
-		const QIcon iconNrpns(":/images/itemNrpns.png");
-		m_ui.ParamTextLabel->setEnabled(true);
-		m_ui.ParamComboBox->setEnabled(true);
-		const QMap<unsigned short, QString>& nrpns
-			= qtractorMidiEditor::defaultNrpnNames();
-		QMap<unsigned short, QString>::ConstIterator nrpns_iter
-			= nrpns.constBegin();
-		const QMap<unsigned short, QString>::ConstIterator& nrpns_end
-			= nrpns.constEnd();
-		for ( ; nrpns_iter != nrpns_end; ++nrpns_iter) {
-			const unsigned short iParam = nrpns_iter.key();
-			m_ui.ParamComboBox->addItem(iconNrpns,
-				sTextMask.arg(iParam).arg(nrpns_iter.value()),
-				int(iParam));
-		}
-		break;
-	}
-	case qtractorMidiEvent::CONTROL14: {
-		const QIcon iconControllers(":/images/itemControllers.png");
-		m_ui.ParamTextLabel->setEnabled(true);
-		m_ui.ParamComboBox->setEnabled(true);
-		for (unsigned short iParam = 1; iParam < 32; ++iParam) {
-			m_ui.ParamComboBox->addItem(iconControllers,
-				sTextMask.arg(iParam)
-					.arg(qtractorMidiEditor::defaultControl14Name(iParam)),
-				int(iParam));
-		}
-		break;
-	}
-	case qtractorMidiEvent::CHANPRESS:
-	case qtractorMidiEvent::PITCHBEND:
-	default:
-		m_ui.ParamTextLabel->setEnabled(false);
-		m_ui.ParamComboBox->setEnabled(false);
-		break;
-	}
-
-	// Restore old parameter index, if convenient...
-	if (iOldParam >= 0 && iOldParam < m_ui.ParamComboBox->count())
-		m_ui.ParamComboBox->setCurrentIndex(iOldParam);
-
-	// This is enabled by as long there's a value.
-	m_ui.LogarithmicCheckBox->setEnabled(
-		m_pMidiObserver && !m_pMidiObserver->isToggled() &&
-		ctype != qtractorMidiEvent::PGMCHANGE);
-
-	// Try make changes dirty.
-	change();
 }
 
 
@@ -414,20 +256,16 @@ void qtractorMidiControlObserverForm::accept (void)
 #endif
 
 	// Get map settings...
-	const int iControlType = m_ui.ControlTypeComboBox->currentIndex();
 	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::ControlType(
-			m_ui.ControlTypeComboBox->itemData(iControlType).toInt());
+		= m_pControlTypeGroup->controlType();
 
 	unsigned short iChannel = m_ui.ChannelSpinBox->value();
 	if (iChannel > 0)
 		--iChannel;
 
 	unsigned short iParam = 0;
-	if (m_ui.ParamComboBox->isEnabled()) {
-		const int iParamIndex = m_ui.ParamComboBox->currentIndex();
-		iParam = m_ui.ParamComboBox->itemData(iParamIndex).toInt();
-	}
+	if (m_ui.ParamComboBox->isEnabled())
+		iParam = m_pControlTypeGroup->controlParam();
 
 	bool bLogarithmic = false;
 	if (m_ui.LogarithmicCheckBox->isEnabled())
@@ -599,33 +437,6 @@ void qtractorMidiControlObserverForm::stabilizeForm (void)
 		m_ui.InputsPushButton->setEnabled(false);
 		m_ui.OutputsPushButton->setEnabled(false);
 	}
-}
-
-
-// Find combo-box index from control type.
-int qtractorMidiControlObserverForm::indexFromControlType (
-	qtractorMidiControl::ControlType ctype ) const
-{
-	const int iItemCount = m_ui.ControlTypeComboBox->count();
-	for (int iIndex = 0; iIndex < iItemCount; ++iIndex) {
-		if (qtractorMidiControl::ControlType(
-			m_ui.ControlTypeComboBox->itemData(iIndex).toInt()) == ctype)
-			return iIndex;
-	}
-	return (-1);
-}
-
-
-// Find combo-box index from control parameter number.
-int qtractorMidiControlObserverForm::indexFromParam (
-	unsigned short iParam ) const
-{
-	const int iItemCount = m_ui.ParamComboBox->count();
-	for (int iIndex = 0; iIndex < iItemCount; ++iIndex) {
-		if (m_ui.ParamComboBox->itemData(iIndex).toInt() == int(iParam))
-			return iIndex;
-	}
-	return (-1);
 }
 
 
