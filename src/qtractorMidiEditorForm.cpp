@@ -91,11 +91,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Event type selection widgets...
 	m_pViewTypeComboBox = new QComboBox(m_ui.editViewToolbar);
 	m_pViewTypeComboBox->setEditable(false);
+
 	m_pEventTypeComboBox = new QComboBox(m_ui.editEventToolbar);
 	m_pEventTypeComboBox->setEditable(false);
 	m_pEventParamComboBox = new QComboBox(m_ui.editEventToolbar);
-	m_pEventParamComboBox->setEditable(false);
+//	m_pEventParamComboBox->setEditable(false);
 	m_pEventParamComboBox->setMinimumWidth(220);
+
+	m_pEventTypeGroup = new qtractorMidiControlTypeGroup(
+		m_pEventTypeComboBox, m_pEventParamComboBox);
 
 	// Snap-to-scale/quantize selection widgets...
 	m_pSnapToScaleKeyComboBox = new QComboBox(m_ui.snapToScaleToolbar);
@@ -136,38 +140,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS),
 		int(qtractorMidiEvent::KEYPRESS));
 
-	m_pEventTypeComboBox->addItem(icon,
-		tr("Note Velocity"), // Special control event name.
-		int(qtractorMidiEvent::NOTEON));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS),
-		int(qtractorMidiEvent::KEYPRESS));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER),
-		int(qtractorMidiEvent::CONTROLLER));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE),
-		int(qtractorMidiEvent::PGMCHANGE));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS),
-		int(qtractorMidiEvent::CHANPRESS));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND),
-		int(qtractorMidiEvent::PITCHBEND));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::REGPARAM),
-		int(qtractorMidiEvent::REGPARAM));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::NONREGPARAM),
-		int(qtractorMidiEvent::NONREGPARAM));
-	m_pEventTypeComboBox->addItem(icon,
-		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROL14),
-		int(qtractorMidiEvent::CONTROL14));
-#if 0
-	m_pEventTypeComboBox->addItem(icon,
-		tr("Sys Ex"), // Special control event legacy.
-		int(qtractorMidiEvent::SYSEX));
-#endif
+	// Special control event names and stuff.
+	m_pEventTypeComboBox->setItemText(0, tr("Note Velocity")); // NOTEON
+	m_pEventTypeComboBox->removeItem(1); // NOTEOFF
+
 	// Snap-to-scale/quantize selection widgets...
 	QStringListIterator iter(qtractorMidiEditor::scaleKeyNames());
 	while (iter.hasNext())
@@ -461,11 +437,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_pViewTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(viewTypeChanged(int)));
-	QObject::connect(m_pEventTypeComboBox,
-		SIGNAL(activated(int)),
+	QObject::connect(m_pEventTypeGroup,
+		SIGNAL(controlTypeChanged(int)),
 		SLOT(eventTypeChanged(int)));
-	QObject::connect(m_pEventParamComboBox,
-		SIGNAL(activated(int)),
+	QObject::connect(m_pEventTypeGroup,
+		SIGNAL(controlParamChanged(int)),
 		SLOT(eventParamChanged(int)));
 
 	QObject::connect(m_pSnapToScaleKeyComboBox,
@@ -615,6 +591,9 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 	// Get edit-mode action group down.
 	if (m_pEditModeActionGroup)
 		delete m_pEditModeActionGroup;
+
+	if (m_pEventTypeGroup)
+		delete m_pEventTypeGroup;
 }
 
 
@@ -1785,70 +1764,16 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 	// Just in case...
 	m_pMidiEditor->updateInstrumentNames();
 
-	// Update the controller names...
-	int iEventParam = m_pEventParamComboBox->currentIndex();
-	if (iEventParam < 0)
-		iEventParam = 0;
+	m_pEventTypeGroup->stabilizeControlType();
 
-	m_pEventParamComboBox->clear();
-
-	const int iEventType = m_pEventTypeComboBox->currentIndex();
 	const qtractorMidiEvent::EventType eventType
-		= qtractorMidiEvent::EventType(
-			m_pEventTypeComboBox->itemData(iEventType).toInt());
+		= m_pEventTypeGroup->controlType();
 
-	const QString sNameMask("%1 - %2");
-
-	switch (eventType) {
-	case qtractorMidiEvent::REGPARAM: {
-		const QIcon iconRpns(":/images/itemRpns.png");
-		const QMap<unsigned short, QString>& rpns
-			= m_pMidiEditor->rpnNames();
-		QMap<unsigned short, QString>::ConstIterator rpns_iter
-			= rpns.constBegin();
-		const QMap<unsigned short, QString>::ConstIterator& rpns_end
-			= rpns.constEnd();
-		for ( ; rpns_iter != rpns_end; ++rpns_iter) {
-			const unsigned short param = rpns_iter.key();
-			m_pEventParamComboBox->addItem(iconRpns,
-				sNameMask.arg(param).arg(rpns_iter.value()), int(param));
-		}
-		break;
-	}
-	case qtractorMidiEvent::NONREGPARAM: {
-		const QIcon iconNrpns(":/images/itemNrpns.png");
-		const QMap<unsigned short, QString>& nrpns
-			= m_pMidiEditor->nrpnNames();
-		QMap<unsigned short, QString>::ConstIterator nrpns_iter
-			= nrpns.constBegin();
-		const QMap<unsigned short, QString>::ConstIterator& nrpns_end
-			= nrpns.constEnd();
-		for ( ; nrpns_iter != nrpns_end; ++nrpns_iter) {
-			const unsigned short param = nrpns_iter.key();
-			m_pEventParamComboBox->addItem(iconNrpns,
-				sNameMask.arg(param).arg(nrpns_iter.value()), int(param));
-		}
-		break;
-	}
-	case qtractorMidiEvent::CONTROL14: {
-		const QIcon iconControllers(":/images/itemControllers.png");
-		for (int i = 1; i < 32; ++i) {
-			m_pEventParamComboBox->addItem(iconControllers,
-				sNameMask.arg(i).arg(m_pMidiEditor->control14Name(i)), i);
-		}
-		break;
-	}
-	default:
-	case qtractorMidiEvent::CONTROLLER: {
-		const QIcon iconControllers(":/images/itemControllers.png");
-		for (int i = 0; i < 128; ++i) {
-			m_pEventParamComboBox->addItem(iconControllers,
-				sNameMask.arg(i).arg(m_pMidiEditor->controllerName(i)), i);
-		}
-		break;
-	}}
-
-	m_pEventParamComboBox->setCurrentIndex(iEventParam);
+	m_pEventParamComboBox->setEnabled(
+		eventType == qtractorMidiEvent::CONTROLLER  ||
+		eventType == qtractorMidiEvent::REGPARAM    ||
+		eventType == qtractorMidiEvent::NONREGPARAM ||
+		eventType == qtractorMidiEvent::CONTROL14);
 }
 
 
@@ -1978,31 +1903,26 @@ void qtractorMidiEditorForm::viewTypeChanged ( int iIndex )
 }
 
 
-void qtractorMidiEditorForm::eventTypeChanged ( int iIndex )
+void qtractorMidiEditorForm::eventTypeChanged ( int etype )
 {
 	const qtractorMidiEvent::EventType eventType
-		= qtractorMidiEvent::EventType(
-			m_pEventTypeComboBox->itemData(iIndex).toInt());
+		= qtractorMidiEvent::EventType(etype);
+
 	m_pEventParamComboBox->setEnabled(
 		eventType == qtractorMidiEvent::CONTROLLER  ||
 		eventType == qtractorMidiEvent::REGPARAM    ||
 		eventType == qtractorMidiEvent::NONREGPARAM ||
 		eventType == qtractorMidiEvent::CONTROL14);
 
-	updateInstrumentNames();
+//	updateInstrumentNames();
 
 	m_pMidiEditor->editEvent()->setEventType(eventType);
-
-	eventParamChanged(m_pEventParamComboBox->currentIndex());
 }
 
 
-void qtractorMidiEditorForm::eventParamChanged ( int iIndex )
+void qtractorMidiEditorForm::eventParamChanged ( int iParam )
 {
-	const unsigned short param
-		= m_pEventParamComboBox->itemData(iIndex).toInt();
-
-	m_pMidiEditor->editEvent()->setEventParam(param);
+	m_pMidiEditor->editEvent()->setEventParam(iParam);
 	m_pMidiEditor->updateContents();
 	m_pMidiEventList->refresh();
 

@@ -386,6 +386,64 @@ inline uint qHash ( const qtractorMidiControl::MapKey& key )
 }
 
 
+//----------------------------------------------------------------------------
+// qtractorMidiControlTypeGroup - MIDI control type/param widget group.
+
+#include "qtractorMidiEditor.h"
+
+// Forwrad decls.
+class QComboBox;
+class QLabel;
+
+
+class qtractorMidiControlTypeGroup : public QObject
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiControlTypeGroup(
+		QComboBox *pControlTypeComboBox,
+		QComboBox *pControlParamComboBox,
+		QLabel *pControlParamTextLabel = NULL);
+
+	// Accessors.
+	void setControlType(qtractorMidiControl::ControlType ctype);
+	qtractorMidiControl::ControlType controlType() const;
+
+	void setControlParam(unsigned short iParam);
+	unsigned short controlParam() const;
+
+	// Stabilizers.
+	void stabilizeControlType();
+
+signals:
+
+	void controlTypeChanged(int);
+	void controlParamChanged(int);
+
+protected slots:
+
+	void activateControlType(int);
+	void activateControlParam(int);
+	void activateControlParam(const QString&);
+
+protected:
+
+	// Find combo-box indexes.
+	int indexFromControlType(qtractorMidiControl::ControlType ctype) const;
+	int indexFromControlParam(unsigned short iParam) const;
+
+private:
+
+	// Instance member variables.
+	QComboBox *m_pControlTypeComboBox;
+	QComboBox *m_pControlParamComboBox;
+	QLabel    *m_pControlParamTextLabel;
+};
+
+
 #endif  // __qtractorMidiControl_h
 
 // end of qtractorMidiControl.h
