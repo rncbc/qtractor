@@ -931,7 +931,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 }
 
 
-// Audio clip paint method.
+// MIDI clip paint method.
 void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iClipOffset )
 {

@@ -43,6 +43,7 @@
 #include "qtractorTimeScale.h"
 #include "qtractorCommand.h"
 
+#include "qtractorMidiThumbView.h"
 #include "qtractorMidiEventList.h"
 
 #include "qtractorFileList.h"
@@ -72,6 +73,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Set our central widget.
 	m_pMidiEditor = new qtractorMidiEditor(this);
 	setCentralWidget(m_pMidiEditor);
+
+	// Toolbar thumbnail view...
+	m_ui.thumbViewToolbar->addWidget(m_pMidiEditor->thumbView());
+	m_ui.thumbViewToolbar->setAllowedAreas(
+		Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
 	// Dockable widgets time.
 	m_pMidiEventList = new qtractorMidiEventList(this);
@@ -360,6 +366,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarScaleAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarScale(bool)));
+	QObject::connect(m_ui.viewToolbarThumbAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarThumb(bool)));
 	QObject::connect(m_ui.viewNoteDurationAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteDuration(bool)));
@@ -473,6 +482,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
 		m_ui.viewToolbarTransportAction->setChecked(pOptions->bMidiTransportToolbar);
 		m_ui.viewToolbarScaleAction->setChecked(pOptions->bMidiScaleToolbar);
+		m_ui.viewToolbarThumbAction->setChecked(pOptions->bMidiThumbToolbar);
 		m_ui.viewNoteDurationAction->setChecked(pOptions->bMidiNoteDuration);
 		m_ui.viewNoteColorAction->setChecked(pOptions->bMidiNoteColor);
 		m_ui.viewValueColorAction->setChecked(pOptions->bMidiValueColor);
@@ -494,6 +504,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		viewToolbarTransport(pOptions->bMidiTransportToolbar);
 		viewToolbarScale(pOptions->bMidiScaleToolbar);
+		viewToolbarThumb(pOptions->bMidiThumbToolbar);
 		m_pMidiEditor->setZoomMode(pOptions->iMidiZoomMode);
 		m_pMidiEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
 		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
@@ -1312,98 +1323,56 @@ void qtractorMidiEditorForm::toolsTimeshift (void)
 // Show/hide the main program window menubar.
 void qtractorMidiEditorForm::viewMenubar ( bool bOn )
 {
-#if 0
-	if (bOn)
-		m_ui.menuBar->show();
-	else
-		m_ui.menuBar->hide();
-#else
 	m_ui.menuBar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the main program window statusbar.
 void qtractorMidiEditorForm::viewStatusbar ( bool bOn )
 {
-#if 0
-	if (bOn)
-		statusBar()->show();
-	else
-		statusBar()->hide();
-#else
 	statusBar()->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the file-toolbar.
 void qtractorMidiEditorForm::viewToolbarFile ( bool bOn )
 {
-#if 0
-	if (bOn)
-		m_ui.fileToolbar->show();
-	else
-		m_ui.fileToolbar->hide();
-#else
 	m_ui.fileToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the edit-toolbar.
 void qtractorMidiEditorForm::viewToolbarEdit ( bool bOn )
 {
-#if 0
-	if (bOn)
-		m_ui.editToolbar->show();
-	else
-		m_ui.editToolbar->hide();
-#else
 	m_ui.editToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the view-toolbar.
 void qtractorMidiEditorForm::viewToolbarView ( bool bOn )
 {
-#if 0
-	if (bOn)
-		m_ui.viewToolbar->show();
-	else
-		m_ui.viewToolbar->hide();
-#else
 	m_ui.viewToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the transport-toolbar.
 void qtractorMidiEditorForm::viewToolbarTransport ( bool bOn )
 {
-#if 0
-	if (bOn)
-		m_ui.transportToolbar->show();
-	else
-		m_ui.transportToolbar->hide();
-#else
 	m_ui.transportToolbar->setVisible(bOn);
-#endif
 }
 
 
-// Show/hide the scale-toolbar.
+// Show/hide the snap-to-scale toolbar.
 void qtractorMidiEditorForm::viewToolbarScale ( bool bOn )
 {
-#if 0
-	if (bOn)
-		m_ui.snapToScaleToolbar->show();
-	else
-		m_ui.snapToScaleToolbar->hide();
-#else
 	m_ui.snapToScaleToolbar->setVisible(bOn);
-#endif
+}
+
+
+// Show/hide the thumb-view toolbar.
+void qtractorMidiEditorForm::viewToolbarThumb ( bool bOn )
+{
+	m_ui.thumbViewToolbar->setVisible(bOn);
 }
 
 
@@ -1774,6 +1743,13 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 		eventType == qtractorMidiEvent::REGPARAM    ||
 		eventType == qtractorMidiEvent::NONREGPARAM ||
 		eventType == qtractorMidiEvent::CONTROL14);
+}
+
+
+// Update thumb-view play-head...
+void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
+{
+	m_pMidiEditor->thumbView()->updatePlayHead(iPlayHead);
 }
 
 

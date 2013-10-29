@@ -90,6 +90,9 @@ public:
 	// Save(as) warning message box.
 	static int querySave(const QString& sFilename);
 
+	// Update thumb-view play-head...
+	void updatePlayHead(unsigned long iPlayHead);
+
 public slots:
 
 	void stabilizeForm();
@@ -139,6 +142,7 @@ protected slots:
 	void viewToolbarView(bool bOn);
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarScale(bool bOn);
+	void viewToolbarThumb(bool bOn);
 	void viewNoteDuration(bool bOn);
 	void viewNoteColor(bool bOn);
 	void viewValueColor(bool bOn);

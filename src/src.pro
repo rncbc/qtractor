@@ -76,6 +76,7 @@ HEADERS += config.h \
 	qtractorMidiRpn.h \
 	qtractorMidiSequence.h \
 	qtractorMidiSysex.h \
+	qtractorMidiThumbView.h \
 	qtractorMidiTimer.h \
 	qtractorMixer.h \
 	qtractorMmcEvent.h \
@@ -195,6 +196,7 @@ SOURCES += \
 	qtractorMidiMonitor.cpp \
 	qtractorMidiRpn.cpp \
 	qtractorMidiSequence.cpp \
+	qtractorMidiThumbView.cpp \
 	qtractorMidiTimer.cpp \
 	qtractorMixer.cpp \
 	qtractorMmcEvent.cpp \

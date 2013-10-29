@@ -27,6 +27,8 @@
 #include "qtractorMidiEditView.h"
 #include "qtractorMidiEditEvent.h"
 
+#include "qtractorMidiThumbView.h"
+
 #include "qtractorMidiEditCommand.h"
 
 #include "qtractorMidiEngine.h"
@@ -788,6 +790,8 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_pEditEventFrame = new QFrame(pHBoxBottom);
 	m_pEditList->updateContentsHeight();
 
+	m_pThumbView = new qtractorMidiThumbView(this);
+
 	// Create child box layouts...
 	QVBoxLayout *pVBoxLeftLayout = new QVBoxLayout(pVBoxLeft);
 	pVBoxLeftLayout->setMargin(0);
@@ -835,6 +839,10 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 		m_pEditTime, SLOT(contentsXMovingSlot(int,int)));
 	QObject::connect(m_pEditEvent, SIGNAL(contentsMoving(int,int)),
 		m_pEditView, SLOT(contentsXMovingSlot(int,int)));
+
+	QObject::connect(m_pEditView,
+		SIGNAL(contentsMoving(int,int)),
+		m_pThumbView, SLOT(updateThumb()));
 
 	QObject::connect(m_pCommands,
 		SIGNAL(updateNotifySignal(unsigned int)),
@@ -1403,6 +1411,12 @@ qtractorMidiEditEventScale *qtractorMidiEditor::editEventScale (void) const
 QFrame *qtractorMidiEditor::editEventFrame (void) const
 {
 	return m_pEditEventFrame;
+}
+
+
+qtractorMidiThumbView *qtractorMidiEditor::thumbView (void) const
+{
+	return m_pThumbView;
 }
 
 
@@ -2210,6 +2224,9 @@ void qtractorMidiEditor::updateContents (void)
 	m_pEditTime->updateContents();
 	m_pEditView->updateContents();
 	m_pEditEvent->updateContents();
+
+	m_pThumbView->updateContents();
+	m_pThumbView->updatePlayHead(m_iPlayHead);
 }
 
 
@@ -2252,6 +2269,9 @@ void qtractorMidiEditor::centerContents (void)
 	m_pEditTime->updateContents();
 	m_pEditView->updateContents();
 	m_pEditEvent->updateContents();
+
+	m_pThumbView->updateContents();
+	m_pThumbView->updatePlayHead(m_iPlayHead);
 }
 
 
@@ -2323,6 +2343,9 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	m_pEditTime->updateContents();
 	m_pEditView->updateContents();
 	m_pEditEvent->updateContents();
+
+	m_pThumbView->updateContents();
+	m_pThumbView->updatePlayHead(m_iPlayHead);
 }
 
 

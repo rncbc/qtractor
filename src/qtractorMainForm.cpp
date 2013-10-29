@@ -4281,178 +4281,84 @@ void qtractorMainForm::clipTakeRange (void)
 // Show/hide the main program window menubar.
 void qtractorMainForm::viewMenubar ( bool bOn )
 {
-#if 0
-	if (bOn)
-		m_ui.menuBar->show();
-	else
-		m_ui.menuBar->hide();
-#else
 	m_ui.menuBar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the main program window statusbar.
 void qtractorMainForm::viewStatusbar ( bool bOn )
 {
-#if 0
-	if (bOn)
-		statusBar()->show();
-	else
-		statusBar()->hide();
-#else
 	statusBar()->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the file-toolbar.
 void qtractorMainForm::viewToolbarFile ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.fileToolbar->show();
-	} else {
-		m_ui.fileToolbar->hide();
-	}
-#else
 	m_ui.fileToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the edit-toolbar.
 void qtractorMainForm::viewToolbarEdit ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.editToolbar->show();
-	} else {
-		m_ui.editToolbar->hide();
-	}
-#else
 	m_ui.editToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the track-toolbar.
 void qtractorMainForm::viewToolbarTrack ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.trackToolbar->show();
-	} else {
-		m_ui.trackToolbar->hide();
-	}
-#else
 	m_ui.trackToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the view-toolbar.
 void qtractorMainForm::viewToolbarView ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.viewToolbar->show();
-	} else {
-		m_ui.viewToolbar->hide();
-	}
-#else
 	m_ui.viewToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the options toolbar.
 void qtractorMainForm::viewToolbarOptions ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.optionsToolbar->show();
-	} else {
-		m_ui.optionsToolbar->hide();
-	}
-#else
 	m_ui.optionsToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the transport toolbar.
 void qtractorMainForm::viewToolbarTransport ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.transportToolbar->show();
-	} else {
-		m_ui.transportToolbar->hide();
-	}
-#else
 	m_ui.transportToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the time toolbar.
 void qtractorMainForm::viewToolbarTime ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.timeToolbar->show();
-	} else {
-		m_ui.timeToolbar->hide();
-	}
-#else
 	m_ui.timeToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the thumb (track-line)ime toolbar.
 void qtractorMainForm::viewToolbarThumb ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_ui.thumbToolbar->show();
-	} else {
-		m_ui.thumbToolbar->hide();
-	}
-#else
 	m_ui.thumbToolbar->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the files window view.
 void qtractorMainForm::viewFiles ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_pFiles->show();
-	} else {
-		m_pFiles->hide();
-	}
-#else
 	m_pFiles->setVisible(bOn);
-#endif
 }
 
 
 // Show/hide the messages window logger.
 void qtractorMainForm::viewMessages ( bool bOn )
 {
-#if 0
-	if (bOn) {
-		m_pMessages->show();
-	} else {
-		m_pMessages->hide();
-	}
-#else
 	m_pMessages->setVisible(bOn);
-#endif
 }
 
 
@@ -4461,15 +4367,8 @@ void qtractorMainForm::viewMixer ( bool bOn )
 {
 	if (m_pOptions)
 		m_pOptions->saveWidgetGeometry(m_pMixer);
-#if 0
-	if (bOn) {
-		m_pMixer->show();
-	} else {
-		m_pMixer->hide();
-	}
-#else
+
 	m_pMixer->setVisible(bOn);
-#endif
 }
 
 
@@ -4478,17 +4377,9 @@ void qtractorMainForm::viewConnections ( bool bOn )
 {
 	if (m_pOptions)
 		m_pOptions->saveWidgetGeometry(m_pConnections);
-#if 0
-	if (bOn) {
-		m_pConnections->reset();
-		m_pConnections->show();
-	} else {
-		m_pConnections->hide();
-	}
-#else
+
 	if (bOn) m_pConnections->reset();
 	m_pConnections->setVisible(bOn);
-#endif
 }
 
 
@@ -5637,6 +5528,11 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 	m_pTimeSpinBox->setValue(iPlayHead, false);
 	m_pThumbView->updatePlayHead(iPlayHead);
 
+	// Update other editors thumb-views...
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext())
+		iter.next()->updatePlayHead(iPlayHead);
+
 	// Tricky stuff: node's non-null iif tempo changes...
 	qtractorTimeScale::Node *pNode = m_pTempoCursor->seek(m_pSession, iPlayHead);
 	if (pNode) {
@@ -5819,6 +5715,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_pTimeSpinBox->setReadOnly(bRecording);
 	m_pTempoSpinBox->setReadOnly(bRecording);
 
+	// Stabilize thumb-view...
 	m_pThumbView->update();
 	m_pThumbView->updateThumb();
 

@@ -44,6 +44,8 @@ class qtractorMidiEditView;
 class qtractorMidiEditEventScale;
 class qtractorMidiEditEvent;
 
+class qtractorMidiThumbView;
+
 class qtractorMidiEditCommand;
 class qtractorMidiClip;
 
@@ -148,6 +150,8 @@ public:
 	qtractorMidiEditEventScale *editEventScale() const;
 	qtractorMidiEditEvent *editEvent() const;
 	QFrame *editEventFrame() const;
+
+	qtractorMidiThumbView *thumbView() const;
 
 	// Edit-head/tail accessors.
 	void setEditHead(unsigned long iEditHead, bool bSyncView = true);
@@ -533,6 +537,8 @@ private:
 	qtractorMidiEditEventScale *m_pEditEventScale;
 	qtractorMidiEditEvent *m_pEditEvent;
 	QFrame *m_pEditEventFrame;
+
+	qtractorMidiThumbView *m_pThumbView;
 
 	// The local time scale.
 	qtractorTimeScale *m_pTimeScale;

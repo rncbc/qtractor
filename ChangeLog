@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Brand new thumb-(over)view toolbar widget added to MIDI clip
+  editor window (aka. piano-roll overview).
+
 - General MIDI RPN/NRPN 14-bit controller support is now being
   introduced on real-time MIDI input parsing, on standard MIDI
   file I/O, on MIDI Controller options and, of course, on MIDI
