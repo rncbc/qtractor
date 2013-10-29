@@ -232,7 +232,7 @@ protected slots:
 private:
 
 	// Instance variables.
-	qtractorMidiEventListView * m_pListView;
+	qtractorMidiEventListView *m_pListView;
 
 	// Cross-selection fake-mutex.
 	int m_iSelectUpdate;

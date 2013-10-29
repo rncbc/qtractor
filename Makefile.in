@@ -74,6 +74,7 @@ headers = \
 	src/qtractorMidiRpn.h \
 	src/qtractorMidiSequence.h \
 	src/qtractorMidiSysex.h \
+	src/qtractorMidiThumbView.h \
 	src/qtractorMidiTimer.h \
 	src/qtractorMixer.h \
 	src/qtractorMonitor.h \
@@ -190,6 +191,7 @@ sources = \
 	src/qtractorMidiMonitor.cpp \
 	src/qtractorMidiRpn.cpp \
 	src/qtractorMidiSequence.cpp \
+	src/qtractorMidiThumbView.cpp \
 	src/qtractorMidiTimer.cpp \
 	src/qtractorMixer.cpp \
 	src/qtractorNsmClient.cpp \

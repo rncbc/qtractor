@@ -227,6 +227,7 @@ public:
 	bool bMidiViewToolbar;
 	bool bMidiTransportToolbar;
 	bool bMidiScaleToolbar;
+	bool bMidiThumbToolbar;
 	bool bMidiNoteDuration;
 	bool bMidiNoteColor;
 	bool bMidiValueColor;

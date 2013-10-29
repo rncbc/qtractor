@@ -146,7 +146,8 @@
      <addaction name="viewToolbarViewAction" />
      <addaction name="viewToolbarTransportAction" />
      <addaction name="viewToolbarScaleAction" />
-    </widget>
+	 <addaction name="viewToolbarThumbAction" />
+	</widget>
     <widget class="QMenu" name="viewWindowsMenu" >
      <property name="title" >
       <string>&amp;Windows</string>
@@ -333,6 +334,14 @@
    </property>
    <attribute name="toolBarArea" >
     <number>4</number>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="thumbViewToolbar" >
+   <property name="orientation" >
+	<enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+	<number>8</number>
    </attribute>
   </widget>
   <action name="fileSaveAction" >
@@ -1010,6 +1019,23 @@
    </property>
    <property name="statusTip" >
     <string>Show/hide the scale toolbar</string>
+   </property>
+  </action>
+  <action name="viewToolbarThumbAction" >
+   <property name="checkable" >
+	<bool>true</bool>
+   </property>
+   <property name="text" >
+	<string>Thum&amp;b</string>
+   </property>
+   <property name="iconText" >
+	<string>Thumb Toolbar</string>
+   </property>
+   <property name="toolTip" >
+	<string>Thumb toolbar</string>
+   </property>
+   <property name="statusTip" >
+	<string>Show/hide the thumb view toolbar</string>
    </property>
   </action>
   <action name="viewNoteDurationAction" >
