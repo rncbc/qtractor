@@ -94,6 +94,14 @@ void qtractorMidiThumbView::updateContents (void)
 	QPainter painter(&m_pixmap);
 	painter.initFrom(this);
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
 	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
 	if (pMidiClip == NULL)
 		return;
@@ -106,12 +114,8 @@ void qtractorMidiThumbView::updateContents (void)
 	if (pSeq == NULL)
 		return;
 
-	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
-		return;
-
 	// Local contents length (in ticks).
-	const int cw = m_pEditor->editView()->contentsWidth() + 1;;
+	const int cw = m_pEditor->editView()->contentsWidth() + 1;
 	const unsigned long iClipStart = pMidiClip->clipStart();
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
@@ -121,31 +125,75 @@ void qtractorMidiThumbView::updateContents (void)
 	m_iContentsLength = pNode->tickFromPixel(x0 + cw) - t0;
 
 	const int f2 = 1 + (m_iContentsLength / w);
+	int x2, y2, w2;
 
 	// Check maximum note span...
 	int iNoteSpan = (pSeq->noteMax() - pSeq->noteMin());
-	if (iNoteSpan < 3)
-		iNoteSpan = 3;
+	if (iNoteSpan < 6)
+		iNoteSpan = 6;
 
-	int h1 = h / iNoteSpan;
-	if (h1 < 1) h1 = 1;
+	const int h2 = 1 + (h / iNoteSpan);
 
 	const QColor& fg = pTrack->foreground().lighter();
 
 	qtractorMidiEvent *pEvent = pSeq->events().first();
 	while (pEvent) {
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			const int x = pEvent->time() / f2;
-			const int y = h - h1 * (pEvent->note() - pSeq->noteMin() + 1);
-			const int w = pEvent->duration() / f2;
-			painter.fillRect(x, y, w + 1, h1 + 1, fg);
+			x2 = pEvent->time() / f2;
+			const int y2 = h - h2
+				- (h * (pEvent->note() - pSeq->noteMin()) / iNoteSpan;
+			const int w2 = 1 + (pEvent->duration() / f2);
+			painter.fillRect(x2, y2, w2, h2, fg);
 		}
 		pEvent = pEvent->next();
 	}
 
-	// May trigger an update now.
+	// Draw the location marker lines, if any...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekFrame(iClipStart);
+	while (pMarker && pMarker->frame < iClipEnd) {
+		x2 = int(pTimeScale->tickFromFrame(pMarker->frame) - t0) / f2;
+		painter.setPen(pMarker->color);
+		painter.drawLine(x2, 0, x2, h);
+		pMarker = pMarker->next();
+	}
+
+	// Draw the loop-bound lines, if any...
+	if (pSession->isLooping()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
+		painter.setPen(Qt::darkCyan);
+		x2 = int(pTimeScale->tickFromFrame(pSession->loopStart()) - t0) / f2;
+		if (x2 > 0 && x2 < w) {
+			painter.fillRect(QRect(0, 0, x2, h), shade);
+			painter.drawLine(x2, 0, x2, h);
+		}
+		x2 = int(pTimeScale->tickFromFrame(pSession->loopEnd()) - t0) / f2;
+		if (x2 > 0 && x2 < w) {
+			painter.fillRect(QRect(x2, 0, w - x2, h), shade);
+			painter.drawLine(x2, 0, x2, h);
+		}
+	}
+	else
+	// Don't forget the punch-in/out ones too...
+	if (pSession->isPunching()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
+		painter.setPen(Qt::darkMagenta);
+		x2 = int(pTimeScale->tickFromFrame(pSession->punchIn()) - t0) / f2;
+		if (x2 > 0 && x2 < w) {
+			painter.fillRect(QRect(0, 0, x2, h), shade);
+			painter.drawLine(x2, 0, x2, h);
+		}
+		x2 = int(pTimeScale->tickFromFrame(pSession->puchOut()) - t0) / f2;
+		if (x2 < w) {
+			painter.fillRect(QRect(x2, 0, w - x2, h), shade);
+			painter.drawLine(x2, 0, x2, h);
+		}
+	}
+
+	// May trigger an update now...
 	update();
 	updateThumb();
+	updatePlayHead(m_pEditor->playHead());
 }
 
 
@@ -188,12 +236,12 @@ void qtractorMidiThumbView::updatePlayHead ( unsigned long iPlayHead )
 	if (w < 1 || h < 1)
 		return;
 
-	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
-	if (pMidiClip == NULL)
-		return;
-
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	if (pTimeScale == NULL)
+		return;
+
+	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
+	if (pMidiClip == NULL)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);
@@ -201,8 +249,7 @@ void qtractorMidiThumbView::updatePlayHead ( unsigned long iPlayHead )
 	// Extra: update current playhead position...
 	const unsigned long iClipStart = pMidiClip->clipStart();
 	const unsigned long t0 = pTimeScale->tickFromFrame(iClipStart);
-	const unsigned long t1 = pTimeScale->tickFromFrame(iPlayHead);
-	const int x2 = int(t1 - t0) / f2;
+	const int x2 = int(pTimeScale->tickFromFrame(iPlayHead) - t0) / f2;
 
 	if (m_iPlayHeadX != x2) {
 		// Override old playhead line...
@@ -246,12 +293,12 @@ void qtractorMidiThumbView::setPlayHeadX ( int iPlayHeadX )
 	if (pSession == NULL)
 		return;
 
-	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
-	if (pMidiClip == NULL)
-		return;
-
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	if (pTimeScale == NULL)
+		return;
+
+	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
+	if (pMidiClip == NULL)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);
@@ -275,11 +322,35 @@ void qtractorMidiThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (w < 1 || h < 1)
 		return;
 	
-	// Draw current play-head as well...
-	painter.setPen(Qt::red);
-	const int x2 = m_iPlayHeadX;
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
+	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
+	if (pMidiClip == NULL)
+		return;
+
+	const int f2 = 1 + (m_iContentsLength / w);
+	int x2;
+
+	const unsigned long iClipStart = pMidiClip->clipStart();
+	const unsigned long t0 = pTimeScale->tickFromFrame(iClipStart);
+	
+	// Extra: update edit-bound positions...
+	painter.setPen(Qt::blue);	
+	x2 = int(pTimeScale->tickFromFrame(pSession->editHead()) - t0) / f2;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
+	x2 = int(pTimeScale->tickFromFrame(pSession->editTail()) - t0) / f2;
+	if (x2 >= rect.left() && x2 <= rect.right())
+		painter.drawLine(x2, 0, x2, h);
+
+	// Draw current play-head as well...
+	x2 = m_iPlayHeadX;
+	if (x2 >= rect.left() && x2 <= rect.right()) {
+		painter.setPen(Qt::red);
+		painter.drawLine(x2, 0, x2, h);
+	}
 }
 
 

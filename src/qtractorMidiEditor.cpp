@@ -2226,7 +2226,6 @@ void qtractorMidiEditor::updateContents (void)
 	m_pEditEvent->updateContents();
 
 	m_pThumbView->updateContents();
-	m_pThumbView->updatePlayHead(m_iPlayHead);
 }
 
 
@@ -2271,7 +2270,6 @@ void qtractorMidiEditor::centerContents (void)
 	m_pEditEvent->updateContents();
 
 	m_pThumbView->updateContents();
-	m_pThumbView->updatePlayHead(m_iPlayHead);
 }
 
 
@@ -2345,7 +2343,6 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	m_pEditEvent->updateContents();
 
 	m_pThumbView->updateContents();
-	m_pThumbView->updatePlayHead(m_iPlayHead);
 }
 
 
