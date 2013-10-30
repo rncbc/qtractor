@@ -169,7 +169,7 @@ void qtractorThumbView::updateContents (void)
 			painter.drawLine(x2, 0, x2, h);
 		}
 	}
-	else
+
 	// Don't forget the punch-in/out ones too...
 	if (pSession->isPunching()) {
 		const QBrush shade(QColor(0, 0, 0, 60));

@@ -128,7 +128,7 @@ void qtractorMidiThumbView::updateContents (void)
 	int x2;
 
 	// Check maximum note span...
-	int iNoteSpan = (pSeq->noteMax() - pSeq->noteMin());
+	int iNoteSpan = (pSeq->noteMax() - pSeq->noteMin() + 1);
 	if (iNoteSpan < 6)
 		iNoteSpan = 6;
 
@@ -175,7 +175,7 @@ void qtractorMidiThumbView::updateContents (void)
 			painter.drawLine(x2, 0, x2, h);
 		}
 	}
-	else
+
 	// Don't forget the punch-in/out ones too...
 	if (pSession->isPunching()) {
 		const QBrush shade(QColor(0, 0, 0, 60));

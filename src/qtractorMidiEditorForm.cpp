@@ -1724,6 +1724,10 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_ui.transportRecordAction->setChecked(bRecording);
 		m_ui.transportPunchAction->setChecked(bPunching);
 	}
+
+	// Stabilize thumb-view...
+	m_pMidiEditor->thumbView()->update();
+	m_pMidiEditor->thumbView()->updateThumb();
 }
 
 
