@@ -125,7 +125,7 @@ void qtractorMidiThumbView::updateContents (void)
 	m_iContentsLength = pNode->tickFromPixel(x0 + cw) - t0;
 
 	const int f2 = 1 + (m_iContentsLength / w);
-	int x2, y2, w2;
+	int x2;
 
 	// Check maximum note span...
 	int iNoteSpan = (pSeq->noteMax() - pSeq->noteMin());
@@ -141,7 +141,7 @@ void qtractorMidiThumbView::updateContents (void)
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 			x2 = pEvent->time() / f2;
 			const int y2 = h - h2
-				- (h * (pEvent->note() - pSeq->noteMin()) / iNoteSpan;
+				- (h * (pEvent->note() - pSeq->noteMin())) / iNoteSpan;
 			const int w2 = 1 + (pEvent->duration() / f2);
 			painter.fillRect(x2, y2, w2, h2, fg);
 		}
@@ -151,8 +151,10 @@ void qtractorMidiThumbView::updateContents (void)
 	// Draw the location marker lines, if any...
 	qtractorTimeScale::Marker *pMarker
 		= pTimeScale->markers().seekFrame(iClipStart);
-	while (pMarker && pMarker->frame < iClipEnd) {
+	while (pMarker) {
 		x2 = int(pTimeScale->tickFromFrame(pMarker->frame) - t0) / f2;
+		if (x2 < 0 || x2 > w)
+			break;
 		painter.setPen(pMarker->color);
 		painter.drawLine(x2, 0, x2, h);
 		pMarker = pMarker->next();
@@ -322,6 +324,10 @@ void qtractorMidiThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (w < 1 || h < 1)
 		return;
 	
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	if (pTimeScale == NULL)
 		return;
