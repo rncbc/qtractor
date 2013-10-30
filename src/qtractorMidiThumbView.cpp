@@ -185,7 +185,7 @@ void qtractorMidiThumbView::updateContents (void)
 			painter.fillRect(QRect(0, 0, x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
 		}
-		x2 = int(pTimeScale->tickFromFrame(pSession->puchOut()) - t0) / f2;
+		x2 = int(pTimeScale->tickFromFrame(pSession->punchOut()) - t0) / f2;
 		if (x2 < w) {
 			painter.fillRect(QRect(x2, 0, w - x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
