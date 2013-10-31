@@ -192,10 +192,13 @@ void qtractorMidiThumbView::updateContents (void)
 		}
 	}
 
+	// Update relative play-head position...
+	const unsigned long iPlayHead = m_pEditor->playHead();
+	m_iPlayHeadX = int(pTimeScale->tickFromFrame(iPlayHead) - t0) / f2;
+
 	// May trigger an update now...
 	update();
 	updateThumb();
-	updatePlayHead(m_pEditor->playHead());
 }
 
 
