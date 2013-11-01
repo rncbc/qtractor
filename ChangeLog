@@ -4,6 +4,8 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 SVN TRUNK
+ 
+- More preparations for Qt5 configure build.
 
 - Brand new thumb-(over)view toolbar widget added to MIDI clip
   editor window (aka. piano-roll overview).
