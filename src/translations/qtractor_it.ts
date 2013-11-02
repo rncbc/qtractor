@@ -12044,12 +12044,12 @@ Vuoi scartare le modifiche?</translation>
         <translation>Patch</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="424"/>
+        <location filename="../qtractorTrackForm.cpp" line="426"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="425"/>
+        <location filename="../qtractorTrackForm.cpp" line="427"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12058,13 +12058,13 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="553"/>
+        <location filename="../qtractorTrackForm.cpp" line="555"/>
         <source>(No instrument)</source>
         <translation>(Nessuno strumento)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="745"/>
-        <location filename="../qtractorTrackForm.cpp" line="856"/>
+        <location filename="../qtractorTrackForm.cpp" line="750"/>
+        <location filename="../qtractorTrackForm.cpp" line="861"/>
         <source>(None)</source>
         <translation>(Nessuno)</translation>
     </message>

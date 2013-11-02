@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
  
+- When adding new tracks, try preserving the last selected bus
+  namesi, while not the default Master ones (after a suggestion 
+  from danboid aka. Daniel MacDonald, thanks).
+
 - More preparations for Qt5 configure build.
 
 - Brand new thumb-(over)view toolbar widget added to MIDI clip

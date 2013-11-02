@@ -400,6 +400,8 @@ void qtractorTrackForm::accept (void)
 		m_props.foreground = colorItem(m_ui.ForegroundColorComboBox);
 		m_props.background = colorItem(m_ui.BackgroundColorComboBox);
 		m_props.background.setAlpha(192);
+		// Save default bus names...
+		saveDefaultBusNames(m_props.trackType);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -648,6 +650,9 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 				m_ui.OutputBusNameComboBox->addItem(icon, pBus->busName());
 		}
 	}
+
+	// Load default bus names...
+	loadDefaultBusNames(trackType);
 
 	// Shake it a little bit first, but
 	// make it as tight as possible...
@@ -1372,6 +1377,74 @@ void qtractorTrackForm::setMidiProgram ( int iBank, int iProg )
 	);
 
 	changed();
+}
+
+
+//----------------------------------------------------------------------------
+// Default bus names...
+
+QString qtractorTrackForm::g_sAudioInputBusName;
+QString qtractorTrackForm::g_sAudioOutputBusName;
+
+QString qtractorTrackForm::g_sMidiInputBusName;
+QString qtractorTrackForm::g_sMidiOutputBusName;
+
+
+// Load default bus names...
+void qtractorTrackForm::loadDefaultBusNames (
+	qtractorTrack::TrackType trackType )
+{
+	QString sInputBusName;
+	QString sOutputBusName;
+
+	switch (trackType) {
+	case qtractorTrack::Audio:
+		sInputBusName  = g_sAudioInputBusName;;
+		sOutputBusName = g_sAudioOutputBusName;
+		break;
+	case qtractorTrack::Midi:
+		sInputBusName  = g_sMidiInputBusName;
+		sOutputBusName = g_sMidiOutputBusName;
+		break;
+	default:
+		break;
+	}
+
+	const int iInputBusIndex
+		= m_ui.InputBusNameComboBox->findText(sInputBusName);
+	m_ui.InputBusNameComboBox->setCurrentIndex(
+		iInputBusIndex < 0 ? 0 : iInputBusIndex);
+
+	const int iOutputBusIndex
+		= m_ui.OutputBusNameComboBox->findText(sOutputBusName);
+	m_ui.OutputBusNameComboBox->setCurrentIndex(
+		iOutputBusIndex < 0 ? 0 : iOutputBusIndex);
+}
+
+
+// Save default bus names...
+void qtractorTrackForm::saveDefaultBusNames (
+	qtractorTrack::TrackType trackType ) const
+{
+	const int iInputBusIndex  = m_ui.InputBusNameComboBox->currentIndex();
+	const int iOutputBusIndex = m_ui.OutputBusNameComboBox->currentIndex();
+
+	switch (trackType) {
+	case qtractorTrack::Audio:
+		if (iInputBusIndex > 0)
+			g_sAudioInputBusName  = m_ui.InputBusNameComboBox->currentText();
+		if (iOutputBusIndex > 0)
+			g_sAudioOutputBusName = m_ui.OutputBusNameComboBox->currentText();
+		break;
+	case qtractorTrack::Midi:
+		if (iInputBusIndex > 0)
+			g_sMidiInputBusName   = m_ui.InputBusNameComboBox->currentText();
+		if (iOutputBusIndex > 0)
+			g_sMidiOutputBusName  = m_ui.OutputBusNameComboBox->currentText();
+		break;
+	default:
+		break;
+	}
 }
 
 

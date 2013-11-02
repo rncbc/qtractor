@@ -116,6 +116,10 @@ protected:
 
 	QColor colorItem(QComboBox *pComboBox);
 
+	// Save/load default bus names...
+	void loadDefaultBusNames(qtractorTrack::TrackType trackType);
+	void saveDefaultBusNames(qtractorTrack::TrackType trackType) const;
+
 private:
 
 	// The Qt-designer UI struct...
@@ -144,6 +148,12 @@ private:
 	class MidiProgramObserver;
 
 	MidiProgramObserver *m_pMidiProgramObserver;
+
+	// Default bus names...
+	static QString g_sAudioInputBusName;
+	static QString g_sAudioOutputBusName;
+	static QString g_sMidiInputBusName;
+	static QString g_sMidiOutputBusName;
 };
 
 
