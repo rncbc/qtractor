@@ -843,8 +843,26 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				pAudioCursor->seek(iFrameEnd);
 				// HACK! Freewheeling observers update (non RT safe!)...
 				qtractorSubject::flushQueue(false);
-			}	// Are we trough?
-			else m_bExportDone = true;
+			} else {
+				// Are we trough?
+				m_bExportDone = true;
+				// HACK: Silence out all audio output buses...
+				for (qtractorBus *pBus = buses().first();
+						pBus; pBus = pBus->next()) {
+					qtractorAudioBus *pAudioBus
+						= static_cast<qtractorAudioBus *> (pBus);
+					if (pAudioBus)
+						pAudioBus->process_prepare(nframes);
+				}
+				// HACK: and all extra audio buses...
+				for (qtractorBus *pBusEx = busesEx().first();
+						pBusEx; pBusEx = pBusEx->next()) {
+					qtractorAudioBus *pAudioBusEx
+						= static_cast<qtractorAudioBus *> (pBusEx);
+					if (pAudioBusEx)
+						pAudioBusEx->process_prepare(nframes);
+				}
+			}
 		}
 		// Done with this one export cycle...
 		return 0;
