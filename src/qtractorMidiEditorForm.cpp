@@ -1620,9 +1620,9 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_pMidiEditor->updateUndoAction(m_ui.editUndoAction);
 	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
 
-	bool bSelected = m_pMidiEditor->isSelected();
-	bool bSelectable = m_pMidiEditor->isSelectable();
-	bool bClipboard = m_pMidiEditor->isClipboard();
+	const bool bSelected = m_pMidiEditor->isSelected();
+	const bool bSelectable = m_pMidiEditor->isSelectable();
+	const bool bClipboard = m_pMidiEditor->isClipboard();
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(bClipboard);
@@ -1631,7 +1631,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
-    bool bInsertable = m_pMidiEditor->isInsertable();
+	const bool bInsertable = m_pMidiEditor->isInsertable();
     m_ui.editInsertRangeAction->setEnabled(bInsertable);
     m_ui.editRemoveRangeAction->setEnabled(bInsertable);
 
@@ -1693,14 +1693,14 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	qtractorSession  *pSession  = qtractorSession::getInstance();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pSession && pMainForm) {
-		unsigned long iPlayHead = pSession->playHead();
-		bool bPlaying   = pSession->isPlaying();
-		bool bRecording = pSession->isRecording();
-		bool bPunching  = pSession->isPunching();
-		bool bLooping   = pSession->isLooping();
-		bool bRolling   = (bPlaying && bRecording);
-		bool bBumped    = (!bRolling && (iPlayHead > 0 || bPlaying));
-		int iRolling = pMainForm->rolling();
+		const unsigned long iPlayHead = pSession->playHead();
+		const bool bPlaying   = pSession->isPlaying();
+		const bool bRecording = pSession->isRecording();
+		const bool bPunching  = pSession->isPunching();
+		const bool bLooping   = pSession->isLooping();
+		const bool bRolling   = (bPlaying && bRecording);
+		const bool bBumped    = (!bRolling && (iPlayHead > 0 || bPlaying));
+		const int iRolling = pMainForm->rolling();
 		m_ui.transportBackwardAction->setEnabled(bBumped);
 		m_ui.transportRewindAction->setEnabled(bBumped);
 		m_ui.transportFastForwardAction->setEnabled(!bRolling);

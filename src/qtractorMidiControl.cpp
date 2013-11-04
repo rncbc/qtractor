@@ -1064,6 +1064,9 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 		= qtractorMidiControl::ControlType(
 			m_pControlTypeComboBox->itemData(iControlType).toInt());
 
+	const int iOldParam
+		= m_pControlParamComboBox->currentIndex();
+
 	m_pControlParamComboBox->clear();
 
 	const QString sTextMask("%1 - %2");
@@ -1181,6 +1184,9 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 			SIGNAL(editingFinished()),
 			SLOT(editControlParamFinished()));
 	}
+
+	if (iOldParam >= 0 && iOldParam < m_pControlParamComboBox->count())
+		m_pControlParamComboBox->setCurrentIndex(iOldParam);
 
 	emit controlTypeChanged(int(ctype));
 

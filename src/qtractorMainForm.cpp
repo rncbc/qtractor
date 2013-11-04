@@ -5563,26 +5563,24 @@ void qtractorMainForm::stabilizeForm (void)
 	pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
 	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
 
-	unsigned long iPlayHead = m_pSession->playHead();
-	unsigned long iSessionEnd = m_pSession->sessionEnd();
+	const unsigned long iPlayHead = m_pSession->playHead();
+	const unsigned long iSessionEnd = m_pSession->sessionEnd();
 
+	const bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
 	qtractorTrack *pTrack = NULL;
-	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
 	if (bTracks)
 		pTrack = m_pTracks->currentTrack();
 
-	bool bEnabled    = (pTrack != NULL);
-	bool bSelected   = (m_pTracks && m_pTracks->isSelected());
-	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
-	bool bPlaying    = m_pSession->isPlaying();
-	bool bRecording  = m_pSession->isRecording();
-	bool bPunching   = m_pSession->isPunching();
-	bool bLooping    = m_pSession->isLooping();
-	bool bRolling    = (bPlaying && bRecording);
-	bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
-
-	if (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected())
-		bSelected = true;
+	const bool bEnabled    = (pTrack != NULL);
+	const bool bSelected   = (m_pTracks && m_pTracks->isSelected())
+		|| (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected());
+	const bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
+	const bool bPlaying    = m_pSession->isPlaying();
+	const bool bRecording  = m_pSession->isRecording();
+	const bool bPunching   = m_pSession->isPunching();
+	const bool bLooping    = m_pSession->isLooping();
+	const bool bRolling    = (bPlaying && bRecording);
+	const bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
 
 //	m_ui.editCutAction->setEnabled(bSelected);
 //	m_ui.editCopyAction->setEnabled(bSelected);
@@ -5598,7 +5596,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectRangeAction->setEnabled(iSessionEnd > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
-	bool bInsertable = m_pSession->editHead() < iSessionEnd;
+	const bool bInsertable = m_pSession->editHead() < iSessionEnd;
 	m_ui.editInsertTrackRangeAction->setEnabled(bEnabled && bInsertable);
 	m_ui.editInsertRangeAction->setEnabled(bInsertable);
     m_ui.editRemoveTrackRangeAction->setEnabled(bEnabled && bInsertable);
