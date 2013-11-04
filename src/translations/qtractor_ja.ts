@@ -28,14 +28,14 @@ Audio:	%1 channels, %2 Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2486"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4192"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2588"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4195"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2486"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4192"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2588"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4195"/>
         <source>%1 Out</source>
         <translation>%1 出力</translation>
     </message>
@@ -1774,13 +1774,21 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="257"/>
-        <source>Output</source>
-        <translation>出力</translation>
+        <source>Outputs</source>
+        <translation type="unfinished">出力</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="275"/>
+        <source>Output bus names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output</source>
+        <translation type="obsolete">出力</translation>
+    </message>
+    <message>
         <source>Output bus name</source>
-        <translation>出力バス名</translation>
+        <translation type="obsolete">出力バス名</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="285"/>
@@ -1829,22 +1837,22 @@ Do you want to apply the changes?</source>
         <translation>音声</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="147"/>
+        <location filename="../qtractorExportForm.cpp" line="149"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="176"/>
+        <location filename="../qtractorExportForm.cpp" line="180"/>
         <source>Export %1</source>
         <translation>%1のエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="225"/>
+        <location filename="../qtractorExportForm.cpp" line="229"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="226"/>
+        <location filename="../qtractorExportForm.cpp" line="230"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -1857,17 +1865,17 @@ Do you want to replace it?</source>
 置きかえますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="259"/>
+        <location filename="../qtractorExportForm.cpp" line="268"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="273"/>
+        <location filename="../qtractorExportForm.cpp" line="281"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="278"/>
+        <location filename="../qtractorExportForm.cpp" line="286"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -1880,17 +1888,17 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="295"/>
+        <location filename="../qtractorExportForm.cpp" line="308"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="309"/>
+        <location filename="../qtractorExportForm.cpp" line="321"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="314"/>
+        <location filename="../qtractorExportForm.cpp" line="326"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -1903,12 +1911,12 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="368"/>
+        <location filename="../qtractorExportForm.cpp" line="380"/>
         <source>Export %1 File</source>
         <translation>%1 ファイルのエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="369"/>
+        <location filename="../qtractorExportForm.cpp" line="381"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 ファイル (*.%1)</translation>
     </message>

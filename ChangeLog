@@ -4,9 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 SVN TRUNK
- 
+
+- Audio track export now allows for mix-down of multiple audio
+  output buses (Track/Export Tracks/Audio...) (EXPERIMENTAL)
+
 - When adding new tracks, try preserving the last selected bus
-  namesi, while not the default Master ones (after a suggestion 
+  names, while not the default Master ones (after a suggestion 
   from danboid aka. Daniel MacDonald, thanks).
 
 - More preparations for Qt5 configure build.

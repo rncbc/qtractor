@@ -586,14 +586,14 @@ Audio:	%1 channels, %2 Hz</source>
 	(%1% posunutí výšky tónu)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2486"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4192"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2588"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4195"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2486"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4192"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2588"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4195"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -2338,22 +2338,22 @@ Chcete použít tyto změny?</translation>
         <translation>Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="147"/>
+        <location filename="../qtractorExportForm.cpp" line="149"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="176"/>
+        <location filename="../qtractorExportForm.cpp" line="180"/>
         <source>Export %1</source>
         <translation>Vyvést %1</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="225"/>
+        <location filename="../qtractorExportForm.cpp" line="229"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="226"/>
+        <location filename="../qtractorExportForm.cpp" line="230"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -2374,17 +2374,17 @@ Chcete jej nahradit?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="259"/>
+        <location filename="../qtractorExportForm.cpp" line="268"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>Vyvedení zvukového souboru: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="273"/>
+        <location filename="../qtractorExportForm.cpp" line="281"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Vyvedení zvukového souboru: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="278"/>
+        <location filename="../qtractorExportForm.cpp" line="286"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2397,17 +2397,17 @@ failed.</source>
 selhalo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="295"/>
+        <location filename="../qtractorExportForm.cpp" line="308"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Vyvedení souboru MIDI: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="309"/>
+        <location filename="../qtractorExportForm.cpp" line="321"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Vyvedení souboru MIDI: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="314"/>
+        <location filename="../qtractorExportForm.cpp" line="326"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -2420,12 +2420,12 @@ failed.</source>
 selhalo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="368"/>
+        <location filename="../qtractorExportForm.cpp" line="380"/>
         <source>Export %1 File</source>
         <translation>Vyvést %1 soubor</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="369"/>
+        <location filename="../qtractorExportForm.cpp" line="381"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 soborů (*.%1)</translation>
     </message>
@@ -2526,13 +2526,21 @@ selhalo.</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="257"/>
-        <source>Output</source>
-        <translation>Výstup</translation>
+        <source>Outputs</source>
+        <translation type="unfinished">Výstupy</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="275"/>
+        <source>Output bus names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output</source>
+        <translation type="obsolete">Výstup</translation>
+    </message>
+    <message>
         <source>Output bus name</source>
-        <translation>Název výstupní sběrnice</translation>
+        <translation type="obsolete">Název výstupní sběrnice</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="300"/>

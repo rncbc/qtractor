@@ -128,6 +128,82 @@ static inline void std_buffer_add (
 
 
 //----------------------------------------------------------------------
+// qtractorAudioExportBuffer -- name tells all: audio export buffer.
+//
+
+class qtractorAudioExportBuffer
+{
+public:
+
+	// Constructor
+	qtractorAudioExportBuffer(
+		unsigned short iChannels, unsigned int iBufferSize )
+	{
+		m_iChannels = iChannels;
+		m_iBufferSize = iBufferSize;
+
+		m_ppBuffer = new float * [m_iChannels];
+
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			m_ppBuffer[i] = new float [iBufferSize];
+
+	#if defined(__SSE__)
+		if (sse_enabled())
+			m_pfnBufferAdd = sse_buffer_add;
+		else
+	#endif
+		m_pfnBufferAdd = std_buffer_add;
+	}
+
+	// Destructor.
+	~qtractorAudioExportBuffer()
+	{
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			delete m_ppBuffer[i];
+
+		delete [] m_ppBuffer;
+	}
+
+	// Mix-down buffer accessors.
+	unsigned short channels() const
+		{ return m_iChannels; }
+
+	unsigned int bufferSize() const
+		{ return m_iBufferSize; }
+
+	float **buffer() const
+		{ return m_ppBuffer; }
+
+	// Prepare mix-down buffer.
+	void process_prepare(unsigned int nframes)
+	{
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			::memset(m_ppBuffer[i], 0, nframes * sizeof(float));
+	}
+
+	// Incremental mix-down buffer.
+	void process_add (qtractorAudioBus *pAudioBus,
+		unsigned int nframes, unsigned int offset = 0)
+	{
+		(*m_pfnBufferAdd)(m_ppBuffer, pAudioBus->out(),
+			nframes, m_iChannels, pAudioBus->channels(), offset);
+	}
+
+private:
+
+	unsigned short m_iChannels;
+	unsigned int m_iBufferSize;
+
+	// Mix-down buffer.
+	float **m_ppBuffer;
+
+	// Mix-down buffer processor.
+	void (*m_pfnBufferAdd)(float **, float **, unsigned int,
+		unsigned short, unsigned short, unsigned int);
+};
+
+
+//----------------------------------------------------------------------
 // qtractorAudioEngine_process -- JACK client process callback.
 //
 
@@ -332,8 +408,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// Audio-export (in)active state.
 	m_bExporting   = false;
-	m_pExportBus   = NULL;
 	m_pExportFile  = NULL;
+	m_pExportBuses = NULL;
+	m_pExportBuffer = NULL;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
 	m_bExportDone  = true;
@@ -675,6 +752,16 @@ void qtractorAudioEngine::clean (void)
 	}
 
 	// Audio-export stilll around? weird...
+	if (m_pExportBuffer) {
+		delete m_pExportBuffer;
+		m_pExportBuffer = NULL;
+	}
+
+	if (m_pExportBuses) {
+		delete m_pExportBuses;
+		m_pExportBuses = NULL;
+	}
+
 	if (m_pExportFile) {
 		delete m_pExportFile;
 		m_pExportFile = NULL;
@@ -716,7 +803,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// notice that freewheeling has no RT requirements.
 	if (m_bFreewheel) {
 		// Make sure we're in a valid state...
-		if (m_pExportFile && m_pExportBus && !m_bExportDone) {
+		if (m_pExportFile && m_pExportBuffer && !m_bExportDone) {
 			// This the legal process cycle frame range...
 			unsigned long iFrameStart = pAudioCursor->frame();
 			unsigned long iFrameEnd   = iFrameStart + nframes;
@@ -724,8 +811,12 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
 				// Force/sync every audio clip approaching...
 				syncExport(iFrameStart, iFrameEnd);
-				// Prepare the output bus first...
-				m_pExportBus->process_prepare(nframes);
+				// Prepare mix-down buffer...
+				m_pExportBuffer->process_prepare(nframes);
+				// Prepare the output buses first...
+				QListIterator<qtractorAudioBus *> iter(*m_pExportBuses);
+				while (iter.hasNext())
+					iter.next()->process_prepare(nframes);
 				// Prepare all extra audio buses...
 				for (qtractorBus *pBusEx = busesEx().first();
 						pBusEx; pBusEx = pBusEx->next()) {
@@ -736,12 +827,18 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				}
 				// Export cycle...
 				pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
-				// Commit the output bus only...
-				m_pExportBus->process_commit(nframes);
-				// Write to export file...
+				// Check end-of-export...
 				if (iFrameEnd > m_iExportEnd)
 					nframes -= (iFrameEnd - m_iExportEnd);
-				m_pExportFile->write(m_pExportBus->out(), nframes);
+				// Commit the output buses...
+				iter.toFront();
+				while (iter.hasNext()) {
+					qtractorAudioBus *pExportBus = iter.next();
+					pExportBus->process_commit(nframes);
+					m_pExportBuffer->process_add(pExportBus, nframes);
+				}
+				// Write to export file...
+				m_pExportFile->write(m_pExportBuffer->buffer(), nframes);
 				// Prepare advance for next cycle...
 				pAudioCursor->seek(iFrameEnd);
 				// HACK! Freewheeling observers update (non RT safe!)...
@@ -1114,8 +1211,8 @@ bool qtractorAudioEngine::isExporting (void) const
 
 // Audio-export method.
 bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
-	unsigned long iExportStart, unsigned long iExportEnd,
-	qtractorAudioBus *pExportBus )
+	const QList<qtractorAudioBus *>& exportBuses,
+	unsigned long iExportStart, unsigned long iExportEnd )
 {
 	// No simultaneous or foul exports...
 	if (!isActivated() || isPlaying() || isExporting())
@@ -1141,16 +1238,17 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	if (iExportStart >= iExportEnd)
 		return false;
 
-	// We'll grab the first bus around, if none is given...
-	if (pExportBus == NULL)
-		pExportBus = static_cast<qtractorAudioBus *> (buses().first());
+	// We'll grab the first bus around, as reference...
+	qtractorAudioBus *pExportBus
+		= static_cast<qtractorAudioBus *> (buses().first());
 	if (pExportBus == NULL)
 		return false;
 
 	// Get proper file type class...
+	const unsigned int iChannels = pExportBus->channels();
 	qtractorAudioFile *pExportFile
 		= qtractorAudioFileFactory::createAudioFile(
-			sExportPath, pExportBus->channels(), sampleRate());
+			sExportPath, iChannels, sampleRate());
 	// No file ready for export?
 	if (pExportFile == NULL)
 		return false;
@@ -1169,8 +1267,9 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 
 	// Start with fixing the export range...
 	m_bExporting   = true;
-	m_pExportBus   = pExportBus;
+	m_pExportBuses = new QList<qtractorAudioBus *> (exportBuses);
 	m_pExportFile  = pExportFile;
+	m_pExportBuffer = new qtractorAudioExportBuffer(iChannels, bufferSize());
 	m_iExportStart = iExportStart;
 	m_iExportEnd   = iExportEnd;
 	m_bExportDone  = false;
@@ -1181,10 +1280,10 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	pProgressBar->show();
 
 	// We'll have to save some session parameters...
-	unsigned long iPlayHead  = pSession->playHead();
-	unsigned long iLoopStart = pSession->loopStart();
-	unsigned long iLoopEnd   = pSession->loopEnd();
-	bool bMonitor = pExportBus->isMonitor();
+	const unsigned long iPlayHead  = pSession->playHead();
+	const unsigned long iLoopStart = pSession->loopStart();
+	const unsigned long iLoopEnd   = pSession->loopEnd();
+	const bool bMonitor = pExportBus->isMonitor();
 
 	// Because we'll have to set the export conditions...
 	pSession->setLoop(0, 0);
@@ -1218,17 +1317,20 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	pExportBus->setMonitor(bMonitor);
 
 	// Check user cancellation...
-	bool bResult = m_bExporting;
+	const bool bResult = m_bExporting;
 
 	// Free up things here.
-	delete m_pExportFile;	
+	delete m_pExportBuffer;
+	delete m_pExportBuses;
+	delete m_pExportFile;
 
 	// Made some progress...
 	pProgressBar->hide();
 
 	m_bExporting   = false;
-	m_pExportBus   = NULL;
+	m_pExportBuses = NULL;
 	m_pExportFile  = NULL;
+	m_pExportBuffer = NULL;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
 	m_bExportDone  = true;
