@@ -3192,8 +3192,8 @@ bool qtractorMidiEngine::saveElement (
 
 // MIDI-export method.
 bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
-	unsigned long iExportStart, unsigned long iExportEnd,
-	qtractorMidiBus *pExportBus )
+	const QList<qtractorMidiBus *>& exportBuses,
+	unsigned long iExportStart, unsigned long iExportEnd )
 {
 	// No simultaneous or foul exports...
 	if (isPlaying())
@@ -3211,6 +3211,9 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 		return false;
 
 	// We'll grab the first bus around, if none is given...
+	qtractorMidiBus *pExportBus = NULL;
+	if (!exportBuses.isEmpty())
+		pExportBus = exportBuses.first();
 	if (pExportBus == NULL)
 		pExportBus = static_cast<qtractorMidiBus *> (buses().first());
 	if (pExportBus == NULL)

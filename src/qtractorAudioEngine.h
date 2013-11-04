@@ -35,6 +35,7 @@ class qtractorAudioBus;
 class qtractorAudioBuffer;
 class qtractorAudioMonitor;
 class qtractorAudioFile;
+class qtractorAudioExportBuffer;
 class qtractorPluginList;
 class qtractorCurveList;
 
@@ -139,8 +140,8 @@ public:
 
 	// Audio-export method.
 	bool fileExport(const QString& sExportPath,
-		unsigned long iExportStart = 0, unsigned long iExportEnd = 0,
-		qtractorAudioBus *pExportBus = NULL);
+		const QList<qtractorAudioBus *>& exportBuses,
+		unsigned long iExportStart = 0, unsigned long iExportEnd = 0);
 
 	// Direct sync method (needed for export)
 	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
@@ -262,11 +263,13 @@ private:
 
 	// Audio-export (in)active state.
 	volatile bool        m_bExporting;
-	qtractorAudioBus    *m_pExportBus;
 	qtractorAudioFile   *m_pExportFile;
 	unsigned long        m_iExportStart;
 	unsigned long        m_iExportEnd;
 	volatile bool        m_bExportDone;
+
+	QList<qtractorAudioBus *> *m_pExportBuses;
+	qtractorAudioExportBuffer *m_pExportBuffer;
 
 	// Audio metronome stuff.
 	bool                 m_bMetronome;

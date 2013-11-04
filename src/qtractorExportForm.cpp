@@ -140,12 +140,16 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 			icon = QIcon(":/images/trackAudio.png");
 			m_sExportType = tr("Audio");
 			m_sExportExt  = qtractorAudioFileFactory::defaultExt();
+			m_ui.ExportBusNameListBox->setSelectionMode(
+				QAbstractItemView::ExtendedSelection);
 			break;
 		case qtractorTrack::Midi:
 			pEngine = pSession->midiEngine();
 			icon = QIcon(":/images/trackMidi.png");
 			m_sExportType = tr("MIDI");
 			m_sExportExt  = "mid";
+			m_ui.ExportBusNameListBox->setSelectionMode(
+				QAbstractItemView::SingleSelection);
 			break;
 		case qtractorTrack::None:
 		default:
@@ -208,9 +212,9 @@ qtractorTrack::TrackType qtractorExportForm::exportType (void) const
 void qtractorExportForm::accept (void)
 {
 	// Must always be a export bus target...
-	QListWidgetItem *pExportBusNameItem
-		= m_ui.ExportBusNameListBox->currentItem();
-	if (pExportBusNameItem == NULL)
+	const QList<QListWidgetItem *>& exportBusNameItems
+		= m_ui.ExportBusNameListBox->selectedItems();
+	if (exportBusNameItems.isEmpty())
 		return;
 
 	// Enforce (again) default file extension...
@@ -249,11 +253,16 @@ void qtractorExportForm::accept (void)
 			// Audio file export...
 			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 			if (pAudioEngine) {
-				// Get the export bus by name...
-				qtractorAudioBus *pExportBus
-					= static_cast<qtractorAudioBus *> (
-						pAudioEngine->findOutputBus(
-							pExportBusNameItem->text()));
+				// Get the export buses by name...
+				QList<qtractorAudioBus *> exportBuses;
+				QListIterator<QListWidgetItem *> iter(exportBusNameItems);
+				while (iter.hasNext()) {
+					qtractorAudioBus *pExportBus
+						= static_cast<qtractorAudioBus *> (
+							pAudioEngine->findOutputBus(iter.next()->text()));
+					if (pExportBus)
+						exportBuses.append(pExportBus);
+				}
 				// Log this event...
 				pMainForm->appendMessages(
 					tr("Audio file export: \"%1\" started...")
@@ -261,10 +270,9 @@ void qtractorExportForm::accept (void)
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 				bool bResult = pAudioEngine->fileExport(
-					sExportPath,
+					sExportPath, exportBuses,
 					m_ui.ExportStartSpinBox->value(),
-					m_ui.ExportEndSpinBox->value(),
-					pExportBus);
+					m_ui.ExportEndSpinBox->value());
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
 					// Log the success...
@@ -285,11 +293,16 @@ void qtractorExportForm::accept (void)
 			// MIDI file export...
 			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 			if (pMidiEngine) {
-				// Get the export bus by name...
-				qtractorMidiBus *pExportBus
-					= static_cast<qtractorMidiBus *> (
-						pMidiEngine->findOutputBus(
-							pExportBusNameItem->text()));
+				// Get the export buses by name...
+				QList<qtractorMidiBus *> exportBuses;
+				QListIterator<QListWidgetItem *> iter(exportBusNameItems);
+				while (iter.hasNext()) {
+					qtractorMidiBus *pExportBus
+						= static_cast<qtractorMidiBus *> (
+							pMidiEngine->findOutputBus(iter.next()->text()));
+					if (pExportBus)
+						exportBuses.append(pExportBus);
+				}
 				// Log this event...
 				pMainForm->appendMessages(
 					tr("MIDI file export: \"%1\" started...")
@@ -297,10 +310,9 @@ void qtractorExportForm::accept (void)
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 				bool bResult = pMidiEngine->fileExport(
-					sExportPath,
+					sExportPath, exportBuses,
 					m_ui.ExportStartSpinBox->value(),
-					m_ui.ExportEndSpinBox->value(),
-					pExportBus);
+					m_ui.ExportEndSpinBox->value());
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
 					// Log the success...
