@@ -3210,15 +3210,6 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	if (iExportStart >= iExportEnd)
 		return false;
 
-	// We'll grab the first bus around, if none is given...
-	qtractorMidiBus *pExportBus = NULL;
-	if (!exportBuses.isEmpty())
-		pExportBus = exportBuses.first();
-	if (pExportBus == NULL)
-		pExportBus = static_cast<qtractorMidiBus *> (buses().first());
-	if (pExportBus == NULL)
-		return false;
-
 	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
 
 	unsigned long iTimeStart = pSession->tickFromFrame(iExportStart);
@@ -3241,6 +3232,8 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 
 	// Do the real grunt work, get eaach elligigle track
 	// and copy the events in range to be written out...
+	QListIterator<qtractorMidiBus *> bus_iter(exportBuses);
+
 	unsigned short iTracks = 0;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -3252,7 +3245,19 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus == NULL)
 			continue;
-		if (pMidiBus->alsaPort() != pExportBus->alsaPort())
+		// Check whether this track makes it
+		// as one of the exported buses....
+		qtractorMidiBus *pExportBus = NULL;
+		bus_iter.toFront();
+		while (bus_iter.hasNext()) {
+			pExportBus = bus_iter.next();
+			if (pExportBus
+				&& pExportBus->alsaPort() == pMidiBus->alsaPort())
+				break;
+			pExportBus = NULL;
+		}
+		// Is it not?
+		if (pExportBus == NULL)
 			continue;
 		// We have a target sequence, maybe reused...
 		qtractorMidiSequence *pSeq;
@@ -3328,10 +3333,10 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 		// Number of actual track sequences...
 		iSeqs  = iTracks;
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
-		QListIterator<qtractorMidiSequence *> iter(seqs);
+		QListIterator<qtractorMidiSequence *> seq_iter(seqs);
 		ppSeqs[0] = NULL;	// META info track...
-		for (iSeq = 1; iSeq < iSeqs && iter.hasNext(); ++iSeq)
-			ppSeqs[iSeq] = iter.next();
+		for (iSeq = 1; iSeq < iSeqs && seq_iter.hasNext(); ++iSeq)
+			ppSeqs[iSeq] = seq_iter.next();
 		// May clear it now.
 		seqs.clear();
 	}
@@ -3342,14 +3347,18 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	bool bResult = file.open(sExportPath, qtractorMidiFile::Write);
 	if (bResult) {
 		if (file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
-			// Export SysEx setup...	
-			qtractorMidiSysexList *pSysexList = pExportBus->sysexList();
-			if (pSysexList && pSysexList->count() > 0) {
-				if (ppSeqs[0] == NULL) {
-					ppSeqs[0] = new qtractorMidiSequence(
-						QFileInfo(sExportPath).baseName(), 0, iTicksPerBeat);
+			// Export SysEx setups...
+			bus_iter.toFront();
+			while (bus_iter.hasNext()) {
+				qtractorMidiBus *pExportBus = bus_iter.next();
+				qtractorMidiSysexList *pSysexList = pExportBus->sysexList();
+				if (pSysexList && pSysexList->count() > 0) {
+					if (ppSeqs[0] == NULL) {
+						ppSeqs[0] = new qtractorMidiSequence(
+							QFileInfo(sExportPath).baseName(), 0, iTicksPerBeat);
+					}
+					pExportBus->exportSysexList(ppSeqs[0]);
 				}
-				pExportBus->exportSysexList(ppSeqs[0]);
 			}
 			// Export tempo map as well...	
 			if (file.tempoMap()) {

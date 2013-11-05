@@ -587,13 +587,13 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2606"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4195"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4204"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2606"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4195"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4204"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -2338,22 +2338,22 @@ Chcete použít tyto změny?</translation>
         <translation>Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="149"/>
+        <location filename="../qtractorExportForm.cpp" line="147"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="180"/>
+        <location filename="../qtractorExportForm.cpp" line="176"/>
         <source>Export %1</source>
         <translation>Vyvést %1</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="229"/>
+        <location filename="../qtractorExportForm.cpp" line="225"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="230"/>
+        <location filename="../qtractorExportForm.cpp" line="226"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -2374,17 +2374,17 @@ Chcete jej nahradit?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="268"/>
+        <location filename="../qtractorExportForm.cpp" line="264"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>Vyvedení zvukového souboru: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="281"/>
+        <location filename="../qtractorExportForm.cpp" line="277"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Vyvedení zvukového souboru: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="286"/>
+        <location filename="../qtractorExportForm.cpp" line="282"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2397,17 +2397,17 @@ failed.</source>
 selhalo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="308"/>
+        <location filename="../qtractorExportForm.cpp" line="304"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Vyvedení souboru MIDI: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="321"/>
+        <location filename="../qtractorExportForm.cpp" line="317"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Vyvedení souboru MIDI: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="326"/>
+        <location filename="../qtractorExportForm.cpp" line="322"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -2420,12 +2420,12 @@ failed.</source>
 selhalo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="380"/>
+        <location filename="../qtractorExportForm.cpp" line="376"/>
         <source>Export %1 File</source>
         <translation>Vyvést %1 soubor</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="381"/>
+        <location filename="../qtractorExportForm.cpp" line="377"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 soborů (*.%1)</translation>
     </message>
@@ -2435,102 +2435,102 @@ selhalo.</translation>
         <translation>Vyvedení - Qtractor</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="53"/>
+        <location filename="../qtractorExportForm.ui" line="52"/>
         <source>&amp;File:</source>
         <translation>&amp;Soubor:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="77"/>
+        <location filename="../qtractorExportForm.ui" line="76"/>
         <source>Export file name</source>
         <translation>Vyvést název souboru</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="102"/>
+        <location filename="../qtractorExportForm.ui" line="101"/>
         <source>Browse export file name</source>
         <translation>Procházet vyvedeným názvem souboru</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="115"/>
+        <location filename="../qtractorExportForm.ui" line="113"/>
         <source>Range</source>
         <translation>Rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="127"/>
+        <location filename="../qtractorExportForm.ui" line="125"/>
         <source>Session range</source>
         <translation>Rozsah sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="130"/>
+        <location filename="../qtractorExportForm.ui" line="128"/>
         <source>&amp;Session</source>
         <translation>&amp;Sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="140"/>
+        <location filename="../qtractorExportForm.ui" line="138"/>
         <source>Loop range</source>
         <translation>Rozsah smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="143"/>
+        <location filename="../qtractorExportForm.ui" line="141"/>
         <source>&amp;Loop</source>
         <translation>&amp;Smyčka</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="153"/>
+        <location filename="../qtractorExportForm.ui" line="151"/>
         <source>Punch range</source>
         <translation>Rozsah přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="156"/>
+        <location filename="../qtractorExportForm.ui" line="154"/>
         <source>&amp;Punch</source>
         <translation>&amp;Přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="166"/>
+        <location filename="../qtractorExportForm.ui" line="164"/>
         <source>Edit range</source>
         <translation>Rozsah úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="169"/>
+        <location filename="../qtractorExportForm.ui" line="167"/>
         <source>&amp;Edit</source>
         <translation>&amp;Úprava</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="179"/>
+        <location filename="../qtractorExportForm.ui" line="177"/>
         <source>Custom range</source>
         <translation>Vlastní rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="182"/>
+        <location filename="../qtractorExportForm.ui" line="180"/>
         <source>&amp;Custom</source>
         <translation>&amp;Vlastní</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="208"/>
+        <location filename="../qtractorExportForm.ui" line="206"/>
         <source>St&amp;art:</source>
         <translation>Za&amp;čátek:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="224"/>
+        <location filename="../qtractorExportForm.ui" line="222"/>
         <source>Clip start</source>
         <translation>Začátek záznamu</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="231"/>
+        <location filename="../qtractorExportForm.ui" line="229"/>
         <source>En&amp;d:</source>
         <translation>Ko&amp;nec:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="247"/>
+        <location filename="../qtractorExportForm.ui" line="245"/>
         <source>Clip offset</source>
         <translation>Posun záznamu</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="257"/>
+        <location filename="../qtractorExportForm.ui" line="255"/>
         <source>Outputs</source>
         <translation type="unfinished">Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="275"/>
+        <location filename="../qtractorExportForm.ui" line="273"/>
         <source>Output bus names</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2543,12 +2543,12 @@ selhalo.</translation>
         <translation type="obsolete">Název výstupní sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="300"/>
+        <location filename="../qtractorExportForm.ui" line="301"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="305"/>
+        <location filename="../qtractorExportForm.ui" line="306"/>
         <source>BBT</source>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
@@ -2557,17 +2557,17 @@ selhalo.</translation>
         <translation type="obsolete">Název výstupní sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="285"/>
+        <location filename="../qtractorExportForm.ui" line="286"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="291"/>
+        <location filename="../qtractorExportForm.ui" line="292"/>
         <source>Time display format</source>
         <translation>Formát zobrazení času</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="295"/>
+        <location filename="../qtractorExportForm.ui" line="296"/>
         <source>Frames</source>
         <translation>Snímky</translation>
     </message>

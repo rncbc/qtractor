@@ -5,8 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- Audio track export now allows for mix-down of multiple audio
-  output buses (Track/Export Tracks/Audio...) (EXPERIMENTAL)
+- Tracks export now allows for the mix-down/merge of multiple
+  audio/MIDI output buses (Track/Export Tracks). (EXPERIMENTAL)
 
 - When adding new tracks, try preserving the last selected bus
   names, while not the default Master ones (after a suggestion 

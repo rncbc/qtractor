@@ -140,16 +140,12 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 			icon = QIcon(":/images/trackAudio.png");
 			m_sExportType = tr("Audio");
 			m_sExportExt  = qtractorAudioFileFactory::defaultExt();
-			m_ui.ExportBusNameListBox->setSelectionMode(
-				QAbstractItemView::ExtendedSelection);
 			break;
 		case qtractorTrack::Midi:
 			pEngine = pSession->midiEngine();
 			icon = QIcon(":/images/trackMidi.png");
 			m_sExportType = tr("MIDI");
 			m_sExportExt  = "mid";
-			m_ui.ExportBusNameListBox->setSelectionMode(
-				QAbstractItemView::SingleSelection);
 			break;
 		case qtractorTrack::None:
 		default:
