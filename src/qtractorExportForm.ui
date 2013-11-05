@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-	<width>380</width>
-	<height>2800</height>
+    <width>380</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -101,7 +101,7 @@
         <string>Browse export file name</string>
        </property>
        <property name="icon">
-		<iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+        <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
        </property>
       </widget>
      </item>
@@ -192,7 +192,7 @@
         <property name="sizeType">
          <enum>QSizePolicy::Fixed</enum>
         </property>
-        <property name="sizeHint" stdset="0">
+        <property name="sizeHint">
          <size>
           <width>16</width>
           <height>16</height>
