@@ -134,7 +134,9 @@ void qtractorMidiThumbView::updateContents (void)
 
 	const int h2 = 1 + (h / iNoteSpan);
 
-	const QColor& fg = pTrack->foreground().lighter();
+	const QColor& fg = pTrack->foreground();
+	painter.setPen(fg);
+	painter.setBrush(fg.lighter());
 
 	qtractorMidiEvent *pEvent = pSeq->events().first();
 	while (pEvent) {
@@ -143,7 +145,8 @@ void qtractorMidiThumbView::updateContents (void)
 			const int y2 = h - h2
 				- (h * (pEvent->note() - pSeq->noteMin())) / iNoteSpan;
 			const int w2 = 1 + (pEvent->duration() / f2);
-			painter.fillRect(x2, y2, w2, h2, fg);
+		//	painter.fillRect(x2, y2, w2, h2, fg);
+			painter.drawRect(x2, y2, w2, h2);
 		}
 		pEvent = pEvent->next();
 	}
