@@ -317,7 +317,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	const unsigned short iSnapPerBeat
 		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
-	unsigned int iBeat = pNode->beatFromPixel(dx - iPixelsPerBeat);
+	unsigned int iBeat = pNode->beatFromPixel(dx);
+	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
 	unsigned short iBar
 		= (m_pEditor->isSnapZebra() ? pNode->barFromBeat(iBeat) : 0);
 	int x = pNode->pixelFromBeat(iBeat) - dx;

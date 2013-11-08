@@ -119,8 +119,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(cx);
-	if (iBeat > 0)
-		pNode = cursor.seekBeat(--iBeat);
+	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
 	x = pNode->pixelFromBeat(iBeat) - cx;
 
 	while (x < w) {
