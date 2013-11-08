@@ -286,17 +286,17 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	// Account for the editing offset:
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pEditor->offset());
-	unsigned long t0 = pNode->tickFromFrame(m_pEditor->offset());
-	int x0 = pTimeScale->pixelFromFrame(m_pEditor->offset());
-	int dx = x0 + cx;
+	const unsigned long t0 = pNode->tickFromFrame(m_pEditor->offset());
+	const int x0 = pTimeScale->pixelFromFrame(m_pEditor->offset());
+	const int dx = x0 + cx;
 
 	// Draw vertical grid lines...
 	const QBrush zebra(QColor(0, 0, 0, 20));
 	pNode = cursor.seekPixel(dx);
-	unsigned short iSnapPerBeat
+	const unsigned short iSnapPerBeat
 		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
-	unsigned int iBeat = pNode->beatFromPixel(dx);
+	unsigned int iBeat = pNode->beatFromPixel(dx - iPixelsPerBeat);
 	unsigned short iBar
 		= (m_pEditor->isSnapZebra() ? pNode->barFromBeat(iBeat) : 0);
 	int x = pNode->pixelFromBeat(iBeat) - dx;

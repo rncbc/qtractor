@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,7 +116,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	int x, y1, y2 = h - 1;
 
 	// Account for the editing offset:
-	int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
+	const int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
 
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekPixel(dx);
