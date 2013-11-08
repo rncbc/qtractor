@@ -117,6 +117,7 @@ void qtractorMidiThumbView::updateContents (void)
 	// Local contents length (in ticks).
 	const int cw = m_pEditor->editView()->contentsWidth() + 1;
 	const unsigned long iClipStart = pMidiClip->clipStart();
+	const unsigned long iClipEnd = iClipStart + pMidiClip->clipLength();
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
 	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
@@ -163,9 +164,14 @@ void qtractorMidiThumbView::updateContents (void)
 		pMarker = pMarker->next();
 	}
 
+	// Shade the beyond-end-of-clip zone...
+	const QBrush shade(QColor(0, 0, 0, 60));
+	pNode = cursor.seekFrame(iClipEnd);
+	x2 = int(pNode->tickFromFrame(iClipEnd) - t0) / f2;
+	painter.fillRect(QRect(x2, 0, w - x2, h), shade);
+
 	// Draw the loop-bound lines, if any...
 	if (pSession->isLooping()) {
-		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkCyan);
 		x2 = int(pTimeScale->tickFromFrame(pSession->loopStart()) - t0) / f2;
 		if (x2 > 0 && x2 < w) {
@@ -181,7 +187,6 @@ void qtractorMidiThumbView::updateContents (void)
 
 	// Don't forget the punch-in/out ones too...
 	if (pSession->isPunching()) {
-		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkMagenta);
 		x2 = int(pTimeScale->tickFromFrame(pSession->punchIn()) - t0) / f2;
 		if (x2 > 0 && x2 < w) {

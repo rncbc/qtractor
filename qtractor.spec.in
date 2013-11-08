@@ -23,7 +23,11 @@ BuildRequires:	libsndfile-devel >= 1.0.11
 BuildRequires:	libvorbis-devel
 #BuildRequires:	libmad-devel
 BuildRequires:	libsamplerate-devel
+%if %{defined fedora}
+BuildRequires:	rubberband-devel >= 1.0.1
+%else
 BuildRequires:	librubberband-devel >= 1.0.1
+%endif
 BuildRequires:	liblo-devel
 BuildRequires:	ladspa-devel
 BuildRequires:	dssi-devel
