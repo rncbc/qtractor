@@ -710,7 +710,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		qtractorTimeScale::Cursor cursor(pTimeScale);
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
 		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
-		unsigned int iBeat = pNode->beatFromPixel(cx - iPixelsPerBeat);
+		unsigned int iBeat = pNode->beatFromPixel(cx);
+		if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
 		unsigned short iBar = pNode->barFromBeat(iBeat);
 		int x = pNode->pixelFromBeat(iBeat) - cx;
 		int x2 = x;

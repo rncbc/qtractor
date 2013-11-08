@@ -123,8 +123,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
-	if (iBeat > 0)
-		pNode = cursor.seekBeat(--iBeat);
+	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
 	x = pNode->pixelFromBeat(iBeat) - dx;
 
 	while (x < w) {
