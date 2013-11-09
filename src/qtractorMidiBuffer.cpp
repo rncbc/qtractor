@@ -980,6 +980,7 @@ void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 	pSession->unlock();
 }
 
+
 void qtractorMidiManager::resetAudioOutputBus (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -1028,14 +1029,19 @@ void qtractorMidiManager::createAudioOutputBus (void)
 			if (m_pAudioOutputBus->open())
 				m_pAudioOutputBus->autoConnect();
 		}
-	}
-	else {
-		// Output bus gets to be the first available output bus...
-		for (qtractorBus *pBus = (pAudioEngine->buses()).first();
-				pBus; pBus = pBus->next()) {
-			if (pBus->busMode() & qtractorBus::Output) {
-				m_pAudioOutputBus = static_cast<qtractorAudioBus *> (pBus);
-				break;
+	} else {
+		// Find named audio output bus, if any...
+		if (!m_sAudioOutputBusName.isEmpty())
+			m_pAudioOutputBus = static_cast<qtractorAudioBus *> (
+				pAudioEngine->findOutputBus(m_sAudioOutputBusName));
+		// Otherwise bus gets to be the first available output bus...
+		if (m_pAudioOutputBus == NULL) {
+			for (qtractorBus *pBus = (pAudioEngine->buses()).first();
+					pBus; pBus = pBus->next()) {
+				if (pBus->busMode() & qtractorBus::Output) {
+					m_pAudioOutputBus = static_cast<qtractorAudioBus *> (pBus);
+					break;
+				}
 			}
 		}
 	}

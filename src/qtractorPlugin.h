@@ -804,6 +804,11 @@ public:
 	bool isAudioOutputAutoConnect() const
 		{ return m_bAudioOutputAutoConnect; }
 
+	void setAudioOutputBusName(const QString& sAudioOutputBusName)
+		{ m_sAudioOutputBusName = sAudioOutputBusName; }
+	const QString& audioOutputBusName() const
+		{ return m_sAudioOutputBusName; }
+
 	// MIDI bank/program observable subject.
 	class MidiProgramSubject : public qtractorSubject
 	{
@@ -869,6 +874,7 @@ private:
 
 	bool m_bAudioOutputBus;
 	bool m_bAudioOutputAutoConnect;
+	QString m_sAudioOutputBusName;
 
 	qtractorBus::ConnectList m_audioOutputs;
 

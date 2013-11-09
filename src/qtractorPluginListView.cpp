@@ -917,7 +917,8 @@ void qtractorPluginListView::audioOutputBus (void)
 	pSession->execute(
 		new qtractorAudioOutputBusCommand(pMidiManager,
 			!pMidiManager->isAudioOutputBus(), // Toggle!
-			pMidiManager->isAudioOutputAutoConnect()));
+			pMidiManager->isAudioOutputAutoConnect(),
+			pMidiManager->audioOutputBusName()));
 
 	emit contentsChanged();
 }
@@ -937,7 +938,8 @@ void qtractorPluginListView::audioOutputAutoConnect (void)
 	pSession->execute(
 		new qtractorAudioOutputBusCommand(pMidiManager,
 			pMidiManager->isAudioOutputBus(),
-			!pMidiManager->isAudioOutputAutoConnect())); // Toggle!
+			!pMidiManager->isAudioOutputAutoConnect(), // Toggle!
+			pMidiManager->audioOutputBusName()));
 
 	emit contentsChanged();
 }
