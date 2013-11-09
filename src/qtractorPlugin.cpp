@@ -1283,6 +1283,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	if (m_pMidiManager) {
 		m_bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
 		m_bAudioOutputAutoConnect = m_pMidiManager->isAudioOutputAutoConnect();
+		m_sAudioOutputBusName = m_pMidiManager->audioOutputBusName();
 		qtractorMidiManager::deleteMidiManager(m_pMidiManager);
 		m_pMidiManager = NULL;
 	}
@@ -1320,6 +1321,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		// Set loaded/cached properties properly...
 		m_pMidiManager->setCurrentBank(m_iMidiBank);
 		m_pMidiManager->setCurrentProg(m_iMidiProg);
+		m_pMidiManager->setAudioOutputBusName(m_sAudioOutputBusName);
 		m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
 		if (m_pMidiManager->isAudioOutputBus()) {
@@ -1597,6 +1599,8 @@ bool qtractorPluginList::loadElement (
 	m_iMidiBank = -1;
 	m_iMidiProg = -1;
 	m_bAudioOutputBus = false;
+	m_bAudioOutputAutoConnect = false;
+	m_sAudioOutputBusName.clear();
 	m_audioOutputs.clear();
 
 	// Load plugin-list children...
@@ -1708,20 +1712,28 @@ bool qtractorPluginList::loadElement (
 			controllers.clear();
 		}
 		else
+		// Load audio output bus name...
+		if (ePlugin.tagName() == "audio-output-bus-name") {
+			m_sAudioOutputBusName = ePlugin.text();
+		}
 		// Load audio output bus flag...
 		if (ePlugin.tagName() == "audio-output-bus") {
-			setAudioOutputBus(qtractorDocument::boolFromText(ePlugin.text()));
+			m_bAudioOutputBus = qtractorDocument::boolFromText(ePlugin.text());
 		}
 		else
 		// Load audio output auto-connect flag...
 		if (ePlugin.tagName() == "audio-output-auto-connect") {
-			setAudioOutputAutoConnect(qtractorDocument::boolFromText(ePlugin.text()));
+			m_bAudioOutputAutoConnect = qtractorDocument::boolFromText(ePlugin.text());
 		}
 		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
 			qtractorBus::loadConnects(m_audioOutputs, pDocument, &ePlugin);
 		}
+		// Make up audio output bus ...
+		setAudioOutputBusName(m_sAudioOutputBusName);
+		setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
+		setAudioOutputBus(m_bAudioOutputBus);
 	}
 
 	return true;
@@ -1801,6 +1813,8 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 
 	// Save audio output-bus connects...
 	if (m_pMidiManager) {
+		pDocument->saveTextElement("audio-output-bus-name",
+			m_pMidiManager->audioOutputBusName(), pElement);
 		pDocument->saveTextElement("audio-output-bus",
 			qtractorDocument::textFromBool(
 				m_pMidiManager->isAudioOutputBus()), pElement);

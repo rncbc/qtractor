@@ -1,7 +1,7 @@
 // qtractorPluginCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -330,7 +330,8 @@ public:
 
 	// Constructor.
 	qtractorAudioOutputBusCommand(qtractorMidiManager *pMidiManager,
-		bool bAudioOutputBus, bool bAudioOutputAutoConnect);
+		bool bAudioOutputBus, bool bAudioOutputAutoConnect,
+		const QString& sAudioOutputBusName);
 
 	// Plugin audio ouput bus command methods.
 	bool redo();
@@ -343,6 +344,7 @@ private:
 
 	bool m_bAudioOutputBus;
 	bool m_bAudioOutputAutoConnect;
+	QString m_sAudioOutputBusName;
 };
 
 

@@ -283,6 +283,10 @@ public:
 	void setAudioOutputBus(bool bAudioOutputBus);
 	bool isAudioOutputBus() const
 		{ return m_bAudioOutputBus; }
+	void setAudioOutputBusName(const QString& sAudioOutputBusName)
+		{ m_sAudioOutputBusName = sAudioOutputBusName; }
+	const QString& audioOutputBusName() const
+		{ return m_sAudioOutputBusName; }
 	qtractorAudioBus *audioOutputBus() const
 		{ return m_pAudioOutputBus; }
 	void resetAudioOutputBus();
@@ -368,6 +372,7 @@ private:
 #endif
 
 	bool                m_bAudioOutputBus;
+	QString             m_sAudioOutputBusName;
 	bool                m_bAudioOutputAutoConnect;
 	qtractorAudioBus   *m_pAudioOutputBus;
 

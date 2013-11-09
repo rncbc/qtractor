@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -584,10 +584,11 @@ bool qtractorPluginParamCommand::undo (void)
 // Constructor.
 qtractorAudioOutputBusCommand::qtractorAudioOutputBusCommand (
 	qtractorMidiManager *pMidiManager, bool bAudioOutputBus,
-	bool bAudioOutputAutoConnect )
+	bool bAudioOutputAutoConnect, const QString& sAudioOutputBusName )
 	: qtractorCommand(QObject::tr("dedicated audio outputs")),
 		m_pMidiManager(pMidiManager), m_bAudioOutputBus(bAudioOutputBus),
-		m_bAudioOutputAutoConnect(bAudioOutputAutoConnect)
+		m_bAudioOutputAutoConnect(bAudioOutputAutoConnect),
+		m_sAudioOutputBusName(sAudioOutputBusName)
 {
 }
 
@@ -600,8 +601,11 @@ bool qtractorAudioOutputBusCommand::redo (void)
 
 	bool bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
 	bool bAudioOutputAutoConnect = m_pMidiManager->isAudioOutputAutoConnect();
+	QString sAudioOutputBusName = m_pMidiManager->audioOutputBusName();
+	m_pMidiManager->setAudioOutputBusName(m_sAudioOutputBusName);
 	m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 	m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
+	m_sAudioOutputBusName = sAudioOutputBusName;
 	m_bAudioOutputAutoConnect = bAudioOutputAutoConnect;
 	m_bAudioOutputBus = bAudioOutputBus;
 
