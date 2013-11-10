@@ -924,6 +924,35 @@ void qtractorPluginListView::audioOutputBus (void)
 }
 
 
+void qtractorPluginListView::audioOutputBusName (void)
+{
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction == NULL)
+		return;
+
+	const QString& sAudioOutputBusName = pAction->text();
+	if (sAudioOutputBusName.isEmpty())
+		return;
+
+	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager == NULL)
+		return;
+
+	// Make it an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->execute(
+		new qtractorAudioOutputBusCommand(pMidiManager,
+			false, // Turn dedicated audio bus off!
+			pMidiManager->isAudioOutputAutoConnect(),
+			sAudioOutputBusName));
+
+	emit contentsChanged();
+}
+
+
 void qtractorPluginListView::audioOutputAutoConnect (void)
 {
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
@@ -1356,6 +1385,10 @@ void qtractorPluginListView::contextMenuEvent (
 	if (m_pPluginList == NULL)
 		return;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	QMenu menu(this);
 	QAction *pAction;
 
@@ -1488,23 +1521,40 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setChecked(pPlugin && pPlugin->isEditorVisible());
 	pAction->setEnabled(pPlugin && pPlugin->type()->isEditor());
 
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager) {
+	if (pAudioEngine && pMidiManager) {
 		menu.addSeparator();
-		QMenu *pAudioMenu = menu.addMenu(
-			QIcon(":/images/trackAudio.png"), "Audi&o");
+		const QIcon& iconAudio = QIcon(":/images/trackAudio.png");
+		const bool bAudioOutputBus = pMidiManager->isAudioOutputBus();
+		qtractorAudioBus *pAudioOutputBus = pMidiManager->audioOutputBus();
+		QMenu *pAudioMenu = menu.addMenu(iconAudio, "Audi&o");
 		pAction = pAudioMenu->addAction(
 			tr("&Outputs"), this, SLOT(audioOutputs()));
-		pAction->setEnabled(pMidiManager->audioOutputBus() != NULL);
+		pAction->setEnabled(pAudioOutputBus != NULL);
+		pAudioMenu->addSeparator();
+		for (qtractorBus *pBus = pAudioEngine->buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				const QString& sBusName = pBus->busName();
+				pAction = pAudioMenu->addAction(iconAudio,
+					sBusName, this, SLOT(audioOutputBusName()));
+				pAction->setCheckable(true);
+				pAction->setChecked(pAudioOutputBus != NULL
+					&& sBusName == pAudioOutputBus->busName());
+				pAction->setEnabled(!bAudioOutputBus);
+			}
+		}
+		pAudioMenu->addSeparator();
 		pAction = pAudioMenu->addAction(
 			tr("&Dedicated"), this, SLOT(audioOutputBus()));
 		pAction->setCheckable(true);
-		pAction->setChecked(pMidiManager->isAudioOutputBus());
+		pAction->setChecked(bAudioOutputBus);
 		pAction = pAudioMenu->addAction(
 			tr("&Auto-connect"), this, SLOT(audioOutputAutoConnect()));
 		pAction->setCheckable(true);
 		pAction->setChecked(pMidiManager->isAudioOutputAutoConnect());
-		pAction->setEnabled(pMidiManager->isAudioOutputBus());
+		pAction->setEnabled(bAudioOutputBus);
 	}
 
 	menu.exec(pContextMenuEvent->globalPos());
