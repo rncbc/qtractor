@@ -5,9 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
-- Preparations for optional non-dedicated MIDI instrument audio
-  outputs on to any existing output bus, other current default
-  to first available eg. Master. (EXPERIMENTAL)
+- Plugin-list chain context-menu now includes MIDI instrument
+  audio output options to an existing non-dedicated output bus,
+  any other than the previous hard-wired default (eg. Master).
+  (EXPERIMENTAL)
 
 - Tracks export now allows for the mix-down/merge of multiple
   audio/MIDI output buses (Track/Export Tracks). (EXPERIMENTAL)
