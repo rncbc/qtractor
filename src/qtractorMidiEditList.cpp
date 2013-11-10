@@ -151,57 +151,63 @@ void qtractorMidiEditList::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
 
 	if (w < 1 || h < 1)
 		return;
 
 	const QPalette& pal = qtractorScrollView::palette();
 
+	const QColor& rgbLine   = pal.mid().color();
+	const QColor& rgbLight  = pal.midlight().color();
+	const QColor& rgbShadow = pal.shadow().color();
+
 	m_pixmap = QPixmap(w, h);
-	m_pixmap.fill(pal.base().color());
+	m_pixmap.fill(pal.window().color());
 
 	QPainter p(&m_pixmap);
 	p.initFrom(this);
 
+	const int ch = qtractorScrollView::contentsHeight() - cy;
+
+	const float hk = (12.0f * m_iItemHeight) / 7.0f;	// Key height.
+	const int wk = (w << 1) / 3;						// Key width.
+
+	const int q0 = (cy / m_iItemHeight);
+	const int n0 = 127 - q0;
+	const int y0 = q0 * m_iItemHeight - cy;
+
+	int n, k, y, x = w - wk;
+
 	// Draw horizontal key-lines...
-	p.setPen(pal.midlight().color());
-	p.setBrush(pal.shadow().color());
-
-	int ch = qtractorScrollView::contentsHeight() - cy;
-
-	float hk = (12.0f * m_iItemHeight) / 7.0f;	// Key height.
-	int wk = (w << 1) / 3;	// Key width.
-
-	int q0 = (cy / m_iItemHeight);
-	int n0 = 127 - q0;
-	int y0 = q0 * m_iItemHeight - cy;
-
-	int n, y, x = w - wk;
-
-	p.setPen(pal.midlight().color());
+	p.setPen(rgbLine);
+	p.setBrush(rgbShadow);
 
 #ifdef CONFIG_GRADIENT
-	QLinearGradient litegrad(x, 0, w, 0);
-	litegrad.setColorAt(0.0f, pal.midlight().color());
-	litegrad.setColorAt(0.1f, pal.base().color());
-	p.setBrush(litegrad);
+	QLinearGradient gradLight(x, 0, w, 0);
+	gradLight.setColorAt(0.0f, rgbLight);
+	gradLight.setColorAt(0.1f, rgbLight.lighter(180));
+	p.fillRect(x, 0, wk, h, gradLight);
+//	p.setBrush(gradLight);
 #else
-	p.setBrush(pal.base().color());
+//	p.setBrush(rgbLight.lighter());
+	p.fillRect(x, 0, wk, h, rgbLight.lighter());
 #endif
 
 	y = y0;
 	n = n0;
 	while (y < h && y < ch) {
-		int k = (n % 12);
+		k = (n % 12);
 		if (k >= 5) ++k;
-		if ((k % 2) == 0) {
-			float yk = ch - ((n / 12) * 7 + (k / 2) + 1) * hk + 1;
-			p.drawRect(QRectF(x, yk, wk, hk));
+		if ((k & 1) == 0) {
+			int y1 = ch - int(hk * ((n / 12) * 7 + (k >> 1)));
+			p.drawLine(x, y1, w, y1);
 			if (k == 0) {
-				int y1 = y + m_iItemHeight;
+				p.setPen(Qt::darkGray);
+				y1 = y + m_iItemHeight;
 				p.drawText(2, y1 - 2, tr("C%1").arg((n / 12) - 1));
+				p.setPen(rgbLine);
 			//	p.drawLine(0, y1, x, y1);
 			}
 		}
@@ -210,24 +216,26 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	}
 
 #ifdef CONFIG_GRADIENT
-	QLinearGradient darkgrad(x, 0, x + wk, 0);
-	darkgrad.setColorAt(0.0f, pal.midlight().color());
-	darkgrad.setColorAt(0.3f, pal.shadow().color());
-	p.setBrush(darkgrad);
+	QLinearGradient gradDark(x, 0, x + wk, 0);
+	gradDark.setColorAt(0.0f, rgbLight);
+	gradDark.setColorAt(0.3f, rgbShadow);
+	p.setBrush(gradDark);
 #else
-	p.setBrush(pal.shadow().color());
+	p.setBrush(rgbShadow);
 #endif
 
 	y = y0;
 	n = n0;
 	while (y < h && y < ch) {
-		int k = (n % 12);
+		k = (n % 12);
 		if (k >= 5) ++k;
-		if (k % 2)
+		if (k & 1)
 			p.drawRect(x, y, (wk * 6) / 10, m_iItemHeight);
 		y += m_iItemHeight;
 		--n;
 	}
+
+	p.drawLine(x, 0, x, h);
 
 	if (y > ch)
 		p.fillRect(0, ch, w, h - ch, pal.dark().color());

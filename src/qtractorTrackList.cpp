@@ -747,8 +747,8 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 		bg = (pItem->track)->foreground().lighter();
 		fg = (pItem->track)->background().lighter();
 	} else if (m_iCurrentTrack == iRow) {
-		bg = pal.midlight().color().darker(150);
-		fg = pal.midlight().color().lighter();
+		bg = pal.midlight().color().darker(160);
+		fg = pal.highlightedText().color();
 	} else {
 		bg = pal.window().color();
 		fg = pal.windowText().color();

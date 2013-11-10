@@ -696,14 +696,14 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	QLinearGradient grad(0, 0, hint.width() >> 1, hint.height());
 	if (m_bSelected) {
 		const QColor& rgbBase = pal.midlight().color();
-		pal.setColor(QPalette::WindowText, rgbBase.lighter());
-		pal.setColor(QPalette::Window, rgbBase.darker(150));
+		pal.setColor(QPalette::WindowText, pal.highlightedText().color());
+		pal.setColor(QPalette::Window, rgbBase.darker(160));
 		grad.setColorAt(0.4, rgbBase.darker(150));
 		grad.setColorAt(0.6, rgbBase.darker(130));
 		grad.setColorAt(1.0, rgbBase.darker());
 	} else {
-		const QColor& rgbBase = pal.button().color();
-	//	pal.setColor(QPalette::WindowText, rgbBase.darker());
+		const QColor& rgbBase = pal.window().color();
+		pal.setColor(QPalette::WindowText, pal.windowText().color());
 		pal.setColor(QPalette::Window, rgbBase);
 		grad.setColorAt(0.4, rgbBase);
 		grad.setColorAt(0.6, rgbBase.lighter(105));
