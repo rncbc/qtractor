@@ -227,6 +227,47 @@
             </item>
            </widget>
           </item>
+		  <item row="3" column="0" colspan="2">
+		   <widget class="QCheckBox" name="SessionAutoSaveCheckBox">
+			<property name="font">
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip">
+			 <string>Whether to enable session auto-save (crash-recovery)</string>
+			</property>
+			<property name="text">
+			 <string>Auto-save current working session every:</string>
+			</property>
+		   </widget>
+		  </item>
+		  <item row="3" column="2">
+		   <widget class="QSpinBox" name="SessionAutoSaveSpinBox">
+			<property name="font">
+			 <font>
+			  <weight>50</weight>
+			  <bold>false</bold>
+			 </font>
+			</property>
+			<property name="toolTip">
+			 <string>Auto-save period (minutes)</string>
+			</property>
+			<property name="suffix">
+			 <string> minutes</string>
+			</property>
+			<property name="minimum">
+			 <number>2</number>
+			</property>
+			<property name="maximum">
+			 <number>120</number>
+			</property>
+			<property name="value">
+			 <number>5</number>
+			</property>
+		   </widget>
+		  </item>
          </layout>
         </widget>
        </item>
@@ -1789,9 +1830,6 @@
             <property name="toolTip">
              <string>Metronome MIDI channel</string>
             </property>
-            <property name="suffix">
-             <string/>
-            </property>
             <property name="minimum">
              <number>1</number>
             </property>
@@ -1878,10 +1916,7 @@
             <property name="toolTip">
              <string>Metronome MIDI velocity (bar)</string>
             </property>
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="minimum">
+			<property name="minimum">
              <number>1</number>
             </property>
             <property name="maximum">
@@ -1931,9 +1966,6 @@
             </property>
             <property name="toolTip">
              <string>Metronome MIDI velocity (bar)</string>
-            </property>
-            <property name="suffix">
-             <string/>
             </property>
             <property name="minimum">
              <number>1</number>
@@ -2011,9 +2043,6 @@
             <property name="toolTip">
              <string>Metronome MIDI velocity (beat)</string>
             </property>
-            <property name="suffix">
-             <string/>
-            </property>
             <property name="minimum">
              <number>1</number>
             </property>
@@ -2051,9 +2080,6 @@
             </property>
             <property name="toolTip">
              <string>Metronome MIDI velocity (beat)</string>
-            </property>
-            <property name="suffix">
-             <string/>
             </property>
             <property name="minimum">
              <number>1</number>

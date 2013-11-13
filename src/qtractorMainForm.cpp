@@ -1424,7 +1424,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			}
 		}
 		// Open up with a new empty session...
-		newSession();
+		if (!autoSaveOpen())
+			newSession();
 	}
 
 	// Final widget slot connections....
@@ -1469,7 +1470,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Make it ready :-)
 	statusBar()->showMessage(tr("Ready"), 3000);
- 
+
+	autoSaveReset();
+
 	// Register the first timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(timerSlot()));
 }
@@ -2097,6 +2100,7 @@ bool qtractorMainForm::closeSession (void)
 		// We're now clean, for sure.
 		m_iDirtyCount = 0;
 		m_iBackupCount = 0;
+		autoSaveClose();
 		appendMessages(tr("Session closed."));
 	}
 
@@ -2309,6 +2313,7 @@ bool qtractorMainForm::saveSessionFileEx (
 		// we're not dirty anymore.
 		if (!bTemplate && bUpdate) {
 			updateRecentFiles(sFilename);
+			autoSaveReset();
 			m_iDirtyCount = 0;
 		}
 		// Save some default session properties...
@@ -2534,6 +2539,101 @@ void qtractorMainForm::hideNsmSession (void)
 	QMainWindow::hide();
 
 #endif	// CONFIG_NSM
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorMainForm -- auot-save executive methods.
+
+// Reset auto-save stats.
+void qtractorMainForm::autoSaveReset (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::autoSaveReset()");
+#endif
+
+	m_iAutoSaveTimer = 0;
+
+	if (m_pOptions->bAutoSaveEnabled)
+		m_iAutoSavePeriod = 60000 * m_pOptions->iAutoSavePeriod;
+	else
+		m_iAutoSavePeriod = 0;
+}
+
+
+// Execute auto-save routine...
+void qtractorMainForm::autoSaveSession (void)
+{
+	QString sAutoSavePathname = m_pOptions->sAutoSavePathname;
+
+	if (sAutoSavePathname.isEmpty()) {
+		QString sAutoSaveDir = m_pOptions->sSessionDir;
+		if (sAutoSaveDir.isEmpty())
+			sAutoSaveDir = QDir::tempPath();
+		QString sAutoSaveName = m_pSession->sessionName();
+		if (sAutoSaveName.isEmpty())
+			sAutoSaveName = QTRACTOR_TITLE;
+		sAutoSavePathname = QFileInfo(sAutoSaveDir,
+			qtractorSession::sanitize(sAutoSaveName)).filePath()
+			+ ".auto-save." + qtractorDocument::defaultExt();
+	}
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::autoSaveSession(\"%s\")",
+		sAutoSavePathname.toUtf8().constData());
+#endif
+	if (saveSessionFileEx(sAutoSavePathname, false, false)) {
+		m_pOptions->sAutoSavePathname = sAutoSavePathname;
+		m_pOptions->sAutoSaveFilename = m_sFilename;
+		m_pOptions->saveOptions();
+	}
+}
+
+
+// Auto-save/crash-recovery setup...
+bool qtractorMainForm::autoSaveOpen (void)
+{
+	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::autoSaveOpen(\"%s\")",
+		sAutoSavePathname.toUtf8().constData());
+#endif
+	if (!sAutoSavePathname.isEmpty()
+		&& QFileInfo(sAutoSavePathname).exists()) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("An auto-saved session file exists:\n\n"
+			"\"%1\"\n\n"
+			"Do you want to crash-recover from it?")
+			.arg(sAutoSavePathname),
+			QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+			if (loadSessionFileEx(sAutoSavePathname, false, false)) {
+				m_sFilename = m_pOptions->sAutoSaveFilename;
+				++m_iDirtyCount;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+
+// Auto-save/crash-recovery cleanup.
+void qtractorMainForm::autoSaveClose (void)
+{
+	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::autoSaveClose(\"%s\")",
+		sAutoSavePathname.toUtf8().constData());
+#endif
+	if (!sAutoSavePathname.isEmpty()
+		&& QFileInfo(sAutoSavePathname).exists())
+		QFile(sAutoSavePathname).remove();
+
+	m_pOptions->sAutoSavePathname.clear();
+	m_pOptions->sAutoSaveFilename.clear();
+
+	autoSaveReset();
 }
 
 
@@ -4762,6 +4862,8 @@ void qtractorMainForm::viewOptions (void)
 				"next time you start this %1.")
 				.arg(sNeedRestart));
 		}
+		// Things that must be reset anyway...
+		autoSaveReset();
 	}
 
 	// This makes it.
@@ -5746,6 +5848,8 @@ bool qtractorMainForm::startSession (void)
 	bool bResult = m_pSession->init();
 	QApplication::restoreOverrideCursor();
 
+	autoSaveReset();
+
 	if (bResult) {
 		appendMessages(tr("Session started."));
 	} else {
@@ -6667,7 +6771,7 @@ void qtractorMainForm::timerSlot (void)
 	}
 
 	// Currrent state...
-	bool bPlaying  = m_pSession->isPlaying();
+	const bool bPlaying = m_pSession->isPlaying();
 	long iPlayHead = long(m_pSession->playHead());
 
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
@@ -6967,6 +7071,15 @@ void qtractorMainForm::timerSlot (void)
 #ifdef CONFIG_LV2_UI
 	qtractorLv2Plugin::idleEditorAll();
 #endif
+
+	// Auto-save option routine...
+	if (!bPlaying && m_iDirtyCount > 0 && m_iAutoSavePeriod > 0) {
+		m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iAutoSaveTimer > m_iAutoSavePeriod) {
+			m_iAutoSaveTimer = 0;
+			autoSaveSession();
+		}
+	}
 
 	// Register the next timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));

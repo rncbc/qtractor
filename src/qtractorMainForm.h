@@ -410,6 +410,11 @@ protected:
 
 	void saveNsmSessionEx(bool bSaveReply);
 
+	bool autoSaveOpen();
+	void autoSaveReset();
+	void autoSaveSession();
+	void autoSaveClose();
+
 private:
 
 	// The Qt-designer UI struct...
@@ -457,6 +462,8 @@ private:
 	int m_iAudioRefreshTimer;
 	int m_iMidiRefreshTimer;
 	int m_iPlayerTimer;
+	int m_iAutoSaveTimer;
+	int m_iAutoSavePeriod;
 
 	// Status bar item indexes
 	enum {

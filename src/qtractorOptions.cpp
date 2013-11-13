@@ -208,6 +208,14 @@ void qtractorOptions::loadOptions (void)
 	bMidButtonModifier = m_settings.value("/MidButtonModifier", false).toBool();
 	m_settings.endGroup();
 
+	// Session auto-save group.
+	m_settings.beginGroup("/AutoSave");
+	bAutoSaveEnabled  = m_settings.value("/Enabled", true).toBool();
+	iAutoSavePeriod   = m_settings.value("/Period", 10).toInt();
+	sAutoSavePathname = m_settings.value("/Pathname").toString();
+	sAutoSaveFilename = m_settings.value("/Filename").toString();
+	m_settings.endGroup();
+
 	// Plug-in paths.
 	m_settings.beginGroup("/Plugins");
 	ladspaPaths = m_settings.value("/LadspaPaths").toStringList();
@@ -447,6 +455,14 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/CurveMode", iCurveMode);
     m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
+	m_settings.endGroup();
+
+	// Session auto-save group.
+	m_settings.beginGroup("/AutoSave");
+	m_settings.setValue("/Enabled", bAutoSaveEnabled);
+	m_settings.setValue("/Period", iAutoSavePeriod);
+	m_settings.setValue("/Pathname", sAutoSavePathname);
+	m_settings.setValue("/Filename", sAutoSaveFilename);
 	m_settings.endGroup();
 
 	// Plug-in paths.

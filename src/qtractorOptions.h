@@ -183,6 +183,12 @@ public:
 	// Mouse modifier options.
 	bool    bMidButtonModifier;
 
+	// Session auto-save options.
+	bool    bAutoSaveEnabled;
+	int     iAutoSavePeriod;
+	QString sAutoSavePathname;
+	QString sAutoSaveFilename;
+
 	// Plug-in paths.
 	QStringList ladspaPaths;
 	QStringList dssiPaths;

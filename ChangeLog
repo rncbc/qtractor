@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Sesssion auto-save/crash-recovery support is sneaking in...
+  (HIGHLY EXPERIMENTAL)
+
 - Plugin-list chain context-menu now includes MIDI instrument
   audio output options to an existing non-dedicated output bus,
   any other than the previous hard-wired default (eg. Master).
