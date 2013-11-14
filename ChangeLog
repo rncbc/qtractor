@@ -5,8 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
-- Sesssion auto-save/crash-recovery support is sneaking in...
-  (HIGHLY EXPERIMENTAL)
+- Session auto-save / crash-recovery support is now on trial as
+  in View/Options.../General/Session/Auto-save current working
+  session every 10 minutes (default on). (EXPERIMENTAL)
 
 - Plugin-list chain context-menu now includes MIDI instrument
   audio output options to an existing non-dedicated output bus,

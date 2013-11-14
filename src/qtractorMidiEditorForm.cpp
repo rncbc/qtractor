@@ -973,7 +973,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			pMidiClip->updateEditor(true);
 			pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 		} else {
-			pMidiClip->setFilenameEx(sFilename);
+			pMidiClip->setFilenameEx(sFilename, true);
 		}
 		// HACK: This operation is so important that
 		// it surely deserves being in the front page...

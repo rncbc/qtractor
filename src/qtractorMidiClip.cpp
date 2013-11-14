@@ -574,7 +574,8 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 
 
 // Sync all ref-counted filenames.
-void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
+void qtractorMidiClip::setFilenameEx (
+	const QString& sFilename, bool bUpdate )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
@@ -594,10 +595,12 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 		qtractorMidiClip *pMidiClip = iter.next();
 		pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
 		pMidiClip->setFilename(sFilename);
-		pMidiClip->setDirty(false);
 		pMidiClip->updateHashKey();
-		pMidiClip->updateEditor(true);
 		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
+		if (bUpdate) {
+			pMidiClip->setDirty(false);
+			pMidiClip->updateEditor(true);
+		}
 	}
 
 	insertHashKey();
@@ -1091,7 +1094,7 @@ bool qtractorMidiClip::queryEditor (void)
 		switch (qtractorMidiEditorForm::querySave(filename())) {
 		case QMessageBox::Save:	{
 			// Save/replace the clip track...
-			bQueryEditor = saveCopyFile();
+			bQueryEditor = saveCopyFile(true);
 			break;
 		}
 		case QMessageBox::Discard:
@@ -1133,7 +1136,7 @@ QString qtractorMidiClip::toolTip (void) const
 
 
 // Auto-save to (possible) new file revision.
-bool qtractorMidiClip::saveCopyFile (void)
+bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1149,7 +1152,7 @@ bool qtractorMidiClip::saveCopyFile (void)
 		return false;
 
 	// Pre-commit dirty changes...
-	setFilenameEx(sFilename);
+	setFilenameEx(sFilename, bUpdate);
 
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

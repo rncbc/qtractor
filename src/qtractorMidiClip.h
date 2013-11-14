@@ -128,7 +128,7 @@ public:
 	QString toolTip() const;
 
 	// Auto-save to (possible) new file revision.
-	bool saveCopyFile();
+	bool saveCopyFile(bool bUpdate);
 
 	// MIDI clip export method.
 	typedef void (*ClipExport)(qtractorMidiSequence *, void *);
@@ -204,7 +204,7 @@ public:
 	typedef QHash<Key, Data *> Hash;
 
 	// Sync all ref-counted filenames.
-	void setFilenameEx(const QString& sFilename);
+	void setFilenameEx(const QString& sFilename, bool bUpdate);
 
 	// Sync all ref-counted clip-lengths.
 	void setClipLengthEx(unsigned long iClipLength);

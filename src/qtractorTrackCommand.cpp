@@ -461,7 +461,7 @@ bool qtractorEditTrackCommand::redo (void)
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pClip);
 				if (pMidiClip)
-					pMidiClip->saveCopyFile();
+					pMidiClip->saveCopyFile(true);
 			}
 		}
 	}
