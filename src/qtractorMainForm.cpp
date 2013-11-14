@@ -2577,10 +2577,12 @@ void qtractorMainForm::autoSaveSession (void)
 			qtractorSession::sanitize(sAutoSaveName)).filePath()
 			+ ".auto-save." + qtractorDocument::defaultExt();
 	}
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::autoSaveSession(\"%s\")",
 		sAutoSavePathname.toUtf8().constData());
 #endif
+
 	if (saveSessionFileEx(sAutoSavePathname, false, false)) {
 		m_pOptions->sAutoSavePathname = sAutoSavePathname;
 		m_pOptions->sAutoSaveFilename = m_sFilename;
@@ -2593,17 +2595,20 @@ void qtractorMainForm::autoSaveSession (void)
 bool qtractorMainForm::autoSaveOpen (void)
 {
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::autoSaveOpen(\"%s\")",
 		sAutoSavePathname.toUtf8().constData());
 #endif
+
 	if (!sAutoSavePathname.isEmpty()
 		&& QFileInfo(sAutoSavePathname).exists()) {
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("Oops! Looks like it crashed or did not "
-			"close properly last time it was run...\n\n"
-			"An auto-saved session file exists:\n\n"
+			tr("Oops!\n\n"
+			"Looks like it crashed or did not close "
+			"properly last time it was run... however, "
+			"an auto-saved session file exists:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to crash-recover from it?")
 			.arg(sAutoSavePathname),
@@ -2624,10 +2629,12 @@ bool qtractorMainForm::autoSaveOpen (void)
 void qtractorMainForm::autoSaveClose (void)
 {
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::autoSaveClose(\"%s\")",
 		sAutoSavePathname.toUtf8().constData());
 #endif
+
 	if (!sAutoSavePathname.isEmpty()
 		&& QFileInfo(sAutoSavePathname).exists())
 		QFile(sAutoSavePathname).remove();
@@ -7075,9 +7082,9 @@ void qtractorMainForm::timerSlot (void)
 #endif
 
 	// Auto-save option routine...
-	if (!bPlaying && m_iDirtyCount > 0 && m_iAutoSavePeriod > 0) {
+	if (m_iDirtyCount > 0 && m_iAutoSavePeriod > 0) {
 		m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
-		if (m_iAutoSaveTimer > m_iAutoSavePeriod) {
+		if (m_iAutoSaveTimer > m_iAutoSavePeriod && !bPlaying) {
 			m_iAutoSaveTimer = 0;
 			autoSaveSession();
 		}
