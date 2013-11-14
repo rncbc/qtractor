@@ -2287,7 +2287,7 @@ bool qtractorMainForm::saveSessionFileEx (
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pClip);
 				if (pMidiClip)
-					pMidiClip->saveCopyFile();
+					pMidiClip->saveCopyFile(bUpdate);
 			}
 		}
 	}
@@ -2601,7 +2601,9 @@ bool qtractorMainForm::autoSaveOpen (void)
 		&& QFileInfo(sAutoSavePathname).exists()) {
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("An auto-saved session file exists:\n\n"
+			tr("Oops! Looks like it crashed or did not "
+			"close properly last time it was run...\n\n"
+			"An auto-saved session file exists:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to crash-recover from it?")
 			.arg(sAutoSavePathname),
