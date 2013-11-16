@@ -2548,7 +2548,7 @@ void qtractorMainForm::hideNsmSession (void)
 // Reset auto-save stats.
 void qtractorMainForm::autoSaveReset (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::autoSaveReset()");
 #endif
 
@@ -2578,7 +2578,7 @@ void qtractorMainForm::autoSaveSession (void)
 			+ ".auto-save." + qtractorDocument::defaultExt();
 	}
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::autoSaveSession(\"%s\")",
 		sAutoSavePathname.toUtf8().constData());
 #endif
@@ -2596,7 +2596,7 @@ bool qtractorMainForm::autoSaveOpen (void)
 {
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::autoSaveOpen(\"%s\")",
 		sAutoSavePathname.toUtf8().constData());
 #endif
@@ -2630,7 +2630,7 @@ void qtractorMainForm::autoSaveClose (void)
 {
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::autoSaveClose(\"%s\")",
 		sAutoSavePathname.toUtf8().constData());
 #endif

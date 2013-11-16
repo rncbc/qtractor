@@ -47,7 +47,7 @@ class TimeshiftCurve : public QWidget
 public:
 
 	// Constructor.
-	TimeshiftCurve(QWidget *pParent = 0) : QWidget(pParent), m_p(0.0) {}
+	TimeshiftCurve(QWidget *pParent = 0) : QWidget(pParent), m_p(0.0f) {}
 
 	// Accessors.
 	void setTimeshift(float p) { m_p = p; update(); }
@@ -55,14 +55,21 @@ public:
 	// Characteristic method.
 	static float timeshift(float t, float p)
 	{
+	#if 0//TIMESHIFT_LOGSCALE
 		if (p > 0.0f)
 			t = ::sqrtf(t * ::powf(1.0f - (10.0f * ::logf(t) / p), 0.1f * p));
-		//	t = ::powf(t, p);
 		else
 		if (p < 0.0f)
 			t = ::sqrtf(1.0f - ((1.0f - t) * ::powf(1.0f + (::logf(1.0f - t) / p), -p)));
-		//	t = 1.0f - ::powf(1.0f - t, -p);
-
+	#else
+		if (p > 0.0f)
+		//	t = ::powf(t, 1.0f - 0.01f * p);
+			t = 1.0f - ::powf(1.0f - t, 1.0f / (1.0f - 0.01f * (p + 1e-9f)));
+		else
+		if (p < 0.0f)
+		//	t = ::powf(t, 1.0f / (1.0f + 0.01f * (p + 1e-9f)));
+			t = 1.0f - ::powf(1.0f - t, 1.0f + 0.01f * p);
+	#endif
 		return t;
 	}
 
@@ -75,21 +82,21 @@ protected:
 
 		painter.setRenderHint(QPainter::Antialiasing);
 
-		int w = QWidget::width();
-		int h = QWidget::height();
+		const int w = QWidget::width();
+		const int h = QWidget::height();
 
-		int x = w >> 1;
-		int y = h >> 1;
+		const int x0 = w >> 1;
+		const int y0 = h >> 1;
 
 		QPen pen(Qt::gray);
 		painter.setPen(pen);
-		painter.drawLine(x, 0, x, h);
-		painter.drawLine(0, y, w, y);
+		painter.drawLine(x0, 0, x0, h);
+		painter.drawLine(0, y0, w, y0);
 
 		QPainterPath path;
 		path.moveTo(0, h);
-		for (x = 4; x < w; x += 4) {
-			float t = float(x) / float(w);
+		for (int x = 4; x < w; x += 4) {
+			const float t = float(x) / float(w);
 			path.lineTo(x, h - int(timeshift(t, m_p) * float(h)));
 		}
 		path.lineTo(w, 0);
@@ -1303,12 +1310,16 @@ void qtractorMidiToolsForm::timeshiftSpinBoxChanged ( double p )
 		return;
 
 	++m_iUpdate;
-	int i = 0; // = int(10000.0f * float(p) / 100.0f);
+#if 0//TIMESHIFT_LOGSCALE
+	int i = 0;
 	if (p > +0.001)
 		i = + int(2000.0f * ::log10f(1000.0f * float(+ p)));
 	else
 	if (p < -0.001)
 		i = - int(2000.0f * ::log10f(1000.0f * float(- p)));
+#else
+	const int i = int(100.0f * float(p));
+#endif
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiToolsForm::timeshiftSpinBoxChanged(%g) i=%d", float(p), i);
 #endif
@@ -1325,13 +1336,17 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 		return;
 
 	++m_iUpdate;
-	float p = 0.0f; // = 100.0f * float(i) / 10000.0f;
+#if 0//TIMESHIFT_LOGSCALE
+	float p = 0.0f;
 	if (i > 0)
 		p = + 0.001f * ::powf(10.0f, (0.0005f * float(+ i)));
 	else
 	if (i < 0)
 		p = - 0.001f * ::powf(10.0f, (0.0005f * float(- i)));
-#ifdef CONFIG_DEBUG
+#else
+	const float p = 0.01f * float(i);
+#endif
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiToolsForm::timeshiftSliderChanged(%d) p=%g", i, p);
 #endif
 	m_ui.TimeshiftSpinBox->setValue(double(p));
