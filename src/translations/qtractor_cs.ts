@@ -9690,17 +9690,17 @@ Promiňte.</translation>
 <context>
     <name>qtractorMidiToolsForm</name>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="141"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="148"/>
         <source>(default)</source>
         <translation>(výchozí)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="721"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="728"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="722"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="729"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -9721,49 +9721,49 @@ Jste si jistý?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="747"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="754"/>
         <source>none</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="752"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="816"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="759"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="823"/>
         <source>quantize</source>
         <translation>Kvantizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="754"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="877"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="761"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="884"/>
         <source>transpose</source>
         <translation>Převést</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="756"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="899"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="763"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="906"/>
         <source>normalize</source>
         <translation>Normalizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="758"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="929"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="765"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="936"/>
         <source>randomize</source>
         <translation>Náhodně vybrat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="760"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="987"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="767"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="994"/>
         <source>resize</source>
         <translation>Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="762"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1012"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="769"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1019"/>
         <source>rescale</source>
         <translation>Změnit měřítko</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="764"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1047"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="771"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1054"/>
         <source>timeshift</source>
         <translation>Časový posun</translation>
     </message>

@@ -3343,6 +3343,8 @@
   <tabstop>SessionTemplatePathToolButton</tabstop>
   <tabstop>SessionBackupCheckBox</tabstop>
   <tabstop>SessionBackupModeComboBox</tabstop>
+  <tabstop>SessionAutoSaveCheckBox</tabstop>
+  <tabstop>SessionAutoSaveSpinBox</tabstop>
   <tabstop>ConfirmRemoveCheckBox</tabstop>
   <tabstop>StdoutCaptureCheckBox</tabstop>
   <tabstop>CompletePathCheckBox</tabstop>
