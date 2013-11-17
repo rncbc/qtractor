@@ -188,7 +188,20 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="2" column="0" colspan="5">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+			  <height>4</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="0" colspan="2">
            <widget class="QCheckBox" name="SessionBackupCheckBox">
             <property name="font">
              <font>
@@ -204,7 +217,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2" colspan="3">
+          <item row="3" column="2" colspan="3">
            <widget class="QComboBox" name="SessionBackupModeComboBox">
             <property name="font">
              <font>
@@ -227,47 +240,47 @@
             </item>
            </widget>
           </item>
-		  <item row="3" column="0" colspan="2">
-		   <widget class="QCheckBox" name="SessionAutoSaveCheckBox">
-			<property name="font">
-			 <font>
-			  <weight>50</weight>
-			  <bold>false</bold>
-			 </font>
-			</property>
-			<property name="toolTip">
-			 <string>Whether to enable session auto-save (crash-recovery)</string>
-			</property>
-			<property name="text">
-			 <string>Auto-save current working session every:</string>
-			</property>
-		   </widget>
-		  </item>
-		  <item row="3" column="2">
-		   <widget class="QSpinBox" name="SessionAutoSaveSpinBox">
-			<property name="font">
-			 <font>
-			  <weight>50</weight>
-			  <bold>false</bold>
-			 </font>
-			</property>
-			<property name="toolTip">
-			 <string>Auto-save period (minutes)</string>
-			</property>
-			<property name="suffix">
-			 <string> minutes</string>
-			</property>
-			<property name="minimum">
-			 <number>2</number>
-			</property>
-			<property name="maximum">
-			 <number>120</number>
-			</property>
-			<property name="value">
-			 <number>5</number>
-			</property>
-		   </widget>
-		  </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="SessionAutoSaveCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to enable session auto-save (crash-recovery)</string>
+            </property>
+            <property name="text">
+             <string>Auto-save current working session every:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QSpinBox" name="SessionAutoSaveSpinBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Auto-save period (minutes)</string>
+            </property>
+            <property name="suffix">
+             <string> minutes</string>
+            </property>
+            <property name="minimum">
+             <number>2</number>
+            </property>
+            <property name="maximum">
+             <number>120</number>
+            </property>
+            <property name="value">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1916,7 +1929,7 @@
             <property name="toolTip">
              <string>Metronome MIDI velocity (bar)</string>
             </property>
-			<property name="minimum">
+            <property name="minimum">
              <number>1</number>
             </property>
             <property name="maximum">

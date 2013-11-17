@@ -857,9 +857,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipNormalizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipNormalize()));
-	QObject::connect(m_ui.clipTempoAction,
+	QObject::connect(m_ui.clipTempoAdjustAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipTempo()));
+		SLOT(clipTempoAdjust()));
 	QObject::connect(m_ui.clipRangeSetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipRangeSet()));
@@ -4053,10 +4053,10 @@ void qtractorMainForm::clipNormalize (void)
 
 
 // Adjust current tempo from clip selection or interactive tapping...
-void qtractorMainForm::clipTempo (void)
+void qtractorMainForm::clipTempoAdjust (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipTempo()");
+	qDebug("qtractorMainForm::clipTempoAdjust()");
 #endif
 
 	if (m_pTracks)
@@ -6559,7 +6559,7 @@ void qtractorMainForm::updateClipMenu (void)
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(bClipSelected);
-	m_ui.clipTempoAction->setEnabled(bClipSelectable);
+	m_ui.clipTempoAdjustAction->setEnabled(bClipSelectable);
 	m_ui.clipRangeSetAction->setEnabled(bClipSelected);
 	m_ui.clipLoopSetAction->setEnabled(bClipSelected);
 //	m_ui.clipImportAction->setEnabled(bTracks);

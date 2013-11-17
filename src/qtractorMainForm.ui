@@ -400,7 +400,7 @@
     <addaction name="clipMergeAction" />
     <addaction name="clipNormalizeAction" />
     <addaction name="separator" />
-    <addaction name="clipTempoAction" />
+	<addaction name="clipTempoAdjustAction" />
     <addaction name="separator" />
     <addaction name="clipRangeSetAction" />
     <addaction name="clipLoopSetAction" />
@@ -1820,9 +1820,9 @@
     <string>Timeshift current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipTempoAction" >
+  <action name="clipTempoAdjustAction" >
    <property name="text" >
-    <string>&amp;Tempo...</string>
+	<string>&amp;Tempo Adjust...</string>
    </property>
    <property name="iconText" >
     <string>Tempo Adjust</string>
