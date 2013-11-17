@@ -197,7 +197,7 @@ public slots:
 	void clipSplit();
 	void clipMerge();
 	void clipNormalize();
-	void clipTempo();
+	void clipTempoAdjust();
 	void clipRangeSet();
 	void clipLoopSet();
 	void clipImport();
