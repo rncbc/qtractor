@@ -98,6 +98,8 @@ public:
 	qtractorPluginListItemDelegate(QListWidget *pListWidget)
 		: QItemDelegate(pListWidget), m_pListWidget(pListWidget) {}
 
+protected:
+
 	// Overridden paint method.
 	void paint(QPainter *pPainter, const QStyleOptionViewItem& option,
 		const QModelIndex& index) const
@@ -146,11 +148,11 @@ public:
 			}
 			// Draw the icon...
 			QRect rect = option.rect;
-			pPainter->drawPixmap(1,
-				rect.top() + ((rect.height() - iconSize.height()) >> 1),
+			pPainter->drawPixmap(rect.left() + 2,
+				rect.top() + ((rect.height() - iconSize.height()) >> 1) + 1,
 				pItem->icon().pixmap(iconSize));
 			// Draw the text...
-			rect.setLeft(iconSize.width());
+			rect.setLeft(iconSize.width() + 2);
 			pPainter->setPen(rgbFore);
 			pPainter->drawText(rect,
 				Qt::AlignLeft | Qt::AlignVCenter, pItem->text());
@@ -178,6 +180,15 @@ public:
 			// Others do as default...
 			QItemDelegate::paint(pPainter, option, index);
 		}
+	}
+
+	// Override height-hint.
+	QSize sizeHint (
+		const QStyleOptionViewItem& option, const QModelIndex& index ) const
+	{
+		QSize size(QItemDelegate::sizeHint(option, index));
+		size.setHeight(16);
+		return size;
 	}
 
 private:
