@@ -14,7 +14,7 @@ SVN TRUNK
   session every 10 minutes (default on). (EXPERIMENTAL)
 
 - Plugin-list chain context-menu now includes MIDI instrument
-  audio output options to an existing non-dedicated output bus,
+  audio output options to existing non-dedicated output buses,
   any other than the previous hard-wired default (eg. Master).
   (EXPERIMENTAL)
 
