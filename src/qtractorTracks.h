@@ -35,7 +35,7 @@ class qtractorSession;
 class qtractorClip;
 class qtractorClipCommand;
 class qtractorClipRangeCommand;
-class qtractorMidiClipCommand;
+class qtractorClipToolCommand;
 class qtractorMidiToolsForm;
 
 
@@ -187,8 +187,8 @@ protected:
 	bool normalizeClipCommand(
 		qtractorClipCommand *pClipCommand, qtractorClip *pClip);
 	bool executeClipToolCommand(
-		qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip,
-		qtractorMidiToolsForm *pToolsForm);
+		qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
+		qtractorMidiToolsForm *pMidiToolsForm);
 
 	// Common clip-export/merge methods.
 	bool mergeExportClips(qtractorClipCommand *pClipCommand);

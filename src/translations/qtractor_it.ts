@@ -120,6 +120,11 @@ Posiz./Durata:	%3 / %4</translation>
         <translation>reset riprese</translation>
     </message>
     <message>
+        <location filename="../qtractorClipCommand.cpp" line="920"/>
+        <source>clip tool %1</source>
+        <translation type="unfinished">strumento clip %1</translation>
+    </message>
+    <message>
         <location filename="../qtractorCurveCommand.cpp" line="104"/>
         <source>automation select</source>
         <translation>selezione automazione</translation>
@@ -12363,9 +12368,8 @@ Lunghezza:   %3</translation>
         <translation>timeshift</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="833"/>
         <source>clip tool %1</source>
-        <translation>strumento clip %1</translation>
+        <translation type="obsolete">strumento clip %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="961"/>

@@ -114,6 +114,11 @@ Versatz / Länge:	%3 / %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorClipCommand.cpp" line="920"/>
+        <source>clip tool %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorCurveCommand.cpp" line="104"/>
         <source>automation select</source>
         <translation type="unfinished"></translation>
@@ -12020,11 +12025,6 @@ Länge:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="830"/>
         <source>timeshift</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTracks.cpp" line="833"/>
-        <source>clip tool %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

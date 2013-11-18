@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- When issued from main tracks view (ie. Clip/Tools menu) MIDI
+  clip tools are now a bit more crash-resilient re. undo/redo-
+  ability. (EXPERIMENTAL)
+
 - Session auto-save / crash-recovery support is now on trial as
   in View/Options.../General/Session/Auto-save current working
   session every 10 minutes (default on). (EXPERIMENTAL)

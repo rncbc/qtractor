@@ -119,6 +119,11 @@ Offs. / Len.:	%3 / %4</source>
         <translation>テイクをリセット</translation>
     </message>
     <message>
+        <location filename="../qtractorClipCommand.cpp" line="920"/>
+        <source>clip tool %1</source>
+        <translation type="unfinished">クリップツール %1</translation>
+    </message>
+    <message>
         <source>insert range</source>
         <translation type="obsolete">レンジの挿入</translation>
     </message>
@@ -12366,9 +12371,8 @@ Length:	%3</source>
         <translation>タイムシフト</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="833"/>
         <source>clip tool %1</source>
-        <translation>クリップツール %1</translation>
+        <translation type="obsolete">クリップツール %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="961"/>

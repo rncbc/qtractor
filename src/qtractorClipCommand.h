@@ -231,6 +231,51 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorClipToolCommand - declaration.
+//
+
+class qtractorClipToolCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipToolCommand(const QString& sName);
+	// Destructor.
+	virtual ~qtractorClipToolCommand();
+
+	// Composite command methods.
+	void addMidiEditCommand(qtractorMidiEditCommand *pMidiEditCommand);
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	int m_iRedoCount;
+
+	// Multi-clip command list.
+	QList<qtractorMidiEditCommand *> m_midiEditCommands;
+
+	struct MidiClipCtxState {
+		QString filename;
+		unsigned long length;
+	};
+
+	struct MidiClipCtx {
+		MidiClipCtxState pre;
+		MidiClipCtxState post;
+	};
+
+	QHash<qtractorMidiClip *, MidiClipCtx> m_midiClipCtxs;
+};
+
+
 #endif	// __qtractorClipCommand_h
 
 // end of qtractorClipCommand.h

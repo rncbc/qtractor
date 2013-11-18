@@ -911,4 +911,100 @@ bool qtractorClipRangeCommand::execute ( bool bRedo )
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorClipToolCommand - declaration.
+//
+
+// Constructor.
+qtractorClipToolCommand::qtractorClipToolCommand ( const QString& sName )
+	: qtractorCommand(QObject::tr("clip tool %1").arg(sName)), m_iRedoCount(0)
+{
+}
+
+
+// Destructor.
+qtractorClipToolCommand::~qtractorClipToolCommand (void)
+{
+	qDeleteAll(m_midiEditCommands);
+	m_midiEditCommands.clear();
+}
+
+
+// Composite command methods.
+void qtractorClipToolCommand::addMidiEditCommand (
+	qtractorMidiEditCommand *pMidiEditCommand )
+{
+	m_midiEditCommands.append(pMidiEditCommand);
+}
+
+
+// Composite predicate.
+bool qtractorClipToolCommand::isEmpty (void) const
+{
+	return m_midiEditCommands.isEmpty();
+}
+
+
+// Virtual command methods.
+bool qtractorClipToolCommand::redo (void)
+{
+	if (++m_iRedoCount > 1)
+		return undo();
+
+	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
+	while (iter.hasNext()) {
+		qtractorMidiEditCommand *pMidiEditCommand = iter.next();
+		if (pMidiEditCommand) {
+			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
+			if (pMidiClip && pMidiClip->saveCopyFile(false)) {
+				MidiClipCtx mctx;
+				mctx.pre.filename = pMidiClip->filename();
+				mctx.pre.length = pMidiClip->clipLength();
+				if (!pMidiEditCommand->redo())
+					return false;
+				pMidiClip->setRevision(0);
+				if (pMidiClip->saveCopyFile(true)) {
+					mctx.post.filename = pMidiClip->filename();
+					mctx.post.length = pMidiClip->clipLength();
+					m_midiClipCtxs.insert(pMidiClip, mctx);
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+bool qtractorClipToolCommand::undo (void)
+{
+	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
+	iter.toBack();
+	while (iter.hasPrevious()) {
+		qtractorMidiEditCommand *pMidiEditCommand = iter.previous();
+		if (pMidiEditCommand) {
+			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
+			if (pMidiClip) {
+				MidiClipCtx& mctx = m_midiClipCtxs[pMidiClip];
+				if (mctx.pre.filename.isEmpty() || mctx.post.filename.isEmpty())
+					return false;
+				const unsigned long iPreLength = mctx.pre.length;
+				const QString sPreFilename = mctx.pre.filename;
+				const unsigned long iPostLength = mctx.post.length;
+				const QString sPostFilename = mctx.post.filename;
+			//	pMidiClip->close();
+				pMidiClip->setClipLength(iPreLength);
+				pMidiClip->setFilenameEx(sPreFilename, true);
+				pMidiClip->open();
+				mctx.post.filename = sPreFilename;
+				mctx.post.length = iPreLength;
+				mctx.pre.filename = sPostFilename;
+				mctx.pre.length = iPostLength;
+			}
+		}
+	}
+
+	return (m_iRedoCount > 0);
+}
+
+
 // end of qtractorClipCommand.cpp

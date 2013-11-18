@@ -120,6 +120,11 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>réinitialiser les prises</translation>
     </message>
     <message>
+        <location filename="../qtractorClipCommand.cpp" line="920"/>
+        <source>clip tool %1</source>
+        <translation type="unfinished">outil clip %1</translation>
+    </message>
+    <message>
         <source>insert range</source>
         <translation type="obsolete">Insérer plage</translation>
     </message>
@@ -12362,9 +12367,8 @@ Longueur:	%3</translation>
         <translation>décalage temporel</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="833"/>
         <source>clip tool %1</source>
-        <translation>outil clip %1</translation>
+        <translation type="obsolete">outil clip %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="961"/>
