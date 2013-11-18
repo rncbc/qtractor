@@ -829,8 +829,9 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 	case 5:	sTool = tr("rescale");   break;
 	case 6:	sTool = tr("timeshift"); break;
 	}
-	qtractorMidiClipCommand *pMidiClipCommand
-		= new qtractorMidiClipCommand(tr("clip tool %1").arg(sTool));
+
+	qtractorClipToolCommand *pClipToolCommand
+		= new qtractorClipToolCommand(sTool);
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -844,27 +845,27 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 			// Make sure it's legal selection...
 			qtractorClip *pClip = iter.key();
 			if (pClip->track() && pClip->isClipSelected())
-				executeClipToolCommand(pMidiClipCommand, pClip, &toolsForm);
+				executeClipToolCommand(pClipToolCommand, pClip, &toolsForm);
 		}
 	}	// Single, current clip instead?
-	else executeClipToolCommand(pMidiClipCommand, pClip, &toolsForm);
+	else executeClipToolCommand(pClipToolCommand, pClip, &toolsForm);
 
 	QApplication::restoreOverrideCursor();
 
 	// Check if valid...
-	if (pMidiClipCommand->isEmpty()) {
-		delete pMidiClipCommand;
+	if (pClipToolCommand->isEmpty()) {
+		delete pClipToolCommand;
 		return false;
 	}
 
 	// That's it...
-	return pSession->execute(pMidiClipCommand);
+	return pSession->execute(pClipToolCommand);
 }
 
 
 bool qtractorTracks::executeClipToolCommand (
-	qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip,
-	qtractorMidiToolsForm *pToolsForm )
+	qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
+	qtractorMidiToolsForm *pMidiToolsForm )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -920,10 +921,9 @@ bool qtractorTracks::executeClipToolCommand (
 	}
 
 	// Add new edit command from tool...
-	pMidiClipCommand->addEditCommand(
-		pToolsForm->editCommand(pMidiClip, &select,
+	pClipToolCommand->addMidiEditCommand(
+		pMidiToolsForm->editCommand(pMidiClip, &select,
 			pSession->tickFromFrame(pClip->clipStart())));
-
 			
 	// Must be brand new revision...
 	pMidiClip->setRevision(0);

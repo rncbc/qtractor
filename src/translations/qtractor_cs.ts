@@ -1223,6 +1223,11 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
+        <location filename="../qtractorClipCommand.cpp" line="920"/>
+        <source>clip tool %1</source>
+        <translation type="unfinished">Nástroj na záznamy %1</translation>
+    </message>
+    <message>
         <source>insert range</source>
         <translation type="obsolete">Vložit rozsah</translation>
     </message>
@@ -13626,9 +13631,8 @@ Jste si jistý?</translation>
         <translation>Časový posun</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="833"/>
         <source>clip tool %1</source>
-        <translation>Nástroj na záznamy %1</translation>
+        <translation type="obsolete">Nástroj na záznamy %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="988"/>

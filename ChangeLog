@@ -5,12 +5,16 @@ ChangeLog
 
 SVN TRUNK
 
+- When issued from main tracks view (ie. Clip/Tools menu) MIDI
+  clip tools are now a bit more crash-resilient re. undo/redo-
+  ability. (EXPERIMENTAL)
+
 - Session auto-save / crash-recovery support is now on trial as
   in View/Options.../General/Session/Auto-save current working
   session every 10 minutes (default on). (EXPERIMENTAL)
 
 - Plugin-list chain context-menu now includes MIDI instrument
-  audio output options to an existing non-dedicated output bus,
+  audio output options to existing non-dedicated output buses,
   any other than the previous hard-wired default (eg. Master).
   (EXPERIMENTAL)
 
