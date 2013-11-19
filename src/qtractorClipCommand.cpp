@@ -956,7 +956,11 @@ bool qtractorClipToolCommand::redo (void)
 		qtractorMidiEditCommand *pMidiEditCommand = iter.next();
 		if (pMidiEditCommand) {
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
-			if (pMidiClip && pMidiClip->saveCopyFile(false)) {
+			if (pMidiClip) {
+				// Save if dirty...
+				if (pMidiClip->isDirty())
+					pMidiClip->saveCopyFile(false);
+				// Filename change one-time transaction...
 				MidiClipCtx mctx;
 				mctx.pre.filename = pMidiClip->filename();
 				mctx.pre.length = pMidiClip->clipLength();
@@ -984,6 +988,7 @@ bool qtractorClipToolCommand::undo (void)
 		if (pMidiEditCommand) {
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
+				// Filename swap transaction...
 				MidiClipCtx& mctx = m_midiClipCtxs[pMidiClip];
 				if (mctx.pre.filename.isEmpty() || mctx.post.filename.isEmpty())
 					return false;
