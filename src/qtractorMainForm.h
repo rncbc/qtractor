@@ -86,7 +86,8 @@ public:
 	qtractorMixer *mixer() const;
 	qtractorThumbView *thumbView() const;
 
-	QString sessionName(const QString& sFilename);
+	QString sessionName(const QString& sFilename) const;
+	QString untitledName(void) const;
 
 	void updateTransportTime(unsigned long iPlayHead);
 
@@ -359,7 +360,7 @@ protected:
 	bool loadSessionFile(const QString& sFilename);
 
 	bool saveSessionFileEx(
-	    const QString& sFilename, bool bTemplate, bool bUpdate);
+		const QString& sFilename, bool bTemplate, bool bUpdate);
 	bool saveSessionFile(const QString& sFilename);
 
 	bool startSession();
