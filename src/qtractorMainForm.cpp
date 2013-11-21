@@ -353,12 +353,12 @@ qtractorMainForm::qtractorMainForm (
 		SLOT(handle_sigusr1()));
 
 	// Install SIGUSR1 signal handler.
-    struct sigaction usr1;
-    usr1.sa_handler = qtractor_sigusr1_handler;
-    ::sigemptyset(&usr1.sa_mask);
-    usr1.sa_flags = 0;
-    usr1.sa_flags |= SA_RESTART;
-    ::sigaction(SIGUSR1, &usr1, NULL);
+	struct sigaction usr1;
+	usr1.sa_handler = qtractor_sigusr1_handler;
+	::sigemptyset(&usr1.sa_mask);
+	usr1.sa_flags = 0;
+	usr1.sa_flags |= SA_RESTART;
+	::sigaction(SIGUSR1, &usr1, NULL);
 
 	// LADISH termination suport.
 	// Initialize file descriptors for SIGTERM socket notifier.
@@ -371,12 +371,12 @@ qtractorMainForm::qtractorMainForm (
 		SLOT(handle_sigterm()));
 
 	// Install SIGTERM signal handler.
-    struct sigaction term;
-    term.sa_handler = qtractor_sigterm_handler;
-    ::sigemptyset(&term.sa_mask);
-    term.sa_flags = 0;
-    term.sa_flags |= SA_RESTART;
-    ::sigaction(SIGTERM, &term, NULL);
+	struct sigaction term;
+	term.sa_handler = qtractor_sigterm_handler;
+	::sigemptyset(&term.sa_mask);
+	term.sa_flags = 0;
+	term.sa_flags |= SA_RESTART;
+	::sigaction(SIGTERM, &term, NULL);
 
 	// Ignore SIGHUP signal.
 	struct sigaction hup;
@@ -1191,7 +1191,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		| Qt::WindowMinMaxButtonsHint
 		| Qt::WindowCloseButtonHint;
 	if (m_pOptions->bKeepToolsOnTop) {
-        pParent = this;
+		pParent = this;
 		wflags |= Qt::Tool;
 	}
 	// Other child/tools forms are also created right away...
@@ -1703,17 +1703,23 @@ int qtractorMainForm::rolling (void) const
 // qtractorMainForm -- Session file stuff.
 
 // Format the displayable session filename.
-QString qtractorMainForm::sessionName ( const QString& sFilename )
+QString qtractorMainForm::sessionName ( const QString& sFilename ) const
 {
 	bool bCompletePath = (m_pOptions && m_pOptions->bCompletePath);
 	QString sSessionName = sFilename;
 	if (sSessionName.isEmpty() && m_pSession)
 		sSessionName = m_pSession->sessionName();
 	if (sSessionName.isEmpty())
-		sSessionName = tr("Untitled%1").arg(m_iUntitled);
+		sSessionName = untitledName();
 	else if (!bCompletePath)
 		sSessionName = QFileInfo(sSessionName).baseName();
 	return sSessionName;
+}
+
+// Retrieve current untitled sessoin name.
+QString qtractorMainForm::untitledName (void) const
+{
+	return tr("Untitled%1").arg(m_iUntitled);
 }
 
 
@@ -1725,9 +1731,9 @@ bool qtractorMainForm::newSession (void)
 		return false;
 
 #ifdef CONFIG_LV2
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    qtractorLv2PluginType::lv2_open();
-    QApplication::restoreOverrideCursor();
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	qtractorLv2PluginType::lv2_open();
+	QApplication::restoreOverrideCursor();
 #endif
 
 	// We're supposedly clean...
@@ -2144,11 +2150,11 @@ bool qtractorMainForm::loadSessionFileEx (
 					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
 					// Restarting...
 				#ifdef CONFIG_LV2
-                    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-                    qtractorLv2PluginType::lv2_open();
-                    QApplication::restoreOverrideCursor();
-                #endif
-                    updateSessionPre();
+					QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+					qtractorLv2PluginType::lv2_open();
+					QApplication::restoreOverrideCursor();
+				#endif
+					updateSessionPre();
 					++m_iUntitled;
 					m_sFilename.clear();
 					updateSessionPost();
@@ -2163,18 +2169,18 @@ bool qtractorMainForm::loadSessionFileEx (
 	appendMessages(tr("Opening \"%1\"...").arg(sFilename));
 
 #ifdef CONFIG_LV2
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    qtractorLv2PluginType::lv2_open();
-    QApplication::restoreOverrideCursor();
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	qtractorLv2PluginType::lv2_open();
+	QApplication::restoreOverrideCursor();
 #endif
 
 	// Warm-up the session engines...
 	updateSessionPre();
 
-    // We'll take some time anyhow...
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	// We'll take some time anyhow...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    // Read the file.
+	// Read the file.
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
 		.load(sFilename, qtractorDocument::Flags(iFlags));
@@ -2414,10 +2420,10 @@ void qtractorMainForm::openNsmSession (void)
 		} else {
 			updateSessionPre();
 		#ifdef CONFIG_LV2
-            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-            qtractorLv2PluginType::lv2_open();
-            QApplication::restoreOverrideCursor();
-        #endif
+			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+			qtractorLv2PluginType::lv2_open();
+			QApplication::restoreOverrideCursor();
+		#endif
 			appendMessages(tr("New session: \"%1\".")
 				.arg(sessionName(sFilename)));
 			updateSessionPost();
@@ -2564,19 +2570,24 @@ void qtractorMainForm::autoSaveReset (void)
 // Execute auto-save routine...
 void qtractorMainForm::autoSaveSession (void)
 {
-	QString sAutoSavePathname = m_pOptions->sAutoSavePathname;
+	QString sAutoSaveDir = m_pOptions->sSessionDir;
+	if (sAutoSaveDir.isEmpty())
+		sAutoSaveDir = QDir::tempPath();
 
-	if (sAutoSavePathname.isEmpty()) {
-		QString sAutoSaveDir = m_pOptions->sSessionDir;
-		if (sAutoSaveDir.isEmpty())
-			sAutoSaveDir = QDir::tempPath();
-		QString sAutoSaveName = m_pSession->sessionName();
-		if (sAutoSaveName.isEmpty())
-			sAutoSaveName = QTRACTOR_TITLE;
-		sAutoSavePathname = QFileInfo(sAutoSaveDir,
-			qtractorSession::sanitize(sAutoSaveName)).filePath()
-			+ ".auto-save." + qtractorDocument::defaultExt();
-	}
+	QString sAutoSaveName = m_pSession->sessionName();
+	if (sAutoSaveName.isEmpty())
+		sAutoSaveName = untitledName();
+
+	const QString& sAutoSavePathname = QFileInfo(sAutoSaveDir,
+		qtractorSession::sanitize(sAutoSaveName)).filePath()
+		+ ".auto-save." + qtractorDocument::defaultExt();
+
+	const QString& sOldAutoSavePathname = m_pOptions->sAutoSavePathname;
+
+	if (!sOldAutoSavePathname.isEmpty()
+		&& sOldAutoSavePathname != sAutoSavePathname
+		&& QFileInfo(sOldAutoSavePathname).exists())
+		QFile(sOldAutoSavePathname).remove();
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::autoSaveSession(\"%s\")",
@@ -3803,23 +3814,23 @@ void qtractorMainForm::trackCurveClear (void)
 	qtractorCurve *pCurrentCurve = pTrack->currentCurve();
 	if (pCurrentCurve == NULL)
 		return;
-    if (pCurrentCurve->isEmpty())
-        return;
+	if (pCurrentCurve->isEmpty())
+		return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::trackCurveClear()");
 #endif
 
-    if (m_pOptions && m_pOptions->bConfirmRemove) {
-        if (QMessageBox::warning(this,
-            tr("Warning") + " - " QTRACTOR_TITLE,
-            tr("About to clear automation:\n\n"
-            "\"%1\"\n\n"
-            "Are you sure?")
-            .arg(pCurrentCurve->subject()->name()),
-            QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-            return;
-    }
+	if (m_pOptions && m_pOptions->bConfirmRemove) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to clear automation:\n\n"
+			"\"%1\"\n\n"
+			"Are you sure?")
+			.arg(pCurrentCurve->subject()->name()),
+			QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
+	}
 
 #if 0
 	pCurrentCurve->clear();
@@ -3944,23 +3955,23 @@ void qtractorMainForm::trackCurveClearAll (void)
 	qtractorCurveList *pCurveList = pTrack->curveList();
 	if (pCurveList == NULL)
 		return;
-    if (pCurveList->isEmpty())
-        return;
+	if (pCurveList->isEmpty())
+		return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::trackCurveClearAll()");
 #endif
 
-    if (m_pOptions && m_pOptions->bConfirmRemove) {
-        if (QMessageBox::warning(this,
-            tr("Warning") + " - " QTRACTOR_TITLE,
-            tr("About to clear all automation:\n\n"
-            "\"%1\"\n\n"
-            "Are you sure?")
-            .arg(pTrack->trackName()),
-            QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-            return;
-    }
+	if (m_pOptions && m_pOptions->bConfirmRemove) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to clear all automation:\n\n"
+			"\"%1\"\n\n"
+			"Are you sure?")
+			.arg(pTrack->trackName()),
+			QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
+	}
 
 #if 0
 	pCurveList->clearAll();
@@ -5719,8 +5730,8 @@ void qtractorMainForm::stabilizeForm (void)
 	const bool bInsertable = m_pSession->editHead() < iSessionEnd;
 	m_ui.editInsertTrackRangeAction->setEnabled(bEnabled && bInsertable);
 	m_ui.editInsertRangeAction->setEnabled(bInsertable);
-    m_ui.editRemoveTrackRangeAction->setEnabled(bEnabled && bInsertable);
-    m_ui.editRemoveRangeAction->setEnabled(bInsertable);
+	m_ui.editRemoveTrackRangeAction->setEnabled(bEnabled && bInsertable);
+	m_ui.editRemoveRangeAction->setEnabled(bInsertable);
 
 	m_ui.editSplitAction->setEnabled(bSelected);
 
