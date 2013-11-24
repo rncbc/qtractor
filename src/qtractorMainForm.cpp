@@ -2123,7 +2123,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		sFilename.toUtf8().constData(), int(bTemplate), int(bUpdate));
 #endif
 
-	// Flag whether we're about to save as template or archive...
+	// Flag whether we're about to load a template or archive...
 	QFileInfo info(sFilename);
 	int iFlags = qtractorDocument::Default;
 	const QString& sSuffix = info.suffix();
@@ -2307,7 +2307,7 @@ bool qtractorMainForm::saveSessionFileEx (
 		.save(sFilename, qtractorDocument::Flags(iFlags));
 
 #ifdef CONFIG_LIBZ
-	if ((iFlags & qtractorDocument::Archive) == 0)
+	if ((iFlags & qtractorDocument::Archive) == 0 && bUpdate)
 		qtractorDocument::clearExtractedArchives();
 #endif
 
@@ -2558,6 +2558,7 @@ void qtractorMainForm::autoSaveReset (void)
 	qDebug("qtractorMainForm::autoSaveReset()");
 #endif
 
+	m_iAutoSaveDirty = 0;
 	m_iAutoSaveTimer = 0;
 
 	if (m_pOptions->bAutoSaveEnabled)
@@ -7093,10 +7094,11 @@ void qtractorMainForm::timerSlot (void)
 #endif
 
 	// Auto-save option routine...
-	if (m_iDirtyCount > 0 && m_iAutoSavePeriod > 0) {
+	if (m_iAutoSavePeriod > 0 && m_iDirtyCount > m_iAutoSaveDirty) {
 		m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
 		if (m_iAutoSaveTimer > m_iAutoSavePeriod && !bPlaying) {
 			m_iAutoSaveTimer = 0;
+			m_iAutoSaveDirty = m_iDirtyCount;
 			autoSaveSession();
 		}
 	}
