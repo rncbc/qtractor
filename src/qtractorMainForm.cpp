@@ -1957,13 +1957,12 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 				f2.setFile(dir, sNameMask.arg(++iBackupNo));
 			if (m_pOptions->iSessionBackupMode > 0) {
 				// Remove from recent files list...
-				if (m_iBackupCount > 0) {
-					int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
-					if (iIndex >= 0)
-						m_pOptions->recentFiles.removeAt(iIndex);
-					// Also remove from sile system...?
+				int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
+				if (iIndex >= 0)
+					m_pOptions->recentFiles.removeAt(iIndex);
+				// Also remove from the file system...?
+				if (m_iBackupCount > 0)
 					QFile::remove(sFilename);
-				}
 				// Make it a brand new one...
 				sFilename = f2.absoluteFilePath();
 				++m_iBackupCount;
