@@ -72,6 +72,7 @@ protected slots:
 	void changed();
 
 	void tempoTap();
+	void tempoFactor();
 	void markerColor();
 
 	void contextMenu(const QPoint&);
