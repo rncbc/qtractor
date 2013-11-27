@@ -209,9 +209,12 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(const QString&)),
 		SLOT(tempoChanged()));
-	QObject::connect(m_ui.TempoPushButton,
+	QObject::connect(m_ui.TempoTapPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoTap()));
+	QObject::connect(m_ui.TempoFactorPushButton,
+		SIGNAL(clicked()),
+		SLOT(tempoFactor()));
 
 	QObject::connect(m_ui.MarkerTextLineEdit,
 		SIGNAL(textChanged(const QString&)),
@@ -821,6 +824,35 @@ void qtractorTimeScaleForm::reject (void)
 
 	if (bReject)
 		QDialog::reject();
+}
+
+
+// Tempo factor perform click.
+void qtractorTimeScaleForm::tempoFactor (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const float fTempoFactor = float(m_ui.TempoFactorSpinBox->value());
+
+	qtractorTimeScaleCommand *pTimeScaleCommand
+		= new qtractorTimeScaleCommand(tr("tempo factor"));
+
+	qtractorTimeScale::Node *pNode = m_pTimeScale->nodes().last();
+	for ( ; pNode; pNode = pNode->prev()) {
+		pTimeScaleCommand->addNodeCommand(
+			new qtractorTimeScaleUpdateNodeCommand(
+				m_pTimeScale, pNode->frame,
+				fTempoFactor * pNode->tempo,
+				pNode->beatType, pNode->beatsPerBar,
+				pNode->beatDivisor));
+	}
+
+	if (pSession->execute(pTimeScaleCommand))
+		++m_iDirtyTotal;
+
+	refreshItems();
 }
 
 

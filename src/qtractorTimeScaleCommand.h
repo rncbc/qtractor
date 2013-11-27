@@ -311,6 +311,34 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorTimeScaleCommand - declaration.
+//
+
+class qtractorTimeScaleCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleCommand(const QString& sName);
+
+	// Destructor.
+	~qtractorTimeScaleCommand();
+
+	// Node commands.
+	void addNodeCommand(qtractorTimeScaleNodeCommand *pNodeCommand);
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Node commands.
+	QList<qtractorTimeScaleNodeCommand *> m_nodeCommands;
+};
+
+
 #endif	// __qtractorTimeScaleCommand_h
 
 // end of qtractorTimeScaleCommand.h

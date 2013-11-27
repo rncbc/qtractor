@@ -602,4 +602,62 @@ bool qtractorTimeScaleMoveMarkerCommand::undo (void)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorTimeScaleCommand - declaration.
+//
+
+// Constructor.
+qtractorTimeScaleCommand::qtractorTimeScaleCommand ( const QString& sName )
+	: qtractorCommand(sName)
+{
+}
+
+
+// Destructor.
+qtractorTimeScaleCommand::~qtractorTimeScaleCommand (void)
+{
+	qDeleteAll(m_nodeCommands);
+	m_nodeCommands.clear();
+}
+
+
+// Node commands.
+void qtractorTimeScaleCommand::addNodeCommand (
+	qtractorTimeScaleNodeCommand *pNodeCommand )
+{
+	m_nodeCommands.append(pNodeCommand);
+}
+
+
+// Time-scale command methods.
+bool qtractorTimeScaleCommand::redo (void)
+{
+	int iRedos = 0;
+
+	QListIterator<qtractorTimeScaleNodeCommand *> iter(m_nodeCommands);
+	iter.toFront();
+	while (iter.hasNext()) {
+		if (iter.next()->redo())
+			++iRedos;
+	}
+
+	return (iRedos > 0);
+}
+
+
+bool qtractorTimeScaleCommand::undo (void)
+{
+	int iUndos = 0;
+
+	QListIterator<qtractorTimeScaleNodeCommand *> iter(m_nodeCommands);
+	iter.toBack();
+	while (iter.hasPrevious()) {
+		if (iter.previous()->undo())
+			++iUndos;
+	}
+
+	return (iUndos > 0);
+}
+
+
 // end of qtractorTimeScaleCommand.cpp
