@@ -42,8 +42,6 @@ public:
 
 	// Constructor.
 	qtractorTimeSpinBox(QWidget *pParent = 0);
-	// Destructor.
-	~qtractorTimeSpinBox();
 
 	// Time-scale accessors.
 	void setTimeScale(qtractorTimeScale *pTimeScale);
@@ -98,6 +96,10 @@ protected:
 	unsigned long valueFromText(const QString& sText) const;
 	QString textFromValue(unsigned long iValue) const;
 
+	// Common value/text setlers.
+	bool updateValue(unsigned long iValue, bool bNotifyChange);
+	void updateText();
+
 	// Local context menu handler.
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
@@ -118,6 +120,8 @@ private:
 	unsigned long      m_iMaximumValue;
 	unsigned long      m_iDeltaValue;
 	bool               m_bDeltaValue;
+
+	int m_iValueChanged;
 };
 
 
@@ -132,8 +136,6 @@ public:
 
 	// Constructor.
 	qtractorTempoSpinBox(QWidget *pParent = 0);
-	// Destructor.
-	~qtractorTempoSpinBox();
 
 	// Nominal tempo value (BPM) accessors.
 	void setTempo(float fTempo, bool bNotifyChange = true);
@@ -175,7 +177,6 @@ protected:
 	// Common value/text setlers.
 	bool updateValue(float fTempo, unsigned short iBeatsPerBar,
 		unsigned short iBeatDivisor, bool bNotifyChange);
-
 	void updateText();
 
 protected slots:

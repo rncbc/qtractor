@@ -11805,17 +11805,17 @@ Vuoi scartare le modifiche?</translation>
 <context>
     <name>qtractorTimeSpinBox</name>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="336"/>
+        <location filename="../qtractorSpinBox.cpp" line="343"/>
         <source>&amp;Frames</source>
         <translation type="unfinished">Campioni</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="341"/>
+        <location filename="../qtractorSpinBox.cpp" line="348"/>
         <source>&amp;Time</source>
         <translation type="unfinished">&amp;Tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="346"/>
+        <location filename="../qtractorSpinBox.cpp" line="353"/>
         <source>&amp;BBT</source>
         <translation type="unfinished">&amp;BBT</translation>
     </message>

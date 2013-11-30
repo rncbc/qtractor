@@ -12946,17 +12946,17 @@ Chcete zahodit tyto změny?</translation>
 <context>
     <name>qtractorTimeSpinBox</name>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="336"/>
+        <location filename="../qtractorSpinBox.cpp" line="343"/>
         <source>&amp;Frames</source>
         <translation>&amp;Snímky</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="341"/>
+        <location filename="../qtractorSpinBox.cpp" line="348"/>
         <source>&amp;Time</source>
         <translation>Č&amp;as</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="346"/>
+        <location filename="../qtractorSpinBox.cpp" line="353"/>
         <source>&amp;BBT</source>
         <translation>&amp;TDT</translation>
     </message>

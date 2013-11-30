@@ -36,16 +36,11 @@
 
 // Constructor.
 qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
-	: QAbstractSpinBox(pParent)
+	: QAbstractSpinBox(pParent), m_pTimeScale(NULL),
+		  m_displayFormat(qtractorTimeScale::Frames),
+		  m_iValue(0), m_iMinimumValue(0), m_iMaximumValue(0),
+		  m_iDeltaValue(0), m_bDeltaValue(false), m_iValueChanged(0)
 {
-	m_pTimeScale    = NULL;
-	m_displayFormat = qtractorTimeScale::Frames;
-	m_iValue        = 0;
-	m_iMinimumValue = 0;
-	m_iMaximumValue = 0;
-	m_iDeltaValue   = 0;
-	m_bDeltaValue   = false;
-
 	QAbstractSpinBox::setAccelerated(true);
 
 	QObject::connect(this,
@@ -54,12 +49,6 @@ qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
 	QObject::connect(QAbstractSpinBox::lineEdit(),
 		SIGNAL(textChanged(const QString&)),
 		SLOT(valueChangedSlot(const QString&)));
-}
-
-
-// Destructor.
-qtractorTimeSpinBox::~qtractorTimeSpinBox (void)
-{
 }
 
 
@@ -103,38 +92,17 @@ qtractorTimeScale::DisplayFormat qtractorTimeSpinBox::displayFormat (void) const
 	return m_displayFormat;
 }
 
-
 void qtractorTimeSpinBox::updateDisplayFormat (void)
 {
-	setValue(m_iValue, false);
+	updateText();
 }
 
 
 // Nominal value (in frames) accessors.
 void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 {
-	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
-	int iCursorPos = pLineEdit->cursorPosition();
-
-	if (iValue < m_iMinimumValue)
-		iValue = m_iMinimumValue;
-	if (iValue > m_iMaximumValue && m_iMaximumValue > m_iMinimumValue)
-		iValue = m_iMaximumValue;
-
-	bool bValueChanged = (iValue != m_iValue);
-
-	m_iValue = iValue;
-
-	if (QAbstractSpinBox::isVisible()) {
-		bool bBlockSignals = pLineEdit->blockSignals(true);
-		pLineEdit->setText(textFromValue(iValue));
-		QAbstractSpinBox::interpretText();
-		if (bNotifyChange && bValueChanged)
-			emit valueChanged(iValue);
-		pLineEdit->blockSignals(bBlockSignals);
-	}
-
-	pLineEdit->setCursorPosition(iCursorPos);
+	if (updateValue(iValue, bNotifyChange))
+		updateText();
 }
 
 unsigned long qtractorTimeSpinBox::value (void) const
@@ -321,6 +289,45 @@ QString qtractorTimeSpinBox::textFromValue ( unsigned long iValue ) const
 }
 
 
+// Common value setler.
+bool qtractorTimeSpinBox::updateValue (
+	unsigned long iValue, bool bNotifyChange )
+{
+	if (iValue < m_iMinimumValue)
+		iValue = m_iMinimumValue;
+	if (iValue > m_iMaximumValue && m_iMaximumValue > m_iMinimumValue)
+		iValue = m_iMaximumValue;
+
+	if (m_iValue != iValue) {
+		m_iValue  = iValue;
+		++m_iValueChanged;
+	}
+
+	int iValueChanged = m_iValueChanged;
+
+	if (bNotifyChange && m_iValueChanged > 0) {
+		emit valueChanged(m_iValue);
+		m_iValueChanged = 0;
+	}
+
+	return (iValueChanged > 0);
+}
+
+
+void qtractorTimeSpinBox::updateText (void)
+{
+	if (QAbstractSpinBox::isVisible()) {
+		QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+		bool bBlockSignals = pLineEdit->blockSignals(true);
+		int iCursorPos = pLineEdit->cursorPosition();
+		pLineEdit->setText(textFromValue(m_iValue));
+	//	QAbstractSpinBox::interpretText();
+		pLineEdit->setCursorPosition(iCursorPos);
+		pLineEdit->blockSignals(bBlockSignals);
+	}
+}
+
+
 // Local context menu handler.
 void qtractorTimeSpinBox::contextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
@@ -369,7 +376,10 @@ void qtractorTimeSpinBox::editingFinishedSlot (void)
 #endif
 
 	// Kind of final fixup.
-	setValue(valueFromText());
+	if (updateValue(valueFromText(), true)) {
+		// Rephrase text display...
+		updateText();
+	}
 }
 
 
@@ -381,8 +391,11 @@ void qtractorTimeSpinBox::valueChangedSlot ( const QString& sText )
 		this, sText.toUtf8().constData());
 #endif
 
-	// Forward this...
-	emit valueChanged(sText);
+	// Kind of interim fixup.
+	if (updateValue(valueFromText(sText), false)) {
+		// Just forward this one...
+		emit valueChanged(sText);
+	}
 }
 
 
@@ -402,12 +415,6 @@ qtractorTempoSpinBox::qtractorTempoSpinBox ( QWidget *pParent )
 	QObject::connect(QAbstractSpinBox::lineEdit(),
 		SIGNAL(textChanged(const QString&)),
 		SLOT(valueChangedSlot(const QString&)));
-}
-
-
-// Destructor.
-qtractorTempoSpinBox::~qtractorTempoSpinBox (void)
-{
 }
 
 
