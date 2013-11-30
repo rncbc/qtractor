@@ -11799,17 +11799,17 @@ Do you want to discard the changes?</source>
 <context>
     <name>qtractorTimeSpinBox</name>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="336"/>
+        <location filename="../qtractorSpinBox.cpp" line="343"/>
         <source>&amp;Frames</source>
         <translation>フレーム(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="341"/>
+        <location filename="../qtractorSpinBox.cpp" line="348"/>
         <source>&amp;Time</source>
         <translation>時間(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="346"/>
+        <location filename="../qtractorSpinBox.cpp" line="353"/>
         <source>&amp;BBT</source>
         <translation></translation>
     </message>
