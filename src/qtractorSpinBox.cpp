@@ -293,6 +293,7 @@ QString qtractorTimeSpinBox::textFromValue ( unsigned long iValue ) const
 bool qtractorTimeSpinBox::updateValue (
 	unsigned long iValue, bool bNotifyChange )
 {
+
 	if (iValue < m_iMinimumValue)
 		iValue = m_iMinimumValue;
 	if (iValue > m_iMaximumValue && m_iMaximumValue > m_iMinimumValue)
@@ -375,10 +376,12 @@ void qtractorTimeSpinBox::editingFinishedSlot (void)
 	qDebug("qtractorTimeSpinBox[%p]::editingFinishedSlot()", this);
 #endif
 
-	// Kind of final fixup.
-	if (updateValue(valueFromText(), true)) {
-		// Rephrase text display...
-		updateText();
+	if (m_iValueChanged > 0) {
+		// Kind of final fixup.
+		if (updateValue(valueFromText(), true)) {
+			// Rephrase text display...
+			updateText();
+		}
 	}
 }
 
@@ -663,14 +666,15 @@ void qtractorTempoSpinBox::editingFinishedSlot (void)
 	qDebug("qtractorTempoSpinBox[%p]::editingFinishedSlot()", this);
 #endif
 
-	const QString& sText = QAbstractSpinBox::text();
-
-	// Kind of final fixup.
-	if (updateValue(tempoFromText(sText),
-			beatsPerBarFromText(sText),
-			beatDivisorFromText(sText), true)) {
-		// Rephrase text display...
-		updateText();
+	if (m_iValueChanged > 0) {
+		// Kind of final fixup.
+		const QString& sText = QAbstractSpinBox::text();
+		if (updateValue(tempoFromText(sText),
+				beatsPerBarFromText(sText),
+				beatDivisorFromText(sText), true)) {
+			// Rephrase text display...
+			updateText();
+		}
 	}
 }
 

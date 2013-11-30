@@ -11802,17 +11802,17 @@ Voulez-vous abandonner ces changements?</translation>
 <context>
     <name>qtractorTimeSpinBox</name>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="343"/>
+        <location filename="../qtractorSpinBox.cpp" line="344"/>
         <source>&amp;Frames</source>
         <translation>T&amp;rames</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="348"/>
+        <location filename="../qtractorSpinBox.cpp" line="349"/>
         <source>&amp;Time</source>
         <translation>&amp;Temps</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="353"/>
+        <location filename="../qtractorSpinBox.cpp" line="354"/>
         <source>&amp;BBT</source>
         <translation>&amp;BBT</translation>
     </message>
