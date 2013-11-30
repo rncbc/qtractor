@@ -63,7 +63,7 @@ protected slots:
 	void changed();
 	void adjust();
 	void tempoTap();
-	void tempoChanged(float, unsigned short, unsigned short);
+	void tempoChanged();
 	void rangeStartChanged(unsigned long);
 	void rangeLengthChanged(unsigned long);
 	void selectChanged();

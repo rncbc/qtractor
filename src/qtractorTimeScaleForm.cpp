@@ -280,7 +280,7 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 		m_ui.TimeSpinBox->setValue(iFrame);
 		m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 		m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
-		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, true);
 	}
 
 	qtractorTimeScale::Marker *pMarker
@@ -471,7 +471,7 @@ void qtractorTimeScaleForm::selectItem (void)
 		m_ui.TimeSpinBox->setValue(pNode->frame);
 		m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 		m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
-		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, true);
 		ensureVisibleFrame(pNode->frame);
 	}
 

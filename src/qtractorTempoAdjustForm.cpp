@@ -56,7 +56,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 
 	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
-	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
+	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), true);
 
 	m_iTempoTap = 0;
 	m_fTempoTap = 0.0f;
@@ -74,7 +74,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
-		SLOT(tempoChanged(float, unsigned short, unsigned short)));
+		SLOT(tempoChanged()));
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(rangeStartChanged(unsigned long)));
@@ -206,12 +206,13 @@ void qtractorTempoAdjustForm::changed (void)
 
 
 // Tempo signature has changed.
-void qtractorTempoAdjustForm::tempoChanged ( float /*fTempo*/,
-	unsigned short /*iBeatsPerBar*/, unsigned short /*iBeatDivisor*/ )
+void qtractorTempoAdjustForm::tempoChanged (void)
 {
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorTempoAdjustForm::tempoChanged(%g, %u, %u)",
-		fTempo, iBeatsPerBar, iBeatDivisor);
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoChanged()");
 #endif
 
 	m_iTempoTap = 0;
@@ -224,6 +225,9 @@ void qtractorTempoAdjustForm::tempoChanged ( float /*fTempo*/,
 // Adjust delta-value spin-boxes to new anchor frame.
 void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTempoAdjustForm::rangeStartChanged(%lu)", iRangeStart);
 #endif
@@ -236,6 +240,9 @@ void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
 
 void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTempoAdjustForm::rangeLengthChanged(%lu)", iRangeLength);
 #endif
@@ -297,6 +304,10 @@ void qtractorTempoAdjustForm::selectChanged (void)
 // Display format has changed.
 void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::formatChanged()");
+#endif
+
 	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 

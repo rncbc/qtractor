@@ -106,7 +106,7 @@ qtractorTimeScale::DisplayFormat qtractorTimeSpinBox::displayFormat (void) const
 
 void qtractorTimeSpinBox::updateDisplayFormat (void)
 {
-	setValue(m_iValue);
+	setValue(m_iValue, false);
 }
 
 
@@ -120,7 +120,7 @@ void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 		iValue = m_iMinimumValue;
 	if (iValue > m_iMaximumValue && m_iMaximumValue > m_iMinimumValue)
 		iValue = m_iMaximumValue;
-	
+
 	bool bValueChanged = (iValue != m_iValue);
 
 	m_iValue = iValue;
