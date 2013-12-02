@@ -180,8 +180,6 @@ public:
 
 	bool is_any() const
 		{ return m_param.is_any() || m_value.is_any(); }
-	bool is_ready() const
-		{ return m_param.is_any() && m_value.is_any(); }
 	bool is_7bit() const
 		{ return m_param.is_any() && m_value.is_7bit(); }
 	bool is_14bit() const
@@ -494,7 +492,7 @@ protected:
 			}
 		}
 		else
-		if (item.is_ready()) {
+		if (item.is_14bit()) {
 			m_queue.push(time, port, item.status(), item.param(), item.value());
 		} else {
 			const unsigned char status = qtractorMidiRpn::CC | item.channel();
