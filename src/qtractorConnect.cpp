@@ -152,7 +152,7 @@ void qtractorPortListItem::cleanConnects (void)
 	QMutableListIterator<qtractorPortListItem *> iter(m_connects);
 	while (iter.hasNext()) {
 		qtractorPortListItem *pPortItem = iter.next();
-		pPortItem->setHilite(false);
+		pPortItem->removeConnect(this);
 		iter.remove();
 	}
 }
