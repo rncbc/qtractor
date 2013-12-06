@@ -1114,24 +1114,23 @@ unsigned long qtractorTrack::clipRecordStart (void) const
 
 unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 {
-	unsigned long iClipRecordEnd = 0;
-
 	if (m_pSession && m_pSession->isPunching()) {
-		unsigned long iPunchOut  = m_pSession->punchOut();
-		unsigned long iLoopStart = m_pSession->loopStart();
-		unsigned long iLoopEnd   = m_pSession->loopEnd();
-		if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
-			iClipRecordEnd += iLoopEnd;
-		else
-			iClipRecordEnd += iPunchOut;
-	} else {
-		iClipRecordEnd += iFrameTime;
-		if (iClipRecordEnd  > m_iClipRecordStart)
-			iClipRecordEnd -= m_iClipRecordStart;
-		if (m_pClipRecord)
-			iClipRecordEnd += m_pClipRecord->clipStart();
+		const unsigned long iPunchOut = m_pSession->punchOut();
+		if (iFrameTime >= iPunchOut) {
+			const unsigned long iLoopStart = m_pSession->loopStart();
+			const unsigned long iLoopEnd   = m_pSession->loopEnd();
+			if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
+				return iLoopEnd;
+			else
+				return iPunchOut;
+		}
 	}
 
+	unsigned long iClipRecordEnd = iFrameTime;
+	if (iClipRecordEnd  > m_iClipRecordStart)
+		iClipRecordEnd -= m_iClipRecordStart;
+	if (m_pClipRecord)
+		iClipRecordEnd += m_pClipRecord->clipStart();
 	return iClipRecordEnd;
 }
 
