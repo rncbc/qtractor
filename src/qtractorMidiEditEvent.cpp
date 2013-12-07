@@ -283,8 +283,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	if (pTimeScale == NULL)
 		return;
 
-	QPainter p(&m_pixmap);
-	p.initFrom(this);
+	QPainter painter(&m_pixmap);
+	painter.initFrom(this);
 
 	// Show that we may have clip limits...
 	if (m_pEditor->length() > 0) {
@@ -292,15 +292,15 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		if (x1 < 0)
 			x1 = 0;
 		if (x1 < w)
-			p.fillRect(x1, 0, w - x1, h, rgbBase.darker(105));
+			painter.fillRect(x1, 0, w - x1, h, rgbBase.darker(105));
 	}
 
 	// Draw horizontal lines...
-	p.setPen(rgbLight);
+	painter.setPen(rgbLight);
 	int dy = (h >> 3);
 	int  y = 0;
 	while (y < h) {
-		p.drawLine(0, y, w, y);
+		painter.drawLine(0, y, w, y);
 		y += dy;
 	}
 
@@ -326,26 +326,26 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	while (x < w) {
 		bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
-			p.setPen(rgbDark);
-			p.drawLine(x - 1, 0, x - 1, h);
+			painter.setPen(rgbDark);
+			painter.drawLine(x - 1, 0, x - 1, h);
 			if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
-				p.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
+				painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 			x2 = x;
 			if (iBeat == pNode->beat)
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 		}
 		if (bBeatIsBar || iPixelsPerBeat > 8) {
-			p.setPen(rgbLight);
-			p.drawLine(x, 0, x, h);
+			painter.setPen(rgbLight);
+			painter.drawLine(x, 0, x, h);
 		}
 		if (iSnapPerBeat > 1) {
 			int q = iPixelsPerBeat / iSnapPerBeat;
 			if (q > 4) {  
-				p.setPen(rgbBase.value() < 0x7f
+				painter.setPen(rgbBase.value() < 0x7f
 					? rgbLight.darker(105) : rgbLight.lighter(120));
 				for (int i = 1; i < iSnapPerBeat; ++i) {
 					x = pTimeScale->pixelSnap(x + dx + q) - dx - 1;
-					p.drawLine(x, 0, x, h);
+					painter.drawLine(x, 0, x, h);
 				}
 			}
 		}
@@ -353,7 +353,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
 	if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
-		p.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
+		painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 
 	// Draw location marker lines...
 	qtractorTimeScale::Marker *pMarker
@@ -361,8 +361,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	while (pMarker) {
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx;
 		if (x > w) break;
-		p.setPen(pMarker->color);
-		p.drawLine(x, 0, x, h);
+		painter.setPen(pMarker->color);
+		painter.drawLine(x, 0, x, h);
 		pMarker = pMarker->next();
 	}
 
@@ -382,10 +382,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	// This is the zero-line...
 	const int y0 = (m_eventType == qtractorMidiEvent::PITCHBEND ? h >> 1 : h);
 
-	p.setPen(rgbLight);
-	p.drawLine(0, y0 - 1, w, y0 - 1);
-	p.setPen(rgbDark);
-	p.drawLine(0, y0, w, y0);
+	painter.setPen(rgbLight);
+	painter.drawLine(0, y0 - 1, w, y0 - 1);
+	painter.setPen(rgbDark);
+	painter.drawLine(0, y0, w, y0);
 
 //	p.setPen(rgbFore);
 //	p.setBrush(rgbBack);
@@ -436,14 +436,14 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				}
 			}
 			if (y < y0) {
-				p.fillRect(x, y, w1, y0 - y, rgbFore);
-				p.fillRect(x + 1, y + 1, w1 - 4, y0 - y - 2, rgbValue);
+				painter.fillRect(x, y, w1, y0 - y, rgbFore);
+				painter.fillRect(x + 1, y + 1, w1 - 4, y0 - y - 2, rgbValue);
 			} else if (y > y0) {
-				p.fillRect(x, y0, w1, y - y0, rgbFore);
-				p.fillRect(x + 1, y0 + 1, w1 - 4, y - y0 - 2, rgbValue);
+				painter.fillRect(x, y0, w1, y - y0, rgbFore);
+				painter.fillRect(x + 1, y0 + 1, w1 - 4, y - y0 - 2, rgbValue);
 			} else {
-				p.fillRect(x, y0 - 2, w1, 4, rgbFore);
-				p.fillRect(x + 1, y0 - 1, w1 - 4, 2, rgbValue);
+				painter.fillRect(x, y0 - 2, w1, 4, rgbFore);
+				painter.fillRect(x + 1, y0 - 1, w1 - 4, 2, rgbValue);
 			}
 		}
 		pEvent = pEvent->next();
@@ -452,44 +452,44 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
 		const QBrush shade(QColor(0, 0, 0, 60));
-		p.setPen(Qt::darkCyan);
+		painter.setPen(Qt::darkCyan);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
 		if (x >= w)
-			p.fillRect(QRect(0, 0, w, h), shade);
+			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
 		if (x >= 0) {
-			p.fillRect(QRect(0, 0, x, h), shade);
-			p.drawLine(x, 0, x, h);
+			painter.fillRect(QRect(0, 0, x, h), shade);
+			painter.drawLine(x, 0, x, h);
 		}
 		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
 		if (x < 0)
-			p.fillRect(QRect(0, 0, w, h), shade);
+			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
 		if (x < w) {
-			p.fillRect(QRect(x, 0, w - x, h), shade);
-			p.drawLine(x, 0, x, h);
+			painter.fillRect(QRect(x, 0, w - x, h), shade);
+			painter.drawLine(x, 0, x, h);
 		}
 	}
 
 	// Draw punch boundaries, if applicable...
 	if (pSession->isPunching()) {
 		const QBrush shade(QColor(0, 0, 0, 60));
-		p.setPen(Qt::darkMagenta);
+		painter.setPen(Qt::darkMagenta);
 		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - dx;
 		if (x >= w)
-			p.fillRect(QRect(0, 0, w, h), shade);
+			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
 		if (x >= 0) {
-			p.fillRect(QRect(0, 0, x, h), shade);
-			p.drawLine(x, 0, x, h);
+			painter.fillRect(QRect(0, 0, x, h), shade);
+			painter.drawLine(x, 0, x, h);
 		}
 		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - dx;
 		if (x < 0)
-			p.fillRect(QRect(0, 0, w, h), shade);
+			painter.fillRect(QRect(0, 0, w, h), shade);
 		else
 		if (x < w) {
-			p.fillRect(QRect(x, 0, w - x, h), shade);
-			p.drawLine(x, 0, x, h);
+			painter.fillRect(QRect(x, 0, w - x, h), shade);
+			painter.drawLine(x, 0, x, h);
 		}
 	}
 }

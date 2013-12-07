@@ -112,7 +112,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	// Draw the time scale...
 	//
 	const QFontMetrics& fm = painter.fontMetrics();
-	int x, y1, y2 = h - 1;
+	int x, x1, y1, y2 = h - 1;
 
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
@@ -120,33 +120,39 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(cx);
 	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
-	x = pNode->pixelFromBeat(iBeat) - cx;
+	x = x1 = pNode->pixelFromBeat(iBeat) - cx;
 
 	while (x < w) {
 		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
-		if (bBeatIsBar) {
-			y1 = 0;
-			painter.setPen(pal.windowText().color());
-			painter.drawText(x + 2, fm.ascent(),
-				QString::number(pNode->barFromBeat(iBeat) + 1));
-			if (iBeat == pNode->beat) {
-				iPixelsPerBeat = pNode->pixelsPerBeat();
-				painter.setPen(pal.base().color().value() < 0x7f
-					? pal.light().color() : pal.dark().color());
-				painter.drawText(x + 16, fm.ascent(),
-					QString("%1 %2/%3")
-					.arg(pNode->tempo, 0, 'g', 3)
-					.arg(pNode->beatsPerBar)
-					.arg(1 << pNode->beatDivisor));
-			}
-		} else {
-			y1 = (y2 >> 1);
-		}
 		if (bBeatIsBar || iPixelsPerBeat > 16) {
+			y1 = (bBeatIsBar && x >= x1 ? 0 : fm.ascent());
 			painter.setPen(pal.mid().color());
 			painter.drawLine(x, y1, x, y2);
 			painter.setPen(pal.light().color());
-			painter.drawLine(x + 1, y1, x + 1, y2);
+			++x; painter.drawLine(x, y1, x, y2);
+		}
+		if (bBeatIsBar) {
+			y1 = fm.ascent();
+			if (x >= x1) {
+				x1 = x + 2;
+				const unsigned short iBar = pNode->barFromBeat(iBeat);
+				const QString& sBeat = QString::number(iBar + 1);
+				painter.setPen(pal.windowText().color());
+				painter.drawText(x1, y1, sBeat);
+				x1 += fm.width(sBeat) + 2;
+			}
+			x1 += 2;
+			if (iBeat == pNode->beat) {
+				iPixelsPerBeat = pNode->pixelsPerBeat();
+				const QString& sTempo = QString("%1 %2/%3")
+					.arg(pNode->tempo, 0, 'g', 3)
+					.arg(pNode->beatsPerBar)
+					.arg(1 << pNode->beatDivisor);
+				painter.setPen(pal.base().color().value() < 0x7f
+					? pal.light().color() : pal.dark().color());
+				painter.drawText(x1, y1, sTempo);
+				x1 += fm.width(sTempo) + 2;
+			}
 		}
 		pNode = cursor.seekBeat(++iBeat);
 		x = pNode->pixelFromBeat(iBeat) - cx;

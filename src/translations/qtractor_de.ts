@@ -6290,42 +6290,42 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="804"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="810"/>
         <source>Play-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="807"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="813"/>
         <source>Edit-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="810"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="816"/>
         <source>Edit-tail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="813"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="819"/>
         <source>Loop-start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="816"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="822"/>
         <source>Loop-end</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="819"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="825"/>
         <source>Punch-in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="822"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="828"/>
         <source>Punch-out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="852"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="858"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -11828,42 +11828,42 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="844"/>
+        <location filename="../qtractorTrackTime.cpp" line="850"/>
         <source>Play-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="847"/>
+        <location filename="../qtractorTrackTime.cpp" line="853"/>
         <source>Edit-head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="850"/>
+        <location filename="../qtractorTrackTime.cpp" line="856"/>
         <source>Edit-tail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="853"/>
+        <location filename="../qtractorTrackTime.cpp" line="859"/>
         <source>Loop-start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="856"/>
+        <location filename="../qtractorTrackTime.cpp" line="862"/>
         <source>Loop-end</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="859"/>
+        <location filename="../qtractorTrackTime.cpp" line="865"/>
         <source>Punch-in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="862"/>
+        <location filename="../qtractorTrackTime.cpp" line="868"/>
         <source>Punch-out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="896"/>
+        <location filename="../qtractorTrackTime.cpp" line="902"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
