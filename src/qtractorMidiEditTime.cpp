@@ -105,15 +105,15 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	if (pTimeScale == NULL)
 		return;
 
-	QPainter p(&m_pixmap);
-	p.initFrom(this);
+	QPainter painter(&m_pixmap);
+	painter.initFrom(this);
 
 	//
 	// Draw the time scale...
 	//
 
-	const QFontMetrics& fm = p.fontMetrics();
-	int x, y1, y2 = h - 1;
+	const QFontMetrics& fm = painter.fontMetrics();
+	int x, x1, y1, y2 = h - 1;
 
 	// Account for the editing offset:
 	const int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
@@ -124,33 +124,39 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
 	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
-	x = pNode->pixelFromBeat(iBeat) - dx;
+	x = x1 = pNode->pixelFromBeat(iBeat) - dx;
 
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat);
+		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
+		if (bBeatIsBar || iPixelsPerBeat > 8) {
+			y1 = (bBeatIsBar && x >= x1 ? 0 : fm.ascent());
+			painter.setPen(pal.mid().color());
+			painter.drawLine(x, y1, x, y2);
+			painter.setPen(pal.light().color());
+			++x; painter.drawLine(x, y1, x, y2);
+		}
 		if (bBeatIsBar) {
-			y1 = 0;
-			p.setPen(pal.windowText().color());
-			p.drawText(x + 2, fm.ascent(),
-				QString::number(pNode->barFromBeat(iBeat) + 1));
+			y1 = fm.ascent();
+			if (x >= x1) {
+				x1 = x + 2;
+				const unsigned short iBar = pNode->barFromBeat(iBeat);
+				const QString& sBeat = QString::number(iBar + 1);
+				painter.setPen(pal.windowText().color());
+				painter.drawText(x1, y1, sBeat);
+				x1 += fm.width(sBeat) + 2;
+			}
+			x1 += 2;
 			if (iBeat == pNode->beat) {
 				iPixelsPerBeat = pNode->pixelsPerBeat();
-				p.setPen(pal.base().color().value() < 0x7f
-					? pal.light().color() : pal.dark().color()); 
-				p.drawText(x + 16, fm.ascent(),
-					QString("%1 %2/%3")
+				const QString& sTempo = QString("%1 %2/%3")
 					.arg(pNode->tempo, 0, 'g', 3)
 					.arg(pNode->beatsPerBar)
-					.arg(1 << pNode->beatDivisor));
+					.arg(1 << pNode->beatDivisor);
+				painter.setPen(pal.base().color().value() < 0x7f
+					? pal.light().color() : pal.dark().color());
+				painter.drawText(x1, y1, sTempo);
+				x1 += fm.width(sTempo) + 2;
 			}
-		} else {
-			y1 = (y2 >> 1);
-		}
-		if (bBeatIsBar || iPixelsPerBeat > 8) {
-			p.setPen(pal.mid().color());
-			p.drawLine(x, y1, x, y2);
-			p.setPen(pal.light().color());
-			p.drawLine(x + 1, y1, x + 1, y2);
 		}
 		pNode = cursor.seekBeat(++iBeat);
 		x = pNode->pixelFromBeat(iBeat) - dx;
@@ -162,8 +168,8 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	while (pMarker) {
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx + 4;
 		if (x > w) break;
-		p.setPen(pMarker->color);
-		p.drawText(x, y2, pMarker->text);
+		painter.setPen(pMarker->color);
+		painter.drawText(x, y2, pMarker->text);
 		pMarker = pMarker->next();
 	}
 
@@ -171,16 +177,16 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	if (pSession->isLooping()) {
 		QPolygon polyg(3);
 	//	h -= 4;
-		int d = (h >> 2) + 1;
-		p.setPen(Qt::darkCyan);
-		p.setBrush(Qt::cyan);
+		const int d = (h >> 2) + 1;
+		painter.setPen(Qt::darkCyan);
+		painter.setBrush(Qt::cyan);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x + d, h - d,
 				x, h,
 				x, h - d);
-			p.drawPolygon(polyg);
+			painter.drawPolygon(polyg);
 		}
 		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
 		if (x >= 0 && x < w) {
@@ -188,7 +194,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h - d,
 				x, h,
 				x - d, h - d);
-			p.drawPolygon(polyg);
+			painter.drawPolygon(polyg);
 		}
 	}
 
@@ -196,16 +202,16 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	if (pSession->isPunching()) {
 		QPolygon polyg(3);
 	//	h -= 4;
-		int d = (h >> 2) + 1;
-		p.setPen(Qt::darkMagenta);
-		p.setBrush(Qt::magenta);
+		const int d = (h >> 2) + 1;
+		painter.setPen(Qt::darkMagenta);
+		painter.setBrush(Qt::magenta);
 		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x + d, h - d,
 				x, h,
 				x, h - d);
-			p.drawPolygon(polyg);
+			painter.drawPolygon(polyg);
 		}
 		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - dx;
 		if (x >= 0 && x < w) {
@@ -213,7 +219,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h - d,
 				x, h,
 				x - d, h - d);
-			p.drawPolygon(polyg);
+			painter.drawPolygon(polyg);
 		}
 	}
 }

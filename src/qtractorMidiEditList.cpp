@@ -166,8 +166,8 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
 
-	QPainter p(&m_pixmap);
-	p.initFrom(this);
+	QPainter painter(&m_pixmap);
+	painter.initFrom(this);
 
 	const int ch = qtractorScrollView::contentsHeight() - cy;
 
@@ -181,18 +181,18 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	int n, k, y, x = w - wk;
 
 	// Draw horizontal key-lines...
-	p.setPen(rgbLine);
-	p.setBrush(rgbShadow);
+	painter.setPen(rgbLine);
+	painter.setBrush(rgbShadow);
 
 #ifdef CONFIG_GRADIENT
 	QLinearGradient gradLight(x, 0, w, 0);
 	gradLight.setColorAt(0.0f, rgbLight);
 	gradLight.setColorAt(0.1f, rgbLight.lighter(180));
-	p.fillRect(x, 0, wk, h, gradLight);
-//	p.setBrush(gradLight);
+	painter.fillRect(x, 0, wk, h, gradLight);
+//	painter.setBrush(gradLight);
 #else
-//	p.setBrush(rgbLight.lighter());
-	p.fillRect(x, 0, wk, h, rgbLight.lighter());
+//	painter.setBrush(rgbLight.lighter());
+	painter.fillRect(x, 0, wk, h, rgbLight.lighter());
 #endif
 
 	y = y0;
@@ -202,12 +202,12 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 		if (k >= 5) ++k;
 		if ((k & 1) == 0) {
 			int y1 = ch - int(hk * ((n / 12) * 7 + (k >> 1)));
-			p.drawLine(x, y1, w, y1);
+			painter.drawLine(x, y1, w, y1);
 			if (k == 0) {
-				p.setPen(Qt::darkGray);
+				painter.setPen(Qt::darkGray);
 				y1 = y + m_iItemHeight;
-				p.drawText(2, y1 - 2, tr("C%1").arg((n / 12) - 1));
-				p.setPen(rgbLine);
+				painter.drawText(2, y1 - 2, tr("C%1").arg((n / 12) - 1));
+				painter.setPen(rgbLine);
 			//	p.drawLine(0, y1, x, y1);
 			}
 		}
@@ -219,9 +219,9 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	QLinearGradient gradDark(x, 0, x + wk, 0);
 	gradDark.setColorAt(0.0f, rgbLight);
 	gradDark.setColorAt(0.3f, rgbShadow);
-	p.setBrush(gradDark);
+	painter.setBrush(gradDark);
 #else
-	p.setBrush(rgbShadow);
+	painter.setBrush(rgbShadow);
 #endif
 
 	y = y0;
@@ -230,15 +230,15 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 		k = (n % 12);
 		if (k >= 5) ++k;
 		if (k & 1)
-			p.drawRect(x, y, (wk * 6) / 10, m_iItemHeight);
+			painter.drawRect(x, y, (wk * 6) / 10, m_iItemHeight);
 		y += m_iItemHeight;
 		--n;
 	}
 
-	p.drawLine(x, 0, x, h);
+	painter.drawLine(x, 0, x, h);
 
 	if (y > ch)
-		p.fillRect(0, ch, w, h - ch, pal.dark().color());
+		painter.fillRect(0, ch, w, h - ch, pal.dark().color());
 }
 
 
