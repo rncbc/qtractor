@@ -228,8 +228,8 @@ void qtractorMidiEditView::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
 
 	if (w < 1 || h < 1)
 		return;
@@ -269,9 +269,10 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	// Draw horizontal lines...
 	painter.setPen(rgbLight);
 //	p.setBrush(rgbSharp);
-	int h1 = m_pEditor->editList()->itemHeight();
-	int ch = qtractorScrollView::contentsHeight() - cy;
-	int q = (cy / h1);
+	const int h1 = m_pEditor->editList()->itemHeight();
+	const int ch = qtractorScrollView::contentsHeight() - cy;
+	const int q = (cy / h1);
+
 	int n = 127 - q;
 	int y = q * h1 - cy;
 	while (y < h && y < ch) {
@@ -357,9 +358,9 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		return;
 
 	pNode = cursor.seekPixel(x = dx);
-	unsigned long iTickStart = pNode->tickFromPixel(x);
+	const unsigned long iTickStart = pNode->tickFromPixel(x);
 	pNode = cursor.seekPixel(x += w);
-	unsigned long iTickEnd = pNode->tickFromPixel(x);
+	const unsigned long iTickEnd = pNode->tickFromPixel(x);
 
 //	p.setPen(rgbFore);
 //	p.setBrush(rgbBack);
@@ -371,10 +372,10 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	qtractorMidiEvent *pEvent
 		= m_pEditor->seekEvent(iTickStart > t0 ? iTickStart - t0 : 0);
 	while (pEvent) {
-		unsigned long t1 = t0 + pEvent->time();
+		const unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTickEnd)
 			break;
-		unsigned long t2 = t1 + pEvent->duration();
+		const unsigned long t2 = t1 + pEvent->duration();
 		// Filter event type!...
 		if (pEvent->type() == m_eventType && t2 >= iTickStart) {
 			y = ch - h1 * (pEvent->note() + 1);
@@ -382,8 +383,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 				pNode = cursor.seekTick(t1);
 				x = pNode->pixelFromTick(t1) - x0 - cx;
 				int w1 = pNode->pixelFromTick(t2) - x0 - cx - x;
-				if (w1 < 5)
-					w1 = 5;
+				if (w1 < 5) w1 = 5;
 				if (m_pEditor->isNoteColor()) {
 					hue = (128 - int(pEvent->note())) << 4;
 					if (m_pEditor->isValueColor())
