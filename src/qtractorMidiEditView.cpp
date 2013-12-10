@@ -304,7 +304,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	int x = pNode->pixelFromBeat(iBeat) - dx;
 	int x2 = x;
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat);
+		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
 			painter.setPen(rgbDark);
 			painter.drawLine(x - 1, 0, x - 1, h);
