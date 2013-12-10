@@ -68,13 +68,13 @@ bool qtractorSessionLoopCommand::redo (void)
 
 	// Just set new bounds...
 	pSession->setLoop(m_iLoopStart, m_iLoopEnd);
-
+#if 0
 	// Restore edit cursors too...
 	if (m_iLoopStart < m_iLoopEnd) {
 		pSession->setEditHead(m_iLoopStart);
 		pSession->setEditTail(m_iLoopEnd);
 	}
-
+#endif
 	// Swap it nice, finally.
 	m_iLoopStart = iLoopStart;
 	m_iLoopEnd   = iLoopEnd;
@@ -115,13 +115,13 @@ bool qtractorSessionPunchCommand::redo (void)
 
 	// Just set new bounds...
 	pSession->setPunch(m_iPunchIn, m_iPunchOut);
-
+#if 0
 	// Restore edit cursors too...
 	if (m_iPunchIn < m_iPunchOut) {
 		pSession->setEditHead(m_iPunchIn);
 		pSession->setEditTail(m_iPunchOut);
 	}
-
+#endif
 	// Swap it nice, finally.
 	m_iPunchIn  = iPunchIn;
 	m_iPunchOut = iPunchOut;
