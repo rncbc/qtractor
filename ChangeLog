@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Copy/paste now preserving clip names (ticket by Holger Marzen,
+  thanks).
+
 - Scaling of whole tempo map with a given factor has been added,
   through a spin-box and button in Tempo Map / Markers dialog,
   after a long overdue patch by Tuomas Airaksinen, thanks again.

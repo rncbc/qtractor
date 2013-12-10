@@ -555,25 +555,25 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="753"/>
+        <location filename="../qtractorAudioClip.cpp" line="754"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>Audio:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="758"/>
+        <location filename="../qtractorAudioClip.cpp" line="759"/>
         <source> (%1 dB)</source>
         <translation>(%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="761"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% natažení času)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="764"/>
+        <location filename="../qtractorAudioClip.cpp" line="765"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
@@ -723,27 +723,27 @@ Délka:	%4</translation>
         <translation>%1 - Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1116"/>
+        <location filename="../qtractorMidiClip.cpp" line="1117"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formát %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1118"/>
+        <location filename="../qtractorMidiClip.cpp" line="1119"/>
         <location filename="../qtractorMidiListView.cpp" line="71"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1120"/>
+        <location filename="../qtractorMidiClip.cpp" line="1121"/>
         <location filename="../qtractorMidiFile.cpp" line="1228"/>
         <location filename="../qtractorMidiListView.cpp" line="65"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1123"/>
+        <location filename="../qtractorMidiClip.cpp" line="1124"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 stopy, %2 tpqn</translation>
     </message>
@@ -752,7 +752,7 @@ MIDI:	</translation>
         <translation type="obsolete">, %1 stopy, %2 tpb</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1129"/>
+        <location filename="../qtractorMidiClip.cpp" line="1130"/>
         <source> (%1% vol)</source>
         <translation> (%1% hlasitost)</translation>
     </message>

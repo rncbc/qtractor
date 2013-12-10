@@ -150,6 +150,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 
 	setFilename(clip.filename());
 	setClipGain(clip.clipGain());
+	setClipName(clip.clipName());
 
 	// Clone the audio peak, if any...
 	if (clip.m_pPeak)
