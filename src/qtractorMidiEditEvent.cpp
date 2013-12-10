@@ -297,7 +297,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	// Draw horizontal lines...
 	painter.setPen(rgbLight);
-	int dy = (h >> 3);
+	const int dy = (h >> 3);
 	int  y = 0;
 	while (y < h) {
 		painter.drawLine(0, y, w, y);
@@ -324,7 +324,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	int x = pNode->pixelFromBeat(iBeat) - dx;
 	int x2 = x;
 	while (x < w) {
-		bool bBeatIsBar = pNode->beatIsBar(iBeat);
+		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
 			painter.setPen(rgbDark);
 			painter.drawLine(x - 1, 0, x - 1, h);
@@ -375,9 +375,9 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		return;
 
 	pNode = cursor.seekPixel(x = dx);
-	unsigned long iTickStart = pNode->tickFromPixel(x);
+	const unsigned long iTickStart = pNode->tickFromPixel(x);
 	pNode = cursor.seekPixel(x += w);
-	unsigned long iTickEnd = pNode->tickFromPixel(x);
+	const unsigned long iTickEnd = pNode->tickFromPixel(x);
 
 	// This is the zero-line...
 	const int y0 = (m_eventType == qtractorMidiEvent::PITCHBEND ? h >> 1 : h);
@@ -402,10 +402,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	qtractorMidiEvent *pEvent
 		= m_pEditor->seekEvent(iTickStart > t0 ? iTickStart - t0 : 0);
 	while (pEvent) {
-		unsigned long t1 = t0 + pEvent->time();
+		const unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTickEnd)
 			break;
-		unsigned long t2 = t1 + pEvent->duration();
+		const unsigned long t2 = t1 + pEvent->duration();
 		// Filter event type!...
 		if (pEvent->type() == m_eventType && t2 >= iTickStart
 			&& (!bEventParam || pEvent->param() == m_eventParam)) {
