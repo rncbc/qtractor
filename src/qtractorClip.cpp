@@ -346,19 +346,9 @@ void qtractorClip::updateClipTime (void)
 
 
 // Base clip drawing method.
-void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
-	unsigned long iClipOffset )
+void qtractorClip::drawClip (
+	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
 {
-	// Fill clip background...
-	pPainter->setPen(m_pTrack->background().darker());
-#ifdef CONFIG_GRADIENT
-	QLinearGradient grad(0, clipRect.top(), 0, clipRect.bottom());
-	grad.setColorAt(0.4, m_pTrack->background());
-	grad.setColorAt(1.0, m_pTrack->background().darker(130));
-	pPainter->setBrush(grad);
-#else
-	pPainter->setBrush(m_pTrack->background());
-#endif
 	pPainter->drawRect(clipRect);
 
 	qtractorSession *pSession = m_pTrack->session();
@@ -389,10 +379,11 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->setBrush(rgbFade);
 
 	// Fade-in slope...
-	int y = rect.top();
+	const int y = rect.top();
+	const int h = rect.bottom();
+
 	int x = rect.left();
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
-	int h = rect.bottom();
 	const QRect rectFadeIn(x + w, y, 8, 8);
 	if (w > 0 && x + w > clipRect.left()) {
 	#if 0

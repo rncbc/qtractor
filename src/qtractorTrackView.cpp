@@ -408,6 +408,19 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					const int h = y2 - y1 - 2;
 					const QRect trackRect(
 						rect.left() - 1, y1 - cy + 1, rect.width() + 2, h);
+					// Track/clip background colors...
+					QColor bg = pTrack->background();
+					pPainter->setPen(bg.darker());
+					bg.setAlpha(192); // translucency...
+				#ifdef CONFIG_GRADIENT
+					const int y = trackRect.y();
+					QLinearGradient grad(0, y, 0, y + h);
+					grad.setColorAt(0.4, bg);
+					grad.setColorAt(1.0, bg.darker(130));
+					pPainter->setBrush(grad);
+				#else
+					pPainter->setBrush(bg);
+				#endif
 					unsigned long iClipStart  = pClipRecord->clipStart();
 					unsigned long iClipOffset = 0;
 					if (iLoopStart < iLoopEnd && !pSession->isPunching()) {
@@ -588,7 +601,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	pPainter->setRenderHint(QPainter::Antialiasing, false);
 
 	// Draw edit-head line...
-//	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
+	//m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 	x = m_iEditHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
@@ -596,7 +609,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw edit-tail line...
-//	m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
+	//m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
 	x = m_iEditTailX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
@@ -604,7 +617,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw play-head line...
-//	m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
+	//m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 	x = m_iPlayHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::red);
