@@ -1139,7 +1139,6 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 void qtractorTrack::setBackground ( const QColor& bg )
 {
 	m_props.background = bg;
-	m_props.background.setAlpha(192);
 }
 
 const QColor& qtractorTrack::background (void) const
@@ -1281,17 +1280,30 @@ void qtractorTrack::process_curve ( unsigned long iFrame )
 void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 	unsigned long iTrackStart, unsigned long iTrackEnd, qtractorClip *pClip )
 {
-	int y = trackRect.y();
-	int h = trackRect.height();
+	const int y = trackRect.y();
+	const int h = trackRect.height();
 
 	if (pClip == NULL)
 		pClip = m_clips.first();
 
+	// Track/clip background...
+	QColor bg = background();
+	const QPen pen(bg.darker());
+	bg.setAlpha(192); // translucency...
+#ifdef CONFIG_GRADIENT
+	QLinearGradient grad(0, y, 0, y + h);
+	grad.setColorAt(0.4, bg);
+	grad.setColorAt(1.0, bg.darker(130));
+	const QBrush brush(grad);
+#else
+	const QBrush brush(bg);
+#endif
+
 	while (pClip) {
-		unsigned long iClipStart = pClip->clipStart();
+		const unsigned long iClipStart = pClip->clipStart();
 		if (iClipStart > iTrackEnd)
 			break;
-		unsigned long iClipEnd = iClipStart + pClip->clipLength();
+		const unsigned long iClipEnd = iClipStart + pClip->clipLength();
 		if (iClipStart < iTrackEnd && iClipEnd > iTrackStart) {
 			unsigned long iClipOffset = 0;
 			int x = trackRect.x();
@@ -1307,13 +1319,15 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			} else {
 				++w;	// Give some clip right-border room.
 			}
-			QRect rect(x, y, w - x, h);
-			pClip->drawClip(pPainter, rect, iClipOffset);
+			pPainter->setPen(pen);
+			pPainter->setBrush(brush);
+			// Draw the clip...
+			pClip->drawClip(pPainter, QRect(x, y, w - x, h), iClipOffset);
 		#if 0
 			// Draw the clip selection...
 			if (pClip->isClipSelected()) {
-				unsigned long iSelectStart = pClip->clipSelectStart();
-				unsigned long iSelectEnd   = pClip->clipSelectEnd();
+				const unsigned long iSelectStart = pClip->clipSelectStart();
+				const unsigned long iSelectEnd   = pClip->clipSelectEnd();
 				x = trackRect.x();
 				w = trackRect.width();
 				if (iSelectStart >= iTrackStart) {
@@ -1326,8 +1340,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				} else {
 					++w;	// Give selection some right-border room.
 				}
-				rect.setRect(x, y, w - x, h);
-				pPainter->fillRect(rect, QColor(0, 0, 255, 120));
+				pPainter->fillRect(QRect(x, y, w - x, h), QColor(0, 0, 255, 120));
 			}
 		#endif
 		}
