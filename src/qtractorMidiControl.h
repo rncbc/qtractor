@@ -416,7 +416,7 @@ public:
 	unsigned short controlParam() const;
 
 	// Stabilizers.
-	void stabilizeControlType();
+	void updateControlType(int iControlType = -1);
 
 signals:
 

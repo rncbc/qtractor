@@ -1737,7 +1737,7 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 	// Just in case...
 	m_pMidiEditor->updateInstrumentNames();
 
-	m_pEventTypeGroup->stabilizeControlType();
+	m_pEventTypeGroup->updateControlType();
 
 	const qtractorMidiEvent::EventType eventType
 		= m_pEventTypeGroup->controlType();

@@ -523,7 +523,7 @@ void qtractorMidiControlForm::typeChangedSlot (void)
 
 void qtractorMidiControlForm::stabilizeTypeChange (void)
 {
-	m_pControlTypeGroup->stabilizeControlType();
+	m_pControlTypeGroup->updateControlType();
 }
 
 
