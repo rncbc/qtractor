@@ -1051,15 +1051,11 @@ unsigned short qtractorMidiControlTypeGroup::controlParam (void) const
 
 
 // Stabilizers.
-void qtractorMidiControlTypeGroup::stabilizeControlType (void)
+void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 {
-	activateControlType(m_pControlTypeComboBox->currentIndex());
-}
+	if (iControlType < 0)
+		iControlType = m_pControlTypeComboBox->currentIndex();
 
-
-// Private slots.
-void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
-{
 	const qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::ControlType(
 			m_pControlTypeComboBox->itemData(iControlType).toInt());
@@ -1086,7 +1082,6 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 					qtractorMidiEditor::defaultNoteName(iParam)),
 				int(iParam));
 		}
-		break;
 		break;
 	}
 	case qtractorMidiEvent::CONTROLLER: {
@@ -1187,17 +1182,28 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 
 	if (iOldParam >= 0 && iOldParam < m_pControlParamComboBox->count())
 		m_pControlParamComboBox->setCurrentIndex(iOldParam);
+}
+
+
+// Private slots.
+void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
+{
+	updateControlType(iControlType);
+
+	const qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::ControlType(
+			m_pControlTypeComboBox->itemData(iControlType).toInt());
 
 	emit controlTypeChanged(int(ctype));
 
 	activateControlParam(m_pControlParamComboBox->currentIndex());
 }
 
-
 void qtractorMidiControlTypeGroup::activateControlParam ( int iControlParam )
 {
 	const unsigned short iParam
 		= m_pControlParamComboBox->itemData(iControlParam).toInt();
+
 	emit controlParamChanged(int(iParam));
 }
 
