@@ -91,8 +91,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 %{_datadir}/icons/hicolor/32x32/mimetypes/application-x-%{name}*.png
-%{_datadir}/icons/hicolor/scalable/apps/%{name}.svgz
-%{_datadir}/icons/hicolor/scalable/mimetypes/application-x-%{name}*.svgz
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_datadir}/icons/hicolor/scalable/mimetypes/application-x-%{name}*.svg
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog

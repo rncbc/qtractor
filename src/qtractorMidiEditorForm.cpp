@@ -582,7 +582,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			pMainForm, SLOT(transportPanic()));
 	}
 
-	eventTypeChanged(0);
+	m_pEventTypeComboBox->setCurrentIndex(0);
+//	eventTypeChanged(0);
 }
 
 
