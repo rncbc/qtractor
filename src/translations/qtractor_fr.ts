@@ -122,7 +122,7 @@ Déc. / Long.:	%3 / %4</translation>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="920"/>
         <source>clip tool %1</source>
-        <translation type="unfinished">outil clip %1</translation>
+        <translation>outil clip %1</translation>
     </message>
     <message>
         <source>insert range</source>
@@ -1771,12 +1771,12 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="255"/>
         <source>Outputs</source>
-        <translation type="unfinished">Sorties</translation>
+        <translation>Sorties</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="273"/>
         <source>Output bus names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom des bus de sortie</translation>
     </message>
     <message>
         <source>Output</source>
@@ -4094,7 +4094,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1825"/>
         <source>&amp;Tempo Adjust...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustement du &amp;Tempo...</translation>
     </message>
     <message>
         <source>&amp;Tempo...</source>
@@ -5456,7 +5456,13 @@ Looks like it crashed or did not close properly last time it was run... however,
 &quot;%1&quot;
 
 Do you want to crash-recover from it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Oups!
+
+Il semblerait qu&apos;il y ait eu un crash ou que l&apos;application n&apos;est pas été correctement fermé la dernière fois... cependant un fichier de sauvegarde automatique existe:
+
+&quot;%1&quot;
+
+Voulez-vous redémarrer à partir de celui-ci?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="3818"/>
@@ -6641,21 +6647,27 @@ Valeur:	%3</translation>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
-        <translation type="unfinished"></translation>
+        <translation>RPN (%1)
+Nom:	%2
+Valeur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4779"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
-        <translation type="unfinished"></translation>
+        <translation>NRPN (%1)
+Nom:	%2
+Valeur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4785"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrôle 14 (%1)
+Nom:	%2
+Valeur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4791"/>
@@ -7549,22 +7561,22 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1029"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">V&amp;ignette</translation>
+        <translation>V&amp;ignette</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1032"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">Barre d&apos;outils Vignette</translation>
+        <translation>Barre d&apos;outils Vignette</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1035"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">Barre d&apos;outils vignette</translation>
+        <translation>Barre d&apos;outils vignette</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1038"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrer/Cacher la barre d&apos;outils vignette</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1046"/>
@@ -8211,7 +8223,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="166"/>
         <source>Parameter type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de paramètre</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="167"/>
@@ -8385,17 +8397,17 @@ Voulez-vous sauvegarder les changements?</translation>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="320"/>
         <source>Control 14 (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrôle 14 (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="322"/>
         <source>RPN (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>RPN (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="324"/>
         <source>NRPN (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>NRPN (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="326"/>
@@ -8750,7 +8762,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiThumbView.cpp" line="77"/>
         <source>MIDI Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue vignette MIDI</translation>
     </message>
 </context>
 <context>
@@ -9400,22 +9412,22 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="252"/>
         <source>Whether to enable session auto-save (crash-recovery)</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;il faut activer la sauvegarde automatique de session (récupération de crash)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="255"/>
         <source>Auto-save current working session every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder automatiquement la session courante toute les:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="268"/>
         <source>Auto-save period (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Période de sauvegarde automatique (minutes)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="271"/>
         <source> minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>. minutes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="296"/>
@@ -11670,12 +11682,12 @@ Voulez-vous appliquer les changements?</translation>
         <location filename="../qtractorTimeScaleForm.ui" line="294"/>
         <location filename="../qtractorTimeScaleForm.ui" line="306"/>
         <source>Tempo scale factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur d&apos;échelle du tempo</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="331"/>
         <source>App&amp;ly</source>
-        <translation type="unfinished"></translation>
+        <translation>App&amp;liquer</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="353"/>
@@ -11791,7 +11803,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="840"/>
         <source>tempo factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="938"/>
