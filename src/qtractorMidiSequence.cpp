@@ -112,7 +112,6 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 			m_duration = iTime;
 	}
 
-
 	// Add it...
 	insertEvent(pEvent);
 }
@@ -217,7 +216,7 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 		}
 		insertEvent(pNewEvent);
 	}
-	
+
 	// Done.
 }
 
@@ -232,7 +231,7 @@ void qtractorMidiSequence::copyEvents ( qtractorMidiSequence *pSeq )
 	qtractorMidiEvent *pEvent = pSeq->events().first();
 	for (; pEvent; pEvent = pEvent->next())
 		m_events.append(new qtractorMidiEvent(*pEvent));
-	
+
 	// Done.
 }
 

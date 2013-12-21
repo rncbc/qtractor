@@ -1075,7 +1075,7 @@ int qtractorMidiFile::readData ( unsigned char *pData, unsigned short n )
 // Integer write method.
 int qtractorMidiFile::writeInt ( int val, unsigned short n )
 {
-	int c;
+	unsigned int c;
 
 	if (n > 0) {
 		// Fixed length (n bytes) integer write.
@@ -1089,7 +1089,7 @@ int qtractorMidiFile::writeInt ( int val, unsigned short n )
 		// Variable length integer write.
 		n = 0;
 		c = val & 0x7f;
-		while (val >>= 7) {
+		while ((val >>= 7) > 0) {
 			c <<= 8;
 			c |= (val & 0x7f) | 0x80;
 		}
