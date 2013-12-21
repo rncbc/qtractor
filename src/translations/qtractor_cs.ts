@@ -1225,7 +1225,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorClipCommand.cpp" line="920"/>
         <source>clip tool %1</source>
-        <translation type="unfinished">Nástroj na záznamy %1</translation>
+        <translation>Nástroj na záznamy %1</translation>
     </message>
     <message>
         <source>insert range</source>
@@ -2532,12 +2532,12 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="255"/>
         <source>Outputs</source>
-        <translation type="unfinished">Výstupy</translation>
+        <translation>Výstupy</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="273"/>
         <source>Output bus names</source>
-        <translation type="unfinished"></translation>
+        <translation>Názvy výstupních sběrnic</translation>
     </message>
     <message>
         <source>Output</source>
@@ -3291,7 +3291,13 @@ Looks like it crashed or did not close properly last time it was run... however,
 &quot;%1&quot;
 
 Do you want to crash-recover from it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fuj, to jsem se lekl!
+
+Vypadá to, jako by program spadl, nebo nebyl naposledy uzavřen správně... nicméně, soubor automaticky uloženým sezením stále existuje:
+
+&quot;%1&quot;
+
+Do you want to crash-recover from it?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="3818"/>
@@ -6170,7 +6176,7 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1825"/>
         <source>&amp;Tempo Adjust...</source>
-        <translation type="unfinished"></translation>
+        <translation>Úp&amp;rava tempa...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1938"/>
@@ -7504,21 +7510,27 @@ Hodnota:	%3</translation>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
-        <translation type="unfinished"></translation>
+        <translation>RPN (%1)
+Název:	%2
+Hodnota:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4779"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
-        <translation type="unfinished"></translation>
+        <translation>NRPN (%1)
+Název:	%2
+Hodnota:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4785"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovladač 14 (%1)
+Název:	%2
+Hodnota:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4791"/>
@@ -7639,7 +7651,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="166"/>
         <source>Parameter type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ parametru</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="167"/>
@@ -8627,22 +8639,22 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1029"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">Ná&amp;hled</translation>
+        <translation>Ná&amp;hled</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1032"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">Nástrojový pruh pro náhled</translation>
+        <translation>Nástrojový pruh pro náhled</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1035"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">Nástrojový pruh pro náhled</translation>
+        <translation>Nástrojový pruh pro náhled</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1038"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat/Skrýt nástrojový pruh pro náhled</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1046"/>
@@ -9304,17 +9316,17 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="320"/>
         <source>Control 14 (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovladač (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="322"/>
         <source>RPN (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>RPN (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="324"/>
         <source>NRPN (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>NRPN (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="326"/>
@@ -9693,7 +9705,7 @@ Promiňte.</translation>
     <message>
         <location filename="../qtractorMidiThumbView.cpp" line="77"/>
         <source>MIDI Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit náhled na MIDI</translation>
     </message>
 </context>
 <context>
@@ -10854,22 +10866,22 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="252"/>
         <source>Whether to enable session auto-save (crash-recovery)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda se má povolit automatické uložení sezení (obnova po pádu)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="255"/>
         <source>Auto-save current working session every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaticky uložit nynější sezení každých:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="268"/>
         <source>Auto-save period (minutes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatické uložení (doba v minutách)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="271"/>
         <source> minutes</source>
-        <translation type="unfinished"></translation>
+        <translation> minut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="485"/>
@@ -12814,12 +12826,12 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTimeScaleForm.ui" line="294"/>
         <location filename="../qtractorTimeScaleForm.ui" line="306"/>
         <source>Tempo scale factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Násobek změny tempa</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="331"/>
         <source>App&amp;ly</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Použít</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="353"/>
@@ -12935,7 +12947,7 @@ Chcete zahodit tyto změny?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="840"/>
         <source>tempo factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Násobek tempa</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="938"/>

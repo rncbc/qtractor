@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- A rare freezing loop condition has been fixed on the oldest of
+  MIDI file save/write routines (after a ticket and solution by
+  Tuomas Airaksinen, thanks again).
+
 - Copy/paste now preserving clip names (ticket by Holger Marzen,
   thanks).
 
