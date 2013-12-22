@@ -740,6 +740,20 @@ void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 }
 
 
+// Handle zoom with mouse wheel.
+void qtractorTrackTime::wheelEvent ( QWheelEvent *pWheelEvent )
+{
+	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
+		const int delta = pWheelEvent->delta();
+		if (delta > 0)
+			m_pTracks->zoomIn();
+		else
+			m_pTracks->zoomOut();
+	}
+	else qtractorScrollView::wheelEvent(pWheelEvent);
+}
+
+
 // Reset drag/select state.
 void qtractorTrackTime::resetDragState (void)
 {

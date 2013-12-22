@@ -76,6 +76,9 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
+	// Handle zoom with mouse wheel.
+	void wheelEvent(QWheelEvent *pWheelEvent);
+
 	// Reset drag/select state.
 	void resetDragState();
 

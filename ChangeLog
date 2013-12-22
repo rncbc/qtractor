@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Zooming with shift/ctrl+mouse-wheel and pointing over the main
+  tracks view or MIDI clip editor time ruler header's now fixed.
+
 - A rare freezing loop condition has been fixed on the oldest of
   MIDI file save/write routines (after a ticket and solution by
   Tuomas Airaksinen, thanks again).

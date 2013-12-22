@@ -6489,42 +6489,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="810"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="824"/>
         <source>Play-head</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="813"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="827"/>
         <source>Edit-head</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="816"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="830"/>
         <source>Edit-tail</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="819"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="833"/>
         <source>Loop-start</source>
         <translation>ループの先頭</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="822"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="836"/>
         <source>Loop-end</source>
         <translation>ループの末尾</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="825"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="839"/>
         <source>Punch-in</source>
         <translation>パンチイン</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="828"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="842"/>
         <source>Punch-out</source>
         <translation>パンチアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="858"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="872"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12171,42 +12171,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="850"/>
+        <location filename="../qtractorTrackTime.cpp" line="864"/>
         <source>Play-head</source>
         <translation>再生先頭</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="853"/>
+        <location filename="../qtractorTrackTime.cpp" line="867"/>
         <source>Edit-head</source>
         <translation>編集先頭</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="856"/>
+        <location filename="../qtractorTrackTime.cpp" line="870"/>
         <source>Edit-tail</source>
         <translation>編集末尾</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="859"/>
+        <location filename="../qtractorTrackTime.cpp" line="873"/>
         <source>Loop-start</source>
         <translation>ループスタート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="862"/>
+        <location filename="../qtractorTrackTime.cpp" line="876"/>
         <source>Loop-end</source>
         <translation>ループエンド</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="865"/>
+        <location filename="../qtractorTrackTime.cpp" line="879"/>
         <source>Punch-in</source>
         <translation>パンチイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="868"/>
+        <location filename="../qtractorTrackTime.cpp" line="882"/>
         <source>Punch-out</source>
         <translation>パンチアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="902"/>
+        <location filename="../qtractorTrackTime.cpp" line="916"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
