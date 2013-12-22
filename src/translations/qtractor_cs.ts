@@ -7358,42 +7358,42 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="810"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="824"/>
         <source>Play-head</source>
         <translation>Začátek přehrávání</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="813"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="827"/>
         <source>Edit-head</source>
         <translation>Začátek úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="816"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="830"/>
         <source>Edit-tail</source>
         <translation>Konec úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="819"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="833"/>
         <source>Loop-start</source>
         <translation>Začátek smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="822"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="836"/>
         <source>Loop-end</source>
         <translation>Konec smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="825"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="839"/>
         <source>Punch-in</source>
         <translation>Začátek přepisu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="828"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="842"/>
         <source>Punch-out</source>
         <translation>Konec přepisu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="858"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="872"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -13350,42 +13350,42 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="850"/>
+        <location filename="../qtractorTrackTime.cpp" line="864"/>
         <source>Play-head</source>
         <translation>Začátek přehrávání</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="853"/>
+        <location filename="../qtractorTrackTime.cpp" line="867"/>
         <source>Edit-head</source>
         <translation>Začátek úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="856"/>
+        <location filename="../qtractorTrackTime.cpp" line="870"/>
         <source>Edit-tail</source>
         <translation>Konec úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="859"/>
+        <location filename="../qtractorTrackTime.cpp" line="873"/>
         <source>Loop-start</source>
         <translation>Začátek smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="862"/>
+        <location filename="../qtractorTrackTime.cpp" line="876"/>
         <source>Loop-end</source>
         <translation>Konec smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="865"/>
+        <location filename="../qtractorTrackTime.cpp" line="879"/>
         <source>Punch-in</source>
         <translation>Začátek přepisu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="868"/>
+        <location filename="../qtractorTrackTime.cpp" line="882"/>
         <source>Punch-out</source>
         <translation>Konec přepisu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="902"/>
+        <location filename="../qtractorTrackTime.cpp" line="916"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>

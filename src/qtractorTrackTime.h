@@ -73,6 +73,9 @@ protected:
 	// Tempo-map dialog accessor.
 	void mouseDoubleClickEvent(QMouseEvent *pMouseEvent);
 
+	// Handle zoom with mouse wheel.
+	void wheelEvent(QWheelEvent *pWheelEvent);
+
 	// Reset drag/select state.
 	void resetDragState();
 

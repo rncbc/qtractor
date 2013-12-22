@@ -702,6 +702,20 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 }
 
 
+// Handle zoom with mouse wheel.
+void qtractorMidiEditTime::wheelEvent ( QWheelEvent *pWheelEvent )
+{
+	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
+		int delta = pWheelEvent->delta();
+		if (delta > 0)
+			m_pEditor->zoomIn();
+		else
+			m_pEditor->zoomOut();
+	}
+	else qtractorScrollView::wheelEvent(pWheelEvent);
+}
+
+
 // Reset drag/select state.
 void qtractorMidiEditTime::resetDragState (void)
 {
