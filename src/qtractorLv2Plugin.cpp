@@ -2587,7 +2587,7 @@ void qtractorLv2Plugin::idleEditor (void)
 			const unsigned long iIndex = iter.key();
 			const float fValue = iter.value();
 		#if 0//def CONFIG_LV2_TIME
-			int i = m_lv2_time_ports.value(iIndex, -1);
+			const int i = m_lv2_time_ports.value(iIndex, -1);
 			if (i >= 0) g_lv2_time[i].value = fValue;
 		#endif
 			updateParamValue(iIndex, fValue, false);
@@ -3143,7 +3143,7 @@ void qtractorLv2Plugin::updateTime (
 		float(pPos->frame_rate));
 	qtractor_lv2_time_update(
 		qtractorLv2Time::speed,
-		float(state == JackTransportRolling));
+		(state == JackTransportRolling ? 1.0f : 0.0f));
 }
 
 #endif	// CONFIG_LV2_TIME
