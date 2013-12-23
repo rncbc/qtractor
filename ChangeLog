@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- A new LV2 host convention is in effect on plugins that expose
+  multiple AtomPort's in either direction: only the first input
+  or output declared AtomPort is eligible to convey regular MIDI
+  data events (introduced while trying Frank Kober's forthcoming
+  QmidiArp LV2 suite of plugins, thanks). (EXPERIMENTAL)
+
 - Zooming with shift/ctrl+mouse-wheel and pointing over the main
   tracks view or MIDI clip editor time ruler header's now fixed.
 

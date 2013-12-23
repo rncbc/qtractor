@@ -329,11 +329,11 @@ private:
 	unsigned long *m_piMidiAtomIns;
 	unsigned long *m_piMidiAtomOuts;
 
-	LV2_Atom_Buffer  *m_lv2_atom_buffer_in;
 	LV2_Atom_Buffer **m_lv2_atom_buffer_ins;
+	LV2_Atom_Buffer **m_lv2_atom_port_ins;
 
-	LV2_Atom_Buffer  *m_lv2_atom_buffer_out;
 	LV2_Atom_Buffer **m_lv2_atom_buffer_outs;
+	LV2_Atom_Buffer **m_lv2_atom_port_outs;
 
 #endif
 
