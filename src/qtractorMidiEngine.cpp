@@ -1757,7 +1757,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 #endif
 	// Scheduled delivery: take into account
 	// the time playback/queue started...
-	unsigned long tick
+	const unsigned long tick
 		= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
 
 #ifdef CONFIG_DEBUG_0
