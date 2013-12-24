@@ -860,6 +860,7 @@ static LilvNode *g_lv2_midi_class  = NULL;
 #ifdef CONFIG_LV2_ATOM
 static LilvNode *g_lv2_atom_port_class    = NULL;
 static uint32_t  g_lv2_atom_event_type    = 0;
+static uint32_t  g_lv2_atom_chunk_type    = 0;
 static uint32_t  g_lv2_atom_sequence_type = 0;
 static uint32_t  g_lv2_atom_string_type   = 0;
 static uint32_t  g_lv2_atom_float_type    = 0;
@@ -1340,6 +1341,7 @@ void qtractorLv2PluginType::lv2_open (void)
 #ifdef CONFIG_LV2_ATOM
 	g_lv2_atom_port_class    = lilv_new_uri(g_lv2_world, LV2_ATOM__AtomPort);
 	g_lv2_atom_event_type    = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__eventTransfer);
+	g_lv2_atom_chunk_type    = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk);
 	g_lv2_atom_sequence_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
 	g_lv2_atom_string_type   = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 	g_lv2_atom_float_type    = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Float);
@@ -1498,6 +1500,7 @@ void qtractorLv2PluginType::lv2_close (void)
 #ifdef CONFIG_LV2_ATOM
 	g_lv2_atom_port_class    = NULL;
 	g_lv2_atom_event_type    = 0;
+	g_lv2_atom_chunk_type    = 0;
 	g_lv2_atom_sequence_type = 0;
 	g_lv2_atom_string_type   = 0;
 	g_lv2_atom_float_type    = 0;
@@ -1755,6 +1758,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			for (unsigned long j = 0; j < iMidiAtomIns; ++j) {
 				m_lv2_atom_buffer_ins[j]
 					= lv2_atom_buffer_new(MaxBufferCapacity,
+						g_lv2_atom_chunk_type,
 						g_lv2_atom_sequence_type, true);
 				m_lv2_atom_port_ins[j] = m_lv2_atom_buffer_ins[j];
 			}
@@ -1766,6 +1770,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			for (unsigned long j = 0; j < iMidiAtomOuts; ++j) {
 				m_lv2_atom_buffer_outs[j]
 					= lv2_atom_buffer_new(MaxBufferCapacity,
+						g_lv2_atom_chunk_type,
 						g_lv2_atom_sequence_type, false);
 				m_lv2_atom_port_outs[j] = m_lv2_atom_buffer_outs[j];
 			}
@@ -2152,8 +2157,8 @@ void qtractorLv2Plugin::process (
 	const unsigned short iAudioIns  = audioIns();
 	const unsigned short iAudioOuts = audioOuts();
 
-	unsigned short iIChannel  = 0;
-	unsigned short iOChannel  = 0;
+	unsigned short iIChannel = 0;
+	unsigned short iOChannel = 0;
 	unsigned short i, j;
 
 	// For each plugin instance...
@@ -2260,7 +2265,7 @@ void qtractorLv2Plugin::process (
 				= lv2_atom_buffer_get(&aiter, &data);
 			if (pLv2AtomEvent == NULL)
 				break;
-			if (j > 0 || pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
+		//	if (j > 0 || pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
 				char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
 				const uint32_t type = pLv2AtomEvent->body.type;
 				const uint32_t size = pLv2AtomEvent->body.size;
@@ -2278,7 +2283,7 @@ void qtractorLv2Plugin::process (
 					(const char *) buf, sizeof(buf));
 				::jack_ringbuffer_write(m_plugin_events,
 					(const char *) data, size);
-			}
+		//	}
 			lv2_atom_buffer_increment(&aiter);
 		}
 	}
