@@ -24,6 +24,7 @@
 #include "qtractorSession.h"
 #include "qtractorPlugin.h"
 
+#include "qtractorMidiEngine.h"
 #include "qtractorAudioEngine.h"
 
 #include "qtractorMixer.h"
@@ -350,7 +351,6 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 	return m_directBuffer.push(pEvent);
 }
 
-#include "qtractorMidiEngine.h"
 
 // Queued buffering.
 bool qtractorMidiManager::queued ( qtractorTimeScale *pTimeScale,
@@ -358,8 +358,8 @@ bool qtractorMidiManager::queued ( qtractorTimeScale *pTimeScale,
 {
 	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	unsigned long t0 = pNode->frameFromTick(iTime);
-	unsigned long t1 = (long(t0) > iFrameStart ? t0 - iFrameStart : t0);
+	const unsigned long t0 = pNode->frameFromTick(iTime);
+	unsigned long t1 = (long(t0) < iFrameStart ? t0 : t0 - iFrameStart);
 
 	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
 		snd_seq_event_t ev = *pEvent;
@@ -456,7 +456,7 @@ void qtractorMidiManager::process (
 	for (unsigned int i = 0; i < m_iBuffer; ++i) {
 		snd_seq_event_t *pEv = &m_pBuffer[i];
 		// - show event for debug purposes...
-		unsigned long iTime = iTimeStart + pEv->time.tick;
+		const unsigned long iTime = iTimeStart + pEv->time.tick;
 		fprintf(stderr, "MIDI Seq %06lu 0x%02x", iTime, pEv->type);
 		if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 			fprintf(stderr, " sysex {");
@@ -545,7 +545,7 @@ void qtractorMidiManager::process (
 
 	// Now's time to process the plugins as usual...
 	if (m_pAudioOutputBus) {
-		unsigned int nframes = iTimeEnd - iTimeStart;
+		const unsigned int nframes = iTimeEnd - iTimeStart;
 		if (m_bAudioOutputBus) {
 			m_pAudioOutputBus->process_prepare(nframes);
 			m_pPluginList->process(m_pAudioOutputBus->out(), nframes);
@@ -720,7 +720,7 @@ void qtractorMidiManager::swapEventBuffers (void)
 // Copy VST event buffer (output)...
 void qtractorMidiManager::vst_events_copy ( VstEvents *pVstBuffer )
 {
-	unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
+	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
 	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
 	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iEventBuffer];
 	::memset(pVstEvents, 0, sizeof(VstEvents));
@@ -741,7 +741,7 @@ void qtractorMidiManager::vst_events_copy ( VstEvents *pVstBuffer )
 // Swap VST event buffers...
 void qtractorMidiManager::vst_events_swap (void)
 {
-	unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
+	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
 	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
 	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iEventBuffer];
 #ifdef CONFIG_LV2_EVENT
@@ -797,7 +797,7 @@ void qtractorMidiManager::vst_events_swap (void)
 // Swap LV2 event buffers...
 void qtractorMidiManager::lv2_events_swap (void)
 {
-	unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
+	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iEventBuffer];
 #ifdef CONFIG_VST
 	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
@@ -871,7 +871,7 @@ void qtractorMidiManager::lv2_events_swap (void)
 // Swap LV2 atom buffers...
 void qtractorMidiManager::lv2_atom_buffer_swap (void)
 {
-	unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
+	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
 #ifdef CONFIG_VST
 	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
