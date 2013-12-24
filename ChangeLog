@@ -7,7 +7,8 @@ SVN TRUNK
 
 - Fixed another off-by-one MIDI plugin chain timing bug, delaying
   the actual playback of the first MIDI event, whenever it started
-  at the same and as long as the initial play-head position.
+  at the same and as long as the initial play-head position (after
+  another ticket by Holger Marzen, thanks again).
 
 - A new LV2 host convention is in effect on plugins that expose
   multiple AtomPort's in either direction: only the first input
