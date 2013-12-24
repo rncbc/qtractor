@@ -272,6 +272,7 @@ qtractorMidiManager::qtractorMidiManager (
 	#endif
 	#ifdef CONFIG_LV2_ATOM
 		m_ppLv2AtomBuffers[i] = lv2_atom_buffer_new(Lv2AtomBufferSize,
+			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk),
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence), (i & 1) == 0);
 	#endif
 	}
