@@ -1475,7 +1475,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	unsigned char *pSysex   = NULL;
 	unsigned short iSysex   = 0;
 
-	int iAlsaPort = pEv->dest.port;
+	const int iAlsaPort = pEv->dest.port;
 
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -1483,7 +1483,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
-		unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
+		const unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
 		pEv->time.tick = q * ((pEv->time.tick + (q >> 1)) / q);
 	}
 
@@ -1623,8 +1623,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 
 	// Now check which bus and track we're into...
-	bool bRecording = (pSession->isRecording() && isPlaying());
-	unsigned long iTime = m_iTimeStart + pEv->time.tick;
+	const bool bRecording = (pSession->isRecording() && isPlaying());
+	const unsigned long iTime = m_iTimeStart + pEv->time.tick;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru
@@ -1662,7 +1662,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
 					if (pMidiBus && pMidiBus->midiMonitor_out()) {
 						// FIXME: MIDI-thru channel filtering prolog... 
-						unsigned short iOldChannel = pEv->data.note.channel;
+						const unsigned short iOldChannel
+							= pEv->data.note.channel;
 						pEv->data.note.channel = pTrack->midiChannel();
 						// MIDI-thru: same event redirected...
 						snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());

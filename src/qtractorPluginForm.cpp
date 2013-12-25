@@ -180,7 +180,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	const qtractorPlugin::Params& params
 		= m_pPlugin->params();
-	int iParams = params.count();
+	const int iParams = params.count();
 
 	int iParamsPerPage = iParams;
 	int iParamsOnLastPage = 0;
@@ -275,18 +275,18 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	}
 
 	// Show editor button if available?
-	bool bEditor = pType->isEditor();
+	const bool bEditor = pType->isEditor();
 	m_ui.EditToolButton->setVisible(bEditor);
 	if (bEditor)
 		toggleEditor(m_pPlugin->isEditorVisible());
 
 	// Show insert tool options...
-	bool bInsertPlugin = (pType->typeHint() == qtractorPluginType::Insert);
+	const bool bInsertPlugin = (pType->typeHint() == qtractorPluginType::Insert);
 	m_ui.SendsToolButton->setVisible(bInsertPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 
 	// Show aux-send tool options...
-	bool bAuxSendPlugin	= (pType->typeHint() == qtractorPluginType::AuxSend );
+	const bool bAuxSendPlugin	= (pType->typeHint() == qtractorPluginType::AuxSend );
 	m_ui.AudioBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AudioBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AudioBusNameToolButton->setVisible(bAuxSendPlugin);
@@ -827,13 +827,13 @@ void qtractorPluginForm::updateDirectAccessParamSlot (void)
 		return;
 
 	QAction *pAction;
-	int iDirectAccessParamIndex = m_pPlugin->directAccessParamIndex();
+	const int iDirectAccessParamIndex = m_pPlugin->directAccessParamIndex();
 	const qtractorPlugin::Params& params = m_pPlugin->params();
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
 		qtractorPluginParam *pParam = param.value();
-		int iParamIndex = int(param.key());
+		const int iParamIndex = int(param.key());
 		pAction = m_pDirectAccessParamMenu->addAction(
 			pParam->name(), this, SLOT(changeDirectAccessParamSlot()));
 		pAction->setCheckable(true);
@@ -864,7 +864,7 @@ void qtractorPluginForm::changeDirectAccessParamSlot (void)
 	if (pAction == NULL)
 		return;
 
-	int iDirectAccessParamIndex = pAction->data().toInt();
+	const int iDirectAccessParamIndex = pAction->data().toInt();
 
 	++m_iUpdate;
 
@@ -989,7 +989,7 @@ void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginForm::keyPressEvent(%d)", pKeyEvent->key());
 #endif
-	int iKey = pKeyEvent->key();
+	const int iKey = pKeyEvent->key();
 	switch (iKey) {
 	case Qt::Key_Escape:
 		close();
@@ -1132,11 +1132,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		QLabel *pLabel = new QLabel(/*this*/);
 		pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		pLabel->setText(m_pParam->name() + ':');
-		if (m_pParam->isDisplay()) {
-			pGridLayout->addWidget(pLabel, 0, 0);
-		} else {
-			pGridLayout->addWidget(pLabel, 0, 0, 1, 2);
-		}
+		pGridLayout->addWidget(pLabel, 0, 0);
 		m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 		m_pSpinBox->setMaximumWidth(64);
 		m_pSpinBox->setDecimals(0);
@@ -1145,17 +1141,13 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pSpinBox->setAlignment(Qt::AlignHCenter);
 		m_pSpinBox->setSubject(m_pParam->subject());
 	//	m_pSpinBox->setValue(int(m_pParam->value()));
-		if (m_pParam->isDisplay()) {
-			pGridLayout->addWidget(m_pSpinBox, 0, 1);
-			m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
-			m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-		//	m_pDisplay->setText(m_pParam->display());
-		//	m_pDisplay->setFixedWidth(72);
-			m_pDisplay->setMinimumWidth(64);
-			pGridLayout->addWidget(m_pDisplay, 0, 2);
-		} else {
-			pGridLayout->addWidget(m_pSpinBox, 0, 2);
-		}
+		pGridLayout->addWidget(m_pSpinBox, 0, 1);
+		m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
+		m_pDisplay->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+	//	m_pDisplay->setText(m_pParam->display());
+	//	m_pDisplay->setFixedWidth(72);
+		m_pDisplay->setMinimumWidth(64);
+		pGridLayout->addWidget(m_pDisplay, 0, 2);
 	} else {
 		QLabel *pLabel = new QLabel(/*this*/);
 		if (m_pParam->isDisplay()) {
@@ -1190,7 +1182,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			pGridLayout->addWidget(m_pDisplay, 0, 2);
 		} else {
 			pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
-			int iDecimals = m_pParam->decimals();
+			const int iDecimals = m_pParam->decimals();
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 			m_pSpinBox->setMaximumWidth(64);
 			m_pSpinBox->setDecimals(iDecimals);
