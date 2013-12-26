@@ -899,6 +899,11 @@ static LilvNode *g_lv2_integer_prop     = NULL;
 static LilvNode *g_lv2_sample_rate_prop = NULL;
 static LilvNode *g_lv2_logarithmic_prop = NULL;
 
+#ifdef CONFIG_LV2_ATOM
+#include "lv2/lv2plug.in/ns/ext/resize-port/resize-port.h"
+static LilvNode *g_lv2_minimum_size_prop = NULL;
+#endif
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
@@ -1392,6 +1397,11 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_logarithmic_prop = lilv_new_uri(g_lv2_world,
 		"http://lv2plug.in/ns/dev/extportinfo#logarithmic");
 
+#ifdef CONFIG_LV2_ATOM
+	g_lv2_minimum_size_prop = lilv_new_uri(g_lv2_world,
+		LV2_RESIZE_PORT__minimumSize);
+#endif
+
 #ifdef CONFIG_LV2_TIME
 	// LV2 Time: set up supported port designations...
 	for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
@@ -1449,6 +1459,10 @@ void qtractorLv2PluginType::lv2_close (void)
 	lilv_node_free(g_lv2_integer_prop);
 	lilv_node_free(g_lv2_sample_rate_prop);
 	lilv_node_free(g_lv2_logarithmic_prop);
+
+#ifdef CONFIG_LV2_ATOM
+	lilv_node_free(g_lv2_minimum_size_prop);
+#endif
 
 #ifdef CONFIG_LV2_STATE
 	lilv_node_free(g_lv2_state_interface_hint);
@@ -1748,37 +1762,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		iMidiEventIns = iMidiEventOuts = 0;
 	#endif	// CONFIG_LV2_EVENT
 	#ifdef CONFIG_LV2_ATOM
-		const unsigned int MaxBufferCapacity = 1024;
 		unsigned short iMidiAtomIns  = pLv2Type->midiAtomIns();
 		unsigned short iMidiAtomOuts = pLv2Type->midiAtomOuts();
-		if (iMidiAtomIns > 0) {
+		if (iMidiAtomIns > 0)
 			m_piMidiAtomIns = new unsigned long [iMidiAtomIns];
-			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
-			m_lv2_atom_port_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
-			for (unsigned long j = 0; j < iMidiAtomIns; ++j) {
-				m_lv2_atom_buffer_ins[j]
-					= lv2_atom_buffer_new(MaxBufferCapacity,
-						g_lv2_atom_chunk_type,
-						g_lv2_atom_sequence_type, true);
-				m_lv2_atom_port_ins[j] = m_lv2_atom_buffer_ins[j];
-			}
-		}
-		if (iMidiAtomOuts > 0) {
+		if (iMidiAtomOuts > 0)
 			m_piMidiAtomOuts = new unsigned long [iMidiAtomOuts];
-			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
-			m_lv2_atom_port_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
-			for (unsigned long j = 0; j < iMidiAtomOuts; ++j) {
-				m_lv2_atom_buffer_outs[j]
-					= lv2_atom_buffer_new(MaxBufferCapacity,
-						g_lv2_atom_chunk_type,
-						g_lv2_atom_sequence_type, false);
-				m_lv2_atom_port_outs[j] = m_lv2_atom_buffer_outs[j];
-			}
-		}
-	#ifdef CONFIG_LV2_UI
-		m_ui_events = ::jack_ringbuffer_create(MaxBufferCapacity);
-		m_plugin_events = ::jack_ringbuffer_create(MaxBufferCapacity);
-	#endif
 		iMidiAtomIns = iMidiAtomOuts = 0;
 	#endif	// CONFIG_LV2_ATOM
 		const unsigned long iNumPorts = lilv_plugin_get_num_ports(plugin);
@@ -1828,6 +1817,70 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				}
 			}
 		}
+	#ifdef CONFIG_LV2_ATOM
+		unsigned int iMidiAtomInsCapacity = 0;
+		if (iMidiAtomIns > 0) {
+			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
+			m_lv2_atom_port_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
+			for (unsigned long j = 0; j < iMidiAtomIns; ++j) {
+				unsigned int iMaxBufferCapacity = 1024;
+				const LilvPort *port
+					= lilv_plugin_get_port_by_index(plugin, m_piMidiAtomIns[j]);
+				if (port) {
+					LilvNode *minimum_size
+						= lilv_port_get(plugin, port, g_lv2_minimum_size_prop);
+					if (minimum_size) {
+						if (lilv_node_is_int(minimum_size)) {
+							const unsigned int iMinimumSize
+								= lilv_node_as_int(minimum_size);
+							if (iMaxBufferCapacity  < iMinimumSize)
+								iMaxBufferCapacity += iMinimumSize;
+						}
+						lilv_node_free(minimum_size);
+					}
+				}
+				m_lv2_atom_buffer_ins[j]
+					= lv2_atom_buffer_new(iMaxBufferCapacity,
+						g_lv2_atom_chunk_type,
+						g_lv2_atom_sequence_type, true);
+				m_lv2_atom_port_ins[j] = m_lv2_atom_buffer_ins[j];
+				iMidiAtomInsCapacity += iMaxBufferCapacity;
+			}
+		}
+		unsigned int iMidiAtomOutsCapacity = 0;
+		if (iMidiAtomOuts > 0) {
+			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
+			m_lv2_atom_port_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
+			for (unsigned long j = 0; j < iMidiAtomOuts; ++j) {
+				unsigned int iMaxBufferCapacity = 1024;
+				const LilvPort *port
+					= lilv_plugin_get_port_by_index(plugin, m_piMidiAtomOuts[j]);
+				if (port) {
+					LilvNode *minimum_size
+						= lilv_port_get(plugin, port, g_lv2_minimum_size_prop);
+					if (minimum_size) {
+						if (lilv_node_is_int(minimum_size)) {
+							const unsigned int iMinimumSize
+								= lilv_node_as_int(minimum_size);
+							if (iMaxBufferCapacity  < iMinimumSize)
+								iMaxBufferCapacity += iMinimumSize;
+						}
+						lilv_node_free(minimum_size);
+					}
+				}
+				m_lv2_atom_buffer_outs[j]
+					= lv2_atom_buffer_new(iMaxBufferCapacity,
+						g_lv2_atom_chunk_type,
+						g_lv2_atom_sequence_type, false);
+				m_lv2_atom_port_outs[j] = m_lv2_atom_buffer_outs[j];
+				iMidiAtomOutsCapacity += iMaxBufferCapacity;
+			}
+		}
+	#ifdef CONFIG_LV2_UI
+		m_ui_events = ::jack_ringbuffer_create(iMidiAtomInsCapacity);
+		m_plugin_events = ::jack_ringbuffer_create(iMidiAtomOutsCapacity);
+	#endif
+	#endif	// CONFIG_LV2_ATOM
 	#ifdef CONFIG_LV2_PRESETS
 		LilvNode *label_uri  = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
 		LilvNode *preset_uri = lilv_new_uri(g_lv2_world, LV2_PRESETS__Preset);
