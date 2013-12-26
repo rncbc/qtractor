@@ -2557,7 +2557,6 @@ void qtractorMainForm::autoSaveReset (void)
 	qDebug("qtractorMainForm::autoSaveReset()");
 #endif
 
-	m_iAutoSaveDirty = 0;
 	m_iAutoSaveTimer = 0;
 
 	if (m_pOptions->bAutoSaveEnabled)
@@ -7094,11 +7093,10 @@ void qtractorMainForm::timerSlot (void)
 #endif
 
 	// Auto-save option routine...
-	if (m_iAutoSavePeriod > 0 && m_iDirtyCount > m_iAutoSaveDirty) {
+	if (m_iAutoSavePeriod > 0 && m_iDirtyCount > 0) {
 		m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
 		if (m_iAutoSaveTimer > m_iAutoSavePeriod && !bPlaying) {
 			m_iAutoSaveTimer = 0;
-			m_iAutoSaveDirty = m_iDirtyCount;
 			autoSaveSession();
 		}
 	}

@@ -465,7 +465,6 @@ private:
 	int m_iPlayerTimer;
 	int m_iAutoSaveTimer;
 	int m_iAutoSavePeriod;
-	int m_iAutoSaveDirty;
 
 	// Status bar item indexes
 	enum {
