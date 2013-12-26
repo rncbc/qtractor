@@ -3934,13 +3934,23 @@ bool qtractorTrackView::queryClipSelect ( qtractorClip *pClip )
 		return (pClip && pClip->queryEditor());
 
 	// Just ask whether any target clips have pending editors...
+	QList<qtractorClip *> clips;
+
 	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
 	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qtractorClip *pClip = iter.key();
 		// Make sure it's a legal selection...
-		if (pClip->track() && pClip->isClipSelected() && !pClip->queryEditor())
+		if (pClip->track() && pClip->isClipSelected())
+			clips.append(pClip);
+	}
+
+	QListIterator<qtractorClip *> clips_iter(clips);
+	while (clips_iter.hasNext()) {
+		qtractorClip *pClip = clips_iter.next();
+		// Ask if it has any pending editor...
+		if (!pClip->queryEditor())
 			return false;
 	}
 
