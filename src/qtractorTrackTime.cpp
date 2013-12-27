@@ -750,7 +750,7 @@ void qtractorTrackTime::wheelEvent ( QWheelEvent *pWheelEvent )
 		else
 			m_pTracks->zoomOut();
 	}
-	else qtractorScrollView::wheelEvent(pWheelEvent);
+//	else qtractorScrollView::wheelEvent(pWheelEvent);
 }
 
 
