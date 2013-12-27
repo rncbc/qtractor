@@ -258,8 +258,7 @@ qtractorMidiManager::qtractorMidiManager (
 		= (sizeof(LV2_Event) + 4) * MaxMidiEvents;
 #endif
 #ifdef CONFIG_LV2_ATOM
-	const unsigned int Lv2AtomBufferSize
-		= (sizeof(LV2_Atom_Event) + 4) * MaxMidiEvents;
+	m_iLv2AtomBufferSize = (sizeof(LV2_Atom_Event) + 4) * MaxMidiEvents;
 #endif
 	for (unsigned short i = 0; i < 2; ++i) {
 	#ifdef CONFIG_VST
@@ -271,7 +270,7 @@ qtractorMidiManager::qtractorMidiManager (
 			LV2_EVENT_AUDIO_STAMP);
 	#endif
 	#ifdef CONFIG_LV2_ATOM
-		m_ppLv2AtomBuffers[i] = lv2_atom_buffer_new(Lv2AtomBufferSize,
+		m_ppLv2AtomBuffers[i] = lv2_atom_buffer_new(m_iLv2AtomBufferSize,
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk),
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence), (i & 1) == 0);
 	#endif
@@ -936,6 +935,24 @@ void qtractorMidiManager::lv2_atom_buffer_swap (void)
 #endif
 	m_iBuffer = iMidiEvents;
 	swapEventBuffers();
+}
+
+
+// Resize LV2 atom buffers if necessary.
+void qtractorMidiManager::lv2_atom_buffer_resize ( unsigned int iMinBufferSize )
+{
+	if (iMinBufferSize < m_iLv2AtomBufferSize)
+		return;
+
+	m_iLv2AtomBufferSize += iMinBufferSize;
+
+	for (unsigned short i = 0; i < 2; ++i) {
+		if (m_ppLv2AtomBuffers[i])
+			lv2_atom_buffer_free(m_ppLv2AtomBuffers[i]);
+		m_ppLv2AtomBuffers[i] = lv2_atom_buffer_new(m_iLv2AtomBufferSize,
+			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk),
+			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence), (i & 1) == 0);
+	}
 }
 
 #endif	// CONFIG_LV2_ATOM
