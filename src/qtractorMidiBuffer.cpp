@@ -944,6 +944,14 @@ void qtractorMidiManager::lv2_atom_buffer_resize ( unsigned int iMinBufferSize )
 	if (iMinBufferSize < m_iLv2AtomBufferSize)
 		return;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const bool bPlaying = pSession->isPlaying();
+	if (bPlaying)
+		pSession->lock();
+
 	m_iLv2AtomBufferSize += iMinBufferSize;
 
 	for (unsigned short i = 0; i < 2; ++i) {
@@ -953,6 +961,9 @@ void qtractorMidiManager::lv2_atom_buffer_resize ( unsigned int iMinBufferSize )
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk),
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence), (i & 1) == 0);
 	}
+
+	if (bPlaying)
+		pSession->unlock();
 }
 
 #endif	// CONFIG_LV2_ATOM

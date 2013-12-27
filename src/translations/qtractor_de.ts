@@ -247,7 +247,7 @@ Versatz / Länge:	%3 / %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1102"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1113"/>
         <source>%1 - Bank %2</source>
         <translation type="unfinished"></translation>
     </message>
