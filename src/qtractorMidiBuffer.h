@@ -277,6 +277,8 @@ public:
 		{ return m_ppLv2AtomBuffers[(m_iEventBuffer + 1) & 1]; }
 	// Swap LV2 atom buffers...
 	void lv2_atom_buffer_swap();
+	// Resize LV2 atom buffers if necessary.
+	void lv2_atom_buffer_resize(unsigned int iMinBufferSize);
 #endif
 
 	// Audio output bus mode accessors.
@@ -369,6 +371,7 @@ private:
 #endif
 #ifdef CONFIG_LV2_ATOM
 	LV2_Atom_Buffer    *m_ppLv2AtomBuffers[2];
+	unsigned int        m_iLv2AtomBufferSize;
 #endif
 
 	bool                m_bAudioOutputBus;

@@ -1683,6 +1683,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 
 #endif	// CONFIG_LV2_PROGRAMS
 
+	qtractorMidiManager *pMidiManager = list()->midiManager();
+
 #ifdef CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_BUF_SIZE
 
@@ -1697,9 +1699,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			m_iMaxBlockLength = pAudioEngine->bufferSize();
 	}
 
-	qtractorMidiManager *pMidiManager = list()->midiManager();
 	if (pMidiManager) {
-		const uint32_t MaxMidiEvents = (pMidiManager->bufferSize() >> 1);
+		const uint32_t MaxMidiEvents = (pMidiManager->bufferSize() << 1);
 	#ifdef CONFIG_LV2_EVENT
 		const uint32_t Lv2EventBufferSize
 			= (sizeof(LV2_Event) + 4) * MaxMidiEvents;
@@ -1823,7 +1824,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
 			m_lv2_atom_port_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
 			for (unsigned long j = 0; j < iMidiAtomIns; ++j) {
-				unsigned int iMaxBufferCapacity = 1024;
+				unsigned int iMinBufferCapacity = 1024;
 				const LilvPort *port
 					= lilv_plugin_get_port_by_index(plugin, m_piMidiAtomIns[j]);
 				if (port) {
@@ -1833,18 +1834,20 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						if (lilv_node_is_int(minimum_size)) {
 							const unsigned int iMinimumSize
 								= lilv_node_as_int(minimum_size);
-							if (iMaxBufferCapacity  < iMinimumSize)
-								iMaxBufferCapacity += iMinimumSize;
+							if (iMinBufferCapacity  < iMinimumSize)
+								iMinBufferCapacity += iMinimumSize;
 						}
 						lilv_node_free(minimum_size);
 					}
 				}
 				m_lv2_atom_buffer_ins[j]
-					= lv2_atom_buffer_new(iMaxBufferCapacity,
+					= lv2_atom_buffer_new(iMinBufferCapacity,
 						g_lv2_atom_chunk_type,
 						g_lv2_atom_sequence_type, true);
 				m_lv2_atom_port_ins[j] = m_lv2_atom_buffer_ins[j];
-				iMidiAtomInsCapacity += iMaxBufferCapacity;
+				if (pMidiManager && j == 0)
+					pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
+				iMidiAtomInsCapacity += iMinBufferCapacity;
 			}
 		}
 		unsigned int iMidiAtomOutsCapacity = 0;
@@ -1852,7 +1855,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
 			m_lv2_atom_port_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
 			for (unsigned long j = 0; j < iMidiAtomOuts; ++j) {
-				unsigned int iMaxBufferCapacity = 1024;
+				unsigned int iMinBufferCapacity = 1024;
 				const LilvPort *port
 					= lilv_plugin_get_port_by_index(plugin, m_piMidiAtomOuts[j]);
 				if (port) {
@@ -1862,18 +1865,20 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						if (lilv_node_is_int(minimum_size)) {
 							const unsigned int iMinimumSize
 								= lilv_node_as_int(minimum_size);
-							if (iMaxBufferCapacity  < iMinimumSize)
-								iMaxBufferCapacity += iMinimumSize;
+							if (iMinBufferCapacity  < iMinimumSize)
+								iMinBufferCapacity += iMinimumSize;
 						}
 						lilv_node_free(minimum_size);
 					}
 				}
 				m_lv2_atom_buffer_outs[j]
-					= lv2_atom_buffer_new(iMaxBufferCapacity,
+					= lv2_atom_buffer_new(iMinBufferCapacity,
 						g_lv2_atom_chunk_type,
 						g_lv2_atom_sequence_type, false);
 				m_lv2_atom_port_outs[j] = m_lv2_atom_buffer_outs[j];
-				iMidiAtomOutsCapacity += iMaxBufferCapacity;
+				if (pMidiManager && j == 0)
+					pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
+				iMidiAtomOutsCapacity += iMinBufferCapacity;
 			}
 		}
 	#ifdef CONFIG_LV2_UI
