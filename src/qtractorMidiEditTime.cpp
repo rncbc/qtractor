@@ -712,7 +712,7 @@ void qtractorMidiEditTime::wheelEvent ( QWheelEvent *pWheelEvent )
 		else
 			m_pEditor->zoomOut();
 	}
-	else qtractorScrollView::wheelEvent(pWheelEvent);
+//	else qtractorScrollView::wheelEvent(pWheelEvent);
 }
 
 
