@@ -3180,24 +3180,27 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 void qtractorLv2Plugin::updateTime (
 	const jack_transport_state_t state, const jack_position_t *pPos )
 {
-	qtractor_lv2_time_update(
-		qtractorLv2Time::position,
-		float(pPos->tick));
-	qtractor_lv2_time_update(
-		qtractorLv2Time::bar,
-		float(pPos->bar));
-	qtractor_lv2_time_update(
-		qtractorLv2Time::beat,
-		float(pPos->beat));
-	qtractor_lv2_time_update(
-		qtractorLv2Time::beatUnit,
-		float(pPos->beat_type));
-	qtractor_lv2_time_update(
-		qtractorLv2Time::beatsPerBar,
-		float(pPos->beats_per_bar));
-	qtractor_lv2_time_update(
-		qtractorLv2Time::beatsPerMinute,
-		float(pPos->beats_per_minute));
+	if (pPos->valid & JackPositionBBT) {
+		qtractor_lv2_time_update(
+			qtractorLv2Time::position,
+			float(pPos->tick));
+		qtractor_lv2_time_update(
+			qtractorLv2Time::bar,
+			float(pPos->bar));
+		qtractor_lv2_time_update(
+			qtractorLv2Time::beat,
+			float(pPos->beat));
+		qtractor_lv2_time_update(
+			qtractorLv2Time::beatUnit,
+			float(pPos->beat_type));
+		qtractor_lv2_time_update(
+			qtractorLv2Time::beatsPerBar,
+			float(pPos->beats_per_bar));
+		qtractor_lv2_time_update(
+			qtractorLv2Time::beatsPerMinute,
+			float(pPos->beats_per_minute));
+	}
+
 	qtractor_lv2_time_update(
 		qtractorLv2Time::frame,
 		float(pPos->frame));
