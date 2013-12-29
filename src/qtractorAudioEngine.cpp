@@ -40,12 +40,6 @@
 
 #include "qtractorMainForm.h"
 
-#ifdef CONFIG_LV2
-#ifdef CONFIG_LV2_TIME
-#include "qtractorLv2Plugin.h"
-#endif
-#endif
-
 #ifdef CONFIG_JACK_SESSION
 #include <jack/session.h>
 #endif
@@ -226,7 +220,7 @@ static int qtractorAudioEngine_process ( jack_nframes_t nframes, void *pvArg )
 // qtractorAudioEngine_timebase -- JACK timebase master callback.
 //
 
-static void qtractorAudioEngine_timebase ( jack_transport_state_t state,
+static void qtractorAudioEngine_timebase ( jack_transport_state_t,
 	jack_nframes_t, jack_position_t *pPos, int, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
@@ -256,13 +250,6 @@ static void qtractorAudioEngine_timebase ( jack_transport_state_t state,
 	pPos->ticks_per_beat   = pNode->ticksPerBeat;
 	pPos->beats_per_minute = pNode->tempo;
 	pPos->beat_type        = float(1 << pNode->beatDivisor);
-
-#ifdef CONFIG_LV2
-#ifdef CONFIG_LV2_TIME
-	// Update LV2 Time from JACK transport position...
-	qtractorLv2Plugin::updateTime(state, pPos);
-#endif
-#endif
 }
 
 
