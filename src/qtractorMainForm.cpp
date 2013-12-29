@@ -6872,15 +6872,16 @@ void qtractorMainForm::timerSlot (void)
 			stabilizeForm();
 		}
 		// Done with transport tricks.
-	} else {
-		// Read JACK transport state and react if out-of-sync..
-		jack_client_t *pJackClient = NULL;
-		if (pAudioEngine->transportMode() & qtractorBus::Input)
-			pJackClient = pAudioEngine->jackClient();
-		if (pJackClient && !pAudioEngine->isFreewheel()) {
-			jack_position_t pos;
-			jack_transport_state_t state
-				= jack_transport_query(pJackClient, &pos);
+	}
+
+	// Read JACK transport state...
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient && !pAudioEngine->isFreewheel()) {
+		jack_position_t pos;
+		jack_transport_state_t state
+			= jack_transport_query(pJackClient, &pos);
+		// React if out-of-sync...
+		if (pAudioEngine->transportMode() & qtractorBus::Input) {
 			// 1. Check on external transport state request changes...
 			if ((state == JackTransportStopped &&  bPlaying) ||
 				(state == JackTransportRolling && !bPlaying)) {
@@ -6932,58 +6933,65 @@ void qtractorMainForm::timerSlot (void)
 				}
 			}
 		}
-		// Check if its time to refresh playhead timer...
-		if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
-			m_iPlayTimer += QTRACTOR_TIMER_MSECS;
-			if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
-				m_iPlayTimer = 0;
-				updateTransportTime(iPlayHead);
-				// If recording update track view and session length, anyway...
-				if (m_pTracks && m_pSession->isRecording()) {
-					// HACK: Care of punch-out...
-					if (m_pSession->isPunching()) {
-						unsigned long iPunchOut  = m_pSession->punchOut();
-						unsigned long iLoopStart = m_pSession->loopStart();
-						unsigned long iLoopEnd   = m_pSession->loopEnd();
-						if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
-							iPunchOut = iLoopEnd;
-						unsigned long iFrameTime = m_pSession->frameTimeEx();
-						if (iFrameTime >= iPunchOut && setRecording(false)) {
-							// Send MMC RECORD_EXIT command...
-							pMidiEngine->sendMmcCommand(
-								qtractorMmcEvent::RECORD_EXIT);
-							++m_iTransportUpdate;
-						}
+	#ifdef CONFIG_LV2
+	#ifdef CONFIG_LV2_TIME
+		// Update LV2 Time from JACK transport position...
+		qtractorLv2Plugin::updateTime(state, &pos);
+	#endif
+	#endif
+	}
+
+	// Check if its time to refresh playhead timer...
+	if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
+		m_iPlayTimer += QTRACTOR_TIMER_MSECS;
+		if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
+			m_iPlayTimer = 0;
+			updateTransportTime(iPlayHead);
+			// If recording update track view and session length, anyway...
+			if (m_pTracks && m_pSession->isRecording()) {
+				// HACK: Care of punch-out...
+				if (m_pSession->isPunching()) {
+					unsigned long iPunchOut  = m_pSession->punchOut();
+					unsigned long iLoopStart = m_pSession->loopStart();
+					unsigned long iLoopEnd   = m_pSession->loopEnd();
+					if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
+						iPunchOut = iLoopEnd;
+					unsigned long iFrameTime = m_pSession->frameTimeEx();
+					if (iFrameTime >= iPunchOut && setRecording(false)) {
+						// Send MMC RECORD_EXIT command...
+						pMidiEngine->sendMmcCommand(
+							qtractorMmcEvent::RECORD_EXIT);
+						++m_iTransportUpdate;
 					}
-					// Recording visual feedback...
-					m_pTracks->trackView()->updateContentsRecord();
-					m_pSession->updateSession(0, iPlayHead);
-					m_statusItems[StatusTime]->setText(
-						m_pSession->timeScale()->textFromFrame(
-							0, true, m_pSession->sessionEnd()));
+				}
+				// Recording visual feedback...
+				m_pTracks->trackView()->updateContentsRecord();
+				m_pSession->updateSession(0, iPlayHead);
+				m_statusItems[StatusTime]->setText(
+					m_pSession->timeScale()->textFromFrame(
+						0, true, m_pSession->sessionEnd()));
+			}
+			else
+			// Whether to continue past end...
+			if (!m_ui.transportContinueAction->isChecked()
+				&& m_iPlayHead > m_pSession->sessionEnd()
+				&& m_iPlayHead > m_pSession->loopEnd()) {
+				if (m_pSession->isLooping()) {
+					// Maybe it's better go on with looping, eh?
+					m_pSession->setPlayHead(m_pSession->loopStart());
+					++m_iTransportUpdate;
 				}
 				else
-				// Whether to continue past end...
-				if (!m_ui.transportContinueAction->isChecked()
-					&& m_iPlayHead > m_pSession->sessionEnd()
-					&& m_iPlayHead > m_pSession->loopEnd()) {
-					if (m_pSession->isLooping()) {
-						// Maybe it's better go on with looping, eh?
-						m_pSession->setPlayHead(m_pSession->loopStart());
-						++m_iTransportUpdate;
-					}
+				// Auto-backward reset feature...
+				if (m_ui.transportAutoBackwardAction->isChecked()) {
+					if (m_iPlayHead > m_pSession->editHead())
+						m_pSession->setPlayHead(m_pSession->editHead());
 					else
-					// Auto-backward reset feature...
-					if (m_ui.transportAutoBackwardAction->isChecked()) {
-						if (m_iPlayHead > m_pSession->editHead())
-							m_pSession->setPlayHead(m_pSession->editHead());
-						else
-							m_pSession->setPlayHead(0);
-						++m_iTransportUpdate;
-					} else {
-						// Stop at once!
-						transportPlay();
-					}
+						m_pSession->setPlayHead(0);
+					++m_iTransportUpdate;
+				} else {
+					// Stop at once!
+					transportPlay();
 				}
 			}
 		}
