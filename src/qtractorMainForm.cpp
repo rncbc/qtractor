@@ -6931,12 +6931,6 @@ void qtractorMainForm::timerSlot (void)
 					updateContents(NULL, true);
 				}
 			}
-		#ifdef CONFIG_LIBLILV
-		#ifdef CONFIG_LV2_TIME
-			// Update LV2 Time from JACK transport position...
-			qtractorLv2Plugin::updateTime(state, &pos);
-		#endif
-		#endif
 		}
 		// Check if its time to refresh playhead timer...
 		if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
