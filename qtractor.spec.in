@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 7
+%define release 9
 
 %define _prefix	@ac_prefix@
 
@@ -96,63 +96,65 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
-* Mon Oct  7 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.11
+* Tue Dec 31 2013 Rui Nuno Capela <rncbc@rncbc.org> 0.5.12
+- Mike November release.
+* Mon Oct  7 2013 Rui Nuno Capela <rncbc@rncbc.org> 0.5.11
 - Lima Oscar release.
-* Thu Jul 18 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.10
+* Thu Jul 18 2013 Rui Nuno Capela <rncbc@rncbc.org> 0.5.10
 - Kilo Papa release.
-* Thu Jun  6 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.9
+* Thu Jun  6 2013 Rui Nuno Capela <rncbc@rncbc.org> 0.5.9
 - Juliet Quebec release.
-* Tue Mar 19 2013 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.8
+* Tue Mar 19 2013 Rui Nuno Capela <rncbc@rncbc.org> 0.5.8
 - India Romeo release.
-* Thu Dec 27 2012 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.7
+* Thu Dec 27 2012 Rui Nuno Capela <rncbc@rncbc.org> 0.5.7
 - Hotel Sierra release.
-* Tue Oct 02 2012 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.6
+* Tue Oct 02 2012 Rui Nuno Capela <rncbc@rncbc.org> 0.5.6
 - Golf Tango release.
-* Fri Jun 15 2012 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.5
+* Fri Jun 15 2012 Rui Nuno Capela <rncbc@rncbc.org> 0.5.5
 - Foxtrot Uniform release.
-* Thu Mar 01 2012 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.4
+* Thu Mar 01 2012 Rui Nuno Capela <rncbc@rncbc.org> 0.5.4
 - Echo Victor release.
-* Wed Dec 28 2011 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.3
+* Wed Dec 28 2011 Rui Nuno Capela <rncbc@rncbc.org> 0.5.3
 - Delta Whisky release.
-* Fri Dec 16 2011 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.2
+* Fri Dec 16 2011 Rui Nuno Capela <rncbc@rncbc.org> 0.5.2
 - Charlie X-ray release.
-* Wed Oct 05 2011 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.1
+* Wed Oct 05 2011 Rui Nuno Capela <rncbc@rncbc.org> 0.5.1
 - Bravo Yankee release.
-* Fri Jul 22 2011 Rui Nuno Capela <rncbc@rncbc.org> - 0.5.0
+* Fri Jul 22 2011 Rui Nuno Capela <rncbc@rncbc.org> 0.5.0
 - Alpha Zulu (TYOQA) release.
-* Thu May 26 2011 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.9
+* Thu May 26 2011 Rui Nuno Capela <rncbc@rncbc.org> 0.4.9
 - Final Dudette release.
-* Tue Jan 19 2011 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.8
+* Tue Jan 19 2011 Rui Nuno Capela <rncbc@rncbc.org> 0.4.8
 - Fiery Demigoddess release.
-* Thu Sep 30 2010 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.7
+* Thu Sep 30 2010 Rui Nuno Capela <rncbc@rncbc.org> 0.4.7
 - Furious Desertrix release.
-* Fri May 21 2010 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.6
+* Fri May 21 2010 Rui Nuno Capela <rncbc@rncbc.org> 0.4.6
 - Funky Deviless release.
-* Sat Jan 23 2010 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.5
+* Sat Jan 23 2010 Rui Nuno Capela <rncbc@rncbc.org> 0.4.5
 - A Friskier Demivierge release.
-* Sat Jan 16 2010 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.4
+* Sat Jan 16 2010 Rui Nuno Capela <rncbc@rncbc.org> 0.4.4
 - Frisky Demivierge release.
-* Mon Oct 05 2009 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.3
+* Mon Oct 05 2009 Rui Nuno Capela <rncbc@rncbc.org> 0.4.3
 - Fussy Doula release.
-* Thu Jun 04 2009 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.2
+* Thu Jun 04 2009 Rui Nuno Capela <rncbc@rncbc.org> 0.4.2
 - Flaunty Demoness release.
-* Sat Apr 04 2009 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.1
+* Sat Apr 04 2009 Rui Nuno Capela <rncbc@rncbc.org> 0.4.1
 - Funky Dominatrix release.
-* Fri Mar 13 2009 Rui Nuno Capela <rncbc@rncbc.org> - 0.4.0
+* Fri Mar 13 2009 Rui Nuno Capela <rncbc@rncbc.org> 0.4.0
 - Foxy Dryad release.
-* Thu Dec 25 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.3.0
+* Thu Dec 25 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.3.0
 - Fluffy Doll release.
-* Sun Oct 05 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.2.2
+* Sun Oct 05 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.2.2
 - Flirty Ditz release.
-* Sat Aug 30 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.2.1
+* Sat Aug 30 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.2.1
 - Fainty Diva release.
-* Fri Jul 18 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.2.0
+* Fri Jul 18 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.2.0
 - Frolic Demoiselle release.
-* Fri May 02 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.1.3
+* Fri May 02 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.1.3
 - Frugal Damsel release.
-* Sun Mar 23 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.1.2
+* Sun Mar 23 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.1.2
 - Frantic Dame release.
-* Sat Feb 16 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.1.1
+* Sat Feb 16 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.1.1
 - Futile Duchess release.
-* Sat Jan  5 2008 Rui Nuno Capela <rncbc@rncbc.org> - 0.1.0
+* Sat Jan  5 2008 Rui Nuno Capela <rncbc@rncbc.org> 0.1.0
 - Frivolous Debutante release.
