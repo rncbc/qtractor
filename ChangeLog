@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Session auto-save period was chronically reduced to one third 
+  of its user setting; non critical but fixed now.
+
+
+0.5.12  2013-12-31  Mike November
+
 - Fixed another off-by-one MIDI plugin chain timing bug, delaying
   the actual playback of the first MIDI event, whenever it started
   at the same and as long as the initial play-head position (after
@@ -14,7 +20,7 @@ SVN TRUNK
   multiple AtomPort's in either direction: only the first input
   or output declared AtomPort is eligible to convey regular MIDI
   data events (introduced while trying Frank Kober's forthcoming
-  QmidiArp LV2 suite of plugins, thanks). (EXPERIMENTAL)
+  QmidiArp LV2 suite of plugins, thanks).
 
 - Zooming with shift/ctrl+mouse-wheel and pointing over the main
   tracks view or MIDI clip editor time ruler header's now fixed.
@@ -29,23 +35,21 @@ SVN TRUNK
 - Scaling of whole tempo map with a given factor has been added,
   through a spin-box and button in Tempo Map / Markers dialog,
   after a long overdue patch by Tuomas Airaksinen, thanks again.
-  (EXPERIMENTAL)
 
 - When issued from main tracks view (ie. Clip/Tools menu) MIDI
   clip tools are now a bit more crash-resilient re. undo/redo-
-  ability. (EXPERIMENTAL)
+  ability.
 
 - Session auto-save / crash-recovery support is now on trial as
   in View/Options.../General/Session/Auto-save current working
-  session every 10 minutes (default on). (EXPERIMENTAL)
+  session every 10 minutes (default on).
 
 - Plugin-list chain context-menu now includes MIDI instrument
   audio output options to existing non-dedicated output buses,
   any other than the previous hard-wired default (eg. Master).
-  (EXPERIMENTAL)
 
 - Tracks export now allows for the mix-down/merge of multiple
-  audio/MIDI output buses (Track/Export Tracks). (EXPERIMENTAL)
+  audio/MIDI output buses (Track/Export Tracks).
 
 - When adding new tracks, try preserving the last selected bus
   names, while not the default Master ones (after a suggestion 
@@ -59,7 +63,7 @@ SVN TRUNK
 - General MIDI RPN/NRPN 14-bit controller support is now being
   introduced on real-time MIDI input parsing, on standard MIDI
   file I/O, on MIDI Controller options and, of course, on MIDI
-  clip and event list editor. (EXPERIMENTAL)
+  clip and event list editor.
 
 - Pretty innocent nitpick on most thread cleanup routines.
 
