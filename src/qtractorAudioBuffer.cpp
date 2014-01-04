@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -325,7 +325,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	}
 
 	// Check samplerate and how many channels there really are.
-	unsigned short iChannels = m_pFile->channels();
+	const unsigned short iChannels = m_pFile->channels();
 	// Just one more sanity check...
 	if (iChannels < 1 || m_pFile->sampleRate() < 1) {
 		m_pFile->close();
@@ -470,6 +470,7 @@ void qtractorAudioBuffer::close (void)
 	m_bIntegral    = false;
 
 	m_iSeekOffset  = 0;
+
 	ATOMIC_SET(&m_seekPending, 0);
 
 	m_fNextGain = 1.0f;
@@ -497,7 +498,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 		nread = iFrames;
 		if (ls < le) {
 			if (m_bIntegral) {
-				unsigned int ri = m_pRingBuffer->readIndex();
+				const unsigned int ri = m_pRingBuffer->readIndex();
 				while (ri < le && ri + nread >= le) {
 					nread -= le - ri;
 					ro = m_iOffset + ls;
@@ -521,7 +522,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
-			unsigned int ri = m_pRingBuffer->readIndex();
+			const unsigned int ri = m_pRingBuffer->readIndex();
 			while (ri < le && ri + iFrames >= le) {
 				nread = m_pRingBuffer->read(ppFrames, le - ri, iOffset);
 				iFrames -= nread;
@@ -565,7 +566,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 	if (m_pRingBuffer == NULL)
 		return -1;
 
-	unsigned short iBuffers = m_pRingBuffer->channels();
+	const unsigned short iBuffers = m_pRingBuffer->channels();
 	if (iChannels < 1)
 		iChannels = iBuffers;
 
@@ -576,13 +577,13 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 		nwrite = m_pRingBuffer->write(ppFrames, nwrite, iOffset);
 	} else {
 		// Multiplexed write...
-		unsigned int ws = m_pRingBuffer->writable();
+		const unsigned int ws = m_pRingBuffer->writable();
 		if (nwrite > ws)
 			nwrite = ws;
 		if (nwrite > 0) {
-			unsigned int w = m_pRingBuffer->writeIndex();
+			const unsigned int w = m_pRingBuffer->writeIndex();
+			const unsigned int bs = m_pRingBuffer->bufferSize();
 			unsigned int n, n1, n2;
-			unsigned int bs = m_pRingBuffer->bufferSize();
 			if (w + nwrite > bs) {
 				n1 = (bs - w);
 				n2 = (w + nwrite) & m_pRingBuffer->bufferMask();
@@ -651,7 +652,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 		nread = iFrames;
 		if (ls < le) {
 			if (m_bIntegral) {
-				unsigned int ri = m_pRingBuffer->readIndex();
+				const unsigned int ri = m_pRingBuffer->readIndex();
 				while (ri < le && ri + nread >= le) {
 					nread -= le - ri;
 					ro = m_iOffset + ls;
@@ -679,7 +680,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
-			unsigned int ri = m_pRingBuffer->readIndex();
+			const unsigned int ri = m_pRingBuffer->readIndex();
 			while (ri < le && ri + iFrames >= le) {
 				m_iRampGain = -1;
 				nread = readMixFrames(ppFrames, le - ri, iChannels, iOffset, fGain);
@@ -760,13 +761,13 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	iFrame += m_iOffset;
 
 	// Check if target is already cached...
-	unsigned int  rs = m_pRingBuffer->readable();
-	unsigned int  ri = m_pRingBuffer->readIndex();
-	unsigned long ro = m_iReadOffset;
+	const unsigned int  rs = m_pRingBuffer->readable();
+	const unsigned int  ri = m_pRingBuffer->readIndex();
+	const unsigned long ro = m_iReadOffset;
 	if (iFrame >= ro && iFrame < ro + rs) {
 		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
-		m_iReadOffset  += iFrame - ro;
+		m_iReadOffset   = iFrame;
 		// Maybe (late) in-sync...
 		//setSyncFlag(ReadSync);
 		return true;
@@ -783,8 +784,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	//		return false;
 	// Force (late) out-of-sync...
 	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
-
 	m_iSeekOffset = iFrame;
+
 	ATOMIC_INC(&m_seekPending);
 
 	// readSync();
@@ -836,6 +837,7 @@ void qtractorAudioBuffer::initSync (void)
 	m_bIntegral    = false;
 
 	m_iSeekOffset  = 0;
+
 	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
@@ -844,6 +846,7 @@ void qtractorAudioBuffer::initSync (void)
 
 	// Set to initial offset...
 	m_iSeekOffset = m_iOffset;
+
 	ATOMIC_INC(&m_seekPending);
 
 	// Initial buffer read in...
@@ -916,7 +919,7 @@ bool qtractorAudioBuffer::inSync (
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",
 		this, iFrameStart, iFrameEnd,
-		(long) m_iReadOffset - (iFrameStart + m_iOffset));
+		long(m_iReadOffset) - long(iFrameStart + m_iOffset));
 #endif
 
 	if (m_iReadOffset == iFrameStart + m_iOffset) {
@@ -957,7 +960,7 @@ void qtractorAudioBuffer::readSync (void)
 		m_iReadOffset  = m_iSeekOffset;
 	}
 
-	unsigned int ws = m_pRingBuffer->writable();
+	const unsigned int ws = m_pRingBuffer->writable();
 	if (ws == 0)
 		return;
 
@@ -966,9 +969,10 @@ void qtractorAudioBuffer::readSync (void)
 
 	while (nahead > 0 && !ATOMIC_GET(&m_seekPending)) {
 		// Take looping into account, if any...
-		unsigned long ls = m_iOffset + m_iLoopStart;
-		unsigned long le = m_iOffset + m_iLoopEnd;
-		bool bLooping = (ls < le && m_iWriteOffset < le && isSyncFlag(InitSync));
+		const unsigned long ls = m_iOffset + m_iLoopStart;
+		const unsigned long le = m_iOffset + m_iLoopEnd;
+		const bool bLooping
+			= (ls < le && m_iWriteOffset < le && isSyncFlag(InitSync));
 		// Adjust request for sane size...
 		if (nahead > m_iBufferSize)
 			nahead = m_iBufferSize;
@@ -1004,7 +1008,7 @@ void qtractorAudioBuffer::readSync (void)
 			nahead = 0;
 			// But we can re-cache, if not an integral fit...
 			if (m_iFileLength >= m_iOffset + m_pRingBuffer->bufferSize() - 1) {
-				unsigned long offset = (bLooping ? ls : m_iOffset);
+				const unsigned long offset = (bLooping ? ls : m_iOffset);
 				if (seekSync(offset))
 					m_iWriteOffset = offset;
 			}
@@ -1019,7 +1023,7 @@ void qtractorAudioBuffer::writeSync (void)
 	if (m_pRingBuffer == NULL)
 		return;
 
-	unsigned int rs = m_pRingBuffer->readable();
+	const unsigned int rs = m_pRingBuffer->readable();
 	if (rs == 0)
 		return;
 
@@ -1136,7 +1140,7 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 
 	// Zero-flush till known end-of-clip (avoid sure drifting)...
 	if ((nread < 1) && (m_iWriteOffset + iFrames > m_iOffset + m_iLength)) {
-		unsigned int nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
+		const unsigned int nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
 		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i)
 			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
 		nread += m_pRingBuffer->write(m_ppFrames, nahead);
@@ -1240,7 +1244,7 @@ int qtractorAudioBuffer::readMixFrames (
 	if (iFrames == 0)
 		return 0;
 
-	unsigned int rs = m_pRingBuffer->readable();
+	const unsigned int rs = m_pRingBuffer->readable();
 	if (rs == 0)
 		return 0;
 
@@ -1264,7 +1268,7 @@ int qtractorAudioBuffer::readMixFrames (
 	if (iFrames > rs)
 		iFrames = rs;
 
-	unsigned int r = m_pRingBuffer->readIndex();
+	const unsigned int r = m_pRingBuffer->readIndex();
 
 	unsigned int n, n1, n2;
 	unsigned int bs = m_pRingBuffer->bufferSize();
@@ -1278,7 +1282,7 @@ int qtractorAudioBuffer::readMixFrames (
 
 	float fGainIter;
 	unsigned short i, j;
-	unsigned short iBuffers = m_pRingBuffer->channels();
+	const unsigned short iBuffers = m_pRingBuffer->channels();
 	float **ppBuffer = m_pRingBuffer->buffer();
 	float *pFrames, *pBuffer;
 	if (iChannels == iBuffers) {
