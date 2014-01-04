@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Corrected some audio buffering boundary conditions that were
+  causing dead-loops/freezes while merging some audio clips.
+
 - Session auto-save period was chronically reduced to one third 
   of its user setting; non critical but fixed now.
 

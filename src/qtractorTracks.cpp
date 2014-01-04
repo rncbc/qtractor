@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1299,20 +1299,19 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 			const unsigned long iClipStart = pClip->clipStart();
 			const unsigned long iClipEnd   = iClipStart + pClip->clipLength();;
 			if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
-				unsigned long iOffset = iFrameEnd - iClipStart;
-				while (!pBuff->inSync(iClipStart - iFrameStart, iOffset))
+				const unsigned long iOffset = iFrameEnd - iClipStart;
+				while (!pBuff->inSync(0, 0))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iOffset,
-					iChannels, iClipStart - iFrameStart,
-					pClip->gain(iOffset));
+					iChannels, iClipStart - iFrameStart, pClip->gain(iOffset));
 			}
 			else
 			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
-				const unsigned long iOffset = iFrameEnd - iClipStart;
-				while (!pBuff->inSync(iFrameStart - iClipStart, iOffset))
+				const unsigned long iFrame = iFrameStart - iClipStart;
+				while (!pBuff->inSync(iFrame, iFrame))
 					pBuff->syncExport();
-				pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
-					iChannels, 0, pClip->gain(iOffset));
+				pBuff->readMix(ppFrames, iBufferSize,
+					iChannels, 0, pClip->gain(iFrameEnd - iClipStart));
 			}
 		}
 		// Actually write to merge audio file;
