@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -7070,6 +7070,12 @@ void qtractorMainForm::timerSlot (void)
 	// Asynchronous observer update...
 	qtractorSubject::flushQueue(true);
 
+	// Crispy plugin UI idle-updates...
+#ifdef CONFIG_LV2_UI
+	qtractorLv2Plugin::idleEditorAll();
+#endif
+
+	// Slower plugin UI idle cycle...
 	if ((m_iIdleTimer += QTRACTOR_TIMER_MSECS) >= QTRACTOR_TIMER_DELAY) {
 		m_iIdleTimer = 0;
 	#ifdef CONFIG_DSSI
@@ -7080,17 +7086,13 @@ void qtractorMainForm::timerSlot (void)
 	#ifdef CONFIG_VST
 		qtractorVstPlugin::idleEditorAll();
 	#endif
-	}
-#ifdef CONFIG_LV2_UI
-	qtractorLv2Plugin::idleEditorAll();
-#endif
-
-	// Auto-save option routine...
-	if (m_iAutoSavePeriod > 0 && m_iDirtyCount > 0) {
-		m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
-		if (m_iAutoSaveTimer > m_iAutoSavePeriod && !bPlaying) {
-			m_iAutoSaveTimer = 0;
-			autoSaveSession();
+		// Auto-save option routine...
+		if (m_iAutoSavePeriod > 0 && m_iDirtyCount > 0) {
+			m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
+			if (m_iAutoSaveTimer > m_iAutoSavePeriod && !bPlaying) {
+				m_iAutoSaveTimer = 0;
+				autoSaveSession();
+			}
 		}
 	}
 

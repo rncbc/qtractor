@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Session auto-save period was chronically reduced to one third 
+  of its user setting; non critical but fixed now.
+
+
 0.5.12  2013-12-31  Mike November
 
 - Fixed another off-by-one MIDI plugin chain timing bug, delaying
