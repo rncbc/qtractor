@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,6 +116,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 
 	// View/Snap-to-beat actions initialization...
 	int iSnap = 0;
+	const QIcon snapIcon(":/images/itemBeat.png");
 	const QString sSnapObjectName("viewSnapPerBeat%1");
 	const QString sSnapStatusTip(tr("Set current snap to %1"));
 	const QStringList& snapItems = qtractorTimeScale::snapItems();
@@ -126,6 +127,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		pAction->setObjectName(sSnapObjectName.arg(iSnap));
 		pAction->setStatusTip(sSnapStatusTip.arg(sSnapText));
 		pAction->setCheckable(true);
+		pAction->setIcon(snapIcon);
 		pAction->setData(iSnap++);
 		QObject::connect(pAction,
 			SIGNAL(triggered(bool)),
@@ -135,7 +137,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	}
 
 	// Pre-fill the combo-boxes...
-	m_pSnapPerBeatComboBox->insertItems(0, snapItems);
+	m_pSnapPerBeatComboBox->setIconSize(QSize(8, 16));
+	snapIter.toFront();
+	while (snapIter.hasNext())
+		m_pSnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
+//	m_pSnapPerBeatComboBox->insertItems(0, snapItems);
 
 	const QIcon icon(":/images/itemProperty.png");
 
