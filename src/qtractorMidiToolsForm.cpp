@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -163,13 +163,28 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		m_ui.TransposeTimeSpinBox->setTimeScale(m_pTimeScale);
 		m_ui.ResizeDurationSpinBox->setTimeScale(m_pTimeScale);
 		// Fill-up snap-per-beat items...
-		QStringList items = qtractorTimeScale::snapItems(1);
+		const QIcon snapIcon(":/images/itemBeat.png");
+		const QSize snapIconSize(8, 16);
+		const QStringList& snapItems = qtractorTimeScale::snapItems(1);
+		QStringListIterator snapIter(snapItems);
 		m_ui.QuantizeTimeComboBox->clear();
-		m_ui.QuantizeTimeComboBox->insertItems(0, items);
+		m_ui.QuantizeTimeComboBox->setIconSize(snapIconSize);
+	//	snapIter.toFront();
+		while (snapIter.hasNext())
+			m_ui.QuantizeTimeComboBox->addItem(snapIcon, snapIter.next());
+	//	m_ui.QuantizeTimeComboBox->insertItems(0, snapItems);
 		m_ui.QuantizeDurationComboBox->clear();
-		m_ui.QuantizeDurationComboBox->insertItems(0, items);
+		m_ui.QuantizeDurationComboBox->setIconSize(snapIconSize);
+		snapIter.toFront();
+		while (snapIter.hasNext())
+			m_ui.QuantizeDurationComboBox->addItem(snapIcon, snapIter.next());
+	//	m_ui.QuantizeDurationComboBox->insertItems(0, snapItems);
 		m_ui.QuantizeSwingComboBox->clear();
-		m_ui.QuantizeSwingComboBox->insertItems(0, items);
+		m_ui.QuantizeSwingComboBox->setIconSize(snapIconSize);
+		snapIter.toFront();
+		while (snapIter.hasNext())
+			m_ui.QuantizeSwingComboBox->addItem(snapIcon, snapIter.next());
+	//	m_ui.QuantizeSwingComboBox->insertItems(0, snapItems);
 		// Default quantization value...
 		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
 		if (iSnapPerBeat > 0)

@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -61,8 +61,15 @@ qtractorSessionForm::qtractorSessionForm (
 		new QIntValidator(m_ui.SampleRateComboBox));
 
 	// Fill-up snap-per-beat items...
+	const QIcon snapIcon(":/images/itemBeat.png");
+	const QStringList& snapItems = qtractorTimeScale::snapItems(0);
+	QStringListIterator snapIter(snapItems);
 	m_ui.SnapPerBeatComboBox->clear();
-	m_ui.SnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
+	m_ui.SnapPerBeatComboBox->setIconSize(QSize(8, 16));
+//	snapIter.toFront();
+	while (snapIter.hasNext())
+		m_ui.SnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
+//	m_ui.SnapPerBeatComboBox->insertItems(0, snapItems);
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;

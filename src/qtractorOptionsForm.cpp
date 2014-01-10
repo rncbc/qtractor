@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -122,9 +122,15 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
 
 	// Populate the MIDI capture quantize combo-box.
-	QStringList items = qtractorTimeScale::snapItems(0);
+	const QIcon snapIcon(":/images/itemBeat.png");
+	const QStringList& snapItems = qtractorTimeScale::snapItems(0);
+	QStringListIterator snapIter(snapItems);
 	m_ui.MidiCaptureQuantizeComboBox->clear();
-	m_ui.MidiCaptureQuantizeComboBox->insertItems(0, items);
+	m_ui.MidiCaptureQuantizeComboBox->setIconSize(QSize(8, 16));
+//	snapIter.toFront();
+	while (snapIter.hasNext())
+		m_ui.MidiCaptureQuantizeComboBox->addItem(snapIcon, snapIter.next());
+//	m_ui.MidiCaptureQuantizeComboBox->insertItems(0, items);
 
 	// Populate the MMC device combo-box.
 	m_ui.MidiMmcDeviceComboBox->clear();
