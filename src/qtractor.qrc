@@ -62,6 +62,7 @@
 		<file>images/itemMidiFile.png</file>
 		<file>images/itemMidiPortIn.png</file>
 		<file>images/itemMidiPortOut.png</file>
+		<file>images/itemNone.png</file>
 		<file>images/itemNotes.png</file>
 		<file>images/itemNrpns.png</file>
 		<file>images/itemPatches.png</file>

@@ -128,6 +128,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureQuantizeComboBox->clear();
 	m_ui.MidiCaptureQuantizeComboBox->setIconSize(QSize(8, 16));
 //	snapIter.toFront();
+	if (snapIter.hasNext())
+		m_ui.MidiCaptureQuantizeComboBox->addItem(
+			QIcon(":/images/itemNone.png"), snapIter.next());
 	while (snapIter.hasNext())
 		m_ui.MidiCaptureQuantizeComboBox->addItem(snapIcon, snapIter.next());
 //	m_ui.MidiCaptureQuantizeComboBox->insertItems(0, items);

@@ -67,6 +67,9 @@ qtractorSessionForm::qtractorSessionForm (
 	m_ui.SnapPerBeatComboBox->clear();
 	m_ui.SnapPerBeatComboBox->setIconSize(QSize(8, 16));
 //	snapIter.toFront();
+	if (snapIter.hasNext())
+		m_ui.SnapPerBeatComboBox->addItem(
+			QIcon(":/images/itemNone.png"), snapIter.next());
 	while (snapIter.hasNext())
 		m_ui.SnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
 //	m_ui.SnapPerBeatComboBox->insertItems(0, snapItems);
