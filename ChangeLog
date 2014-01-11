@@ -6,7 +6,7 @@ ChangeLog
 SVN TRUNK
 
 - Introducing tiny quarter-note/crotchet/seminima/beat icon on all
-  snap-to-beat selection items--even "None" gets the new icon:).
+  snap-to-beat selection items get a new icon :).
 
 - Corrected some audio buffering boundary conditions that were
   causing dead-loops/freezes while merging some audio clips.

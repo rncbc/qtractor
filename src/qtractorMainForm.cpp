@@ -415,7 +415,7 @@ qtractorMainForm::qtractorMainForm (
 		pAction->setObjectName(sSnapObjectName.arg(iSnap));
 		pAction->setStatusTip(sSnapStatusTip.arg(sSnapText));
 		pAction->setCheckable(true);
-		pAction->setIcon(snapIcon);
+	//	pAction->setIcon(snapIcon);
 		pAction->setData(iSnap++);
 		QObject::connect(pAction,
 			SIGNAL(triggered(bool)),
@@ -484,6 +484,9 @@ qtractorMainForm::qtractorMainForm (
 //	m_pSnapPerBeatComboBox->insertItems(0, snapItems);
 	m_pSnapPerBeatComboBox->setIconSize(QSize(8, 16));
 	snapIter.toFront();
+	if (snapIter.hasNext())
+		m_pSnapPerBeatComboBox->addItem(
+			QIcon(":/images/itemNone.png"), snapIter.next());
 	while (snapIter.hasNext())
 		m_pSnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
