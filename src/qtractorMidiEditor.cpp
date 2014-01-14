@@ -2880,9 +2880,11 @@ void qtractorMidiEditor::dragMoveUpdate (
 		if ((pos - m_posDrag).manhattanLength()
 			< QApplication::startDragDistance())
 			break;
+	#if 0
 		// Take care of selection modifier...
 		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
 			flags |= SelectClear;
+	#endif
 		// Are we about to move something around?
 		if (m_pEventDrag) {
 			if (m_resizeMode == ResizeNone) {
@@ -2894,7 +2896,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 				updateDragMove(pScrollView, pos + m_posStep);
 			} else {
 				// Start resizing... take care of yet initial selection...
-				if (!m_bEventDragEdit/* && !m_select.findItem(m_pEventDrag)*/) {
+				if (!m_bEventDragEdit && !m_select.findItem(m_pEventDrag)) {
 					updateDragSelect(pScrollView,
 						QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
 				}

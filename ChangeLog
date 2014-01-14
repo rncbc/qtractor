@@ -5,7 +5,7 @@ ChangeLog
 
 SVN TRUNK
 
-- One liner's attempt to make it consistent behaviour for resizing
+- One liner's attempt to make it consistent behaviour on resizing
   and moving multiple selected notes or events while on the MIDI
   clip editor (aka. piano-roll; after a ticket request from Daniel
   MacDonald aka. danboid, thanks).
