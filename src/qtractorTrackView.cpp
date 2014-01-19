@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -259,7 +259,10 @@ void qtractorTrackView::updateContentsHeight (void)
 		qtractorScrollView::contentsWidth(), iContentsHeight);
 
 	// Keep selection (we'll update all contents anyway)...
-	updateClipSelect();
+	if (m_bCurveEdit)
+		updateCurveSelect();
+	else
+		updateClipSelect();
 }
 
 
@@ -292,7 +295,10 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 		iContentsWidth, qtractorScrollView::contentsHeight());
 
 	// Keep selection (we'll update all contents anyway)...
-	updateClipSelect();
+	if (m_bCurveEdit)
+		updateCurveSelect();
+	else
+		updateClipSelect();
 
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(
@@ -2851,35 +2857,6 @@ void qtractorTrackView::updateClipSelect (void)
 }
 
 
-// Show selection tooltip...
-void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
-{
-	if (!m_bToolTips)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
-		return;
-
-	const unsigned long iFrameStart = pTimeScale->frameSnap(
-		pTimeScale->frameFromPixel(rect.left() + dx));
-	const unsigned long iFrameEnd = pTimeScale->frameSnap(
-		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
-
-	QToolTip::showText(
-		QCursor::pos(),
-		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
-			.arg(pTimeScale->textFromFrame(iFrameStart))
-			.arg(pTimeScale->textFromFrame(iFrameEnd))
-			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
-		qtractorScrollView::viewport());
-}
-
-
 // Draw/hide the whole current clip selection.
 void qtractorTrackView::showClipSelect (void) const
 {
@@ -2909,6 +2886,80 @@ void qtractorTrackView::hideClipSelect (void) const
 		if (pRubberBand && pRubberBand->isVisible())
 			pRubberBand->hide();
 	}
+}
+
+
+// Update whole automation/curve selection.
+void qtractorTrackView::updateCurveSelect (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	int iUpdate = 0;
+	QRect rectUpdate = m_pCurveSelect->rect();
+
+	int y1, y2 = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		y1  = y2;
+		y2 += pTrack->zoomHeight();
+		qtractorCurve *pCurve = pTrack->currentCurve();
+		if (pCurve && m_pCurveSelect->isCurrentCurve(pCurve)) {
+			const int h = y2 - y1 - 2;
+			qtractorCurve::Node *pNode = pCurve->nodes().first();
+			while (pNode) {
+				qtractorCurveSelect::Item *pItem
+					= m_pCurveSelect->findItem(pNode);
+				if (pItem) {
+					const float s = pCurve->scaleFromValue(pNode->value);
+					const int x = pSession->pixelFromFrame(pNode->frame);
+					const int y	= y2 - int(s * float(h));
+					pItem->rectNode.setRect(x - 4, y - 4, 8, 8);
+					++iUpdate;
+				}
+				pNode = pNode->next();
+			}
+			break;
+		}
+		pTrack = pTrack->next();
+	}
+
+	// This is most probably an overall update...
+	if (iUpdate > 0) {
+		m_pCurveSelect->update(true);
+		updateRect(rectUpdate.united(m_pCurveSelect->rect()));
+	//	m_pTracks->selectionChangeNotify();
+	}
+}
+
+
+// Show selection tooltip...
+void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
+{
+	if (!m_bToolTips)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
+	const unsigned long iFrameStart = pTimeScale->frameSnap(
+		pTimeScale->frameFromPixel(rect.left() + dx));
+	const unsigned long iFrameEnd = pTimeScale->frameSnap(
+		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
+
+	QToolTip::showText(
+		QCursor::pos(),
+		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
+			.arg(pTimeScale->textFromFrame(iFrameStart))
+			.arg(pTimeScale->textFromFrame(iFrameEnd))
+			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
+		qtractorScrollView::viewport());
 }
 
 

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Update current automation/curve nodes selection while changing
+  horizontal (time axis) zoom levels. (EXPERIMENTAL)
+
 - One liner's attempt to make it consistent behaviour on resizing
   and moving multiple selected notes or events while on the MIDI
   clip editor (aka. piano-roll; after a ticket request from Daniel
