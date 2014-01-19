@@ -1,7 +1,7 @@
 // qtractorTrackView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -320,6 +320,9 @@ protected:
 	// Draw/hide the whole current clip selection.
 	void showClipSelect() const;
 	void hideClipSelect() const;
+
+	// Update whole automation/curve selection.
+	void updateCurveSelect();
 
 	// Show selection tooltip...
 	void showToolTip(const QRect& rect, int dx) const;
