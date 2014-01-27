@@ -12248,7 +12248,7 @@ Length:	%3</source>
         <translation>クリップを追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="2958"/>
+        <location filename="../qtractorTrackView.cpp" line="2963"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12257,74 +12257,74 @@ Length:	%3</source>
 長さ:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3175"/>
+        <location filename="../qtractorTrackView.cpp" line="3180"/>
         <source>clip %1</source>
         <translation>クリップ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3176"/>
+        <location filename="../qtractorTrackView.cpp" line="3181"/>
         <source>fade-in</source>
         <translation>フェードイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3176"/>
+        <location filename="../qtractorTrackView.cpp" line="3181"/>
         <source>fade-out</source>
         <translation>フェードアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3252"/>
+        <location filename="../qtractorTrackView.cpp" line="3257"/>
         <source>clip stretch</source>
         <translation>クリップの伸長</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3252"/>
+        <location filename="../qtractorTrackView.cpp" line="3257"/>
         <source>clip resize</source>
         <translation>クリップリサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4034"/>
+        <location filename="../qtractorTrackView.cpp" line="4039"/>
         <source>%1 automation</source>
         <translation>%1 オートメーション</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4107"/>
+        <location filename="../qtractorTrackView.cpp" line="4112"/>
         <source>%1 clip</source>
         <translation>%1 クリップ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4721"/>
+        <location filename="../qtractorTrackView.cpp" line="4726"/>
         <source>move automation</source>
         <translation>オートメーションの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4802"/>
+        <location filename="../qtractorTrackView.cpp" line="4807"/>
         <source>paste automation</source>
         <translation>オートメーションの貼り付け</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4038"/>
-        <location filename="../qtractorTrackView.cpp" line="4111"/>
+        <location filename="../qtractorTrackView.cpp" line="4043"/>
+        <location filename="../qtractorTrackView.cpp" line="4116"/>
         <source>cut</source>
         <translation>切り取り</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4041"/>
-        <location filename="../qtractorTrackView.cpp" line="4114"/>
+        <location filename="../qtractorTrackView.cpp" line="4046"/>
+        <location filename="../qtractorTrackView.cpp" line="4119"/>
         <source>delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4117"/>
+        <location filename="../qtractorTrackView.cpp" line="4122"/>
         <source>split</source>
         <translation>分割</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4473"/>
+        <location filename="../qtractorTrackView.cpp" line="4478"/>
         <source>move clip</source>
         <translation>クリップの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4603"/>
+        <location filename="../qtractorTrackView.cpp" line="4608"/>
         <source>paste clip</source>
         <translation>クリップの貼り付け</translation>
     </message>
