@@ -1956,10 +1956,15 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	qtractorScrollView::mouseDoubleClickEvent(pMouseEvent);
 
 	// By this time we should have something under...
-	if (m_pClipDrag)
-		m_pTracks->editClip(m_pClipDrag);
+	qtractorClip *pClip = m_pClipDrag;
+	if (pClip == NULL) {
+		const QPoint& pos = viewportToContents(pMouseEvent->pos());
+		pClip = clipAt(pos, true);
+	}
+
+	if (pClip)
+		m_pTracks->editClip(pClip);
 	else
-	if (!m_bCurveEdit)
 		m_pTracks->selectCurrentTrack();
 }
 
