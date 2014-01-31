@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -678,6 +678,8 @@ void qtractorClipForm::browseFilename (void)
 			break;
 		}
 		fileDialog.setSidebarUrls(urls);
+		if (pOptions->bDontUseNativeDialog)
+			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...
 	if (fileDialog.exec())

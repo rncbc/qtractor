@@ -995,8 +995,11 @@ void qtractorOptionsForm::choosePluginPath (void)
 	const QString& sTitle = tr("Plug-in Directory") + " - " QTRACTOR_TITLE;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the directory...
+	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
+	if (m_pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
     sPluginPath = QFileDialog::getExistingDirectory(this,
-		sTitle, m_ui.PluginPathComboBox->currentText());
+		sTitle, m_ui.PluginPathComboBox->currentText(), options);
 #else
 	// Construct open-directory dialog...
 	QFileDialog fileDialog(this,
@@ -1008,6 +1011,8 @@ void qtractorOptionsForm::choosePluginPath (void)
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
 	fileDialog.setSidebarUrls(urls);
+	if (m_pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sPluginPath = fileDialog.selectedFiles().first();
@@ -1218,8 +1223,11 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 	const QString& sTitle = tr("LV2 Presets Directory") + " - " QTRACTOR_TITLE;
 #if 1// QT_VERSION < 0x040400
 	// Ask for the directory...
+	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
+	if (m_pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sLv2PresetDir = QFileDialog::getExistingDirectory(this,
-		sTitle, sLv2PresetDir);
+		sTitle, sLv2PresetDir, options);
 #else
 	// Construct open-directory dialog...
 	QFileDialog fileDialog(this,
@@ -1231,6 +1239,8 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(m_pOptions->sLv2PresetDir));
 	fileDialog.setSidebarUrls(urls);
+	if (m_pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sLv2PresetDir = fileDialog.selectedFiles().first();
@@ -1280,6 +1290,8 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 	fileDialog.setFileMode(QFileDialog::AnyFile);
 	fileDialog.setDefaultSuffix(sExt);
+	if (m_pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
@@ -1317,6 +1329,8 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
 	fileDialog.setSidebarUrls(urls);
+	if (m_pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
@@ -1465,6 +1479,8 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(m_pOptions->sAudioDir));
 	fileDialog.setSidebarUrls(urls);
+	if (m_pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sAudioFile = fileDialog.selectedFiles().first();

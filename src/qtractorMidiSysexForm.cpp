@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -232,6 +232,8 @@ void qtractorMidiSysexForm::importSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		files = fileDialog.selectedFiles();
@@ -303,6 +305,8 @@ void qtractorMidiSysexForm::exportSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sPath = fileDialog.selectedFiles().first();
@@ -437,6 +441,8 @@ void qtractorMidiSysexForm::openSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
@@ -502,6 +508,8 @@ void qtractorMidiSysexForm::saveSlot (void)
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 		fileDialog.setSidebarUrls(urls);
+		if (pOptions->bDontUseNativeDialog)
+			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		// Show dialog...
 		if (fileDialog.exec())
 			sFilename = fileDialog.selectedFiles().first();

@@ -949,6 +949,8 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 			fileDialog.setSidebarUrls(urls);
+			if (pOptions->bDontUseNativeDialog)
+				fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		}
 		// Show dialog...
 		if (fileDialog.exec())

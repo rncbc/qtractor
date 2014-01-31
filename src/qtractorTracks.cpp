@@ -1179,6 +1179,8 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
 		fileDialog.setSidebarUrls(urls);
+		if (pOptions->bDontUseNativeDialog)
+			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...
 	if (!fileDialog.exec())
@@ -1439,6 +1441,8 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 		fileDialog.setSidebarUrls(urls);
+		if (pOptions->bDontUseNativeDialog)
+			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...
 	if (!fileDialog.exec())

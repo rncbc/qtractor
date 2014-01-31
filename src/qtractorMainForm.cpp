@@ -1412,6 +1412,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			m_sNsmExt = m_pOptions->sSessionExt;
 			if (m_sNsmExt.isEmpty())
 				m_sNsmExt = qtractorDocument::defaultExt();
+			// Run-time special non-persistent options.
+			m_pOptions->bDontUseNativeDialog = true;
 		}
 	#endif
 		// Change to last known session dir...
@@ -1739,17 +1741,19 @@ bool qtractorMainForm::newSession (void)
 	// We're supposedly clean...
 	m_iDirtyCount = 0;
 
+#ifdef CONFIG_NSM
+	if (m_pNsmClient == NULL || !m_pNsmClient->is_active()) {
+#endif
 	// Check whether we start the new session
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate) {
 		const bool bNewSession
 			= loadSessionFileEx(m_pOptions->sSessionTemplatePath, true, false);
-	#ifdef CONFIG_NSM
-		if (m_pNsmClient && m_pNsmClient->is_active())
-			updateDirtyCount(true);
-	#endif
 		return bNewSession;
 	}
+#ifdef CONFIG_NSM
+	}
+#endif
 
 	// Prepare the session engines...
 	updateSessionPre();
@@ -1814,6 +1818,8 @@ bool qtractorMainForm::openSession (void)
 	if (sExt == qtractorDocument::archiveExt())
 		fileDialog.setNameFilter(filters.last());
 #endif
+	if (m_pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Stuff sidebar...
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
@@ -1896,6 +1902,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (sExt == qtractorDocument::archiveExt())
 			fileDialog.setNameFilter(filters.last());
 	#endif
+		if (m_pOptions->bDontUseNativeDialog)
+			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		// Stuff sidebar...
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
