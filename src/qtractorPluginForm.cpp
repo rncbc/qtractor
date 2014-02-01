@@ -536,8 +536,11 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
-		sTitle, pOptions->sPresetDir, sFilter);
+		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this,
@@ -614,8 +617,11 @@ void qtractorPluginForm::savePresetSlot (void)
 				const QString& sFilter = tr("Preset files (*.%1)").arg(sExt);
 			#if 0//QT_VERSION < 0x040400
 				// Ask for the filename to save...
+				QFileDialog::Options options = 0;
+				if (pOptions->bDontUseNativeDialog)
+					options |= QFileDialog::DontUseNativeDialog;
 				sFilename = QFileDialog::getSaveFileName(this,
-					sTitle, sFilename, sFilter);
+					sTitle, sFilename, sFilter, NULL, options);
 			#else
 				// Construct save-file dialog...
 				QFileDialog fileDialog(this,

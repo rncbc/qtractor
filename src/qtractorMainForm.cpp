@@ -1802,8 +1802,11 @@ bool qtractorMainForm::openSession (void)
 	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
 #if 0//QT_VERSION < 0x040400
+	QFileDialog::Options options = 0;
+	if (m_pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
-		sTitle, m_pOptions->sSessionDir, sFilter);
+		sTitle, m_pOptions->sSessionDir, sFilter, NULL, options);
 #else
 	// Construct open-file session/template dialog...
 	QFileDialog fileDialog(this,
@@ -1886,8 +1889,11 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = filters.join(";;");
 	#if 0//QT_VERSION < 0x040400
+		QFileDialog::Options options = 0;
+		if (m_pOptions->bDontUseNativeDialog)
+			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,
-			sTitle, sFilename, sFilter);
+			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file session/template dialog...
 		QFileDialog fileDialog(this,

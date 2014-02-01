@@ -197,8 +197,11 @@ void qtractorMidiControlForm::importSlot (void)
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
-		sTitle, pOptions->sMidiControlDir, sFilter);
+		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -398,8 +401,11 @@ void qtractorMidiControlForm::exportSlot (void)
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
-		sTitle, pOptions->sMidiControlDir, sFilter);
+		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,

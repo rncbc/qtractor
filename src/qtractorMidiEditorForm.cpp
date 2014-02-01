@@ -932,8 +932,12 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
 	#if 0//QT_VERSION < 0x040400
 		// Ask for the filenames to open...
+		QFileDialog::Options options = 0;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bDontUseNativeDialog)
+			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,
-			sTitle, sFilename, sFilter);
+			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct open-files dialog...
 		QFileDialog fileDialog(this,

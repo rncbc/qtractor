@@ -198,8 +198,11 @@ void qtractorInstrumentForm::importSlot (void)
 	const QString& sFilter = tr("Instrument files (*.%1 *.sf2 *.midnam)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
-		sTitle, pOptions->sInstrumentDir, sFilter);
+		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -364,8 +367,11 @@ void qtractorInstrumentForm::exportSlot (void)
 	const QString& sFilter = tr("Instrument files (*.%1)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
-		sTitle, pOptions->sInstrumentDir, sFilter);
+		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,

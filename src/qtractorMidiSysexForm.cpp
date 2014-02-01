@@ -217,8 +217,11 @@ void qtractorMidiSysexForm::importSlot (void)
 	const QString& sFilter = filters.join(";;");
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
-		sTitle, pOptions->sMidiSysexDir, sFilter);
+		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -290,8 +293,11 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
 #if 0// QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
-		sTitle, pOptions->sMidiSysexDir, sFilter);
+		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -426,8 +432,11 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
-		sTitle, pOptions->sMidiSysexDir, sFilter);
+		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this,
@@ -493,8 +502,11 @@ void qtractorMidiSysexForm::saveSlot (void)
 		const QString& sFilter = tr("Sysex files (*.%1)").arg(sExt);
 	#if 0//QT_VERSION < 0x040400
 		// Ask for the filename to save...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions->bDontUseNativeDialog)
+			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,
-			sTitle, sFilename, sFilter);
+			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file dialog...
 		QFileDialog fileDialog(this,

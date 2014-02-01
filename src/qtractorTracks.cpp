@@ -1162,8 +1162,12 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	const QString& sFilter = tr("Audio files (*.%1)").arg(sExt); 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
+	QFileDialog::Options options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
-		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this, sTitle,
@@ -1424,8 +1428,12 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
+	QFileDialog::Options options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
-		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this, sTitle,

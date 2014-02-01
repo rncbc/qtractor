@@ -5,7 +5,7 @@ ChangeLog
 
 SVN TRUNK
 
-- A couple of run-time circunventions have been hacked in, both
+- A couple of run-time circumventions have been hacked in, both
   strictly related to when NSM session management is in charge:
   1) the new session template feature is disabled (was aborting
   initial NSM new client additions); 2) the native (as from the

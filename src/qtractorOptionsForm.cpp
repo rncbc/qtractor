@@ -1280,8 +1280,11 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString& sFilter = tr("Log files (*.%1)").arg(sExt); 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (m_pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getSaveFileName(this,
-		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter);
+		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter, NULL, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(this,
@@ -1315,8 +1318,11 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString& sFilter = tr("Session template files (*.qtr *.qts *.%1)").arg(sExt); 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (m_pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
-		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter);
+		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -1464,8 +1470,11 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (m_pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sAudioFile = QFileDialog::getOpenFileName(this,
-		sTitle, sFilename, qtractorAudioFileFactory::filters());
+		sTitle, sFilename, qtractorAudioFileFactory::filters(), NULL, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(this,

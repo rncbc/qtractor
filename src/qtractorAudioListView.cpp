@@ -138,8 +138,12 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 	const QString& sTitle = tr("Open Audio Files") + " - " QTRACTOR_TITLE;
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
-		sTitle, recentDir(), qtractorAudioFileFactory::filters());
+		sTitle, recentDir(), qtractorAudioFileFactory::filters(), NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
