@@ -1,7 +1,7 @@
 // qtractorMidiListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -176,8 +176,12 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filenames to open...
+	QFileDialog::Options options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
-		sTitle, recentDir(), sFilter);
+		sTitle, recentDir(), sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -193,6 +197,8 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 		fileDialog.setSidebarUrls(urls);
+		if (pOptions->bDontUseNativeDialog)
+			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...
 	if (fileDialog.exec())

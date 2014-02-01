@@ -281,9 +281,16 @@ void qtractorSessionForm::stabilizeForm (void)
 // Browse for session directory.
 void qtractorSessionForm::browseSessionDir (void)
 {
-	const QString& sTitle = tr("Session Directory") + " - " QTRACTOR_TITLE; 
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
+	const QString& sTitle = tr("Session Directory") + " - " QTRACTOR_TITLE;
 #if 1// QT_VERSION < 0x040400
-    QString sSessionDir = QFileDialog::getExistingDirectory(this,                                  // Parent.
+	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
+	QString sSessionDir = QFileDialog::getExistingDirectory(this,                                  // Parent.
 		sTitle, m_ui.SessionDirComboBox->currentText());
 #else
 	// Construct open-directory dialog...
@@ -293,12 +300,11 @@ void qtractorSessionForm::browseSessionDir (void)
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::DirectoryOnly);
 	// Stuff sidebar...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
-		QList<QUrl> urls(fileDialog.sidebarUrls());
-		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
-		fileDialog.setSidebarUrls(urls);
-	}
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (!fileDialog.exec())
 		return;

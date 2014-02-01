@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -198,8 +198,11 @@ void qtractorInstrumentForm::importSlot (void)
 	const QString& sFilter = tr("Instrument files (*.%1 *.sf2 *.midnam)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
-		sTitle, pOptions->sInstrumentDir, sFilter);
+		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -213,6 +216,8 @@ void qtractorInstrumentForm::importSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sInstrumentDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		files = fileDialog.selectedFiles();
@@ -362,8 +367,11 @@ void qtractorInstrumentForm::exportSlot (void)
 	const QString& sFilter = tr("Instrument files (*.%1)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
-		sTitle, pOptions->sInstrumentDir, sFilter);
+		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -377,6 +385,8 @@ void qtractorInstrumentForm::exportSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sInstrumentDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sPath = fileDialog.selectedFiles().first();

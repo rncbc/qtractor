@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -217,8 +217,11 @@ void qtractorMidiSysexForm::importSlot (void)
 	const QString& sFilter = filters.join(";;");
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
-		sTitle, pOptions->sMidiSysexDir, sFilter);
+		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -232,6 +235,8 @@ void qtractorMidiSysexForm::importSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		files = fileDialog.selectedFiles();
@@ -288,8 +293,11 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
 #if 0// QT_VERSION < 0x040400
 	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
-		sTitle, pOptions->sMidiSysexDir, sFilter);
+		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(this,
@@ -303,6 +311,8 @@ void qtractorMidiSysexForm::exportSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sPath = fileDialog.selectedFiles().first();
@@ -422,8 +432,11 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
-		sTitle, pOptions->sMidiSysexDir, sFilter);
+		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this,
@@ -437,6 +450,8 @@ void qtractorMidiSysexForm::openSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
@@ -487,8 +502,11 @@ void qtractorMidiSysexForm::saveSlot (void)
 		const QString& sFilter = tr("Sysex files (*.%1)").arg(sExt);
 	#if 0//QT_VERSION < 0x040400
 		// Ask for the filename to save...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions->bDontUseNativeDialog)
+			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,
-			sTitle, sFilename, sFilter);
+			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file dialog...
 		QFileDialog fileDialog(this,
@@ -502,6 +520,8 @@ void qtractorMidiSysexForm::saveSlot (void)
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 		fileDialog.setSidebarUrls(urls);
+		if (pOptions->bDontUseNativeDialog)
+			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		// Show dialog...
 		if (fileDialog.exec())
 			sFilename = fileDialog.selectedFiles().first();

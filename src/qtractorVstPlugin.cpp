@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1302,16 +1302,18 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 				.arg(pvfs->fileTypes[i].name).arg(pvfs->fileTypes[i].dosType));
 		}
         filters.append(QObject::tr("All files (*.*)"));
-		QString sFilter = filters.join(";;");
-		QString sDirectory = pvfs->initialPath;
-		QString sTitle = QString("%1 - %2")
+		QWidget *pParentWidget = pVstPlugin->editorWidget();
+		const QString& sTitle = QString("%1 - %2")
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
+		const QString& sDirectory = pvfs->initialPath;
+		const QString& sFilter = filters.join(";;");
+		const QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
 		if (pvfs->command == kVstFileLoad) {
 			sFilename = QFileDialog::getOpenFileName(
-				pVstPlugin->editorWidget(), sTitle, sDirectory, sFilter);
+				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
 		} else {
 			sFilename = QFileDialog::getSaveFileName(
-				pVstPlugin->editorWidget(), sTitle, sDirectory, sFilter);
+				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
 		}
 		if (!sFilename.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
@@ -1324,11 +1326,13 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
     }
 	else
 	if (pvfs->command == kVstDirectorySelect) {
-		QString sDirectory = pvfs->initialPath;
-		QString sTitle = QString("%1 - %2")
+		QWidget *pParentWidget = pVstPlugin->editorWidget();
+		const QString& sTitle = QString("%1 - %2")
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
-		sDirectory = QFileDialog::getExistingDirectory(
-			pVstPlugin->editorWidget(), sTitle, sDirectory);
+		const QString& sDirectory
+			= QFileDialog::getExistingDirectory(
+				pParentWidget, sTitle, pvfs->initialPath,
+				QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog);
 		if (!sDirectory.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
 				pvfs->returnPath = new char [sDirectory.length() + 1];

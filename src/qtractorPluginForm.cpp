@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -536,8 +536,11 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to save...
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialog)
+		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
-		sTitle, pOptions->sPresetDir, sFilter);
+		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(this,
@@ -551,6 +554,8 @@ void qtractorPluginForm::openPresetSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
 	fileDialog.setSidebarUrls(urls);
+	if (pOptions->bDontUseNativeDialog)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
@@ -612,8 +617,11 @@ void qtractorPluginForm::savePresetSlot (void)
 				const QString& sFilter = tr("Preset files (*.%1)").arg(sExt);
 			#if 0//QT_VERSION < 0x040400
 				// Ask for the filename to save...
+				QFileDialog::Options options = 0;
+				if (pOptions->bDontUseNativeDialog)
+					options |= QFileDialog::DontUseNativeDialog;
 				sFilename = QFileDialog::getSaveFileName(this,
-					sTitle, sFilename, sFilter);
+					sTitle, sFilename, sFilter, NULL, options);
 			#else
 				// Construct save-file dialog...
 				QFileDialog fileDialog(this,
@@ -627,6 +635,8 @@ void qtractorPluginForm::savePresetSlot (void)
 				urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 				urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
 				fileDialog.setSidebarUrls(urls);
+				if (pOptions->bDontUseNativeDialog)
+					fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 				// Show dialog...
 				if (fileDialog.exec())
 					sFilename = fileDialog.selectedFiles().first();
