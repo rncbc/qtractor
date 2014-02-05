@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- The following options, although decieved on View/Options... as
+  global configuration options, were always and still are proper
+  session instance properties: (JACK) Transport mode, MMC mode,
+  MMC device, MIDI SPP and MIDI Clock modes, are now shown there
+  reflecting the current open session state.
+
 - A couple of run-time circumventions have been hacked in, both
   strictly related to when NSM session management is in charge:
   1) the new session template feature is disabled (was aborting

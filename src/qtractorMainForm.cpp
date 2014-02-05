@@ -2220,6 +2220,19 @@ bool qtractorMainForm::loadSessionFileEx (
 		// Save as default session directory...
 		if (m_pOptions && bUpdate) {
 			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+			// Save also some Audio engine hybrid-properties...
+			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+			if (pAudioEngine)
+				m_pOptions->iTransportMode = int(pAudioEngine->transportMode());
+			// Save also some MIDI engine hybrid-properties...
+			qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+			if (pMidiEngine) {
+				m_pOptions->iMidiMmcMode   = int(pMidiEngine->mmcMode());
+				m_pOptions->iMidiMmcDevice = pMidiEngine->mmcDevice();
+				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
+				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
+			}
+			// Save it good...
 			m_pOptions->saveOptions();
 		}	
 	} else {
