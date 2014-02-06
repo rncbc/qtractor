@@ -636,6 +636,17 @@ if test "x$ac_libz" = "xyes"; then
    fi
 fi
 
+# Check for LV2 support.
+if test "x$ac_lv2" = "xno"; then
+   ac_lilv="no"
+   ac_lv2_ui="no"
+fi
+
+if test "x$ac_lv2_ui" = "xno"; then
+   ac_suil="no"
+   ac_lv2_external_ui="no"
+fi
+
 # Check for optional liblilv library.
 if test "x$ac_lilv" = "xyes"; then
    AC_CHECK_LIB(lilv-0, main, [ac_lilv="yes"], [ac_lilv="no"])
@@ -648,16 +659,7 @@ if test "x$ac_lilv" = "xyes"; then
    else
       AC_MSG_WARN([*** lilv library not found.])
       ac_lilv="no"
-      ac_suil="no"
    fi
-else
-   ac_suil="no"
-fi
-
-# Check for LV2 support.
-if test "x$ac_lv2_ui" = "xno"; then
-   ac_suil="no"
-   ac_lv2_external_ui="no"
 fi
 
 # Check for LV2 new UI instantiation availability (libsuil).
@@ -672,10 +674,9 @@ if test "x$ac_suil" = "xyes"; then
    else
       AC_MSG_WARN([*** suil library not found.])
       ac_suil="no"
-      ac_lv2_ui="no"
-      ac_lv2_external_ui="no"
    fi
 fi
+
 if test "x$ac_suil" = "xyes"; then
    AC_CHECK_LIB(suil-0, suil_instance_get_handle,
       [ac_suil_instance_get_handle="yes"],
@@ -684,7 +685,6 @@ if test "x$ac_suil" = "xyes"; then
       AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
    fi
 else
-   ac_suil="no"
    ac_lv2_ui="no"
    ac_lv2_external_ui="no"
 fi
