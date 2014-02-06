@@ -162,6 +162,8 @@ qtractorOptionsForm::qtractorOptionsForm (
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Lv2));
+#else
+	m_ui.Lv2DynManifestCheckBox->hide();
 #endif
 
 #ifndef CONFIG_LV2_PRESETS
@@ -408,6 +410,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.DummyVstScanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.Lv2DynManifestCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MessagesFontPushButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesFont()));
@@ -605,6 +610,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
 	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
 	m_ui.DummyVstScanCheckBox->setChecked(m_pOptions->bDummyVstScan);
+	m_ui.Lv2DynManifestCheckBox->setChecked(m_pOptions->bLv2DynManifest);
 
 	int iPluginType = m_pOptions->iPluginType - 1;
 	if (iPluginType < 0)
@@ -705,6 +711,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
 		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
 		m_pOptions->bDummyVstScan        = m_ui.DummyVstScanCheckBox->isChecked();
+		m_pOptions->bLv2DynManifest      = m_ui.Lv2DynManifestCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();
@@ -940,9 +947,7 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 	qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iPluginType));
-#ifdef CONFIG_LV2_PRESETS
-    bool bLv2Enabled = false;
-#endif
+
 	switch (typeHint) {
 	case qtractorPluginType::Ladspa:
 		paths = m_ladspaPaths;
@@ -955,10 +960,7 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 		break;
 	case qtractorPluginType::Lv2:
 		paths = m_lv2Paths;
-    #ifdef CONFIG_LV2_PRESETS
-        bLv2Enabled = true;
-    #endif
-		break;
+		// Fall thru...
 	default:
 		break;
 	}
@@ -967,12 +969,6 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 	QStringListIterator iter(paths);
 	while (iter.hasNext())
 		m_ui.PluginPathListWidget->addItem(iter.next());
-
-#ifdef CONFIG_LV2_PRESETS
-	m_ui.Lv2PresetDirLabel->setEnabled(bLv2Enabled);
-	m_ui.Lv2PresetDirComboBox->setEnabled(bLv2Enabled);
-	m_ui.Lv2PresetDirToolButton->setEnabled(bLv2Enabled);
-#endif
 
 	selectPluginPath();
 	stabilizeForm();

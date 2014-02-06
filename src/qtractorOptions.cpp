@@ -227,6 +227,7 @@ void qtractorOptions::loadOptions (void)
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
 	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
+	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
 	m_settings.endGroup();
 
 	// Instrument file list.
@@ -479,6 +480,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
 	m_settings.setValue("/OpenEditor", bOpenEditor);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
+	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
 	m_settings.endGroup();
 
 	// Instrument file list.

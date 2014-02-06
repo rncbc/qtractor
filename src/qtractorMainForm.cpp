@@ -4702,6 +4702,7 @@ void qtractorMainForm::viewOptions (void)
 #endif
 	QString sOldLv2Path = m_pOptions->lv2Paths.join(sPathSep);
 	QString sOldLv2PresetDir = m_pOptions->sLv2PresetDir;
+	bool    bOldLv2DynManifest = m_pOptions->bLv2DynManifest;
 #endif
 
 	// Check out some initial nullities(tm)...
@@ -4788,6 +4789,10 @@ void qtractorMainForm::viewOptions (void)
 		if ((sOldLv2Path != m_pOptions->lv2Paths.join(sPathSep)) ||
 			(sOldLv2PresetDir != m_pOptions->sLv2PresetDir)) {
 			updatePluginPaths();
+			iNeedRestart |= RestartSession;
+		}
+		if (( bOldLv2DynManifest && !m_pOptions->bLv2DynManifest) ||
+			(!bOldLv2DynManifest &&  m_pOptions->bLv2DynManifest)) {
 			iNeedRestart |= RestartSession;
 		}
 	#endif

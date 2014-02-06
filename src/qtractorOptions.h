@@ -207,6 +207,9 @@ public:
 	// VST dummy plugin scan option.
 	bool bDummyVstScan;
 
+	// LV2 plugin specific options.
+	bool bLv2DynManifest;
+
 	// The instrument file list.
 	QStringList instrumentFiles;
 

@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1323,10 +1323,13 @@ void qtractorLv2PluginType::lv2_open (void)
 
 	g_lv2_world = lilv_world_new();
 
-	// Set dyn-manifest support option...
-	LilvNode *dyn_manifest = lilv_new_bool(g_lv2_world, true);
-	lilv_world_set_option(g_lv2_world, LILV_OPTION_DYN_MANIFEST, dyn_manifest);
-	lilv_node_free(dyn_manifest);
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bLv2DynManifest) {
+		// Set dyn-manifest support option...
+		LilvNode *dyn_manifest = lilv_new_bool(g_lv2_world, true);
+		lilv_world_set_option(g_lv2_world, LILV_OPTION_DYN_MANIFEST, dyn_manifest);
+		lilv_node_free(dyn_manifest);
+	}
 
 	// Find all installed plugins.
 	lilv_world_load_all(g_lv2_world);

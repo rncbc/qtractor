@@ -196,7 +196,7 @@
             <property name="sizeHint">
              <size>
               <width>20</width>
-			  <height>4</height>
+              <height>4</height>
              </size>
             </property>
            </spacer>
@@ -1421,7 +1421,7 @@
            <widget class="QComboBox" name="MidiCaptureQuantizeComboBox">
             <property name="maximumSize">
              <size>
-			  <width>120</width>
+              <width>120</width>
               <height>32767</height>
              </size>
             </property>
@@ -3325,6 +3325,25 @@
             </property>
             <property name="shortcut">
              <string>Alt+V</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether LV2 Dynamic Manifest plugins are supported</string>
+            </property>
+            <property name="text">
+             <string>LV2 Dynamic &amp;Manifest support</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+M</string>
             </property>
            </widget>
           </item>
