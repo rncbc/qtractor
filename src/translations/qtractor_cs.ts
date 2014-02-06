@@ -10945,6 +10945,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1333"/>
+        <location filename="../qtractorOptionsForm.ui" line="3346"/>
         <source>Alt+N</source>
         <translation>Alt+N</translation>
     </message>
@@ -11409,7 +11410,6 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2678"/>
         <location filename="../qtractorOptionsForm.ui" line="2821"/>
-        <location filename="../qtractorOptionsForm.ui" line="3346"/>
         <source>Alt+M</source>
         <translation>Alt+M</translation>
     </message>
@@ -11587,7 +11587,7 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3343"/>
-        <source>LV2 Dynamic &amp;Manifest support</source>
+        <source>LV2 Dy&amp;namic Manifest support</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
