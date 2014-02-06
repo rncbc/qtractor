@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Dyn(amic)-manifest support is now optional (default=off);
+  cf. View/Options.../Plugins/Experimental/LV2 Dynamic Manifest
+  support).
+
 - The following options, although decieved on View/Options... as
   global configuration options, were always and still are proper
   session instance properties: (JACK) Transport mode, MMC mode,
