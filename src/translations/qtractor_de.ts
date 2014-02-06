@@ -9559,6 +9559,7 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1333"/>
+        <location filename="../qtractorOptionsForm.ui" line="3346"/>
         <source>Alt+N</source>
         <translation>Alt+U</translation>
     </message>
@@ -9997,7 +9998,6 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2678"/>
         <location filename="../qtractorOptionsForm.ui" line="2821"/>
-        <location filename="../qtractorOptionsForm.ui" line="3346"/>
         <source>Alt+M</source>
         <translation>Alt+M</translation>
     </message>
@@ -10189,7 +10189,7 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3343"/>
-        <source>LV2 Dynamic &amp;Manifest support</source>
+        <source>LV2 Dy&amp;namic Manifest support</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
