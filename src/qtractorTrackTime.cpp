@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -745,7 +745,7 @@ void qtractorTrackTime::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
 		const int delta = pWheelEvent->delta();
-		if (delta > 0)
+		if (delta < 0)
 			m_pTracks->zoomIn();
 		else
 			m_pTracks->zoomOut();

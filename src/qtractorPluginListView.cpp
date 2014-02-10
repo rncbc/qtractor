@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -383,7 +383,7 @@ void qtractorPluginListView::clear (void)
 // Get an item index, given the plugin reference...
 int qtractorPluginListView::pluginItem ( qtractorPlugin *pPlugin )
 {
-	int iItemCount = QListWidget::count();
+	const int iItemCount = QListWidget::count();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		qtractorPluginListItem *pItem
 			= static_cast<qtractorPluginListItem *> (QListWidget::item(iItem));
@@ -740,7 +740,7 @@ void qtractorPluginListView::moveUpPlugin (void)
 	if (pItem == NULL)
 		return;
 
-	int iNextItem = QListWidget::row(pItem) - 1;
+	const int iNextItem = QListWidget::row(pItem) - 1;
 	if (iNextItem < 0)
 		return;
 
@@ -765,7 +765,7 @@ void qtractorPluginListView::moveDownPlugin (void)
 	if (pItem == NULL)
 		return;
 
-	int iNextItem = QListWidget::row(pItem) + 1;
+	const int iNextItem = QListWidget::row(pItem) + 1;
 	if (iNextItem >= QListWidget::count())
 		return;
 
@@ -797,7 +797,7 @@ void qtractorPluginListView::directAccessPlugin (void)
 	if (pAction == NULL)
 		return;
 
-	int iDirectAccessParamIndex = pAction->data().toInt();
+	const int iDirectAccessParamIndex = pAction->data().toInt();
 
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -1078,7 +1078,7 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 		if (pDirectAccessObserver) {
 			const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
 			float fValue = pDirectAccessObserver->value();
-			float fScale = pDirectAccessObserver->scaleFromValue(
+			const float fScale = pDirectAccessObserver->scaleFromValue(
 				fValue, bLogarithmic);
 			float fDelta = (pWheelEvent->delta() < 0 ? -0.1f : +0.1f);
 			if (!pDirectAccessParam->isInteger())
@@ -1218,7 +1218,7 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 
 bool qtractorPluginListView::canDropItem (  QDropEvent *pDropEvent  )
 {
-	bool bCanDropItem = canDropEvent(pDropEvent);
+	const bool bCanDropItem = canDropEvent(pDropEvent);
 	
 	if (bCanDropItem)
 		moveRubberBand(m_pDropItem);
@@ -1233,7 +1233,7 @@ bool qtractorPluginListView::canDropItem (  QDropEvent *pDropEvent  )
 // Ensure given item is brought to viewport visibility...
 void qtractorPluginListView::ensureVisibleItem ( qtractorPluginListItem *pItem )
 {
-	int iItem = QListWidget::row(pItem);
+	const int iItem = QListWidget::row(pItem);
 	if (iItem > 0) {
 		qtractorPluginListItem *pItemAbove
 			= static_cast<qtractorPluginListItem *> (
@@ -1403,10 +1403,10 @@ void qtractorPluginListView::contextMenuEvent (
 	QMenu menu(this);
 	QAction *pAction;
 
-	int iItem = -1;
-	int iItemCount = QListWidget::count();
-	bool bEnabled  = (iItemCount > 0);
+	const int iItemCount = QListWidget::count();
+	const bool bEnabled  = (iItemCount > 0);
 
+	int iItem = -1;
 	qtractorPlugin *pPlugin = NULL;
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
@@ -1430,7 +1430,7 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("Add &Aux Send"), this, SLOT(addAuxSendPlugin()));
 	pAction->setEnabled(m_pPluginList->channels() > 0);
 	pInsertMenu->addSeparator();
-	bool bInsertEnabled = (pPlugin
+	const bool bInsertEnabled = (pPlugin
 		&& (pPlugin->type())->typeHint() == qtractorPluginType::Insert);
 	pAction = pInsertMenu->addAction(
 		QIcon(":/images/itemAudioPortOut.png"),
@@ -1449,14 +1449,14 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setChecked(pPlugin && pPlugin->isActivated());
 	pAction->setEnabled(pPlugin != NULL);
 
-	bool bActivatedAll = m_pPluginList->isActivatedAll();
+	const bool bActivatedAll = m_pPluginList->isActivatedAll();
 	pAction = menu.addAction(
 		tr("Acti&vate All"), this, SLOT(activateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bActivatedAll);
 	pAction->setEnabled(bEnabled && !bActivatedAll);
 
-	bool bDeactivatedAll = (m_pPluginList->activated() < 1);
+	const bool bDeactivatedAll = (m_pPluginList->activated() < 1);
 	pAction = menu.addAction(
 		tr("Deactivate Al&l"), this, SLOT(deactivateAllPlugins()));
 	pAction->setCheckable(true);
@@ -1490,20 +1490,20 @@ void qtractorPluginListView::contextMenuEvent (
 
 	QMenu *pDirectAccessParamMenu = menu.addMenu("Dire&ct Access");
 	if (pPlugin) {
-		int iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
+		const int iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
 		const qtractorPlugin::Params& params = pPlugin->params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
 			qtractorPluginParam *pParam = param.value();
-			int iParamIndex = int(param.key());
+			const int iParamIndex = int(param.key());
 			pAction = pDirectAccessParamMenu->addAction(
 				pParam->name(), this, SLOT(directAccessPlugin()));
 			pAction->setCheckable(true);
 			pAction->setChecked(iDirectAccessParamIndex == iParamIndex);
 			pAction->setData(iParamIndex);
 		}
-		bool bParams = (params.count() > 0);
+		const bool bParams = (params.count() > 0);
 		if (bParams) {
 			pDirectAccessParamMenu->addSeparator();
 			pAction = pDirectAccessParamMenu->addAction(
@@ -1639,9 +1639,11 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 		.adjusted(QListWidget::iconSize().width(), 1, -2, -2);
 
 	if (m_dragState == DragNone) {
-		float fValue = pDirectAccessParam->value();
-		float fScale = pDirectAccessObserver->scaleFromValue(fValue, bLogarithmic);
-		int x = rectItem.x() + int(fScale * float(iDirectAccessWidth));
+		const float fValue
+			= pDirectAccessParam->value();
+		const float fScale
+			= pDirectAccessObserver->scaleFromValue(fValue, bLogarithmic);
+		const int x = rectItem.x() + int(fScale * float(iDirectAccessWidth));
 		if (pos.x() > x - 5 && pos.x() < x + 5) {
 			m_dragCursor = DragDirectAccess;
 			QListWidget::setCursor(QCursor(Qt::PointingHandCursor));
@@ -1652,8 +1654,10 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 	}
 	else
 	if (m_dragState == DragDirectAccess) {
-		float fScale = float(pos.x() - rectItem.x()) / float(iDirectAccessWidth);
-		float fValue = pDirectAccessObserver->valueFromScale(fScale, bLogarithmic);
+		const float fScale
+			= float(pos.x() - rectItem.x()) / float(iDirectAccessWidth);
+		const float fValue
+			= pDirectAccessObserver->valueFromScale(fScale, bLogarithmic);
 		pDirectAccessParam->updateValue(fValue, true);
 		QWidget *pViewport = QListWidget::viewport();
 		QToolTip::showText(pViewport->mapToGlobal(pos),
