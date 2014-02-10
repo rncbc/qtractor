@@ -1604,30 +1604,13 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 		}
-		if (m_bCurveEdit) {
-			if (!bModifier)
-				clearSelect();
-	#if 0//TEST_DRAG_CURVE_NODE
-			if ((m_dragCursor == DragCurveNode) ||
-				(m_dragCursor == DragNone && !bModifier))
-				if ((modifiers & Qt::ControlModifier) == 0)
-					dragCurveNode(pos, false);
-	#endif
-		}
-	#if 0//TEST_DRAG_CURVE_NODE
-		if (m_dragCursor == DragCurveNode) {
-			if (m_pDragCurve && m_pDragCurveNode) {
-				m_dragState = DragStart;//DragCurveNode;
-				m_posDrag   = pos;
-				m_pClipDrag = NULL;
-			}
-	#else
+		if (m_bCurveEdit && !bModifier)
+			clearSelect();
 		if (m_dragCursor == DragCurveNode
 			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
 			m_dragState = DragStart;//DragCurveNode;
 			m_posDrag   = pos;
 			m_pClipDrag = NULL;
-	#endif
 		//	qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
 		}
@@ -1896,32 +1879,16 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				// Nothing more has been deferred...
 			} else {
 				// As long we're editing curve/automation...
-			#if 0//TEST_DRAG_CURVE_NODE
-				if (m_bCurveEdit
-					&& (m_dragCursor == DragCurveNode
-					 || m_dragCursor == DragCurveMove)) {
-					if (modifiers & Qt::ControlModifier)
-						dragCurveNode(pos, true);
-			#else
-				if (m_bCurveEdit) {
+				if (m_bCurveEdit)
 					dragCurveNode(pos, modifiers & Qt::ControlModifier);
-			#endif
-				}
 				// As long we're not editing anything...
-				if (m_dragCursor == DragNone) {
-					// Direct play-head positioning...
-					if (bModifier) {
-						// First, set actual engine position...
-						pSession->setPlayHead(iFrame);
-						// Play-head positioning...
-						setPlayHead(iFrame);
-						// Done with (deferred) play-head positioning.
-					#if 0
-					} else {
-						// Deferred left-button edit-head positioning...
-						setEditHead(iFrame);
-					#endif
-					}
+				if (m_dragCursor == DragNone && bModifier) {
+					// Direct play-head positioning:
+					// first, set actual engine position...
+					pSession->setPlayHead(iFrame);
+					// Play-head positioning...
+					setPlayHead(iFrame);
+					// Done with (deferred) play-head positioning.
 				}
 			}
 			// Fall thru...
@@ -3123,8 +3090,8 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 
 	// Reset cursor if any persist around.
 	if (m_dragCursor != DragNone) {
-		qtractorScrollView::unsetCursor();
 		m_dragCursor  = DragNone;
+		qtractorScrollView::unsetCursor();
 	}
 
 	return false;
