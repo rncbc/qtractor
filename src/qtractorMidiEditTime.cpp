@@ -707,7 +707,7 @@ void qtractorMidiEditTime::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
 		const int delta = pWheelEvent->delta();
-		if (delta < 0)
+		if (delta > 0)
 			m_pEditor->zoomIn();
 		else
 			m_pEditor->zoomOut();
