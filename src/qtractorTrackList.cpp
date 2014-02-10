@@ -1106,7 +1106,8 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorTrackList::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
-		if (pWheelEvent->delta() > 0)
+		const int delta = pWheelEvent->delta();
+		if (delta > 0)
 			m_pTracks->zoomIn();
 		else
 			m_pTracks->zoomOut();

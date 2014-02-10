@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Horizontal scrolling shift+mouse-wheel direction now reversed.
+
 - LV2 Dyn(amic)-manifest support is now optional (default=off);
   cf. View/Options.../Plugins/Experimental/LV2 Dynamic Manifest
   support).

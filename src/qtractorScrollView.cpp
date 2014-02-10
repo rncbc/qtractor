@@ -1,7 +1,7 @@
 // qtractorScrollView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -173,7 +173,7 @@ void qtractorScrollView::wheelEvent ( QWheelEvent *pWheelEvent )
 	if (pWheelEvent->modifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier)) {
 		setContentsPos(
-			m_rectContents.x() + pWheelEvent->delta(),
+			m_rectContents.x() - pWheelEvent->delta(),
 			m_rectContents.y());
 	}
 	else QAbstractScrollArea::wheelEvent(pWheelEvent);

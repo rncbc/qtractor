@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -706,7 +706,7 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 void qtractorMidiEditTime::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
-		int delta = pWheelEvent->delta();
+		const int delta = pWheelEvent->delta();
 		if (delta > 0)
 			m_pEditor->zoomIn();
 		else
