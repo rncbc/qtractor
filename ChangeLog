@@ -26,7 +26,7 @@ SVN TRUNK
   first time invocation).
 
 - Update current automation/curve nodes selection while changing
-  horizontal (time axis) zoom levels. (EXPERIMENTAL)
+  horizontal (time axis) zoom levels.
 
 - One liner's attempt to make it consistent behaviour on resizing
   and moving multiple selected notes or events while on the MIDI
