@@ -3765,16 +3765,16 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	const int wm = (w >> 3);
 
 	// Time-line header extents...
-	const int h2 = m_pTracks->trackTime()->height();
-	const int d2 = (h2 >> 1);
+	const int h0 = m_pTracks->trackTime()->height();
+	const int d0 = (h0 >> 1);
 
 	// Restore old position...
 	int x1 = iPositionX - x0;
-	if (iPositionX != x && x1 >= 0 && x1 < w + d2) {
+	if (iPositionX != x && x1 >= 0 && x1 < w + d0) {
 		// Override old view line...
 		qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
 		((m_pTracks->trackTime())->viewport())->update(
-			QRect(x1 - d2, d2, h2, d2));
+			QRect(x1 - d0, d0, h0, d0));
 	}
 
 	// New position is in...
@@ -3782,21 +3782,21 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 
 	// Force position to be in view?
 	if (bSyncView && (x < x0 || x > x0 + w - wm)
-		&& m_dragState == DragNone && m_dragCursor == DragNone) {
-		 // Maybe we'll need some head-room...
+		&& m_dragState == DragNone && m_dragCursor == DragNone
+		&& QApplication::mouseButtons() == Qt::NoButton) {
+		// Maybe we'll need some head-room...
 		if (x < qtractorScrollView::contentsWidth() - w) {
 			qtractorScrollView::setContentsPos(
 				x - wm, qtractorScrollView::contentsY());
 		}
 		else updateContentsWidth(x + w);
-	}
-	else {
+	} else {
 		// Draw the line, by updating the new region...
 		x1 = x - x0;
-		if (x1 >= 0 && x1 < w + d2) {
+		if (x1 >= 0 && x1 < w + d0) {
 			qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
 			((m_pTracks->trackTime())->viewport())->update(
-				QRect(x1 - d2, d2, h2, d2));
+				QRect(x1 - d0, d0, h0, d0));
 		}
 	}
 }

@@ -1362,7 +1362,8 @@ void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView 
 
 	// Force position to be in view?
 	if (bSyncView && (x < x0 || x > x0 + w - wm)
-		&& m_dragState == DragNone && m_dragCursor == DragNone) {
+		&& m_dragState == DragNone && m_dragCursor == DragNone
+		&& QApplication::mouseButtons() == Qt::NoButton) {
 		// Move it...
 		m_pEditView->setContentsPos(x - wm, m_pEditView->contentsY());
 	} else {
