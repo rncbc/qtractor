@@ -219,7 +219,7 @@ public:
 			m_pVstPlugin = NULL;
 		}
 
-		int iIndex = g_vstEditors.indexOf(this);
+		const int iIndex = g_vstEditors.indexOf(this);
 		if (iIndex >= 0)
 			g_vstEditors.removeAt(iIndex);
 	}
@@ -275,6 +275,9 @@ protected:
 			(m_pVstPlugin->form())->toggleEditor(false);
 
 		QWidget::closeEvent(pCloseEvent);
+
+		if (m_pVstPlugin)
+			m_pVstPlugin->closeEditor();
 	}
 
 	void moveEvent(QMoveEvent *pMoveEvent)
@@ -989,7 +992,7 @@ void qtractorVstPlugin::idleEditor (void)
 	if (m_pEditorWidget == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorVstPlugin[%p]::idleEditor()", this);
 #endif
 
