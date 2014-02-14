@@ -947,7 +947,7 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
 		const float val = *(float *) value;
-		unsigned long port_index = lilv_port_get_index(plugin, port);
+		const unsigned long port_index = lilv_port_get_index(plugin, port);
 		pLv2Plugin->updateParamValue(port_index, val, true);
 	}
 
@@ -1920,11 +1920,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				const LilvPort *port = lilv_plugin_get_port_by_designation(
 					plugin, g_lv2_input_class, member.node);
 				if (port) {
-					unsigned long index = lilv_port_get_index(plugin, port);
+					const unsigned long iIndex = lilv_port_get_index(plugin, port);
 					qtractorLv2PluginParam *pParam
-						= static_cast<qtractorLv2PluginParam *> (findParam(index));
+						= static_cast<qtractorLv2PluginParam *> (findParam(iIndex));
 					if (pParam) {
-						m_lv2_time_ports.insert(index, i);
+						m_lv2_time_ports.insert(iIndex, i);
 						member.params->append(pParam);
 					}
 				}
@@ -2502,7 +2502,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
 			qtractorPluginParam *pParam = param.value();
-			float fValue = pParam->value();
+			const float fValue = pParam->value();
 			suil_instance_port_event(m_suil_instance,
 				pParam->index(), sizeof(float), 0, &fValue);
 		}
@@ -2784,7 +2784,7 @@ void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 #ifdef CONFIG_LV2_ATOM
 	if (protocol == g_lv2_atom_event_type) {
 		char buf[sizeof(ControlEvent) + buffer_size];
-		ControlEvent* ev = (ControlEvent *) buf;
+		ControlEvent *ev = (ControlEvent *) buf;
 		ev->index    = port_index;
 		ev->protocol = protocol;
 		ev->size     = buffer_size;
@@ -2847,6 +2847,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 
 #endif	// CONFIG_LV2_STATE
 }
+
 
 // Plugin configuration/state (load) realization.
 void qtractorLv2Plugin::realizeConfigs (void)
