@@ -1,7 +1,7 @@
 // qtractorMidiRpn.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -467,7 +467,11 @@ public:
 protected:
 
 	xrpn_item& get_item ( int port, unsigned short channel )
-		{ return m_cache[(port << 4) | channel]; }
+	{
+		xrpn_item& item = m_cache[(port << 4) | channel];
+		item.set_port(port);
+		return item;
+	}
 
 	void enqueue ( xrpn_item& item )
 	{
