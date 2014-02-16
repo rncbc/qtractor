@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -603,9 +603,7 @@ bool qtractorDummyPluginType::open (void)
 	m_sName  = QFileInfo(filename()).baseName();
 	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 
-	m_iUniqueID = 0;
-	for (int i = 0; i < m_sLabel.length(); ++i)
-		m_iUniqueID += int(m_sLabel[i].toLatin1());
+	m_iUniqueID = qHash(m_sLabel);
 
 	// Fake the rest...
 	m_iAudioIns  = 2;
@@ -641,17 +639,12 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 // Constructors.
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
-	: m_pList(pList), m_pType(pType), m_iInstances(0),
+	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
 		m_bActivated(false), m_pForm(NULL), m_iDirectAccessParamIndex(-1)
 {
-#if 0
-	// Open this...
-	if (m_pType) {
-		qtractorPluginFile *pFile = m_pType->file();
-		if (pFile && pFile->open())
-			m_pType->open();
-	}
-#endif
+	// Acquire a local unique id in chain...
+	if (m_pList && m_pType)
+		m_iUniqueID = m_pList->createUniqueID(m_pType);
 }
 
 
@@ -1211,6 +1204,257 @@ void qtractorPlugin::updateParamValue (
 }
 
 
+// Load plugin parameter controllers (MIDI).
+void qtractorPlugin::loadControllers (
+	QDomElement *pElement, qtractorMidiControl::Controllers& controllers )
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	pMidiControl->loadControllers(pElement, controllers);
+}
+
+
+// Save plugin parameter controllers (MIDI).
+void qtractorPlugin::saveControllers (
+	qtractorDocument *pDocument, QDomElement *pElement ) const
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	qtractorMidiControl::Controllers controllers;
+	Params::ConstIterator param = m_params.constBegin();
+	const Params::ConstIterator param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param) {
+		qtractorPluginParam *pParam = param.value();
+		qtractorMidiControlObserver *pObserver = pParam->observer();
+		if (pMidiControl->isMidiObserverMapped(pObserver)) {
+			qtractorMidiControl::Controller *pController
+				= new qtractorMidiControl::Controller;
+			pController->name = pParam->name();
+			pController->index = pParam->index();
+			pController->ctype = pObserver->type();
+			pController->channel = pObserver->channel();
+			pController->param = pObserver->param();
+			pController->logarithmic = pObserver->isLogarithmic();
+			pController->feedback = pObserver->isFeedback();
+			pController->invert = pObserver->isInvert();
+			pController->hook = pObserver->isHook();
+			controllers.append(pController);
+		}
+	}
+
+	pMidiControl->saveControllers(pDocument, pElement, controllers);
+
+	qDeleteAll(controllers);
+}
+
+
+// Map/realize plugin parameter controllers (MIDI).
+void qtractorPlugin::mapControllers (
+	const qtractorMidiControl::Controllers& controllers )
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl) {
+		QListIterator<qtractorMidiControl::Controller *> iter(controllers);
+		while (iter.hasNext()) {
+			qtractorMidiControl::Controller *pController = iter.next();
+			qtractorPluginParam *pParam = findParam(pController->index);
+			if (pParam == NULL)
+				continue;
+			qtractorMidiControlObserver *pObserver = pParam->observer();
+			pObserver->setType(pController->ctype);
+			pObserver->setChannel(pController->channel);
+			pObserver->setParam(pController->param);
+			pObserver->setLogarithmic(pController->logarithmic);
+			pObserver->setFeedback(pController->feedback);
+			pObserver->setInvert(pController->invert);
+			pObserver->setHook(pController->hook);
+			pMidiControl->mapMidiObserver(pObserver);
+		}
+	}
+}
+
+
+// Load plugin automation curves (monitor, gain, pan, record, mute, solo).
+void qtractorPlugin::loadCurveFile (
+	QDomElement *pElement, qtractorCurveFile *pCurveFile )
+{
+	if (pCurveFile) pCurveFile->load(pElement);
+}
+
+
+// Save plugin automation curves (monitor, gain, pan, record, mute, solo).
+void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
+	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+{
+	if (pCurveFile == NULL)
+		return;
+
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pCurveFile->clear();
+	pCurveFile->setBaseDir(pSession->sessionDir());
+	
+	unsigned short iParam = 0;
+	Params::ConstIterator param = m_params.constBegin();
+	const Params::ConstIterator param_end = m_params.constEnd();
+	for ( ; param != param_end; ++param) {
+		qtractorPluginParam *pParam = param.value();
+		qtractorCurve *pCurve = pParam->subject()->curve();
+		if (pCurve) {
+			unsigned short controller = (iParam % 0x7f);
+			if (controller == 0x00 || controller == 0x20)
+				++iParam; // Avoid bank-select controllers, please.
+			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+			pCurveItem->name = pParam->name();
+			pCurveItem->index = pParam->index();
+			pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
+			pCurveItem->channel = ((iParam / 0x7f) % 16);
+			pCurveItem->param = (iParam % 0x7f);
+			pCurveItem->mode = pCurve->mode();
+			pCurveItem->process = pCurve->isProcess();
+			pCurveItem->capture = pCurve->isCapture();
+			pCurveItem->locked = pCurve->isLocked();
+			pCurveItem->logarithmic = pCurve->isLogarithmic();
+			pCurveItem->color = pCurve->color();
+			pCurveItem->subject = pCurve->subject();
+			pCurveFile->addItem(pCurveItem);
+			++iParam;
+		}
+	}
+
+	if (pCurveFile->isEmpty())
+		return;
+
+	QString sBaseName(list()->name());
+	sBaseName += '_';
+	sBaseName += type()->label();
+	sBaseName += '_';
+	sBaseName += QString::number(uniqueID(), 16);
+	sBaseName += "_curve";
+//	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", 1));
+
+	pCurveFile->save(pDocument, pElement, pSession->timeScale());
+}
+
+
+// Apply plugin automation curves (monitor, gain, pan, record, mute, solo).
+void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
+{
+	if (pCurveFile == NULL)
+		return;
+	if (pCurveFile->items().isEmpty())
+		return;
+
+	qtractorCurveList *pCurveList = pCurveFile->list();
+	if (pCurveList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pCurveFile->setBaseDir(pSession->sessionDir());
+
+	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
+	while (iter.hasNext()) {
+		qtractorCurveFile::Item *pCurveItem = iter.next();
+		qtractorPluginParam *pParam = findParam(pCurveItem->index);
+		if (pParam)
+			pCurveItem->subject = pParam->subject();
+	}
+
+	pCurveFile->apply(pSession->timeScale());
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorPluginParam -- Plugin parameter (control input port) instance.
+//
+
+// Current port value.
+void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
+{
+	// Decimals caching....
+	if (m_iDecimals < 0) {
+		m_iDecimals = 0;
+		if (!isInteger()) {
+			float fDecs = ::log10f(maxValue() - minValue());
+			if (fDecs < -3.0f)
+				m_iDecimals = 6;
+			else if (fDecs < 0.0f)
+				m_iDecimals = 3;
+			else if (fDecs < 1.0f)
+				m_iDecimals = 2;
+			else if (fDecs < 6.0f)
+				m_iDecimals = 1;
+			if (isLogarithmic())
+				++m_iDecimals;
+		}
+	}
+
+	// Sanitize value...
+	if (isBoundedAbove() && fValue > maxValue())
+		fValue = maxValue();
+	else
+	if (isBoundedBelow() && fValue < minValue())
+		fValue = minValue();
+
+	m_observer.setValue(fValue);
+
+	// Update specifics.
+	if (bUpdate) m_pPlugin->updateParam(this, fValue, true);
+
+	if (m_pPlugin->directAccessParamIndex() == long(m_iIndex))
+		m_pPlugin->updateDirectAccessParam();
+}
+
+
+void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPluginParam[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
+#endif
+
+	// Make it a undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		pSession->execute(
+			new qtractorPluginParamCommand(this, fValue, bUpdate));
+	}
+}
+
+
+// Constructor.
+qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
+	: qtractorMidiControlObserver(pParam->subject()), m_pParam(pParam)
+{
+	setCurveList((pParam->plugin())->list()->curveList());
+}
+
+
+// Virtual observer updater.
+void qtractorPluginParam::Observer::update ( bool bUpdate )
+{
+	qtractorMidiControlObserver::update(bUpdate);
+
+	qtractorPlugin *pPlugin = m_pParam->plugin();
+	if (bUpdate && pPlugin->directAccessParamIndex() == long(m_pParam->index()))
+		pPlugin->updateDirectAccessParam();
+	pPlugin->updateParam(m_pParam, qtractorMidiControlObserver::value(), bUpdate);
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorPluginList -- Plugin chain list instance.
 //
@@ -1314,7 +1558,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		}
 	}
 
-    // Allocate new MIDI manager, if applicable...
+	// Allocate new MIDI manager, if applicable...
 	if (m_iFlags & Midi) {
 		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
@@ -1620,6 +1864,7 @@ bool qtractorPluginList::loadElement (
 		else
 		if (ePlugin.tagName() == "plugin") {
 			QString sFilename;
+			unsigned long iUniqueID = 0;
 			unsigned long iIndex = 0;
 			QString sLabel;
 			QString sPreset;
@@ -1643,6 +1888,9 @@ bool qtractorPluginList::loadElement (
 					continue;
 				if (eParam.tagName() == "filename")
 					sFilename = eParam.text();
+				else
+				if (eParam.tagName() == "unique-id")
+					iUniqueID = eParam.text().toULong();
 				else
 				if (eParam.tagName() == "index")
 					iIndex = eParam.text().toULong();
@@ -1694,6 +1942,8 @@ bool qtractorPluginList::loadElement (
 				} while (pPlugin && (pPlugin->type())->label() != sLabel);
 			}
 			if (pPlugin) {
+				if (iUniqueID > 0)
+					pPlugin->setUniqueID(iUniqueID);
 				pPlugin->setPreset(sPreset);
 				pPlugin->setConfigs(configs);
 				pPlugin->setConfigTypes(ctypes);
@@ -1769,6 +2019,10 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			pDocument->saveTextElement("filename",
 				sFilename, &ePlugin);
 		}
+		if (isUniqueID(pType)) {
+			pDocument->saveTextElement("unique-id",
+				QString::number(pPlugin->uniqueID()), &ePlugin);
+		}
 		pDocument->saveTextElement("index",
 			QString::number(pType->index()), &ePlugin);
 		pDocument->saveTextElement("label",
@@ -1803,7 +2057,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			pPlugin->saveCurveFile(pDocument, &eCurveFile, &cfile);
 			ePlugin.appendChild(eCurveFile);
 		}
-	
+
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
 
@@ -1838,254 +2092,20 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 }
 
 
-// Load plugin parameter controllers (MIDI).
-void qtractorPlugin::loadControllers (
-	QDomElement *pElement, qtractorMidiControl::Controllers& controllers )
+// Acquire a unique plugin identifier in chain.
+unsigned long qtractorPluginList::createUniqueID ( qtractorPluginType *pType )
 {
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
-		return;
-
-	pMidiControl->loadControllers(pElement, controllers);
+	const unsigned long k = pType->uniqueID();
+	const unsigned int i = m_uniqueIDs.value(k, 0);
+	m_uniqueIDs.insert(k, i + 1);
+	return k + i;
 }
 
 
-// Save plugin parameter controllers (MIDI).
-void qtractorPlugin::saveControllers (
-	qtractorDocument *pDocument, QDomElement *pElement ) const
+// Whether unique plugin identifiers are in chain.
+bool qtractorPluginList::isUniqueID ( qtractorPluginType *pType ) const
 {
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
-		return;
-
-	qtractorMidiControl::Controllers controllers;
-	Params::ConstIterator param = m_params.constBegin();
-	const Params::ConstIterator param_end = m_params.constEnd();
-	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
-		qtractorMidiControlObserver *pObserver = pParam->observer();
-		if (pMidiControl->isMidiObserverMapped(pObserver)) {
-			qtractorMidiControl::Controller *pController
-				= new qtractorMidiControl::Controller;
-			pController->name = pParam->name();
-			pController->index = pParam->index();
-			pController->ctype = pObserver->type();
-			pController->channel = pObserver->channel();
-			pController->param = pObserver->param();
-			pController->logarithmic = pObserver->isLogarithmic();
-			pController->feedback = pObserver->isFeedback();
-			pController->invert = pObserver->isInvert();
-			pController->hook = pObserver->isHook();
-			controllers.append(pController);
-		}
-	}
-
-	pMidiControl->saveControllers(pDocument, pElement, controllers);
-
-	qDeleteAll(controllers);
-}
-
-
-// Map/realize plugin parameter controllers (MIDI).
-void qtractorPlugin::mapControllers (
-	const qtractorMidiControl::Controllers& controllers )
-{
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl) {
-		QListIterator<qtractorMidiControl::Controller *> iter(controllers);
-		while (iter.hasNext()) {
-			qtractorMidiControl::Controller *pController = iter.next();
-			qtractorPluginParam *pParam = findParam(pController->index);
-			if (pParam == NULL)
-				continue;
-			qtractorMidiControlObserver *pObserver = pParam->observer();
-			pObserver->setType(pController->ctype);
-			pObserver->setChannel(pController->channel);
-			pObserver->setParam(pController->param);
-			pObserver->setLogarithmic(pController->logarithmic);
-			pObserver->setFeedback(pController->feedback);
-			pObserver->setInvert(pController->invert);
-			pObserver->setHook(pController->hook);
-			pMidiControl->mapMidiObserver(pObserver);
-		}
-	}
-}
-
-
-// Load plugin automation curves (monitor, gain, pan, record, mute, solo).
-void qtractorPlugin::loadCurveFile (
-	QDomElement *pElement, qtractorCurveFile *pCurveFile )
-{
-	if (pCurveFile) pCurveFile->load(pElement);
-}
-
-
-// Save plugin automation curves (monitor, gain, pan, record, mute, solo).
-void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
-	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
-{
-	if (pCurveFile == NULL)
-		return;
-
-	qtractorCurveList *pCurveList = pCurveFile->list();
-	if (pCurveList == NULL)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	pCurveFile->clear();
-	pCurveFile->setBaseDir(pSession->sessionDir());
-	
-	unsigned short iParam = 0;
-	Params::ConstIterator param = m_params.constBegin();
-	const Params::ConstIterator param_end = m_params.constEnd();
-	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
-		qtractorCurve *pCurve = pParam->subject()->curve();
-		if (pCurve) {
-			unsigned short controller = (iParam % 0x7f);
-			if (controller == 0x00 || controller == 0x20)
-				++iParam; // Avoid bank-select controllers, please.
-			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
-			pCurveItem->name = pParam->name();
-			pCurveItem->index = pParam->index();
-			pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
-			pCurveItem->channel = ((iParam / 0x7f) % 16);
-			pCurveItem->param = (iParam % 0x7f);
-			pCurveItem->mode = pCurve->mode();
-			pCurveItem->process = pCurve->isProcess();
-			pCurveItem->capture = pCurve->isCapture();
-			pCurveItem->locked = pCurve->isLocked();
-			pCurveItem->logarithmic = pCurve->isLogarithmic();
-			pCurveItem->color = pCurve->color();
-			pCurveItem->subject = pCurve->subject();
-			pCurveFile->addItem(pCurveItem);
-			++iParam;
-		}
-	}
-
-	if (pCurveFile->isEmpty())
-		return;
-
-	QString sBaseName(list()->name());
-	sBaseName += '_';
-	sBaseName += type()->label();
-	sBaseName += '_';
-	sBaseName += QString::number(type()->uniqueID(), 16);
-	sBaseName += "_curve";
-//	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", 1));
-
-	pCurveFile->save(pDocument, pElement, pSession->timeScale());
-}
-
-
-// Apply plugin automation curves (monitor, gain, pan, record, mute, solo).
-void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
-{
-	if (pCurveFile == NULL)
-		return;
-	if (pCurveFile->items().isEmpty())
-		return;
-
-	qtractorCurveList *pCurveList = pCurveFile->list();
-	if (pCurveList == NULL)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	pCurveFile->setBaseDir(pSession->sessionDir());
-
-	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
-	while (iter.hasNext()) {
-		qtractorCurveFile::Item *pCurveItem = iter.next();
-		qtractorPluginParam *pParam = findParam(pCurveItem->index);
-		if (pParam)
-			pCurveItem->subject = pParam->subject();
-	}
-
-	pCurveFile->apply(pSession->timeScale());
-}
-
-
-//----------------------------------------------------------------------------
-// qtractorPluginParam -- Plugin parameter (control input port) instance.
-//
-
-// Current port value.
-void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
-{
-	// Decimals caching....
-	if (m_iDecimals < 0) {
-		m_iDecimals = 0;
-		if (!isInteger()) {
-			float fDecs = ::log10f(maxValue() - minValue());
-			if (fDecs < -3.0f)
-				m_iDecimals = 6;
-			else if (fDecs < 0.0f)
-				m_iDecimals = 3;
-			else if (fDecs < 1.0f)
-				m_iDecimals = 2;
-			else if (fDecs < 6.0f)
-				m_iDecimals = 1;
-			if (isLogarithmic())
-				++m_iDecimals;
-		}
-	}
-
-	// Sanitize value...
-	if (isBoundedAbove() && fValue > maxValue())
-		fValue = maxValue();
-	else
-	if (isBoundedBelow() && fValue < minValue())
-		fValue = minValue();
-
-	m_observer.setValue(fValue);
-
-	// Update specifics.
-	if (bUpdate) m_pPlugin->updateParam(this, fValue, true);
-
-	if (m_pPlugin->directAccessParamIndex() == long(m_iIndex))
-		m_pPlugin->updateDirectAccessParam();
-}
-
-
-void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginParam[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
-#endif
-
-	// Make it a undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		pSession->execute(
-			new qtractorPluginParamCommand(this, fValue, bUpdate));
-	}
-}
-
-
-// Constructor.
-qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
-	: qtractorMidiControlObserver(pParam->subject()), m_pParam(pParam)
-{
-	setCurveList((pParam->plugin())->list()->curveList());
-}
-
-
-// Virtual observer updater.
-void qtractorPluginParam::Observer::update ( bool bUpdate )
-{
-	qtractorMidiControlObserver::update(bUpdate);
-
-	qtractorPlugin *pPlugin = m_pParam->plugin();
-	if (bUpdate && pPlugin->directAccessParamIndex() == long(m_pParam->index()))
-		pPlugin->updateDirectAccessParam();
-	pPlugin->updateParam(m_pParam, qtractorMidiControlObserver::value(), bUpdate);
+	return (m_uniqueIDs.value(pType->uniqueID(), 0) > 1);
 }
 
 

@@ -420,7 +420,7 @@ bool qtractorVstPluginType::open (void)
 
 	// Retrieve plugin unique identifier.
 #ifdef CONFIG_VESTIGE_OLD
-	m_iUniqueID = qHash(filename());
+	m_iUniqueID = qHash(m_sLabel);
 #else
 	m_iUniqueID = pVstEffect->uniqueID;
 #endif

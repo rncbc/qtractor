@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- A discretionary plug-in unique identifier have been devised for
+  when more than one from the same type are inserted on a bus or
+  track chain, avoiding destructive clashing of automation data.
+  (EXPERIMENTAL)
+
 - Horizontal scrolling shift+mouse-wheel direction now reversed.
 
 - LV2 Dyn(amic)-manifest support is now optional (default=off);

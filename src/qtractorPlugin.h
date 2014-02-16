@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -90,7 +90,7 @@ public:
 	// Cache accessors.
 	const QString& name()        const { return m_sName;        }
 	const QString& label()       const { return m_sLabel;       }
-	unsigned long  uniqueID()    const { return m_iUniqueID;    }
+	unsigned long uniqueID()     const { return m_iUniqueID;    }
 
 	// Port count accessors..
 	unsigned short controlIns()  const { return m_iControlIns;  }
@@ -122,7 +122,7 @@ protected:
 	QString m_sLabel;
 
 	// Cache unique identifier.
-	unsigned long  m_iUniqueID;
+	unsigned long m_iUniqueID;
 
 	// Cached port counts.
 	unsigned short m_iControlIns;
@@ -411,6 +411,12 @@ public:
 	unsigned short channels() const;
 	bool isMidi() const;
 
+	// Unique ID methods.
+	void setUniqueID(unsigned long iUniqueID)
+		{ m_iUniqueID = iUniqueID; }
+	unsigned long uniqueID() const
+		{ return m_iUniqueID; }
+
 	// Activation methods.
 	void setActivated(bool bActivated);
 	bool isActivated() const
@@ -651,8 +657,13 @@ private:
 	qtractorPluginList *m_pList;
 	qtractorPluginType *m_pType;
 
+	// Unique identifier in chain.
+	unsigned long m_iUniqueID;
+
+	// Number of instances in chain node.
 	unsigned short m_iInstances;
 
+	// Activation flag.
 	bool m_bActivated;
 
 	// List of input control ports (parameters).
@@ -846,6 +857,12 @@ public:
 	MidiProgramSubject *midiProgramSubject() const
 		{ return m_pMidiProgramSubject; }
 
+	// Acquire a unique plugin identifier in chain.
+	unsigned long createUniqueID(qtractorPluginType *pType);
+
+	// Whether unique plugin identifiers are in chain.
+	bool isUniqueID(qtractorPluginType *pType) const;
+
 private:
 
 	// Instance variables.
@@ -883,6 +900,9 @@ private:
 
 	// MIDI bank/program observable subject.
 	MidiProgramSubject *m_pMidiProgramSubject;
+
+	// Plugin registry (chain unique ids.)
+	QHash<unsigned long, unsigned int> m_uniqueIDs;
 };
 
 
