@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Fix port origin on MIDI RPN/NRPN 14-bit controllers input.
+
 - A discretionary plug-in unique identifier have been devised for
   when more than one from the same type are inserted on a bus or
   track chain, avoiding destructive clashing of automation data.
