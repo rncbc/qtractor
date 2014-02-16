@@ -658,7 +658,7 @@ static QString qtractor_lv2_state_prefix ( qtractorLv2Plugin *pLv2Plugin )
 	sPrefix += '-';
 
 	if (sPresetName.isEmpty()) {
-		sPrefix += QString::number(pLv2Plugin->type()->uniqueID(), 16);
+		sPrefix += QString::number(pLv2Plugin->uniqueID(), 16);
 	} else {
 		sPrefix += qtractorSession::sanitize(sPresetName);
 	}
