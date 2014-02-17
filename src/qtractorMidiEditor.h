@@ -321,6 +321,10 @@ public:
 	QString eventToolTip(qtractorMidiEvent *pEvent,
 		long iTimeDelta = 0, int iNoteDelta = 0, int iValueDelta = 0) const;
 
+	// Temporary sync-view/follow-playhead hold state.
+	void setSyncViewHold(bool bSyncViewHold);
+	bool isSyncViewHold() const;
+
 	// Visualize the event selection drag-move.
 	void paintDragState(qtractorScrollView *pScrollView,
 		QPainter *pPainter);
@@ -673,6 +677,9 @@ private:
 	// Snap-to-scale (aka.in-place scale-quantize) stuff.
 	int m_iSnapToScaleKey;
 	int m_iSnapToScaleType;
+
+	// Temporary sync-view/follow-playhead hold state.
+	int m_iSyncViewHold;
 };
 
 

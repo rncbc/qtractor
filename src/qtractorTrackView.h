@@ -242,6 +242,10 @@ public:
 	void setCurveEdit(bool bCurveEdit);
 	bool isCurveEdit() const;
 
+	// Temporary sync-view/follow-playhead hold state.
+	void setSyncViewHold(bool bSyncViewHold);
+	bool isSyncViewHold() const;
+
 protected:
 
 	// Resize event handler.
@@ -539,6 +543,9 @@ private:
 	int m_iDragCurveX;
 
 	qtractorCurveEditCommand *m_pCurveEditCommand;
+
+	// Temporary sync-view/follow-playhead hold state.
+	int m_iSyncViewHold;
 };
 
 

@@ -7725,8 +7725,8 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 #endif
 
 	// Read session edit-head/tails...
-	unsigned long iEditHead = m_pSession->editHead();
-	unsigned long iEditTail = m_pSession->editTail();
+	const unsigned long iEditHead = m_pSession->editHead();
+	const unsigned long iEditTail = m_pSession->editTail();
 
 	// Track-view is due...
 	if (m_pTracks) {

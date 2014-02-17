@@ -69,6 +69,9 @@
 #include <QDrag>
 #endif
 
+// Follow-playhead: maximum iterations on hold.
+#define SYNC_VIEW_HOLD	33
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackView::ClipBoard - Local clipaboard singleton.
@@ -210,6 +213,8 @@ void qtractorTrackView::clear (void)
 	
 	m_iPasteCount  = 0;
 	m_iPastePeriod = 0;
+
+	m_iSyncViewHold = 0;
 
 	if (m_pSessionCursor)
 		delete m_pSessionCursor;
@@ -3783,7 +3788,8 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	// Force position to be in view?
 	if (bSyncView && (x < x0 || x > x0 + w - wm)
 		&& m_dragState == DragNone && m_dragCursor == DragNone
-		&& QApplication::mouseButtons() == Qt::NoButton) {
+		&& QApplication::mouseButtons() == Qt::NoButton
+		&& --m_iSyncViewHold < 0) {
 		// Maybe we'll need some head-room...
 		if (x < qtractorScrollView::contentsWidth() - w) {
 			qtractorScrollView::setContentsPos(
@@ -3831,6 +3837,8 @@ void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 	if (pSession) {
 		if (iEditHead > pSession->editTail())
 			setEditTail(iEditHead);
+		else
+			setSyncViewHold(true);
 		pSession->setEditHead(iEditHead);
 		const int iEditHeadX = pSession->pixelFromFrame(iEditHead);
 		drawPositionX(m_iEditHeadX, iEditHeadX);
@@ -3850,6 +3858,8 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 	if (pSession) {
 		if (iEditTail < pSession->editHead())
 			setEditHead(iEditTail);
+		else
+			setSyncViewHold(true);
 		pSession->setEditTail(iEditTail);
 		const int iEditTailX = pSession->pixelFromFrame(iEditTail);
 		drawPositionX(m_iEditTailX, iEditTailX);
@@ -4951,6 +4961,19 @@ void qtractorTrackView::setCurveEdit ( bool bCurveEdit )
 bool qtractorTrackView::isCurveEdit (void) const
 {
 	return m_bCurveEdit;
+}
+
+
+// Temporary sync-view/follow-playhead hold state.
+void qtractorTrackView::setSyncViewHold ( bool bSyncViewHold )
+{
+	m_iSyncViewHold = (bSyncViewHold ? SYNC_VIEW_HOLD : 0);
+}
+
+
+bool qtractorTrackView::isSyncViewHold (void) const
+{
+	return (m_iSyncViewHold > 0);
 }
 
 

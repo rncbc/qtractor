@@ -1,7 +1,7 @@
 // qtractorMidiThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -291,6 +291,7 @@ void qtractorMidiThumbView::updateView ( int dx )
 	if (cx < 0)
 		cx = 0;
 
+	m_pEditor->setSyncViewHold(true);
 	pEditView->setContentsPos(cx, cy);
 }
 
