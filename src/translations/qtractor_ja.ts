@@ -6249,20 +6249,20 @@ JACK音声サーバー(jackd)が起動し実行されているなら
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="197"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="401"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="403"/>
         <source>Controller files (*.%1)</source>
         <translation>コントローラーファイル(*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="273"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="438"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="453"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="484"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="275"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="445"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="460"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="491"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="274"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="276"/>
         <source>About to remove controller file:
 
 &quot;%1&quot;
@@ -6275,12 +6275,17 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="400"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="402"/>
         <source>Export Controller File</source>
         <translation>コントローラーファイルをエクスポートします</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="439"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="406"/>
+        <source>controller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="446"/>
         <source>The controller file already exists:
 
 &quot;%1&quot;
@@ -6293,7 +6298,7 @@ Do you want to replace it?</source>
 置きかえますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="454"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="461"/>
         <source>Saved controller mappings may not be effective
 the next time you start this program.
 
@@ -6308,23 +6313,23 @@ Do you want to apply to controller files?</source>
 コントローラーファイルを適用しますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="485"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="492"/>
         <source>Controller mappings have been changed.</source>
         <translation>コントローラーマッピングは変更されました。</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="486"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="493"/>
         <source>Do you want to save the changes?</source>
         <translation>変更を保存しますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="676"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="760"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="687"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
         <source>Yes</source>
         <translation>はい</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="760"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
         <source>No</source>
         <translation>いいえ</translation>
     </message>

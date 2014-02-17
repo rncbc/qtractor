@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed some user interface related annoyances while on the MIDI
+  Controllers mappings (ie. View/Controllers...).
+
 - Fix port origin on MIDI RPN/NRPN 14-bit controllers input.
 
 - A discretionary plug-in unique identifier have been devised for

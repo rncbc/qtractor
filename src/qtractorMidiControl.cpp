@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -273,7 +273,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	}
 	else
 	if (key.isParamTrack()) {
-		unsigned short iParam = key.param() & TrackParamMask;
+		const unsigned short iParam = key.param() & TrackParamMask;
 		if (int(ctle.param()) >= iParam)
 			iTrack += int(ctle.param()) - iParam;
 	}
@@ -416,7 +416,7 @@ void qtractorMidiControl::sendTrackController (
 {
 
 	unsigned short iValue = 0;
-	Scale scale(ctype);
+	const Scale scale(ctype);
 
 	switch (command) {
 	case TRACK_GAIN:
@@ -478,7 +478,7 @@ void qtractorMidiControl::sendController (
 void qtractorMidiControl::mapMidiObserver (
 	qtractorMidiControlObserver *pMidiObserver )
 {
-	MapKey key(
+	const MapKey key(
 		pMidiObserver->type(),
 		pMidiObserver->channel(),
 		pMidiObserver->param());
@@ -489,7 +489,7 @@ void qtractorMidiControl::mapMidiObserver (
 void qtractorMidiControl::unmapMidiObserver (
 	qtractorMidiControlObserver *pMidiObserver )
 {
-	MapKey key(
+	const MapKey key(
 		pMidiObserver->type(),
 		pMidiObserver->channel(),
 		pMidiObserver->param());
@@ -556,10 +556,10 @@ bool qtractorMidiControl::loadElement (
 		if (eItem.tagName() == "map") {
 			ControlType ctype
 				= typeFromText(eItem.attribute("type"));
-			unsigned short iChannel
+			const unsigned short iChannel
 				= keyFromText(eItem.attribute("channel"));
 			unsigned short iParam = 0;
-			bool bOldMap = (ctype == ControlType(0));
+			const bool bOldMap = (ctype == ControlType(0));
 			bool bOldTrackParam = false;
 			if (bOldMap) {
 				ctype  = qtractorMidiEvent::CONTROLLER;

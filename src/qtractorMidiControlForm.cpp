@@ -195,6 +195,7 @@ void qtractorMidiControlForm::importSlot (void)
 	const QString  sExt("qtc");
 	const QString& sTitle  = tr("Import Controller Files") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
+
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
@@ -209,6 +210,7 @@ void qtractorMidiControlForm::importSlot (void)
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFiles);
+	fileDialog.setHistory(pOptions->midiControlFiles);
 	fileDialog.setDefaultSuffix(sExt);
 	// Stuff sidebar...
 	QList<QUrl> urls(fileDialog.sidebarUrls());
@@ -399,20 +401,25 @@ void qtractorMidiControlForm::exportSlot (void)
 	const QString  sExt("qtc");
 	const QString& sTitle  = tr("Export Controller File") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
+
+	const QString& sMidiControlPath // default directory/path...
+		= QFileInfo(pOptions->sMidiControlDir, tr("controller") + '.' + sExt)
+			.absoluteFilePath();
+
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialog)
 		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
-		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
+		sTitle, sMidiControlPath, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
-		sTitle, pOptions->sMidiControlDir, sFilter);
+	QFileDialog fileDialog(this, sTitle, sMidiControlPath, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 	fileDialog.setFileMode(QFileDialog::AnyFile);
+	fileDialog.setHistory(pOptions->midiControlFiles);
 	fileDialog.setDefaultSuffix(sExt);
 	// Stuff sidebar...
 	QList<QUrl> urls(fileDialog.sidebarUrls());
@@ -500,7 +507,7 @@ void qtractorMidiControlForm::reloadSlot (void)
 	pOptions->midiControlFiles.clear();
 
 	// Load each file in order...
-	int iItemCount = m_ui.FilesListView->topLevelItemCount();
+	const int iItemCount = m_ui.FilesListView->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = m_ui.FilesListView->topLevelItem(iItem);
 		if (pItem) {
@@ -568,7 +575,8 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
-	bool bMapped = pMidiControl->isChannelParamMapped(ctype, iChannel, iParam);
+	const bool bMapped
+		= pMidiControl->isChannelParamMapped(ctype, iChannel, iParam);
 
 	if (bMapped) {
 		QList<QTreeWidgetItem *> items
@@ -624,7 +632,8 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
-	bool bMapped = pMidiControl->isChannelParamMapped(ctype, iChannel, iParam);
+	const bool bMapped
+		= pMidiControl->isChannelParamMapped(ctype, iChannel, iParam);
 
 	if (bMapped) {
 		qtractorMidiControl::Command command
@@ -649,8 +658,8 @@ void qtractorMidiControlForm::stabilizeForm (void)
 
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
-		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
-		int iItemCount = m_ui.FilesListView->topLevelItemCount();
+		const int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
+		const int iItemCount = m_ui.FilesListView->topLevelItemCount();
 		m_ui.RemovePushButton->setEnabled(true);
 		m_ui.MoveUpPushButton->setEnabled(iItem > 0);
 		m_ui.MoveDownPushButton->setEnabled(iItem < iItemCount - 1);
@@ -665,12 +674,14 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		++m_iUpdating;
 		m_pControlTypeGroup->setControlType(
 			qtractorMidiControl::typeFromName(pItem->text(0)));
-		m_pControlTypeGroup->setControlParam(pItem->text(2).toInt());
+		m_pControlTypeGroup->setControlParam( // remove non-digits tail...
+			pItem->text(2).remove(QRegExp("[\\D]+.*$")).toUShort());
 		m_ui.ChannelComboBox->setCurrentIndex(
 			m_ui.ChannelComboBox->findText(pItem->text(1)));
-		const QString& sText = pItem->text(3);
+		QString sText = pItem->text(3);
 		m_ui.TrackCheckBox->setChecked(sText[0] == '+');
-		m_ui.TrackSpinBox->setValue(sText.toInt());
+		m_ui.TrackSpinBox->setValue( // remove non-digits any...
+			sText.remove(QRegExp("[\\D]*")).toInt());
 		m_ui.CommandComboBox->setCurrentIndex(
 			m_ui.CommandComboBox->findText(pItem->text(4)));
 		m_ui.FeedbackCheckBox->setChecked(pItem->text(5) == tr("Yes"));

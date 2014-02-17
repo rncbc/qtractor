@@ -6369,20 +6369,20 @@ are up and running and then restart the session.</source>
 <context>
     <name>qtractorMidiControlForm</name>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="273"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="438"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="453"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="484"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="275"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="445"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="460"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="491"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="485"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="492"/>
         <source>Controller mappings have been changed.</source>
         <translation>Карта связанных каналов/контроллеров изменилась.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="486"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="493"/>
         <source>Do you want to save the changes?</source>
         <translation>Вы хотите сохранить эти изменения?</translation>
     </message>
@@ -6401,17 +6401,22 @@ are up and running and then restart the session.</source>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="197"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="401"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="403"/>
         <source>Controller files (*.%1)</source>
         <translation>Файлы с конфигурацией контроллеров (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="400"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="402"/>
         <source>Export Controller File</source>
         <translation>Экспорт конфигурации контроллеров</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="439"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="406"/>
+        <source>controller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="446"/>
         <source>The controller file already exists:
 
 &quot;%1&quot;
@@ -6424,13 +6429,13 @@ Do you want to replace it?</source>
 Вы хотите заменить его?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="676"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="760"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="687"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="760"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
@@ -6705,7 +6710,7 @@ Do you want to replace it?</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="454"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="461"/>
         <source>Saved controller mappings may not be effective
 the next time you start this program.
 
@@ -6740,7 +6745,7 @@ Do you want to apply to controller files?</source>
         <translation>Убрать связывание команды контроллера</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="274"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="276"/>
         <source>About to remove controller file:
 
 &quot;%1&quot;
