@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -286,14 +286,19 @@ void qtractorThumbView::updateView ( int dx )
 	if (pTracks == NULL)
 		return;
 
-	const int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
-	const int cy = pTracks->trackView()->contentsY();
+	qtractorTrackView *pTrackView = pTracks->trackView();
+	if (pTrackView == NULL)
+		return;
 
-	int cx = pTracks->trackView()->contentsX() + (dx * cw) / w;
+	const int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
+	const int cy = pTrackView->contentsY();
+
+	int cx = pTrackView->contentsX() + (dx * cw) / w;
 	if (cx < 0)
 		cx = 0;
 
-	pTracks->trackView()->setContentsPos(cx, cy);
+	pTrackView->setSyncViewHold(true);
+	pTrackView->setContentsPos(cx, cy);
 }
 
 

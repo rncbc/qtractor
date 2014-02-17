@@ -62,6 +62,10 @@
 #define _TR(x) QT_TR_NOOP(x)
 
 
+// Follow-playhead: maximum iterations on hold.
+#define SYNC_VIEW_HOLD	33
+
+
 // An empty blank reference string .
 static QString g_sNoname;
 
@@ -771,6 +775,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_iSnapToScaleKey  = 0;
 	m_iSnapToScaleType = 0;
 
+	// Temporary sync-view/follow-playhead hold state.
+	m_iSyncViewHold = 0;
+
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
 	QWidget *pVBoxLeft   = new QWidget(pSplitter);
@@ -1146,6 +1153,8 @@ void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSyncView )
 {
 	if (iEditHead > m_iEditTail)
 		setEditTail(iEditHead, bSyncView);
+	else
+		setSyncViewHold(true);
 
 	if (bSyncView) {
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -1176,6 +1185,8 @@ void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSyncView )
 {
 	if (iEditTail < m_iEditHead)
 		setEditHead(iEditTail, bSyncView);
+	else
+		setSyncViewHold(true);
 
 	if (bSyncView) {
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -1255,6 +1266,7 @@ void qtractorMidiEditor::updateTimeScale (void)
 void qtractorMidiEditor::setSyncView ( bool bSyncView )
 {
 	m_bSyncView = bSyncView;
+	m_iSyncViewHold = 0;
 }
 
 bool qtractorMidiEditor::isSyncView (void) const
@@ -1338,22 +1350,22 @@ int qtractorMidiEditor::snapToScaleType (void) const
 void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 {
 	// Update track-view position...
-	int x0 = m_pEditView->contentsX();
-	int x1 = iPositionX - x0;
-	int w  = m_pEditView->width();
-	int h1 = m_pEditView->height();
-	int h2 = m_pEditEvent->height();
-	int wm = (w >> 3);
+	const int x0 = m_pEditView->contentsX();
+	const int w  = m_pEditView->width();
+	const int h  = m_pEditView->height();
+	const int h2 = m_pEditEvent->height();
+	const int wm = (w >> 3);
 
 	// Time-line header extents...
-	int h0 = m_pEditTime->height();
-	int d0 = (h0 >> 1);
+	const int h0 = m_pEditTime->height();
+	const int d0 = (h0 >> 1);
 
 	// Restore old position...
+	int x1 = iPositionX - x0;
 	if (iPositionX != x && x1 >= 0 && x1 < w + d0) {
 		// Override old view line...
 		(m_pEditEvent->viewport())->update(QRect(x1, 0, 1, h2));
-		(m_pEditView->viewport())->update(QRect(x1, 0, 1, h1));
+		(m_pEditView->viewport())->update(QRect(x1, 0, 1, h));
 		(m_pEditTime->viewport())->update(QRect(x1 - d0, d0, h0, d0));
 	}
 
@@ -1363,7 +1375,8 @@ void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView 
 	// Force position to be in view?
 	if (bSyncView && (x < x0 || x > x0 + w - wm)
 		&& m_dragState == DragNone && m_dragCursor == DragNone
-		&& QApplication::mouseButtons() == Qt::NoButton) {
+		&& QApplication::mouseButtons() == Qt::NoButton
+		&& --m_iSyncViewHold < 0) {
 		// Move it...
 		m_pEditView->setContentsPos(x - wm, m_pEditView->contentsY());
 	} else {
@@ -1371,7 +1384,7 @@ void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView 
 		x1 = x - x0;
 		if (x1 >= 0 && x1 < w + d0) {
 			(m_pEditEvent->viewport())->update(QRect(x1, 0, 1, h2));
-			(m_pEditView->viewport())->update(QRect(x1, 0, 1, h1));
+			(m_pEditView->viewport())->update(QRect(x1, 0, 1, h));
 			(m_pEditTime->viewport())->update(QRect(x1 - d0, d0, h0, d0));
 		}
 	}
@@ -2367,6 +2380,8 @@ void qtractorMidiEditor::reset ( bool bSelectClear )
 // Clear all contents.
 void qtractorMidiEditor::clear (void)
 {
+	m_iSyncViewHold = 0;
+
 	m_pCommands->clear();
 
 	if (m_pMidiClip)
@@ -5072,6 +5087,19 @@ void qtractorMidiEditor::showToolTip (
 			.arg(m_pTimeScale->textFromFrame(iFrameEnd))
 			.arg(m_pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
 		pScrollView->viewport());
+}
+
+
+// Temporary sync-view/follow-playhead hold state.
+void qtractorMidiEditor::setSyncViewHold ( bool bSyncViewHold )
+{
+	m_iSyncViewHold = (bSyncViewHold ? SYNC_VIEW_HOLD : 0);
+}
+
+
+bool qtractorMidiEditor::isSyncViewHold (void) const
+{
+	return (m_iSyncViewHold > 0);
 }
 
 

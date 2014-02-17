@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- A bit of slack have been introduced to put "Follow Playhead"
+  (aka. auto-scroll view mode) on hold, while doing in-flight
+  selection edit moves. (EXPERIMENTAL)
+
 - Fixed some user interface related annoyances while on the MIDI
   Controllers mappings (ie. View/Controllers...).
 
