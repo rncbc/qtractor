@@ -42,10 +42,12 @@ qtractorScrollView::qtractorScrollView ( QWidget *pParent )
 	pViewport->setAutoFillBackground(false);
 }
 
+
 // Destructor.
 qtractorScrollView::~qtractorScrollView (void)
 {
 }
+
 
 // Virtual contents methods.
 void qtractorScrollView::setContentsPos ( int cx, int cy )
@@ -78,8 +80,8 @@ void qtractorScrollView::resizeContents ( int cw, int ch )
 void qtractorScrollView::ensureVisible ( int cx, int cy, int mx, int my )
 {
 	QWidget *pViewport = QAbstractScrollArea::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
 
 	int dx = - m_rectContents.x();
 	int dy = - m_rectContents.y();
@@ -116,12 +118,14 @@ void qtractorScrollView::ensureVisible ( int cx, int cy, int mx, int my )
 
 	if (dx > 0)
 		dx = 0;
-	else if (dx < w - cw && cw > w)
+	else
+	if (dx < w - cw && cw > w)
 		dx = w - cw;
 
 	if (dy > 0)
 		dy = 0;
-	else if (dy < h - ch && ch > h)
+	else
+	if (dy < h - ch && ch > h)
 		dy = h - ch;
 
 	setContentsPos(-dx, -dy);
@@ -132,19 +136,23 @@ void qtractorScrollView::ensureVisible ( int cx, int cy, int mx, int my )
 void qtractorScrollView::updateScrollBars (void)
 {
 	QWidget *pViewport = QAbstractScrollArea::viewport();
-	int w = pViewport->width()  - 2;
-	int h = pViewport->height() - 2;
+	const int w = pViewport->width();
+	const int h = pViewport->height();
+
+	const int cw
+		= (m_rectContents.width() > w ? m_rectContents.width() - w : 0);
 
 	QScrollBar *pHScrollBar = QAbstractScrollArea::horizontalScrollBar();
-	int cw = (m_rectContents.width() > w ? m_rectContents.width() - w : 0);
 	if (pHScrollBar->sliderPosition() > cw)
 		pHScrollBar->setSliderPosition(cw);
 	pHScrollBar->setRange(0, cw);
 	pHScrollBar->setSingleStep((w >> 4) + 1);
 	pHScrollBar->setPageStep(w);
 
+	const int ch
+		= (m_rectContents.height() > h ? m_rectContents.height() - h : 0);
+
 	QScrollBar *pVScrollBar = QAbstractScrollArea::verticalScrollBar();
-	int ch = (m_rectContents.height() > h ? m_rectContents.height() - h : 0);
 	if (pVScrollBar->sliderPosition() > ch)
 		pVScrollBar->setSliderPosition(ch);
 	pVScrollBar->setRange(0, ch);
