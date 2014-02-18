@@ -70,7 +70,7 @@
 #endif
 
 // Follow-playhead: maximum iterations on hold.
-#define SYNC_VIEW_HOLD	33
+#define QTRACTOR_SYNC_VIEW_HOLD 66
 
 
 //----------------------------------------------------------------------------
@@ -3788,7 +3788,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	// Force position to be in view?
 	if (bSyncView && (x < x0 || x > x0 + w - wm)
 		&& m_dragState == DragNone && m_dragCursor == DragNone
-		&& QApplication::mouseButtons() == Qt::NoButton
+	//	&& QApplication::mouseButtons() == Qt::NoButton
 		&& --m_iSyncViewHold < 0) {
 		// Maybe we'll need some head-room...
 		if (x < qtractorScrollView::contentsWidth() - w) {
@@ -3796,6 +3796,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 				x - wm, qtractorScrollView::contentsY());
 		}
 		else updateContentsWidth(x + w);
+		m_iSyncViewHold = 0;
 	} else {
 		// Draw the line, by updating the new region...
 		x1 = x - x0;
@@ -4967,7 +4968,7 @@ bool qtractorTrackView::isCurveEdit (void) const
 // Temporary sync-view/follow-playhead hold state.
 void qtractorTrackView::setSyncViewHold ( bool bSyncViewHold )
 {
-	m_iSyncViewHold = (bSyncViewHold ? SYNC_VIEW_HOLD : 0);
+	m_iSyncViewHold = (bSyncViewHold ? QTRACTOR_SYNC_VIEW_HOLD : 0);
 }
 
 
