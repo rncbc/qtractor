@@ -4724,6 +4724,8 @@ void qtractorMidiEditor::updateNotifySlot ( unsigned int flags )
 // Emit selection/changes.
 void qtractorMidiEditor::selectionChangeNotify (void)
 {
+	setSyncViewHold(true);
+
 	emit selectNotifySignal(this);
 
 	m_pThumbView->update();
