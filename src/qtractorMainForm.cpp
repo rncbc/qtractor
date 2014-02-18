@@ -133,12 +133,17 @@
 #endif
 #endif
 
+#include <math.h>
+
+// Timer constant (magic) stuff.
+#define QTRACTOR_TIMER_MSECS    66
+#define QTRACTOR_TIMER_DELAY    233
+
 #if QT_VERSION < 0x040500
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
 #endif
-
 
 #if defined(WIN32)
 #undef HAVE_SIGNAL_H
@@ -179,14 +184,6 @@ static void qtractor_sigterm_handler ( int /* signo */ )
 }
 
 #endif	// HANDLE_SIGNAL_H
-
-
-#include <math.h>
-
-
-// Timer constant (magic) stuff.
-#define QTRACTOR_TIMER_MSECS    66
-#define QTRACTOR_TIMER_DELAY    233
 
 
 //-------------------------------------------------------------------------
