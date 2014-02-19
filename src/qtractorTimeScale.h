@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -95,7 +95,7 @@ public:
 
 	// Fastest rounding-from-float helper.
 	static unsigned long uroundf(float x)
-		{ return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f); }
+		{ return (unsigned long) (x < 0.0f ? x - 0.5f : x + 0.5f); }
 
 	// Beat divisor (snap index) accessors.
 	static unsigned short snapFromIndex(int iSnap);

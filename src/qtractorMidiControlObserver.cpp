@@ -89,6 +89,9 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 {
 	const unsigned short iScale = midiScale();
 //	setScaleValue(float(iValue) / float(iScale));
+	if (iValue > iScale)
+		iValue = iScale;
+
 	const float fScale
 		= float(m_bInvert ? iScale - iValue : iValue) / float(iScale);
 	const float fValue
@@ -116,7 +119,9 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 unsigned short qtractorMidiControlObserver::midiValue (void) const
 {
 	const unsigned short iScale = midiScale();
-	const unsigned short iValue = float(iScale) * scaleValue();
+	unsigned short iValue = float(iScale) * scaleValue();
+	if (iValue > iScale)
+		iValue = iScale;
 	return (m_bInvert ? iScale - iValue : iValue);
 }
 

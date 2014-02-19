@@ -376,8 +376,8 @@ void qtractorMidiControl::sendTrackController (
 				continue;
 			// Convert/normalize value...
 			const ControlType ctype = key.type();
+			const Scale scale(ctype);
 			unsigned short iValue = 0;
-			Scale scale(ctype);
 			switch (command) {
 			case TRACK_GAIN:
 				if (bCubic) fValue = ::cbrtf2(fValue);
@@ -414,9 +414,8 @@ void qtractorMidiControl::sendTrackController (
 	ControlType ctype, qtractorTrack *pTrack,
 	Command command, unsigned short iChannel, unsigned short iParam ) const
 {
-
-	unsigned short iValue = 0;
 	const Scale scale(ctype);
+	unsigned short iValue = 0;
 
 	switch (command) {
 	case TRACK_GAIN:
