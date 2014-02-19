@@ -1688,12 +1688,12 @@ Chcete zahodit tyto změny?</translation>
 <context>
     <name>qtractorClientListView</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="538"/>
+        <location filename="../qtractorConnect.cpp" line="488"/>
         <source>Readable Clients / Output Ports</source>
         <translation>Čitelní klienti/Výstupní přípojky</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="540"/>
+        <location filename="../qtractorConnect.cpp" line="490"/>
         <source>Writable Clients / Input Ports</source>
         <translation>Zapisovatelní klienti/Vstupní přípojky</translation>
     </message>
@@ -1992,22 +1992,22 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1798"/>
+        <location filename="../qtractorConnect.cpp" line="1749"/>
         <source>Connect</source>
         <translation>Připojit</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1803"/>
+        <location filename="../qtractorConnect.cpp" line="1754"/>
         <source>Disconnect</source>
         <translation>Odpojit</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1808"/>
+        <location filename="../qtractorConnect.cpp" line="1759"/>
         <source>Disconnect All</source>
         <translation>Odpojit vše</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1815"/>
+        <location filename="../qtractorConnect.cpp" line="1766"/>
         <source>Refresh</source>
         <translation>Obnovit</translation>
     </message>
@@ -7114,15 +7114,15 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="197"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="403"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="401"/>
         <source>Controller files (*.%1)</source>
         <translation>Soubory s ovladači (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="275"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="445"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="460"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="491"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="444"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="459"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="490"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
@@ -7140,17 +7140,17 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="402"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="400"/>
         <source>Export Controller File</source>
         <translation>Vyvést do souboru s ovladačem</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="406"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="404"/>
         <source>controller</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="446"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="445"/>
         <source>The controller file already exists:
 
 &quot;%1&quot;
@@ -7163,7 +7163,7 @@ Do you want to replace it?</source>
 Přejete si jej nahradit?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="461"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="460"/>
         <source>Saved controller mappings may not be effective
 the next time you start this program.
 
@@ -7178,23 +7178,23 @@ dokud znovu program nespustíte.
 Chcete použít soubory s ovladači?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="492"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="491"/>
         <source>Controller mappings have been changed.</source>
         <translation>Přiřazení ovladačů byla změněna.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="493"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="492"/>
         <source>Do you want to save the changes?</source>
         <translation>Chcete uložit změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="687"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="686"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="770"/>
         <source>Yes</source>
         <translation>Ano</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="770"/>
         <source>No</source>
         <translation>Ne</translation>
     </message>

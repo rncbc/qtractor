@@ -396,15 +396,12 @@ void qtractorMidiControlForm::exportSlot (void)
 	if (pOptions == NULL)
 		return;
 
-	QString sPath;
-
 	const QString  sExt("qtc");
 	const QString& sTitle  = tr("Export Controller File") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 
-	const QString& sMidiControlPath // default directory/path...
-		= QFileInfo(pOptions->sMidiControlDir, tr("controller") + '.' + sExt)
-			.absoluteFilePath();
+	QString sPath = QFileInfo(pOptions->sMidiControlDir,
+		tr("controller") + '.' + sExt).absoluteFilePath();
 
 #if 0//QT_VERSION < 0x040400
 	// Ask for the filename to open...
@@ -412,10 +409,10 @@ void qtractorMidiControlForm::exportSlot (void)
 	if (pOptions->bDontUseNativeDialog)
 		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
-		sTitle, sMidiControlPath, sFilter, NULL, options);
+		sTitle, sPath, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this, sTitle, sMidiControlPath, sFilter);
+	QFileDialog fileDialog(this, sTitle, sPath, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 	fileDialog.setFileMode(QFileDialog::AnyFile);
@@ -431,6 +428,8 @@ void qtractorMidiControlForm::exportSlot (void)
 	// Show dialog...
 	if (fileDialog.exec())
 		sPath = fileDialog.selectedFiles().first();
+	else
+		sPath.clear();
 #endif
 
 	if (sPath.isEmpty())
