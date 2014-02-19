@@ -83,16 +83,16 @@ void qtractorScrollView::ensureVisible ( int cx, int cy, int mx, int my )
 	const int w = pViewport->width();
 	const int h = pViewport->height();
 
-	int dx = - m_rectContents.x();
-	int dy = - m_rectContents.y();
+	int dx = m_rectContents.x();
+	int dy = m_rectContents.y();
 	int cw = m_rectContents.width();
 	int ch = m_rectContents.height();
 
-	if (w < mx * 2)
-		mx = w / 2;
+	if (w < (mx << 1))
+		mx = (w >> 1);
 
-	if (h < my * 2)
-		my = h / 2;
+	if (h < (my << 1))
+		my = (h >> 1);
 
 	if (cw <= w) {
 		mx = 0;
@@ -104,31 +104,31 @@ void qtractorScrollView::ensureVisible ( int cx, int cy, int mx, int my )
 		dy = 0;
 	}
 
-	if (cx < mx - dx)
-		dx = mx - cx;
+	if (cx < mx + dx)
+		dx = cx - mx;
 	else
-	if (cx >= w - mx - dx)
-		dx  = w - mx - cx;
+	if (cx >= w - mx + dx)
+		dx = cx + mx - w;
 
-	if (cy < my - dy)
-		dy = my - cy;
+	if (cy < my + dy)
+		dy = cy - my;
 	else
-	if (cy >= h - my - dy)
-		dy  = h - my - cy;
+	if (cy >= h - my + dy)
+		dy = cy + my - h;
 
-	if (dx > 0)
+	if (dx < 0)
 		dx = 0;
 	else
-	if (dx < w - cw && cw > w)
-		dx = w - cw;
+	if (dx >= cw - w && w >= cw)
+		dx  = cw - w;
 
-	if (dy > 0)
+	if (dy < 0)
 		dy = 0;
 	else
-	if (dy < h - ch && ch > h)
-		dy = h - ch;
+	if (dy >= ch - h && h >= ch)
+		dy  = ch - h;
 
-	setContentsPos(-dx, -dy);
+	setContentsPos(dx, dy);
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,7 +77,7 @@ public:
 	void markPort(int iMark);
 	void markClientPort(int iMark);
 
-	int portMark();
+	int portMark() const;
 
 	// Connected port list primitives.
 	void addConnect(qtractorPortListItem *pPortItem);
@@ -136,7 +136,7 @@ public:
 	const QString& clientName() const;
 
 	// Readable flag accessor.
-	bool isReadable();
+	bool isReadable() const;
 
 	// Client port cleanup marker.
 	void markClient(int iMark);
@@ -227,7 +227,7 @@ public:
 
 	// Auto-open timer methods.
 	void setAutoOpenTimeout(int iAutoOpenTimeout);
-	int autoOpenTimeout();
+	int autoOpenTimeout() const;
 
 	// Do proper contents refresh/update.
 	void refresh();
@@ -361,13 +361,13 @@ public:
 	enum { ClientItem = 1001, PortItem = 1002 };
 
 	// Widget accesors.
-	qtractorClientListView *OListView()     { return m_pOListView; }
-	qtractorClientListView *IListView()     { return m_pIListView; }
-	qtractorConnectorView  *ConnectorView() { return m_pConnectorView; }
+	qtractorClientListView *OListView() const     { return m_pOListView; }
+	qtractorClientListView *IListView() const     { return m_pIListView; }
+	qtractorConnectorView  *ConnectorView() const { return m_pConnectorView; }
 
 	// Connector line style accessors.
 	void setBezierLines(bool bBezierLines);
-	bool isBezierLines();
+	bool isBezierLines() const;
 
 	// Explicit connection tests.
 	bool canConnectSelected();

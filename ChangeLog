@@ -12,7 +12,7 @@ SVN TRUNK
 - Fixed some user interface related annoyances while on the MIDI
   Controllers mappings (ie. View/Controllers...).
 
-- Fix port origin on MIDI RPN/NRPN 14-bit controllers input.
+- Fixed port origin on MIDI RPN/NRPN 14-bit controllers input.
 
 - A discretionary plug-in unique identifier have been devised for
   when more than one from the same type are inserted on a bus or

@@ -1054,12 +1054,12 @@ Vuoi annullare le modifiche?</translation>
 <context>
     <name>qtractorClientListView</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="538"/>
+        <location filename="../qtractorConnect.cpp" line="488"/>
         <source>Readable Clients / Output Ports</source>
         <translation>Client Leggibili / Porte di Uscita</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="540"/>
+        <location filename="../qtractorConnect.cpp" line="490"/>
         <source>Writable Clients / Input Ports</source>
         <translation>Client Scrivibili / Porte di Ingresso</translation>
     </message>
@@ -1306,22 +1306,22 @@ Vuoi applicare le modifiche?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1798"/>
+        <location filename="../qtractorConnect.cpp" line="1749"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1803"/>
+        <location filename="../qtractorConnect.cpp" line="1754"/>
         <source>Disconnect</source>
         <translation>Disconnetti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1808"/>
+        <location filename="../qtractorConnect.cpp" line="1759"/>
         <source>Disconnect All</source>
         <translation>Disconnetti Tutti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1815"/>
+        <location filename="../qtractorConnect.cpp" line="1766"/>
         <source>Refresh</source>
         <translation>Aggiorna</translation>
     </message>
@@ -6080,15 +6080,15 @@ sia avviato ed in esecuzione, poi riavvia la sessione.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="197"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="403"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="401"/>
         <source>Controller files (*.%1)</source>
         <translation>File di controller (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="275"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="445"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="460"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="491"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="444"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="459"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="490"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
@@ -6106,17 +6106,17 @@ Are you sure?</source>
 Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="402"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="400"/>
         <source>Export Controller File</source>
         <translation>Esporta File di Controller</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="406"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="404"/>
         <source>controller</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="446"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="445"/>
         <source>The controller file already exists:
 
 &quot;%1&quot;
@@ -6129,7 +6129,7 @@ Do you want to replace it?</source>
 Vuoi sostituirlo?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="461"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="460"/>
         <source>Saved controller mappings may not be effective
 the next time you start this program.
 
@@ -6144,23 +6144,23 @@ al prossimo riavvio di questo programma.
 Vuoi applicarla ai file dei controller?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="492"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="491"/>
         <source>Controller mappings have been changed.</source>
         <translation>La mappa del controller è stata modificata.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="493"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="492"/>
         <source>Do you want to save the changes?</source>
         <translation>Vuoi salvare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="687"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="686"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="770"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="771"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="770"/>
         <source>No</source>
         <translation>No</translation>
     </message>

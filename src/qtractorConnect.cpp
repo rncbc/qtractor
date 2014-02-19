@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -120,7 +120,7 @@ void qtractorPortListItem::markClientPort ( int iMark )
 	m_pClientItem->markClient(iMark);
 }
 
-int qtractorPortListItem::portMark (void)
+int qtractorPortListItem::portMark (void) const
 {
 	return m_iPortMark;
 }
@@ -208,56 +208,6 @@ bool qtractorPortListItem::isHilite (void) const
 bool qtractorPortListItem::operator< ( const QTreeWidgetItem& other ) const
 {
 	return qtractorClientListView::lessThan(*this, other);
-#if 0
-	const QString& s1 = text(0);
-	const QString& s2 = other.text(0);
-
-	int ich1, ich2;
-
-	int cch1 = s1.length();
-	int cch2 = s2.length();
-
-	for (ich1 = ich2 = 0; ich1 < cch1 && ich2 < cch2; ++ich1, ++ich2) {
-
-		// Skip (white)spaces...
-		while (s1.at(ich1).isSpace())
-			++ich1;
-		while (s2.at(ich2).isSpace())
-			++ich2;
-
-		// Normalize (to uppercase) the next characters...
-		QChar ch1 = s1.at(ich1).toUpper();
-		QChar ch2 = s2.at(ich2).toUpper();
-
-		if (ch1.isDigit() && ch2.isDigit()) {
-			// Find the whole length numbers...
-			int iDigits1 = ich1++;
-			while (ich1 < cch1 && s1.at(ich1).isDigit())
-				++ich1;
-			int iDigits2 = ich2++;
-			while (ich2 < cch2 && s2.at(ich2).isDigit())
-				++ich2;
-			// Compare as natural decimal-numbers...
-			int n1 = s1.mid(iDigits1, ich1 - iDigits1).toInt();
-			int n2 = s2.mid(iDigits2, ich2 - iDigits2).toInt();
-			if (n1 != n2)
-				return (n1 < n2);
-			// Never go out of bounds...
-			if (ich1 >= cch1 || ich1 >= cch2)
-				break;
-			// Go on with this next char...
-			ch1 = s1.at(ich1).toUpper();
-			ch2 = s2.at(ich2).toUpper();
-		}
-
-		// Compare this char...
-		if (ch1 != ch2)
-			return (ch1 < ch2);
-	}
-
-	// Probable exact match.
-	return false;
-#endif
 }
 
 
@@ -287,7 +237,7 @@ qtractorClientListItem::~qtractorClientListItem (void)
 qtractorPortListItem *qtractorClientListItem::findPortItem (
 	const QString& sPortName )
 {
-	int iChildCount = QTreeWidgetItem::childCount();
+	const int iChildCount = QTreeWidgetItem::childCount();
 	for (int iChild = 0; iChild < iChildCount; ++iChild) {
 		QTreeWidgetItem *pChild = QTreeWidgetItem::child(iChild);
 		if (pChild->type() != qtractorConnect::PortItem)
@@ -317,7 +267,7 @@ const QString& qtractorClientListItem::clientName (void) const
 
 
 // Readable flag client accessor.
-bool qtractorClientListItem::isReadable (void)
+bool qtractorClientListItem::isReadable (void) const
 {
 	qtractorClientListView *pClientListView
 		= static_cast<qtractorClientListView *> (QTreeWidgetItem::treeWidget());
@@ -337,7 +287,7 @@ void qtractorClientListItem::markClientPorts ( int iMark )
 {
 	markClient(iMark);
 
-	int iChildCount = QTreeWidgetItem::childCount();
+	const int iChildCount = QTreeWidgetItem::childCount();
 	for (int iChild = 0; iChild < iChildCount; ++iChild) {
 		QTreeWidgetItem *pChild = QTreeWidgetItem::child(iChild);
 		if (pChild->type() != qtractorConnect::PortItem)
@@ -482,7 +432,7 @@ qtractorClientListView::~qtractorClientListView (void)
 qtractorClientListItem *qtractorClientListView::findClientItem (
 	const QString& sClientName )
 {
-	int iItemCount = QTreeWidget::topLevelItemCount();
+	const int iItemCount = QTreeWidget::topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = QTreeWidget::topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -502,7 +452,7 @@ qtractorPortListItem *qtractorClientListView::findClientPortItem (
 {
 	qtractorPortListItem *pPortItem = NULL;
 
-	int iColon = sClientPort.indexOf(':');
+	const int iColon = sClientPort.indexOf(':');
 	if (iColon >= 0) {
 		qtractorClientListItem *pClientItem
 			= findClientItem(sClientPort.left(iColon));
@@ -617,7 +567,7 @@ bool qtractorClientListView::isPortName ( const QString& sPortName )
 void qtractorClientListView::setOpenAll ( bool bOpen )
 {
 	// For each client item...
-	int iItemCount = QTreeWidget::topLevelItemCount();
+	const int iItemCount = QTreeWidget::topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = QTreeWidget::topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -627,7 +577,7 @@ void qtractorClientListView::setOpenAll ( bool bOpen )
 		if (pClientItem == NULL)
 			continue;
 		// For each port item...
-		int iChildCount = pClientItem->childCount();
+		const int iChildCount = pClientItem->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
 			QTreeWidgetItem *pChildItem = pClientItem->child(iChild);
 			if (pChildItem->type() != qtractorConnect::PortItem)
@@ -653,7 +603,7 @@ void qtractorClientListView::markClientPorts ( int iMark )
 	m_clientNames.clear();
 	m_pHiliteItem = NULL;
 
-	int iItemCount = QTreeWidget::topLevelItemCount();
+	const int iItemCount = QTreeWidget::topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = QTreeWidget::topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -695,7 +645,7 @@ void qtractorClientListView::hiliteClientPorts (void)
 	// Dehilite the previous selected items.
 	if (m_pHiliteItem && pCurrentItem != m_pHiliteItem) {
 		if (m_pHiliteItem->type() == qtractorConnect::ClientItem) {
-			int iChildCount = m_pHiliteItem->childCount();
+			const int iChildCount = m_pHiliteItem->childCount();
 			for (int iChild = 0; iChild < iChildCount; ++iChild) {
 				QTreeWidgetItem *pChild = m_pHiliteItem->child(iChild);
 				if (pChild->type() != qtractorConnect::PortItem)
@@ -721,7 +671,7 @@ void qtractorClientListView::hiliteClientPorts (void)
 
 	// Hilite the now current selected items.
 	if (pCurrentItem && pCurrentItem->type() == qtractorConnect::ClientItem) {
-		int iChildCount = pCurrentItem->childCount();
+		const int iChildCount = pCurrentItem->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
 			QTreeWidgetItem *pChild = pCurrentItem->child(iChild);
 			if (pChild->type() != qtractorConnect::PortItem)
@@ -768,7 +718,7 @@ void qtractorClientListView::setAutoOpenTimeout ( int iAutoOpenTimeout )
 
 
 // Auto-open timeout accessor.
-int qtractorClientListView::autoOpenTimeout (void)
+int qtractorClientListView::autoOpenTimeout (void) const
 {
 	return m_iAutoOpenTimeout;
 }
@@ -876,6 +826,7 @@ void qtractorClientListView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 void qtractorClientListView::dragLeaveEvent ( QDragLeaveEvent * )
 {
 	m_pDropItem = NULL;
+
 	if (m_pAutoOpenTimer)
 		m_pAutoOpenTimer->stop();
 }
@@ -944,10 +895,10 @@ bool qtractorClientListView::lessThan (
 	const QString& s1 = i1.text(0);
 	const QString& s2 = i2.text(0);
 
-	int ich1, ich2;
+	const int cch1 = s1.length();
+	const int cch2 = s2.length();
 
-	int cch1 = s1.length();
-	int cch2 = s2.length();
+	int ich1, ich2;
 
 	for (ich1 = ich2 = 0; ich1 < cch1 && ich2 < cch2; ++ich1, ++ich2) {
 
@@ -1099,9 +1050,9 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 	qtractorClientListView *pOListView = m_pConnect->OListView();
 	qtractorClientListView *pIListView = m_pConnect->IListView();
 
-	int yc = QWidget::pos().y();
-	int yo = pOListView->pos().y();
-	int yi = pIListView->pos().y();
+	const int yc = QWidget::pos().y();
+	const int yo = pOListView->pos().y();
+	const int yi = pIListView->pos().y();
 
 	QPainter painter(this);
 	int x1, y1, h1;
@@ -1120,7 +1071,7 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 	h1 = (pOListView->header())->sizeHint().height();
 	h2 = (pIListView->header())->sizeHint().height();
 	// For each output client item...
-	int iItemCount = pOListView->topLevelItemCount();
+	const int iItemCount = pOListView->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = pOListView->topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -1133,7 +1084,7 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 		++i;
 		painter.setPen(QColor(rgb[i % 3], rgb[(i / 3) % 3], rgb[(i / 9) % 3]));
 		// For each port item
-		int iChildCount = pOClient->childCount();
+		const int iChildCount = pOClient->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
 			QTreeWidgetItem *pChild = pOClient->child(iChild);
 			if (pChild->type() != qtractorConnect::PortItem)
@@ -1220,9 +1171,9 @@ qtractorConnect::qtractorConnect (
 qtractorConnect::~qtractorConnect (void)
 {
 	// Force end of works here.
-	m_pOListView->setBinding(0);
-	m_pIListView->setBinding(0);
-	m_pConnectorView->setBinding(0);
+	m_pOListView->setBinding(NULL);
+	m_pIListView->setBinding(NULL);
+	m_pConnectorView->setBinding(NULL);
 }
 
 
@@ -1232,7 +1183,7 @@ void qtractorConnect::setBezierLines ( bool bBezierLines )
 	m_bBezierLines = bBezierLines;
 }
 
-bool qtractorConnect::isBezierLines (void)
+bool qtractorConnect::isBezierLines (void) const
 {
 	return m_bBezierLines;
 }
@@ -1293,10 +1244,10 @@ bool qtractorConnect::canConnectSelected (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
+			const int iICount = pIClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount && iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				pIItem = pIClient->child(iIItem);
@@ -1318,8 +1269,8 @@ bool qtractorConnect::canConnectSelected (void)
 				= static_cast<qtractorPortListItem *> (pIItem);
 			if (pIPort == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			while (iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				if (pOItem && pOItem->type() == qtractorConnect::PortItem) {
@@ -1342,8 +1293,8 @@ bool qtractorConnect::canConnectSelected (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iICount = pIClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount) {
 				pIItem = pIClient->child(iIItem);
 				if (pIItem && pIItem->type() == qtractorConnect::PortItem) {
@@ -1401,10 +1352,10 @@ bool qtractorConnect::connectSelectedEx (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
+			const int iICount = pIClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount && iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				pIItem = pIClient->child(iIItem);
@@ -1425,8 +1376,8 @@ bool qtractorConnect::connectSelectedEx (void)
 				= static_cast<qtractorPortListItem *> (pIItem);
 			if (pIPort == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			while (iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				if (pOItem && pOItem->type() == qtractorConnect::PortItem) {
@@ -1448,8 +1399,8 @@ bool qtractorConnect::connectSelectedEx (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iICount = pIClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount) {
 				pIItem = pIClient->child(iIItem);
 				if (pIItem && pIItem->type() == qtractorConnect::PortItem) {
@@ -1494,10 +1445,10 @@ bool qtractorConnect::canDisconnectSelected (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
+			const int iICount = pIClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount && iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				pIItem = pIClient->child(iIItem);
@@ -1519,8 +1470,8 @@ bool qtractorConnect::canDisconnectSelected (void)
 				= static_cast<qtractorPortListItem *> (pIItem);
 			if (pIPort == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			while (iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				if (pOItem && pOItem->type() == qtractorConnect::PortItem) {
@@ -1543,8 +1494,8 @@ bool qtractorConnect::canDisconnectSelected (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iICount = pIClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount) {
 				pIItem = pIClient->child(iIItem);
 				if (pIItem && pIItem->type() == qtractorConnect::PortItem) {
@@ -1602,10 +1553,10 @@ bool qtractorConnect::disconnectSelectedEx (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
+			const int iICount = pIClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount && iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				pIItem = pIClient->child(iIItem);
@@ -1626,8 +1577,8 @@ bool qtractorConnect::disconnectSelectedEx (void)
 				= static_cast<qtractorPortListItem *> (pIItem);
 			if (pIPort == NULL)
 				return false;
+			const int iOCount = pOClient->childCount();
 			int iOItem  = 0;
-			int iOCount = pOClient->childCount();
 			while (iOItem < iOCount) {
 				pOItem = pOClient->child(iOItem);
 				if (pOItem && pOItem->type() == qtractorConnect::PortItem) {
@@ -1649,8 +1600,8 @@ bool qtractorConnect::disconnectSelectedEx (void)
 				= static_cast<qtractorClientListItem *> (pIItem);
 			if (pIClient == NULL)
 				return false;
+			const int iICount = pIClient->childCount();
 			int iIItem  = 0;
-			int iICount = pIClient->childCount();
 			while (iIItem < iICount) {
 				pIItem = pIClient->child(iIItem);
 				if (pIItem && pIItem->type() == qtractorConnect::PortItem) {
@@ -1676,7 +1627,7 @@ bool qtractorConnect::disconnectSelectedEx (void)
 bool qtractorConnect::canDisconnectAll (void)
 {
 	// For each output client item...
-	int iItemCount = m_pOListView->topLevelItemCount();
+	const int iItemCount = m_pOListView->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = m_pOListView->topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -1686,7 +1637,7 @@ bool qtractorConnect::canDisconnectAll (void)
 		if (pOClient == NULL)
 			continue;
 		// For each output port item...
-		int iChildCount = pOClient->childCount();
+		const int iChildCount = pOClient->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
 			QTreeWidgetItem *pChild = pOClient->child(iChild);
 			if (pChild->type() != qtractorConnect::PortItem)
@@ -1716,7 +1667,7 @@ bool qtractorConnect::disconnectAll (void)
 bool qtractorConnect::disconnectAllEx (void)
 {
 	// For each output client item...
-	int iItemCount = m_pOListView->topLevelItemCount();
+	const int iItemCount = m_pOListView->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = m_pOListView->topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -1726,7 +1677,7 @@ bool qtractorConnect::disconnectAllEx (void)
 		if (pOClient == NULL)
 			continue;
 		// For each output port item...
-		int iChildCount = pOClient->childCount();
+		const int iChildCount = pOClient->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
 			QTreeWidgetItem *pChild = pOClient->child(iChild);
 			if (pChild->type() != qtractorConnect::PortItem)

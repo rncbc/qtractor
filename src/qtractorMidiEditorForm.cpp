@@ -823,8 +823,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 
 	// Get those time-scales in sync,
 	// while keeping zoom ratios persistant...
-	unsigned short iHorizontalZoom = m_pMidiEditor->horizontalZoom();
-	unsigned short iVerticalZoom   = m_pMidiEditor->verticalZoom();
+	const unsigned short iHorizontalZoom = m_pMidiEditor->horizontalZoom();
+	const unsigned short iVerticalZoom = m_pMidiEditor->verticalZoom();
 	qtractorTimeScale *pTimeScale  = m_pMidiEditor->timeScale();
 	pTimeScale->copy(*pSession->timeScale());
 	m_pMidiEditor->setHorizontalZoom(iHorizontalZoom);
@@ -866,15 +866,15 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	// (Re)try to position the editor in same of track view...
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks) {
-		unsigned long iFrame = pTimeScale->frameFromPixel(
+		unsigned long iFrame = pSession->frameFromPixel(
 			(pTracks->trackView())->contentsX());
 		if (iFrame  > m_pMidiEditor->offset()) {
 			iFrame -= m_pMidiEditor->offset();
 		} else {
 			iFrame = 0;
 		}
-		int cx = pTimeScale->pixelFromFrame(iFrame);
-		int cy = (m_pMidiEditor->editView())->contentsY();
+		const int cx = pTimeScale->pixelFromFrame(iFrame);
+		const int cy = (m_pMidiEditor->editView())->contentsY();
 		(m_pMidiEditor->editView())->setContentsPos(cx, cy);
 	}
 
@@ -1779,7 +1779,7 @@ void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
 // Zoom view menu stabilizer.
 void qtractorMidiEditorForm::updateZoomMenu (void)
 {
-	int iZoomMode = m_pMidiEditor->zoomMode();
+	const int iZoomMode = m_pMidiEditor->zoomMode();
 	
 	m_ui.viewZoomHorizontalAction->setChecked(
 		iZoomMode == qtractorMidiEditor::ZoomHorizontal);
@@ -1799,7 +1799,7 @@ void qtractorMidiEditorForm::updateSnapMenu (void)
 	if (pTimeScale == NULL)
 		return;
 
-	int iSnapCurrent
+	const int iSnapCurrent
 		= qtractorTimeScale::indexFromSnap(pTimeScale->snapPerBeat());
 
 	int iSnap = 0;
@@ -1822,7 +1822,7 @@ void qtractorMidiEditorForm::updateScaleMenu (void)
 {
 	m_ui.viewScaleMenu->clear();
 
-	int iSnapToScaleKey = m_pMidiEditor->snapToScaleKey();
+	const int iSnapToScaleKey = m_pMidiEditor->snapToScaleKey();
 	int iScaleKey = 0;
 	QStringListIterator iter_key(qtractorMidiEditor::scaleKeyNames());
 	while (iter_key.hasNext()) {
@@ -1835,7 +1835,7 @@ void qtractorMidiEditorForm::updateScaleMenu (void)
 
 	m_ui.viewScaleMenu->addSeparator();
 
-	int iSnapToScaleType = m_pMidiEditor->snapToScaleType();
+	const int iSnapToScaleType = m_pMidiEditor->snapToScaleType();
 	int iScaleType = 0;
 	QStringListIterator iter_type(qtractorMidiEditor::scaleTypeNames());
 	while (iter_type.hasNext()) {
@@ -1856,7 +1856,7 @@ void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 		return;
 
 	// Avoid bogus changes...
-	unsigned short iSnapPerBeat = qtractorTimeScale::snapFromIndex(iSnap);
+	const unsigned short iSnapPerBeat = qtractorTimeScale::snapFromIndex(iSnap);
 	if (iSnapPerBeat == pTimeScale->snapPerBeat())
 		return;
 
