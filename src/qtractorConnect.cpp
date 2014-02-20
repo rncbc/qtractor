@@ -207,7 +207,15 @@ bool qtractorPortListItem::isHilite (void) const
 // - Natural decimal sorting comparator.
 bool qtractorPortListItem::operator< ( const QTreeWidgetItem& other ) const
 {
-	return qtractorClientListView::lessThan(*this, other);
+	QTreeWidget *pTreeWidget = QTreeWidgetItem::treeWidget();
+	if (pTreeWidget == NULL)
+		return false;
+
+	const int col = pTreeWidget->sortColumn();
+	if (col < 0)
+		return false;
+
+	return qtractorClientListView::lessThan(*this, other, col);
 }
 
 
@@ -890,10 +898,10 @@ void qtractorClientListView::contextMenuEvent (
 
 // Natural decimal sorting comparator.
 bool qtractorClientListView::lessThan (
-	const QTreeWidgetItem& i1, const QTreeWidgetItem& i2 )
+	const QTreeWidgetItem& i1, const QTreeWidgetItem& i2, int col )
 {
-	const QString& s1 = i1.text(0);
-	const QString& s2 = i2.text(0);
+	const QString& s1 = i1.text(col);
+	const QString& s2 = i2.text(col);
 
 	const int cch1 = s1.length();
 	const int cch2 = s2.length();

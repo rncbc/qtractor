@@ -55,7 +55,7 @@ void qtractorObserverCheckBox::updateValue ( float fValue )
 // Protected slot.
 void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 {
-	float fValue = valueFromScale(bValue ? 1.0f : 0.0f);
+	const float fValue = valueFromScale(bValue ? 1.0f : 0.0f);
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverCheckBox[%p]::checkBoxChanged(%g)", this, fValue);
 #endif
@@ -84,7 +84,7 @@ void qtractorObserverSpinBox::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSpinBox[%p]::updateValue(%g)", this, fValue);
 #endif
-	bool bBlockSignals = QDoubleSpinBox::blockSignals(true);
+	const bool bBlockSignals = QDoubleSpinBox::blockSignals(true);
 	QDoubleSpinBox::setValue(scaleFromValue(fValue));
 	QDoubleSpinBox::blockSignals(bBlockSignals);
 }
@@ -93,7 +93,7 @@ void qtractorObserverSpinBox::updateValue ( float fValue )
 // Protected slot.
 void qtractorObserverSpinBox::spinBoxChanged ( double value )
 {
-	float fValue = valueFromScale(float(value));
+	const float fValue = valueFromScale(float(value));
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
@@ -134,6 +134,7 @@ void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 		iValue += pageStep();
 	else
 		iValue -= pageStep();
+
 	if (iValue > maximum())
 		iValue = maximum();
 	else
@@ -150,7 +151,7 @@ void qtractorObserverSlider::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSlider[%p]::updateValue(%g)", this, fValue);
 #endif
-	bool bBlockSignals = QSlider::blockSignals(true);
+	const bool bBlockSignals = QSlider::blockSignals(true);
 	QSlider::setValue(int(scaleFromValue(fValue)));
 	QSlider::blockSignals(bBlockSignals);
 }
@@ -159,7 +160,7 @@ void qtractorObserverSlider::updateValue ( float fValue )
 // Protected slot.
 void qtractorObserverSlider::sliderChanged ( int iValue )
 {
-	float fValue = valueFromScale(float(iValue));
+	const float fValue = valueFromScale(float(iValue));
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSlider[%p]::sliderChanged(%g)", this, fValue);
 #endif

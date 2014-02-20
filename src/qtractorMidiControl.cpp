@@ -53,7 +53,7 @@ static inline float cbrtf2 ( float x )
 	u.i = (u.i / 3) + 710235478;
 	return u.f;
 #else
-	return cbrtf(x);
+	return ::cbrtf(x);
 #endif
 }
 

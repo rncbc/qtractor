@@ -34,6 +34,36 @@
 
 
 //----------------------------------------------------------------------
+// qtractorMidiControlMapListItem -- Control Map item.
+//
+
+#include "qtractorConnect.h"
+
+class qtractorMidiControlMapListItem : public QTreeWidgetItem
+{
+public:
+
+	// Contructor.
+	qtractorMidiControlMapListItem() : QTreeWidgetItem() {}
+
+protected:
+
+	bool operator< ( const QTreeWidgetItem& other ) const
+	{
+		QTreeWidget *parent = QTreeWidgetItem::treeWidget();
+		if (parent == NULL)
+			return false;
+
+		const int col = parent->sortColumn();
+		if (col < 0)
+			return false;
+
+		return qtractorClientListView::lessThan(*this, other, col);
+	}
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiControlForm -- MIDI controller file manager form.
 //
 
@@ -752,10 +782,11 @@ void qtractorMidiControlForm::refreshControlMap (void)
 	const QIcon	iconControlType(":/images/itemProperty.png");
 	const QIcon	iconParam(":/images/itemControllers.png");
 	const QIcon	iconCommand(":/images/itemChannel.png");
+	qtractorMidiControlMapListItem *pItem;
 	for ( ; it != it_end; ++it) {
 		const qtractorMidiControl::MapKey& key = it.key();
 		const qtractorMidiControl::MapVal& val = it.value();
-		QTreeWidgetItem *pItem = new QTreeWidgetItem();
+		pItem = new qtractorMidiControlMapListItem();
 		pItem->setIcon(0, iconControlType);
 		pItem->setText(0, qtractorMidiControl::nameFromType(key.type()));
 		pItem->setText(1, textFromChannel(key.channel()));
