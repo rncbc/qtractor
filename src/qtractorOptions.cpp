@@ -416,9 +416,9 @@ void qtractorOptions::saveOptions (void)
 	m_settings.beginGroup("/Metronome");
 	// Audio metronome...
 	m_settings.setValue("/BarFilename", sMetroBarFilename);
-	m_settings.setValue("/BarGain", fMetroBarGain);
+	m_settings.setValue("/BarGain", double(fMetroBarGain));
 	m_settings.setValue("/BeatFilename", sMetroBeatFilename);
-	m_settings.setValue("/BeatGain", fMetroBeatGain);
+	m_settings.setValue("/BeatGain", double(fMetroBeatGain));
 	// MIDI metronome...
 	m_settings.setValue("/Channel", iMetroChannel);
 	m_settings.setValue("/BarNote", iMetroBarNote);
