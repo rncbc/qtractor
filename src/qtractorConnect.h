@@ -233,7 +233,8 @@ public:
 	void refresh();
 
 	// Natural decimal sorting comparator.
-	static bool lessThan(const QTreeWidgetItem& i1, const QTreeWidgetItem& i2);
+	static bool lessThan(
+		const QTreeWidgetItem& i1, const QTreeWidgetItem& i2, int col = 0);
 
 protected slots:
 
