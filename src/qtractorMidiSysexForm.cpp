@@ -215,7 +215,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	filters.append(tr("All files (*.*)"));
 	const QString& sTitle  = tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialog)
@@ -291,7 +291,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString  sExt("syx");
 	const QString& sTitle  = tr("Export SysEx File") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
-#if 0// QT_VERSION < 0x040400
+#if 1// QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialog)
@@ -430,7 +430,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString  sExt("syx");
 	const QString& sTitle  = tr("Open SysEx") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialog)
@@ -500,9 +500,10 @@ void qtractorMidiSysexForm::saveSlot (void)
 	if (!fi.exists()) {
 		const QString& sTitle  = tr("Save SysEx") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = tr("Sysex files (*.%1)").arg(sExt);
-	#if 0//QT_VERSION < 0x040400
+	#if 1//QT_VERSION < 0x040400
 		// Ask for the filename to save...
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		QFileDialog::Options options = 0;
 		if (pOptions->bDontUseNativeDialog)
 			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,

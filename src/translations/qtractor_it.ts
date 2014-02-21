@@ -8477,9 +8477,9 @@ Vuoi salvare i cambiamenti?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="330"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="533"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="577"/>
-        <location filename="../qtractorMidiSysexForm.cpp" line="770"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="534"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="578"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="771"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
@@ -8502,7 +8502,7 @@ Vuoi sostituirlo?</translation>
         <translation>File SysEx (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="534"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="535"/>
         <source>About to replace SysEx:
 
 &quot;%1&quot;
@@ -8515,7 +8515,7 @@ Are you sure?</source>
 Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="578"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="579"/>
         <source>About to delete SysEx:
 
 &quot;%1&quot;
@@ -8528,7 +8528,7 @@ Are you sure?</source>
 Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="771"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="772"/>
         <source>SysEx settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -8537,12 +8537,12 @@ Do you want to apply the changes?</source>
 Vuoi applicare i cambiamenti?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="1047"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1048"/>
         <source>Error</source>
         <translation>Errore</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="1048"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1049"/>
         <source>SysEx could not be loaded:
 
 &quot;%1&quot;.
