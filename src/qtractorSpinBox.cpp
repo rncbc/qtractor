@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
 void qtractorTimeSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 {
 	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
-	bool bBlockSignals = pLineEdit->blockSignals(true);
+	const bool bBlockSignals = pLineEdit->blockSignals(true);
 	pLineEdit->setText(textFromValue(m_iValue));
 	QAbstractSpinBox::interpretText();
 	pLineEdit->blockSignals(bBlockSignals);
@@ -203,7 +203,7 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 #endif
 
 	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
-	int iCursorPos = pLineEdit->cursorPosition();
+	const int iCursorPos = pLineEdit->cursorPosition();
 	
 	long iValue = long(value());
 
@@ -214,7 +214,7 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(iValue);
 			unsigned long iFrame = pNode->frame;
 			const QString& sText = pLineEdit->text();
-			int iPos = sText.section('.', 0, 0).length() + 1;
+			const int iPos = sText.section('.', 0, 0).length() + 1;
 			if (iCursorPos < iPos)
 				iFrame = pNode->frameFromBar(pNode->bar + 1);
 			else if (iCursorPos < iPos + sText.section('.', 1, 1).length() + 1)
@@ -226,7 +226,7 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 		}
 		case qtractorTimeScale::Time: {
 			const QString& sText = pLineEdit->text();
-			int iPos = sText.section(':', 0, 0).length() + 1;
+			const int iPos = sText.section(':', 0, 0).length() + 1;
 			if (iCursorPos < iPos)
 				iSteps *= int(3600 * m_pTimeScale->sampleRate());
 			else if (iCursorPos < iPos + sText.section(':', 1, 1).length() + 1)
@@ -319,8 +319,8 @@ void qtractorTimeSpinBox::updateText (void)
 {
 	if (QAbstractSpinBox::isVisible()) {
 		QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
-		bool bBlockSignals = pLineEdit->blockSignals(true);
-		int iCursorPos = pLineEdit->cursorPosition();
+		const bool bBlockSignals = pLineEdit->blockSignals(true);
+		const int iCursorPos = pLineEdit->cursorPosition();
 		pLineEdit->setText(textFromValue(m_iValue));
 	//	QAbstractSpinBox::interpretText();
 		pLineEdit->setCursorPosition(iCursorPos);
@@ -425,7 +425,7 @@ qtractorTempoSpinBox::qtractorTempoSpinBox ( QWidget *pParent )
 void qtractorTempoSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 {
 	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
-	bool bBlockSignals = pLineEdit->blockSignals(true);
+	const bool bBlockSignals = pLineEdit->blockSignals(true);
 	pLineEdit->setText(textFromValue(m_fTempo, m_iBeatsPerBar, m_iBeatDivisor));
 	pLineEdit->blockSignals(bBlockSignals);
 //	QAbstractSpinBox::interpretText();
@@ -498,7 +498,8 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 		iBeatDivisor = 8;
 
 	if (::fabs(m_fTempo - fTempo) > 0.05f) {
-		m_fTempo = fTempo;
+		// Fixup: round to one single decimal place.
+		m_fTempo = 0.1f * ::roundf(10.0f * fTempo);
 		++m_iValueChanged;
 	}
 
@@ -526,8 +527,8 @@ void qtractorTempoSpinBox::updateText (void)
 {
 	if (QAbstractSpinBox::isVisible()) {
 		QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
-		bool bBlockSignals = pLineEdit->blockSignals(true);
-		int iCursorPos = pLineEdit->cursorPosition();
+		const bool bBlockSignals = pLineEdit->blockSignals(true);
+		const int iCursorPos = pLineEdit->cursorPosition();
 		pLineEdit->setText(textFromValue(
 			m_fTempo, m_iBeatsPerBar, m_iBeatDivisor));
 	//	QAbstractSpinBox::interpretText();
@@ -575,7 +576,7 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 #endif
 
 	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
-	int iCursorPos = pLineEdit->cursorPosition();
+	const int iCursorPos = pLineEdit->cursorPosition();
 	const QString& sText = pLineEdit->text();
 	if (iCursorPos < sText.section(' ', 0, 0).length() + 1) {
 		const QChar& decp = QLocale().decimalPoint();
@@ -595,9 +596,9 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 QAbstractSpinBox::StepEnabled qtractorTempoSpinBox::stepEnabled (void) const
 {
 	StepEnabled flags = StepNone;
-	float fTempo = tempo();
-	unsigned short iBeatsPerBar = beatsPerBar();
-	unsigned short iBeatDivisor = beatDivisor();
+	const float fTempo = tempo();
+	const unsigned short iBeatsPerBar = beatsPerBar();
+	const unsigned short iBeatDivisor = beatDivisor();
 	if (fTempo > 1.0f && iBeatsPerBar > 2 && iBeatDivisor > 1)
 		flags |= StepDownEnabled;
 	if (fTempo < 1000.0f && iBeatsPerBar < 128 && iBeatDivisor < 8)
@@ -609,14 +610,14 @@ QAbstractSpinBox::StepEnabled qtractorTempoSpinBox::stepEnabled (void) const
 // Value/text format converters.
 float qtractorTempoSpinBox::tempoFromText ( const QString& sText ) const
 {
-	float fTempo = sText.section(' ', 0, 0).toFloat();
+	const float fTempo = sText.section(' ', 0, 0).toFloat();
 	return (fTempo >= 1.0f ? fTempo : m_fTempo);
 }
 
 
 unsigned short qtractorTempoSpinBox::beatsPerBarFromText ( const QString& sText) const
 {
-	unsigned short iBeatsPerBar
+	const unsigned short iBeatsPerBar
 		= sText.section(' ', 1, 1).section('/', 0, 0).toUShort();
 	return (iBeatsPerBar >= 2 ? iBeatsPerBar : m_iBeatsPerBar);
 }

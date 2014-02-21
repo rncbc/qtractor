@@ -426,12 +426,17 @@ void qtractorMidiControlForm::exportSlot (void)
 	if (pOptions == NULL)
 		return;
 
+	QString sPath;
+
 	const QString  sExt("qtc");
 	const QString& sTitle  = tr("Export Controller File") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 
-	QString sPath = QFileInfo(pOptions->sMidiControlDir,
-		tr("controller") + '.' + sExt).absoluteFilePath();
+	if (pOptions->midiControlFiles.isEmpty()) {
+		sPath =	QFileInfo(pOptions->sMidiControlDir,
+			tr("controller") + '.' + sExt).absoluteFilePath();
+	}
+	else sPath = pOptions->midiControlFiles.last();
 
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
