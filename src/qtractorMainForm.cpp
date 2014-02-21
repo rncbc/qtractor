@@ -1807,7 +1807,7 @@ bool qtractorMainForm::openSession (void)
 	sExt = m_pOptions->sSessionExt; // Default session  file format...
 	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialog)
 		options |= QFileDialog::DontUseNativeDialog;
@@ -1894,7 +1894,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = filters.join(";;");
-	#if 0//QT_VERSION < 0x040400
+	#if 1//QT_VERSION < 0x040400
 		QFileDialog::Options options = 0;
 		if (m_pOptions->bDontUseNativeDialog)
 			options |= QFileDialog::DontUseNativeDialog;

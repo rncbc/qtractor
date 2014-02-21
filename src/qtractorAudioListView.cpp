@@ -136,7 +136,7 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 	QStringList files;
 
 	const QString& sTitle = tr("Open Audio Files") + " - " QTRACTOR_TITLE;
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();

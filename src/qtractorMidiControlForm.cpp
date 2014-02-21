@@ -226,7 +226,7 @@ void qtractorMidiControlForm::importSlot (void)
 	const QString& sTitle  = tr("Import Controller Files") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialog)
@@ -433,7 +433,7 @@ void qtractorMidiControlForm::exportSlot (void)
 	QString sPath = QFileInfo(pOptions->sMidiControlDir,
 		tr("controller") + '.' + sExt).absoluteFilePath();
 
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialog)

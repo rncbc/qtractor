@@ -1274,7 +1274,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString  sExt("log");
 	const QString& sTitle  = tr("Messages Log") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Log files (*.%1)").arg(sExt); 
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialog)
@@ -1312,7 +1312,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString  sExt("qtt");
 	const QString& sTitle  = tr("Session Template") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Session template files (*.qtr *.qts *.%1)").arg(sExt); 
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialog)
@@ -1464,7 +1464,7 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 {
 	QString sAudioFile;
 
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialog)

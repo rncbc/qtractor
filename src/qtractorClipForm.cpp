@@ -651,7 +651,7 @@ void qtractorClipForm::browseFilename (void)
 	QString sFilename;
 
 	const QString& sTitle = tr("%1 Clip File").arg(sType) + " - " QTRACTOR_TITLE;
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialog)

@@ -534,7 +534,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString  sExt("qtx");
 	const QString& sTitle  = tr("Open Preset") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
-#if 0//QT_VERSION < 0x040400
+#if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialog)
@@ -615,7 +615,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			if (!fi.exists()) {
 				const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
 				const QString& sFilter = tr("Preset files (*.%1)").arg(sExt);
-			#if 0//QT_VERSION < 0x040400
+			#if 1//QT_VERSION < 0x040400
 				// Ask for the filename to save...
 				QFileDialog::Options options = 0;
 				if (pOptions->bDontUseNativeDialog)
