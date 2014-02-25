@@ -310,16 +310,24 @@ void qtractorOptions::loadOptions (void)
 	iMidiSnapToScaleType = m_settings.value("/SnapToScaleType", 0).toInt();
 	m_settings.endGroup();
 
+	m_settings.endGroup(); // MidiEditor
+
+	// User preference options.
+	m_settings.beginGroup("/Preferences");
+
 	// Meter colors.
 	m_settings.beginGroup("/Colors");
 	audioMeterColors = m_settings.value("/AudioMeter").toStringList();
 	midiMeterColors  = m_settings.value("/MidiMeter").toStringList();
 	m_settings.endGroup();
 
+	// Run-time special semi/non-persistent options.
+	m_settings.beginGroup("/Dialogs");
+	bUseNativeDialogs = m_settings.value("/UseNativeDialogs", true).toBool();
+	bDontUseNativeDialogs = !bUseNativeDialogs;
 	m_settings.endGroup();
 
-	// Run-time special non-persistent options.
-	bDontUseNativeDialog = false;
+	m_settings.endGroup(); // Preferences
 }
 
 
@@ -379,7 +387,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TransportMode", iTransportMode);
 	m_settings.endGroup();
 
-	// Audio redndering options group.
+	// Audio rendering options group.
 	m_settings.beginGroup("/Audio");
 	m_settings.setValue("/CaptureExt", sAudioCaptureExt);
 	m_settings.setValue("/CaptureType", iAudioCaptureType);
@@ -457,7 +465,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/PluginType", iPluginType);
 	m_settings.setValue("/PluginActivate", bPluginActivate);
 	m_settings.setValue("/CurveMode", iCurveMode);
-    m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
+	m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
 	m_settings.endGroup();
 
@@ -499,18 +507,18 @@ void qtractorOptions::saveOptions (void)
 	iFile = 0;
 	m_settings.beginGroup("/MidiControlFiles");
 	QStringListIterator iter2(midiControlFiles);
-    while (iter2.hasNext())
+	while (iter2.hasNext())
 		m_settings.setValue(sFilePrefix.arg(++iFile), iter2.next());
-    // Cleanup old entries, if any...
-    while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
-        m_settings.remove(sFilePrefix.arg(iFile));
+	// Cleanup old entries, if any...
+	while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
+		m_settings.remove(sFilePrefix.arg(iFile));
 	m_settings.endGroup();
 
 	// Recent file list.
 	iFile = 0;
 	m_settings.beginGroup("/RecentFiles");
 	QStringListIterator iter3(recentFiles);
-    while (iter3.hasNext())
+	while (iter3.hasNext())
 		m_settings.setValue(sFilePrefix.arg(++iFile), iter3.next());
 	m_settings.endGroup();
 
@@ -554,13 +562,23 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/SnapToScaleType", iMidiSnapToScaleType);
 	m_settings.endGroup();
 
+	m_settings.endGroup(); // MidiEditor
+
+	// User preference options.
+	m_settings.beginGroup("/Preferences");
+
 	// Meter colors.
 	m_settings.beginGroup("/Colors");
 	m_settings.setValue("/AudioMeter", audioMeterColors);
 	m_settings.setValue("/MidiMeter", midiMeterColors);
 	m_settings.endGroup();
 
+	// Run-time special semi/non-persistent options.
+	m_settings.beginGroup("/Dialogs");
+	m_settings.setValue("/UseNativeDialogs", bUseNativeDialogs);
 	m_settings.endGroup();
+
+	m_settings.endGroup(); // Preferences
 
 	// Save/commit to disk.
 	m_settings.sync();

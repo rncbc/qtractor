@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- A new user preference option is now in place for whether to
+  use desktop environment's own native file requester/browser
+  dialogs (View/Options.../Display/Dialogs/Use native dialogs).
+
 - A bit of slack have been introduced to put "Follow Playhead"
   (aka. auto-scroll view mode) on hold, while doing in-flight
   selection edit moves. (EXPERIMENTAL)

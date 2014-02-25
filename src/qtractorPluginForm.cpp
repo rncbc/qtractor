@@ -537,7 +537,7 @@ void qtractorPluginForm::openPresetSlot (void)
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
@@ -554,7 +554,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
@@ -618,7 +618,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			#if 1//QT_VERSION < 0x040400
 				// Ask for the filename to save...
 				QFileDialog::Options options = 0;
-				if (pOptions->bDontUseNativeDialog)
+				if (pOptions->bDontUseNativeDialogs)
 					options |= QFileDialog::DontUseNativeDialog;
 				sFilename = QFileDialog::getSaveFileName(this,
 					sTitle, sFilename, sFilter, NULL, options);
@@ -635,7 +635,7 @@ void qtractorPluginForm::savePresetSlot (void)
 				urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 				urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
 				fileDialog.setSidebarUrls(urls);
-				if (pOptions->bDontUseNativeDialog)
+				if (pOptions->bDontUseNativeDialogs)
 					fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 				// Show dialog...
 				if (fileDialog.exec())

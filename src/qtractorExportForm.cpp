@@ -378,7 +378,7 @@ void qtractorExportForm::browseExportPath (void)
 #if 1//QT_VERSION < 0x040400
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialog)
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	sExportPath = QFileDialog::getSaveFileName(this,
 		sTitle, sExportPath, sFilter, NULL, options);
@@ -406,7 +406,7 @@ void qtractorExportForm::browseExportPath (void)
 			break;
 		}
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialog)
+		if (pOptions->bDontUseNativeDialogs)
 			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...

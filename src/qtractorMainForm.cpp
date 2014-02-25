@@ -1410,7 +1410,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			if (m_sNsmExt.isEmpty())
 				m_sNsmExt = qtractorDocument::defaultExt();
 			// Run-time special non-persistent options.
-			m_pOptions->bDontUseNativeDialog = true;
+			m_pOptions->bDontUseNativeDialogs = true;
 		}
 	#endif
 		// Change to last known session dir...
@@ -1800,7 +1800,7 @@ bool qtractorMainForm::openSession (void)
 	const QString& sFilter = filters.join(";;");
 #if 1//QT_VERSION < 0x040400
 	QFileDialog::Options options = 0;
-	if (m_pOptions->bDontUseNativeDialog)
+	if (m_pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, m_pOptions->sSessionDir, sFilter, NULL, options);
@@ -1818,7 +1818,7 @@ bool qtractorMainForm::openSession (void)
 	if (sExt == qtractorDocument::archiveExt())
 		fileDialog.setNameFilter(filters.last());
 #endif
-	if (m_pOptions->bDontUseNativeDialog)
+	if (m_pOptions->bDontUseNativeDialogs)
 		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Stuff sidebar...
 	QList<QUrl> urls(fileDialog.sidebarUrls());
@@ -1890,7 +1890,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		const QString& sFilter = filters.join(";;");
 	#if 1//QT_VERSION < 0x040400
 		QFileDialog::Options options = 0;
-		if (m_pOptions->bDontUseNativeDialog)
+		if (m_pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter, NULL, options);
@@ -1908,7 +1908,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (sExt == qtractorDocument::archiveExt())
 			fileDialog.setNameFilter(filters.last());
 	#endif
-		if (m_pOptions->bDontUseNativeDialog)
+		if (m_pOptions->bDontUseNativeDialogs)
 			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		// Stuff sidebar...
 		QList<QUrl> urls(fileDialog.sidebarUrls());

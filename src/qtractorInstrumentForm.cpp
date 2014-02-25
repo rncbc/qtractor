@@ -199,7 +199,7 @@ void qtractorInstrumentForm::importSlot (void)
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
@@ -216,7 +216,7 @@ void qtractorInstrumentForm::importSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sInstrumentDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
@@ -368,7 +368,7 @@ void qtractorInstrumentForm::exportSlot (void)
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
 		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
@@ -385,7 +385,7 @@ void qtractorInstrumentForm::exportSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sInstrumentDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
