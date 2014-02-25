@@ -178,7 +178,7 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 	// Ask for the filenames to open...
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialog)
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, recentDir(), sFilter, NULL, options);
@@ -197,7 +197,7 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialog)
+		if (pOptions->bDontUseNativeDialogs)
 			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...

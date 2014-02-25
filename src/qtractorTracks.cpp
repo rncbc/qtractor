@@ -1164,7 +1164,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	// Ask for the filename to save...
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialog)
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
@@ -1183,7 +1183,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialog)
+		if (pOptions->bDontUseNativeDialogs)
 			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...
@@ -1430,7 +1430,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	// Ask for the filename to save...
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialog)
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
@@ -1449,7 +1449,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialog)
+		if (pOptions->bDontUseNativeDialogs)
 			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...

@@ -254,12 +254,15 @@ public:
 	int  iMidiSnapToScaleKey;
 	int  iMidiSnapToScaleType;
 
-	// Run-time special non-persistent options.
-	bool bDontUseNativeDialog;
-
 	// Meter colors.
 	QStringList audioMeterColors;
 	QStringList midiMeterColors;
+
+	// Global persistent user preference options.
+	bool bUseNativeDialogs;
+
+	// Run-time special non-persistent options.
+	bool bDontUseNativeDialogs;
 
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);

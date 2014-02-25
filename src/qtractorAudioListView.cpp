@@ -140,7 +140,7 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialog)
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, recentDir(), qtractorAudioFileFactory::filters(), NULL, options);
@@ -159,7 +159,7 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialog)
+		if (pOptions->bDontUseNativeDialogs)
 			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
 	// Show dialog...

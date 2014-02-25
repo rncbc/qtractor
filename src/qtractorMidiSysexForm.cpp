@@ -218,7 +218,7 @@ void qtractorMidiSysexForm::importSlot (void)
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
@@ -235,7 +235,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
@@ -294,7 +294,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 #if 1// QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	sPath = QFileDialog::getSaveFileName(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
@@ -311,7 +311,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
@@ -433,7 +433,7 @@ void qtractorMidiSysexForm::openSlot (void)
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
@@ -450,7 +450,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialog)
+	if (pOptions->bDontUseNativeDialogs)
 		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Show dialog...
 	if (fileDialog.exec())
@@ -504,7 +504,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 		// Ask for the filename to save...
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		QFileDialog::Options options = 0;
-		if (pOptions->bDontUseNativeDialog)
+		if (pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter, NULL, options);
@@ -521,7 +521,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialog)
+		if (pOptions->bDontUseNativeDialogs)
 			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		// Show dialog...
 		if (fileDialog.exec())

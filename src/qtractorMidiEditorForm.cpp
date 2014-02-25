@@ -934,7 +934,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		// Ask for the filenames to open...
 		QFileDialog::Options options = 0;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bDontUseNativeDialog)
+		if (pOptions && pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter, NULL, options);
@@ -953,7 +953,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 			fileDialog.setSidebarUrls(urls);
-			if (pOptions->bDontUseNativeDialog)
+			if (pOptions->bDontUseNativeDialogs)
 				fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		}
 		// Show dialog...
