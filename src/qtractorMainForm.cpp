@@ -1867,7 +1867,10 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	QString sFilename = m_sFilename;
 
 	if (sFilename.isEmpty()) {
-		sFilename = QFileInfo(m_pOptions->sSessionDir,
+		QString sSessionDir = m_pSession->sessionDir();
+		if (sSessionDir.isEmpty() || !QFileInfo(sSessionDir).exists())
+			sSessionDir = m_pOptions->sSessionDir;
+		sFilename = QFileInfo(sSessionDir,
 			qtractorSession::sanitize(m_pSession->sessionName())).filePath();
 		bPrompt = true;
 	}
