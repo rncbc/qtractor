@@ -551,7 +551,7 @@ const QString& qtractorVstPluginType::aboutText (void)
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
 			m_sAboutText += QObject::tr("Product: ");
-			m_sAboutText + szTemp;
+			m_sAboutText += szTemp;
 		}
 		szTemp[0] = (char) 0;
 		vst_dispatch(effGetVendorString, 0, 0, (void *) szTemp, 0.0f);
@@ -559,7 +559,14 @@ const QString& qtractorVstPluginType::aboutText (void)
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
 			m_sAboutText += QObject::tr("Vendor: ");
-			m_sAboutText + szTemp;
+			m_sAboutText += szTemp;
+		}
+		const int iVersion = vst_dispatch(effGetVendorVersion, 0, 0, NULL, 0.0f);
+		if (iVersion) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Version: ");
+			m_sAboutText += QString::number(iVersion);
 		}
 	}
 

@@ -87,13 +87,6 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.PresetComboBox->setCompleter(NULL);
 
 	// Have some effective feedback when toggling on/off...
-	QIcon iconParams;
-	iconParams.addPixmap(
-		QPixmap(":/images/formParamsOff.png"), QIcon::Active, QIcon::Off);
-	iconParams.addPixmap(
-		QPixmap(":/images/formParamsOn.png"), QIcon::Active, QIcon::On);
-	m_ui.ParamsToolButton->setIcon(iconParams);
-
 	QIcon iconActivate;
 	iconActivate.addPixmap(
 		QPixmap(":/images/itemLedOff.png"), QIcon::Active, QIcon::Off);
@@ -120,9 +113,6 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.DeletePresetToolButton,
 		SIGNAL(clicked()),
 		SLOT(deletePresetSlot()));
-	QObject::connect(m_ui.ParamsToolButton,
-		SIGNAL(toggled(bool)),
-		SLOT(paramsSlot(bool)));
 	QObject::connect(m_ui.EditToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(editSlot(bool)));
@@ -207,31 +197,22 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	}
 
 	// Maybe we need a tabbed widget...
-	QTabWidget  *pTabWidget = NULL;
-	QVBoxLayout *pVBoxLayout = NULL;
-
-	if (iPages > 1) {
-		pTabWidget  = new QTabWidget();
-		pVBoxLayout = new QVBoxLayout();
-		pVBoxLayout->setMargin(0);
-		pVBoxLayout->setSpacing(4);
-	}
-
-	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(8);
-	pGridLayout->setSpacing(4);
+	QTabWidget  *pTabWidget  = NULL;
+	QGridLayout *pGridLayout = NULL;
+	QWidget     *pPageWidget = NULL;
 
 	int iPage = 0;
 	const QString sPage = tr("Page %1");
-	QWidget *pPageWidget = NULL;
-	if (pTabWidget) {	
+	if (iParams > 0) {
+		pTabWidget  = m_ui.TabWidget;
+		pGridLayout = new QGridLayout();
+		pGridLayout->setMargin(8);
+		pGridLayout->setSpacing(4);
 		pPageWidget = new QWidget();
 		pPageWidget->setLayout(pGridLayout);
-		pTabWidget->addTab(pPageWidget, sPage.arg(++iPage));
+		pTabWidget->insertTab(iPage, pPageWidget, sPage.arg(iPage + 1));
+		++iPage;
 	}
-
-	// Plugin might not have its own editor...
-	pGridLayout->setHorizontalSpacing(16);
 
 	// FIXME: Couldn't stand more than a hundred widgets?
 	// or do we have one dedicated editor GUI?
@@ -261,17 +242,11 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 					pGridLayout->setSpacing(4);
 					pPageWidget = new QWidget();
 					pPageWidget->setLayout(pGridLayout);
-					pTabWidget->addTab(pPageWidget, sPage.arg(++iPage));
+					pTabWidget->insertTab(iPage, pPageWidget, sPage.arg(iPage + 1));
+					++iPage;
 				}
 			}
 		}
-	}
-
-	if (pVBoxLayout && pTabWidget) {
-		pVBoxLayout->addWidget(pTabWidget);
-		m_ui.ParamsGridWidget->setLayout(pVBoxLayout);
-	} else {
-		m_ui.ParamsGridWidget->setLayout(pGridLayout);
 	}
 
 	// Show editor button if available?
@@ -298,12 +273,16 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// maybe redundant but necessary...
 	m_pPlugin->updateEditorTitle();
 
+	// About page...
+	m_ui.NameTextLabel->setText(pType->name());
+	m_ui.AboutTextLabel->setText(pType->aboutText());
+
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
-	m_ui.ParamsToolButton->setVisible(iParams > 0);
-	m_ui.ParamsToolButton->setChecked(iParams > 0);
 	m_ui.DirectAccessParamPushButton->setVisible(iParams > 0);
-	paramsSlot(iParams > 0);
+
+	// Always first tab/page selected...
+	m_ui.TabWidget->setCurrentIndex(0);
 
 	// Clear any initial param update.
 	qtractorSubject::resetQueue();
@@ -709,32 +688,6 @@ void qtractorPluginForm::deletePresetSlot (void)
 
 	refresh();
 	stabilize();
-}
-
-
-// Params slot.
-void qtractorPluginForm::paramsSlot ( bool bOn )
-{
-	if (m_pPlugin == NULL)
-		return;
-
-	if (m_iUpdate > 0)
-		return;
-
-	++m_iUpdate;
-
-	m_ui.ParamsGridWidget->setVisible(bOn);
-	if (bOn)
-		m_ui.ParamsGridWidget->show();
-	else
-		m_ui.ParamsGridWidget->hide();
-
-	// Shake it a little bit first, but
-	// make it as tight as possible...
-	resize(width() + 1, height() + 1);
-	adjustSize();
-
-	--m_iUpdate;
 }
 
 

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Generic native plugin dialogs now shows an additional "About"
+  last page where authorship credits are due. (EXPERIMENTAL)
+
 - A new user preference option is now in place for whether to
   use desktop environment's own native file requester/browser
   dialogs (View/Options.../Display/Dialogs/Use native dialogs).

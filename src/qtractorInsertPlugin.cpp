@@ -203,9 +203,7 @@ qtractorInsertPluginType *qtractorInsertPluginType::createType (
 const QString& qtractorInsertPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText  = QTRACTOR_TITLE;
-		m_sAboutText += ' ';
-		m_sAboutText += QObject::tr("Send/Return insert pseudo-plugin.");
+		m_sAboutText += QObject::tr("Insert Send/Return pseudo-plugin.");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
@@ -562,9 +560,7 @@ qtractorAuxSendPluginType *qtractorAuxSendPluginType::createType (
 const QString& qtractorAuxSendPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText  = QTRACTOR_TITLE;
-		m_sAboutText += ' ';
-		m_sAboutText += QObject::tr("Aux/Send insert pseudo-plugin.");
+		m_sAboutText += QObject::tr("Aux Send pseudo-plugin.");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
