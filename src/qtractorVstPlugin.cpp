@@ -410,8 +410,9 @@ bool qtractorVstPluginType::open (void)
 #endif
 
 	// Retrieve plugin type names.
-	char szName[256]; ::memset(szName, 0, sizeof(szName));
-	if (vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f))
+	char szName[32]; szName[0] = (char) 0;
+	vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f);
+	if (szName[0])
 		m_sName = szName;
 	else
 		m_sName = QFileInfo(filename()).baseName();
@@ -536,6 +537,33 @@ bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 		return false;
 
 	return (m_pEffect->vst_dispatch(effCanDo, 0, 0, (void *) pszCanDo, 0.0f) > 0);
+}
+
+
+// Instance cached-deferred accesors.
+const QString& qtractorVstPluginType::aboutText (void)
+{
+	if (m_sAboutText.isEmpty()) {
+		char szTemp[64];
+		szTemp[0] = (char) 0;
+		vst_dispatch(effGetProductString, 0, 0, (void *) szTemp, 0.0f);
+		if (szTemp[0]) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Product: ");
+			m_sAboutText + szTemp;
+		}
+		szTemp[0] = (char) 0;
+		vst_dispatch(effGetVendorString, 0, 0, (void *) szTemp, 0.0f);
+		if (szTemp[0]) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Vendor: ");
+			m_sAboutText + szTemp;
+		}
+	}
+
+	return m_sAboutText;
 }
 
 

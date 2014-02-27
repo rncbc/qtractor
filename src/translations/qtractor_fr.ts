@@ -47,7 +47,7 @@ Audio:	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="158"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1307"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1335"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -230,15 +230,25 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>panoramique du bus</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="231"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="571"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="208"/>
+        <source>Send/Return insert pseudo-plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorInsertPlugin.cpp" line="248"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="605"/>
         <source>Send Gain</source>
         <translation>Gain d&apos;Envoie</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="239"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="256"/>
         <source>Dry / Wet</source>
         <translation>Dry / Wet</translation>
+    </message>
+    <message>
+        <location filename="../qtractorInsertPlugin.cpp" line="567"/>
+        <source>Aux/Send insert pseudo-plugin.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="408"/>
@@ -382,6 +392,11 @@ MIDI:	</translation>
         <location filename="../qtractorPlugin.cpp" line="585"/>
         <source>(Any)</source>
         <translation>(Tous)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPlugin.cpp" line="641"/>
+        <source>Dummy plugin type.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="117"/>
@@ -628,9 +643,44 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1304"/>
+        <location filename="../qtractorVstPlugin.cpp" line="553"/>
+        <source>Product: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorVstPlugin.cpp" line="561"/>
+        <source>Vendor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorVstPlugin.cpp" line="1332"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
+        <source>Maker: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLadspaPlugin.cpp" line="146"/>
+        <source>Copyright: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="1591"/>
+        <source>Project: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
+        <source>Author: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="1607"/>
+        <source>Email: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

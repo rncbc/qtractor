@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -61,6 +61,9 @@ public:
 	// Specific accessors.
 	const LADSPA_Descriptor *ladspa_descriptor() const
 		{ return m_pLadspaDescriptor; }
+
+	// Instance cached-deferred accesors.
+	const QString& aboutText();
 
 protected:
 

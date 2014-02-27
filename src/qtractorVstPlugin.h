@@ -74,6 +74,9 @@ public:
 	int vst_dispatch(
 		long opcode, long index, long value, void *ptr, float opt) const;
 
+	// Instance cached-deferred accesors.
+	const QString& aboutText();
+
 protected:
 
 	// VST flag inquirer.

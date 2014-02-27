@@ -357,7 +357,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="158"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1307"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1335"/>
         <source>All files (*.*)</source>
         <translation>Все файлы (*.*)</translation>
     </message>
@@ -541,6 +541,11 @@ MIDI:	</translation>
         <location filename="../qtractorPlugin.cpp" line="585"/>
         <source>(Any)</source>
         <translation>(Любой)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPlugin.cpp" line="641"/>
+        <source>Dummy plugin type.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="117"/>
@@ -735,7 +740,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1304"/>
+        <location filename="../qtractorVstPlugin.cpp" line="553"/>
+        <source>Product: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorVstPlugin.cpp" line="561"/>
+        <source>Vendor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorVstPlugin.cpp" line="1332"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -797,15 +812,25 @@ Offs/Length:	%3 / %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="231"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="571"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="208"/>
+        <source>Send/Return insert pseudo-plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorInsertPlugin.cpp" line="248"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="605"/>
         <source>Send Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="239"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="256"/>
         <source>Dry / Wet</source>
         <translation>До / После обработки</translation>
+    </message>
+    <message>
+        <location filename="../qtractorInsertPlugin.cpp" line="567"/>
+        <source>Aux/Send insert pseudo-plugin.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlCommand.h" line="70"/>
@@ -941,6 +966,31 @@ Offs/Length:	%3 / %4</source>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="467"/>
         <source>automation edit list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
+        <source>Maker: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLadspaPlugin.cpp" line="146"/>
+        <source>Copyright: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="1591"/>
+        <source>Project: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
+        <source>Author: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="1607"/>
+        <source>Email: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

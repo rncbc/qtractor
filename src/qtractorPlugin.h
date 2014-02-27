@@ -115,6 +115,9 @@ public:
 	static Hint hintFromText(const QString& sText);
 	static QString textFromHint(Hint typeHint);
 
+	// Instance cached-deferred methods.
+	virtual const QString& aboutText() = 0;
+
 protected:
 
 	// Cached name strings.
@@ -136,6 +139,9 @@ protected:
 	bool m_bRealtime;
 	bool m_bConfigure;
 	bool m_bEditor;
+
+	// Instance cached-deferred variables.
+	QString m_sAboutText;
 
 private:
 
@@ -165,6 +171,9 @@ public:
 	// Factory method (static)
 	static qtractorDummyPluginType *createType(
 		qtractorPluginFile *pFile, unsigned long iIndex = 0, Hint typeHint = Vst);
+
+	// Instance cached-deferred accesors.
+	const QString& aboutText();
 };
 
 

@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -127,6 +127,28 @@ const LADSPA_Descriptor *qtractorLadspaPluginType::ladspa_descriptor (
 
 	// Retrieve descriptor if any...
 	return (*pfnLadspaDescriptor)(iIndex);
+}
+
+
+// Instance cached-deferred accesors.
+const QString& qtractorLadspaPluginType::aboutText (void)
+{
+	if (m_sAboutText.isEmpty() && m_pLadspaDescriptor) {
+		if (m_pLadspaDescriptor->Maker) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Maker: ");
+			m_sAboutText += m_pLadspaDescriptor->Maker;
+		}
+		if (m_pLadspaDescriptor->Copyright) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Copyright: ");
+			m_sAboutText += m_pLadspaDescriptor->Copyright;
+		}
+	}
+
+	return m_sAboutText;
 }
 
 

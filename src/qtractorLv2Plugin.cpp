@@ -1580,6 +1580,40 @@ bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
 }
 
 
+// Instance cached-deferred accesors.
+const QString& qtractorLv2PluginType::aboutText (void)
+{
+	if (m_sAboutText.isEmpty() && m_lv2_plugin) {
+		LilvNode *node = lilv_plugin_get_project(m_lv2_plugin);
+		if (node) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Project: ");
+			m_sAboutText += lilv_node_as_string(node);
+			lilv_node_free(node);
+		}
+		node = lilv_plugin_get_author_name(m_lv2_plugin);
+		if (node) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Author: ");
+			m_sAboutText += lilv_node_as_string(node);
+			lilv_node_free(node);
+		}
+		node = lilv_plugin_get_author_email(m_lv2_plugin);
+		if (node) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Email: ");
+			m_sAboutText += lilv_node_as_string(node);
+			lilv_node_free(node);
+		}
+	}
+
+	return m_sAboutText;
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorLv2Plugin -- LV2 plugin instance.
 //
