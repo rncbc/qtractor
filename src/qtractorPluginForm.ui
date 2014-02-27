@@ -27,7 +27,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>120</height>
+    <height>140</height>
    </rect>
   </property>
   <property name="font">
@@ -45,13 +45,14 @@
    <string>qtractorPluginForm</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/trackProperties.png</iconset>
+   <iconset resource="qtractor.qrc">
+    <normaloff>:/images/trackProperties.png</normaloff>:/images/trackProperties.png</iconset>
   </property>
   <layout class="QVBoxLayout">
-   <property name="margin">
+   <property name="spacing">
     <number>4</number>
    </property>
-   <property name="spacing">
+   <property name="margin">
     <number>4</number>
    </property>
    <item>
@@ -68,7 +69,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formOpen.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/formOpen.png</normaloff>:/images/formOpen.png</iconset>
        </property>
       </widget>
      </item>
@@ -100,7 +102,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/formSave.png</normaloff>:/images/formSave.png</iconset>
        </property>
       </widget>
      </item>
@@ -116,7 +119,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/formRemove.png</normaloff>:/images/formRemove.png</iconset>
        </property>
       </widget>
      </item>
@@ -128,35 +132,13 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint">
+       <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
          <height>20</height>
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QToolButton" name="ParamsToolButton">
-       <property name="focusPolicy">
-        <enum>Qt::TabFocus</enum>
-       </property>
-       <property name="toolTip">
-        <string>Plugin parameters</string>
-       </property>
-       <property name="text">
-        <string>Params</string>
-       </property>
-       <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formParamsOff.png</iconset>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="EditToolButton">
@@ -170,7 +152,8 @@
         <string>Edit</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formEdit.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/formEdit.png</normaloff>:/images/formEdit.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -192,7 +175,8 @@
         <string>Active</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemLedOff.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/itemLedOff.png</normaloff>:/images/itemLedOff.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -205,7 +189,45 @@
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="ParamsGridWidget" />
+    <widget class="QTabWidget" name="TabWidget">
+     <widget class="QWidget" name="About">
+      <attribute name="title">
+       <string>About</string>
+      </attribute>
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QLabel" name="NameTextLabel">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="AboutTextLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout">
@@ -221,7 +243,8 @@
         <string>Sends</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemAudioPortOut.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/itemAudioPortOut.png</normaloff>:/images/itemAudioPortOut.png</iconset>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -240,49 +263,50 @@
         <string>Returns</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemAudioPortIn.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/itemAudioPortIn.png</normaloff>:/images/itemAudioPortIn.png</iconset>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
      </item>
-	 <item>
-	  <widget class="QLabel" name="AudioBusNameLabel">
-	   <property name="text">
-		<string>Aux Send Bus:</string>
-	   </property>
-	  </widget>
-	 </item>
-	 <item>
-	  <widget class="QComboBox" name="AudioBusNameComboBox"/>
-	 </item>
-	 <item>
-      <widget class="QToolButton" name="AudioBusNameToolButton" >
-       <property name="minimumSize" >
+     <item>
+      <widget class="QLabel" name="AudioBusNameLabel">
+       <property name="text">
+        <string>Aux Send Bus:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="AudioBusNameComboBox"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="AudioBusNameToolButton">
+       <property name="minimumSize">
         <size>
          <width>22</width>
          <height>22</height>
         </size>
        </property>
-       <property name="maximumSize" >
+       <property name="maximumSize">
         <size>
          <width>24</width>
          <height>24</height>
         </size>
        </property>
-       <property name="focusPolicy" >
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Manage buses</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
      </item>
-	 <item>
+     <item>
       <spacer>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -290,7 +314,7 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint">
+       <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
          <height>0</height>
@@ -299,19 +323,19 @@
       </spacer>
      </item>
      <item>
-	  <widget class="QPushButton" name="DirectAccessParamPushButton">
-	  <property name="minimumSize" >
-       <size>
-        <width>80</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>120</width>
-        <height>24</height>
-       </size>
-      </property>
+      <widget class="QPushButton" name="DirectAccessParamPushButton">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>24</height>
+        </size>
+       </property>
        <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
@@ -332,7 +356,6 @@
   <tabstop>OpenPresetToolButton</tabstop>
   <tabstop>SavePresetToolButton</tabstop>
   <tabstop>DeletePresetToolButton</tabstop>
-  <tabstop>ParamsToolButton</tabstop>
   <tabstop>EditToolButton</tabstop>
   <tabstop>ActivateToolButton</tabstop>
   <tabstop>SendsToolButton</tabstop>

@@ -148,9 +148,12 @@ public:
 	unsigned short midiAtomOuts()  const { return m_iMidiAtomOuts;  }
 #endif
 
+	// Instance cached-deferred accesors.
+	const QString& aboutText();
+
 protected:
 
-	// LV2 plgin URI.
+	// LV2 plugin URI.
 	QString    m_sUri;
 
 	// LV2 descriptor itself.

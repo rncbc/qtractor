@@ -64,6 +64,9 @@ public:
 	// Specific named accessors.
 	unsigned short channels() const
 		{ return index(); }
+
+	// Instance cached-deferred accesors.
+	const QString& aboutText();
 };
 
 
@@ -179,6 +182,9 @@ public:
 	// Specific named accessors.
 	unsigned short channels() const
 		{ return index(); }
+
+	// Instance cached-deferred accesors.
+	const QString& aboutText();
 };
 
 

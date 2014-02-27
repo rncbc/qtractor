@@ -199,6 +199,21 @@ qtractorInsertPluginType *qtractorInsertPluginType::createType (
 }
 
 
+// Instance cached-deferred accesors.
+const QString& qtractorInsertPluginType::aboutText (void)
+{
+	if (m_sAboutText.isEmpty()) {
+		m_sAboutText += QObject::tr("Insert Send/Return pseudo-plugin.");
+		m_sAboutText += '\n';
+		m_sAboutText += QTRACTOR_WEBSITE;
+		m_sAboutText += '\n';
+		m_sAboutText += QTRACTOR_COPYRIGHT;
+	}
+
+	return m_sAboutText;
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorInsertPlugin -- Insert pseudo-plugin instance.
 //
@@ -538,6 +553,21 @@ qtractorAuxSendPluginType *qtractorAuxSendPluginType::createType (
 
 	// Yep, most probably its a valid pseu-plugin...
 	return new qtractorAuxSendPluginType(iChannels);
+}
+
+
+// Instance cached-deferred accesors.
+const QString& qtractorAuxSendPluginType::aboutText (void)
+{
+	if (m_sAboutText.isEmpty()) {
+		m_sAboutText += QObject::tr("Aux Send pseudo-plugin.");
+		m_sAboutText += '\n';
+		m_sAboutText += QTRACTOR_WEBSITE;
+		m_sAboutText += '\n';
+		m_sAboutText += QTRACTOR_COPYRIGHT;
+	}
+
+	return m_sAboutText;
 }
 
 

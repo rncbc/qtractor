@@ -632,6 +632,23 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 }
 
 
+// Instance cached-deferred accesors.
+const QString& qtractorDummyPluginType::aboutText (void)
+{
+	if (m_sAboutText.isEmpty()) {
+		m_sAboutText  = QTRACTOR_TITLE;
+		m_sAboutText += ' ';
+		m_sAboutText += QObject::tr("Dummy plugin type.");
+		m_sAboutText += '\n';
+		m_sAboutText += QTRACTOR_WEBSITE;
+		m_sAboutText += '\n';
+		m_sAboutText += QTRACTOR_COPYRIGHT;
+	}
+
+	return m_sAboutText;
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorPlugin -- Plugin instance.
 //
