@@ -1604,7 +1604,15 @@ const QString& qtractorLv2PluginType::aboutText (void)
 		if (node) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
-			m_sAboutText += QObject::tr("Email: ");
+		//	m_sAboutText += QObject::tr("Email: ");
+			m_sAboutText += lilv_node_as_string(node);
+			lilv_node_free(node);
+		}
+		node = lilv_plugin_get_author_homepage(m_lv2_plugin);
+		if (node) {
+			if (!m_sAboutText.isEmpty())
+				m_sAboutText += '\n';
+		//	m_sAboutText += QObject::tr("Homepage: ");
 			m_sAboutText += lilv_node_as_string(node);
 			lilv_node_free(node);
 		}
