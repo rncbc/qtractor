@@ -661,11 +661,6 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <source>Maker: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="146"/>
         <source>Copyright: </source>
         <translation type="unfinished"></translation>
@@ -676,13 +671,9 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
         <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
         <source>Author: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1607"/>
-        <source>Email: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10833,35 +10824,33 @@ Do you want to apply the changes?</source>
         <translation>ページ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="281"/>
-        <source>
-
-%1 [%2], %3 instance(s), %4 channel(s).</source>
+        <location filename="../qtractorPluginForm.cpp" line="284"/>
+        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="387"/>
+        <location filename="../qtractorPluginForm.cpp" line="391"/>
         <source>(none)</source>
         <translation>(なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="522"/>
+        <location filename="../qtractorPluginForm.cpp" line="526"/>
         <source>Open Preset</source>
         <translation>プリセットを開く</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="523"/>
-        <location filename="../qtractorPluginForm.cpp" line="604"/>
+        <location filename="../qtractorPluginForm.cpp" line="527"/>
+        <location filename="../qtractorPluginForm.cpp" line="608"/>
         <source>Preset files (*.%1)</source>
         <translation>プリセットファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="561"/>
+        <location filename="../qtractorPluginForm.cpp" line="565"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="562"/>
+        <location filename="../qtractorPluginForm.cpp" line="566"/>
         <source>Preset could not be loaded
 from &quot;%1&quot;.
 
@@ -10872,17 +10861,17 @@ Sorry.</source>
 ごめんなさい。</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="603"/>
+        <location filename="../qtractorPluginForm.cpp" line="607"/>
         <source>Save Preset</source>
         <translation>プリセットの保存</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="671"/>
+        <location filename="../qtractorPluginForm.cpp" line="675"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="672"/>
+        <location filename="../qtractorPluginForm.cpp" line="676"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -10895,7 +10884,7 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="818"/>
+        <location filename="../qtractorPluginForm.cpp" line="822"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>

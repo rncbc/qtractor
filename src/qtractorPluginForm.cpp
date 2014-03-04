@@ -277,12 +277,16 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.NameTextLabel->setText(pType->name());
 	m_ui.TypeHintTextLabel->setText(
 		qtractorPluginType::textFromHint(pType->typeHint()));
+
 	QString sAboutText = pType->aboutText();
-	sAboutText += tr("\n\n%1 [%2], %3 instance(s), %4 channel(s).")
+	sAboutText += '\n';
+	sAboutText += '\n';
+	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s).")
 		.arg(pType->filename())
 		.arg(pType->index())
 		.arg(m_pPlugin->instances())
 		.arg(m_pPlugin->channels());
+
 	m_ui.AboutTextLabel->setText(sAboutText);
 
 	// This should trigger paramsSlot(!bEditor)

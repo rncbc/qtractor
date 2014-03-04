@@ -137,7 +137,7 @@ const QString& qtractorLadspaPluginType::aboutText (void)
 		if (m_pLadspaDescriptor->Maker) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
-			m_sAboutText += QObject::tr("Maker: ");
+			m_sAboutText += QObject::tr("Author: ");
 			m_sAboutText += m_pLadspaDescriptor->Maker;
 		}
 		if (m_pLadspaDescriptor->Copyright) {
