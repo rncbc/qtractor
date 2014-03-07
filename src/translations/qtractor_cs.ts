@@ -833,7 +833,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="641"/>
         <source>Dummy plugin type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepravý typ přídavného modulu.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="117"/>
@@ -1037,17 +1037,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="553"/>
         <source>Product: </source>
-        <translation type="unfinished"></translation>
+        <translation>Výrobek: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="561"/>
         <source>Vendor: </source>
-        <translation type="unfinished"></translation>
+        <translation>Prodejce: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="568"/>
         <source>Version: </source>
-        <translation type="unfinished"></translation>
+        <translation>Verze: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="1339"/>
@@ -1123,7 +1123,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="206"/>
         <source>Insert Send/Return pseudo-plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit předstíraný přídavný modul pro poslání/vrácení.</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="246"/>
@@ -1134,12 +1134,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="254"/>
         <source>Dry / Wet</source>
-        <translation>Zkušební/Ostrý</translation>
+        <translation>Poměr směšování mezi původním (nefiltrovaným)/filtrovaným signálem</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="563"/>
         <source>Aux Send pseudo-plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomocný předstíraný přídavný modul pro poslání (Aux).</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlCommand.h" line="70"/>
@@ -1268,18 +1268,18 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="146"/>
         <source>Copyright: </source>
-        <translation type="unfinished"></translation>
+        <translation>Autorské právo: </translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="1591"/>
         <source>Project: </source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
         <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
         <source>Author: </source>
-        <translation type="unfinished"></translation>
+        <translation>Autor: </translation>
     </message>
 </context>
 <context>
@@ -7193,7 +7193,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="437"/>
         <source>controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovladač</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="480"/>
@@ -11478,17 +11478,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2735"/>
         <source>Dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogy</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2756"/>
         <source>Whether to use native dialogs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda se mají použít původní dialogy.</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2759"/>
         <source>Use &amp;native dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít &amp;původní dialogy</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2778"/>
@@ -11650,12 +11650,12 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3383"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda jsou podporovány přídavné moduly pro dynamické manifesty LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3386"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro dy&amp;namické manifesty LV2</translation>
     </message>
     <message>
         <source>Dedicated audi&amp;o outputs</source>
@@ -11785,7 +11785,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="284"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 [%2], %3 instance, %4 kanál(y).</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="391"/>
@@ -11905,7 +11905,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="195"/>
         <source>About</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="257"/>
