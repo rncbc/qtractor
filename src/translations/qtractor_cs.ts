@@ -789,37 +789,37 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="609"/>
+        <location filename="../qtractorOptions.cpp" line="611"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Užití: %1 [volby] [soubor sezení]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="612"/>
+        <location filename="../qtractorOptions.cpp" line="614"/>
         <source>Options:</source>
         <translation>Volby:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="615"/>
+        <location filename="../qtractorOptions.cpp" line="617"/>
         <source>Set session identification (uuid)</source>
         <translation>Nastavit označení sezení (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="618"/>
+        <location filename="../qtractorOptions.cpp" line="620"/>
         <source>Show help about command line options</source>
         <translation>Ukázat nápovědu k volbám příkazového řádku</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="620"/>
+        <location filename="../qtractorOptions.cpp" line="622"/>
         <source>Show version information</source>
         <translation>Ukázat informaci o verzi</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="654"/>
+        <location filename="../qtractorOptions.cpp" line="656"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Volba -s vyžaduje argument (ID sezení).</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="668"/>
+        <location filename="../qtractorOptions.cpp" line="670"/>
         <source>Qt: %1
 </source>
         <translation>Qt: %1
@@ -10401,12 +10401,12 @@ P &lt; 0 : zpomalení posunu.
         <translation>(Jakýkoli)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="778"/>
+        <location filename="../qtractorOptionsForm.cpp" line="783"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="779"/>
+        <location filename="../qtractorOptionsForm.cpp" line="784"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -10427,42 +10427,42 @@ Chcete použít tyto změny?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="809"/>
+        <location filename="../qtractorOptionsForm.cpp" line="814"/>
         <source>Metronome Bar Audio File</source>
         <translation>Zvukový soubor s taktem pro přístroj sloužící k stanovení tempa v hudbě (metronom)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="823"/>
+        <location filename="../qtractorOptionsForm.cpp" line="828"/>
         <source>Metronome Beat Audio File</source>
         <translation>Zvukový soubor s dobou pro přístroj sloužící k stanovení tempa v hudbě (metronom)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1000"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1005"/>
         <source>Plug-in Directory</source>
         <translation>Adresář s přídavnými moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1228"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1233"/>
         <source>LV2 Presets Directory</source>
         <translation>Adresář s přednastaveními LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1284"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1289"/>
         <source>Messages Log</source>
         <translation>Záznam se sděleními</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1285"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1290"/>
         <source>Log files (*.%1)</source>
         <translation>Soubory se záznamy (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1322"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1327"/>
         <source>Session Template</source>
         <translation>Předloha pro sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1323"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1328"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Soubory předloh (*.qtr *.qts *.%1) pro sezení</translation>
     </message>
@@ -11656,6 +11656,21 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
         <location filename="../qtractorOptionsForm.ui" line="3386"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
         <translation>Podpora pro dy&amp;namické manifesty LV2</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="3402"/>
+        <source>Whether to save plugin automation with higher resolution (14-bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="3405"/>
+        <source>&amp;High resolution plugin automation (14-bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="3408"/>
+        <source>Alt+H</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Dedicated audi&amp;o outputs</source>

@@ -413,6 +413,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.Lv2DynManifestCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.SaveCurve14bitCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MessagesFontPushButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesFont()));
@@ -617,6 +620,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
 	m_ui.DummyVstScanCheckBox->setChecked(m_pOptions->bDummyVstScan);
 	m_ui.Lv2DynManifestCheckBox->setChecked(m_pOptions->bLv2DynManifest);
+	m_ui.SaveCurve14bitCheckBox->setChecked(m_pOptions->bSaveCurve14bit);
 
 	int iPluginType = m_pOptions->iPluginType - 1;
 	if (iPluginType < 0)
@@ -718,6 +722,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
 		m_pOptions->bDummyVstScan        = m_ui.DummyVstScanCheckBox->isChecked();
 		m_pOptions->bLv2DynManifest      = m_ui.Lv2DynManifestCheckBox->isChecked();
+		m_pOptions->bSaveCurve14bit      = m_ui.SaveCurve14bitCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();

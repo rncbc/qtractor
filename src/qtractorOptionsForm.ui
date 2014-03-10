@@ -3390,6 +3390,25 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" colspan="3">
+           <widget class="QCheckBox" name="SaveCurve14bitCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to save plugin automation with higher resolution (14-bit)</string>
+            </property>
+            <property name="text">
+             <string>&amp;High resolution plugin automation (14-bit)</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+H</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -3495,6 +3514,8 @@
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>DummyVstScanCheckBox</tabstop>
+  <tabstop>Lv2DynManifestCheckBox</tabstop>
+  <tabstop>SaveCurve14bitCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
