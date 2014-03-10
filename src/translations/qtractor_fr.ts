@@ -10554,17 +10554,17 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3402"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit sauver les automations des greffons avec une haute résolution (14-bit)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3405"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automation de greffon &amp;haute résolution (14-bit)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3408"/>
         <source>Alt+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+H</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="491"/>
