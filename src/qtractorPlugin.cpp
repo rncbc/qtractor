@@ -1318,6 +1318,10 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	if (pSession == NULL)
 		return;
 
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
 	
@@ -1328,15 +1332,21 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 		qtractorPluginParam *pParam = param.value();
 		qtractorCurve *pCurve = pParam->subject()->curve();
 		if (pCurve) {
-			unsigned short controller = (iParam % 0x7f);
-			if (controller == 0x00 || controller == 0x20)
-				++iParam; // Avoid bank-select controllers, please.
 			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 			pCurveItem->name = pParam->name();
 			pCurveItem->index = pParam->index();
-			pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
+			if (pParam->isToggled()	|| pParam->isInteger()
+				|| !pOptions->bSaveCurve14bit) {
+				const unsigned short controller = (iParam % 0x7f);
+				if (controller == 0x00 || controller == 0x20)
+					++iParam; // Avoid bank-select controllers, please.
+				pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
+				pCurveItem->param = (iParam % 0x7f);
+			} else {
+				pCurveItem->ctype = qtractorMidiEvent::NONREGPARAM;
+				pCurveItem->param = (iParam % 0x3fff);
+			}
 			pCurveItem->channel = ((iParam / 0x7f) % 16);
-			pCurveItem->param = (iParam % 0x7f);
 			pCurveItem->mode = pCurve->mode();
 			pCurveItem->process = pCurve->isProcess();
 			pCurveItem->capture = pCurve->isCapture();

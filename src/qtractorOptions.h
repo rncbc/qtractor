@@ -210,6 +210,9 @@ public:
 	// LV2 plugin specific options.
 	bool bLv2DynManifest;
 
+	// Automation preferred resolution (14bit).
+	bool bSaveCurve14bit;
+
 	// The instrument file list.
 	QStringList instrumentFiles;
 

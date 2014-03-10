@@ -5,8 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- New user option added: on whether to save plugins automation
+  values with higher resolution as possible, using 14-bit NRPN:
+  cf. View/Options.../Plugins/Experimental/High resolution
+  plugin automation (default=off).
+
 - Generic native plugin dialogs now shows an additional "About"
-  last page where authorship credits are due. (EXPERIMENTAL)
+  last page where authorship credits are due.
 
 - A new user preference option is now in place for whether to
   use desktop environment's own native file requester/browser
@@ -14,7 +19,7 @@ SVN TRUNK
 
 - A bit of slack have been introduced to put "Follow Playhead"
   (aka. auto-scroll view mode) on hold, while doing in-flight
-  selection edit moves. (EXPERIMENTAL)
+  selection edit moves.
 
 - Fixed some user interface related annoyances while on the MIDI
   Controllers mappings (ie. View/Controllers...).
@@ -24,7 +29,6 @@ SVN TRUNK
 - A discretionary plug-in unique identifier have been devised for
   when more than one from the same type are inserted on a bus or
   track chain, avoiding destructive clashing of automation data.
-  (EXPERIMENTAL)
 
 - Horizontal scrolling shift+mouse-wheel direction now reversed.
 

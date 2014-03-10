@@ -228,6 +228,7 @@ void qtractorOptions::loadOptions (void)
 	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
+	bSaveCurve14bit = m_settings.value("/SaveCurve14bit", false).toBool();
 	m_settings.endGroup();
 
 	// Instrument file list.
@@ -489,6 +490,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/OpenEditor", bOpenEditor);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
+	m_settings.setValue("/SaveCurve14bit", bSaveCurve14bit);
 	m_settings.endGroup();
 
 	// Instrument file list.
