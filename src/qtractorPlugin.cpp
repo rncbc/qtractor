@@ -1396,7 +1396,11 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
-		qtractorPluginParam *pParam = findParam(pCurveItem->index);
+		qtractorPluginParam *pParam = NULL;
+		if (!pCurveItem->name.isEmpty())
+			pParam = findParamName(pCurveItem->name);
+		if (pParam == NULL)
+			pParam = findParam(pCurveItem->index);
 		if (pParam)
 			pCurveItem->subject = pParam->subject();
 	}
