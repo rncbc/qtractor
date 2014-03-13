@@ -10555,17 +10555,17 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3402"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのオートメーションをより高い解像度 (14ビット) で保存するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3405"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインオートメーションを高解像度 (14ビット) で保存 (&amp;H)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3408"/>
         <source>Alt+H</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="491"/>
