@@ -1352,7 +1352,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 
 	// Stop logging...
 	if (pMainForm) {
-		pMainForm->addAudioFile(sFilename, true);
+		pMainForm->addAudioFile(sFilename);
 		pMainForm->appendMessages(
 			tr("Audio clip merge/export: \"%1\" complete.")
 			.arg(sFilename));
@@ -1603,7 +1603,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 
 	// Stop logging...
 	if (pMainForm) {
-		pMainForm->addMidiFile(sFilename, true);
+		pMainForm->addMidiFile(sFilename);
 		pMainForm->appendMessages(
 			tr("MIDI clip merge/export: \"%1\" complete.")
 			.arg(sFilename));

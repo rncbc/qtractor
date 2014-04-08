@@ -3,6 +3,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+
+SVN TRUNK
+
+- Clip/Export...'ed files are now made permanent, no questions
+  asked (after a ticket by Oliver Kester, thanks).
+
+
 0.6.0  2016-03-21  Byte Bald Beta
 
 - New user option added: on whether to save plugins automation
