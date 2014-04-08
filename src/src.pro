@@ -283,6 +283,7 @@ TRANSLATIONS += \
 	translations/qtractor_fr.ts \
 	translations/qtractor_it.ts \
 	translations/qtractor_ja.ts \
+	translations/qtractor_pt.ts \
 	translations/qtractor_ru.ts
 
 unix {
