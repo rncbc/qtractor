@@ -1,7 +1,7 @@
 // qtractorFileList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -140,7 +140,7 @@ public:
 
 	// File/path registry management.
 	qtractorFileListItem *findFileItem(Type iType, const QString& sPath) const;
-	void addFileItem(Type iType, qtractorFileListItem *pFileItem, bool bAutoRemove);
+	void addFileItem(Type iType, qtractorFileListItem *pFileItem, bool bAutoRemove = false);
 	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
 
 	// Clip/path registry management.

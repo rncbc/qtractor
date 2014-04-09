@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -379,7 +379,7 @@ qtractorFileList::Type qtractorFileListView::fileType (void) const
 
 // Add a new file item, optionally under a given group.
 qtractorFileListItem *qtractorFileListView::addFileItem (
-	const QString& sPath, bool bAutoRemove, qtractorFileGroupItem *pParentItem )
+	const QString& sPath, qtractorFileGroupItem *pParentItem )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -390,7 +390,7 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 		pFileItem = createFileItem(sPath);
 		if (pFileItem) {
 			// Add to file/path registry...
-			pSession->files()->addFileItem(m_iFileType, pFileItem, bAutoRemove);
+			pSession->files()->addFileItem(m_iFileType, pFileItem);
 			// Insert the new file item in place...
 			if (pParentItem) {
 				if (pParentItem->type() == GroupItem) {
@@ -1409,7 +1409,7 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 				else
 					QTreeWidget::addTopLevelItem(pFileItem);
 				if (pSession)
-					pSession->files()->addFileItem(m_iFileType, pFileItem, false);
+					pSession->files()->addFileItem(m_iFileType, pFileItem);
 			}
 		}
 	}

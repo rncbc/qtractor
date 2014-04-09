@@ -6,7 +6,7 @@ ChangeLog
 
 SVN TRUNK
 
-- Clip/Export...'ed files are now made permanent, no questions
+- Clip/Export...'ed files are now made persistent, no questions
   asked (after a ticket by Oliver Kester, thanks).
 
 
