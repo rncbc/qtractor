@@ -5561,12 +5561,6 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 	}
-
-#ifdef CONFIG_VST
-#if 0 // !VST_FORCE_DEPRECATED
-	qtractorVstPlugin::idleTimerAll();
-#endif
-#endif
 }
 
 
@@ -5818,7 +5812,6 @@ void qtractorMainForm::updateSessionPre (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::updateSessionPre()");
 #endif
-qDebug("DEBUG> updateSessionPre: snapPerBeat=%d", qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	//  Actually (re)start session engines...
 	if (startSession()) {
@@ -5847,7 +5840,6 @@ void qtractorMainForm::updateSessionPost (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::updateSessionPost()");
 #endif
-qDebug("DEBUG> updateSessionPost: snapPerBeat=%d", qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	m_pSession->open();
