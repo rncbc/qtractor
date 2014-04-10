@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 9
+%define release 10
 
 %define _prefix	@ac_prefix@
 
@@ -96,6 +96,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/locale/%{name}_*.qm
 
 %changelog
+* Fri Mar 21 2014 Rui Nuno Capela <rncbc@rncbc.org> 0.6.0
+- Byte Bald Beta release.
 * Tue Dec 31 2013 Rui Nuno Capela <rncbc@rncbc.org> 0.5.12
 - Mike November release.
 * Mon Oct  7 2013 Rui Nuno Capela <rncbc@rncbc.org> 0.5.11

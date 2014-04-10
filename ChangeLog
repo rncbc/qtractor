@@ -3,7 +3,15 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+
 SVN TRUNK
+
+- Fixed initial session snap-per-beat setting on main toolbar.
+- Clip/Export...'ed files are now made persistent, no questions
+  asked (after a ticket by Oliver Kester, thanks).
+
+
+0.6.0  2016-03-21  Byte Bald Beta
 
 - New user option added: on whether to save plugins automation
   values with higher resolution as possible, using 14-bit NRPN:

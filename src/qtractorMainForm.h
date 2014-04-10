@@ -272,8 +272,8 @@ public slots:
 
 	void stabilizeForm();
 
-	void addAudioFile(const QString& sFilename, bool bAutoRemove = false);
-	void addMidiFile(const QString& sFilename, bool bAutoRemove = false);
+	void addAudioFile(const QString& sFilename);
+	void addMidiFile(const QString& sFilename);
 
 	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);

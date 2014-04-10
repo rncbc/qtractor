@@ -1,7 +1,7 @@
 // qtractorFiles.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -67,8 +67,8 @@ public:
 	bool isFileSelected() const;
 
 	// File addition Convenience helper methods.
-	void addAudioFile (const QString& sFilename, bool bAutoRemove);
-	void addMidiFile  (const QString& sFilename, bool bAutoRemove);
+	void addAudioFile (const QString& sFilename);
+	void addMidiFile  (const QString& sFilename);
 
 	// File selection Convenience helper methods.
 	void selectAudioFile (const QString& sFilename);
