@@ -1359,7 +1359,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
 	
 	// Is any session identification to get loaded?
-	bool bSessionId = !m_pOptions->sSessionId.isEmpty();
+	const bool bSessionId = !m_pOptions->sSessionId.isEmpty();
 	if (bSessionId && pAudioEngine) {
 		pAudioEngine->setSessionId(m_pOptions->sSessionId);
 		m_pOptions->sSessionId.clear();
@@ -1376,7 +1376,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			// some foreign session manager (eg. JACK session)...
 			const QString& sLadishAppName
 				= QString::fromLatin1(::getenv("LADISH_APP_NAME"));
-			bool bLadishApp = !sLadishAppName.isEmpty();
+			const bool bLadishApp = !sLadishAppName.isEmpty();
 			if (bSessionId || bLadishApp) {
 				// JACK session manager will take care of audio connections...
 				if (pAudioEngine)
@@ -1704,7 +1704,7 @@ int qtractorMainForm::rolling (void) const
 // Format the displayable session filename.
 QString qtractorMainForm::sessionName ( const QString& sFilename ) const
 {
-	bool bCompletePath = (m_pOptions && m_pOptions->bCompletePath);
+	const bool bCompletePath = (m_pOptions && m_pOptions->bCompletePath);
 	QString sSessionName = sFilename;
 	if (sSessionName.isEmpty() && m_pSession)
 		sSessionName = m_pSession->sessionName();
@@ -2009,7 +2009,7 @@ bool qtractorMainForm::editSession (void)
 		return false;
 
 	// If currently playing, we need to do a stop and go...
-	bool bPlaying = m_pSession->isPlaying();
+	const bool bPlaying = m_pSession->isPlaying();
 	if (bPlaying)
 		m_pSession->lock();
 
@@ -2195,13 +2195,14 @@ bool qtractorMainForm::loadSessionFileEx (
 
 	// Read the file.
 	QDomDocument doc("qtractorSession");
-	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
-		.load(sFilename, qtractorDocument::Flags(iFlags));
+	const bool bLoadSessionFileEx
+		= qtractorSessionDocument(&doc, m_pSession, m_pFiles)
+			.load(sFilename, qtractorDocument::Flags(iFlags));
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
 
-	if (bResult) {
+	if (bLoadSessionFileEx) {
 		// Got something loaded...
 		// we're not dirty anymore.
 		if (!bTemplate && bUpdate) {
@@ -2247,7 +2248,7 @@ bool qtractorMainForm::loadSessionFileEx (
 	// Now we'll try to create (update) the whole GUI session.
 	updateSessionPost();
 
-	return bResult;
+	return bLoadSessionFileEx;
 }
 
 
@@ -2265,7 +2266,8 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	}
 #endif
 
-	bool bLoadSessionFile = loadSessionFileEx(sFilename, false, bUpdate);
+	const bool bLoadSessionFile
+		= loadSessionFileEx(sFilename, false, bUpdate);
 
 #ifdef CONFIG_NSM
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
@@ -3440,7 +3442,7 @@ void qtractorMainForm::trackHeightUp (void)
 	qDebug("qtractorMainForm::trackHeightUp()");
 #endif
 
-	int iZoomHeight = (150 * pTrack->zoomHeight()) / 100;
+	const int iZoomHeight = (150 * pTrack->zoomHeight()) / 100;
 	m_pSession->execute(
 		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 }
@@ -3459,7 +3461,7 @@ void qtractorMainForm::trackHeightDown (void)
 	qDebug("qtractorMainForm::trackHeightDown()");
 #endif
 
-	int iZoomHeight = (75 * pTrack->zoomHeight()) / 100;
+	const int iZoomHeight = (75 * pTrack->zoomHeight()) / 100;
 	m_pSession->execute(
 		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 }
@@ -3478,8 +3480,8 @@ void qtractorMainForm::trackHeightReset (void)
 	qDebug("qtractorMainForm::trackHeightReset()");
 #endif
 
-	int iVerticalZoom = m_pSession->verticalZoom();
-	int iZoomHeight = (iVerticalZoom * qtractorTrack::HeightBase) / 100;
+	const int iVerticalZoom = m_pSession->verticalZoom();
+	const int iZoomHeight = (iVerticalZoom * qtractorTrack::HeightBase) / 100;
 	m_pSession->execute(
 		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 }
@@ -3508,7 +3510,7 @@ void qtractorMainForm::trackImportAudio (void)
 
 	// Import Audio files into tracks...
 	if (m_pTracks) {
-		unsigned long iClipStart = m_pSession->editHead();
+		const unsigned long iClipStart = m_pSession->editHead();
 		m_pTracks->addAudioTracks(
 			m_pFiles->audioListView()->openFileNames(), iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
@@ -3525,7 +3527,7 @@ void qtractorMainForm::trackImportMidi (void)
 
 	// Import MIDI files into tracks...
 	if (m_pTracks) {
-		unsigned long iClipStart = m_pSession->editHead();
+		const unsigned long iClipStart = m_pSession->editHead();
 		m_pTracks->addMidiTracks(
 			m_pFiles->midiListView()->openFileNames(), iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
@@ -3591,11 +3593,6 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 				mode = qtractorCurve::Mode(m_pOptions->iCurveMode);
 			pCurve = new qtractorCurve(pCurveList, pSubject, mode);
 			pCurve->setLogarithmic(pMidiObserver->isLogarithmic());
-		#if 0
-			qtractorTrack *pTrack = m_pSession->findTrack(pCurveList);
-			if (pTrack)
-				pCurve->setColor(pTrack->foreground().darker(180));
-		#endif
 		}
 	}
 
@@ -3603,17 +3600,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 	qDebug("qtractorMainForm::trackCurveSelect(%p)", pCurve);
 #endif
 
-#if 0
-	pCurveList->setCurrentCurve(pCurve);
-
-	m_pTracks->updateTrackList();
-	m_pTracks->updateTrackView();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveSelectCommand(pCurveList, pCurve));
-#endif	
 }
 
 void qtractorMainForm::trackCurveSelect ( bool bOn )
@@ -3626,7 +3613,7 @@ void qtractorMainForm::trackCurveSelect ( bool bOn )
 
 void qtractorMainForm::trackCurveMode ( QAction *pAction )
 {
-	int iMode = pAction->data().toInt();
+	const int iMode = pAction->data().toInt();
 	if (iMode < 0)
 		return;
 
@@ -3648,23 +3635,9 @@ void qtractorMainForm::trackCurveMode ( QAction *pAction )
 	if (m_pOptions)
 		m_pOptions->iCurveMode = iMode;
 
-	qtractorCurve::Mode mode = qtractorCurve::Mode(iMode);
+	const qtractorCurve::Mode mode = qtractorCurve::Mode(iMode);
 
-#if 0
-	pCurrentCurve->setMode(mode);
-	pCurrentCurve->update();
-
-	if (!m_pSession->isPlaying())
-		pTrack->process_curve(m_iPlayHead);
-
-	m_pTracks->updateTrackList();
-	m_pTracks->updateTrackView();
-
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveModeCommand(pCurrentCurve, mode));
-#endif
 }
 
 
@@ -3711,20 +3684,7 @@ void qtractorMainForm::trackCurveProcess ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveProcess(%d)", int(bOn));
 #endif
 
-#if 0
-	if (!bOn) pCurrentCurve->setCapture(false);
-	pCurrentCurve->setProcess(bOn);
-
-	if (bOn && !m_pSession->isPlaying())
-		pTrack->process_curve(m_iPlayHead);
-
-	m_pTracks->updateTrackList();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveProcessCommand(pCurrentCurve, bOn));
-#endif
 }
 
 
@@ -3745,20 +3705,7 @@ void qtractorMainForm::trackCurveCapture ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveCapture(%d)", int(bOn));
 #endif
 
-#if 0
-	if (bOn) pCurrentCurve->setProcess(true);
-	pCurrentCurve->setCapture(bOn);
-
-	if (bOn && !m_pSession->isPlaying())
-		pTrack->process_curve(m_iPlayHead);
-
-	m_pTracks->updateTrackList();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveCaptureCommand(pCurrentCurve, bOn));
-#endif
 }
 
 
@@ -3779,16 +3726,7 @@ void qtractorMainForm::trackCurveLogarithmic ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveLogarithmic(%d)", int(bOn));
 #endif
 
-#if 0
-	pCurrentCurve->setLogarithmic(bOn);
-
-	m_pTracks->updateTrackView();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveLogarithmicCommand(pCurrentCurve, bOn));
-#endif
 }
 
 
@@ -3815,16 +3753,7 @@ void qtractorMainForm::trackCurveColor (void)
 	if (!color.isValid())
 		return;
 
-#if 0
-	pCurrentCurve->setColor(color);
-
-	m_pTracks->updateTrackView();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveColorCommand(pCurrentCurve, color));
-#endif
 }
 
 
@@ -3858,20 +3787,7 @@ void qtractorMainForm::trackCurveClear (void)
 			return;
 	}
 
-#if 0
-	pCurrentCurve->clear();
-
-	if (!m_pSession->isPlaying())
-		pTrack->process_curve(m_iPlayHead);
-
-	m_pTracks->updateTrackList();
-	m_pTracks->updateTrackView();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveClearCommand(pCurrentCurve));
-#endif
 }
 
 
@@ -3918,20 +3834,7 @@ void qtractorMainForm::trackCurveProcessAll ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveProcessAll(%d)", int(bOn));
 #endif
 
-#if 0
-	if (!bOn) pCurveList->setCaptureAll(false);
-	pCurveList->setProcessAll(bOn);
-
-	if (bOn && !m_pSession->isPlaying())
-		pTrack->process_curve(m_iPlayHead);
-
-	m_pTracks->updateTrackList();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveProcessAllCommand(pCurveList, bOn));
-#endif
 }
 
 
@@ -3952,20 +3855,7 @@ void qtractorMainForm::trackCurveCaptureAll ( bool bOn )
 	qDebug("qtractorMainForm::trackCurveCaptureAll(%d)", int(bOn));
 #endif
 
-#if 0
-	if (bOn) pCurveList->setProcessAll(true);
-	pCurveList->setCaptureAll(bOn);
-
-	if (bOn && !m_pSession->isPlaying())
-		pTrack->process_curve(m_iPlayHead);
-
-	m_pTracks->updateTrackList();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveCaptureAllCommand(pCurveList, bOn));
-#endif
 }
 
 
@@ -3999,17 +3889,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 			return;
 	}
 
-#if 0
-	pCurveList->clearAll();
-	
-	m_pTracks->updateTrackList();
-	m_pTracks->updateTrackView();
-	
-	updateDirtyCount(true);
-	stabilizeForm();
-#else
 	m_pSession->execute(new qtractorCurveClearAllCommand(pCurveList));
-#endif
 }
 
 
@@ -4146,7 +4026,7 @@ void qtractorMainForm::clipImport (void)
 	// Import (audio) clip(s)...
 	if (m_pTracks) {
 		// Depending on current track type (default to audio)...
-		unsigned long iClipStart = m_pSession->editHead();
+		const unsigned long iClipStart = m_pSession->editHead();
 		QStringList files;
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
 		if (pTrack == NULL)
@@ -4268,7 +4148,7 @@ void qtractorMainForm::clipToolsTimeshift (void)
 // Select current clip take.
 void qtractorMainForm::clipTakeSelect ( QAction *pAction )
 {
-	int iTake = pAction->data().toInt();
+	const int iTake = pAction->data().toInt();
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::clipTakeSelect(%d)", iTake);
@@ -4362,7 +4242,7 @@ void qtractorMainForm::clipTakeLast (void)
 
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	if (pTakeInfo) {
-		int iTake = pTakeInfo->takeCount() - 1;
+		const int iTake = pTakeInfo->takeCount() - 1;
 		m_pSession->execute(
 			new qtractorClipTakeCommand(pTakeInfo, pClip->track(), iTake));
 	}
@@ -4401,7 +4281,8 @@ void qtractorMainForm::clipTakeRange (void)
 
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	if (pClip && pTakeInfo == NULL) {
-		unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
+		const unsigned long iClipEnd
+			= pClip->clipStart() + pClip->clipLength();
 		qtractorTakeRangeForm form(this);
 		form.setClip(pClip);
 		if (form.exec() && form.takeEnd() < iClipEnd) {
@@ -4630,6 +4511,13 @@ void qtractorMainForm::viewRefresh (void)
 	m_pSession->updateTimeScale();
 	m_pSession->updateSession();
 
+	// Initialize toolbar widgets...
+//	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
+//	m_pTempoSpinBox->setBeatsPerBar(m_pSession->beatsPerBar(), false);
+//	m_pTempoSpinBox->setBeatDivisor(m_pSession->beatDivisor(), false);
+	m_pSnapPerBeatComboBox->setCurrentIndex(
+		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
+
 	if (m_pTracks)
 		m_pTracks->updateContents(true);
 	if (m_pConnections)
@@ -4700,57 +4588,57 @@ void qtractorMainForm::viewOptions (void)
 #else
 	const QString sPathSep(':');
 #endif
-	QString sOldLv2Path = m_pOptions->lv2Paths.join(sPathSep);
-	QString sOldLv2PresetDir = m_pOptions->sLv2PresetDir;
-	bool    bOldLv2DynManifest = m_pOptions->bLv2DynManifest;
+	const QString sOldLv2Path = m_pOptions->lv2Paths.join(sPathSep);
+	const QString sOldLv2PresetDir = m_pOptions->sLv2PresetDir;
+	const bool bOldLv2DynManifest = m_pOptions->bLv2DynManifest;
 #endif
 
 	// Check out some initial nullities(tm)...
 	if (m_pOptions->sMessagesFont.isEmpty() && m_pMessages)
 		m_pOptions->sMessagesFont = m_pMessages->messagesFont().toString();
 	// To track down deferred or immediate changes.
-	bool    bOldMessagesLog        = m_pOptions->bMessagesLog; 
-	QString sOldMessagesLogPath    = m_pOptions->sMessagesLogPath;
-	QString sOldMessagesFont       = m_pOptions->sMessagesFont;
-	bool    bOldStdoutCapture      = m_pOptions->bStdoutCapture;
-	int     bOldMessagesLimit      = m_pOptions->bMessagesLimit;
-	int     iOldMessagesLimitLines = m_pOptions->iMessagesLimitLines;
-	bool    bOldCompletePath       = m_pOptions->bCompletePath;
-	bool    bOldPeakAutoRemove     = m_pOptions->bPeakAutoRemove;
-	bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
-	int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
-	int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
-	int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
-	int     iOldResampleType       = m_pOptions->iAudioResampleType;
-	bool    bOldWsolaTimeStretch   = m_pOptions->bAudioWsolaTimeStretch;
-	bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
-	bool    bOldAudioPlayerAutoConnect = m_pOptions->bAudioPlayerAutoConnect;
-	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
-	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
-	int     iOldTransportMode      = m_pOptions->iTransportMode;
-	int     iOldMidiMmcDevice      = m_pOptions->iMidiMmcDevice;
-	int     iOldMidiMmcMode        = m_pOptions->iMidiMmcMode;
-	int     iOldMidiSppMode        = m_pOptions->iMidiSppMode;
-	int     iOldMidiClockMode      = m_pOptions->iMidiClockMode;
-	int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
-	int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
-	bool    bOldMidiPlayerBus      = m_pOptions->bMidiPlayerBus;
-	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
-	QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
-	float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
-	float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
-	bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
-	bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
-	bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
-	bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
-	int     iOldMetroChannel       = m_pOptions->iMetroChannel;
-	int     iOldMetroBarNote       = m_pOptions->iMetroBarNote;
-	int     iOldMetroBarVelocity   = m_pOptions->iMetroBarVelocity;
-	int     iOldMetroBarDuration   = m_pOptions->iMetroBarDuration;
-	int     iOldMetroBeatNote      = m_pOptions->iMetroBeatNote;
-	int     iOldMetroBeatVelocity  = m_pOptions->iMetroBeatVelocity;
-	int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
-	bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
+	const bool    bOldMessagesLog        = m_pOptions->bMessagesLog;
+	const QString sOldMessagesLogPath    = m_pOptions->sMessagesLogPath;
+	const QString sOldMessagesFont       = m_pOptions->sMessagesFont;
+	const bool    bOldStdoutCapture      = m_pOptions->bStdoutCapture;
+	const int     bOldMessagesLimit      = m_pOptions->bMessagesLimit;
+	const int     iOldMessagesLimitLines = m_pOptions->iMessagesLimitLines;
+	const bool    bOldCompletePath       = m_pOptions->bCompletePath;
+	const bool    bOldPeakAutoRemove     = m_pOptions->bPeakAutoRemove;
+	const bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
+	const int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
+	const int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
+	const int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
+	const int     iOldResampleType       = m_pOptions->iAudioResampleType;
+	const bool    bOldWsolaTimeStretch   = m_pOptions->bAudioWsolaTimeStretch;
+	const bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
+	const bool    bOldAudioPlayerAutoConnect = m_pOptions->bAudioPlayerAutoConnect;
+	const bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
+	const bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
+	const int     iOldTransportMode      = m_pOptions->iTransportMode;
+	const int     iOldMidiMmcDevice      = m_pOptions->iMidiMmcDevice;
+	const int     iOldMidiMmcMode        = m_pOptions->iMidiMmcMode;
+	const int     iOldMidiSppMode        = m_pOptions->iMidiSppMode;
+	const int     iOldMidiClockMode      = m_pOptions->iMidiClockMode;
+	const int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
+	const int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
+	const bool    bOldMidiPlayerBus      = m_pOptions->bMidiPlayerBus;
+	const QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
+	const QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
+	const float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
+	const float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
+	const bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
+	const bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
+	const bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
+	const bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
+	const int     iOldMetroChannel       = m_pOptions->iMetroChannel;
+	const int     iOldMetroBarNote       = m_pOptions->iMetroBarNote;
+	const int     iOldMetroBarVelocity   = m_pOptions->iMetroBarVelocity;
+	const int     iOldMetroBarDuration   = m_pOptions->iMetroBarDuration;
+	const int     iOldMetroBeatNote      = m_pOptions->iMetroBeatNote;
+	const int     iOldMetroBeatVelocity  = m_pOptions->iMetroBeatVelocity;
+	const int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
+	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -4941,15 +4829,6 @@ void qtractorMainForm::transportBackward (void)
 		m_pSession->setPlayHead(0);
 	} else {
 		unsigned long iPlayHead = m_pSession->playHead();
-	#if 0
-		if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
-			iPlayHead = m_pSession->editTail();
-		else
-		if (iPlayHead > m_pSession->editHead())
-			iPlayHead = m_pSession->editHead();
-		else
-			iPlayHead = 0;
-	#else
 		QList<unsigned long> list;
 		list.append(0);
 		if (iPlayHead > m_pSession->editHead())
@@ -4974,7 +4853,6 @@ void qtractorMainForm::transportBackward (void)
 			list.append(pMarker->frame);
 		qSort(list.begin(), list.end());
 		iPlayHead = list.last();
-	#endif
 		m_pSession->setPlayHead(iPlayHead);
 	}
 	++m_iTransportUpdate;
@@ -5063,15 +4941,6 @@ void qtractorMainForm::transportForward (void)
 		m_pSession->setPlayHead(m_pSession->sessionEnd());
 	} else {
 		unsigned long iPlayHead = m_pSession->playHead();
-	#if 0
-		if (iPlayHead < m_pSession->editHead())
-			iPlayHead = m_pSession->editHead();
-		else
-		if (iPlayHead < m_pSession->editTail())
-			iPlayHead = m_pSession->editTail();
-		else
-			iPlayHead = m_pSession->sessionLength();
-	#else
 		QList<unsigned long> list;
 		if (iPlayHead < m_pSession->editHead())
 			list.append(m_pSession->editHead());
@@ -5095,7 +4964,6 @@ void qtractorMainForm::transportForward (void)
 			list.append(pMarker->frame);
 		qSort(list.begin(), list.end());
 		iPlayHead = list.first();
-	#endif
 		m_pSession->setPlayHead(iPlayHead);
 	}
 	++m_iTransportUpdate;
@@ -5183,7 +5051,7 @@ void qtractorMainForm::transportPlay (void)
 		return;
 
 	// Toggle playing...
-	bool bPlaying = !m_pSession->isPlaying();
+	const bool bPlaying = !m_pSession->isPlaying();
 	if (setPlaying(bPlaying)) {
 		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 		if (pMidiEngine) {
@@ -5215,7 +5083,7 @@ void qtractorMainForm::transportRecord (void)
 		return;
 
 	// Toggle recording...
-	bool bRecording = !m_pSession->isRecording();
+	const bool bRecording = !m_pSession->isRecording();
 	if (setRecording(bRecording)) {
 		// Send MMC RECORD_STROBE/EXIT command...
 		m_pSession->midiEngine()->sendMmcCommand(bRecording ?
@@ -5581,7 +5449,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 
 int qtractorMainForm::setRolling ( int iRolling )
 {
-	int iOldRolling = m_iTransportRolling;
+	const int iOldRolling = m_iTransportRolling;
 
 	// Avoid if recording is armed...
 	if (m_pSession->isRecording() || iOldRolling == iRolling)
@@ -5619,7 +5487,7 @@ void qtractorMainForm::setLocate ( unsigned long iLocate )
 
 void qtractorMainForm::setShuttle ( float fShuttle )
 {
-	float fOldShuttle = m_fTransportShuttle;
+	const float fOldShuttle = m_fTransportShuttle;
 
 	if (fShuttle < 0.0f && fOldShuttle >= 0.0f)
 		setRolling(-1);
@@ -5896,7 +5764,7 @@ bool qtractorMainForm::startSession (void)
 	m_iPlayerTimer = 0;
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-	bool bResult = m_pSession->init();
+	const bool bResult = m_pSession->init();
 	QApplication::restoreOverrideCursor();
 
 	autoSaveReset();
@@ -5923,7 +5791,7 @@ bool qtractorMainForm::checkRestartSession (void)
 	// try to (re)open the whole thing...
 	if (!m_pSession->isActivated()) {
 		// Save current playhead position, if any...
-		unsigned long iPlayHead = m_pSession->playHead();
+		const unsigned long iPlayHead = m_pSession->playHead();
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		m_pSession->close();
 		QApplication::restoreOverrideCursor();
@@ -5950,13 +5818,7 @@ void qtractorMainForm::updateSessionPre (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::updateSessionPre()");
 #endif
-
-	// Initialize toolbar widgets...
-//	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
-//	m_pTempoSpinBox->setBeatsPerBar(m_pSession->beatsPerBar(), false);
-//	m_pTempoSpinBox->setBeatDivisor(m_pSession->beatDivisor(), false);
-	m_pSnapPerBeatComboBox->setCurrentIndex(
-		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
+qDebug("DEBUG> updateSessionPre: snapPerBeat=%d", qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	//  Actually (re)start session engines...
 	if (startSession()) {
@@ -5985,6 +5847,7 @@ void qtractorMainForm::updateSessionPost (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::updateSessionPost()");
 #endif
+qDebug("DEBUG> updateSessionPost: snapPerBeat=%d", qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	m_pSession->open();
@@ -5992,7 +5855,8 @@ void qtractorMainForm::updateSessionPost (void)
 
 	// HACK: Special treatment for disparate sample rates,
 	// and only for (just loaded) non empty sessions...
-	unsigned int iSampleRate = m_pSession->audioEngine()->sampleRate();
+	const unsigned int iSampleRate
+		= m_pSession->audioEngine()->sampleRate();
 
 	if (m_pSession->sampleRate() != iSampleRate) {
 		appendMessagesError(
@@ -6062,7 +5926,7 @@ void qtractorMainForm::updateRecentFiles ( const QString& sFilename )
 		return;
 
 	// Remove from list if already there (avoid duplicates)
-	int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
+	const int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
 	if (iIndex >= 0)
 		m_pOptions->recentFiles.removeAt(iIndex);
 	// Put it to front...
@@ -6257,7 +6121,7 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setMetroBarGain(m_pOptions->fMetroBarGain);
 	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
 
-	bool bAudioMetronome = m_pOptions->bAudioMetronome;
+	const bool bAudioMetronome = m_pOptions->bAudioMetronome;
 	pAudioEngine->setMetroAutoConnect(m_pOptions->bAudioMetroAutoConnect);
 	pAudioEngine->setMetroBus(
 		bAudioMetronome && m_pOptions->bAudioMetroBus);
@@ -6288,7 +6152,7 @@ void qtractorMainForm::updateMidiMetronome (void)
 		m_pOptions->iMetroBeatVelocity,
 		m_pOptions->iMetroBeatDuration);
 
-	bool bMidiMetronome = m_pOptions->bMidiMetronome;
+	const bool bMidiMetronome = m_pOptions->bMidiMetronome;
 	pMidiEngine->setMetroBus(
 		bMidiMetronome && m_pOptions->bMidiMetroBus);
 	pMidiEngine->setMetroEnabled(bMidiMetronome);
@@ -6301,14 +6165,14 @@ void qtractorMainForm::updateMidiMetronome (void)
 void qtractorMainForm::updateTrackMenu (void)
 {
 	qtractorTrack *pTrack = NULL;
-	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
+	const bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
 	if (bTracks)
 		pTrack = m_pTracks->currentTrack();
 
-	bool bEnabled   = (pTrack != NULL);
-	bool bPlaying   = m_pSession->isPlaying();
-	bool bRecording = m_pSession->isRecording();
-	bool bRolling   = (bPlaying && bRecording);
+	const bool bEnabled   = (pTrack != NULL);
+	const bool bPlaying   = m_pSession->isPlaying();
+	const bool bRecording = m_pSession->isRecording();
+	const bool bRolling   = (bPlaying && bRecording);
 
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(
@@ -6364,7 +6228,7 @@ void qtractorMainForm::updateCurveMenu (void)
 	if (bEnabled)
 		bEnabled = (pCurveList && !pCurveList->isEmpty());
 
-	bool bCurveEnabled = bEnabled && pCurrentCurve != NULL;
+	const bool bCurveEnabled = bEnabled && pCurrentCurve != NULL;
 
 	m_ui.trackCurveModeMenu->setEnabled(bCurveEnabled);
 
@@ -6530,8 +6394,8 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 	if (pCurrentCurve == NULL)
 		return false;
 
-	qtractorCurve::Mode mode = pCurrentCurve->mode();
-	bool bToggled = (pCurrentCurve->subject())->isToggled();
+	const qtractorCurve::Mode mode = pCurrentCurve->mode();
+	const bool bToggled = (pCurrentCurve->subject())->isToggled();
 
 	QAction *pAction;
 
@@ -6573,7 +6437,7 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 // Clip menu stabilizer.
 void qtractorMainForm::updateClipMenu (void)
 {
-	unsigned long iPlayHead = m_pSession->playHead();
+	const unsigned long iPlayHead = m_pSession->playHead();
 
 	qtractorClip  *pClip  = NULL;
 	qtractorTrack *pTrack = NULL;
@@ -6583,13 +6447,13 @@ void qtractorMainForm::updateClipMenu (void)
 		pTrack = (pClip ? pClip->track() : m_pTracks->currentTrack());
 	}
 
-	bool bEnabled = (pTrack != NULL);
-	bool bSelected = (m_pTracks && m_pTracks->isSelected());
-	bool bClipSelected = (pClip != NULL)
+	const bool bEnabled = (pTrack != NULL);
+	const bool bSelected = (m_pTracks && m_pTracks->isSelected());
+	const bool bClipSelected = (pClip != NULL)
 		|| (m_pTracks && m_pTracks->isClipSelected());
-	bool bClipSelectable = (pClip != NULL)
+	const bool bClipSelectable = (pClip != NULL)
 		|| (m_pSession->editHead() < m_pSession->editTail());
-	bool bSingleTrackSelected = bClipSelected
+	const bool bSingleTrackSelected = bClipSelected
 		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack);
 
 	m_ui.editCutAction->setEnabled(bSelected);
@@ -6629,8 +6493,8 @@ void qtractorMainForm::updateTakeMenu (void)
 		pClip = m_pTracks->currentClip();
 
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
-	int iCurrentTake = (pTakeInfo ? pTakeInfo->currentTake() : -1);
-	int iTakeCount = (pTakeInfo ? pTakeInfo->takeCount() : 0);
+	const int iCurrentTake = (pTakeInfo ? pTakeInfo->currentTake() : -1);
+	const int iTakeCount = (pTakeInfo ? pTakeInfo->takeCount() : 0);
 
 //	m_ui.clipTakeMenu->setEnabled(pTakeInfo != NULL);
 	m_ui.clipTakeSelectMenu->setEnabled(iTakeCount > 0);
@@ -6655,8 +6519,8 @@ void qtractorMainForm::updateTakeSelectMenu (void)
 	qtractorClip::TakeInfo *pTakeInfo = (pClip ? pClip->takeInfo() : NULL);
 	if (pTakeInfo) {
 		QAction *pAction;
-		int iCurrentTake = pTakeInfo->currentTake();
-		int iTakeCount = pTakeInfo->takeCount();
+		const int iCurrentTake = pTakeInfo->currentTake();
+		const int iTakeCount = pTakeInfo->takeCount();
 		for (int iTake = 0; iTake < iTakeCount; ++iTake) {
 			pAction = m_ui.clipTakeSelectMenu->addAction(
 				tr("Take %1").arg(iTake + 1));
@@ -6696,7 +6560,7 @@ void qtractorMainForm::updateSnapMenu (void)
 {
 	m_ui.viewSnapMenu->clear();
 
-	int iSnapCurrent
+	const int iSnapCurrent
 		= qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat());
 
 	int iSnap = 0;
@@ -6983,12 +6847,12 @@ void qtractorMainForm::timerSlot (void)
 			if (m_pTracks && m_pSession->isRecording()) {
 				// HACK: Care of punch-out...
 				if (m_pSession->isPunching()) {
-					unsigned long iPunchOut  = m_pSession->punchOut();
-					unsigned long iLoopStart = m_pSession->loopStart();
-					unsigned long iLoopEnd   = m_pSession->loopEnd();
+					const unsigned long iLoopStart = m_pSession->loopStart();
+					const unsigned long iLoopEnd   = m_pSession->loopEnd();
+					unsigned long iPunchOut = m_pSession->punchOut();
 					if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
 						iPunchOut = iLoopEnd;
-					unsigned long iFrameTime = m_pSession->frameTimeEx();
+					const unsigned long iFrameTime = m_pSession->frameTimeEx();
 					if (iFrameTime >= iPunchOut && setRecording(false)) {
 						// Send MMC RECORD_EXIT command...
 						pMidiEngine->sendMmcCommand(
@@ -7250,8 +7114,8 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 		pJackSessionEvent->session_dir);
 #endif
 
-	bool bTemplate = (pJackSessionEvent->type == JackSessionSaveTemplate);
-	bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
+	const bool bTemplate = (pJackSessionEvent->type == JackSessionSaveTemplate);
+	const bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
 
 	if (m_pSession->sessionName().isEmpty())
 		m_pSession->setSessionName(::getenv("LADISH_PROJECT_NAME"));
@@ -7437,7 +7301,7 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 		// Handle volume controls...
 		if (ctle.param() == 7) {
 			int iTrack = 0;
-			float fGain = float(ctle.value()) / 127.0f;
+			const float fGain = float(ctle.value()) / 127.0f;
 			for (qtractorTrack *pTrack = m_pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (pTrack->trackType() == qtractorTrack::Midi &&
@@ -7456,7 +7320,7 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 		// Handle pan controls...
 		if (ctle.param() == 10) {
 			int iTrack = 0;
-			float fPanning = (float(ctle.value()) - 64.0f) / 63.0f;
+			const float fPanning = (float(ctle.value()) - 64.0f) / 63.0f;
 			for (qtractorTrack *pTrack = m_pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (pTrack->trackType() == qtractorTrack::Midi &&
@@ -7877,7 +7741,7 @@ void qtractorMainForm::transportTempoFinished (void)
 	qDebug("qtractorMainForm::transportTempoFinished()");
 #endif
 
-	bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
+	const bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
 	m_pTempoSpinBox->clearFocus();
 //	if (m_pTracks)
 //		m_pTracks->trackView()->setFocus();
@@ -7889,7 +7753,8 @@ void qtractorMainForm::transportTempoFinished (void)
 void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 {
 	// Avoid bogus changes...
-	unsigned short iSnapPerBeat = qtractorTimeScale::snapFromIndex(iSnap);
+	const unsigned short iSnapPerBeat
+		= qtractorTimeScale::snapFromIndex(iSnap);
 	if (iSnapPerBeat == m_pSession->snapPerBeat())
 		return;
 
