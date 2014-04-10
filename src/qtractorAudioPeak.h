@@ -1,7 +1,7 @@
 // qtractorAudioPeak.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,12 +80,12 @@ public:
 	void write(float **ppAudioFrames, unsigned int iAudioFrames);
 	void closeWrite();
 
-	// Auto-delete property.
-	//bool isAutoRemove() const;
-
 	// Reference count methods.
 	void addRef();
 	void removeRef();
+
+	// Physical removal.
+	void remove();
 
 	// Sync thread state flags accessors.
 	void setWaitSync(bool bWaitSync);
@@ -204,7 +204,7 @@ public:
 
 	// The peak file factory-method.
 	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
-	void removePeak(qtractorAudioPeakFile *pPeakFile);
+	void removePeak(qtractorAudioPeakFile *pPeakFile, bool bAborted);
 
 	// Auto-delete property.
 	void setAutoRemove(bool bAutoRemove);
