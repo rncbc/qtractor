@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -259,8 +259,8 @@ bool qtractorAudioPeakThread::openPeakFile (void)
 		return false;
 	}
 
-	unsigned short iChannels   = m_pAudioFile->channels();
-	unsigned int   iSampleRate = m_pAudioFile->sampleRate();
+	const unsigned short iChannels = m_pAudioFile->channels();
+	const unsigned int iSampleRate = m_pAudioFile->sampleRate();
 
 	if (!m_pPeakFile->openWrite(iChannels, iSampleRate)) {
 		delete m_pAudioFile;
@@ -296,7 +296,7 @@ bool qtractorAudioPeakThread::writePeakFile (void)
 #endif
 
 	// Read another bunch of frames from the physical audio file...
-	int nread = m_pAudioFile->read(m_ppAudioFrames, c_iAudioFrames);
+	const int nread = m_pAudioFile->read(m_ppAudioFrames, c_iAudioFrames);
 	if (nread > 0)
 		m_pPeakFile->write(m_ppAudioFrames, nread);
 
@@ -316,7 +316,7 @@ void qtractorAudioPeakThread::closePeakFile (void)
 
 	// Get rid of physical used stuff.
 	if (m_ppAudioFrames) {
-		unsigned short iChannels = m_pAudioFile->channels();
+		const unsigned short iChannels = m_pAudioFile->channels();
 		for (unsigned short i = 0; i < iChannels; ++i)
 			delete [] m_ppAudioFrames[i];
 		delete [] m_ppAudioFrames;
@@ -389,15 +389,9 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		dir.setPath(pSession->sessionDir());
-	const QString sPeakFilePrefix
-		= QFileInfo(dir, QFileInfo(sFilename).fileName()).filePath()
-		+ '_' + QString::number(fTimeStretch);
-	QFileInfo peakInfo(sPeakFilePrefix + c_sPeakFileExt);
-	// Avoid duplicates, as much as psssible...
-	for (int i = 1; peakInfo.exists(); ++i) {
-		peakInfo.setFile(sPeakFilePrefix
-			+ '-' + QString::number(i) + c_sPeakFileExt);
-	}
+	const QFileInfo fileInfo(sFilename);
+	const QFileInfo peakInfo(dir, fileInfo.fileName()
+		+ '_' + QString::number(fTimeStretch) + c_sPeakFileExt);
 	m_peakFile.setFileName(peakInfo.absoluteFilePath());
 }
 
@@ -406,24 +400,20 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 {
 	// Check if it's aborting (ought to be atomic)...
-	bool bAborted = m_bWaitSync;
+	const bool bAborted = m_bWaitSync;
 	m_bWaitSync = false;
 
 	// Close the file, anyway now.
 	closeWrite();
 	closeRead();
 
-	// Tell master-factory that we're out.
+	// Tell master-factory that we're out immediately (if aborted)...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		qtractorAudioPeakFactory *pPeakFactory
 			= pSession->audioPeakFactory();
-		if (pPeakFactory) {
-			pPeakFactory->removePeak(this);
-			// Do we get rid from the filesystem too?
-			if (pPeakFactory->isAutoRemove() || bAborted)
-				m_peakFile.remove();
-		}
+		if (pPeakFactory)
+			pPeakFactory->removePeak(this, bAborted);
 	}
 }
 
@@ -557,7 +547,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 #endif
 
 	// Cache effect, only valid if we're really reading...
-	unsigned long iPeakEnd = iPeakOffset + iPeakFrames;
+	const unsigned long iPeakEnd = iPeakOffset + iPeakFrames;
 	if (iPeakOffset >= m_iBuffOffset && m_iBuffOffset < iPeakEnd) {
 		unsigned long iBuffEnd = m_iBuffOffset + m_iBuffLength;
 		if (iBuffEnd >= iPeakEnd)
@@ -603,8 +593,10 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 
 	// Grab new contents from peak file...
 	char *pBuffer = (char *) (m_pBuffer + m_peakHeader.channels * iBuffOffset);
-	unsigned long iOffset = iPeakOffset * m_peakHeader.channels * sizeof(Frame);
-	unsigned int  iLength = iPeakFrames * m_peakHeader.channels * sizeof(Frame);
+	const unsigned long iOffset
+		= iPeakOffset * m_peakHeader.channels * sizeof(Frame);
+	const unsigned int iLength
+		= iPeakFrames * m_peakHeader.channels * sizeof(Frame);
 
 	int nread = 0;
 	if (m_peakFile.seek(sizeof(Header) + iOffset))
@@ -735,7 +727,7 @@ void qtractorAudioPeakFile::write (
 	for (unsigned int n = 0; n < iAudioFrames; ++n) {
 		// Accumulate for this sample frame...
 		for (unsigned short i = 0; i < m_peakHeader.channels; ++i) {
-			float fSample = ppAudioFrames[i][n];
+			const float fSample = ppAudioFrames[i][n];
 			if (m_peakMax[i] < fSample)
 				m_peakMax[i] = fSample;
 			if (m_peakMin[i] > fSample)
@@ -784,6 +776,13 @@ void qtractorAudioPeakFile::removeRef (void)
 {
 	if (--m_iRefCount == 0)
 		delete this;
+}
+
+
+// Physical removal.
+void qtractorAudioPeakFile::remove (void)
+{
+	m_peakFile.remove();
 }
 
 
@@ -849,12 +848,16 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	return new qtractorAudioPeak(pPeakFile);
 }
 
-void qtractorAudioPeakFactory::removePeak ( qtractorAudioPeakFile *pPeakFile )
+void qtractorAudioPeakFactory::removePeak (
+	qtractorAudioPeakFile *pPeakFile, bool bAborted )
 {
 	QMutexLocker locker(&m_mutex);
 
 	m_peaks.remove(pPeakFile->filename()
 		+ '_' + QString::number(pPeakFile->timeStretch()));
+
+	if (m_bAutoRemove || bAborted)
+		pPeakFile->remove();
 }
 
 
