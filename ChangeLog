@@ -6,7 +6,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio peak file re-generation and clean-up has been hopefully
+  fixed and cache optimized (re. drawing audio clip waveforms).
+
 - Fixed initial session snap-per-beat setting on main toolbar.
+
 - Clip/Export...'ed files are now made persistent, no questions
   asked (after a ticket by Oliver Kester, thanks).
 

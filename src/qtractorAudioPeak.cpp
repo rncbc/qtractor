@@ -838,7 +838,7 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 		m_pPeakThread->start();
 	}
 
-	const QString sKey = sFilename + '_' + QString::number(fTimeStretch);
+	const QString& sKey = sFilename + '_' + QString::number(fTimeStretch);
 	qtractorAudioPeakFile *pPeakFile = m_peaks.value(sKey, NULL);
 	if (pPeakFile == NULL) {
 		pPeakFile = new qtractorAudioPeakFile(sFilename, fTimeStretch);
@@ -853,11 +853,16 @@ void qtractorAudioPeakFactory::removePeak (
 {
 	QMutexLocker locker(&m_mutex);
 
-	m_peaks.remove(pPeakFile->filename()
-		+ '_' + QString::number(pPeakFile->timeStretch()));
+	const QString& sKey = pPeakFile->filename()
+		+ '_' + QString::number(pPeakFile->timeStretch());
 
-	if (m_bAutoRemove || bAborted)
+	m_peaks.remove(sKey);
+
+	if (bAborted)
 		pPeakFile->remove();
+	else
+	if (m_bAutoRemove)
+		m_files.append(pPeakFile->name());
 }
 
 
@@ -884,6 +889,16 @@ void qtractorAudioPeakFactory::notifyPeakEvent (void)
 void qtractorAudioPeakFactory::sync ( qtractorAudioPeakFile *pPeakFile )
 {
 	if (m_pPeakThread) m_pPeakThread->sync(pPeakFile);
+}
+
+
+// Cleanup method.
+void qtractorAudioPeakFactory::cleanup (void)
+{
+	QStringListIterator iter(m_files);
+	while (iter.hasNext())
+		QFile::remove(iter.next());
+	m_files.clear();
 }
 
 
