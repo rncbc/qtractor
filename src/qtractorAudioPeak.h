@@ -28,6 +28,9 @@
 
 #include <QMutex>
 
+#include <QStringList>
+
+
 // Forward declarations.
 class qtractorAudioPeakThread;
 
@@ -216,6 +219,9 @@ public:
 	// Base sync method.
 	void sync(qtractorAudioPeakFile *pPeakFile = NULL);
 
+	// Cleanup method.
+	void cleanup();
+
 signals:
 
 	// Peak ready signal.
@@ -232,9 +238,11 @@ private:
 	// Auto-delete property.
 	bool m_bAutoRemove;
 
+	// The queue of discardable peak files.
+	QStringList m_files;
+
 	// The peak file creation detached thread.
 	qtractorAudioPeakThread *m_pPeakThread;
-
 };
 
 

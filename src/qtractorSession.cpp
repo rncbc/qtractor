@@ -319,6 +319,8 @@ void qtractorSession::clear (void)
 		pMidiCursor->seek(0);
 		m_cursors.append(pMidiCursor);
 	}
+
+	m_pAudioPeakFactory->cleanup();
 }
 
 
