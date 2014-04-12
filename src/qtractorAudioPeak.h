@@ -53,6 +53,8 @@ public:
 	const QString& filename() const;
 	float timeStretch() const;
 
+	QString peakName() const;
+
 	// Peak cache properties accessors.
 	QString name() const;
 	unsigned short period();
@@ -206,6 +208,7 @@ public:
 	~qtractorAudioPeakFactory();
 
 	// The peak file factory-method.
+	static QString peakName(const QString& sFilename, float fTimeStretch);
 	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
 	void removePeak(qtractorAudioPeakFile *pPeakFile, bool bAborted);
 

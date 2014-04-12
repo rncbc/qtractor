@@ -384,14 +384,21 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 
 	m_iRefCount    = 0;
 
-	// Set peak filename...
+	// Set (unique) peak filename...
 	QDir dir;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		dir.setPath(pSession->sessionDir());
+
 	const QFileInfo fileInfo(sFilename);
-	const QFileInfo peakInfo(dir, fileInfo.fileName()
-		+ '_' + QString::number(fTimeStretch) + c_sPeakFileExt);
+	const QString& sPeakFilePrefix
+		= QFileInfo(dir, fileInfo.fileName()).filePath();
+	const QString& sPeakName
+		= qtractorAudioPeakFactory::peakName(sFilename, fTimeStretch);
+	const QFileInfo peakInfo(sPeakFilePrefix + '_'
+		+ QString::number(qHash(sPeakName), 16)
+		+ c_sPeakFileExt);
+
 	m_peakFile.setFileName(peakInfo.absoluteFilePath());
 }
 
@@ -510,6 +517,12 @@ const QString& qtractorAudioPeakFile::filename (void) const
 float qtractorAudioPeakFile::timeStretch (void) const
 {
 	return m_fTimeStretch;
+}
+
+
+QString qtractorAudioPeakFile::peakName (void) const
+{
+	return qtractorAudioPeakFactory::peakName(m_sFilename, m_fTimeStretch);
 }
 
 
@@ -828,6 +841,13 @@ qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 
 
 // The peak file factory-methods.
+QString qtractorAudioPeakFactory::peakName (
+	const QString& sFilename, float fTimeStretch )
+{
+	return sFilename + '_' + QString::number(fTimeStretch);
+}
+
+
 qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	const QString& sFilename, float fTimeStretch )
 {
@@ -838,25 +858,23 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 		m_pPeakThread->start();
 	}
 
-	const QString& sKey = sFilename + '_' + QString::number(fTimeStretch);
-	qtractorAudioPeakFile *pPeakFile = m_peaks.value(sKey, NULL);
+	const QString& sPeakName = peakName(sFilename, fTimeStretch);
+	qtractorAudioPeakFile *pPeakFile = m_peaks.value(sPeakName);
 	if (pPeakFile == NULL) {
 		pPeakFile = new qtractorAudioPeakFile(sFilename, fTimeStretch);
-		m_peaks.insert(sKey, pPeakFile);
+		m_peaks.insert(sPeakName, pPeakFile);
 	}
 
 	return new qtractorAudioPeak(pPeakFile);
 }
+
 
 void qtractorAudioPeakFactory::removePeak (
 	qtractorAudioPeakFile *pPeakFile, bool bAborted )
 {
 	QMutexLocker locker(&m_mutex);
 
-	const QString& sKey = pPeakFile->filename()
-		+ '_' + QString::number(pPeakFile->timeStretch());
-
-	m_peaks.remove(sKey);
+	m_peaks.remove(pPeakFile->peakName());
 
 	if (bAborted)
 		pPeakFile->remove();
