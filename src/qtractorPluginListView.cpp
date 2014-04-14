@@ -1420,7 +1420,7 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("&Add Plugin..."), this, SLOT(addPlugin()));
 //	pAction->setEnabled(true);
 
-	QMenu *pInsertMenu = menu.addMenu("&Inserts");
+	QMenu *pInsertMenu = menu.addMenu(tr("&Inserts"));
 	pAction = pInsertMenu->addAction(
 		QIcon(":/images/formAdd.png"),
 		tr("Add &Insert"), this, SLOT(addInsertPlugin()));

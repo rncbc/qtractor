@@ -10437,32 +10437,42 @@ Chcete použít tyto změny?</translation>
         <translation>Zvukový soubor s dobou pro přístroj sloužící k stanovení tempa v hudbě (metronom)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1005"/>
+        <location filename="../qtractorOptionsForm.cpp" line="913"/>
+        <source>Audio Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="925"/>
+        <source>MIDI Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1009"/>
         <source>Plug-in Directory</source>
         <translation>Adresář s přídavnými moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1233"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1237"/>
         <source>LV2 Presets Directory</source>
         <translation>Adresář s přednastaveními LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1289"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1293"/>
         <source>Messages Log</source>
         <translation>Záznam se sděleními</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1290"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1294"/>
         <source>Log files (*.%1)</source>
         <translation>Soubory se záznamy (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1327"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1331"/>
         <source>Session Template</source>
         <translation>Předloha pro sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1328"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1332"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Soubory předloh (*.qtr *.qts *.%1) pro sezení</translation>
     </message>
@@ -12021,6 +12031,11 @@ Jste si jistý?</translation>
         <translation>&amp;Přidat přídavný modul...</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginListView.cpp" line="1423"/>
+        <source>&amp;Inserts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginListView.cpp" line="1426"/>
         <source>Add &amp;Insert</source>
         <translation>Přidat &amp;vložku</translation>
@@ -12956,7 +12971,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="388"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="921"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="924"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
     </message>
@@ -12972,7 +12987,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="404"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="926"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="929"/>
         <source>&amp;Update</source>
         <translation>&amp;Obnovit</translation>
     </message>
@@ -12988,7 +13003,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="420"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="931"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="934"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
@@ -13051,7 +13066,12 @@ Chcete zahodit tyto změny?</translation>
         <translation>Násobek tempa</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="938"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="892"/>
+        <source>Marker Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="941"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Obnovit</translation>
     </message>
@@ -13132,6 +13152,16 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTrackForm.cpp" line="555"/>
         <source>(No instrument)</source>
         <translation>(Žádný nástroj)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1324"/>
+        <source>Forgeground Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1338"/>
+        <source>Background Color</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Apply</source>
@@ -13849,6 +13879,11 @@ Jste si jistý?</translation>
         <location filename="../qtractorTracks.cpp" line="2186"/>
         <source>remove track range</source>
         <translation>Odstranit rozsah stopy</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTracks.cpp" line="2424"/>
+        <source>Track %1</source>
+        <translation type="unfinished">Stopa %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2703"/>

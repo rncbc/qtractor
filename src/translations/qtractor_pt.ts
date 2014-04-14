@@ -8217,6 +8217,14 @@ Você quer mesmo manter as alterações?</translation>
         <source>WSOLA quic&amp;k seek</source>
         <translation>WSOLA mudança &amp;rápida</translation>
     </message>
+    <message>
+        <source>Audio Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MIDI Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorPasteRepeatForm</name>
@@ -8516,6 +8524,10 @@ Posso continuar?</translation>
     <message>
         <source>Acti&amp;vate All</source>
         <translation>Ati&amp;var Tudo</translation>
+    </message>
+    <message>
+        <source>&amp;Inserts</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9174,6 +9186,10 @@ Do you want to discard the changes?</source>
 
 Você deseja descartar essas alterações?</translation>
     </message>
+    <message>
+        <source>Marker Color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorTimeSpinBox</name>
@@ -9438,6 +9454,14 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <source>Remove plugin</source>
         <translation>Remover efeito</translation>
+    </message>
+    <message>
+        <source>Forgeground Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background Color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9749,6 +9773,10 @@ Posso continuar?</translation>
     <message>
         <source>Merge/Export Audio Clip</source>
         <translation>Unir/Renderizar Sequência de Áudio</translation>
+    </message>
+    <message>
+        <source>Track %1</source>
+        <translation type="unfinished">Pista %1</translation>
     </message>
 </context>
 </TS>
