@@ -657,7 +657,7 @@ const QStringList& qtractorMidiEditor::scaleTypeNames (void)
 unsigned char qtractorMidiEditor::snapToScale (
 	unsigned char note, int iKey, int iScale )
 {
-	int n = int(note) + (12 - iKey);
+	const int n = int(note) + (12 - iKey);
 	return 12 * ((n / 12) - 1) + iKey + int(g_aScaleTab[iScale].note[n % 12]);
 }
 
@@ -1673,7 +1673,8 @@ void qtractorMidiEditor::copyClipboard (void)
 // (as from current clipboard width)
 unsigned long qtractorMidiEditor::pastePeriod (void) const
 {
-	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+	const unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+
 	unsigned long t1 = 0;
 	unsigned long t2 = 0;
 
@@ -1715,12 +1716,13 @@ void qtractorMidiEditor::pasteClipboard (
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
 	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
-	int dx = m_pTimeScale->pixelFromFrame(iPastePeriod);
+
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const int dx = m_pTimeScale->pixelFromFrame(iPastePeriod);
 	
 	// This is the edit-view spacifics...
-	int h1 = m_pEditList->itemHeight();
-	int ch = m_pEditView->contentsHeight(); // + 1;
+	const int h1 = m_pEditList->itemHeight();
+	const int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
 	const qtractorMidiEvent::EventType eventType = m_pEditEvent->eventType();
@@ -1728,7 +1730,7 @@ void qtractorMidiEditor::pasteClipboard (
 	const int y0 = (eventType == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
 	int k, x1;
-	unsigned long d0 = t0;
+	const unsigned long d0 = t0;
 	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
 	for (unsigned short i = 0; i < iPasteCount; ++i) {
 		iter.toFront();
@@ -1878,10 +1880,10 @@ void qtractorMidiEditor::selectAll (
 void qtractorMidiEditor::selectRange (
 	qtractorScrollView *pScrollView, bool bToggle, bool bCommit )
 {
-	int x = m_iEditHeadX;
-	int y = 0;
-	int w = m_iEditTailX - m_iEditHeadX;
-	int h = pScrollView->contentsHeight();
+	const int x = m_iEditHeadX;
+	const int y = 0;
+	const int w = m_iEditTailX - m_iEditHeadX;
+	const int h = pScrollView->contentsHeight();
 
 	selectRect(pScrollView, QRect(x, y, w, h), bToggle, bCommit);
 }
@@ -1993,12 +1995,12 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 {
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 
 	// This is the edit-view specifics...
-	int h1 = m_pEditList->itemHeight();
-	int ch = m_pEditView->contentsHeight(); // + 1;
+	const int h1 = m_pEditList->itemHeight();
+	const int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
 	const qtractorMidiEvent::EventType eventType = m_pEditEvent->eventType();
@@ -2013,8 +2015,8 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		// Common event coords...
 		int y;
-		unsigned long t1 = t0 + pEvent->time();
-		unsigned long t2 = t1 + pEvent->duration();
+		const unsigned long t1 = t0 + pEvent->time();
+		const unsigned long t2 = t1 + pEvent->duration();
 		pNode = cursor.seekTick(t1);
 		int x  = pNode->pixelFromTick(t1) - 1;
 		int w1 = pNode->pixelFromTick(t2) - x;
@@ -2093,21 +2095,22 @@ void qtractorMidiEditor::insertEditRange (void)
 	if (pSeq == NULL)
 		return;
 
-	unsigned long iInsertStart = m_pTimeScale->tickFromFrame(m_iEditHead);
-	unsigned long iInsertEnd   = 0;
+	const unsigned long iInsertStart
+		= m_pTimeScale->tickFromFrame(m_iEditHead);
 
+	unsigned long iInsertEnd = 0;
 	if (m_iEditHead < m_iEditTail) {
 		iInsertEnd = m_pTimeScale->tickFromFrame(m_iEditTail);
 	} else {
-		unsigned short iBar = m_pTimeScale->barFromFrame(m_iEditHead);
+		const unsigned short iBar = m_pTimeScale->barFromFrame(m_iEditHead);
 		iInsertEnd = m_pTimeScale->tickFromFrame(m_pTimeScale->frameFromBar(iBar + 1));
 	}
 
 	if (iInsertStart >= iInsertEnd)
 		return;
 
-	unsigned long iInsertDuration = iInsertEnd - iInsertStart;
-	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+	const unsigned long iInsertDuration = iInsertEnd - iInsertStart;
+	const unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
 
 	int iUpdate = 0;
 	qtractorMidiEditCommand *pEditCommand
@@ -2115,10 +2118,10 @@ void qtractorMidiEditor::insertEditRange (void)
 
 	qtractorMidiEvent *pEvent = pSeq->events().first();
 	while (pEvent) {
-		unsigned long iTime = pEvent->time();
-		unsigned long iDuration = pEvent->duration();
-		unsigned long iEventStart = t0 + iTime;
-		unsigned long iEventEnd = iEventStart + iDuration;
+		const unsigned long iTime = pEvent->time();
+		const unsigned long iDuration = pEvent->duration();
+		const unsigned long iEventStart = t0 + iTime;
+		const unsigned long iEventEnd = iEventStart + iDuration;
 		// Slip/move event...
 		if (iEventEnd >= iInsertStart) {
 			if (iEventStart < iInsertStart) {
@@ -2161,9 +2164,10 @@ void qtractorMidiEditor::removeEditRange (void)
 	if (pSeq == NULL)
 		return;
 
-	unsigned long iRemoveStart = m_pTimeScale->tickFromFrame(m_iEditHead);
-	unsigned long iRemoveEnd   = 0;
+	const unsigned long iRemoveStart
+		= m_pTimeScale->tickFromFrame(m_iEditHead);
 
+	unsigned long iRemoveEnd   = 0;
 	if (m_iEditHead < m_iEditTail) {
 		iRemoveEnd = m_pTimeScale->tickFromFrame(m_iEditTail);
 	} else {
@@ -2174,8 +2178,8 @@ void qtractorMidiEditor::removeEditRange (void)
 	if (iRemoveStart >= iRemoveEnd)
 		return;
 
-	unsigned long iRemoveDuration = iRemoveEnd - iRemoveStart;
-	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+	const unsigned long iRemoveDuration = iRemoveEnd - iRemoveStart;
+	const unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
 
 	int iUpdate = 0;
 	qtractorMidiEditCommand *pEditCommand
@@ -2183,10 +2187,10 @@ void qtractorMidiEditor::removeEditRange (void)
 
 	qtractorMidiEvent *pEvent = pSeq->events().first();
 	while (pEvent) {
-		unsigned long iTime = pEvent->time();
-		unsigned long iDuration = pEvent->duration();
-		unsigned long iEventStart = t0 + iTime;
-		unsigned long iEventEnd = iEventStart + iDuration;
+		const unsigned long iTime = pEvent->time();
+		const unsigned long iDuration = pEvent->duration();
+		const unsigned long iEventStart = t0 + iTime;
+		const unsigned long iEventEnd = iEventStart + iDuration;
 		// Slip/move event...
 		if (iEventEnd >= iRemoveStart) {
 			if (iEventStart < iRemoveStart) {
@@ -2258,9 +2262,9 @@ void qtractorMidiEditor::centerContents (void)
 	if (m_pMidiClip)
 		pSeq = m_pMidiClip->sequence();
 	if (pSeq)	{
-		int cy = m_pEditView->contentsHeight();
-		int h2 = m_pEditList->itemHeight()
+		const int h2 = m_pEditList->itemHeight()
 			* (pSeq->noteMin() + pSeq->noteMax());
+		int cy = m_pEditView->contentsHeight();
 		if (h2 > 0)
 			cy -= ((h2 + (m_pEditView->viewport())->height()) >> 1);
 		else
@@ -2311,11 +2315,11 @@ void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
 	#endif
 	}
 
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
-	int cx = m_pEditView->contentsX();
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const int cx = m_pEditView->contentsX();
 	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
 
-	int cy = m_pEditView->contentsY();
+	const int cy = m_pEditView->contentsY();
 	zc.item = (cy + zc.y) / m_pEditList->itemHeight();
 }
 
@@ -2327,7 +2331,8 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	if (m_pTimeScale == NULL)
 		return;
 
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+
 	int cx = m_pTimeScale->pixelFromFrame(zc.frame);
 	int cy = zc.item * m_pEditList->itemHeight();
 
@@ -2416,8 +2421,8 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 
 	pNode = cursor.seekPixel(x0 + pos.x());
 	unsigned long iTime = pNode->tickFromPixel(x0 + pos.x());
@@ -2447,10 +2452,10 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 				(!bEventParam || pEvent->param() == eventParam))))) {
 			// Common event coords...
 			int y;
-			unsigned long t1 = t0 + pEvent->time();
-			unsigned long t2 = t1 + pEvent->duration();
+			const unsigned long t1 = t0 + pEvent->time();
+			const unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
-			int x  = pNode->pixelFromTick(t1) - 1;
+			int x = pNode->pixelFromTick(t1) - 1;
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
@@ -2515,7 +2520,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	qtractorMidiEvent::EventType eventType
 		= (bEditView ? m_pEditView->eventType() : m_pEditEvent->eventType());
 
-	int ch = m_pEditView->contentsHeight();
+	const int ch = m_pEditView->contentsHeight();
+
 	int h1 = m_pEditList->itemHeight();
 	unsigned char note = (ch - pos.y()) / h1;
 	if (m_iSnapToScaleType > 0)
@@ -2545,17 +2551,18 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	if (y < ymin) y = ymin; else if (y > ymax) y = ymax;
 
 	// Compute onset time from given horizontal position...
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+
 	int x1 = x0 + pos.x();
 	int y1 = 0;
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
 
 	// This would the new event onset time...
 	pNode = cursor.seekPixel(x1);
-	unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), 8) - t0;
+	const unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), 8) - t0;
 
 	// Check for time/onset changes and whether it's already drawn...
 	if (m_bEventDragEdit && m_pEventDrag) {
@@ -3015,7 +3022,7 @@ void qtractorMidiEditor::dragMoveCommit (
 		// Shall we move the playhead?...
 		if (m_pEventDrag == NULL) {
 			// Direct snap positioning...
-			unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
+			const unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
 				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 			// Playhead positioning...
 			setPlayHead(iFrame);
@@ -3086,7 +3093,7 @@ bool qtractorMidiEditor::dragMoveFilter (
 					int note = m_last.note;
 					if (pScrollView
 						== static_cast<qtractorScrollView *> (m_pEditView)) {
-						int ch = m_pEditList->contentsHeight();
+						const int ch = m_pEditList->contentsHeight();
 						note = (ch - pos.y()) / m_pEditList->itemHeight();
 					}
 					QToolTip::showText(
@@ -3126,7 +3133,9 @@ void qtractorMidiEditor::updateDragSelect (
 
 	// Rubber-banding only applicable whenever
 	// the selection rectangle is not that empty...
-	bool bRectSelect = (rectSelect.width() > 1 || rectSelect.height() > 1);
+	const bool bRectSelect
+		= (rectSelect.width() > 1 || rectSelect.height() > 1);
+
 	if (bRectSelect) {
 		// Create rubber-band, if not already...
 		if (m_pRubberBand == NULL) {
@@ -3152,9 +3161,9 @@ void qtractorMidiEditor::updateDragSelect (
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
 
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 	int x1, x2;
 	if (bRectSelect) {
 		x1 = pScrollView->contentsX();
@@ -3173,15 +3182,15 @@ void qtractorMidiEditor::updateDragSelect (
 
 	pNode = cursor.seekPixel(x0 + x1);
 	unsigned long t1 = pNode->tickFromPixel(x0 + x1);
-	unsigned long iTickStart = (t1 > t0 ? t1 - t0 : 0);
+	const unsigned long iTickStart = (t1 > t0 ? t1 - t0 : 0);
 
 	pNode = cursor.seekPixel(x0 + x2);
 	unsigned long t2 = pNode->tickFromPixel(x0 + x2);
-	unsigned long iTickEnd = (t2 > t0 ? t2 - t0 : 0);
+	const unsigned long iTickEnd = (t2 > t0 ? t2 - t0 : 0);
 
 	// This is the edit-view spacifics...
-	int h1 = m_pEditList->itemHeight();
-	int ch = m_pEditView->contentsHeight(); // + 1;
+	const int h1 = m_pEditList->itemHeight();
+	const int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
 	const qtractorMidiEvent::EventType eventType = m_pEditEvent->eventType();
@@ -3269,7 +3278,7 @@ void qtractorMidiEditor::updateDragSelect (
 	}
 
 	// Commit selection...
-	bool bCommit = (flags & SelectCommit);
+	const bool bCommit = (flags & SelectCommit);
 	m_select.update(bCommit);
 
 	rectUpdateView = rectUpdateView.united(m_select.rectView());
@@ -3298,8 +3307,8 @@ long qtractorMidiEditor::timeSnap ( long iTime ) const
 {
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	unsigned long t1 = t0 + iTime;
+	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	const unsigned long t1 = t0 + iTime;
 	pNode = cursor.seekTick(t1);
 	iTime = long(pNode->tickSnap(t1)) - long(t0);
 	return (iTime > 0 ? iTime : 0);
@@ -3502,12 +3511,12 @@ void qtractorMidiEditor::updateEventRects (
 {
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 
 	// This is the edit-view spacifics...
-	int h1 = m_pEditList->itemHeight();
-	int ch = m_pEditView->contentsHeight(); // + 1;
+	const int h1 = m_pEditList->itemHeight();
+	const int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
 	const qtractorMidiEvent::EventType eventType = m_pEditEvent->eventType();
@@ -3515,8 +3524,8 @@ void qtractorMidiEditor::updateEventRects (
 	const int y0 = (eventType == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
 	// Common event coords...
-	unsigned long t1 = t0 + pEvent->time();
-	unsigned long t2 = t1 + pEvent->duration();
+	const unsigned long t1 = t0 + pEvent->time();
+	const unsigned long t2 = t1 + pEvent->duration();
 	pNode = cursor.seekTick(t1);
 	int x  = pNode->pixelFromTick(t1) - 1;
 	int w1 = pNode->pixelFromTick(t2) - x;
@@ -3571,20 +3580,23 @@ void qtractorMidiEditor::updateDragMove (
 	QPoint delta(pos - m_posDrag);
 	QRect rect(bEditView ? m_select.rectView() : m_select.rectEvent());
 
-	int cw = pScrollView->contentsWidth();
+	const int cw = pScrollView->contentsWidth();
+
 	int dx = delta.x();
-	int x0 = m_rectDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
-	int x1 = rect.x() + dx;
+
+	const int x0 = m_rectDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
+	const int x1 = rect.x() + dx;
 	if (x1 < 0)
 		dx = -(rect.x());
 	if (x1 + rect.width() > cw)
 		dx = cw - rect.right();
 	m_posDelta.setX(m_pTimeScale->pixelSnap(x0 + dx) - x0);
 
-	int h1 = m_pEditList->itemHeight();
+	const int h1 = m_pEditList->itemHeight();
+
 	if (bEditView && h1 > 0) {
-		int ch = m_pEditView->contentsHeight();
-		int y0 = rect.y();
+		const int ch = m_pEditView->contentsHeight();
+		const int y0 = rect.y();
 		int y1 = y0 + delta.y();
 		if (y1 < 0)
 			y1 = 0;
@@ -3894,8 +3906,8 @@ void qtractorMidiEditor::executeDragMove (
 
 	updateDragMove(pScrollView, pos + m_posStep);
 
-	long iTimeDelta = timeDelta(pScrollView);
-	int  iNoteDelta = noteDelta(pScrollView);
+	const long iTimeDelta = timeDelta(pScrollView);
+	const int  iNoteDelta = noteDelta(pScrollView);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("move"));
@@ -3913,7 +3925,7 @@ void qtractorMidiEditor::executeDragMove (
 			iNote = 0;
 		if (iNote > 127)
 			iNote = 127;
-		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
+		const long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
 		pEditCommand->moveEvent(pEvent, iNote, iTime);
@@ -3933,8 +3945,8 @@ void qtractorMidiEditor::executeDragResize (
 
 	updateDragResize(pScrollView, pos);
 
-	long iTimeDelta = timeDelta(pScrollView);
-	int iValueDelta = valueDelta(pScrollView);
+	const long iTimeDelta = timeDelta(pScrollView);
+	const int iValueDelta = valueDelta(pScrollView);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip,
@@ -4105,8 +4117,8 @@ void qtractorMidiEditor::executeDragPaste (
 	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
-	long iTimeDelta = timeDelta(pScrollView);
-	int  iNoteDelta = (bEditView ? noteDelta(pScrollView) : 0);
+	const long iTimeDelta = timeDelta(pScrollView);
+	const int  iNoteDelta = (bEditView ? noteDelta(pScrollView) : 0);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("paste"));
@@ -4121,7 +4133,7 @@ void qtractorMidiEditor::executeDragPaste (
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
 			continue;
-		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
+		const long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
 		pEvent->setTime(iTime);
@@ -4990,8 +5002,8 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 
 	// Determine vertical step...
 	if (iKey == Qt::Key_Up || iKey == Qt::Key_Down)  {
-		int iVerticalStep = m_pEditList->itemHeight();
-		int y0 = m_posDrag.y();
+		const int iVerticalStep = m_pEditList->itemHeight();
+		const int y0 = m_posDrag.y();
 		int y1 = y0 + m_posStep.y();
 		if (iKey == Qt::Key_Up)
 			y1 -= iVerticalStep;
@@ -5002,8 +5014,8 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	else
 	// Determine horizontal step...
 	if (iKey == Qt::Key_Left || iKey == Qt::Key_Right)  {
+		const int x0 = m_posDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
 		int iHorizontalStep = 0;
-		int x0 = m_posDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
 		int x1 = x0 + m_posStep.x();
 		qtractorTimeScale::Cursor cursor(m_pTimeScale);
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
@@ -5078,9 +5090,9 @@ void qtractorMidiEditor::showToolTip (
 	if (m_pTimeScale == NULL)
 		return;
 
-	unsigned long iFrameStart = m_pTimeScale->frameSnap(
+	const unsigned long iFrameStart = m_pTimeScale->frameSnap(
 		m_iOffset + m_pTimeScale->frameFromPixel(rect.left()));
-	unsigned long iFrameEnd = m_pTimeScale->frameSnap(
+	const unsigned long iFrameEnd = m_pTimeScale->frameSnap(
 		iFrameStart + m_pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(
