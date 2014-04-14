@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1319,8 +1319,10 @@ void qtractorTrackForm::progChanged (void)
 // Select custom track foreground color.
 void qtractorTrackForm::selectForegroundColor (void)
 {
-	QColor color = QColorDialog::getColor(
-		colorItem(m_ui.ForegroundColorComboBox), this);
+	const QColor& color = QColorDialog::getColor(
+		colorItem(m_ui.ForegroundColorComboBox), this,
+		tr("Forgeground Color") + " - " QTRACTOR_TITLE);
+
 	if (color.isValid()) {
 		updateColorItem(m_ui.ForegroundColorComboBox, color);
 		changed();
@@ -1331,8 +1333,10 @@ void qtractorTrackForm::selectForegroundColor (void)
 // Select custom track background color.
 void qtractorTrackForm::selectBackgroundColor (void)
 {
-	QColor color = QColorDialog::getColor(
-		colorItem(m_ui.BackgroundColorComboBox), this);
+	const QColor& color = QColorDialog::getColor(
+		colorItem(m_ui.BackgroundColorComboBox), this,
+		tr("Background Color") + " - " QTRACTOR_TITLE);
+
 	if (color.isValid()) {
 		updateColorItem(m_ui.BackgroundColorComboBox, color);
 		changed();

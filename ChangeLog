@@ -6,6 +6,8 @@ ChangeLog
 
 SVN TRUNK
 
+- All color chooser dialogs were missing proper titles.
+
 - Audio peak file re-generation and clean-up has been hopefully
   fixed and cache optimized (re. drawing audio clip waveforms).
 
