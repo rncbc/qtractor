@@ -2421,7 +2421,7 @@ bool qtractorTracks::addTrack (void)
 	const int iTrack = pSession->tracks().count() + 1;
 	const QColor& color = qtractorTrack::trackColor(iTrack);
 	qtractorTrack *pTrack = new qtractorTrack(pSession);
-	pTrack->setTrackName(QString("Track %1").arg(iTrack));
+	pTrack->setTrackName(tr("Track %1").arg(iTrack));
 	pTrack->setMidiChannel(pSession->midiTag() % 16);
 	pTrack->setBackground(color);
 	pTrack->setForeground(color.darker());

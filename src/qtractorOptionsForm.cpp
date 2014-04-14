@@ -909,7 +909,9 @@ void qtractorOptionsForm::changeMidiMeterColor ( const QString& sColor )
 void qtractorOptionsForm::chooseAudioMeterColor (void)
 {
 	const QColor& color = QColorDialog::getColor(
-		QColor(m_ui.AudioMeterColorLineEdit->text()), this);
+		QColor(m_ui.AudioMeterColorLineEdit->text()), this,
+		tr("Audio Meter Color") + " - " QTRACTOR_TITLE);
+
 	if (color.isValid())
 		m_ui.AudioMeterColorLineEdit->setText(color.name());
 }
@@ -919,7 +921,9 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 void qtractorOptionsForm::chooseMidiMeterColor (void)
 {
 	const QColor& color = QColorDialog::getColor(
-		QColor(m_ui.MidiMeterColorLineEdit->text()), this);
+		QColor(m_ui.MidiMeterColorLineEdit->text()), this,
+		tr("MIDI Meter Color") + " - " QTRACTOR_TITLE);
+
 	if (color.isValid())
 		m_ui.MidiMeterColorLineEdit->setText(color.name());
 }

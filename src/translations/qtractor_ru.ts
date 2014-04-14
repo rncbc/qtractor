@@ -9870,32 +9870,42 @@ Do you want to apply the changes?</source>
         <translation>Звуковой файл доли для метронома</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1005"/>
+        <location filename="../qtractorOptionsForm.cpp" line="913"/>
+        <source>Audio Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="925"/>
+        <source>MIDI Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1009"/>
         <source>Plug-in Directory</source>
         <translation>Каталог с эффектами</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1233"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1237"/>
         <source>LV2 Presets Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1289"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1293"/>
         <source>Messages Log</source>
         <translation>Журнал сообщений</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1290"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1294"/>
         <source>Log files (*.%1)</source>
         <translation>Файлы журнала  (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1327"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1331"/>
         <source>Session Template</source>
         <translation>Шаблон сеанса</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1328"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1332"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Файлы шаблонов сеанса (*.qtr *.qts *.%1)</translation>
     </message>
@@ -11421,6 +11431,11 @@ Are you sure?</source>
         <translation>&amp;Добавить эффект...</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginListView.cpp" line="1423"/>
+        <source>&amp;Inserts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginListView.cpp" line="1426"/>
         <source>Add &amp;Insert</source>
         <translation type="unfinished"></translation>
@@ -12221,25 +12236,30 @@ Do you want to discard the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="892"/>
+        <source>Marker Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTimeScaleForm.ui" line="388"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="921"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="924"/>
         <source>&amp;Add</source>
         <translation>&amp;Добавить</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="404"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="926"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="929"/>
         <source>&amp;Update</source>
         <translation>Об&amp;новить ноду</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="420"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="931"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="934"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="938"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="941"/>
         <source>&amp;Refresh</source>
         <translation>О&amp;бновить</translation>
     </message>
@@ -12488,6 +12508,16 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="555"/>
         <source>(No instrument)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1324"/>
+        <source>Forgeground Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1338"/>
+        <source>Background Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -13137,6 +13167,11 @@ Are you sure?</source>
         <location filename="../qtractorTracks.cpp" line="2186"/>
         <source>remove track range</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTracks.cpp" line="2424"/>
+        <source>Track %1</source>
+        <translation type="unfinished">Дорожка %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2703"/>

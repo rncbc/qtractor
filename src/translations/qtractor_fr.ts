@@ -10637,32 +10637,42 @@ Voulez-vous appliquer les changements?</translation>
         <translation>Fichier audio métronome - Battement</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1005"/>
+        <location filename="../qtractorOptionsForm.cpp" line="913"/>
+        <source>Audio Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="925"/>
+        <source>MIDI Meter Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1009"/>
         <source>Plug-in Directory</source>
         <translation>Répertoire Greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1233"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1237"/>
         <source>LV2 Presets Directory</source>
         <translation>Répertoire des réglages LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1289"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1293"/>
         <source>Messages Log</source>
         <translation>Journal des messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1290"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1294"/>
         <source>Log files (*.%1)</source>
         <translation>Fichiers journal (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1327"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1331"/>
         <source>Session Template</source>
         <translation>Modèle de session</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1328"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1332"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Fichiers de modèle de session (*.qtr *.qts *.%1)</translation>
     </message>
@@ -10956,6 +10966,11 @@ Etes-vous sur?</translation>
         <location filename="../qtractorPluginListView.cpp" line="1420"/>
         <source>&amp;Add Plugin...</source>
         <translation>&amp;Ajouter Greffon...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginListView.cpp" line="1423"/>
+        <source>&amp;Inserts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1426"/>
@@ -11812,7 +11827,7 @@ Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="388"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="921"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="924"/>
         <source>&amp;Add</source>
         <translation>&amp;Ajouter</translation>
     </message>
@@ -11828,7 +11843,7 @@ Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="404"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="926"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="929"/>
         <source>&amp;Update</source>
         <translation>&amp;Mettre à jour</translation>
     </message>
@@ -11844,7 +11859,7 @@ Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="420"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="931"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="934"/>
         <source>&amp;Remove</source>
         <translation>&amp;Supprimer</translation>
     </message>
@@ -11907,7 +11922,12 @@ Voulez-vous abandonner ces changements?</translation>
         <translation>Facteur de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="938"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="892"/>
+        <source>Marker Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="941"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Rafraichir</translation>
     </message>
@@ -12242,6 +12262,16 @@ Voulez-vous appliquer les changements?</translation>
         <location filename="../qtractorTrackForm.cpp" line="861"/>
         <source>(None)</source>
         <translation>(Rien)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1324"/>
+        <source>Forgeground Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1338"/>
+        <source>Background Color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12606,6 +12636,11 @@ Longueur:	%3</translation>
         <location filename="../qtractorTracks.cpp" line="2186"/>
         <source>remove track range</source>
         <translation>enlever la plage de piste</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTracks.cpp" line="2424"/>
+        <source>Track %1</source>
+        <translation type="unfinished">Piste %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2467"/>
