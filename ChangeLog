@@ -14,6 +14,8 @@ SVN TRUNK
 - Clip/Export...'ed files are now made persistent, no questions
   asked (after a ticket by Oliver Kester, thanks).
 
+- Portuguese (pt) translation added (by Esteban Viveros, thanks).
+
 
 0.6.0  2016-03-21  Byte Bald Beta
 
