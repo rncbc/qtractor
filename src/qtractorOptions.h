@@ -261,6 +261,9 @@ public:
 	QStringList audioMeterColors;
 	QStringList midiMeterColors;
 
+	// Transport view options.
+	bool bSyncViewHold;
+
 	// Global persistent user preference options.
 	bool bUseNativeDialogs;
 

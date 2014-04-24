@@ -291,7 +291,7 @@ void qtractorMidiThumbView::updateView ( int dx )
 	if (cx < 0)
 		cx = 0;
 
-	m_pEditor->setSyncViewHold(true);
+	m_pEditor->setSyncViewHoldOn(true);
 	pEditView->setContentsPos(cx, cy);
 }
 

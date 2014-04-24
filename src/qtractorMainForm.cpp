@@ -1327,6 +1327,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMidiPlayer();
 	updateMidiControl();
 	updateMidiMetronome();
+	updateSyncViewHold();
 
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
@@ -4639,6 +4640,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMetroBeatVelocity  = m_pOptions->iMetroBeatVelocity;
 	const int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
+	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -4784,6 +4786,10 @@ void qtractorMainForm::viewOptions (void)
 			( bOldMidiMetroBus     && !m_pOptions->bMidiMetroBus)     ||
 			(!bOldMidiMetroBus     &&  m_pOptions->bMidiMetroBus))
 			updateMidiMetronome();
+		// Transport display options...
+		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
+			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
+			updateSyncViewHold();
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -6150,6 +6156,22 @@ void qtractorMainForm::updateMidiMetronome (void)
 	pMidiEngine->setMetroEnabled(bMidiMetronome);
 	pMidiEngine->setMetronome(
 		bMidiMetronome && m_ui.transportMetroAction->isChecked());
+}
+
+
+// Update tranmsport display options.
+void qtractorMainForm::updateSyncViewHold (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	if (m_pTracks)
+		m_pTracks->trackView()->setSyncViewHold(m_pOptions->bSyncViewHold);
+
+	// Update editors ...
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext())
+		(iter.next())->editor()->setSyncViewHold(m_pOptions->bSyncViewHold);
 }
 
 

@@ -6,6 +6,10 @@ ChangeLog
 
 SVN TRUNK
 
+- New user preference option added as View/Options.../Display
+  /Transport/Hold auto-scrolling (follow play-head) on edits
+  (after requests by Holger Marzen and Louigi Verone, thanks).
+
 - All color chooser dialogs were missing proper titles.
 
 - Audio peak file re-generation and clean-up has been hopefully

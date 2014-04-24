@@ -397,6 +397,7 @@ protected:
 	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();
+	void updateSyncViewHold();
 
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 	void updateDirtyCount(bool bDirtyCount);

@@ -297,7 +297,7 @@ void qtractorThumbView::updateView ( int dx )
 	if (cx < 0)
 		cx = 0;
 
-	pTrackView->setSyncViewHold(true);
+	pTrackView->setSyncViewHoldOn(true);
 	pTrackView->setContentsPos(cx, cy);
 }
 

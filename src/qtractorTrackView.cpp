@@ -105,7 +105,9 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_bCurveEdit = false;
 
 	m_pCurveEditCommand = NULL;
-	
+
+	m_bSyncViewHold = false;
+
 	clear();
 
 	// Zoom tool widgets
@@ -3839,7 +3841,7 @@ void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 		if (iEditHead > pSession->editTail())
 			setEditTail(iEditHead);
 		else
-			setSyncViewHold(true);
+			setSyncViewHoldOn(true);
 		pSession->setEditHead(iEditHead);
 		const int iEditHeadX = pSession->pixelFromFrame(iEditHead);
 		drawPositionX(m_iEditHeadX, iEditHeadX);
@@ -3860,7 +3862,7 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 		if (iEditTail < pSession->editHead())
 			setEditHead(iEditTail);
 		else
-			setSyncViewHold(true);
+			setSyncViewHoldOn(true);
 		pSession->setEditTail(iEditTail);
 		const int iEditTailX = pSession->pixelFromFrame(iEditTail);
 		drawPositionX(m_iEditTailX, iEditTailX);
@@ -4966,15 +4968,22 @@ bool qtractorTrackView::isCurveEdit (void) const
 
 
 // Temporary sync-view/follow-playhead hold state.
+void qtractorTrackView::setSyncViewHoldOn ( bool bOn )
+{
+	m_iSyncViewHold = (m_bSyncViewHold && bOn ? QTRACTOR_SYNC_VIEW_HOLD : 0);
+}
+
+
 void qtractorTrackView::setSyncViewHold ( bool bSyncViewHold )
 {
-	m_iSyncViewHold = (bSyncViewHold ? QTRACTOR_SYNC_VIEW_HOLD : 0);
+	m_bSyncViewHold = bSyncViewHold;
+	setSyncViewHoldOn(bSyncViewHold);
 }
 
 
 bool qtractorTrackView::isSyncViewHold (void) const
 {
-	return (m_iSyncViewHold > 0);
+	return (m_bSyncViewHold && m_iSyncViewHold > 0);
 }
 
 
