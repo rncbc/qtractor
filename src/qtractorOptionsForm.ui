@@ -2724,6 +2724,49 @@
         </spacer>
        </item>
        <item>
+        <widget class="QGroupBox" name="TransportGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Transport</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>8</number>
+          </property>
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="SyncViewHoldCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
+            </property>
+            <property name="text">
+             <string>&amp;Hold auto-scrolling (follow play-head) on edits</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+H</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="DialogsGroupBox">
          <property name="font">
           <font>
@@ -3497,6 +3540,8 @@
   <tabstop>MessagesFontPushButton</tabstop>
   <tabstop>MessagesLimitCheckBox</tabstop>
   <tabstop>MessagesLimitLinesSpinBox</tabstop>
+  <tabstop>SyncViewHoldCheckBox</tabstop>
+  <tabstop>UseNativeDialogsCheckBox</tabstop>
   <tabstop>MessagesLogCheckBox</tabstop>
   <tabstop>MessagesLogPathComboBox</tabstop>
   <tabstop>MessagesLogPathToolButton</tabstop>

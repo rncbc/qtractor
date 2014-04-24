@@ -322,6 +322,11 @@ void qtractorOptions::loadOptions (void)
 	midiMeterColors  = m_settings.value("/MidiMeter").toStringList();
 	m_settings.endGroup();
 
+	// Transport view options.
+	m_settings.beginGroup("/Transport");
+	bSyncViewHold = m_settings.value("/SyncViewHold", false).toBool();
+	m_settings.endGroup();
+
 	// Run-time special semi/non-persistent options.
 	m_settings.beginGroup("/Dialogs");
 	bUseNativeDialogs = m_settings.value("/UseNativeDialogs", true).toBool();
@@ -573,6 +578,11 @@ void qtractorOptions::saveOptions (void)
 	m_settings.beginGroup("/Colors");
 	m_settings.setValue("/AudioMeter", audioMeterColors);
 	m_settings.setValue("/MidiMeter", midiMeterColors);
+	m_settings.endGroup();
+
+	// Transport view options.
+	m_settings.beginGroup("/Transport");
+	m_settings.setValue("/SyncViewHold", bSyncViewHold);
 	m_settings.endGroup();
 
 	// Run-time special semi/non-persistent options.

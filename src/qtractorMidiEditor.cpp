@@ -776,6 +776,7 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_iSnapToScaleType = 0;
 
 	// Temporary sync-view/follow-playhead hold state.
+	m_bSyncViewHold = false;
 	m_iSyncViewHold = 0;
 
 	// Create child frame widgets...
@@ -1154,7 +1155,7 @@ void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSyncView )
 	if (iEditHead > m_iEditTail)
 		setEditTail(iEditHead, bSyncView);
 	else
-		setSyncViewHold(true);
+		setSyncViewHoldOn(true);
 
 	if (bSyncView) {
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -1186,7 +1187,7 @@ void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSyncView )
 	if (iEditTail < m_iEditHead)
 		setEditHead(iEditTail, bSyncView);
 	else
-		setSyncViewHold(true);
+		setSyncViewHoldOn(true);
 
 	if (bSyncView) {
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -4736,7 +4737,7 @@ void qtractorMidiEditor::updateNotifySlot ( unsigned int flags )
 // Emit selection/changes.
 void qtractorMidiEditor::selectionChangeNotify (void)
 {
-	setSyncViewHold(true);
+	setSyncViewHoldOn(true);
 
 	emit selectNotifySignal(this);
 
@@ -5106,15 +5107,22 @@ void qtractorMidiEditor::showToolTip (
 
 
 // Temporary sync-view/follow-playhead hold state.
+void qtractorMidiEditor::setSyncViewHoldOn ( bool bOn )
+{
+	m_iSyncViewHold = (m_bSyncViewHold && bOn ? QTRACTOR_SYNC_VIEW_HOLD : 0);
+}
+
+
 void qtractorMidiEditor::setSyncViewHold ( bool bSyncViewHold )
 {
-	m_iSyncViewHold = (bSyncViewHold ? QTRACTOR_SYNC_VIEW_HOLD : 0);
+	m_bSyncViewHold = bSyncViewHold;
+	setSyncViewHoldOn(bSyncViewHold);
 }
 
 
 bool qtractorMidiEditor::isSyncViewHold (void) const
 {
-	return (m_iSyncViewHold > 0);
+	return (m_bSyncViewHold && m_iSyncViewHold > 0);
 }
 
 

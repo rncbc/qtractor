@@ -434,6 +434,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MessagesLogPathToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesLogPath()));
+	QObject::connect(m_ui.SyncViewHoldCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.UseNativeDialogsCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -572,6 +575,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Messages limit option.
 	m_ui.MessagesLimitCheckBox->setChecked(m_pOptions->bMessagesLimit);
 	m_ui.MessagesLimitLinesSpinBox->setValue(m_pOptions->iMessagesLimitLines);
+
+	// Transport display preferences...
+	m_ui.SyncViewHoldCheckBox->setChecked(m_pOptions->bSyncViewHold);
 
 	// Dialogs preferences...
 	m_ui.UseNativeDialogsCheckBox->setChecked(m_pOptions->bUseNativeDialogs);
@@ -745,6 +751,8 @@ void qtractorOptionsForm::accept (void)
 			qtractorAudioMeter::setColor(iColor, m_audioMeterColors[iColor]);
 		for (iColor = 0; iColor < MidiMeterColors; ++iColor)
 			qtractorMidiMeter::setColor(iColor, m_midiMeterColors[iColor]);
+		// Transport display preferences...
+		m_pOptions->bSyncViewHold = m_ui.SyncViewHoldCheckBox->isChecked();
 		// Dialogs preferences...
 		m_pOptions->bUseNativeDialogs = m_ui.UseNativeDialogsCheckBox->isChecked();
 		m_pOptions->bDontUseNativeDialogs = !m_pOptions->bUseNativeDialogs;

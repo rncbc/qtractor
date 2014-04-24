@@ -8225,6 +8225,14 @@ Você quer mesmo manter as alterações?</translation>
         <source>MIDI Meter Color</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorPasteRepeatForm</name>

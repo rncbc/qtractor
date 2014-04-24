@@ -243,6 +243,8 @@ public:
 	bool isCurveEdit() const;
 
 	// Temporary sync-view/follow-playhead hold state.
+	void setSyncViewHoldOn(bool bOn);
+
 	void setSyncViewHold(bool bSyncViewHold);
 	bool isSyncViewHold() const;
 
@@ -545,7 +547,8 @@ private:
 	qtractorCurveEditCommand *m_pCurveEditCommand;
 
 	// Temporary sync-view/follow-playhead hold state.
-	int m_iSyncViewHold;
+	bool m_bSyncViewHold;
+	int  m_iSyncViewHold;
 };
 
 
