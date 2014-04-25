@@ -273,9 +273,12 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	}
 	else
 	if (key.isParamTrack()) {
-		const unsigned short iParam = key.param() & TrackParamMask;
-		if (int(ctle.param()) >= iParam)
-			iTrack += int(ctle.param()) - iParam;
+		const unsigned short iKeyParam = key.param() & TrackParamMask;
+		const unsigned short iCtlParam = ctle.param();
+		if (iCtlParam >= iKeyParam)
+			iTrack += iCtlParam - iKeyParam;
+		else
+			return bResult;
 	}
 
 	qtractorSession *pSession = qtractorSession::getInstance();
