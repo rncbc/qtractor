@@ -3,6 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Allow the build system to include an user specified LDFLAGS
+  (patch by Alessio Treglia aka. quadrispro, thanks).
+
 
 O.6.1  2014-04-29  Bitsy Sweet Beta
 
