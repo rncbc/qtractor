@@ -3,12 +3,19 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-
 SVN TRUNK
+
+- LV2 UI Idle and Show interfaces support added. (EXPERIMENTAL)
+
+- Allow the build system to include an user specified LDFLAGS
+  (patch by Alessio Treglia aka. quadrispro, thanks).
+
+
+O.6.1  2014-04-29  Bitsy Sweet Beta
 
 - New user preference option added as View/Options.../Display
   /Transport/Hold auto-scrolling (follow play-head) on edits
-  (after requests by Holger Marzen and Louigi Verone, thanks).
+  (after requests by Holger Marzen and Louigi Verona, thanks).
 
 - All color chooser dialogs were missing proper titles.
 
@@ -23,7 +30,7 @@ SVN TRUNK
 - Portuguese (pt) translation added (by Esteban Viveros, thanks).
 
 
-0.6.0  2016-03-21  Byte Bald Beta
+0.6.0  2014-03-21  Byte Bald Beta
 
 - New user option added: on whether to save plugins automation
   values with higher resolution as possible, using 14-bit NRPN:

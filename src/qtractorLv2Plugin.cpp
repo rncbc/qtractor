@@ -1665,6 +1665,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_suil_host(NULL)
 		, m_suil_instance(NULL)
 		, m_lv2_ui_widget(NULL)
+		, m_lv2_ui_handle(NULL)
 	#ifdef CONFIG_LV2_ATOM
 		, m_ui_events(NULL)
 		, m_plugin_events(NULL)
@@ -1672,6 +1673,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#if QT_VERSION < 0x050000
 		, m_pQt4Filter(NULL)
 		, m_pQt4Widget(NULL)
+	#endif
+	#ifdef CONFIG_LV2_UI_IDLE
+		, m_lv2_ui_idle_interface(NULL)
+	#endif
+	#ifdef CONFIG_LV2_UI_SHOW
+		, m_lv2_ui_show_interface(NULL)
 	#endif
 	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_OPTIONS
@@ -2565,7 +2572,27 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		//	m_pQt4Widget->show();
 		}
 	#endif
-
+	#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
+		m_lv2_ui_handle = (LV2UI_Handle)
+			suil_instance_get_handle(m_suil_instance);
+	#else
+		struct SuilInstanceHead {	// HACK!
+			void                   *ui_lib_handle;
+			const LV2UI_Descriptor *ui_descriptor;
+			LV2UI_Handle            ui_handle;
+		} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
+		m_lv2_ui_handle = suil_instance_head->ui_handle;
+	#endif	//  CONFIG_SUIL_INSTANCE_GET_HANDLE
+	#ifdef CONFIG_LV2_UI_IDLE
+		m_lv2_ui_idle_interface	= (const LV2UI_Idle_Interface *)
+			suil_instance_extension_data(
+				m_suil_instance, LV2_UI__idleInterface);
+	#endif
+	#ifdef CONFIG_LV2_UI_SHOW
+		m_lv2_ui_show_interface	= (const LV2UI_Show_Interface *)
+			suil_instance_extension_data(
+				m_suil_instance, LV2_UI__showInterface);
+	#endif
 		g_lv2Plugins.append(this);
 	}
 
@@ -2589,6 +2616,14 @@ void qtractorLv2Plugin::closeEditor (void)
 
 	m_ui_params.clear();
 
+	m_lv2_ui_handle = NULL;
+
+#ifdef CONFIG_LV2_UI_SHOW
+	m_lv2_ui_show_interface	= NULL;
+#endif
+#ifdef CONFIG_LV2_UI_IDLE
+	m_lv2_ui_idle_interface	= NULL;
+#endif
 #if QT_VERSION < 0x050000
 	if (m_pQt4Filter) {
 		delete m_pQt4Filter;
@@ -2665,6 +2700,12 @@ void qtractorLv2Plugin::idleEditor (void)
 	if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 		LV2_EXTERNAL_UI_RUN((LV2_External_UI_Widget *) m_lv2_ui_widget);
 #endif
+#ifdef CONFIG_LV2_UI_IDLE
+	if (m_lv2_ui_idle_interface && m_lv2_ui_idle_interface->idle) {
+		if ((*m_lv2_ui_idle_interface->idle)(m_lv2_ui_handle))
+			setEditorClosed(true);
+	}
+#endif
 
 #ifdef CONFIG_LV2_ATOM
 
@@ -2733,6 +2774,10 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_SHOW((LV2_External_UI_Widget *) m_lv2_ui_widget);
 	#endif
+	#ifdef CONFIG_LV2_UI_SHOW
+		if (m_lv2_ui_show_interface && m_lv2_ui_show_interface->show)
+			(*m_lv2_ui_show_interface->show)(m_lv2_ui_handle);
+	#endif
 	#if QT_VERSION < 0x050000
 		if (m_pQt4Widget) {
 			// Guaranteeing a reasonable window type:
@@ -2754,6 +2799,10 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_HIDE((LV2_External_UI_Widget *) m_lv2_ui_widget);
+	#endif
+	#ifdef CONFIG_LV2_UI_SHOW
+		if (m_lv2_ui_show_interface && m_lv2_ui_show_interface->hide)
+			(*m_lv2_ui_show_interface->hide)(m_lv2_ui_handle);
 	#endif
 	#if QT_VERSION < 0x050000
 		if (m_pQt4Widget)
@@ -3122,26 +3171,8 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 			= (const LV2_Programs_UI_Interface *)
 				suil_instance_extension_data(
 					m_suil_instance, LV2_PROGRAMS__UIInterface);
-		if (ui_programs && ui_programs->select_program) {
-		#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
-			LV2UI_Handle ui_handle = (LV2UI_Handle)
-				suil_instance_get_handle(m_suil_instance);
-		#else
-			struct SuilInstanceHead {	// HACK!
-				void                   *ui_lib_handle;
-				const LV2UI_Descriptor *ui_descriptor;
-				LV2UI_Handle            ui_handle;
-			} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
-			LV2UI_Handle ui_handle = suil_instance_head->ui_handle;
-		#endif	//  CONFIG_SUIL_INSTANCE_GET_HANDLE
-		#ifdef CONFIG_DEBUG
-			qDebug("qtractorLv2Plugin[%p]::selectProgram(%d, %d)"
-				" LV2UI_Handle=%p", this, iBank, iProg, ui_handle);
-		#endif
-			if (ui_handle) {
-				(*ui_programs->select_program)(ui_handle, iBank, iProg);
-			}
-		}
+		if (ui_programs && ui_programs->select_program)
+			(*ui_programs->select_program)(m_lv2_ui_handle, iBank, iProg);
 	}
 #endif	// CONFIG_LV2_UI
 

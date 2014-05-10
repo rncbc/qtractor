@@ -371,6 +371,8 @@ private:
 	SuilInstance  *m_suil_instance;
 	SuilWidget     m_lv2_ui_widget;
 
+	LV2UI_Handle   m_lv2_ui_handle;
+
 #ifdef CONFIG_LV2_ATOM
 
 	// LV2 Atom control (ring)buffers for UI updates.
@@ -404,6 +406,15 @@ private:
 
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;
+
+#ifdef CONFIG_LV2_UI_IDLE
+	// LV2 UI Idle extension data interface.
+	const LV2UI_Idle_Interface *m_lv2_ui_idle_interface;
+#endif
+#ifdef CONFIG_LV2_UI_SHOW
+	// LV2 UI Show extension data interface.
+	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
+#endif
 
 #endif	// CONFIG_LV2_UI
 
