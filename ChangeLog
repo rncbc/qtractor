@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 UI Idle and Show interfaces support added. (EXPERIMENTAL)
+
 - Allow the build system to include an user specified LDFLAGS
   (patch by Alessio Treglia aka. quadrispro, thanks).
 

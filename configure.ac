@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.1.1, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.1.2, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -191,6 +191,16 @@ AC_ARG_ENABLE(lv2-buf-size,
   AC_HELP_STRING([--enable-lv2-buf-size], [enable LV2 plug-in Buf-size support (default=yes)]),
   [ac_lv2_buf_size="$enableval"],
   [ac_lv2_buf_size="yes"])
+
+AC_ARG_ENABLE(lv2-ui-idle,
+  AC_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 UI Idle interface support (default=yes)]),
+  [ac_lv2_ui_idle="$enableval"],
+  [ac_lv2_ui_idle="yes"])
+
+AC_ARG_ENABLE(lv2-ui-show,
+  AC_HELP_STRING([--enable-lv2-ui-show], [enable LV2 UI Show interface support (default=yes)]),
+  [ac_lv2_ui_show="$enableval"],
+  [ac_lv2_ui_show="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -646,6 +656,8 @@ fi
 if test "x$ac_lv2_ui" = "xno"; then
    ac_suil="no"
    ac_lv2_external_ui="no"
+   ac_lv2_ui_idle="no"
+   ac_lv2_ui_show="no"
 fi
 
 # Check for optional liblilv library.
@@ -688,6 +700,8 @@ if test "x$ac_suil" = "xyes"; then
 else
    ac_lv2_ui="no"
    ac_lv2_external_ui="no"
+   ac_lv2_ui_idle="no"
+   ac_lv2_ui_show="no"
 fi
 
 # Check for LV2 host library (liblilv).
@@ -705,6 +719,8 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_time="no"
    ac_lv2_options="no"
    ac_lv2_buf_size="no"
+   ac_lv2_ui_idle="no"
+   ac_lv2_ui_show="no"
 fi
 
 # Check for JACK session event callback availability.
@@ -954,6 +970,8 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_time="no"
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
+      ac_lv2_ui_idle="no"
+      ac_lv2_ui_show="no"
    fi
 fi
 if test "x$ac_lv2_ui" = "xyes"; then
@@ -965,9 +983,13 @@ if test "x$ac_lv2_ui" = "xyes"; then
    else
       AC_MSG_WARN([*** LV2 UI support will be disabled.])
       ac_lv2_external_ui="no"
+      ac_lv2_ui_idle="no"
+      ac_lv2_ui_show="no"
    fi
 else
    ac_lv2_external_ui="no"
+   ac_lv2_ui_idle="no"
+   ac_lv2_ui_show="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(
@@ -1089,6 +1111,37 @@ if test "x$ac_lv2_buf_size" = "xyes"; then
       AC_MSG_WARN([*** LV2 Buf-size support will be disabled.])
    fi
 fi
+if test "x$ac_lv2_ui_idle" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Idle interface],
+      ac_cv_lv2_ui_idle, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Idle interface...
+         LV2UI_Idle_Interface idle;
+      ], ac_cv_lv2_ui_idle="yes", ac_cv_lv2_ui_idle="no")
+   ])
+   ac_lv2_ui_idle=$ac_cv_lv2_ui_idle
+   if test "x$ac_lv2_ui_idle" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_IDLE, 1, [Define if LV2 UI Idle interface support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI Idle interface support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_ui_show" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Show interface],
+      ac_cv_lv2_ui_idle, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Show interface...
+         LV2UI_Show_Interface show;
+      ], ac_cv_lv2_ui_show="yes", ac_cv_lv2_ui_show="no")
+   ])
+   ac_lv2_ui_show=$ac_cv_lv2_ui_show
+   if test "x$ac_lv2_ui_show" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_SHOW, 1, [Define if LV2 UI Show interface support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI Show interface support will be disabled.])
+   fi
+fi
+
 
 # Check for JACK session headers availability.
 if test "x$ac_jack_session" = "xyes"; then
@@ -1171,6 +1224,8 @@ echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
+echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
+echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
