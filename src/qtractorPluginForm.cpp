@@ -161,6 +161,11 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// Dispatch any pending updates.
 	qtractorSubject::flushQueue(true);
 
+	// Set activate button MIDI controller observer...
+	addMidiControlAction(
+		m_ui.ActivateToolButton,
+		m_pPlugin->activateObserver());
+
 	qtractorPluginType *pType = m_pPlugin->type();
 
 	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);

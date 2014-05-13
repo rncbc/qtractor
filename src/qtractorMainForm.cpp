@@ -6372,15 +6372,18 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 		pMenu->addSeparator();
 		qtractorPlugin *pPlugin = pPluginList->first();
 		while (pPlugin) {
+			QMenu *pPluginMenu = pMenu->addMenu(pPlugin->type()->name());
+			trackCurveSelectMenuAction(pPluginMenu,
+				pPlugin->activateObserver(), pCurrentSubject);
 			const qtractorPlugin::Params& params = pPlugin->params();
 			if (params.count() > 0) {
-				QMenu *pParamMenu = pMenu->addMenu(pPlugin->type()->name());
+				pPluginMenu->addSeparator();
 				qtractorPlugin::Params::ConstIterator param
 					= params.constBegin();
 				const qtractorPlugin::Params::ConstIterator& param_end
 					= params.constEnd();
 				for ( ; param != param_end; ++param) {
-					trackCurveSelectMenuAction(pParamMenu,
+					trackCurveSelectMenuAction(pPluginMenu,
 						param.value()->observer(), pCurrentSubject);
 				}
 			}

@@ -657,11 +657,15 @@ const QString& qtractorDummyPluginType::aboutText (void)
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
-		m_bActivated(false), m_pForm(NULL), m_iDirectAccessParamIndex(-1)
+		m_activateObserver(this), m_pForm(NULL), m_iDirectAccessParamIndex(-1)
 {
 	// Acquire a local unique id in chain...
 	if (m_pList && m_pType)
 		m_iUniqueID = m_pList->createUniqueID(m_pType);
+
+	// Activate subject properties.
+	m_activateSubject.setName(QObject::tr("Activate"));
+	m_activateSubject.setToggled(true);
 }
 
 
@@ -723,15 +727,17 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 // Activation methods.
 void qtractorPlugin::setActivated ( bool bActivated )
 {
-	if (bActivated && !m_bActivated) {
+	const bool bOldActivated = isActivated();
+
+	if (bActivated && !bOldActivated) {
 		activate();
 		m_pList->updateActivated(true);
-	} else if (!bActivated && m_bActivated) {
+	} else if (!bActivated && bOldActivated) {
 		deactivate();
 		m_pList->updateActivated(false);
 	}
 
-	m_bActivated = bActivated;
+	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
 
 	QListIterator<qtractorPluginListItem *> iter(m_items);
 	while (iter.hasNext())
@@ -739,6 +745,27 @@ void qtractorPlugin::setActivated ( bool bActivated )
 
 	if (m_pForm)
 		m_pForm->updateActivated();
+}
+
+bool qtractorPlugin::isActivated (void) const
+{
+	return (m_activateObserver.value() > 0.5f);
+}
+
+
+// Activate observer ctor.
+qtractorPlugin::ActivateObserver::ActivateObserver ( qtractorPlugin *pPlugin )
+	: qtractorMidiControlObserver(pPlugin->activateSubject()), m_pPlugin(pPlugin)
+{
+	setCurveList(pPlugin->list()->curveList());
+}
+
+// Activate observer updater.
+void qtractorPlugin::ActivateObserver::update ( bool bUpdate )
+{
+	qtractorMidiControlObserver::update(bUpdate);
+
+	m_pPlugin->setActivated(qtractorMidiControlObserver::value() > 0.5f);
 }
 
 
@@ -1305,7 +1332,7 @@ void qtractorPlugin::loadCurveFile (
 
 // Save plugin automation curves (monitor, gain, pan, record, mute, solo).
 void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
-	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
+	QDomElement *pElement, qtractorCurveFile *pCurveFile )
 {
 	if (pCurveFile == NULL)
 		return;
@@ -1324,7 +1351,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
-	
+
 	unsigned short iParam = 0;
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
@@ -1359,6 +1386,28 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 		}
 	}
 
+	// Activate subject curve
+	qtractorCurve *pCurve = activateSubject()->curve();
+	if (pCurve) {
+		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+		pCurveItem->name = pCurve->subject()->name();
+		pCurveItem->index = m_params.count();	// =ActivateSubject
+		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
+		pCurveItem->channel = 0;
+		const unsigned short controller = (iParam % 0x7f);
+		if (controller == 0x00 || controller == 0x20)
+			++iParam; // Avoid bank-select controllers, please.
+		pCurveItem->param = (iParam % 0x7f);
+		pCurveItem->mode = pCurve->mode();
+		pCurveItem->process = pCurve->isProcess();
+		pCurveItem->capture = pCurve->isCapture();
+		pCurveItem->locked = pCurve->isLocked();
+		pCurveItem->logarithmic = pCurve->isLogarithmic();
+		pCurveItem->color = pCurve->color();
+		pCurveItem->subject = pCurve->subject();
+		pCurveFile->addItem(pCurveItem);
+	}
+
 	if (pCurveFile->isEmpty())
 		return;
 
@@ -1376,7 +1425,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 
 
 // Apply plugin automation curves (monitor, gain, pan, record, mute, solo).
-void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
+void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 {
 	if (pCurveFile == NULL)
 		return;
@@ -1396,13 +1445,17 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
-		qtractorPluginParam *pParam = NULL;
-		if (!pCurveItem->name.isEmpty())
-			pParam = findParamName(pCurveItem->name);
-		if (pParam == NULL)
-			pParam = findParam(pCurveItem->index);
-		if (pParam)
-			pCurveItem->subject = pParam->subject();
+		if (pCurveItem->index == (unsigned long) m_params.count()) {
+			pCurveItem->subject = activateSubject();
+		} else {
+			qtractorPluginParam *pParam = NULL;
+			if (!pCurveItem->name.isEmpty())
+				pParam = findParamName(pCurveItem->name);
+			if (pParam == NULL)
+				pParam = findParam(pCurveItem->index);
+			if (pParam)
+				pCurveItem->subject = pParam->subject();
+		}
 	}
 
 	pCurveFile->apply(pSession->timeScale());

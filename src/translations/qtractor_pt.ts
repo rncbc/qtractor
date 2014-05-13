@@ -528,6 +528,10 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <source>remove marker</source>
         <translation>remover marcador</translation>
     </message>
+    <message>
+        <source>Activate</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>

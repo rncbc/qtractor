@@ -434,6 +434,7 @@ void qtractorTrackForm::reject (void)
 			break;
 		default:    // Cancel.
 			bReject = false;
+			break;
 		}
 	}
 
@@ -465,9 +466,9 @@ void qtractorTrackForm::stabilizeForm (void)
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 
 	// Stabilize current plugin list state.
-	int iItem = -1;
-	int iItemCount = m_ui.PluginListView->count();
+	const int iItemCount = m_ui.PluginListView->count();
 
+	int iItem = -1;
 	qtractorPlugin *pPlugin = NULL;
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (
@@ -477,7 +478,7 @@ void qtractorTrackForm::stabilizeForm (void)
 		pPlugin = pItem->plugin();
 	}
 
-//	m_ui.AddPluginToolButton->setEnabled(true);
+	m_ui.AddPluginToolButton->setEnabled(bValid);
 	m_ui.RemovePluginToolButton->setEnabled(pPlugin != NULL);
 
 	m_ui.MoveUpPluginToolButton->setEnabled(pItem && iItem > 0);
@@ -512,7 +513,7 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void) const
 int qtractorTrackForm::midiBank (void) const
 {
 	const QString& sBankText = m_ui.BankComboBox->currentText();
-	int iBankIndex = m_ui.BankComboBox->findText(sBankText);
+	const int iBankIndex = m_ui.BankComboBox->findText(sBankText);
 	if (iBankIndex >= 0 && m_banks.contains(iBankIndex)
 		&& m_ui.BankComboBox->itemText(iBankIndex) == sBankText)
 		return m_banks[iBankIndex];
@@ -525,7 +526,7 @@ int qtractorTrackForm::midiBank (void) const
 int qtractorTrackForm::midiProg (void) const
 {
 	const QString& sProgText = m_ui.ProgComboBox->currentText();
-	int iProgIndex = m_ui.ProgComboBox->findText(sProgText);
+	const int iProgIndex = m_ui.ProgComboBox->findText(sProgText);
 	if (iProgIndex >= 0 && m_progs.contains(iProgIndex)
 		&& m_ui.ProgComboBox->itemText(iProgIndex) == sProgText)
 		return m_progs[iProgIndex];
@@ -1009,7 +1010,7 @@ void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
 	updateColorText(pComboBox, color);
 
 	// Check if already exists...
-	int iItem = pComboBox->findText(color.name());
+	const int iItem = pComboBox->findText(color.name());
 	if (iItem >= 0) {
 		pComboBox->setCurrentIndex(iItem);
 		return;
@@ -1279,13 +1280,13 @@ void qtractorTrackForm::progChanged (void)
 	// Of course, only applicable on MIDI tracks...
 	if (m_pMidiBus) {
 		// Patch parameters...
-		unsigned short iChannel = m_ui.ChannelSpinBox->value() - 1;
+		const unsigned short iChannel = m_ui.ChannelSpinBox->value() - 1;
 		QString sInstrumentName;
 		if (m_ui.InstrumentComboBox->currentIndex() > 0)
 			sInstrumentName = m_ui.InstrumentComboBox->currentText();
-		int iBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
-		int iBank = midiBank();
-		int iProg = midiProg();
+		const int iBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
+		const int iBank = midiBank();
+		const int iProg = midiProg();
 		// Keep old bus/channel patching consistency.
 		if (m_pMidiBus != m_pOldMidiBus || iChannel != m_iOldChannel) {
 			// Restore previously saved patch...

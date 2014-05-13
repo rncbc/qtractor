@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI Controller assignment (aka MIDI learn) and/or automation
+  of plugins (de)activation state has been added (as requested
+  by AutoStatic aka. Jeremy Jongepier, thanks). (EXPERIMENTAL)
+
 - LV2 UI Idle and Show interfaces support added. (EXPERIMENTAL)
 
 - Allow the build system to include an user specified LDFLAGS
