@@ -428,6 +428,7 @@ public:
 
 	// Activation methods.
 	void setActivated(bool bActivated);
+	void setActivatedEx(bool bActivated);
 	bool isActivated() const;
 
 	// Activate subject accessors.
@@ -664,6 +665,9 @@ protected:
 
 	// Instance number settler.
 	void setInstances(unsigned short iInstances);
+
+	// Activation stabilizer.
+	void updateActivated(bool bActivated);
 
 private:
 

@@ -727,17 +727,32 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 // Activation methods.
 void qtractorPlugin::setActivated ( bool bActivated )
 {
-	const bool bOldActivated = isActivated();
-
-	if (bActivated && !bOldActivated) {
-		activate();
-		m_pList->updateActivated(true);
-	} else if (!bActivated && bOldActivated) {
-		deactivate();
-		m_pList->updateActivated(false);
-	}
-
 	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
+
+	updateActivated(bActivated);
+}
+
+void qtractorPlugin::setActivatedEx ( bool bActivated )
+{
+	m_activateSubject.setValue(bActivated ? 1.0f : 0.0f);
+}
+
+
+bool qtractorPlugin::isActivated (void) const
+{
+	return (m_activateSubject.value() > 0.5f);
+}
+
+
+// Activation stabilizer.
+void qtractorPlugin::updateActivated ( bool bActivated )
+{
+	if (bActivated)
+		activate();
+	else
+		deactivate();
+
+	m_pList->updateActivated(bActivated);
 
 	QListIterator<qtractorPluginListItem *> iter(m_items);
 	while (iter.hasNext())
@@ -745,11 +760,6 @@ void qtractorPlugin::setActivated ( bool bActivated )
 
 	if (m_pForm)
 		m_pForm->updateActivated();
-}
-
-bool qtractorPlugin::isActivated (void) const
-{
-	return (m_activateObserver.value() > 0.5f);
 }
 
 
@@ -765,7 +775,7 @@ void qtractorPlugin::ActivateObserver::update ( bool bUpdate )
 {
 	qtractorMidiControlObserver::update(bUpdate);
 
-	m_pPlugin->setActivated(qtractorMidiControlObserver::value() > 0.5f);
+	m_pPlugin->updateActivated(qtractorMidiControlObserver::value() > 0.5f);
 }
 
 
