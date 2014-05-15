@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -169,6 +169,7 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 
 	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
+	m_ui.LogarithmicCheckBox->setEnabled(!m_pMidiObserver->isToggled());
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
 	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook());

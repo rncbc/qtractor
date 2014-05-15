@@ -6307,6 +6307,7 @@ void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
 			else
 		//	if (pCurve->isEnabled())
 				icon = QIcon(":images/trackCurveEnabled.png");
+			text += '*';
 		}
 	}
 
@@ -6439,13 +6440,10 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 	m_ui.trackCurveLogarithmicAction->setChecked(
 		pCurrentCurve && pCurrentCurve->isLogarithmic());
 	m_ui.trackCurveLogarithmicAction->setData(-1);
-//	m_ui.trackCurveLogarithmicAction->setEnabled(
-//		pCurrentCurve && pCurrentCurve->isEnabled());
+	m_ui.trackCurveLogarithmicAction->setEnabled(!bToggled);
 
 	pMenu->addAction(m_ui.trackCurveColorAction);
 	m_ui.trackCurveColorAction->setData(-1);
-//	m_ui.trackCurveColorAction->setEnabled(
-//		pCurrentCurve && pCurrentCurve->isEnabled());
 
 	return true;
 }

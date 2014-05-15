@@ -668,6 +668,7 @@ protected:
 
 	// Activation stabilizer.
 	void updateActivated(bool bActivated);
+	void updateActivatedEx(bool bActivated);
 
 private:
 

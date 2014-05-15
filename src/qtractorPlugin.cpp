@@ -729,7 +729,8 @@ void qtractorPlugin::setActivated ( bool bActivated )
 {
 	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
 
-	updateActivated(bActivated);
+	if (m_activateSubject.isQueued())
+		updateActivated(bActivated);
 }
 
 void qtractorPlugin::setActivatedEx ( bool bActivated )
@@ -753,6 +754,11 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 		deactivate();
 
 	m_pList->updateActivated(bActivated);
+}
+
+void qtractorPlugin::updateActivatedEx ( bool bActivated )
+{
+	updateActivated(bActivated);
 
 	QListIterator<qtractorPluginListItem *> iter(m_items);
 	while (iter.hasNext())
@@ -775,7 +781,7 @@ void qtractorPlugin::ActivateObserver::update ( bool bUpdate )
 {
 	qtractorMidiControlObserver::update(bUpdate);
 
-	m_pPlugin->updateActivated(qtractorMidiControlObserver::value() > 0.5f);
+	m_pPlugin->updateActivatedEx(qtractorMidiControlObserver::value() > 0.5f);
 }
 
 
