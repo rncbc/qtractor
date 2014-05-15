@@ -5871,14 +5871,14 @@ void qtractorMainForm::updateSessionPost (void)
 		updateDirtyCount(true);
 	}
 
-	// Update the session views...
-	viewRefresh();
-
 	// We're definitely clean...
 	qtractorSubject::resetQueue();
 
 	// Sync all process-enabled automation curves...
 	m_pSession->process_curve(m_iPlayHead);
+
+	// Update the session views...
+	viewRefresh();
 
 	// Ah, make it stand right.
 	if (m_pTracks)
