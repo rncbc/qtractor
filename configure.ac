@@ -1128,7 +1128,7 @@ if test "x$ac_lv2_ui_idle" = "xyes"; then
 fi
 if test "x$ac_lv2_ui_show" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI Show interface],
-      ac_cv_lv2_ui_idle, [
+      ac_cv_lv2_ui_show, [
       AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
          // Checking for LV2 UI Show interface...
          LV2UI_Show_Interface show;

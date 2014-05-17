@@ -657,7 +657,8 @@ const QString& qtractorDummyPluginType::aboutText (void)
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
-		m_activateObserver(this), m_pForm(NULL), m_iDirectAccessParamIndex(-1)
+		m_bActivated(false), m_activateObserver(this),
+		m_pForm(NULL), m_iDirectAccessParamIndex(-1)
 {
 	// Acquire a local unique id in chain...
 	if (m_pList && m_pType)
@@ -727,10 +728,9 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 // Activation methods.
 void qtractorPlugin::setActivated ( bool bActivated )
 {
-	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
+	updateActivated(bActivated);
 
-	if (m_activateSubject.isQueued())
-		updateActivated(bActivated);
+	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
 }
 
 void qtractorPlugin::setActivatedEx ( bool bActivated )
@@ -738,22 +738,24 @@ void qtractorPlugin::setActivatedEx ( bool bActivated )
 	m_activateSubject.setValue(bActivated ? 1.0f : 0.0f);
 }
 
-
 bool qtractorPlugin::isActivated (void) const
 {
-	return (m_activateSubject.value() > 0.5f);
+	return m_bActivated;
 }
 
 
-// Activation stabilizer.
+// Activation stabilizers.
 void qtractorPlugin::updateActivated ( bool bActivated )
 {
-	if (bActivated)
+	if (bActivated && !m_bActivated) {
 		activate();
-	else
+		m_pList->updateActivated(true);
+	} else if (!bActivated && m_bActivated) {
 		deactivate();
+		m_pList->updateActivated(false);
+	}
 
-	m_pList->updateActivated(bActivated);
+	m_bActivated = bActivated;
 }
 
 void qtractorPlugin::updateActivatedEx ( bool bActivated )
@@ -2033,6 +2035,7 @@ bool qtractorPluginList::loadElement (
 			qtractorPlugin *pPlugin
 				= qtractorPluginFile::createPlugin(this,
 					sFilename, iIndex, typeHint);
+		#if 0
 			if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
 				((pPlugin == NULL) || ((pPlugin->type())->label() != sLabel))) {
 				iIndex = 0;
@@ -2041,6 +2044,7 @@ bool qtractorPluginList::loadElement (
 						sFilename, iIndex++, typeHint);
 				} while (pPlugin && (pPlugin->type())->label() != sLabel);
 			}
+		#endif
 			if (pPlugin) {
 				if (iUniqueID > 0)
 					pPlugin->setUniqueID(iUniqueID);

@@ -666,7 +666,7 @@ protected:
 	// Instance number settler.
 	void setInstances(unsigned short iInstances);
 
-	// Activation stabilizer.
+	// Activation stabilizers.
 	void updateActivated(bool bActivated);
 	void updateActivatedEx(bool bActivated);
 
@@ -681,6 +681,9 @@ private:
 
 	// Number of instances in chain node.
 	unsigned short m_iInstances;
+
+	// Activation flag.
+	bool m_bActivated;
 
 	// Activate subject value.
 	qtractorSubject m_activateSubject;
