@@ -460,9 +460,9 @@ void qtractorTrackForm::reject (void)
 // Stabilize current form state.
 void qtractorTrackForm::stabilizeForm (void)
 {
-	bool bValid = (m_iDirtyCount > 0);
-	bValid = bValid && !m_ui.TrackNameTextEdit->toPlainText().isEmpty();
-	bValid = bValid && trackType() != qtractorTrack::None;
+	const bool bEnabled = (trackType() != qtractorTrack::None);
+	const bool bValid = (m_iDirtyCount > 0) && bEnabled
+		&& !m_ui.TrackNameTextEdit->toPlainText().isEmpty();
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 
 	// Stabilize current plugin list state.
@@ -478,7 +478,7 @@ void qtractorTrackForm::stabilizeForm (void)
 		pPlugin = pItem->plugin();
 	}
 
-	m_ui.AddPluginToolButton->setEnabled(bValid);
+	m_ui.AddPluginToolButton->setEnabled(bEnabled);
 	m_ui.RemovePluginToolButton->setEnabled(pPlugin != NULL);
 
 	m_ui.MoveUpPluginToolButton->setEnabled(pItem && iItem > 0);
