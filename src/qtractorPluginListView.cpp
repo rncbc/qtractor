@@ -1010,6 +1010,10 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 	if (pOptions)
 		bOpenEditor = pOptions->bOpenEditor;
 
+	if (QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier))
+		bOpenEditor = !bOpenEditor;
+
 	if (bOpenEditor && (pPlugin->type())->isEditor())
 		pPlugin->openEditor(this);
 	else
