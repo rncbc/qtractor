@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Pressing shift/ctrl keyboard modifiers while double-clicking
+  on a plugin list entry now briefly reverses the current View
+  /Options.../Plugins/Editor/Open plugin's editor (GUI) by
+  default option preference.
+
 - Fixed an old crash lurker when switching output buses that
   implied a change on the number of audio channels, while on
   tracks that have (auto-)monitor turned on and at least one
