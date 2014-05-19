@@ -5,6 +5,16 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed an old crash lurker when switching output buses that
+  implied a change on the number of audio channels, while on
+  tracks that have (auto-)monitor turned on and at least one
+  active plugin in chain (yet another ticket by AutoStatic
+  aka. Jeremy Jongepier, thanks).
+
+- MIDI Controller assignment (aka MIDI learn) and/or automation
+  of plugins (de)activation state has been added (as requested
+  by AutoStatic aka. Jeremy Jongepier, thanks). (EXPERIMENTAL)
+
 - LV2 UI Idle and Show interfaces support added. (EXPERIMENTAL)
 
 - Allow the build system to include an user specified LDFLAGS

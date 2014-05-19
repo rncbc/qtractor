@@ -2584,14 +2584,22 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_lv2_ui_handle = suil_instance_head->ui_handle;
 	#endif	//  CONFIG_SUIL_INSTANCE_GET_HANDLE
 	#ifdef CONFIG_LV2_UI_IDLE
-		m_lv2_ui_idle_interface	= (const LV2UI_Idle_Interface *)
-			suil_instance_extension_data(
-				m_suil_instance, LV2_UI__idleInterface);
+		if (m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
+			m_lv2_ui_idle_interface	= (const LV2UI_Idle_Interface *)
+				suil_instance_extension_data(
+					m_suil_instance, LV2_UI__idleInterface);
+		} else {
+			m_lv2_ui_idle_interface	= NULL;
+		}
 	#endif
 	#ifdef CONFIG_LV2_UI_SHOW
-		m_lv2_ui_show_interface	= (const LV2UI_Show_Interface *)
-			suil_instance_extension_data(
-				m_suil_instance, LV2_UI__showInterface);
+		if (m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
+			m_lv2_ui_show_interface	= (const LV2UI_Show_Interface *)
+				suil_instance_extension_data(
+					m_suil_instance, LV2_UI__showInterface);
+		} else {
+			m_lv2_ui_show_interface	= NULL;
+		}
 	#endif
 		g_lv2Plugins.append(this);
 	}

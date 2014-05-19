@@ -395,7 +395,7 @@ bool qtractorActivatePluginCommand::redo (void)
 
 	QListIterator<qtractorPlugin *> iter(plugins());
 	while (iter.hasNext())
-		iter.next()->setActivated(m_bActivated);
+		iter.next()->setActivatedEx(m_bActivated);
 
 	// Swap it nice, finally.
 	m_bActivated = bActivated;

@@ -2079,6 +2079,8 @@ bool qtractorMainForm::closeSession (void)
 	if (bClose) {
 		// Just in case we were in the middle of something...
 		setPlaying(false);
+		// Reset subject/observer queue.
+		qtractorSubject::resetQueue();
 		// Reset all dependables to default.
 		m_pMixer->clear();
 		m_pFiles->clear();
@@ -5880,14 +5882,14 @@ void qtractorMainForm::updateSessionPost (void)
 		updateDirtyCount(true);
 	}
 
-	// Update the session views...
-	viewRefresh();
-
 	// We're definitely clean...
 	qtractorSubject::resetQueue();
 
 	// Sync all process-enabled automation curves...
 	m_pSession->process_curve(m_iPlayHead);
+
+	// Update the session views...
+	viewRefresh();
 
 	// Ah, make it stand right.
 	if (m_pTracks)
@@ -6316,6 +6318,7 @@ void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
 			else
 		//	if (pCurve->isEnabled())
 				icon = QIcon(":images/trackCurveEnabled.png");
+			text += '*';
 		}
 	}
 
@@ -6381,15 +6384,18 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 		pMenu->addSeparator();
 		qtractorPlugin *pPlugin = pPluginList->first();
 		while (pPlugin) {
+			QMenu *pPluginMenu = pMenu->addMenu(pPlugin->type()->name());
+			trackCurveSelectMenuAction(pPluginMenu,
+				pPlugin->activateObserver(), pCurrentSubject);
 			const qtractorPlugin::Params& params = pPlugin->params();
 			if (params.count() > 0) {
-				QMenu *pParamMenu = pMenu->addMenu(pPlugin->type()->name());
+				pPluginMenu->addSeparator();
 				qtractorPlugin::Params::ConstIterator param
 					= params.constBegin();
 				const qtractorPlugin::Params::ConstIterator& param_end
 					= params.constEnd();
 				for ( ; param != param_end; ++param) {
-					trackCurveSelectMenuAction(pParamMenu,
+					trackCurveSelectMenuAction(pPluginMenu,
 						param.value()->observer(), pCurrentSubject);
 				}
 			}
@@ -6445,13 +6451,10 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 	m_ui.trackCurveLogarithmicAction->setChecked(
 		pCurrentCurve && pCurrentCurve->isLogarithmic());
 	m_ui.trackCurveLogarithmicAction->setData(-1);
-//	m_ui.trackCurveLogarithmicAction->setEnabled(
-//		pCurrentCurve && pCurrentCurve->isEnabled());
+	m_ui.trackCurveLogarithmicAction->setEnabled(!bToggled);
 
 	pMenu->addAction(m_ui.trackCurveColorAction);
 	m_ui.trackCurveColorAction->setData(-1);
-//	m_ui.trackCurveColorAction->setEnabled(
-//		pCurrentCurve && pCurrentCurve->isEnabled());
 
 	return true;
 }

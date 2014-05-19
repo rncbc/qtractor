@@ -434,6 +434,7 @@ void qtractorTrackForm::reject (void)
 			break;
 		default:    // Cancel.
 			bReject = false;
+			break;
 		}
 	}
 
@@ -442,6 +443,12 @@ void qtractorTrackForm::reject (void)
 		if (m_pTrack) {
 			// Backout all commands made this far...
 			((m_pTrack->session())->commands())->backout(m_pLastCommand);
+			// Restore old output bus...
+			if (!m_sOldOutputBusName.isEmpty()) {
+				m_pTrack->setOutputBusName(m_sOldOutputBusName);
+				m_pTrack->open(); // re-open...
+				m_sOldOutputBusName.clear();
+			}
 			// Try to restore the previously saved patch...
 			if (m_pOldMidiBus && m_iDirtyPatch > 0) {
 				m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
@@ -459,15 +466,15 @@ void qtractorTrackForm::reject (void)
 // Stabilize current form state.
 void qtractorTrackForm::stabilizeForm (void)
 {
-	bool bValid = (m_iDirtyCount > 0);
-	bValid = bValid && !m_ui.TrackNameTextEdit->toPlainText().isEmpty();
-	bValid = bValid && trackType() != qtractorTrack::None;
+	const bool bEnabled = (trackType() != qtractorTrack::None);
+	const bool bValid = (m_iDirtyCount > 0) && bEnabled
+		&& !m_ui.TrackNameTextEdit->toPlainText().isEmpty();
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 
 	// Stabilize current plugin list state.
-	int iItem = -1;
-	int iItemCount = m_ui.PluginListView->count();
+	const int iItemCount = m_ui.PluginListView->count();
 
+	int iItem = -1;
 	qtractorPlugin *pPlugin = NULL;
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (
@@ -477,7 +484,7 @@ void qtractorTrackForm::stabilizeForm (void)
 		pPlugin = pItem->plugin();
 	}
 
-//	m_ui.AddPluginToolButton->setEnabled(true);
+	m_ui.AddPluginToolButton->setEnabled(bEnabled);
 	m_ui.RemovePluginToolButton->setEnabled(pPlugin != NULL);
 
 	m_ui.MoveUpPluginToolButton->setEnabled(pItem && iItem > 0);
@@ -512,7 +519,7 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void) const
 int qtractorTrackForm::midiBank (void) const
 {
 	const QString& sBankText = m_ui.BankComboBox->currentText();
-	int iBankIndex = m_ui.BankComboBox->findText(sBankText);
+	const int iBankIndex = m_ui.BankComboBox->findText(sBankText);
 	if (iBankIndex >= 0 && m_banks.contains(iBankIndex)
 		&& m_ui.BankComboBox->itemText(iBankIndex) == sBankText)
 		return m_banks[iBankIndex];
@@ -525,7 +532,7 @@ int qtractorTrackForm::midiBank (void) const
 int qtractorTrackForm::midiProg (void) const
 {
 	const QString& sProgText = m_ui.ProgComboBox->currentText();
-	int iProgIndex = m_ui.ProgComboBox->findText(sProgText);
+	const int iProgIndex = m_ui.ProgComboBox->findText(sProgText);
 	if (iProgIndex >= 0 && m_progs.contains(iProgIndex)
 		&& m_ui.ProgComboBox->itemText(iProgIndex) == sProgText)
 		return m_progs[iProgIndex];
@@ -1009,7 +1016,7 @@ void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
 	updateColorText(pComboBox, color);
 
 	// Check if already exists...
-	int iItem = pComboBox->findText(color.name());
+	const int iItem = pComboBox->findText(color.name());
 	if (iItem >= 0) {
 		pComboBox->setCurrentIndex(iItem);
 		return;
@@ -1090,6 +1097,12 @@ void qtractorTrackForm::trackTypeChanged (void)
 	if (m_iDirtySetup > 0)
 		return;
 
+	if (!m_sOldOutputBusName.isEmpty() && m_pTrack) {
+		m_pTrack->setOutputBusName(m_sOldOutputBusName);
+		m_pTrack->open(); // re-open...
+		m_sOldOutputBusName.clear();
+	}
+
 	if (m_pOldMidiBus) {
 		// Restore previously current/saved patch...
 		m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
@@ -1129,29 +1142,12 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	qtractorTrack::TrackType trackType = qtractorTrackForm::trackType();
 
 	// (Re)initialize plugin-list audio output bus properly...
-	qtractorSession *pSession = m_pTrack->session();
-	qtractorAudioEngine *pAudioEngine = NULL;
-	if (pSession)
-		pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine) {
-		// Get the audio bus applicable for the plugin list...
-		qtractorAudioBus *pAudioBus = NULL;
-		if (trackType == qtractorTrack::Audio)
-			pAudioBus = static_cast<qtractorAudioBus *> (
-				pAudioEngine->findOutputBus(sBusName));
-		// FIXME: Master audio bus as reference, still...
-		if (pAudioBus == NULL)
-			pAudioBus = static_cast<qtractorAudioBus *> (
-				pAudioEngine->buses().first());
-		// If an audio bus has been found applicable,
-		// must set plugin-list channel buffers...
-		if (pAudioBus) {
-			m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-				trackType == qtractorTrack::Audio
-					? qtractorPluginList::AudioTrack
-					: qtractorPluginList::MidiTrack);
-		}
+	const QString& sOutputBusName = m_pTrack->outputBusName();
+	if (sOutputBusName != sBusName) {
+		if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
+			m_sOldOutputBusName = sOutputBusName;
+		m_pTrack->setOutputBusName(sBusName);
+		m_pTrack->open(); // re-open...
 	}
 
 	// Recache the applicable MIDI output bus ...
@@ -1279,13 +1275,13 @@ void qtractorTrackForm::progChanged (void)
 	// Of course, only applicable on MIDI tracks...
 	if (m_pMidiBus) {
 		// Patch parameters...
-		unsigned short iChannel = m_ui.ChannelSpinBox->value() - 1;
+		const unsigned short iChannel = m_ui.ChannelSpinBox->value() - 1;
 		QString sInstrumentName;
 		if (m_ui.InstrumentComboBox->currentIndex() > 0)
 			sInstrumentName = m_ui.InstrumentComboBox->currentText();
-		int iBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
-		int iBank = midiBank();
-		int iProg = midiProg();
+		const int iBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
+		const int iBank = midiBank();
+		const int iProg = midiProg();
 		// Keep old bus/channel patching consistency.
 		if (m_pMidiBus != m_pOldMidiBus || iChannel != m_iOldChannel) {
 			// Restore previously saved patch...

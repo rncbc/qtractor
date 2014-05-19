@@ -1,6 +1,6 @@
 /*
   LV2 Programs Extension
-  Copyright 2012 Filipe Coelho <falktx@gmail.com>
+  Copyright 2012 Filipe Coelho <falktx@falktx.com>
 
   Permission to use, copy, modify, and/or distribute this software for any
   purpose with or without fee is hereby granted, provided that the above
@@ -16,14 +16,14 @@
 */
 
 /**
-   @file programs.h
+   @file lv2_programs.h
    C header for the LV2 programs extension <http://kxstudio.sf.net/ns/lv2ext/programs>.
 */
 
 #ifndef LV2_PROGRAMS_H
 #define LV2_PROGRAMS_H
 
-#include "lv2.h"
+#include "lv2/lv2plug.in/ns/lv2core/lv2.h"
 #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
 
 #define LV2_PROGRAMS_URI    "http://kxstudio.sf.net/ns/lv2ext/programs"
@@ -157,7 +157,10 @@ typedef struct _LV2_Programs_Host {
      * Parameter index is program index to change.
      * When index is -1, host should reload all the programs.
      *
-     * NOTE: The plugin MUST NEVER call this function on a RT context or during run().
+     * The plugin MUST NEVER call this function on a RT context or during run().
+     *
+     * NOTE: This call is to inform the host about a program's bank, program or name change.
+     *       It DOES NOT change the current selected program.
      */
     void (*program_changed)(LV2_Programs_Handle handle,
                             int32_t index);

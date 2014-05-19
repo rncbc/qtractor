@@ -378,7 +378,7 @@ private:
 	protected:
 
 		// Virtual observer updater.
-		void update(bool Update);
+		void update(bool bUpdate);
 
 	private:
 
@@ -428,8 +428,14 @@ public:
 
 	// Activation methods.
 	void setActivated(bool bActivated);
-	bool isActivated() const
-		{ return m_bActivated; }
+	void setActivatedEx(bool bActivated);
+	bool isActivated() const;
+
+	// Activate subject accessors.
+	qtractorSubject *activateSubject()
+		{ return &m_activateSubject; }
+	qtractorMidiControlObserver *activateObserver()
+		{ return &m_activateObserver; }
 
 	// An accessible list of parameters.
 	typedef QHash<unsigned long, qtractorPluginParam *> Params;
@@ -642,8 +648,8 @@ public:
 	static void loadCurveFile(
 	    QDomElement *pElement, qtractorCurveFile *pCurveFile);
 	void saveCurveFile(qtractorDocument *pDocument,
-		QDomElement *pElement, qtractorCurveFile *pCurveFile) const;
-	void applyCurveFile (qtractorCurveFile *pCurveFile) const;
+		QDomElement *pElement, qtractorCurveFile *pCurveFile);
+	void applyCurveFile (qtractorCurveFile *pCurveFile);
 
 	// Direct access parameter accessors.
 	qtractorPluginParam *directAccessParam() const;
@@ -660,6 +666,10 @@ protected:
 	// Instance number settler.
 	void setInstances(unsigned short iInstances);
 
+	// Activation stabilizers.
+	void updateActivated(bool bActivated);
+	void updateActivatedEx(bool bActivated);
+
 private:
 
 	// Instance variables.
@@ -674,6 +684,29 @@ private:
 
 	// Activation flag.
 	bool m_bActivated;
+
+	// Activate subject value.
+	qtractorSubject m_activateSubject;
+
+	// Activate observer manager.
+	class ActivateObserver : public qtractorMidiControlObserver
+	{
+	public:
+
+		// Constructor.
+		ActivateObserver(qtractorPlugin *pPlugin);
+
+	protected:
+
+		// Virtual observer updater.
+		void update(bool bUpdate);
+
+	private:
+
+		// Instance members.
+		qtractorPlugin *m_pPlugin;
+
+	} m_activateObserver;
 
 	// List of input control ports (parameters).
 	Params m_params;
