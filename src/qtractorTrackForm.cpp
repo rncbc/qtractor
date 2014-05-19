@@ -443,6 +443,12 @@ void qtractorTrackForm::reject (void)
 		if (m_pTrack) {
 			// Backout all commands made this far...
 			((m_pTrack->session())->commands())->backout(m_pLastCommand);
+			// Restore old output bus...
+			if (!m_sOldOutputBusName.isEmpty()) {
+				m_pTrack->setOutputBusName(m_sOldOutputBusName);
+				m_pTrack->open(); // re-open...
+				m_sOldOutputBusName.clear();
+			}
 			// Try to restore the previously saved patch...
 			if (m_pOldMidiBus && m_iDirtyPatch > 0) {
 				m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
@@ -1091,6 +1097,12 @@ void qtractorTrackForm::trackTypeChanged (void)
 	if (m_iDirtySetup > 0)
 		return;
 
+	if (!m_sOldOutputBusName.isEmpty() && m_pTrack) {
+		m_pTrack->setOutputBusName(m_sOldOutputBusName);
+		m_pTrack->open(); // re-open...
+		m_sOldOutputBusName.clear();
+	}
+
 	if (m_pOldMidiBus) {
 		// Restore previously current/saved patch...
 		m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
@@ -1130,29 +1142,12 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	qtractorTrack::TrackType trackType = qtractorTrackForm::trackType();
 
 	// (Re)initialize plugin-list audio output bus properly...
-	qtractorSession *pSession = m_pTrack->session();
-	qtractorAudioEngine *pAudioEngine = NULL;
-	if (pSession)
-		pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine) {
-		// Get the audio bus applicable for the plugin list...
-		qtractorAudioBus *pAudioBus = NULL;
-		if (trackType == qtractorTrack::Audio)
-			pAudioBus = static_cast<qtractorAudioBus *> (
-				pAudioEngine->findOutputBus(sBusName));
-		// FIXME: Master audio bus as reference, still...
-		if (pAudioBus == NULL)
-			pAudioBus = static_cast<qtractorAudioBus *> (
-				pAudioEngine->buses().first());
-		// If an audio bus has been found applicable,
-		// must set plugin-list channel buffers...
-		if (pAudioBus) {
-			m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-				trackType == qtractorTrack::Audio
-					? qtractorPluginList::AudioTrack
-					: qtractorPluginList::MidiTrack);
-		}
+	const QString& sOutputBusName = m_pTrack->outputBusName();
+	if (sOutputBusName != sBusName) {
+		if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
+			m_sOldOutputBusName = sOutputBusName;
+		m_pTrack->setOutputBusName(sBusName);
+		m_pTrack->open(); // re-open...
 	}
 
 	// Recache the applicable MIDI output bus ...

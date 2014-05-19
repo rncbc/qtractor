@@ -12267,23 +12267,23 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="556"/>
+        <location filename="../qtractorTrackForm.cpp" line="562"/>
         <source>(No instrument)</source>
         <translation>(インストルメントなし)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="751"/>
-        <location filename="../qtractorTrackForm.cpp" line="862"/>
+        <location filename="../qtractorTrackForm.cpp" line="757"/>
+        <location filename="../qtractorTrackForm.cpp" line="868"/>
         <source>(None)</source>
         <translation>(なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1325"/>
+        <location filename="../qtractorTrackForm.cpp" line="1320"/>
         <source>Forgeground Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1339"/>
+        <location filename="../qtractorTrackForm.cpp" line="1334"/>
         <source>Background Color</source>
         <translation type="unfinished"></translation>
     </message>
