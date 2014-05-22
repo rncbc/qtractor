@@ -1503,6 +1503,8 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 			if (isLogarithmic())
 				++m_iDecimals;
 		}
+		// Make this permanent...
+		m_subject.setToggled(isToggled());
 	}
 
 	// Sanitize value...
