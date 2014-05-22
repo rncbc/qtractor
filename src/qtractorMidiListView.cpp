@@ -160,6 +160,9 @@ qtractorFileListItem *qtractorMidiListView::createFileItem (
 	if (file.open(sPath)) {
 		pFileItem = new qtractorMidiFileItem(sPath, &file);
 		file.close();
+	} else {
+		qWarning("WARNING: %s: MIDI file not found.",
+			sPath.toUtf8().constData());
 	}
 
 	return pFileItem;

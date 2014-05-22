@@ -185,6 +185,9 @@ qtractorFileListItem *qtractorAudioListView::createFileItem (
 	if (pFile->open(sPath)) {
 		pFileItem = new qtractorAudioFileItem(sPath, pFile);
 		pFile->close();
+	} else {
+		qWarning("WARNING: %s: Audio file not found.",
+			sPath.toUtf8().constData());
 	}
 
 	delete pFile;

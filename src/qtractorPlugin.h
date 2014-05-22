@@ -362,7 +362,7 @@ private:
 
 	// Instance variables.
 	qtractorPlugin *m_pPlugin;
-	unsigned long m_iIndex;
+	unsigned long   m_iIndex;
 
 	// Port subject value.
 	qtractorSubject m_subject;

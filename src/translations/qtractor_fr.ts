@@ -8524,12 +8524,12 @@ Voulez-vous sauvegarder les changements?</translation>
         <translation>Chemin</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="175"/>
+        <location filename="../qtractorMidiListView.cpp" line="178"/>
         <source>Open MIDI Files</source>
         <translation>Ouvrir Fichiers MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="176"/>
+        <location filename="../qtractorMidiListView.cpp" line="179"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Fichiers MIDI (*.%1 *.smf *.midi)</translation>
     </message>
@@ -11173,17 +11173,17 @@ Etes-vous sur?</translation>
         <translation>Scan des greffons en cours...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="325"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="326"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="327"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="328"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="329"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="330"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>

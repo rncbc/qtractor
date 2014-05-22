@@ -8937,12 +8937,12 @@ Do you want to save the changes?</source>
         <translation>Расположение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="175"/>
+        <location filename="../qtractorMidiListView.cpp" line="178"/>
         <source>Open MIDI Files</source>
         <translation>Открыть файлы MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiListView.cpp" line="176"/>
+        <location filename="../qtractorMidiListView.cpp" line="179"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Файлы MIDI (*.%1 *.smf *.midi)</translation>
     </message>
@@ -11549,17 +11549,17 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginSelectForm</name>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="325"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="326"/>
         <source>GUI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="327"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="328"/>
         <source>EXT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="329"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="330"/>
         <source>RT</source>
         <translation type="unfinished"></translation>
     </message>

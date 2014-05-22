@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio/MIDI files or plugins found missing on session load are
+  now subject for their own discrete warning messages.
+
 - Pressing shift/ctrl keyboard modifiers while double-clicking
   on a plugin list entry now briefly reverses the current View
   /Options.../Plugins/Editor/Open plugin's editor (GUI) by

@@ -1503,6 +1503,8 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 			if (isLogarithmic())
 				++m_iDecimals;
 		}
+		// Make this permanent...
+		m_subject.setToggled(isToggled());
 	}
 
 	// Sanitize value...
@@ -2060,6 +2062,11 @@ bool qtractorPluginList::loadElement (
 				pPlugin->applyCurveFile(&cfile);
 				pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
 				pPlugin->setActivated(bActivated); // Later's better!
+			} else {
+				qWarning("WARNING: %s(%lu): %s plugin not found.",
+					sFilename.toUtf8().constData(), iIndex,
+					qtractorPluginType::textFromHint(typeHint)
+						.toUtf8().constData());
 			}
 			// Cleanup.
 			qDeleteAll(controllers);
