@@ -2060,6 +2060,11 @@ bool qtractorPluginList::loadElement (
 				pPlugin->applyCurveFile(&cfile);
 				pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
 				pPlugin->setActivated(bActivated); // Later's better!
+			} else {
+				qWarning("WARNING: %s(%lu): %s plugin not found.",
+					sFilename.toUtf8().constData(), iIndex,
+					qtractorPluginType::textFromHint(typeHint)
+						.toUtf8().constData());
 			}
 			// Cleanup.
 			qDeleteAll(controllers);

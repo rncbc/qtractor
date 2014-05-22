@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -307,14 +307,15 @@ void qtractorPluginSelectForm::refresh (void)
 			|| rx.indexIn(sName) >= 0
 			|| rx.indexIn(sFilename) >= 0) {
 			// Try primary instantiation...
-			int iAudioIns    = pType->audioIns();
-			int iAudioOuts   = pType->audioOuts();
-			int iMidiIns     = pType->midiIns();
-			int iMidiOuts    = pType->midiOuts();
-			int iControlIns  = pType->controlIns();
-			int iControlOuts = pType->controlOuts();
+			const int iAudioIns    = pType->audioIns();
+			const int iAudioOuts   = pType->audioOuts();
+			const int iMidiIns     = pType->midiIns();
+			const int iMidiOuts    = pType->midiOuts();
+			const int iControlIns  = pType->controlIns();
+			const int iControlOuts = pType->controlOuts();
 			// All that to check whether it will get properly instantiated.
-			unsigned short iInstances = pType->instances(m_iChannels, m_bMidi);
+			const unsigned short iInstances
+				= pType->instances(m_iChannels, m_bMidi);
 			cols.clear();
 			cols << sName;
 			cols << QString("%1:%2").arg(iAudioIns).arg(iAudioOuts);
@@ -338,7 +339,7 @@ void qtractorPluginSelectForm::refresh (void)
 			QTreeWidgetItem *pItem = new QTreeWidgetItem(cols);
 			if (iInstances < 1) {
 				pItem->setFlags(pItem->flags() & ~Qt::ItemIsSelectable);
-				int iColumnCount = m_ui.PluginListView->columnCount();
+				const int iColumnCount = m_ui.PluginListView->columnCount();
 				const QPalette& pal = m_ui.PluginListView->palette();
 				const QColor& rgbForeground
 					= pal.color(QPalette::Disabled, QPalette::WindowText);
