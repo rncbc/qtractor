@@ -297,7 +297,8 @@ public:
 
 	// Primitive command methods.
 	void addNode(qtractorCurve::Node *pNode);
-	void moveNode(qtractorCurve::Node *pNode, unsigned long iFrame);
+	void moveNode(qtractorCurve::Node *pNode,
+		unsigned long iFrame, float fValue);
 	void removeNode(qtractorCurve::Node *pNode);
 
 	void addEditList(qtractorCurveEditList *pEditList);

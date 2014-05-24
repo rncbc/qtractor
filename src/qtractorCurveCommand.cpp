@@ -1,7 +1,7 @@
 // qtractorCurveCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -168,7 +168,7 @@ bool qtractorCurveProcessCommand::execute ( bool bRedo )
 	if (m_pCurve == NULL)
 		return false;
 
-	bool bProcess = m_pCurve->isProcess();
+	const bool bProcess = m_pCurve->isProcess();
 	if (!m_bProcess)
 		m_pCurve->setCapture(false);
 	m_pCurve->setProcess(m_bProcess);
@@ -197,7 +197,7 @@ bool qtractorCurveCaptureCommand::execute ( bool bRedo )
 	if (m_pCurve == NULL)
 		return false;
 
-	bool bCapture = m_pCurve->isCapture();
+	const bool bCapture = m_pCurve->isCapture();
 	if (m_bCapture)
 		m_pCurve->setProcess(true);
 	m_pCurve->setCapture(m_bCapture);
@@ -226,7 +226,7 @@ bool qtractorCurveLogarithmicCommand::execute ( bool /*bRedo*/ )
 	if (m_pCurve == NULL)
 		return false;
 
-	bool bLogarithmic = m_pCurve->isLogarithmic();
+	const bool bLogarithmic = m_pCurve->isLogarithmic();
 	m_pCurve->setLogarithmic(m_bLogarithmic);
 	m_bLogarithmic = bLogarithmic;
 
@@ -253,7 +253,7 @@ bool qtractorCurveColorCommand::execute ( bool /*bRedo*/ )
 	if (m_pCurve == NULL)
 		return false;
 
-	QColor color = m_pCurve->color();
+	const QColor color = m_pCurve->color();
 	m_pCurve->setColor(m_color);
 	m_color = color;
 
@@ -280,7 +280,7 @@ bool qtractorCurveProcessAllCommand::execute ( bool bRedo )
 	if (m_pCurveList == NULL)
 		return false;
 
-	bool bProcessAll = m_pCurveList->isProcessAll();
+	const bool bProcessAll = m_pCurveList->isProcessAll();
 	if (!m_bProcessAll)
 		m_pCurveList->setCaptureAll(false);
 	m_pCurveList->setProcessAll(m_bProcessAll);
@@ -309,7 +309,7 @@ bool qtractorCurveCaptureAllCommand::execute ( bool bRedo )
 	if (m_pCurveList == NULL)
 		return false;
 
-	bool bCaptureAll = m_pCurveList->isCaptureAll();
+	const bool bCaptureAll = m_pCurveList->isCaptureAll();
 	if (m_bCaptureAll)
 		m_pCurveList->setProcessAll(true);
 	m_pCurveList->setCaptureAll(m_bCaptureAll);
@@ -353,9 +353,9 @@ void qtractorCurveEditCommand::addNode ( qtractorCurve::Node *pNode )
 
 
 void qtractorCurveEditCommand::moveNode ( qtractorCurve::Node *pNode,
-	unsigned long iFrame )
+	unsigned long iFrame, float fValue )
 {
-	m_edits.moveNode(pNode, iFrame);
+	m_edits.moveNode(pNode, iFrame, fValue);
 }
 
 

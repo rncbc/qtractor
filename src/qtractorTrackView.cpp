@@ -45,6 +45,7 @@
 #include "qtractorThumbView.h"
 
 #include <QToolButton>
+#include <QDoubleSpinBox>
 #include <QScrollBar>
 #include <QToolTip>
 
@@ -68,6 +69,9 @@
 #include <QMimeData>
 #include <QDrag>
 #endif
+
+#include <math.h>
+
 
 // Follow-playhead: maximum iterations on hold.
 #define QTRACTOR_SYNC_VIEW_HOLD 66
@@ -107,6 +111,10 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pCurveEditCommand = NULL;
 
 	m_bSyncViewHold = false;
+
+	m_pEditCurve = NULL;
+	m_pEditCurveNode = NULL;
+	m_pEditCurveNodeSpinBox = NULL;
 
 	clear();
 
@@ -234,6 +242,7 @@ void qtractorTrackView::clear (void)
 	m_iDragSingleTrackY = 0;
 	m_iDragSingleTrackHeight = 0;
 
+	m_pDragCurve = NULL;
 	m_pDragCurveNode = NULL;
 	m_iDragCurveX = 0;
 
@@ -1929,12 +1938,22 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorScrollView::mouseDoubleClickEvent(pMouseEvent);
 
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
+
+	qtractorTrackViewInfo tvi;
+	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
+	if (pTrack) {
+		qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
+		if (pNode) {
+			openEditCurveNode(pTrack->currentCurve(), pNode);
+			return;
+		}
+	}
+
 	// By this time we should have something under...
 	qtractorClip *pClip = m_pClipDrag;
-	if (pClip == NULL) {
-		const QPoint& pos = viewportToContents(pMouseEvent->pos());
+	if (pClip == NULL)
 		pClip = clipAt(pos, true);
-	}
 
 	if (pClip)
 		m_pTracks->editClip(pClip);
@@ -3423,6 +3442,7 @@ void qtractorTrackView::resetDragState (void)
 		m_dragState == DragCurvePaste      ||
 		m_dragState == DragCurveStep       ||
 		m_dragState == DragCurveMove) {
+		closeEditCurveNode();
 		updateContents();
 	}
 
@@ -4984,6 +5004,130 @@ void qtractorTrackView::setSyncViewHold ( bool bSyncViewHold )
 bool qtractorTrackView::isSyncViewHold (void) const
 {
 	return (m_bSyncViewHold && m_iSyncViewHold > 0);
+}
+
+
+// Automation/curve node editor methods.
+void qtractorTrackView::openEditCurveNode (
+	qtractorCurve *pCurve, qtractorCurve::Node *pNode )
+{
+	closeEditCurveNode();
+
+	if (pCurve == NULL || pNode == NULL)
+		return;
+
+	qtractorSubject *pSubject = pCurve->subject();
+	if (pSubject == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackView::openEditCurveNode(%p, %p)", pCurve, pNode);
+#endif
+
+	m_pEditCurve = pCurve;
+	m_pEditCurveNode = pNode;
+
+	const float fMaxValue = pSubject->maxValue();
+	const float fMinValue = pSubject->minValue();
+
+	int iDecimals = 0;
+	if (!pSubject->isToggled()) {
+		const float fDecimals = ::log10f(fMaxValue - fMinValue);
+		if (fDecimals < -3.0f)
+			iDecimals = 6;
+		else if (fDecimals < 0.0f)
+			iDecimals = 3;
+		else if (fDecimals < 1.0f)
+			iDecimals = 2;
+		else if (fDecimals < 6.0f)
+			iDecimals = 1;
+		if (m_pEditCurve->isLogarithmic())
+			++iDecimals;
+	}
+
+	m_pEditCurveNodeSpinBox = new QDoubleSpinBox(this);
+	m_pEditCurveNodeSpinBox->setDecimals(iDecimals);
+	m_pEditCurveNodeSpinBox->setMinimum(fMinValue);
+	m_pEditCurveNodeSpinBox->setMaximum(fMaxValue);
+	m_pEditCurveNodeSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
+	m_pEditCurveNodeSpinBox->setAccelerated(true);
+	m_pEditCurveNodeSpinBox->setToolTip(pSubject->name());
+	m_pEditCurveNodeSpinBox->setMinimumWidth(42);
+	m_pEditCurveNodeSpinBox->setValue(m_pEditCurveNode->value);
+
+	QWidget *pViewport = qtractorScrollView::viewport();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
+	const QPoint& vpos = pViewport->mapFromGlobal(QCursor::pos());
+	const QSize& size = m_pEditCurveNodeSpinBox->sizeHint();
+	int x = vpos.x() + 4;
+	int y = vpos.y();
+	if (x +  size.width()  > w)
+		x -= size.width()  + 8;
+	if (y +  size.height() > h)
+		y -= size.height();
+	m_pEditCurveNodeSpinBox->move(x, y);
+	m_pEditCurveNodeSpinBox->show();
+
+	m_pEditCurveNodeSpinBox->setFocus();
+
+	QObject::connect(m_pEditCurveNodeSpinBox,
+		SIGNAL(editingFinished()),
+		SLOT(editCurveNodeFinished()));
+}
+
+
+void qtractorTrackView::closeEditCurveNode (void)
+{
+	if (m_pEditCurveNodeSpinBox == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackView::closeEditCurveNode()");
+#endif
+
+	m_pEditCurveNodeSpinBox->blockSignals(true);
+	m_pEditCurveNodeSpinBox->clearFocus();
+	m_pEditCurveNodeSpinBox->close();
+
+	delete m_pEditCurveNodeSpinBox;
+	m_pEditCurveNodeSpinBox = NULL;
+
+	qtractorScrollView::setFocus();
+}
+
+
+void qtractorTrackView::editCurveNodeFinished (void)
+{
+	if (m_pEditCurveNodeSpinBox == NULL)
+		return;
+
+	if (m_pEditCurve == NULL || m_pEditCurveNode == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackView::editCurveNodeFinished()");
+#endif
+
+	// Make it an undoable command...
+	const float fOldValue = m_pEditCurveNode->value;
+	const float fNewValue = m_pEditCurveNodeSpinBox->value();
+	if (::fabs(fNewValue - fOldValue) > 0.001f) {
+		qtractorCurveEditCommand *pEditCurveNodeCommand
+			= new qtractorCurveEditCommand(m_pEditCurve);
+		pEditCurveNodeCommand->moveNode(m_pEditCurveNode,
+			m_pEditCurveNode->frame, fNewValue);
+		pSession->execute(pEditCurveNodeCommand);
+	}
+
+	m_pEditCurveNode = NULL;
+	m_pEditCurve = NULL;
+
+	closeEditCurveNode();
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorCurve.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -98,7 +98,7 @@ inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 	// http://www.korf.co.uk/spline.pdf
 	const float fZero = 1e-9f;
 
-	float x0 = float(pNode->frame);
+	const float x0 = float(pNode->frame);
 
 	float y1, x1 = x0;
 	float s1 = 0.0f;
@@ -121,7 +121,8 @@ inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 	if (pPrev) {
 		pPrev = pPrev->prev();
 		if (pPrev && (fabs(y1 - pPrev->value) > fZero)) {
-			float s0 = (x1 - float(pPrev->frame) - x0) / (y1 - pPrev->value);
+			const float s0
+				= (x1 - float(pPrev->frame) - x0) / (y1 - pPrev->value);
 			if (s1 * s0 > 0.0f && fabs(s1 + s0) > fZero)
 				f1 = 2.0f / (s1 + s0);
 		}
@@ -132,12 +133,14 @@ inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 	if (s2 * s1 > 0.0f && fabs(s2 + s1) > fZero)
 		f2 = 2.0f / (s2 + s1);
 
-	float x12 = x1 * x1;
-	float dy = y2 - y1;
+	const float x12 = x1 * x1;
+	const float dy = y2 - y1;
 
 	// Compute second derivative for either side of control point...
-	float ff1 = (((2.0f * (f2 + (2.0f * f1))) / x1)) + ((6.0f * dy) / x12);
-	float ff2 = (-2.0f * ((2.0f * f2) + f1) / x1) - ((6.0f * dy) / x12);
+	const float ff1
+		= (((2.0f * (f2 + (2.0f * f1))) / x1)) + ((6.0f * dy) / x12);
+	const float ff2
+		= (-2.0f * ((2.0f * f2) + f1) / x1) - ((6.0f * dy) / x12);
 
 	// Compute and store polynomial coefficients...
 	pNode->a = (ff1 - ff2) / (6.0f * x1);
@@ -293,7 +296,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	if (pNode) {
 		// Move/update the existing one as average...
 		if (pEditList)
-			pEditList->moveNode(pNode, pNode->frame);
+			pEditList->moveNode(pNode, pNode->frame, pNode->value);
 		pNode->frame = m_cursor.frame();
 		pNode->value = fValue;
 	} else {
@@ -535,9 +538,9 @@ float qtractorCurve::value ( const Node *pNode, unsigned long iFrame ) const
 			pNode = &m_tail;
 	}
 
-	float x = float(pNode->frame) - float(iFrame);
-	float y = pNode->value;
+	const float x = float(pNode->frame) - float(iFrame);
 
+	float y = pNode->value;
 	if (x > 0.0f) {
 		switch (m_mode) {
 		case Hold:
@@ -629,7 +632,7 @@ void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 		qtractorMidiEvent *pEvent = pSeq->events().first();
 		while (pEvent) {
 			if (pEvent->type() == ctype && pEvent->note() == iParam) {
-				unsigned long iFrame = ts.frameFromTick(pEvent->time());
+				const unsigned long iFrame = ts.frameFromTick(pEvent->time());
 				float fScale;
 				if (ctype == qtractorMidiEvent::PITCHBEND)
 					fScale = float(pEvent->pitchBend()) / float(0x3fff);
@@ -640,7 +643,7 @@ void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 					fScale = float(pEvent->value()) / float(0x3fff);
 				else
 					fScale = float(pEvent->value()) / float(0x7f);
-				float fValue = m_observer.valueFromScale(fScale);
+				const float fValue = m_observer.valueFromScale(fScale);
 				m_nodes.append(new Node(iFrame, fValue));
 			}
 			pEvent = pEvent->next();
@@ -676,9 +679,9 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 	// Convert nodes to events...
 	qtractorCurve::Node *pNode = m_nodes.first();
 	while (pNode) {
-		unsigned long iTime = ts.tickFromFrame(pNode->frame);
+		const unsigned long iTime = ts.tickFromFrame(pNode->frame);
 		qtractorMidiEvent *pEvent = new qtractorMidiEvent(iTime, ctype, iParam);
-		float fScale = m_observer.scaleFromValue(pNode->value);
+		const float fScale = m_observer.scaleFromValue(pNode->value);
 		if (ctype == qtractorMidiEvent::PITCHBEND)
 			pEvent->setPitchBend(float(0x3fff) * fScale);
 		else
@@ -702,10 +705,8 @@ void qtractorCurve::setCapture ( bool bCapture )
 	qDebug("qtractorCurve[%p]::setCapture(%d)", this, int(bCapture));
 #endif
 
-	bool bOldCapture = (m_state & Capture);
-
+	const bool bOldCapture = (m_state & Capture);
 	m_state = State(bCapture ? (m_state | Capture) : (m_state & ~Capture));
-
 	if ((bCapture && !bOldCapture) || (!bCapture && bOldCapture))
 		m_pList->updateCapture(bCapture);
 }
@@ -717,10 +718,8 @@ void qtractorCurve::setProcess ( bool bProcess )
 	qDebug("qtractorCurve[%p]::setProcess(%d)", this, int(bProcess));
 #endif
 
-	bool bOldProcess = (m_state & Process);
-
+	const bool bOldProcess = (m_state & Process);
 	m_state = State(bProcess ? (m_state | Process) : (m_state & ~Process));
-
 	if ((bProcess && !bOldProcess) || (!bProcess && bOldProcess))
 		m_pList->updateProcess(bProcess);
 }
@@ -732,10 +731,8 @@ void qtractorCurve::setLocked ( bool bLocked )
 	qDebug("qtractorCurve[%p]::setLocked(%d)", this, int(bLocked));
 #endif
 
-	bool bOldLocked = (m_state & Locked);
-
+	const bool bOldLocked = (m_state & Locked);
 	m_state = State(bLocked ? (m_state | Locked) : (m_state & ~Locked));
-
 	if ((bLocked && !bOldLocked) || (!bLocked && bOldLocked))
 		m_pList->updateLocked(bLocked);
 }
@@ -767,8 +764,8 @@ bool qtractorCurveEditList::execute ( bool bRedo )
 		}
 		case MoveNode: {
 			qtractorCurve::Node *pNode = pItem->node;
-			unsigned long iFrame = pNode->frame;
-			float fValue = pNode->value;
+			const unsigned long iFrame = pNode->frame;
+			const float fValue = pNode->value;
 			pNode->frame = pItem->frame;
 			pNode->value = pItem->value;
 			pItem->frame = iFrame;
