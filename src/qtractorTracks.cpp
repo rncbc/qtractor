@@ -2119,7 +2119,8 @@ int qtractorTracks::insertEditRangeTrack (
 				qtractorCurve::Node *pNode = pCurve->seek(iInsertStart);
 				while (pNode) {
 					pCurveEditCommand->moveNode(pNode,
-						pNode->frame + iInsertLength);
+						pNode->frame + iInsertLength,
+						pNode->value);
 					++iCurveEditUpdate;
 					pNode = pNode->next();
 				}
@@ -2388,7 +2389,8 @@ int qtractorTracks::removeEditRangeTrack (
 						pCurveEditCommand->removeNode(pNode);
 					else
 						pCurveEditCommand->moveNode(pNode,
-							pNode->frame - iRemoveLength);
+							pNode->frame - iRemoveLength,
+							pNode->value);
 					++iCurveEditUpdate;
 					pNode = pNode->next();
 				}

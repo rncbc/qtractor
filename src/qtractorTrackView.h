@@ -42,6 +42,7 @@ class qtractorTrackListItem;
 class qtractorCurveEditCommand;
 
 class QToolButton;
+class QDoubleSpinBox;
 
 class QDragEnterEvent;
 class QDragLeaveEvent;
@@ -371,6 +372,10 @@ protected:
 	// Vertical line positioning.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView = false);
 
+	// Automation/curve node editor methods.
+	void openEditCurveNode(qtractorCurve *pCurve, qtractorCurve::Node *pNode);
+	void closeEditCurveNode();
+
 protected slots:
 
 	// To have track view in v-sync with track list.
@@ -381,6 +386,9 @@ protected slots:
 
 	// Drag-reset timer slot.
 	void dragTimeout();
+
+	// Automatio/curve node editor slots.
+	void editCurveNodeFinished();
 
 private:
 
@@ -549,6 +557,11 @@ private:
 	// Temporary sync-view/follow-playhead hold state.
 	bool m_bSyncViewHold;
 	int  m_iSyncViewHold;
+
+	// Automation curve node editor widget.
+	qtractorCurve       *m_pEditCurve;
+	qtractorCurve::Node *m_pEditCurveNode;
+	QDoubleSpinBox      *m_pEditCurveNodeSpinBox;
 };
 
 

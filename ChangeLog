@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Discrete automation curve node values may now be edited via
+  a numerical entry floating spin-box on double-click (as yet
+  another request by AutoStatic aka. Jeremy Jongepier, thanks).
+  (EXPERIMENTAL)
+
 - Audio/MIDI files or plugins found missing on session load are
   now subject for their own discrete warning messages.
 

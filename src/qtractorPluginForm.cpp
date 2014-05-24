@@ -1164,7 +1164,6 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
 			const int iDecimals = m_pParam->decimals();
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
-			m_pSpinBox->setMaximumWidth(64);
 			m_pSpinBox->setDecimals(iDecimals);
 			m_pSpinBox->setMinimum(m_pParam->minValue());
 			m_pSpinBox->setMaximum(m_pParam->maxValue());
@@ -1172,6 +1171,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSpinBox->setAccelerated(true);
 			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(m_pParam->value());
+			m_pSpinBox->setMaximumWidth(64);
 			pGridLayout->addWidget(m_pSpinBox, 1, 2);
 		}
 	}
