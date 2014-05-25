@@ -186,8 +186,8 @@ class qtractorPluginFile : public QLibrary
 public:
 
 	// Constructor.
-	qtractorPluginFile(const QString& sFilename, bool bAutoUnload = true)
-		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload) {}
+	qtractorPluginFile(const QString& sFilename)
+		: QLibrary(sFilename) {}
 
 	// Destructor.
 	~qtractorPluginFile()
@@ -200,12 +200,6 @@ public:
 	bool open();
 	void close();
 
-	// Auto-unload flag accessors.
-	void setAutoUnload(bool bAutoUnload)
-		{ m_bAutoUnload = bAutoUnload; }
-	bool isAutoUnload() const
-		{ return m_bAutoUnload; }
-	
 	// Plugin type listing.
 	bool getTypes(qtractorPluginPath& path,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
@@ -214,11 +208,6 @@ public:
 	static qtractorPlugin *createPlugin(qtractorPluginList *pList,
 		const QString& sFilename, unsigned long iIndex = 0,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
-
-private:
-
-	// Instance variables.
-	bool m_bAutoUnload;
 };
 
 
@@ -449,6 +438,7 @@ public:
 	// Parameter list accessor.
 	void addParam(qtractorPluginParam *pParam)
 	{
+		pParam->reset();
 		if (pParam->isLogarithmic())
 			pParam->observer()->setLogarithmic(true);
 		m_params.insert(pParam->index(), pParam);

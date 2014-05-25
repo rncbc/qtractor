@@ -454,11 +454,6 @@ bool qtractorVstPluginType::open (void)
 	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
 	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
 
-	// HACK: JUCE based VST plugins, which are the most found
-	// with a GUI editor, need to skip explicit shared library
-	// unloading, to avoid mysterious crashes later...
-	if (m_bEditor) file()->setAutoUnload(false);
-
 	return true;
 }
 

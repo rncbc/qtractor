@@ -501,7 +501,7 @@ qtractorLadspaPluginParam::qtractorLadspaPluginParam (
 	setDefaultValue(fDefaultValue);
 
 	// Initialize port value...
-	reset();
+	// reset(); -- deferred to qtractorPlugin::addParam();
 }
 
 
