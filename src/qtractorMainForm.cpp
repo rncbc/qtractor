@@ -2079,7 +2079,7 @@ bool qtractorMainForm::closeSession (void)
 	if (bClose) {
 		// Just in case we were in the middle of something...
 		setPlaying(false);
-		// Reset subject/observer queue.
+		// Reset (soft) subject/observer queue.
 		qtractorSubject::resetQueue();
 		// Reset all dependables to default.
 		m_pMixer->clear();
@@ -2091,6 +2091,8 @@ bool qtractorMainForm::closeSession (void)
 		// And last but not least.
 		m_pConnections->clear();
 		m_pTracks->clear();
+		// Clear (hard) subject/observer queue.
+		qtractorSubject::clearQueue();
 		// Reset playhead.
 		m_iPlayHead = 0;
 	#ifdef CONFIG_LV2

@@ -1,7 +1,7 @@
 // qtractorObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -172,6 +172,11 @@ void qtractorSubject::flushQueue ( bool bUpdate )
 void qtractorSubject::resetQueue (void)
 {
 	g_subjectQueue.reset();
+}
+
+void qtractorSubject::clearQueue (void)
+{
+	g_subjectQueue.clear();
 }
 
 

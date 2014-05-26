@@ -3498,7 +3498,7 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 	}
 
 	// Initialize port value...
-	reset();
+	// reset(); -- deferred to qtractorPlugin::addParam();
 }
 
 

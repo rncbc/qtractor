@@ -286,7 +286,7 @@ void qtractorPluginFile::close (void)
 		(*pfnFini)();
 #endif
 
-	if (m_bAutoUnload) QLibrary::unload();
+	QLibrary::unload();
 }
 
 
@@ -1491,7 +1491,8 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 	if (m_iDecimals < 0) {
 		m_iDecimals = 0;
 		if (!isInteger()) {
-			float fDecs = ::log10f(maxValue() - minValue());
+			const float fDecs
+				= ::log10f(maxValue() - minValue());
 			if (fDecs < -3.0f)
 				m_iDecimals = 6;
 			else if (fDecs < 0.0f)

@@ -208,7 +208,7 @@ public:
 		: m_size(0), m_mask(0), m_read(0), m_write(0), m_events(0)
 		{ resize(size); }
 
-	~xrpn_queue () { if (m_events) delete m_events; }
+	~xrpn_queue () { if (m_events) delete [] m_events; }
 	
 	void resize ( unsigned int size )
 	{
