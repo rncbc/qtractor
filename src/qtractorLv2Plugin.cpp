@@ -2560,29 +2560,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			suil_instance_port_event(m_suil_instance,
 				m_piControlOuts[j], sizeof(float), 0, &m_pfControlOuts[j]);
 		}
-
 		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
-	#if QT_VERSION < 0x050000
-		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
-			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
-			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
-			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);
-			// LV2 UI resize control...
-			resizeEditor(m_pQt4Widget->sizeHint());
-		//	m_pQt4Widget->show();
-		}
-	#endif
-	#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
-		m_lv2_ui_handle = (LV2UI_Handle)
-			suil_instance_get_handle(m_suil_instance);
-	#else
-		struct SuilInstanceHead {	// HACK!
-			void                   *ui_lib_handle;
-			const LV2UI_Descriptor *ui_descriptor;
-			LV2UI_Handle            ui_handle;
-		} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
-		m_lv2_ui_handle = suil_instance_head->ui_handle;
-	#endif	//  CONFIG_SUIL_INSTANCE_GET_HANDLE
 	#ifdef CONFIG_LV2_UI_IDLE
 		if (m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
 			m_lv2_ui_idle_interface	= (const LV2UI_Idle_Interface *)
@@ -2601,6 +2579,34 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			m_lv2_ui_show_interface	= NULL;
 		}
 	#endif
+	#if QT_VERSION < 0x050000
+		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL
+		#ifdef CONFIG_LV2_UI_SHOW
+			&& m_lv2_ui_show_interface == NULL
+		#endif
+		) {
+			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
+			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
+			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);
+			// LV2 UI resize control...
+			resizeEditor(m_pQt4Widget->sizeHint());
+		//	m_pQt4Widget->show();
+		} else {
+			m_pQt4Widget = NULL;
+			m_pQt4Filter = NULL;
+		}
+	#endif
+	#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
+		m_lv2_ui_handle = (LV2UI_Handle)
+			suil_instance_get_handle(m_suil_instance);
+	#else
+		struct SuilInstanceHead {	// HACK!
+			void                   *ui_lib_handle;
+			const LV2UI_Descriptor *ui_descriptor;
+			LV2UI_Handle            ui_handle;
+		} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
+		m_lv2_ui_handle = suil_instance_head->ui_handle;
+	#endif	//  CONFIG_SUIL_INSTANCE_GET_HANDLE
 		g_lv2Plugins.append(this);
 	}
 
