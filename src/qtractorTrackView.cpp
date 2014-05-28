@@ -3812,6 +3812,8 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 		&& m_dragState == DragNone && m_dragCursor == DragNone
 	//	&& QApplication::mouseButtons() == Qt::NoButton
 		&& --m_iSyncViewHold < 0) {
+		// Make sure no floating widget is around...
+		closeEditCurveNode();
 		// Maybe we'll need some head-room...
 		if (x < qtractorScrollView::contentsWidth() - w) {
 			qtractorScrollView::setContentsPos(
@@ -5074,6 +5076,8 @@ void qtractorTrackView::openEditCurveNode (
 	QObject::connect(m_pEditCurveNodeSpinBox,
 		SIGNAL(editingFinished()),
 		SLOT(editCurveNodeFinished()));
+
+	setSyncViewHoldOn(true);
 }
 
 

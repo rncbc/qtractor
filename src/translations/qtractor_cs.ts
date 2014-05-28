@@ -13609,49 +13609,49 @@ Délka:	%3</translation>
         <translation>Změnit velikost záznamu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4039"/>
+        <location filename="../qtractorTrackView.cpp" line="4041"/>
         <source>%1 automation</source>
         <translation>%1 automatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4112"/>
+        <location filename="../qtractorTrackView.cpp" line="4114"/>
         <source>%1 clip</source>
         <translation>%1 záznam</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4726"/>
+        <location filename="../qtractorTrackView.cpp" line="4728"/>
         <source>move automation</source>
         <translation>Přesunout automatizaci</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4807"/>
+        <location filename="../qtractorTrackView.cpp" line="4809"/>
         <source>paste automation</source>
         <translation>Vložit automatizaci</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4043"/>
-        <location filename="../qtractorTrackView.cpp" line="4116"/>
+        <location filename="../qtractorTrackView.cpp" line="4045"/>
+        <location filename="../qtractorTrackView.cpp" line="4118"/>
         <source>cut</source>
         <translation>Vyjmout</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4046"/>
-        <location filename="../qtractorTrackView.cpp" line="4119"/>
+        <location filename="../qtractorTrackView.cpp" line="4048"/>
+        <location filename="../qtractorTrackView.cpp" line="4121"/>
         <source>delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4122"/>
+        <location filename="../qtractorTrackView.cpp" line="4124"/>
         <source>split</source>
         <translation>Rozdělit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4478"/>
+        <location filename="../qtractorTrackView.cpp" line="4480"/>
         <source>move clip</source>
         <translation>Přesunout záznam</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4608"/>
+        <location filename="../qtractorTrackView.cpp" line="4610"/>
         <source>paste clip</source>
         <translation>Vložit záznam</translation>
     </message>
