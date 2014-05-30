@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -205,14 +205,15 @@ bool qtractorAudioClip::isOverlap ( unsigned int iOverlapSize ) const
 	if (m_pData == NULL)
 		return false;
 
-	unsigned long iClipStart = clipStart();
-	unsigned long iClipEnd = iClipStart + clipLength() + iOverlapSize;
+	const unsigned long iClipStart = clipStart();
+	const unsigned long iClipEnd = iClipStart + clipLength() + iOverlapSize;
 
 	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
 		qtractorAudioClip *pClip = iter.next();
-		unsigned long iClipStart2 = pClip->clipStart();
-		unsigned long iClipEnd2 = iClipStart2 + pClip->clipLength() + iOverlapSize;
+		const unsigned long iClipStart2 = pClip->clipStart();
+		const unsigned long iClipEnd2
+			= iClipStart2 + pClip->clipLength() + iOverlapSize;
 		if ((iClipStart >= iClipStart2 && iClipEnd2 >  iClipStart) ||
 			(iClipEnd   >  iClipStart2 && iClipEnd2 >= iClipEnd))
 			return true;
@@ -242,7 +243,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 
 	// Check file buffer number of channels...
 	unsigned short iChannels = 0;
-	bool bWrite = (iMode & qtractorAudioFile::Write);
+	const bool bWrite = (iMode & qtractorAudioFile::Write);
 	qtractorAudioBus *pAudioBus
 		= static_cast<qtractorAudioBus *> (bWrite ?
 			pTrack->inputBus() : pTrack->outputBus());
@@ -256,7 +257,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		return false;
 
 	// Save old property (need for peak file ignition)...
-	bool bFilenameChanged = (sFilename != filename());
+	const bool bFilenameChanged = (sFilename != filename());
 
 	// Set local properties...
 	setFilename(sFilename);
@@ -271,7 +272,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pData = g_hashTable.value(*m_pKey, NULL);
 		if (m_pData) {
 			// Check if current clip overlaps any other...
-			unsigned int iOverlapSize
+			const unsigned int iOverlapSize
 				= pSession->audioEngine()->bufferSize() << 2;
 			bool bOverlap = isOverlap(iOverlapSize);
 			while (bOverlap) {
@@ -577,15 +578,15 @@ void qtractorAudioClip::process (
 		return;
 
 	// Get the next bunch from the clip...
-	unsigned long iClipStart = clipStart();
+	const unsigned long iClipStart = clipStart();
 	if (iClipStart > iFrameEnd)
 		return;
 
-	unsigned long iClipEnd = iClipStart + clipLength();
+	const unsigned long iClipEnd = iClipStart + clipLength();
 	if (iClipEnd < iFrameStart)
 		return;
 
-	unsigned long iOffset
+	const unsigned long iOffset
 		= (iFrameEnd < iClipEnd ? iFrameEnd : iClipEnd) - iClipStart;
 
 	if (iClipStart > iFrameStart) {
@@ -611,8 +612,8 @@ void qtractorAudioClip::process (
 
 
 // Audio clip paint method.
-void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
-	unsigned long iClipOffset )
+void qtractorAudioClip::draw (
+	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
@@ -625,21 +626,22 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	if (!m_pPeak->openRead())
 		return;
 
-	unsigned short iPeriod = m_pPeak->period();
+	const unsigned short iPeriod = m_pPeak->period();
 	if (iPeriod < 1)
 		return;
-	unsigned short iChannels = m_pPeak->channels();
+
+	const unsigned short iChannels = m_pPeak->channels();
 	if (iChannels < 1)
 		return;
 
-	unsigned long iframe
+	const unsigned long iframe
 		= ((iClipOffset + clipOffset()) / iPeriod);
-	unsigned long nframes
+	const unsigned long nframes
 		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
 
 	// Needed an even number of polygon points...
-	bool bZoomedIn = (clipRect.width() > int(nframes));
-	unsigned int iPolyPoints
+	const bool bZoomedIn = (clipRect.width() > int(nframes));
+	const unsigned int iPolyPoints
 		= (bZoomedIn ? nframes: (clipRect.width() >> 1)) << 1;
 	if (iPolyPoints < 2)
 		return;
@@ -660,9 +662,10 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 
 	// Draw peak chart...
 	const QColor& fg = track()->foreground();
-	int h1 = (clipRect.height() / iChannels);
-	int h2 = (h1 >> 1);
-	int h2gain = (h2 * m_fractGain.num); 
+	const int h1 = (clipRect.height() / iChannels);
+	const int h2 = (h1 >> 1);
+	const int h2gain = (h2 * m_fractGain.num);
+
 	int ymax, ymin, yrms;
 	unsigned int n, n2;
 	int x, y;
@@ -773,7 +776,7 @@ QString qtractorAudioClip::toolTip (void) const
 
 // Virtual document element methods.
 bool qtractorAudioClip::loadClipElement (
-	qtractorDocument * /* pDocument */, QDomElement *pElement )
+	qtractorDocument */*pDocument*/, QDomElement *pElement )
 {
 	// Load track children...
 	for (QDomNode nChild = pElement->firstChild();
@@ -849,19 +852,20 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	}
 
 	unsigned short i;
-	unsigned int iFrames = pBuff->bufferSize();
+
+	const unsigned int iFrames = pBuff->bufferSize();
 	float **ppFrames = new float * [iChannels];
 	for (i = 0; i < iChannels; ++i) {
 		ppFrames[i] = new float[iFrames];
 		::memset(ppFrames[i], 0, iFrames * sizeof(float));
 	}
 
-	float fGain = clipGain();
+	const float fGain = clipGain();
 	unsigned long iFrameStart = 0;
 	while (iFrameStart < iLength) {
 		pBuff->syncExport();
 		if (pBuff->inSync(iFrameStart, iFrameStart + iFrames)) {
-			int nread = pBuff->read(ppFrames, iFrames);
+			const int nread = pBuff->read(ppFrames, iFrames);
 			if (nread < 1)
 				break;
 			for (i = 0; i < iChannels; ++i) {

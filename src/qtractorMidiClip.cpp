@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -981,10 +981,10 @@ void qtractorMidiClip::draw (
 	qtractorMidiEvent *pEvent
 		= m_drawCursor.reset(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
-		unsigned long t1 = t0 + pEvent->time();
+		const unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTimeEnd)
 			break;
-		unsigned long t2 = t1 + pEvent->duration();
+		const unsigned long t2 = t1 + pEvent->duration();
 		if (pEvent->type() == qtractorMidiEvent::NOTEON && t2 >= iTimeStart) {
 			pNode = cursor.seekTick(t1);
 			const int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
