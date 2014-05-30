@@ -315,25 +315,25 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="754"/>
+        <location filename="../qtractorAudioClip.cpp" line="757"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Звук:	каналов: %1, %2 Гц</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="759"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source> (%1 dB)</source>
         <translation> (%1 Дб)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="762"/>
+        <location filename="../qtractorAudioClip.cpp" line="765"/>
         <source>
 	(%1% time stretch)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="765"/>
+        <location filename="../qtractorAudioClip.cpp" line="768"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation type="unfinished"></translation>
@@ -6387,12 +6387,12 @@ are up and running and then restart the session.</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="261"/>
+        <location filename="../qtractorMessages.cpp" line="257"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Ведение журнала остановлено --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="271"/>
+        <location filename="../qtractorMessages.cpp" line="267"/>
         <source>Logging started --- %1 ---</source>
         <translation>Ведение журнала начато --- %1 ---</translation>
     </message>

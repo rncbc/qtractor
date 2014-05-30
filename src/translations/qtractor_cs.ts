@@ -555,25 +555,25 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="754"/>
+        <location filename="../qtractorAudioClip.cpp" line="757"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>Audio:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="759"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source> (%1 dB)</source>
         <translation>(%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="762"/>
+        <location filename="../qtractorAudioClip.cpp" line="765"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% natažení času)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="765"/>
+        <location filename="../qtractorAudioClip.cpp" line="768"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
@@ -6847,12 +6847,12 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
         <translation>Vzkazy</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="261"/>
+        <location filename="../qtractorMessages.cpp" line="257"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Zapisování vzkazů bylo zastaveno --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="271"/>
+        <location filename="../qtractorMessages.cpp" line="267"/>
         <source>Logging started --- %1 ---</source>
         <translation>Zapisování vzkazů začalo --- %1 ---</translation>
     </message>
