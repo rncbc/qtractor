@@ -29,14 +29,14 @@ Audio:	%1 canaux, %2 Hz</translation>
         <translation>	(%1 demi-tons de décalage de la tonalité)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2606"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4205"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2608"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4259"/>
         <source>%1 In</source>
         <translation>%1 Entrée</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2606"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4205"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2608"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4259"/>
         <source>%1 Out</source>
         <translation>%1 Sortie</translation>
     </message>
@@ -271,7 +271,7 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>%1 Banque %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1113"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1103"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banque %2</translation>
     </message>
