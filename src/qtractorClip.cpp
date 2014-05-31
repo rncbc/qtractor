@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -215,8 +215,8 @@ bool qtractorClip::isClipSelected (void) const
 
 
 // Clip-selection points accessors.
-void qtractorClip::setClipSelect ( unsigned long iSelectStart,
-	unsigned long iSelectEnd )
+void qtractorClip::setClipSelect (
+	unsigned long iSelectStart, unsigned long iSelectEnd )
 {
 	if (iSelectStart < m_iClipStart)
 		iSelectStart = m_iClipStart;
@@ -835,8 +835,8 @@ int qtractorClip::TakeInfo::takeCount (void) const
 {
 	int iTakeCount = -1;
 
-	unsigned long iClipEnd = m_iClipStart + m_iClipLength;
-	unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+	const unsigned long iClipEnd = m_iClipStart + m_iClipLength;
+	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
 
 	if (iTakeLength > 0) {
 		if (m_iClipStart < m_iTakeStart)
@@ -858,11 +858,11 @@ int qtractorClip::TakeInfo::select (
 	unsigned long iClipOffset = m_iClipOffset;
 	unsigned long iClipLength = m_iClipLength;
 
-	unsigned long iClipEnd    = iClipStart + iClipLength;
+	const unsigned long iClipEnd    = iClipStart + iClipLength;
 
-	unsigned long iTakeStart  = m_iTakeStart;
-	unsigned long iTakeEnd    = m_iTakeEnd;
-	unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+	const unsigned long iTakeStart  = m_iTakeStart;
+	const unsigned long iTakeEnd    = m_iTakeEnd;
+	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorClip::TakeInfo[%p]::select(%d, %lu, %lu, %lu, %lu, %lu)",
@@ -870,7 +870,7 @@ int qtractorClip::TakeInfo::select (
 #endif
 
 	if (iClipStart < iTakeStart) {
-		int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
+		const int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
 		// Clip-head for sure...
@@ -889,7 +889,7 @@ int qtractorClip::TakeInfo::select (
 	}
 	else
 	if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
-		int iTakeCount = (iClipEnd - iTakeEnd) / iTakeLength + 1;
+		const int iTakeCount = (iClipEnd - iTakeEnd) / iTakeLength + 1;
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
 		// Clip-take for sure...
@@ -960,9 +960,9 @@ void qtractorClip::TakeInfo::selectClipPart (
 void qtractorClip::TakeInfo::reset (
 	qtractorClipCommand *pClipCommand, bool bClear )
 {
-	unsigned long iClipStart  = m_iClipStart;
-	unsigned long iClipOffset = m_iClipOffset;
-	unsigned long iClipLength = m_iClipLength;
+	const unsigned long iClipStart  = m_iClipStart;
+	const unsigned long iClipOffset = m_iClipOffset;
+	const unsigned long iClipLength = m_iClipLength;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorClip::TakeInfo[%p]::reset(%lu, %lu, %lu, %d)",

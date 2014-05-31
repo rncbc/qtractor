@@ -4,39 +4,39 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="754"/>
+        <location filename="../qtractorAudioClip.cpp" line="757"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Audio:	%1 canaux, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="759"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="762"/>
+        <location filename="../qtractorAudioClip.cpp" line="765"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% étirement temporel)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="765"/>
+        <location filename="../qtractorAudioClip.cpp" line="768"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>	(%1 demi-tons de décalage de la tonalité)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2606"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4205"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2608"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4262"/>
         <source>%1 In</source>
         <translation>%1 Entrée</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2606"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4205"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2608"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4262"/>
         <source>%1 Out</source>
         <translation>%1 Sortie</translation>
     </message>
@@ -271,7 +271,7 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>%1 Banque %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1113"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1103"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banque %2</translation>
     </message>
@@ -6019,12 +6019,12 @@ est près et en fonctionnement puis redémarrez la session.</translation>
         <translation>Messages</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="261"/>
+        <location filename="../qtractorMessages.cpp" line="257"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Journalisation arrêtée --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="271"/>
+        <location filename="../qtractorMessages.cpp" line="267"/>
         <source>Logging started --- %1 ---</source>
         <translation>Journalisation démarrée --- %1 ---</translation>
     </message>

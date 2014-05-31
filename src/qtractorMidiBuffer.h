@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -108,7 +108,7 @@ public:
 	// Read event from buffer.
 	snd_seq_event_t *pop()
 	{
-		unsigned int iReadIndex = m_iReadIndex;
+		const unsigned int iReadIndex = m_iReadIndex;
 		if (iReadIndex == m_iWriteIndex)
 			return NULL;
 		m_iReadIndex = (iReadIndex + 1) & m_iBufferMask;
@@ -118,7 +118,7 @@ public:
 	// Write event to buffer.
 	bool push(snd_seq_event_t *pEvent, unsigned long iTick = 0)
 	{
-		unsigned int iWriteIndex = (m_iWriteIndex + 1) & m_iBufferMask;
+		const unsigned int iWriteIndex = (m_iWriteIndex + 1) & m_iBufferMask;
 		if (iWriteIndex == m_iReadIndex)
 			return false;
 		m_pBuffer[m_iWriteIndex] = *pEvent;
@@ -130,7 +130,7 @@ public:
 	// Write event to buffer (ordered).
 	bool insert(snd_seq_event_t *pEvent, unsigned long iTick = 0)
 	{
-		unsigned int iWriteIndex = (m_iWriteIndex + 1) & m_iBufferMask;
+		const unsigned int iWriteIndex = (m_iWriteIndex + 1) & m_iBufferMask;
 		if (iWriteIndex == m_iReadIndex)
 			return false;
 		unsigned int i = m_iWriteIndex;
@@ -153,8 +153,8 @@ public:
 	// Returns number of events currently available.
 	unsigned int count() const
 	{
-		unsigned int iWriteIndex = m_iWriteIndex;
-		unsigned int iReadIndex  = m_iReadIndex;
+		const unsigned int iWriteIndex = m_iWriteIndex;
+		const unsigned int iReadIndex  = m_iReadIndex;
 		if (iWriteIndex > iReadIndex) {
 			return (iWriteIndex - iReadIndex);
 		} else {
@@ -218,8 +218,8 @@ public:
 	bool direct(snd_seq_event_t *pEvent);
 
 	// Queued buffering.
-	bool queued(qtractorTimeScale *pTimeScale,
-		snd_seq_event_t *pEvent, unsigned long iTime, long iFrameStart);
+	bool queued(snd_seq_event_t *pEvent,
+		unsigned long iTime, unsigned long iTimeOff);
 
 	// Process buffers.
 	void process(unsigned long iTimeStart, unsigned long iTimeEnd);

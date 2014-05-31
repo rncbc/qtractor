@@ -1,7 +1,7 @@
 // qtractorClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -343,21 +343,21 @@ protected:
 
 private:
 
-	qtractorTrack *m_pTrack;        // Track reference.
+	qtractorTrack *m_pTrack;            // Track reference.
 
-	QString       m_sFilename;      // Clip filename (complete path).
-	QString       m_sClipName;      // Clip label.
+	QString       m_sFilename;          // Clip filename (complete path).
+	QString       m_sClipName;          // Clip label.
 
-	unsigned long m_iClipStart;     // Clip frame start.
-	unsigned long m_iClipLength;    // Clip frame length.
-	unsigned long m_iClipOffset;    // Clip frame offset.
+	unsigned long m_iClipStart;         // Clip frame start.
+	unsigned long m_iClipLength;        // Clip frame length.
+	unsigned long m_iClipOffset;        // Clip frame offset.
 
-	unsigned long m_iClipStartTime; // Clip time (tick) start.
-	unsigned long m_iClipOffsetTime;// Clip time (tick) offset.
-	unsigned long m_iClipLengthTime;// Clip time (tick) length.
+	unsigned long m_iClipStartTime;     // Clip time (tick) start.
+	unsigned long m_iClipOffsetTime;    // Clip time (tick) offset.
+	unsigned long m_iClipLengthTime;	// Clip time (tick) length.
 
-	unsigned long m_iSelectStart;   // Clip loop start frame-offset.
-	unsigned long m_iSelectEnd;     // Clip loop end frame-offset.
+	unsigned long m_iSelectStart;       // Clip loop start frame-offset.
+	unsigned long m_iSelectEnd;         // Clip loop end frame-offset.
 
 	// Clip gain/volume.
 	float m_fGain;
@@ -366,14 +366,14 @@ private:
 	TakeInfo *m_pTakeInfo;
 
 	// Fade-in/out stuff.
-	unsigned long m_iFadeInLength;  // Fade-in length (in frames).
-	unsigned long m_iFadeOutLength; // Fade-out length (in frames).
+	unsigned long m_iFadeInLength;      // Fade-in length (in frames).
+	unsigned long m_iFadeOutLength;     // Fade-out length (in frames).
 
-	unsigned long m_iFadeInTime;    // Fade-in length (in ticks).
-	unsigned long m_iFadeOutTime;   // Fade-out length (in ticks).
+	unsigned long m_iFadeInTime;        // Fade-in length (in ticks).
+	unsigned long m_iFadeOutTime;       // Fade-out length (in ticks).
 
-	FadeType m_fadeInType;          // Fade-in curve type.
-	FadeType m_fadeOutType;         // Fade-out curve type.
+	FadeType m_fadeInType;              // Fade-in curve type.
+	FadeType m_fadeOutType;             // Fade-out curve type.
 
 	// Aproximations to exponential fade interpolation.
 	FadeFunctor *m_pFadeInFunctor;
