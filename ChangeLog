@@ -5,8 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- Once again audio frame/MIDI time drift correction has been
-  slightly refactored in regard to MIDI input monitoring.
+- Once again, audio frame/MIDI time drift correction has been
+  slightly refactored to improve MIDI input monitor and timing.
   (EXPERIMENTAL)
 
 - Discrete automation curve node values may now be edited via
