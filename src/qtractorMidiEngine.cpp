@@ -2022,7 +2022,7 @@ void qtractorMidiEngine::drift (void)
 		const long iDeltaTime = (iAudioTime - iMidiTime);
 		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
 			m_iTimeDrift += (iDeltaTime >> 1);
-		if (m_iTimeDrift && iMidiTime > m_iTimeDrift) {
+		if ((m_iTimeDrift || m_iFrameDrift) && iMidiTime > m_iTimeDrift) {
 		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
 			snd_seq_queue_tempo_alloca(&pAlsaTempo);
@@ -2038,16 +2038,17 @@ void qtractorMidiEngine::drift (void)
 				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 			}
 		//--DRIFT-SKEW-END--
-			m_iFrameDrift = iAudioFrame;
 			pNode = m_pMetroCursor->seekTick(iMidiTime);
-			m_iFrameDrift -= long(pNode->frameFromTick(iMidiTime));
-		#ifdef CONFIG_DEBUG
+			const unsigned long iMidiFrame
+				= pNode->frameFromTick(iMidiTime);
+			const long iDeltaFrame = (iAudioFrame - iMidiFrame);
+			m_iFrameDrift = (iDeltaFrame >> 1);
+		#ifdef CONFIG_DEBUG//_0
 			qDebug("qtractorMidiEngine::drift(): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) "
-				"iTimeDrift=%ld (%.2g%%) iFrameDrift=%ld",
-				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
-				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f,
-				m_iFrameDrift);
+				"iTimeDrift=%ld iFrameDrift=%ld (%.2g%%)",
+				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift, m_iFrameDrift,
+				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
 		}
 	}
