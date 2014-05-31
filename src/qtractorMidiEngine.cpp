@@ -1172,6 +1172,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iTimeStart     = 0;
 	m_iTimeDrift     = 0;
 	m_iFrameStart    = 0;
+	m_iFrameDrift    = 0;
 	m_iFrameTime     = 0;
 
 	m_bControlBus    = false;
@@ -1644,8 +1645,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
+	const long f0 = m_iFrameStart + m_iFrameDrift;
 	const unsigned long t0 = pNode->frameFromTick(iTime);
-	const unsigned long t1 = (long(t0) < m_iFrameStart ? t0 : t0 - m_iFrameStart);
+	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
 
 	if (pEv->type == SND_SEQ_EVENT_NOTE && pEv->data.note.duration > 0) {
@@ -1941,8 +1943,9 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	// Do it for the MIDI track plugins too...
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
+	const long f0 = m_iFrameStart + m_iFrameDrift;
 	const unsigned long t0 = pNode->frameFromTick(iTime);
-	const unsigned long t1 = (long(t0) < m_iFrameStart ? t0 : t0 - m_iFrameStart);
+	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
 
 	if (ev.type == SND_SEQ_EVENT_NOTE && ev.data.note.duration > 0) {
@@ -1984,7 +1987,8 @@ void qtractorMidiEngine::resetDrift (void)
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 //--DRIFT-SKEW-END--
 
-	m_iTimeDrift = 0;
+	m_iTimeDrift  = 0;
+	m_iFrameDrift = 0;
 }
 
 
@@ -2016,7 +2020,9 @@ void qtractorMidiEngine::drift (void)
 		const long iMidiTime = m_iTimeStart
 			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		const long iDeltaTime = (iAudioTime - iMidiTime);
-		if (iDeltaTime && iAudioTime > 0 && iMidiTime > m_iTimeDrift) {
+		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
+			m_iTimeDrift += (iDeltaTime >> 1);
+		if (m_iTimeDrift && iMidiTime > m_iTimeDrift) {
 		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
 			snd_seq_queue_tempo_alloca(&pAlsaTempo);
@@ -2026,19 +2032,22 @@ void qtractorMidiEngine::drift (void)
 			const unsigned int iSkewPrev
 				= snd_seq_queue_tempo_get_skew(pAlsaTempo);
 			const unsigned int iSkewNext = (unsigned int) (float(iSkewBase)
-				* float(iAudioTime) / float(iMidiTime - m_iTimeDrift));
+				* float(iMidiTime + m_iTimeDrift) / float(iMidiTime));
 			if (iSkewNext != iSkewPrev) {
 				snd_seq_queue_tempo_set_skew(pAlsaTempo, iSkewNext);
 				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 			}
 		//--DRIFT-SKEW-END--
-			m_iTimeDrift += iDeltaTime;
-		//	m_iTimeDrift >>= 1; // Damp fast-average drift?
-		#ifdef CONFIG_DEBUG_0
+			m_iFrameDrift = iAudioFrame;
+			pNode = m_pMetroCursor->seekTick(iMidiTime);
+			m_iFrameDrift -= long(pNode->frameFromTick(iMidiTime));
+		#ifdef CONFIG_DEBUG
 			qDebug("qtractorMidiEngine::drift(): "
-				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.2g%%)",
+				"iAudioTime=%ld iMidiTime=%ld (%ld) "
+				"iTimeDrift=%ld (%.2g%%) iFrameDrift=%ld",
 				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
-				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
+				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f,
+				m_iFrameDrift);
 		#endif
 		}
 	}
@@ -2193,7 +2202,7 @@ bool qtractorMidiEngine::start (void)
 	m_iFrameStart = long(pMidiCursor->frame());
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
 	m_iFrameTime  = long(pSession->audioEngine()->jackFrame()) - m_iFrameStart;
-	
+
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
 	snd_seq_drain_output(m_pAlsaSeq);
@@ -2323,9 +2332,9 @@ void qtractorMidiEngine::restartLoop (void)
 		const long iLoopLength = long(iLoopEnd - iLoopStart);
 		m_iFrameTime  += iLoopLength;
 		m_iFrameStart -= iLoopLength;
-		m_iTimeStart  -= long(pSession->tickFromFrame(iLoopEnd)
-			- pSession->tickFromFrame(iLoopStart));
-	//	m_iTimeStart += m_iTimeDrift; -- Drift correction?
+		m_iTimeStart  -= pSession->tickFromFrame(iLoopEnd);
+		m_iTimeStart  += pSession->tickFromFrame(iLoopStart);
+	//	m_iTimeStart  += m_iTimeDrift; -- Drift correction?
 		resetDrift();
 	}
 }
@@ -2335,12 +2344,6 @@ void qtractorMidiEngine::restartLoop (void)
 long qtractorMidiEngine::timeStart (void) const
 {
 	return m_iTimeStart;
-}
-
-
-long qtractorMidiEngine::frameStart (void) const
-{
-	return m_iFrameStart;
 }
 
 

@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Once again audio frame/MIDI time drift correction has been
+  slightly refactored in regard to MIDI input monitoring.
+  (EXPERIMENTAL)
+
 - Discrete automation curve node values may now be edited via
   a numerical entry floating spin-box on double-click (as yet
   another request by AutoStatic aka. Jeremy Jongepier, thanks).

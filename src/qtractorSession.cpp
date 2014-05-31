@@ -806,7 +806,8 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 	}
 
 	// Set the conversion ratio...
-	float fRatio = float(m_props.timeScale.sampleRate()) / float(iSampleRate);
+	const float fRatio
+		= float(m_props.timeScale.sampleRate()) / float(iSampleRate);
 
 	// Set actual sample-rate...
 	m_props.timeScale.setSampleRate(iSampleRate);
@@ -1154,10 +1155,10 @@ void qtractorSession::setPlaying ( bool bPlaying )
 	if (bPlaying && isRecording()) {
 		// Take a snapshot on where recording
 		// clips are about to start...
-		unsigned long iPlayHead  = playHead();
+		const unsigned long iPlayHead  = playHead();
 		unsigned long iClipStart = iPlayHead;
 		if (isPunching()) {
-			unsigned long iPunchIn = punchIn();
+			const unsigned long iPunchIn = punchIn();
 			if (iClipStart < iPunchIn)
 				iClipStart = iPunchIn;
 		}
@@ -1277,7 +1278,7 @@ bool qtractorSession::isBusy (void) const
 // Playhead positioning.
 void qtractorSession::setPlayHead ( unsigned long iFrame )
 {
-	bool bPlaying = isPlaying();
+	const bool bPlaying = isPlaying();
 	if (bPlaying && isRecording())
 		return;
 
@@ -1307,7 +1308,7 @@ unsigned long qtractorSession::playHead (void) const
 void qtractorSession::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-	bool bPlaying = isPlaying();
+	const bool bPlaying = isPlaying();
 	if (bPlaying && isRecording())
 		return;
 
@@ -1321,7 +1322,7 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	}
 
 	// Save exact current play-head position...
-	unsigned long iFrame = playHead();
+	const unsigned long iFrame = playHead();
 
 	// Set proper loop points for every track, clip and buffer...
 	qtractorTrack *pTrack = m_tracks.first();
@@ -1460,12 +1461,12 @@ void qtractorSession::setRecording ( bool bRecording )
 	unsigned long iClipStart = playHead();
 
 	if (isPunching()) {
-		unsigned long iPunchIn = punchIn();
+		const unsigned long iPunchIn = punchIn();
 		if (iClipStart < iPunchIn)
 			iClipStart = iPunchIn;
 	}
 
-	unsigned long iFrameTime = frameTimeEx();
+	const unsigned long iFrameTime = frameTimeEx();
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->isRecord())
@@ -1560,8 +1561,8 @@ void qtractorSession::trackRecord (
 		// MIDI adjust to playing queue start
 		// iif armed while already playing ...
 		if (isPlaying()) {
-			unsigned long iTime = pMidiClip->clipStartTime();
-			unsigned long iTimeStart = m_pMidiEngine->timeStart();
+			const unsigned long iTime = pMidiClip->clipStartTime();
+			const unsigned long iTimeStart = m_pMidiEngine->timeStart();
 			if (iTime > iTimeStart)
 				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);
 		}
@@ -1661,7 +1662,7 @@ void qtractorSession::acquireMidiTag ( qtractorTrack *pTrack )
 
 void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 {
-	unsigned short iMidiTag = pTrack->midiTag();
+	const unsigned short iMidiTag = pTrack->midiTag();
 	if (iMidiTag > 0) {
 		m_midiTags.push_back(iMidiTag);
 		pTrack->setMidiTag(0);

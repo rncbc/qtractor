@@ -145,8 +145,6 @@ public:
 	// The delta-time/frame accessors.
 	long timeStart() const;
 
-	long frameStart() const;
-
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 
@@ -309,8 +307,8 @@ private:
 	// The delta-time/frame when playback started .
 	long m_iTimeStart;
 	long m_iTimeDrift;
-
 	long m_iFrameStart;
+	long m_iFrameDrift;
 	long m_iFrameTime;
 
 	// The assigned control buses.
