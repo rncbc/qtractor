@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -353,34 +353,24 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 
 
 // Queued buffering.
-bool qtractorMidiManager::queued ( qtractorTimeScale *pTimeScale,
-	snd_seq_event_t *pEvent, unsigned long iTime, long iFrameStart )
+bool qtractorMidiManager::queued (
+	snd_seq_event_t *pEvent, unsigned long iTime, unsigned long iTimeOff )
 {
-	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	const unsigned long t0 = pNode->frameFromTick(iTime);
-	unsigned long t1 = (long(t0) < iFrameStart ? t0 : t0 - iFrameStart);
-
 	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
 		snd_seq_event_t ev = *pEvent;
 		ev.type = SND_SEQ_EVENT_NOTEON;
-		if (!m_queuedBuffer.insert(&ev, t1))
+		if (!m_queuedBuffer.insert(&ev, iTime))
 			return false;
-		if (ev.data.note.duration > 0) {
-			iTime += (ev.data.note.duration - 1);
-			pNode = cursor.seekTick(iTime);
-			t1 += (pNode->frameFromTick(iTime) - t0);
-		}
 		ev.type = SND_SEQ_EVENT_NOTEOFF;
 		ev.data.note.velocity = 0;
 		ev.data.note.duration = 0;
-		return m_postedBuffer.insert(&ev, t1);
+		return m_postedBuffer.insert(&ev, iTimeOff);
 	}
 
 	if (pEvent->type == SND_SEQ_EVENT_NOTEOFF)
-		return m_postedBuffer.insert(pEvent, t1);
+		return m_postedBuffer.insert(pEvent, iTime);
 	else
-		return m_queuedBuffer.insert(pEvent, t1);
+		return m_queuedBuffer.insert(pEvent, iTime);
 }
 
 

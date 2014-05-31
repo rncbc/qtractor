@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -369,9 +369,9 @@ static int qtractorAudioEngine_sync (
 	if (pAudioEngine->isFreewheel())
 		return 0;
 
-	long iDeltaFrames
+	const long iDeltaFrames
 		= long(pos->frame) - long(pAudioEngine->sessionCursor()->frame());
-	unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 	if (labs(iDeltaFrames) > long(iBufferSize << 1)) {
 		unsigned long iPlayHead = pos->frame;
 		if (pAudioEngine->isPlaying())
@@ -805,8 +805,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		// Make sure we're in a valid state...
 		if (m_pExportFile && m_pExportBuffer && !m_bExportDone) {
 			// This the legal process cycle frame range...
-			unsigned long iFrameStart = pAudioCursor->frame();
-			unsigned long iFrameEnd   = iFrameStart + nframes;
+			const unsigned long iFrameStart = pAudioCursor->frame();
+			const unsigned long iFrameEnd   = iFrameStart + nframes;
 			// Write output bus buffer to export audio file...
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
 				// Force/sync every audio clip approaching...
@@ -923,8 +923,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	qtractorMidiManager *pMidiManager
 		= pSession->midiManagers().first();
 	if (pMidiManager) {
-		unsigned long iFrameTimeStart = pAudioCursor->frameTime();
-		unsigned long iFrameTimeEnd   = iFrameTimeStart + nframes;
+		const unsigned long iFrameTimeStart = pAudioCursor->frameTime();
+		const unsigned long iFrameTimeEnd   = iFrameTimeStart + nframes;
 		while (pMidiManager) {
 			pMidiManager->process(iFrameTimeStart, iFrameTimeEnd);
 			if (!pMidiManager->isAudioOutputBus())
@@ -1019,8 +1019,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Split processing, in case we're looping...
 	if (pSession->isLooping()) {
-		unsigned long iLoopEnd = pSession->loopEnd();
-		 if (iFrameStart < iLoopEnd) {
+		const unsigned long iLoopEnd = pSession->loopEnd();
+		if (iFrameStart < iLoopEnd) {
 			// Loop-length might be shorter than the buffer-period...
 			while (iFrameEnd >= iLoopEnd + nframes) {
 				// Process the remaining until end-of-loop...
@@ -1573,14 +1573,14 @@ bool qtractorAudioEngine::openMetroBus (void)
 	}
 
 	// Enough number of channels?...
-	unsigned short iChannels = m_pMetroBus->channels();
+	const unsigned short iChannels = m_pMetroBus->channels();
 	if (iChannels < 1) {
 		closeMetroBus();
 		return false;
 	}
 
 	// We got it...
-	unsigned int iSampleRate = sampleRate();
+	const unsigned int iSampleRate = sampleRate();
 	m_pMetroBarBuff = new qtractorAudioBuffer(
 		m_pSyncThread, iChannels, iSampleRate);
 	m_pMetroBarBuff->open(m_sMetroBarFilename);
@@ -1652,8 +1652,8 @@ void qtractorAudioEngine::resetMetro (void)
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 
 	// FIXME: Each sample buffer must be bounded properly...
-	unsigned long  iMaxLength = 0;
-	unsigned short iNextBeat = pNode->beatFromFrame(iFrame);
+	unsigned long iMaxLength = 0;
+	const unsigned short iNextBeat = pNode->beatFromFrame(iFrame);
 	if (iNextBeat > 0) {
 		m_iMetroBeat = iNextBeat;
 		m_iMetroBeatStart = pNode->frameFromBeat(m_iMetroBeat);
@@ -1665,14 +1665,16 @@ void qtractorAudioEngine::resetMetro (void)
 	}
 
 	if (m_pMetroBarBuff) {
-		unsigned long iMetroBarLength = m_pMetroBarBuff->frames();
+		const unsigned long iMetroBarLength
+			= m_pMetroBarBuff->frames();
 		m_pMetroBarBuff->setLength(
 			iMetroBarLength > iMaxLength ? iMaxLength : iMetroBarLength);
 		m_pMetroBarBuff->reset(false);
 	}
 
 	if (m_pMetroBeatBuff) {
-		unsigned long iMetroBeatLength = m_pMetroBeatBuff->frames();
+		const unsigned long iMetroBeatLength
+			= m_pMetroBeatBuff->frames();
 		m_pMetroBeatBuff->setLength(
 			iMetroBeatLength > iMaxLength ? iMaxLength : iMetroBeatLength);
 		m_pMetroBeatBuff->reset(false);
@@ -1766,7 +1768,7 @@ bool qtractorAudioEngine::openPlayerBus (void)
 	}
 
 	// Enough number of channels?...
-	unsigned short iChannels = m_pPlayerBus->channels();
+	const unsigned short iChannels = m_pPlayerBus->channels();
 	if (iChannels < 1) {
 		closePlayerBus();
 		return false;
@@ -2098,7 +2100,7 @@ bool qtractorAudioBus::open (void)
 	}
 
 	// Allocate internal working bus buffers...
-	unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 	m_ppXBuffer = new float * [m_iChannels];
 	m_ppYBuffer = new float * [m_iChannels];
 	for (i = 0; i < m_iChannels; ++i) {
@@ -2363,8 +2365,8 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
 	if (pAudioEngine == NULL)
 		return;
 
-	unsigned int offset = pAudioEngine->bufferOffset();
-	unsigned int nbytes = nframes * sizeof(float);
+	const unsigned int offset = pAudioEngine->bufferOffset();
+	const unsigned int nbytes = nframes * sizeof(float);
 
 	if (pInputBus == NULL) {
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
@@ -2374,7 +2376,7 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
 		return;
 	}
 
-	unsigned short iBuffers = pInputBus->channels();
+	const unsigned short iBuffers = pInputBus->channels();
 	float **ppBuffer = pInputBus->in();
 
 	if (m_iChannels == iBuffers) {
@@ -2606,6 +2608,7 @@ void qtractorAudioBus::updatePluginListName (
 		QObject::tr("%1 In") : QObject::tr("%1 Out")).arg(busName()));
 }
 
+
 // Update plugin-list name/buffers properly.
 void qtractorAudioBus::updatePluginList (
 	qtractorPluginList *pPluginList, int iFlags )
@@ -2666,7 +2669,7 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 				item.portName   = sClientPort.section(':', 1, 1);
 				ConnectItem *pItem = connects.findItem(item);
 				if (pItem && bConnect) {
-					int iItem = connects.indexOf(pItem);
+					const int iItem = connects.indexOf(pItem);
 					if (iItem >= 0) {
 						connects.removeAt(iItem);
 						delete pItem;
@@ -2706,12 +2709,12 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 			sOutputPort = sClientPort.arg(pItem->index + 1);
 			sInputPort  = pItem->clientName + ':' + pItem->portName;
 		}
-#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG
 		qDebug("qtractorAudioBus[%p]::updateConnects(%d): "
 			"jack_connect: [%s] => [%s]", this, (int) busMode,
 				sOutputPort.toUtf8().constData(),
 				sInputPort.toUtf8().constData());
-#endif
+	#endif
 		// Do it...
 		if (jack_connect(pAudioEngine->jackClient(),
 				sOutputPort.toUtf8().constData(),
