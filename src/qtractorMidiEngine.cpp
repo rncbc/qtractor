@@ -1645,7 +1645,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	const long f0 = m_iFrameStart + m_iFrameDrift;
+	const long f0 = m_iFrameStart - m_iFrameDrift;
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
@@ -1943,7 +1943,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	// Do it for the MIDI track plugins too...
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	const long f0 = m_iFrameStart + m_iFrameDrift;
+	const long f0 = m_iFrameStart - m_iFrameDrift;
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
@@ -2021,7 +2021,7 @@ void qtractorMidiEngine::drift (void)
 			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		const long iDeltaTime = (iAudioTime - iMidiTime);
 		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
-			m_iTimeDrift += (iDeltaTime >> 1);
+			m_iTimeDrift += iDeltaTime;
 		if ((m_iTimeDrift || m_iFrameDrift) && iMidiTime > m_iTimeDrift) {
 		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
@@ -2041,8 +2041,7 @@ void qtractorMidiEngine::drift (void)
 			pNode = m_pMetroCursor->seekTick(iMidiTime);
 			const unsigned long iMidiFrame
 				= pNode->frameFromTick(iMidiTime);
-			const long iDeltaFrame = (iAudioFrame - iMidiFrame);
-			m_iFrameDrift = (iDeltaFrame >> 1);
+			m_iFrameDrift = long(iAudioFrame - iMidiFrame);
 		#ifdef CONFIG_DEBUG//_0
 			qDebug("qtractorMidiEngine::drift(): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) "
