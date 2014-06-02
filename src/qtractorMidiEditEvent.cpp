@@ -419,8 +419,9 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
 			pNode = cursor.seekTick(t1);
-			x = pNode->pixelFromTick(t1) - x0 - cx;
-			int w1 = pNode->pixelFromTick(t2) - x0 - cx - x;
+			x = pNode->pixelFromTick(t1) - dx;
+			pNode = cursor.seekTick(t2);
+			int w1 = pNode->pixelFromTick(t2) - dx - x;
 			if (w1 < 5 || !m_pEditor->isNoteDuration())
 				w1 = 5;
 			if (m_eventType == qtractorMidiEvent::NOTEON ||

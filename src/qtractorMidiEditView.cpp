@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -381,8 +381,9 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 			y = ch - h1 * (pEvent->note() + 1);
 			if (y + h1 >= 0 && y < h) {
 				pNode = cursor.seekTick(t1);
-				x = pNode->pixelFromTick(t1) - x0 - cx;
-				int w1 = pNode->pixelFromTick(t2) - x0 - cx - x;
+				x = pNode->pixelFromTick(t1) - dx;
+				pNode = cursor.seekTick(t2);
+				int w1 = pNode->pixelFromTick(t2) - dx - x;
 				if (w1 < 5) w1 = 5;
 				if (m_pEditor->isNoteColor()) {
 					hue = (128 - int(pEvent->note())) << 4;

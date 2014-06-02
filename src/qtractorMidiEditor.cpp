@@ -1744,6 +1744,7 @@ void qtractorMidiEditor::pasteClipboard (
 			unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
 			int x  = pNode->pixelFromTick(t1) - 1;
+			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
@@ -2020,6 +2021,7 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 		const unsigned long t2 = t1 + pEvent->duration();
 		pNode = cursor.seekTick(t1);
 		int x  = pNode->pixelFromTick(t1) - 1;
+		pNode = cursor.seekTick(t2);
 		int w1 = pNode->pixelFromTick(t2) - x;
 		if (w1 < 5)
 			w1 = 5;
@@ -2457,6 +2459,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			const unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
 			int x = pNode->pixelFromTick(t1) - 1;
+			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
@@ -3223,6 +3226,7 @@ void qtractorMidiEditor::updateDragSelect (
 			t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
 			int x  = pNode->pixelFromTick(t1) - 1;
+			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
@@ -3326,12 +3330,18 @@ long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView ) const
 
 	if (m_pEventDrag) {
 		t1 = dts.t0 + m_pEventDrag->time();
+		if (m_resizeMode == ResizeNoteRight)
+			t1 += m_pEventDrag->duration();
 		dts.node = dts.cursor.seekTick(t1);
 		x1 = dts.node->pixelFromTick(t1);
 	} else {
-		x1 = dts.x0 + (
-			static_cast<qtractorScrollView *> (m_pEditView) == pScrollView
-			? m_select.rectView().x() : m_select.rectEvent().x());
+		const bool bEditView
+			= static_cast<qtractorScrollView *> (m_pEditView) == pScrollView;
+		const QRect& rect
+			= (bEditView ? m_select.rectView() : m_select.rectEvent());
+		x1 = dts.x0 + rect.x();
+		if (m_resizeMode == ResizeNoteRight)
+			x1 += rect.width();
 		dts.node = dts.cursor.seekPixel(x1);
 		t1 = dts.node->tickFromPixel(x1);
 	}
@@ -3529,6 +3539,7 @@ void qtractorMidiEditor::updateEventRects (
 	const unsigned long t2 = t1 + pEvent->duration();
 	pNode = cursor.seekTick(t1);
 	int x  = pNode->pixelFromTick(t1) - 1;
+	pNode = cursor.seekTick(t2);
 	int w1 = pNode->pixelFromTick(t2) - x;
 	if (w1 < 5)
 		w1 = 5;

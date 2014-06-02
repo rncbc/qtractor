@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Drawing, selecting and/or resizing of MIDI note events that
+  extend across tempo/time-signature changes is now made a bit
+  more correctly over the MIDI clip editor (aka. piano-roll),
+  especially regarding to current snap-to-beat setting (after
+  an outstanding ticket by yubatake, thanks). (EXPERIMENTAL)
+
 - Once again, audio frame/MIDI time drift correction has been
   slightly refactored to improve MIDI input monitor and timing.
   (EXPERIMENTAL)
