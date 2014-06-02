@@ -2032,7 +2032,7 @@ void qtractorMidiEngine::drift (void)
 			const unsigned int iSkewPrev
 				= snd_seq_queue_tempo_get_skew(pAlsaTempo);
 			const unsigned int iSkewNext = (unsigned int) (float(iSkewBase)
-				* float(iMidiTime + m_iTimeDrift) / float(iMidiTime));
+				* float(iAudioTime + m_iTimeDrift) / float(iAudioTime));
 			if (iSkewNext != iSkewPrev) {
 				snd_seq_queue_tempo_set_skew(pAlsaTempo, iSkewNext);
 				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
