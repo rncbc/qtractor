@@ -990,6 +990,7 @@ void qtractorMidiClip::draw (
 			const int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
 			const int y = clipRect.bottom()
 				- (h1 * (pEvent->note() - pSeq->noteMin() + 1)) / iNoteSpan;
+			pNode = cursor.seekTick(t2);
 			int w = (pEvent->duration() > 0 || !bClipRecord
 				? clipRect.x() + pNode->pixelFromTick(t2) - cx
 				: clipRect.right()) - x; // Pending note-off? (while recording)
