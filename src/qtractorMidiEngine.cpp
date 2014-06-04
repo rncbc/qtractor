@@ -2022,7 +2022,7 @@ void qtractorMidiEngine::drift (void)
 		const long iDeltaTime = (iAudioTime - iMidiTime);
 		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
 			m_iTimeDrift += iDeltaTime;
-		if ((m_iTimeDrift || m_iFrameDrift) && iMidiTime > m_iTimeDrift) {
+		if ((m_iTimeDrift || m_iFrameDrift) && (iAudioTime > -m_iTimeDrift)) {
 		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
 			snd_seq_queue_tempo_alloca(&pAlsaTempo);
@@ -2042,7 +2042,7 @@ void qtractorMidiEngine::drift (void)
 			const unsigned long iMidiFrame
 				= pNode->frameFromTick(iMidiTime);
 			m_iFrameDrift = long(iAudioFrame - iMidiFrame);
-		#ifdef CONFIG_DEBUG//_0
+		#ifdef CONFIG_DEBUG_0
 			qDebug("qtractorMidiEngine::drift(): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) "
 				"iTimeDrift=%ld iFrameDrift=%ld (%.2g%%)",
