@@ -72,7 +72,10 @@
 
 
 // Audio vs. MIDI time drift cycle
-#define DRIFT_CHECK 8
+#define DRIFT_CHECK         8
+
+#define DRIFT_CHECK_MIN     (DRIFT_CHECK >> 1)
+#define DRIFT_CHECK_MAX     (DRIFT_CHECK << 2)
 
 
 //----------------------------------------------------------------------
@@ -1168,6 +1171,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pOutputThread  = NULL;
 
 	m_iDriftCheck    = 0;
+	m_iDriftCount    = DRIFT_CHECK;
 
 	m_iTimeStart     = 0;
 	m_iTimeDrift     = 0;
@@ -1976,6 +1980,7 @@ void qtractorMidiEngine::resetDrift (void)
 #endif
 
 	m_iDriftCheck = 0;
+	m_iDriftCount = DRIFT_CHECK;
 
 //--DRIFT-SKEW-BEGIN--
 	snd_seq_queue_tempo_t *pAlsaTempo;
@@ -1995,7 +2000,7 @@ void qtractorMidiEngine::resetDrift (void)
 // Do ouput queue status (audio vs. MIDI)...
 void qtractorMidiEngine::drift (void)
 {
-	if (++m_iDriftCheck < DRIFT_CHECK)
+	if (++m_iDriftCheck < m_iDriftCount)
 		return;
 
 	qtractorSession *pSession = session();
@@ -2043,12 +2048,17 @@ void qtractorMidiEngine::drift (void)
 				= pNode->frameFromTick(iMidiTime);
 			m_iFrameDrift = long(iAudioFrame - iMidiFrame);
 		#ifdef CONFIG_DEBUG_0
-			qDebug("qtractorMidiEngine::drift(): "
+			qDebug("qtractorMidiEngine::drift(%u): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) "
-				"iTimeDrift=%ld iFrameDrift=%ld (%.2g%%)",
+				"iTimeDrift=%ld iFrameDrift=%ld (%.2g%%)", m_iDriftCount,
 				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift, m_iFrameDrift,
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
+			if (m_iDriftCheck > DRIFT_CHECK_MIN && iDeltaTime)
+				--m_iDriftCount;
+			else
+			if (m_iDriftCheck < DRIFT_CHECK_MAX)
+				++m_iDriftCount;
 		}
 	}
 

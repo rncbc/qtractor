@@ -303,6 +303,7 @@ private:
 
 	// The number of times we check for time drift.
 	unsigned int m_iDriftCheck;
+	unsigned int m_iDriftCount;
 
 	// The delta-time/frame when playback started .
 	long m_iTimeStart;
