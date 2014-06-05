@@ -556,7 +556,8 @@ const QString& qtractorVstPluginType::aboutText (void)
 			m_sAboutText += QObject::tr("Vendor: ");
 			m_sAboutText += szTemp;
 		}
-		const int iVersion = vst_dispatch(effGetVendorVersion, 0, 0, NULL, 0.0f);
+		const int iVersion
+			= vst_dispatch(effGetVendorVersion, 0, 0, NULL, 0.0f);
 		if (iVersion) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
@@ -589,15 +590,15 @@ qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
 #endif
 
 	// Allocate I/O audio buffer pointers.
-	unsigned short iAudioIns  = pVstType->audioIns();
-	unsigned short iAudioOuts = pVstType->audioOuts();
+	const unsigned short iAudioIns  = pVstType->audioIns();
+	const unsigned short iAudioOuts = pVstType->audioOuts();
 	if (iAudioIns > 0)
 		m_ppIBuffer = new float * [iAudioIns];
 	if (iAudioOuts > 0)
 		m_ppOBuffer = new float * [iAudioOuts];
 
 	// Create all existing parameters...
-	unsigned short iParamCount = pVstType->controlIns();
+	const unsigned short iParamCount = pVstType->controlIns();
 	for (unsigned short i = 0; i < iParamCount; ++i)
 		addParam(new qtractorVstPluginParam(this, i));
 
@@ -630,15 +631,15 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		return;
 		
 	// Estimate the (new) number of instances...
-	unsigned short iOldInstances = instances();
-	unsigned short iInstances
+	const unsigned short iOldInstances = instances();
+	const unsigned short iInstances
 		= pVstType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
 		return;
 
 	// Gotta go for a while...
-	bool bActivated = isActivated();
+	const bool bActivated = isActivated();
 	setActivated(false);
 
 	// Set new instance number...
@@ -658,7 +659,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
-		setActivated(bActivated);
+	//	setActivated(bActivated);
 		return;
 	}
 
@@ -893,7 +894,7 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 		// Load the BLOB (base64 encoded)...
 		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
 		const char *pData = data.constData();
-		int iData = data.size();
+		const int iData = data.size();
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d checksum=0x%04x",
 			this, iData, qChecksum(pData, iData));
@@ -921,7 +922,8 @@ void qtractorVstPlugin::freezeConfigs (void)
 
 	// Save plugin state into chunk configuration...
 	char *pData = NULL;
-	int iData = vst_dispatch(0, effGetChunk, 0, 0, (void *) &pData, 0.0f);
+	const int iData
+		= vst_dispatch(0, effGetChunk, 0, 0, (void *) &pData, 0.0f);
 	if (iData < 1 || pData == NULL)
 		return;
 

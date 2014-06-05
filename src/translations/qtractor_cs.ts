@@ -604,7 +604,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="158"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1337"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1339"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
@@ -1050,12 +1050,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Prodejce: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="563"/>
+        <location filename="../qtractorVstPlugin.cpp" line="564"/>
         <source>Version: </source>
         <translation>Verze: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1334"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1336"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>

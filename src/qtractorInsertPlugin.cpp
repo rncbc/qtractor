@@ -148,7 +148,7 @@ static inline void std_process_dry_wet (
 bool qtractorInsertPluginType::open (void)
 {
 	// Sanity check...
-	unsigned short iChannels = index();
+	const unsigned short iChannels = index();
 	if (iChannels < 1)
 		return false;
 
@@ -289,14 +289,14 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Estimate the (new) number of instances...
-	unsigned short iInstances
+	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == instances())
 		return;
 
 	// Gotta go for a while...
-	bool bActivated = isActivated();
+	const bool bActivated = isActivated();
 	setActivated(false);
 
 	// TODO: Cleanup bus...
@@ -310,7 +310,7 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
-		setActivated(bActivated);
+	//	setActivated(bActivated);
 		return;
 	}
 
@@ -504,7 +504,7 @@ qtractorAudioBus *qtractorInsertPlugin::audioBus (void) const
 bool qtractorAuxSendPluginType::open (void)
 {
 	// Sanity check...
-	unsigned short iChannels = index();
+	const unsigned short iChannels = index();
 	if (iChannels < 1)
 		return false;
 
@@ -633,14 +633,14 @@ void qtractorAuxSendPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Estimate the (new) number of instances...
-	unsigned short iInstances
+	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == instances())
 		return;
 
 	// Gotta go for a while...
-	bool bActivated = isActivated();
+	const bool bActivated = isActivated();
 	setActivated(false);
 
 	// TODO: Cleanup bus...
@@ -650,7 +650,7 @@ void qtractorAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
-		setActivated(bActivated);
+	//	setActivated(bActivated);
 		return;
 	}
 

@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -323,8 +323,8 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 {
-    int   param = argv[0]->i;
-    float value = argv[1]->f;
+	const int   param = argv[0]->i;
+	const float value = argv[1]->f;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_control: path \"%s\", param %d, value %g",
@@ -346,8 +346,8 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 {
-    int bank = argv[0]->i;
-    int prog = argv[1]->i;
+	const int bank = argv[0]->i;
+	const int prog = argv[1]->i;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_program: path \"%s\", bank %d, prog %d",
@@ -374,7 +374,7 @@ static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
 	static snd_midi_event_t *s_pAlsaCoder = NULL;
 	static snd_seq_event_t   s_aAlsaEvent[4];
 
-	unsigned char *data = argv[0]->m;
+	const unsigned char *data = argv[0]->m;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_midi: path \"%s\", midi 0x%02x 0x%02x 0x%02x 0x%02x",
@@ -581,7 +581,10 @@ public:
 	// Add plugin instances to registry pool.
 	void addPlugin(qtractorDssiPlugin *pDssiPlugin)
 	{
-		unsigned long iNewInstances = m_iInstances + pDssiPlugin->instances();
+		const unsigned long iInstances
+			= pDssiPlugin->instances();
+		const unsigned long iNewInstances
+			= m_iInstances + iInstances;
 
 		if (iNewInstances >= m_iSize) {
 			m_iSize += iNewInstances;
@@ -611,16 +614,17 @@ public:
 			m_piEvents = new unsigned long     [m_iSize];
 		}
 
-		for (unsigned long i = 0; i < pDssiPlugin->instances(); ++i) {
-			unsigned long iInstance = m_iInstances + i;
+		for (unsigned long i = 0; i < iInstances; ++i) {
+			const unsigned long iInstance = m_iInstances + i;
 			m_ppPlugins[iInstance] = pDssiPlugin;
 			m_phInstances[iInstance] = pDssiPlugin->ladspa_handle(i);
 		}
 
 		m_iInstances = iNewInstances;
 
-		if (g_iDummyBufferSize < pDssiPlugin->list()->bufferSize()) {
-			g_iDummyBufferSize = pDssiPlugin->list()->bufferSize();
+		const unsigned int iBufferSize = pDssiPlugin->list()->bufferSize();
+		if (g_iDummyBufferSize < iBufferSize) {
+			g_iDummyBufferSize = iBufferSize;
 			if (g_pDummyBuffer)
 				delete [] g_pDummyBuffer;
 			g_pDummyBuffer = new float [g_iDummyBufferSize];
@@ -637,7 +641,7 @@ public:
 			while (j < m_iInstances && m_ppPlugins[j] == pDssiPlugin)
 				++j;
 			if (j > i) {
-				unsigned long k = (j - i);
+				const unsigned long k = (j - i);
 				for (; j < m_iInstances; ++j, ++i) {
 					m_ppPlugins[i] = m_ppPlugins[j];
 					m_phInstances[i] = m_phInstances[j];
@@ -693,9 +697,10 @@ public:
 		// instances somewhere, otherwise it will crash...
 		const LADSPA_Descriptor *pLadspaDescriptor
 			= pDssiPlugin->ladspa_descriptor();
-		unsigned short iAudioIns  = pDssiPlugin->audioIns();
-		unsigned short iAudioOuts = pDssiPlugin->audioOuts();
-		for (unsigned short i = 0; i < pDssiPlugin->instances(); ++i) {
+		const unsigned short iAudioIns  = pDssiPlugin->audioIns();
+		const unsigned short iAudioOuts = pDssiPlugin->audioOuts();
+		const unsigned short iInstances = pDssiPlugin->instances();
+		for (unsigned short i = 0; i < iInstances; ++i) {
 			LADSPA_Handle handle = pDssiPlugin->ladspa_handle(i);
 			for (unsigned short j = 0; j < iAudioIns; ++j) {
 				(*pLadspaDescriptor->connect_port)(handle,
@@ -891,7 +896,7 @@ qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	m_pDssiMulti = dssi_multi_create(pDssiType);
 
 	// For tracking changes on output control ports.
-	unsigned long iControlOuts = pDssiType->controlOuts();
+	const unsigned long iControlOuts = pDssiType->controlOuts();
 	if (iControlOuts > 0) {
 		m_pfControlOutsLast = new float [iControlOuts];
 		for (unsigned long j = 0; j < iControlOuts; ++j)
@@ -941,7 +946,7 @@ void qtractorDssiPlugin::resetChannels (void)
 	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPluginParam *));
 
 	// Check how many instances are about there...
-	unsigned short iInstances = instances();
+	const unsigned short iInstances = instances();
 	if (iInstances < 1)
 		return;
 
@@ -964,7 +969,7 @@ void qtractorDssiPlugin::resetChannels (void)
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
 			qtractorPluginParam *pParam = param.value();
-			int iController
+			const int iController
 				= (*pDssiDescriptor->get_midi_controller_for_port)(
 					handle, pParam->index());
 			if (iController > 0 && DSSI_IS_CC(iController))
@@ -1196,7 +1201,8 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 #endif
 
 	// For each plugin instance...
-	for (unsigned short i = 0; i < instances(); ++i)
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i)
 		(*pDssiDescriptor->select_program)(m_phInstances[i], iBank, iProg);
 
 #ifdef CONFIG_LIBLO
@@ -1281,7 +1287,8 @@ void qtractorDssiPlugin::configure ( const QString& sKey, const QString& sValue 
 #endif
 
 	// For each plugin instance...
-	for (unsigned short i = 0; i < instances(); ++i) {
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i) {
 		(*pDssiDescriptor->configure)(m_phInstances[i],
 			sKey.toUtf8().constData(),
 			sValue.toUtf8().constData());
@@ -1311,7 +1318,7 @@ void qtractorDssiPlugin::updateControlOuts ( bool bForce )
 {
 #ifdef CONFIG_LIBLO
 	if (m_pDssiEditor && m_piControlOuts && m_pfControlOuts) {
-		unsigned long iControlOuts = type()->controlOuts();
+		const unsigned long iControlOuts = type()->controlOuts();
 		for (unsigned long j = 0; j < iControlOuts; ++j) {
 		//	if (::fabs(m_pfControlOuts[j] - m_pfControlOutsLast[j]) > 1e-6f) {
 			if (m_pfControlOutsLast[j] != m_pfControlOuts[j] || bForce) {
