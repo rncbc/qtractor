@@ -240,8 +240,8 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		return;
 		
 	// Estimate the (new) number of instances...
-	unsigned short iOldInstances = instances();
-	unsigned short iInstances
+	const unsigned short iOldInstances = instances();
+	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
@@ -252,7 +252,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Gotta go for a while...
-	bool bActivated = isActivated();
+	const bool bActivated = isActivated();
 	setActivated(false);
 
 	// Set new instance number...
@@ -269,7 +269,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 
 	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
-		setActivated(bActivated);
+	//	setActivated(bActivated);
 		return;
 	}
 
@@ -279,7 +279,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 #endif
 
 	// We'll need output control (not dummy anymore) port indexes...
-	unsigned short iControlOuts = pType->controlOuts();
+	const unsigned short iControlOuts = pType->controlOuts();
 	// Allocate new instances...
 	m_phInstances = new LADSPA_Handle [iInstances];
 	for (unsigned short i = 0; i < iInstances; ++i) {
