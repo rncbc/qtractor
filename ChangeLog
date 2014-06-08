@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Changing instrument plugin programs is now an undo/redo-able
+  command operation, especially for DSSI but also for plugins
+  that come with the LV2 Programs interface extension support
+  (http://kxstudio.sourceforge.net/ns/lv2ext/programs).
+
 - Drawing, selecting and/or resizing of MIDI note events that
   extend across tempo/time-signature changes is now made a bit
   more correctly over the MIDI clip editor (aka. piano-roll),
