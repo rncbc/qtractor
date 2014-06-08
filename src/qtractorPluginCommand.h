@@ -1,7 +1,7 @@
 // qtractorPluginCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -239,6 +239,30 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorPresetPluginCommand - declaration.
+//
+
+class qtractorPresetPluginCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorPresetPluginCommand(qtractorPlugin *pPlugin,
+		const QString& sPreset, const QStringList& vlist);
+
+	// Plugin-preset command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	QString     m_sPreset;
+	QStringList m_vlist;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorResetPluginCommand - declaration.
 //
 
@@ -262,26 +286,26 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorPresetPluginCommand - declaration.
+// class qtractorPluginProgramCommand - declaration.
 //
 
-class qtractorPresetPluginCommand : public qtractorPluginCommand
+class qtractorProgramPluginCommand : public qtractorPluginCommand
 {
 public:
 
 	// Constructor.
-	qtractorPresetPluginCommand(qtractorPlugin *pPlugin,
-		const QString& sPreset, const QStringList& vlist);
+	qtractorProgramPluginCommand(qtractorPlugin *pPlugin,
+		int iBank, int iProg);
 
-	// Plugin-preset command methods.
+	// Plugin-change command methods.
 	bool redo();
 	bool undo();
 
 private:
 
 	// Instance variables.
-	QString     m_sPreset;
-	QStringList m_vlist;
+	int m_iBank;
+	int m_iProg;
 };
 
 

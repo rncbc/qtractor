@@ -593,17 +593,22 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="463"/>
+        <location filename="../qtractorPluginCommand.cpp" line="465"/>
         <source>reset plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="588"/>
+        <location filename="../qtractorPluginCommand.cpp" line="515"/>
+        <source>program plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginCommand.cpp" line="639"/>
         <source>dedicated audio outputs</source>
         <translation>собственный выход эффекта</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="628"/>
+        <location filename="../qtractorPluginCommand.cpp" line="684"/>
         <source>direct access param</source>
         <translation type="unfinished"></translation>
     </message>
@@ -984,13 +989,13 @@ Offs/Length:	%3 / %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1591"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1593"/>
         <source>Project: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1601"/>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
