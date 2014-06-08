@@ -1,7 +1,7 @@
 // qtractorTrack.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -321,7 +321,7 @@ public:
 	void clearTakeInfo() const;
 
 	// Update tracks/list-view.
-	void updateTracks();
+	void updateTracks(bool bDirty = false);
 
 private:
 
@@ -381,7 +381,7 @@ private:
 	// MIDI bank/program observer.
 	class MidiProgramObserver;
 
-	MidiProgramObserver  *m_pMidiProgramObserver;
+	MidiProgramObserver *m_pMidiProgramObserver;
 };
 
 

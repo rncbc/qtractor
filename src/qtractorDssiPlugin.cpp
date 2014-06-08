@@ -360,7 +360,7 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 	// Bank/Program selection pending...
 	++(pDssiEditor->busy);
-	pDssiPlugin->selectProgram(bank, prog);
+	//pDssiPlugin->selectProgram(bank, prog); -- done via observer:
 	if ((pDssiPlugin->list())->midiProgramSubject())
 		((pDssiPlugin->list())->midiProgramSubject())->setProgram(bank, prog);
 	--(pDssiEditor->busy);

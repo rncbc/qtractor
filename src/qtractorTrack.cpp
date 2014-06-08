@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -68,7 +68,7 @@ protected:
 	// Update feedback.
 	void update(bool bUpdate)
 	{
-		bool bOn = (value() > 0.0f);
+		const bool bOn = (value() > 0.0f);
 		switch (m_toolType) {
 		case qtractorTrack::Record:
 			m_pTrack->setRecord(bOn);
@@ -192,7 +192,7 @@ protected:
 		m_pTrack->setMidiBank(iBank);
 		m_pTrack->setMidiProg(iProg);
 		// Refresh track item, at least the names...
-		if (bUpdate) m_pTrack->updateTracks();
+		if (bUpdate) m_pTrack->updateTracks(true);
 	}
 
 private:
@@ -282,7 +282,7 @@ int qtractorTrack::takeInfoNew ( qtractorTrack::TakeInfo *pTakeInfo ) const
 	if (iter != m_takeids.constEnd()) {
 		return iter.value();
 	} else {
-		int iTakeID = m_takeids.count();
+		const int iTakeID = m_takeids.count();
 		takeInfoAdd(iTakeID, pTakeInfo);
 		return iTakeID;
 	}
@@ -1162,7 +1162,7 @@ const QColor& qtractorTrack::foreground (void) const
 // Generate a default track color.
 QColor qtractorTrack::trackColor ( int iTrack )
 {
-	int c[3] = { 0xff, 0xcc, 0x99 };
+	const int c[3] = { 0xff, 0xcc, 0x99 };
 
 	return QColor(c[iTrack % 3], c[(iTrack / 3) % 3], c[(iTrack / 9) % 3]);
 }
@@ -1180,7 +1180,7 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	// Audio-buffers needs some preparation...
-	unsigned int nframes = iFrameEnd - iFrameStart;
+	const unsigned int nframes = iFrameEnd - iFrameStart;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	qtractorAudioBus *pOutputBus = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
@@ -1230,8 +1230,8 @@ void qtractorTrack::process_record (
 		unsigned int nframes = iFrameEnd - iFrameStart;
 		if (m_pSession->isPunching()) {
 			// Punch-in/out recording...
-			unsigned long iPunchIn  = m_pSession->punchIn();
-			unsigned long iPunchOut = m_pSession->punchOut();
+			const unsigned long iPunchIn  = m_pSession->punchIn();
+			const unsigned long iPunchOut = m_pSession->punchOut();
 			if (iPunchIn < iFrameEnd && iPunchOut > iFrameStart) {
 				unsigned int offs = 0;
 				// Punch-out (unlikely...)
@@ -1378,7 +1378,7 @@ void qtractorTrack::setLoop (
 // MIDI track instrument patching.
 void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 {
-	int iProg = midiProg();
+	const int iProg = midiProg();
 	if (iProg < 0)
 		return;
 
@@ -1387,9 +1387,10 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 	if (pMidiBus == NULL)
 		return;
 
-	unsigned short iChannel = midiChannel();
+	const unsigned short iChannel = midiChannel();
 	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
-	int iBank = midiBank();
+	const int iBank = midiBank();
+
 	int iBankSelMethod = midiBankSelMethod();
 	if (iBankSelMethod < 0) {
 		if (!patch.instrumentName.isEmpty())
@@ -2133,7 +2134,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		return;
 
 	const QString sBaseName(trackName() + "_curve");
-	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
+	const int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
 	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
@@ -2195,7 +2196,7 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 
 
 // Update tracks/list-view.
-void qtractorTrack::updateTracks (void)
+void qtractorTrack::updateTracks ( bool bDirty )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -2206,6 +2207,8 @@ void qtractorTrack::updateTracks (void)
 		return;
 
 	pTracks->updateTrack(this);
+
+	if (bDirty) pTracks->dirtyChangeNotify();
 }
 
 
