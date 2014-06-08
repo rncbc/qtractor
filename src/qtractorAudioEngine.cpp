@@ -990,9 +990,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	unsigned long iFrameEnd   = iFrameStart + nframes;
 
 	// Metronome stuff...
-	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
 	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
+		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
 		qtractorAudioBuffer *pMetroBuff = NULL;
 		float fMetroGain = 1.0f;
 		if (pNode->beatIsBar(m_iMetroBeat)) {
