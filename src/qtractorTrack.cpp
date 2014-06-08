@@ -192,7 +192,7 @@ protected:
 		m_pTrack->setMidiBank(iBank);
 		m_pTrack->setMidiProg(iProg);
 		// Refresh track item, at least the names...
-		if (bUpdate) m_pTrack->updateTracks(true);
+		if (bUpdate) m_pTrack->updateTracks();
 	}
 
 private:
@@ -2196,7 +2196,7 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 
 
 // Update tracks/list-view.
-void qtractorTrack::updateTracks ( bool bDirty )
+void qtractorTrack::updateTracks (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -2207,8 +2207,6 @@ void qtractorTrack::updateTracks ( bool bDirty )
 		return;
 
 	pTracks->updateTrack(this);
-
-	if (bDirty) pTracks->dirtyChangeNotify();
 }
 
 

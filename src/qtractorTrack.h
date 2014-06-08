@@ -321,7 +321,7 @@ public:
 	void clearTakeInfo() const;
 
 	// Update tracks/list-view.
-	void updateTracks(bool bDirty = false);
+	void updateTracks();
 
 private:
 

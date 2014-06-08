@@ -906,6 +906,8 @@ static LilvNode *g_lv2_minimum_size_prop = NULL;
 
 #ifdef CONFIG_LV2_PROGRAMS
 
+#include "qtractorPluginCommand.h"
+
 void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 {
 	qtractorLv2Plugin *pLv2Plugin
@@ -3241,10 +3243,12 @@ void qtractorLv2Plugin::lv2_program_changed ( int iIndex )
 	} else {
 		qtractorPlugin::Program program;
 		if (getProgram(iIndex, program)) {
-			qtractorPluginList::MidiProgramSubject *pMidiProgramSubject
-				= pList->midiProgramSubject();
-			if (pMidiProgramSubject)
-				pMidiProgramSubject->setProgram(program.bank, program.prog);
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				pSession->execute(
+					new qtractorProgramPluginCommand(
+						this, program.bank, program.prog));
+			}
 		}
 	}
 }

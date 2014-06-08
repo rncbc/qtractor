@@ -26,8 +26,12 @@
 #include "qtractorDssiPlugin.h"
 
 #include "qtractorPluginForm.h"
+#include "qtractorPluginCommand.h"
 
 #include "qtractorMidiBuffer.h"
+
+#include "qtractorSession.h"
+
 
 #include <QFileInfo>
 #include <QDir>
@@ -360,9 +364,11 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 	// Bank/Program selection pending...
 	++(pDssiEditor->busy);
-	//pDssiPlugin->selectProgram(bank, prog); -- done via observer:
-	if ((pDssiPlugin->list())->midiProgramSubject())
-		((pDssiPlugin->list())->midiProgramSubject())->setProgram(bank, prog);
+	//pDssiPlugin->selectProgram(bank, prog); -- done via observer update:
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(
+			new qtractorProgramPluginCommand(pDssiPlugin, bank, prog));
 	--(pDssiEditor->busy);
 
 	return 0;

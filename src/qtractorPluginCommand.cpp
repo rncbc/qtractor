@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -200,7 +200,7 @@ bool qtractorAuxSendPluginCommand::redo (void)
 	if (pAuxSendPlugin == NULL)
 		return false;
 
-	QString sAudioBusName = pAuxSendPlugin->audioBusName();
+	const QString sAudioBusName = pAuxSendPlugin->audioBusName();
 	pAuxSendPlugin->setAudioBusName(m_sAudioBusName);
 	m_sAudioBusName = sAudioBusName;
 
@@ -391,7 +391,7 @@ qtractorActivatePluginCommand::qtractorActivatePluginCommand (
 bool qtractorActivatePluginCommand::redo (void)
 {
 	// Save the toggled state alright...
-	bool bActivated = !m_bActivated;
+	const bool bActivated = !m_bActivated;
 
 	QListIterator<qtractorPlugin *> iter(plugins());
 	while (iter.hasNext())
@@ -431,11 +431,13 @@ bool qtractorPresetPluginCommand::redo (void)
 		return false;
 
 	// Save the current toggled state alright...
-	QString sPreset = pPlugin->preset();
-	QStringList vlist = pPlugin->valueList();
+	const QString sPreset = pPlugin->preset();
+	const QStringList vlist = pPlugin->valueList();
+
 	pPlugin->setPreset(m_sPreset);
 	pPlugin->setValueList(m_vlist);
 	pPlugin->realizeValues();
+
 	// Swap it nice, finally.
 	m_sPreset = sPreset;
 	m_vlist = vlist;
@@ -473,15 +475,18 @@ bool qtractorResetPluginCommand::redo (void)
 		return false;
 
 	// Toggle/swap it nice...
-	QString sPreset = pPlugin->preset();
-	QStringList vlist = pPlugin->valueList();
+	const QString sPreset = pPlugin->preset();
+	const QStringList vlist = pPlugin->valueList();
+
 	pPlugin->setPreset(m_sPreset);
+
 	if (m_sPreset.isEmpty() || m_vlist.isEmpty()) {
 		pPlugin->reset();
 	} else {
 		pPlugin->setValueList(m_vlist);
 		pPlugin->realizeValues();
 	}
+
 	// Swap it nice.
 	m_sPreset = sPreset;
 	m_vlist = vlist;
@@ -494,6 +499,52 @@ bool qtractorResetPluginCommand::redo (void)
 
 
 bool qtractorResetPluginCommand::undo (void)
+{
+	// As we swap the prev/state this is non-idempotent.
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorProgramPluginCommand - implementation
+//
+
+// Constructor.
+qtractorProgramPluginCommand::qtractorProgramPluginCommand (
+	qtractorPlugin *pPlugin, int iBank, int iProg )
+	: qtractorPluginCommand(QObject::tr("program plugin"), pPlugin)
+{
+	m_iBank = iBank;
+	m_iProg = iProg;
+}
+
+
+// Plugin-preset command methods.
+bool qtractorProgramPluginCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == NULL)
+		return false;
+
+	// Save the current toggled state alright...
+	qtractorPluginList::MidiProgramSubject *pMidiProgramSubject
+		= (pPlugin->list())->midiProgramSubject();
+	if (pMidiProgramSubject == NULL)
+		return false;
+
+
+	const int iBank = pMidiProgramSubject->bank();
+	const int iProg = pMidiProgramSubject->prog();
+
+	pMidiProgramSubject->setProgram(m_iBank, m_iProg);
+
+	m_iBank = iBank;
+	m_iProg = iProg;
+
+	return true;
+}
+
+bool qtractorProgramPluginCommand::undo (void)
 {
 	// As we swap the prev/state this is non-idempotent.
 	return redo();
@@ -527,10 +578,10 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 				= static_cast<qtractorPluginParamCommand *> (pLastCommand);
 			if (pLastParamCommand) {
 				// Equivalence means same (sign) direction too...
-				float fPrevValue = pLastParamCommand->prevValue();
-				float fLastValue = pLastParamCommand->value();
-				int   iPrevSign  = (fPrevValue > fLastValue ? +1 : -1);
-				int   iCurrSign  = (fPrevValue < m_fValue   ? +1 : -1); 
+				const float fPrevValue = pLastParamCommand->prevValue();
+				const float fLastValue = pLastParamCommand->value();
+				const int   iPrevSign  = (fPrevValue > fLastValue ? +1 : -1);
+				const int   iCurrSign  = (fPrevValue < m_fValue   ? +1 : -1);
 				if (iPrevSign == iCurrSign || m_fValue == m_fPrevValue) {
 					m_fPrevValue = fLastValue;
 					(pSession->commands())->removeLastCommand();
@@ -550,7 +601,7 @@ bool qtractorPluginParamCommand::redo (void)
 		return false;
 
 	// Set plugin parameter value...
-	float fValue = m_fPrevValue;
+	const float fValue = m_fPrevValue;
 
 	m_pParam->setValue(m_fValue, m_bUpdate);
 
@@ -599,12 +650,17 @@ bool qtractorAudioOutputBusCommand::redo (void)
 	if (m_pMidiManager == NULL)
 		return false;
 
-	bool bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
-	bool bAudioOutputAutoConnect = m_pMidiManager->isAudioOutputAutoConnect();
-	QString sAudioOutputBusName = m_pMidiManager->audioOutputBusName();
+	const bool bAudioOutputBus
+		= m_pMidiManager->isAudioOutputBus();
+	const bool bAudioOutputAutoConnect
+		= m_pMidiManager->isAudioOutputAutoConnect();
+	const QString sAudioOutputBusName
+		= m_pMidiManager->audioOutputBusName();
+
 	m_pMidiManager->setAudioOutputBusName(m_sAudioOutputBusName);
 	m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 	m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
+
 	m_sAudioOutputBusName = sAudioOutputBusName;
 	m_bAudioOutputAutoConnect = bAudioOutputAutoConnect;
 	m_bAudioOutputBus = bAudioOutputBus;
@@ -638,7 +694,7 @@ bool qtractorDirectAccessParamCommand::redo (void)
 	if (pPlugin == NULL)
 		return false;
 
-	long iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
+	const long iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
 	pPlugin->setDirectAccessParamIndex(m_iDirectAccessParamIndex);
 	m_iDirectAccessParamIndex = iDirectAccessParamIndex;
 

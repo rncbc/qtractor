@@ -881,17 +881,22 @@ MIDI:	</translation>
         <translation>Přednastavit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="463"/>
+        <location filename="../qtractorPluginCommand.cpp" line="465"/>
         <source>reset plugin</source>
         <translation>Znovu spustit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="588"/>
+        <location filename="../qtractorPluginCommand.cpp" line="515"/>
+        <source>program plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginCommand.cpp" line="639"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="628"/>
+        <location filename="../qtractorPluginCommand.cpp" line="684"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
@@ -1276,13 +1281,13 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1591"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1593"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1601"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
