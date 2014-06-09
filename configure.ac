@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.1.21, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.1.22, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -236,7 +236,6 @@ AC_ARG_ENABLE(gradient,
 AC_ARG_ENABLE(stacktrace,
   AC_HELP_STRING([--enable-stacktrace], [enable debugger stack-trace (default=no)]),
   [ac_stacktrace="$enableval"])
-
 
 
 # Standard installation base dirs.
