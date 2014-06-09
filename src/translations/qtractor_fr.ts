@@ -401,7 +401,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="668"/>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="117"/>
@@ -451,7 +451,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="515"/>
         <source>program plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Programme du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="639"/>
@@ -10369,12 +10369,12 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2756"/>
         <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit maintenir le défilement automatique (suivre la tête de lecture) lors de l&apos;édition.</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2759"/>
         <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Maintenir le défilement automatique (suivre la tête de lecture) lors de l&apos;édition</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2778"/>
@@ -10661,12 +10661,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="921"/>
         <source>Audio Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur Audiomètre</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="933"/>
         <source>MIDI Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur MIDImètre</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1017"/>
@@ -10992,7 +10992,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1427"/>
         <source>&amp;Inserts</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Insertions</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1430"/>
@@ -11946,7 +11946,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="892"/>
         <source>Marker Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur du Marqueur</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="941"/>
@@ -12288,12 +12288,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1320"/>
         <source>Forgeground Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur du Premier Plan</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1334"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur d&apos;Arrière Plan</translation>
     </message>
 </context>
 <context>
@@ -12662,7 +12662,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="2426"/>
         <source>Track %1</source>
-        <translation type="unfinished">Piste %1</translation>
+        <translation>Piste %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2469"/>
