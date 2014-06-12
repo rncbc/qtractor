@@ -691,6 +691,11 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <source>Author: </source>
         <translation>作者:</translation>
     </message>
+    <message>
+        <location filename="../qtractorCurveFile.cpp" line="212"/>
+        <source>%1: Automation/curve file not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -5398,6 +5403,7 @@ Sorry.</source>
         <location filename="../qtractorMainForm.cpp" line="2662"/>
         <location filename="../qtractorMainForm.cpp" line="3797"/>
         <location filename="../qtractorMainForm.cpp" line="3899"/>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -5669,6 +5675,15 @@ next time you start this %1.</source>
         <translation>LV2プラグインの状態ファイルサポートは無効です。</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5904"/>
+        <source>The following issues were detected:
+
+%1
+
+Saving into another session file is highly recommended.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>LV2 Plug-in support (libslv2) enabled. (DEPRECATED)</source>
         <translation type="obsolete">LV2プラグインサポート(libslv2)有効 (非推奨)</translation>
     </message>
@@ -5832,14 +5847,6 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
         <location filename="../qtractorMainForm.cpp" line="5339"/>
         <source>NSM support disabled.</source>
         <translation>NSMサポートは無効です。</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5895"/>
-        <source>The following issues were detected:
-
-%1
-Saving into a new session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6447"/>

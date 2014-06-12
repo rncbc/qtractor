@@ -5889,15 +5889,6 @@ void qtractorMainForm::updateSessionPost (void)
 		updateDirtyCount(true);
 	}
 
-	// Check for any pending nested messages...
-	if (!qtractorMessageList::isEmpty()) {
-		appendMessagesError(
-			tr("The following issues were detected:\n\n%1\n"
-			"Saving into a new session file is highly recommended.")
-			.arg(qtractorMessageList::items().join("\n")));
-		qtractorMessageList::clear();
-	}
-
 	// We're definitely clean...
 	qtractorSubject::resetQueue();
 
@@ -5906,6 +5897,15 @@ void qtractorMainForm::updateSessionPost (void)
 
 	// Update the session views...
 	viewRefresh();
+
+	// Check for any pending nested messages...
+	if (!qtractorMessageList::isEmpty()) {
+		QMessageBox::warning(this, tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("The following issues were detected:\n\n%1\n\n"
+			"Saving into another session file is highly recommended.")
+			.arg(qtractorMessageList::items().join("\n\n")));
+		qtractorMessageList::clear();
+	}
 
 	// Ah, make it stand right.
 	if (m_pTracks)

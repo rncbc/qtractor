@@ -1296,6 +1296,11 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
+    <message>
+        <location filename="../qtractorCurveFile.cpp" line="212"/>
+        <source>%1: Automation/curve file not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -3490,14 +3495,6 @@ Jste si jistý?</translation>
         <translation>Podpora pro NSM byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5895"/>
-        <source>The following issues were detected:
-
-%1
-Saving into a new session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="6447"/>
         <source>&amp;Hold</source>
         <translation>&amp;Držet</translation>
@@ -3695,6 +3692,7 @@ spuštěn a běží, a potom sezení začněte znovu.</translation>
         <location filename="../qtractorMainForm.cpp" line="2662"/>
         <location filename="../qtractorMainForm.cpp" line="3797"/>
         <location filename="../qtractorMainForm.cpp" line="3899"/>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
@@ -3983,6 +3981,15 @@ are up and running and then restart the session.</source>
 Ujistěte se, že jsou zvukový server Jack (jackd) a/nebo
 
 spuštěny a běží, a potom sezení začněte znovu.</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5904"/>
+        <source>The following issues were detected:
+
+%1
+
+Saving into another session file is highly recommended.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6656"/>

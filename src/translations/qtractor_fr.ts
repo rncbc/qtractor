@@ -693,6 +693,11 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <source>Author: </source>
         <translation>Auteur: </translation>
     </message>
+    <message>
+        <location filename="../qtractorCurveFile.cpp" line="212"/>
+        <source>%1: Automation/curve file not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -5393,6 +5398,7 @@ Désolé.</translation>
         <location filename="../qtractorMainForm.cpp" line="2662"/>
         <location filename="../qtractorMainForm.cpp" line="3797"/>
         <location filename="../qtractorMainForm.cpp" line="3899"/>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
@@ -5669,6 +5675,15 @@ que la prochaine fois que vous démarrerez %1.</translation>
         <translation>Support fichiers état greffon LV2 désactivé.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5904"/>
+        <source>The following issues were detected:
+
+%1
+
+Saving into another session file is highly recommended.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>LV2 Plug-in support (libslv2) enabled. (DEPRECATED)</source>
         <translation type="obsolete">Support greffon LV2 (libslv2) activé (OBSOLETE)</translation>
     </message>
@@ -5828,14 +5843,6 @@ est près et en fonctionnement puis redémarrer la session.</translation>
         <location filename="../qtractorMainForm.cpp" line="5339"/>
         <source>NSM support disabled.</source>
         <translation>Support de NSM désactivé.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5895"/>
-        <source>The following issues were detected:
-
-%1
-Saving into a new session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6447"/>

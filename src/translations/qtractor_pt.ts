@@ -540,6 +540,10 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <source>%1(%2): %s plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>%1: Automation/curve file not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -4614,7 +4618,8 @@ Posso continuar?</translation>
         <source>The following issues were detected:
 
 %1
-Saving into a new session file is highly recommended.</source>
+
+Saving into another session file is highly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

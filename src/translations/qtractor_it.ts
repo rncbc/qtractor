@@ -680,6 +680,11 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qtractorCurveFile.cpp" line="212"/>
+        <source>%1: Automation/curve file not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -5256,6 +5261,7 @@ Spiacente.</translation>
         <location filename="../qtractorMainForm.cpp" line="2662"/>
         <location filename="../qtractorMainForm.cpp" line="3797"/>
         <location filename="../qtractorMainForm.cpp" line="3899"/>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
@@ -5521,6 +5527,15 @@ al prossimo avvio di questo %1.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5904"/>
+        <source>The following issues were detected:
+
+%1
+
+Saving into another session file is highly recommended.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="409"/>
         <source>Set current snap to %1</source>
         <translation type="unfinished">Imposta allineamento corrente a %1</translation>
@@ -5665,14 +5680,6 @@ siano attivi ed in esecuzione, poi riavvia la sessione.</translation>
         <location filename="../qtractorMainForm.cpp" line="5339"/>
         <source>NSM support disabled.</source>
         <translation>Supporto NSM disabilitato.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5895"/>
-        <source>The following issues were detected:
-
-%1
-Saving into a new session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6447"/>

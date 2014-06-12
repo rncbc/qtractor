@@ -676,6 +676,11 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
+    <message>
+        <location filename="../qtractorCurveFile.cpp" line="212"/>
+        <source>%1: Automation/curve file not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -5289,6 +5294,7 @@ Sorry.</source>
         <location filename="../qtractorMainForm.cpp" line="2662"/>
         <location filename="../qtractorMainForm.cpp" line="3797"/>
         <location filename="../qtractorMainForm.cpp" line="3899"/>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
@@ -5658,11 +5664,12 @@ is highly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5895"/>
+        <location filename="../qtractorMainForm.cpp" line="5904"/>
         <source>The following issues were detected:
 
 %1
-Saving into a new session file is highly recommended.</source>
+
+Saving into another session file is highly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
