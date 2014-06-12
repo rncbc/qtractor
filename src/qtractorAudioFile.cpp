@@ -1,7 +1,7 @@
 // qtractorAudioFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,10 +57,6 @@ void qtractorAudioFileFactory::Destroy (void)
 {
 	// OK. We're done with ourselves.
 	if (g_pInstance) {
-		qDeleteAll(g_pInstance->m_formats);
-		g_pInstance->m_formats.clear();
-		g_pInstance->m_filters.clear();
-		g_pInstance->m_types.clear();
 		delete g_pInstance;
 		g_pInstance = NULL;
 	}
@@ -156,6 +152,17 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	}
 	m_filters.prepend(QObject::tr("Audio files (%1)").arg(exts.join(" ")));
 	m_filters.append(QObject::tr("All files (*.*)"));
+}
+
+
+// Destructor.
+qtractorAudioFileFactory::~qtractorAudioFileFactory (void)
+{
+	qDeleteAll(m_formats);
+
+	m_formats.clear();
+	m_filters.clear();
+	m_types.clear();
 }
 
 

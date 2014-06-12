@@ -25,6 +25,8 @@
 
 #include "qtractorOptions.h"
 
+#include "qtractorMessageList.h"
+
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QUrl>
@@ -186,8 +188,8 @@ qtractorFileListItem *qtractorAudioListView::createFileItem (
 		pFileItem = new qtractorAudioFileItem(sPath, pFile);
 		pFile->close();
 	} else {
-		qWarning("WARNING: %s: Audio file not found.",
-			sPath.toUtf8().constData());
+		qtractorMessageList::append(
+			tr("%1: Audio file not found.").arg(sPath));
 	}
 
 	delete pFile;

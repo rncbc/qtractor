@@ -83,37 +83,22 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 //-------------------------------------------------------------------------
 // qtractorSession -- Session container.
 
-// Singleton instance pointer.
+// pSeudo-singleton instance pointer.
 qtractorSession *qtractorSession::g_pSession = NULL;
 
 
-// Singleton instance accessor (static).
+// Pseudo-singleton instance accessor (static).
 qtractorSession *qtractorSession::getInstance (void)
 {
-	// Create the singleton instance, if not already...
-	if (g_pSession == NULL) {
-		g_pSession = new qtractorSession();
-		::atexit(Destroy);
-	}
-
 	return g_pSession;
-}
-
-
-// Singleton instance destroyer.
-void qtractorSession::Destroy (void)
-{
-	// OK. We're done with ourselves.
-	if (g_pSession) {
-		delete g_pSession;
-		g_pSession = NULL;
-	}
 }
 
 
 // Constructor.
 qtractorSession::qtractorSession (void)
 {
+	g_pSession = this;
+
 	m_tracks.setAutoDelete(true);
 	m_cursors.setAutoDelete(false);
 
@@ -154,6 +139,8 @@ qtractorSession::~qtractorSession (void)
 	delete m_pCommands;
 
 	delete m_pFiles;
+
+	g_pSession = NULL;
 }
 
 

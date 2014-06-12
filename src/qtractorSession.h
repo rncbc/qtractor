@@ -52,6 +52,9 @@ class qtractorSession
 {
 public:
 
+	// Constructor.
+	qtractorSession();
+
 	// Default destructor.
 	~qtractorSession();
 
@@ -378,16 +381,8 @@ public:
 	// Session files registry accessor.
 	qtractorFileList *files() const;
 
-	// Singleton instance accessor.
+	// Pseudo-singleton instance accessor.
 	static qtractorSession *getInstance();
-
-	// Singleton destroyer.
-	static void Destroy();
-
-protected:
-
-	// Constructor.
-	qtractorSession();
 
 private:
 
@@ -478,7 +473,7 @@ private:
 	// File registry.
 	qtractorFileList *m_pFiles;
 
-	// The singleton instance.
+	// The pseudo-singleton instance.
 	static qtractorSession *g_pSession;
 };
 

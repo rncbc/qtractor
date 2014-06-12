@@ -536,6 +536,10 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <source>program plugin</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>%1(%2): %s plugin not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -566,6 +570,10 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     <message>
         <source>Frames</source>
         <translation>Amostras</translation>
+    </message>
+    <message>
+        <source>%1: Audio file not found.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4602,6 +4610,13 @@ Posso continuar?</translation>
         <source>Edit toolbar</source>
         <translation>Editar barra de ferramentas</translation>
     </message>
+    <message>
+        <source>The following issues were detected:
+
+%1
+Saving into a new session file is highly recommended.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorMessages</name>
@@ -6571,6 +6586,10 @@ Deseja salvar essas alterações?</translation>
     <message>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Arquivos MIDI (*.%1 *.smf *.midi)</translation>
+    </message>
+    <message>
+        <source>%1: MIDI file not found.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
