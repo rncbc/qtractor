@@ -75,6 +75,8 @@
 #include "qtractorTrackCommand.h"
 #include "qtractorCurveCommand.h"
 
+#include "qtractorMessageList.h"
+
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
 #endif
@@ -236,8 +238,9 @@ qtractorMainForm::qtractorMainForm (
 	m_pOptions = NULL;
 
 	// FIXME: This gotta go, somwhere in time...
-	m_pSession = qtractorSession::getInstance();
+	m_pSession = new qtractorSession();
 	m_pTempoCursor = new qtractorTempoCursor();
+	m_pMessageList = new qtractorMessageList();;
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
@@ -1149,6 +1152,14 @@ qtractorMainForm::~qtractorMainForm (void)
 	// Remove midi controllers.
 	if (m_pMidiControl)
 		delete m_pMidiControl;
+
+	// Remove message list buffer.
+	if (m_pMessageList)
+		delete m_pMessageList;
+
+	// And finally the session object.
+	if (m_pSession)
+		delete m_pSession;
 
 	// Pseudo-singleton reference shut-down.
 	g_pMainForm = NULL;
@@ -5841,6 +5852,9 @@ void qtractorMainForm::updateSessionPre (void)
 				SLOT(alsaNotify()));			
 		}
 	}
+
+	// Start collection of nested messages...
+	qtractorMessageList::clear();
 }
 
 
@@ -5873,6 +5887,15 @@ void qtractorMainForm::updateSessionPost (void)
 		m_pSession->updateSampleRate(iSampleRate);
 		QApplication::restoreOverrideCursor();
 		updateDirtyCount(true);
+	}
+
+	// Check for any pending nested messages...
+	if (!qtractorMessageList::isEmpty()) {
+		appendMessagesError(
+			tr("The following issues were detected:\n\n%1\n"
+			"Saving into a new session file is highly recommended.")
+			.arg(qtractorMessageList::items().join("\n")));
+		qtractorMessageList::clear();
 	}
 
 	// We're definitely clean...

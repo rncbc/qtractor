@@ -34,6 +34,8 @@
 #include "qtractorDocument.h"
 #include "qtractorCurveFile.h"
 
+#include "qtractorMessageList.h"
+
 #ifdef CONFIG_LADSPA
 #include "qtractorLadspaPlugin.h"
 #endif
@@ -2064,10 +2066,10 @@ bool qtractorPluginList::loadElement (
 				pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
 				pPlugin->setActivated(bActivated); // Later's better!
 			} else {
-				qWarning("WARNING: %s(%lu): %s plugin not found.",
-					sFilename.toUtf8().constData(), iIndex,
-					qtractorPluginType::textFromHint(typeHint)
-						.toUtf8().constData());
+				qtractorMessageList::append(
+					QObject::tr("%1(%2): %s plugin not found.")
+						.arg(sFilename).arg(iIndex)
+						.arg(qtractorPluginType::textFromHint(typeHint)));
 			}
 			// Cleanup.
 			qDeleteAll(controllers);

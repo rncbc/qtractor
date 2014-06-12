@@ -32,9 +32,7 @@ class qtractorSessionEvent;
 class qtractorSyncEvent;
 class qtractorTracks;
 class qtractorThumbView;
-class qtractorCommand;
-class qtractorCommandList;
-class qtractorInstrumentList;
+class qtractorMessageList;
 class qtractorFiles;
 class qtractorMessages;
 class qtractorConnections;
@@ -428,6 +426,7 @@ private:
 	qtractorConnections *m_pConnections;
 	qtractorMixer *m_pMixer;
 	qtractorTracks *m_pTracks;
+	qtractorMessageList *m_pMessageList;
 	QString m_sFilename;
 	int m_iUntitled;
 	int m_iDirtyCount;

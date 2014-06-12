@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio/MIDI files or plugins found missing on session load are
+  now subject for an explicit modal warning message.
+
 - Changing instrument plugin programs is now an undo/redo-able
   command operation, especially for DSSI but also for plugins
   that come with the LV2 Programs interface extension support
@@ -24,9 +27,6 @@ SVN TRUNK
   a numerical entry floating spin-box on double-click (as yet
   another request by AutoStatic aka. Jeremy Jongepier, thanks).
   (EXPERIMENTAL)
-
-- Audio/MIDI files or plugins found missing on session load are
-  now subject for their own discrete warning messages.
 
 - Pressing shift/ctrl keyboard modifiers while double-clicking
   on a plugin list entry now briefly reverses the current View

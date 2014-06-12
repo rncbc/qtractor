@@ -25,6 +25,8 @@
 
 #include "qtractorOptions.h"
 
+#include "qtractorMessageList.h"
+
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QUrl>
@@ -161,8 +163,8 @@ qtractorFileListItem *qtractorMidiListView::createFileItem (
 		pFileItem = new qtractorMidiFileItem(sPath, &file);
 		file.close();
 	} else {
-		qWarning("WARNING: %s: MIDI file not found.",
-			sPath.toUtf8().constData());
+		qtractorMessageList::append(
+			tr("%1: MIDI file not found.").arg(sPath));
 	}
 
 	return pFileItem;
