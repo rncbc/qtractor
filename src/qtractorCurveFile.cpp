@@ -28,6 +28,8 @@
 
 #include "qtractorMidiControl.h"
 
+#include "qtractorMessageList.h"
+
 #include <QDomDocument>
 #include <QDir>
 
@@ -205,8 +207,13 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	const QString& sFilename = QDir(m_sBaseDir).absoluteFilePath(m_sFilename);
 
 	qtractorMidiFile file;
-	if (!file.open(sFilename, qtractorMidiFile::Read))
+	if (!file.open(sFilename, qtractorMidiFile::Read)) {
+		const QString& sText
+			= QObject::tr("%1: Automation/curve file not found.")
+				.arg(sFilename);
+		qtractorMessageList::append(sText);
 		return;
+	}
 
 	unsigned short iSeq = 0;
 	unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();

@@ -1004,6 +1004,11 @@ Offs/Length:	%3 / %4</source>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qtractorCurveFile.cpp" line="212"/>
+        <source>%1: Automation/curve file not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorAudioListView</name>
@@ -3092,14 +3097,6 @@ Do you want to crash-recover from it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5895"/>
-        <source>The following issues were detected:
-
-%1
-Saving into a new session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="6447"/>
         <source>&amp;Hold</source>
         <translation type="unfinished"></translation>
@@ -3292,6 +3289,7 @@ JACK (jackd) запущен и функционирует,
         <location filename="../qtractorMainForm.cpp" line="2662"/>
         <location filename="../qtractorMainForm.cpp" line="3797"/>
         <location filename="../qtractorMainForm.cpp" line="3899"/>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
@@ -3522,6 +3520,15 @@ are up and running and then restart the session.</source>
 Убедитесь в том, что звуковой сервер JACK
 и/или модуль секвенсера ALSA (snd-seq-midi)
 запущены и работают, затем перезапустите сеанс.</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5904"/>
+        <source>The following issues were detected:
+
+%1
+
+Saving into another session file is highly recommended.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6656"/>
