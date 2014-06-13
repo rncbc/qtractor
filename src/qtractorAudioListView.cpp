@@ -199,4 +199,3 @@ qtractorFileListItem *qtractorAudioListView::createFileItem (
 
 
 // end of qtractorAudioListView.cpp
-

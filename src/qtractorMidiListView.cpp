@@ -215,4 +215,3 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 
 
 // end of qtractorMidiListView.cpp
-

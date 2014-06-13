@@ -177,7 +177,6 @@ const char *qtractorLv2Plugin::lv2_urid_unmap ( uint32_t id )
 
 #include <jack/ringbuffer.h>
 
-
 //----------------------------------------------------------------------
 // class qtractorLv2Worker -- LV2 Worker/Schedule item decl.
 //
@@ -1111,7 +1110,7 @@ bool qtractorLv2PluginType::open (void)
 		lilv_node_free(name);
 	} else {
 		m_sName = filename();
-		int iIndex = m_sName.lastIndexOf('/');
+		const int iIndex = m_sName.lastIndexOf('/');
 		if (iIndex > 0)
 			m_sName = m_sName.right(m_sName.length() - iIndex - 1);
 	}
@@ -3509,12 +3508,6 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 
 	// Initialize port value...
 	// reset(); -- deferred to qtractorPlugin::addParam();
-}
-
-
-// Destructor.
-qtractorLv2PluginParam::~qtractorLv2PluginParam (void)
-{
 }
 
 
