@@ -471,9 +471,6 @@ public:
 	qtractorLv2PluginParam(qtractorLv2Plugin *pLv2Plugin,
 		unsigned long iIndex);
 
-	// Destructor.
-	~qtractorLv2PluginParam();
-
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;
 	bool isBoundedAbove() const;

@@ -994,13 +994,13 @@ Offs/Length:	%3 / %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1593"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1592"/>
         <source>Project: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1601"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1600"/>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
