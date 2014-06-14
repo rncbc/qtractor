@@ -5,8 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
-- Audio/MIDI files or plugins found missing on session load are
-  now subject for an explicit modal warning message.
+- Automation curves are now automatically re-adjusted to tempo
+  -map node changes (after a ticket by Holger Marzen, thanks).
+  (EXPERIMENTAL)
+
+- Audio/MIDI files or plugins found missing on session load
+  are now subject for an explicit modal warning message.
 
 - Changing instrument plugin programs is now an undo/redo-able
   command operation, especially for DSSI but also for plugins

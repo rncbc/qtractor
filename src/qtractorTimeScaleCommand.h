@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@
 
 // Forward declarations.
 class qtractorClipCommand;
-class qtractorClip;
+class qtractorCurveEditCommand;
 
 
 //----------------------------------------------------------------------
@@ -73,7 +73,11 @@ protected:
 	bool removeNode();
 
 	// Make it automatic clip time-stretching command (static).
-	qtractorClipCommand *createClipCommand(const QString& sName,
+	qtractorClipCommand *createClipCommand(
+		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
+
+	// Automation curve time-stretching command (static).
+	void addCurveEditCommands(
 		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
 
 private:
@@ -87,9 +91,11 @@ private:
 	unsigned short m_iBeatsPerBar;
 	unsigned short m_iBeatDivisor;
 
+	bool m_bAutoTimeStretch;
+
 	qtractorClipCommand *m_pClipCommand;
 
-	bool m_bAutoTimeStretch;
+	QList<qtractorCurveEditCommand *> m_curveEditCommands;
 };
 
 
