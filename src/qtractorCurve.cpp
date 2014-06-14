@@ -785,6 +785,8 @@ bool qtractorCurveEditList::execute ( bool bRedo )
 		}
 	}
 
+	m_pCurve->update();
+
 	return true;
 }
 

@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@
 #include "qtractorTimeScaleCommand.h"
 
 #include "qtractorClipCommand.h"
+#include "qtractorCurveCommand.h"
 
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
@@ -43,7 +44,7 @@ qtractorTimeScaleNodeCommand::qtractorTimeScaleNodeCommand (
 	: qtractorCommand(sName), m_pTimeScale(pTimeScale),
 		m_iFrame(iFrame), m_fTempo(fTempo), m_iBeatType(iBeatType),
 		m_iBeatsPerBar(iBeatsPerBar), m_iBeatDivisor(iBeatDivisor),
-		m_pClipCommand(NULL), m_bAutoTimeStretch(false)
+		m_bAutoTimeStretch(false), m_pClipCommand(NULL)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
@@ -58,6 +59,9 @@ qtractorTimeScaleNodeCommand::~qtractorTimeScaleNodeCommand (void)
 {
 	if (m_pClipCommand)
 		delete m_pClipCommand;
+
+	qDeleteAll(m_curveEditCommands);
+	m_curveEditCommands.clear();
 }
 
 
@@ -69,28 +73,44 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 		return false;
 
 	// If currently playing, we need to do a stop and go...
-	bool bPlaying = pSession->isPlaying();
+	const bool bPlaying = pSession->isPlaying();
 	if (bPlaying)
 		pSession->lock();
 
 	if (m_pClipCommand)
 		m_pClipCommand->undo();
-	
+
+	QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
+	while (undos.hasNext())
+		undos.next()->undo();
+
 	qtractorTimeScale::Node *pNode = m_pTimeScale->addNode(
 		m_iFrame, m_fTempo, m_iBeatType, m_iBeatsPerBar, m_iBeatDivisor);
 
-	if (m_pClipCommand) {
+	qtractorTimeScale::Node *pPrev = pNode->prev();
+	const float fOldTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
+	const float fNewTempo = pNode->tempo;
+
+	if (m_pClipCommand == NULL) {
+		m_pClipCommand = createClipCommand(pNode, fNewTempo, fOldTempo);
+	} else {
 		delete m_pClipCommand;
 		m_pClipCommand = NULL;
-	} else {
-		qtractorTimeScale::Node *pPrev = pNode->prev();
-		float fOldTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
-		float fNewTempo = pNode->tempo;
-		m_pClipCommand = createClipCommand(name(),
-			pNode, fNewTempo, fOldTempo);
-		if (m_pClipCommand)
-			m_pClipCommand->redo();
 	}
+
+	if (m_curveEditCommands.isEmpty()) {
+		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
+	} else {
+		qDeleteAll(m_curveEditCommands);
+		m_curveEditCommands.clear();
+	}
+
+	if (m_pClipCommand)
+		m_pClipCommand->redo();
+
+	QListIterator<qtractorCurveEditCommand *> redos(m_curveEditCommands);
+	while (redos.hasNext())
+		redos.next()->redo();
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
@@ -122,24 +142,37 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 		return false;
 
 	// If currently playing, we need to do a stop and go...
-	bool bPlaying = pSession->isPlaying();
+	const bool bPlaying = pSession->isPlaying();
 	if (bPlaying)
 		pSession->lock();
 
-	float          fTempo       = pNode->tempo;
-	unsigned short iBeatType    = pNode->beatType;
-	unsigned short iBeatsPerBar = pNode->beatsPerBar;
-	unsigned short iBeatDivisor = pNode->beatDivisor;
+	const float          fTempo       = pNode->tempo;
+	const unsigned short iBeatType    = pNode->beatType;
+	const unsigned short iBeatsPerBar = pNode->beatsPerBar;
+	const unsigned short iBeatDivisor = pNode->beatDivisor;
 
-	if (m_pClipCommand) {
+	const float fOldTempo = pNode->tempo;
+	const float fNewTempo = m_fTempo;
+
+	if (m_pClipCommand)
 		m_pClipCommand->undo();
+
+	QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
+	while (undos.hasNext())
+		undos.next()->undo();
+
+	if (m_pClipCommand == NULL) {
+		m_pClipCommand = createClipCommand(pNode, fNewTempo, fOldTempo);
+	} else {
 		delete m_pClipCommand;
 		m_pClipCommand = NULL;
+	}
+
+	if (m_curveEditCommands.isEmpty()) {
+		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
 	} else {
-		float fOldTempo = pNode->tempo;
-		float fNewTempo = m_fTempo;
-		m_pClipCommand = createClipCommand(name(),
-			pNode, fNewTempo, fOldTempo);
+		qDeleteAll(m_curveEditCommands);
+		m_curveEditCommands.clear();
 	}
 
 	pNode->tempo       = m_fTempo;
@@ -156,6 +189,10 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 
 	if (m_pClipCommand)
 		m_pClipCommand->redo();
+
+	QListIterator<qtractorCurveEditCommand *> redos(m_curveEditCommands);
+	while (redos.hasNext())
+		redos.next()->undo();
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
@@ -187,20 +224,33 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 		return false;
 
 	// If currently playing, we need to do a stop and go...
-	bool bPlaying = pSession->isPlaying();
+	const bool bPlaying = pSession->isPlaying();
 	if (bPlaying)
 		pSession->lock();
 
-	if (m_pClipCommand) {
+	qtractorTimeScale::Node *pPrev = pNode->prev();
+	const float fOldTempo = pNode->tempo;
+	const float fNewTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
+
+	if (m_pClipCommand)
 		m_pClipCommand->undo();
+
+	QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
+	while (undos.hasNext())
+		undos.next()->undo();
+
+	if (m_pClipCommand == NULL) {
+		m_pClipCommand = createClipCommand(pNode, fNewTempo, fOldTempo);
+	} else {
 		delete m_pClipCommand;
 		m_pClipCommand = NULL;
+	}
+
+	if (m_curveEditCommands.isEmpty()) {
+		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
 	} else {
-		qtractorTimeScale::Node *pPrev = pNode->prev();
-		float fOldTempo = pNode->tempo;
-		float fNewTempo = (pPrev ? pPrev->tempo : m_pTimeScale->tempo());
-		m_pClipCommand = createClipCommand(name(),
-			pNode, fNewTempo, fOldTempo);
+		qDeleteAll(m_curveEditCommands);
+		m_curveEditCommands.clear();
 	}
 
 //	m_iFrame       = pNode->frame;
@@ -213,6 +263,10 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 
 	if (m_pClipCommand)
 		m_pClipCommand->redo();
+
+	QListIterator<qtractorCurveEditCommand *> redos(m_curveEditCommands);
+	while (redos.hasNext())
+		redos.next()->redo();
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
@@ -231,8 +285,7 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 
 // Make it automatic clip time-stretching command (static).
 qtractorClipCommand *qtractorTimeScaleNodeCommand::createClipCommand (
-	const QString& sName, qtractorTimeScale::Node *pNode,
-	float fNewTempo, float fOldTempo )
+	qtractorTimeScale::Node *pNode, float fNewTempo, float fOldTempo )
 {
 	if (pNode == NULL)
 		return NULL;
@@ -244,8 +297,8 @@ qtractorClipCommand *qtractorTimeScaleNodeCommand::createClipCommand (
 		return NULL;
 
 	qtractorTimeScale::Node *pNext = pNode->next();
-	unsigned long iFrameStart = pNode->frame;
-	unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionEnd());
+	const unsigned long iFrameStart = pNode->frame;
+	const unsigned long iFrameEnd = (pNext ? pNext->frame : pSession->sessionEnd());
 
 	qtractorClipCommand *pClipCommand = NULL;
 
@@ -261,9 +314,9 @@ qtractorClipCommand *qtractorTimeScaleNodeCommand::createClipCommand (
 					= static_cast<qtractorAudioClip *> (pClip);
 				if (pAudioClip) {
 					if (pClipCommand == NULL)
-						pClipCommand = new qtractorClipCommand(sName);
+						pClipCommand = new qtractorClipCommand(name());
 					if (m_bAutoTimeStretch) {
-						float fTimeStretch
+						const float fTimeStretch
 							= (fOldTempo * pAudioClip->timeStretch()) / fNewTempo;
 						pClipCommand->timeStretchClip(pClip, fTimeStretch);
 					} else {
@@ -281,6 +334,59 @@ qtractorClipCommand *qtractorTimeScaleNodeCommand::createClipCommand (
 	}
 	
 	return pClipCommand;
+}
+
+
+// Automation curve time-stretching command (static).
+void qtractorTimeScaleNodeCommand::addCurveEditCommands (
+	qtractorTimeScale::Node *pNode, float fNewTempo, float fOldTempo )
+{
+	if (pNode == NULL)
+		return;
+	if (fNewTempo == fOldTempo)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const unsigned long iFrameStart = pNode->frame;
+	const float fFactor = (fOldTempo / fNewTempo);
+	const bool bReverse = (fOldTempo > fNewTempo);
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		qtractorCurveList *pCurveList = pTrack->curveList();
+		if (pCurveList == NULL)
+			continue;
+		qtractorCurve *pCurve = pCurveList->first();
+		while (pCurve) {
+			int iCurveEditUpdate = 0;
+			qtractorCurveEditCommand *pCurveEditCommand
+				= new qtractorCurveEditCommand(QString(), pCurve);
+			qtractorCurve::Node *pCurveNode = (bReverse
+				? pCurve->nodes().last() : pCurve->seek(iFrameStart));
+			while (pCurveNode) {
+				if (pCurveNode->frame >= iFrameStart) {
+					const unsigned long iFrame = iFrameStart + (unsigned long)
+						(float(pCurveNode->frame - iFrameStart) * fFactor);
+					const float fValue = pCurveNode->value;
+					pCurveEditCommand->moveNode(pCurveNode, iFrame, fValue);
+					++iCurveEditUpdate;
+				} else if (bReverse)
+					break;
+				if (bReverse)
+					pCurveNode = pCurveNode->prev();
+				else
+					pCurveNode = pCurveNode->next();
+			}
+			if (iCurveEditUpdate > 0)
+				m_curveEditCommands.append(pCurveEditCommand);
+			else
+				delete pCurveEditCommand;
+			pCurve = pCurve->next();
+		}
+	}
 }
 
 
@@ -379,8 +485,8 @@ bool qtractorTimeScaleMoveNodeCommand::redo (void)
 	if (pTimeScale == NULL)
 		return false;
 
-	unsigned long iNewFrame = m_iNewFrame;
-	unsigned long iOldFrame = m_iOldFrame;
+	const unsigned long iNewFrame = m_iNewFrame;
+	const unsigned long iOldFrame = m_iOldFrame;
 
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iOldFrame);
@@ -403,7 +509,7 @@ bool qtractorTimeScaleMoveNodeCommand::undo (void)
 	if (pTimeScale == NULL)
 		return false;
 
-	bool bResult = redo();
+	const bool bResult = redo();
 
 	if (bResult && m_bOldNode) {
 		pTimeScale->addNode(m_iNewFrame, m_fOldTempo,
@@ -445,8 +551,8 @@ bool qtractorTimeScaleMarkerCommand::updateMarker (void)
 	if (pMarker->frame != m_iFrame)
 		return false;
 
-	QString sText    = pMarker->text;
-	QColor  rgbColor = pMarker->color;
+	const QString sText    = pMarker->text;
+	const QColor  rgbColor = pMarker->color;
 
 	pMarker->text  = m_sText;
 	pMarker->color = m_rgbColor;
@@ -570,8 +676,8 @@ bool qtractorTimeScaleMoveMarkerCommand::redo (void)
 	if (pTimeScale == NULL)
 		return false;
 
-	unsigned long iNewFrame = m_iNewFrame;
-	unsigned long iOldFrame = m_iOldFrame;
+	const unsigned long iNewFrame = m_iNewFrame;
+	const unsigned long iOldFrame = m_iOldFrame;
 
 	qtractorTimeScale::Marker *pMarker
 		= pTimeScale->markers().seekFrame(iOldFrame);
@@ -593,7 +699,7 @@ bool qtractorTimeScaleMoveMarkerCommand::undo (void)
 	if (pTimeScale == NULL)
 		return false;
 
-	bool bResult = redo();
+	const bool bResult = redo();
 
 	if (bResult && m_bOldMarker)
 		pTimeScale->addMarker(m_iNewFrame, m_sOldText, m_rgbOldColor);
