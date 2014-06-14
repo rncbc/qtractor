@@ -6,7 +6,7 @@ ChangeLog
 SVN TRUNK
 
 - Automation curves are now automatically re-adjusted to tempo
-  -map node changes (after a ticket by Holger Marzen, thanks).
+  map node changes (after a ticket by Holger Marzen, thanks).
   (EXPERIMENTAL)
 
 - Audio/MIDI files or plugins found missing on session load
