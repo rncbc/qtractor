@@ -296,7 +296,9 @@ translations_targets = \
 
 
 export datarootdir = @datarootdir@
-export localedir = @localedir@
+export datadir = @datadir@
+
+translations_dir = $(datadir)/$(name)/translations
 
 
 all:	$(target)
@@ -320,14 +322,12 @@ translations_lrelease:	translations_lupdate $(translations_targets)
 
 install:	$(target) translations_lrelease
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
-	@install -d -v -m 0755 $(DESTDIR)$(localedir)
-	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(localedir)
+	@install -d -v -m 0755 $(DESTDIR)$(translations_dir)
+	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(translations_dir)
 
 uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak uninstall
-	@rm -vf $(DESTDIR)$(localedir)/$(translations_targets)
-	@for x in $(translations_targets); do \
-		rm -vf $(DESTDIR)$(localedir)/`basename $$x`; done
+	@rm -rvf $(DESTDIR)$(translations_dir)
 
 
 clean:	$(name).mak
