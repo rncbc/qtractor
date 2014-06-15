@@ -841,67 +841,67 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2070"/>
+        <location filename="../qtractorPlugin.cpp" line="2095"/>
         <source>%1(%2): %s plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="117"/>
+        <location filename="../qtractorPluginCommand.cpp" line="120"/>
         <source>add plugin</source>
         <translation>Přidat přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="141"/>
+        <location filename="../qtractorPluginCommand.cpp" line="144"/>
         <source>add insert</source>
         <translation>Přidat vložku</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="165"/>
+        <location filename="../qtractorPluginCommand.cpp" line="168"/>
         <source>add aux-send</source>
         <translation>Přidat aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="189"/>
+        <location filename="../qtractorPluginCommand.cpp" line="192"/>
         <source>aux-send bus</source>
         <translation>Sběrnice aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="225"/>
+        <location filename="../qtractorPluginCommand.cpp" line="228"/>
         <source>remove plugin</source>
         <translation>Odstranit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="331"/>
+        <location filename="../qtractorPluginCommand.cpp" line="334"/>
         <source>move plugin</source>
         <translation>Přesunout přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="384"/>
+        <location filename="../qtractorPluginCommand.cpp" line="397"/>
         <source>activate plugin</source>
         <translation>Zapnout přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="419"/>
+        <location filename="../qtractorPluginCommand.cpp" line="432"/>
         <source>preset plugin</source>
         <translation>Přednastavit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="465"/>
+        <location filename="../qtractorPluginCommand.cpp" line="478"/>
         <source>reset plugin</source>
         <translation>Znovu spustit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="515"/>
+        <location filename="../qtractorPluginCommand.cpp" line="528"/>
         <source>program plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="639"/>
+        <location filename="../qtractorPluginCommand.cpp" line="652"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="684"/>
+        <location filename="../qtractorPluginCommand.cpp" line="697"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
