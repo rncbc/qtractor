@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- When moving plugins by eg. drag-and-dropping across tracks,
+  automation curves were being left behind, maybe leading to
+  unpredictable mistaken behavior. Hopefully, not anymore.
+
 - Translations install directory change. (EXPERIMENTAL)
 
 - Automation curves are now automatically re-adjusted to tempo

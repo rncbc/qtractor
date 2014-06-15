@@ -62,7 +62,7 @@ bool qtractorCurveBaseCommand::execute ( bool /*bRedo*/ )
 		qtractorTracks *pTracks = pMainForm->tracks();
 		if (pTracks) {
 			pTracks->clearSelect();
-			pTracks->updateTrackList();
+			pTracks->updateTrackList(pTracks->currentTrack());
 		}
 	}
 

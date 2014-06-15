@@ -197,13 +197,15 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 
 	m_observer.setCurve(this);
 
-	m_pList->addCurve(this);
+	if (m_pList)
+		m_pList->append(this);
 }
 
 // Destructor.
 qtractorCurve::~qtractorCurve (void)
 {
-	m_pList->removeCurve(this);
+	if (m_pList)
+		m_pList->removeCurve(this);
 
 	m_observer.setCurve(NULL);
 
@@ -314,7 +316,8 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	updateNode(pNode);
 	
 	// Dirty up...
-	m_pList->notify();
+	if (m_pList)
+		m_pList->notify();
 
 	return pNode;
 }
@@ -340,7 +343,8 @@ void qtractorCurve::insertNode ( Node *pNode )
 	updateNode(pNode);
 
 	// Dirty up...
-	m_pList->notify();
+	if (m_pList)
+		m_pList->notify();
 }
 
 
@@ -361,7 +365,8 @@ void qtractorCurve::unlinkNode ( Node *pNode )
 	updateNode(pNext);
 
 	// Dirty up...
-	m_pList->notify();
+	if (m_pList)
+		m_pList->notify();
 }
 
 
@@ -382,7 +387,8 @@ void qtractorCurve::removeNode ( Node *pNode )
 	updateNode(pNext);
 
 	// Dirty up...
-	m_pList->notify();
+	if (m_pList)
+		m_pList->notify();
 }
 
 
@@ -449,7 +455,8 @@ void qtractorCurve::update (void)
 
 	updateNodeEx(NULL);
 
-	m_pList->notify();
+	if (m_pList)
+		m_pList->notify();
 }
 
 
@@ -469,7 +476,8 @@ void qtractorCurve::setDefaultValue ( float fDefaultValue )
 	if (pFirst != pLast)
 		updateNode(pFirst);
 
-	m_pList->notify();
+	if (m_pList)
+		m_pList->notify();
 }
 
 
@@ -491,7 +499,8 @@ void qtractorCurve::setLength ( unsigned long iLength )
 
 	updateNode(pNode);
 
-	m_pList->notify();
+	if (m_pList)
+		m_pList->notify();
 }
 
 
@@ -701,6 +710,9 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 
 void qtractorCurve::setCapture ( bool bCapture )
 {
+	if (m_pList == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setCapture(%d)", this, int(bCapture));
 #endif
@@ -714,6 +726,9 @@ void qtractorCurve::setCapture ( bool bCapture )
 
 void qtractorCurve::setProcess ( bool bProcess )
 {
+	if (m_pList == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setProcess(%d)", this, int(bProcess));
 #endif
@@ -727,6 +742,9 @@ void qtractorCurve::setProcess ( bool bProcess )
 
 void qtractorCurve::setLocked ( bool bLocked )
 {
+	if (m_pList == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorCurve[%p]::setLocked(%d)", this, int(bLocked));
 #endif

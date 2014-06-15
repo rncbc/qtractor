@@ -53,7 +53,9 @@ public:
 	// Destructor.
 	~qtractorCurve();
 
-	// Curve list owner accessor.
+	// Curve list owner accessors.
+	void setList(qtractorCurveList *pList)
+		{ m_pList = pList; }
 	qtractorCurveList *list() const
 		{ return m_pList; }
 
@@ -445,7 +447,18 @@ public:
 
 	// Simple list methods.
 	void addCurve(qtractorCurve *pCurve)
-		{ append(pCurve); }
+	{
+		append(pCurve);
+
+		pCurve->setList(this);
+
+		if (pCurve->isProcess())
+			updateProcess(true);
+		if (pCurve->isCapture())
+			updateCapture(true);
+		if (pCurve->isLocked())
+			updateLocked(true);
+	}
 
 	void removeCurve(qtractorCurve *pCurve)
 	{
@@ -459,7 +472,9 @@ public:
 		if (pCurve->isLocked())
 			updateLocked(false);
 
-	//	remove(pCurve);
+		pCurve->setList(NULL);
+
+	//	unlink(pCurve);
 	}
 
 	// Set common curve length procedure.
@@ -471,9 +486,6 @@ public:
 			pCurve = pCurve->next();
 		}
 	}
-
-	unsigned long length() const
-		{ return (first() ? first()->length() : 0); }
 
 	// Record automation procedure.
 	void capture(unsigned long iFrame)
@@ -501,7 +513,6 @@ public:
 		if (bProcess)
 			++m_iProcess;
 		else
-		if (!bProcess)
 			--m_iProcess;
 	}
 

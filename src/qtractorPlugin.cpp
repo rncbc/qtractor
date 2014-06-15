@@ -1801,6 +1801,31 @@ void qtractorPluginList::movePlugin (
 
 	// DANGER: Gasp, we might be not the same...
 	if (pPluginList != this) {
+		// Move all plugin automation curves...
+		qtractorCurveList *pCurveList = pPluginList->curveList();
+		// Activation automation/curve...
+		qtractorCurve *pCurve = pPlugin->activateSubject()->curve();
+		if (pCurve && pCurve->list() == pCurveList) {
+			pCurveList->removeCurve(pCurve);
+			pCurveList->unlink(pCurve);
+			m_pCurveList->addCurve(pCurve);
+		}
+		pPlugin->activateObserver()->setCurveList(m_pCurveList);
+		// Parameters automation/curves...
+		const qtractorPlugin::Params& params = pPlugin->params();
+		qtractorPlugin::Params::ConstIterator param = params.constBegin();
+		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+		for ( ; param != param_end; ++param) {
+			qtractorPluginParam *pParam = param.value();
+			pCurve = pParam->subject()->curve();
+			if (pCurve && pCurve->list() == pCurveList) {
+				pCurveList->removeCurve(pCurve);
+				pCurveList->unlink(pCurve);
+				m_pCurveList->addCurve(pCurve);
+			}
+			pParam->observer()->setCurveList(m_pCurveList);
+		}
+		// Now for the real thing...
 		pPlugin->setPluginList(this);
 		pPlugin->setChannels(channels());
 		if (pPlugin->isActivated()) {

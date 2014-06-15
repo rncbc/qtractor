@@ -75,7 +75,8 @@ public:
 		unsigned long iClipStart = 0);
 
 	// Track-list active maintenance update.
-	void updateTrack(qtractorTrack *pTrack);
+	void updateTrack(qtractorTrack *pTrack = NULL);
+
 	// MIDI track/bus/channel alias active maintenance method.
 	void updateMidiTrack(qtractorTrack *pMidiTrack);
 
@@ -161,7 +162,7 @@ public:
 	void zoomReset();
 
 	// Track-list update (current track only).
-	void updateTrackList();
+	void updateTrackList(qtractorTrack *pTrack = NULL);
 
 protected:
 

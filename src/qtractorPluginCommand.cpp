@@ -30,6 +30,9 @@
 #include "qtractorSession.h"
 #include "qtractorMidiBuffer.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorTracks.h"
+
 
 //----------------------------------------------------------------------
 // class qtractorPluginCommand - implementation
@@ -363,6 +366,16 @@ bool qtractorMovePluginCommand::redo (void)
 	setNextPlugin(pNextPlugin);
 
 //	pSession->unlock();
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks) {
+			pTracks->clearSelect();
+			pTracks->updateTrackList();
+			pTracks->updateTrackView();
+		}
+	}
 
 	return true;
 }
