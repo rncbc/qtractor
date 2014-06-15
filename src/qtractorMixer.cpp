@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -141,7 +141,7 @@ qtractorBus *qtractorMonitorButton::bus (void) const
 void qtractorMonitorButton::updateValue ( float fValue )
 {
 	// Avoid self-triggering...
-	bool bBlockSignals = QPushButton::blockSignals(true);
+	const bool bBlockSignals = QPushButton::blockSignals(true);
 	QPushButton::setChecked(fValue > 0.0f);
 	QPushButton::blockSignals(bBlockSignals);
 }
@@ -1437,7 +1437,7 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 	qtractorCurveList *pCurveList = pTrack->curveList();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pCurveList && pMainForm && pMainForm->tracks()) {
-		pMainForm->tracks()->updateTrackList();
+		pMainForm->tracks()->updateTrackList(pTrack);
 		QObject::connect(
 			pCurveList->proxy(), SIGNAL(update()),
 			pMainForm->tracks(), SLOT(updateTrackView()));
@@ -1549,7 +1549,7 @@ void qtractorMixer::keyPressEvent ( QKeyEvent *pKeyEvent )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMixer::keyPressEvent(%d)", pKeyEvent->key());
 #endif
-	int iKey = pKeyEvent->key();
+	const int iKey = pKeyEvent->key();
 	switch (iKey) {
 	case Qt::Key_Escape:
 		close();

@@ -2795,7 +2795,7 @@ void qtractorTracks::updateTrack ( qtractorTrack *pTrack )
 {
 	m_pTrackList->updateTrack(pTrack);
 
-	if (pTrack->trackType() == qtractorTrack::Midi)
+	if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
 		updateMidiTrack(pTrack);
 }
 
@@ -2878,9 +2878,9 @@ void qtractorTracks::dirtyChangeNotify (void)
 
 
 // Track-list update (current track only).
-void qtractorTracks::updateTrackList (void)
+void qtractorTracks::updateTrackList ( qtractorTrack *pTrack )
 {
-	m_pTrackList->updateTrack(currentTrack());
+	m_pTrackList->updateTrack(pTrack);
 }
 
 
