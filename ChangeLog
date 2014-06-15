@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Translations install directory change. (EXPERIMENTAL)
+
 - Automation curves are now automatically re-adjusted to tempo
   map node changes (after a ticket by Holger Marzen, thanks).
   (EXPERIMENTAL)

@@ -1,7 +1,7 @@
 // qtractor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -36,12 +36,6 @@
 #define CONFIG_DATADIR CONFIG_QUOTED(DATADIR)
 #else
 #define CONFIG_DATADIR CONFIG_PREFIX "/share"
-#endif
-
-#if defined(LOCALEDIR)
-#define CONFIG_LOCALEDIR CONFIG_QUOTED(LOCALEDIR)
-#else
-#define CONFIG_LOCALEDIR CONFIG_DATADIR "/locale"
 #endif
 
 
@@ -100,7 +94,7 @@ public:
 			if (m_pMyTranslator->load(sLocName, sLocPath)) {
 				QApplication::installTranslator(m_pMyTranslator);
 			} else {
-				sLocPath = CONFIG_LOCALEDIR;
+				sLocPath = CONFIG_DATADIR "/qtractor/translations";
 				if (m_pMyTranslator->load(sLocName, sLocPath)) {
 					QApplication::installTranslator(m_pMyTranslator);
 				} else {
