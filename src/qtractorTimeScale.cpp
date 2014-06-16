@@ -184,7 +184,7 @@ unsigned long qtractorTimeScale::Node::tickSnap (
 {
 	unsigned long iTickSnap = iTick - tick;
 	if (ts->snapPerBeat() > 0) {
-		unsigned long q = ticksPerBeat / ts->snapPerBeat();
+		const unsigned long q = ticksPerBeat / ts->snapPerBeat();
 		iTickSnap = q * ((iTickSnap + (q >> p)) / q);
 	}
 	return tick + iTickSnap;
@@ -440,7 +440,6 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 }
 
 
-
 // Complete time-scale update method.
 void qtractorTimeScale::updateScale (void)
 {
@@ -518,6 +517,7 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 
 	return iFrame;
 }
+
 
 unsigned long qtractorTimeScale::frameFromText (
 	const QString& sText, bool bDelta, unsigned long iFrame )
@@ -602,6 +602,7 @@ QString qtractorTimeScale::textFromFrameEx (
 	return sText;
 }
 
+
 QString qtractorTimeScale::textFromFrame (
 	unsigned long iFrame, bool bDelta, unsigned long iDelta )
 {
@@ -626,7 +627,8 @@ QString qtractorTimeScale::textFromTick (
 	unsigned long iTick, bool bDelta, unsigned long iDelta )
 {
 	Node *pNode = m_cursor.seekTick(iTick);
-	unsigned long iFrame = (pNode ? pNode->frameFromTick(iTick) : 0);
+	const unsigned long iFrame
+		= (pNode ? pNode->frameFromTick(iTick) : 0);
 	if (bDelta > 0 && pNode) {
 		iTick += iDelta;
 		pNode  = m_cursor.seekTick(iTick);
@@ -691,9 +693,11 @@ unsigned long qtractorTimeScale::frameFromTickRange (
 	unsigned long iTickStart, unsigned long iTickEnd )
 {
 	Node *pNode = m_cursor.seekTick(iTickStart);
-	unsigned long iFrameStart = (pNode ? pNode->frameFromTick(iTickStart) : 0);
+	const unsigned long iFrameStart
+		= (pNode ? pNode->frameFromTick(iTickStart) : 0);
 	pNode = m_cursor.seekTick(iTickEnd);
-	unsigned long iFrameEnd = (pNode ? pNode->frameFromTick(iTickEnd) : 0);
+	const unsigned long iFrameEnd
+		= (pNode ? pNode->frameFromTick(iTickEnd) : 0);
 	return (iFrameEnd > iFrameStart ? iFrameEnd - iFrameStart : 0);
 }
 
@@ -702,9 +706,11 @@ unsigned long qtractorTimeScale::tickFromFrameRange (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	Node *pNode = m_cursor.seekFrame(iFrameStart);
-	unsigned long iTickStart = (pNode ? pNode->tickFromFrame(iFrameStart) : 0);
+	const unsigned long iTickStart
+		= (pNode ? pNode->tickFromFrame(iFrameStart) : 0);
 	pNode = m_cursor.seekFrame(iFrameEnd);
-	unsigned long iTickEnd = (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
+	const unsigned long iTickEnd
+		= (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
 	return (iTickEnd > iTickStart ? iTickEnd - iTickStart : 0);
 }
 
@@ -744,11 +750,13 @@ qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekFrame (
 	return marker;
 }
 
+
 qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekBar (
 	unsigned short iBar )
 {
 	return seekFrame(ts->frameFromBar(iBar));
 }
+
 
 qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekBeat (
 	unsigned int iBeat )
@@ -756,11 +764,13 @@ qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekBeat (
 	return seekFrame(ts->frameFromBeat(iBeat));
 }
 
+
 qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekTick (
 	unsigned long iTick )
 {
 	return seekFrame(ts->frameFromTick(iTick));
 }
+
 
 qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekPixel ( int x )
 {

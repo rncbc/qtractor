@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -362,9 +362,9 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 						? -1 : rxKey.cap(2).toInt());
 					pInstrument->setNotes(iBank, iProg,	m_notes[rxKey.cap(3)]);
 				} else if (rxDrum.exactMatch(sLine)) {
-					int iBank = (rxDrum.cap(1) == sAsterisk
+					const int iBank = (rxDrum.cap(1) == sAsterisk
 						? -1 : rxDrum.cap(1).toInt());
-					int iProg = (rxDrum.cap(2) == sAsterisk
+					const int iProg = (rxDrum.cap(2) == sAsterisk
 						? -1 : rxKey.cap(2).toInt());
 					pInstrument->setDrum(iBank, iProg,
 						(bool) rxDrum.cap(3).toInt());
@@ -483,7 +483,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		qtractorInstrumentKeys::ConstIterator kit = keys.constBegin();
 		const qtractorInstrumentKeys::ConstIterator kit_end = keys.constEnd();
 		for ( ; kit != kit_end; ++kit) {
-			int iBank = kit.key();
+			const int iBank = kit.key();
 			const QString& sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
 			const qtractorInstrumentNotes& notes = kit.value();
@@ -492,7 +492,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 			for ( ; nit != nit_end; ++nit) {
 				const QString& sKey = nit.value().name();
 				if (!sKey.isEmpty()) {
-					int iProg = nit.key();
+					const int iProg = nit.key();
 					const QString& sProg = (iProg < 0
 						? QString("*") : QString::number(iProg));
 					ts << "Key[" << sBank << "," << sProg << "]="
@@ -505,14 +505,14 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		qtractorInstrumentDrums::ConstIterator dit = drums.constBegin();
 		const qtractorInstrumentDrums::ConstIterator& dit_end = drums.constEnd();
 		for ( ; dit != dit_end; ++dit) {
-			int iBank = dit.key();
+			const int iBank = dit.key();
 			const QString& sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
 			const qtractorInstrumentDrumFlags& flags = dit.value();
 			qtractorInstrumentDrumFlags::ConstIterator fit = flags.constBegin();
 			const qtractorInstrumentDrumFlags::ConstIterator& fit_end = flags.constEnd();
 			for ( ; fit != fit_end; ++fit) {
-				int iProg = fit.key();
+				const int iProg = fit.key();
 				const QString& sProg = (iProg < 0
 					? QString("*") : QString::number(iProg));
 				ts << "Drum[" << sBank << "," << sProg << "]="
@@ -628,7 +628,7 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 			instr.setInstrumentName(sInstrumentName);		
 			// Preset header...
 			int iDrums = 0;
-			int iPresets = (chunk.size / 38);
+			const int iPresets = (chunk.size / 38);
 			for (int i = 0; i < iPresets; ++i) {
 				char name[20];
 				int16_t prog;
@@ -892,7 +892,7 @@ void qtractorInstrumentList::loadMidiNoteNameList (
 		const QString& sTagName = eItem.tagName();
 		if (sTagName == "Note") {
 			const QString& sNote = eItem.attribute("Name");
-			unsigned short iNote = eItem.attribute("Number").toUShort();
+			const unsigned short iNote = eItem.attribute("Number").toUShort();
 			notes[int(iNote)] = sNote;
 		}
 		else
@@ -909,7 +909,7 @@ void qtractorInstrumentList::loadMidiNoteNameList (
 				const QString& sSubTagName = eSubItem.tagName();
 				if (sSubTagName == "Note") {
 					const QString& sNote = eSubItem.attribute("Name");
-					int iNote = eSubItem.attribute("Number").toInt();
+					const int iNote = eSubItem.attribute("Number").toInt();
 					notes[iNote] = sSubName + sNote;
 				}
 			}
@@ -939,7 +939,7 @@ void qtractorInstrumentList::loadMidiControlNameList (
 		if (sTagName == "Control") {
 			const QString& sControlType = eItem.attribute("Type");
 			const QString& sControl = eItem.attribute("Name");
-			int iControl = eItem.attribute("Number").toInt();
+			const int iControl = eItem.attribute("Number").toInt();
 			if (sControlType == "NRPN")
 				nrpns[iControl] = sControl;
 			else

@@ -137,7 +137,7 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	m_pHzoomIn->setIcon(QIcon(":/images/viewZoomIn.png"));
 	m_pHzoomReset->setIcon(QIcon(":/images/viewZoomTool.png"));
 
-	int iScrollBarExtent
+	const int iScrollBarExtent
 		= qtractorScrollView::style()->pixelMetric(QStyle::PM_ScrollBarExtent);
 	m_pHzoomReset->setFixedWidth(iScrollBarExtent);
 	m_pHzoomIn->setFixedWidth(iScrollBarExtent);
@@ -504,8 +504,9 @@ void qtractorMidiEditEvent::drawContents ( QPainter *pPainter, const QRect& rect
 	m_pEditor->paintDragState(this, pPainter);
 
 	// Draw special play-head line...
-	int cx = qtractorScrollView::contentsX();
-	int x  = m_pEditor->playHeadX() - cx;
+	const int cx = qtractorScrollView::contentsX();
+
+	int x = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::red);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
@@ -570,7 +571,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 	const QPoint& pos
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	switch (pMouseEvent->button()) {

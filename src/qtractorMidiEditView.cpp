@@ -71,7 +71,7 @@ qtractorMidiEditView::qtractorMidiEditView (
 	m_pVzoomOut->setToolTip(tr("Zoom out (vertical)"));
 	m_pVzoomReset->setToolTip(tr("Zoom reset (vertical)"));
 
-	int iScrollBarExtent
+	const int iScrollBarExtent
 		= qtractorScrollView::style()->pixelMetric(QStyle::PM_ScrollBarExtent);
 	m_pVzoomReset->setFixedHeight(iScrollBarExtent);
 	m_pVzoomOut->setFixedHeight(iScrollBarExtent);
@@ -145,9 +145,12 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 	if (pTimeScale) {
 		qtractorMidiSequence *pSeq = m_pEditor->sequence();
 		if (pSeq) {
-			unsigned long t0 = pTimeScale->tickFromFrame(m_pEditor->offset());
-			int x0 = pTimeScale->pixelFromFrame(m_pEditor->offset());
-			int w0 = pTimeScale->pixelFromTick(t0 + pSeq->duration()) - x0;
+			const unsigned long t0
+				= pTimeScale->tickFromFrame(m_pEditor->offset());
+			const int x0
+				= pTimeScale->pixelFromFrame(m_pEditor->offset());
+			const int w0
+				= pTimeScale->pixelFromTick(t0 + pSeq->duration()) - x0;
 			if (iContentsWidth < w0)
 				iContentsWidth = w0;
 		}
@@ -214,7 +217,7 @@ void qtractorMidiEditView::resizeEvent ( QResizeEvent *pResizeEvent )
 	// Scrollbar/tools layout management.
 	const QSize& size = qtractorScrollView::size();
 	QScrollBar *pVScrollBar = qtractorScrollView::verticalScrollBar();
-	int w = pVScrollBar->width(); 
+	const int w = pVScrollBar->width();
 
 	updateContents();
 
@@ -457,8 +460,9 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 	m_pEditor->paintDragState(this, pPainter);
 
 	// Draw special play-head line...
-	int cx = qtractorScrollView::contentsX();
-	int x  = m_pEditor->playHeadX() - cx;
+	const int cx = qtractorScrollView::contentsX();
+
+	int x = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::red);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
@@ -524,14 +528,14 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		return;
 
 	// Which mouse state?
-	bool bModifier = (pMouseEvent->modifiers() &
-		(Qt::ShiftModifier | Qt::ControlModifier));
+	bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Maybe start the drag-move-selection dance?
 	const QPoint& pos
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	// We'll need options somehow...
@@ -621,4 +625,3 @@ bool qtractorMidiEditView::eventFilter ( QObject *pObject, QEvent *pEvent )
 
 
 // end of qtractorMidiEditView.cpp
-

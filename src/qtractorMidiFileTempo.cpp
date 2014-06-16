@@ -1,7 +1,7 @@
 // qtractorMidiFileTempo.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -247,7 +247,7 @@ void qtractorMidiFileTempo::fromTimeScale (
 	qtractorTimeScale::Marker *pMarker
 		= pTimeScale->markers().seekTick(iTimeOffset);
 	while (pMarker) {
-		unsigned long iTick = pTimeScale->tickFromFrame(pMarker->frame);
+		const unsigned long iTick = pTimeScale->tickFromFrame(pMarker->frame);
 		unsigned long iTime = uint64_t(iTick) * p / q;
 		iTime = (iTime > iTimeOffset ? iTime - iTimeOffset : 0);
 		addMarker(iTime, pMarker->text);
@@ -271,7 +271,7 @@ void qtractorMidiFileTempo::intoTimeScale (
 	// Copy tempo-map nodes...
 	qtractorMidiFileTempo::Node *pNode = m_nodes.first();
 	while (pNode) {
-		unsigned long iTime	= uint64_t(pNode->tick) * p / q;
+		const unsigned long iTime = uint64_t(pNode->tick) * p / q;
 		pTimeScale->addNode(
 			pTimeScale->frameFromTick(iTime + iTimeOffset),
 			pNode->tempo, 2,
@@ -283,7 +283,7 @@ void qtractorMidiFileTempo::intoTimeScale (
 	// Copy location markers...
 	qtractorMidiFileTempo::Marker *pMarker = m_markers.first();
 	while (pMarker) {
-		unsigned long iTime	= uint64_t(pMarker->tick) * p / q;
+		const unsigned long iTime = uint64_t(pMarker->tick) * p / q;
 		pTimeScale->addMarker(
 			pTimeScale->frameFromTick(iTime + iTimeOffset),
 			pMarker->text);

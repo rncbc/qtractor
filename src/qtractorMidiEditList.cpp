@@ -106,7 +106,7 @@ unsigned short qtractorMidiEditList::itemHeight (void) const
 // Update key-list content height.
 void qtractorMidiEditList::updateContentsHeight (void)
 {
-	int iContentsHeight = 128 * m_iItemHeight;
+	const int iContentsHeight = 128 * m_iItemHeight;
 
 	qtractorScrollView::resizeContents(
 		qtractorScrollView::contentsWidth(), iContentsHeight);
@@ -288,7 +288,7 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 	if (iNote >= 0) {
 		// This stands for the keyboard area...
 		QWidget *pViewport = qtractorScrollView::viewport();
-		int w  = pViewport->width();
+		const int w = pViewport->width();
 		int wk = (w << 1) / 3;
 		int xk = w - wk;
 	#if 0
@@ -304,12 +304,12 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 			wk = (wk * 6) / 10;
 		}
 	#else
-		int hk = m_iItemHeight;
-		int k  = (iNote % 12);
+		const int hk = m_iItemHeight;
+		int k = (iNote % 12);
 		if (k >= 5) ++k;
 		if (k % 2)
 			wk = (wk * 6) / 10;
-		int yk = ((127 - iNote) * hk) + 1;
+		const int yk = ((127 - iNote) * hk) + 1;
 	#endif
 		// This is the new note on...
 		m_iNoteOn = iNote;
@@ -492,8 +492,8 @@ bool qtractorMidiEditList::eventFilter ( QObject *pObject, QEvent *pEvent )
 				const QPoint& pos
 					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
 				const QString sToolTip("%1 (%2)");
-				int ch = qtractorScrollView::contentsHeight();
-				int note = (ch - pos.y()) / m_iItemHeight;
+				const int ch = qtractorScrollView::contentsHeight();
+				const int note = (ch - pos.y()) / m_iItemHeight;
 				QToolTip::showText(pHelpEvent->globalPos(),
 					sToolTip.arg(m_pEditor->noteName(note)).arg(note));
 				return true;

@@ -118,8 +118,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	if (m_pCurveList == NULL)
 		return;
 
-	unsigned short iSeq;
-	unsigned short iSeqs = m_items.count();
+	const unsigned short iSeqs = m_items.count();
 	if (iSeqs < 1)
 		return;
 
@@ -127,9 +126,11 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	if (!file.open(m_sFilename, qtractorMidiFile::Write))
 		return;
 
-	unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
+	const unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
+	unsigned short iSeq = 0;
+
 	qtractorMidiSequence **ppSeqs = new qtractorMidiSequence * [iSeqs];
-	for (iSeq = 0; iSeq < iSeqs; ++iSeq)
+	for ( ; iSeq < iSeqs; ++iSeq)
 		ppSeqs[iSeq] = new qtractorMidiSequence(QString(), 0, iTicksPerBeat);
 
 	iSeq = 0;
@@ -215,8 +216,8 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 		return;
 	}
 
+	const unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	unsigned short iSeq = 0;
-	unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 
 	qtractorCurve *pCurrentCurve = NULL;
 
@@ -290,4 +291,3 @@ QString qtractorCurveFile::textFromMode ( qtractorCurve::Mode mode )
 
 
 // end of qtractorCurveFile.cpp
-

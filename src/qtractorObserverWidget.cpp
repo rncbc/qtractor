@@ -46,7 +46,7 @@ void qtractorObserverCheckBox::updateValue ( float fValue )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverCheckBox[%p]::updateValue(%g)", this, fValue);
 #endif
-	bool bBlockSignals = QCheckBox::blockSignals(true);
+	const bool bBlockSignals = QCheckBox::blockSignals(true);
 	QCheckBox::setChecked(bool(scaleFromValue(fValue)));
 	QCheckBox::blockSignals(bBlockSignals);
 }

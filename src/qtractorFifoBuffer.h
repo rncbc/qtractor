@@ -1,7 +1,7 @@
 // qtractorFifoBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2006, Olli Parviainen.
@@ -149,7 +149,7 @@ template<typename T>
 unsigned int qtractorFifoBuffer<T>::readFrames (
 	T **ppFrames, unsigned int iFrames, unsigned int iOffset ) const
 {
-	unsigned int iMaxFrames
+	const unsigned int iMaxFrames
 		= (iFrames > m_iFrameCount ? m_iFrameCount : iFrames);
 	for (unsigned short i = 0; i < m_iChannels; ++i)
 		::memcpy(ppFrames[i], ptrBegin(i) + iOffset, iMaxFrames * sizeof(T));
@@ -173,7 +173,7 @@ template<typename T>
 unsigned int qtractorFifoBuffer<T>::receiveFrames ( unsigned int iFrames )
 {
 	if (iFrames >= m_iFrameCount) {
-		unsigned int iFrameCount = m_iFrameCount;
+		const unsigned int iFrameCount = m_iFrameCount;
 		m_iFrameCount = 0;
 		return iFrameCount;
 	}
@@ -222,12 +222,12 @@ void qtractorFifoBuffer<T>::putFrames ( unsigned int iFrames )
 template<typename T>
 void qtractorFifoBuffer<T>::ensureCapacity ( const unsigned int iSlackCapacity )
 {
-	unsigned int iBufferSize
+	const unsigned int iBufferSize
 		= m_iFramePos + m_iFrameCount + (iSlackCapacity << 2);
 
 	if (iBufferSize > m_iBufferSize) {
 		// Enlarge the buffer in 4KB steps (round up to next 4KB boundary)
-		unsigned int iSizeInBytes
+		const unsigned int iSizeInBytes
 			= ((iBufferSize << 1) * sizeof(T) + 4095) & -4096;
 		// assert(iSizeInBytes % 2 == 0);
 		float **ppTemp = new T * [m_iChannels];

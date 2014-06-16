@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -85,12 +85,15 @@ void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 	if (pMidiMeter == NULL)
 		return;
 
-	int h = QWidget::height() - 4;
-	int d = (h / 5);
+	const int h = QWidget::height() - 4;
+	const int d = (h / 5);
+
+	int y = h;
 	int n = 100;
-	while (h > 0) {
-		drawLineLabel(pPainter, h, QString::number(n));
-		h -= d; n -= 20;
+
+	while (y > 0) {
+		drawLineLabel(pPainter, y, QString::number(n));
+		y -= d; n -= 20;
 	}
 }
 
@@ -140,7 +143,7 @@ void qtractorMidiMeterValue::refresh (void)
 	if (pMidiMonitor == NULL)
 		return;
 
-	float fValue = pMidiMonitor->value();
+	const float fValue = pMidiMonitor->value();
 	if (fValue < 0.001f && m_iPeak < 1)
 		return;
 
@@ -181,8 +184,8 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 {
 	QPainter painter(this);
 
-	int w = QWidget::width();
-	int h = QWidget::height();
+	const int w = QWidget::width();
+	const int h = QWidget::height();
 
 	if (isEnabled()) {
 		painter.fillRect(0, 0, w, h,
@@ -354,8 +357,8 @@ const QPixmap& qtractorMidiMeter::pixmap (void) const
 
 void qtractorMidiMeter::updatePixmap (void)
 {
-	int w = boxWidget()->width();
-	int h = boxWidget()->height();
+	const int w = boxWidget()->width();
+	const int h = boxWidget()->height();
 
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(0.0f, color(ColorPeak));
@@ -374,7 +377,7 @@ void qtractorMidiMeter::refresh (void)
 	m_pMidiValue->refresh();
 	
 	// Take care of the MIDI LED status...
-	bool bMidiOn = (m_pMidiMonitor->count() > 0);
+	const bool bMidiOn = (m_pMidiMonitor->count() > 0);
 	if (bMidiOn) {
 		if (m_iMidiCount == 0)
 			m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOn]);

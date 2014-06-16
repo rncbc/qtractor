@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,7 +77,7 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 
 	// NOTE: Find previous note event and compute duration...
 	if (pEvent->type() == qtractorMidiEvent::NOTEOFF) {
-		unsigned char note = pEvent->note();
+		const unsigned char note = pEvent->note();
 		NoteMap::Iterator iter = m_notes.find(note);
 		const NoteMap::Iterator& iter_end = m_notes.end();
 		NoteMap::Iterator iter_last;
@@ -87,7 +87,7 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 			iter_last = iter;
 		}
 		if (pNoteEvent) {
-			unsigned long iTime = pNoteEvent->time();
+			const unsigned long iTime = pNoteEvent->time();
 			unsigned long iDuration = pEvent->time() - iTime;
 			pNoteEvent->setDuration(iDuration);
 			iDuration += iTime;
@@ -107,7 +107,7 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 	else
 	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
 		// SYSEX: add enough slack...
-		unsigned long iTime = pEvent->time() + (m_iTicksPerBeat >> 3);
+		const unsigned long iTime = pEvent->time() + (m_iTicksPerBeat >> 3);
 		if (m_duration < iTime)
 			m_duration = iTime;
 	}
@@ -134,7 +134,7 @@ void qtractorMidiSequence::insertEvent ( qtractorMidiEvent *pEvent )
 	unsigned long iTime = pEvent->time();
 	// NOTEON: Keep note stats and make it pending on a NOTEOFF...
 	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-		unsigned char note = pEvent->note();
+		const unsigned char note = pEvent->note();
 		if (m_noteMin > note || m_noteMin == 0)
 			m_noteMin = note;
 		if (m_noteMax < note || m_noteMax == 0)
@@ -193,10 +193,12 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 	}
 
 	// Set the given replacement range...
-	unsigned short iTicksPerBeat = pSeq->ticksPerBeat();
-
-	unsigned long iTimeStart = timeq(iTimeOffset, iTicksPerBeat);
-	unsigned long iTimeEnd   = timeq(iTimeOffset + iTimeLength, iTicksPerBeat);
+	const unsigned short iTicksPerBeat
+		= pSeq->ticksPerBeat();
+	const unsigned long iTimeStart
+		= timeq(iTimeOffset, iTicksPerBeat);
+	const unsigned long iTimeEnd
+		= timeq(iTimeOffset + iTimeLength, iTicksPerBeat);
 
 	// Remove existing events in the given range...
 	qtractorMidiEvent *pEvent = m_events.first();

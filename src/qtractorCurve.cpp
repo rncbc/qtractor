@@ -204,8 +204,8 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 // Destructor.
 qtractorCurve::~qtractorCurve (void)
 {
-	if (m_pList)
-		m_pList->removeCurve(this);
+//	if (m_pList)
+//		m_pList->remove(this);
 
 	m_observer.setCurve(NULL);
 

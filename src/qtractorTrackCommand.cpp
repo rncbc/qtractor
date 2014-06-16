@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -315,7 +315,7 @@ qtractorResizeTrackCommand::qtractorResizeTrackCommand (
 bool qtractorResizeTrackCommand::redo (void)
 {
 	// Save the previous item height alright...
-	int iZoomHeight = track()->zoomHeight();
+	const int iZoomHeight = track()->zoomHeight();
 
 	// Just set new one...
 	track()->setZoomHeight(m_iZoomHeight);
@@ -448,7 +448,7 @@ bool qtractorEditTrackCommand::redo (void)
 		return false;
 
 	// Howdy, maybe we're already have a name on recording...
-	bool bRecord = m_pTrack->isRecord();
+	const bool bRecord = m_pTrack->isRecord();
 	if (bRecord)
 		pSession->trackRecord(m_pTrack, false, 0, 0);
 
@@ -484,11 +484,11 @@ bool qtractorEditTrackCommand::redo (void)
 	if (bRecord) {
 		unsigned long iClipStart = pSession->playHead();
 		if (pSession->isPunching()) {
-			unsigned long iPunchIn = pSession->punchIn();
+			const unsigned long iPunchIn = pSession->punchIn();
 			if (iClipStart < iPunchIn)
 				iClipStart = iPunchIn;
 		}
-		unsigned long iFrameTime = pSession->frameTimeEx();
+		const unsigned long iFrameTime = pSession->frameTimeEx();
 		pSession->trackRecord(m_pTrack, true, iClipStart, iFrameTime);
 	}
 
@@ -620,7 +620,7 @@ bool qtractorTrackStateCommand::redo (void)
 			&& m_pClipCommand == NULL && m_iRecordCount == 0) {
 			m_pClipCommand = new qtractorClipCommand(QString());
 			// Do all the record stuffing here...
-			unsigned long iFrameTime = pSession->frameTimeEx();
+			const unsigned long iFrameTime = pSession->frameTimeEx();
 			if (m_pClipCommand->addClipRecord(pTrack, iFrameTime)) {
 				// Yes, we've recorded something...
 				setRefresh(true);
@@ -693,7 +693,7 @@ bool qtractorTrackStateCommand::redo (void)
 				pTrack->setSolo(pTrackItem->on);
 			}
 			// Send MMC MASKED_WRITE command...
-			int iTrack = pTrackList->trackRow(pTrack);
+			iTrack = pTrackList->trackRow(pTrack);
 			if (pMidiEngine)
 				pMidiEngine->sendMmcMaskedWrite(scmd, iTrack, pTrackItem->on);
 			// Send MIDI controller command...
@@ -782,7 +782,7 @@ bool qtractorTrackMonitorCommand::redo (void)
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		if (pMidiControl) {
-			int iTrack = pSession->tracks().find(pTrack);
+			const int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_MONITOR, iTrack, m_bMonitor);
 		}
@@ -803,7 +803,7 @@ bool qtractorTrackMonitorCommand::redo (void)
 			pTrack->setMonitor(pTrackItem->on);
 			// Send MIDI controller command...
 			if (pMidiControl) {
-				int iTrack = pSession->tracks().find(pTrack);
+				const int iTrack = pSession->tracks().find(pTrack);
 				pMidiControl->processTrackCommand(
 					qtractorMidiControl::TRACK_MONITOR, iTrack, pTrackItem->on);
 			}
@@ -845,10 +845,10 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 				= static_cast<qtractorTrackGainCommand *> (pLastCommand);
 			if (pLastGainCommand) {
 				// Equivalence means same (sign) direction too...
-				float fPrevGain = pLastGainCommand->prevGain();
-				float fLastGain = pLastGainCommand->gain();
-				int   iPrevSign = (fPrevGain > fLastGain ? +1 : -1);
-				int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1); 
+				const float fPrevGain = pLastGainCommand->prevGain();
+				const float fLastGain = pLastGainCommand->gain();
+				const int   iPrevSign = (fPrevGain > fLastGain ? +1 : -1);
+				const int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1);
 				if (iPrevSign == iCurrSign || m_fGain == m_fPrevGain) {
 					m_fPrevGain = fLastGain;
 					(pSession->commands())->removeLastCommand();
@@ -872,7 +872,7 @@ bool qtractorTrackGainCommand::redo (void)
 		return false;
 
 	// Set undo value...
-	float fGain = m_fPrevGain;
+	const float fGain = m_fPrevGain;
 
 	// Set track gain (respective monitor gets set too...)
 	pTrack->setGain(m_fGain);
@@ -890,7 +890,7 @@ bool qtractorTrackGainCommand::redo (void)
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		if (pMidiControl) {
-			int iTrack = pSession->tracks().find(pTrack);
+			const int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_GAIN, iTrack, m_fGain,
 				pTrack->trackType() == qtractorTrack::Audio);
@@ -934,10 +934,10 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 				= static_cast<qtractorTrackPanningCommand *> (pLastCommand);
 			if (pLastPanningCommand) {
 				// Equivalence means same (sign) direction too...
-				float fPrevPanning = pLastPanningCommand->prevPanning();
-				float fLastPanning = pLastPanningCommand->panning();
-				int   iPrevSign    = (fPrevPanning > fLastPanning ? +1 : -1);
-				int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1); 
+				const float fPrevPanning = pLastPanningCommand->prevPanning();
+				const float fLastPanning = pLastPanningCommand->panning();
+				const int   iPrevSign    = (fPrevPanning > fLastPanning ? +1 : -1);
+				const int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1);
 				if (iPrevSign == iCurrSign || m_fPanning == m_fPrevPanning) {
 					m_fPrevPanning = fLastPanning;
 					(pSession->commands())->removeLastCommand();
@@ -961,7 +961,7 @@ bool qtractorTrackPanningCommand::redo (void)
 		return false;
 
 	// Set undo value...
-	float fPanning = m_fPrevPanning;
+	const float fPanning = m_fPrevPanning;
 
 	// Set track panning (respective monitor gets set too...)
 	pTrack->setPanning(m_fPanning);
@@ -979,7 +979,7 @@ bool qtractorTrackPanningCommand::redo (void)
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		if (pMidiControl) {
-			int iTrack = pSession->tracks().find(pTrack);
+			const int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_PANNING, iTrack, m_fPanning);
 		}

@@ -1,7 +1,7 @@
 // qtractorNsmClient.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -157,7 +157,7 @@ qtractorNsmClient::qtractorNsmClient (
 {
 #ifdef CONFIG_LIBLO
 	m_address = lo_address_new_from_url(nsm_url.toUtf8().constData());
-	int proto = lo_address_get_protocol(m_address);
+	const int proto = lo_address_get_protocol(m_address);
 	m_thread = lo_server_thread_new_with_proto(NULL, proto, NULL);
 	if (m_thread) {
 		m_server = lo_server_thread_get_server(m_thread);

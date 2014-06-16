@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -288,8 +288,8 @@ bool qtractorClipCommand::addClipRecord (
 	if (pClip == NULL)
 		return false;
 
-	unsigned long iClipEnd = pTrack->clipRecordEnd(iFrameTime);
-	unsigned long iClipStart = pClip->clipStart();
+	const unsigned long iClipEnd = pTrack->clipRecordEnd(iFrameTime);
+	const unsigned long iClipStart = pClip->clipStart();
 	if (iClipStart >= iClipEnd)
 		return false;
 
@@ -301,10 +301,11 @@ bool qtractorClipCommand::addClipRecord (
 		return false;
 
 	// Recorded clip length and offset...
-	unsigned long iClipLength = iClipEnd - iClipStart;
-	unsigned long iClipOffset = 0;
+	const unsigned long iClipLength = iClipEnd - iClipStart;
 
 	// Attend to audio clip record latency compensation...
+	unsigned long iClipOffset = 0;
+
 	if (pTrack->trackType() == qtractorTrack::Audio) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
@@ -321,9 +322,8 @@ bool qtractorClipCommand::addClipRecord (
 				iClipStart, iClipOffset, iClipLength,
 				pSession->loopStart(),
 				pSession->loopEnd());
-		int iTake = (pSession->loopRecordingMode() == 1 ? 0 : -1);
-		iTake = pTakeInfo->select(this, pTrack, iTake);
-		pTakeInfo->setCurrentTake(iTake);
+		const int iTake = (pSession->loopRecordingMode() == 1 ? 0 : -1);
+		pTakeInfo->setCurrentTake(pTakeInfo->select(this, pTrack, iTake));
 	}
 	else
 	addClipRecordTake(pTrack, pClip, iClipStart, iClipOffset, iClipLength);
@@ -417,19 +417,19 @@ qtractorMidiEditCommand *qtractorClipCommand::createMidiEditCommand (
 		= new qtractorMidiEditCommand(pMidiClip, name());
 
 	qtractorMidiSequence *pSeq = pMidiClip->sequence();
-	unsigned long iTimeOffset = pSeq->timeOffset();
+	const unsigned long iTimeOffset = pSeq->timeOffset();
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(pMidiClip->clipStart());
-	unsigned long t0 = pNode->tickFromFrame(pMidiClip->clipStart());
+	const unsigned long t0 = pNode->tickFromFrame(pMidiClip->clipStart());
 
 	unsigned long f1 = pMidiClip->clipStart() + pMidiClip->clipOffset();
 	pNode = cursor.seekFrame(f1);
-	unsigned long t1 = pNode->tickFromFrame(f1);
+	const unsigned long t1 = pNode->tickFromFrame(f1);
 	unsigned long iTimeStart = t1 - t0;
 	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);
 	pNode = cursor.seekFrame(f1 += pMidiClip->clipLength());
-	unsigned long iTimeEnd = iTimeStart + pNode->tickFromFrame(f1) - t1;
+	const unsigned long iTimeEnd = iTimeStart + pNode->tickFromFrame(f1) - t1;
 
 	for (qtractorMidiEvent *pEvent = pSeq->events().first();
 			pEvent; pEvent = pEvent->next()) {
@@ -539,11 +539,11 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case MoveClip: {
 			qtractorTrack *pOldTrack = pClip->track();
-			unsigned long  iOldStart = pClip->clipStart();
-			unsigned long iOldOffset = pClip->clipOffset();
-			unsigned long iOldLength = pClip->clipLength();
-			unsigned long iOldFadeIn = pClip->fadeInLength();
-			unsigned long iOldFadeOut = pClip->fadeOutLength();
+			const unsigned long  iOldStart = pClip->clipStart();
+			const unsigned long iOldOffset = pClip->clipOffset();
+			const unsigned long iOldLength = pClip->clipLength();
+			const unsigned long iOldFadeIn = pClip->fadeInLength();
+			const unsigned long iOldFadeOut = pClip->fadeOutLength();
 			pOldTrack->removeClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
@@ -563,11 +563,11 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case ResizeClip: {
-			unsigned long iOldStart  = pClip->clipStart();
-			unsigned long iOldOffset = pClip->clipOffset();
-			unsigned long iOldLength = pClip->clipLength();
-			unsigned long iOldFadeIn = pClip->fadeInLength();
-			unsigned long iOldFadeOut = pClip->fadeOutLength();
+			const unsigned long iOldStart  = pClip->clipStart();
+			const unsigned long iOldOffset = pClip->clipOffset();
+			const unsigned long iOldLength = pClip->clipLength();
+			const unsigned long iOldFadeIn = pClip->fadeInLength();
+			const unsigned long iOldFadeOut = pClip->fadeOutLength();
 			float fOldTimeStretch = 0.0f;
 			float fOldPitchShift  = 0.0f;
 			qtractorAudioClip *pAudioClip = NULL;
@@ -620,13 +620,13 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case GainClip: {
-			float fOldGain = pClip->clipGain();
+			const float fOldGain = pClip->clipGain();
 			pClip->setClipGain(pItem->clipGain);
 			pItem->clipGain = fOldGain;
 			break;
 		}
 		case FadeInClip: {
-			unsigned long iOldFadeIn = pClip->fadeInLength();
+			const unsigned long iOldFadeIn = pClip->fadeInLength();
 			qtractorClip::FadeType oldFadeInType = pClip->fadeInType();
 			pClip->setFadeInType(pItem->fadeInType);
 			pClip->setFadeInLength(pItem->fadeInLength);
@@ -635,7 +635,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case FadeOutClip: {
-			unsigned long iOldFadeOut = pClip->fadeOutLength();
+			const unsigned long iOldFadeOut = pClip->fadeOutLength();
 			qtractorClip::FadeType oldFadeOutType = pClip->fadeOutType();
 			pClip->setFadeOutType(pItem->fadeOutType);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
@@ -648,7 +648,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pTrack->trackType() == qtractorTrack::Audio)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
-				float fOldTimeStretch = pAudioClip->timeStretch();
+				const float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
 			//--pAudioClip->close();			// Scrap peak file.
 				pAudioClip->updateClipTime();	// Care of tempo change.
@@ -662,7 +662,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pTrack->trackType() == qtractorTrack::Audio)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
-				float fOldPitchShift = pAudioClip->pitchShift();
+				const float fOldPitchShift = pAudioClip->pitchShift();
 				pAudioClip->setPitchShift(pItem->pitchShift);
 			//--pAudioClip->open();
 				pItem->pitchShift = fOldPitchShift;
@@ -680,9 +680,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case ResetClip: {
-			unsigned long iClipStartTime  = pClip->clipStartTime();
-			unsigned long iClipOffsetTime = pClip->clipOffsetTime();
-			unsigned long iClipLengthTime = pClip->clipLengthTime();
+			const unsigned long iClipStartTime  = pClip->clipStartTime();
+			const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
+			const unsigned long iClipLengthTime = pClip->clipLengthTime();
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
 			pItem->clipOffset =	pSession->frameFromTickRange(
@@ -743,7 +743,7 @@ qtractorClipTakeCommand::qtractorClipTakeCommand (
 // Executive override.
 bool qtractorClipTakeCommand::execute ( bool bRedo )
 {
-	int iCurrentTake = m_pTakeInfo->currentTake();
+	const int iCurrentTake = m_pTakeInfo->currentTake();
 	m_pTakeInfo->setCurrentTake(m_iCurrentTake);
 	m_iCurrentTake = iCurrentTake;;
 
@@ -875,7 +875,7 @@ bool qtractorClipRangeCommand::execute ( bool bRedo )
 	// Time-map...
 	if (!m_timeScaleNodeCommands.isEmpty()) {
 		// If currently playing, we need to do a stop and go...
-		bool bPlaying = pSession->isPlaying();
+		const bool bPlaying = pSession->isPlaying();
 		if (bPlaying)
 			pSession->lock();
 		QListIterator<qtractorTimeScaleNodeCommand *>

@@ -86,8 +86,8 @@ qtractorMidiEditTime::qtractorMidiEditTime (
 void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
 
 	if (w < 1 || h < 1)
 		return;
@@ -259,9 +259,10 @@ void qtractorMidiEditTime::drawContents ( QPainter *pPainter, const QRect& rect 
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	// Draw special play/edit-head/tail headers...
-	int cx = qtractorScrollView::contentsX();
-	int h = qtractorScrollView::height() - 4;
-	int d = (h >> 2);
+	const int cx = qtractorScrollView::contentsX();
+	const int h = qtractorScrollView::height() - 4;
+	const int d = (h >> 2);
+
 	int x = m_pEditor->editHeadX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
@@ -313,8 +314,9 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 {
 	// Try to catch mouse clicks over the
 	// play/edit-head/tail cursors...
-	int h = qtractorScrollView::height(); // - 4;
-	int d = (h >> 1);
+	const int h = qtractorScrollView::height(); // - 4;
+	const int d = (h >> 1);
+
 	QRect rect(0, h - d, d << 1, d);
 
 	// Check play-head header...
@@ -333,7 +335,7 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	if (pTimeScale == NULL)
 		return false;
 
-	int dx = pTimeScale->pixelFromFrame(m_pEditor->offset()) + d;
+	const int dx = pTimeScale->pixelFromFrame(m_pEditor->offset()) + d;
 
 	// Loop points...
 	if (pSession->isLooping()) {
@@ -416,8 +418,8 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		return;
 
 	// Which mouse state?
-	bool bModifier = (pMouseEvent->modifiers() &
-		(Qt::ShiftModifier | Qt::ControlModifier));
+	bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Make sure we'll reset selection...
 	if (!bModifier)
@@ -487,9 +489,9 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	// Are we already moving/dragging something?
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-	int y = m_pEditor->editView()->contentsY();
+	const int y = m_pEditor->editView()->contentsY();
 	switch (m_dragState) {
 	case DragNone:
 		// Try to catch mouse over the cursor heads...
@@ -573,7 +575,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 	switch (m_dragState) {
 	case DragSelect:
@@ -674,7 +676,7 @@ void qtractorMidiEditTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	// Show tempo map dialog.
@@ -863,9 +865,9 @@ void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
 	if (pTimeScale == NULL)
 		return;
 
-	unsigned long iFrameStart = pTimeScale->frameSnap(
+	const unsigned long iFrameStart = pTimeScale->frameSnap(
 		pTimeScale->frameFromPixel(rect.left()));
-	unsigned long iFrameEnd = pTimeScale->frameSnap(
+	const unsigned long iFrameEnd = pTimeScale->frameSnap(
 		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(QCursor::pos(),

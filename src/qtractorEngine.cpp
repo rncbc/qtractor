@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -245,7 +245,7 @@ bool qtractorEngine::open (void)
 void qtractorEngine::close (void)
 {
 	// Save current activation state...
-	bool bActivated = m_bActivated;
+	const bool bActivated = m_bActivated;
 	// We're stopping now...
 	m_bActivated = false;
 
@@ -741,7 +741,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		return;
 
 	const QString sBaseName(sBusName + "_curve");
-	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
+	const int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
 	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());

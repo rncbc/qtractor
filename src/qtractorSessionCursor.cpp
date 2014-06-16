@@ -1,7 +1,7 @@
 // qtractorSessionCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -95,16 +95,17 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		// Now something fulcral for clips around...
 		if (pTrack->trackType() == m_syncType) {
 			// Tell whether play-head is after loop-start position...
-			bool bLooping = (iFrame >= m_pSession->loopStart());
+			const bool bLooping = (iFrame >= m_pSession->loopStart());
 			// Care for old/previous clip...
 			if (pClipLast && pClipLast != pClip)
 				pClipLast->reset(bLooping);
 			// Set final position within target clip...
 			if (pClip && bSync) {
 				// Take care of overlapping clips...
-				unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
+				const unsigned long iClipEnd
+					= pClip->clipStart() + pClip->clipLength();
 				while (pClip) {
-					unsigned long iClipStart = pClip->clipStart();
+					const unsigned long iClipStart = pClip->clipStart();
 					if (iClipStart > iClipEnd)
 						break;
 					if (iFrame >= iClipStart &&
@@ -141,10 +142,12 @@ void qtractorSessionCursor::setFrameTime ( unsigned long iFrameTime )
 	m_iFrameDelta = m_iFrame - iFrameTime;
 }
 
+
 unsigned long qtractorSessionCursor::frameTime (void) const
 {
 	return m_iFrameTime;
 }
+
 
 unsigned long qtractorSessionCursor::frameTimeEx (void) const
 {
@@ -185,7 +188,7 @@ void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 	if (pTrack == NULL)
 		pTrack = m_pSession->tracks().last();
 
-	unsigned int iTracks = m_iTracks + 1;
+	const unsigned int iTracks = m_iTracks + 1;
 	if (iTracks < m_iSize) {
 		updateClips(m_ppClips, iTracks);
 	} else {
@@ -204,7 +207,7 @@ void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 // Update track after adding/removing a clip from cursor.
 void qtractorSessionCursor::updateTrack ( qtractorTrack *pTrack )
 {
-	int iTrack = m_pSession->tracks().find(pTrack);
+	const int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0) {
 		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
 		if (pClip && pTrack->trackType() == m_syncType
@@ -220,7 +223,7 @@ void qtractorSessionCursor::updateTrack ( qtractorTrack *pTrack )
 // Remove a track from cursor.
 void qtractorSessionCursor::removeTrack ( qtractorTrack *pTrack )
 {
-	int iTrack = m_pSession->tracks().find(pTrack);
+	const int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0)
 		removeTrack((unsigned int) iTrack);
 }
@@ -237,7 +240,7 @@ void qtractorSessionCursor::removeTrack ( unsigned int iTrack )
 // Update current track clip under cursor.
 void qtractorSessionCursor::updateTrackClip ( qtractorTrack *pTrack )
 {
-	int iTrack = m_pSession->tracks().find(pTrack);
+	const int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0) {
 		qtractorClip *pClip = m_ppClips[iTrack];
 		if (pClip && pTrack->trackType() == m_syncType) {

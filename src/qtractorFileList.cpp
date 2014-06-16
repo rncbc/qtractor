@@ -191,4 +191,3 @@ void qtractorFileList::clear (void)
 
 
 // end of qtractorFileList.cpp
-

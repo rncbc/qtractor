@@ -1,7 +1,7 @@
 // qtractorCurveSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ void qtractorCurveSelect::selectItem ( qtractorCurve *pCurve,
 {
 	Item *pItem = findItem(pNode);
 	if (pItem) {
-		unsigned int flags = pItem->flags;
+		const unsigned int flags = pItem->flags;
 		if ( (!bSelect && (flags & 2) == 0) ||
 			(( bSelect && (flags & 3) == 3) && bToggle))
 			pItem->flags &= ~1;

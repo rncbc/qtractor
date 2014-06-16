@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -288,7 +288,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	// Finally, we're ready to save to external file.
 	QFile file(sDocname);
 #ifdef CONFIG_LIBZ
-	bool bRemove = !file.exists();
+	const bool bRemove = !file.exists();
 #endif
 	if (!file.open(mode))
 		return false;
@@ -410,7 +410,6 @@ QString qtractorDocument::addArchiveFile ( const QString& sFilename )
 {
 	return (g_pArchive ? g_pArchive->addFile(sFilename) : sFilename);
 }
-
 
 
 // end of qtractorDocument.cpp
