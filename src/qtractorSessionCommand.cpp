@@ -1,7 +1,7 @@
 // qtractorSessionCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,8 +63,8 @@ bool qtractorSessionLoopCommand::redo (void)
 		return false;
 
 	// Save the previous session loop state alright...
-	unsigned long iLoopStart = pSession->loopStart();
-	unsigned long iLoopEnd   = pSession->loopEnd();
+	const unsigned long iLoopStart = pSession->loopStart();
+	const unsigned long iLoopEnd   = pSession->loopEnd();
 
 	// Just set new bounds...
 	pSession->setLoop(m_iLoopStart, m_iLoopEnd);
@@ -110,8 +110,8 @@ bool qtractorSessionPunchCommand::redo (void)
 		return false;
 
 	// Save the previous session punch state alright...
-	unsigned long iPunchIn  = pSession->punchIn();
-	unsigned long iPunchOut = pSession->punchOut();
+	const unsigned long iPunchIn  = pSession->punchIn();
+	const unsigned long iPunchOut = pSession->punchOut();
 
 	// Just set new bounds...
 	pSession->setPunch(m_iPunchIn, m_iPunchOut);
@@ -152,9 +152,9 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 			name(), pSession->properties(), properties);
 
 	// Append tempo/time-siganture changes...
-	float fTempo = properties.timeScale.tempo();
-	unsigned short iBeatsPerBar = properties.timeScale.beatsPerBar();
-	unsigned short iBeatDivisor = properties.timeScale.beatDivisor();
+	const float fTempo = properties.timeScale.tempo();
+	const unsigned short iBeatsPerBar = properties.timeScale.beatsPerBar();
+	const unsigned short iBeatDivisor = properties.timeScale.beatDivisor();
 	if (pSession->tempo() != fTempo ||
 		pSession->beatsPerBar() != iBeatsPerBar ||
 		pSession->beatDivisor() != iBeatDivisor) {
@@ -166,7 +166,7 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 	}
 
 	// Append time resolution changes too...
-	unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
+	const unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
 	if (pSession->ticksPerBeat() != iTicksPerBeat)
 		m_iTicksPerBeat = iTicksPerBeat;
 }

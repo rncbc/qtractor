@@ -1,7 +1,7 @@
 // qtractorTrackButton.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,7 +80,7 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
 
-	QPalette pal(QPushButton::palette());
+	const QPalette pal(QPushButton::palette());
 	m_rgbText = pal.buttonText().color();
 	m_rgbOff  = pal.button().color();
 	switch (m_toolType) {
@@ -110,15 +110,13 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 // Visitors overload.
 void qtractorTrackButton::updateValue ( float fValue )
 {
-	bool bBlockSignals = QPushButton::blockSignals(true);
+	const bool bBlockSignals = QPushButton::blockSignals(true);
 
-	bool bOn = (fValue > 0.0f);
-
+	const bool bOn = (fValue > 0.0f);
 	QPalette pal(QPushButton::palette());
 	pal.setColor(QPalette::ButtonText, bOn ? m_rgbOn.darker() : m_rgbText);
 	pal.setColor(QPalette::Button, bOn ? m_rgbOn : m_rgbOff);
 	QPushButton::setPalette(pal);
-
 	QPushButton::setChecked(bOn);
 
 	QPushButton::blockSignals(bBlockSignals);

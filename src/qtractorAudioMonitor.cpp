@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -238,7 +238,7 @@ unsigned short qtractorAudioMonitor::channels (void) const
 // Value holder accessor.
 float qtractorAudioMonitor::value ( unsigned short iChannel ) const
 {
-	float fValue = m_pfValues[iChannel];
+	const float fValue = m_pfValues[iChannel];
 	m_pfValues[iChannel] = 0.0f;
 	return fValue;
 }
@@ -371,8 +371,9 @@ void qtractorAudioMonitor::update (void)
     }
 
 	// Apply to multi-channel gain array (paired fashion)...
-	unsigned short i, iChannels = (m_iChannels - (m_iChannels % 2));
-	for (i = 0; i < iChannels; ++i) {
+	const unsigned short iChannels = (m_iChannels - (m_iChannels % 2));
+	unsigned short i = 0;
+	for ( ; i < iChannels; ++i) {
 		m_pfPrevGains[i] = m_pfGains[i];
 		m_pfGains[i] = afGains[i % 2];
 	}

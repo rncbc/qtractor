@@ -304,7 +304,7 @@ bool qtractorTimeSpinBox::updateValue (
 		++m_iValueChanged;
 	}
 
-	int iValueChanged = m_iValueChanged;
+	const int iValueChanged = m_iValueChanged;
 
 	if (bNotifyChange && m_iValueChanged > 0) {
 		emit valueChanged(m_iValue);
@@ -512,7 +512,7 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 		++m_iValueChanged;
 	}
 
-	int iValueChanged = m_iValueChanged;
+	const int iValueChanged = m_iValueChanged;
 
 	if (bNotifyChange && m_iValueChanged > 0) {
 		emit valueChanged(m_fTempo, m_iBeatsPerBar, m_iBeatDivisor);

@@ -1,7 +1,7 @@
 // qtractorMidiTimer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -70,7 +70,7 @@ qtractorMidiTimer::qtractorMidiTimer (void)
 		snd_timer_id_alloca(&pTimerID);
 		snd_timer_id_set_class(pTimerID, SND_TIMER_CLASS_NONE);
 		while (snd_timer_query_next_device(pTimerQuery, pTimerID) >= 0) {
-			int iClass = snd_timer_id_get_class(pTimerID);
+			const int iClass = snd_timer_id_get_class(pTimerID);
 			if (iClass < 0)
 				break;
 			int iSClass = snd_timer_id_get_sclass(pTimerID);
@@ -95,7 +95,7 @@ qtractorMidiTimer::qtractorMidiTimer (void)
 				snd_timer_info_alloca(&pTimerInfo);
 				if (snd_timer_info(pTimer, pTimerInfo) >= 0) {
 					qtractorMidiTimer::Key key(iClass, iCard, iDevice, iSubDev);
-					long iResol = snd_timer_info_get_resolution(pTimerInfo);
+					const long iResol = snd_timer_info_get_resolution(pTimerInfo);
 					QString sTimerName = QString::fromUtf8(
 						snd_timer_info_get_name(pTimerInfo));
 					QString sTimerText;
@@ -136,6 +136,7 @@ int qtractorMidiTimer::indexOf ( int iKey ) const
 	int iIndex = m_keys.indexOf(iKey);
 	if (iIndex < 0)
 		iIndex = 0;
+
 	return iIndex;
 }
 

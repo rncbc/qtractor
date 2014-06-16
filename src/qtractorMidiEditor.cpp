@@ -997,7 +997,8 @@ unsigned short qtractorMidiEditor::horizontalZoom (void) const
 void qtractorMidiEditor::setVerticalZoom ( unsigned short iVerticalZoom )
 {
 	// Hold and try setting new item height...
-	int iZoomStep = int(iVerticalZoom) - int(verticalZoom());
+	const int iZoomStep
+		= int(iVerticalZoom) - int(verticalZoom());
 	int iItemHeight
 		= (iVerticalZoom * qtractorMidiEditList::ItemHeightBase) / 100;
 	if (iItemHeight < qtractorMidiEditList::ItemHeightMax && iZoomStep > 0)
@@ -1164,7 +1165,8 @@ void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSyncView )
 	}
 
 	m_iEditHead = iEditHead;
-	int iEditHeadX
+
+	const int iEditHeadX
 		= m_pTimeScale->pixelFromFrame(iEditHead)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
@@ -1196,7 +1198,8 @@ void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSyncView )
 	}
 
 	m_iEditTail = iEditTail;
-	int iEditTailX
+
+	const int iEditTailX
 		= m_pTimeScale->pixelFromFrame(iEditTail)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
@@ -1221,7 +1224,8 @@ void qtractorMidiEditor::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 		bSyncView = m_bSyncView;
 
 	m_iPlayHead = iPlayHead;
-	int iPlayHeadX
+
+	const int iPlayHeadX
 		= m_pTimeScale->pixelFromFrame(iPlayHead)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
@@ -2431,9 +2435,9 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 	unsigned long iTime = pNode->tickFromPixel(x0 + pos.x());
 	iTime = (iTime > t0 ? iTime - t0 : 0);
 
-	// This is the edit-view spacifics...
-	int h1 = m_pEditList->itemHeight();
-	int ch = m_pEditView->contentsHeight(); // + 1;
+	// This is the edit-view specifics...
+	const int h1 = m_pEditList->itemHeight();
+	const int ch = m_pEditView->contentsHeight(); // + 1;
 
 	// This is the edit-event zero-line...
 	const qtractorMidiEvent::EventType eventType = m_pEditEvent->eventType();
@@ -2458,7 +2462,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			const unsigned long t1 = t0 + pEvent->time();
 			const unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
-			int x = pNode->pixelFromTick(t1) - 1;
+			const int x = pNode->pixelFromTick(t1) - 1;
 			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
@@ -2525,7 +2529,6 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		= (bEditView ? m_pEditView->eventType() : m_pEditEvent->eventType());
 
 	const int ch = m_pEditView->contentsHeight();
-
 	int h1 = m_pEditList->itemHeight();
 	unsigned char note = (ch - pos.y()) / h1;
 	if (m_iSnapToScaleType > 0)
@@ -3361,7 +3364,7 @@ int qtractorMidiEditor::noteDelta ( qtractorScrollView *pScrollView ) const
 	int iNoteDelta = 0;
 
 	if (pScrollView == static_cast<qtractorScrollView *> (m_pEditView)) {
-		int h1 = m_pEditList->itemHeight();
+		const int h1 = m_pEditList->itemHeight();
 		if (h1 > 0)
 			iNoteDelta = -(m_posDelta.y() / h1);
 	}
@@ -3749,8 +3752,10 @@ void qtractorMidiEditor::updateDragResize (
 	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
 
 	QPoint delta(pos - m_posDrag);
+
 	int x0, x1;
 	int y0, y1;
+
 	int dx = 0;
 	int dy = 0;
 

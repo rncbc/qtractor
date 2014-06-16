@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -70,7 +70,7 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 		// out-of-time phantom monitor peak values...)
 		if (iOffset > c_iQueueMask)
 			iOffset = c_iQueueMask;
-		unsigned int iIndex = (m_iQueueIndex + iOffset) & c_iQueueMask;
+		const unsigned int iIndex = (m_iQueueIndex + iOffset) & c_iQueueMask;
 		// Set the value in buffer...
 		QueueItem& item = m_pQueue[iIndex];
 		if (item.value < val && type == qtractorMidiEvent::NOTEON)
@@ -100,7 +100,7 @@ float qtractorMidiMonitor::value (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && g_iFrameSlot > 0) {
 		// Sweep the queue until current time...
-		unsigned long iFrameTime = pSession->frameTimeEx();
+		const unsigned long iFrameTime = pSession->frameTimeEx();
 		while (m_iFrameStart < iFrameTime) {
 			QueueItem& item = m_pQueue[m_iQueueIndex];
 			if (val < item.value)
@@ -123,7 +123,7 @@ float qtractorMidiMonitor::value (void)
 int qtractorMidiMonitor::count (void)
 {
 	// Grab latest direct/dequeued count...
-	int iCount = int(m_item.count);
+	const int iCount = int(m_item.count);
 	m_item.count = 0;
 	return iCount;
 }
@@ -186,7 +186,7 @@ void qtractorMidiMonitor::splitTime ( qtractorTimeScale *pTimeScale,
 	// Reset time references...
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
-	unsigned long t0 = pNode->tickFromFrame(iFrame);
+	const unsigned long t0 = pNode->tickFromFrame(iFrame);
 
 	// Time slot: the amount of time (in ticks)
 	// each queue slot will hold scheduled events;

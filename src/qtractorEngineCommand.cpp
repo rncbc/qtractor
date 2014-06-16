@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -166,7 +166,7 @@ bool qtractorBusCommand::updateBus (void)
 		return false;
 
 	// We need to hold things for a while...
-	bool bPlaying = pSession->isPlaying();
+	const bool bPlaying = pSession->isPlaying();
 
 	pSession->lock();
 	pSession->setPlaying(false);
@@ -174,7 +174,7 @@ bool qtractorBusCommand::updateBus (void)
 	// Save current bus properties...
 	qtractorBus::BusMode busMode = m_pBus->busMode();
 	QString sBusName = m_pBus->busName();
-	bool bMonitor = m_pBus->isMonitor();
+	const bool bMonitor = m_pBus->isMonitor();
 
 	// Save current connections...
 	qtractorBus::ConnectList inputs;
@@ -364,7 +364,7 @@ bool qtractorBusCommand::deleteBus (void)
 		return false;
 
 	// We need to hold things for a while...
-	bool bPlaying = pSession->isPlaying();
+	const bool bPlaying = pSession->isPlaying();
 
 	pSession->lock();
 	pSession->setPlaying(false);
@@ -553,7 +553,7 @@ bool qtractorBusMonitorCommand::redo (void)
 		return false;
 
 	// Set Bus gain (repective monitor gets set too...)
-	float bMonitor = pBus->isMonitor();
+	const bool bMonitor = pBus->isMonitor();
 	pBus->setMonitor(qtractorBusCommand::isMonitor());
 	qtractorBusCommand::setMonitor(bMonitor);
 
@@ -605,10 +605,10 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 				= static_cast<qtractorBusGainCommand *> (pLastCommand);
 			if (pLastGainCommand) {
 				// Equivalence means same (sign) direction too...
-				float fPrevGain = pLastGainCommand->prevGain();
-				float fLastGain = pLastGainCommand->gain();
-				int   iPrevSign = (fPrevGain > fLastGain ? +1 : -1);
-				int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1); 
+				const float fPrevGain = pLastGainCommand->prevGain();
+				const float fLastGain = pLastGainCommand->gain();
+				const int   iPrevSign = (fPrevGain > fLastGain ? +1 : -1);
+				const int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1);
 				if (iPrevSign == iCurrSign || m_fGain == m_fPrevGain) {
 					m_fPrevGain = fLastGain;
 					(pSession->commands())->removeLastCommand();
@@ -628,7 +628,7 @@ bool qtractorBusGainCommand::redo (void)
 		return false;
 
 	// Set Bus gain (repective monitor gets set too...)
-	float fGain = m_fPrevGain;
+	const float fGain = m_fPrevGain;
 
 	qtractorMeter *pMeter = meter();
 	if (pMeter)
@@ -682,10 +682,10 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 				= static_cast<qtractorBusPanningCommand *> (pLastCommand);
 			if (pLastPanningCommand) {
 				// Equivalence means same (sign) direction too...
-				float fPrevPanning = pLastPanningCommand->prevPanning();
-				float fLastPanning = pLastPanningCommand->panning();
-				int   iPrevSign    = (fPrevPanning > fLastPanning ? +1 : -1);
-				int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1); 
+				const float fPrevPanning = pLastPanningCommand->prevPanning();
+				const float fLastPanning = pLastPanningCommand->panning();
+				const int   iPrevSign    = (fPrevPanning > fLastPanning ? +1 : -1);
+				const int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1);
 				if (iPrevSign == iCurrSign || m_fPanning == m_fPrevPanning) {
 					m_fPrevPanning = fLastPanning;
 					(pSession->commands())->removeLastCommand();
@@ -705,7 +705,7 @@ bool qtractorBusPanningCommand::redo (void)
 		return false;
 
 	// Set Bus panning (repective monitor gets set too...)
-	float fPanning = m_fPrevPanning;
+	const float fPanning = m_fPrevPanning;
 
 	qtractorMeter *pMeter = meter();
 	if (pMeter)

@@ -1807,7 +1807,6 @@ void qtractorPluginList::movePlugin (
 		qtractorCurve *pCurve = pPlugin->activateSubject()->curve();
 		if (pCurve && pCurve->list() == pCurveList) {
 			pCurveList->removeCurve(pCurve);
-			pCurveList->unlink(pCurve);
 			m_pCurveList->addCurve(pCurve);
 		}
 		pPlugin->activateObserver()->setCurveList(m_pCurveList);
@@ -1820,7 +1819,6 @@ void qtractorPluginList::movePlugin (
 			pCurve = pParam->subject()->curve();
 			if (pCurve && pCurve->list() == pCurveList) {
 				pCurveList->removeCurve(pCurve);
-				pCurveList->unlink(pCurve);
 				m_pCurveList->addCurve(pCurve);
 			}
 			pParam->observer()->setCurveList(m_pCurveList);

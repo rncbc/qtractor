@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -72,8 +72,8 @@ qtractorMeter *qtractorMeterScale::meter (void) const
 void qtractorMeterScale::drawLineLabel ( QPainter *p,
 	int y, const QString& sLabel )
 {
-	int iCurrY = QWidget::height() - y;
-	int iWidth = QWidget::width();
+	const int iCurrY = QWidget::height() - y;
+	const int iWidth = QWidget::width();
 
 	const QFontMetrics& fm = p->fontMetrics();
 	int iMidHeight = (fm.height() >> 1);

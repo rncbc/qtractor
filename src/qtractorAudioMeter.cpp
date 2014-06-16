@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -225,7 +225,7 @@ void qtractorAudioMeterValue::refresh (void)
 	if (pAudioMonitor == NULL)
 		return;
 
-	float fValue = pAudioMonitor->value(m_iChannel);
+	const float fValue = pAudioMonitor->value(m_iChannel);
 	if (fValue < 0.001f && m_iPeak < 1)
 		return;
 
@@ -278,8 +278,9 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 {
 	QPainter painter(this);
 
-	int w = QWidget::width();
-	int h = QWidget::height();
+	const int w = QWidget::width();
+	const int h = QWidget::height();
+
 	int y;
 
 	if (isEnabled()) {
@@ -462,7 +463,7 @@ void qtractorAudioMeter::reset (void)
 	setPanningSubject(m_pAudioMonitor->panningSubject());
 	setGainSubject(m_pAudioMonitor->gainSubject());
 
-	unsigned short iChannels = m_pAudioMonitor->channels();
+	const unsigned short iChannels = m_pAudioMonitor->channels();
 
 	if (m_iChannels == iChannels)
 		return;
@@ -505,8 +506,8 @@ const QPixmap& qtractorAudioMeter::pixmap (void) const
 
 void qtractorAudioMeter::updatePixmap (void)
 {
-	int w = boxWidget()->width();
-	int h = boxWidget()->height();
+	const int w = boxWidget()->width();
+	const int h = boxWidget()->height();
 
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(0.1f, color(ColorOver));

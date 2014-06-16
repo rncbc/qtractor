@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -201,7 +201,7 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 			return false;
 		}
 		// Check track chunk length...
-		int iMTrkLength = readInt(4);
+		const int iMTrkLength = readInt(4);
 		if (iMTrkLength < 0) {
 			close();
 			return false;
@@ -261,7 +261,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 	qtractorMidiFileRpn xrpn;
 
 	// So, how many tracks are we reading in a row?...
-	unsigned short iSeqTracks = (iSeqs > 1 ? m_iTracks : 1);
+	const unsigned short iSeqTracks = (iSeqs > 1 ? m_iTracks : 1);
 
 	// Go fetch them...
 	for (unsigned short iSeqTrack = 0; iSeqTrack < iSeqTracks; ++iSeqTrack) {
@@ -269,15 +269,16 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 		// If under a format 0 file, we'll filter for one single channel.
 		if (iSeqTracks > 1)
 			iTrackChannel = iSeqTrack;
-		unsigned short iTrack = (m_iFormat == 1 ? iTrackChannel : 0);
+
+		const unsigned short iTrack = (m_iFormat == 1 ? iTrackChannel : 0);
 		if (iTrack >= m_iTracks)
 			return false;
-		unsigned short iChannelFilter = iTrackChannel;
-		if (m_iFormat == 1 || iSeqs > 1)
-			iChannelFilter = 0xf0;
+
+		const unsigned short iChannelFilter
+			= (m_iFormat == 1 || iSeqs > 1 ? 0xf0 : iTrackChannel);
 
 		// Locate the desired track stuff...
-		unsigned long iTrackStart = m_pTrackInfo[iTrack].offset;
+		const unsigned long iTrackStart = m_pTrackInfo[iTrack].offset;
 		if (iTrackStart != m_iOffset) {
 			if (::fseek(m_pFile, iTrackStart, SEEK_SET))
 				return false;
@@ -285,8 +286,10 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 		}
 
 		// Now we're going into business...
+		const unsigned long iTrackEnd
+			= m_iOffset + m_pTrackInfo[iTrack].length;
+
 		unsigned long iTrackTime  = 0;
-		unsigned long iTrackEnd   = m_iOffset + m_pTrackInfo[iTrack].length;
 		unsigned int  iLastStatus = 0;
 		unsigned long iTimeout    = 0;
 
@@ -308,8 +311,9 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				iLastStatus = iStatus;
 			}
 
+			const unsigned short iChannel = (iStatus & 0x0f);
+
 			qtractorMidiEvent *pEvent;
-			unsigned short iChannel = (iStatus & 0x0f);
 			qtractorMidiEvent::EventType type
 				= qtractorMidiEvent::EventType(iStatus & 0xf0);
 			if (iStatus == qtractorMidiEvent::META)
@@ -322,7 +326,8 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 			qtractorMidiSequence *pSeq = ppSeqs[iSeq];
 
 			// Event time converted to sequence resolution...
-			unsigned long iTime = pSeq->timeq(iTrackTime, m_iTicksPerBeat);
+			const unsigned long iTime
+				= pSeq->timeq(iTrackTime, m_iTicksPerBeat);
 
 			// Check for sequence time length, if any...
 			if (pSeq->timeLength() > 0
@@ -339,7 +344,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 			}
 
 			// Check whether it won't be channel filtered...
-			bool bChannelEvent = (iTime >= pSeq->timeOffset()
+			const bool bChannelEvent = (iTime >= pSeq->timeOffset()
 				&& ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)));
 
 			unsigned char *data, data1, data2;
@@ -530,6 +535,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 	return true;
 }
 
+
 bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 	unsigned short iTrackChannel )
 {
@@ -612,6 +618,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 		unsigned short iSeq = 0;
 		if (iSeqs > 1 && m_iFormat == 1)
 			iSeq = iTrack;
+
 		// Which is just good for track labeling...
 		qtractorMidiSequence *pSeq = NULL; 
 		if (ppSeqs)
@@ -621,18 +628,19 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 		writeData((unsigned char *) SMF_MTRK, 4);
 
 		// Write a dummy track length (we'll overwrite it later)...
-		unsigned long iMTrkOffset = m_iOffset;
+		const unsigned long iMTrkOffset = m_iOffset;
+
 		writeInt(0, 4);
 
 		// Track name...
-		QString sTrackName
+		const QString& sTrackName
 			= (pSeq ? pSeq->name() : QFileInfo(m_sFilename).baseName());
 		if (!sTrackName.isEmpty()) {
 			writeInt(0); // delta-time=0
 			writeInt(qtractorMidiEvent::META, 1);
 			writeInt(qtractorMidiEvent::TRACKNAME, 1);
 			writeInt(sTrackName.length());
-			QByteArray aTrackName = sTrackName.toUtf8();
+			const QByteArray aTrackName = sTrackName.toUtf8();
 			writeData((unsigned char *) aTrackName.constData(), aTrackName.length());
 		}
 
@@ -678,9 +686,9 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 
 			EventItem *pItem;
 			unsigned short iItem;
-			unsigned short iItems = (m_iFormat == 0 ? iSeqs : 1);
 
 			// Prolog...
+			const unsigned short iItems = (m_iFormat == 0 ? iSeqs : 1);
 			EventItem **ppItems = new EventItem * [iItems];
 			for (iItem = 0; iItem < iItems; ++iItem) {
 				iSeq = (m_iFormat == 0 ? iItem : iTrack);
@@ -1023,11 +1031,11 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 	return true;
 }
 
+
 bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 {
 	return writeTracks((pSeq ? &pSeq : NULL), 1);
 }
-
 
 
 // Integer read method.
@@ -1111,7 +1119,7 @@ int qtractorMidiFile::writeInt ( int val, unsigned short n )
 // Raw data write method.
 int qtractorMidiFile::writeData ( unsigned char *pData, unsigned short n )
 {
-	int nwrite = ::fwrite(pData, sizeof(unsigned char), n, m_pFile);
+	const int nwrite = ::fwrite(pData, sizeof(unsigned char), n, m_pFile);
 	if (nwrite > 0)
 		m_iOffset += nwrite;
 	return nwrite;
@@ -1165,7 +1173,7 @@ void qtractorMidiFile::writeNode (
 void qtractorMidiFile::writeMarker (
 	qtractorMidiFileTempo::Marker *pMarker, unsigned long iLastTime )
 {
-	unsigned long iDeltaTime
+	const unsigned long iDeltaTime
 		= (pMarker->tick > iLastTime ? pMarker->tick - iLastTime : 0);
 
 #ifdef CONFIG_DEBUG_0
@@ -1225,7 +1233,8 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	unsigned short iTracks;
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
-	const QString sTrackName = QObject::tr("Track %1");
+
+	const QString& sTrackName = QObject::tr("Track %1");
 
 	if (pSeq == NULL)
 		return false;

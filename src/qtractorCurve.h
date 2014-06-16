@@ -474,7 +474,7 @@ public:
 
 		pCurve->setList(NULL);
 
-	//	unlink(pCurve);
+		unlink(pCurve);
 	}
 
 	// Set common curve length procedure.

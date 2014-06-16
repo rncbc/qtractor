@@ -1,7 +1,7 @@
 // qtractorMidiEventList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -248,7 +248,8 @@ QModelIndex qtractorMidiEventListModel::indexFromTick (
 	if (m_pEvent == NULL)
 		return QModelIndex();
 
-	unsigned long iTime = (iTick > m_iTimeOffset ? iTick - m_iTimeOffset : 0);
+	const unsigned long iTime
+		= (iTick > m_iTimeOffset ? iTick - m_iTimeOffset : 0);
 
 	if (m_pEvent->time() >= iTime) {
 		while (m_pEvent && m_pEvent->prev()
@@ -268,6 +269,7 @@ QModelIndex qtractorMidiEventListModel::indexFromTick (
 	return createIndex(m_iEvent, 0, m_pEvent);
 }
 
+
 unsigned long qtractorMidiEventListModel::tickFromIndex (
 	const QModelIndex& index ) const
 {
@@ -281,6 +283,7 @@ QModelIndex qtractorMidiEventListModel::indexFromFrame (
 {
 	return indexFromTick((m_pEditor->timeScale())->tickFromFrame(iFrame));
 }
+
 
 unsigned long qtractorMidiEventListModel::frameFromIndex (
 	const QModelIndex& index ) const
@@ -717,8 +720,8 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 	{
 		QComboBox *pComboBox = qobject_cast<QComboBox *> (pEditor);
 		if (pComboBox) {
-			int iNote = pComboBox->currentIndex();
-			unsigned long iTime = pEvent->time();
+			const int iNote = pComboBox->currentIndex();
+			const unsigned long iTime = pEvent->time();
 			pEditCommand->moveEvent(pEvent, iNote, iTime);
 		}
 		break;
@@ -728,7 +731,7 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 	{
 		QSpinBox *pSpinBox = qobject_cast<QSpinBox *> (pEditor);
 		if (pSpinBox) {
-			int iValue = pSpinBox->value();
+			const int iValue = pSpinBox->value();
 			pEditCommand->resizeEventValue(pEvent, iValue);
 		}
 		break;
@@ -739,8 +742,8 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 		qtractorTimeSpinBox *pTimeSpinBox
 			= qobject_cast<qtractorTimeSpinBox *> (pEditor);
 		if (pTimeSpinBox) {
-			unsigned long iTime = pEvent->time();
-			unsigned long iDuration
+			const unsigned long iTime = pEvent->time();
+			const unsigned long iDuration
 				= pTimeScale->tickFromFrame(pTimeSpinBox->value());
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 		}
@@ -867,6 +870,7 @@ QModelIndex qtractorMidiEventListView::indexFromTick (
 	return (m_pListModel ? m_pListModel->indexFromTick(iTick) : QModelIndex());
 }
 
+
 unsigned long qtractorMidiEventListView::tickFromIndex (
 	const QModelIndex& index ) const
 {
@@ -879,6 +883,7 @@ QModelIndex qtractorMidiEventListView::indexFromFrame (
 {
 	return (m_pListModel ? m_pListModel->indexFromFrame(iFrame) : QModelIndex());
 }
+
 
 unsigned long qtractorMidiEventListView::frameFromIndex (
 	const QModelIndex& index ) const
@@ -989,6 +994,7 @@ void qtractorMidiEventList::setEditor ( qtractorMidiEditor *pEditor )
 		SIGNAL(changeNotifySignal(qtractorMidiEditor*)),
 		SLOT(changeNotifySlot(qtractorMidiEditor*)));
 }
+
 
 qtractorMidiEditor *qtractorMidiEventList::editor (void) const
 {

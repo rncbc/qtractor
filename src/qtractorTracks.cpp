@@ -210,6 +210,7 @@ void qtractorTracks::setZoomMode ( int iZoomMode )
 	m_iZoomMode = iZoomMode;
 }
 
+
 int qtractorTracks::zoomMode (void) const
 {
 	return m_iZoomMode;
@@ -229,6 +230,7 @@ void qtractorTracks::zoomIn (void)
 
 	zoomCenterPost(zc);
 }
+
 
 void qtractorTracks::zoomOut (void)
 {
@@ -271,6 +273,7 @@ void qtractorTracks::horizontalZoomInSlot (void)
 	zoomCenterPost(zc);
 }
 
+
 void qtractorTracks::horizontalZoomOutSlot (void)
 {
 	ZoomCenter zc;
@@ -279,6 +282,7 @@ void qtractorTracks::horizontalZoomOutSlot (void)
 	horizontalZoomStep(- ZoomStep);
 	zoomCenterPost(zc);
 }
+
 
 void qtractorTracks::verticalZoomInSlot (void)
 {
@@ -289,6 +293,7 @@ void qtractorTracks::verticalZoomInSlot (void)
 	zoomCenterPost(zc);
 }
 
+
 void qtractorTracks::verticalZoomOutSlot (void)
 {
 	ZoomCenter zc;
@@ -297,6 +302,7 @@ void qtractorTracks::verticalZoomOutSlot (void)
 	verticalZoomStep(- ZoomStep);
 	zoomCenterPost(zc);
 }
+
 
 void qtractorTracks::viewZoomResetSlot (void)
 {
@@ -1633,10 +1639,12 @@ bool qtractorTracks::rangeClip ( qtractorClip *pClip )
 	return rangeClipEx(pClip, false);
 }
 
+
 bool qtractorTracks::loopClip ( qtractorClip *pClip )
 {
 	return rangeClipEx(pClip, true);
 }
+
 
 bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 {
@@ -1809,6 +1817,7 @@ void qtractorTracks::cutClipboard (void)
 		m_pTrackView->executeClipSelect(qtractorTrackView::Cut);
 }
 
+
 void qtractorTracks::copyClipboard (void)
 {
 	if (m_pTrackView->isCurveEdit())
@@ -1816,6 +1825,7 @@ void qtractorTracks::copyClipboard (void)
 	else
 		m_pTrackView->executeClipSelect(qtractorTrackView::Copy);
 }
+
 
 void qtractorTracks::pasteClipboard (void)
 {
@@ -2655,7 +2665,7 @@ bool qtractorTracks::addMidiTracks (
 		if (!file.open(sPath))
 			continue;
 		// It all depends on the format...
-		int iTracks = (file.format() == 1 ? file.tracks() : 16);
+		const int iTracks = (file.format() == 1 ? file.tracks() : 16);
 		for (int iTrackChannel = 0; iTrackChannel < iTracks; ++iTrackChannel) {
 			// Create a new track right away...
 			const QColor& color = qtractorTrack::trackColor(++iTrack);

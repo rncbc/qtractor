@@ -1,7 +1,7 @@
 // qtractorZipFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,12 +116,14 @@ static inline void copy_ushort ( unsigned char *dest, const unsigned char *src )
 static void write_msdos_date ( unsigned char *data, const QDateTime& dt )
 {
 	if (dt.isValid()) {
-		unsigned short time = (dt.time().hour() << 11) // 5 bit hour
+		const unsigned short time
+			= (dt.time().hour() << 11)   // 5 bit hour
 			| (dt.time().minute() << 5)  // 6 bit minute
 			| (dt.time().second() >> 1); // 5 bit double seconds
 		data[0] = time & 0xff;
 		data[1] = time >> 8;
-		unsigned short date = ((dt.date().year() - 1980) << 9) // 7 bit year 1980-based
+		const unsigned short date
+			= ((dt.date().year() - 1980) << 9) // 7 bit year 1980-based
 			| (dt.date().month() << 5)   // 4 bit month
 			| (dt.date().day());         // 5 bit day
 		data[2] = date & 0xff;
@@ -136,15 +138,15 @@ static void write_msdos_date ( unsigned char *data, const QDateTime& dt )
 
 static QDateTime read_msdos_date ( unsigned char *data )
 {
-	unsigned short time = data[0] + (data[1] << 8);
-	unsigned short date = data[2] + (data[3] << 8);
+	const unsigned short time = data[0] + (data[1] << 8);
+	const unsigned short date = data[2] + (data[3] << 8);
 
-	unsigned int year = (date >> 9) + 1980; // 7 bit year 1980-based.
-	unsigned int mon  = (date >> 5) & 0x0f; // 4 bit month.
-	unsigned int day  = (date & 0x1f);      // 5 bit day.
-	unsigned int hh   = (time >> 11);       // 5 bit hour
-	unsigned int mm   = (time >> 5) & 0x3f; // 6 bit minute
-	unsigned int ss   = (time & 0x1f) << 1; // 5 bit double (m)seconds.
+	const unsigned int year = (date >> 9) + 1980; // 7 bit year 1980-based.
+	const unsigned int mon  = (date >> 5) & 0x0f; // 4 bit month.
+	const unsigned int day  = (date & 0x1f);      // 5 bit day.
+	const unsigned int hh   = (time >> 11);       // 5 bit hour
+	const unsigned int mm   = (time >> 5) & 0x3f; // 6 bit minute
+	const unsigned int ss   = (time & 0x1f) << 1; // 5 bit double (m)seconds.
 
 	return QDateTime(QDate(year, mon, day), QTime(hh, mm, ss));
 }
@@ -391,7 +393,7 @@ void qtractorZipDevice::scanFiles (void)
 	int num_dir_entries = 0;
 	EndOfDirectory eod;
 	while (dir_start_offset == -1) {
-		int pos = device->size() - sizeof(EndOfDirectory) - i;
+		const int pos = device->size() - sizeof(EndOfDirectory) - i;
 		if (pos < 0 || i > 65535) {
 			qWarning("qtractorZipDevice::scanFiles: "
 				"end-of-directory not found.");
@@ -409,7 +411,7 @@ void qtractorZipDevice::scanFiles (void)
 	dir_start_offset = read_uint(eod.dir_start_offset);
 	num_dir_entries = read_ushort(eod.num_dir_entries);
 
-	int comment_length = read_ushort(eod.comment_length);
+	const int comment_length = read_ushort(eod.comment_length);
 	if (comment_length != i)
 		qWarning("qtractorZipDevice::scanFiles: failed to parse zip file.");
 	comment = device->read(qMin(comment_length, i));
@@ -417,8 +419,8 @@ void qtractorZipDevice::scanFiles (void)
 	device->seek(dir_start_offset);
 	for (i = 0; i < num_dir_entries; ++i) {
 		FileHeader fh;
-		int read = device->read((char *) &fh.h, sizeof(CentralFileHeader));
-		if (read < (int) sizeof(CentralFileHeader)) {
+		int nread = device->read((char *) &fh.h, sizeof(CentralFileHeader));
+		if (nread < (int) sizeof(CentralFileHeader)) {
 			qWarning("qtractorZipDevice::scanFiles: "
 				"failed to read complete header, "
 				"index may be incomplete.");
@@ -430,25 +432,25 @@ void qtractorZipDevice::scanFiles (void)
 				"zip index may be incomplete.");
 			break;
 		}
-		int l = read_ushort(fh.h.file_name_length);
-		fh.file_name = device->read(l);
-		if (fh.file_name.length() != l) {
+		nread = read_ushort(fh.h.file_name_length);
+		fh.file_name = device->read(nread);
+		if (fh.file_name.length() != nread) {
 			qWarning("qtractorZipDevice::scanFiles: "
 				"failed to read filename, "
 				"zip index may be incomplete.");
 			break;
 		}
-		l = read_ushort(fh.h.extra_field_length);
-		fh.extra_field = device->read(l);
-		if (fh.extra_field.length() != l) {
+		nread = read_ushort(fh.h.extra_field_length);
+		fh.extra_field = device->read(nread);
+		if (fh.extra_field.length() != nread) {
 			qWarning("qtractorZipDevice::scanFiles: "
 				"failed to read extra field, skipping, "
 				"zip index may be incomplete");
 			break;
 		}
-		l = read_ushort(fh.h.file_comment_length);
-		fh.file_comment = device->read(l);
-		if (fh.file_comment.length() != l) {
+		nread = read_ushort(fh.h.file_comment_length);
+		fh.file_comment = device->read(nread);
+		if (fh.file_comment.length() != nread) {
 			qWarning("qtractorZipDevice::scanFiles: "
 				"failed to read file comment, "
 				"index may be incomplete");
@@ -496,8 +498,8 @@ bool qtractorZipDevice::extractEntry (
 	if (pFile == NULL)
 		return false;
 	
-	unsigned int uncompressed_size = read_uint(fh.h.uncompressed_size);
-	unsigned int compressed_size = read_uint(fh.h.compressed_size);
+	const unsigned int uncompressed_size = read_uint(fh.h.uncompressed_size);
+	const unsigned int compressed_size = read_uint(fh.h.compressed_size);
 
 	if (uncompressed_size == 0 || compressed_size == 0)
 		return false;
@@ -506,41 +508,41 @@ bool qtractorZipDevice::extractEntry (
 
 	LocalFileHeader lfh;
 	device->read((char *) &lfh, sizeof(LocalFileHeader));
-	unsigned int skip = read_ushort(lfh.file_name_length)
+	const unsigned int skip = read_ushort(lfh.file_name_length)
 		+ read_ushort(lfh.extra_field_length);
 	device->seek(device->pos() + skip);
 
 	ushort compression_method = read_ushort(lfh.compression_method);
 
 	if (compression_method == 8) {
-		unsigned int n_file_read  = 0;
-		unsigned int n_file_write = 0;
+		unsigned int nread  = 0;
+		unsigned int nwrite = 0;
 		z_stream zstream;
 		memset(&zstream, 0, sizeof(zstream));
 		unsigned int crc_32 = ::crc32(0, 0, 0);
 		int zrc = ::inflateInit2(&zstream, -MAX_WBITS);
 		while (zrc != Z_STREAM_END) {
-			unsigned int n_buff_read = BUFF_SIZE;
-			if (n_file_read + BUFF_SIZE > compressed_size)
-				n_buff_read = compressed_size - n_file_read;
-			device->read((char *) buff_read, n_buff_read);
-			n_file_read += n_buff_read;
+			unsigned int nbuff = BUFF_SIZE;
+			if (nread + BUFF_SIZE > compressed_size)
+				nbuff = compressed_size - nread;
+			device->read((char *) buff_read, nbuff);
+			nread += nbuff;
 			zstream.next_in  = (uchar *) buff_read;
-			zstream.avail_in = (uint)  n_buff_read;
+			zstream.avail_in = (uint) nbuff;
 			do {
-				unsigned int n_buff_write = BUFF_SIZE;
+				nbuff = BUFF_SIZE;
 				zstream.next_out  = (uchar *) buff_write;
-				zstream.avail_out = (uint)  n_buff_write;
+				zstream.avail_out = (uint) nbuff;
 				zrc = ::inflate(&zstream, Z_NO_FLUSH);
 				if (zrc != Z_STREAM_ERROR) {
-					n_buff_write -= zstream.avail_out;
-					if (n_buff_write > 0) {
-						pFile->write((const char *) buff_write, n_buff_write);
+					nbuff -= zstream.avail_out;
+					if (nbuff > 0) {
+						pFile->write((const char *) buff_write, nbuff);
 						crc_32 = ::crc32(crc_32,
 							(const uchar *) buff_write,
-							(ulong) n_buff_write);
-						n_file_write += n_buff_write;
-						total_processed += n_buff_write;
+							(ulong) nbuff);
+						nwrite += nbuff;
+						total_processed += nbuff;
 					}
 				}
 			}
@@ -567,7 +569,7 @@ bool qtractorZipDevice::extractEntry (
 
 	// Set file time using utime...
 	struct utimbuf utb;
-	long tse = read_msdos_date(lfh.last_mod_file).toTime_t();
+	const long tse = read_msdos_date(lfh.last_mod_file).toTime_t();
 	utb.actime = tse;
 	utb.modtime = tse;
 	if (::utime(fh.file_name.data(), &utb))
@@ -730,7 +732,7 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 		}
 	}
 
-	unsigned int uncompressed_size = read_uint(fh.h.uncompressed_size);
+	const unsigned int uncompressed_size = read_uint(fh.h.uncompressed_size);
 	unsigned int compressed_size = 0;
 
 	device->seek(write_offset);
@@ -744,8 +746,8 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 
 	if (pFile) {
 		write_ushort(fh.h.compression_method, 8); /* DEFERRED */
-		unsigned int n_file_read  = 0;
-		unsigned int n_file_write = 0;
+		unsigned int nread  = 0;
+		unsigned int nwrite = 0;
 		z_stream zstream;
 		memset(&zstream, 0, sizeof(zstream));
 		int zrc = ::deflateInit2(&zstream,
@@ -753,28 +755,28 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 			Z_DEFLATED, -MAX_WBITS, 8,
 			Z_DEFAULT_STRATEGY);
 		while (zrc != Z_STREAM_END) {
-			unsigned int n_buff_read = BUFF_SIZE;
-			if (n_file_read + BUFF_SIZE > uncompressed_size)
-				n_buff_read =uncompressed_size - n_file_read;
-			int zflush = (n_buff_read < BUFF_SIZE ? Z_FINISH : Z_NO_FLUSH);
-			pFile->read((char *) buff_read, n_buff_read);
+			unsigned int nbuff = BUFF_SIZE;
+			if (nread + BUFF_SIZE > uncompressed_size)
+				nbuff = uncompressed_size - nread;
+			const int zflush = (nbuff < BUFF_SIZE ? Z_FINISH : Z_NO_FLUSH);
+			pFile->read((char *) buff_read, nbuff);
 			crc_32 = ::crc32(crc_32,
 				(const uchar *) buff_read,
-				(ulong) n_buff_read);
-			n_file_read += n_buff_read;
-			total_processed += n_buff_read;
+				(ulong) nbuff);
+			nread += nbuff;
+			total_processed += nbuff;
 			zstream.next_in  = (uchar *) buff_read;
-			zstream.avail_in = (uint)  n_buff_read;
+			zstream.avail_in = (uint) nbuff;
 			do {
-				unsigned int n_buff_write = BUFF_SIZE;
+				nbuff = BUFF_SIZE;
 				zstream.next_out  = (uchar *) buff_write;
-				zstream.avail_out = (uint)  n_buff_write;
+				zstream.avail_out = (uint) nbuff;
 				zrc = ::deflate(&zstream, zflush);
 				if (zrc != Z_STREAM_ERROR) {
-					n_buff_write -= zstream.avail_out;
-					if (n_buff_write > 0) {
-						device->write((const char *) buff_write, n_buff_write);
-						n_file_write += n_buff_write;
+					nbuff -= zstream.avail_out;
+					if (nbuff > 0) {
+						device->write((const char *) buff_write, nbuff);
+						nwrite += nbuff;
 					}
 				}
 			}
@@ -784,13 +786,13 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 				(100.0f * float(total_processed)) / float(total_uncompressed));
 		#endif
 		}
-		compressed_size = n_file_write;
+		compressed_size = nwrite;
 		::deflateEnd(&zstream);
 		pFile->close();
 		delete pFile;
 	}
 
-	unsigned int last_offset = device->pos();
+	const unsigned int last_offset = device->pos();
 
 	// Rewrite updated header...
 	total_compressed += compressed_size;
@@ -874,6 +876,7 @@ qtractorZipFile::qtractorZipFile (
 	m_pZip->status = status;
 }
 
+
 qtractorZipFile::qtractorZipFile ( QIODevice *pDevice )
 	: m_pZip(new qtractorZipDevice(pDevice, /*bOwnDevice=*/false))
 {
@@ -931,6 +934,7 @@ bool qtractorZipFile::extractFile ( const QString& sFilename )
 	return m_pZip->extractEntry(sFilename,
 		m_pZip->file_headers.value(sFilename));
 }
+
 
 // Extracts the full contents of the zip archive (read-only).
 bool qtractorZipFile::extractAll (void)
@@ -993,7 +997,7 @@ void qtractorZipFile::close (void)
 		m_pZip->device->write(fh.file_comment);
 	}
 
-	int dir_size = m_pZip->device->pos() - m_pZip->write_offset;
+	const int dir_size = m_pZip->device->pos() - m_pZip->write_offset;
 
 	// Write end of directory...
 	EndOfDirectory eod;
@@ -1017,10 +1021,12 @@ unsigned int qtractorZipFile::totalUncompressed (void) const
 	return m_pZip->total_uncompressed;
 }
 
+
 unsigned int qtractorZipFile::totalCompressed (void) const
 {
 	return m_pZip->total_compressed;
 }
+
 
 unsigned int qtractorZipFile::totalProcessed (void) const
 {

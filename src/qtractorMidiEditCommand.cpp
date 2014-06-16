@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -127,7 +127,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		pSession->midiEngine()->trackMute(pTrack, true);
 #endif
 	// Track sequence duration changes...
-	unsigned long iOldDuration = pSeq->duration();
+	const unsigned long iOldDuration = pSeq->duration();
 	int iSelectClear = 0;
 
 	// Changes are due...
@@ -149,8 +149,8 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			break;
 		}
 		case MoveEvent: {
-			int iOldNote = int(pEvent->note());
-			unsigned long iOldTime = pEvent->time();
+			const int iOldNote = int(pEvent->note());
+			const unsigned long iOldTime = pEvent->time();
 			pSeq->unlinkEvent(pEvent);
 			pEvent->setNote(pItem->note);
 			pEvent->setTime(pItem->time);
@@ -160,8 +160,8 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			break;
 		}
 		case ResizeEventTime: {
-			unsigned long iOldTime = pEvent->time();
-			unsigned long iOldDuration = pEvent->duration();
+			const unsigned long iOldTime = pEvent->time();
+			const unsigned long iOldDuration = pEvent->duration();
 			pSeq->unlinkEvent(pEvent);
 			pEvent->setTime(pItem->time);
 			if (pEvent->type() == qtractorMidiEvent::NOTEON)
@@ -277,16 +277,19 @@ bool qtractorMidiEditCommand::adjust (void)
 			// Already there?
 			qtractorMidiEvent *pPrevEvent = events.value(key, NULL);
 			if (pPrevEvent) {
-				unsigned long iTime = pEvent->time();
-				unsigned long iPrevTime = pPrevEvent->time();
+				const unsigned long iTime = pEvent->time();
+				const unsigned long iPrevTime = pPrevEvent->time();
 				// NOTEON: Find previous note event and check overlaps...
 				if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-					unsigned long iTimeEnd = iTime + pEvent->duration();
-					unsigned long iPrevTimeEnd = iPrevTime + pPrevEvent->duration();
+					const unsigned long iTimeEnd
+						= iTime + pEvent->duration();
+					const unsigned long iPrevTimeEnd
+						= iPrevTime + pPrevEvent->duration();
 					// Inner operlap...
 					if (iTime > iPrevTime && iTime < iPrevTimeEnd) {
 						// Left-side outer event...
-						unsigned long iDuration = pPrevEvent->duration();
+						const unsigned long iDuration
+							= pPrevEvent->duration();
 						pPrevEvent->setDuration(iTime - iPrevTime);
 						if (!findEvent(pPrevEvent, ResizeEventTime))
 							resizeEventTime(pPrevEvent, iPrevTime, iDuration);
@@ -329,7 +332,7 @@ bool qtractorMidiEditCommand::adjust (void)
 								}
 							} else {
 								// Large over short...
-								unsigned long iDuration = pEvent->duration();
+								const unsigned long iDuration = pEvent->duration();
 								pSeq->unlinkEvent(pEvent);
 								pEvent->setTime(iPrevTimeEnd);
 								pEvent->setDuration(iTimeEnd - iPrevTimeEnd);
