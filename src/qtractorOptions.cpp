@@ -639,7 +639,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 	QTextStream out(stderr);
 	const QString sEol = "\n\n";
 	int iCmdArgs = 0;
-	int argc = args.count();
+	const int argc = args.count();
 
 	for (int i = 1; i < argc; ++i) {
 
@@ -659,8 +659,11 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			sVal = sArg.right(sArg.length() - iEqual - 1);
 			sArg = sArg.left(iEqual);
 		}
-		else if (i < argc - 1)
+		else if (i < argc - 1) {
 			sVal = args.at(i + 1);
+			if (sVal[0] == '-')
+				sVal.clear();
+		}
 		if (sArg == "-s" || sArg == "--session-id") {
 			if (sVal.isNull()) {
 				out << QObject::tr("Option -s requires an argument (session-id).") + sEol;
