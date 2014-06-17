@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- A man page has beed added (making up Gürkan Sengün's work on
+  debian, thanks).
+
 - When moving plugins by eg. drag-and-dropping across tracks,
   automation curves were being left behind, maybe leading to
   unpredictable mistaken behavior. Hopefully, not anymore.
