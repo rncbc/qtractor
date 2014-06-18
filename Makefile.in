@@ -322,6 +322,7 @@ translations_lrelease:	translations_lupdate $(translations_targets)
 install:	$(target) translations_lrelease $(name).1
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
 	@install -d -v -m 0755 $(DESTDIR)$(translations_dir)
+	@install -d -v -m 0755 $(DESTDIR)$(mandir)/man1
 	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(translations_dir)
 	@install -v -m 0644 $(name).1 $(DESTDIR)$(mandir)/man1
 	@gzip -vf $(DESTDIR)$(mandir)/man1/$(name).1
