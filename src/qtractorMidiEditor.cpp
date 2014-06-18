@@ -2825,7 +2825,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 				pEvent = NULL;
 			}
 		}
-		if ((m_resizeMode == ResizeNoteRight ||
+		if ((m_resizeMode == ResizeNoteLeft  ||
+			 m_resizeMode == ResizeNoteRight ||
 			 m_resizeMode == ResizePitchBend ||
 			 m_resizeMode == ResizeValue14   ||
 			 m_resizeMode == ResizeValue)
@@ -2931,7 +2932,8 @@ void qtractorMidiEditor::dragMoveUpdate (
 						QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
 				}
 				// Start drag-resizing/rescaling...
-				if ((m_resizeMode == ResizeNoteRight ||
+				if ((m_resizeMode == ResizeNoteLeft  ||
+					 m_resizeMode == ResizeNoteRight ||
 					 m_resizeMode == ResizePitchBend ||
 					 m_resizeMode == ResizeValue14   ||
 					 m_resizeMode == ResizeValue)
@@ -2945,7 +2947,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 			}
 			break;
 		}
-		// About to drag(draw) event-value reszing...
+		// About to drag(draw) event-value resizing...
 		if (static_cast<qtractorMidiEditEvent *> (pScrollView) == m_pEditEvent
 			&& isDragEventResize(modifiers)) {
 			m_dragState = DragEventResize;
@@ -3680,6 +3682,14 @@ void qtractorMidiEditor::updateDragRescale (
 	int dy = 0;
 
 	switch (m_resizeMode) {
+	case ResizeNoteLeft:
+		dx = delta.x();
+		x0 = m_rectDrag.left() + m_pTimeScale->pixelFromFrame(m_iOffset);
+		x1 = m_rectDrag.left() + dx;
+		if (x1 > m_rectDrag.right())
+			dx = +(m_rectDrag.width());
+		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
+		break;
 	case ResizeNoteRight:
 		dx = delta.x();
 		x0 = m_rectDrag.right() + m_pTimeScale->pixelFromFrame(m_iOffset);
@@ -3747,10 +3757,13 @@ void qtractorMidiEditor::updateDragResize (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
 	ensureVisible(pScrollView, pos);
-
+#if 0
 	QRect rectUpdateView(m_select.rectView().translated(m_posDelta.x(), 0));
 	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
-
+#else
+	QRect rectUpdateView(m_select.rectView());
+	QRect rectUpdateEvent(m_select.rectEvent());
+#endif
 	QPoint delta(pos - m_posDrag);
 
 	int x0, x1;
@@ -3767,16 +3780,24 @@ void qtractorMidiEditor::updateDragResize (
 		x1 = m_rectDrag.left() + dx;
 		if (x1 < 0)
 			dx = -(m_rectDrag.left());
-		if (x1 > m_rectDrag.right())
-			dx = +(m_rectDrag.width());
+		if (x1 > m_rectDrag.right()) {
+		//	dx = +(m_rectDrag.width());
+			m_resizeMode = ResizeNoteRight;
+			m_posDrag.setX(m_rectDrag.left());
+		//	x0 += m_rectDrag.width();
+		}
 		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeNoteRight:
 		dx = delta.x();
 		x0 = m_rectDrag.right() + m_pTimeScale->pixelFromFrame(m_iOffset);
 		x1 = m_rectDrag.right() + dx;
-		if (x1 < m_rectDrag.left())
-			dx = -(m_rectDrag.width());
+		if (x1 < m_rectDrag.left()) {
+		//	dx = -(m_rectDrag.width());
+			m_resizeMode = ResizeNoteLeft;
+			m_posDrag.setX(m_rectDrag.right());
+		//	x0 -= m_rectDrag.width();
+		}
 		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeValue:
@@ -3793,7 +3814,7 @@ void qtractorMidiEditor::updateDragResize (
 
 	m_posDelta.setX(dx);
 	m_posDelta.setY(dy);
-
+#if 0
 	rectUpdateView = rectUpdateView.united(
 		m_select.rectView().translated(dx, 0));
 	m_pEditView->viewport()->update(QRect(
@@ -3805,7 +3826,30 @@ void qtractorMidiEditor::updateDragResize (
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
+#else
+	const QRect& rectView  = (m_pEditView->viewport())->rect();
+	const QRect& rectEvent = (m_pEditEvent->viewport())->rect();
 
+	if (dx) {
+		rectUpdateView.setLeft(rectView.left());
+		rectUpdateView.setRight(rectView.right());
+		rectUpdateEvent.setLeft(rectEvent.left());
+		rectUpdateEvent.setRight(rectEvent.right());
+	}
+
+	if (dy) {
+		rectUpdateEvent.setTop(rectEvent.top());
+		rectUpdateEvent.setBottom(rectEvent.bottom());
+	}
+
+	m_pEditView->viewport()->update(QRect(
+		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
+		rectUpdateView.size()));
+
+	m_pEditEvent->viewport()->update(QRect(
+		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
+		rectUpdateEvent.size()));
+#endif
 	// Show anchor event tooltip...
 	if (m_bToolTips) {
 		qtractorMidiEvent *pEvent = m_pEventDrag;
@@ -4278,6 +4322,7 @@ void qtractorMidiEditor::paintDragState (
 
 	if (m_dragState == DragRescale && m_pEventDrag) {
 		switch (m_resizeMode) {
+		case ResizeNoteLeft:
 		case ResizeNoteRight:
 			pDts = new DragTimeScale(m_pTimeScale, m_iOffset);
 			t1 = pDts->t0 + m_pEventDrag->time();
@@ -4316,6 +4361,7 @@ void qtractorMidiEditor::paintDragState (
 		if (!m_bEventDragEdit || pEvent == m_pEventDrag) {
 			if (m_dragState == DragRescale) {
 				switch (m_resizeMode) {
+				case ResizeNoteLeft:
 				case ResizeNoteRight:
 					if (pDts && d1 > 0) {
 						t2 = pDts->t0 + pEvent->time();
