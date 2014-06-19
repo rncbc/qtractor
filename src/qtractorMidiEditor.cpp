@@ -3681,6 +3681,7 @@ void qtractorMidiEditor::updateDragResize (
 		x0 = m_rectDrag.left() + m_pTimeScale->pixelFromFrame(m_iOffset);
 		x1 = m_rectDrag.left() + dx;
 		if (x1 > m_rectDrag.right()) {
+			dx -= m_rectDrag.width();
 			m_resizeMode = ResizeNoteRight;
 			m_posDrag.setX(m_rectDrag.right());
 			x0 += m_rectDrag.width();
@@ -3692,6 +3693,7 @@ void qtractorMidiEditor::updateDragResize (
 		x0 = m_rectDrag.right() + m_pTimeScale->pixelFromFrame(m_iOffset);
 		x1 = m_rectDrag.right() + dx;
 		if (x1 < m_rectDrag.left()) {
+			dx += m_rectDrag.width();
 			m_resizeMode = ResizeNoteLeft;
 			m_posDrag.setX(m_rectDrag.left());
 			x0 -= m_rectDrag.width();
