@@ -406,7 +406,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2093"/>
         <source>%1(%2): %s plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): greffon %s introuvable.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="120"/>
@@ -696,7 +696,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorCurveFile.cpp" line="213"/>
         <source>%1: Automation/curve file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Fichier automation/courbe introuvable.</translation>
     </message>
 </context>
 <context>
@@ -739,7 +739,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorAudioListView.cpp" line="192"/>
         <source>%1: Audio file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Fichier audio introuvable.</translation>
     </message>
 </context>
 <context>
@@ -5681,7 +5681,11 @@ que la prochaine fois que vous démarrerez %1.</translation>
 %1
 
 Saving into another session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les problèmes suivants ont été détectés:
+
+%1
+
+Sauvegarder dans un autre fichier session est fortement recommandé.</translation>
     </message>
     <message>
         <source>LV2 Plug-in support (libslv2) enabled. (DEPRECATED)</source>
@@ -6671,40 +6675,40 @@ Longueur:	%3</translation>
         <translation>enlever plage</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3930"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3844"/>
         <source>move</source>
         <translation>déplacer</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3970"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3884"/>
         <source>edit</source>
         <translation>éditer</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="3970"/>
-        <location filename="../qtractorMidiEditor.cpp" line="4207"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3884"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4121"/>
         <source>resize</source>
         <translation>redimensionner</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4045"/>
+        <location filename="../qtractorMidiEditor.cpp" line="3959"/>
         <source>rescale</source>
         <translation>remise à l&apos;échelle</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4141"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4055"/>
         <source>paste</source>
         <translation>coller</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4794"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4710"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Temps:	%1
 Type:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4803"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4719"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration:	%4</source>
@@ -6713,14 +6717,14 @@ Velocité:	%3
 Durée:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4810"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4726"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>Touche Appuyée (%1) %2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4816"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4732"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -6729,7 +6733,7 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4822"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4738"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -6738,7 +6742,7 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4828"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4744"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -6747,7 +6751,7 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4834"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4750"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
@@ -6756,34 +6760,34 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4840"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4756"/>
         <source>Pgm Change (%1)</source>
         <translation>Pgm Change (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4844"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4760"/>
         <source>Chan Press (%1)</source>
         <translation>Can Appuyé (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4848"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4764"/>
         <source>Pitch Bend (%1)</source>
         <translation>Pitch Bend (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4855"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4771"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bytes)
 Données:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4867"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4783"/>
         <source>Unknown (%1)</source>
         <translation>Inconnu (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5117"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5033"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -8556,7 +8560,7 @@ Voulez-vous sauvegarder les changements?</translation>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="167"/>
         <source>%1: MIDI file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Fichier MIDI introuvable.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="180"/>
