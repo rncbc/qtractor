@@ -2939,11 +2939,10 @@ void qtractorMidiEditor::dragMoveUpdate (
 					 m_resizeMode == ResizeValue)
 					&& (modifiers & Qt::ControlModifier)) {
 					m_dragState = DragRescale;
-					updateDragRescale(pScrollView, pos);
 				} else {
 					m_dragState = DragResize;
-					updateDragResize(pScrollView, pos);
 				}
+				updateDragResize(pScrollView, pos);
 			}
 			break;
 		}
@@ -2972,12 +2971,9 @@ void qtractorMidiEditor::dragMoveUpdate (
 		// Drag-moving...
 		updateDragMove(pScrollView, pos + m_posStep);
 		break;
-	case DragRescale:
-		// Drag-rescaling...
-		updateDragRescale(pScrollView, pos);
-		break;
 	case DragResize:
-		// Drag-resizing...
+	case DragRescale:
+		// Drag-resizing/rescaling...
 		updateDragResize(pScrollView, pos);
 		// Drag-edit/drawing...
 		if (m_bEventDragEdit && m_pEventDrag) {
@@ -3664,106 +3660,15 @@ void qtractorMidiEditor::updateDragMove (
 }
 
 
-// Drag-rescale current selection.
-void qtractorMidiEditor::updateDragRescale (
-	qtractorScrollView *pScrollView, const QPoint& pos )
-{
-	ensureVisible(pScrollView, pos);
-
-	QRect rectUpdateView(m_select.rectView());
-	QRect rectUpdateEvent(m_select.rectEvent());
-
-	QPoint delta(pos - m_posDrag);
-
-	int x0, x1;
-	int y0, y1;
-
-	int dx = 0;
-	int dy = 0;
-
-	switch (m_resizeMode) {
-	case ResizeNoteLeft:
-		dx = delta.x();
-		x0 = m_rectDrag.left() + m_pTimeScale->pixelFromFrame(m_iOffset);
-		x1 = m_rectDrag.left() + dx;
-		if (x1 > m_rectDrag.right())
-			dx = +(m_rectDrag.width());
-		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
-		break;
-	case ResizeNoteRight:
-		dx = delta.x();
-		x0 = m_rectDrag.right() + m_pTimeScale->pixelFromFrame(m_iOffset);
-		x1 = m_rectDrag.right() + dx;
-		if (x1 < m_rectDrag.left())
-			dx = -(m_rectDrag.width());
-		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
-		break;
-	case ResizeValue:
-	case ResizeValue14:
-	case ResizePitchBend:
-		dy = delta.y();
-		y0 = m_rectDrag.bottom();
-		y1 = y0 + dy;
-		dy = y1 - y0;
-		// Fall thru...
-	default:
-		break;
-	}
-
-	m_posDelta.setX(dx);
-	m_posDelta.setY(dy);
-
-	const QRect& rectView  = (m_pEditView->viewport())->rect();
-	const QRect& rectEvent = (m_pEditEvent->viewport())->rect();
-
-	if (dx) {
-		rectUpdateView.setLeft(rectView.left());
-		rectUpdateView.setRight(rectView.right());
-		rectUpdateEvent.setLeft(rectEvent.left());
-		rectUpdateEvent.setRight(rectEvent.right());
-	}
-
-	if (dy) {
-		rectUpdateEvent.setTop(rectEvent.top());
-		rectUpdateEvent.setBottom(rectEvent.bottom());
-	}
-
-	m_pEditView->viewport()->update(QRect(
-		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
-		rectUpdateView.size()));
-
-	m_pEditEvent->viewport()->update(QRect(
-		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
-		rectUpdateEvent.size()));
-
-	// Show anchor event tooltip...
-	if (m_bToolTips) {
-		qtractorMidiEvent *pEvent = m_pEventDrag;
-		if (pEvent == NULL)
-			pEvent = m_select.anchorEvent();
-		if (pEvent) {
-			QToolTip::showText(
-				QCursor::pos(),
-				eventToolTip(pEvent,
-					timeDelta(pScrollView), 0, valueDelta(pScrollView)),
-				pScrollView->viewport());
-		}
-	}
-}
-
-
 // Drag-resize current selection (also editing).
 void qtractorMidiEditor::updateDragResize (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
 	ensureVisible(pScrollView, pos);
-#if 0
-	QRect rectUpdateView(m_select.rectView().translated(m_posDelta.x(), 0));
-	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
-#else
+
 	QRect rectUpdateView(m_select.rectView());
 	QRect rectUpdateEvent(m_select.rectEvent());
-#endif
+
 	QPoint delta(pos - m_posDrag);
 
 	int x0, x1;
@@ -3814,19 +3719,7 @@ void qtractorMidiEditor::updateDragResize (
 
 	m_posDelta.setX(dx);
 	m_posDelta.setY(dy);
-#if 0
-	rectUpdateView = rectUpdateView.united(
-		m_select.rectView().translated(dx, 0));
-	m_pEditView->viewport()->update(QRect(
-		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
-		rectUpdateView.size()));
 
-	rectUpdateEvent = rectUpdateEvent.united(
-		m_select.rectEvent().translated(dx, dy));
-	m_pEditEvent->viewport()->update(QRect(
-		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
-		rectUpdateEvent.size()));
-#else
 	const QRect& rectView  = (m_pEditView->viewport())->rect();
 	const QRect& rectEvent = (m_pEditEvent->viewport())->rect();
 
@@ -3849,7 +3742,7 @@ void qtractorMidiEditor::updateDragResize (
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
-#endif
+
 	// Show anchor event tooltip...
 	if (m_bToolTips) {
 		qtractorMidiEvent *pEvent = m_pEventDrag;
@@ -4048,7 +3941,7 @@ void qtractorMidiEditor::executeDragRescale (
 	if (m_pEventDrag == NULL)
 		return;
 
-	updateDragRescale(pScrollView, pos);
+	updateDragResize(pScrollView, pos);
 
 	DragTimeScale *pDts = NULL;
 
