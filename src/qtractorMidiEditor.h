@@ -481,6 +481,8 @@ protected:
 	// Finalize the event drag-resize (also editing).
 	void executeDragResize(qtractorScrollView *pScrollView, const QPoint& pos);
 
+	// Drag-rescale current selection.
+	void updateDragRescale(qtractorScrollView *pScrollView, const QPoint& pos);
 	// Finalize the event drag-rescale.
 	void executeDragRescale(qtractorScrollView *pScrollView, const QPoint& pos);
 
