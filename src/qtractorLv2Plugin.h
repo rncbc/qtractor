@@ -64,6 +64,9 @@ class qtractorLv2Worker;
 // LV2 External UI support.
 #include "lv2_external_ui.h"
 #endif
+#if QT_VERSION < 0x050000
+#undef CONFIG_LV2_UI_SHOW
+#endif
 #endif
 
 

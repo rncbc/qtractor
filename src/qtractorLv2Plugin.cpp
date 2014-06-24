@@ -2427,6 +2427,14 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (pLv2Type == NULL)
 		return;
 
+	const LilvInstance *instance = lv2_instance(0);
+	if (instance == NULL)
+		return;
+
+	const LV2_Descriptor *descriptor = lilv_instance_get_descriptor(instance);
+	if (descriptor == NULL)
+		return;
+
 	// Check the UI inventory...
 	m_lv2_uis = lilv_plugin_get_uis(pLv2Type->lv2_plugin());
 	if (m_lv2_uis == NULL)
@@ -2458,21 +2466,16 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	#endif
 	}
 
-	if (ui_map.isEmpty())
+	if (ui_map.isEmpty()) {
+		lilv_uis_free(m_lv2_uis);
+		m_lv2_uis = NULL;
 		return;
+	}
 
 	QMap<int, LilvUI *>::ConstIterator ui_iter = ui_map.constBegin();
 
 	m_lv2_ui_type = ui_iter.key();
 	m_lv2_ui = ui_iter.value();
-
-	const LilvInstance *instance = lv2_instance(0);
-	if (instance == NULL)
-		return;
-	
-	const LV2_Descriptor *descriptor = lilv_instance_get_descriptor(instance);
-	if (descriptor == NULL)
-		return;
 
 	updateEditorTitle();
 
@@ -2570,7 +2573,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		} else {
 			m_lv2_ui_idle_interface	= NULL;
 		}
-	#endif
+	#endif	// CONFIG_LV2_UI_IDLE
 	#ifdef CONFIG_LV2_UI_SHOW
 		if (m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
 			m_lv2_ui_show_interface	= (const LV2UI_Show_Interface *)
@@ -2579,13 +2582,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		} else {
 			m_lv2_ui_show_interface	= NULL;
 		}
-	#endif
+	#endif	// CONFIG_LV2_UI_SHOW
 	#if QT_VERSION < 0x050000
-		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL
-		#ifdef CONFIG_LV2_UI_SHOW
-			&& m_lv2_ui_show_interface == NULL
-		#endif
-		) {
+		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
 			m_pQt4Widget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQt4Widget->setWindowTitle(m_aEditorTitle.constData());
 			m_pQt4Filter = new EventFilter(this, m_pQt4Widget);

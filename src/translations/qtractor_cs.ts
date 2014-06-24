@@ -838,12 +838,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="670"/>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapnout</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2093"/>
         <source>%1(%2): %s plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): %s přídavný modul nenalezen.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="120"/>
@@ -893,7 +893,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="528"/>
         <source>program plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Programovat přídavný modul</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="652"/>
@@ -1299,7 +1299,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorCurveFile.cpp" line="213"/>
         <source>%1: Automation/curve file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:Soubor s automatizací/křivkou nenalezen.</translation>
     </message>
 </context>
 <context>
@@ -1342,7 +1342,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorAudioListView.cpp" line="192"/>
         <source>%1: Audio file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Zvukový soubor nebyl nalezen.</translation>
     </message>
 </context>
 <context>
@@ -3989,7 +3989,11 @@ spuštěny a běží, a potom sezení začněte znovu.</translation>
 %1
 
 Saving into another session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Byly zjištěny následující problémy:
+
+%1
+
+Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6656"/>
@@ -9483,7 +9487,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="167"/>
         <source>%1: MIDI file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Soubor MIDI nebyl nalezen.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="180"/>
@@ -10479,12 +10483,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="921"/>
         <source>Audio Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Barva měřiče zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="933"/>
         <source>MIDI Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Barva měřiče MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1017"/>
@@ -11529,12 +11533,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2756"/>
         <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda při úpravách podržet automatické projíždění (sledovat polohu přehrávání).</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2759"/>
         <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Při úpravách podržet automatické projíždění (sledovat polohu přehrávání)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2778"/>
@@ -11701,7 +11705,7 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3367"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Otevřít editor (rozhraní) přídavného modulu</translation>
+        <translation>Otevřít &amp;editor (rozhraní) přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3370"/>
@@ -11721,18 +11725,18 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3445"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda se má uložit automatizace přídavného modulu s vyšším rozlišením (14-bit)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3448"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatizace přídavného modulu s &amp;vysokým rozlišením (14-bit)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2762"/>
         <location filename="../qtractorOptionsForm.ui" line="3451"/>
         <source>Alt+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+H</translation>
     </message>
     <message>
         <source>Dedicated audi&amp;o outputs</source>
@@ -12085,7 +12089,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1427"/>
         <source>&amp;Inserts</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vložky</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1430"/>
@@ -13120,7 +13124,7 @@ Chcete zahodit tyto změny?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="892"/>
         <source>Marker Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Barva značky</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="941"/>
@@ -13208,12 +13212,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1320"/>
         <source>Forgeground Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Barva popředí</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1334"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Barva pozadí</translation>
     </message>
     <message>
         <source>Apply</source>
@@ -13935,7 +13939,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="2436"/>
         <source>Track %1</source>
-        <translation type="unfinished">Stopa %1</translation>
+        <translation>Stopa %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2715"/>
