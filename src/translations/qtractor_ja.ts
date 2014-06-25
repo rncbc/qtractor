@@ -399,12 +399,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="670"/>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>アクティベート</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2093"/>
         <source>%1(%2): %s plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): %s プラグインが見つかりません。</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="120"/>
@@ -454,7 +454,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="528"/>
         <source>program plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>プログラムプラグイン</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="652"/>
@@ -694,7 +694,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorCurveFile.cpp" line="213"/>
         <source>%1: Automation/curve file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: オートメーション/カーブファイルが見つかりません。</translation>
     </message>
 </context>
 <context>
@@ -737,7 +737,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorAudioListView.cpp" line="192"/>
         <source>%1: Audio file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1; オーディオファイルが見つかりません。</translation>
     </message>
 </context>
 <context>
@@ -5681,7 +5681,11 @@ next time you start this %1.</source>
 %1
 
 Saving into another session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>以下の問題が検出されました:
+
+%1
+
+別なセッションファイルに保存してください。</translation>
     </message>
     <message>
         <source>LV2 Plug-in support (libslv2) enabled. (DEPRECATED)</source>
@@ -8557,7 +8561,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="167"/>
         <source>%1: MIDI file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: MIDI ファイルが見つかりません。</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="180"/>
@@ -10400,12 +10404,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2756"/>
         <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
-        <translation type="unfinished"></translation>
+        <translation>編集中に自動スクロール (再生位置に追随) するかどうか。</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2759"/>
         <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>編集中に自動スクロール (再生位置に追随) する(&amp;H)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2778"/>
@@ -10692,12 +10696,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="921"/>
         <source>Audio Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>オーディオメーターの色</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="933"/>
         <source>MIDI Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIメーターの色</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1017"/>
@@ -11023,7 +11027,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1427"/>
         <source>&amp;Inserts</source>
-        <translation type="unfinished"></translation>
+        <translation>挿入(&amp;I)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1430"/>
@@ -11973,7 +11977,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="892"/>
         <source>Marker Color</source>
-        <translation type="unfinished"></translation>
+        <translation>マーカーの色</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="941"/>
@@ -12315,12 +12319,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1320"/>
         <source>Forgeground Color</source>
-        <translation type="unfinished"></translation>
+        <translation>全景の色</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1334"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>背景の色</translation>
     </message>
 </context>
 <context>
@@ -12694,7 +12698,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="2436"/>
         <source>Track %1</source>
-        <translation type="unfinished">トラック %1</translation>
+        <translation>トラック %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2479"/>
