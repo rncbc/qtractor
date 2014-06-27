@@ -1975,43 +1975,29 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	else
 	// Backup versioning?
 	if (m_pOptions->bSessionBackup) {
-		const QFileInfo f1(sFilename);
-		if (f1.exists()) {
-			int iBackupNo = 0;
-			const QDir& dir = f1.absoluteDir();
-			QString sNameMask = f1.completeBaseName();
-			if (m_pOptions->iSessionBackupMode > 0) {
-				QRegExp rxBackupNo("\\.([0-9]+)$");
-				if (rxBackupNo.indexIn(sNameMask) >= 0) {
-					iBackupNo = rxBackupNo.cap(1).toInt();
-					sNameMask.remove(rxBackupNo);
-				}
-			}
-			sNameMask += ".%1." + f1.suffix();
-			QFileInfo f2(dir, sNameMask.arg(++iBackupNo));
-			while (f2.exists())
-				f2.setFile(dir, sNameMask.arg(++iBackupNo));
-			if (m_pOptions->iSessionBackupMode > 0) {
-				// Remove from recent files list...
-				int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
-				if (iIndex >= 0)
-					m_pOptions->recentFiles.removeAt(iIndex);
-				// Also remove from the file system...?
-				if (m_iBackupCount > 0)
-					QFile::remove(sFilename);
-				// Make it a brand new one...
-				sFilename = f2.absoluteFilePath();
-				++m_iBackupCount;
-			}
-			else
-			if (QFile(sFilename).rename(f2.absoluteFilePath())) {
+		const QString& sBackupPath = sessionBackupPath(sFilename);
+		if (m_pOptions->iSessionBackupMode > 0) {
+			// Remove from recent files list...
+			const int iIndex
+				= m_pOptions->recentFiles.indexOf(sFilename);
+			if (iIndex >= 0)
+				m_pOptions->recentFiles.removeAt(iIndex);
+			// Also remove from the file system...?
+			if (m_iBackupCount > 0)
+				QFile::remove(sFilename);
+			// Make it a brand new one...
+			sFilename = sBackupPath;
+			++m_iBackupCount;
+		} else {
+			const QFileInfo fi(sBackupPath);
+			if (QFile(sFilename).rename(sBackupPath)) {
 				appendMessages(
 					tr("Backup session: \"%1\" as \"%2\".")
-					.arg(sFilename).arg(f2.fileName()));
+					.arg(sFilename).arg(fi.fileName()));
 			} else {
 				appendMessagesError(
 					tr("Could not backup existing session:\n\n"
-					"%1 as %2\n\nSorry.").arg(sFilename).arg(f2.fileName()));
+					"%1 as %2\n\nSorry.").arg(sFilename).arg(fi.fileName()));
 			}
 		}
 	}
@@ -2415,6 +2401,29 @@ bool qtractorMainForm::saveSessionFileEx (
 bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 {
 	return saveSessionFileEx(sFilename, false, true);
+}
+
+
+QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
+{
+	const QFileInfo f1(sFilename);
+	if (f1.exists()) {
+		int iBackupNo = 0;
+		const QDir& dir = f1.absoluteDir();
+		const QRegExp rxBackupNo("\\.([0-9]+)$");
+		QString sBackupName = f1.completeBaseName();
+		if (rxBackupNo.indexIn(sBackupName) >= 0) {
+			iBackupNo = rxBackupNo.cap(1).toInt();
+			sBackupName.remove(rxBackupNo);
+		}
+		sBackupName += ".%1." + f1.suffix();
+		QFileInfo f2(dir, sBackupName.arg(++iBackupNo));
+		while (f2.exists())
+			f2.setFile(dir, sBackupName.arg(++iBackupNo));
+		return f2.absoluteFilePath();
+	} else {
+		return sFilename;
+	}
 }
 
 
@@ -5910,10 +5919,15 @@ void qtractorMainForm::updateSessionPost (void)
 
 	// Check for any pending nested messages...
 	if (!qtractorMessageList::isEmpty()) {
-		QMessageBox::warning(this, tr("Warning") + " - " QTRACTOR_TITLE,
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("The following issues were detected:\n\n%1\n\n"
 			"Saving into another session file is highly recommended.")
-			.arg(qtractorMessageList::items().join("\n\n")));
+			.arg(qtractorMessageList::items().join("\n\n")),
+			QMessageBox::Save | QMessageBox::Ignore) == QMessageBox::Save) {
+			saveSessionFile(sessionBackupPath(m_sFilename));
+		}
+		else updateDirtyCount(true);
 		qtractorMessageList::clear();
 	}
 

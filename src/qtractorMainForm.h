@@ -363,6 +363,8 @@ protected:
 		const QString& sFilename, bool bTemplate, bool bUpdate);
 	bool saveSessionFile(const QString& sFilename);
 
+	QString sessionBackupPath(const QString& sFilename);
+
 	bool startSession();
 	bool checkRestartSession();
 
