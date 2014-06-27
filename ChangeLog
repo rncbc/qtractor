@@ -5,21 +5,21 @@ ChangeLog
 
 SVN TRUNK
 
-- A man page has beed added (making up Gürkan Sengün's work on
-  debian, thanks).
+- A man page has beed added (making up Gürkan Sengün's work
+  on debian, thanks).
 
 - When moving plugins by eg. drag-and-dropping across tracks,
   automation curves were being left behind, maybe leading to
   unpredictable mistaken behavior. Hopefully, not anymore.
 
-- Translations install directory change. (EXPERIMENTAL)
+- Translations install directory change.
 
 - Automation curves are now automatically re-adjusted to tempo
   map node changes (after a ticket by Holger Marzen, thanks).
-  (EXPERIMENTAL)
 
 - Audio/MIDI files or plugins found missing on session load
-  are now subject for an explicit modal warning message.
+  are now subject for an explicit modal warning message and
+  prompt for an immediate session backup salvage.
 
 - Changing instrument plugin programs is now an undo/redo-able
   command operation, especially for DSSI but also for plugins
@@ -30,16 +30,14 @@ SVN TRUNK
   extend across tempo/time-signature changes is now made a bit
   more correctly over the MIDI clip editor (aka. piano-roll),
   especially regarding to current snap-to-beat setting (after
-  an outstanding ticket by yubatake, thanks). (EXPERIMENTAL)
+  an outstanding ticket by yubatake, thanks).
 
 - Once again, audio frame/MIDI time drift correction has been
   slightly refactored to improve MIDI input monitor and timing.
-  (EXPERIMENTAL)
 
 - Discrete automation curve node values may now be edited via
   a numerical entry floating spin-box on double-click (as yet
   another request by AutoStatic aka. Jeremy Jongepier, thanks).
-  (EXPERIMENTAL)
 
 - Pressing shift/ctrl keyboard modifiers while double-clicking
   on a plugin list entry now briefly reverses the current View
@@ -54,9 +52,9 @@ SVN TRUNK
 
 - MIDI Controller assignment (aka MIDI learn) and/or automation
   of plugins (de)activation state has been added (as requested
-  by AutoStatic aka. Jeremy Jongepier, thanks). (EXPERIMENTAL)
+  by AutoStatic aka. Jeremy Jongepier, thanks).
 
-- LV2 UI Idle and Show interfaces support added. (EXPERIMENTAL)
+- LV2 UI Idle and Show interfaces support added.
 
 - Allow the build system to include an user specified LDFLAGS
   (patch by Alessio Treglia aka. quadrispro, thanks).
