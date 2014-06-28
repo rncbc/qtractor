@@ -670,13 +670,13 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1592"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1595"/>
         <source>Project: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1600"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1603"/>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
