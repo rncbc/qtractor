@@ -400,12 +400,11 @@ private:
 #endif
 #endif
 
-#if QT_VERSION < 0x050000
 	// Our own Qt UI widget (native).
 	class EventFilter;
-	EventFilter *m_pQt4Filter;
-	QWidget     *m_pQt4Widget;
-#endif
+
+	EventFilter *m_pQtFilter;
+	QWidget     *m_pQtWidget;
 
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;
