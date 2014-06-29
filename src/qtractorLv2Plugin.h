@@ -400,12 +400,11 @@ private:
 #endif
 #endif
 
-#if QT_VERSION < 0x050000
 	// Our own Qt UI widget (native).
 	class EventFilter;
-	EventFilter *m_pQt4Filter;
-	QWidget     *m_pQt4Widget;
-#endif
+
+	EventFilter *m_pQtFilter;
+	QWidget     *m_pQtWidget;
 
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;
@@ -442,7 +441,7 @@ private:
 
 #ifdef CONFIG_LV2_PRESETS
 	// LV2 Presets label-to-uri map.
-	QHash<QString, QString> m_lv2_presets;
+	QHash<QString, QString>    m_lv2_presets;
 #endif
 
 #ifdef CONFIG_LV2_TIME

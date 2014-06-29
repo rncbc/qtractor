@@ -77,11 +77,11 @@
     </message>
     <message>
         <source>reset plugin</source>
-        <translation>resetar efeito</translation>
+        <translation>resetar plugin</translation>
     </message>
     <message>
         <source>preset plugin</source>
-        <translation>pré-configurações do efeito</translation>
+        <translation>pré-configurações do plugin</translation>
     </message>
     <message>
         <source>import track</source>
@@ -113,7 +113,7 @@
     </message>
     <message>
         <source>Dummy plugin type.</source>
-        <translation>Efeito de tipo simples.</translation>
+        <translation>Plugin de tipo dummy.</translation>
     </message>
     <message>
         <source>session loop</source>
@@ -215,11 +215,11 @@ MIDI:	</translation>
     </message>
     <message>
         <source>add insert</source>
-        <translation>adicionar inserção</translation>
+        <translation>adicionar Insertor</translation>
     </message>
     <message>
         <source>move plugin</source>
-        <translation>mover efeito</translation>
+        <translation>mover plugin</translation>
     </message>
     <message>
         <source>add marker</source>
@@ -231,7 +231,7 @@ MIDI:	</translation>
     </message>
     <message>
         <source>add plugin</source>
-        <translation>adicionar efeito</translation>
+        <translation>adicionar plugin</translation>
     </message>
     <message>
         <source>move track</source>
@@ -322,7 +322,7 @@ MIDI:	</translation>
     </message>
     <message>
         <source>Insert Send/Return pseudo-plugin.</source>
-        <translation>Inserir Mandada/Retribuir pseudo-efeito.</translation>
+        <translation>Inserir Mandada/Retribuir pseudo-plugin.</translation>
     </message>
     <message>
         <source>Copyright: </source>
@@ -434,7 +434,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <source>activate plugin</source>
-        <translation>ativar efeito</translation>
+        <translation>ativar plugin</translation>
     </message>
     <message>
         <source>Track assignment failed:
@@ -516,7 +516,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
         <source>remove plugin</source>
-        <translation>remover efeito</translation>
+        <translation>remover plugin</translation>
     </message>
     <message>
         <source>%1 (format %2)
@@ -530,19 +530,19 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>Ativar</translation>
     </message>
     <message>
         <source>program plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin do programa</translation>
     </message>
     <message>
         <source>%1(%2): %s plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): %s plugin não encontrado.</translation>
     </message>
     <message>
         <source>%1: Automation/curve file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
 </context>
 <context>
@@ -577,7 +577,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
         <source>%1: Audio file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Arquivo de áudio não encontrado.</translation>
     </message>
 </context>
 <context>
@@ -667,15 +667,15 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
         <source>Move output plugin up</source>
-        <translation>Mover Efeito na Saída para Cima</translation>
+        <translation>Mover Plugin na Saída para Cima</translation>
     </message>
     <message>
         <source>Add input plugin</source>
-        <translation>Adicionar Efeito na entrada</translation>
+        <translation>Adicionar Plugin na entrada</translation>
     </message>
     <message>
         <source>Input bus plugins</source>
-        <translation>Efeitos aplicados na entrada do Canal Primário</translation>
+        <translation>Plugins aplicados na entrada do Canal Primário</translation>
     </message>
     <message>
         <source>MIDI SysEx setup</source>
@@ -687,7 +687,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
         <source>Add output plugin</source>
-        <translation>Adicionar Efeito na Saída</translation>
+        <translation>Adicionar Plugin na Saída</translation>
     </message>
     <message>
         <source>MIDI Instrument name</source>
@@ -739,7 +739,7 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <source>Output bus plugins</source>
-        <translation>Efeitos na Saída do Canal Primário</translation>
+        <translation>Plugins na Saída do Canal Primário</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -751,7 +751,7 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <source>Input Plugins</source>
-        <translation>Efeitos na Entrada</translation>
+        <translation>Plugins da Entrada</translation>
     </message>
     <message>
         <source>SysE&amp;x...</source>
@@ -779,7 +779,7 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <source>Remove input plugin</source>
-        <translation>Retirar Efeito na entrada</translation>
+        <translation>Retirar Plugin da entrada</translation>
     </message>
     <message>
         <source>M&amp;onitor (pass-through)</source>
@@ -799,7 +799,7 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <source>Move input plugin up</source>
-        <translation>Mover Efeito para Cima</translation>
+        <translation>Mover Plugin para Cima</translation>
     </message>
     <message>
         <source>About to remove bus:
@@ -815,7 +815,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Output Plugins</source>
-        <translation>Efeitos na Saída</translation>
+        <translation>Plugins da Saída</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
@@ -855,7 +855,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Remove output plugin</source>
-        <translation>Retirar Efeito na Saída</translation>
+        <translation>Retirar Plugin da Saída</translation>
     </message>
     <message>
         <source>Refresh bus list view</source>
@@ -863,11 +863,11 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Move input plugin down</source>
-        <translation>Mover Efeito para Baixo</translation>
+        <translation>Mover Plugin para Baixo</translation>
     </message>
     <message>
         <source>Move output plugin down</source>
-        <translation>Mover Efeito na Saída para Baixo</translation>
+        <translation>Mover Plugin da Saída para Baixo</translation>
     </message>
     <message>
         <source>Some settings have been changed.
@@ -4620,7 +4620,11 @@ Posso continuar?</translation>
 %1
 
 Saving into another session file is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Os seguintes problemas foram detectados:
+
+%1
+
+Salvar esta sessão em um novo arquivo é altamente recomendável.</translation>
     </message>
 </context>
 <context>
@@ -6594,7 +6598,7 @@ Deseja salvar essas alterações?</translation>
     </message>
     <message>
         <source>%1: MIDI file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Arquivo MIDI não encontrado.</translation>
     </message>
 </context>
 <context>
@@ -7455,7 +7459,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     </message>
     <message>
         <source>Plugin path</source>
-        <translation>Local do efeito</translation>
+        <translation>Local do plugin</translation>
     </message>
     <message>
         <source>Input</source>
@@ -7463,7 +7467,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     </message>
     <message>
         <source>Plugin type</source>
-        <translation>Tipo de Efeito</translation>
+        <translation>Tipo de Plugin</translation>
     </message>
     <message>
         <source>Paths</source>
@@ -7559,7 +7563,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     </message>
     <message>
         <source>Whether to use a dummy plugin type when scanning for VST plugins</source>
-        <translation>Sempre utilizar Dummy VST scan quando estiver procurando por efeitos VST</translation>
+        <translation>Sempre utilizar Dummy VST scan quando estiver procurando por plugins VST</translation>
     </message>
     <message>
         <source>Session Template</source>
@@ -7727,7 +7731,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Plugin paths</source>
-        <translation>Locais de Efeitos</translation>
+        <translation>Locais dos Plugins</translation>
     </message>
     <message>
         <source>Select custom audio meter color</source>
@@ -7831,7 +7835,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
-        <translation>&amp;Efeitos</translation>
+        <translation>&amp;Plugins</translation>
     </message>
     <message>
         <source>Default session &amp;file format:</source>
@@ -7895,7 +7899,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Abrir &amp;editor de efeito (GUI) por padrão</translation>
+        <translation>Abrir &amp;editor de plugins (GUI) por padrão</translation>
     </message>
     <message>
         <source>Sinc (Fastest)</source>
@@ -7975,7 +7979,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
-        <translation>Sempre suportar Efeitos LV2 Dynamic Manifest</translation>
+        <translation>Sempre dar suporte a Plugins LV2 Dynamic Manifest</translation>
     </message>
     <message>
         <source>&amp;Duration (bar):</source>
@@ -7987,11 +7991,11 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Dummy &amp;VST plugin scan (RECOMMENDED)</source>
-        <translation>Dummy &amp;VST scan (RECOMENDADO)</translation>
+        <translation>Escaneamento Dummy &amp;plugins VST (RECOMENDADO)</translation>
     </message>
     <message>
         <source>Add plugin path</source>
-        <translation>Adicionar local de Efeitos</translation>
+        <translation>Adicionar local de Plugins</translation>
     </message>
     <message>
         <source>&amp;Audio:</source>
@@ -8087,7 +8091,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>&amp;High resolution plugin automation (14-bit)</source>
-        <translation>&amp;Automação de efeitos em alta resolução (14-bits)</translation>
+        <translation>&amp;Automação de plugins em alta resolução (14-bits)</translation>
     </message>
     <message>
         <source>MIDI Machine Control (MMC) device id.</source>
@@ -8123,7 +8127,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Browse plugin path</source>
-        <translation>Procurar local do efeito</translation>
+        <translation>Procurar local do plugin</translation>
     </message>
     <message>
         <source>The maximum number of recent files to keep in menu</source>
@@ -8155,11 +8159,11 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
-        <translation>Sempre abrir o editor do efeito (GUI) por padrão </translation>
+        <translation>Sempre abrir o editor do plugin (GUI) por padrão </translation>
     </message>
     <message>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
-        <translation>Sempre salvar a automação do efeito em alta resolução (14-bits)</translation>
+        <translation>Sempre salvar a automação do plugin em alta resolução (14-bits)</translation>
     </message>
     <message>
         <source>&amp;Channel:</source>
@@ -8187,7 +8191,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Remove plugin path</source>
-        <translation>Remover local de Efeitos</translation>
+        <translation>Remover local de Plugins</translation>
     </message>
     <message>
         <source>Capture / Export</source>
@@ -8251,19 +8255,19 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Audio Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor do medidor de áudio</translation>
     </message>
     <message>
         <source>MIDI Meter Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor dos medidores MIDI</translation>
     </message>
     <message>
         <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre manter a rolagem automática (seguir o cursor de reprodução) na edição.</translation>
     </message>
     <message>
         <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Manter rolagem automática (seguir o cursor de reprodução) na edição</translation>
     </message>
 </context>
 <context>
@@ -8411,7 +8415,7 @@ Desculpe.</translation>
     </message>
     <message>
         <source>Edit plugin</source>
-        <translation>Editar Efeito</translation>
+        <translation>Editar Plugin</translation>
     </message>
     <message>
         <source>About to delete preset:
@@ -8440,7 +8444,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Activate plugin</source>
-        <translation>Ativar Efeito</translation>
+        <translation>Ativar Plugin</translation>
     </message>
     <message>
         <source>Aux Send Bus:</source>
@@ -8499,7 +8503,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>copy plugin</source>
-        <translation>copiar efeito</translation>
+        <translation>copiar plugin</translation>
     </message>
     <message>
         <source>Move &amp;Down</source>
@@ -8511,7 +8515,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>remove all plugins</source>
-        <translation>remover todos os efeitos</translation>
+        <translation>remover todos os plugins</translation>
     </message>
     <message>
         <source>&amp;Returns</source>
@@ -8519,7 +8523,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Add &amp;Insert</source>
-        <translation>Adicionar &amp;Inserção</translation>
+        <translation>Adicionar &amp;Insertor</translation>
     </message>
     <message>
         <source>&amp;Dedicated</source>
@@ -8539,15 +8543,15 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>&amp;Add Plugin...</source>
-        <translation>&amp;Adicionar Efeito...</translation>
+        <translation>&amp;Adicionar Plugin...</translation>
     </message>
     <message>
         <source>activate all plugins</source>
-        <translation>ativar todos os efeitos</translation>
+        <translation>ativar todos os plugins</translation>
     </message>
     <message>
         <source>deactivate all plugins</source>
-        <translation>desativar todos os efeitos</translation>
+        <translation>desativar todos os plugins</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
@@ -8567,7 +8571,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>&amp;Inserts</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Insertores</translation>
     </message>
 </context>
 <context>
@@ -8606,7 +8610,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Plugin search string (regular expression)</source>
-        <translation>Efeito de busca de palavra (expressão regular)</translation>
+        <translation>Plugin de busca de palavra (expressão regular)</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -8622,7 +8626,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Plugin type</source>
-        <translation>Tipo de efeito</translation>
+        <translation>Tipo de plugin</translation>
     </message>
     <message>
         <source>Modes</source>
@@ -8634,11 +8638,11 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Available plugins</source>
-        <translation>Efeitos disponíveis</translation>
+        <translation>Plugins disponíveis</translation>
     </message>
     <message>
         <source>Activate plugin on insert</source>
-        <translation>Ativar plugin na Inserção</translation>
+        <translation>Ativar plugin no Insertor</translation>
     </message>
     <message>
         <source>Control</source>
@@ -8654,11 +8658,11 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Plugin scanning in progress...</source>
-        <translation>Procura de efeitos em processo...</translation>
+        <translation>Procura por plugins em processo...</translation>
     </message>
     <message>
         <source>Plugins - Qtractor</source>
-        <translation>Efeitos - Qtractor</translation>
+        <translation>Plugins - Qtractor</translation>
     </message>
 </context>
 <context>
@@ -9228,7 +9232,7 @@ Você deseja descartar essas alterações?</translation>
     </message>
     <message>
         <source>Marker Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor do marcador</translation>
     </message>
 </context>
 <context>
@@ -9381,11 +9385,11 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Efeitos</translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <source>Add plugin</source>
-        <translation>Adicionar efeito</translation>
+        <translation>Adicionar plugin</translation>
     </message>
     <message>
         <source>Background color</source>
@@ -9433,7 +9437,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Move plugin down</source>
-        <translation>Mover Efeito para Baixo</translation>
+        <translation>Mover Plugin para Baixo</translation>
     </message>
     <message>
         <source>Audio track type</source>
@@ -9469,7 +9473,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Move plugin up</source>
-        <translation>Mover Efeito para Cima</translation>
+        <translation>Mover Plugin para Cima</translation>
     </message>
     <message>
         <source>Foreground color</source>
@@ -9485,7 +9489,7 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Track plugins</source>
-        <translation>Efeitos na pista</translation>
+        <translation>Plugins na pista</translation>
     </message>
     <message>
         <source>MIDI Patch: Program</source>
@@ -9493,15 +9497,15 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <source>Remove plugin</source>
-        <translation>Remover efeito</translation>
+        <translation>Remover plugin</translation>
     </message>
     <message>
         <source>Forgeground Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor do segundo plano</translation>
     </message>
 </context>
 <context>
@@ -9816,7 +9820,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <source>Track %1</source>
-        <translation type="unfinished">Pista %1</translation>
+        <translation>Pista %1</translation>
     </message>
 </context>
 </TS>
