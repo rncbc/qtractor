@@ -442,7 +442,7 @@ private:
 
 #ifdef CONFIG_LV2_PRESETS
 	// LV2 Presets label-to-uri map.
-	QHash<QString, QString> m_lv2_presets;
+	QHash<QString, QString>    m_lv2_presets;
 #endif
 
 #ifdef CONFIG_LV2_TIME

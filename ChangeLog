@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed save of LV2 Presets for plugins with state files.
+
 - A man page has beed added (making up Gürkan Sengün's work
   on debian, thanks).
 

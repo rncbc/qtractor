@@ -1728,6 +1728,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 
 #endif	// CONFIG_LV2_STATE_FILES
 
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 	m_lv2_programs_host.handle = this;
@@ -3371,11 +3372,28 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 	if (pLv2Type == NULL)
 		return false;
 
+	LV2_Feature *features[] = { NULL, NULL };
+
+#ifdef CONFIG_LV2_STATE_FILES
+
+	LV2_State_Map_Path map_path;
+	map_path.handle = this;
+	map_path.abstract_path = &qtractor_lv2_state_absolute_path; // yes, absolutely!
+	map_path.absolute_path = &qtractor_lv2_state_absolute_path;
+
+	LV2_Feature map_path_feature;
+	map_path_feature.URI = LV2_STATE__mapPath;
+	map_path_feature.data = &map_path;
+
+	features[0] = &map_path_feature;
+
+#endif
+
 	LilvState *state = lilv_state_new_from_instance(
 		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
 		NULL, NULL, NULL, NULL,
 		qtractor_lv2_get_port_value, this,
-		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, features);
 
 	if (state == NULL)
 		return false;
