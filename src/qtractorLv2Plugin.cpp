@@ -1220,11 +1220,7 @@ bool qtractorLv2PluginType::open (void)
 				|| lilv_ui_is_a(ui, g_lv2_external_ui_deprecated_class)
 			#endif
 			) {
-			#if QT_VERSION < 0x050000
-				m_bEditor = !lilv_ui_is_a(ui, g_lv2_qt5_ui_class);
-			#else
-				m_bEditor = !lilv_ui_is_a(ui, g_lv2_qt4_ui_class);
-			#endif
+				m_bEditor = true;
 				break;
 			}
 		#endif
