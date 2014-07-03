@@ -177,6 +177,7 @@ private:
 
 	// Toggled value mode (max or min).
 	bool    m_bToggled;
+
 	// Integer value mode.
 	bool    m_bInteger;
 

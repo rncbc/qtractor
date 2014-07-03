@@ -118,7 +118,7 @@ static qtractorSubjectQueue g_subjectQueue;
 qtractorSubject::qtractorSubject ( float fValue, float fDefaultValue )
 	: m_fValue(fValue), m_bQueued(false), m_fPrevValue(fValue),
 		m_fMinValue(0.0f), m_fMaxValue(1.0f), m_fDefaultValue(fDefaultValue),
-		m_bToggled(false), m_pCurve(NULL)
+		m_bToggled(false), m_bInteger(false), m_pCurve(NULL)
 {
 }
 
