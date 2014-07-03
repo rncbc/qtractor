@@ -404,7 +404,7 @@ MIDI:	</translation>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2093"/>
+        <location filename="../qtractorPlugin.cpp" line="2094"/>
         <source>%1(%2): %s plugin not found.</source>
         <translation>%1(%2): greffon %s introuvable.</translation>
     </message>
@@ -683,13 +683,13 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1595"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1607"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1603"/>
         <source>Author: </source>
         <translation>Auteur: </translation>
     </message>

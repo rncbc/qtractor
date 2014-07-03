@@ -402,7 +402,7 @@ MIDI:	</translation>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2093"/>
+        <location filename="../qtractorPlugin.cpp" line="2094"/>
         <source>%1(%2): %s plugin not found.</source>
         <translation>%1(%2): %s プラグインが見つかりません。</translation>
     </message>
@@ -681,13 +681,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>コピーライト:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1599"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1595"/>
         <source>Project: </source>
         <translation>プロジェクト:</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1607"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1603"/>
         <source>Author: </source>
         <translation>作者:</translation>
     </message>

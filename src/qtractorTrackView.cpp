@@ -5033,7 +5033,7 @@ void qtractorTrackView::openEditCurveNode (
 	const float fMinValue = pSubject->minValue();
 
 	int iDecimals = 0;
-	if (!pSubject->isToggled()) {
+	if (pSubject->isDecimal()) {
 		const float fDecimals = ::log10f(fMaxValue - fMinValue);
 		if (fDecimals < -3.0f)
 			iDecimals = 6;

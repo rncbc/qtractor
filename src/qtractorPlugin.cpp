@@ -1508,6 +1508,7 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 		}
 		// Make this permanent...
 		m_subject.setToggled(isToggled());
+		m_subject.setInteger(isInteger());
 	}
 
 	// Sanitize value...
