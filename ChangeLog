@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Prevent linear and spline automation curve modes for all
+  integer valued subjects. Also, make sure those values are
+  rounded to the nearest integer away from zero.
+
 - Fixed save of LV2 Presets for plugins with state files.
 
 - A man page has beed added (making up Gürkan Sengün's work

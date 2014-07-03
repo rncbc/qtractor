@@ -260,7 +260,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		float y0 = (pPrev ? pPrev->value : m_tail.value);
 		float y1 = fValue;
 		float y2 = (pNext ? pNext->value : fValue);
-		if (m_mode == Hold || m_observer.isToggled()) {
+		if (m_mode == Hold || !m_observer.isDecimal()) {
 			const float fThreshold
 				= (m_bLogarithmic ? 0.1f * fabs(y1) : 0.01f)
 				* (m_observer.maxValue() - m_observer.minValue());

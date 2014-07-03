@@ -169,7 +169,7 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 
 	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
-	m_ui.LogarithmicCheckBox->setEnabled(!m_pMidiObserver->isToggled());
+	m_ui.LogarithmicCheckBox->setEnabled(m_pMidiObserver->isDecimal());
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
 	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook());

@@ -3624,7 +3624,7 @@ void qtractorMainForm::trackCurveSelect ( QAction *pAction, bool bOn )
 		pCurve = pSubject->curve();
 		if (pCurve == NULL) {
 			qtractorCurve::Mode mode = qtractorCurve::Hold;
-			if (m_pOptions && !pSubject->isToggled())
+			if (m_pOptions && pSubject->isDecimal())
 				mode = qtractorCurve::Mode(m_pOptions->iCurveMode);
 			pCurve = new qtractorCurve(pCurveList, pSubject, mode);
 			pCurve->setLogarithmic(pMidiObserver->isLogarithmic());
@@ -6464,7 +6464,7 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 		return false;
 
 	const qtractorCurve::Mode mode = pCurrentCurve->mode();
-	const bool bToggled = (pCurrentCurve->subject())->isToggled();
+	const bool bDecimal = (pCurrentCurve->subject())->isDecimal();
 
 	QAction *pAction;
 
@@ -6477,13 +6477,13 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 	pAction->setCheckable(true);
 	pAction->setChecked(mode == qtractorCurve::Linear);
 	pAction->setData(int(qtractorCurve::Linear));
-	pAction->setEnabled(!bToggled);
+	pAction->setEnabled(bDecimal);
 
 	pAction = pMenu->addAction(tr("&Spline"));
 	pAction->setCheckable(true);
 	pAction->setChecked(mode == qtractorCurve::Spline);
 	pAction->setData(int(qtractorCurve::Spline));
-	pAction->setEnabled(!bToggled);
+	pAction->setEnabled(bDecimal);
 
 	pMenu->addSeparator();
 
@@ -6491,7 +6491,7 @@ bool qtractorMainForm::trackCurveModeMenuReset ( QMenu *pMenu ) const
 	m_ui.trackCurveLogarithmicAction->setChecked(
 		pCurrentCurve && pCurrentCurve->isLogarithmic());
 	m_ui.trackCurveLogarithmicAction->setData(-1);
-	m_ui.trackCurveLogarithmicAction->setEnabled(!bToggled);
+	m_ui.trackCurveLogarithmicAction->setEnabled(bDecimal);
 
 	pMenu->addAction(m_ui.trackCurveColorAction);
 	m_ui.trackCurveColorAction->setData(-1);

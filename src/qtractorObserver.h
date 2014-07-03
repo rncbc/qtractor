@@ -25,6 +25,9 @@
 #include <QString>
 #include <QList>
 
+#include <math.h>
+
+
 // Forward declarations.
 class qtractorSubject;
 class qtractorObserver;
@@ -105,6 +108,16 @@ public:
 	bool isToggled() const
 		{ return m_bToggled; }
 
+	// Integer mode accessors.
+	void setInteger(bool bInteger)
+		{ m_bInteger = bInteger; }
+	bool isInteger() const
+		{ return m_bInteger; }
+
+	// Non toggled nor integer mode helper.
+	bool isDecimal() const
+		{ return !m_bToggled && !m_bInteger; }
+
 	// Filter value within legal bounds.
 	float safeValue (float fValue) const
 	{
@@ -118,6 +131,9 @@ public:
 		else
 		if (fValue < m_fMinValue)
 			fValue = m_fMinValue;
+		else
+		if (m_bInteger)
+			fValue = ::roundf(fValue);
 
 		return fValue;
 	}
@@ -161,6 +177,8 @@ private:
 
 	// Toggled value mode (max or min).
 	bool    m_bToggled;
+	// Integer value mode.
+	bool    m_bInteger;
 
 	// Automation curve association.
 	qtractorCurve *m_pCurve;
@@ -231,6 +249,14 @@ public:
 	// Toggled mode accessors.
 	bool isToggled() const
 		{ return (m_pSubject ? m_pSubject->isToggled() : false); }
+
+	// Integer mode accessors.
+	bool isInteger() const
+		{ return (m_pSubject ? m_pSubject->isInteger() : false); }
+
+	// Non toggled nor integer mode helper.
+	bool isDecimal() const
+		{ return (m_pSubject ? m_pSubject->isDecimal() : false); }
 
 	// Filter value within legal bounds.
 	float safeValue(float fValue) const

@@ -67,9 +67,9 @@ public:
 
 	// Curve mode accessor.
 	void setMode(Mode mode)
-		{ m_mode = (m_observer.isToggled() ? Hold : mode); }
+		{ m_mode = (m_observer.isDecimal() ? mode : Hold); }
 	Mode mode() const
-		{ return (m_observer.isToggled() ? Hold : m_mode); }
+		{ return (m_observer.isDecimal() ? m_mode : Hold); }
 
 	// Minimum distance between adjacent nodes accessors.
 	void setMinFrameDist(unsigned int iMinFrameDist)
