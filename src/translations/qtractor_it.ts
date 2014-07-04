@@ -376,23 +376,23 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="587"/>
+        <location filename="../qtractorPlugin.cpp" line="571"/>
         <source>(Any)</source>
         <translation>(Qualsiasi)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="643"/>
+        <location filename="../qtractorPlugin.cpp" line="627"/>
         <source>Dummy plugin type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="670"/>
+        <location filename="../qtractorPlugin.cpp" line="654"/>
         <source>Activate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2094"/>
-        <source>%1(%2): %s plugin not found.</source>
+        <location filename="../qtractorPlugin.cpp" line="2078"/>
+        <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
