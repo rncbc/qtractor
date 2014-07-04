@@ -387,24 +387,28 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="587"/>
+        <location filename="../qtractorPlugin.cpp" line="571"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="643"/>
+        <location filename="../qtractorPlugin.cpp" line="627"/>
         <source>Dummy plugin type.</source>
         <translation>ダミープラグインタイプ</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="670"/>
+        <location filename="../qtractorPlugin.cpp" line="654"/>
         <source>Activate</source>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2094"/>
+        <location filename="../qtractorPlugin.cpp" line="2078"/>
+        <source>%1(%2): %3 plugin not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>%1(%2): %s plugin not found.</source>
-        <translation>%1(%2): %s プラグインが見つかりません。</translation>
+        <translation type="obsolete">%1(%2): %s プラグインが見つかりません。</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="120"/>

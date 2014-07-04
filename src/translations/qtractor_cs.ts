@@ -826,24 +826,28 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="587"/>
+        <location filename="../qtractorPlugin.cpp" line="571"/>
         <source>(Any)</source>
         <translation>(Jakýkoli)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="643"/>
+        <location filename="../qtractorPlugin.cpp" line="627"/>
         <source>Dummy plugin type.</source>
         <translation>Nepravý typ přídavného modulu.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="670"/>
+        <location filename="../qtractorPlugin.cpp" line="654"/>
         <source>Activate</source>
         <translation>Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2094"/>
+        <location filename="../qtractorPlugin.cpp" line="2078"/>
+        <source>%1(%2): %3 plugin not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>%1(%2): %s plugin not found.</source>
-        <translation>%1(%2): %s přídavný modul nenalezen.</translation>
+        <translation type="obsolete">%1(%2): %s přídavný modul nenalezen.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="120"/>

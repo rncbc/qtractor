@@ -526,65 +526,49 @@ unsigned short qtractorPluginType::instances (
 qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	const QString& sText )
 {
-#ifdef CONFIG_LADSPA
 	if (sText == "LADSPA")
 		return Ladspa;
 	else
-#endif
-#ifdef CONFIG_DSSI
 	if (sText == "DSSI")
 		return Dssi;
 	else
-#endif
-#ifdef CONFIG_VST
 	if (sText == "VST")
 		return Vst;
 	else
-#endif
-#ifdef CONFIG_LV2
 	if (sText == "LV2")
 		return Lv2;
 	else
-#endif
 	if (sText == "Insert")
 		return Insert;
 	else
 	if (sText == "AuxSend")
 		return AuxSend;
 	else
-	return Any;
+		return Any;
 }
 
 QString qtractorPluginType::textFromHint (
 	qtractorPluginType::Hint typeHint )
 {
-#ifdef CONFIG_LADSPA
 	if (typeHint == Ladspa)
 		return "LADSPA";
 	else
-#endif
-#ifdef CONFIG_DSSI
 	if (typeHint == Dssi)
 		return "DSSI";
 	else
-#endif
-#ifdef CONFIG_VST
 	if (typeHint == Vst)
 		return "VST";
 	else
-#endif
-#ifdef CONFIG_LV2
 	if (typeHint == Lv2)
 		return "LV2";
 	else
-#endif
 	if (typeHint == Insert)
 		return "Insert";
 	else
 	if (typeHint == AuxSend)
 		return "AuxSend";
 	else
-	return QObject::tr("(Any)");
+		return QObject::tr("(Any)");
 }
 
 
@@ -2007,9 +1991,9 @@ bool qtractorPluginList::loadElement (
 			qtractorPlugin::Values values;
 			qtractorMidiControl::Controllers controllers;
 			qtractorCurveFile cfile(qtractorPluginList::curveList());
+			const QString& sTypeHint = ePlugin.attribute("type");
 			qtractorPluginType::Hint typeHint
-				= qtractorPluginType::hintFromText(
-					ePlugin.attribute("type"));
+				= qtractorPluginType::hintFromText(sTypeHint);
 			for (QDomNode nParam = ePlugin.firstChild();
 					!nParam.isNull();
 						nParam = nParam.nextSibling()) {
@@ -2091,9 +2075,8 @@ bool qtractorPluginList::loadElement (
 				pPlugin->setActivated(bActivated); // Later's better!
 			} else {
 				qtractorMessageList::append(
-					QObject::tr("%1(%2): %s plugin not found.")
-						.arg(sFilename).arg(iIndex)
-						.arg(qtractorPluginType::textFromHint(typeHint)));
+					QObject::tr("%1(%2): %3 plugin not found.")
+						.arg(sFilename).arg(iIndex).arg(sTypeHint));
 			}
 			// Cleanup.
 			qDeleteAll(controllers);

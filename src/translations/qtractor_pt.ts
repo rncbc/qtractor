@@ -538,11 +538,15 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
         <source>%1(%2): %s plugin not found.</source>
-        <translation>%1(%2): %s plugin não encontrado.</translation>
+        <translation type="obsolete">%1(%2): %s plugin não encontrado.</translation>
     </message>
     <message>
         <source>%1: Automation/curve file not found.</source>
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
+    </message>
+    <message>
+        <source>%1(%2): %3 plugin not found.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
