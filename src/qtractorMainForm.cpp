@@ -5913,7 +5913,7 @@ void qtractorMainForm::updateSessionPost (void)
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("The following issues were detected:\n\n%1\n\n"
 			"Saving into another session file is highly recommended.")
-			.arg(qtractorMessageList::items().join("\n\n")),
+			.arg(qtractorMessageList::items().join("\n")),
 			QMessageBox::Save | QMessageBox::Ignore) == QMessageBox::Save) {
 			saveSessionFile(sessionBackupPath(m_sFilename));
 		}
