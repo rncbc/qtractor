@@ -1393,9 +1393,10 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	// Activate subject curve
 	qtractorCurve *pCurve = activateSubject()->curve();
 	if (pCurve) {
+		const unsigned long ActivateSubjectIndex = m_params.count() + 1000;
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
-		pCurveItem->index = m_params.count();	// =ActivateSubject
+		pCurveItem->index = ActivateSubjectIndex;
 		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		const unsigned short controller = (iParam % 0x7f);
@@ -1446,10 +1447,11 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
+	const unsigned long ActivateSubjectIndex = m_params.count() + 1000;
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
-		if (pCurveItem->index == (unsigned long) m_params.count()) {
+		if (pCurveItem->index == ActivateSubjectIndex) {
 			pCurveItem->subject = activateSubject();
 		} else {
 			qtractorPluginParam *pParam = NULL;
