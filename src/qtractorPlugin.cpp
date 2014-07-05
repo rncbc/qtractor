@@ -644,7 +644,8 @@ qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
 		m_bActivated(false), m_activateObserver(this),
-		m_pForm(NULL), m_iDirectAccessParamIndex(-1)
+		m_iActivateSubjectIndex(0), m_pForm(NULL),
+		m_iDirectAccessParamIndex(-1)
 {
 	// Acquire a local unique id in chain...
 	if (m_pList && m_pType)
@@ -1393,10 +1394,9 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	// Activate subject curve
 	qtractorCurve *pCurve = activateSubject()->curve();
 	if (pCurve) {
-		const unsigned long ActivateSubjectIndex = m_params.count() + 1000;
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
-		pCurveItem->index = ActivateSubjectIndex;
+		pCurveItem->index = activateSubjectIndex();
 		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
 		const unsigned short controller = (iParam % 0x7f);
@@ -1447,11 +1447,10 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
-	const unsigned long ActivateSubjectIndex = m_params.count() + 1000;
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
-		if (pCurveItem->index == ActivateSubjectIndex) {
+		if (pCurveItem->index == activateSubjectIndex()) {
 			pCurveItem->subject = activateSubject();
 		} else {
 			qtractorPluginParam *pParam = NULL;
@@ -1987,6 +1986,7 @@ bool qtractorPluginList::loadElement (
 			QString sPreset;
 			QStringList vlist;
 			bool bActivated = false;
+			unsigned long iActivateSubjectIndex = 0;
 			long iDirectAccessParamIndex = -1;
 			qtractorPlugin::Configs configs;
 			qtractorPlugin::ConfigTypes ctypes;
@@ -2020,6 +2020,9 @@ bool qtractorPluginList::loadElement (
 				else
 				if (eParam.tagName() == "values")
 					vlist = eParam.text().split(',');
+				else
+				if (eParam.tagName() == "activate-subject-index")
+					iActivateSubjectIndex = eParam.text().toULong();
 				else
 				if (eParam.tagName() == "activated")
 					bActivated = qtractorDocument::boolFromText(eParam.text());
@@ -2063,6 +2066,8 @@ bool qtractorPluginList::loadElement (
 			if (pPlugin) {
 				if (iUniqueID > 0)
 					pPlugin->setUniqueID(iUniqueID);
+				if (iActivateSubjectIndex > 0)
+					pPlugin->setActivateSubjectIndex(iActivateSubjectIndex);
 				pPlugin->setPreset(sPreset);
 				pPlugin->setConfigs(configs);
 				pPlugin->setConfigTypes(ctypes);
@@ -2156,6 +2161,10 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			QString::number(pPlugin->directAccessParamIndex()), &ePlugin);
 	//	pDocument->saveTextElement("values",
 	//		pPlugin->valueList().join(","), &ePlugin);
+		if (pPlugin->isActivateSubjectIndex()) {
+			pDocument->saveTextElement("activate-subject-index",
+				QString::number(pPlugin->activateSubjectIndex()), &ePlugin);
+		}
 		pDocument->saveTextElement("activated",
 			qtractorDocument::textFromBool(pPlugin->isActivated()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
