@@ -224,24 +224,27 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
-		qtractorCurve *pCurve = (pItem->subject)->curve();
-		if (pCurve == NULL)
-			pCurve = new qtractorCurve(m_pCurveList, pItem->subject, pItem->mode);
-		if (m_iCurrentCurve == int(pItem->index))
-			pCurrentCurve = pCurve;
-		qtractorMidiSequence seq(QString(), pItem->channel, iTicksPerBeat);
-		if (file.readTrack(&seq, iSeq)) {
-			pCurve->readMidiSequence(&seq,
-				pItem->ctype,
-				pItem->channel,
-				pItem->param,
-				pTimeScale);
+		if (pItem->subject) {
+			qtractorCurve *pCurve = (pItem->subject)->curve();
+			if (pCurve == NULL)
+				pCurve = new qtractorCurve(m_pCurveList,
+					pItem->subject, pItem->mode);
+			if (m_iCurrentCurve == int(pItem->index))
+				pCurrentCurve = pCurve;
+			qtractorMidiSequence seq(QString(), pItem->channel, iTicksPerBeat);
+			if (file.readTrack(&seq, iSeq)) {
+				pCurve->readMidiSequence(&seq,
+					pItem->ctype,
+					pItem->channel,
+					pItem->param,
+					pTimeScale);
+			}
+			pCurve->setProcess(pItem->process);
+			pCurve->setCapture(pItem->capture);
+			pCurve->setLocked(pItem->locked);
+			pCurve->setLogarithmic(pItem->logarithmic);
+			pCurve->setColor(pItem->color);
 		}
-		pCurve->setProcess(pItem->process);
-		pCurve->setCapture(pItem->capture);
-		pCurve->setLocked(pItem->locked);
-		pCurve->setLogarithmic(pItem->logarithmic);
-		pCurve->setColor(pItem->color);
 		++iSeq;
 	}
 

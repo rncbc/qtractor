@@ -399,12 +399,12 @@ MIDI:	</translation>
         <translation>Type de greffon factice.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="654"/>
+        <location filename="../qtractorPlugin.cpp" line="655"/>
         <source>Activate</source>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2080"/>
+        <location filename="../qtractorPlugin.cpp" line="2085"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>

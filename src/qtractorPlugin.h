@@ -426,6 +426,15 @@ public:
 	qtractorMidiControlObserver *activateObserver()
 		{ return &m_activateObserver; }
 
+	// Activate pseudo-parameter port index.
+	void setActivateSubjectIndex (unsigned long iIndex)
+		{ m_iActivateSubjectIndex = iIndex; }
+	unsigned long activateSubjectIndex() const
+		{ return m_iActivateSubjectIndex; }
+
+	bool isActivateSubjectIndex() const
+		{ return int(m_iActivateSubjectIndex) > m_params.count(); }
+
 	// An accessible list of parameters.
 	typedef QHash<unsigned long, qtractorPluginParam *> Params;
 	const Params& params() const
@@ -443,6 +452,8 @@ public:
 			pParam->observer()->setLogarithmic(true);
 		m_params.insert(pParam->index(), pParam);
 		m_paramNames.insert(pParam->name(), pParam);
+		if (pParam->index() >= m_iActivateSubjectIndex)
+			m_iActivateSubjectIndex = pParam->index() + 1;
 	}
 
 	// Instance capped number of audio ports.
@@ -697,6 +708,9 @@ private:
 		qtractorPlugin *m_pPlugin;
 
 	} m_activateObserver;
+
+	// Activate pseudo-parameter port index.
+	unsigned long m_iActivateSubjectIndex;
 
 	// List of input control ports (parameters).
 	Params m_params;
