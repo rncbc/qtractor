@@ -2109,7 +2109,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
-	//	setActivated(bActivated);
+		setActivated(bActivated);
 		return;
 	}
 
