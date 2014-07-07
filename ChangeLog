@@ -3,7 +3,8 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+
+0.6.2  2014-07-07  Boson Walk Beta
 
 - Prevent linear and spline automation curve modes for all
   integer valued subjects. Also, make sure those values are
