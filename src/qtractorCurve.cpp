@@ -247,13 +247,13 @@ qtractorCurve::Node *qtractorCurve::addNode (
 #endif
 
 	Node *pNode = NULL;
-	Node *pNext = m_cursor.seek(frameDist(iFrame));
+	Node *pNext = m_cursor.seek(iFrame);
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
 
-	if (pNext && pNext->frame == m_cursor.frame())
+	if (pNext && isMinFrameDist(pNext, iFrame))
 		pNode = pNext;
 	else
-	if (pPrev && pPrev->frame == m_cursor.frame())
+	if (pPrev && isMinFrameDist(pPrev, iFrame))
 		pNode = pPrev;
 	else {
 		// Smoothing...
@@ -299,12 +299,12 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		// Move/update the existing one as average...
 		if (pEditList)
 			pEditList->moveNode(pNode, pNode->frame, pNode->value);
-		pNode->frame = m_cursor.frame();
+		pNode->frame = iFrame;
 		pNode->value = fValue;
 	} else {
 		// Create a brand new node,
 		// insert it in the right frame...
-		pNode = new Node(m_cursor.frame(), fValue);
+		pNode = new Node(iFrame, fValue);
 		if (pNext)
 			m_nodes.insertBefore(pNode, pNext);
 		else
@@ -392,15 +392,11 @@ void qtractorCurve::removeNode ( Node *pNode )
 }
 
 
-// Snap to minimum distance frame.
-unsigned long qtractorCurve::frameDist ( unsigned long iFrame ) const
+// Whether to snap to minimum distance frame.
+bool qtractorCurve::isMinFrameDist ( Node *pNode, unsigned long iFrame ) const
 {
-	if (m_iMinFrameDist > 0) {
-		const unsigned long q = m_iMinFrameDist;
-		iFrame = q * ((iFrame + (q >> 1)) / q);
-	}
-
-	return iFrame;
+	return iFrame > pNode->frame - m_iMinFrameDist
+		&& iFrame < pNode->frame + m_iMinFrameDist;
 }
 
 

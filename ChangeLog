@@ -3,6 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Automation curve node editing has been slightly improved
+  in regard to time positioning and resolution. (EXPERIMENTAL)
+
 
 0.6.2  2014-07-07  Boson Walk Beta
 
