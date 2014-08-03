@@ -171,11 +171,11 @@ void qtractorMessages::appendStdoutBuffer ( const QString& s )
 {
 	m_sStdoutBuffer.append(s);
 
-	const int iLength = m_sStdoutBuffer.lastIndexOf('\n') + 1;
+	const int iLength = m_sStdoutBuffer.lastIndexOf('\n');
 	if (iLength > 0) {
 		const QString& sTemp = m_sStdoutBuffer.left(iLength);
-		m_sStdoutBuffer.remove(0, iLength);
-		QStringList list = sTemp.trimmed().split('\n');
+		m_sStdoutBuffer.remove(0, iLength + 1);
+		QStringList list = sTemp.split('\n');
 		QStringListIterator iter(list);
 		while (iter.hasNext())
 			appendMessagesText(iter.next());
