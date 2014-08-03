@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Messages standard output capture has been slightly improved
+  as for non-blocking i/o, whenever available. (EXPERIMENTAL)
+
 - Automation curve node editing has been slightly improved
   in regard to time positioning and resolution. (EXPERIMENTAL)
 
