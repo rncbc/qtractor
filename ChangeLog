@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- A segmentation fault when closing with VST plugins open has
+  been hopefully fixed (after a patch by EternalX, thanks).
+
 - Messages standard output capture has been slightly improved
   as for non-blocking i/o, whenever available. (EXPERIMENTAL)
 
