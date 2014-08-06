@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI Controller Hook and Invert properties are now properly
+  saved for tracks (after bug report by Nicola Pandini, thanks).
+
 - A segmentation fault when closing with VST plugins open has
   been hopefully fixed (after a patch by EternalX, thanks).
 

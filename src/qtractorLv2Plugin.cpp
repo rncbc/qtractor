@@ -1045,6 +1045,7 @@ static struct qtractorLv2Time
 		position = 0,
 		bar,
 		beat,
+		barBeat,
 		beatUnit,
 		beatsPerBar,
 		beatsPerMinute,
@@ -1056,6 +1057,7 @@ static struct qtractorLv2Time
 	};
 
 	const char *uri;
+	LV2_URID    urid;
 	LilvNode   *node;
 	float       value;
 
@@ -1063,16 +1065,23 @@ static struct qtractorLv2Time
 
 } g_lv2_time[] = {
 
-	{ LV2_TIME__position,        NULL, 0.0f, NULL },
-	{ LV2_TIME__bar,             NULL, 0.0f, NULL },
-	{ LV2_TIME__beat,            NULL, 0.0f, NULL },
-	{ LV2_TIME__beatUnit,        NULL, 0.0f, NULL },
-	{ LV2_TIME__beatsPerBar,     NULL, 0.0f, NULL },
-	{ LV2_TIME__beatsPerMinute,  NULL, 0.0f, NULL },
-	{ LV2_TIME__frame,           NULL, 0.0f, NULL },
-	{ LV2_TIME__framesPerSecond, NULL, 0.0f, NULL },
-	{ LV2_TIME__speed,           NULL, 0.0f, NULL }
+	{ LV2_TIME__position,        0, NULL, 0.0f, NULL },
+	{ LV2_TIME__bar,             0, NULL, 0.0f, NULL },
+	{ LV2_TIME__beat,            0, NULL, 0.0f, NULL },
+	{ LV2_TIME__barBeat,         0, NULL, 0.0f, NULL },
+	{ LV2_TIME__beatUnit,        0, NULL, 0.0f, NULL },
+	{ LV2_TIME__beatsPerBar,     0, NULL, 0.0f, NULL },
+	{ LV2_TIME__beatsPerMinute,  0, NULL, 0.0f, NULL },
+	{ LV2_TIME__frame,           0, NULL, 0.0f, NULL },
+	{ LV2_TIME__framesPerSecond, 0, NULL, 0.0f, NULL },
+	{ LV2_TIME__speed,           0, NULL, 0.0f, NULL }
 };
+
+#ifdef CONFIG_LV2_ATOM
+// LV2 Time atoms...
+#include "lv2/lv2plug.in/ns/ext/atom/forge.h"
+static LV2_Atom_Forge g_lv2_forge;
+#endif
 
 #endif	// CONFIG_LV2_TIME
 
@@ -1415,10 +1424,15 @@ void qtractorLv2PluginType::lv2_open (void)
 	// LV2 Time: set up supported port designations...
 	for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
 		qtractorLv2Time& member = g_lv2_time[i];
+		member.urid = qtractorLv2Plugin::lv2_urid_map(member.uri);
 		member.node = lilv_new_uri(g_lv2_world, member.uri);
 		member.value = 0.0f;
 		member.params = new QList<qtractorLv2PluginParam *> ();
 	}
+#ifdef CONFIG_LV2_ATOM
+	// LV2 Time: set up for atom port event notifications...
+	lv2_atom_forge_init(&g_lv2_forge, &g_lv2_urid_map);
+#endif
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
@@ -3265,12 +3279,13 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 {
 	qtractorLv2Time& member = g_lv2_time[i];
 
-	if (member.value != fValue
-		&& member.params && member.params->count() > 0) {
+	if (member.value != fValue) {
 		member.value  = fValue;
-		QListIterator<qtractorLv2PluginParam *> iter(*member.params);
-		while (iter.hasNext())
-			iter.next()->setValue(fValue, true);
+		if (member.params && member.params->count() > 0) {
+			QListIterator<qtractorLv2PluginParam *> iter(*member.params);
+			while (iter.hasNext())
+				iter.next()->setValue(fValue, true);
+		}
 	}
 }
 
@@ -3287,6 +3302,9 @@ void qtractorLv2Plugin::updateTime (
 		qtractor_lv2_time_update(
 			qtractorLv2Time::beat,
 			float(pPos->beat));
+		qtractor_lv2_time_update(
+			qtractorLv2Time::barBeat,
+			float(pPos->beat + (pPos->tick / pPos->ticks_per_beat) - 1));
 		qtractor_lv2_time_update(
 			qtractorLv2Time::beatUnit,
 			float(pPos->beat_type));
