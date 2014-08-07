@@ -212,13 +212,13 @@ void qtractorAudioPeakThread::run (void)
 		// Do whatever we must, then wait for more...
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
-		while (r != w) {
+		while (m_bRunState && r != w) {
 			qtractorAudioPeak *pSyncItem = m_ppSyncItems[r];
 			m_pPeakFile = pSyncItem->peakFile();
 			if (m_pPeakFile->isWaitSync()) {
 				if (openPeakFile()) {
 					// Go ahead with the whole bunch...
-					while (writePeakFile())
+					while (m_bRunState && writePeakFile())
 						/* empty loop */;
 					// We're done.
 					closePeakFile();
@@ -231,10 +231,13 @@ void qtractorAudioPeakThread::run (void)
 			w = m_iSyncWrite;
 		}
 		m_iSyncRead = r;
-		// Send notification event, anyway...
-		notifyPeakEvent();
-		// Wait for sync...
-		m_cond.wait(&m_mutex);
+		// Are we still in the game?
+		if (m_bRunState) {
+			// Send notification event, anyway...
+			notifyPeakEvent();
+			// Wait for sync...
+			m_cond.wait(&m_mutex);
+		}
 	}
 
 	m_mutex.unlock();

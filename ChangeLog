@@ -3,9 +3,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+
 SVN TRUNK
 
-- MIDI Controller Hook and Invert properties are now properly
+- Attempt to break extremely long audio file peak generation
+  on session close or program exit (as reported by EternalX,
+  thanks again).
+
+- MIDI Controllers Hook and Invert properties are now properly
   saved for tracks (after bug report by Nicola Pandini, thanks).
 
 - A segmentation fault when closing with VST plugins open has

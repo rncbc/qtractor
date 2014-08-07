@@ -1077,12 +1077,6 @@ static struct qtractorLv2Time
 	{ LV2_TIME__speed,           0, NULL, 0.0f, NULL }
 };
 
-#ifdef CONFIG_LV2_ATOM
-// LV2 Time atoms...
-#include "lv2/lv2plug.in/ns/ext/atom/forge.h"
-static LV2_Atom_Forge g_lv2_forge;
-#endif
-
 #endif	// CONFIG_LV2_TIME
 
 
@@ -1429,10 +1423,6 @@ void qtractorLv2PluginType::lv2_open (void)
 		member.value = 0.0f;
 		member.params = new QList<qtractorLv2PluginParam *> ();
 	}
-#ifdef CONFIG_LV2_ATOM
-	// LV2 Time: set up for atom port event notifications...
-	lv2_atom_forge_init(&g_lv2_forge, &g_lv2_urid_map);
-#endif
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
@@ -3279,13 +3269,12 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 {
 	qtractorLv2Time& member = g_lv2_time[i];
 
-	if (member.value != fValue) {
+	if (member.value != fValue
+		&& member.params && member.params->count() > 0) {
 		member.value  = fValue;
-		if (member.params && member.params->count() > 0) {
-			QListIterator<qtractorLv2PluginParam *> iter(*member.params);
-			while (iter.hasNext())
-				iter.next()->setValue(fValue, true);
-		}
+		QListIterator<qtractorLv2PluginParam *> iter(*member.params);
+		while (iter.hasNext())
+			iter.next()->setValue(fValue, true);
 	}
 }
 
