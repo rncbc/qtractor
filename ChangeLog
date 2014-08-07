@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Time position for plugin atom ports that support it is
+  being slowly introduced. (EXPERIMENTAL)
+
 - Attempt to break extremely long audio file peak generation
   on session close or program exit (as reported by EternalX,
   thanks again).
