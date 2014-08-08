@@ -143,7 +143,7 @@ qtractorAudioPeakThread::~qtractorAudioPeakThread (void)
 // Run state accessor.
 void qtractorAudioPeakThread::setRunState ( bool bRunState )
 {
-	QMutexLocker locker(&m_mutex);
+//	QMutexLocker locker(&m_mutex);
 
 	m_bRunState = bRunState;
 }

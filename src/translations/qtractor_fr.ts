@@ -47,7 +47,7 @@ Audio:	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1339"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1345"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -677,7 +677,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1336"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1342"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -687,13 +687,13 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1595"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1684"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1603"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1692"/>
         <source>Author: </source>
         <translation>Auteur: </translation>
     </message>
@@ -6052,17 +6052,17 @@ est près et en fonctionnement puis redémarrez la session.</translation>
 <context>
     <name>qtractorMessages</name>
     <message>
-        <location filename="../qtractorMessages.cpp" line="110"/>
+        <location filename="../qtractorMessages.cpp" line="111"/>
         <source>Messages</source>
         <translation>Messages</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="257"/>
+        <location filename="../qtractorMessages.cpp" line="270"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Journalisation arrêtée --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="267"/>
+        <location filename="../qtractorMessages.cpp" line="280"/>
         <source>Logging started --- %1 ---</source>
         <translation>Journalisation démarrée --- %1 ---</translation>
     </message>

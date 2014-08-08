@@ -1077,7 +1077,7 @@ static struct qtractorLv2Time
 	{ LV2_TIME__speed,           0, NULL, 0.0f, NULL }
 };
 
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 
 // LV2 Time position atoms...
 #include "lv2/lv2plug.in/ns/ext/atom/forge.h"
@@ -1091,6 +1091,16 @@ static LV2_Atom_Forge *g_lv2_time_position_forge   = NULL;
 static uint8_t        *g_lv2_time_position_buffer  = NULL;
 
 static uint32_t        g_lv2_time_position_changed = 0;
+
+#ifndef CONFIG_LV2_ATOM_FORGE_OBJECT
+#define lv2_atom_forge_object(forge, frame, id, otype) \
+		lv2_atom_forge_blank(forge, frame, id, otype)
+#endif
+
+#ifndef CONFIG_LV2_ATOM_FORGE_KEY
+#define lv2_atom_forge_key(forge, key) \
+		lv2_atom_forge_property_head(forge, key, 0)
+#endif
 
 static void qtractor_lv2_time_position_open ( qtractorLv2Plugin *pLv2Plugin )
 {
@@ -1138,7 +1148,7 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 	}
 }
 
-#endif	// CONFIG_LV2_ATOM
+#endif	// CONFIG_LV2_TIME_POSITION
 
 #endif	// CONFIG_LV2_TIME
 
@@ -1486,7 +1496,7 @@ void qtractorLv2PluginType::lv2_open (void)
 		member.value = 0.0f;
 		member.params = new QList<qtractorLv2PluginParam *> ();
 	}
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 	// LV2 Time: set up for atom port event notifications...
 	g_lv2_time_position_type
 		= qtractorLv2Plugin::lv2_urid_map(LV2_TIME__Position);
@@ -1535,7 +1545,7 @@ void qtractorLv2PluginType::lv2_close (void)
 		delete member.params;
 		member.params = NULL;
 	}
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 	lilv_node_free(g_lv2_time_position_node);
 	g_lv2_time_position_node = NULL;
 	g_lv2_time_position_type = 0;
@@ -1763,7 +1773,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_TIME
-	#ifdef CONFIG_LV2_ATOM
+	#ifdef CONFIG_LV2_TIME_POSITION
 		, m_lv2_time_position_enabled(false)
 		, m_lv2_time_position_port_in(0)
 		, m_lv2_time_position_changed(0)
@@ -1980,7 +1990,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						}
 						lilv_node_free(minimum_size);
 					}
-				#ifdef CONFIG_LV2_TIME
+				#ifdef CONFIG_LV2_TIME_POSITION
 					if (lilv_port_supports_event(plugin,
 							port, g_lv2_time_position_node)) {
 						m_lv2_time_position_enabled = true;
@@ -2101,7 +2111,7 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 		if (pParam)
 			g_lv2_time[iter.value()].params->removeAll(pParam);
 	}
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 	if (m_lv2_time_position_enabled)
 		qtractor_lv2_time_position_close(this);
 #endif
@@ -2421,7 +2431,7 @@ void qtractorLv2Plugin::process (
 				lilv_instance_connect_port(instance,
 					m_piMidiAtomOuts[j], &m_lv2_atom_port_outs[j]->atoms);
 			}
-		#ifdef CONFIG_LV2_TIME
+		#ifdef CONFIG_LV2_TIME_POSITION
 			if (m_lv2_time_position_changed > 0) {
 				m_lv2_time_position_changed = 0;
 				LV2_Atom_Buffer *abuf
@@ -3385,7 +3395,7 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 			while (iter.hasNext())
 				iter.next()->setValue(fValue, true);
 		}
-	#ifdef CONFIG_LV2_ATOM
+	#ifdef CONFIG_LV2_TIME_POSITION
 		++g_lv2_time_position_changed;
 	#endif
 	}
@@ -3394,7 +3404,7 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 void qtractorLv2Plugin::updateTime (
 	const jack_transport_state_t state, const jack_position_t *pPos )
 {
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 	g_lv2_time_position_changed = 0;
 #endif
 
@@ -3432,7 +3442,7 @@ void qtractorLv2Plugin::updateTime (
 		qtractorLv2Time::speed,
 		(state == JackTransportRolling ? 1.0f : 0.0f));
 
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 	if (g_lv2_time_position_changed > 0 &&
 		g_lv2_time_position_plugins &&
 		g_lv2_time_position_forge &&
@@ -3481,10 +3491,10 @@ void qtractorLv2Plugin::updateTime (
 		while (iter.hasNext())
 			iter.next()->lv2_time_position_changed();
 	}
-#endif
+#endif	// CONFIG_LV2_TIME_POSITION
 }
 
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 // Make ready LV2 Time position.
 void qtractorLv2Plugin::lv2_time_position_changed (void)
 {

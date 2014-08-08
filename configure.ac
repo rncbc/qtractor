@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.2.6, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.2.7, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -178,9 +178,14 @@ AC_ARG_ENABLE(lv2-presets,
   [ac_lv2_presets="yes"])
 
 AC_ARG_ENABLE(lv2-time,
-  AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time/position support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time support (default=yes)]),
   [ac_lv2_time="$enableval"],
   [ac_lv2_time="yes"])
+
+AC_ARG_ENABLE(lv2-time-position,
+  AC_HELP_STRING([--enable-lv2-time-position], [enable LV2 plug-in Time/position support (default=yes)]),
+  [ac_lv2_time_position="$enableval"],
+  [ac_lv2_time_position="yes"])
 
 AC_ARG_ENABLE(lv2-options,
   AC_HELP_STRING([--enable-lv2-options], [enable LV2 plug-in Options support (default=yes)]),
@@ -716,6 +721,7 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_programs="no"
    ac_lv2_presets="no"
    ac_lv2_time="no"
+   ac_lv2_time_position="no";
    ac_lv2_options="no"
    ac_lv2_buf_size="no"
    ac_lv2_ui_idle="no"
@@ -967,6 +973,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_programs="no"
       ac_lv2_presets="no"
       ac_lv2_time="no"
+      ac_lv2_time_position="no";
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
       ac_lv2_ui_idle="no"
@@ -1009,10 +1016,12 @@ if test "x$ac_lv2_atom" = "xyes"; then
       AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
+      ac_lv2_time_position="no";
    fi
 else
    ac_options="no"
    ac_buf_size="no"
+   ac_lv2_time_position="no";
 fi
 if test "x$ac_lv2_worker" = "xyes"; then
    AC_CHECK_HEADER(
@@ -1082,10 +1091,13 @@ if test "x$ac_lv2_time" = "xyes"; then
       lv2/lv2plug.in/ns/ext/time/time.h,
       [ac_lv2_time="yes"], [ac_lv2_time="no"])
    if test "x$ac_lv2_time" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_TIME, 1, [Define if LV2 Time/position is supported.])
+      AC_DEFINE(CONFIG_LV2_TIME, 1, [Define if LV2 Time is supported.])
    else
       AC_MSG_WARN([*** LV2 Time support will be disabled.])
+      ac_lv2_time_position="no";
    fi
+else
+   ac_lv2_time_position="no";
 fi
 if test "x$ac_lv2_options" = "xyes"; then
    AC_CHECK_HEADER(
@@ -1140,7 +1152,40 @@ if test "x$ac_lv2_ui_show" = "xyes"; then
       AC_MSG_WARN([*** LV2 UI Show interface support will be disabled.])
    fi
 fi
-
+if test "x$ac_lv2_time_position" = "xyes"; then
+   AC_CHECK_HEADER(lv2/lv2plug.in/ns/ext/atom/forge.h,
+      [ac_lv2_time_position="yes"], [ac_lv2_time_position="no"])
+   if test "x$ac_lv2_time_position" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_TIME_POSITION, 1, [Define if LV2 Time/position support is available.])
+      AC_CACHE_CHECK([for LV2 Time/position support (lv2_atom_forge_object)],
+         ac_cv_lv2_atom_forge_object, [
+         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
+            // Checking for lv2_atom_forge_object...
+            LV2_Atom_Forge *forge;
+            LV2_Atom_Forge_Frame *frame;
+            lv2_atom_forge_object(forge, frame, 0, 101);
+         ], ac_cv_lv2_atom_forge_object="yes", ac_cv_atom_forge_object="no")
+      ])
+      ac_lv2_atom_forge_object=$ac_cv_lv2_atom_forge_object
+      if test "x$ac_lv2_atom_forge_object" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_OBJECT, 1, [Define if lv2_atom_forge_object is available.])
+      fi
+      AC_CACHE_CHECK([for LV2 Time/position support (lv2_atom_forge_key)],
+         ac_cv_lv2_atom_forge_key, [
+         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
+            // Checking for lv2_atom_forge_key...
+            LV2_Atom_Forge *forge;
+            lv2_atom_forge_key(forge, 102);
+         ], ac_cv_lv2_atom_forge_key="yes", ac_cv_atom_forge_key="no")
+      ])
+      ac_lv2_atom_forge_key=$ac_cv_lv2_atom_forge_key
+      if test "x$ac_lv2_atom_forge_key" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_KEY, 1, [Define if lv2_atom_forge_key is available.])
+      fi
+   else
+      AC_MSG_WARN([*** LV2 Time/position support will be disabled.])
+   fi
+fi
 
 # Check for JACK session headers availability.
 if test "x$ac_jack_session" = "xyes"; then
@@ -1221,6 +1266,7 @@ echo "  LV2 plug-in State Files support  . . . . . . . . .: $ac_lv2_state_files"
 echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
 echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
+echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_position"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"

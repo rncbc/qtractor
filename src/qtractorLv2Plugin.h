@@ -307,7 +307,7 @@ public:
 	// Update LV2 Time from JACK transport position.
 	static void updateTime(
 		const jack_transport_state_t state, const jack_position_t *pPos);
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 	// Make ready LV2 Time position.
 	void lv2_time_position_changed();
 #endif
@@ -451,7 +451,7 @@ private:
 #ifdef CONFIG_LV2_TIME
 	// LV2 Time designated ports map.
 	QHash<unsigned long, int>  m_lv2_time_ports;
-#ifdef CONFIG_LV2_ATOM
+#ifdef CONFIG_LV2_TIME_POSITION
 	// LV2 Time position port enabled index.
 	bool          m_lv2_time_position_enabled;
 	unsigned long m_lv2_time_position_port_in;
