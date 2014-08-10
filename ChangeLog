@@ -6,8 +6,12 @@ ChangeLog
 
 SVN TRUNK
 
-- LV2 Time position for plugin atom ports that support it is
-  being slowly introduced. (EXPERIMENTAL)
+- Zooming in/out increment is now augmented by whether shift
+  /ctrl keyboard modifiers are set (on a ticket request by
+  Holger Marzen, thanks).
+
+- LV2 Time position event messages for plugin atom ports that
+  support it is now implemented. (EXPERIMENTAL)
 
 - Attempt to break extremely long audio file peak generation
   on session close or program exit (as reported by EternalX,
