@@ -1472,21 +1472,6 @@ void qtractorMidiEditor::verticalZoomStep ( int iZoomStep )
 }
 
 
-// Zoom step evaluator.
-int qtractorMidiEditor::zoomStep (void) const
-{
-	const Qt::KeyboardModifiers& modifiers
-		= QApplication::keyboardModifiers();
-
-	if (modifiers & Qt::ControlModifier)
-		return ZoomMax;
-	if (modifiers & Qt::ShiftModifier)
-		return ZoomBase >> 1;
-
-	return ZoomStep;
-}
-
-
 // Zoom view slots.
 void qtractorMidiEditor::zoomIn (void)
 {
@@ -1494,9 +1479,9 @@ void qtractorMidiEditor::zoomIn (void)
 	zoomCenterPre(zc);
 
 	if (m_iZoomMode & ZoomHorizontal)
-		horizontalZoomStep(+ zoomStep());
+		horizontalZoomStep(+ ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
-		verticalZoomStep(+ zoomStep());
+		verticalZoomStep(+ ZoomStep);
 
 	zoomCenterPost(zc);
 }
@@ -1507,9 +1492,9 @@ void qtractorMidiEditor::zoomOut (void)
 	zoomCenterPre(zc);
 
 	if (m_iZoomMode & ZoomHorizontal)
-		horizontalZoomStep(- zoomStep());
+		horizontalZoomStep(- ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
-		verticalZoomStep(- zoomStep());
+		verticalZoomStep(- ZoomStep);
 
 	zoomCenterPost(zc);
 }
@@ -1526,6 +1511,21 @@ void qtractorMidiEditor::zoomReset (void)
 		verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
 
 	zoomCenterPost(zc);
+}
+
+
+// Zoom step evaluator.
+int qtractorMidiEditor::zoomStep (void) const
+{
+	const Qt::KeyboardModifiers& modifiers
+		= QApplication::keyboardModifiers();
+
+	if (modifiers & Qt::ControlModifier)
+		return ZoomMax;
+	if (modifiers & Qt::ShiftModifier)
+		return ZoomBase >> 1;
+
+	return ZoomStep;
 }
 
 

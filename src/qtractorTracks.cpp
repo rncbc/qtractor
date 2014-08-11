@@ -217,21 +217,6 @@ int qtractorTracks::zoomMode (void) const
 }
 
 
-// Zoom step evaluator.
-int qtractorTracks::zoomStep (void) const
-{
-	const Qt::KeyboardModifiers& modifiers
-		= QApplication::keyboardModifiers();
-
-	if (modifiers & Qt::ControlModifier)
-		return ZoomMax;
-	if (modifiers & Qt::ShiftModifier)
-		return ZoomBase >> 1;
-
-	return ZoomStep;
-}
-
-
 // Zoom view actuators.
 void qtractorTracks::zoomIn (void)
 {
@@ -239,9 +224,9 @@ void qtractorTracks::zoomIn (void)
 	zoomCenterPre(zc);
 
 	if (m_iZoomMode & ZoomHorizontal)
-		horizontalZoomStep(+ zoomStep());
+		horizontalZoomStep(+ ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
-		verticalZoomStep(+ zoomStep());
+		verticalZoomStep(+ ZoomStep);
 
 	zoomCenterPost(zc);
 }
@@ -253,9 +238,9 @@ void qtractorTracks::zoomOut (void)
 	zoomCenterPre(zc);
 
 	if (m_iZoomMode & ZoomHorizontal)
-		horizontalZoomStep(- zoomStep());
+		horizontalZoomStep(- ZoomStep);
 	if (m_iZoomMode & ZoomVertical)
-		verticalZoomStep(- zoomStep());
+		verticalZoomStep(- ZoomStep);
 
 	zoomCenterPost(zc);
 }
@@ -276,6 +261,21 @@ void qtractorTracks::zoomReset (void)
 		verticalZoomStep(ZoomBase - pSession->verticalZoom());
 
 	zoomCenterPost(zc);
+}
+
+
+// Zoom step evaluator.
+int qtractorTracks::zoomStep (void) const
+{
+	const Qt::KeyboardModifiers& modifiers
+		= QApplication::keyboardModifiers();
+
+	if (modifiers & Qt::ControlModifier)
+		return ZoomMax;
+	if (modifiers & Qt::ShiftModifier)
+		return ZoomBase >> 1;
+
+	return ZoomStep;
 }
 
 
