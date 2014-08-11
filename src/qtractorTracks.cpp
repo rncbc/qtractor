@@ -217,6 +217,21 @@ int qtractorTracks::zoomMode (void) const
 }
 
 
+// Zoom step evaluator.
+int qtractorTracks::zoomStep (void) const
+{
+	const Qt::KeyboardModifiers& modifiers
+		= QApplication::keyboardModifiers();
+
+	if (modifiers & Qt::ControlModifier)
+		return ZoomMax;
+	if (modifiers & Qt::ShiftModifier)
+		return ZoomBase >> 1;
+
+	return ZoomStep;
+}
+
+
 // Zoom view actuators.
 void qtractorTracks::zoomIn (void)
 {
@@ -224,9 +239,9 @@ void qtractorTracks::zoomIn (void)
 	zoomCenterPre(zc);
 
 	if (m_iZoomMode & ZoomHorizontal)
-		horizontalZoomStep(+ ZoomStep);
+		horizontalZoomStep(+ zoomStep());
 	if (m_iZoomMode & ZoomVertical)
-		verticalZoomStep(+ ZoomStep);
+		verticalZoomStep(+ zoomStep());
 
 	zoomCenterPost(zc);
 }
@@ -238,9 +253,9 @@ void qtractorTracks::zoomOut (void)
 	zoomCenterPre(zc);
 
 	if (m_iZoomMode & ZoomHorizontal)
-		horizontalZoomStep(- ZoomStep);
+		horizontalZoomStep(- zoomStep());
 	if (m_iZoomMode & ZoomVertical)
-		verticalZoomStep(- ZoomStep);
+		verticalZoomStep(- zoomStep());
 
 	zoomCenterPost(zc);
 }
@@ -269,16 +284,7 @@ void qtractorTracks::horizontalZoomInSlot (void)
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	const Qt::KeyboardModifiers& modifiers
-		= QApplication::keyboardModifiers();
-	int iZoomStep = ZoomStep;
-	if (modifiers & Qt::ShiftModifier)
-		iZoomStep <<= 1;
-	else
-	if (modifiers & Qt::ControlModifier)
-		iZoomStep = ZoomMax;
-
-	horizontalZoomStep(+ iZoomStep);
+	horizontalZoomStep(+ zoomStep());
 	zoomCenterPost(zc);
 }
 
@@ -288,16 +294,7 @@ void qtractorTracks::horizontalZoomOutSlot (void)
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	const Qt::KeyboardModifiers& modifiers
-		= QApplication::keyboardModifiers();
-	int iZoomStep = ZoomStep;
-	if (modifiers & Qt::ShiftModifier)
-		iZoomStep <<= 1;
-	else
-	if (modifiers & Qt::ControlModifier)
-		iZoomStep = ZoomMax;
-
-	horizontalZoomStep(- iZoomStep);
+	horizontalZoomStep(- zoomStep());
 	zoomCenterPost(zc);
 }
 
@@ -307,16 +304,7 @@ void qtractorTracks::verticalZoomInSlot (void)
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	const Qt::KeyboardModifiers& modifiers
-		= QApplication::keyboardModifiers();
-	int iZoomStep = ZoomStep;
-	if (modifiers & Qt::ShiftModifier)
-		iZoomStep <<= 1;
-	else
-	if (modifiers & Qt::ControlModifier)
-		iZoomStep = ZoomMax;
-
-	verticalZoomStep(+ iZoomStep);
+	verticalZoomStep(+ zoomStep());
 	zoomCenterPost(zc);
 }
 
@@ -326,16 +314,7 @@ void qtractorTracks::verticalZoomOutSlot (void)
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	const Qt::KeyboardModifiers& modifiers
-		= QApplication::keyboardModifiers();
-	int iZoomStep = ZoomStep;
-	if (modifiers & Qt::ShiftModifier)
-		iZoomStep <<= 1;
-	else
-	if (modifiers & Qt::ControlModifier)
-		iZoomStep = ZoomMax;
-
-	verticalZoomStep(- iZoomStep);
+	verticalZoomStep(- zoomStep());
 	zoomCenterPost(zc);
 }
 
