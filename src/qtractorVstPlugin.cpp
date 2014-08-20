@@ -578,10 +578,11 @@ const QString& qtractorVstPluginType::aboutText (void)
 static QHash<AEffect *, qtractorVstPlugin *> g_vstPlugins;
 
 // Constructors.
-qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
-	qtractorVstPluginType *pVstType )
+qtractorVstPlugin::qtractorVstPlugin (
+	qtractorPluginList *pList, qtractorVstPluginType *pVstType )
 	: qtractorPlugin(pList, pVstType), m_ppEffects(NULL),
-		m_ppIBuffer(NULL), m_ppOBuffer(NULL), m_pEditorWidget(NULL)
+		m_ppIBuffer(NULL), m_ppOBuffer(NULL),
+		m_pEditorWidget(NULL), m_bEditorClosed(false)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -1005,6 +1006,11 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 // Close editor.
 void qtractorVstPlugin::closeEditor (void)
 {
+	if (m_bEditorClosed)
+		return;
+
+	m_bEditorClosed = true;
+
 	if (m_pEditorWidget == NULL)
 		return;
 

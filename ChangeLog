@@ -4,6 +4,35 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+SVN TRUNK
+
+- File/Save As... now prompts and suggests an incremental
+  backup name for existing sessions files.
+
+- Zooming in/out increment is now augmented by whether shift
+  /ctrl keyboard modifiers are set (on a ticket request by
+  Holger Marzen, thanks).
+
+- LV2 Time position event messages for plugin atom ports that
+  support it is now implemented. (EXPERIMENTAL)
+
+- Attempt to break extremely long audio file peak generation
+  on session close or program exit (as reported by EternalX,
+  thanks again).
+
+- MIDI Controllers Hook and Invert properties are now properly
+  saved for tracks (after bug report by Nicola Pandini, thanks).
+
+- A segmentation fault when closing with VST plugins open has
+  been hopefully fixed (after a patch by EternalX, thanks).
+
+- Messages standard output capture has been slightly improved
+  as for non-blocking i/o, whenever available. (EXPERIMENTAL)
+
+- Automation curve node editing has been slightly improved
+  in regard to time positioning and resolution. (EXPERIMENTAL)
+
+
 0.6.2  2014-07-07  Boson Walk Beta
 
 - Prevent linear and spline automation curve modes for all

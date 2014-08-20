@@ -166,7 +166,7 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
-		
+
 	int iHorizontalZoom = pSession->horizontalZoom() + iZoomStep;
 	if (iHorizontalZoom < ZoomMin)
 		iHorizontalZoom = ZoomMin;
@@ -264,12 +264,27 @@ void qtractorTracks::zoomReset (void)
 }
 
 
+// Zoom step evaluator.
+int qtractorTracks::zoomStep (void) const
+{
+	const Qt::KeyboardModifiers& modifiers
+		= QApplication::keyboardModifiers();
+
+	if (modifiers & Qt::ControlModifier)
+		return ZoomMax;
+	if (modifiers & Qt::ShiftModifier)
+		return ZoomBase >> 1;
+
+	return ZoomStep;
+}
+
+
 void qtractorTracks::horizontalZoomInSlot (void)
 {
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	horizontalZoomStep(+ ZoomStep);
+	horizontalZoomStep(+ zoomStep());
 	zoomCenterPost(zc);
 }
 
@@ -279,7 +294,7 @@ void qtractorTracks::horizontalZoomOutSlot (void)
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	horizontalZoomStep(- ZoomStep);
+	horizontalZoomStep(- zoomStep());
 	zoomCenterPost(zc);
 }
 
@@ -289,7 +304,7 @@ void qtractorTracks::verticalZoomInSlot (void)
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	verticalZoomStep(+ ZoomStep);
+	verticalZoomStep(+ zoomStep());
 	zoomCenterPost(zc);
 }
 
@@ -299,7 +314,7 @@ void qtractorTracks::verticalZoomOutSlot (void)
 	ZoomCenter zc;
 	zoomCenterPre(zc);
 
-	verticalZoomStep(- ZoomStep);
+	verticalZoomStep(- zoomStep());
 	zoomCenterPost(zc);
 }
 

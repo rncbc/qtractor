@@ -1910,6 +1910,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = filters.join(";;");
+		// Try to rename as if a backup is about...
+		sFilename = sessionBackupPath(sFilename);
 	#if 1//QT_VERSION < 0x040400
 		QFileDialog::Options options = 0;
 		if (m_pOptions->bDontUseNativeDialogs)
@@ -5925,7 +5927,7 @@ void qtractorMainForm::updateSessionPost (void)
 			"Saving into another session file is highly recommended.")
 			.arg(qtractorMessageList::items().join("\n")),
 			QMessageBox::Save | QMessageBox::Ignore) == QMessageBox::Save) {
-			saveSessionFile(sessionBackupPath(m_sFilename));
+			saveSession(true);
 		}
 		else updateDirtyCount(true);
 		qtractorMessageList::clear();

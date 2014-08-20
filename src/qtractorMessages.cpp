@@ -37,6 +37,7 @@
 
 #if !defined(WIN32)
 #include <unistd.h>
+#include <fcntl.h>
 #endif
 
 // The default maximum number of message lines.
@@ -143,12 +144,24 @@ void qtractorMessages::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 void qtractorMessages::stdoutNotify ( int fd )
 {
 #if !defined(WIN32)
+	// Set non-blocking reads, if not already...
+	const int iFlags = ::fcntl(fd, F_GETFL, 0);
+	int iBlock = ((iFlags & O_NONBLOCK) == 0);
+	if (iBlock)
+		iBlock = ::fcntl(fd, F_SETFL, iFlags | O_NONBLOCK);
+	// Read as much as is available...
+	QString sTemp;
 	char achBuffer[1024];
-	const int cchBuffer = ::read(fd, achBuffer, sizeof(achBuffer) - 1);
-	if (cchBuffer > 0) {
-		achBuffer[cchBuffer] = (char) 0;
-		appendStdoutBuffer(achBuffer);
+	const int cchBuffer = sizeof(achBuffer) - 1;
+	int cchRead = ::read(fd, achBuffer, cchBuffer);
+	while (cchRead > 0) {
+		achBuffer[cchRead] = (char) 0;
+		sTemp.append(achBuffer);
+		cchRead = (iBlock ? 0 : ::read(fd, achBuffer, cchBuffer));
 	}
+	// Needs to be non-empty...
+	if (!sTemp.isEmpty())
+		appendStdoutBuffer(sTemp);
 #endif
 }
 
@@ -158,10 +171,10 @@ void qtractorMessages::appendStdoutBuffer ( const QString& s )
 {
 	m_sStdoutBuffer.append(s);
 
-	const int iLength = m_sStdoutBuffer.lastIndexOf('\n') + 1;
+	const int iLength = m_sStdoutBuffer.lastIndexOf('\n');
 	if (iLength > 0) {
 		const QString& sTemp = m_sStdoutBuffer.left(iLength);
-		m_sStdoutBuffer.remove(0, iLength);
+		m_sStdoutBuffer.remove(0, iLength + 1);
 		QStringList list = sTemp.split('\n');
 		QStringListIterator iter(list);
 		while (iter.hasNext())
@@ -175,7 +188,7 @@ void qtractorMessages::flushStdoutBuffer (void)
 {
 	if (!m_sStdoutBuffer.isEmpty()) {
 		appendMessagesText(m_sStdoutBuffer);
-		m_sStdoutBuffer.truncate(0);
+		m_sStdoutBuffer.clear();
 	}
 }
 

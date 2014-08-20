@@ -183,6 +183,8 @@ private:
 
 	// Our own editor widget (parent frame).
 	EditorWidget *m_pEditorWidget;
+
+	volatile bool m_bEditorClosed;
 };
 
 

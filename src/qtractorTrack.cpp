@@ -1827,6 +1827,8 @@ void qtractorTrack::saveControllers (
 		pController->param = m_pMonitorObserver->param();
 		pController->logarithmic = m_pMonitorObserver->isLogarithmic();
 		pController->feedback = m_pMonitorObserver->isFeedback();
+		pController->invert = m_pMonitorObserver->isInvert();
+		pController->hook = m_pMonitorObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -1842,6 +1844,8 @@ void qtractorTrack::saveControllers (
 		pController->param = pPanObserver->param();
 		pController->logarithmic = pPanObserver->isLogarithmic();
 		pController->feedback = pPanObserver->isFeedback();
+		pController->invert = pPanObserver->isInvert();
+		pController->hook = pPanObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -1857,6 +1861,8 @@ void qtractorTrack::saveControllers (
 		pController->param = pGainObserver->param();
 		pController->logarithmic = pGainObserver->isLogarithmic();
 		pController->feedback = pGainObserver->isFeedback();
+		pController->invert = pGainObserver->isInvert();
+		pController->hook = pGainObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -1870,6 +1876,8 @@ void qtractorTrack::saveControllers (
 		pController->param = m_pRecordObserver->param();
 		pController->logarithmic = m_pRecordObserver->isLogarithmic();
 		pController->feedback = m_pRecordObserver->isFeedback();
+		pController->invert = m_pRecordObserver->isInvert();
+		pController->hook = m_pRecordObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -1883,6 +1891,8 @@ void qtractorTrack::saveControllers (
 		pController->param = m_pMuteObserver->param();
 		pController->logarithmic = m_pMuteObserver->isLogarithmic();
 		pController->feedback = m_pMuteObserver->isFeedback();
+		pController->invert = m_pMuteObserver->isInvert();
+		pController->hook = m_pMuteObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -1896,6 +1906,8 @@ void qtractorTrack::saveControllers (
 		pController->param = m_pSoloObserver->param();
 		pController->logarithmic = m_pSoloObserver->isLogarithmic();
 		pController->feedback = m_pSoloObserver->isFeedback();
+		pController->invert = m_pSoloObserver->isInvert();
+		pController->hook = m_pSoloObserver->isHook();
 		controllers.append(pController);
 	}
 
@@ -1956,6 +1968,8 @@ void qtractorTrack::mapControllers (void)
 			pObserver->setParam(pController->param);
 			pObserver->setLogarithmic(pController->logarithmic);
 			pObserver->setFeedback(pController->feedback);
+			pObserver->setInvert(pController->invert);
+			pObserver->setHook(pController->hook);
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}
