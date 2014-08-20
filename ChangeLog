@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- File/Save As... now prompts and suggests an incremental
+  backup name for existing sessions files.
+
 - Zooming in/out increment is now augmented by whether shift
   /ctrl keyboard modifiers are set (on a ticket request by
   Holger Marzen, thanks).
