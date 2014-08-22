@@ -1972,6 +1972,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_ATOM
 		unsigned int iAtomInsCapacity = 0;
 		if (iAtomIns > 0) {
+			unsigned int iMidiAtomIns = 0;
 			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iAtomIns];
 			for (unsigned long j = 0; j < iAtomIns; ++j) {
 				unsigned int iMinBufferCapacity = 1024;
@@ -1990,10 +1991,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						lilv_node_free(minimum_size);
 					}
 					if (pMidiManager &&
-						m_lv2_atom_midi_port_in >= j &&
 						lilv_port_supports_event(plugin,
 							port, g_lv2_midi_class)) {
-						m_lv2_atom_midi_port_in = j;
+						if (++iMidiAtomIns == 1)
+							m_lv2_atom_midi_port_in = j; // First wins input.
 						pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
 					}
 				#ifdef CONFIG_LV2_TIME_POSITION
@@ -2014,6 +2015,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		}
 		unsigned int iAtomOutsCapacity = 0;
 		if (iAtomOuts > 0) {
+			unsigned int iMidiAtomOuts = 0;
 			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iAtomOuts];
 			for (unsigned long j = 0; j < iAtomOuts; ++j) {
 				unsigned int iMinBufferCapacity = 1024;
@@ -2032,10 +2034,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						lilv_node_free(minimum_size);
 					}
 					if (pMidiManager &&
-						m_lv2_atom_midi_port_out >= j &&
 						lilv_port_supports_event(plugin,
 							port, g_lv2_midi_class)) {
-						m_lv2_atom_midi_port_out = j;
+						if (++iMidiAtomOuts == 1)
+							m_lv2_atom_midi_port_out = j; // First wins output.
 						pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
 					}
 				}
