@@ -143,12 +143,12 @@ public:
 	static bool getTypes(qtractorPluginPath& path);
 
 #ifdef CONFIG_LV2_EVENT
-	unsigned short midiEventIns()  const { return m_iMidiEventIns;  }
-	unsigned short midiEventOuts() const { return m_iMidiEventOuts; }
+	unsigned short eventIns()  const { return m_iEventIns;  }
+	unsigned short eventOuts() const { return m_iEventOuts; }
 #endif
 #ifdef CONFIG_LV2_ATOM
-	unsigned short midiAtomIns()   const { return m_iMidiAtomIns;   }
-	unsigned short midiAtomOuts()  const { return m_iMidiAtomOuts;  }
+	unsigned short atomIns()   const { return m_iAtomIns;   }
+	unsigned short atomOuts()  const { return m_iAtomOuts;  }
 #endif
 
 	// Instance cached-deferred accesors.
@@ -163,12 +163,12 @@ protected:
 	LilvPlugin *m_lv2_plugin;
 
 #ifdef CONFIG_LV2_EVENT
-	unsigned short m_iMidiEventIns;
-	unsigned short m_iMidiEventOuts;
+	unsigned short m_iEventIns;
+	unsigned short m_iEventOuts;
 #endif
 #ifdef CONFIG_LV2_ATOM
-	unsigned short m_iMidiAtomIns;
-	unsigned short m_iMidiAtomOuts;
+	unsigned short m_iAtomIns;
+	unsigned short m_iAtomOuts;
 #endif
 };
 
@@ -329,21 +329,21 @@ private:
 
 #ifdef CONFIG_LV2_EVENT
 	// List of LV2 Event/MIDI port indexes.
-	unsigned long *m_piMidiEventIns;
-	unsigned long *m_piMidiEventOuts;
+	unsigned long *m_piEventIns;
+	unsigned long *m_piEventOuts;
 #endif
 
 #ifdef CONFIG_LV2_ATOM
 
 	// List of LV2 Atom/MIDI port indexes and buffers.
-	unsigned long *m_piMidiAtomIns;
-	unsigned long *m_piMidiAtomOuts;
+	unsigned long *m_piAtomIns;
+	unsigned long *m_piAtomOuts;
 
 	LV2_Atom_Buffer **m_lv2_atom_buffer_ins;
-	LV2_Atom_Buffer **m_lv2_atom_port_ins;
-
 	LV2_Atom_Buffer **m_lv2_atom_buffer_outs;
-	LV2_Atom_Buffer **m_lv2_atom_port_outs;
+
+	unsigned long  m_lv2_atom_midi_port_in;
+	unsigned long  m_lv2_atom_midi_port_out;
 
 #endif
 

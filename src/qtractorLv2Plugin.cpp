@@ -852,10 +852,10 @@ static LilvNode *g_lv2_input_class   = NULL;
 static LilvNode *g_lv2_output_class  = NULL;
 static LilvNode *g_lv2_control_class = NULL;
 static LilvNode *g_lv2_audio_class   = NULL;
+static LilvNode *g_lv2_midi_class    = NULL;
 
 #ifdef CONFIG_LV2_EVENT
-static LilvNode *g_lv2_event_class = NULL;
-static LilvNode *g_lv2_midi_class  = NULL;
+static LilvNode *g_lv2_event_class   = NULL;
 #endif
 
 #ifdef CONFIG_LV2_ATOM
@@ -1082,7 +1082,7 @@ static struct qtractorLv2Time
 // LV2 Time position atoms...
 #include "lv2/lv2plug.in/ns/ext/atom/forge.h"
 
-static LilvNode       *g_lv2_time_position_node    = NULL;
+static LilvNode       *g_lv2_time_position_class   = NULL;
 static uint32_t        g_lv2_time_position_type    = 0;
 
 static QList<qtractorLv2Plugin *> *g_lv2_time_position_plugins = NULL;
@@ -1207,12 +1207,12 @@ bool qtractorLv2PluginType::open (void)
 	m_iMidiOuts    = 0;
 
 #ifdef CONFIG_LV2_EVENT
-	m_iMidiEventIns  = 0;
-	m_iMidiEventOuts = 0;
+	m_iEventIns  = 0;
+	m_iEventOuts = 0;
 #endif
 #ifdef CONFIG_LV2_ATOM
-	m_iMidiAtomIns  = 0;
-	m_iMidiAtomOuts = 0;
+	m_iAtomIns   = 0;
+	m_iAtomOuts  = 0;
 #endif
 
 	const unsigned long iNumPorts = lilv_plugin_get_num_ports(m_lv2_plugin);
@@ -1240,32 +1240,32 @@ bool qtractorLv2PluginType::open (void)
 			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_event_class) ||
 				lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class)) {
 				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
-					++m_iMidiEventIns;
+					++m_iEventIns;
 				else
 				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class))
-					++m_iMidiEventOuts;
+					++m_iEventOuts;
 			}
 		#endif
 		#ifdef CONFIG_LV2_ATOM
 			else
 			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_atom_port_class)) {
 				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
-					++m_iMidiAtomIns;
+					++m_iAtomIns;
 				else
 				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class))
-					++m_iMidiAtomOuts;
+					++m_iAtomOuts;
 			}
 		#endif
 		}
 	}
 
 #ifdef CONFIG_LV2_EVENT
-	m_iMidiIns  += m_iMidiEventIns;
-	m_iMidiOuts += m_iMidiEventOuts;
+	m_iMidiIns  += m_iEventIns;
+	m_iMidiOuts += m_iEventOuts;
 #endif
 #ifdef CONFIG_LV2_ATOM
-	m_iMidiIns  += m_iMidiAtomIns;
-	m_iMidiOuts += m_iMidiAtomOuts;
+	m_iMidiIns  += m_iAtomIns;
+	m_iMidiOuts += m_iAtomOuts;
 #endif
 
 	// Cache flags.
@@ -1425,9 +1425,9 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_output_class  = lilv_new_uri(g_lv2_world, LILV_URI_OUTPUT_PORT);
 	g_lv2_control_class = lilv_new_uri(g_lv2_world, LILV_URI_CONTROL_PORT);
 	g_lv2_audio_class   = lilv_new_uri(g_lv2_world, LILV_URI_AUDIO_PORT);
+	g_lv2_midi_class    = lilv_new_uri(g_lv2_world, LILV_URI_MIDI_EVENT);
 #ifdef CONFIG_LV2_EVENT
 	g_lv2_event_class   = lilv_new_uri(g_lv2_world, LILV_URI_EVENT_PORT);
-	g_lv2_midi_class    = lilv_new_uri(g_lv2_world, LILV_URI_MIDI_EVENT);
 #endif
 #ifdef CONFIG_LV2_ATOM
 	g_lv2_atom_port_class    = lilv_new_uri(g_lv2_world, LV2_ATOM__AtomPort);
@@ -1498,10 +1498,10 @@ void qtractorLv2PluginType::lv2_open (void)
 	}
 #ifdef CONFIG_LV2_TIME_POSITION
 	// LV2 Time: set up for atom port event notifications...
+	g_lv2_time_position_class
+		= lilv_new_uri(g_lv2_world, LV2_TIME__Position);
 	g_lv2_time_position_type
 		= qtractorLv2Plugin::lv2_urid_map(LV2_TIME__Position);
-	g_lv2_time_position_node
-		= lilv_new_uri(g_lv2_world, LV2_TIME__Position);
 #endif
 #endif
 
@@ -1546,8 +1546,8 @@ void qtractorLv2PluginType::lv2_close (void)
 		member.params = NULL;
 	}
 #ifdef CONFIG_LV2_TIME_POSITION
-	lilv_node_free(g_lv2_time_position_node);
-	g_lv2_time_position_node = NULL;
+	lilv_node_free(g_lv2_time_position_class);
+	g_lv2_time_position_class = NULL;
 	g_lv2_time_position_type = 0;
 #endif
 #endif
@@ -1577,9 +1577,9 @@ void qtractorLv2PluginType::lv2_close (void)
 	lilv_node_free(g_lv2_output_class);
 	lilv_node_free(g_lv2_control_class);
 	lilv_node_free(g_lv2_audio_class);
+	lilv_node_free(g_lv2_midi_class);
 #ifdef CONFIG_LV2_EVENT
 	lilv_node_free(g_lv2_event_class);
-	lilv_node_free(g_lv2_midi_class);
 #endif
 #ifdef CONFIG_LV2_ATOM
 	lilv_node_free(g_lv2_atom_port_class);
@@ -1604,9 +1604,9 @@ void qtractorLv2PluginType::lv2_close (void)
 	g_lv2_output_class  = NULL;
 	g_lv2_control_class = NULL;
 	g_lv2_audio_class   = NULL;
+	g_lv2_midi_class    = NULL;
 #ifdef CONFIG_LV2_EVENT
 	g_lv2_event_class   = NULL;
-	g_lv2_midi_class    = NULL;
 #endif
 #ifdef CONFIG_LV2_ATOM
 	g_lv2_atom_port_class    = NULL;
@@ -1733,16 +1733,16 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_piAudioIns(NULL)
 		, m_piAudioOuts(NULL)
 	#ifdef CONFIG_LV2_EVENT
-		, m_piMidiEventIns(NULL)
-		, m_piMidiEventOuts(NULL)
+		, m_piEventIns(NULL)
+		, m_piEventOuts(NULL)
 	#endif
 	#ifdef CONFIG_LV2_ATOM
-		, m_piMidiAtomIns(NULL)
-		, m_piMidiAtomOuts(NULL)
+		, m_piAtomIns(NULL)
+		, m_piAtomOuts(NULL)
 		, m_lv2_atom_buffer_ins(NULL)
-		, m_lv2_atom_port_ins(NULL)
 		, m_lv2_atom_buffer_outs(NULL)
-		, m_lv2_atom_port_outs(NULL)
+		, m_lv2_atom_midi_port_in(0)
+		, m_lv2_atom_midi_port_out(0)
 	#endif
 		, m_lv2_features(NULL)
 	#ifdef CONFIG_LV2_WORKER
@@ -1905,22 +1905,22 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		}
 		iControlOuts = iAudioIns = iAudioOuts = 0;
 	#ifdef CONFIG_LV2_EVENT
-		unsigned short iMidiEventIns  = pLv2Type->midiEventIns();
-		unsigned short iMidiEventOuts = pLv2Type->midiEventOuts();
-		if (iMidiEventIns > 0)
-			m_piMidiEventIns = new unsigned long [iMidiEventIns];
-		if (iMidiEventOuts > 0)
-			m_piMidiEventOuts = new unsigned long [iMidiEventOuts];
-		iMidiEventIns = iMidiEventOuts = 0;
+		unsigned short iEventIns  = pLv2Type->eventIns();
+		unsigned short iEventOuts = pLv2Type->eventOuts();
+		if (iEventIns > 0)
+			m_piEventIns = new unsigned long [iEventIns];
+		if (iEventOuts > 0)
+			m_piEventOuts = new unsigned long [iEventOuts];
+		iEventIns = iEventOuts = 0;
 	#endif	// CONFIG_LV2_EVENT
 	#ifdef CONFIG_LV2_ATOM
-		unsigned short iMidiAtomIns  = pLv2Type->midiAtomIns();
-		unsigned short iMidiAtomOuts = pLv2Type->midiAtomOuts();
-		if (iMidiAtomIns > 0)
-			m_piMidiAtomIns = new unsigned long [iMidiAtomIns];
-		if (iMidiAtomOuts > 0)
-			m_piMidiAtomOuts = new unsigned long [iMidiAtomOuts];
-		iMidiAtomIns = iMidiAtomOuts = 0;
+		unsigned short iAtomIns  = pLv2Type->atomIns();
+		unsigned short iAtomOuts = pLv2Type->atomOuts();
+		if (iAtomIns > 0)
+			m_piAtomIns = new unsigned long [iAtomIns];
+		if (iAtomOuts > 0)
+			m_piAtomOuts = new unsigned long [iAtomOuts];
+		iAtomIns = iAtomOuts = 0;
 	#endif	// CONFIG_LV2_ATOM
 		const unsigned long iNumPorts = lilv_plugin_get_num_ports(plugin);
 		for (unsigned long i = 0; i < iNumPorts; ++i) {
@@ -1933,12 +1933,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				#ifdef CONFIG_LV2_EVENT
 					if (lilv_port_is_a(plugin, port, g_lv2_event_class) ||
 						lilv_port_is_a(plugin, port, g_lv2_midi_class))
-						m_piMidiEventIns[iMidiEventIns++] = i;
+						m_piEventIns[iEventIns++] = i;
 					else
 				#endif
 				#ifdef CONFIG_LV2_ATOM
 					if (lilv_port_is_a(plugin, port, g_lv2_atom_port_class))
-						m_piMidiAtomIns[iMidiAtomIns++] = i;
+						m_piAtomIns[iAtomIns++] = i;
 					else
 				#endif
 					if (lilv_port_is_a(plugin, port, g_lv2_control_class))
@@ -1952,12 +1952,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				#ifdef CONFIG_LV2_EVENT
 					if (lilv_port_is_a(plugin, port, g_lv2_event_class) ||
 						lilv_port_is_a(plugin, port, g_lv2_midi_class))
-						m_piMidiEventOuts[iMidiEventOuts++] = i;
+						m_piEventOuts[iEventOuts++] = i;
 					else
 				#endif
 				#ifdef CONFIG_LV2_ATOM
 					if (lilv_port_is_a(plugin, port, g_lv2_atom_port_class))
-						m_piMidiAtomOuts[iMidiAtomOuts++] = i;
+						m_piAtomOuts[iAtomOuts++] = i;
 					else
 				#endif
 					if (lilv_port_is_a(plugin, port, g_lv2_control_class)) {
@@ -1970,14 +1970,14 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			}
 		}
 	#ifdef CONFIG_LV2_ATOM
-		unsigned int iMidiAtomInsCapacity = 0;
-		if (iMidiAtomIns > 0) {
-			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
-			m_lv2_atom_port_ins = new LV2_Atom_Buffer * [iMidiAtomIns];
-			for (unsigned long j = 0; j < iMidiAtomIns; ++j) {
+		unsigned int iAtomInsCapacity = 0;
+		if (iAtomIns > 0) {
+			unsigned int iMidiAtomIns = 0;
+			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iAtomIns];
+			for (unsigned long j = 0; j < iAtomIns; ++j) {
 				unsigned int iMinBufferCapacity = 1024;
 				const LilvPort *port
-					= lilv_plugin_get_port_by_index(plugin, m_piMidiAtomIns[j]);
+					= lilv_plugin_get_port_by_index(plugin, m_piAtomIns[j]);
 				if (port) {
 					LilvNode *minimum_size
 						= lilv_port_get(plugin, port, g_lv2_minimum_size_prop);
@@ -1990,9 +1990,16 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						}
 						lilv_node_free(minimum_size);
 					}
+					if (pMidiManager &&
+						lilv_port_supports_event(plugin,
+							port, g_lv2_midi_class)) {
+						if (++iMidiAtomIns == 1)
+							m_lv2_atom_midi_port_in = j; // First wins input.
+						pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
+					}
 				#ifdef CONFIG_LV2_TIME_POSITION
 					if (lilv_port_supports_event(plugin,
-							port, g_lv2_time_position_node)) {
+							port, g_lv2_time_position_class)) {
 						m_lv2_time_position_enabled = true;
 						m_lv2_time_position_port_in = j;
 						qtractor_lv2_time_position_open(this);
@@ -2003,20 +2010,17 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					= lv2_atom_buffer_new(iMinBufferCapacity,
 						g_lv2_atom_chunk_type,
 						g_lv2_atom_sequence_type, true);
-				m_lv2_atom_port_ins[j] = m_lv2_atom_buffer_ins[j];
-				if (pMidiManager && j == 0)
-					pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
-				iMidiAtomInsCapacity += iMinBufferCapacity;
+				iAtomInsCapacity += iMinBufferCapacity;
 			}
 		}
-		unsigned int iMidiAtomOutsCapacity = 0;
-		if (iMidiAtomOuts > 0) {
-			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
-			m_lv2_atom_port_outs = new LV2_Atom_Buffer * [iMidiAtomOuts];
-			for (unsigned long j = 0; j < iMidiAtomOuts; ++j) {
+		unsigned int iAtomOutsCapacity = 0;
+		if (iAtomOuts > 0) {
+			unsigned int iMidiAtomOuts = 0;
+			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iAtomOuts];
+			for (unsigned long j = 0; j < iAtomOuts; ++j) {
 				unsigned int iMinBufferCapacity = 1024;
 				const LilvPort *port
-					= lilv_plugin_get_port_by_index(plugin, m_piMidiAtomOuts[j]);
+					= lilv_plugin_get_port_by_index(plugin, m_piAtomOuts[j]);
 				if (port) {
 					LilvNode *minimum_size
 						= lilv_port_get(plugin, port, g_lv2_minimum_size_prop);
@@ -2029,20 +2033,24 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						}
 						lilv_node_free(minimum_size);
 					}
+					if (pMidiManager &&
+						lilv_port_supports_event(plugin,
+							port, g_lv2_midi_class)) {
+						if (++iMidiAtomOuts == 1)
+							m_lv2_atom_midi_port_out = j; // First wins output.
+						pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
+					}
 				}
 				m_lv2_atom_buffer_outs[j]
 					= lv2_atom_buffer_new(iMinBufferCapacity,
 						g_lv2_atom_chunk_type,
 						g_lv2_atom_sequence_type, false);
-				m_lv2_atom_port_outs[j] = m_lv2_atom_buffer_outs[j];
-				if (pMidiManager && j == 0)
-					pMidiManager->lv2_atom_buffer_resize(iMinBufferCapacity);
-				iMidiAtomOutsCapacity += iMinBufferCapacity;
+				iAtomOutsCapacity += iMinBufferCapacity;
 			}
 		}
 	#ifdef CONFIG_LV2_UI
-		m_ui_events = ::jack_ringbuffer_create(iMidiAtomInsCapacity);
-		m_plugin_events = ::jack_ringbuffer_create(iMidiAtomOutsCapacity);
+		m_ui_events = ::jack_ringbuffer_create(iAtomInsCapacity);
+		m_plugin_events = ::jack_ringbuffer_create(iAtomOutsCapacity);
 	#endif
 	#endif	// CONFIG_LV2_ATOM
 	#ifdef CONFIG_LV2_PRESETS
@@ -2121,21 +2129,19 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 #ifdef CONFIG_LV2_ATOM
 	qtractorLv2PluginType *pLv2Type
 		= static_cast<qtractorLv2PluginType *> (type());
-	const unsigned short iMidiAtomOuts
-		= (pLv2Type ? pLv2Type->midiAtomOuts() : 0);
-	if (m_lv2_atom_buffer_outs && m_lv2_atom_port_outs) {
-		for (unsigned long j = 0; j < iMidiAtomOuts; ++j)
+	const unsigned short iAtomOuts
+		= (pLv2Type ? pLv2Type->atomOuts() : 0);
+	if (m_lv2_atom_buffer_outs) {
+		for (unsigned long j = 0; j < iAtomOuts; ++j)
 			lv2_atom_buffer_free(m_lv2_atom_buffer_outs[j]);
 		delete [] m_lv2_atom_buffer_outs;
-		delete [] m_lv2_atom_port_outs;
 	}
-	const unsigned short iMidiAtomIns
-		= (pLv2Type ? pLv2Type->midiAtomIns() : 0);
-	if (m_lv2_atom_buffer_ins && m_lv2_atom_port_ins) {
-		for (unsigned long j = 0; j < iMidiAtomIns; ++j)
+	const unsigned short iAtomIns
+		= (pLv2Type ? pLv2Type->atomIns() : 0);
+	if (m_lv2_atom_buffer_ins) {
+		for (unsigned long j = 0; j < iAtomIns; ++j)
 			lv2_atom_buffer_free(m_lv2_atom_buffer_ins[j]);
 		delete [] m_lv2_atom_buffer_ins;
-		delete [] m_lv2_atom_port_ins;
 	}
 #ifdef CONFIG_LV2_UI
 	if (m_plugin_events)
@@ -2143,16 +2149,16 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	if (m_ui_events)
 		::jack_ringbuffer_free(m_ui_events);
 #endif
-	if (m_piMidiAtomOuts)
-		delete [] m_piMidiAtomOuts;
-	if (m_piMidiAtomIns)
-		delete [] m_piMidiAtomIns;
+	if (m_piAtomOuts)
+		delete [] m_piAtomOuts;
+	if (m_piAtomIns)
+		delete [] m_piAtomIns;
 #endif	// CONFIG_LV2_ATOM
 #ifdef CONFIG_LV2_EVENT
-	if (m_piMidiEventOuts)
-		delete [] m_piMidiEventOuts;
-	if (m_piMidiEventIns)
-		delete [] m_piMidiEventIns;
+	if (m_piEventOuts)
+		delete [] m_piEventOuts;
+	if (m_piEventIns)
+		delete [] m_piEventIns;
 #endif	// CONFIG_LV2_EVENT
 	if (m_piAudioOuts)
 		delete [] m_piAudioOuts;
@@ -2363,12 +2369,12 @@ void qtractorLv2Plugin::process (
 	if (pLv2Type->midiIns() > 0)
 		pMidiManager = list()->midiManager();
 #ifdef CONFIG_LV2_EVENT
-	const unsigned short iMidiEventIns  = pLv2Type->midiEventIns();
-	const unsigned short iMidiEventOuts = pLv2Type->midiEventOuts();
+	const unsigned short iEventIns  = pLv2Type->eventIns();
+	const unsigned short iEventOuts = pLv2Type->eventOuts();
 #endif
 #ifdef CONFIG_LV2_ATOM
-	const unsigned short iMidiAtomIns  = pLv2Type->midiAtomIns();
-	const unsigned short iMidiAtomOuts = pLv2Type->midiAtomOuts();
+	const unsigned short iAtomIns   = pLv2Type->atomIns();
+	const unsigned short iAtomOuts  = pLv2Type->atomOuts();
 #endif
 #endif
 
@@ -2403,39 +2409,41 @@ void qtractorLv2Plugin::process (
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input event/MIDI ports...
 			if (pMidiManager) {
-				for (j = 0; j < iMidiEventIns; ++j) {
+				for (j = 0; j < iEventIns; ++j) {
 					lilv_instance_connect_port(instance,
-						m_piMidiEventIns[j], pMidiManager->lv2_events_in());
+						m_piEventIns[j], pMidiManager->lv2_events_in());
 				}
-				for (j = 0; j < iMidiEventOuts; ++j) {
+				for (j = 0; j < iEventOuts; ++j) {
 					lilv_instance_connect_port(instance,
-						m_piMidiEventOuts[j], pMidiManager->lv2_events_out());
+						m_piEventOuts[j], pMidiManager->lv2_events_out());
 				}
 			}
 		#endif
 		#ifdef CONFIG_LV2_ATOM
 			// Connect all existing input atom/MIDI ports...
-			for (j = 0; j < iMidiAtomIns; ++j) {
-				if (pMidiManager && j == 0)
-					m_lv2_atom_port_ins[j] = pMidiManager->lv2_atom_buffer_in();
+			for (j = 0; j < iAtomIns; ++j) {
+				LV2_Atom_Buffer *abuf = m_lv2_atom_buffer_ins[j];
+				if (pMidiManager && j == m_lv2_atom_midi_port_in)
+					abuf = pMidiManager->lv2_atom_buffer_in();
 				else
-					lv2_atom_buffer_reset(m_lv2_atom_port_ins[j], true);
+					lv2_atom_buffer_reset(abuf, true);
 				lilv_instance_connect_port(instance,
-					m_piMidiAtomIns[j], &m_lv2_atom_port_ins[j]->atoms);
+					m_piAtomIns[j], &abuf->atoms);
 			}
-			for (j = 0; j < iMidiAtomOuts; ++j) {
-				if (pMidiManager && j == 0)
-					m_lv2_atom_port_outs[j] = pMidiManager->lv2_atom_buffer_out();
+			for (j = 0; j < iAtomOuts; ++j) {
+				LV2_Atom_Buffer *abuf = m_lv2_atom_buffer_outs[j];
+				if (pMidiManager && j == m_lv2_atom_midi_port_out)
+					abuf = pMidiManager->lv2_atom_buffer_out();
 				else
-					lv2_atom_buffer_reset(m_lv2_atom_port_outs[j], false);
+					lv2_atom_buffer_reset(abuf, false);
 				lilv_instance_connect_port(instance,
-					m_piMidiAtomOuts[j], &m_lv2_atom_port_outs[j]->atoms);
+					m_piAtomOuts[j], &abuf->atoms);
 			}
 		#ifdef CONFIG_LV2_TIME_POSITION
 			if (m_lv2_time_position_changed > 0) {
 				m_lv2_time_position_changed = 0;
 				LV2_Atom_Buffer *abuf
-					= m_lv2_atom_port_ins[m_lv2_time_position_port_in];
+					= m_lv2_atom_buffer_ins[m_lv2_time_position_port_in];
 				LV2_Atom_Buffer_Iterator aiter;
 				lv2_atom_buffer_end(&aiter, abuf);
 				const LV2_Atom *atom
@@ -2452,16 +2460,16 @@ void qtractorLv2Plugin::process (
 				while (read_space > 0) {
 					ControlEvent ev;
 					::jack_ringbuffer_read(m_ui_events, (char *) &ev, sizeof(ev));
-					char buf[ev.size];
-					if (::jack_ringbuffer_read(m_ui_events, buf, ev.size) < ev.size)
+					char ebuf[ev.size];
+					if (::jack_ringbuffer_read(m_ui_events, ebuf, ev.size) < ev.size)
 						break;
 					if (ev.protocol == g_lv2_atom_event_type) {
-						for (j = 0; j < iMidiAtomIns; ++j) {
-							if (m_piMidiAtomIns[j] == ev.index) {
-								LV2_Atom_Buffer *abuf = m_lv2_atom_port_ins[j];
+						for (j = 0; j < iAtomIns; ++j) {
+							if (m_piAtomIns[j] == ev.index) {
+								LV2_Atom_Buffer *abuf = m_lv2_atom_buffer_ins[j];
 								LV2_Atom_Buffer_Iterator aiter;
 								lv2_atom_buffer_end(&aiter, abuf);
-								const LV2_Atom *atom = (const LV2_Atom *) buf;
+								const LV2_Atom *atom = (const LV2_Atom *) ebuf;
 								lv2_atom_buffer_write(&aiter, nframes, 0,
 									atom->type, atom->size,
 									(const uint8_t *) LV2_ATOM_BODY(atom));
@@ -2492,9 +2500,9 @@ void qtractorLv2Plugin::process (
 
 #ifdef CONFIG_LV2_ATOM
 #ifdef CONFIG_LV2_UI
-	for (j = 0; j < iMidiAtomOuts; ++j) {
+	for (j = 0; j < iAtomOuts; ++j) {
 		LV2_Atom_Buffer_Iterator aiter;
-		lv2_atom_buffer_begin(&aiter, m_lv2_atom_port_outs[j]);
+		lv2_atom_buffer_begin(&aiter, m_lv2_atom_buffer_outs[j]);
 		while (true) {
 			uint8_t *data;
 			LV2_Atom_Event *pLv2AtomEvent
@@ -2506,7 +2514,7 @@ void qtractorLv2Plugin::process (
 				const uint32_t type = pLv2AtomEvent->body.type;
 				const uint32_t size = pLv2AtomEvent->body.size;
 				ControlEvent *ev = (ControlEvent *) buf;
-				ev->index    = m_piMidiAtomOuts[j];
+				ev->index    = m_piAtomOuts[j];
 				ev->protocol = g_lv2_atom_event_type;
 				ev->size     = sizeof(LV2_Atom) + size;
 				LV2_Atom *atom = (LV2_Atom *) ev->body;
@@ -2527,11 +2535,11 @@ void qtractorLv2Plugin::process (
 #endif	// CONFIG_LV2_ATOM
 
 #ifdef CONFIG_LV2_EVENT
-	if (pMidiManager && iMidiEventOuts > 0)
+	if (pMidiManager && iEventOuts > 0)
 		pMidiManager->lv2_events_swap();
 #endif
 #ifdef CONFIG_LV2_ATOM
-	if (pMidiManager && iMidiAtomOuts > 0)
+	if (pMidiManager && iAtomOuts > 0)
 		pMidiManager->lv2_atom_buffer_swap();
 #endif
 }
