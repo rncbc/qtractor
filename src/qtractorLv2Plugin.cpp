@@ -855,11 +855,11 @@ static LilvNode *g_lv2_audio_class   = NULL;
 static LilvNode *g_lv2_midi_class    = NULL;
 
 #ifdef CONFIG_LV2_EVENT
-static LilvNode *g_lv2_event_class   = NULL;
+static LilvNode *g_lv2_event_class = NULL;
 #endif
 
 #ifdef CONFIG_LV2_ATOM
-static LilvNode *g_lv2_atom_port_class    = NULL;
+static LilvNode *g_lv2_atom_class         = NULL;
 static uint32_t  g_lv2_atom_event_type    = 0;
 static uint32_t  g_lv2_atom_chunk_type    = 0;
 static uint32_t  g_lv2_atom_sequence_type = 0;
@@ -1207,12 +1207,12 @@ bool qtractorLv2PluginType::open (void)
 	m_iMidiOuts    = 0;
 
 #ifdef CONFIG_LV2_EVENT
-	m_iEventIns  = 0;
-	m_iEventOuts = 0;
+	m_iEventIns    = 0;
+	m_iEventOuts   = 0;
 #endif
 #ifdef CONFIG_LV2_ATOM
-	m_iAtomIns   = 0;
-	m_iAtomOuts  = 0;
+	m_iAtomIns     = 0;
+	m_iAtomOuts    = 0;
 #endif
 
 	const unsigned long iNumPorts = lilv_plugin_get_num_ports(m_lv2_plugin);
@@ -1248,7 +1248,7 @@ bool qtractorLv2PluginType::open (void)
 		#endif
 		#ifdef CONFIG_LV2_ATOM
 			else
-			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_atom_port_class)) {
+			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_atom_class)) {
 				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
 					++m_iAtomIns;
 				else
@@ -1430,7 +1430,7 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_event_class   = lilv_new_uri(g_lv2_world, LILV_URI_EVENT_PORT);
 #endif
 #ifdef CONFIG_LV2_ATOM
-	g_lv2_atom_port_class    = lilv_new_uri(g_lv2_world, LV2_ATOM__AtomPort);
+	g_lv2_atom_class         = lilv_new_uri(g_lv2_world, LV2_ATOM__AtomPort);
 	g_lv2_atom_event_type    = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__eventTransfer);
 	g_lv2_atom_chunk_type    = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk);
 	g_lv2_atom_sequence_type = qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
@@ -1582,7 +1582,7 @@ void qtractorLv2PluginType::lv2_close (void)
 	lilv_node_free(g_lv2_event_class);
 #endif
 #ifdef CONFIG_LV2_ATOM
-	lilv_node_free(g_lv2_atom_port_class);
+	lilv_node_free(g_lv2_atom_class);
 #endif
 
 #ifdef CONFIG_LV2_UI
@@ -1609,7 +1609,7 @@ void qtractorLv2PluginType::lv2_close (void)
 	g_lv2_event_class   = NULL;
 #endif
 #ifdef CONFIG_LV2_ATOM
-	g_lv2_atom_port_class    = NULL;
+	g_lv2_atom_class         = NULL;
 	g_lv2_atom_event_type    = 0;
 	g_lv2_atom_chunk_type    = 0;
 	g_lv2_atom_sequence_type = 0;
@@ -1937,7 +1937,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					else
 				#endif
 				#ifdef CONFIG_LV2_ATOM
-					if (lilv_port_is_a(plugin, port, g_lv2_atom_port_class))
+					if (lilv_port_is_a(plugin, port, g_lv2_atom_class))
 						m_piAtomIns[iAtomIns++] = i;
 					else
 				#endif
@@ -1956,7 +1956,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					else
 				#endif
 				#ifdef CONFIG_LV2_ATOM
-					if (lilv_port_is_a(plugin, port, g_lv2_atom_port_class))
+					if (lilv_port_is_a(plugin, port, g_lv2_atom_class))
 						m_piAtomOuts[iAtomOuts++] = i;
 					else
 				#endif
@@ -2154,12 +2154,14 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	if (m_piAtomIns)
 		delete [] m_piAtomIns;
 #endif	// CONFIG_LV2_ATOM
+
 #ifdef CONFIG_LV2_EVENT
 	if (m_piEventOuts)
 		delete [] m_piEventOuts;
 	if (m_piEventIns)
 		delete [] m_piEventIns;
 #endif	// CONFIG_LV2_EVENT
+
 	if (m_piAudioOuts)
 		delete [] m_piAudioOuts;
 	if (m_piAudioIns)
@@ -2180,14 +2182,15 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 {
 	// Check our type...
-	qtractorPluginType *pType = type();
-	if (pType == NULL)
+	qtractorLv2PluginType *pLv2Type
+		= static_cast<qtractorLv2PluginType *> (type());
+	if (pLv2Type == NULL)
 		return;
 
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
 	const unsigned short iInstances
-		= pType->instances(iChannels, list()->isMidi());
+		= pLv2Type->instances(iChannels, list()->isMidi());
 
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
@@ -2244,7 +2247,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 #endif
 
 	// We'll need output control (not dummy anymore) port indexes...
-	const unsigned short iControlOuts = pType->controlOuts();
+	const unsigned short iControlOuts = pLv2Type->controlOuts();
+
 	// Allocate new instances...
 	m_ppInstances = new LilvInstance * [iInstances];
 	for (unsigned short i = 0; i < iInstances; ++i) {
