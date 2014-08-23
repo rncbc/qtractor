@@ -402,7 +402,7 @@ MIDI:	</translation>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2085"/>
+        <location filename="../qtractorPlugin.cpp" line="2087"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
