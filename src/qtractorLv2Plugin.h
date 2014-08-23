@@ -143,12 +143,12 @@ public:
 	static bool getTypes(qtractorPluginPath& path);
 
 #ifdef CONFIG_LV2_EVENT
-	unsigned short eventIns()  const { return m_iEventIns;  }
-	unsigned short eventOuts() const { return m_iEventOuts; }
+	unsigned short eventIns()   const { return m_iEventIns;   }
+	unsigned short eventOuts()  const { return m_iEventOuts;  }
 #endif
 #ifdef CONFIG_LV2_ATOM
-	unsigned short atomIns()   const { return m_iAtomIns;   }
-	unsigned short atomOuts()  const { return m_iAtomOuts;  }
+	unsigned short atomIns()    const { return m_iAtomIns;    }
+	unsigned short atomOuts()   const { return m_iAtomOuts;   }
 #endif
 
 	// Instance cached-deferred accesors.

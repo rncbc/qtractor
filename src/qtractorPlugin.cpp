@@ -1887,6 +1887,8 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->releaseConfigs();
 		pNewPlugin->releaseValues();
 		pNewPlugin->setActivated(pPlugin->isActivated());
+		pNewPlugin->setDirectAccessParamIndex(
+			pPlugin->directAccessParamIndex());
 	}
 
 	pPlugin->releaseConfigs();

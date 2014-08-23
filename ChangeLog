@@ -6,6 +6,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Drag-and-copy of plug-in instances across tracks or buses
+  (ie. cloning) now also copies the direct access parameter
+  setting (ticket by Holger Marzen, thanks).
+
 - File/Save As... now prompts and suggests an incremental
   backup name for existing sessions files.
 
