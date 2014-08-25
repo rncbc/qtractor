@@ -666,13 +666,13 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1684"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1688"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1692"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1696"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
