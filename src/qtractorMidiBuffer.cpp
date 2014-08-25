@@ -514,7 +514,7 @@ void qtractorMidiManager::process (
 		#ifdef CONFIG_VST
 			VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[m_iEventBuffer & 1];
 			VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iVstMidiEvents];
-			if (iMidiData < long(pVstMidiEvent->midiData)) {
+			if (iMidiData < long(sizeof(pVstMidiEvent->midiData))) {
 				::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
 				pVstMidiEvent->type = kVstMidiType;
 				pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
