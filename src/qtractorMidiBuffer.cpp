@@ -225,7 +225,7 @@ qtractorMidiManager::qtractorMidiManager (
 	m_queuedBuffer(iBufferSize),
 	m_postedBuffer(iBufferSize),
 	m_controllerBuffer(iBufferSize >> 2),
-	m_pBuffer(NULL), m_iBuffer(0),
+	m_pEventBuffer(NULL), m_iEventCount(0),
 #ifdef CONFIG_MIDI_PARSER
 	m_pMidiParser(NULL),
 #endif
@@ -241,7 +241,7 @@ qtractorMidiManager::qtractorMidiManager (
 {
 	const unsigned int MaxMidiEvents = (bufferSize() << 1);
 
-	m_pBuffer = new snd_seq_event_t [MaxMidiEvents];
+	m_pEventBuffer = new snd_seq_event_t [MaxMidiEvents];
 
 #ifdef CONFIG_MIDI_PARSER
 	if (snd_midi_event_new(c_iMaxMidiData, &m_pMidiParser) == 0)
@@ -324,8 +324,8 @@ qtractorMidiManager::~qtractorMidiManager (void)
 	}
 #endif
 
-	if (m_pBuffer)
-		delete [] m_pBuffer;
+	if (m_pEventBuffer)
+		delete [] m_pEventBuffer;
 }
 
 
@@ -377,7 +377,7 @@ bool qtractorMidiManager::queued (
 // Clears buffers for processing.
 void qtractorMidiManager::clear (void)
 {
-	m_iBuffer = 0;
+	m_iEventCount = 0;
 
 	// Reset event buffers...
 	for (unsigned short i = 0; i < 2; ++i) {
@@ -417,7 +417,7 @@ void qtractorMidiManager::process (
 
 	// Direct events...
 	while (pEv0) {
-		m_pBuffer[m_iBuffer++] = *pEv0;
+		m_pEventBuffer[m_iEventCount++] = *pEv0;
 		pEv0 = m_directBuffer.next();
 	}
 
@@ -426,16 +426,16 @@ void qtractorMidiManager::process (
 		|| (pEv2 && pEv2->time.tick < iTimeEnd)) {
 		while (pEv1 && pEv1->time.tick < iTimeEnd
 			&& ((pEv2 && pEv2->time.tick >= pEv1->time.tick) || !pEv2)) {
-			m_pBuffer[m_iBuffer] = *pEv1;
-			m_pBuffer[m_iBuffer++].time.tick
+			m_pEventBuffer[m_iEventCount] = *pEv1;
+			m_pEventBuffer[m_iEventCount++].time.tick
 				= (pEv1->time.tick > iTimeStart
 					? pEv1->time.tick - iTimeStart : 0);
 			pEv1 = m_queuedBuffer.next();
 		}
 		while (pEv2 && pEv2->time.tick < iTimeEnd
 			&& ((pEv1 && pEv1->time.tick > pEv2->time.tick) || !pEv1)) {
-			m_pBuffer[m_iBuffer] = *pEv2;
-			m_pBuffer[m_iBuffer++].time.tick
+			m_pEventBuffer[m_iEventCount] = *pEv2;
+			m_pEventBuffer[m_iEventCount++].time.tick
 				= (pEv2->time.tick > iTimeStart
 					? pEv2->time.tick - iTimeStart : 0);
 			pEv2 = m_postedBuffer.next();
@@ -486,8 +486,8 @@ void qtractorMidiManager::process (
 	#endif
 		unsigned char *pMidiData;
 		long iMidiData;
-		for (unsigned int i = 0; i < m_iBuffer; ++i) {
-			snd_seq_event_t *pEv = &m_pBuffer[i];
+		for (unsigned int i = 0; i < m_iEventCount; ++i) {
+			snd_seq_event_t *pEv = &m_pEventBuffer[i];
 			unsigned char midiData[c_iMaxMidiData];
 			pMidiData = &midiData[0];
 			iMidiData = sizeof(midiData);
@@ -756,7 +756,7 @@ void qtractorMidiManager::vst_events_swap (void)
 		long iMidiData = sizeof(pVstMidiEvent->midiData);
 	#ifdef CONFIG_MIDI_PARSER
 		if (m_pMidiParser) {
-			snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
+			snd_seq_event_t *pEv = &m_pEventBuffer[iMidiEvents];
 		//	snd_seq_ev_clear(pEv);
 			iMidiData = snd_midi_event_encode(m_pMidiParser,
 				pMidiData, iMidiData, pEv);
@@ -775,7 +775,7 @@ void qtractorMidiManager::vst_events_swap (void)
 	#endif
 		++iMidiEvents;
 	}
-	m_iBuffer = iMidiEvents;
+	m_iEventCount = iMidiEvents;
 	swapEventBuffers();
 }
 
@@ -821,7 +821,7 @@ void qtractorMidiManager::lv2_events_swap (void)
 		#endif
 		#ifdef CONFIG_MIDI_PARSER
 			if (m_pMidiParser) {
-				snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
+				snd_seq_event_t *pEv = &m_pEventBuffer[iMidiEvents];
 			//	snd_seq_ev_clear(pEv);
 				iMidiData = snd_midi_event_encode(m_pMidiParser,
 					pMidiData, iMidiData, pEv);
@@ -849,7 +849,7 @@ void qtractorMidiManager::lv2_events_swap (void)
 #ifdef CONFIG_VST
 	pVstEvents->numEvents = iMidiEvents;
 #endif
-	m_iBuffer = iMidiEvents;
+	m_iEventCount = iMidiEvents;
 	swapEventBuffers();
 }
 
@@ -895,7 +895,7 @@ void qtractorMidiManager::lv2_atom_buffer_swap (void)
 		#endif
 		#ifdef CONFIG_MIDI_PARSER
 			if (m_pMidiParser) {
-				snd_seq_event_t *pEv = &m_pBuffer[iMidiEvents];
+				snd_seq_event_t *pEv = &m_pEventBuffer[iMidiEvents];
 			//	snd_seq_ev_clear(pEv);
 				iMidiData = snd_midi_event_encode(m_pMidiParser,
 					pMidiData, iMidiData, pEv);
@@ -923,7 +923,7 @@ void qtractorMidiManager::lv2_atom_buffer_swap (void)
 #ifdef CONFIG_VST
 	pVstEvents->numEvents = iMidiEvents;
 #endif
-	m_iBuffer = iMidiEvents;
+	m_iEventCount = iMidiEvents;
 	swapEventBuffers();
 }
 

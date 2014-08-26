@@ -209,10 +209,10 @@ public:
 	void clear();
 
 	// Event buffer accessor. 
-	snd_seq_event_t *events() const { return m_pBuffer; }
+	snd_seq_event_t *events() const { return m_pEventBuffer; }
 
 	// Returns number of events result of process.
-	unsigned int count() const { return m_iBuffer; }
+	unsigned int count() const { return m_iEventCount; }
 
 	// Direct buffering.
 	bool direct(snd_seq_event_t *pEvent);
@@ -350,8 +350,8 @@ private:
 
 	qtractorMidiBuffer  m_controllerBuffer;
 
-	snd_seq_event_t    *m_pBuffer;
-	unsigned int        m_iBuffer;
+	snd_seq_event_t    *m_pEventBuffer;
+	unsigned int        m_iEventCount;
 
 	volatile bool       m_bWaitSync;
 
