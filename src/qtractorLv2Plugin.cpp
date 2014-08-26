@@ -1976,9 +1976,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_ATOM
 		unsigned int iAtomInsCapacity = 0;
 		if (iAtomIns > 0) {
-			unsigned int iMidiAtomIns = 0;
+			unsigned short iMidiAtomIns = 0;
 			m_lv2_atom_buffer_ins = new LV2_Atom_Buffer * [iAtomIns];
-			for (unsigned long j = 0; j < iAtomIns; ++j) {
+			for (unsigned short j = 0; j < iAtomIns; ++j) {
 				unsigned int iMinBufferCapacity = 1024;
 				const LilvPort *port
 					= lilv_plugin_get_port_by_index(plugin, m_piAtomIns[j]);
@@ -2019,9 +2019,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		}
 		unsigned int iAtomOutsCapacity = 0;
 		if (iAtomOuts > 0) {
-			unsigned int iMidiAtomOuts = 0;
+			unsigned short iMidiAtomOuts = 0;
 			m_lv2_atom_buffer_outs = new LV2_Atom_Buffer * [iAtomOuts];
-			for (unsigned long j = 0; j < iAtomOuts; ++j) {
+			for (unsigned short j = 0; j < iAtomOuts; ++j) {
 				unsigned int iMinBufferCapacity = 1024;
 				const LilvPort *port
 					= lilv_plugin_get_port_by_index(plugin, m_piAtomOuts[j]);
@@ -2085,12 +2085,15 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
 			qtractorLv2Time& member = g_lv2_time[i];
 			if (member.node) {
-				const LilvPort *port = lilv_plugin_get_port_by_designation(
-					plugin, g_lv2_input_class, member.node);
+				const LilvPort *port
+					= lilv_plugin_get_port_by_designation(
+						plugin, g_lv2_input_class, member.node);
 				if (port) {
-					const unsigned long iIndex = lilv_port_get_index(plugin, port);
+					const unsigned long iIndex
+						= lilv_port_get_index(plugin, port);
 					qtractorLv2PluginParam *pParam
-						= static_cast<qtractorLv2PluginParam *> (findParam(iIndex));
+						= static_cast<qtractorLv2PluginParam *> (
+							findParam(iIndex));
 					if (pParam) {
 						m_lv2_time_ports.insert(iIndex, i);
 						member.params->append(pParam);
@@ -2143,14 +2146,14 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	const unsigned short iAtomOuts
 		= (pLv2Type ? pLv2Type->atomOuts() : 0);
 	if (m_lv2_atom_buffer_outs) {
-		for (unsigned long j = 0; j < iAtomOuts; ++j)
+		for (unsigned short j = 0; j < iAtomOuts; ++j)
 			lv2_atom_buffer_free(m_lv2_atom_buffer_outs[j]);
 		delete [] m_lv2_atom_buffer_outs;
 	}
 	const unsigned short iAtomIns
 		= (pLv2Type ? pLv2Type->atomIns() : 0);
 	if (m_lv2_atom_buffer_ins) {
-		for (unsigned long j = 0; j < iAtomIns; ++j)
+		for (unsigned short j = 0; j < iAtomIns; ++j)
 			lv2_atom_buffer_free(m_lv2_atom_buffer_ins[j]);
 		delete [] m_lv2_atom_buffer_ins;
 	}
@@ -2444,6 +2447,19 @@ void qtractorLv2Plugin::process (
 					lv2_atom_buffer_reset(abuf, true);
 				lilv_instance_connect_port(instance,
 					m_piAtomIns[j], &abuf->atoms);
+			#ifdef CONFIG_LV2_TIME_POSITION
+				if (m_lv2_time_position_changed > 0 &&
+					j == m_lv2_time_position_port_in) {
+					LV2_Atom_Buffer_Iterator aiter;
+					lv2_atom_buffer_end(&aiter, abuf);
+					const LV2_Atom *atom
+						= (const LV2_Atom *) g_lv2_time_position_buffer;
+					lv2_atom_buffer_write(&aiter, nframes, 0,
+						atom->type, atom->size,
+						(const uint8_t *) LV2_ATOM_BODY(atom));
+					m_lv2_time_position_changed = 0;
+				}
+			#endif
 			}
 			for (j = 0; j < iAtomOuts; ++j) {
 				LV2_Atom_Buffer *abuf = m_lv2_atom_buffer_outs[j];
@@ -2454,20 +2470,6 @@ void qtractorLv2Plugin::process (
 				lilv_instance_connect_port(instance,
 					m_piAtomOuts[j], &abuf->atoms);
 			}
-		#ifdef CONFIG_LV2_TIME_POSITION
-			if (m_lv2_time_position_changed > 0) {
-				m_lv2_time_position_changed = 0;
-				LV2_Atom_Buffer *abuf
-					= m_lv2_atom_buffer_ins[m_lv2_time_position_port_in];
-				LV2_Atom_Buffer_Iterator aiter;
-				lv2_atom_buffer_end(&aiter, abuf);
-				const LV2_Atom *atom
-					= (const LV2_Atom *) g_lv2_time_position_buffer;
-				lv2_atom_buffer_write(&aiter, nframes, 0,
-					atom->type, atom->size,
-					(const uint8_t *) LV2_ATOM_BODY(atom));
-			}
-		#endif
 		#ifdef CONFIG_LV2_UI
 			// Read and apply control change events from UI...
 			if (m_lv2_ui_widget) {
@@ -2482,6 +2484,8 @@ void qtractorLv2Plugin::process (
 						for (j = 0; j < iAtomIns; ++j) {
 							if (m_piAtomIns[j] == ev.index) {
 								LV2_Atom_Buffer *abuf = m_lv2_atom_buffer_ins[j];
+								if (pMidiManager && j == m_lv2_atom_midi_port_in)
+									abuf = pMidiManager->lv2_atom_buffer_in();
 								LV2_Atom_Buffer_Iterator aiter;
 								lv2_atom_buffer_end(&aiter, abuf);
 								const LV2_Atom *atom = (const LV2_Atom *) ebuf;
