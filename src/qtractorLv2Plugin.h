@@ -72,7 +72,6 @@ class qtractorLv2Worker;
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
-#include "lv2/lv2plug.in/ns/ext/atom/atom.h"
 #include "lv2/lv2plug.in/ns/ext/state/state.h"
 #endif
 
@@ -273,8 +272,8 @@ public:
 #endif
 
 	// URID map/unmap helpers.
-	static uint32_t    lv2_urid_map(const char *uri);
-	static const char *lv2_urid_unmap(uint32_t id);
+	static LV2_URID    lv2_urid_map(const char *uri);
+	static const char *lv2_urid_unmap(LV2_URID id);
 
 #ifdef CONFIG_LV2_PROGRAMS
 
