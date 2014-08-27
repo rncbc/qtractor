@@ -687,13 +687,13 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1688"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1717"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1696"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1725"/>
         <source>Author: </source>
         <translation>Auteur: </translation>
     </message>

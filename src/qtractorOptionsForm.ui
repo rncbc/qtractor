@@ -60,7 +60,7 @@
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-        <widget class="QGroupBox" name="SessionGroupBox">
+		<widget class="QGroupBox" name="GeneralSessionGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -285,7 +285,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="OptionsGroupBox">
+		<widget class="QGroupBox" name="GeneralOptionsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -509,7 +509,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QGroupBox" name="TransportGroupBox">
+		<widget class="QGroupBox" name="GeneralTransportGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -646,7 +646,7 @@
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-        <widget class="QGroupBox" name="AudioCaptureGroupBox">
+		<widget class="QGroupBox" name="AudioCaptureGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2138,7 +2138,7 @@
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-        <widget class="QGroupBox" name="DefaultsGroupBox">
+		<widget class="QGroupBox" name="DisplayDefaultsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2288,7 +2288,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="MetersGroupBox">
+		<widget class="QGroupBox" name="DisplayMetersGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2568,7 +2568,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="MessagesGroupBox">
+		<widget class="QGroupBox" name="DisplayMessagesGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2724,7 +2724,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QGroupBox" name="TransportGroupBox">
+		<widget class="QGroupBox" name="DisplayTransportGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2767,7 +2767,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="DialogsGroupBox">
+		<widget class="QGroupBox" name="DisplayDialogsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2810,7 +2810,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="LoggingGroupBox">
+		<widget class="QGroupBox" name="DisplayLoggingGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2925,7 +2925,7 @@
         <number>8</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="PluginPathsGroupBox">
+		<widget class="QGroupBox" name="PluginsPathsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -3244,7 +3244,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="PluginInstrumentsGroupBox">
+		<widget class="QGroupBox" name="PluginsInstrumentsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -3332,7 +3332,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QGroupBox" name="PluginEditorGroupBox">
+		<widget class="QGroupBox" name="PluginsEditorGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -3375,7 +3375,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="PluginExperimentalGroupBox">
+		<widget class="QGroupBox" name="PluginsExperimentalGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
