@@ -1840,7 +1840,7 @@ void qtractorMidiEditor::pasteClipboard (
 	m_pEditPaste = pScrollView;
 
 	// It doesn't matter which one, both pasteable views are due...
-	QCursor cursr(QPixmap(":/images/editPaste.png"), 20, 20);
+	const QCursor cursr(QPixmap(":/images/editPaste.png"), 20, 20);
 	m_pEditView->setCursor(cursr);
 	m_pEditEvent->setCursor(cursr);
 
@@ -3824,7 +3824,7 @@ void qtractorMidiEditor::updateDragResize (
 // Drag(draw) event value-resize check.
 bool qtractorMidiEditor::isDragEventResize ( Qt::KeyboardModifiers modifiers ) const
 {
-	if (!m_bEditMode || !m_bEditModeDraw)
+	if (!m_bEditMode/* || !m_bEditModeDraw*/)
 		return false;
 	if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier))
 		return false;
@@ -3866,13 +3866,13 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 	const QRect& rectDrag = QRect(m_posDrag, m_posDragEventResize).normalized();
 	QRect rectUpdateEvent(m_select.rectEvent().united(rectDrag));
 
-	const int xmin = (delta.x() < 0 ? pos.x() : m_posDrag.x());
-	const int xmax = (delta.x() > 0 ? pos.x() : m_posDrag.x());
+	const int xmin = (m_bEditModeDraw || delta.x() < 0 ? pos.x() : m_posDrag.x());
+	const int xmax = (m_bEditModeDraw || delta.x() > 0 ? pos.x() : m_posDrag.x());
 
 	const int ymin = 1;
 	const int ymax = h0;
 
-	const float m = float(delta.y()) / float(delta.x());
+	const float m = (m_bEditModeDraw ? 0.0f : float(delta.y()) / float(delta.x()));
 	const float b = float(pos.y()) - m * float(pos.x());
 
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
@@ -4459,7 +4459,7 @@ void qtractorMidiEditor::paintDragState (
 	if (pDts) delete pDts;
 
 	// Paint drag(draw) event-value line...
-	if (!bEditView && m_dragState == DragEventResize) {
+	if (!bEditView && m_dragState == DragEventResize && !m_bEditModeDraw) {
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
 		pPainter->setPen(pen);

@@ -598,7 +598,6 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 		return;
 	}
 
-
 	// Remember what and where we'll be dragging/selecting...
 	m_pEditor->dragMoveStart(this, pos, pMouseEvent->modifiers());
 }
