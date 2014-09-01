@@ -8418,7 +8418,7 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiEventItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="695"/>
+        <location filename="../qtractorMidiEventList.cpp" line="693"/>
         <source>edit %1</source>
         <translation>編集 %1</translation>
     </message>
@@ -8426,7 +8426,7 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="941"/>
+        <location filename="../qtractorMidiEventList.cpp" line="939"/>
         <source>Events</source>
         <translation>イベント</translation>
     </message>
@@ -8470,67 +8470,67 @@ Do you want to save the changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="315"/>
+        <location filename="../qtractorMidiEventList.cpp" line="313"/>
         <source>Note On (%1)</source>
         <translation>ノートオン (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="317"/>
+        <location filename="../qtractorMidiEventList.cpp" line="315"/>
         <source>Note Off (%1)</source>
         <translation>ノートオフ (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="319"/>
+        <location filename="../qtractorMidiEventList.cpp" line="317"/>
         <source>Key Press (%1)</source>
         <translation>キープレス (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="321"/>
+        <location filename="../qtractorMidiEventList.cpp" line="319"/>
         <source>Controller (%1)</source>
         <translation>コントローラー (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="323"/>
+        <location filename="../qtractorMidiEventList.cpp" line="321"/>
         <source>Control 14 (%1)</source>
         <translation>コントロール 14 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="325"/>
+        <location filename="../qtractorMidiEventList.cpp" line="323"/>
         <source>RPN (%1)</source>
         <translation>RPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="327"/>
+        <location filename="../qtractorMidiEventList.cpp" line="325"/>
         <source>NRPN (%1)</source>
         <translation>NRPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="329"/>
+        <location filename="../qtractorMidiEventList.cpp" line="327"/>
         <source>Pgm Change</source>
         <translation>Pgmチェンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="331"/>
+        <location filename="../qtractorMidiEventList.cpp" line="329"/>
         <source>Chan Press</source>
         <translation>チャンネルプレス</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="333"/>
+        <location filename="../qtractorMidiEventList.cpp" line="331"/>
         <source>Pitch Bend</source>
         <translation>ピッチベンド</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="335"/>
+        <location filename="../qtractorMidiEventList.cpp" line="333"/>
         <source>SysEx</source>
         <translation>SysEx</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="337"/>
+        <location filename="../qtractorMidiEventList.cpp" line="335"/>
         <source>Meta (%1)</source>
         <translation>メタ (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="341"/>
+        <location filename="../qtractorMidiEventList.cpp" line="339"/>
         <source>Unknown (%1)</source>
         <translation>不明 (%1)</translation>
     </message>

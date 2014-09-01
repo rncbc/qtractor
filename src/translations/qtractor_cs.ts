@@ -9336,7 +9336,7 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiEventItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="695"/>
+        <location filename="../qtractorMidiEventList.cpp" line="693"/>
         <source>edit %1</source>
         <translation>Upravit %1</translation>
     </message>
@@ -9344,7 +9344,7 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="941"/>
+        <location filename="../qtractorMidiEventList.cpp" line="939"/>
         <source>Events</source>
         <translation>Události</translation>
     </message>
@@ -9388,52 +9388,52 @@ Chcete uložit změny?</translation>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="315"/>
+        <location filename="../qtractorMidiEventList.cpp" line="313"/>
         <source>Note On (%1)</source>
         <translation>Nota zapnuta (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="317"/>
+        <location filename="../qtractorMidiEventList.cpp" line="315"/>
         <source>Note Off (%1)</source>
         <translation>Nota vypnuta (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="319"/>
+        <location filename="../qtractorMidiEventList.cpp" line="317"/>
         <source>Key Press (%1)</source>
         <translation>Stisknutí klávesy (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="321"/>
+        <location filename="../qtractorMidiEventList.cpp" line="319"/>
         <source>Controller (%1)</source>
         <translation>Ovladač (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="323"/>
+        <location filename="../qtractorMidiEventList.cpp" line="321"/>
         <source>Control 14 (%1)</source>
         <translation>Ovladač (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="325"/>
+        <location filename="../qtractorMidiEventList.cpp" line="323"/>
         <source>RPN (%1)</source>
         <translation>RPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="327"/>
+        <location filename="../qtractorMidiEventList.cpp" line="325"/>
         <source>NRPN (%1)</source>
         <translation>NRPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="329"/>
+        <location filename="../qtractorMidiEventList.cpp" line="327"/>
         <source>Pgm Change</source>
         <translation>Změna Pgm</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="331"/>
+        <location filename="../qtractorMidiEventList.cpp" line="329"/>
         <source>Chan Press</source>
         <translation>Stisknutí kanálu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="333"/>
+        <location filename="../qtractorMidiEventList.cpp" line="331"/>
         <source>Pitch Bend</source>
         <translation>Změna výšky tónu</translation>
     </message>
@@ -9442,17 +9442,17 @@ Chcete uložit změny?</translation>
         <translation type="obsolete">Ohyb výšky tónu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="335"/>
+        <location filename="../qtractorMidiEventList.cpp" line="333"/>
         <source>SysEx</source>
         <translation>SysEx</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="337"/>
+        <location filename="../qtractorMidiEventList.cpp" line="335"/>
         <source>Meta (%1)</source>
         <translation>Meta (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="341"/>
+        <location filename="../qtractorMidiEventList.cpp" line="339"/>
         <source>Unknown (%1)</source>
         <translation>Neznámý (%1)</translation>
     </message>

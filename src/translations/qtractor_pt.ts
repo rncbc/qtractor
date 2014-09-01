@@ -8215,7 +8215,7 @@ Deseja salvar essas alterações?</translation>
 <context>
     <name>qtractorMidiEventItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="695"/>
+        <location filename="../qtractorMidiEventList.cpp" line="693"/>
         <source>edit %1</source>
         <translation>editar %1</translation>
     </message>
@@ -8223,7 +8223,7 @@ Deseja salvar essas alterações?</translation>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="941"/>
+        <location filename="../qtractorMidiEventList.cpp" line="939"/>
         <source>Events</source>
         <translation>Eventos</translation>
     </message>
@@ -8257,12 +8257,12 @@ Deseja salvar essas alterações?</translation>
         <translation>Amostra</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="331"/>
+        <location filename="../qtractorMidiEventList.cpp" line="329"/>
         <source>Chan Press</source>
         <translation>Cnl Press</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="335"/>
+        <location filename="../qtractorMidiEventList.cpp" line="333"/>
         <source>SysEx</source>
         <translation>SysEx</translation>
     </message>
@@ -8272,57 +8272,57 @@ Deseja salvar essas alterações?</translation>
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="315"/>
+        <location filename="../qtractorMidiEventList.cpp" line="313"/>
         <source>Note On (%1)</source>
         <translation>Nota Ligada (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="323"/>
+        <location filename="../qtractorMidiEventList.cpp" line="321"/>
         <source>Control 14 (%1)</source>
         <translation>Controle 14 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="329"/>
+        <location filename="../qtractorMidiEventList.cpp" line="327"/>
         <source>Pgm Change</source>
         <translation>Mudança de Pgm</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="325"/>
+        <location filename="../qtractorMidiEventList.cpp" line="323"/>
         <source>RPN (%1)</source>
         <translation>RPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="327"/>
+        <location filename="../qtractorMidiEventList.cpp" line="325"/>
         <source>NRPN (%1)</source>
         <translation>NRPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="319"/>
+        <location filename="../qtractorMidiEventList.cpp" line="317"/>
         <source>Key Press (%1)</source>
         <translation>Tecla Pressionada (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="333"/>
+        <location filename="../qtractorMidiEventList.cpp" line="331"/>
         <source>Pitch Bend</source>
         <translation>Pitch Bend</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="341"/>
+        <location filename="../qtractorMidiEventList.cpp" line="339"/>
         <source>Unknown (%1)</source>
         <translation>Desconhecido (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="317"/>
+        <location filename="../qtractorMidiEventList.cpp" line="315"/>
         <source>Note Off (%1)</source>
         <translation>Nota Desligada (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="321"/>
+        <location filename="../qtractorMidiEventList.cpp" line="319"/>
         <source>Controller (%1)</source>
         <translation>Controlador (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="337"/>
+        <location filename="../qtractorMidiEventList.cpp" line="335"/>
         <source>Meta (%1)</source>
         <translation>Meta (%1)</translation>
     </message>
