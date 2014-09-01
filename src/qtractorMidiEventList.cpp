@@ -125,12 +125,10 @@ Qt::ItemFlags qtractorMidiEventListModel::flags (
 	Qt::ItemFlags ret = Qt::ItemFlags(0);
 
 	qtractorMidiEvent *pEvent = eventOfIndex(index);
-	if (pEvent) {
-		if (m_pEditor->isEventSelectable(pEvent))
-			ret = QAbstractItemModel::flags(index);
-		else
-			ret = Qt::ItemIsEnabled;
-		ret |= Qt::ItemIsEditable;
+	if (pEvent && m_pEditor->isEventSelectable(pEvent)) {
+		ret = QAbstractItemModel::flags(index)
+			| Qt::ItemIsEnabled
+			| Qt::ItemIsEditable;
 	}
 
 	return ret;
