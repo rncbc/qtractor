@@ -6897,12 +6897,6 @@ void qtractorMainForm::timerSlot (void)
 				}
 			}
 		}
-	#ifdef CONFIG_LV2
-	#ifdef CONFIG_LV2_TIME
-		// Update LV2 Time from JACK transport position...
-		qtractorLv2Plugin::updateTime(state, &pos);
-	#endif
-	#endif
 	}
 
 	// Check if its time to refresh playhead timer...
@@ -7043,9 +7037,15 @@ void qtractorMainForm::timerSlot (void)
 	// Asynchronous observer update...
 	qtractorSubject::flushQueue(true);
 
-	// Crispy plugin UI idle-updates...
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_TIME
+	// Update plugin LV2 Time designated ports, if any...
+	qtractorLv2Plugin::updateTimePost();
+#endif
 #ifdef CONFIG_LV2_UI
+	// Crispy plugin LV2 UI idle-updates...
 	qtractorLv2Plugin::idleEditorAll();
+#endif
 #endif
 
 	// Slower plugin UI idle cycle...

@@ -40,7 +40,7 @@
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2608"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2614"/>
         <location filename="../qtractorMidiEngine.cpp" line="4272"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
@@ -121,7 +121,7 @@
         <translation>%1 Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2608"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2614"/>
         <location filename="../qtractorMidiEngine.cpp" line="4272"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>
@@ -242,7 +242,7 @@ MIDI:	</translation>
         <translation>resetar tentativas</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1693"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1696"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
@@ -566,7 +566,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1701"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1704"/>
         <source>Author: </source>
         <translation>Autor:</translation>
     </message>
@@ -3254,7 +3254,7 @@ Desculpe.</translation>
         <translation>&amp;Limpar</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6972"/>
+        <location filename="../qtractorMainForm.cpp" line="6966"/>
         <source>XRUN(%1 skipped)</source>
         <translation>XRUN(%1 ignorado(s))</translation>
     </message>
@@ -3561,7 +3561,7 @@ Desculpe.</translation>
         <translation>Selecionar a primeira tentativa da sequência atual</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6989"/>
+        <location filename="../qtractorMainForm.cpp" line="6983"/>
         <source>Audio connections change.</source>
         <translation>Conexões de áudio modificadas.</translation>
     </message>
@@ -3617,7 +3617,7 @@ Desculpe.</translation>
         <translation>Diminuir eventos em uma sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7022"/>
+        <location filename="../qtractorMainForm.cpp" line="7016"/>
         <source>Playing ended.</source>
         <translation>Reprodução completada.</translation>
     </message>
@@ -5564,7 +5564,7 @@ Posso continuar?</translation>
         <translation>Importar Arquivo MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7003"/>
+        <location filename="../qtractorMainForm.cpp" line="6997"/>
         <source>MIDI connections change.</source>
         <translation>Conexões MIDI modificadas.</translation>
     </message>
@@ -5851,7 +5851,7 @@ Posso continuar?</translation>
         <translation>&amp;Instrumentos...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6977"/>
+        <location filename="../qtractorMainForm.cpp" line="6971"/>
         <source>XRUN(%1): some frames might have been lost.</source>
         <translation>XRUN(%1): algumas amostras podem ter sido perdidas.</translation>
     </message>
@@ -6660,7 +6660,7 @@ Valor:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="220"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1703"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1705"/>
         <source>MOD</source>
         <translation>MOD</translation>
     </message>
@@ -7361,12 +7361,12 @@ Valor:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="33"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1671"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1673"/>
         <source>MIDI Editor</source>
         <translation>Editor MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1684"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1686"/>
         <source>Channel %1</source>
         <translation>Canal %1</translation>
     </message>
@@ -7615,7 +7615,7 @@ Deseja salvar essas alterações?</translation>
         <translation>&amp;Controles</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1687"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1689"/>
         <source>Track %1</source>
         <translation>Pista %1</translation>
     </message>
@@ -7831,7 +7831,7 @@ Deseja salvar essas alterações?</translation>
         <translation>&amp;Eventos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1694"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1696"/>
         <source>[modified]</source>
         <translation>(modificado)</translation>
     </message>

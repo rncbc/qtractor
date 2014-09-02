@@ -1005,6 +1005,8 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	}
 
 	// Done.
+	m_pMidiEventList->refresh();
+
 	stabilizeForm();
 	return bResult;
 }
