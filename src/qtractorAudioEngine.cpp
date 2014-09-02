@@ -919,6 +919,12 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		ATOMIC_SET(&m_playerLock, 0);
 	}
 
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_TIME
+	qtractorLv2Plugin::updateTime(m_pJackClient);
+#endif
+#endif
+
 	// MIDI plugin manager processing...
 	qtractorMidiManager *pMidiManager
 		= pSession->midiManagers().first();

@@ -304,8 +304,8 @@ public:
 #endif
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
-	static void updateTime(
-		const jack_transport_state_t state, const jack_position_t *pPos);
+	static void updateTime(jack_client_t *pJackClient);
+	static void updateTimePost();
 #ifdef CONFIG_LV2_TIME_POSITION
 	// Make ready LV2 Time position.
 	void lv2_time_position_changed();
