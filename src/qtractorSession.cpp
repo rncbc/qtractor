@@ -151,7 +151,7 @@ bool qtractorSession::init (void)
 	lock();
 
 	//  Actually init session device engines...
-	bool bResult = (m_pAudioEngine->init() && m_pMidiEngine->init());
+	const bool bResult = (m_pAudioEngine->init() && m_pMidiEngine->init());
 
 	// Done.
 	unlock();
@@ -1906,7 +1906,8 @@ bool qtractorSession::loadElement (
 					continue;
 				// Load tempo-map...
 				if (eNode.tagName() == "tempo-node") {
-					unsigned long iFrame = eNode.attribute("frame").toULong();
+					const unsigned long iFrame
+						= eNode.attribute("frame").toULong();
 					float fTempo = 120.0f;
 					unsigned short iBeatType = 2;
 					unsigned short iBeatsPerBar = 4;
@@ -1947,7 +1948,8 @@ bool qtractorSession::loadElement (
 					continue;
 				// Load markers...
 				if (eMarker.tagName() == "marker") {
-					unsigned long iFrame = eMarker.attribute("frame").toULong();
+					const unsigned long iFrame
+						= eMarker.attribute("frame").toULong();
 					QString sText;
 					QColor rgbColor = Qt::darkGray;
 					for (QDomNode nItem = eMarker.firstChild();

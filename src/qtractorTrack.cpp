@@ -738,11 +738,11 @@ void qtractorTrack::setRecord ( bool bRecord )
 	if (m_pSession->isRecording()) {
 		unsigned long iClipStart = m_pSession->playHead();
 		if (m_pSession->isPunching()) {
-			unsigned long iPunchIn = m_pSession->punchIn();
+			const unsigned long iPunchIn = m_pSession->punchIn();
 			if (iClipStart < iPunchIn)
 				iClipStart = iPunchIn;
 		}
-		unsigned long iFrameTime = m_pSession->frameTimeEx();
+		const unsigned long iFrameTime = m_pSession->frameTimeEx();
 		m_pSession->trackRecord(this, bRecord, iClipStart, iFrameTime);
 	}
 }
@@ -1359,8 +1359,8 @@ void qtractorTrack::setLoop (
 	qtractorClip *pClip = m_clips.first();
 	while (pClip) {
 		// Convert loop-points from session to clip...
-		unsigned long iClipStart = pClip->clipStart();
-		unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+		const unsigned long iClipStart = pClip->clipStart();
+		const unsigned long iClipEnd   = iClipStart + pClip->clipLength();
 		if (iLoopStart < iClipEnd && iLoopEnd > iClipStart) {
 			// Set clip inner-loop...
 			pClip->setLoop(
