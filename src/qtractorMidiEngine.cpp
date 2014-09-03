@@ -2147,6 +2147,11 @@ bool qtractorMidiEngine::init (void)
 // Device engine activation method.
 bool qtractorMidiEngine::activate (void)
 {
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
 	// Open SMF player to last...
 	openPlayerBus();
 
@@ -2159,12 +2164,14 @@ bool qtractorMidiEngine::activate (void)
 	m_pInputThread->start(QThread::TimeCriticalPriority);
 
 	// Create and start our own MIDI output queue thread...
-	const unsigned int iReadAhead = (session()->sampleRate() >> 1);
+	const unsigned int iReadAhead = (pSession->sampleRate() >> 1);
 	m_pOutputThread = new qtractorMidiOutputThread(this, iReadAhead);
 	m_pOutputThread->start(QThread::HighPriority);
 
 	// Reset/zero tickers...
-	m_iTimeStart = 0;
+	m_iFrameStart = 0;
+	m_iTimeStart  = 0;
+	m_iFrameTime  = long(pSession->audioEngine()->jackFrame());
 
 	// Reset output queue drift compensator...
 	resetDrift();
