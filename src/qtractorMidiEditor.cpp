@@ -3890,8 +3890,8 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 		if (rectEvent.right() < xmin || rectEvent.left() > xmax)
 			continue;
 		int y = int(m * float(rectEvent.x()) + b);
+		if (y < ymin) y = ymin; else if (y > ymax) y = ymax;
 		if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
-			if (y < ymin) y = ymin; else if (y > ymax) y = ymax;
 			if (y > y0) {
 				pItem->rectEvent.setBottom(y);
 				y = y0;
