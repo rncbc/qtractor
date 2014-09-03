@@ -2823,6 +2823,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 					shape = Qt::SplitVCursor;
 				}
 			}
+			else
 			if (etype == qtractorMidiEvent::REGPARAM    ||
 				etype == qtractorMidiEvent::NONREGPARAM ||
 				etype == qtractorMidiEvent::CONTROL14) {
