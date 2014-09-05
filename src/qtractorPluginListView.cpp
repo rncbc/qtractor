@@ -777,6 +777,30 @@ void qtractorPluginListView::moveDownPlugin (void)
 }
 
 
+// Load a plugin preset name.
+void qtractorPluginListView::loadPresetPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem == NULL)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == NULL)
+		return;
+
+	// Retrieve direct access parameter index from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction == NULL)
+		return;
+
+	pPlugin->loadPresetEx(pAction->text());
+}
+
+
 // Select a direct access parameter index.
 void qtractorPluginListView::directAccessPlugin (void)
 {
@@ -1492,6 +1516,25 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setEnabled(pItem && iItem < iItemCount - 1);
 
 	menu.addSeparator();
+
+	QMenu *pPresetMenu = menu.addMenu("Preset");
+	if (pPlugin) {
+		const QStringList& presets = pPlugin->presetList();
+		QStringListIterator iter(presets);
+		while (iter.hasNext()) {
+			const QString& sPreset = iter.next();
+			pAction = pPresetMenu->addAction(
+				sPreset, this, SLOT(loadPresetPlugin()));
+			pAction->setCheckable(true);
+			pAction->setChecked(sPreset == pPlugin->preset());
+		}
+		if (presets.count() > 0)
+			pPresetMenu->addSeparator();
+		pAction = pPresetMenu->addAction(
+			qtractorPlugin::defPreset(), this, SLOT(loadPresetPlugin()));
+		pAction->setCheckable(false);
+	}
+	pPresetMenu->setEnabled(pPlugin != NULL);
 
 	QMenu *pDirectAccessParamMenu = menu.addMenu("Dire&ct Access");
 	if (pPlugin) {
