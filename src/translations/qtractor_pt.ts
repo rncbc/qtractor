@@ -96,12 +96,12 @@
         <translation>remover pista</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="478"/>
+        <location filename="../qtractorPluginCommand.cpp" line="480"/>
         <source>reset plugin</source>
         <translation>resetar plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="432"/>
+        <location filename="../qtractorPluginCommand.cpp" line="433"/>
         <source>preset plugin</source>
         <translation>pré-configurações do plugin</translation>
     </message>
@@ -277,7 +277,7 @@ MIDI:	</translation>
         <translation>adicionar Insertor</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="334"/>
+        <location filename="../qtractorPluginCommand.cpp" line="335"/>
         <source>move plugin</source>
         <translation>mover plugin</translation>
     </message>
@@ -311,7 +311,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="652"/>
+        <location filename="../qtractorPluginCommand.cpp" line="655"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -336,7 +336,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="697"/>
+        <location filename="../qtractorPluginCommand.cpp" line="700"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>
@@ -547,7 +547,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>volume do canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="397"/>
+        <location filename="../qtractorPluginCommand.cpp" line="398"/>
         <source>activate plugin</source>
         <translation>ativar plugin</translation>
     </message>
@@ -649,7 +649,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>apagar todas as automações</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="228"/>
+        <location filename="../qtractorPluginCommand.cpp" line="229"/>
         <source>remove plugin</source>
         <translation>remover plugin</translation>
     </message>
@@ -671,7 +671,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>Ativar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="528"/>
+        <location filename="../qtractorPluginCommand.cpp" line="531"/>
         <source>program plugin</source>
         <translation>Plugin do programa</translation>
     </message>
@@ -685,7 +685,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2135"/>
+        <location filename="../qtractorPlugin.cpp" line="2136"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>

@@ -403,7 +403,7 @@ MIDI:	</translation>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2135"/>
+        <location filename="../qtractorPlugin.cpp" line="2136"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -432,42 +432,42 @@ MIDI:	</translation>
         <translation>Auxセンドバスの追加</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="228"/>
+        <location filename="../qtractorPluginCommand.cpp" line="229"/>
         <source>remove plugin</source>
         <translation>プラグインの除去</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="334"/>
+        <location filename="../qtractorPluginCommand.cpp" line="335"/>
         <source>move plugin</source>
         <translation>プラグインの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="397"/>
+        <location filename="../qtractorPluginCommand.cpp" line="398"/>
         <source>activate plugin</source>
         <translation>プラグインを有効化</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="432"/>
+        <location filename="../qtractorPluginCommand.cpp" line="433"/>
         <source>preset plugin</source>
         <translation>プラグインのプリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="478"/>
+        <location filename="../qtractorPluginCommand.cpp" line="480"/>
         <source>reset plugin</source>
         <translation>プラグインのリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="528"/>
+        <location filename="../qtractorPluginCommand.cpp" line="531"/>
         <source>program plugin</source>
         <translation>プログラムプラグイン</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="652"/>
+        <location filename="../qtractorPluginCommand.cpp" line="655"/>
         <source>dedicated audio outputs</source>
         <translation>音声出力専用</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="697"/>
+        <location filename="../qtractorPluginCommand.cpp" line="700"/>
         <source>direct access param</source>
         <translation>ダイレクトアクセスパラメーター</translation>
     </message>
