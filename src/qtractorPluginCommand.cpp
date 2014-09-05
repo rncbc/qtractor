@@ -207,7 +207,8 @@ bool qtractorAuxSendPluginCommand::redo (void)
 	pAuxSendPlugin->setAudioBusName(m_sAudioBusName);
 	m_sAudioBusName = sAudioBusName;
 
-	(pAuxSendPlugin->form())->updateAudioBusName();
+	if (pAuxSendPlugin->isFormVisible())
+		pAuxSendPlugin->form()->updateAudioBusName();
 
 	return true;
 }
@@ -456,7 +457,8 @@ bool qtractorPresetPluginCommand::redo (void)
 	m_vlist = vlist;
 
 	// Update the form, showing it up as necessary...
-	pPlugin->form()->refresh();
+	if (pPlugin->isFormVisible())
+		pPlugin->form()->refresh();
 
 	return true;
 }
@@ -505,7 +507,8 @@ bool qtractorResetPluginCommand::redo (void)
 	m_vlist = vlist;
 
 	// Update the form, showing it up as necessary...
-	pPlugin->form()->refresh();
+	if (pPlugin->isFormVisible())
+		pPlugin->form()->refresh();
 
 	return true;
 }
@@ -625,7 +628,7 @@ bool qtractorPluginParamCommand::redo (void)
 
 	// Update the form, showing it up as necessary...
 	if (pPlugin->isFormVisible())
-		(pPlugin->form())->changeParamValue(m_pParam->index());
+		pPlugin->form()->changeParamValue(m_pParam->index());
 
 	// Update any GUI editor...
 	// pPlugin->idleEditor();

@@ -792,7 +792,7 @@ void qtractorPluginListView::loadPresetPlugin (void)
 	if (pPlugin == NULL)
 		return;
 
-	// Retrieve direct access parameter index from action data...
+	// Retrieve preset-name from action text...
 	QAction *pAction = qobject_cast<QAction *> (sender());
 	if (pAction == NULL)
 		return;

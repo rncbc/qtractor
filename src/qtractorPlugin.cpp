@@ -1050,15 +1050,15 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 	if (pSession == NULL)
 		return false;
 
-	bool bResult = false;
-
-	if (sPreset == g_sDefPreset) {
+	if (sPreset.isEmpty() || sPreset == g_sDefPreset) {
 		// Reset to default...
-		bResult = pSession->execute(
-			new qtractorResetPluginCommand(this));
+		return pSession->execute(new qtractorResetPluginCommand(this));
 	}
-	else
-	if (!loadPreset(sPreset)) {
+
+	bool bResult = loadPreset(sPreset);
+	if (bResult) {
+		setPreset(sPreset);
+	} else {
 		// An existing preset is about to be loaded...
 		QSettings& settings = pOptions->settings();
 		// Should it be load from known file?...
@@ -1066,6 +1066,7 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 			settings.beginGroup(presetGroup());
 			bResult = loadPresetFile(settings.value(sPreset).toString());
 			settings.endGroup();
+			if (bResult) setPreset(sPreset);
 		} else {
 			//...or make it as usual (parameter list only)...
 			settings.beginGroup(presetGroup());
