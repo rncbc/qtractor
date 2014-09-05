@@ -127,6 +127,7 @@ public slots:
 	void removePlugin();
 	void moveUpPlugin();
 	void moveDownPlugin();
+	void loadPresetPlugin();
 	void directAccessPlugin();
 	void propertiesPlugin();
 	void editPlugin();

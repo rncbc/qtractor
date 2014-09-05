@@ -564,9 +564,16 @@ public:
 	QString presetGroup() const;
 	QString presetPrefix() const;
 
+	// Default preset name (global).
+	static const QString& defPreset()
+		{ return g_sDefPreset; }
+
 	// Plugin configuration from/to xml file.
 	bool loadPresetFile(const QString& sFilename);
 	bool savePresetFile(const QString& sFilename);
+
+	// Load an existing preset by name.
+	bool loadPresetEx(const QString& sPreset);
 
 	// Plugin parameter lookup.
 	qtractorPluginParam *findParam(unsigned long iIndex) const;
@@ -739,6 +746,9 @@ private:
 
 	// Direct access parameter, if any.
 	long m_iDirectAccessParamIndex;
+
+	// Default preset name.
+	static QString g_sDefPreset;
 };
 
 

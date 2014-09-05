@@ -56,10 +56,6 @@
 #include "math.h"
 
 
-// This shall hold the default preset name.
-static QString g_sDefPreset;
-
-
 //----------------------------------------------------------------------------
 // qtractorPluginForm -- UI wrapper form.
 
@@ -93,9 +89,6 @@ qtractorPluginForm::qtractorPluginForm (
 	iconActivate.addPixmap(
 		QPixmap(":/images/itemLedOn.png"), QIcon::Active, QIcon::On);
 	m_ui.ActivateToolButton->setIcon(iconActivate);
-
-	if (g_sDefPreset.isEmpty())
-		g_sDefPreset = tr("(default)");
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetComboBox,
@@ -351,7 +344,7 @@ void qtractorPluginForm::setPreset ( const QString& sPreset )
 	QString sEditText = sPreset;
 
 	if (sEditText.isEmpty())
-		sEditText = g_sDefPreset;
+		sEditText = qtractorPlugin::defPreset();
 
 	++m_iUpdate;
 	m_ui.PresetComboBox->setEditText(sEditText);
@@ -362,7 +355,7 @@ QString qtractorPluginForm::preset (void) const
 {
 	QString sPreset = m_ui.PresetComboBox->currentText();
 
-	if (sPreset == g_sDefPreset || m_iDirtyCount > 0)
+	if (sPreset == qtractorPlugin::defPreset() || m_iDirtyCount > 0)
 		sPreset.clear();
 
 	return sPreset;
@@ -468,41 +461,8 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 	if (m_iUpdate > 0 || sPreset.isEmpty())
 		return;
 
-	// We'll need this, sure.
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	if (sPreset == g_sDefPreset) {
-		// Reset to default...
-		pSession->execute(
-			new qtractorResetPluginCommand(m_pPlugin));
-	}
-	else
-	if (!m_pPlugin->loadPreset(sPreset)) {
-		// An existing preset is about to be loaded...
-		QSettings& settings = pOptions->settings();
-		// Should it be load from known file?...
-		if ((m_pPlugin->type())->isConfigure()) {
-			settings.beginGroup(m_pPlugin->presetGroup());
-			m_pPlugin->loadPresetFile(settings.value(sPreset).toString());
-			settings.endGroup();
-			refresh();
-		} else {
-			//...or make it as usual (parameter list only)...
-			settings.beginGroup(m_pPlugin->presetGroup());
-			QStringList vlist = settings.value(sPreset).toStringList();
-			settings.endGroup();
-			if (!vlist.isEmpty()) {
-				pSession->execute(
-					new qtractorPresetPluginCommand(m_pPlugin, sPreset, vlist));
-			}
-		}
-	}
+	if (m_pPlugin->loadPresetEx(sPreset))
+		refresh();
 
 	stabilize();
 }
@@ -586,7 +546,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		return;
 
 	const QString& sPreset = m_ui.PresetComboBox->currentText();
-	if (sPreset.isEmpty() || sPreset == g_sDefPreset)
+	if (sPreset.isEmpty() || sPreset == qtractorPlugin::defPreset())
 		return;
 
 	// We'll need this, sure.
@@ -665,7 +625,7 @@ void qtractorPluginForm::deletePresetSlot (void)
 		return;
 
 	const QString& sPreset =  m_ui.PresetComboBox->currentText();
-	if (sPreset.isEmpty() || sPreset == g_sDefPreset)
+	if (sPreset.isEmpty() || sPreset == qtractorPlugin::defPreset())
 		return;
 
 	// We'll need this, sure.
@@ -900,7 +860,7 @@ void qtractorPluginForm::refresh (void)
 	m_ui.PresetComboBox->clear();
 	m_ui.PresetComboBox->insertItems(0, m_pPlugin->presetList());
 	m_ui.PresetComboBox->model()->sort(0);
-	m_ui.PresetComboBox->addItem(g_sDefPreset);
+	m_ui.PresetComboBox->addItem(qtractorPlugin::defPreset());
 	m_ui.PresetComboBox->setEditText(sOldPreset);
 
 	ParamWidgets::ConstIterator iter = m_paramWidgets.constBegin();
@@ -938,7 +898,7 @@ void qtractorPluginForm::stabilize (void)
 	if (bEnabled) {
 		const QString& sPreset = m_ui.PresetComboBox->currentText();
 		bEnabled = !sPreset.isEmpty()
-			&& sPreset != g_sDefPreset
+			&& sPreset != qtractorPlugin::defPreset()
 			&& !m_pPlugin->isReadOnlyPreset(sPreset);
 		bExists	= (m_ui.PresetComboBox->findText(sPreset) >= 0);
 	}

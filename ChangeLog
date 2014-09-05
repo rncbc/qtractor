@@ -6,6 +6,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Existing plugin presets may now be selected right(-click)
+  from plugin list context-menu (ticket by Harry van Haaren,
+  thanks).
+
 - So-called "painting" over multiple selected event values,
   while on the MIDI clip editor view pane below the main
   piano-roll (eg. note velocities, controller values, etc.)

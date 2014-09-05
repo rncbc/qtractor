@@ -639,6 +639,10 @@ const QString& qtractorDummyPluginType::aboutText (void)
 // qtractorPlugin -- Plugin instance.
 //
 
+// Default preset name (global).
+QString qtractorPlugin::g_sDefPreset = QObject::tr("(default)");
+
+
 // Constructors.
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
@@ -1031,6 +1035,50 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	releaseConfigs();
 
 	return true;
+}
+
+
+// Load an existing preset by name.
+bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
+{
+	// We'll need this, sure.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	bool bResult = false;
+
+	if (sPreset == g_sDefPreset) {
+		// Reset to default...
+		bResult = pSession->execute(
+			new qtractorResetPluginCommand(this));
+	}
+	else
+	if (!loadPreset(sPreset)) {
+		// An existing preset is about to be loaded...
+		QSettings& settings = pOptions->settings();
+		// Should it be load from known file?...
+		if (type()->isConfigure()) {
+			settings.beginGroup(presetGroup());
+			bResult = loadPresetFile(settings.value(sPreset).toString());
+			settings.endGroup();
+		} else {
+			//...or make it as usual (parameter list only)...
+			settings.beginGroup(presetGroup());
+			QStringList vlist = settings.value(sPreset).toStringList();
+			settings.endGroup();
+			if (!vlist.isEmpty()) {
+				bResult = pSession->execute(
+					new qtractorPresetPluginCommand(this, sPreset, vlist));
+			}
+		}
+	}
+
+	return bResult;
 }
 
 
