@@ -515,11 +515,15 @@ unsigned short qtractorPluginType::instances (
 		else
 		if (m_iAudioOuts >= iChannels)
 			iInstances = (iChannels >= m_iAudioIns ? iChannels : 1);
-	#else
-		if (m_iAudioOuts > 0)
-			iInstances = (iChannels > m_iAudioOuts ? iChannels / m_iAudioOuts : 1);
-	#endif
 		else
+	#else
+		if (m_iAudioOuts >= iChannels)
+			iInstances = 1;
+		else
+		if (m_iAudioOuts > 0)
+			iInstances = (iChannels / m_iAudioOuts);
+		else
+	#endif
 		if (bMidi && m_iMidiIns > 0)
 			iInstances = 1;
 	}
