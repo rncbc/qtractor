@@ -5463,7 +5463,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(tr("record clip"));
 		// For all non-empty clip on record...
-		const unsigned long iFrameTime = m_pSession->frameTimeEx();
+		const unsigned long iFrameTime = m_pSession->frameTime();
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pClipCommand->addClipRecord(pTrack, iFrameTime))

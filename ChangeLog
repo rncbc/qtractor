@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Plugin instantiation is now constrained as much to prevent
+  any audio channel output overriding. (EXPERIMENTAL)
+
 - Existing plugin presets may now be selected right(-click)
   from plugin list context-menu (ticket by Harry van Haaren,
   thanks).
