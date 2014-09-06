@@ -332,7 +332,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="65"/>
-        <location filename="../qtractorPlugin.cpp" line="648"/>
+        <location filename="../qtractorPlugin.cpp" line="652"/>
         <source>(default)</source>
         <translation>(デフォルト)</translation>
     </message>
@@ -388,22 +388,22 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="576"/>
+        <location filename="../qtractorPlugin.cpp" line="580"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="632"/>
+        <location filename="../qtractorPlugin.cpp" line="636"/>
         <source>Dummy plugin type.</source>
         <translation>ダミープラグインタイプ</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="664"/>
+        <location filename="../qtractorPlugin.cpp" line="668"/>
         <source>Activate</source>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2141"/>
+        <location filename="../qtractorPlugin.cpp" line="2145"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
