@@ -929,7 +929,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	qtractorMidiManager *pMidiManager
 		= pSession->midiManagers().first();
 	if (pMidiManager) {
-		const unsigned long iFrameTimeStart = pAudioCursor->frameTimeEx();
+		const unsigned long iFrameTimeStart = pAudioCursor->frameTime();
 		const unsigned long iFrameTimeEnd   = iFrameTimeStart + nframes;
 		while (pMidiManager) {
 			pMidiManager->process(iFrameTimeStart, iFrameTimeEnd);
