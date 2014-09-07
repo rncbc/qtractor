@@ -1659,7 +1659,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		pNode = cursor.seekTick(iTimeOff);
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
-
+qDebug("DEBUG> MIDI eventTime=[%lu, %lu] frameTime=[%lu, %lu]", t1, t2, pSession->frameTime(), pSession->frameTimeEx());
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru

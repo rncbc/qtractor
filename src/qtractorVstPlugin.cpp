@@ -752,8 +752,8 @@ void qtractorVstPlugin::process (
 	const unsigned short iAudioIns  = audioIns();
 	const unsigned short iAudioOuts = audioOuts();
 
-	unsigned short iIChannel  = 0;
-	unsigned short iOChannel  = 0;
+	unsigned short iIChannel = 0;
+	unsigned short iOChannel = 0;
 	unsigned short i, j;
 
 	// For each plugin instance...
@@ -788,11 +788,13 @@ void qtractorVstPlugin::process (
 				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
 		}
 	#endif
+	#if 0
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
 			++iIChannel;
 		if (iOChannel < iChannels - 1)
 			++iOChannel;
+	#endif
 	}
 
 	if (pMidiManager && iMidiOuts > 0)
