@@ -2512,11 +2512,13 @@ void qtractorLv2Plugin::process (
 			// Make it run...
 			lilv_instance_run(instance, nframes);
 			// Done.
+		#if 0
 			// Wrap channels?...
 			if (iIChannel < iChannels - 1)
 				++iIChannel;
 			if (iOChannel < iChannels - 1)
 				++iOChannel;
+		#endif
 		}
 	}
 
