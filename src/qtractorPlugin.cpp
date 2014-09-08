@@ -517,7 +517,7 @@ unsigned short qtractorPluginType::instances (
 			iInstances = (iChannels >= m_iAudioIns ? iChannels : 1);
 		else
 	#else
-		if (m_iAudioOuts >= iChannels)
+		if (m_iAudioOuts >= iChannels || m_iAudioIns >= iChannels)
 			iInstances = 1;
 		else
 		if (m_iAudioOuts > 0)
