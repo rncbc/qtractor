@@ -1379,6 +1379,10 @@ void qtractorMidiEngine::resetAllMonitors (void)
 // Reset all MIDI instrument/controllers...
 void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiEngine::resetAllControllers(%d)", int(bForceImmediate));
+#endif
+
 	// Deferred processsing?
 	if (!bForceImmediate) {
 		++m_iResetAllControllers;
