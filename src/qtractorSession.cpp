@@ -1658,7 +1658,7 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 
 
 // MIDI session/tracks instrument/controller patching (conditional).
-void qtractorSession::setMidiPatch ( bool bForceImmediate )
+void qtractorSession::resetAllMidiControllers ( bool bForceImmediate )
 {
 	if (!bForceImmediate || m_pMidiEngine->isResetAllControllers())
 		m_pMidiEngine->resetAllControllers(bForceImmediate);

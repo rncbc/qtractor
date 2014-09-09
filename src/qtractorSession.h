@@ -312,7 +312,7 @@ public:
 	void releaseMidiTag(qtractorTrack *pTrack);
 
 	// MIDI session/tracks instrument/controller patching (conditional).
-	void setMidiPatch(bool bForceImmediate);
+	void resetAllMidiControllers(bool bForceImmediate);
 
 	// MIDI manager list accessors.
 	void addMidiManager(qtractorMidiManager *pMidiManager);
