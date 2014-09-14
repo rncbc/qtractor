@@ -1164,7 +1164,7 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 	if (g_lv2_time_position_plugins == NULL) {
 		if (g_lv2_time_position_buffer) {
-			delete g_lv2_time_position_buffer;
+			delete [] g_lv2_time_position_buffer;
 			g_lv2_time_position_buffer = NULL;
 		}
 		if (g_lv2_time_position_forge) {
