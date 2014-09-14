@@ -407,7 +407,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2145"/>
         <source>%1(%2): %3 plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
     <message>
         <source>%1(%2): %s plugin not found.</source>
