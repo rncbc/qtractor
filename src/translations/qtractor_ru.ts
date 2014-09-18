@@ -9712,22 +9712,22 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1237"/>
+        <location filename="../qtractorMixer.cpp" line="1362"/>
         <source>Inputs</source>
         <translation>Входы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1238"/>
+        <location filename="../qtractorMixer.cpp" line="1363"/>
         <source>Tracks</source>
         <translation>Дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1240"/>
+        <location filename="../qtractorMixer.cpp" line="1365"/>
         <source>Outputs</source>
         <translation>Выходы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1264"/>
+        <location filename="../qtractorMixer.cpp" line="1372"/>
         <source>Mixer</source>
         <translation>Микшер</translation>
     </message>
@@ -9735,24 +9735,43 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixerRack</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1147"/>
         <source>&amp;Inputs</source>
-        <translation>&amp;Входы</translation>
+        <translation type="obsolete">&amp;Входы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1151"/>
         <source>&amp;Outputs</source>
-        <translation>В&amp;ыходы</translation>
+        <translation type="obsolete">В&amp;ыходы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1157"/>
         <source>&amp;Monitor</source>
-        <translation>&amp;Мониторинг</translation>
+        <translation type="obsolete">&amp;Мониторинг</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1166"/>
         <source>&amp;Buses...</source>
-        <translation>&amp;Шины...</translation>
+        <translation type="obsolete">&amp;Шины...</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMixerRackWidget</name>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1026"/>
+        <source>&amp;Inputs</source>
+        <translation type="unfinished">&amp;Входы</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1030"/>
+        <source>&amp;Outputs</source>
+        <translation type="unfinished">В&amp;ыходы</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1036"/>
+        <source>&amp;Monitor</source>
+        <translation type="unfinished">&amp;Мониторинг</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1045"/>
+        <source>&amp;Buses...</source>
+        <translation type="unfinished">&amp;Шины...</translation>
     </message>
 </context>
 <context>

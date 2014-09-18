@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Mixer widget gets (un)dockable Inputs and Outputs panels,
+  also with their respective title captions. (EXPERIMENTAL)
+
 - Plugin instantiation is now constrained as much to prevent
   any audio channel output overriding. (EXPERIMENTAL)
 

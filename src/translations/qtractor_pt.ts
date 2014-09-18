@@ -9114,22 +9114,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1264"/>
+        <location filename="../qtractorMixer.cpp" line="1372"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1237"/>
+        <location filename="../qtractorMixer.cpp" line="1362"/>
         <source>Inputs</source>
         <translation>Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1238"/>
+        <location filename="../qtractorMixer.cpp" line="1363"/>
         <source>Tracks</source>
         <translation>Pistas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1240"/>
+        <location filename="../qtractorMixer.cpp" line="1365"/>
         <source>Outputs</source>
         <translation>Saídas</translation>
     </message>
@@ -9137,24 +9137,43 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixerRack</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1157"/>
         <source>&amp;Monitor</source>
-        <translation>&amp;Monitorar</translation>
+        <translation type="obsolete">&amp;Monitorar</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1151"/>
         <source>&amp;Outputs</source>
-        <translation>&amp;Saídas</translation>
+        <translation type="obsolete">&amp;Saídas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1147"/>
         <source>&amp;Inputs</source>
-        <translation>&amp;Entradas</translation>
+        <translation type="obsolete">&amp;Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1166"/>
         <source>&amp;Buses...</source>
-        <translation>&amp;Canais Primários...</translation>
+        <translation type="obsolete">&amp;Canais Primários...</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMixerRackWidget</name>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1026"/>
+        <source>&amp;Inputs</source>
+        <translation type="unfinished">&amp;Entradas</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1030"/>
+        <source>&amp;Outputs</source>
+        <translation type="unfinished">&amp;Saídas</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1036"/>
+        <source>&amp;Monitor</source>
+        <translation type="unfinished">&amp;Monitorar</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1045"/>
+        <source>&amp;Buses...</source>
+        <translation type="unfinished">&amp;Canais Primários...</translation>
     </message>
 </context>
 <context>

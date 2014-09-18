@@ -9316,22 +9316,22 @@ Etes-vous sur?</translation>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1237"/>
+        <location filename="../qtractorMixer.cpp" line="1362"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1238"/>
+        <location filename="../qtractorMixer.cpp" line="1363"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1240"/>
+        <location filename="../qtractorMixer.cpp" line="1365"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1264"/>
+        <location filename="../qtractorMixer.cpp" line="1372"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
@@ -9339,24 +9339,43 @@ Etes-vous sur?</translation>
 <context>
     <name>qtractorMixerRack</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1147"/>
         <source>&amp;Inputs</source>
-        <translation>&amp;Entrées</translation>
+        <translation type="obsolete">&amp;Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1151"/>
         <source>&amp;Outputs</source>
-        <translation>&amp;Sorties</translation>
+        <translation type="obsolete">&amp;Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1157"/>
         <source>&amp;Monitor</source>
-        <translation>&amp;Moniteur</translation>
+        <translation type="obsolete">&amp;Moniteur</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1166"/>
         <source>&amp;Buses...</source>
-        <translation>&amp;Bus...</translation>
+        <translation type="obsolete">&amp;Bus...</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMixerRackWidget</name>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1026"/>
+        <source>&amp;Inputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1030"/>
+        <source>&amp;Outputs</source>
+        <translation type="unfinished">&amp;Sorties</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1036"/>
+        <source>&amp;Monitor</source>
+        <translation type="unfinished">&amp;Moniteur</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1045"/>
+        <source>&amp;Buses...</source>
+        <translation type="unfinished">&amp;Bus...</translation>
     </message>
 </context>
 <context>

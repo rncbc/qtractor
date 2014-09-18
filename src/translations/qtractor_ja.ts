@@ -9317,22 +9317,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1237"/>
+        <location filename="../qtractorMixer.cpp" line="1362"/>
         <source>Inputs</source>
         <translation>入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1238"/>
+        <location filename="../qtractorMixer.cpp" line="1363"/>
         <source>Tracks</source>
         <translation>トラック</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1240"/>
+        <location filename="../qtractorMixer.cpp" line="1365"/>
         <source>Outputs</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1264"/>
+        <location filename="../qtractorMixer.cpp" line="1372"/>
         <source>Mixer</source>
         <translation>ミキサー</translation>
     </message>
@@ -9340,24 +9340,43 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRack</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1147"/>
         <source>&amp;Inputs</source>
-        <translation>入力(&amp;I)</translation>
+        <translation type="obsolete">入力(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1151"/>
         <source>&amp;Outputs</source>
-        <translation>出力(&amp;O)</translation>
+        <translation type="obsolete">出力(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1157"/>
         <source>&amp;Monitor</source>
-        <translation>モニター(&amp;M)</translation>
+        <translation type="obsolete">モニター(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1166"/>
         <source>&amp;Buses...</source>
-        <translation>バス(&amp;B)...</translation>
+        <translation type="obsolete">バス(&amp;B)...</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMixerRackWidget</name>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1026"/>
+        <source>&amp;Inputs</source>
+        <translation type="unfinished">入力(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1030"/>
+        <source>&amp;Outputs</source>
+        <translation type="unfinished">出力(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1036"/>
+        <source>&amp;Monitor</source>
+        <translation type="unfinished">モニター(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="1045"/>
+        <source>&amp;Buses...</source>
+        <translation type="unfinished">バス(&amp;B)...</translation>
     </message>
 </context>
 <context>
