@@ -26,14 +26,18 @@
 
 #include "qtractorTrackButton.h"
 
+#include <QMainWindow>
+#include <QDockWidget>
 #include <QScrollArea>
 #include <QFrame>
+
 #include <QHash>
 
 
 // Forward declarations.
 class qtractorMixerStrip;
 class qtractorMixerRack;
+class qtractorMixerRackWidget;
 class qtractorMixer;
 class qtractorMeter;
 
@@ -42,9 +46,8 @@ class qtractorPluginListView;
 class QHBoxLayout;
 class QVBoxLayout;
 
-class QLabel;
-class QSplitter;
 class QPushButton;
+class QLabel;
 
 
 //----------------------------------------------------------------------------
@@ -205,26 +208,25 @@ private:
 //----------------------------------------------------------------------------
 // qtractorMixerRack -- Mixer strip rack.
 
-class qtractorMixerRack : public QScrollArea
+class qtractorMixerRack : public QDockWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorMixerRack(qtractorMixer *pMixer, const QString& sName);
+	qtractorMixerRack(qtractorMixer *pMixer, const QString& sTitle);
 	// Default destructor.
 	~qtractorMixerRack();
 
 	// The main mixer widget accessor.
 	qtractorMixer *mixer() const;
 
-	// Rack name accessor.
-	void setName(const QString& sName);
-	const QString& name() const;
-
-	// The mixer strip workspace.
+	// The mixer strip workspace widget accessor.
 	QWidget *workspace() const;
+
+	// The mixer strip workspace methods.
+	void ensureVisible(int x, int y, int xm, int ym);
 
 	// Strip list primitive methods.
 	void addStrip(qtractorMixerStrip *pStrip);
@@ -248,7 +250,7 @@ public:
 	// Selection stuff.
 	void setSelectEnabled(bool bSelectEnabled);
 	bool isSelectEnabled() const;
-	
+
 	void setSelectedStrip(qtractorMixerStrip *pStrip);
 	qtractorMixerStrip *selectedStrip() const;
 
@@ -269,55 +271,35 @@ signals:
 	// Selection changed signal.
 	void selectionChanged();
 
-protected:
-
-	// Resize event handler.
-	void resizeEvent(QResizeEvent *pResizeEvent);
-
-	// Context menu request event handler.
-	void contextMenuEvent(QContextMenuEvent *);
-
-	// Mouse click event handler.
-	void mousePressEvent(QMouseEvent *);
-
 private:
 
 	// Instance properties.
 	qtractorMixer *m_pMixer;
 
-	// Rack title.
-	QString m_sName;
-	
-	// Layout widgets.
-	QWidget     *m_pWorkspace;
-	QHBoxLayout *m_pWorkspaceLayout;
-
 	// The Strips list.
 	typedef QHash<qtractorMonitor *, qtractorMixerStrip *> Strips;
 	Strips m_strips;
-	
+
 	// Selection stuff.
-	bool                m_bSelectEnabled;
+	bool m_bSelectEnabled;
 	qtractorMixerStrip *m_pSelectedStrip;
+
+	// The inner rack scroll-area/workspace widget.
+	qtractorMixerRackWidget *m_pRackWidget;
 };
 
 
 //----------------------------------------------------------------------------
 // qtractorMixer -- Mixer widget.
 
-class qtractorMixer : public QWidget
+class qtractorMixer : public QMainWindow
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
 	qtractorMixer(QWidget *pParent, Qt::WindowFlags wflags = 0);
 	// Default destructor.
 	~qtractorMixer();
-
-	// The splitter layout widget accessor.
-	QSplitter *splitter() const;
 
 	// The mixer strips rack accessors.
 	qtractorMixerRack *inputRack()  const;
@@ -351,17 +333,14 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *);
 
-	// Special splitter-size persistence methods.
-	void loadSplitterSizes();
-	void saveSplitterSizes();
+	// Special dockables persistence methods.
+	void loadMixerState();
+	void saveMixerState();
 
 	// Initial minimum widget extents.
 	QSize sizeHint() const;
 
 private:
-
-	// Child controls.
-	QSplitter *m_pSplitter;
 
 	qtractorMixerRack *m_pInputRack;
 	qtractorMixerRack *m_pTrackRack;
