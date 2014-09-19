@@ -405,7 +405,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2145"/>
         <source>%1(%2): %3 plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): %3 プラグインが見つかりません。</translation>
     </message>
     <message>
         <source>%1(%2): %s plugin not found.</source>
@@ -9361,22 +9361,22 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMixer.cpp" line="1029"/>
         <source>&amp;Inputs</source>
-        <translation type="unfinished">入力(&amp;I)</translation>
+        <translation>入力(&amp;I)</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1033"/>
         <source>&amp;Outputs</source>
-        <translation type="unfinished">出力(&amp;O)</translation>
+        <translation>出力(&amp;O)</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1039"/>
         <source>&amp;Monitor</source>
-        <translation type="unfinished">モニター(&amp;M)</translation>
+        <translation>モニター(&amp;M)</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1048"/>
         <source>&amp;Buses...</source>
-        <translation type="unfinished">バス(&amp;B)...</translation>
+        <translation>バス(&amp;B)...</translation>
     </message>
 </context>
 <context>
