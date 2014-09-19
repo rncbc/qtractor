@@ -282,7 +282,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	const QFont& font = QFrame::font();
 	const QFont font2(font.family(), font.pointSize() - 2);
 	const QFont font3(font.family(), font.pointSize() - 3);
-	const int iFixedHeight = QFontMetrics(font2).lineSpacing() + 6;
+	const int iFixedHeight = QFontMetrics(font).lineSpacing() + 4;
 
 	QFrame::setFont(font2);
 
@@ -317,7 +317,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pMonitorButton = new qtractorMonitorButton(m_pTrack);
 		m_pMonitorButton->setFixedHeight(iFixedHeight);
 		m_pMonitorButton->setSizePolicy(sizePolicy);
-		m_pMonitorButton->setFont(font3);
+	//	m_pMonitorButton->setFont(font2);
 		m_pRecordButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Record);
 		m_pRecordButton->setFixedHeight(iFixedHeight);
@@ -344,13 +344,13 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pMonitorButton = new qtractorMonitorButton(m_pBus);
 		m_pMonitorButton->setFixedHeight(iFixedHeight);
 		m_pMonitorButton->setSizePolicy(sizePolicy);
-		m_pMonitorButton->setFont(font3);
+	//	m_pMonitorButton->setFont(font2);
 		m_pBusButton = new QPushButton(/*this*/);
 		m_pBusButton->setFixedHeight(iFixedHeight);
 		m_pBusButton->setFocusPolicy(Qt::NoFocus);
 		m_pBusButton->setSizePolicy(sizePolicy);
 	//	m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
-		m_pBusButton->setFont(font3);
+	//	m_pBusButton->setFont(font2);
 		m_pBusButton->setText(
 			m_busMode & qtractorBus::Input ? tr("inputs") : tr("outputs"));
 		m_pBusButton->setToolTip(tr("Connect %1").arg(m_pBusButton->text()));

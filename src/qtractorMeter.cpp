@@ -194,7 +194,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 {
 	const QFont& font = QWidget::font();
 //	const QFont font2(font.family(), font.pointSize() - 2);
-	const int iFixedHeight = QFontMetrics(font).lineSpacing() + 6;
+	const int iFixedHeight = QFontMetrics(font).lineSpacing() + 4;
 
 //	QWidget::setFont(font2);
 
