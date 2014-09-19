@@ -1116,6 +1116,7 @@ qtractorMixerRack::qtractorMixerRack (
 	QDockWidget::setObjectName(sTitle);	// TODO: make this an unique-id.
 	QDockWidget::setTitleBarWidget(
 		new qtractorMixerRackTitleBarWidget(this, sTitle));
+	QDockWidget::setToolTip(sTitle);
 
 	QDockWidget::setWidget(m_pRackWidget);
 
