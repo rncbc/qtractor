@@ -843,7 +843,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2145"/>
         <source>%1(%2): %3 plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>
     <message>
         <source>%1(%2): %s plugin not found.</source>
@@ -10323,22 +10323,22 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMixer.cpp" line="1029"/>
         <source>&amp;Inputs</source>
-        <translation type="unfinished">&amp;Vstupy</translation>
+        <translation>&amp;Vstupy</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1033"/>
         <source>&amp;Outputs</source>
-        <translation type="unfinished">&amp;Výstupy</translation>
+        <translation>&amp;Výstupy</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1039"/>
         <source>&amp;Monitor</source>
-        <translation type="unfinished">&amp;Sledování</translation>
+        <translation>&amp;Sledování</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1048"/>
         <source>&amp;Buses...</source>
-        <translation type="unfinished">&amp;Sběrnice...</translation>
+        <translation>&amp;Sběrnice...</translation>
     </message>
 </context>
 <context>
