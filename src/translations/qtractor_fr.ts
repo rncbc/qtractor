@@ -9316,22 +9316,22 @@ Etes-vous sur?</translation>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1366"/>
+        <location filename="../qtractorMixer.cpp" line="1367"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1367"/>
+        <location filename="../qtractorMixer.cpp" line="1368"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1369"/>
+        <location filename="../qtractorMixer.cpp" line="1370"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1376"/>
+        <location filename="../qtractorMixer.cpp" line="1377"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
