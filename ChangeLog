@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Make the mouse-wheel to scroll the plugin list views, when
+  not hovering a direct-access parameter slider.
+
 - Mixer widget gets (un)dockable Inputs and Outputs panels,
   also with their respective title captions. (EXPERIMENTAL)
 

@@ -1114,8 +1114,12 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 			fValue = pDirectAccessObserver->valueFromScale(
 				fScale + fDelta, bLogarithmic);
 			pDirectAccessParam->updateValue(fValue, true);
+			return;
 		}
 	}
+
+	// Not handled here.
+	QListWidget::wheelEvent(pWheelEvent);
 }
 
 
