@@ -79,7 +79,7 @@ static inline float pow10f2 ( float x )
 
 
 // Audio meter default color array.
-QColor qtractorAudioMeter::g_defaultColors[qtractorAudioMeter::ColorCount] = {
+QColor qtractorAudioMeter::g_defaultColors[ColorCount] = {
 	QColor(240,  0, 20),	// ColorOver
 	QColor(240,160, 20),	// Color0dB
 	QColor(220,220, 20),	// Color3dB
@@ -90,7 +90,7 @@ QColor qtractorAudioMeter::g_defaultColors[qtractorAudioMeter::ColorCount] = {
 };
 
 // Audio meter color array.
-QColor qtractorAudioMeter::g_currentColors[qtractorAudioMeter::ColorCount] = {
+QColor qtractorAudioMeter::g_currentColors[ColorCount] = {
 	g_defaultColors[ColorOver],
 	g_defaultColors[Color0dB],
 	g_defaultColors[Color3dB],

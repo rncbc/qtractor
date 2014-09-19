@@ -208,6 +208,9 @@ protected:
 	// Direct access parameter handle.
 	void dragDirectAccess(const QPoint& pos);
 
+	// Initial size-policy hints.
+	QSize sizeHint() const;
+
 private:
 
 	// Instance variables.

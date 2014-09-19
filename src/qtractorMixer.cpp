@@ -281,27 +281,31 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	const QFont& font = QFrame::font();
 	const QFont font2(font.family(), font.pointSize() - 2);
-	const int iFixedHeight = QFontMetrics(font2).lineSpacing() + 4;
+	const QFont font3(font.family(), font.pointSize() - 3);
+	const int iFixedHeight = QFontMetrics(font2).lineSpacing() + 6;
+
+	QFrame::setFont(font2);
 
 	m_pLayout = new QVBoxLayout(this);
 	m_pLayout->setMargin(4);
 	m_pLayout->setSpacing(4);
 
 	m_pLabel = new IconLabel(/*this*/);
-	m_pLabel->setFont(font2);
+//	m_pLabel->setFont(font2);
 	m_pLabel->setFixedHeight(iFixedHeight);
 	m_pLabel->setBackgroundRole(QPalette::Button);
 	m_pLabel->setForegroundRole(QPalette::ButtonText);
 	m_pLabel->setAutoFillBackground(true);
 	m_pLayout->addWidget(m_pLabel);
 
+	const QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+
 	m_pPluginListView = new qtractorPluginListView(/*this*/);
-	m_pPluginListView->setFont(font2);
-	m_pPluginListView->setFixedHeight(iFixedHeight << 2);
+	m_pPluginListView->setFont(font3);
+//	m_pPluginListView->setFixedHeight(iFixedHeight << 2);
+	m_pPluginListView->setSizePolicy(sizePolicy);
 	m_pPluginListView->setTinyScrollBar(true);
 	m_pLayout->addWidget(m_pPluginListView);
-
-	const QSizePolicy buttonPolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 	m_pButtonLayout = new QHBoxLayout(/*this*/);
 	m_pButtonLayout->setMargin(0);
@@ -312,23 +316,22 @@ void qtractorMixerStrip::initMixerStrip (void)
 		meterType = m_pTrack->trackType();
 		m_pMonitorButton = new qtractorMonitorButton(m_pTrack);
 		m_pMonitorButton->setFixedHeight(iFixedHeight);
-		m_pMonitorButton->setSizePolicy(buttonPolicy);
-		m_pMonitorButton->setFont(font2);
-		const QFont font3(font.family(), font.pointSize() - 3);
+		m_pMonitorButton->setSizePolicy(sizePolicy);
+		m_pMonitorButton->setFont(font3);
 		m_pRecordButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Record);
 		m_pRecordButton->setFixedHeight(iFixedHeight);
-		m_pRecordButton->setSizePolicy(buttonPolicy);
+		m_pRecordButton->setSizePolicy(sizePolicy);
 		m_pRecordButton->setFont(font3);
 		m_pMuteButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Mute);
 		m_pMuteButton->setFixedHeight(iFixedHeight);
-		m_pMuteButton->setSizePolicy(buttonPolicy);
+		m_pMuteButton->setSizePolicy(sizePolicy);
 		m_pMuteButton->setFont(font3);
 		m_pSoloButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Solo);
 		m_pSoloButton->setFixedHeight(iFixedHeight);
-		m_pSoloButton->setSizePolicy(buttonPolicy);
+		m_pSoloButton->setSizePolicy(sizePolicy);
 		m_pSoloButton->setFont(font3);
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
@@ -340,14 +343,14 @@ void qtractorMixerStrip::initMixerStrip (void)
 		meterType = m_pBus->busType();
 		m_pMonitorButton = new qtractorMonitorButton(m_pBus);
 		m_pMonitorButton->setFixedHeight(iFixedHeight);
-		m_pMonitorButton->setSizePolicy(buttonPolicy);
-		m_pMonitorButton->setFont(font2);
+		m_pMonitorButton->setSizePolicy(sizePolicy);
+		m_pMonitorButton->setFont(font3);
 		m_pBusButton = new QPushButton(/*this*/);
 		m_pBusButton->setFixedHeight(iFixedHeight);
 		m_pBusButton->setFocusPolicy(Qt::NoFocus);
-		m_pBusButton->setSizePolicy(buttonPolicy);
+		m_pBusButton->setSizePolicy(sizePolicy);
 	//	m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
-		m_pBusButton->setFont(font2);
+		m_pBusButton->setFont(font3);
 		m_pBusButton->setText(
 			m_busMode & qtractorBus::Input ? tr("inputs") : tr("outputs"));
 		m_pBusButton->setToolTip(tr("Connect %1").arg(m_pBusButton->text()));
@@ -431,7 +434,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 			// like proper MIDI channel settings...
 			if (m_pTrack) {
 				m_pMidiLabel = new QLabel(/*m_pMeter->topWidget()*/);
-				m_pMidiLabel->setFont(font2);
+		//		m_pMidiLabel->setFont(font2);
 				m_pMidiLabel->setAlignment(
 					Qt::AlignHCenter | Qt::AlignVCenter);
 				m_pMeter->topLayout()->insertWidget(1, m_pMidiLabel);
@@ -1365,8 +1368,8 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"));
 
 	// Some specialties to this kind of dock window...
-	QMainWindow::setMinimumWidth(440);
-	QMainWindow::setMinimumHeight(220);
+	QMainWindow::setMinimumWidth(360);
+	QMainWindow::setMinimumHeight(240);
 
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Mixer") + " - " QTRACTOR_TITLE;
