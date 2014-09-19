@@ -57,7 +57,7 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
 //	QFrame::setBackgroundRole(QPalette::Mid);
 
 	const QFont& font = QFrame::font();
-	QFrame::setFont(QFont(font.family(), font.pointSize() - 2));
+	QFrame::setFont(QFont(font.family(), font.pointSize() - 3));
 }
 
 
@@ -76,7 +76,7 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 	const int iWidth = QWidget::width();
 
 	const QFontMetrics& fm = p->fontMetrics();
-	int iMidHeight = (fm.height() >> 1);
+	const int iMidHeight = (fm.height() >> 1);
 
 	if (iCurrY < iMidHeight || iCurrY > (m_iLastY + iMidHeight)) {
 		if (fm.width(sLabel) < iWidth - 5)
@@ -193,8 +193,10 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	: QWidget(pParent)
 {
 	const QFont& font = QWidget::font();
-	QFont font7(font.family(), font.pointSize() - 1);
-	QFontMetrics fm(font7);
+//	const QFont font2(font.family(), font.pointSize() - 2);
+	const int iFixedHeight = QFontMetrics(font).lineSpacing() + 4;
+
+//	QWidget::setFont(font2);
 
 	m_pVBoxLayout = new QVBoxLayout();
 	m_pVBoxLayout->setMargin(0);
@@ -207,8 +209,8 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pVBoxLayout->addWidget(m_pPanSlider);
 
 	m_pPanSpinBox = new qtractorObserverSpinBox(/*this*/);
-	m_pPanSpinBox->setFont(font7);
-	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
+//	m_pPanSpinBox->setFont(font2);
+	m_pPanSpinBox->setFixedHeight(iFixedHeight);
 	m_pPanSpinBox->setKeyboardTracking(false);
 	m_pVBoxLayout->addWidget(m_pPanSpinBox);
 
@@ -232,8 +234,8 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pBoxLayout->addWidget(m_pGainSlider);
 
 	m_pGainSpinBox = new qtractorObserverSpinBox(/*this*/);
-	m_pGainSpinBox->setFont(font7);
-	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
+//	m_pGainSpinBox->setFont(font2);
+	m_pGainSpinBox->setFixedHeight(iFixedHeight);
 	m_pGainSpinBox->setKeyboardTracking(false);
 	m_pVBoxLayout->addWidget(m_pGainSpinBox);
 
@@ -270,7 +272,8 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSpinBox->setAccelerated(true);
 	m_pGainSpinBox->setToolTip(tr("Gain"));
 
-	QWidget::setMinimumHeight(140);
+	QWidget::setMinimumHeight(160);
+//	QWidget::setMaximumHeight(480);
 	QWidget::setSizePolicy(
 		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
 }

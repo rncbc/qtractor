@@ -51,14 +51,14 @@ int      qtractorMidiMeter::g_iLedRefCount = 0;
 QPixmap *qtractorMidiMeter::g_pLedPixmap[qtractorMidiMeter::LedCount];
 
 // MIDI meter color arrays.
-QColor qtractorMidiMeter::g_defaultColors[qtractorMidiMeter::ColorCount] = {
+QColor qtractorMidiMeter::g_defaultColors[ColorCount] = {
 	QColor(160,220, 20),	// ColorPeak
 	QColor(160,160, 40),	// ColorOver
 	QColor( 20, 40, 20),	// ColorBack
 	QColor( 80, 80, 80) 	// ColorFore
 };
 
-QColor qtractorMidiMeter::g_currentColors[qtractorMidiMeter::ColorCount] = {
+QColor qtractorMidiMeter::g_currentColors[ColorCount] = {
 	g_defaultColors[ColorPeak],
 	g_defaultColors[ColorOver],
 	g_defaultColors[ColorBack],

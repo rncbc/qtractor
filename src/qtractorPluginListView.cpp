@@ -1717,4 +1717,13 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 }
 
 
+// Initial size-policy hints.
+QSize qtractorPluginListView::sizeHint (void) const
+{
+	const QFont& font = QListWidget::font();
+	const int iItemHeight = QFontMetrics(font).lineSpacing() + 4;
+	return QSize(140, iItemHeight << 2);
+}
+
+
 // end of qtractorPluginListView.cpp
