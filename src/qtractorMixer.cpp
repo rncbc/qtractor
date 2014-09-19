@@ -1121,7 +1121,8 @@ qtractorMixerRack::qtractorMixerRack (
 	QDockWidget::setWidget(m_pRackWidget);
 
 	QDockWidget::setFeatures(
-		QDockWidget::DockWidgetMovable |
+		QDockWidget::DockWidgetClosable |
+		QDockWidget::DockWidgetMovable  |
 		QDockWidget::DockWidgetFloatable); // FIXME: is floatable necessary?
 
 	QDockWidget::setAllowedAreas(Qt::AllDockWidgetAreas);

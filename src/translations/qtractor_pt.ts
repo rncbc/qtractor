@@ -9114,22 +9114,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1376"/>
+        <location filename="../qtractorMixer.cpp" line="1377"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1366"/>
+        <location filename="../qtractorMixer.cpp" line="1367"/>
         <source>Inputs</source>
         <translation>Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1367"/>
+        <location filename="../qtractorMixer.cpp" line="1368"/>
         <source>Tracks</source>
         <translation>Pistas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1369"/>
+        <location filename="../qtractorMixer.cpp" line="1370"/>
         <source>Outputs</source>
         <translation>Saídas</translation>
     </message>
