@@ -298,14 +298,14 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLabel->setAutoFillBackground(true);
 	m_pLayout->addWidget(m_pLabel);
 
-	const QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
-
 	m_pPluginListView = new qtractorPluginListView(/*this*/);
 	m_pPluginListView->setFont(font3);
 //	m_pPluginListView->setFixedHeight(iFixedHeight << 2);
-	m_pPluginListView->setSizePolicy(sizePolicy);
+	m_pPluginListView->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	m_pPluginListView->setTinyScrollBar(true);
-	m_pLayout->addWidget(m_pPluginListView);
+	m_pLayout->addWidget(m_pPluginListView, 1);
+
+	const QSizePolicy buttonPolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
 	m_pButtonLayout = new QHBoxLayout(/*this*/);
 	m_pButtonLayout->setMargin(0);
@@ -316,22 +316,22 @@ void qtractorMixerStrip::initMixerStrip (void)
 		meterType = m_pTrack->trackType();
 		m_pMonitorButton = new qtractorMonitorButton(m_pTrack);
 		m_pMonitorButton->setFixedHeight(iFixedHeight);
-		m_pMonitorButton->setSizePolicy(sizePolicy);
+		m_pMonitorButton->setSizePolicy(buttonPolicy);
 	//	m_pMonitorButton->setFont(font2);
 		m_pRecordButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Record);
 		m_pRecordButton->setFixedHeight(iFixedHeight);
-		m_pRecordButton->setSizePolicy(sizePolicy);
+		m_pRecordButton->setSizePolicy(buttonPolicy);
 		m_pRecordButton->setFont(font3);
 		m_pMuteButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Mute);
 		m_pMuteButton->setFixedHeight(iFixedHeight);
-		m_pMuteButton->setSizePolicy(sizePolicy);
+		m_pMuteButton->setSizePolicy(buttonPolicy);
 		m_pMuteButton->setFont(font3);
 		m_pSoloButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Solo);
 		m_pSoloButton->setFixedHeight(iFixedHeight);
-		m_pSoloButton->setSizePolicy(sizePolicy);
+		m_pSoloButton->setSizePolicy(buttonPolicy);
 		m_pSoloButton->setFont(font3);
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
@@ -343,12 +343,12 @@ void qtractorMixerStrip::initMixerStrip (void)
 		meterType = m_pBus->busType();
 		m_pMonitorButton = new qtractorMonitorButton(m_pBus);
 		m_pMonitorButton->setFixedHeight(iFixedHeight);
-		m_pMonitorButton->setSizePolicy(sizePolicy);
+		m_pMonitorButton->setSizePolicy(buttonPolicy);
 	//	m_pMonitorButton->setFont(font2);
 		m_pBusButton = new QPushButton(/*this*/);
 		m_pBusButton->setFixedHeight(iFixedHeight);
 		m_pBusButton->setFocusPolicy(Qt::NoFocus);
-		m_pBusButton->setSizePolicy(sizePolicy);
+		m_pBusButton->setSizePolicy(buttonPolicy);
 	//	m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
 	//	m_pBusButton->setFont(font2);
 		m_pBusButton->setText(
@@ -369,7 +369,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
 	m_pMidiLabel = NULL;
-	int iFixedWidth = 42;
+	int iFixedWidth = 46;
 	switch (meterType) {
 	case qtractorTrack::Audio: {
 		// Type cast for proper audio monitor...
@@ -472,7 +472,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 			pMidiObserver->setCurveList(m_pTrack->curveList());
 		m_pMeter->addMidiControlAction(m_pMeter->gainSlider(), pMidiObserver);
 		// Finally, add to layout...	
-		m_pLayout->addWidget(m_pMeter);
+		m_pLayout->addWidget(m_pMeter, 4);
 		QObject::connect(m_pMeter->panSlider(),
 			SIGNAL(valueChanged(float)),
 			SLOT(panningChangedSlot(float)));
@@ -920,7 +920,7 @@ public:
 protected:
 
 	// Resize event handler.
-	void resizeEvent(QResizeEvent *pResizeEvent);
+	void resizeEvent(QResizeEvent *);
 
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
