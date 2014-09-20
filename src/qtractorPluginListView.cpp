@@ -1725,7 +1725,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 QSize qtractorPluginListView::sizeHint (void) const
 {
 	const QFont& font = QListWidget::font();
-	const int iItemHeight = QFontMetrics(font).lineSpacing() + 8;
+	const int iItemHeight = QFontMetrics(font).lineSpacing() + 4;
 	return QSize(320, iItemHeight << 2);
 }
 
