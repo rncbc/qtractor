@@ -2530,8 +2530,13 @@ void qtractorLv2Plugin::process (
 #ifdef CONFIG_LV2_ATOM
 #ifdef CONFIG_LV2_UI
 	for (j = 0; j < iAtomOuts; ++j) {
+		LV2_Atom_Buffer *abuf;
+		if (pMidiManager && j == m_lv2_atom_midi_port_out)
+			abuf = pMidiManager->lv2_atom_buffer_out();
+		else
+			abuf = m_lv2_atom_buffer_outs[j];
 		LV2_Atom_Buffer_Iterator aiter;
-		lv2_atom_buffer_begin(&aiter, m_lv2_atom_buffer_outs[j]);
+		lv2_atom_buffer_begin(&aiter, abuf);
 		while (true) {
 			uint8_t *data;
 			LV2_Atom_Event *pLv2AtomEvent
