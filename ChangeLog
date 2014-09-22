@@ -4,16 +4,16 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-SVN TRUNK
+0.6.3  2014-09-22  Armed Hadron Beta
 
 - Make the mouse-wheel to scroll the plugin list views, when
   not hovering a direct-access parameter slider.
 
 - Mixer widget gets (un)dockable Inputs and Outputs panels,
-  also with their respective title captions. (EXPERIMENTAL)
+  also with their respective title captions.
 
 - Plugin instantiation is now constrained as much to prevent
-  any audio channel output overriding. (EXPERIMENTAL)
+  any audio channel output overriding.
 
 - Existing plugin presets may now be selected right(-click)
   from plugin list context-menu (ticket by Harry van Haaren,
@@ -24,7 +24,7 @@ SVN TRUNK
   piano-roll (eg. note velocities, controller values, etc.)
   is now split into two similar painting modes, whether the
   sub-menu Edit/Select Mode/Edit Draw is set on (free-hand)
-  or off (linear). (EXPERIMENTAL)
+  or off (linear).
 
 - Drag-and-copy of plug-in instances across tracks or buses
   (ie. cloning) now also copies the direct access parameter
@@ -38,7 +38,7 @@ SVN TRUNK
   Holger Marzen, thanks).
 
 - LV2 Time position event messages for plugin atom ports that
-  support it is now being implemented. (EXPERIMENTAL)
+  support it is now being implemented.
 
 - Attempt to break extremely long audio file peak generation
   on session close or program exit (as reported by EternalX,
@@ -51,10 +51,10 @@ SVN TRUNK
   been hopefully fixed (after a patch by EternalX, thanks).
 
 - Messages standard output capture has been slightly improved
-  as for non-blocking i/o, whenever available. (EXPERIMENTAL)
+  as for non-blocking i/o, whenever available.
 
 - Automation curve node editing has been slightly improved
-  in regard to time positioning and resolution. (EXPERIMENTAL)
+  in regard to time positioning and resolution.
 
 
 0.6.2  2014-07-07  Boson Walk Beta

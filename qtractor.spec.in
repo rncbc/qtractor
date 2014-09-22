@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 12
+%define release 13
 
 %define _prefix	@ac_prefix@
 
@@ -101,6 +101,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/man/man1/%{name}.1.gz
 
 %changelog
+* Mon Sep 22 2014 Rui Nuno Capela <rncbc@rncbc.org> 0.6.3
+- Armed Hadron Beta release.
 * Mon Jul  7 2014 Rui Nuno Capela <rncbc@rncbc.org> 0.6.2
 - Boson Walk Beta release.
 * Tue Apr 29 2014 Rui Nuno Capela <rncbc@rncbc.org> 0.6.1
