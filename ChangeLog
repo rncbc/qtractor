@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+SVN TRUNK
+
+- Fixed a typo causing FTBFS when VST plug-in support is
+  explicity disabled (./configure --disable-vst).
+
+
 0.6.3  2014-09-22  Armed Hadron Beta
 
 - Make the mouse-wheel to scroll the plugin list views, when
