@@ -261,7 +261,7 @@ void qtractorClipCommand::takeInfoClip ( qtractorClip *pClip,
 void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 {
 	Item *pItem = new Item(ResetClip, pClip, pClip->track());
-	pItem->clipOffset = pClip->clipOffset();
+//	pItem->clipOffset = pClip->clipOffset();
 	pItem->clipLength = pClip->clipLength();
 	m_items.append(pItem);
 
@@ -681,12 +681,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case ResetClip: {
 			const unsigned long iClipStartTime  = pClip->clipStartTime();
-			const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
+		//	const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
 			const unsigned long iClipLengthTime = pClip->clipLengthTime();
-			pClip->setClipOffset(pItem->clipOffset);
+		//	pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
-			pItem->clipOffset =	pSession->frameFromTickRange(
-				iClipStartTime, iClipStartTime + iClipOffsetTime);
+		//	pItem->clipOffset =	pSession->frameFromTickRange(
+		//		iClipStartTime, iClipStartTime + iClipOffsetTime);
 			pItem->clipLength =	pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
 			break;

@@ -383,22 +383,23 @@ bool qtractorMidiClip::openMidiFile (
 	pSeq->clear();
 	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 
-	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(clipStart());
-	const unsigned long t0 = pNode->tickFromFrame(clipStart());
+	qtractorTimeScale timeScale(*pSession->timeScale());
+	if (m_pFile->tempoMap())
+		m_pFile->tempoMap()->intoTimeScale(&timeScale);
+	else
+		timeScale.reset();
+	timeScale.updateScale();
 
-	if (clipStart() > clipOffset()) {
-		const unsigned long iOffset = clipStart() - clipOffset();
-		pNode = cursor.seekFrame(iOffset);
-		pSeq->setTimeOffset(t0 - pNode->tickFromFrame(iOffset));
-	} else {
-		pNode = cursor.seekFrame(clipOffset());
-		pSeq->setTimeOffset(pNode->tickFromFrame(clipOffset()));
-	}
+	const unsigned long iFrameOffset = clipOffset();
+	qtractorTimeScale::Cursor cursor(&timeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameOffset);
+	const unsigned long iTimeOffset = pNode->tickFromFrame(iFrameOffset);
+	pSeq->setTimeOffset(iTimeOffset);
 
-	const unsigned long iClipEnd = clipStart() + clipLength();
-	pNode = cursor.seekFrame(iClipEnd);
-	pSeq->setTimeLength(pNode->tickFromFrame(iClipEnd) - t0);
+	const unsigned long iFrameLength = clipLength();
+	const unsigned long iFrameEnd = iFrameOffset + iFrameLength;
+	pNode = cursor.seekFrame(iFrameEnd);
+	pSeq->setTimeLength(pNode->tickFromFrame(iFrameEnd) - iTimeOffset);
 
 	// Initial statistics...
 	pSeq->setNoteMin(m_noteMin);
@@ -468,6 +469,7 @@ bool qtractorMidiClip::openMidiFile (
 		#endif
 			// Import tempo map as well...
 			if (m_pFile->tempoMap()) {
+				const unsigned long t0 = pSession->tickFromFrame(clipStart());
 				m_pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
 				pSession->updateTimeScale();
 			}
@@ -483,11 +485,12 @@ bool qtractorMidiClip::openMidiFile (
 	// setRevision(1);
 
 	// Default clip length will be whole sequence duration.
-	if (clipLength() == 0 && pSeq->timeLength() > pSeq->timeOffset()) {
-		const unsigned long t1
-			= t0 + (pSeq->timeLength() - pSeq->timeOffset());
-		pNode = cursor.seekTick(t1);
-		setClipLength(pNode->frameFromTick(t1) - clipStart());
+	if (iFrameLength == 0) {
+		const unsigned long iClipStart = clipStart();
+		const unsigned long t0 = pSession->tickFromFrame(iClipStart);
+		const unsigned long t1 = t0 + pSeq->timeLength();
+		const unsigned long iClipEnd = pSession->frameFromTick(t1);
+		setClipLength(iClipEnd - iClipStart);
 	}
 
 	// Clip name should be clear about it all.

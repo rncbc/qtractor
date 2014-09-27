@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Attempt to correct potential clip-offset misalignments
+  due to varying tempo map changes. (EXPERIMENTAL)
+
 - Fixed a typo causing FTBFS when VST plug-in support is
   explicity disabled (./configure --disable-vst).
 
