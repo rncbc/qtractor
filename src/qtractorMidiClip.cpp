@@ -383,23 +383,24 @@ bool qtractorMidiClip::openMidiFile (
 	pSeq->clear();
 	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 
-	qtractorTimeScale timeScale(*pSession->timeScale());
-	if (m_pFile->tempoMap())
-		m_pFile->tempoMap()->intoTimeScale(&timeScale);
-	else
-		timeScale.reset();
-	timeScale.updateScale();
+	const unsigned long iClipStart  = clipStart();
+	const unsigned long iClipOffset = clipOffset();
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
+	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
+	if (iClipStart > iClipOffset) {
+		const unsigned long iFrameOffset = iClipStart - iClipOffset;
+		pNode = cursor.seekFrame(iFrameOffset);
+		pSeq->setTimeOffset(t0 - pNode->tickFromFrame(iFrameOffset));
+	} else {
+		pNode = cursor.seekFrame(iClipOffset);
+		pSeq->setTimeOffset(pNode->tickFromFrame(iClipOffset));
+	}
 
-	const unsigned long iFrameOffset = clipOffset();
-	qtractorTimeScale::Cursor cursor(&timeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameOffset);
-	const unsigned long iTimeOffset = pNode->tickFromFrame(iFrameOffset);
-	pSeq->setTimeOffset(iTimeOffset);
-
-	const unsigned long iFrameLength = clipLength();
-	const unsigned long iFrameEnd = iFrameOffset + iFrameLength;
-	pNode = cursor.seekFrame(iFrameEnd);
-	pSeq->setTimeLength(pNode->tickFromFrame(iFrameEnd) - iTimeOffset);
+	const unsigned long iClipLength = clipLength();
+	const unsigned long iClipEnd = iClipStart + iClipLength;
+	pNode = cursor.seekFrame(iClipEnd);
+	pSeq->setTimeLength(pNode->tickFromFrame(iClipEnd) - t0);
 
 	// Initial statistics...
 	pSeq->setNoteMin(m_noteMin);
@@ -469,7 +470,6 @@ bool qtractorMidiClip::openMidiFile (
 		#endif
 			// Import tempo map as well...
 			if (m_pFile->tempoMap()) {
-				const unsigned long t0 = pSession->tickFromFrame(clipStart());
 				m_pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
 				pSession->updateTimeScale();
 			}
@@ -485,12 +485,9 @@ bool qtractorMidiClip::openMidiFile (
 	// setRevision(1);
 
 	// Default clip length will be whole sequence duration.
-	if (iFrameLength == 0) {
-		const unsigned long iClipStart = clipStart();
-		const unsigned long t0 = pSession->tickFromFrame(iClipStart);
+	if (iClipLength == 0) {
 		const unsigned long t1 = t0 + pSeq->timeLength();
-		const unsigned long iClipEnd = pSession->frameFromTick(t1);
-		setClipLength(iClipEnd - iClipStart);
+		setClipLength(pSession->frameFromTick(t1) - iClipStart);
 	}
 
 	// Clip name should be clear about it all.
