@@ -86,8 +86,8 @@ public:
 	void setClipOffset(unsigned long iClipOffset);
 	unsigned long clipOffset() const
 		{ return m_iClipOffset; }
-	unsigned long clipOffsetTime() const
-		{ return m_iClipOffsetTime; }
+//	unsigned long clipOffsetTime() const
+//		{ return m_iClipOffsetTime; }
 
 	// Clip selection accessors.
 	void setClipSelected(bool bClipSelected);
@@ -353,8 +353,8 @@ private:
 	unsigned long m_iClipOffset;        // Clip frame offset.
 
 	unsigned long m_iClipStartTime;     // Clip time (tick) start.
-	unsigned long m_iClipOffsetTime;    // Clip time (tick) offset.
-	unsigned long m_iClipLengthTime;	// Clip time (tick) length.
+	unsigned long m_iClipLengthTime;    // Clip time (tick) length.
+//	unsigned long m_iClipOffsetTime;    // Clip time (tick) offset.
 
 	unsigned long m_iSelectStart;       // Clip loop start frame-offset.
 	unsigned long m_iSelectEnd;         // Clip loop end frame-offset.
@@ -369,8 +369,8 @@ private:
 	unsigned long m_iFadeInLength;      // Fade-in length (in frames).
 	unsigned long m_iFadeOutLength;     // Fade-out length (in frames).
 
-	unsigned long m_iFadeInTime;        // Fade-in length (in ticks).
-	unsigned long m_iFadeOutTime;       // Fade-out length (in ticks).
+//	unsigned long m_iFadeInTime;        // Fade-in length (in ticks).
+//	unsigned long m_iFadeOutTime;       // Fade-out length (in ticks).
 
 	FadeType m_fadeInType;              // Fade-in curve type.
 	FadeType m_fadeOutType;             // Fade-out curve type.

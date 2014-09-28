@@ -152,19 +152,28 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	pItem->clipStart  = iClipStart;
 	pItem->clipOffset = iClipOffset;
 	pItem->clipLength = iClipLength;
+
 	long iFadeInLength = long(pClip->fadeInLength());
 	if (iFadeInLength > 0) {
-		iFadeInLength += long(pClip->clipOffset()) - long(iClipOffset);
+		if (fTimeStretch > 0.0f)
+			iFadeInLength = long(fTimeStretch * float(iFadeInLength));
+		else
+			iFadeInLength += long(pClip->clipStart()) - long(iClipStart);
 		if (iFadeInLength > 0)
 			pItem->fadeInLength = iFadeInLength;
 	}
+
 	long iFadeOutLength = long(pClip->fadeOutLength());
 	if (iFadeOutLength > 0) {
-		iFadeOutLength += long(iClipOffset + iClipLength)
-			- long(pClip->clipOffset() + pClip->clipLength());
+		if (fTimeStretch > 0.0f)
+			iFadeOutLength = long(fTimeStretch * float(iFadeOutLength));
+		else
+			iFadeOutLength += long(iClipStart + iClipLength)
+				- long(pClip->clipStart() + pClip->clipLength());
 		if (iFadeOutLength > 0)
 			pItem->fadeOutLength = iFadeOutLength;
 	}
+
 	if (fTimeStretch > 0.0f) {
 		pItem->timeStretch = fTimeStretch;
 		switch ((pClip->track())->trackType()) {
@@ -185,6 +194,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 			break;
 		}
 	}
+
 	if (fPitchShift > 0.0f)
 		pItem->pitchShift = fPitchShift;
 	m_items.append(pItem);
@@ -261,7 +271,7 @@ void qtractorClipCommand::takeInfoClip ( qtractorClip *pClip,
 void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 {
 	Item *pItem = new Item(ResetClip, pClip, pClip->track());
-	pItem->clipOffset = pClip->clipOffset();
+//	pItem->clipOffset = pClip->clipOffset();
 	pItem->clipLength = pClip->clipLength();
 	m_items.append(pItem);
 
@@ -681,12 +691,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case ResetClip: {
 			const unsigned long iClipStartTime  = pClip->clipStartTime();
-			const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
+		//	const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
 			const unsigned long iClipLengthTime = pClip->clipLengthTime();
-			pClip->setClipOffset(pItem->clipOffset);
+		//	pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
-			pItem->clipOffset =	pSession->frameFromTickRange(
-				iClipStartTime, iClipStartTime + iClipOffsetTime);
+		//	pItem->clipOffset =	pSession->frameFromTickRange(
+		//		iClipStartTime, iClipStartTime + iClipOffsetTime);
 			pItem->clipLength =	pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
 			break;

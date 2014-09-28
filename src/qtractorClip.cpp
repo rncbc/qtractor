@@ -82,8 +82,8 @@ void qtractorClip::clear (void)
 	m_iClipOffset     = 0;
 
 	m_iClipStartTime  = 0;
-	m_iClipOffsetTime = 0;
 	m_iClipLengthTime = 0;
+//	m_iClipOffsetTime = 0;
 
 	m_iSelectStart    = 0;
 	m_iSelectEnd      = 0;
@@ -97,8 +97,8 @@ void qtractorClip::clear (void)
 	m_iFadeInLength   = 0;
 	m_iFadeOutLength  = 0;
 
-	m_iFadeInTime     = 0;
-	m_iFadeOutTime    = 0;
+//	m_iFadeInTime     = 0;
+//	m_iFadeOutTime    = 0;
 
 	setFadeInType(InQuad);
 	setFadeOutType(OutQuad);
@@ -192,9 +192,9 @@ void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 {
 	m_iClipOffset = iClipOffset;
 
-	if (m_pTrack && m_pTrack->session())
-		m_iClipOffsetTime = m_pTrack->session()->tickFromFrameRange(
-			m_iClipStart, m_iClipStart + m_iClipOffset);
+//	if (m_pTrack && m_pTrack->session())
+//		m_iClipOffsetTime = m_pTrack->session()->tickFromFrameRange(
+//			m_iClipStart, m_iClipStart + m_iClipOffset);
 }
 
 
@@ -266,9 +266,9 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	
 	m_iFadeInLength = iFadeInLength;
 
-	if (m_pTrack && m_pTrack->session())
-		m_iFadeInTime = m_pTrack->session()->tickFromFrameRange(
-			m_iClipStart, m_iClipStart + m_iFadeInLength);
+//	if (m_pTrack && m_pTrack->session())
+//		m_iFadeInTime = m_pTrack->session()->tickFromFrameRange(
+//			m_iClipStart, m_iClipStart + m_iFadeInLength);
 }
 
 
@@ -290,10 +290,10 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 	m_iFadeOutLength = iFadeOutLength;
 
-	if (m_pTrack && m_pTrack->session())
-		m_iFadeOutTime = m_pTrack->session()->tickFromFrameRange(
-			m_iClipStart + m_iClipLength - m_iFadeOutLength,
-			m_iClipStart + m_iClipLength);
+//	if (m_pTrack && m_pTrack->session())
+//		m_iFadeOutTime = m_pTrack->session()->tickFromFrameRange(
+//			m_iClipStart + m_iClipLength - m_iFadeOutLength,
+//			m_iClipStart + m_iClipLength);
 }
 
 
@@ -331,17 +331,16 @@ void qtractorClip::updateClipTime (void)
 		return;
 
 	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
-
-	m_iClipOffset = pSession->frameFromTickRange(
-		m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime);
 	m_iClipLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iClipLengthTime);
+//	m_iClipOffset = pSession->frameFromTickRange(
+//		m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime);
 
-	m_iFadeInLength = pSession->frameFromTickRange(
-		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);
-	m_iFadeOutLength = pSession->frameFromTickRange(
-		m_iClipStartTime + m_iClipLengthTime - m_iFadeOutTime,
-		m_iClipStartTime + m_iClipLengthTime);
+//	m_iFadeInLength = pSession->frameFromTickRange(
+//		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);
+//	m_iFadeOutLength = pSession->frameFromTickRange(
+//		m_iClipStartTime + m_iClipLengthTime - m_iFadeOutTime,
+//		m_iClipStartTime + m_iClipLengthTime);
 }
 
 

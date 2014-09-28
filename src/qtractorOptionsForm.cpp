@@ -157,7 +157,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
 #else
-	m_ui.PluginExperimentalGroupBox->hide();
+	m_ui.PluginsExperimentalGroupBox->hide();
 #endif
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
