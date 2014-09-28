@@ -6,8 +6,13 @@ ChangeLog
 
 SVN TRUNK
 
+- Clip fade-in/out now follows time-stretch resizing, via
+  shift/ctrl+click and drag one of its edges.
+
 - Attempt to correct potential clip-offset misalignments
-  due to varying tempo map changes. (EXPERIMENTAL)
+  due to varying tempo map changes; audio clip offsets due
+  for recording latency compensation are not quantized to
+  MIDI metronomic time scale anymore. (EXPERIMENTAL)
 
 - Fixed a typo causing FTBFS when VST plug-in support is
   explicity disabled (./configure --disable-vst).
