@@ -1263,17 +1263,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="732"/>
+        <location filename="../qtractorClipCommand.cpp" line="742"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="734"/>
+        <location filename="../qtractorClipCommand.cpp" line="744"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="920"/>
+        <location filename="../qtractorClipCommand.cpp" line="930"/>
         <source>clip tool %1</source>
         <translation>Nástroj na záznamy %1</translation>
     </message>
