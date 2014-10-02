@@ -50,7 +50,7 @@
 #include <QSplitter>
 #include <QLabel>
 
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QVBoxLayout>
 
 #include <QContextMenuEvent>
@@ -931,13 +931,16 @@ protected:
 	// Initial minimum widget extents.
 	QSize sizeHint() const;
 
+	// Multi-row workspace layout method.
+	void updateWorkspace();
+
 private:
 
 	// Instance variables.
 	qtractorMixerRack *m_pRack;
 
 	// Layout widgets.
-	QHBoxLayout *m_pWorkspaceLayout;
+	QGridLayout *m_pWorkspaceLayout;
 	QWidget     *m_pWorkspaceWidget;
 };
 
@@ -949,7 +952,7 @@ private:
 qtractorMixerRackWidget::qtractorMixerRackWidget (
 	qtractorMixerRack *pRack ) : QScrollArea(pRack), m_pRack(pRack)
 {
-	m_pWorkspaceLayout = new QHBoxLayout();
+	m_pWorkspaceLayout = new QGridLayout();
 	m_pWorkspaceLayout->setMargin(0);
 	m_pWorkspaceLayout->setSpacing(0);
 
@@ -976,7 +979,7 @@ qtractorMixerRackWidget::~qtractorMixerRackWidget (void)
 // Add/remove a mixer strip to/from rack workspace.
 void qtractorMixerRackWidget::addStrip ( qtractorMixerStrip *pStrip )
 {
-	m_pWorkspaceLayout->addWidget(pStrip);
+	m_pWorkspaceLayout->addWidget(pStrip, 0, m_pWorkspaceLayout->count());
 }
 
 
@@ -998,9 +1001,7 @@ void qtractorMixerRackWidget::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	QScrollArea::resizeEvent(pResizeEvent);
 
-//	m_pWorkspaceWidget->setMinimumWidth(QScrollArea::viewport()->width());
-	m_pWorkspaceWidget->setFixedHeight(QScrollArea::viewport()->height());
-	m_pWorkspaceWidget->adjustSize();
+	updateWorkspace();
 }
 
 
@@ -1065,6 +1066,45 @@ void qtractorMixerRackWidget::mousePressEvent ( QMouseEvent *pMouseEvent )
 QSize qtractorMixerRackWidget::sizeHint (void) const
 {
 	return QSize(160, 320);
+}
+
+
+// Multi-row workspace layout method.
+void qtractorMixerRackWidget::updateWorkspace (void)
+{
+	QWidget *pViewport = QScrollArea::viewport();
+	const int h = pViewport->height();
+	const int w = pViewport->width();
+
+	const int nitems = m_pWorkspaceLayout->count();
+	const int nrows  = h / sizeHint().height();
+	const int ncols  = nitems / (nrows > 0 ? nrows : 1);
+
+	if (nitems > 3) qDebug("qdock1_rack[%p]::refresh(%d, %d)"
+		" nitems=%d nrows=%d ncols=%d", this, w, h, nitems, nrows, ncols);
+
+	if (nitems > 0) {
+		QLayoutItem *items[nitems];
+		for (int i = 0; i < nitems; ++i)
+			items[i] = m_pWorkspaceLayout->takeAt(0);
+		int row = 0;
+		int col = 0;
+		int wth = 0;
+		for (int i = 0; i < nitems; ++i) {
+			QLayoutItem *item = items[i];
+			wth += item->sizeHint().width();
+			if (wth > w && row < nrows && col > ncols) {
+				wth = 0;
+				col = 0;
+				++row;
+			}
+			m_pWorkspaceLayout->addItem(item, row, col++);
+		}
+	}
+
+//	m_pWorkspaceWidget->setMinimumWidth(w);
+	m_pWorkspaceWidget->setFixedHeight(h);
+	m_pWorkspaceWidget->adjustSize();
 }
 
 
