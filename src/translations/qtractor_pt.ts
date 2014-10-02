@@ -9114,22 +9114,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1377"/>
+        <location filename="../qtractorMixer.cpp" line="1417"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1367"/>
+        <location filename="../qtractorMixer.cpp" line="1407"/>
         <source>Inputs</source>
         <translation>Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1368"/>
+        <location filename="../qtractorMixer.cpp" line="1408"/>
         <source>Tracks</source>
         <translation>Pistas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1370"/>
+        <location filename="../qtractorMixer.cpp" line="1410"/>
         <source>Outputs</source>
         <translation>Saídas</translation>
     </message>
@@ -9156,22 +9156,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1029"/>
+        <location filename="../qtractorMixer.cpp" line="1030"/>
         <source>&amp;Inputs</source>
         <translation type="unfinished">&amp;Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1033"/>
+        <location filename="../qtractorMixer.cpp" line="1034"/>
         <source>&amp;Outputs</source>
         <translation type="unfinished">&amp;Saídas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1039"/>
+        <location filename="../qtractorMixer.cpp" line="1040"/>
         <source>&amp;Monitor</source>
         <translation type="unfinished">&amp;Monitorar</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1048"/>
+        <location filename="../qtractorMixer.cpp" line="1049"/>
         <source>&amp;Buses...</source>
         <translation type="unfinished">&amp;Canais Primários...</translation>
     </message>
