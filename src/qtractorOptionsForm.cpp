@@ -347,6 +347,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.SessionAutoSaveSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MixerAutoGridLayoutCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -545,6 +548,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MetroBeatVelocitySpinBox->setValue(m_pOptions->iMetroBeatVelocity);
 	m_ui.MetroBeatDurationSpinBox->setValue(m_pOptions->iMetroBeatDuration);
 	m_ui.MidiMetroBusCheckBox->setChecked(m_pOptions->bMidiMetroBus);
+
+	// Mixer preferences.
+	m_ui.MixerAutoGridLayoutCheckBox->setChecked(m_pOptions->bMixerAutoGridLayout);
 
 	// Custom colors.
 	int iColor;
@@ -745,6 +751,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iSessionBackupMode   = m_ui.SessionBackupModeComboBox->currentIndex();
 		m_pOptions->bAutoSaveEnabled     = m_ui.SessionAutoSaveCheckBox->isChecked();
 		m_pOptions->iAutoSavePeriod      = m_ui.SessionAutoSaveSpinBox->value();
+		// Mixer preferences....
+		m_pOptions->bMixerAutoGridLayout = m_ui.MixerAutoGridLayoutCheckBox->isChecked();
 		// Custom colors.
 		int iColor;
 		for (iColor = 0; iColor < AudioMeterColors; ++iColor)

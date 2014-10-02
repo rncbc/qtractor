@@ -1338,6 +1338,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMidiPlayer();
 	updateMidiControl();
 	updateMidiMetronome();
+	updateMixerAutoGridLayout();
 	updateSyncViewHold();
 
 	// FIXME: This is what it should ever be,
@@ -4666,6 +4667,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMetroBeatVelocity  = m_pOptions->iMetroBeatVelocity;
 	const int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
+	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
@@ -4812,6 +4814,10 @@ void qtractorMainForm::viewOptions (void)
 			( bOldMidiMetroBus     && !m_pOptions->bMidiMetroBus)     ||
 			(!bOldMidiMetroBus     &&  m_pOptions->bMidiMetroBus))
 			updateMidiMetronome();
+		// Mixer layout options...
+		if (( bOldMixerAutoGridLayout && !m_pOptions->bMixerAutoGridLayout) ||
+			(!bOldMixerAutoGridLayout &&  m_pOptions->bMixerAutoGridLayout))
+			updateMixerAutoGridLayout();
 		// Transport display options...
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
@@ -6202,7 +6208,15 @@ void qtractorMainForm::updateMidiMetronome (void)
 }
 
 
-// Update tranmsport display options.
+// Update mixer automatic multi-row strip/grid layout.
+void qtractorMainForm::updateMixerAutoGridLayout (void)
+{
+	if (m_pMixer)
+		m_pMixer->updateWorkspaces();
+}
+
+
+// Update transport display options.
 void qtractorMainForm::updateSyncViewHold (void)
 {
 	if (m_pOptions == NULL)

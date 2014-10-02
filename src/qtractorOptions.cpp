@@ -316,6 +316,11 @@ void qtractorOptions::loadOptions (void)
 	// User preference options.
 	m_settings.beginGroup("/Preferences");
 
+	// Mixer options.
+	m_settings.beginGroup("/Mixer");
+	bMixerAutoGridLayout = m_settings.value("/AutoGridLayout", false).toBool();
+	m_settings.endGroup();
+
 	// Meter colors.
 	m_settings.beginGroup("/Colors");
 	audioMeterColors = m_settings.value("/AudioMeter").toStringList();
@@ -573,6 +578,11 @@ void qtractorOptions::saveOptions (void)
 
 	// User preference options.
 	m_settings.beginGroup("/Preferences");
+
+	// Mixer options.
+	m_settings.beginGroup("/Mixer");
+	m_settings.setValue("/AutoGridLayout", bMixerAutoGridLayout);
+	m_settings.endGroup();
 
 	// Meter colors.
 	m_settings.beginGroup("/Colors");

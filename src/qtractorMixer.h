@@ -258,6 +258,9 @@ public:
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
 
+	// Multi-row workspace layout method.
+	void updateWorkspace();
+
 public slots:
 
 	// Bus context menu slots.
@@ -320,6 +323,9 @@ public:
 
 	// Complete mixer recycle.
 	void clear();
+
+	// Multi-row workspace layout method.
+	void updateWorkspaces();
 
 protected:
 
