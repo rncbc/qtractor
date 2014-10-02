@@ -917,6 +917,9 @@ public:
 	void addStrip(qtractorMixerStrip *pStrip);
 	void removeStrip( qtractorMixerStrip *pStrip);
 
+	// Multi-row workspace layout method.
+	void updateWorkspace();
+
 protected:
 
 	// Resize event handler.
@@ -930,9 +933,6 @@ protected:
 
 	// Initial minimum widget extents.
 	QSize sizeHint() const;
-
-	// Multi-row workspace layout method.
-	void updateWorkspace();
 
 private:
 
@@ -1076,14 +1076,12 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 	const int h = pViewport->height();
 	const int w = pViewport->width();
 
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	const bool bAutoGridLayout = (pOptions && pOptions->bMixerAutoGridLayout);
 	const int nitems = m_pWorkspaceLayout->count();
-	const int nrows  = h / sizeHint().height();
-	const int ncols  = nitems / (nrows > 0 ? nrows : 1);
-
-	if (nitems > 3) qDebug("qdock1_rack[%p]::refresh(%d, %d)"
-		" nitems=%d nrows=%d ncols=%d", this, w, h, nitems, nrows, ncols);
-
 	if (nitems > 0) {
+		const int nrows = h / sizeHint().height();
+		const int ncols = nitems / (nrows > 0 ? nrows : 1);
 		QLayoutItem *items[nitems];
 		for (int i = 0; i < nitems; ++i)
 			items[i] = m_pWorkspaceLayout->takeAt(0);
@@ -1092,11 +1090,13 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 		int wth = 0;
 		for (int i = 0; i < nitems; ++i) {
 			QLayoutItem *item = items[i];
-			wth += item->sizeHint().width();
-			if (wth > w && row < nrows && col > ncols) {
-				wth = 0;
-				col = 0;
-				++row;
+			if (bAutoGridLayout) {
+				wth += item->sizeHint().width();
+				if (wth > w && row < nrows && col > ncols) {
+					wth = 0;
+					col = 0;
+					++row;
+				}
 			}
 			m_pWorkspaceLayout->addItem(item, row, col++);
 		}
@@ -1394,6 +1394,13 @@ void qtractorMixerRack::busPropertiesSlot (void)
 }
 
 
+// Multi-row workspace layout method.
+void qtractorMixerRack::updateWorkspace (void)
+{
+	m_pRackWidget->updateWorkspace();
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMixer -- Mixer widget.
 
@@ -1677,6 +1684,15 @@ void qtractorMixer::clear (void)
 	m_pInputRack->clear();
 	m_pTrackRack->clear();
 	m_pOutputRack->clear();
+}
+
+
+// Update mixer automatic multi-row strip/grid layout.
+void qtractorMixer::updateWorkspaces (void)
+{
+	m_pInputRack->updateWorkspace();
+	m_pTrackRack->updateWorkspace();
+	m_pOutputRack->updateWorkspace();
 }
 
 

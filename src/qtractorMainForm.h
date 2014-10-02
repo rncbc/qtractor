@@ -399,6 +399,7 @@ protected:
 	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();
+	void updateMixerAutoGridLayout();
 	void updateSyncViewHold();
 
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);

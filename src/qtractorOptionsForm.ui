@@ -60,7 +60,7 @@
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-		<widget class="QGroupBox" name="GeneralSessionGroupBox">
+        <widget class="QGroupBox" name="GeneralSessionGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -285,7 +285,7 @@
         </widget>
        </item>
        <item>
-		<widget class="QGroupBox" name="GeneralOptionsGroupBox">
+        <widget class="QGroupBox" name="GeneralOptionsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -509,7 +509,7 @@
         </spacer>
        </item>
        <item>
-		<widget class="QGroupBox" name="GeneralTransportGroupBox">
+        <widget class="QGroupBox" name="GeneralTransportGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -646,7 +646,7 @@
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-		<widget class="QGroupBox" name="AudioCaptureGroupBox">
+        <widget class="QGroupBox" name="AudioCaptureGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2138,7 +2138,7 @@
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-		<widget class="QGroupBox" name="DisplayDefaultsGroupBox">
+        <widget class="QGroupBox" name="DisplayDefaultsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2288,7 +2288,50 @@
         </widget>
        </item>
        <item>
-		<widget class="QGroupBox" name="DisplayMetersGroupBox">
+        <widget class="QGroupBox" name="DisplayMixerGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Mixer</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>8</number>
+          </property>
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="MixerAutoGridLayoutCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to allow automatic mixer strip/grid layout (multi-row).</string>
+            </property>
+            <property name="text">
+			 <string>A&amp;utomatic strip/grid layout (multi-row)</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+U</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="DisplayMetersGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2568,7 +2611,7 @@
         </widget>
        </item>
        <item>
-		<widget class="QGroupBox" name="DisplayMessagesGroupBox">
+        <widget class="QGroupBox" name="DisplayMessagesGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2724,7 +2767,7 @@
         </spacer>
        </item>
        <item>
-		<widget class="QGroupBox" name="DisplayTransportGroupBox">
+        <widget class="QGroupBox" name="DisplayTransportGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2767,7 +2810,7 @@
         </widget>
        </item>
        <item>
-		<widget class="QGroupBox" name="DisplayDialogsGroupBox">
+        <widget class="QGroupBox" name="DisplayDialogsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2810,7 +2853,7 @@
         </widget>
        </item>
        <item>
-		<widget class="QGroupBox" name="DisplayLoggingGroupBox">
+        <widget class="QGroupBox" name="DisplayLoggingGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2925,7 +2968,7 @@
         <number>8</number>
        </property>
        <item>
-		<widget class="QGroupBox" name="PluginsPathsGroupBox">
+        <widget class="QGroupBox" name="PluginsPathsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -3244,7 +3287,7 @@
         </widget>
        </item>
        <item>
-		<widget class="QGroupBox" name="PluginsInstrumentsGroupBox">
+        <widget class="QGroupBox" name="PluginsInstrumentsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -3332,7 +3375,7 @@
         </spacer>
        </item>
        <item>
-		<widget class="QGroupBox" name="PluginsEditorGroupBox">
+        <widget class="QGroupBox" name="PluginsEditorGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -3375,7 +3418,7 @@
         </widget>
        </item>
        <item>
-		<widget class="QGroupBox" name="PluginsExperimentalGroupBox">
+        <widget class="QGroupBox" name="PluginsExperimentalGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -3530,6 +3573,7 @@
   <tabstop>MidiMetroBusCheckBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>BaseFontSizeComboBox</tabstop>
+  <tabstop>MixerAutoGridLayoutCheckBox</tabstop>
   <tabstop>AudioMeterLevelComboBox</tabstop>
   <tabstop>AudioMeterColorLineEdit</tabstop>
   <tabstop>AudioMeterColorToolButton</tabstop>
