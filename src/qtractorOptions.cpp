@@ -338,6 +338,11 @@ void qtractorOptions::loadOptions (void)
 	bDontUseNativeDialogs = !bUseNativeDialogs;
 	m_settings.endGroup();
 
+	// Custom display options.
+	m_settings.beginGroup("/Custom");
+	sCustomColorTheme = m_settings.value("/ColorTheme").toString();
+	m_settings.endGroup();
+
 	m_settings.endGroup(); // Preferences
 }
 
@@ -598,6 +603,11 @@ void qtractorOptions::saveOptions (void)
 	// Run-time special semi/non-persistent options.
 	m_settings.beginGroup("/Dialogs");
 	m_settings.setValue("/UseNativeDialogs", bUseNativeDialogs);
+	m_settings.endGroup();
+
+	// Custom display options.
+	m_settings.beginGroup("/Custom");
+	m_settings.setValue("/ColorTheme", sCustomColorTheme);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences
