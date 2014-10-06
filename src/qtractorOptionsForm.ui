@@ -3647,6 +3647,8 @@
   <tabstop>SyncViewHoldCheckBox</tabstop>
   <tabstop>UseNativeDialogsCheckBox</tabstop>
   <tabstop>MixerAutoGridLayoutCheckBox</tabstop>
+  <tabstop>CustomColorThemeComboBox</tabstop>
+  <tabstop>CustomStyleThemeComboBox</tabstop>
   <tabstop>AudioMeterLevelComboBox</tabstop>
   <tabstop>AudioMeterColorLineEdit</tabstop>
   <tabstop>AudioMeterColorToolButton</tabstop>
