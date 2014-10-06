@@ -251,6 +251,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// To remember last time we've shown the playhead.
 	m_iPlayHead = 0;
+	m_iPlayHeadAutoBackward = 0;
 
 	// We'll start clean.
 	m_iUntitled   = 0;
@@ -5107,6 +5108,9 @@ void qtractorMainForm::transportPlay (void)
 					: SND_SEQ_EVENT_START)
 				: SND_SEQ_EVENT_STOP);
 		}
+		// Save auto-backward return position...
+		if (bPlaying)
+			m_iPlayHeadAutoBackward = m_pSession->playHead();
 	}
 
 	stabilizeForm();
@@ -5429,14 +5433,8 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		if (pCurveCommand)
 			m_pSession->commands()->push(pCurveCommand);
 		// Auto-backward reset feature...
-		if (m_ui.transportAutoBackwardAction->isChecked()) {
-			unsigned long iPlayHead = m_pSession->playHead();
-			if (iPlayHead > m_pSession->editHead())
-				iPlayHead = m_pSession->editHead();
-			else
-				iPlayHead = 0;
-			m_pSession->setPlayHead(iPlayHead);
-		}
+		if (m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
 	}	// Start something... ;)
 	else ++m_iTransportUpdate;
 
@@ -5858,12 +5856,8 @@ void qtractorMainForm::updateSessionPre (void)
 	//  Actually (re)start session engines...
 	if (startSession()) {
 		// (Re)set playhead...
-		if (m_ui.transportAutoBackwardAction->isChecked()) {
-			if (m_iPlayHead > m_pSession->editHead())
-				m_pSession->setPlayHead(m_pSession->editHead());
-			else
-				m_pSession->setPlayHead(0);
-		}
+		if (m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->resetAllMidiControllers(false); // Deferred++
 		// Get on with the special ALSA sequencer notifier...
@@ -6950,10 +6944,7 @@ void qtractorMainForm::timerSlot (void)
 				else
 				// Auto-backward reset feature...
 				if (m_ui.transportAutoBackwardAction->isChecked()) {
-					if (m_iPlayHead > m_pSession->editHead())
-						m_pSession->setPlayHead(m_pSession->editHead());
-					else
-						m_pSession->setPlayHead(0);
+					m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
 					++m_iTransportUpdate;
 				} else {
 					// Stop at once!

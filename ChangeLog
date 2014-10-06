@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Transport auto-backward feature now honoring last position
+  playback was started. (EXPERIMENTAL)
+
 - Introducing brand new application user preferences on
   View/Options.../Display/Options/Custom style and color
   themes (eg. "KXStudio", by Filipe Coelho aka. falkTX).
@@ -718,20 +721,20 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 - Audio clip wave-forms were being displayed in inverted phase (ie.
   upside-down) all this time ever since day one. What a shame! :)
 
-- LV2 Programs interface is getting initial experimental status, to let
-  LV2 instrument plugins get on par with the DSSI and VST crowd for MIDI
-  bank/program instrument inventory and selection support (a sidetrack
-  complot with Filipe Coelho aka. falktx, thanks:).
+- LV2 Programs interface is getting initial experimental status, to
+  let LV2 instrument plugins get on par with the DSSI and VST crowd
+  for MIDI bank/program instrument inventory and selection support
+  (a sidetrack complot with Filipe Coelho aka. falktx, thanks:).
 
-- Dropped the old but entirely useless LV2 URI-unmap feature, now being
-  superseded by official LV2 URID (un)mapper.
+- Dropped the old but entirely useless LV2 URI-unmap feature, now
+  being superseded by official LV2 URID (un)mapper.
 
 - Russian (ru) translation added (by Alexandre Prokoudine, thanks).
 
 - SLV2 deprecation process started, effective now at configure time.
 
-- Added include <unistd.h> to shut up gcc 4.7 build failures (patch by
-  Alessio Treglia).
+- Added include <unistd.h> to shut up gcc 4.7 build failures (patch
+  by Alessio Treglia).
 
 - Another approach avoiding recursive observer widget updates. Also
   applies to mixer, monitor and track state buttons.
@@ -813,8 +816,8 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 
 - Make sure all MIDI note-off are always queued after their respective
   note-on events when buffering for MIDI input of instrument plugins,
-  event though for zero duration MIDI note events (hopefully fixing the
-  hanging notes bug reported by Albert Graef, thanks).
+  event though for zero duration MIDI note events (hopefully fixing
+  the hanging notes bug reported by Albert Graef, thanks).
 
 - LV2 MIDI-fx plugin support has been repaired.
 
@@ -846,16 +849,16 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
   position and current selected track; the last one clicked over and/or
   selected still has precedence (following request by Loiugi Verona).
 
-- Drag-moving clips horizontally with the keyboard arrow-keys just got a
-  step better with a fixed minimum of one pixel, depending still on the
-  current snap-per-beat setting and horizontal zoom level (as suggested
-  by Louigi Verona, thanks).
+- Drag-moving clips horizontally with the keyboard arrow-keys just got
+  a step better with a fixed minimum of one pixel, depending still on
+  the current snap-per-beat setting and horizontal zoom level (as
+  suggested by Louigi Verona, thanks).
 
 - Get maximum and minimum peak values back when drawing audio waveforms.
 
-- Automation play/feedback has been missed to show on those plugins that
-  provide their own GUI, now on par with all the rest 'homebrew' widgets
-  (eg. generic plugin properties dialog).
+- Automation play/feedback has been missed to show on those plugins
+  that provide their own GUI, now on par with all the rest 'homebrew'
+  widgets (eg. generic plugin properties dialog).
 
 - All plugin parameters automation and selection were left inaccessible
   until the generic native plugin dialog is eventually shown, now fixed.
@@ -876,19 +879,19 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 - Fixed extraordinary shadow-playback of audio clips which extent were
   longer than the respective audio file length.
 
-- Default session file format option now promoted (see
-  View/Options.../General/Session) in the way of whether file suffix gets
-  honored upon session open or save (.qtr, .qts or .qtz). This brand new
-  option also applies for default state file format on a JACK-session
-  salvage context.
+- Default session file format option now promoted (see View/Options...
+  /General/Session) in the way of whether file suffix gets honored upon
+  session open or save (.qtr, .qts or .qtz). This brand new option also
+  applies for default state file format on a JACK-session salvage
+  context.
 
 - The View/Options... (aka. user preferences) dialog sees a new
-  arranjement in layout, with some options moving into this brand new tab
-  page called General.
+  arranjement in layout, with some options moving into this brand
+  new tab page called General.
 
-- LV2 State extension support has been added, which shall replace old LV2
-  Persist extension interface in the near future. It also replaces the LV2
-  Files extension from now on (thanks to Dave Robillard).
+- LV2 State extension support has been added, which shall replace old
+  LV2 Persist extension interface in the near future. It also replaces
+  the LV2 Files extension from now on (thanks to Dave Robillard).
 
 - Dirty MIDI clips are now auto-saved when MIDI track properties get
   changed through its own dialog.
@@ -897,15 +900,15 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 
 - MIDI SysEx event list editing is now fixed.
 
-- Once again, make sure all recorded clips start and end at the very same
-  position when multiple track recording is turned on/off, while playback
-  is still rolling.
+- Once again, make sure all recorded clips start and end at the very
+  same position when multiple track recording is turned on/off, while
+  playback is still rolling.
 
 - Fixed Makefile.in handling installation directories to the configure
   script eg. --datadir, --localedir.
 
-- Possible attempt to improve in-flight recording clip display, especially
-  when looping and MIDI clips are involved.
+- Possible attempt to improve in-flight recording clip display,
+  especially when looping and MIDI clips are involved.
 
 - MIDI clip revision (re)numbering paranoia has been improved as much to
   avoid MIDI file clashes as much as possible while editing multiple MIDI
