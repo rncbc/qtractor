@@ -6,8 +6,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Introducing a brand new application user preference as
+  View/Options.../Display/Options/Custom color theme (eg.
+  "Carla PRO Black", by Filipe Coelho aka. falktx).
+
 - Mixer widget gets automatic multi-row strip layout.
- 
+
 - Clip fade-in/out now follows time-stretch resizing, via
   shift/ctrl+click and drag one of its edges.
 

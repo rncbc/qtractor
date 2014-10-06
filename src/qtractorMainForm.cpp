@@ -4669,6 +4669,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
 	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
+	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -4719,7 +4720,8 @@ void qtractorMainForm::viewOptions (void)
 			updateMessagesCapture();
 			iNeedRestart |= RestartProgram;
 		}
-		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
+		if ((iOldBaseFontSize != m_pOptions->iBaseFontSize) ||
+			(sOldCustomColorTheme != m_pOptions->sCustomColorTheme))
 			iNeedRestart |= RestartProgram;
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||

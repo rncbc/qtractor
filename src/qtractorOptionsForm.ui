@@ -2288,7 +2288,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="DisplayMixerGroupBox">
+        <widget class="QGroupBox" name="DisplayOptionsGroupBox">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -2296,7 +2296,7 @@
           </font>
          </property>
          <property name="title">
-          <string>Mixer</string>
+          <string>Options</string>
          </property>
          <property name="flat">
           <bool>true</bool>
@@ -2309,6 +2309,44 @@
            <number>4</number>
           </property>
           <item row="0" column="0">
+           <widget class="QCheckBox" name="SyncViewHoldCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
+            </property>
+            <property name="text">
+             <string>&amp;Hold auto-scrolling (follow play-head) on edits</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+H</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="UseNativeDialogsCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to use desktop environment native dialogs.</string>
+            </property>
+            <property name="text">
+             <string>Use desktop environment &amp;native dialogs</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+N</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QCheckBox" name="MixerAutoGridLayoutCheckBox">
             <property name="font">
              <font>
@@ -2320,15 +2358,86 @@
              <string>Whether to allow automatic mixer strip/grid layout (multi-row).</string>
             </property>
             <property name="text">
-			 <string>A&amp;utomatic strip/grid layout (multi-row)</string>
+             <string>A&amp;utomatic mixer strip/grid layout (multi-row)</string>
             </property>
             <property name="shortcut">
              <string>Alt+U</string>
             </property>
            </widget>
           </item>
+          <item row="0" column="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="CustomColorThemeTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;Custom color theme:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>CustomColorThemeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QComboBox" name="CustomColorThemeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Custom color theme</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>(default)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Carla PRO Black</string>
+             </property>
+            </item>
+           </widget>
+          </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>4</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item>
         <widget class="QGroupBox" name="DisplayMetersGroupBox">
@@ -2747,105 +2856,6 @@
             </property>
             <property name="value">
              <number>1000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint">
-          <size>
-           <width>20</width>
-           <height>4</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="DisplayTransportGroupBox">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="title">
-          <string>Transport</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>8</number>
-          </property>
-          <property name="spacing">
-           <number>4</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="SyncViewHoldCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
-            </property>
-            <property name="text">
-             <string>&amp;Hold auto-scrolling (follow play-head) on edits</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+H</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="DisplayDialogsGroupBox">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="title">
-          <string>Dialogs</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>8</number>
-          </property>
-          <property name="spacing">
-           <number>4</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="UseNativeDialogsCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to use native dialogs.</string>
-            </property>
-            <property name="text">
-             <string>Use &amp;native dialogs</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+N</string>
             </property>
            </widget>
           </item>
@@ -3573,6 +3583,8 @@
   <tabstop>MidiMetroBusCheckBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>BaseFontSizeComboBox</tabstop>
+  <tabstop>SyncViewHoldCheckBox</tabstop>
+  <tabstop>UseNativeDialogsCheckBox</tabstop>
   <tabstop>MixerAutoGridLayoutCheckBox</tabstop>
   <tabstop>AudioMeterLevelComboBox</tabstop>
   <tabstop>AudioMeterColorLineEdit</tabstop>
@@ -3584,8 +3596,6 @@
   <tabstop>MessagesFontPushButton</tabstop>
   <tabstop>MessagesLimitCheckBox</tabstop>
   <tabstop>MessagesLimitLinesSpinBox</tabstop>
-  <tabstop>SyncViewHoldCheckBox</tabstop>
-  <tabstop>UseNativeDialogsCheckBox</tabstop>
   <tabstop>MessagesLogCheckBox</tabstop>
   <tabstop>MessagesLogPathComboBox</tabstop>
   <tabstop>MessagesLogPathToolButton</tabstop>

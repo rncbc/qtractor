@@ -350,6 +350,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MixerAutoGridLayoutCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.CustomColorThemeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -565,6 +568,12 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	changeAudioMeterLevel(m_ui.AudioMeterLevelComboBox->currentIndex());
 	changeMidiMeterLevel(m_ui.MidiMeterLevelComboBox->currentIndex());
 
+	int iCustomColorTheme = 0;
+	if (!m_pOptions->sCustomColorTheme.isEmpty())
+		iCustomColorTheme = m_ui.CustomColorThemeComboBox->findText(
+			m_pOptions->sCustomColorTheme);
+	m_ui.CustomColorThemeComboBox->setCurrentIndex(iCustomColorTheme);
+
 	// Load Display options...
 	QFont font;
 	// Messages font.
@@ -764,6 +773,11 @@ void qtractorOptionsForm::accept (void)
 		// Dialogs preferences...
 		m_pOptions->bUseNativeDialogs = m_ui.UseNativeDialogsCheckBox->isChecked();
 		m_pOptions->bDontUseNativeDialogs = !m_pOptions->bUseNativeDialogs;
+		// Custom options..
+		if (m_ui.CustomColorThemeComboBox->currentIndex() > 0)
+			m_pOptions->sCustomColorTheme = m_ui.CustomColorThemeComboBox->currentText();
+		else
+			m_pOptions->sCustomColorTheme.clear();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
