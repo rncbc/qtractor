@@ -452,6 +452,7 @@ private:
 	QString m_sNsmExt;
 	bool m_bNsmDirty;
 	unsigned long m_iPlayHead;
+	unsigned long m_iPlayHeadAutoBackward;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
 	int m_iIdleTimer;
