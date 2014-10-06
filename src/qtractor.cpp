@@ -28,6 +28,8 @@
 #include <QTranslator>
 #include <QLocale>
 
+#include <QStyleFactory>
+
 
 #define CONFIG_QUOTE1(x) #x
 #define CONFIG_QUOTED(x) CONFIG_QUOTE1(x)
@@ -346,7 +348,10 @@ int main ( int argc, char **argv )
 		return 2;
 	}
 
-	// Custom color theme (eg. "Carla PRO Black")...
+	// Custom style theme...
+	if (!options.sCustomStyleTheme.isEmpty())
+		app.setStyle(QStyleFactory::create(options.sCustomStyleTheme));
+	// Custom color theme (eg. "KXStudio")...
 	if (!options.sCustomColorTheme.isEmpty()) {
 		QPalette pal(app.palette());
 		pal.setColor(QPalette::Active,   QPalette::Window, QColor(17, 17, 17));

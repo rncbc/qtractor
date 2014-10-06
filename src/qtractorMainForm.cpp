@@ -4680,6 +4680,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
+	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -4731,7 +4732,8 @@ void qtractorMainForm::viewOptions (void)
 			iNeedRestart |= RestartProgram;
 		}
 		if ((iOldBaseFontSize != m_pOptions->iBaseFontSize) ||
-			(sOldCustomColorTheme != m_pOptions->sCustomColorTheme))
+			(sOldCustomColorTheme != m_pOptions->sCustomColorTheme) ||
+			(sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme))
 			iNeedRestart |= RestartProgram;
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
