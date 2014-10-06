@@ -273,8 +273,9 @@ public:
 	// Run-time special non-persistent options.
 	bool bDontUseNativeDialogs;
 
-	// Custom color theme (eg. "Carla PRO Black").
+	// Custom display options.
 	QString sCustomColorTheme;
+	QString sCustomStyleTheme;
 
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);

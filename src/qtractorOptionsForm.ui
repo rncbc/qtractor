@@ -2320,10 +2320,10 @@
              <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
             </property>
             <property name="text">
-             <string>&amp;Hold auto-scrolling (follow play-head) on edits</string>
+             <string>H&amp;old auto-scrolling (follow play-head) on edits</string>
             </property>
             <property name="shortcut">
-             <string>Alt+H</string>
+             <string>Alt+O</string>
             </property>
            </widget>
           </item>
@@ -2365,6 +2365,112 @@
             </property>
            </widget>
           </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="DisplayCustomGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Custom</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>8</number>
+          </property>
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="CustomColorThemeTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;Color theme:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>CustomColorThemeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="CustomColorThemeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Custom color palette theme</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>(default)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>KXStudio</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="CustomStyleThemeTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Style t&amp;heme:</string>
+            </property>
+            <property name="buddy">
+             <cstring>CustomStyleThemeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QComboBox" name="CustomStyleThemeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Custom widget style theme</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>(default)</string>
+             </property>
+            </item>
+           </widget>
+          </item>
           <item row="0" column="2">
            <spacer>
             <property name="orientation">
@@ -2377,51 +2483,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLabel" name="CustomColorThemeTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&amp;Custom color theme:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>CustomColorThemeComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QComboBox" name="CustomColorThemeComboBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Custom color theme</string>
-            </property>
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string>(default)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Carla PRO Black</string>
-             </property>
-            </item>
-           </widget>
           </item>
          </layout>
         </widget>

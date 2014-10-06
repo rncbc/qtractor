@@ -41,6 +41,9 @@
 #include <QHeaderView>
 #include <QUrl>
 
+#include <QStyleFactory>
+
+
 // Needed for fabs(), logf() and powf()
 #include <math.h>
 
@@ -353,6 +356,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.CustomColorThemeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.CustomStyleThemeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -568,11 +574,28 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	changeAudioMeterLevel(m_ui.AudioMeterLevelComboBox->currentIndex());
 	changeMidiMeterLevel(m_ui.MidiMeterLevelComboBox->currentIndex());
 
+	// Custom display options...
+	const QString& sDefName = tr("(default)");
+
+	m_ui.CustomColorThemeComboBox->clear();
+	m_ui.CustomColorThemeComboBox->addItem(sDefName);
+	m_ui.CustomColorThemeComboBox->addItem("KXStudio");
+
 	int iCustomColorTheme = 0;
 	if (!m_pOptions->sCustomColorTheme.isEmpty())
 		iCustomColorTheme = m_ui.CustomColorThemeComboBox->findText(
 			m_pOptions->sCustomColorTheme);
 	m_ui.CustomColorThemeComboBox->setCurrentIndex(iCustomColorTheme);
+
+	m_ui.CustomStyleThemeComboBox->clear();
+	m_ui.CustomStyleThemeComboBox->addItem(sDefName);
+	m_ui.CustomStyleThemeComboBox->addItems(QStyleFactory::keys());
+
+	int iCustomStyleTheme = 0;
+	if (!m_pOptions->sCustomStyleTheme.isEmpty())
+		iCustomStyleTheme = m_ui.CustomStyleThemeComboBox->findText(
+			m_pOptions->sCustomStyleTheme);
+	m_ui.CustomStyleThemeComboBox->setCurrentIndex(iCustomStyleTheme);
 
 	// Load Display options...
 	QFont font;
@@ -778,6 +801,10 @@ void qtractorOptionsForm::accept (void)
 			m_pOptions->sCustomColorTheme = m_ui.CustomColorThemeComboBox->currentText();
 		else
 			m_pOptions->sCustomColorTheme.clear();
+		if (m_ui.CustomStyleThemeComboBox->currentIndex() > 0)
+			m_pOptions->sCustomStyleTheme = m_ui.CustomStyleThemeComboBox->currentText();
+		else
+			m_pOptions->sCustomStyleTheme.clear();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}

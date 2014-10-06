@@ -6,9 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
-- Introducing a brand new application user preference as
-  View/Options.../Display/Options/Custom color theme (eg.
-  "Carla PRO Black", by Filipe Coelho aka. falktx).
+- Introducing brand new application user preferences on
+  View/Options.../Display/Options/Custom style and color
+  themes (eg. "KXStudio", by Filipe Coelho aka. falkTX).
 
 - Mixer widget gets automatic multi-row strip layout.
 
