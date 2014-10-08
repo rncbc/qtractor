@@ -4881,9 +4881,11 @@ void qtractorMainForm::transportBackward (void)
 		& (Qt::ShiftModifier | Qt::ControlModifier)) {
 		m_pSession->setPlayHead(0);
 	} else {
-		unsigned long iPlayHead = m_pSession->playHead();
+		const unsigned long iPlayHead = m_pSession->playHead();
 		QList<unsigned long> list;
 		list.append(0);
+		if (iPlayHead > m_iPlayHeadAutoBackward)
+			list.append(m_iPlayHeadAutoBackward);
 		if (iPlayHead > m_pSession->editHead())
 			list.append(m_pSession->editHead());
 	//	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
@@ -4905,8 +4907,7 @@ void qtractorMainForm::transportBackward (void)
 		if (pMarker && iPlayHead > pMarker->frame)
 			list.append(pMarker->frame);
 		qSort(list.begin(), list.end());
-		iPlayHead = list.last();
-		m_pSession->setPlayHead(iPlayHead);
+		m_pSession->setPlayHead(list.last());
 	}
 	++m_iTransportUpdate;
 
@@ -4993,8 +4994,10 @@ void qtractorMainForm::transportForward (void)
 		& (Qt::ShiftModifier | Qt::ControlModifier)) {
 		m_pSession->setPlayHead(m_pSession->sessionEnd());
 	} else {
-		unsigned long iPlayHead = m_pSession->playHead();
+		const unsigned long iPlayHead = m_pSession->playHead();
 		QList<unsigned long> list;
+		if (iPlayHead < m_iPlayHeadAutoBackward)
+			list.append(m_iPlayHeadAutoBackward);
 		if (iPlayHead < m_pSession->editHead())
 			list.append(m_pSession->editHead());
 		if (iPlayHead < m_pSession->editTail())
@@ -5016,8 +5019,7 @@ void qtractorMainForm::transportForward (void)
 		if (pMarker && iPlayHead < pMarker->frame)
 			list.append(pMarker->frame);
 		qSort(list.begin(), list.end());
-		iPlayHead = list.first();
-		m_pSession->setPlayHead(iPlayHead);
+		m_pSession->setPlayHead(list.first());
 	}
 	++m_iTransportUpdate;
 
