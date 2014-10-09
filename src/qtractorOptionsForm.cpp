@@ -579,6 +579,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	m_ui.CustomColorThemeComboBox->clear();
 	m_ui.CustomColorThemeComboBox->addItem(sDefName);
+	m_ui.CustomColorThemeComboBox->addItem("Wonton Soup");
 	m_ui.CustomColorThemeComboBox->addItem("KXStudio");
 
 	int iCustomColorTheme = 0;
