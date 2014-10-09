@@ -318,42 +318,75 @@ void stacktrace ( int signo )
 
 
 //-------------------------------------------------------------------------
-// main - The main program trunk.
+// update_palette() - Application palette settler.
 //
 
-int main ( int argc, char **argv )
+static bool update_palette ( QPalette& pal, const QString& sCustomColorTheme )
 {
-	Q_INIT_RESOURCE(qtractor);
-#ifdef CONFIG_STACKTRACE
-#if defined(__GNUC__) && defined(Q_OS_LINUX)
-	signal(SIGILL,  stacktrace);
-	signal(SIGFPE,  stacktrace);
-	signal(SIGSEGV, stacktrace);
-	signal(SIGABRT, stacktrace);
-	signal(SIGBUS,  stacktrace);
-#endif
-#endif
-	qtractorApplication app(argc, argv);
+	if (sCustomColorTheme.isEmpty())
+		return false;
 
-	// Construct default settings; override with command line arguments.
-	qtractorOptions options;
-	if (!options.parse_args(app.arguments())) {
-		app.quit();
-		return 1;
+	if (sCustomColorTheme == "Wonton Soup") {
+		pal.setColor(QPalette::Active,   QPalette::Window, QColor(73, 78, 88));
+		pal.setColor(QPalette::Inactive, QPalette::Window, QColor(73, 78, 88));
+		pal.setColor(QPalette::Disabled, QPalette::Window, QColor(64, 68, 77));
+		pal.setColor(QPalette::Active,   QPalette::WindowText, QColor(182, 193, 208));
+		pal.setColor(QPalette::Inactive, QPalette::WindowText, QColor(182, 193, 208));
+		pal.setColor(QPalette::Disabled, QPalette::WindowText, QColor(97, 104, 114));
+		pal.setColor(QPalette::Active,   QPalette::Base, QColor(60, 64, 72));
+		pal.setColor(QPalette::Inactive, QPalette::Base, QColor(60, 64, 72));
+		pal.setColor(QPalette::Disabled, QPalette::Base, QColor(52, 56, 63));
+		pal.setColor(QPalette::Active,   QPalette::AlternateBase, QColor(67, 71, 80));
+		pal.setColor(QPalette::Inactive, QPalette::AlternateBase, QColor(67, 71, 80));
+		pal.setColor(QPalette::Disabled, QPalette::AlternateBase, QColor(59, 62, 70));
+		pal.setColor(QPalette::Active,   QPalette::ToolTipBase, QColor(182, 193, 208));
+		pal.setColor(QPalette::Inactive, QPalette::ToolTipBase, QColor(182, 193, 208));
+		pal.setColor(QPalette::Disabled, QPalette::ToolTipBase, QColor(182, 193, 208));
+		pal.setColor(QPalette::Active,   QPalette::ToolTipText, QColor(42, 44, 48));
+		pal.setColor(QPalette::Inactive, QPalette::ToolTipText, QColor(42, 44, 48));
+		pal.setColor(QPalette::Disabled, QPalette::ToolTipText, QColor(42, 44, 48));
+		pal.setColor(QPalette::Active,   QPalette::Text, QColor(210, 222, 240));
+		pal.setColor(QPalette::Inactive, QPalette::Text, QColor(210, 222, 240));
+		pal.setColor(QPalette::Disabled, QPalette::Text, QColor(99, 105, 115));
+		pal.setColor(QPalette::Active,   QPalette::Button, QColor(82, 88, 99));
+		pal.setColor(QPalette::Inactive, QPalette::Button, QColor(82, 88, 99));
+		pal.setColor(QPalette::Disabled, QPalette::Button, QColor(72, 77, 87));
+		pal.setColor(QPalette::Active,   QPalette::ButtonText, QColor(210, 222, 240));
+		pal.setColor(QPalette::Inactive, QPalette::ButtonText, QColor(210, 222, 240));
+		pal.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(111, 118, 130));
+		pal.setColor(QPalette::Active,   QPalette::BrightText, QColor(255, 255, 255));
+		pal.setColor(QPalette::Inactive, QPalette::BrightText, QColor(255, 255, 255));
+		pal.setColor(QPalette::Disabled, QPalette::BrightText, QColor(255, 255, 255));
+		pal.setColor(QPalette::Active,   QPalette::Light, QColor(95, 101, 114));
+		pal.setColor(QPalette::Inactive, QPalette::Light, QColor(95, 101, 114));
+		pal.setColor(QPalette::Disabled, QPalette::Light, QColor(86, 92, 104));
+		pal.setColor(QPalette::Active,   QPalette::Midlight, QColor(84, 90, 101));
+		pal.setColor(QPalette::Inactive, QPalette::Midlight, QColor(84, 90, 101));
+		pal.setColor(QPalette::Disabled, QPalette::Midlight, QColor(75, 81, 91));
+		pal.setColor(QPalette::Active,   QPalette::Dark, QColor(40, 43, 49));
+		pal.setColor(QPalette::Inactive, QPalette::Dark, QColor(40, 43, 49));
+		pal.setColor(QPalette::Disabled, QPalette::Dark, QColor(35, 38, 43));
+		pal.setColor(QPalette::Active,   QPalette::Mid, QColor(63, 68, 76));
+		pal.setColor(QPalette::Inactive, QPalette::Mid, QColor(63, 68, 76));
+		pal.setColor(QPalette::Disabled, QPalette::Mid, QColor(56, 59, 67));
+		pal.setColor(QPalette::Active,   QPalette::Shadow, QColor(29, 31, 35));
+		pal.setColor(QPalette::Inactive, QPalette::Shadow, QColor(29, 31, 35));
+		pal.setColor(QPalette::Disabled, QPalette::Shadow, QColor(25, 27, 30));
+		pal.setColor(QPalette::Active,   QPalette::Highlight, QColor(120, 136, 156));
+		pal.setColor(QPalette::Inactive, QPalette::Highlight, QColor(81, 90, 103));
+		pal.setColor(QPalette::Disabled, QPalette::Highlight, QColor(64, 68, 77));
+		pal.setColor(QPalette::Active,   QPalette::HighlightedText, QColor(209, 225, 244));
+		pal.setColor(QPalette::Inactive, QPalette::HighlightedText, QColor(182, 193, 208));
+		pal.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(97, 104, 114));
+		pal.setColor(QPalette::Active,   QPalette::Link, QColor(156, 212, 255));
+		pal.setColor(QPalette::Inactive, QPalette::Link, QColor(156, 212, 255));
+		pal.setColor(QPalette::Disabled, QPalette::Link, QColor(82, 102, 119));
+		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(64, 128, 255));
+		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(64, 128, 255));
+		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(54, 76, 119));
 	}
-
-	// Have another instance running?
-	if (app.setup()) {
-		app.quit();
-		return 2;
-	}
-
-	// Custom style theme...
-	if (!options.sCustomStyleTheme.isEmpty())
-		app.setStyle(QStyleFactory::create(options.sCustomStyleTheme));
-	// Custom color theme (eg. "KXStudio")...
-	if (!options.sCustomColorTheme.isEmpty()) {
-		QPalette pal(app.palette());
+	else
+	if (sCustomColorTheme == "KXStudio") {
 		pal.setColor(QPalette::Active,   QPalette::Window, QColor(17, 17, 17));
 		pal.setColor(QPalette::Inactive, QPalette::Window, QColor(17, 17, 17));
 		pal.setColor(QPalette::Disabled, QPalette::Window, QColor(14, 14, 14));
@@ -411,11 +444,54 @@ int main ( int argc, char **argv )
 		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(230, 100, 230));
 		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(230, 100, 230));
 		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(74, 34, 74));
-		app.setPalette(pal);
+		return true;
 	}
 
-	// Dark themes grayed/disabled color group fix...
+	return false;
+}
+
+
+//-------------------------------------------------------------------------
+// main - The main program trunk.
+//
+
+int main ( int argc, char **argv )
+{
+	Q_INIT_RESOURCE(qtractor);
+#ifdef CONFIG_STACKTRACE
+#if defined(__GNUC__) && defined(Q_OS_LINUX)
+	signal(SIGILL,  stacktrace);
+	signal(SIGFPE,  stacktrace);
+	signal(SIGSEGV, stacktrace);
+	signal(SIGABRT, stacktrace);
+	signal(SIGBUS,  stacktrace);
+#endif
+#endif
+	qtractorApplication app(argc, argv);
+
+	// Construct default settings; override with command line arguments.
+	qtractorOptions options;
+	if (!options.parse_args(app.arguments())) {
+		app.quit();
+		return 1;
+	}
+
+	// Have another instance running?
+	if (app.setup()) {
+		app.quit();
+		return 2;
+	}
+
+	// Custom style theme...
+	if (!options.sCustomStyleTheme.isEmpty())
+		app.setStyle(QStyleFactory::create(options.sCustomStyleTheme));
+
+	// Custom color theme (eg. "KXStudio")...
 	QPalette pal(app.palette());
+	unsigned int iUpdatePalette = 0;
+	if (update_palette(pal, options.sCustomColorTheme))
+		++iUpdatePalette;
+	// Dark themes grayed/disabled color group fix...
 	if (pal.base().color().value() < 0x7f) {
 		const QColor& color = pal.window().color();
 		const int iGroups = int(QPalette::Active | QPalette::Inactive) + 1;
@@ -443,14 +519,15 @@ int main ( int argc, char **argv )
 		pal.setColor(QPalette::Disabled,
 			QPalette::ButtonText, pal.mid().color());
 	#endif
-		app.setPalette(pal);
+		++iUpdatePalette;
 	}
+	// New palette update?
+	if (iUpdatePalette > 0)
+		app.setPalette(pal);
 
 	// Set default base font...
-	int iBaseFontSize = app.font().pointSize();
 	if (options.iBaseFontSize > 0)
-		iBaseFontSize = options.iBaseFontSize;
-	app.setFont(QFont(app.font().family(), iBaseFontSize));
+		app.setFont(QFont(app.font().family(), options.iBaseFontSize));
 
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;

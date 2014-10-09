@@ -2429,6 +2429,11 @@
             </item>
             <item>
              <property name="text">
+              <string>Wonton Soup</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>KXStudio</string>
              </property>
             </item>
