@@ -318,42 +318,15 @@ void stacktrace ( int signo )
 
 
 //-------------------------------------------------------------------------
-// main - The main program trunk.
+// update_palette() - Application palette settler.
 //
 
-int main ( int argc, char **argv )
+static bool update_palette ( QPalette& pal, const QString& sCustomColorTheme )
 {
-	Q_INIT_RESOURCE(qtractor);
-#ifdef CONFIG_STACKTRACE
-#if defined(__GNUC__) && defined(Q_OS_LINUX)
-	signal(SIGILL,  stacktrace);
-	signal(SIGFPE,  stacktrace);
-	signal(SIGSEGV, stacktrace);
-	signal(SIGABRT, stacktrace);
-	signal(SIGBUS,  stacktrace);
-#endif
-#endif
-	qtractorApplication app(argc, argv);
+	if (sCustomColorTheme.isEmpty())
+		return false;
 
-	// Construct default settings; override with command line arguments.
-	qtractorOptions options;
-	if (!options.parse_args(app.arguments())) {
-		app.quit();
-		return 1;
-	}
-
-	// Have another instance running?
-	if (app.setup()) {
-		app.quit();
-		return 2;
-	}
-
-	// Custom style theme...
-	if (!options.sCustomStyleTheme.isEmpty())
-		app.setStyle(QStyleFactory::create(options.sCustomStyleTheme));
-	// Custom color theme (eg. "KXStudio")...
-	if (!options.sCustomColorTheme.isEmpty()) {
-		QPalette pal(app.palette());
+	if (sCustomColorTheme == "KXStudio") {
 		pal.setColor(QPalette::Active,   QPalette::Window, QColor(17, 17, 17));
 		pal.setColor(QPalette::Inactive, QPalette::Window, QColor(17, 17, 17));
 		pal.setColor(QPalette::Disabled, QPalette::Window, QColor(14, 14, 14));
@@ -411,11 +384,54 @@ int main ( int argc, char **argv )
 		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(230, 100, 230));
 		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(230, 100, 230));
 		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(74, 34, 74));
-		app.setPalette(pal);
+		return true;
 	}
 
-	// Dark themes grayed/disabled color group fix...
+	return false;
+}
+
+
+//-------------------------------------------------------------------------
+// main - The main program trunk.
+//
+
+int main ( int argc, char **argv )
+{
+	Q_INIT_RESOURCE(qtractor);
+#ifdef CONFIG_STACKTRACE
+#if defined(__GNUC__) && defined(Q_OS_LINUX)
+	signal(SIGILL,  stacktrace);
+	signal(SIGFPE,  stacktrace);
+	signal(SIGSEGV, stacktrace);
+	signal(SIGABRT, stacktrace);
+	signal(SIGBUS,  stacktrace);
+#endif
+#endif
+	qtractorApplication app(argc, argv);
+
+	// Construct default settings; override with command line arguments.
+	qtractorOptions options;
+	if (!options.parse_args(app.arguments())) {
+		app.quit();
+		return 1;
+	}
+
+	// Have another instance running?
+	if (app.setup()) {
+		app.quit();
+		return 2;
+	}
+
+	// Custom style theme...
+	if (!options.sCustomStyleTheme.isEmpty())
+		app.setStyle(QStyleFactory::create(options.sCustomStyleTheme));
+
+	// Custom color theme (eg. "KXStudio")...
 	QPalette pal(app.palette());
+	unsigned int iUpdatePalette = 0;
+	if (update_palette(pal, options.sCustomColorTheme))
+		++iUpdatePalette;
+	// Dark themes grayed/disabled color group fix...
 	if (pal.base().color().value() < 0x7f) {
 		const QColor& color = pal.window().color();
 		const int iGroups = int(QPalette::Active | QPalette::Inactive) + 1;
@@ -443,14 +459,15 @@ int main ( int argc, char **argv )
 		pal.setColor(QPalette::Disabled,
 			QPalette::ButtonText, pal.mid().color());
 	#endif
-		app.setPalette(pal);
+		++iUpdatePalette;
 	}
+	// New palette update?
+	if (iUpdatePalette > 0)
+		app.setPalette(pal);
 
 	// Set default base font...
-	int iBaseFontSize = app.font().pointSize();
 	if (options.iBaseFontSize > 0)
-		iBaseFontSize = options.iBaseFontSize;
-	app.setFont(QFont(app.font().family(), iBaseFontSize));
+		app.setFont(QFont(app.font().family(), options.iBaseFontSize));
 
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;
