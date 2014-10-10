@@ -384,6 +384,7 @@ static bool update_palette ( QPalette& pal, const QString& sCustomColorTheme )
 		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(64, 128, 255));
 		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(64, 128, 255));
 		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(54, 76, 119));
+		return true;
 	}
 	else
 	if (sCustomColorTheme == "KXStudio") {

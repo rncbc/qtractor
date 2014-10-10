@@ -393,6 +393,7 @@ protected:
 	void updateMidiControlModes();
 	void updateAudioPlayer();
 	void updateMidiQueueTimer();
+	void updateMidiDriftCorrect();
 	void updateMidiPlayer();
 	void updateMidiControl();
 	void updateAudioMetronome();
