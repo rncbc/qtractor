@@ -57,15 +57,17 @@ class qtractorPortListItem : public QTreeWidgetItem
 public:
 
 	// Constructor.
-	qtractorPortListItem(qtractorClientListItem *pClientItem,
-		const QString& sPortName);
+	qtractorPortListItem(qtractorClientListItem *pClientItem);
 	// Default destructor.
-	~qtractorPortListItem();
+	virtual ~qtractorPortListItem();
 
 	// Instance accessors.
 	void setPortName(const QString& sPortName);
 	const QString& clientName() const;
 	const QString& portName() const;
+
+	// Proto-pretty/display name accessors.
+	virtual void updatePortName();
 
 	// Complete client:port name helper.
 	QString clientPortName();
@@ -100,6 +102,12 @@ public:
 	// - Natural decimal sorting comparator.
 	bool operator< (const QTreeWidgetItem& other) const;
 
+protected:
+
+	// Port name display name accessors.
+	void setPortText(const QString& sPortText);
+	QString portText() const;
+
 private:
 
 	// Instance variables.
@@ -123,10 +131,9 @@ class qtractorClientListItem : public QTreeWidgetItem
 public:
 
 	// Constructor.
-	qtractorClientListItem(qtractorClientListView *pClientListView,
-		const QString& sClientName);
+	qtractorClientListItem(qtractorClientListView *pClientListView);
 	// Default destructor.
-	~qtractorClientListItem();
+	virtual ~qtractorClientListItem();
 
 	// Port finder.
 	qtractorPortListItem *findPortItem(const QString& sPortName);
@@ -134,6 +141,9 @@ public:
 	// Instance accessors.
 	void setClientName(const QString& sClientName);
 	const QString& clientName() const;
+
+	// Proto-pretty/display name accessors.
+	virtual void updateClientName();
 
 	// Readable flag accessor.
 	bool isReadable() const;
@@ -156,6 +166,12 @@ public:
 	// Proxy sort override method.
 	// - Natural decimal sorting comparator.
 	bool operator< (const QTreeWidgetItem& other) const;
+
+protected:
+
+	// Client name display name accessors.
+	void setClientText(const QString& sClientText);
+	QString clientText() const;
 
 private:
 

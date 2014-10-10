@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- JACK client/port pretty-name (metadata) support is being
+  seamlessly introduced. (EXPERIMENTAL)
+
 - Audio frame/MIDI time drift correction is now an option on
   View/Options.../MIDI/Playback/Correct MIDI queue drifting.
 
