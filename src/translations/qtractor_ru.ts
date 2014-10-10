@@ -10314,6 +10314,16 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="1514"/>
+        <source>Whether to enable MIDI queue time drift correction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="1517"/>
+        <source>E&amp;nable MIDI queue time drift correction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="1555"/>
         <source>Control</source>
         <translation>Управление</translation>
@@ -10793,20 +10803,11 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1333"/>
+        <location filename="../qtractorOptionsForm.ui" line="1520"/>
         <location filename="../qtractorOptionsForm.ui" line="2364"/>
         <location filename="../qtractorOptionsForm.ui" line="3570"/>
         <source>Alt+N</source>
         <translation type="unfinished">Alt+у</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="1514"/>
-        <source>Whether to correct MIDI queue drifting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="1517"/>
-        <source>Co&amp;rrect MIDI queue drifting</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1533"/>
@@ -10992,7 +10993,6 @@ Do you want to apply the changes?</source>
         <translation>&amp;Сбросить</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1520"/>
         <location filename="../qtractorOptionsForm.ui" line="2797"/>
         <source>Alt+R</source>
         <translation>Alt+с</translation>
