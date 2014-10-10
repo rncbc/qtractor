@@ -10,7 +10,8 @@ SVN TRUNK
   seamlessly introduced. (EXPERIMENTAL)
 
 - Audio frame/MIDI time drift correction is now an option on
-  View/Options.../MIDI/Playback/Correct MIDI queue drifting.
+  View/Options.../MIDI/Playback/Enable MIDI queue time drift
+  correction. (EXPERIMENTAL)
 
 - Transport auto-backward feature now honoring last position
   playback was started.

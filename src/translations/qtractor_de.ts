@@ -9684,6 +9684,7 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1333"/>
+        <location filename="../qtractorOptionsForm.ui" line="1520"/>
         <location filename="../qtractorOptionsForm.ui" line="2364"/>
         <location filename="../qtractorOptionsForm.ui" line="3570"/>
         <source>Alt+N</source>
@@ -9722,16 +9723,6 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1488"/>
         <source>Queue timer (resolution)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="1514"/>
-        <source>Whether to correct MIDI queue drifting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="1517"/>
-        <source>Co&amp;rrect MIDI queue drifting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10154,7 +10145,6 @@ Are you sure?</source>
         <translation>&amp;Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1520"/>
         <location filename="../qtractorOptionsForm.ui" line="2797"/>
         <source>Alt+R</source>
         <translation>Alt+F</translation>
@@ -10213,6 +10203,16 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2339"/>
         <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="1514"/>
+        <source>Whether to enable MIDI queue time drift correction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="1517"/>
+        <source>E&amp;nable MIDI queue time drift correction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

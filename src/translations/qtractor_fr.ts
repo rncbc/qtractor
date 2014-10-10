@@ -9978,6 +9978,7 @@ existantes:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1333"/>
+        <location filename="../qtractorOptionsForm.ui" line="1520"/>
         <location filename="../qtractorOptionsForm.ui" line="2364"/>
         <location filename="../qtractorOptionsForm.ui" line="3570"/>
         <source>Alt+N</source>
@@ -10020,12 +10021,12 @@ existantes:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1514"/>
-        <source>Whether to correct MIDI queue drifting</source>
+        <source>Whether to enable MIDI queue time drift correction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1517"/>
-        <source>Co&amp;rrect MIDI queue drifting</source>
+        <source>E&amp;nable MIDI queue time drift correction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10453,7 +10454,6 @@ existantes:</translation>
         <translation>&amp;Réinitialiser</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1520"/>
         <location filename="../qtractorOptionsForm.ui" line="2797"/>
         <source>Alt+R</source>
         <translation>Alt+R</translation>

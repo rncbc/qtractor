@@ -1511,13 +1511,13 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to correct MIDI queue drifting</string>
+             <string>Whether to enable MIDI queue time drift correction</string>
             </property>
             <property name="text">
-             <string>Co&amp;rrect MIDI queue drifting</string>
+             <string>E&amp;nable MIDI queue time drift correction</string>
             </property>
             <property name="shortcut">
-             <string>Alt+R</string>
+             <string>Alt+N</string>
             </property>
            </widget>
           </item>
