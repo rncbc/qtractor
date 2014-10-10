@@ -1,7 +1,7 @@
 // qtractorMidiConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,8 +43,8 @@ class qtractorMidiPortItem : public qtractorPortListItem
 public:
 
 	// Constructor.
-	qtractorMidiPortItem(qtractorMidiClientItem *pClientItem,
-		const QString& sPortName, int iAlsaPort);
+	qtractorMidiPortItem(
+		qtractorMidiClientItem *pClientItem, int iAlsaPort);
 	// Default destructor.
 	~qtractorMidiPortItem();
 
@@ -68,8 +68,8 @@ class qtractorMidiClientItem : public qtractorClientListItem
 public:
 
 	// Constructor.
-	qtractorMidiClientItem(qtractorMidiClientListView *pClientListView,
-		const QString& sClientName, int iAlsaClient);
+	qtractorMidiClientItem(
+		qtractorMidiClientListView *pClientListView, int iAlsaClient);
 	// Default destructor.
 	~qtractorMidiClientItem();
 

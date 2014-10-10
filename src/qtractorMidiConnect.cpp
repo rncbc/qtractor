@@ -1,7 +1,7 @@
 // qtractorMidiConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiConnect.h"
 #include "qtractorMidiEngine.h"
 
@@ -33,8 +34,8 @@
 
 // Constructor.
 qtractorMidiPortItem::qtractorMidiPortItem (
-	qtractorMidiClientItem *pClientItem, const QString& sPortName,
-	int iAlsaPort ) : qtractorPortListItem(pClientItem, sPortName)
+	qtractorMidiClientItem *pClientItem, int iAlsaPort )
+	: qtractorPortListItem(pClientItem)
 {
 	m_iAlsaPort = iAlsaPort;
 
@@ -73,8 +74,8 @@ int qtractorMidiPortItem::alsaPort (void) const
 
 // Constructor.
 qtractorMidiClientItem::qtractorMidiClientItem (
-	qtractorMidiClientListView *pClientListView, const QString& sClientName,
-	int iAlsaClient ) : qtractorClientListItem(pClientListView, sClientName)
+	qtractorMidiClientListView *pClientListView, int iAlsaClient )
+	: qtractorClientListItem(pClientListView)
 {
 	m_iAlsaClient = iAlsaClient;
 
@@ -223,7 +224,8 @@ int qtractorMidiClientListView::updateClientPorts (void)
 							qtractorMidiPortItem *pPortItem = NULL;
 							if (pClientItem == NULL) {
 								pClientItem = new qtractorMidiClientItem(this,
-									sClientName, iAlsaClient);
+									iAlsaClient);
+								pClientItem->setClientName(sClientName);
 								++iDirtyCount;
 							} else {
 								pPortItem = pClientItem->findPortItem(iAlsaPort);
@@ -235,7 +237,8 @@ int qtractorMidiClientListView::updateClientPorts (void)
 							if (pClientItem) {
 								if (pPortItem == NULL) {
 									pPortItem = new qtractorMidiPortItem(
-										pClientItem, sPortName, iAlsaPort);
+										pClientItem, iAlsaPort);
+									pPortItem->setPortName(sPortName);
 									++iDirtyCount;
 								} else if (sPortName != pPortItem->portName()) {
 									pPortItem->setPortName(sPortName);

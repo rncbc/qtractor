@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorConnect.h"
 
 #include <QApplication>
@@ -52,15 +53,15 @@
 
 // Constructor.
 qtractorPortListItem::qtractorPortListItem (
-	qtractorClientListItem *pClientItem, const QString& sPortName )
+	qtractorClientListItem *pClientItem )
 	: QTreeWidgetItem(pClientItem, qtractorConnect::PortItem)
 {
 	m_pClientItem = pClientItem;
-	m_sPortName   = sPortName;
+//	m_sPortName   = sPortName;
 	m_iPortMark   = 0;
 	m_bHilite     = false;
 
-	QTreeWidgetItem::setText(0, m_sPortName);
+//	QTreeWidgetItem::setText(0, m_sPortName);
 }
 
 // Default destructor.
@@ -73,9 +74,9 @@ qtractorPortListItem::~qtractorPortListItem (void)
 // Instance accessors.
 void qtractorPortListItem::setPortName ( const QString& sPortName )
 {
-	QTreeWidgetItem::setText(0, sPortName);
-
 	m_sPortName = sPortName;
+
+	updatePortName();
 }
 
 const QString& qtractorPortListItem::clientName (void) const
@@ -86,6 +87,25 @@ const QString& qtractorPortListItem::clientName (void) const
 const QString& qtractorPortListItem::portName (void) const
 {
 	return m_sPortName;
+}
+
+
+// Proto-pretty/alias display name method.
+void qtractorPortListItem::updatePortName (void)
+{
+	setPortText(m_sPortName);
+}
+
+
+// Port display name accessors.
+void qtractorPortListItem::setPortText ( const QString& sPortText )
+{
+	QTreeWidgetItem::setText(0, sPortText);
+}
+
+QString qtractorPortListItem::portText (void) const
+{
+	return QTreeWidgetItem::text(0);
 }
 
 
@@ -225,14 +245,14 @@ bool qtractorPortListItem::operator< ( const QTreeWidgetItem& other ) const
 
 // Constructor.
 qtractorClientListItem::qtractorClientListItem (
-	qtractorClientListView *pClientListView, const QString& sClientName )
+	qtractorClientListView *pClientListView )
 	: QTreeWidgetItem(pClientListView, qtractorConnect::ClientItem)
 {
-	m_sClientName = sClientName;
+//	m_sClientName = sClientName;
 	m_iClientMark = 0;
 	m_iHilite     = 0;
 	
-	QTreeWidgetItem::setText(0, m_sClientName);
+//	QTreeWidgetItem::setText(0, m_sClientName);
 }
 
 // Default destructor.
@@ -263,14 +283,33 @@ qtractorPortListItem *qtractorClientListItem::findPortItem (
 // Instance accessors.
 void qtractorClientListItem::setClientName ( const QString& sClientName )
 {
-	QTreeWidgetItem::setText(0, sClientName);
-
 	m_sClientName = sClientName;
+
+	updateClientName();
 }
 
 const QString& qtractorClientListItem::clientName (void) const
 {
 	return m_sClientName;
+}
+
+
+// Proto-pretty/alias display name method.
+void qtractorClientListItem::updateClientName (void)
+{
+	setClientText(m_sClientName);
+}
+
+
+// Client display name accessors.
+void qtractorClientListItem::setClientText ( const QString& sClientText )
+{
+	QTreeWidgetItem::setText(0, sClientText);
+}
+
+QString qtractorClientListItem::clientText (void) const
+{
+	return QTreeWidgetItem::text(0);
 }
 
 

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.3.9, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.3.10, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -218,6 +218,12 @@ AC_ARG_ENABLE(jack-latency,
   AC_HELP_STRING([--enable-jack-latency], [enable JACK latency support (default=yes)]),
   [ac_jack_latency="$enableval"],
   [ac_jack_latency="yes"])
+
+# Enable JACK metadata support.
+AC_ARG_ENABLE(jack_metadata,
+  AC_HELP_STRING([--enable-jack-metadata], [enable JACK metadata support (default=yes)]),
+  [ac_jack_metadata="$enableval"],
+  [ac_jack_metadata="yes"])
 
 # Enable NSM support.
 AC_ARG_ENABLE(nsm,
@@ -745,6 +751,13 @@ if test "x$ac_jack_latency" = "xyes"; then
    fi
 fi
 
+# Check for JACK metadata support availability.
+if test "x$ac_jack_metadata" = "xyes"; then
+   AC_CHECK_LIB(jack, jack_get_property, [ac_jack_metadata="yes"], [ac_jack_metadata="no"])
+else
+   AC_MSG_WARN([*** JACK metadata support will be disabled.])
+fi
+
 # Some recent distros (eg. fedora, debian) require this.
 ac_libs="$ac_libs -lX11"
 
@@ -1198,6 +1211,18 @@ if test "x$ac_jack_session" = "xyes"; then
    fi
 fi
 
+# Check for JACK metadata headers availability.
+if test "x$ac_jack_metadata" = "xyes"; then
+   AC_CHECK_HEADER(jack/metadata.h, [ac_jack_metadata="yes"], [ac_jack_metadata="no"])
+   if test "x$ac_jack_metadata" = "xyes"; then
+      AC_DEFINE(CONFIG_JACK_METADATA, 1, [Define if JACK metadata support is available.])
+   else
+      AC_MSG_WARN([*** jack/metadata.h file not found.])
+      AC_MSG_WARN([*** JACK metadata support will be disabled.])
+   fi
+fi
+
+
 # Check for NSM support.
 if test "x$ac_nsm" = "xyes"; then
    AC_DEFINE(CONFIG_NSM, 1, [Define if NSM support is available.])
@@ -1274,6 +1299,7 @@ echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
+echo "  JACK Metadata support  . . . . . . . . . . . . . .: $ac_jack_metadata"
 echo
 echo "  Non Session Management (NSM) support . . . . . . .: $ac_nsm"
 echo

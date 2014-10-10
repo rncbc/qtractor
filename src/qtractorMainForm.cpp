@@ -5378,6 +5378,9 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_JACK_LATENCY
 	list << tr("JACK Latency support disabled.");
 #endif
+#ifndef CONFIG_JACK_METADATA
+	list << tr("JACK Metadata support disabled.");
+#endif
 #ifndef CONFIG_NSM
 	list << tr("NSM support disabled.");
 #endif
