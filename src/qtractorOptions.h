@@ -125,6 +125,7 @@ public:
 	int  iMidiCaptureFormat;
 	int  iMidiCaptureQuantize;
 	int  iMidiQueueTimer;
+	bool bMidiDriftCorrect;
 	bool bMidiPlayerBus;
 	bool bMidiControlBus;
 	bool bMidiMetroBus;

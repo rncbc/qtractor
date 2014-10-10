@@ -619,7 +619,7 @@ void qtractorMidiOutputThread::process (void)
 
 	// Always do the queue drift stats
 	// at the bottom of the pack...
-	m_pMidiEngine->drift();
+	m_pMidiEngine->driftCheck();
 }
 
 
@@ -1169,6 +1169,8 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	m_pInputThread   = NULL;
 	m_pOutputThread  = NULL;
+
+	m_bDriftCorrect  = true;
 
 	m_iDriftCheck    = 0;
 	m_iDriftCount    = DRIFT_CHECK;
@@ -2002,8 +2004,10 @@ void qtractorMidiEngine::resetDrift (void)
 
 
 // Do ouput queue status (audio vs. MIDI)...
-void qtractorMidiEngine::drift (void)
+void qtractorMidiEngine::driftCheck (void)
 {
+	if (!m_bDriftCorrect)
+		return;
 	if (++m_iDriftCheck < m_iDriftCount)
 		return;
 
@@ -2051,8 +2055,8 @@ void qtractorMidiEngine::drift (void)
 			const unsigned long iMidiFrame
 				= pNode->frameFromTick(iMidiTime);
 			m_iFrameDrift = long(iAudioFrame - iMidiFrame);
-		#ifdef CONFIG_DEBUG_0
-			qDebug("qtractorMidiEngine::drift(%u): "
+		#ifdef CONFIG_DEBUG//_0
+			qDebug("qtractorMidiEngine::driftCheck(%u): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) "
 				"iTimeDrift=%ld iFrameDrift=%ld (%.2g%%)", m_iDriftCount,
 				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift, m_iFrameDrift,
@@ -3499,6 +3503,18 @@ void qtractorMidiEngine::setAlsaTimer ( int iAlsaTimer )
 int qtractorMidiEngine::alsaTimer (void) const
 {
 	return m_iAlsaTimer;
+}
+
+
+// Drift check/correction accessors.
+void qtractorMidiEngine::setDriftCorrect ( bool bDriftCorrect )
+{
+	m_bDriftCorrect = bDriftCorrect;
+}
+
+bool qtractorMidiEngine::isDriftCorrect (void) const
+{
+	return m_bDriftCorrect;
 }
 
 

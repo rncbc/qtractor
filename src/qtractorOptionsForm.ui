@@ -1502,6 +1502,25 @@
             </property>
            </spacer>
           </item>
+          <item row="0" column="3">
+           <widget class="QCheckBox" name="MidiDriftCorrectCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to correct MIDI queue drifting</string>
+            </property>
+            <property name="text">
+             <string>Co&amp;rrect MIDI queue drifting</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+R</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="4">
            <widget class="QCheckBox" name="MidiPlayerBusCheckBox">
             <property name="font">
@@ -3632,6 +3651,7 @@
   <tabstop>MidiCaptureFormatComboBox</tabstop>
   <tabstop>MidiCaptureQuantizeComboBox</tabstop>
   <tabstop>MidiQueueTimerComboBox</tabstop>
+  <tabstop>MidiDriftCorrectCheckBox</tabstop>
   <tabstop>MidiPlayerBusCheckBox</tabstop>
   <tabstop>MidiMmcModeComboBox</tabstop>
   <tabstop>MidiMmcDeviceComboBox</tabstop>

@@ -6,8 +6,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio frame/MIDI time drift correction is now an option on
+  View/Options.../MIDI/Playback/Correct MIDI queue drifting.
+
 - Transport auto-backward feature now honoring last position
-  playback was started. (EXPERIMENTAL)
+  playback was started.
 
 - Introducing brand new application user preferences on
   View/Options.../Display/Options/Custom style and color

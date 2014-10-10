@@ -134,7 +134,7 @@ public:
 		unsigned long iTime, float fGain = 1.0f);
 
 	// Do ouput queue drift stats (audio vs. MIDI)...
-	void drift();
+	void driftCheck();
 
 	// Flush ouput queue (if necessary)...
 	void flush();
@@ -232,6 +232,10 @@ public:
 	void setAlsaTimer(int iAlsaTimer);
 	int alsaTimer() const;
 
+	// Drift check/correction accessors.
+	void setDriftCorrect(bool bDriftCorrect);
+	bool isDriftCorrect() const;
+
 	// MMC device-id accessors.
 	void setMmcDevice(unsigned char mmcDevice);
 	unsigned char mmcDevice() const;
@@ -300,6 +304,9 @@ private:
 	// Name says it all.
 	qtractorMidiInputThread  *m_pInputThread;
 	qtractorMidiOutputThread *m_pOutputThread;
+
+	// Whether to check for time drift.
+	bool m_bDriftCorrect;
 
 	// The number of times we check for time drift.
 	unsigned int m_iDriftCheck;

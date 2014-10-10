@@ -1346,6 +1346,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateAudioMetronome();
 	updateMidiControlModes();
 	updateMidiQueueTimer();
+	updateMidiDriftCorrect();
 	updateMidiPlayer();
 	updateMidiControl();
 	updateMidiMetronome();
@@ -4661,6 +4662,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMidiClockMode      = m_pOptions->iMidiClockMode;
 	const int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
 	const int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
+	const bool    bOldMidiDriftCorrect   = m_pOptions->bMidiDriftCorrect;
 	const bool    bOldMidiPlayerBus      = m_pOptions->bMidiPlayerBus;
 	const QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
 	const QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
@@ -4796,6 +4798,10 @@ void qtractorMainForm::viewOptions (void)
 			( bOldAudioPlayerAutoConnect && !m_pOptions->bAudioPlayerAutoConnect) ||
 			(!bOldAudioPlayerAutoConnect &&  m_pOptions->bAudioPlayerAutoConnect))
 			updateAudioPlayer();
+		// MIDI engine drift correction option...
+		if (( bOldMidiDriftCorrect && !m_pOptions->bMidiDriftCorrect) ||
+			(!bOldMidiDriftCorrect &&  m_pOptions->bMidiDriftCorrect))
+			updateMidiDriftCorrect();
 		// MIDI engine player options...
 		if (( bOldMidiPlayerBus && !m_pOptions->bMidiPlayerBus) ||
 			(!bOldMidiPlayerBus &&  m_pOptions->bMidiPlayerBus))
@@ -6134,8 +6140,19 @@ void qtractorMainForm::updateMidiQueueTimer (void)
 	if (m_pOptions == NULL)
 		return;
 
-	// Configure the MIDI engine player handling...
+	// Configure the MIDI engine queue timer...
 	m_pSession->midiEngine()->setAlsaTimer(m_pOptions->iMidiQueueTimer);
+}
+
+
+// Update MIDI playback drift correction.
+void qtractorMainForm::updateMidiDriftCorrect (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Configure the MIDI engine drift correction...
+	m_pSession->midiEngine()->setDriftCorrect(m_pOptions->bMidiDriftCorrect);
 }
 
 
