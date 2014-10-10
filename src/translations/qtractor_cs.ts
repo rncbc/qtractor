@@ -1764,12 +1764,12 @@ Chcete zahodit tyto změny?</translation>
 <context>
     <name>qtractorClientListView</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="496"/>
+        <location filename="../qtractorConnect.cpp" line="535"/>
         <source>Readable Clients / Output Ports</source>
         <translation>Čitelní klienti/Výstupní přípojky</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="498"/>
+        <location filename="../qtractorConnect.cpp" line="537"/>
         <source>Writable Clients / Input Ports</source>
         <translation>Zapisovatelní klienti/Vstupní přípojky</translation>
     </message>
@@ -2068,22 +2068,22 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1757"/>
+        <location filename="../qtractorConnect.cpp" line="1796"/>
         <source>Connect</source>
         <translation>Připojit</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1762"/>
+        <location filename="../qtractorConnect.cpp" line="1801"/>
         <source>Disconnect</source>
         <translation>Odpojit</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1767"/>
+        <location filename="../qtractorConnect.cpp" line="1806"/>
         <source>Disconnect All</source>
         <translation>Odpojit vše</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1774"/>
+        <location filename="../qtractorConnect.cpp" line="1813"/>
         <source>Refresh</source>
         <translation>Obnovit</translation>
     </message>

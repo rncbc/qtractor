@@ -1129,12 +1129,12 @@ Você deseja descartar essas alterações?</translation>
 <context>
     <name>qtractorClientListView</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="496"/>
+        <location filename="../qtractorConnect.cpp" line="535"/>
         <source>Readable Clients / Output Ports</source>
         <translation>Saídas</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="498"/>
+        <location filename="../qtractorConnect.cpp" line="537"/>
         <source>Writable Clients / Input Ports</source>
         <translation>Entradas</translation>
     </message>
@@ -1381,22 +1381,22 @@ Você quer mesmo manter as modificações?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1774"/>
+        <location filename="../qtractorConnect.cpp" line="1813"/>
         <source>Refresh</source>
         <translation>Atualizar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1762"/>
+        <location filename="../qtractorConnect.cpp" line="1801"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1757"/>
+        <location filename="../qtractorConnect.cpp" line="1796"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1767"/>
+        <location filename="../qtractorConnect.cpp" line="1806"/>
         <source>Disconnect All</source>
         <translation>Desconectar Tudo</translation>
     </message>

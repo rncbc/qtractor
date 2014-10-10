@@ -1126,12 +1126,12 @@ Vuoi annullare le modifiche?</translation>
 <context>
     <name>qtractorClientListView</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="496"/>
+        <location filename="../qtractorConnect.cpp" line="535"/>
         <source>Readable Clients / Output Ports</source>
         <translation>Client Leggibili / Porte di Uscita</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="498"/>
+        <location filename="../qtractorConnect.cpp" line="537"/>
         <source>Writable Clients / Input Ports</source>
         <translation>Client Scrivibili / Porte di Ingresso</translation>
     </message>
@@ -1378,22 +1378,22 @@ Vuoi applicare le modifiche?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1757"/>
+        <location filename="../qtractorConnect.cpp" line="1796"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1762"/>
+        <location filename="../qtractorConnect.cpp" line="1801"/>
         <source>Disconnect</source>
         <translation>Disconnetti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1767"/>
+        <location filename="../qtractorConnect.cpp" line="1806"/>
         <source>Disconnect All</source>
         <translation>Disconnetti Tutti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1774"/>
+        <location filename="../qtractorConnect.cpp" line="1813"/>
         <source>Refresh</source>
         <translation>Aggiorna</translation>
     </message>

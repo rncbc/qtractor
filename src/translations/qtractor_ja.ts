@@ -1141,12 +1141,12 @@ Do you want to discard the changes?</source>
 <context>
     <name>qtractorClientListView</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="496"/>
+        <location filename="../qtractorConnect.cpp" line="535"/>
         <source>Readable Clients / Output Ports</source>
         <translation>出力可能なクライアント / 出力ポート</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="498"/>
+        <location filename="../qtractorConnect.cpp" line="537"/>
         <source>Writable Clients / Input Ports</source>
         <translation>入力可能なクライアント / 入力ポート</translation>
     </message>
@@ -1413,22 +1413,22 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1757"/>
+        <location filename="../qtractorConnect.cpp" line="1796"/>
         <source>Connect</source>
         <translation>接続</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1762"/>
+        <location filename="../qtractorConnect.cpp" line="1801"/>
         <source>Disconnect</source>
         <translation>切断</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1767"/>
+        <location filename="../qtractorConnect.cpp" line="1806"/>
         <source>Disconnect All</source>
         <translation>すべて切断</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1774"/>
+        <location filename="../qtractorConnect.cpp" line="1813"/>
         <source>Refresh</source>
         <translation>更新</translation>
     </message>
