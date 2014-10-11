@@ -9797,11 +9797,6 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1729"/>
-        <source>Cloc&amp;k:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="1745"/>
         <source>MIDI Clock control mode</source>
         <translation type="unfinished"></translation>
@@ -10213,6 +10208,11 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1517"/>
         <source>E&amp;nable MIDI queue time drift correction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="1729"/>
+        <source>MIDI Cloc&amp;k:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

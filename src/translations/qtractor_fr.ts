@@ -10102,8 +10102,12 @@ existantes:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1729"/>
+        <source>MIDI Cloc&amp;k:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Cloc&amp;k:</source>
-        <translation>Ho&amp;rloge:</translation>
+        <translation type="obsolete">Ho&amp;rloge:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1745"/>

@@ -9859,9 +9859,8 @@ Sei sicuro?</translation>
         <translation>Modalità controllo MIDI Song Position pointer (SPP)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1729"/>
         <source>Cloc&amp;k:</source>
-        <translation>Cloc&amp;k:</translation>
+        <translation type="obsolete">Cloc&amp;k:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1745"/>
@@ -10275,6 +10274,11 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1517"/>
         <source>E&amp;nable MIDI queue time drift correction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="1729"/>
+        <source>MIDI Cloc&amp;k:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
