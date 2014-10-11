@@ -291,6 +291,7 @@ protected slots:
 	void audioBuffNotify();
 	void audioSessNotify(void *pvSessionArg);
 	void audioSyncNotify(unsigned long iPlayHead);
+	void audioPropNotify();
 
 	void midiMmcNotify(const qtractorMmcEvent& mmce);
 	void midiCtlNotify(const qtractorCtlEvent& ctle);
@@ -470,6 +471,7 @@ private:
 	int m_iPlayerTimer;
 	int m_iAutoSaveTimer;
 	int m_iAutoSavePeriod;
+	int m_iAudioPropertyChange;
 
 	// Status bar item indexes
 	enum {

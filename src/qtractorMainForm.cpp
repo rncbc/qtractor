@@ -284,6 +284,8 @@ qtractorMainForm::qtractorMainForm (
 	m_pNsmClient = NULL;
 	m_bNsmDirty  = false;
 
+	m_iAudioPropertyChange = 0;
+
 	// Configure the audio file peak factory...
 	if (m_pSession->audioPeakFactory()) {
 		QObject::connect(m_pSession->audioPeakFactory(),
@@ -312,6 +314,9 @@ qtractorMainForm::qtractorMainForm (
 		QObject::connect(pAudioEngine->proxy(),
 			SIGNAL(syncEvent(unsigned long)),
 			SLOT(audioSyncNotify(unsigned long)));
+		QObject::connect(pAudioEngine->proxy(),
+			SIGNAL(propEvent()),
+			SLOT(audioPropNotify()));
 	}
 
 	// Configure the MIDI engine event handling...
@@ -5818,6 +5823,8 @@ bool qtractorMainForm::startSession (void)
 
 	m_iPlayerTimer = 0;
 
+	m_iAudioPropertyChange = 0;
+
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	const bool bResult = m_pSession->init();
 	QApplication::restoreOverrideCursor();
@@ -7022,8 +7029,14 @@ void qtractorMainForm::timerSlot (void)
 			if (pAudioEngine->updateConnects() == 0) {
 				appendMessagesColor(
 					tr("Audio connections change."), "#cc9966");
-				if (m_pConnections)
-					m_pConnections->connectForm()->audioRefresh();
+				if (m_pConnections) {
+					if (m_iAudioPropertyChange > 0) {
+						m_iAudioPropertyChange = 0;
+						m_pConnections->connectForm()->audioClear();
+					} else {
+						m_pConnections->connectForm()->audioRefresh();
+					}
+				}
 			}
 		}
 	}
@@ -7272,6 +7285,17 @@ void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
 }
 
 
+// Custom (JACK) audio property change event handler.
+void qtractorMainForm::audioPropNotify (void)
+{
+	// An Audio property change has just been issued;
+	// try to postpone the event effect a little more...
+	if (m_iAudioRefreshTimer  < QTRACTOR_TIMER_DELAY)
+		m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
+
+	// Mark that a complete refresh is needed...
+	++m_iAudioPropertyChange;
+}
 
 
 // Custom MMC event handler.
