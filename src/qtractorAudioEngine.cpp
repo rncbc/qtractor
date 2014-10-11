@@ -44,6 +44,10 @@
 #include <jack/session.h>
 #endif
 
+#ifdef CONFIG_JACK_METADATA
+#include <jack/metadata.h>
+#endif
+
 #include <QApplication>
 #include <QProgressBar>
 #include <QDomDocument>
@@ -383,6 +387,24 @@ static int qtractorAudioEngine_sync (
 }
 
 
+#ifdef CONFIG_JACK_METADATA
+//----------------------------------------------------------------------
+// qtractorAudioEngine_property_change -- JACK property change callabck
+//
+
+static void qtractorAudioEngine_property_change (
+	jack_uuid_t, const char *key, jack_property_change_t, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	// PRETTY_NAME is the only metadata we are currently interested in...
+	if (key && (::strcmp(key, JACK_METADATA_PRETTY_NAME) == 0))
+		pAudioEngine->notifyPropEvent();
+}
+#endif
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
@@ -478,6 +500,11 @@ void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
 void qtractorAudioEngine::notifySyncEvent ( unsigned long iPlayHead )
 {
 	m_proxy.notifySyncEvent(iPlayHead);
+}
+
+void qtractorAudioEngine::notifyPropEvent (void)
+{
+	m_proxy.notifyPropEvent();
 }
 
 
@@ -633,11 +660,17 @@ bool qtractorAudioEngine::activate (void)
 	}
 #endif
 
-	// Set transport sync callback.
+	// Set JACK transport sync callback.
 	if (m_transportMode & qtractorBus::Input) {
 		jack_set_sync_callback(m_pJackClient,
 			qtractorAudioEngine_sync, this);
 	}
+
+#ifdef CONFIG_JACK_METADATA
+	// Set JACK property change callback.
+	jack_set_property_change_callback(m_pJackClient,
+		qtractorAudioEngine_property_change, this);
+#endif
 
     // Reset all dependable monitoring...
     resetAllMonitors();
