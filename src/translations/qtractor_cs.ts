@@ -10928,9 +10928,8 @@ Chcete použít tyto změny?</translation>
         <translation>Režim ovládání ukazovátka polohy písně MIDI (UPP)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1729"/>
         <source>Cloc&amp;k:</source>
-        <translation>&amp;Hodiny:</translation>
+        <translation type="obsolete">&amp;Hodiny:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1745"/>
@@ -11111,6 +11110,11 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1539"/>
         <source>Alt+L</source>
         <translation>Alt+L</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="1729"/>
+        <source>MIDI Cloc&amp;k:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2139"/>

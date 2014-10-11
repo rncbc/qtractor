@@ -1726,7 +1726,7 @@ QSize qtractorPluginListView::sizeHint (void) const
 {
 	const QFont& font = QListWidget::font();
 	const int iItemHeight = QFontMetrics(font).lineSpacing() + 4;
-	return QSize(320, iItemHeight << 2);
+	return QSize(180, iItemHeight << 2);
 }
 
 

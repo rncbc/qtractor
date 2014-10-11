@@ -10103,8 +10103,12 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1729"/>
+        <source>MIDI Cloc&amp;k:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Cloc&amp;k:</source>
-        <translation>クロック(&amp;K):</translation>
+        <translation type="obsolete">クロック(&amp;K):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1745"/>

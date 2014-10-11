@@ -10380,11 +10380,6 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1729"/>
-        <source>Cloc&amp;k:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="1745"/>
         <source>MIDI Clock control mode</source>
         <translation type="unfinished"></translation>
@@ -10822,6 +10817,11 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1539"/>
         <source>Alt+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="1729"/>
+        <source>MIDI Cloc&amp;k:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

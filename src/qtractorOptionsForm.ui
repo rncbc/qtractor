@@ -1726,7 +1726,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Cloc&amp;k:</string>
+             <string>MIDI Cloc&amp;k:</string>
             </property>
             <property name="buddy">
              <cstring>MidiClockModeComboBox</cstring>
@@ -3155,7 +3155,7 @@
              <widget class="QToolButton" name="PluginPathAddToolButton">
               <property name="minimumSize">
                <size>
-                <width>60</width>
+                <width>66</width>
                 <height>22</height>
                </size>
               </property>
@@ -3216,7 +3216,7 @@
            <widget class="QToolButton" name="PluginPathRemoveToolButton">
             <property name="minimumSize">
              <size>
-              <width>60</width>
+              <width>66</width>
               <height>22</height>
              </size>
             </property>
@@ -3247,7 +3247,7 @@
            <widget class="QToolButton" name="PluginPathUpToolButton">
             <property name="minimumSize">
              <size>
-              <width>60</width>
+              <width>66</width>
               <height>22</height>
              </size>
             </property>
@@ -3278,7 +3278,7 @@
            <widget class="QToolButton" name="PluginPathDownToolButton">
             <property name="minimumSize">
              <size>
-              <width>60</width>
+              <width>66</width>
               <height>22</height>
              </size>
             </property>

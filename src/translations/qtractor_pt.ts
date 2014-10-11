@@ -9734,6 +9734,11 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Tempo de espera (resolução):</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="1729"/>
+        <source>MIDI Cloc&amp;k:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="2342"/>
         <source>H&amp;old auto-scrolling (follow play-head) on edits</source>
         <translation type="unfinished"></translation>
@@ -10241,9 +10246,8 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Sempre aplicar &quot;distorcer-tempo&quot; quando o tempo mudar</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="1729"/>
         <source>Cloc&amp;k:</source>
-        <translation>Pul&amp;so:</translation>
+        <translation type="obsolete">Pul&amp;so:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1242"/>
