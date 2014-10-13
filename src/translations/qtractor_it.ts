@@ -392,7 +392,7 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2145"/>
+        <location filename="../qtractorPlugin.cpp" line="2146"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6310,32 +6310,37 @@ Vuoi applicarla ai file dei controller?</translation>
         <translation>Aggancio</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="143"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="141"/>
+        <source>L&amp;atch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="150"/>
         <source>Control input connections</source>
         <translation>Controlla le connessioni di ingresso</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="146"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="153"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="156"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="163"/>
         <source>Control output connections</source>
         <translation>Controlla le connessioni di uscita</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.ui" line="159"/>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="166"/>
         <source>&amp;Outputs</source>
         <translation>Uscite</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="165"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="168"/>
         <source>MIDI Controller</source>
         <translation>Controller MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="290"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="298"/>
         <source>MIDI controller is already assigned.
 
 Do you want to replace the mapping?</source>
@@ -6344,7 +6349,7 @@ Do you want to replace the mapping?</source>
 Vuoi sostituire la mappatura?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="334"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="343"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -6353,32 +6358,32 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="453"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="462"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controller &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="559"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="568"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automazione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="573"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="582"/>
         <source>&amp;Lock</source>
         <translation>B&amp;locca</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="591"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="600"/>
         <source>&amp;Play</source>
         <translation>Ri&amp;produci</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="607"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="616"/>
         <source>&amp;Record</source>
         <translation>&amp;Registra</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="617"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="626"/>
         <source>&amp;Clear</source>
         <translation>Pulis&amp;ci</translation>
     </message>
