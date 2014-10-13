@@ -711,8 +711,12 @@ void qtractorMidiControl::loadControllers (
 				else
 				if (eProp.tagName() == "invert")
 					pController->invert = qtractorDocument::boolFromText(eProp.text());
+				else
 				if (eProp.tagName() == "hook")
 					pController->hook = qtractorDocument::boolFromText(eProp.text());
+				else
+				if (eProp.tagName() == "latch")
+					pController->latch = qtractorDocument::boolFromText(eProp.text());
 			}
 			controllers.append(pController);
 		}
@@ -743,6 +747,8 @@ void qtractorMidiControl::saveControllers ( qtractorDocument *pDocument,
 			qtractorDocument::textFromBool(pController->invert), &eController);
 		pDocument->saveTextElement("hook",
 			qtractorDocument::textFromBool(pController->hook), &eController);
+		pDocument->saveTextElement("latch",
+			qtractorDocument::textFromBool(pController->latch), &eController);
 		pElement->appendChild(eController);
 	}
 }

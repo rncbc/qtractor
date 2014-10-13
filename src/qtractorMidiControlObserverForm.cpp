@@ -96,6 +96,9 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	QObject::connect(m_ui.HookCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(change()));
+	QObject::connect(m_ui.LatchCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(change()));
 	QObject::connect(m_ui.InputsPushButton,
 		SIGNAL(clicked()),
 		SLOT(inputs()));
@@ -173,6 +176,8 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
 	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook());
+	m_ui.LatchCheckBox->setChecked(m_pMidiObserver->isLatch());
+	m_ui.LatchCheckBox->setEnabled(m_pMidiObserver->isToggled());
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
@@ -280,6 +285,9 @@ void qtractorMidiControlObserverForm::accept (void)
 	bool bHook = false;
 	if (m_ui.HookCheckBox->isEnabled())
 		bHook = m_ui.HookCheckBox->isChecked();
+	bool bLatch = true;
+	if (m_ui.LatchCheckBox->isEnabled())
+		bLatch = m_ui.LatchCheckBox->isChecked();
 
 	// Check whether already mapped...
 	qtractorMidiControlObserver *pMidiObserver
@@ -303,6 +311,7 @@ void qtractorMidiControlObserverForm::accept (void)
 	m_pMidiObserver->setFeedback(bFeedback);
 	m_pMidiObserver->setInvert(bInvert);
 	m_pMidiObserver->setHook(bHook);
+	m_pMidiObserver->setLatch(bLatch);
 #if 0
 	pMidiControl->mapMidiObserver(m_pMidiObserver);
 #else

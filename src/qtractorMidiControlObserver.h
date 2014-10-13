@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,6 +82,11 @@ public:
 	bool isHook() const
 		{ return m_bHook; }
 
+	void setLatch(bool bLatch)
+		{ m_bLatch = bLatch; }
+	bool isLatch() const
+		{ return m_bLatch; }
+
 	// Normalized scale accessors.
 	void setScaleValue(float fScale)
 		{ setValue(valueFromScale(fScale, m_bLogarithmic)); }
@@ -122,6 +127,7 @@ private:
 	bool m_bFeedback;
 	bool m_bInvert;
 	bool m_bHook;
+	bool m_bLatch;
 
 	// Tracking/catch-up members.
 	bool  m_bMidiValueInit;

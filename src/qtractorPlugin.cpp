@@ -1349,6 +1349,7 @@ void qtractorPlugin::saveControllers (
 			pController->feedback = pObserver->isFeedback();
 			pController->invert = pObserver->isInvert();
 			pController->hook = pObserver->isHook();
+			pController->latch = pObserver->isLatch();
 			controllers.append(pController);
 		}
 	}

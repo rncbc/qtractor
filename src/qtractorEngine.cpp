@@ -524,6 +524,7 @@ void qtractorBus::saveControllers (
 		pController->feedback = m_pMonitorObserver->isFeedback();
 		pController->invert = m_pMonitorObserver->isInvert();
 		pController->hook = m_pMonitorObserver->isHook();
+		pController->latch = m_pMonitorObserver->isLatch();
 		controllers.append(pController);
 	}
 
@@ -541,6 +542,7 @@ void qtractorBus::saveControllers (
 		pController->feedback = pPanObserver->isFeedback();
 		pController->invert = pPanObserver->isInvert();
 		pController->hook = pPanObserver->isHook();
+		pController->latch = pPanObserver->isLatch();
 		controllers.append(pController);
 	}
 
@@ -558,6 +560,7 @@ void qtractorBus::saveControllers (
 		pController->feedback = pGainObserver->isFeedback();
 		pController->invert = pGainObserver->isInvert();
 		pController->hook = pGainObserver->isHook();
+		pController->latch = pGainObserver->isLatch();
 		controllers.append(pController);
 	}
 

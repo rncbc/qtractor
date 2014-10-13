@@ -6,6 +6,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Latch/momentary MIDI Controllers toggle mode introduced
+  (a request by AutoStatic aka. Jeremy Jongepier, thanks).
+  (EXPERIMENTAL)
+
 - JACK client/port pretty-name (metadata) support is being
   seamlessly introduced. (EXPERIMENTAL)
 

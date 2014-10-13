@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>179</height>
+    <width>360</width>
+    <height>180</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,7 +80,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="4" rowspan="7">
+   <item row="0" column="4" rowspan="8">
     <widget class="QDialogButtonBox" name="DialogButtonBox">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -131,11 +131,18 @@
    <item row="5" column="1" colspan="3">
     <widget class="QCheckBox" name="HookCheckBox">
      <property name="text">
-	  <string>&amp;Hook</string>
+      <string>&amp;Hook</string>
      </property>
     </widget>
    </item>
    <item row="6" column="1" colspan="3">
+    <widget class="QCheckBox" name="LatchCheckBox">
+     <property name="text">
+      <string>L&amp;atch</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="3">
     <layout class="QHBoxLayout">
      <item>
       <widget class="QPushButton" name="InputsPushButton">
@@ -188,6 +195,8 @@
   <tabstop>LogarithmicCheckBox</tabstop>
   <tabstop>FeedbackCheckBox</tabstop>
   <tabstop>InvertCheckBox</tabstop>
+  <tabstop>HookCheckBox</tabstop>
+  <tabstop>LatchCheckBox</tabstop>
   <tabstop>InputsPushButton</tabstop>
   <tabstop>OutputsPushButton</tabstop>
   <tabstop>DialogButtonBox</tabstop>

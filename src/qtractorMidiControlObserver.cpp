@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -55,9 +55,10 @@ static inline float cubef2 ( float x )
 qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
-		m_bLogarithmic(false), m_bFeedback(false), m_bInvert(false), m_bHook(false),
-		m_bMidiValueInit(false), m_bMidiValueSync(false), m_fMidiValue(0.0f),
-		m_pCurveList(NULL)
+		m_bLogarithmic(false), m_bFeedback(false),
+		m_bInvert(false), m_bHook(false), m_bLatch(true),
+		m_bMidiValueInit(false), m_bMidiValueSync(false),
+		m_fMidiValue(0.0f), m_pCurveList(NULL)
 {
 }
 
@@ -94,8 +95,17 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 
 	const float fScale
 		= float(m_bInvert ? iScale - iValue : iValue) / float(iScale);
-	const float fValue
-		= valueFromScale(fScale, m_bLogarithmic);
+	float fValue = valueFromScale(fScale, m_bLogarithmic);
+
+	if (!m_bLatch && subject()->isToggled()) {
+		const float vmax = qtractorObserver::maxValue();
+		const float vmin = qtractorObserver::minValue();
+		const float vmid = 0.5f * (vmax + vmin);
+		if (fValue > vmid)
+			fValue = (m_fMidiValue > vmid ? vmin : vmax);
+		else
+			fValue = (m_fMidiValue > vmid ? vmax : vmin);
+	}
 
 	if (m_bHook)
 		m_bMidiValueSync = true;
