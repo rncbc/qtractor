@@ -257,9 +257,9 @@ public:
 
 		// Scale value converters (toggled).
 		float valueToggledFromMidi(unsigned short iValue) const
-			{ return (iValue > 0 ? 1.0f : 0.0f); }
+			{ return (iValue > m_iMidScale ? 1.0f : 0.0f); }
 		unsigned short midiFromValueToggled(float fValue) const
-			{ return (fValue > 0.0f ? m_iMaxScale : 0); }
+			{ return (fValue > 0.5f ? m_iMaxScale : 0); }
 
 	private:
 
@@ -326,6 +326,7 @@ public:
 		bool           feedback;
 		bool           invert;
 		bool           hook;
+		bool           latch;
 	};
 
 	typedef QList<Controller *> Controllers;
