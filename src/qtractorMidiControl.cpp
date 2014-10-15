@@ -687,9 +687,16 @@ void qtractorMidiControl::loadControllers (
 		// Check for controller item...
 		if (eController.tagName() == "controller") {
 			Controller *pController = new Controller;
-			pController->name  = eController.attribute("name");
+			pController->name = eController.attribute("name");
 			pController->index = eController.attribute("index").toULong();
 			pController->ctype = typeFromText(eController.attribute("type"));
+			pController->channel = 0;
+			pController->param = 0;
+			pController->logarithmic = false;
+			pController->feedback = false;
+			pController->invert = false;
+			pController->hook = false;
+			pController->latch = true;
 			for (QDomNode nProp = eController.firstChild();
 					!nProp.isNull(); nProp = nProp.nextSibling()) {
 				// Convert node to element, if any.
