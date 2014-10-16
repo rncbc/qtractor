@@ -63,7 +63,7 @@
 
 
 // Follow-playhead: maximum iterations on hold.
-#define QTRACTOR_SYNC_VIEW_HOLD 66
+#define QTRACTOR_SYNC_VIEW_HOLD 46
 
 
 // An empty blank reference string .
