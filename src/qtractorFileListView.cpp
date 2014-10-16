@@ -1456,22 +1456,20 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 	case FileItem: {
 		qtractorFileListItem *pFileItem
 			= static_cast<qtractorFileListItem *> (pItem);
-		// Make it all relative to archive or session directory...
 		QString sPath = pFileItem->path();
-		if (pDocument->isArchive()) {
-			qtractorFileList::Item *pFileListItem
-				= pSession->files()->findItem(m_iFileType, sPath);
-			if (pFileListItem && pFileListItem->clipRefCount() > 0) {
+		qtractorFileList::Item *pFileListItem
+			= pSession->files()->findItem(m_iFileType, sPath);
+		if (pFileListItem
+			&& (pFileListItem->clipRefCount() > 0
+			|| !pFileListItem->isAutoRemove())) {
+			// Make it all relative to archive or session directory...
+			if (pDocument->isArchive()) {
 				sPath = pDocument->addFile(sPath);
 			} else {
-				sPath.clear();
+				const QDir dir(pSession->sessionDir());
+				sPath = dir.relativeFilePath(sPath);
 			}
-		} else {
-			const QDir dir(pSession->sessionDir());
-			sPath = dir.relativeFilePath(sPath);
-		}
-		// Save file item if valid...
-		if (!sPath.isEmpty()) {
+			// Save file item if valid...
 			QDomElement eFile = pDocument->document()->createElement("file");
 			eFile.setAttribute("name", pFileItem->text(0));
 			eFile.appendChild(pDocument->document()->createTextNode(sPath));
