@@ -313,9 +313,6 @@
             <property name="text">
              <string>&amp;Confirm removals</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+C</string>
-            </property>
            </widget>
           </item>
           <item row="0" column="2">
@@ -379,9 +376,6 @@
             <property name="text">
              <string>Capture standard &amp;output</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+O</string>
-            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -397,9 +391,6 @@
             </property>
             <property name="text">
              <string>S&amp;how complete path of session files</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+P</string>
             </property>
            </widget>
           </item>
@@ -430,9 +421,6 @@
             <property name="text">
              <string>Auto-remove audio pea&amp;k files</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+K</string>
-            </property>
            </widget>
           </item>
           <item row="4" column="0">
@@ -448,9 +436,6 @@
             </property>
             <property name="text">
              <string>Keep tool &amp;windows always on top</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+K</string>
             </property>
            </widget>
           </item>
@@ -468,9 +453,6 @@
             <property name="text">
              <string>&amp;Drop multiple audio files into the same track</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+S</string>
-            </property>
            </widget>
           </item>
           <item row="6" column="0">
@@ -486,9 +468,6 @@
             </property>
             <property name="text">
              <string>Re&amp;verse middle-button modifier role (Shift/Ctrl)</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+V</string>
             </property>
            </widget>
           </item>
@@ -832,9 +811,6 @@
             <property name="text">
              <string>Aut&amp;omatic time-stretching</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+O</string>
-            </property>
            </widget>
           </item>
           <item row="0" column="1" rowspan="3">
@@ -921,9 +897,6 @@
             <property name="text">
              <string>&amp;WSOLA time-stretching</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+W</string>
-            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -939,9 +912,6 @@
             </property>
             <property name="text">
              <string>WSOLA quic&amp;k seek</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+K</string>
             </property>
            </widget>
           </item>
@@ -959,9 +929,6 @@
             <property name="text">
              <string>Dedicated au&amp;dition/pre-listening player outputs:</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+D</string>
-            </property>
            </widget>
           </item>
           <item row="3" column="3">
@@ -977,9 +944,6 @@
             </property>
             <property name="text">
              <string>Auto-&amp;connect</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+C</string>
             </property>
            </widget>
           </item>
@@ -1040,9 +1004,6 @@
             </property>
             <property name="text">
              <string>&amp;Enable audio metronome</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+E</string>
             </property>
            </widget>
           </item>
@@ -1310,9 +1271,6 @@
             <property name="text">
              <string>Dedicated a&amp;udio metronome outputs:</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+U</string>
-            </property>
            </widget>
           </item>
           <item row="4" column="2" colspan="4">
@@ -1328,9 +1286,6 @@
             </property>
             <property name="text">
              <string>Auto-co&amp;nnect</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+N</string>
             </property>
            </widget>
           </item>
@@ -1496,7 +1451,7 @@
             </property>
             <property name="sizeHint">
              <size>
-              <width>120</width>
+              <width>20</width>
               <height>20</height>
              </size>
             </property>
@@ -1516,9 +1471,6 @@
             <property name="text">
              <string>E&amp;nable MIDI queue time drift correction</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+N</string>
-            </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="4">
@@ -1534,9 +1486,6 @@
             </property>
             <property name="text">
              <string>Dedicated MIDI p&amp;layer outputs</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+L</string>
             </property>
            </widget>
           </item>
@@ -1780,9 +1729,6 @@
             <property name="text">
              <string>Dedicated MIDI &amp;control input/output</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+C</string>
-            </property>
            </widget>
           </item>
          </layout>
@@ -1829,9 +1775,6 @@
             </property>
             <property name="text">
              <string>&amp;Enable MIDI metronome</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+E</string>
             </property>
            </widget>
           </item>
@@ -2141,9 +2084,6 @@
             <property name="text">
              <string>Dedicated M&amp;IDI metronome output</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+I</string>
-            </property>
            </widget>
           </item>
          </layout>
@@ -2341,9 +2281,6 @@
             <property name="text">
              <string>H&amp;old auto-scrolling (follow play-head) on edits</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+O</string>
-            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -2360,9 +2297,6 @@
             <property name="text">
              <string>Use desktop environment &amp;native dialogs</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+N</string>
-            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -2378,9 +2312,6 @@
             </property>
             <property name="text">
              <string>A&amp;utomatic mixer strip/grid layout (multi-row)</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+U</string>
             </property>
            </widget>
           </item>
@@ -2467,7 +2398,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Style t&amp;heme:</string>
+             <string>&amp;Style theme:</string>
             </property>
             <property name="buddy">
              <cstring>CustomStyleThemeComboBox</cstring>
@@ -2793,9 +2724,6 @@
             <property name="text">
              <string>&amp;Reset</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+R</string>
-            </property>
             <property name="autoDefault">
              <bool>false</bool>
             </property>
@@ -2876,9 +2804,6 @@
             <property name="text">
              <string>&amp;Font...</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+F</string>
-            </property>
             <property name="autoDefault">
              <bool>false</bool>
             </property>
@@ -2910,9 +2835,6 @@
             </property>
             <property name="text">
              <string>M&amp;essages limit:</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+M</string>
             </property>
            </widget>
           </item>
@@ -3040,9 +2962,6 @@
             </property>
             <property name="text">
              <string>Messages &amp;log file:</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+M</string>
             </property>
            </widget>
           </item>
@@ -3416,9 +3335,6 @@
             <property name="text">
              <string>Dedicated audi&amp;o outputs:</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+O</string>
-            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -3434,9 +3350,6 @@
             </property>
             <property name="text">
              <string>Au&amp;to-connect</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+T</string>
             </property>
            </widget>
           </item>
@@ -3504,9 +3417,6 @@
             <property name="text">
              <string>Open plugin's &amp;editor (GUI) by default</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+G</string>
-            </property>
            </widget>
           </item>
          </layout>
@@ -3547,9 +3457,6 @@
             <property name="text">
              <string>Dummy &amp;VST plugin scan (RECOMMENDED)</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+V</string>
-            </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="3">
@@ -3566,9 +3473,6 @@
             <property name="text">
              <string>LV2 Dy&amp;namic Manifest support</string>
             </property>
-            <property name="shortcut">
-             <string>Alt+N</string>
-            </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="3">
@@ -3584,9 +3488,6 @@
             </property>
             <property name="text">
              <string>&amp;High resolution plugin automation (14-bit)</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+H</string>
             </property>
            </widget>
           </item>

@@ -204,9 +204,6 @@
        <property name="toolTip" >
         <string>Activate plugin on insert</string>
        </property>
-       <property name="shortcut" >
-        <string>Alt+A</string>
-       </property>
       </widget>
      </item>
      <item>

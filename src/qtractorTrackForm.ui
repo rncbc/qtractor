@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -106,9 +106,6 @@
               <property name="text" >
                <string>&amp;Audio</string>
               </property>
-              <property name="shortcut" >
-               <string>Alt+A</string>
-              </property>
              </widget>
             </item>
             <item>
@@ -118,9 +115,6 @@
               </property>
               <property name="text" >
                <string>&amp;MIDI</string>
-              </property>
-              <property name="shortcut" >
-               <string>Alt+M</string>
               </property>
              </widget>
             </item>
@@ -260,9 +254,6 @@
             </property>
             <property name="toolTip" >
              <string>MIDI Omni: Capture All Channels</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+O</string>
             </property>
            </widget>
           </item>
@@ -518,9 +509,6 @@
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formCreate.png</iconset>
            </property>
-           <property name="shortcut" >
-            <string>Alt+A</string>
-           </property>
            <property name="toolButtonStyle" >
             <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
@@ -542,9 +530,6 @@
            </property>
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
-           </property>
-           <property name="shortcut" >
-            <string>Alt+R</string>
            </property>
            <property name="toolButtonStyle" >
             <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -581,9 +566,6 @@
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formMoveUp.png</iconset>
            </property>
-           <property name="shortcut" >
-            <string>Alt+U</string>
-           </property>
            <property name="toolButtonStyle" >
             <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
@@ -605,9 +587,6 @@
            </property>
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formMoveDown.png</iconset>
-           </property>
-           <property name="shortcut" >
-            <string>Alt+D</string>
            </property>
            <property name="toolButtonStyle" >
             <enum>Qt::ToolButtonTextBesideIcon</enum>

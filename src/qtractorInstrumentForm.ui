@@ -141,9 +141,6 @@
        <property name="icon" >
         <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
        </property>
-       <property name="shortcut" >
-        <string>Alt+I</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -156,9 +153,6 @@
        </property>
        <property name="icon" >
         <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+R</string>
        </property>
       </widget>
      </item>
@@ -173,9 +167,6 @@
        <property name="icon" >
         <iconset resource="qtractor.qrc" >:/images/formMoveUp.png</iconset>
        </property>
-       <property name="shortcut" >
-        <string>Alt+U</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -188,9 +179,6 @@
        </property>
        <property name="icon" >
         <iconset resource="qtractor.qrc" >:/images/formMoveDown.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+D</string>
        </property>
       </widget>
      </item>
@@ -221,9 +209,6 @@
        <property name="icon" >
         <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
        </property>
-       <property name="shortcut" >
-        <string>Alt+A</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -237,9 +222,6 @@
        <property name="icon" >
         <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
        </property>
-       <property name="shortcut" >
-        <string>Alt+X</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -249,9 +231,6 @@
        </property>
        <property name="text" >
         <string>Close</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
        </property>
       </widget>
      </item>

@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>506</width>
-    <height>250</height>
+    <width>480</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -139,9 +139,6 @@
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formConnect.png</iconset>
            </property>
-           <property name="shortcut" >
-            <string>Alt+C</string>
-           </property>
           </widget>
          </item>
          <item>
@@ -155,9 +152,6 @@
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formDisconnect.png</iconset>
            </property>
-           <property name="shortcut" >
-            <string>Alt+D</string>
-           </property>
           </widget>
          </item>
          <item>
@@ -170,9 +164,6 @@
            </property>
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formDisconnectAll.png</iconset>
-           </property>
-           <property name="shortcut" >
-            <string>Alt+A</string>
            </property>
           </widget>
          </item>
@@ -202,9 +193,6 @@
            </property>
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
-           </property>
-           <property name="shortcut" >
-            <string>Alt+R</string>
            </property>
           </widget>
          </item>
@@ -298,9 +286,6 @@
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formConnect.png</iconset>
            </property>
-           <property name="shortcut" >
-            <string>Alt+C</string>
-           </property>
           </widget>
          </item>
          <item>
@@ -314,9 +299,6 @@
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formDisconnect.png</iconset>
            </property>
-           <property name="shortcut" >
-            <string>Alt+D</string>
-           </property>
           </widget>
          </item>
          <item>
@@ -329,9 +311,6 @@
            </property>
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formDisconnectAll.png</iconset>
-           </property>
-           <property name="shortcut" >
-            <string>Alt+A</string>
            </property>
           </widget>
          </item>
@@ -361,9 +340,6 @@
            </property>
            <property name="icon" >
             <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
-           </property>
-           <property name="shortcut" >
-            <string>Alt+R</string>
            </property>
           </widget>
          </item>

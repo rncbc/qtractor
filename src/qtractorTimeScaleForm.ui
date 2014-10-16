@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -358,9 +358,6 @@
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formRefresh.png</iconset>
        </property>
-       <property name="shortcut">
-        <string>Alt+F</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -390,9 +387,6 @@
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formAdd.png</iconset>
        </property>
-       <property name="shortcut">
-        <string>Alt+A</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -406,9 +400,6 @@
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formAccept.png</iconset>
        </property>
-       <property name="shortcut">
-        <string>Alt+U</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -421,9 +412,6 @@
        </property>
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
-       </property>
-       <property name="shortcut">
-        <string>Alt+R</string>
        </property>
       </widget>
      </item>
