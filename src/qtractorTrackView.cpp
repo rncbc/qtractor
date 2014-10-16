@@ -74,7 +74,7 @@
 
 
 // Follow-playhead: maximum iterations on hold.
-#define QTRACTOR_SYNC_VIEW_HOLD 33
+#define QTRACTOR_SYNC_VIEW_HOLD 46
 
 
 //----------------------------------------------------------------------------
