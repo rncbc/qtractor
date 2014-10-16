@@ -206,9 +206,6 @@
                 <property name="text">
                  <string>M&amp;onitor (pass-through)</string>
                 </property>
-                <property name="shortcut">
-                 <string>Alt+O</string>
-                </property>
                </widget>
               </item>
              </layout>
@@ -269,9 +266,6 @@
                 </property>
                 <property name="text">
                  <string>&amp;Auto connect</string>
-                </property>
-                <property name="shortcut">
-                 <string>Alt+A</string>
                 </property>
                </widget>
               </item>
@@ -363,9 +357,6 @@
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formCreate.png</iconset>
                </property>
-               <property name="shortcut">
-                <string>Alt+A</string>
-               </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
                </property>
@@ -387,9 +378,6 @@
                </property>
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
-               </property>
-               <property name="shortcut">
-                <string>Alt+R</string>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -426,9 +414,6 @@
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
                </property>
-               <property name="shortcut">
-                <string>Alt+U</string>
-               </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
                </property>
@@ -450,9 +435,6 @@
                </property>
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
-               </property>
-               <property name="shortcut">
-                <string>Alt+D</string>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -497,9 +479,6 @@
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formCreate.png</iconset>
                </property>
-               <property name="shortcut">
-                <string>Alt+A</string>
-               </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
                </property>
@@ -521,9 +500,6 @@
                </property>
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
-               </property>
-               <property name="shortcut">
-                <string>Alt+R</string>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -560,9 +536,6 @@
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
                </property>
-               <property name="shortcut">
-                <string>Alt+U</string>
-               </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
                </property>
@@ -584,9 +557,6 @@
                </property>
                <property name="icon">
                 <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
-               </property>
-               <property name="shortcut">
-                <string>Alt+D</string>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -622,9 +592,6 @@
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formRefresh.png</iconset>
        </property>
-       <property name="shortcut">
-        <string>Alt+R</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -651,9 +618,6 @@
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formCreate.png</iconset>
        </property>
-       <property name="shortcut">
-        <string>Alt+C</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -667,9 +631,6 @@
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formAccept.png</iconset>
        </property>
-       <property name="shortcut">
-        <string>Alt+U</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -682,9 +643,6 @@
        </property>
        <property name="icon">
         <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
-       </property>
-       <property name="shortcut">
-        <string>Alt+D</string>
        </property>
       </widget>
      </item>
