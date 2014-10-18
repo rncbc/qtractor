@@ -707,7 +707,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	}
 
 	// Re-open needed clips, just once...
-	for (clip = m_clips.constBegin(); clip != m_clips.constEnd(); ++clip)
+	for (clip = m_clips.constBegin(); clip != clip_end; ++clip)
 		clip.key()->open();
 
 	pSession->unlock();

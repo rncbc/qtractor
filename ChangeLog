@@ -6,6 +6,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed undo/redo conversion of audio clip offsets under
+  (automatic) time-stretching eg. due on tempo changes.
+  (ticket by Holger Marzen, thanks). (EXPERIMENTAL)
+
 - Latch/momentary MIDI Controllers toggle mode introduced
   (a request by AutoStatic aka. Jeremy Jongepier, thanks).
   (EXPERIMENTAL)
