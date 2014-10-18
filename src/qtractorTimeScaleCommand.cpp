@@ -87,7 +87,8 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 	const bool bRedoClipCommand = (m_pClipCommand == NULL);
 	if (bRedoClipCommand) {
 		m_pClipCommand = createClipCommand(pNode, fNewTempo, fOldTempo);
-		m_pClipCommand->redo();
+		if (m_pClipCommand)
+			m_pClipCommand->redo();
 	} else {
 		m_pClipCommand->undo();
 		delete m_pClipCommand;
@@ -170,12 +171,14 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 	m_iBeatsPerBar = iBeatsPerBar;
 	m_iBeatDivisor = iBeatDivisor;
 
-	if (bRedoClipCommand) {
-		m_pClipCommand->redo();
-	} else {
-		m_pClipCommand->undo();
-		delete m_pClipCommand;
-		m_pClipCommand = NULL;
+	if (m_pClipCommand) {
+		if (bRedoClipCommand) {
+			m_pClipCommand->redo();
+		} else {
+			m_pClipCommand->undo();
+			delete m_pClipCommand;
+			m_pClipCommand = NULL;
+		}
 	}
 
 	if (bRedoCurveEditCommands) {
@@ -244,12 +247,14 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 
 	m_pTimeScale->removeNode(pNode);
 
-	if (bRedoClipCommand) {
-		m_pClipCommand->redo();
-	} else {
-		m_pClipCommand->undo();
-		delete m_pClipCommand;
-		m_pClipCommand = NULL;
+	if (m_pClipCommand) {
+		if (bRedoClipCommand) {
+			m_pClipCommand->redo();
+		} else {
+			m_pClipCommand->undo();
+			delete m_pClipCommand;
+			m_pClipCommand = NULL;
+		}
 	}
 
 	if (bRedoCurveEditCommands) {
