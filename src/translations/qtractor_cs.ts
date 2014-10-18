@@ -1095,42 +1095,42 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="399"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="404"/>
         <source>add tempo node</source>
         <translation>Přidat uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="419"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="424"/>
         <source>update tempo node</source>
         <translation>Obnovit uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="437"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="442"/>
         <source>remove tempo node</source>
         <translation>Odstranit uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="454"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="459"/>
         <source>move tempo node</source>
         <translation>Přesunout uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="594"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="599"/>
         <source>add marker</source>
         <translation>Přidat značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="613"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="618"/>
         <source>update marker</source>
         <translation>Obnovit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="631"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="636"/>
         <source>remove marker</source>
         <translation>Odstranit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="649"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="654"/>
         <source>move marker</source>
         <translation>Přesunout značku</translation>
     </message>

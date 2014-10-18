@@ -282,12 +282,12 @@ MIDI:	</translation>
         <translation>mover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="594"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="599"/>
         <source>add marker</source>
         <translation>adicionar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="649"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="654"/>
         <source>move marker</source>
         <translation>mover marcador</translation>
     </message>
@@ -488,7 +488,7 @@ MIDI:	</translation>
         <translation>%1 - Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="437"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="442"/>
         <source>remove tempo node</source>
         <translation>remover nó de tempo</translation>
     </message>
@@ -504,12 +504,12 @@ MIDI:	</translation>
         <translation>Tudo (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="613"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="618"/>
         <source>update marker</source>
         <translation>atualizar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="454"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="459"/>
         <source>move tempo node</source>
         <translation>mover nó de tempo</translation>
     </message>
@@ -572,7 +572,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Autor:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="419"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="424"/>
         <source>update tempo node</source>
         <translation>nó de atualização de tempo</translation>
     </message>
@@ -589,7 +589,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>, %1 pistas, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="399"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="404"/>
         <source>add tempo node</source>
         <translation>adicionar nó de tempo</translation>
     </message>
@@ -661,7 +661,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
 %3</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="631"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="636"/>
         <source>remove marker</source>
         <translation>remover marcador</translation>
     </message>
