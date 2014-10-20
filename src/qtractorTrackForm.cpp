@@ -1116,7 +1116,12 @@ void qtractorTrackForm::trackTypeChanged (void)
 		m_iOldProg = -1;
 	}
 
-	updateTrackType(trackType());
+	const qtractorTrack::TrackType trackType
+		= qtractorTrackForm::trackType();
+
+	m_pTrack->setTrackType(trackType);
+
+	updateTrackType(trackType);
 //	inputBusNameChanged(m_ui.InputBusNameComboBox->currentText());
 	outputBusNameChanged(m_ui.OutputBusNameComboBox->currentText());
 }
@@ -1139,7 +1144,8 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 		return;
 
 	// It all depends on the track type we're into...
-	qtractorTrack::TrackType trackType = qtractorTrackForm::trackType();
+	const qtractorTrack::TrackType trackType
+		= qtractorTrackForm::trackType();
 
 	// (Re)initialize plugin-list audio output bus properly...
 	const QString& sOutputBusName = m_pTrack->outputBusName();
@@ -1148,6 +1154,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 			m_sOldOutputBusName = sOutputBusName;
 		m_pTrack->setOutputBusName(sBusName);
 		m_pTrack->open(); // re-open...
+		qDebug("DEBUG> outputBusNameChanged()");
 	}
 
 	// Recache the applicable MIDI output bus ...

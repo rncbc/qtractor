@@ -12344,12 +12344,12 @@ Voulez-vous appliquer les changements?</translation>
         <translation>(Rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1320"/>
+        <location filename="../qtractorTrackForm.cpp" line="1327"/>
         <source>Forgeground Color</source>
         <translation>Couleur du Premier Plan</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1334"/>
+        <location filename="../qtractorTrackForm.cpp" line="1341"/>
         <source>Background Color</source>
         <translation>Couleur d&apos;Arrière Plan</translation>
     </message>
