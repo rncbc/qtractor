@@ -1202,16 +1202,17 @@ void qtractorTrack::process ( qtractorClip *pClip,
 				pClip->process(iFrameStart, iFrameEnd);
 			pClip = pClip->next();
 		}
-		// Audio buffers needs monitoring and commitment...
-		if (pAudioMonitor && pOutputBus) {
-			// Plugin chain post-processing...
-			if (m_pPluginList->activated() > 0)
-				m_pPluginList->process(pOutputBus->buffer(), nframes);
-			// Monitor passthru...
-			pAudioMonitor->process(pOutputBus->buffer(), nframes);
-			// Actually render it...
-			pOutputBus->buffer_commit(nframes);
-		}
+	}
+
+	// Audio buffers needs monitoring and commitment...
+	if (pAudioMonitor && pOutputBus) {
+		// Plugin chain post-processing...
+		if (m_pPluginList->activated() > 0)
+			m_pPluginList->process(pOutputBus->buffer(), nframes);
+		// Monitor passthru...
+		pAudioMonitor->process(pOutputBus->buffer(), nframes);
+		// Actually render it...
+		pOutputBus->buffer_commit(nframes);
 	}
 }
 

@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Make audio tracks monitoring always flow while playback
+  is rolling, independently of their mute/solo state.
+
 - Fixed undo/redo conversion of audio clip offsets under
   (automatic) time-stretching eg. due on tempo changes.
   (ticket by Holger Marzen, thanks). (EXPERIMENTAL)
