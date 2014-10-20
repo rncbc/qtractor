@@ -12097,12 +12097,12 @@ Do you want to apply the changes?</source>
         <translation>(なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1320"/>
+        <location filename="../qtractorTrackForm.cpp" line="1327"/>
         <source>Forgeground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1334"/>
+        <location filename="../qtractorTrackForm.cpp" line="1341"/>
         <source>Background Color</source>
         <translation>背景の色</translation>
     </message>

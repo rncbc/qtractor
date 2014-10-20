@@ -12040,12 +12040,12 @@ Vuoi applicare le modifiche?</translation>
         <translation>(Nessuno)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1320"/>
+        <location filename="../qtractorTrackForm.cpp" line="1327"/>
         <source>Forgeground Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1334"/>
+        <location filename="../qtractorTrackForm.cpp" line="1341"/>
         <source>Background Color</source>
         <translation type="unfinished"></translation>
     </message>
