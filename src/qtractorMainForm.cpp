@@ -5430,8 +5430,12 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	// We must start/stop certain things...
 	if (!bPlaying) {
 		// Shutdown recording anyway...
-		if (m_pSession->isRecording())
-			setRecording(false);
+		if (m_pSession->isRecording() && setRecording(false)) {
+			// Send MMC RECORD_EXIT command...
+			m_pSession->midiEngine()->sendMmcCommand(
+				qtractorMmcEvent::RECORD_EXIT);
+			++m_iTransportUpdate;
+		}
 		// Stop transport rolling, immediately...
 		setRolling(0);
 		// Session tracks automation recording.
@@ -6940,12 +6944,25 @@ void qtractorMainForm::timerSlot (void)
 			if (m_pTracks && m_pSession->isRecording()) {
 				// HACK: Care of punch-out...
 				if (m_pSession->isPunching()) {
+					const unsigned long iFrameTime = m_pSession->frameTimeEx();
 					const unsigned long iLoopStart = m_pSession->loopStart();
-					const unsigned long iLoopEnd   = m_pSession->loopEnd();
+					const unsigned long iLoopEnd = m_pSession->loopEnd();
 					unsigned long iPunchOut = m_pSession->punchOut();
+				#if 0//TEST_PUNCH_LOOP_RECORDING
+					if (iLoopStart < iLoopEnd &&
+						iLoopStart < iFrameTime &&
+						m_pSession->loopRecordingMode() > 0) {
+						const unsigned long iLoopLength
+							= iLoopEnd - iLoopStart;
+						const unsigned long iLoopCount
+							= (iFrameTime - iLoopStart) / iLoopLength;
+						iPunchOut += (iLoopCount + 1) * iLoopLength;
+					}
+				#else
 					if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
 						iPunchOut = iLoopEnd;
-					const unsigned long iFrameTime = m_pSession->frameTimeEx();
+				#endif
+					// Make sure it's really about to punch-out...
 					if (iFrameTime >= iPunchOut && setRecording(false)) {
 						// Send MMC RECORD_EXIT command...
 						pMidiEngine->sendMmcCommand(

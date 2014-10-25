@@ -1114,16 +1114,28 @@ unsigned long qtractorTrack::clipRecordStart (void) const
 
 unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 {
+	// HACK: Care of punch-out...
 	if (m_pSession && m_pSession->isPunching()) {
-		const unsigned long iPunchOut = m_pSession->punchOut();
-		if (iFrameTime >= iPunchOut) {
-			const unsigned long iLoopStart = m_pSession->loopStart();
-			const unsigned long iLoopEnd   = m_pSession->loopEnd();
-			if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
-				return iLoopEnd;
-			else
-				return iPunchOut;
+		const unsigned long iLoopStart = m_pSession->loopStart();
+		const unsigned long iLoopEnd = m_pSession->loopEnd();
+		unsigned long iPunchOut = m_pSession->punchOut();
+	#if 0//TEST_PUNCH_LOOP_RECORDING
+		if (iLoopStart < iLoopEnd &&
+			iLoopStart < iFrameTime &&
+			m_pSession->loopRecordingMode() > 0) {
+			const unsigned long iLoopLength
+				= iLoopEnd - iLoopStart;
+			const unsigned long iLoopCount
+				= (iFrameTime - iLoopStart) / iLoopLength;
+			iPunchOut += iLoopCount * iLoopLength;
 		}
+	#else
+		if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
+			iPunchOut = iLoopEnd;
+	#endif
+		// Make sure it's really about to punch-out...
+		if (iFrameTime >= iPunchOut)
+			return iPunchOut;
 	}
 
 	unsigned long iClipRecordEnd = iFrameTime;

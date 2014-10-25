@@ -414,7 +414,13 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	// On-the-fly recording clip drawing...
 	if (pSession->isRecording() && pSession->isPlaying()) {
 		iTrackStart = pSession->frameFromPixel(cx + rect.x());
-		iTrackEnd   = pSession->playHead();
+		iTrackEnd = pSession->playHead();
+		const bool bPunching = pSession->isPunching();
+		if (bPunching) {
+			const unsigned long iPunchOut = pSession->punchOut();
+			if (iTrackEnd > iPunchOut)
+				iTrackEnd = iPunchOut;
+		}
 		if (iTrackStart < iTrackEnd) {
 			const unsigned long iFrameTime = pSession->frameTimeEx();
 			const unsigned long iFrameOffset = iFrameTime - iTrackEnd;
@@ -445,16 +451,16 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				#endif
 					unsigned long iClipStart  = pClipRecord->clipStart();
 					unsigned long iClipOffset = 0;
-					if (iLoopStart < iLoopEnd && !pSession->isPunching()) {
+					if (iLoopStart < iLoopEnd && !bPunching) {
 						// Clip recording started within loop range:
 						// -- adjust turn-around clip offset...
 						if (iClipStart > iLoopStart && iClipStart < iLoopEnd) {
-							unsigned long iHeadLength = (iLoopEnd - iClipStart);
-							unsigned long iLoopLength = (iLoopEnd - iLoopStart);
-							unsigned long iClipLength
+							const unsigned long iHeadLength = (iLoopEnd - iClipStart);
+							const unsigned long iLoopLength = (iLoopEnd - iLoopStart);
+							const unsigned long iClipLength
 								= (iFrameTime - pTrack->clipRecordStart());
 							if (iClipLength > iHeadLength) {
-								unsigned long iLoopCount
+								const unsigned long iLoopCount
 									= (iClipLength - iHeadLength) / iLoopLength;
 								iClipOffset += iHeadLength + iLoopCount * iLoopLength;
 								iClipStart = iLoopStart;
