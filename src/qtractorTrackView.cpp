@@ -416,8 +416,13 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		iTrackStart = pSession->frameFromPixel(cx + rect.x());
 		iTrackEnd = pSession->playHead();
 		if (iTrackStart < iTrackEnd) {
+			const unsigned long iFrameTime = pSession->frameTimeEx();
+			const unsigned long iLoopStart = pSession->loopStart();
+			const unsigned long iLoopEnd = pSession->loopEnd();
+			const bool bLooping = (iLoopStart < iLoopEnd);
+		#if 0//TEST_PUNCH_LOOP_RECORDING
 			// HACK: Care of punch-in/out...
-			const unsigned long iPunchIn  = pSession->punchIn();
+			const unsigned long iPunchIn = pSession->punchIn();
 			const unsigned long iPunchOut = pSession->punchOut();
 			const bool bPunching = (iPunchIn < iPunchOut);
 			if (bPunching) {
@@ -426,11 +431,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				if (iTrackEnd > iPunchOut && iTrackStart < iPunchOut)
 					iTrackEnd = iPunchOut;
 			}
-			// TODO: Care of punch-in/out on loop-recording...
-			const unsigned long iFrameTime = pSession->frameTimeEx();
-			const unsigned long iFrameOffset = iFrameTime - iTrackEnd;
-			const unsigned long iLoopStart = pSession->loopStart();
-			const unsigned long iLoopEnd = pSession->loopEnd();
+		#endif
 			qtractorTrack *pTrack = pSession->tracks().first();
 			while (pTrack && y2 < ch) {
 				y1  = y2;
@@ -456,7 +457,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				#endif
 					unsigned long iClipStart  = pClipRecord->clipStart();
 					unsigned long iClipOffset = 0;
-					if (iLoopStart < iLoopEnd) {
+					if (bLooping) {
 						// Clip recording started within loop range:
 						// -- adjust turn-around clip offset...
 						if (iClipStart > iLoopStart && iClipStart < iLoopEnd) {
@@ -468,8 +469,16 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 								const unsigned long iLoopCount
 									= (iClipLength - iHeadLength) / iLoopLength;
 								iClipOffset += iHeadLength + iLoopCount * iLoopLength;
-								if (!bPunching || iPunchIn < iLoopStart)
-									iClipStart = iLoopStart;
+							#if 0//TEST_PUNCH_LOOP_RECORDING
+								if (bPunching
+									&& iPunchIn > iLoopStart
+									&& iPunchIn < iLoopEnd) {
+									iClipOffset += iPunchIn - iLoopStart; // wrong!
+									iClipStart = iPunchIn;
+								}
+								else
+							#endif
+								iClipStart = iLoopStart;
 							}
 						}
 						else
@@ -482,7 +491,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							x = pSession->pixelFromFrame(iClipStart) - cx;
 							w = 0;
 							if (iClipStart < iLoopStart) {
-								w += pSession->pixelFromFrame(iLoopStart - iClipStart);
+								w += pSession->pixelFromFrame(iLoopStart) - cx - x;
 								iClipOffset += iLoopStart - iClipStart;
 							}
 							const QRect& headRect
@@ -491,11 +500,22 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 								pClipRecord->drawClip(pPainter, headRect, iHeadOffset);
 								pPainter->fillRect(headRect, QColor(255, 0, 0, 120));
 							}
-							iClipOffset += iFrameOffset;
-							if (!bPunching || iPunchIn < iLoopStart)
-								iClipStart = iLoopStart;
+							iClipOffset += iFrameTime - iTrackEnd;
+						#if 0//TEST_PUNCH_LOOP_RECORDING
+							if (bPunching
+								&& iPunchIn > iLoopStart
+								&& iPunchIn < iLoopEnd) {
+								iClipOffset += iPunchIn - iLoopStart; // wrong!
+								iClipStart = iPunchIn;
+							}
+							else
+						#endif
+							iClipStart = iLoopStart;
 						}
 					}
+				#if 0//TEST_PUNCH_LOOP_RECORDING
+					if (!bPunching || iTrackStart < iPunchOut) {
+				#endif
 					// Clip recording rolling:
 					// -- redraw current clip segment...
 					if (iClipStart < iTrackStart)
@@ -510,6 +530,9 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						pClipRecord->drawClip(pPainter, clipRect, iClipOffset);
 						pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));
 					}
+				#if 0//TEST_PUNCH_LOOP_RECORDING
+					}
+				#endif
 				}
 				pTrack = pTrack->next();
 			}
