@@ -354,7 +354,7 @@ void qtractorClip::drawClip (
 	if (pSession == NULL)
 		return;
 
-	// Adjust the clip rectangle left origin... 
+	// Adjust the clip rectangle left origin...
 	QRect rect(clipRect);
 	if (iClipOffset > 0)
 		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset) + 1);

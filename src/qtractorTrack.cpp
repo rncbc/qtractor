@@ -1241,8 +1241,23 @@ void qtractorTrack::process_record (
 	if (pAudioClip && pInputBus) {
 		// Clip recording...
 		unsigned int nframes = iFrameEnd - iFrameStart;
+		// Punch-in/out recording...
 		if (m_pSession->isPunching()) {
-			// Punch-in/out recording...
+		#if 0//TEST_PUNCH_LOOP_RECORDING
+			const unsigned long iPunchIn = m_pSession->punchIn();
+			// Punch-in (likely...)
+			if (iPunchIn < iFrameEnd) {
+				unsigned int offs = 0;
+				if (iPunchIn >= iFrameStart
+					&& m_pSession->frameTimeEx() < iFrameEnd) {
+					offs += (iPunchIn - iFrameStart);
+					nframes = (iFrameEnd - iPunchIn);
+				}
+				// Punch-in recording...
+				pAudioClip->write(
+					pInputBus->in(), nframes, pInputBus->channels(), offs);
+			}
+		#else
 			const unsigned long iPunchIn  = m_pSession->punchIn();
 			const unsigned long iPunchOut = m_pSession->punchOut();
 			if (iPunchIn < iFrameEnd && iPunchOut > iFrameStart) {
@@ -1263,6 +1278,7 @@ void qtractorTrack::process_record (
 				pAudioClip->write(
 					pInputBus->in(), nframes, pInputBus->channels(), offs);
 			}
+		#endif
 		} else {
 			// Regular full-length recording...
 			pAudioClip->write(
