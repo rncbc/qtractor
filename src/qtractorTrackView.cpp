@@ -473,7 +473,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 								if (bPunching
 									&& iPunchIn > iLoopStart
 									&& iPunchIn < iLoopEnd) {
-									iClipOffset += iLoopCount * iHeadLength;
+									iClipOffset += iLoopCount * (iLoopEnd - iPunchIn);
+									iClipStart = iPunchIn;
 								} else {
 									iClipOffset += iLoopCount * iLoopLength;
 									iClipStart = iLoopStart;
