@@ -621,6 +621,7 @@ bool qtractorClip::loadElement (
 			unsigned long iClipLength = 0;
 			unsigned long iTakeStart  = 0;
 			unsigned long iTakeEnd    = 0;
+			unsigned long iTakeGap    = 0;
 			int iCurrentTake = -1;
 			for (QDomNode nProp = eChild.firstChild();
 					!nProp.isNull();
@@ -645,6 +646,9 @@ bool qtractorClip::loadElement (
 				if (eProp.tagName() == "take-end")
 					iTakeEnd = eProp.text().toULong();
 				else
+				if (eProp.tagName() == "take-gap")
+					iTakeGap = eProp.text().toULong();
+				else
 				if (eProp.tagName() == "current-take")
 					iCurrentTake = eProp.text().toInt();
 			}
@@ -656,7 +660,7 @@ bool qtractorClip::loadElement (
 				pTakeInfo = static_cast<qtractorTrack::TakeInfo *> (
 					new qtractorClip::TakeInfo(
 						iClipStart, iClipOffset, iClipLength,
-						iTakeStart, iTakeEnd));
+						iTakeStart, iTakeEnd, iTakeGap));
 				if (pTrack && iTakeID >= 0)
 					pTrack->takeInfoAdd(iTakeID, pTakeInfo);
 			}
@@ -731,7 +735,9 @@ bool qtractorClip::saveElement (
 					QString::number(pTakeInfo->takeStart()), &eTakeInfo);
 				pDocument->saveTextElement("take-end", 
 					QString::number(pTakeInfo->takeEnd()), &eTakeInfo);
-				pDocument->saveTextElement("current-take", 
+				pDocument->saveTextElement("take-gap",
+					QString::number(pTakeInfo->takeGap()), &eTakeInfo);
+				pDocument->saveTextElement("current-take",
 					QString::number(pTakeInfo->currentTake()), &eTakeInfo);
 			}
 			eTakeInfo.setAttribute("id", QString::number(iTakeID));
@@ -835,7 +841,7 @@ int qtractorClip::TakeInfo::takeCount (void) const
 	int iTakeCount = -1;
 
 	const unsigned long iClipEnd = m_iClipStart + m_iClipLength;
-	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart + m_iTakeGap;
 
 	if (iTakeLength > 0) {
 		if (m_iClipStart < m_iTakeStart)
@@ -857,11 +863,11 @@ int qtractorClip::TakeInfo::select (
 	unsigned long iClipOffset = m_iClipOffset;
 	unsigned long iClipLength = m_iClipLength;
 
-	const unsigned long iClipEnd    = iClipStart + iClipLength;
+	const unsigned long iClipEnd = iClipStart + iClipLength;
 
 	const unsigned long iTakeStart  = m_iTakeStart;
 	const unsigned long iTakeEnd    = m_iTakeEnd;
-	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart + m_iTakeGap;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorClip::TakeInfo[%p]::select(%d, %lu, %lu, %lu, %lu, %lu)",
@@ -881,7 +887,7 @@ int qtractorClip::TakeInfo::select (
 		if (iTake > 0)
 			iClipOffset += iTake * iTakeLength;
 		if (iTake < iTakeCount)
-			iClipLength = iTakeLength;
+			iClipLength = iTakeEnd - iTakeStart;
 		else
 			iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
 		iClipStart = iTakeStart;
@@ -897,7 +903,7 @@ int qtractorClip::TakeInfo::select (
 			if (iTake > 0)
 				iClipOffset += (iTake - 1) * iTakeLength;
 			if (iTake < iTakeCount)
-				iClipLength = iTakeLength;
+				iClipLength = iTakeEnd - iTakeStart;
 			else
 				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
 			iClipStart = iTakeStart;

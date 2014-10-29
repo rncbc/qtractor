@@ -1,7 +1,7 @@
 // qtractorTakeRangeForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -238,7 +238,7 @@ void qtractorTakeRangeForm::updateCurrentTake (void)
 			m_pClip->clipOffset(),
 			m_pClip->clipLength(),
 			m_ui.TakeStartSpinBox->value(),
-			m_ui.TakeEndSpinBox->value()).takeCount();
+			m_ui.TakeEndSpinBox->value(), 0).takeCount();
 		for (int iTake = 0; iTake < iTakeCount; ++iTake)
 			m_ui.CurrentTakeListBox->addItem(tr("Take %1").arg(iTake + 1));
 		if (iCurrentTake < 0)

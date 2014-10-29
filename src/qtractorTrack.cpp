@@ -1243,7 +1243,7 @@ void qtractorTrack::process_record (
 		unsigned int nframes = iFrameEnd - iFrameStart;
 		// Punch-in/out recording...
 		if (m_pSession->isPunching()) {
-		#if 0//TEST_PUNCH_LOOP_RECORDING
+		#if 1//TEST_PUNCH_LOOP_RECORDING
 			const unsigned long iPunchIn = m_pSession->punchIn();
 			// Punch-in (likely...)
 			if (iPunchIn < iFrameEnd) {

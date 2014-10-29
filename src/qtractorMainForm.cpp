@@ -4323,7 +4323,7 @@ void qtractorMainForm::clipTakeRange (void)
 		if (form.exec() && form.takeEnd() < iClipEnd) {
 			pTakeInfo = new qtractorClip::TakeInfo(
 				pClip->clipStart(), pClip->clipOffset(), pClip->clipLength(),
-				form.takeStart(), form.takeEnd());
+				form.takeStart(), form.takeEnd(), 0);
 			qtractorClipCommand *pClipCommand
 				= new qtractorClipCommand(tr("take range"));
 			pClipCommand->takeInfoClip(pClip, pTakeInfo);

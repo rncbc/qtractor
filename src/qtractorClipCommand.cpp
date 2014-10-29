@@ -327,11 +327,28 @@ bool qtractorClipCommand::addClipRecord (
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->isLoopRecording()
 		&& iClipEnd > pSession->loopEnd()) {
+		// HACK: Take care of punch-in/out...
+		unsigned long iTakeStart = pSession->loopStart();
+		unsigned long iTakeEnd = pSession->loopEnd();
+		unsigned long iTakeGap = 0;
+	#if 0//TEST_PUNCH_LOOP_RECORDING
+		if (pSession->isPunching()) {
+			const unsigned long iPunchIn  = pSession->punchIn();
+			const unsigned long iPunchOut = pSession->punchOut();
+			if (iTakeStart < iPunchIn && iPunchIn < iTakeEnd) {
+				iTakeGap += (iPunchIn - iTakeStart);
+				iTakeStart = iPunchIn;
+			}
+			if (iTakeStart < iPunchOut && iPunchOut < iTakeEnd) {
+				iTakeGap += (iTakeEnd - iPunchOut);
+				iTakeEnd = iPunchOut;
+			}
+		}
+	#endif
 		qtractorClip::TakeInfo *pTakeInfo
 			= new qtractorClip::TakeInfo(
 				iClipStart, iClipOffset, iClipLength,
-				pSession->loopStart(),
-				pSession->loopEnd());
+				iTakeStart, iTakeEnd, iTakeGap);
 		const int iTake = (pSession->loopRecordingMode() == 1 ? 0 : -1);
 		pTakeInfo->setCurrentTake(pTakeInfo->select(this, pTrack, iTake));
 	}
