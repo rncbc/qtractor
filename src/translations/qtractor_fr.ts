@@ -110,17 +110,17 @@ Déc. / Long.:	%3 / %4</translation>
         <translation>Fichier:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="742"/>
+        <location filename="../qtractorClipCommand.cpp" line="759"/>
         <source>take %1</source>
         <translation>prise %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="744"/>
+        <location filename="../qtractorClipCommand.cpp" line="761"/>
         <source>reset takes</source>
         <translation>réinitialiser les prises</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="930"/>
+        <location filename="../qtractorClipCommand.cpp" line="947"/>
         <source>clip tool %1</source>
         <translation>outil clip %1</translation>
     </message>
@@ -12390,42 +12390,42 @@ Voulez-vous appliquer les changements?</translation>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="864"/>
+        <location filename="../qtractorTrackTime.cpp" line="866"/>
         <source>Play-head</source>
         <translation>Jouer le début</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="867"/>
+        <location filename="../qtractorTrackTime.cpp" line="869"/>
         <source>Edit-head</source>
         <translation>Editer le début</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="870"/>
+        <location filename="../qtractorTrackTime.cpp" line="872"/>
         <source>Edit-tail</source>
         <translation>Editer la fin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="873"/>
+        <location filename="../qtractorTrackTime.cpp" line="875"/>
         <source>Loop-start</source>
         <translation>Boucle-début</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="876"/>
+        <location filename="../qtractorTrackTime.cpp" line="878"/>
         <source>Loop-end</source>
         <translation>Boucle-fin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="879"/>
+        <location filename="../qtractorTrackTime.cpp" line="881"/>
         <source>Punch-in</source>
         <translation>Punch-in</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="882"/>
+        <location filename="../qtractorTrackTime.cpp" line="884"/>
         <source>Punch-out</source>
         <translation>Punch-out</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="916"/>
+        <location filename="../qtractorTrackTime.cpp" line="918"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
