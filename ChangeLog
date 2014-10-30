@@ -7,7 +7,7 @@ ChangeLog
 SVN TRUNK
 
 - Extending punch-in/out over loop-recording/takes modes...
-  (TESTING)
+  (EXPERIMENTAL)
 
 - Make audio tracks monitoring always flow while playback
   is rolling, independently of their mute/solo state.

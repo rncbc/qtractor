@@ -1119,7 +1119,7 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 		const unsigned long iLoopStart = m_pSession->loopStart();
 		const unsigned long iLoopEnd = m_pSession->loopEnd();
 		unsigned long iPunchOut = m_pSession->punchOut();
-	#if 0//TEST_PUNCH_LOOP_RECORDING
+	#if 1//TEST_PUNCH_LOOP_RECORDING_0
 		if (iLoopStart < iLoopEnd &&
 			iLoopStart < iFrameTime &&
 			m_pSession->loopRecordingMode() > 0) {
@@ -1243,7 +1243,7 @@ void qtractorTrack::process_record (
 		unsigned int nframes = iFrameEnd - iFrameStart;
 		// Punch-in/out recording...
 		if (m_pSession->isPunching()) {
-		#if 1//TEST_PUNCH_LOOP_RECORDING
+		#if 1//TEST_PUNCH_LOOP_RECORDING_1
 			const unsigned long iPunchIn = m_pSession->punchIn();
 			// Punch-in (likely...)
 			if (iPunchIn < iFrameEnd) {

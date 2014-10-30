@@ -865,15 +865,36 @@ int qtractorClip::TakeInfo::select (
 
 	const unsigned long iClipEnd = iClipStart + iClipLength;
 
-	const unsigned long iTakeStart  = m_iTakeStart;
-	const unsigned long iTakeEnd    = m_iTakeEnd;
-	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart + m_iTakeGap;
+	const unsigned long iTakeStart = m_iTakeStart;
+	const unsigned long iTakeEnd   = m_iTakeEnd;
+	const unsigned long iTakeGap   = m_iTakeGap;
+
+	const unsigned long iTakeLength = iTakeEnd - iTakeStart + iTakeGap;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorClip::TakeInfo[%p]::select(%d, %lu, %lu, %lu, %lu, %lu)",
 		this, iTake, iClipStart, iClipOffset, iClipLength, iTakeStart, iTakeEnd);
 #endif
 
+#if 1//TEST_PUNCH_LOOP_RECORDING_1
+	if (iTakeStart < iClipEnd) {
+		iClipLength = (iClipEnd > iTakeEnd ? iTakeEnd : iClipEnd) - iClipStart;
+		int iTakeCount = 0;
+		if (iClipEnd > iTakeEnd)
+			iTakeCount += (iClipEnd - iTakeEnd) / iTakeLength + 1;
+		if (iTake < 0 || iTake > iTakeCount)
+			iTake = iTakeCount;
+		if (iTake > 0) {
+			iClipOffset += (iTakeEnd - iClipStart);
+			iClipOffset += (iTake - 1) * (iTakeLength - iTakeGap);
+			if (iTake < iTakeCount)
+				iClipLength = iTakeEnd - iTakeStart;
+			else
+				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
+			iClipStart = iTakeStart;
+		}
+	}
+#else
 	if (iClipStart < iTakeStart) {
 		const int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
 		if (iTake < 0 || iTake > iTakeCount)
@@ -893,7 +914,7 @@ int qtractorClip::TakeInfo::select (
 		iClipStart = iTakeStart;
 	}
 	else
-	if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
+	if (iClipStart < iTakeEnd && iTakeEnd < iClipEnd) {
 		const int iTakeCount = (iClipEnd - iTakeEnd) / iTakeLength + 1;
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
@@ -901,7 +922,7 @@ int qtractorClip::TakeInfo::select (
 		if (iTake > 0 || iTakeCount < 1) {
 			iClipOffset += (iTakeEnd - iClipStart);
 			if (iTake > 0)
-				iClipOffset += (iTake - 1) * iTakeLength;
+				iClipOffset += (iTake - 1) * (iTakeLength - iTakeGap);
 			if (iTake < iTakeCount)
 				iClipLength = iTakeEnd - iTakeStart;
 			else
@@ -910,6 +931,7 @@ int qtractorClip::TakeInfo::select (
 		}
 		else iClipLength = iTakeEnd - iClipStart;
 	}
+#endif
 	else iTake = -1;
 
 	selectClipPart(pClipCommand, pTrack, ClipTake,

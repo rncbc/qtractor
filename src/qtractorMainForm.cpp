@@ -6948,7 +6948,7 @@ void qtractorMainForm::timerSlot (void)
 					const unsigned long iLoopStart = m_pSession->loopStart();
 					const unsigned long iLoopEnd = m_pSession->loopEnd();
 					unsigned long iPunchOut = m_pSession->punchOut();
-				#if 0//TEST_PUNCH_LOOP_RECORDING
+				#if 1//TEST_PUNCH_LOOP_RECORDING_0
 					if (iLoopStart < iLoopEnd &&
 						iLoopStart < iFrameTime &&
 						m_pSession->loopRecordingMode() > 0) {
