@@ -885,8 +885,8 @@ int qtractorClip::TakeInfo::select (
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
 		if (iTake > 0) {
-			iClipOffset += (iTakeEnd - iClipStart);
-			iClipOffset += (iTake - 1) * (iTakeLength - iTakeGap);
+			iClipOffset += (iTakeEnd - iClipStart) + iTakeGap;
+			iClipOffset += (iTake - 1) * iTakeLength;
 			if (iTake < iTakeCount)
 				iClipLength = iTakeEnd - iTakeStart;
 			else

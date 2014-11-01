@@ -420,7 +420,6 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			const unsigned long iLoopStart = pSession->loopStart();
 			const unsigned long iLoopEnd = pSession->loopEnd();
 			const bool bLooping = (iLoopStart < iLoopEnd);
-		#if 1//TEST_PUNCH_LOOP_RECORDING_1
 			// HACK: Care of punch-in/out...
 			const unsigned long iPunchIn = pSession->punchIn();
 			const unsigned long iPunchOut = pSession->punchOut();
@@ -431,7 +430,6 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				if (iTrackEnd > iPunchOut && iTrackStart < iPunchOut)
 					iTrackEnd = iPunchOut;
 			}
-		#endif
 			qtractorTrack *pTrack = pSession->tracks().first();
 			while (pTrack && y2 < ch) {
 				y1  = y2;
@@ -469,20 +467,15 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 								const unsigned long iLoopCount
 									= (iClipLength - iHeadLength) / iLoopLength;
 								iClipOffset += iHeadLength;
-							#if 1//TEST_PUNCH_LOOP_RECORDING_1
+								iClipOffset += iLoopCount * iLoopLength;
 								if (bPunching
 									&& iPunchIn > iLoopStart
 									&& iPunchIn < iLoopEnd) {
-									iClipOffset += iLoopCount * (iLoopEnd - iPunchIn);
+									iClipOffset += (iPunchIn - iLoopStart);
 									iClipStart = iPunchIn;
 								} else {
-									iClipOffset += iLoopCount * iLoopLength;
 									iClipStart = iLoopStart;
 								}
-							#else
-								iClipOffset += iLoopCount * iLoopLength;
-								iClipStart = iLoopStart;
-							#endif
 							}
 						} else {
 							// Clip recording is within loop range:
@@ -506,9 +499,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							iClipStart = iLoopStart;
 						}
 					}
-				#if 1//TEST_PUNCH_LOOP_RECORDING_1
+					// HACK: Care of punch-out...
 					if (!bPunching || iTrackStart < iPunchOut) {
-				#endif
 						// Clip recording rolling:
 						// -- redraw current clip segment...
 						if (iClipStart < iTrackStart)
@@ -523,9 +515,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							pClipRecord->drawClip(pPainter, clipRect, iClipOffset);
 							pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));
 						}
-				#if 1//TEST_PUNCH_LOOP_RECORDING_1
 					}
-				#endif
 				}
 				pTrack = pTrack->next();
 			}
