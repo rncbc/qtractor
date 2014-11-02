@@ -454,7 +454,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					pPainter->setBrush(bg);
 				#endif
 					unsigned long iClipStart  = pClipRecord->clipStart();
-					unsigned long iClipOffset = 0;
+					unsigned long iClipOffset = pClipRecord->clipOffset();
 					if (bLooping && iFrameTime > iLoopStart) {
 						// Clip recording started within loop range:
 						// -- adjust turn-around clip offset...

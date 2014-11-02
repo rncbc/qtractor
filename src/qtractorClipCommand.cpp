@@ -312,16 +312,7 @@ bool qtractorClipCommand::addClipRecord (
 
 	// Recorded clip length and offset...
 	const unsigned long iClipLength = iClipEnd - iClipStart;
-
-	// Attend to audio clip record latency compensation...
-	unsigned long iClipOffset = 0;
-
-	if (pTrack->trackType() == qtractorTrack::Audio) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-		if (pAudioBus)
-			iClipOffset += pAudioBus->latency_in();
-	}
+	const unsigned long iClipOffset = pClip->clipOffset();
 
 	// Check whether in loop-recording/takes mode....
 	qtractorSession *pSession = qtractorSession::getInstance();
