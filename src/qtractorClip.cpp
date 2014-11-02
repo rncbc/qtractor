@@ -843,13 +843,8 @@ int qtractorClip::TakeInfo::takeCount (void) const
 	const unsigned long iClipEnd = m_iClipStart + m_iClipLength;
 	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart + m_iTakeGap;
 
-	if (iTakeLength > 0) {
-		if (m_iClipStart < m_iTakeStart)
-			iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
-		else
-		if (m_iClipStart < m_iTakeEnd && iClipEnd > m_iTakeEnd)
-			iTakeCount = (iClipEnd - m_iTakeEnd) / iTakeLength + 1;
-	}
+	if (iTakeLength > 0 && m_iClipStart < m_iTakeEnd && m_iTakeEnd < iClipEnd)
+		iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
 
 	return iTakeCount + 1;
 }
@@ -876,13 +871,12 @@ int qtractorClip::TakeInfo::select (
 		this, iTake, iClipStart, iClipOffset, iClipLength, iTakeStart, iTakeEnd);
 #endif
 
-#if 1//TEST_PUNCH_LOOP_RECORDING_1
 	if (iTakeStart < iClipEnd) {
 		int iTakeCount = 0;
 		if (iClipEnd > iTakeEnd)
-			iTakeCount += (iClipEnd - iTakeEnd) / iTakeLength + 1;
-		if (iTake < 0 || iTake > iTakeCount)
-			iTake = iTakeCount;
+			iTakeCount += (iClipEnd - iTakeStart) / iTakeLength + 1;
+		if (iTake < 0 || iTake >= iTakeCount)
+			iTake = iTakeCount - 1;
 		// Clip-head for sure...
 		if (iClipStart < iTakeStart) {
 			iClipLength = iTakeStart - iClipStart;
@@ -896,51 +890,13 @@ int qtractorClip::TakeInfo::select (
 		if (iTake > 0) {
 			iClipOffset += (iTakeEnd - iClipStart) + iTakeGap;
 			iClipOffset += (iTake - 1) * iTakeLength;
-			if (iTake < iTakeCount)
+			if (iTake < iTakeCount - 1)
 				iClipLength = iTakeEnd - iTakeStart;
 			else
 				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
 			iClipStart = iTakeStart;
 		}
 	}
-#else
-	if (iClipStart < iTakeStart) {
-		const int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
-		if (iTake < 0 || iTake > iTakeCount)
-			iTake = iTakeCount;
-		// Clip-head for sure...
-		iClipLength = iTakeStart - iClipStart;
-		selectClipPart(pClipCommand, pTrack, ClipHead,
-			iClipStart, iClipOffset, iClipLength);
-		// Clip-take from now on...
-		iClipOffset += iClipLength;
-		if (iTake > 0)
-			iClipOffset += iTake * iTakeLength;
-		if (iTake < iTakeCount)
-			iClipLength = iTakeEnd - iTakeStart;
-		else
-			iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
-		iClipStart = iTakeStart;
-	}
-	else
-	if (iClipStart < iTakeEnd && iTakeEnd < iClipEnd) {
-		const int iTakeCount = (iClipEnd - iTakeEnd) / iTakeLength + 1;
-		if (iTake < 0 || iTake > iTakeCount)
-			iTake = iTakeCount;
-		// Clip-take for sure...
-		if (iTake > 0 || iTakeCount < 1) {
-			iClipOffset += (iTakeEnd - iClipStart);
-			if (iTake > 0)
-				iClipOffset += (iTake - 1) * (iTakeLength - iTakeGap);
-			if (iTake < iTakeCount)
-				iClipLength = iTakeEnd - iTakeStart;
-			else
-				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
-			iClipStart = iTakeStart;
-		}
-		else iClipLength = iTakeEnd - iClipStart;
-	}
-#endif
 	else iTake = -1;
 
 	selectClipPart(pClipCommand, pTrack, ClipTake,

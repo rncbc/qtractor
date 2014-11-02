@@ -6948,7 +6948,6 @@ void qtractorMainForm::timerSlot (void)
 					const unsigned long iLoopStart = m_pSession->loopStart();
 					const unsigned long iLoopEnd = m_pSession->loopEnd();
 					unsigned long iPunchOut = m_pSession->punchOut();
-				#if 1//TEST_PUNCH_LOOP_RECORDING_1
 					if (iLoopStart < iLoopEnd &&
 						iLoopStart < iFrameTime &&
 						m_pSession->loopRecordingMode() > 0) {
@@ -6958,12 +6957,8 @@ void qtractorMainForm::timerSlot (void)
 							= (iFrameTime - iLoopStart) / iLoopLength;
 						iPunchOut += (iLoopCount + 1) * iLoopLength;
 					}
-				#else
-					if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
-						iPunchOut = iLoopEnd;
-				#endif
 					// Make sure it's really about to punch-out...
-					if (iFrameTime >= iPunchOut && setRecording(false)) {
+					if (iFrameTime > iPunchOut && setRecording(false)) {
 						// Send MMC RECORD_EXIT command...
 						pMidiEngine->sendMmcCommand(
 							qtractorMmcEvent::RECORD_EXIT);
