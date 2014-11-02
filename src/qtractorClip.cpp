@@ -878,12 +878,21 @@ int qtractorClip::TakeInfo::select (
 
 #if 1//TEST_PUNCH_LOOP_RECORDING_1
 	if (iTakeStart < iClipEnd) {
-		iClipLength = (iClipEnd > iTakeEnd ? iTakeEnd : iClipEnd) - iClipStart;
 		int iTakeCount = 0;
 		if (iClipEnd > iTakeEnd)
 			iTakeCount += (iClipEnd - iTakeEnd) / iTakeLength + 1;
 		if (iTake < 0 || iTake > iTakeCount)
 			iTake = iTakeCount;
+		// Clip-head for sure...
+		if (iClipStart < iTakeStart) {
+			iClipLength = iTakeStart - iClipStart;
+			selectClipPart(pClipCommand, pTrack, ClipHead,
+				iClipStart, iClipOffset, iClipLength);
+			iClipOffset += iClipLength;
+			iClipStart = iTakeStart;
+		}
+		// Clip-take from now on...
+		iClipLength = (iClipEnd > iTakeEnd ? iTakeEnd : iClipEnd) - iClipStart;
 		if (iTake > 0) {
 			iClipOffset += (iTakeEnd - iClipStart) + iTakeGap;
 			iClipOffset += (iTake - 1) * iTakeLength;
