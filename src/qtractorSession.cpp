@@ -1527,6 +1527,11 @@ void qtractorSession::trackRecord (
 	{
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(iClipStart);
+		// Attend to audio clip record latency compensation...
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+		if (pAudioBus)
+			pAudioClip->setClipOffset(pAudioBus->latency_in());
 		pAudioClip->openAudioFile(
 			createFilePath(pTrack->trackName(),
 				qtractorAudioFileFactory::defaultExt()),

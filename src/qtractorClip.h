@@ -207,12 +207,14 @@ public:
 			unsigned long iClipOffset,
 			unsigned long iClipLength,
 			unsigned long iTakeStart,
-			unsigned long iTakeEnd)
+			unsigned long iTakeEnd,
+			unsigned long iTakeGap)
 		:	m_iClipStart(iClipStart),
 			m_iClipOffset(iClipOffset),
 			m_iClipLength(iClipLength),
 			m_iTakeStart(iTakeStart),
 			m_iTakeEnd(iTakeEnd),
+			m_iTakeGap(iTakeGap),
 			m_iCurrentTake(-1),
 			m_iRefCount(0)
 			{ m_apClipParts[ClipHead] = NULL; m_apClipParts[ClipTake] = NULL; }
@@ -229,6 +231,8 @@ public:
 			{ return m_iTakeStart; }
 		unsigned long takeEnd() const
 			{ return m_iTakeEnd; }
+		unsigned long takeGap() const
+			{ return m_iTakeGap; }
 
 		void setCurrentTake(int iCurrentTake)
 			{ m_iCurrentTake = iCurrentTake; }
@@ -275,6 +279,7 @@ public:
 
 		unsigned long m_iTakeStart;
 		unsigned long m_iTakeEnd;
+		unsigned long m_iTakeGap;
 
 		int m_iCurrentTake;
 		int m_iRefCount;

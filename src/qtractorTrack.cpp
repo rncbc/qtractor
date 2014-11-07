@@ -1114,16 +1114,28 @@ unsigned long qtractorTrack::clipRecordStart (void) const
 
 unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 {
+	// HACK: Care of loop-recording + punch-in/out...
 	if (m_pSession && m_pSession->isPunching()) {
-		const unsigned long iPunchOut = m_pSession->punchOut();
-		if (iFrameTime >= iPunchOut) {
-			const unsigned long iLoopStart = m_pSession->loopStart();
-			const unsigned long iLoopEnd   = m_pSession->loopEnd();
-			if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
-				return iLoopEnd;
-			else
-				return iPunchOut;
+		const unsigned long iLoopStart = m_pSession->loopStart();
+		const unsigned long iLoopEnd = m_pSession->loopEnd();
+		unsigned long iPunchIn = m_pSession->punchIn();
+		unsigned long iPunchOut = m_pSession->punchOut();
+		if (iLoopStart < iLoopEnd &&
+			iLoopEnd < iFrameTime &&
+			m_pSession->loopRecordingMode() > 0) {
+			if (iPunchIn < iLoopStart)
+				iPunchIn = iLoopStart;
+			if (iPunchOut > iLoopEnd)
+				iPunchOut = iLoopEnd;
+			const unsigned long iLoopLength
+				= iLoopEnd - iLoopStart;
+			const unsigned int iLoopCount
+				= (iFrameTime - iPunchIn) / iLoopLength;
+			iPunchOut += iLoopCount * iLoopLength;
 		}
+		// Make sure it's really about to punch-out...
+		if (iFrameTime > iPunchOut)
+			return iPunchOut;
 	}
 
 	unsigned long iClipRecordEnd = iFrameTime;
@@ -1229,27 +1241,20 @@ void qtractorTrack::process_record (
 	if (pAudioClip && pInputBus) {
 		// Clip recording...
 		unsigned int nframes = iFrameEnd - iFrameStart;
-		if (m_pSession->isPunching()) {
-			// Punch-in/out recording...
-			const unsigned long iPunchIn  = m_pSession->punchIn();
-			const unsigned long iPunchOut = m_pSession->punchOut();
-			if (iPunchIn < iFrameEnd && iPunchOut > iFrameStart) {
-				unsigned int offs = 0;
-				// Punch-out (unlikely...)
+		// Punch-in/out recording...
+		if (m_pSession->isPunching()
+			&& m_pSession->frameTimeEx() < iFrameEnd) {
+			const unsigned long iPunchIn = m_pSession->punchIn();
+			// Punch-in (likely...)
+			if (iPunchIn < iFrameEnd) {
+				unsigned int offset = 0;
 				if (iPunchIn >= iFrameStart) {
-					offs += (iPunchIn - iFrameStart);
-					if (iPunchOut < iFrameEnd)
-						nframes = (iPunchOut - iPunchIn);
-					else
-						nframes = (iFrameEnd - iPunchIn);
+					offset += (iPunchIn - iFrameStart);
+					nframes = (iFrameEnd - iPunchIn);
 				}
-				else
-				// Punch-out (likely...)
-				if (iPunchOut < iFrameEnd)
-					nframes = (iPunchOut - iFrameStart);
-				// Punch-in/out recording...
+				// Punch-in recording...
 				pAudioClip->write(
-					pInputBus->in(), nframes, pInputBus->channels(), offs);
+					pInputBus->in(), nframes, pInputBus->channels(), offset);
 			}
 		} else {
 			// Regular full-length recording...

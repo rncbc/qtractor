@@ -312,26 +312,32 @@ bool qtractorClipCommand::addClipRecord (
 
 	// Recorded clip length and offset...
 	const unsigned long iClipLength = iClipEnd - iClipStart;
-
-	// Attend to audio clip record latency compensation...
-	unsigned long iClipOffset = 0;
-
-	if (pTrack->trackType() == qtractorTrack::Audio) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-		if (pAudioBus)
-			iClipOffset += pAudioBus->latency_in();
-	}
+	const unsigned long iClipOffset = pClip->clipOffset();
 
 	// Check whether in loop-recording/takes mode....
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->isLoopRecording()
 		&& iClipEnd > pSession->loopEnd()) {
+		// HACK: Take care of punch-in/out...
+		unsigned long iTakeStart = pSession->loopStart();
+		unsigned long iTakeEnd = pSession->loopEnd();
+		unsigned long iTakeGap = 0;
+		if (pSession->isPunching()) {
+			const unsigned long iPunchIn  = pSession->punchIn();
+			const unsigned long iPunchOut = pSession->punchOut();
+			if (iTakeStart < iPunchIn && iPunchIn < iTakeEnd) {
+				iTakeGap += (iPunchIn - iTakeStart);
+				iTakeStart = iPunchIn;
+			}
+			if (iTakeStart < iPunchOut && iPunchOut < iTakeEnd) {
+				iTakeGap += (iTakeEnd - iPunchOut);
+				iTakeEnd = iPunchOut;
+			}
+		}
 		qtractorClip::TakeInfo *pTakeInfo
 			= new qtractorClip::TakeInfo(
 				iClipStart, iClipOffset, iClipLength,
-				pSession->loopStart(),
-				pSession->loopEnd());
+				iTakeStart, iTakeEnd, iTakeGap);
 		const int iTake = (pSession->loopRecordingMode() == 1 ? 0 : -1);
 		pTakeInfo->setCurrentTake(pTakeInfo->select(this, pTrack, iTake));
 	}

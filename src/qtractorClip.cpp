@@ -354,7 +354,7 @@ void qtractorClip::drawClip (
 	if (pSession == NULL)
 		return;
 
-	// Adjust the clip rectangle left origin... 
+	// Adjust the clip rectangle left origin...
 	QRect rect(clipRect);
 	if (iClipOffset > 0)
 		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset) + 1);
@@ -621,6 +621,7 @@ bool qtractorClip::loadElement (
 			unsigned long iClipLength = 0;
 			unsigned long iTakeStart  = 0;
 			unsigned long iTakeEnd    = 0;
+			unsigned long iTakeGap    = 0;
 			int iCurrentTake = -1;
 			for (QDomNode nProp = eChild.firstChild();
 					!nProp.isNull();
@@ -645,6 +646,9 @@ bool qtractorClip::loadElement (
 				if (eProp.tagName() == "take-end")
 					iTakeEnd = eProp.text().toULong();
 				else
+				if (eProp.tagName() == "take-gap")
+					iTakeGap = eProp.text().toULong();
+				else
 				if (eProp.tagName() == "current-take")
 					iCurrentTake = eProp.text().toInt();
 			}
@@ -656,7 +660,7 @@ bool qtractorClip::loadElement (
 				pTakeInfo = static_cast<qtractorTrack::TakeInfo *> (
 					new qtractorClip::TakeInfo(
 						iClipStart, iClipOffset, iClipLength,
-						iTakeStart, iTakeEnd));
+						iTakeStart, iTakeEnd, iTakeGap));
 				if (pTrack && iTakeID >= 0)
 					pTrack->takeInfoAdd(iTakeID, pTakeInfo);
 			}
@@ -731,7 +735,9 @@ bool qtractorClip::saveElement (
 					QString::number(pTakeInfo->takeStart()), &eTakeInfo);
 				pDocument->saveTextElement("take-end", 
 					QString::number(pTakeInfo->takeEnd()), &eTakeInfo);
-				pDocument->saveTextElement("current-take", 
+				pDocument->saveTextElement("take-gap",
+					QString::number(pTakeInfo->takeGap()), &eTakeInfo);
+				pDocument->saveTextElement("current-take",
 					QString::number(pTakeInfo->currentTake()), &eTakeInfo);
 			}
 			eTakeInfo.setAttribute("id", QString::number(iTakeID));
@@ -835,15 +841,10 @@ int qtractorClip::TakeInfo::takeCount (void) const
 	int iTakeCount = -1;
 
 	const unsigned long iClipEnd = m_iClipStart + m_iClipLength;
-	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart + m_iTakeGap;
 
-	if (iTakeLength > 0) {
-		if (m_iClipStart < m_iTakeStart)
-			iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
-		else
-		if (m_iClipStart < m_iTakeEnd && iClipEnd > m_iTakeEnd)
-			iTakeCount = (iClipEnd - m_iTakeEnd) / iTakeLength + 1;
-	}
+	if (iTakeLength > 0 && m_iClipStart < m_iTakeEnd && m_iTakeEnd < iClipEnd)
+		iTakeCount = (iClipEnd - m_iTakeStart) / iTakeLength;
 
 	return iTakeCount + 1;
 }
@@ -857,52 +858,44 @@ int qtractorClip::TakeInfo::select (
 	unsigned long iClipOffset = m_iClipOffset;
 	unsigned long iClipLength = m_iClipLength;
 
-	const unsigned long iClipEnd    = iClipStart + iClipLength;
+	const unsigned long iClipEnd = iClipStart + iClipLength;
 
-	const unsigned long iTakeStart  = m_iTakeStart;
-	const unsigned long iTakeEnd    = m_iTakeEnd;
-	const unsigned long iTakeLength = m_iTakeEnd - m_iTakeStart;
+	const unsigned long iTakeStart = m_iTakeStart;
+	const unsigned long iTakeEnd   = m_iTakeEnd;
+	const unsigned long iTakeGap   = m_iTakeGap;
+
+	const unsigned long iTakeLength = iTakeEnd - iTakeStart + iTakeGap;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorClip::TakeInfo[%p]::select(%d, %lu, %lu, %lu, %lu, %lu)",
 		this, iTake, iClipStart, iClipOffset, iClipLength, iTakeStart, iTakeEnd);
 #endif
 
-	if (iClipStart < iTakeStart) {
-		const int iTakeCount = (iClipEnd - iTakeStart) / iTakeLength;
-		if (iTake < 0 || iTake > iTakeCount)
-			iTake = iTakeCount;
+	if (iTakeStart < iClipEnd) {
+		int iTakeCount = 0;
+		if (iClipEnd > iTakeEnd)
+			iTakeCount += (iClipEnd - iTakeStart) / iTakeLength + 1;
+		if (iTake < 0 || iTake >= iTakeCount)
+			iTake = iTakeCount - 1;
 		// Clip-head for sure...
-		iClipLength = iTakeStart - iClipStart;
-		selectClipPart(pClipCommand, pTrack, ClipHead,
-			iClipStart, iClipOffset, iClipLength);
+		if (iClipStart < iTakeStart) {
+			iClipLength = iTakeStart - iClipStart;
+			selectClipPart(pClipCommand, pTrack, ClipHead,
+				iClipStart, iClipOffset, iClipLength);
+			iClipOffset += iClipLength;
+			iClipStart = iTakeStart;
+		}
 		// Clip-take from now on...
-		iClipOffset += iClipLength;
-		if (iTake > 0)
-			iClipOffset += iTake * iTakeLength;
-		if (iTake < iTakeCount)
-			iClipLength = iTakeLength;
-		else
-			iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
-		iClipStart = iTakeStart;
-	}
-	else
-	if (iClipStart < iTakeEnd && iClipEnd > iTakeEnd) {
-		const int iTakeCount = (iClipEnd - iTakeEnd) / iTakeLength + 1;
-		if (iTake < 0 || iTake > iTakeCount)
-			iTake = iTakeCount;
-		// Clip-take for sure...
-		if (iTake > 0 || iTakeCount < 1) {
-			iClipOffset += (iTakeEnd - iClipStart);
-			if (iTake > 0)
-				iClipOffset += (iTake - 1) * iTakeLength;
-			if (iTake < iTakeCount)
-				iClipLength = iTakeLength;
+		iClipLength = (iClipEnd > iTakeEnd ? iTakeEnd : iClipEnd) - iClipStart;
+		if (iTake > 0) {
+			iClipOffset += (iTakeEnd - iClipStart) + iTakeGap;
+			iClipOffset += (iTake - 1) * iTakeLength;
+			if (iTake < iTakeCount - 1)
+				iClipLength = iTakeEnd - iTakeStart;
 			else
 				iClipLength = (iClipEnd - iTakeStart) % iTakeLength;
 			iClipStart = iTakeStart;
 		}
-		else iClipLength = iTakeEnd - iClipStart;
 	}
 	else iTake = -1;
 

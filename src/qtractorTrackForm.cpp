@@ -1154,7 +1154,6 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 			m_sOldOutputBusName = sOutputBusName;
 		m_pTrack->setOutputBusName(sBusName);
 		m_pTrack->open(); // re-open...
-		qDebug("DEBUG> outputBusNameChanged()");
 	}
 
 	// Recache the applicable MIDI output bus ...

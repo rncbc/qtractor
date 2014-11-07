@@ -4333,7 +4333,7 @@ void qtractorMainForm::clipTakeRange (void)
 		if (form.exec() && form.takeEnd() < iClipEnd) {
 			pTakeInfo = new qtractorClip::TakeInfo(
 				pClip->clipStart(), pClip->clipOffset(), pClip->clipLength(),
-				form.takeStart(), form.takeEnd());
+				form.takeStart(), form.takeEnd(), 0);
 			qtractorClipCommand *pClipCommand
 				= new qtractorClipCommand(tr("take range"));
 			pClipCommand->takeInfoClip(pClip, pTakeInfo);
@@ -5327,7 +5327,7 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_VST
 	list << tr("VST Plug-in support disabled.");
 #endif
-#ifdef  CONFIG_VESTIGE
+#ifdef  CONFIG_VESTIGE_0
 	list << tr("VeSTige header support enabled.");
 #endif
 #ifndef CONFIG_LV2
@@ -5440,8 +5440,12 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	// We must start/stop certain things...
 	if (!bPlaying) {
 		// Shutdown recording anyway...
-		if (m_pSession->isRecording())
-			setRecording(false);
+		if (m_pSession->isRecording() && setRecording(false)) {
+			// Send MMC RECORD_EXIT command...
+			m_pSession->midiEngine()->sendMmcCommand(
+				qtractorMmcEvent::RECORD_EXIT);
+			++m_iTransportUpdate;
+		}
 		// Stop transport rolling, immediately...
 		setRolling(0);
 		// Session tracks automation recording.
@@ -6950,13 +6954,21 @@ void qtractorMainForm::timerSlot (void)
 			if (m_pTracks && m_pSession->isRecording()) {
 				// HACK: Care of punch-out...
 				if (m_pSession->isPunching()) {
-					const unsigned long iLoopStart = m_pSession->loopStart();
-					const unsigned long iLoopEnd   = m_pSession->loopEnd();
-					unsigned long iPunchOut = m_pSession->punchOut();
-					if (iLoopStart < iLoopEnd && iPunchOut >= iLoopEnd)
-						iPunchOut = iLoopEnd;
 					const unsigned long iFrameTime = m_pSession->frameTimeEx();
-					if (iFrameTime >= iPunchOut && setRecording(false)) {
+					const unsigned long iLoopStart = m_pSession->loopStart();
+					const unsigned long iLoopEnd = m_pSession->loopEnd();
+					unsigned long iPunchOut = m_pSession->punchOut();
+					if (iLoopStart < iLoopEnd &&
+						iLoopStart < iFrameTime &&
+						m_pSession->loopRecordingMode() > 0) {
+						const unsigned long iLoopLength
+							= iLoopEnd - iLoopStart;
+						const unsigned long iLoopCount
+							= (iFrameTime - iLoopStart) / iLoopLength;
+						iPunchOut += (iLoopCount + 1) * iLoopLength;
+					}
+					// Make sure it's really about to punch-out...
+					if (iFrameTime > iPunchOut && setRecording(false)) {
 						// Send MMC RECORD_EXIT command...
 						pMidiEngine->sendMmcCommand(
 							qtractorMmcEvent::RECORD_EXIT);

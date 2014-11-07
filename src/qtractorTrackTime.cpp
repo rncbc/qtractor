@@ -626,8 +626,9 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New punch-in boundary...
 			if (pSession->editHead() < pSession->punchOut()) {
 				// Yep, new punch-in point...
-				pSession->setPunch(
-					pSession->editHead(), pSession->punchOut());
+				pSession->execute(
+					new qtractorSessionPunchCommand(pSession,
+						pSession->editHead(), pSession->punchOut()));
 				// For visual feedback...
 				m_pTracks->contentsChangeNotify();
 			}
@@ -649,8 +650,9 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New punch-out boundary...
 			if (pSession->punchIn() < pSession->editTail()) {
 				// Yep, new punch-out point...
-				pSession->setPunch(
-					pSession->punchIn(), pSession->editTail());
+				pSession->execute(
+					new qtractorSessionPunchCommand(pSession,
+						pSession->punchIn(), pSession->editTail()));
 				// For visual feedback...
 				m_pTracks->contentsChangeNotify();
 			}
