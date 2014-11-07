@@ -5317,7 +5317,7 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_VST
 	list << tr("VST Plug-in support disabled.");
 #endif
-#ifdef  CONFIG_VESTIGE
+#ifdef  CONFIG_VESTIGE_0
 	list << tr("VeSTige header support enabled.");
 #endif
 #ifndef CONFIG_LV2

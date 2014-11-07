@@ -6,6 +6,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio capture/export file type default now set to "wav".
+
 - Extending punch-in/out over loop-recording/takes modes...
   (EXPERIMENTAL)
 

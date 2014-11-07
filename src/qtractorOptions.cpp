@@ -33,7 +33,7 @@
 
 // Supposed to be determinant as default audio file type
 // (effective only for capture/record)
-#ifdef CONFIG_LIBVORBIS
+#ifdef CONFIG_LIBVORBIS_0
 #define AUDIO_DEFAULT_EXT "ogg"
 #else
 #define AUDIO_DEFAULT_EXT "wav"
