@@ -134,6 +134,12 @@ void qtractorTakeRangeForm::setClip ( qtractorClip *pClip )
 			m_ui.EditRangeRadioButton->setChecked(true);
 		else
 			m_ui.CustomRangeRadioButton->setChecked(true);
+		// Set range limits...
+		const unsigned long iClipStart = m_pClip->clipStart();
+		const unsigned long iClipEnd = iClipStart + m_pClip->clipLength();
+		m_ui.TakeStartSpinBox->setMinimum(iClipStart);
+		m_ui.TakeEndSpinBox->setMaximum(iClipEnd);
+
 		// Populate range values...
 		rangeChanged();
 	}
@@ -233,7 +239,7 @@ void qtractorTakeRangeForm::updateCurrentTake (void)
 	int iCurrentTake = m_ui.CurrentTakeListBox->currentRow();
 	m_ui.CurrentTakeListBox->clear();
 	if (m_pClip) {
-		int iTakeCount = qtractorClip::TakeInfo(
+		const int iTakeCount = qtractorClip::TakeInfo(
 			m_pClip->clipStart(),
 			m_pClip->clipOffset(),
 			m_pClip->clipLength(),
@@ -254,19 +260,31 @@ void qtractorTakeRangeForm::updateCurrentTake (void)
 // Stabilize current form state.
 void qtractorTakeRangeForm::stabilizeForm (void)
 {
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+	if (m_pClip == NULL)
+		return;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
 	m_ui.SelectionRangeRadioButton->setEnabled(
-		m_pClip && m_pClip->isClipSelected());
+		m_pClip->isClipSelected());
 	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
 	m_ui.PunchRangeRadioButton->setEnabled(pSession->isPunching());
 	m_ui.EditRangeRadioButton->setEnabled(
 		pSession->editHead() < pSession->editTail());
 
+	const unsigned long iClipStart = m_pClip->clipStart();
+	const unsigned long iClipEnd = iClipStart + m_pClip->clipLength();
+
+	const unsigned long iTakeStart = m_ui.TakeStartSpinBox->value();
+	const unsigned long iTakeEnd = m_ui.TakeEndSpinBox->value();
+
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
-		m_ui.TakeStartSpinBox->value() < m_ui.TakeEndSpinBox->value());
+		iTakeStart < iTakeEnd && m_ui.CurrentTakeListBox->count() > 0
+		&& iTakeStart >= iClipStart && iTakeEnd < iClipEnd);
 }
 
 

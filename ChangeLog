@@ -6,6 +6,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Clip/Take/Range... input dialog values are now properly
+  sanitized as long to prevent invalid take/folding ranges.
+
 - Audio capture/export file type default now set to "wav".
 
 - Extending punch-in/out over loop-recording/takes modes...
