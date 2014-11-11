@@ -11640,7 +11640,7 @@ Voulez-vous appliquer les changements?</translation>
         <translation type="obsolete">&amp;BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.cpp" line="243"/>
+        <location filename="../qtractorTakeRangeForm.cpp" line="249"/>
         <source>Take %1</source>
         <translation>Prise %1</translation>
     </message>

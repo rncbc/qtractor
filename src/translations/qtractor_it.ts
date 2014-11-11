@@ -11368,7 +11368,7 @@ Vuoi applicare le modifiche?</translation>
         <translation>Campioni</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.cpp" line="243"/>
+        <location filename="../qtractorTakeRangeForm.cpp" line="249"/>
         <source>Take %1</source>
         <translation>Ripresa %1</translation>
     </message>

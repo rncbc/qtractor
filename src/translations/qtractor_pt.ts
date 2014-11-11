@@ -11366,7 +11366,7 @@ Você quer aplicar essas alterações?</translation>
         <translation>&amp;Início:</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.cpp" line="243"/>
+        <location filename="../qtractorTakeRangeForm.cpp" line="249"/>
         <source>Take %1</source>
         <translation>Tentativa %1</translation>
     </message>

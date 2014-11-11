@@ -11433,7 +11433,7 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">BBT (バー ビート チック)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.cpp" line="243"/>
+        <location filename="../qtractorTakeRangeForm.cpp" line="249"/>
         <source>Take %1</source>
         <translation>テイク %1</translation>
     </message>
