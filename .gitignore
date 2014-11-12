@@ -1,0 +1,14 @@
+Makefile
+config.*
+configure
+*.mak
+*.spec
+*.desktop
+*.pri
+*.o
+*.so
+qrc_*.cpp
+.moc
+.obj
+.ui
+qtractor
