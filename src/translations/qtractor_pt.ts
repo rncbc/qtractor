@@ -687,7 +687,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2146"/>
         <source>%1(%2): %3 plugin not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>
 </context>
 <context>
@@ -4303,7 +4303,7 @@ está rodando e reinicie a sessão.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5375"/>
         <source>JACK Metadata support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte a Metadata do JACK desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7454"/>
@@ -6226,7 +6226,7 @@ Posso continuar?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="127"/>
         <source>In&amp;vert</source>
-        <translation>In&amp;verter</translation>
+        <translation>&amp;Inverter</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="134"/>
@@ -6300,7 +6300,7 @@ Você deseja aplicar essas mudanças?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="141"/>
         <source>L&amp;atch</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Trava</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="150"/>
@@ -9117,22 +9117,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorMixer.cpp" line="1030"/>
         <source>&amp;Inputs</source>
-        <translation type="unfinished">&amp;Entradas</translation>
+        <translation>&amp;Entradas</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1034"/>
         <source>&amp;Outputs</source>
-        <translation type="unfinished">&amp;Saídas</translation>
+        <translation>&amp;Saídas</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1040"/>
         <source>&amp;Monitor</source>
-        <translation type="unfinished">&amp;Monitorar</translation>
+        <translation>&amp;Monitorar</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1049"/>
         <source>&amp;Buses...</source>
-        <translation type="unfinished">&amp;Canais Primários...</translation>
+        <translation>&amp;Canais Primários...</translation>
     </message>
 </context>
 <context>
@@ -9376,37 +9376,37 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2311"/>
         <source>Whether to allow automatic mixer strip/grid layout (multi-row).</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir automaticamente o layout do Mixer em grade/linhas (multi-linhas).</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2330"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalizado</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2351"/>
         <source>&amp;Color theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema de &amp;Cores:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2370"/>
         <source>Custom color palette theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema de cores com paleta padrão</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2382"/>
         <source>Wonton Soup</source>
-        <translation type="unfinished"></translation>
+        <translation>Sopa de Wonton</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2387"/>
         <source>KXStudio</source>
-        <translation type="unfinished"></translation>
+        <translation>KXStudio</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2417"/>
         <source>Custom widget style theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema padrão para widgets</translation>
     </message>
     <message>
         <source>Alt+F</source>
@@ -9431,12 +9431,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1469"/>
         <source>Whether to enable MIDI queue time drift correction</source>
-        <translation type="unfinished"></translation>
+        <translation>Correção de fluxo de tempo de espera MIDI sempre habilitado</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1472"/>
         <source>E&amp;nable MIDI queue time drift correction</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Habilitar Correção de fluxo de tempo e espera MIDI</translation>
     </message>
     <message>
         <source>Alt+L</source>
@@ -9652,32 +9652,32 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1678"/>
         <source>MIDI Cloc&amp;k:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pulso MIDI:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2282"/>
         <source>H&amp;old auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Manter rolagem automática (seguir o cursor de reprodução) na edição</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2295"/>
         <source>Whether to use desktop environment native dialogs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre utilizar diálogos nativos do ambiente de trabalho.</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2298"/>
         <source>Use desktop environment &amp;native dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizar diálogos &amp;nativos do ambiente de trabalho</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2314"/>
         <source>A&amp;utomatic mixer strip/grid layout (multi-row)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Layout em grade/linhas do Mixer em automático (multi-linhas)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2401"/>
         <source>&amp;Style theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Estilo do tema:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2853"/>
