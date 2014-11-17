@@ -413,8 +413,9 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 
 	// On-the-fly recording clip drawing...
 	if (pSession->isRecording() && pSession->isPlaying()) {
+		const unsigned long iPlayHead = pSession->playHead();
 		iTrackStart = pSession->frameFromPixel(cx + rect.x());
-		iTrackEnd = pSession->playHead();
+		iTrackEnd = iPlayHead;
 		if (iTrackStart < iTrackEnd) {
 			const unsigned long iFrameTime = pSession->frameTimeEx();
 			const unsigned long iLoopStart = pSession->loopStart();
@@ -478,7 +479,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 								}
 							}
 						} else {
-							// Clip recording is within loop range:
+							// Clip recording is rolling within loop range:
 							// -- redraw leading/head clip segment...
 							unsigned long iHeadOffset = 0;
 							if (iClipStart < iTrackStart)
@@ -492,10 +493,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							const QRect& headRect
 								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 							if (!headRect.isEmpty()) {
+								const QBrush brush(pPainter->brush());
 								pClipRecord->drawClip(pPainter, headRect, iHeadOffset);
 								pPainter->fillRect(headRect, QColor(255, 0, 0, 120));
+								pPainter->setBrush(brush);
 							}
-							iClipOffset += iFrameTime - iTrackEnd;
+							iClipOffset += (iFrameTime - iPlayHead);
 							iClipStart = iLoopStart;
 						}
 					}
