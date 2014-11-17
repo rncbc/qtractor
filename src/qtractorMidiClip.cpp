@@ -988,10 +988,10 @@ void qtractorMidiClip::draw (
 			break;
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 			unsigned long t2 = t1 + pEvent->duration();
+			if (t2 > iTimeEnd || (t1 >= t2 && bClipRecord))
+				t2 = iTimeEnd;
 			if (t1 < iTimeStart)
 				t1 = iTimeStart;
-			if (t2 > iTimeEnd)
-				t2 = iTimeEnd;
 			if (t2 > iTimeStart) {
 				pNode = cursor.seekTick(t1);
 				const int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
