@@ -958,17 +958,19 @@ void qtractorMidiClip::draw (
 	if (iNoteSpan < 6)
 		iNoteSpan = 6;
 
-	const unsigned long iFrameStart = clipStart() + iClipOffset;
+	const unsigned long iClipStart = clipStart();
+	const unsigned long iFrameStart = iClipStart + iClipOffset;
 	const int cx = pSession->pixelFromFrame(iFrameStart);
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(clipStart());
-	const unsigned long t0 = pNode->tickFromFrame(clipStart());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
+	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
 
+	const int cw = clipRect.width();
 	pNode = cursor.seekFrame(iFrameStart);	
 	const unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
-	pNode = cursor.seekPixel(cx + clipRect.width());	
-	const unsigned long iTimeEnd = pNode->tickFromPixel(cx + clipRect.width());
+	pNode = cursor.seekPixel(cx + cw);
+	const unsigned long iTimeEnd = pNode->tickFromPixel(cx + cw);
 
 	const QColor& fg = pTrack->foreground();
 	pPainter->setPen(fg);
@@ -981,26 +983,32 @@ void qtractorMidiClip::draw (
 	qtractorMidiEvent *pEvent
 		= m_drawCursor.reset(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
-		const unsigned long t1 = t0 + pEvent->time();
+		unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTimeEnd)
 			break;
-		const unsigned long t2 = t1 + pEvent->duration();
-		if (pEvent->type() == qtractorMidiEvent::NOTEON && t2 >= iTimeStart) {
-			pNode = cursor.seekTick(t1);
-			const int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
-			const int y = clipRect.bottom()
-				- (h1 * (pEvent->note() - pSeq->noteMin() + 1)) / iNoteSpan;
-			pNode = cursor.seekTick(t2);
-			int w = (pEvent->duration() > 0 || !bClipRecord
-				? clipRect.x() + pNode->pixelFromTick(t2) - cx
-				: clipRect.right()) - x; // Pending note-off? (while recording)
-			if (w < 3) w = 3;
-			pPainter->fillRect(x, y, w, h, fg);
-			if (w > 4 && h > 3)
-				pPainter->fillRect(x + 1, y + 1, w - 4, h - 3, fg.lighter());
-			else
-			if (w > 3 && h > 2)
-				pPainter->fillRect(x + 1, y + 1, w - 3, h - 2, fg.lighter());
+		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+			unsigned long t2 = t1 + pEvent->duration();
+			if (t2 > iTimeEnd || (t1 >= t2 && bClipRecord))
+				t2 = iTimeEnd;
+			if (t1 < iTimeStart)
+				t1 = iTimeStart;
+			if (t2 > iTimeStart) {
+				pNode = cursor.seekTick(t1);
+				const int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
+				const int y = clipRect.bottom()
+					- (h1 * (pEvent->note() - pSeq->noteMin() + 1)) / iNoteSpan;
+				pNode = cursor.seekTick(t2);
+				int w = (t1 < t2 || !bClipRecord
+					? clipRect.x() + pNode->pixelFromTick(t2) - cx
+					: clipRect.right()) - x; // Pending note-off? (while recording)
+				if (w < 3) w = 3;
+				pPainter->fillRect(x, y, w, h, fg);
+				if (w > 4 && h > 3)
+					pPainter->fillRect(x + 1, y + 1, w - 4, h - 3, fg.lighter());
+				else
+				if (w > 3 && h > 2)
+					pPainter->fillRect(x + 1, y + 1, w - 3, h - 2, fg.lighter());
+			}
 		}
 		pEvent = pEvent->next();
 	}
