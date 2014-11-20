@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-SVN TRUNK
+GIT HEAD
 
 - Clip/Take/Range... input dialog values are now properly
   sanitized as long to prevent invalid take/folding ranges.

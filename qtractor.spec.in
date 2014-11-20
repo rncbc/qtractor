@@ -53,7 +53,7 @@ specially dedicated to the personal home-studio.
 
 %prep
 %setup
-[ -f Makefile.svn ] && %__make -f Makefile.svn
+[ -f Makefile.git ] && %__make -f Makefile.git
 
 %build
 %configure
