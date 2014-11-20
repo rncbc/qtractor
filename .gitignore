@@ -5,6 +5,7 @@ configure
 *.spec
 *.desktop
 *.pri
+*.qm
 *.o
 *.so
 qrc_*.cpp
