@@ -162,7 +162,7 @@ Just launch ${prefix}/bin/qtractor and you're off (hopefully).
 
 Note that the default installation path ${prefix} is /usr/local.
 
-If you're checking out from Subversion (SVN), you'll have to prepare the
+If you're checking out from Git, you'll have to prepare the
 configure script just before you proceed with the above instructions:
 
    make -f Makefile.git
