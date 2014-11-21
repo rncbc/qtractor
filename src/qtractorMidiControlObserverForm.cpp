@@ -61,7 +61,7 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	// Make it auto-modeless dialog...
 	QDialog::setAttribute(Qt::WA_DeleteOnClose);
 
-	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(
+	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(NULL,
 		m_ui.ControlTypeComboBox, m_ui.ParamComboBox, m_ui.ParamTextLabel);
 
 	// Start clean.

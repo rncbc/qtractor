@@ -105,7 +105,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pEventParamComboBox->setMinimumWidth(220);
 
 	m_pEventTypeGroup = new qtractorMidiControlTypeGroup(
-		m_pEventTypeComboBox, m_pEventParamComboBox);
+		m_pMidiEditor, m_pEventTypeComboBox, m_pEventParamComboBox);
 
 	// Snap-to-scale/quantize selection widgets...
 	m_pSnapToScaleKeyComboBox = new QComboBox(m_ui.snapToScaleToolbar);
@@ -1755,8 +1755,6 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 void qtractorMidiEditorForm::updateInstrumentNames (void)
 {
 	// Just in case...
-	m_pMidiEditor->updateInstrumentNames();
-
 	m_pEventTypeGroup->updateControlType();
 
 	const qtractorMidiEvent::EventType eventType

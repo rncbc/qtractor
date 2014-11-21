@@ -6,31 +6,34 @@ ChangeLog
 
 GIT HEAD
 
+- Current assigned track/channel instrument definition
+  names for MIDI controllers, note keys, RPN and NRPN,
+  are now in effect on the MIDI clip editor drop-down
+  lists, whether available. (EXPERIMENTAL)
+
 - Clip/Take/Range... input dialog values are now properly
   sanitized as long to prevent invalid take/folding ranges.
 
 - Audio capture/export file type default now set to "wav".
 
 - Extending punch-in/out over loop-recording/takes modes...
-  (EXPERIMENTAL)
 
 - Make audio tracks monitoring always flow while playback
   is rolling, independently of their mute/solo state.
 
 - Fixed undo/redo conversion of audio clip offsets under
   (automatic) time-stretching eg. due on tempo changes.
-  (ticket by Holger Marzen, thanks). (EXPERIMENTAL)
+  (ticket by Holger Marzen, thanks).
 
 - Latch/momentary MIDI Controllers toggle mode introduced
   (a request by AutoStatic aka. Jeremy Jongepier, thanks).
-  (EXPERIMENTAL)
 
 - JACK client/port pretty-name (metadata) support is being
   seamlessly introduced. (EXPERIMENTAL)
 
 - Audio frame/MIDI time drift correction is now an option on
   View/Options.../MIDI/Playback/Enable MIDI queue time drift
-  correction. (EXPERIMENTAL)
+  correction.
 
 - Transport auto-backward feature now honoring last position
   playback was started.

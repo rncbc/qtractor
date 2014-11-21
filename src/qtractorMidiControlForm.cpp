@@ -106,7 +106,7 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	pHeader->setMovable(false);
 #endif
 
-	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(
+	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(NULL,
 		m_ui.ControlTypeComboBox, m_ui.ParamComboBox, m_ui.ParamTextLabel);
 
 	m_ui.ControlTypeComboBox->setCurrentIndex(3); // Controller (default).
