@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed some old loop-recording clip drawing glitches.
+
 - Current assigned track/channel instrument definition
   names for MIDI controllers, note keys, RPN and NRPN,
   are now in effect on the MIDI clip editor drop-down
@@ -16,7 +18,7 @@ GIT HEAD
 
 - Audio capture/export file type default now set to "wav".
 
-- Extending punch-in/out over loop-recording/takes modes...
+- Extending punch-in/out over loop-recording/takes modes.
 
 - Make audio tracks monitoring always flow while playback
   is rolling, independently of their mute/solo state.

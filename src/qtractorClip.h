@@ -142,9 +142,11 @@ public:
 	// Clip time reference settler method.
 	void updateClipTime();
 
-	// Clip paint method.
-	void drawClip(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset);
+	// Clip paint methods.
+	void drawClip(QPainter *pPainter,
+		const QRect& clipRect, unsigned long iClipOffset);
+	void drawClipRecord(QPainter *pPainter,
+		const QRect& clipRect, unsigned long iClipOffset);
 
 	// Clip (re)open method.
 	virtual void open() = 0;

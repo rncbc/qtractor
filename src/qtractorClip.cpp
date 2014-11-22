@@ -348,6 +348,7 @@ void qtractorClip::updateClipTime (void)
 void qtractorClip::drawClip (
 	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
 {
+	// Draw the framed rectangle and background...
 	pPainter->drawRect(clipRect);
 
 	qtractorSession *pSession = m_pTrack->session();
@@ -499,6 +500,25 @@ void qtractorClip::drawClip (
 		pPainter->fillRect(rectFadeIn, rgbFade.darker(120));
 	if (rectFadeOut.intersects(clipRect))
 		pPainter->fillRect(rectFadeOut, rgbFade.darker(120));
+}
+
+
+// Recording clip drawing method.
+void qtractorClip::drawClipRecord (
+	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+{
+	const QBrush brush(pPainter->brush());
+
+	// Draw the framed rectangle and background...
+	pPainter->drawRect(clipRect);
+
+	// Draw clip contents (virtual)...
+	draw(pPainter, clipRect, iClipOffset);
+
+	// Draw red shade overlay...
+	pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));
+
+	pPainter->setBrush(brush);
 }
 
 
