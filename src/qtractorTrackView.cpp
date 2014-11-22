@@ -492,8 +492,11 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							}
 							const QRect& headRect
 								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
-							if (!headRect.isEmpty())
+							if (!headRect.isEmpty()) {
+								const QBrush brush(pPainter->brush());
 								pClipRecord->drawClipRecord(pPainter, headRect, iHeadOffset);
+								pPainter->setBrush(brush);
+							}
 							iClipOffset += (iFrameTime - iPlayHead);
 							iClipStart = iLoopStart;
 						}

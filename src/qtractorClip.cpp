@@ -507,8 +507,6 @@ void qtractorClip::drawClip (
 void qtractorClip::drawClipRecord (
 	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
 {
-	const QBrush brush(pPainter->brush());
-
 	// Draw the framed rectangle and background...
 	pPainter->drawRect(clipRect);
 
@@ -517,8 +515,6 @@ void qtractorClip::drawClipRecord (
 
 	// Draw red shade overlay...
 	pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));
-
-	pPainter->setBrush(brush);
 }
 
 
