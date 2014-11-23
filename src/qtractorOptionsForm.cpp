@@ -493,7 +493,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	while (iter.hasNext()) {
 		qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
 		if (m_pOptions->sAudioCaptureExt == pFormat->ext
-			&& m_pOptions->iAudioCaptureType == pFormat->data) {
+			&& (m_pOptions->iAudioCaptureType == 0 ||
+				m_pOptions->iAudioCaptureType == pFormat->data)) {
 			iIndex = m_ui.AudioCaptureTypeComboBox->findData(iFormat);
 			break;
 		}
@@ -702,7 +703,7 @@ void qtractorOptionsForm::accept (void)
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Audio options...
-		int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(
+		const int iFormat = m_ui.AudioCaptureTypeComboBox->itemData(
 			m_ui.AudioCaptureTypeComboBox->currentIndex()).toInt();
 		const qtractorAudioFileFactory::FileFormat *pFormat
 			= qtractorAudioFileFactory::formats().at(iFormat);

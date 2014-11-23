@@ -10436,12 +10436,12 @@ P &lt; 0 : zpomalení posunu.
         <translation>(Jakýkoli)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="846"/>
+        <location filename="../qtractorOptionsForm.cpp" line="847"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="847"/>
+        <location filename="../qtractorOptionsForm.cpp" line="848"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -10462,52 +10462,52 @@ Chcete použít tyto změny?</translation>
         <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="877"/>
+        <location filename="../qtractorOptionsForm.cpp" line="878"/>
         <source>Metronome Bar Audio File</source>
         <translation>Zvukový soubor s taktem pro přístroj sloužící k stanovení tempa v hudbě (metronom)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="891"/>
+        <location filename="../qtractorOptionsForm.cpp" line="892"/>
         <source>Metronome Beat Audio File</source>
         <translation>Zvukový soubor s dobou pro přístroj sloužící k stanovení tempa v hudbě (metronom)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="976"/>
+        <location filename="../qtractorOptionsForm.cpp" line="977"/>
         <source>Audio Meter Color</source>
         <translation>Barva měřiče zvuku</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="988"/>
+        <location filename="../qtractorOptionsForm.cpp" line="989"/>
         <source>MIDI Meter Color</source>
         <translation>Barva měřiče MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1072"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1073"/>
         <source>Plug-in Directory</source>
         <translation>Adresář s přídavnými moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1300"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1301"/>
         <source>LV2 Presets Directory</source>
         <translation>Adresář s přednastaveními LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1356"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1357"/>
         <source>Messages Log</source>
         <translation>Záznam se sděleními</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1357"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1358"/>
         <source>Log files (*.%1)</source>
         <translation>Soubory se záznamy (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1394"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1395"/>
         <source>Session Template</source>
         <translation>Předloha pro sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1395"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1396"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Soubory předloh (*.qtr *.qts *.%1) pro sezení</translation>
     </message>
@@ -11311,7 +11311,7 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="2206"/>
         <location filename="../qtractorOptionsForm.ui" line="2377"/>
         <location filename="../qtractorOptionsForm.ui" line="2424"/>
-        <location filename="../qtractorOptionsForm.cpp" line="582"/>
+        <location filename="../qtractorOptionsForm.cpp" line="583"/>
         <source>(default)</source>
         <translation>(výchozí)</translation>
     </message>
