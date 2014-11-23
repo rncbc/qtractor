@@ -5590,7 +5590,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5375"/>
         <source>JACK Metadata support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>JACK Metadata サポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5940"/>
@@ -6358,12 +6358,12 @@ Do you want to apply to controller files?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="134"/>
         <source>&amp;Hook</source>
-        <translation></translation>
+        <translation>フック(&amp;H)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="141"/>
         <source>L&amp;atch</source>
-        <translation type="unfinished"></translation>
+        <translation>ラッチ(&amp;L)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="150"/>
@@ -9642,7 +9642,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2401"/>
         <source>&amp;Style theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>スタイルテーマ(&amp;S)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="911"/>
@@ -9804,12 +9804,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1469"/>
         <source>Whether to enable MIDI queue time drift correction</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIキュータイムドリフト訂正を有効にするかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1472"/>
         <source>E&amp;nable MIDI queue time drift correction</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIキュータイムドリフト訂正(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1485"/>
@@ -9880,7 +9880,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1678"/>
         <source>MIDI Cloc&amp;k:</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIクロック(&amp;K)</translation>
     </message>
     <message>
         <source>Cloc&amp;k:</source>
@@ -10074,17 +10074,17 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2282"/>
         <source>H&amp;old auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>再生中に自動スクロールを再生位置に追随させる</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2295"/>
         <source>Whether to use desktop environment native dialogs.</source>
-        <translation type="unfinished"></translation>
+        <translation>デスクトップ環境ネイティブなダイアログを使うかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2298"/>
         <source>Use desktop environment &amp;native dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>デスクトップ環境ネイティブなダイアログを使う(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2314"/>
@@ -10103,32 +10103,32 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2330"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタマイズ</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2351"/>
         <source>&amp;Color theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>カラーテーマ</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2370"/>
         <source>Custom color palette theme</source>
-        <translation type="unfinished"></translation>
+        <translation>カラーパレットテーマのカスタマイズ</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2382"/>
         <source>Wonton Soup</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2387"/>
         <source>KXStudio</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2417"/>
         <source>Custom widget style theme</source>
-        <translation type="unfinished"></translation>
+        <translation>ウィジェットスタイルテーマのカスタマイズ</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2467"/>
