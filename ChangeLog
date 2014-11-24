@@ -4,14 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.6.4  2014-11-24  Baryon Throne Beta
 
 - Fixed some old loop-recording clip drawing glitches.
 
 - Current assigned track/channel instrument definition
   names for MIDI controllers, note keys, RPN and NRPN,
   are now in effect on the MIDI clip editor drop-down
-  lists, whether available. (EXPERIMENTAL)
+  lists, whether available.
 
 - Clip/Take/Range... input dialog values are now properly
   sanitized as long to prevent invalid take/folding ranges.

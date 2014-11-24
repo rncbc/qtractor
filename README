@@ -152,11 +152,12 @@ and optionally as root:
 
     make install
 
-This procedure will end installing the following couple of files:
+This procedure will end installing the following files:
 
     ${prefix}/bin/qtractor
     ${prefix}/share/applications/qtractor.desktop
     ${prefix}/share/icons/hicolor/32x32/apps/qtractor.png
+    ${prefix}/share/qtractor/translations/qtractor_*.qm
 
 Just launch ${prefix}/bin/qtractor and you're off (hopefully).
 
@@ -277,7 +278,7 @@ References
 [17] GNU General Public License
      http://www.gnu.org/copyleft/gpl.html
 
-[18] Cakewalk (by Roland), powerful and easy-to-use tools
+[18] Cakewalk, powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
 
