@@ -237,7 +237,7 @@ void qtractorAudioFileFactory::setDefaultType(const QString& sExt, int iType,
 	QListIterator<FileFormat *> iter(getInstance().m_formats);
 	while (iter.hasNext()) {
 		FileFormat *pFormat = iter.next();
-		if (sExt == pFormat->ext && iType == pFormat->data) {
+		if (sExt == pFormat->ext && (iType == 0 || iType == pFormat->data)) {
 			getInstance().m_pDefaultFormat = pFormat;
 			iDefaultFormat = format(pFormat, iFormat);
 			break;
@@ -256,7 +256,7 @@ QString qtractorAudioFileFactory::defaultExt (void)
 	if (pFormat)
 		return pFormat->ext;
 
-#ifdef CONFIG_LIBVORBIS
+#ifdef CONFIG_LIBVORBIS_0
 	return "ogg";
 #else
 	return "wav";
@@ -269,7 +269,7 @@ int qtractorAudioFileFactory::defaultFormat (void)
 	FileFormat *pFormat = getInstance().m_pDefaultFormat;
 	if (pFormat)
 		iDefaultFormat |= pFormat->data;
-#ifndef CONFIG_LIBVORBIS
+#ifndef CONFIG_LIBVORBIS_0
 	else
 		iDefaultFormat |= SF_FORMAT_WAV;
 #endif

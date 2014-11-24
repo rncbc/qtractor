@@ -18,7 +18,7 @@ configure-stamp:
 	dh_testdir
 
 	# Add here commands to configure the package.
-	-$(MAKE) -f Makefile.svn
+	-$(MAKE) -f Makefile.git
 
 	./configure --prefix=/usr
 	touch configure-stamp
@@ -42,7 +42,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) -f Makefile.svn clean
+	-$(MAKE) -f Makefile.git clean
 
 	dh_clean 
 

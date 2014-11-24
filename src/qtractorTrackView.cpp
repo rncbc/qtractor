@@ -494,8 +494,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 							if (!headRect.isEmpty()) {
 								const QBrush brush(pPainter->brush());
-								pClipRecord->drawClip(pPainter, headRect, iHeadOffset);
-								pPainter->fillRect(headRect, QColor(255, 0, 0, 120));
+								pClipRecord->drawClipRecord(pPainter, headRect, iHeadOffset);
 								pPainter->setBrush(brush);
 							}
 							iClipOffset += (iFrameTime - iPlayHead);
@@ -514,10 +513,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							w += pSession->pixelFromFrame(iTrackEnd) - cx - x;
 						const QRect& clipRect
 							= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
-						if (!clipRect.isEmpty()) {
-							pClipRecord->drawClip(pPainter, clipRect, iClipOffset);
-							pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));
-						}
+						if (!clipRect.isEmpty())
+							pClipRecord->drawClipRecord(pPainter, clipRect, iClipOffset);
 					}
 				}
 				pTrack = pTrack->next();

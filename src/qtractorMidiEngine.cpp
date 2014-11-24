@@ -3837,9 +3837,6 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (sInstrumentName.isEmpty())
 		m_patches.remove(iChannel & 0x0f);
 
-	if (iProg < 0)
-		return;
-
 	// Update patch mapping...
 	Patch& patch = m_patches[iChannel & 0x0f];
 	patch.instrumentName = sInstrumentName;
@@ -3902,14 +3899,16 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	}
 
 	// Program change...
-	ev.type = SND_SEQ_EVENT_PGMCHANGE;
-	ev.data.control.channel = iChannel;
-	ev.data.control.value   = iProg;
-	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
-	if (pTrackMidiManager)
-		pTrackMidiManager->direct(&ev);
-	if (pBusMidiManager)
-		pBusMidiManager->direct(&ev);
+	if (iProg >= 0) {
+		ev.type = SND_SEQ_EVENT_PGMCHANGE;
+		ev.data.control.channel = iChannel;
+		ev.data.control.value   = iProg;
+		snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+		if (pTrackMidiManager)
+			pTrackMidiManager->direct(&ev);
+		if (pBusMidiManager)
+			pBusMidiManager->direct(&ev);
+	}
 
 //	pMidiEngine->flush();
 }

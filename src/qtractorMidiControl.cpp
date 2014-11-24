@@ -973,8 +973,11 @@ const QString& qtractorMidiControl::nameFromCommand ( Command command )
 
 // Constructor.
 qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
-	QComboBox *pControlTypeComboBox, QComboBox *pControlParamComboBox,
+	qtractorMidiEditor *pMidiEditor,
+	QComboBox *pControlTypeComboBox,
+	QComboBox *pControlParamComboBox,
 	QLabel *pControlParamTextLabel ) : QObject(),
+		m_pMidiEditor(pMidiEditor),
 		m_pControlTypeComboBox(pControlTypeComboBox),
 		m_pControlParamComboBox(pControlParamComboBox),
 		m_pControlParamTextLabel(pControlParamTextLabel),
@@ -1068,6 +1071,10 @@ unsigned short qtractorMidiControlTypeGroup::controlParam (void) const
 // Stabilizers.
 void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 {
+	// Just in case...
+	if (m_pMidiEditor)
+		m_pMidiEditor->updateInstrumentNames();
+
 	if (iControlType < 0)
 		iControlType = m_pControlTypeComboBox->currentIndex();
 
@@ -1094,7 +1101,8 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
 			m_pControlParamComboBox->addItem(iconNotes,
 				sTextMask.arg(iParam).arg(
-					qtractorMidiEditor::defaultNoteName(iParam)),
+					m_pMidiEditor ? m_pMidiEditor->noteName(iParam)
+					: qtractorMidiEditor::defaultNoteName(iParam)),
 				int(iParam));
 		}
 		break;
@@ -1108,7 +1116,8 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
 			m_pControlParamComboBox->addItem(iconControllers,
 				sTextMask.arg(iParam).arg(
-					qtractorMidiEditor::defaultControllerName(iParam)),
+					m_pMidiEditor ? m_pMidiEditor->controllerName(iParam)
+					: qtractorMidiEditor::defaultControllerName(iParam)),
 				int(iParam));
 		}
 		break;
@@ -1132,7 +1141,8 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(true);
 		const QMap<unsigned short, QString>& rpns
-			= qtractorMidiEditor::defaultRpnNames();
+			= (m_pMidiEditor ? m_pMidiEditor->rpnNames()
+			: qtractorMidiEditor::defaultRpnNames());
 		QMap<unsigned short, QString>::ConstIterator rpns_iter
 			= rpns.constBegin();
 		const QMap<unsigned short, QString>::ConstIterator& rpns_end
@@ -1152,7 +1162,8 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(true);
 		const QMap<unsigned short, QString>& nrpns
-			= qtractorMidiEditor::defaultNrpnNames();
+			= (m_pMidiEditor ? m_pMidiEditor->nrpnNames()
+			: qtractorMidiEditor::defaultNrpnNames());
 		QMap<unsigned short, QString>::ConstIterator nrpns_iter
 			= nrpns.constBegin();
 		const QMap<unsigned short, QString>::ConstIterator& nrpns_end
@@ -1174,7 +1185,8 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		for (unsigned short iParam = 1; iParam < 32; ++iParam) {
 			m_pControlParamComboBox->addItem(iconControllers,
 				sTextMask.arg(iParam).arg(
-					qtractorMidiEditor::defaultControl14Name(iParam)),
+					m_pMidiEditor ? m_pMidiEditor->control14Name(iParam)
+					: qtractorMidiEditor::defaultControl14Name(iParam)),
 				int(iParam));
 		}
 		break;

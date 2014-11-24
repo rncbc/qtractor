@@ -5,8 +5,10 @@ configure
 *.spec
 *.desktop
 *.pri
+*.qm
 *.o
 *.so
+*.pro.user
 qrc_*.cpp
 .moc
 .obj

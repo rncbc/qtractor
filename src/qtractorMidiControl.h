@@ -406,6 +406,7 @@ public:
 
 	// Constructor.
 	qtractorMidiControlTypeGroup(
+		qtractorMidiEditor *pMidiEditor,
 		QComboBox *pControlTypeComboBox,
 		QComboBox *pControlParamComboBox,
 		QLabel *pControlParamTextLabel = NULL);
@@ -440,6 +441,8 @@ protected:
 private:
 
 	// Instance member variables.
+	qtractorMidiEditor *m_pMidiEditor;
+
 	QComboBox *m_pControlTypeComboBox;
 	QComboBox *m_pControlParamComboBox;
 	QLabel    *m_pControlParamTextLabel;
