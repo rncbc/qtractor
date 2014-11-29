@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Make sure some audio sample file encodings (eg. old Ogg
+  Vorbis) does not head-start on audio peak generation.
+
+
 0.6.4  2014-11-24  Baryon Throne Beta
 
 - Fixed some old loop-recording clip drawing glitches.
