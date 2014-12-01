@@ -164,6 +164,9 @@ public:
 	// Track-list update (current track only).
 	void updateTrackList(qtractorTrack *pTrack = NULL);
 
+	// Update/sync recording tracks.
+	void updateContentsRecord();
+
 protected:
 
 	// Zoom factor constants.

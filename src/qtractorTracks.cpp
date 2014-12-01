@@ -2909,6 +2909,27 @@ void qtractorTracks::updateTrackList ( qtractorTrack *pTrack )
 }
 
 
+// Update/sync recording tracks.
+void qtractorTracks::updateContentsRecord (void)
+{
+	// First we do the usual...
+	m_pTrackView->updateContentsRecord();
+
+	// Then we care of the overdubs, if any...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		// FIXME: Ought to be optimzed, as only for
+		// overdubbing clips in a designated list...
+		for (qtractorTrack *pTrack = pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			qtractorClip *pClipRecord = pTrack->clipRecord();
+			if (pClipRecord && pTrack->isClipRecordEx())
+				pClipRecord->updateEditorContents();
+		}
+	}
+}
+
+
 // Track-view update (obviously a slot).
 void qtractorTracks::updateTrackView (void)
 {

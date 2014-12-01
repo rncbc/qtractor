@@ -60,6 +60,7 @@
     <addaction name="fileSaveAction" />
     <addaction name="fileSaveAsAction" />
     <addaction name="fileUnlinkAction" />
+    <addaction name="fileRecordExAction" />
     <addaction name="separator" />
     <addaction name="filePropertiesAction" />
     <addaction name="separator" />
@@ -249,6 +250,8 @@
    <addaction name="fileSaveAction" />
    <addaction name="separator" />
    <addaction name="fileTrackPropertiesAction" />
+   <addaction name="separator" />
+   <addaction name="fileRecordExAction" />
   </widget>
   <widget class="QToolBar" name="editModeToolbar" >
    <property name="orientation" >
@@ -388,6 +391,26 @@
    <property name="statusTip" >
     <string>Unlink current MIDI clip</string>
    </property>
+  </action>
+  <action name="fileRecordExAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="qtractor.qrc" >:/images/transportRecord.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Record</string>
+   </property>
+   <property name="iconText" >
+    <string>Record</string>
+   </property>
+   <property name="toolTip" >
+    <string>Record</string>
+   </property>
+   <property name="statusTip" >
+    <string>Record current MIDI clip (overdub)</string>
+  </property>
   </action>
   <action name="fileTrackInputsAction" >
    <property name="text" >

@@ -863,6 +863,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipUnlinkAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipUnlink()));
+	QObject::connect(m_ui.clipRecordExAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipRecordEx(bool)));
 	QObject::connect(m_ui.clipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipSplit()));
@@ -3974,6 +3977,25 @@ void qtractorMainForm::clipUnlink (void)
 }
 
 
+// Enter in clip record/ overdub mode.
+void qtractorMainForm::clipRecordEx ( bool bOn )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipRecordEx(%d)", int(bOn));
+#endif
+
+	// Start record/overdub the current clip, if any...
+	if (m_pTracks) {
+		qtractorClip *pClip = m_pTracks->currentClip();
+		if (pClip) {
+			qtractorTrack *pTrack = pClip->track();
+			if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
+				m_pSession->execute(new qtractorClipRecordExCommand(pClip, bOn));
+		}
+	}
+}
+
+
 // Split current clip at playhead.
 void qtractorMainForm::clipSplit (void)
 {
@@ -6570,6 +6592,10 @@ void qtractorMainForm::updateClipMenu (void)
 		pMidiClip = static_cast<qtractorMidiClip *> (pClip);
 	m_ui.clipUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
+	m_ui.clipRecordExAction->setEnabled(pMidiClip != NULL);
+	m_ui.clipRecordExAction->setChecked(
+		pTrack && pTrack->isClipRecordEx());
+
 	m_ui.clipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
@@ -6964,7 +6990,7 @@ void qtractorMainForm::timerSlot (void)
 					}
 				}
 				// Recording visual feedback...
-				m_pTracks->trackView()->updateContentsRecord();
+				m_pTracks->updateContentsRecord();
 				m_pSession->updateSession(0, iPlayHead);
 				m_statusItems[StatusTime]->setText(
 					m_pSession->timeScale()->textFromFrame(

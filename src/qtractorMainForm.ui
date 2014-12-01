@@ -395,6 +395,7 @@
     <addaction name="separator" />
     <addaction name="clipTakeMenu" />
     <addaction name="clipUnlinkAction" />
+    <addaction name="clipRecordExAction" />
     <addaction name="separator" />
     <addaction name="clipSplitAction" />
     <addaction name="clipMergeAction" />
@@ -1678,6 +1679,26 @@
    </property>
    <property name="statusTip" >
     <string>Unlink current clip</string>
+   </property>
+  </action>
+  <action name="clipRecordExAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="qtractor.qrc" >:/images/transportRecord.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Record</string>
+   </property>
+   <property name="iconText" >
+    <string>Record Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Record clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Record current clip (overdub)</string>
    </property>
   </action>
   <action name="clipSplitAction" >

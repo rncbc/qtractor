@@ -314,6 +314,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pClipRecord = NULL;
 	m_iClipRecordStart = 0;
 
+	m_bClipRecordEx = false;
+
 	m_clips.setAutoDelete(true);
 
 	m_pSyncThread = NULL;
@@ -828,7 +830,6 @@ float qtractorTrack::prevGain (void) const
 	return (m_pMonitor ? m_pMonitor->prevGain() : 1.0f);
 }
 
-
 // Track stereo-panning accessor.
 void qtractorTrack::setPanning ( float fPanning )
 {
@@ -1089,11 +1090,16 @@ void qtractorTrack::removeClip ( qtractorClip *pClip )
 void qtractorTrack::setClipRecord (
 	qtractorClip *pClipRecord, unsigned long iClipRecordStart )
 {
-	if (m_pClipRecord)
+	if (!m_bClipRecordEx && m_pClipRecord)
 		delete m_pClipRecord;
 
 	m_pClipRecord = pClipRecord;
 
+	if (m_bClipRecordEx && m_pClipRecord == NULL) {
+		m_bClipRecordEx = false;
+		setRecord(false);
+	}
+	else
 	if (m_pSession && m_pSession->isPlaying())
 		m_iClipRecordStart = iClipRecordStart;
 	else
@@ -1144,6 +1150,18 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 	if (m_pClipRecord)
 		iClipRecordEnd += m_pClipRecord->clipStart();
 	return iClipRecordEnd;
+}
+
+
+// Set current clip on exclusive recording.
+void qtractorTrack::setClipRecordEx ( bool bClipRecordEx )
+{
+	m_bClipRecordEx = bClipRecordEx;
+}
+
+bool qtractorTrack::isClipRecordEx (void) const
+{
+	return m_bClipRecordEx;
 }
 
 

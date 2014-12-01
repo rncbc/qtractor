@@ -1092,6 +1092,18 @@ void qtractorMidiClip::updateEditor ( bool bSelectClear )
 }
 
 
+// Clip editor update.
+void qtractorMidiClip::updateEditorContents (void)
+{
+	if (m_pMidiEditorForm == NULL)
+		return;
+
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	if (pMidiEditor)
+		pMidiEditor->updateContents();
+}
+
+
 // Clip query-close method (return true if editing is done).
 bool qtractorMidiClip::queryEditor (void)
 {

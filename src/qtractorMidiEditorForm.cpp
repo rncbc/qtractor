@@ -48,6 +48,8 @@
 
 #include "qtractorFileList.h"
 
+#include "qtractorClipCommand.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QActionGroup>
@@ -224,6 +226,14 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pStatusModLabel->setAutoFillBackground(true);
 	pStatusBar->addPermanentWidget(m_pStatusModLabel);
 
+	// Session recording status.
+	m_pStatusRecLabel = new QLabel(tr("REC"));
+	m_pStatusRecLabel->setAlignment(Qt::AlignHCenter);
+	m_pStatusRecLabel->setMinimumSize(m_pStatusRecLabel->sizeHint() + pad);
+	m_pStatusRecLabel->setToolTip(tr("MIDI clip record state"));
+	m_pStatusRecLabel->setAutoFillBackground(true);
+	pStatusBar->addPermanentWidget(m_pStatusRecLabel);
+
 	// Sequence duration status.
 	m_pDurationLabel = new QLabel(tr("00:00:00.000"));
 	m_pDurationLabel->setAlignment(Qt::AlignHCenter);
@@ -231,6 +241,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pDurationLabel->setToolTip(tr("MIDI clip duration"));
 	m_pDurationLabel->setAutoFillBackground(true);
 	pStatusBar->addPermanentWidget(m_pDurationLabel);
+
+	m_pRedPalette = new QPalette(pStatusBar->palette());
+	m_pRedPalette->setColor(QPalette::Window, Qt::red);
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
@@ -261,6 +274,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.fileUnlinkAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileUnlink()));
+	QObject::connect(m_ui.fileRecordExAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileRecordEx(bool)));
 	QObject::connect(m_ui.fileTrackInputsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileTrackInputs()));
@@ -617,6 +633,10 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 
 	if (m_pEventTypeGroup)
 		delete m_pEventTypeGroup;
+
+	// Ditch rec-mode/red palette...
+	if (m_pRedPalette)
+		delete m_pRedPalette;
 }
 
 
@@ -1038,6 +1058,20 @@ void qtractorMidiEditorForm::fileUnlink (void)
 		if (pTracks)
 			pTracks->unlinkClip(m_pMidiEditor->midiClip());
 	}
+}
+
+
+// Enter in clip record/ overdub mode.
+void qtractorMidiEditorForm::fileRecordEx ( bool bOn )
+{
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == NULL)
+		return;
+
+	// Start record/overdub the current clip, if any...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(new qtractorClipRecordExCommand(pMidiClip, bOn));
 }
 
 
@@ -1631,6 +1665,9 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 	m_ui.fileUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
+	m_ui.fileRecordExAction->setEnabled(pMidiClip != NULL);
+	m_ui.fileRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx());
+
 	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != NULL);
 	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != NULL);
 	m_ui.fileTrackPropertiesAction->setEnabled(pTrack != NULL);
@@ -1675,6 +1712,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_pTrackChannelLabel->clear();
 		m_pTrackNameLabel->clear();
 		m_pStatusModLabel->clear();
+		m_pStatusRecLabel->clear();
 		m_pDurationLabel->clear();
 		return;
 	}
@@ -1701,10 +1739,19 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));
 	m_pTrackNameLabel->setText(pSeq->name());
+
 	if (m_iDirtyCount > 0)
 		m_pStatusModLabel->setText(tr("MOD"));
 	else
 		m_pStatusModLabel->clear();
+
+	if (pTrack && pTrack->clipRecord() == pMidiClip) {
+		m_pStatusRecLabel->setText(tr("REC"));
+		m_pStatusRecLabel->setPalette(*m_pRedPalette);
+	} else {
+		m_pStatusRecLabel->clear();
+		m_pStatusRecLabel->setPalette(statusBar()->palette());
+	}
 
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	m_pDurationLabel->setText(pTimeScale->textFromTick(

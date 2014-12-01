@@ -39,6 +39,7 @@ class QContextMenuEvent;
 class QActionGroup;
 class QComboBox;
 class QLabel;
+class QPalette;
 
 
 //----------------------------------------------------------------------------
@@ -102,6 +103,7 @@ protected slots:
 	void fileSave();
 	void fileSaveAs();
 	void fileUnlink();
+	void fileRecordEx(bool bOn);
 	void fileTrackInputs();
 	void fileTrackOutputs();
 	void fileTrackProperties();
@@ -236,7 +238,10 @@ private:
 	QLabel *m_pFileNameLabel;
 	QLabel *m_pTrackChannelLabel;
 	QLabel *m_pStatusModLabel;
+	QLabel *m_pStatusRecLabel;
 	QLabel *m_pDurationLabel;
+
+	QPalette *m_pRedPalette;
 };
 
 
