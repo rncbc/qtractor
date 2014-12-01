@@ -400,7 +400,7 @@
     <iconset resource="qtractor.qrc" >:/images/transportRecord.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Record</string>
+    <string>Recor&amp;d</string>
    </property>
    <property name="iconText" >
     <string>Record</string>
