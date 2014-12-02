@@ -528,7 +528,6 @@ void qtractorMidiClip::closeMidiFile (void)
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession)
 			pSession->files()->removeClipItem(qtractorFileList::Midi, this);
-
 	}
 
 	if (m_pKey) {

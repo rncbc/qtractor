@@ -1666,7 +1666,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.fileUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
 	m_ui.fileRecordExAction->setEnabled(pMidiClip != NULL);
-	m_ui.fileRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx());
+	m_ui.fileRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx()
+		&& static_cast<qtractorMidiClip *> (pTrack->clipRecord()) == pMidiClip);
 
 	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != NULL);
 	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != NULL);

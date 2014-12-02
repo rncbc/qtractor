@@ -6593,8 +6593,8 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
 	m_ui.clipRecordExAction->setEnabled(pMidiClip != NULL);
-	m_ui.clipRecordExAction->setChecked(
-		pTrack && pTrack->isClipRecordEx());
+	m_ui.clipRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx()
+		&& static_cast<qtractorMidiClip *> (pTrack->clipRecord()) == pMidiClip);
 
 	m_ui.clipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()

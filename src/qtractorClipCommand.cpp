@@ -304,6 +304,10 @@ bool qtractorClipCommand::addClipRecord (
 	if (iClipStart >= iClipEnd)
 		return false;
 
+	// Recorded clip length and offset...
+	const unsigned long iClipLength = iClipEnd - iClipStart;
+	const unsigned long iClipOffset = pClip->clipOffset();
+
 	// HACK: Exclusive MIDI clip recording/overdub...
 	if (pTrack->isClipRecordEx()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -311,9 +315,9 @@ bool qtractorClipCommand::addClipRecord (
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip) {
 				// Do not ever make a clip shorter than it was, ever...
-				unsigned long iClipLength = iClipEnd - iClipStart;
-				if (iClipLength < pClip->clipLength())
-					iClipLength = pClip->clipLength();
+				unsigned long iClipLengthEx = iClipLength;
+				if (iClipLengthEx < pClip->clipLength())
+					iClipLengthEx = pClip->clipLength();
 				// Have a new filename revision...
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision(true);
@@ -328,14 +332,22 @@ bool qtractorClipCommand::addClipRecord (
 						pSession->timeScale(),
 						pSession->tickFromFrame(pMidiClip->clipStart()));
 				}
-				// Close original clip anyway...
-				pMidiClip->close();
+				// Remove original clip anyway...
+				removeClip(pMidiClip);
+				// Clone into a new one...
+				pMidiClip = new qtractorMidiClip(*pMidiClip);
+				pMidiClip->setClipStart(iClipStart);
+				pMidiClip->setClipOffset(iClipOffset);
+				pMidiClip->setClipLength(iClipLengthEx);
+				pMidiClip->setFilename(sFilename);
+				pMidiClip->setDirty(true);
+				addClip(pMidiClip, pTrack);
 				// Post-commit dirty changes...
-				fileClip(pMidiClip, sFilename, pMidiClip->trackChannel());
-				resizeClip(pMidiClip, iClipStart, pMidiClip->clipOffset(), iClipLength);
+				if (pSession)
+					pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 				if (pMainForm)
-					pMainForm->addMidiFile(sFilename);
+					pMainForm->addMidiFile(pMidiClip->filename());
 			}
 		}
 		// Can get rid of the recorded clip.
@@ -349,10 +361,6 @@ bool qtractorClipCommand::addClipRecord (
 	// Actual clip length might have changed on close.
 	if (pClip->clipLength() < 1)
 		return false;
-
-	// Recorded clip length and offset...
-	const unsigned long iClipLength = iClipEnd - iClipStart;
-	const unsigned long iClipOffset = pClip->clipOffset();
 
 	// Check whether in loop-recording/takes mode....
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -1077,6 +1085,8 @@ qtractorClipRecordExCommand::qtractorClipRecordExCommand (
 	qtractorClip *pClipRecordEx, bool bClipRecordEx )
 	: qtractorCommand(QObject::tr("clip record"))
 {
+	m_pTrack = pClipRecordEx->track();
+
 	m_pClipRecordEx = pClipRecordEx;
 	m_bClipRecordEx = bClipRecordEx;
 
@@ -1087,22 +1097,20 @@ qtractorClipRecordExCommand::qtractorClipRecordExCommand (
 // Clip-record command method.
 bool qtractorClipRecordExCommand::redo (void)
 {
-	if (m_pClipRecordEx == NULL)
-		return false;
-
-	qtractorTrack *pTrack = m_pClipRecordEx->track();
-	if (pTrack == NULL)
+	if (m_pTrack == NULL)
 		return false;
 
 	// Carry on...
-	const bool bClipRecordEx = pTrack->isClipRecordEx();
+	qtractorClip *pClipRecordEx = m_pTrack->clipRecord();
+	const bool bClipRecordEx = m_pTrack->isClipRecordEx();
 
-	pTrack->setRecord(m_bClipRecordEx);
-	pTrack->setClipRecord(m_bClipRecordEx ? m_pClipRecordEx : NULL);
-	pTrack->setClipRecordEx(m_bClipRecordEx);
+	m_pTrack->setRecord(m_bClipRecordEx);
+	m_pTrack->setClipRecord(m_bClipRecordEx ? m_pClipRecordEx : NULL);
+	m_pTrack->setClipRecordEx(m_bClipRecordEx);
 
 	// Reset for undo.
 	m_bClipRecordEx = bClipRecordEx;
+	m_pClipRecordEx = pClipRecordEx;
 
 	return true;
 }

@@ -294,9 +294,10 @@ public:
 private:
 
 	// Instance variables.
-	bool m_bClipRecordEx;
+	qtractorTrack *m_pTrack;
 
-	qtractorClip *m_pClipRecordEx;
+	bool           m_bClipRecordEx;
+	qtractorClip  *m_pClipRecordEx;
 };
 
 
