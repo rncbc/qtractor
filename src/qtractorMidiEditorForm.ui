@@ -397,7 +397,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportRecord.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/clipRecord.png</iconset>
    </property>
    <property name="text" >
     <string>Recor&amp;d</string>
