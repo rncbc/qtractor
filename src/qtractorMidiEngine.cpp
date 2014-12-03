@@ -1650,7 +1650,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// Now check which bus and track we're into...
 	const bool bRecording = (pSession->isRecording() && isPlaying());
-	const unsigned long iTime = m_iTimeStart + pEv->time.tick;
+	unsigned long iTime = m_iTimeStart + pEv->time.tick;
 
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
@@ -1681,14 +1681,32 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pTrack->isRecord() && bRecording) {
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
-					if (pMidiClip // && tick >= pMidiClip->clipStartTime()
-						&& (!pSession->isPunching()
-							|| ((iTime >= pSession->punchInTime())
-							&&  (iTime <  pSession->punchOutTime())))) {
-						if (pTrack->isClipRecordEx()
-							&& iTime >= pMidiClip->clipStartTime())
+					if (pSession->isPunching()
+						&& (iTime < pSession->punchInTime() ||
+							iTime > pSession->punchOutTime()))
+						pMidiClip = NULL;
+					if (pMidiClip && pTrack->isClipRecordEx()) {
+						// Wrap in loop-range, if any...
+						if (pSession->isLooping()) {
+							pNode = cursor.seekFrame(pSession->loopEnd());
+							const unsigned long iLoopEndTime
+								= pNode->tickFromFrame(pSession->loopEnd());
+							if (iTime > iLoopEndTime) {
+								pNode = cursor.seekFrame(pSession->loopStart());
+								const unsigned long iLoopStartTime
+									= pNode->tickFromFrame(pSession->loopStart());
+								iTime = iLoopEndTime + (iTime - iLoopEndTime)
+									% (iLoopEndTime - iLoopStartTime);
+							}
+						}
+						// Make sure it falls inside clip...
+						if (iTime >= pMidiClip->clipStartTime())
 							pEv->time.tick = iTime - pMidiClip->clipStartTime();
-						// Yep, we got a new MIDI event...
+						else
+							pMidiClip = NULL;
+					}
+					// Yep, maybe we got a new MIDI event...
+					if (pMidiClip) {
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, param, value, duration);
 						if (pSysex)
