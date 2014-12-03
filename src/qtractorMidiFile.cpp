@@ -148,7 +148,7 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 	if (iMode == None)
 		iMode = Read;
 
-	QByteArray aFilename = sFilename.toUtf8();
+	const QByteArray aFilename = sFilename.toUtf8();
 	m_pFile = ::fopen(aFilename.constData(), iMode == Write ? "w+b" : "rb");
 	if (m_pFile == NULL)
 		return false;
@@ -585,8 +585,8 @@ bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
 
 
 // Sequence/track writers.
-bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
-	unsigned short iSeqs )
+bool qtractorMidiFile::writeTracks (
+	qtractorMidiSequence **ppSeqs, unsigned short iSeqs )
 {
 	if (m_pFile == NULL)
 		return false;
@@ -609,7 +609,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 #endif
 
 	// So, how many tracks are we reading in a row?...
-	unsigned short iTracks = (iSeqs > 1 ? m_iTracks : 1);
+	const unsigned short iTracks = (iSeqs > 1 ? m_iTracks : 1);
 
 	// Go fetch them...
 	for (unsigned short iTrack = 0; iTrack < iTracks; ++iTrack) {
@@ -1073,7 +1073,7 @@ int qtractorMidiFile::readInt ( unsigned short n )
 // Raw data read method.
 int qtractorMidiFile::readData ( unsigned char *pData, unsigned short n )
 {
-	int nread = ::fread(pData, sizeof(unsigned char), n, m_pFile);
+	const int nread = ::fread(pData, sizeof(unsigned char), n, m_pFile);
 	if (nread > 0)
 		m_iOffset += nread;
 	return nread;
@@ -1195,9 +1195,8 @@ QString qtractorMidiFile::createFilePathRevision (
 	const QString& sFilename, int iRevision )
 {
 	QFileInfo fi(sFilename);
-	QDir adir(fi.absoluteDir());
 
-	QRegExp rxRevision("(.+)\\-(\\d+)$");
+	const QRegExp rxRevision("(.+)\\-(\\d+)$");
 	QString sBasename = fi.baseName();
 	if (rxRevision.exactMatch(sBasename)) {
 		sBasename = rxRevision.cap(1);
@@ -1209,6 +1208,7 @@ QString qtractorMidiFile::createFilePathRevision (
 	if (iRevision < 1)
 		++iRevision;
 
+	const QDir adir(fi.absoluteDir());
 	fi.setFile(adir, sBasename.arg(iRevision));
 	while (fi.exists())
 		fi.setFile(adir, sBasename.arg(++iRevision));

@@ -294,6 +294,10 @@ void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 bool qtractorClipCommand::addClipRecord (
 	qtractorTrack *pTrack, unsigned long iFrameTime )
 {
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return false;
+
 	qtractorClip *pClip = pTrack->clipRecord();
 	if (pClip == NULL)
 		return false;
@@ -314,24 +318,28 @@ bool qtractorClipCommand::addClipRecord (
 			qtractorMidiClip *pMidiClip
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip) {
-				// Do not ever make a clip shorter than it was, ever...
 				unsigned long iClipLengthEx = iClipLength;
+				// On looping, try to cut clip at loop range...
+				if (pSession->isLooping()) {
+					const unsigned long iLoopEnd = pSession->loopEnd();
+					if (iClipStart < iLoopEnd && iLoopEnd < iClipEnd)
+						iClipLengthEx = iLoopEnd - iClipStart;
+				}
+				// Do not ever make a clip shorter than it was, ever...
 				if (iClipLengthEx < pClip->clipLength())
 					iClipLengthEx = pClip->clipLength();
 				// Have a new filename revision...
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision(true);
 				// Save/replace the overdubbed clip...
-				qtractorSession *pSession = pTrack->session();
-				if (pSession) {
-					qtractorMidiFile::saveCopyFile(sFilename,
-						pMidiClip->filename(),
-						pMidiClip->trackChannel(),
-						pMidiClip->format(),
-						pMidiClip->sequence(),
-						pSession->timeScale(),
-						pSession->tickFromFrame(pMidiClip->clipStart()));
-				}
+				qtractorMidiFile::saveCopyFile(
+					sFilename,
+					pMidiClip->filename(),
+					pMidiClip->trackChannel(),
+					pMidiClip->format(),
+					pMidiClip->sequence(),
+					pSession->timeScale(),
+					pSession->tickFromFrame(pMidiClip->clipStart()));
 				// Remove original clip anyway...
 				removeClip(pMidiClip);
 				// Clone into a new one...
@@ -343,8 +351,8 @@ bool qtractorClipCommand::addClipRecord (
 				pMidiClip->setDirty(true);
 				addClip(pMidiClip, pTrack);
 				// Post-commit dirty changes...
-				if (pSession)
-					pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
+				pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
+				// Add the new file version to the roster...
 				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 				if (pMainForm)
 					pMainForm->addMidiFile(pMidiClip->filename());
@@ -363,9 +371,7 @@ bool qtractorClipCommand::addClipRecord (
 		return false;
 
 	// Check whether in loop-recording/takes mode....
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->isLoopRecording()
-		&& iClipEnd > pSession->loopEnd()) {
+	if (pSession->isLoopRecording() && iClipEnd > pSession->loopEnd()) {
 		// HACK: Take care of punch-in/out...
 		unsigned long iTakeStart = pSession->loopStart();
 		unsigned long iTakeEnd = pSession->loopEnd();

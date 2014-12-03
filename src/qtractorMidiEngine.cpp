@@ -1650,7 +1650,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// Now check which bus and track we're into...
 	const bool bRecording = (pSession->isRecording() && isPlaying());
-	const unsigned long iTime = m_iTimeStart + pEv->time.tick;
+	unsigned long iTime = m_iTimeStart + pEv->time.tick;
 
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
@@ -1681,14 +1681,36 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pTrack->isRecord() && bRecording) {
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
-					if (pMidiClip // && tick >= pMidiClip->clipStartTime()
-						&& (!pSession->isPunching()
-							|| ((iTime >= pSession->punchInTime())
-							&&  (iTime <  pSession->punchOutTime())))) {
-						if (pTrack->isClipRecordEx()
-							&& iTime >= pMidiClip->clipStartTime())
-							pEv->time.tick = iTime - pMidiClip->clipStartTime();
-						// Yep, we got a new MIDI event...
+					if (pMidiClip && (!pSession->isPunching()
+						|| (iTime >= pSession->punchInTime() &&
+							iTime <  pSession->punchOutTime()))) {
+						// Take care of the overdub scenario...
+						if (pTrack->isClipRecordEx()) {
+							// Wrap in loop-range, if any...
+							if (pSession->isLooping()) {
+								const unsigned long iLoopEnd
+									= pSession->loopEnd();
+								pNode = cursor.seekFrame(iLoopEnd);
+								const unsigned long iLoopEndTime
+									= pNode->tickFromFrame(iLoopEnd);
+								if (iTime > iLoopEndTime) {
+									const unsigned long iLoopStart
+										= pSession->loopStart();
+									pNode = cursor.seekFrame(iLoopStart);
+									const unsigned long iLoopStartTime
+										= pNode->tickFromFrame(iLoopStart);
+									iTime = iLoopStartTime
+										+ (iTime - iLoopEndTime)
+										% (iLoopEndTime - iLoopStartTime);
+								}
+							}
+							// Make sure it falls inside the recording clip...
+							const unsigned long iClipStartTime
+								= pMidiClip->clipStartTime();
+							if (iTime >= iClipStartTime)
+								pEv->time.tick = iTime - iClipStartTime;
+						}
+						// Yep, maybe we still have a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, param, value, duration);
 						if (pSysex)
