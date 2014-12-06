@@ -320,10 +320,10 @@ private:
 	long m_iTimeDrift;
 	long m_iFrameStart;
 	long m_iFrameDrift;
-	long m_iFrameTime;
 
 	// The absolute-time/frame when playback started.
 	unsigned long m_iTimeStartEx;
+	unsigned long m_iFrameStartEx;
 
 	// The assigned control buses.
 	bool             m_bControlBus;
