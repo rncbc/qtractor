@@ -1181,6 +1181,8 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iFrameDrift    = 0;
 	m_iFrameTime     = 0;
 
+	m_iTimeStartEx   = 0;
+
 	m_bControlBus    = false;
 	m_pIControlBus   = NULL;
 	m_pOControlBus   = NULL;
@@ -1686,7 +1688,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							iTime <  pSession->punchOutTime()))) {
 						// Take care of the overdub scenario...
 						if (pTrack->isClipRecordEx()) {
-							unsigned long iTimeEx = iTime;
+							unsigned long iTimeEx = m_iTimeStartEx + pEv->time.tick;
 							// Wrap in loop-range, if any...
 							if (pSession->isLooping()) {
 								const unsigned long iLoopEnd
@@ -1694,14 +1696,14 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 								pNode = cursor.seekFrame(iLoopEnd);
 								const unsigned long iLoopEndTime
 									= pNode->tickFromFrame(iLoopEnd);
-								if (iTime > iLoopEndTime) {
+								if (iTimeEx > iLoopEndTime) {
 									const unsigned long iLoopStart
 										= pSession->loopStart();
 									pNode = cursor.seekFrame(iLoopStart);
 									const unsigned long iLoopStartTime
 										= pNode->tickFromFrame(iLoopStart);
 									iTimeEx = iLoopStartTime
-										+ (iTime - iLoopEndTime)
+										+ (iTimeEx - iLoopEndTime)
 										% (iLoopEndTime - iLoopStartTime);
 								}
 							}
@@ -2203,9 +2205,11 @@ bool qtractorMidiEngine::activate (void)
 	m_pOutputThread->start(QThread::HighPriority);
 
 	// Reset/zero tickers...
-	m_iFrameStart = 0;
 	m_iTimeStart  = 0;
+	m_iFrameStart = 0;
 	m_iFrameTime  = long(pSession->audioEngine()->jackFrame());
+
+	m_iTimeStartEx = m_iTimeStart;
 
 	// Reset output queue drift compensator...
 	resetDrift();
@@ -2253,6 +2257,8 @@ bool qtractorMidiEngine::start (void)
 	m_iFrameStart = long(pMidiCursor->frame());
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
 	m_iFrameTime  = long(pSession->audioEngine()->jackFrame()) - m_iFrameStart;
+
+	m_iTimeStartEx = m_iTimeStart;
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -2325,6 +2331,7 @@ void qtractorMidiEngine::clean (void)
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
 		m_iTimeDrift = 0;
+		m_iTimeStartEx = 0;
 	}
 
 	// Last but not least, delete input thread...
@@ -2395,6 +2402,13 @@ void qtractorMidiEngine::restartLoop (void)
 long qtractorMidiEngine::timeStart (void) const
 {
 	return m_iTimeStart;
+}
+
+
+// The absolute-time/frame accessors.
+unsigned long qtractorMidiEngine::timeStartEx (void) const
+{
+	return m_iTimeStartEx;
 }
 
 
@@ -2717,6 +2731,8 @@ bool qtractorMidiEngine::openPlayer ( const QString& sFilename, int iTrackChanne
 
 	m_iFrameStart = 0;
 	m_iTimeStart  = 0;
+
+	m_iTimeStartEx = m_iTimeStart;
 
 	return (m_pPlayer ? m_pPlayer->open(sFilename, iTrackChannel) : false);
 }
