@@ -1158,32 +1158,34 @@ unsigned long qtractorMidiPlayer::queueFrame (void) const
 qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Midi)
 {
-	m_pAlsaSeq       = NULL;
-	m_iAlsaClient    = -1;
-	m_iAlsaQueue     = -1;
-	m_iAlsaTimer     = 0;
+	m_pAlsaSeq      = NULL;
+	m_iAlsaClient   = -1;
+	m_iAlsaQueue    = -1;
+	m_iAlsaTimer    = 0;
 
-	m_pAlsaSubsSeq   = NULL;
-	m_iAlsaSubsPort  = -1;
-	m_pAlsaNotifier  = NULL;
+	m_pAlsaSubsSeq  = NULL;
+	m_iAlsaSubsPort = -1;
+	m_pAlsaNotifier = NULL;
 
-	m_pInputThread   = NULL;
-	m_pOutputThread  = NULL;
+	m_pInputThread  = NULL;
+	m_pOutputThread = NULL;
 
-	m_bDriftCorrect  = true;
+	m_bDriftCorrect = true;
 
-	m_iDriftCheck    = 0;
-	m_iDriftCount    = DRIFT_CHECK;
+	m_iDriftCheck   = 0;
+	m_iDriftCount   = DRIFT_CHECK;
 
-	m_iTimeStart     = 0;
-	m_iTimeDrift     = 0;
-	m_iFrameStart    = 0;
-	m_iFrameDrift    = 0;
-	m_iFrameTime     = 0;
+	m_iTimeStart    = 0;
+	m_iTimeDrift    = 0;
+	m_iFrameStart   = 0;
+	m_iFrameDrift   = 0;
 
-	m_bControlBus    = false;
-	m_pIControlBus   = NULL;
-	m_pOControlBus   = NULL;
+	m_iTimeStartEx  = 0;
+	m_iFrameStartEx = 0;
+
+	m_bControlBus   = false;
+	m_pIControlBus  = NULL;
+	m_pOControlBus  = NULL;
 
 	m_bMetronome         = false;
 	m_bMetroBus          = false;
@@ -1650,7 +1652,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// Now check which bus and track we're into...
 	const bool bRecording = (pSession->isRecording() && isPlaying());
-	unsigned long iTime = m_iTimeStart + pEv->time.tick;
+	const unsigned long iTime = m_iTimeStart + pEv->time.tick;
 
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
@@ -1686,6 +1688,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							iTime <  pSession->punchOutTime()))) {
 						// Take care of the overdub scenario...
 						if (pTrack->isClipRecordEx()) {
+							unsigned long iTimeEx = m_iTimeStartEx + pEv->time.tick;
 							// Wrap in loop-range, if any...
 							if (pSession->isLooping()) {
 								const unsigned long iLoopEnd
@@ -1693,22 +1696,22 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 								pNode = cursor.seekFrame(iLoopEnd);
 								const unsigned long iLoopEndTime
 									= pNode->tickFromFrame(iLoopEnd);
-								if (iTime > iLoopEndTime) {
+								if (iTimeEx > iLoopEndTime) {
 									const unsigned long iLoopStart
 										= pSession->loopStart();
 									pNode = cursor.seekFrame(iLoopStart);
 									const unsigned long iLoopStartTime
 										= pNode->tickFromFrame(iLoopStart);
-									iTime = iLoopStartTime
-										+ (iTime - iLoopEndTime)
+									iTimeEx = iLoopStartTime
+										+ (iTimeEx - iLoopEndTime)
 										% (iLoopEndTime - iLoopStartTime);
 								}
 							}
 							// Make sure it falls inside the recording clip...
 							const unsigned long iClipStartTime
 								= pMidiClip->clipStartTime();
-							if (iTime >= iClipStartTime)
-								pEv->time.tick = iTime - iClipStartTime;
+							if (iTimeEx >= iClipStartTime)
+								pEv->time.tick = iTimeEx - iClipStartTime;
 						}
 						// Yep, maybe we still have a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
@@ -2052,10 +2055,10 @@ void qtractorMidiEngine::driftCheck (void)
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
 	//	const unsigned long iAudioFrame = pSession->playHead();
 		const unsigned long iAudioFrame
-			= pSession->audioEngine()->jackFrame() - m_iFrameTime;
+			= pSession->audioEngine()->jackFrame() - m_iFrameStartEx;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime = long(pNode->tickFromFrame(iAudioFrame));
-		const long iMidiTime = m_iTimeStart
+		const long iMidiTime = m_iTimeStartEx
 			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		const long iDeltaTime = (iAudioTime - iMidiTime);
 		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
@@ -2202,9 +2205,11 @@ bool qtractorMidiEngine::activate (void)
 	m_pOutputThread->start(QThread::HighPriority);
 
 	// Reset/zero tickers...
-	m_iFrameStart = 0;
 	m_iTimeStart  = 0;
-	m_iFrameTime  = long(pSession->audioEngine()->jackFrame());
+	m_iFrameStart = 0;
+
+	m_iTimeStartEx = m_iTimeStart;
+	m_iFrameStartEx = pSession->audioEngine()->jackFrame() - m_iFrameStart;
 
 	// Reset output queue drift compensator...
 	resetDrift();
@@ -2251,7 +2256,9 @@ bool qtractorMidiEngine::start (void)
 	// Start queue timer...
 	m_iFrameStart = long(pMidiCursor->frame());
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
-	m_iFrameTime  = long(pSession->audioEngine()->jackFrame()) - m_iFrameStart;
+
+	m_iTimeStartEx = m_iTimeStart;
+	m_iFrameStartEx = pSession->audioEngine()->jackFrame() - m_iFrameStart;
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -2324,6 +2331,7 @@ void qtractorMidiEngine::clean (void)
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
 		m_iTimeDrift = 0;
+		m_iTimeStartEx = 0;
 	}
 
 	// Last but not least, delete input thread...
@@ -2379,13 +2387,11 @@ void qtractorMidiEngine::restartLoop (void)
 	if (pSession && pSession->isLooping()) {
 		const unsigned long iLoopStart = pSession->loopStart();
 		const unsigned long iLoopEnd = pSession->loopEnd();
-		const long iLoopLength = long(iLoopEnd - iLoopStart);
-		m_iFrameTime  += iLoopLength;
-		m_iFrameStart -= iLoopLength;
+		m_iFrameStart -= long(iLoopEnd - iLoopStart);
 		m_iTimeStart  -= pSession->tickFromFrame(iLoopEnd);
 		m_iTimeStart  += pSession->tickFromFrame(iLoopStart);
 	//	m_iTimeStart  += m_iTimeDrift; -- Drift correction?
-		resetDrift();
+	//	resetDrift();
 	}
 }
 
@@ -2394,6 +2400,13 @@ void qtractorMidiEngine::restartLoop (void)
 long qtractorMidiEngine::timeStart (void) const
 {
 	return m_iTimeStart;
+}
+
+
+// The absolute-time/frame accessors.
+unsigned long qtractorMidiEngine::timeStartEx (void) const
+{
+	return m_iTimeStartEx;
 }
 
 
@@ -2716,6 +2729,8 @@ bool qtractorMidiEngine::openPlayer ( const QString& sFilename, int iTrackChanne
 
 	m_iFrameStart = 0;
 	m_iTimeStart  = 0;
+
+	m_iTimeStartEx = m_iTimeStart;
 
 	return (m_pPlayer ? m_pPlayer->open(sFilename, iTrackChannel) : false);
 }
