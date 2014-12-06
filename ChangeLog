@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip record/overdubbing is now possible (Clip/Record
+  on the main menu or File/Record from the MIDI clip editor.
+  (EXPERIMENTAL)
+
 - Make sure some audio sample file encodings (eg. old Ogg
   Vorbis) does not head-start on audio peak generation.
 
