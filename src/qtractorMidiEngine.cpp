@@ -1652,7 +1652,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	qtractorTimeScale::Node *pNode;
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
-	unsigned long iTimeOn = m_iTimeStartEx + pEv->time.tick;
+	unsigned long iTime = m_iTimeStartEx + pEv->time.tick;
 
 	// Wrap in loop-range, if any...
 	if (pSession->isLooping()) {
@@ -1660,25 +1660,25 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		pNode = cursor.seekFrame(iLoopEnd);
 		const unsigned long iLoopEndTime
 			= pNode->tickFromFrame(iLoopEnd);
-		if (iTimeOn > iLoopEndTime) {
+		if (iTime > iLoopEndTime) {
 			const unsigned long iLoopStart = pSession->loopStart();
 			pNode = cursor.seekFrame(iLoopStart);
 			const unsigned long iLoopStartTime
 				= pNode->tickFromFrame(iLoopStart);
-			iTimeOn = iLoopStartTime
-				+ (iTimeOn - iLoopEndTime)
+			iTime = iLoopStartTime
+				+ (iTime - iLoopEndTime)
 				% (iLoopEndTime - iLoopStartTime);
 		}
 	}
 
 	const long f0 = m_iFrameStart - m_iFrameDrift;
-	pNode = cursor.seekTick(iTimeOn);
-	const unsigned long t0 = pNode->frameFromTick(iTimeOn);
+	pNode = cursor.seekTick(iTime);
+	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
 
 	if (pEv->type == SND_SEQ_EVENT_NOTE && pEv->data.note.duration > 0) {
-		const unsigned long iTimeOff = iTimeOn + (pEv->data.note.duration - 1);
+		const unsigned long iTimeOff = iTime + (pEv->data.note.duration - 1);
 		pNode = cursor.seekTick(iTimeOff);
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
@@ -1686,8 +1686,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	qtractorMidiManager *pMidiManager;
 	const bool bRecording = (pSession->isRecording() && isPlaying()
 		&& (!pSession->isPunching() ||
-			(iTimeOn >= pSession->punchInTime() &&
-			 iTimeOn <  pSession->punchOutTime())));
+			(iTime >= pSession->punchInTime() &&
+			 iTime <  pSession->punchOutTime())));
 
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
@@ -1711,8 +1711,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							// Make sure it falls inside the recording clip...
 							const unsigned long iClipStartTime
 								= pMidiClip->clipStartTime();
-							if (iTimeOn >= iClipStartTime)
-								pEv->time.tick = iTimeOn - iClipStartTime;
+							if (iTime >= iClipStartTime)
+								pEv->time.tick = iTime - iClipStartTime;
 						}
 						// Yep, maybe we still have a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
