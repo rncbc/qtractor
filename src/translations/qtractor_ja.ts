@@ -109,22 +109,22 @@ Offs. / Len.:	%3 / %4</source>
         <translation>ファイル:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="802"/>
+        <location filename="../qtractorClipCommand.cpp" line="809"/>
         <source>take %1</source>
         <translation>テイク %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="804"/>
+        <location filename="../qtractorClipCommand.cpp" line="811"/>
         <source>reset takes</source>
         <translation>テイクをリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="990"/>
+        <location filename="../qtractorClipCommand.cpp" line="997"/>
         <source>clip tool %1</source>
         <translation>クリップツール %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1092"/>
+        <location filename="../qtractorClipCommand.cpp" line="1099"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>
