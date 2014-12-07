@@ -1621,7 +1621,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			else
 			if (m_iClockCount > 72) { // 3 beat averaging...
 				m_iClockCount = 0;
-				float fTempo = int(180000.0f / float(s_clockTime.elapsed()));
+				const float fTempo = int(180000.0f / float(s_clockTime.elapsed()));
 				if (::fabs(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
 					m_fClockTempo = fTempo;
 					// Post the stuffed event...
@@ -1873,9 +1873,10 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.note.velocity = int(fGain * float(pEvent->value())) & 0x7f;
 			ev.data.note.duration = pEvent->duration();
 			if (pSession->isLooping()) {
-				unsigned long le = pSession->tickFromFrame(pSession->loopEnd());
-				if (le < iTime + ev.data.note.duration)
-					ev.data.note.duration = le - iTime;
+				const unsigned long iLoopEndTime
+					= pSession->tickFromFrame(pSession->loopEnd());
+				if (iLoopEndTime < iTime + ev.data.note.duration)
+					ev.data.note.duration = iLoopEndTime - iTime;
 			}
 			break;
 		case qtractorMidiEvent::KEYPRESS:
@@ -2330,9 +2331,6 @@ void qtractorMidiEngine::clean (void)
 		} while (!m_pOutputThread->wait(100));
 		delete m_pOutputThread;
 		m_pOutputThread = NULL;
-		m_iTimeStart = 0;
-		m_iTimeDrift = 0;
-		m_iTimeStartEx = 0;
 	}
 
 	// Last but not least, delete input thread...
@@ -2378,6 +2376,16 @@ void qtractorMidiEngine::clean (void)
 
 	// Clean any other left-overs...
 	clearSysexCache();
+
+	// And all other timing tracers.
+	m_iTimeStart = 0;
+	m_iTimeDrift = 0;
+
+	m_iFrameStart = 0;
+	m_iFrameDrift = 0;
+
+	m_iTimeStartEx = 0;
+	m_iFrameStartEx = 0;
 }
 
 
