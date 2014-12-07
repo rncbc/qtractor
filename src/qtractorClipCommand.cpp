@@ -1103,7 +1103,7 @@ qtractorClipRecordExCommand::qtractorClipRecordExCommand (
 	m_pClipRecordEx = pClipRecordEx;
 	m_bClipRecordEx = bClipRecordEx;
 
-	setRefresh(false);
+	setRefresh(true);
 }
 
 

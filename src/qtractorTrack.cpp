@@ -1323,6 +1323,8 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 	const QBrush brush(bg);
 #endif
 
+	qtractorClip *pClipRecordEx = (m_bClipRecordEx ? m_pClipRecord : NULL);
+
 	while (pClip) {
 		const unsigned long iClipStart = pClip->clipStart();
 		if (iClipStart > iTrackEnd)
@@ -1346,7 +1348,8 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			pPainter->setPen(pen);
 			pPainter->setBrush(brush);
 			// Draw the clip...
-			pClip->drawClip(pPainter, QRect(x, y, w - x, h), iClipOffset);
+			const QRect clipRect(x, y, w - x, h);
+			pClip->drawClip(pPainter, clipRect, iClipOffset);
 		#if 0
 			// Draw the clip selection...
 			if (pClip->isClipSelected()) {
@@ -1367,6 +1370,8 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				pPainter->fillRect(QRect(x, y, w - x, h), QColor(0, 0, 255, 120));
 			}
 		#endif
+			if (pClip == pClipRecordEx)
+				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
 		}
 		pClip = pClip->next();
 	}
