@@ -1703,9 +1703,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
 				if (pTrack->isRecord() && bRecording) {
+					qtractorMidiSequence *pSeq = NULL;
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
-					if (pMidiClip && pTrack->isClipRecordEx()) {
+					if (pMidiClip)
+						pSeq = pMidiClip->sequence();
+					if (pMidiClip && pSeq && pTrack->isClipRecordEx()) {
 						// Take care of the overdub scenario...
 						// Make sure it falls inside the recording clip...
 						const unsigned long iClipStartTime
@@ -1716,15 +1719,15 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							pEv->time.tick = iTime - iClipStartTime;
 						else
 						if (pEv->type != SND_SEQ_EVENT_NOTEOFF)
-							pMidiClip = NULL;
+							pSeq = NULL;
 					}
 					// Yep, maybe we have a new MIDI event on record...
-					if (pMidiClip) {
+					if (pSeq) {
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, param, value, duration);
 						if (pSysex)
 							pEvent->setSysex(pSysex, iSysex);
-						(pMidiClip->sequence())->addEvent(pEvent);
+						pSeq->addEvent(pEvent);
 					}
 				}
 				// Track input monitoring...
