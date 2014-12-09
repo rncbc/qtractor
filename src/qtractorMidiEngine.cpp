@@ -1705,16 +1705,21 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pTrack->isRecord() && bRecording) {
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
-					if (pMidiClip) {
+					if (pMidiClip && pTrack->isClipRecordEx()) {
 						// Take care of the overdub scenario...
-						if (pTrack->isClipRecordEx()) {
-							// Make sure it falls inside the recording clip...
-							const unsigned long iClipStartTime
-								= pMidiClip->clipStartTime();
-							if (iTime >= iClipStartTime)
-								pEv->time.tick = iTime - iClipStartTime;
-						}
-						// Yep, maybe we still have a new MIDI event...
+						// Make sure it falls inside the recording clip...
+						const unsigned long iClipStartTime
+							= pMidiClip->clipStartTime();
+						const unsigned long iClipEndTime
+							= iClipStartTime + pMidiClip->clipLengthTime();
+						if (iTime >= iClipStartTime && iTime < iClipEndTime)
+							pEv->time.tick = iTime - iClipStartTime;
+						else
+						if (pEv->type != SND_SEQ_EVENT_NOTEOFF)
+							pMidiClip = NULL;
+					}
+					// Yep, maybe we have a new MIDI event on record...
+					if (pMidiClip) {
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, param, value, duration);
 						if (pSysex)

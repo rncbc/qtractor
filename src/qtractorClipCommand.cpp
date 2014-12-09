@@ -318,23 +318,8 @@ bool qtractorClipCommand::addClipRecord (
 			qtractorMidiClip *pMidiClip
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip) {
-				unsigned long iClipEndEx = iClipEnd;
-				// On punching, try to cut clip at punch-out...
-				if (pSession->isPunching()) {
-					const unsigned long iPunchOut = pSession->punchOut();
-					if (iClipEndEx > iPunchOut && iPunchOut > iClipStart)
-						iClipEndEx = iPunchOut;
-				}
-				// On looping, try to cut clip at loop-end...
-				if (pSession->isLooping()) {
-					const unsigned long iLoopEnd = pSession->loopEnd();
-					if (iClipEndEx > iLoopEnd && iLoopEnd > iClipStart)
-						iClipEndEx = iLoopEnd;
-				}
-				// Do not ever make a clip shorter than it was, ever...
-				unsigned long iClipLengthEx = iClipEndEx - iClipStart;
-				if (iClipLengthEx < pClip->clipLength())
-					iClipLengthEx = pClip->clipLength();
+				// Original clip length stays put...
+				const unsigned long iClipLengthEx = pMidiClip->clipLength();
 				// Have a new filename revision...
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision(true);
