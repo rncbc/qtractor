@@ -359,10 +359,10 @@ void qtractorTrackView::updateContentsRecord (void)
 				if (m_iLastRecordX > cx + dx)
 					x = m_iLastRecordX - (cx + dx);
 			}
+			pViewport->update(QRect(x, 0, w + dx, pViewport->height()));
 		}
-		else w = m_iLastRecordX - cx + dx;
+		else updateContents();
 		m_iLastRecordX = m_iPlayHeadX;
-		pViewport->update(QRect(x, 0, w + dx, pViewport->height()));
 	}
 }
 
