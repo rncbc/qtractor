@@ -47,7 +47,7 @@ Audio:	%1 Kanäle, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1347"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1384"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
@@ -322,7 +322,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="65"/>
-        <location filename="../qtractorPlugin.cpp" line="652"/>
+        <location filename="../qtractorPlugin.cpp" line="659"/>
         <source>(default)</source>
         <translation>(voreingestellt)</translation>
     </message>
@@ -378,22 +378,22 @@ MIDI:	</translation>
         <translation>Qt: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="580"/>
+        <location filename="../qtractorPlugin.cpp" line="587"/>
         <source>(Any)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="636"/>
+        <location filename="../qtractorPlugin.cpp" line="643"/>
         <source>Dummy plugin type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="668"/>
+        <location filename="../qtractorPlugin.cpp" line="675"/>
         <source>Activate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2146"/>
+        <location filename="../qtractorPlugin.cpp" line="2153"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -647,22 +647,22 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Unbenannt</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="548"/>
+        <location filename="../qtractorVstPlugin.cpp" line="585"/>
         <source>Product: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="556"/>
+        <location filename="../qtractorVstPlugin.cpp" line="593"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="564"/>
+        <location filename="../qtractorVstPlugin.cpp" line="601"/>
         <source>Version: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1344"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1381"/>
         <source>%1 (*.%2)</source>
         <translation type="unfinished"></translation>
     </message>

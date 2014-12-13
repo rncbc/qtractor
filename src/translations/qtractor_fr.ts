@@ -47,7 +47,7 @@ Audio:	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1347"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1384"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -338,7 +338,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="65"/>
-        <location filename="../qtractorPlugin.cpp" line="652"/>
+        <location filename="../qtractorPlugin.cpp" line="659"/>
         <source>(default)</source>
         <translation>(défaut)</translation>
     </message>
@@ -395,22 +395,22 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="580"/>
+        <location filename="../qtractorPlugin.cpp" line="587"/>
         <source>(Any)</source>
         <translation>(Tous)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="636"/>
+        <location filename="../qtractorPlugin.cpp" line="643"/>
         <source>Dummy plugin type.</source>
         <translation>Type de greffon factice.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="668"/>
+        <location filename="../qtractorPlugin.cpp" line="675"/>
         <source>Activate</source>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2146"/>
+        <location filename="../qtractorPlugin.cpp" line="2153"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
@@ -668,22 +668,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="548"/>
+        <location filename="../qtractorVstPlugin.cpp" line="585"/>
         <source>Product: </source>
         <translation>Produit:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="556"/>
+        <location filename="../qtractorVstPlugin.cpp" line="593"/>
         <source>Vendor: </source>
         <translation>Vendeur:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="564"/>
+        <location filename="../qtractorVstPlugin.cpp" line="601"/>
         <source>Version: </source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1344"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1381"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
