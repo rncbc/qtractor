@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- VST-shell sub-plugins are now supported (as suggested by
+  abique aka. Alexandre Bique, thanks). (EXPERIMENTAL)
+
 - MIDI clip record/overdubbing is now possible (Clip/Record
   on the main menu or File/Record from the MIDI clip editor.
   (EXPERIMENTAL)

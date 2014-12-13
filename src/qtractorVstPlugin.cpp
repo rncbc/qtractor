@@ -317,7 +317,7 @@ public:
 	Effect(AEffect *pVstEffect = NULL) : m_pVstEffect(pVstEffect) {}
 
 	// Specific methods.
-	bool open(qtractorPluginFile *pFile);
+	bool open(qtractorPluginFile *pFile, unsigned long iIndex);
 	void close();
 
 	// Specific accessors.
@@ -334,8 +334,13 @@ private:
 };
 
 
+// Current working VST Shell identifier.
+static int g_iVstShellCurrentId = 0;
+
+
 // Specific methods.
-bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
+bool qtractorVstPluginType::Effect::open (
+	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Do we have an effect descriptor already?
 	if (m_pVstEffect == NULL)
@@ -343,8 +348,40 @@ bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 	if (m_pVstEffect == NULL)
 		return false;
 
+	// Check whether it's a VST Shell...
+	const int categ = vst_dispatch(effGetPlugCategory, 0, 0, NULL, 0.0f);
+	if (categ == kPlugCategShell) {
+		int id = 0;
+		char buf[40];
+		unsigned long i = 0;
+		for ( ; iIndex >= i; ++i) {
+			buf[0] = (char) 0;
+			id = vst_dispatch(effShellGetNextPlugin, 0, 0, (void *) buf, 0.0f);
+			if (id == 0 || !buf[0])
+				break;
+		}
+		// Check if we're actually the intended plugin...
+		if (i < iIndex || id == 0 || !buf[0]) {
+			m_pVstEffect = NULL;
+			return false;
+		}
+		// Make it known...
+		g_iVstShellCurrentId = id;
+		// Re-allocate the thing all over again...
+		m_pVstEffect = qtractorVstPluginType::vst_effect(pFile);
+		// Not needed anymore, hopefully...
+		g_iVstShellCurrentId = 0;
+		// Don't go further if failed...
+		if (m_pVstEffect == NULL)
+			return false;
+	#ifdef CONFIG_DEBUG//_0
+		qDebug("AEffect[%p]::vst_shell(%lu) id=0x%x name=\"%s\"",
+			m_pVstEffect, i, id, buf);
+	#endif
+	}
+
 #ifdef CONFIG_DEBUG_0
-	qDebug("AEffect[%p]::open(%p)", m_pVstEffect, pFile);
+	qDebug("AEffect[%p]::open(%p, %lu)", m_pVstEffect, pFile, iIndex);
 #endif
 
 //	vst_dispatch(effIdentify, 0, 0, NULL, 0);
@@ -397,7 +434,7 @@ bool qtractorVstPluginType::open (void)
 	// Do we have an effect descriptor already?
 	if (m_pEffect == NULL)
 		m_pEffect = new Effect();
-	if (!m_pEffect->open(file()))
+	if (!m_pEffect->open(file(), index()))
 		return false;
 
 	AEffect *pVstEffect = m_pEffect->vst_effect();
@@ -476,7 +513,7 @@ void qtractorVstPluginType::close (void)
 
 // Factory method (static)
 qtractorVstPluginType *qtractorVstPluginType::createType (
-	qtractorPluginFile *pFile )
+	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Sanity check...
 	if (pFile == NULL)
@@ -488,7 +525,7 @@ qtractorVstPluginType *qtractorVstPluginType::createType (
 		return NULL;
 
 	// Yep, most probably its a valid plugin effect...
-	return new qtractorVstPluginType(pFile, new Effect(pVstEffect));
+	return new qtractorVstPluginType(pFile, iIndex, new Effect(pVstEffect));
 }
 
 
@@ -675,7 +712,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	g_vstPlugins.insert(m_ppEffects[0]->vst_effect(), this);
 	for (unsigned short i = 1; i < iInstances; ++i) {
 		m_ppEffects[i] = new qtractorVstPluginType::Effect();
-		m_ppEffects[i]->open(pVstType->file());
+		m_ppEffects[i]->open(pVstType->file(), pVstType->index());
 		g_vstPlugins.insert(m_ppEffects[i]->vst_effect(), this);
 	}
 
@@ -1456,6 +1493,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 	case audioMasterCurrentId:
 		VST_HC_DEBUG("audioMasterCurrentId");
+		ret = (VstIntPtr) g_iVstShellCurrentId;
 		break;
 
 	case audioMasterIdle:
