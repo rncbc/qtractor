@@ -107,6 +107,8 @@ private:
 	QStringList m_dssiPaths;
 	QStringList m_lv2Paths;
 	QStringList m_vstPaths;
+
+	int m_iDirtyPluginPaths;
 };
 
 

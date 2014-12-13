@@ -386,4 +386,11 @@ void qtractorPluginSelectForm::accept (void)
 }
 
 
+// External accesss.
+void qtractorPluginSelectForm::clearPluginPaths (void)
+{
+	g_pluginPath.clear();
+}
+
+
 // end of qtractorPluginSelectForm.cpp

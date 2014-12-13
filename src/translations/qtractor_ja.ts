@@ -10080,7 +10080,7 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="2206"/>
         <location filename="../qtractorOptionsForm.ui" line="2377"/>
         <location filename="../qtractorOptionsForm.ui" line="2424"/>
-        <location filename="../qtractorOptionsForm.cpp" line="583"/>
+        <location filename="../qtractorOptionsForm.cpp" line="586"/>
         <source>(default)</source>
         <translation>(デフォルト)</translation>
     </message>
@@ -10515,52 +10515,52 @@ Are you sure?</source>
         <translation>プラグインオートメーションを高解像度 (14ビット) で保存 (&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="116"/>
+        <location filename="../qtractorOptionsForm.cpp" line="118"/>
         <source>Signed 16-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="117"/>
+        <location filename="../qtractorOptionsForm.cpp" line="119"/>
         <source>Signed 24-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="118"/>
+        <location filename="../qtractorOptionsForm.cpp" line="120"/>
         <source>Signed 32-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="119"/>
+        <location filename="../qtractorOptionsForm.cpp" line="121"/>
         <source>Float  32-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="120"/>
+        <location filename="../qtractorOptionsForm.cpp" line="122"/>
         <source>Float  64-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="124"/>
+        <location filename="../qtractorOptionsForm.cpp" line="126"/>
         <source>SMF Format 0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="125"/>
+        <location filename="../qtractorOptionsForm.cpp" line="127"/>
         <source>SMF Format 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="145"/>
+        <location filename="../qtractorOptionsForm.cpp" line="147"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="847"/>
+        <location filename="../qtractorOptionsForm.cpp" line="856"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="848"/>
+        <location filename="../qtractorOptionsForm.cpp" line="857"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -10569,52 +10569,52 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="878"/>
+        <location filename="../qtractorOptionsForm.cpp" line="887"/>
         <source>Metronome Bar Audio File</source>
         <translation>メトロノームのbar用音声ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="892"/>
+        <location filename="../qtractorOptionsForm.cpp" line="901"/>
         <source>Metronome Beat Audio File</source>
         <translation>メトロノームのBeat用の音声ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="977"/>
+        <location filename="../qtractorOptionsForm.cpp" line="986"/>
         <source>Audio Meter Color</source>
         <translation>オーディオメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="989"/>
+        <location filename="../qtractorOptionsForm.cpp" line="998"/>
         <source>MIDI Meter Color</source>
         <translation>MIDIメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1073"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1082"/>
         <source>Plug-in Directory</source>
         <translation>プラグインディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1301"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1318"/>
         <source>LV2 Presets Directory</source>
         <translation>LV2プリセットディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1357"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1374"/>
         <source>Messages Log</source>
         <translation>メッセージログ</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1358"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1375"/>
         <source>Log files (*.%1)</source>
         <translation>ログファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1395"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1412"/>
         <source>Session Template</source>
         <translation>セッションのテンプレート</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1396"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1413"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>セッションのテンプレートファイル(*.qtr *.qts *.%1)</translation>
     </message>

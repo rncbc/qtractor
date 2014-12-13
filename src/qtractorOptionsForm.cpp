@@ -33,6 +33,8 @@
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
 
+#include "qtractorPluginSelectForm.h"
+
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QColorDialog>
@@ -177,6 +179,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
+	m_iDirtyPluginPaths = 0;
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -686,6 +689,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
+	m_iDirtyPluginPaths = 0;
+
 	stabilizeForm();
 }
 
@@ -812,7 +817,11 @@ void qtractorOptionsForm::accept (void)
 			m_pOptions->sCustomStyleTheme = m_ui.CustomStyleThemeComboBox->currentText();
 		else
 			m_pOptions->sCustomStyleTheme.clear();
-		// Reset dirty flag.
+		// Reset dirty flags.
+		if (m_iDirtyPluginPaths > 0) {
+			qtractorPluginSelectForm::clearPluginPaths();
+			m_iDirtyPluginPaths = 0;
+		}
 		m_iDirtyCount = 0;
 	}
 
@@ -905,13 +914,13 @@ void qtractorOptionsForm::chooseMetroBeatFilename (void)
 void qtractorOptionsForm::updateMetroNoteNames (void)
 {
 	// Save current selection...
-	int iOldBarNote  = m_ui.MetroBarNoteComboBox->currentIndex();
-	int iOldBeatNote = m_ui.MetroBeatNoteComboBox->currentIndex();
+	const int iOldBarNote  = m_ui.MetroBarNoteComboBox->currentIndex();
+	const int iOldBeatNote = m_ui.MetroBeatNoteComboBox->currentIndex();
 
 	// Populate the Metronome notes.
 	m_ui.MetroBarNoteComboBox->clear();
 	m_ui.MetroBeatNoteComboBox->clear();
-	bool bDrums = (m_ui.MetroChannelSpinBox->value() == 10);
+	const bool bDrums = (m_ui.MetroChannelSpinBox->value() == 10);
 	QStringList items;
 	const QString sItem("%1 (%2)");
 	for (int i = 0; i < 128; ++i) {
@@ -1140,13 +1149,15 @@ void qtractorOptionsForm::addPluginPath (void)
 	m_ui.PluginPathListWidget->setCurrentRow(
 		m_ui.PluginPathListWidget->count() - 1);
 
-	int i = m_ui.PluginPathComboBox->findText(sPluginPath);
+	const int i = m_ui.PluginPathComboBox->findText(sPluginPath);
 	if (i >= 0)
 		m_ui.PluginPathComboBox->removeItem(i);
 	m_ui.PluginPathComboBox->insertItem(0, sPluginPath);
 	m_ui.PluginPathComboBox->setEditText(QString());
 
 	m_ui.PluginPathListWidget->setFocus();
+
+	++m_iDirtyPluginPaths;
 
 	selectPluginPath();
 	changed();
@@ -1156,7 +1167,7 @@ void qtractorOptionsForm::addPluginPath (void)
 // Select current plugin path.
 void qtractorOptionsForm::selectPluginPath (void)
 {
-	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+	const int iPluginPath = m_ui.PluginPathListWidget->currentRow();
 
 	m_ui.PluginPathRemoveToolButton->setEnabled(iPluginPath >= 0);
 	m_ui.PluginPathUpToolButton->setEnabled(iPluginPath > 0);
@@ -1168,7 +1179,7 @@ void qtractorOptionsForm::selectPluginPath (void)
 // Remove current plugin path.
 void qtractorOptionsForm::removePluginPath (void)
 {
-	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+	const int iPluginPath = m_ui.PluginPathListWidget->currentRow();
 	if (iPluginPath < 0)
 		return;
 
@@ -1196,6 +1207,8 @@ void qtractorOptionsForm::removePluginPath (void)
 	if (pItem)
 		delete pItem;
 
+	++m_iDirtyPluginPaths;
+
 	selectPluginPath();
 	changed();
 }
@@ -1204,7 +1217,7 @@ void qtractorOptionsForm::removePluginPath (void)
 // Move up plugin path on search order.
 void qtractorOptionsForm::moveUpPluginPath (void)
 {
-	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+	const int iPluginPath = m_ui.PluginPathListWidget->currentRow();
 	if (iPluginPath < 1)
 		return;
 
@@ -1241,6 +1254,8 @@ void qtractorOptionsForm::moveUpPluginPath (void)
 		m_ui.PluginPathListWidget->setCurrentItem(pItem);
 	}
 
+	++m_iDirtyPluginPaths;
+
 	selectPluginPath();
 	changed();
 }
@@ -1249,7 +1264,7 @@ void qtractorOptionsForm::moveUpPluginPath (void)
 // Move down plugin path on search order.
 void qtractorOptionsForm::moveDownPluginPath (void)
 {
-	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+	const int iPluginPath = m_ui.PluginPathListWidget->currentRow();
 	if (iPluginPath >= m_ui.PluginPathListWidget->count() - 1)
 		return;
 
@@ -1285,6 +1300,8 @@ void qtractorOptionsForm::moveDownPluginPath (void)
 		pItem->setSelected(true);
 		m_ui.PluginPathListWidget->setCurrentItem(pItem);
 	}
+
+	++m_iDirtyPluginPaths;
 
 	selectPluginPath();
 	changed();
@@ -1463,7 +1480,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.AudioPlayerAutoConnectCheckBox->setEnabled(
 		m_ui.AudioPlayerBusCheckBox->isChecked());
 
-	bool bAudioMetronome = m_ui.AudioMetronomeCheckBox->isChecked();
+	const bool bAudioMetronome = m_ui.AudioMetronomeCheckBox->isChecked();
 	m_ui.MetroBarFilenameTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBarFilenameComboBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBarFilenameToolButton->setEnabled(bAudioMetronome);
@@ -1479,11 +1496,11 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.AudioMetroAutoConnectCheckBox->setEnabled(
 		bAudioMetronome && m_ui.AudioMetroBusCheckBox->isChecked());
 
-	bool bMmcMode =(m_ui.MidiMmcModeComboBox->currentIndex() > 0);
+	const bool bMmcMode =(m_ui.MidiMmcModeComboBox->currentIndex() > 0);
 	m_ui.MidiMmcDeviceTextLabel->setEnabled(bMmcMode);
 	m_ui.MidiMmcDeviceComboBox->setEnabled(bMmcMode);
 
-	bool bMidiMetronome = m_ui.MidiMetronomeCheckBox->isChecked();
+	const bool bMidiMetronome = m_ui.MidiMetronomeCheckBox->isChecked();
 	m_ui.MetroChannelTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroChannelSpinBox->setEnabled(bMidiMetronome);
 	m_ui.MetroBarNoteTextLabel->setEnabled(bMidiMetronome);
@@ -1500,7 +1517,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatDurationSpinBox->setEnabled(bMidiMetronome);
 	m_ui.MidiMetroBusCheckBox->setEnabled(bMidiMetronome);
 
-	bool bMessagesLog = m_ui.MessagesLogCheckBox->isChecked();
+	const bool bMessagesLog = m_ui.MessagesLogCheckBox->isChecked();
 	m_ui.MessagesLogPathComboBox->setEnabled(bMessagesLog);
 	m_ui.MessagesLogPathToolButton->setEnabled(bMessagesLog);
 	if (bMessagesLog && bValid) {
@@ -1508,7 +1525,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 		bValid = !sPath.isEmpty();
 	}
 
-	bool bSessionTemplate = m_ui.SessionTemplateCheckBox->isChecked();
+	const bool bSessionTemplate = m_ui.SessionTemplateCheckBox->isChecked();
 	m_ui.SessionTemplatePathComboBox->setEnabled(bSessionTemplate);
 	m_ui.SessionTemplatePathToolButton->setEnabled(bSessionTemplate);
 	if (bSessionTemplate && bValid) {
