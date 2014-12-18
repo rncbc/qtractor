@@ -41,7 +41,7 @@
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2647"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4355"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4357"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
     </message>
@@ -122,7 +122,7 @@
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2647"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4355"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4357"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>
     </message>

@@ -2036,8 +2036,8 @@ void qtractorMidiEngine::resetDrift (void)
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 //--DRIFT-SKEW-END--
 
-	m_iTimeDrift  = 0;
 	m_iFrameDrift = 0;
+	m_iTimeDrift  = 0;
 }
 
 
@@ -2409,6 +2409,8 @@ void qtractorMidiEngine::restartLoop (void)
 		m_iTimeStart  += pSession->tickFromFrame(iLoopStart);
 	//	m_iTimeStart  += m_iTimeDrift; -- Drift correction?
 	//	resetDrift();
+		m_iFrameDrift = 0;
+		m_iTimeDrift  = 0;
 	}
 }
 
