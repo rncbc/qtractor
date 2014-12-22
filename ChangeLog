@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- As long to prevent asynchronous mistakes to JACK transport
+  state changes, an internal slack-delay is now introduced
+  after self-initiated transport commands (eg. start/stop).
+
 - The MIDI clip editor (aka. piano-roll) was missing to
   clear or reset the current selection when no shift/ctrl
   keyboard modifier is in effect.
