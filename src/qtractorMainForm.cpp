@@ -6825,17 +6825,15 @@ void qtractorMainForm::timerSlot (void)
 
 	// Playhead status...
 	if (iPlayHead != long(m_iPlayHead)) {
-		if (m_pTracks) {
-			// Update tracks-view play-head...
-			m_pTracks->trackView()->setPlayHead(iPlayHead,
-				m_ui.transportFollowAction->isChecked());
-			// Update editors play-head...
-			QListIterator<qtractorMidiEditorForm *> iter(m_editors);
-			while (iter.hasNext())
-				(iter.next()->editor())->setPlayHead(iPlayHead);
-		}
+		// Update tracks-view play-head...
+		m_pTracks->trackView()->setPlayHead(iPlayHead,
+			m_ui.transportFollowAction->isChecked());
+		// Update editors play-head...
+		QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+		while (iter.hasNext())
+			(iter.next()->editor())->setPlayHead(iPlayHead);
+		// Update transport status anyway...
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
-			// Update transport status anyway...
 			++m_iTransportUpdate;
 			// Send MMC LOCATE command...
 			if (!pAudioEngine->isFreewheel()) {
@@ -6889,7 +6887,7 @@ void qtractorMainForm::timerSlot (void)
 			m_pSession->setPlayHead(iPlayHead);
 		}
 		// Ensure track-view into visibility...
-		if (m_pTracks && m_ui.transportFollowAction->isChecked())
+		if (m_ui.transportFollowAction->isChecked())
 			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
 		// Take the change to give some visual feedback...
 		if (m_iTransportUpdate > 0) {
@@ -6947,8 +6945,7 @@ void qtractorMainForm::timerSlot (void)
 						(unsigned short) pos.beats_per_bar,
 						(unsigned short) pos.beat_type);
 				#endif
-					if (m_pTracks)
-						m_pTracks->clearSelect();
+					m_pTracks->clearSelect();
 					m_pSession->lock();
 					pNode->tempo = pos.beats_per_minute;
 					pNode->beatsPerBar = pos.beats_per_bar;
@@ -6969,12 +6966,12 @@ void qtractorMainForm::timerSlot (void)
 	}
 
 	// Check if its time to refresh playhead timer...
-	if (bPlaying
-		&& (m_iPlayTimer += QTRACTOR_TIMER_MSECS) > QTRACTOR_TIMER_DELAY) {
-		m_iPlayTimer = 0;
+	if (bPlaying &&
+		(m_iPlayTimer -= QTRACTOR_TIMER_MSECS) < 0) {
+		 m_iPlayTimer  = QTRACTOR_TIMER_DELAY;
 		updateTransportTime(iPlayHead);
 		// If recording update track view and session length, anyway...
-		if (m_pTracks && m_pSession->isRecording()) {
+		if (m_pSession->isRecording()) {
 			// HACK: Care of punch-out...
 			if (m_pSession->isPunching()) {
 				const unsigned long iFrameTime = m_pSession->frameTimeEx();
@@ -7028,83 +7025,69 @@ void qtractorMainForm::timerSlot (void)
 	}
 
 	// Check if its time to refresh some tracks...
-	if (m_iPeakTimer  > 0) {
-		m_iPeakTimer -= QTRACTOR_TIMER_MSECS;
-		if (m_iPeakTimer < 0) {
-			m_iPeakTimer = 0;
-			if (m_pTracks && m_pTracks->trackView())
-				m_pTracks->trackView()->updateContents();
-		}
+	if ( m_iPeakTimer  > 0 &&
+		(m_iPeakTimer -= QTRACTOR_TIMER_MSECS) < 0) {
+		 m_iPeakTimer  = 0;
+		m_pTracks->trackView()->updateContents();
 	}
 
 	// Check if we've got some XRUN callbacks...
-	if (m_iXrunTimer  > 0) {
-		m_iXrunTimer -= QTRACTOR_TIMER_MSECS;
-		if (m_iXrunTimer < 0) {
-			m_iXrunTimer = 0;
-			// Did we skip any?
-			if (m_iXrunSkip > 0) {
-				appendMessagesColor(
-					tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc99cc");
-				m_iXrunSkip = 0;
-			}
-			// Just post an informative message...
+	if ( m_iXrunTimer  > 0 &&
+		(m_iXrunTimer -= QTRACTOR_TIMER_MSECS) < 0) {
+		 m_iXrunTimer  = 0;
+		// Did we skip any?
+		if (m_iXrunSkip > 0) {
 			appendMessagesColor(
-				tr("XRUN(%1): some frames might have been lost.")
-				.arg(m_iXrunCount), "#cc0033");
+				tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc99cc");
+			m_iXrunSkip = 0;
 		}
+		// Just post an informative message...
+		appendMessagesColor(
+			tr("XRUN(%1): some frames might have been lost.")
+			.arg(m_iXrunCount), "#cc0033");
 	}
 
 	// Check if its time to refresh Audio connections...
-	if (m_iAudioRefreshTimer  > 0) {
-		m_iAudioRefreshTimer -= QTRACTOR_TIMER_MSECS;
-		if (m_iAudioRefreshTimer < 0) {
-			m_iAudioRefreshTimer = 0;
-			if (pAudioEngine->updateConnects() == 0) {
-				appendMessagesColor(
-					tr("Audio connections change."), "#cc9966");
-				if (m_pConnections) {
-					if (m_iAudioPropertyChange > 0) {
-						m_iAudioPropertyChange = 0;
-						m_pConnections->connectForm()->audioClear();
-					} else {
-						m_pConnections->connectForm()->audioRefresh();
-					}
-				}
+	if ( m_iAudioRefreshTimer  > 0 &&
+		(m_iAudioRefreshTimer -= QTRACTOR_TIMER_MSECS) < 0) {
+		 m_iAudioRefreshTimer  = 0;
+		if (pAudioEngine->updateConnects() == 0) {
+			appendMessagesColor(
+				tr("Audio connections change."), "#cc9966");
+			if (m_iAudioPropertyChange > 0) {
+				m_iAudioPropertyChange = 0;
+				m_pConnections->connectForm()->audioClear();
+			} else {
+				m_pConnections->connectForm()->audioRefresh();
 			}
 		}
 	}
 
 	// MIDI connections should be checked too...
-	if (m_iMidiRefreshTimer  > 0) {
-		m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS;
-		if (m_iMidiRefreshTimer < 0) {
-			m_iMidiRefreshTimer = 0;
-			if (pMidiEngine->updateConnects() == 0) {
-				appendMessagesColor(
-					tr("MIDI connections change."), "#66cc99");
-				if (m_pConnections)
-					m_pConnections->connectForm()->midiRefresh();
-			}
+	if ( m_iMidiRefreshTimer  > 0 &&
+		(m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS) < 0) {
+		 m_iMidiRefreshTimer  = 0;
+		if (pMidiEngine->updateConnects() == 0) {
+			appendMessagesColor(
+				tr("MIDI connections change."), "#66cc99");
+			m_pConnections->connectForm()->midiRefresh();
 		}
 	}
 
 	// Check if its time to refresh audition/pre-listening status...
-	if (m_iPlayerTimer  > 0) {
-		m_iPlayerTimer -= QTRACTOR_TIMER_MSECS;
-		if (m_iPlayerTimer < 0) {
-			m_iPlayerTimer = 0;
-			if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
-				if (m_pFiles && m_pFiles->isPlayState())
-					m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
-			}
-			if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
-				if (m_pFiles && m_pFiles->isPlayState())
-					m_pFiles->setPlayState(false);
-				appendMessages(tr("Playing ended."));
-				pAudioEngine->closePlayer();
-				pMidiEngine->closePlayer();
-			}
+	if ( m_iPlayerTimer  > 0 &&
+		(m_iPlayerTimer -= QTRACTOR_TIMER_MSECS) < 0) {
+		 m_iPlayerTimer  = 0;
+		if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
+			if (m_pFiles && m_pFiles->isPlayState())
+				m_iPlayerTimer += (QTRACTOR_TIMER_DELAY << 2);
+		}
+		if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
+			if (m_pFiles && m_pFiles->isPlayState())
+				m_pFiles->setPlayState(false);
+			appendMessages(tr("Playing ended."));
+			pAudioEngine->closePlayer();
+			pMidiEngine->closePlayer();
 		}
 	}
 
@@ -7127,8 +7110,8 @@ void qtractorMainForm::timerSlot (void)
 #endif
 
 	// Slower plugin UI idle cycle...
-	if ((m_iIdleTimer += QTRACTOR_TIMER_MSECS) > QTRACTOR_TIMER_DELAY) {
-		m_iIdleTimer = 0;
+	if ((m_iIdleTimer -= QTRACTOR_TIMER_MSECS) < 0) {
+		 m_iIdleTimer  = QTRACTOR_TIMER_DELAY;
 	#ifdef CONFIG_DSSI
 	#ifdef CONFIG_LIBLO
 		qtractorDssiPlugin::idleEditorAll();
