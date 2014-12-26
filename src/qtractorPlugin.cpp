@@ -304,8 +304,10 @@ bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
 	// Try DSSI plugin types first...
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Dssi) {
-		while ((pType
-			= qtractorDssiPluginType::createType(this, iIndex)) != NULL) {
+		while (true) {
+			pType = qtractorDssiPluginType::createType(this, iIndex);
+			if (pType == NULL)
+				break;
 			if (pType->open()) {
 				path.addType(pType);
 				pType->close();
@@ -325,8 +327,10 @@ bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
 	// Try LADSPA plugin types...
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Ladspa) {
-		while ((pType
-			= qtractorLadspaPluginType::createType(this, iIndex)) != NULL) {
+		while (true) {
+			pType = qtractorLadspaPluginType::createType(this, iIndex);
+			if (pType == NULL)
+				break;
 			if (pType->open()) {
 				path.addType(pType);
 				pType->close();
@@ -348,17 +352,20 @@ bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
 		typeHint == qtractorPluginType::Vst) {
 		// Need to look at the options...
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bDummyVstScan)
-			pType = qtractorDummyPluginType::createType(this);
-		else
-			pType = qtractorVstPluginType::createType(this);
-		if (pType) {
+		while (true) {
+			if (pOptions && pOptions->bDummyVstScan)
+				pType = qtractorDummyPluginType::createType(this, iIndex);
+			else
+				pType = qtractorVstPluginType::createType(this, iIndex);
+			if (pType == NULL)
+				break;
 			if (pType->open()) {
 				path.addType(pType);
 				pType->close();
 				++iIndex;
 			} else {
 				delete pType;
+				break;
 			}
 		}
 	}
@@ -473,7 +480,7 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Vst) {
 		qtractorVstPluginType *pVstType
-			= qtractorVstPluginType::createType(pFile);
+			= qtractorVstPluginType::createType(pFile, iIndex);
 		if (pVstType) {
 			if (pVstType->open())
 				return new qtractorVstPlugin(pList, pVstType);
@@ -619,7 +626,7 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 	qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint )
 {
 	// Sanity check...
-	if (pFile == NULL)
+	if (pFile == NULL || iIndex > 0)
 		return NULL;
 
 	// Yep, most probably its a dummy plugin effect...

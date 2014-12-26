@@ -49,8 +49,9 @@ public:
 	class Effect;
 
 	// Constructor.
-	qtractorVstPluginType(qtractorPluginFile *pFile, Effect *pEffect = NULL)
-		: qtractorPluginType(pFile, 0, qtractorPluginType::Vst),
+	qtractorVstPluginType(qtractorPluginFile *pFile,
+		unsigned long iIndex, Effect *pEffect = NULL)
+		: qtractorPluginType(pFile, iIndex, qtractorPluginType::Vst),
 			m_pEffect(pEffect), m_iFlagsEx(0) {}
 
 	// Destructor.
@@ -65,7 +66,8 @@ public:
 	Effect *effect() const { return m_pEffect; }
 
 	// Factory method (static)
-	static qtractorVstPluginType *createType(qtractorPluginFile *pFile);
+	static qtractorVstPluginType *createType(
+		qtractorPluginFile *pFile, unsigned long iIndex);
 
 	// Effect instance method (static)
 	static AEffect *vst_effect(qtractorPluginFile *pFile);

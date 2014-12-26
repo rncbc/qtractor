@@ -281,6 +281,9 @@ bool qtractorAudioPeakThread::openPeakFile (void)
 	for (unsigned short i = 0; i < iChannels; ++i)
 		m_ppAudioFrames[i] = new float [c_iAudioFrames];
 
+	// Make sure audio file decoder makes no head-start...
+	m_pAudioFile->seek(0);
+
 	return true;
 }
 

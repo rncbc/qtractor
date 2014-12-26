@@ -306,9 +306,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	// Account for the editing offset:
 	qtractorTimeScale::Cursor cursor(pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pEditor->offset());
-	const unsigned long t0 = pNode->tickFromFrame(m_pEditor->offset());
-	const int x0 = pTimeScale->pixelFromFrame(m_pEditor->offset());
+	const unsigned long f0 = m_pEditor->offset();
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(f0);
+	const unsigned long t0 = pNode->tickFromFrame(f0);
+	const int x0 = pTimeScale->pixelFromFrame(f0);
 	const int dx = x0 + cx;
 
 	// Draw vertical grid lines...
@@ -379,6 +380,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	pNode = cursor.seekPixel(x += w);
 	const unsigned long iTickEnd = pNode->tickFromPixel(x);
 
+	const unsigned long f1 = f0 + m_pEditor->length();
+	pNode = cursor.seekFrame(f1);
+	const unsigned long iTimeEnd = pNode->tickFromFrame(f1);
+
 	// This is the zero-line...
 	const int y0 = (m_eventType == qtractorMidiEvent::PITCHBEND ? h >> 1 : h);
 
@@ -405,7 +410,9 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		const unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTickEnd)
 			break;
-		const unsigned long t2 = t1 + pEvent->duration();
+		unsigned long t2 = t1 + pEvent->duration();
+		if (t2 > iTimeEnd)
+			t2 = iTimeEnd;
 		// Filter event type!...
 		if (pEvent->type() == m_eventType && t2 >= iTickStart
 			&& (!bEventParam || pEvent->param() == m_eventParam)) {

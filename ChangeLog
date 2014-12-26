@@ -6,12 +6,33 @@ ChangeLog
 
 GIT HEAD
 
+- As long to prevent asynchronous mistakes to JACK transport
+  state changes, an internal slack-delay is now introduced
+  after self-initiated transport commands (eg. start/stop).
+
+- The MIDI clip editor (aka. piano-roll) was missing to
+  clear or reset the current selection when no shift/ctrl
+  keyboard modifier is in effect.
+
+- VST-shell sub-plugins are now supported (as suggested by
+  abique aka. Alexandre Bique, thanks). (EXPERIMENTAL)
+
+- MIDI clip record/overdubbing is now possible (Clip/Record
+  on the main menu or File/Record from the MIDI clip editor.
+  (EXPERIMENTAL)
+
+- Make sure some audio sample file encodings (eg. old Ogg
+  Vorbis) does not head-start on audio peak generation.
+
+
+0.6.4  2014-11-24  Baryon Throne Beta
+
 - Fixed some old loop-recording clip drawing glitches.
 
 - Current assigned track/channel instrument definition
   names for MIDI controllers, note keys, RPN and NRPN,
   are now in effect on the MIDI clip editor drop-down
-  lists, whether available. (EXPERIMENTAL)
+  lists, whether available.
 
 - Clip/Take/Range... input dialog values are now properly
   sanitized as long to prevent invalid take/folding ranges.

@@ -183,6 +183,9 @@ public:
 	unsigned long clipRecordStart() const;
 	unsigned long clipRecordEnd(unsigned long iFrameTime) const;
 
+	void setClipRecordEx(bool bClipRecordEx);
+	bool isClipRecordEx() const;
+
 	// Background color accessors.
 	void setBackground(const QColor& bg);
 	const QColor& background() const;
@@ -343,6 +346,8 @@ private:
 
 	qtractorClip *m_pClipRecord;        // Current clip on record (capture).
 	unsigned long m_iClipRecordStart;   // Current clip on record start frame.
+
+	bool m_bClipRecordEx;               // Current clip on record/overdub flag.
 
 	qtractorPluginList *m_pPluginList;	// Plugin chain (audio).
 

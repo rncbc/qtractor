@@ -174,6 +174,7 @@ public:
 	virtual bool startEditor(QWidget *pParent);
 	virtual void resetEditor(bool bSelectClear);
 	virtual void updateEditor(bool bSelectClear);
+	virtual void updateEditorContents();
 	virtual bool queryEditor();
 
 	// Clip tool-tip.

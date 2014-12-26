@@ -528,7 +528,6 @@ void qtractorMidiClip::closeMidiFile (void)
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession)
 			pSession->files()->removeClipItem(qtractorFileList::Midi, this);
-
 	}
 
 	if (m_pKey) {
@@ -1089,6 +1088,18 @@ void qtractorMidiClip::updateEditor ( bool bSelectClear )
 	m_pMidiEditorForm->resetDirtyCount();
 	m_pMidiEditorForm->updateInstrumentNames();
 	m_pMidiEditorForm->stabilizeForm();
+}
+
+
+// Clip editor update.
+void qtractorMidiClip::updateEditorContents (void)
+{
+	if (m_pMidiEditorForm == NULL)
+		return;
+
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	if (pMidiEditor)
+		pMidiEditor->updateContents();
 }
 
 

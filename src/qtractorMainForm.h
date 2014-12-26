@@ -193,6 +193,7 @@ public slots:
 	void clipNew();
 	void clipEdit();
 	void clipUnlink();
+	void clipRecordEx(bool bOn);
 	void clipSplit();
 	void clipMerge();
 	void clipNormalize();
@@ -458,6 +459,7 @@ private:
 	int m_iPeakTimer;
 	int m_iPlayTimer;
 	int m_iIdleTimer;
+	int m_iTransportTimer;
 	int m_iTransportUpdate;
 	int m_iTransportRolling;
 	bool m_bTransportPlaying;
