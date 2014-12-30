@@ -25,6 +25,7 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditCommand.h"
+#include "qtractorMidiEditView.h"
 #include "qtractorMidiSequence.h"
 
 #include "qtractorSpinBox.h"
@@ -433,63 +434,6 @@ qtractorMidiEventItemDelegate::qtractorMidiEventItemDelegate (
 }
 
 
-// Destructor.
-qtractorMidiEventItemDelegate::~qtractorMidiEventItemDelegate (void)
-{
-}
-
-
-// Keyboard event hook.
-bool qtractorMidiEventItemDelegate::eventFilter ( QObject *pObject, QEvent *pEvent )
-{
-	QWidget *pEditor = qobject_cast<QWidget*> (pObject);
-
-	if (pEditor) {
-
-		switch (pEvent->type()) {
-		case QEvent::KeyPress:
-		case QEvent::KeyRelease:
-		{
-			QKeyEvent *pKeyEvent = static_cast<QKeyEvent *> (pEvent);
-			if ((pKeyEvent->modifiers() & Qt::ControlModifier) == 0 &&
-				(pKeyEvent->key() == Qt::Key_Up || pKeyEvent->key() == Qt::Key_Down)) {
-				pEvent->ignore();
-				return true;
-			}
-			if (pKeyEvent->key() == Qt::Key_Enter ||
-				pKeyEvent->key() == Qt::Key_Return) {
-				emit commitData(pEditor);
-				if (pEditor)
-					pEditor->close();
-				return true;
-			}
-			break;
-		}
-
-		case QEvent::FocusOut:
-		{
-			if (!pEditor->isActiveWindow()
-				|| (QApplication::focusWidget() != pEditor)) {
-				QWidget *pWidget = QApplication::focusWidget();
-				while (pWidget) {
-					if (pWidget == pEditor)
-						return false;
-					pWidget = pWidget->parentWidget();
-				}
-				emit commitData(pEditor);
-			}
-			return false;
-		}
-
-		default:
-			break;
-		}
-	}
-
-	return QItemDelegate::eventFilter(pObject, pEvent);
-}
-
-
 // QItemDelegate Interface...
 
 void qtractorMidiEventItemDelegate::paint ( QPainter *pPainter,
@@ -581,11 +525,6 @@ QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
 
 	default:
 		break;
-	}
-
-	if (pEditor) {
-		pEditor->installEventFilter(
-			const_cast<qtractorMidiEventItemDelegate *> (this));
 	}
 
 #ifdef CONFIG_DEBUG
@@ -754,13 +693,6 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 
 	// Do it.
 	pMidiEditor->commands()->exec(pEditCommand);
-}
-
-
-void qtractorMidiEventItemDelegate::updateEditorGeometry ( QWidget *pEditor,
-	const QStyleOptionViewItem& option, const QModelIndex& index ) const
-{
-	QItemDelegate::updateEditorGeometry(pEditor, option, index);
 }
 
 
@@ -1041,7 +973,9 @@ void qtractorMidiEventList::currentRowChangedSlot (
 	qDebug("qtractorMidiEventList[%p]::currentRowChangedSlot()", this);
 #endif
 
-	pEditor->setEditHead(m_pListView->frameFromIndex(index));
+//	pEditor->setEditHead(m_pListView->frameFromIndex(index));
+	pEditor->ensureVisibleFrame(pEditor->editView(),
+		m_pListView->frameFromIndex(index));
 	pEditor->selectionChangeNotify();
 
 	--m_iSelectUpdate;
