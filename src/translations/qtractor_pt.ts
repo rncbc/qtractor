@@ -19,7 +19,7 @@
         <translation>Arquivo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="373"/>
+        <location filename="../qtractorTrackList.cpp" line="397"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -30,7 +30,7 @@
         <translation>Nenhuma</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="98"/>
+        <location filename="../qtractorTrackList.cpp" line="100"/>
         <source>none</source>
         <translation>nenhum</translation>
     </message>
@@ -61,7 +61,7 @@
         <translation>gravação da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="360"/>
+        <location filename="../qtractorTrackList.cpp" line="384"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
@@ -71,7 +71,7 @@
         <translation>Entrada</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="693"/>
+        <location filename="../qtractorOptions.cpp" line="695"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Opção -s requer um argumento (nome da sessão).</translation>
     </message>
@@ -111,7 +111,7 @@
         <translation>importar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="656"/>
+        <location filename="../qtractorOptions.cpp" line="658"/>
         <source>Show version information</source>
         <translation>Mostrar informações da versão</translation>
     </message>
@@ -132,7 +132,7 @@
         <translation>%1 (*.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="654"/>
+        <location filename="../qtractorOptions.cpp" line="656"/>
         <source>Show help about command line options</source>
         <translation>Mostrar ajuda sobre opções em linha de comando</translation>
     </message>
@@ -185,7 +185,7 @@
         <translation>Duplex</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="645"/>
+        <location filename="../qtractorOptions.cpp" line="647"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Uso: %1 [opções] [arquivo-da-sessão]</translation>
     </message>
@@ -252,7 +252,7 @@ MIDI:	</translation>
         <translation>Projeto: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="197"/>
+        <location filename="../qtractorTrackList.cpp" line="199"/>
         <source>Automation</source>
         <translation>Automação</translation>
     </message>
@@ -326,7 +326,7 @@ MIDI:	</translation>
         <translation>panorâmico da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="648"/>
+        <location filename="../qtractorOptions.cpp" line="650"/>
         <source>Options:</source>
         <translation>Opções:</translation>
     </message>
@@ -390,7 +390,7 @@ MIDI:	</translation>
         <translation>Pista %1</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="707"/>
+        <location filename="../qtractorOptions.cpp" line="709"/>
         <source>Qt: %1
 </source>
         <translation></translation>
@@ -421,7 +421,7 @@ MIDI:	</translation>
         <translation>Direitos: </translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="651"/>
+        <location filename="../qtractorOptions.cpp" line="653"/>
         <source>Set session identification (uuid)</source>
         <translation>Nomear sessão (uuid)</translation>
     </message>
@@ -542,7 +542,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Fornecedor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="430"/>
+        <location filename="../qtractorTrackList.cpp" line="454"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>
@@ -624,7 +624,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>propriedades da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="90"/>
+        <location filename="../qtractorTrackList.cpp" line="92"/>
         <source>Automation (%1)</source>
         <translation>Automação (%1)</translation>
     </message>
@@ -12119,32 +12119,32 @@ Você quer mesmo manter as alterações?</translation>
 <context>
     <name>qtractorTrackListHeaderModel</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="136"/>
+        <location filename="../qtractorTrackList.cpp" line="138"/>
         <source>Ch</source>
         <translation>Cnl</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="133"/>
+        <location filename="../qtractorTrackList.cpp" line="135"/>
         <source>Nr</source>
         <translation>Nº</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="135"/>
+        <location filename="../qtractorTrackList.cpp" line="137"/>
         <source>Bus</source>
         <translation>Canal Primário</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="137"/>
+        <location filename="../qtractorTrackList.cpp" line="139"/>
         <source>Patch</source>
         <translation>Programação</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="134"/>
+        <location filename="../qtractorTrackList.cpp" line="136"/>
         <source>Track Name</source>
         <translation>Nome da Pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="138"/>
+        <location filename="../qtractorTrackList.cpp" line="140"/>
         <source>Instrument</source>
         <translation>Instrumento</translation>
     </message>

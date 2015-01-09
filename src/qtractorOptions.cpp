@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -280,6 +280,7 @@ void qtractorOptions::loadOptions (void)
 	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
+	trackListHeaderSizes = m_settings.value("/TrackListHeaderSizes").toStringList();
 	m_settings.endGroup();
 
 	// MIDI options group.
@@ -550,6 +551,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.setValue("/TrackViewToolTips", bTrackViewToolTips);
 	m_settings.setValue("/TrackViewCurveEdit", bTrackViewCurveEdit);
+	m_settings.setValue("/TrackListHeaderSizes", trackListHeaderSizes);
 	m_settings.endGroup();
 
 	// MIDI Editor options group.

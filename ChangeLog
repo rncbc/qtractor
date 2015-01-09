@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Track-list (left pane) header column widths are now saved
+  and made persistent across application power cycle (double
+  -click reverts to the old original default).
+
 - Minor fixes on the MIDI clip event list editor, also making
   sure the current event is visible on the piano-roll view.
 

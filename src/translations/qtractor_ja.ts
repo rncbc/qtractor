@@ -357,37 +357,37 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="645"/>
+        <location filename="../qtractorOptions.cpp" line="647"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>使用法: %1 [オプション] [セッションファイル]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="648"/>
+        <location filename="../qtractorOptions.cpp" line="650"/>
         <source>Options:</source>
         <translation>オプション:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="651"/>
+        <location filename="../qtractorOptions.cpp" line="653"/>
         <source>Set session identification (uuid)</source>
         <translation>セッションのID (uuid) をセット</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="654"/>
+        <location filename="../qtractorOptions.cpp" line="656"/>
         <source>Show help about command line options</source>
         <translation>コマンドラインオプションに関するヘルプを表示</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="656"/>
+        <location filename="../qtractorOptions.cpp" line="658"/>
         <source>Show version information</source>
         <translation>バージョン情報を表示します</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="693"/>
+        <location filename="../qtractorOptions.cpp" line="695"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>-sオプションは引数としてsession-idを必要とします。</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="707"/>
+        <location filename="../qtractorOptions.cpp" line="709"/>
         <source>Qt: %1
 </source>
         <translation></translation>
@@ -636,32 +636,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>トラックパニング</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="90"/>
+        <location filename="../qtractorTrackList.cpp" line="92"/>
         <source>Automation (%1)</source>
         <translation>オートメーション (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="98"/>
+        <location filename="../qtractorTrackList.cpp" line="100"/>
         <source>none</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="197"/>
+        <location filename="../qtractorTrackList.cpp" line="199"/>
         <source>Automation</source>
         <translation>オートメーション</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="360"/>
+        <location filename="../qtractorTrackList.cpp" line="384"/>
         <source>Audio</source>
         <translation>音声</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="373"/>
+        <location filename="../qtractorTrackList.cpp" line="397"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="430"/>
+        <location filename="../qtractorTrackList.cpp" line="454"/>
         <source>Unknown</source>
         <translation>不明</translation>
     </message>
@@ -12165,32 +12165,32 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackListHeaderModel</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="133"/>
+        <location filename="../qtractorTrackList.cpp" line="135"/>
         <source>Nr</source>
         <translation>番号</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="134"/>
+        <location filename="../qtractorTrackList.cpp" line="136"/>
         <source>Track Name</source>
         <translation>トラック名</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="135"/>
+        <location filename="../qtractorTrackList.cpp" line="137"/>
         <source>Bus</source>
         <translation>バス</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="136"/>
+        <location filename="../qtractorTrackList.cpp" line="138"/>
         <source>Ch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="137"/>
+        <location filename="../qtractorTrackList.cpp" line="139"/>
         <source>Patch</source>
         <translation>パッチ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="138"/>
+        <location filename="../qtractorTrackList.cpp" line="140"/>
         <source>Instrument</source>
         <translation>インストルメント</translation>
     </message>

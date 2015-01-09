@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,6 +41,8 @@
 #include "qtractorMixer.h"
 
 #include "qtractorCurve.h"
+
+#include "qtractorOptions.h"
 
 #include <QHeaderView>
 
@@ -254,9 +256,21 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 	const QFont& font = qtractorScrollView::font();
 	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
 
+	// Load header section (column) sizes...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		const QStringList& list = pOptions->trackListHeaderSizes;
+		const int iColCount = list.count();
+		for (int iCol = 0; iCol < iColCount; ++iCol)
+			m_pHeader->resizeSection(iCol, list.at(iCol).toInt());
+	}
+
 	QObject::connect(m_pHeader,
 		SIGNAL(sectionResized(int,int,int)),
 		SLOT(updateHeader()));
+	QObject::connect(m_pHeader,
+		SIGNAL(sectionHandleDoubleClicked(int)),
+		SLOT(resetHeaderSize(int)));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
@@ -266,6 +280,16 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 // Destructor.
 qtractorTrackList::~qtractorTrackList (void)
 {
+	// Save header section (column) sizes...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QStringList list;
+		const int iColCount = m_pHeader->count() - 1;
+		for (int iCol = 0; iCol < iColCount; ++iCol)
+			list.append(QString::number(m_pHeader->sectionSize(iCol)));
+		pOptions->trackListHeaderSizes = list;
+	}
+
 	delete m_pPixmap[IconAudio];
 	delete m_pPixmap[IconMidi];
 }
@@ -733,6 +757,15 @@ void qtractorTrackList::updateHeader (void)
 		iContentsWidth, qtractorScrollView::contentsHeight());
 
 	updateContents();
+}
+
+
+// Reset header extents.
+void qtractorTrackList::resetHeaderSize ( int iCol )
+{
+	static const int s_aiDefaultHeaderSizes[] = { 26, 120, 100, 24, 100, 100 };
+
+	m_pHeader->resizeSection(iCol, s_aiDefaultHeaderSizes[iCol]);
 }
 
 
