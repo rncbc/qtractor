@@ -653,17 +653,17 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Automation</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="384"/>
+        <location filename="../qtractorTrackList.cpp" line="386"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="397"/>
+        <location filename="../qtractorTrackList.cpp" line="399"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="454"/>
+        <location filename="../qtractorTrackList.cpp" line="456"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>

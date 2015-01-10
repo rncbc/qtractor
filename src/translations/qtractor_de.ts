@@ -632,17 +632,17 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Automatisierung</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="384"/>
+        <location filename="../qtractorTrackList.cpp" line="386"/>
         <source>Audio</source>
         <translation type="unfinished">Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="397"/>
+        <location filename="../qtractorTrackList.cpp" line="399"/>
         <source>MIDI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="454"/>
+        <location filename="../qtractorTrackList.cpp" line="456"/>
         <source>Unknown</source>
         <translation>Unbenannt</translation>
     </message>

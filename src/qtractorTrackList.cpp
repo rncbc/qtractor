@@ -259,15 +259,18 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 	// Load header section (column) sizes...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
-		const QStringList& list = pOptions->trackListHeaderSizes;
-		const int iColCount = list.count();
-		for (int iCol = 0; iCol < iColCount; ++iCol)
-			m_pHeader->resizeSection(iCol, list.at(iCol).toInt());
+		QSettings& settings = pOptions->settings();
+		settings.beginGroup("Tracks");
+		const QByteArray& aHeaderView
+			= pOptions->settings().value("/TrackList/HeaderView").toByteArray();
+		if (!aHeaderView.isEmpty())
+			m_pHeader->restoreState(aHeaderView);
+		settings.endGroup();
 	}
 
 	QObject::connect(m_pHeader,
 		SIGNAL(sectionResized(int,int,int)),
-		SLOT(updateHeader()));
+		SLOT(updateHeaderSize(int,int,int)));
 	QObject::connect(m_pHeader,
 		SIGNAL(sectionHandleDoubleClicked(int)),
 		SLOT(resetHeaderSize(int)));
@@ -283,11 +286,10 @@ qtractorTrackList::~qtractorTrackList (void)
 	// Save header section (column) sizes...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
-		QStringList list;
-		const int iColCount = m_pHeader->count() - 1;
-		for (int iCol = 0; iCol < iColCount; ++iCol)
-			list.append(QString::number(m_pHeader->sectionSize(iCol)));
-		pOptions->trackListHeaderSizes = list;
+		QSettings& settings = pOptions->settings();
+		settings.beginGroup("Tracks");
+		settings.setValue("/TrackList/HeaderView", m_pHeader->saveState());
+		settings.endGroup();
 	}
 
 	delete m_pPixmap[IconAudio];
@@ -737,6 +739,16 @@ void qtractorTrackList::updateContents (void)
 void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	qtractorScrollView::resizeEvent(pResizeEvent);
+
+	updateHeader();
+}
+
+
+// Check/update header resize.
+void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
+{
+	if (iCol == Name && iColSize < 110)
+		m_pHeader->resizeSection(iCol, 110);
 
 	updateHeader();
 }

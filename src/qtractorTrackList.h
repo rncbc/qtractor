@@ -187,6 +187,9 @@ protected:
 	// Reset drag/select/move state.
 	void resetDragState();
 
+	// Update header extents.
+	void updateHeader();
+
 signals:
 
 	// More like current row has changed.
@@ -200,8 +203,8 @@ protected slots:
 	// (Re)create the time scale pixmap.
 	void updatePixmap(int cx, int cy);
 
-	// Update header extents.
-	void updateHeader();
+	// Check/update header resize.
+	void updateHeaderSize(int iCol, int, int iColSize);
 
 	// Update header extents.
 	void resetHeaderSize(int iCol);
