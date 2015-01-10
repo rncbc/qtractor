@@ -232,8 +232,6 @@ public:
 	bool bTrackViewToolTips;
 	bool bTrackViewCurveEdit;
 
-	QStringList trackListHeaderSizes;
-
 	// MIDI Editor options...
 	bool bMidiMenubar;
 	bool bMidiStatusbar;

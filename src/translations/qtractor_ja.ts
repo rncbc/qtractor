@@ -357,37 +357,37 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="647"/>
+        <location filename="../qtractorOptions.cpp" line="645"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>使用法: %1 [オプション] [セッションファイル]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="650"/>
+        <location filename="../qtractorOptions.cpp" line="648"/>
         <source>Options:</source>
         <translation>オプション:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="653"/>
+        <location filename="../qtractorOptions.cpp" line="651"/>
         <source>Set session identification (uuid)</source>
         <translation>セッションのID (uuid) をセット</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="656"/>
+        <location filename="../qtractorOptions.cpp" line="654"/>
         <source>Show help about command line options</source>
         <translation>コマンドラインオプションに関するヘルプを表示</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="658"/>
+        <location filename="../qtractorOptions.cpp" line="656"/>
         <source>Show version information</source>
         <translation>バージョン情報を表示します</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="695"/>
+        <location filename="../qtractorOptions.cpp" line="693"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>-sオプションは引数としてsession-idを必要とします。</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="709"/>
+        <location filename="../qtractorOptions.cpp" line="707"/>
         <source>Qt: %1
 </source>
         <translation></translation>

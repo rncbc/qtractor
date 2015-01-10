@@ -789,37 +789,37 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="647"/>
+        <location filename="../qtractorOptions.cpp" line="645"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Užití: %1 [volby] [soubor sezení]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="650"/>
+        <location filename="../qtractorOptions.cpp" line="648"/>
         <source>Options:</source>
         <translation>Volby:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="653"/>
+        <location filename="../qtractorOptions.cpp" line="651"/>
         <source>Set session identification (uuid)</source>
         <translation>Nastavit označení sezení (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="656"/>
+        <location filename="../qtractorOptions.cpp" line="654"/>
         <source>Show help about command line options</source>
         <translation>Ukázat nápovědu k volbám příkazového řádku</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="658"/>
+        <location filename="../qtractorOptions.cpp" line="656"/>
         <source>Show version information</source>
         <translation>Ukázat informaci o verzi</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="695"/>
+        <location filename="../qtractorOptions.cpp" line="693"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Volba -s vyžaduje argument (ID sezení).</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="709"/>
+        <location filename="../qtractorOptions.cpp" line="707"/>
         <source>Qt: %1
 </source>
         <translation>Qt: %1

@@ -342,37 +342,37 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="647"/>
+        <location filename="../qtractorOptions.cpp" line="645"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Benutzung: %1 [Optionen] [Sitzungsdatei]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="650"/>
+        <location filename="../qtractorOptions.cpp" line="648"/>
         <source>Options:</source>
         <translation>Optionen:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="653"/>
+        <location filename="../qtractorOptions.cpp" line="651"/>
         <source>Set session identification (uuid)</source>
         <translation>Setze Sitzungsidentifikation (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="656"/>
+        <location filename="../qtractorOptions.cpp" line="654"/>
         <source>Show help about command line options</source>
         <translation>Zeige Hilfe zu Kommandozeilenargumenten an</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="658"/>
+        <location filename="../qtractorOptions.cpp" line="656"/>
         <source>Show version information</source>
         <translation>Zeige Versionsinformation an</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="695"/>
+        <location filename="../qtractorOptions.cpp" line="693"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Option -s benötigt ein Argument (session-id).</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="709"/>
+        <location filename="../qtractorOptions.cpp" line="707"/>
         <source>Qt: %1
 </source>
         <translation>Qt: %1</translation>

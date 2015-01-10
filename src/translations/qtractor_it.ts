@@ -345,37 +345,37 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="647"/>
+        <location filename="../qtractorOptions.cpp" line="645"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Utilizzo: %1 [opzioni] [file di sessione]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="650"/>
+        <location filename="../qtractorOptions.cpp" line="648"/>
         <source>Options:</source>
         <translation>Opzioni:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="653"/>
+        <location filename="../qtractorOptions.cpp" line="651"/>
         <source>Set session identification (uuid)</source>
         <translation>Imposta identificativo sessione (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="656"/>
+        <location filename="../qtractorOptions.cpp" line="654"/>
         <source>Show help about command line options</source>
         <translation>Mostra opzioni della riga di comando</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="658"/>
+        <location filename="../qtractorOptions.cpp" line="656"/>
         <source>Show version information</source>
         <translation>Mostra informazioni di versione</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="695"/>
+        <location filename="../qtractorOptions.cpp" line="693"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>L&apos;opzione -s richiede un argomento (ID sessione).</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="709"/>
+        <location filename="../qtractorOptions.cpp" line="707"/>
         <source>Qt: %1
 </source>
         <translation>Qt: %1
