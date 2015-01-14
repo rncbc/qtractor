@@ -177,6 +177,7 @@ protected:
 
 	// Show and move rubber-band item.
 	void moveRubberBand(const QPoint& posDrag);
+	void moveRubberBand(const QRect& rectDrag);
 
 	// Make sure the given (track) rectangle is visible.
 	bool ensureVisibleRect(const QRect& rect);
@@ -189,6 +190,12 @@ protected:
 
 	// Update header extents.
 	void updateHeader();
+
+	// Selection methods.
+	void selectTrack(int iTrack, bool bSelect = true, bool bToggle = false);
+
+	void updateSelect(bool bCommit);
+	void clearSelect();
 
 signals:
 
@@ -236,6 +243,7 @@ private:
 		// Item members.
 		qtractorTrack *track;
 		QStringList    text;
+		unsigned int   flags;
 		// Track-list item widget.
 		qtractorTrackItemWidget *widget;
 	};
@@ -243,12 +251,15 @@ private:
 	// Model cache item list.
 	QList<Item *> m_items;
 
+	// Current selection map.
+	QHash<int, Item *> m_select;
+
 	// Current selected row.
 	int m_iCurrentTrack;
 
 	// The current selecting/dragging item stuff.
 	enum DragState {
-		DragNone = 0, DragStart, DragMove, DragResize
+		DragNone = 0, DragStart, DragMove, DragResize, DragSelect
 	} m_dragState;
 
 	// For whether we're resizing or moving an item;

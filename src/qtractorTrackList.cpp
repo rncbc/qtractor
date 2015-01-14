@@ -313,7 +313,7 @@ QHeaderView *qtractorTrackList::header (void) const
 
 // Track-list model item constructor
 qtractorTrackList::Item::Item ( qtractorTrackList *pTrackList,
-	qtractorTrack *pTrack ) : track(pTrack), widget(NULL)
+	qtractorTrack *pTrack ) : track(pTrack), flags(0), widget(NULL)
 {
 	update(pTrackList);
 }
@@ -477,18 +477,16 @@ int qtractorTrackList::trackRow ( qtractorTrack *pTrack ) const
 }
 
 
-// Find track row of given viewport point...
+// Find track row of given contents point...
 int qtractorTrackList::trackRowAt ( const QPoint& pos )
 {
-	const int cy = qtractorScrollView::contentsY();
-	const int  y = cy + pos.y() - m_pHeader->sizeHint().height();
-	const int  h = qtractorScrollView::viewport()->height();
+	const int y = pos.y() - m_pHeader->sizeHint().height();
 
 	int y1, y2;
 	y1 = y2 = 0;
 	int iTrack = 0;
 	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext() && y2 < cy + h) {
+	while (iter.hasNext() && y2 < qtractorScrollView::contentsHeight()) {
 		y1  = y2;
 		y2 += (iter.next()->track)->zoomHeight();
 		if (y >= y1 && y < y2)
@@ -500,15 +498,13 @@ int qtractorTrackList::trackRowAt ( const QPoint& pos )
 }
 
 
-// Find track column of given viewport point...
+// Find track column of given contents point...
 int qtractorTrackList::trackColumnAt ( const QPoint& pos )
 {
-	const int cy = qtractorScrollView::contentsY();
-	const int  y = cy + pos.y() - m_pHeader->sizeHint().height();
+	const int y = pos.y() - m_pHeader->sizeHint().height();
 
 	if (y > 0 && y < qtractorScrollView::contentsHeight()) {
-		const int cx = qtractorScrollView::contentsX();
-		const int  x = cx + pos.x();
+		const int x = pos.x();
 		int x1, x2;
 		x1 = x2 = 0;
 		const int iColCount = m_pHeader->count();
@@ -579,6 +575,9 @@ int qtractorTrackList::removeTrack ( int iTrack )
 	if (iTrack < 0 || iTrack >= m_items.count())
 		return -1;
 
+	if (m_select.contains(iTrack))
+		m_select.remove(iTrack);
+
 	delete m_items.at(iTrack);
 	m_items.removeAt(iTrack);
 
@@ -605,6 +604,8 @@ void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 #endif
 
 	m_iCurrentTrack = iCurrentTrack;
+
+	if (m_iCurrentTrack < 0) clearSelect();
 
 	// Make sure the new current track is visible...
 	if (!ensureVisibleRect(trackRect(m_iCurrentTrack)))
@@ -661,6 +662,8 @@ void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 // Main table cleaner.
 void qtractorTrackList::clear (void)
 {
+	clearSelect();
+
 	m_iCurrentTrack = -1;
 
 	m_dragState  = DragNone;
@@ -781,9 +784,82 @@ void qtractorTrackList::resetHeaderSize ( int iCol )
 }
 
 
+// Selection method.
+void qtractorTrackList::selectTrack ( int iTrack, bool bSelect, bool bToggle )
+{
+	Item *pItem = m_items.at(iTrack);
+
+	if (m_select.contains(iTrack)) {
+		const unsigned int flags = pItem->flags;
+		if ( (!bSelect && (flags & 2) == 0) ||
+			(( bSelect && (flags & 3) == 3) && bToggle))
+			pItem->flags &= ~1;
+		else
+		if ( ( bSelect && (flags & 2) == 0) ||
+			((!bSelect && (flags & 3) == 2) && bToggle))
+			pItem->flags |=  1;
+	}
+	else
+	if (bSelect) {
+		pItem->flags = 1;
+		m_select.insert(iTrack, pItem);
+	}
+
+	updateContents();
+}
+
+
+// Selection commit method.
+void qtractorTrackList::updateSelect ( bool bCommit )
+{
+	// Remove unselected...
+	int iUpdate = 0;
+
+	QHash<int, Item *>::Iterator iter = m_select.begin();
+	const QHash<int, Item *>::Iterator& iter_end = m_select.end();
+	while (iter != iter_end) {
+		Item *pItem = iter.value();
+		if (bCommit) {
+			if (pItem->flags & 1)
+				pItem->flags |=  2;
+			else
+				pItem->flags &= ~2;
+		}
+		if ((pItem->flags & 3) == 0) {
+			iter = m_select.erase(iter);
+			++iUpdate;
+		}
+		else ++iter;
+	}
+
+	// Did we remove any?
+	if (iUpdate > 0)
+		updateContents();
+}
+
+
+// Selection clear method.
+void qtractorTrackList::clearSelect (void)
+{
+	// Remove unselected...
+	int iUpdate = 0;
+
+	QHash<int, Item *>::ConstIterator iter = m_select.constBegin();
+	const QHash<int, Item *>::ConstIterator& iter_end = m_select.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		iter.value()->flags = 0;
+		++iUpdate;
+	}
+
+	// Did we remove any?
+	if (iUpdate > 0)
+		updateContents();
+}
+
+
 // Draw table cell.
-void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
-	const QRect& rect ) const
+void qtractorTrackList::drawCell (
+	QPainter *pPainter, int iRow, int iCol, const QRect& rect ) const
 {
 	const QPalette& pal = qtractorScrollView::palette();
 	const Item *pItem = m_items.at(iRow);
@@ -791,6 +867,9 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 	if (iCol == Number) {
 		bg = (pItem->track)->foreground().lighter();
 		fg = (pItem->track)->background().lighter();
+	} else if (pItem->flags & 1) {
+		bg = pal.highlight().color();
+		fg = pal.highlightedText().color();
 	} else if (m_iCurrentTrack == iRow) {
 		bg = pal.midlight().color().darker(160);
 		fg = pal.highlightedText().color();
@@ -972,19 +1051,38 @@ void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	const QPoint& pos = pMouseEvent->pos();
+	const QPoint& pos
+		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 
 	// Select current track...
 	const int iTrack = trackRowAt(pos);
-	setCurrentTrackRow(iTrack);
 
 	// Look for the mouse hovering around some item boundary...
 	if (iTrack >= 0) {
 		// Special attitude, only of interest on
 		// the first-left column (track-number)...
 		if (trackColumnAt(pos) == Number) {
+		#if 0
 			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
 				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
+		#else
+			const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+			const bool bToggle = (modifiers & Qt::ControlModifier);
+			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+				clearSelect();
+		/*	else
+			if (m_iCurrentTrack >= 0) {
+				if (iTrack < m_iCurrentTrack) {
+					for (int i = m_iCurrentTrack; i > iTrack; --i)
+						selectTrack(i, true, bToggle);
+				} else if (iTrack > m_iCurrentTrack) {
+					for (int i = m_iCurrentTrack; i < iTrack; ++i)
+						selectTrack(i, true, bToggle);
+				}
+			}	*/
+			selectTrack(iTrack, true, bToggle);
+			updateSelect(true);
+		#endif
 		}
 		if (pMouseEvent->button() == Qt::LeftButton) {
 			// Try for drag-resize...
@@ -1000,6 +1098,8 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
+	setCurrentTrackRow(iTrack);
+
 	// Probably this would be done ahead,
 	// just 'coz we're using ruberbands, which are
 	// in fact based on real widgets (WM entities)...
@@ -1010,7 +1110,8 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 // Handle item selection/dragging -- mouse pointer move.
 void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-	const QPoint& pos = pMouseEvent->pos();
+	const QPoint& pos
+		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 
 	// We're already on some item dragging/resizing?...
 	switch (m_dragState) {
@@ -1040,15 +1141,48 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			moveRubberBand(m_posDrag);
 		}
 		break;
+	case DragSelect:
+		// Currently selecting an group of items...
+		if (m_iDragTrack >= 0 && m_iCurrentTrack >= 0) {
+			const int iTrack = trackRowAt(pos);
+			ensureVisibleRect(trackRect(iTrack));
+			if (iTrack >= 0 && m_iDragTrack != iTrack) {
+				const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+				const bool bToggle = (modifiers & Qt::ControlModifier);
+				if (iTrack < m_iCurrentTrack) {
+					for (int i = iTrack; i < m_iCurrentTrack; ++i)
+						selectTrack(i, true, bToggle);
+				} else if (iTrack > m_iCurrentTrack) {
+					for (int i = iTrack; i > m_iCurrentTrack; --i)
+						selectTrack(i, true, bToggle);
+				}
+				if ((m_iDragTrack > iTrack && m_iDragTrack > m_iCurrentTrack) ||
+					(m_iDragTrack < iTrack && m_iDragTrack < m_iCurrentTrack)) {
+					const bool bSelect = !m_select.contains(m_iDragTrack);
+					selectTrack(m_iDragTrack, bSelect, bToggle);
+				}
+			//	selectTrack(iTrack, true, bToggle);
+				updateSelect(false);
+				m_iDragTrack = iTrack;
+			}
+			moveRubberBand(QRect(m_posDrag, pos));
+		}
+		break;
 	case DragStart:
 		// About to start dragging an item...
 		if (m_iDragTrack >= 0
 			&& (m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
-			qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
-			m_dragState = DragMove;
-			m_posDrag   = trackRect(m_iDragTrack).topLeft();
-			moveRubberBand(m_posDrag);
+			if (trackColumnAt(pos) == Number) {
+				qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
+				m_dragState = DragSelect;
+				moveRubberBand(QRect(m_posDrag, pos));
+			} else {
+				qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
+				m_dragState = DragMove;
+				m_posDrag   = trackRect(m_iDragTrack).topLeft();
+				moveRubberBand(m_posDrag);
+			}
 		}
 		break;
 	case DragNone: {
@@ -1101,7 +1235,8 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	if (pSession == NULL)
 		return;
 
-	const QPoint& pos = pMouseEvent->pos();
+	const QPoint& pos
+		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 
 	// If we were resizing, now's time to let
 	// things know that have changed somehow...
@@ -1116,6 +1251,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pTrackDrop = track(iTrack);
 				if (pTrack != pTrackDrop
 					&& (pTrackDrop == NULL || pTrack != pTrackDrop->prev())) {
+					clearSelect();
 					pSession->execute(
 						new qtractorMoveTrackCommand(pTrack, pTrackDrop));
 				}
@@ -1135,10 +1271,21 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 			}
 		}
+		break;
+	case DragSelect:
+		if (m_iDragTrack >= 0) {
+			const int iTrack = trackRowAt(pos);
+			if (iTrack >= 0 && m_iDragTrack != iTrack) {
+				const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+				const bool bToggle = (modifiers & Qt::ControlModifier);
+				selectTrack(iTrack, true, bToggle);
+			}
+		}
 		// Fall thru...
 	case DragStart:
 	case DragNone:
 	default:
+		updateSelect(true);
 		break;
 	}
 
@@ -1177,6 +1324,32 @@ void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 	// Just move it
 	m_pRubberBand->setGeometry(
 		QRect(0, posDrag.y(), qtractorScrollView::viewport()->width(), 4));
+
+	// Ah, and make it visible, of course...
+	if (!m_pRubberBand->isVisible())
+		m_pRubberBand->show();
+}
+
+
+// Draw a lasso rectangle.
+void qtractorTrackList::moveRubberBand ( const QRect& rectDrag )
+{
+	QRect rect(rectDrag.normalized());
+
+	rect.moveTopLeft(qtractorScrollView::contentsToViewport(rect.topLeft()));
+
+	// Create the rubber-band if there's none...
+	if (m_pRubberBand == NULL) {
+		m_pRubberBand = new qtractorRubberBand(
+			QRubberBand::Rectangle, qtractorScrollView::viewport());
+	//	QPalette pal(m_pRubberBand->palette());
+	//	pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
+	//	m_pRubberBand->setPalette(pal);
+	//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	}
+
+	// Just move it
+	m_pRubberBand->setGeometry(rect);
 
 	// Ah, and make it visible, of course...
 	if (!m_pRubberBand->isVisible())

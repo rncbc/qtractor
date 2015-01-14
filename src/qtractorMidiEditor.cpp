@@ -3205,7 +3205,7 @@ void qtractorMidiEditor::updateDragSelect (
 		m_select.clear();
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
 	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
 
 	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);

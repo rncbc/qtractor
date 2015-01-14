@@ -1806,10 +1806,10 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					// DragClipFade...
 					m_iDragClipX = (pos.x() - m_posDrag.x());
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-					moveRubberBand(&m_pRubberBand, m_rectHandle);					
+					moveRubberBand(&m_pRubberBand, m_rectHandle);
 				} else if (m_pClipDrag) {
 					// DragClipResize...
-					moveRubberBand(&m_pRubberBand, m_rectDrag, 3);					
+					moveRubberBand(&m_pRubberBand, m_rectDrag, 3);
 				}
 			}
 			else
@@ -1822,7 +1822,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				if (m_pClipDrag && pSession)
 					pClipItem = m_pClipSelect->findItem(m_pClipDrag);
 				if (pClipItem && pClipItem->rectClip.contains(pos)) {
-					int x = pSession->pixelSnap(m_rectDrag.x());
+					const int x = pSession->pixelSnap(m_rectDrag.x());
 					m_iDragClipX = (x - m_rectDrag.x());
 					m_dragState = m_dragCursor = DragClipMove;
 					qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
