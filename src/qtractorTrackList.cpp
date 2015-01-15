@@ -855,6 +855,7 @@ void qtractorTrackList::drawCell (
 	} else if (pItem->flags & 1) {
 		bg = pal.highlight().color();
 		fg = pal.highlightedText().color();
+		if (m_iCurrentTrack == iRow) bg = bg.darker(140);
 	} else if (m_iCurrentTrack == iRow) {
 		bg = pal.midlight().color().darker(160);
 		fg = pal.highlightedText().color();
@@ -1047,19 +1048,17 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		// Special attitude, only of interest on
 		// the first-left column (track-number)...
 		if (trackColumnAt(pos) == Number) {
-		#if 0
 			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
 				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
-		#else
-			const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
-			const bool bToggle = (modifiers & Qt::ControlModifier);
-			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
-				clearSelect();
-			selectTrack(iTrack, true, bToggle);
-			updateSelect(true);
-			updateContents();
-		#endif
 		}
+		// Make current row always selected...
+		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+			clearSelect();
+		selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
+		updateSelect(true);
+		updateContents();
+		// Now set ready for drag something...
 		if (pMouseEvent->button() == Qt::LeftButton) {
 			// Try for drag-resize...
 			m_posDrag = pos;
@@ -1151,14 +1150,14 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			&& (m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 			if (trackColumnAt(pos) == Number) {
-				qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
-				m_dragState = DragSelect;
-				moveRubberBand(QRect(m_posDrag, pos));
-			} else {
 				qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
 				m_dragState = DragMove;
 				m_posDrag   = trackRect(m_iDragTrack).topLeft();
 				moveRubberBand(m_posDrag);
+			} else {
+				qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
+				m_dragState = DragSelect;
+				moveRubberBand(QRect(m_posDrag, pos));
 			}
 		}
 		break;
@@ -1250,19 +1249,12 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		}
 		break;
 	case DragSelect:
-		if (m_iDragTrack >= 0) {
-			const int iTrack = trackRowAt(pos);
-			if (iTrack >= 0 && m_iDragTrack != iTrack) {
-				const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
-				const bool bToggle = (modifiers & Qt::ControlModifier);
-				selectTrack(iTrack, true, bToggle);
-			}
-		}
+		if (m_iDragTrack >= 0)
+			updateSelect(true);
 		// Fall thru...
 	case DragStart:
 	case DragNone:
 	default:
-		updateSelect(true);
 		break;
 	}
 
