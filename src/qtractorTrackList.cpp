@@ -851,6 +851,33 @@ void qtractorTrackList::clearSelect (void)
 }
 
 
+// Retrieve all current seleceted tracks but one.
+QList<qtractorTrack *> qtractorTrackList::selectedTracks(
+	qtractorTrack *pTrackEx, bool bAll ) const
+{
+	QList<qtractorTrack *> tracks;
+
+	if (m_select.isEmpty() && bAll) {
+		QListIterator<Item *> iter(m_items);
+		while (iter.hasNext()) {
+			qtractorTrack *pTrack = iter.next()->track;
+			if (pTrackEx != pTrack)
+				tracks.append(pTrack);
+		}
+	} else {
+		QHash<int, Item *>::ConstIterator iter = m_select.constBegin();
+		const QHash<int, Item *>::ConstIterator& iter_end = m_select.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			qtractorTrack *pTrack = iter.value()->track;
+			if (pTrackEx != pTrack)
+				tracks.append(pTrack);
+		}
+	}
+
+	return tracks;
+}
+
+
 // Draw table cell.
 void qtractorTrackList::drawCell (
 	QPainter *pPainter, int iRow, int iCol, const QRect& rect ) const
@@ -1058,12 +1085,12 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		// the first left-most column (track-number)...
 		if (trackColumnAt(pos) == Number) {
 			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
-				& (Qt::ShiftModifier|Qt::ControlModifier)) == 0);
+				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 			qtractorScrollView::setFocus(); // get focus back anyway.
 		}
 		// Make current row always selected...
 		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
-		if ((modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) == 0) {
+		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
 			clearSelect();
 		} else {
 			selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
@@ -1135,7 +1162,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if (iTrack >= 0 && m_iDragTrack != iTrack) {
 				const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
 				const bool bToggle = (modifiers & Qt::ControlModifier);
-				if ((modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) == 0)
+				if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
 					selectTrack(m_iCurrentTrack, true, bToggle);
 				if (iTrack < m_iCurrentTrack) {
 					for (int i = iTrack; i < m_iCurrentTrack; ++i)
@@ -1397,7 +1424,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 	case Qt::Key_Home:
 		if (m_iCurrentTrack  > 0) {
 			const int iTrack = 0;
-			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
 				const bool bToggle = (modifiers & Qt::ControlModifier);
 				for (int i = iTrack; m_iCurrentTrack >= i; ++i)
 					selectTrack(i, true, bToggle);
@@ -1409,7 +1436,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 	case Qt::Key_End:
 		if (m_iCurrentTrack  < m_items.count() - 1) {
 			const int iTrack = m_items.count() - 1;
-			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
 				const bool bToggle = (modifiers & Qt::ControlModifier);
 				for (int i = iTrack; i >= m_iCurrentTrack; --i)
 					selectTrack(i, true, bToggle);
@@ -1443,7 +1470,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 	case Qt::Key_Up:
 		if (m_iCurrentTrack > 0) {
 			const int iTrack = m_iCurrentTrack - 1;
-			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
 				const bool bToggle = (modifiers & Qt::ControlModifier);
 				const bool bSelect = !m_select.contains(m_iCurrentTrack);
 				selectTrack(m_iCurrentTrack, bSelect, bToggle);
@@ -1456,7 +1483,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 	case Qt::Key_Down:
 		if (m_iCurrentTrack < m_items.count() - 1) {
 			const int iTrack = m_iCurrentTrack + 1;
-			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
 				const bool bToggle = (modifiers & Qt::ControlModifier);
 				const bool bSelect = !m_select.contains(m_iCurrentTrack);
 				selectTrack(m_iCurrentTrack, bSelect, bToggle);

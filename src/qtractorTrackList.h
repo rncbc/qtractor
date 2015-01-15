@@ -146,6 +146,10 @@ public:
 	// Overall contents update.
 	void updateContents();
 
+	// Retrieve all current seleceted tracks but one.
+	QList<qtractorTrack *> selectedTracks(
+		qtractorTrack *pTrackEx = NULL, bool bAll = false) const;
+
 protected:
 
 	// Resize event handler.
