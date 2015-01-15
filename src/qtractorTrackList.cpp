@@ -826,19 +826,28 @@ void qtractorTrackList::updateSelect ( bool bCommit )
 		else
 			++iter;
 	}
+
+	updateContents();
 }
 
 
 // Selection clear method.
 void qtractorTrackList::clearSelect (void)
 {
+	int iUpdate = 0;
+
 	// Clear all selected...
 	QHash<int, Item *>::ConstIterator iter = m_select.constBegin();
 	const QHash<int, Item *>::ConstIterator& iter_end = m_select.constEnd();
-	for ( ; iter != iter_end; ++iter)
+	for ( ; iter != iter_end; ++iter) {
 		iter.value()->flags = 0;
+		++iUpdate;
+	}
 
 	m_select.clear();
+
+	if (iUpdate > 0)
+		updateContents();
 }
 
 
@@ -1046,18 +1055,20 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Look for the mouse hovering around some item boundary...
 	if (iTrack >= 0) {
 		// Special attitude, only of interest on
-		// the first-left column (track-number)...
+		// the first left-most column (track-number)...
 		if (trackColumnAt(pos) == Number) {
 			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
-				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
+				& (Qt::ShiftModifier|Qt::ControlModifier)) == 0);
+			qtractorScrollView::setFocus(); // get focus back anyway.
 		}
 		// Make current row always selected...
 		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
-		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+		if ((modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) == 0) {
 			clearSelect();
-		selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
-		updateSelect(true);
-		updateContents();
+		} else {
+			selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
+			updateSelect(true);
+		}
 		// Now set ready for drag something...
 		if (pMouseEvent->button() == Qt::LeftButton) {
 			// Try for drag-resize...
@@ -1124,6 +1135,8 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if (iTrack >= 0 && m_iDragTrack != iTrack) {
 				const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
 				const bool bToggle = (modifiers & Qt::ControlModifier);
+				if ((modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) == 0)
+					selectTrack(m_iCurrentTrack, true, bToggle);
 				if (iTrack < m_iCurrentTrack) {
 					for (int i = iTrack; i < m_iCurrentTrack; ++i)
 						selectTrack(i, true, bToggle);
@@ -1138,7 +1151,6 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				}
 			//	selectTrack(iTrack, true, bToggle);
 				updateSelect(false);
-				updateContents();
 				m_iDragTrack = iTrack;
 			}
 			moveRubberBand(QRect(m_posDrag, pos));
@@ -1375,29 +1387,39 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackList::keyPressEvent(%d)", pKeyEvent->key());
 #endif
+	const Qt::KeyboardModifiers& modifiers = pKeyEvent->modifiers();
+
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:
 		resetDragState();
+		clearSelect();
 		break;
 	case Qt::Key_Home:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
-			setCurrentTrackRow(0);
-		} else {
-			qtractorScrollView::setContentsPos(
-				0, qtractorScrollView::contentsY());
+		if (m_iCurrentTrack  > 0) {
+			const int iTrack = 0;
+			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+				const bool bToggle = (modifiers & Qt::ControlModifier);
+				for (int i = iTrack; m_iCurrentTrack >= i; ++i)
+					selectTrack(i, true, bToggle);
+				updateSelect(true);
+			}
+			setCurrentTrackRow(iTrack);
 		}
 		break;
 	case Qt::Key_End:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
-			setCurrentTrackRow(m_items.count() - 1);
-		} else {
-			qtractorScrollView::setContentsPos(
-				qtractorScrollView::contentsWidth(),
-				qtractorScrollView::contentsY());
+		if (m_iCurrentTrack  < m_items.count() - 1) {
+			const int iTrack = m_items.count() - 1;
+			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+				const bool bToggle = (modifiers & Qt::ControlModifier);
+				for (int i = iTrack; i >= m_iCurrentTrack; --i)
+					selectTrack(i, true, bToggle);
+				updateSelect(true);
+			}
+			setCurrentTrackRow(iTrack);
 		}
 		break;
 	case Qt::Key_Left:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() - qtractorScrollView::width(),
 				qtractorScrollView::contentsY());
@@ -1408,7 +1430,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		}
 		break;
 	case Qt::Key_Right:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() + qtractorScrollView::width(),
 				qtractorScrollView::contentsY());
@@ -1419,15 +1441,33 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		}
 		break;
 	case Qt::Key_Up:
-		if (m_iCurrentTrack > 0)
-			setCurrentTrackRow(m_iCurrentTrack - 1);
+		if (m_iCurrentTrack > 0) {
+			const int iTrack = m_iCurrentTrack - 1;
+			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+				const bool bToggle = (modifiers & Qt::ControlModifier);
+				const bool bSelect = !m_select.contains(m_iCurrentTrack);
+				selectTrack(m_iCurrentTrack, bSelect, bToggle);
+				selectTrack(iTrack, true, bToggle);
+				updateSelect(true);
+			}
+			setCurrentTrackRow(iTrack);
+		}
 		break;
 	case Qt::Key_Down:
-		if (m_iCurrentTrack < m_items.count() - 1)
-			setCurrentTrackRow(m_iCurrentTrack + 1);
+		if (m_iCurrentTrack < m_items.count() - 1) {
+			const int iTrack = m_iCurrentTrack + 1;
+			if (modifiers & (Qt::ShiftModifier|Qt::ControlModifier)) {
+				const bool bToggle = (modifiers & Qt::ControlModifier);
+				const bool bSelect = !m_select.contains(m_iCurrentTrack);
+				selectTrack(m_iCurrentTrack, bSelect, bToggle);
+				selectTrack(iTrack, true, bToggle);
+				updateSelect(true);
+			}
+			setCurrentTrackRow(iTrack);
+		}
 		break;
 	case Qt::Key_PageUp:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(), 0);
 		} else {
@@ -1438,7 +1478,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		}
 		break;
 	case Qt::Key_PageDown:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsHeight());
