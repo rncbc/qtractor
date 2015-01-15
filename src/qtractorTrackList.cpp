@@ -804,8 +804,6 @@ void qtractorTrackList::selectTrack ( int iTrack, bool bSelect, bool bToggle )
 		pItem->flags = 1;
 		m_select.insert(iTrack, pItem);
 	}
-
-	updateContents();
 }
 
 
@@ -813,8 +811,6 @@ void qtractorTrackList::selectTrack ( int iTrack, bool bSelect, bool bToggle )
 void qtractorTrackList::updateSelect ( bool bCommit )
 {
 	// Remove unselected...
-	int iUpdate = 0;
-
 	QHash<int, Item *>::Iterator iter = m_select.begin();
 	const QHash<int, Item *>::Iterator& iter_end = m_select.end();
 	while (iter != iter_end) {
@@ -825,35 +821,24 @@ void qtractorTrackList::updateSelect ( bool bCommit )
 			else
 				pItem->flags &= ~2;
 		}
-		if ((pItem->flags & 3) == 0) {
+		if ((pItem->flags & 3) == 0)
 			iter = m_select.erase(iter);
-			++iUpdate;
-		}
-		else ++iter;
+		else
+			++iter;
 	}
-
-	// Did we remove any?
-	if (iUpdate > 0)
-		updateContents();
 }
 
 
 // Selection clear method.
 void qtractorTrackList::clearSelect (void)
 {
-	// Remove unselected...
-	int iUpdate = 0;
-
+	// Clear all selected...
 	QHash<int, Item *>::ConstIterator iter = m_select.constBegin();
 	const QHash<int, Item *>::ConstIterator& iter_end = m_select.constEnd();
-	for ( ; iter != iter_end; ++iter) {
+	for ( ; iter != iter_end; ++iter)
 		iter.value()->flags = 0;
-		++iUpdate;
-	}
 
-	// Did we remove any?
-	if (iUpdate > 0)
-		updateContents();
+	m_select.clear();
 }
 
 
@@ -1070,18 +1055,9 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 			const bool bToggle = (modifiers & Qt::ControlModifier);
 			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
 				clearSelect();
-		/*	else
-			if (m_iCurrentTrack >= 0) {
-				if (iTrack < m_iCurrentTrack) {
-					for (int i = m_iCurrentTrack; i > iTrack; --i)
-						selectTrack(i, true, bToggle);
-				} else if (iTrack > m_iCurrentTrack) {
-					for (int i = m_iCurrentTrack; i < iTrack; ++i)
-						selectTrack(i, true, bToggle);
-				}
-			}	*/
 			selectTrack(iTrack, true, bToggle);
 			updateSelect(true);
+			updateContents();
 		#endif
 		}
 		if (pMouseEvent->button() == Qt::LeftButton) {
@@ -1163,6 +1139,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				}
 			//	selectTrack(iTrack, true, bToggle);
 				updateSelect(false);
+				updateContents();
 				m_iDragTrack = iTrack;
 			}
 			moveRubberBand(QRect(m_posDrag, pos));
