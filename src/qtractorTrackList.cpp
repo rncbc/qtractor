@@ -560,6 +560,8 @@ QRect qtractorTrackList::trackRect ( int iTrack ) const
 // Insert a track item; return actual track row added.
 int qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 {
+	clearSelect();
+
 	if (iTrack < 0)
 		iTrack = m_items.count();
 
@@ -574,6 +576,8 @@ int qtractorTrackList::removeTrack ( int iTrack )
 {
 	if (iTrack < 0 || iTrack >= m_items.count())
 		return -1;
+
+	clearSelect();
 
 	if (m_select.contains(iTrack))
 		m_select.remove(iTrack);
@@ -853,24 +857,35 @@ void qtractorTrackList::clearSelect (void)
 
 // Retrieve all current seleceted tracks but one.
 QList<qtractorTrack *> qtractorTrackList::selectedTracks(
-	qtractorTrack *pTrackEx, bool bAll ) const
+	qtractorTrack *pTrackEx, bool bAllTracks ) const
 {
 	QList<qtractorTrack *> tracks;
 
-	if (m_select.isEmpty() && bAll) {
-		QListIterator<Item *> iter(m_items);
-		while (iter.hasNext()) {
-			qtractorTrack *pTrack = iter.next()->track;
-			if (pTrackEx != pTrack)
-				tracks.append(pTrack);
-		}
-	} else {
-		QHash<int, Item *>::ConstIterator iter = m_select.constBegin();
-		const QHash<int, Item *>::ConstIterator& iter_end = m_select.constEnd();
-		for ( ; iter != iter_end; ++iter) {
-			qtractorTrack *pTrack = iter.value()->track;
-			if (pTrackEx != pTrack)
-				tracks.append(pTrack);
+	// Grab current selected tracks; also check
+	// whether given track is currently selected...
+	bool bSelected = false;
+	QHash<int, Item *>::ConstIterator iter = m_select.constBegin();
+	const QHash<int, Item *>::ConstIterator& iter_end = m_select.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorTrack *pTrack = iter.value()->track;
+		if (pTrackEx == pTrack)
+			bSelected = true;
+		else
+			tracks.append(pTrack);
+	}
+
+	// Currentt selection is either empty or
+	// given track is not currently selected...
+	if (!bSelected) {
+		tracks.clear();
+		// Optionally apply to all tracks
+		if (bAllTracks) {
+			QListIterator<Item *> iter(m_items);
+			while (iter.hasNext()) {
+				qtractorTrack *pTrack = iter.next()->track;
+				if (pTrackEx != pTrack)
+					tracks.append(pTrack);
+			}
 		}
 	}
 

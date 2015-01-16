@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Extended multi-selection is now featured on the track-list
+  (main left-pane), primarily allowing for group mute/solo
+  (and monitor) switching. (EXPERIMENTAL)
+
 - Track-list (left pane) header column widths are now saved
   and made persistent across application power cycle (double
   -click reverts to the old original default).
