@@ -623,17 +623,17 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>piste solo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="730"/>
+        <location filename="../qtractorTrackCommand.cpp" line="733"/>
         <source>track monitor</source>
         <translation>piste contrôler</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="827"/>
+        <location filename="../qtractorTrackCommand.cpp" line="833"/>
         <source>track gain</source>
         <translation>piste gain</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="916"/>
+        <location filename="../qtractorTrackCommand.cpp" line="922"/>
         <source>track pan</source>
         <translation>piste panoramique</translation>
     </message>

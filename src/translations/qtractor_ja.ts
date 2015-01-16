@@ -621,17 +621,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>トラックをソロ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="730"/>
+        <location filename="../qtractorTrackCommand.cpp" line="733"/>
         <source>track monitor</source>
         <translation>トラックモニター</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="827"/>
+        <location filename="../qtractorTrackCommand.cpp" line="833"/>
         <source>track gain</source>
         <translation>トラックゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="916"/>
+        <location filename="../qtractorTrackCommand.cpp" line="922"/>
         <source>track pan</source>
         <translation>トラックパニング</translation>
     </message>

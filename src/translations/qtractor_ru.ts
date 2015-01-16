@@ -710,17 +710,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>солирование дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="730"/>
+        <location filename="../qtractorTrackCommand.cpp" line="733"/>
         <source>track monitor</source>
         <translation>мониторинг дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="827"/>
+        <location filename="../qtractorTrackCommand.cpp" line="833"/>
         <source>track gain</source>
         <translation>усиление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="916"/>
+        <location filename="../qtractorTrackCommand.cpp" line="922"/>
         <source>track pan</source>
         <translation>панорама дорожки</translation>
     </message>

@@ -602,17 +602,17 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="730"/>
+        <location filename="../qtractorTrackCommand.cpp" line="733"/>
         <source>track monitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="827"/>
+        <location filename="../qtractorTrackCommand.cpp" line="833"/>
         <source>track gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="916"/>
+        <location filename="../qtractorTrackCommand.cpp" line="922"/>
         <source>track pan</source>
         <translation type="unfinished"></translation>
     </message>
