@@ -327,6 +327,9 @@ public:
 	void setSyncViewHold(bool bSyncViewHold);
 	bool isSyncViewHold() const;
 
+	// Make given frame position visible in view.
+	void ensureVisibleFrame(qtractorScrollView *pScrollView, unsigned long iFrame);
+
 	// Visualize the event selection drag-move.
 	void paintDragState(qtractorScrollView *pScrollView,
 		QPainter *pPainter);
@@ -429,7 +432,7 @@ protected:
 	void zoomCenterPre(ZoomCenter& zc) const;
 	void zoomCenterPost(const ZoomCenter& zc);
 
-	// Ensuere point visibility depending on view.
+	// Ensure point visibility depending on view.
 	void ensureVisible(qtractorScrollView *pScrollView, const QPoint& pos);
 
 	// Selection flags

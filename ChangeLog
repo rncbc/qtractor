@@ -6,6 +6,17 @@ ChangeLog
 
 GIT HEAD
 
+- Extended multi-selection is now featured on the track-list
+  (main left-pane), primarily allowing for group mute/solo
+  (and monitor) switching. (EXPERIMENTAL)
+
+- Track-list (left pane) header column widths are now saved
+  and made persistent across application power cycle (double
+  -click reverts to the old original default).
+
+- Minor fixes on the MIDI clip event list editor, also making
+  sure the current event is visible on the piano-roll view.
+
 - As long to prevent asynchronous mistakes to JACK transport
   state changes, an internal slack-delay is now introduced
   after self-initiated transport commands (eg. start/stop).

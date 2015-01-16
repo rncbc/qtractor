@@ -1982,7 +1982,7 @@ bool qtractorMidiEditor::isEventSelectable ( qtractorMidiEvent *pEvent ) const
 }
 
 
-// Ensuere point visibility depending on view.
+// Ensure point visibility depending on view.
 void qtractorMidiEditor::ensureVisible (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
@@ -1990,6 +1990,25 @@ void qtractorMidiEditor::ensureVisible (
 		pScrollView->ensureVisible(pos.x(), 0, 16, 0);
 	else
 		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+}
+
+
+// Make given frame position visible in view.
+void qtractorMidiEditor::ensureVisibleFrame (
+	qtractorScrollView *pScrollView, unsigned long iFrame )
+{
+	const int x0 = pScrollView->contentsX();
+	const int y  = pScrollView->contentsY();
+	const int w  = pScrollView->viewport()->width();
+	const int w3 = w - (w >> 3);
+	int x = m_pTimeScale->pixelFromFrame(iFrame)
+		  - m_pTimeScale->pixelFromFrame(m_iOffset);
+	if (x < x0)
+		x -= w3;
+	else if (x > x0 + w3)
+		x += w3;
+	pScrollView->ensureVisible(x, y, 0, 0);
+//	pScrollView->setFocus();
 }
 
 
@@ -3186,7 +3205,7 @@ void qtractorMidiEditor::updateDragSelect (
 		m_select.clear();
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
 	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
 
 	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);

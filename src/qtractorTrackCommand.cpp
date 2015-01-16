@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -563,18 +563,21 @@ qtractorTrackStateCommand::qtractorTrackStateCommand ( qtractorTrack *pTrack,
 	}
 
 	// Toggle/update all other?
-	Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
-	if (m_toolType != qtractorTrack::Record
-		&& (modifiers & (Qt::ShiftModifier | Qt::ControlModifier))) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession) {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks) {
+			const Qt::KeyboardModifiers& modifiers
+				= QApplication::keyboardModifiers();
 			if (modifiers & Qt::ControlModifier)
 				bOn = !bOn;
-			for (qtractorTrack *pTrackEx = pSession->tracks().first();
-					pTrackEx; pTrackEx = pTrackEx->next()) {
-				if (pTrackEx != track())
-					m_tracks.append(new TrackItem(pTrackEx, bOn));
-			}
+			const QList<qtractorTrack *>& tracks
+				= pTracks->trackList()->selectedTracks(track(),
+					(m_toolType != qtractorTrack::Record) &&
+					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)));
+			QListIterator<qtractorTrack *> iter(tracks);
+			while (iter.hasNext())
+				m_tracks.append(new TrackItem(iter.next(), bOn));
 		}
 	}
 
@@ -732,17 +735,20 @@ qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (
 	m_bMonitor = bMonitor;
 
 	// Toggle/update all other?
-	Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
-	if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession) {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks) {
+			const Qt::KeyboardModifiers& modifiers
+				= QApplication::keyboardModifiers();
 			if (modifiers & Qt::ControlModifier)
 				bMonitor = !bMonitor;
-			for (qtractorTrack *pTrackEx = pSession->tracks().first();
-					pTrackEx; pTrackEx = pTrackEx->next()) {
-				if (pTrackEx != pTrack)
-					m_tracks.append(new TrackItem(pTrackEx, bMonitor));
-			}
+			const QList<qtractorTrack *>& tracks
+				= pTracks->trackList()->selectedTracks(track(),
+					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)));
+			QListIterator<qtractorTrack *> iter(tracks);
+			while (iter.hasNext())
+				m_tracks.append(new TrackItem(iter.next(), bMonitor));
 		}
 	}
 

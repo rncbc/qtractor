@@ -110,12 +110,6 @@ public:
 	// Constructor.
 	qtractorMidiEventItemDelegate(QObject *pParent = NULL);
 
-	// Destructor.
-	~qtractorMidiEventItemDelegate();
-
-	// Keyboard event hook.
-	bool eventFilter(QObject *pObject, QEvent *pEvent);
-
 	// QItemDelegate Interface...
 
 	void paint(QPainter *pPainter,
@@ -135,10 +129,6 @@ public:
 
 	void setModelData(QWidget *pEditor,
 		QAbstractItemModel *pModel,
-		const QModelIndex& index) const;
-
-	void updateEditorGeometry(QWidget *pEditor,
-		const QStyleOptionViewItem& option,
 		const QModelIndex& index) const;
 };
 

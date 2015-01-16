@@ -1,7 +1,7 @@
 // qtractorTrackList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -146,6 +146,10 @@ public:
 	// Overall contents update.
 	void updateContents();
 
+	// Retrieve all current seleceted tracks but one.
+	QList<qtractorTrack *> selectedTracks(
+		qtractorTrack *pTrackEx = NULL, bool bAllTracks = false) const;
+
 protected:
 
 	// Resize event handler.
@@ -177,6 +181,7 @@ protected:
 
 	// Show and move rubber-band item.
 	void moveRubberBand(const QPoint& posDrag);
+	void moveRubberBand(const QRect& rectDrag);
 
 	// Make sure the given (track) rectangle is visible.
 	bool ensureVisibleRect(const QRect& rect);
@@ -186,6 +191,15 @@ protected:
 
 	// Reset drag/select/move state.
 	void resetDragState();
+
+	// Update header extents.
+	void updateHeader();
+
+	// Selection methods.
+	void selectTrack(int iTrack, bool bSelect = true, bool bToggle = false);
+
+	void updateSelect(bool bCommit);
+	void clearSelect();
 
 signals:
 
@@ -200,8 +214,11 @@ protected slots:
 	// (Re)create the time scale pixmap.
 	void updatePixmap(int cx, int cy);
 
+	// Check/update header resize.
+	void updateHeaderSize(int iCol, int, int iColSize);
+
 	// Update header extents.
-	void updateHeader();
+	void resetHeaderSize(int iCol);
 
 private:
 
@@ -230,6 +247,7 @@ private:
 		// Item members.
 		qtractorTrack *track;
 		QStringList    text;
+		unsigned int   flags;
 		// Track-list item widget.
 		qtractorTrackItemWidget *widget;
 	};
@@ -237,12 +255,15 @@ private:
 	// Model cache item list.
 	QList<Item *> m_items;
 
+	// Current selection map.
+	QHash<int, Item *> m_select;
+
 	// Current selected row.
 	int m_iCurrentTrack;
 
 	// The current selecting/dragging item stuff.
 	enum DragState {
-		DragNone = 0, DragStart, DragMove, DragResize
+		DragNone = 0, DragStart, DragMove, DragResize, DragSelect
 	} m_dragState;
 
 	// For whether we're resizing or moving an item;
