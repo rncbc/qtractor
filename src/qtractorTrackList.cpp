@@ -908,7 +908,7 @@ void qtractorTrackList::drawCell (
 		bg = pal.highlight().color();
 		fg = pal.highlightedText().color();
 		if (m_iCurrentTrack == iRow)
-			bg = bg.darker(160);
+			bg = bg.darker(140);
 	} else if (m_iCurrentTrack == iRow) {
 		bg = pal.midlight().color().darker(160);
 		fg = pal.highlightedText().color();
