@@ -1105,16 +1105,16 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 			qtractorScrollView::setFocus(); // get focus back anyway.
 		}
-		// Make current row always selected...
-		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
-		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
-			clearSelect();
-		} else {
-			selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
-			updateSelect(true);
-		}
 		// Now set ready for drag something...
 		if (pMouseEvent->button() == Qt::LeftButton) {
+			// Make current row always selected...
+			const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
+				clearSelect();
+			} else {
+				selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
+				updateSelect(true);
+			}
 			// Try for drag-resize...
 			m_posDrag = pos;
 			if (m_iDragTrack >= 0) {
