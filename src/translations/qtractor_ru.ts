@@ -1745,22 +1745,22 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1796"/>
+        <location filename="../qtractorConnect.cpp" line="1799"/>
         <source>Connect</source>
         <translation>Соединить</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1801"/>
+        <location filename="../qtractorConnect.cpp" line="1804"/>
         <source>Disconnect</source>
         <translation>Разъединить</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1806"/>
+        <location filename="../qtractorConnect.cpp" line="1809"/>
         <source>Disconnect All</source>
         <translation>Разъединить все</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1813"/>
+        <location filename="../qtractorConnect.cpp" line="1816"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
@@ -1783,26 +1783,26 @@ Do you want to apply the changes?</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="83"/>
-        <location filename="../qtractorConnectForm.ui" line="230"/>
+        <location filename="../qtractorConnectForm.ui" line="86"/>
+        <location filename="../qtractorConnectForm.ui" line="236"/>
         <source>Select output client/ports</source>
         <translation>Выберите порты клиента наружу</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="108"/>
-        <location filename="../qtractorConnectForm.ui" line="255"/>
+        <location filename="../qtractorConnectForm.ui" line="111"/>
+        <location filename="../qtractorConnectForm.ui" line="261"/>
         <source>Select input client/ports</source>
         <translation>Выберите порты клиента внутрь</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="134"/>
-        <location filename="../qtractorConnectForm.ui" line="281"/>
+        <location filename="../qtractorConnectForm.ui" line="137"/>
+        <location filename="../qtractorConnectForm.ui" line="287"/>
         <source>Connect currently selected ports</source>
         <translation>Соединить выбранные сейчас порты</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="137"/>
-        <location filename="../qtractorConnectForm.ui" line="284"/>
+        <location filename="../qtractorConnectForm.ui" line="140"/>
+        <location filename="../qtractorConnectForm.ui" line="290"/>
         <source>&amp;Connect</source>
         <translation>&amp;Соединить</translation>
     </message>
@@ -1811,14 +1811,14 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">Alt+c</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="147"/>
-        <location filename="../qtractorConnectForm.ui" line="294"/>
+        <location filename="../qtractorConnectForm.ui" line="150"/>
+        <location filename="../qtractorConnectForm.ui" line="300"/>
         <source>Disconnect currently selected ports</source>
         <translation>Рассоединить выбранные сейчас порты</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="150"/>
-        <location filename="../qtractorConnectForm.ui" line="297"/>
+        <location filename="../qtractorConnectForm.ui" line="153"/>
+        <location filename="../qtractorConnectForm.ui" line="303"/>
         <source>&amp;Disconnect</source>
         <translation>&amp;Рассоединить</translation>
     </message>
@@ -1827,14 +1827,14 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">Alt+р</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="160"/>
-        <location filename="../qtractorConnectForm.ui" line="307"/>
+        <location filename="../qtractorConnectForm.ui" line="163"/>
+        <location filename="../qtractorConnectForm.ui" line="313"/>
         <source>Disconnect all currently connected ports</source>
         <translation>Рассоединить все соединённые сейчас порты</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="163"/>
-        <location filename="../qtractorConnectForm.ui" line="310"/>
+        <location filename="../qtractorConnectForm.ui" line="166"/>
+        <location filename="../qtractorConnectForm.ui" line="316"/>
         <source>Disconnect &amp;All</source>
         <translation>Рассоединить &amp;все</translation>
     </message>
@@ -1843,14 +1843,14 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">Alt+в</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="189"/>
-        <location filename="../qtractorConnectForm.ui" line="336"/>
+        <location filename="../qtractorConnectForm.ui" line="192"/>
+        <location filename="../qtractorConnectForm.ui" line="342"/>
         <source>Refresh current connections view</source>
         <translation>Обновить отображение текущих соединений</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="192"/>
-        <location filename="../qtractorConnectForm.ui" line="339"/>
+        <location filename="../qtractorConnectForm.ui" line="195"/>
+        <location filename="../qtractorConnectForm.ui" line="345"/>
         <source>&amp;Refresh</source>
         <translation>О&amp;бновить</translation>
     </message>
@@ -1859,7 +1859,7 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">Alt+б</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.ui" line="205"/>
+        <location filename="../qtractorConnectForm.ui" line="208"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>

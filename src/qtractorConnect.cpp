@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1105,6 +1105,9 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 	int x1, y1, h1;
 	int x2, y2, h2;
 	int i, rgb[3] = { 0x33, 0x66, 0x99 };
+
+	// Draw all lines anti-aliased...
+	painter.setRenderHint(QPainter::Antialiasing);
 
 	// Inline adaptive to darker background themes...
 	if (QWidget::palette().window().color().value() < 0x7f)

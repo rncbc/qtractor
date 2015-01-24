@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Connections lines now drawn with anti-aliasing; connections
+  splitter handles width is now reduced; the MIDI connections
+  splitter pane sizes are now saved and restored properly.
+
 - Extended multi-selection is now featured on the track-list
   (main left-pane), primarily allowing for group mute/solo
   (and monitor) switching. (EXPERIMENTAL)
