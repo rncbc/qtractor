@@ -563,21 +563,23 @@ qtractorTrackStateCommand::qtractorTrackStateCommand ( qtractorTrack *pTrack,
 	}
 
 	// Toggle/update all other?
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorTracks *pTracks = pMainForm->tracks();
-		if (pTracks) {
-			const Qt::KeyboardModifiers& modifiers
-				= QApplication::keyboardModifiers();
-			if (modifiers & Qt::ControlModifier)
-				bOn = !bOn;
-			const QList<qtractorTrack *>& tracks
-				= pTracks->trackList()->selectedTracks(track(),
-					(m_toolType != qtractorTrack::Record) &&
-					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)));
-			QListIterator<qtractorTrack *> iter(tracks);
-			while (iter.hasNext())
-				m_tracks.append(new TrackItem(iter.next(), bOn));
+	if (m_toolType != qtractorTrack::Record) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorTracks *pTracks = pMainForm->tracks();
+			if (pTracks) {
+				const Qt::KeyboardModifiers& modifiers
+					= QApplication::keyboardModifiers();
+				const bool bAllTracks
+					= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
+				if (modifiers & Qt::ControlModifier)
+					bOn = !bOn;
+				const QList<qtractorTrack *>& tracks
+					= pTracks->trackList()->selectedTracks(track(), bAllTracks);
+				QListIterator<qtractorTrack *> iter(tracks);
+				while (iter.hasNext())
+					m_tracks.append(new TrackItem(iter.next(), bOn));
+			}
 		}
 	}
 
@@ -741,11 +743,12 @@ qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (
 		if (pTracks) {
 			const Qt::KeyboardModifiers& modifiers
 				= QApplication::keyboardModifiers();
+			const bool bAllTracks
+				= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 			if (modifiers & Qt::ControlModifier)
 				bMonitor = !bMonitor;
 			const QList<qtractorTrack *>& tracks
-				= pTracks->trackList()->selectedTracks(track(),
-					(modifiers & (Qt::ShiftModifier | Qt::ControlModifier)));
+				= pTracks->trackList()->selectedTracks(track(), bAllTracks);
 			QListIterator<qtractorTrack *> iter(tracks);
 			while (iter.hasNext())
 				m_tracks.append(new TrackItem(iter.next(), bMonitor));

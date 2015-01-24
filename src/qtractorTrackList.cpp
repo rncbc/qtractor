@@ -609,7 +609,8 @@ void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 
 	m_iCurrentTrack = iCurrentTrack;
 
-	if (m_iCurrentTrack < 0) clearSelect();
+	if (m_iCurrentTrack < 0)
+		clearSelect();
 
 	// Make sure the new current track is visible...
 	if (!ensureVisibleRect(trackRect(m_iCurrentTrack)))
@@ -906,7 +907,8 @@ void qtractorTrackList::drawCell (
 	} else if (pItem->flags & 1) {
 		bg = pal.highlight().color();
 		fg = pal.highlightedText().color();
-		if (m_iCurrentTrack == iRow) bg = bg.darker(140);
+		if (m_iCurrentTrack == iRow)
+			bg = bg.darker(140);
 	} else if (m_iCurrentTrack == iRow) {
 		bg = pal.midlight().color().darker(160);
 		fg = pal.highlightedText().color();
@@ -1103,16 +1105,16 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 			qtractorScrollView::setFocus(); // get focus back anyway.
 		}
-		// Make current row always selected...
-		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
-		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
-			clearSelect();
-		} else {
-			selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
-			updateSelect(true);
-		}
 		// Now set ready for drag something...
 		if (pMouseEvent->button() == Qt::LeftButton) {
+			// Make current row always selected...
+			const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
+			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
+				clearSelect();
+			} else {
+				selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
+				updateSelect(true);
+			}
 			// Try for drag-resize...
 			m_posDrag = pos;
 			if (m_iDragTrack >= 0) {
@@ -1487,8 +1489,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 			const int iTrack = m_iCurrentTrack - 1;
 			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
 				const bool bToggle = (modifiers & Qt::ControlModifier);
-				const bool bSelect = !m_select.contains(m_iCurrentTrack);
-				selectTrack(m_iCurrentTrack, bSelect, bToggle);
+				selectTrack(m_iCurrentTrack, true, bToggle);
 				selectTrack(iTrack, true, bToggle);
 				updateSelect(true);
 			}
@@ -1500,8 +1501,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 			const int iTrack = m_iCurrentTrack + 1;
 			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
 				const bool bToggle = (modifiers & Qt::ControlModifier);
-				const bool bSelect = !m_select.contains(m_iCurrentTrack);
-				selectTrack(m_iCurrentTrack, bSelect, bToggle);
+				selectTrack(m_iCurrentTrack, true, bToggle);
 				selectTrack(iTrack, true, bToggle);
 				updateSelect(true);
 			}
