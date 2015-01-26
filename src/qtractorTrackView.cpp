@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -462,6 +462,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							= iClipStart + pClipRecord->clipLength();
 						if (iTrackEnd > iClipEnd)
 							iTrackEnd = iClipEnd;
+						if (bPunching
+							&& iPunchIn > iClipStart
+							&& iPunchIn < iClipEnd) {
+							iClipOffset += (iPunchIn - iClipStart);
+							iClipStart = iPunchIn;
+						}
 					}
 					else
 					if (bLooping && iFrameTime > iLoopStart) {
