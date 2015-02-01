@@ -47,7 +47,7 @@ Audio:	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1384"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1390"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -127,7 +127,7 @@ Déc. / Long.:	%3 / %4</translation>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1084"/>
         <source>clip record</source>
-        <translation type="unfinished"></translation>
+        <translation>enregistrer clip</translation>
     </message>
     <message>
         <source>insert range</source>
@@ -668,22 +668,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="585"/>
+        <location filename="../qtractorVstPlugin.cpp" line="591"/>
         <source>Product: </source>
         <translation>Produit:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="593"/>
+        <location filename="../qtractorVstPlugin.cpp" line="599"/>
         <source>Vendor: </source>
         <translation>Vendeur:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="601"/>
+        <location filename="../qtractorVstPlugin.cpp" line="607"/>
         <source>Version: </source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1381"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1387"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -3951,22 +3951,22 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1692"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>Enre&amp;gistrer</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1695"/>
         <source>Record Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer Clip</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1698"/>
         <source>Record clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer clip</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1701"/>
         <source>Record current clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer clip courant (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1706"/>
@@ -5679,7 +5679,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5398"/>
         <source>JACK Metadata support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support des métadonnées JACK désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5966"/>
@@ -6484,7 +6484,7 @@ Voulez-vous mettre à jour les fichiers contrôleur?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="141"/>
         <source>L&amp;atch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verr&amp;ou</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="150"/>
@@ -6946,12 +6946,12 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="403"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>Enre&amp;gistrer</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="412"/>
         <source>Record current MIDI clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer clip MIDI courant (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="417"/>
@@ -8371,12 +8371,12 @@ Longueur:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="230"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="1750"/>
         <source>REC</source>
-        <translation type="unfinished">ENR</translation>
+        <translation>ENR</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="233"/>
         <source>MIDI clip record state</source>
-        <translation type="unfinished"></translation>
+        <translation>Etat d&apos;enregistrement du clip MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="238"/>
@@ -9375,22 +9375,22 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorMixer.cpp" line="1030"/>
         <source>&amp;Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Entrées</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1034"/>
         <source>&amp;Outputs</source>
-        <translation type="unfinished">&amp;Sorties</translation>
+        <translation>&amp;Sorties</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1040"/>
         <source>&amp;Monitor</source>
-        <translation type="unfinished">&amp;Moniteur</translation>
+        <translation>&amp;Moniteur</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1049"/>
         <source>&amp;Buses...</source>
-        <translation type="unfinished">&amp;Bus...</translation>
+        <translation>&amp;Bus...</translation>
     </message>
 </context>
 <context>
@@ -9833,7 +9833,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2401"/>
         <source>&amp;Style theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Style de thème:</translation>
     </message>
     <message>
         <source>Alt+W</source>
@@ -10015,12 +10015,12 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1469"/>
         <source>Whether to enable MIDI queue time drift correction</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit activer la correction de décalage temporel de la queue MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1472"/>
         <source>E&amp;nable MIDI queue time drift correction</source>
-        <translation type="unfinished"></translation>
+        <translation>Ac&amp;tiver la correction du décalage temporelle de la queue MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1485"/>
@@ -10095,7 +10095,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1678"/>
         <source>MIDI Cloc&amp;k:</source>
-        <translation type="unfinished"></translation>
+        <translation>Horlo&amp;ge MIDI:</translation>
     </message>
     <message>
         <source>Cloc&amp;k:</source>
@@ -10293,22 +10293,22 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2282"/>
         <source>H&amp;old auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintenir le défilement aut&amp;omatique (suivre la tête de lecture) lors des éditions</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2295"/>
         <source>Whether to use desktop environment native dialogs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit utiliser des dialogues natifs de l&apos;environnement de bureau.</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2298"/>
         <source>Use desktop environment &amp;native dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser des dialogues &amp;natifs de l&apos;environnement de bureau</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2314"/>
         <source>A&amp;utomatic mixer strip/grid layout (multi-row)</source>
-        <translation type="unfinished"></translation>
+        <translation>Disposition a&amp;utomatique en grille des bande de mixer (multi-ligne)</translation>
     </message>
     <message>
         <source>Mixer</source>
@@ -10317,37 +10317,37 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2311"/>
         <source>Whether to allow automatic mixer strip/grid layout (multi-row).</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit autoriser la disposition automatique en grille des bande de mixer (multi-ligne).</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2330"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Spéciale</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2351"/>
         <source>&amp;Color theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Thème de &amp;couleur:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2370"/>
         <source>Custom color palette theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette de couleur customisée</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2382"/>
         <source>Wonton Soup</source>
-        <translation type="unfinished"></translation>
+        <translation>Wonton Soup</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2387"/>
         <source>KXStudio</source>
-        <translation type="unfinished"></translation>
+        <translation>KXStudio</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2417"/>
         <source>Custom widget style theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Style de thème de widget customisée</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2467"/>
