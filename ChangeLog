@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Non-dummy scannig for regular VST, non-shell plugins, were
+  doomed to infinite-loop freezes on discovery, now fixed.
+
+
 0.6.5  2015-01-30  Fermion Ray Beta
 
 - Connections lines now drawn with anti-aliasing; connections

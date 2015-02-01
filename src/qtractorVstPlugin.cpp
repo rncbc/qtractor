@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -378,6 +378,12 @@ bool qtractorVstPluginType::Effect::open (
 		qDebug("AEffect[%p]::vst_shell(%lu) id=0x%x name=\"%s\"",
 			m_pVstEffect, i, id, buf);
 	#endif
+	}
+	else
+	// Not a VST Shell plugin...
+	if (iIndex > 0) {
+		m_pVstEffect = NULL;
+		return false;
 	}
 
 #ifdef CONFIG_DEBUG_0
