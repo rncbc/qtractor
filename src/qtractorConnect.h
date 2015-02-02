@@ -1,7 +1,7 @@
 // qtractorConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -328,7 +328,7 @@ public:
 	void setBinding(qtractorConnect *pConnect);
 	qtractorConnect *binding() const;
 	
-public slots:
+protected slots:
 
 	// Useful slots (should this be protected?).
 	void contentsChanged();

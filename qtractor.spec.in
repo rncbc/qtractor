@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 14
+%define release 15
 
 %define _prefix	@ac_prefix@
 
@@ -101,6 +101,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/man/man1/%{name}.1.gz
 
 %changelog
+* Fri Jan 30 2015 Rui Nuno Capela <rncbc@rncbc.org> 0.6.5
+- Fermion Ray Beta release.
 * Mon Nov 24 2014 Rui Nuno Capela <rncbc@rncbc.org> 0.6.4
 - Baryon Throne Beta release.
 * Mon Sep 22 2014 Rui Nuno Capela <rncbc@rncbc.org> 0.6.3

@@ -6,9 +6,22 @@ ChangeLog
 
 GIT HEAD
 
+- Recursive VST plugin search is now in effect for inventory
+  and discovery on path sub-directories (VST only).
+
+- Non-dummy scannig for regular VST, non-shell plugins, were
+  doomed to infinite-loop freezes on discovery, now fixed.
+
+
+0.6.5  2015-01-30  Fermion Ray Beta
+
+- Connections lines now drawn with anti-aliasing; connections
+  splitter handles width is now reduced; the MIDI connections
+  splitter pane sizes are now saved and restored properly.
+
 - Extended multi-selection is now featured on the track-list
   (main left-pane), primarily allowing for group mute/solo
-  (and monitor) switching. (EXPERIMENTAL)
+  (and monitor) switching.
 
 - Track-list (left pane) header column widths are now saved
   and made persistent across application power cycle (double
@@ -26,11 +39,10 @@ GIT HEAD
   keyboard modifier is in effect.
 
 - VST-shell sub-plugins are now supported (as suggested by
-  abique aka. Alexandre Bique, thanks). (EXPERIMENTAL)
+  abique aka. Alexandre Bique, thanks).
 
 - MIDI clip record/overdubbing is now possible (Clip/Record
   on the main menu or File/Record from the MIDI clip editor.
-  (EXPERIMENTAL)
 
 - Make sure some audio sample file encodings (eg. old Ogg
   Vorbis) does not head-start on audio peak generation.
