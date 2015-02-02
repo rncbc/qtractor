@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Recursive VST plugin search is now in effect for inventory
+  and discovery on path sub-directories (VST only).
+
 - Non-dummy scannig for regular VST, non-shell plugins, were
   doomed to infinite-loop freezes on discovery, now fixed.
 

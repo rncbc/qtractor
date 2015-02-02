@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -219,16 +219,8 @@ bool qtractorPluginPath::open (void)
 #endif
 
 	QStringListIterator path_iter(path_list);
-	while (path_iter.hasNext()) {
-		const QDir dir(path_iter.next());
-		const QStringList& file_list = dir.entryList(QDir::Files);
-		QStringListIterator file_iter(file_list);
-		while (file_iter.hasNext()) {
-			const QString& sPath = dir.absoluteFilePath(file_iter.next());
-			if (QLibrary::isLibrary(sPath))
-				m_files.append(new qtractorPluginFile(sPath));
-		}
-	}
+	while (path_iter.hasNext())
+		addFiles(path_iter.next());
 
 	return (m_files.count() > 0);
 }
@@ -246,6 +238,28 @@ void qtractorPluginPath::setPaths (
 	qtractorPluginType::Hint typeHint, const QString& sPaths )
 {
 	m_paths.insert(typeHint, sPaths.split(PATH_SEP));
+}
+
+
+// Recursive plugin file/path inventory method.
+void qtractorPluginPath::addFiles ( const QString& sPath )
+{
+	const QDir dir(sPath);
+	QDir::Filters filters = QDir::Files;
+	if (m_typeHint == qtractorPluginType::Vst)
+		filters = filters | QDir::AllDirs | QDir::NoDotAndDotDot;
+	const QFileInfoList& info_list = dir.entryInfoList(filters);
+	QListIterator<QFileInfo> info_iter(info_list);
+	while (info_iter.hasNext()) {
+		const QFileInfo& info = info_iter.next();
+		if (info.isDir() && info.isReadable())
+			addFiles(info.absoluteFilePath());
+		else if (info.isExecutable()) {
+			const QString& sFilename = info.absoluteFilePath();
+			if (QLibrary::isLibrary(sFilename))
+				m_files.append(new qtractorPluginFile(sFilename));
+		}
+	}
 }
 
 
