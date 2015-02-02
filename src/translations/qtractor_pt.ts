@@ -127,7 +127,7 @@
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1387"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1391"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -504,7 +504,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1390"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1394"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
@@ -9121,22 +9121,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1424"/>
+        <location filename="../qtractorMixer.cpp" line="1421"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1414"/>
+        <location filename="../qtractorMixer.cpp" line="1411"/>
         <source>Inputs</source>
         <translation>Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1415"/>
+        <location filename="../qtractorMixer.cpp" line="1412"/>
         <source>Tracks</source>
         <translation>Pistas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1417"/>
+        <location filename="../qtractorMixer.cpp" line="1414"/>
         <source>Outputs</source>
         <translation>Saídas</translation>
     </message>
@@ -9163,22 +9163,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1030"/>
+        <location filename="../qtractorMixer.cpp" line="1027"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1034"/>
+        <location filename="../qtractorMixer.cpp" line="1031"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Saídas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1040"/>
+        <location filename="../qtractorMixer.cpp" line="1037"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Monitorar</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1049"/>
+        <location filename="../qtractorMixer.cpp" line="1046"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Canais Primários...</translation>
     </message>
@@ -9186,42 +9186,42 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="535"/>
+        <location filename="../qtractorMixer.cpp" line="532"/>
         <source>%1 In</source>
         <translation>%1 (E)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="537"/>
+        <location filename="../qtractorMixer.cpp" line="534"/>
         <source>%1 Out</source>
         <translation>%1 (S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="550"/>
+        <location filename="../qtractorMixer.cpp" line="547"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="554"/>
+        <location filename="../qtractorMixer.cpp" line="551"/>
         <source>(None)</source>
         <translation>(Nenhuma)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="356"/>
+        <location filename="../qtractorMixer.cpp" line="353"/>
         <source>Connect %1</source>
         <translation>Conectar %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="355"/>
+        <location filename="../qtractorMixer.cpp" line="352"/>
         <source>outputs</source>
         <translation>saídas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="355"/>
+        <location filename="../qtractorMixer.cpp" line="352"/>
         <source>inputs</source>
         <translation>entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="546"/>
+        <location filename="../qtractorMixer.cpp" line="543"/>
         <source>(Audio)</source>
         <translation>(Áudio)</translation>
     </message>
@@ -9229,17 +9229,17 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMonitorButton</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="112"/>
+        <location filename="../qtractorMixer.cpp" line="109"/>
         <source>Monitor (rec)</source>
         <translation>Monitoração (gravação)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="100"/>
+        <location filename="../qtractorMixer.cpp" line="97"/>
         <source>monitor</source>
         <translation>monitorar</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="129"/>
+        <location filename="../qtractorMixer.cpp" line="126"/>
         <source>Monitor (thru)</source>
         <translation>Monitoração (direto)</translation>
     </message>

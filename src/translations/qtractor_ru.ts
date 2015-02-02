@@ -357,7 +357,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1390"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1394"/>
         <source>All files (*.*)</source>
         <translation>Все файлы (*.*)</translation>
     </message>
@@ -770,7 +770,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1387"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1391"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -9715,22 +9715,22 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1414"/>
+        <location filename="../qtractorMixer.cpp" line="1411"/>
         <source>Inputs</source>
         <translation>Входы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1415"/>
+        <location filename="../qtractorMixer.cpp" line="1412"/>
         <source>Tracks</source>
         <translation>Дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1417"/>
+        <location filename="../qtractorMixer.cpp" line="1414"/>
         <source>Outputs</source>
         <translation>Выходы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1424"/>
+        <location filename="../qtractorMixer.cpp" line="1421"/>
         <source>Mixer</source>
         <translation>Микшер</translation>
     </message>
@@ -9757,22 +9757,22 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1030"/>
+        <location filename="../qtractorMixer.cpp" line="1027"/>
         <source>&amp;Inputs</source>
         <translation type="unfinished">&amp;Входы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1034"/>
+        <location filename="../qtractorMixer.cpp" line="1031"/>
         <source>&amp;Outputs</source>
         <translation type="unfinished">В&amp;ыходы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1040"/>
+        <location filename="../qtractorMixer.cpp" line="1037"/>
         <source>&amp;Monitor</source>
         <translation type="unfinished">&amp;Мониторинг</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1049"/>
+        <location filename="../qtractorMixer.cpp" line="1046"/>
         <source>&amp;Buses...</source>
         <translation type="unfinished">&amp;Шины...</translation>
     </message>
@@ -9788,17 +9788,17 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation type="obsolete">Мониторинг (запись)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="355"/>
+        <location filename="../qtractorMixer.cpp" line="352"/>
         <source>inputs</source>
         <translation>входы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="355"/>
+        <location filename="../qtractorMixer.cpp" line="352"/>
         <source>outputs</source>
         <translation>выходы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="356"/>
+        <location filename="../qtractorMixer.cpp" line="353"/>
         <source>Connect %1</source>
         <translation>Соединить %1</translation>
     </message>
@@ -9807,17 +9807,17 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation type="obsolete">Мониторинг (сквозной)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="535"/>
+        <location filename="../qtractorMixer.cpp" line="532"/>
         <source>%1 In</source>
         <translation>Вход %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="537"/>
+        <location filename="../qtractorMixer.cpp" line="534"/>
         <source>%1 Out</source>
         <translation>Выход %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="546"/>
+        <location filename="../qtractorMixer.cpp" line="543"/>
         <source>(Audio)</source>
         <translation>(аудио)</translation>
     </message>
@@ -9826,7 +9826,7 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation type="obsolete">Усиление</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="550"/>
+        <location filename="../qtractorMixer.cpp" line="547"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
@@ -9835,7 +9835,7 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation type="obsolete">Громкость</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="554"/>
+        <location filename="../qtractorMixer.cpp" line="551"/>
         <source>(None)</source>
         <translation>(нет)</translation>
     </message>
@@ -9847,17 +9847,17 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMonitorButton</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="100"/>
+        <location filename="../qtractorMixer.cpp" line="97"/>
         <source>monitor</source>
         <translation type="unfinished">монитор</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="112"/>
+        <location filename="../qtractorMixer.cpp" line="109"/>
         <source>Monitor (rec)</source>
         <translation type="unfinished">Мониторинг (запись)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="129"/>
+        <location filename="../qtractorMixer.cpp" line="126"/>
         <source>Monitor (thru)</source>
         <translation type="unfinished">Мониторинг (сквозной)</translation>
     </message>

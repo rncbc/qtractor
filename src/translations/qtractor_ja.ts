@@ -46,7 +46,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1390"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1394"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -681,7 +681,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>バージョン:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1387"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1391"/>
         <source>%1 (*.%2)</source>
         <translation></translation>
     </message>
@@ -9208,22 +9208,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1414"/>
+        <location filename="../qtractorMixer.cpp" line="1411"/>
         <source>Inputs</source>
         <translation>入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1415"/>
+        <location filename="../qtractorMixer.cpp" line="1412"/>
         <source>Tracks</source>
         <translation>トラック</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1417"/>
+        <location filename="../qtractorMixer.cpp" line="1414"/>
         <source>Outputs</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1424"/>
+        <location filename="../qtractorMixer.cpp" line="1421"/>
         <source>Mixer</source>
         <translation>ミキサー</translation>
     </message>
@@ -9250,22 +9250,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1030"/>
+        <location filename="../qtractorMixer.cpp" line="1027"/>
         <source>&amp;Inputs</source>
         <translation>入力(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1034"/>
+        <location filename="../qtractorMixer.cpp" line="1031"/>
         <source>&amp;Outputs</source>
         <translation>出力(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1040"/>
+        <location filename="../qtractorMixer.cpp" line="1037"/>
         <source>&amp;Monitor</source>
         <translation>モニター(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1049"/>
+        <location filename="../qtractorMixer.cpp" line="1046"/>
         <source>&amp;Buses...</source>
         <translation>バス(&amp;B)...</translation>
     </message>
@@ -9273,32 +9273,32 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="355"/>
+        <location filename="../qtractorMixer.cpp" line="352"/>
         <source>inputs</source>
         <translation>入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="355"/>
+        <location filename="../qtractorMixer.cpp" line="352"/>
         <source>outputs</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="356"/>
+        <location filename="../qtractorMixer.cpp" line="353"/>
         <source>Connect %1</source>
         <translation>%1 の接続</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="535"/>
+        <location filename="../qtractorMixer.cpp" line="532"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="537"/>
+        <location filename="../qtractorMixer.cpp" line="534"/>
         <source>%1 Out</source>
         <translation>%1 出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="546"/>
+        <location filename="../qtractorMixer.cpp" line="543"/>
         <source>(Audio)</source>
         <translation>(音声)</translation>
     </message>
@@ -9307,7 +9307,7 @@ Are you sure?</source>
         <translation type="obsolete">ゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="550"/>
+        <location filename="../qtractorMixer.cpp" line="547"/>
         <source>(MIDI)</source>
         <translation></translation>
     </message>
@@ -9316,7 +9316,7 @@ Are you sure?</source>
         <translation type="obsolete">ボリューム</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="554"/>
+        <location filename="../qtractorMixer.cpp" line="551"/>
         <source>(None)</source>
         <translation>(なし)</translation>
     </message>
@@ -9328,17 +9328,17 @@ Are you sure?</source>
 <context>
     <name>qtractorMonitorButton</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="100"/>
+        <location filename="../qtractorMixer.cpp" line="97"/>
         <source>monitor</source>
         <translation>モニター</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="112"/>
+        <location filename="../qtractorMixer.cpp" line="109"/>
         <source>Monitor (rec)</source>
         <translation>モニター(録音)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="129"/>
+        <location filename="../qtractorMixer.cpp" line="126"/>
         <source>Monitor (thru)</source>
         <translation>モニター(スルー)</translation>
     </message>

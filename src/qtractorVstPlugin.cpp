@@ -390,8 +390,8 @@ bool qtractorVstPluginType::Effect::open (
 	qDebug("AEffect[%p]::open(%p, %lu)", m_pVstEffect, pFile, iIndex);
 #endif
 
-//	vst_dispatch(effIdentify, 0, 0, NULL, 0);
 	vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
+//	vst_dispatch(effIdentify, 0, 0, NULL, 0);
 //	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 
 	return true;
@@ -691,12 +691,15 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Close old instances, all the way...
 	if (m_ppEffects) {
+		qtractorVstPluginType::Effect *pEffect;
 		for (unsigned short i = 1; i < iOldInstances; ++i) {
-			g_vstPlugins.remove(m_ppEffects[i]->vst_effect());
-			m_ppEffects[i]->close();
-			delete m_ppEffects[i];
+			pEffect = m_ppEffects[i];
+			g_vstPlugins.remove(pEffect->vst_effect());
+			pEffect->close();
+			delete pEffect;
 		}
-		g_vstPlugins.remove(m_ppEffects[0]->vst_effect());
+		pEffect = m_ppEffects[0];
+		g_vstPlugins.remove(pEffect->vst_effect());
 		delete [] m_ppEffects;
 		m_ppEffects = NULL;
 	}
@@ -722,18 +725,11 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		g_vstPlugins.insert(m_ppEffects[i]->vst_effect(), this);
 	}
 
-	// (Re)issue all configuration as needed...
-	realizeConfigs();
-	realizeValues();
-
-	// But won't need it anymore.
-	releaseConfigs();
-	releaseValues();
-
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
+	//	pEffect->vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
 	//	pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
@@ -745,6 +741,14 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	#endif
 	}
+
+	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
+	releaseConfigs();
+	releaseValues();
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
