@@ -11092,17 +11092,17 @@ Are you sure?</source>
         <translation>プラグインを検索中です...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="326"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="324"/>
         <source>GUI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="328"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="326"/>
         <source>EXT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="330"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="328"/>
         <source>RT</source>
         <translation></translation>
     </message>

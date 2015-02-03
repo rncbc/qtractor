@@ -11295,17 +11295,17 @@ Etes-vous sur?</translation>
         <translation>Scan des greffons en cours...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="326"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="324"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="328"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="326"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="330"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="328"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Force reset of plugin selection list when any of the plugin
+  search paths change (in View/Options.../Plugins/Paths).
+
 - Recursive VST plugin search is now in effect for inventory
   and discovery on path sub-directories (VST only).
 
