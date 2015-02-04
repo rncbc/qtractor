@@ -271,12 +271,12 @@ void qtractorPluginPath::addFiles ( const QString& sPath )
 bool qtractorPluginFile::open (void)
 {
 	close();
-
+#if 0
 	// ATTN: Not really needed, as it would be
 	// loaded automagically on resolve()...
 	if (!QLibrary::load())
 		return false;
-
+#endif
 	// Do the openning dance...
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 	qtractorPluginFile_Function pfnInit

@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -412,7 +412,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(moveDownPluginPath()));
 	QObject::connect(m_ui.Lv2PresetDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
-		SLOT(changed()));
+		SLOT(pluginPathsChanged()));
 	QObject::connect(m_ui.Lv2PresetDirToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseLv2PresetDir()));
@@ -427,10 +427,10 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.DummyVstScanCheckBox,
 		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
+		SLOT(pluginPathsChanged()));
 	QObject::connect(m_ui.Lv2DynManifestCheckBox,
 		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
+		SLOT(pluginPathsChanged()));
 	QObject::connect(m_ui.SaveCurve14bitCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -1157,10 +1157,8 @@ void qtractorOptionsForm::addPluginPath (void)
 
 	m_ui.PluginPathListWidget->setFocus();
 
-	++m_iDirtyPluginPaths;
-
 	selectPluginPath();
-	changed();
+	pluginPathsChanged();
 }
 
 
@@ -1207,10 +1205,8 @@ void qtractorOptionsForm::removePluginPath (void)
 	if (pItem)
 		delete pItem;
 
-	++m_iDirtyPluginPaths;
-
 	selectPluginPath();
-	changed();
+	pluginPathsChanged();
 }
 
 
@@ -1254,10 +1250,8 @@ void qtractorOptionsForm::moveUpPluginPath (void)
 		m_ui.PluginPathListWidget->setCurrentItem(pItem);
 	}
 
-	++m_iDirtyPluginPaths;
-
 	selectPluginPath();
-	changed();
+	pluginPathsChanged();
 }
 
 
@@ -1301,9 +1295,15 @@ void qtractorOptionsForm::moveDownPluginPath (void)
 		m_ui.PluginPathListWidget->setCurrentItem(pItem);
 	}
 
-	++m_iDirtyPluginPaths;
-
 	selectPluginPath();
+	pluginPathsChanged();
+}
+
+
+// Dirty up plugin-paths.
+void qtractorOptionsForm::pluginPathsChanged (void)
+{
+	++m_iDirtyPluginPaths;
 	changed();
 }
 
@@ -1346,7 +1346,7 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 		m_ui.Lv2PresetDirComboBox->setFocus();
 	}
 
-	changed();
+	pluginPathsChanged();
 }
 
 

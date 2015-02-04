@@ -1,7 +1,7 @@
 // qtractorOptionsForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -69,6 +69,7 @@ protected slots:
 	void removePluginPath();
 	void moveUpPluginPath();
 	void moveDownPluginPath();
+	void pluginPathsChanged();
 	void chooseLv2PresetDir();
 	void chooseMessagesFont();
 	void chooseMessagesLogPath();

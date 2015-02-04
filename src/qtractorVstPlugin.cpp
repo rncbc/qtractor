@@ -624,8 +624,7 @@ static QHash<AEffect *, qtractorVstPlugin *> g_vstPlugins;
 qtractorVstPlugin::qtractorVstPlugin (
 	qtractorPluginList *pList, qtractorVstPluginType *pVstType )
 	: qtractorPlugin(pList, pVstType), m_ppEffects(NULL),
-		m_ppIBuffer(NULL), m_ppOBuffer(NULL),
-		m_pEditorWidget(NULL), m_bEditorClosed(false)
+		m_ppIBuffer(NULL), m_ppOBuffer(NULL), m_pEditorWidget(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -1055,11 +1054,6 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 // Close editor.
 void qtractorVstPlugin::closeEditor (void)
 {
-	if (m_bEditorClosed)
-		return;
-
-	m_bEditorClosed = true;
-
 	if (m_pEditorWidget == NULL)
 		return;
 
