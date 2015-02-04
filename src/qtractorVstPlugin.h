@@ -166,7 +166,7 @@ public:
 	// Editor widget forward decls.
 	class EditorWidget;
 
-#if defined(Q_WS_X11)
+#if 0//defined(Q_WS_X11)
 	// Global X11 event filter.
 	static bool x11EventFilter(void *pvEvent);
 #endif

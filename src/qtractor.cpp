@@ -231,7 +231,7 @@ public:
 				XFree(pData);
 		}
 	#endif
-	#ifdef CONFIG_VST
+	#if 0//def CONFIG_VST
 		// Let xevents be processed by VST plugin editors...
 		if (qtractorVstPlugin::x11EventFilter(pEv))
 			return true;

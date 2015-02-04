@@ -30,12 +30,15 @@
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorSession.h"
+
+#ifdef QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorOptions.h"
+#endif
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QWidget>
+
 
 #if QT_VERSION < 0x040500
 namespace Qt {
@@ -46,9 +49,11 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 
 #if defined(Q_WS_X11)
 #include <QX11Info>
+#if 0//defined(Q_WS_X11)
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
+#endif//0
 #endif
 
 #if !defined(VST_2_3_EXTENSIONS)
@@ -98,7 +103,7 @@ const int effFlagsProgramChunks = 32;
 //---------------------------------------------------------------------
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
 
-#if defined(Q_WS_X11)
+#if 0//defined(Q_WS_X11)
 
 static bool g_bXError = false;
 
@@ -156,9 +161,11 @@ public:
 		: QWidget(pParent, wflags),
 	#if defined(Q_WS_X11)
 		m_pDisplay(QX11Info::display()),
+	#if 0//defined(Q_WS_X11)
 		m_wVstEditor(0),
 		m_pVstEventProc(NULL),
 		m_bButtonPress(false),
+	#endif//0
 	#endif
 		m_pVstPlugin(NULL) {}
 
@@ -194,7 +201,7 @@ public:
 
 		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
 		
-	#if defined(Q_WS_X11)
+	#if 0//defined(Q_WS_X11)
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
@@ -224,8 +231,7 @@ public:
 			g_vstEditors.removeAt(iIndex);
 	}
 
-#if defined(Q_WS_X11)
-
+#if 0//defined(Q_WS_X11)
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -252,7 +258,6 @@ public:
 			return false;
 		}
 	}
-
 #endif
 
 	qtractorVstPlugin *plugin() const
@@ -280,25 +285,27 @@ protected:
 			m_pVstPlugin->closeEditor();
 	}
 
+#if 0//defined(Q_WS_X11)
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
-	#if defined(Q_WS_X11)
 		if (m_wVstEditor) {
 			XMoveWindow(m_pDisplay, m_wVstEditor, 0, 0);
 		//	QWidget::update();
 		}
-	#endif
 	}
+#endif
 
 private:
 
 	// Instance variables...
 #if defined(Q_WS_X11)
 	Display   *m_pDisplay;
+#if 0//defined(Q_WS_X11)
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
+#endif//0
 #endif
 
 	qtractorVstPlugin *m_pVstPlugin;
@@ -1042,10 +1049,11 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 		| Qt::WindowSystemMenuHint
 		| Qt::WindowMinMaxButtonsHint
 		| Qt::WindowCloseButtonHint;
+#ifdef QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop)
 		wflags |= Qt::Tool;
-
+#endif
 	m_pEditorWidget = new EditorWidget(NULL, wflags);
 	m_pEditorWidget->open(this);
 }
@@ -1139,7 +1147,7 @@ qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
 }
 
 
-#if defined(Q_WS_X11)
+#if 0//defined(Q_WS_X11)
 
 // Global X11 event filter.
 bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
