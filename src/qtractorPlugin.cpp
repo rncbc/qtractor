@@ -277,6 +277,10 @@ bool qtractorPluginFile::open (void)
 	if (!QLibrary::load())
 		return false;
 #endif
+
+	// Count references, business s usual...
+	++m_iRefCount;
+
 	// Do the openning dance...
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 	qtractorPluginFile_Function pfnInit
@@ -291,6 +295,10 @@ bool qtractorPluginFile::open (void)
 
 void qtractorPluginFile::close (void)
 {
+	// Discount references, business s usual...
+	if (--m_iRefCount > 0)
+		return;
+
 	if (!QLibrary::isLoaded())
 		return;
 
