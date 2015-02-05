@@ -187,7 +187,7 @@ public:
 
 	// Constructor.
 	qtractorPluginFile(const QString& sFilename)
-		: QLibrary(sFilename), m_iRefCount(0) {}
+		: QLibrary(sFilename) {}
 
 	// Destructor.
 	~qtractorPluginFile()
@@ -208,11 +208,6 @@ public:
 	static qtractorPlugin *createPlugin(qtractorPluginList *pList,
 		const QString& sFilename, unsigned long iIndex = 0,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
-
-private:
-
-	// Managed here nevertheless.
-	unsigned int m_iRefCount;
 };
 
 

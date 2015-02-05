@@ -278,9 +278,6 @@ bool qtractorPluginFile::open (void)
 		return false;
 #endif
 
-	// Count references, business s usual...
-	++m_iRefCount;
-
 	// Do the openning dance...
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 	qtractorPluginFile_Function pfnInit
@@ -295,21 +292,21 @@ bool qtractorPluginFile::open (void)
 
 void qtractorPluginFile::close (void)
 {
-	// Discount references, business s usual...
-	if (m_iRefCount > 0 && --m_iRefCount > 0)
-		return;
-
 	if (!QLibrary::isLoaded())
 		return;
 
 	// Do the closing dance...
-#if 0 // defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 	qtractorPluginFile_Function pfnFini
 		= (qtractorPluginFile_Function) QLibrary::resolve("_fini");
 	if (pfnFini)
 		(*pfnFini)();
 #endif
 
+	// ATTN: Might be really needed, as it would
+	// otherwise pile up hosing all available RAM
+	// until freed and unloaded on exit();
+	// nb. some VST might choke on this.
 	QLibrary::unload();
 }
 
@@ -479,20 +476,6 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 			if (pLadspaType->open())
 				return new qtractorLadspaPlugin(pList, pLadspaType);
 			delete pLadspaType;
-		}
-	}
-#endif
-
-#ifdef CONFIG_LV2
-	// Try LV2 plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Lv2) {
-		qtractorLv2PluginType *pLv2Type
-			= qtractorLv2PluginType::createType(sFilename);
-		if (pLv2Type) {
-			if (pLv2Type->open())
-				return new qtractorLv2Plugin(pList, pLv2Type);
-			delete pLv2Type;
 		}
 	}
 #endif
