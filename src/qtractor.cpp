@@ -1,7 +1,7 @@
 // qtractor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -231,7 +231,7 @@ public:
 				XFree(pData);
 		}
 	#endif
-	#if 0//def CONFIG_VST
+	#ifdef CONFIG_VST
 		// Let xevents be processed by VST plugin editors...
 		if (qtractorVstPlugin::x11EventFilter(pEv))
 			return true;

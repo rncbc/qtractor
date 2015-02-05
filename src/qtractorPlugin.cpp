@@ -296,7 +296,7 @@ bool qtractorPluginFile::open (void)
 void qtractorPluginFile::close (void)
 {
 	// Discount references, business s usual...
-	if (--m_iRefCount > 0)
+	if (m_iRefCount > 0 && --m_iRefCount > 0)
 		return;
 
 	if (!QLibrary::isLoaded())
