@@ -306,8 +306,8 @@ void qtractorPluginFile::close (void)
 	// ATTN: Might be really needed, as it would
 	// otherwise pile up hosing all available RAM
 	// until freed and unloaded on exit();
-	// nb. some VST might choke on this.
-	QLibrary::unload();
+	// nb. some VST might choke on auto-unload.
+	if (m_bAutoUnload) QLibrary::unload();
 }
 
 

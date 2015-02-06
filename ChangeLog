@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Return of an old hack/fix for some native VST plugins with
+  GUI editor, on whether to skip the explicit shared library
+  unloading on close and thus avoid some mysterious crashes
+  on session and/or application exit. (EXPERIMENTAL)
+
 - Force reset of plugin selection list when any of the plugin
   search paths change (in View/Options.../Plugins/Paths).
 

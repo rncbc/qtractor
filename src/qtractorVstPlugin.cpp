@@ -498,6 +498,12 @@ bool qtractorVstPluginType::open (void)
 	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
 	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
 
+	// HACK: Some native VST plugins with a GUI editor
+	// need to skip explicit shared library unloading,
+	// on close, in order to avoid mysterious crashes
+	// later on session and/or application exit.
+	if (m_bEditor) file()->setAutoUnload(false);
+
 	return true;
 }
 
