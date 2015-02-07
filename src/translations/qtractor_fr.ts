@@ -338,7 +338,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="65"/>
-        <location filename="../qtractorPlugin.cpp" line="663"/>
+        <location filename="../qtractorPlugin.cpp" line="662"/>
         <source>(default)</source>
         <translation>(défaut)</translation>
     </message>
@@ -395,22 +395,22 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="591"/>
+        <location filename="../qtractorPlugin.cpp" line="590"/>
         <source>(Any)</source>
         <translation>(Tous)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="647"/>
+        <location filename="../qtractorPlugin.cpp" line="646"/>
         <source>Dummy plugin type.</source>
         <translation>Type de greffon factice.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="679"/>
+        <location filename="../qtractorPlugin.cpp" line="678"/>
         <source>Activate</source>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2157"/>
+        <location filename="../qtractorPlugin.cpp" line="2156"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>

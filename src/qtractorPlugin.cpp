@@ -252,13 +252,12 @@ void qtractorPluginPath::addFiles ( const QString& sPath )
 	QListIterator<QFileInfo> info_iter(info_list);
 	while (info_iter.hasNext()) {
 		const QFileInfo& info = info_iter.next();
+		const QString& sFilename = info.absoluteFilePath();
 		if (info.isDir() && info.isReadable())
-			addFiles(info.absoluteFilePath());
-		else if (info.isExecutable()) {
-			const QString& sFilename = info.absoluteFilePath();
-			if (QLibrary::isLibrary(sFilename))
-				m_files.append(new qtractorPluginFile(sFilename));
-		}
+			addFiles(sFilename);
+		else
+		if (QLibrary::isLibrary(sFilename))
+			m_files.append(new qtractorPluginFile(sFilename));
 	}
 }
 
