@@ -205,7 +205,7 @@ public:
 		{ m_bAutoUnload = bAutoUnload; }
 	bool isAutoUnload() const
 		{ return m_bAutoUnload; }
-	
+
 	// Plugin type listing.
 	bool getTypes(qtractorPluginPath& path,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
