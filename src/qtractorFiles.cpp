@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -424,15 +424,17 @@ void qtractorFiles::stabilizeSlot (void)
 			pItem && pItem->type() == qtractorFileListView::FileItem);
 		m_pCopyItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::FileItem);
+		const QMimeData *pMimeData
+			= QApplication::clipboard()->mimeData();
 		m_pPasteItemAction->setEnabled(
-			(QApplication::clipboard()->mimeData())->hasUrls());
+			pMimeData && pMimeData->hasUrls());
 		m_pRenameItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::GroupItem);
 		m_pRemoveItemAction->setEnabled(
 			pItem && pItem->type() != qtractorFileListView::ChannelItem);
 		m_pCleanupAction->setEnabled(pFileListView->topLevelItemCount() > 0);
-		bool bPlayEnabled = (
-			pItem && pItem->type() != qtractorFileListView::GroupItem);
+		const bool bPlayEnabled
+			= (pItem && pItem->type() != qtractorFileListView::GroupItem);
 		m_pPlayItemAction->setEnabled(bPlayEnabled);
 		m_pPlayButton->setEnabled(bPlayEnabled);
 	}

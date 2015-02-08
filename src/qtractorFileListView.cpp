@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -401,13 +401,13 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 						= static_cast<QTreeWidgetItem *> (pParentItem);
 					pParentItem = groupItem(pParentItem);
 					if (pParentItem) {
-						int iItem = pParentItem->indexOfChild(pItem);
+						const int iItem = pParentItem->indexOfChild(pItem);
 						if (iItem >= 0)
 							pParentItem->insertChild(iItem + 1, pFileItem);
 						else
 							pItem->addChild(pFileItem);
 					} else {
-						int iItem = QTreeWidget::indexOfTopLevelItem(pItem);
+						const int iItem = QTreeWidget::indexOfTopLevelItem(pItem);
 						if (iItem >= 0)
 							QTreeWidget::insertTopLevelItem(iItem + 1, pFileItem);
 						else
@@ -599,6 +599,9 @@ void qtractorFileListView::copyItem ( bool bCut )
 void qtractorFileListView::pasteItem (void)
 {
 	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
+	if (pMimeData == NULL)
+		return;
+
 	if (!pMimeData->hasUrls())
 		return;
 

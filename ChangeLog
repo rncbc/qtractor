@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixing segfaults due to QClipboard::mimeData() returning an
+  invalid null pointer while on Qt5 and Weston. (TESTING)
+
 - Return of an old hack/fix for some native VST plugins with
   GUI editor, on whether to skip the explicit shared library
   unloading on close and thus avoid some mysterious crashes

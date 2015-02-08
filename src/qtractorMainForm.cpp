@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -5692,8 +5692,9 @@ void qtractorMainForm::stabilizeForm (void)
 
 //	m_ui.editCutAction->setEnabled(bSelected);
 //	m_ui.editCopyAction->setEnabled(bSelected);
+	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
 	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
-		|| QApplication::clipboard()->mimeData()->hasUrls());
+		|| (pMimeData && pMimeData->hasUrls()));
 	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
 //	m_ui.editDeleteAction->setEnabled(bSelected);
 
