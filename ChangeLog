@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Current highlighted client/port connections are now drawn
+  with thicker connector lines.
+
 - Fixing segfaults due to QClipboard::mimeData() returning an
   invalid null pointer while on Qt5 and Weston. (TESTING)
 
