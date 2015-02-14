@@ -6,6 +6,20 @@ ChangeLog
 
 GIT HEAD
 
+- Current highlighted client/port connections are now drawn
+  with thicker connector lines.
+
+- Fixing segfaults due to QClipboard::mimeData() returning an
+  invalid null pointer while on Qt5 and Weston. (TESTING)
+
+- Return of an old hack/fix for some native VST plugins with
+  GUI editor, on whether to skip the explicit shared library
+  unloading on close and thus avoid some mysterious crashes
+  on session and/or application exit. (EXPERIMENTAL)
+
+- Force reset of plugin selection list when any of the plugin
+  search paths change (in View/Options.../Plugins/Paths).
+
 - Recursive VST plugin search is now in effect for inventory
   and discovery on path sub-directories (VST only).
 

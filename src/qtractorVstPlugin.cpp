@@ -30,12 +30,15 @@
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorSession.h"
+
+#ifdef QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorOptions.h"
+#endif
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QWidget>
+
 
 #if QT_VERSION < 0x040500
 namespace Qt {
@@ -225,7 +228,6 @@ public:
 	}
 
 #if defined(Q_WS_X11)
-
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -252,7 +254,6 @@ public:
 			return false;
 		}
 	}
-
 #endif
 
 	qtractorVstPlugin *plugin() const
@@ -280,16 +281,16 @@ protected:
 			m_pVstPlugin->closeEditor();
 	}
 
+#if defined(Q_WS_X11)
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
-	#if defined(Q_WS_X11)
 		if (m_wVstEditor) {
 			XMoveWindow(m_pDisplay, m_wVstEditor, 0, 0);
 		//	QWidget::update();
 		}
-	#endif
 	}
+#endif
 
 private:
 
@@ -390,8 +391,8 @@ bool qtractorVstPluginType::Effect::open (
 	qDebug("AEffect[%p]::open(%p, %lu)", m_pVstEffect, pFile, iIndex);
 #endif
 
-//	vst_dispatch(effIdentify, 0, 0, NULL, 0);
 	vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
+//	vst_dispatch(effIdentify, 0, 0, NULL, 0);
 //	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 
 	return true;
@@ -496,6 +497,12 @@ bool qtractorVstPluginType::open (void)
 	m_bRealtime  = true;
 	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
 	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
+
+	// HACK: Some native VST plugins with a GUI editor
+	// need to skip explicit shared library unloading,
+	// on close, in order to avoid mysterious crashes
+	// later on session and/or application exit.
+	if (m_bEditor) file()->setAutoUnload(false);
 
 	return true;
 }
@@ -691,12 +698,15 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Close old instances, all the way...
 	if (m_ppEffects) {
+		qtractorVstPluginType::Effect *pEffect;
 		for (unsigned short i = 1; i < iOldInstances; ++i) {
-			g_vstPlugins.remove(m_ppEffects[i]->vst_effect());
-			m_ppEffects[i]->close();
-			delete m_ppEffects[i];
+			pEffect = m_ppEffects[i];
+			g_vstPlugins.remove(pEffect->vst_effect());
+			pEffect->close();
+			delete pEffect;
 		}
-		g_vstPlugins.remove(m_ppEffects[0]->vst_effect());
+		pEffect = m_ppEffects[0];
+		g_vstPlugins.remove(pEffect->vst_effect());
 		delete [] m_ppEffects;
 		m_ppEffects = NULL;
 	}
@@ -722,18 +732,11 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		g_vstPlugins.insert(m_ppEffects[i]->vst_effect(), this);
 	}
 
-	// (Re)issue all configuration as needed...
-	realizeConfigs();
-	realizeValues();
-
-	// But won't need it anymore.
-	releaseConfigs();
-	releaseValues();
-
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
+	//	pEffect->vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
 	//	pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
@@ -745,6 +748,14 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	#endif
 	}
+
+	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
+	releaseConfigs();
+	releaseValues();
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
@@ -1032,6 +1043,9 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 	qDebug("qtractorVstPlugin[%p]::openEditor()", this);
 #endif
 
+	// Make sure it's not closed...
+	m_bEditorClosed = false;
+
 	// Create the new parent frame...
 	Qt::WindowFlags wflags = Qt::Window
 		| Qt::CustomizeWindowHint
@@ -1039,10 +1053,11 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 		| Qt::WindowSystemMenuHint
 		| Qt::WindowMinMaxButtonsHint
 		| Qt::WindowCloseButtonHint;
+#ifdef QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop)
 		wflags |= Qt::Tool;
-
+#endif
 	m_pEditorWidget = new EditorWidget(NULL, wflags);
 	m_pEditorWidget->open(this);
 }

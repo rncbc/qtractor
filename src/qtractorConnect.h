@@ -348,7 +348,7 @@ private:
 
 	// Drawing methods.
 	void drawConnectionLine(QPainter *pPainter,
-		int x1, int y1, int x2, int y2, int h1, int h2);
+		int x1, int y1, int x2, int y2, int h1, int h2, const QPen& pen);
 
 	// Local instance variables.
 	qtractorConnect *m_pConnect;

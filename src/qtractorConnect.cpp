@@ -1054,8 +1054,11 @@ int qtractorConnectorView::itemY ( QTreeWidgetItem *pItem ) const
 
 // Draw visible port connection relation lines
 void qtractorConnectorView::drawConnectionLine ( QPainter *pPainter,
-	int x1, int y1, int x2, int y2, int h1, int h2 )
+	int x1, int y1, int x2, int y2, int h1, int h2, const QPen& pen )
 {
+	// Set apropriate pen...
+	pPainter->setPen(pen);
+
 	// Account for list view headers.
 	y1 += h1;
 	y2 += h2;
@@ -1076,7 +1079,7 @@ void qtractorConnectorView::drawConnectionLine ( QPainter *pPainter,
 		QPainterPath path;
 		path.moveTo(spline.at(0));
 		path.cubicTo(spline.at(1), spline.at(2), spline.at(3));
-		pPainter->strokePath(path, pPainter->pen());
+		pPainter->strokePath(path, pen);
 	}
 	else pPainter->drawLine(x1 + 4, y1, x2 - 4, y2);
 
@@ -1132,7 +1135,7 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 			continue;
 		// Set new connector color.
 		++i;
-		painter.setPen(QColor(rgb[i % 3], rgb[(i / 3) % 3], rgb[(i / 9) % 3]));
+		QPen pen(QColor(rgb[i % 3], rgb[(i / 3) % 3], rgb[(i / 9) % 3]));
 		// For each port item
 		const int iChildCount = pOClient->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
@@ -1142,6 +1145,8 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 			qtractorPortListItem *pOPort
 				= static_cast<qtractorPortListItem *> (pChild);
 			if (pOPort) {
+				// Set proposed line width...
+				const int w1 = (pOPort->isHilite() ? 2 : 1);
 				// Get starting connector arrow coordinates.
 				y1 = itemY(pOPort) + (yo - yc);
 				// Get port connections...
@@ -1151,7 +1156,8 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 					// Obviously, should be a connection
 					// from pOPort to pIPort items:
 					y2 = itemY(pIPort) + (yi - yc);
-					drawConnectionLine(&painter, x1, y1, x2, y2, h1, h2);
+					pen.setWidth(pIPort->isHilite() ? 2 : w1);
+					drawConnectionLine(&painter, x1, y1, x2, y2, h1, h2, pen);
 				}
 			}
 		}
@@ -1273,6 +1279,7 @@ bool qtractorConnect::canConnectSelected (void)
 	// Take this opportunity to highlight any current selections.
 	m_pOListView->hiliteClientPorts();
 	m_pIListView->hiliteClientPorts();
+	m_pConnectorView->update();
 
 	// Now with our predicate work...
 	QTreeWidgetItem *pOItem = m_pOListView->currentItem();

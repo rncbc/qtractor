@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2355,7 +2355,8 @@ LV2_Handle qtractorLv2Plugin::lv2_handle ( unsigned short iInstance ) const
 void qtractorLv2Plugin::activate (void)
 {
 	if (m_ppInstances) {
-		for (unsigned short i = 0; i < instances(); ++i) {
+		const unsigned short iInstances = instances();
+		for (unsigned short i = 0; i < iInstances; ++i) {
 			LilvInstance *instance = m_ppInstances[i];
 			if (instance)
 				lilv_instance_activate(instance);
@@ -2368,7 +2369,8 @@ void qtractorLv2Plugin::activate (void)
 void qtractorLv2Plugin::deactivate (void)
 {
 	if (m_ppInstances) {
-		for (unsigned short i = 0; i < instances(); ++i) {
+		const unsigned short iInstances = instances();
+		for (unsigned short i = 0; i < iInstances; ++i) {
 			LilvInstance *instance = m_ppInstances[i];
 			if (instance)
 				lilv_instance_deactivate(instance);
@@ -3109,7 +3111,8 @@ void qtractorLv2Plugin::freezeConfigs (void)
 
 #ifdef CONFIG_LV2_STATE
 
-	for (unsigned short i = 0; i < instances(); ++i) {
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i) {
 		const LV2_State_Interface *state = lv2_state_interface(i);
 		if (state) {
 			LV2_Handle handle = lv2_handle(i);
@@ -3338,7 +3341,8 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 #endif
 
 	// For each plugin instance...
-	for (unsigned short i = 0; i < instances(); ++i) {
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i) {
 		const LV2_Programs_Interface *programs = lv2_programs_descriptor(i);
 		if (programs && programs->select_program) {
 			LV2_Handle handle = lv2_handle(i);
@@ -3607,7 +3611,8 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 		return false;
 	}
 
-	for (unsigned short i = 0; i < instances(); ++i) {
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i) {
 		lilv_state_restore(state, m_ppInstances[i],
 			qtractor_lv2_set_port_value, this, 0, NULL);
 	}

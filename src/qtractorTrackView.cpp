@@ -4377,9 +4377,10 @@ void qtractorTrackView::pasteClipboard (
 	if (g_clipboard.clips.isEmpty() &&
 		g_clipboard.nodes.isEmpty()) {
 		// System clipboard?
-		QClipboard *pClipboard = QApplication::clipboard();
-		if (pClipboard && (pClipboard->mimeData())->hasUrls()) {
-			dragClipDrop(pos, false, pClipboard->mimeData());
+		const QMimeData *pMimeData
+			= QApplication::clipboard()->mimeData();
+		if (pMimeData && pMimeData->hasUrls()) {
+			dragClipDrop(pos, false, pMimeData);
 			// Make a proper out of this (new) state?
 			if (!m_dropItems.isEmpty()) {
 				m_dragState = m_dragCursor = DragClipPasteDrop;

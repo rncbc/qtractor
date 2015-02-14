@@ -252,13 +252,12 @@ void qtractorPluginPath::addFiles ( const QString& sPath )
 	QListIterator<QFileInfo> info_iter(info_list);
 	while (info_iter.hasNext()) {
 		const QFileInfo& info = info_iter.next();
+		const QString& sFilename = info.absoluteFilePath();
 		if (info.isDir() && info.isReadable())
-			addFiles(info.absoluteFilePath());
-		else if (info.isExecutable()) {
-			const QString& sFilename = info.absoluteFilePath();
-			if (QLibrary::isLibrary(sFilename))
-				m_files.append(new qtractorPluginFile(sFilename));
-		}
+			addFiles(sFilename);
+		else
+		if (QLibrary::isLibrary(sFilename))
+			m_files.append(new qtractorPluginFile(sFilename));
 	}
 }
 
@@ -273,7 +272,7 @@ bool qtractorPluginFile::open (void)
 	close();
 
 	// ATTN: Not really needed, as it would be
-	// loaded automagically on resolve()...
+	// loaded automagically on resolve(), but ntl...
 	if (!QLibrary::load())
 		return false;
 
@@ -295,14 +294,18 @@ void qtractorPluginFile::close (void)
 		return;
 
 	// Do the closing dance...
-#if 0 // defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 	qtractorPluginFile_Function pfnFini
 		= (qtractorPluginFile_Function) QLibrary::resolve("_fini");
 	if (pfnFini)
 		(*pfnFini)();
 #endif
 
-	QLibrary::unload();
+	// ATTN: Might be really needed, as it would
+	// otherwise pile up hosing all available RAM
+	// until freed and unloaded on exit();
+	// nb. some VST might choke on auto-unload.
+	if (m_bAutoUnload) QLibrary::unload();
 }
 
 
@@ -471,20 +474,6 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 			if (pLadspaType->open())
 				return new qtractorLadspaPlugin(pList, pLadspaType);
 			delete pLadspaType;
-		}
-	}
-#endif
-
-#ifdef CONFIG_LV2
-	// Try LV2 plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Lv2) {
-		qtractorLv2PluginType *pLv2Type
-			= qtractorLv2PluginType::createType(sFilename);
-		if (pLv2Type) {
-			if (pLv2Type->open())
-				return new qtractorLv2Plugin(pList, pLv2Type);
-			delete pLv2Type;
 		}
 	}
 #endif

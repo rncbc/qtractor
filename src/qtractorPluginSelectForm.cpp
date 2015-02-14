@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -238,7 +238,6 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
 	if (g_pluginPath.typeHint() != typeHint) {
 		g_pluginPath.setTypeHint(typeHint);
-		g_pluginPath.open();
 		g_pluginPath.clear();
 	}
 
@@ -266,10 +265,9 @@ void qtractorPluginSelectForm::refresh (void)
 	if (g_pluginPath.types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		g_pluginPath.open();
 		int iFile = 0;
-		qtractorPluginType::Hint typeHint
-			= qtractorPluginType::hintFromText(
-				m_ui.PluginTypeComboBox->currentText());
+		const qtractorPluginType::Hint typeHint = g_pluginPath.typeHint();
 		m_ui.PluginTypeProgressBar->setMaximum(g_pluginPath.files().count());
 		m_ui.PluginTypeProgressBar->show();
 		QListIterator<qtractorPluginFile *> file_iter(g_pluginPath.files());
@@ -294,7 +292,7 @@ void qtractorPluginSelectForm::refresh (void)
 	}
 
 	QString sSearch = m_ui.PluginSearchComboBox->currentText().simplified();
-	QRegExp rx(sSearch.replace(QRegExp("[\\s]+"), ".*"), Qt::CaseInsensitive);
+	const QRegExp rx(sSearch.replace(QRegExp("[\\s]+"), ".*"), Qt::CaseInsensitive);
 
 	QStringList cols;
 	QList<QTreeWidgetItem *> items;
@@ -353,16 +351,14 @@ void qtractorPluginSelectForm::refresh (void)
 			items.append(pItem);
 		}
 	}
-
-	m_ui.PluginResetToolButton->setEnabled(!rx.isEmpty());
-	
 	m_ui.PluginListView->addTopLevelItems(items);
-//	m_ui.PluginListView->resizeColumnToContents(0);			// Name.
 
 	QHeaderView *pHeader = m_ui.PluginListView->header();
 	m_ui.PluginListView->sortItems(
 		pHeader->sortIndicatorSection(),
 		pHeader->sortIndicatorOrder());
+
+	m_ui.PluginResetToolButton->setEnabled(!rx.isEmpty());
 
 	stabilize();
 }
