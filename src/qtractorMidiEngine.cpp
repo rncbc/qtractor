@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3900,13 +3900,14 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	// Sanity check.
 	if (sInstrumentName.isEmpty())
 		m_patches.remove(iChannel & 0x0f);
-
-	// Update patch mapping...
-	Patch& patch = m_patches[iChannel & 0x0f];
-	patch.instrumentName = sInstrumentName;
-	patch.bankSelMethod  = iBankSelMethod;
-	patch.bank = iBank;
-	patch.prog = iProg;
+	else {
+		// Update patch mapping...
+		Patch& patch = m_patches[iChannel & 0x0f];
+		patch.instrumentName = sInstrumentName;
+		patch.bankSelMethod  = iBankSelMethod;
+		patch.bank = iBank;
+		patch.prog = iProg;
+	}
 
 	// Don't do anything else if engine
 	// has not been activated...
