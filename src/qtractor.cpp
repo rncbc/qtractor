@@ -28,6 +28,8 @@
 #include <QTranslator>
 #include <QLocale>
 
+#include <QDir>
+
 #include <QStyleFactory>
 
 
@@ -38,6 +40,20 @@
 #define CONFIG_DATADIR CONFIG_QUOTED(DATADIR)
 #else
 #define CONFIG_DATADIR CONFIG_PREFIX "/share"
+#endif
+
+#ifndef CONFIG_LIBDIR
+#if defined(__x86_64__)
+#define CONFIG_LIBDIR CONFIG_PREFIX "/lib64"
+#else
+#define CONFIG_LIBDIR CONFIG_PREFIX "/lib"
+#endif
+#endif
+
+#if QT_VERSION < 0x050000
+#define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt4/plugins"
+#else
+#define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt5/plugins"
 #endif
 
 
@@ -482,6 +498,10 @@ int main ( int argc, char **argv )
 		app.quit();
 		return 2;
 	}
+
+	// Special style paths...
+	if (QDir(CONFIG_PLUGINSDIR).exists())
+		app.addLibraryPath(CONFIG_PLUGINSDIR);
 
 	// Custom style theme...
 	if (!options.sCustomStyleTheme.isEmpty())
