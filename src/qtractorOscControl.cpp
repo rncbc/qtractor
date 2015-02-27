@@ -1,7 +1,7 @@
 // qtractorOscControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,24 +29,190 @@
 
 #include "qtractorOscControl.h"
 
+#include <QUdpSocket>
+#include <QTcpSocket>
+#include <QTcpServer>
+
 
 //---------------------------------------------------------------------------
-// qtractorOscBase
+// qtractorOscPath - impl.
 
 // Constructor.
-qtractorOscBase::qtractorOscBase ( QObject *pParent ) : QUdpSocket(pParent)
+qtractorOscPath::qtractorOscPath (
+	const QString& path, QVariant::Type vtype, QObject *pParent)
+	: QObject(pParent), m_path(path), m_vtype(vtype),
+		m_host(QHostAddress::Null), m_port(0)
+{
+}
+
+
+// Instance properties accessors.
+const QString& qtractorOscPath::path (void) const
+{
+	return m_path;
+}
+
+QVariant::Type qtractorOscPath::vtype (void) const
+{
+	return m_vtype;
+}
+
+
+// Transient properties accessors.
+const QHostAddress& qtractorOscPath::host (void) const
+{
+	return m_host;
+}
+
+unsigned short qtractorOscPath::port (void) const
+{
+	return m_port;
+}
+
+
+// Data notifier.
+void qtractorOscPath::notifyData (
+	const QVariant& v, const QHostAddress& host, unsigned short port )
+{
+	if (v.type() == m_vtype) {
+		m_host = host;
+		m_port = port;
+		emit dataSignal(v);
+	}
+}
+
+
+//---------------------------------------------------------------------------
+// qtractorOscSocket - impl.
+
+// Constructor.
+qtractorOscSocket::qtractorOscSocket ( qtractorOscSocket::Type stype, QAbstractSocket *pSocket )
+	: m_stype(stype), m_pSocket(pSocket), m_bAutoDelete(pSocket == 0)
+{
+	if (m_bAutoDelete) {
+		if (m_stype == qtractorOscSocket::Tcp) {
+			m_pSocket = new QTcpSocket();
+		} else {
+			m_pSocket = new QUdpSocket();
+		}
+	}
+}
+
+
+// Destructor.
+qtractorOscSocket::~qtractorOscSocket (void)
+{
+	if (m_bAutoDelete) delete m_pSocket;
+}
+
+
+// Socket accessors.
+qtractorOscSocket::Type qtractorOscSocket::stype (void) const
+{
+	return m_stype;
+}
+
+
+void qtractorOscSocket::connectToHost (
+	const QHostAddress& host, unsigned short port, qtractorOscNode *pOscNode )
+{
+	if (m_stype == qtractorOscSocket::Tcp) {
+		QTcpSocket *pTcpSocket = static_cast<QTcpSocket *> (m_pSocket);
+		if (pTcpSocket) {
+			pTcpSocket->connectToHost(host, port);
+		//	pTcpSocket->waitForConnected(3000);
+		}
+	} else {
+		QUdpSocket *pUdpSocket = static_cast<QUdpSocket *> (m_pSocket);
+		if (pUdpSocket)
+			pUdpSocket->bind(host, port);
+	}
+
+	QObject::connect(
+		m_pSocket, SIGNAL(readyRead()),
+		pOscNode, SLOT(readyReadSlot()));
+}
+
+
+bool qtractorOscSocket::hasPendingData (void) const
+{
+	bool ret = false;
+
+	if (m_stype == qtractorOscSocket::Tcp) {
+		QTcpSocket *pTcpSocket = static_cast<QTcpSocket *> (m_pSocket);
+		if (pTcpSocket)
+			ret = pTcpSocket->bytesAvailable();
+	} else {
+		QUdpSocket *pUdpSocket = static_cast<QUdpSocket *> (m_pSocket);
+		if (pUdpSocket)
+			ret = pUdpSocket->hasPendingDatagrams();
+	}
+
+	return ret;
+}
+
+
+// Socket I/O.
+int qtractorOscSocket::readData (
+	char *data, int size, QHostAddress *host, unsigned short *port )
+{
+	int ret = 0;
+
+	if (m_stype == qtractorOscSocket::Tcp) {
+		QTcpSocket *pTcpSocket = static_cast<QTcpSocket *> (m_pSocket);
+		if (pTcpSocket) {
+			ret = pTcpSocket->read(data, size);
+			if (host) *host = pTcpSocket->peerAddress();
+			if (port) *port = pTcpSocket->peerPort();
+		}
+	} else {
+		QUdpSocket *pUdpSocket = static_cast<QUdpSocket *> (m_pSocket);
+		if (pUdpSocket)
+			ret = pUdpSocket->readDatagram(data, size, host, port);
+	}
+
+	return ret;
+}
+
+
+int qtractorOscSocket::writeData (
+	const QByteArray& data, const QHostAddress& host, unsigned short port )
+{
+	int ret = 0;
+
+	if (m_stype == qtractorOscSocket::Tcp) {
+		QTcpSocket *pTcpSocket = static_cast<QTcpSocket *> (m_pSocket);
+		if (pTcpSocket)
+			ret = pTcpSocket->write(data);
+	} else {
+		QUdpSocket *pUdpSocket = static_cast<QUdpSocket *> (m_pSocket);
+		if (pUdpSocket)
+			ret = pUdpSocket->writeDatagram(data, host, port);
+	}
+
+	return ret;
+}
+
+
+//---------------------------------------------------------------------------
+// qtractorOscNode - impl.
+
+// Constructor.
+qtractorOscNode::qtractorOscNode ( qtractorOscSocket::Type stype, QObject *pParent )
+	: QObject(pParent), m_socket(stype)
 {
 }
 
 
 // Destructor.
-qtractorOscBase::~qtractorOscBase (void)
+qtractorOscNode::~qtractorOscNode (void)
 {
+	clear();
 }
 
 
 // Basic data converters.
-QByteArray qtractorOscBase::fromString ( const QString& s )
+QByteArray qtractorOscNode::fromString ( const QString& s )
 {
 	QByteArray ret = s.toUtf8();
 	ret.append(char(0));
@@ -55,35 +221,35 @@ QByteArray qtractorOscBase::fromString ( const QString& s )
 	return ret;
 }
 
-QByteArray qtractorOscBase::fromInt ( int i )
+QByteArray qtractorOscNode::fromInt ( int i )
 {
 	return reverse(QByteArray((char *) (&i), 4));
 }
 
-QByteArray qtractorOscBase::fromFloat ( float f )
+QByteArray qtractorOscNode::fromFloat ( float f )
 {
 	return reverse(QByteArray((char *) (&f), 4));
 }
 
 
-QString qtractorOscBase::toString ( const QByteArray& a )
+QString qtractorOscNode::toString ( const QByteArray& a )
 {
 	return QString(a.data());
 }
 
-int qtractorOscBase::toInt ( const QByteArray& a )
+int qtractorOscNode::toInt ( const QByteArray& a )
 {
 	return *(int *) reverse(a.left(4)).data();
 }
 
-float qtractorOscBase::toFloat( const QByteArray& a )
+float qtractorOscNode::toFloat( const QByteArray& a )
 {
 	return *(float *) reverse(a.left(4)).data();
 }
 
 
 // Specific data converters.
-QByteArray qtractorOscBase::reverse ( const QByteArray& a )
+QByteArray qtractorOscNode::reverse ( const QByteArray& a )
 {
 	QByteArray ret;
 	for (int i = 0; i < a.size(); ++i)
@@ -92,7 +258,7 @@ QByteArray qtractorOscBase::reverse ( const QByteArray& a )
 }
 
 
-void qtractorOscBase::parseArgs (
+void qtractorOscNode::parseArgs (
 	const QVariant& v, QString& types, QByteArray& args )
 {
 	switch (v.type()) {
@@ -120,143 +286,92 @@ void qtractorOscBase::parseArgs (
 }
 
 
-QByteArray qtractorOscBase::message ( const QString& sPath, const QVariant& v )
+QByteArray qtractorOscNode::message ( const QString& path, const QVariant& v )
 {
 	QString types(',');
 	QByteArray args;
 
 	parseArgs(v, types, args);
 
-	QByteArray ret = fromString(sPath);
+	QByteArray ret = fromString(path);
 	ret.append(fromString(types));
 	ret.append(args);
 	return ret;
 }
 
 
-//---------------------------------------------------------------------------
-// qtractorOscPath
-
-// Constructor.
-qtractorOscPath::qtractorOscPath (
-	const QString& sPath, QVariant::Type vtype, qtractorOscServer *pServer )
-	: QObject(pServer), m_pServer(pServer), m_sPath(sPath), m_vtype(vtype),
-		m_host(QHostAddress::Null), m_port(0)
-{
-}
-
-
-// Instance properties accessors.
-qtractorOscServer *qtractorOscPath::server (void) const
-{
-	return m_pServer;
-}
-
-const QString& qtractorOscPath::path (void) const
-{
-	return m_sPath;
-}
-
-QVariant::Type qtractorOscPath::type (void) const
-{
-	return m_vtype;
-}
-
-
-// Transient properties accessors.
-const QHostAddress& qtractorOscPath::host (void) const
-{
-	return m_host;
-}
-
-unsigned short qtractorOscPath::port (void) const
-{
-	return m_port;
-}
-
-
-// Data notifier.
-void qtractorOscPath::signalData ( const QVariant& v,
-	const QHostAddress& host, unsigned short port )
-{
-	if (v.type() == m_vtype) {
-		m_host = host;
-		m_port = port;
-		emit data(v);
-	}
-}
-
-
-//---------------------------------------------------------------------------
-// qtractorOscServer
-
-// Constructor.
-qtractorOscServer::qtractorOscServer ( unsigned short port, QObject *pParent )
-	: qtractorOscBase(pParent)
-{
-	QUdpSocket::bind(port);
-
-	QObject::connect(this, SIGNAL(readyRead()), SLOT(readyReadSlot()));
-}
-
-
-// Destructor.
-qtractorOscServer::~qtractorOscServer (void)
-{
-	clear();
-}
-
-
 // Path registry methods.
-qtractorOscPath *qtractorOscServer::addPath (
-	const QString& sPath, QVariant::Type vtype )
+qtractorOscPath *qtractorOscNode::addPath (
+	const QString& path, QVariant::Type vtype )
 {
-	qtractorOscPath *pOscPath = new qtractorOscPath(sPath, vtype, this);
+	qtractorOscPath *pOscPath = new qtractorOscPath(path, vtype, this);
 	m_paths.insert(pOscPath->path(), pOscPath);
 	return pOscPath;
 }
 
-qtractorOscPath *qtractorOscServer::addPath (
-	const QString& sPath, QVariant::Type vtype,
-	const QObject *pReceiver, const char *pMember )
+qtractorOscPath *qtractorOscNode::addPath (
+	const QString& path, QVariant::Type vtype,
+	const QObject *receiver, const char *method )
 {
-	qtractorOscPath *pOscPath = addPath(sPath, vtype);
+	qtractorOscPath *pOscPath = addPath(path, vtype);
 	QObject::connect(pOscPath,
-		SIGNAL(data(const QVariant&)), pReceiver, pMember);
+		SIGNAL(dataSignal(const QVariant&)),
+		receiver, method);
 	return pOscPath;
 }
 
 
-void qtractorOscServer::removePath ( qtractorOscPath *pOscPath )
+void qtractorOscNode::removePath ( qtractorOscPath *pOscPath )
 {
 	m_paths.remove(pOscPath->path());
 	delete pOscPath;
 }
 
 
-void qtractorOscServer::clear (void)
+void qtractorOscNode::clear (void)
 {
 	qDeleteAll(m_paths);
 	m_paths.clear();
 }
 
 
-// Data receiver.
-void qtractorOscServer::readyReadSlot (void)
+// Node methods.
+void qtractorOscNode::connectToHost (
+	const QHostAddress& host, unsigned short port )
 {
-	while (QUdpSocket::hasPendingDatagrams()) {
+	m_socket.connectToHost(host, port, this);
+}
+
+
+int qtractorOscNode::writeData ( const QByteArray& data,
+	const QHostAddress& host, unsigned short port )
+{
+	return m_socket.writeData(data, host, port);
+}
+
+
+// Data receiver.
+void qtractorOscNode::readyReadSlot (void)
+{
+	QAbstractSocket *pSocket = qobject_cast<QAbstractSocket *> (sender());
+	if (pSocket == 0)
+		return;
+
+	qtractorOscSocket socket(m_socket.stype(), pSocket);
+
+	while (socket.hasPendingData()) {
 		QHostAddress host;
-		unsigned short port;
+		unsigned short port = 0;
 		const int nsize = 1024;
 		QByteArray data(nsize, char(0));
-		int nread = QUdpSocket::readDatagram(data.data(), nsize, &host, &port);
-		QString sPath;
-		QString types;
-		QVariant args;
+		int nread = socket.readData(data.data(), nsize, &host, &port);
 		int i = 0;
-		if (data[i] == '/') {
+		while (i < nread && data[i] == '/') {
+			QString path;
+			QString types;
+			QVariant args;
 			for ( ; i < nread && data[i] != char(0); ++i)
-				sPath += data[i];
+				path += data[i];
 			while (data[i++] != ',');
 			while (data[i] != char(0))
 				types += data[i++];
@@ -288,32 +403,69 @@ void qtractorOscServer::readyReadSlot (void)
 					else
 						args = v;
 				}
-
 				if (types.size() > 1)
 					args = list;
 			}
+			qtractorOscPath *pOscPath = m_paths.value(path, 0);
+			if (pOscPath)
+				pOscPath->notifyData(args, host, port);
+			while (i < nread && data[++i] != '/');
 		}
-
-		qtractorOscPath *pOscPath = m_paths.value(sPath, NULL);
-		if (pOscPath)
-			pOscPath->signalData(args, host, port);
 	}
 }
 
 
 //---------------------------------------------------------------------------
-// qtractorOscClient
+// qtractorOscServer - impl.
 
 // Constructor.
-qtractorOscClient::qtractorOscClient (
-	const QHostAddress& host, unsigned short port, QObject* pParent )
-	: qtractorOscBase(pParent), m_host(host), m_port(port)
+qtractorOscServer::qtractorOscServer ( qtractorOscSocket::Type stype,
+	const QHostAddress& host, unsigned short port, QObject *pParent )
+	: qtractorOscNode(stype, pParent), m_pTcpServer(0)
 {
+	if (stype == qtractorOscSocket::Tcp) {
+		m_pTcpServer = new QTcpServer(this);
+		m_pTcpServer->listen(host, port);
+		QObject::connect(m_pTcpServer,
+			SIGNAL(newConnection()),
+			SLOT(newConnectionSlot()));
+	}
+	else connectToHost(host, port);
 }
 
-// Destructor.
-qtractorOscClient::~qtractorOscClient (void)
+
+// Destructor
+qtractorOscServer::~qtractorOscServer (void)
 {
+	if (m_pTcpServer)
+		delete m_pTcpServer;
+}
+
+
+// New connection receiver.
+void qtractorOscServer::newConnectionSlot (void)
+{
+	while (m_pTcpServer && m_pTcpServer->hasPendingConnections()) {
+		QTcpSocket *pTcpSocket = m_pTcpServer->nextPendingConnection();
+		QObject::connect(pTcpSocket,
+			SIGNAL(readyRead()),
+			SLOT(readyReadSlot()));
+	}
+}
+
+
+//---------------------------------------------------------------------------
+// qtractorOscClient - impl.
+
+// Constructor.
+qtractorOscClient::qtractorOscClient ( qtractorOscSocket::Type stype,
+	const QHostAddress& host, unsigned short port, QObject *pParent )
+	: qtractorOscNode(stype, pParent), m_host(host), m_port(port)
+{
+	if (stype == qtractorOscSocket::Tcp)
+		qtractorOscNode::connectToHost(host, port);
+	else
+		qtractorOscNode::connectToHost(QHostAddress::LocalHost, 0);
 }
 
 
@@ -330,9 +482,9 @@ unsigned short qtractorOscClient::port (void) const
 
 
 // Data senders.
-void qtractorOscClient::sendData ( const QString& sPath, const QVariant& v )
+void qtractorOscClient::sendData ( const QString& path, const QVariant& v )
 {
-	QUdpSocket::writeDatagram(message(sPath, v), m_host, m_port);
+	qtractorOscNode::writeData(message(path, v), m_host, m_port);
 }
 
 
@@ -347,21 +499,26 @@ void qtractorOscClient::sendData ( const QString& sPath, const QVariant& v )
 #include "qtractorAudioClip.h"
 
 
+#define QTRACTOR_OSC_SERVER_PORT 5000
+
+
 // Kind of singleton reference.
 qtractorOscControl* qtractorOscControl::g_pOscControl = NULL;
+
 
 // Contructor.
 qtractorOscControl::qtractorOscControl (void)
 {
-	m_pOscServer = new qtractorOscServer(QTRACTOR_OSC_SERVER_PORT);
+	m_pOscServer = new qtractorOscServer(qtractorOscSocket::Udp,
+		QHostAddress::LocalHost, QTRACTOR_OSC_SERVER_PORT);
 
 	// Add some command action slots
 	m_pOscServer->addPath("/AddAudioTrack", QVariant::String,
 		this, SLOT(addAudioTrackSlot(const QVariant&)));
 	m_pOscServer->addPath("/AddAudioClip", QVariant::List,
 		this, SLOT(addAudioClipSlot(const QVariant&)));
-	m_pOscServer->addPath("/AddAudioClipOnUniqueTrack", QVariant::List,
-		this, SLOT(addAudioClipOnUniqueTrackSlot(const QVariant&)));
+	m_pOscServer->addPath("/AddAudioClipUniqueTrack", QVariant::List,
+		this, SLOT(addAudioClipUniqueTrackSlot(const QVariant&)));
 	m_pOscServer->addPath("/EnsureUniqueTrack", QVariant::String,
 		this, SLOT(ensureUniqueTrackSlot(const QVariant&)));
 	m_pOscServer->addPath("/SetGlobalTempo", QVariant::List,
@@ -370,7 +527,7 @@ qtractorOscControl::qtractorOscControl (void)
 		this, SLOT(advanceLoopRangeSlot(const QVariant&)));
 
 	// Pseudo-singleton reference setup.
-	g_pOscControl = this;	
+	g_pOscControl = this;
 }
 
 
@@ -380,7 +537,7 @@ qtractorOscControl::~qtractorOscControl (void)
 	// Pseudo-singleton reference shut-down.
 	g_pOscControl = NULL;
 
-	delete m_pOscServer;	
+	delete m_pOscServer;
 }
 
 
@@ -408,7 +565,7 @@ void qtractorOscControl::addAudioTrackSlot ( const QVariant& v )
 		return;
 
 	// Put it in the form of an undoable command...
-	int iTrack = pSession->tracks().count() + 1;
+	const int iTrack = pSession->tracks().count() + 1;
 	const QColor color = qtractorTrack::trackColor(iTrack);
 	qtractorTrack *pTrack = new qtractorTrack(pSession, qtractorTrack::Audio);
 	pTrack->setTrackName(sTrackName);
@@ -417,22 +574,23 @@ void qtractorOscControl::addAudioTrackSlot ( const QVariant& v )
 	pSession->execute(new qtractorAddTrackCommand(pTrack));
 }
 
+
 // AddAudioClip i:trackno s:filename i:start i:offset i:length
 //
 void qtractorOscControl::addAudioClipSlot ( const QVariant& v )
 {
 	// Parse arguments...
-	QList<QVariant> args = v.toList();
+	const QList<QVariant>& args = v.toList();
 
-	int iTrack = args.at(0).toInt();
+	const int iTrack = args.at(0).toInt();
 	// *** FIXME Sending two strings in one OSC command does not seem to work
-	QString sFilename = args.at(1).toString();
-	unsigned long iClipStart
-		= (args.count() > 2 ? args.at(2).toULongLong() : 0);
-	unsigned long iClipOffset
-		= (args.count() > 3 ? args.at(3).toULongLong() : 0);
-	unsigned long iClipLength
-		= (args.count() > 4 ? args.at(4).toULongLong() : 0);
+	const QString& sFilename = args.at(1).toString();
+	const unsigned long iClipStart
+		= (args.count() > 2 ? args.at(2).toUInt() : 0);
+	const unsigned long iClipOffset
+		= (args.count() > 3 ? args.at(3).toUInt() : 0);
+	const unsigned long iClipLength
+		= (args.count() > 4 ? args.at(4).toUInt() : 0);
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorOscControl::addAudioClipSlot(%d, \"%s\", %lu, %lu, %lu)",
@@ -461,7 +619,7 @@ void qtractorOscControl::addAudioClipSlot ( const QVariant& v )
 }
 
 
-// EnsureUniqueTrackExistsForClip s:filename of clip
+// EnsureUniqueTrackExistsForClip s:filename
 //
 // Prepare a track associated with a given audio clip.
 // Subsequent calls to AddAudioClipOnUniqueTrack will use the newly created track.
@@ -497,27 +655,27 @@ void qtractorOscControl::ensureUniqueTrackSlot ( const QVariant& v )
 }
 
 
-// AddAudioClipOnUniqueTrack s:filename i:start i:offset i:length i:fade f:gain
+// AddAudioClipUniqueTrack s:filename i:start i:offset i:length i:fade f:gain
 //
 // Put an audio clip on a unique track. All clips with this filename will go
 // on the same track. Start location is relative to the current edit tail.
 //
-void qtractorOscControl::addAudioClipOnUniqueTrackSlot ( const QVariant& v )
+void qtractorOscControl::addAudioClipUniqueTrackSlot ( const QVariant& v )
 {
 	// Parse arguments...
-	QList<QVariant> args = v.toList();
+	const QList<QVariant>& args = v.toList();
 
-	const QString& sFilename = args.at(5).toString();
-	unsigned long iClipStart
-		= (args.count() > 1 ? args.at(0).toULongLong() : 0);
-	unsigned long iClipOffset
-		= (args.count() > 2 ? args.at(1).toULongLong() : 0);
-	unsigned long iClipLength
-		= (args.count() > 3 ? args.at(2).toULongLong() : 0);
-	unsigned long iClipFade
-		= (args.count() > 4 ? args.at(3).toULongLong() : 0);
-	float fClipGain
-		= (args.count() > 5 ? args.at(4).toFloat() : 0.0f);
+	const QString& sFilename = args.at(0).toString();
+	const unsigned long iClipStart
+		= (args.count() > 1 ? args.at(1).toUInt() : 0);
+	const unsigned long iClipOffset
+		= (args.count() > 2 ? args.at(2).toUInt() : 0);
+	const unsigned long iClipLength
+		= (args.count() > 3 ? args.at(3).toUInt() : 0);
+	const unsigned long iClipFade
+		= (args.count() > 4 ? args.at(4).toUInt() : 0);
+	const float fClipGain
+		= (args.count() > 5 ? args.at(5).toFloat() : 0.0f);
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorOscControl::addAudioClipUniqueTrackSlot(\"%s\", %lu, %lu, %lu, %lu, %g)",
@@ -529,23 +687,23 @@ void qtractorOscControl::addAudioClipOnUniqueTrackSlot ( const QVariant& v )
 		return;
 
 	// Relative position
-	unsigned long iEditTail = pSession->editTail();
-	iClipStart += iEditTail;
+	const unsigned long iClipStartEx = iClipStart + pSession->editTail();
 
 	// Find a track with this clip on it already
 	bool bFound = false;
 	qtractorTrack *pTrack = pSession->tracks().first();
-	while (pTrack&& !bFound) {
+	while (pTrack) {
 		qtractorClip *pClip = pTrack->clips().first();
-		while (pClip&& !bFound) {
+		while (pClip) {
 			if (pClip->filename() == sFilename) {
 				bFound = true;
 				break;
 			}
 			pClip = pClip->next();
 		}
-		if (!bFound)
-			pTrack = pTrack->next();
+		if (bFound)
+			break;
+		pTrack = pTrack->next();
 	}
 
 	if (!bFound) {
@@ -559,7 +717,7 @@ void qtractorOscControl::addAudioClipOnUniqueTrackSlot ( const QVariant& v )
 		= new qtractorClipCommand(tr("add audio clip"));
 	qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 	pAudioClip->setFilename(sFilename);
-	pAudioClip->setClipStart(iClipStart);
+	pAudioClip->setClipStart(iClipStartEx);
 	pAudioClip->setClipOffset(iClipOffset);
 	if (iClipLength > 0)
 		pAudioClip->setClipLength(iClipLength);
@@ -580,10 +738,10 @@ void qtractorOscControl::addAudioClipOnUniqueTrackSlot ( const QVariant& v )
 void qtractorOscControl::setGlobalTempoSlot ( const QVariant& v )
 {
 	// Parse arguments...
-	QList<QVariant> args = v.toList();
+	const QList<QVariant>& args = v.toList();
 
-	float fTempo = args.at(0).toFloat();
-	int iBeatsPerBar = args.at(1).toInt();
+	const float fTempo = args.at(0).toFloat();
+	const int iBeatsPerBar = args.at(1).toInt();
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorOscControl::setGlobalTempoSlot(%f, %d)", fTempo, iBeatsPerBar);
@@ -611,10 +769,10 @@ void qtractorOscControl::setGlobalTempoSlot ( const QVariant& v )
 void qtractorOscControl::advanceLoopRangeSlot ( const QVariant& v )
 {
 	// Parse arguments...
-	QList<QVariant> args = v.toList();
+	const QList<QVariant>& args = v.toList();
 
-	unsigned long iEditHead = args.at(0).toULongLong();
-	unsigned long iEditTail = args.at(1).toULongLong();
+	const unsigned long iEditHead = args.at(0).toUInt();
+	const unsigned long iEditTail = args.at(1).toUInt();
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorOscControl::advanceLoopRangeSlot(%lu, %lu)", iEditHead, iEditTail);

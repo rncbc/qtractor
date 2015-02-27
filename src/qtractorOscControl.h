@@ -1,7 +1,7 @@
 // qtractorOscControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
 #ifndef __qtractorOscControl_h
 #define __qtractorOscControl_h
 
-#include <QUdpSocket>
+#include <QHostAddress>
 #include <QVariant>
 
 
@@ -37,20 +37,124 @@ class qtractorOscServer;
 class qtractorOscClient;
 
 
-//---------------------------------------------------------------------------
-// qtractorOscBase
+// Forward declarations.
+class QAbstractSocket;
 
-class qtractorOscBase : public QUdpSocket
+class QTcpServer;
+
+class qtractorOscNode;
+
+
+//---------------------------------------------------------------------------
+// qtractorOscPath - decl.
+
+class qtractorOscPath : public QObject
 {
 	Q_OBJECT
+
+public:
+
+	// Constructors.
+	qtractorOscPath(const QString& path, QVariant::Type vtype, QObject *pParent = 0);
+
+	// Instance properties accessors.
+	const QString& path() const;
+	QVariant::Type vtype() const;
+
+	// Transient properties accessors.
+	const QHostAddress& host() const;
+	unsigned short port() const;
+
+	// Data notifier.
+	void notifyData(const QVariant& v,
+		const QHostAddress& host, unsigned short port);
+
+signals:
+
+	void dataSignal(const QVariant& v);
+
+private:
+
+	// Instance properties.
+	QString        m_path;
+	QVariant::Type m_vtype;
+
+	// Transient properties.
+	QHostAddress   m_host;
+	unsigned short m_port;
+};
+
+
+//---------------------------------------------------------------------------
+// qtractorOscSocket - decl.
+
+class qtractorOscSocket
+{
+public:
+
+	// Type of OSC socket
+	enum Type { Udp, Tcp };
+
+	// Constructor.
+	qtractorOscSocket(Type stype, QAbstractSocket *pSocket = 0);
+
+	// Desstructor.
+	~qtractorOscSocket();
+
+	// Socket accessors.
+	Type stype() const;
+
+	void connectToHost(
+		const QHostAddress& host, unsigned short port, qtractorOscNode *pOscNode);
+
+	bool hasPendingData() const;
+
+	// Socket I/O.
+	int readData(char *data, int size,
+		QHostAddress *host, unsigned short *port);
+
+	int writeData(const QByteArray& data,
+		const QHostAddress& host, unsigned short port);
+
+private:
+
+	// Instance variables.
+	Type m_stype;
+	QAbstractSocket *m_pSocket;
+	bool m_bAutoDelete;
+};
+
+
+//---------------------------------------------------------------------------
+// qtractorOscNode - decl.
+
+class qtractorOscNode : public QObject
+{
+	Q_OBJECT
+
+public:
+
+	// Path registry methods.
+	qtractorOscPath *addPath(const QString& path,
+		QVariant::Type vtype = QVariant::Invalid);
+	qtractorOscPath *addPath(const QString& path,
+		QVariant::Type vtype, const QObject *receiver, const char *method);
+
+	void removePath(qtractorOscPath *pOscPath);
+
+	void clear();
+
+signals:
+
+	void dataSignal(const QString& path, const QVariant& v);
 
 protected:
 
 	// Constructor.
-	qtractorOscBase(QObject *pParent = 0);
+	qtractorOscNode(qtractorOscSocket::Type stype, QObject *pParent = 0);
 
 	// Destructor.
-	~qtractorOscBase();
+	~qtractorOscNode();
 
 	// Basic data converters.
 	static QByteArray fromString (const QString& s);
@@ -64,88 +168,24 @@ protected:
 	// Specific data converters.
 	static QByteArray reverse(const QByteArray& a);
 	static void parseArgs(const QVariant& v, QString& s, QByteArray& a);
-	static QByteArray message(const QString& sPath, const QVariant& v);
-};
+	static QByteArray message(const QString& path, const QVariant& v);
 
-
-//---------------------------------------------------------------------------
-// qtractorOscPath
-
-class qtractorOscPath : public QObject
-{
-	Q_OBJECT
-
-public:
-
-	// Constructors.
-	qtractorOscPath(const QString& sPath,
-		QVariant::Type vtype, qtractorOscServer *pServer);
-
-	// Instance properties accessors.
-	const QString& path() const;
-	QVariant::Type type() const;
-	qtractorOscServer *server() const;
-
-	// Transient properties accessors.
-	const QHostAddress& host() const;
-	unsigned short port() const;
-
-	// Data notifier.
-	void signalData(const QVariant& v,
+	// Node methods.
+	void connectToHost(
 		const QHostAddress& host, unsigned short port);
 
-signals:
+	int writeData(const QByteArray& data,
+		const QHostAddress& host, unsigned short port);
 
-	void data(const QVariant& v);
-
-private:
-
-	// Instance properties.
-	qtractorOscServer *m_pServer;
-	QString            m_sPath;
-	QVariant::Type     m_vtype;
-
-	// Transient properties.
-	QHostAddress       m_host;
-	unsigned short     m_port;
-};
-
-
-//---------------------------------------------------------------------------
-// qtractorOscServer
-
-class qtractorOscServer : public qtractorOscBase
-{
-	Q_OBJECT
-
-public:
-
-	// Constructor.
-	qtractorOscServer(unsigned short port, QObject *pParent = 0);
-
-	// Destructor.
-	~qtractorOscServer();
-
-	// Path registry methods.
-	qtractorOscPath *addPath(const QString& sPath,
-		QVariant::Type vtype = QVariant::Invalid);
-	qtractorOscPath *addPath(const QString& sPath,
-		QVariant::Type vtype, const QObject *pReceiver, const char *pMember);
-
-	void removePath(qtractorOscPath *pOscPath);
-
-	void clear();
-
-signals:
-
-	void data(const QString& sPath, const QVariant& v);
-
-private slots:
+protected slots:
 
 	// Data receiver.
 	void readyReadSlot();
 
 private:
+
+	// Instance variables.
+	qtractorOscSocket m_socket;
 
 	// Path registry.
 	QHash<QString, qtractorOscPath *> m_paths;
@@ -153,20 +193,45 @@ private:
 
 
 //---------------------------------------------------------------------------
-// qtractorOscClient
+// qtractorOscServer - decl.
 
-class qtractorOscClient : public qtractorOscBase
+class qtractorOscServer : public qtractorOscNode
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorOscClient(
+	qtractorOscServer(qtractorOscSocket::Type stype,
 		const QHostAddress& host, unsigned short port, QObject *pParent = 0);
 
-	// Desstructor.
-	~qtractorOscClient();
+	// Destructor.
+	~qtractorOscServer();
+
+protected slots:
+
+	// New connection receiver.
+	void newConnectionSlot();
+
+private:
+
+	// Instance variables.
+	QTcpServer *m_pTcpServer;
+};
+
+
+//---------------------------------------------------------------------------
+// qtractorOscClient - decl.
+
+class qtractorOscClient : public qtractorOscNode
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorOscClient(qtractorOscSocket::Type stype,
+		const QHostAddress& host, unsigned short port, QObject *pParent = 0);
 
 	// Instance accessors.
 	const QHostAddress& host() const;
@@ -175,7 +240,7 @@ public:
 public slots:
 
 	// Data senders.
-	void sendData(const QString& sPath, const QVariant& v = QVariant::Invalid);
+	void sendData(const QString& path, const QVariant& v = QVariant::Invalid);
 
 private:
 
@@ -187,8 +252,6 @@ private:
 
 //---------------------------------------------------------------------------
 // OSC command slots implementation...
-
-#define QTRACTOR_OSC_SERVER_PORT 5000
 
 class qtractorOscControl : public QObject
 {
@@ -209,7 +272,7 @@ public slots:
 
 	void addAudioTrackSlot(const QVariant& v);
 	void addAudioClipSlot(const QVariant& v);
-	void addAudioClipOnUniqueTrackSlot(const QVariant& v);
+	void addAudioClipUniqueTrackSlot(const QVariant& v);
 	void ensureUniqueTrackSlot(const QVariant& v);
 	void setGlobalTempoSlot(const QVariant& v);
 	void advanceLoopRangeSlot(const QVariant& v);
@@ -220,7 +283,7 @@ private:
 	qtractorOscServer *m_pOscServer;
 
 	// Pseudo-singleton instance.
-	static qtractorOscControl *g_pOscControl;	
+	static qtractorOscControl *g_pOscControl;
 };
 
 
