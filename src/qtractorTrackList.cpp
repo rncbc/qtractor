@@ -153,6 +153,8 @@ QVariant qtractorTrackListHeaderModel::headerData (
 				return int(Qt::AlignHCenter | Qt::AlignVCenter);
 			else
 				return int(Qt::AlignLeft | Qt::AlignVCenter);
+		case Qt::SizeHintRole:
+			return QSize(100, 24);
 		}
 	}	
 

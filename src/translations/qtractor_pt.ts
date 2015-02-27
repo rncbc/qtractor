@@ -19,7 +19,7 @@
         <translation>Arquivo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="399"/>
+        <location filename="../qtractorTrackList.cpp" line="401"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -41,7 +41,7 @@
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2647"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4362"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4363"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
     </message>
@@ -61,7 +61,7 @@
         <translation>gravação da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="386"/>
+        <location filename="../qtractorTrackList.cpp" line="388"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
@@ -122,7 +122,7 @@
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2647"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4362"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4363"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>
     </message>
@@ -252,7 +252,7 @@ MIDI:	</translation>
         <translation>Projeto: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="199"/>
+        <location filename="../qtractorTrackList.cpp" line="201"/>
         <source>Automation</source>
         <translation>Automação</translation>
     </message>
@@ -542,7 +542,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Fornecedor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="456"/>
+        <location filename="../qtractorTrackList.cpp" line="458"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>

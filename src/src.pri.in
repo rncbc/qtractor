@@ -1,6 +1,7 @@
 # qtractor.pri
 #
 PREFIX  = @ac_prefix@
+LIBDIR  = @ac_libdir@
 CONFIG += @ac_debug@
 INCLUDEPATH += @ac_incpath@
 LIBS += @ac_libs@

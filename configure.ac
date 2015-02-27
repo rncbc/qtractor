@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.5.9, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.5.11, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -13,6 +13,14 @@ if test "x$ac_prefix" = "xNONE"; then
 fi
 AC_SUBST(ac_prefix)
 AC_DEFINE_UNQUOTED(CONFIG_PREFIX, ["$ac_prefix"], [Default installation prefix.])
+
+# Set default library/plugin prefix.
+if test "x$exec_prefix" = "xNONE"; then
+    exec_prefix=$ac_prefix
+fi
+eval ac_libdir=$libdir
+AC_SUBST(ac_libdir)
+AC_DEFINE_UNQUOTED(CONFIG_LIBDIR, ["$ac_libdir"], [Default library path.])
 
 # Enable debugging argument option.
 AC_ARG_ENABLE(debug,
