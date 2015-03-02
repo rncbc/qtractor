@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor (aka. piano-roll) gets lingering notes
+  properly shown while on record/overdubbing. (EXPERIMENTAL)
+
 - Current highlighted client/port connections are now drawn
   with thicker connector lines.
 

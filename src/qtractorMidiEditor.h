@@ -1,7 +1,7 @@
 // qtractorMidiEditor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -142,6 +142,9 @@ public:
 	void setLength(unsigned long iLength);
 	unsigned long length() const;
 
+	// Clip recording/overdub status.
+	bool isClipRecord() const;
+
 	// Child widgets accessors.
 	QFrame *editListHeader() const;
 	qtractorMidiEditList *editList() const;
@@ -197,10 +200,6 @@ public:
 	// Snap-to-scale/quantize type accessor.
 	void setSnapToScaleType(int iSnapToScaleType);
 	int snapToScaleType() const;
-
-	// Alterrnate command action update helper...
-	void updateUndoAction(QAction *pAction) const;
-	void updateRedoAction(QAction *pAction) const;
 
 	// Command predicate status.
 	bool canUndo() const;

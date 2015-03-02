@@ -5666,11 +5666,6 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.fileSaveAsAction->setEnabled(m_pNsmClient == NULL);
 #endif
 
-	// Update edit menu state...
-	qtractorCommandList *pCommands = m_pSession->commands();
-	pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
-	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
-
 	const unsigned long iPlayHead = m_pSession->playHead();
 	const unsigned long iSessionEnd = m_pSession->sessionEnd();
 
@@ -5689,6 +5684,16 @@ void qtractorMainForm::stabilizeForm (void)
 	const bool bLooping    = m_pSession->isLooping();
 	const bool bRolling    = (bPlaying && bRecording);
 	const bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
+
+	// Update edit menu state...
+	if (bRolling) {
+		m_ui.editUndoAction->setEnabled(false);
+		m_ui.editRedoAction->setEnabled(false);
+	} else {
+		qtractorCommandList *pCommands = m_pSession->commands();
+		pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
+		pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
+	}
 
 //	m_ui.editCutAction->setEnabled(bSelected);
 //	m_ui.editCopyAction->setEnabled(bSelected);
