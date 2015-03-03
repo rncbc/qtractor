@@ -318,8 +318,6 @@ bool qtractorClipCommand::addClipRecord (
 			qtractorMidiClip *pMidiClip
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip) {
-				// Original clip length stays put...
-				const unsigned long iClipLengthEx = pMidiClip->clipLength();
 				// Have a new filename revision...
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision(true);
@@ -331,7 +329,10 @@ bool qtractorClipCommand::addClipRecord (
 					pMidiClip->format(),
 					pMidiClip->sequence(),
 					pSession->timeScale(),
-					pSession->tickFromFrame(pMidiClip->clipStart()));
+					pSession->tickFromFrame(iClipStart));
+			#if 0
+				// Original clip length stays put...
+				const unsigned long iClipLengthEx = pMidiClip->clipLength();
 				// Remove original clip anyway...
 				removeClip(pMidiClip);
 				// Clone into a new one...
@@ -342,6 +343,10 @@ bool qtractorClipCommand::addClipRecord (
 				pMidiClip->setFilename(sFilename);
 				pMidiClip->setDirty(true);
 				addClip(pMidiClip, pTrack);
+			#else
+				// Just change filename/track-channel...
+				fileClip(pMidiClip, sFilename, pMidiClip->trackChannel());
+			#endif
 				// Post-commit dirty changes...
 				pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 				// Add the new file version to the roster...
@@ -575,7 +580,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case FileClip: {
-			QString sOldFilename = pClip->filename();
+			const QString sOldFilename = pClip->filename();
 			unsigned short iOldTrackChannel = 0;
 			pClip->setFilename(pItem->filename);
 			qtractorMidiClip *pMidiClip = NULL;

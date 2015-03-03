@@ -177,8 +177,8 @@ void qtractorCommandList::updateAction (
 	pAction->setStatusTip(pAction->statusTip().remove(rxBrackets));
 	pAction->setToolTip(pAction->toolTip().remove(rxBrackets));
 	if (pCommand) {
-		const QString& sCommand  = QString(pCommand->name()).remove(rxBrackets);
-		const QString& sBrackets = QString(" (%1)").arg(sCommand);
+		const QString sCommand  = QString(pCommand->name()).remove(rxBrackets);
+		const QString sBrackets = QString(" (%1)").arg(sCommand);
 		pAction->setText(pAction->text() + sBrackets);
 		pAction->setStatusTip(pAction->statusTip() + sBrackets);
 		pAction->setToolTip(pAction->toolTip() + sBrackets);
