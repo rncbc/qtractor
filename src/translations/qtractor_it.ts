@@ -105,22 +105,22 @@ Offset / Lunghezza:	%3 / %4</translation>
         <translation>File:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="794"/>
+        <location filename="../qtractorClipCommand.cpp" line="799"/>
         <source>take %1</source>
         <translation>ripresa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="796"/>
+        <location filename="../qtractorClipCommand.cpp" line="801"/>
         <source>reset takes</source>
         <translation>reset riprese</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="982"/>
+        <location filename="../qtractorClipCommand.cpp" line="987"/>
         <source>clip tool %1</source>
         <translation>strumento clip %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1084"/>
+        <location filename="../qtractorClipCommand.cpp" line="1089"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>
