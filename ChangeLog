@@ -6,9 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Added this "Don't ask this question again" option to the
-  zip/archive extrated directory removal warning message.
-  (EXPERIMENTAL)
+- Added a prompt "Don't ask this again" option to zip/archive
+  extrated directory removal/replace warning messages.
 
 - MIDI clip editor (aka. piano-roll) gets lingering notes
   properly shown while on record/overdubbing. (EXPERIMENTAL)

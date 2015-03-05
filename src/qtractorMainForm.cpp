@@ -2119,18 +2119,18 @@ bool qtractorMainForm::closeSession (void)
 					.arg(paths.join("\",\n\""));
 			#if 0
 				bArchiveRemove = (QMessageBox::warning(this, sTitle, sText,
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes);
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
 			#else
 				QMessageBox mbox(this);
 				mbox.setIcon(QMessageBox::Warning);
 				mbox.setWindowTitle(sTitle);
 				mbox.setText(sText);
-				mbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-				QCheckBox cbox(tr("Don't ask this question again"));
+				mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+				QCheckBox cbox(tr("Don't ask this again"));
 				cbox.setChecked(false);
 				cbox.blockSignals(true);
 				mbox.addButton(&cbox, QMessageBox::ActionRole);
-				bArchiveRemove = (mbox.exec() == QMessageBox::Yes);
+				bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
 				if (cbox.isChecked())
 					m_pOptions->bArchiveRemove = false;
 			#endif
@@ -2185,24 +2185,46 @@ bool qtractorMainForm::loadSessionFileEx (
 		} else {
 			info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 			if (info.exists() && info.isDir()) {
-				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
-					tr("The directory already exists:\n\n"
-					"\"%1\"\n\n"
-					"Do you want to replace it?")
-					.arg(info.filePath()),
-					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
-					// Restarting...
-				#ifdef CONFIG_LV2
-					QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-					qtractorLv2PluginType::lv2_open();
-					QApplication::restoreOverrideCursor();
+				bool bArchiveRemove = true;
+				bool bConfirmRemove = (m_pOptions && m_pOptions->bArchiveRemove);
+				if (bConfirmRemove) {
+					const QString& sTitle
+						= tr("Warning") + " - " QTRACTOR_TITLE;
+					const QString& sText = tr(
+						"The directory already exists:\n\n"
+						"\"%1\"\n\n"
+						"Do you want to replace it?")
+						.arg(info.filePath());
+				#if 0
+					bArchiveRemove (QMessageBox::warning(this, sTitle, sText,
+						QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+				#else
+					QMessageBox mbox(this);
+					mbox.setIcon(QMessageBox::Warning);
+					mbox.setWindowTitle(sTitle);
+					mbox.setText(sText);
+					mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+					QCheckBox cbox(tr("Don't ask this again"));
+					cbox.setChecked(false);
+					cbox.blockSignals(true);
+					mbox.addButton(&cbox, QMessageBox::ActionRole);
+					bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
+					if (cbox.isChecked())
+						m_pOptions->bArchiveRemove = false;
 				#endif
-					updateSessionPre();
-					++m_iUntitled;
-					m_sFilename.clear();
-					updateSessionPost();
-					return false;
+					if (!bArchiveRemove) {
+						// Restarting...
+					#ifdef CONFIG_LV2
+						QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+						qtractorLv2PluginType::lv2_open();
+						QApplication::restoreOverrideCursor();
+					#endif
+						updateSessionPre();
+						++m_iUntitled;
+						m_sFilename.clear();
+						updateSessionPost();
+						return false;
+					}
 				}
 			}
 		}
