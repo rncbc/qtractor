@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Added this "Don't ask this question again" option to the
+  zip/archive extrated directory removal warning message.
+  (EXPERIMENTAL)
+
 - MIDI clip editor (aka. piano-roll) gets lingering notes
   properly shown while on record/overdubbing. (EXPERIMENTAL)
 

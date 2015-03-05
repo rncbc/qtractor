@@ -87,6 +87,7 @@ void qtractorOptions::loadOptions (void)
 	bMessagesLimit  = m_settings.value("/MessagesLimit", true).toBool();
 	iMessagesLimitLines = m_settings.value("/MessagesLimitLines", 1000).toInt();
 	bConfirmRemove  = m_settings.value("/ConfirmRemove", true).toBool();
+	bArchiveRemove  = m_settings.value("/ArchiveRemove", true).toBool();
 	bStdoutCapture  = m_settings.value("/StdoutCapture", true).toBool();
 	bCompletePath   = m_settings.value("/CompletePath", true).toBool();
 	bPeakAutoRemove = m_settings.value("/PeakAutoRemove", true).toBool();
@@ -366,6 +367,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MessagesLimit", bMessagesLimit);
 	m_settings.setValue("/MessagesLimitLines", iMessagesLimitLines);
 	m_settings.setValue("/ConfirmRemove", bConfirmRemove);
+	m_settings.setValue("/ArchiveRemove", bArchiveRemove);
 	m_settings.setValue("/StdoutCapture", bStdoutCapture);
 	m_settings.setValue("/CompletePath", bCompletePath);
 	m_settings.setValue("/PeakAutoRemove", bPeakAutoRemove);

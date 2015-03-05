@@ -302,6 +302,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.ConfirmRemoveCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ArchiveRemoveCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.StdoutCaptureCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -635,6 +638,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// Other options finally.
 	m_ui.ConfirmRemoveCheckBox->setChecked(m_pOptions->bConfirmRemove);
+	m_ui.ArchiveRemoveCheckBox->setChecked(m_pOptions->bArchiveRemove);
 	m_ui.StdoutCaptureCheckBox->setChecked(m_pOptions->bStdoutCapture);
 	m_ui.CompletePathCheckBox->setChecked(m_pOptions->bCompletePath);
 	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
@@ -755,6 +759,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bMidiMetroBus        = m_ui.MidiMetroBusCheckBox->isChecked();
 		// Display options...
 		m_pOptions->bConfirmRemove       = m_ui.ConfirmRemoveCheckBox->isChecked();
+		m_pOptions->bArchiveRemove       = m_ui.ArchiveRemoveCheckBox->isChecked();
 		m_pOptions->bStdoutCapture       = m_ui.StdoutCaptureCheckBox->isChecked();
 		m_pOptions->bCompletePath        = m_ui.CompletePathCheckBox->isChecked();
 		m_pOptions->bPeakAutoRemove      = m_ui.PeakAutoRemoveCheckBox->isChecked();

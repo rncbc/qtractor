@@ -2105,20 +2105,35 @@ bool qtractorMainForm::closeSession (void)
 		const QStringList& paths = qtractorDocument::extractedArchives();
 		if (!paths.isEmpty()) {
 			bool bArchiveRemove = true;
-			bool bConfirmRemove = (m_pOptions && m_pOptions->bConfirmRemove);
+			bool bConfirmRemove = (m_pOptions && m_pOptions->bArchiveRemove);
 		#ifdef CONFIG_NSM
 			if (m_pNsmClient && m_pNsmClient->is_active())
 				bConfirmRemove = false;
 		#endif
-			if (bConfirmRemove &&
-				QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
-					tr("About to remove archive directory:\n\n"
+			if (bConfirmRemove) {
+				const QString& sTitle = tr("Warning") + " - " QTRACTOR_TITLE;
+				const QString& sText = tr(
+					"About to remove archive directory:\n\n"
 					"\"%1\"\n\n"
 					"Are you sure?")
-					.arg(paths.join("\",\n\"")),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No) {
-				bArchiveRemove = false;
+					.arg(paths.join("\",\n\""));
+			#if 0
+				bArchiveRemove = (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes);
+			#else
+				QMessageBox mbox(this);
+				mbox.setIcon(QMessageBox::Warning);
+				mbox.setWindowTitle(sTitle);
+				mbox.setText(sText);
+				mbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+				QCheckBox cbox(tr("Don't ask this question again"));
+				cbox.setChecked(false);
+				cbox.blockSignals(true);
+				mbox.addButton(&cbox, QMessageBox::ActionRole);
+				bArchiveRemove = (mbox.exec() == QMessageBox::Yes);
+				if (cbox.isChecked())
+					m_pOptions->bArchiveRemove = false;
+			#endif
 			}
 			qtractorDocument::clearExtractedArchives(bArchiveRemove);
 		}

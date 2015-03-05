@@ -315,6 +315,22 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="ArchiveRemoveCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to ask for confirmation on archive directory removal</string>
+            </property>
+            <property name="text">
+             <string>C&amp;onfirm archive removals</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="2">
            <widget class="QLabel" name="MaxRecentFilesTextLabel">
             <property name="font">
@@ -362,7 +378,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QCheckBox" name="StdoutCaptureCheckBox">
             <property name="font">
              <font>
@@ -378,7 +394,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QCheckBox" name="CompletePathCheckBox">
             <property name="font">
              <font>
@@ -394,20 +410,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QCheckBox" name="PeakAutoRemoveCheckBox">
             <property name="font">
              <font>
@@ -423,7 +426,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QCheckBox" name="KeepToolsOnTopCheckBox">
             <property name="font">
              <font>
@@ -439,7 +442,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QCheckBox" name="TrackViewDropSpanCheckBox">
             <property name="font">
              <font>
@@ -455,7 +458,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QCheckBox" name="MidButtonModifierCheckBox">
             <property name="font">
              <font>
