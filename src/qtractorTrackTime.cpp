@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -435,7 +435,7 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			// Try to catch mouse clicks over the cursor heads...
 			if (dragHeadStart(m_posDrag)) {
 				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-				m_dragState = m_dragCursor;
+			//	m_dragState = m_dragCursor;
 			}
 			break;
 		case Qt::MidButton:
@@ -547,12 +547,12 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if ((m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 				// We'll start dragging alright...
-				int h = qtractorScrollView::height();	// - 4;
+				const int h = qtractorScrollView::height();	// - 4;
 				m_rectDrag.setTop(0);			// h - (h >> 2)
 				m_rectDrag.setLeft(m_posDrag.x());
 				m_rectDrag.setRight(pos.x());
 				m_rectDrag.setBottom(h);
-				m_dragState = m_dragCursor = DragSelect;
+				m_dragState = (dragHeadStart(m_posDrag) ? m_dragCursor : DragSelect);
 				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			}
 			// Fall thru...

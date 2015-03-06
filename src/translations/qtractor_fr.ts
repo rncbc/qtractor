@@ -6595,42 +6595,42 @@ Voulez-vous appliquer les changements?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="826"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="825"/>
         <source>Play-head</source>
         <translation>Jouer le début</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="829"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="828"/>
         <source>Edit-head</source>
         <translation>Editer le début</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="832"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="831"/>
         <source>Edit-tail</source>
         <translation>Editer la fin</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="835"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="834"/>
         <source>Loop-start</source>
         <translation>Boucle-début</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="838"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="837"/>
         <source>Loop-end</source>
         <translation>Boucle-fin</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="841"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="840"/>
         <source>Punch-in</source>
         <translation>Punch-in</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="844"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="843"/>
         <source>Punch-out</source>
         <translation>Punch-out</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="874"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="873"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>

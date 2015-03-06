@@ -6417,17 +6417,17 @@ Você deseja subtituir o mapeamento?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="829"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="828"/>
         <source>Edit-head</source>
         <translation>Editar começo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="832"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="831"/>
         <source>Edit-tail</source>
         <translation>Editar final</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="874"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="873"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -6436,27 +6436,27 @@ Final:	%2
 Tamanho:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="835"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="834"/>
         <source>Loop-start</source>
         <translation>Começo do Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="844"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="843"/>
         <source>Punch-out</source>
         <translation>Final da Gravação Localizada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="838"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="837"/>
         <source>Loop-end</source>
         <translation>Final do Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="826"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="825"/>
         <source>Play-head</source>
         <translation>Começo da reprodução</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="841"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="840"/>
         <source>Punch-in</source>
         <translation>Começo da Gravação Localizada</translation>
     </message>

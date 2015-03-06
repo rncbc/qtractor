@@ -7458,42 +7458,42 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="826"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="825"/>
         <source>Play-head</source>
         <translation>Začátek přehrávání</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="829"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="828"/>
         <source>Edit-head</source>
         <translation>Začátek úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="832"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="831"/>
         <source>Edit-tail</source>
         <translation>Konec úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="835"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="834"/>
         <source>Loop-start</source>
         <translation>Začátek smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="838"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="837"/>
         <source>Loop-end</source>
         <translation>Konec smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="841"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="840"/>
         <source>Punch-in</source>
         <translation>Začátek přepisu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="844"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="843"/>
         <source>Punch-out</source>
         <translation>Konec přepisu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="874"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="873"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>

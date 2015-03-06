@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -441,8 +441,8 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_posDrag   = pos;
 		// Try to catch mouse clicks over the cursor heads...
 		if (dragHeadStart(m_posDrag)) {
-			m_dragState = m_dragCursor;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		//	m_dragState = m_dragCursor;
 		} else if (!bModifier) {
 			// Edit-head positioning...
 			m_pEditor->setEditHead(iFrame);
@@ -542,13 +542,12 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		if ((m_posDrag - pos).manhattanLength()
 			> QApplication::startDragDistance()) {
 			// We'll start dragging alright...
-			int h = m_pEditor->editView()->contentsHeight();
+			const int h = m_pEditor->editView()->contentsHeight();
 			m_rectDrag.setTop(0);
 			m_rectDrag.setLeft(m_posDrag.x());
 			m_rectDrag.setRight(pos.x());
 			m_rectDrag.setBottom(h);
-			m_dragState = m_dragCursor = DragSelect;
-			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			m_dragState = (dragHeadStart(m_posDrag) ? m_dragCursor : DragSelect);
 		}
 		// Fall thru...
 	default:
