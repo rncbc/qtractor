@@ -67,7 +67,7 @@ public:
 	bool    bMessagesLimit;
 	int     iMessagesLimitLines;
 	bool    bConfirmRemove;
-	bool    bArchiveRemove;
+	bool    bConfirmArchive;
 	bool    bStdoutCapture;
 	bool    bCompletePath;
 	bool    bPeakAutoRemove;

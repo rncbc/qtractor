@@ -316,7 +316,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QCheckBox" name="ArchiveRemoveCheckBox">
+           <widget class="QCheckBox" name="ConfirmArchiveCheckBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -3525,7 +3525,7 @@
   <tabstop>SessionAutoSaveCheckBox</tabstop>
   <tabstop>SessionAutoSaveSpinBox</tabstop>
   <tabstop>ConfirmRemoveCheckBox</tabstop>
-  <tabstop>ArchiveRemoveCheckBox</tabstop>
+  <tabstop>ConfirmArchiveCheckBox</tabstop>
   <tabstop>StdoutCaptureCheckBox</tabstop>
   <tabstop>CompletePathCheckBox</tabstop>
   <tabstop>PeakAutoRemoveCheckBox</tabstop>

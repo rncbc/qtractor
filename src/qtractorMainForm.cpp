@@ -2105,12 +2105,12 @@ bool qtractorMainForm::closeSession (void)
 		const QStringList& paths = qtractorDocument::extractedArchives();
 		if (!paths.isEmpty()) {
 			bool bArchiveRemove = true;
-			bool bConfirmRemove = (m_pOptions && m_pOptions->bArchiveRemove);
+			bool bConfirmArchive = (m_pOptions && m_pOptions->bConfirmArchive);
 		#ifdef CONFIG_NSM
 			if (m_pNsmClient && m_pNsmClient->is_active())
-				bConfirmRemove = false;
+				bConfirmArchive = false;
 		#endif
-			if (bConfirmRemove) {
+			if (bConfirmArchive) {
 				const QString& sTitle = tr("Warning") + " - " QTRACTOR_TITLE;
 				const QString& sText = tr(
 					"About to remove archive directory:\n\n"
@@ -2132,7 +2132,7 @@ bool qtractorMainForm::closeSession (void)
 				mbox.addButton(&cbox, QMessageBox::ActionRole);
 				bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
 				if (cbox.isChecked())
-					m_pOptions->bArchiveRemove = false;
+					m_pOptions->bConfirmArchive = false;
 			#endif
 			}
 			qtractorDocument::clearExtractedArchives(bArchiveRemove);
@@ -2186,8 +2186,8 @@ bool qtractorMainForm::loadSessionFileEx (
 			info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 			if (info.exists() && info.isDir()) {
 				bool bArchiveRemove = true;
-				bool bConfirmRemove = (m_pOptions && m_pOptions->bArchiveRemove);
-				if (bConfirmRemove) {
+				bool bConfirmArchive = (m_pOptions && m_pOptions->bConfirmArchive);
+				if (bConfirmArchive) {
 					const QString& sTitle
 						= tr("Warning") + " - " QTRACTOR_TITLE;
 					const QString& sText = tr(
@@ -2210,10 +2210,10 @@ bool qtractorMainForm::loadSessionFileEx (
 					mbox.addButton(&cbox, QMessageBox::ActionRole);
 					bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
 					if (cbox.isChecked())
-						m_pOptions->bArchiveRemove = false;
+						m_pOptions->bConfirmArchive = false;
 				#endif
+					// Restarting...
 					if (!bArchiveRemove) {
-						// Restarting...
 					#ifdef CONFIG_LV2
 						QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 						qtractorLv2PluginType::lv2_open();
