@@ -778,6 +778,8 @@ void qtractorOptions::saveWidgetGeometry ( QWidget *pWidget, bool bVisible )
 
 void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 {
+	const bool bBlockSignals = pComboBox->blockSignals(true);
+
 	// Load combobox list from configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
 
@@ -796,38 +798,43 @@ void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 	}
 
 	m_settings.endGroup();
+
+	pComboBox->blockSignals(bBlockSignals);
 }
 
 
 void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 {
-	int iCount = pComboBox->count();
+	const bool bBlockSignals = pComboBox->blockSignals(true);
 
 	// Add current text as latest item...
-	const QString& sCurrentText = pComboBox->currentText();
-	if (!sCurrentText.isEmpty()) {
-		int i = pComboBox->findText(sCurrentText);
-		if (i >= 0) {
+	const QString sCurrentText = pComboBox->currentText();
+	int iCount = pComboBox->count();
+	for (int i = 0; i < iCount; i++) {
+		const QString& sText = pComboBox->itemText(i);
+		if (sText == sCurrentText) {
 			pComboBox->removeItem(i);
 			--iCount;
+			break;
 		}
-		pComboBox->insertItem(0, sCurrentText);
-		++iCount;
 	}
-
-	// Take care of item limit...
-	while (iCount > iLimit)
+	while (iCount >= iLimit)
 		pComboBox->removeItem(--iCount);
+	pComboBox->insertItem(0, sCurrentText);
+	pComboBox->setCurrentIndex(0);
+	++iCount;
 
 	// Save combobox list to configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
 	for (int i = 0; i < iCount; ++i) {
 		const QString& sText = pComboBox->itemText(i);
 		if (sText.isEmpty())
-			continue;
+			break;
 		m_settings.setValue("/Item" + QString::number(i + 1), sText);
 	}
 	m_settings.endGroup();
+
+	pComboBox->blockSignals(bBlockSignals);
 }
 
 
