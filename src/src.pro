@@ -305,7 +305,7 @@ unix {
 	DEFINES += DATADIR=\"$${DATADIR}\"
 
 	# make install
-	INSTALLS += target desktop icon \
+	INSTALLS += target desktop icon appdata \
 		icon_scalable mimeinfo mimetypes mimetypes_scalable
 
 	target.path = $${BINDIR}
@@ -318,6 +318,9 @@ unix {
 
 	icon_scalable.path = $${DATADIR}/icons/hicolor/scalable/apps
 	icon_scalable.files += images/$${NAME}.svg
+
+	appdata.path = $${DATADIR}/appdata
+	appdata.files += appdata/$${NAME}.appdata.xml
 
 	mimeinfo.path = $${DATADIR}/mime/packages
 	mimeinfo.files += mimetypes/$${NAME}.xml

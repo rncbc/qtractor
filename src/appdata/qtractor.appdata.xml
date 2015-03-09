@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2005-2015 Rui Nuno Capela <rncbc@rncbc.org> -->
+<component type="desktop">
+ <id>qtractor.desktop</id>
+ <metadata_license>GPL-2.0+</metadata_license>
+ <project_license>GPL-2.0+</project_license>
+ <name>Qtractor</name>
+ <summary>An Audio/MIDI multi-track sequencer</summary>
+ <description>
+  <p>Qtractor is an Audio/MIDI multi-track sequencer application
+  written in C++ around the Qt4 toolkit using Qt Designer.</p>
+  <p>The initial target platform will be Linux, where the Jack Audio
+  Connection Kit (JACK) for audio, and the Advanced Linux Sound
+  Architecture (ALSA) for MIDI, are the main infrastructures to
+  evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
+  specially dedicated to the personal home-studio.</p>
+ </description>
+ <screenshots>
+  <screenshot type="default">
+   <image>http://qtractor.sourceforge.net/image/qtractor-screenshot11.png</image>
+   <caption>The main window showing the application in action</caption>
+  </screenshot>
+ </screenshots>
+ <url type="homepage">http://qtractor.sourceforge.net</url>
+ <updatecontact>rncbc@rncbc.org</updatecontact>
+ <project_group>rncbc.org</project_group>
+</component>

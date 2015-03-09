@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Added application description as freedesktop.org's AppData.
+
 - Added a "Don't ask this again" prompt option to zip/archive
   extrated directory removal/replace warning messages.
 
