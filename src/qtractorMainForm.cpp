@@ -2115,20 +2115,35 @@ bool qtractorMainForm::closeSession (void)
 		const QStringList& paths = qtractorDocument::extractedArchives();
 		if (!paths.isEmpty()) {
 			bool bArchiveRemove = true;
-			bool bConfirmRemove = (m_pOptions && m_pOptions->bConfirmRemove);
+			bool bConfirmArchive = (m_pOptions && m_pOptions->bConfirmArchive);
 		#ifdef CONFIG_NSM
 			if (m_pNsmClient && m_pNsmClient->is_active())
-				bConfirmRemove = false;
+				bConfirmArchive = false;
 		#endif
-			if (bConfirmRemove &&
-				QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
-					tr("About to remove archive directory:\n\n"
+			if (bConfirmArchive) {
+				const QString& sTitle = tr("Warning") + " - " QTRACTOR_TITLE;
+				const QString& sText = tr(
+					"About to remove archive directory:\n\n"
 					"\"%1\"\n\n"
 					"Are you sure?")
-					.arg(paths.join("\",\n\"")),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No) {
-				bArchiveRemove = false;
+					.arg(paths.join("\",\n\""));
+			#if 0
+				bArchiveRemove = (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+			#else
+				QMessageBox mbox(this);
+				mbox.setIcon(QMessageBox::Warning);
+				mbox.setWindowTitle(sTitle);
+				mbox.setText(sText);
+				mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+				QCheckBox cbox(tr("Don't ask this again"));
+				cbox.setChecked(false);
+				cbox.blockSignals(true);
+				mbox.addButton(&cbox, QMessageBox::ActionRole);
+				bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
+				if (cbox.isChecked())
+					m_pOptions->bConfirmArchive = false;
+			#endif
 			}
 			qtractorDocument::clearExtractedArchives(bArchiveRemove);
 		}
@@ -2180,24 +2195,46 @@ bool qtractorMainForm::loadSessionFileEx (
 		} else {
 			info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 			if (info.exists() && info.isDir()) {
-				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
-					tr("The directory already exists:\n\n"
-					"\"%1\"\n\n"
-					"Do you want to replace it?")
-					.arg(info.filePath()),
-					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
-					// Restarting...
-				#ifdef CONFIG_LV2
-					QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-					qtractorLv2PluginType::lv2_open();
-					QApplication::restoreOverrideCursor();
+				bool bArchiveRemove = true;
+				bool bConfirmArchive = (m_pOptions && m_pOptions->bConfirmArchive);
+				if (bConfirmArchive) {
+					const QString& sTitle
+						= tr("Warning") + " - " QTRACTOR_TITLE;
+					const QString& sText = tr(
+						"The directory already exists:\n\n"
+						"\"%1\"\n\n"
+						"Do you want to replace it?")
+						.arg(info.filePath());
+				#if 0
+					bArchiveRemove (QMessageBox::warning(this, sTitle, sText,
+						QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+				#else
+					QMessageBox mbox(this);
+					mbox.setIcon(QMessageBox::Warning);
+					mbox.setWindowTitle(sTitle);
+					mbox.setText(sText);
+					mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+					QCheckBox cbox(tr("Don't ask this again"));
+					cbox.setChecked(false);
+					cbox.blockSignals(true);
+					mbox.addButton(&cbox, QMessageBox::ActionRole);
+					bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
+					if (cbox.isChecked())
+						m_pOptions->bConfirmArchive = false;
 				#endif
-					updateSessionPre();
-					++m_iUntitled;
-					m_sFilename.clear();
-					updateSessionPost();
-					return false;
+					// Restarting...
+					if (!bArchiveRemove) {
+					#ifdef CONFIG_LV2
+						QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+						qtractorLv2PluginType::lv2_open();
+						QApplication::restoreOverrideCursor();
+					#endif
+						updateSessionPre();
+						++m_iUntitled;
+						m_sFilename.clear();
+						updateSessionPost();
+						return false;
+					}
 				}
 			}
 		}
@@ -5676,11 +5713,6 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.fileSaveAsAction->setEnabled(m_pNsmClient == NULL);
 #endif
 
-	// Update edit menu state...
-	qtractorCommandList *pCommands = m_pSession->commands();
-	pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
-	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
-
 	const unsigned long iPlayHead = m_pSession->playHead();
 	const unsigned long iSessionEnd = m_pSession->sessionEnd();
 
@@ -5699,6 +5731,16 @@ void qtractorMainForm::stabilizeForm (void)
 	const bool bLooping    = m_pSession->isLooping();
 	const bool bRolling    = (bPlaying && bRecording);
 	const bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
+
+	// Update edit menu state...
+	if (bRolling) {
+		m_ui.editUndoAction->setEnabled(false);
+		m_ui.editRedoAction->setEnabled(false);
+	} else {
+		qtractorCommandList *pCommands = m_pSession->commands();
+		pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
+		pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
+	}
 
 //	m_ui.editCutAction->setEnabled(bSelected);
 //	m_ui.editCopyAction->setEnabled(bSelected);

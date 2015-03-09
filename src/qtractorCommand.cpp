@@ -1,7 +1,7 @@
 // qtractorCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -142,7 +142,7 @@ bool qtractorCommandList::undo (void)
 		// Undo operation...
 		bResult = m_pLastCommand->undo();
 		// Backward one command...
-		unsigned int flags = m_pLastCommand->flags();
+		const unsigned int flags = m_pLastCommand->flags();
 		m_pLastCommand = m_pLastCommand->prev();
 		// Notify commanders...
 		emit updateNotifySignal(flags);
@@ -169,8 +169,8 @@ bool qtractorCommandList::redo (void)
 
 
 // Command action update helper.
-void qtractorCommandList::updateAction ( QAction *pAction,
-	qtractorCommand *pCommand ) const
+void qtractorCommandList::updateAction (
+	QAction *pAction, qtractorCommand *pCommand ) const
 {
 	const QRegExp rxBrackets("[\\s]+\\([^\\)]+\\)$");
 	pAction->setText(pAction->text().remove(rxBrackets));

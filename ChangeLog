@@ -6,6 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- Added application description as freedesktop.org's AppData.
+
+- Added a "Don't ask this again" prompt option to zip/archive
+  extrated directory removal/replace warning messages.
+
+- MIDI clip editor (aka. piano-roll) gets lingering notes
+  properly shown while on record/overdubbing. (EXPERIMENTAL)
+
 - Current highlighted client/port connections are now drawn
   with thicker connector lines.
 

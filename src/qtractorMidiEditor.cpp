@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1150,6 +1150,14 @@ unsigned long qtractorMidiEditor::length (void) const
 }
 
 
+// Clip recording/overdub status.
+bool qtractorMidiEditor::isClipRecord (void) const
+{
+	qtractorTrack *pTrack = (m_pMidiClip ? m_pMidiClip->track() : NULL);
+	return (pTrack ? pTrack->clipRecord() == m_pMidiClip : false);
+}
+
+
 // Edit-head/tail positioning.
 void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSyncView )
 {
@@ -1583,18 +1591,6 @@ void qtractorMidiEditor::verticalZoomResetSlot (void)
 
 	verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
 	zoomCenterPost(zc);
-}
-
-
-// Alterrnate command action update helper...
-void qtractorMidiEditor::updateUndoAction ( QAction *pAction ) const
-{
-	m_pCommands->updateAction(pAction, m_pCommands->lastCommand());
-}
-
-void qtractorMidiEditor::updateRedoAction ( QAction *pAction ) const
-{
-	m_pCommands->updateAction(pAction, m_pCommands->nextCommand());
 }
 
 

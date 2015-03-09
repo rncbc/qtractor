@@ -1675,8 +1675,10 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.fileRangeSetAction->setEnabled(pTrack != NULL);
 	m_ui.fileLoopSetAction->setEnabled(pTrack != NULL);
 
-	m_pMidiEditor->updateUndoAction(m_ui.editUndoAction);
-	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
+	// Update edit menu state...
+	qtractorCommandList *pCommands = m_pMidiEditor->commands();
+	pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
+	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
 
 	const bool bSelected = m_pMidiEditor->isSelected();
 	const bool bSelectable = m_pMidiEditor->isSelectable();

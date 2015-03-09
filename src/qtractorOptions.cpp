@@ -87,6 +87,7 @@ void qtractorOptions::loadOptions (void)
 	bMessagesLimit  = m_settings.value("/MessagesLimit", true).toBool();
 	iMessagesLimitLines = m_settings.value("/MessagesLimitLines", 1000).toInt();
 	bConfirmRemove  = m_settings.value("/ConfirmRemove", true).toBool();
+	bConfirmArchive = m_settings.value("/ConfirmArchive", true).toBool();
 	bStdoutCapture  = m_settings.value("/StdoutCapture", true).toBool();
 	bCompletePath   = m_settings.value("/CompletePath", true).toBool();
 	bPeakAutoRemove = m_settings.value("/PeakAutoRemove", true).toBool();
@@ -366,6 +367,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MessagesLimit", bMessagesLimit);
 	m_settings.setValue("/MessagesLimitLines", iMessagesLimitLines);
 	m_settings.setValue("/ConfirmRemove", bConfirmRemove);
+	m_settings.setValue("/ConfirmArchive", bConfirmArchive);
 	m_settings.setValue("/StdoutCapture", bStdoutCapture);
 	m_settings.setValue("/CompletePath", bCompletePath);
 	m_settings.setValue("/PeakAutoRemove", bPeakAutoRemove);
@@ -776,6 +778,8 @@ void qtractorOptions::saveWidgetGeometry ( QWidget *pWidget, bool bVisible )
 
 void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 {
+	const bool bBlockSignals = pComboBox->blockSignals(true);
+
 	// Load combobox list from configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
 
@@ -794,38 +798,43 @@ void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 	}
 
 	m_settings.endGroup();
+
+	pComboBox->blockSignals(bBlockSignals);
 }
 
 
 void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 {
-	int iCount = pComboBox->count();
+	const bool bBlockSignals = pComboBox->blockSignals(true);
 
 	// Add current text as latest item...
-	const QString& sCurrentText = pComboBox->currentText();
-	if (!sCurrentText.isEmpty()) {
-		int i = pComboBox->findText(sCurrentText);
-		if (i >= 0) {
+	const QString sCurrentText = pComboBox->currentText();
+	int iCount = pComboBox->count();
+	for (int i = 0; i < iCount; i++) {
+		const QString& sText = pComboBox->itemText(i);
+		if (sText == sCurrentText) {
 			pComboBox->removeItem(i);
 			--iCount;
+			break;
 		}
-		pComboBox->insertItem(0, sCurrentText);
-		++iCount;
 	}
-
-	// Take care of item limit...
-	while (iCount > iLimit)
+	while (iCount >= iLimit)
 		pComboBox->removeItem(--iCount);
+	pComboBox->insertItem(0, sCurrentText);
+	pComboBox->setCurrentIndex(0);
+	++iCount;
 
 	// Save combobox list to configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
 	for (int i = 0; i < iCount; ++i) {
 		const QString& sText = pComboBox->itemText(i);
 		if (sText.isEmpty())
-			continue;
+			break;
 		m_settings.setValue("/Item" + QString::number(i + 1), sText);
 	}
 	m_settings.endGroup();
+
+	pComboBox->blockSignals(bBlockSignals);
 }
 
 
