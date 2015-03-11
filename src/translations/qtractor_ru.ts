@@ -914,22 +914,22 @@ Offs/Length:	%3 / %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="799"/>
+        <location filename="../qtractorClipCommand.cpp" line="790"/>
         <source>take %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="801"/>
+        <location filename="../qtractorClipCommand.cpp" line="792"/>
         <source>reset takes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="987"/>
+        <location filename="../qtractorClipCommand.cpp" line="978"/>
         <source>clip tool %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1089"/>
+        <location filename="../qtractorClipCommand.cpp" line="1080"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>
