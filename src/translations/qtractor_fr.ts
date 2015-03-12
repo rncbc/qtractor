@@ -5854,7 +5854,7 @@ est près et en fonctionnement puis redémarrer la session.</translation>
         <location filename="../qtractorMainForm.cpp" line="2129"/>
         <location filename="../qtractorMainForm.cpp" line="2207"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas redemander</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5438"/>
@@ -9616,7 +9616,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="406"/>
         <source>Whether to show the complete directory path of loaded session files</source>
-        <translation>Si ont doit afficher le chemin complet des répertoires des fichiers de session chargés</translation>
+        <translation>Si on doit afficher le chemin complet des répertoires des fichiers de session chargés</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="409"/>
@@ -9668,12 +9668,12 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="327"/>
         <source>Whether to ask for confirmation on archive directory removal</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit demander une confirmation lors de la suppression d&apos;un répertoire archive</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="330"/>
         <source>C&amp;onfirm archive removals</source>
-        <translation type="unfinished"></translation>
+        <translation>C&amp;onfirmer les suppressions d&apos;archives</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="470"/>
