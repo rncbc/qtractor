@@ -1280,7 +1280,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1080"/>
         <source>clip record</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávání záznamu</translation>
     </message>
     <message>
         <source>insert range</source>
@@ -3828,7 +3828,7 @@ až při příštím spuštění %1.</translation>
         <location filename="../qtractorMainForm.cpp" line="2129"/>
         <location filename="../qtractorMainForm.cpp" line="2207"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished"></translation>
+        <translation>Neptat se znovu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5355"/>
@@ -4811,7 +4811,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1757"/>
         <source>Quantize current MIDI clip events</source>
-        <translation>Kvantizovat události nynějšího záznamu MIDI</translation>
+        <translation>Kvantizovat události záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1762"/>
@@ -4831,7 +4831,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1771"/>
         <source>Transpose current MIDI clip events</source>
-        <translation>Převést události nynějšího záznamu MIDI</translation>
+        <translation>Převést události záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1776"/>
@@ -4846,7 +4846,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1785"/>
         <source>Normalize current MIDI clip events</source>
-        <translation>Normalizovat události nynějšího záznamu MIDI</translation>
+        <translation>Normalizovat události záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1790"/>
@@ -4866,7 +4866,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1799"/>
         <source>Randomize current MIDI clip events</source>
-        <translation>Náhodně vybrat události nynějšího záznamu MIDI</translation>
+        <translation>Náhodně vybrat události záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1804"/>
@@ -4886,7 +4886,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1813"/>
         <source>Resize current MIDI clip events</source>
-        <translation>Změnit velikost událostí nynějšího záznamu MIDI</translation>
+        <translation>Změnit velikost událostí záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1818"/>
@@ -4906,7 +4906,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1827"/>
         <source>Rescale current MIDI clip events</source>
-        <translation>Změnit měřítko událostí nynějšího záznamu MIDI</translation>
+        <translation>Změnit měřítko událostí záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1832"/>
@@ -4926,7 +4926,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1841"/>
         <source>Timeshift current MIDI clip events</source>
-        <translation>Časově posunout události nynějšího záznamu MIDI</translation>
+        <translation>Časově posunout události záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <source>&amp;Tempo...</source>
@@ -6254,22 +6254,22 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1692"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nahrávat</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1695"/>
         <source>Record Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávat záznam</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1698"/>
         <source>Record clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávat záznam</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1701"/>
         <source>Record current clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávat nynější záznam (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1846"/>
@@ -7793,12 +7793,12 @@ Délka:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="230"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="1752"/>
         <source>REC</source>
-        <translation type="unfinished">NAHRÁT</translation>
+        <translation>NAHRÁT</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="233"/>
         <source>MIDI clip record state</source>
-        <translation type="unfinished"></translation>
+        <translation>Stav nahrávání záznamu MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="238"/>
@@ -7822,7 +7822,7 @@ Délka:	%3</translation>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation>Nynější záznam MIDI byl změněn:
+        <translation>Záznam nynějšího MIDI byl změněn:
 
 &quot;%1&quot;
 
@@ -7953,7 +7953,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="364"/>
         <source>Save current MIDI clip to existing file name</source>
-        <translation>Uložit nynější záznam MIDI pod již existujícím názvem souboru</translation>
+        <translation>Uložit záznam nynějšího MIDI pod již existujícím názvem souboru</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="369"/>
@@ -7973,7 +7973,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="378"/>
         <source>Save current MIDI clip with another file name</source>
-        <translation>Uložit nynější záznam MIDI pod jiným názvem souboru</translation>
+        <translation>Uložit záznam nynějšího MIDI pod jiným názvem souboru</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="417"/>
@@ -7993,7 +7993,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="426"/>
         <source>Show current MIDI clip/track input bus connections</source>
-        <translation>Ukázat připojení vstupní sběrnice nynějšího  záznamu/stopy MIDI</translation>
+        <translation>Ukázat připojení vstupní sběrnice záznamu/stopy nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="431"/>
@@ -8013,7 +8013,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="440"/>
         <source>Show current MIDI clip/track output bus connections</source>
-        <translation>Ukázat připojení výstupní sběrnice nynějšího záznamu/stopy MIDI</translation>
+        <translation>Ukázat připojení výstupní sběrnice záznamu/stopy nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="448"/>
@@ -8034,7 +8034,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="457"/>
         <source>Edit current MIDI clip/track properties</source>
-        <translation>Upravit vlastnosti nynějšího záznamu/stopy MIDI</translation>
+        <translation>Upravit vlastnosti záznamu/stopy nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="460"/>
@@ -8050,7 +8050,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="477"/>
         <source>Edit current MIDI clip properties</source>
-        <translation>Upravit vlastnosti nynějšího záznamu MIDI</translation>
+        <translation>Upravit vlastnosti záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="480"/>
@@ -8226,7 +8226,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="619"/>
         <source>Paste local clipboard contents into the current MIDI clip</source>
-        <translation>Vložit obsah místní schránky do nynější MIDI ukázky</translation>
+        <translation>Vložit obsah místní schránky do záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="622"/>
@@ -8251,7 +8251,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="636"/>
         <source>Paste/repeat local clipboard contents into the current MIDI clip</source>
-        <translation>Vložit/Opakovat obsah místní schránky do nynějšího záznamu MIDI</translation>
+        <translation>Vložit/Opakovat obsah místní schránky do záznamu nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="639"/>
@@ -8485,17 +8485,17 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="392"/>
         <source>Unlink current MIDI clip</source>
-        <translation>Zrušit odkaz na nynější záznam MIDI</translation>
+        <translation>Zrušit odkaz na záznam nynějšího MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="403"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nahrát</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="412"/>
         <source>Record current MIDI clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávat záznam nynějšího MIDI (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="485"/>
@@ -11031,12 +11031,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="327"/>
         <source>Whether to ask for confirmation on archive directory removal</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda se má požádat o potvrzení při odstranění adresáře s archivem</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="330"/>
         <source>C&amp;onfirm archive removals</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Potvrdit odstranění archivu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="470"/>
