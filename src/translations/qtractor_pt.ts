@@ -244,7 +244,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1080"/>
         <source>clip record</source>
-        <translation type="unfinished"></translation>
+        <translation>gravador de sequência</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="1696"/>
@@ -2315,22 +2315,22 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1692"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gravar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1695"/>
         <source>Record Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar Sequência</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1698"/>
         <source>Record clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar sequência</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1701"/>
         <source>Record current clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar sequência selecionada (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1858"/>
@@ -2503,7 +2503,7 @@ Você quer mesmo manter as modificações?</translation>
         <location filename="../qtractorMainForm.cpp" line="2129"/>
         <location filename="../qtractorMainForm.cpp" line="2207"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished"></translation>
+        <translation>Não pergunte novamente</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7368"/>
@@ -6666,12 +6666,12 @@ Valor:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="230"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="1752"/>
         <source>REC</source>
-        <translation type="unfinished">GRAVAR</translation>
+        <translation>GRAVAR</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="233"/>
         <source>MIDI clip record state</source>
-        <translation type="unfinished"></translation>
+        <translation>Estado de gravação da sequência MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="724"/>
@@ -6913,12 +6913,12 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="403"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gravar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="412"/>
         <source>Record current MIDI clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar sequência MIDI selecionada (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="630"/>
