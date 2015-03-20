@@ -2978,6 +2978,8 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 					= m_pQtWidget->windowFlags() & ~Qt::WindowType_Mask;
 				m_pQtWidget->setWindowFlags(wflags | Qt::Widget);
 			}
+			if (!m_posEditor.isNull())
+				m_pQtWidget->move(m_posEditor);
 			m_pQtWidget->show();
 			m_pQtWidget->raise();
 			m_pQtWidget->activateWindow();
@@ -2994,8 +2996,10 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_lv2_ui_show_interface && m_lv2_ui_show_interface->hide)
 			(*m_lv2_ui_show_interface->hide)(m_lv2_ui_handle);
 	#endif
-		if (m_pQtWidget)
+		if (m_pQtWidget) {
+			m_posEditor = m_pQtWidget->pos();
 			m_pQtWidget->hide();
+		}
 		m_bEditorVisible = false;
 	}
 

@@ -189,8 +189,8 @@ public:
 		} *pRect;
 
 		if (m_pVstPlugin->vst_dispatch(0, effEditGetRect, 0, 0, &pRect, 0.0f)) {
-			int w = pRect->right - pRect->left;
-			int h = pRect->bottom - pRect->top;
+			const int w = pRect->right - pRect->left;
+			const int h = pRect->bottom - pRect->top;
 			if (w > 0 && h > 0)
 				QWidget::setFixedSize(w, h);
 		}
@@ -214,11 +214,13 @@ public:
 	// Close the editor widget.
 	void close()
 	{
+		if (m_pVstPlugin)
+			m_pVstPlugin->setEditorVisible(false);
+
 		QWidget::close();
 
 		if (m_pVstPlugin) {
 			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
-		//	m_pVstPlugin->setEditorVisible(false);
 			m_pVstPlugin = NULL;
 		}
 
@@ -1103,7 +1105,13 @@ void qtractorVstPlugin::idleEditor (void)
 // GUI editor visibility state.
 void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 {
-	if (m_pEditorWidget) m_pEditorWidget->setVisible(bVisible);
+	if (m_pEditorWidget) {
+		if (bVisible && !m_posEditor.isNull())
+			m_pEditorWidget->move(m_posEditor);
+		else if (!bVisible)
+			m_posEditor = m_pEditorWidget->pos();
+		m_pEditorWidget->setVisible(bVisible);
+	}
 }
 
 bool qtractorVstPlugin::isEditorVisible (void) const

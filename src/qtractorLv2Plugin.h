@@ -360,6 +360,7 @@ private:
 
 	QByteArray     m_aEditorTitle;
 	bool           m_bEditorVisible;
+	QPoint         m_posEditor;
 
 	volatile bool  m_bEditorClosed;
 
