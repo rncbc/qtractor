@@ -2948,6 +2948,7 @@ void qtractorLv2Plugin::closeEditorEx (void)
 #endif
 
 	if (m_pQtWidget) {
+		m_posEditor = m_pQtWidget->pos();
 		m_pQtWidget = NULL;
 		setEditorClosed(true);
 	}
