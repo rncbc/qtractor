@@ -214,9 +214,6 @@ public:
 	// Close the editor widget.
 	void close()
 	{
-		if (m_pVstPlugin)
-			m_pVstPlugin->setEditorVisible(false);
-
 		QWidget::close();
 
 		if (m_pVstPlugin) {
@@ -1034,8 +1031,11 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 {
 	// Is it already there?
 	if (m_pEditorWidget) {
-		if (!m_pEditorWidget->isVisible())
+		if (!m_pEditorWidget->isVisible()) {
+			if (!m_posEditor.isNull())
+				m_pEditorWidget->move(m_posEditor);
 			m_pEditorWidget->show();
+		}
 		m_pEditorWidget->raise();
 		m_pEditorWidget->activateWindow();
 		return;
@@ -1079,6 +1079,8 @@ void qtractorVstPlugin::closeEditor (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p]::closeEditor()", this);
 #endif
+
+	setEditorVisible(false);
 
 	// Close the parent widget, if any.
 	delete m_pEditorWidget;
