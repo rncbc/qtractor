@@ -185,7 +185,6 @@ private:
 
 	// Our own editor widget (parent frame).
 	EditorWidget *m_pEditorWidget;
-	QPoint        m_posEditor;
 
 	volatile bool m_bEditorClosed;
 };

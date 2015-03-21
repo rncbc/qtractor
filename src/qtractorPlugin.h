@@ -546,6 +546,11 @@ public:
 
 	void updateEditorTitle();
 
+	void setEditorPos(const QPoint& pos)
+		{ m_posEditor = pos; }
+	const QPoint& editorPos() const
+		{ return m_posEditor; }
+
 	// An accessible list of observers.
 	const QList<qtractorPluginListItem *>& items() const
 		{ return m_items; }
@@ -750,6 +755,8 @@ private:
 
 	// GUI editor stuff.
 	QString m_sEditorTitle;
+
+	QPoint  m_posEditor;
 
 	// Plugin configuration (CLOB) stuff.
 	Configs m_configs;

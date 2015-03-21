@@ -969,6 +969,10 @@ void qtractorVstPlugin::freezeConfigs (void)
 	// saving plugin's state and before parameter values.
 	updateParamValues(false);
 
+	// Also, update current editor position...
+	if (m_pEditorWidget && m_pEditorWidget->isVisible())
+		setEditorPos(m_pEditorWidget->pos());
+
 	if (!type()->isConfigure())
 		return;
 
@@ -1032,8 +1036,9 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 	// Is it already there?
 	if (m_pEditorWidget) {
 		if (!m_pEditorWidget->isVisible()) {
-			if (!m_posEditor.isNull())
-				m_pEditorWidget->move(m_posEditor);
+			const QPoint& posEditor = editorPos();
+			if (!posEditor.isNull())
+				m_pEditorWidget->move(posEditor);
 			m_pEditorWidget->show();
 		}
 		m_pEditorWidget->raise();
@@ -1108,10 +1113,12 @@ void qtractorVstPlugin::idleEditor (void)
 void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 {
 	if (m_pEditorWidget) {
-		if (bVisible && !m_posEditor.isNull())
-			m_pEditorWidget->move(m_posEditor);
-		else if (!bVisible)
-			m_posEditor = m_pEditorWidget->pos();
+		if (bVisible) {
+			const QPoint& posEditor = editorPos();
+			if (!posEditor.isNull())
+				m_pEditorWidget->move(posEditor);
+		}
+		else setEditorPos(m_pEditorWidget->pos());
 		m_pEditorWidget->setVisible(bVisible);
 	}
 }
