@@ -357,7 +357,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1405"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1422"/>
         <source>All files (*.*)</source>
         <translation>Все файлы (*.*)</translation>
     </message>
@@ -553,7 +553,7 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2156"/>
+        <location filename="../qtractorPlugin.cpp" line="2164"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -755,22 +755,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="598"/>
+        <location filename="../qtractorVstPlugin.cpp" line="597"/>
         <source>Product: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="606"/>
+        <location filename="../qtractorVstPlugin.cpp" line="605"/>
         <source>Vendor: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="614"/>
+        <location filename="../qtractorVstPlugin.cpp" line="613"/>
         <source>Version: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1402"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1419"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -914,22 +914,22 @@ Offs/Length:	%3 / %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="799"/>
+        <location filename="../qtractorClipCommand.cpp" line="790"/>
         <source>take %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="801"/>
+        <location filename="../qtractorClipCommand.cpp" line="792"/>
         <source>reset takes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="987"/>
+        <location filename="../qtractorClipCommand.cpp" line="978"/>
         <source>clip tool %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1089"/>
+        <location filename="../qtractorClipCommand.cpp" line="1080"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11522,62 +11522,62 @@ Are you sure?</source>
         <translation>О&amp;тменить</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1452"/>
+        <location filename="../qtractorPluginListView.cpp" line="1454"/>
         <source>&amp;Add Plugin...</source>
         <translation>&amp;Добавить эффект...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1455"/>
+        <location filename="../qtractorPluginListView.cpp" line="1457"/>
         <source>&amp;Inserts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1458"/>
+        <location filename="../qtractorPluginListView.cpp" line="1460"/>
         <source>Add &amp;Insert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1462"/>
+        <location filename="../qtractorPluginListView.cpp" line="1464"/>
         <source>Add &amp;Aux Send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1470"/>
+        <location filename="../qtractorPluginListView.cpp" line="1472"/>
         <source>&amp;Sends</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1474"/>
+        <location filename="../qtractorPluginListView.cpp" line="1476"/>
         <source>&amp;Returns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1480"/>
+        <location filename="../qtractorPluginListView.cpp" line="1482"/>
         <source>Ac&amp;tivate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1503"/>
+        <location filename="../qtractorPluginListView.cpp" line="1505"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1562"/>
+        <location filename="../qtractorPluginListView.cpp" line="1564"/>
         <source>&amp;None</source>
         <translation type="unfinished">&amp;Снять выделение</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1575"/>
+        <location filename="../qtractorPluginListView.cpp" line="1577"/>
         <source>&amp;Properties...</source>
         <translation type="unfinished">С&amp;войства...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1582"/>
+        <location filename="../qtractorPluginListView.cpp" line="1584"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1617"/>
+        <location filename="../qtractorPluginListView.cpp" line="1619"/>
         <source>&amp;Auto-connect</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11586,27 +11586,27 @@ Are you sure?</source>
         <translation type="obsolete">&amp;Активировать</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1487"/>
+        <location filename="../qtractorPluginListView.cpp" line="1489"/>
         <source>Acti&amp;vate All</source>
         <translation>Активировать &amp;все</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1494"/>
+        <location filename="../qtractorPluginListView.cpp" line="1496"/>
         <source>Deactivate Al&amp;l</source>
         <translation>Д&amp;еактивировать все</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1507"/>
+        <location filename="../qtractorPluginListView.cpp" line="1509"/>
         <source>Re&amp;move All</source>
         <translation>Уда&amp;лить все</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1514"/>
+        <location filename="../qtractorPluginListView.cpp" line="1516"/>
         <source>Move &amp;Up</source>
         <translation>Переместить &amp;выше</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1519"/>
+        <location filename="../qtractorPluginListView.cpp" line="1521"/>
         <source>Move &amp;Down</source>
         <translation>Переместить &amp;ниже</translation>
     </message>
@@ -11615,12 +11615,12 @@ Are you sure?</source>
         <translation type="obsolete">&amp;Параметры эффекта...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1596"/>
+        <location filename="../qtractorPluginListView.cpp" line="1598"/>
         <source>&amp;Outputs</source>
         <translation>В&amp;ыходы</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1613"/>
+        <location filename="../qtractorPluginListView.cpp" line="1615"/>
         <source>&amp;Dedicated</source>
         <translation>&amp;Собственный выход</translation>
     </message>

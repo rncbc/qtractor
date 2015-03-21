@@ -127,7 +127,7 @@
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1402"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1419"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -227,7 +227,7 @@ MIDI:	</source>
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="598"/>
+        <location filename="../qtractorVstPlugin.cpp" line="597"/>
         <source>Product: </source>
         <translation>Produto:</translation>
     </message>
@@ -237,14 +237,14 @@ MIDI:	</translation>
         <translation>%1 Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="801"/>
+        <location filename="../qtractorClipCommand.cpp" line="792"/>
         <source>reset takes</source>
         <translation>resetar tentativas</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1089"/>
+        <location filename="../qtractorClipCommand.cpp" line="1080"/>
         <source>clip record</source>
-        <translation type="unfinished"></translation>
+        <translation>gravador de sequência</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="1696"/>
@@ -426,7 +426,7 @@ MIDI:	</translation>
         <translation>Nomear sessão (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="614"/>
+        <location filename="../qtractorVstPlugin.cpp" line="613"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
@@ -466,7 +466,7 @@ MIDI:	</translation>
         <translation>monitoração da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="799"/>
+        <location filename="../qtractorClipCommand.cpp" line="790"/>
         <source>take %1</source>
         <translation>tentativa %1</translation>
     </message>
@@ -504,7 +504,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1405"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1422"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
@@ -537,7 +537,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Arquivos de áudio (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="606"/>
+        <location filename="../qtractorVstPlugin.cpp" line="605"/>
         <source>Vendor: </source>
         <translation>Fornecedor: </translation>
     </message>
@@ -604,7 +604,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>repassar canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="987"/>
+        <location filename="../qtractorClipCommand.cpp" line="978"/>
         <source>clip tool %1</source>
         <translation>ferramentas para sequências %1</translation>
     </message>
@@ -690,7 +690,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2156"/>
+        <location filename="../qtractorPlugin.cpp" line="2164"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>
@@ -2315,22 +2315,22 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1692"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gravar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1695"/>
         <source>Record Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar Sequência</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1698"/>
         <source>Record clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar sequência</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1701"/>
         <source>Record current clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar sequência selecionada (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1858"/>
@@ -2503,7 +2503,7 @@ Você quer mesmo manter as modificações?</translation>
         <location filename="../qtractorMainForm.cpp" line="2129"/>
         <location filename="../qtractorMainForm.cpp" line="2207"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished"></translation>
+        <translation>Não pergunte novamente</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7368"/>
@@ -6666,12 +6666,12 @@ Valor:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="230"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="1752"/>
         <source>REC</source>
-        <translation type="unfinished">GRAVAR</translation>
+        <translation>GRAVAR</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="233"/>
         <source>MIDI clip record state</source>
-        <translation type="unfinished"></translation>
+        <translation>Estado de gravação da sequência MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="724"/>
@@ -6913,12 +6913,12 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="403"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gravar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="412"/>
         <source>Record current MIDI clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar sequência MIDI selecionada (overdub)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="630"/>
@@ -10850,22 +10850,22 @@ Posso continuar?</translation>
 <context>
     <name>qtractorPluginListView</name>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1582"/>
+        <location filename="../qtractorPluginListView.cpp" line="1584"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1562"/>
+        <location filename="../qtractorPluginListView.cpp" line="1564"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1470"/>
+        <location filename="../qtractorPluginListView.cpp" line="1472"/>
         <source>&amp;Sends</source>
         <translation>&amp;Mandadas</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1617"/>
+        <location filename="../qtractorPluginListView.cpp" line="1619"/>
         <source>&amp;Auto-connect</source>
         <translation>&amp;Auto-conectar</translation>
     </message>
@@ -10875,17 +10875,17 @@ Posso continuar?</translation>
         <translation>C&amp;ancelar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1507"/>
+        <location filename="../qtractorPluginListView.cpp" line="1509"/>
         <source>Re&amp;move All</source>
         <translation>Re&amp;mover Tudo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1514"/>
+        <location filename="../qtractorPluginListView.cpp" line="1516"/>
         <source>Move &amp;Up</source>
         <translation>Mover Para &amp;Cima</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1596"/>
+        <location filename="../qtractorPluginListView.cpp" line="1598"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Saídas</translation>
     </message>
@@ -10895,7 +10895,7 @@ Posso continuar?</translation>
         <translation>copiar plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1519"/>
+        <location filename="../qtractorPluginListView.cpp" line="1521"/>
         <source>Move &amp;Down</source>
         <translation>Mover para &amp;Baixo</translation>
     </message>
@@ -10910,27 +10910,27 @@ Posso continuar?</translation>
         <translation>remover todos os plugins</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1474"/>
+        <location filename="../qtractorPluginListView.cpp" line="1476"/>
         <source>&amp;Returns</source>
         <translation>&amp;Retornos</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1458"/>
+        <location filename="../qtractorPluginListView.cpp" line="1460"/>
         <source>Add &amp;Insert</source>
         <translation>Adicionar &amp;Insertor</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1613"/>
+        <location filename="../qtractorPluginListView.cpp" line="1615"/>
         <source>&amp;Dedicated</source>
         <translation>&amp;Dedicadas</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1462"/>
+        <location filename="../qtractorPluginListView.cpp" line="1464"/>
         <source>Add &amp;Aux Send</source>
         <translation>Adicionar Mandada &amp;Auxiliar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1503"/>
+        <location filename="../qtractorPluginListView.cpp" line="1505"/>
         <source>&amp;Remove</source>
         <translation>&amp;Remover</translation>
     </message>
@@ -10940,7 +10940,7 @@ Posso continuar?</translation>
         <translation>&amp;Mover para Cá</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1452"/>
+        <location filename="../qtractorPluginListView.cpp" line="1454"/>
         <source>&amp;Add Plugin...</source>
         <translation>&amp;Adicionar Plugin...</translation>
     </message>
@@ -10955,27 +10955,27 @@ Posso continuar?</translation>
         <translation>desativar todos os plugins</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1575"/>
+        <location filename="../qtractorPluginListView.cpp" line="1577"/>
         <source>&amp;Properties...</source>
         <translation>&amp;Propriedades...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1480"/>
+        <location filename="../qtractorPluginListView.cpp" line="1482"/>
         <source>Ac&amp;tivate</source>
         <translation>A&amp;tivar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1494"/>
+        <location filename="../qtractorPluginListView.cpp" line="1496"/>
         <source>Deactivate Al&amp;l</source>
         <translation>Desativar T&amp;udo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1487"/>
+        <location filename="../qtractorPluginListView.cpp" line="1489"/>
         <source>Acti&amp;vate All</source>
         <translation>Ati&amp;var Tudo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1455"/>
+        <location filename="../qtractorPluginListView.cpp" line="1457"/>
         <source>&amp;Inserts</source>
         <translation>&amp;Insertores</translation>
     </message>

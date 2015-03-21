@@ -2064,6 +2064,7 @@ bool qtractorPluginList::loadElement (
 			qtractorPlugin::Values values;
 			qtractorMidiControl::Controllers controllers;
 			qtractorCurveFile cfile(qtractorPluginList::curveList());
+			QPoint posEditor;
 			const QString& sTypeHint = ePlugin.attribute("type");
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(sTypeHint);
@@ -2120,6 +2121,12 @@ bool qtractorPluginList::loadElement (
 					// Load plugin automation curves...
 					qtractorPlugin::loadCurveFile(&eParam, &cfile);
 				}
+				else
+				if (eParam.tagName() == "editor-pos") {
+					const QStringList& sxy = eParam.text().split(',');
+					posEditor.setX(sxy.at(0).toInt());
+					posEditor.setY(sxy.at(1).toInt());
+				}
 			}
 			qtractorPlugin *pPlugin
 				= qtractorPluginFile::createPlugin(this,
@@ -2151,6 +2158,7 @@ bool qtractorPluginList::loadElement (
 				pPlugin->applyCurveFile(&cfile);
 				pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
 				pPlugin->setActivated(bActivated); // Later's better!
+				pPlugin->setEditorPos(posEditor);
 			} else {
 				qtractorMessageList::append(
 					QObject::tr("%1(%2): %3 plugin not found.")
@@ -2259,6 +2267,13 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 				= pDocument->document()->createElement("curve-file");
 			pPlugin->saveCurveFile(pDocument, &eCurveFile, &cfile);
 			ePlugin.appendChild(eCurveFile);
+		}
+		// Save editor position...
+		const QPoint& posEditor = pPlugin->editorPos();
+		if (!posEditor.isNull()) {
+			pDocument->saveTextElement("editor-pos",
+				QString::number(posEditor.x()) + ',' +
+				QString::number(posEditor.y()), &ePlugin);
 		}
 
 		// Add this plugin...

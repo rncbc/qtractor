@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1440,11 +1440,13 @@ void qtractorPluginListView::contextMenuEvent (
 
 	int iItem = -1;
 	qtractorPlugin *pPlugin = NULL;
+	qtractorPluginType *pType = NULL;
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
 	if (pItem) {
 		iItem = QListWidget::row(pItem);
 		pPlugin = pItem->plugin();
+		pType = pPlugin->type();
 	}
 
 	pAction = menu.addAction(
@@ -1463,8 +1465,8 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setEnabled(m_pPluginList->channels() > 0
 		&& (m_pPluginList->flags() != qtractorPluginList::AudioOutBus));
 	pInsertMenu->addSeparator();
-	const bool bInsertEnabled = (pPlugin
-		&& (pPlugin->type())->typeHint() == qtractorPluginType::Insert);
+	const bool bInsertEnabled
+		= (pType && pType->typeHint() == qtractorPluginType::Insert);
 	pAction = pInsertMenu->addAction(
 		QIcon(":/images/itemAudioPortOut.png"),
 		tr("&Sends"), this, SLOT(insertPluginOutputs()));
@@ -1582,7 +1584,7 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("&Edit"), this, SLOT(editPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isEditorVisible());
-	pAction->setEnabled(pPlugin && pPlugin->type()->isEditor());
+	pAction->setEnabled(pType && pType->isEditor());
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
@@ -1714,7 +1716,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 		QWidget *pViewport = QListWidget::viewport();
 		QToolTip::showText(pViewport->mapToGlobal(pos),
 			QString("%1\n(%2: %3)")
-				.arg(pItem->text()) // (pPlugin->type())->name();
+				.arg(pItem->text()) // (pType->name();
 				.arg(pDirectAccessParam->name())
 				.arg(pDirectAccessParam->display()), pViewport);
 	}

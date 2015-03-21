@@ -2948,6 +2948,7 @@ void qtractorLv2Plugin::closeEditorEx (void)
 #endif
 
 	if (m_pQtWidget) {
+		setEditorPos(m_pQtWidget->pos());
 		m_pQtWidget = NULL;
 		setEditorClosed(true);
 	}
@@ -2978,6 +2979,9 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 					= m_pQtWidget->windowFlags() & ~Qt::WindowType_Mask;
 				m_pQtWidget->setWindowFlags(wflags | Qt::Widget);
 			}
+			const QPoint& posEditor = editorPos();
+			if (!posEditor.isNull())
+				m_pQtWidget->move(posEditor);
 			m_pQtWidget->show();
 			m_pQtWidget->raise();
 			m_pQtWidget->activateWindow();
@@ -2994,8 +2998,10 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_lv2_ui_show_interface && m_lv2_ui_show_interface->hide)
 			(*m_lv2_ui_show_interface->hide)(m_lv2_ui_handle);
 	#endif
-		if (m_pQtWidget)
+		if (m_pQtWidget) {
+			setEditorPos(m_pQtWidget->pos());
 			m_pQtWidget->hide();
+		}
 		m_bEditorVisible = false;
 	}
 
@@ -3106,6 +3112,12 @@ void qtractorLv2Plugin::resizeEditor ( const QSize& size ) const
 // Plugin configuration/state (save) snapshot.
 void qtractorLv2Plugin::freezeConfigs (void)
 {
+#ifdef CONFIG_LV2_UI
+	// Update current editor position...
+	if (m_pQtWidget && m_pQtWidget->isVisible())
+		setEditorPos(m_pQtWidget->pos());
+#endif
+
 	if (!type()->isConfigure())
 		return;
 

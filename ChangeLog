@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 and VST plugins GUI editor widget position is preserved
+  across hide/show cycles.
+  
 - Added application description as freedesktop.org's AppData.
 
 - Added a "Don't ask this again" prompt option to zip/archive

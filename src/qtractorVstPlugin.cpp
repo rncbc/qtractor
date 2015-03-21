@@ -189,8 +189,8 @@ public:
 		} *pRect;
 
 		if (m_pVstPlugin->vst_dispatch(0, effEditGetRect, 0, 0, &pRect, 0.0f)) {
-			int w = pRect->right - pRect->left;
-			int h = pRect->bottom - pRect->top;
+			const int w = pRect->right - pRect->left;
+			const int h = pRect->bottom - pRect->top;
 			if (w > 0 && h > 0)
 				QWidget::setFixedSize(w, h);
 		}
@@ -218,7 +218,6 @@ public:
 
 		if (m_pVstPlugin) {
 			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
-		//	m_pVstPlugin->setEditorVisible(false);
 			m_pVstPlugin = NULL;
 		}
 
@@ -970,6 +969,10 @@ void qtractorVstPlugin::freezeConfigs (void)
 	// saving plugin's state and before parameter values.
 	updateParamValues(false);
 
+	// Also, update current editor position...
+	if (m_pEditorWidget && m_pEditorWidget->isVisible())
+		setEditorPos(m_pEditorWidget->pos());
+
 	if (!type()->isConfigure())
 		return;
 
@@ -1032,8 +1035,12 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 {
 	// Is it already there?
 	if (m_pEditorWidget) {
-		if (!m_pEditorWidget->isVisible())
+		if (!m_pEditorWidget->isVisible()) {
+			const QPoint& posEditor = editorPos();
+			if (!posEditor.isNull())
+				m_pEditorWidget->move(posEditor);
 			m_pEditorWidget->show();
+		}
 		m_pEditorWidget->raise();
 		m_pEditorWidget->activateWindow();
 		return;
@@ -1078,6 +1085,8 @@ void qtractorVstPlugin::closeEditor (void)
 	qDebug("qtractorVstPlugin[%p]::closeEditor()", this);
 #endif
 
+	setEditorVisible(false);
+
 	// Close the parent widget, if any.
 	delete m_pEditorWidget;
 	m_pEditorWidget = NULL;
@@ -1103,7 +1112,15 @@ void qtractorVstPlugin::idleEditor (void)
 // GUI editor visibility state.
 void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 {
-	if (m_pEditorWidget) m_pEditorWidget->setVisible(bVisible);
+	if (m_pEditorWidget) {
+		if (bVisible) {
+			const QPoint& posEditor = editorPos();
+			if (!posEditor.isNull())
+				m_pEditorWidget->move(posEditor);
+		}
+		else setEditorPos(m_pEditorWidget->pos());
+		m_pEditorWidget->setVisible(bVisible);
+	}
 }
 
 bool qtractorVstPlugin::isEditorVisible (void) const

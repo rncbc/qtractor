@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -590,8 +590,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				iOldTrackChannel = pMidiClip->trackChannel();
 				pMidiClip->setTrackChannel(pItem->trackChannel);
 			}
-		//--pClip->close();	// Scrap peak file (audio).
-		//--pClip->open();
 			pItem->filename = sOldFilename;
 			if (pMidiClip)
 				pItem->trackChannel = iOldTrackChannel;
@@ -599,7 +597,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case RenameClip: {
-			QString sOldName = pClip->clipName();
+			const QString sOldName = pClip->clipName();
 			pClip->setClipName(pItem->clipName);
 			pItem->clipName = sOldName;
 			break;
@@ -649,9 +647,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 						fOldPitchShift = pAudioClip->pitchShift();
 				}
 			}
-		//--else
-		//--if (pItem->editCommand == NULL)
-		//--	pClip->close();
 			if (iOldStart != pItem->clipStart)
 				pTrack->unlinkClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
@@ -675,7 +670,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				else
 					(pItem->editCommand)->undo();
 			}
-		//--else pClip->open();
 			if (iOldStart != pItem->clipStart)
 				pTrack->insertClip(pClip);
 			pItem->clipStart  = iOldStart;
@@ -717,9 +711,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip) {
 				const float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-			//--pAudioClip->close();			// Scrap peak file.
 				pAudioClip->updateClipTime();	// Care of tempo change.
-			//--pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;
 			}
 			break;
@@ -731,7 +723,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip) {
 				const float fOldPitchShift = pAudioClip->pitchShift();
 				pAudioClip->setPitchShift(pItem->pitchShift);
-			//--pAudioClip->open();
 				pItem->pitchShift = fOldPitchShift;
 			}
 			break;
