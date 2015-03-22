@@ -126,7 +126,7 @@ Offs. / Len.:	%3 / %4</source>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1080"/>
         <source>clip record</source>
-        <translation type="unfinished"></translation>
+        <translation>クリップの録音</translation>
     </message>
     <message>
         <source>insert range</source>
@@ -252,7 +252,7 @@ Offs. / Len.:	%3 / %4</source>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="563"/>
         <source>Aux Send pseudo-plugin.</source>
-        <translation>Auxセンド擬似プラグイン</translation>
+        <translation>Auxセンド擬似プラグイン.</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="408"/>
@@ -400,7 +400,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="646"/>
         <source>Dummy plugin type.</source>
-        <translation>ダミープラグインタイプ</translation>
+        <translation>ダミープラグインタイプ。</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="678"/>
@@ -3892,22 +3892,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1692"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1695"/>
         <source>Record Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>クリップの録音</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1698"/>
         <source>Record clip</source>
-        <translation type="unfinished"></translation>
+        <translation>クリップの録音</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1701"/>
         <source>Record current clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のクリップを録音します(オーバーダブ)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1706"/>
@@ -4108,7 +4108,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1846"/>
         <source>&amp;Tempo Adjust...</source>
-        <translation>テンポ調整(&amp;T)</translation>
+        <translation>テンポ調整(&amp;T)...</translation>
     </message>
     <message>
         <source>&amp;Tempo...</source>
@@ -5794,7 +5794,7 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
         <location filename="../qtractorMainForm.cpp" line="2129"/>
         <location filename="../qtractorMainForm.cpp" line="2207"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished"></translation>
+        <translation>再確認しない</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5438"/>
@@ -6856,12 +6856,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="403"/>
         <source>Recor&amp;d</source>
-        <translation type="unfinished"></translation>
+        <translation>記録(&amp;D)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="412"/>
         <source>Record current MIDI clip (overdub)</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のMIDIクリップを記録する(オーバーダブ)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="417"/>
@@ -8282,12 +8282,12 @@ Length:	%3</source>
         <location filename="../qtractorMidiEditorForm.cpp" line="230"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="1752"/>
         <source>REC</source>
-        <translation type="unfinished">記録</translation>
+        <translation>記録</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="233"/>
         <source>MIDI clip record state</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIクリップの記録状態</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="238"/>
@@ -9434,7 +9434,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="255"/>
         <source>Auto-save current working session every:</source>
-        <translation>現在のワーキングセッションを自動保存</translation>
+        <translation>現在のワーキングセッションを自動保存:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="268"/>
@@ -9465,12 +9465,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="327"/>
         <source>Whether to ask for confirmation on archive directory removal</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブディレクトリの削除時に確認するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="330"/>
         <source>C&amp;onfirm archive removals</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブの削除を確認(&amp;O)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="343"/>
@@ -9706,7 +9706,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2404"/>
         <source>&amp;Style theme:</source>
-        <translation>スタイルテーマ(&amp;S)</translation>
+        <translation>スタイルテーマ(&amp;S):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="914"/>
@@ -9944,7 +9944,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1681"/>
         <source>MIDI Cloc&amp;k:</source>
-        <translation>MIDIクロック(&amp;K)</translation>
+        <translation>MIDIクロック(&amp;K):</translation>
     </message>
     <message>
         <source>Cloc&amp;k:</source>
@@ -10138,12 +10138,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2285"/>
         <source>H&amp;old auto-scrolling (follow play-head) on edits</source>
-        <translation>再生中に自動スクロールを再生位置に追随させる</translation>
+        <translation>編集中に自動スクロールを再生位置に追随させる(&amp;O)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2298"/>
         <source>Whether to use desktop environment native dialogs.</source>
-        <translation>デスクトップ環境ネイティブなダイアログを使うかどうか</translation>
+        <translation>デスクトップ環境ネイティブなダイアログを使うかどうか.</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2301"/>
@@ -10153,7 +10153,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2317"/>
         <source>A&amp;utomatic mixer strip/grid layout (multi-row)</source>
-        <translation type="unfinished"></translation>
+        <translation>ミキサーのトリミング表示あるいはグリッドレイアウト表示を自動で選択する</translation>
     </message>
     <message>
         <source>Mixer</source>
@@ -10162,7 +10162,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2314"/>
         <source>Whether to allow automatic mixer strip/grid layout (multi-row).</source>
-        <translation type="unfinished"></translation>
+        <translation>ミキサーの表示方法を自動でトリミングあるいはグリッドレイアウトから選択するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2333"/>
@@ -10172,7 +10172,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2354"/>
         <source>&amp;Color theme:</source>
-        <translation>カラーテーマ</translation>
+        <translation>カラーテーマ(&amp;C):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2373"/>
@@ -11351,7 +11351,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="373"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
-        <translation>キーボードショートカット (%1) はすでにアサインされています</translation>
+        <translation>キーボードショートカット (%1) はすでに関連付けされています.</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="432"/>
