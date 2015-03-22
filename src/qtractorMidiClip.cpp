@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -341,7 +341,6 @@ bool qtractorMidiClip::openMidiFile (
 
 	// Set local properties...
 	setFilename(sFilename);
-	setTrackChannel(iTrackChannel);
 	setDirty(false);
 
 	// Register file path...
@@ -480,6 +479,9 @@ bool qtractorMidiClip::openMidiFile (
 		//if (m_pSeq->events().count() < 1)
 		//	return false;
 	}
+
+	// Actual track-channel set...
+	setTrackChannel(iTrackChannel);
 
 	// Make it a brand new revision...
 	// setRevision(1);
