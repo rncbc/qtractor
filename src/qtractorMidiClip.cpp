@@ -409,15 +409,12 @@ bool qtractorMidiClip::openMidiFile (
 	if (bWrite) {
 		// On write mode, iTrackChannel holds the SMF format,
 		// so we'll convert it here as properly.
-		unsigned short iFormat = 0;
+		const unsigned short iFormat
+			= qtractorMidiClip::defaultFormat();
 		unsigned short iTracks = 1;
-		if (iTrackChannel == 0) {
-			// SMF format 0 (1 track, 1 channel)
-			iTrackChannel = pTrack->midiChannel();
-		} else {
+		if (iFormat == 1) {
 			// SMF format 1 (2 tracks, 1 channel)
 			iTrackChannel = 1;
-			iFormat = 1;
 			++iTracks;
 		}
 		// That's it.
@@ -468,8 +465,9 @@ bool qtractorMidiClip::openMidiFile (
 				pMidiBus->importSysexList(pSeq);
 		#endif
 			// Import tempo map as well...
-			if (m_pFile->tempoMap()) {
-				m_pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
+			qtractorMidiFileTempo *pTempoMap = m_pFile->tempoMap();
+			if (pTempoMap) {
+				pTempoMap->intoTimeScale(pSession->timeScale(), t0);
 				pSession->updateTimeScale();
 			}
 			// Reset session flag now.
@@ -480,7 +478,7 @@ bool qtractorMidiClip::openMidiFile (
 		//	return false;
 	}
 
-	// Actual track-channel set...
+	// Actual track-channel is set by now...
 	setTrackChannel(iTrackChannel);
 
 	// Make it a brand new revision...

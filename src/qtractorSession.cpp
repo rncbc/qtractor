@@ -1564,7 +1564,7 @@ void qtractorSession::trackRecord (
 		pMidiClip->setClipStart(iClipStart);
 		pMidiClip->openMidiFile(
 			createFilePath(pTrack->trackName(), "mid"),
-			qtractorMidiClip::defaultFormat(),
+			pTrack->midiChannel(),
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip, iFrameTime);
 		// MIDI adjust to playing queue start

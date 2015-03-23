@@ -137,7 +137,7 @@
         <translation>Mostrar ajuda sobre opções em linha de comando</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1154"/>
+        <location filename="../qtractorMidiClip.cpp" line="1152"/>
         <source> (%1% vol)</source>
         <translation> (%1% vol)</translation>
     </message>
@@ -190,7 +190,7 @@
         <translation>Uso: %1 [opções] [arquivo-da-sessão]</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1143"/>
+        <location filename="../qtractorMidiClip.cpp" line="1141"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Canal %1</translation>
@@ -220,7 +220,7 @@
         <translation>%1 Gravar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1141"/>
+        <location filename="../qtractorMidiClip.cpp" line="1139"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formato %1)
@@ -383,7 +383,7 @@ MIDI:	</translation>
 	(%1 mudança de altura em semitons)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1145"/>
+        <location filename="../qtractorMidiClip.cpp" line="1143"/>
         <location filename="../qtractorMidiFile.cpp" line="1237"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
@@ -589,7 +589,7 @@ Offset / Length:	%3 / %4</source>
 Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1148"/>
+        <location filename="../qtractorMidiClip.cpp" line="1146"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 pistas, %2 tpqn</translation>
     </message>
