@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -341,7 +341,6 @@ bool qtractorMidiClip::openMidiFile (
 
 	// Set local properties...
 	setFilename(sFilename);
-	setTrackChannel(iTrackChannel);
 	setDirty(false);
 
 	// Register file path...
@@ -410,15 +409,12 @@ bool qtractorMidiClip::openMidiFile (
 	if (bWrite) {
 		// On write mode, iTrackChannel holds the SMF format,
 		// so we'll convert it here as properly.
-		unsigned short iFormat = 0;
+		const unsigned short iFormat
+			= qtractorMidiClip::defaultFormat();
 		unsigned short iTracks = 1;
-		if (iTrackChannel == 0) {
-			// SMF format 0 (1 track, 1 channel)
-			iTrackChannel = pTrack->midiChannel();
-		} else {
+		if (iFormat == 1) {
 			// SMF format 1 (2 tracks, 1 channel)
 			iTrackChannel = 1;
-			iFormat = 1;
 			++iTracks;
 		}
 		// That's it.
@@ -469,8 +465,9 @@ bool qtractorMidiClip::openMidiFile (
 				pMidiBus->importSysexList(pSeq);
 		#endif
 			// Import tempo map as well...
-			if (m_pFile->tempoMap()) {
-				m_pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
+			qtractorMidiFileTempo *pTempoMap = m_pFile->tempoMap();
+			if (pTempoMap) {
+				pTempoMap->intoTimeScale(pSession->timeScale(), t0);
 				pSession->updateTimeScale();
 			}
 			// Reset session flag now.
@@ -480,6 +477,9 @@ bool qtractorMidiClip::openMidiFile (
 		//if (m_pSeq->events().count() < 1)
 		//	return false;
 	}
+
+	// Actual track-channel is set by now...
+	setTrackChannel(iTrackChannel);
 
 	// Make it a brand new revision...
 	// setRevision(1);

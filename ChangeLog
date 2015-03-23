@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip record/reopen to/from SMF format 0 has been fixed.
+
 - LV2 and VST plugins GUI editor widget position is preserved
   across hide/show cycles.
   
