@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -645,7 +645,7 @@ bool qtractorAudioEngine::activate (void)
 		qtractorAudioEngine_graph_order, this);
 	jack_set_port_registration_callback(m_pJackClient,
 		qtractorAudioEngine_graph_port, this);
-    jack_set_buffer_size_callback(m_pJackClient,
+	jack_set_buffer_size_callback(m_pJackClient,
 		qtractorAudioEngine_buffer_size, this);
 
 	// Set audio export processor callback.
@@ -672,8 +672,8 @@ bool qtractorAudioEngine::activate (void)
 		qtractorAudioEngine_property_change, this);
 #endif
 
-    // Reset all dependable monitoring...
-    resetAllMonitors();
+	// Reset all dependable monitoring...
+	resetAllMonitors();
 
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
@@ -711,12 +711,12 @@ bool qtractorAudioEngine::activate (void)
 bool qtractorAudioEngine::start (void)
 {
 	if (!isActivated())
-	    return false;
+		return false;
 
-    // Reset all dependables...
-    resetAllMonitors();
+	// Reset all dependables...
+	resetAllMonitors();
 
-    // Make sure we have an actual session cursor...
+	// Make sure we have an actual session cursor...
 	resetMetro();
 
 	// Start transport rolling...
@@ -732,7 +732,7 @@ bool qtractorAudioEngine::start (void)
 void qtractorAudioEngine::stop (void)
 {
 	if (!isActivated())
-	    return;
+		return;
 
 	if (m_transportMode & qtractorBus::Output) {
 		jack_transport_stop(m_pJackClient);
@@ -1351,7 +1351,7 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	syncExport(m_iExportStart, m_iExportEnd);
 
 	// Special initialization.
-    m_iBufferOffset = 0;
+	m_iBufferOffset = 0;
 
 	// Start export (freewheeling)...
 	jack_set_freewheel(m_pJackClient, 1);
@@ -1943,10 +1943,10 @@ unsigned long qtractorAudioEngine::jackFrame (void) const
 // Reset all audio monitoring...
 void qtractorAudioEngine::resetAllMonitors (void)
 {
-    // There must a session reference...
-    qtractorSession *pSession = session();
-    if (pSession == NULL)
-        return;
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
 
 	// Reset all audio bus monitors...
 	for (qtractorBus *pBus = buses().first();

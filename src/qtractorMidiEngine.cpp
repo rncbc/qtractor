@@ -777,7 +777,7 @@ void qtractorMidiPlayerThread::run (void)
 		#endif
 			unsigned long iSleep = iReadAhead;
 			if (iSleep +  iDelta > 0)
-			    iSleep += iDelta;
+				iSleep += iDelta;
 			msleep((1000 * iSleep) / iSampleRate);
 			iFrameStart = iFrameEnd;
 		}

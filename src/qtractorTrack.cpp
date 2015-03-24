@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1087,23 +1087,20 @@ void qtractorTrack::removeClip ( qtractorClip *pClip )
 
 
 // Current clip on record (capture).
-void qtractorTrack::setClipRecord (
-	qtractorClip *pClipRecord, unsigned long iClipRecordStart )
+void qtractorTrack::setClipRecord ( qtractorClip *pClipRecord )
 {
 	if (!m_bClipRecordEx && m_pClipRecord)
 		delete m_pClipRecord;
 
 	m_pClipRecord = pClipRecord;
 
-	if (m_bClipRecordEx && m_pClipRecord == NULL) {
-		m_bClipRecordEx = false;
-		setRecord(false);
+	if (m_pClipRecord == NULL) {
+		m_iClipRecordStart = 0;
+		if (m_bClipRecordEx) {
+			m_bClipRecordEx = false;
+			setRecord(false);
+		}
 	}
-	else
-	if (m_pSession && m_pSession->isPlaying())
-		m_iClipRecordStart = iClipRecordStart;
-	else
-		m_iClipRecordStart = (m_pClipRecord ? m_pClipRecord->clipStart() : 0);
 }
 
 qtractorClip *qtractorTrack::clipRecord (void) const
@@ -1113,10 +1110,16 @@ qtractorClip *qtractorTrack::clipRecord (void) const
 
 
 // Current clip on record absolute start frame (capture).
+void qtractorTrack::setClipRecordStart ( unsigned long iClipRecordStart )
+{
+	m_iClipRecordStart = iClipRecordStart;
+}
+
 unsigned long qtractorTrack::clipRecordStart (void) const
 {
 	return m_iClipRecordStart;
 }
+
 
 unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 {
@@ -1149,6 +1152,7 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 		iClipRecordEnd -= m_iClipRecordStart;
 	if (m_pClipRecord)
 		iClipRecordEnd += m_pClipRecord->clipStart();
+
 	return iClipRecordEnd;
 }
 

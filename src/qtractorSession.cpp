@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1154,6 +1154,7 @@ void qtractorSession::setPlaying ( bool bPlaying )
 				pTrack; pTrack = pTrack->next()) {
 			qtractorClip *pClipRecord = pTrack->clipRecord();
 			if (pClipRecord && !pTrack->isClipRecordEx()) {
+				pTrack->setClipRecordStart(iClipStart);
 				pClipRecord->setClipStart(iClipStart);
 				// MIDI adjust to playing queue start...
 				if (pTrack->trackType() == qtractorTrack::Midi
@@ -1496,6 +1497,8 @@ void qtractorSession::trackRecord (
 		iClipStart, iFrameTime);
 #endif
 
+	const qtractorTrack::TrackType trackType = pTrack->trackType();
+
 	// Just ditch the in-record clip...
 	if (!bRecord) {
 		pTrack->setClipRecord(NULL);
@@ -1503,7 +1506,7 @@ void qtractorSession::trackRecord (
 		if (recordTracks() < 1)
 			setRecording(false);
 		// One-down current tracks in record mode.
-		switch (pTrack->trackType()) {
+		switch (trackType) {
 		case qtractorTrack::Audio:
 			--m_iAudioRecord;
 			break;
@@ -1525,7 +1528,7 @@ void qtractorSession::trackRecord (
 	// Are we set record exclusive?
 	if (pTrack->isClipRecordEx()) {
 		// One-up current tracks in record mode.
-		switch (pTrack->trackType()) {
+		switch (trackType) {
 		case qtractorTrack::Audio:
 			++m_iAudioRecord;
 			break;
@@ -1539,7 +1542,9 @@ void qtractorSession::trackRecord (
 		return;
 	}
 
-	switch (pTrack->trackType()) {
+	const bool bPlaying = isPlaying();
+
+	switch (trackType) {
 	case qtractorTrack::Audio:
 	{
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
@@ -1553,7 +1558,7 @@ void qtractorSession::trackRecord (
 			createFilePath(pTrack->trackName(),
 				qtractorAudioFileFactory::defaultExt()),
 			qtractorAudioFile::Write);
-		pTrack->setClipRecord(pAudioClip, iFrameTime);
+		pTrack->setClipRecord(pAudioClip);
 		// One-up audio tracks in record mode.
 		++m_iAudioRecord;
 		break;
@@ -1566,10 +1571,10 @@ void qtractorSession::trackRecord (
 			createFilePath(pTrack->trackName(), "mid"),
 			pTrack->midiChannel(),
 			qtractorMidiFile::Write);
-		pTrack->setClipRecord(pMidiClip, iFrameTime);
+		pTrack->setClipRecord(pMidiClip);
 		// MIDI adjust to playing queue start
 		// iif armed while already playing ...
-		if (isPlaying()) {
+		if (bPlaying) {
 			const unsigned long iTime = pMidiClip->clipStartTime();
 			const unsigned long iTimeStart = m_pMidiEngine->timeStart();
 			if (iTime > iTimeStart)
@@ -1583,9 +1588,13 @@ void qtractorSession::trackRecord (
 		break;
 	}
 
+	// Make sure the recording clip
+	// starts on some exact location...
+	pTrack->setClipRecordStart(bPlaying ? iFrameTime : iClipStart);
+
 #if 0
 	// Mute track as appropriate...
-	if (isPlaying())
+	if (bPlaying)
 		trackMute(pTrack, true);
 #endif
 }
