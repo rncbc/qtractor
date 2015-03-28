@@ -635,8 +635,8 @@ void qtractorMidiOutputThread::processSync (void)
 
 
 // MIDI track output process resync.
-void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
-	unsigned long iFrameStart )
+void qtractorMidiOutputThread::trackSync (
+	qtractorTrack *pTrack, unsigned long iFrameStart )
 {
 	QMutexLocker locker(&m_mutex);
 
@@ -2746,7 +2746,8 @@ bool qtractorMidiEngine::isPlayerOpen (void) const
 
 
 // Open and start audition/pre-listening...
-bool qtractorMidiEngine::openPlayer ( const QString& sFilename, int iTrackChannel )
+bool qtractorMidiEngine::openPlayer (
+	const QString& sFilename, int iTrackChannel )
 {
 	if (isPlaying())
 		return false;
@@ -2782,8 +2783,9 @@ void qtractorMidiEngine::sendMmcLocate ( unsigned long iLocate ) const
 	sendMmcCommand(qtractorMmcEvent::LOCATE, data, sizeof(data));
 }
 
-void qtractorMidiEngine::sendMmcMaskedWrite ( qtractorMmcEvent::SubCommand scmd,
-	int iTrack,	bool bOn ) const
+
+void qtractorMidiEngine::sendMmcMaskedWrite (
+	qtractorMmcEvent::SubCommand scmd, int iTrack, bool bOn ) const
 {
 	unsigned char data[4];
 	const int iMask = (1 << (iTrack < 2 ? iTrack + 5 : (iTrack - 2) % 7));
@@ -2796,7 +2798,9 @@ void qtractorMidiEngine::sendMmcMaskedWrite ( qtractorMmcEvent::SubCommand scmd,
 	sendMmcCommand(qtractorMmcEvent::MASKED_WRITE, data, sizeof(data));
 }
 
-void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
+
+void qtractorMidiEngine::sendMmcCommand (
+	qtractorMmcEvent::Command cmd,
 	unsigned char *pMmcData, unsigned short iMmcData ) const
 {
 	// Do we have MMC output enabled?
@@ -2838,7 +2842,8 @@ void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 
 
 // SPP dispatch special command.
-void qtractorMidiEngine::sendSppCommand ( int iCmdType, unsigned short iSongPos ) const
+void qtractorMidiEngine::sendSppCommand (
+	int iCmdType, unsigned short iSongPos ) const
 {
 	// Do we have SPP output enabled?
 	if ((m_sppMode & qtractorBus::Output) == 0)
@@ -3331,8 +3336,8 @@ bool qtractorMidiEngine::saveElement (
 
 
 // MIDI-export method.
-bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
-	const QList<qtractorMidiBus *>& exportBuses,
+bool qtractorMidiEngine::fileExport (
+	const QString& sExportPath, const QList<qtractorMidiBus *>& exportBuses,
 	unsigned long iExportStart, unsigned long iExportEnd )
 {
 	// No simultaneous or foul exports...
@@ -3713,19 +3718,24 @@ bool qtractorMidiBus::open (void)
 		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
 		return false;
-	if (pMidiEngine->alsaSeq() == NULL)
+
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return false;
+
+	const qtractorBus::BusMode busMode
+		= qtractorMidiBus::busMode();
 
 	// The verry same port might be used for input and output...
 	unsigned int flags = 0;
 
-	if (busMode() & qtractorBus::Input)
+	if (busMode & qtractorBus::Input)
 		flags |= SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE;
-	if (busMode() & qtractorBus::Output)
+	if (busMode & qtractorBus::Output)
 		flags |= SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ;
 
 	m_iAlsaPort = snd_seq_create_simple_port(
-		pMidiEngine->alsaSeq(), busName().toUtf8().constData(), flags,
+		pAlsaSeq, busName().toUtf8().constData(), flags,
 		SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
 
 	if (m_iAlsaPort < 0)
@@ -3735,14 +3745,14 @@ bool qtractorMidiBus::open (void)
 	snd_seq_port_info_t *pinfo;
 	snd_seq_port_info_alloca(&pinfo);
 
-	if (snd_seq_get_port_info(pMidiEngine->alsaSeq(), m_iAlsaPort, pinfo) < 0)
+	if (snd_seq_get_port_info(pAlsaSeq, m_iAlsaPort, pinfo) < 0)
 		return false;
 
 	snd_seq_port_info_set_timestamping(pinfo, 1);
 	snd_seq_port_info_set_timestamp_queue(pinfo, pMidiEngine->alsaQueue());
 	snd_seq_port_info_set_timestamp_real(pinfo, 0);	// MIDI ticks.
 
-	if (snd_seq_set_port_info(pMidiEngine->alsaSeq(), m_iAlsaPort, pinfo) < 0)
+	if (snd_seq_set_port_info(pAlsaSeq, m_iAlsaPort, pinfo) < 0)
 		return false;
 
 	// Plugin lists need some buffer (re)allocation too...
@@ -3763,12 +3773,14 @@ void qtractorMidiBus::close (void)
 		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
 		return;
-	if (pMidiEngine->alsaSeq() == NULL)
+
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 	shutOff(true);
 
-	snd_seq_delete_simple_port(pMidiEngine->alsaSeq(), m_iAlsaPort);
+	snd_seq_delete_simple_port(pAlsaSeq, m_iAlsaPort);
 
 	m_iAlsaPort = -1;
 }
@@ -3777,10 +3789,11 @@ void qtractorMidiBus::close (void)
 // Bus mode change event.
 void qtractorMidiBus::updateBusMode (void)
 {
-	const qtractorBus::BusMode mode = busMode();
+	const qtractorBus::BusMode busMode
+		= qtractorMidiBus::busMode();
 
 	// Have a new/old input monitor?
-	if ((mode & qtractorBus::Input) && !(mode & qtractorBus::Ex)) {
+	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
 		if (m_pIMidiMonitor == NULL)
 			m_pIMidiMonitor = new qtractorMidiMonitor();
 		if (m_pIPluginList == NULL)
@@ -3803,7 +3816,7 @@ void qtractorMidiBus::updateBusMode (void)
 	}
 
 	// Have a new/old output monitor?
-	if ((mode & qtractorBus::Output) && !(mode & qtractorBus::Ex)) {
+	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		if (m_pOMidiMonitor == NULL)
 			m_pOMidiMonitor = new qtractorMidiMonitor();
 		if (m_pOPluginList == NULL)
@@ -3840,7 +3853,9 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
 		return;
-	if (pMidiEngine->alsaSeq() == NULL)
+
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -3911,7 +3926,8 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 	// Don't do anything else if engine
 	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 	// Do it for the MIDI plugins if applicable...
@@ -3943,7 +3959,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 			ev.data.control.value = (iBank & 0x3f80) >> 7;
 		else
 			ev.data.control.value = (iBank & 0x007f);
-		snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+		snd_seq_event_output_direct(pAlsaSeq, &ev);
 		if (pTrackMidiManager)
 			pTrackMidiManager->direct(&ev);
 		if (pBusMidiManager)
@@ -3956,7 +3972,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		ev.data.control.channel = iChannel;
 		ev.data.control.param   = BANK_SELECT_LSB;
 		ev.data.control.value   = (iBank & 0x007f);
-		snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+		snd_seq_event_output_direct(pAlsaSeq, &ev);
 		if (pTrackMidiManager)
 			pTrackMidiManager->direct(&ev);
 		if (pBusMidiManager)
@@ -3968,7 +3984,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iChannel;
 		ev.data.control.value   = iProg;
-		snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+		snd_seq_event_output_direct(pAlsaSeq, &ev);
 		if (pTrackMidiManager)
 			pTrackMidiManager->direct(&ev);
 		if (pBusMidiManager)
@@ -3980,8 +3996,8 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 
 // Direct MIDI controller helper.
-void qtractorMidiBus::setController ( qtractorTrack *pTrack,
-	int iController, int iValue ) const
+void qtractorMidiBus::setController (
+	qtractorTrack *pTrack, int iController, int iValue ) const
 {
 	setControllerEx(pTrack->midiChannel(), iController, iValue, pTrack);
 }
@@ -4005,7 +4021,8 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 
 	// Don't do anything else if engine
 	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -4029,7 +4046,7 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	ev.data.control.channel = iChannel;
 	ev.data.control.param   = iController;
 	ev.data.control.value   = iValue;
-	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pAlsaSeq, &ev);
 
 	// Do it for the MIDI plugins too...
 	if (pTrack && (pTrack->pluginList())->midiManager())
@@ -4053,7 +4070,8 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 
 	// Don't do anything else if engine
 	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -4137,13 +4155,13 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 		break;
 	}
 
-	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pAlsaSeq, &ev);
 }
 
 
 // Direct MIDI note on/off helper.
-void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
-	int iNote, int iVelocity ) const
+void qtractorMidiBus::sendNote (
+	qtractorTrack *pTrack, int iNote, int iVelocity ) const
 {
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
@@ -4153,10 +4171,12 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 
 	// Don't do anything else if engine
 	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 	const unsigned short iChannel = pTrack->midiChannel();
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d)",
 		this, iChannel, iNote, iVelocity);
@@ -4178,7 +4198,7 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	ev.data.note.channel  = iChannel;
 	ev.data.note.note     = iNote;
 	ev.data.note.velocity = iVelocity;
-	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pAlsaSeq, &ev);
 
 	// Do it for the MIDI plugins too...
 	if ((pTrack->pluginList())->midiManager())
@@ -4203,7 +4223,8 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 
 
 // Direct SysEx helpers.
-void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) const
+void qtractorMidiBus::sendSysex (
+	unsigned char *pSysex, unsigned int iSysex ) const
 {
 	// Yet again, we need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
@@ -4213,7 +4234,8 @@ void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) c
 
 	// Don't do anything else if engine
 	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -4238,7 +4260,7 @@ void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) c
 	// Just set SYSEX stuff and send it out..
 	ev.type = SND_SEQ_EVENT_SYSEX;
 	snd_seq_ev_set_sysex(&ev, iSysex, pSysex);
-	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pAlsaSeq, &ev);
 
 //	pMidiEngine->flush();
 }
@@ -4260,7 +4282,8 @@ void qtractorMidiBus::sendSysexList (void) const
 
 	// Don't do anything else if engine
 	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);
@@ -4286,7 +4309,7 @@ void qtractorMidiBus::sendSysexList (void) const
 		// Just set SYSEX stuff and send it out..
 		ev.type = SND_SEQ_EVENT_SYSEX;
 		snd_seq_ev_set_sysex(&ev, pSysex->size(), pSysex->data());
-		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+		snd_seq_event_output(pAlsaSeq, &ev);
 		// AG: Do it for the MIDI plugins too...
 		if (pluginList_out() && pluginList_out()->midiManager())
 			(pluginList_out()->midiManager())->direct(&ev);
@@ -4434,17 +4457,20 @@ qtractorCurveFile *qtractorMidiBus::curveFile_out (void) const
 int qtractorMidiBus::updateConnects (
 	qtractorBus::BusMode busMode, ConnectList& connects, bool bConnect ) const
 {
+	// Modes must match, at least...
+	if ((busMode & qtractorMidiBus::busMode()) == 0)
+		return 0;
+
+	if (bConnect && connects.isEmpty())
+		return 0;
+
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
 		return 0;
-	if (pMidiEngine->alsaSeq() == NULL)
-		return 0;
 
-	// Modes must match, at least...
-	if ((busMode & qtractorMidiBus::busMode()) == 0)
-		return 0;
-	if (bConnect && connects.isEmpty())
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == NULL)
 		return 0;
 
 	// Which kind of subscription?
@@ -4472,15 +4498,13 @@ int qtractorMidiBus::updateConnects (
 	else
 		iPortFlags = SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE;
 
-	while (snd_seq_query_next_client(
-			pMidiEngine->alsaSeq(), pClientInfo) >= 0) {
+	while (snd_seq_query_next_client(pAlsaSeq, pClientInfo) >= 0) {
 		item.client = snd_seq_client_info_get_client(pClientInfo);
 		item.clientName = QString::fromUtf8(
 			snd_seq_client_info_get_name(pClientInfo));
 		snd_seq_port_info_set_client(pPortInfo, item.client);
 		snd_seq_port_info_set_port(pPortInfo, -1);
-		while (snd_seq_query_next_port(
-				pMidiEngine->alsaSeq(), pPortInfo) >= 0) {
+		while (snd_seq_query_next_port(pAlsaSeq, pPortInfo) >= 0) {
 			const unsigned int iPortCapability
 				= snd_seq_port_info_get_capability(pPortInfo);
 			if (((iPortCapability & iPortFlags) == iPortFlags) &&
@@ -4503,16 +4527,15 @@ int qtractorMidiBus::updateConnects (
 	seq_addr.client = pMidiEngine->alsaClient();
 	seq_addr.port   = m_iAlsaPort;
 	snd_seq_query_subscribe_set_root(pAlsaSubs, &seq_addr);
-	while (snd_seq_query_port_subscribers(
-			pMidiEngine->alsaSeq(), pAlsaSubs) >= 0) {
+	while (snd_seq_query_port_subscribers(pAlsaSeq, pAlsaSubs) >= 0) {
 		seq_addr = *snd_seq_query_subscribe_get_addr(pAlsaSubs);
-		snd_seq_get_any_client_info(
-			pMidiEngine->alsaSeq(), seq_addr.client, pClientInfo);
+		snd_seq_get_any_client_info(pAlsaSeq,
+			seq_addr.client, pClientInfo);
 		item.client = seq_addr.client;
 		item.clientName = QString::fromUtf8(
 			snd_seq_client_info_get_name(pClientInfo));
-		snd_seq_get_any_port_info(
-			pMidiEngine->alsaSeq(), seq_addr.client, seq_addr.port, pPortInfo);
+		snd_seq_get_any_port_info(pAlsaSeq,
+			seq_addr.client, seq_addr.port, pPortInfo);
 		item.port = seq_addr.port;
 		item.portName = QString::fromUtf8(
 			snd_seq_port_info_get_name(pPortInfo));
@@ -4569,7 +4592,7 @@ int qtractorMidiBus::updateConnects (
 				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
 				pItem->client, pItem->portName.toUtf8().constData());
 #endif
-		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pPortSubs) == 0) {
+		if (snd_seq_subscribe_port(pAlsaSeq, pPortSubs) == 0) {
 			const int iItem = connects.indexOf(pItem);
 			if (iItem >= 0) {
 				connects.removeAt(iItem);
@@ -4716,16 +4739,19 @@ bool qtractorMidiBus::loadElement (
 bool qtractorMidiBus::saveElement (
 	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
+	const qtractorBus::BusMode busMode
+		= qtractorMidiBus::busMode();
+
 	pElement->setAttribute("name",
 		qtractorMidiBus::busName());
 	pElement->setAttribute("mode",
-		qtractorBus::textFromBusMode(qtractorMidiBus::busMode()));
+		qtractorBus::textFromBusMode(busMode));
 
 	pDocument->saveTextElement("monitor",
 		qtractorDocument::textFromBool(
 			qtractorMidiBus::isMonitor()), pElement);
 
-	if (qtractorMidiBus::busMode() & qtractorBus::Input) {
+	if (busMode & qtractorBus::Input) {
 		pDocument->saveTextElement("input-gain",
 			QString::number(qtractorMidiBus::monitor_in()->gain()),
 				pElement);
@@ -4765,7 +4791,7 @@ bool qtractorMidiBus::saveElement (
 		pElement->appendChild(eMidiInputs);
 	}
 
-	if (qtractorMidiBus::busMode() & qtractorBus::Output) {
+	if (busMode & qtractorBus::Output) {
 		pDocument->saveTextElement("output-gain",
 			QString::number(qtractorMidiBus::monitor_out()->gain()),
 				pElement);

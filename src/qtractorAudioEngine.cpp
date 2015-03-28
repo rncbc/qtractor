@@ -1267,8 +1267,8 @@ bool qtractorAudioEngine::isExporting (void) const
 
 
 // Audio-export method.
-bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
-	const QList<qtractorAudioBus *>& exportBuses,
+bool qtractorAudioEngine::fileExport (
+	const QString& sExportPath, const QList<qtractorAudioBus *>& exportBuses,
 	unsigned long iExportStart, unsigned long iExportEnd )
 {
 	// No simultaneous or foul exports...
@@ -1979,9 +1979,9 @@ void qtractorAudioEngine::resetAllMonitors (void)
 //
 
 // Constructor.
-qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
-	const QString& sBusName, BusMode busMode, bool bMonitor,
-	unsigned short iChannels )
+qtractorAudioBus::qtractorAudioBus (
+	qtractorAudioEngine *pAudioEngine, const QString& sBusName,
+	BusMode busMode, bool bMonitor, unsigned short iChannels )
 	: qtractorBus(pAudioEngine, sBusName, busMode, bMonitor)
 {
 	m_iChannels = iChannels;
@@ -2100,20 +2100,25 @@ bool qtractorAudioBus::open (void)
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == NULL)
 		return false;
-	if (pAudioEngine->jackClient() == NULL)
+
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient == NULL)
 		return false;
+
+	const qtractorBus::BusMode busMode
+		= qtractorAudioBus::busMode();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 
 	unsigned short i;
 	unsigned short iDisabled = 0;
 
-	if (busMode() & qtractorBus::Input) {
+	if (busMode & qtractorBus::Input) {
 		// Register and allocate input port buffers...
 		m_ppIPorts  = new jack_port_t * [m_iChannels];
 		m_ppIBuffer = new float * [m_iChannels];
 		const QString sIPortName(busName() + "/in_%1");
 		for (i = 0; i < m_iChannels; ++i) {
-			m_ppIPorts[i] = jack_port_register(
-				pAudioEngine->jackClient(),
+			m_ppIPorts[i] = jack_port_register(pJackClient,
 				sIPortName.arg(i + 1).toUtf8().constData(),
 				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsInput, 0);
@@ -2122,14 +2127,13 @@ bool qtractorAudioBus::open (void)
 		}
 	}
 
-	if (busMode() & qtractorBus::Output) {
+	if (busMode & qtractorBus::Output) {
 		// Register and allocate output port buffers...
 		m_ppOPorts  = new jack_port_t * [m_iChannels];
 		m_ppOBuffer = new float * [m_iChannels];
 		const QString sOPortName(busName() + "/out_%1");
 		for (i = 0; i < m_iChannels; ++i) {
-			m_ppOPorts[i] = jack_port_register(
-				pAudioEngine->jackClient(),
+			m_ppOPorts[i] = jack_port_register(pJackClient,
 				sOPortName.arg(i + 1).toUtf8().constData(),
 				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsOutput, 0);
@@ -2139,7 +2143,6 @@ bool qtractorAudioBus::open (void)
 	}
 
 	// Allocate internal working bus buffers...
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 	m_ppXBuffer = new float * [m_iChannels];
 	m_ppYBuffer = new float * [m_iChannels];
 	for (i = 0; i < m_iChannels; ++i) {
@@ -2171,47 +2174,48 @@ void qtractorAudioBus::close (void)
 	if (pAudioEngine == NULL)
 		return;
 
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient == NULL)
+		return;
+
+	const qtractorBus::BusMode busMode
+		= qtractorAudioBus::busMode();
+
 	unsigned short i;
 
-	if (busMode() & qtractorBus::Input) {
-		// Free input ports.
+	if (busMode & qtractorBus::Input) {
+		// Unregister and free input ports,
+		// if we're not shutdown...
 		if (m_ppIPorts) {
-			// Unregister, if we're not shutdown...
-			if (pAudioEngine->jackClient()) {
-				for (i = 0; i < m_iChannels; ++i) {
-					if (m_ppIPorts[i]) {
-						jack_port_unregister(
-							pAudioEngine->jackClient(), m_ppIPorts[i]);
-						m_ppIPorts[i] = NULL;
-					}
+			for (i = 0; i < m_iChannels; ++i) {
+				if (m_ppIPorts[i]) {
+					jack_port_unregister(pJackClient, m_ppIPorts[i]);
+					m_ppIPorts[i] = NULL;
 				}
 			}
 			delete [] m_ppIPorts;
 			m_ppIPorts = NULL;
 		}
-		// Free input Buffers.
+		// Free input buffers.
 		if (m_ppIBuffer)
 			delete [] m_ppIBuffer;
 		m_ppIBuffer = NULL;
 	}
 
-	if (busMode() & qtractorBus::Output) {
-		// Free output ports.
+	if (busMode & qtractorBus::Output) {
+		// Unregister and free output ports,
+		// if we're not shutdown...
 		if (m_ppOPorts) {
-			// Unregister, if we're not shutdown...
-			if (pAudioEngine->jackClient()) {
-				for (i = 0; i < m_iChannels; ++i) {
-					if (m_ppOPorts[i]) {
-						jack_port_unregister(
-							pAudioEngine->jackClient(), m_ppOPorts[i]);
-						m_ppOPorts[i] = NULL;
-					}
+			for (i = 0; i < m_iChannels; ++i) {
+				if (m_ppOPorts[i]) {
+					jack_port_unregister(pJackClient, m_ppOPorts[i]);
+					m_ppOPorts[i] = NULL;
 				}
 			}
 			delete [] m_ppOPorts;
 			m_ppOPorts = NULL;
 		}
-		// Free output Buffers.
+		// Free output buffers.
 		if (m_ppOBuffer)
 			delete [] m_ppOBuffer;
 		m_ppOBuffer = NULL;
@@ -2235,44 +2239,49 @@ void qtractorAudioBus::close (void)
 // Auto-connect to physical ports.
 void qtractorAudioBus::autoConnect (void)
 {
+	if (!m_bAutoConnect)
+		return;
+
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == NULL)
 		return;
-	if (pAudioEngine->jackClient() == NULL)
+
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient == NULL)
 		return;
 
-	if (!m_bAutoConnect)
-		return;
+	const qtractorBus::BusMode busMode
+		= qtractorAudioBus::busMode();
 
 	unsigned short i;
 
-	if ((busMode() & qtractorBus::Input) && inputs().isEmpty()) {
+	if ((busMode & qtractorBus::Input) && inputs().isEmpty()) {
 		const char **ppszOPorts
-			= jack_get_ports(pAudioEngine->jackClient(),
+			= jack_get_ports(pJackClient,
 				0, JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsOutput | JackPortIsPhysical);
 		if (ppszOPorts) {
 			const QString sIPortName = pAudioEngine->clientName()
 				+ ':' + busName() + "/in_%1";
 			for (i = 0; i < m_iChannels && ppszOPorts[i]; ++i) {
-				jack_connect(pAudioEngine->jackClient(),
+				jack_connect(pJackClient,
 					ppszOPorts[i], sIPortName.arg(i + 1).toUtf8().constData());
 			}
 			::free(ppszOPorts);
 		}
 	}
 
-	if ((busMode() & qtractorBus::Output) && outputs().isEmpty()) {
+	if ((busMode & qtractorBus::Output) && outputs().isEmpty()) {
 		const char **ppszIPorts
-			= jack_get_ports(pAudioEngine->jackClient(),
+			= jack_get_ports(pJackClient,
 				0, JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsInput | JackPortIsPhysical);
 		if (ppszIPorts) {
 			const QString sOPortName = pAudioEngine->clientName()
 				+ ':' + busName() + "/out_%1";
 			for (i = 0; i < m_iChannels && ppszIPorts[i]; ++i) {
-				jack_connect(pAudioEngine->jackClient(),
+				jack_connect(pJackClient,
 					sOPortName.arg(i + 1).toUtf8().constData(), ppszIPorts[i]);
 			}
 			::free(ppszIPorts);
@@ -2284,10 +2293,11 @@ void qtractorAudioBus::autoConnect (void)
 // Bus mode change event.
 void qtractorAudioBus::updateBusMode (void)
 {
-	const qtractorBus::BusMode mode = busMode();
+	const qtractorBus::BusMode busMode
+		= qtractorAudioBus::busMode();
 
 	// Have a new/old input monitor?
-	if ((mode & qtractorBus::Input) && !(mode & qtractorBus::Ex)) {
+	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
 		if (m_pIAudioMonitor == NULL)
 			m_pIAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pIPluginList == NULL)
@@ -2310,7 +2320,7 @@ void qtractorAudioBus::updateBusMode (void)
 	}
 
 	// Have a new/old output monitor?
-	if ((mode & qtractorBus::Output) && !(mode & qtractorBus::Ex)) {
+	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		if (m_pOAudioMonitor == NULL)
 			m_pOAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pOPluginList == NULL)
@@ -2340,16 +2350,19 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
+	const qtractorBus::BusMode busMode
+		= qtractorAudioBus::busMode();
+
 	unsigned short i;
 
-	if (busMode() & qtractorBus::Input) {
+	if (busMode & qtractorBus::Input) {
 		for (i = 0; i < m_iChannels; ++i) {
 			m_ppIBuffer[i] = static_cast<float *>
 				(jack_port_get_buffer(m_ppIPorts[i], nframes));
 		}
 	}
 
-	if (busMode() & qtractorBus::Output) {
+	if (busMode & qtractorBus::Output) {
 		for (i = 0; i < m_iChannels; ++i) {
 			m_ppOBuffer[i] = static_cast<float *>
 				(jack_port_get_buffer(m_ppOPorts[i], nframes));
@@ -2366,12 +2379,15 @@ void qtractorAudioBus::process_monitor ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	if (busMode() & qtractorBus::Input) {
+	const qtractorBus::BusMode busMode
+		= qtractorAudioBus::busMode();
+
+	if (busMode & qtractorBus::Input) {
 		if (m_pIPluginList && m_pIPluginList->activated())
 			m_pIPluginList->process(m_ppIBuffer, nframes);
 		if (m_pIAudioMonitor)
 			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
-		if (isMonitor() && (busMode() & qtractorBus::Output)) {
+		if (isMonitor() && (busMode & qtractorBus::Output)) {
 			(*m_pfnBufferAdd)(m_ppOBuffer, m_ppIBuffer,
 				nframes, m_iChannels, m_iChannels, 0);
 		}
@@ -2669,20 +2685,23 @@ void qtractorAudioBus::updatePluginList (
 
 // Retrieve all current JACK connections for a given bus mode interface;
 // return the effective number of connection attempts...
-int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
-	ConnectList& connects, bool bConnect ) const
+int qtractorAudioBus::updateConnects (
+	qtractorBus::BusMode busMode, ConnectList& connects, bool bConnect ) const
 {
+	// Modes must match, at least...
+	if ((busMode & qtractorAudioBus::busMode()) == 0)
+		return 0;
+
+	if (bConnect && connects.isEmpty())
+		return 0;
+
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == NULL)
 		return 0;
-	if (pAudioEngine->jackClient() == NULL)
-		return 0;
 
-	// Modes must match, at least...
-	if ((busMode & qtractorAudioBus::busMode()) == 0)
-		return 0;
-	if (bConnect && connects.isEmpty())
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient == NULL)
 		return 0;
 
 	// Which kind of ports?
@@ -2695,8 +2714,8 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 	ConnectItem item;
 	for (item.index = 0; item.index < m_iChannels; ++item.index) {
 		// Get port connections...
-		const char **ppszClientPorts = jack_port_get_all_connections(
-			pAudioEngine->jackClient(), ppPorts[item.index]);
+		const char **ppszClientPorts
+			= jack_port_get_all_connections(pJackClient, ppPorts[item.index]);
 		if (ppszClientPorts) {
 			// Now, for each port...
 			int iClientPort = 0;
@@ -2755,10 +2774,10 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 				sInputPort.toUtf8().constData());
 	#endif
 		// Do it...
-		if (jack_connect(pAudioEngine->jackClient(),
+		if (jack_connect(pJackClient,
 				sOutputPort.toUtf8().constData(),
 				sInputPort.toUtf8().constData()) == 0) {
-			int iItem = connects.indexOf(pItem);
+			const int iItem = connects.indexOf(pItem);
 			if (iItem >= 0) {
 				connects.removeAt(iItem);
 				delete pItem;
@@ -2843,10 +2862,13 @@ bool qtractorAudioBus::loadElement (
 bool qtractorAudioBus::saveElement (
 	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
+	const qtractorBus::BusMode busMode
+		= qtractorAudioBus::busMode();
+
 	pElement->setAttribute("name",
 		qtractorAudioBus::busName());
 	pElement->setAttribute("mode",
-		qtractorBus::textFromBusMode(qtractorAudioBus::busMode()));
+		qtractorBus::textFromBusMode(busMode));
 
 	pDocument->saveTextElement("monitor",
 		qtractorDocument::textFromBool(
@@ -2857,7 +2879,7 @@ bool qtractorAudioBus::saveElement (
 		qtractorDocument::textFromBool(
 			qtractorAudioBus::isAutoConnect()), pElement);
 
-	if (qtractorAudioBus::busMode() & qtractorBus::Input) {
+	if (busMode & qtractorBus::Input) {
 		if (qtractorAudioBus::monitor_in()) {
 			pDocument->saveTextElement("input-gain",
 				QString::number(qtractorAudioBus::monitor_in()->gain()),
@@ -2899,7 +2921,7 @@ bool qtractorAudioBus::saveElement (
 		pElement->appendChild(eAudioInputs);
 	}
 
-	if (qtractorAudioBus::busMode() & qtractorBus::Output) {
+	if (busMode & qtractorBus::Output) {
 		if (qtractorAudioBus::monitor_out()) {
 			pDocument->saveTextElement("output-gain",
 				QString::number(qtractorAudioBus::monitor_out()->gain()),
