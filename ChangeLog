@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-0.6.6  2015-03-30  Lazy Tachyon Beta
+0.6.6  2015-03-29  Lazy Tachyon Beta
 
 - MIDI clip record/reopen to/from SMF format 0 has been fixed.
 
