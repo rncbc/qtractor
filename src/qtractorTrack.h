@@ -1,7 +1,7 @@
 // qtractorTrack.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -175,11 +175,11 @@ public:
 	void removeClip(qtractorClip *pClip);
 
 	// Current clip on record (capture).
-	void setClipRecord(qtractorClip *pClipRecord,
-		unsigned long iClipRecordStart = 0);
+	void setClipRecord(qtractorClip *pClipRecord);
 	qtractorClip *clipRecord() const;
 
 	// Current clip on record absolute start frame (capture).
+	void setClipRecordStart(unsigned long iClipRecordStart);
 	unsigned long clipRecordStart() const;
 	unsigned long clipRecordEnd(unsigned long iFrameTime) const;
 

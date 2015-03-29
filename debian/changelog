@@ -1,3 +1,9 @@
+qtractor (0.6.6-16) unstable; urgency=low
+
+  * New release: lazy tachyon beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Mon, 30 Mar 2015 18:30:00 +0100
+
 qtractor (0.6.5-15) unstable; urgency=low
 
   * New release: fermion ray beta

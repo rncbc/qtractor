@@ -4,31 +4,31 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.6.6  2015-03-30  Lazy Tachyon Beta
 
 - MIDI clip record/reopen to/from SMF format 0 has been fixed.
 
 - LV2 and VST plugins GUI editor widget position is preserved
   across hide/show cycles.
-  
+
 - Added application description as freedesktop.org's AppData.
 
 - Added a "Don't ask this again" prompt option to zip/archive
   extrated directory removal/replace warning messages.
 
 - MIDI clip editor (aka. piano-roll) gets lingering notes
-  properly shown while on record/overdubbing. (EXPERIMENTAL)
+  properly shown while on record/overdubbing.
 
 - Current highlighted client/port connections are now drawn
   with thicker connector lines.
 
 - Fixing segfaults due to QClipboard::mimeData() returning an
-  invalid null pointer while on Qt5 and Weston. (TESTING)
+  invalid null pointer while on Qt5 and Weston.
 
 - Return of an old hack/fix for some native VST plugins with
   GUI editor, on whether to skip the explicit shared library
   unloading on close and thus avoid some mysterious crashes
-  on session and/or application exit. (EXPERIMENTAL)
+  on session and/or application exit.
 
 - Force reset of plugin selection list when any of the plugin
   search paths change (in View/Options.../Plugins/Paths).
