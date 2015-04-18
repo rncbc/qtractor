@@ -2107,7 +2107,8 @@ bool qtractorAudioBus::open (void)
 
 	const qtractorBus::BusMode busMode
 		= qtractorAudioBus::busMode();
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSize
+		= pAudioEngine->bufferSize();
 
 	unsigned short i;
 	unsigned short iDisabled = 0;
@@ -2175,8 +2176,6 @@ void qtractorAudioBus::close (void)
 		return;
 
 	jack_client_t *pJackClient = pAudioEngine->jackClient();
-	if (pJackClient == NULL)
-		return;
 
 	const qtractorBus::BusMode busMode
 		= qtractorAudioBus::busMode();
@@ -2186,16 +2185,18 @@ void qtractorAudioBus::close (void)
 	if (busMode & qtractorBus::Input) {
 		// Unregister and free input ports,
 		// if we're not shutdown...
-		if (m_ppIPorts) {
+		if (m_ppIPorts && pJackClient) {
 			for (i = 0; i < m_iChannels; ++i) {
 				if (m_ppIPorts[i]) {
 					jack_port_unregister(pJackClient, m_ppIPorts[i]);
 					m_ppIPorts[i] = NULL;
 				}
 			}
-			delete [] m_ppIPorts;
-			m_ppIPorts = NULL;
 		}
+		// Free input ports.
+		if (m_ppIPorts)
+			delete [] m_ppIPorts;
+		m_ppIPorts = NULL;
 		// Free input buffers.
 		if (m_ppIBuffer)
 			delete [] m_ppIBuffer;
@@ -2205,16 +2206,18 @@ void qtractorAudioBus::close (void)
 	if (busMode & qtractorBus::Output) {
 		// Unregister and free output ports,
 		// if we're not shutdown...
-		if (m_ppOPorts) {
+		if (m_ppOPorts && pJackClient) {
 			for (i = 0; i < m_iChannels; ++i) {
 				if (m_ppOPorts[i]) {
 					jack_port_unregister(pJackClient, m_ppOPorts[i]);
 					m_ppOPorts[i] = NULL;
 				}
 			}
-			delete [] m_ppOPorts;
-			m_ppOPorts = NULL;
 		}
+		// Free output ports.
+		if (m_ppOPorts)
+			delete [] m_ppOPorts;
+		m_ppOPorts = NULL;
 		// Free output buffers.
 		if (m_ppOBuffer)
 			delete [] m_ppOBuffer;

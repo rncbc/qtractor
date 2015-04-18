@@ -586,13 +586,13 @@ Audio:	%1 channels, %2 Hz</source>
 	(%1% posunutí výšky tónu)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2663"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2666"/>
         <location filename="../qtractorMidiEngine.cpp" line="4386"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2663"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2666"/>
         <location filename="../qtractorMidiEngine.cpp" line="4386"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
@@ -1049,7 +1049,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="458"/>
+        <location filename="../qtractorTrackList.cpp" line="460"/>
         <source>Unknown</source>
         <translation>Neznámý</translation>
     </message>

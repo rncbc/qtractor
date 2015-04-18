@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,8 +128,8 @@ static int osc_send_configure ( DssiEditor *pDssiEditor,
 }
 
 
-static int osc_send_control ( DssiEditor *pDssiEditor,
-	int param, float value )
+static int osc_send_control (
+	DssiEditor *pDssiEditor, int param, float value )
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
@@ -150,8 +150,8 @@ static int osc_send_control ( DssiEditor *pDssiEditor,
 }
 
 
-static int osc_send_program ( DssiEditor *pDssiEditor,
-	int bank, int prog )
+static int osc_send_program (
+	DssiEditor *pDssiEditor, int bank, int prog )
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
@@ -229,8 +229,8 @@ static int osc_send_quit ( DssiEditor *pDssiEditor )
 }
 
 
-static int osc_update ( DssiEditor *pDssiEditor,
-	lo_arg **argv, lo_address source )
+static int osc_update (
+	DssiEditor *pDssiEditor, lo_arg **argv, lo_address source )
 {
 	const char *url = (const char *) &argv[0]->s;
 	const char *host, *port;
@@ -825,7 +825,7 @@ bool qtractorDssiPluginType::open (void)
 
 #ifdef CONFIG_LIBLO
 	// Check for GUI editor exacutable...
-	QFileInfo fi(filename());
+	const QFileInfo fi(filename());
 	QFileInfo gi(fi.dir(), fi.baseName());
 	if (gi.isDir()) {
 		QDir dir(gi.absoluteFilePath());
@@ -1271,7 +1271,7 @@ void qtractorDssiPlugin::setController ( int iController, int iValue )
 		this, iController, iValue, int(pParam->index()));
 #endif
 
-	float fValue = float(iValue) / 127.0f;
+	const float fValue = float(iValue) / 127.0f;
 	pParam->setValue(fValue, true);
 }
 

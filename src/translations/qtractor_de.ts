@@ -29,13 +29,13 @@ Audio:	%1 Kanäle, %2 Hz</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2663"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2666"/>
         <location filename="../qtractorMidiEngine.cpp" line="4386"/>
         <source>%1 In</source>
         <translation>%1 Ein</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2663"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2666"/>
         <location filename="../qtractorMidiEngine.cpp" line="4386"/>
         <source>%1 Out</source>
         <translation>%1 Aus</translation>
@@ -642,7 +642,7 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="458"/>
+        <location filename="../qtractorTrackList.cpp" line="460"/>
         <source>Unknown</source>
         <translation>Unbenannt</translation>
     </message>
