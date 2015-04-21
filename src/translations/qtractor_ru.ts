@@ -12602,12 +12602,12 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1326"/>
+        <location filename="../qtractorTrackForm.cpp" line="1332"/>
         <source>Forgeground Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1340"/>
+        <location filename="../qtractorTrackForm.cpp" line="1346"/>
         <source>Background Color</source>
         <translation type="unfinished"></translation>
     </message>

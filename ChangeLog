@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Track properties dialog output bus switch fix/optimization.
+
 - Fixed for some strict tests for Qt4 vs. Qt5 configure builds.
 
 - German (de) translation update (by Guido Scholz, thanks).

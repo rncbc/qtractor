@@ -12122,12 +12122,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Remover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1326"/>
+        <location filename="../qtractorTrackForm.cpp" line="1332"/>
         <source>Forgeground Color</source>
         <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1340"/>
+        <location filename="../qtractorTrackForm.cpp" line="1346"/>
         <source>Background Color</source>
         <translation>Cor do segundo plano</translation>
     </message>

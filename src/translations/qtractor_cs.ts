@@ -13305,12 +13305,12 @@ Chcete použít tyto změny?</translation>
         <translation>(Žádný nástroj)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1326"/>
+        <location filename="../qtractorTrackForm.cpp" line="1332"/>
         <source>Forgeground Color</source>
         <translation>Barva popředí</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1340"/>
+        <location filename="../qtractorTrackForm.cpp" line="1346"/>
         <source>Background Color</source>
         <translation>Barva pozadí</translation>
     </message>
