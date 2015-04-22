@@ -693,8 +693,8 @@ public:
 	// Reference count methods.
 	void addRef()
 		{ ++m_iRefCount; }
-	void removeRef()
-		{ if (--m_iRefCount == 0) delete this; }
+	bool removeRef()
+		{ return (--m_iRefCount == 0); }
 
 	// Reset connections.
 	void reset(qtractorDssiPlugin *pDssiPlugin)
@@ -779,8 +779,12 @@ void dssi_multi_destroy ( qtractorDssiPluginType *pDssiType )
 	QHash<QString, DssiMulti *>::Iterator iter = g_dssiHash.find(sKey);
 	if (iter == g_dssiHash.end())
 		return;
-	iter.value()->removeRef();
-	g_dssiHash.erase(iter);
+
+	DssiMulti *pDssiMulti = iter.value();
+	if (pDssiMulti->removeRef()) {
+		delete pDssiMulti;
+		g_dssiHash.erase(iter);
+	}
 
 	// On last entry deallocate dummy buffer as well...
 	if (g_dssiHash.isEmpty() && g_pDummyBuffer) {

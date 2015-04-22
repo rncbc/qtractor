@@ -6,7 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Track properties dialog output bus switch fix/optimization.
+- Track properties dialog output bus switch fix/optimization;
+  also fixed multiple DSSI instance reference count on close.
 
 - Fixed for some strict tests for Qt4 vs. Qt5 configure builds.
 
