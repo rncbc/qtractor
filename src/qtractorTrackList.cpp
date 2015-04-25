@@ -411,10 +411,12 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			QString sInstrument = s;
 			QString sProg = s;
 			QString sBank;
-			if (track->midiProg() >= 0)
-				sProg = QString::number(track->midiProg() + 1) + s;
-			if (track->midiBank() >= 0)
-				sBank = QString::number(track->midiBank());
+			const int iProg = track->midiProg();
+			if (iProg >= 0)
+				sProg = QString::number(iProg + 1) + s;
+			const int iBank = track->midiBank();
+			if (iBank >= 0)
+				sBank = QString::number(iBank);
 			if (pMidiBus) {
 				const qtractorMidiBus::Patch& patch
 					= pMidiBus->patch(iChannel);
@@ -439,9 +441,9 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 							qtractorInstrument& instr
 								= (*pInstruments)[sInstrument];
 							const qtractorInstrumentData& bank
-								= instr.patch(track->midiBank());
-							if (bank.contains(track->midiProg())) {
-								sProg = bank[track->midiProg()];
+								= instr.patch(iBank);
+							if (bank.contains(iProg)) {
+								sProg = bank[iProg];
 								sBank = bank.name();
 							}
 						}

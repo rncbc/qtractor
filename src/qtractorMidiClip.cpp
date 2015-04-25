@@ -952,10 +952,15 @@ void qtractorMidiClip::draw (
 	if (pSeq == NULL)
 		return;
 
-	// Check maximum note span...
-	int iNoteSpan = (pSeq->noteMax() - pSeq->noteMin()) + 1;
-	if (iNoteSpan < 6)
+	// Check min/maximum note span...
+	int iNoteMin  = pSeq->noteMin() - 1;
+	int iNoteSpan = pSeq->noteMax() - iNoteMin;
+	if (iNoteSpan < 6) {
 		iNoteSpan = 6;
+		--iNoteMin;
+	}
+	if (iNoteMin < 0)
+		iNoteMin = 0;
 
 	const unsigned long iClipStart = clipStart();
 	const unsigned long iFrameStart = iClipStart + iClipOffset;
@@ -995,7 +1000,7 @@ void qtractorMidiClip::draw (
 				pNode = cursor.seekTick(t1);
 				const int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
 				const int y = clipRect.bottom()
-					- (h1 * (pEvent->note() - pSeq->noteMin() + 1)) / iNoteSpan;
+					- (h1 * (pEvent->note() - iNoteMin)) / iNoteSpan;
 				pNode = cursor.seekTick(t2);
 				int w = (t1 < t2 || !bClipRecord
 					? clipRect.x() + pNode->pixelFromTick(t2) - cx

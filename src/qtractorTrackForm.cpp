@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1147,19 +1147,25 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	const qtractorTrack::TrackType trackType
 		= qtractorTrackForm::trackType();
 
-	// (Re)initialize plugin-list audio output bus properly...
-	const QString& sOutputBusName = m_pTrack->outputBusName();
-	if (sOutputBusName != sBusName) {
-		if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
-			m_sOldOutputBusName = sOutputBusName;
-		m_pTrack->setOutputBusName(sBusName);
-		m_pTrack->open(); // re-open...
+	switch (trackType) {
+	case qtractorTrack::Audio: {
+		// (Re)initialize plugin-list audio output bus properly...
+		const QString& sOutputBusName = m_pTrack->outputBusName();
+		if (sOutputBusName != sBusName) {
+			if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
+				m_sOldOutputBusName = sOutputBusName;
+			m_pTrack->setOutputBusName(sBusName);
+			m_pTrack->open(); // re-open...
+		}
+		break;
 	}
-
-	// Recache the applicable MIDI output bus ...
-	if (trackType == qtractorTrack::Midi) {
+	case qtractorTrack::Midi:
+		// Recache the applicable MIDI output bus ...
 		m_pMidiBus = midiBus();
 		updateInstruments();
+		// Fall thru...
+	default:
+		break;
 	}
 
 	channelChanged(m_ui.ChannelSpinBox->value());

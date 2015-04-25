@@ -4,6 +4,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- MIDI file player now does (N)RPN 14-bit controller events.
+
+- Track properties dialog output bus switch fix/optimization;
+  also fixed multiple DSSI instance reference count on close.
+
+- Fixed for some strict tests for Qt4 vs. Qt5 configure builds.
+
+- German (de) translation update (by Guido Scholz, thanks).
+
+
 0.6.6  2015-03-29  Lazy Tachyon Beta
 
 - MIDI clip record/reopen to/from SMF format 0 has been fixed.

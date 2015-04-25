@@ -1,7 +1,7 @@
 // qtractorAudioConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -157,6 +157,7 @@ void qtractorAudioClientItem::updateClientName (void)
 			jack_uuid_t client_uuid = 0;
 			::jack_uuid_parse(pszClientUuid, &client_uuid);
 			setClientText(prettyName(client_uuid, sClientName));
+			::jack_free((void *) pszClientUuid);
 			return;
 		}
 	}
