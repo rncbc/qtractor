@@ -1056,6 +1056,24 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 		ev.data.control.param   = pEvent->controller();
 		ev.data.control.value   = pEvent->value();
 		break;
+	case qtractorMidiEvent::REGPARAM:
+		ev.type = SND_SEQ_EVENT_REGPARAM;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.param   = pEvent->param();
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::NONREGPARAM:
+		ev.type = SND_SEQ_EVENT_NONREGPARAM;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.param   = pEvent->param();
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::CONTROL14:
+		ev.type = SND_SEQ_EVENT_CONTROL14;
+		ev.data.control.channel = iMidiChannel;
+		ev.data.control.param   = pEvent->param();
+		ev.data.control.value   = pEvent->value();
+		break;
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iMidiChannel;
