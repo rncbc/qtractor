@@ -1292,6 +1292,15 @@ bool qtractorMidiClip::clipExport (
 }
 
 
+// MIDI clip freewheeling process cycle executive (needed for export).
+void qtractorMidiClip::syncExport (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	// FIXME: make the enqueuing process internal...
+	process(iFrameStart, iFrameEnd);
+}
+
+
 // Default MIDI file format (for capture/record) accessors.
 unsigned short qtractorMidiClip::g_iDefaultFormat = 0;
 

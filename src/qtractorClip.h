@@ -180,6 +180,10 @@ public:
 	// Clip tool-tip.
 	virtual QString toolTip() const;
 
+	// Clip freewheeling process cycle executive (needed for export).
+	virtual void syncExport(
+		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
+
 	// Local dirty flag.
 	void setDirty(bool bDirty)
 		{ m_bDirty = bDirty; }

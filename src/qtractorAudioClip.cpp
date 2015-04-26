@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -476,13 +476,6 @@ void qtractorAudioClip::write ( float **ppBuffer,
 }
 
 
-// Direct sync method.
-void qtractorAudioClip::syncExport (void)
-{
-	if (m_pData) m_pData->syncExport();
-}
-
-
 // Intra-clip frame positioning.
 void qtractorAudioClip::seek ( unsigned long iFrame )
 {
@@ -884,6 +877,18 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	delete pBuff;
 
 	return true;
+}
+
+
+// Audio clip freewheeling process cycle executive (needed for export).
+void qtractorAudioClip::syncExport (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	// Direct sync method.
+	if (m_pData) m_pData->syncExport();
+
+	// Normal clip processing...
+	process(iFrameStart, iFrameEnd);
 }
 
 

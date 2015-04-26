@@ -137,6 +137,9 @@ public:
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
 		unsigned long iOffset = 0, unsigned long iLength = 0) const;
 
+	// MIDI clip freewheeling process cycle executive (needed for export).
+	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Default MIDI file format accessors
 	// (specific to capture/recording)
 	static void setDefaultFormat(unsigned short iFormat);

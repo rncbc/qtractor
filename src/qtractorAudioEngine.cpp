@@ -842,8 +842,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			const unsigned long iFrameEnd   = iFrameStart + nframes;
 			// Write output bus buffer to export audio file...
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
-				// Force/sync every audio clip approaching...
-				syncExport(iFrameStart, iFrameEnd);
 				// Prepare mix-down buffer...
 				m_pExportBuffer->process_prepare(nframes);
 				// Prepare the output buses first...
@@ -858,8 +856,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 					if (pAudioBusEx)
 						pAudioBusEx->process_prepare(nframes);
 				}
-				// Export cycle...
-				pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
+				// Force/sync every audio clip approaching...
+				syncExport(iFrameStart, iFrameEnd);
 				// Check end-of-export...
 				if (iFrameEnd > m_iExportEnd)
 					nframes -= (iFrameEnd - m_iExportEnd);
@@ -872,8 +870,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				}
 				// Write to export file...
 				m_pExportFile->write(m_pExportBuffer->buffer(), nframes);
-				// Prepare advance for next cycle...
-				pAudioCursor->seek(iFrameEnd);
 				// HACK! Freewheeling observers update (non RT safe!)...
 				qtractorSubject::flushQueue(false);
 			} else {
@@ -1347,9 +1343,6 @@ bool qtractorAudioEngine::fileExport (
 	pSession->setPlayHead(m_iExportStart);
 	pExportBus->setMonitor(false);
 
-	// Force initial full-sync...
-	syncExport(m_iExportStart, m_iExportEnd);
-
 	// Special initialization.
 	m_iBufferOffset = 0;
 
@@ -1400,7 +1393,7 @@ bool qtractorAudioEngine::fileExport (
 }
 
 
-// Direct sync method (needed for export)
+// Freewheeling process cycle executive (needed for export).
 void qtractorAudioEngine::syncExport (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
@@ -1416,19 +1409,14 @@ void qtractorAudioEngine::syncExport (
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Audio) {
-			qtractorClip *pClip = pAudioCursor->clip(iTrack);
-			while (pClip
-				&& pClip->clipStart() < iFrameEnd
-				&& pClip->clipStart() + pClip->clipLength() > iFrameStart) {
-				qtractorAudioClip *pAudioClip
-					= static_cast<qtractorAudioClip *> (pClip);
-				if (pAudioClip)
-					pAudioClip->syncExport();
-				pClip = pClip->next();
-			}
+			pTrack->syncExport(pAudioCursor->clip(iTrack),
+				iFrameStart, iFrameEnd);
 		}
 		++iTrack;
 	}
+
+	// Prepare advance for next cycle...
+	pAudioCursor->seek(iFrameEnd);
 }
 
 
@@ -2412,8 +2400,8 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 
 
 // Bus-buffering methods.
-void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
-	qtractorAudioBus *pInputBus )
+void qtractorAudioBus::buffer_prepare (
+	unsigned int nframes, qtractorAudioBus *pInputBus )
 {
 	if (!m_bEnabled)
 		return;
