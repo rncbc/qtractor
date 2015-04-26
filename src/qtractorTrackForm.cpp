@@ -1097,7 +1097,10 @@ void qtractorTrackForm::trackTypeChanged (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-	if (!m_sOldOutputBusName.isEmpty() && m_pTrack) {
+	if (m_pTrack == NULL)
+		return;
+
+	if (!m_sOldOutputBusName.isEmpty()) {
 		m_pTrack->setOutputBusName(m_sOldOutputBusName);
 		m_pTrack->open(); // re-open...
 		m_sOldOutputBusName.clear();
@@ -1122,6 +1125,9 @@ void qtractorTrackForm::trackTypeChanged (void)
 	m_pTrack->setTrackType(trackType);
 
 	updateTrackType(trackType);
+
+	if (trackType == qtractorTrack::Midi)
+		m_pTrack->open(); // re-open...
 //	inputBusNameChanged(m_ui.InputBusNameComboBox->currentText());
 	outputBusNameChanged(m_ui.OutputBusNameComboBox->currentText());
 }

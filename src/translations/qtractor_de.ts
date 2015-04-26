@@ -12011,12 +12011,12 @@ Wollen Sie diese übernehmen?</translation>
         <translation>(Keine)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1332"/>
+        <location filename="../qtractorTrackForm.cpp" line="1338"/>
         <source>Forgeground Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1346"/>
+        <location filename="../qtractorTrackForm.cpp" line="1352"/>
         <source>Background Color</source>
         <translation type="unfinished"></translation>
     </message>
