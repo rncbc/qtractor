@@ -875,6 +875,15 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			} else {
 				// Are we trough?
 				m_bExportDone = true;
+				// HACK! Reset all observers...
+				qtractorSubject::resetQueue();
+				// HACK: Reset all MIDI plugin buffers...
+				qtractorMidiManager *pMidiManager
+					= pSession->midiManagers().first();
+				while (pMidiManager) {
+					pMidiManager->reset();
+					pMidiManager = pMidiManager->next();
+				}
 				// HACK: Silence out all audio output buses...
 				for (qtractorBus *pBus = buses().first();
 						pBus; pBus = pBus->next()) {
