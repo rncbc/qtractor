@@ -1405,13 +1405,27 @@ void qtractorAudioEngine::syncExport (
 	if (pAudioCursor == NULL)
 		return;
 
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_TIME
+	qtractorLv2Plugin::updateTime(m_pJackClient);
+#endif
+#endif
+
+	// MIDI plugin manager processing...
+	qtractorMidiManager *pMidiManager
+		= pSession->midiManagers().first();
+	while (pMidiManager) {
+		pMidiManager->process(iFrameStart, iFrameEnd);
+		pMidiManager = pMidiManager->next();
+	}
+
+	// Perform all tracks processing...
 	int iTrack = 0;
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackType() == qtractorTrack::Audio) {
-			pTrack->syncExport(pAudioCursor->clip(iTrack),
-				iFrameStart, iFrameEnd);
-		}
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		pTrack->syncExport(pAudioCursor->clip(iTrack),
+			iFrameStart, iFrameEnd);
+		pTrack = pTrack->next();
 		++iTrack;
 	}
 

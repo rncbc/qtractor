@@ -244,6 +244,10 @@ protected:
 	// Private cleanup.
 	void closeMidiFile();
 
+	// MIDI clip freewheeling event enqueue method (needed for export).
+	void syncExportEvent(qtractorTrack *pTrack,
+		qtractorMidiEvent *pEvent, unsigned long iTime, float fGain);
+
 private:
 
 	// Instance variables.
