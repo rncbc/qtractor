@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- It's live: audio track export (cf. Track/Export Tracks/
+  Audio...) has been deeply refactored to finally include
+  MIDI track/instrument plugins rendering (aka. freeze) on
+  selected audio output buses on mix-down. (EXPERIMENTAL)
+
 - MIDI file player now does (N)RPN 14-bit controller events.
 
 - Track properties dialog output bus switch fix/optimization;
