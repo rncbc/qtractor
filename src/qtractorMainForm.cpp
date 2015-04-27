@@ -7211,6 +7211,9 @@ void qtractorMainForm::audioShutNotify (void)
 	m_pSession->shutdown();
 	m_pConnections->clear();
 
+	// Always do auto-save here, hence...
+	autoSaveSession();
+
 	// Send an informative message box...
 	appendMessagesError(
 		tr("The audio engine has been shutdown.\n\n"
