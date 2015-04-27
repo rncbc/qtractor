@@ -41,7 +41,7 @@
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2666"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4386"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
     </message>
@@ -122,7 +122,7 @@
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2666"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4386"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>
     </message>
@@ -12122,12 +12122,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Remover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1332"/>
+        <location filename="../qtractorTrackForm.cpp" line="1338"/>
         <source>Forgeground Color</source>
         <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1346"/>
+        <location filename="../qtractorTrackForm.cpp" line="1352"/>
         <source>Background Color</source>
         <translation>Cor do segundo plano</translation>
     </message>

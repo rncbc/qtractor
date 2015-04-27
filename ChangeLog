@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI file player now does (N)RPN 14-bit controller events.
+
 - Track properties dialog output bus switch fix/optimization;
   also fixed multiple DSSI instance reference count on close.
 
