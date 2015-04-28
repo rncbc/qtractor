@@ -13069,17 +13069,17 @@ Length:	%3</source>
         <translation>Дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="517"/>
+        <location filename="../qtractorTracks.cpp" line="506"/>
         <source>new clip</source>
         <translation>создание клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="641"/>
+        <location filename="../qtractorTracks.cpp" line="630"/>
         <source>split clip</source>
         <translation>разделение клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="726"/>
+        <location filename="../qtractorTracks.cpp" line="715"/>
         <source>clip normalize</source>
         <translation>нормализация клипа</translation>
     </message>
@@ -13092,7 +13092,7 @@ Length:	%3</source>
         <translation type="obsolete">Экспорт звукового клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1183"/>
+        <location filename="../qtractorTracks.cpp" line="1172"/>
         <source>Audio files (*.%1)</source>
         <translation>Звуковые файлы (*.%1)</translation>
     </message>
@@ -13120,7 +13120,7 @@ failed.</source>
         <translation type="obsolete">Экспорт клипа MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1449"/>
+        <location filename="../qtractorTracks.cpp" line="1438"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Файлы MIDI (*.%1 *.smf *.midi)</translation>
     </message>
@@ -13144,12 +13144,12 @@ failed.</source>
 &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2494"/>
+        <location filename="../qtractorTracks.cpp" line="2483"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2495"/>
+        <location filename="../qtractorTracks.cpp" line="2484"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -13162,116 +13162,116 @@ Are you sure?</source>
 Вы уверены?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1009"/>
-        <location filename="../qtractorTracks.cpp" line="2611"/>
+        <location filename="../qtractorTracks.cpp" line="998"/>
+        <location filename="../qtractorTracks.cpp" line="2600"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Импорт звукового файла &quot;%1&quot; в %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="845"/>
+        <location filename="../qtractorTracks.cpp" line="834"/>
         <source>quantize</source>
         <translation type="unfinished">квантование</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="846"/>
+        <location filename="../qtractorTracks.cpp" line="835"/>
         <source>transpose</source>
         <translation type="unfinished">транспонирование</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="847"/>
+        <location filename="../qtractorTracks.cpp" line="836"/>
         <source>normalize</source>
         <translation type="unfinished">нормализация</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="848"/>
+        <location filename="../qtractorTracks.cpp" line="837"/>
         <source>randomize</source>
         <translation type="unfinished">случайные значения</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="849"/>
+        <location filename="../qtractorTracks.cpp" line="838"/>
         <source>resize</source>
         <translation type="unfinished">смена размера</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="850"/>
+        <location filename="../qtractorTracks.cpp" line="839"/>
         <source>rescale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="851"/>
+        <location filename="../qtractorTracks.cpp" line="840"/>
         <source>timeshift</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="982"/>
+        <location filename="../qtractorTracks.cpp" line="971"/>
         <source>clip import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1014"/>
-        <location filename="../qtractorTracks.cpp" line="2616"/>
+        <location filename="../qtractorTracks.cpp" line="1003"/>
+        <location filename="../qtractorTracks.cpp" line="2605"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Импорт звукового файла: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1044"/>
-        <location filename="../qtractorTracks.cpp" line="2800"/>
+        <location filename="../qtractorTracks.cpp" line="1033"/>
+        <location filename="../qtractorTracks.cpp" line="2789"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1973"/>
+        <location filename="../qtractorTracks.cpp" line="1962"/>
         <source>Insert Range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1993"/>
+        <location filename="../qtractorTracks.cpp" line="1982"/>
         <source>insert range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1994"/>
+        <location filename="../qtractorTracks.cpp" line="1983"/>
         <source>insert track range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2191"/>
+        <location filename="../qtractorTracks.cpp" line="2180"/>
         <source>Remove Range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2211"/>
+        <location filename="../qtractorTracks.cpp" line="2200"/>
         <source>remove range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2212"/>
+        <location filename="../qtractorTracks.cpp" line="2201"/>
         <source>remove track range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2451"/>
+        <location filename="../qtractorTracks.cpp" line="2440"/>
         <source>Track %1</source>
         <translation type="unfinished">Дорожка %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2730"/>
+        <location filename="../qtractorTracks.cpp" line="2719"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Импорт файла MIDI &quot;%1&quot; в %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2735"/>
+        <location filename="../qtractorTracks.cpp" line="2724"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Импорт файла MIDI: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1050"/>
-        <location filename="../qtractorTracks.cpp" line="2806"/>
+        <location filename="../qtractorTracks.cpp" line="1039"/>
+        <location filename="../qtractorTracks.cpp" line="2795"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Импорт файла MIDI &quot;%1&quot;, дорожка-канал: %2.</translation>
     </message>
@@ -13280,7 +13280,7 @@ Are you sure?</source>
         <translation type="obsolete">Объединить звуковые клипы</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1085"/>
+        <location filename="../qtractorTracks.cpp" line="1074"/>
         <source>clip merge</source>
         <translation>объединение клипов</translation>
     </message>
@@ -13301,32 +13301,32 @@ Are you sure?</source>
         <translation type="obsolete">Объединение MIDI-клипов: &quot;%1&quot; завершено.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1182"/>
+        <location filename="../qtractorTracks.cpp" line="1171"/>
         <source>Merge/Export Audio Clip</source>
         <translation>Объединить/экспортировать звуковые клипы</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1242"/>
+        <location filename="../qtractorTracks.cpp" line="1231"/>
         <source>Audio clip merge/export: &quot;%1&quot; started...</source>
         <translation>Объединение/экспорт звукового клипа: &quot;%1&quot; начат...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1378"/>
+        <location filename="../qtractorTracks.cpp" line="1367"/>
         <source>Audio clip merge/export: &quot;%1&quot; complete.</source>
         <translation>Объединение/экспорт звукового клипа: &quot;%1&quot; завершен...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1448"/>
+        <location filename="../qtractorTracks.cpp" line="1437"/>
         <source>Merge/Export MIDI Clip</source>
         <translation>Объединить/экспортировать клипы MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1509"/>
+        <location filename="../qtractorTracks.cpp" line="1498"/>
         <source>MIDI clip merge/export: &quot;%1&quot; started...</source>
         <translation>Объединение/экспорт клипа MIDI: &quot;%1&quot; начат...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1629"/>
+        <location filename="../qtractorTracks.cpp" line="1618"/>
         <source>MIDI clip merge/export: &quot;%1&quot; complete.</source>
         <translation>Объединение/экспорт клипа MIDI: &quot;%1&quot; завершен...</translation>
     </message>
