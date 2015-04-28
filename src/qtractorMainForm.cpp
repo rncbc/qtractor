@@ -6035,14 +6035,14 @@ void qtractorMainForm::updateExportMenu (void)
 	if (!m_pSession->isPlaying()) {
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
+			const int iClips = pTrack->clips().count();
 			switch (pTrack->trackType()) {
-			case qtractorTrack::Audio:
-				iAudioClips += pTrack->clips().count();
-				break;
 			case qtractorTrack::Midi:
-				iMidiClips += pTrack->clips().count();
-				break;
+				iMidiClips += iClips;
+				// Fall thru...
+			case qtractorTrack::Audio:
 			default:
+				iAudioClips += iClips;
 				break;
 			}
 		}
