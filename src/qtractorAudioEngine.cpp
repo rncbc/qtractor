@@ -1345,12 +1345,18 @@ bool qtractorAudioEngine::fileExport (
 	const unsigned long iPlayHead  = pSession->playHead();
 	const unsigned long iLoopStart = pSession->loopStart();
 	const unsigned long iLoopEnd   = pSession->loopEnd();
-	const bool bMonitor = pExportBus->isMonitor();
+
+	QHash<qtractorAudioBus *, bool> exportMonitors;
+	QListIterator<qtractorAudioBus *> bus_iter(exportBuses);
+	while (bus_iter.hasNext()) {
+		qtractorAudioBus *pAudioBus = bus_iter.next();
+		exportMonitors.insert(pAudioBus, pAudioBus->isMonitor());
+		pAudioBus->setMonitor(false);
+	}
 
 	// Because we'll have to set the export conditions...
 	pSession->setLoop(0, 0);
 	pSession->setPlayHead(m_iExportStart);
-	pExportBus->setMonitor(false);
 
 	// Special initialization.
 	m_iBufferOffset = 0;
@@ -1373,7 +1379,12 @@ bool qtractorAudioEngine::fileExport (
 	// Restore session at ease...
 	pSession->setLoop(iLoopStart, iLoopEnd);
 	pSession->setPlayHead(iPlayHead);
-	pExportBus->setMonitor(bMonitor);
+
+	bus_iter.toFront();
+	while (bus_iter.hasNext()) {
+		qtractorAudioBus *pAudioBus = bus_iter.next();
+		pAudioBus->setMonitor(exportMonitors.value(pAudioBus, false));
+	}
 
 	// Check user cancellation...
 	const bool bResult = m_bExporting;

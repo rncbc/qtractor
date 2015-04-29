@@ -6037,18 +6037,20 @@ void qtractorMainForm::updateExportMenu (void)
 				pTrack; pTrack = pTrack->next()) {
 			const int iClips = pTrack->clips().count();
 			switch (pTrack->trackType()) {
+			case qtractorTrack::Audio:
+				iAudioClips += iClips;
+				break;
 			case qtractorTrack::Midi:
 				iMidiClips += iClips;
 				// Fall thru...
-			case qtractorTrack::Audio:
 			default:
-				iAudioClips += iClips;
 				break;
 			}
 		}
 	}
 
-	m_ui.trackExportAudioAction->setEnabled(iAudioClips > 0);
+	// nb. audio export also applies to MIDI intrument tracks...
+	m_ui.trackExportAudioAction->setEnabled(iAudioClips > 0 || iMidiClips > 0);
 	m_ui.trackExportMidiAction->setEnabled(iMidiClips > 0);
 }
 
