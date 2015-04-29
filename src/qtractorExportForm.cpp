@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -265,7 +265,7 @@ void qtractorExportForm::accept (void)
 					.arg(sExportPath));
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-				bool bResult = pAudioEngine->fileExport(
+				const bool bResult = pAudioEngine->fileExport(
 					sExportPath, exportBuses,
 					m_ui.ExportStartSpinBox->value(),
 					m_ui.ExportEndSpinBox->value());
@@ -305,7 +305,7 @@ void qtractorExportForm::accept (void)
 					.arg(sExportPath));
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-				bool bResult = pMidiEngine->fileExport(
+				const bool bResult = pMidiEngine->fileExport(
 					sExportPath, exportBuses,
 					m_ui.ExportStartSpinBox->value(),
 					m_ui.ExportEndSpinBox->value());
@@ -475,7 +475,7 @@ void qtractorExportForm::valueChanged (void)
 // Display format has changed.
 void qtractorExportForm::formatChanged ( int iDisplayFormat )
 {
-	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
 	qtractorTimeScale::DisplayFormat displayFormat

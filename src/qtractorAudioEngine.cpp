@@ -842,8 +842,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			const unsigned long iFrameEnd   = iFrameStart + nframes;
 			// Write output bus buffer to export audio file...
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
-				// Force/sync every audio clip approaching...
-				syncExport(iFrameStart, iFrameEnd);
 				// Prepare mix-down buffer...
 				m_pExportBuffer->process_prepare(nframes);
 				// Prepare the output buses first...
@@ -858,8 +856,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 					if (pAudioBusEx)
 						pAudioBusEx->process_prepare(nframes);
 				}
-				// Export cycle...
-				pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
+				// Force/sync every audio clip approaching...
+				syncExport(iFrameStart, iFrameEnd);
 				// Check end-of-export...
 				if (iFrameEnd > m_iExportEnd)
 					nframes -= (iFrameEnd - m_iExportEnd);
@@ -872,13 +870,20 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				}
 				// Write to export file...
 				m_pExportFile->write(m_pExportBuffer->buffer(), nframes);
-				// Prepare advance for next cycle...
-				pAudioCursor->seek(iFrameEnd);
 				// HACK! Freewheeling observers update (non RT safe!)...
 				qtractorSubject::flushQueue(false);
 			} else {
 				// Are we trough?
 				m_bExportDone = true;
+				// HACK! Reset all observers...
+				qtractorSubject::resetQueue();
+				// HACK: Reset all MIDI plugin buffers...
+				qtractorMidiManager *pMidiManager
+					= pSession->midiManagers().first();
+				while (pMidiManager) {
+					pMidiManager->reset();
+					pMidiManager = pMidiManager->next();
+				}
 				// HACK: Silence out all audio output buses...
 				for (qtractorBus *pBus = buses().first();
 						pBus; pBus = pBus->next()) {
@@ -1340,15 +1345,18 @@ bool qtractorAudioEngine::fileExport (
 	const unsigned long iPlayHead  = pSession->playHead();
 	const unsigned long iLoopStart = pSession->loopStart();
 	const unsigned long iLoopEnd   = pSession->loopEnd();
-	const bool bMonitor = pExportBus->isMonitor();
+
+	QHash<qtractorAudioBus *, bool> exportMonitors;
+	QListIterator<qtractorAudioBus *> bus_iter(exportBuses);
+	while (bus_iter.hasNext()) {
+		qtractorAudioBus *pAudioBus = bus_iter.next();
+		exportMonitors.insert(pAudioBus, pAudioBus->isMonitor());
+		pAudioBus->setMonitor(false);
+	}
 
 	// Because we'll have to set the export conditions...
 	pSession->setLoop(0, 0);
 	pSession->setPlayHead(m_iExportStart);
-	pExportBus->setMonitor(false);
-
-	// Force initial full-sync...
-	syncExport(m_iExportStart, m_iExportEnd);
 
 	// Special initialization.
 	m_iBufferOffset = 0;
@@ -1371,7 +1379,12 @@ bool qtractorAudioEngine::fileExport (
 	// Restore session at ease...
 	pSession->setLoop(iLoopStart, iLoopEnd);
 	pSession->setPlayHead(iPlayHead);
-	pExportBus->setMonitor(bMonitor);
+
+	bus_iter.toFront();
+	while (bus_iter.hasNext()) {
+		qtractorAudioBus *pAudioBus = bus_iter.next();
+		pAudioBus->setMonitor(exportMonitors.value(pAudioBus, false));
+	}
 
 	// Check user cancellation...
 	const bool bResult = m_bExporting;
@@ -1400,7 +1413,7 @@ bool qtractorAudioEngine::fileExport (
 }
 
 
-// Direct sync method (needed for export)
+// Freewheeling process cycle executive (needed for export).
 void qtractorAudioEngine::syncExport (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
@@ -1412,23 +1425,32 @@ void qtractorAudioEngine::syncExport (
 	if (pAudioCursor == NULL)
 		return;
 
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_TIME
+	qtractorLv2Plugin::updateTime(m_pJackClient);
+#endif
+#endif
+
+	// MIDI plugin manager processing...
+	qtractorMidiManager *pMidiManager
+		= pSession->midiManagers().first();
+	while (pMidiManager) {
+		pMidiManager->process(iFrameStart, iFrameEnd);
+		pMidiManager = pMidiManager->next();
+	}
+
+	// Perform all tracks processing...
 	int iTrack = 0;
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackType() == qtractorTrack::Audio) {
-			qtractorClip *pClip = pAudioCursor->clip(iTrack);
-			while (pClip
-				&& pClip->clipStart() < iFrameEnd
-				&& pClip->clipStart() + pClip->clipLength() > iFrameStart) {
-				qtractorAudioClip *pAudioClip
-					= static_cast<qtractorAudioClip *> (pClip);
-				if (pAudioClip)
-					pAudioClip->syncExport();
-				pClip = pClip->next();
-			}
-		}
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		pTrack->syncExport(pAudioCursor->clip(iTrack),
+			iFrameStart, iFrameEnd);
+		pTrack = pTrack->next();
 		++iTrack;
 	}
+
+	// Prepare advance for next cycle...
+	pAudioCursor->seek(iFrameEnd);
 }
 
 
@@ -2412,8 +2434,8 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 
 
 // Bus-buffering methods.
-void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
-	qtractorAudioBus *pInputBus )
+void qtractorAudioBus::buffer_prepare (
+	unsigned int nframes, qtractorAudioBus *pInputBus )
 {
 	if (!m_bEnabled)
 		return;

@@ -147,7 +147,7 @@ public:
 		const QList<qtractorAudioBus *>& exportBuses,
 		unsigned long iExportStart = 0, unsigned long iExportEnd = 0);
 
-	// Direct sync method (needed for export)
+	// Freewheeling process cycle executive (needed for export).
 	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Special track-immediate methods.

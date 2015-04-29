@@ -137,6 +137,9 @@ public:
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
 		unsigned long iOffset = 0, unsigned long iLength = 0) const;
 
+	// MIDI clip freewheeling process cycle executive (needed for export).
+	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Default MIDI file format accessors
 	// (specific to capture/recording)
 	static void setDefaultFormat(unsigned short iFormat);
@@ -240,6 +243,10 @@ protected:
 
 	// Private cleanup.
 	void closeMidiFile();
+
+	// MIDI clip freewheeling event enqueue method (needed for export).
+	void syncExportEvent(qtractorTrack *pTrack,
+		qtractorMidiEvent *pEvent, unsigned long iTime, float fGain) const;
 
 private:
 

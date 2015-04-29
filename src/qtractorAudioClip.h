@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -71,9 +71,6 @@ public:
 	void write(float **ppBuffer, unsigned int iFrames,
 		unsigned short iChannels = 0, unsigned int iOffset = 0);
 
-	// Export-mode sync method.
-	void syncExport();
-
 	// Intra-clip frame positioning.
 	void seek(unsigned long iFrame);
 
@@ -101,6 +98,9 @@ public:
 
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
 		unsigned long iOffset = 0, unsigned long iLength = 0) const;
+
+	// Audio clip freewheeling process cycle executive (needed for export).
+	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Most interesting key/data (ref-counted?)...
 	class Key;

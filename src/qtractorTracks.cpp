@@ -428,18 +428,7 @@ void qtractorTracks::updateContents ( bool bRefresh )
 // Retrieves current (selected) track reference.
 qtractorTrack *qtractorTracks::currentTrack (void) const
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return NULL;
-
-	qtractorTrack *pTrack = m_pTrackList->currentTrack();
-	if (pTrack == NULL) {
-		qtractorClip *pClip = m_pTrackView->currentClip();
-		if (pClip)
-			pTrack = pClip->track();
-	}
-
-	return pTrack;
+	return m_pTrackList->currentTrack();
 }
 
 

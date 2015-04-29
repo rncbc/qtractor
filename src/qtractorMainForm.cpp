@@ -6045,20 +6045,22 @@ void qtractorMainForm::updateExportMenu (void)
 	if (!m_pSession->isPlaying()) {
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
+			const int iClips = pTrack->clips().count();
 			switch (pTrack->trackType()) {
 			case qtractorTrack::Audio:
-				iAudioClips += pTrack->clips().count();
+				iAudioClips += iClips;
 				break;
 			case qtractorTrack::Midi:
-				iMidiClips += pTrack->clips().count();
-				break;
+				iMidiClips += iClips;
+				// Fall thru...
 			default:
 				break;
 			}
 		}
 	}
 
-	m_ui.trackExportAudioAction->setEnabled(iAudioClips > 0);
+	// nb. audio export also applies to MIDI intrument tracks...
+	m_ui.trackExportAudioAction->setEnabled(iAudioClips > 0 || iMidiClips > 0);
 	m_ui.trackExportMidiAction->setEnabled(iMidiClips > 0);
 }
 
@@ -7220,6 +7222,9 @@ void qtractorMainForm::audioShutNotify (void)
 	// Engine shutdown is on demand...
 	m_pSession->shutdown();
 	m_pConnections->clear();
+
+	// Always do auto-save here, hence...
+	autoSaveSession();
 
 	// Send an informative message box...
 	appendMessagesError(

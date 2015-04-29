@@ -28,10 +28,14 @@
 
 #include "qtractorDocument.h"
 
+#include "qtractorMidiBuffer.h"
+#include "qtractorPlugin.h"
+
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
 
 #include "qtractorMainForm.h"
+
 
 #ifdef QTRACTOR_MIDI_EDITOR_TOOL
 #include "qtractorOptions.h"
@@ -1289,6 +1293,134 @@ bool qtractorMidiClip::clipExport (
 	(*pfnClipExport)(&seq, pvArg);
 
 	return true;
+}
+
+
+// MIDI clip freewheeling process cycle executive (needed for export).
+void qtractorMidiClip::syncExport (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorMidiSequence *pSeq = sequence();
+	if (pSeq == NULL)
+		return;
+
+	// Track mute state...
+	const bool bMute = (pTrack->isMute()
+		|| (pSession->soloTracks() && !pTrack->isSolo()));
+
+	const unsigned long t0 = pSession->tickFromFrame(clipStart());
+
+	const unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
+	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
+
+	// Enqueue the requested events...
+	qtractorMidiEvent *pEvent
+		= m_playCursor.seek(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
+	while (pEvent) {
+		const unsigned long t1 = t0 + pEvent->time();
+		if (t1 >= iTimeEnd)
+			break;
+		if (t1 >= iTimeStart
+			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
+			syncExportEvent(pTrack, pEvent, t1,
+				gain(pSession->frameFromTick(t1) - clipStart()));
+		}
+		pEvent = pEvent->next();
+	}
+}
+
+
+// MIDI clip freewheeling event enqueue method (needed for export).
+void qtractorMidiClip::syncExportEvent ( qtractorTrack *pTrack,
+	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain ) const
+{
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	snd_seq_ev_schedule_tick(&ev, 0, 0, iTime);
+
+	switch (pEvent->type()) {
+	case qtractorMidiEvent::NOTEON:
+		ev.type = SND_SEQ_EVENT_NOTE;
+		ev.data.note.channel  = pTrack->midiChannel();
+		ev.data.note.note     = pEvent->note();
+		ev.data.note.velocity = int(fGain * float(pEvent->value())) & 0x7f;
+		ev.data.note.duration = pEvent->duration();
+		break;
+	case qtractorMidiEvent::KEYPRESS:
+		ev.type = SND_SEQ_EVENT_KEYPRESS;
+		ev.data.note.channel  = pTrack->midiChannel();
+		ev.data.note.note     = pEvent->note();
+		ev.data.note.velocity = pEvent->velocity();
+		ev.data.note.duration = 0;
+		break;
+	case qtractorMidiEvent::CONTROLLER:
+		ev.type = SND_SEQ_EVENT_CONTROLLER;
+		ev.data.control.channel = pTrack->midiChannel();
+		ev.data.control.param   = pEvent->controller();
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::PGMCHANGE:
+		ev.type = SND_SEQ_EVENT_PGMCHANGE;
+		ev.data.control.channel = pTrack->midiChannel();
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::CHANPRESS:
+		ev.type = SND_SEQ_EVENT_CHANPRESS;
+		ev.data.control.channel = pTrack->midiChannel();
+		ev.data.control.value   = pEvent->value();
+		break;
+	case qtractorMidiEvent::PITCHBEND:
+		ev.type = SND_SEQ_EVENT_PITCHBEND;
+		ev.data.control.channel = pTrack->midiChannel();
+		ev.data.control.value   = pEvent->pitchBend();
+		break;
+	case qtractorMidiEvent::SYSEX:
+		ev.type = SND_SEQ_EVENT_SYSEX;
+		snd_seq_ev_set_sysex(&ev, pEvent->sysex_len(), pEvent->sysex());
+		break;
+	default:
+		break;
+	}
+
+	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
+	const unsigned long t1 = pNode->frameFromTick(iTime);
+	unsigned long t2 = t1;
+	if (ev.type == SND_SEQ_EVENT_NOTE
+		&& ev.data.note.duration > 0) {
+		iTime += (ev.data.note.duration - 1);
+		pNode = cursor.seekTick(iTime);
+		t2 += (pNode->frameFromTick(iTime) - t1);
+	}
+
+	// Do it for the MIDI track plugins...
+	qtractorMidiManager *pMidiManager
+		= (pTrack->pluginList())->midiManager();
+	if (pMidiManager)
+		pMidiManager->queued(&ev, t1, t2);
+
+	// And for the MIDI output plugins as well...
+	// Target MIDI bus...
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+	if (pMidiBus && pMidiBus->pluginList_out()) {
+		pMidiManager = (pMidiBus->pluginList_out())->midiManager();
+		if (pMidiManager)
+			pMidiManager->queued(&ev, t1, t2);
+	}
 }
 
 
