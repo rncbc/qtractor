@@ -1340,7 +1340,7 @@ void qtractorMidiClip::syncExport (
 
 // MIDI clip freewheeling event enqueue method (needed for export).
 void qtractorMidiClip::syncExportEvent ( qtractorTrack *pTrack,
-	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain )
+	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain ) const
 {
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)

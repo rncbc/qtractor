@@ -246,7 +246,7 @@ protected:
 
 	// MIDI clip freewheeling event enqueue method (needed for export).
 	void syncExportEvent(qtractorTrack *pTrack,
-		qtractorMidiEvent *pEvent, unsigned long iTime, float fGain);
+		qtractorMidiEvent *pEvent, unsigned long iTime, float fGain) const;
 
 private:
 
