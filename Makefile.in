@@ -279,6 +279,7 @@ resources = \
 translations_sources = \
 	src/translations/qtractor_cs.ts \
 	src/translations/qtractor_de.ts \
+	src/translations/qtractor_es.ts \
 	src/translations/qtractor_fr.ts \
 	src/translations/qtractor_it.ts \
 	src/translations/qtractor_ja.ts \
@@ -288,6 +289,7 @@ translations_sources = \
 translations_targets = \
 	src/translations/qtractor_cs.qm \
 	src/translations/qtractor_de.qm \
+	src/translations/qtractor_es.qm \
 	src/translations/qtractor_fr.qm \
 	src/translations/qtractor_it.qm \
 	src/translations/qtractor_ja.qm \

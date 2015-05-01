@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Spanish (es) translation added, by avid Reyes Pucheta.
+
 - It's live: audio track export (cf. Track/Export Tracks/
   Audio...) has been deeply refactored to finally include
   MIDI track/instrument plugins rendering (aka. freeze) on
