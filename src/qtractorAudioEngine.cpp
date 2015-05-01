@@ -834,8 +834,20 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Are we actually freewheeling for export?...
 	// notice that freewheeling has no RT requirements.
-	if (m_bFreewheel) {
+	if (m_bFreewheel && m_pExportBuses) {
 		// Make sure we're in a valid state...
+		QListIterator<qtractorAudioBus *> iter(*m_pExportBuses);
+		// Prepare the output buses first...
+		while (iter.hasNext())
+			iter.next()->process_prepare(nframes);
+		// Prepare all extra audio buses...
+		for (qtractorBus *pBusEx = busesEx().first();
+				pBusEx; pBusEx = pBusEx->next()) {
+			qtractorAudioBus *pAudioBusEx
+				= static_cast<qtractorAudioBus *> (pBusEx);
+			if (pAudioBusEx)
+				pAudioBusEx->process_prepare(nframes);
+		}
 		if (m_pExportFile && m_pExportBuffer && !m_bExportDone) {
 			// This the legal process cycle frame range...
 			const unsigned long iFrameStart = pAudioCursor->frame();
@@ -844,18 +856,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
 				// Prepare mix-down buffer...
 				m_pExportBuffer->process_prepare(nframes);
-				// Prepare the output buses first...
-				QListIterator<qtractorAudioBus *> iter(*m_pExportBuses);
-				while (iter.hasNext())
-					iter.next()->process_prepare(nframes);
-				// Prepare all extra audio buses...
-				for (qtractorBus *pBusEx = busesEx().first();
-						pBusEx; pBusEx = pBusEx->next()) {
-					qtractorAudioBus *pAudioBusEx
-						= static_cast<qtractorAudioBus *> (pBusEx);
-					if (pAudioBusEx)
-						pAudioBusEx->process_prepare(nframes);
-				}
 				// Force/sync every audio clip approaching...
 				syncExport(iFrameStart, iFrameEnd);
 				// Check end-of-export...
@@ -883,22 +883,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				while (pMidiManager) {
 					pMidiManager->reset();
 					pMidiManager = pMidiManager->next();
-				}
-				// HACK: Silence out all audio output buses...
-				for (qtractorBus *pBus = buses().first();
-						pBus; pBus = pBus->next()) {
-					qtractorAudioBus *pAudioBus
-						= static_cast<qtractorAudioBus *> (pBus);
-					if (pAudioBus)
-						pAudioBus->process_prepare(nframes);
-				}
-				// HACK: and all extra audio buses...
-				for (qtractorBus *pBusEx = busesEx().first();
-						pBusEx; pBusEx = pBusEx->next()) {
-					qtractorAudioBus *pAudioBusEx
-						= static_cast<qtractorAudioBus *> (pBusEx);
-					if (pAudioBusEx)
-						pAudioBusEx->process_prepare(nframes);
 				}
 			}
 		}
