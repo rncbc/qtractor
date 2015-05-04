@@ -1251,6 +1251,49 @@ void qtractorTrack::process ( qtractorClip *pClip,
 }
 
 
+// Freewheeling process cycle executive (needed for export).
+void qtractorTrack::process_export ( qtractorClip *pClip,
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	// Track automation processing...
+	qtractorCurveList *pCurveList = curveList();
+	if (pCurveList && pCurveList->isProcess())
+		pCurveList->process(iFrameStart);
+
+	// Audio-buffers needs some preparation...
+	const unsigned int nframes = iFrameEnd - iFrameStart;
+	qtractorAudioMonitor *pAudioMonitor = NULL;
+	qtractorAudioBus *pOutputBus = NULL;
+	if (m_props.trackType == qtractorTrack::Audio) {
+		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
+		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
+		if (pOutputBus)
+			pOutputBus->buffer_prepare(nframes);
+	}
+
+	// Playback...
+	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		// Now, for every clip...
+		while (pClip && pClip->clipStart() < iFrameEnd) {
+			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
+				pClip->process_export(iFrameStart, iFrameEnd);
+			pClip = pClip->next();
+		}
+	}
+
+	// Audio buffers needs monitoring and commitment...
+	if (pAudioMonitor && pOutputBus) {
+		// Plugin chain post-processing...
+		if (m_pPluginList->activated() > 0)
+			m_pPluginList->process(pOutputBus->buffer(), nframes);
+		// Monitor passthru...
+		pAudioMonitor->process(pOutputBus->buffer(), nframes);
+		// Actually render it...
+		pOutputBus->buffer_commit(nframes);
+	}
+}
+
+
 // Track special process record executive (audio recording only).
 void qtractorTrack::process_record (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
@@ -2260,49 +2303,6 @@ void qtractorTrack::updateTracks (void)
 		return;
 
 	pTracks->updateTrack(this);
-}
-
-
-// Freewheeling process cycle executive (needed for export).
-void qtractorTrack::syncExport ( qtractorClip *pClip,
-	unsigned long iFrameStart, unsigned long iFrameEnd )
-{
-	// Track automation processing...
-	qtractorCurveList *pCurveList = curveList();
-	if (pCurveList && pCurveList->isProcess())
-		pCurveList->process(iFrameStart);
-
-	// Audio-buffers needs some preparation...
-	const unsigned int nframes = iFrameEnd - iFrameStart;
-	qtractorAudioMonitor *pAudioMonitor = NULL;
-	qtractorAudioBus *pOutputBus = NULL;
-	if (m_props.trackType == qtractorTrack::Audio) {
-		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
-		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
-		if (pOutputBus)
-			pOutputBus->buffer_prepare(nframes);
-	}
-
-	// Playback...
-	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
-		// Now, for every clip...
-		while (pClip && pClip->clipStart() < iFrameEnd) {
-			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
-				pClip->syncExport(iFrameStart, iFrameEnd);
-			pClip = pClip->next();
-		}
-	}
-
-	// Audio buffers needs monitoring and commitment...
-	if (pAudioMonitor && pOutputBus) {
-		// Plugin chain post-processing...
-		if (m_pPluginList->activated() > 0)
-			m_pPluginList->process(pOutputBus->buffer(), nframes);
-		// Monitor passthru...
-		pAudioMonitor->process(pOutputBus->buffer(), nframes);
-		// Actually render it...
-		pOutputBus->buffer_commit(nframes);
-	}
 }
 
 

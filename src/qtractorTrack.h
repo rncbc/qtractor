@@ -201,6 +201,10 @@ public:
 	void process(qtractorClip *pClip,
 		unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Track freewheeling process cycle executive (needed for export).
+	void process_export(qtractorClip *pClip,
+		unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Track special process record executive (audio recording only).
 	void process_record(
 		unsigned long iFrameStart, unsigned long iFrameEnd);
@@ -325,10 +329,6 @@ public:
 
 	// Update tracks/list-view.
 	void updateTracks();
-
-	// Track freewheeling process cycle executive (needed for export).
-	void syncExport(qtractorClip *pClip,
-		unsigned long iFrameStart, unsigned long iFrameEnd);
 
 private:
 

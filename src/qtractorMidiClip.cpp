@@ -940,6 +940,48 @@ void qtractorMidiClip::process (
 }
 
 
+// MIDI clip freewheeling process cycle executive (needed for export).
+void qtractorMidiClip::process_export (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorMidiSequence *pSeq = sequence();
+	if (pSeq == NULL)
+		return;
+
+	// Track mute state...
+	const bool bMute = (pTrack->isMute()
+		|| (pSession->soloTracks() && !pTrack->isSolo()));
+
+	const unsigned long t0 = pSession->tickFromFrame(clipStart());
+
+	const unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
+	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
+
+	// Enqueue the requested events...
+	qtractorMidiEvent *pEvent
+		= m_playCursor.seek(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
+	while (pEvent) {
+		const unsigned long t1 = t0 + pEvent->time();
+		if (t1 >= iTimeEnd)
+			break;
+		if (t1 >= iTimeStart
+			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
+			enqueue_export(pTrack, pEvent, t1,
+				gain(pSession->frameFromTick(t1) - clipStart()));
+		}
+		pEvent = pEvent->next();
+	}
+}
+
+
 // MIDI clip paint method.
 void qtractorMidiClip::draw (
 	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
@@ -1296,50 +1338,8 @@ bool qtractorMidiClip::clipExport (
 }
 
 
-// MIDI clip freewheeling process cycle executive (needed for export).
-void qtractorMidiClip::syncExport (
-	unsigned long iFrameStart, unsigned long iFrameEnd )
-{
-	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
-		return;
-
-	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
-		return;
-
-	qtractorMidiSequence *pSeq = sequence();
-	if (pSeq == NULL)
-		return;
-
-	// Track mute state...
-	const bool bMute = (pTrack->isMute()
-		|| (pSession->soloTracks() && !pTrack->isSolo()));
-
-	const unsigned long t0 = pSession->tickFromFrame(clipStart());
-
-	const unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
-	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
-
-	// Enqueue the requested events...
-	qtractorMidiEvent *pEvent
-		= m_playCursor.seek(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
-	while (pEvent) {
-		const unsigned long t1 = t0 + pEvent->time();
-		if (t1 >= iTimeEnd)
-			break;
-		if (t1 >= iTimeStart
-			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
-			syncExportEvent(pTrack, pEvent, t1,
-				gain(pSession->frameFromTick(t1) - clipStart()));
-		}
-		pEvent = pEvent->next();
-	}
-}
-
-
 // MIDI clip freewheeling event enqueue method (needed for export).
-void qtractorMidiClip::syncExportEvent ( qtractorTrack *pTrack,
+void qtractorMidiClip::enqueue_export ( qtractorTrack *pTrack,
 	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain ) const
 {
 	qtractorSession *pSession = pTrack->session();

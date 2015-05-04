@@ -115,6 +115,9 @@ public:
 	// Process cycle executive.
 	int process(unsigned int nframes);
 
+	// Freewheeling process cycle executive (needed for export).
+	int process_export(unsigned int nframes);
+
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
@@ -146,9 +149,6 @@ public:
 	bool fileExport(const QString& sExportPath,
 		const QList<qtractorAudioBus *>& exportBuses,
 		unsigned long iExportStart = 0, unsigned long iExportEnd = 0);
-
-	// Freewheeling process cycle executive (needed for export).
-	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);

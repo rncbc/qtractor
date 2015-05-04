@@ -40,7 +40,7 @@
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2698"/>
         <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
@@ -121,7 +121,7 @@
         <translation>%1 Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2698"/>
         <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>
@@ -137,7 +137,7 @@
         <translation>Mostrar ajuda sobre opções em linha de comando</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1161"/>
+        <location filename="../qtractorMidiClip.cpp" line="1203"/>
         <source> (%1% vol)</source>
         <translation> (%1% vol)</translation>
     </message>
@@ -190,7 +190,7 @@
         <translation>Uso: %1 [opções] [arquivo-da-sessão]</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1150"/>
+        <location filename="../qtractorMidiClip.cpp" line="1192"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Canal %1</translation>
@@ -220,7 +220,7 @@
         <translation>%1 Gravar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1148"/>
+        <location filename="../qtractorMidiClip.cpp" line="1190"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formato %1)
@@ -376,14 +376,14 @@ MIDI:	</translation>
         <translation>Nome:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="761"/>
+        <location filename="../qtractorAudioClip.cpp" line="773"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
 	(%1 mudança de altura em semitons)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1152"/>
+        <location filename="../qtractorMidiClip.cpp" line="1194"/>
         <location filename="../qtractorMidiFile.cpp" line="1237"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
@@ -471,12 +471,12 @@ MIDI:	</translation>
         <translation>tentativa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="755"/>
+        <location filename="../qtractorAudioClip.cpp" line="767"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="758"/>
+        <location filename="../qtractorAudioClip.cpp" line="770"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
@@ -488,7 +488,7 @@ MIDI:	</translation>
         <translation>adicionar mandada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiBuffer.cpp" line="1103"/>
+        <location filename="../qtractorMidiBuffer.cpp" line="1133"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banco %2</translation>
     </message>
@@ -519,7 +519,7 @@ MIDI:	</translation>
         <translation>mover nó de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="750"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
@@ -589,7 +589,7 @@ Offset / Length:	%3 / %4</source>
 Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1155"/>
+        <location filename="../qtractorMidiClip.cpp" line="1197"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 pistas, %2 tpqn</translation>
     </message>
