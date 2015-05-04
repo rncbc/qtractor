@@ -40,7 +40,7 @@
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
         <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
@@ -121,7 +121,7 @@
         <translation>%1 Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
         <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>

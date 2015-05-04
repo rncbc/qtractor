@@ -30,13 +30,13 @@ Audio:	%1 canales, %2 Hz</translation>
 	(%1  tranponer semitonos)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
         <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
         <location filename="../qtractorMidiEngine.cpp" line="4404"/>
         <source>%1 Out</source>
         <translation>%1 Salida</translation>

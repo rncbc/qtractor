@@ -884,6 +884,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 					pMidiManager->reset();
 					pMidiManager = pMidiManager->next();
 				}
+				// HACK: Reset all MIDI tracks...
+				pSession->midiEngine()->shutOffAllTracks();
+				// HACK: Reset all audio monitors...
+				resetAllMonitors();
 			}
 		}
 		// Done with this one export cycle...

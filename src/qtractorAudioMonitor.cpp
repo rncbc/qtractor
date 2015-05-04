@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -248,7 +248,7 @@ float qtractorAudioMonitor::value ( unsigned short iChannel ) const
 void qtractorAudioMonitor::reset (void)
 {
 	for (unsigned short i = 0; i < m_iChannels; ++i)
-		m_pfPrevGains[i] = 0.0f;
+		m_pfPrevGains[i] = m_pfValues[i] = 0.0f;
 
 	++m_iProcessRamp;
 }
