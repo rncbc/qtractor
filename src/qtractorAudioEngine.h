@@ -116,7 +116,7 @@ public:
 	int process(unsigned int nframes);
 
 	// Freewheeling process cycle executive (needed for export).
-	int process_export(unsigned int nframes);
+	void process_export(unsigned int nframes);
 
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);

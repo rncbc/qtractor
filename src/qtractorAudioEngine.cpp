@@ -824,8 +824,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Are we actually freewheeling for export?...
 	// notice that freewheeling has no RT requirements.
-	if (m_bFreewheel)
-		return process_export(nframes);
+	if (m_bFreewheel) {
+		process_export(nframes);
+		return 0;
+	}
 
 	// Must have a valid session...
 	qtractorSession *pSession = session();
@@ -1059,18 +1061,18 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 
 // Freewheeling process cycle executive (needed for export).
-int qtractorAudioEngine::process_export ( unsigned int nframes )
+void qtractorAudioEngine::process_export ( unsigned int nframes )
 {
 	if (m_pExportBuses == NULL)
-		return 0;
+		return;
 
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
-		return 0;
+		return;
 
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
-		return 0;
+		return;
 
 
 	// Make sure we're in a valid state...
@@ -1088,7 +1090,7 @@ int qtractorAudioEngine::process_export ( unsigned int nframes )
 	}
 
 	if (m_pExportFile == NULL || m_pExportBuffer == NULL || m_bExportDone)
-		return 0;
+		return;
 
 	// This the legal process cycle frame range...
 	const unsigned long iFrameStart = pAudioCursor->frame();
@@ -1153,14 +1155,14 @@ int qtractorAudioEngine::process_export ( unsigned int nframes )
 				pTrack; pTrack = pTrack->next()) {
 			if (pTrack->trackType() != qtractorTrack::Midi)
 				continue;
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-			if (pMidiBus == NULL)
-				continue;
 			const unsigned short iChannel = pTrack->midiChannel();
 			pMidiManager = (pTrack->pluginList())->midiManager();
 			if (pMidiManager)
 				pMidiManager->shutOff(iChannel);
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+			if (pMidiBus == NULL)
+				continue;
 			const unsigned short iChannelMask = (1 << iChannel);
 			const unsigned short iChannelFlags = channels.value(pMidiBus, 0);
 			if ((iChannelFlags & iChannelMask) == 0) {
@@ -1173,8 +1175,6 @@ int qtractorAudioEngine::process_export ( unsigned int nframes )
 		// HACK: Reset all audio monitors...
 		resetAllMonitors();
 	}
-
-	return 0;
 }
 
 
