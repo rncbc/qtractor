@@ -1063,7 +1063,11 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 // Freewheeling process cycle executive (needed for export).
 void qtractorAudioEngine::process_export ( unsigned int nframes )
 {
-	if (m_pExportBuses == NULL)
+	if (m_bExportDone)
+		return;
+	if (m_pExportBuses  == NULL ||
+		m_pExportFile   == NULL ||
+		m_pExportBuffer == NULL)
 		return;
 
 	qtractorSession *pSession = session();
@@ -1073,7 +1077,6 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
 		return;
-
 
 	// Make sure we're in a valid state...
 	QListIterator<qtractorAudioBus *> iter(*m_pExportBuses);
@@ -1088,9 +1091,6 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 		if (pAudioBusEx)
 			pAudioBusEx->process_prepare(nframes);
 	}
-
-	if (m_pExportFile == NULL || m_pExportBuffer == NULL || m_bExportDone)
-		return;
 
 	// This the legal process cycle frame range...
 	const unsigned long iFrameStart = pAudioCursor->frame();
@@ -1149,20 +1149,20 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 			pMidiManager->reset();
 			pMidiManager = pMidiManager->next();
 		}
-		// HACK: Reset all MIDI tracks...
+		// HACK: Shut-off (panic) all MIDI tracks...
 		QHash<qtractorMidiBus *, unsigned short> channels;
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pTrack->trackType() != qtractorTrack::Midi)
 				continue;
-			const unsigned short iChannel = pTrack->midiChannel();
-			pMidiManager = (pTrack->pluginList())->midiManager();
-			if (pMidiManager)
-				pMidiManager->shutOff(iChannel);
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 			if (pMidiBus == NULL)
 				continue;
+			const unsigned short iChannel = pTrack->midiChannel();
+			pMidiManager = (pTrack->pluginList())->midiManager();
+			if (pMidiManager)
+				pMidiManager->shutOff(iChannel);
 			const unsigned short iChannelMask = (1 << iChannel);
 			const unsigned short iChannelFlags = channels.value(pMidiBus, 0);
 			if ((iChannelFlags & iChannelMask) == 0) {
