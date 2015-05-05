@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -329,6 +329,12 @@ public:
 	// Instrument map accessor.
 	const Instruments& instruments() const
 		{ return m_instruments; }
+
+	// Direct MIDI controller helper.
+	void setController(unsigned short iChannel, int iController, int iValue);
+
+	// Shut-off MIDI channel (panic)...
+	void shutOff(unsigned short iChannel);
 
 protected:
 

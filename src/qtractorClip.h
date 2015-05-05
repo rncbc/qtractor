@@ -164,7 +164,12 @@ public:
 	virtual void close() = 0;
 
 	// Clip special process cycle executive.
-	virtual void process(unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
+	virtual void process(
+		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
+
+	// Clip freewheeling process cycle executive (needed for export).
+	virtual void process_export(
+		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
 
 	// Clip paint method.
 	virtual void draw(QPainter *pPainter, const QRect& clipRect,
@@ -179,10 +184,6 @@ public:
 
 	// Clip tool-tip.
 	virtual QString toolTip() const;
-
-	// Clip freewheeling process cycle executive (needed for export).
-	virtual void syncExport(
-		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
 
 	// Local dirty flag.
 	void setDirty(bool bDirty)

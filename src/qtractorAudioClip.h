@@ -86,6 +86,9 @@ public:
 	// Audio clip special process cycle executive.
 	void process(unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Audio clip freewheeling process cycle executive (needed for export).
+	void process_export(unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Clip paint method.
 	void draw(QPainter *pPainter, const QRect& clipRect,
 	    unsigned long iClipOffset);
@@ -98,9 +101,6 @@ public:
 
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
 		unsigned long iOffset = 0, unsigned long iLength = 0) const;
-
-	// Audio clip freewheeling process cycle executive (needed for export).
-	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Most interesting key/data (ref-counted?)...
 	class Key;

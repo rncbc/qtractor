@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,6 +37,10 @@
 // Specific controller definitions
 #define BANK_SELECT_MSB		0x00
 #define BANK_SELECT_LSB		0x20
+
+#define ALL_SOUND_OFF		0x78
+#define ALL_CONTROLLERS_OFF	0x79
+#define ALL_NOTES_OFF		0x7b
 
 
 //----------------------------------------------------------------------
@@ -345,7 +349,8 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 			break;
 		}
 	}
-	else if (pEvent->type == SND_SEQ_EVENT_PGMCHANGE)
+	else
+	if (pEvent->type == SND_SEQ_EVENT_PGMCHANGE)
 		m_iPendingProg = pEvent->data.control.value;
 
 	return m_directBuffer.push(pEvent);
@@ -632,6 +637,31 @@ void qtractorMidiManager::reset (void)
 	m_iPendingProg    = -1;
 
 	pSession->unlock();
+}
+
+
+// Direct MIDI controller helper.
+void qtractorMidiManager::setController (
+	unsigned short iChannel, int iController, int iValue )
+{
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	ev.type = SND_SEQ_EVENT_CONTROLLER;
+	ev.data.control.channel = iChannel;
+	ev.data.control.param   = iController;
+	ev.data.control.value   = iValue;
+
+	direct(&ev);
+}
+
+
+// Shut-off MIDI channel (panic)...
+void qtractorMidiManager::shutOff ( unsigned short iChannel )
+{
+	setController(iChannel, ALL_SOUND_OFF, 0);
+	setController(iChannel, ALL_NOTES_OFF, 0);
+	setController(iChannel, ALL_CONTROLLERS_OFF, 0);
 }
 
 

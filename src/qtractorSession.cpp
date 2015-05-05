@@ -899,8 +899,8 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 }
 
 
-void qtractorSession::moveTrack ( qtractorTrack *pTrack,
-	qtractorTrack *pNextTrack )
+void qtractorSession::moveTrack (
+	qtractorTrack *pTrack, qtractorTrack *pNextTrack )
 {
 //	lock();
 
@@ -1273,8 +1273,9 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 	lock();
 	setPlaying(false);
 
-	if (m_pAudioEngine->jackClient())
-		jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
+	jack_client_t *pJackClient = m_pAudioEngine->jackClient();
+	if (pJackClient)
+		jack_transport_locate(pJackClient, iFrame);
 
 	seek(iFrame, true);
 
@@ -1293,8 +1294,8 @@ unsigned long qtractorSession::playHead (void) const
 
 
 // Session loop points accessors.
-void qtractorSession::setLoop ( unsigned long iLoopStart,
-	unsigned long iLoopEnd )
+void qtractorSession::setLoop (
+	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
 	const bool bPlaying = isPlaying();
 	if (bPlaying && isRecording())
@@ -1727,7 +1728,8 @@ bool qtractorSession::isAutoTimeStretch (void) const
 
 
 // Session special process cycle executive.
-void qtractorSession::process ( qtractorSessionCursor *pSessionCursor,
+void qtractorSession::process (
+	qtractorSessionCursor *pSessionCursor,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	const qtractorTrack::TrackType syncType = pSessionCursor->syncType();

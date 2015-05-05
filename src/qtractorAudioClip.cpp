@@ -604,6 +604,18 @@ void qtractorAudioClip::process (
 }
 
 
+// Audio clip freewheeling process cycle executive (needed for export).
+void qtractorAudioClip::process_export (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	// Direct sync method.
+	if (m_pData) m_pData->syncExport();
+
+	// Normal clip processing...
+	process(iFrameStart, iFrameEnd);
+}
+
+
 // Audio clip paint method.
 void qtractorAudioClip::draw (
 	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
@@ -877,18 +889,6 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	delete pBuff;
 
 	return true;
-}
-
-
-// Audio clip freewheeling process cycle executive (needed for export).
-void qtractorAudioClip::syncExport (
-	unsigned long iFrameStart, unsigned long iFrameEnd )
-{
-	// Direct sync method.
-	if (m_pData) m_pData->syncExport();
-
-	// Normal clip processing...
-	process(iFrameStart, iFrameEnd);
 }
 
 
