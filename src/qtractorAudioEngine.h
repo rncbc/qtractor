@@ -115,9 +115,6 @@ public:
 	// Process cycle executive.
 	int process(unsigned int nframes);
 
-	// Freewheeling process cycle executive (needed for export).
-	void process_export(unsigned int nframes);
-
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
@@ -236,6 +233,9 @@ protected:
 	bool openPlayerBus();
 	void closePlayerBus();
 	void deletePlayerBus();
+
+	// Freewheeling process cycle executive (needed for export).
+	void process_export(unsigned int nframes);
 
 private:
 
