@@ -1005,8 +1005,7 @@ if test "x$ac_lv2" = "xyes"; then
    AC_CHECK_HEADER(lv2.h, [ac_lv2="yes"], [ac_lv2="no"])
    if test "x$ac_lv2" = "xyes"; then
       AC_CHECK_HEADERS(
-         lv2/lv2plug.in/ns/ext/urid/urid.h \
-         lv2/lv2plug.in/ns/ext/uri-map/uri-map.h,
+         lv2/lv2plug.in/ns/ext/urid/urid.h,
          [ac_lv2="yes"], [ac_lv2="no"])
    fi
    if test "x$ac_lv2" = "xyes"; then
@@ -1050,6 +1049,7 @@ else
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(
+      lv2/lv2plug.in/ns/ext/uri-map/uri-map.h \
       lv2/lv2plug.in/ns/ext/event/event.h \
       lv2/lv2plug.in/ns/ext/event/event-helpers.h,
       [ac_lv2_event="yes"], [ac_lv2_event="no"])
