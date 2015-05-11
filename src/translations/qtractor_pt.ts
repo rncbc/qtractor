@@ -4332,6 +4332,11 @@ está rodando e reinicie a sessão.</translation>
         <translation>aplicativo</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5398"/>
+        <source>LV2 Plug-in MIDI/Event support enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="5435"/>
         <source>JACK Metadata support disabled.</source>
         <translation>Suporte a Metadata do JACK desabilitado.</translation>
@@ -4516,9 +4521,8 @@ Desculpe.</translation>
         <translation>Abrindo &quot;%1&quot;...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5398"/>
         <source>LV2 Plug-in MIDI/Event support disabled.</source>
-        <translation>Suporte a LV2 Plug-in MIDI/Event desabilitado.</translation>
+        <translation type="obsolete">Suporte a LV2 Plug-in MIDI/Event desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="917"/>

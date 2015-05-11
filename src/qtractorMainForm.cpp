@@ -5394,8 +5394,8 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("LV2 Plug-in External UI support disabled.");
 #endif
 #endif // CONFIG_LV2_UI
-#ifndef CONFIG_LV2_EVENT
-	list << tr("LV2 Plug-in MIDI/Event support disabled.");
+#ifdef CONFIG_LV2_EVENT
+	list << tr("LV2 Plug-in MIDI/Event support enabled.");
 #endif
 #ifndef CONFIG_LV2_ATOM
 	list << tr("LV2 Plug-in MIDI/Atom support disabled.");

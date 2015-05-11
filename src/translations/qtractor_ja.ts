@@ -5603,9 +5603,8 @@ next time you start this %1.</source>
         <translation>LV2プラグインユーザーインターフェイスサポート (libsuil) は無効です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5398"/>
         <source>LV2 Plug-in MIDI/Event support disabled.</source>
-        <translation>LV2プラグインのMIDI/イベントサポートは無効です。</translation>
+        <translation type="obsolete">LV2プラグインのMIDI/イベントサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5410"/>
@@ -5795,6 +5794,11 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
         <location filename="../qtractorMainForm.cpp" line="2207"/>
         <source>Don&apos;t ask this again</source>
         <translation>再確認しない</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5398"/>
+        <source>LV2 Plug-in MIDI/Event support enabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5438"/>

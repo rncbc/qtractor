@@ -5541,7 +5541,7 @@ wenn sie %1 das nächste Mal starten.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5398"/>
-        <source>LV2 Plug-in MIDI/Event support disabled.</source>
+        <source>LV2 Plug-in MIDI/Event support enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

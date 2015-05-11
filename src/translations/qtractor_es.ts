@@ -5482,8 +5482,12 @@ la próxima vez que inicie este %1.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5398"/>
+        <source>LV2 Plug-in MIDI/Event support enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>LV2 Plug-in MIDI/Event support disabled.</source>
-        <translation>Soporte de MIDI/Evento de Plug-in LV2 deshabilitado.</translation>
+        <translation type="obsolete">Soporte de MIDI/Evento de Plug-in LV2 deshabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5401"/>

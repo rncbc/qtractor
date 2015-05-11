@@ -5662,9 +5662,8 @@ que la prochaine fois que vous démarrerez %1.</translation>
         <translation>Support du GUI des greffons (libsuil) LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5398"/>
         <source>LV2 Plug-in MIDI/Event support disabled.</source>
-        <translation>Support MIDI/évènement greffon LV2 désactivé.</translation>
+        <translation type="obsolete">Support MIDI/évènement greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5401"/>
@@ -5855,6 +5854,11 @@ est près et en fonctionnement puis redémarrer la session.</translation>
         <location filename="../qtractorMainForm.cpp" line="2207"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5398"/>
+        <source>LV2 Plug-in MIDI/Event support enabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5438"/>
