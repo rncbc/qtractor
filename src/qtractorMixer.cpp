@@ -366,7 +366,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
 	m_pMidiLabel = NULL;
-	int iFixedWidth = 46;
+	int iFixedWidth = 54;
 	switch (meterType) {
 	case qtractorTrack::Audio: {
 		// Type cast for proper audio monitor...
@@ -392,8 +392,8 @@ void qtractorMixerStrip::initMixerStrip (void)
 		}
 		// Have we an audio monitor/meter?...
 		if (pAudioMonitor) {
-			iFixedWidth += 16 * (pAudioMonitor->channels() < 2
-				? 2 : pAudioMonitor->channels());
+			const int iAudioChannels = pAudioMonitor->channels();
+			iFixedWidth += 12 * (iAudioChannels < 2	? 2 : iAudioChannels);
 			m_pMeter = new qtractorAudioMeter(pAudioMonitor, this);
 		}
 		m_pPluginListView->setEnabled(true);
@@ -425,7 +425,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		}
 		// Have we a MIDI monitor/meter?...
 		if (pMidiMonitor) {
-			iFixedWidth += 32;
+			iFixedWidth += 24;
 			m_pMeter = new qtractorMidiMeter(pMidiMonitor, this);
 			// MIDI Tracks might need to show something,
 			// like proper MIDI channel settings...
