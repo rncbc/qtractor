@@ -50,12 +50,10 @@ static QHash<LV2_URID, QByteArray> g_ids_map;
 static LV2_URID qtractor_lv2_urid_map (
 	LV2_URID_Map_Handle /*handle*/, const char *uri )
 {
-#ifdef CONFIG_LV2_EVENT
 	if (strcmp(uri, LILV_URI_MIDI_EVENT) == 0)
 	    return QTRACTOR_LV2_MIDI_EVENT_ID;
-#endif
-
-	return qtractorLv2Plugin::lv2_urid_map(uri);
+	else
+		return qtractorLv2Plugin::lv2_urid_map(uri);
 }
 
 static LV2_URID_Map g_lv2_urid_map =
@@ -67,12 +65,10 @@ static const LV2_Feature g_lv2_urid_map_feature =
 static const char *qtractor_lv2_urid_unmap (
 	LV2_URID_Unmap_Handle /*handle*/, LV2_URID id )
 {
-#ifdef CONFIG_LV2_EVENT
 	if (id == QTRACTOR_LV2_MIDI_EVENT_ID)
 		return LILV_URI_MIDI_EVENT;
-#endif
-
-	return qtractorLv2Plugin::lv2_urid_unmap(id);
+	else
+		return qtractorLv2Plugin::lv2_urid_unmap(id);
 }
 
 static LV2_URID_Unmap g_lv2_urid_unmap =
@@ -81,18 +77,19 @@ static const LV2_Feature g_lv2_urid_unmap_feature =
 	{ LV2_URID_UNMAP_URI, &g_lv2_urid_unmap };
 
 
+#ifdef CONFIG_LV2_EVENT
+
 // URI map (uri_to_id) feature (DEPRECATED)
 #include "lv2/lv2plug.in/ns/ext/uri-map/uri-map.h"
 
 static LV2_URID qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
 {
-#ifdef CONFIG_LV2_EVENT
-	if ((map && strcmp(map, LV2_EVENT_URI) == 0) &&
-		strcmp(uri, LILV_URI_MIDI_EVENT) == 0)
+	if ((map && strcmp(map, LV2_EVENT_URI) == 0)
+		&& strcmp(uri, LILV_URI_MIDI_EVENT) == 0)
 		return QTRACTOR_LV2_MIDI_EVENT_ID;
-#endif
-	return qtractorLv2Plugin::lv2_urid_map(uri);
+	else
+		return qtractorLv2Plugin::lv2_urid_map(uri);
 }
 
 static LV2_URI_Map_Feature g_lv2_uri_map =
@@ -100,6 +97,7 @@ static LV2_URI_Map_Feature g_lv2_uri_map =
 static const LV2_Feature g_lv2_uri_map_feature =
 	{ LV2_URI_MAP_URI, &g_lv2_uri_map };
 
+#endif	// CONFIG_LV2_EVENT
 
 #ifdef CONFIG_LV2_STATE
 
@@ -724,7 +722,9 @@ static const LV2_Feature *g_lv2_features[] =
 {
 	&g_lv2_urid_map_feature,
 	&g_lv2_urid_unmap_feature,
-	&g_lv2_uri_map_feature,	// deprecated
+#ifdef CONFIG_LV2_EVENT
+	&g_lv2_uri_map_feature,	// deprecated.
+#endif
 #ifdef CONFIG_LV2_STATE
 	&g_lv2_state_feature,
 #endif
