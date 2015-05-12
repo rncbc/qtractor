@@ -461,6 +461,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// JACK transport mode.
 	m_transportMode = qtractorBus::Duplex;
+
+	// JACK timebase mode.
+	m_bTimebase = true;
 }
 
 
@@ -629,8 +632,8 @@ bool qtractorAudioEngine::activate (void)
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
 
-	// Trnsport timebase callbacks...
-	if (m_transportMode & qtractorBus::Output) {
+	// Transport timebase callbacks...
+	if (m_bTimebase) {
 		jack_set_timebase_callback(m_pJackClient,
 			0 /* FIXME: un-conditional! */,
 			qtractorAudioEngine_timebase, this);
@@ -1207,6 +1210,11 @@ bool qtractorAudioEngine::loadElement (
 					qtractorAudioEngine::setTransportMode(
 						qtractorBus::busModeFromText(eProp.text()));
 				}
+				else
+				if (eProp.tagName() == "timebase") {
+					qtractorAudioEngine::setTimebase(
+						qtractorDocument::boolFromText(eProp.text()));
+				}
 			}
 		}
 		else if (eChild.tagName() == "audio-bus") {
@@ -1246,6 +1254,9 @@ bool qtractorAudioEngine::saveElement (
 	pDocument->saveTextElement("transport-mode",
 		qtractorBus::textFromBusMode(
 			qtractorAudioEngine::transportMode()), &eControl);
+	pDocument->saveTextElement("timebase",
+		qtractorDocument::textFromBool(
+			qtractorAudioEngine::isTimebase()), &eControl);
 	pElement->appendChild(eControl);
 
 	// Save audio buses...
@@ -1957,11 +1968,26 @@ void qtractorAudioEngine::setTransportMode (
 	qtractorBus::BusMode transportMode )
 {
 	m_transportMode = transportMode;
+#if 1//FIXME!
+	m_bTimebase = (m_transportMode & qtractorBus::Output);
+#endif
 }
 
 qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const
 {
 	return m_transportMode;
+}
+
+
+// JACK Timebase mode accessors.
+void qtractorAudioEngine::setTimebase ( bool bTimebase )
+{
+	m_bTimebase = bTimebase;
+}
+
+bool qtractorAudioEngine::isTimebase (void) const
+{
+	return m_bTimebase;
 }
 
 

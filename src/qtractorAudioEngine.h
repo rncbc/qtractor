@@ -207,6 +207,10 @@ public:
 	void setTransportMode(qtractorBus::BusMode transportMode);
 	qtractorBus::BusMode transportMode() const;
 
+	// JACK Timebase mode accessors.
+	void setTimebase(bool bTimebase);
+	bool isTimebase() const;
+
 	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrame() const;
 
@@ -301,6 +305,9 @@ private:
 
 	// JACK Transport mode.
 	qtractorBus::BusMode m_transportMode;
+
+	// JACK Timebase mode.
+	bool m_bTimebase;
 };
 
 
