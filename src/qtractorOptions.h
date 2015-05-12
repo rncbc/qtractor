@@ -98,6 +98,7 @@ public:
 	bool    bAutoBackward;
 	bool    bContinuePastEnd;
 	int     iTransportMode;
+	bool    bTimebase;
 
 	// Audio options...
 	QString sAudioCaptureExt;

@@ -1968,9 +1968,6 @@ void qtractorAudioEngine::setTransportMode (
 	qtractorBus::BusMode transportMode )
 {
 	m_transportMode = transportMode;
-#if 1//FIXME!
-	m_bTimebase = (m_transportMode & qtractorBus::Output);
-#endif
 }
 
 qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const

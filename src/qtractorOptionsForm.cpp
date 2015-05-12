@@ -200,6 +200,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.TransportModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.TimebaseCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioAutoTimeStretchCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -511,6 +514,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioCaptureQualitySpinBox->setValue(m_pOptions->iAudioCaptureQuality);
 	m_ui.AudioResampleTypeComboBox->setCurrentIndex(m_pOptions->iAudioResampleType);
 	m_ui.TransportModeComboBox->setCurrentIndex(m_pOptions->iTransportMode);
+	m_ui.TimebaseCheckBox->setChecked(m_pOptions->bTimebase);
 	m_ui.AudioAutoTimeStretchCheckBox->setChecked(m_pOptions->bAudioAutoTimeStretch);
 #ifdef CONFIG_LIBRUBBERBAND
 	m_ui.AudioWsolaTimeStretchCheckBox->setChecked(m_pOptions->bAudioWsolaTimeStretch);
@@ -722,6 +726,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		m_pOptions->iTransportMode       = m_ui.TransportModeComboBox->currentIndex();
+		m_pOptions->bTimebase            = m_ui.TimebaseCheckBox->isChecked();
 		m_pOptions->bAudioAutoTimeStretch = m_ui.AudioAutoTimeStretchCheckBox->isChecked();
 		m_pOptions->bAudioWsolaTimeStretch = m_ui.AudioWsolaTimeStretchCheckBox->isChecked();
 		m_pOptions->bAudioWsolaQuickSeek = m_ui.AudioWsolaQuickSeekCheckBox->isChecked();
@@ -1463,12 +1468,12 @@ void qtractorOptionsForm::stabilizeForm (void)
 	const qtractorAudioFileFactory::FileFormat *pFormat
 		= qtractorAudioFileFactory::formats().at(iFormat);
 
-	bool bSndFile
+	const bool bSndFile
 		= (pFormat && pFormat->type == qtractorAudioFileFactory::SndFile);
 	m_ui.AudioCaptureFormatTextLabel->setEnabled(bSndFile);
 	m_ui.AudioCaptureFormatComboBox->setEnabled(bSndFile);
 
-	bool bVorbisFile
+	const bool bVorbisFile
 		= (pFormat && pFormat->type == qtractorAudioFileFactory::VorbisFile);
 	m_ui.AudioCaptureQualityTextLabel->setEnabled(bVorbisFile);
 	m_ui.AudioCaptureQualitySpinBox->setEnabled(bVorbisFile);

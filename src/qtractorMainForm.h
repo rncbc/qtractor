@@ -392,6 +392,7 @@ protected:
 	void updateDisplayFormat();
 	void updatePluginPaths();
 	void updateTransportMode();
+	void updateTimebase();
 	void updateMidiControlModes();
 	void updateAudioPlayer();
 	void updateMidiQueueTimer();

@@ -558,6 +558,22 @@
            </widget>
           </item>
           <item row="0" column="2">
+           <widget class="QCheckBox" name="TimebaseCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to start as timebase master (JACK)</string>
+            </property>
+            <property name="text">
+             <string>&amp;Timebase</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -570,7 +586,7 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="3">
+          <item row="0" column="4">
            <widget class="QLabel" name="LoopRecordingModeTextLabel">
             <property name="font">
              <font>
@@ -589,7 +605,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
+          <item row="0" column="5">
            <widget class="QComboBox" name="LoopRecordingModeComboBox">
             <property name="font">
              <font>
@@ -3534,6 +3550,7 @@
   <tabstop>MidButtonModifierCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>TransportModeComboBox</tabstop>
+  <tabstop>TimebaseCheckBox</tabstop>
   <tabstop>LoopRecordingModeComboBox</tabstop>
   <tabstop>AudioCaptureTypeComboBox</tabstop>
   <tabstop>AudioCaptureFormatComboBox</tabstop>
