@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing (JACK) Timebase master setting as an option
+  to Transport mode (cf. View/Options.../General/Transport
+  /Timebase). (EXPERIMENTAL)
+
+- LV2 plug-in MIDI/Event support now slanted for deprecation.
+
 - Spanish (es) translation added, by avid Reyes Pucheta.
 
 - It's live: audio track export (cf. Track/Export Tracks/

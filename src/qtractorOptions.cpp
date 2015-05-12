@@ -125,6 +125,7 @@ void qtractorOptions::loadOptions (void)
 	bAutoBackward    = m_settings.value("/AutoBackward", false).toBool();
 	bContinuePastEnd = m_settings.value("/ContinuePastEnd", true).toBool();
 	iTransportMode   = m_settings.value("/TransportMode", 3).toInt();
+	bTimebase        = m_settings.value("/Timebase", true).toBool();
 	m_settings.endGroup();
 
 	// Audio rendering options group.
@@ -405,6 +406,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/AutoBackward", bAutoBackward);
 	m_settings.setValue("/ContinuePastEnd", bContinuePastEnd);
 	m_settings.setValue("/TransportMode", iTransportMode);
+	m_settings.setValue("/Timebase", bTimebase);
 	m_settings.endGroup();
 
 	// Audio rendering options group.

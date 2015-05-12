@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.6.12, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.6.14, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -135,9 +135,9 @@ AC_ARG_ENABLE(lv2,
   [ac_lv2="yes"])
 
 AC_ARG_ENABLE(lv2-event,
-  AC_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in MIDI/Event support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in MIDI/Event support (default=no)]),
   [ac_lv2_event="$enableval"],
-  [ac_lv2_event="yes"])
+  [ac_lv2_event="no"])
 
 AC_ARG_ENABLE(lv2-atom,
   AC_HELP_STRING([--enable-lv2-atom], [enable LV2 plug-in MIDI/Atom support (default=yes)]),
@@ -1005,8 +1005,7 @@ if test "x$ac_lv2" = "xyes"; then
    AC_CHECK_HEADER(lv2.h, [ac_lv2="yes"], [ac_lv2="no"])
    if test "x$ac_lv2" = "xyes"; then
       AC_CHECK_HEADERS(
-         lv2/lv2plug.in/ns/ext/urid/urid.h \
-         lv2/lv2plug.in/ns/ext/uri-map/uri-map.h,
+         lv2/lv2plug.in/ns/ext/urid/urid.h,
          [ac_lv2="yes"], [ac_lv2="no"])
    fi
    if test "x$ac_lv2" = "xyes"; then
@@ -1050,6 +1049,7 @@ else
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(
+      lv2/lv2plug.in/ns/ext/uri-map/uri-map.h \
       lv2/lv2plug.in/ns/ext/event/event.h \
       lv2/lv2plug.in/ns/ext/event/event-helpers.h,
       [ac_lv2_event="yes"], [ac_lv2_event="no"])
@@ -1321,7 +1321,7 @@ echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lv2"
 echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_lv2_ui"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
-echo "  LV2 plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 plug-in MIDI/Event support (DEPRECATED)  . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
 echo "  LV2 plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
 echo "  LV2 plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"

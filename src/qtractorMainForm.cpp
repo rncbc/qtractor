@@ -1351,6 +1351,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateDisplayFormat();
 	updatePluginPaths();
 	updateTransportMode();
+	updateTimebase();
 	updateAudioPlayer();
 	updateAudioMetronome();
 	updateMidiControlModes();
@@ -2277,8 +2278,10 @@ bool qtractorMainForm::loadSessionFileEx (
 			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 			// Save also some Audio engine hybrid-properties...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-			if (pAudioEngine)
+			if (pAudioEngine) {
 				m_pOptions->iTransportMode = int(pAudioEngine->transportMode());
+				m_pOptions->bTimebase = pAudioEngine->isTimebase();
+			}
 			// Save also some MIDI engine hybrid-properties...
 			qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 			if (pMidiEngine) {
@@ -2416,8 +2419,10 @@ bool qtractorMainForm::saveSessionFileEx (
 		// Save some default session properties...
 		if (m_pOptions && bUpdate) {
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-			if (pAudioEngine)
+			if (pAudioEngine) {
 				m_pOptions->iTransportMode = int(pAudioEngine->transportMode());
+				m_pOptions->bTimebase = pAudioEngine->isTimebase();
+			}
 			qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 			if (pMidiEngine) {
 				m_pOptions->iMidiMmcMode   = int(pMidiEngine->mmcMode());
@@ -4719,6 +4724,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	const bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
 	const int     iOldTransportMode      = m_pOptions->iTransportMode;
+	const bool    bOldTimebase           = m_pOptions->bTimebase;
 	const int     iOldMidiMmcDevice      = m_pOptions->iMidiMmcDevice;
 	const int     iOldMidiMmcMode        = m_pOptions->iMidiMmcMode;
 	const int     iOldMidiSppMode        = m_pOptions->iMidiSppMode;
@@ -4771,6 +4777,13 @@ void qtractorMainForm::viewOptions (void)
 			updateTransportMode();
 		//	iNeedRestart |= RestartSession;
 		}
+		if (( bOldTimebase && !m_pOptions->bTimebase) ||
+			(!bOldTimebase &&  m_pOptions->bTimebase)) {
+			++m_iDirtyCount; // Fake session properties change.
+			updateTimebase();
+			iNeedRestart |= RestartSession;
+		}
+		// MIDI engine queue timer...
 		if (iOldMidiQueueTimer != m_pOptions->iMidiQueueTimer) {
 			updateMidiQueueTimer();
 			iNeedRestart |= RestartSession;
@@ -5404,8 +5417,8 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("LV2 Plug-in External UI support disabled.");
 #endif
 #endif // CONFIG_LV2_UI
-#ifndef CONFIG_LV2_EVENT
-	list << tr("LV2 Plug-in MIDI/Event support disabled.");
+#ifdef CONFIG_LV2_EVENT
+	list << tr("LV2 Plug-in MIDI/Event support enabled.");
 #endif
 #ifndef CONFIG_LV2_ATOM
 	list << tr("LV2 Plug-in MIDI/Atom support disabled.");
@@ -6194,6 +6207,20 @@ void qtractorMainForm::updateTransportMode (void)
 
 	pAudioEngine->setTransportMode(
 		qtractorBus::BusMode(m_pOptions->iTransportMode));
+}
+
+
+void qtractorMainForm::updateTimebase (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Configure the Audio engine handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	pAudioEngine->setTimebase(m_pOptions->bTimebase);
 }
 
 
