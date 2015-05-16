@@ -508,6 +508,10 @@ bool qtractorMidiClip::openMidiFile (
 	updateHashKey();
 	insertHashKey();
 
+	// Update/reset MIDI clip editor if any...
+	if (m_pMidiEditorForm)
+		m_pMidiEditorForm->setup(this);
+
 	return true;
 }
 
@@ -515,12 +519,6 @@ bool qtractorMidiClip::openMidiFile (
 // Private cleanup.
 void qtractorMidiClip::closeMidiFile (void)
 {
-	if (m_pMidiEditorForm) {
-		m_pMidiEditorForm->close();
-		delete m_pMidiEditorForm;
-		m_pMidiEditorForm = NULL;
-	}
-
 	if (m_pData) {
 		m_pData->detach(this);
 		if (m_pData->count() < 1) {
@@ -871,6 +869,13 @@ void qtractorMidiClip::close (void)
 			m_pFile->writeTrack(NULL);	// Setup track (SMF format 1).
 		m_pFile->writeTrack(pSeq);		// Channel track.
 		m_pFile->close();
+	}
+
+	// Sure close MIDI clip editor if any...
+	if (m_pMidiEditorForm) {
+		m_pMidiEditorForm->close();
+		delete m_pMidiEditorForm;
+		m_pMidiEditorForm = NULL;
 	}
 
 	// Just to be sure things get deallocated..
