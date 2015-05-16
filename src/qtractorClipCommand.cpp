@@ -99,12 +99,12 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
 
-	reopenClip(pClip, true);
+	reopenClip(pClip, (pClip->track())->trackType() == qtractorTrack::Audio);
 }
 
 
-void qtractorClipCommand::renameClip ( qtractorClip *pClip,
-	const QString& sClipName )
+void qtractorClipCommand::renameClip (
+	qtractorClip *pClip, const QString& sClipName )
 {
 	Item *pItem = new Item(RenameClip, pClip, pClip->track());
 	pItem->clipName = sClipName;
@@ -593,7 +593,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->filename = sOldFilename;
 			if (pMidiClip)
 				pItem->trackChannel = iOldTrackChannel;
-			pSession->updateTrack(pTrack);
+			//pSession->updateTrack(pTrack);
 			break;
 		}
 		case RenameClip: {
