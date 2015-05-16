@@ -99,12 +99,12 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
 
-	reopenClip(pClip, true);
+	reopenClip(pClip, (pClip->track())->trackType() == qtractorTrack::Audio);
 }
 
 
-void qtractorClipCommand::renameClip ( qtractorClip *pClip,
-	const QString& sClipName )
+void qtractorClipCommand::renameClip (
+	qtractorClip *pClip, const QString& sClipName )
 {
 	Item *pItem = new Item(RenameClip, pClip, pClip->track());
 	pItem->clipName = sClipName;
@@ -180,7 +180,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (pClip);
-			float fRatio = fTimeStretch / pAudioClip->timeStretch();
+			const float fRatio = fTimeStretch / pAudioClip->timeStretch();
 			pItem->clipOffset = (unsigned long) (fRatio * float(iClipOffset));
 			break;
 		}
@@ -234,8 +234,8 @@ void qtractorClipCommand::fadeOutClip ( qtractorClip *pClip,
 }
 
 
-void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
-	float fTimeStretch )
+void qtractorClipCommand::timeStretchClip (
+	qtractorClip *pClip, float fTimeStretch )
 {
 	Item *pItem = new Item(TimeStretchClip, pClip, pClip->track());
 	pItem->timeStretch = fTimeStretch;
@@ -245,8 +245,8 @@ void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
 }
 
 
-void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
-	float fPitchShift )
+void qtractorClipCommand::pitchShiftClip (
+	qtractorClip *pClip, float fPitchShift )
 {
 	Item *pItem = new Item(PitchShiftClip, pClip, pClip->track());
 	pItem->pitchShift = fPitchShift;
@@ -256,8 +256,8 @@ void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
 }
 
 
-void qtractorClipCommand::takeInfoClip ( qtractorClip *pClip,
-	qtractorClip::TakeInfo *pTakeInfo )
+void qtractorClipCommand::takeInfoClip (
+	qtractorClip *pClip, qtractorClip::TakeInfo *pTakeInfo )
 {
 	Item *pItem = new Item(TakeInfoClip, pClip, pClip->track());
 	pItem->takeInfo = pTakeInfo;
@@ -593,7 +593,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->filename = sOldFilename;
 			if (pMidiClip)
 				pItem->trackChannel = iOldTrackChannel;
-			pSession->updateTrack(pTrack);
+			//pSession->updateTrack(pTrack);
 			break;
 		}
 		case RenameClip: {

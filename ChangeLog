@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor resilience is about to get an improvement,
+  fe. it doesn't close on stopping record/overdub anymore.
+  (EXPERIMENTAL)
+
 - Introducing (JACK) Timebase master setting as an option
   to Transport mode (cf. View/Options.../General/Transport
   /Timebase). (EXPERIMENTAL)
