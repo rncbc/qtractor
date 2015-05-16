@@ -2065,6 +2065,7 @@ bool qtractorPluginList::loadElement (
 			qtractorMidiControl::Controllers controllers;
 			qtractorCurveFile cfile(qtractorPluginList::curveList());
 			QPoint posEditor;
+			QPoint posForm;
 			const QString& sTypeHint = ePlugin.attribute("type");
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(sTypeHint);
@@ -2127,6 +2128,12 @@ bool qtractorPluginList::loadElement (
 					posEditor.setX(sxy.at(0).toInt());
 					posEditor.setY(sxy.at(1).toInt());
 				}
+				else
+				if (eParam.tagName() == "form-pos") {
+					const QStringList& sxy = eParam.text().split(',');
+					posForm.setX(sxy.at(0).toInt());
+					posForm.setY(sxy.at(1).toInt());
+				}
 			}
 			qtractorPlugin *pPlugin
 				= qtractorPluginFile::createPlugin(this,
@@ -2159,6 +2166,7 @@ bool qtractorPluginList::loadElement (
 				pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
 				pPlugin->setActivated(bActivated); // Later's better!
 				pPlugin->setEditorPos(posEditor);
+				pPlugin->setFormPos(posForm);
 			} else {
 				qtractorMessageList::append(
 					QObject::tr("%1(%2): %3 plugin not found.")
@@ -2211,6 +2219,10 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 	// Save plugins...
 	for (qtractorPlugin *pPlugin = qtractorPluginList::first();
 			pPlugin; pPlugin = pPlugin->next()) {
+
+		// Freeze form position, if currently visible...
+		if (pPlugin->isFormVisible())
+			pPlugin->setFormPos((pPlugin->form())->pos());
 
 		// Do freeze plugin state...
 		pPlugin->freezeConfigs();
@@ -2274,6 +2286,12 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			pDocument->saveTextElement("editor-pos",
 				QString::number(posEditor.x()) + ',' +
 				QString::number(posEditor.y()), &ePlugin);
+		}
+		const QPoint& posForm = pPlugin->formPos();
+		if (!posForm.isNull()) {
+			pDocument->saveTextElement("form-pos",
+				QString::number(posForm.x()) + ',' +
+				QString::number(posForm.y()), &ePlugin);
 		}
 
 		// Add this plugin...

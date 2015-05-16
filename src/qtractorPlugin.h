@@ -564,6 +564,11 @@ public:
 	bool isFormVisible() const;
 	qtractorPluginForm *form();
 
+	void setFormPos(const QPoint& pos)
+		{ m_posForm = pos; }
+	const QPoint& formPos() const
+		{ return m_posForm; }
+
 	// Provisional preset accessors.
 	virtual QStringList presetList() const;
 
@@ -752,10 +757,10 @@ private:
 	// The plugin form reference.
 	qtractorPluginForm *m_pForm;
 	QString m_sPreset;
+	QPoint  m_posForm;
 
 	// GUI editor stuff.
 	QString m_sEditorTitle;
-
 	QPoint  m_posEditor;
 
 	// Plugin configuration (CLOB) stuff.

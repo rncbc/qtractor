@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Generic plugin form widget position is now also preserved
+  across open/save session cycles.
+
 - MIDI clip editor resilience is about to get an improvement,
   fe. it doesn't close on stopping record/overdub anymore.
   (EXPERIMENTAL)
