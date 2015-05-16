@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -300,6 +300,11 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	updateActivated();
 	refresh();
 	stabilize();
+
+	const QPoint& pos = m_pPlugin->formPos();
+	if (!pos.isNull())
+		move(pos);
+
 	show();
 }
 
@@ -938,6 +943,20 @@ void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
 		QWidget::keyPressEvent(pKeyEvent);
 		break;
 	}
+}
+
+
+// Form close event (save visible position).
+void qtractorPluginForm::closeEvent ( QCloseEvent *pCloseEvent )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPluginForm::closeEvent()");
+#endif
+
+	if (m_pPlugin)
+		m_pPlugin->setFormPos(QWidget::pos());
+
+	QWidget::closeEvent(pCloseEvent);
 }
 
 
