@@ -25,7 +25,7 @@
 #include "config.h"
 
 #define QTRACTOR_TITLE        PACKAGE_NAME
-#define QTRACTOR_VERSION      PACKAGE_VERSION "-recx"
+#define QTRACTOR_VERSION      PACKAGE_VERSION
 
 #define QTRACTOR_SUBTITLE     "An Audio/MIDI multi-track sequencer"
 #define QTRACTOR_WEBSITE      "http://qtractor.sourceforge.net"
