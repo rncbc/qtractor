@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -197,7 +197,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		}
 	}
 
-	// It's dirty, definitly...
+	// It's dirty, definitely...
 	m_pMidiClip->setDirtyEx(true);
 
 	// Have we changed on something less durable?

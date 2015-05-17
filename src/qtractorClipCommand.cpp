@@ -318,6 +318,8 @@ bool qtractorClipCommand::addClipRecord (
 			qtractorMidiClip *pMidiClip
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip) {
+				// HACK: Make all final adjustments...
+				qtractorMidiEditCommand(pMidiClip, name()).adjust();
 				// Have a new filename revision...
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision(true);
