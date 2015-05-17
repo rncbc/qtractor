@@ -1,7 +1,7 @@
 // qtractorFileList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -87,9 +87,9 @@ void qtractorFileList::removeFileItem (
 
 // Clip/path registry management.
 void qtractorFileList::addClipItem (
-	qtractorFileList::Type iType, qtractorClip *pClip, bool bAutoRemove )
+	qtractorFileList::Type iType, const QString& sPath, bool bAutoRemove )
 {
-	Item *pItem = addItem(iType, pClip->filename(), bAutoRemove);
+	Item *pItem = addItem(iType, sPath, bAutoRemove);
 	if (pItem) {
 		pItem->addClipRef();
 	#ifdef CONFIG_DEBUG_0
@@ -101,11 +101,17 @@ void qtractorFileList::addClipItem (
 	}
 }
 
+void qtractorFileList::addClipItem (
+	qtractorFileList::Type iType, qtractorClip *pClip, bool bAutoRemove )
+{
+	addClipItem(iType, pClip->filename(), bAutoRemove);
+}
+
 
 void qtractorFileList::removeClipItem (
-	qtractorFileList::Type iType, qtractorClip *pClip )
+	qtractorFileList::Type iType, const QString& sPath )
 {
-	Item *pItem = findItem(iType, pClip->filename());
+	Item *pItem = findItem(iType, sPath);
 	if (pItem) {
 		pItem->removeClipRef();
 	#ifdef CONFIG_DEBUG_0
@@ -116,6 +122,12 @@ void qtractorFileList::removeClipItem (
 	#endif
 		removeItem(pItem);
 	}
+}
+
+void qtractorFileList::removeClipItem (
+	qtractorFileList::Type iType, qtractorClip *pClip )
+{
+	removeClipItem(iType, pClip->filename());
 }
 
 
