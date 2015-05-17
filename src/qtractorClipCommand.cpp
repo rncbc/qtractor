@@ -350,11 +350,11 @@ bool qtractorClipCommand::addClipRecord (
 				fileClip(pMidiClip, sFilename, pMidiClip->trackChannel());
 			#endif
 				// Post-commit dirty changes...
-				pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
+				pSession->files()->addClipItem(qtractorFileList::Midi, sFilename, true);
 				// Add the new file version to the roster...
 				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 				if (pMainForm)
-					pMainForm->addMidiFile(pMidiClip->filename());
+					pMainForm->addMidiFile(sFilename);
 			}
 		}
 		// Can get rid of the recorded clip.
