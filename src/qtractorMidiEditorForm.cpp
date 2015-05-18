@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -609,8 +609,18 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			pMainForm, SLOT(transportPanic()));
 	}
 
-	m_pEventTypeComboBox->setCurrentIndex(0);
-//	eventTypeChanged(0);
+	// Finally set initial editor type-params...
+	if (pOptions) {
+		m_pViewTypeComboBox->setCurrentIndex(pOptions->iMidiViewType);
+		m_pEventTypeGroup->setControlType(
+			qtractorMidiControl::ControlType(pOptions->iMidiEventType));
+		eventTypeChanged(m_pEventTypeGroup->controlType());
+		m_pEventTypeGroup->setControlParam(pOptions->iMidiEventParam);
+		viewTypeChanged(pOptions->iMidiViewType);
+	} else {
+		m_pEventTypeComboBox->setCurrentIndex(0);
+	//	eventTypeChanged(0);
+	}
 }
 
 
@@ -719,6 +729,10 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
 		pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
 		pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
+		// Save editor type-params...
+		pOptions->iMidiViewType = m_pViewTypeComboBox->currentIndex();
+		pOptions->iMidiEventType = int(m_pEventTypeGroup->controlType());
+		pOptions->iMidiEventParam = m_pEventTypeGroup->controlParam();
 		// Save snap-per-beat setting...
 		pOptions->iMidiSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
 		// Save snap-to-scale settings...

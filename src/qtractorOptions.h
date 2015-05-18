@@ -257,6 +257,9 @@ public:
 	bool bMidiSnapZebra;
 	bool bMidiSnapGrid;
 	bool bMidiToolTips;
+	int  iMidiViewType;
+	int  iMidiEventType;
+	int  iMidiEventParam;
 	int  iMidiSnapToScaleKey;
 	int  iMidiSnapToScaleType;
 

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor (aka. piano-roll) view/event type criteria
+  now being recalled and persistent as user preferences.
+
 - Generic plugin form widget position is now also preserved
   across open/save session cycles.
 
