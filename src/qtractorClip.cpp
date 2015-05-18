@@ -700,7 +700,7 @@ bool qtractorClip::loadElement (
 
 
 bool qtractorClip::saveElement (
-	qtractorDocument *pDocument, QDomElement *pElement ) const
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	pElement->setAttribute("name", qtractorClip::clipName());
 

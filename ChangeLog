@@ -6,11 +6,12 @@ ChangeLog
 
 GIT HEAD
 
-- MIDI clip editor (aka. piano-roll) view/event type criteria
-  now being recalled and persistent as user preferences.
+- MIDI clip editor (aka. piano-roll) position, size, and view
+  /event type criteria are now persistent, across session and
+  user preferences application state. (EXPERIMENTAL)
 
 - Generic plugin form widget position is now also preserved
-  across open/save session cycles.
+  across open/save session cycles. (EXPERIMENTAL)
 
 - MIDI clip editor resilience is about to get an improvement,
   fe. it doesn't close on stopping record/overdub anymore.

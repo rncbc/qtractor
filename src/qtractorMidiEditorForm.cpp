@@ -744,8 +744,13 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		// Save the dock windows state.
 		pOptions->settings().setValue(
 			"/MidiEditor/Layout/DockWindows", saveState());
-		// And the main windows state?
+		// And this main windows state?
 		// pOptions->saveWidgetGeometry(this, true);
+		qtractorMidiClip *pMidiClip = midiClip();
+		if (pMidiClip) {
+			pMidiClip->setEditorPos(pos());
+			pMidiClip->setEditorSize(size());
+		}
 	}
 
 	// Remove this one from main-form list...
