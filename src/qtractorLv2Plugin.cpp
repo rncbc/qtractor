@@ -2464,7 +2464,7 @@ void qtractorLv2Plugin::process (
 					lv2_atom_buffer_end(&aiter, abuf);
 					const LV2_Atom *atom
 						= (const LV2_Atom *) g_lv2_time_position_buffer;
-					lv2_atom_buffer_write(&aiter, nframes, 0,
+					lv2_atom_buffer_write(&aiter, 0, 0,
 						atom->type, atom->size,
 						(const uint8_t *) LV2_ATOM_BODY(atom));
 					m_lv2_time_position_changed = 0;
