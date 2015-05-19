@@ -196,7 +196,7 @@ public:
 
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
-	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement);
 
 	// Clip fade type textual helper methods.
 	static FadeType fadeInTypeFromText(const QString& sText);
@@ -349,7 +349,7 @@ protected:
 	virtual bool loadClipElement(
 		qtractorDocument *pDocument, QDomElement *pElement) = 0;
 	virtual bool saveClipElement(
-		qtractorDocument *pDocument, QDomElement *pElement) const = 0;
+		qtractorDocument *pDocument, QDomElement *pElement) = 0;
 
 	// Gain fractionalizer(tm)...
 	struct { int num, den; } m_fractGain;

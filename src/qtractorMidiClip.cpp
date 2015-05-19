@@ -1094,6 +1094,10 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		// Do it...
 		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
 		// Set its most standing properties...
+		if (!m_posEditor.isNull())
+			m_pMidiEditorForm->move(m_posEditor);
+		if (!m_sizeEditor.isNull() && m_sizeEditor.isValid())
+			m_pMidiEditorForm->resize(m_sizeEditor);
 		m_pMidiEditorForm->show();
 		m_pMidiEditorForm->setup(this);
 	} else {
@@ -1259,6 +1263,16 @@ bool qtractorMidiClip::loadClipElement (
 			qtractorMidiClip::setTrackChannel(eChild.text().toUShort());
 		else if (eChild.tagName() == "revision")
 			qtractorMidiClip::setRevision(eChild.text().toUShort());
+		else if (eChild.tagName() == "editor-pos") {
+			const QStringList& sxy = eChild.text().split(',');
+			m_posEditor.setX(sxy.at(0).toInt());
+			m_posEditor.setY(sxy.at(1).toInt());
+		}
+		else if (eChild.tagName() == "editor-size") {
+			const QStringList& swh = eChild.text().split(',');
+			m_sizeEditor.setWidth(swh.at(0).toInt());
+			m_sizeEditor.setHeight(swh.at(1).toInt());
+		}
 	}
 
 	return true;
@@ -1266,8 +1280,14 @@ bool qtractorMidiClip::loadClipElement (
 
 
 bool qtractorMidiClip::saveClipElement (
-	qtractorDocument *pDocument, QDomElement *pElement ) const
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
+	// Freeze current MIDI clip editor, if up and visible...
+	if (m_pMidiEditorForm && m_pMidiEditorForm->isVisible()) {
+		m_posEditor = m_pMidiEditorForm->pos();
+		m_sizeEditor = m_pMidiEditorForm->size();
+	}
+
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
 	pDocument->saveTextElement("filename",
 		qtractorMidiClip::relativeFilename(pDocument), &eMidiClip);
@@ -1275,6 +1295,16 @@ bool qtractorMidiClip::saveClipElement (
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
 	pDocument->saveTextElement("revision",
 		QString::number(qtractorMidiClip::revision()), &eMidiClip);
+	if (!m_posEditor.isNull()) {
+		pDocument->saveTextElement("editor-pos",
+			QString::number(m_posEditor.x()) + ',' +
+			QString::number(m_posEditor.y()), &eMidiClip);
+	}
+	if (!m_sizeEditor.isNull() && m_sizeEditor.isValid()) {
+		pDocument->saveTextElement("editor-size",
+			QString::number(m_sizeEditor.width()) + ',' +
+			QString::number(m_sizeEditor.height()), &eMidiClip);
+	}
 	pElement->appendChild(eMidiClip);
 
 	return true;

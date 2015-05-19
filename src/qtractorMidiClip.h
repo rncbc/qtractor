@@ -235,11 +235,22 @@ public:
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
 
+	// MIDI clip editor position/size accessors.
+	void setEditorPos(const QPoint& pos)
+		{ m_posEditor = pos; }
+	const QPoint& editorPos() const
+		{ return m_posEditor; }
+
+	void setEditorSize(const QSize& size)
+		{ m_sizeEditor = size; }
+	const QSize& editorSize() const
+		{ return m_sizeEditor; }
+
 protected:
 
 	// Virtual document element methods.
 	bool loadClipElement(qtractorDocument *pDocument, QDomElement *pElement);
-	bool saveClipElement(qtractorDocument *pDocument, QDomElement *pElement) const;
+	bool saveClipElement(qtractorDocument *pDocument, QDomElement *pElement);
 
 	// Private cleanup.
 	void closeMidiFile();
@@ -280,6 +291,10 @@ private:
 
 	// This clip editor form widget.
 	qtractorMidiEditorForm *m_pMidiEditorForm;
+
+	// And for geometry it was last seen...
+	QPoint m_posEditor;
+	QSize m_sizeEditor;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;

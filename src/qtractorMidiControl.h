@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -414,9 +414,11 @@ public:
 	// Accessors.
 	void setControlType(qtractorMidiControl::ControlType ctype);
 	qtractorMidiControl::ControlType controlType() const;
+	qtractorMidiControl::ControlType controlTypeFromIndex(int iIndex) const;
 
 	void setControlParam(unsigned short iParam);
 	unsigned short controlParam() const;
+	unsigned short controlParamFromIndex(int iIndex) const;
 
 	// Stabilizers.
 	void updateControlType(int iControlType = -1);
@@ -430,6 +432,7 @@ protected slots:
 
 	void activateControlType(int);
 	void activateControlParam(int);
+
 	void editControlParamFinished();
 
 protected:

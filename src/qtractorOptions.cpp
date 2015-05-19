@@ -310,6 +310,9 @@ void qtractorOptions::loadOptions (void)
 	bMidiSnapZebra   = m_settings.value("/SnapZebra", false).toBool();
 	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	bMidiToolTips    = m_settings.value("/ToolTips", true).toBool();
+	iMidiViewType    = m_settings.value("/ViewType", 0).toInt();
+	iMidiEventType   = m_settings.value("/EventType", 0).toInt();
+	iMidiEventParam  = m_settings.value("/EventParam", 0).toInt();
 	iMidiSnapToScaleKey = m_settings.value("/SnapToScaleKey", 0).toInt();
 	iMidiSnapToScaleType = m_settings.value("/SnapToScaleType", 0).toInt();
 	m_settings.endGroup();
@@ -582,6 +585,9 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/SnapZebra", bMidiSnapZebra);
 	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
 	m_settings.setValue("/ToolTips", bMidiToolTips);
+	m_settings.setValue("/ViewType", iMidiViewType);
+	m_settings.setValue("/EventType", iMidiEventType);
+	m_settings.setValue("/EventParam", iMidiEventParam);
 	m_settings.setValue("/SnapToScaleKey", iMidiSnapToScaleKey);
 	m_settings.setValue("/SnapToScaleType", iMidiSnapToScaleType);
 	m_settings.endGroup();

@@ -255,7 +255,7 @@ bool qtractorMidiEditCommand::adjust (void)
 	while (pEvent) {
 		qtractorMidiEvent *pNextEvent = pEvent->next();
 		// Whether event is (time) adjustable...
-		int key = int(pEvent->type()) << 7;
+		int key = int(pEvent->type()) << 14;
 		switch (pEvent->type()) {
 		case qtractorMidiEvent::NOTEON:
 		case qtractorMidiEvent::NOTEOFF:
@@ -263,6 +263,9 @@ bool qtractorMidiEditCommand::adjust (void)
 			key += int(pEvent->note());
 			break;
 		case qtractorMidiEvent::CONTROLLER:
+		case qtractorMidiEvent::REGPARAM:
+		case qtractorMidiEvent::NONREGPARAM:
+		case qtractorMidiEvent::CONTROL14:
 			key += int(pEvent->controller());
 			break;
 		case qtractorMidiEvent::CHANPRESS:

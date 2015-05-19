@@ -188,7 +188,7 @@ protected:
 
 	// Virtual document element methods.
 	bool loadClipElement(qtractorDocument *pDocument, QDomElement *pElement);
-	bool saveClipElement(qtractorDocument *pDocument, QDomElement *pElement) const;
+	bool saveClipElement(qtractorDocument *pDocument, QDomElement *pElement);
 
 	// Private cleanup.
 	void closeAudioFile();

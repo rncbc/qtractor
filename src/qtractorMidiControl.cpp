@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -1038,10 +1038,19 @@ void qtractorMidiControlTypeGroup::setControlType (
 
 qtractorMidiControl::ControlType qtractorMidiControlTypeGroup::controlType (void) const
 {
-	const int iControlType = m_pControlTypeComboBox->currentIndex();
-	return qtractorMidiControl::ControlType(
-		m_pControlTypeComboBox->itemData(iControlType).toInt());
+	return controlTypeFromIndex(m_pControlTypeComboBox->currentIndex());
 }
+
+qtractorMidiControl::ControlType
+qtractorMidiControlTypeGroup::controlTypeFromIndex ( int iIndex ) const
+{
+	if (iIndex < 0 || iIndex >= m_pControlTypeComboBox->count())
+		return qtractorMidiEvent::NOTEON;
+	else
+		return qtractorMidiControl::ControlType(
+			m_pControlTypeComboBox->itemData(iIndex).toInt());
+}
+
 
 
 void qtractorMidiControlTypeGroup::setControlParam (
@@ -1060,11 +1069,26 @@ void qtractorMidiControlTypeGroup::setControlParam (
 
 unsigned short qtractorMidiControlTypeGroup::controlParam (void) const
 {
-	const int iControlParam = m_pControlParamComboBox->currentIndex();
-	if (iControlParam >= 0)
-		return m_pControlParamComboBox->itemData(iControlParam).toInt();
+	if (m_pControlParamComboBox->isEditable()) {
+		unsigned short iParam = 0;
+		const QString& sControlParam
+			= m_pControlParamComboBox->currentText();
+		bool bOk = false;
+		iParam = sControlParam.toInt(&bOk);
+		if (bOk) return iParam;
+	}
+
+	return controlParamFromIndex(m_pControlParamComboBox->currentIndex());
+
+}
+
+
+unsigned short qtractorMidiControlTypeGroup::controlParamFromIndex ( int iIndex ) const
+{
+	if (iIndex >= 0 && iIndex < m_pControlParamComboBox->count())
+		return m_pControlParamComboBox->itemData(iIndex).toInt();
 	else
-		return m_pControlParamComboBox->currentText().toInt();
+		return 0;
 }
 
 
@@ -1082,8 +1106,12 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		= qtractorMidiControl::ControlType(
 			m_pControlTypeComboBox->itemData(iControlType).toInt());
 
+	const bool bOldEditable
+		= m_pControlParamComboBox->isEditable();
 	const int iOldParam
 		= m_pControlParamComboBox->currentIndex();
+	const QString sOldParam
+		= m_pControlParamComboBox->currentText();
 
 	m_pControlParamComboBox->clear();
 
@@ -1201,14 +1229,16 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		break;
 	}
 
+	if (iOldParam >= 0 && iOldParam < m_pControlParamComboBox->count())
+		m_pControlParamComboBox->setCurrentIndex(iOldParam);
+
 	if (m_pControlParamComboBox->isEditable()) {
 		QObject::connect(m_pControlParamComboBox->lineEdit(),
 			SIGNAL(editingFinished()),
 			SLOT(editControlParamFinished()));
+		if (bOldEditable)
+			m_pControlParamComboBox->setEditText(sOldParam);
 	}
-
-	if (iOldParam >= 0 && iOldParam < m_pControlParamComboBox->count())
-		m_pControlParamComboBox->setCurrentIndex(iOldParam);
 }
 
 
@@ -1225,6 +1255,7 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 
 	activateControlParam(m_pControlParamComboBox->currentIndex());
 }
+
 
 void qtractorMidiControlTypeGroup::activateControlParam ( int iControlParam )
 {

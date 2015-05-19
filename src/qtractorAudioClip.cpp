@@ -805,7 +805,7 @@ bool qtractorAudioClip::loadClipElement (
 
 
 bool qtractorAudioClip::saveClipElement (
-	qtractorDocument *pDocument, QDomElement *pElement ) const
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	QDomElement eAudioClip = pDocument->document()->createElement("audio-clip");
 	pDocument->saveTextElement("filename",
