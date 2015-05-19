@@ -312,7 +312,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiToolTips    = m_settings.value("/ToolTips", true).toBool();
 	iMidiViewType    = m_settings.value("/ViewType", 0).toInt();
 	iMidiEventType   = m_settings.value("/EventType", 0).toInt();
-	iMidiEventParam  = m_settings.value("/EventParam", 1).toInt();
+	iMidiEventParam  = m_settings.value("/EventParam", 0).toInt();
 	iMidiSnapToScaleKey = m_settings.value("/SnapToScaleKey", 0).toInt();
 	iMidiSnapToScaleType = m_settings.value("/SnapToScaleType", 0).toInt();
 	m_settings.endGroup();

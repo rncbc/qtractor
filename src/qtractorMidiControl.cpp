@@ -1038,10 +1038,19 @@ void qtractorMidiControlTypeGroup::setControlType (
 
 qtractorMidiControl::ControlType qtractorMidiControlTypeGroup::controlType (void) const
 {
-	const int iControlType = m_pControlTypeComboBox->currentIndex();
-	return qtractorMidiControl::ControlType(
-		m_pControlTypeComboBox->itemData(iControlType).toInt());
+	return controlTypeFromIndex(m_pControlTypeComboBox->currentIndex());
 }
+
+qtractorMidiControl::ControlType
+qtractorMidiControlTypeGroup::controlTypeFromIndex ( int iIndex ) const
+{
+	if (iIndex < 0 || iIndex >= m_pControlTypeComboBox->count())
+		return qtractorMidiEvent::NOTEON;
+	else
+		return qtractorMidiControl::ControlType(
+			m_pControlTypeComboBox->itemData(iIndex).toInt());
+}
+
 
 
 void qtractorMidiControlTypeGroup::setControlParam (
@@ -1060,9 +1069,8 @@ void qtractorMidiControlTypeGroup::setControlParam (
 
 unsigned short qtractorMidiControlTypeGroup::controlParam (void) const
 {
-	unsigned short iParam = 0;
-
 	if (m_pControlParamComboBox->isEditable()) {
+		unsigned short iParam = 0;
 		const QString& sControlParam
 			= m_pControlParamComboBox->currentText();
 		bool bOk = false;
@@ -1070,11 +1078,17 @@ unsigned short qtractorMidiControlTypeGroup::controlParam (void) const
 		if (bOk) return iParam;
 	}
 
-	const int iControlParam = m_pControlParamComboBox->currentIndex();
-	if (iControlParam >= 0)
-		iParam = m_pControlParamComboBox->itemData(iControlParam).toInt();
+	return controlParamFromIndex(m_pControlParamComboBox->currentIndex());
 
-	return iParam;
+}
+
+
+unsigned short qtractorMidiControlTypeGroup::controlParamFromIndex ( int iIndex ) const
+{
+	if (iIndex >= 0 && iIndex < m_pControlParamComboBox->count())
+		return m_pControlParamComboBox->itemData(iIndex).toInt();
+	else
+		return 0;
 }
 
 

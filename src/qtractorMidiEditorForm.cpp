@@ -612,9 +612,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Finally set initial editor type-params...
 	if (pOptions) {
 		m_pViewTypeComboBox->setCurrentIndex(pOptions->iMidiViewType);
-		m_pEventTypeGroup->setControlType(
-			qtractorMidiControl::ControlType(pOptions->iMidiEventType));
-		eventTypeChanged(m_pEventTypeGroup->controlType());
+		const qtractorMidiControl::ControlType ctype
+			= m_pEventTypeGroup->controlTypeFromIndex(pOptions->iMidiEventType);
+		m_pEventTypeGroup->setControlType(ctype);
+		eventTypeChanged(ctype);
 		m_pEventTypeGroup->setControlParam(pOptions->iMidiEventParam);
 		viewTypeChanged(pOptions->iMidiViewType);
 	} else {
@@ -731,7 +732,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
 		// Save editor type-params...
 		pOptions->iMidiViewType = m_pViewTypeComboBox->currentIndex();
-		pOptions->iMidiEventType = int(m_pEventTypeGroup->controlType());
+		pOptions->iMidiEventType = m_pEventTypeComboBox->currentIndex();
 		pOptions->iMidiEventParam = m_pEventTypeGroup->controlParam();
 		// Save snap-per-beat setting...
 		pOptions->iMidiSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();

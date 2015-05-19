@@ -7270,7 +7270,7 @@ Data: </source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="222"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1766"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1767"/>
         <source>MOD</source>
         <translation>РЕЖ</translation>
     </message>
@@ -7281,7 +7281,7 @@ Data: </source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="230"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1771"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1772"/>
         <source>REC</source>
         <translation type="unfinished">ЗАП</translation>
     </message>
@@ -7301,12 +7301,12 @@ Data: </source>
         <translation>Длительность клипа MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="684"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="685"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="685"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="686"/>
         <source>The current MIDI clip has been changed:
 
 &quot;%1&quot;
@@ -7325,38 +7325,38 @@ Do you want to save the changes?</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="972"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="973"/>
         <source>Save MIDI Clip</source>
         <translation>Сохранить клип MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="973"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="974"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Файлы MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1040"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1041"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Сохранение файла MIDI: &quot;%1&quot;, дорожка-канал: %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="33"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1732"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1733"/>
         <source>MIDI Editor</source>
         <translation>Редактор MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1746"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1747"/>
         <source>Channel %1</source>
         <translation>Канал %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1749"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1750"/>
         <source>Track %1</source>
         <translation>Дорожка %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1756"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1757"/>
         <source>[modified]</source>
         <translation>[изменен]</translation>
     </message>
