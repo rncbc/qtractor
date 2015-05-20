@@ -5858,7 +5858,7 @@ est près et en fonctionnement puis redémarrer la session.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5411"/>
         <source>LV2 Plug-in MIDI/Event support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support MIDI/évènement greffon LV2 activé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5451"/>
@@ -9731,12 +9731,12 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="569"/>
         <source>Whether to start as timebase master (JACK)</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit démarrer comme base de temps maître (JACK)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="572"/>
         <source>&amp;Timebase</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de &amp;temps</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="598"/>
