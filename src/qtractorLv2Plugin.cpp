@@ -3468,7 +3468,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 	jack_transport_state_t state
 		= jack_transport_query(pJackClient, &pos);
 
-#if 0//QTRACTOR_LV2_TIME_POSITION_FULL
+#if 0//QTRACTOR_LV2_TIME_POSITION_FRAME
 	qtractor_lv2_time_update(
 		qtractorLv2Time::frame,
 		float(pos.frame));
@@ -3487,7 +3487,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 		qtractor_lv2_time_update(
 			qtractorLv2Time::beat,
 			float(pos.beat));
-	#if 0//QTRACTOR_LV2_TIME_POSITION_FULL
+	#if 0//QTRACTOR_LV2_TIME_POSITION_BARBEAT
 		qtractor_lv2_time_update(
 			qtractorLv2Time::barBeat,
 			float(pos.beat + (pos.tick / pos.ticks_per_beat) - 1));
@@ -3516,7 +3516,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 		lv2_atom_forge_object(forge, &frame, 0, g_lv2_urids.time_Position);
 		qtractorLv2Time& time_frame
 			= g_lv2_time[qtractorLv2Time::frame];
-	#if 1//QTRACTOR_LV2_TIME_POSITION_FULL
+	#if 1//QTRACTOR_LV2_TIME_POSITION_FRAME
 		time_frame.value = float(pos.frame);
 	#endif
 		lv2_atom_forge_key(forge, time_frame.urid);
@@ -3536,7 +3536,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 			lv2_atom_forge_int(forge, int(time_beat.value));
 			qtractorLv2Time& time_barBeat
 				= g_lv2_time[qtractorLv2Time::barBeat];
-		#if 1//QTRACTOR_LV2_TIME_POSITION_FULL
+		#if 1//QTRACTOR_LV2_TIME_POSITION_BARBEAT
 			time_barBeat.value = float(pos.beat + (pos.tick / pos.ticks_per_beat) - 1);
 		#endif
 			lv2_atom_forge_key(forge, time_barBeat.urid);
