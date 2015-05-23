@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.6.19, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.6.21, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -252,7 +252,7 @@ AC_ARG_ENABLE(stacktrace,
 
 
 # Standard installation base dirs.
-ac_with_paths="/usr /usr/local"
+ac_with_paths="/usr/local /usr"
 
 # Set for alternate Qt4/5 installation dir.
 AC_ARG_WITH(qt4,
@@ -386,19 +386,25 @@ if test "x$ac_qt5" = "xyes"; then
    ac_qtdirs="qt5 $ac_qtdirs"
 fi
 
-ac_topdirs="/usr/share /usr/lib"
+ac_topdirs="/usr/local /usr"
+ac_subdirs="lib"
 
 if test "x$ac_arch" = "xx86_64"; then
+   ac_subdirs="$ac_subdirs lib64"
+fi
+
+if test "x$ac_arch" = "xx86_64" -o "x$ac_qt5" = "xyes"; then
    CFLAGS="-fPIC $CFLAGS"
    CPPFLAGS="-fPIC $CPPFLAGS"
-   ac_topdirs="$ac_topdirs /usr/lib64"
 fi
 
 for X in $ac_topdirs; do
-  for Y in $ac_qtdirs; do
-    if test -d $X/$Y/bin; then
-      ac_with_paths="$X/$Y $ac_with_paths"
-    fi
+  for Y in share $ac_subdirs; do
+    for Z in $ac_qtdirs; do
+      if test -d $X/$Y/$Z/bin; then
+         ac_with_paths="$X/$Y/$Z $ac_with_paths"
+      fi
+    done
   done
 done
 
@@ -408,9 +414,6 @@ for X in $ac_with_paths; do
   if test -d $X/bin; then
     ac_path="$X/bin:$ac_path"
   fi
-# if test -x $X/qmake; then
-#   ac_path="$X:$ac_path"
-# fi
   if test -d $X/include; then
     for Y in $ac_qtdirs; do
       if test -d $X/include/$Y; then
@@ -419,18 +422,16 @@ for X in $ac_with_paths; do
         ac_incpath="$X/include/$Y $ac_incpath"
       fi
     done
-    CFLAGS="-I$X/include $CFLAGS"
-    CPPFLAGS="-I$X/include $CPPFLAGS"
-    ac_incpath="$X/include $ac_incpath"
+    CFLAGS="$CFLAGS -I$X/include"
+    CPPFLAGS="$CPPFLAGS -I$X/include"
+    ac_incpath="$ac_incpath $X/include"
   fi
-  if test "x$ac_arch" = "xx86_64" -a -d $X/lib64; then
-    LIBS="-L$X/lib64 $LIBS"
-    ac_libs="-L$X/lib64 $ac_libs"
-  fi
-  if test -d $X/lib; then
-    LIBS="-L$X/lib $LIBS"
-    ac_libs="-L$X/lib $ac_libs"
-  fi
+  for Y in $ac_subdirs; do
+    if test -d $X/$Y; then
+       LIBS="$LIBS -L$X/$Y"
+       ac_libs="$ac_libs -L$X/$Y"
+    fi
+  done
 done
 
 # Check for proper Qt4/5 version.
