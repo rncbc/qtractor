@@ -428,8 +428,8 @@ for X in $ac_with_paths; do
   fi
   for Y in $ac_subdirs; do
     if test -d $X/$Y; then
-       LIBS="$LIBS -L$X/$Y"
-       ac_libs="$ac_libs -L$X/$Y"
+       LIBS="-L$X/$Y $LIBS"
+       ac_libs="-L$X/$Y $ac_libs"
     fi
   done
 done
