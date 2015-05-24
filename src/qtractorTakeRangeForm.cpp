@@ -1,7 +1,7 @@
 // qtractorTakeRangeForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -215,7 +215,7 @@ void qtractorTakeRangeForm::valueChanged (void)
 // Display format has changed.
 void qtractorTakeRangeForm::formatChanged ( int iDisplayFormat )
 {
-	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
 	qtractorTimeScale::DisplayFormat displayFormat
@@ -281,6 +281,9 @@ void qtractorTakeRangeForm::stabilizeForm (void)
 
 	const unsigned long iTakeStart = m_ui.TakeStartSpinBox->value();
 	const unsigned long iTakeEnd = m_ui.TakeEndSpinBox->value();
+
+	m_ui.TakeStartSpinBox->setMaximum(iTakeEnd);
+	m_ui.TakeEndSpinBox->setMinimum(iTakeStart);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		iTakeStart < iTakeEnd && m_ui.CurrentTakeListBox->count() > 0
