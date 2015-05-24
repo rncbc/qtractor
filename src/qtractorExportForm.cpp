@@ -505,6 +505,12 @@ void qtractorExportForm::stabilizeForm (void)
 	m_ui.EditRangeRadioButton->setEnabled(
 		pSession->editHead() < pSession->editTail());
 
+	const unsigned long iExportStart = m_ui.ExportStartSpinBox->value();
+	const unsigned long iExportEnd = m_ui.ExportEndSpinBox->value();
+
+	m_ui.ExportStartSpinBox->setMaximum(iExportEnd);
+	m_ui.ExportEndSpinBox->setMinimum(iExportStart);
+
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		!m_ui.ExportPathComboBox->currentText().isEmpty() &&
 		m_ui.ExportBusNameListBox->currentItem() != NULL &&

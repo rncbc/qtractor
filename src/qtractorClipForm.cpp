@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -354,7 +354,7 @@ void qtractorClipForm::accept (void)
 		qtractorClipCommand *pClipCommand = NULL;
 		qtractorTrack::TrackType clipType = trackType();
 		const QString& sFilename  = m_ui.FilenameComboBox->currentText();
-		unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
+		const unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
 		const QString& sClipName  = m_ui.ClipNameLineEdit->text();
 		float fClipGain = 1.0f;
 		float fTimeStretch = 0.0f;
@@ -371,13 +371,13 @@ void qtractorClipForm::accept (void)
 		default:
 			break;
 		}
-		unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
-		unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
-		unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
-		unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
+		const unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
+		const unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
+		const unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
+		const unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
 		qtractorClip::FadeType fadeInType
 			= fadeTypeFromIndex(m_ui.FadeInTypeComboBox->currentIndex());
-		unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
+		const unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
 		qtractorClip::FadeType fadeOutType
 			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
 		int iFileChange = 0;
@@ -559,7 +559,7 @@ void qtractorClipForm::changed (void)
 // Display format has changed.
 void qtractorClipForm::formatChanged ( int iDisplayFormat )
 {
-	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
 	qtractorTimeScale::DisplayFormat displayFormat
@@ -584,7 +584,7 @@ void qtractorClipForm::formatChanged ( int iDisplayFormat )
 void qtractorClipForm::stabilizeForm (void)
 {
 	const QString& sFilename = m_ui.FilenameComboBox->currentText();
-	unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
+	const unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
 	m_ui.FadeInTypeComboBox->setEnabled(
 		m_ui.FadeInLengthSpinBox->value() > 0);
 	m_ui.FadeInLengthSpinBox->setMaximum(iClipLength);

@@ -1,7 +1,7 @@
 // qtractorEditRangeForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -282,7 +282,7 @@ void qtractorEditRangeForm::valueChanged (void)
 // Display format has changed.
 void qtractorEditRangeForm::formatChanged ( int iDisplayFormat )
 {
-	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
 	qtractorTimeScale::DisplayFormat displayFormat
@@ -311,19 +311,28 @@ void qtractorEditRangeForm::stabilizeForm (void)
 	if (pTimeScale == NULL)
 		return;
 
+	const bool bLooping = pSession->isLooping();
+	const bool bPunching = pSession->isPunching();
+
 	m_ui.SelectionRangeRadioButton->setEnabled(m_iSelectStart < m_iSelectEnd);
-	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
-	m_ui.PunchRangeRadioButton->setEnabled(pSession->isPunching());
+	m_ui.LoopRangeRadioButton->setEnabled(bLooping);
+	m_ui.PunchRangeRadioButton->setEnabled(bPunching);
 	m_ui.EditRangeRadioButton->setEnabled(
 		pSession->editHead() < pSession->editTail());
 
-	m_ui.LoopCheckBox->setEnabled(pSession->isLooping());
-	m_ui.PunchCheckBox->setEnabled(pSession->isPunching());
+	m_ui.LoopCheckBox->setEnabled(bLooping);
+	m_ui.PunchCheckBox->setEnabled(bPunching);
 	m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != NULL);
     m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
 
+	const unsigned long iRangeStart = m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeEnd = m_ui.RangeEndSpinBox->value();
+
+	m_ui.RangeStartSpinBox->setMaximum(iRangeEnd);
+	m_ui.RangeEndSpinBox->setMinimum(iRangeStart);
+
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
-		m_ui.RangeStartSpinBox->value() < m_ui.RangeEndSpinBox->value());
+		iRangeStart < iRangeEnd);
 }
 
 

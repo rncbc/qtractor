@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.6.21, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.6.22, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -428,8 +428,8 @@ for X in $ac_with_paths; do
   fi
   for Y in $ac_subdirs; do
     if test -d $X/$Y; then
-       LIBS="$LIBS -L$X/$Y"
-       ac_libs="$ac_libs -L$X/$Y"
+       LIBS="-L$X/$Y $LIBS"
+       ac_libs="-L$X/$Y $ac_libs"
     fi
   done
 done

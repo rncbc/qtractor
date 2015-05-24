@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -262,14 +262,15 @@ void qtractorTempoAdjustForm::adjust (void)
 	qDebug("qtractorTempoAdjustForm::adjust()");
 #endif
 
-	unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
+	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
 	if (iRangeBeats < 1)
 		return;
 
-	unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
-	unsigned long iBeatLength  = iRangeLength / iRangeBeats;
+	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned long iBeatLength = iRangeLength / iRangeBeats;
 	
-	float fTempo = 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
+	const float fTempo
+		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(fTempo, false);
 
 //	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
@@ -284,8 +285,8 @@ void qtractorTempoAdjustForm::selectChanged (void)
 	qDebug("qtractorTempoAdjustForm::selectChanged()");
 #endif
 
-	unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
-	unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -308,7 +309,7 @@ void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 	qDebug("qtractorTempoAdjustForm::formatChanged()");
 #endif
 
-	bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
 	qtractorTimeScale::DisplayFormat displayFormat
@@ -329,9 +330,10 @@ void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 // Stabilize current form state.
 void qtractorTempoAdjustForm::stabilizeForm (void)
 {
+	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
+
 	bool bValid = (m_iDirtyCount > 0);
-	unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
-	unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
 	bValid = bValid && (iRangeLength > 0);
 	bValid = bValid && (iRangeBeats > 0);
 	m_ui.AdjustPushButton->setEnabled(bValid);
@@ -346,7 +348,7 @@ void qtractorTempoAdjustForm::tempoTap (void)
 	qDebug("qtractorTempoAdjustForm::tempoTap()");
 #endif
 
-	int iTimeTap = m_pTempoTap->restart();
+	const int iTimeTap = m_pTempoTap->restart();
 	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
 		m_fTempoTap += (60000.0f / float(iTimeTap));
 		if (++m_iTempoTap > 2) {
