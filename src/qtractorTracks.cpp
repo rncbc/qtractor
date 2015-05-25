@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1734,10 +1734,13 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	const bool bAutoTimeStretch = pSession->isAutoTimeStretch();
 	pSession->setAutoTimeStretch(false);
 
+	iRangeStart  = form.rangeStart();
+	iRangeLength = form.rangeLength();
+
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
 	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(form.rangeStart());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iRangeStart);
 
 	// Now, express the change as a undoable command...
 	pSession->execute(
@@ -1746,7 +1749,8 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 
 	// Done.
 	pSession->setAutoTimeStretch(bAutoTimeStretch);	
-	pSession->setEditTail(pSession->editHead() + form.rangeLength());
+	pSession->setEditHead(iRangeStart);
+	pSession->setEditTail(iRangeStart + iRangeLength);
 
 	selectionChangeNotify();
 	return true;
@@ -2069,7 +2073,14 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 		return false;
 	}
 
-	return pSession->execute(pClipRangeCommand);
+	const bool bResult = pSession->execute(pClipRangeCommand);
+	if (bResult) {
+		pSession->setEditHead(iInsertStart);
+		pSession->setEditTail(iInsertEnd);
+		selectionChangeNotify();
+	}
+
+	return bResult;
 }
 
 
@@ -2323,7 +2334,14 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 
 	clearSelect();
 
-	return pSession->execute(pClipRangeCommand);
+	const bool bResult = pSession->execute(pClipRangeCommand);
+	if (bResult) {
+		pSession->setEditHead(iRemoveStart);
+		pSession->setEditTail(iRemoveEnd);
+		selectionChangeNotify();
+	}
+
+	return bResult;
 }
 
 

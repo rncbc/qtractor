@@ -4394,9 +4394,11 @@ void qtractorMainForm::clipTakeRange (void)
 		qtractorTakeRangeForm form(this);
 		form.setClip(pClip);
 		if (form.exec()) {
+			const unsigned long iTakeStart = form.takeStart();
+			const unsigned long iTakeEnd = form.takeEnd();
 			pTakeInfo = new qtractorClip::TakeInfo(
 				pClip->clipStart(), pClip->clipOffset(), pClip->clipLength(),
-				form.takeStart(), form.takeEnd(), 0);
+				iTakeStart, iTakeEnd, 0);
 			qtractorClipCommand *pClipCommand
 				= new qtractorClipCommand(tr("take range"));
 			pClipCommand->takeInfoClip(pClip, pTakeInfo);
@@ -4404,7 +4406,11 @@ void qtractorMainForm::clipTakeRange (void)
 			int iTake = form.currentTake();
 			iTake = pTakeInfo->select(pClipCommand, pClip->track(), iTake);
 			pTakeInfo->setCurrentTake(iTake);
-			m_pSession->execute(pClipCommand);
+			if (m_pSession->execute(pClipCommand)) {
+				m_pSession->setEditHead(iTakeStart);
+				m_pSession->setEditTail(iTakeEnd);
+				selectionNotifySlot(NULL);
+			}
 		}
 	}
 }
