@@ -1,8 +1,9 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,8 +21,8 @@
 
  </comment>
  <class>qtractorMidiEditorForm</class>
- <widget class="QMainWindow" name="qtractorMidiEditorForm" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="qtractorMidiEditorForm">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -29,1643 +30,1660 @@
     <height>600</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>MIDI Editor</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/qtractor.png</iconset>
+  <property name="windowIcon">
+   <iconset resource="qtractor.qrc">:/images/qtractor.png</iconset>
   </property>
-  <widget class="QMenuBar" name="menuBar" >
-   <property name="geometry" >
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>803</width>
-     <height>29</height>
+     <width>840</width>
+     <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="fileTrackMenu" >
-    <property name="title" >
-     <string>&amp;Track</string>
-    </property>
-    <addaction name="fileTrackInputsAction" />
-    <addaction name="fileTrackOutputsAction" />
-    <addaction name="separator" />
-    <addaction name="fileTrackPropertiesAction" />
-   </widget>
-   <widget class="QMenu" name="fileMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="fileMenu">
+    <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="fileSaveAction" />
-    <addaction name="fileSaveAsAction" />
-    <addaction name="fileUnlinkAction" />
-    <addaction name="fileRecordExAction" />
-    <addaction name="separator" />
-    <addaction name="filePropertiesAction" />
-    <addaction name="separator" />
-    <addaction name="fileRangeSetAction" />
-    <addaction name="fileLoopSetAction" />
-    <addaction name="separator" />
-    <addaction name="fileTrackMenu" />
-    <addaction name="separator" />
-    <addaction name="fileCloseAction" />
+    <addaction name="fileSaveAction"/>
+    <addaction name="fileSaveAsAction"/>
+    <addaction name="fileUnlinkAction"/>
+    <addaction name="fileRecordExAction"/>
+    <addaction name="separator"/>
+    <addaction name="filePropertiesAction"/>
+    <addaction name="separator"/>
+    <addaction name="fileRangeSetAction"/>
+    <addaction name="fileLoopSetAction"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="fileCloseAction"/>
    </widget>
-   <widget class="QMenu" name="editModeMenu" >
-    <property name="title" >
-     <string>Select &amp;Mode</string>
-    </property>
-    <addaction name="editModeOffAction" />
-    <addaction name="editModeOnAction" />
-    <addaction name="separator" />
-    <addaction name="editModeDrawAction" />
-   </widget>
-   <widget class="QMenu" name="editSelectMenu" >
-    <property name="title" >
-     <string>&amp;Select</string>
-    </property>
-    <addaction name="editSelectAllAction" />
-    <addaction name="editSelectNoneAction" />
-    <addaction name="editSelectInvertAction" />
-    <addaction name="separator" />
-    <addaction name="editSelectRangeAction" />
-   </widget>
-   <widget class="QMenu" name="editInsertMenu" >
-    <property name="title" >
-     <string>I&amp;nsert</string>
-    </property>
-    <addaction name="editInsertRangeAction" />
-   </widget>
-   <widget class="QMenu" name="editRemoveMenu" >
-	<property name="title" >
-	 <string>Remo&amp;ve</string>
-	</property>
-	<addaction name="editRemoveRangeAction" />
-   </widget>
-   <widget class="QMenu" name="toolsMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="toolsMenu">
+    <property name="title">
      <string>&amp;Tools</string>
     </property>
-    <addaction name="toolsQuantizeAction" />
-    <addaction name="toolsTransposeAction" />
-    <addaction name="toolsNormalizeAction" />
-    <addaction name="toolsRandomizeAction" />
-    <addaction name="toolsResizeAction" />
-    <addaction name="toolsRescaleAction" />
-    <addaction name="toolsTimeshiftAction" />
+    <addaction name="toolsQuantizeAction"/>
+    <addaction name="toolsTransposeAction"/>
+    <addaction name="toolsNormalizeAction"/>
+    <addaction name="toolsRandomizeAction"/>
+    <addaction name="toolsResizeAction"/>
+    <addaction name="toolsRescaleAction"/>
+    <addaction name="toolsTimeshiftAction"/>
    </widget>
-   <widget class="QMenu" name="editMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="editMenu">
+    <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="editUndoAction" />
-    <addaction name="editRedoAction" />
-    <addaction name="separator" />
-    <addaction name="editCutAction" />
-    <addaction name="editCopyAction" />
-    <addaction name="editPasteAction" />
-    <addaction name="editPasteRepeatAction" />
-    <addaction name="separator" />
-    <addaction name="editDeleteAction" />
-    <addaction name="separator" />
-    <addaction name="editModeMenu" />
-    <addaction name="editSelectMenu" />
-    <addaction name="separator" />
-    <addaction name="editInsertMenu" />
-	<addaction name="editRemoveMenu" />
+    <widget class="QMenu" name="editModeMenu">
+     <property name="title">
+      <string>Select &amp;Mode</string>
+     </property>
+     <addaction name="editModeOffAction"/>
+     <addaction name="editModeOnAction"/>
+     <addaction name="separator"/>
+     <addaction name="editModeDrawAction"/>
+    </widget>
+    <widget class="QMenu" name="editSelectMenu">
+     <property name="title" >
+      <string>&amp;Select</string>
+     </property>
+     <addaction name="editSelectAllAction"/>
+     <addaction name="editSelectNoneAction"/>
+     <addaction name="editSelectInvertAction"/>
+     <addaction name="separator" />
+     <addaction name="editSelectRangeAction"/>
+    </widget>
+    <widget class="QMenu" name="editInsertMenu">
+     <property name="title">
+      <string>I&amp;nsert</string>
+     </property>
+     <addaction name="editInsertRangeAction"/>
+    </widget>
+    <widget class="QMenu" name="editRemoveMenu">
+     <property name="title">
+      <string>Remo&amp;ve</string>
+     </property> 
+     <addaction name="editRemoveRangeAction"/>
+    </widget>
+    <addaction name="editUndoAction"/>
+    <addaction name="editRedoAction"/>
+    <addaction name="separator"/>
+    <addaction name="editCutAction"/>
+    <addaction name="editCopyAction"/>
+    <addaction name="editPasteAction"/>
+    <addaction name="editPasteRepeatAction"/>
+    <addaction name="separator"/>
+    <addaction name="editDeleteAction"/>
+    <addaction name="separator"/>
+    <addaction name="editModeMenu"/>
+    <addaction name="editSelectMenu"/>
+    <addaction name="separator"/>
+    <addaction name="editInsertMenu"/>
+	<addaction name="editRemoveMenu"/>
    </widget>
-   <widget class="QMenu" name="viewMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="viewMenu">
+    <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="viewToolbarsMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="viewToolbarsMenu">
+     <property name="title">
       <string>&amp;Toolbars</string>
      </property>
-     <addaction name="viewToolbarFileAction" />
-     <addaction name="viewToolbarEditAction" />
-     <addaction name="viewToolbarViewAction" />
-     <addaction name="viewToolbarTransportAction" />
-     <addaction name="viewToolbarScaleAction" />
-	 <addaction name="viewToolbarThumbAction" />
-	</widget>
-    <widget class="QMenu" name="viewWindowsMenu" >
-     <property name="title" >
+     <addaction name="viewToolbarFileAction"/>
+     <addaction name="viewToolbarEditAction"/>
+     <addaction name="viewToolbarViewAction"/>
+     <addaction name="viewToolbarTransportAction"/>
+     <addaction name="viewToolbarScaleAction"/>
+     <addaction name="viewToolbarThumbAction"/>
+    </widget>
+    <widget class="QMenu" name="viewWindowsMenu">
+     <property name="title">
       <string>&amp;Windows</string>
      </property>
-     <addaction name="viewEventsAction" />
+     <addaction name="viewEventsAction"/>
     </widget>
-    <widget class="QMenu" name="viewZoomMenu" >
-     <property name="icon" >
-      <iconset resource="qtractor.qrc" >:/images/viewZoomTool.png</iconset>
-     </property>
-     <property name="title" >
+    <widget class="QMenu" name="viewZoomMenu">
+     <property name="title">
       <string>&amp;Zoom</string>
      </property>
-     <addaction name="viewZoomInAction" />
-     <addaction name="viewZoomOutAction" />
-     <addaction name="separator" />
-     <addaction name="viewZoomResetAction" />
-     <addaction name="separator" />
-     <addaction name="viewZoomHorizontalAction" />
-     <addaction name="viewZoomVerticalAction" />
-     <addaction name="viewZoomAllAction" />
+     <property name="icon">
+      <iconset resource="qtractor.qrc">:/images/viewZoomTool.png</iconset>
+     </property>
+     <addaction name="viewZoomInAction"/>
+     <addaction name="viewZoomOutAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewZoomResetAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewZoomHorizontalAction"/>
+     <addaction name="viewZoomVerticalAction"/>
+     <addaction name="viewZoomAllAction"/>
     </widget>
-    <widget class="QMenu" name="viewSnapMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="viewSnapMenu">
+     <property name="title">
       <string>S&amp;nap</string>
      </property>
     </widget>
-    <widget class="QMenu" name="viewScaleMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="viewScaleMenu">
+     <property name="title">
       <string>Sc&amp;ale</string>
      </property>
     </widget>
-    <addaction name="viewMenubarAction" />
-    <addaction name="viewStatusbarAction" />
-    <addaction name="viewToolbarsMenu" />
-    <addaction name="viewWindowsMenu" />
-    <addaction name="separator" />
-    <addaction name="viewToolTipsAction" />
-    <addaction name="separator" />
-    <addaction name="viewNoteDurationAction" />
-    <addaction name="viewNoteColorAction" />
-    <addaction name="viewValueColorAction" />
-    <addaction name="separator" />
-    <addaction name="viewZoomMenu" />
-    <addaction name="viewSnapMenu" />
-    <addaction name="viewScaleMenu" />
-    <addaction name="separator" />
-    <addaction name="viewRefreshAction" />
-    <addaction name="separator" />
-    <addaction name="viewPreviewAction" />
-    <addaction name="viewFollowAction" />
+    <addaction name="viewMenubarAction"/>
+    <addaction name="viewStatusbarAction"/>
+    <addaction name="viewToolbarsMenu"/>
+    <addaction name="viewWindowsMenu"/>
+    <addaction name="separator"/>
+    <addaction name="viewToolTipsAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewNoteDurationAction"/>
+    <addaction name="viewNoteColorAction"/>
+    <addaction name="viewValueColorAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewZoomMenu"/>
+    <addaction name="viewSnapMenu"/>
+    <addaction name="viewScaleMenu"/>
+    <addaction name="separator"/>
+    <addaction name="viewRefreshAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewPreviewAction"/>
+    <addaction name="viewFollowAction"/>
    </widget>
-   <widget class="QMenu" name="transportMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="transportMenu">
+    <property name="title">
      <string>T&amp;ransport</string>
     </property>
-    <addaction name="transportBackwardAction" />
-    <addaction name="transportRewindAction" />
-    <addaction name="transportFastForwardAction" />
-    <addaction name="transportForwardAction" />
-    <addaction name="separator" />
-    <addaction name="transportLoopAction" />
-    <addaction name="transportLoopSetAction" />
-    <addaction name="separator" />
-    <addaction name="transportStopAction" />
-    <addaction name="transportPlayAction" />
-    <addaction name="transportRecordAction" />
-    <addaction name="separator" />
-    <addaction name="transportPunchAction" />
-    <addaction name="transportPunchSetAction" />
-    <addaction name="separator" />
-    <addaction name="transportPanicAction" />
+    <addaction name="transportBackwardAction"/>
+    <addaction name="transportRewindAction"/>
+    <addaction name="transportFastForwardAction"/>
+    <addaction name="transportForwardAction"/>
+    <addaction name="separator"/>
+    <addaction name="transportLoopAction"/>
+    <addaction name="transportLoopSetAction"/>
+    <addaction name="separator"/>
+    <addaction name="transportStopAction"/>
+    <addaction name="transportPlayAction"/>
+    <addaction name="transportRecordAction"/>
+    <addaction name="separator"/>
+    <addaction name="transportPunchAction"/>
+    <addaction name="transportPunchSetAction"/>
+    <addaction name="separator"/>
+    <addaction name="transportPanicAction"/>
    </widget>
-   <widget class="QMenu" name="helpMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="helpMenu">
+    <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="helpShortcutsAction" />
-    <addaction name="separator" />
-    <addaction name="helpAboutAction" />
-    <addaction name="helpAboutQtAction" />
+    <addaction name="helpShortcutsAction"/>
+    <addaction name="separator"/>
+    <addaction name="helpAboutAction"/>
+    <addaction name="helpAboutQtAction"/>
    </widget>
-   <addaction name="fileMenu" />
-   <addaction name="editMenu" />
-   <addaction name="viewMenu" />
-   <addaction name="toolsMenu" />
-   <addaction name="transportMenu" />
-   <addaction name="helpMenu" />
+   <addaction name="fileMenu"/>
+   <addaction name="editMenu"/>
+   <addaction name="viewMenu"/>
+   <addaction name="toolsMenu"/>
+   <addaction name="transportMenu"/>
+   <addaction name="helpMenu"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar" />
-  <widget class="QToolBar" name="fileToolbar" >
-   <property name="orientation" >
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="fileToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
    </attribute>
-   <addaction name="filePropertiesAction" />
-   <addaction name="fileSaveAction" />
-   <addaction name="separator" />
-   <addaction name="fileTrackPropertiesAction" />
-   <addaction name="separator" />
-   <addaction name="fileRecordExAction" />
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="filePropertiesAction"/>
+   <addaction name="fileSaveAction"/>
+   <addaction name="separator"/>
+   <addaction name="fileTrackPropertiesAction"/>
+   <addaction name="separator"/>
+   <addaction name="fileRecordExAction"/>
   </widget>
-  <widget class="QToolBar" name="editModeToolbar" >
-   <property name="orientation" >
+  <widget class="QToolBar" name="editModeToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
    </attribute>
-   <addaction name="editModeOffAction" />
-   <addaction name="editModeOnAction" />
-   <addaction name="separator" />
-   <addaction name="editModeDrawAction" />
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="editModeOffAction"/>
+   <addaction name="editModeOnAction"/>
+   <addaction name="separator"/>
+   <addaction name="editModeDrawAction"/>
   </widget>
-  <widget class="QToolBar" name="editToolbar" >
-   <property name="orientation" >
+  <widget class="QToolBar" name="editToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
    </attribute>
-   <addaction name="editUndoAction" />
-   <addaction name="editRedoAction" />
-   <addaction name="separator" />
-   <addaction name="editCutAction" />
-   <addaction name="editCopyAction" />
-   <addaction name="editPasteAction" />
-   <addaction name="separator" />
-   <addaction name="editDeleteAction" />
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="editUndoAction"/>
+   <addaction name="editRedoAction"/>
+   <addaction name="separator"/>
+   <addaction name="editCutAction"/>
+   <addaction name="editCopyAction"/>
+   <addaction name="editPasteAction"/>
+   <addaction name="separator"/>
+   <addaction name="editDeleteAction"/>
   </widget>
-  <widget class="QToolBar" name="viewToolbar" >
-   <property name="orientation" >
+  <widget class="QToolBar" name="viewToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
    </attribute>
-   <addaction name="viewEventsAction" />
-   <addaction name="separator" />
-   <addaction name="viewPreviewAction" />
-   <addaction name="viewFollowAction" />
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="viewEventsAction"/>
+   <addaction name="separator"/>
+   <addaction name="viewPreviewAction"/>
+   <addaction name="viewFollowAction"/>
   </widget>
-  <widget class="QToolBar" name="transportToolbar" >
-   <property name="orientation" >
+  <widget class="QToolBar" name="transportToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
    </attribute>
-   <addaction name="transportBackwardAction" />
-   <addaction name="transportRewindAction" />
-   <addaction name="transportFastForwardAction" />
-   <addaction name="transportForwardAction" />
-   <addaction name="separator" />
-   <addaction name="transportLoopAction" />
-   <addaction name="separator" />
-   <addaction name="transportStopAction" />
-   <addaction name="transportPlayAction" />
-   <addaction name="transportRecordAction" />
-   <addaction name="separator" />
-   <addaction name="transportPunchAction" />
-   <addaction name="separator" />
-   <addaction name="transportPanicAction" />
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="transportBackwardAction"/>
+   <addaction name="transportRewindAction"/>
+   <addaction name="transportFastForwardAction"/>
+   <addaction name="transportForwardAction"/>
+   <addaction name="separator"/>
+   <addaction name="transportLoopAction"/>
+   <addaction name="separator"/>
+   <addaction name="transportStopAction"/>
+   <addaction name="transportPlayAction"/>
+   <addaction name="transportRecordAction"/>
+   <addaction name="separator"/>
+   <addaction name="transportPunchAction"/>
+   <addaction name="separator"/>
+   <addaction name="transportPanicAction"/>
   </widget>
-  <widget class="QToolBar" name="editViewToolbar" >
-   <property name="orientation" >
+  <widget class="QToolBar" name="editViewToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QToolBar" name="editEventToolbar" >
-   <property name="orientation" >
+  <widget class="QToolBar" name="editEventToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QToolBar" name="snapToScaleToolbar" >
-   <property name="orientation" >
+  <widget class="QToolBar" name="snapToScaleToolbar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QToolBar" name="thumbViewToolbar" >
-   <property name="orientation" >
-	<enum>Qt::Horizontal</enum>
+  <widget class="QToolBar" name="thumbViewToolbar">
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
-	<number>8</number>
+   <attribute name="toolBarArea">
+    <enum>BottomToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
    </attribute>
   </widget>
-  <action name="fileSaveAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/fileSave.png</iconset>
+  <action name="fileSaveAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/fileSave.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Save</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Save</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Save</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Save current MIDI clip to existing file name</string>
    </property>
   </action>
-  <action name="fileSaveAsAction" >
-   <property name="text" >
+  <action name="fileSaveAsAction">
+   <property name="text">
     <string>Save &amp;As...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Save As</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Save as</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Save current MIDI clip with another file name</string>
    </property>
   </action>
-  <action name="fileUnlinkAction" >
-   <property name="text" >
+  <action name="fileUnlinkAction">
+   <property name="text">
     <string>&amp;Unlink</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Unlink</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Unlink</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Unlink current MIDI clip</string>
    </property>
   </action>
-  <action name="fileRecordExAction" >
-   <property name="checkable" >
+  <action name="fileRecordExAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/clipRecord.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/clipRecord.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Recor&amp;d</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Record</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Record</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Record current MIDI clip (overdub)</string>
-  </property>
+   </property>
   </action>
-  <action name="fileTrackInputsAction" >
-   <property name="text" >
+  <action name="fileTrackInputsAction">
+   <property name="text">
     <string>&amp;Inputs</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Track Inputs</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Track inputs</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show current MIDI clip/track input bus connections</string>
    </property>
   </action>
-  <action name="fileTrackOutputsAction" >
-   <property name="text" >
+  <action name="fileTrackOutputsAction">
+   <property name="text">
     <string>&amp;Outputs</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Track Outputs</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Track outputs</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show current MIDI clip/track output bus connections</string>
    </property>
   </action>
-  <action name="fileTrackPropertiesAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/trackProperties.png</iconset>
+  <action name="fileTrackPropertiesAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/trackProperties.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Properties...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Track Properties</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Track properties</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Edit current MIDI clip/track properties</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Shift+F2</string>
    </property>
   </action>
-  <action name="filePropertiesAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/clipEdit.png</iconset>
+  <action name="filePropertiesAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/clipEdit.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Properties...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Properties</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Properties</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Edit current MIDI clip properties</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>F4</string>
    </property>
   </action>
-  <action name="fileRangeSetAction" >
-   <property name="text" >
+  <action name="fileRangeSetAction">
+   <property name="text">
     <string>&amp;Range Set</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Clip Range</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Clip range</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Set edit-range from clip extents</string>
    </property>
   </action>
-  <action name="fileLoopSetAction" >
-   <property name="text" >
+  <action name="fileLoopSetAction">
+   <property name="text">
     <string>&amp;Loop Set</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Clip Loop</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Clip loop</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Set loop-range from clip extents</string>
    </property>
   </action>
-  <action name="fileCloseAction" >
-   <property name="text" >
+  <action name="fileCloseAction">
+   <property name="text">
     <string>&amp;Close</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Close</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Close</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Close this MIDI clip editor</string>
    </property>
   </action>
-  <action name="editUndoAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editUndo.png</iconset>
+  <action name="editUndoAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editUndo.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Undo</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Undo</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Undo</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Undo last edit operation</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Z</string>
    </property>
   </action>
-  <action name="editRedoAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editRedo.png</iconset>
+  <action name="editRedoAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editRedo.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Redo</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Redo</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Redo</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Redo last edit operation</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+Z</string>
    </property>
   </action>
-  <action name="editCutAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editCut.png</iconset>
+  <action name="editCutAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editCut.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Cu&amp;t</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cut</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cut</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Cut current selection into the local clipboard</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="editCopyAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editCopy.png</iconset>
+  <action name="editCopyAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editCopy.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Copy</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Copy</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Copy</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Copy current selection to the local clipboard</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="editPasteAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editPaste.png</iconset>
+  <action name="editPasteAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editPaste.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Paste</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Paste</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Paste</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Paste local clipboard contents into the current MIDI clip</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="editPasteRepeatAction" >
-   <property name="text" >
+  <action name="editPasteRepeatAction">
+   <property name="text">
     <string>Past&amp;e Repeat...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Paste Repeat</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Paste repeat</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Paste/repeat local clipboard contents into the current MIDI clip</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+V</string>
    </property>
   </action>
-  <action name="editDeleteAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editDelete.png</iconset>
+  <action name="editDeleteAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editDelete.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Delete</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Delete</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Delete</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Delete current selection</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Del</string>
    </property>
   </action>
-  <action name="editModeOffAction" >
-   <property name="checkable" >
+  <action name="editModeOffAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editModeOff.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editModeOff.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Edit Of&amp;f</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Edit Off</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Edit off</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Set edit mode off</string>
    </property>
   </action>
-  <action name="editModeOnAction" >
-   <property name="checkable" >
+  <action name="editModeOnAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editModeOn.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editModeOn.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Edit &amp;On</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Edit On</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Edit on</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Set edit mode on</string>
    </property>
   </action>
-  <action name="editModeDrawAction" >
-   <property name="checkable" >
+  <action name="editModeDrawAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/editModeDraw.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/editModeDraw.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Edit &amp;Draw</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Edit draw mode</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Edit draw mode (notes)</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="editSelectAllAction" >
-   <property name="text" >
+  <action name="editSelectAllAction">
+   <property name="text">
     <string>&amp;All</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Select All</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Select all</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Select all</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="editSelectNoneAction" >
-   <property name="text" >
+  <action name="editSelectNoneAction">
+   <property name="text">
     <string>&amp;None</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Select None</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Select none</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Select none</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+A</string>
    </property>
   </action>
-  <action name="editSelectInvertAction" >
-   <property name="text" >
+  <action name="editSelectInvertAction">
+   <property name="text">
     <string>&amp;Invert</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Select Invert</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Select invert</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Select invert</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+I</string>
    </property>
   </action>
-  <action name="editSelectRangeAction" >
-   <property name="text" >
+  <action name="editSelectRangeAction">
+   <property name="text">
     <string>&amp;Range</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Select Range</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Select range</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Mark range as selected</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="editInsertRangeAction" >
-   <property name="text" >
+  <action name="editInsertRangeAction">
+   <property name="text">
     <string>&amp;Range</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Insert Range</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Insert range</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Insert range as selected</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Ins</string>
    </property>
   </action>
-  <action name="editRemoveRangeAction" >
-   <property name="text" >
-	<string>&amp;Range</string>
+  <action name="editRemoveRangeAction">
+   <property name="text">
+    <string>&amp;Range</string>
    </property>
-   <property name="iconText" >
-	<string>Remove Range</string>
+   <property name="iconText">
+    <string>Remove Range</string>
    </property>
-   <property name="toolTip" >
-	<string>Remove range</string>
+   <property name="toolTip">
+    <string>Remove range</string>
    </property>
-   <property name="statusTip" >
-	<string>Remove range as selected</string>
+   <property name="statusTip">
+    <string>Remove range as selected</string>
    </property>
-   <property name="shortcut" >
-	<string>Ctrl+Del</string>
+   <property name="shortcut">
+    <string>Ctrl+Del</string>
    </property>
   </action>
-  <action name="toolsQuantizeAction" >
-   <property name="text" >
+  <action name="toolsQuantizeAction">
+   <property name="text">
     <string>&amp;Quantize...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Quantize</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Quantize</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Quantize selection</string>
    </property>
   </action>
-  <action name="toolsTransposeAction" >
-   <property name="text" >
+  <action name="toolsTransposeAction">
+   <property name="text">
     <string>&amp;Transpose...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Transpose</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Transpose</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transpose selection</string>
    </property>
   </action>
-  <action name="toolsNormalizeAction" >
-   <property name="text" >
+  <action name="toolsNormalizeAction">
+   <property name="text">
     <string>&amp;Normalize...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Normalize</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Normalize</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Normalize selection</string>
    </property>
   </action>
-  <action name="toolsRandomizeAction" >
-   <property name="text" >
+  <action name="toolsRandomizeAction">
+   <property name="text">
     <string>&amp;Randomize...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Randomize</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Randomize</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Randomize selection</string>
    </property>
   </action>
-  <action name="toolsResizeAction" >
-   <property name="text" >
+  <action name="toolsResizeAction">
+   <property name="text">
     <string>Resi&amp;ze...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Resize</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Resize</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Resize selection</string>
    </property>
   </action>
-  <action name="toolsRescaleAction" >
-   <property name="text" >
+  <action name="toolsRescaleAction">
+   <property name="text">
     <string>Re&amp;scale...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Rescale</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Rescale</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Rescale selection</string>
    </property>
   </action>
-  <action name="toolsTimeshiftAction" >
-   <property name="text" >
+  <action name="toolsTimeshiftAction">
+   <property name="text">
     <string>T&amp;imeshift...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Timeshift</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Timeshift</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Timeshift selection</string>
    </property>
   </action>
-  <action name="viewMenubarAction" >
-   <property name="checkable" >
+  <action name="viewMenubarAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Menubar</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Menubar</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Menubar</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the menubar</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+M</string>
    </property>
   </action>
-  <action name="viewStatusbarAction" >
-   <property name="checkable" >
+  <action name="viewStatusbarAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Statusbar</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Statusbar</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Statusbar</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the statusbar</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="viewToolbarFileAction" >
-   <property name="checkable" >
+  <action name="viewToolbarFileAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;File</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>File Toolbar</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>File toolbar</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the file toolbar</string>
    </property>
   </action>
-  <action name="viewToolbarEditAction" >
-   <property name="checkable" >
+  <action name="viewToolbarEditAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Edit</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Edit Toolbar</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Edit toolbar</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the edit toolbar</string>
    </property>
   </action>
-  <action name="viewToolbarViewAction" >
-   <property name="checkable" >
+  <action name="viewToolbarViewAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;View</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>View Toolbar</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>View toolbar</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the view toolbar</string>
    </property>
   </action>
-  <action name="viewToolbarTransportAction" >
-   <property name="checkable" >
+  <action name="viewToolbarTransportAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Transport</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Transport Toolbar</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Transport toolbar</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the transport toolbar</string>
    </property>
   </action>
-  <action name="viewToolbarScaleAction" >
-   <property name="checkable" >
+  <action name="viewToolbarScaleAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Scale</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Scale Toolbar</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Scale toolbar</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the scale toolbar</string>
    </property>
   </action>
-  <action name="viewToolbarThumbAction" >
-   <property name="checkable" >
-	<bool>true</bool>
-   </property>
-   <property name="text" >
-	<string>Thum&amp;b</string>
-   </property>
-   <property name="iconText" >
-	<string>Thumb Toolbar</string>
-   </property>
-   <property name="toolTip" >
-	<string>Thumb toolbar</string>
-   </property>
-   <property name="statusTip" >
-	<string>Show/hide the thumb view toolbar</string>
-   </property>
-  </action>
-  <action name="viewNoteDurationAction" >
-   <property name="checkable" >
+  <action name="viewToolbarThumbAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
+    <string>Thum&amp;b</string>
+   </property>
+   <property name="iconText">
+    <string>Thumb Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Thumb toolbar</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide the thumb view toolbar</string>
+   </property>
+  </action>
+  <action name="viewNoteDurationAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
     <string>Note &amp;Duration</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Note Duration</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Note duration</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Whether note events are shown proportional to duration</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="viewNoteColorAction" >
-   <property name="checkable" >
+  <action name="viewNoteColorAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Note &amp;Color</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Note Color</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Note color</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Whether note events are colored according to pitch</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="viewValueColorAction" >
-   <property name="checkable" >
+  <action name="viewValueColorAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Value Color</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Value Color</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Value color</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Whether note events are colored according to value (velocity)</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="viewEventsAction" >
-   <property name="checkable" >
+  <action name="viewEventsAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/viewEvents.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewEvents.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Events</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>View events</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>View events</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show/hide the events list</string>
    </property>
   </action>
-  <action name="viewPreviewAction" >
-   <property name="checkable" >
+  <action name="viewPreviewAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/viewPreview.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewPreview.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Preview Notes</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Preview Notes</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Preview notes</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Preview notes while editing (scrub)</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="viewFollowAction" >
-   <property name="checkable" >
+  <action name="viewFollowAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportFollow.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportFollow.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>F&amp;ollow Playhead</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Follow Playhead</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Follow playhead</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Follow playhead</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="viewZoomInAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/viewZoomIn.png</iconset>
+  <action name="viewZoomInAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewZoomIn.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;In</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Zoom In</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Zoom in</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Zoom in</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl++</string>
    </property>
   </action>
-  <action name="viewZoomOutAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/viewZoomOut.png</iconset>
+  <action name="viewZoomOutAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewZoomOut.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Out</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Zoom Out</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Zoom out</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Zoom out</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="viewZoomResetAction" >
-   <property name="text" >
+  <action name="viewZoomResetAction">
+   <property name="text">
     <string>&amp;Reset</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Zoom Reset</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Zoom reset</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Zoom reset</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+1</string>
    </property>
   </action>
-  <action name="viewZoomHorizontalAction" >
-   <property name="checkable" >
+  <action name="viewZoomHorizontalAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Horizontal</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Horizontal Zoom</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Horizontal zoom</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Horizontal zoom mode</string>
    </property>
   </action>
-  <action name="viewZoomVerticalAction" >
-   <property name="checkable" >
+  <action name="viewZoomVerticalAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Vertical</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Vertical Zoom</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Vertical zoom</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Vertical zoom mode</string>
    </property>
   </action>
-  <action name="viewZoomAllAction" >
-   <property name="checkable" >
+  <action name="viewZoomAllAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;All</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>All Zoom</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>All zoom</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>All zoom mode</string>
    </property>
   </action>
-  <action name="viewSnapZebraAction" >
-   <property name="checkable" >
+  <action name="viewSnapZebraAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Zebra</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Zebra</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Zebra</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Bar zebra view mode</string>
    </property>
   </action>
-  <action name="viewSnapGridAction" >
-   <property name="checkable" >
+  <action name="viewSnapGridAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Grid</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Grid</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Grid</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Snap grid view mode</string>
    </property>
   </action>
-  <action name="viewToolTipsAction" >
-   <property name="checkable" >
+  <action name="viewToolTipsAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Too&amp;l Tips</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Tool tips</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Tool tips</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Floating tool tips view mode</string>
    </property>
   </action>
-  <action name="viewRefreshAction" >
-   <property name="text" >
+  <action name="viewRefreshAction">
+   <property name="text">
     <string>&amp;Refresh</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Refresh</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Refresh</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Refresh views</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>F5</string>
    </property>
   </action>
-  <action name="transportBackwardAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportBackward.png</iconset>
+  <action name="transportBackwardAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportBackward.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Backward</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Backward</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Backward</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport backward</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Backspace</string>
    </property>
   </action>
-  <action name="transportRewindAction" >
-   <property name="checkable" >
+  <action name="transportRewindAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportRewind.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportRewind.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Re&amp;wind</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Rewind</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Rewind</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport rewind</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="transportFastForwardAction" >
-   <property name="checkable" >
+  <action name="transportFastForwardAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportFastForward.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportFastForward.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>F&amp;ast Forward</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Fast Forward</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Fast forward</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport fast forward</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="transportForwardAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportForward.png</iconset>
+  <action name="transportForwardAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportForward.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Forward</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Forward</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Forward</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport forward</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="transportLoopAction" >
-   <property name="checkable" >
+  <action name="transportLoopAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportLoop.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportLoop.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Loop</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Loop</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Loop</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport loop</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+L</string>
    </property>
   </action>
-  <action name="transportLoopSetAction" >
-   <property name="text" >
+  <action name="transportLoopSetAction">
+   <property name="text">
     <string>Loop &amp;Set</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Loop Set</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Loop set</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport loop set</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+L</string>
    </property>
   </action>
-  <action name="transportStopAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportStop.png</iconset>
+  <action name="transportStopAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportStop.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Stop</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Stop</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Stop</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport stop</string>
    </property>
   </action>
-  <action name="transportPlayAction" >
-   <property name="checkable" >
+  <action name="transportPlayAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportPlay.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportPlay.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Play</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Play</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Play</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport play/pause</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Space</string>
    </property>
   </action>
-  <action name="transportRecordAction" >
-   <property name="checkable" >
+  <action name="transportRecordAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportRecord.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportRecord.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Record</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Record</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Record</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport record</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="transportPunchAction" >
-   <property name="checkable" >
+  <action name="transportPunchAction">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportPunch.png</iconset>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportPunch.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Punch</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Punch</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Punch in/out</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport punch in/out</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+P</string>
    </property>
   </action>
-  <action name="transportPunchSetAction" >
-   <property name="text" >
+  <action name="transportPunchSetAction">
+   <property name="text">
     <string>Punch Se&amp;t</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Punch Set</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Punch in/out set</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Transport punch in/out set</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="transportPanicAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/transportPanic.png</iconset>
+  <action name="transportPanicAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportPanic.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Pa&amp;nic</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Panic</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Panic</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>All MIDI tracks shut off (panic)</string>
    </property>
   </action>
-  <action name="helpShortcutsAction" >
-   <property name="icon" >
-    <iconset resource="qtractor.qrc" >:/images/helpShortcuts.png</iconset>
+  <action name="helpShortcutsAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/helpShortcuts.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Shortcuts...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Shortcuts</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Shortcuts</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Keyboard shortcuts</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="helpAboutAction" >
-   <property name="text" >
+  <action name="helpAboutAction">
+   <property name="text">
     <string>&amp;About...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>About</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>About</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show information about this application program</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
-  <action name="helpAboutQtAction" >
-   <property name="text" >
+  <action name="helpAboutQtAction">
+   <property name="text">
     <string>About &amp;Qt...</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>About Qt</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>About Qt</string>
    </property>
-   <property name="statusTip" >
+   <property name="statusTip">
     <string>Show information about the Qt toolkit</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string/>
    </property>
   </action>
  </widget>
  <resources>
-  <include location="qtractor.qrc" />
+  <include location="qtractor.qrc"/>
  </resources>
  <connections/>
 </ui>
