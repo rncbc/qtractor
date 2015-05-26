@@ -1606,7 +1606,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="251"/>
         <source>Mar&amp;kers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mar&amp;kierungen</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="261"/>
@@ -1956,12 +1956,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFileListView.cpp" line="691"/>
         <source>group</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe</translation>
     </message>
     <message>
         <location filename="../qtractorFileListView.cpp" line="691"/>
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
 </context>
 <context>
@@ -2162,7 +2162,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="217"/>
         <source>Export to instrument file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Instrumentendatei exportieren</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="220"/>
@@ -2319,7 +2319,7 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="722"/>
         <source>Unknown</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation>Unbenannt</translation>
     </message>
 </context>
 <context>
@@ -3476,12 +3476,12 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1351"/>
         <source>Increase height</source>
-        <translation>Spurhöhe vergrößern</translation>
+        <translation>Höhe vergrößern</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1354"/>
         <source>Increase track height</source>
-        <translation type="unfinished"></translation>
+        <translation>Spurhöhe vergrößern</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1357"/>
@@ -3496,17 +3496,17 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1365"/>
         <source>Decrease Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe verringern</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1368"/>
         <source>Decrease height</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe verringern</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1371"/>
         <source>Decrease track height</source>
-        <translation type="unfinished"></translation>
+        <translation>Spurhöhe verringern</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1374"/>
@@ -3635,7 +3635,7 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1479"/>
         <source>Export tracks to MIDI file</source>
-        <translation type="unfinished"></translation>
+        <translation>Spuren in MIDI-DAtei exportieren</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1487"/>
@@ -3700,7 +3700,7 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1554"/>
         <source>Playback automation curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisierungskurve wiedergeben</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1572"/>
@@ -3711,7 +3711,7 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1578"/>
         <source>Record automation curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisierungskurve aufzeichnen</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1583"/>
@@ -3727,7 +3727,7 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1592"/>
         <source>Clear automation curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisierungskurve löschen</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1600"/>
@@ -3759,7 +3759,7 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1626"/>
         <source>Playback all automation curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Automatisierungskurven wiedergeben</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1634"/>
@@ -3775,7 +3775,7 @@ Sollen die Änderungen übernommen werden?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1643"/>
         <source>Record all automation curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Automatisierungskurven aufzeichnen</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1648"/>
@@ -5440,17 +5440,17 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4922"/>
         <source>session</source>
-        <translation type="unfinished"></translation>
+        <translation>Sitzung</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4925"/>
         <source> or </source>
-        <translation type="unfinished"></translation>
+        <translation>oder</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4926"/>
         <source>program</source>
-        <translation type="unfinished"></translation>
+        <translation>Programm</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4930"/>
@@ -9437,7 +9437,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="631"/>
         <source>Last</source>
-        <translation type="unfinished"></translation>
+        <translation>Letzter</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="643"/>
@@ -9484,7 +9484,7 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="813"/>
         <location filename="../qtractorOptionsForm.ui" line="1425"/>
         <source>Playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiedergabe</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="828"/>
@@ -9691,7 +9691,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1345"/>
         <source>File &amp;format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei&amp;format:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1361"/>
@@ -10535,7 +10535,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="51"/>
         <source>&amp;Count:</source>
-        <translation type="unfinished"></translation>
+        <translation>An&amp;zahl:</translation>
     </message>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="61"/>
@@ -10616,7 +10616,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="149"/>
         <source>Edit plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin bearbeiten</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="152"/>
@@ -10626,7 +10626,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="172"/>
         <source>Activate plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin aktivieren</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="175"/>
