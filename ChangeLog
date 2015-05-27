@@ -4,22 +4,21 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.6.7  2015-05-27  Lepton Acid Beta
 
 - MIDI clip editor (aka. piano-roll) position, size, and view
   /event type criteria are now persistent, across session and
-  user preferences application state. (EXPERIMENTAL)
+  user preferences application state.
 
 - Generic plugin form widget position is now also preserved
-  across open/save session cycles. (EXPERIMENTAL)
+  across open/save session cycles.
 
 - MIDI clip editor resilience is about to get an improvement,
   fe. it doesn't close on stopping record/overdub anymore.
-  (EXPERIMENTAL)
 
 - Introducing (JACK) Timebase master setting as an option
   to Transport mode (cf. View/Options.../General/Transport
-  /Timebase). (EXPERIMENTAL)
+  /Timebase).
 
 - LV2 plug-in MIDI/Event support now slanted for deprecation.
 
