@@ -22,7 +22,7 @@ ChangeLog
 
 - LV2 plug-in MIDI/Event support now slanted for deprecation.
 
-- Spanish (es) translation added, by avid Reyes Pucheta.
+- Spanish (es) translation added, by David Reyes Pucheta.
 
 - It's live: audio track export (cf. Track/Export Tracks/
   Audio...) has been deeply refactored to finally include
