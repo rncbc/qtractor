@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Added support to LV2UI_portMap extension, found really handy
+  for the cases where you have multiple plugins with different
+  port configurations and a single common UI to drive them all
+  (pull request by Hanspeter Portner aka. ventosus, thanks).
+
+
 0.6.7  2015-05-27  Lepton Acid Beta
 
 - MIDI clip editor (aka. piano-roll) position, size, and view
