@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed in-flight VST plugin editor (GUI) resizing.
+
 - Added support to LV2UI_portMap extension, found really handy
   for the cases where you have multiple plugins with different
   port configurations and a single common UI to drive them all
