@@ -12655,18 +12655,18 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorShortcutForm</name>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="372"/>
-        <location filename="../qtractorShortcutForm.cpp" line="431"/>
+        <location filename="../qtractorShortcutForm.cpp" line="398"/>
+        <location filename="../qtractorShortcutForm.cpp" line="457"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="373"/>
+        <location filename="../qtractorShortcutForm.cpp" line="399"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>Klávesová zkratka (%1) již přiřazena.</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="432"/>
+        <location filename="../qtractorShortcutForm.cpp" line="458"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -12700,9 +12700,13 @@ Chcete použít tyto změny?</translation>
         <translation>Klávesové zkratky</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="64"/>
         <source>Action</source>
-        <translation>Čin</translation>
+        <translation type="obsolete">Čin</translation>
+    </message>
+    <message>
+        <location filename="../qtractorShortcutForm.ui" line="64"/>
+        <source>Menu/Action</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="69"/>

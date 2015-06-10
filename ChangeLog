@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Keyboard shortcuts configuration (Help/Shortcuts...) now
+  lists complete menu/action path where available.
+
 - Fixed in-flight VST plugin editor (GUI) resizing.
 
 - Added support to LV2UI_portMap extension, found really handy

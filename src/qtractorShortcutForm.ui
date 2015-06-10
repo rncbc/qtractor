@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
+    <width>640</width>
     <height>360</height>
    </rect>
   </property>
@@ -61,7 +61,7 @@
      </property>
      <column>
       <property name="text" >
-       <string>Action</string>
+       <string>Menu/Action</string>
       </property>
      </column>
      <column>

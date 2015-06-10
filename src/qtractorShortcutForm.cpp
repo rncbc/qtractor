@@ -1,7 +1,7 @@
 // qtractorShortcutForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +25,8 @@
 #include "qtractorOptions.h"
 
 #include <QAction>
+#include <QMenu>
+
 #include <QMessageBox>
 #include <QPushButton>
 #include <QHeaderView>
@@ -60,8 +62,10 @@ public:
 // Shortcut key to text event translation.
 void qtractorShortcutTableItemEdit::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
+	const Qt::KeyboardModifiers modifiers
+		= pKeyEvent->modifiers();
+
 	int iKey = pKeyEvent->key();
-	Qt::KeyboardModifiers modifiers = pKeyEvent->modifiers();
 
 	if (modifiers == Qt::NoModifier) {
 		switch (iKey) {
@@ -152,7 +156,7 @@ void qtractorShortcutTableItemEditor::clear (void)
 // Shortcut text finish notification.
 void qtractorShortcutTableItemEditor::finish (void)
 {
-	bool bBlockSignals = m_pItemEdit->blockSignals(true);
+	const bool bBlockSignals = m_pItemEdit->blockSignals(true);
 	emit editingFinished();
 	m_index = QModelIndex();
 	m_sDefaultText.clear();
@@ -163,7 +167,7 @@ void qtractorShortcutTableItemEditor::finish (void)
 // Shortcut text cancel notification.
 void qtractorShortcutTableItemEditor::cancel (void)
 {
-	bool bBlockSignals = m_pItemEdit->blockSignals(true);
+	const bool bBlockSignals = m_pItemEdit->blockSignals(true);
 	m_index = QModelIndex();
 	m_sDefaultText.clear();
 	emit editingFinished();
@@ -263,6 +267,27 @@ void qtractorShortcutTableItemDelegate::commitEditor (void)
 //-------------------------------------------------------------------------
 // qtractorShortcutForm
 
+static
+QString menuActionText ( QAction *pAction, const QString& sTitle )
+{
+	QString sText = sTitle;
+
+	QListIterator<QWidget *> iter(pAction->associatedWidgets());
+	while (iter.hasNext()) {
+		QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
+		if (pMenu) {
+			sText = pMenu->title() + '/' + sText;
+			pAction = pMenu->menuAction();
+			if (pAction)
+				sText = menuActionText(pAction, sText);
+		}
+	}
+
+	return sText;
+}
+
+
+// Constructor.
 qtractorShortcutForm::qtractorShortcutForm (
 	const QList<QAction *>& actions, QWidget *pParent ) : QDialog(pParent)
 {
@@ -274,7 +299,7 @@ qtractorShortcutForm::qtractorShortcutForm (
 
 	m_iDirtyCount = 0;
 
-//	m_ui.qtractorShortcutTable = new QTableWidget(0, 3, this);
+//	m_ui.ShortcutTable = new QTableWidget(0, 3, this);
 	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
 	m_ui.ShortcutTable->setItemDelegate(
 		new qtractorShortcutTableItemDelegate(this));
@@ -284,13 +309,13 @@ qtractorShortcutForm::qtractorShortcutForm (
 //	m_ui.ShortcutTable->setSortingEnabled(true);
 
 //	m_ui.ShortcutTable->setHorizontalHeaderLabels(
-//		QStringList() << tr("Item") << tr("Description") << tr("Shortcut"));
+//		QStringList() << tr("Menu/Action") << tr("Description") << tr("Shortcut"));
 	m_ui.ShortcutTable->horizontalHeader()->setStretchLastSection(true);
 	m_ui.ShortcutTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-	m_ui.ShortcutTable->horizontalHeader()->resizeSection(0, 120);
-	m_ui.ShortcutTable->horizontalHeader()->resizeSection(1, 260);
+	m_ui.ShortcutTable->horizontalHeader()->resizeSection(0, 180);
+	m_ui.ShortcutTable->horizontalHeader()->resizeSection(1, 320);
 
-	int iRowHeight = m_ui.ShortcutTable->fontMetrics().height() + 4;
+	const int iRowHeight = m_ui.ShortcutTable->fontMetrics().height() + 4;
 	m_ui.ShortcutTable->verticalHeader()->setDefaultSectionSize(iRowHeight);
 	m_ui.ShortcutTable->verticalHeader()->hide();
 
@@ -301,8 +326,9 @@ qtractorShortcutForm::qtractorShortcutForm (
 		if (pAction->objectName().isEmpty())
 			continue;
 		m_ui.ShortcutTable->insertRow(iRow);
+		const QString& sActionText = menuActionText(pAction, pAction->text());
 		m_ui.ShortcutTable->setItem(iRow, 0,
-			new qtractorShortcutTableItem(pAction->icon(), pAction->text()));
+			new qtractorShortcutTableItem(pAction->icon(), sActionText));
 		m_ui.ShortcutTable->setItem(iRow, 1,
 			new qtractorShortcutTableItem(pAction->statusTip()));
 		const QKeySequence& shortcut = pAction->shortcut();

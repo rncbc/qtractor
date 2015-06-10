@@ -11060,9 +11060,13 @@ Do you want to apply the changes?</source>
         <translation>Atajos de teclado</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="64"/>
         <source>Action</source>
-        <translation>Acción</translation>
+        <translation type="obsolete">Acción</translation>
+    </message>
+    <message>
+        <location filename="../qtractorShortcutForm.ui" line="64"/>
+        <source>Menu/Action</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="69"/>
@@ -11075,18 +11079,18 @@ Do you want to apply the changes?</source>
         <translation>Atajo</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="372"/>
-        <location filename="../qtractorShortcutForm.cpp" line="431"/>
+        <location filename="../qtractorShortcutForm.cpp" line="398"/>
+        <location filename="../qtractorShortcutForm.cpp" line="457"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="373"/>
+        <location filename="../qtractorShortcutForm.cpp" line="399"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>Atajo de teclado (%1) ya asignado.</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="432"/>
+        <location filename="../qtractorShortcutForm.cpp" line="458"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>

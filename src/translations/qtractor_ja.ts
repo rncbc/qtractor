@@ -11341,9 +11341,13 @@ Do you want to apply the changes?</source>
         <translation>キーボードショートカット</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="64"/>
         <source>Action</source>
-        <translation>操作</translation>
+        <translation type="obsolete">操作</translation>
+    </message>
+    <message>
+        <location filename="../qtractorShortcutForm.ui" line="64"/>
+        <source>Menu/Action</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="69"/>
@@ -11356,18 +11360,18 @@ Do you want to apply the changes?</source>
         <translation>ショートカット</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="372"/>
-        <location filename="../qtractorShortcutForm.cpp" line="431"/>
+        <location filename="../qtractorShortcutForm.cpp" line="398"/>
+        <location filename="../qtractorShortcutForm.cpp" line="457"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="373"/>
+        <location filename="../qtractorShortcutForm.cpp" line="399"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>キーボードショートカット (%1) はすでに関連付けされています.</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="432"/>
+        <location filename="../qtractorShortcutForm.cpp" line="458"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
