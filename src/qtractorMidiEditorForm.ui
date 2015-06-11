@@ -49,6 +49,15 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="fileTrackMenu">
+     <property name="title">
+      <string>&amp;Track</string>
+     </property>
+     <addaction name="fileTrackInputsAction"/>
+     <addaction name="fileTrackOutputsAction"/>
+     <addaction name="separator"/>
+     <addaction name="fileTrackPropertiesAction"/>
+    </widget>
     <addaction name="fileSaveAction"/>
     <addaction name="fileSaveAsAction"/>
     <addaction name="fileUnlinkAction"/>
@@ -59,6 +68,7 @@
     <addaction name="fileRangeSetAction"/>
     <addaction name="fileLoopSetAction"/>
     <addaction name="separator"/>
+    <addaction name="fileTrackMenu"/>
     <addaction name="separator"/>
     <addaction name="fileCloseAction"/>
    </widget>

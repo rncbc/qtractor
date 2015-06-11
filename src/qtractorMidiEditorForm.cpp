@@ -135,8 +135,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			SIGNAL(triggered(bool)),
 			SLOT(viewSnap()));
 		m_snapPerBeatActions.append(pAction);
-		addAction(pAction);
+		m_ui.viewSnapMenu->addAction(pAction);
 	}
+//	m_ui.viewSnapMenu->addSeparator();
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapZebraAction);
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
 
 	// Pre-fill the combo-boxes...
 	m_pSnapPerBeatComboBox->setIconSize(QSize(8, 16));
@@ -277,15 +280,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.fileRecordExAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileRecordEx(bool)));
-	QObject::connect(m_ui.fileTrackInputsAction,
-		SIGNAL(triggered(bool)),
-		SLOT(fileTrackInputs()));
-	QObject::connect(m_ui.fileTrackOutputsAction,
-		SIGNAL(triggered(bool)),
-		SLOT(fileTrackOutputs()));
-	QObject::connect(m_ui.fileTrackPropertiesAction,
-		SIGNAL(triggered(bool)),
-		SLOT(fileTrackProperties()));
 	QObject::connect(m_ui.filePropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileProperties()));
@@ -295,6 +289,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.fileLoopSetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileLoopSet()));
+	QObject::connect(m_ui.fileTrackInputsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileTrackInputs()));
+	QObject::connect(m_ui.fileTrackOutputsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileTrackOutputs()));
+	QObject::connect(m_ui.fileTrackPropertiesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileTrackProperties()));
 	QObject::connect(m_ui.fileCloseAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileClose()));
