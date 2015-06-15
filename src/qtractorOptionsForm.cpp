@@ -464,6 +464,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.UseNativeDialogsCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.OscServerPortSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -695,6 +698,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.StdoutCaptureCheckBox->setEnabled(false);
 #endif
 
+	// OSC options.
+	m_ui.OscServerPortSpinBox->setValue(m_pOptions->iOscServerPort);
+
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
 	m_iDirtyPluginPaths = 0;
@@ -827,6 +833,8 @@ void qtractorOptionsForm::accept (void)
 			m_pOptions->sCustomStyleTheme = m_ui.CustomStyleThemeComboBox->currentText();
 		else
 			m_pOptions->sCustomStyleTheme.clear();
+		// OSC options..
+		m_pOptions->iOscServerPort = m_ui.OscServerPortSpinBox->value();
 		// Reset dirty flags.
 		if (m_iDirtyPluginPaths > 0) {
 			qtractorPluginSelectForm::clearPluginPaths();

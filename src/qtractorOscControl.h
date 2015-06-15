@@ -253,6 +253,9 @@ private:
 //---------------------------------------------------------------------------
 // OSC command slots implementation...
 
+#define QTRACTOR_OSC_SERVER_PORT 5000
+
+
 class qtractorOscControl : public QObject
 {
 	Q_OBJECT
@@ -260,7 +263,7 @@ class qtractorOscControl : public QObject
 public:
 
 	// Constructor.
-	qtractorOscControl();
+	qtractorOscControl(unsigned short port = QTRACTOR_OSC_SERVER_PORT);
 
 	// Destructor.
 	~qtractorOscControl();

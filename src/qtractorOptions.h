@@ -283,6 +283,9 @@ public:
 	QString sCustomColorTheme;
 	QString sCustomStyleTheme;
 
+	// OSC options.
+	int iOscServerPort;
+
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);
 	void loadWidgetGeometry(QWidget *pWidget, bool bVisible = false);

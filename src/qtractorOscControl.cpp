@@ -499,18 +499,15 @@ void qtractorOscClient::sendData ( const QString& path, const QVariant& v )
 #include "qtractorAudioClip.h"
 
 
-#define QTRACTOR_OSC_SERVER_PORT 5000
-
-
 // Kind of singleton reference.
 qtractorOscControl* qtractorOscControl::g_pOscControl = NULL;
 
 
 // Contructor.
-qtractorOscControl::qtractorOscControl (void)
+qtractorOscControl::qtractorOscControl ( unsigned short port )
 {
-	m_pOscServer = new qtractorOscServer(qtractorOscSocket::Udp,
-		QHostAddress::LocalHost, QTRACTOR_OSC_SERVER_PORT);
+	m_pOscServer = new qtractorOscServer(
+		qtractorOscSocket::Udp, QHostAddress::LocalHost, port);
 
 	// Add some command action slots
 	m_pOscServer->addPath("/AddAudioTrack", QVariant::String,

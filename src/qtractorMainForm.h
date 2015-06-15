@@ -405,6 +405,7 @@ protected:
 	void updateMidiMetronome();
 	void updateMixerAutoGridLayout();
 	void updateSyncViewHold();
+	void updateOscControl();
 
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 	void updateDirtyCount(bool bDirtyCount);

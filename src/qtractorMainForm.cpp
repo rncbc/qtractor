@@ -343,7 +343,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pMidiControl = new qtractorMidiControl();
 
 	// Also the OSC control server (TESTING)...
-	m_pOscControl = new qtractorOscControl();
+	m_pOscControl = NULL;
 
 #ifdef HAVE_SIGNAL_H
 
@@ -1369,6 +1369,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMidiMetronome();
 	updateMixerAutoGridLayout();
 	updateSyncViewHold();
+	updateOscControl();
 
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
@@ -4766,6 +4767,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
+	const int     iOldOscServerPort      = m_pOptions->iOscServerPort;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -4932,6 +4934,9 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
+		// OSC service options...
+		if (iOldOscServerPort != m_pOptions->iOscServerPort)
+			updateOscControl();
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -6379,6 +6384,22 @@ void qtractorMainForm::updateSyncViewHold (void)
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext())
 		(iter.next())->editor()->setSyncViewHold(m_pOptions->bSyncViewHold);
+}
+
+
+// Update OSC control connections. (TESTING)
+void qtractorMainForm::updateOscControl (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	if (m_pOscControl) {
+		delete m_pOscControl;
+		m_pOscControl = NULL;
+	}
+
+	// Update OSC server ...
+	m_pOscControl = new qtractorOscControl(m_pOptions->iOscServerPort);
 }
 
 

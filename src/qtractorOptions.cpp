@@ -351,6 +351,11 @@ void qtractorOptions::loadOptions (void)
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences
+
+	// OSC options.
+	m_settings.beginGroup("/Osc");
+	iOscServerPort = m_settings.value("/ServerPort", 5000).toInt();
+	m_settings.endGroup();
 }
 
 
@@ -625,6 +630,11 @@ void qtractorOptions::saveOptions (void)
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences
+
+	// OSC options.
+	m_settings.beginGroup("/Osc");
+	m_settings.setValue("/ServerPort", iOscServerPort);
+	m_settings.endGroup();
 
 	// Save/commit to disk.
 	m_settings.sync();
