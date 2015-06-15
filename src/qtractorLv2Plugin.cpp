@@ -772,6 +772,18 @@ static void qtractor_lv2_ui_write (
 	pLv2Plugin->lv2_ui_write(port_index, buffer_size, protocol, buffer);
 }
 
+static uint32_t qtractor_lv2_ui_index (
+	SuilController ui_controller,
+	const char *port_symbol )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (ui_controller);
+	if (pLv2Plugin == NULL)
+		return LV2UI_INVALID_PORT_INDEX;
+
+	return pLv2Plugin->lv2_ui_index(port_symbol);
+}
+
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 
@@ -2712,7 +2724,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
 #endif
 
-	m_suil_host = suil_host_new(qtractor_lv2_ui_write, NULL, NULL, NULL);
+	m_suil_host = suil_host_new(qtractor_lv2_ui_write, qtractor_lv2_ui_index,
+		NULL, NULL);
 	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_UI_HOST_URI,
 		lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin())),
 		lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui)), ui_type_uri,
@@ -3086,6 +3099,26 @@ void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 	m_ui_params.insert(port_index, val);
 }
 
+// LV2 UI portMap method.
+uint32_t qtractorLv2Plugin::lv2_ui_index ( const char *port_symbol )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_index(%s)",
+		this, port_symbol);
+#endif
+
+	LilvPlugin *plugin = lv2_plugin();
+	if (plugin == NULL)
+		return LV2UI_INVALID_PORT_INDEX;
+
+	LilvNode *symbol_uri = lilv_new_string(g_lv2_world, port_symbol);
+	const LilvPort *port = lilv_plugin_get_port_by_symbol(plugin, symbol_uri);
+	lilv_node_free(symbol_uri);
+
+	return port
+		? lilv_port_get_index(plugin, port)
+		: LV2UI_INVALID_PORT_INDEX;
+}
 
 // LV2 UI resize control (host->ui).
 void qtractorLv2Plugin::resizeEditor ( const QSize& size ) const

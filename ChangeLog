@@ -4,6 +4,22 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Improved MIDI clip editor resilience across tempo and time-
+  signature changes.
+
+- Keyboard shortcuts configuration (Help/Shortcuts...) now
+  lists complete menu/action path where available.
+
+- Fixed in-flight VST plugin editor (GUI) resizing.
+
+- Added support to LV2UI_portMap extension, found really handy
+  for the cases where you have multiple plugins with different
+  port configurations and a single common UI to drive them all
+  (pull request by Hanspeter Portner aka. ventosus, thanks).
+
+
 0.6.7  2015-05-27  Lepton Acid Beta
 
 - MIDI clip editor (aka. piano-roll) position, size, and view
@@ -22,7 +38,7 @@ ChangeLog
 
 - LV2 plug-in MIDI/Event support now slanted for deprecation.
 
-- Spanish (es) translation added, by avid Reyes Pucheta.
+- Spanish (es) translation added, by David Reyes Pucheta.
 
 - It's live: audio track export (cf. Track/Export Tracks/
   Audio...) has been deeply refactored to finally include

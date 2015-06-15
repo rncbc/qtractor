@@ -434,8 +434,15 @@ qtractorMainForm::qtractorMainForm (
 			SIGNAL(triggered(bool)),
 			SLOT(viewSnap()));
 		m_snapPerBeatActions.append(pAction);
-		addAction(pAction);
+		m_ui.viewSnapMenu->addAction(pAction);
 	}
+//	m_ui.viewSnapMenu->addSeparator();
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapZebraAction);
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
+
+	// Automation/curve mode menu setup...
+	m_ui.trackCurveModeMenu->addAction(m_ui.trackCurveLogarithmicAction);
+	m_ui.trackCurveModeMenu->addAction(m_ui.trackCurveColorAction);
 
 	// Editable toolbar widgets special palette.
 	QPalette pal;

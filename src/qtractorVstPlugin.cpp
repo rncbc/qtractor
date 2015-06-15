@@ -1162,7 +1162,7 @@ QWidget *qtractorVstPlugin::editorWidget (void) const
 void qtractorVstPlugin::resizeEditor ( int w, int h )
 {
 	if (m_pEditorWidget && w > 0 && h > 0)
-		m_pEditorWidget->resize(w, h);
+		m_pEditorWidget->setFixedSize(w, h);
 }
 
 

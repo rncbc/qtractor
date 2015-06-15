@@ -83,8 +83,8 @@ The software requirements for build and runtime are listed as follows:
   Mandatory:
 
   [1] Qt framework, C++ class library and tools for
-      cross-platform application and UI development
-      http://qt.io/
+        cross-platform application and UI development
+        http://qt.io/
 
   [2] JACK Audio Connection Kit
         http://jackaudio.org/
@@ -217,9 +217,9 @@ A special mention should also go to the translators of Qtractor
 References
 ----------
 
-[1] Qt4 (core, gui, xml), C++ class library and tools
-     for crossplatform development and internationalization
-     http://qt-project.org/
+[1] Qt framework, C++ class library and tools for
+     cross-platform application and UI development
+     http://qt.io/
 
 [2] JACK Audio Connection Kit
      http://jackaudio.org/

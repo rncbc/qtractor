@@ -190,8 +190,7 @@ protected slots:
 
 protected:
 
-	// On-open/close event handlers.
-	void showEvent(QShowEvent *pShowEvent);
+	// On-close event handler.
 	void closeEvent(QCloseEvent *pCloseEvent);
 
 	// Context menu request.
