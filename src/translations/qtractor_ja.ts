@@ -11361,18 +11361,18 @@ Do you want to apply the changes?</source>
         <translation>ショートカット</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="398"/>
-        <location filename="../qtractorShortcutForm.cpp" line="457"/>
+        <location filename="../qtractorShortcutForm.cpp" line="400"/>
+        <location filename="../qtractorShortcutForm.cpp" line="461"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="399"/>
+        <location filename="../qtractorShortcutForm.cpp" line="401"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>キーボードショートカット (%1) はすでに関連付けされています.</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="458"/>
+        <location filename="../qtractorShortcutForm.cpp" line="462"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>

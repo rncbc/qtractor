@@ -360,6 +360,8 @@ qtractorShortcutForm::qtractorShortcutForm (
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(rejected()),
 		SLOT(reject()));
+
+	stabilizeForm();
 }
 
 
@@ -424,6 +426,8 @@ void qtractorShortcutForm::actionChanged ( QTableWidgetItem *pItem )
 		= QKeySequence(pItem->text().trimmed()).toString();
 	pItem->setText(sShortcutText);
 	++m_iDirtyCount;
+
+	stabilizeForm();
 }
 
 
@@ -470,6 +474,13 @@ void qtractorShortcutForm::reject (void)
 
 	if (bReject)
 		QDialog::reject();
+}
+
+
+void qtractorShortcutForm::stabilizeForm (void)
+{
+	const bool bValid = (m_iDirtyCount > 0);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 
 
