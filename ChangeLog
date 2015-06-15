@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- French (fr) translation line to desktop file added (patch by
+  Olivier Humbert, thanks).
+
 - A new top-level widget window geometry state save and restore
   sub-routine is now in effect. (EXPERIMENTAL)
 
