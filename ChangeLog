@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- A new top-level widget window geometry state save and restore
+  sub-routine is now in effect. (EXPERIMENTAL)
+
 - Improved MIDI clip editor resilience across tempo and time-
   signature changes.
 
