@@ -178,6 +178,10 @@ protected slots:
 	void accept();
 	void reject();
 
+protected:
+
+	void stabilizeForm();
+
 private:
 
 	// The Qt-designer UI struct...

@@ -11310,7 +11310,7 @@ Deseja criá-la?</translation>
         <translation type="obsolete">Ações</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="458"/>
+        <location filename="../qtractorShortcutForm.cpp" line="462"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11329,7 +11329,7 @@ Você quer aplicar essas alterações?</translation>
         <translation>Descrição</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="399"/>
+        <location filename="../qtractorShortcutForm.cpp" line="401"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>O atalho (%1) já está sendo utilizado.</translation>
     </message>
@@ -11339,8 +11339,8 @@ Você quer aplicar essas alterações?</translation>
         <translation>Atalhos no Teclado</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="398"/>
-        <location filename="../qtractorShortcutForm.cpp" line="457"/>
+        <location filename="../qtractorShortcutForm.cpp" line="400"/>
+        <location filename="../qtractorShortcutForm.cpp" line="461"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>

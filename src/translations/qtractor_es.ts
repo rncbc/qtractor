@@ -11080,18 +11080,18 @@ Do you want to apply the changes?</source>
         <translation>Atajo</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="398"/>
-        <location filename="../qtractorShortcutForm.cpp" line="457"/>
+        <location filename="../qtractorShortcutForm.cpp" line="400"/>
+        <location filename="../qtractorShortcutForm.cpp" line="461"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="399"/>
+        <location filename="../qtractorShortcutForm.cpp" line="401"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>Atajo de teclado (%1) ya asignado.</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="458"/>
+        <location filename="../qtractorShortcutForm.cpp" line="462"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
