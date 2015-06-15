@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Improved MIDI clip editor resilience across tempo and time-
+  signature changes.
+
 - Keyboard shortcuts configuration (Help/Shortcuts...) now
   lists complete menu/action path where available.
 

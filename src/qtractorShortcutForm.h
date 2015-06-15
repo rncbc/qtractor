@@ -24,12 +24,11 @@
 
 #include "ui_qtractorShortcutForm.h"
 
-
 #include <QHash>
 #include <QItemDelegate>
 #include <QLineEdit>
 
-
+// Forward decls.
 class QAction;
 class QToolButton;
 

@@ -886,7 +886,8 @@ void qtractorOptions::saveSplitterSizes ( QSplitter *pSplitter )
 
 
 //---------------------------------------------------------------------------
-// Action shortcut persistence helper methos.
+// Action shortcut persistence helper methods.
+
 void qtractorOptions::loadActionShortcuts ( QObject *pObject )
 {
 	m_settings.beginGroup("/Shortcuts/" + pObject->objectName());
