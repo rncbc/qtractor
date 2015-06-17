@@ -3562,7 +3562,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 			const qtractorLv2Time& time_bar
 				= g_lv2_time[qtractorLv2Time::bar];
 			lv2_atom_forge_key(forge, time_bar.urid);
-			lv2_atom_forge_long(forge, long(time_bar.value));
+			lv2_atom_forge_long(forge, long(time_bar.value) - 1); // WTF?
 			const qtractorLv2Time& time_beat
 				= g_lv2_time[qtractorLv2Time::beat];
 			lv2_atom_forge_key(forge, time_beat.urid);
