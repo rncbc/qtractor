@@ -765,25 +765,12 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 void qtractorMidiEditorForm::contextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
 {
-	QMenu menu(this);
+	stabilizeForm();
 
-	menu.addAction(m_ui.editUndoAction);
-	menu.addAction(m_ui.editRedoAction);
-	menu.addSeparator();
-	menu.addAction(m_ui.editCutAction);
-	menu.addAction(m_ui.editCopyAction);
-	menu.addAction(m_ui.editPasteAction);
-	menu.addAction(m_ui.editPasteRepeatAction);
-	menu.addSeparator();
-	menu.addAction(m_ui.editDeleteAction);
-	menu.addSeparator();
-	menu.addMenu(m_ui.editModeMenu);
-	menu.addMenu(m_ui.editSelectMenu);
-	menu.addSeparator();
-	menu.addMenu(m_ui.toolsMenu);
-
-	menu.exec(pContextMenuEvent->globalPos());
+	// Primordial edit menu should be available...
+	m_ui.editMenu->exec(pContextMenuEvent->globalPos());
 }
+
 
 // Edit menu accessor.
 QMenu *qtractorMidiEditorForm::editMenu (void) const

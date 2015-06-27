@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed missing Track and Clip sub-menus from Edit/context-menu
+  that were found AWOL ever since after the Lazy Tachyon beta
+  release (> 0.6.6).
+
 - An off-by-one bar position (as in BBT, bar, beat and ticks)
   has been purportedly fixed as long as LV2 Time/Position atom
   event transfer goes.

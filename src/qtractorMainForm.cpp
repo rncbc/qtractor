@@ -1658,12 +1658,13 @@ void qtractorMainForm::dropEvent ( QDropEvent *pDropEvent )
 
 
 // Context menu event handler.
-void qtractorMainForm::contextMenuEvent ( QContextMenuEvent *pEvent )
+void qtractorMainForm::contextMenuEvent (
+	QContextMenuEvent *pContextMenuEvent )
 {
 	stabilizeForm();
 
 	// Primordial edit menu should be available...
-	m_ui.editMenu->exec(pEvent->globalPos());
+	m_ui.editMenu->exec(pContextMenuEvent->globalPos());
 }
 
 
