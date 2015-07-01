@@ -11,6 +11,7 @@ headers = \
 	src/config.h \
 	src/qtractorAbout.h \
 	src/qtractorAtomic.h \
+	src/qtractorActionControl.h \
 	src/qtractorAudioBuffer.h \
 	src/qtractorAudioClip.h \
 	src/qtractorAudioConnect.h \
@@ -135,6 +136,7 @@ headers = \
 
 sources = \
 	src/qtractor.cpp \
+	src/qtractorActionControl.cpp \
 	src/qtractorAudioBuffer.cpp \
 	src/qtractorAudioClip.cpp \
 	src/qtractorAudioConnect.cpp \
