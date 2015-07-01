@@ -22,10 +22,9 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiControlForm.h"
 
-#include "qtractorOptions.h"
+#include "qtractorMidiControlTypeGroup.h"
 
-// Needed for controller names.
-#include "qtractorMidiEditor.h"
+#include "qtractorOptions.h"
 
 #include <QHeaderView>
 #include <QMessageBox>

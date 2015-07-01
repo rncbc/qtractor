@@ -6,6 +6,17 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed missing Track and Clip sub-menus from Edit/context-menu
+  that were found AWOL ever since after the Lazy Tachyon beta
+  release (> 0.6.6).
+
+- An off-by-one bar position (as in BBT, bar, beat and ticks)
+  has been purportedly fixed as long as LV2 Time/Position atom
+  event transfer goes.
+
+- French (fr) translation line to desktop file added (patch by
+  Olivier Humbert, thanks).
+
 - A new top-level widget window geometry state save and restore
   sub-routine is now in effect. (EXPERIMENTAL)
 
@@ -46,7 +57,7 @@ GIT HEAD
 - It's live: audio track export (cf. Track/Export Tracks/
   Audio...) has been deeply refactored to finally include
   MIDI track/instrument plugins rendering (aka. freeze) on
-  selected audio output buses on mix-down. (EXPERIMENTAL)
+  selected audio output buses on mix-down.
 
 - MIDI file player now does (N)RPN 14-bit controller events.
 

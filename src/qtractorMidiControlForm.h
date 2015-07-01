@@ -27,6 +27,10 @@
 #include "qtractorMidiControl.h"
 
 
+// forward decls.
+class qtractorMidiControlTypeGroup;
+
+
 //----------------------------------------------------------------------------
 // qtractorMidiControlForm -- UI wrapper form.
 

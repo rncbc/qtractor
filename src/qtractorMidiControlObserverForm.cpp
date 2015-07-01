@@ -24,7 +24,7 @@
 #include "qtractorMidiControlObserver.h"
 #include "qtractorMidiControlCommand.h"
 
-#include "qtractorMidiEditor.h"
+#include "qtractorMidiControlTypeGroup.h"
 
 #include "qtractorSession.h"
 

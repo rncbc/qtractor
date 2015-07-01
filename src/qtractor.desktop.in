@@ -2,7 +2,9 @@
 Name=@PACKAGE_NAME@
 Version=1.0
 GenericName=Multi-track Sequencer
+GenericName[fr]=Séquenceur multi-pistes
 Comment=Qtractor is an Audio/MIDI multi-track sequencer application
+Comment[fr]=Qtractor est un séquenceur multi-pistes audio/MIDI
 Exec=@ac_prefix@/bin/qtractor
 Icon=qtractor
 Categories=Audio;AudioVideo;Midi;Sequencer;X-Multitrack;X-Alsa;X-Jack;Qt;

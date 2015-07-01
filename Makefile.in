@@ -56,6 +56,7 @@ headers = \
 	src/qtractorMidiConnect.h \
 	src/qtractorMidiControl.h \
 	src/qtractorMidiControlObserver.h \
+	src/qtractorMidiControlTypeGroup.h \
 	src/qtractorMidiCursor.h \
 	src/qtractorMidiEditor.h \
 	src/qtractorMidiEditCommand.h \
@@ -177,6 +178,7 @@ sources = \
 	src/qtractorMidiConnect.cpp \
 	src/qtractorMidiControl.cpp \
 	src/qtractorMidiControlObserver.cpp \
+	src/qtractorMidiControlTypeGroup.cpp \
 	src/qtractorMidiCursor.cpp \
 	src/qtractorMidiEditor.cpp \
 	src/qtractorMidiEditCommand.cpp \

@@ -72,69 +72,6 @@
     <addaction name="separator"/>
     <addaction name="fileCloseAction"/>
    </widget>
-   <widget class="QMenu" name="toolsMenu">
-    <property name="title">
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="toolsQuantizeAction"/>
-    <addaction name="toolsTransposeAction"/>
-    <addaction name="toolsNormalizeAction"/>
-    <addaction name="toolsRandomizeAction"/>
-    <addaction name="toolsResizeAction"/>
-    <addaction name="toolsRescaleAction"/>
-    <addaction name="toolsTimeshiftAction"/>
-   </widget>
-   <widget class="QMenu" name="editMenu">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <widget class="QMenu" name="editModeMenu">
-     <property name="title">
-      <string>Select &amp;Mode</string>
-     </property>
-     <addaction name="editModeOffAction"/>
-     <addaction name="editModeOnAction"/>
-     <addaction name="separator"/>
-     <addaction name="editModeDrawAction"/>
-    </widget>
-    <widget class="QMenu" name="editSelectMenu">
-     <property name="title" >
-      <string>&amp;Select</string>
-     </property>
-     <addaction name="editSelectAllAction"/>
-     <addaction name="editSelectNoneAction"/>
-     <addaction name="editSelectInvertAction"/>
-     <addaction name="separator" />
-     <addaction name="editSelectRangeAction"/>
-    </widget>
-    <widget class="QMenu" name="editInsertMenu">
-     <property name="title">
-      <string>I&amp;nsert</string>
-     </property>
-     <addaction name="editInsertRangeAction"/>
-    </widget>
-    <widget class="QMenu" name="editRemoveMenu">
-     <property name="title">
-      <string>Remo&amp;ve</string>
-     </property> 
-     <addaction name="editRemoveRangeAction"/>
-    </widget>
-    <addaction name="editUndoAction"/>
-    <addaction name="editRedoAction"/>
-    <addaction name="separator"/>
-    <addaction name="editCutAction"/>
-    <addaction name="editCopyAction"/>
-    <addaction name="editPasteAction"/>
-    <addaction name="editPasteRepeatAction"/>
-    <addaction name="separator"/>
-    <addaction name="editDeleteAction"/>
-    <addaction name="separator"/>
-    <addaction name="editModeMenu"/>
-    <addaction name="editSelectMenu"/>
-    <addaction name="separator"/>
-    <addaction name="editInsertMenu"/>
-	<addaction name="editRemoveMenu"/>
-   </widget>
    <widget class="QMenu" name="viewMenu">
     <property name="title">
      <string>&amp;View</string>
@@ -201,6 +138,71 @@
     <addaction name="separator"/>
     <addaction name="viewPreviewAction"/>
     <addaction name="viewFollowAction"/>
+   </widget>
+   <widget class="QMenu" name="toolsMenu">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="toolsQuantizeAction"/>
+    <addaction name="toolsTransposeAction"/>
+    <addaction name="toolsNormalizeAction"/>
+    <addaction name="toolsRandomizeAction"/>
+    <addaction name="toolsResizeAction"/>
+    <addaction name="toolsRescaleAction"/>
+    <addaction name="toolsTimeshiftAction"/>
+   </widget>
+   <widget class="QMenu" name="editMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <widget class="QMenu" name="editModeMenu">
+     <property name="title">
+      <string>Select &amp;Mode</string>
+     </property>
+     <addaction name="editModeOffAction"/>
+     <addaction name="editModeOnAction"/>
+     <addaction name="separator"/>
+     <addaction name="editModeDrawAction"/>
+    </widget>
+    <widget class="QMenu" name="editSelectMenu">
+     <property name="title" >
+      <string>&amp;Select</string>
+     </property>
+     <addaction name="editSelectAllAction"/>
+     <addaction name="editSelectNoneAction"/>
+     <addaction name="editSelectInvertAction"/>
+     <addaction name="separator" />
+     <addaction name="editSelectRangeAction"/>
+    </widget>
+    <widget class="QMenu" name="editInsertMenu">
+     <property name="title">
+      <string>I&amp;nsert</string>
+     </property>
+     <addaction name="editInsertRangeAction"/>
+    </widget>
+    <widget class="QMenu" name="editRemoveMenu">
+     <property name="title">
+      <string>Remo&amp;ve</string>
+     </property> 
+     <addaction name="editRemoveRangeAction"/>
+    </widget>
+    <addaction name="editUndoAction"/>
+    <addaction name="editRedoAction"/>
+    <addaction name="separator"/>
+    <addaction name="editCutAction"/>
+    <addaction name="editCopyAction"/>
+    <addaction name="editPasteAction"/>
+    <addaction name="editPasteRepeatAction"/>
+    <addaction name="separator"/>
+    <addaction name="editDeleteAction"/>
+    <addaction name="separator"/>
+    <addaction name="editModeMenu"/>
+    <addaction name="editSelectMenu"/>
+    <addaction name="separator"/>
+    <addaction name="editInsertMenu"/>
+	<addaction name="editRemoveMenu"/>
+    <addaction name="separator"/>
+    <addaction name="toolsMenu"/>
    </widget>
    <widget class="QMenu" name="transportMenu">
     <property name="title">
