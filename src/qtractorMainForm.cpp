@@ -57,6 +57,8 @@
 #include "qtractorMidiMonitor.h"
 #include "qtractorMidiBuffer.h"
 
+#include "qtractorActionControl.h"
+
 #include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
@@ -394,6 +396,9 @@ qtractorMainForm::qtractorMainForm (
 	m_pTermNotifier = NULL;
 	
 #endif	// !HAVE_SIGNAL_H
+
+	// Also the (QAction) MIDI observer map (TESTING)...
+	m_pActionControl = new qtractorActionControl(this);
 
 	// Get edit selection mode action group up...
 //	m_ui.editToolbar->addSeparator();
@@ -1169,6 +1174,10 @@ qtractorMainForm::~qtractorMainForm (void)
 	// Remove midi controllers.
 	if (m_pMidiControl)
 		delete m_pMidiControl;
+
+	// Remove (QAction) MIDI observer ma TESTING).
+	if (m_pActionControl)
+		delete m_pActionControl;
 
 	// Remove message list buffer.
 	if (m_pMessageList)
