@@ -1508,6 +1508,15 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		SIGNAL(contentsMoving(int,int)),
 		m_pThumbView, SLOT(updateThumb()));
 
+//--TESTING-BEGIN---
+	qtractorActionControl::MidiObserver *pMidiObserver
+		= m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
+	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
+	pMidiObserver->setChannel(0);
+	pMidiObserver->setParam(37); // AMPK25 S1 button
+	m_pMidiControl->mapMidiObserver(pMidiObserver);
+//--TESTING-END---
+
 	// Make it ready :-)
 	statusBar()->showMessage(tr("Ready"), 3000);
 

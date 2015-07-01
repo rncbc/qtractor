@@ -38,7 +38,7 @@ class qtractorActionControl : public QObject
 public:
 
 	// ctor.
-	qtractorActionControl(QObject *pParant = NULL);
+	qtractorActionControl(QObject *pParent = NULL);
 
 	// dtor.
 	~qtractorActionControl();
@@ -49,24 +49,28 @@ public:
 	public:
 
 		MidiObserver(QAction *pAction)
-			: qtractorMidiControlObserver(&m_subject), m_pAction(pAction)
-			{ m_subject.setToggled(pAction->isChecked()); }
+			: qtractorMidiControlObserver(NULL), m_pAction(pAction)
+		{
+			m_subject.setName(pAction->text());
+			m_subject.setToggled(pAction->isChecked());
+
+			qtractorMidiControlObserver::setSubject(&m_subject);
+			qtractorMidiControlObserver::setHook(true);
+		}
 
 	protected:
 
 		void update(bool bUpdate)
 		{
-		#ifdef CONFIG_DEBUG
-			qDebug("qtractorActionControl::MidiObserver[%p]::update(%d)", this, int(bUpdate));
-		#endif
 			m_pAction->activate(QAction::Trigger);
+
 			qtractorMidiControlObserver::update(bUpdate);
 		}
 
 	private:
 
-		qtractorSubject m_subject;
 		QAction *m_pAction;
+		qtractorSubject m_subject;
 	};
 
 	// MIDI observers map methods.
