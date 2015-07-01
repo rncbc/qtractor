@@ -58,6 +58,7 @@ HEADERS += config.h \
 	qtractorMidiControl.h \
 	qtractorMidiControlCommand.h \
 	qtractorMidiControlObserver.h \
+	qtractorMidiControlTypeGroup.h \
 	qtractorMidiCursor.h \
 	qtractorMidiEditor.h \
 	qtractorMidiEditCommand.h \
@@ -180,6 +181,7 @@ SOURCES += \
 	qtractorMidiControl.cpp \
 	qtractorMidiControlCommand.cpp \
 	qtractorMidiControlObserver.cpp \
+	qtractorMidiControlTypeGroup.cpp \
 	qtractorMidiCursor.cpp \
 	qtractorMidiEditor.cpp \
 	qtractorMidiEditCommand.cpp \

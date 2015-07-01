@@ -21,9 +21,10 @@
 
 #include "qtractorAbout.h"
 #include "qtractorMidiEditorForm.h"
-#include "qtractorMidiEditor.h"
 #include "qtractorMidiEditView.h"
 #include "qtractorMidiEditEvent.h"
+
+#include "qtractorMidiControlTypeGroup.h"
 
 #include "qtractorMidiClip.h"
 #include "qtractorMidiEngine.h"

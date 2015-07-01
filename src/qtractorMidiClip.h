@@ -26,6 +26,10 @@
 #include "qtractorMidiCursor.h"
 #include "qtractorMidiFile.h"
 
+#include <QPoint>
+#include <QSize>
+
+
 // Forward declartiuons.
 class qtractorMidiEditorForm;
 

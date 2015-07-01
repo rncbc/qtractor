@@ -28,6 +28,7 @@
 
 // Forward declarartions.
 class qtractorMidiControlObserver;
+class qtractorMidiControlTypeGroup;
 class qtractorCtlEvent;
 
 class QCloseEvent;

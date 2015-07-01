@@ -28,6 +28,7 @@
 
 #include <QStringList>
 #include <QLibrary>
+#include <QPoint>
 #include <QSize>
 
 #include <QHash>
