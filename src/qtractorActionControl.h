@@ -74,6 +74,9 @@ public:
 	MidiObserver *addMidiObserver(QAction *pAction);
 	void removeMidiObserver(QAction *pAction);
 
+	// Pseudo-singleton instance accessor.
+	static qtractorActionControl *getInstance();
+
 protected slots:
 
 	// MIDI observer trigger slot.
@@ -88,6 +91,9 @@ private:
 
 	// MIDI observers map.
 	QHash<QAction *, MidiObserver *> m_midiObservers;
+
+	// Pseudo-singleton instance.
+	static qtractorActionControl *g_pActionControl;
 };
 
 

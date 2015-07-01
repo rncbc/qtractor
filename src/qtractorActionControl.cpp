@@ -28,17 +28,33 @@
 // class qtractorActionControl -- (QAction) MIDI observers map.
 //
 
+// Kind of singleton reference.
+qtractorActionControl *qtractorActionControl::g_pActionControl = NULL;
+
+
 // ctor.
 qtractorActionControl::qtractorActionControl ( QObject *pParent )
 	: QObject(pParent)
 {
+	// Pseudo-singleton reference setup.
+	g_pActionControl = this;
 }
 
 
 // dtor.
 qtractorActionControl::~qtractorActionControl (void)
 {
+	// Pseudo-singleton reference shut-down.
+	g_pActionControl = NULL;
+
 	clear();
+}
+
+
+// Kind of singleton reference.
+qtractorActionControl *qtractorActionControl::getInstance (void)
+{
+	return g_pActionControl;
 }
 
 
