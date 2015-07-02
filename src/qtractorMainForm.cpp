@@ -1509,11 +1509,16 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pThumbView, SLOT(updateThumb()));
 
 //--TESTING-BEGIN---
-	qtractorActionControl::MidiObserver *pMidiObserver
-		= m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
+	qtractorActionControl::MidiObserver *pMidiObserver;
+	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
 	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
 	pMidiObserver->setChannel(0);
 	pMidiObserver->setParam(37); // AMPK25 S1 button
+	m_pMidiControl->mapMidiObserver(pMidiObserver);
+	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportBackwardAction);
+	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
+	pMidiObserver->setChannel(0);
+	pMidiObserver->setParam(39); // AMPK25 S2 button
 	m_pMidiControl->mapMidiObserver(pMidiObserver);
 //--TESTING-END---
 

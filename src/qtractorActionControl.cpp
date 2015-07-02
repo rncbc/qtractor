@@ -48,6 +48,9 @@ void qtractorActionControl::MidiObserver::update ( bool bUpdate )
 	if (pActionControl) {
 		const bool bBlockSignals
 			= pActionControl->blockSignals(true);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorActionControl::MidiObserver[%p]::update(%d)", this, int(bUpdate));
+	#endif
 		m_pAction->activate(QAction::Trigger);
 		pActionControl->blockSignals(bBlockSignals);
 	}
@@ -144,16 +147,16 @@ void qtractorActionControl::triggeredSlot ( bool bOn )
 		MidiObserver *pMidiObserver = getMidiObserver(pAction);
 		if (pMidiObserver) {
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractorActionControl::triggeredSlot(%d)", int(bOn));
+			qDebug("qtractorActionControl::triggeredSlot(%d) [%p]", int(bOn), pMidiObserver);
 		#endif
 			const float v0 = pMidiObserver->value();
 			const float vmax = pMidiObserver->maxValue();
 			const float vmin = pMidiObserver->minValue();
 			const float vmid = 0.5f * (vmax + vmin);
-			if (bOn)
+			if (bOn && !pAction->isChecked())
 				pMidiObserver->setValue(v0 > vmid ? vmin : vmax);
 			else
-				pMidiObserver->setValue(v0 < vmid ? vmax : vmin);
+				pMidiObserver->setValue(v0 > vmid ? vmax : vmin);
 		}
 	}
 }
