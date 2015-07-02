@@ -26,6 +26,37 @@
 
 
 //----------------------------------------------------------------------
+// class qtractorActionControl::MidiObserver -- impl.
+//
+
+// MIDI observer ctor.
+qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
+	: qtractorMidiControlObserver(NULL), m_pAction(pAction)
+{
+	m_subject.setName(pAction->text());
+	m_subject.setToggled(pAction->isChecked());
+
+	qtractorMidiControlObserver::setSubject(&m_subject);
+	qtractorMidiControlObserver::setHook(true);
+}
+
+
+// MIDI observer updater.
+void qtractorActionControl::MidiObserver::update ( bool bUpdate )
+{
+	qtractorActionControl *pActionControl = qtractorActionControl::getInstance();
+	if (pActionControl) {
+		const bool bBlockSignals
+			= pActionControl->blockSignals(true);
+		m_pAction->activate(QAction::Trigger);
+		pActionControl->blockSignals(bBlockSignals);
+	}
+
+	qtractorMidiControlObserver::update(bUpdate);
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorActionControl -- (QAction) MIDI observers map.
 //
 
@@ -118,15 +149,11 @@ void qtractorActionControl::triggeredSlot ( bool bOn )
 			const float v0 = pMidiObserver->value();
 			const float vmax = pMidiObserver->maxValue();
 			const float vmin = pMidiObserver->minValue();
-			if (pAction->isChecked()) {
-				pMidiObserver->setValue(bOn ? vmax : vmin);
-			} else {
-				const float vmid = 0.5f * (vmax + vmin);
-				if (bOn)
-					pMidiObserver->setValue(v0 > vmid ? vmin : vmax);
-				else
-					pMidiObserver->setValue(v0 > vmid ? vmax : vmin);
-			}
+			const float vmid = 0.5f * (vmax + vmin);
+			if (bOn)
+				pMidiObserver->setValue(v0 > vmid ? vmin : vmax);
+			else
+				pMidiObserver->setValue(v0 < vmid ? vmax : vmin);
 		}
 	}
 }

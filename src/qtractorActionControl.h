@@ -48,24 +48,11 @@ public:
 	{
 	public:
 
-		MidiObserver(QAction *pAction)
-			: qtractorMidiControlObserver(NULL), m_pAction(pAction)
-		{
-			m_subject.setName(pAction->text());
-			m_subject.setToggled(pAction->isChecked());
-
-			qtractorMidiControlObserver::setSubject(&m_subject);
-			qtractorMidiControlObserver::setHook(true);
-		}
+		MidiObserver(QAction *pAction);
 
 	protected:
 
-		void update(bool bUpdate)
-		{
-			m_pAction->activate(QAction::Trigger);
-
-			qtractorMidiControlObserver::update(bUpdate);
-		}
+		void update(bool bUpdate);
 
 	private:
 
