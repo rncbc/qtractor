@@ -944,4 +944,101 @@ void qtractorOptions::saveActionShortcuts ( QObject *pObject )
 }
 
 
+//---------------------------------------------------------------------------
+// Action MIDI observers persistence helper methods.
+
+#include "qtractorActionControl.h"
+
+void qtractorOptions::loadActionControl ( QObject *pObject )
+{
+	qtractorActionControl *pActionControl
+		= qtractorActionControl::getInstance();
+	if (pActionControl == NULL)
+		return;
+
+	qtractorMidiControl *pMidiControl
+		= qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	pActionControl->clear();
+
+	m_settings.beginGroup("/MidiObservers/" + pObject->objectName());
+
+	const QStringList& keys = m_settings.childKeys();
+	QStringListIterator iter(keys);
+	while (iter.hasNext()) {
+		const QString& sObjectName = iter.next();
+		const QList<QAction *>& actions
+			= pObject->findChildren<QAction *> (sObjectName);
+		if (actions.isEmpty())
+			continue;
+		const QString& sKey = '/' + sObjectName;
+		const QStringList& vlist
+			= m_settings.value(sKey).toStringList();
+		if (vlist.count() < 3)
+			continue;
+		QAction *pAction = actions.first();
+		qtractorActionControl::MidiObserver *pMidiObserver
+			= pActionControl->addMidiObserver(pAction);
+		if (pMidiObserver) {
+			pMidiObserver->setType(
+				qtractorMidiControl::typeFromText(vlist.at(0)));
+			pMidiObserver->setChannel(
+				vlist.at(1).toUShort());
+			pMidiObserver->setParam(
+				vlist.at(2).toUShort());
+			pMidiControl->mapMidiObserver(pMidiObserver);
+		}
+	}
+
+	m_settings.endGroup();
+}
+
+
+void qtractorOptions::saveActionControl ( QObject *pObject )
+{
+	qtractorActionControl *pActionControl
+		= qtractorActionControl::getInstance();
+	if (pActionControl == NULL)
+		return;
+
+	qtractorMidiControl *pMidiControl
+		= qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	m_settings.beginGroup("/MidiObservers/" + pObject->objectName());
+
+	const QStringList& keys = m_settings.childKeys();
+	QStringListIterator iter(keys);
+	while (iter.hasNext()) {
+		const QString& key = iter.next();
+		m_settings.remove(key);
+	}
+
+	const qtractorActionControl::MidiObservers& midiObservers
+		= pActionControl->midiObservers();
+	qtractorActionControl::MidiObservers::ConstIterator midi_iter
+		= midiObservers.constBegin();
+	const qtractorActionControl::MidiObservers::ConstIterator midi_end
+		= midiObservers.constEnd();
+	for ( ; midi_iter != midi_end; ++midi_iter) {
+		QAction *pAction = midi_iter.key();
+		qtractorActionControl::MidiObserver *pMidiObserver
+			= midi_iter.value();
+		if (!pMidiControl->isMidiObserverMapped(pMidiObserver))
+			continue;
+		const QString& sKey	= '/' + pAction->objectName();
+		QStringList vlist;
+		vlist.append(qtractorMidiControl::textFromType(pMidiObserver->type()));
+		vlist.append(QString::number(pMidiObserver->channel()));
+		vlist.append(QString::number(pMidiObserver->param()));
+		m_settings.setValue(sKey, vlist);
+	}
+
+	m_settings.endGroup();
+}
+
+
 // end of qtractorOptions.cpp

@@ -299,6 +299,10 @@ public:
 	void loadActionShortcuts(QObject *pObject);
 	void saveActionShortcuts(QObject *pObject);
 
+	// Action MIDI observers persistence helper methods.
+	void loadActionControl(QObject *pObject);
+	void saveActionControl(QObject *pObject);
+
 	// Singleton instance accessor.
 	static qtractorOptions *getInstance();
 

@@ -570,6 +570,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		// pOptions->loadWidgetGeometry(this, true);
 		// Load (action) keyboard shortcuts...
 		pOptions->loadActionShortcuts(this);
+		pOptions->loadActionControl(this);
 	}
 
 	// Make last-but-not-least conections....

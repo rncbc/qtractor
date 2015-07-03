@@ -60,10 +60,19 @@ public:
 		qtractorSubject m_subject;
 	};
 
+	// MIDI observers map accessor.
+	typedef QHash<QAction *, MidiObserver *> MidiObservers;
+
+	const MidiObservers& midiObservers() const
+		{ return m_midiObservers; }
+
 	// MIDI observers map methods.
 	MidiObserver *getMidiObserver(QAction *pAction);
 	MidiObserver *addMidiObserver(QAction *pAction);
 	void removeMidiObserver(QAction *pAction);
+
+	// MIDI observers map cleaner.
+	void clear();
 
 	// Pseudo-singleton instance accessor.
 	static qtractorActionControl *getInstance();
@@ -73,15 +82,10 @@ protected slots:
 	// MIDI observer trigger slot.
 	void triggeredSlot(bool bOn);
 
-protected:
-
-	// MIDI observers map cleaner.
-	void clear();
-
 private:
 
 	// MIDI observers map.
-	QHash<QAction *, MidiObserver *> m_midiObservers;
+	MidiObservers m_midiObservers;
 
 	// Pseudo-singleton instance.
 	static qtractorActionControl *g_pActionControl;

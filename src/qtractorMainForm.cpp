@@ -1390,6 +1390,22 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
+	m_pOptions->loadActionControl(this);
+
+#if 1//--TESTING-BEGIN---
+	qtractorActionControl::MidiObserver *pMidiObserver;
+	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
+	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
+	pMidiObserver->setChannel(0);
+	pMidiObserver->setParam(37); // AMPK25 S1 button
+	m_pMidiControl->mapMidiObserver(pMidiObserver);
+	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportBackwardAction);
+	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
+	pMidiObserver->setChannel(0);
+	pMidiObserver->setParam(39); // AMPK25 S2 button
+	m_pMidiControl->mapMidiObserver(pMidiObserver);
+	m_pOptions->saveActionControl(this);
+#endif//--TESTING-END---
 
 	// Initial thumb-view background (empty)
 	m_pThumbView->updateContents();
@@ -1507,20 +1523,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	QObject::connect(m_pTracks->trackView(),
 		SIGNAL(contentsMoving(int,int)),
 		m_pThumbView, SLOT(updateThumb()));
-
-//--TESTING-BEGIN---
-	qtractorActionControl::MidiObserver *pMidiObserver;
-	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
-	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
-	pMidiObserver->setChannel(0);
-	pMidiObserver->setParam(37); // AMPK25 S1 button
-	m_pMidiControl->mapMidiObserver(pMidiObserver);
-	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportBackwardAction);
-	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
-	pMidiObserver->setChannel(0);
-	pMidiObserver->setParam(39); // AMPK25 S2 button
-	m_pMidiControl->mapMidiObserver(pMidiObserver);
-//--TESTING-END---
 
 	// Make it ready :-)
 	statusBar()->showMessage(tr("Ready"), 3000);
