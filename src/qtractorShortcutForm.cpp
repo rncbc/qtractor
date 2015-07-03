@@ -22,6 +22,8 @@
 #include "qtractorAbout.h"
 #include "qtractorShortcutForm.h"
 
+#include "qtractorActionControl.h"
+
 #include "qtractorOptions.h"
 
 #include <QAction>
@@ -267,26 +269,6 @@ void qtractorShortcutTableItemDelegate::commitEditor (void)
 //-------------------------------------------------------------------------
 // qtractorShortcutForm
 
-static
-QString menuActionText ( QAction *pAction, const QString& sTitle )
-{
-	QString sText = sTitle;
-
-	QListIterator<QWidget *> iter(pAction->associatedWidgets());
-	while (iter.hasNext()) {
-		QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
-		if (pMenu) {
-			sText = pMenu->title() + '/' + sText;
-			pAction = pMenu->menuAction();
-			if (pAction)
-				sText = menuActionText(pAction, sText);
-		}
-	}
-
-	return sText;
-}
-
-
 // Constructor.
 qtractorShortcutForm::qtractorShortcutForm (
 	const QList<QAction *>& actions, QWidget *pParent ) : QDialog(pParent)
@@ -326,7 +308,8 @@ qtractorShortcutForm::qtractorShortcutForm (
 		if (pAction->objectName().isEmpty())
 			continue;
 		m_ui.ShortcutTable->insertRow(iRow);
-		const QString& sActionText = menuActionText(pAction, pAction->text());
+		const QString& sActionText
+			= qtractorActionControl::menuActionText(pAction, pAction->text());
 		m_ui.ShortcutTable->setItem(iRow, 0,
 			new qtractorShortcutTableItem(pAction->icon(), sActionText));
 		m_ui.ShortcutTable->setItem(iRow, 1,

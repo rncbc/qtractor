@@ -77,6 +77,9 @@ public:
 	// Pseudo-singleton instance accessor.
 	static qtractorActionControl *getInstance();
 
+	// Complete action text, from associated menus.
+	static QString menuActionText(QAction *pAction, const QString& sText);
+
 protected slots:
 
 	// MIDI observer trigger slot.

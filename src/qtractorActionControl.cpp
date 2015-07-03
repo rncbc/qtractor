@@ -23,6 +23,7 @@
 #include "qtractorActionControl.h"
 
 #include <QAction>
+#include <QMenu>
 
 
 //----------------------------------------------------------------------
@@ -33,7 +34,7 @@
 qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
 	: qtractorMidiControlObserver(NULL), m_pAction(pAction)
 {
-	m_subject.setName(pAction->text());
+	m_subject.setName(menuActionText(pAction, pAction->text()).remove('&'));
 	m_subject.setToggled(pAction->isChecked());
 
 	qtractorMidiControlObserver::setSubject(&m_subject);
@@ -159,6 +160,27 @@ void qtractorActionControl::triggeredSlot ( bool bOn )
 				pMidiObserver->setValue(v0 > vmid ? vmax : vmin);
 		}
 	}
+}
+
+
+// Complete action text, from associated menus. [static]
+QString qtractorActionControl::menuActionText (
+	QAction *pAction, const QString& sText )
+{
+	QString sActionText = sText;
+
+	QListIterator<QWidget *> iter(pAction->associatedWidgets());
+	while (iter.hasNext()) {
+		QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
+		if (pMenu) {
+			sActionText = pMenu->title() + '/' + sActionText;
+			pAction = pMenu->menuAction();
+			if (pAction)
+				sActionText = menuActionText(pAction, sActionText);
+		}
+	}
+
+	return sActionText;
 }
 
 
