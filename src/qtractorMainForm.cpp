@@ -1392,7 +1392,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions->loadActionShortcuts(this);
 	m_pOptions->loadActionControl(this);
 
-#if 1//--TESTING-BEGIN---
+#if 0//--TESTING-BEGIN---
 	qtractorActionControl::MidiObserver *pMidiObserver;
 	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
 	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);

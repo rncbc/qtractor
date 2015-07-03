@@ -974,20 +974,19 @@ void qtractorOptions::loadActionControl ( QObject *pObject )
 		if (actions.isEmpty())
 			continue;
 		const QString& sKey = '/' + sObjectName;
-		const QStringList& vlist
-			= m_settings.value(sKey).toStringList();
-		if (vlist.count() < 3)
+		const QList<QVariant>& vlist
+			= m_settings.value(sKey).toList();
+		if (vlist.count() < 4)
 			continue;
 		QAction *pAction = actions.first();
 		qtractorActionControl::MidiObserver *pMidiObserver
 			= pActionControl->addMidiObserver(pAction);
 		if (pMidiObserver) {
 			pMidiObserver->setType(
-				qtractorMidiControl::typeFromText(vlist.at(0)));
-			pMidiObserver->setChannel(
-				vlist.at(1).toUShort());
-			pMidiObserver->setParam(
-				vlist.at(2).toUShort());
+				qtractorMidiControl::typeFromText(vlist.at(0).toString()));
+			pMidiObserver->setChannel(vlist.at(1).toInt());
+			pMidiObserver->setParam(vlist.at(2).toInt());
+			pMidiObserver->setFeedback(vlist.at(3).toBool());
 			pMidiControl->mapMidiObserver(pMidiObserver);
 		}
 	}
@@ -1030,10 +1029,11 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 		if (!pMidiControl->isMidiObserverMapped(pMidiObserver))
 			continue;
 		const QString& sKey	= '/' + pAction->objectName();
-		QStringList vlist;
+		QList<QVariant> vlist;
 		vlist.append(qtractorMidiControl::textFromType(pMidiObserver->type()));
-		vlist.append(QString::number(pMidiObserver->channel()));
-		vlist.append(QString::number(pMidiObserver->param()));
+		vlist.append(pMidiObserver->channel());
+		vlist.append(pMidiObserver->param());
+		vlist.append(pMidiObserver->isFeedback());
 		m_settings.setValue(sKey, vlist);
 	}
 
