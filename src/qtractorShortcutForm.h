@@ -180,12 +180,15 @@ protected slots:
 	void actionShortcutChanged(QTableWidgetItem *);
 
 	void actionControlMenuRequested(const QPoint&);
-	void actionControlMidiObserver();
+	void actionControlActivated();
+	void actionControlAccepted();
 
 	void accept();
 	void reject();
 
 protected:
+
+	QString actionControlText(QAction *pAction) const;
 
 	void stabilizeForm();
 
@@ -199,6 +202,8 @@ private:
 
 	int m_iDirtyActionShortcuts;
 	int m_iDirtyActionControl;
+
+	int m_iActionControlRow;
 };
 
 

@@ -30,7 +30,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Keyboard Shortcuts</string>
+   <string>Shortcuts</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="qtractor.qrc" >:/images/helpShortcuts.png</iconset>
@@ -57,7 +57,7 @@
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="columnCount" >
-      <number>3</number>
+      <number>4</number>
      </property>
      <column>
       <property name="text" >
@@ -71,7 +71,12 @@
      </column>
      <column>
       <property name="text" >
-       <string>Shortcut</string>
+       <string>Keyboard</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>MIDI Controller</string>
       </property>
      </column>
     </widget>

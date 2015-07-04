@@ -976,7 +976,7 @@ void qtractorOptions::loadActionControl ( QObject *pObject )
 		const QString& sKey = '/' + sObjectName;
 		const QList<QVariant>& vlist
 			= m_settings.value(sKey).toList();
-		if (vlist.count() < 4)
+		if (vlist.count() < 6)
 			continue;
 		QAction *pAction = actions.first();
 		qtractorActionControl::MidiObserver *pMidiObserver
@@ -987,6 +987,9 @@ void qtractorOptions::loadActionControl ( QObject *pObject )
 			pMidiObserver->setChannel(vlist.at(1).toInt());
 			pMidiObserver->setParam(vlist.at(2).toInt());
 			pMidiObserver->setFeedback(vlist.at(3).toBool());
+			pMidiObserver->setInvert(vlist.at(4).toBool());
+			pMidiObserver->setHook(vlist.at(5).toBool());
+			pMidiObserver->setLatch(vlist.at(6).toBool());
 			pMidiControl->mapMidiObserver(pMidiObserver);
 		}
 	}
@@ -1034,6 +1037,9 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 		vlist.append(pMidiObserver->channel());
 		vlist.append(pMidiObserver->param());
 		vlist.append(pMidiObserver->isFeedback());
+		vlist.append(pMidiObserver->isInvert());
+		vlist.append(pMidiObserver->isHook());
+		vlist.append(pMidiObserver->isLatch());
 		m_settings.setValue(sKey, vlist);
 	}
 

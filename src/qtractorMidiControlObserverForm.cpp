@@ -194,22 +194,20 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 
 	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
 
-	const bool bEnabled = (m_pMidiObserverAction == NULL);
-
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
-	m_ui.LogarithmicCheckBox->setEnabled(m_pMidiObserver->isDecimal() && bEnabled);
+	m_ui.LogarithmicCheckBox->setEnabled(m_pMidiObserver->isDecimal());
 
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
 	m_ui.FeedbackCheckBox->setEnabled(true);
 
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
-	m_ui.InvertCheckBox->setEnabled(bEnabled);
+	m_ui.InvertCheckBox->setEnabled(true);
 
 	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook());
-	m_ui.HookCheckBox->setEnabled(bEnabled);
+	m_ui.HookCheckBox->setEnabled(true);
 
 	m_ui.LatchCheckBox->setChecked(m_pMidiObserver->isLatch());
-	m_ui.LatchCheckBox->setEnabled(m_pMidiObserver->isToggled() && bEnabled);
+	m_ui.LatchCheckBox->setEnabled(m_pMidiObserver->isToggled());
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
@@ -332,22 +330,20 @@ void qtractorMidiControlObserverForm::accept (void)
 	if (m_ui.ParamComboBox->isEnabled())
 		iParam = m_pControlTypeGroup->controlParam();
 
-	const bool bEnabled = (m_pMidiObserverAction == NULL);
-
 	bool bLogarithmic = m_pMidiObserver->isLogarithmic();
-	if (m_ui.LogarithmicCheckBox->isEnabled() && bEnabled)
+	if (m_ui.LogarithmicCheckBox->isEnabled())
 		bLogarithmic = m_ui.LogarithmicCheckBox->isChecked();
-	bool bFeedback = m_pMidiObserver->isFeedback();;
+	bool bFeedback = m_pMidiObserver->isFeedback();
 	if (m_ui.FeedbackCheckBox->isEnabled())
 		bFeedback = m_ui.FeedbackCheckBox->isChecked();
-	bool bInvert = m_pMidiObserver->isInvert();;
-	if (m_ui.InvertCheckBox->isEnabled() && bEnabled)
+	bool bInvert = m_pMidiObserver->isInvert();
+	if (m_ui.InvertCheckBox->isEnabled())
 		bInvert = m_ui.InvertCheckBox->isChecked();
-	bool bHook = m_pMidiObserver->isHook();;
-	if (m_ui.HookCheckBox->isEnabled() && bEnabled)
+	bool bHook = m_pMidiObserver->isHook();
+	if (m_ui.HookCheckBox->isEnabled())
 		bHook = m_ui.HookCheckBox->isChecked();
-	bool bLatch = m_pMidiObserver->isLatch();;
-	if (m_ui.LatchCheckBox->isEnabled() && bEnabled)
+	bool bLatch = m_pMidiObserver->isLatch();
+	if (m_ui.LatchCheckBox->isEnabled())
 		bLatch = m_ui.LatchCheckBox->isChecked();
 
 	// Check whether already mapped...

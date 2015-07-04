@@ -35,18 +35,21 @@ qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
 	: qtractorMidiControlObserver(NULL), m_pAction(pAction)
 {
 	m_subject.setName(menuActionText(pAction, pAction->text()).remove('&'));
+	m_subject.setInteger(true);
 	m_subject.setToggled(pAction->isChecked());
 
 	qtractorMidiControlObserver::setSubject(&m_subject);
 	qtractorMidiControlObserver::setHook(true);
+//	qtractorMidiControlObserver::setLatch(true);
 }
 
 
 // MIDI observer updater.
 void qtractorActionControl::MidiObserver::update ( bool bUpdate )
 {
-	qtractorActionControl *pActionControl = qtractorActionControl::getInstance();
-	if (pActionControl) {
+	qtractorActionControl *pActionControl
+		= qtractorActionControl::getInstance();
+	if (pActionControl && m_pAction->isEnabled()) {
 		const bool bBlockSignals
 			= pActionControl->blockSignals(true);
 	#ifdef CONFIG_DEBUG
