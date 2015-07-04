@@ -914,16 +914,19 @@ void qtractorOptions::loadActionShortcuts ( QObject *pObject )
 {
 	m_settings.beginGroup("/Shortcuts/" + pObject->objectName());
 
-	QList<QAction *> actions = pObject->findChildren<QAction *> ();
-	QListIterator<QAction *> iter(actions);
+	const QStringList& keys = m_settings.childKeys();
+	QStringListIterator iter(keys);
 	while (iter.hasNext()) {
-		QAction *pAction = iter.next();
-		if (pAction->objectName().isEmpty())
+		const QString& sObjectName = iter.next();
+		const QList<QAction *>& actions
+			= pObject->findChildren<QAction *> (sObjectName);
+		if (actions.isEmpty())
 			continue;
-		const QString& sKey = '/' + pAction->objectName();
-		const QString& sValue = m_settings.value('/' + sKey).toString();
+		const QString& sKey = '/' + sObjectName;
+		const QString& sValue = m_settings.value(sKey).toString();
 		if (sValue.isEmpty())
 			continue;
+		QAction *pAction = actions.first();
 		pAction->setShortcut(QKeySequence(sValue));
 	}
 
@@ -948,6 +951,109 @@ void qtractorOptions::saveActionShortcuts ( QObject *pObject )
 		else
 		if (m_settings.contains(sKey))
 			m_settings.remove(sKey);
+	}
+
+	m_settings.endGroup();
+}
+
+
+//---------------------------------------------------------------------------
+// Action MIDI observers persistence helper methods.
+
+#include "qtractorActionControl.h"
+
+void qtractorOptions::loadActionControl ( QObject *pObject )
+{
+	qtractorActionControl *pActionControl
+		= qtractorActionControl::getInstance();
+	if (pActionControl == NULL)
+		return;
+
+	qtractorMidiControl *pMidiControl
+		= qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	pActionControl->clear();
+
+	m_settings.beginGroup("/MidiObservers/" + pObject->objectName());
+
+	const QStringList& keys = m_settings.childKeys();
+	QStringListIterator iter(keys);
+	while (iter.hasNext()) {
+		const QString& sObjectName = iter.next();
+		const QList<QAction *>& actions
+			= pObject->findChildren<QAction *> (sObjectName);
+		if (actions.isEmpty())
+			continue;
+		const QString& sKey = '/' + sObjectName;
+		const QList<QVariant>& vlist
+			= m_settings.value(sKey).toList();
+		if (vlist.count() < 6)
+			continue;
+		QAction *pAction = actions.first();
+		qtractorActionControl::MidiObserver *pMidiObserver
+			= pActionControl->addMidiObserver(pAction);
+		if (pMidiObserver) {
+			pMidiObserver->setType(
+				qtractorMidiControl::typeFromText(vlist.at(0).toString()));
+			pMidiObserver->setChannel(vlist.at(1).toInt());
+			pMidiObserver->setParam(vlist.at(2).toInt());
+			pMidiObserver->setFeedback(vlist.at(3).toBool());
+			pMidiObserver->setInvert(vlist.at(4).toBool());
+			pMidiObserver->setHook(vlist.at(5).toBool());
+			pMidiObserver->setLatch(vlist.at(6).toBool());
+			pMidiControl->mapMidiObserver(pMidiObserver);
+		}
+	}
+
+	m_settings.endGroup();
+}
+
+
+void qtractorOptions::saveActionControl ( QObject *pObject )
+{
+	qtractorActionControl *pActionControl
+		= qtractorActionControl::getInstance();
+	if (pActionControl == NULL)
+		return;
+
+	qtractorMidiControl *pMidiControl
+		= qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	m_settings.beginGroup("/MidiObservers/" + pObject->objectName());
+
+	const QStringList& keys = m_settings.childKeys();
+	QStringListIterator iter(keys);
+	while (iter.hasNext()) {
+		const QString& key = iter.next();
+		m_settings.remove(key);
+	}
+
+	const qtractorActionControl::MidiObservers& midiObservers
+		= pActionControl->midiObservers();
+	qtractorActionControl::MidiObservers::ConstIterator midi_iter
+		= midiObservers.constBegin();
+	const qtractorActionControl::MidiObservers::ConstIterator midi_end
+		= midiObservers.constEnd();
+	for ( ; midi_iter != midi_end; ++midi_iter) {
+		QAction *pAction = midi_iter.key();
+		qtractorActionControl::MidiObserver *pMidiObserver
+			= midi_iter.value();
+		if (!pMidiControl->isMidiObserverMapped(pMidiObserver))
+			continue;
+		const QString& sKey	= '/' + pAction->objectName();
+		QList<QVariant> vlist;
+		vlist.append(qtractorMidiControl::textFromType(pMidiObserver->type()));
+		vlist.append(pMidiObserver->channel());
+		vlist.append(pMidiObserver->param());
+		vlist.append(pMidiObserver->isFeedback());
+		vlist.append(pMidiObserver->isInvert());
+		vlist.append(pMidiObserver->isHook());
+		vlist.append(pMidiObserver->isLatch());
+		m_settings.setValue(sKey, vlist);
 	}
 
 	m_settings.endGroup();

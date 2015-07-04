@@ -570,6 +570,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		// pOptions->loadWidgetGeometry(this, true);
 		// Load (action) keyboard shortcuts...
 		pOptions->loadActionShortcuts(this);
+		pOptions->loadActionControl(this);
 	}
 
 	// Make last-but-not-least conections....
@@ -1610,8 +1611,12 @@ void qtractorMidiEditorForm::helpShortcuts (void)
 		return;
 
 	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
-	if (shortcutForm.exec())
-		pOptions->saveActionShortcuts(this);
+	if (shortcutForm.exec()) {
+		if (shortcutForm.isDirtyActionShortcuts())
+			pOptions->saveActionShortcuts(this);
+		if (shortcutForm.isDirtyActionControl())
+			pOptions->saveActionControl(this);
+	}
 }
 
 

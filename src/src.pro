@@ -12,6 +12,7 @@ include(src.pri)
 HEADERS += config.h \
 	qtractorAbout.h \
 	qtractorAtomic.h \
+	qtractorActionControl.h \
 	qtractorAudioBuffer.h \
 	qtractorAudioClip.h \
 	qtractorAudioConnect.h \
@@ -139,6 +140,7 @@ HEADERS += config.h \
 
 SOURCES += \
 	qtractor.cpp \
+	qtractorActionControl.cpp \
 	qtractorAudioBuffer.cpp \
 	qtractorAudioClip.cpp \
 	qtractorAudioConnect.cpp \

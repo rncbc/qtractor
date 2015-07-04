@@ -47,6 +47,7 @@ class qtractorTempoCursor;
 class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 
+class qtractorActionControl;
 class qtractorMidiControlObserver;
 class qtractorSubject;
 
@@ -450,6 +451,7 @@ private:
 	QProgressBar *m_pProgressBar;
 	qtractorThumbView *m_pThumbView;
 	qtractorTempoCursor *m_pTempoCursor;
+	qtractorActionControl *m_pActionControl;
 	qtractorMidiControl *m_pMidiControl;
 	qtractorOscControl *m_pOscControl;
 	qtractorNsmClient *m_pNsmClient;

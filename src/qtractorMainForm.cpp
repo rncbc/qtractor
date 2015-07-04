@@ -57,6 +57,8 @@
 #include "qtractorMidiMonitor.h"
 #include "qtractorMidiBuffer.h"
 
+#include "qtractorActionControl.h"
+
 #include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
@@ -400,6 +402,9 @@ qtractorMainForm::qtractorMainForm (
 	m_pTermNotifier = NULL;
 	
 #endif	// !HAVE_SIGNAL_H
+
+	// Also the (QAction) MIDI observer map (TESTING)...
+	m_pActionControl = new qtractorActionControl(this);
 
 	// Get edit selection mode action group up...
 //	m_ui.editToolbar->addSeparator();
@@ -1180,6 +1185,10 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pOscControl)
 		delete m_pOscControl;
 
+	// Remove (QAction) MIDI observer ma TESTING).
+	if (m_pActionControl)
+		delete m_pActionControl;
+
 	// Remove message list buffer.
 	if (m_pMessageList)
 		delete m_pMessageList;
@@ -1392,6 +1401,22 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
+	m_pOptions->loadActionControl(this);
+
+#if 0//--TESTING-BEGIN---
+	qtractorActionControl::MidiObserver *pMidiObserver;
+	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
+	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
+	pMidiObserver->setChannel(0);
+	pMidiObserver->setParam(37); // AMPK25 S1 button
+	m_pMidiControl->mapMidiObserver(pMidiObserver);
+	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportBackwardAction);
+	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
+	pMidiObserver->setChannel(0);
+	pMidiObserver->setParam(39); // AMPK25 S2 button
+	m_pMidiControl->mapMidiObserver(pMidiObserver);
+	m_pOptions->saveActionControl(this);
+#endif//--TESTING-END---
 
 	// Initial thumb-view background (empty)
 	m_pThumbView->updateContents();
@@ -5380,8 +5405,12 @@ void qtractorMainForm::helpShortcuts (void)
 		return;
 
 	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
-	if (shortcutForm.exec())
-		m_pOptions->saveActionShortcuts(this);
+	if (shortcutForm.exec()) {
+		if (shortcutForm.isDirtyActionShortcuts())
+			m_pOptions->saveActionShortcuts(this);
+		if (shortcutForm.isDirtyActionControl())
+			m_pOptions->saveActionControl(this);
+	}
 }
 
 
