@@ -281,7 +281,8 @@ qtractorShortcutForm::qtractorShortcutForm (
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::ApplicationModal);
 
-	m_iDirtyCount = 0;
+	m_iDirtyActionShortcuts = 0;
+	m_iDirtyActionControl = 0;
 
 //	m_ui.ShortcutTable = new QTableWidget(0, 3, this);
 	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
@@ -336,15 +337,15 @@ qtractorShortcutForm::qtractorShortcutForm (
 	
 	QObject::connect(m_ui.ShortcutTable,
 		SIGNAL(itemActivated(QTableWidgetItem *)),
-		SLOT(actionActivated(QTableWidgetItem *)));
+		SLOT(actionShortcutActivated(QTableWidgetItem *)));
 
 	QObject::connect(m_ui.ShortcutTable,
 		SIGNAL(itemChanged(QTableWidgetItem *)),
-		SLOT(actionChanged(QTableWidgetItem *)));
+		SLOT(actionShortcutChanged(QTableWidgetItem *)));
 
 	QObject::connect(m_ui.ShortcutTable,
 		SIGNAL(customContextMenuRequested(const QPoint&)),
-		SLOT(actionContextMenuRequested(const QPoint&)));
+		SLOT(actionControlMenuRequested(const QPoint&)));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -366,9 +367,22 @@ qtractorShortcutForm::~qtractorShortcutForm (void)
 }
 
 
+// Action shortcut/control table widget accessor.
 QTableWidget *qtractorShortcutForm::tableWidget (void) const
 {
 	return m_ui.ShortcutTable;
+}
+
+
+// Action shortcut/control dirty-flag accessors.
+bool qtractorShortcutForm::isDirtyActionShortcuts (void) const
+{
+	return (m_iDirtyActionShortcuts > 0);
+}
+
+bool qtractorShortcutForm::isDirtyActionControl (void) const
+{
+	return (m_iDirtyActionControl > 0);
 }
 
 
@@ -406,18 +420,18 @@ bool qtractorShortcutForm::commitEditor (
 }
 
 
-void qtractorShortcutForm::actionActivated ( QTableWidgetItem *pItem )
+void qtractorShortcutForm::actionShortcutActivated ( QTableWidgetItem *pItem )
 {
 	m_ui.ShortcutTable->editItem(m_ui.ShortcutTable->item(pItem->row(), 2));
 }
 
 
-void qtractorShortcutForm::actionChanged ( QTableWidgetItem *pItem )
+void qtractorShortcutForm::actionShortcutChanged ( QTableWidgetItem *pItem )
 {
 	const QString& sShortcutText
 		= QKeySequence(pItem->text().trimmed()).toString();
 	pItem->setText(sShortcutText);
-	++m_iDirtyCount;
+	++m_iDirtyActionShortcuts;
 
 	stabilizeForm();
 }
@@ -425,7 +439,7 @@ void qtractorShortcutForm::actionChanged ( QTableWidgetItem *pItem )
 
 void qtractorShortcutForm::accept (void)
 {
-	if (m_iDirtyCount > 0) {
+	if (m_iDirtyActionShortcuts > 0) {
 		QHash<int, QAction *>::ConstIterator iter = m_actions.constBegin();
 		const QHash<int, QAction *>::ConstIterator& iter_end = m_actions.constEnd();
 		for ( ; iter != iter_end; ++iter) {
@@ -444,7 +458,7 @@ void qtractorShortcutForm::reject (void)
 	bool bReject = true;
 
 	// Check if there's any pending changes...
-	if (m_iDirtyCount > 0) {
+	if (m_iDirtyActionShortcuts > 0) {
 		QMessageBox::StandardButtons buttons
 			= QMessageBox::Discard | QMessageBox::Cancel;
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
@@ -452,6 +466,26 @@ void qtractorShortcutForm::reject (void)
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Keyboard shortcuts have been changed.\n\n"
+			"Do you want to apply the changes?"),
+			buttons)) {
+		case QMessageBox::Apply:
+			accept();
+			return;
+		case QMessageBox::Discard:
+			break;
+		default:    // Cancel.
+			bReject = false;
+		}
+	}
+	else
+	if (m_iDirtyActionControl > 0) {
+		QMessageBox::StandardButtons buttons
+			= QMessageBox::Discard | QMessageBox::Cancel;
+		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
+			buttons |= QMessageBox::Apply;
+		switch (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("MIDI controllers have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
 		case QMessageBox::Apply:
@@ -471,12 +505,13 @@ void qtractorShortcutForm::reject (void)
 
 void qtractorShortcutForm::stabilizeForm (void)
 {
-	const bool bValid = (m_iDirtyCount > 0);
+	const bool bValid
+		= (m_iDirtyActionShortcuts > 0 || m_iDirtyActionControl > 0);
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 
 
-void qtractorShortcutForm::actionContextMenuRequested ( const QPoint& pos )
+void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 {
 	QMenu menu(this);
 
@@ -500,7 +535,7 @@ void qtractorShortcutForm::actionControlMidiObserver (void)
 		return;
 
 	qtractorMidiControlObserverForm::showInstance(pMidiObserverAction, this);
-	++m_iDirtyCount;
+	++m_iDirtyActionControl;
 
 	stabilizeForm();
 }

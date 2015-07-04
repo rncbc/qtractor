@@ -164,17 +164,22 @@ public:
 	// Destructor.
 	~qtractorShortcutForm();
 
-	// Shortcut table widget accessor.
+	// Action shortcut/control table widget accessor.
 	QTableWidget *tableWidget() const;
+
+	// Action shortcut/control dirty-flag accessors.
+	bool isDirtyActionShortcuts() const;
+	bool isDirtyActionControl() const;
 
 	// Shortcut action finder & settler.
 	bool commitEditor(qtractorShortcutTableItemEditor *pItemEditor);
 
 protected slots:
 
-	void actionActivated(QTableWidgetItem *);
-	void actionChanged(QTableWidgetItem *);
-	void actionContextMenuRequested(const QPoint&);
+	void actionShortcutActivated(QTableWidgetItem *);
+	void actionShortcutChanged(QTableWidgetItem *);
+
+	void actionControlMenuRequested(const QPoint&);
 	void actionControlMidiObserver();
 
 	void accept();
@@ -192,7 +197,8 @@ private:
 	QHash<int, QAction *> m_actions;
 	QHash<QString, int> m_shortcuts;
 
-	int m_iDirtyCount;
+	int m_iDirtyActionShortcuts;
+	int m_iDirtyActionControl;
 };
 
 
