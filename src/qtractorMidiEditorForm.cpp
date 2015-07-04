@@ -1611,8 +1611,10 @@ void qtractorMidiEditorForm::helpShortcuts (void)
 		return;
 
 	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
-	if (shortcutForm.exec())
+	if (shortcutForm.exec()) {
 		pOptions->saveActionShortcuts(this);
+		pOptions->saveActionControl(this);
+	}
 }
 
 

@@ -26,6 +26,8 @@
 
 #include "qtractorMidiControlTypeGroup.h"
 
+#include "qtractorActionControl.h"
+
 #include "qtractorSession.h"
 
 #include "qtractorMainForm.h"
@@ -63,6 +65,12 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 
 	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(NULL,
 		m_ui.ControlTypeComboBox, m_ui.ParamComboBox, m_ui.ParamTextLabel);
+
+	// Target object.
+	m_pMidiObserver = NULL;
+
+	// Proxy object.
+	m_pMidiObserverAction = NULL;
 
 	// Start clean.
 	m_iDirtyCount = 0;
@@ -135,7 +143,7 @@ qtractorMidiControlObserverForm::getInstance (void)
 }
 
 
-// Pseudo-constructor.
+// Pseudo-constructors.
 void qtractorMidiControlObserverForm::showInstance (
 	qtractorMidiControlObserver *pMidiObserver,
 	QWidget *pParent, Qt::WindowFlags wflags )
@@ -145,8 +153,27 @@ void qtractorMidiControlObserverForm::showInstance (
 	if (pMidiObserverForm)
 		pMidiObserverForm->close();
 
+	if (pMidiObserver == NULL)
+		return;
+	if (pMidiObserver->subject() == NULL)
+		return;
+
 	pMidiObserverForm = new qtractorMidiControlObserverForm(pParent, wflags);
 	pMidiObserverForm->setMidiObserver(pMidiObserver);
+	pMidiObserverForm->show();
+}
+
+
+void qtractorMidiControlObserverForm::showInstance (
+	QAction *pMidiObserverAction, QWidget *pParent, Qt::WindowFlags wflags )
+{
+	qtractorMidiControlObserverForm *pMidiObserverForm
+		= qtractorMidiControlObserverForm::getInstance();
+	if (pMidiObserverForm)
+		pMidiObserverForm->close();
+
+	pMidiObserverForm = new qtractorMidiControlObserverForm(pParent, wflags);
+	pMidiObserverForm->setMidiObserverAction(pMidiObserverAction);
 	pMidiObserverForm->show();
 }
 
@@ -155,14 +182,9 @@ void qtractorMidiControlObserverForm::showInstance (
 void qtractorMidiControlObserverForm::setMidiObserver (
 	qtractorMidiControlObserver *pMidiObserver )
 {
-	m_pMidiObserver = pMidiObserver;
-
-	if (m_pMidiObserver == NULL)
-		return;
-	if (m_pMidiObserver->subject() == NULL)
-		return;
-
 	++m_iDirtySetup;
+
+	m_pMidiObserver = pMidiObserver;
 
 	QDialog::setWindowTitle(
 		m_pMidiObserver->subject()->name() + " - " + tr("MIDI Controller"));
@@ -171,13 +193,23 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	m_pControlTypeGroup->setControlParam(m_pMidiObserver->param());
 
 	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
+
+	const bool bEnabled = (m_pMidiObserverAction == NULL);
+
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
-	m_ui.LogarithmicCheckBox->setEnabled(m_pMidiObserver->isDecimal());
+	m_ui.LogarithmicCheckBox->setEnabled(m_pMidiObserver->isDecimal() && bEnabled);
+
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
+	m_ui.FeedbackCheckBox->setEnabled(true);
+
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
+	m_ui.InvertCheckBox->setEnabled(bEnabled);
+
 	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook());
+	m_ui.HookCheckBox->setEnabled(bEnabled);
+
 	m_ui.LatchCheckBox->setChecked(m_pMidiObserver->isLatch());
-	m_ui.LatchCheckBox->setEnabled(m_pMidiObserver->isToggled());
+	m_ui.LatchCheckBox->setEnabled(m_pMidiObserver->isToggled() && bEnabled);
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
@@ -199,9 +231,36 @@ qtractorMidiControlObserver *qtractorMidiControlObserverForm::midiObserver (void
 }
 
 
+// Action (control) observer accessors.
+void qtractorMidiControlObserverForm::setMidiObserverAction (
+	QAction *pMidiObserverAction )
+{
+	qtractorActionControl *pActionControl
+		= qtractorActionControl::getInstance();
+	if (pActionControl == NULL)
+		return;
+
+	qtractorActionControl::MidiObserver *pMidiObserver
+		= pActionControl->addMidiObserver(pMidiObserverAction);
+	if (pMidiObserver) {
+		m_pMidiObserverAction = pMidiObserverAction;
+		setMidiObserver(pMidiObserver);
+	}
+}
+
+QAction *qtractorMidiControlObserverForm::midiObserverAction (void) const
+{
+	return m_pMidiObserverAction;
+}
+
+
 // Pseudo-destructor.
 void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
+	// Cleanup.
+	m_pMidiObserverAction = NULL;
+	m_pMidiObserver = NULL;
+
 	// Pseudo-singleton reference setup.
 	g_pMidiObserverForm = NULL;
 
@@ -273,20 +332,22 @@ void qtractorMidiControlObserverForm::accept (void)
 	if (m_ui.ParamComboBox->isEnabled())
 		iParam = m_pControlTypeGroup->controlParam();
 
-	bool bLogarithmic = false;
-	if (m_ui.LogarithmicCheckBox->isEnabled())
+	const bool bEnabled = (m_pMidiObserverAction == NULL);
+
+	bool bLogarithmic = m_pMidiObserver->isLogarithmic();
+	if (m_ui.LogarithmicCheckBox->isEnabled() && bEnabled)
 		bLogarithmic = m_ui.LogarithmicCheckBox->isChecked();
-	bool bFeedback = false;
+	bool bFeedback = m_pMidiObserver->isFeedback();;
 	if (m_ui.FeedbackCheckBox->isEnabled())
 		bFeedback = m_ui.FeedbackCheckBox->isChecked();
-	bool bInvert = false;
-	if (m_ui.InvertCheckBox->isEnabled())
+	bool bInvert = m_pMidiObserver->isInvert();;
+	if (m_ui.InvertCheckBox->isEnabled() && bEnabled)
 		bInvert = m_ui.InvertCheckBox->isChecked();
-	bool bHook = false;
-	if (m_ui.HookCheckBox->isEnabled())
+	bool bHook = m_pMidiObserver->isHook();;
+	if (m_ui.HookCheckBox->isEnabled() && bEnabled)
 		bHook = m_ui.HookCheckBox->isChecked();
-	bool bLatch = true;
-	if (m_ui.LatchCheckBox->isEnabled())
+	bool bLatch = m_pMidiObserver->isLatch();;
+	if (m_ui.LatchCheckBox->isEnabled() && bEnabled)
 		bLatch = m_ui.LatchCheckBox->isChecked();
 
 	// Check whether already mapped...
@@ -304,6 +365,7 @@ void qtractorMidiControlObserverForm::accept (void)
 
 	// Map the damn control....
 	pMidiControl->unmapMidiObserver(m_pMidiObserver);
+
 	m_pMidiObserver->setType(ctype);
 	m_pMidiObserver->setChannel(iChannel);
 	m_pMidiObserver->setParam(iParam);
@@ -312,13 +374,14 @@ void qtractorMidiControlObserverForm::accept (void)
 	m_pMidiObserver->setInvert(bInvert);
 	m_pMidiObserver->setHook(bHook);
 	m_pMidiObserver->setLatch(bLatch);
-#if 0
-	pMidiControl->mapMidiObserver(m_pMidiObserver);
-#else
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pSession->execute(new qtractorMidiControlObserverMapCommand(m_pMidiObserver));
-#endif
+
+	if (m_pMidiObserverAction) {
+		pMidiControl->mapMidiObserver(m_pMidiObserver);
+	} else {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) pSession->execute(
+			new qtractorMidiControlObserverMapCommand(m_pMidiObserver));
+	}
 
 	// Aint't dirty no more...
 	m_iDirtyCount = 0;
@@ -354,6 +417,19 @@ void qtractorMidiControlObserverForm::reject (void)
 		}
 	}
 
+	// Remove any (QAction) MIDI observer mapping...
+	if (m_pMidiObserverAction) {
+		qtractorMidiControl *pMidiControl
+			= qtractorMidiControl::getInstance();
+		if (pMidiControl
+			&& !pMidiControl->isMidiObserverMapped(m_pMidiObserver)) {
+			qtractorActionControl *pActionControl
+				= qtractorActionControl::getInstance();
+			if (pActionControl)
+				pActionControl->removeMidiObserver(m_pMidiObserverAction);
+		}
+	}
+
 	// Just go with dialog rejection...
 	QDialog::reject();
 	QDialog::close();
@@ -367,16 +443,20 @@ void qtractorMidiControlObserverForm::reset (void)
 	qDebug("qtractorMidiControlObserverForm::reset()");
 #endif
 
-#if 0
-	qtractorMidiControl *pMidiControl
-		= qtractorMidiControl::getInstance();
-	if (pMidiControl)
-		pMidiControl->unmapMidiObserver(m_pMidiObserver);
-#else
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pSession->execute(new qtractorMidiControlObserverUnmapCommand(m_pMidiObserver));
-#endif
+	if (m_pMidiObserverAction) {
+		qtractorMidiControl *pMidiControl
+			= qtractorMidiControl::getInstance();
+		qtractorActionControl *pActionControl
+			= qtractorActionControl::getInstance();
+		if (pMidiControl && pActionControl) {
+			pMidiControl->unmapMidiObserver(m_pMidiObserver);
+			pActionControl->removeMidiObserver(m_pMidiObserverAction);
+		}
+	} else {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) pSession->execute(
+			new qtractorMidiControlObserverUnmapCommand(m_pMidiObserver));
+	}
 
 	// Bail out...
 	QDialog::accept();
@@ -438,7 +518,7 @@ void qtractorMidiControlObserverForm::stabilizeForm (void)
 	if (pSession)
 		pMidiEngine = pSession->midiEngine();
 	if (pMidiEngine) {
-		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
+		const bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 		m_ui.InputsPushButton->setEnabled(
 			pMidiEngine->controlBus_in() != NULL);
 		m_ui.OutputsPushButton->setEnabled(

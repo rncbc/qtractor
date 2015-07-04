@@ -174,6 +174,8 @@ protected slots:
 
 	void actionActivated(QTableWidgetItem *);
 	void actionChanged(QTableWidgetItem *);
+	void actionContextMenuRequested(const QPoint&);
+	void actionControlMidiObserver();
 
 	void accept();
 	void reject();
@@ -187,7 +189,7 @@ private:
 	// The Qt-designer UI struct...
 	Ui::qtractorShortcutForm m_ui;
 
-	QHash<QAction *, int> m_actions;
+	QHash<int, QAction *> m_actions;
 	QHash<QString, int> m_shortcuts;
 
 	int m_iDirtyCount;

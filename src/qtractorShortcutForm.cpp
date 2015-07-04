@@ -24,6 +24,8 @@
 
 #include "qtractorActionControl.h"
 
+#include "qtractorMidiControlObserverForm.h"
+
 #include "qtractorOptions.h"
 
 #include <QAction>
@@ -318,11 +320,14 @@ qtractorShortcutForm::qtractorShortcutForm (
 		const QString& sShortcutText = shortcut.toString();
 		m_ui.ShortcutTable->setItem(iRow, 2,
 			new qtractorShortcutTableItem(shortcut));
-		m_actions.insert(pAction, iRow);
+		m_actions.insert(iRow, pAction);
 		if (!sShortcutText.isEmpty())
 			m_shortcuts.insert(sShortcutText, iRow);
 		++iRow;
 	}
+
+	// Custom context menu...
+	m_ui.ShortcutTable->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	// Restore last seen form position and extents...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -336,6 +341,10 @@ qtractorShortcutForm::qtractorShortcutForm (
 	QObject::connect(m_ui.ShortcutTable,
 		SIGNAL(itemChanged(QTableWidgetItem *)),
 		SLOT(actionChanged(QTableWidgetItem *)));
+
+	QObject::connect(m_ui.ShortcutTable,
+		SIGNAL(customContextMenuRequested(const QPoint&)),
+		SLOT(actionContextMenuRequested(const QPoint&)));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -417,12 +426,12 @@ void qtractorShortcutForm::actionChanged ( QTableWidgetItem *pItem )
 void qtractorShortcutForm::accept (void)
 {
 	if (m_iDirtyCount > 0) {
-		QHash<QAction *, int>::ConstIterator iter = m_actions.constBegin();
-		const QHash<QAction *, int>::ConstIterator& iter_end = m_actions.constEnd();
+		QHash<int, QAction *>::ConstIterator iter = m_actions.constBegin();
+		const QHash<int, QAction *>::ConstIterator& iter_end = m_actions.constEnd();
 		for ( ; iter != iter_end; ++iter) {
 			const QString& sShortcutText
-				= m_ui.ShortcutTable->item(iter.value(), 2)->text();
-			iter.key()->setShortcut(QKeySequence(sShortcutText));
+				= m_ui.ShortcutTable->item(iter.key(), 2)->text();
+			iter.value()->setShortcut(QKeySequence(sShortcutText));
 		}
 	}
 
@@ -464,6 +473,36 @@ void qtractorShortcutForm::stabilizeForm (void)
 {
 	const bool bValid = (m_iDirtyCount > 0);
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
+}
+
+
+void qtractorShortcutForm::actionContextMenuRequested ( const QPoint& pos )
+{
+	QMenu menu(this);
+
+	menu.addAction(
+		QIcon(":/images/itemControllers.png"),
+		tr("&MIDI Controller..."), this,
+		SLOT(actionControlMidiObserver()));
+
+	menu.exec(m_ui.ShortcutTable->viewport()->mapToGlobal(pos));
+}
+
+
+void qtractorShortcutForm::actionControlMidiObserver (void)
+{
+	const int iCurrentRow = m_ui.ShortcutTable->currentRow();
+	if (iCurrentRow < 0)
+		return;
+
+	QAction *pMidiObserverAction = m_actions.value(iCurrentRow, NULL);
+	if (pMidiObserverAction == NULL)
+		return;
+
+	qtractorMidiControlObserverForm::showInstance(pMidiObserverAction, this);
+	++m_iDirtyCount;
+
+	stabilizeForm();
 }
 
 

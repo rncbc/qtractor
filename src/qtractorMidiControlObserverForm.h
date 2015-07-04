@@ -26,12 +26,14 @@
 
 #include "qtractorMidiControl.h"
 
+
 // Forward declarartions.
 class qtractorMidiControlObserver;
 class qtractorMidiControlTypeGroup;
 class qtractorCtlEvent;
 
 class QCloseEvent;
+class QAction;
 
 
 //----------------------------------------------------------------------------
@@ -46,13 +48,19 @@ public:
 	// Pseudo-singleton instance.
 	static qtractorMidiControlObserverForm *getInstance();
 
-	// Pseudo-constructor.
+	// Pseudo-constructors.
 	static void showInstance(qtractorMidiControlObserver *pMidiObserver,
+		QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	static void showInstance(QAction *pMidiObserverAction,
 		QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 
 	// Observer accessors.
 	void setMidiObserver(qtractorMidiControlObserver *pMidiObserver);
 	qtractorMidiControlObserver *midiObserver() const;
+
+	// Action (control) observer accessors.
+	void setMidiObserverAction(QAction *pMidiObserverAction);
+	QAction *midiObserverAction() const;
 
 	// Process incoming controller event.
 	void processEvent(const qtractorCtlEvent& ctle);
@@ -99,6 +107,9 @@ private:
 
 	// Target object.
 	qtractorMidiControlObserver *m_pMidiObserver;
+
+	// Proxy object.
+	QAction *m_pMidiObserverAction;
 
 	// Instance variables.
 	int m_iDirtyCount;
