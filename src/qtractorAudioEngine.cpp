@@ -2206,6 +2206,9 @@ bool qtractorAudioBus::open (void)
 		m_ppYBuffer[i] = NULL;
 	}
 
+	// Update monitor subject names...
+	qtractorAudioBus::updateBusName();
+
 	// Plugin lists need some buffer (re)allocation too...
 	if (m_pIPluginList)
 		updatePluginList(m_pIPluginList, qtractorPluginList::AudioInBus);
@@ -2399,6 +2402,34 @@ void qtractorAudioBus::updateBusMode (void)
 			m_pOPluginList = NULL;
 		}
 	}
+}
+
+
+// Bus name change event.
+void qtractorAudioBus::updateBusName (void)
+{
+	const QString& sBusName
+		= qtractorAudioBus::busName();
+
+	if (m_pIAudioMonitor) {
+		const QString& sBusNameIn
+			= QObject::tr("%1 In").arg(sBusName);
+		m_pIAudioMonitor->gainSubject()->setName(
+			QObject::tr("%1 Gain").arg(sBusNameIn));
+		m_pIAudioMonitor->panningSubject()->setName(
+			QObject::tr("%1 Pan").arg(sBusNameIn));
+	}
+
+	if (m_pOAudioMonitor) {
+		const QString& sBusNameOut
+			= QObject::tr("%1 Out").arg(sBusName);
+		m_pOAudioMonitor->gainSubject()->setName(
+			QObject::tr("%1 Gain").arg(sBusNameOut));
+		m_pOAudioMonitor->panningSubject()->setName(
+			QObject::tr("%1 Pan").arg(sBusNameOut));
+	}
+
+	qtractorBus::updateBusName();
 }
 
 

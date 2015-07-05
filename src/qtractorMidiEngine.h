@@ -501,8 +501,9 @@ protected:
 	void setControllerEx(unsigned short iChannel, int iController,
 		int iValue = 0, qtractorTrack *pTrack = NULL) const;
 
-	// Bus mode change event.
+	// Bus mode/name change events.
 	void updateBusMode();
+	void updateBusName();
 
 	// Create plugin-list properly.
 	qtractorPluginList *createPluginList(int iFlags) const;

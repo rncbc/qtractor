@@ -3773,6 +3773,9 @@ bool qtractorMidiBus::open (void)
 	if (snd_seq_set_port_info(pAlsaSeq, m_iAlsaPort, pinfo) < 0)
 		return false;
 
+	// Update monitor subject names...
+	qtractorMidiBus::updateBusName();
+
 	// Plugin lists need some buffer (re)allocation too...
 	if (m_pIPluginList)
 		updatePluginList(m_pIPluginList, qtractorPluginList::MidiInBus);
@@ -3861,6 +3864,34 @@ void qtractorMidiBus::updateBusMode (void)
 			m_pSysexList = NULL;
 		}
 	}
+}
+
+
+// Bus name change event.
+void qtractorMidiBus::updateBusName (void)
+{
+	const QString& sBusName
+		= qtractorMidiBus::busName();
+
+	if (m_pIMidiMonitor) {
+		const QString& sBusNameIn
+			= QObject::tr("%1 In").arg(sBusName);
+		m_pIMidiMonitor->gainSubject()->setName(
+			QObject::tr("%1 Volume").arg(sBusNameIn));
+		m_pIMidiMonitor->panningSubject()->setName(
+			QObject::tr("%1 Pan").arg(sBusNameIn));
+	}
+
+	if (m_pOMidiMonitor) {
+		const QString& sBusNameOut
+			= QObject::tr("%1 Out").arg(sBusName);
+		m_pOMidiMonitor->gainSubject()->setName(
+			QObject::tr("%1 Volume").arg(sBusNameOut));
+		m_pOMidiMonitor->panningSubject()->setName(
+			QObject::tr("%1 Pan").arg(sBusNameOut));
+	}
+
+	qtractorBus::updateBusName();
 }
 
 
