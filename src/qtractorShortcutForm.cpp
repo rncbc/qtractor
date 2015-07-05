@@ -42,25 +42,6 @@
 
 
 //-------------------------------------------------------------------------
-// qtractorShortcutTableItem
-
-class qtractorShortcutTableItem : public QTableWidgetItem
-{
-public:
-
-	// Constructors.
-	qtractorShortcutTableItem(const QIcon& icon, const QString& sText)
-		: QTableWidgetItem(icon, sText)
-		{ setFlags(flags() & ~Qt::ItemIsEditable); }
-	qtractorShortcutTableItem(const QString& sText)
-		: QTableWidgetItem(sText)
-		{ setFlags(flags() & ~Qt::ItemIsEditable); }
-	qtractorShortcutTableItem(const QKeySequence& shortcut)
-		: QTableWidgetItem(shortcut.toString()) {}
-};
-
-
-//-------------------------------------------------------------------------
 // qtractorShortcutTableItemEdit
 
 // Shortcut key to text event translation.
@@ -270,6 +251,13 @@ void qtractorShortcutTableItemDelegate::commitEditor (void)
 }
 
 
+QSize qtractorShortcutTableItemDelegate::sizeHint (
+	const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+	return QItemDelegate::sizeHint(option, index) + QSize(4, 4);
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorShortcutForm
 
@@ -286,48 +274,44 @@ qtractorShortcutForm::qtractorShortcutForm (
 	m_iDirtyActionShortcuts = 0;
 	m_iDirtyActionControl = 0;
 
-	m_iActionControlRow = -1;
+	m_pActionControlItem = NULL;
 
 //	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
 	m_ui.ShortcutTable->setItemDelegate(
 		new qtractorShortcutTableItemDelegate(this));
 
-	QHeaderView *pHorizontalHeader = m_ui.ShortcutTable->horizontalHeader();
-	pHorizontalHeader->setStretchLastSection(true);
-	pHorizontalHeader->setDefaultAlignment(Qt::AlignLeft);
-	pHorizontalHeader->resizeSection(0, 180);
-	pHorizontalHeader->resizeSection(1, 320);
-//	pHorizontalHeader->hideSection(3);
+	QHeaderView *pHeaderView = m_ui.ShortcutTable->header();
+	pHeaderView->setStretchLastSection(true);
+	pHeaderView->setDefaultAlignment(Qt::AlignLeft);
+	pHeaderView->resizeSection(0, 180);
+	pHeaderView->resizeSection(1, 320);
+//	pHeaderView->hideSection(3);
 
-	QHeaderView *pVerticalHeader = m_ui.ShortcutTable->verticalHeader();
-	const int iRowHeight = m_ui.ShortcutTable->fontMetrics().height() + 4;
-	pVerticalHeader->setDefaultSectionSize(iRowHeight);
-	pVerticalHeader->hide();
-
-	int iRow = 0;
+	QList<QTreeWidgetItem *> items;
 	QListIterator<QAction *> iter(actions);
 	while (iter.hasNext()) {
 		QAction *pAction = iter.next();
 		if (pAction->objectName().isEmpty())
 			continue;
-		m_ui.ShortcutTable->insertRow(iRow);
+		QTreeWidgetItem *pItem = new QTreeWidgetItem(m_ui.ShortcutTable);
 		const QString& sActionText
 			= qtractorActionControl::menuActionText(pAction, pAction->text());
-		m_ui.ShortcutTable->setItem(iRow, 0,
-			new qtractorShortcutTableItem(pAction->icon(), sActionText));
-		m_ui.ShortcutTable->setItem(iRow, 1,
-			new qtractorShortcutTableItem(pAction->statusTip()));
+		pItem->setIcon(0, pAction->icon());
+		pItem->setText(0, sActionText);
+		pItem->setText(1, pAction->statusTip());
 		const QKeySequence& shortcut = pAction->shortcut();
 		const QString& sShortcutText = shortcut.toString();
-		m_ui.ShortcutTable->setItem(iRow, 2,
-			new qtractorShortcutTableItem(shortcut));
-		m_ui.ShortcutTable->setItem(iRow, 3,
-			new qtractorShortcutTableItem(actionControlText(pAction)));
-		m_actions.insert(iRow, pAction);
+		pItem->setText(2, sShortcutText);
+		pItem->setText(3, actionControlText(pAction));
+		pItem->setFlags(
+			Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
+		m_actions.insert(pItem, pAction);
 		if (!sShortcutText.isEmpty())
-			m_shortcuts.insert(sShortcutText, iRow);
-		++iRow;
+			m_shortcuts.insert(sShortcutText, pItem);
+		items.append(pItem);
 	}
+	m_ui.ShortcutTable->addTopLevelItems(items);
+	m_ui.ShortcutTable->expandAll();
 
 	// Custom context menu...
 	m_ui.ShortcutTable->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -338,12 +322,12 @@ qtractorShortcutForm::qtractorShortcutForm (
 		pOptions->loadWidgetGeometry(this, true);
 
 	QObject::connect(m_ui.ShortcutTable,
-		SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
-		SLOT(actionShortcutActivated(QTableWidgetItem *)));
+		SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+		SLOT(actionShortcutActivated(QTreeWidgetItem *, int)));
 
 	QObject::connect(m_ui.ShortcutTable,
-		SIGNAL(itemChanged(QTableWidgetItem *)),
-		SLOT(actionShortcutChanged(QTableWidgetItem *)));
+		SIGNAL(itemChanged(QTreeWidgetItem *, int)),
+		SLOT(actionShortcutChanged(QTreeWidgetItem *, int)));
 
 	QObject::connect(m_ui.ShortcutTable,
 		SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -370,7 +354,7 @@ qtractorShortcutForm::~qtractorShortcutForm (void)
 
 
 // Action shortcut/control table widget accessor.
-QTableWidget *qtractorShortcutForm::tableWidget (void) const
+QTreeWidget *qtractorShortcutForm::tableWidget (void) const
 {
 	return m_ui.ShortcutTable;
 }
@@ -412,7 +396,9 @@ bool qtractorShortcutForm::commitEditor (
 			pItemEditor->clear();
 			return false;
 		}
-		m_shortcuts.insert(sShortcutText, index.row());
+		QTreeWidgetItem *pItem
+			= m_ui.ShortcutTable->topLevelItem(index.row());
+		if (pItem) m_shortcuts.insert(sShortcutText, pItem);
 	}
 
 	if (!sDefaultText.isEmpty())
@@ -422,9 +408,10 @@ bool qtractorShortcutForm::commitEditor (
 }
 
 
-void qtractorShortcutForm::actionShortcutActivated ( QTableWidgetItem *pItem )
+void qtractorShortcutForm::actionShortcutActivated (
+	QTreeWidgetItem *pItem, int iColumn )
 {
-	switch (pItem->column()) {
+	switch (iColumn) {
 	case 3:
 		// MIDI Controller...
 		actionControlActivated();
@@ -432,18 +419,21 @@ void qtractorShortcutForm::actionShortcutActivated ( QTableWidgetItem *pItem )
 	case 2:
 	default:
 		// Keyboard shortcut...
-		m_ui.ShortcutTable->editItem(m_ui.ShortcutTable->item(pItem->row(), 2));
+		m_ui.ShortcutTable->editItem(pItem, 2);
 		break;
 	}
 }
 
 
-void qtractorShortcutForm::actionShortcutChanged ( QTableWidgetItem *pItem )
+void qtractorShortcutForm::actionShortcutChanged (
+	QTreeWidgetItem *pItem, int iColumn )
 {
-	const QString& sShortcutText
-		= QKeySequence(pItem->text().trimmed()).toString();
-	pItem->setText(sShortcutText);
-	++m_iDirtyActionShortcuts;
+	if (iColumn == 2) {
+		const QString& sShortcutText
+			= QKeySequence(pItem->text(2).trimmed()).toString();
+		pItem->setText(2, sShortcutText);
+		++m_iDirtyActionShortcuts;
+	}
 
 	stabilizeForm();
 }
@@ -452,13 +442,12 @@ void qtractorShortcutForm::actionShortcutChanged ( QTableWidgetItem *pItem )
 void qtractorShortcutForm::accept (void)
 {
 	if (m_iDirtyActionShortcuts > 0) {
-		QHash<int, QAction *>::ConstIterator iter = m_actions.constBegin();
-		const QHash<int, QAction *>::ConstIterator& iter_end = m_actions.constEnd();
-		for ( ; iter != iter_end; ++iter) {
-			const QString& sShortcutText
-				= m_ui.ShortcutTable->item(iter.key(), 2)->text();
-			iter.value()->setShortcut(QKeySequence(sShortcutText));
-		}
+		QHash<QTreeWidgetItem *, QAction *>::ConstIterator iter
+			= m_actions.constBegin();
+		const QHash<QTreeWidgetItem *, QAction *>::ConstIterator& iter_end
+			= m_actions.constEnd();
+		for ( ; iter != iter_end; ++iter)
+			iter.value()->setShortcut(QKeySequence(iter.key()->text(2)));
 	}
 
 	QDialog::accept();
@@ -538,11 +527,11 @@ void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 
 void qtractorShortcutForm::actionControlActivated (void)
 {
-	m_iActionControlRow = m_ui.ShortcutTable->currentRow();
-	if (m_iActionControlRow < 0)
+	m_pActionControlItem = m_ui.ShortcutTable->currentItem();
+	if (m_pActionControlItem == NULL)
 		return;
 
-	QAction *pMidiObserverAction = m_actions.value(m_iActionControlRow, NULL);
+	QAction *pMidiObserverAction = m_actions.value(m_pActionControlItem, NULL);
 	if (pMidiObserverAction == NULL)
 		return;
 
@@ -560,19 +549,17 @@ void qtractorShortcutForm::actionControlActivated (void)
 
 void qtractorShortcutForm::actionControlAccepted (void)
 {
-	if (m_iActionControlRow >= 0) {
-		m_ui.ShortcutTable->setUpdatesEnabled(false);
+	if (m_pActionControlItem) {
 		QAction *pMidiObserverAction
-			= m_actions.value(m_iActionControlRow, NULL);
-		QTableWidgetItem *pItem
-			= m_ui.ShortcutTable->item(m_iActionControlRow, 3);
-		if (pItem && pMidiObserverAction)
-			pItem->setText(actionControlText(pMidiObserverAction));
-		m_iActionControlRow = -1;
-		m_ui.ShortcutTable->setUpdatesEnabled(true);
+			= m_actions.value(m_pActionControlItem, NULL);
+		if (pMidiObserverAction) {
+			const QString& sText = actionControlText(pMidiObserverAction);
+			m_pActionControlItem->setText(3, sText);
+		}
+		m_pActionControlItem = NULL;
+		++m_iDirtyActionControl;
 	}
 
-	++m_iDirtyActionControl;
 	stabilizeForm();
 }
 

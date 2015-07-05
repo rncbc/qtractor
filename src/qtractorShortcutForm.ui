@@ -1,4 +1,5 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
@@ -20,8 +21,8 @@
 
  </comment>
  <class>qtractorShortcutForm</class>
- <widget class="QDialog" name="qtractorShortcutForm" >
-  <property name="geometry" >
+ <widget class="QDialog" name="qtractorShortcutForm">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -29,53 +30,68 @@
     <height>360</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Shortcuts</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/helpShortcuts.png</iconset>
+  <property name="windowIcon">
+   <iconset resource="qtractor.qrc">:/images/helpShortcuts.png</iconset>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QTableWidget" name="ShortcutTable" >
-     <property name="tabKeyNavigation" >
+    <widget class="QTreeWidget" name="ShortcutTable">
+     <property name="tabKeyNavigation">
       <bool>false</bool>
      </property>
-     <property name="showDropIndicator" stdset="0" >
-      <bool>false</bool>
-     </property>
-     <property name="dragDropOverwriteMode" >
-      <bool>false</bool>
-     </property>
-     <property name="alternatingRowColors" >
+     <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
-     <property name="selectionMode" >
+     <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
      </property>
-     <property name="selectionBehavior" >
+     <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="columnCount" >
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="itemsExpandable">
+      <bool>false</bool>
+     </property>
+     <property name="allColumnsShowFocus">
+      <bool>true</bool>
+     </property>
+     <property name="expandsOnDoubleClick">
+      <bool>false</bool>
+     </property>
+     <property name="columnCount">
       <number>4</number>
      </property>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Menu/Action</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Description</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Keyboard</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>MIDI Controller</string>
       </property>
      </column>
@@ -98,7 +114,7 @@
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="qtractor.qrc" />
+  <include location="qtractor.qrc"/>
  </resources>
  <connections/>
 </ui>

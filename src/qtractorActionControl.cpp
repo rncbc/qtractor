@@ -151,7 +151,7 @@ void qtractorActionControl::triggeredSlot ( bool bOn )
 		MidiObserver *pMidiObserver = getMidiObserver(pAction);
 		if (pMidiObserver) {
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractorActionControl::triggeredSlot(%d) [%p]", int(bOn), pMidiObserver);
+			qDebug("qtractorActionControl::triggeredSlot(%d)", int(bOn));
 		#endif
 			const float v0 = pMidiObserver->value();
 			const float vmax = pMidiObserver->maxValue();
