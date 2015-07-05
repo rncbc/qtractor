@@ -30,14 +30,18 @@ Audio:	%1 canali, %2 Hz</translation>
 	(%1 semitoni trasposti)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2721"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4404"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2416"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2752"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3878"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4435"/>
         <source>%1 In</source>
         <translation>%1 Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2721"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4404"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2425"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2752"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3887"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4435"/>
         <source>%1 Out</source>
         <translation>%1 Uscite</translation>
     </message>
@@ -186,7 +190,7 @@ Offset / Lunghezza:	%3 / %4</translation>
         <translation>lista modifiche automazioni</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="406"/>
+        <location filename="../qtractorEngine.cpp" line="418"/>
         <location filename="../qtractorTrack.cpp" line="658"/>
         <source>%1 Monitor</source>
         <translation>%1 Monitor</translation>
@@ -537,16 +541,24 @@ MIDI:	</translation>
         <translation>%1 Solo</translation>
     </message>
     <message>
+        <location filename="../qtractorMidiEngine.cpp" line="3880"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3889"/>
         <location filename="../qtractorTrack.cpp" line="666"/>
         <source>%1 Volume</source>
         <translation>%1 Volume</translation>
     </message>
     <message>
+        <location filename="../qtractorAudioEngine.cpp" line="2418"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2427"/>
         <location filename="../qtractorTrack.cpp" line="669"/>
         <source>%1 Gain</source>
         <translation>%1 Guadagno</translation>
     </message>
     <message>
+        <location filename="../qtractorAudioEngine.cpp" line="2420"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2429"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3882"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3891"/>
         <location filename="../qtractorTrack.cpp" line="672"/>
         <source>%1 Pan</source>
         <translation>%1 Bilanciamento</translation>

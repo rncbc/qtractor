@@ -393,8 +393,9 @@ public:
 
 protected:
 
-	// Bus mode change event.
+	// Bus mode/name change events.
 	void updateBusMode();
+	void updateBusName();
 
 	// Create plugin-list properly.
 	qtractorPluginList *createPluginList(int iFlags) const;

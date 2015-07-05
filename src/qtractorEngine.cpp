@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -402,13 +402,20 @@ void qtractorBus::setBusName ( const QString& sBusName )
 {
 	m_sBusName = sBusName;
 
-	if (m_pMonitorSubject)
-		m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sBusName));
+	updateBusName();
 }
 
 const QString& qtractorBus::busName (void) const
 {
 	return m_sBusName;
+}
+
+
+// Bus name change event. [virtual]
+void qtractorBus::updateBusName (void)
+{
+	if (m_pMonitorSubject)
+		m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(m_sBusName));
 }
 
 
