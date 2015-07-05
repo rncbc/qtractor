@@ -196,9 +196,7 @@ void qtractorShortcutTableItemDelegate::paint ( QPainter *pPainter,
 {
 	// Special treatment for action icon+text...
 	if (index.column() == 0) {
-		QTableWidget *pTableWidget = m_pShortcutForm->tableWidget();
-		QTableWidgetItem *pItem	= pTableWidget->item(index.row(), 0);
-		pPainter->save();
+	//	pPainter->save();
 		if (option.state & QStyle::State_Selected) {
 			const QPalette& pal = option.palette;
 			pPainter->fillRect(option.rect, pal.highlight().color());
@@ -206,16 +204,18 @@ void qtractorShortcutTableItemDelegate::paint ( QPainter *pPainter,
 		}
 		// Draw the icon...
 		QRect rect = option.rect;
-		const QSize& iconSize = pTableWidget->iconSize();
+		const QSize iconSize(16, 16);
+		const QIcon& icon
+			= index.model()->data(index, Qt::DecorationRole).value<QIcon>();
 		pPainter->drawPixmap(1,
 			rect.top() + ((rect.height() - iconSize.height()) >> 1),
-			pItem->icon().pixmap(iconSize));
+			icon.pixmap(iconSize));
 		// Draw the text...
 		rect.setLeft(iconSize.width() + 2);
 		pPainter->drawText(rect,
 			Qt::TextShowMnemonic | Qt::AlignLeft | Qt::AlignVCenter,
-			pItem->text());
-		pPainter->restore();
+			index.model()->data(index, Qt::DisplayRole).toString());
+	//	pPainter->restore();
 	} else {
 		// Others do as default...
 		QItemDelegate::paint(pPainter, option, index);
@@ -288,7 +288,7 @@ qtractorShortcutForm::qtractorShortcutForm (
 
 	m_iActionControlRow = -1;
 
-	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
+//	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
 	m_ui.ShortcutTable->setItemDelegate(
 		new qtractorShortcutTableItemDelegate(this));
 
