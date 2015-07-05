@@ -139,6 +139,10 @@ protected:
 		QAbstractItemModel *pModel,
 		const QModelIndex& index) const;
 
+	QSize sizeHint(
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
 protected slots:
 
 	void commitEditor();
@@ -165,7 +169,7 @@ public:
 	~qtractorShortcutForm();
 
 	// Action shortcut/control table widget accessor.
-	QTableWidget *tableWidget() const;
+	QTreeWidget *tableWidget() const;
 
 	// Action shortcut/control dirty-flag accessors.
 	bool isDirtyActionShortcuts() const;
@@ -176,8 +180,8 @@ public:
 
 protected slots:
 
-	void actionShortcutActivated(QTableWidgetItem *);
-	void actionShortcutChanged(QTableWidgetItem *);
+	void actionShortcutActivated(QTreeWidgetItem *, int);
+	void actionShortcutChanged(QTreeWidgetItem *, int);
 
 	void actionControlMenuRequested(const QPoint&);
 	void actionControlActivated();
@@ -197,13 +201,13 @@ private:
 	// The Qt-designer UI struct...
 	Ui::qtractorShortcutForm m_ui;
 
-	QHash<int, QAction *> m_actions;
-	QHash<QString, int> m_shortcuts;
+	QHash<QTreeWidgetItem *, QAction *> m_actions;
+	QHash<QString, QTreeWidgetItem *> m_shortcuts;
 
 	int m_iDirtyActionShortcuts;
 	int m_iDirtyActionControl;
 
-	int m_iActionControlRow;
+	QTreeWidgetItem *m_pActionControlItem;
 };
 
 

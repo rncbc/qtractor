@@ -11967,33 +11967,33 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorShortcutForm</name>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="408"/>
-        <location filename="../qtractorShortcutForm.cpp" line="479"/>
-        <location filename="../qtractorShortcutForm.cpp" line="499"/>
+        <location filename="../qtractorShortcutForm.cpp" line="392"/>
+        <location filename="../qtractorShortcutForm.cpp" line="468"/>
+        <location filename="../qtractorShortcutForm.cpp" line="488"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="409"/>
+        <location filename="../qtractorShortcutForm.cpp" line="393"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="480"/>
+        <location filename="../qtractorShortcutForm.cpp" line="469"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="500"/>
+        <location filename="../qtractorShortcutForm.cpp" line="489"/>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="532"/>
+        <location filename="../qtractorShortcutForm.cpp" line="521"/>
         <source>&amp;MIDI Controller...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12018,27 +12018,27 @@ Do you want to apply the changes?</source>
         <translation type="obsolete">Действие</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="33"/>
+        <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
         <translation type="unfinished">Клавиатурные комбинации</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="64"/>
+        <location filename="../qtractorShortcutForm.ui" line="80"/>
         <source>Menu/Action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="69"/>
+        <location filename="../qtractorShortcutForm.ui" line="85"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="74"/>
+        <location filename="../qtractorShortcutForm.ui" line="90"/>
         <source>Keyboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.ui" line="79"/>
+        <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
         <translation type="unfinished">Контроллер MIDI</translation>
     </message>
