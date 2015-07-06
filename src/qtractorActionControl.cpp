@@ -36,7 +36,7 @@ qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
 {
 	m_subject.setName(menuActionText(pAction, pAction->text()).remove('&'));
 	m_subject.setInteger(true);
-	m_subject.setToggled(pAction->isChecked());
+	m_subject.setToggled(pAction->isCheckable());
 
 	qtractorMidiControlObserver::setSubject(&m_subject);
 	qtractorMidiControlObserver::setHook(true);
@@ -47,14 +47,14 @@ qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
 // MIDI observer updater.
 void qtractorActionControl::MidiObserver::update ( bool bUpdate )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorActionControl::MidiObserver[%p]::update(%d)", this, int(bUpdate));
+#endif
 	qtractorActionControl *pActionControl
 		= qtractorActionControl::getInstance();
 	if (pActionControl && m_pAction->isEnabled()) {
 		const bool bBlockSignals
 			= pActionControl->blockSignals(true);
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorActionControl::MidiObserver[%p]::update(%d)", this, int(bUpdate));
-	#endif
 		m_pAction->activate(QAction::Trigger);
 		pActionControl->blockSignals(bBlockSignals);
 	}
@@ -121,6 +121,10 @@ qtractorActionControl::MidiObserver *qtractorActionControl::addMidiObserver (
 		pMidiObserver = new MidiObserver(pAction);
 		m_midiObservers.insert(pAction, pMidiObserver);
 	}
+
+	pMidiObserver->setValue(pAction->isChecked()
+		? pMidiObserver->maxValue()
+		: pMidiObserver->minValue());
 
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),

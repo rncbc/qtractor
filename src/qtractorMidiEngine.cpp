@@ -1527,15 +1527,17 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	if (pSession == NULL)
 		return;
 
+	unsigned long tick = pEv->time.tick;
+
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
 		const unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
-		pEv->time.tick = q * ((pEv->time.tick + (q >> 1)) / q);
+		tick = q * ((tick + (q >> 1)) / q);
 	}
 
 #ifdef CONFIG_DEBUG_0
 	// - show event for debug purposes...
-	fprintf(stderr, "MIDI In  %06lu 0x%02x", pEv->time.tick, pEv->type);
+	fprintf(stderr, "MIDI In  %06lu 0x%02x", tick, pEv->type);
 	if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 		fprintf(stderr, " sysex {");
 		unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
@@ -1671,13 +1673,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Node *pNode;
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
-	const unsigned long iTime = m_iTimeStart + pEv->time.tick;
+	const unsigned long iTime = m_iTimeStart + tick;
 
 	// Wrap in recording, if any...
 	unsigned long iTimeEx = 0;
 	bool bRecording = (pSession->isRecording() && isPlaying());
 	if (bRecording ) {
-		iTimeEx = m_iTimeStartEx + pEv->time.tick;
+		iTimeEx = m_iTimeStartEx + tick;
 		// Take care of recording loop-range...
 		if (pSession->isLooping()) {
 			const unsigned long iLoopEnd = pSession->loopEnd();
@@ -1738,8 +1740,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							= pMidiClip->clipStartTime();
 						const unsigned long iClipEndTime
 							= iClipStartTime + pMidiClip->clipLengthTime();
-						if (iTimeEx >= iClipStartTime && iTimeEx < iClipEndTime)
-							pEv->time.tick = iTimeEx - iClipStartTime;
+						if (iTimeEx >= iClipStartTime && iTimeEx < iClipEndTime) {
+							tick = iTimeEx - iClipStartTime;
+							duration = iClipEndTime - tick;
+						}
 						else
 						if (pEv->type != SND_SEQ_EVENT_NOTEOFF)
 							pSeq = NULL;
@@ -1747,7 +1751,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					// Yep, maybe we have a new MIDI event on record...
 					if (pSeq) {
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
-							pEv->time.tick, type, param, value, duration);
+							tick, type, param, value, duration);
 						if (pSysex)
 							pEvent->setSysex(pSysex, iSysex);
 						pSeq->addEvent(pEvent);
