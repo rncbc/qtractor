@@ -177,7 +177,7 @@ void qtractorShortcutTableItemDelegate::paint ( QPainter *pPainter,
 {
 	// Special treatment for action icon+text...
 	if (index.column() == 0) {
-	//	pPainter->save();
+		pPainter->save();
 		if (option.state & QStyle::State_Selected) {
 			const QPalette& pal = option.palette;
 			pPainter->fillRect(option.rect, pal.highlight().color());
@@ -196,7 +196,7 @@ void qtractorShortcutTableItemDelegate::paint ( QPainter *pPainter,
 		pPainter->drawText(rect,
 			Qt::TextShowMnemonic | Qt::AlignLeft | Qt::AlignVCenter,
 			index.model()->data(index, Qt::DisplayRole).toString());
-	//	pPainter->restore();
+		pPainter->restore();
 	} else {
 		// Others do as default...
 		QItemDelegate::paint(pPainter, option, index);
