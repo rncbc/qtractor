@@ -1511,6 +1511,12 @@ void qtractorMidiEngine::shutOffAllTracks (void) const
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	const int iAlsaPort = pEv->dest.port;
+
 	qtractorMidiEvent::EventType type;
 
 	unsigned char  channel  = 0;
@@ -1520,12 +1526,6 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	unsigned char *pSysex   = NULL;
 	unsigned short iSysex   = 0;
-
-	const int iAlsaPort = pEv->dest.port;
-
-	qtractorSession *pSession = session();
-	if (pSession == NULL)
-		return;
 
 	unsigned long tick = pEv->time.tick;
 
@@ -1708,8 +1708,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
 
-	if (pEv->type == SND_SEQ_EVENT_NOTE && pEv->data.note.duration > 0) {
-		const unsigned long iTimeOff = iTime + (pEv->data.note.duration - 1);
+	if (type == qtractorMidiEvent::NOTEON && duration > 0) {
+		const unsigned long iTimeOff = iTime + (duration - 1);
 		pNode = cursor.seekTick(iTimeOff);
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
@@ -1740,12 +1740,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							= pMidiClip->clipStartTime();
 						const unsigned long iClipEndTime
 							= iClipStartTime + pMidiClip->clipLengthTime();
-						if (iTimeEx >= iClipStartTime && iTimeEx < iClipEndTime) {
+						if (iTimeEx >= iClipStartTime && iTimeEx < iClipEndTime)
 							tick = iTimeEx - iClipStartTime;
-							duration = iClipEndTime - tick;
-						}
 						else
-						if (pEv->type != SND_SEQ_EVENT_NOTEOFF)
+						if (type != qtractorMidiEvent::NOTEOFF)
 							pSeq = NULL;
 					}
 					// Yep, maybe we have a new MIDI event on record...
