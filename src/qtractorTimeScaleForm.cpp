@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,16 +63,20 @@ protected:
 		QStyleOptionViewItem opt(option);
 		switch (index.column()) {
 		case 0: // Bar
-		case 1: // Time
 		case 2: // Tempo
-			opt.displayAlignment = Qt::AlignHCenter;
+			opt.displayAlignment = Qt::AlignCenter;
 			break;
-		case 3: // Marker
 		default:
-			opt.displayAlignment = Qt::AlignLeft;
+			opt.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
 			break;
 		}
 		QItemDelegate::paint(painter, opt, index);
+	}
+
+	QSize sizeHint (
+		const QStyleOptionViewItem& option, const QModelIndex& index ) const
+	{
+		return QItemDelegate::sizeHint(option, index) + QSize(4, 4);
 	}
 };
 
@@ -171,6 +175,11 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setMovable(false);
 #endif
+	QAbstractItemModel *pHeaderModel = pHeader->model();
+	pHeaderModel->setHeaderData(0, Qt::Horizontal,
+		Qt::AlignCenter, Qt::TextAlignmentRole); // Bar
+	pHeaderModel->setHeaderData(2, Qt::Horizontal,
+		Qt::AlignCenter, Qt::TextAlignmentRole); // tempo
 
 	m_ui.TimeScaleListView->setItemDelegate(
 		new qtractorTimeScaleItemDelegate(m_ui.TimeScaleListView));

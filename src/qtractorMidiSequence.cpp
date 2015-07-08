@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -87,12 +87,15 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 			iter_last = iter;
 		}
 		if (pNoteEvent) {
-			const unsigned long iTime = pNoteEvent->time();
-			unsigned long iDuration = pEvent->time() - iTime;
-			pNoteEvent->setDuration(iDuration);
-			iDuration += iTime;
-			if (m_duration < iDuration)
-				m_duration = iDuration;
+			const unsigned long t1 = pNoteEvent->time();	// NOTEON
+			const unsigned long t2 = pEvent->time();		// NOTEOFF
+			if (t1 > t2) {
+				pNoteEvent->setDuration(t1 - m_duration);
+			} else {
+				pNoteEvent->setDuration(t2 - t1);
+				if (m_duration < t2)
+					m_duration = t2;
+			}
 			m_notes.erase(iter_last);
 		}
 		// NOTEOFF: Won't own this any longer...
@@ -107,9 +110,9 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 	else
 	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
 		// SYSEX: add enough slack...
-		const unsigned long iTime = pEvent->time() + (m_iTicksPerBeat >> 3);
-		if (m_duration < iTime)
-			m_duration = iTime;
+		const unsigned long t1 = pEvent->time() + (m_iTicksPerBeat >> 3);
+		if (m_duration < t1)
+			m_duration = t1;
 	}
 
 	// Add it...
@@ -236,7 +239,6 @@ void qtractorMidiSequence::copyEvents ( qtractorMidiSequence *pSeq )
 
 	// Done.
 }
-
 
 
 // end of qtractorMidiSequence.cpp

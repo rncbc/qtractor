@@ -1,7 +1,7 @@
 // qtractorMidiEventList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -114,9 +114,8 @@ QVariant qtractorMidiEventListModel::data (
 	case Qt::ToolTipRole:
 		return itemToolTip(index);
 	default:
-		break;
+		return QVariant();
 	}
-	return QVariant();
 }
 
 
@@ -222,7 +221,7 @@ QModelIndex qtractorMidiEventListModel::indexOfEvent (
 	if (pEvent == NULL)
 		return QModelIndex();
 
-	unsigned long iTime = pEvent->time();
+	const unsigned long iTime = pEvent->time();
 	if (indexFromTick(m_iTimeOffset + iTime).isValid()) {
 		while (m_pEvent != pEvent && m_pEvent->next()
 			&& m_pEvent->time() == iTime) {
@@ -302,6 +301,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 {
 //	qDebug("itemDisplay(%d, %d)", index.row(), index.column());
 	const QString sDashes(2, '-');
+
 	qtractorMidiEvent *pEvent = eventOfIndex(index);
 	if (pEvent) {
 		switch (index.column()) {
@@ -400,6 +400,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 			break;
 		}
 	}
+
 	return sDashes;
 }
 
@@ -417,10 +418,14 @@ QString qtractorMidiEventListModel::itemToolTip (
 
 int qtractorMidiEventListModel::columnAlignment( int column ) const
 {
-	if (column == 0 || column == 3) // Time,Value.
+	switch (column) {
+	case 0: // Time.
+		return int(Qt::AlignHCenter | Qt::AlignVCenter);
+	case 3: // Value.
 		return int(Qt::AlignRight | Qt::AlignVCenter);
-	else
-		return int(Qt::AlignLeft  | Qt::AlignVCenter);
+	default:
+		return int(Qt::AlignLeft | Qt::AlignVCenter);
+	}
 }
 
 
