@@ -290,9 +290,6 @@ public:
 	void setLoopRecordingMode(int iLoopRecordingMode);
 	int loopRecordingMode() const;
 
-	// Loop-recording/take state.
-	bool isLoopRecording() const;
-
 	// Track recording specifics.
 	unsigned short audioRecord() const;
 	unsigned short midiRecord() const;

@@ -1482,12 +1482,6 @@ int qtractorSession::loopRecordingMode (void) const
 	return m_iLoopRecordingMode;
 }
 
-// Loop-recording/take state.
-bool qtractorSession::isLoopRecording (void) const
-{
-	return isLooping() && (m_iLoopRecordingMode > 0);
-}
-
 
 // Immediate track record-arming.
 void qtractorSession::trackRecord (
