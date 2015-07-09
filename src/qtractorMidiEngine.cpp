@@ -1686,7 +1686,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			pNode = cursor.seekFrame(iLoopEnd);
 			const unsigned long iLoopEndTime
 				= pNode->tickFromFrame(iLoopEnd);
-			if (iTimeEx > iLoopEndTime) {
+			if (iTime < iLoopEndTime && iTimeEx > iLoopEndTime) {
 				const unsigned long iLoopStart = pSession->loopStart();
 				pNode = cursor.seekFrame(iLoopStart);
 				const unsigned long iLoopStartTime
