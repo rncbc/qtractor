@@ -369,14 +369,19 @@ bool qtractorClipCommand::addClipRecord (
 	if (pClip->clipLength() < 1)
 		return false;
 
-	// Check whether in loop-recording/takes mode....
-	if (pSession->isLoopRecording() && iClipEnd > pSession->loopEnd()) {
+	// Check whether in loop-recording/takes mode...
+	const unsigned long iLoopStart = pSession->loopStart();
+	const unsigned long iLoopEnd = pSession->loopEnd();
+
+	if (iLoopStart < iLoopEnd
+		&& pSession->loopRecordingMode() > 0
+		&& iClipStart < iLoopEnd && iClipEnd > iLoopEnd) {
 		// HACK: Take care of punch-in/out...
-		unsigned long iTakeStart = pSession->loopStart();
-		unsigned long iTakeEnd = pSession->loopEnd();
+		unsigned long iTakeStart = iLoopStart;
+		unsigned long iTakeEnd = iLoopEnd;
 		unsigned long iTakeGap = 0;
 		if (pSession->isPunching()) {
-			const unsigned long iPunchIn  = pSession->punchIn();
+			const unsigned long iPunchIn = pSession->punchIn();
 			const unsigned long iPunchOut = pSession->punchOut();
 			if (iTakeStart < iPunchIn && iPunchIn < iTakeEnd) {
 				iTakeGap += (iPunchIn - iTakeStart);
