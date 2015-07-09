@@ -1125,10 +1125,12 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 {
 	// HACK: Care of loop-recording + punch-in/out...
 	if (m_pSession && m_pSession->isPunching()) {
-		const unsigned long iLoopStart = m_pSession->loopStart();
-		const unsigned long iLoopEnd = m_pSession->loopEnd();
 		unsigned long iPunchIn = m_pSession->punchIn();
 		unsigned long iPunchOut = m_pSession->punchOut();
+		if (m_pSession->playHead() < iPunchIn)
+			return iPunchIn; // Cancelled.
+		const unsigned long iLoopStart = m_pSession->loopStart();
+		const unsigned long iLoopEnd = m_pSession->loopEnd();
 		if (iLoopStart < iLoopEnd &&
 			iLoopEnd < iFrameTime &&
 			m_pSession->loopRecordingMode() > 0) {
