@@ -416,21 +416,23 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		const unsigned long iPlayHead = pSession->playHead();
 		iTrackStart = pSession->frameFromPixel(cx + rect.x());
 		iTrackEnd = iPlayHead;
+		// Care of punch-in/out...
+		const unsigned long iPunchIn = pSession->punchIn();
+		const unsigned long iPunchOut = pSession->punchOut();
+		const bool bPunching = (iPunchIn < iPunchOut);
+		if (bPunching) {
+			if (iTrackStart < iPunchIn/* && iTrackEnd > iPunchIn*/)
+				iTrackStart = iPunchIn;
+			if (iTrackEnd > iPunchOut/*&& iTrackStart < iPunchOut*/)
+				iTrackEnd = iPunchOut;
+		}
+		// Care of each track...
 		if (iTrackStart < iTrackEnd) {
 			const unsigned long iFrameTime = pSession->frameTimeEx();
 			const unsigned long iLoopStart = pSession->loopStart();
 			const unsigned long iLoopEnd = pSession->loopEnd();
-			const bool bLooping = (iLoopStart < iLoopEnd);
-			// HACK: Care of punch-in/out...
-			const unsigned long iPunchIn = pSession->punchIn();
-			const unsigned long iPunchOut = pSession->punchOut();
-			const bool bPunching = (iPunchIn < iPunchOut);
-			if (bPunching) {
-				if (iTrackStart < iPunchIn && iTrackEnd > iPunchIn)
-					iTrackStart = iPunchIn;
-				if (iTrackEnd > iPunchOut && iTrackStart < iPunchOut)
-					iTrackEnd = iPunchOut;
-			}
+			const bool bLooping = (iLoopStart < iLoopEnd
+				&& iPlayHead > iLoopStart && iPlayHead < iLoopEnd);
 			qtractorTrack *pTrack = pSession->tracks().first();
 			while (pTrack && y2 < ch) {
 				y1  = y2;
@@ -470,7 +472,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						}
 					}
 					else
-					if (bLooping && iFrameTime > iLoopStart) {
+					if (bLooping) {
 						// Clip recording started within loop range:
 						// -- adjust turn-around clip offset...
 						if (iClipStart > iLoopStart && iClipStart < iLoopEnd) {
@@ -515,7 +517,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							iClipStart = iLoopStart;
 						}
 					}
-					// HACK: Care of punch-out...
+					// Careless to punch-in/out...
 					if (!bPunching || iTrackStart < iPunchOut) {
 						// Clip recording rolling:
 						// -- redraw current clip segment...
