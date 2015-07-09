@@ -6561,7 +6561,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="54"/>
         <source>&amp;Track</source>
-        <translation type="unfinished">Pis&amp;ta</translation>
+        <translation>Pis&amp;ta</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="50"/>
@@ -11078,12 +11078,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Atajos</translation>
+        <translation>Atajos</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="80"/>
         <source>Menu/Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Menú/Acción</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="85"/>
@@ -11093,12 +11093,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="90"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Teclado</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished">Controlador MIDI</translation>
+        <translation>Controlador MIDI</translation>
     </message>
     <message>
         <source>Shortcut</source>
@@ -11130,12 +11130,14 @@ Do you want to apply the changes?</source>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Los atajos del Controlador MIDI han cambiado.
+
+¿Desea aplicar los cambios?</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="521"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished">Controlador &amp;MIDI...</translation>
+        <translation>Controlador &amp;MIDI...</translation>
     </message>
 </context>
 <context>
