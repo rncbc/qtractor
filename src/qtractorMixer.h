@@ -45,6 +45,7 @@ class qtractorPluginListView;
 
 class QHBoxLayout;
 class QVBoxLayout;
+class QGridLayout;
 
 class QPushButton;
 class QLabel;
@@ -206,6 +207,55 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorMixerRackWidget -- Mixer strip rack widget decl.
+
+class qtractorMixerRackWidget : public QScrollArea
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMixerRackWidget(qtractorMixerRack *pRack);
+	// Default destructor.
+	~qtractorMixerRackWidget();
+
+	// The mixer strip workspace widget.
+	QWidget *workspace() const;
+
+	// Add/remove a mixer strip to/from rack workspace.
+	void addStrip(qtractorMixerStrip *pStrip);
+	void removeStrip( qtractorMixerStrip *pStrip);
+
+	// Multi-row workspace layout method.
+	void updateWorkspace();
+
+protected:
+
+	// Resize event handler.
+	void resizeEvent(QResizeEvent *);
+
+	// Context menu request event handler.
+	void contextMenuEvent(QContextMenuEvent *);
+
+	// Mouse click event handler.
+	void mousePressEvent(QMouseEvent *);
+
+	// Initial minimum widget extents.
+	QSize sizeHint() const;
+
+private:
+
+	// Instance variables.
+	qtractorMixerRack *m_pRack;
+
+	// Layout widgets.
+	QGridLayout *m_pWorkspaceLayout;
+	QWidget     *m_pWorkspaceWidget;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorMixerRack -- Mixer strip rack.
 
 class qtractorMixerRack : public QDockWidget
@@ -297,6 +347,8 @@ private:
 
 class qtractorMixer : public QMainWindow
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.

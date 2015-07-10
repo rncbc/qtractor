@@ -896,53 +896,6 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 
 
 //----------------------------------------------------------------------------
-// qtractorMixerRackWidget -- Mixer strip rack widget decl.
-
-class qtractorMixerRackWidget : public QScrollArea
-{
-public:
-
-	// Constructor.
-	qtractorMixerRackWidget(qtractorMixerRack *pRack);
-	// Default destructor.
-	~qtractorMixerRackWidget();
-
-	// The mixer strip workspace widget.
-	QWidget *workspace() const;
-
-	// Add/remove a mixer strip to/from rack workspace.
-	void addStrip(qtractorMixerStrip *pStrip);
-	void removeStrip( qtractorMixerStrip *pStrip);
-
-	// Multi-row workspace layout method.
-	void updateWorkspace();
-
-protected:
-
-	// Resize event handler.
-	void resizeEvent(QResizeEvent *);
-
-	// Context menu request event handler.
-	void contextMenuEvent(QContextMenuEvent *);
-
-	// Mouse click event handler.
-	void mousePressEvent(QMouseEvent *);
-
-	// Initial minimum widget extents.
-	QSize sizeHint() const;
-
-private:
-
-	// Instance variables.
-	qtractorMixerRack *m_pRack;
-
-	// Layout widgets.
-	QGridLayout *m_pWorkspaceLayout;
-	QWidget     *m_pWorkspaceWidget;
-};
-
-
-//----------------------------------------------------------------------------
 // qtractorMixerRackWidget -- Meter bridge rack widget impl.
 
 // Constructor.
@@ -1136,7 +1089,6 @@ public:
 		QWidget::setLayout(pHBoxLayout);
 	}
 };
-
 
 
 

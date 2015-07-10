@@ -7151,22 +7151,19 @@ void qtractorMainForm::timerSlot (void)
 		else
 		// Whether to continue past end...
 		if (!m_ui.transportContinueAction->isChecked()
-			&& m_iPlayHead > m_pSession->sessionEnd()
-			&& m_iPlayHead > m_pSession->loopEnd()) {
-			if (m_pSession->isLooping()) {
-				// Maybe it's better go on with looping, eh?
-				m_pSession->setPlayHead(m_pSession->loopStart());
-				++m_iTransportUpdate;
-			}
-			else
+			&& m_iPlayHead > m_pSession->sessionEnd()) {
 			// Auto-backward reset feature...
 			if (m_ui.transportAutoBackwardAction->isChecked()) {
-				m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
+				// Maybe it's better go on with looping, eh?
+				if (m_pSession->isLooping()
+					&& m_iPlayHead > m_pSession->loopEnd()
+					&& m_iPlayHeadAutoBackward < m_pSession->loopStart())
+					m_pSession->setPlayHead(m_pSession->loopStart());
+				else
+					m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
 				++m_iTransportUpdate;
-			} else {
-				// Stop at once!
-				transportPlay();
-			}
+			}	// Stop at once!
+			else  transportPlay();
 		}
 	}
 
