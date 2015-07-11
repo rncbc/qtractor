@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -194,8 +194,11 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 
 	m_ui.ChannelSpinBox->setValue(m_pMidiObserver->channel() + 1);
 
+	const bool bDecimal = m_pMidiObserver->isDecimal();
+	const bool bToggled = m_pMidiObserver->isToggled();
+
 	m_ui.LogarithmicCheckBox->setChecked(m_pMidiObserver->isLogarithmic());
-	m_ui.LogarithmicCheckBox->setEnabled(m_pMidiObserver->isDecimal());
+	m_ui.LogarithmicCheckBox->setEnabled(bDecimal);
 
 	m_ui.FeedbackCheckBox->setChecked(m_pMidiObserver->isFeedback());
 	m_ui.FeedbackCheckBox->setEnabled(true);
@@ -203,11 +206,11 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
 	m_ui.InvertCheckBox->setEnabled(true);
 
-	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook());
-	m_ui.HookCheckBox->setEnabled(true);
+	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook() || !bDecimal);
+	m_ui.HookCheckBox->setEnabled(bDecimal);
 
-	m_ui.LatchCheckBox->setChecked(m_pMidiObserver->isLatch());
-	m_ui.LatchCheckBox->setEnabled(m_pMidiObserver->isToggled());
+	m_ui.LatchCheckBox->setChecked(m_pMidiObserver->isLatch() || !bToggled);
+	m_ui.LatchCheckBox->setEnabled(bToggled);
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
