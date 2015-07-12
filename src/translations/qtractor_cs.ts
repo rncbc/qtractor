@@ -7897,7 +7897,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="54"/>
         <source>&amp;Track</source>
-        <translation type="unfinished">&amp;Stopa</translation>
+        <translation>&amp;Stopa</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="50"/>
@@ -12693,12 +12693,14 @@ Chcete použít tyto změny?</translation>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Klávesové zkratky ovladače MIDI byly změněny.
+
+Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="521"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished">Ovladač &amp;MIDI...</translation>
+        <translation>Ovladač &amp;MIDI...</translation>
     </message>
     <message>
         <source>Keyboard shortcuts have been changed.</source>
@@ -12731,12 +12733,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Zkratky</translation>
+        <translation>Zkratky</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="80"/>
         <source>Menu/Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Nabídka/Činnost</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="85"/>
@@ -12746,12 +12748,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="90"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Klávesnice</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished">Ovladač MIDI</translation>
+        <translation>Ovladač MIDI</translation>
     </message>
     <message>
         <source>Shortcut</source>
