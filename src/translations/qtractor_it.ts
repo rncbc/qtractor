@@ -9138,22 +9138,22 @@ Sei sicuro?</translation>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1366"/>
+        <location filename="../qtractorMixer.cpp" line="1363"/>
         <source>Inputs</source>
         <translation>Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1367"/>
+        <location filename="../qtractorMixer.cpp" line="1364"/>
         <source>Tracks</source>
         <translation>Tracce</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1369"/>
+        <location filename="../qtractorMixer.cpp" line="1366"/>
         <source>Outputs</source>
         <translation>Uscite</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1376"/>
+        <location filename="../qtractorMixer.cpp" line="1373"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>

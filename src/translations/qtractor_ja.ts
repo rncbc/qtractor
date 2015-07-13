@@ -9230,22 +9230,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1366"/>
+        <location filename="../qtractorMixer.cpp" line="1363"/>
         <source>Inputs</source>
         <translation>入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1367"/>
+        <location filename="../qtractorMixer.cpp" line="1364"/>
         <source>Tracks</source>
         <translation>トラック</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1369"/>
+        <location filename="../qtractorMixer.cpp" line="1366"/>
         <source>Outputs</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1376"/>
+        <location filename="../qtractorMixer.cpp" line="1373"/>
         <source>Mixer</source>
         <translation>ミキサー</translation>
     </message>
