@@ -1042,8 +1042,8 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 			QLayoutItem *item = items[i];
 			m_pWorkspaceLayout->addItem(item, row, col++);
 			if (bAutoGridLayout) {
-				wth += item->sizeHint().width();
-				if (wth > w && row < nrows && col > ncols) {
+				const int wi = item->sizeHint().width(); wth += wi;
+				if (wth > (w - wi) && row < nrows && col > ncols) {
 					wth = 0;
 					col = 0;
 					++row;

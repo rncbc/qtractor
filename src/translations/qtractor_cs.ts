@@ -10312,22 +10312,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1363"/>
+        <location filename="../qtractorMixer.cpp" line="1366"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1364"/>
+        <location filename="../qtractorMixer.cpp" line="1367"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1366"/>
+        <location filename="../qtractorMixer.cpp" line="1369"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1373"/>
+        <location filename="../qtractorMixer.cpp" line="1376"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>
