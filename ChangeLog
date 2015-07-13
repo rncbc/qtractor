@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Mixer multi-row layout gets a little bit of a fairness fix.
+
+- Non-continuous MIDI Controllers now have their Hook and Latch
+  options disabled as those are found not applicable,
+
 - As an alternative to PC-keyboard shortcuts, MIDI controllers
   are now also assignable and configurable for any of the main
   and MIDI editor's menu command actions, all from the same old

@@ -1040,6 +1040,7 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 		int wth = 0;
 		for (int i = 0; i < nitems; ++i) {
 			QLayoutItem *item = items[i];
+			m_pWorkspaceLayout->addItem(item, row, col++);
 			if (bAutoGridLayout) {
 				wth += item->sizeHint().width();
 				if (wth > w && row < nrows && col > ncols) {
@@ -1048,7 +1049,6 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 					++row;
 				}
 			}
-			m_pWorkspaceLayout->addItem(item, row, col++);
 		}
 	}
 
