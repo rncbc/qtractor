@@ -130,10 +130,9 @@ private:
 	bool m_bLatch;
 
 	// Tracking/catch-up members.
-	bool  m_bMidiValueInit;
-	bool  m_bMidiValueSync;
 	float m_fMidiValue;
-	
+	bool  m_bMidiSync;
+
 	// Special indirect automation relatives.
 	qtractorCurveList *m_pCurveList;
 };

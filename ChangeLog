@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Revised MIDI Controlllers catch-up algorithm. (EXPERIMENTAL)
+
 - Mixer multi-row layout gets a little bit of a fairness fix.
 
 - Non-continuous MIDI Controllers now have their Hook and Latch
