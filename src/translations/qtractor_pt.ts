@@ -4346,7 +4346,7 @@ está rodando e reinicie a sessão.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5454"/>
         <source>LV2 Plug-in MIDI/Event support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte a LV2 Plug-in MIDI/Event habilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5491"/>
@@ -7123,7 +7123,7 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="54"/>
         <source>&amp;Track</source>
-        <translation type="unfinished">&amp;Pistas</translation>
+        <translation>&amp;Pistas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="569"/>
@@ -9712,22 +9712,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="327"/>
         <source>Whether to ask for confirmation on archive directory removal</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre pergunta por confirmação quando apagar pastas</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="330"/>
         <source>C&amp;onfirm archive removals</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Confirmar a remoção de pastas</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="569"/>
         <source>Whether to start as timebase master (JACK)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre utilizar tempo base mestre (JACK)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="572"/>
         <source>&amp;Timebase</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tempo Base</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1345"/>
@@ -11335,22 +11335,24 @@ Você quer aplicar essas alterações?</translation>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Os atalhos do Controlador MIDI foram modificados.
+
+Deseja aplicar as modificações?</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="521"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished">Controlador &amp;MIDI...</translation>
+        <translation>Controlador &amp;MIDI...</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Atalhos</translation>
+        <translation>Atalhos</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="80"/>
         <source>Menu/Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Menu/Ação</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="85"/>
@@ -11360,12 +11362,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="90"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Teclado</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished">Controlador MIDI</translation>
+        <translation>Controlador MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="393"/>
