@@ -465,7 +465,6 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1203"/>
-        <location filename="../qtractorMidiFile.cpp" line="1237"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Дорожка %1</translation>
@@ -13305,9 +13304,8 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2458"/>
         <source>Track %1</source>
-        <translation type="unfinished">Дорожка %1</translation>
+        <translation type="obsolete">Дорожка %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2737"/>

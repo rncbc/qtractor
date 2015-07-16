@@ -1234,7 +1234,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 
-	const QString& sTrackName = QObject::tr("Track %1");
+	const QString sTrackName("Track %1");
 
 	if (pSeq == NULL)
 		return false;

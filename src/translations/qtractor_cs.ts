@@ -741,7 +741,6 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1203"/>
-        <location filename="../qtractorMidiFile.cpp" line="1237"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
@@ -14083,9 +14082,8 @@ Jste si jistý?</translation>
         <translation>Odstranit rozsah stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2458"/>
         <source>Track %1</source>
-        <translation>Stopa %1</translation>
+        <translation type="obsolete">Stopa %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2737"/>

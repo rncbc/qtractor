@@ -285,7 +285,6 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1203"/>
-        <location filename="../qtractorMidiFile.cpp" line="1237"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Spur %1</translation>
@@ -12431,9 +12430,8 @@ Länge:	%3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2458"/>
         <source>Track %1</source>
-        <translation>Spur %1</translation>
+        <translation type="obsolete">Spur %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2501"/>

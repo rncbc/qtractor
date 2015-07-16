@@ -298,7 +298,6 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1203"/>
-        <location filename="../qtractorMidiFile.cpp" line="1237"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
@@ -12596,9 +12595,8 @@ Length:	%3</source>
         <translation>トラックレンジを除去します</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2458"/>
         <source>Track %1</source>
-        <translation>トラック %1</translation>
+        <translation type="obsolete">トラック %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2501"/>

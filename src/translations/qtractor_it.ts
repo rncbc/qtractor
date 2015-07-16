@@ -286,7 +286,6 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1203"/>
-        <location filename="../qtractorMidiFile.cpp" line="1237"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Traccia %1</translation>
@@ -12530,9 +12529,8 @@ Lunghezza:   %3</translation>
         <translation>elimina intervallo traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2458"/>
         <source>Track %1</source>
-        <translation type="unfinished">Traccia %1</translation>
+        <translation type="obsolete">Traccia %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2501"/>

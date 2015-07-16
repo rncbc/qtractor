@@ -1527,7 +1527,7 @@ bool qtractorTrackView::dropClip (
 		pTrack = new qtractorTrack(pSession, m_dropType);
 		pTrack->setBackground(color);
 		pTrack->setForeground(color.darker());
-	//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
+	//	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 		pClipCommand->addTrack(pTrack);
 	}
 
@@ -4525,7 +4525,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			const int iTrack = pSession->tracks().count() + 1;
 			const QColor& color = qtractorTrack::trackColor(iTrack);
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
-		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
+		//	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.darker());
 			if (pSingleTrack->trackType() == qtractorTrack::Midi) {
@@ -4653,7 +4653,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			const int iTrack = pSession->tracks().count() + 1;
 			const QColor& color = qtractorTrack::trackColor(iTrack);
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
-		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
+		//	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.darker());
 			pClipCommand->addTrack(pTrack);
