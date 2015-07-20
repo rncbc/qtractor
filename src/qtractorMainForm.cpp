@@ -5390,6 +5390,7 @@ void qtractorMainForm::helpShortcuts (void)
 		return;
 
 	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
+	shortcutForm.setActionControl(m_pActionControl);
 	if (shortcutForm.exec()) {
 		if (shortcutForm.isDirtyActionShortcuts())
 			m_pOptions->saveActionShortcuts(this);

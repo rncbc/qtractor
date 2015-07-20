@@ -271,6 +271,8 @@ qtractorShortcutForm::qtractorShortcutForm (
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::ApplicationModal);
 
+	m_pActionControl = NULL;
+
 	m_iDirtyActionShortcuts = 0;
 	m_iDirtyActionControl = 0;
 
@@ -302,7 +304,7 @@ qtractorShortcutForm::qtractorShortcutForm (
 		const QKeySequence& shortcut = pAction->shortcut();
 		const QString& sShortcutText = shortcut.toString();
 		pItem->setText(2, sShortcutText);
-		pItem->setText(3, actionControlText(pAction));
+	//	pItem->setText(3, actionControlText(pAction));
 		pItem->setFlags(
 			Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 		m_actions.insert(pItem, pAction);
@@ -357,6 +359,31 @@ qtractorShortcutForm::~qtractorShortcutForm (void)
 QTreeWidget *qtractorShortcutForm::tableWidget (void) const
 {
 	return m_ui.ShortcutTable;
+}
+
+
+// MIDI Controller manager accessor.
+void qtractorShortcutForm::setActionControl ( qtractorActionControl *pActionControl )
+{
+	m_pActionControl = pActionControl;
+
+	QHeaderView *pHeaderView = m_ui.ShortcutTable->header();
+	if (m_pActionControl) {
+		QHash<QTreeWidgetItem *, QAction *>::ConstIterator iter
+			= m_actions.constBegin();
+		const QHash<QTreeWidgetItem *, QAction *>::ConstIterator& iter_end
+			= m_actions.constEnd();
+		for ( ; iter != iter_end; ++iter)
+			iter.key()->setText(3, actionControlText(iter.value()));
+		pHeaderView->showSection(3);
+	} else {
+		pHeaderView->hideSection(3);
+	}
+}
+
+qtractorActionControl *qtractorShortcutForm::actionControl (void) const
+{
+	return m_pActionControl;
 }
 
 
@@ -514,6 +541,9 @@ void qtractorShortcutForm::stabilizeForm (void)
 
 void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 {
+	if (m_pActionControl == NULL)
+		return;
+
 	QMenu menu(this);
 
 	menu.addAction(
@@ -527,6 +557,9 @@ void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 
 void qtractorShortcutForm::actionControlActivated (void)
 {
+	if (m_pActionControl == NULL)
+		return;
+
 	m_pActionControlItem = m_ui.ShortcutTable->currentItem();
 	if (m_pActionControlItem == NULL)
 		return;
@@ -549,6 +582,9 @@ void qtractorShortcutForm::actionControlActivated (void)
 
 void qtractorShortcutForm::actionControlAccepted (void)
 {
+	if (m_pActionControl == NULL)
+		return;
+
 	if (m_pActionControlItem) {
 		QAction *pMidiObserverAction
 			= m_actions.value(m_pActionControlItem, NULL);
@@ -568,11 +604,9 @@ QString qtractorShortcutForm::actionControlText ( QAction *pAction ) const
 {
 	QString sActionControlText;
 
-	qtractorActionControl *pActionControl
-		= qtractorActionControl::getInstance();
-	if (pActionControl) {
+	if (m_pActionControl) {
 		qtractorActionControl::MidiObserver *pMidiObserver
-			= pActionControl->getMidiObserver(pAction);
+			= m_pActionControl->getMidiObserver(pAction);
 		if (pMidiObserver) {
 			QStringList clist;
 			clist.append(qtractorMidiControl::nameFromType(pMidiObserver->type()));
