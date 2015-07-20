@@ -67,6 +67,9 @@ public:
 	bool readTrack(qtractorMidiSequence *pSeq,
 		unsigned short iTrackChannel);
 
+	// Sequence/track/channel duration reader helper.
+	unsigned long readTrackDuration(unsigned short iTrackChannel);
+
 	// Header writer.
 	bool writeHeader(unsigned short iFormat,
 		unsigned short iTracks, unsigned short iTicksPerBeat);
