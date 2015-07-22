@@ -127,7 +127,7 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 	}
 
 	if (bSync)
-		qtractorObserver::setValue(fValue);
+		subject()->setValue(fValue);
 }
 
 unsigned short qtractorMidiControlObserver::midiValue (void) const
@@ -203,7 +203,7 @@ void qtractorMidiControlObserver::update ( bool bUpdate )
 		}
 	}
 
-	m_bMidiSync = false;
+//	m_bMidiSync = false;
 }
 
 
