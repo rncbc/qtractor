@@ -729,10 +729,15 @@ void qtractorClipForm::fileChanged (
 	case qtractorTrack::Midi: {
 		qtractorMidiFile file;
 		if (file.open(sFilename)) {
-			qtractorMidiSequence seq;
-			seq.setTicksPerBeat(pSession->ticksPerBeat());
-			if (file.readTrack(&seq, iTrackChannel) && seq.duration() > 0)
-				iClipLength = pSession->frameFromTick(seq.duration());
+			const unsigned short p = pSession->ticksPerBeat();
+			const unsigned short q = file.ticksPerBeat();
+			const unsigned long iTrackDuration
+				= file.readTrackDuration(iTrackChannel);
+			if (iTrackDuration > 0) {
+				const unsigned long duration
+					= uint64_t(iTrackDuration * p) / q;
+				iClipLength = pSession->frameFromTick(duration);
+			}
 			file.close();
 		}
 		break;

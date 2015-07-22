@@ -26,9 +26,7 @@
 
 #include "qtractorMidiRpn.h"
 
-#include <QFileInfo>
 #include <QDir>
-#include <QRegExp>
 
 
 // Symbolic header markers.
@@ -536,12 +534,72 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 }
 
 
+
 bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 	unsigned short iTrackChannel )
 {
 	return readTracks(&pSeq, 1, iTrackChannel);
 }
 
+
+// Sequence/track/channel duration reader helper.
+unsigned long qtractorMidiFile::readTrackDuration ( unsigned short iTrackChannel )
+{
+	if (m_pFile == NULL)
+		return 0;
+	if (m_iMode != Read)
+		return 0;
+
+	const unsigned short iTrack = (m_iFormat == 1 ? iTrackChannel : 0);
+	if (iTrack >= m_iTracks)
+		return 0;
+
+	const unsigned short iChannelFilter
+		= (m_iFormat == 1 ? 0xf0 : iTrackChannel);
+
+	// Locate the desired track stuff...
+	const unsigned long iTrackStart = m_pTrackInfo[iTrack].offset;
+	if (iTrackStart != m_iOffset) {
+		if (::fseek(m_pFile, iTrackStart, SEEK_SET))
+			return 0;
+		m_iOffset = iTrackStart;
+	}
+
+	// Now we're going into business...
+	const unsigned long iTrackEnd
+		= m_iOffset + m_pTrackInfo[iTrack].length;
+
+	unsigned long iTrackDuration = 0;
+
+	unsigned long iTrackTime  = 0;
+	unsigned int  iLastStatus = 0;
+
+	// While this track lasts...
+	while (m_iOffset < iTrackEnd) {
+
+		// Read delta timestamp...
+		iTrackTime += readInt();
+
+		// Read probable status byte...
+		unsigned int iStatus = readInt(1);
+		// Maybe a running status byte?
+		if ((iStatus & 0x80) == 0) {
+			// Go back one byte...
+			::ungetc(iStatus, m_pFile);
+			--m_iOffset;
+			iStatus = iLastStatus;
+		} else {
+			iLastStatus = iStatus;
+		}
+
+		// Check whether it won't be channel filtered...
+		const unsigned short iChannel = (iStatus & 0x0f);
+		if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel))
+			iTrackDuration = iTrackTime;
+	}
+
+	return iTrackDuration;
+}
 
 
 // Header writer.
@@ -1234,7 +1292,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 
-	const QString& sTrackName = QObject::tr("Track %1");
+	const QString sTrackName("Track %1");
 
 	if (pSeq == NULL)
 		return false;

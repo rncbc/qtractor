@@ -1233,15 +1233,18 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 			unsigned long t1, t0 = pNode->tickFromPixel(x0);
 			qtractorMidiFile file;
 			if (file.open(pDropItem->path)) {
-				qtractorMidiSequence seq;
-				seq.setTicksPerBeat(pSession->ticksPerBeat());
+				const unsigned short p = pSession->ticksPerBeat();
+				const unsigned short q = file.ticksPerBeat();
 				if (pDropItem->channel < 0) {
-					int iTracks = (file.format() == 1 ? file.tracks() : 16);
+					const int iTracks = (file.format() == 1 ? file.tracks() : 16);
 					for (int iTrackChannel = 0;
 							iTrackChannel < iTracks; ++iTrackChannel) {
-						if (file.readTrack(&seq, iTrackChannel)
-							&& seq.duration() > 0) {
-							t1 = t0 + seq.duration();
+						const unsigned long iTrackDuration
+							= file.readTrackDuration(iTrackChannel);
+						if (iTrackDuration > 0) {
+							const unsigned long duration
+								= uint64_t(iTrackDuration * p) / q;
+							t1 = t0 + duration;
 							pNode = cursor.seekTick(t1);
 							m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
 							pDropItem->rect = m_rectDrag;
@@ -1250,18 +1253,23 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 					}
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Midi;
-				} else if (file.readTrack(&seq, pDropItem->channel)
-					&& seq.duration() > 0) {
-					t1 = t0 + seq.duration();
-					pNode = cursor.seekTick(t1);
-					m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
-					pDropItem->rect = m_rectDrag;
-					m_rectDrag.translate(0, m_rectDrag.height() + 4);
-					if (m_dropType == qtractorTrack::None)
-						m_dropType = qtractorTrack::Midi;
-				} else /*if (m_dropType == qtractorTrack::Midi)*/ {
-					iter.remove();
-					delete pDropItem;
+				} else {
+					const unsigned long iTrackDuration
+						= file.readTrackDuration(pDropItem->channel);
+					if (iTrackDuration > 0) {
+						const unsigned long duration
+							= uint64_t(iTrackDuration * p) / q;
+						t1 = t0 + duration;
+						pNode = cursor.seekTick(t1);
+						m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
+						pDropItem->rect = m_rectDrag;
+						m_rectDrag.translate(0, m_rectDrag.height() + 4);
+						if (m_dropType == qtractorTrack::None)
+							m_dropType = qtractorTrack::Midi;
+					} else /*if (m_dropType == qtractorTrack::Midi)*/ {
+						iter.remove();
+						delete pDropItem;
+					}
 				}
 				file.close();
 				continue;
@@ -1527,7 +1535,7 @@ bool qtractorTrackView::dropClip (
 		pTrack = new qtractorTrack(pSession, m_dropType);
 		pTrack->setBackground(color);
 		pTrack->setForeground(color.darker());
-	//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
+	//	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 		pClipCommand->addTrack(pTrack);
 	}
 
@@ -4525,7 +4533,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			const int iTrack = pSession->tracks().count() + 1;
 			const QColor& color = qtractorTrack::trackColor(iTrack);
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
-		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
+		//	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.darker());
 			if (pSingleTrack->trackType() == qtractorTrack::Midi) {
@@ -4653,7 +4661,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			const int iTrack = pSession->tracks().count() + 1;
 			const QColor& color = qtractorTrack::trackColor(iTrack);
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
-		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
+		//	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.darker());
 			pClipCommand->addTrack(pTrack);

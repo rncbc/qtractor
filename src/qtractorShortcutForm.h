@@ -25,10 +25,14 @@
 #include "ui_qtractorShortcutForm.h"
 
 #include <QHash>
+
 #include <QItemDelegate>
 #include <QLineEdit>
 
+
 // Forward decls.
+class qtractorActionControl;
+
 class QAction;
 class QToolButton;
 
@@ -164,12 +168,16 @@ public:
 
 	// Constructor.
 	qtractorShortcutForm(const QList<QAction *>& actions, QWidget *pParent = NULL);
-	
+
 	// Destructor.
 	~qtractorShortcutForm();
 
 	// Action shortcut/control table widget accessor.
 	QTreeWidget *tableWidget() const;
+
+	// MIDI Controller manager accessor.
+	void setActionControl(qtractorActionControl *pActionControl);
+	qtractorActionControl *actionControl() const;
 
 	// Action shortcut/control dirty-flag accessors.
 	bool isDirtyActionShortcuts() const;
@@ -200,6 +208,8 @@ private:
 
 	// The Qt-designer UI struct...
 	Ui::qtractorShortcutForm m_ui;
+
+	qtractorActionControl *m_pActionControl;
 
 	QHash<QTreeWidgetItem *, QAction *> m_actions;
 	QHash<QString, QTreeWidgetItem *> m_shortcuts;
