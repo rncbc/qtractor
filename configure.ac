@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.6.7.22, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.6.7.23, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -252,7 +252,7 @@ AC_ARG_ENABLE(stacktrace,
 
 
 # Standard installation base dirs.
-ac_with_paths="/usr/local /usr"
+ac_with_paths="/usr /usr/local"
 
 # Set for alternate Qt4/5 installation dir.
 AC_ARG_WITH(qt4,
@@ -376,63 +376,88 @@ AC_LANG_CPLUSPLUS
 # Check for proper flags.
 ac_arch=`uname -m`
 
-# Check for some a-la-debian alternatives...
-ac_qtdirs="qt"
-
-if test "x$ac_qt4" = "xyes"; then
-   ac_qtdirs="qt4 $ac_qtdirs"
-fi
-if test "x$ac_qt5" = "xyes"; then
-   ac_qtdirs="qt5 $ac_qtdirs"
-fi
-
-ac_topdirs="/usr/local /usr"
-ac_subdirs="lib"
+# Check for install paths and alternatives...
+ac_libdirs="lib"
 
 if test "x$ac_arch" = "xx86_64"; then
-   ac_subdirs="$ac_subdirs lib64"
+   ac_libdirs="$ac_libdirs lib64"
 fi
 
-if test "x$ac_arch" = "xx86_64" -o "x$ac_qt5" = "xyes"; then
-   CFLAGS="-fPIC $CFLAGS"
-   CPPFLAGS="-fPIC $CPPFLAGS"
-fi
-
-for X in $ac_topdirs; do
-  for Y in share $ac_subdirs; do
-    for Z in $ac_qtdirs; do
-      if test -d $X/$Y/$Z/bin; then
-         ac_with_paths="$X/$Y/$Z $ac_with_paths"
-      fi
-    done
-  done
-done
+CFLAGS="-fPIC $CFLAGS"
+CPPFLAGS="-fPIC $CPPFLAGS"
 
 # Prepend alternate dependencies paths.
 ac_path=$PATH
+
 for X in $ac_with_paths; do
   if test -d $X/bin; then
     ac_path="$X/bin:$ac_path"
   fi
   if test -d $X/include; then
-    for Y in $ac_qtdirs; do
-      if test -d $X/include/$Y; then
-        CFLAGS="-I$X/include/$Y $CFLAGS"
-        CPPFLAGS="-I$X/include/$Y $CPPFLAGS"
-        ac_incpath="$X/include/$Y $ac_incpath"
-      fi
-    done
-    CFLAGS="$CFLAGS -I$X/include"
-    CPPFLAGS="$CPPFLAGS -I$X/include"
-    ac_incpath="$ac_incpath $X/include"
+    CFLAGS="-I$X/include $CFLAGS "
+    CPPFLAGS="-I$X/include $CPPFLAGS"
+    ac_incpath="$X/include $ac_incpath"
   fi
-  for Y in $ac_subdirs; do
+  for Y in $ac_libdirs; do
     if test -d $X/$Y; then
        LIBS="-L$X/$Y $LIBS"
        ac_libs="-L$X/$Y $ac_libs"
     fi
   done
 done
+
+# A common error message:
+ac_errmsg="not found in current PATH. Maybe QT development environment isn't available."
+
+if test "x$ac_qt4" = "xyes"; then
+   AC_PATH_PROG(ac_qmake, qmake-qt4, [no], $ac_path)
+fi
+if test "x$ac_qt5" = "xyes"; then
+   AC_PATH_PROG(ac_qmake, qmake-qt5, [no], $ac_path)
+fi
+if test "x$ac_qmake" = "xno"; then
+   AC_PATH_PROG(ac_cv_qmake, qmake, [no], $ac_path)
+   ac_qmake=$ac_cv_qmake
+fi
+if test "x$ac_qmake" = "xno"; then
+   AC_MSG_ERROR([qmake $ac_errmsg])
+fi
+
+# Check for proper Qt4/5 major version.
+ac_qt_version_major=`$ac_qmake -query QT_VERSION | cut -d. -f1`
+if test "x$ac_qt4" = "xyes" -a "x$ac_qt_version_major" != "x4"; then
+   AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
+fi
+if test "x$ac_qt5" = "xyes" -a "x$ac_qt_version_major" != "x5"; then
+   AC_MSG_ERROR([qmake-qt5 $ac_errmsg (qt5-devel)])
+fi
+
+ac_qt_install_bins=`$ac_qmake -query QT_INSTALL_BINS`
+if test -d $ac_qt_install_bins; then
+   ac_path="$ac_qt_install_bins:$ac_path"
+fi
+
+# Check it again, now with updated PATH, just in case...
+AC_PATH_PROG(ac_cv_qmake, qmake, [no], $ac_path)
+ac_qmake=$ac_cv_qmake
+if test "x$ac_qmake" = "xno"; then
+   AC_MSG_ERROR([qmake $ac_errmsg])
+fi
+
+AC_SUBST(ac_qmake)
+
+ac_qt_install_headers=`$ac_qmake -query QT_INSTALL_HEADERS`
+if test -d $ac_qt_install_headers; then
+   CFLAGS="-I$ac_qt_install_headers $CFLAGS "
+   CPPFLAGS="-I$ac_qt_install_headers $CPPFLAGS"
+   ac_incpath="$ac_qt_install_headers $ac_incpath"
+fi
+
+ac_qt_install_libs=`$ac_qmake -query QT_INSTALL_LIBS`
+if test -d $ac_qt_install_libs; then
+   LIBS="-L$ac_qt_install_libs $LIBS"
+   ac_libs="-L$ac_qt_install_libs $ac_libs"
+fi
 
 # Check for proper Qt4/5 version.
 if test "x$ac_qt4" = "xyes"; then
@@ -448,7 +473,7 @@ if test "x$ac_qt4" = "xyes"; then
       ])
    ])
 fi
-
+ 
 if test "x$ac_qt5" = "xyes"; then
    AC_CACHE_CHECK([for Qt library version >= 5.1],
       ac_cv_qtversion, [
@@ -462,6 +487,35 @@ if test "x$ac_qt5" = "xyes"; then
       ])
    ])
 fi
+
+# Check for Qt moc utility.
+AC_PATH_PROG(ac_moc, moc, [no], $ac_path)
+if test "x$ac_moc" = "xno"; then
+   AC_MSG_ERROR([moc $ac_errmsg])
+fi
+AC_SUBST(ac_moc)
+
+# Check for Qt uic utility.
+AC_PATH_PROG(ac_uic, uic, [no], $ac_path)
+if test "x$ac_uic" = "xno"; then
+   AC_MSG_ERROR([uic $ac_errmsg])
+fi
+AC_SUBST(ac_uic)
+
+# Check for Qt lupdate utility.
+AC_PATH_PROG(ac_lupdate, lupdate, [no], $ac_path)
+if test "x$ac_lupdate" = "xno"; then
+   AC_MSG_ERROR([lupdate $ac_errmsg])
+fi
+AC_SUBST(ac_lupdate)
+
+# Check for Qt lrelease utility.
+AC_PATH_PROG(ac_lrelease, lrelease, [no], $ac_path)
+if test "x$ac_release" = "xno"; then
+   AC_MSG_ERROR([lrelease $ac_errmsg])
+fi
+AC_SUBST(ac_lrelease)
+
 
 # Check for IEEE 32bit float optimizations.
 AC_CACHE_CHECK([for IEEE 32bit float optimizations],
@@ -505,45 +559,6 @@ if test "x$ac_sse" = "xyes"; then
       CFLAGS=$ac_old_cflags
    fi
 fi
-
-
-# A common error message:
-ac_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt-devel)."
-
-# Check for Qt qmake utility.
-AC_PATH_PROG(ac_qmake, qmake, [no], $ac_path)
-if test "x$ac_qmake" = "xno"; then
-   AC_MSG_ERROR([qmake $ac_errmsg])
-fi
-AC_SUBST(ac_qmake)
-
-# Check for Qt moc utility.
-AC_PATH_PROG(ac_moc, moc, [no], $ac_path)
-if test "x$ac_moc" = "xno"; then
-   AC_MSG_ERROR([moc $ac_errmsg])
-fi
-AC_SUBST(ac_moc)
-
-# Check for Qt uic utility.
-AC_PATH_PROG(ac_uic, uic, [no], $ac_path)
-if test "x$ac_uic" = "xno"; then
-   AC_MSG_ERROR([uic $ac_errmsg])
-fi
-AC_SUBST(ac_uic)
-
-# Check for Qt lupdate utility.
-AC_PATH_PROG(ac_lupdate, lupdate, [no], $ac_path)
-if test "x$ac_lupdate" = "xno"; then
-   AC_MSG_ERROR([lupdate $ac_errmsg])
-fi
-AC_SUBST(ac_lupdate)
-
-# Check for Qt lrelease utility.
-AC_PATH_PROG(ac_lrelease, lrelease, [no], $ac_path)
-if test "x$ac_release" = "xno"; then
-   AC_MSG_ERROR([lrelease $ac_errmsg])
-fi
-AC_SUBST(ac_lrelease)
 
 
 # Check for pkg-config utility (needed for LV2 GTK UI support).
