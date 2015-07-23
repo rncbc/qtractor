@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Complete rewrite of Qt4 vs. Qt5 configure builds. (TESTING)
+
 - Revised MIDI Controlllers catch-up algorithm. (EXPERIMENTAL)
 
 - Mixer multi-row layout gets a little bit of a fairness fix.
