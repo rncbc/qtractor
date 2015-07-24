@@ -4,11 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.7.0  2015-07-24  Muon Base Beta
 
-- Complete rewrite of Qt4 vs. Qt5 configure builds. (TESTING)
+- Complete rewrite of Qt4 vs. Qt5 configure builds.
 
-- Revised MIDI Controlllers catch-up algorithm. (EXPERIMENTAL)
+- Revised MIDI Controlllers catch-up algorithm.
 
 - Mixer multi-row layout gets a little bit of a fairness fix.
 
@@ -18,7 +18,7 @@ GIT HEAD
 - As an alternative to PC-keyboard shortcuts, MIDI controllers
   are now also assignable and configurable for any of the main
   menu command actions, all from the same old configuration
-  dialog (Help/Shortcuts...). (EXPERIMENTAL)
+  dialog (Help/Shortcuts...).
 
 - Fixed missing Track and Clip sub-menus from Edit/context-menu
   that were found AWOL ever since after the Lazy Tachyon beta
@@ -32,7 +32,7 @@ GIT HEAD
   Olivier Humbert, thanks).
 
 - A new top-level widget window geometry state save and restore
-  sub-routine is now in effect. (EXPERIMENTAL)
+  sub-routine is now in effect.
 
 - Improved MIDI clip editor resilience across tempo and time-
   signature changes.
