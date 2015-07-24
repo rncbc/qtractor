@@ -1,3 +1,9 @@
+qtractor (0.7.0-18) unstable; urgency=low
+
+  * New release: muon base beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 24 Jul 2015 22:00:00 +0100
+
 qtractor (0.6.7-17) unstable; urgency=low
 
   * New release: lepton acid beta
