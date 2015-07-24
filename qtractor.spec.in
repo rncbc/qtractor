@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 16
+%define release 18
 
 %define _prefix	@ac_prefix@
 
