@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- MIDI Tools/Quantize et al. are tentatively being corrected
+  to take event times as relative to THE beginning of session,
+  instead of MIDI clip start location. (EXPERIMENTAL)
+
+
 0.7.0  2015-07-24  Muon Base Beta
 
 - Complete rewrite of Qt4 vs. Qt5 configure builds.
