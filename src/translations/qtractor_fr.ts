@@ -9314,37 +9314,37 @@ Etes-vous sur?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="776"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="899"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="902"/>
         <source>transpose</source>
         <translation>transposer</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="778"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="921"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="923"/>
         <source>normalize</source>
         <translation>normaliser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="780"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="951"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="953"/>
         <source>randomize</source>
         <translation>randomiser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="782"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1009"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1015"/>
         <source>resize</source>
         <translation>redimensionner</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="784"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1034"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1039"/>
         <source>rescale</source>
         <translation>remise à l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="786"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1069"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1078"/>
         <source>timeshift</source>
         <translation>décaler temporellement</translation>
     </message>
