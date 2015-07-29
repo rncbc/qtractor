@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Build fix for qt5.5 (patch by KaOS, thanks).
+
 - MIDI Tools/Quantize et al. are tentatively being corrected
   to take event times as relative to THE beginning of session,
   instead of MIDI clip start location. (EXPERIMENTAL)

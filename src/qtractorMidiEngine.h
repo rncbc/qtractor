@@ -30,6 +30,7 @@
 #include <alsa/asoundlib.h>
 
 #include <QHash>
+#include <QObject>
 
 // Forward declarations.
 class qtractorMidiBus;
