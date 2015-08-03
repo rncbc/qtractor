@@ -157,8 +157,6 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Copy from global time-scale instance...
-		if (m_pTimeScale)
-			delete m_pTimeScale;
 		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
 		m_ui.TransposeTimeSpinBox->setTimeScale(m_pTimeScale);
 		m_ui.ResizeDurationSpinBox->setTimeScale(m_pTimeScale);
@@ -189,7 +187,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
 		if (iSnapPerBeat > 0)
 			--iSnapPerBeat;
-		int iSnapIndex = qtractorTimeScale::indexFromSnap(iSnapPerBeat);
+		const int iSnapIndex = qtractorTimeScale::indexFromSnap(iSnapPerBeat);
 		m_ui.QuantizeTimeComboBox->setCurrentIndex(iSnapIndex);
 		m_ui.QuantizeDurationComboBox->setCurrentIndex(iSnapIndex);
 		m_ui.QuantizeSwingComboBox->setCurrentIndex(0);
@@ -1151,9 +1149,9 @@ void qtractorMidiToolsForm::formatChanged ( int iDisplayFormat )
 
 	if (m_pTimeScale) {
 		// Set from local time-scale instance...
-		m_pTimeScale->setDisplayFormat(displayFormat);
-		m_ui.TransposeTimeSpinBox->updateDisplayFormat();
-		m_ui.ResizeDurationSpinBox->updateDisplayFormat();
+		//m_pTimeScale->setDisplayFormat(displayFormat);
+		m_ui.TransposeTimeSpinBox->setDisplayFormat(displayFormat);
+		m_ui.ResizeDurationSpinBox->setDisplayFormat(displayFormat);
 	}
 
 	stabilizeForm();
