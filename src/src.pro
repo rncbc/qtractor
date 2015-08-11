@@ -283,6 +283,7 @@ FORMS += \
 RESOURCES += \
 	qtractor.qrc
 
+
 TRANSLATIONS += \
 	translations/qtractor_cs.ts \
 	translations/qtractor_de.ts \
@@ -292,6 +293,7 @@ TRANSLATIONS += \
 	translations/qtractor_ja.ts \
 	translations/qtractor_pt.ts \
 	translations/qtractor_ru.ts
+
 
 unix {
 
