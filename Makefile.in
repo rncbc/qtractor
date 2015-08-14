@@ -1,9 +1,5 @@
 prefix  = @ac_prefix@
 
-QMAKE   = @ac_qmake@
-LUPDATE = @ac_lupdate@
-LRELEASE = @ac_lrelease@
-
 name    = qtractor
 
 target  = src/$(name)
@@ -305,6 +301,11 @@ export datadir = @datadir@
 export mandir = @mandir@
 
 translations_dir = $(datadir)/$(name)/translations
+
+
+export QMAKE = @ac_qmake@
+export LUPDATE = @ac_lupdate@
+export LRELEASE = @ac_lrelease@
 
 
 all:	$(target)
