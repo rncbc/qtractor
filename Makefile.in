@@ -1,7 +1,8 @@
 prefix  = @ac_prefix@
-qmake   = @ac_qmake@
-lupdate = @ac_lupdate@
-lrelease = @ac_lrelease@
+
+QMAKE   = @ac_qmake@
+LUPDATE = @ac_lupdate@
+LRELEASE = @ac_lrelease@
 
 name    = qtractor
 
@@ -313,16 +314,16 @@ $(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
 	@$(MAKE) -f $(name).mak
 
 $(name).mak:	$(name).pro
-	@$(qmake) -o $(name).mak $(name).pro
+	@$(QMAKE) -o $(name).mak $(name).pro
 
 
 translations_lupdate:	$(name).pro
-	@$(lupdate) -verbose $(name).pro
+	@$(LUPDATE) -verbose $(name).pro
 
 translations_lrelease:	translations_lupdate $(translations_targets)
 
 %.qm:	%.ts
-	@$(lrelease) -verbose $< -qm $@
+	@$(LRELEASE) -verbose $< -qm $@
 
 
 install:	$(target) translations_lrelease $(name).1
