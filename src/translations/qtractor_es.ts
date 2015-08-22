@@ -5497,10 +5497,6 @@ la próxima vez que inicie este %1.</translation>
         <translation>Soporte de MIDI/Evento de Plug in LV2 habilitado.</translation>
     </message>
     <message>
-        <source>LV2 Plug-in MIDI/Event support disabled.</source>
-        <translation type="obsolete">Soporte de MIDI/Evento de Plug-in LV2 deshabilitado.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5458"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
         <translation>Soporte de MIDI/Atom de Plug-in LV2 deshabilitado.</translation>
@@ -8840,10 +8836,6 @@ Lo siento.</translation>
         <translation>Formato de duración para redimensionar </translation>
     </message>
     <message>
-        <source>Percentage</source>
-        <translation type="obsolete">Porcentaje</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiToolsForm.ui" line="897"/>
         <source>Resize value</source>
         <translation>Valor para redimensionar</translation>
@@ -11066,14 +11058,6 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorShortcutForm</name>
     <message>
-        <source>Keyboard Shortcuts</source>
-        <translation type="obsolete">Atajos de teclado</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="obsolete">Acción</translation>
-    </message>
-    <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
         <translation>Atajos</translation>
@@ -11097,10 +11081,6 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
         <translation>Controlador MIDI</translation>
-    </message>
-    <message>
-        <source>Shortcut</source>
-        <translation type="obsolete">Atajo</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="419"/>
@@ -12254,10 +12234,6 @@ Duración:	%3</translation>
         <location filename="../qtractorTracks.cpp" line="2212"/>
         <source>remove track range</source>
         <translation>Remover rango de pista</translation>
-    </message>
-    <message>
-        <source>Track %1</source>
-        <translation type="obsolete">Pista %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2501"/>
