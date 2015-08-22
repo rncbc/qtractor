@@ -5809,7 +5809,7 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
     <message>
         <location filename="../qtractorMainForm.cpp" line="5455"/>
         <source>LV2 Plug-in MIDI/Event support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2のMIDI/イベントプラグインサポートは有効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5495"/>
@@ -6736,7 +6736,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="54"/>
         <source>&amp;Track</source>
-        <translation type="unfinished">トラック(&amp;T)</translation>
+        <translation>トラック(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="50"/>
@@ -9598,12 +9598,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="569"/>
         <source>Whether to start as timebase master (JACK)</source>
-        <translation type="unfinished"></translation>
+        <translation>タイムベースマスター(JACK)として開始するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="572"/>
         <source>&amp;Timebase</source>
-        <translation type="unfinished"></translation>
+        <translation>タイムベース(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="598"/>
@@ -11357,12 +11357,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">ショートカット</translation>
+        <translation>ショートカット</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="80"/>
         <source>Menu/Action</source>
-        <translation type="unfinished"></translation>
+        <translation>メニュー/動作</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="85"/>
@@ -11372,12 +11372,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="90"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>キーボード</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished">MIDIコントローラー</translation>
+        <translation>MIDIコントローラー</translation>
     </message>
     <message>
         <source>Shortcut</source>
@@ -11409,12 +11409,14 @@ Do you want to apply the changes?</source>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDIコントローラーのショートカットが変更されました。
+
+この変更を適用しますか?</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="551"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished">MIDIコントローラー(&amp;M)...</translation>
+        <translation>MIDIコントローラー(&amp;M)...</translation>
     </message>
 </context>
 <context>
