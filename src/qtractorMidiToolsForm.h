@@ -77,8 +77,8 @@ protected slots:
 protected:
 
 	// Preset management methods...
-    void loadPreset(const QString& sPreset);
-    void savePreset(const QString& sPreset);
+	void loadPreset(const QString& sPreset);
+	void savePreset(const QString& sPreset);
 
 	void refreshPresets();
 

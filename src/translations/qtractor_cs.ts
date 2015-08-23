@@ -2,557 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="cs_CZ">
 <context>
-    <name></name>
-    <message>
-        <source>C</source>
-        <translation type="obsolete">C</translation>
-    </message>
-    <message>
-        <source>C#</source>
-        <translation type="obsolete">C#</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <source>D#</source>
-        <translation type="obsolete">D#</translation>
-    </message>
-    <message>
-        <source>E</source>
-        <translation type="obsolete">E</translation>
-    </message>
-    <message>
-        <source>F</source>
-        <translation type="obsolete">F</translation>
-    </message>
-    <message>
-        <source>F#</source>
-        <translation type="obsolete">F#</translation>
-    </message>
-    <message>
-        <source>G</source>
-        <translation type="obsolete">G</translation>
-    </message>
-    <message>
-        <source>G#</source>
-        <translation type="obsolete">G#</translation>
-    </message>
-    <message>
-        <source>A</source>
-        <translation type="obsolete">A</translation>
-    </message>
-    <message>
-        <source>A#</source>
-        <translation type="obsolete">A#</translation>
-    </message>
-    <message>
-        <source>B</source>
-        <translation type="obsolete">B</translation>
-    </message>
-    <message>
-        <source>Acoustic Bass Drum</source>
-        <translation type="obsolete">Akustický basový buben</translation>
-    </message>
-    <message>
-        <source>Bass Drum 1</source>
-        <translation type="obsolete">Basový buben 1</translation>
-    </message>
-    <message>
-        <source>Side Stick</source>
-        <translation type="obsolete">Další palička</translation>
-    </message>
-    <message>
-        <source>Acoustic Snare</source>
-        <translation type="obsolete">Akustický virblový/malý buben</translation>
-    </message>
-    <message>
-        <source>Hand Clap</source>
-        <translation type="obsolete">Potlesk</translation>
-    </message>
-    <message>
-        <source>Electric Snare</source>
-        <translation type="obsolete">Elektrický virblový/malý buben</translation>
-    </message>
-    <message>
-        <source>Low Floor Tom</source>
-        <translation type="obsolete">Nízký podlahový Tom</translation>
-    </message>
-    <message>
-        <source>Closed Hi-Hat</source>
-        <translation type="obsolete">Zavřená hajtka (činely ovládané nožním pedálem)</translation>
-    </message>
-    <message>
-        <source>High Floor Tom</source>
-        <translation type="obsolete">Vysoký podlahový Tom</translation>
-    </message>
-    <message>
-        <source>Pedal Hi-Hat</source>
-        <translation type="obsolete">Pedálová hajtka (činely ovládané nožním pedálem)</translation>
-    </message>
-    <message>
-        <source>Low Tom</source>
-        <translation type="obsolete">Nízký Tom</translation>
-    </message>
-    <message>
-        <source>Open Hi-Hat</source>
-        <translation type="obsolete">Otevřená hajtka (činely ovládané nožním pedálem)</translation>
-    </message>
-    <message>
-        <source>Low-Mid Tom</source>
-        <translation type="obsolete">Nízký-střední Tom</translation>
-    </message>
-    <message>
-        <source>Hi-Mid Tom</source>
-        <translation type="obsolete">Vysoký-střední Tom</translation>
-    </message>
-    <message>
-        <source>Crash Cymbal 1</source>
-        <translation type="obsolete">Nárazový cymbál 1</translation>
-    </message>
-    <message>
-        <source>High Tom</source>
-        <translation type="obsolete">Vysoký Tom</translation>
-    </message>
-    <message>
-        <source>Ride Cymbal 1</source>
-        <translation type="obsolete">Jezdící cymbál 1</translation>
-    </message>
-    <message>
-        <source>Chinese Cymbal</source>
-        <translation type="obsolete">Čínský cymbál</translation>
-    </message>
-    <message>
-        <source>Ride Bell</source>
-        <translation type="obsolete">Jezdící zvonek</translation>
-    </message>
-    <message>
-        <source>Tambourine</source>
-        <translation type="obsolete">Tamburína</translation>
-    </message>
-    <message>
-        <source>Splash Cymbal</source>
-        <translation type="obsolete">Nápadný cymbál</translation>
-    </message>
-    <message>
-        <source>Cowbell</source>
-        <translation type="obsolete">Kravský zvonec (i bicí nástroj)</translation>
-    </message>
-    <message>
-        <source>Crash Cymbal 2</source>
-        <translation type="obsolete">Nárazový  cymbál 2</translation>
-    </message>
-    <message>
-        <source>Vibraslap</source>
-        <translation type="obsolete">Vibrující plácání</translation>
-    </message>
-    <message>
-        <source>Ride Cymbal 2</source>
-        <translation type="obsolete">Jezdící cymbál 2</translation>
-    </message>
-    <message>
-        <source>Hi Bongo</source>
-        <translation type="obsolete">Vysoké bongo (malý bubínek)</translation>
-    </message>
-    <message>
-        <source>Low Bongo</source>
-        <translation type="obsolete">Nízké bongo (malý bubínek)</translation>
-    </message>
-    <message>
-        <source>Mute Hi Conga</source>
-        <translation type="obsolete">Ztlumit vysoká  konga (vysoký buben, na který se hraje dlaněmi)</translation>
-    </message>
-    <message>
-        <source>Open Hi Conga</source>
-        <translation type="obsolete">Otevřít vysoká  konga (vysoký buben, na který se hraje dlaněmi)</translation>
-    </message>
-    <message>
-        <source>Low Conga</source>
-        <translation type="obsolete">Nízká  konga (nízký buben, na který se hraje dlaněmi)</translation>
-    </message>
-    <message>
-        <source>High Timbale</source>
-        <translation type="obsolete">Vysoké timbale</translation>
-    </message>
-    <message>
-        <source>Low Timbale</source>
-        <translation type="obsolete">Nízké timbale</translation>
-    </message>
-    <message>
-        <source>High Agogo</source>
-        <translation type="obsolete">Vysoké agogo</translation>
-    </message>
-    <message>
-        <source>Low Agogo</source>
-        <translation type="obsolete">Nízké agogo</translation>
-    </message>
-    <message>
-        <source>Cabasa</source>
-        <translation type="obsolete">Cabasa</translation>
-    </message>
-    <message>
-        <source>Maracas</source>
-        <translation type="obsolete">Rumba koule</translation>
-    </message>
-    <message>
-        <source>Short Whistle</source>
-        <translation type="obsolete">Krátké hvízdnutí</translation>
-    </message>
-    <message>
-        <source>Long Whistle</source>
-        <translation type="obsolete">Dlouhé hvízdnutí</translation>
-    </message>
-    <message>
-        <source>Short Guiro</source>
-        <translation type="obsolete">Krátké guiro (perkusní nástroj latinskoamerického původu)</translation>
-    </message>
-    <message>
-        <source>Long Guiro</source>
-        <translation type="obsolete">Dlouhé guiro (perkusní nástroj latinskoamerického původu)</translation>
-    </message>
-    <message>
-        <source>Claves</source>
-        <translation type="obsolete">Claves</translation>
-    </message>
-    <message>
-        <source>Hi Wood Block</source>
-        <translation type="obsolete">Vysoký dřevěný špalíček (čínský dřevěný bicí nástroj v podobě dutého špalíku - štěrbinový buben)</translation>
-    </message>
-    <message>
-        <source>Low Wood Block</source>
-        <translation type="obsolete">Nízký dřevěný špalíček (čínský dřevěný bicí nástroj v podobě dutého špalíku - štěrbinový buben)</translation>
-    </message>
-    <message>
-        <source>Mute Cuica</source>
-        <translation type="obsolete">Oněmělá cuica</translation>
-    </message>
-    <message>
-        <source>Open Cuica</source>
-        <translation type="obsolete">Otevřená cuica</translation>
-    </message>
-    <message>
-        <source>Mute Triangle</source>
-        <translation type="obsolete">Oněmělý triangl</translation>
-    </message>
-    <message>
-        <source>Open Triangle</source>
-        <translation type="obsolete">Otevřený triangl</translation>
-    </message>
-    <message>
-        <source>Bank Select (coarse)</source>
-        <translation type="obsolete">Výběr banky (hrubý)</translation>
-    </message>
-    <message>
-        <source>Modulation Wheel (coarse)</source>
-        <translation type="obsolete">Modulační kolo (hrubé)</translation>
-    </message>
-    <message>
-        <source>Breath Controller (coarse)</source>
-        <translation type="obsolete">Ovládací spínač dechu (hrubý)</translation>
-    </message>
-    <message>
-        <source>Foot Pedal (coarse)</source>
-        <translation type="obsolete">Nožní pedál (hrubý)</translation>
-    </message>
-    <message>
-        <source>Portamento Time (coarse)</source>
-        <translation type="obsolete">Délka trvání portamenta (hrubá) (v nástrojové hře způsob přednesu mezi legátem a stakkátem)</translation>
-    </message>
-    <message>
-        <source>Data Entry (coarse)</source>
-        <translation type="obsolete">Záznam údajů (hrubý)</translation>
-    </message>
-    <message>
-        <source>Volume (coarse)</source>
-        <translation type="obsolete">Hlasitost (hrubá)</translation>
-    </message>
-    <message>
-        <source>Balance (coarse)</source>
-        <translation type="obsolete">Vyvážení (hrubé)</translation>
-    </message>
-    <message>
-        <source>Pan Position (coarse)</source>
-        <translation type="obsolete">Pozice panorámy (hrubá)</translation>
-    </message>
-    <message>
-        <source>Expression (coarse)</source>
-        <translation type="obsolete">Umělecká stránka (hrubá)</translation>
-    </message>
-    <message>
-        <source>Effect Control 1 (coarse)</source>
-        <translation type="obsolete">Ovládání efektu 1 (hrubé)</translation>
-    </message>
-    <message>
-        <source>Effect Control 2 (coarse)</source>
-        <translation type="obsolete">Ovládání efektu 2 (hrubé)</translation>
-    </message>
-    <message>
-        <source>General Purpose Slider 1</source>
-        <translation type="obsolete">Táhlo sloužící všeobecnému účelu 1</translation>
-    </message>
-    <message>
-        <source>General Purpose Slider 2</source>
-        <translation type="obsolete">Táhlo sloužící všeobecnému účelu 2</translation>
-    </message>
-    <message>
-        <source>General Purpose Slider 3</source>
-        <translation type="obsolete">Táhlo sloužící všeobecnému účelu 3</translation>
-    </message>
-    <message>
-        <source>General Purpose Slider 4</source>
-        <translation type="obsolete">Táhlo sloužící všeobecnému účelu 4</translation>
-    </message>
-    <message>
-        <source>Bank Select (fine)</source>
-        <translation type="obsolete">Výběr banky (citlivý)</translation>
-    </message>
-    <message>
-        <source>Modulation Wheel (fine)</source>
-        <translation type="obsolete">Modulační kolo (citlivé)</translation>
-    </message>
-    <message>
-        <source>Breath Controller (fine)</source>
-        <translation type="obsolete">Dechový ovládací spínač (citlivý)</translation>
-    </message>
-    <message>
-        <source>Foot Pedal (fine)</source>
-        <translation type="obsolete">Nožní pedál citlivý)</translation>
-    </message>
-    <message>
-        <source>Portamento Time (fine)</source>
-        <translation type="obsolete">Délka trvání portamenta (citlivá) (v nástrojové hře způsob přednesu mezi legátem a stakkátem)</translation>
-    </message>
-    <message>
-        <source>Data Entry (fine)</source>
-        <translation type="obsolete">Záznam údajů (citlivý)</translation>
-    </message>
-    <message>
-        <source>Volume (fine)</source>
-        <translation type="obsolete">Hlasitost (citlivá)</translation>
-    </message>
-    <message>
-        <source>Balance (fine)</source>
-        <translation type="obsolete">Vyvážení (citlivé)</translation>
-    </message>
-    <message>
-        <source>Pan Position (fine)</source>
-        <translation type="obsolete">Pozice panorámy (citlivá)</translation>
-    </message>
-    <message>
-        <source>Expression (fine)</source>
-        <translation type="obsolete">Umělecká stránka (citlivá)</translation>
-    </message>
-    <message>
-        <source>Effect Control 1 (fine)</source>
-        <translation type="obsolete">Ovládání efektu 1 (citlivé)</translation>
-    </message>
-    <message>
-        <source>Effect Control 2 (fine)</source>
-        <translation type="obsolete">Ovládání efektu 2 (citlivé)</translation>
-    </message>
-    <message>
-        <source>Hold Pedal (on/off)</source>
-        <translation type="obsolete">Držení pedálu (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>Portamento (on/off)</source>
-        <translation type="obsolete">Portamento (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>Sustenuto Pedal (on/off)</source>
-        <translation type="obsolete">Zdrženlivý pedál (sostenuto) (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>Soft Pedal (on/off)</source>
-        <translation type="obsolete">Jemný pedál (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>Legato Pedal (on/off)</source>
-        <translation type="obsolete">Vázaný (legáto) pedál (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>Hold 2 Pedal (on/off)</source>
-        <translation type="obsolete">Držení pedálu 2 (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>Sound Variation</source>
-        <translation type="obsolete">Zvuková variace</translation>
-    </message>
-    <message>
-        <source>Sound Timbre</source>
-        <translation type="obsolete">Zvukové zabarvení hlasu (témbr)</translation>
-    </message>
-    <message>
-        <source>Sound Release Time</source>
-        <translation type="obsolete">Doba vyloudění zvuku</translation>
-    </message>
-    <message>
-        <source>Sound Attack Time</source>
-        <translation type="obsolete">Doba zaznění zvuku</translation>
-    </message>
-    <message>
-        <source>Sound Brightness</source>
-        <translation type="obsolete">Jasnost zvuku</translation>
-    </message>
-    <message>
-        <source>Sound Control 6</source>
-        <translation type="obsolete">Ovládání zvuku 6</translation>
-    </message>
-    <message>
-        <source>Sound Control 7</source>
-        <translation type="obsolete">Ovládání zvuku 7</translation>
-    </message>
-    <message>
-        <source>Sound Control 8</source>
-        <translation type="obsolete">Ovládání zvuku 8</translation>
-    </message>
-    <message>
-        <source>Sound Control 9</source>
-        <translation type="obsolete">Ovládání zvuku 9</translation>
-    </message>
-    <message>
-        <source>Sound Control 10</source>
-        <translation type="obsolete">Ovládání zvuku 10</translation>
-    </message>
-    <message>
-        <source>General Purpose Button 1 (on/off)</source>
-        <translation type="obsolete">Tlačítko sloužící všeobecnému účelu 1 (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>General Purpose Button 2 (on/off)</source>
-        <translation type="obsolete">Tlačítko sloužící všeobecnému účelu 2 (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>General Purpose Button 3 (on/off)</source>
-        <translation type="obsolete">Tlačítko sloužící všeobecnému účelu 3 (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>General Purpose Button 4 (on/off)</source>
-        <translation type="obsolete">Tlačítko sloužící všeobecnému účelu 4 (zapnuto/vypnuto)</translation>
-    </message>
-    <message>
-        <source>Effects Level</source>
-        <translation type="obsolete">Úroveň efektu</translation>
-    </message>
-    <message>
-        <source>Tremulo Level</source>
-        <translation type="obsolete">Úroveň chvění (tremolo)</translation>
-    </message>
-    <message>
-        <source>Chorus Level</source>
-        <translation type="obsolete">Úroveň refrénu</translation>
-    </message>
-    <message>
-        <source>Celeste Level</source>
-        <translation type="obsolete">Úroveň celesty (nástroj poněkud podobný klavíru)</translation>
-    </message>
-    <message>
-        <source>Phaser Level</source>
-        <translation type="obsolete">Úroveň fáze</translation>
-    </message>
-    <message>
-        <source>Data Button Increment</source>
-        <translation type="obsolete">Datové tlačítko - zvýšení (inkrement)</translation>
-    </message>
-    <message>
-        <source>Data Button Decrement</source>
-        <translation type="obsolete">Datové tlačítko - úbytek (dekrement útlumu)</translation>
-    </message>
-    <message>
-        <source>Non-Registered Parameter (fine)</source>
-        <translation type="obsolete">Nezapsaná pomocná proměnná (citlivá)</translation>
-    </message>
-    <message>
-        <source>Non-Registered Parameter (coarse)</source>
-        <translation type="obsolete">Nezapsaná pomocná proměnná (hrubá)</translation>
-    </message>
-    <message>
-        <source>Registered Parameter (fine)</source>
-        <translation type="obsolete">Zapsaná pomocná proměnná (citlivá)</translation>
-    </message>
-    <message>
-        <source>Registered Parameter (coarse)</source>
-        <translation type="obsolete">Zapsaná pomocná proměnná (hrubá)</translation>
-    </message>
-    <message>
-        <source>All Sound Off</source>
-        <translation type="obsolete">Všechny zvuky vypnuty</translation>
-    </message>
-    <message>
-        <source>All Controllers Off</source>
-        <translation type="obsolete">Všechny ovládací spínače vypnuty</translation>
-    </message>
-    <message>
-        <source>Local Keyboard (on/off)</source>
-        <translation type="obsolete">Místní klávesnice (zapnuta/vypnuta)</translation>
-    </message>
-    <message>
-        <source>All Notes Off</source>
-        <translation type="obsolete">Všechny tóny (noty) vypnuty</translation>
-    </message>
-    <message>
-        <source>Omni Mode Off</source>
-        <translation type="obsolete">Celkový režim: vypnuto</translation>
-    </message>
-    <message>
-        <source>Omni Mode On</source>
-        <translation type="obsolete">Celkový režim: zapnuto</translation>
-    </message>
-    <message>
-        <source>Mono Operation</source>
-        <translation type="obsolete">Monofonní operace</translation>
-    </message>
-    <message>
-        <source>Poly Operation</source>
-        <translation type="obsolete">Polyfonní operace</translation>
-    </message>
-    <message>
-        <source>add clip</source>
-        <translation type="obsolete">Přidat ukázku</translation>
-    </message>
-    <message>
-        <source>clip %1</source>
-        <translation type="obsolete">Ukázka %1</translation>
-    </message>
-    <message>
-        <source>fade-in</source>
-        <translation type="obsolete">Postupné zesílení signálu</translation>
-    </message>
-    <message>
-        <source>fade-out</source>
-        <translation type="obsolete">Postupné slábnutí signálu</translation>
-    </message>
-    <message>
-        <source>clip stretch</source>
-        <translation type="obsolete">Natáhnout ukázku</translation>
-    </message>
-    <message>
-        <source>clip resize</source>
-        <translation type="obsolete">Změnit velikost ukázky</translation>
-    </message>
-    <message>
-        <source>%1 clip</source>
-        <translation type="obsolete">%1 ukázka</translation>
-    </message>
-    <message>
-        <source>cut</source>
-        <translation type="obsolete">Vyjmout</translation>
-    </message>
-    <message>
-        <source>delete</source>
-        <translation type="obsolete">Smazat</translation>
-    </message>
-    <message>
-        <source>move clip</source>
-        <translation type="obsolete">Přesunout ukázku</translation>
-    </message>
-    <message>
-        <source>paste clip</source>
-        <translation type="obsolete">Vložit ukázku</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="762"/>
@@ -578,12 +27,6 @@ Audio:	%1 channels, %2 Hz</source>
 	(%1 semitones pitch shift)</source>
         <translation>
 	(posunutí výšky tónu v půltónech %1)</translation>
-    </message>
-    <message>
-        <source>
-	(%1% pitch shift)</source>
-        <translation type="obsolete">
-	(%1% posunutí výšky tónu)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2416"/>
@@ -637,34 +80,6 @@ Posun/Délka:	%3 / %4</translation>
         <location filename="../qtractorClip.cpp" line="161"/>
         <source> (take %1)</source>
         <translation> (záběr %1)</translation>
-    </message>
-    <message>
-        <source>Start / End:	%1 / %2
-Offs. / Len.:	%3 / %4</source>
-        <translation type="obsolete">Začátek/Konec:	%1 / %2
-Posun/Délka:	%3 / %4</translation>
-    </message>
-    <message>
-        <source>Start / End:	%1 / %2
-Offs. / Length:	%3 / %4</source>
-        <translation type="obsolete">Začátek/Konec:	%1 / %2
-Posun/Délka:	%3 / %4</translation>
-    </message>
-    <message>
-        <source>Start/End:	%1 / %2
-Offs/Length:	%3 / %4</source>
-        <translation type="obsolete">Začátek/Konec:	%1 / %2
-Posun/Délka:	%3 / %4</translation>
-    </message>
-    <message>
-        <source>Start:	%1
-End:	%2
-Offset:	%3
-Length:	%4</source>
-        <translation type="obsolete">Začátek:	%1
-Konec:	%2
-Vyrovnání:	%3
-Délka:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="574"/>
@@ -751,21 +166,9 @@ MIDI:	</translation>
         <translation>, %1 stopy, %2 tpqn</translation>
     </message>
     <message>
-        <source>, %1 tracks, %2 tpb</source>
-        <translation type="obsolete">, %1 stopy, %2 tpb</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiClip.cpp" line="1212"/>
         <source> (%1% vol)</source>
         <translation> (%1% hlasitost)</translation>
-    </message>
-    <message>
-        <source>%1 (format %2)
-%3 tracks, %4 tpb
-%5</source>
-        <translation type="obsolete">%1 (formát %2)
-%3 stop, %4 tpb
-%5</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="82"/>
@@ -782,14 +185,6 @@ MIDI:	</translation>
 %3</source>
         <translation>%1 (formát %2)
 %3</translation>
-    </message>
-    <message>
-        <source>Usage: %1 [options] [session-file]
-
-</source>
-        <translation type="obsolete">Užití: %1 [volby] [soubor sezení]
-
-</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="655"/>
@@ -847,10 +242,6 @@ MIDI:	</translation>
         <location filename="../qtractorPlugin.cpp" line="2172"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
-    </message>
-    <message>
-        <source>%1(%2): %s plugin not found.</source>
-        <translation type="obsolete">%1(%2): %s přídavný modul nenalezen.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="120"/>
@@ -913,10 +304,6 @@ MIDI:	</translation>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
-        <source>session tempo</source>
-        <translation type="obsolete">Tempo sezení</translation>
-    </message>
-    <message>
         <location filename="../qtractorSessionCommand.cpp" line="52"/>
         <source>session loop</source>
         <translation>Smyčka sezení</translation>
@@ -948,12 +335,12 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="83"/>
-        <location filename="../qtractorTimeScale.cpp" line="673"/>
+        <location filename="../qtractorTimeScale.cpp" line="674"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="677"/>
+        <location filename="../qtractorTimeScale.cpp" line="678"/>
         <source>Beat</source>
         <translation>Rytmus</translation>
     </message>
@@ -1077,23 +464,23 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 (*.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiTimer.cpp" line="65"/>
+        <location filename="../qtractorMidiTimer.cpp" line="66"/>
         <location filename="../qtractorPlugin.cpp" line="662"/>
         <source>(default)</source>
         <translation>(výchozí)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiTimer.cpp" line="103"/>
+        <location filename="../qtractorMidiTimer.cpp" line="104"/>
         <source>%1 Hz</source>
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiTimer.cpp" line="105"/>
+        <location filename="../qtractorMidiTimer.cpp" line="106"/>
         <source>slave</source>
         <translation>Řízený</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiTimer.cpp" line="107"/>
+        <location filename="../qtractorMidiTimer.cpp" line="108"/>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
@@ -1294,14 +681,6 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nahrávání záznamu</translation>
     </message>
     <message>
-        <source>insert range</source>
-        <translation type="obsolete">Vložit rozsah</translation>
-    </message>
-    <message>
-        <source>insert track range</source>
-        <translation type="obsolete">Vložit rozsah stopy</translation>
-    </message>
-    <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="146"/>
         <source>Copyright: </source>
         <translation>Autorské právo: </translation>
@@ -1451,18 +830,6 @@ Chcete použít tyto změny?</translation>
         <translation>(%1 položky)</translation>
     </message>
     <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
         <location filename="../qtractorBusForm.cpp" line="689"/>
         <source>About to remove bus:
 
@@ -1474,10 +841,6 @@ Are you sure?</source>
 &quot;%1&quot; (%2)
 
 Jste si jistý?</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="747"/>
@@ -1589,11 +952,6 @@ Chcete zahodit tyto změny?</translation>
         <translation>&amp;Sledování (průchodnost)</translation>
     </message>
     <message>
-        <source>Alt+O</source>
-        <oldsource>Alt+P</oldsource>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
         <location filename="../qtractorBusForm.ui" line="229"/>
         <source>Cha&amp;nnels:</source>
         <translation>Ka&amp;nály:</translation>
@@ -1612,10 +970,6 @@ Chcete zahodit tyto změny?</translation>
         <location filename="../qtractorBusForm.ui" line="268"/>
         <source>&amp;Auto connect</source>
         <translation>&amp;Připojit automaticky</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="284"/>
@@ -1659,10 +1013,6 @@ Chcete zahodit tyto změny?</translation>
         <translation>Odstranit vstupní přídavný modul</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
-    </message>
-    <message>
         <location filename="../qtractorBusForm.ui" line="409"/>
         <source>Move input plugin up</source>
         <translation>Přesunout vstupní přídavný modul nahoru</translation>
@@ -1674,10 +1024,6 @@ Chcete zahodit tyto změny?</translation>
         <translation>&amp;Nahoru</translation>
     </message>
     <message>
-        <source>Alt+U</source>
-        <translation type="obsolete">Alt+U</translation>
-    </message>
-    <message>
         <location filename="../qtractorBusForm.ui" line="431"/>
         <source>Move input plugin down</source>
         <translation>Přesunout vstupní přídavný modul dolů</translation>
@@ -1687,10 +1033,6 @@ Chcete zahodit tyto změny?</translation>
         <location filename="../qtractorBusForm.ui" line="556"/>
         <source>&amp;Down</source>
         <translation>&amp;Dolů</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <translation type="obsolete">Alt+D</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="450"/>
@@ -1731,10 +1073,6 @@ Chcete zahodit tyto změny?</translation>
         <location filename="../qtractorBusForm.ui" line="613"/>
         <source>Create bus</source>
         <translation>Vytvořit sběrnici</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="626"/>
@@ -1824,18 +1162,6 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="406"/>
         <location filename="../qtractorClipForm.cpp" line="636"/>
         <source>Audio</source>
@@ -1895,10 +1221,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>Stopa se záznamem/Kanál</translation>
-    </message>
-    <message>
-        <source>&amp;Gain/Volume:</source>
-        <translation type="obsolete">&amp;Zesílení/Hlasitost:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="265"/>
@@ -1971,26 +1293,6 @@ Chcete použít tyto změny?</translation>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
-        <source>Fra&amp;mes</source>
-        <translation type="obsolete">Sní&amp;mky</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss.zzz)</source>
-        <translation type="obsolete">Čas (hh:mm:ss.zzz)</translation>
-    </message>
-    <message>
-        <source>&amp;Time</source>
-        <translation type="obsolete">Č&amp;as</translation>
-    </message>
-    <message>
-        <source>BBT (bars.beats.ticks)</source>
-        <translation type="obsolete">TÚT (takty-doby-tiky)</translation>
-    </message>
-    <message>
-        <source>&amp;BBT</source>
-        <translation type="obsolete">&amp;TDT</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="312"/>
         <source>Fade In/Out</source>
         <translation>Postupné zesílení/zeslabení signálu</translation>
@@ -2009,18 +1311,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorClipForm.ui" line="347"/>
         <source>Clip fade-in type</source>
         <translation>Druh postupného zesílení signálu záznamu</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">Lineární</translation>
-    </message>
-    <message>
-        <source>Quadratic</source>
-        <translation type="obsolete">Čtvercové</translation>
-    </message>
-    <message>
-        <source>Cubic</source>
-        <translation type="obsolete">Krychlové</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="373"/>
@@ -2061,10 +1351,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorClipForm.ui" line="491"/>
         <source> semitones</source>
         <translation>Půltóny</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
     </message>
 </context>
 <context>
@@ -2132,10 +1418,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Připojit</translation>
     </message>
     <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
         <location filename="../qtractorConnectForm.ui" line="150"/>
         <location filename="../qtractorConnectForm.ui" line="300"/>
         <source>Disconnect currently selected ports</source>
@@ -2146,10 +1428,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorConnectForm.ui" line="303"/>
         <source>&amp;Disconnect</source>
         <translation>&amp;Odpojit</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <translation type="obsolete">Alt+D</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="163"/>
@@ -2164,10 +1442,6 @@ Chcete použít tyto změny?</translation>
         <translation>Odpojit &amp;vše</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../qtractorConnectForm.ui" line="192"/>
         <location filename="../qtractorConnectForm.ui" line="342"/>
         <source>Refresh current connections view</source>
@@ -2178,10 +1452,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorConnectForm.ui" line="345"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Obnovit</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="208"/>
@@ -2195,17 +1465,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorConnections.cpp" line="71"/>
         <source>Connections</source>
         <translation>Připojení</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorCurveButton</name>
-    <message>
-        <source>Automation (%1)</source>
-        <translation type="obsolete">Automatizace (%1)</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">Žádná</translation>
     </message>
 </context>
 <context>
@@ -2341,29 +1600,9 @@ Chcete použít tyto změny?</translation>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
-        <source>Format</source>
-        <translation type="obsolete">Formát</translation>
-    </message>
-    <message>
         <location filename="../qtractorEditRangeForm.ui" line="281"/>
         <source>Frames</source>
         <translation>Snímky</translation>
-    </message>
-    <message>
-        <source>&amp;Frames</source>
-        <translation type="obsolete">&amp;Snímky</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss.zzz)</source>
-        <translation type="obsolete">Čas (hh:mm:ss.zzz)</translation>
-    </message>
-    <message>
-        <source>&amp;Time</source>
-        <translation type="obsolete">Č&amp;as</translation>
-    </message>
-    <message>
-        <source>&amp;BBT</source>
-        <translation type="obsolete">&amp;TDT</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="196"/>
@@ -2389,10 +1628,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorEditRangeForm.ui" line="215"/>
         <source>Apply to Automation nodes in range</source>
         <translation>Použít na uzly automatizace v rozsahu</translation>
-    </message>
-    <message>
-        <source>&amp;Automation</source>
-        <translation type="obsolete">&amp;Automatizace</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="258"/>
@@ -2439,14 +1674,6 @@ Do you want to replace it?</source>
 &quot;%1&quot;
 
 Chcete jej nahradit?</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation type="obsolete">Nahradit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="264"/>
@@ -2610,14 +1837,6 @@ selhalo.</translation>
         <translation>Názvy výstupních sběrnic</translation>
     </message>
     <message>
-        <source>Output</source>
-        <translation type="obsolete">Výstup</translation>
-    </message>
-    <message>
-        <source>Output bus name</source>
-        <translation type="obsolete">Název výstupní sběrnice</translation>
-    </message>
-    <message>
         <location filename="../qtractorExportForm.ui" line="301"/>
         <source>Time</source>
         <translation>Čas</translation>
@@ -2626,10 +1845,6 @@ selhalo.</translation>
         <location filename="../qtractorExportForm.ui" line="306"/>
         <source>BBT</source>
         <translation>TDT (takty-doby-tiky)</translation>
-    </message>
-    <message>
-        <source>Ouput bus name</source>
-        <translation type="obsolete">Název výstupní sběrnice</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="286"/>
@@ -2646,30 +1861,6 @@ selhalo.</translation>
         <source>Frames</source>
         <translation>Snímky</translation>
     </message>
-    <message>
-        <source>&amp;Frames</source>
-        <translation type="obsolete">&amp;Snímky</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss.zzz)</source>
-        <translation type="obsolete">Čas (hh:mm:ss.zzz)</translation>
-    </message>
-    <message>
-        <source>&amp;Time</source>
-        <translation type="obsolete">Č&amp;as</translation>
-    </message>
-    <message>
-        <source>BBT (bars.beats.ticks)</source>
-        <translation type="obsolete">TDT (takty-doby-tiky)</translation>
-    </message>
-    <message>
-        <source>&amp;BBT</source>
-        <translation type="obsolete">&amp;TDT</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
 </context>
 <context>
     <name>qtractorFileListView</name>
@@ -2683,22 +1874,6 @@ selhalo.</translation>
         <location filename="../qtractorFileListView.cpp" line="687"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
-    </message>
-    <message>
-        <source>About to remove %1 file items.
-
-Are you sure?</source>
-        <translation type="obsolete">Chystáte se odstranit %1 položek souborů:
-
-Jste si jistý?</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorFileListView.cpp" line="659"/>
@@ -2751,10 +1926,6 @@ Jste si jistý?</translation>
         <translation>Přehrát soubor</translation>
     </message>
     <message>
-        <source>New &amp;Group</source>
-        <translation type="obsolete">Nová &amp;skupina</translation>
-    </message>
-    <message>
         <location filename="../qtractorFiles.cpp" line="107"/>
         <source>Add &amp;Files...</source>
         <translation>Přidat &amp;soubory...</translation>
@@ -2770,30 +1941,6 @@ Jste si jistý?</translation>
         <translation>&amp;Kopírovat</translation>
     </message>
     <message>
-        <source>P&amp;aste</source>
-        <translation type="obsolete">V&amp;ložit</translation>
-    </message>
-    <message>
-        <source>R&amp;ename</source>
-        <translation type="obsolete">P&amp;řejmenovat</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Smazat</translation>
-    </message>
-    <message>
-        <source>Play</source>
-        <translation type="obsolete">Přehrát</translation>
-    </message>
-    <message>
-        <source>Ctrl+G</source>
-        <translation type="obsolete">Ctrl+G</translation>
-    </message>
-    <message>
-        <source>Ctrl+F</source>
-        <translation type="obsolete">Ctrl+F</translation>
-    </message>
-    <message>
         <location filename="../qtractorFiles.cpp" line="125"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
@@ -2807,10 +1954,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorFiles.cpp" line="127"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Ctrl+E</source>
-        <translation type="obsolete">Ctrl+E</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="105"/>
@@ -2886,10 +2029,6 @@ Jste si jistý?</translation>
         <translation>Vyvést soubor s nástrojem</translation>
     </message>
     <message>
-        <source>Instrument files (*.%1 *.sf2)</source>
-        <translation type="obsolete">Soubory nástrojů (*.%1 *.sf2)</translation>
-    </message>
-    <message>
         <location filename="../qtractorInstrumentForm.cpp" line="404"/>
         <location filename="../qtractorInstrumentForm.cpp" line="446"/>
         <source>Warning</source>
@@ -2907,30 +2046,6 @@ Do you want to replace it?</source>
 &quot;%1&quot;
 
 Přejete si jej nahradit?</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation type="obsolete">Nahradit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
-        <source>Instrument settings have been changed.</source>
-        <translation type="obsolete">Nastavení nástrojů bylo změněno.</translation>
-    </message>
-    <message>
-        <source>Do you want to apply the changes?</source>
-        <translation type="obsolete">Přejete si použít změny?</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="447"/>
@@ -3067,10 +2182,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Zavést...</translation>
     </message>
     <message>
-        <source>Alt+I</source>
-        <translation type="obsolete">Alt+I</translation>
-    </message>
-    <message>
         <location filename="../qtractorInstrumentForm.ui" line="149"/>
         <source>Remove instrument file</source>
         <translation>Odstranit soubor s nástrojem</translation>
@@ -3079,10 +2190,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorInstrumentForm.ui" line="152"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="162"/>
@@ -3095,10 +2202,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Nahoru</translation>
     </message>
     <message>
-        <source>Alt+U</source>
-        <translation type="obsolete">Alt+U</translation>
-    </message>
-    <message>
         <location filename="../qtractorInstrumentForm.ui" line="175"/>
         <source>Move instrument file down on list order</source>
         <translation>Přesunout soubor s nástrojem dolů na seznamu příkazů</translation>
@@ -3107,10 +2210,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorInstrumentForm.ui" line="178"/>
         <source>&amp;Down</source>
         <translation>&amp;Dolů</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <translation type="obsolete">Alt+D</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="204"/>
@@ -3123,34 +2222,14 @@ Chcete použít tyto změny?</translation>
         <translation>Na&amp;hrát znovu</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../qtractorInstrumentForm.ui" line="220"/>
         <source>E&amp;xport...</source>
         <translation>V&amp;yvést...</translation>
     </message>
     <message>
-        <source>Alt+X</source>
-        <translation type="obsolete">Alt+X</translation>
-    </message>
-    <message>
-        <source>R&amp;eload</source>
-        <translation type="obsolete">Z&amp;novu nahrát</translation>
-    </message>
-    <message>
-        <source>Alt+E</source>
-        <translation type="obsolete">Alt+E</translation>
-    </message>
-    <message>
         <location filename="../qtractorInstrumentForm.ui" line="217"/>
         <source>Export to instrument file</source>
         <translation>Vyvést do souboru s nástrojem</translation>
-    </message>
-    <message>
-        <source>&amp;Export...</source>
-        <translation type="obsolete">&amp;Exportovat...</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="230"/>
@@ -3165,18 +2244,6 @@ Chcete použít tyto změny?</translation>
 </context>
 <context>
     <name>qtractorMainForm</name>
-    <message>
-        <source>Current transport time (playhead)</source>
-        <translation type="obsolete">Nynější čas přesunu (hrací hlava)</translation>
-    </message>
-    <message>
-        <source>Tempo (BPM)</source>
-        <translation type="obsolete">Tempo (BPM - doby za minutu)</translation>
-    </message>
-    <message>
-        <source>Current time (playhead)</source>
-        <translation type="obsolete">Nynější čas (hrací hlava)</translation>
-    </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="495"/>
         <source>Current tempo (BPM)</source>
@@ -3440,10 +2507,6 @@ Jste si jistý?</translation>
         <translation>Podpora pro velikost vyrovnávací paměti přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
-        <source>LV2 Plug-in State Files support enabled. (FUBAR)</source>
-        <translation type="obsolete">Podpora pro přídavných modulů LV2 stav souborů byla povolena.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5470"/>
         <source>LV2 Plug-in Programs support disabled.</source>
         <translation>Podpora pro programy přídavných modulů LV2 byla zakázána.</translation>
@@ -3457,30 +2520,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorMainForm.cpp" line="5476"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
         <translation>Podpora pro čas/poloha přídavných modulů LV2 byla zakázána.</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in support (libslv2) enabled. (OLD)</source>
-        <translation type="obsolete">Podpora pro přídavný modul LV2 (llibslv2) byla povolena. (STARÉ)</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in support (liblilv) enabled. (NEW)</source>
-        <translation type="obsolete">Podpora pro přídavný modul LV2 (liblilv) byla povolena. (NOVÉ)</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in UI instantiation support (libsuil) enabled. (NEW)</source>
-        <translation type="obsolete">Podpora pro doložení příkladem obrazové uživatelské rozhraní přídavný modul LV2 (libsuil) byla povolena. (NOVÉ)</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in QT4 UI support disabled.</source>
-        <translation type="obsolete">Podpora pro obrazové uživatelské rozhraní Qt4 přídavných modulů LV2 byla zakázána.</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in GTK UI support disabled.</source>
-        <translation type="obsolete">Podpora pro obrazové uživatelské rozhraní přídavných modulů GTK LV2 byla zakázána.</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in Persist support disabled.</source>
-        <translation type="obsolete">Podpora pro přetrvávání přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5489"/>
@@ -3621,10 +2660,6 @@ spuštěn a běží, a potom sezení začněte znovu.</translation>
         <translation>%1 ÚZM</translation>
     </message>
     <message>
-        <source>MIDI channel %1, Controller %2, Value %3</source>
-        <translation type="obsolete">MIDI kanál %1, Ovladač %2, Hodnota %3</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="7568"/>
         <source>(track %1, gain %2)</source>
         <translation>(stopa %1, zesílení %2)</translation>
@@ -3654,10 +2689,6 @@ spuštěn a běží, a potom sezení začněte znovu.</translation>
         <location filename="../qtractorMainForm.cpp" line="7372"/>
         <source>Untitled%1</source>
         <translation>Bez názvu %1</translation>
-    </message>
-    <message>
-        <source>Untitled</source>
-        <translation type="obsolete">Bez názvu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1822"/>
@@ -3713,14 +2744,6 @@ Do you want to replace it?</source>
 Chcete jej nahradit?</translation>
     </message>
     <message>
-        <source>Replace</source>
-        <translation type="obsolete">Nahradit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="2096"/>
         <source>The current session has been changed:
 
@@ -3737,10 +2760,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMainForm.ui" line="602"/>
         <source>Save</source>
         <translation>Uložit</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2188"/>
@@ -3810,10 +2829,6 @@ Promiňte.</translation>
 next time you start this %1.</source>
         <translation>Některá nastavení mohou být účinná teprve,
 až při příštím spuštění %1.</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5502"/>
@@ -3892,30 +2907,14 @@ až při příštím spuštění %1.</translation>
         <translation>Podpora pro přídavné moduly LV2 byla zakázána.</translation>
     </message>
     <message>
-        <source>LV2 Plug-in support (libslv2) enabled. (DEPRECATED)</source>
-        <translation type="obsolete">Podpora pro přídavný modul LV2 (libslv2) byla povolena. (ODMÍTNUTÉ)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5442"/>
         <source>LV2 Plug-in support (liblilv) disabled.</source>
         <translation>Podpora přídavných modulů LV2 (liblilv) byla zakázána.</translation>
     </message>
     <message>
-        <source>LV2 Plug-in UI instantiation support (libsuil) disabled.</source>
-        <translation type="obsolete">Podpora pro instanciaci rozhraní přídavných modulů LV2 (libsuil) byla zakázána.</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in MIDI/Event support disabled.</source>
-        <translation type="obsolete">Podpora pro MIDI/Události přídavných modulů LV2 byla zakázána.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5451"/>
         <source>LV2 Plug-in External UI support disabled.</source>
         <translation>Podpora pro obrazové uživatelské rozhraní přídavných modulů LV2 byla zakázána.</translation>
-    </message>
-    <message>
-        <source>LV2 Plug-in Save/Restore support disabled.</source>
-        <translation type="obsolete">Podpora pro funkci uložit/obnovit přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5486"/>
@@ -3967,7 +2966,7 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6040"/>
         <source>The original session sample rate (%1 Hz)
-is not the same of the current audio engine (%2 Hz).
+is not the same as the current audio engine (%2 Hz).
 
 Saving and reloading from a new session file
 is highly recommended.</source>
@@ -4034,26 +3033,10 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Přehrávání ukončeno.</translation>
     </message>
     <message>
-        <source>Tracks closed.</source>
-        <translation type="obsolete">Stopy zavřeny.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="7709"/>
         <location filename="../qtractorMainForm.cpp" line="7768"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Přehrává &quot;%1&quot;...</translation>
-    </message>
-    <message>
-        <source>&amp;Frames</source>
-        <translation type="obsolete">&amp;Snímky</translation>
-    </message>
-    <message>
-        <source>&amp;Time</source>
-        <translation type="obsolete">Č&amp;as</translation>
-    </message>
-    <message>
-        <source>&amp;BBT</source>
-        <translation type="obsolete">&amp;TDT</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="46"/>
@@ -4076,10 +3059,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMainForm.ui" line="233"/>
         <source>&amp;Navigate</source>
         <translation>&amp;Navádění</translation>
-    </message>
-    <message>
-        <source>&amp;Move</source>
-        <translation type="obsolete">&amp;Přesunout</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="262"/>
@@ -4752,10 +3731,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Rozdělit nynější záznam v místě hrací hlavy</translation>
     </message>
     <message>
-        <source>Nor&amp;malize</source>
-        <translation type="obsolete">No&amp;rmalizovat</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="1749"/>
         <source>&amp;Merge...</source>
         <translation>&amp;Sloučit...</translation>
@@ -4797,21 +3772,9 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Normalizovat nynější záznam (zesílení/hlasitost)</translation>
     </message>
     <message>
-        <source>&amp;Quantize</source>
-        <translation type="obsolete">&amp;Kvantizovat</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="1780"/>
         <source>Quantize Clip</source>
         <translation>Kvantizovat záznam</translation>
-    </message>
-    <message>
-        <source>Quantize clip</source>
-        <translation type="obsolete">Kvantizovat ukázku</translation>
-    </message>
-    <message>
-        <source>Quantize current MIDI clip (snap to beat)</source>
-        <translation type="obsolete">Kvantizovat nynější MIDI ukázku (zapadnout do doby)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1777"/>
@@ -4942,10 +3905,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMainForm.ui" line="1870"/>
         <source>Timeshift current MIDI clip events</source>
         <translation>Časově posunout události záznamu nynějšího MIDI</translation>
-    </message>
-    <message>
-        <source>&amp;Tempo...</source>
-        <translation type="obsolete">&amp;Tempo...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1878"/>
@@ -5423,10 +4382,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMainForm.ui" line="1342"/>
         <source>Move current track to bottom</source>
         <translation>Přesunout nynější stopu úplně dolů</translation>
-    </message>
-    <message>
-        <source>A&amp;uto Monitor</source>
-        <translation type="obsolete">A&amp;utomaticky sledovat</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1404"/>
@@ -6500,22 +5455,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Změnit vymezení sběrnice sezení</translation>
     </message>
     <message>
-        <source>Tempo M&amp;ap...</source>
-        <translation type="obsolete">&amp;Zobrazení tempa...</translation>
-    </message>
-    <message>
-        <source>Tempo Map</source>
-        <translation type="obsolete">Zobrazení tempa</translation>
-    </message>
-    <message>
-        <source>Tempo map</source>
-        <translation type="obsolete">Zobrazení tempa</translation>
-    </message>
-    <message>
-        <source>Change session tempo map</source>
-        <translation type="obsolete">Změnit zobrazení tempa sezení</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="2532"/>
         <source>&amp;Options...</source>
         <translation>&amp;Volby...</translation>
@@ -6641,10 +5580,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>&amp;Nouzové zastavení</translation>
     </message>
     <message>
-        <source>Shift+Ctrl+L</source>
-        <translation type="obsolete">Shift+Ctrl+L</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="2649"/>
         <source>Loop &amp;Set</source>
         <translation>Nastavení &amp;smyčky</translation>
@@ -6757,10 +5692,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMainForm.ui" line="2741"/>
         <source>Transport punch in/out</source>
         <translation>Začátek/Konec přepisu přehrávání</translation>
-    </message>
-    <message>
-        <source>Shift+Ctrl+P</source>
-        <translation type="obsolete">Shift+Ctrl+P</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2749"/>
@@ -6931,17 +5862,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <source>Gain</source>
         <translation>Zesílení</translation>
     </message>
-    <message>
-        <source>MIDI Controller...</source>
-        <translation type="obsolete">Ovladač MIDI...</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorMidiControlButton</name>
-    <message>
-        <source>MIDI Controller...</source>
-        <translation type="obsolete">Ovladač MIDI...</translation>
-    </message>
 </context>
 <context>
     <name>qtractorMidiControlForm</name>
@@ -6976,10 +5896,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>&amp;Zavést...</translation>
     </message>
     <message>
-        <source>Alt+I</source>
-        <translation type="obsolete">Alt+I</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiControlForm.ui" line="85"/>
         <source>Remove controller file</source>
         <translation>Odstranit soubor s ovladačem</translation>
@@ -6988,10 +5904,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMidiControlForm.ui" line="88"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="98"/>
@@ -7004,10 +5916,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>&amp;Nahoru</translation>
     </message>
     <message>
-        <source>Alt+U</source>
-        <translation type="obsolete">Alt+U</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiControlForm.ui" line="111"/>
         <source>Move controller file down on list order</source>
         <translation>Posunout soubor s ovladačem dolů v seznamu</translation>
@@ -7016,18 +5924,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMidiControlForm.ui" line="114"/>
         <source>&amp;Down</source>
         <translation>&amp;Dolů</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <translation type="obsolete">Alt+D</translation>
-    </message>
-    <message>
-        <source>C&amp;hannel</source>
-        <translation type="obsolete">&amp;Kanál</translation>
-    </message>
-    <message>
-        <source>&amp;Controller</source>
-        <translation type="obsolete">&amp;Ovladač</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="176"/>
@@ -7045,17 +5941,9 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Kanál MIDI</translation>
     </message>
     <message>
-        <source>MIDI Controller</source>
-        <translation type="obsolete">Ovladač MIDI</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiControlForm.ui" line="243"/>
         <source>Command action</source>
         <translation>Krok příkazu</translation>
-    </message>
-    <message>
-        <source>Command parameter</source>
-        <translation type="obsolete">Parametr příkazu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="250"/>
@@ -7078,10 +5966,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>&amp;Přiřadit</translation>
     </message>
     <message>
-        <source>Alt+M</source>
-        <translation type="obsolete">Alt+M</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiControlForm.ui" line="279"/>
         <source>Controller map</source>
         <translation>Zobrazení ovladače</translation>
@@ -7090,10 +5974,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMidiControlForm.ui" line="303"/>
         <source>Channel</source>
         <translation>Kanál</translation>
-    </message>
-    <message>
-        <source>Controller</source>
-        <translation type="obsolete">Ovladač</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="318"/>
@@ -7171,10 +6051,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Zr&amp;ušit přiřazení</translation>
     </message>
     <message>
-        <source>Alt+N</source>
-        <translation type="obsolete">Alt+N</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiControlForm.ui" line="357"/>
         <source>Reload/apply all controller files</source>
         <translation>Nahrát znovu/Použít všechny soubory s ovladači</translation>
@@ -7185,10 +6061,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Na&amp;hrát znovu</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Export to controller file</source>
         <translation>Vyvést do souboru s ovladačem</translation>
@@ -7197,10 +6069,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
         <source>E&amp;xport...</source>
         <translation>V&amp;yvést...</translation>
-    </message>
-    <message>
-        <source>Alt+X</source>
-        <translation type="obsolete">Alt+X</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="383"/>
@@ -7365,10 +6233,6 @@ Chcete použít soubory s ovladači?</translation>
         <location filename="../qtractorMidiControlObserverForm.ui" line="166"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
-    </message>
-    <message>
-        <source>(Any)</source>
-        <translation type="obsolete">(Jakýkoli)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="96"/>
@@ -7663,10 +6527,6 @@ Hodnota:	%3</translation>
         <translation>Změna výšky tónu (%1)</translation>
     </message>
     <message>
-        <source>Pich Bend (%d)</source>
-        <translation type="obsolete">Ohyb výšky tónu (%d)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditor.cpp" line="4873"/>
         <source>SysEx (%1 bytes)
 Data: </source>
@@ -7696,58 +6556,14 @@ Délka:	%3</translation>
         <translation>Klapnout/doba</translation>
     </message>
     <message>
-        <source>Note On</source>
-        <translation type="obsolete">Tóny (noty) zapnuty</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="124"/>
         <source>Set current snap to %1</source>
         <translation>Nastavit nynější zapadnutí na %1</translation>
     </message>
     <message>
-        <source>Key Press</source>
-        <translation type="obsolete">Stisk klávesy</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="165"/>
         <source>Note Velocity</source>
         <translation>Rychlost noty</translation>
-    </message>
-    <message>
-        <source>Key Pressure</source>
-        <translation type="obsolete">Stisknutí klávesy</translation>
-    </message>
-    <message>
-        <source>Controller</source>
-        <translation type="obsolete">Ovladač</translation>
-    </message>
-    <message>
-        <source>Program Change</source>
-        <translation type="obsolete">Změna programu</translation>
-    </message>
-    <message>
-        <source>Channel Pressure</source>
-        <translation type="obsolete">Stisknutí kanálu</translation>
-    </message>
-    <message>
-        <source>Pitch Bend</source>
-        <translation type="obsolete">Změna výšky tónu</translation>
-    </message>
-    <message>
-        <source>System Exclusive</source>
-        <translation type="obsolete">Exkluzivní zpráva systému</translation>
-    </message>
-    <message>
-        <source>Pgm Change</source>
-        <translation type="obsolete">Změna Pgm</translation>
-    </message>
-    <message>
-        <source>Chan Press</source>
-        <translation type="obsolete">Stisknutí kanálu</translation>
-    </message>
-    <message>
-        <source>Sys Ex</source>
-        <translation type="obsolete">SysEx</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="179"/>
@@ -7758,10 +6574,6 @@ Délka:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="180"/>
         <source>Value type</source>
         <translation>Typ hodnoty</translation>
-    </message>
-    <message>
-        <source>Controller type</source>
-        <translation type="obsolete">Typ ovladače</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="181"/>
@@ -7848,14 +6660,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="391"/>
         <source>Save</source>
         <translation>Uložit</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="955"/>
@@ -7955,10 +6759,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="230"/>
         <source>&amp;Help</source>
         <translation>&amp;Nápověda</translation>
-    </message>
-    <message>
-        <source>&amp;Context</source>
-        <translation type="obsolete">&amp;Souvislosti</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="385"/>
@@ -8295,10 +7095,6 @@ Chcete uložit změny?</translation>
         <translation>Smazat</translation>
     </message>
     <message>
-        <source>Select &amp;None</source>
-        <translation type="obsolete">Žádný &amp;výběr</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="774"/>
         <source>Select None</source>
         <translation>Žádný výběr</translation>
@@ -8315,10 +7111,6 @@ Chcete uložit změny?</translation>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <source>Select &amp;Invert</source>
-        <translation type="obsolete">&amp;Obrátit výběr</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="791"/>
         <source>Select Invert</source>
         <translation>Obrátit výběr</translation>
@@ -8333,10 +7125,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="800"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
-    </message>
-    <message>
-        <source>Select &amp;All</source>
-        <translation type="obsolete">Vybrat &amp;vše</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="757"/>
@@ -9066,10 +7854,6 @@ Chcete uložit změny?</translation>
         <translation>Mřížka</translation>
     </message>
     <message>
-        <source>Snap grid mode</source>
-        <translation type="obsolete">Režim zapadávání do mřížky</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1381"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Obnovit</translation>
@@ -9180,10 +7964,6 @@ Chcete uložit změny?</translation>
         <translation>Přesunout smyčku</translation>
     </message>
     <message>
-        <source>Shift+Ctrl+L</source>
-        <translation type="obsolete">Shift+Ctrl+L</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1507"/>
         <source>Loop &amp;Set</source>
         <translation>Umístit &amp;smyčku</translation>
@@ -9282,10 +8062,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="1602"/>
         <source>Transport punch in/out</source>
         <translation>Přesunout důraz: zapnutý/vypnutý</translation>
-    </message>
-    <message>
-        <source>Shift+Ctrl+P</source>
-        <translation type="obsolete">Shift+Ctrl+P</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1610"/>
@@ -9482,10 +8258,6 @@ Chcete uložit změny?</translation>
         <translation>Změna výšky tónu</translation>
     </message>
     <message>
-        <source>Pich Bend</source>
-        <translation type="obsolete">Ohyb výšky tónu</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEventList.cpp" line="334"/>
         <source>SysEx</source>
         <translation>SysEx</translation>
@@ -9522,10 +8294,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiListView.cpp" line="135"/>
         <source>tpqn</source>
         <translation>tpqn</translation>
-    </message>
-    <message>
-        <source>tpb</source>
-        <translation type="obsolete">tpb</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="136"/>
@@ -9604,10 +8372,6 @@ Chcete uložit změny?</translation>
         <translation>&amp;Zavést...</translation>
     </message>
     <message>
-        <source>Alt+I</source>
-        <translation type="obsolete">Alt+I</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiSysexForm.ui" line="88"/>
         <source>Export to SysEx file</source>
         <translation>Vyvést do souboru SysEx</translation>
@@ -9616,10 +8380,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiSysexForm.ui" line="91"/>
         <source>E&amp;xport...</source>
         <translation>V&amp;yvést...</translation>
-    </message>
-    <message>
-        <source>Alt+X</source>
-        <translation type="obsolete">Alt+X</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="114"/>
@@ -9632,10 +8392,6 @@ Chcete uložit změny?</translation>
         <translation>&amp;Nahoru</translation>
     </message>
     <message>
-        <source>Alt+U</source>
-        <translation type="obsolete">Alt+U</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiSysexForm.ui" line="127"/>
         <source>Move SysEx item down on list order</source>
         <translation>Posunout položku SysEx dolů v seznamu</translation>
@@ -9644,10 +8400,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiSysexForm.ui" line="130"/>
         <source>&amp;Down</source>
         <translation>&amp;Dolů</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <translation type="obsolete">Alt+D</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="143"/>
@@ -9682,10 +8434,6 @@ Chcete uložit změny?</translation>
         <translation>&amp;Přidat</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiSysexForm.ui" line="217"/>
         <source>Update SysEx item</source>
         <translation>Obnovit položku SysEx</translation>
@@ -9696,10 +8444,6 @@ Chcete uložit změny?</translation>
         <translation>Obnovi&amp;t</translation>
     </message>
     <message>
-        <source>Alt+T</source>
-        <translation type="obsolete">Alt+T</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiSysexForm.ui" line="230"/>
         <source>Remove SysEx item</source>
         <translation>Odstranit položku SysEx</translation>
@@ -9708,26 +8452,6 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiSysexForm.ui" line="233"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
-    </message>
-    <message>
-        <source>Clear all SysEx items</source>
-        <translation type="obsolete">Smazat všechny položky SysEx</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Smazat</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="213"/>
@@ -9852,12 +8576,12 @@ Promiňte.</translation>
         <translation>(výchozí)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="743"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="741"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="744"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="742"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -9870,57 +8594,49 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="769"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="767"/>
         <source>none</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="774"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="838"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="772"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="836"/>
         <source>quantize</source>
         <translation>Kvantizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="776"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="902"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="774"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="900"/>
         <source>transpose</source>
         <translation>Převést</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="778"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="923"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="776"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="921"/>
         <source>normalize</source>
         <translation>Normalizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="780"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="953"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="778"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="951"/>
         <source>randomize</source>
         <translation>Náhodně vybrat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="782"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1015"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="780"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1013"/>
         <source>resize</source>
         <translation>Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="784"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1039"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="782"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1037"/>
         <source>rescale</source>
         <translation>Změnit měřítko</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="786"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1078"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="784"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1076"/>
         <source>timeshift</source>
         <translation>Časový posun</translation>
     </message>
@@ -9959,7 +8675,7 @@ Jste si jistý?</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="162"/>
         <location filename="../qtractorMidiToolsForm.ui" line="439"/>
         <location filename="../qtractorMidiToolsForm.ui" line="699"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1010"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1005"/>
         <source>&amp;Time:</source>
         <translation>Č&amp;as:</translation>
     </message>
@@ -9977,7 +8693,7 @@ Jste si jistý?</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="214"/>
         <location filename="../qtractorMidiToolsForm.ui" line="725"/>
         <location filename="../qtractorMidiToolsForm.ui" line="829"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1055"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1050"/>
         <source>&amp;Duration:</source>
         <translation>&amp;Doba trvání:</translation>
     </message>
@@ -9990,10 +8706,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="234"/>
         <source>Quantize duration percent</source>
         <translation>Kvantizovat procento doby trvání</translation>
-    </message>
-    <message>
-        <source>&amp;Swing:</source>
-        <translation type="obsolete">&amp;Výkyv:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="260"/>
@@ -10118,88 +8830,88 @@ Jste si jistý?</translation>
         <translation>&amp;Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="912"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="907"/>
         <source>Resize value mode</source>
         <translation>Režim změny velikosti hodnoty</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="916"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="911"/>
         <source>Flat</source>
         <translation>Rovný</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="921"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="916"/>
         <source>Ramp</source>
         <translation>Nájezd</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="935"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="930"/>
         <source>Resize final value</source>
         <translation>Změnit konečnou velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="972"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="987"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="967"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="982"/>
         <source>Re&amp;scale</source>
         <translation>Změnit &amp;měřítko</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="984"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="979"/>
         <source>Rescale selected events</source>
         <translation>Změnit měřítko vybraných událostí</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1023"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1018"/>
         <source>Rescale time</source>
         <translation>Změnit měřítko času</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1068"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1063"/>
         <source>Rescale duration</source>
         <translation>Změnit měřítko doby trvání</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1100"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1095"/>
         <source>Rescale value</source>
         <translation>Změnit měřítko hodnoty</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1133"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1128"/>
         <source>T&amp;imeshift</source>
         <translation>Ča&amp;sový posun</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1145"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1140"/>
         <source>Timeshift selected events</source>
         <translation>Časově posunout vybrané události</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1148"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1143"/>
         <source>Timeshift</source>
         <translation>Časově posunout</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1171"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1166"/>
         <source>P:</source>
         <translation>P:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1184"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1179"/>
         <source>Timeshift parameter</source>
         <translation>Parametr pro časový posun</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1209"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1204"/>
         <source>Timeshift parameter (log)</source>
         <translation>Parametr pro časový posun (log)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1246"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1241"/>
         <source>Timeshift curve</source>
         <translation>Křivka časového posunu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1259"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1254"/>
         <source>P = 0 : no change.
 P &gt; 0 : accelerating shift.
 P &lt; 0 : slowing down shift.
@@ -10210,7 +8922,7 @@ P &lt; 0 : zpomalení posunu.
 (Modré) značky pro úpravy začátku/konce vymezují rozsah posunu.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1269"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1264"/>
         <source>Timeshift duration</source>
         <translation>Doba trvání posunu</translation>
     </message>
@@ -10223,9 +8935,9 @@ P &lt; 0 : zpomalení posunu.
         <location filename="../qtractorMidiToolsForm.ui" line="715"/>
         <location filename="../qtractorMidiToolsForm.ui" line="741"/>
         <location filename="../qtractorMidiToolsForm.ui" line="767"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1026"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1071"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1103"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1021"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1066"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1098"/>
         <source> %</source>
         <translation> %</translation>
     </message>
@@ -10237,8 +8949,8 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="585"/>
         <location filename="../qtractorMidiToolsForm.ui" line="751"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="889"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1087"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="884"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1082"/>
         <source>&amp;Value:</source>
         <translation>&amp;Délka trvání:</translation>
     </message>
@@ -10279,10 +8991,6 @@ P &lt; 0 : zpomalení posunu.
         <translation>Náhodně vybrat délku trvání tónu</translation>
     </message>
     <message>
-        <source>Re&amp;size</source>
-        <translation type="obsolete">Změ&amp;nit velikost</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiToolsForm.ui" line="803"/>
         <source>Resize selected events</source>
         <translation>Změnit velikost výbraných událostí</translation>
@@ -10298,12 +9006,7 @@ P &lt; 0 : zpomalení posunu.
         <translation>Změnit velikost formátu doby trvání</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="868"/>
-        <source>Percentage</source>
-        <translation>Procento</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="902"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="897"/>
         <source>Resize value</source>
         <translation>Změnit velikost hodnoty</translation>
     </message>
@@ -10332,29 +9035,6 @@ P &lt; 0 : zpomalení posunu.
     </message>
 </context>
 <context>
-    <name>qtractorMixerRack</name>
-    <message>
-        <source>&amp;Inputs</source>
-        <translation type="obsolete">&amp;Vstupy</translation>
-    </message>
-    <message>
-        <source>&amp;Outputs</source>
-        <translation type="obsolete">&amp;Výstupy</translation>
-    </message>
-    <message>
-        <source>&amp;Monitor</source>
-        <translation type="obsolete">&amp;Sledování</translation>
-    </message>
-    <message>
-        <source>&amp;Pass-through</source>
-        <translation type="obsolete">&amp;Průchodnost</translation>
-    </message>
-    <message>
-        <source>&amp;Buses...</source>
-        <translation type="obsolete">&amp;Sběrnice...</translation>
-    </message>
-</context>
-<context>
     <name>qtractorMixerRackWidget</name>
     <message>
         <location filename="../qtractorMixer.cpp" line="980"/>
@@ -10380,14 +9060,6 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <source>monitor</source>
-        <translation type="obsolete">Sledovat</translation>
-    </message>
-    <message>
-        <source>Monitor (rec)</source>
-        <translation type="obsolete">Sledovat (nahrávání)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMixer.cpp" line="352"/>
         <source>inputs</source>
         <translation>Vstupy</translation>
@@ -10401,10 +9073,6 @@ P &lt; 0 : zpomalení posunu.
         <location filename="../qtractorMixer.cpp" line="353"/>
         <source>Connect %1</source>
         <translation>Připojit %1</translation>
-    </message>
-    <message>
-        <source>Monitor (thru)</source>
-        <translation type="obsolete">Sledovat (skrz: &quot;thru&quot;)</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="532"/>
@@ -10422,26 +9090,14 @@ P &lt; 0 : zpomalení posunu.
         <translation>(Zvuk)</translation>
     </message>
     <message>
-        <source>Gain</source>
-        <translation type="obsolete">Zesílení</translation>
-    </message>
-    <message>
         <location filename="../qtractorMixer.cpp" line="547"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <source>Volume</source>
-        <translation type="obsolete">Hlasitost</translation>
-    </message>
-    <message>
         <location filename="../qtractorMixer.cpp" line="551"/>
         <source>(None)</source>
         <translation>(Žádný)</translation>
-    </message>
-    <message>
-        <source>Pan</source>
-        <translation type="obsolete">Vyvážení</translation>
     </message>
 </context>
 <context>
@@ -10517,18 +9173,6 @@ Do you want to apply the changes?</source>
         <translation>Některá nastavení byla změněna.
 
 Chcete použít tyto změny?</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="897"/>
@@ -10673,10 +9317,6 @@ Chcete použít tyto změny?</translation>
         <translation>Lineární</translation>
     </message>
     <message>
-        <source>Tran&amp;sport mode:</source>
-        <translation type="obsolete">Režim pře&amp;sunu:</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
         <source>Transport control mode (JACK)</source>
         <translation>Režim ovládání přesunu (JACK)</translation>
@@ -10716,10 +9356,6 @@ Chcete použít tyto změny?</translation>
         <translation>Auto&amp;matické natahování času</translation>
     </message>
     <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="914"/>
         <source>Whether to use WSOLA time-stretching</source>
         <translation>Zda se má použít WSOLA natahování času</translation>
@@ -10728,10 +9364,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="917"/>
         <source>&amp;WSOLA time-stretching</source>
         <translation>&amp;WSOLA natahování času</translation>
-    </message>
-    <message>
-        <source>Alt+W</source>
-        <translation type="obsolete">Alt+W</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="930"/>
@@ -10744,21 +9376,9 @@ Chcete použít tyto změny?</translation>
         <translation>WSOLA rych&amp;lé vyhledání</translation>
     </message>
     <message>
-        <source>Alt+K</source>
-        <translation type="obsolete">Alt+K</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="946"/>
         <source>Whether to have separate audition/pre-listening player output ports</source>
         <translation>Zda mít oddělené poslechové/před-poslechové výstupní přípojky přehrávacího zařízení</translation>
-    </message>
-    <message>
-        <source>Dedicated au&amp;dition/pre-listening player outputs</source>
-        <translation type="obsolete">Jednoúčelové po&amp;slechové/před-poslechové výstupní přípojky přehrávacího zařízení</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <translation type="obsolete">Alt+D</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1007"/>
@@ -10775,10 +9395,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1025"/>
         <source>&amp;Enable audio metronome</source>
         <translation>&amp;Povolit zvukový metronom</translation>
-    </message>
-    <message>
-        <source>Alt+E</source>
-        <translation type="obsolete">Alt+E</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1038"/>
@@ -10835,14 +9451,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1288"/>
         <source>Whether to have separate audio metronome output ports</source>
         <translation>Zda mít pro metronom oddělené zvukové výstupní přípojky</translation>
-    </message>
-    <message>
-        <source>Dedicated a&amp;udio metronome outputs</source>
-        <translation type="obsolete">Jednoúčelové zv&amp;ukové výstupy metronomu</translation>
-    </message>
-    <message>
-        <source>Alt+U</source>
-        <translation type="obsolete">Alt+U</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1318"/>
@@ -10946,10 +9554,6 @@ Chcete použít tyto změny?</translation>
         <translation>Režim ovládání ukazovátka polohy písně MIDI (UPP)</translation>
     </message>
     <message>
-        <source>Cloc&amp;k:</source>
-        <translation type="obsolete">&amp;Hodiny:</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="1713"/>
         <source>MIDI Clock control mode</source>
         <translation>Ovládací režim &amp;hodin MIDI:</translation>
@@ -10963,10 +9567,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1749"/>
         <source>Dedicated MIDI &amp;control input/output</source>
         <translation>&amp;Jednoúčelový ovládací vstup/výstup pro MIDI</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="59"/>
@@ -11124,10 +9724,6 @@ Chcete použít tyto změny?</translation>
         <translation>Přip&amp;ojit automaticky</translation>
     </message>
     <message>
-        <source>Alt+N</source>
-        <translation type="obsolete">Alt+N</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="1504"/>
         <source>Whether to have separate MIDI player output ports</source>
         <translation>Zda mít oddělené výstupní přípojky přehrávače MIDI</translation>
@@ -11136,10 +9732,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1507"/>
         <source>Dedicated MIDI p&amp;layer outputs</source>
         <translation>Jednoúčelové výstupy pře&amp;hrávače MIDI</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1697"/>
@@ -11155,10 +9747,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="2104"/>
         <source>Dedicated M&amp;IDI metronome output</source>
         <translation>Jenoúčelový výstup metronomu pro M&amp;IDI</translation>
-    </message>
-    <message>
-        <source>Alt+I</source>
-        <translation type="obsolete">Alt+I</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1987"/>
@@ -11284,10 +9872,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Potvrdit odstranění</translation>
     </message>
     <message>
-        <source>&amp;Number of recent files:</source>
-        <translation type="obsolete">&amp;Počet naposledy otevřených souborů:</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="368"/>
         <source>The maximum number of recent files to keep in menu</source>
         <translation>Nejvyšší počet naposledy otevřených souborů, které mají být podrženy v seznamu nabídek</translation>
@@ -11306,14 +9890,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="406"/>
         <source>Whether to show the complete directory path of loaded session files</source>
         <translation>Zda se má ukázat úplnou adresářovou cestu nahraných souborů se sezením</translation>
-    </message>
-    <message>
-        <source>Show complete &amp;path of session files</source>
-        <translation type="obsolete">Ukázat úplnou adresářovou &amp;cestu nahraných souborů se sezením</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation type="obsolete">Alt+P</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="617"/>
@@ -11346,14 +9922,6 @@ Chcete použít tyto změny?</translation>
         <translation>Zda se mají držet všechna nástrojová okna navrchu hlavního okna</translation>
     </message>
     <message>
-        <source>&amp;Keep tool windows always on top</source>
-        <translation type="obsolete">&amp;Držet všechna nástrojová okna vždy navrchu</translation>
-    </message>
-    <message>
-        <source>Time display &amp;format:</source>
-        <translation type="obsolete">&amp;Formát zobrazení času:</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="2158"/>
         <source>Time display format</source>
         <translation>Formát zobrazení času</translation>
@@ -11377,14 +9945,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="454"/>
         <source>Whether to try dropping multiple audio files into the same track</source>
         <translation>Zda se má zkusit upustit mnohonásobné zvukové soubory do stejné stopy</translation>
-    </message>
-    <message>
-        <source>Drop multiple audio files into the &amp;same track</source>
-        <translation type="obsolete">Upustit mnohonásobné zvukové soubory do &amp;stejné stopy</translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <translation type="obsolete">Alt+S</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2199"/>
@@ -11450,10 +10010,6 @@ Chcete použít tyto změny?</translation>
         <translation>Zda se mají vytvořit nová sezení založená na předlohách</translation>
     </message>
     <message>
-        <source>New session &amp;template:</source>
-        <translation type="obsolete">&amp;Předloha pro nové sezení:</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="156"/>
         <source>New session template</source>
         <translation>Předloha pro nové sezení</translation>
@@ -11469,10 +10025,6 @@ Chcete použít tyto změny?</translation>
         <translation>Zda se mají uložit zálohovací verze stávajících sezení</translation>
     </message>
     <message>
-        <source>Save &amp;backup versions of existing sessions</source>
-        <translation type="obsolete">Uložit &amp;zálohovací verze stávajících sezení</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="2127"/>
         <source>Defaults</source>
         <translation>Výchozí</translation>
@@ -11481,10 +10033,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="2142"/>
         <source>&amp;Time display format:</source>
         <translation>Formát zobrazení č&amp;asu:</translation>
-    </message>
-    <message>
-        <source>Mixer</source>
-        <translation type="obsolete">Mixážní pult</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2330"/>
@@ -11616,10 +10164,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Nastavit znovu</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="2763"/>
         <source>Messages</source>
         <translation>Sdělení</translation>
@@ -11640,21 +10184,9 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Font...</translation>
     </message>
     <message>
-        <source>Alt+F</source>
-        <translation type="obsolete">Alt+F</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="2853"/>
         <source>Whether to keep a maximum number of lines in the messages window</source>
         <translation>Zda se má podržet nejvyšší počet řádků ve sdělovacím okně</translation>
-    </message>
-    <message>
-        <source>&amp;Messages limit:</source>
-        <translation type="obsolete">&amp;Nejvyšší počet sdělení:</translation>
-    </message>
-    <message>
-        <source>Alt+M</source>
-        <translation type="obsolete">Alt+M</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2869"/>
@@ -11670,22 +10202,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="2298"/>
         <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
         <translation>Zda při úpravách podržet automatické projíždění (sledovat polohu přehrávání).</translation>
-    </message>
-    <message>
-        <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="obsolete">&amp;Při úpravách podržet automatické projíždění (sledovat polohu přehrávání)</translation>
-    </message>
-    <message>
-        <source>Dialogs</source>
-        <translation type="obsolete">Dialogy</translation>
-    </message>
-    <message>
-        <source>Whether to use native dialogs.</source>
-        <translation type="obsolete">Zda se mají použít původní dialogy.</translation>
-    </message>
-    <message>
-        <source>Use &amp;native dialogs</source>
-        <translation type="obsolete">Použít &amp;původní dialogy</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2900"/>
@@ -11820,10 +10336,6 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
         <translation>Připoji&amp;t automaticky</translation>
     </message>
     <message>
-        <source>Alt+T</source>
-        <translation type="obsolete">Alt+T</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="3413"/>
         <source>Editor</source>
         <translation>Editor</translation>
@@ -11837,10 +10349,6 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
         <location filename="../qtractorOptionsForm.ui" line="3437"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
         <translation>Otevřít &amp;editor (rozhraní) přídavného modulu</translation>
-    </message>
-    <message>
-        <source>Alt+G</source>
-        <translation type="obsolete">Alt+G</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3490"/>
@@ -11863,14 +10371,6 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
         <translation>Automatizace přídavného modulu s &amp;vysokým rozlišením (14-bit)</translation>
     </message>
     <message>
-        <source>Alt+H</source>
-        <translation type="obsolete">Alt+H</translation>
-    </message>
-    <message>
-        <source>Dedicated audi&amp;o outputs</source>
-        <translation type="obsolete">Jednoúčelové zvuk&amp;ové výstupy</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="3453"/>
         <source>Experimental</source>
         <translation>Pokusný</translation>
@@ -11884,14 +10384,6 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
         <location filename="../qtractorOptionsForm.ui" line="3477"/>
         <source>Dummy &amp;VST plugin scan (RECOMMENDED)</source>
         <translation>Umělý &amp;VST přídavný modul při hledání (DOPORUČENO)</translation>
-    </message>
-    <message>
-        <source>Alt+V</source>
-        <translation type="obsolete">Alt+V</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
     </message>
 </context>
 <context>
@@ -11909,18 +10401,6 @@ Do you want to apply the changes?</source>
         <translation>Některá nastavení byla změněna.
 
 Chcete použít tyto změny?</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="36"/>
@@ -11972,17 +10452,9 @@ Chcete použít tyto změny?</translation>
         <source>BBT</source>
         <translation>TDT</translation>
     </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
 </context>
 <context>
     <name>qtractorPluginForm</name>
-    <message>
-        <source>(default)</source>
-        <translation type="obsolete">(výchozí)</translation>
-    </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="203"/>
         <source>Page %1</source>
@@ -12031,14 +10503,6 @@ Promiňte.</translation>
         <translation>&amp;Žádné</translation>
     </message>
     <message>
-        <source>MIDI Controller...</source>
-        <translation type="obsolete">Ovladač MIDI...</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
         <location filename="../qtractorPluginForm.cpp" line="577"/>
         <source>Save Preset</source>
         <translation>Uložit přednastavení</translation>
@@ -12060,10 +10524,6 @@ Are you sure?</source>
 &quot;%1&quot; (%2)
 
 Jste si jistý?</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="45"/>
@@ -12089,14 +10549,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorPluginForm.ui" line="116"/>
         <source>Delete preset</source>
         <translation>Smazat přednastavení</translation>
-    </message>
-    <message>
-        <source>Plugin parameters</source>
-        <translation type="obsolete">Parametry přídavného modulu</translation>
-    </message>
-    <message>
-        <source>Params</source>
-        <translation type="obsolete">Parametry</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="149"/>
@@ -12267,10 +10719,6 @@ Jste si jistý?</translation>
         <translation>&amp;Připojit automaticky</translation>
     </message>
     <message>
-        <source>Act&amp;ivate</source>
-        <translation type="obsolete">Za&amp;pnout</translation>
-    </message>
-    <message>
         <location filename="../qtractorPluginListView.cpp" line="1489"/>
         <source>Acti&amp;vate All</source>
         <translation>Z&amp;apnout vše</translation>
@@ -12294,10 +10742,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorPluginListView.cpp" line="1521"/>
         <source>Move &amp;Down</source>
         <translation>Posunout &amp;dolů</translation>
-    </message>
-    <message>
-        <source>&amp;Edit Plugin...</source>
-        <translation type="obsolete">&amp;Upravit přídavný modul...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1598"/>
@@ -12414,21 +10858,9 @@ Jste si jistý?</translation>
         <translation>Zapnout přídavný modul při vložení</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../qtractorPluginSelectForm.ui" line="218"/>
         <source>Plugin scanning in progress...</source>
         <translation>Běží hledání přídavných modulů...</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
 </context>
 <context>
@@ -12460,18 +10892,6 @@ Do you want to apply the changes?</source>
         <translation>Některá nastavení byla změněna.
 
 Chcete použít tyto změny?</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.cpp" line="288"/>
@@ -12584,29 +11004,9 @@ Chcete použít tyto změny?</translation>
         <translation>Rozlišení (tiky/doby; tpqn)</translation>
     </message>
     <message>
-        <source>Tempo (BPM)</source>
-        <translation type="obsolete">Tempo (počet úderů za minutu)</translation>
-    </message>
-    <message>
-        <source>&amp;Beats/Bar:</source>
-        <translation type="obsolete">&amp;Doby/takty:</translation>
-    </message>
-    <message>
-        <source>Time signature (beats/bar)</source>
-        <translation type="obsolete">Taktové označení (doby/takty)</translation>
-    </message>
-    <message>
-        <source> / 4</source>
-        <translation type="obsolete"> / 4</translation>
-    </message>
-    <message>
         <location filename="../qtractorSessionForm.ui" line="244"/>
         <source>T&amp;icks/Beat:</source>
         <translation>T&amp;iky/doby:</translation>
-    </message>
-    <message>
-        <source>Resolution (ticks/beat; TPQN)</source>
-        <translation type="obsolete">Rozvedení (akordu) (tiky/doby; TPQN)</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="292"/>
@@ -12659,10 +11059,6 @@ Chcete použít tyto změny?</translation>
         <source>Vertical Zoom (%)</source>
         <translation>Svislé přiblížení (%)</translation>
     </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
 </context>
 <context>
     <name>qtractorShortcutForm</name>
@@ -12702,34 +11098,6 @@ Chcete použít tyto změny?</translation>
         <translation>Ovladač &amp;MIDI...</translation>
     </message>
     <message>
-        <source>Keyboard shortcuts have been changed.</source>
-        <translation type="obsolete">Klávesové zkratky byly změněny.</translation>
-    </message>
-    <message>
-        <source>Do you want to apply the changes?</source>
-        <translation type="obsolete">Přejete si použít změny?</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
-        <source>Keyboard Shortcuts</source>
-        <translation type="obsolete">Klávesové zkratky</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="obsolete">Čin</translation>
-    </message>
-    <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
         <translation>Zkratky</translation>
@@ -12753,14 +11121,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
         <translation>Ovladač MIDI</translation>
-    </message>
-    <message>
-        <source>Shortcut</source>
-        <translation type="obsolete">Zkratka</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
     </message>
 </context>
 <context>
@@ -12881,26 +11241,6 @@ Chcete použít tyto změny?</translation>
         <translation>Snímky</translation>
     </message>
     <message>
-        <source>&amp;Frames</source>
-        <translation type="obsolete">&amp;Snímky</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss.zzz)</source>
-        <translation type="obsolete">Čas (hh:mm:ss.zzz)</translation>
-    </message>
-    <message>
-        <source>&amp;Time</source>
-        <translation type="obsolete">Č&amp;as</translation>
-    </message>
-    <message>
-        <source>BBT (bars.beats.ticks)</source>
-        <translation type="obsolete">TDT (takty-doby-tiky)</translation>
-    </message>
-    <message>
-        <source>&amp;BBT</source>
-        <translation type="obsolete">&amp;TDT</translation>
-    </message>
-    <message>
         <location filename="../qtractorTakeRangeForm.cpp" line="249"/>
         <source>Take %1</source>
         <translation>Záběr %1</translation>
@@ -12999,26 +11339,6 @@ Chcete použít tyto změny?</translation>
         <translation>Snímky</translation>
     </message>
     <message>
-        <source>Fra&amp;mes</source>
-        <translation type="obsolete">Sní&amp;mky</translation>
-    </message>
-    <message>
-        <source>Time (hh:mm:ss.zzz)</source>
-        <translation type="obsolete">Čas (hh:mm:ss.zzz)</translation>
-    </message>
-    <message>
-        <source>&amp;Time</source>
-        <translation type="obsolete">Č&amp;as</translation>
-    </message>
-    <message>
-        <source>BBT (bars.beats.ticks)</source>
-        <translation type="obsolete">TDT (takty.doby.tiky)</translation>
-    </message>
-    <message>
-        <source>&amp;BBT</source>
-        <translation type="obsolete">&amp;TDT</translation>
-    </message>
-    <message>
         <location filename="../qtractorTempoAdjustForm.cpp" line="178"/>
         <source>Warning</source>
         <translation>Varování</translation>
@@ -13044,14 +11364,6 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTimeScaleForm</name>
     <message>
-        <source>Tempo Map - Qtractor</source>
-        <translation type="obsolete">Zobrazení tempa - Qtractor</translation>
-    </message>
-    <message>
-        <source>Tempo map</source>
-        <translation type="obsolete">Zobrazení tempa</translation>
-    </message>
-    <message>
         <location filename="../qtractorTimeScaleForm.ui" line="75"/>
         <source>Bar</source>
         <translation>Takt</translation>
@@ -13065,10 +11377,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTimeScaleForm.ui" line="85"/>
         <source>Tempo</source>
         <translation>Tempo</translation>
-    </message>
-    <message>
-        <source>Signature</source>
-        <translation type="obsolete">Taktové označení</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="188"/>
@@ -13110,10 +11418,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTimeScaleForm.ui" line="146"/>
         <source>T&amp;ime:</source>
         <translation>Č&amp;as:</translation>
-    </message>
-    <message>
-        <source>Bar/Time node</source>
-        <translation type="obsolete">Takt/Časový uzel</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="165"/>
@@ -13172,10 +11476,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Obnovit</translation>
     </message>
     <message>
-        <source>Alt+F</source>
-        <translation type="obsolete">Alt+F</translation>
-    </message>
-    <message>
         <location filename="../qtractorTimeScaleForm.ui" line="385"/>
         <source>Add node</source>
         <translation>Přidat uzel</translation>
@@ -13185,10 +11485,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTimeScaleForm.cpp" line="933"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="398"/>
@@ -13202,10 +11498,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Obnovit</translation>
     </message>
     <message>
-        <source>Alt+U</source>
-        <translation type="obsolete">Alt+U</translation>
-    </message>
-    <message>
         <location filename="../qtractorTimeScaleForm.ui" line="411"/>
         <source>Remove node</source>
         <translation>Odstranit uzel</translation>
@@ -13215,10 +11507,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTimeScaleForm.cpp" line="943"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="424"/>
@@ -13372,18 +11660,6 @@ Chcete použít tyto změny?</translation>
         <translation>Barva pozadí</translation>
     </message>
     <message>
-        <source>Apply</source>
-        <translation type="obsolete">Použít</translation>
-    </message>
-    <message>
-        <source>Discard</source>
-        <translation type="obsolete">Vyhodit</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
-    </message>
-    <message>
         <location filename="../qtractorTrackForm.cpp" line="757"/>
         <location filename="../qtractorTrackForm.cpp" line="868"/>
         <source>(None)</source>
@@ -13425,10 +11701,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Zvuk</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../qtractorTrackForm.ui" line="114"/>
         <source>MIDI track type</source>
         <translation>Druh MIDI stopy</translation>
@@ -13439,10 +11711,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;MIDI</translation>
     </message>
     <message>
-        <source>Alt+M</source>
-        <translation type="obsolete">Alt+M</translation>
-    </message>
-    <message>
         <location filename="../qtractorTrackForm.ui" line="127"/>
         <source>Input / Output</source>
         <translation>Vstup/Výstup</translation>
@@ -13451,10 +11719,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTrackForm.ui" line="153"/>
         <source>Input bus name</source>
         <translation>Název vstupní sběrnice</translation>
-    </message>
-    <message>
-        <source>Ouput bus name</source>
-        <translation type="obsolete">Název výstupní sběrnice</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="174"/>
@@ -13502,10 +11766,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTrackForm.ui" line="256"/>
         <source>MIDI Omni: Capture All Channels</source>
         <translation>MIDI Omni: zachytávání všech kanálů</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="263"/>
@@ -13603,10 +11863,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <translation type="obsolete">Alt+R</translation>
-    </message>
-    <message>
         <location filename="../qtractorTrackForm.ui" line="561"/>
         <source>Move plugin up</source>
         <translation>Přesunout přídavný modul nahoru</translation>
@@ -13617,10 +11873,6 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Nahoru</translation>
     </message>
     <message>
-        <source>Alt+U</source>
-        <translation type="obsolete">Alt+U</translation>
-    </message>
-    <message>
         <location filename="../qtractorTrackForm.ui" line="583"/>
         <source>Move plugin down</source>
         <translation>Přesunout přídavný modul dolů</translation>
@@ -13629,21 +11881,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorTrackForm.ui" line="586"/>
         <source>&amp;Down</source>
         <translation>&amp;Dolů</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <translation type="obsolete">Alt+D</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorTrackItemWidget</name>
-    <message>
-        <source>Automation</source>
-        <translation type="obsolete">Automatizace</translation>
     </message>
 </context>
 <context>
@@ -13863,17 +12100,9 @@ Délka:	%3</translation>
         <translation>Normalizace záznamu</translation>
     </message>
     <message>
-        <source>clip quantize</source>
-        <translation type="obsolete">Kvantizace ukázky</translation>
-    </message>
-    <message>
         <location filename="../qtractorTracks.cpp" line="971"/>
         <source>clip import</source>
         <translation>Zavedení záznamu</translation>
-    </message>
-    <message>
-        <source>Export Audio Clip</source>
-        <translation type="obsolete">Exportovat zvukovou ukázku</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1172"/>
@@ -13881,53 +12110,9 @@ Délka:	%3</translation>
         <translation>Zvukové soubory (*.%1)</translation>
     </message>
     <message>
-        <source>Audio clip export: &quot;%1&quot; started...</source>
-        <translation type="obsolete">Export zvukové ukázky: &quot;%1&quot; právě začal...</translation>
-    </message>
-    <message>
-        <source>Audio clip export: &quot;%1&quot; complete.</source>
-        <translation type="obsolete">Export zvukové ukázky: &quot;%1&quot; je hotový.</translation>
-    </message>
-    <message>
-        <source>Audio clip export:
-
-&quot;%1&quot;
-
-failed.</source>
-        <translation type="obsolete">Export zvukové ukázky:
-
-&quot;%1&quot;
-
-selhal.</translation>
-    </message>
-    <message>
-        <source>Export MIDI Clip</source>
-        <translation type="obsolete">Exportovat MIDI ukázku</translation>
-    </message>
-    <message>
         <location filename="../qtractorTracks.cpp" line="1438"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Soubory MIDI (*.%1 *.smf *.midi)</translation>
-    </message>
-    <message>
-        <source>MIDI clip export: &quot;%1&quot; started...</source>
-        <translation type="obsolete">Export ukázky MIDI: &quot;%1&quot; právě začal...</translation>
-    </message>
-    <message>
-        <source>MIDI clip export: &quot;%1&quot; complete.</source>
-        <translation type="obsolete">Export ukázky MIDI: &quot;%1&quot; je hotový.</translation>
-    </message>
-    <message>
-        <source>MIDI clip export:
-
-&quot;%1&quot;
-
-failed.</source>
-        <translation type="obsolete">Export ukázky MIDI:
-
-&quot;%1&quot;
-
-selhal.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2501"/>
@@ -13946,14 +12131,6 @@ Are you sure?</source>
 &quot;%1&quot;
 
 Jste si jistý?</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="834"/>
@@ -13989,10 +12166,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorTracks.cpp" line="840"/>
         <source>timeshift</source>
         <translation>Časový posun</translation>
-    </message>
-    <message>
-        <source>clip tool %1</source>
-        <translation type="obsolete">Nástroj na záznamy %1</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="998"/>
@@ -14082,10 +12255,6 @@ Jste si jistý?</translation>
         <translation>Odstranit rozsah stopy</translation>
     </message>
     <message>
-        <source>Track %1</source>
-        <translation type="obsolete">Stopa %1</translation>
-    </message>
-    <message>
         <location filename="../qtractorTracks.cpp" line="2737"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
@@ -14102,13 +12271,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorTracks.cpp" line="2813"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Zavedení MIDI souboru: &quot;%1&quot;, stopa-kanál: %2.</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorVstPlugin::EditorWidget</name>
-    <message>
-        <source>%1 - Editor</source>
-        <translation type="obsolete">%1 - Editor</translation>
     </message>
 </context>
 </TS>

@@ -26,6 +26,7 @@
 #include "qtractorMidiSequence.h"
 
 #include <QColor>
+#include <QObject>
 
 
 // Forward declarations.
