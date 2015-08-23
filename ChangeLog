@@ -9,7 +9,7 @@ GIT HEAD
 - MIDI Tools/Transpose, Resize duration display format (frames,
   time or BBT) have been fixed.
 
-- Build fix for qt5.5 (patch by KaOS, thanks).
+- Build fix for Qt5.5 (patch by KaOS, thanks).
 
 - MIDI Tools/Quantize et al. are tentatively being corrected
   to take event times as relative to THE beginning of session,

@@ -6038,7 +6038,7 @@ void qtractorMainForm::updateSessionPost (void)
 	if (m_pSession->sampleRate() != iSampleRate) {
 		appendMessagesError(
 			tr("The original session sample rate (%1 Hz)\n"
-			"is not the same of the current audio engine (%2 Hz).\n\n"
+			"is not the same as the current audio engine (%2 Hz).\n\n"
 			"Saving and reloading from a new session file\n"
 			"is highly recommended.")
 			.arg(m_pSession->sampleRate())
