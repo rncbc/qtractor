@@ -62,10 +62,15 @@
 //
 
 #if QT_VERSION < 0x050000
-#ifdef CONFIG_X11
+#if defined(Q_WS_X11)
+#define CONFIG_X11
+#endif
+#else
+#if defined(QT_X11EXTRAS_LIB)
 #define CONFIG_X11
 #endif
 #endif
+
 
 #ifdef CONFIG_X11
 
@@ -237,7 +242,7 @@ public:
 			XRaiseWindow(m_pDisplay, m_wOwner);
 			// And then, let it get caught on destination
 			// by QApplication::x11EventFilter...
-			QByteArray value = QTRACTOR_XUNIQUE;
+			const QByteArray value = QTRACTOR_XUNIQUE;
 			XChangeProperty(
 				m_pDisplay,
 				m_wOwner,

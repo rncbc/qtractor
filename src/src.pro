@@ -352,7 +352,6 @@ QT += xml
 !lessThan(QT_MAJOR_VERSION, 5) {
 	QT += widgets
 	unix {
-		DEFINES += CONFIG_X11
 		QT += x11extras
 	}
 }
