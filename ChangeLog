@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Single/unique application instance control adapted to Qt5/X11
+  (cf. configure --enable-xunique). (EXPERIMENTAL)
+
 - MIDI Tools/Transpose, Resize duration display format (frames,
   time or BBT) have been fixed.
 
