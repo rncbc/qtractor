@@ -748,22 +748,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
 <context>
     <name>qtractorAudioMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="414"/>
+        <location filename="../qtractorAudioMeter.cpp" line="402"/>
         <source>Gain (dB)</source>
         <translation>Zesílení (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="415"/>
+        <location filename="../qtractorAudioMeter.cpp" line="403"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="599"/>
+        <location filename="../qtractorAudioMeter.cpp" line="587"/>
         <source>Pan: %1</source>
         <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="608"/>
+        <location filename="../qtractorAudioMeter.cpp" line="596"/>
         <source>Gain: %1 dB</source>
         <translation>Zesílení: %1 dB</translation>
     </message>
@@ -8319,22 +8319,22 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="297"/>
+        <location filename="../qtractorMidiMeter.cpp" line="285"/>
         <source>Volume (%)</source>
         <translation>Hlasitost (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="298"/>
+        <location filename="../qtractorMidiMeter.cpp" line="286"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="456"/>
+        <location filename="../qtractorMidiMeter.cpp" line="444"/>
         <source>Pan: %1</source>
         <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="466"/>
+        <location filename="../qtractorMidiMeter.cpp" line="454"/>
         <source>Volume: %1%</source>
         <translation>Hlasitost: %1%</translation>
     </message>
@@ -9014,22 +9014,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1363"/>
+        <location filename="../qtractorMixer.cpp" line="1263"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1364"/>
+        <location filename="../qtractorMixer.cpp" line="1264"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1366"/>
+        <location filename="../qtractorMixer.cpp" line="1266"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1373"/>
+        <location filename="../qtractorMixer.cpp" line="1273"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>
@@ -9037,22 +9037,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="980"/>
+        <location filename="../qtractorMixer.cpp" line="925"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="984"/>
+        <location filename="../qtractorMixer.cpp" line="929"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="990"/>
+        <location filename="../qtractorMixer.cpp" line="935"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Sledování</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="999"/>
+        <location filename="../qtractorMixer.cpp" line="944"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Sběrnice...</translation>
     </message>
@@ -9060,42 +9060,42 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="352"/>
+        <location filename="../qtractorMixer.cpp" line="342"/>
         <source>inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="352"/>
+        <location filename="../qtractorMixer.cpp" line="342"/>
         <source>outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="353"/>
+        <location filename="../qtractorMixer.cpp" line="343"/>
         <source>Connect %1</source>
         <translation>Připojit %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="532"/>
+        <location filename="../qtractorMixer.cpp" line="522"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="534"/>
+        <location filename="../qtractorMixer.cpp" line="524"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="543"/>
+        <location filename="../qtractorMixer.cpp" line="533"/>
         <source>(Audio)</source>
         <translation>(Zvuk)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="547"/>
+        <location filename="../qtractorMixer.cpp" line="537"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="551"/>
+        <location filename="../qtractorMixer.cpp" line="541"/>
         <source>(None)</source>
         <translation>(Žádný)</translation>
     </message>
@@ -9113,7 +9113,7 @@ P &lt; 0 : zpomalení posunu.
         <translation>Sledovat (nahrávání)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="126"/>
+        <location filename="../qtractorMixer.cpp" line="121"/>
         <source>Monitor (thru)</source>
         <translation>Sledovat (skrz: &quot;thru&quot;)</translation>
     </message>

@@ -1,7 +1,7 @@
 // qtractorAudioMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,11 +66,9 @@ public:
 	// Constructor.
 	qtractorAudioMeterValue(qtractorAudioMeter *pAudioMeter,
 		unsigned short iChannel, QWidget *pParent = 0);
-	// Default destructor.
-	~qtractorAudioMeterValue();
 
 	// Reset peak holder.
-	void peakReset();
+	void peakReset() { m_iPeak = 0; }
 
 	// Value refreshment.
 	void refresh();

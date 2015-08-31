@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -289,29 +289,6 @@ qtractorMeter::~qtractorMeter (void)
 }
 
 
-// Dynamic layout accessors.
-QWidget *qtractorMeter::topWidget (void) const
-{
-	return m_pTopWidget;
-}
-
-QHBoxLayout *qtractorMeter::topLayout (void) const
-{
-	return m_pTopLayout;
-}
-
-
-QWidget *qtractorMeter::boxWidget (void) const
-{
-	return m_pBoxWidget;
-}
-
-QHBoxLayout *qtractorMeter::boxLayout (void) const
-{
-	return m_pBoxLayout;
-}
-
-
 // Panning subject accessors.
 void qtractorMeter::setPanningSubject ( qtractorSubject *pSubject )
 {
@@ -393,40 +370,6 @@ float qtractorMeter::gain (void) const
 float qtractorMeter::prevGain (void) const
 {
 	return m_pGainObserver->prevValue();
-}
-
-
-// Common slider/spin-box accessors.
-qtractorObserverSlider *qtractorMeter::panSlider (void) const
-{
-	return m_pPanSlider;
-}
-
-qtractorObserverSpinBox *qtractorMeter::panSpinBox (void) const
-{
-	return m_pPanSpinBox;
-}
-
-qtractorObserverSlider *qtractorMeter::gainSlider (void) const
-{
-	return m_pGainSlider;
-}
-
-qtractorObserverSpinBox *qtractorMeter::gainSpinBox (void) const
-{
-	return m_pGainSpinBox;
-}
-
-
-// Peak falloff mode setting.
-void qtractorMeter::setPeakFalloff ( int iPeakFalloff )
-{
-	m_iPeakFalloff = iPeakFalloff;
-}
-
-int qtractorMeter::peakFalloff (void) const
-{
-	return m_iPeakFalloff;
 }
 
 

@@ -111,11 +111,6 @@ void qtractorMonitorButton::setTrack ( qtractorTrack *pTrack )
 	updateMonitor(); // Visitor setup.
 }
 
-qtractorTrack *qtractorMonitorButton::track (void) const
-{
-	return m_pTrack;
-}
-
 
 // Specific bus accessors.
 void qtractorMonitorButton::setBus ( qtractorBus *pBus )
@@ -126,11 +121,6 @@ void qtractorMonitorButton::setBus ( qtractorBus *pBus )
 	QPushButton::setToolTip(tr("Monitor (thru)"));
 
 	updateMonitor(); // Visitor setup.
-}
-
-qtractorBus *qtractorMonitorButton::bus (void) const
-{
-	return m_pBus;
 }
 
 
@@ -575,18 +565,6 @@ void qtractorMixerStrip::updateMidiLabel (void)
 }
 
 
-// Child accessors.
-qtractorPluginListView *qtractorMixerStrip::pluginListView (void) const
-{
-	return m_pPluginListView;
-}
-
-qtractorMeter *qtractorMixerStrip::meter (void) const
-{
-	return m_pMeter;
-}
-
-
 // Mixer strip clear/suspend delegates
 void qtractorMixerStrip::clear (void)
 {
@@ -649,11 +627,6 @@ void qtractorMixerStrip::setBus ( qtractorBus *pBus )
 	updateName();
 }
 
-qtractorBus *qtractorMixerStrip::bus (void) const
-{
-	return m_pBus;
-}
-
 
 // Track property accessors.
 void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
@@ -677,11 +650,6 @@ void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 
 	updateMidiLabel();
 	updateName();
-}
-
-qtractorTrack *qtractorMixerStrip::track (void) const
-{
-	return m_pTrack;
 }
 
 
@@ -743,11 +711,6 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 #endif
 }
 
-bool qtractorMixerStrip::isSelected (void) const
-{
-	return m_bSelected;
-}
-
 
 // Strip refreshment.
 void qtractorMixerStrip::refresh (void)
@@ -755,17 +718,6 @@ void qtractorMixerStrip::refresh (void)
 	if (m_pMeter) m_pMeter->refresh();
 }
 
-
-// Hacko-list-management marking...
-void qtractorMixerStrip::setMark ( int iMark )
-{
-	m_iMark = iMark;
-}
-
-int qtractorMixerStrip::mark (void) const
-{
-	return m_iMark;
-}
 
 // Mouse selection event handlers.
 void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
@@ -939,13 +891,6 @@ void qtractorMixerRackWidget::removeStrip ( qtractorMixerStrip *pStrip )
 }
 
 
-// The strip workspace widget.
-QWidget *qtractorMixerRackWidget::workspace (void) const
-{
-	return m_pWorkspaceWidget;
-}
-
-
 // Resize event handler.
 void qtractorMixerRackWidget::resizeEvent ( QResizeEvent *pResizeEvent )
 {
@@ -1009,13 +954,6 @@ void qtractorMixerRackWidget::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_pRack->setSelectedStrip(NULL);
 
 	QScrollArea::mousePressEvent(pMouseEvent);
-}
-
-
-// Initial minimum widget extents.
-QSize qtractorMixerRackWidget::sizeHint (void) const
-{
-	return QSize(160, 320);
 }
 
 
@@ -1126,19 +1064,6 @@ qtractorMixerRack::~qtractorMixerRack (void)
 }
 
 
-// The main mixer widget accessor.
-qtractorMixer *qtractorMixerRack::mixer (void) const
-{
-	return m_pMixer;
-}
-
-
-// The mixer strip workspace widget accessor.
-QWidget *qtractorMixerRack::workspace (void) const
-{
-	return m_pRackWidget->workspace();
-}
-
 // The mixer strip workspace methods.
 void qtractorMixerRack::ensureVisible ( int x, int y, int xm, int ym )
 {
@@ -1202,13 +1127,6 @@ void qtractorMixerRack::updateStrip (
 }
 
 
-// Current strip count.
-int qtractorMixerRack::stripCount (void) const
-{
-	return m_strips.count();
-}
-
-
 // Complete rack refreshment.
 void qtractorMixerRack::refresh (void)
 {
@@ -1241,11 +1159,6 @@ void qtractorMixerRack::setSelectEnabled ( bool bSelectEnabled )
 	}
 }
 
-bool qtractorMixerRack::isSelectEnabled (void) const
-{
-	return m_bSelectEnabled;
-}
-
 
 void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 {
@@ -1258,12 +1171,6 @@ void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 		emit selectionChanged();
 	}
 }
-
-qtractorMixerStrip *qtractorMixerRack::selectedStrip (void) const
-{
-	return m_pSelectedStrip;
-}
-
 
 
 // Hacko-list-management marking...
@@ -1340,13 +1247,6 @@ void qtractorMixerRack::busPropertiesSlot (void)
 		busForm.setBus(pStrip->bus());
 		busForm.exec();
 	}
-}
-
-
-// Multi-row workspace layout method.
-void qtractorMixerRack::updateWorkspace (void)
-{
-	m_pRackWidget->updateWorkspace();
 }
 
 
@@ -1459,30 +1359,6 @@ void qtractorMixer::saveMixerState (void)
 		settings.setValue("/Layout/DockWindows", QMainWindow::saveState());
 		settings.endGroup();
 	}
-}
-
-
-// Initial minimum widget extents.
-QSize qtractorMixer::sizeHint (void) const
-{
-	return QSize(480, 320);
-}
-
-
-// The mixer strips rack accessors.
-qtractorMixerRack *qtractorMixer::inputRack (void) const
-{
-	return m_pInputRack;
-}
-
-qtractorMixerRack *qtractorMixer::trackRack (void) const
-{
-	return m_pTrackRack;
-}
-
-qtractorMixerRack *qtractorMixer::outputRack (void) const
-{
-	return m_pOutputRack;
 }
 
 
