@@ -1,7 +1,7 @@
 // qtractorMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -99,17 +99,26 @@ public:
 	virtual ~qtractorMeter();
 
 	// Dynamic layout accessors.
-	QHBoxLayout *topLayout() const;
-	QWidget     *topWidget() const;
-	QHBoxLayout *boxLayout() const;
-	QWidget     *boxWidget() const;
+	QHBoxLayout *topLayout() const
+		{ return m_pTopLayout; }
+	QWidget *topWidget() const
+		{ return m_pTopWidget; }
+
+	QHBoxLayout *boxLayout() const
+		{ return m_pBoxLayout; }
+	QWidget *boxWidget() const
+		{ return m_pBoxWidget; }
 
 	// Common slider/spin-box accessors.
-	qtractorObserverSlider  *panSlider()  const;
-	qtractorObserverSpinBox *panSpinBox() const;
+	qtractorObserverSlider *panSlider() const
+		{ return m_pPanSlider; }
+	qtractorObserverSpinBox *panSpinBox() const
+		{ return m_pPanSpinBox; }
 
-	qtractorObserverSlider  *gainSlider()  const;
-	qtractorObserverSpinBox *gainSpinBox() const;
+	qtractorObserverSlider *gainSlider() const
+		{ return m_pGainSlider; }
+	qtractorObserverSpinBox *gainSpinBox() const
+		{ return m_pGainSpinBox; }
 
 	// Panning subject accessors.
 	void setPanningSubject(qtractorSubject *pSubject);
@@ -149,8 +158,10 @@ public:
 	virtual void peakReset() = 0;
 
 	// Peak falloff mode setting.
-	void setPeakFalloff(int bPeakFalloff);
-	int peakFalloff() const;
+	void setPeakFalloff(int iPeakFalloff)
+		{ m_iPeakFalloff = iPeakFalloff; }
+	int peakFalloff() const
+		{ return m_iPeakFalloff; }
 
 	// MIDI controller/observer attachment (context menu) activator.
 	void addMidiControlAction(

@@ -66,11 +66,13 @@ public:
 
 	// Specific track accessors.
 	void setTrack(qtractorTrack *pTrack);
-	qtractorTrack *track() const;
+	qtractorTrack *track() const
+		{ return m_pTrack; }
 
 	// Specific bus accessors.
 	void setBus(qtractorBus *pBus);
-	qtractorBus *bus() const;
+	qtractorBus *bus() const
+		{ return m_pBus; }
 
 protected slots:
 
@@ -121,27 +123,34 @@ public:
 	qtractorMonitor *monitor() const;
 
 	// Child accessors.
-	qtractorPluginListView *pluginListView() const;
-	qtractorMeter *meter() const;
+	qtractorPluginListView *pluginListView() const
+		{ return m_pPluginListView; }
+	qtractorMeter *meter() const
+		{ return m_pMeter; }
 
 	// Bus property accessors.
 	void setBus(qtractorBus *pBus);
-	qtractorBus *bus() const;
+	qtractorBus *bus() const
+		{ return m_pBus; }
 
 	// Track property accessors.
 	void setTrack(qtractorTrack *pTrack);
-	qtractorTrack *track() const;
+	qtractorTrack *track() const
+		{ return m_pTrack; }
 
 	// Selection methods.
 	void setSelected(bool bSelected);
-	bool isSelected() const;
+	bool isSelected() const
+		{ return m_bSelected; }
 
 	// Strip refreshment.
 	void refresh();
 
 	// Hacko-list-management marking...
-	void setMark(int iMark);
-	int mark() const;
+	void setMark(int iMark)
+		{ m_iMark = iMark; }
+	int mark() const
+		{ return m_iMark; }
 
 	// Special bus dispatchers.
 	void busConnections(qtractorBus::BusMode busMode);
@@ -221,7 +230,8 @@ public:
 	~qtractorMixerRackWidget();
 
 	// The mixer strip workspace widget.
-	QWidget *workspace() const;
+	QWidget *workspace() const
+		{ return m_pWorkspaceWidget; }
 
 	// Add/remove a mixer strip to/from rack workspace.
 	void addStrip(qtractorMixerStrip *pStrip);
@@ -242,7 +252,8 @@ protected:
 	void mousePressEvent(QMouseEvent *);
 
 	// Initial minimum widget extents.
-	QSize sizeHint() const;
+	QSize sizeHint() const
+		{ return QSize(160, 320); }
 
 private:
 
@@ -270,10 +281,12 @@ public:
 	~qtractorMixerRack();
 
 	// The main mixer widget accessor.
-	qtractorMixer *mixer() const;
+	qtractorMixer *mixer() const
+		{ return m_pMixer; }
 
 	// The mixer strip workspace widget accessor.
-	QWidget *workspace() const;
+	QWidget *workspace() const
+		{ return m_pRackWidget->workspace(); }
 
 	// The mixer strip workspace methods.
 	void ensureVisible(int x, int y, int xm, int ym);
@@ -289,7 +302,8 @@ public:
 	void updateStrip(qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor);
 
 	// Current Strip count.
-	int stripCount() const;
+	int stripCount() const
+		{ return m_strips.count(); }
 
 	// Complete rack refreshment.
 	void refresh();
@@ -299,17 +313,20 @@ public:
 
 	// Selection stuff.
 	void setSelectEnabled(bool bSelectEnabled);
-	bool isSelectEnabled() const;
+	bool isSelectEnabled() const
+		{ return m_bSelectEnabled; }
 
 	void setSelectedStrip(qtractorMixerStrip *pStrip);
-	qtractorMixerStrip *selectedStrip() const;
+	qtractorMixerStrip *selectedStrip() const
+		{ return m_pSelectedStrip; }
 
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
 
 	// Multi-row workspace layout method.
-	void updateWorkspace();
+	void updateWorkspace()
+		{ m_pRackWidget->updateWorkspace(); }
 
 public slots:
 
@@ -357,10 +374,13 @@ public:
 	~qtractorMixer();
 
 	// The mixer strips rack accessors.
-	qtractorMixerRack *inputRack()  const;
-	qtractorMixerRack *trackRack()  const;
-	qtractorMixerRack *outputRack() const;
-	
+	qtractorMixerRack *inputRack() const
+		{ return m_pInputRack; }
+	qtractorMixerRack *trackRack() const
+		{ return m_pTrackRack; }
+	qtractorMixerRack *outputRack() const
+		{ return m_pOutputRack; }
+
 	// Update buses and tracks'racks.
 	void updateBuses(bool bReset = false);
 	void updateTracks(bool bReset = false);
@@ -396,7 +416,8 @@ protected:
 	void saveMixerState();
 
 	// Initial minimum widget extents.
-	QSize sizeHint() const;
+	QSize sizeHint() const
+		{ return QSize(480, 320); }
 
 private:
 
