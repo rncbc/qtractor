@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.0.11, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.0.12, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1366,3 +1366,4 @@ echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo
 echo "Now type 'make', followed by 'make install' as root."
 echo
+
