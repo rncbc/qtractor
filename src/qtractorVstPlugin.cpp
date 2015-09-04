@@ -28,7 +28,6 @@
 #include "qtractorPluginForm.h"
 
 #include "qtractorMidiBuffer.h"
-
 #include "qtractorSession.h"
 
 #ifdef QTRACTOR_VST_EDITOR_TOOL
@@ -47,12 +46,18 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #endif
 
 
-#if defined(Q_WS_X11)
+#ifdef CONFIG_VST_X11
+
 #include <QX11Info>
+
+#if QT_VERSION < 0x050000
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
 #endif
+
+#endif	// CONFIG_VST_X11
+
 
 #if !defined(VST_2_3_EXTENSIONS)
 #ifdef CONFIG_VESTIGE
@@ -101,7 +106,8 @@ const int effFlagsProgramChunks = 32;
 //---------------------------------------------------------------------
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
 
-#if defined(Q_WS_X11)
+#ifdef CONFIG_VST_X11
+#if QT_VERSION < 0x050000
 
 static bool g_bXError = false;
 
@@ -122,7 +128,7 @@ static XEventProc getXEventProc ( Display *pDisplay, Window w )
 	g_bXError = false;
 	XErrorHandler oldErrorHandler = XSetErrorHandler(tempXErrorHandler);
 	XGetWindowProperty(pDisplay, w, aName, 0, 1, false,
-		AnyPropertyType, &aType,  &iSize, &iCount, &iBytes, &pData);
+		AnyPropertyType, &aType, &iSize, &iCount, &iBytes, &pData);
 	if (g_bXError == false && iCount == 1)
 		eventProc = (XEventProc) (pData);
 	XSetErrorHandler(oldErrorHandler);
@@ -140,7 +146,8 @@ static Window getXChildWindow ( Display *pDisplay, Window w )
 	return (iChildren > 0 ? pwChildren[0] : 0);
 }
 
-#endif // Q_WS_X11
+#endif
+#endif // CONFIG_VST_X11
 
 
 //----------------------------------------------------------------------------
@@ -157,12 +164,14 @@ public:
 	// Constructor.
 	EditorWidget(QWidget *pParent, Qt::WindowFlags wflags = 0)
 		: QWidget(pParent, wflags),
-	#if defined(Q_WS_X11)
+	#ifdef CONFIG_VST_X11
 		m_pDisplay(QX11Info::display()),
+	#if QT_VERSION < 0x050000
 		m_wVstEditor(0),
 		m_pVstEventProc(NULL),
 		m_bButtonPress(false),
 	#endif
+	#endif	// CONFIG_VST_X11
 		m_pVstPlugin(NULL) {}
 
 	// Destructor.
@@ -176,7 +185,7 @@ public:
 		// Start the proper (child) editor...
 		long  value = 0;
 		void *ptr = (void *) winId();
-	#if defined(Q_WS_X11)
+	#ifdef CONFIG_VST_X11
 		value = (long) m_pDisplay;
 	#endif
 
@@ -197,11 +206,13 @@ public:
 
 		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
 		
-	#if defined(Q_WS_X11)
+	#ifdef CONFIG_VST_X11
+	#if QT_VERSION < 0x050000
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
 	#endif
+	#endif	// CONFIG_VST_X11
 
 		g_vstEditors.append(this);
 
@@ -226,7 +237,8 @@ public:
 			g_vstEditors.removeAt(iIndex);
 	}
 
-#if defined(Q_WS_X11)
+#ifdef CONFIG_VST_X11
+#if QT_VERSION < 0x050000
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -254,6 +266,7 @@ public:
 		}
 	}
 #endif
+#endif	// CONFIG_VST_X11
 
 	qtractorVstPlugin *plugin() const
 		{ return m_pVstPlugin; }
@@ -280,7 +293,8 @@ protected:
 			m_pVstPlugin->closeEditor();
 	}
 
-#if defined(Q_WS_X11)
+#ifdef CONFIG_VST_X11
+#if QT_VERSION < 0x050000
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
@@ -290,16 +304,19 @@ protected:
 		}
 	}
 #endif
+#endif	// CONFIG_VST_X11
 
 private:
 
 	// Instance variables...
-#if defined(Q_WS_X11)
+#ifdef CONFIG_VST_X11
 	Display   *m_pDisplay;
+#if QT_VERSION < 0x050000
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
 #endif
+#endif	// CONFIG_VST_X11
 
 	qtractorVstPlugin *m_pVstPlugin;
 };
@@ -1173,7 +1190,8 @@ qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
 }
 
 
-#if defined(Q_WS_X11)
+#ifdef CONFIG_VST_X11
+#if QT_VERSION < 0x050000
 
 // Global X11 event filter.
 bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
@@ -1190,6 +1208,7 @@ bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
 }
 
 #endif
+#endif	// CONFIG_VST_X11
 
 
 // Parameter update method.
