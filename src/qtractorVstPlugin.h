@@ -36,6 +36,15 @@
 
 #include <aeffectx.h>
 
+#if QT_VERSION < 0x050000
+#if defined(Q_WS_X11)
+#define CONFIG_VST_X11
+#endif
+#else
+#if defined(QT_X11EXTRAS_LIB)
+#define CONFIG_VST_X11
+#endif
+#endif
 
 //----------------------------------------------------------------------------
 // qtractorVstPluginType -- VST plugin type instance.
@@ -166,9 +175,11 @@ public:
 	// Editor widget forward decls.
 	class EditorWidget;
 
-#if defined(Q_WS_X11)
+#ifdef CONFIG_VST_X11
+#if QT_VERSION < 0x050000
 	// Global X11 event filter.
 	static bool x11EventFilter(void *pvEvent);
+#endif
 #endif
 
 	// Parameter update method.

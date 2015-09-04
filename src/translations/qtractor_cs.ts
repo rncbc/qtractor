@@ -51,7 +51,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1422"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1441"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
@@ -444,22 +444,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Neznámý</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="597"/>
+        <location filename="../qtractorVstPlugin.cpp" line="614"/>
         <source>Product: </source>
         <translation>Výrobek: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="605"/>
+        <location filename="../qtractorVstPlugin.cpp" line="622"/>
         <source>Vendor: </source>
         <translation>Prodejce: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="613"/>
+        <location filename="../qtractorVstPlugin.cpp" line="630"/>
         <source>Version: </source>
         <translation>Verze: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1419"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1438"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
