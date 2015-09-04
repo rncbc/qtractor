@@ -1191,6 +1191,22 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 #endif	// CONFIG_LV2_TIME
 
 
+#ifdef CONFIG_LV2_UI
+#ifdef CONFIG_LV2_UI_GTK2
+#if QT_VERSION >= 0x050100
+
+#include <QWindow>
+
+#undef signals // Collides with GTK symbology
+
+#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
+
+#endif
+#endif	// CONFIG_LV2_UI_GTK2
+#endif	// CONFIG_LV2_UI
+
+
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
 //
@@ -2771,6 +2787,51 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			m_lv2_ui_show_interface	= NULL;
 		}
 	#endif	// CONFIG_LV2_UI_SHOW
+	#ifdef CONFIG_LV2_UI_GTK2
+	#if QT_VERSION >= 0x050100
+		if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK) {
+			// Create embeddable native window...
+			GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+			gtk_window_set_resizable(GTK_WINDOW(pGtkWindow), 1);
+			gtk_window_set_title(
+				GTK_WINDOW(pGtkWindow),
+				m_aEditorTitle.constData());
+			// Add plugin widget into our new window container...
+			gtk_container_add(
+				GTK_CONTAINER(pGtkWindow),
+				static_cast<GtkWidget *> (m_lv2_ui_widget));
+			gtk_widget_show_all(pGtkWindow);
+			WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
+			qDebug("DEBUG> QWindow::fromWinId(0x%08lx):", ulong(wid));
+			QWindow *pQt5Window = QWindow::fromWinId(wid);
+			qDebug("DEBUG>   pQt5Window=%p", pQt5Window);
+			// Create the new parent frame...
+			Qt::WindowFlags wflags = Qt::Window
+				| Qt::CustomizeWindowHint
+				| Qt::WindowTitleHint
+				| Qt::WindowSystemMenuHint
+				| Qt::WindowMinMaxButtonsHint
+				| Qt::WindowCloseButtonHint;
+			QWidget *pQt5Widget = new QWidget(NULL, wflags);
+			qDebug("DEBUG> QWidget::createWindowContainer(%p, %p):", pQt5Window, pQt5Widget);
+			QWidget *pQt5Container = QWidget::createWindowContainer(pQt5Window, pQt5Widget);
+			qDebug("DEBUG>   pQt5Container=%p", pQt5Container);
+			qDebug("DEBUG> layout:");
+			QVBoxLayout *pVBoxLayout = new QVBoxLayout();
+			pVBoxLayout->setMargin(0);
+			pVBoxLayout->setSpacing(0);
+			pVBoxLayout->addWidget(pQt5Container);
+			pQt5Widget->setLayout(pVBoxLayout);
+			qDebug("DEBUG> show:");
+			pQt5Widget->show();
+			qDebug("DEBUG> raise:");
+			pQt5Widget->raise();
+			qDebug("DEBUG> activateWindow:");
+			pQt5Widget->activateWindow();
+			qDebug("DEBUG> done.");
+		}
+	#endif
+	#endif	// CONFIG_LV2_UI_GTK2
 		if (m_lv2_ui_widget &&
 		#if QT_VERSION < 0x050000
 			m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL
