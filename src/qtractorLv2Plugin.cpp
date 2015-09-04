@@ -2792,6 +2792,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 			// Create embeddable native window...
 			GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+		//	GtkWidget *pGtkWindow = gtk_plug_new(0);
 			gtk_window_set_resizable(GTK_WINDOW(pGtkWindow), 1);
 			// Add plugin widget into our new window container...
 			gtk_container_add(
@@ -2802,6 +2803,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			GtkAllocation alloc;
 			gtk_widget_get_allocation(pGtkWindow, &alloc);
 			WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
+		//	WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
 			qDebug("DEBUG> QWindow::fromWinId(0x%08lx):", ulong(wid));
 			QWindow *pQt5Window = QWindow::fromWinId(wid);
 			qDebug("DEBUG>   pQt5Window=%p", pQt5Window);
@@ -2813,21 +2815,25 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				| Qt::WindowMinMaxButtonsHint
 				| Qt::WindowCloseButtonHint;
 			QWidget *pQt5Widget = new QWidget(NULL, wflags);
-			pQt5Widget->setWindowTitle(m_aEditorTitle);
 			pQt5Widget->resize(alloc.width, alloc.height);
 			qDebug("DEBUG> QWidget::createWindowContainer(%p, %p):", pQt5Window, pQt5Widget);
 			QWidget *pQt5Container = QWidget::createWindowContainer(pQt5Window, pQt5Widget);
 			qDebug("DEBUG>   pQt5Container=%p", pQt5Container);
-			qDebug("DEBUG> layout:");
 			QVBoxLayout *pVBoxLayout = new QVBoxLayout();
 			pVBoxLayout->setMargin(0);
 			pVBoxLayout->setSpacing(0);
 			pVBoxLayout->addWidget(pQt5Container);
 			pQt5Widget->setLayout(pVBoxLayout);
+			qDebug("DEBUG>   pQt5Widget=%p", pQt5Widget);
 			qDebug("DEBUG> done.");
 			m_pQtWidget = pQt5Widget;
+			pQt5Widget->setWindowTitle(m_aEditorTitle);
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
+			// LV2 UI resize control...
+			resizeEditor(QSize(alloc.width, alloc.height));
+		//	m_pQtWidget->show();
 		}
+		else
 	#endif
 	#endif	// CONFIG_LV2_UI_GTK2
 		if (m_lv2_ui_widget &&
