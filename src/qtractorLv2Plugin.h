@@ -67,7 +67,12 @@ class qtractorLv2Worker;
 #if QT_VERSION < 0x050000
 #undef CONFIG_LV2_UI_SHOW
 #endif
+#ifdef CONFIG_LV2_UI_GTK2
+#if QT_VERSION >= 0x050100
+class QWindow;
 #endif
+#endif	// CONFIG_LV2_UI_GTK2
+#endif	// CONFIG_LV2_UI
 
 
 #ifdef CONFIG_LV2_STATE
@@ -423,6 +428,13 @@ private:
 	// LV2 UI Show extension data interface.
 	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
 #endif
+
+#ifdef CONFIG_LV2_UI_GTK2
+#if QT_VERSION >= 0x050100
+	struct _GtkWidget *m_pGtkWindow;
+	QWidget *m_pQtContainer;
+#endif
+#endif	// CONFIG_LV2_UI_GTK2
 
 #endif	// CONFIG_LV2_UI
 

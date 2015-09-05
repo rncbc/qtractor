@@ -1811,6 +1811,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_UI_SHOW
 		, m_lv2_ui_show_interface(NULL)
 	#endif
+	#ifdef CONFIG_LV2_UI_GTK2
+	#if QT_VERSION >= 0x050100
+		, m_pGtkWindow(NULL)
+		, m_pQtContainer(NULL)
+	#endif
+	#endif	// CONFIG_LV2_UI_GTK2
 	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_TIME
 	#ifdef CONFIG_LV2_TIME_POSITION
@@ -2802,11 +2808,11 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			// Get initial widget size...
 			GtkAllocation alloc;
 			gtk_widget_get_allocation(pGtkWindow, &alloc);
-			WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
-		//	WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
+			const WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
+		//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
 			qDebug("DEBUG> QWindow::fromWinId(0x%08lx):", ulong(wid));
-			QWindow *pQt5Window = QWindow::fromWinId(wid);
-			qDebug("DEBUG>   pQt5Window=%p", pQt5Window);
+			QWindow *pQtWindow = QWindow::fromWinId(wid);
+			qDebug("DEBUG>   pQtWindow=%p", pQtWindow);
 			// Create the new parent frame...
 			Qt::WindowFlags wflags = Qt::Window
 				| Qt::CustomizeWindowHint
@@ -2814,20 +2820,23 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				| Qt::WindowSystemMenuHint
 				| Qt::WindowMinMaxButtonsHint
 				| Qt::WindowCloseButtonHint;
-			QWidget *pQt5Widget = new QWidget(NULL, wflags);
-			pQt5Widget->resize(alloc.width, alloc.height);
-			qDebug("DEBUG> QWidget::createWindowContainer(%p, %p):", pQt5Window, pQt5Widget);
-			QWidget *pQt5Container = QWidget::createWindowContainer(pQt5Window, pQt5Widget);
-			qDebug("DEBUG>   pQt5Container=%p", pQt5Container);
+			QWidget *pQtWidget = new QWidget(NULL, wflags);
+			pQtWidget->resize(alloc.width, alloc.height);
+			qDebug("DEBUG> QWidget::createWindowContainer(%p, %p):", pQtWindow, pQtWidget);
+			QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
+			qDebug("DEBUG>   pQtContainer=%p", pQtContainer);
 			QVBoxLayout *pVBoxLayout = new QVBoxLayout();
 			pVBoxLayout->setMargin(0);
 			pVBoxLayout->setSpacing(0);
-			pVBoxLayout->addWidget(pQt5Container);
-			pQt5Widget->setLayout(pVBoxLayout);
-			qDebug("DEBUG>   pQt5Widget=%p", pQt5Widget);
+			pVBoxLayout->addWidget(pQtContainer);
+			pQtWidget->setLayout(pVBoxLayout);
+			qDebug("DEBUG>   pQtWidget=%p", pQtWidget);
 			qDebug("DEBUG> done.");
-			m_pQtWidget = pQt5Widget;
-			pQt5Widget->setWindowTitle(m_aEditorTitle);
+			m_pGtkWindow = pGtkWindow;
+			m_pQtContainer = pQtContainer;
+			// done.
+			m_pQtWidget = pQtWidget;
+			m_pQtWidget->setWindowTitle(m_aEditorTitle);
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
 			// LV2 UI resize control...
 			resizeEditor(QSize(alloc.width, alloc.height));
@@ -2889,6 +2898,19 @@ void qtractorLv2Plugin::closeEditor (void)
 
 	m_lv2_ui_handle = NULL;
 
+#ifdef CONFIG_LV2_UI_GTK2
+#if QT_VERSION >= 0x050100
+	if (m_pQtContainer) {
+		delete m_pQtContainer;
+		m_pQtContainer = NULL;
+	}
+	if (m_pGtkWindow) {
+		gtk_widget_destroy(m_pGtkWindow);
+		m_pGtkWindow = NULL;
+	}
+#endif
+#endif	// CONFIG_LV2_UI_GTK2
+
 #ifdef CONFIG_LV2_UI_SHOW
 	m_lv2_ui_show_interface	= NULL;
 #endif
@@ -2902,7 +2924,9 @@ void qtractorLv2Plugin::closeEditor (void)
 	}
 
 	if (m_pQtWidget) {
-	//	delete m_pQtWidget;
+	#if QT_VERSION >= 0x050100
+		delete m_pQtWidget;
+	#endif
 		m_pQtWidget = NULL;
 	}
 
@@ -3027,7 +3051,9 @@ void qtractorLv2Plugin::closeEditorEx (void)
 
 	if (m_pQtWidget) {
 		setEditorPos(m_pQtWidget->pos());
+	#if QT_VERSION < 0x050100
 		m_pQtWidget = NULL;
+	#endif
 		setEditorClosed(true);
 	}
 }
