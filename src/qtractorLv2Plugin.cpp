@@ -1814,7 +1814,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_UI_GTK2
 	#if QT_VERSION >= 0x050100
 		, m_pGtkWindow(NULL)
-		, m_pQtContainer(NULL)
 	#endif
 	#endif	// CONFIG_LV2_UI_GTK2
 	#endif	// CONFIG_LV2_UI
@@ -2833,7 +2832,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			qDebug("DEBUG>   pQtWidget=%p", pQtWidget);
 			qDebug("DEBUG> done.");
 			m_pGtkWindow = pGtkWindow;
-			m_pQtContainer = pQtContainer;
 			// done.
 			m_pQtWidget = pQtWidget;
 			m_pQtWidget->setWindowTitle(m_aEditorTitle);
@@ -2898,19 +2896,6 @@ void qtractorLv2Plugin::closeEditor (void)
 
 	m_lv2_ui_handle = NULL;
 
-#ifdef CONFIG_LV2_UI_GTK2
-#if QT_VERSION >= 0x050100
-	if (m_pQtContainer) {
-		delete m_pQtContainer;
-		m_pQtContainer = NULL;
-	}
-	if (m_pGtkWindow) {
-		gtk_widget_destroy(m_pGtkWindow);
-		m_pGtkWindow = NULL;
-	}
-#endif
-#endif	// CONFIG_LV2_UI_GTK2
-
 #ifdef CONFIG_LV2_UI_SHOW
 	m_lv2_ui_show_interface	= NULL;
 #endif
@@ -2918,16 +2903,27 @@ void qtractorLv2Plugin::closeEditor (void)
 	m_lv2_ui_idle_interface	= NULL;
 #endif
 
-	if (m_pQtFilter) {
-		delete m_pQtFilter;
-		m_pQtFilter = NULL;
+#ifdef CONFIG_LV2_UI_GTK2
+#if QT_VERSION >= 0x050100
+	if (m_pGtkWindow) {
+		qDebug("DEBUG> gtk_widget_destroy(%p)", m_pGtkWindow);
+		gtk_widget_destroy(m_pGtkWindow);
+		m_pGtkWindow = NULL;
+		qtractorSession::stabilize();
 	}
+#endif
+#endif	// CONFIG_LV2_UI_GTK2
 
 	if (m_pQtWidget) {
 	#if QT_VERSION >= 0x050100
 		delete m_pQtWidget;
 	#endif
 		m_pQtWidget = NULL;
+	}
+
+	if (m_pQtFilter) {
+		delete m_pQtFilter;
+		m_pQtFilter = NULL;
 	}
 
 	m_lv2_ui_type = LV2_UI_TYPE_NONE;

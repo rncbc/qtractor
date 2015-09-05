@@ -432,7 +432,6 @@ private:
 #ifdef CONFIG_LV2_UI_GTK2
 #if QT_VERSION >= 0x050100
 	struct _GtkWidget *m_pGtkWindow;
-	QWidget *m_pQtContainer;
 #endif
 #endif	// CONFIG_LV2_UI_GTK2
 
