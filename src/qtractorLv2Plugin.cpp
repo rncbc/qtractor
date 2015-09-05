@@ -1202,6 +1202,20 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
+static void lv2_ui_gtk2_on_size_request (
+	GtkWidget */*widget*/, GtkRequisition *req, gpointer user_data )
+{
+	QWidget *pQtWidget = static_cast<QWidget *> (user_data);
+	pQtWidget->setMinimumSize(req->width, req->height);
+}
+
+static void lv2_ui_gtk2_on_size_allocate (
+	GtkWidget */*widget*/, GdkRectangle *rect, gpointer user_data )
+{
+	QWidget *pQtWidget = static_cast<QWidget *> (user_data);
+	pQtWidget->resize(rect->width, rect->height);
+}
+
 #endif
 #endif	// CONFIG_LV2_UI_GTK2
 #endif	// CONFIG_LV2_UI
@@ -2804,14 +2818,10 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				GTK_CONTAINER(pGtkWindow),
 				static_cast<GtkWidget *> (m_lv2_ui_widget));
 			gtk_widget_show_all(pGtkWindow);
-			// Get initial widget size...
-			GtkAllocation alloc;
-			gtk_widget_get_allocation(pGtkWindow, &alloc);
+			// Embed native GTK+ window into a Qt widget...
 			const WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
 		//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
-			qDebug("DEBUG> QWindow::fromWinId(0x%08lx):", ulong(wid));
 			QWindow *pQtWindow = QWindow::fromWinId(wid);
-			qDebug("DEBUG>   pQtWindow=%p", pQtWindow);
 			// Create the new parent frame...
 			Qt::WindowFlags wflags = Qt::Window
 				| Qt::CustomizeWindowHint
@@ -2820,19 +2830,23 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				| Qt::WindowMinMaxButtonsHint
 				| Qt::WindowCloseButtonHint;
 			QWidget *pQtWidget = new QWidget(NULL, wflags);
-			pQtWidget->resize(alloc.width, alloc.height);
-			qDebug("DEBUG> QWidget::createWindowContainer(%p, %p):", pQtWindow, pQtWidget);
 			QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
-			qDebug("DEBUG>   pQtContainer=%p", pQtContainer);
 			QVBoxLayout *pVBoxLayout = new QVBoxLayout();
 			pVBoxLayout->setMargin(0);
 			pVBoxLayout->setSpacing(0);
 			pVBoxLayout->addWidget(pQtContainer);
 			pQtWidget->setLayout(pVBoxLayout);
-			qDebug("DEBUG>   pQtWidget=%p", pQtWidget);
-			qDebug("DEBUG> done.");
-			m_pGtkWindow = pGtkWindow;
+			// Get initial window size...
+			GtkAllocation alloc;
+			gtk_widget_get_allocation(pGtkWindow, &alloc);
+			pQtWidget->resize(alloc.width, alloc.height);
+			// Set native GTK+ window size callbacks...
+			g_signal_connect(G_OBJECT(pGtkWindow), "size-request",
+				G_CALLBACK(lv2_ui_gtk2_on_size_request), pQtWidget);
+			g_signal_connect(G_OBJECT(pGtkWindow), "size-allocate",
+				G_CALLBACK(lv2_ui_gtk2_on_size_allocate), pQtWidget);
 			// done.
+			m_pGtkWindow = pGtkWindow;
 			m_pQtWidget = pQtWidget;
 			m_pQtWidget->setWindowTitle(m_aEditorTitle);
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
@@ -2906,7 +2920,6 @@ void qtractorLv2Plugin::closeEditor (void)
 #ifdef CONFIG_LV2_UI_GTK2
 #if QT_VERSION >= 0x050100
 	if (m_pGtkWindow) {
-		qDebug("DEBUG> gtk_widget_destroy(%p)", m_pGtkWindow);
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = NULL;
 		qtractorSession::stabilize();
