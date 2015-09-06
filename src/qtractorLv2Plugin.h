@@ -67,11 +67,6 @@ class qtractorLv2Worker;
 #if QT_VERSION < 0x050000
 #undef CONFIG_LV2_UI_SHOW
 #endif
-#ifdef CONFIG_LV2_UI_GTK2
-#if QT_VERSION >= 0x050100
-class QWindow;
-#endif
-#endif	// CONFIG_LV2_UI_GTK2
 #endif	// CONFIG_LV2_UI
 
 
@@ -429,11 +424,16 @@ private:
 	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
 #endif
 
-#ifdef CONFIG_LV2_UI_GTK2
 #if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_GTK2
 	struct _GtkWidget *m_pGtkWindow;
-#endif
 #endif	// CONFIG_LV2_UI_GTK2
+#ifdef CONFIG_LV2_UI_X11
+	LV2UI_Resize m_lv2_ui_resize;
+	LV2_Feature  m_lv2_ui_resize_feature;
+	LV2_Feature  m_lv2_ui_parent_feature;
+#endif	// CONFIG_LV2_UI_X11
+#endif
 
 #endif	// CONFIG_LV2_UI
 

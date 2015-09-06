@@ -214,6 +214,11 @@ AC_ARG_ENABLE(lv2-ui-gtk2,
   [ac_lv2_ui_gtk2="$enableval"],
   [ac_lv2_ui_gtk2="yes"])
 
+AC_ARG_ENABLE(lv2-ui-x11,
+  AC_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 UI X11 interface support (default=yes)]),
+  [ac_lv2_ui_x11="$enableval"],
+  [ac_lv2_ui_x11="yes"])
+
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
   AC_HELP_STRING([--enable-jack-session], [enable JACK session support (default=yes)]),
@@ -728,10 +733,12 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_x11="no"
 fi
 
 if test "x$ac_qt5" = "xno"; then
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_x11="no"
 fi
 
 # Check for optional liblilv library.
@@ -777,6 +784,7 @@ else
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_x11="no"
 fi
 
 # Check for LV2 host library (liblilv).
@@ -798,6 +806,7 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_x11="no"
 fi
 
 # Check for JACK session event callback availability.
@@ -1057,6 +1066,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
+      ac_lv2_ui_x11="no"
    fi
 fi
 if test "x$ac_lv2_ui" = "xyes"; then
@@ -1071,12 +1081,14 @@ if test "x$ac_lv2_ui" = "xyes"; then
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
+      ac_lv2_ui_x11="no"
    fi
 else
    ac_lv2_external_ui="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_x11="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(
@@ -1280,6 +1292,9 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
       ac_lv2_ui_gtk2 = "no"
    fi
 fi
+if test "x$ac_lv2_ui_x11" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_UI_X11, 1, [Define if LV2 UI X11 interface support is available.])
+fi
 
 # Check for JACK session headers availability.
 if test "x$ac_jack_session" = "xyes"; then
@@ -1378,6 +1393,7 @@ echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 echo "  LV2 plug-in UI GTK2 interface support  . . . . . .: $ac_lv2_ui_gtk2"
+echo "  LV2 plug-in UI X11 interface support . . . . . . .: $ac_lv2_ui_x11"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"

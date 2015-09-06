@@ -1192,8 +1192,9 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 
 #ifdef CONFIG_LV2_UI
-#ifdef CONFIG_LV2_UI_GTK2
 #if QT_VERSION >= 0x050100
+
+#ifdef CONFIG_LV2_UI_GTK2
 
 #include <QWindow>
 
@@ -1202,22 +1203,35 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-static void lv2_ui_gtk2_on_size_request (
+static void qtractor_lv2_ui_gtk2_on_size_request (
 	GtkWidget */*widget*/, GtkRequisition *req, gpointer user_data )
 {
 	QWidget *pQtWidget = static_cast<QWidget *> (user_data);
 	pQtWidget->setMinimumSize(req->width, req->height);
 }
 
-static void lv2_ui_gtk2_on_size_allocate (
+static void qtractor_lv2_ui_gtk2_on_size_allocate (
 	GtkWidget */*widget*/, GdkRectangle *rect, gpointer user_data )
 {
 	QWidget *pQtWidget = static_cast<QWidget *> (user_data);
 	pQtWidget->resize(rect->width, rect->height);
 }
 
-#endif
 #endif	// CONFIG_LV2_UI_GTK2
+
+#ifdef CONFIG_LV2_UI_X11
+
+static int qtractor_lv2_ui_resize (
+	LV2UI_Feature_Handle handle, int width, int height )
+{
+	QWidget *pQtWidget = static_cast<QWidget *> (handle);
+	pQtWidget->resize(width, height);
+	return 0;
+}
+
+#endif	// CONFIG_LV2_UI_X11
+
+#endif
 #endif	// CONFIG_LV2_UI
 
 
@@ -1825,11 +1839,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_UI_SHOW
 		, m_lv2_ui_show_interface(NULL)
 	#endif
-	#ifdef CONFIG_LV2_UI_GTK2
 	#if QT_VERSION >= 0x050100
+	#ifdef CONFIG_LV2_UI_GTK2
 		, m_pGtkWindow(NULL)
-	#endif
 	#endif	// CONFIG_LV2_UI_GTK2
+	#endif
 	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_TIME
 	#ifdef CONFIG_LV2_TIME_POSITION
@@ -2696,7 +2710,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	int iFeatures = 0;
 	while (m_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_ui_features = new LV2_Feature * [iFeatures + 5];
+	m_lv2_ui_features = new LV2_Feature * [iFeatures + 7];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
 
@@ -2759,8 +2773,35 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
 #endif
 
-	m_suil_host = suil_host_new(qtractor_lv2_ui_write, qtractor_lv2_ui_index,
-		NULL, NULL);
+#if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_X11
+	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
+		// Create the new parent frame...
+		Qt::WindowFlags wflags = Qt::Window
+			| Qt::CustomizeWindowHint
+			| Qt::WindowTitleHint
+			| Qt::WindowSystemMenuHint
+			| Qt::WindowMinMaxButtonsHint
+			| Qt::WindowCloseButtonHint;
+		QWidget *pQtWidget = new QWidget(NULL, wflags);
+		// Add/prepare some neeed features...
+		m_lv2_ui_resize.handle = pQtWidget;
+		m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;
+		m_lv2_ui_resize_feature.URI = LV2_UI__resize;
+		m_lv2_ui_resize_feature.data = &m_lv2_ui_resize;
+		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_resize_feature;
+		m_lv2_ui_parent_feature.URI = LV2_UI__parent;
+		m_lv2_ui_parent_feature.data = (void *) pQtWidget->winId();
+		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_parent_feature;
+		m_lv2_ui_features[iFeatures] = NULL;
+		// Done.
+		m_pQtWidget = pQtWidget;
+	}
+#endif
+#endif
+
+	m_suil_host = suil_host_new(
+		qtractor_lv2_ui_write, qtractor_lv2_ui_index, NULL, NULL);
 	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_UI_HOST_URI,
 		lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin())),
 		lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui)), ui_type_uri,
@@ -2806,8 +2847,18 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			m_lv2_ui_show_interface	= NULL;
 		}
 	#endif	// CONFIG_LV2_UI_SHOW
-	#ifdef CONFIG_LV2_UI_GTK2
 	#if QT_VERSION >= 0x050100
+	#ifdef CONFIG_LV2_UI_X11
+		if (m_pQtWidget && m_lv2_ui_type == LV2_UI_TYPE_X11) {
+			// Override widget handle...
+			m_lv2_ui_widget = static_cast<SuilWidget> (m_pQtWidget);
+			m_pQtWidget->setWindowTitle(m_aEditorTitle.constData());
+			m_pQtFilter = new EventFilter(this, m_pQtWidget);
+		//	m_pQtWidget->show();
+		}
+		else
+	#endif	// CONFIG_LV2_UI_X11
+	#ifdef CONFIG_LV2_UI_GTK2
 		if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 			// Create embeddable native window...
 			GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -2842,9 +2893,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			pQtWidget->resize(alloc.width, alloc.height);
 			// Set native GTK+ window size callbacks...
 			g_signal_connect(G_OBJECT(pGtkWindow), "size-request",
-				G_CALLBACK(lv2_ui_gtk2_on_size_request), pQtWidget);
+				G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_request), pQtWidget);
 			g_signal_connect(G_OBJECT(pGtkWindow), "size-allocate",
-				G_CALLBACK(lv2_ui_gtk2_on_size_allocate), pQtWidget);
+				G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_allocate), pQtWidget);
 			// done.
 			m_pGtkWindow = pGtkWindow;
 			m_pQtWidget = pQtWidget;
@@ -2855,8 +2906,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		//	m_pQtWidget->show();
 		}
 		else
-	#endif
 	#endif	// CONFIG_LV2_UI_GTK2
+	#endif
 		if (m_lv2_ui_widget &&
 		#if QT_VERSION < 0x050000
 			m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL
@@ -2917,15 +2968,21 @@ void qtractorLv2Plugin::closeEditor (void)
 	m_lv2_ui_idle_interface	= NULL;
 #endif
 
-#ifdef CONFIG_LV2_UI_GTK2
+	m_lv2_ui_type = LV2_UI_TYPE_NONE;
+	
+	const int iLv2Plugin = g_lv2Plugins.indexOf(this);
+	if (iLv2Plugin >= 0)
+		g_lv2Plugins.removeAt(iLv2Plugin);
+
 #if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_GTK2
 	if (m_pGtkWindow) {
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = NULL;
 		qtractorSession::stabilize();
 	}
-#endif
 #endif	// CONFIG_LV2_UI_GTK2
+#endif
 
 	if (m_pQtWidget) {
 	#if QT_VERSION >= 0x050100
@@ -2938,12 +2995,6 @@ void qtractorLv2Plugin::closeEditor (void)
 		delete m_pQtFilter;
 		m_pQtFilter = NULL;
 	}
-
-	m_lv2_ui_type = LV2_UI_TYPE_NONE;
-	
-	const int iLv2Plugin = g_lv2Plugins.indexOf(this);
-	if (iLv2Plugin >= 0)
-		g_lv2Plugins.removeAt(iLv2Plugin);
 
 	if (m_suil_instance) {
 		suil_instance_free(m_suil_instance);
