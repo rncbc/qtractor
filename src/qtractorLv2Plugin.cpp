@@ -2852,7 +2852,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		if (m_pQtWidget && m_lv2_ui_type == LV2_UI_TYPE_X11) {
 			// Override widget handle...
 			m_lv2_ui_widget = static_cast<SuilWidget> (m_pQtWidget);
-			m_pQtWidget->setWindowTitle(m_aEditorTitle.constData());
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
 		//	m_pQtWidget->show();
 		}
@@ -2860,10 +2859,13 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	#endif	// CONFIG_LV2_UI_X11
 	#ifdef CONFIG_LV2_UI_GTK2
 		if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK) {
+		#ifdef CONFIG_LV2_UI_SHOW
+			if (m_lv2_ui_show_interface == NULL) {
+		#endif
 			// Create embeddable native window...
 			GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		//	GtkWidget *pGtkWindow = gtk_plug_new(0);
-			gtk_window_set_resizable(GTK_WINDOW(pGtkWindow), 1);
+			gtk_window_set_resizable(GTK_WINDOW(pGtkWindow), 0);
 			// Add plugin widget into our new window container...
 			gtk_container_add(
 				GTK_CONTAINER(pGtkWindow),
@@ -2899,11 +2901,13 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			// done.
 			m_pGtkWindow = pGtkWindow;
 			m_pQtWidget = pQtWidget;
-			m_pQtWidget->setWindowTitle(m_aEditorTitle);
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
 			// LV2 UI resize control...
 			resizeEditor(QSize(alloc.width, alloc.height));
 		//	m_pQtWidget->show();
+		#ifdef CONFIG_LV2_UI_SHOW
+			}
+		#endif
 		}
 		else
 	#endif	// CONFIG_LV2_UI_GTK2
@@ -2916,7 +2920,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		#endif
 		) {
 			m_pQtWidget = static_cast<QWidget *> (m_lv2_ui_widget);
-			m_pQtWidget->setWindowTitle(m_aEditorTitle.constData());
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
 			// LV2 UI resize control...
 			resizeEditor(m_pQtWidget->sizeHint());
@@ -2941,6 +2944,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 	setEditorVisible(true);
 
+	updateEditorTitleEx();
 //	idleEditor();
 }
 
@@ -3185,11 +3189,32 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 	qtractorPlugin::setEditorTitle(sTitle);
 
 	m_aEditorTitle = editorTitle().toUtf8();
+
+	updateEditorTitleEx();
+}
+
+
+void qtractorLv2Plugin::updateEditorTitleEx (void)
+{
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
 #endif
 	if (m_pQtWidget)
-		m_pQtWidget->setWindowTitle(m_aEditorTitle.constData());
+		m_pQtWidget->setWindowTitle(m_aEditorTitle);
+#if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_GTK2
+#ifdef CONFIG_LV2_UI_SHOW
+	if (m_lv2_ui_widget
+		&& m_lv2_ui_type == LV2_UI_TYPE_GTK
+		&& m_lv2_ui_show_interface) {
+		GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
+		gtk_window_set_title(
+			GTK_WINDOW(gtk_widget_get_toplevel(pGtkWidget)),
+			m_aEditorTitle.constData());
+	}
+#endif	// CONFIG_LV2_UI_GTK2
+#endif	// CONFIG_LV2_UI_SHOW
+#endif
 }
 
 

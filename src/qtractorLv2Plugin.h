@@ -221,6 +221,7 @@ public:
 	bool isEditorVisible() const;
 
 	void setEditorTitle(const QString& sTitle);
+	void updateEditorTitleEx();
 
 	// Parameter update method.
 	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
