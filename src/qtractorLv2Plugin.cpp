@@ -2863,13 +2863,12 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			if (m_lv2_ui_show_interface == NULL) {
 		#endif
 			// Create embeddable native window...
+			GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
 			GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		//	GtkWidget *pGtkWindow = gtk_plug_new(0);
 			gtk_window_set_resizable(GTK_WINDOW(pGtkWindow), 0);
 			// Add plugin widget into our new window container...
-			gtk_container_add(
-				GTK_CONTAINER(pGtkWindow),
-				static_cast<GtkWidget *> (m_lv2_ui_widget));
+			gtk_container_add(GTK_CONTAINER(pGtkWindow), pGtkWidget);
 			gtk_widget_show_all(pGtkWindow);
 			// Embed native GTK+ window into a Qt widget...
 			const WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
@@ -2891,7 +2890,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			pQtWidget->setLayout(pVBoxLayout);
 			// Get initial window size...
 			GtkAllocation alloc;
-			gtk_widget_get_allocation(pGtkWindow, &alloc);
+			gtk_widget_get_allocation(pGtkWidget, &alloc);
 			pQtWidget->resize(alloc.width, alloc.height);
 			// Set native GTK+ window size callbacks...
 			g_signal_connect(G_OBJECT(pGtkWindow), "size-request",
@@ -2912,13 +2911,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		else
 	#endif	// CONFIG_LV2_UI_GTK2
 	#endif
-		if (m_lv2_ui_widget &&
-		#if QT_VERSION < 0x050000
-			m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL
-		#else
-			m_lv2_ui_type == LV2_UI_TYPE_QT5
-		#endif
-		) {
+		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
 			m_pQtWidget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
 			// LV2 UI resize control...
@@ -2990,7 +2983,11 @@ void qtractorLv2Plugin::closeEditor (void)
 
 	if (m_pQtWidget) {
 	#if QT_VERSION >= 0x050100
+	#ifdef CONFIG_LV2_UI_GTK2
+	#ifdef CONFIG_LV2_UI_X11
 		delete m_pQtWidget;
+	#endif	// CONFIG_LV2_UI_X11
+	#endif	// CONFIG_LV2_UI_GTK2
 	#endif
 		m_pQtWidget = NULL;
 	}
