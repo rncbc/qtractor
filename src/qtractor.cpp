@@ -553,6 +553,13 @@ static bool update_palette ( QPalette& pal, const QString& sCustomColorTheme )
 // main - The main program trunk.
 //
 
+#if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_GTK2
+#undef signals // Collides with GTK symbology
+#include <gtk/gtk.h>
+#endif	// CONFIG_LV2_UI_GTK2
+#endif
+
 int main ( int argc, char **argv )
 {
 	Q_INIT_RESOURCE(qtractor);
@@ -579,6 +586,13 @@ int main ( int argc, char **argv )
 		app.quit();
 		return 2;
 	}
+
+#if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_GTK2
+	// Initialize GTK+ framework (LV2 plug-in UI GTK2 support)...
+	gtk_init(NULL, NULL);
+#endif	// CONFIG_LV2_UI_GTK2
+#endif
 
 	// Special style paths...
 	if (QDir(CONFIG_PLUGINSDIR).exists())

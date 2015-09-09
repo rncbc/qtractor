@@ -64,10 +64,7 @@ class qtractorLv2Worker;
 // LV2 External UI support.
 #include "lv2_external_ui.h"
 #endif
-#if QT_VERSION < 0x050000
-#undef CONFIG_LV2_UI_SHOW
-#endif
-#endif
+#endif	// CONFIG_LV2_UI
 
 
 #ifdef CONFIG_LV2_STATE
@@ -221,6 +218,7 @@ public:
 	bool isEditorVisible() const;
 
 	void setEditorTitle(const QString& sTitle);
+	void updateEditorTitleEx();
 
 	// Parameter update method.
 	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
@@ -411,6 +409,7 @@ private:
 
 	EventFilter *m_pQtFilter;
 	QWidget     *m_pQtWidget;
+	bool         m_bQtDelete;
 
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;
@@ -419,9 +418,19 @@ private:
 	// LV2 UI Idle extension data interface.
 	const LV2UI_Idle_Interface *m_lv2_ui_idle_interface;
 #endif
+#if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_SHOW
 	// LV2 UI Show extension data interface.
 	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
+#endif
+#ifdef CONFIG_LV2_UI_GTK2
+	struct _GtkWidget *m_pGtkWindow;
+#endif	// CONFIG_LV2_UI_GTK2
+#ifdef CONFIG_LV2_UI_X11
+	LV2UI_Resize m_lv2_ui_resize;
+	LV2_Feature  m_lv2_ui_resize_feature;
+	LV2_Feature  m_lv2_ui_parent_feature;
+#endif	// CONFIG_LV2_UI_X11
 #endif
 
 #endif	// CONFIG_LV2_UI
