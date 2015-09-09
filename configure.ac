@@ -839,7 +839,6 @@ ac_libs="$ac_libs -lX11"
 
 AC_SUBST(ac_libs)
 
-
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
@@ -1283,6 +1282,8 @@ if test "x$ac_lv2_ui_show" = "xyes"; then
 fi
 
 if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
+   ac_old_libs=$LIBS
+   LIBS=$ac_libs
    AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
       ac_cv_suil_gtk2_in_qt5, [
       AC_TRY_RUN([
@@ -1291,9 +1292,10 @@ if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
          #ifndef LV2_UI__Qt5UI
          #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
          #endif
-         int main() { return suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__GtkUI); }
+         int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__GtkUI); }
       ], ac_cv_suil_gtk2_in_qt5="yes", ac_cv_suil_gtk2_in_qt5="no")
    ])
+   LIBS=$ac_old_libs
    if test "x$ac_cv_suil_gtk2_in_qt5" = "xyes"; then
       ac_lv2_ui_gtk2="no"
    fi
@@ -1312,6 +1314,8 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
 fi
 
 if test "x$ac_lv2_ui_x11" = "xyes" -a "x$ac_suil" = "xyes"; then
+   ac_old_libs=$LIBS
+   LIBS=$ac_libs
    AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
       ac_cv_suil_x11_in_qt5, [
       AC_TRY_RUN([
@@ -1320,9 +1324,10 @@ if test "x$ac_lv2_ui_x11" = "xyes" -a "x$ac_suil" = "xyes"; then
          #ifndef LV2_UI__Qt5UI
          #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
          #endif
-         int main() { return suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__X11UI); }
+         int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__X11UI); }
       ], ac_cv_suil_x11_in_qt5="yes", ac_cv_suil_x11_in_qt5="no")
    ])
+   LIBS=$ac_old_libs
    if test "x$ac_cv_suil_x11_in_qt5" = "xyes"; then
       ac_lv2_ui_x11="no"
    fi
