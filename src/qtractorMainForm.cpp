@@ -5485,15 +5485,15 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_UI_IDLE
 	list << tr("LV2 Plug-in UI Idle interface support disabled.");
 #endif
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050100
 #ifndef CONFIG_LV2_UI_SHOW
 	list << tr("LV2 Plug-in UI Show interface support disabled.");
 #endif
-#ifndef CONFIG_LV2_UI_GTK2
-	list << tr("LV2 Plug-in UI GTK2 support disabled.");
+#ifdef CONFIG_LV2_UI_GTK2
+	list << tr("LV2 Plug-in UI GTK2 native support enabled.");
 #endif
-#ifndef CONFIG_LV2_UI_X11
-	list << tr("LV2 Plug-in UI X11 support disabled.");
+#ifdef CONFIG_LV2_UI_X11
+	list << tr("LV2 Plug-in UI X11 native support enabled.");
 #endif
 #endif
 #endif // CONFIG_LV2_UI

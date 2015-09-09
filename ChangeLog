@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 plug-in UI GTK2 and X11 in Qt5 host native support added.
+  (EXPPERIMENTAL)
+
 - Single/unique application instance control adapted to Qt5/X11
   (cf. configure --enable-xunique). (EXPERIMENTAL)
 

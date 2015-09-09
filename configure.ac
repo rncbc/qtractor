@@ -200,22 +200,22 @@ AC_ARG_ENABLE(lv2-buf-size,
   [ac_lv2_buf_size="yes"])
 
 AC_ARG_ENABLE(lv2-ui-idle,
-  AC_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 UI Idle interface support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 plug-in UI Idle interface support (default=yes)]),
   [ac_lv2_ui_idle="$enableval"],
   [ac_lv2_ui_idle="yes"])
 
 AC_ARG_ENABLE(lv2-ui-show,
-  AC_HELP_STRING([--enable-lv2-ui-show], [enable LV2 UI Show interface support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-ui-show], [enable LV2 plug-in UI Show interface support (default=yes)]),
   [ac_lv2_ui_show="$enableval"],
   [ac_lv2_ui_show="yes"])
 
 AC_ARG_ENABLE(lv2-ui-gtk2,
-  AC_HELP_STRING([--enable-lv2-ui-gtk2], [enable LV2 UI GTK2 interface support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-ui-gtk2], [enable LV2 plug-in UI GTK2 native support (default=yes)]),
   [ac_lv2_ui_gtk2="$enableval"],
   [ac_lv2_ui_gtk2="yes"])
 
 AC_ARG_ENABLE(lv2-ui-x11,
-  AC_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 UI X11 interface support (default=yes)]),
+  AC_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 plug-in UI X11 native support (default=yes)]),
   [ac_lv2_ui_x11="$enableval"],
   [ac_lv2_ui_x11="yes"])
 
@@ -737,6 +737,7 @@ if test "x$ac_lv2_ui" = "xno"; then
 fi
 
 if test "x$ac_qt5" = "xno"; then
+   ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
    ac_lv2_ui_x11="no"
 fi
@@ -1216,36 +1217,6 @@ if test "x$ac_lv2_buf_size" = "xyes"; then
       AC_MSG_WARN([*** LV2 Buf-size support will be disabled.])
    fi
 fi
-if test "x$ac_lv2_ui_idle" = "xyes"; then
-   AC_CACHE_CHECK([for LV2 UI Idle interface],
-      ac_cv_lv2_ui_idle, [
-      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
-         // Checking for LV2 UI Idle interface...
-         LV2UI_Idle_Interface idle;
-      ], ac_cv_lv2_ui_idle="yes", ac_cv_lv2_ui_idle="no")
-   ])
-   ac_lv2_ui_idle=$ac_cv_lv2_ui_idle
-   if test "x$ac_lv2_ui_idle" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_UI_IDLE, 1, [Define if LV2 UI Idle interface support is available.])
-   else
-      AC_MSG_WARN([*** LV2 UI Idle interface support will be disabled.])
-   fi
-fi
-if test "x$ac_lv2_ui_show" = "xyes"; then
-   AC_CACHE_CHECK([for LV2 UI Show interface],
-      ac_cv_lv2_ui_show, [
-      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
-         // Checking for LV2 UI Show interface...
-         LV2UI_Show_Interface show;
-      ], ac_cv_lv2_ui_show="yes", ac_cv_lv2_ui_show="no")
-   ])
-   ac_lv2_ui_show=$ac_cv_lv2_ui_show
-   if test "x$ac_lv2_ui_show" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_UI_SHOW, 1, [Define if LV2 UI Show interface support is available.])
-   else
-      AC_MSG_WARN([*** LV2 UI Show interface support will be disabled.])
-   fi
-fi
 if test "x$ac_lv2_time_position" = "xyes"; then
    AC_CHECK_HEADER(lv2/lv2plug.in/ns/ext/atom/forge.h,
       [ac_lv2_time_position="yes"], [ac_lv2_time_position="no"])
@@ -1280,20 +1251,84 @@ if test "x$ac_lv2_time_position" = "xyes"; then
       AC_MSG_WARN([*** LV2 Time/position support will be disabled.])
    fi
 fi
+if test "x$ac_lv2_ui_idle" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Idle interface],
+      ac_cv_lv2_ui_idle, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Idle interface...
+         LV2UI_Idle_Interface idle;
+      ], ac_cv_lv2_ui_idle="yes", ac_cv_lv2_ui_idle="no")
+   ])
+   ac_lv2_ui_idle=$ac_cv_lv2_ui_idle
+   if test "x$ac_lv2_ui_idle" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_IDLE, 1, [Define if LV2 UI Idle interface support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI Idle interface support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_ui_show" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Show interface],
+      ac_cv_lv2_ui_show, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Show interface...
+         LV2UI_Show_Interface show;
+      ], ac_cv_lv2_ui_show="yes", ac_cv_lv2_ui_show="no")
+   ])
+   ac_lv2_ui_show=$ac_cv_lv2_ui_show
+   if test "x$ac_lv2_ui_show" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_SHOW, 1, [Define if LV2 UI Show interface support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI Show interface support will be disabled.])
+   fi
+fi
+
+if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
+      ac_cv_suil_gtk2_in_qt5, [
+      AC_TRY_RUN([
+         #include <suil/suil.h>
+         #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
+         #ifndef LV2_UI__Qt5UI
+         #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
+         #endif
+         int main() { return suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__GtkUI); }
+      ], ac_cv_suil_gtk2_in_qt5="yes", ac_cv_suil_gtk2_in_qt5="no")
+   ])
+   if test "x$ac_cv_suil_gtk2_in_qt5" = "xyes"; then
+      ac_lv2_ui_gtk2="no"
+   fi
+fi
 if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    ac_gtk2_cflags=`$ac_pkg_config --cflags gtk+-2.0 2>/dev/null`
    ac_gtk2_libs=`$ac_pkg_config --libs gtk+-2.0 2>/dev/null`
    if test -n "$ac_gtk2_cflags" -a -n "$ac_gtk2_libs"; then
       ac_cflags="$ac_cflags $ac_gtk2_cflags"
       ac_libs="$ac_libs $ac_gtk2_libs"
-      AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 interface support is available.])
+      AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
    else
-      AC_MSG_WARN([*** LV2 UI GTK2 interface support will be disabled.])
+      AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
       ac_lv2_ui_gtk2 = "no"
    fi
 fi
+
+if test "x$ac_lv2_ui_x11" = "xyes" -a "x$ac_suil" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
+      ac_cv_suil_x11_in_qt5, [
+      AC_TRY_RUN([
+         #include <suil/suil.h>
+         #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
+         #ifndef LV2_UI__Qt5UI
+         #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
+         #endif
+         int main() { return suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__X11UI); }
+      ], ac_cv_suil_x11_in_qt5="yes", ac_cv_suil_x11_in_qt5="no")
+   ])
+   if test "x$ac_cv_suil_x11_in_qt5" = "xyes"; then
+      ac_lv2_ui_x11="no"
+   fi
+fi
 if test "x$ac_lv2_ui_x11" = "xyes"; then
-   AC_DEFINE(CONFIG_LV2_UI_X11, 1, [Define if LV2 UI X11 interface support is available.])
+   AC_DEFINE(CONFIG_LV2_UI_X11, 1, [Define if LV2 UI X11 native support is available.])
 fi
 
 # Check for JACK session headers availability.
@@ -1392,8 +1427,8 @@ echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
-echo "  LV2 plug-in UI GTK2 support  . . . . . . . . . . .: $ac_lv2_ui_gtk2"
-echo "  LV2 plug-in UI X11 support . . . . . . . . . . . .: $ac_lv2_ui_x11"
+echo "  LV2 plug-in UI GTK2 native support . . . . . . . .: $ac_lv2_ui_gtk2"
+echo "  LV2 plug-in UI X11 native support  . . . . . . . .: $ac_lv2_ui_x11"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
