@@ -10486,28 +10486,28 @@ Chcete použít tyto změny?</translation>
         <translation>%1 [%2], %3 instance, %4 kanál(y).</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="394"/>
+        <location filename="../qtractorPluginForm.cpp" line="396"/>
         <source>(none)</source>
         <translation>(Žádné)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="496"/>
+        <location filename="../qtractorPluginForm.cpp" line="498"/>
         <source>Open Preset</source>
         <translation>Otevřít přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="497"/>
-        <location filename="../qtractorPluginForm.cpp" line="578"/>
+        <location filename="../qtractorPluginForm.cpp" line="499"/>
+        <location filename="../qtractorPluginForm.cpp" line="580"/>
         <source>Preset files (*.%1)</source>
         <translation>Soubory s přednastaveními (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="535"/>
+        <location filename="../qtractorPluginForm.cpp" line="537"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="536"/>
+        <location filename="../qtractorPluginForm.cpp" line="538"/>
         <source>Preset could not be loaded
 from &quot;%1&quot;.
 
@@ -10518,22 +10518,22 @@ z &quot;%1&quot;.
 Promiňte.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="792"/>
+        <location filename="../qtractorPluginForm.cpp" line="794"/>
         <source>&amp;None</source>
         <translation>&amp;Žádné</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="577"/>
+        <location filename="../qtractorPluginForm.cpp" line="579"/>
         <source>Save Preset</source>
         <translation>Uložit přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="645"/>
+        <location filename="../qtractorPluginForm.cpp" line="647"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="646"/>
+        <location filename="../qtractorPluginForm.cpp" line="648"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -10546,97 +10546,101 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="45"/>
         <source>qtractorPluginForm</source>
-        <translation>Formulář přídavných modulů QTractor</translation>
+        <translation type="obsolete">Formulář přídavných modulů QTractor</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="66"/>
+        <location filename="../qtractorPluginForm.ui" line="55"/>
         <source>Open preset</source>
         <translation>Otevřít přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="86"/>
+        <location filename="../qtractorPluginForm.ui" line="74"/>
         <source>Preset name</source>
         <translation>Název přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="99"/>
+        <location filename="../qtractorPluginForm.ui" line="87"/>
         <source>Save preset</source>
         <translation>Uložit přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="116"/>
+        <location filename="../qtractorPluginForm.ui" line="103"/>
         <source>Delete preset</source>
         <translation>Smazat přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="149"/>
+        <location filename="../qtractorPluginForm.ui" line="135"/>
         <source>Edit plugin</source>
         <translation>Upravit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="152"/>
+        <location filename="../qtractorPluginForm.ui" line="138"/>
         <source>Edit</source>
         <translation>upravit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="195"/>
+        <location filename="../qtractorPluginForm.ui" line="179"/>
         <source>About</source>
         <translation>O</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="257"/>
+        <location filename="../qtractorPluginForm.ui" line="241"/>
         <source>Outputs (Sends)</source>
         <translation>Výstupy (Poslání)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="260"/>
+        <location filename="../qtractorPluginForm.ui" line="244"/>
         <source>Sends</source>
         <translation>Poslání</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="277"/>
+        <location filename="../qtractorPluginForm.ui" line="260"/>
         <source>Inputs (Returns)</source>
         <translation>Vstupy (Navrácení)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="280"/>
+        <location filename="../qtractorPluginForm.ui" line="263"/>
         <source>Returns</source>
         <translation>Navrácení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="294"/>
+        <location filename="../qtractorPluginForm.ui" line="276"/>
         <source>Aux Send Bus:</source>
         <translation>Sběrnice aux-send:</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="319"/>
+        <location filename="../qtractorPluginForm.ui" line="301"/>
         <source>Manage buses</source>
         <translation>Spravovat sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="322"/>
+        <location filename="../qtractorPluginForm.ui" line="304"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="360"/>
+        <location filename="../qtractorPluginForm.ui" line="342"/>
         <source>Direct Access Parameter</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="363"/>
+        <location filename="../qtractorPluginForm.ui" line="345"/>
         <source>Direct Access</source>
         <translation>Přímý přístup</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="172"/>
+        <location filename="../qtractorPluginForm.ui" line="157"/>
         <source>Activate plugin</source>
         <translation>Zapnout přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="175"/>
+        <location filename="../qtractorPluginForm.ui" line="34"/>
+        <source>Plugin Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.ui" line="160"/>
         <source>Active</source>
         <translation>Aktivní</translation>
     </message>

@@ -301,10 +301,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	refresh();
 	stabilize();
 
-	const QPoint& pos = m_pPlugin->formPos();
-	if (!pos.isNull())
-		move(pos);
-
 	show();
 }
 
@@ -314,6 +310,12 @@ void qtractorPluginForm::activateForm (void)
 	if (!isVisible()) {
 		if (m_pPlugin) toggleEditor(m_pPlugin->isEditorVisible());
 		show();
+	}
+
+	if (m_pPlugin) {
+		const QPoint& pos = m_pPlugin->formPos();
+		if (!pos.isNull())
+			move(pos);
 	}
 
 	raise();
