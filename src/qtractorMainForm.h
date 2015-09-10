@@ -384,6 +384,9 @@ protected:
 
 	void setSongPos(unsigned short iSongPos);
 
+	unsigned long playHeadBackward() const;
+	unsigned long playHeadForward() const;
+
 	void updateSessionPre();
 	void updateSessionPost();
 
