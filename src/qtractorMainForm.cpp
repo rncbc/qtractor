@@ -4992,33 +4992,7 @@ void qtractorMainForm::transportBackward (void)
 		& (Qt::ShiftModifier | Qt::ControlModifier)) {
 		m_pSession->setPlayHead(0);
 	} else {
-		const unsigned long iPlayHead = m_pSession->playHead();
-		QList<unsigned long> list;
-		list.append(0);
-		if (iPlayHead > m_iPlayHeadAutoBackward)
-			list.append(m_iPlayHeadAutoBackward);
-		if (iPlayHead > m_pSession->editHead())
-			list.append(m_pSession->editHead());
-	//	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
-	//		list.append(m_pSession->editTail());
-		if (m_pSession->isLooping()) {
-			if (iPlayHead > m_pSession->loopStart())
-				list.append(m_pSession->loopStart());
-		//	if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
-		//		list.append(m_pSession->loopEnd());
-		}
-		if (iPlayHead > m_pSession->sessionStart())
-			list.append(m_pSession->sessionStart());
-		if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
-			list.append(m_pSession->sessionEnd());
-		qtractorTimeScale::Marker *pMarker
-			= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
-		while (pMarker && pMarker->frame >= iPlayHead)
-			pMarker = pMarker->prev();
-		if (pMarker && iPlayHead > pMarker->frame)
-			list.append(pMarker->frame);
-		qSort(list.begin(), list.end());
-		m_pSession->setPlayHead(list.last());
+		m_pSession->setPlayHead(playHeadBackward());
 	}
 	++m_iTransportUpdate;
 
@@ -5105,32 +5079,7 @@ void qtractorMainForm::transportForward (void)
 		& (Qt::ShiftModifier | Qt::ControlModifier)) {
 		m_pSession->setPlayHead(m_pSession->sessionEnd());
 	} else {
-		const unsigned long iPlayHead = m_pSession->playHead();
-		QList<unsigned long> list;
-		if (iPlayHead < m_iPlayHeadAutoBackward)
-			list.append(m_iPlayHeadAutoBackward);
-		if (iPlayHead < m_pSession->editHead())
-			list.append(m_pSession->editHead());
-		if (iPlayHead < m_pSession->editTail())
-			list.append(m_pSession->editTail());
-		if (m_pSession->isLooping()) {
-			if (iPlayHead < m_pSession->loopStart())
-				list.append(m_pSession->loopStart());
-			if (iPlayHead < m_pSession->loopEnd())
-				list.append(m_pSession->loopEnd());
-		}
-		if (iPlayHead < m_pSession->sessionStart())
-			list.append(m_pSession->sessionStart());
-		if (iPlayHead < m_pSession->sessionEnd())
-			list.append(m_pSession->sessionEnd());
-		qtractorTimeScale::Marker *pMarker
-			= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
-		while (pMarker && iPlayHead >= pMarker->frame)
-			pMarker = pMarker->next();
-		if (pMarker && iPlayHead < pMarker->frame)
-			list.append(pMarker->frame);
-		qSort(list.begin(), list.end());
-		m_pSession->setPlayHead(list.first());
+		m_pSession->setPlayHead(playHeadForward());
 	}
 	++m_iTransportUpdate;
 
@@ -5585,7 +5534,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 			m_pSession->commands()->push(pCurveCommand);
 		// Auto-backward reset feature...
 		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
+			m_pSession->setPlayHead(playHeadBackward());
 	}	// Start something... ;)
 	else ++m_iTransportUpdate;
 
@@ -5732,6 +5681,70 @@ void qtractorMainForm::setSongPos ( unsigned short iSongPos )
 {
 	m_pSession->setPlayHead(m_pSession->frameFromSongPos(iSongPos));
 	++m_iTransportUpdate;
+}
+
+
+
+unsigned long qtractorMainForm::playHeadBackward (void) const
+{
+	const unsigned long iPlayHead = m_pSession->playHead();
+	QList<unsigned long> list;
+	list.append(0);
+	if (iPlayHead > m_iPlayHeadAutoBackward)
+		list.append(m_iPlayHeadAutoBackward);
+	if (iPlayHead > m_pSession->editHead())
+		list.append(m_pSession->editHead());
+//	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
+//		list.append(m_pSession->editTail());
+	if (m_pSession->isLooping()) {
+		if (iPlayHead > m_pSession->loopStart())
+			list.append(m_pSession->loopStart());
+	//	if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
+	//		list.append(m_pSession->loopEnd());
+	}
+	if (iPlayHead > m_pSession->sessionStart())
+		list.append(m_pSession->sessionStart());
+	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
+		list.append(m_pSession->sessionEnd());
+	qtractorTimeScale::Marker *pMarker
+		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
+	while (pMarker && pMarker->frame >= iPlayHead)
+		pMarker = pMarker->prev();
+	if (pMarker && iPlayHead > pMarker->frame)
+		list.append(pMarker->frame);
+	qSort(list.begin(), list.end());
+	return list.last();
+}
+
+
+unsigned long qtractorMainForm::playHeadForward (void) const
+{
+	const unsigned long iPlayHead = m_pSession->playHead();
+	QList<unsigned long> list;
+	if (iPlayHead < m_iPlayHeadAutoBackward)
+		list.append(m_iPlayHeadAutoBackward);
+	if (iPlayHead < m_pSession->editHead())
+		list.append(m_pSession->editHead());
+	if (iPlayHead < m_pSession->editTail())
+		list.append(m_pSession->editTail());
+	if (m_pSession->isLooping()) {
+		if (iPlayHead < m_pSession->loopStart())
+			list.append(m_pSession->loopStart());
+		if (iPlayHead < m_pSession->loopEnd())
+			list.append(m_pSession->loopEnd());
+	}
+	if (iPlayHead < m_pSession->sessionStart())
+		list.append(m_pSession->sessionStart());
+	if (iPlayHead < m_pSession->sessionEnd())
+		list.append(m_pSession->sessionEnd());
+	qtractorTimeScale::Marker *pMarker
+		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
+	while (pMarker && iPlayHead >= pMarker->frame)
+		pMarker = pMarker->next();
+	if (pMarker && iPlayHead < pMarker->frame)
+		list.append(pMarker->frame);
+	qSort(list.begin(), list.end());
+	return list.first();
 }
 
 
@@ -6019,7 +6032,7 @@ void qtractorMainForm::updateSessionPre (void)
 	if (startSession()) {
 		// (Re)set playhead...
 		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
+			m_pSession->setPlayHead(playHeadBackward());
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->resetAllMidiControllers(false); // Deferred++
 		// Get on with the special ALSA sequencer notifier...
@@ -7049,8 +7062,7 @@ void qtractorMainForm::timerSlot (void)
 			if ((state == JackTransportStopped &&  bPlaying) ||
 				(state == JackTransportRolling && !bPlaying)) {
 			#ifdef CONFIG_DEBUG
-				qDebug("qtractorMainForm::timerSlot()"
-					" playing=%d state=%d",
+				qDebug("qtractorMainForm::timerSlot() playing=%d state=%d",
 					int(bPlaying), int(state == JackTransportRolling));
 			#endif
 				iPlayHead = pos.frame;
@@ -7138,18 +7150,8 @@ void qtractorMainForm::timerSlot (void)
 		// Whether to continue past end...
 		if (!m_ui.transportContinueAction->isChecked()
 			&& m_iPlayHead > m_pSession->sessionEnd()) {
-			// Auto-backward reset feature...
-			if (m_ui.transportAutoBackwardAction->isChecked()) {
-				// Maybe it's better go on with looping, eh?
-				if (m_pSession->isLooping()
-					&& m_iPlayHead > m_pSession->loopEnd()
-					&& m_iPlayHeadAutoBackward < m_pSession->loopStart())
-					m_pSession->setPlayHead(m_pSession->loopStart());
-				else
-					m_pSession->setPlayHead(m_iPlayHeadAutoBackward);
-				++m_iTransportUpdate;
-			}	// Stop at once!
-			else  transportPlay();
+			// Stop at once!
+			transportPlay();
 		}
 	}
 
