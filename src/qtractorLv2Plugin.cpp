@@ -933,6 +933,9 @@ static struct qtractorLv2Urids
 	LV2_URID bufsz_maxBlockLength;
 	LV2_URID bufsz_sequenceSize;
 #endif
+#ifdef CONFIG_LV2_UI
+	LV2_URID ui_windowTitle;
+#endif
 #endif	// CONFIG_LV2_OPTIONS
 
 } g_lv2_urids;
@@ -1583,6 +1586,10 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__maxBlockLength);
 	g_lv2_urids.bufsz_sequenceSize
 		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__sequenceSize);
+#endif
+#ifdef CONFIG_LV2_UI
+	g_lv2_urids.ui_windowTitle
+		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__windowTitle);
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 
@@ -2737,6 +2744,24 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #endif
 #endif
 
+#ifdef CONFIG_LV2_OPTIONS
+	const LV2_Options_Option ui_options[] = {
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle, sizeof(char *),
+		  g_lv2_urids.atom_String, m_aEditorTitle.constData() },
+		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
+	};
+	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));
+	m_lv2_ui_options_feature.URI  = LV2_OPTIONS__options;
+	m_lv2_ui_options_feature.data = &m_lv2_ui_options;
+	// Find and override options feature...
+	for (int i = 0; i < iFeatures; ++i) {
+		if (::strcmp(m_lv2_ui_features[i]->URI, LV2_OPTIONS__options) == 0) {
+			m_lv2_ui_features[i] = &m_lv2_ui_options_feature;
+			break;
+		}
+	}
+#endif
+
 	m_lv2_ui_features[iFeatures] = NULL;
 
 	const char *ui_type_uri = NULL;
@@ -2947,6 +2972,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	setEditorVisible(true);
 
 	updateEditorTitleEx();
+
+	loadEditorPos();
 //	idleEditor();
 }
 
@@ -3065,7 +3092,7 @@ void qtractorLv2Plugin::idleEditor (void)
 #ifdef CONFIG_LV2_UI_IDLE
 	if (m_lv2_ui_idle_interface && m_lv2_ui_idle_interface->idle) {
 		if ((*m_lv2_ui_idle_interface->idle)(m_lv2_ui_handle))
-			setEditorClosed(true);
+			closeEditorEx();
 	}
 #endif
 
@@ -3087,8 +3114,6 @@ void qtractorLv2Plugin::idleEditor (void)
 
 #endif	// CONFIG_LV2_ATOM
 
-#ifdef CONFIG_LV2_UI
-
 	if (m_ui_params.count() > 0) {
 		QHash<unsigned long, float>::ConstIterator iter
 			= m_ui_params.constBegin();
@@ -3105,8 +3130,6 @@ void qtractorLv2Plugin::idleEditor (void)
 		}
 		m_ui_params.clear();
 	}
-
-#endif	// CONFIG_LV2_UI
 }
 
 
@@ -3117,7 +3140,7 @@ void qtractorLv2Plugin::closeEditorEx (void)
 #endif
 
 	// Save current editor position, if any...
-	saveEditorPos();
+	// saveEditorPos();
 
 	setEditorClosed(true);
 }
@@ -3129,7 +3152,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	if (m_lv2_ui_widget == NULL)
 		return;
 
-	if (!m_bEditorVisible && bVisible) {
+	if (/*!m_bEditorVisible && */bVisible) {
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_SHOW((LV2_External_UI_Widget *) m_lv2_ui_widget);
@@ -3155,10 +3178,10 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		}
 		m_bEditorVisible = true;
 		// Restore editor last known position, if any...
-		loadEditorPos();
+		// loadEditorPos();
 	}
 	else
-	if (m_bEditorVisible && !bVisible) {
+	if (/*m_bEditorVisible && */!bVisible) {
 		// Save editor current position, if any...
 		saveEditorPos();
 	#ifdef CONFIG_LV2_EXTERNAL_UI
@@ -3205,6 +3228,15 @@ void qtractorLv2Plugin::updateEditorTitleEx (void)
 
 	if (m_pQtWidget)
 		m_pQtWidget->setWindowTitle(m_aEditorTitle);
+
+#ifdef CONFIG_LV2_OPTIONS
+	for (int i = 0; m_lv2_ui_options[i].type; ++i) {
+		if (m_lv2_ui_options[i].type == g_lv2_urids.ui_windowTitle) {
+			m_lv2_ui_options[i].value = m_aEditorTitle.constData();
+			break;
+		}
+	}
+#endif
 
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
