@@ -3116,8 +3116,8 @@ void qtractorLv2Plugin::closeEditorEx (void)
 	qDebug("qtractorLv2Plugin[%p]::closeEditorEx()", this);
 #endif
 
-	if (m_pQtWidget)
-		setEditorPos(m_pQtWidget->pos());
+	// Save current editor position, if any...
+	saveEditorPos();
 
 	setEditorClosed(true);
 }
@@ -3129,7 +3129,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 	if (m_lv2_ui_widget == NULL)
 		return;
 
-	if (/*!m_bEditorVisible && */bVisible) {
+	if (!m_bEditorVisible && bVisible) {
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_SHOW((LV2_External_UI_Widget *) m_lv2_ui_widget);
@@ -3149,17 +3149,18 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 					= m_pQtWidget->windowFlags() & ~Qt::WindowType_Mask;
 				m_pQtWidget->setWindowFlags(wflags | Qt::Widget);
 			}
-			const QPoint& posEditor = editorPos();
-			if (!posEditor.isNull())
-				m_pQtWidget->move(posEditor);
 			m_pQtWidget->show();
 			m_pQtWidget->raise();
 			m_pQtWidget->activateWindow();
 		}
 		m_bEditorVisible = true;
+		// Restore editor last known position, if any...
+		loadEditorPos();
 	}
 	else
-	if (/*m_bEditorVisible && */!bVisible) {
+	if (m_bEditorVisible && !bVisible) {
+		// Save editor current position, if any...
+		saveEditorPos();
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 			LV2_EXTERNAL_UI_HIDE((LV2_External_UI_Widget *) m_lv2_ui_widget);
@@ -3170,10 +3171,8 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 			(*m_lv2_ui_show_interface->hide)(m_lv2_ui_handle);
 	#endif
 	#endif
-		if (m_pQtWidget) {
-			setEditorPos(m_pQtWidget->pos());
+		if (m_pQtWidget)
 			m_pQtWidget->hide();
-		}
 		m_bEditorVisible = false;
 	}
 
@@ -3187,7 +3186,7 @@ bool qtractorLv2Plugin::isEditorVisible (void) const
 }
 
 
-// Update editor widget caption.
+// GUI editor window title methods.
 void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 {
 	qtractorPlugin::setEditorTitle(sTitle);
@@ -3218,8 +3217,66 @@ void qtractorLv2Plugin::updateEditorTitleEx (void)
 			GTK_WINDOW(gtk_widget_get_toplevel(pGtkWidget)),
 			m_aEditorTitle.constData());
 	}
-#endif	// CONFIG_LV2_UI_GTK2
 #endif	// CONFIG_LV2_UI_SHOW
+#endif	// CONFIG_LV2_UI_GTK2
+#endif
+}
+
+
+// GUI editor window (re)position methods.
+void qtractorLv2Plugin::saveEditorPos (void)
+{
+	QPoint posEditor;
+
+	if (m_pQtWidget && m_pQtWidget->isVisible())
+		posEditor = m_pQtWidget->pos();
+
+#if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_GTK2
+#ifdef CONFIG_LV2_UI_SHOW
+	if (m_lv2_ui_widget
+		&& m_lv2_ui_type == LV2_UI_TYPE_GTK
+		&& m_lv2_ui_show_interface) {
+		GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
+		gint x = 0;
+		gint y = 0;
+		gtk_window_get_position(
+			GTK_WINDOW(gtk_widget_get_toplevel(pGtkWidget)), &x, &y);
+		posEditor.setX(int(x));
+		posEditor.setY(int(y));
+	}
+#endif	// CONFIG_LV2_UI_SHOW
+#endif	// CONFIG_LV2_UI_GTK2
+#endif
+
+	setEditorPos(posEditor);
+}
+
+
+void qtractorLv2Plugin::loadEditorPos (void)
+{
+	const QPoint& posEditor = editorPos();
+
+	if (posEditor.isNull())
+		return;
+
+	if (m_pQtWidget)
+		m_pQtWidget->move(posEditor);
+
+#if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_GTK2
+#ifdef CONFIG_LV2_UI_SHOW
+	if (m_lv2_ui_widget
+		&& m_lv2_ui_type == LV2_UI_TYPE_GTK
+		&& m_lv2_ui_show_interface) {
+		GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
+		const gint x = posEditor.x();
+		const gint y = posEditor.y();
+		gtk_window_move(
+			GTK_WINDOW(gtk_widget_get_toplevel(pGtkWidget)), x, y);
+	}
+#endif	// CONFIG_LV2_UI_SHOW
+#endif	// CONFIG_LV2_UI_GTK2
 #endif
 }
 
@@ -3329,8 +3386,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 {
 #ifdef CONFIG_LV2_UI
 	// Update current editor position...
-	if (m_pQtWidget && m_pQtWidget->isVisible())
-		setEditorPos(m_pQtWidget->pos());
+	saveEditorPos();
 #endif
 
 	if (!type()->isConfigure())
