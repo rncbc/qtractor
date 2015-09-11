@@ -10475,97 +10475,101 @@ Voulez-vous appliquer les changements?</translation>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="45"/>
         <source>qtractorPluginForm</source>
-        <translation>qtractorPluginForm</translation>
+        <translation type="obsolete">qtractorPluginForm</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="66"/>
+        <location filename="../qtractorPluginForm.ui" line="34"/>
+        <source>Plugin Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.ui" line="55"/>
         <source>Open preset</source>
         <translation>Ouvrir réglages</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="86"/>
+        <location filename="../qtractorPluginForm.ui" line="74"/>
         <source>Preset name</source>
         <translation>Nom du réglage</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="99"/>
+        <location filename="../qtractorPluginForm.ui" line="87"/>
         <source>Save preset</source>
         <translation>Savegarder réglages</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="116"/>
+        <location filename="../qtractorPluginForm.ui" line="103"/>
         <source>Delete preset</source>
         <translation>Supprimer réglages</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="149"/>
+        <location filename="../qtractorPluginForm.ui" line="135"/>
         <source>Edit plugin</source>
         <translation>Editer greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="152"/>
+        <location filename="../qtractorPluginForm.ui" line="138"/>
         <source>Edit</source>
         <translation>Editer</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="172"/>
+        <location filename="../qtractorPluginForm.ui" line="157"/>
         <source>Activate plugin</source>
         <translation>Activer greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="175"/>
+        <location filename="../qtractorPluginForm.ui" line="160"/>
         <source>Active</source>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="195"/>
+        <location filename="../qtractorPluginForm.ui" line="179"/>
         <source>About</source>
         <translation>A propos</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="257"/>
+        <location filename="../qtractorPluginForm.ui" line="241"/>
         <source>Outputs (Sends)</source>
         <translation>Sorties (Envois)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="260"/>
+        <location filename="../qtractorPluginForm.ui" line="244"/>
         <source>Sends</source>
         <translation>Envois</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="277"/>
+        <location filename="../qtractorPluginForm.ui" line="260"/>
         <source>Inputs (Returns)</source>
         <translation>Entrées (Retours)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="280"/>
+        <location filename="../qtractorPluginForm.ui" line="263"/>
         <source>Returns</source>
         <translation>Retours</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="294"/>
+        <location filename="../qtractorPluginForm.ui" line="276"/>
         <source>Aux Send Bus:</source>
         <translation>Bus d&apos;envoie aux:</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="319"/>
+        <location filename="../qtractorPluginForm.ui" line="301"/>
         <source>Manage buses</source>
         <translation>Gèrer les bus</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="322"/>
+        <location filename="../qtractorPluginForm.ui" line="304"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="360"/>
+        <location filename="../qtractorPluginForm.ui" line="342"/>
         <source>Direct Access Parameter</source>
         <translation>Paramètre d&apos;accès direct</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="363"/>
+        <location filename="../qtractorPluginForm.ui" line="345"/>
         <source>Direct Access</source>
         <translation>Accès direct</translation>
     </message>
