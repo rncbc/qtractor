@@ -217,8 +217,13 @@ public:
 	void setEditorVisible(bool bVisible);
 	bool isEditorVisible() const;
 
+	// GUI editor window title methods.
 	void setEditorTitle(const QString& sTitle);
 	void updateEditorTitleEx();
+
+	// GUI editor window (re)position methods.
+	void saveEditorPos();
+	void loadEditorPos();
 
 	// Parameter update method.
 	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
