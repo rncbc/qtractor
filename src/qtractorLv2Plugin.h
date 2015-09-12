@@ -423,18 +423,22 @@ private:
 	// LV2 UI Idle extension data interface.
 	const LV2UI_Idle_Interface *m_lv2_ui_idle_interface;
 #endif
-#if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_SHOW
 	// LV2 UI Show extension data interface.
 	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
 #endif
+#if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
+#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	struct _GtkWidget *m_pGtkWindow;
+#endif
 #endif	// CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_X11
+#ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	LV2UI_Resize m_lv2_ui_resize;
 	LV2_Feature  m_lv2_ui_resize_feature;
 	LV2_Feature  m_lv2_ui_parent_feature;
+#endif
 #endif	// CONFIG_LV2_UI_X11
 #endif
 
@@ -482,6 +486,10 @@ private:
 	uint32_t           m_iMinBlockLength;
 	uint32_t           m_iMaxBlockLength;
 	uint32_t           m_iSequenceSize;
+#endif
+#ifdef CONFIG_LV2_UI
+	LV2_Feature        m_lv2_ui_options_feature;
+	LV2_Options_Option m_lv2_ui_options[2];
 #endif
 #endif
 };
