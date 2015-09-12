@@ -10476,38 +10476,38 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="203"/>
+        <location filename="../qtractorPluginForm.cpp" line="204"/>
         <source>Page %1</source>
         <translation>Strana %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="282"/>
+        <location filename="../qtractorPluginForm.cpp" line="283"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 instance, %4 kanál(y).</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="394"/>
+        <location filename="../qtractorPluginForm.cpp" line="391"/>
         <source>(none)</source>
         <translation>(Žádné)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="496"/>
+        <location filename="../qtractorPluginForm.cpp" line="493"/>
         <source>Open Preset</source>
         <translation>Otevřít přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="497"/>
-        <location filename="../qtractorPluginForm.cpp" line="578"/>
+        <location filename="../qtractorPluginForm.cpp" line="494"/>
+        <location filename="../qtractorPluginForm.cpp" line="575"/>
         <source>Preset files (*.%1)</source>
         <translation>Soubory s přednastaveními (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="535"/>
+        <location filename="../qtractorPluginForm.cpp" line="532"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="536"/>
+        <location filename="../qtractorPluginForm.cpp" line="533"/>
         <source>Preset could not be loaded
 from &quot;%1&quot;.
 
@@ -10518,22 +10518,22 @@ z &quot;%1&quot;.
 Promiňte.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="792"/>
+        <location filename="../qtractorPluginForm.cpp" line="789"/>
         <source>&amp;None</source>
         <translation>&amp;Žádné</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="577"/>
+        <location filename="../qtractorPluginForm.cpp" line="574"/>
         <source>Save Preset</source>
         <translation>Uložit přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="645"/>
+        <location filename="../qtractorPluginForm.cpp" line="642"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="646"/>
+        <location filename="../qtractorPluginForm.cpp" line="643"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)

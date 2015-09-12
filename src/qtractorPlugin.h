@@ -757,6 +757,7 @@ private:
 
 	// The plugin form reference.
 	qtractorPluginForm *m_pForm;
+
 	QString m_sPreset;
 	QPoint  m_posForm;
 

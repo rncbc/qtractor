@@ -52,6 +52,8 @@
 
 #include <QMenu>
 #include <QKeyEvent>
+#include <QShowEvent>
+#include <QHideEvent>
 
 #include "math.h"
 
@@ -166,8 +168,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const int MaxColumnsPerPage = (bVstPlugin ?  2 : 3);
 	const int MaxParamsPerPage  = MaxRowsPerPage * MaxColumnsPerPage;
 
-	const qtractorPlugin::Params& params
-		= m_pPlugin->params();
+	const qtractorPlugin::Params& params = m_pPlugin->params();
 	const int iParams = params.count();
 
 	int iParamsPerPage = iParams;
@@ -300,10 +301,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	updateActivated();
 	refresh();
 	stabilize();
-
-	const QPoint& pos = m_pPlugin->formPos();
-	if (!pos.isNull())
-		move(pos);
 
 	show();
 }
@@ -946,17 +943,34 @@ void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
 }
 
 
-// Form close event (save visible position).
-void qtractorPluginForm::closeEvent ( QCloseEvent *pCloseEvent )
+// Form show event (restore visible position).
+void qtractorPluginForm::showEvent ( QShowEvent *pShowEvent )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm::closeEvent()");
+	qDebug("qtractorPluginForm[%p]::showEvent()", this);
+#endif
+
+	QWidget::showEvent(pShowEvent);
+
+	if (m_pPlugin) {
+		const QPoint& pos = m_pPlugin->formPos();
+		if (!pos.isNull())
+			QWidget::move(pos);
+	}
+}
+
+
+// Form hide event (save visible position).
+void qtractorPluginForm::hideEvent ( QHideEvent *pHideEvent )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPluginForm[%p]::hideEvent()", this);
 #endif
 
 	if (m_pPlugin)
 		m_pPlugin->setFormPos(QWidget::pos());
 
-	QWidget::closeEvent(pCloseEvent);
+	QWidget::hideEvent(pHideEvent);
 }
 
 

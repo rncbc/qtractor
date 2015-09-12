@@ -756,6 +756,15 @@ if test "x$ac_lilv" = "xyes"; then
    fi
 fi
 
+if test "x$ac_lilv" = "xyes"; then
+   AC_CHECK_LIB(lilv-0, lilv_file_uri_parse,
+      [ac_lilv_file_uri_parse="yes"],
+      [ac_lilv_file_uri_parse="no"])
+   if test "x$ac_lilv_file_uri_parse" = "xyes"; then
+      AC_DEFINE(CONFIG_LILV_FILE_URI_PARSE, 1, [Define if lilv_file_uri_parse is available.])
+   fi
+fi
+
 # Check for LV2 new UI instantiation availability (libsuil).
 if test "x$ac_suil" = "xyes"; then
    AC_CHECK_LIB(suil-0, main, [ac_suil="yes"], [ac_suil="no"])

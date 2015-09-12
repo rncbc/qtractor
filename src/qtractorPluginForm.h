@@ -111,8 +111,9 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *);
 
-	// Form close event (save visible position).
-	void closeEvent(QCloseEvent *pCloseEvent);
+	// Form show/hide events (restore/save position).
+	void showEvent(QShowEvent *);
+	void hideEvent(QHideEvent *);
 
 private:
 
