@@ -5357,7 +5357,6 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("Debugging option enabled.");
 #endif
 #ifndef CONFIG_LIBVORBIS
-
 	list << tr("Ogg Vorbis (libvorbis) file support disabled.");
 #endif
 #ifndef CONFIG_LIBMAD
@@ -5434,16 +5433,20 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_UI_IDLE
 	list << tr("LV2 Plug-in UI Idle interface support disabled.");
 #endif
-#if QT_VERSION >= 0x050100
 #ifndef CONFIG_LV2_UI_SHOW
 	list << tr("LV2 Plug-in UI Show interface support disabled.");
 #endif
+#if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
+#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	list << tr("LV2 Plug-in UI GTK2 native support enabled.");
 #endif
+#endif // CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_X11
+#ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	list << tr("LV2 Plug-in UI X11 native support enabled.");
 #endif
+#endif // CONFIG_LV2_UI_X11
 #endif
 #endif // CONFIG_LV2_UI
 #endif // CONFIG_LV2
