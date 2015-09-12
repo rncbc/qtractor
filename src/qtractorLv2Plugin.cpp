@@ -2839,12 +2839,25 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 	m_suil_host = suil_host_new(
 		qtractor_lv2_ui_write, qtractor_lv2_ui_index, NULL, NULL);
+
+	const char *bundle_uri = lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui));
+	const char *binary_uri = lilv_node_as_uri(lilv_ui_get_binary_uri(m_lv2_ui));
+#ifdef CONFIG_LILV_FILE_URI_PARSE
+	const char *bundle_path = lilv_file_uri_parse(bundle_uri, NULL);
+	const char *binary_path = lilv_file_uri_parse(binary_uri, NULL);
+#else
+	const char *bundle_path = lilv_uri_to_path(bundle_uri);
+	const char *binary_path = lilv_uri_to_path(binary_uri);
+#endif
 	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_UI_HOST_URI,
 		lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin())),
 		lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui)), ui_type_uri,
-		lilv_uri_to_path(lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui))),
-		lilv_uri_to_path(lilv_node_as_uri(lilv_ui_get_binary_uri(m_lv2_ui))),
-		m_lv2_ui_features);
+		bundle_path, binary_path, m_lv2_ui_features);
+
+#ifdef CONFIG_LILV_FILE_URI_PARSE
+	lilv_free((void *) binary_path);
+	lilv_free((void *) bundle_path);
+#endif
 
 	if (m_suil_instance) {
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
