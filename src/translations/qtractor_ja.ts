@@ -684,13 +684,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>コピーライト:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1759"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1766"/>
         <source>Project: </source>
         <translation>プロジェクト:</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1767"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1774"/>
         <source>Author: </source>
         <translation>作者:</translation>
     </message>

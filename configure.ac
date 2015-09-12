@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.0.16, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.0.17, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -737,7 +737,6 @@ if test "x$ac_lv2_ui" = "xno"; then
 fi
 
 if test "x$ac_qt5" = "xno"; then
-   ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
    ac_lv2_ui_x11="no"
 fi
@@ -1284,7 +1283,7 @@ fi
 if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
    ac_old_libs=$LIBS
    LIBS=$ac_libs
-   AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
+   AC_CACHE_CHECK([for LV2 UI GTK2 embed support (libsuil_gtk2_in_qt5)],
       ac_cv_suil_gtk2_in_qt5, [
       AC_TRY_RUN([
          #include <suil/suil.h>
@@ -1296,7 +1295,9 @@ if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
       ], ac_cv_suil_gtk2_in_qt5="yes", ac_cv_suil_gtk2_in_qt5="no")
    ])
    LIBS=$ac_old_libs
-   if test "x$ac_cv_suil_gtk2_in_qt5" = "xyes"; then
+   ac_suil_gtk2_in_qt5=$ac_cv_suil_gtk2_in_qt5
+   if test "x$ac_suil_gtk2_in_qt5" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBSUIL_GTK2_IN_QT5, 1, [Define if libsuil_gtk2_in_qt5 is available.])
       ac_lv2_ui_gtk2="no"
    fi
 fi
@@ -1328,7 +1329,9 @@ if test "x$ac_lv2_ui_x11" = "xyes" -a "x$ac_suil" = "xyes"; then
       ], ac_cv_suil_x11_in_qt5="yes", ac_cv_suil_x11_in_qt5="no")
    ])
    LIBS=$ac_old_libs
-   if test "x$ac_cv_suil_x11_in_qt5" = "xyes"; then
+   ac_suil_x11_in_qt5=$ac_cv_suil_x11_in_qt5
+   if test "x$ac_suil_x11_in_qt5" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBSUIL_X11_IN_QT5, 1, [Define if libsuil_x11_in_qt5 is available.])
       ac_lv2_ui_x11="no"
    fi
 fi
