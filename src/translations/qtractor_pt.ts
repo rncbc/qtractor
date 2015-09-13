@@ -257,7 +257,7 @@ MIDI:	</translation>
         <translation>gravador de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1766"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1762"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
@@ -583,7 +583,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1774"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1770"/>
         <source>Author: </source>
         <translation>Autor:</translation>
     </message>
@@ -697,7 +697,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2172"/>
+        <location filename="../qtractorPlugin.cpp" line="2173"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>

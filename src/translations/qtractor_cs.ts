@@ -239,7 +239,7 @@ MIDI:	</translation>
         <translation>Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2172"/>
+        <location filename="../qtractorPlugin.cpp" line="2173"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>
@@ -686,13 +686,13 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1766"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1762"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1774"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1770"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
