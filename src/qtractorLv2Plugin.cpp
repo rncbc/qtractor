@@ -1199,10 +1199,6 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 #ifdef CONFIG_LV2_UI_GTK2
 
-#ifndef CONFIG_LIBSUIL_GTK2_GTK2_IN_QT5
-#include <QWindow>
-#endif
-
 #undef signals // Collides with GTK symbology
 
 #include <gtk/gtk.h>
@@ -1858,6 +1854,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_UI_GTK2
 	#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 		, m_pGtkWindow(NULL)
+		, m_pQtWindow(NULL)
 	#endif
 	#endif	// CONFIG_LV2_UI_GTK2
 	#endif
@@ -2926,8 +2923,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_request), pQtWidget);
 			g_signal_connect(G_OBJECT(pGtkWindow), "size-allocate",
 				G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_allocate), pQtWidget);
-			// done.
 			m_pGtkWindow = pGtkWindow;
+			m_pQtWindow = pQtWindow;
+			// done.
 			m_pQtWidget = pQtWidget;
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
 			m_bQtDelete = true; // owned!
@@ -3024,10 +3022,13 @@ void qtractorLv2Plugin::closeEditor (void)
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
 #ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
+	if (m_pQtWindow) {
+		m_pQtWindow->setParent(NULL);
+		m_pQtWindow = NULL;
+	}
 	if (m_pGtkWindow) {
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = NULL;
-		qtractorSession::stabilize();
 	}
 #endif
 #endif	// CONFIG_LV2_UI_GTK2
