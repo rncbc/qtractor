@@ -887,6 +887,7 @@ bool qtractorPlugin::isFormVisible (void) const
 	return (m_pForm ? m_pForm->isVisible() : false);
 }
 
+
 qtractorPluginForm *qtractorPlugin::form (void)
 {
 	// Take the change and create the form if it doesn't current exist.

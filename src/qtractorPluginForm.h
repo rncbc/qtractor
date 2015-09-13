@@ -24,7 +24,6 @@
 
 #include "ui_qtractorPluginForm.h"
 
-#include <QFrame>
 #include <QHash>
 
 
@@ -40,7 +39,6 @@ class qtractorObserverSlider;
 class qtractorObserverSpinBox;
 
 class qtractorPluginParamDisplay;
-
 
 //----------------------------------------------------------------------------
 // qtractorPluginForm -- UI wrapper form.
@@ -137,7 +135,7 @@ private:
 // qtractorPluginParamWidget -- Plugin port widget.
 //
 
-class qtractorPluginParamWidget : public QFrame
+class qtractorPluginParamWidget : public QWidget
 {
 	Q_OBJECT
 

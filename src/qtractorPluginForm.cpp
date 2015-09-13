@@ -302,7 +302,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	refresh();
 	stabilize();
 
-	show();
+	QWidget::show();
 }
 
 
@@ -310,11 +310,11 @@ void qtractorPluginForm::activateForm (void)
 {
 	if (!isVisible()) {
 		if (m_pPlugin) toggleEditor(m_pPlugin->isEditorVisible());
-		show();
+		QWidget::show();
 	}
 
-	raise();
-	activateWindow();
+	QWidget::raise();
+	QWidget::activateWindow();
 }
 
 
@@ -1083,7 +1083,7 @@ private:
 // Constructor.
 qtractorPluginParamWidget::qtractorPluginParamWidget (
 	qtractorPluginParam *pParam, QWidget *pParent )
-	: QFrame(pParent), m_pParam(pParam)
+	: QWidget(pParent), m_pParam(pParam)
 {
 	m_pSlider   = NULL;
 	m_pSpinBox  = NULL;
@@ -1187,10 +1187,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			SLOT(updateValue(float)));
 	}
 
-	QFrame::setLayout(pGridLayout);
-//	QFrame::setFrameShape(QFrame::StyledPanel);
-//	QFrame::setFrameShadow(QFrame::Raised);
-	QFrame::setToolTip(m_pParam->name());
+	QWidget::setLayout(pGridLayout);
+	QWidget::setToolTip(m_pParam->name());
 }
 
 
