@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -207,8 +207,7 @@ bool qtractorAuxSendPluginCommand::redo (void)
 	pAuxSendPlugin->setAudioBusName(m_sAudioBusName);
 	m_sAudioBusName = sAudioBusName;
 
-	if (pAuxSendPlugin->isFormVisible())
-		pAuxSendPlugin->form()->updateAudioBusName();
+	pAuxSendPlugin->updateFormAudioBusName();
 
 	return true;
 }
@@ -457,8 +456,7 @@ bool qtractorPresetPluginCommand::redo (void)
 	m_vlist = vlist;
 
 	// Update the form, showing it up as necessary...
-	if (pPlugin->isFormVisible())
-		pPlugin->form()->refresh();
+	pPlugin->refreshForm();
 
 	return true;
 }
@@ -507,8 +505,7 @@ bool qtractorResetPluginCommand::redo (void)
 	m_vlist = vlist;
 
 	// Update the form, showing it up as necessary...
-	if (pPlugin->isFormVisible())
-		pPlugin->form()->refresh();
+	pPlugin->refreshForm();
 
 	return true;
 }
@@ -627,8 +624,7 @@ bool qtractorPluginParamCommand::redo (void)
 	m_bUpdate    = true;
 
 	// Update the form, showing it up as necessary...
-	if (pPlugin->isFormVisible())
-		pPlugin->form()->changeParamValue(m_pParam->index());
+	pPlugin->updateFormParamValue(m_pParam->index());
 
 	// Update any GUI editor...
 	// pPlugin->idleEditor();

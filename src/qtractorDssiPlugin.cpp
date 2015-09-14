@@ -1146,8 +1146,7 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 #endif
 
 	m_bEditorVisible = true;
-	if (isFormVisible())
-		form()->toggleEditor(true);
+	toggleFormEditor(true);
 }
 
 
@@ -1169,7 +1168,7 @@ void qtractorDssiPlugin::setEditorVisible ( bool bVisible )
 
 	// Check if still here...
 	if (m_pDssiEditor == NULL) {
-		if (bVisible) openEditor(form());
+		if (bVisible) openEditor(NULL);
 		return;
 	}
 
@@ -1181,9 +1180,8 @@ void qtractorDssiPlugin::setEditorVisible ( bool bVisible )
 
 #endif
 
-	if (isFormVisible())
-		form()->toggleEditor(bVisible);
 	m_bEditorVisible = bVisible;
+	toggleFormEditor(bVisible);
 }
 
 bool qtractorDssiPlugin::isEditorVisible (void) const
@@ -1350,9 +1348,8 @@ void qtractorDssiPlugin::clearEditor (void)
 {
 	m_pDssiEditor = NULL;
 
-	if (isFormVisible())
-		form()->toggleEditor(false);
 	m_bEditorVisible = false;
+	toggleFormEditor(false);
 }
 
 

@@ -503,9 +503,9 @@ void qtractorPluginListView::addPlugin (void)
 			pAddPluginCommand->addPlugin(pPlugin);
 			// Show the plugin form right away...
 			if (bOpenEditor && (pPlugin->type())->isEditor())
-				pPlugin->openEditor(this);
+				pPlugin->openEditor(NULL);
 			else
-				(pPlugin->form())->activateForm();
+				pPlugin->openForm();
 		}
 	}
 
@@ -541,7 +541,7 @@ void qtractorPluginListView::addInsertPlugin (void)
 
 	if (pPlugin) {
 		// Show the plugin form right away...
-		(pPlugin->form())->activateForm();
+		pPlugin->openForm();
 		// Make it a undoable command...
 		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
 	}
@@ -575,7 +575,7 @@ void qtractorPluginListView::addAuxSendPlugin (void)
 
 	if (pPlugin) {
 		// Show the plugin form right away...
-		(pPlugin->form())->activateForm();
+		pPlugin->openForm();
 		// Make it a undoable command...
 		pSession->execute(new qtractorAddAuxSendPluginCommand(pPlugin));
 	}
@@ -849,9 +849,9 @@ void qtractorPluginListView::propertiesPlugin (void)
 		return;
 
 	if (pPlugin->isFormVisible())
-		(pPlugin->form())->hide();
+		pPlugin->closeForm();
 	else
-		(pPlugin->form())->activateForm();
+		pPlugin->openForm();
 }
 
 
@@ -874,7 +874,7 @@ void qtractorPluginListView::editPlugin (void)
 	if (pPlugin->isEditorVisible())
 		pPlugin->closeEditor();
 	else
-		pPlugin->openEditor(this);
+		pPlugin->openEditor(NULL);
 }
 
 
@@ -1039,9 +1039,9 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 		bOpenEditor = !bOpenEditor;
 
 	if (bOpenEditor && (pPlugin->type())->isEditor())
-		pPlugin->openEditor(this);
+		pPlugin->openEditor(NULL);
 	else
-		(pPlugin->form())->activateForm();
+		pPlugin->openForm();
 }
 
 
