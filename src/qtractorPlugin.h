@@ -561,9 +561,18 @@ public:
 	void removeItem(qtractorPluginListItem *pItem);
 	void clearItems();
 
-	// Special plugin form accessors.
+	// Special plugin form methods.
+	void openForm(QWidget *pParent = NULL);
+	void closeForm();
+
 	bool isFormVisible() const;
-	qtractorPluginForm *form();
+
+	void toggleFormEditor(bool bOn);
+	void updateFormParamValue(unsigned long iIndex);
+	void updateFormAudioBusName();
+	void refreshForm();
+
+	void freezeFormPos();
 
 	void setFormPos(const QPoint& pos)
 		{ m_posForm = pos; }

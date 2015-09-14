@@ -278,14 +278,14 @@ protected:
 	{
 		QWidget::showEvent(pShowEvent);
 
-		if (m_pVstPlugin && m_pVstPlugin->isFormVisible())
-			(m_pVstPlugin->form())->toggleEditor(true);
+		if (m_pVstPlugin)
+			m_pVstPlugin->toggleFormEditor(true);
 	}
 
 	void closeEvent(QCloseEvent *pCloseEvent)
 	{
-		if (m_pVstPlugin && m_pVstPlugin->isFormVisible())
-			(m_pVstPlugin->form())->toggleEditor(false);
+		if (m_pVstPlugin)
+			m_pVstPlugin->toggleFormEditor(false);
 
 		QWidget::closeEvent(pCloseEvent);
 
@@ -1226,8 +1226,7 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 			float fValue = pVstEffect->getParameter(pVstEffect, pParam->index());
 			if (pParam->value() != fValue) {
 				pParam->setValue(fValue, bUpdate);
-				if (isFormVisible())
-					form()->changeParamValue(pParam->index());
+				updateFormParamValue(pParam->index());
 			}
 		}
 	}

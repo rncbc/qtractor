@@ -29,6 +29,7 @@
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorOptions.h"
+#include "qtractorMainForm.h"
 
 #include "qtractorSession.h"
 #include "qtractorDocument.h"
@@ -881,20 +882,17 @@ void qtractorPlugin::clearItems (void)
 }
 
 
-// Special plugin form accessors.
-bool qtractorPlugin::isFormVisible (void) const
-{
-	return (m_pForm ? m_pForm->isVisible() : false);
-}
-
-
-qtractorPluginForm *qtractorPlugin::form (void)
+// Special plugin form methods.
+void qtractorPlugin::openForm ( QWidget *pParent )
 {
 	// Take the change and create the form if it doesn't current exist.
-	if (m_pForm == NULL) {
+	const bool bCreate = (m_pForm == NULL);
+
+	if (bCreate) {
 		// Build up the plugin form...
-		// What style do we create tool childs?
-		QWidget *pParent = NULL;
+		if (pParent == NULL)
+			pParent = qtractorMainForm::getInstance();
+	// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window
 			| Qt::CustomizeWindowHint
 			| Qt::WindowTitleHint
@@ -903,7 +901,6 @@ qtractorPluginForm *qtractorPlugin::form (void)
 			| Qt::WindowCloseButtonHint;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
-		//	pParent = qtractorMainForm::getInstance();
 			wflags |= Qt::Tool;
 		}
 		// Do it...
@@ -911,7 +908,65 @@ qtractorPluginForm *qtractorPlugin::form (void)
 		m_pForm->setPlugin(this);
 	}
 
-	return m_pForm;
+	// Activate form...
+	if (!m_pForm->isVisible()) {
+		m_pForm->toggleEditor(isEditorVisible());
+		m_pForm->show();
+	}
+
+	m_pForm->raise();
+	m_pForm->activateWindow();
+
+	if (bCreate && !m_posForm.isNull())
+		m_pForm->move(m_posForm);
+}
+
+
+void qtractorPlugin::closeForm (void)
+{
+	if (m_pForm && m_pForm->isVisible())
+		m_pForm->hide();
+}
+
+
+bool qtractorPlugin::isFormVisible (void) const
+{
+	return (m_pForm && m_pForm->isVisible());
+}
+
+
+void qtractorPlugin::toggleFormEditor ( bool bOn )
+{
+	if (m_pForm && m_pForm->isVisible())
+		m_pForm->toggleEditor(bOn);
+}
+
+
+void qtractorPlugin::updateFormParamValue ( unsigned long iIndex )
+{
+	if (m_pForm && m_pForm->isVisible())
+		m_pForm->updateParamValue(iIndex);
+}
+
+
+void qtractorPlugin::updateFormAudioBusName (void)
+{
+	if (m_pForm && m_pForm->isVisible())
+		m_pForm->updateAudioBusName();
+}
+
+
+void qtractorPlugin::refreshForm (void)
+{
+	if (m_pForm && m_pForm->isVisible())
+		m_pForm->refresh();
+}
+
+
+void qtractorPlugin::freezeFormPos (void)
+{
+	if (m_pForm && m_pForm->isVisible())
+		m_posForm = m_pForm->pos();
 }
 
 
@@ -2222,8 +2277,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			pPlugin; pPlugin = pPlugin->next()) {
 
 		// Freeze form position, if currently visible...
-		if (pPlugin->isFormVisible())
-			pPlugin->setFormPos((pPlugin->form())->pos());
+		pPlugin->freezeFormPos();
 
 		// Do freeze plugin state...
 		pPlugin->freezeConfigs();

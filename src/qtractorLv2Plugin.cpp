@@ -3079,8 +3079,7 @@ void qtractorLv2Plugin::idleEditor (void)
 	// Do we need some clean-up...?
 	if (isEditorClosed()) {
 		setEditorClosed(false);
-		if (isFormVisible())
-			form()->toggleEditor(false);
+		toggleFormEditor(false);
 		m_bEditorVisible = false;
 		// Do really close now.
 		closeEditor();
@@ -3214,8 +3213,7 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		m_bEditorVisible = false;
 	}
 
-	if (isFormVisible())
-		form()->toggleEditor(m_bEditorVisible);
+	toggleFormEditor(m_bEditorVisible);
 }
 
 bool qtractorLv2Plugin::isEditorVisible (void) const

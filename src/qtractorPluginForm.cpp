@@ -52,7 +52,6 @@
 
 #include <QMenu>
 #include <QKeyEvent>
-#include <QShowEvent>
 #include <QHideEvent>
 
 #include "math.h"
@@ -301,35 +300,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	updateActivated();
 	refresh();
 	stabilize();
-
-	QWidget::show();
-}
-
-
-void qtractorPluginForm::activateForm (void)
-{
-	if (!isVisible()) {
-		if (m_pPlugin) toggleEditor(m_pPlugin->isEditorVisible());
-		QWidget::show();
-	}
-
-	QWidget::raise();
-	QWidget::activateWindow();
-}
-
-
-// Editor widget methods.
-void qtractorPluginForm::toggleEditor ( bool bOn )
-{
-	if (m_pPlugin == NULL)
-		return;
-
-	if (m_iUpdate > 0)
-		return;
-
-	++m_iUpdate;
-	m_ui.EditToolButton->setChecked(bOn);
-	--m_iUpdate;
 }
 
 
@@ -379,6 +349,26 @@ void qtractorPluginForm::updateActivated (void)
 }
 
 
+// Update port widget state.
+void qtractorPluginForm::updateParamValue ( unsigned long /*iIndex*/ )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu)", this, iIndex);
+#endif
+
+#if 0
+	qtractorPluginParamWidget *pParamWidget
+		= m_paramWidgets.value(iIndex, NULL);
+	if (pParamWidget)
+		pParamWidget->refresh();
+#endif
+
+	// Sure is dirty...
+	++m_iDirtyCount;
+	stabilize();
+}
+
+
 // Update specific aux-send audio bus settings.
 void qtractorPluginForm::updateAudioBusName (void)
 {
@@ -422,23 +412,18 @@ void qtractorPluginForm::updateAudioBusName (void)
 }
 
 
-// Update port widget state.
-void qtractorPluginForm::changeParamValue ( unsigned long /*iIndex*/ )
+// Editor widget methods.
+void qtractorPluginForm::toggleEditor ( bool bOn )
 {
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm[%p]::changeParamValue(%lu)", this, iIndex);
-#endif
+	if (m_pPlugin == NULL)
+		return;
 
-#if 0
-	qtractorPluginParamWidget *pParamWidget
-		= m_paramWidgets.value(iIndex, NULL);
-	if (pParamWidget)
-		pParamWidget->refresh();
-#endif
+	if (m_iUpdate > 0)
+		return;
 
-	// Sure is dirty...
-	++m_iDirtyCount;
-	stabilize();
+	++m_iUpdate;
+	m_ui.EditToolButton->setChecked(bOn);
+	--m_iUpdate;
 }
 
 
@@ -682,7 +667,7 @@ void qtractorPluginForm::editSlot ( bool bOn )
 	++m_iUpdate;
 
 	if (bOn)
-		m_pPlugin->openEditor(this);
+		m_pPlugin->openEditor(NULL);
 	else
 		m_pPlugin->closeEditor();
 
@@ -943,23 +928,6 @@ void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
 }
 
 
-// Form show event (restore visible position).
-void qtractorPluginForm::showEvent ( QShowEvent *pShowEvent )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm[%p]::showEvent()", this);
-#endif
-
-	QWidget::showEvent(pShowEvent);
-
-	if (m_pPlugin) {
-		const QPoint& pos = m_pPlugin->formPos();
-		if (!pos.isNull())
-			QWidget::move(pos);
-	}
-}
-
-
 // Form hide event (save visible position).
 void qtractorPluginForm::hideEvent ( QHideEvent *pHideEvent )
 {
@@ -967,6 +935,7 @@ void qtractorPluginForm::hideEvent ( QHideEvent *pHideEvent )
 	qDebug("qtractorPluginForm[%p]::hideEvent()", this);
 #endif
 
+	// Save current form position...
 	if (m_pPlugin)
 		m_pPlugin->setFormPos(QWidget::pos());
 

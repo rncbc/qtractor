@@ -62,17 +62,13 @@ public:
 	QString preset() const;
 
 	void updateActivated();
-
-	void changeParamValue(unsigned long iIndex);
-
+	void updateParamValue(unsigned long iIndex);
 	void updateAudioBusName();
 
-	void activateForm();
+	void toggleEditor(bool bOn);
 
 	void refresh();
 	void clear();
-
-	void toggleEditor(bool bOn);
 
 protected slots:
 
@@ -110,7 +106,6 @@ protected:
 	void keyPressEvent(QKeyEvent *);
 
 	// Form show/hide events (restore/save position).
-	void showEvent(QShowEvent *);
 	void hideEvent(QHideEvent *);
 
 private:
