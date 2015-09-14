@@ -3024,6 +3024,7 @@ void qtractorLv2Plugin::closeEditor (void)
 #ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	if (m_pQtWindow) {
 		m_pQtWindow->setParent(NULL);
+		delete m_pQtWindow;
 		m_pQtWindow = NULL;
 	}
 	if (m_pGtkWindow) {
