@@ -1204,9 +1204,15 @@ bool qtractorPlugin::isDirectAccessParam (void) const
 // Write the value to the display item.
 void qtractorPlugin::updateDirectAccessParam (void)
 {
+#if QT_VERSION >= 0x050000
+	QListIterator<qtractorPluginListView *> iter(m_pList->views());
+	while (iter.hasNext())
+		iter.next()->viewport()->update();
+#else
 	QListIterator<qtractorPluginListItem *> iter(m_items);
 	while (iter.hasNext())
 		iter.next()->updateActivated();
+#endif
 }
 
 

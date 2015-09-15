@@ -133,7 +133,7 @@ protected:
 			if (pDirectAccessParam)
 				pDirectAccessObserver = pDirectAccessParam->observer();
 			if (pDirectAccessObserver) {
-				float fScale = pDirectAccessObserver->scaleFromValue(
+				const float fScale = pDirectAccessObserver->scaleFromValue(
 					pDirectAccessParam->value(),
 					pDirectAccessParam->isLogarithmic());
 				QRect rectValue = option.rect
