@@ -682,13 +682,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1762"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1769"/>
         <source>Project: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1770"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1777"/>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>

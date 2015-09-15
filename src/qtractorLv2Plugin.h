@@ -493,6 +493,7 @@ private:
 	LV2_Options_Option m_lv2_options[4];
 	uint32_t           m_iMinBlockLength;
 	uint32_t           m_iMaxBlockLength;
+	uint32_t           m_iNominalBlockLength;
 	uint32_t           m_iSequenceSize;
 #endif
 #ifdef CONFIG_LV2_UI
