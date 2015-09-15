@@ -931,6 +931,9 @@ static struct qtractorLv2Urids
 #ifdef CONFIG_LV2_BUF_SIZE
 	LV2_URID bufsz_minBlockLength;
 	LV2_URID bufsz_maxBlockLength;
+#ifdef LV2_BUF_SIZE__nominalBlockLength
+	LV2_URID bufsz_nominalBlockLength;
+#endif
 	LV2_URID bufsz_sequenceSize;
 #endif
 #ifdef CONFIG_LV2_UI
@@ -1587,6 +1590,10 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__minBlockLength);
 	g_lv2_urids.bufsz_maxBlockLength
 		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__maxBlockLength);
+#ifdef LV2_BUF_SIZE__nominalBlockLength
+	g_lv2_urids.bufsz_nominalBlockLength
+		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__nominalBlockLength);
+#endif
 	g_lv2_urids.bufsz_sequenceSize
 		= qtractorLv2Plugin::lv2_urid_map(LV2_BUF_SIZE__sequenceSize);
 #endif
@@ -1870,6 +1877,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_BUF_SIZE
 		, m_iMinBlockLength(0)
 		, m_iMaxBlockLength(0)
+		, m_iNominalBlockLength(0)
 		, m_iSequenceSize(0)
 	#endif
 	#endif	// CONFIG_LV2_OPTIONS
@@ -1926,15 +1934,19 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 #ifdef CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_BUF_SIZE
 
-	m_iMinBlockLength = 0;
-	m_iMaxBlockLength = 0;
-	m_iSequenceSize   = 0;
+	m_iMinBlockLength     = 0;
+	m_iMaxBlockLength     = 0;
+	m_iNominalBlockLength = 0;
+	m_iSequenceSize       = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine)
-			m_iMaxBlockLength = pAudioEngine->bufferSize();
+		if (pAudioEngine) {
+			m_iMinBlockLength     = pAudioEngine->bufferSize();
+			m_iMaxBlockLength     = m_iMinBlockLength;
+			m_iNominalBlockLength = m_iMinBlockLength;
+		}
 	}
 
 	if (pMidiManager) {
@@ -1959,6 +1971,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		  sizeof(int32_t), g_lv2_urids.atom_Int, &m_iMinBlockLength },
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.bufsz_maxBlockLength,
 		  sizeof(int32_t), g_lv2_urids.atom_Int, &m_iMaxBlockLength },
+	#ifdef LV2_BUF_SIZE__nominalBlockLength
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.bufsz_nominalBlockLength,
+		  sizeof(int32_t), g_lv2_urids.atom_Int, &m_iNominalBlockLength },
+	#endif
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.bufsz_sequenceSize,
 		  sizeof(int32_t), g_lv2_urids.atom_Int, &m_iSequenceSize },
 		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
