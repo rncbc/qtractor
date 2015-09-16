@@ -2826,13 +2826,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Create the new parent frame...
-		Qt::WindowFlags wflags = Qt::Window
-			| Qt::CustomizeWindowHint
-			| Qt::WindowTitleHint
-			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint
-			| Qt::WindowCloseButtonHint;
-		QWidget *pQtWidget = new QWidget(NULL, wflags);
+		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
 		// Add/prepare some neeed features...
 		m_lv2_ui_resize.handle = pQtWidget;
 		m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;
@@ -2917,13 +2911,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
 			QWindow *pQtWindow = QWindow::fromWinId(wid);
 			// Create the new parent frame...
-			Qt::WindowFlags wflags = Qt::Window
-				| Qt::CustomizeWindowHint
-				| Qt::WindowTitleHint
-				| Qt::WindowSystemMenuHint
-				| Qt::WindowMinMaxButtonsHint
-				| Qt::WindowCloseButtonHint;
-			QWidget *pQtWidget = new QWidget(NULL, wflags);
+			QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
 			QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
 			QVBoxLayout *pVBoxLayout = new QVBoxLayout();
 			pVBoxLayout->setMargin(0);
