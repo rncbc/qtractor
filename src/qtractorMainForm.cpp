@@ -1209,9 +1209,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pFiles = new qtractorFiles(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
-	m_pMessages = new qtractorMessages(this);
 
 	// Setup messages logging appropriately...
+	m_pMessages = new qtractorMessages(this);
 	m_pMessages->setLogging(
 		m_pOptions->bMessagesLog,
 		m_pOptions->sMessagesLogPath);
@@ -1389,21 +1389,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions->loadActionShortcuts(this);
 	m_pOptions->loadActionControl(this);
 
-#if 0//--TESTING-BEGIN---
-	qtractorActionControl::MidiObserver *pMidiObserver;
-	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportFollowAction);
-	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
-	pMidiObserver->setChannel(0);
-	pMidiObserver->setParam(37); // AMPK25 S1 button
-	m_pMidiControl->mapMidiObserver(pMidiObserver);
-	pMidiObserver = m_pActionControl->addMidiObserver(m_ui.transportBackwardAction);
-	pMidiObserver->setType(qtractorMidiEvent::CONTROLLER);
-	pMidiObserver->setChannel(0);
-	pMidiObserver->setParam(39); // AMPK25 S2 button
-	m_pMidiControl->mapMidiObserver(pMidiObserver);
-	m_pOptions->saveActionControl(this);
-#endif//--TESTING-END---
-
 	// Initial thumb-view background (empty)
 	m_pThumbView->updateContents();
 
@@ -1412,75 +1397,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	if (pAudioEngine)
 		pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
 	
-	// Is any session identification to get loaded?
-	const bool bSessionId = !m_pOptions->sSessionId.isEmpty();
-	if (bSessionId && pAudioEngine) {
-		pAudioEngine->setSessionId(m_pOptions->sSessionId);
-		m_pOptions->sSessionId.clear();
-	}
-
-	// Is any session pending to be loaded?
-	if (!m_pOptions->sSessionFile.isEmpty()) {
-		// We're supposedly clean...
-		m_iDirtyCount = 0;
-		// Just load the prabable startup session...
-		if (loadSessionFileEx(m_pOptions->sSessionFile, false, !bSessionId)) {
-			m_pOptions->sSessionFile.clear();
-			// Take appropriate action when session is loaded from
-			// some foreign session manager (eg. JACK session)...
-			const QString& sLadishAppName
-				= QString::fromLatin1(::getenv("LADISH_APP_NAME"));
-			const bool bLadishApp = !sLadishAppName.isEmpty();
-			if (bSessionId || bLadishApp) {
-				// JACK session manager will take care of audio connections...
-				if (pAudioEngine)
-					pAudioEngine->clearConnects();
-				// LADISH session manager will take care of MIDI connections...
-				if (bLadishApp)
-					m_pSession->midiEngine()->clearConnects();
-			}
-		}
-	} else {
-	#ifdef CONFIG_NSM
-		// Check whether to participate into a NSM session...
-		const QString& sNsmUrl
-			= QString::fromLatin1(::getenv("NSM_URL"));
-		if (!sNsmUrl.isEmpty()) {
-			m_pNsmClient = new qtractorNsmClient(sNsmUrl);
-			QObject::connect(m_pNsmClient,
-				SIGNAL(open()),
-				SLOT(openNsmSession()));
-			QObject::connect(m_pNsmClient,
-				SIGNAL(save()),
-				SLOT(saveNsmSession()));
-			QObject::connect(m_pNsmClient,
-				SIGNAL(show()),
-				SLOT(showNsmSession()));
-			QObject::connect(m_pNsmClient,
-				SIGNAL(hide()),
-				SLOT(hideNsmSession()));
-			m_pNsmClient->announce(QTRACTOR_TITLE, ":switch:dirty:optional-gui:");
-			m_sNsmExt = m_pOptions->sSessionExt;
-			if (m_sNsmExt.isEmpty())
-				m_sNsmExt = qtractorDocument::defaultExt();
-			// Run-time special non-persistent options.
-			m_pOptions->bDontUseNativeDialogs = true;
-		}
-	#endif
-		// Change to last known session dir...
-		if (!m_pOptions->sSessionDir.isEmpty()) {
-			if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
-				appendMessagesError(
-					tr("Could not set default session directory:\n\n"
-					"%1\n\nSorry.").arg(m_pOptions->sSessionDir));
-				m_pOptions->sSessionDir.clear();
-			}
-		}
-		// Open up with a new empty session...
-		if (!autoSaveOpen())
-			newSession();
-	}
-
 	// Final widget slot connections....
 	QObject::connect(m_pFiles->toggleViewAction(),
 		SIGNAL(triggered(bool)),
@@ -1521,8 +1437,78 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		SIGNAL(contentsMoving(int,int)),
 		m_pThumbView, SLOT(updateThumb()));
 
+#ifdef CONFIG_NSM
+	// Check whether to participate into a NSM session...
+	const QString& sNsmUrl
+		= QString::fromLatin1(::getenv("NSM_URL"));
+	if (!sNsmUrl.isEmpty()) {
+		m_pNsmClient = new qtractorNsmClient(sNsmUrl);
+		QObject::connect(m_pNsmClient,
+			SIGNAL(open()),
+			SLOT(openNsmSession()));
+		QObject::connect(m_pNsmClient,
+			SIGNAL(save()),
+			SLOT(saveNsmSession()));
+		QObject::connect(m_pNsmClient,
+			SIGNAL(show()),
+			SLOT(showNsmSession()));
+		QObject::connect(m_pNsmClient,
+			SIGNAL(hide()),
+			SLOT(hideNsmSession()));
+		m_pNsmClient->announce(QTRACTOR_TITLE, ":switch:dirty:optional-gui:");
+		m_sNsmExt = m_pOptions->sSessionExt;
+		if (m_sNsmExt.isEmpty())
+			m_sNsmExt = qtractorDocument::defaultExt();
+		// Run-time special non-persistent options.
+		m_pOptions->bDontUseNativeDialogs = true;
+	}
+#endif
+
 	// Make it ready :-)
 	statusBar()->showMessage(tr("Ready"), 3000);
+
+	// Is any session identification to get loaded?
+	const bool bSessionId = !m_pOptions->sSessionId.isEmpty();
+	if (bSessionId && pAudioEngine) {
+		pAudioEngine->setSessionId(m_pOptions->sSessionId);
+		m_pOptions->sSessionId.clear();
+	}
+
+	// Is any session pending to be loaded?
+	if (!m_pOptions->sSessionFile.isEmpty()) {
+		// We're supposedly clean...
+		m_iDirtyCount = 0;
+		// Just load the prabable startup session...
+		if (loadSessionFileEx(m_pOptions->sSessionFile, false, !bSessionId)) {
+			m_pOptions->sSessionFile.clear();
+			// Take appropriate action when session is loaded from
+			// some foreign session manager (eg. JACK session)...
+			const QString& sLadishAppName
+				= QString::fromLatin1(::getenv("LADISH_APP_NAME"));
+			const bool bLadishApp = !sLadishAppName.isEmpty();
+			if (bSessionId || bLadishApp) {
+				// JACK session manager will take care of audio connections...
+				if (pAudioEngine)
+					pAudioEngine->clearConnects();
+				// LADISH session manager will take care of MIDI connections...
+				if (bLadishApp)
+					m_pSession->midiEngine()->clearConnects();
+			}
+		}
+	} else {
+		// Change to last known session dir...
+		if (!m_pOptions->sSessionDir.isEmpty()) {
+			if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
+				appendMessagesError(
+					tr("Could not set default session directory:\n\n"
+					"%1\n\nSorry.").arg(m_pOptions->sSessionDir));
+				m_pOptions->sSessionDir.clear();
+			}
+		}
+		// Open up with a new empty session...
+		if (!autoSaveOpen())
+			newSession();
+	}
 
 	autoSaveReset();
 
@@ -4642,6 +4628,7 @@ void qtractorMainForm::viewRefresh (void)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Update the whole session view dependables...
+	m_pTempoCursor->clear();
 	m_pSession->updateTimeScale();
 	m_pSession->updateSession();
 
@@ -7911,6 +7898,7 @@ void qtractorMainForm::updateContents (
 	qtractorMidiEditor *pMidiEditor, bool bRefresh )
 {
 	// Maybe, just maybe, we've made things larger...
+	m_pTempoCursor->clear();
 	m_pSession->updateTimeScale();
 	m_pSession->updateSession();
 
