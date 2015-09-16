@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed wrong initial tempo/time-signature display when session
+  is loaded from command line.
+
 - LV2 plug-in UI GTK2 and X11 in Qt5 host native support added.
   (EXPERIMENTAL)
 
