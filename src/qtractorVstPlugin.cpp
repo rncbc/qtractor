@@ -33,6 +33,7 @@
 #ifdef QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorOptions.h"
 #endif
+#include "qtractorMainForm.h"
 
 #include <QApplication>
 #include <QFileDialog>
@@ -1048,7 +1049,7 @@ int qtractorVstPlugin::vst_dispatch( unsigned short iInstance,
 
 
 // Open editor.
-void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
+void qtractorVstPlugin::openEditor ( QWidget *pParent )
 {
 	// Is it already there?
 	if (m_pEditorWidget) {
@@ -1071,6 +1072,9 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 	m_bEditorClosed = false;
 
 	// Create the new parent frame...
+	if (pParent == NULL)
+		pParent = qtractorMainForm::getInstance();
+
 	Qt::WindowFlags wflags = Qt::Window
 		| Qt::CustomizeWindowHint
 		| Qt::WindowTitleHint
@@ -1082,7 +1086,7 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 	if (pOptions && pOptions->bKeepToolsOnTop)
 		wflags |= Qt::Tool;
 #endif
-	m_pEditorWidget = new EditorWidget(NULL, wflags);
+	m_pEditorWidget = new EditorWidget(pParent, wflags);
 	m_pEditorWidget->open(this);
 }
 
