@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added LV2_BUF_SIZE__nominalBlockLength option support (patch
+  by falktx aka. Filipe Coelho, thanks).
+
 - Fixed wrong initial tempo/time-signature display when session
   is loaded from command line.
 
