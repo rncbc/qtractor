@@ -490,7 +490,7 @@ private:
 #ifdef CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_BUF_SIZE
 	LV2_Feature        m_lv2_options_feature;
-	LV2_Options_Option m_lv2_options[4];
+	LV2_Options_Option m_lv2_options[5];
 	uint32_t           m_iMinBlockLength;
 	uint32_t           m_iMaxBlockLength;
 	uint32_t           m_iNominalBlockLength;
