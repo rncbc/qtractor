@@ -2016,7 +2016,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	// Do it for the MIDI track plugins too...
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	const long f0 = m_iFrameStart - m_iFrameDrift;
+	const long f0 = m_iFrameStart; // - m_iFrameDrift;
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
@@ -2117,7 +2117,7 @@ void qtractorMidiEngine::driftCheck (void)
 			pNode = m_pMetroCursor->seekTick(iMidiTime);
 			const unsigned long iMidiFrame
 				= pNode->frameFromTick(iMidiTime);
-			m_iFrameDrift = long(iAudioFrame - iMidiFrame);
+			m_iFrameDrift += long(iAudioFrame - iMidiFrame);
 		#ifdef CONFIG_DEBUG//_0
 			qDebug("qtractorMidiEngine::driftCheck(%u): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) "
