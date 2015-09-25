@@ -589,10 +589,8 @@ int main ( int argc, char **argv )
 
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
-#ifndef CONFIG_SUIL_GTK2_IN_QT5
 	// Initialize GTK+ framework (LV2 plug-in UI GTK2 support)...
 	gtk_init(NULL, NULL);
-#endif
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
 
