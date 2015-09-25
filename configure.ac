@@ -1289,27 +1289,6 @@ if test "x$ac_lv2_ui_show" = "xyes"; then
    fi
 fi
 
-if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
-   ac_old_libs=$LIBS
-   LIBS=$ac_libs
-   AC_CACHE_CHECK([for LV2 UI GTK2 embed support (libsuil_gtk2_in_qt5)],
-      ac_cv_suil_gtk2_in_qt5, [
-      AC_TRY_RUN([
-         #include <suil/suil.h>
-         #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
-         #ifndef LV2_UI__Qt5UI
-         #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
-         #endif
-         int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__GtkUI); }
-      ], ac_cv_suil_gtk2_in_qt5="yes", ac_cv_suil_gtk2_in_qt5="no")
-   ])
-   LIBS=$ac_old_libs
-   ac_suil_gtk2_in_qt5=$ac_cv_suil_gtk2_in_qt5
-   if test "x$ac_suil_gtk2_in_qt5" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBSUIL_GTK2_IN_QT5, 1, [Define if libsuil_gtk2_in_qt5 is available.])
-      ac_lv2_ui_gtk2="no"
-   fi
-fi
 if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    ac_gtk2_cflags=`$ac_pkg_config --cflags gtk+-2.0 2>/dev/null`
    ac_gtk2_libs=`$ac_pkg_config --libs gtk+-2.0 2>/dev/null`
@@ -1323,27 +1302,6 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    fi
 fi
 
-if test "x$ac_lv2_ui_x11" = "xyes" -a "x$ac_suil" = "xyes"; then
-   ac_old_libs=$LIBS
-   LIBS=$ac_libs
-   AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
-      ac_cv_suil_x11_in_qt5, [
-      AC_TRY_RUN([
-         #include <suil/suil.h>
-         #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
-         #ifndef LV2_UI__Qt5UI
-         #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
-         #endif
-         int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__X11UI); }
-      ], ac_cv_suil_x11_in_qt5="yes", ac_cv_suil_x11_in_qt5="no")
-   ])
-   LIBS=$ac_old_libs
-   ac_suil_x11_in_qt5=$ac_cv_suil_x11_in_qt5
-   if test "x$ac_suil_x11_in_qt5" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBSUIL_X11_IN_QT5, 1, [Define if libsuil_x11_in_qt5 is available.])
-      ac_lv2_ui_x11="no"
-   fi
-fi
 if test "x$ac_lv2_ui_x11" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_UI_X11, 1, [Define if LV2 UI X11 native support is available.])
 fi
@@ -1444,8 +1402,10 @@ echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
+if test "x$ac_qt5" = "xyes"; then
 echo "  LV2 plug-in UI GTK2 native support . . . . . . . .: $ac_lv2_ui_gtk2"
 echo "  LV2 plug-in UI X11 native support  . . . . . . . .: $ac_lv2_ui_x11"
+fi
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
