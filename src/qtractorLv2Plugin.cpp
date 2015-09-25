@@ -1209,8 +1209,6 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
-
 static void qtractor_lv2_ui_gtk2_on_size_request (
 	GtkWidget */*widget*/, GtkRequisition *req, gpointer user_data )
 {
@@ -1225,11 +1223,9 @@ static void qtractor_lv2_ui_gtk2_on_size_allocate (
 	pQtWidget->resize(rect->width, rect->height);
 }
 
-#endif
 #endif	// CONFIG_LV2_UI_GTK2
 
 #ifdef CONFIG_LV2_UI_X11
-#ifndef CONFIG_LIBSUIL_X11_IN_QT5
 
 static int qtractor_lv2_ui_resize (
 	LV2UI_Feature_Handle handle, int width, int height )
@@ -1239,7 +1235,6 @@ static int qtractor_lv2_ui_resize (
 	return 0;
 }
 
-#endif
 #endif	// CONFIG_LV2_UI_X11
 
 #endif
@@ -1859,10 +1854,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	#if QT_VERSION >= 0x050100
 	#ifdef CONFIG_LV2_UI_GTK2
-	#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 		, m_pGtkWindow(NULL)
 		, m_pQtWindow(NULL)
-	#endif
 	#endif	// CONFIG_LV2_UI_GTK2
 	#endif
 	#endif	// CONFIG_LV2_UI
@@ -2819,10 +2812,13 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
 #endif
 
+	// Check whether special UI wrapping are supported...
+	const char *ui_host_uri = LV2_UI_HOST_URI;
+	const bool ui_supported = (suil_ui_supported(ui_host_uri, ui_type_uri) > 0);
+
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_X11
-#ifndef CONFIG_LIBSUIL_X11_IN_QT5
-	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
+	if (m_lv2_ui_type == LV2_UI_TYPE_X11 && !ui_supported) {
 		// Create the new parent frame...
 		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
 		// Add/prepare some neeed features...
@@ -2838,7 +2834,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		// Done.
 		m_pQtWidget = pQtWidget;
 	}
-#endif
 #endif	// CONFIG_LV2_UI_X11
 #endif
 
@@ -2854,7 +2849,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	const char *bundle_path = lilv_uri_to_path(bundle_uri);
 	const char *binary_path = lilv_uri_to_path(binary_uri);
 #endif
-	m_suil_instance = suil_instance_new(m_suil_host, this, LV2_UI_HOST_URI,
+	m_suil_instance = suil_instance_new(m_suil_host, this, ui_host_uri,
 		lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin())),
 		lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui)), ui_type_uri,
 		bundle_path, binary_path, m_lv2_ui_features);
@@ -2882,8 +2877,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
 	#if QT_VERSION >= 0x050100
 	#ifdef CONFIG_LV2_UI_X11
-	#ifndef CONFIG_LIBSUIL_X11_IN_QT5
-		if (m_pQtWidget && m_lv2_ui_type == LV2_UI_TYPE_X11) {
+		if (!ui_supported && m_pQtWidget
+			&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
 			// Override widget handle...
 			m_lv2_ui_widget = static_cast<SuilWidget> (m_pQtWidget);
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
@@ -2891,11 +2886,10 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		//	m_pQtWidget->show();
 		}
 		else
-	#endif
 	#endif	// CONFIG_LV2_UI_X11
 	#ifdef CONFIG_LV2_UI_GTK2
-	#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
-		if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK) {
+		if (!ui_supported && m_lv2_ui_widget
+			&& m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 			// Create embeddable native window...
 			GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
 			GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -2936,10 +2930,10 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		//	m_pQtWidget->show();
 		}
 		else
-	#endif
 	#endif	// CONFIG_LV2_UI_GTK2
 	#endif
-		if (m_lv2_ui_widget && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
+		if (ui_supported && m_lv2_ui_widget
+			&& m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
 			m_pQtWidget = static_cast<QWidget *> (m_lv2_ui_widget);
 			m_pQtFilter = new EventFilter(this, m_pQtWidget);
 			m_bQtDelete = false;
@@ -3023,7 +3017,6 @@ void qtractorLv2Plugin::closeEditor (void)
 
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
-#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	if (m_pQtWindow) {
 		m_pQtWindow->setParent(NULL);
 		delete m_pQtWindow;
@@ -3033,7 +3026,6 @@ void qtractorLv2Plugin::closeEditor (void)
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = NULL;
 	}
-#endif
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
 
