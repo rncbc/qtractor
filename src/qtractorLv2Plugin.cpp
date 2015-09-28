@@ -1835,12 +1835,12 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_uis(NULL)
 		, m_lv2_ui(NULL)
 		, m_lv2_ui_features(NULL)
-		, m_suil_host(NULL)
-		, m_suil_instance(NULL)
 		, m_lv2_ui_library(NULL)
 		, m_lv2_ui_descriptor(NULL)
 		, m_lv2_ui_handle(NULL)
 		, m_lv2_ui_widget(NULL)
+		, m_suil_host(NULL)
+		, m_suil_instance(NULL)
 	#ifdef CONFIG_LV2_ATOM
 		, m_ui_events(NULL)
 		, m_plugin_events(NULL)
@@ -3065,14 +3065,12 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 
 	if (m_piControlOuts && m_pfControlOuts && m_pfControlOutsLast) {
-		if (m_suil_instance) {
-			const unsigned long iControlOuts = type()->controlOuts();
-			for (unsigned short j = 0; j < iControlOuts; ++j) {
-				if (m_pfControlOutsLast[j] != m_pfControlOuts[j]) {
-					lv2_ui_port_event(m_piControlOuts[j],
-						sizeof(float), 0, &m_pfControlOuts[j]);
-					m_pfControlOutsLast[j] = m_pfControlOuts[j];
-				}
+		const unsigned long iControlOuts = type()->controlOuts();
+		for (unsigned short j = 0; j < iControlOuts; ++j) {
+			if (m_pfControlOutsLast[j] != m_pfControlOuts[j]) {
+				lv2_ui_port_event(m_piControlOuts[j],
+					sizeof(float), 0, &m_pfControlOuts[j]);
+				m_pfControlOutsLast[j] = m_pfControlOuts[j];
 			}
 		}
 	}
@@ -3796,14 +3794,11 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 	}
 
 #ifdef CONFIG_LV2_UI
-	if (m_suil_instance) {
-		const LV2_Programs_UI_Interface *ui_programs
-			= (const LV2_Programs_UI_Interface *)
-				suil_instance_extension_data(
-					m_suil_instance, LV2_PROGRAMS__UIInterface);
-		if (ui_programs && ui_programs->select_program)
-			(*ui_programs->select_program)(m_lv2_ui_handle, iBank, iProg);
-	}
+	const LV2_Programs_UI_Interface *ui_programs
+		= (const LV2_Programs_UI_Interface *)
+			lv2_ui_extension_data(LV2_PROGRAMS__UIInterface);
+	if (ui_programs && ui_programs->select_program)
+		(*ui_programs->select_program)(m_lv2_ui_handle, iBank, iProg);
 #endif	// CONFIG_LV2_UI
 
 	// Reset parameters default value...

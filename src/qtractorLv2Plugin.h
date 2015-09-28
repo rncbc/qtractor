@@ -402,9 +402,6 @@ private:
 
 	LV2_Feature  **m_lv2_ui_features;
 
-	SuilHost      *m_suil_host;
-	SuilInstance  *m_suil_instance;
-
 	// Alternate UI instantiation stuff (!suil_ui_supported)
 	QLibrary      *m_lv2_ui_library;
 
@@ -416,6 +413,9 @@ private:
 	// Common UI instantiation stuff.
 	LV2UI_Handle   m_lv2_ui_handle;
 	LV2UI_Widget   m_lv2_ui_widget;
+
+	SuilHost      *m_suil_host;
+	SuilInstance  *m_suil_instance;
 
 #ifdef CONFIG_LV2_ATOM
 
