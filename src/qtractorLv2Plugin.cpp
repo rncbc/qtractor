@@ -837,7 +837,7 @@ public:
 				QResizeEvent *pResizeEvent
 					= static_cast<QResizeEvent *> (pEvent);
 				if (pResizeEvent)
-					m_pLv2Plugin->resizeEditor(pResizeEvent->size());
+					m_pLv2Plugin->lv2_ui_resize(pResizeEvent->size());
 				// Fall thru...
 			}
 			default:
@@ -1837,12 +1837,15 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_ui_features(NULL)
 		, m_suil_host(NULL)
 		, m_suil_instance(NULL)
-		, m_lv2_ui_widget(NULL)
+		, m_lv2_ui_library(NULL)
+		, m_lv2_ui_descriptor(NULL)
 		, m_lv2_ui_handle(NULL)
+		, m_lv2_ui_widget(NULL)
 	#ifdef CONFIG_LV2_ATOM
 		, m_ui_events(NULL)
 		, m_plugin_events(NULL)
 	#endif
+
 		, m_pQtFilter(NULL)
 		, m_pQtWidget(NULL)
 		, m_bQtDelete(false)
@@ -2731,7 +2734,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	int iFeatures = 0;
 	while (m_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_ui_features = new LV2_Feature * [iFeatures + 7];
+	m_lv2_ui_features = new LV2_Feature * [iFeatures + 8];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
 
@@ -2812,170 +2815,139 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
 #endif
 
-	// Check whether special UI wrapping are supported...
 	const char *ui_host_uri = LV2_UI_HOST_URI;
-	const bool ui_supported = (suil_ui_supported(ui_host_uri, ui_type_uri) > 0);
+	const char *plugin_uri
+		= lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin()));
+	const char *ui_uri = lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui));
+
+	const char *ui_bundle_uri = lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui));
+	const char *ui_binary_uri = lilv_node_as_uri(lilv_ui_get_binary_uri(m_lv2_ui));
+#ifdef CONFIG_LILV_FILE_URI_PARSE
+	const char *ui_bundle_path = lilv_file_uri_parse(ui_bundle_uri, NULL);
+	const char *ui_binary_path = lilv_file_uri_parse(ui_binary_uri, NULL);
+#else
+	const char *ui_bundle_path = lilv_uri_to_path(ui_bundle_uri);
+	const char *ui_binary_path = lilv_uri_to_path(ui_binary_uri);
+#endif
+
+	const bool ui_instantiate = lv2_ui_instantiate(
+		ui_host_uri, plugin_uri, ui_uri, ui_type_uri,
+		ui_bundle_path, ui_binary_path);
+
+#ifdef CONFIG_LILV_FILE_URI_PARSE
+	lilv_free((void *) ui_binary_path);
+	lilv_free((void *) ui_bundle_path);
+#endif
+
+	// dit we failed miserably?
+	if (!ui_instantiate)
+		return;
+
+	const bool ui_supported = (m_suil_instance != NULL);
+
+	const qtractorPlugin::Params& params = qtractorPlugin::params();
+	qtractorPlugin::Params::ConstIterator param = params.constBegin();
+	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
+	for ( ; param != param_end; ++param) {
+		qtractorPluginParam *pParam = param.value();
+		const float fValue = pParam->value();
+		lv2_ui_port_event(pParam->index(), sizeof(float), 0, &fValue);
+	}
+
+	const unsigned long iControlOuts = pLv2Type->controlOuts();
+	for (unsigned long j = 0; j < iControlOuts; ++j) {
+		lv2_ui_port_event(m_piControlOuts[j],
+			sizeof(float), 0, &m_pfControlOuts[j]);
+	}
 
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_X11
-	if (m_lv2_ui_type == LV2_UI_TYPE_X11 && !ui_supported) {
+	if (!ui_supported && m_pQtWidget
+		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
+		// Override widget handle...
+		m_lv2_ui_widget = static_cast<SuilWidget> (m_pQtWidget);
+		m_pQtFilter = new EventFilter(this, m_pQtWidget);
+		m_bQtDelete = true; // owned!
+	//	m_pQtWidget->show();
+	}
+	else
+#endif	// CONFIG_LV2_UI_X11
+#ifdef CONFIG_LV2_UI_GTK2
+	if (!ui_supported && m_lv2_ui_widget
+		&& m_lv2_ui_type == LV2_UI_TYPE_GTK) {
+		// Create embeddable native window...
+		GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
+		GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	//	GtkWidget *pGtkWindow = gtk_plug_new(0);
+		gtk_window_set_resizable(GTK_WINDOW(pGtkWindow), 0);
+		// Add plugin widget into our new window container...
+		gtk_container_add(GTK_CONTAINER(pGtkWindow), pGtkWidget);
+		gtk_widget_show_all(pGtkWindow);
+		// Embed native GTK+ window into a Qt widget...
+		const WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
+	//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
+		QWindow *pQtWindow = QWindow::fromWinId(wid);
 		// Create the new parent frame...
 		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
-		// Add/prepare some neeed features...
-		m_lv2_ui_resize.handle = pQtWidget;
-		m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;
-		m_lv2_ui_resize_feature.URI = LV2_UI__resize;
-		m_lv2_ui_resize_feature.data = &m_lv2_ui_resize;
-		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_resize_feature;
-		m_lv2_ui_parent_feature.URI = LV2_UI__parent;
-		m_lv2_ui_parent_feature.data = (void *) pQtWidget->winId();
-		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_parent_feature;
-		m_lv2_ui_features[iFeatures] = NULL;
-		// Done.
+		QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
+		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
+		pVBoxLayout->setMargin(0);
+		pVBoxLayout->setSpacing(0);
+		pVBoxLayout->addWidget(pQtContainer);
+		pQtWidget->setLayout(pVBoxLayout);
+		// Get initial window size...
+		GtkAllocation alloc;
+		gtk_widget_get_allocation(pGtkWidget, &alloc);
+		pQtWidget->resize(alloc.width, alloc.height);
+		// Set native GTK+ window size callbacks...
+		g_signal_connect(G_OBJECT(pGtkWindow), "size-request",
+			G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_request), pQtWidget);
+		g_signal_connect(G_OBJECT(pGtkWindow), "size-allocate",
+			G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_allocate), pQtWidget);
+		m_pGtkWindow = pGtkWindow;
+		m_pQtWindow = pQtWindow;
+		// done.
 		m_pQtWidget = pQtWidget;
+		m_pQtFilter = new EventFilter(this, m_pQtWidget);
+		m_bQtDelete = true; // owned!
+		// LV2 UI resize control...
+		lv2_ui_resize(QSize(alloc.width, alloc.height));
+	//	m_pQtWidget->show();
 	}
-#endif	// CONFIG_LV2_UI_X11
+	else
+#endif	// CONFIG_LV2_UI_GTK2
 #endif
-
-	m_suil_host = suil_host_new(
-		qtractor_lv2_ui_write, qtractor_lv2_ui_index, NULL, NULL);
-
-	const char *bundle_uri = lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui));
-	const char *binary_uri = lilv_node_as_uri(lilv_ui_get_binary_uri(m_lv2_ui));
-#ifdef CONFIG_LILV_FILE_URI_PARSE
-	const char *bundle_path = lilv_file_uri_parse(bundle_uri, NULL);
-	const char *binary_path = lilv_file_uri_parse(binary_uri, NULL);
-#else
-	const char *bundle_path = lilv_uri_to_path(bundle_uri);
-	const char *binary_path = lilv_uri_to_path(binary_uri);
-#endif
-	m_suil_instance = suil_instance_new(m_suil_host, this, ui_host_uri,
-		lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin())),
-		lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui)), ui_type_uri,
-		bundle_path, binary_path, m_lv2_ui_features);
-
-#ifdef CONFIG_LILV_FILE_URI_PARSE
-	lilv_free((void *) binary_path);
-	lilv_free((void *) bundle_path);
-#endif
-
-	if (m_suil_instance) {
-		const qtractorPlugin::Params& params = qtractorPlugin::params();
-		qtractorPlugin::Params::ConstIterator param = params.constBegin();
-		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
-		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
-			const float fValue = pParam->value();
-			suil_instance_port_event(m_suil_instance,
-				pParam->index(), sizeof(float), 0, &fValue);
-		}
-		const unsigned long iControlOuts = pLv2Type->controlOuts();
-		for (unsigned long j = 0; j < iControlOuts; ++j) {
-			suil_instance_port_event(m_suil_instance,
-				m_piControlOuts[j], sizeof(float), 0, &m_pfControlOuts[j]);
-		}
-		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
-	#if QT_VERSION >= 0x050100
-	#ifdef CONFIG_LV2_UI_X11
-		if (!ui_supported && m_pQtWidget
-			&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
-			// Override widget handle...
-			m_lv2_ui_widget = static_cast<SuilWidget> (m_pQtWidget);
-			m_pQtFilter = new EventFilter(this, m_pQtWidget);
-			m_bQtDelete = true; // owned!
-		//	m_pQtWidget->show();
-		}
-		else
-	#endif	// CONFIG_LV2_UI_X11
-	#ifdef CONFIG_LV2_UI_GTK2
-		if (!ui_supported && m_lv2_ui_widget
-			&& m_lv2_ui_type == LV2_UI_TYPE_GTK) {
-			// Create embeddable native window...
-			GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
-			GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-		//	GtkWidget *pGtkWindow = gtk_plug_new(0);
-			gtk_window_set_resizable(GTK_WINDOW(pGtkWindow), 0);
-			// Add plugin widget into our new window container...
-			gtk_container_add(GTK_CONTAINER(pGtkWindow), pGtkWidget);
-			gtk_widget_show_all(pGtkWindow);
-			// Embed native GTK+ window into a Qt widget...
-			const WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
-		//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
-			QWindow *pQtWindow = QWindow::fromWinId(wid);
-			// Create the new parent frame...
-			QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
-			QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
-			QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-			pVBoxLayout->setMargin(0);
-			pVBoxLayout->setSpacing(0);
-			pVBoxLayout->addWidget(pQtContainer);
-			pQtWidget->setLayout(pVBoxLayout);
-			// Get initial window size...
-			GtkAllocation alloc;
-			gtk_widget_get_allocation(pGtkWidget, &alloc);
-			pQtWidget->resize(alloc.width, alloc.height);
-			// Set native GTK+ window size callbacks...
-			g_signal_connect(G_OBJECT(pGtkWindow), "size-request",
-				G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_request), pQtWidget);
-			g_signal_connect(G_OBJECT(pGtkWindow), "size-allocate",
-				G_CALLBACK(qtractor_lv2_ui_gtk2_on_size_allocate), pQtWidget);
-			m_pGtkWindow = pGtkWindow;
-			m_pQtWindow = pQtWindow;
-			// done.
-			m_pQtWidget = pQtWidget;
-			m_pQtFilter = new EventFilter(this, m_pQtWidget);
-			m_bQtDelete = true; // owned!
-			// LV2 UI resize control...
-			resizeEditor(QSize(alloc.width, alloc.height));
-		//	m_pQtWidget->show();
-		}
-		else
-	#endif	// CONFIG_LV2_UI_GTK2
-	#endif
-		if (ui_supported && m_lv2_ui_widget
-			&& m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
-			m_pQtWidget = static_cast<QWidget *> (m_lv2_ui_widget);
-			m_pQtFilter = new EventFilter(this, m_pQtWidget);
-			m_bQtDelete = false;
-			// LV2 UI resize control...
-			resizeEditor(m_pQtWidget->sizeHint());
-		//	m_pQtWidget->show();
-		} else {
-			m_pQtWidget = NULL;
-			m_pQtFilter = NULL;
-			m_bQtDelete = false;
-		}
-	#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
-		m_lv2_ui_handle = (LV2UI_Handle)
-			suil_instance_get_handle(m_suil_instance);
-	#else
-		struct SuilInstanceHead {	// HACK!
-			void                   *ui_lib_handle;
-			const LV2UI_Descriptor *ui_descriptor;
-			LV2UI_Handle            ui_handle;
-		} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
-		m_lv2_ui_handle = suil_instance_head->ui_handle;
-	#endif	//  CONFIG_SUIL_INSTANCE_GET_HANDLE
-	#ifdef CONFIG_LV2_UI_IDLE
-		if (m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
-			m_lv2_ui_idle_interface	= (const LV2UI_Idle_Interface *)
-				suil_instance_extension_data(
-					m_suil_instance, LV2_UI__idleInterface);
-		} else {
-			m_lv2_ui_idle_interface	= NULL;
-		}
-	#endif	// CONFIG_LV2_UI_IDLE
-	#ifdef CONFIG_LV2_UI_SHOW
-		if (m_pQtWidget == NULL && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
-			m_lv2_ui_show_interface	= (const LV2UI_Show_Interface *)
-				suil_instance_extension_data(
-					m_suil_instance, LV2_UI__showInterface);
-		} else {
-			m_lv2_ui_show_interface	= NULL;
-		}
-	#endif	// CONFIG_LV2_UI_SHOW
-		g_lv2Plugins.append(this);
+	if (ui_supported && m_lv2_ui_widget
+		&& m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
+		m_pQtWidget = static_cast<QWidget *> (m_lv2_ui_widget);
+		m_pQtFilter = new EventFilter(this, m_pQtWidget);
+		m_bQtDelete = false;
+		// LV2 UI resize control...
+		lv2_ui_resize(m_pQtWidget->sizeHint());
+	//	m_pQtWidget->show();
+	} else {
+		m_pQtWidget = NULL;
+		m_pQtFilter = NULL;
+		m_bQtDelete = false;
 	}
+#ifdef CONFIG_LV2_UI_IDLE
+	if (m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
+		m_lv2_ui_idle_interface	= (const LV2UI_Idle_Interface *)
+			lv2_ui_extension_data(LV2_UI__idleInterface);
+	} else {
+		m_lv2_ui_idle_interface	= NULL;
+	}
+#endif	// CONFIG_LV2_UI_IDLE
+#ifdef CONFIG_LV2_UI_SHOW
+	if (m_pQtWidget == NULL && m_lv2_ui_type != LV2_UI_TYPE_EXTERNAL) {
+		m_lv2_ui_show_interface	= (const LV2UI_Show_Interface *)
+			lv2_ui_extension_data(LV2_UI__showInterface);
+	} else {
+		m_lv2_ui_show_interface	= NULL;
+	}
+#endif	// CONFIG_LV2_UI_SHOW
+
+	g_lv2Plugins.append(this);
 
 	setEditorVisible(true);
 
@@ -2999,10 +2971,6 @@ void qtractorLv2Plugin::closeEditor (void)
 	setEditorVisible(false);
 
 	m_ui_params.clear();
-
-	m_lv2_ui_handle = NULL;
-	m_lv2_ui_widget = NULL;
-	m_lv2_ui_type = LV2_UI_TYPE_NONE;
 
 #ifdef CONFIG_LV2_UI_SHOW
 	m_lv2_ui_show_interface	= NULL;
@@ -3052,6 +3020,21 @@ void qtractorLv2Plugin::closeEditor (void)
 		m_suil_host = NULL;
 	}
 
+	if (m_lv2_ui_descriptor) {
+		if (m_lv2_ui_handle)
+			m_lv2_ui_descriptor->cleanup(m_lv2_ui_handle);
+		m_lv2_ui_descriptor = NULL;
+	}
+
+	if (m_lv2_ui_library) {
+		delete m_lv2_ui_library;
+		m_lv2_ui_library = NULL;
+	}
+
+	m_lv2_ui_widget = NULL;
+	m_lv2_ui_handle = NULL;
+	m_lv2_ui_type   = LV2_UI_TYPE_NONE;
+
 	if (m_lv2_ui_features) {
 		delete [] m_lv2_ui_features;
 		m_lv2_ui_features = NULL;
@@ -3086,8 +3069,8 @@ void qtractorLv2Plugin::idleEditor (void)
 			const unsigned long iControlOuts = type()->controlOuts();
 			for (unsigned short j = 0; j < iControlOuts; ++j) {
 				if (m_pfControlOutsLast[j] != m_pfControlOuts[j]) {
-					suil_instance_port_event(m_suil_instance,
-						m_piControlOuts[j], sizeof(float), 0, &m_pfControlOuts[j]);
+					lv2_ui_port_event(m_piControlOuts[j],
+						sizeof(float), 0, &m_pfControlOuts[j]);
 					m_pfControlOutsLast[j] = m_pfControlOuts[j];
 				}
 			}
@@ -3114,10 +3097,7 @@ void qtractorLv2Plugin::idleEditor (void)
 		char buf[ev.size];
 		if (::jack_ringbuffer_read(m_plugin_events, buf, ev.size) < ev.size)
 			break;
-		if (m_suil_instance) {
-			suil_instance_port_event(m_suil_instance,
-				ev.index, ev.size, ev.protocol, buf);
-		}
+		lv2_ui_port_event(ev.index, ev.size, ev.protocol, buf);
 		read_space -= sizeof(ev) + ev.size;
 	}
 
@@ -3334,10 +3314,8 @@ void qtractorLv2Plugin::updateParam (
 		this, pParam->index(), fValue, int(bUpdate));
 #endif
 
-	if (bUpdate && m_suil_instance) {
-		suil_instance_port_event(m_suil_instance,
-			pParam->index(), sizeof(float), 0, &fValue);
-	}
+	if (bUpdate)
+		lv2_ui_port_event(pParam->index(), sizeof(float), 0, &fValue);
 }
 
 
@@ -3404,23 +3382,161 @@ uint32_t qtractorLv2Plugin::lv2_ui_index ( const char *port_symbol )
 }
 
 // LV2 UI resize control (host->ui).
-void qtractorLv2Plugin::resizeEditor ( const QSize& size ) const
+void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::resizeEditor(%d, %d)",
 		this, size.width(), size.height());
 #endif
+	const LV2UI_Resize *resize
+		= (const LV2UI_Resize *) lv2_ui_extension_data(LV2_UI__resize);
+	if (resize && resize->ui_resize)
+		(*resize->ui_resize)(resize->handle, size.width(), size.height());
+}
 
-	if (m_suil_instance) {
-		const LV2UI_Resize *resize
-			= (const LV2UI_Resize *) suil_instance_extension_data(
-				m_suil_instance, LV2_UI__resize);
-		if (resize && resize->ui_resize) {
-			(*resize->ui_resize)(resize->handle,
-				size.width(), size.height());
+
+// Alternate UI instantiation stuff (!suil_ui_supported)
+bool qtractorLv2Plugin::lv2_ui_instantiate (
+	const char *ui_host_uri, const char *plugin_uri,
+	const char *ui_uri,	const char *ui_type_uri,
+	const char *ui_bundle_path, const char *ui_binary_path )
+{
+	// Check whether special UI wrapping are supported...
+	if (suil_ui_supported(ui_host_uri, ui_type_uri) > 0) {
+		m_suil_host = suil_host_new(
+			qtractor_lv2_ui_write, qtractor_lv2_ui_index, NULL, NULL);
+		if (m_suil_host == NULL)
+			return false;
+		m_suil_instance = suil_instance_new(m_suil_host, this,
+			ui_host_uri, plugin_uri, ui_uri, ui_type_uri,
+			ui_bundle_path, ui_binary_path, m_lv2_ui_features);
+		if (m_suil_instance == NULL) {
+			suil_host_free(m_suil_host);
+			m_suil_host = NULL;
+			return false;
+		}
+	#ifdef CONFIG_SUIL_INSTANCE_GET_HANDLE
+		m_lv2_ui_handle = (LV2UI_Handle)
+			suil_instance_get_handle(m_suil_instance);
+	#else
+		struct SuilInstanceHead {	// HACK!
+			void                   *ui_lib_handle;
+			const LV2UI_Descriptor *ui_descriptor;
+			LV2UI_Handle            ui_handle;
+		} *suil_instance_head = (SuilInstanceHead *) m_suil_instance;
+		m_lv2_ui_handle = suil_instance_head->ui_handle;
+	#endif	// CONFIG_SUIL_INSTANCE_GET_HANDLE
+		m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
+		return true;
+	}
+
+	// Open UI library...
+	m_lv2_ui_library = new QLibrary(ui_binary_path);
+
+	// Get UI descriptor discovery function...
+	LV2UI_DescriptorFunction pfnLv2UiDescriptor
+		= (LV2UI_DescriptorFunction) m_lv2_ui_library->resolve("lv2ui_descriptor");
+	if (pfnLv2UiDescriptor == NULL) {
+		delete m_lv2_ui_library;
+		m_lv2_ui_library = NULL;
+		return false;
+	}
+
+	// Get UI descriptor...
+	m_lv2_ui_descriptor = NULL;
+
+	for (uint32_t i = 0; true; ++i) {
+		const LV2UI_Descriptor *ui_descriptor = (*pfnLv2UiDescriptor)(i);
+		if (ui_descriptor && ::strcmp(ui_descriptor->URI, ui_uri) == 0) {
+			m_lv2_ui_descriptor = ui_descriptor;
+			break;
 		}
 	}
+
+	if (m_lv2_ui_descriptor == NULL) {
+		delete m_lv2_ui_library;
+		m_lv2_ui_library = NULL;
+		return false;
+	}
+
+	// Add additional features implemented by host functions...
+	int iFeatures = 0;
+	while (m_lv2_ui_features[iFeatures]) { ++iFeatures; }
+
+#if QT_VERSION >= 0x050100
+#ifdef CONFIG_LV2_UI_X11
+	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
+		// Create the new parent frame...
+		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
+		// Add/prepare some neeed features...
+		m_lv2_ui_resize.handle = pQtWidget;
+		m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;
+		m_lv2_ui_resize_feature.URI = LV2_UI__resize;
+		m_lv2_ui_resize_feature.data = &m_lv2_ui_resize;
+		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_resize_feature;
+		m_lv2_ui_parent_feature.URI = LV2_UI__parent;
+		m_lv2_ui_parent_feature.data = (void *) pQtWidget->winId();
+		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_parent_feature;
+		m_lv2_ui_features[iFeatures] = NULL;
+		// Done.
+		m_pQtWidget = pQtWidget;
+	}
+#endif	// CONFIG_LV2_UI_X11
+#endif
+
+	m_lv2_ui_port_map.handle       = this;
+	m_lv2_ui_port_map.port_index   = qtractor_lv2_ui_index;
+	m_lv2_ui_port_map_feature.URI  = LV2_UI__portMap;
+	m_lv2_ui_port_map_feature.data = &m_lv2_ui_port_map;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_port_map_feature;
+	m_lv2_ui_features[iFeatures]   = NULL;
+
+	// Instantiate UI
+	m_lv2_ui_widget = NULL;
+	m_lv2_ui_handle = m_lv2_ui_descriptor->instantiate(
+		m_lv2_ui_descriptor, plugin_uri, ui_bundle_path,
+		qtractor_lv2_ui_write, this, &m_lv2_ui_widget,
+		m_lv2_ui_features);
+
+	// Failed to instantiate UI
+	if (m_lv2_ui_handle == NULL) {
+		m_lv2_ui_widget = NULL;
+		m_lv2_ui_descriptor = NULL;
+		delete m_lv2_ui_library;
+		m_lv2_ui_library = NULL;
+		return false;
+	}
+
+	return true;
 }
+
+
+void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
+	uint32_t buffer_size, uint32_t format, const void *buffer )
+{
+	if (m_suil_instance) {
+		suil_instance_port_event(m_suil_instance,
+			port_index, buffer_size, format, buffer);
+	}
+	else
+	if (m_lv2_ui_descriptor && m_lv2_ui_descriptor->port_event) {
+		(*m_lv2_ui_descriptor->port_event)(m_lv2_ui_handle,
+			port_index, buffer_size, format, buffer);
+	}
+}
+
+
+const void *qtractorLv2Plugin::lv2_ui_extension_data ( const char *uri )
+{
+	if (m_suil_instance)
+		return suil_instance_extension_data(m_suil_instance, uri);
+	else
+	if (m_lv2_ui_descriptor && m_lv2_ui_descriptor->extension_data)
+		return (*m_lv2_ui_descriptor->extension_data)(uri);
+
+	return NULL;
+}
+
 
 #endif	// CONFIG_LV2_UI
 
