@@ -52,7 +52,9 @@ class qtractorLv2Worker;
 
 #ifdef CONFIG_LV2_UI
 // LV2 UI support.
+#ifdef CONFIG_LIBSUIL
 #include <suil/suil.h>
+#endif
 #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
 // LV2 UI data/instance access support.
 #include "lv2/lv2plug.in/ns/ext/data-access/data-access.h"
@@ -327,7 +329,7 @@ public:
 #ifdef CONFIG_LV2_UI
 protected:
 
-	// Alternate UI instantiation stuff (!suil_ui_supported)...
+	// Alternate UI instantiation stuff...
 	bool lv2_ui_instantiate(
 		const char *ui_host_uri, const char *plugin_uri,
 		const char *ui_uri,	const char *ui_type_uri,
@@ -402,7 +404,7 @@ private:
 
 	LV2_Feature  **m_lv2_ui_features;
 
-	// Alternate UI instantiation stuff (!suil_ui_supported)
+	// Alternate UI instantiation stuff.
 	QLibrary      *m_lv2_ui_library;
 
 	const LV2UI_Descriptor *m_lv2_ui_descriptor;
@@ -414,8 +416,10 @@ private:
 	LV2UI_Handle   m_lv2_ui_handle;
 	LV2UI_Widget   m_lv2_ui_widget;
 
+#ifdef CONFIG_LIBSUIL
 	SuilHost      *m_suil_host;
 	SuilInstance  *m_suil_instance;
+#endif
 
 #ifdef CONFIG_LV2_ATOM
 
