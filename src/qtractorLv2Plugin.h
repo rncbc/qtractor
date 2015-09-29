@@ -52,7 +52,9 @@ class qtractorLv2Worker;
 
 #ifdef CONFIG_LV2_UI
 // LV2 UI support.
+#ifdef CONFIG_LIBSUIL
 #include <suil/suil.h>
+#endif
 #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
 // LV2 UI data/instance access support.
 #include "lv2/lv2plug.in/ns/ext/data-access/data-access.h"
@@ -237,14 +239,14 @@ public:
 	static void idleEditorAll();
 
 	// LV2 UI control change method.
-	void lv2_ui_write(uint32_t port_index,
+	void lv2_ui_port_write(uint32_t port_index,
 		uint32_t buffer_size, uint32_t protocol, const void *buffer);
 
 	// LV2 UI portMap method.
-	uint32_t lv2_ui_index(const char *port_symbol);
+	uint32_t lv2_ui_port_index(const char *port_symbol);
 
 	// LV2 UI resize control (host->ui).
-	void resizeEditor(const QSize& size) const;
+	void lv2_ui_resize(const QSize& size);
 
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
@@ -313,6 +315,7 @@ public:
 	// Whether given preset is internal/read-only.
 	bool isReadOnlyPreset(const QString& sPreset) const;
 #endif
+
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
 	static void updateTime(jack_client_t *pJackClient);
@@ -321,6 +324,23 @@ public:
 	// Make ready LV2 Time position.
 	void lv2_time_position_changed();
 #endif
+#endif
+
+#ifdef CONFIG_LV2_UI
+protected:
+
+	// Alternate UI instantiation stuff...
+	bool lv2_ui_instantiate(
+		const char *ui_host_uri, const char *plugin_uri,
+		const char *ui_uri,	const char *ui_type_uri,
+		const char *ui_bundle_path, const char *ui_binary_path);
+
+	void lv2_ui_port_event(
+		uint32_t port_index, uint32_t buffer_size,
+		uint32_t format, const void *buffer);
+
+	const void *lv2_ui_extension_data(const char *uri);
+
 #endif
 
 private:
@@ -377,18 +397,29 @@ private:
 	LilvUIs       *m_lv2_uis;
 	LilvUI        *m_lv2_ui;
 
-	LV2_Extension_Data_Feature m_lv2_data_access;
+	LV2_Extension_Data_Feature m_lv2_ui_data_access;
 
-	LV2_Feature    m_lv2_data_access_feature;
-	LV2_Feature    m_lv2_instance_access_feature;
+	LV2_Feature    m_lv2_ui_data_access_feature;
+	LV2_Feature    m_lv2_ui_instance_access_feature;
 
 	LV2_Feature  **m_lv2_ui_features;
 
+	// Alternate UI instantiation stuff.
+	QLibrary      *m_lv2_ui_library;
+
+	const LV2UI_Descriptor *m_lv2_ui_descriptor;
+
+	LV2UI_Port_Map m_lv2_ui_port_map;
+	LV2_Feature    m_lv2_ui_port_map_feature;
+
+	// Common UI instantiation stuff.
+	LV2UI_Handle   m_lv2_ui_handle;
+	LV2UI_Widget   m_lv2_ui_widget;
+
+#ifdef CONFIG_LIBSUIL
 	SuilHost      *m_suil_host;
 	SuilInstance  *m_suil_instance;
-	SuilWidget     m_lv2_ui_widget;
-
-	LV2UI_Handle   m_lv2_ui_handle;
+#endif
 
 #ifdef CONFIG_LV2_ATOM
 

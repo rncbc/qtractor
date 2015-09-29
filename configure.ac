@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.0.26, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.0.27, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -787,13 +787,6 @@ if test "x$ac_suil" = "xyes"; then
    if test "x$ac_suil_instance_get_handle" = "xyes"; then
       AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
    fi
-else
-   ac_lv2_ui="no"
-   ac_lv2_external_ui="no"
-   ac_lv2_ui_idle="no"
-   ac_lv2_ui_show="no"
-   ac_lv2_ui_gtk2="no"
-   ac_lv2_ui_x11="no"
 fi
 
 # Check for LV2 host library (liblilv).
@@ -1386,8 +1379,8 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
-echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lv2"
-echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_lv2_ui"
+echo "  LV2 plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
+echo "  LV2 plug-in UI support . . . . . . . . . . . . . .: $ac_lv2_ui"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 plug-in MIDI/Event support (DEPRECATED)  . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
