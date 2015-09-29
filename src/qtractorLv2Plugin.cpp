@@ -3369,14 +3369,14 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
 
-	m_lv2_data_access.data_access = descriptor->extension_data;
-	m_lv2_data_access_feature.URI = LV2_DATA_ACCESS_URI;
-	m_lv2_data_access_feature.data = &m_lv2_data_access;
-	m_lv2_ui_features[iFeatures++] = &m_lv2_data_access_feature;
+	m_lv2_ui_data_access.data_access = descriptor->extension_data;
+	m_lv2_ui_data_access_feature.URI = LV2_DATA_ACCESS_URI;
+	m_lv2_ui_data_access_feature.data = &m_lv2_ui_data_access;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_data_access_feature;
 
-	m_lv2_instance_access_feature.URI = LV2_INSTANCE_ACCESS_URI;
-	m_lv2_instance_access_feature.data = lilv_instance_get_handle(instance);
-	m_lv2_ui_features[iFeatures++] = &m_lv2_instance_access_feature;
+	m_lv2_ui_instance_access_feature.URI = LV2_INSTANCE_ACCESS_URI;
+	m_lv2_ui_instance_access_feature.data = lilv_instance_get_handle(instance);
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_instance_access_feature;
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	m_lv2_ui_external_host.ui_closed = qtractor_lv2_ui_closed;
@@ -3437,10 +3437,10 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 				m_lv2_ui_widget = suil_instance_get_widget(m_suil_instance);
 				return true;
 			}
+			// Fall thru...
+			suil_host_free(m_suil_host);
+			m_suil_host = NULL;
 		}
-		// Fall thru...
-		suil_host_free(m_suil_host);
-		m_suil_host = NULL;
 	}
 #endif
 

@@ -397,10 +397,10 @@ private:
 	LilvUIs       *m_lv2_uis;
 	LilvUI        *m_lv2_ui;
 
-	LV2_Extension_Data_Feature m_lv2_data_access;
+	LV2_Extension_Data_Feature m_lv2_ui_data_access;
 
-	LV2_Feature    m_lv2_data_access_feature;
-	LV2_Feature    m_lv2_instance_access_feature;
+	LV2_Feature    m_lv2_ui_data_access_feature;
+	LV2_Feature    m_lv2_ui_instance_access_feature;
 
 	LV2_Feature  **m_lv2_ui_features;
 
