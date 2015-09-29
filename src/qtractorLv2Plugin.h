@@ -239,11 +239,11 @@ public:
 	static void idleEditorAll();
 
 	// LV2 UI control change method.
-	void lv2_ui_write(uint32_t port_index,
+	void lv2_ui_port_write(uint32_t port_index,
 		uint32_t buffer_size, uint32_t protocol, const void *buffer);
 
 	// LV2 UI portMap method.
-	uint32_t lv2_ui_index(const char *port_symbol);
+	uint32_t lv2_ui_port_index(const char *port_symbol);
 
 	// LV2 UI resize control (host->ui).
 	void lv2_ui_resize(const QSize& size);

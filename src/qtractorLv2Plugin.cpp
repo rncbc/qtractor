@@ -761,7 +761,7 @@ static const LV2_Feature *g_lv2_features[] =
 #endif
 
 
-static void qtractor_lv2_ui_write (
+static void qtractor_lv2_ui_port_write (
 	LV2UI_Controller ui_controller,
 	uint32_t port_index,
 	uint32_t buffer_size,
@@ -773,10 +773,10 @@ static void qtractor_lv2_ui_write (
 	if (pLv2Plugin == NULL)
 		return;
 
-	pLv2Plugin->lv2_ui_write(port_index, buffer_size, protocol, buffer);
+	pLv2Plugin->lv2_ui_port_write(port_index, buffer_size, protocol, buffer);
 }
 
-static uint32_t qtractor_lv2_ui_index (
+static uint32_t qtractor_lv2_ui_port_index (
 	LV2UI_Controller ui_controller,
 	const char *port_symbol )
 {
@@ -785,7 +785,7 @@ static uint32_t qtractor_lv2_ui_index (
 	if (pLv2Plugin == NULL)
 		return LV2UI_INVALID_PORT_INDEX;
 
-	return pLv2Plugin->lv2_ui_index(port_symbol);
+	return pLv2Plugin->lv2_ui_port_index(port_symbol);
 }
 
 
@@ -2683,14 +2683,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (pLv2Type == NULL)
 		return;
 
-	const LilvInstance *instance = lv2_instance(0);
-	if (instance == NULL)
-		return;
-
-	const LV2_Descriptor *descriptor = lilv_instance_get_descriptor(instance);
-	if (descriptor == NULL)
-		return;
-
 	// Check the UI inventory...
 	m_lv2_uis = lilv_plugin_get_uis(pLv2Type->lv2_plugin());
 	if (m_lv2_uis == NULL)
@@ -2732,55 +2724,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_lv2_ui = ui_iter.value();
 
 	updateEditorTitle();
-
-	int iFeatures = 0;
-	while (m_lv2_features[iFeatures]) { ++iFeatures; }
-
-	m_lv2_ui_features = new LV2_Feature * [iFeatures + 8];
-	for (int i = 0; i < iFeatures; ++i)
-		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
-
-	m_lv2_data_access.data_access = descriptor->extension_data;
-	m_lv2_data_access_feature.URI = LV2_DATA_ACCESS_URI;
-	m_lv2_data_access_feature.data = &m_lv2_data_access;
-	m_lv2_ui_features[iFeatures++] = &m_lv2_data_access_feature;
-
-	m_lv2_instance_access_feature.URI = LV2_INSTANCE_ACCESS_URI;
-	m_lv2_instance_access_feature.data = lilv_instance_get_handle(instance);
-	m_lv2_ui_features[iFeatures++] = &m_lv2_instance_access_feature;
-
-#ifdef CONFIG_LV2_EXTERNAL_UI
-	m_lv2_ui_external_host.ui_closed = qtractor_lv2_ui_closed;
-	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
-	m_lv2_ui_external_feature.URI = LV2_EXTERNAL_UI__Host;
-	m_lv2_ui_external_feature.data = &m_lv2_ui_external_host;
-	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_feature;
-#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
-	m_lv2_ui_external_deprecated_feature.URI = LV2_EXTERNAL_UI_DEPRECATED_URI;
-	m_lv2_ui_external_deprecated_feature.data = &m_lv2_ui_external_host;
-	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_deprecated_feature;
-#endif
-#endif
-
-#ifdef CONFIG_LV2_OPTIONS
-	const LV2_Options_Option ui_options[] = {
-		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle, sizeof(char *),
-		  g_lv2_urids.atom_String, m_aEditorTitle.constData() },
-		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
-	};
-	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));
-	m_lv2_ui_options_feature.URI  = LV2_OPTIONS__options;
-	m_lv2_ui_options_feature.data = &m_lv2_ui_options;
-	// Find and override options feature...
-	for (int i = 0; i < iFeatures; ++i) {
-		if (::strcmp(m_lv2_ui_features[i]->URI, LV2_OPTIONS__options) == 0) {
-			m_lv2_ui_features[i] = &m_lv2_ui_options_feature;
-			break;
-		}
-	}
-#endif
-
-	m_lv2_ui_features[iFeatures] = NULL;
 
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
@@ -3334,11 +3277,11 @@ void qtractorLv2Plugin::idleEditorAll (void)
 
 
 // LV2 UI control change method.
-void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
+void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 	uint32_t buffer_size, uint32_t protocol, const void *buffer )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorLv2Plugin[%p]::lv2_ui_write(%u, %u, %u, %p)",
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_port_write(%u, %u, %u, %p)",
 		this, port_index, buffer_size, protocol, buffer);
 #endif
 
@@ -3366,10 +3309,10 @@ void qtractorLv2Plugin::lv2_ui_write ( uint32_t port_index,
 }
 
 // LV2 UI portMap method.
-uint32_t qtractorLv2Plugin::lv2_ui_index ( const char *port_symbol )
+uint32_t qtractorLv2Plugin::lv2_ui_port_index ( const char *port_symbol )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorLv2Plugin[%p]::lv2_ui_index(%s)",
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_port_index(%s)",
 		this, port_symbol);
 #endif
 
@@ -3410,11 +3353,71 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_instantiate(\"%s\")", this, ui_uri);
 #endif
 
+	// Setup fundamental UI features...
+	const LilvInstance *instance = lv2_instance(0);
+	if (instance == NULL)
+		return false;
+
+	const LV2_Descriptor *descriptor = lilv_instance_get_descriptor(instance);
+	if (descriptor == NULL)
+		return false;
+
+	int iFeatures = 0;
+	while (m_lv2_features[iFeatures]) { ++iFeatures; }
+
+	m_lv2_ui_features = new LV2_Feature * [iFeatures + 8];
+	for (int i = 0; i < iFeatures; ++i)
+		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
+
+	m_lv2_data_access.data_access = descriptor->extension_data;
+	m_lv2_data_access_feature.URI = LV2_DATA_ACCESS_URI;
+	m_lv2_data_access_feature.data = &m_lv2_data_access;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_data_access_feature;
+
+	m_lv2_instance_access_feature.URI = LV2_INSTANCE_ACCESS_URI;
+	m_lv2_instance_access_feature.data = lilv_instance_get_handle(instance);
+	m_lv2_ui_features[iFeatures++] = &m_lv2_instance_access_feature;
+
+#ifdef CONFIG_LV2_EXTERNAL_UI
+	m_lv2_ui_external_host.ui_closed = qtractor_lv2_ui_closed;
+	m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
+	m_lv2_ui_external_feature.URI = LV2_EXTERNAL_UI__Host;
+	m_lv2_ui_external_feature.data = &m_lv2_ui_external_host;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_feature;
+#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+	m_lv2_ui_external_deprecated_feature.URI = LV2_EXTERNAL_UI_DEPRECATED_URI;
+	m_lv2_ui_external_deprecated_feature.data = &m_lv2_ui_external_host;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_external_deprecated_feature;
+#endif
+#endif
+
+#ifdef CONFIG_LV2_OPTIONS
+	const LV2_Options_Option ui_options[] = {
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle, sizeof(char *),
+		  g_lv2_urids.atom_String, m_aEditorTitle.constData() },
+		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
+	};
+	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));
+	m_lv2_ui_options_feature.URI  = LV2_OPTIONS__options;
+	m_lv2_ui_options_feature.data = &m_lv2_ui_options;
+	// Find and override options feature...
+	for (int i = 0; i < iFeatures; ++i) {
+		if (::strcmp(m_lv2_ui_features[i]->URI, LV2_OPTIONS__options) == 0) {
+			m_lv2_ui_features[i] = &m_lv2_ui_options_feature;
+			break;
+		}
+	}
+#endif
+
+	m_lv2_ui_features[iFeatures] = NULL;
+
 #ifdef CONFIG_LIBSUIL
 	// Check whether special UI wrapping are supported...
 	if (suil_ui_supported(ui_host_uri, ui_type_uri) > 0) {
 		m_suil_host = suil_host_new(
-			qtractor_lv2_ui_write, qtractor_lv2_ui_index, NULL, NULL);
+			qtractor_lv2_ui_port_write,
+			qtractor_lv2_ui_port_index,
+			NULL, NULL);
 		if (m_suil_host) {
 			m_suil_instance = suil_instance_new(m_suil_host, this,
 				ui_host_uri, plugin_uri, ui_uri, ui_type_uri,
@@ -3454,10 +3457,10 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	}
 
 	// Get UI descriptor...
-	uint32_t i = 0;
-	m_lv2_ui_descriptor = (*pfnLv2UiDescriptor)(i);
+	uint32_t ui_index = 0;
+	m_lv2_ui_descriptor = (*pfnLv2UiDescriptor)(ui_index);
 	while (m_lv2_ui_descriptor && ::strcmp(m_lv2_ui_descriptor->URI, ui_uri))
-		m_lv2_ui_descriptor = (*pfnLv2UiDescriptor)(++i);
+		m_lv2_ui_descriptor = (*pfnLv2UiDescriptor)(++ui_index);
 	if (m_lv2_ui_descriptor == NULL) {
 		delete m_lv2_ui_library;
 		m_lv2_ui_library = NULL;
@@ -3465,11 +3468,8 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	}
 
 	// Add additional features implemented by host functions...
-	int iFeatures = 0;
-	while (m_lv2_ui_features[iFeatures]) { ++iFeatures; }
-
 	m_lv2_ui_port_map.handle       = this;
-	m_lv2_ui_port_map.port_index   = qtractor_lv2_ui_index;
+	m_lv2_ui_port_map.port_index   = qtractor_lv2_ui_port_index;
 	m_lv2_ui_port_map_feature.URI  = LV2_UI__portMap;
 	m_lv2_ui_port_map_feature.data = &m_lv2_ui_port_map;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_port_map_feature;
@@ -3501,7 +3501,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	m_lv2_ui_widget = NULL;
 	m_lv2_ui_handle = m_lv2_ui_descriptor->instantiate(
 		m_lv2_ui_descriptor, plugin_uri, ui_bundle_path,
-		qtractor_lv2_ui_write, this, &m_lv2_ui_widget,
+		qtractor_lv2_ui_port_write, this, &m_lv2_ui_widget,
 		m_lv2_ui_features);
 
 	// Failed to instantiate UI?
