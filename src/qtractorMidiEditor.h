@@ -464,6 +464,12 @@ protected:
 	// Compute current drag value delta.
 	int valueDelta(qtractorScrollView *pScrollView) const;
 
+	// Safe/capped value helpers.
+	int safeNote(int iNote) const;
+	int safeValue(int iValue) const;
+	int safeValue14(int iValue14) const;
+	int safePitchBend(int iPitchBend) const;
+
 	// Apply the event drag-resize (also editing).
 	void resizeEvent(qtractorMidiEvent *pEvent,
 		long iTimeDelta, int iValueDelta,
