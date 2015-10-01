@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Force an initial but temporary main window expose/realize/show,
+  prior to restore its saved position and size, making sure the
+  top-level window decorations (title, frame and borders) are
+  taken into account. (EXPERIMENTAL)
+
 - Added LV2_BUF_SIZE__nominalBlockLength option support (patch
   by falktx aka. Filipe Coelho, thanks).
 
