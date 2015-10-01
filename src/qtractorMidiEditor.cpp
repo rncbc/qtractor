@@ -3478,12 +3478,7 @@ void qtractorMidiEditor::resizeEvent (
 		}
 		break;
 	case ResizeValue:
-		iValue = int(pEvent->value()) + iValueDelta;
-		if (iValue < 0)
-			iValue = 0;
-		else
-		if (iValue > 127)
-			iValue = 127;
+		iValue = safeValue(pEvent->value() + iValueDelta);
 		if (m_bEventDragEdit) {
 			pEvent->setValue(iValue);
 			if (pEditCommand)
@@ -3496,12 +3491,7 @@ void qtractorMidiEditor::resizeEvent (
 			m_last.value = iValue;
 		break;
 	case ResizeValue14:
-		iValue = int(pEvent->value()) + iValueDelta;
-		if (iValue < 0)
-			iValue = 0;
-		else
-		if (iValue > 16383)
-			iValue = 16383;
+		iValue = safeValue14(pEvent->value() + iValueDelta);
 		if (m_bEventDragEdit) {
 			pEvent->setValue(iValue);
 			if (pEditCommand)
@@ -3514,12 +3504,7 @@ void qtractorMidiEditor::resizeEvent (
 			m_last.value = iValue;
 		break;
 	case ResizePitchBend:
-		iValue = pEvent->pitchBend() + iValueDelta;
-		if (iValue < -8191)
-			iValue = -8191;
-		else
-		if (iValue > +8191)
-			iValue = +8191;
+		iValue = safePitchBend(pEvent->pitchBend() + iValueDelta);
 		if (m_bEventDragEdit) {
 			pEvent->setPitchBend(iValue);
 			if (pEditCommand)
@@ -3955,11 +3940,7 @@ void qtractorMidiEditor::executeDragMove (
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
 			continue;
-		int iNote = int(pEvent->note()) + iNoteDelta;
-		if (iNote < 0)
-			iNote = 0;
-		if (iNote > 127)
-			iNote = 127;
+		const int  iNote = safeNote(pEvent->note() + iNoteDelta);
 		const long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
@@ -4090,12 +4071,7 @@ void qtractorMidiEditor::executeDragRescale (
 			break;
 		case ResizeValue:
 			if (v1) {
-				v2 = pEvent->value() * (v1 + iValueDelta) / v1;
-				if (v2 < 0)
-					v2 = 0;
-				else
-				if (v2 > 127)
-					v2 = 127;
+				v2 = safeValue(pEvent->value() * (v1 + iValueDelta) / v1);
 				pEditCommand->resizeEventValue(pEvent, v2);
 				if (pEvent == m_pEventDrag)
 					m_last.value = v2;
@@ -4103,12 +4079,7 @@ void qtractorMidiEditor::executeDragRescale (
 			break;
 		case ResizeValue14:
 			if (v1) {
-				v2 = pEvent->value() * (v1 + iValueDelta) / v1;
-				if (v2 < 0)
-					v2 = 0;
-				else
-				if (v2 > 16383)
-					v2 = 16383;
+				v2 = safeValue14(pEvent->value() * (v1 + iValueDelta) / v1);
 				pEditCommand->resizeEventValue(pEvent, v2);
 				if (pEvent == m_pEventDrag)
 					m_last.value = v2;
@@ -4116,12 +4087,7 @@ void qtractorMidiEditor::executeDragRescale (
 			break;
 		case ResizePitchBend:
 			if (v1) {
-				v2 = pEvent->pitchBend() * (v1 + iValueDelta) / v1;
-				if (v2 < -8191)
-					v2 = -8191;
-				else
-				if (v2 > +8191)
-					v2 = +8191;
+				v2 = safePitchBend(pEvent->pitchBend() * (v1 + iValueDelta) / v1);
 				pEditCommand->resizeEventValue(pEvent, v2);
 				if (pEvent == m_pEventDrag)
 					m_last.pitchBend = v2;
@@ -4172,14 +4138,8 @@ void qtractorMidiEditor::executeDragPaste (
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
 		pEvent->setTime(iTime);
-		if (bEditView) {
-			int iNote = int(pEvent->note()) + iNoteDelta;
-			if (iNote < 0)
-				iNote = 0;
-			if (iNote > 127)
-				iNote = 127;
-			pEvent->setNote(iNote);
-		}
+		if (bEditView)
+			pEvent->setNote(safeNote(pEvent->note() + iNoteDelta));
 		else
 		if (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER)
 			pEvent->setController(m_pEditEvent->eventParam());
@@ -4794,6 +4754,44 @@ void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
 }
 
 
+// Safe/capped value helpers.
+int qtractorMidiEditor::safeNote ( int iNote ) const
+	{ return safeValue(iNote); }
+
+int qtractorMidiEditor::safeValue ( int iValue ) const
+{
+	if (iValue < 0)
+		iValue = 0;
+	else
+	if (iValue > 127)
+		iValue = 127;
+
+	return iValue;
+}
+
+int qtractorMidiEditor::safeValue14 ( int iValue14 ) const
+{
+	if (iValue14 < 0)
+		iValue14 = 0;
+	else
+	if (iValue14 > 16383)
+		iValue14 = 16383;
+
+	return iValue14;
+}
+
+int qtractorMidiEditor::safePitchBend ( int iPitchBend ) const
+{
+	if (iPitchBend < -8191)
+		iPitchBend = -8191;
+	else
+	if (iPitchBend > +8191)
+		iPitchBend = +8191;
+
+	return iPitchBend;
+}
+
+
 // MIDI event tool tip helper.
 QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 	long iTimeDelta, int iNoteDelta, int iValueDelta ) const
@@ -4821,50 +4819,50 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 		sToolTip += tr("Note On (%1) %2\nVelocity:\t%3\nDuration:\t%4")
 			.arg(int(pEvent->note() + iNoteDelta))
 			.arg(noteName(pEvent->note() + iNoteDelta))
-			.arg(int(pEvent->velocity() + iValueDelta))
+			.arg(safeValue(pEvent->velocity() + iValueDelta))
 			.arg(m_pTimeScale->textFromTick(t0, true, d0));
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		sToolTip += tr("Key Press (%1) %2\nValue:\t%3")
 			.arg(int(pEvent->note() + iNoteDelta))
 			.arg(noteName(pEvent->note() + iNoteDelta))
-			.arg(int(pEvent->velocity() + iValueDelta));
+			.arg(safeValue(pEvent->velocity() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CONTROLLER:
 		sToolTip += tr("Controller (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->controller()))
 			.arg(controllerName(pEvent->controller()))
-			.arg(int(pEvent->value() + iValueDelta));
+			.arg(safeValue(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::REGPARAM:
 		sToolTip += tr("RPN (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->param()))
 			.arg(rpnNames().value(pEvent->param()))
-			.arg(int(pEvent->value() + iValueDelta));
+			.arg(safeValue14(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::NONREGPARAM:
 		sToolTip += tr("NRPN (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->param()))
 			.arg(nrpnNames().value(pEvent->param()))
-			.arg(int(pEvent->value() + iValueDelta));
+			.arg(safeValue14(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CONTROL14:
 		sToolTip += tr("Control 14 (%1)\nName:\t%2\nValue:\t%3")
 			.arg(int(pEvent->controller()))
 			.arg(control14Name(pEvent->controller()))
-			.arg(int(pEvent->value() + iValueDelta));
+			.arg(safeValue14(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::PGMCHANGE:
 		sToolTip += tr("Pgm Change (%1)")
-			.arg(int(pEvent->value() + iValueDelta));
+			.arg(safeValue(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		sToolTip += tr("Chan Press (%1)")
-			.arg(int(pEvent->value() + iValueDelta));
+			.arg(safeValue(pEvent->value() + iValueDelta));
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		sToolTip += tr("Pitch Bend (%1)")
-			.arg(int(pEvent->pitchBend() + iValueDelta));
+			.arg(safePitchBend(pEvent->pitchBend() + iValueDelta));
 		break;
 	case qtractorMidiEvent::SYSEX:
 	{

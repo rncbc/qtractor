@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed false value readings on the MIDI clip editor (aka. piano
+  -roll) tool-tips, when dragging a note velocity or controller
+  value outside the acceptable nominal range (eg. 0-127).
+
 - Force an initial but temporary main window expose/realize/show,
   prior to restore its saved position and size, making sure the
   top-level window decorations (title, frame and borders) are
