@@ -1537,7 +1537,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 #ifdef CONFIG_DEBUG_0
 	// - show event for debug purposes...
-	fprintf(stderr, "MIDI In  %06lu 0x%02x", tick, pEv->type);
+	fprintf(stderr, "MIDI In %d: %06lu 0x%02x", iAlsaPort, tick, pEv->type);
 	if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 		fprintf(stderr, " sysex {");
 		unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
