@@ -917,7 +917,7 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 	m_pForm->raise();
 	m_pForm->activateWindow();
 
-	if (bCreate && !m_posForm.isNull())
+	if (bCreate && m_posForm.x() >= 0 && m_posForm.y() >= 0)
 		m_pForm->move(m_posForm);
 }
 
@@ -2343,13 +2343,13 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		}
 		// Save editor position...
 		const QPoint& posEditor = pPlugin->editorPos();
-		if (!posEditor.isNull()) {
+		if (posEditor.x() >= 0 && posEditor.y() >= 0) {
 			pDocument->saveTextElement("editor-pos",
 				QString::number(posEditor.x()) + ',' +
 				QString::number(posEditor.y()), &ePlugin);
 		}
 		const QPoint& posForm = pPlugin->formPos();
-		if (!posForm.isNull()) {
+		if (posForm.x() >= 0 && posForm.y() >= 0) {
 			pDocument->saveTextElement("form-pos",
 				QString::number(posForm.x()) + ',' +
 				QString::number(posForm.y()), &ePlugin);

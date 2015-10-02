@@ -1094,7 +1094,7 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		// Do it...
 		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
 		// Set its most standing properties...
-		if (!m_posEditor.isNull())
+		if (m_posEditor.x() >= 0 && m_posEditor.y() >= 0)
 			m_pMidiEditorForm->move(m_posEditor);
 		if (!m_sizeEditor.isNull() && m_sizeEditor.isValid())
 			m_pMidiEditorForm->resize(m_sizeEditor);
@@ -1295,7 +1295,7 @@ bool qtractorMidiClip::saveClipElement (
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
 	pDocument->saveTextElement("revision",
 		QString::number(qtractorMidiClip::revision()), &eMidiClip);
-	if (!m_posEditor.isNull()) {
+	if (m_posEditor.x() >= 0 && m_posEditor.y() >= 0) {
 		pDocument->saveTextElement("editor-pos",
 			QString::number(m_posEditor.x()) + ',' +
 			QString::number(m_posEditor.y()), &eMidiClip);
