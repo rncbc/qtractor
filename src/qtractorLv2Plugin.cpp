@@ -3231,7 +3231,7 @@ void qtractorLv2Plugin::loadEditorPos (void)
 
 	const QPoint& posEditor = editorPos();
 
-	if (posEditor.isNull())
+	if (posEditor.x() < 0 || posEditor.y() < 0)
 		return;
 
 	if (m_pQtWidget)
