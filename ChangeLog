@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed port on MIDI 14-bit controllers input caching.
+
 - Fixed false value readings on the MIDI clip editor (aka. piano
   -roll) tool-tips, when dragging a note velocity or controller
   value outside the acceptable nominal range (eg. 0-127).
