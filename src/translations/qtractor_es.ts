@@ -252,22 +252,22 @@ Offset / Duración:	%3 / %4</translation>
         <translation>Pseudo-plugin de Envío Auxiliar.</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="413"/>
+        <location filename="../qtractorInstrument.cpp" line="408"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Archivo de Definición de Instrumento Cakewalk</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="423"/>
+        <location filename="../qtractorInstrument.cpp" line="418"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="425"/>
+        <location filename="../qtractorInstrument.cpp" line="420"/>
         <source>Date</source>
         <translation>Fecha</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="647"/>
+        <location filename="../qtractorInstrument.cpp" line="642"/>
         <source>%1 Bank %2</source>
         <translation>%1 Banco %2</translation>
     </message>
@@ -5858,12 +5858,12 @@ este en funcionamiento y reinicie la sesión.</translation>
         <translation>Mensajes</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="270"/>
+        <location filename="../qtractorMessages.cpp" line="284"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Se ha detenido la bitácora --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="280"/>
+        <location filename="../qtractorMessages.cpp" line="294"/>
         <source>Logging started --- %1 ---</source>
         <translation>Se ha iniciado la bitácora --- %1 ---</translation>
     </message>
