@@ -122,6 +122,16 @@ Posun/Délka:	%3 / %4</translation>
         <translation>Soubor s Cakewalk definicí nástroje</translation>
     </message>
     <message>
+        <location filename="../qtractorInstrument.cpp" line="412"/>
+        <source>Version</source>
+        <translation type="unfinished">Verze</translation>
+    </message>
+    <message>
+        <location filename="../qtractorInstrument.cpp" line="414"/>
+        <source>Build</source>
+        <translation type="unfinished">Sestavení</translation>
+    </message>
+    <message>
         <location filename="../qtractorInstrument.cpp" line="418"/>
         <source>File</source>
         <translation>Soubor</translation>
@@ -2009,33 +2019,33 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorInstrumentForm</name>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="197"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="221"/>
         <source>Import Instrument Files</source>
         <translation>Zavést soubory s nástroji</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="198"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="222"/>
         <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
         <translation>Soubory nástrojů (*.%1 *.sf2 *.midnam))</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="367"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="380"/>
         <source>Instrument files (*.%1)</source>
         <translation>Soubory s nástroji (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="366"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="379"/>
         <source>Export Instrument File</source>
         <translation>Vyvést soubor s nástrojem</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="404"/>
-        <location filename="../qtractorInstrumentForm.cpp" line="446"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="417"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="459"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="405"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="418"/>
         <source>The instrument file already exists:
 
 &quot;%1&quot;
@@ -2048,7 +2058,7 @@ Do you want to replace it?</source>
 Přejete si jej nahradit?</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="447"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="460"/>
         <source>Instrument settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -2057,92 +2067,92 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="530"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="544"/>
         <source>Patch Names for Banks</source>
         <translation>Názvy políček pro Banky</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="572"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="586"/>
         <source>Controller Names = %1</source>
         <translation>Názvy ovladačů = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="580"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="594"/>
         <source>RPN Names = %1</source>
         <translation>RPN Názvy = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="588"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="602"/>
         <source>NRPN Names = %1</source>
         <translation>NRPN Názvy = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="595"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="609"/>
         <source>Bank Select Method = %1</source>
         <translation>Metoda výběru zvukové banky = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="608"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="622"/>
         <source>Patch Names</source>
         <translation>Názvy políček</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="614"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="628"/>
         <source>Note Names</source>
         <translation>Názvy not</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="620"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="634"/>
         <source>Controller Names</source>
         <translation>Názvy ovladačů</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="626"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="640"/>
         <source>RPN Names</source>
         <translation>Názvy RPN</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="632"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="646"/>
         <source>NRPN Names</source>
         <translation>Názvy NRPN</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="638"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="652"/>
         <source>Bank Select Methods</source>
         <translation>Metody výběru zvukové banky</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="645"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="659"/>
         <source>%1 = %2</source>
         <translation>%1 = %2</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="682"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="696"/>
         <source>Based On = %1</source>
         <translation>Založeno na = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="718"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="732"/>
         <source>Normal</source>
         <translation>Normální</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="719"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="733"/>
         <source>Bank MSB</source>
         <translation>Banka MSB</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="720"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="734"/>
         <source>Bank LSB</source>
         <translation>Banka LSB</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="721"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="735"/>
         <source>Patch</source>
         <translation>Políčko</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="722"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="736"/>
         <source>Unknown</source>
         <translation>Neznámý</translation>
     </message>

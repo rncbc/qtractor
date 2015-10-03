@@ -73,10 +73,6 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 
 	m_pInstruments = NULL;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		m_pInstruments = pSession->instruments();
-
 	m_iDirtyCount = 0;
 
 	QHeaderView *pHeader = m_ui.InstrumentsListView->header();
@@ -115,8 +111,9 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 	pHeader->setMovable(false);
 #endif
 
-	refreshForm();
-	stabilizeForm();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		setInstruments(pSession->instruments());
 
 	adjustSize();
 
@@ -171,6 +168,11 @@ void qtractorInstrumentForm::setInstruments ( qtractorInstrumentList *pInstrumen
 {
 	m_pInstruments = pInstruments;
 
+	if (m_pInstruments)
+		m_files = m_pInstruments->files();
+	else
+		m_files.clear();
+
 	refreshForm();
 	stabilizeForm();
 }
@@ -178,6 +180,28 @@ void qtractorInstrumentForm::setInstruments ( qtractorInstrumentList *pInstrumen
 qtractorInstrumentList *qtractorInstrumentForm::instruments (void) const
 {
 	return m_pInstruments;
+}
+
+
+// Load the complete instrument definitions, from list.
+void qtractorInstrumentForm::reloadFiles ( const QStringList& files )
+{
+	if (m_pInstruments == NULL)
+		return;
+
+	// Tell that we may take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Ooops...
+	m_pInstruments->clearAll();
+
+	// Load each file in order...
+	QStringListIterator iter(files);
+	while (iter.hasNext())
+		m_pInstruments->load(iter.next());
+
+	// Done with reload.
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -322,31 +346,20 @@ void qtractorInstrumentForm::moveDownSlot (void)
 // Reload the complete instrument definitions, from list.
 void qtractorInstrumentForm::reloadSlot (void)
 {
-	if (m_pInstruments == NULL)
-		return;
-
-	// Tell that we may take some time...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-	// Ooops...
-	m_pInstruments->clearAll();
-
-	// Load each file in order...
-	int iItemCount = m_ui.FilesListView->topLevelItemCount();
+	// Get current instrument file list...
+	QStringList files;
+	const int iItemCount = m_ui.FilesListView->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = m_ui.FilesListView->topLevelItem(iItem);
 		if (pItem) 
-			m_pInstruments->load(pItem->text(1));
+			files.append(pItem->text(1));
 	}
 
-	// We're clear.
-	m_iDirtyCount = 0;
+	// Load each file in order...
+	reloadFiles(files);
 
 	refreshForm();
 	stabilizeForm();
-
-	// Done with reload.
-	QApplication::restoreOverrideCursor();
 }
 
 
@@ -453,6 +466,7 @@ void qtractorInstrumentForm::reject (void)
 			accept();
 			return;
 		case QMessageBox::Discard:
+			reloadFiles(m_files);
 			break;
 		default:    // Cancel.
 			bReject = false;
@@ -711,7 +725,7 @@ void qtractorInstrumentForm::listInstrumentDataList (
 }
 
 
-QString qtractorInstrumentForm::bankSelMethod ( int iBankSelMethod )
+QString qtractorInstrumentForm::bankSelMethod ( int iBankSelMethod ) const
 {
 	QString sText;
 	switch (iBankSelMethod) {

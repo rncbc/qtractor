@@ -251,6 +251,16 @@ Décalage / Longueur:	%3 / %4</translation>
         <translation>Fichier de définition d&apos;instrument Cakewalk</translation>
     </message>
     <message>
+        <location filename="../qtractorInstrument.cpp" line="412"/>
+        <source>Version</source>
+        <translation type="unfinished">Version</translation>
+    </message>
+    <message>
+        <location filename="../qtractorInstrument.cpp" line="414"/>
+        <source>Build</source>
+        <translation type="unfinished">Compilation</translation>
+    </message>
+    <message>
         <location filename="../qtractorInstrument.cpp" line="418"/>
         <source>File</source>
         <translation>Fichier</translation>
@@ -2103,33 +2113,33 @@ Etes-vous sur?</translation>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="197"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="221"/>
         <source>Import Instrument Files</source>
         <translation>Importer des fichiers instrument</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="198"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="222"/>
         <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
         <translation>Fichiers instrument (*.%1 *.sf2 *.midnam)</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="366"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="379"/>
         <source>Export Instrument File</source>
         <translation>Exporter le fichier instrument</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="367"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="380"/>
         <source>Instrument files (*.%1)</source>
         <translation>Fichiers instrument (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="404"/>
-        <location filename="../qtractorInstrumentForm.cpp" line="446"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="417"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="459"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="405"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="418"/>
         <source>The instrument file already exists:
 
 &quot;%1&quot;
@@ -2142,7 +2152,7 @@ Do you want to replace it?</source>
 Voulez-vous le remplacer?</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="447"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="460"/>
         <source>Instrument settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -2151,92 +2161,92 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements?</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="530"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="544"/>
         <source>Patch Names for Banks</source>
         <translation>Noms de patches pour les banques</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="572"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="586"/>
         <source>Controller Names = %1</source>
         <translation>Noms de contrôleur = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="580"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="594"/>
         <source>RPN Names = %1</source>
         <translation>Noms RPN = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="588"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="602"/>
         <source>NRPN Names = %1</source>
         <translation>Noms NRPN = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="595"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="609"/>
         <source>Bank Select Method = %1</source>
         <translation>Méthode de sélection de banque = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="608"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="622"/>
         <source>Patch Names</source>
         <translation>Noms de Patch</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="614"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="628"/>
         <source>Note Names</source>
         <translation>Noms de Note</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="620"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="634"/>
         <source>Controller Names</source>
         <translation>Noms de Contrôleur</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="626"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="640"/>
         <source>RPN Names</source>
         <translation>Noms RPN</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="632"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="646"/>
         <source>NRPN Names</source>
         <translation>Noms NRPN</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="638"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="652"/>
         <source>Bank Select Methods</source>
         <translation>Méthodes de Sélection de Banque</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="645"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="659"/>
         <source>%1 = %2</source>
         <translation>%1 = %2</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="682"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="696"/>
         <source>Based On = %1</source>
         <translation>Basé Sur = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="718"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="732"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="719"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="733"/>
         <source>Bank MSB</source>
         <translation>Banque MSB</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="720"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="734"/>
         <source>Bank LSB</source>
         <translation>Banque LSB</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="721"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="735"/>
         <source>Patch</source>
         <translation>Patch</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="722"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="736"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>
