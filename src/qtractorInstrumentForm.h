@@ -72,12 +72,14 @@ protected slots:
 
 protected:
 
-    void listInstrumentData(QTreeWidgetItem *pParentItem,
+	void reloadFiles(const QStringList& files);
+
+	void listInstrumentData(QTreeWidgetItem *pParentItem,
 		const qtractorInstrumentData& data);
-    void listInstrumentDataList(QTreeWidgetItem *pParentItem,
+	void listInstrumentDataList(QTreeWidgetItem *pParentItem,
 		const qtractorInstrumentDataList& list, const QIcon& icon);
 
-    QString bankSelMethod(int iBankSelMethod);
+	QString bankSelMethod(int iBankSelMethod) const;
 
 private:
 
@@ -88,6 +90,8 @@ private:
 	qtractorInstrumentList *m_pInstruments;
 
 	// Instance variables...
+	QStringList m_files;
+
 	int m_iDirtyCount;
 };
 

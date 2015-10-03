@@ -287,7 +287,7 @@ public:
 
 	void removeFile(const QString& sFilename)
 	{
-		int iFile = m_files.indexOf(sFilename);
+		const int iFile = m_files.indexOf(sFilename);
 		if (iFile >= 0)
 			m_files.removeAt(iFile);
 	}
