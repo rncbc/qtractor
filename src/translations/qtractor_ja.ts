@@ -245,22 +245,22 @@ Offset / Length:	%3 / %4</source>
         <translation>Auxセンド擬似プラグイン.</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="408"/>
+        <location filename="../qtractorInstrument.cpp" line="413"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Cakewalkのインストルメント定義ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="418"/>
+        <location filename="../qtractorInstrument.cpp" line="423"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="420"/>
+        <location filename="../qtractorInstrument.cpp" line="425"/>
         <source>Date</source>
         <translation>日付</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="642"/>
+        <location filename="../qtractorInstrument.cpp" line="647"/>
         <source>%1 Bank %2</source>
         <translation>%1 バンク %2</translation>
     </message>

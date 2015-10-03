@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +28,8 @@
 #include <QDate>
 
 #include <QDomDocument>
+
+#include <QApplication>
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -377,6 +379,9 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 			default:
 				break;
 		}
+
+		// Give it some slack esp.re. socket notifiers...
+		QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
 
 	// Ok. We've read it all.

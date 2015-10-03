@@ -246,22 +246,22 @@ Versatz / Länge:	%3 / %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="408"/>
+        <location filename="../qtractorInstrument.cpp" line="413"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="418"/>
+        <location filename="../qtractorInstrument.cpp" line="423"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="420"/>
+        <location filename="../qtractorInstrument.cpp" line="425"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="642"/>
+        <location filename="../qtractorInstrument.cpp" line="647"/>
         <source>%1 Bank %2</source>
         <translation type="unfinished"></translation>
     </message>
