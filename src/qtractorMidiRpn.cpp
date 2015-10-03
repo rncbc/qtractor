@@ -116,7 +116,7 @@ public:
 	void clear()
 	{
 		m_time = 0;
-	//	m_port = 0;
+		m_port = 0;
 		m_status = 0;
 		m_param.clear();
 		m_value.clear();
@@ -342,6 +342,7 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
+				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::RPN | channel);
 				++m_count;
 			}
@@ -356,6 +357,7 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
+				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::RPN | channel);
 				++m_count;
 			}
@@ -370,6 +372,7 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
+				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::NRPN | channel);
 				++m_count;
 			}
@@ -384,6 +387,7 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
+				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::NRPN | channel);
 				++m_count;
 			}
@@ -432,6 +436,7 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
+				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::CC14 | channel);
 				++m_count;
 			}
@@ -451,6 +456,7 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
+				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::CC14 | channel);
 				++m_count;
 			}
@@ -467,11 +473,7 @@ public:
 protected:
 
 	xrpn_item& get_item ( int port, unsigned short channel )
-	{
-		xrpn_item& item = m_cache[(port << 4) | channel];
-		item.set_port(port);
-		return item;
-	}
+		{ return m_cache[(port << 4) | channel]; }
 
 	void enqueue ( xrpn_item& item )
 	{
