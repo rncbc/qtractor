@@ -9,12 +9,12 @@
         <translation>Pulso</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="420"/>
+        <location filename="../qtractorInstrument.cpp" line="425"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="418"/>
+        <location filename="../qtractorInstrument.cpp" line="423"/>
         <source>File</source>
         <translation>Arquivo</translation>
     </message>
@@ -407,7 +407,7 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="642"/>
+        <location filename="../qtractorInstrument.cpp" line="647"/>
         <source>%1 Bank %2</source>
         <translation>%1 Banco %2</translation>
     </message>
@@ -620,7 +620,7 @@ Deslocamento / Tamanho:	%3 / %4</translation>
         <translation>ferramentas para sequências %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="408"/>
+        <location filename="../qtractorInstrument.cpp" line="413"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Arquivo de definições de Instrumento Cakewalk</translation>
     </message>

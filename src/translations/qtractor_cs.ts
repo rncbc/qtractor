@@ -117,22 +117,22 @@ Posun/Délka:	%3 / %4</translation>
         <translation>Vyvážení sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="408"/>
+        <location filename="../qtractorInstrument.cpp" line="413"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Soubor s Cakewalk definicí nástroje</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="418"/>
+        <location filename="../qtractorInstrument.cpp" line="423"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="420"/>
+        <location filename="../qtractorInstrument.cpp" line="425"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="642"/>
+        <location filename="../qtractorInstrument.cpp" line="647"/>
         <source>%1 Bank %2</source>
         <translation>%1 Banka %2</translation>
     </message>
