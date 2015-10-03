@@ -1,7 +1,7 @@
 // qtractorMessages.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -140,15 +140,28 @@ void qtractorMessages::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 }
 
 
+// Set stdout/stderr blocking mode.
+bool qtractorMessages::stdoutBlock ( int fd, bool bBlock ) const
+{
+#if !defined(WIN32)
+	const int iFlags = ::fcntl(fd, F_GETFL, 0);
+	const bool bNonBlock = bool(iFlags & O_NONBLOCK);
+	if (bBlock && bNonBlock)
+		bBlock = (::fcntl(fd, F_SETFL, iFlags & ~O_NONBLOCK) == 0);
+	else
+	if (!bBlock && !bNonBlock)
+		bBlock = (::fcntl(fd, F_SETFL, iFlags |  O_NONBLOCK) != 0);
+#endif
+	return bBlock;
+}
+
+
 // Own stdout/stderr socket notifier slot.
 void qtractorMessages::stdoutNotify ( int fd )
 {
 #if !defined(WIN32)
 	// Set non-blocking reads, if not already...
-	const int iFlags = ::fcntl(fd, F_GETFL, 0);
-	int iBlock = ((iFlags & O_NONBLOCK) == 0);
-	if (iBlock)
-		iBlock = ::fcntl(fd, F_SETFL, iFlags | O_NONBLOCK);
+	const bool bBlock = stdoutBlock(fd, false);
 	// Read as much as is available...
 	QString sTemp;
 	char achBuffer[1024];
@@ -157,7 +170,7 @@ void qtractorMessages::stdoutNotify ( int fd )
 	while (cchRead > 0) {
 		achBuffer[cchRead] = (char) 0;
 		sTemp.append(achBuffer);
-		cchRead = (iBlock ? 0 : ::read(fd, achBuffer, cchBuffer));
+		cchRead = (bBlock ? 0 : ::read(fd, achBuffer, cchBuffer));
 	}
 	// Needs to be non-empty...
 	if (!sTemp.isEmpty())
@@ -223,6 +236,7 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 	if (bCapture && m_pStdoutNotifier == NULL && ::pipe(m_fdStdout) == 0) {
 		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDOUT_FILENO);
 		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDERR_FILENO);
+		stdoutBlock(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], false);
 		m_pStdoutNotifier = new QSocketNotifier(
 			m_fdStdout[QTRACTOR_MESSAGES_FDREAD], QSocketNotifier::Read, this);
 		QObject::connect(m_pStdoutNotifier,

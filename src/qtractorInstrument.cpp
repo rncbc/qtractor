@@ -29,8 +29,6 @@
 
 #include <QDomDocument>
 
-#include <QApplication>
-
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -379,9 +377,6 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 			default:
 				break;
 		}
-
-		// Give it some slack esp.re. socket notifiers...
-		QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
 
 	// Ok. We've read it all.

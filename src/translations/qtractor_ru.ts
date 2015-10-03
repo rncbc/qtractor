@@ -115,22 +115,22 @@ Offset / Length:	%3 / %4</source>
         <translation>панорама шины</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="413"/>
+        <location filename="../qtractorInstrument.cpp" line="408"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Файл определений инструментов Cakewalk</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="423"/>
+        <location filename="../qtractorInstrument.cpp" line="418"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="425"/>
+        <location filename="../qtractorInstrument.cpp" line="420"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="647"/>
+        <location filename="../qtractorInstrument.cpp" line="642"/>
         <source>%1 Bank %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5820,12 +5820,12 @@ Saving into another session file is highly recommended.</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="270"/>
+        <location filename="../qtractorMessages.cpp" line="284"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Ведение журнала остановлено --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="280"/>
+        <location filename="../qtractorMessages.cpp" line="294"/>
         <source>Logging started --- %1 ---</source>
         <translation>Ведение журнала начато --- %1 ---</translation>
     </message>

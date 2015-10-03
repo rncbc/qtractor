@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -253,7 +253,7 @@ void qtractorInstrumentForm::importSlot (void)
 				pItem->setText(1, sPath);
 				m_ui.FilesListView->setCurrentItem(pItem);
 				pOptions->sInstrumentDir = info.absolutePath();
-			//	++m_iDirtyCount;
+				++m_iDirtyCount;
 			}
 		}
 	}

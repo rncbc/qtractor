@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Messages standard output capture has been improved again, now
+  in both ways a non-blocking pipe may get. (EXPERIMENTAL)
+
 - Fixed port on MIDI 14-bit controllers input caching.
 
 - Fixed false value readings on the MIDI clip editor (aka. piano
