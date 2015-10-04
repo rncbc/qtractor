@@ -3909,6 +3909,9 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 	if (pAlsaSeq == NULL)
 		return;
 
+	if ((busMode() & qtractorBus::Output) == 0)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::shutOff(%d)", this, int(bClose));
 #endif
