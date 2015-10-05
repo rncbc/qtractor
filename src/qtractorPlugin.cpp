@@ -917,8 +917,8 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 	m_pForm->raise();
 	m_pForm->activateWindow();
 
-	if (bCreate && m_posForm.x() >= 0 && m_posForm.y() >= 0)
-		m_pForm->move(m_posForm);
+	if (bCreate)
+		moveWidgetPos(m_pForm, m_posForm);
 }
 
 
@@ -967,6 +967,31 @@ void qtractorPlugin::freezeFormPos (void)
 {
 	if (m_pForm && m_pForm->isVisible())
 		m_posForm = m_pForm->pos();
+}
+
+
+// Move widget to alleged parent center or else...
+void qtractorPlugin::moveWidgetPos (
+	QWidget *pWidget, const QPoint& wpos ) const
+{
+	QPoint pos(wpos);
+
+	if (pos.isNull() || pos.x() < 0 || pos.y() < 0) {
+		QWidget *pParent = pWidget->parentWidget();
+		if (pParent == NULL)
+			pParent = qtractorMainForm::getInstance();
+		if (pParent && pParent->isVisible()) {
+			const QSize& delta = pParent->size() - pWidget->size();
+			if (delta.isValid()) {
+				pos = pParent->pos() + QPoint(
+					delta.width()  >> 1,
+					delta.height() >> 1);
+			}
+		}
+	}
+
+	if (!pos.isNull() && pos.x() >= 0 && pos.y() >= 0)
+		pWidget->move(pos);
 }
 
 

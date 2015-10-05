@@ -552,6 +552,9 @@ public:
 	const QPoint& editorPos() const
 		{ return m_posEditor; }
 
+	// Move widget to alleged parent center or else...
+	void moveWidgetPos(QWidget *pWidget, const QPoint& wpos) const;
+
 	// An accessible list of observers.
 	const QList<qtractorPluginListItem *>& items() const
 		{ return m_items; }
