@@ -1054,10 +1054,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 	// Is it already there?
 	if (m_pEditorWidget) {
 		if (!m_pEditorWidget->isVisible()) {
-			const QPoint& posEditor = editorPos();
-			if (!posEditor.isNull()
-				&& posEditor.x() >= 0 && posEditor.y() >= 0)
-				m_pEditorWidget->move(posEditor);
+			moveWidgetPos(m_pEditorWidget, editorPos());
 			m_pEditorWidget->show();
 		}
 		m_pEditorWidget->raise();
@@ -1135,13 +1132,10 @@ void qtractorVstPlugin::idleEditor (void)
 void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 {
 	if (m_pEditorWidget) {
-		if (bVisible) {
-			const QPoint& posEditor = editorPos();
-			if (!posEditor.isNull()
-				&& posEditor.x() >= 0 && posEditor.y() >= 0)
-				m_pEditorWidget->move(posEditor);
-		}
-		else setEditorPos(m_pEditorWidget->pos());
+		if (bVisible)
+			moveWidgetPos(m_pEditorWidget, editorPos());
+		else
+			setEditorPos(m_pEditorWidget->pos());
 		m_pEditorWidget->setVisible(bVisible);
 	}
 }

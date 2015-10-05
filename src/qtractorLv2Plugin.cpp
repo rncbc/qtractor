@@ -3231,11 +3231,8 @@ void qtractorLv2Plugin::loadEditorPos (void)
 
 	const QPoint& posEditor = editorPos();
 
-	if (posEditor.isNull() || posEditor.x() < 0 || posEditor.y() < 0)
-		return;
-
 	if (m_pQtWidget)
-		m_pQtWidget->move(posEditor);
+		moveWidgetPos(m_pQtWidget, posEditor);
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_SHOW
