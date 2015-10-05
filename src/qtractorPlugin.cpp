@@ -917,7 +917,8 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 	m_pForm->raise();
 	m_pForm->activateWindow();
 
-	if (bCreate && m_posForm.x() >= 0 && m_posForm.y() >= 0)
+	if (bCreate && !m_posForm.isNull()
+		&& m_posForm.x() >= 0 && m_posForm.y() >= 0)
 		m_pForm->move(m_posForm);
 }
 
