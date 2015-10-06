@@ -1308,8 +1308,9 @@ void qtractorTrackForm::progChanged (void)
 					m_iOldBankSelMethod, m_iOldBank, m_iOldProg, m_pTrack);
 			}
 			// Save current channel patch...
-			const qtractorMidiBus::Patch& patch = m_pMidiBus->patch(iChannel);
-			if (!patch.instrumentName.isEmpty()) {
+			const qtractorMidiBus::Patch& patch
+				= m_pMidiBus->patch(iChannel);
+			if (patch.isValid()) {
 				m_pOldMidiBus = m_pMidiBus;
 				m_iOldChannel = iChannel;
 				m_sOldInstrumentName = patch.instrumentName;

@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed an ages old MIDI track/channel instrument mapp (bank,
+  program) issue that prevented normal all-shut-up messages
+  from being sent to MIDI output buses/ports on playback stop.
+  (EXPERIMENTAL)
+
 - Messages standard output capture has been improved again, now
   in both ways a non-blocking pipe may get. (EXPERIMENTAL)
 
