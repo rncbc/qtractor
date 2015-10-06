@@ -124,6 +124,9 @@ public:
 	void resetAllControllers(bool bForceImmediate);
 	bool isResetAllControllers() const;
 
+	// Shut-off all MIDI buses (stop)...
+	void shutOffAllBuses(bool bClose = false) const;
+
 	// Shut-off all MIDI tracks (panic)...
 	void shutOffAllTracks() const;
 
