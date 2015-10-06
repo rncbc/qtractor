@@ -1861,6 +1861,8 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			return;
 	}
 #endif
+	const int iAlsaPort = pMidiBus->alsaPort();
+
 	// Scheduled delivery: take into account
 	// the time playback/queue started...
 	const unsigned long tick
@@ -1868,8 +1870,8 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 
 #ifdef CONFIG_DEBUG_0
 	// - show event for debug purposes...
-	fprintf(stderr, "MIDI Out %06lu 0x%02x", tick,
-		(int) pEvent->type() | pTrack->midiChannel());
+	fprintf(stderr, "MIDI Out %d: %06lu 0x%02x", iAlsaPort,
+		tick, int(pEvent->type() | pTrack->midiChannel()));
 	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
 		fprintf(stderr, " sysex {");
 		unsigned char *data = (unsigned char *) pEvent->sysex();
@@ -1891,7 +1893,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	ev.tag = (unsigned char) (pTrack->midiTag() & 0xff);
 
 	// Addressing...
-	snd_seq_ev_set_source(&ev, pMidiBus->alsaPort());
+	snd_seq_ev_set_source(&ev, iAlsaPort);
 	snd_seq_ev_set_subs(&ev);
 
 	// Scheduled delivery...
@@ -3966,17 +3968,16 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		iBankSelMethod, iBank, iProg);
 #endif
 
+	// Update patch mapping...
+	Patch& patch = m_patches[iChannel & 0x0f];
+	patch.instrumentName = sInstrumentName;
+	patch.bankSelMethod  = iBankSelMethod;
+	patch.bank = iBank;
+	patch.prog = iProg;
+
 	// Sanity check.
-	if (sInstrumentName.isEmpty())
+	if (!patch.isValid())
 		m_patches.remove(iChannel & 0x0f);
-	else {
-		// Update patch mapping...
-		Patch& patch = m_patches[iChannel & 0x0f];
-		patch.instrumentName = sInstrumentName;
-		patch.bankSelMethod  = iBankSelMethod;
-		patch.bank = iBank;
-		patch.prog = iProg;
-	}
 
 	// Don't do anything else if engine
 	// has not been activated...
@@ -4953,7 +4954,7 @@ bool qtractorMidiBus::loadMidiMap (
 					patch.prog = ePatch.text().toInt();
 			}
 			// Rollback if instrument-patch is invalid...
-			if (patch.instrumentName.isEmpty())
+			if (!patch.isValid())
 				m_patches.remove(iChannel & 0x0f);
 		}
 	}
@@ -4972,6 +4973,8 @@ bool qtractorMidiBus::saveMidiMap (
 		= m_patches.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		const Patch& patch = iter.value();
+		if (!patch.isValid())
+			continue;
 		QDomElement ePatch = pDocument->document()->createElement("midi-patch");
 		ePatch.setAttribute("channel", QString::number(iter.key()));
 		if (!patch.instrumentName.isEmpty()) {
