@@ -1474,6 +1474,23 @@ bool qtractorMidiEngine::isResetAllControllers (void) const
 }
 
 
+// Shut-off all MIDI buses (stop)...
+void qtractorMidiEngine::shutOffAllBuses ( bool bClose ) const
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiEngine::shutOffAllBuses(%d)", int(bClose));
+#endif
+
+	for (qtractorBus *pBus = qtractorEngine::buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus)
+			pMidiBus->shutOff(bClose);
+	}
+}
+
+
 // Shut-off all MIDI tracks (panic)...
 void qtractorMidiEngine::shutOffAllTracks (void) const
 {
@@ -2323,13 +2340,7 @@ void qtractorMidiEngine::stop (void)
 	snd_seq_drain_output(m_pAlsaSeq);
 
 	// Shut-off all MIDI buses...
-	for (qtractorBus *pBus = qtractorEngine::buses().first();
-			pBus; pBus = pBus->next()) {
-		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pBus);
-		if (pMidiBus)
-			pMidiBus->shutOff();
-	}
+	shutOffAllBuses();
 }
 
 

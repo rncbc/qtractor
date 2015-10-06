@@ -30,16 +30,16 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2416"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3882"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4441"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3893"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4452"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2425"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3891"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4441"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3902"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4452"/>
         <source>%1 Out</source>
         <translation>%1 出力</translation>
     </message>
@@ -547,8 +547,8 @@ MIDI:	</translation>
         <translation>%1 ソロ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="3884"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3893"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3895"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3904"/>
         <location filename="../qtractorTrack.cpp" line="666"/>
         <source>%1 Volume</source>
         <translation>%1 ボリューム</translation>
@@ -563,8 +563,8 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2420"/>
         <location filename="../qtractorAudioEngine.cpp" line="2429"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3886"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3895"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3897"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3906"/>
         <location filename="../qtractorTrack.cpp" line="672"/>
         <source>%1 Pan</source>
         <translation>%1 パニング</translation>
