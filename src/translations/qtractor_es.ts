@@ -283,7 +283,7 @@ Offset / Duración:	%3 / %4</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1772"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1775"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
@@ -293,7 +293,7 @@ Offset / Duración:	%3 / %4</translation>
         <translation>Derechos de copia: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1764"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1767"/>
         <source>Project: </source>
         <translation>Proyecto: </translation>
     </message>
