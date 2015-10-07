@@ -716,7 +716,9 @@ static char *qtractor_lv2_state_make_path (
 #define LV2_BUF_SIZE__nominalBlockLength LV2_BUF_SIZE_PREFIX "nominalBlockLength"
 #endif
 
-static const LV2_Feature g_lv2_buf_size_feature =
+static const LV2_Feature g_lv2_buf_size_fixed_feature =
+	{ LV2_BUF_SIZE__fixedBlockLength, NULL };
+static const LV2_Feature g_lv2_buf_size_bounded_feature =
 	{ LV2_BUF_SIZE__boundedBlockLength, NULL };
 
 #endif	// CONFIG_LV2_BUF_SIZE
@@ -733,7 +735,8 @@ static const LV2_Feature *g_lv2_features[] =
 	&g_lv2_state_feature,
 #endif
 #ifdef CONFIG_LV2_BUF_SIZE
-	&g_lv2_buf_size_feature,
+	&g_lv2_buf_size_fixed_feature,
+	&g_lv2_buf_size_bounded_feature,
 #endif
 	NULL
 };
@@ -1847,7 +1850,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_ui_events(NULL)
 		, m_plugin_events(NULL)
 	#endif
-
 		, m_pQtFilter(NULL)
 		, m_pQtWidget(NULL)
 		, m_bQtDelete(false)

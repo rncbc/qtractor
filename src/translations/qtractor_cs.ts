@@ -696,13 +696,13 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1764"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1767"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1772"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1775"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
