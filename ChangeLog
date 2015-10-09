@@ -4,15 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.7.1  2015-10-09  Meson Dope Beta
 
-- Fixed an ages old MIDI track/channel instrument mapp (bank,
-  program) issue that prevented normal all-shut-up messages
-  from being sent to MIDI output buses/ports on playback stop.
-  (EXPERIMENTAL)
+- Fixed an ages old MIDI track/channel instrument mapping (bank,
+  program) issue that prevented normal all-shut-up messages from
+  being sent to MIDI output buses/ports on playback stop.
 
 - Messages standard output capture has been improved again, now
-  in both ways a non-blocking pipe may get. (EXPERIMENTAL)
+  in both ways a non-blocking pipe may get.
 
 - Fixed port on MIDI 14-bit controllers input caching.
 
@@ -27,13 +26,12 @@ GIT HEAD
   is loaded from command line.
 
 - LV2 plug-in UI GTK2 and X11 in Qt5 host native support added.
-  (EXPERIMENTAL)
 
-- Transport/Auto Backward feature now honoring (auto returning)
-  to same current location precedence as Transport/Backward.
+- Transport/Auto Backward feature now honoring (auto return) to
+  same current location precedence as Transport/Backward.
 
 - Single/unique application instance control adapted to Qt5/X11
-  (cf. configure --enable-xunique). (EXPERIMENTAL)
+  (cf. configure --enable-xunique).
 
 - MIDI Tools/Transpose, Resize duration display format (frames,
   time or BBT) have been fixed.
@@ -42,7 +40,7 @@ GIT HEAD
 
 - MIDI Tools/Quantize et al. are tentatively being corrected
   to take event times as relative to THE beginning of session,
-  instead of MIDI clip start location. (EXPERIMENTAL)
+  instead of MIDI clip start location.
 
 
 0.7.0  2015-07-24  Muon Base Beta
