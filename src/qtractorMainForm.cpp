@@ -5285,6 +5285,10 @@ void qtractorMainForm::transportFollow (void)
 	qDebug("qtractorMainForm::transportFollow()");
 #endif
 
+	// Can't hold on anymore...
+	if (m_pTracks)
+		m_pTracks->trackView()->setSyncViewHoldOn(false);
+
 	// Toggle follow-playhead...
 	stabilizeForm();
 }

@@ -1,3 +1,9 @@
+qtractor (0.7.1-19) unstable; urgency=low
+
+  * New release: meson dope beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri,  9 Oct 2015 20:00:00 +0100
+
 qtractor (0.7.0-18) unstable; urgency=low
 
   * New release: muon base beta
