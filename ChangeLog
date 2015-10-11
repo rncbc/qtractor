@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a potential crash-bug on first enabling either once the
+  audio or MIDI metronomes.
+
+
 0.7.1  2015-10-09  Meson Dope Beta
 
 - Fixed an ages old MIDI track/channel instrument mapping (bank,
