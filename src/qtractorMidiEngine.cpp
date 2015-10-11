@@ -3205,7 +3205,7 @@ void qtractorMidiEngine::processMetro (
 			// Pump it into the queue.
 			snd_seq_event_output(m_pAlsaSeq, &ev);
 			// MIDI track monitoring...
-			if (m_pMetroBus->midiMonitor_out()) {
+			if (m_pMetroBus && m_pMetroBus->midiMonitor_out()) {
 				m_pMetroBus->midiMonitor_out()->enqueue(
 					qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
 			}
