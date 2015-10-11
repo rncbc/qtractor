@@ -554,9 +554,12 @@ if test "x$ac_sse" = "xyes"; then
          #error SSE optimization disabled.
          #endif
          int main() {
-             unsigned int a, b, c, d;
-             __asm__ __volatile__
-             ("cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (1));
+            unsigned int a, b, c, d;
+            __asm__ __volatile__ (
+              "movl %%ebx, %%esi\n\t" \
+              "cpuid\n\t" \
+              "xchgl %%ebx, %%esi" \
+              : "=a" (a), "=S" (b), "=c" (c), "=d" (d) : "0" (1));
             return ((d & (1 << 25)) ? 0 : 1);
          }
       ], ac_cv_sse="yes", ac_cv_sse="no")
