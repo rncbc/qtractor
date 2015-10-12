@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Prefer Qt5 over Qt4 by default with configure script.
+
 - Fixed a potential crash-bug on first enabling either once the
   audio or MIDI metronomes.
 
