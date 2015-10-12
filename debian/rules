@@ -8,7 +8,7 @@ APPNAME := qtractor
 #export DH_COMPAT=4
 
 # Set Qt5 environment for qtchooser.
-#export QT_SELECT=5
+export QT_SELECT=5
 
 CFLAGS = -g
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.1.1, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.1.2, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -41,14 +41,14 @@ AC_SUBST(ac_debug)
 
 # Enable Qt4/5 availability.
 AC_ARG_ENABLE(qt4,
-  AC_HELP_STRING([--enable-qt4], [enable Qt4 build (default=yes)]),
+  AC_HELP_STRING([--enable-qt4], [enable Qt4 build (default=no)]),
   [ac_qt4="$enableval"],
-  [ac_qt4="yes"])
+  [ac_qt4="no"])
 
 AC_ARG_ENABLE(qt5,
-  AC_HELP_STRING([--enable-qt5], [enable Qt5 build (default=no)]),
+  AC_HELP_STRING([--enable-qt5], [enable Qt5 build (default=yes)]),
   [ac_qt5="$enableval"],
-  [ac_qt5="no"])
+  [ac_qt5="yes"])
 
 
 # Enable libvorbis(file) availability.
@@ -283,11 +283,11 @@ if test "x$ac_qt5_path" != "xno"; then
    ac_qt5="yes"
 fi
 
-if test "x$ac_qt4" = "xno"; then
-   ac_qt5="yes"
+if test "x$ac_qt5" = "xno"; then
+   ac_qt4="yes"
 fi
-if test "x$ac_qt5" = "xyes"; then
-   ac_qt4="no"
+if test "x$ac_qt4" = "xyes"; then
+   ac_qt5="no"
 fi
 
 # Set for alternate JACK installation dir.
