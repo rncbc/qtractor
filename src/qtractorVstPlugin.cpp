@@ -899,8 +899,7 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 
 	// HACK: We don't change program-preset when
 	// we're supposed to be multi-timbral...
-	if ((list()->flags() & qtractorPluginList::MidiBus)
-		== qtractorPluginList::MidiBus)
+	if (list()->isMidiBus())
 		return;
 
 #ifdef CONFIG_DEBUG

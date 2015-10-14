@@ -145,7 +145,7 @@
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1437"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1436"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -525,7 +525,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1440"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1439"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>

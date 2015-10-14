@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.1.2, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.1.4, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -473,7 +473,7 @@ fi
 if test "x$ac_qt4" = "xyes"; then
    AC_CACHE_CHECK([for Qt library version >= 4.4],
       ac_cv_qtversion, [
-      AC_TRY_LINK([#include "QtCore/qglobal.h"], [
+      AC_TRY_COMPILE([#include "QtCore/qglobal.h"], [
          #if QT_VERSION < 0x040400 || QT_VERSION >= 0x050000
          #error Qt library 4.4 or greater required.
          #endif
@@ -487,7 +487,7 @@ fi
 if test "x$ac_qt5" = "xyes"; then
    AC_CACHE_CHECK([for Qt library version >= 5.1],
       ac_cv_qtversion, [
-      AC_TRY_LINK([#include "QtCore/qglobal.h"], [
+      AC_TRY_COMPILE([#include "QtCore/qglobal.h"], [
          #if QT_VERSION < 0x050100 || QT_VERSION >= 0x060000
          #error Qt library 5.1 or greater required.
          #endif

@@ -850,8 +850,9 @@ public:
 	unsigned int bufferSize() const { return m_iBufferSize; }
 	unsigned int flags()      const { return m_iFlags; }
 
-	// Brainless helper.
-	bool isMidi() const { return (m_iFlags & Midi); }	
+	// Brainless helpers.
+	bool isMidi()    const { return (m_iFlags & Midi); }
+	bool isMidiBus() const { return (m_iFlags & MidiBus) == MidiBus; }
 
 	// Specific automation curve list accessor.
 	qtractorCurveList *curveList() const
