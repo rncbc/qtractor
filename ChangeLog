@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Make sure program change/presets are not selected on possibly
+  multi-timbral instrument plugins when inserted on a MIDI bus.
+
 - Prefer Qt5 over Qt4 by default with configure script.
 
 - Fixed a potential crash-bug on first enabling either once the

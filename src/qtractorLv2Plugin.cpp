@@ -3788,6 +3788,11 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 	if (iBank < 0 || iProg < 0)
 		return;
 
+	// HACK: We don't change program-preset when
+	// we're supposed to be multi-timbral...
+	if (list()->isMidiBus())
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2Plugin[%p]::selectProgram(%d, %d)", this, iBank, iProg);
 #endif
