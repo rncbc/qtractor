@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 5), automake, pkg-config, qtbase5-dev (>= 5.1),
   libjack-dev, libasound2-dev, libsndfile-dev, ladspa-sdk, libvorbis-dev,
   libsamplerate-dev, libmad0-dev, librubberband-dev, dssi-dev, liblo0-dev,
   libz-dev, libx11-dev, x11proto-core-dev, liblilv-dev, libsratom-dev,
-  libsord-dev, libserd-dev, libsuil-dev, lv2-dev,
+  libsord-dev, libserd-dev, libsuil-dev, lv2-dev, zlib1g-dev,
   libx11-dev, x11proto-core-dev, libqt5x11extras5-dev (>= 5.1)
 Standards-Version: 3.7.2
 
