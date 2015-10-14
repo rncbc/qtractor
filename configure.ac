@@ -1288,7 +1288,7 @@ fi
 if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
    ac_old_libs=$LIBS
    LIBS=$ac_libs
-   AC_CACHE_CHECK([for LV2 UI GTK2 embed support (libsuil_gtk2_in_qt5)],
+   AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
       ac_cv_suil_gtk2_in_qt5, [
       AC_TRY_RUN([
          #include <suil/suil.h>
@@ -1314,7 +1314,7 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
    else
       AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
-      ac_lv2_ui_gtk2 = "no"
+      ac_lv2_ui_gtk2="no"
    fi
 fi
 
