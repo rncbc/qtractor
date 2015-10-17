@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Added new Track/Duplicate menu command. (EXPERIMENTAL)
+
 - Added simple XRUN red indicator to status bar.
 
 - Make sure program change/presets are not selected on possibly

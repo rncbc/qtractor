@@ -773,6 +773,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackRemoveAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackRemove()));
+	QObject::connect(m_ui.trackDuplicateAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackDuplicate()));
 	QObject::connect(m_ui.trackPropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackProperties()));
@@ -3264,6 +3267,19 @@ void qtractorMainForm::trackRemove (void)
 	// Remove Track...
 	if (m_pTracks)
 		m_pTracks->removeTrack();
+}
+
+
+// Duplicate/copy track on session.
+void qtractorMainForm::trackDuplicate (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackDuplicate()");
+#endif
+
+	// Track Properties...
+	if (m_pTracks)
+		m_pTracks->copyTrack();
 }
 
 
@@ -6488,6 +6504,7 @@ void qtractorMainForm::updateTrackMenu (void)
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(
 		bEnabled && (!bRolling || !pTrack->isRecord()));
+	m_ui.trackDuplicateAction->setEnabled(bEnabled);
 	m_ui.trackPropertiesAction->setEnabled(
 		bEnabled && (!bRolling || !pTrack->isRecord()));
 	m_ui.trackInputsAction->setEnabled(

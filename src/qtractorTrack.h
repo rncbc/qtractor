@@ -310,6 +310,7 @@ public:
 	};
 
 	// Alternate properties accessor.
+	void setProperties(const Properties& props);
 	Properties& properties();
 
 	// Track type textual helper methods.

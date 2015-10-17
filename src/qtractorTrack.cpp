@@ -1206,6 +1206,12 @@ QColor qtractorTrack::trackColor ( int iTrack )
 
 
 // Alternate properties accessor.
+void qtractorTrack::setProperties ( const qtractorTrack::Properties& props )
+{
+	m_props = props;
+}
+
+
 qtractorTrack::Properties& qtractorTrack::properties (void)
 {
 	return m_props;
