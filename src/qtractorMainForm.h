@@ -486,9 +486,10 @@ private:
 		StatusMute    = 3,   // Current session muting state.
 		StatusSolo    = 4,   // Current session soloing state.
 		StatusLoop    = 5,   // Current session looping state.
-		StatusTime    = 6,   // Current session length time.
-		StatusRate    = 7,   // Current session sample rate.
-		StatusItems   = 8    // Number of status items.
+		StatusXrun    = 6,   // Current session XRUN count.
+		StatusTime    = 7,   // Current session length time.
+		StatusRate    = 8,   // Current session sample rate.
+		StatusItems   = 9    // Number of status items.
 	};
 
 	QLabel *m_statusItems[StatusItems];

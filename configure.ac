@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.1.4, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.1.5, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -9,14 +9,14 @@ AC_CONFIG_FILES(Makefile qtractor.spec src/src.pri src/qtractor.desktop)
 AC_PREFIX_DEFAULT(/usr/local)
 ac_prefix=$prefix
 if test "x$ac_prefix" = "xNONE"; then
-    ac_prefix=$ac_default_prefix
+   ac_prefix=$ac_default_prefix
 fi
 AC_SUBST(ac_prefix)
 AC_DEFINE_UNQUOTED(CONFIG_PREFIX, ["$ac_prefix"], [Default installation prefix.])
 
 # Set default library/plugin prefix.
 if test "x$exec_prefix" = "xNONE"; then
-    exec_prefix=$ac_prefix
+   exec_prefix=$ac_prefix
 fi
 eval ac_libdir=$libdir
 AC_SUBST(ac_libdir)

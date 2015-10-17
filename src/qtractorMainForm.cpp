@@ -623,6 +623,15 @@ qtractorMainForm::qtractorMainForm (
 	m_statusItems[StatusLoop] = pLabel;
 	pStatusBar->addPermanentWidget(pLabel);
 
+	// XRUN count.
+	pLabel = new QLabel("XRUN");
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setAutoFillBackground(true);
+	pLabel->setToolTip(tr("Session XRUN state"));
+	m_statusItems[StatusXrun] = pLabel;
+	pStatusBar->addPermanentWidget(pLabel);
+
 	// Session length time.
 	pLabel = new QLabel(sTime);
 	pLabel->setAlignment(Qt::AlignHCenter);
@@ -5882,6 +5891,11 @@ void qtractorMainForm::stabilizeForm (void)
 	else
 		m_statusItems[StatusLoop]->clear();
 
+	if (m_iXrunCount > 0)
+		m_statusItems[StatusXrun]->setText(tr("XRUN"));
+	else
+		m_statusItems[StatusXrun]->clear();
+
 	m_statusItems[StatusTime]->setText(
 		m_pSession->timeScale()->textFromFrame(0, true, iSessionEnd));
 
@@ -5896,6 +5910,9 @@ void qtractorMainForm::stabilizeForm (void)
 		m_pSession->soloTracks() > 0 ? PaletteCyan : PaletteNone]);
 	m_statusItems[StatusLoop]->setPalette(*m_paletteItems[
 		bLooping ? PaletteGreen : PaletteNone]);
+
+	m_statusItems[StatusXrun]->setPalette(*m_paletteItems[
+		m_iXrunCount > 0 ? PaletteRed : PaletteNone]);
 
 	// Transport stuff...
 	m_ui.transportBackwardAction->setEnabled(bBumped);
@@ -6002,6 +6019,11 @@ bool qtractorMainForm::checkRestartSession (void)
 		QApplication::restoreOverrideCursor();
 		// Restore previous playhead position...
 		m_pSession->setPlayHead(iPlayHead);
+	} else {
+		// Reset XRUN counters...
+		m_iXrunCount = 0;
+		m_iXrunSkip  = 0;
+		m_iXrunTimer = 0;
 	}
 
 	return true;
@@ -7163,6 +7185,8 @@ void qtractorMainForm::timerSlot (void)
 		appendMessagesColor(
 			tr("XRUN(%1): some frames might have been lost.")
 			.arg(m_iXrunCount), "#cc0033");
+		// Let the XRUN status item get an update...
+		stabilizeForm();
 	}
 
 	// Check if its time to refresh Audio connections...
