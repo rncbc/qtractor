@@ -304,6 +304,7 @@
     </widget>
     <addaction name="trackAddAction"/>
     <addaction name="trackRemoveAction"/>
+    <addaction name="trackDuplicateAction"/>
     <addaction name="separator"/>
     <addaction name="trackPropertiesAction"/>
     <addaction name="separator"/>
@@ -1098,6 +1099,20 @@
    </property>
    <property name="shortcut">
     <string>Shift+Del</string>
+   </property>
+  </action>
+  <action name="trackDuplicateAction">
+   <property name="text">
+    <string>&amp;Duplicate Track</string>
+   </property>
+   <property name="iconText">
+    <string>Duplicate Track</string>
+   </property>
+   <property name="toolTip">
+    <string>Duplicate track</string>
+   </property>
+   <property name="statusTip">
+    <string>Duplicate current track</string>
    </property>
   </action>
   <action name="trackPropertiesAction">

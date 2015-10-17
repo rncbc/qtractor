@@ -151,6 +151,7 @@ public slots:
 
 	void trackAdd();
 	void trackRemove();
+	void trackDuplicate();
 	void trackProperties();
 	void trackInputs();
 	void trackOutputs();

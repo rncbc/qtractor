@@ -25,17 +25,15 @@
 #include <QSplitter>
 
 // Forward declarations.
-class qtractorInstrumentList;
-class qtractorTrackItemWidget;
 class qtractorTrackList;
 class qtractorTrackTime;
 class qtractorTrackView;
 class qtractorTrack;
-class qtractorSession;
 class qtractorClip;
 class qtractorClipCommand;
 class qtractorClipRangeCommand;
 class qtractorClipToolCommand;
+
 class qtractorMidiToolsForm;
 
 
@@ -67,6 +65,7 @@ public:
 	bool addTrack();
 	bool removeTrack(qtractorTrack *pTrack = NULL);
 	bool editTrack(qtractorTrack *pTrack = NULL);
+	bool copyTrack(qtractorTrack *pTrack = NULL);
 
 	// Import Audio/MIDI files into new tracks...
 	bool addAudioTracks(QStringList files, unsigned long iClipStart = 0);
