@@ -64,8 +64,6 @@
 
 #include "qtractorFileList.h"
 
-#include "qtractorPlugin.h"
-
 #include <QVBoxLayout>
 #include <QProgressBar>
 #include <QMessageBox>
@@ -2590,19 +2588,7 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	pNewTrack->setTrackName(sNewTrackName);
 	pNewTrack->setBackground(color);
 	pNewTrack->setForeground(color.darker());
-
-	// Copy all former plugins...
-	qtractorPluginList *pPluginList = pTrack->pluginList();
-	qtractorPluginList *pNewPluginList = pNewTrack->pluginList();
-	if (pPluginList && pNewPluginList) {
-		for (qtractorPlugin *pPlugin = pPluginList->first();
-				pPlugin; pPlugin = pPlugin->next()) {
-			// Copy new plugin...
-			qtractorPlugin *pNewPlugin = pNewPluginList->copyPlugin(pPlugin);
-			if (pNewPlugin)
-				pNewPluginList->insertPlugin(pNewPlugin, NULL);
-		}
-	}
+	pNewTrack->setZoomHeight(pTrack->zoomHeight());
 
 	// Copy all former clips depending of track type...
 	for (qtractorClip *pClip = pTrack->clips().first();
@@ -2647,7 +2633,7 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 
 	// Put it in the form of an undoable command...
 	const bool bResult = pSession->execute(
-		new qtractorAddTrackCommand(pNewTrack, pTrack));
+		new qtractorCopyTrackCommand(pNewTrack, pTrack));
 
 	QApplication::restoreOverrideCursor();
 
