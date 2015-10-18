@@ -264,6 +264,7 @@ public:
 	qtractorCurveFile *curveFile() const;
 
 	// Track automation current curve accessor.
+	void setCurrentCurve(qtractorCurve *pCurrentCurve);
 	qtractorCurve *currentCurve() const;
 
 	// Track automation curve serialization methods.

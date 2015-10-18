@@ -375,6 +375,9 @@ public:
 	// Find track of specific curve-list.
 	qtractorTrack *findTrack(qtractorCurveList *pCurveList) const;
 
+	// Find track of specific name.
+	qtractorTrack *findTrack(const QString& sTrackName) const;
+
 	// Session files registry accessor.
 	qtractorFileList *files() const;
 

@@ -64,6 +64,8 @@
 
 #include "qtractorFileList.h"
 
+#include "qtractorPlugin.h"
+
 #include <QVBoxLayout>
 #include <QProgressBar>
 #include <QMessageBox>
@@ -2564,6 +2566,9 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	if (pTrack == NULL)
 		return false;
 
+	// Might take a while...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Duplicate into a new track...
 	const qtractorTrack::TrackType trackType = pTrack->trackType();
 	const int iTrack = pSession->tracks().count() + 1;
@@ -2571,19 +2576,33 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	qtractorTrack *pNewTrack = new qtractorTrack(pSession, trackType);
 	pNewTrack->setProperties(pTrack->properties());
 	// Find an incremental/next track name...
-	const QString& sTrackName = pTrack->trackName();
-	QString sNewTrackName = sTrackName;
+	QString sTrackName = pTrack->trackName();
+	QString sNewTrackName;
 	const QRegExp rxTrackNo("([0-9]+)$");
 	int iTrackNo = 0;
-	if (rxTrackNo.indexIn(sNewTrackName) >= 0) {
+	if (rxTrackNo.indexIn(sTrackName) >= 0) {
 		iTrackNo = rxTrackNo.cap(1).toInt();
-		sNewTrackName.remove(rxTrackNo);
+		sTrackName.remove(rxTrackNo);
 	}
-	sNewTrackName += ' ' + QString::number(++iTrackNo);
+	else sTrackName += ' ';
+	do { sNewTrackName = sTrackName + QString::number(++iTrackNo); }
+	while (pSession->findTrack(sNewTrackName));
 	pNewTrack->setTrackName(sNewTrackName);
-	pNewTrack->setMidiChannel(pSession->midiTag() % 16);
 	pNewTrack->setBackground(color);
 	pNewTrack->setForeground(color.darker());
+
+	// Copy all former plugins...
+	qtractorPluginList *pPluginList = pTrack->pluginList();
+	qtractorPluginList *pNewPluginList = pNewTrack->pluginList();
+	if (pPluginList && pNewPluginList) {
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			// Copy new plugin...
+			qtractorPlugin *pNewPlugin = pNewPluginList->copyPlugin(pPlugin);
+			if (pNewPlugin)
+				pNewPluginList->insertPlugin(pNewPlugin, NULL);
+		}
+	}
 
 	// Copy all former clips depending of track type...
 	for (qtractorClip *pClip = pTrack->clips().first();
@@ -2627,8 +2646,12 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	}
 
 	// Put it in the form of an undoable command...
-	return pSession->execute(
+	const bool bResult = pSession->execute(
 		new qtractorAddTrackCommand(pNewTrack, pTrack));
+
+	QApplication::restoreOverrideCursor();
+
+	return bResult;
 }
 
 

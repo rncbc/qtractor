@@ -2084,7 +2084,15 @@ qtractorCurveFile *qtractorTrack::curveFile (void) const
 }
 
 
-// Track automation current curve accessor.
+// Track automation current curve accessors.
+void qtractorTrack::setCurrentCurve ( qtractorCurve *pCurrentCurve )
+{
+	qtractorCurveList *pCurveList = curveList();
+	if (pCurveList)
+		pCurveList->setCurrentCurve(pCurrentCurve);
+}
+
+
 qtractorCurve *qtractorTrack::currentCurve (void) const
 {
 	qtractorCurveList *pCurveList = curveList();

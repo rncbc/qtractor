@@ -2030,7 +2030,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 #endif
 
 	// Filename is empty for insert pseudo-plugins.
-	QString sFilename = pType->filename();
+	const QString& sFilename = pType->filename();
 	qtractorPlugin *pNewPlugin = qtractorPluginFile::createPlugin(this,
 		sFilename, pType->index(), pType->typeHint());
 	if (pNewPlugin) {
