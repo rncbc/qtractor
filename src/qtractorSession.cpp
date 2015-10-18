@@ -1785,6 +1785,19 @@ qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) cons
 }
 
 
+// Find track of specific name.
+qtractorTrack *qtractorSession::findTrack ( const QString& sTrackName ) const
+{
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackName() == sTrackName)
+			return pTrack;
+	}
+
+	return NULL;
+}
+
+
 // Session files registry accessor.
 qtractorFileList *qtractorSession::files (void) const
 {
