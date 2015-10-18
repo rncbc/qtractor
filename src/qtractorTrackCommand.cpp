@@ -32,6 +32,8 @@
 #include "qtractorMidiClip.h"
 #include "qtractorMixer.h"
 
+#include "qtractorPlugin.h"
+
 
 //----------------------------------------------------------------------
 // class qtractorTrackCommand - implementation
@@ -217,6 +219,51 @@ bool qtractorRemoveTrackCommand::redo (void)
 bool qtractorRemoveTrackCommand::undo (void)
 {
 	return addTrack();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorCopyTrackCommand - implementation
+//
+
+// Constructor.
+qtractorCopyTrackCommand::qtractorCopyTrackCommand (
+	qtractorTrack *pTrack, qtractorTrack *pAfterTrack  )
+	: qtractorTrackCommand(QObject::tr("duplicate track"), pTrack),
+		m_pAfterTrack(pAfterTrack), m_iCopyCount(0)
+{
+}
+
+
+// Track insertion command methods.
+bool qtractorCopyTrackCommand::redo (void)
+{
+	const bool bResult = addTrack(m_pAfterTrack);
+
+	if (++m_iCopyCount > 1)
+		return bResult;
+
+	// Copy all former plugins...
+	qtractorTrack *pTrack = m_pAfterTrack;
+	qtractorTrack *pNewTrack = track();
+	qtractorPluginList *pPluginList = pTrack->pluginList();
+	qtractorPluginList *pNewPluginList = pNewTrack->pluginList();
+	if (pPluginList && pNewPluginList) {
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			// Copy new plugin...
+			qtractorPlugin *pNewPlugin = pNewPluginList->copyPlugin(pPlugin);
+			if (pNewPlugin)
+				pNewPluginList->insertPlugin(pNewPlugin, NULL);
+		}
+	}
+
+	return bResult;
+}
+
+bool qtractorCopyTrackCommand::undo (void)
+{
+	return removeTrack();
 }
 
 

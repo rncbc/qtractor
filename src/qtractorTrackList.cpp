@@ -534,7 +534,7 @@ qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 }
 
 
-// Retrive the given track row rectangular (in viewport coordinates).
+// Retrive the given track row rectangular (in contents coordinates).
 QRect qtractorTrackList::trackRect ( int iTrack ) const
 {
 	QRect rect;
@@ -549,7 +549,7 @@ QRect qtractorTrackList::trackRect ( int iTrack ) const
 			y1  = y2;
 			y2 += (iter.next()->track)->zoomHeight();
 			if (iTrack == 0) {
-				rect.setY(y1 - qtractorScrollView::contentsY());
+				rect.setY(y1);
 				rect.setHeight(y2 - y1);
 				break;
 			}
@@ -1226,7 +1226,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		int iTrack = trackRowAt(pos);
 		if (iTrack >= 0 && trackColumnAt(pos) == Number) {
 			m_posDrag  = pos;
-			QRect rect = trackRect(iTrack);
+			const QRect& rect = trackRect(iTrack);
 			if (pos.y() >= rect.top() && pos.y() < rect.top() + 4) {
 				if (--iTrack >= 0) {
 					if (m_iDragTrack < 0)
@@ -1340,6 +1340,9 @@ void qtractorTrackList::wheelEvent ( QWheelEvent *pWheelEvent )
 // Draw a dragging separator line.
 void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 {
+	const QPoint& pos
+		= qtractorScrollView::contentsToViewport(posDrag);
+
 	// Create the rubber-band if there's none...
 	if (m_pRubberBand == NULL) {
 		m_pRubberBand = new qtractorRubberBand(
@@ -1352,7 +1355,7 @@ void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 	
 	// Just move it
 	m_pRubberBand->setGeometry(
-		QRect(0, posDrag.y(), qtractorScrollView::viewport()->width(), 4));
+		QRect(0, pos.y(), qtractorScrollView::viewport()->width(), 4));
 
 	// Ah, and make it visible, of course...
 	if (!m_pRubberBand->isVisible())

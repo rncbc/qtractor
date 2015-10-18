@@ -114,6 +114,30 @@ public:
 
 
 //----------------------------------------------------------------------
+// class qtractorCopyTrackCommand - declaration.
+//
+
+class qtractorCopyTrackCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorCopyTrackCommand(qtractorTrack *pTrack,
+		qtractorTrack *pAfterTrack);
+
+	// Track-removal command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorTrack *m_pAfterTrack;
+	int m_iCopyCount;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorMoveTrackCommand - declaration.
 //
 
