@@ -135,8 +135,8 @@ public:
 protected:
 
 	// Clone an existing automation/curve.
-	qtractorCurve *cloneCurve(qtractorCurveList *pCurveList,
-		qtractorSubject *pSubject, qtractorCurve *pCurve ) const;
+	qtractorCurve *cloneCurve(qtractorCurveList *pNewCurveList,
+		qtractorSubject *pNewSubject, qtractorCurve *pCurve) const;
 
 private:
 

@@ -378,14 +378,13 @@ bool qtractorCopyTrackCommand::undo (void)
 }
 
 
-
 // Clone an existing automation/curve.
 qtractorCurve *qtractorCopyTrackCommand::cloneCurve (
-	qtractorCurveList *pCurveList, qtractorSubject *pSubject,
+	qtractorCurveList *pNewCurveList, qtractorSubject *pNewSubject,
 	qtractorCurve *pCurve ) const
 {
-	qtractorCurve *pNewCurve = new qtractorCurve(pCurveList,
-		pSubject, pCurve->mode(), pCurve->minFrameDist());
+	qtractorCurve *pNewCurve = new qtractorCurve(pNewCurveList,
+		pNewSubject, pCurve->mode(), pCurve->minFrameDist());
 
 	pNewCurve->setDefaultValue(pCurve->defaultValue());
 	pNewCurve->setLength(pCurve->length());
