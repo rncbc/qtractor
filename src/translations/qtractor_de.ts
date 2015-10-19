@@ -569,42 +569,42 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="194"/>
+        <location filename="../qtractorTrackCommand.cpp" line="196"/>
         <source>add track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="218"/>
+        <location filename="../qtractorTrackCommand.cpp" line="220"/>
         <source>remove track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="243"/>
+        <location filename="../qtractorTrackCommand.cpp" line="245"/>
         <source>duplicate track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="288"/>
+        <location filename="../qtractorTrackCommand.cpp" line="412"/>
         <source>move track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="366"/>
+        <location filename="../qtractorTrackCommand.cpp" line="490"/>
         <source>resize track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="401"/>
+        <location filename="../qtractorTrackCommand.cpp" line="525"/>
         <source>import track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="488"/>
+        <location filename="../qtractorTrackCommand.cpp" line="612"/>
         <source>track properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="535"/>
+        <location filename="../qtractorTrackCommand.cpp" line="659"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -613,32 +613,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="613"/>
+        <location filename="../qtractorTrackCommand.cpp" line="737"/>
         <source>track record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="616"/>
+        <location filename="../qtractorTrackCommand.cpp" line="740"/>
         <source>track mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="619"/>
+        <location filename="../qtractorTrackCommand.cpp" line="743"/>
         <source>track solo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="793"/>
+        <location filename="../qtractorTrackCommand.cpp" line="917"/>
         <source>track monitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="894"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1018"/>
         <source>track gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="983"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1107"/>
         <source>track pan</source>
         <translation type="unfinished"></translation>
     </message>
