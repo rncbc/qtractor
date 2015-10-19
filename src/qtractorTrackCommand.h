@@ -31,6 +31,10 @@
 // Forward declarations.
 class qtractorClipCommand;
 
+class qtractorCurveList;
+class qtractorCurve;
+class qtractorSubject;
+
 
 //----------------------------------------------------------------------
 // class qtractorTrackCommand - declaration.
@@ -42,13 +46,16 @@ public:
 
 	// Constructor.
 	qtractorTrackCommand(const QString& sName,
-		qtractorTrack *pTrack);
+		qtractorTrack *pTrack, qtractorTrack *pAfterTrack = NULL);
 
 	// Destructor.
 	virtual ~qtractorTrackCommand();
 
 	// Track accessor.
 	qtractorTrack *track() const { return m_pTrack; }
+
+	// After/previous track accessor.
+	qtractorTrack *afterTrack() const { return m_pAfterTrack; }
 
 protected:
 
@@ -63,13 +70,14 @@ protected:
 	};
 
 	// Track command methods.
-	bool addTrack(qtractorTrack *pAfterTrack = NULL);
+	bool addTrack();
 	bool removeTrack();
 
 private:
 
 	// Instance variables.
 	qtractorTrack *m_pTrack;
+	qtractorTrack *m_pAfterTrack;
 };
 
 
@@ -88,11 +96,6 @@ public:
 	// Track insertion command methods.
 	bool redo();
 	bool undo();
-
-private:
-
-	// Instance variables.
-	qtractorTrack *m_pAfterTrack;
 };
 
 
@@ -129,10 +132,15 @@ public:
 	bool redo();
 	bool undo();
 
+protected:
+
+	// Clone an existing automation/curve.
+	qtractorCurve *cloneCurve(qtractorCurveList *pNewCurveList,
+		qtractorSubject *pNewSubject, qtractorCurve *pCurve) const;
+
 private:
 
 	// Instance variables.
-	qtractorTrack *m_pAfterTrack;
 	int m_iCopyCount;
 };
 
