@@ -619,6 +619,27 @@ float qtractorCurve::scaleFromValue ( float fValue ) const
 }
 
 
+// Copy all events from another curve (raw-copy).
+void qtractorCurve::copyNodes ( qtractorCurve *pCurve )
+{
+	// Check whether we're the same...
+	if (pCurve == this)
+		return;
+
+	// Remove existing nodes.
+	m_nodes.clear();
+
+	// Clone new ones...
+	Node *pNode = pCurve->nodes().first();
+	for (; pNode; pNode = pNode->next())
+		m_nodes.append(new Node(pNode->frame, pNode->value));
+
+	// Done.
+	update();
+}
+
+
+
 // Convert MIDI sequence events to curve nodes.
 void qtractorCurve::readMidiSequence ( qtractorMidiSequence *pSeq,
 	qtractorMidiEvent::EventType ctype, unsigned short iChannel,

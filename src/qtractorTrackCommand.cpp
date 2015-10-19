@@ -33,6 +33,8 @@
 #include "qtractorMixer.h"
 
 #include "qtractorPlugin.h"
+#include "qtractorMonitor.h"
+#include "qtractorCurve.h"
 
 
 //----------------------------------------------------------------------
@@ -254,9 +256,19 @@ bool qtractorCopyTrackCommand::redo (void)
 	if (++m_iCopyCount > 1)
 		return bResult;
 
-	// Copy all former plugins...
+	// One-time copy...
 	qtractorTrack *pTrack = afterTrack();
 	qtractorTrack *pNewTrack = track();
+
+	// About to copy all automation/curves...
+	qtractorCurveList *pCurveList = pTrack->curveList();
+	qtractorCurveList *pNewCurveList = pNewTrack->curveList();
+
+	// About to find and set current automation/curve...
+	qtractorCurve *pCurve, *pCurrentCurve = pTrack->currentCurve();
+	qtractorCurve *pNewCurve, *pNewCurrentCurve = NULL;
+
+	// Copy all former plugins and respective automation/curves...
 	qtractorPluginList *pPluginList = pTrack->pluginList();
 	qtractorPluginList *pNewPluginList = pNewTrack->pluginList();
 	if (pPluginList && pNewPluginList) {
@@ -264,9 +276,97 @@ bool qtractorCopyTrackCommand::redo (void)
 				pPlugin; pPlugin = pPlugin->next()) {
 			// Copy new plugin...
 			qtractorPlugin *pNewPlugin = pNewPluginList->copyPlugin(pPlugin);
-			if (pNewPlugin)
-				pNewPluginList->insertPlugin(pNewPlugin, NULL);
+			if (pNewPlugin == NULL)
+				continue;
+			pNewPluginList->insertPlugin(pNewPlugin, NULL);
+			// Activation automation/curves...
+			if (pCurveList == NULL || pNewCurveList == NULL)
+				continue;
+			pCurve = pPlugin->activateSubject()->curve();
+			if (pCurve && pCurve->list() == pCurveList) {
+				pNewCurve = cloneCurve(pNewCurveList,
+					pNewPlugin->activateSubject(), pCurve);
+				if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+					pNewCurrentCurve = pNewCurve;
+			}
+			// Copy plugin parameters automation/curves...
+			const qtractorPlugin::Params& params = pPlugin->params();
+			qtractorPlugin::Params::ConstIterator param = params.constBegin();
+			const qtractorPlugin::Params::ConstIterator& param_end
+				= params.constEnd();
+			for ( ; param != param_end; ++param) {
+				qtractorPluginParam *pParam = param.value();
+				pCurve = pParam->subject()->curve();
+				if (pCurve && pCurve->list() == pCurveList) {
+					qtractorPluginParam *pNewParam
+						= pNewPlugin->findParam(pParam->index());
+					if (pNewParam == NULL)
+						continue;
+					pNewCurve = cloneCurve(pNewCurveList,
+						pNewParam->subject(), pCurve);
+					if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+						pNewCurrentCurve = pNewCurve;
+				}
+			}
 		}
+	}
+
+	// Copy all former plugins and respective automation...
+	if (pCurveList && pNewCurveList) {
+		pCurve = pTrack->monitorSubject()->curve();
+		if (pCurve) {
+			pNewCurve = cloneCurve(pNewCurveList,
+				pNewTrack->monitorSubject(), pCurve);
+			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+				pNewCurrentCurve = pNewCurve;
+		}
+		pCurve = pTrack->monitor()->panningSubject()->curve();
+		if (pCurve) {
+			pNewCurve = cloneCurve(pNewCurveList,
+				pNewTrack->monitor()->panningSubject(), pCurve);
+			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+				pNewCurrentCurve = pNewCurve;
+		}
+		pCurve = pTrack->monitor()->gainSubject()->curve();
+		if (pCurve) {
+			pNewCurve = cloneCurve(pNewCurveList,
+				pNewTrack->monitor()->gainSubject(), pCurve);
+			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+				pNewCurrentCurve = pNewCurve;
+		}
+		pCurve = pTrack->recordSubject()->curve();
+		if (pCurve) {
+			pNewCurve = cloneCurve(pNewCurveList,
+				pNewTrack->recordSubject(), pCurve);
+			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+				pNewCurrentCurve = pNewCurve;
+		}
+		pCurve = pTrack->muteSubject()->curve();
+		if (pCurve) {
+			pNewCurve = cloneCurve(pNewCurveList,
+				pNewTrack->muteSubject(), pCurve);
+			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+				pNewCurrentCurve = pNewCurve;
+		}
+		pCurve = pTrack->soloSubject()->curve();
+		if (pCurve) {
+			pNewCurve = cloneCurve(pNewCurveList,
+				pNewTrack->soloSubject(), pCurve);
+			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+				pNewCurrentCurve = pNewCurve;
+		}
+	}
+
+	// Set final new track properties...
+	if (pNewCurrentCurve)
+		pNewTrack->setCurrentCurve(pNewCurrentCurve);
+
+	// Refresh to most recent things...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer)
+			pMixer->updateTrackStrip(pNewTrack);
 	}
 
 	return bResult;
@@ -275,6 +375,31 @@ bool qtractorCopyTrackCommand::redo (void)
 bool qtractorCopyTrackCommand::undo (void)
 {
 	return removeTrack();
+}
+
+
+
+// Clone an existing automation/curve.
+qtractorCurve *qtractorCopyTrackCommand::cloneCurve (
+	qtractorCurveList *pCurveList, qtractorSubject *pSubject,
+	qtractorCurve *pCurve ) const
+{
+	qtractorCurve *pNewCurve = new qtractorCurve(pCurveList,
+		pSubject, pCurve->mode(), pCurve->minFrameDist());
+
+	pNewCurve->setDefaultValue(pCurve->defaultValue());
+	pNewCurve->setLength(pCurve->length());
+
+	pNewCurve->setCapture(pCurve->isCapture());
+	pNewCurve->setProcess(pCurve->isProcess());
+	pNewCurve->setLocked(pCurve->isLocked());
+
+	pNewCurve->setLogarithmic(pCurve->isLogarithmic());
+	pNewCurve->setColor(pCurve->color());
+
+	pNewCurve->copyNodes(pCurve);
+
+	return pNewCurve;
 }
 
 

@@ -223,6 +223,9 @@ public:
 	qtractorCurveEditList *editList() const
 		{ return m_pEditList; }
 
+	// Copy all events from another curve (raw-copy).
+	void copyNodes(qtractorCurve *pCurve);
+
 	// Convert MIDI sequence events to curve nodes.
 	void readMidiSequence(qtractorMidiSequence *pSeq,
 		qtractorMidiEvent::EventType ctype, unsigned short iChannel,

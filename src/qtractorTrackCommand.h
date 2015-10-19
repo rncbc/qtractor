@@ -31,6 +31,10 @@
 // Forward declarations.
 class qtractorClipCommand;
 
+class qtractorCurveList;
+class qtractorCurve;
+class qtractorSubject;
+
 
 //----------------------------------------------------------------------
 // class qtractorTrackCommand - declaration.
@@ -127,6 +131,12 @@ public:
 	// Track-removal command methods.
 	bool redo();
 	bool undo();
+
+protected:
+
+	// Clone an existing automation/curve.
+	qtractorCurve *cloneCurve(qtractorCurveList *pCurveList,
+		qtractorSubject *pSubject, qtractorCurve *pCurve ) const;
 
 private:
 
