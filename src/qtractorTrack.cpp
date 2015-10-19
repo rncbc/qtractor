@@ -569,6 +569,7 @@ bool qtractorTrack::open (void)
 			}
 		}
 		// Update gain and panning curve new subjects...
+	#if 0
 		qtractorCurveList *pCurveList = m_pPluginList->curveList();
 		if (pCurveList) {
 			qtractorCurve *pCurve = pCurveList->first();
@@ -587,7 +588,21 @@ bool qtractorTrack::open (void)
 				}
 				pCurve = pCurve->next();
 			}
-		}		
+		}
+	#else
+		// Panning subject ownership transfer...
+		qtractorCurve *pCurve = pMonitor->panningSubject()->curve();
+		if (pCurve) {
+			pCurve->setSubject(m_pMonitor->panningSubject());
+			m_pMonitor->panningSubject()->setCurve(pCurve);
+		}
+		// Gain subject ownership transfer...
+		pCurve = pMonitor->gainSubject()->curve();
+		if (pCurve) {
+			pCurve->setSubject(m_pMonitor->gainSubject());
+			m_pMonitor->gainSubject()->setCurve(pCurve);
+		}
+	#endif
 		// That's it...
 		delete pMonitor;
 	}
