@@ -593,42 +593,42 @@ MIDI:	</translation>
         <translation>%1 Panorámica</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="196"/>
+        <location filename="../qtractorTrackCommand.cpp" line="197"/>
         <source>add track</source>
         <translation>añadir pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="220"/>
+        <location filename="../qtractorTrackCommand.cpp" line="221"/>
         <source>remove track</source>
         <translation>quitar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="245"/>
+        <location filename="../qtractorTrackCommand.cpp" line="246"/>
         <source>duplicate track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="412"/>
+        <location filename="../qtractorTrackCommand.cpp" line="455"/>
         <source>move track</source>
         <translation>mover pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="490"/>
+        <location filename="../qtractorTrackCommand.cpp" line="533"/>
         <source>resize track</source>
         <translation>redimensionar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="525"/>
+        <location filename="../qtractorTrackCommand.cpp" line="568"/>
         <source>import track</source>
         <translation>importar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="612"/>
+        <location filename="../qtractorTrackCommand.cpp" line="655"/>
         <source>track properties</source>
         <translation>propiedades de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="659"/>
+        <location filename="../qtractorTrackCommand.cpp" line="702"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -637,32 +637,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="737"/>
+        <location filename="../qtractorTrackCommand.cpp" line="780"/>
         <source>track record</source>
         <translation>grabar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="740"/>
+        <location filename="../qtractorTrackCommand.cpp" line="783"/>
         <source>track mute</source>
         <translation>silenciar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="743"/>
+        <location filename="../qtractorTrackCommand.cpp" line="786"/>
         <source>track solo</source>
         <translation>pista a solas</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="917"/>
+        <location filename="../qtractorTrackCommand.cpp" line="960"/>
         <source>track monitor</source>
         <translation>monitorear pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1018"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1061"/>
         <source>track gain</source>
         <translation>ganacia de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1107"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1150"/>
         <source>track pan</source>
         <translation>panorámica de pista</translation>
     </message>
@@ -12205,27 +12205,27 @@ Duración:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="998"/>
-        <location filename="../qtractorTracks.cpp" line="2712"/>
+        <location filename="../qtractorTracks.cpp" line="2666"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importar archivo de audio &quot;%1&quot; en %2 %3.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1003"/>
-        <location filename="../qtractorTracks.cpp" line="2717"/>
+        <location filename="../qtractorTracks.cpp" line="2671"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Importar archivo de audio: &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1033"/>
-        <location filename="../qtractorTracks.cpp" line="2901"/>
+        <location filename="../qtractorTracks.cpp" line="2855"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Importar archivo MIDI &quot;%1&quot; pista/canal %2 en %3 %4.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1039"/>
-        <location filename="../qtractorTracks.cpp" line="2907"/>
+        <location filename="../qtractorTracks.cpp" line="2861"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Importar archivo MIDI: &quot;%1&quot;, pista/canal %2.</translation>
     </message>
@@ -12323,13 +12323,13 @@ Are you sure?</source>
 ¿Esta seguro?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2831"/>
+        <location filename="../qtractorTracks.cpp" line="2785"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importar archivo MIDI &quot;%1&quot; en %2 %3.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2836"/>
+        <location filename="../qtractorTracks.cpp" line="2790"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Importar archivo MIDI: &quot;%1&quot;.</translation>
     </message>

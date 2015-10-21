@@ -2554,10 +2554,6 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	if (pSession == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
 	// Get the list view item reference of the intended track...
 	if (pTrack == NULL)
 		pTrack = currentTrack();
@@ -2568,10 +2564,9 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Duplicate into a new track...
-	const qtractorTrack::TrackType trackType = pTrack->trackType();
 	const int iTrack = pSession->tracks().count() + 1;
 	const QColor& color = qtractorTrack::trackColor(iTrack);
-	qtractorTrack *pNewTrack = new qtractorTrack(pSession, trackType);
+	qtractorTrack *pNewTrack = new qtractorTrack(pSession, pTrack->trackType());
 	pNewTrack->setProperties(pTrack->properties());
 	// Find an incremental/next track name...
 	QString sTrackName = pTrack->trackName();
@@ -2589,47 +2584,6 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	pNewTrack->setBackground(color);
 	pNewTrack->setForeground(color.darker());
 	pNewTrack->setZoomHeight(pTrack->zoomHeight());
-
-	// Copy all former clips depending of track type...
-	for (qtractorClip *pClip = pTrack->clips().first();
-			pClip; pClip = pClip->next()) {
-		switch (trackType) {
-		case qtractorTrack::Audio: {
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (pClip);
-			if (pAudioClip) {
-				qtractorAudioClip *pNewAudioClip
-					= new qtractorAudioClip(*pAudioClip);
-				pNewAudioClip->setClipStart(pAudioClip->clipStart());
-				pNewAudioClip->setClipOffset(pAudioClip->clipOffset());
-				pNewAudioClip->setClipLength(pAudioClip->clipLength());
-				pNewAudioClip->setFadeInLength(pAudioClip->fadeInLength());
-				pNewAudioClip->setFadeOutLength(pAudioClip->fadeOutLength());
-				pNewAudioClip->setPitchShift(pAudioClip->pitchShift());
-				pNewAudioClip->setTimeStretch(pAudioClip->timeStretch());
-				pNewTrack->addClip(pNewAudioClip);
-			}
-			break;
-		}
-		case qtractorTrack::Midi: {
-			qtractorMidiClip *pMidiClip
-				= static_cast<qtractorMidiClip *> (pClip);
-			if (pMidiClip) {
-				qtractorMidiClip *pNewMidiClip
-					= new qtractorMidiClip(*pMidiClip);
-				pNewMidiClip->setClipStart(pMidiClip->clipStart());
-				pNewMidiClip->setClipOffset(pMidiClip->clipOffset());
-				pNewMidiClip->setClipLength(pMidiClip->clipLength());
-				pNewMidiClip->setFadeInLength(pMidiClip->fadeInLength());
-				pNewMidiClip->setFadeOutLength(pMidiClip->fadeOutLength());
-				pNewTrack->addClip(pNewMidiClip);
-			}
-			break;
-		}
-		default:
-			break;
-		}
-	}
 
 	// Put it in the form of an undoable command...
 	const bool bResult = pSession->execute(

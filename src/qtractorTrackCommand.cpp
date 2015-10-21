@@ -32,6 +32,7 @@
 #include "qtractorMidiClip.h"
 #include "qtractorMixer.h"
 
+#include "qtractorAudioClip.h"
 #include "qtractorPlugin.h"
 #include "qtractorMonitor.h"
 #include "qtractorCurve.h"
@@ -259,6 +260,48 @@ bool qtractorCopyTrackCommand::redo (void)
 	// One-time copy...
 	qtractorTrack *pTrack = afterTrack();
 	qtractorTrack *pNewTrack = track();
+
+	// Copy all former clips depending of track type...
+	const qtractorTrack::TrackType trackType = pTrack->trackType();
+	for (qtractorClip *pClip = pTrack->clips().first();
+			pClip; pClip = pClip->next()) {
+		switch (trackType) {
+		case qtractorTrack::Audio: {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip) {
+				qtractorAudioClip *pNewAudioClip
+					= new qtractorAudioClip(*pAudioClip);
+				pNewAudioClip->setClipStart(pAudioClip->clipStart());
+				pNewAudioClip->setClipOffset(pAudioClip->clipOffset());
+				pNewAudioClip->setClipLength(pAudioClip->clipLength());
+				pNewAudioClip->setFadeInLength(pAudioClip->fadeInLength());
+				pNewAudioClip->setFadeOutLength(pAudioClip->fadeOutLength());
+				pNewAudioClip->setPitchShift(pAudioClip->pitchShift());
+				pNewAudioClip->setTimeStretch(pAudioClip->timeStretch());
+				pNewTrack->addClip(pNewAudioClip);
+			}
+			break;
+		}
+		case qtractorTrack::Midi: {
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (pClip);
+			if (pMidiClip) {
+				qtractorMidiClip *pNewMidiClip
+					= new qtractorMidiClip(*pMidiClip);
+				pNewMidiClip->setClipStart(pMidiClip->clipStart());
+				pNewMidiClip->setClipOffset(pMidiClip->clipOffset());
+				pNewMidiClip->setClipLength(pMidiClip->clipLength());
+				pNewMidiClip->setFadeInLength(pMidiClip->fadeInLength());
+				pNewMidiClip->setFadeOutLength(pMidiClip->fadeOutLength());
+				pNewTrack->addClip(pNewMidiClip);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+	}
 
 	// About to copy all automation/curves...
 	qtractorCurveList *pCurveList = pTrack->curveList();
