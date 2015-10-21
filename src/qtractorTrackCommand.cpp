@@ -27,14 +27,14 @@
 
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
+#include "qtractorAudioClip.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiControl.h"
 #include "qtractorMidiClip.h"
 #include "qtractorMixer.h"
 
-#include "qtractorAudioClip.h"
-#include "qtractorPlugin.h"
 #include "qtractorMonitor.h"
+#include "qtractorPlugin.h"
 #include "qtractorCurve.h"
 
 
