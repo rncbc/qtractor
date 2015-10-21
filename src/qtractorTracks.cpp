@@ -2468,12 +2468,19 @@ bool qtractorTracks::addTrack (void)
 		return false;
 	}
 
+	// Might take a while...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Take care of user supplied properties...
 	pTrack->setProperties(trackForm.properties());
 
 	// Put it in the form of an undoable command...
-	return pSession->execute(
+	const bool bResult = pSession->execute(
 		new qtractorAddTrackCommand(pTrack, currentTrack()));
+
+	QApplication::restoreOverrideCursor();
+
+	return bResult;
 }
 
 
@@ -2508,9 +2515,16 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 			return false;
 	}
 
+	// Might take a while...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Put it in the form of an undoable command...
-	return pSession->execute(
+	const bool bResult = pSession->execute(
 		new qtractorRemoveTrackCommand(pTrack));
+
+	QApplication::restoreOverrideCursor();
+
+	return bResult;
 }
 
 
@@ -2541,9 +2555,16 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (!trackForm.exec())
 		return false;
 
+	// Might take a while...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Put it in the form of an undoable command...
-	return pSession->execute(
+	const bool bResult = pSession->execute(
 		new qtractorEditTrackCommand(pTrack, trackForm.properties()));
+
+	QApplication::restoreOverrideCursor();
+
+	return bResult;
 }
 
 
@@ -2597,7 +2618,7 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 
 // Import Audio files into new tracks...
 bool qtractorTracks::addAudioTracks (
-	QStringList files, unsigned long iClipStart )
+	const QStringList& files, unsigned long iClipStart )
 {
 	// Have we some?
 	if (files.isEmpty())
@@ -2691,7 +2712,7 @@ bool qtractorTracks::addAudioTracks (
 
 // Import MIDI files into new tracks...
 bool qtractorTracks::addMidiTracks (
-	QStringList files, unsigned long iClipStart )
+	const QStringList& files, unsigned long iClipStart )
 {
 	// Have we some?
 	if (files.isEmpty())

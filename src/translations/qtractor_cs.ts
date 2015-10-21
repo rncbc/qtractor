@@ -12184,12 +12184,12 @@ Délka:	%3</translation>
         <translation>Soubory MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2501"/>
+        <location filename="../qtractorTracks.cpp" line="2508"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2502"/>
+        <location filename="../qtractorTracks.cpp" line="2509"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -12238,7 +12238,7 @@ Jste si jistý?</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="998"/>
-        <location filename="../qtractorTracks.cpp" line="2666"/>
+        <location filename="../qtractorTracks.cpp" line="2687"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Zavedení zvukového souboru &quot;%1&quot; do %2 %3.
@@ -12246,13 +12246,13 @@ Jste si jistý?</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1003"/>
-        <location filename="../qtractorTracks.cpp" line="2671"/>
+        <location filename="../qtractorTracks.cpp" line="2692"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Zavedení zvukového souboru: &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1033"/>
-        <location filename="../qtractorTracks.cpp" line="2855"/>
+        <location filename="../qtractorTracks.cpp" line="2876"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Zavedení MIDI souboru: &quot;%1&quot;, stopa-kanál %2 %3 %4.
@@ -12324,20 +12324,20 @@ Jste si jistý?</translation>
         <translation>Odstranit rozsah stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2785"/>
+        <location filename="../qtractorTracks.cpp" line="2806"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Zavedení MIDI souboru &quot;%1&quot; do %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2790"/>
+        <location filename="../qtractorTracks.cpp" line="2811"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Zavedení MIDI souboru: &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1039"/>
-        <location filename="../qtractorTracks.cpp" line="2861"/>
+        <location filename="../qtractorTracks.cpp" line="2882"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Zavedení MIDI souboru: &quot;%1&quot;, stopa-kanál: %2.</translation>
     </message>
