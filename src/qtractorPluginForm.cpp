@@ -161,7 +161,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		m_pPlugin->activateObserver());
 
 	qtractorPluginType *pType = m_pPlugin->type();
-
 	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
 	const int MaxRowsPerPage    = (bVstPlugin ? 12 : 8);
 	const int MaxColumnsPerPage = (bVstPlugin ?  2 : 3);
@@ -459,7 +458,10 @@ void qtractorPluginForm::openPresetSlot (void)
 {
 	if (m_pPlugin == NULL)
 		return;
-	if (!(m_pPlugin->type())->isConfigure())
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
+	if (!pType->isConfigure() && !bVstPlugin)
 		return;
 
 	if (m_iUpdate > 0)
@@ -474,9 +476,11 @@ void qtractorPluginForm::openPresetSlot (void)
 	QString sFilename;
 
 	// Prompt if file does not currently exist...
-	const QString  sExt("qtx");
+	const QString sExt("qtx");
+	QStringList filters(sExt);
+	if (bVstPlugin) { filters.append("fxp"); filters.append("fxb"); }
 	const QString& sTitle  = tr("Open Preset") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
+	const QString& sFilter = tr("Preset files (*.%1)").arg(filters.join(" *."));
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	QFileDialog::Options options = 0;
@@ -507,22 +511,21 @@ void qtractorPluginForm::openPresetSlot (void)
 	if (!sFilename.isEmpty()) {
 		if (m_pPlugin->loadPresetFile(sFilename)) {
 			// Got it loaded alright...
-			QFileInfo fi(sFilename);
-			setPreset(fi.baseName()
-				.replace((m_pPlugin->type())->label() + '-', QString()));
+			const QFileInfo fi(sFilename);
+			setPreset(fi.baseName().replace(pType->label() + '-', QString()));
 			pOptions->sPresetDir = fi.absolutePath();
 		} else {
 			// Failure (maybe wrong plugin)...
 			QMessageBox::critical(this,
 				tr("Error") + " - " QTRACTOR_TITLE,
-				tr("Preset could not be loaded\n"
-				"from \"%1\".\n\n"
+				tr("Preset could not be loaded from file:\n\n"
+				"\"%1\".\n\n"
 				"Sorry.").arg(sFilename),
 				QMessageBox::Cancel);
 		}
 	}
-	refresh();
 
+	refresh();
 	stabilize();
 }
 
@@ -543,63 +546,82 @@ void qtractorPluginForm::savePresetSlot (void)
 
 	// The current state preset is about to be saved...
 	// this is where we'll make it!
-	if (!m_pPlugin->savePreset(sPreset)) {
-		QSettings& settings = pOptions->settings();
-		settings.beginGroup(m_pPlugin->presetGroup());
-		// Which mode of preset?
-		if ((m_pPlugin->type())->isConfigure()) {
-			// Sure, we'll have something complex enough
-			// to make it save into an external file...
-			const QString sExt("qtx");
-			QFileInfo fi(QDir(pOptions->sPresetDir),
-				(m_pPlugin->type())->label() + '-' + sPreset + '.' + sExt);
-			QString sFilename = fi.absoluteFilePath();
-			// Prompt if file does not currently exist...
-			if (!fi.exists()) {
-				const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
-				const QString& sFilter = tr("Preset files (*.%1)").arg(sExt);
-			#if 1//QT_VERSION < 0x040400
-				// Ask for the filename to save...
-				QFileDialog::Options options = 0;
-				if (pOptions->bDontUseNativeDialogs)
-					options |= QFileDialog::DontUseNativeDialog;
-				sFilename = QFileDialog::getSaveFileName(this,
-					sTitle, sFilename, sFilter, NULL, options);
-			#else
-				// Construct save-file dialog...
-				QFileDialog fileDialog(this,
-					sTitle, sFilename, sFilter);
-				// Set proper open-file modes...
-				fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-				fileDialog.setFileMode(QFileDialog::AnyFile);
-				fileDialog.setDefaultSuffix(sExt);
-				// Stuff sidebar...
-				QList<QUrl> urls(fileDialog.sidebarUrls());
-				urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
-				urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
-				fileDialog.setSidebarUrls(urls);
-				if (pOptions->bDontUseNativeDialogs)
-					fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
-				// Show dialog...
-				if (fileDialog.exec())
-					sFilename = fileDialog.selectedFiles().first();
-				else
-					sFilename.clear();
-			#endif
-			}
-			// We've a filename to save the preset
-			if (!sFilename.isEmpty()) {
-				if (QFileInfo(sFilename).suffix().isEmpty())
-					sFilename += '.' + sExt;
-				if (m_pPlugin->savePresetFile(sFilename)) {
-					settings.setValue(sPreset, sFilename);
-					pOptions->sPresetDir = QFileInfo(sFilename).absolutePath();
-				}
-			}
-		}	// Just leave it to simple parameter value list...
-		else settings.setValue(sPreset, m_pPlugin->valueList());
-		settings.endGroup();
+	if (m_pPlugin->savePreset(sPreset)) {
+		refresh();
+		stabilize();
+		return;
 	}
+
+	QSettings& settings = pOptions->settings();
+	settings.beginGroup(m_pPlugin->presetGroup());
+	// Which mode of preset?
+	qtractorPluginType *pType = m_pPlugin->type();
+	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
+	if (pType->isConfigure() || bVstPlugin) {
+		// Sure, we'll have something complex enough
+		// to make it save into an external file...
+		const QString sExt("qtx");
+		QStringList filters(sExt);
+		if (bVstPlugin) { filters.append("fxp"); filters.append("fxb"); }
+		QFileInfo fi(settings.value(sPreset).toString());
+		if (!fi.exists() || !fi.isFile())
+			fi.setFile(QDir(pOptions->sPresetDir),
+				pType->label() + '-' + sPreset + '.' + sExt);
+		QString sFilename = fi.absoluteFilePath();
+		// Prompt if file does not currently exist...
+		if (!fi.exists()) {
+			const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
+			const QString& sFilter = tr("Preset files (*.%1)").arg(filters.join(" *."));
+		#if 1//QT_VERSION < 0x040400
+			// Ask for the filename to save...
+			QFileDialog::Options options = 0;
+			if (pOptions->bDontUseNativeDialogs)
+				options |= QFileDialog::DontUseNativeDialog;
+			sFilename = QFileDialog::getSaveFileName(this,
+				sTitle, sFilename, sFilter, NULL, options);
+		#else
+			// Construct save-file dialog...
+			QFileDialog fileDialog(this,
+				sTitle, sFilename, sFilter);
+			// Set proper open-file modes...
+			fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+			fileDialog.setFileMode(QFileDialog::AnyFile);
+			fileDialog.setDefaultSuffix(sExt);
+			// Stuff sidebar...
+			QList<QUrl> urls(fileDialog.sidebarUrls());
+			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+			urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
+			fileDialog.setSidebarUrls(urls);
+			if (pOptions->bDontUseNativeDialogs)
+				fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+			// Show dialog...
+			if (fileDialog.exec())
+				sFilename = fileDialog.selectedFiles().first();
+			else
+				sFilename.clear();
+		#endif
+		}
+		// We've a filename to save the preset...
+		if (!sFilename.isEmpty()) {
+			fi.setFile(sFilename);
+			if (fi.suffix().isEmpty())
+				sFilename += '.' + sExt;
+			if (m_pPlugin->savePresetFile(sFilename)) {
+				settings.setValue(sPreset, sFilename);
+				pOptions->sPresetDir = fi.absolutePath();
+			} else {
+				// Failure (maybe wrong suffix)...
+				QMessageBox::critical(this,
+					tr("Error") + " - " QTRACTOR_TITLE,
+					tr("Preset could not be saved to file:\n\n"
+					"\"%1\".\n\n"
+					"Sorry.").arg(sFilename),
+					QMessageBox::Cancel);
+			}
+		}
+	}	// Just leave it to simple parameter value list...
+	else settings.setValue(sPreset, m_pPlugin->valueList());
+	settings.endGroup();
 
 	refresh();
 	stabilize();
@@ -869,18 +891,18 @@ void qtractorPluginForm::refresh (void)
 // Preset control.
 void qtractorPluginForm::stabilize (void)
 {
+	qtractorPluginType *pType = m_pPlugin->type();
+	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
+
 	bool bExists  = false;
 	bool bEnabled = (m_pPlugin != NULL);
 	m_ui.ActivateToolButton->setEnabled(bEnabled);
-	if (bEnabled) {
-		bEnabled = (
-			(m_pPlugin->type())->controlIns() > 0 ||
-			(m_pPlugin->type())->isConfigure());
-	}
+	if (bEnabled)
+		bEnabled = (pType->controlIns() > 0	|| pType->isConfigure());
 
 	m_ui.PresetComboBox->setEnabled(bEnabled);
 	m_ui.OpenPresetToolButton->setVisible(
-		bEnabled && (m_pPlugin->type())->isConfigure());
+		bEnabled && (pType->isConfigure() || bVstPlugin));
 
 	if (bEnabled) {
 		const QString& sPreset = m_ui.PresetComboBox->currentText();

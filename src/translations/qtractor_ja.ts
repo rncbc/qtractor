@@ -50,7 +50,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1439"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1460"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -674,22 +674,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>不明</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="615"/>
+        <location filename="../qtractorVstPlugin.cpp" line="616"/>
         <source>Product: </source>
         <translation>プロダクト:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="623"/>
+        <location filename="../qtractorVstPlugin.cpp" line="624"/>
         <source>Vendor: </source>
         <translation>ベンダー:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="631"/>
+        <location filename="../qtractorVstPlugin.cpp" line="632"/>
         <source>Version: </source>
         <translation>バージョン:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1436"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1457"/>
         <source>%1 (*.%2)</source>
         <translation></translation>
     </message>
@@ -10518,10 +10518,6 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <source>qtractorPluginForm</source>
-        <translation type="obsolete">qtractorプラグイン</translation>
-    </message>
-    <message>
         <location filename="../qtractorPluginForm.ui" line="34"/>
         <source>Plugin Properties</source>
         <translation type="unfinished"></translation>
@@ -10617,59 +10613,67 @@ Do you want to apply the changes?</source>
         <translation>ダイレクトアクセス</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="203"/>
+        <location filename="../qtractorPluginForm.cpp" line="202"/>
         <source>Page %1</source>
         <translation>ページ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="282"/>
+        <location filename="../qtractorPluginForm.cpp" line="281"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 インスタンス, %4 チャンネル.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="381"/>
+        <location filename="../qtractorPluginForm.cpp" line="380"/>
         <source>(none)</source>
         <translation>(なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="478"/>
+        <location filename="../qtractorPluginForm.cpp" line="482"/>
         <source>Open Preset</source>
         <translation>プリセットを開く</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="479"/>
-        <location filename="../qtractorPluginForm.cpp" line="560"/>
+        <location filename="../qtractorPluginForm.cpp" line="483"/>
+        <location filename="../qtractorPluginForm.cpp" line="574"/>
         <source>Preset files (*.%1)</source>
         <translation>プリセットファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="517"/>
+        <location filename="../qtractorPluginForm.cpp" line="520"/>
+        <location filename="../qtractorPluginForm.cpp" line="615"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="518"/>
-        <source>Preset could not be loaded
-from &quot;%1&quot;.
+        <location filename="../qtractorPluginForm.cpp" line="521"/>
+        <source>Preset could not be loaded from file:
+
+&quot;%1&quot;.
 
 Sorry.</source>
-        <translation>%1 からプリセットをロードすることが
-できませんでした。
-
-ごめんなさい。</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="559"/>
+        <location filename="../qtractorPluginForm.cpp" line="573"/>
         <source>Save Preset</source>
         <translation>プリセットの保存</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="627"/>
+        <location filename="../qtractorPluginForm.cpp" line="616"/>
+        <source>Preset could not be saved to file:
+
+&quot;%1&quot;.
+
+Sorry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="649"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="628"/>
+        <location filename="../qtractorPluginForm.cpp" line="650"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -10682,7 +10686,7 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="774"/>
+        <location filename="../qtractorPluginForm.cpp" line="796"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>

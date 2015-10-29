@@ -46,6 +46,10 @@
 #endif
 #endif
 
+// Forward decls.
+class QFile;
+
+
 //----------------------------------------------------------------------------
 // qtractorVstPluginType -- VST plugin type instance.
 //
@@ -142,6 +146,10 @@ public:
 	void freezeConfigs();
 	void releaseConfigs();
 
+	// Plugin preset i/o (configuration from/to (fxp/fxb files).
+	bool loadPresetFile(const QString& sFilename);
+	bool savePresetFile(const QString& sFilename);
+
 	// GUI Editor stuff.
 	void openEditor(QWidget *pParent);
 	void closeEditor();
@@ -232,6 +240,51 @@ public:
 private:
 
 	VstParameterProperties m_props;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorVstPreset -- VST preset file interface.
+//
+
+class qtractorVstPreset
+{
+public:
+
+	// Constructor.
+	qtractorVstPreset(qtractorVstPlugin *pVstPlugin);
+
+	// File loader/saver.
+	bool load(const QString& sFilename);
+	bool save(const QString& sFilename);
+
+protected:
+
+	// Forward decls.
+	struct BaseHeader;
+	struct BankHeader;
+	struct ProgHeader;
+	struct Chunk;
+
+	// Loader methods.
+	bool load_bank_progs(QFile& file);
+	bool load_prog_params(QFile& file);
+	bool load_bank_chunk(QFile& file);
+	bool load_prog_chunk(QFile& file);
+	bool load_chunk(QFile& file, int preset);
+
+	// Saver methods.
+	bool save_bank_progs(QFile& file);
+	bool save_prog_params(QFile& file);
+	bool save_bank_chunk(QFile& file, const Chunk& chunk);
+	bool save_prog_chunk(QFile& file, const Chunk& chunk);
+	bool save_chunk(QFile& file, const Chunk& chunk);
+	bool get_chunk(Chunk& chunk, int preset);
+
+private:
+
+	// Instance variables.
+	qtractorVstPlugin *m_pVstPlugin;
 };
 
 

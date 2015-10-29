@@ -608,8 +608,8 @@ public:
 		{ return g_sDefPreset; }
 
 	// Plugin configuration from/to xml file.
-	bool loadPresetFile(const QString& sFilename);
-	bool savePresetFile(const QString& sFilename);
+	virtual bool loadPresetFile(const QString& sFilename);
+	virtual bool savePresetFile(const QString& sFilename);
 
 	// Load an existing preset by name.
 	bool loadPresetEx(const QString& sPreset);
