@@ -31,7 +31,7 @@
 #include <QPoint>
 #include <QSize>
 
-#include <QHash>
+#include <QMap>
 
 
 // Forward declarations.
@@ -453,7 +453,7 @@ public:
 		{ return int(m_iActivateSubjectIndex) > m_params.count(); }
 
 	// An accessible list of parameters.
-	typedef QHash<unsigned long, qtractorPluginParam *> Params;
+	typedef QMap<unsigned long, qtractorPluginParam *> Params;
 	const Params& params() const
 		{ return m_params; }
 
