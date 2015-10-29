@@ -145,7 +145,7 @@
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1436"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1457"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -245,7 +245,7 @@ MIDI:	</source>
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="615"/>
+        <location filename="../qtractorVstPlugin.cpp" line="616"/>
         <source>Product: </source>
         <translation>Produto:</translation>
     </message>
@@ -447,7 +447,7 @@ MIDI:	</translation>
         <translation>Nomear sessão (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="631"/>
+        <location filename="../qtractorVstPlugin.cpp" line="632"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
@@ -530,7 +530,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1439"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1460"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
@@ -563,7 +563,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Arquivos de áudio (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="623"/>
+        <location filename="../qtractorVstPlugin.cpp" line="624"/>
         <source>Vendor: </source>
         <translation>Fornecedor: </translation>
     </message>
@@ -10534,7 +10534,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Entradas (Retornos)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="774"/>
+        <location filename="../qtractorPluginForm.cpp" line="796"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
@@ -10544,7 +10544,8 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Sobre</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="517"/>
+        <location filename="../qtractorPluginForm.cpp" line="520"/>
+        <location filename="../qtractorPluginForm.cpp" line="615"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
@@ -10554,7 +10555,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Mandadas</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="282"/>
+        <location filename="../qtractorPluginForm.cpp" line="281"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 instância(s), %4 canal(s).</translation>
     </message>
@@ -10564,17 +10565,13 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Gerenciar Canais Primários</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="381"/>
+        <location filename="../qtractorPluginForm.cpp" line="380"/>
         <source>(none)</source>
         <translation>(nenhum)</translation>
     </message>
     <message>
-        <source>qtractorPluginForm</source>
-        <translation type="obsolete">qtractorPluginForm</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.cpp" line="479"/>
-        <location filename="../qtractorPluginForm.cpp" line="560"/>
+        <location filename="../qtractorPluginForm.cpp" line="483"/>
+        <location filename="../qtractorPluginForm.cpp" line="574"/>
         <source>Preset files (*.%1)</source>
         <translation>Arquivos com pré configurações (*.%1)</translation>
     </message>
@@ -10584,30 +10581,37 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Ativar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="518"/>
-        <source>Preset could not be loaded
-from &quot;%1&quot;.
-
-Sorry.</source>
-        <translation>A Pré configuração não pode ser carregada
-de &quot;%1&quot;.
-
-Desculpe.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.cpp" line="559"/>
+        <location filename="../qtractorPluginForm.cpp" line="573"/>
         <source>Save Preset</source>
         <translation>Salvar pré configuração</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="478"/>
+        <location filename="../qtractorPluginForm.cpp" line="482"/>
         <source>Open Preset</source>
         <translation>Abrir pré configuração</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="203"/>
+        <location filename="../qtractorPluginForm.cpp" line="202"/>
         <source>Page %1</source>
         <translation>Página %1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="521"/>
+        <source>Preset could not be loaded from file:
+
+&quot;%1&quot;.
+
+Sorry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="616"/>
+        <source>Preset could not be saved to file:
+
+&quot;%1&quot;.
+
+Sorry.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="241"/>
@@ -10635,7 +10639,7 @@ Desculpe.</translation>
         <translation>Editar Plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="628"/>
+        <location filename="../qtractorPluginForm.cpp" line="650"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -10669,7 +10673,7 @@ Posso continuar?</translation>
         <translation>Mandada Auxiliar em um Canal Primário:</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="627"/>
+        <location filename="../qtractorPluginForm.cpp" line="649"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
