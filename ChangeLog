@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- VST Plugin preset/bank files support (FXB/FXP) is now being
+  integrated to the generic Plugin/Properties widget dialog.
+  (EXPERIMENTAL)
+
 - Added new Track/Duplicate menu command. (EXPERIMENTAL)
 
 - Added simple XRUN red indicator to status bar.
