@@ -940,7 +940,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 	if (iIndex < 0 || iIndex >= pVstEffect->numPrograms)
 		return false;
 
-	char szName[256]; ::memset(szName, 0, sizeof(szName));
+	char szName[24]; ::memset(szName, 0, sizeof(szName));
 #ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
 #endif
@@ -2241,6 +2241,10 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 	#endif
 
 	file.close();
+
+	// HACK: Make sure all parameter display values are in sync.
+	m_pVstPlugin->updateParamValues(false);
+
 	return bResult;
 }
 
@@ -2542,6 +2546,10 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 			base_header.fxMagic = *(VstInt32 *) bankMagic;
 		}
 	} else {
+		char szName[24]; ::memset(szName, 0, sizeof(szName));
+		::strncpy(szName, fi.baseName().toUtf8().constData(), sizeof(szName) - 1);
+		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
+			m_pVstPlugin->vst_dispatch(i, effSetProgramName, 0, 0, (void *) szName, 0.0f);
 		if (bChunked) {
 			get_chunk(chunk, 1);
 			base_header.byteSize += sizeof(chunk.size) + chunk.size;
