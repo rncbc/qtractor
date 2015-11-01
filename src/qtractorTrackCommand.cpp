@@ -1227,4 +1227,78 @@ bool qtractorTrackPanningCommand::redo (void)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorTrackstrumentCommand - implementation.
+//
+
+// Constructor.
+qtractorTrackInstrumentCommand::qtractorTrackInstrumentCommand (
+	qtractorTrack *pTrack, const QString& sInstrumentName, int iBank, int iProg )
+	: qtractorTrackCommand(QObject::tr("track instrument"), pTrack),
+		m_sInstrumentName(sInstrumentName), m_iBank(iBank), m_iProg(iProg)
+{
+	setRefresh(false);
+}
+
+
+// Track-instrument command method.
+bool qtractorTrackInstrumentCommand::redo (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	if (pTrack->trackType() != qtractorTrack::Midi)
+		return false;
+
+	// Gotta make sure we've a proper MIDI bus...
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+	if (pMidiBus == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return false;
+
+
+	// Set undo values...
+	const unsigned short iChannel = pTrack->midiChannel();
+	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
+	QString sInstrumentName = patch.instrumentName;
+	if (sInstrumentName.isEmpty())
+		sInstrumentName = pMidiBus->instrumentName();
+	int iBankSelMethod = pTrack->midiBankSelMethod();
+	if (iBankSelMethod < 0)
+		iBankSelMethod = patch.bankSelMethod;
+
+	const int iBank = pTrack->midiBank();
+	const int iProg = pTrack->midiProg();
+
+	// Set instrument patch...
+	pMidiBus->setPatch(iChannel, m_sInstrumentName,
+		iBankSelMethod, m_iBank, m_iProg, pTrack);
+
+	// Set track instrument...
+	pTrack->setMidiBank(m_iBank);
+	pTrack->setMidiProg(m_iProg);
+
+	// Reset undo values...
+	m_sInstrumentName = sInstrumentName;
+
+	m_iBank = iBank;
+	m_iProg = iProg;
+
+	// Refresh to most recent things...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer)
+			pMixer->updateTrackStrip(pTrack);
+	}
+
+	return true;
+}
+
+
 // end of qtractorTrackCommand.cpp
