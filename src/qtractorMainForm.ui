@@ -271,6 +271,11 @@
      <addaction name="trackExportAudioAction"/>
      <addaction name="trackExportMidiAction"/>
     </widget>
+    <widget class="QMenu" name="trackInstrumentMenu">
+     <property name="title">
+      <string>Instrum&amp;ent</string>
+     </property>
+    </widget>
     <widget class="QMenu" name="trackCurveMenu">
      <property name="title">
       <string>A&amp;utomation</string>
@@ -321,6 +326,7 @@
     <addaction name="trackImportMenu"/>
     <addaction name="trackExportMenu"/>
     <addaction name="separator"/>
+    <addaction name="trackInstrumentMenu"/>
     <addaction name="trackCurveMenu"/>
    </widget>
    <widget class="QMenu" name="clipMenu">

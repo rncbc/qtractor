@@ -398,6 +398,31 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorTrackInstrumentCommand - declaration.
+//
+
+class qtractorTrackInstrumentCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorTrackInstrumentCommand(qtractorTrack *pTrack,
+		const QString& sInstrumentName, int iBank, int iProg);
+
+	// Track-instrument patch command methods.
+	bool redo();
+	bool undo() { return redo(); }
+
+private:
+
+	// Instance variables.
+	QString m_sInstrumentName;
+	int     m_iBank;
+	int     m_iProg;
+};
+
+
 #endif	// __qtractorTrackCommand_h
 
 // end of qtractorTrackCommand.h
