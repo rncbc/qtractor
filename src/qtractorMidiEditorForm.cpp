@@ -46,7 +46,7 @@
 
 #include "qtractorMidiThumbView.h"
 #include "qtractorMidiEventList.h"
-
+#include "qtractorInstrumentMenu.h"
 #include "qtractorFileList.h"
 
 #include "qtractorClipCommand.h"
@@ -65,8 +65,8 @@
 
 // Constructor.
 qtractorMidiEditorForm::qtractorMidiEditorForm (
-	QWidget */*pParent*/, Qt::WindowFlags wflags )
-	: QMainWindow(NULL/*pParent*/, wflags)
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QMainWindow(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -86,6 +86,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pMidiEventList = new qtractorMidiEventList(this);
 	m_pMidiEventList->setEditor(m_pMidiEditor);
 	m_pMidiEventList->hide(); // Initially hidden.
+
+	// Custom track/instrument proxy menu.
+	m_pInstrumentMenu = new qtractorInstrumentMenu(this);
 
 	// Set edit-mode action group up...
 	m_pEditModeActionGroup = new QActionGroup(this);
@@ -457,6 +460,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(helpAboutQt()));
 
+	QObject::connect(m_ui.fileTrackInstrumentMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateTrackInstrumentMenu()));
 	QObject::connect(m_ui.viewZoomMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateZoomMenu()));
@@ -648,6 +654,10 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 		delete m_pMidiEventList;
 	if (m_pMidiEditor)
 		delete m_pMidiEditor;
+
+	// Destroy custom track/instrument proxy menu.
+	if (m_pInstrumentMenu)
+		delete m_pInstrumentMenu;
 
 	// Get edit-mode action group down.
 	if (m_pEditModeActionGroup)
@@ -1674,6 +1684,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 
 	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != NULL);
 	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != NULL);
+	m_ui.fileTrackInstrumentMenu->setEnabled(pTrack != NULL);
 	m_ui.fileTrackPropertiesAction->setEnabled(pTrack != NULL);
 	m_ui.fileRangeSetAction->setEnabled(pTrack != NULL);
 	m_ui.fileLoopSetAction->setEnabled(pTrack != NULL);
@@ -1898,6 +1909,17 @@ void qtractorMidiEditorForm::updateScaleMenu (void)
 		pAction->setCheckable(true);
 		pAction->setChecked(iScaleType == iSnapToScaleType);
 		pAction->setData(iScaleType++);
+	}
+}
+
+
+// Track/Instrument sub-menu stabilizers.
+void qtractorMidiEditorForm::updateTrackInstrumentMenu (void)
+{
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip) {
+		m_pInstrumentMenu->updateTrackMenu(
+			pMidiClip->track(), m_ui.fileTrackInstrumentMenu);
 	}
 }
 

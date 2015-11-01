@@ -47,6 +47,7 @@ HEADERS += config.h \
 	qtractorFiles.h \
 	qtractorInsertPlugin.h \
 	qtractorInstrument.h \
+	qtractorInstrumentMenu.h \
 	qtractorLadspaPlugin.h \
 	qtractorList.h \
 	qtractorLv2Plugin.h \
@@ -173,6 +174,7 @@ SOURCES += \
 	qtractorFiles.cpp \
 	qtractorInsertPlugin.cpp \
 	qtractorInstrument.cpp \
+	qtractorInstrumentMenu.cpp \
 	qtractorLadspaPlugin.cpp \
 	qtractorLv2Plugin.cpp \
 	qtractorMessageList.cpp \

@@ -44,6 +44,8 @@ class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
 class qtractorTempoCursor;
 
+class qtractorInstrumentMenu;
+
 class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 class qtractorMidiManager;
@@ -314,9 +316,6 @@ protected slots:
 	void updateSnapMenu();
 
 	void updateTrackInstrumentMenu();
-	void updateTrackInstrumentBankMenu();
-	void updateTrackInstrumentProgMenu();
-	void trackInstrumentPatch();
 
 	void selectAudioFile(const QString& sFilename, int iTrackChannel, bool bSelect);
 	void activateAudioFile(const QString& sFilename, int iTrackChannel = -1);
@@ -428,25 +427,6 @@ protected:
 	bool trackCurveSelectMenuReset(QMenu *pMenu) const;
 	bool trackCurveModeMenuReset(QMenu *pMenu) const;
 
-	bool trackInstrumentMenuReset(QMenu *pMenu) const;
-	bool trackInstrumentMenuAdd(QMenu *pMenu,
-		qtractorMidiManager *pMidiManager,
-		const QString& sCurrentName) const;
-
-	bool trackInstrumentBankMenuReset(QMenu *pBankMenu) const;
-	bool trackInstrumentBankMenuAdd(QMenu *pBankMenu,
-		qtractorMidiManager *pMidiManager,
-		const QString& sInstrumentName,
-		int iCurrentBank) const;
-
-	bool trackInstrumentProgMenuReset(QMenu *pProgMenu) const;
-	bool trackInstrumentProgMenuAdd(QMenu *pProgMenu,
-		qtractorMidiManager *pMidiManager,
-		const QString& sInstrumentName,
-		int iBank, int iCurrentProg) const;
-
-	static QStyle *scrollableMenuStyle();
-
 	void saveNsmSessionEx(bool bSaveReply);
 
 	bool autoSaveOpen();
@@ -481,6 +461,7 @@ private:
 	QProgressBar *m_pProgressBar;
 	qtractorThumbView *m_pThumbView;
 	qtractorTempoCursor *m_pTempoCursor;
+	qtractorInstrumentMenu *m_pInstrumentMenu;
 	qtractorActionControl *m_pActionControl;
 	qtractorMidiControl *m_pMidiControl;
 	qtractorOscControl *m_pOscControl;

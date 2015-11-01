@@ -316,6 +316,8 @@
     <addaction name="trackInputsAction"/>
     <addaction name="trackOutputsAction"/>
     <addaction name="separator"/>
+    <addaction name="trackInstrumentMenu"/>
+    <addaction name="separator"/>
     <addaction name="trackStateMenu"/>
     <addaction name="trackNavigateMenu"/>
     <addaction name="trackMoveMenu"/>
@@ -326,7 +328,6 @@
     <addaction name="trackImportMenu"/>
     <addaction name="trackExportMenu"/>
     <addaction name="separator"/>
-    <addaction name="trackInstrumentMenu"/>
     <addaction name="trackCurveMenu"/>
    </widget>
    <widget class="QMenu" name="clipMenu">
