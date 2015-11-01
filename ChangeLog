@@ -6,8 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- MIDI Track/Instrument cascading pop-up menus have been added.
-  (EXPERIMENTAL)
+- MIDI Track/Instrument cascading pop-up menus have been added,
+  to main and MIDI clip editor windows. (EXPERIMENTAL)
 
 - VST Plugin preset/bank files support (FXB/FXP) is now being
   integrated to the generic Plugin/Properties widget dialog.

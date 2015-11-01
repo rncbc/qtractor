@@ -32,8 +32,8 @@ class qtractorMidiSequence;
 class qtractorTimeScale;
 
 class qtractorMidiEventList;
-
 class qtractorMidiControlTypeGroup;
+class qtractorInstrumentMenu;
 
 class QContextMenuEvent;
 class QActionGroup;
@@ -173,6 +173,8 @@ protected slots:
 	void updateSnapMenu();
 	void updateScaleMenu();
 
+	void updateTrackInstrumentMenu();
+
 	void sendNote(int iNote, int iVelocity);
 
 	void selectionChanged(qtractorMidiEditor *);
@@ -214,6 +216,9 @@ private:
 
 	// Edit-mode action group up.
 	QActionGroup *m_pEditModeActionGroup;
+
+	// Custom track/instrument proxy menu.
+	qtractorInstrumentMenu *m_pInstrumentMenu;
 
 	// View/Snap-to-beat actions (for shortcuts access)
 	QList<QAction *> m_snapPerBeatActions;
