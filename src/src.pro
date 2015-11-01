@@ -358,7 +358,7 @@ QT += network
 # QT5 support
 !lessThan(QT_MAJOR_VERSION, 5) {
 	QT += widgets
-	unix {
+	unix:!macx {
 		QT += x11extras
 	}
 }
