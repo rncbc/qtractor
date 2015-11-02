@@ -34,12 +34,11 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
 
-#include "qtractorMainForm.h"
-
-
 #ifdef QTRACTOR_MIDI_EDITOR_TOOL
 #include "qtractorOptions.h"
 #endif
+
+#include "qtractorMainForm.h"
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -1080,25 +1079,20 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 	if (m_pMidiEditorForm == NULL) {
 		// Build up the editor form...
 		// What style do we create tool childs?
-		Qt::WindowFlags wflags = Qt::Window
-			| Qt::CustomizeWindowHint
-			| Qt::WindowTitleHint
-			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint
-			| Qt::WindowCloseButtonHint;
+		Qt::WindowFlags wflags = Qt::Window;
 	#ifdef QTRACTOR_MIDI_EDITOR_TOOL
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bKeepToolsOnTop)
+		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;
+			// Make sure it has a parent...
+			if (pParent == NULL)
+				pParent = qtractorMainForm::getInstance();
+		}
+		else
 	#endif
+		pParent = NULL;
 		// Do it...
 		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
-		// Set its most standing properties...
-		if (!m_posEditor.isNull()
-			&& m_posEditor.x() >= 0 && m_posEditor.y() >= 0)
-			m_pMidiEditorForm->move(m_posEditor);
-		if (!m_sizeEditor.isNull() && m_sizeEditor.isValid())
-			m_pMidiEditorForm->resize(m_sizeEditor);
 		m_pMidiEditorForm->show();
 		m_pMidiEditorForm->setup(this);
 	} else {
@@ -1106,6 +1100,13 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		m_pMidiEditorForm->setup();
 		m_pMidiEditorForm->show();
 	}
+
+	// Set its most standing properties...
+	if (!m_posEditor.isNull()
+		&& m_posEditor.x() >= 0 && m_posEditor.y() >= 0)
+		m_pMidiEditorForm->move(m_posEditor);
+	if (!m_sizeEditor.isNull() && m_sizeEditor.isValid())
+		m_pMidiEditorForm->resize(m_sizeEditor);
 
 	// Get it up any way...
 	m_pMidiEditorForm->raise();

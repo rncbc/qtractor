@@ -892,17 +892,11 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 		// Build up the plugin form...
 		if (pParent == NULL)
 			pParent = qtractorMainForm::getInstance();
-	// What style do we create tool childs?
-		Qt::WindowFlags wflags = Qt::Window
-			| Qt::CustomizeWindowHint
-			| Qt::WindowTitleHint
-			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint
-			| Qt::WindowCloseButtonHint;
+		// What style do we create tool childs?
+		Qt::WindowFlags wflags = Qt::Window;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bKeepToolsOnTop) {
+		if (pOptions && pOptions->bKeepToolsOnTop)
 			wflags |= Qt::Tool;
-		}
 		// Do it...
 		m_pForm = new qtractorPluginForm(pParent, wflags);
 		m_pForm->setPlugin(this);
