@@ -41,6 +41,7 @@ BuildRequires:	libsratom-devel
 BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 BuildRequires:	zlib-devel
+BuildRequires:  gtk2-devel
 
 Requires(post):		desktop-file-utils, shared-mime-info
 Requires(postun):	desktop-file-utils, shared-mime-info
