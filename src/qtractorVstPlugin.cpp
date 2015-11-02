@@ -32,8 +32,8 @@
 
 #ifdef QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorOptions.h"
-#endif
 #include "qtractorMainForm.h"
+#endif
 
 #include <QApplication>
 #include <QFileDialog>
@@ -1083,27 +1083,27 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 	}
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::openEditor()", this);
+	qDebug("qtractorVstPlugin[%p]::openEditor(%p)", this, pParent);
 #endif
 
 	// Make sure it's not closed...
 	m_bEditorClosed = false;
 
-	// Create the new parent frame...
-	if (pParent == NULL)
-		pParent = qtractorMainForm::getInstance();
-
-	Qt::WindowFlags wflags = Qt::Window
-		| Qt::CustomizeWindowHint
-		| Qt::WindowTitleHint
-		| Qt::WindowSystemMenuHint
-		| Qt::WindowMinMaxButtonsHint
-		| Qt::WindowCloseButtonHint;
+	// What style do we create tool childs?
+	Qt::WindowFlags wflags = Qt::Window;
 #ifdef QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bKeepToolsOnTop)
+	if (pOptions && pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
+		// Make sure it has a parent...
+		if (pParent == NULL)
+			pParent = qtractorMainForm::getInstance();
+	}
+	else
 #endif
+	pParent = NULL;
+
+	// Do it...
 	m_pEditorWidget = new EditorWidget(pParent, wflags);
 	m_pEditorWidget->open(this);
 }
