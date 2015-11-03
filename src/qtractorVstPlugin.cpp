@@ -2199,50 +2199,50 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 
 	if (!fx_is_magic(base_header.chunkMagic, cMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPresetload() header.chunkMagic is not \"%s\"\n", cMagic);
+		qDebug("qtractorVstPresetload() header.chunkMagic is not \"%s\".", cMagic);
 	#endif
 	}
 	else
 	if (base_header.fxID != VstInt32(m_pVstPlugin->uniqueID())) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxID != 0x%08lx\n", m_pVstPlugin->uniqueID());
+		qDebug("qtractorVstPreset::load() header.fxID != 0x%08lx.", m_pVstPlugin->uniqueID());
 	#endif
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, bankMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (regular fxb)\n", bankMagic);
+		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (regular fxb)", bankMagic);
 	#endif
 		bResult = load_bank_progs(file);
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, chunkBankMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxb)\n", chunkBankMagic);
+		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxb)", chunkBankMagic);
 	#endif
 		bResult = load_bank_chunk(file);
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, fMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (regular fxp)\n", fMagic);
+		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (regular fxp)", fMagic);
 	#endif
 		bResult = load_prog_params(file);
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, chunkPresetMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxp)\n", chunkPresetMagic);
+		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxp)", chunkPresetMagic);
 	#endif
 		bResult = load_prog_chunk(file);
 	}
 	#ifdef CONFIG_DEBUG
-	else qDebug("qtractorVstPreset::load() header.fxMagic not recognized.\n");
+	else qDebug("qtractorVstPreset::load() header.fxMagic not recognized.");
 	#endif
 
 	file.close();
 
-	// HACK: Make sure all parameter display values are in sync.
+	// HACK: Make sure all displayed parameter values are in sync.
 	m_pVstPlugin->updateParamValues(false);
 
 	return bResult;
