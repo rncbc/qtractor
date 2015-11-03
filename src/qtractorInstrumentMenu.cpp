@@ -400,7 +400,7 @@ bool qtractorInstrumentMenu::progMenuAdd (
 	pAction->setData(-1);
 	QObject::connect(pAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackInstrumentPatch()));
+		SLOT(progActionTriggered()));
 
 	return true;
 }

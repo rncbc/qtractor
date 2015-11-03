@@ -2623,10 +2623,6 @@ Jste si jistý?</translation>
         <translation>Žádný</translation>
     </message>
     <message>
-        <source>(None)</source>
-        <translation type="obsolete">(Žádný)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="7351"/>
         <source>The audio engine has been shutdown.
 

@@ -5700,10 +5700,6 @@ Saving into another session file is highly recommended.</source>
         <translation>Keiner</translation>
     </message>
     <message>
-        <source>(None)</source>
-        <translation type="obsolete">(Keine)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="6932"/>
         <source>Error</source>
         <translation>Fehler</translation>

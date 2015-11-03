@@ -5759,10 +5759,6 @@ siano attivi ed in esecuzione, poi riavvia la sessione.</translation>
         <translation>Nessuno</translation>
     </message>
     <message>
-        <source>(None)</source>
-        <translation type="obsolete">(Nessuno)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="6932"/>
         <source>Error</source>
         <translation>Errore</translation>
