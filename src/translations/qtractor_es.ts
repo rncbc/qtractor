@@ -5757,10 +5757,6 @@ Guardar en otro archivo de sesión es muy recomendable.</translation>
         <translation>Ninguno</translation>
     </message>
     <message>
-        <source>(None)</source>
-        <translation type="obsolete">(Ninguno)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="6932"/>
         <source>Error</source>
         <translation>Error</translation>

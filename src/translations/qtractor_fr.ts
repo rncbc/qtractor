@@ -5758,10 +5758,6 @@ est près et en fonctionnement puis redémarrer la session.</translation>
         <translation>Rien</translation>
     </message>
     <message>
-        <source>(None)</source>
-        <translation type="obsolete">(Rien)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="6932"/>
         <source>Error</source>
         <translation>Erreur</translation>
