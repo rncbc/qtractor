@@ -51,7 +51,7 @@ Audio:	%1 Kanäle, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1460"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1469"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
@@ -693,7 +693,7 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1457"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1466"/>
         <source>%1 (*.%2)</source>
         <translation type="unfinished"></translation>
     </message>

@@ -944,7 +944,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 #ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
 #endif
-		int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		const int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iIndex, NULL, 0.0f);
 		vst_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iOldIndex, NULL, 0.0f);
@@ -1030,11 +1030,20 @@ void qtractorVstPlugin::releaseConfigs (void)
 // Plugin preset i/o (configuration from/to (fxp/fxb files).
 bool qtractorVstPlugin::loadPresetFile ( const QString& sFilename )
 {
+	bool bResult = false;
+
 	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
-	if (sExt == "fxp" || sExt == "fxb")
-		return qtractorVstPreset(this).load(sFilename);
-	else
-		return qtractorPlugin::loadPresetFile(sFilename);
+	if (sExt == "fxp" || sExt == "fxb") {
+		bResult = qtractorVstPreset(this).load(sFilename);
+	} else {
+		const int iCurrentProgram
+			= vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		bResult = qtractorPlugin::loadPresetFile(sFilename);
+		for (unsigned short i = 0; i < instances(); ++i)
+			vst_dispatch(i, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+	}
+
+	return bResult;
 }
 
 bool qtractorVstPlugin::savePresetFile ( const QString& sFilename )
@@ -1951,7 +1960,9 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 	fx_endian_swap(bank_header.currentProgram);
 
 	const int iNumPrograms = int(bank_header.numPrograms);
-	const int iCurrentProgram = int(bank_header.currentProgram);
+//	const int iCurrentProgram = int(bank_header.currentProgram);
+	const int iCurrentProgram
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
 
 	for (int iProgram = 0; iProgram < iNumPrograms; ++iProgram) {
 
@@ -2034,7 +2045,15 @@ bool qtractorVstPreset::load_bank_chunk ( QFile& file )
 	if (file.read((char *) &bank_header, nread) < nread)
 		return false;
 
-	return load_chunk(file, 0);
+	const int iCurrentProgram
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+
+	const bool bResult = load_chunk(file, 0);
+
+	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
+		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+
+	return bResult;
 }
 
 
@@ -2151,6 +2170,8 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, chunkPresetMagic)) {
+const int iCurrentProgram = m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+qDebug("DEBUG> load: iCurrentProgram=%d", iCurrentProgram);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxp)", chunkPresetMagic);
 	#endif
@@ -2416,6 +2437,8 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 			base_header.fxMagic = *(VstInt32 *) bankMagic;
 		}
 	} else {
+const int iCurrentProgram = m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+qDebug("DEBUG> save: iCurrentProgram=%d", iCurrentProgram);
 		char szName[24]; ::memset(szName, 0, sizeof(szName));
 		::strncpy(szName, fi.baseName().toUtf8().constData(), sizeof(szName) - 1);
 		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
