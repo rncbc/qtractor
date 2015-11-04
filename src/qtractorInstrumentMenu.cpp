@@ -431,7 +431,7 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 						QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
 						if (pMenu) {
 							const QString& sInstrumentName = pMenu->title();
-						#ifdef CONFIG_DEBUG
+						#ifdef CONFIG_DEBUG_0
 							qDebug("qtractorInstrumentMenu::progActionTriggered(%p) "
 								"sInstrumentName=\"%s\" iBank=%d iProg=%d",
 								m_pTrack, sInstrumentName.toUtf8().constData(),

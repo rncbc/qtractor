@@ -944,7 +944,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 #ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
 #endif
-		int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		const int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iIndex, NULL, 0.0f);
 		vst_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iOldIndex, NULL, 0.0f);
@@ -1030,11 +1030,20 @@ void qtractorVstPlugin::releaseConfigs (void)
 // Plugin preset i/o (configuration from/to (fxp/fxb files).
 bool qtractorVstPlugin::loadPresetFile ( const QString& sFilename )
 {
+	bool bResult = false;
+
 	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
-	if (sExt == "fxp" || sExt == "fxb")
-		return qtractorVstPreset(this).load(sFilename);
-	else
-		return qtractorPlugin::loadPresetFile(sFilename);
+	if (sExt == "fxp" || sExt == "fxb") {
+		bResult = qtractorVstPreset(this).load(sFilename);
+	} else {
+		const int iCurrentProgram
+			= vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		bResult = qtractorPlugin::loadPresetFile(sFilename);
+		for (unsigned short i = 0; i < instances(); ++i)
+			vst_dispatch(i, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+	}
+
+	return bResult;
 }
 
 bool qtractorVstPlugin::savePresetFile ( const QString& sFilename )
@@ -1950,19 +1959,12 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 	fx_endian_swap(bank_header.numPrograms);
 	fx_endian_swap(bank_header.currentProgram);
 
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n", "numPrograms", bank_header.numPrograms);
-	printf("%-16s = %d\n", "currentProgram", bank_header.currentProgram);
-#endif
-
 	const int iNumPrograms = int(bank_header.numPrograms);
-	const int iCurrentProgram = int(bank_header.currentProgram);
+//	const int iCurrentProgram = int(bank_header.currentProgram);
+	const int iCurrentProgram
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
 
 	for (int iProgram = 0; iProgram < iNumPrograms; ++iProgram) {
-
-	#ifdef CONFIG_DEBUG
-		printf("-- prog %d --\n", iProgram);
-	#endif
 
 		BaseHeader base_header;
 		const int nread = sizeof(base_header);
@@ -1976,46 +1978,22 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 		fx_endian_swap(base_header.fxID);
 		fx_endian_swap(base_header.fxVersion);
 
-	#ifdef CONFIG_DEBUG
-		printf("%-16s = 0x%08x\n", "chunkMagic", base_header.chunkMagic);
-		printf("%-16s = %d\n",     "byteSize",   base_header.byteSize);
-		printf("%-16s = 0x%08x\n", "fxMagic",    base_header.fxMagic);
-		printf("%-16s = 0x%08x\n", "version",    base_header.version);
-		printf("%-16s = 0x%08x\n", "fxID",       base_header.fxID);
-		printf("%-16s = 0x%08x\n", "fxVersion",  base_header.fxVersion);
-	#endif
-
-		if (!fx_is_magic(base_header.chunkMagic, cMagic)) {
-		#ifdef CONFIG_DEBUG
-			printf("-- prog %d: header.chunkMagic is not \"%s\"\n", iProgram, cMagic);
-		#endif
+		if (!fx_is_magic(base_header.chunkMagic, cMagic))
 			return false;
-		}
 
 		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
 			m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iProgram, NULL, 0.0f);
 
 		if (fx_is_magic(base_header.fxMagic, fMagic)) {
-		#ifdef CONFIG_DEBUG
-			printf("-- prog %d: header.fxMagic == \"%s\" (regular fxp)\n", iProgram, fMagic);
-		#endif
 			if (!load_prog_params(file))
 				return false;
 		}
 		else
 		if (fx_is_magic(base_header.fxMagic, chunkPresetMagic)) {
-		#ifdef CONFIG_DEBUG
-			printf("-- prog %d: header.fxMagic == \"%s\" (chunked fxp)\n", iProgram, chunkPresetMagic);
-		#endif
 			if (!load_prog_chunk(file))
 				return false;
 		}
-		else {
-		#ifdef CONFIG_DEBUG
-			printf("-- prog %d: header.fxMagic not recognized.\n", iProgram);
-		#endif
-			return false;
-		}
+		else return false;
 	}
 
 	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
@@ -2034,11 +2012,6 @@ bool qtractorVstPreset::load_prog_params ( QFile& file )
 
 	fx_endian_swap(prog_header.numParams);
 
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n",     "numParams", prog_header.numParams);
-	printf("%-16s = \"%s\"\n", "prgName",   prog_header.prgName);
-#endif
-
 	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
 		m_pVstPlugin->vst_dispatch(i, effSetProgramName, 0, 0, (void *) prog_header.prgName, 0.0f);
 
@@ -2051,9 +2024,6 @@ bool qtractorVstPreset::load_prog_params ( QFile& file )
 	if (file.read((char *) params, nread_params) < nread_params)
 		return false;
 
-#ifdef CONFIG_DEBUG
-	printf("%-16s = {", "params");
-#endif
 	for (int iParam = 0; iParam < iNumParams; ++iParam) {
 		fx_endian_swap(params[iParam]);
 		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i) {
@@ -2061,15 +2031,7 @@ bool qtractorVstPreset::load_prog_params ( QFile& file )
 			if (pVstEffect)
 				pVstEffect->setParameter(pVstEffect, iParam, params[iParam]);
 		}
-	#ifdef CONFIG_DEBUG
-		if (iParam > 0 && iParam < 8) printf(",");
-		if (iParam < 8) printf(" %g", params[iParam]);
-	#endif
 	}
-#ifdef CONFIG_DEBUG
-	if (iNumParams > 8) printf(", ...");
-	printf(" }\n");
-#endif
 
 	delete [] params;
 	return true;
@@ -2083,13 +2045,15 @@ bool qtractorVstPreset::load_bank_chunk ( QFile& file )
 	if (file.read((char *) &bank_header, nread) < nread)
 		return false;
 
-#ifdef CONFIG_DEBUG
-	fx_endian_swap(bank_header.numPrograms);
-	fx_endian_swap(bank_header.currentProgram);
-	printf("%-16s = %d\n", "numPrograms", bank_header.numPrograms);
-	printf("%-16s = %d\n", "currentProgram", bank_header.currentProgram);
-#endif
-	return load_chunk(file, 0);
+	const int iCurrentProgram
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+
+	const bool bResult = load_chunk(file, 0);
+
+	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
+		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+
+	return bResult;
 }
 
 
@@ -2100,11 +2064,6 @@ bool qtractorVstPreset::load_prog_chunk ( QFile& file )
 	if (file.read((char *) &prog_header, nread) < nread)
 		return false;
 
-#ifdef CONFIG_DEBUG
-	fx_endian_swap(prog_header.numParams);
-	printf("%-16s = %d\n",     "numParams", prog_header.numParams);
-	printf("%-16s = \"%s\"\n", "prgName",   prog_header.prgName);
-#endif
 	return load_chunk(file, 1);
 }
 
@@ -2124,17 +2083,6 @@ bool qtractorVstPreset::load_chunk ( QFile& file, int preset )
 		delete [] chunk.data;
 		return false;
 	}
-
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n", "chunk.size", chunk.size);
-	printf("%-16s = {", "chunk.data");
-	for (int i = 0; i < ndata; ++i) {
-		if (i > 0 && i < 8) printf(",");
-		if (i < 8) printf(" 0x%02x", chunk.data[i]); else break;
-	}
-	if (ndata > 8) printf(", ...");
-	printf(" }\n");
-#endif
 
 	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i) {
 		m_pVstPlugin->vst_dispatch(i, effSetChunk,
@@ -2186,15 +2134,6 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 	fx_endian_swap(base_header.fxID);
 	fx_endian_swap(base_header.fxVersion);
 
-#ifdef CONFIG_DEBUG
-	printf("%-16s = 0x%08x\n", "chunkMagic", base_header.chunkMagic);
-	printf("%-16s = %d\n",     "byteSize",   base_header.byteSize);
-	printf("%-16s = 0x%08x\n", "fxMagic",    base_header.fxMagic);
-	printf("%-16s = 0x%08x\n", "version",    base_header.version);
-	printf("%-16s = 0x%08x\n", "fxID",       base_header.fxID);
-	printf("%-16s = 0x%08x\n", "fxVersion",  base_header.fxVersion);
-#endif
-
 	bool bResult = false;
 
 	if (!fx_is_magic(base_header.chunkMagic, cMagic)) {
@@ -2231,6 +2170,8 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, chunkPresetMagic)) {
+const int iCurrentProgram = m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+qDebug("DEBUG> load: iCurrentProgram=%d", iCurrentProgram);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxp)", chunkPresetMagic);
 	#endif
@@ -2271,11 +2212,6 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 	bank_header.numPrograms = iNumPrograms;
 	bank_header.currentProgram = iCurrentProgram;
 
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n", "numPrograms", bank_header.numPrograms);
-	printf("%-16s = %d\n", "currentProgram", bank_header.currentProgram);
-#endif
-
 	fx_endian_swap(bank_header.numPrograms);
 	fx_endian_swap(bank_header.currentProgram);
 
@@ -2313,15 +2249,6 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 			base_header.byteSize += sizeof(ProgHeader);
 			base_header.byteSize += iNumParams * sizeof(float);
 		}
-
-	#ifdef CONFIG_DEBUG
-		printf("%-16s = 0x%08x\n", "chunkMagic", base_header.chunkMagic);
-		printf("%-16s = %d\n",     "byteSize",   base_header.byteSize);
-		printf("%-16s = 0x%08x\n", "fxMagic",    base_header.fxMagic);
-		printf("%-16s = 0x%08x\n", "version",    base_header.version);
-		printf("%-16s = 0x%08x\n", "fxID",       base_header.fxID);
-		printf("%-16s = 0x%08x\n", "fxVersion",  base_header.fxVersion);
-	#endif
 
 	//	fx_endian_swap(base_header.chunkMagic);
 		fx_endian_swap(base_header.byteSize);
@@ -2363,31 +2290,16 @@ bool qtractorVstPreset::save_prog_params ( QFile& file )
 
 	m_pVstPlugin->vst_dispatch(0, effGetProgramName, 0, 0, (void *) prog_header.prgName, 0.0f);
 
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n",     "numParams", prog_header.numParams);
-	printf("%-16s = \"%s\"\n", "prgName",   prog_header.prgName);
-#endif
-
 	fx_endian_swap(prog_header.numParams);
 
 	file.write((char *) &prog_header, sizeof(prog_header));
 
 	float *params = new float [iNumParams];
-#ifdef CONFIG_DEBUG
-	printf("%-16s = {", "params");
-#endif
 	for (int iParam = 0; iParam < iNumParams; ++iParam) {
 		params[iParam] = pVstEffect->getParameter(pVstEffect, iParam);
-	#ifdef CONFIG_DEBUG
-		if (iParam > 0 && iParam < 8) printf(",");
-		if (iParam < 8) printf(" %g", params[iParam]);
-	#endif
 		fx_endian_swap(params[iParam]);
 	}
-#ifdef CONFIG_DEBUG
-	if (iNumParams > 8) printf(", ...");
-	printf(" }\n");
-#endif
+
 	file.write((char *) params, iNumParams * sizeof(float));
 	delete [] params;
 
@@ -2409,11 +2321,6 @@ bool qtractorVstPreset::save_bank_chunk ( QFile& file, const Chunk& chunk )
 	::memset(&bank_header, 0, sizeof(bank_header));
 	bank_header.numPrograms = iNumPrograms;
 	bank_header.currentProgram = iCurrentProgram;
-
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n", "numPrograms", bank_header.numPrograms);
-	printf("%-16s = %d\n", "currentProgram", bank_header.currentProgram);
-#endif
 
 	fx_endian_swap(bank_header.numPrograms);
 	fx_endian_swap(bank_header.currentProgram);
@@ -2439,11 +2346,6 @@ bool qtractorVstPreset::save_prog_chunk ( QFile& file, const Chunk& chunk )
 	m_pVstPlugin->vst_dispatch(0, effGetProgramName,
 		0, 0, (void *) prog_header.prgName, 0.0f);
 
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n",     "numParams", prog_header.numParams);
-	printf("%-16s = \"%s\"\n", "prgName",   prog_header.prgName);
-#endif
-
 	fx_endian_swap(prog_header.numParams);
 
 	file.write((char *) &prog_header, sizeof(prog_header));
@@ -2455,17 +2357,6 @@ bool qtractorVstPreset::save_prog_chunk ( QFile& file, const Chunk& chunk )
 bool qtractorVstPreset::save_chunk ( QFile& file, const Chunk& chunk )
 {
 	const int ndata = int(chunk.size);
-
-#ifdef CONFIG_DEBUG
-	printf("%-16s = %d\n", "chunk.size", chunk.size);
-	printf("%-16s = {", "chunk.data");
-	for (int i = 0; i < ndata; ++i) {
-		if (i > 0 && i < 8) printf(",");
-		if (i < 8) printf(" 0x%02x", chunk.data[i]); else break;
-	}
-	if (ndata > 8) printf(", ...");
-	printf(" }\n");
-#endif
 
 	VstInt32 chunk_size = ndata;
 	fx_endian_swap(chunk_size);
@@ -2546,6 +2437,8 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 			base_header.fxMagic = *(VstInt32 *) bankMagic;
 		}
 	} else {
+const int iCurrentProgram = m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+qDebug("DEBUG> save: iCurrentProgram=%d", iCurrentProgram);
 		char szName[24]; ::memset(szName, 0, sizeof(szName));
 		::strncpy(szName, fi.baseName().toUtf8().constData(), sizeof(szName) - 1);
 		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
@@ -2561,15 +2454,6 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 			base_header.fxMagic = *(VstInt32 *) fMagic;
 		}
 	}
-
-#ifdef CONFIG_DEBUG
-	printf("%-16s = 0x%08x\n", "chunkMagic", base_header.chunkMagic);
-	printf("%-16s = %d\n",     "byteSize",   base_header.byteSize);
-	printf("%-16s = 0x%08x\n", "fxMagic",    base_header.fxMagic);
-	printf("%-16s = 0x%08x\n", "version",    base_header.version);
-	printf("%-16s = 0x%08x\n", "fxID",       base_header.fxID);
-	printf("%-16s = 0x%08x\n", "fxVersion",  base_header.fxVersion);
-#endif
 
 //	fx_endian_swap(base_header.chunkMagic);
 	fx_endian_swap(base_header.byteSize);
