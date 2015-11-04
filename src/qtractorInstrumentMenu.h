@@ -30,6 +30,7 @@ class qtractorTrack;
 class qtractorMidiManager;
 
 class QMenu;
+class QIcon;
 class QStyle;
 
 
