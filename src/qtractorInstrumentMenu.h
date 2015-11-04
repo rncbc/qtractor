@@ -61,18 +61,17 @@ protected slots:
 protected:
 
 	bool trackMenuReset(QMenu *pMenu) const;
-	bool trackMenuAdd(QMenu *pMenu,
-		qtractorMidiManager *pMidiManager,
-		const QString& sCurrentName) const;
+	bool trackMenuAdd(QMenu *pMenu, const QIcon& icon,
+		qtractorMidiManager *pMidiManager, const QString& sCurrentName) const;
 
 	bool bankMenuReset(QMenu *pBankMenu) const;
-	bool bankMenuAdd(QMenu *pBankMenu,
+	bool bankMenuAdd(QMenu *pBankMenu, const QIcon& icon,
 		qtractorMidiManager *pMidiManager,
 		const QString& sInstrumentName,
 		int iCurrentBank) const;
 
 	bool progMenuReset(QMenu *pProgMenu) const;
-	bool progMenuAdd(QMenu *pProgMenu,
+	bool progMenuAdd(QMenu *pProgMenu, const QIcon& icon,
 		qtractorMidiManager *pMidiManager,
 		const QString& sInstrumentName,
 		int iBank, int iCurrentProg) const;
