@@ -2252,10 +2252,10 @@ Sollen die Änderungen übernommen werden?</translation>
 <context>
     <name>qtractorInstrumentMenu</name>
     <message>
-        <location filename="../qtractorInstrumentMenu.cpp" line="208"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="255"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="346"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="397"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="210"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="258"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="350"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="403"/>
         <source>(None)</source>
         <translation type="unfinished">(Keine)</translation>
     </message>

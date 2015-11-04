@@ -82,15 +82,16 @@ bool qtractorInstrumentMenu::trackMenuReset ( QMenu *pMenu ) const
 	}
 
 	// Instrument sub-menu...
-	trackMenuAdd(pMenu,
+	const QIcon icon(":/images/itemInstrument.png");
+
+	trackMenuAdd(pMenu, icon,
 		(m_pTrack->pluginList())->midiManager(), sCurrentName);
 
 	if (pMidiBus && pMidiBus->pluginList_out()) {
-		trackMenuAdd(pMenu,
+		trackMenuAdd(pMenu, icon,
 			(pMidiBus->pluginList_out())->midiManager(), sCurrentName);
 	}
 
-	const QIcon icon(":/images/itemInstrument.png");
 	qtractorInstrumentList::ConstIterator iter = pInstruments->constBegin();
 	const qtractorInstrumentList::ConstIterator& iter_end = pInstruments->constEnd();
 	for ( ; iter != iter_end; ++iter) {
@@ -110,7 +111,8 @@ bool qtractorInstrumentMenu::trackMenuReset ( QMenu *pMenu ) const
 }
 
 bool qtractorInstrumentMenu::trackMenuAdd (
-	QMenu *pMenu, qtractorMidiManager *pMidiManager,
+	QMenu *pMenu, const QIcon& icon,
+	qtractorMidiManager *pMidiManager,
 	const QString& sCurrentName ) const
 {
 	if (pMidiManager == NULL)
@@ -119,7 +121,6 @@ bool qtractorInstrumentMenu::trackMenuAdd (
 	pMidiManager->updateInstruments();
 
 	// Instrument sub-menu...
-	const QIcon icon(":/images/itemInstrument.png");
 	const qtractorMidiManager::Instruments& list = pMidiManager->instruments();
 	qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
 	const qtractorMidiManager::Instruments::ConstIterator& iter_end = list.constEnd();
@@ -159,7 +160,9 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 	const int iCurrentBank = m_pTrack->midiBank();
 
 	// Instrument plug-in banks sub-menu...
-	if (bankMenuAdd(pBankMenu,
+	const QIcon icon(":/images/itemPatches.png");
+
+	if (bankMenuAdd(pBankMenu, icon,
 		(m_pTrack->pluginList())->midiManager(),
 		sInstrumentName, iCurrentBank))
 		return true;
@@ -167,7 +170,7 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
 	if (pMidiBus && pMidiBus->pluginList_out()
-		&& bankMenuAdd(pBankMenu,
+		&& bankMenuAdd(pBankMenu, icon,
 			(pMidiBus->pluginList_out())->midiManager(),
 			sInstrumentName, iCurrentBank))
 		return true;
@@ -181,7 +184,6 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 	if (pInstruments == NULL)
 		return false;
 
-	const QIcon icon(":/images/itemPatches.png");
 	const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 	const qtractorInstrumentPatches& patches = instr.patches();
 	qtractorInstrumentPatches::ConstIterator patch_iter = patches.constBegin();
@@ -218,8 +220,10 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 }
 
 bool qtractorInstrumentMenu::bankMenuAdd (
-	QMenu *pBankMenu, qtractorMidiManager *pMidiManager,
-	const QString& sInstrumentName, int iCurrentBank ) const
+	QMenu *pBankMenu, const QIcon& icon,
+	qtractorMidiManager *pMidiManager,
+	const QString& sInstrumentName,
+	int iCurrentBank ) const
 {
 	if (pMidiManager == NULL)
 		return false;
@@ -230,7 +234,6 @@ bool qtractorInstrumentMenu::bankMenuAdd (
 		return false;
 
 	// Instrument plug-in banks sub-menu...
-	const QIcon icon(":/images/itemPatches.png");
 	const qtractorMidiManager::Banks& banks = list.value(sInstrumentName);
 	qtractorMidiManager::Banks::ConstIterator bank_iter = banks.constBegin();
 	const qtractorMidiManager::Banks::ConstIterator& bank_end = banks.constEnd();
@@ -298,7 +301,9 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 	const int iCurrentProg = m_pTrack->midiProg();
 
 	// Instrument plugin programs sub-menu...
-	if (progMenuAdd(pProgMenu,
+	const QIcon icon(":/images/itemChannel.png");
+
+	if (progMenuAdd(pProgMenu, icon,
 		(m_pTrack->pluginList())->midiManager(),
 		sInstrumentName, iBank, iCurrentProg))
 		return true;
@@ -306,7 +311,7 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
 	if (pMidiBus && pMidiBus->pluginList_out()
-		&& progMenuAdd(pProgMenu,
+		&& progMenuAdd(pProgMenu, icon,
 			(pMidiBus->pluginList_out())->midiManager(),
 			sInstrumentName, iBank, iCurrentProg))
 		return true;
@@ -320,7 +325,6 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 	if (pInstruments == NULL)
 		return false;
 
-	const QIcon icon(":/images/itemChannel.png");
 	const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 	const qtractorInstrumentPatches& patches = instr.patches();
 	const qtractorInstrumentData& patch = patches[iBank];
@@ -356,8 +360,10 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 
 
 bool qtractorInstrumentMenu::progMenuAdd (
-	QMenu *pProgMenu, qtractorMidiManager *pMidiManager,
-	const QString& sInstrumentName, int iBank, int iCurrentProg ) const
+	QMenu *pProgMenu, const QIcon& icon,
+	qtractorMidiManager *pMidiManager,
+	const QString& sInstrumentName,
+	int iBank, int iCurrentProg ) const
 {
 	if (pMidiManager == NULL)
 		return false;
@@ -373,14 +379,14 @@ bool qtractorInstrumentMenu::progMenuAdd (
 	if (!banks.contains(iBank))
 		return false;
 
-	const QIcon icon(":/images/itemChannel.png");
+	const QString sProg("%1 - %2");
 	const qtractorMidiManager::Progs& progs = banks.value(iBank).progs;
 	qtractorMidiManager::Progs::ConstIterator prog_iter = progs.constBegin();
 	const qtractorMidiManager::Progs::ConstIterator& prog_end = progs.constEnd();
 	for ( ; prog_iter != prog_end; ++prog_iter) {
 		const int iProg = prog_iter.key();
 		if (iProg < 0) continue;
-		const QString& sProgName = prog_iter.value();
+		const QString& sProgName = sProg.arg(iProg).arg(prog_iter.value());
 		QAction *pAction = pProgMenu->addAction(icon, sProgName);
 		pAction->setCheckable(true);
 		pAction->setChecked(iProg == iCurrentProg);
@@ -400,7 +406,7 @@ bool qtractorInstrumentMenu::progMenuAdd (
 	pAction->setData(-1);
 	QObject::connect(pAction,
 		SIGNAL(triggered(bool)),
-		SLOT(progActionTriggered()));
+		SLOT(progActionTriggered(bool)));
 
 	return true;
 }
@@ -431,12 +437,6 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 						QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
 						if (pMenu) {
 							const QString& sInstrumentName = pMenu->title();
-						#ifdef CONFIG_DEBUG_0
-							qDebug("qtractorInstrumentMenu::progActionTriggered(%p) "
-								"sInstrumentName=\"%s\" iBank=%d iProg=%d",
-								m_pTrack, sInstrumentName.toUtf8().constData(),
-								iBank, iProg);
-						#endif
 							// Make it an undoable command...
 							pSession->execute(
 								new qtractorTrackInstrumentCommand(
