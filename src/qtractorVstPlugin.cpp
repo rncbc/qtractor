@@ -2170,8 +2170,6 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, chunkPresetMagic)) {
-const int iCurrentProgram = m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
-qDebug("DEBUG> load: iCurrentProgram=%d", iCurrentProgram);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxp)", chunkPresetMagic);
 	#endif
@@ -2437,8 +2435,6 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 			base_header.fxMagic = *(VstInt32 *) bankMagic;
 		}
 	} else {
-const int iCurrentProgram = m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
-qDebug("DEBUG> save: iCurrentProgram=%d", iCurrentProgram);
 		char szName[24]; ::memset(szName, 0, sizeof(szName));
 		::strncpy(szName, fi.baseName().toUtf8().constData(), sizeof(szName) - 1);
 		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
