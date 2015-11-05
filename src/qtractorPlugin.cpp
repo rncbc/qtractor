@@ -1144,6 +1144,10 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 	if (pSession == NULL)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	if (sPreset.isEmpty() || sPreset == g_sDefPreset) {
 		// Reset to default...
 		return pSession->execute(new qtractorResetPluginCommand(this));
@@ -1152,19 +1156,24 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 	bool bResult = loadPreset(sPreset);
 	if (bResult) {
 		setPreset(sPreset);
+		pMainForm->dirtyNotifySlot();
 	} else {
 		// An existing preset is about to be loaded...
 		QSettings& settings = pOptions->settings();
 		// Should it be load from known file?...
 		if (type()->isConfigure()) {
 			settings.beginGroup(presetGroup());
-			bResult = loadPresetFile(settings.value(sPreset).toString());
+			bResult = loadPresetFileEx(settings.value(sPreset).toString());
 			settings.endGroup();
-			if (bResult) setPreset(sPreset);
+			if (bResult) {
+				setPreset(sPreset);
+				pMainForm->dirtyNotifySlot();
+			}
 		} else {
 			//...or make it as usual (parameter list only)...
 			settings.beginGroup(presetGroup());
-			QStringList vlist = settings.value(sPreset).toStringList();
+			const QStringList& vlist
+				= settings.value(sPreset).toStringList();
 			settings.endGroup();
 			if (!vlist.isEmpty()) {
 				bResult = pSession->execute(
@@ -1173,6 +1182,19 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 		}
 	}
 
+	return bResult;
+}
+
+
+// Load an existing preset from file.
+bool qtractorPlugin::loadPresetFileEx ( const QString& sFilename )
+{
+	const bool bActivated = isActivated();
+	setActivated(false);
+
+	const bool bResult = loadPresetFile(sFilename);
+
+	setActivated(bActivated);
 	return bResult;
 }
 

@@ -8019,9 +8019,12 @@ void qtractorMainForm::updateDirtyCount ( bool bDirtyCount )
 
 #ifdef CONFIG_NSM
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
-		if (!m_bNsmDirty/* && bDirtyCount*/) {
+		if (!m_bNsmDirty && bDirtyCount) {
 			m_pNsmClient->dirty(true);
 			m_bNsmDirty = true;
+		} else {
+			m_pNsmClient->dirty(false);
+			m_bNsmDirty = false;
 		}
 	}
 #endif
