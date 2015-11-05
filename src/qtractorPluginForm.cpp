@@ -318,7 +318,16 @@ void qtractorPluginForm::setPreset ( const QString& sPreset )
 		sEditText = qtractorPlugin::defPreset();
 
 	++m_iUpdate;
-	m_ui.PresetComboBox->setEditText(sEditText);
+	const bool bBlockSignals
+		= m_ui.PresetComboBox->blockSignals(true);
+
+	const int iIndex = m_ui.PresetComboBox->findText(sEditText);
+	if (iIndex >= 0)
+		m_ui.PresetComboBox->setCurrentIndex(iIndex);
+	else
+		m_ui.PresetComboBox->setEditText(sEditText);
+
+	m_ui.PresetComboBox->blockSignals(bBlockSignals);
 	--m_iUpdate;
 }
 
@@ -447,8 +456,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 	if (m_iUpdate > 0 || sPreset.isEmpty())
 		return;
 
-	if (m_pPlugin->loadPresetEx(sPreset))
-		refresh();
+	m_pPlugin->loadPresetEx(sPreset);
 
 	stabilize();
 }
@@ -862,6 +870,8 @@ void qtractorPluginForm::refresh (void)
 #endif
 
 	++m_iUpdate;
+	const bool bBlockSignals
+		= m_ui.PresetComboBox->blockSignals(true);
 
 	qtractorSubject::flushQueue(true);
 
@@ -870,7 +880,11 @@ void qtractorPluginForm::refresh (void)
 	m_ui.PresetComboBox->insertItems(0, m_pPlugin->presetList());
 	m_ui.PresetComboBox->model()->sort(0);
 	m_ui.PresetComboBox->addItem(qtractorPlugin::defPreset());
-	m_ui.PresetComboBox->setEditText(sOldPreset);
+	const int iIndex = m_ui.PresetComboBox->findText(sOldPreset);
+	if (iIndex >= 0)
+		m_ui.PresetComboBox->setCurrentIndex(iIndex);
+	else
+		m_ui.PresetComboBox->setEditText(sOldPreset);
 
 	ParamWidgets::ConstIterator iter = m_paramWidgets.constBegin();
 	const ParamWidgets::ConstIterator& iter_end = m_paramWidgets.constEnd();
@@ -884,6 +898,7 @@ void qtractorPluginForm::refresh (void)
 	qtractorSubject::resetQueue();
 
 	m_iDirtyCount = 0;
+	m_ui.PresetComboBox->blockSignals(bBlockSignals);
 	--m_iUpdate;
 }
 
