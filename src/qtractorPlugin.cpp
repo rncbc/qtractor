@@ -1157,6 +1157,7 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 	if (bResult) {
 		setPreset(sPreset);
 		pMainForm->dirtyNotifySlot();
+		refreshForm();
 	} else {
 		// An existing preset is about to be loaded...
 		QSettings& settings = pOptions->settings();
@@ -1168,6 +1169,7 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 			if (bResult) {
 				setPreset(sPreset);
 				pMainForm->dirtyNotifySlot();
+				refreshForm();
 			}
 		} else {
 			//...or make it as usual (parameter list only)...
