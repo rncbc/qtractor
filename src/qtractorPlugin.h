@@ -611,8 +611,9 @@ public:
 	virtual bool loadPresetFile(const QString& sFilename);
 	virtual bool savePresetFile(const QString& sFilename);
 
-	// Load an existing preset by name.
+	// Load an existing preset by name/file.
 	bool loadPresetEx(const QString& sPreset);
+	bool loadPresetFileEx(const QString& sFilename);
 
 	// Plugin parameter lookup.
 	qtractorPluginParam *findParam(unsigned long iIndex) const;
