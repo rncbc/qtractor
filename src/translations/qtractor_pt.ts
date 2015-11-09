@@ -58,6 +58,12 @@
         <translation>%1 Entrada</translation>
     </message>
     <message>
+        <location filename="../qtractorClip.cpp" line="566"/>
+        <source>Start:	%1	Offset:	%2
+End:	%3	Length:	%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorClip.cpp" line="574"/>
         <source>File:	%1</source>
         <translation>Arquivo:	%1</translation>
@@ -613,10 +619,9 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>nó de atualização de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="566"/>
         <source>Start / End:	%1 / %2
 Offset / Length:	%3 / %4</source>
-        <translation>Início / Fim:	%1 / %2
+        <translation type="vanished">Início / Fim:	%1 / %2
 Deslocamento / Tamanho:	%3 / %4</translation>
     </message>
     <message>
@@ -6512,11 +6517,10 @@ Tamanho:	%3</translation>
         <translation>remover limite</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4819"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration:	%4</source>
-        <translation>Acionamento da Nota (%1) %2
+        <translation type="vanished">Acionamento da Nota (%1) %2
 intensidade:	%3
 Duração:	%4</translation>
     </message>
@@ -6582,6 +6586,13 @@ Valor:	%3</translation>
         <location filename="../qtractorMidiEditor.cpp" line="4044"/>
         <source>rescale</source>
         <translation>reescalonar</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4819"/>
+        <source>Note On (%1) %2
+Velocity:	%3
+Duration: %4</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4883"/>

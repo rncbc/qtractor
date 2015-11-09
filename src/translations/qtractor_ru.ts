@@ -75,8 +75,8 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="566"/>
-        <source>Start / End:	%1 / %2
-Offset / Length:	%3 / %4</source>
+        <source>Start:	%1	Offset:	%2
+End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6493,11 +6493,10 @@ Type:	</source>
 Тип:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4819"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration:	%4</source>
-        <translation>Нота (%1) %2
+        <translation type="vanished">Нота (%1) %2
 Сила нажатия:	%3
 Длительность:	%4</translation>
     </message>
@@ -6565,6 +6564,13 @@ Length:	%3</source>
 Data: </source>
         <translation>SysEx (%1 байтов)
 Данные: </translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4819"/>
+        <source>Note On (%1) %2
+Velocity:	%3
+Duration: %4</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4883"/>

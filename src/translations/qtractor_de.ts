@@ -97,9 +97,14 @@ Audio:	%1 Kanäle, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="566"/>
+        <source>Start:	%1	Offset:	%2
+End:	%3	Length:	%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Start / End:	%1 / %2
 Offset / Length:	%3 / %4</source>
-        <translation>Start / Ende:	%1 / %2
+        <translation type="vanished">Start / Ende:	%1 / %2
 Versatz / Länge:	%3 / %4</translation>
     </message>
     <message>
@@ -6470,7 +6475,7 @@ Type:	</source>
         <location filename="../qtractorMidiEditor.cpp" line="4819"/>
         <source>Note On (%1) %2
 Velocity:	%3
-Duration:	%4</source>
+Duration: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

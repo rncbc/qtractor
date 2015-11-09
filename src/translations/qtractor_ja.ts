@@ -90,16 +90,21 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>名前:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="566"/>
         <source>Start / End:	%1 / %2
 Offset / Length:	%3 / %4</source>
-        <translation>開始 / 終了:	%1 / %2
+        <translation type="vanished">開始 / 終了:	%1 / %2
 オフセット / 長さ	%3 / %4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="161"/>
         <source> (take %1)</source>
         <translation> (テイク %1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClip.cpp" line="566"/>
+        <source>Start:	%1	Offset:	%2
+End:	%3	Length:	%4</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="574"/>
@@ -6545,8 +6550,14 @@ Type:	</source>
         <location filename="../qtractorMidiEditor.cpp" line="4819"/>
         <source>Note On (%1) %2
 Velocity:	%3
+Duration: %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note On (%1) %2
+Velocity:	%3
 Duration:	%4</source>
-        <translation>ノートオン (%1) %2
+        <translation type="vanished">ノートオン (%1) %2
 ベロシティー	%3
 デュレーション	%4</translation>
     </message>

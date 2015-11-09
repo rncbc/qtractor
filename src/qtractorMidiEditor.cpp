@@ -4816,7 +4816,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 //		break;
 	case qtractorMidiEvent::NOTEON:
 		d0 = (long(pEvent->duration()) + d0 < 0 ? 0 : pEvent->duration() + d0);
-		sToolTip += tr("Note On (%1) %2\nVelocity:\t%3\nDuration:\t%4")
+		sToolTip += tr("Note On (%1) %2\nVelocity:\t%3\nDuration: %4")
 			.arg(int(pEvent->note() + iNoteDelta))
 			.arg(noteName(pEvent->note() + iNoteDelta))
 			.arg(safeValue(pEvent->velocity() + iValueDelta))

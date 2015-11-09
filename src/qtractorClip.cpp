@@ -563,10 +563,10 @@ QString qtractorClip::toolTip (void) const
 	if (pSession) {
 		sToolTip += '\n';
 		qtractorTimeScale *pTimeScale = pSession->timeScale();
-		sToolTip += QObject::tr("Start / End:\t%1 / %2\nOffset / Length:\t%3 / %4")
+		sToolTip += QObject::tr("Start:\t%1\tOffset:\t%2\nEnd:\t%3\tLength:\t%4")
 			.arg(pTimeScale->textFromFrame(m_iClipStart))
-			.arg(pTimeScale->textFromFrame(m_iClipStart  + m_iClipLength))
 			.arg(pTimeScale->textFromFrame(m_iClipStart, true, m_iClipOffset))
+			.arg(pTimeScale->textFromFrame(m_iClipStart + m_iClipLength))
 			.arg(pTimeScale->textFromFrame(m_iClipStart, true, m_iClipLength));
 	}
 
