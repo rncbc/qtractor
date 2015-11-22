@@ -1083,17 +1083,25 @@ Do you want to apply the changes?</source>
 Voulez vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="689"/>
         <source>About to remove bus:
 
 &quot;%1&quot; (%2)
 
 Are you sûre?</source>
-        <translation>Sur le point d&apos;enlever un bus :
+        <translation type="vanished">Sur le point d&apos;enlever un bus :
 
 &quot;%1&quot; (%2)
 
 Êtes vous sûr ?</translation>
+    </message>
+    <message>
+        <location filename="../qtractorBusForm.cpp" line="689"/>
+        <source>About to remove bus:
+
+&quot;%1&quot; (%2)
+
+Are you sure?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="747"/>
@@ -6703,7 +6711,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="58"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Instrum&amp;ent</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="88"/>
