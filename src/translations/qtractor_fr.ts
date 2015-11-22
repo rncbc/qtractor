@@ -232,13 +232,13 @@ Décalage / Longueur:	%3 / %4</translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="206"/>
         <source>Insert Send/Return pseudo-plugin.</source>
-        <translation>Insérer un pseudo greffon d&apos;Envoie/Retour.</translation>
+        <translation>Insérer un pseudo greffon d&apos;envoi/retour.</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="246"/>
         <location filename="../qtractorInsertPlugin.cpp" line="601"/>
         <source>Send Gain</source>
-        <translation>Gain d&apos;Envoie</translation>
+        <translation>Gain d&apos;envoi</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="254"/>
@@ -248,7 +248,7 @@ Décalage / Longueur:	%3 / %4</translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="563"/>
         <source>Aux Send pseudo-plugin.</source>
-        <translation>Pseudo greffon d&apos;Envoie / Retour.</translation>
+        <translation>Pseudo greffon d&apos;envoi/retour.</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="408"/>
@@ -258,12 +258,12 @@ Décalage / Longueur:	%3 / %4</translation>
     <message>
         <location filename="../qtractorInstrument.cpp" line="412"/>
         <source>Version</source>
-        <translation type="unfinished">Version</translation>
+        <translation>Version</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="414"/>
         <source>Build</source>
-        <translation type="unfinished">Compilation</translation>
+        <translation type="unfinished">Construction</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="418"/>
@@ -369,7 +369,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="658"/>
         <source>Options:</source>
-        <translation>Options:</translation>
+        <translation>Options :</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="661"/>
@@ -688,17 +688,17 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="616"/>
         <source>Product: </source>
-        <translation>Produit:</translation>
+        <translation>Produit :</translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="624"/>
         <source>Vendor: </source>
-        <translation>Vendeur:</translation>
+        <translation>Vendeur :</translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="632"/>
         <source>Version: </source>
-        <translation>Version:</translation>
+        <translation>Version :</translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="1466"/>
@@ -708,7 +708,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="146"/>
         <source>Copyright: </source>
-        <translation>Copyright:</translation>
+        <translation>Copyright :</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="1767"/>
@@ -835,7 +835,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="139"/>
         <source>&amp;Name:</source>
-        <translation>&amp;Nom:</translation>
+        <translation>&amp;Nom :</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="149"/>
@@ -845,7 +845,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="156"/>
         <source>&amp;Mode:</source>
-        <translation>&amp;Mode:</translation>
+        <translation>&amp;Mode :</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="179"/>
@@ -888,7 +888,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="229"/>
         <source>Cha&amp;nnels:</source>
-        <translation>Ca&amp;naux:</translation>
+        <translation>Ca&amp;naux :</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="239"/>
@@ -1015,13 +1015,13 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="587"/>
         <source>Refresh bus list view</source>
-        <translation>Rafraichir la vue de liste des bus</translation>
+        <translation>Rafraîchir l&apos;affichage de la liste des bus</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="590"/>
         <location filename="../qtractorBusForm.cpp" line="864"/>
         <source>&amp;Refresh</source>
-        <translation>&amp;Rafraichir</translation>
+        <translation>&amp;Rafraîchir</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="613"/>
@@ -1080,7 +1080,19 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
 Do you want to apply the changes?</source>
         <translation>Des réglages ont changé.
 
-Voulez vous appliquer les changements?</translation>
+Voulez vous appliquer les changements ?</translation>
+    </message>
+    <message>
+        <source>About to remove bus:
+
+&quot;%1&quot; (%2)
+
+Are you sûre?</source>
+        <translation type="vanished">Sur le point d&apos;enlever un bus :
+
+&quot;%1&quot; (%2)
+
+Êtes vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="689"/>
@@ -1089,11 +1101,7 @@ Voulez vous appliquer les changements?</translation>
 &quot;%1&quot; (%2)
 
 Are you sure?</source>
-        <translation>Sur le point d&apos;enlever un bus:
-
-&quot;%1&quot; (%2)
-
-Etes vous sur?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="747"/>
@@ -1102,7 +1110,7 @@ Etes vous sur?</translation>
 Do you want to discard the changes?</source>
         <translation>Des réglages ont changé.
 
-Voulez-vous abandonner les changements?</translation>
+Voulez-vous abandonner les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="902"/>
@@ -1148,7 +1156,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="46"/>
         <source>&amp;Name:</source>
-        <translation>&amp;Nom:</translation>
+        <translation>&amp;Nom :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="56"/>
@@ -1158,7 +1166,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="63"/>
         <source>&amp;File:</source>
-        <translation>&amp;Fichier:</translation>
+        <translation>&amp;Fichier :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="73"/>
@@ -1173,7 +1181,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="108"/>
         <source>Track/&amp;Channel:</source>
-        <translation>Piste/&amp;Canal:</translation>
+        <translation>Piste/&amp;Canal :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
@@ -1208,17 +1216,17 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="208"/>
         <source>Offs&amp;et:</source>
-        <translation>Décalag&amp;e:</translation>
+        <translation>Décalag&amp;e :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="224"/>
         <source>&amp;Length:</source>
-        <translation>&amp;Longueur:</translation>
+        <translation>&amp;Longueur :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="240"/>
         <source>&amp;Start:</source>
-        <translation>&amp;Début:</translation>
+        <translation>&amp;Début :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="253"/>
@@ -1258,7 +1266,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="324"/>
         <source>Fade &amp;In:</source>
-        <translation>Fondu en &amp;ouverture:</translation>
+        <translation>Fondu en &amp;ouverture :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="340"/>
@@ -1273,7 +1281,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="373"/>
         <source>Fade &amp;Out:</source>
-        <translation>Fondu en &amp;fermeture:</translation>
+        <translation>Fondu en &amp;fermeture :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="389"/>
@@ -1294,7 +1302,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="431"/>
         <source>Time St&amp;retch:</source>
-        <translation>Eti&amp;rement temporel:</translation>
+        <translation>Eti&amp;rement temporel :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="447"/>
@@ -1310,7 +1318,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="469"/>
         <source>Pitch S&amp;hift:</source>
-        <translation>Décalage de t&amp;onalité:</translation>
+        <translation>Décalage de t&amp;onalité :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="488"/>
@@ -1325,7 +1333,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.cpp" line="266"/>
         <source>&amp;Gain:</source>
-        <translation>&amp;Gain:</translation>
+        <translation>&amp;Gain :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="267"/>
@@ -1335,7 +1343,7 @@ Voulez-vous abandonner les changements?</translation>
     <message>
         <location filename="../qtractorClipForm.cpp" line="289"/>
         <source>&amp;Volume:</source>
-        <translation>&amp;Volume:</translation>
+        <translation>&amp;Volume :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="387"/>
@@ -1359,7 +1367,7 @@ Voulez-vous abandonner les changements?</translation>
 Do you want to apply the changes?</source>
         <translation>Des réglages ont changé.
 
-Voulez vous appliquer les changements?</translation>
+Voulez vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="641"/>
@@ -1464,7 +1472,7 @@ Voulez vous appliquer les changements?</translation>
         <location filename="../qtractorConnectForm.ui" line="192"/>
         <location filename="../qtractorConnectForm.ui" line="342"/>
         <source>Refresh current connections view</source>
-        <translation>Rafraichir la vue courante des connections</translation>
+        <translation>Rafraichir l&apos;affichage courante des connections</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="195"/>
@@ -1536,12 +1544,12 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="92"/>
         <source>Edit range</source>
-        <translation>Editer la plage</translation>
+        <translation>Éditer la plage</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="95"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editer</translation>
+        <translation>&amp;Éditer</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="105"/>
@@ -1556,7 +1564,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="118"/>
         <source>St&amp;art:</source>
-        <translation>&amp;Début:</translation>
+        <translation>&amp;Début :</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="134"/>
@@ -1566,7 +1574,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="157"/>
         <source>En&amp;d:</source>
-        <translation>F&amp;in:</translation>
+        <translation>F&amp;in :</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="173"/>
@@ -1674,7 +1682,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="52"/>
         <source>&amp;File:</source>
-        <translation>&amp;Fichier:</translation>
+        <translation>&amp;Fichier :</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="76"/>
@@ -1724,12 +1732,12 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="164"/>
         <source>Edit range</source>
-        <translation>Editer la plage</translation>
+        <translation>Éditer la plage</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="167"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editer</translation>
+        <translation>&amp;Éditer</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="177"/>
@@ -1744,7 +1752,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="206"/>
         <source>St&amp;art:</source>
-        <translation>&amp;Début:</translation>
+        <translation>&amp;Début :</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="222"/>
@@ -1754,7 +1762,7 @@ Voulez vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="229"/>
         <source>En&amp;d:</source>
-        <translation>F&amp;in:</translation>
+        <translation>F&amp;in :</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="245"/>
@@ -1827,7 +1835,7 @@ Do you want to replace it?</source>
 
 &quot;%1&quot;
 
-Voulez-vous le remplacer?</translation>
+Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="264"/>
@@ -1906,7 +1914,7 @@ failed.</source>
 Are you sure?</source>
         <translation>Sur le point de supprimer %1 élément(s) de type fichier
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorFileListView.cpp" line="688"/>
@@ -1919,7 +1927,7 @@ Are you sure?</source>
 
 &quot;%2&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorFileListView.cpp" line="691"/>
@@ -2164,7 +2172,7 @@ Do you want to replace it?</source>
 
 &quot;%1&quot;
 
-Voulez-vous le remplacer?</translation>
+Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="460"/>
@@ -2173,7 +2181,7 @@ Voulez-vous le remplacer?</translation>
 Do you want to apply the changes?</source>
         <translation>Les réglages de l&apos;instrument ont été changés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="544"/>
@@ -2238,7 +2246,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="696"/>
         <source>Based On = %1</source>
-        <translation>Basé Sur = %1</translation>
+        <translation>Basé sur = %1</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="732"/>
@@ -2299,7 +2307,7 @@ Voulez-vous appliquer les changements?</translation>
         <location filename="../qtractorMainForm.ui" line="392"/>
         <location filename="../qtractorMainForm.ui" line="2114"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editer</translation>
+        <translation>&amp;Éditer</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="396"/>
@@ -2333,7 +2341,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="223"/>
         <source>&amp;State</source>
-        <translation>&amp;Etat</translation>
+        <translation>&amp;État</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="233"/>
@@ -2373,7 +2381,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="276"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrum&amp;ent</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="335"/>
@@ -2394,7 +2402,7 @@ Voulez-vous appliquer les changements?</translation>
         <location filename="../qtractorMainForm.ui" line="453"/>
         <location filename="../qtractorMainForm.ui" line="2148"/>
         <source>&amp;View</source>
-        <translation>&amp;Vue</translation>
+        <translation>&amp;Affichage</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="457"/>
@@ -2540,7 +2548,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="647"/>
         <source>Edit current session properties</source>
-        <translation>Editer les propriétés de la session courante</translation>
+        <translation>Éditer les propriétés de la session courante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="650"/>
@@ -2556,12 +2564,12 @@ Voulez-vous appliquer les changements?</translation>
         <location filename="../qtractorMainForm.ui" line="658"/>
         <location filename="../qtractorMainForm.ui" line="661"/>
         <source>Exit</source>
-        <translation>Sortir</translation>
+        <translation>Quitter</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="664"/>
         <source>Exit this application program</source>
-        <translation>Sortir de cette application</translation>
+        <translation>Quitter de cette application</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="672"/>
@@ -3130,7 +3138,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1139"/>
         <source>Edit current track properties</source>
-        <translation>Editer les propriétés de la piste courante</translation>
+        <translation>Éditer les propriétés de la piste courante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1142"/>
@@ -3796,22 +3804,22 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1706"/>
         <source>&amp;Edit...</source>
-        <translation>&amp;Editer...</translation>
+        <translation>&amp;Éditer...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1709"/>
         <source>Edit Clip</source>
-        <translation>Editer Clip</translation>
+        <translation>Éditer Clip</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1712"/>
         <source>Edit clip</source>
-        <translation>Editer clip</translation>
+        <translation>Éditer clip</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1715"/>
         <source>Edit current clip</source>
-        <translation>Editer le clip courant</translation>
+        <translation>Éditer le clip courant</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1718"/>
@@ -4310,12 +4318,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2117"/>
         <source>Edit Toolbar</source>
-        <translation>Editer la barre d&apos;outils</translation>
+        <translation>Éditer la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2120"/>
         <source>Edit toolbar</source>
-        <translation>Editer la barre d&apos;outils</translation>
+        <translation>Éditer la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2123"/>
@@ -4340,17 +4348,17 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2151"/>
         <source>View Toolbar</source>
-        <translation>Barre d&apos;outils Vue</translation>
+        <translation>Affichage de la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2154"/>
         <source>View toolbar</source>
-        <translation>Barre d&apos;outils vue</translation>
+        <translation>Affichage de la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2157"/>
         <source>Show/hide main program window view toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils vue de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher la barre d&apos;outils de l&apos;affichage de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2165"/>
@@ -4628,7 +4636,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2436"/>
         <source>Snap grid view mode</source>
-        <translation>Mode vue grille magnétique</translation>
+        <translation>Mode d&apos;affichage collant à la grille magnétique</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2444"/>
@@ -4644,7 +4652,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2453"/>
         <source>Bar zebra view mode</source>
-        <translation>Mode vue barre zèbrée</translation>
+        <translation>Mode d&apos;affichage barre zèbrée</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2461"/>
@@ -4660,7 +4668,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2470"/>
         <source>Floating tool tips view mode</source>
-        <translation>Mode vue info-bulles flottantes</translation>
+        <translation>Mode d&apos;affichage des astuces d&apos;info-bulles flottantes</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2475"/>
@@ -4676,7 +4684,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2484"/>
         <source>Refresh views</source>
-        <translation>Rafraichir les vues</translation>
+        <translation>Rafraichir l&apos;affichage</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2487"/>
@@ -5138,7 +5146,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="589"/>
         <source>Session modification state</source>
-        <translation>Etat de modification de la session</translation>
+        <translation>État de modification de la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="595"/>
@@ -5149,7 +5157,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="598"/>
         <source>Session record state</source>
-        <translation>Etat d&apos;enregistrement de la session</translation>
+        <translation>État d&apos;enregistrement de la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="604"/>
@@ -5160,7 +5168,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="607"/>
         <source>Session muting state</source>
-        <translation>Etat muet de la session</translation>
+        <translation>État muet de la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="613"/>
@@ -5171,7 +5179,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="616"/>
         <source>Session soloing state</source>
-        <translation>Etat solo de la session</translation>
+        <translation>État solo de la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="622"/>
@@ -5182,7 +5190,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="625"/>
         <source>Session looping state</source>
-        <translation>Etat de bouclage de la session</translation>
+        <translation>État de bouclage de la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="643"/>
@@ -5286,7 +5294,7 @@ Do you want to replace it?</source>
 
 &quot;%1&quot;
 
-Voulez-vous le remplacer?</translation>
+Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2037"/>
@@ -5317,7 +5325,7 @@ Do you want to save the changes?</source>
 
 &quot;%1&quot;
 
-Voulez-vous sauvegarder les changements?</translation>
+Voulez-vous sauvegarder les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2153"/>
@@ -5330,7 +5338,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2192"/>
@@ -5344,11 +5352,11 @@ Etes-vous sur?</translation>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation>Le répertoire existe déjà:
+        <translation>Le répertoire existe déjà :
 
 &quot;%1&quot;
 
-Voulez-vous le remplacer?</translation>
+Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2273"/>
@@ -5407,7 +5415,7 @@ Il semblerait qu&apos;il y ait eu un crash ou que l&apos;application n&apos;est 
 
 &quot;%1&quot;
 
-Voulez-vous redémarrer à partir de celui-ci?</translation>
+Voulez-vous redémarrer à partir de celui-ci ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="3913"/>
@@ -5420,7 +5428,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4015"/>
@@ -5433,7 +5441,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4443"/>
@@ -5570,7 +5578,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5918"/>
         <source>XRUN</source>
-        <translation type="unfinished"></translation>
+        <translation>XRUN</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6127"/>
@@ -6200,7 +6208,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="431"/>
@@ -6223,7 +6231,7 @@ Do you want to replace it?</source>
 
 &quot;%1&quot;
 
-Voulez-vous le remplacer?</translation>
+Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="494"/>
@@ -6238,7 +6246,7 @@ la prochaine fois que vous démarrerez ce programme.
 
 &quot;%1&quot;
 
-Voulez-vous mettre à jour les fichiers contrôleur?</translation>
+Voulez-vous mettre à jour les fichiers contrôleur ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="525"/>
@@ -6248,7 +6256,7 @@ Voulez-vous mettre à jour les fichiers contrôleur?</translation>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="526"/>
         <source>Do you want to save the changes?</source>
-        <translation>Voulez-vous sauvegarder les changements?</translation>
+        <translation>Voulez-vous sauvegarder les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="720"/>
@@ -6272,7 +6280,7 @@ Voulez-vous mettre à jour les fichiers contrôleur?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="43"/>
         <source>&amp;Type:</source>
-        <translation>&amp;Type:</translation>
+        <translation>&amp;Type :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="53"/>
@@ -6282,7 +6290,7 @@ Voulez-vous mettre à jour les fichiers contrôleur?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="60"/>
         <source>Cha&amp;nnel:</source>
-        <translation>Ca&amp;nal:</translation>
+        <translation>Ca&amp;nal :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="70"/>
@@ -6292,7 +6300,7 @@ Voulez-vous mettre à jour les fichiers contrôleur?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="96"/>
         <source>&amp;Parameter:</source>
-        <translation>&amp;Paramètre:</translation>
+        <translation>&amp;Paramètre :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="106"/>
@@ -6356,7 +6364,7 @@ Voulez-vous mettre à jour les fichiers contrôleur?</translation>
 Do you want to replace the mapping?</source>
         <translation>Le contrôleur MIDI est déjà associé.
 
-Voulez-vous remplacer l&apos;association?</translation>
+Voulez-vous remplacer l&apos;association ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="405"/>
@@ -6365,7 +6373,7 @@ Voulez-vous remplacer l&apos;association?</translation>
 Do you want to apply the changes?</source>
         <translation>Des réglages ont été changés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="541"/>
@@ -6434,12 +6442,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="828"/>
         <source>Edit-head</source>
-        <translation>Editer le début</translation>
+        <translation>Éditer le début</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="831"/>
         <source>Edit-tail</source>
-        <translation>Editer la fin</translation>
+        <translation>Éditer la fin</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditTime.cpp" line="834"/>
@@ -6627,7 +6635,7 @@ Valeur:	%3</translation>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bytes)
-Données:</translation>
+Données :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4883"/>
@@ -6692,18 +6700,18 @@ Longueur:	%3</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="163"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1021"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editer</translation>
+        <translation>&amp;Éditer</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="84"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1038"/>
         <source>&amp;View</source>
-        <translation>&amp;Vue</translation>
+        <translation>&amp;Affichage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="58"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Instrum&amp;ent</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="88"/>
@@ -6861,7 +6869,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="494"/>
         <source>Edit current MIDI clip/track properties</source>
-        <translation>Editer les propriétés MIDI du clip/piste courant</translation>
+        <translation>Éditer les propriétés MIDI du clip/piste courant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="497"/>
@@ -6877,7 +6885,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="514"/>
         <source>Edit current MIDI clip properties</source>
-        <translation>Editer les propriétés du clip MIDI courant</translation>
+        <translation>Éditer les propriétés du clip MIDI courant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="517"/>
@@ -7459,17 +7467,17 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1041"/>
         <source>View Toolbar</source>
-        <translation>Barre d&apos;outils Vue</translation>
+        <translation>Affichage de la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1044"/>
         <source>View toolbar</source>
-        <translation>Barre d&apos;outils vue</translation>
+        <translation>Affichage de la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1047"/>
         <source>Show/hide the view toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils vue</translation>
+        <translation>Montrer/cacher l&apos;affichage de la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1055"/>
@@ -7791,7 +7799,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1366"/>
         <source>Snap grid view mode</source>
-        <translation>Mode de vue capture sur la grille</translation>
+        <translation>Mode de l&apos;affichage de la grille magnétique</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1374"/>
@@ -7807,7 +7815,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1383"/>
         <source>Floating tool tips view mode</source>
-        <translation>Mode de vue info-bulles flottantes</translation>
+        <translation>Mode d&apos;affichage des info-bulles flottantes</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1388"/>
@@ -7823,7 +7831,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1397"/>
         <source>Refresh views</source>
-        <translation>Rafraichir les vues</translation>
+        <translation>Rafraîchir l&apos;affichage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1400"/>
@@ -8182,7 +8190,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="232"/>
         <source>MIDI modification state</source>
-        <translation>Etat de modification MIDI</translation>
+        <translation>État de modification MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="237"/>
@@ -8193,7 +8201,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="240"/>
         <source>MIDI clip record state</source>
-        <translation>Etat d&apos;enregistrement du clip MIDI</translation>
+        <translation>État d&apos;enregistrement du clip MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="245"/>
@@ -8221,7 +8229,7 @@ Do you want to save the changes?</source>
 
 &quot;%1&quot;
 
-Voulez-vous sauvegarder les changements?</translation>
+Voulez-vous sauvegarder les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="965"/>
@@ -8600,7 +8608,7 @@ Do you want to replace it?</source>
 
 &quot;%1&quot;
 
-Voulez-vous le remplacer?</translation>
+Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="502"/>
@@ -8618,7 +8626,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="579"/>
@@ -8631,7 +8639,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="772"/>
@@ -8640,7 +8648,7 @@ Etes-vous sur?</translation>
 Do you want to apply the changes?</source>
         <translation>Les réglages SysEx ont été changés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="1048"/>
@@ -8666,7 +8674,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiThumbView.cpp" line="77"/>
         <source>MIDI Thumb view</source>
-        <translation>Vue vignette MIDI</translation>
+        <translation>Affichage vignette MIDI</translation>
     </message>
 </context>
 <context>
@@ -8708,7 +8716,7 @@ Désolé.</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="699"/>
         <location filename="../qtractorMidiToolsForm.ui" line="1005"/>
         <source>&amp;Time:</source>
-        <translation>&amp;Temps:</translation>
+        <translation>&amp;Temps :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="169"/>
@@ -8741,7 +8749,7 @@ Désolé.</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="829"/>
         <location filename="../qtractorMidiToolsForm.ui" line="1050"/>
         <source>&amp;Duration:</source>
-        <translation>&amp;Durée:</translation>
+        <translation>&amp;Durée :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="221"/>
@@ -8756,7 +8764,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="253"/>
         <source>S&amp;wing:</source>
-        <translation>F&amp;luctuation:</translation>
+        <translation>F&amp;luctuation :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="260"/>
@@ -8791,7 +8799,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="327"/>
         <source>&amp;Scale:</source>
-        <translation>&amp;Echelle:</translation>
+        <translation>&amp;Echelle :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="334"/>
@@ -8818,7 +8826,7 @@ Désolé.</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="400"/>
         <location filename="../qtractorMidiToolsForm.ui" line="660"/>
         <source>&amp;Note:</source>
-        <translation>&amp;Note:</translation>
+        <translation>&amp;Note :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="413"/>
@@ -8867,7 +8875,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="546"/>
         <source>&amp;Percent:</source>
-        <translation>&amp;Pourcent:</translation>
+        <translation>&amp;Pourcent :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="559"/>
@@ -8880,7 +8888,7 @@ Désolé.</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="884"/>
         <location filename="../qtractorMidiToolsForm.ui" line="1082"/>
         <source>&amp;Value:</source>
-        <translation>&amp;Valeur:</translation>
+        <translation>&amp;Valeur :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="598"/>
@@ -9008,7 +9016,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1166"/>
         <source>P:</source>
-        <translation>P:</translation>
+        <translation>P :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1179"/>
@@ -9034,7 +9042,7 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation>P = 0 : pas de changement.
 P &gt; 0 : décalage accéléré.
 P &lt; 0 : décalage ralenti.
-Editer les marqueurs tête/queue (bleu) pour définir la plage de décalage.</translation>
+Éditer les marqueurs tête/queue (bleu) pour définir la plage de décalage.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1264"/>
@@ -9062,7 +9070,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="767"/>
@@ -9239,7 +9247,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="86"/>
         <source>Default session &amp;file format:</source>
-        <translation>Format de &amp;fichier par défaut de la session:</translation>
+        <translation>Format de &amp;fichier par défaut de la session :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="102"/>
@@ -9254,7 +9262,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="131"/>
         <source>&amp;New session template:</source>
-        <translation>&amp;Nouveau modèle de session:</translation>
+        <translation>&amp;Nouveau modèle de session :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="156"/>
@@ -9275,7 +9283,7 @@ Etes-vous sur?</translation>
         <location filename="../qtractorOptionsForm.ui" line="216"/>
         <source>Save &amp;backup versions of existing sessions:</source>
         <translation>Sauver &amp;des versions de sauvegarde de sessions
-existantes:</translation>
+existantes :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="229"/>
@@ -9300,7 +9308,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="255"/>
         <source>Auto-save current working session every:</source>
-        <translation>Sauvegarder automatiquement la session courante toute les:</translation>
+        <translation>Sauvegarder automatiquement la session courante toute les :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="268"/>
@@ -9331,7 +9339,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="343"/>
         <source>Number of &amp;recent files:</source>
-        <translation>Nombre de fichiers &amp;récents:</translation>
+        <translation>Nombre de fichiers &amp;récents :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="368"/>
@@ -9416,7 +9424,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="517"/>
         <source>Transport &amp;mode:</source>
-        <translation>&amp;Mode transport:</translation>
+        <translation>&amp;Mode transport :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
@@ -9460,7 +9468,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="598"/>
         <source>&amp;Loop recording mode (takes):</source>
-        <translation>Mode d&apos;enregistrement de bouc&amp;les (prises):</translation>
+        <translation>Mode d&apos;enregistrement de bouc&amp;les (prises) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="617"/>
@@ -9506,17 +9514,17 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="749"/>
         <source>File &amp;type:</source>
-        <translation>&amp;Type de fichier:</translation>
+        <translation>&amp;Type de fichier :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="765"/>
         <source>Sample &amp;format:</source>
-        <translation>&amp;Format d&apos;échantillon:</translation>
+        <translation>&amp;Format d&apos;échantillon :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="781"/>
         <source>&amp;Quality:</source>
-        <translation>&amp;Qualité:</translation>
+        <translation>&amp;Qualité :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="813"/>
@@ -9537,7 +9545,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="857"/>
         <source>Sample-&amp;rate converter type:</source>
-        <translation>Type de conve&amp;rtisseur de fréquence d&apos;échantillonnage:</translation>
+        <translation>Type de conve&amp;rtisseur de fréquence d&apos;échantillonnage :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="876"/>
@@ -9582,7 +9590,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2420"/>
         <source>&amp;Style theme:</source>
-        <translation>&amp;Style de thème:</translation>
+        <translation>&amp;Style de thème :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="930"/>
@@ -9602,7 +9610,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="949"/>
         <source>Dedicated au&amp;dition/pre-listening player outputs:</source>
-        <translation>Sorties dédiées pour le lecteur audio pour l&apos;au&amp;dition/pré-écoute:</translation>
+        <translation>Sorties dédiées pour le lecteur audio pour l&apos;au&amp;dition/pré-écoute :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="962"/>
@@ -9633,7 +9641,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1038"/>
         <source>&amp;File (bar):</source>
-        <translation>&amp;Fichier (barre):</translation>
+        <translation>&amp;Fichier (barre) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1066"/>
@@ -9648,7 +9656,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1113"/>
         <source>&amp;Gain (bar):</source>
-        <translation>&amp;Gain (barre):</translation>
+        <translation>&amp;Gain (barre) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1135"/>
@@ -9664,7 +9672,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1163"/>
         <source>&amp;File (beat):</source>
-        <translation>&amp;Fichier (battement):</translation>
+        <translation>&amp;Fichier (battement) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1191"/>
@@ -9679,7 +9687,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1238"/>
         <source>&amp;Gain (beat):</source>
-        <translation>&amp;Gain (battement):</translation>
+        <translation>&amp;Gain (battement) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1260"/>
@@ -9694,7 +9702,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1291"/>
         <source>Dedicated a&amp;udio metronome outputs:</source>
-        <translation>Sorties a&amp;udio métronome dédiées:</translation>
+        <translation>Sorties a&amp;udio métronome dédiées :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1304"/>
@@ -9714,7 +9722,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1345"/>
         <source>File &amp;format:</source>
-        <translation>Format de &amp;fichier:</translation>
+        <translation>Format de &amp;fichier :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1361"/>
@@ -9724,7 +9732,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1387"/>
         <source>&amp;Quantize:</source>
-        <translation>&amp;Quantifier:</translation>
+        <translation>&amp;Quantifier :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1409"/>
@@ -9734,7 +9742,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1446"/>
         <source>Queue &amp;timer (resolution):</source>
-        <translation>File d&apos;attente minu&amp;teur (résolution):</translation>
+        <translation>File d&apos;attente minu&amp;teur (résolution) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1462"/>
@@ -9769,7 +9777,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1544"/>
         <source>&amp;MMC:</source>
-        <translation>&amp;MMC:</translation>
+        <translation>&amp;MMC :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1560"/>
@@ -9800,7 +9808,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1593"/>
         <source>&amp;Device:</source>
-        <translation>&amp;Périphérique:</translation>
+        <translation>&amp;Périphérique :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1609"/>
@@ -9810,7 +9818,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1635"/>
         <source>&amp;SPP:</source>
-        <translation>&amp;SPP:</translation>
+        <translation>&amp;SPP :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1651"/>
@@ -9820,7 +9828,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1697"/>
         <source>MIDI Cloc&amp;k:</source>
-        <translation>Horlo&amp;ge MIDI:</translation>
+        <translation>Horlo&amp;ge MIDI :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1713"/>
@@ -9850,7 +9858,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1809"/>
         <source>&amp;Channel:</source>
-        <translation>&amp;Canal:</translation>
+        <translation>&amp;Canal :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1825"/>
@@ -9860,7 +9868,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1860"/>
         <source>&amp;Note (bar):</source>
-        <translation>&amp;Note (barre):</translation>
+        <translation>&amp;Note (barre) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1882"/>
@@ -9870,7 +9878,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1895"/>
         <source>&amp;Velocity (bar):</source>
-        <translation>&amp;Vélocité (barre):</translation>
+        <translation>&amp;Vélocité (barre) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1911"/>
@@ -9881,12 +9889,12 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1946"/>
         <source>&amp;Duration (bar):</source>
-        <translation>&amp;Durée (barre):</translation>
+        <translation>&amp;Durée (barre) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1987"/>
         <source>&amp;Note (beat):</source>
-        <translation>&amp;Note (battement):</translation>
+        <translation>&amp;Note (battement) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2009"/>
@@ -9896,7 +9904,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2022"/>
         <source>&amp;Velocity (beat):</source>
-        <translation>&amp;Vélocité (battement):</translation>
+        <translation>&amp;Vélocité (battement) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2038"/>
@@ -9907,7 +9915,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2060"/>
         <source>&amp;Duration (beat):</source>
-        <translation>&amp;Durée (battement):</translation>
+        <translation>&amp;Durée (battement) :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2101"/>
@@ -9932,7 +9940,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2142"/>
         <source>&amp;Time display format:</source>
-        <translation>Format d&apos;affichage du &amp;temps:</translation>
+        <translation>Format d&apos;affichage du &amp;temps :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2158"/>
@@ -9957,7 +9965,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2199"/>
         <source>&amp;Base font size:</source>
-        <translation>Taille de la police de &amp;base:</translation>
+        <translation>Taille de la police de &amp;base :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2218"/>
@@ -10040,7 +10048,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2370"/>
         <source>&amp;Color theme:</source>
-        <translation>Thème de &amp;couleur:</translation>
+        <translation>Thème de &amp;couleur :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2389"/>
@@ -10070,7 +10078,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2501"/>
         <source>&amp;Audio:</source>
-        <translation>&amp;Audio:</translation>
+        <translation>&amp;Audio :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2523"/>
@@ -10124,7 +10132,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2627"/>
         <source>&amp;MIDI:</source>
-        <translation>&amp;MIDI:</translation>
+        <translation>&amp;MIDI :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2652"/>
@@ -10184,12 +10192,12 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2856"/>
         <source>M&amp;essages limit:</source>
-        <translation>Limite des m&amp;essages:</translation>
+        <translation>Limite des m&amp;essages :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2869"/>
         <source>The maximum number of message lines to keep in view</source>
-        <translation>Le nombre maximum de lignes de messages à conserver dans la vue</translation>
+        <translation>Le nombre maximum de lignes de messages à conserver dans l&apos;affichage</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2872"/>
@@ -10224,7 +10232,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2983"/>
         <source>Messages &amp;log file:</source>
-        <translation>Fichier d&apos;enregis&amp;trement des messages:</translation>
+        <translation>Fichier d&apos;enregis&amp;trement des messages :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2994"/>
@@ -10295,7 +10303,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3257"/>
         <source>&amp;LV2 Presets directory:</source>
-        <translation>Répertoire des réglages &amp;LV2:</translation>
+        <translation>Répertoire des réglages &amp;LV2 :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3279"/>
@@ -10320,7 +10328,7 @@ existantes:</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3355"/>
         <source>Dedicated audi&amp;o outputs:</source>
-        <translation>Sorties audi&amp;o dédiées:</translation>
+        <translation>Sorties audi&amp;o dédiées :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3368"/>
@@ -10434,7 +10442,7 @@ existantes:</translation>
 Do you want to apply the changes?</source>
         <translation>Des réglages ont été changés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="897"/>
@@ -10502,7 +10510,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="51"/>
         <source>&amp;Count:</source>
-        <translation>&amp;Compte:</translation>
+        <translation>&amp;Compte :</translation>
     </message>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="61"/>
@@ -10512,7 +10520,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="87"/>
         <source>&amp;Period:</source>
-        <translation>&amp;Période:</translation>
+        <translation>&amp;Période :</translation>
     </message>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="100"/>
@@ -10551,7 +10559,7 @@ Voulez-vous appliquer les changements?</translation>
 Do you want to apply the changes?</source>
         <translation>Certains réglages ont été changés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
 </context>
 <context>
@@ -10584,12 +10592,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="135"/>
         <source>Edit plugin</source>
-        <translation>Editer greffon</translation>
+        <translation>Éditer greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="138"/>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="157"/>
@@ -10629,7 +10637,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="276"/>
         <source>Aux Send Bus:</source>
-        <translation>Bus d&apos;envoie aux:</translation>
+        <translation>Bus d&apos;envoi aux :</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="301"/>
@@ -10722,7 +10730,7 @@ Are you sure?</source>
 
 &quot;%1&quot; (%2)
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="804"/>
@@ -10785,7 +10793,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1464"/>
         <source>Add &amp;Aux Send</source>
-        <translation>Ajouter Envoie &amp;Auxiliaire</translation>
+        <translation>Ajouter envoi &amp;auxiliaire</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1472"/>
@@ -10845,7 +10853,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1584"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editer</translation>
+        <translation>&amp;Éditer</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1598"/>
@@ -10986,7 +10994,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="55"/>
         <source>&amp;Name:</source>
-        <translation>&amp;Nom:</translation>
+        <translation>&amp;Nom :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="71"/>
@@ -10996,7 +11004,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="78"/>
         <source>&amp;Directory:</source>
-        <translation>&amp;Répertoire:</translation>
+        <translation>&amp;Répertoire :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="99"/>
@@ -11016,7 +11024,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="139"/>
         <source>&amp;Description:</source>
-        <translation>&amp;Description:</translation>
+        <translation>&amp;Description :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="155"/>
@@ -11036,7 +11044,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="175"/>
         <source>Sample &amp;Rate:</source>
-        <translation>&amp;Fréquence d&apos;échantillonnage:</translation>
+        <translation>&amp;Fréquence d&apos;échantillonnage :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="188"/>
@@ -11066,7 +11074,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="218"/>
         <source>&amp;Tempo:</source>
-        <translation>&amp;Tempo:</translation>
+        <translation>&amp;Tempo :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="237"/>
@@ -11076,7 +11084,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="244"/>
         <source>T&amp;icks/Beat:</source>
-        <translation>C&amp;oches/Battement:</translation>
+        <translation>C&amp;oches/Battement :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="257"/>
@@ -11086,12 +11094,12 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="292"/>
         <source>View</source>
-        <translation>Vue</translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="298"/>
         <source>&amp;Snap/Beat:</source>
-        <translation>&amp;Capture/Battement:</translation>
+        <translation>&amp;Capture/Battement :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="311"/>
@@ -11101,7 +11109,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="321"/>
         <source>&amp;Pixels/Beat:</source>
-        <translation>&amp;Pixels/Battement:</translation>
+        <translation>&amp;Pixels/Battement :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="334"/>
@@ -11111,7 +11119,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="353"/>
         <source>&amp;Horizontal Zoom:</source>
-        <translation>Zoom &amp;Horizontal:</translation>
+        <translation>Zoom &amp;Horizontal :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="366"/>
@@ -11127,7 +11135,7 @@ Etes-vous sur?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="388"/>
         <source>&amp;Vertical Zoom:</source>
-        <translation>Zoom &amp;Vertical:</translation>
+        <translation>Zoom &amp;Vertical :</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="401"/>
@@ -11151,7 +11159,7 @@ Do you want to create it?</source>
 
 &quot;%1&quot;
 
-Voulez-vous le créer?</translation>
+Voulez-vous le créer ?</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.cpp" line="243"/>
@@ -11160,7 +11168,7 @@ Voulez-vous le créer?</translation>
 Do you want to apply the changes?</source>
         <translation>Certains réglages ont été modifiés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.cpp" line="288"/>
@@ -11214,7 +11222,7 @@ Voulez-vous appliquer les changements?</translation>
 Do you want to apply the changes?</source>
         <translation>Des raccourcis clavier ont été modifiés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="516"/>
@@ -11223,7 +11231,7 @@ Voulez-vous appliquer les changements?</translation>
 Do you want to apply the changes?</source>
         <translation>Des raccourcis de contrôleur MIDI ont été modifiés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="551"/>
@@ -11306,7 +11314,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="157"/>
         <source>St&amp;art:</source>
-        <translation>&amp;Début:</translation>
+        <translation>&amp;Début :</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="137"/>
@@ -11316,7 +11324,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="53"/>
         <source>En&amp;d:</source>
-        <translation>&amp;Fin:</translation>
+        <translation>&amp;Fin :</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="150"/>
@@ -11369,7 +11377,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="58"/>
         <source>Temp&amp;o:</source>
-        <translation>Temp&amp;o:</translation>
+        <translation>Temp&amp;o :</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="74"/>
@@ -11389,7 +11397,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="152"/>
         <source>&amp;Start:</source>
-        <translation>&amp;Début:</translation>
+        <translation>&amp;Début :</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="197"/>
@@ -11409,7 +11417,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="116"/>
         <source>&amp;Length:</source>
-        <translation>&amp;Longueur:</translation>
+        <translation>&amp;Longueur :</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="184"/>
@@ -11419,7 +11427,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="168"/>
         <source>B&amp;eats:</source>
-        <translation>Batt&amp;ements:</translation>
+        <translation>Batt&amp;ements :</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="126"/>
@@ -11458,7 +11466,7 @@ Voulez-vous appliquer les changements?</translation>
 Do you want to apply the changes?</source>
         <translation>Certains réglages ont été modifiés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
 </context>
 <context>
@@ -11466,7 +11474,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorThumbView.cpp" line="75"/>
         <source>Thumb view</source>
-        <translation>Vue vignette</translation>
+        <translation>Affichage vignette</translation>
     </message>
 </context>
 <context>
@@ -11494,7 +11502,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="111"/>
         <source>&amp;Bar:</source>
-        <translation>&amp;Barre:</translation>
+        <translation>&amp;Barre :</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="37"/>
@@ -11525,7 +11533,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="146"/>
         <source>T&amp;ime:</source>
-        <translation>T&amp;emps:</translation>
+        <translation>T&amp;emps :</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="165"/>
@@ -11535,7 +11543,7 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="200"/>
         <source>&amp;Tempo:</source>
-        <translation>&amp;Tempo:</translation>
+        <translation>&amp;Tempo :</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="219"/>
@@ -11640,7 +11648,7 @@ Voulez-vous appliquer les changements?</translation>
 Do you want to apply the changes?</source>
         <translation>Certains réglages ont été modifiés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="676"/>
@@ -11653,7 +11661,7 @@ Are you sure?</source>
 
 %1 (%2) %3  %4/%5
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="826"/>
@@ -11662,7 +11670,7 @@ Etes-vous sur?</translation>
 Do you want to discard the changes?</source>
         <translation>Certains réglages ont été modifiés.
 
-Voulez-vous abandonner ces changements?</translation>
+Voulez-vous abandonner ces changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.cpp" line="849"/>
@@ -11731,7 +11739,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="55"/>
         <source>&amp;Name:</source>
-        <translation>&amp;Nom:</translation>
+        <translation>&amp;Nom :</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="77"/>
@@ -11798,17 +11806,17 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="223"/>
         <source>&amp;Program:</source>
-        <translation>&amp;Programme:</translation>
+        <translation>&amp;Programme :</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="233"/>
         <source>&amp;Bank:</source>
-        <translation>&amp;Banque:</translation>
+        <translation>&amp;Banque :</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="243"/>
         <source>Bank &amp;Select Method:</source>
-        <translation>Méthode de &amp;sélection de banque:</translation>
+        <translation>Méthode de &amp;sélection de banque :</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="253"/>
@@ -11823,7 +11831,7 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="263"/>
         <source>&amp;Channel:</source>
-        <translation>&amp;Canal:</translation>
+        <translation>&amp;Canal :</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="279"/>
@@ -11853,12 +11861,12 @@ Voulez-vous abandonner ces changements?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="337"/>
         <source>View / Colors</source>
-        <translation>Vue / Couleurs</translation>
+        <translation>Affichage / Couleurs</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="349"/>
         <source>&amp;Foreground:</source>
-        <translation>&amp;Premier plan:</translation>
+        <translation>&amp;Premier plan :</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="365"/>
@@ -11967,7 +11975,7 @@ Voulez-vous abandonner ces changements?</translation>
 Do you want to apply the changes?</source>
         <translation>Des réglages ont été modifiés.
 
-Voulez-vous appliquer les changements?</translation>
+Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="562"/>
@@ -12034,12 +12042,12 @@ Voulez-vous appliquer les changements?</translation>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="869"/>
         <source>Edit-head</source>
-        <translation>Editer le début</translation>
+        <translation>Éditer le début</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="872"/>
         <source>Edit-tail</source>
-        <translation>Editer la fin</translation>
+        <translation>Éditer la fin</translation>
     </message>
     <message>
         <location filename="../qtractorTrackTime.cpp" line="875"/>
@@ -12366,7 +12374,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-Etes-vous sur?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2806"/>
