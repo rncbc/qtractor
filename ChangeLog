@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Yet another audio/MIDI time drift correction fix, now giving
+  it some slack while turnaround looping on tempo changes.
+
 - Prevent x11extras module from use on non-X11/Unix plaforms.
 
 - MIDI Track/Instrument cascading pop-up menus have been added,
