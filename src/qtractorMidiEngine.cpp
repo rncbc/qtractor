@@ -2108,13 +2108,21 @@ void qtractorMidiEngine::driftCheck (void)
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
 	//	const unsigned long iAudioFrame = pSession->playHead();
-		const unsigned long iAudioFrame
-			= pSession->audioEngine()->jackFrame() - m_iFrameStartEx;
+		const long iAudioFrame = m_iFrameStart
+			+ pSession->audioEngine()->jackFrame() - m_iFrameStartEx;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime = long(pNode->tickFromFrame(iAudioFrame));
-		const long iMidiTime = m_iTimeStartEx
+		const long iMidiTime = m_iTimeStart
 			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
-		const long iDeltaTime = (iAudioTime - iMidiTime);
+		long iDeltaTime = (iAudioTime - iMidiTime);
+		if (pSession->isLooping()) {
+			const long iDeadTime
+				= pSession->tickFromFrame(iAudioFrame + readAhead())
+				- iAudioTime;
+			const long iDeadTime2 = long(iDeadTime >> 2);
+			if (iDeltaTime < -iDeadTime2 || iDeltaTime > +iDeadTime2)
+				iDeltaTime = 0;
+		}
 		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
 			m_iTimeDrift += iDeltaTime;
 		if ((m_iTimeDrift || m_iFrameDrift) && (iAudioTime > -m_iTimeDrift)) {
@@ -2263,7 +2271,7 @@ bool qtractorMidiEngine::activate (void)
 	m_iFrameStart = 0;
 
 	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrame() - m_iFrameStart;
+	m_iFrameStartEx = pSession->audioEngine()->jackFrame();
 
 	// Reset output queue drift compensator...
 	resetDrift();
@@ -2312,7 +2320,7 @@ bool qtractorMidiEngine::start (void)
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
 
 	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrame() - m_iFrameStart;
+	m_iFrameStartEx = pSession->audioEngine()->jackFrame();
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
