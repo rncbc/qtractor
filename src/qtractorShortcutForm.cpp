@@ -74,6 +74,8 @@ void qtractorShortcutTableItemEdit::keyPressEvent ( QKeyEvent *pKeyEvent )
 		iKey |= Qt::CTRL;
 	if (modifiers & Qt::AltModifier)
 		iKey |= Qt::ALT;
+	if (modifiers & Qt::MetaModifier)
+		iKey |= Qt::META;
 
 	QLineEdit::setText(QKeySequence(iKey).toString());
 }
