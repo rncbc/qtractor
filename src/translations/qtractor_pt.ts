@@ -11171,7 +11171,7 @@ Deseja criá-la?</translation>
 <context>
     <name>qtractorShortcutForm</name>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="496"/>
+        <location filename="../qtractorShortcutForm.cpp" line="498"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11180,7 +11180,7 @@ Do you want to apply the changes?</source>
 Você quer aplicar essas alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="516"/>
+        <location filename="../qtractorShortcutForm.cpp" line="518"/>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11189,7 +11189,7 @@ Do you want to apply the changes?</source>
 Deseja aplicar as modificações?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="551"/>
+        <location filename="../qtractorShortcutForm.cpp" line="553"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controlador &amp;MIDI...</translation>
     </message>
@@ -11219,14 +11219,14 @@ Deseja aplicar as modificações?</translation>
         <translation>Controlador MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="420"/>
+        <location filename="../qtractorShortcutForm.cpp" line="422"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>O atalho (%1) já está sendo utilizado.</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="419"/>
-        <location filename="../qtractorShortcutForm.cpp" line="495"/>
-        <location filename="../qtractorShortcutForm.cpp" line="515"/>
+        <location filename="../qtractorShortcutForm.cpp" line="421"/>
+        <location filename="../qtractorShortcutForm.cpp" line="497"/>
+        <location filename="../qtractorShortcutForm.cpp" line="517"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>

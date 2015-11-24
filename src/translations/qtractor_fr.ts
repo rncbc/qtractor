@@ -11204,19 +11204,19 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Contrôleur MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="419"/>
-        <location filename="../qtractorShortcutForm.cpp" line="495"/>
-        <location filename="../qtractorShortcutForm.cpp" line="515"/>
+        <location filename="../qtractorShortcutForm.cpp" line="421"/>
+        <location filename="../qtractorShortcutForm.cpp" line="497"/>
+        <location filename="../qtractorShortcutForm.cpp" line="517"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="420"/>
+        <location filename="../qtractorShortcutForm.cpp" line="422"/>
         <source>Keyboard shortcut (%1) already assigned.</source>
         <translation>Le raccourci clavier (%1) est déjà affecté.</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="496"/>
+        <location filename="../qtractorShortcutForm.cpp" line="498"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11225,7 +11225,7 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="516"/>
+        <location filename="../qtractorShortcutForm.cpp" line="518"/>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11234,7 +11234,7 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="551"/>
+        <location filename="../qtractorShortcutForm.cpp" line="553"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Contrôleur &amp;MIDI...</translation>
     </message>
