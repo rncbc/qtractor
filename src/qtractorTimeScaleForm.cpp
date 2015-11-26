@@ -522,7 +522,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 			iFlags |= RemoveNode;
 	}
 	if (pNode
-		&& ::fabs(pNode->tempo - fTempo) < 0.05f
+		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)
@@ -533,7 +533,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		iFlags &= ~AddNode;
 	if (pNode
 		&& (pNode = pNode->next())	// real assignment
-		&& ::fabs(pNode->tempo - fTempo) < 0.05f
+		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)

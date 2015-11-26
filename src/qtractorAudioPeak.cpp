@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -768,8 +768,8 @@ void qtractorAudioPeakFile::writeFrame (void)
 	for (unsigned short i = 0; i < m_peakHeader.channels; ++i) {
 		Frame frame;
 		// Write the denormalized peak values...
-		m_peakMax[i] = 255.0f * ::fabs(m_peakMax[i]);
-		m_peakMin[i] = 255.0f * ::fabs(m_peakMin[i]);
+		m_peakMax[i] = 255.0f * ::fabsf(m_peakMax[i]);
+		m_peakMin[i] = 255.0f * ::fabsf(m_peakMin[i]);
 		m_peakRms[i] = 255.0f * ::sqrtf(m_peakRms[i] / float(m_iPeak));
 		frame.max = (unsigned char) (m_peakMax[i] > 255.0f ? 255 : m_peakMax[i]);
 		frame.min = (unsigned char) (m_peakMin[i] > 255.0f ? 255 : m_peakMin[i]);

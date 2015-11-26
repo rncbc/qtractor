@@ -1659,7 +1659,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (m_iClockCount > 72) { // 3 beat averaging...
 				m_iClockCount = 0;
 				const float fTempo = int(180000.0f / float(s_clockTime.elapsed()));
-				if (::fabs(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
+				if (::fabsf(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
 					m_fClockTempo = fTempo;
 					// Post the stuffed event...
 					m_proxy.notifyClkEvent(m_fClockTempo);

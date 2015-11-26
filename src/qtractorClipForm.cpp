@@ -39,7 +39,7 @@
 #include <QLineEdit>
 #include <QUrl>
 
-// Needed for fabs(), logf() and powf()
+// Needed for fabsf(), logf() and powf()
 #include <math.h>
 
 static inline float log10f2 ( float x )
@@ -441,9 +441,9 @@ void qtractorClipForm::accept (void)
 				qtractorAudioClip *pAudioClip
 					= static_cast<qtractorAudioClip *> (m_pClip);
 				if (pAudioClip) {
-					if (::fabs(fTimeStretch - pAudioClip->timeStretch()) < 0.001f)
+					if (::fabsf(fTimeStretch - pAudioClip->timeStretch()) < 0.001f)
 						fTimeStretch = 0.0f;
-					if (::fabs(fPitchShift - pAudioClip->pitchShift()) < 0.001f)
+					if (::fabsf(fPitchShift - pAudioClip->pitchShift()) < 0.001f)
 						fPitchShift = 0.0f;
 				}
 				break;
@@ -465,7 +465,7 @@ void qtractorClipForm::accept (void)
 			if (iFileChange > 0)
 				pClipCommand->fileClip(m_pClip, sFilename, iTrackChannel);
 			// Gain/volume...
-			if (::fabs(fClipGain - m_pClip->clipGain()) > 0.001f)
+			if (::fabsf(fClipGain - m_pClip->clipGain()) > 0.001f)
 				pClipCommand->gainClip(m_pClip, fClipGain);
 			// Parameters and/or time-stretching changes...
 			if (iClipStart  != m_pClip->clipStart()  ||
