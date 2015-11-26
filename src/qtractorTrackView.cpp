@@ -5164,7 +5164,7 @@ void qtractorTrackView::editCurveNodeFinished (void)
 	// Make it an undoable command...
 	const float fOldValue = m_pEditCurveNode->value;
 	const float fNewValue = m_pEditCurveNodeSpinBox->value();
-	if (::fabs(fNewValue - fOldValue) > 0.001f) {
+	if (::fabsf(fNewValue - fOldValue) > 0.001f) {
 		qtractorCurveEditCommand *pEditCurveNodeCommand
 			= new qtractorCurveEditCommand(m_pEditCurve);
 		pEditCurveNodeCommand->moveNode(m_pEditCurveNode,

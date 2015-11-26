@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -497,7 +497,7 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 	if (iBeatDivisor > 8)
 		iBeatDivisor = 8;
 
-	if (::fabs(m_fTempo - fTempo) > 0.05f) {
+	if (::fabsf(m_fTempo - fTempo) > 0.05f) {
 		// Fixup: round to one single decimal place.
 		m_fTempo = 0.1f * ::roundf(10.0f * fTempo);
 		++m_iValueChanged;

@@ -7122,7 +7122,7 @@ void qtractorMainForm::timerSlot (void)
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
 				if (pNode && pos.frame > (pNode->frame + iBufferSize) && (
-					::fabs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
+					::fabsf(pNode->tempo - pos.beats_per_minute) > 0.01f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
 				#ifdef CONFIG_DEBUG

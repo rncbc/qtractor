@@ -1,7 +1,7 @@
 // qtractorCurve.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -115,22 +115,22 @@ inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 		y1 = y0;
 	}
 
-	if (fabs(y1 - y2) > fZero)
+	if (::fabsf(y1 - y2) > fZero)
 		s1 =  x1 / (y1 - y2);
 
 	if (pPrev) {
 		pPrev = pPrev->prev();
-		if (pPrev && (fabs(y1 - pPrev->value) > fZero)) {
+		if (pPrev && (::fabsf(y1 - pPrev->value) > fZero)) {
 			const float s0
 				= (x1 - float(pPrev->frame) - x0) / (y1 - pPrev->value);
-			if (s1 * s0 > 0.0f && fabs(s1 + s0) > fZero)
+			if (s1 * s0 > 0.0f && ::fabsf(s1 + s0) > fZero)
 				f1 = 2.0f / (s1 + s0);
 		}
 	}
 
-	if (pNext && (fabs(pNext->value - y2) > fZero))
+	if (pNext && (::fabsf(pNext->value - y2) > fZero))
 		s2 = (float(pNext->frame) - x0) / (pNext->value - y2);
-	if (s2 * s1 > 0.0f && fabs(s2 + s1) > fZero)
+	if (s2 * s1 > 0.0f && ::fabsf(s2 + s1) > fZero)
 		f2 = 2.0f / (s2 + s1);
 
 	const float x12 = x1 * x1;
@@ -262,12 +262,12 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		float y2 = (pNext ? pNext->value : fValue);
 		if (m_mode == Hold || !m_observer.isDecimal()) {
 			const float fThreshold
-				= (m_bLogarithmic ? 0.1f * fabs(y1) : 0.01f)
+				= (m_bLogarithmic ? 0.1f * ::fabsf(y1) : 0.01f)
 				* (m_observer.maxValue() - m_observer.minValue());
-			if (fabs(y2 - y1) < fThreshold)
+			if (::fabsf(y2 - y1) < fThreshold)
 				pNode = pNext;
 			else
-			if (fabs(y1 - y0) < fThreshold)
+			if (::fabsf(y1 - y0) < fThreshold)
 				return NULL;
 		} else {
 			const float fThreshold = 0.5f; // (m_bLogarithmic ? 0.1f : 0.5f);
@@ -276,7 +276,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			float x2 = (pNext ? float(pNext->frame) : m_tail.frame);
 			float s1 = (x1 > x0 ? (y1 - y0) / (x1 - x0) : 0.0f);
 			float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
-			if (fabs(y3 - y2) < fThreshold * fabs(y3 - y1))
+			if (::fabsf(y3 - y2) < fThreshold * ::fabsf(y3 - y1))
 				return NULL;
 			if (pPrev) {
 				pNode = pPrev;
@@ -289,7 +289,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 				y2 = fValue;
 				s1 = (y1 - y0) / (x1 - x0);
 				y3 = s1 * (x2 - x1) + y1;
-				if (fabs(y3 - y2) > fThreshold * fabs(y3 - y1))
+				if (::fabsf(y3 - y2) > fThreshold * ::fabsf(y3 - y1))
 					pNode = NULL;
 			}
 		}

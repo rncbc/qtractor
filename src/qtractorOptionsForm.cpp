@@ -46,7 +46,7 @@
 #include <QStyleFactory>
 
 
-// Needed for fabs(), logf() and powf()
+// Needed for fabsf(), logf() and powf()
 #include <math.h>
 
 static inline float log10f2 ( float x )
