@@ -7221,10 +7221,15 @@ void qtractorMainForm::timerSlot (void)
 		}
 		else
 		// Whether to continue past end...
-		if (!m_ui.transportContinueAction->isChecked()
-			&& m_iPlayHead > m_pSession->sessionEnd()) {
-			// Stop at once!
-			transportPlay();
+		if (!m_ui.transportContinueAction->isChecked()) {
+			unsigned long iSessionEnd = m_pSession->sessionEnd();
+			if (m_pSession->isLooping()) {
+				const unsigned long iLoopEnd = m_pSession->loopEnd();
+				if (iSessionEnd < iLoopEnd)
+					iSessionEnd = iLoopEnd;
+			}
+			if (m_iPlayHead > iSessionEnd)
+				transportPlay(); // Stop at once!
 		}
 	}
 
