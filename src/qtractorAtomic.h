@@ -1,7 +1,7 @@
 // qtractorAtomic.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,6 +32,27 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
+
+
+#if defined(HAVE_QATOMIC_H)
+
+typedef QAtomicInt qtractorAtomic;
+
+#if QT_VERSION >= 0x050000
+#define ATOMIC_GET(a)	((a)->load())
+#define ATOMIC_SET(a,v)	((a)->store(v))
+#else
+#define ATOMIC_GET(a)	((int) *(a))
+#define ATOMIC_SET(a,v)	(*(a) = (v))
+#endif
+
+static inline int ATOMIC_CAS ( qtractorAtomic *pVal,
+	int iOldValue, int iNewValue )
+{
+	return pVal->testAndSetOrdered(iOldValue, iNewValue);
+}
+
+#else	// !HAVE_QATOMIC_H
 
 #if defined(__GNUC__)
 
@@ -106,27 +127,6 @@ static inline int ATOMIC_CAS1 (
 #   error "qtractorAtomic.h: unsupported target compiler processor (WIN32)."
 #endif
 
-
-#if defined(HAVE_QATOMIC_H)
-
-typedef QAtomicInt qtractorAtomic;
-
-#if QT_VERSION >= 0x050000
-#define ATOMIC_GET(a)	((a)->load())
-#define ATOMIC_SET(a,v)	((a)->store(v))
-#else
-#define ATOMIC_GET(a)	((int) *(a))
-#define ATOMIC_SET(a,v)	(*(a) = (v))
-#endif
-
-static inline int ATOMIC_CAS ( qtractorAtomic *pVal,
-	int iOldValue, int iNewValue )
-{
-	return pVal->testAndSetOrdered(iOldValue, iNewValue);
-}
-
-#else
-
 typedef struct { volatile int value; } qtractorAtomic;
 
 #define ATOMIC_GET(a)	((a)->value)
@@ -138,7 +138,7 @@ static inline int ATOMIC_CAS ( qtractorAtomic *pVal,
 	return ATOMIC_CAS1(&(pVal->value), iOldValue, iNewValue);
 }
 
-#endif
+#endif	// !HAVE_QATOMIC_H
 
 
 // Strict test-and-set primite.
