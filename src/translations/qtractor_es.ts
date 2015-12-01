@@ -103,12 +103,6 @@ End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Start / End:	%1 / %2
-Offset / Length:	%3 / %4</source>
-        <translation type="vanished">Inicio / Fin:	%1 / %2
-Offset / Duración:	%3 / %4</translation>
-    </message>
-    <message>
         <location filename="../qtractorClip.cpp" line="574"/>
         <source>File:	%1</source>
         <translation>Archivo:	%1</translation>
@@ -6553,14 +6547,6 @@ Tipo:	</translation>
 Velocity:	%3
 Duration: %4</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Note On (%1) %2
-Velocity:	%3
-Duration:	%4</source>
-        <translation type="vanished">Nota Enc. (%1) %2
-Velocidad:	%3
-Duración:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4826"/>

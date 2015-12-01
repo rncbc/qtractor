@@ -619,12 +619,6 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>nó de atualização de tempo</translation>
     </message>
     <message>
-        <source>Start / End:	%1 / %2
-Offset / Length:	%3 / %4</source>
-        <translation type="vanished">Início / Fim:	%1 / %2
-Deslocamento / Tamanho:	%3 / %4</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiClip.cpp" line="1208"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 pistas, %2 tpqn</translation>
@@ -6515,14 +6509,6 @@ Tamanho:	%3</translation>
         <location filename="../qtractorMidiEditor.cpp" line="2223"/>
         <source>remove range</source>
         <translation>remover limite</translation>
-    </message>
-    <message>
-        <source>Note On (%1) %2
-Velocity:	%3
-Duration:	%4</source>
-        <translation type="vanished">Acionamento da Nota (%1) %2
-intensidade:	%3
-Duração:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="5133"/>

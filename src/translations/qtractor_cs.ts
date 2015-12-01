@@ -70,12 +70,6 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Název:	%1</translation>
     </message>
     <message>
-        <source>Start / End:	%1 / %2
-Offset / Length:	%3 / %4</source>
-        <translation type="vanished">Začátek/Konec:	%1 / %2
-Posun/Délka:	%3 / %4</translation>
-    </message>
-    <message>
         <location filename="../qtractorClip.cpp" line="161"/>
         <source> (take %1)</source>
         <translation> (záběr %1)</translation>
@@ -6556,14 +6550,6 @@ Typ:	</translation>
 Velocity:	%3
 Duration: %4</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Note On (%1) %2
-Velocity:	%3
-Duration:	%4</source>
-        <translation type="vanished">Nota zapnuta (%1) %2
-Rychlost:	%3
-Doba trvání:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4826"/>
