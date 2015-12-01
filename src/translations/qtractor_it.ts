@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="it_IT">
+<TS version="2.0" language="it_IT">
 <context>
     <name>QObject</name>
     <message>
@@ -100,13 +100,8 @@ Audio:	%1 canali, %2 Hz</translation>
         <location filename="../qtractorClip.cpp" line="566"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Start / End:	%1 / %2
-Offset / Length:	%3 / %4</source>
-        <translation type="vanished">Inizio / Fine:	%1 / %2
-Offset / Lunghezza:	%3 / %4</translation>
+        <translation>Inizio:	%1	Offset:	%2
+Fine:	%3	Lunghezza:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="574"/>
@@ -259,12 +254,12 @@ Offset / Lunghezza:	%3 / %4</translation>
     <message>
         <location filename="../qtractorInstrument.cpp" line="412"/>
         <source>Version</source>
-        <translation type="unfinished">Versione</translation>
+        <translation>Versione</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="414"/>
         <source>Build</source>
-        <translation type="unfinished">Build</translation>
+        <translation>Build</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="418"/>
@@ -590,7 +585,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="246"/>
         <source>duplicate track</source>
-        <translation type="unfinished"></translation>
+        <translation>duplica traccia</translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="455"/>
@@ -654,7 +649,7 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="1237"/>
         <source>track instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>strumento della traccia</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="92"/>
@@ -2275,7 +2270,7 @@ Vuoi applicare le modifiche?</translation>
         <location filename="../qtractorInstrumentMenu.cpp" line="350"/>
         <location filename="../qtractorInstrumentMenu.cpp" line="403"/>
         <source>(None)</source>
-        <translation type="unfinished">(Nessuno)</translation>
+        <translation>(nessuno)</translation>
     </message>
 </context>
 <context>
@@ -2374,7 +2369,7 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="276"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation>Strum&amp;ento</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="335"/>
@@ -3096,22 +3091,22 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1113"/>
         <source>&amp;Duplicate Track</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplica Traccia</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1116"/>
         <source>Duplicate Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplica Traccia</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1119"/>
         <source>Duplicate track</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplica traccia</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1122"/>
         <source>Duplicate current track</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplica la traccia corrente</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1130"/>
@@ -5216,7 +5211,7 @@ Spiacente.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="635"/>
         <source>Session XRUN state</source>
-        <translation type="unfinished"></translation>
+        <translation>Stato della sessione XRUN</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1783"/>
@@ -5541,22 +5536,22 @@ al prossimo avvio di questo %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5456"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto dell&apos;interfaccia UI Idle della plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5459"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto dell&apos;interfaccia UI Show della plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5463"/>
         <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto nativo di UI GTK per la plugin LV2 abilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5466"/>
         <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto nativo di UI X11 per la plugin LV2 abilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5478"/>
@@ -5566,7 +5561,7 @@ al prossimo avvio di questo %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5918"/>
         <source>XRUN</source>
-        <translation type="unfinished"></translation>
+        <translation>XRUN</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6127"/>
@@ -6555,15 +6550,9 @@ Tipo:	</translation>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Note On (%1) %2
+        <translation>Nota On (%1) %2
 Velocity:	%3
-Duration:	%4</source>
-        <translation type="vanished">Nota On (%1) %2
-Pressione:	%3
-Durata: 	%4</translation>
+Durata: %4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4826"/>
@@ -6704,7 +6693,7 @@ Durata:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="58"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation>Strum&amp;ento</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="88"/>
@@ -10559,7 +10548,7 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="34"/>
         <source>Plugin Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietà delle plugin</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="55"/>
@@ -10690,7 +10679,11 @@ Vuoi applicare le modifiche?</translation>
 &quot;%1&quot;.
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il preset non può essere caricato dal file:
+
+&quot;%1&quot;.
+
+Spiacente.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="581"/>
@@ -10704,7 +10697,11 @@ Sorry.</source>
 &quot;%1&quot;.
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il preset non può essere salvato sul file:
+
+&quot;%1&quot;.
+
+Spiacente.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="657"/>
