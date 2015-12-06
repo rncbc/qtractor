@@ -78,7 +78,8 @@ Audio:	%1 channels, %2 Hz</source>
         <location filename="../qtractorClip.cpp" line="566"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
-        <translation type="unfinished"></translation>
+        <translation>Začátek:	%1	Posun	%2
+Konec:	%2	Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="574"/>
@@ -123,12 +124,12 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorInstrument.cpp" line="412"/>
         <source>Version</source>
-        <translation type="unfinished">Verze</translation>
+        <translation>Verze</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="414"/>
         <source>Build</source>
-        <translation type="unfinished">Sestavení</translation>
+        <translation>Sestavení</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="418"/>
@@ -366,7 +367,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="246"/>
         <source>duplicate track</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdvojit stopu</translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="455"/>
@@ -430,7 +431,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="1237"/>
         <source>track instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>Nástroj stopy</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="92"/>
@@ -2269,7 +2270,7 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorInstrumentMenu.cpp" line="350"/>
         <location filename="../qtractorInstrumentMenu.cpp" line="403"/>
         <source>(None)</source>
-        <translation type="unfinished">(Žádný)</translation>
+        <translation>(Žádný)</translation>
     </message>
 </context>
 <context>
@@ -2494,12 +2495,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5415"/>
         <source>LV2 Plug-in UI support disabled.</source>
-        <translation>Podpora pro obrazové uživatelské rozhraní přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro uživatelské rozhraní přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5418"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
-        <translation>Podpora pro obrazové uživatelské rozhraní přídavných modulů LV2 (libsuil) byla zakázána.</translation>
+        <translation>Podpora pro uživatelské rozhraní přídavných modulů LV2 (libsuil) byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5425"/>
@@ -2544,7 +2545,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="635"/>
         <source>Session XRUN state</source>
-        <translation type="unfinished"></translation>
+        <translation>Stav XRUN sezení</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5443"/>
@@ -2559,22 +2560,22 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5456"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5459"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 Show byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5463"/>
         <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v GTK byla povolena.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5466"/>
         <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v X11 byla povolena.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5475"/>
@@ -2594,7 +2595,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5918"/>
         <source>XRUN</source>
-        <translation type="unfinished"></translation>
+        <translation>XRUN</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6710"/>
@@ -2974,7 +2975,7 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5421"/>
         <source>LV2 Plug-in External UI support disabled.</source>
-        <translation>Podpora pro obrazové uživatelské rozhraní přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro rozhraní přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5472"/>
@@ -4070,7 +4071,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="276"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nástroj</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1079"/>
@@ -4120,22 +4121,22 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1113"/>
         <source>&amp;Duplicate Track</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zdvojit stopu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1116"/>
         <source>Duplicate Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdvojit stopu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1119"/>
         <source>Duplicate track</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdvojit stopu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1122"/>
         <source>Duplicate current track</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdvojit nynější stopu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1130"/>
@@ -6549,7 +6550,9 @@ Typ:	</translation>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Nota zapnuta (%1) %2
+Dynamika:	%3
+Doba trvání: %4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4826"/>
@@ -7360,7 +7363,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="58"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nástroj</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="420"/>
@@ -10592,7 +10595,11 @@ Chcete použít tyto změny?</translation>
 &quot;%1&quot;.
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Přednastavení nemohlo být nahráno ze souboru:
+
+&quot;%1&quot;.
+
+Promiňte.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="624"/>
@@ -10601,7 +10608,11 @@ Sorry.</source>
 &quot;%1&quot;.
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Přednastavení nemohlo být uloženo do souboru:
+
+&quot;%1&quot;.
+
+Promiňte.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="657"/>
@@ -10709,7 +10720,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="34"/>
         <source>Plugin Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastnosti přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="160"/>
