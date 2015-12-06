@@ -6493,14 +6493,6 @@ Type:	</source>
 Тип:	</translation>
     </message>
     <message>
-        <source>Note On (%1) %2
-Velocity:	%3
-Duration:	%4</source>
-        <translation type="vanished">Нота (%1) %2
-Сила нажатия:	%3
-Длительность:	%4</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditor.cpp" line="4826"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
