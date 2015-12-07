@@ -1084,11 +1084,11 @@ Voulez vous appliquer les changements ?</translation>
 &quot;%1&quot; (%2)
 
 Are you sure?</source>
-        <translation>Sur le point de supprimer un bus:
+        <translation>Sur le point de supprimer un bus :
 
 &quot;%1&quot; (%2)
 
-Êtes-vous sur ?</translation>
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="747"/>
@@ -3090,7 +3090,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1113"/>
         <source>&amp;Duplicate Track</source>
-        <translation>Piste &amp;Dupliquée</translation>
+        <translation>Piste &amp;dupliquée</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1116"/>
@@ -5210,7 +5210,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="635"/>
         <source>Session XRUN state</source>
-        <translation>Etat XRUN de la session</translation>
+        <translation>État XRUN de la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1783"/>
@@ -10548,7 +10548,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="34"/>
         <source>Plugin Properties</source>
-        <translation>Propriétées du Greffon</translation>
+        <translation>Propriétés du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="55"/>
