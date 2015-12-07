@@ -390,14 +390,10 @@ bool qtractorMidiClip::openMidiFile (
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
 	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
-	if (iClipStart > iClipOffset) {
-		const unsigned long iFrameOffset = iClipStart - iClipOffset;
-		pNode = cursor.seekFrame(iFrameOffset);
-		pSeq->setTimeOffset(t0 - pNode->tickFromFrame(iFrameOffset));
-	} else {
-		pNode = cursor.seekFrame(iClipOffset);
-		pSeq->setTimeOffset(pNode->tickFromFrame(iClipOffset));
-	}
+
+	const unsigned long iClipOffset2 = iClipStart + iClipOffset;
+	pNode = cursor.seekFrame(iClipOffset2);
+	pSeq->setTimeOffset(pNode->tickFromFrame(iClipOffset2) - t0);
 
 	const unsigned long iClipLength = clipLength();
 	const unsigned long iClipEnd = iClipStart + iClipLength;
