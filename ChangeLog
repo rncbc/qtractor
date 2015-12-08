@@ -12,13 +12,12 @@ GIT HEAD
 - Prevent x11extras module from use on non-X11/Unix plaforms.
 
 - MIDI Track/Instrument cascading pop-up menus have been added,
-  to main and MIDI clip editor windows. (EXPERIMENTAL)
+  to main and MIDI clip editor windows.
 
 - VST Plugin preset/bank files support (FXB/FXP) is now being
   integrated to the generic Plugin/Properties widget dialog.
-  (EXPERIMENTAL)
 
-- Added new Track/Duplicate menu command. (EXPERIMENTAL)
+- Added new Track/Duplicate menu command.
 
 - Added simple XRUN red indicator to status bar.
 
