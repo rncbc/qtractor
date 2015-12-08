@@ -1,3 +1,9 @@
+qtractor (0.7.2-20) unstable; urgency=low
+
+  * New release: tacky gluon beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Thu, 10 Dec 2015 19:00:00 +0000
+
 qtractor (0.7.1-19) unstable; urgency=low
 
   * New release: meson dope beta
