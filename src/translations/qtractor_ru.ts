@@ -437,7 +437,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTrackList.cpp" line="201"/>
         <source>Automation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Автоматизация</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="388"/>
@@ -3591,12 +3591,12 @@ Saving into another session file is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="923"/>
         <source>Select Invert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Инвертировать выделение</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="926"/>
         <source>Select invert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Инвертировать выделение</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="929"/>
@@ -6320,7 +6320,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="647"/>
         <source>&amp;Automation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Автоматизация</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="661"/>
@@ -6767,7 +6767,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="99"/>
         <source>&amp;Windows</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Окна</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="105"/>
@@ -7741,18 +7741,18 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1340"/>
         <source>&amp;Zebra</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Зебра</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1343"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1346"/>
         <source>Zebra</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Чередовать яркость тактов</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1349"/>
         <source>Bar zebra view mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Чередовать яркость тактов</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1509"/>
@@ -7773,12 +7773,12 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="186"/>
         <source>I&amp;nsert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">В&amp;ставить</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="192"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Удалить</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="778"/>
@@ -7788,7 +7788,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="795"/>
         <source>&amp;Invert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Инвертировать</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="832"/>
@@ -7828,7 +7828,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="858"/>
         <source>Ctrl+Del</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+Del</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1326"/>
@@ -7853,13 +7853,13 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1374"/>
         <source>Too&amp;l Tips</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Всплываю&amp;щие подсказки</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1377"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1380"/>
         <source>Tool tips</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Всплывающие подсказки</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1383"/>
@@ -11144,12 +11144,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="63"/>
         <source>Selection range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Область выделения</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="66"/>
         <source>&amp;Selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">В&amp;ыделение</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="118"/>
@@ -11277,7 +11277,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="94"/>
         <source>T&amp;ap</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Настучать ритм</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="104"/>
