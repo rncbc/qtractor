@@ -3332,13 +3332,17 @@ uint32_t qtractorLv2Plugin::lv2_ui_port_index ( const char *port_symbol )
 void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorLv2Plugin[%p]::resizeEditor(%d, %d)",
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_resize(%d, %d)",
 		this, size.width(), size.height());
 #endif
 	const LV2UI_Resize *resize
 		= (const LV2UI_Resize *) lv2_ui_extension_data(LV2_UI__resize);
-	if (resize && resize->ui_resize)
-		(*resize->ui_resize)(resize->handle, size.width(), size.height());
+	if (resize && resize->ui_resize) {
+		LV2UI_Feature_Handle handle = resize->handle;
+		if (handle == NULL)
+			handle = m_lv2_ui_handle;
+		(*resize->ui_resize)(handle, size.width(), size.height());
+	}
 }
 
 

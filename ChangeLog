@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed LV2UI_Resize handle from extension_data(LV2_UI__resize), 
+  now passing LV2UI_Handle in first argument to ui_resize(), as
+  found correct and needed for resizable/scalable LV2 UI's, most
+  specially to ssj71's so called Infamous Plugins, thanks.
+
+
 0.7.2  2015-12-10  Tacky Gluon Beta
 
 - Yet another audio/MIDI time drift correction fix, now giving

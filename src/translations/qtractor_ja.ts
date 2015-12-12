@@ -11966,7 +11966,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1339"/>
-        <source>Forgeground Color</source>
+        <source>Foreground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>

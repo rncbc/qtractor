@@ -1336,7 +1336,7 @@ void qtractorTrackForm::selectForegroundColor (void)
 {
 	const QColor& color = QColorDialog::getColor(
 		colorItem(m_ui.ForegroundColorComboBox), this,
-		tr("Forgeground Color") + " - " QTRACTOR_TITLE);
+		tr("Foreground Color") + " - " QTRACTOR_TITLE);
 
 	if (color.isValid()) {
 		updateColorItem(m_ui.ForegroundColorComboBox, color);
