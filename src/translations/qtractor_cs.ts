@@ -11758,7 +11758,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1339"/>
-        <source>Forgeground Color</source>
+        <source>Foreground Color</source>
         <translation>Barva popředí</translation>
     </message>
     <message>
