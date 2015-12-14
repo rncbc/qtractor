@@ -392,7 +392,7 @@ bool qtractorMidiClip::openMidiFile (
 	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
 
 	const unsigned long iClipOffset2 = iClipStart + iClipOffset;
-	pNode = cursor.seekFrame(iClipOffset2);
+//	pNode = cursor.seekFrame(iClipOffset2);
 	pSeq->setTimeOffset(pNode->tickFromFrame(iClipOffset2) - t0);
 
 	const unsigned long iClipLength = clipLength();
