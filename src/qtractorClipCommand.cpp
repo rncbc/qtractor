@@ -751,7 +751,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
 			pItem->clipOffset =	pSession->frameFromTickRange(
-				iClipStartTime, iClipStartTime + iClipOffsetTime);
+				iClipStartTime, iClipStartTime + iClipOffsetTime, true);
 			pItem->clipLength =	pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
 			break;

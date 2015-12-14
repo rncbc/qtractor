@@ -149,9 +149,9 @@ public:
 
 	// Tick/Frame range conversion (delta conversion).
 	unsigned long frameFromTickRange(
-	    unsigned long iTickStart, unsigned long iTickEnd);
+		unsigned long iTickStart, unsigned long iTickEnd, bool bOffset = false);
 	unsigned long tickFromFrameRange(
-	    unsigned long iFrameStart, unsigned long iFrameEnd);
+		unsigned long iFrameStart, unsigned long iFrameEnd, bool bOffset = false);
 
 	// Beat/frame snap filters.
 	unsigned long tickSnap(unsigned long iTick);
