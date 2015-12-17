@@ -68,10 +68,12 @@ public:
 	bool copyTrack(qtractorTrack *pTrack = NULL);
 
 	// Import Audio/MIDI files into new tracks...
-	bool addAudioTracks(const QStringList& files, unsigned long iClipStart = 0);
-	bool addMidiTracks(const QStringList& files, unsigned long iClipStart = 0);
+	bool addAudioTracks(const QStringList& files,
+		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
+	bool addMidiTracks(const QStringList& files,
+		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
 	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,
-		unsigned long iClipStart = 0);
+		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
 
 	// Track-list active maintenance update.
 	void updateTrack(qtractorTrack *pTrack = NULL);

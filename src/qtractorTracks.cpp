@@ -2617,8 +2617,8 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 
 
 // Import Audio files into new tracks...
-bool qtractorTracks::addAudioTracks (
-	const QStringList& files, unsigned long iClipStart )
+bool qtractorTracks::addAudioTracks ( const QStringList& files,
+	unsigned long iClipStart, qtractorTrack *pAfterTrack )
 {
 	// Have we some?
 	if (files.isEmpty())
@@ -2635,7 +2635,7 @@ bool qtractorTracks::addAudioTracks (
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(currentTrack());
+		= new qtractorImportTrackCommand(pAfterTrack);
 
 	// Increment this for suggestive track coloring...
 	int iTrack = pSession->tracks().count();
@@ -2711,8 +2711,8 @@ bool qtractorTracks::addAudioTracks (
 
 
 // Import MIDI files into new tracks...
-bool qtractorTracks::addMidiTracks (
-	const QStringList& files, unsigned long iClipStart )
+bool qtractorTracks::addMidiTracks ( const QStringList& files,
+	unsigned long iClipStart, qtractorTrack *pAfterTrack )
 {
 	// Have we some?
 	if (files.isEmpty())
@@ -2729,7 +2729,7 @@ bool qtractorTracks::addMidiTracks (
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(currentTrack());
+		= new qtractorImportTrackCommand(pAfterTrack);
 
 	// Increment this for suggestive track coloring...
 	int iTrack = pSession->tracks().count();
@@ -2831,7 +2831,7 @@ bool qtractorTracks::addMidiTracks (
 
 // Import MIDI file track-channel into new track...
 bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
-	int iTrackChannel, unsigned long iClipStart )
+	int iTrackChannel, unsigned long iClipStart, qtractorTrack *pAfterTrack )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -2844,7 +2844,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(currentTrack());
+		= new qtractorImportTrackCommand(pAfterTrack);
 
 	// Increment this for suggestive track coloring...
 	int iTrack = pSession->tracks().count();

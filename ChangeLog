@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a drag-and-drop bug over the main tracks view, when new 
+  tracks were being inserted at the top and not to the bottom as
+  is normally indicated by the floating visual placeholder.
+
 - Fixed LV2UI_Resize handle from extension_data(LV2_UI__resize), 
   now passing LV2UI_Handle in first argument to ui_resize(), as
   found correct and needed for resizable/scalable LV2 UI's, most
