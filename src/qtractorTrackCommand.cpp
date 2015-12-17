@@ -82,9 +82,10 @@ bool qtractorTrackCommand::addTrack (void)
 		return false;
 
 	// Guess which item we're adding after...
+#if 0
 	if (m_pAfterTrack == NULL)
 		m_pAfterTrack = m_pTrack->prev();
-#if 0
+#else
 	if (m_pAfterTrack == NULL)
 		m_pAfterTrack = pSession->tracks().last();
 #endif
