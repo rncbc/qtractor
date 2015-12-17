@@ -1236,6 +1236,7 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 				const unsigned short p = pSession->ticksPerBeat();
 				const unsigned short q = file.ticksPerBeat();
 				if (pDropItem->channel < 0) {
+					t1 = t0;
 					const int iTracks = (file.format() == 1 ? file.tracks() : 16);
 					for (int iTrackChannel = 0;
 							iTrackChannel < iTracks; ++iTrackChannel) {
@@ -1244,13 +1245,15 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 						if (iTrackDuration > 0) {
 							const unsigned long duration
 								= uint64_t(iTrackDuration * p) / q;
-							t1 = t0 + duration;
-							pNode = cursor.seekTick(t1);
-							m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
-							pDropItem->rect = m_rectDrag;
-							m_rectDrag.translate(0, m_rectDrag.height() + 4);
+							const unsigned long t2 = t0 + duration;
+							if (t1 < t2)
+								t1 = t2;
 						}
 					}
+					pNode = cursor.seekTick(t1);
+					m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
+					pDropItem->rect = m_rectDrag;
+					m_rectDrag.translate(0, m_rectDrag.height() + 4);
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Midi;
 				} else {

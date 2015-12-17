@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI file track/channel duration estimator, which was
+  giving quite wrong and way too short reads.
+
 - Fixed a drag-and-drop bug over the main tracks view, when new 
   tracks were being inserted at the top and not to the bottom as
   is normally indicated by the floating visual placeholder.
@@ -1563,7 +1566,7 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 
 - A new timeshift MIDI tool has been added, after an awesome patch by
   Jiri Prochaszka aka Anchakor; applies to selected events between edit
-  markers,  distorting their time and duration (optionally), either
+  markers, distorting their time and duration (optionally), either
   slowing down and accelerating, based on a given parameter P value.
 
 - Audio clip/buffer pitch-shifting fixes with regard to latency correction

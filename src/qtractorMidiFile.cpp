@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -596,6 +596,38 @@ unsigned long qtractorMidiFile::readTrackDuration ( unsigned short iTrackChannel
 		const unsigned short iChannel = (iStatus & 0x0f);
 		if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel))
 			iTrackDuration = iTrackTime;
+
+		qtractorMidiEvent::EventType type
+			= qtractorMidiEvent::EventType(iStatus & 0xf0);
+		if (iStatus == qtractorMidiEvent::META)
+			type = qtractorMidiEvent::META;
+
+		switch (type) {
+		case qtractorMidiEvent::NOTEOFF:
+		case qtractorMidiEvent::NOTEON:
+		case qtractorMidiEvent::KEYPRESS:
+		case qtractorMidiEvent::CONTROLLER:
+		case qtractorMidiEvent::PITCHBEND:
+			readInt(2);
+			break;
+		case qtractorMidiEvent::PGMCHANGE:
+		case qtractorMidiEvent::CHANPRESS:
+			readInt(1);
+			break;
+		case qtractorMidiEvent::META:
+			readInt(1);
+			// Fall thru...
+		case qtractorMidiEvent::SYSEX:
+		{
+			int n = readInt();
+			if (n < 1 || ::fseek(m_pFile, m_iOffset + n, SEEK_SET))
+				m_iOffset = iTrackEnd; // Force EoT!
+			else
+				m_iOffset += n;
+		}	// Fall thru...
+		default:
+			break;
+		}
 	}
 
 	return iTrackDuration;
