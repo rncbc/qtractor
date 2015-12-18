@@ -108,22 +108,22 @@ Fin:	%3	Longueur:	%4</translation>
         <translation>Fichier:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="797"/>
+        <location filename="../qtractorClipCommand.cpp" line="815"/>
         <source>take %1</source>
         <translation>prise %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="799"/>
+        <location filename="../qtractorClipCommand.cpp" line="817"/>
         <source>reset takes</source>
         <translation>réinitialiser les prises</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="985"/>
+        <location filename="../qtractorClipCommand.cpp" line="1003"/>
         <source>clip tool %1</source>
         <translation>outil clip %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1087"/>
+        <location filename="../qtractorClipCommand.cpp" line="1105"/>
         <source>clip record</source>
         <translation>enregistrer clip</translation>
     </message>
@@ -12145,12 +12145,12 @@ Longueur:	%3</translation>
         <translation>%1 clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4775"/>
+        <location filename="../qtractorTrackView.cpp" line="4789"/>
         <source>move automation</source>
         <translation>déplacer l&apos;automation</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4856"/>
+        <location filename="../qtractorTrackView.cpp" line="4870"/>
         <source>paste automation</source>
         <translation>coller l&apos;automation</translation>
     </message>
