@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the conversion and/or override of MIDI clip offsets when
+  moving and copy/pasting across tempo/time-signature changes.
+
 - Fixed MIDI file track/channel duration estimator, which was
   giving quite wrong and way too short reads.
 

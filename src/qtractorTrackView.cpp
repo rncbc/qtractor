@@ -4711,8 +4711,22 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			qtractorClip *pNewClip = cloneClip(pClip);
 			// Add the new pasted clip...
 			if (pNewClip) {
+				// HACK: convert/override MIDI clip-offset times
+				// across potential tempo/time-sig changes...
+				unsigned long iClipOffset = pClipItem->clipOffset;
+				if (pTrack->trackType() == qtractorTrack::Midi) {
+					const unsigned long iOldClipStart = pClipItem->clipStart;
+					const unsigned long iClipStartTime
+						= pSession->tickFromFrame(iClipStart);
+					const unsigned long iClipOffsetTime
+						= pSession->tickFromFrameRange(
+							iOldClipStart, iOldClipStart + iClipOffset, true);
+					iClipOffset = pSession->frameFromTickRange(
+						iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+				}
+				// Clone clip properties...
 				pNewClip->setClipStart(iClipStart);
-				pNewClip->setClipOffset(pClipItem->clipOffset);
+				pNewClip->setClipOffset(iClipOffset);
 				pNewClip->setClipLength(pClipItem->clipLength);
 				pNewClip->setFadeInLength(pClipItem->fadeInLength);
 				pNewClip->setFadeOutLength(pClipItem->fadeOutLength);

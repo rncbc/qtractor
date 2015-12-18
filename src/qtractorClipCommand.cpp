@@ -117,9 +117,26 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 	unsigned long iClipOffset, unsigned long iClipLength )
 {
 	Item *pItem = new Item(MoveClip, pClip, pTrack);
+
+	// HACK: convert/override MIDI clip-offset times
+	// across potential tempo/time-sig changes...
+	qtractorSession *pSession = pTrack->session();
+	if (pSession && pTrack->trackType() == qtractorTrack::Midi) {
+		const unsigned long iOldClipStart = pClip->clipStart();
+		const unsigned long iOldClipOffset = pClip->clipOffset();
+		const unsigned long iClipStartTime
+			= pSession->tickFromFrame(iClipStart);
+		const unsigned long iClipOffsetTime
+			= pSession->tickFromFrameRange(
+				iOldClipStart, iOldClipStart + iOldClipOffset, true);
+		iClipOffset = pSession->frameFromTickRange(
+			iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+	}
+
 	pItem->clipStart  = iClipStart;
 	pItem->clipOffset = iClipOffset;
 	pItem->clipLength = iClipLength;
+
 	if (iClipOffset == pClip->clipOffset())
 		pItem->fadeInLength = pClip->fadeInLength();
 	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
@@ -149,6 +166,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	unsigned long iClipLength, float fTimeStretch, float fPitchShift )
 {
 	Item *pItem = new Item(ResizeClip, pClip, pClip->track());
+
 	pItem->clipStart  = iClipStart;
 	pItem->clipOffset = iClipOffset;
 	pItem->clipLength = iClipLength;
@@ -611,7 +629,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case MoveClip: {
 			qtractorTrack *pOldTrack = pClip->track();
-			const unsigned long  iOldStart = pClip->clipStart();
+			const unsigned long iOldStart = pClip->clipStart();
 			const unsigned long iOldOffset = pClip->clipOffset();
 			const unsigned long iOldLength = pClip->clipLength();
 			const unsigned long iOldFadeIn = pClip->fadeInLength();
@@ -623,8 +641,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
 			pTrack->addClip(pClip);
-			pItem->track      = pOldTrack;
-			pItem->clipStart  = iOldStart;
+			pItem->track = pOldTrack;
+			pItem->clipStart = iOldStart;
 			pItem->clipOffset = iOldOffset;
 			pItem->clipLength = iOldLength;
 			pItem->fadeInLength = iOldFadeIn;
@@ -635,7 +653,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case ResizeClip: {
-			const unsigned long iOldStart  = pClip->clipStart();
+			const unsigned long iOldStart = pClip->clipStart();
 			const unsigned long iOldOffset = pClip->clipOffset();
 			const unsigned long iOldLength = pClip->clipLength();
 			const unsigned long iOldFadeIn = pClip->fadeInLength();
@@ -679,7 +697,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			}
 			if (iOldStart != pItem->clipStart)
 				pTrack->insertClip(pClip);
-			pItem->clipStart  = iOldStart;
+			pItem->clipStart = iOldStart;
 			pItem->clipOffset = iOldOffset;
 			pItem->clipLength = iOldLength;
 			pItem->fadeInLength = iOldFadeIn;
