@@ -264,12 +264,12 @@ MIDI:	</translation>
         <translation>%1 Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="799"/>
+        <location filename="../qtractorClipCommand.cpp" line="817"/>
         <source>reset takes</source>
         <translation>resetar tentativas</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1087"/>
+        <location filename="../qtractorClipCommand.cpp" line="1105"/>
         <source>clip record</source>
         <translation>gravador de sequência</translation>
     </message>
@@ -504,7 +504,7 @@ MIDI:	</translation>
         <translation>monitoração da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="797"/>
+        <location filename="../qtractorClipCommand.cpp" line="815"/>
         <source>take %1</source>
         <translation>tentativa %1</translation>
     </message>
@@ -635,7 +635,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>repassar canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="985"/>
+        <location filename="../qtractorClipCommand.cpp" line="1003"/>
         <source>clip tool %1</source>
         <translation>ferramentas para sequências %1</translation>
     </message>
@@ -12077,7 +12077,7 @@ Tamanho:	%3</translation>
         <translation>recortar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4856"/>
+        <location filename="../qtractorTrackView.cpp" line="4870"/>
         <source>paste automation</source>
         <translation>colar automação</translation>
     </message>
@@ -12142,7 +12142,7 @@ Tamanho:	%3</translation>
         <translation>sequência %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4775"/>
+        <location filename="../qtractorTrackView.cpp" line="4789"/>
         <source>move automation</source>
         <translation>mover automação</translation>
     </message>

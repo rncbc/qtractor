@@ -106,22 +106,22 @@ End:	%3	Length:	%4</source>
         <translation>ファイル:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="797"/>
+        <location filename="../qtractorClipCommand.cpp" line="815"/>
         <source>take %1</source>
         <translation>テイク %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="799"/>
+        <location filename="../qtractorClipCommand.cpp" line="817"/>
         <source>reset takes</source>
         <translation>テイクをリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="985"/>
+        <location filename="../qtractorClipCommand.cpp" line="1003"/>
         <source>clip tool %1</source>
         <translation>クリップツール %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1087"/>
+        <location filename="../qtractorClipCommand.cpp" line="1105"/>
         <source>clip record</source>
         <translation>クリップの録音</translation>
     </message>
@@ -12132,12 +12132,12 @@ Length:	%3</source>
         <translation>%1 クリップ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4775"/>
+        <location filename="../qtractorTrackView.cpp" line="4789"/>
         <source>move automation</source>
         <translation>オートメーションの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4856"/>
+        <location filename="../qtractorTrackView.cpp" line="4870"/>
         <source>paste automation</source>
         <translation>オートメーションの貼り付け</translation>
     </message>

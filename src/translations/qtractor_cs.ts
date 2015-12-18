@@ -681,22 +681,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="797"/>
+        <location filename="../qtractorClipCommand.cpp" line="815"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="799"/>
+        <location filename="../qtractorClipCommand.cpp" line="817"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="985"/>
+        <location filename="../qtractorClipCommand.cpp" line="1003"/>
         <source>clip tool %1</source>
         <translation>Nástroj na záznamy %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1087"/>
+        <location filename="../qtractorClipCommand.cpp" line="1105"/>
         <source>clip record</source>
         <translation>Nahrávání záznamu</translation>
     </message>
@@ -12147,12 +12147,12 @@ Délka:	%3</translation>
         <translation>%1 záznam</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4775"/>
+        <location filename="../qtractorTrackView.cpp" line="4789"/>
         <source>move automation</source>
         <translation>Přesunout automatizaci</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4856"/>
+        <location filename="../qtractorTrackView.cpp" line="4870"/>
         <source>paste automation</source>
         <translation>Vložit automatizaci</translation>
     </message>
