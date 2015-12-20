@@ -306,11 +306,7 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 {
 	updateControlType(iControlType);
 
-	const qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::ControlType(
-			m_pControlTypeComboBox->itemData(iControlType).toInt());
-
-	emit controlTypeChanged(int(ctype));
+	emit controlTypeChanged(iControlType);
 
 	activateControlParam(m_pControlParamComboBox->currentIndex());
 }

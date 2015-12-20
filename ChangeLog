@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Added View/Note Type and Value Type command menus to the MIDI
+  clip editor (aka. piano-roll) which opens the possibility for
+  discrete shortcuts to switching views eg. Note Velocity and
+  Controller views (after a kind request by yubatake, thanks).
+  
 - Fixed the conversion and/or override of MIDI clip offsets when
   moving and copy/pasting across tempo/time-signature changes.
 

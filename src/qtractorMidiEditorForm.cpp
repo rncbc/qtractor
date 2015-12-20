@@ -185,6 +185,40 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pSnapToScaleKeyComboBox->setToolTip(tr("Scale key"));
 	m_pSnapToScaleTypeComboBox->setToolTip(tr("Scale type"));
 
+	// Late view/note type menu...
+	const QString sViewTypeObjectName("viewNoteType%1");
+	const QString sViewTypeStatusTip("Set note type to %1");
+	const int iViewTypeCount = m_pViewTypeComboBox->count();
+	for (int iIndex = 0; iIndex < iViewTypeCount; ++iIndex) {
+		const QString& sViewTypeText = m_pViewTypeComboBox->itemText(iIndex);
+		QAction *pAction = new QAction(sViewTypeText, this);
+		pAction->setObjectName(sViewTypeObjectName.arg(iIndex));
+		pAction->setStatusTip(sViewTypeStatusTip.arg(sViewTypeText));
+		pAction->setCheckable(true);
+		pAction->setData(iIndex);
+		QObject::connect(pAction,
+			SIGNAL(triggered(bool)),
+			SLOT(viewNoteType()));
+		m_ui.viewNoteTypeMenu->addAction(pAction);
+	}
+
+	// Late event/type type menu...
+	const QString sEventTypeObjectName("viewValueType%1");
+	const QString sEventTypeStatusTip("Set value type to %1");
+	const int iEventTypeCount = m_pEventTypeComboBox->count();
+	for (int iIndex = 0; iIndex < iEventTypeCount; ++iIndex) {
+		const QString& sEventTypeText = m_pEventTypeComboBox->itemText(iIndex);
+		QAction *pAction = new QAction(sEventTypeText, this);
+		pAction->setObjectName(sEventTypeObjectName.arg(iIndex));
+		pAction->setStatusTip(sEventTypeStatusTip.arg(sEventTypeText));
+		pAction->setCheckable(true);
+		pAction->setData(iIndex);
+		QObject::connect(pAction,
+			SIGNAL(triggered(bool)),
+			SLOT(viewValueType()));
+		m_ui.viewValueTypeMenu->addAction(pAction);
+	}
+
 	// Add combo-boxes to toolbars...
 	m_ui.viewToolbar->addSeparator();
 	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
@@ -463,6 +497,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.fileTrackInstrumentMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateTrackInstrumentMenu()));
+	QObject::connect(m_ui.viewNoteTypeMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateNoteTypeMenu()));
+	QObject::connect(m_ui.viewValueTypeMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateValueTypeMenu()));
 	QObject::connect(m_ui.viewZoomMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateZoomMenu()));
@@ -627,7 +667,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		const qtractorMidiControl::ControlType ctype
 			= m_pEventTypeGroup->controlTypeFromIndex(pOptions->iMidiEventType);
 		m_pEventTypeGroup->setControlType(ctype);
-		eventTypeChanged(ctype);
+		eventTypeChanged(pOptions->iMidiEventType);
 		m_pEventTypeGroup->setControlParam(pOptions->iMidiEventParam);
 		viewTypeChanged(pOptions->iMidiViewType);
 	} else {
@@ -1466,6 +1506,36 @@ void qtractorMidiEditorForm::viewNoteDuration ( bool bOn )
 }
 
 
+// Change view/note type setting via menu.
+void qtractorMidiEditorForm::viewNoteType (void)
+{
+	// Retrieve view/note type index from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		const int iIndex = pAction->data().toInt();
+		// Update the other toolbar control...
+		m_pViewTypeComboBox->setCurrentIndex(iIndex);
+		// Commit the change as usual...
+		viewTypeChanged(iIndex);
+	}
+}
+
+
+// Change event/value type setting via menu.
+void qtractorMidiEditorForm::viewValueType (void)
+{
+	// Retrieve event/value type index from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		const int iIndex = pAction->data().toInt();
+		// Update the other toolbar control...
+		m_pEventTypeComboBox->setCurrentIndex(iIndex);
+		// Commit the change as usual...
+		eventTypeChanged(iIndex);
+	}
+}
+
+
 // Show/hide the events window view.
 void qtractorMidiEditorForm::viewEvents ( bool bOn )
 {
@@ -1841,11 +1911,35 @@ void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Selection widget slots.
 
+// Note type view menu stabilizer.
+void qtractorMidiEditorForm::updateNoteTypeMenu (void)
+{
+	const int iCurrentIndex = m_pViewTypeComboBox->currentIndex();
+	QListIterator<QAction *> iter(m_ui.viewNoteTypeMenu->actions());
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		pAction->setChecked(pAction->data().toInt() == iCurrentIndex);
+	}
+}
+
+
+// Event type view menu stabilizer.
+void qtractorMidiEditorForm::updateValueTypeMenu (void)
+{
+	const int iCurrentIndex = m_pEventTypeComboBox->currentIndex();
+	QListIterator<QAction *> iter(m_ui.viewValueTypeMenu->actions());
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		pAction->setChecked(pAction->data().toInt() == iCurrentIndex);
+	}
+}
+
+
 // Zoom view menu stabilizer.
 void qtractorMidiEditorForm::updateZoomMenu (void)
 {
 	const int iZoomMode = m_pMidiEditor->zoomMode();
-	
+
 	m_ui.viewZoomHorizontalAction->setChecked(
 		iZoomMode == qtractorMidiEditor::ZoomHorizontal);
 	m_ui.viewZoomVerticalAction->setChecked(
@@ -1975,10 +2069,11 @@ void qtractorMidiEditorForm::viewTypeChanged ( int iIndex )
 }
 
 
-void qtractorMidiEditorForm::eventTypeChanged ( int etype )
+void qtractorMidiEditorForm::eventTypeChanged ( int iIndex )
 {
 	const qtractorMidiEvent::EventType eventType
-		= qtractorMidiEvent::EventType(etype);
+		= qtractorMidiEvent::EventType(
+			m_pEventTypeComboBox->itemData(iIndex).toInt());
 
 	m_pEventParamComboBox->setEnabled(
 		eventType == qtractorMidiEvent::CONTROLLER  ||
@@ -1989,6 +2084,10 @@ void qtractorMidiEditorForm::eventTypeChanged ( int etype )
 //	updateInstrumentNames();
 
 	m_pMidiEditor->editEvent()->setEventType(eventType);
+	m_pMidiEditor->updateContents();
+	m_pMidiEventList->refresh();
+
+	stabilizeForm();
 }
 
 
