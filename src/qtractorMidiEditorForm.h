@@ -147,7 +147,9 @@ protected slots:
 	void viewToolbarThumb(bool bOn);
 	void viewNoteDuration(bool bOn);
 	void viewNoteColor(bool bOn);
+	void viewNoteType();
 	void viewValueColor(bool bOn);
+	void viewValueType();
 	void viewEvents(bool bOn);
 	void viewPreview(bool bOn);
 	void viewFollow(bool bOn);
@@ -168,6 +170,9 @@ protected slots:
 	void helpShortcuts();
 	void helpAbout();
 	void helpAboutQt();
+
+	void updateNoteTypeMenu();
+	void updateValueTypeMenu();
 
 	void updateZoomMenu();
 	void updateSnapMenu();

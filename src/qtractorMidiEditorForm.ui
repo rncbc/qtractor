@@ -100,6 +100,16 @@
      </property>
      <addaction name="viewEventsAction"/>
     </widget>
+    <widget class="QMenu" name="viewNoteTypeMenu">
+     <property name="title">
+      <string>Not&amp;e Type</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="viewValueTypeMenu">
+     <property name="title">
+      <string>Val&amp;ue Type</string>
+     </property>
+    </widget>
     <widget class="QMenu" name="viewZoomMenu">
      <property name="title">
       <string>&amp;Zoom</string>
@@ -135,7 +145,10 @@
     <addaction name="separator"/>
     <addaction name="viewNoteDurationAction"/>
     <addaction name="viewNoteColorAction"/>
+    <addaction name="viewNoteTypeMenu"/>
+    <addaction name="separator"/>
     <addaction name="viewValueColorAction"/>
+    <addaction name="viewValueTypeMenu"/>
     <addaction name="separator"/>
     <addaction name="viewZoomMenu"/>
     <addaction name="viewSnapMenu"/>
