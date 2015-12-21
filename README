@@ -53,7 +53,8 @@ Features
   (a-la QjackCtl [16]).
 - LADSPA [5], DSSI [11], native VST [12] and LV2 [13] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
-- Plug-in presets, programs and chunk/configurations support.
+- Plug-in presets, programs and chunk/configurations support, including
+  native VST FXB/FXP file support.
 - Unlimited audio effect send/return inserts per track or bus.
 - Loop-recording/takes.
 - Audio/MIDI clip fade-in/out (linear, quadratic, cubic).
@@ -63,7 +64,7 @@ Features
 - Audio clip time-stretching (WSOLA-like or via librubberband [9]),
   pitch-shifting (via librubberband [9]) and seamless sample-rate
   conversion (via libsamplerate [8]).
-- Audio/MIDI track export (mix-down, merge).
+- Audio/MIDI track export (mix-down, render, merge).
 - Audio/MIDI metronome bar/beat clicks.
 - Unlimited tempo/time-signature map.
 - Unlimited location/bar markers.
@@ -77,7 +78,7 @@ Features
 - NSM (Non Session Management) support [15].
 - MMC control surface enabled.
 - MIDI Song Position cueing support.
-- Configurable keyboard shortcuts.
+- Configurable keyboard and MIDI controller shortcuts.
 
 
 Requirements
