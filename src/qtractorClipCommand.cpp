@@ -165,8 +165,8 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	unsigned long iClipLength, float fTimeStretch, float fPitchShift )
 {
 	Item *pItem = new Item(ResizeClip, pClip, pClip->track());
-#if 0
-	// HACK: convert/override MIDI clip-offset times
+
+	// FIXME: convert/override MIDI clip-offset times
 	// across potential tempo/time-sig changes...
 	qtractorTrack *pTrack = pClip->track();
 	qtractorSession *pSession = pTrack->session();
@@ -180,7 +180,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 		iClipOffset = pSession->frameFromTickRange(
 			iClipStartTime, iClipStartTime + iClipOffsetTime, true);
 	}
-#endif
+
 	pItem->clipStart  = iClipStart;
 	pItem->clipOffset = iClipOffset;
 	pItem->clipLength = iClipLength;

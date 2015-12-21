@@ -681,22 +681,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="815"/>
+        <location filename="../qtractorClipCommand.cpp" line="829"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="817"/>
+        <location filename="../qtractorClipCommand.cpp" line="831"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1003"/>
+        <location filename="../qtractorClipCommand.cpp" line="1017"/>
         <source>clip tool %1</source>
         <translation>Nástroj na záznamy %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1105"/>
+        <location filename="../qtractorClipCommand.cpp" line="1119"/>
         <source>clip record</source>
         <translation>Nahrávání záznamu</translation>
     </message>
