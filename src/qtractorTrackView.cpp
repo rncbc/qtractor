@@ -1921,8 +1921,15 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragClipFadeOut:
 			dragClipFadeDrop(pos);
 			break;
-		case DragClipResizeLeft:
 		case DragClipResizeRight:
+			// HACK: Reaper-like feature shameless plug...
+			if (modifiers & Qt::ControlModifier
+				&& pos.x() > m_posDrag.x()) {
+				dragClipRepeatRight(pos);
+				break;
+			}
+			// Fall thru...
+		case DragClipResizeLeft:
 			dragClipResizeDrop(pos, bModifier);
 			break;
 		case DragCurveMove:
@@ -3353,6 +3360,77 @@ void qtractorTrackView::dragClipResizeDrop (
 	// Declare the clip resize parcel...
 	pClipCommand->resizeClip(m_pClipDrag,
 		iClipStart, iClipOffset, iClipLength, fTimeStretch);
+
+	// Put it in the form of an undoable command...
+	pSession->execute(pClipCommand);
+}
+
+
+// Clip resize/repeat handler (over to the right, reaper-like).
+void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
+{
+	if (m_pClipDrag == NULL)
+		return;
+
+	if (!m_pClipDrag->queryEditor())
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorTrack *pTrack = m_pClipDrag->track();
+	if (pTrack == NULL)
+		return;
+
+	// We'll build a command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip repeat"));
+
+	// Always repeat horizontally-wise, to the right...
+	unsigned long iClipStart = pSession->frameSnap(
+		m_pClipDrag->clipStart() + m_pClipDrag->clipLength());
+
+	const int x0 = pSession->pixelFromFrame(iClipStart);
+	const int x1 = x0 + (pos.x() - m_posDrag.x());
+
+	int x = x0;
+
+	while (x < x1) {
+		unsigned long iClipEnd = iClipStart + m_pClipDrag->clipLength();
+		x = pSession->pixelFromFrame(iClipEnd);
+		if (x > x1)
+			iClipEnd = pSession->frameFromPixel(x1);
+		const unsigned long iClipLength = iClipEnd - iClipStart;
+		// Now, its imperative to make a proper clone...
+		qtractorClip *pNewClip = cloneClip(m_pClipDrag);
+		// Add the new cloned clip...
+		if (pNewClip) {
+			// HACK: convert/override MIDI clip-offset times
+			// across potential tempo/time-sig changes...
+			unsigned long iClipOffset = m_pClipDrag->clipOffset();
+			if (pTrack->trackType() == qtractorTrack::Midi) {
+				const unsigned long iOldClipStart = m_pClipDrag->clipStart();
+				const unsigned long iClipStartTime
+					= pSession->tickFromFrame(iClipStart);
+				const unsigned long iClipOffsetTime
+					= pSession->tickFromFrameRange(
+						iOldClipStart, iOldClipStart + iClipOffset, true);
+				iClipOffset = pSession->frameFromTickRange(
+					iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+			}
+			// Clone clip properties...
+			pNewClip->setClipStart(iClipStart);
+			pNewClip->setClipOffset(iClipOffset);
+			pNewClip->setClipLength(iClipLength);
+			pNewClip->setFadeInLength(m_pClipDrag->fadeInLength());
+			pNewClip->setFadeOutLength(m_pClipDrag->fadeOutLength());
+			// Add it, ofc.
+			pClipCommand->addClip(pNewClip, pTrack);
+		}
+		// Next clone starts...
+		iClipStart = pSession->frameSnap(iClipEnd);
+	}
 
 	// Put it in the form of an undoable command...
 	pSession->execute(pClipCommand);

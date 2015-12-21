@@ -354,6 +354,9 @@ protected:
 	void dragClipResizeMove(const QPoint& pos);
 	void dragClipResizeDrop(const QPoint& pos, bool bTimeStretch = false);
 
+	// Clip resize/repeat handler (over to the right, reaper-like).
+	void dragClipRepeatRight(const QPoint& pos);
+
 	// Automation curve node drag-move methods.
 	void dragCurveNode(const QPoint& pos, bool bToggle);
 

@@ -123,12 +123,11 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 	qtractorSession *pSession = pTrack->session();
 	if (pSession && pTrack->trackType() == qtractorTrack::Midi) {
 		const unsigned long iOldClipStart = pClip->clipStart();
-		const unsigned long iOldClipOffset = pClip->clipOffset();
 		const unsigned long iClipStartTime
 			= pSession->tickFromFrame(iClipStart);
 		const unsigned long iClipOffsetTime
 			= pSession->tickFromFrameRange(
-				iOldClipStart, iOldClipStart + iOldClipOffset, true);
+				iOldClipStart, iOldClipStart + iClipOffset, true);
 		iClipOffset = pSession->frameFromTickRange(
 			iClipStartTime, iClipStartTime + iClipOffsetTime, true);
 	}
@@ -166,6 +165,21 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	unsigned long iClipLength, float fTimeStretch, float fPitchShift )
 {
 	Item *pItem = new Item(ResizeClip, pClip, pClip->track());
+
+	// FIXME: convert/override MIDI clip-offset times
+	// across potential tempo/time-sig changes...
+	qtractorTrack *pTrack = pClip->track();
+	qtractorSession *pSession = pTrack->session();
+	if (pSession && pTrack->trackType() == qtractorTrack::Midi) {
+		const unsigned long iOldClipStart = pClip->clipStart();
+		const unsigned long long iClipOffsetTime
+			= pSession->tickFromFrameRange(
+				iOldClipStart, iOldClipStart + iClipOffset, true);
+		const unsigned long iClipStartTime
+			= pSession->tickFromFrame(iClipStart);
+		iClipOffset = pSession->frameFromTickRange(
+			iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+	}
 
 	pItem->clipStart  = iClipStart;
 	pItem->clipOffset = iClipOffset;
