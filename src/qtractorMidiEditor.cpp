@@ -1982,6 +1982,11 @@ bool qtractorMidiEditor::isEventSelectable ( qtractorMidiEvent *pEvent ) const
 void qtractorMidiEditor::ensureVisible (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
+	const int w = pScrollView->width();
+	const int wm = (w >> 3);
+	if (pos.x() > w - wm)
+		m_pEditView->updateContentsWidth(pos.x() + wm);
+
 	if (static_cast<qtractorMidiEditEvent *> (pScrollView) == m_pEditEvent)
 		pScrollView->ensureVisible(pos.x(), 0, 16, 0);
 	else

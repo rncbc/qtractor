@@ -418,8 +418,8 @@ void qtractorTracks::updateContents ( bool bRefresh )
 
 	// Update dependant views.
 	if (iRefresh > 0) {
-		m_pTrackView->updateContentsWidth();
 		m_pTrackList->updateContentsHeight();
+		m_pTrackView->updateContentsWidth();
 	//	m_pTrackView->setFocus();
 	}
 }
