@@ -487,8 +487,13 @@ bool qtractorTracks::newClip (void)
 		if (pSession->editTail() > pSession->editHead()) {
 			pClip->setClipLength(pSession->editTail() - pSession->editHead());
 		} else {
-			pClip->setClipLength(pSession->frameFromTick(
-				pSession->ticksPerBeat() * pSession->beatsPerBar()));
+			// Deafult length is one bar...
+			const unsigned long iClipStartTime
+				= pSession->tickFromFrame(iClipStart);
+			const unsigned long iClipLengthTime
+				= pSession->ticksPerBeat() * pSession->beatsPerBar();
+			pClip->setClipLength(pSession->frameFromTickRange(
+				iClipStartTime, iClipStartTime + iClipLengthTime));
 		}
 		// Proceed to setup the MDII clip properly...
 		qtractorMidiClip *pMidiClip
