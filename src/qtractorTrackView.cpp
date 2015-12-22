@@ -291,13 +291,11 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 			= pSession->pixelFromFrame(pSession->sessionEnd());
 		if (iContentsWidth < iSessionWidth)
 			iContentsWidth = iSessionWidth;
-	#if 0
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(iContentsWidth);
 		iContentsWidth += pNode->pixelFromBeat(
-			pNode->beat + 2* pNode->beatsPerBar) - pNode->pixel;
-	#endif
-		if (iContentsWidth <  qtractorScrollView::width())
+			pNode->beat + 2 * pNode->beatsPerBar) - pNode->pixel;
+		if (iContentsWidth  < qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
 		m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());

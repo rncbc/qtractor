@@ -154,11 +154,8 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 			if (iContentsWidth < w0)
 				iContentsWidth = w0;
 		}
-	#if 0
-		iContentsWidth += pTimeScale->pixelFromBeat(
-			2 * pTimeScale->beatsPerBar());
-	#endif
-		if (iContentsWidth <  qtractorScrollView::width())
+		iContentsWidth += pTimeScale->pixelFromBeat(pTimeScale->beatsPerBar());
+		if (iContentsWidth  < qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
 	}
 
