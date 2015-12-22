@@ -128,8 +128,13 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 		const unsigned long iClipOffsetTime
 			= pSession->tickFromFrameRange(
 				iOldClipStart, iOldClipStart + iClipOffset, true);
+		const unsigned long iClipLengthTime
+			= pSession->tickFromFrameRange(
+				iOldClipStart, iOldClipStart + iClipLength);
 		iClipOffset = pSession->frameFromTickRange(
 			iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+		iClipLength = pSession->frameFromTickRange(
+			iClipStartTime, iClipStartTime + iClipLengthTime);
 	}
 
 	pItem->clipStart  = iClipStart;

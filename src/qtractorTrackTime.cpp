@@ -494,7 +494,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragSelect:
 			// Rubber-band selection...
 			m_rectDrag.setRight(pos.x());
-			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->ensureVisible(pos.x(), y);
 			if (pTrackView->isCurveEdit()) {
 				// Select all current track curve/automation
 				// nodes that fall inside range...
@@ -514,7 +514,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragPlayHead:
 			// Play-head positioning...
-			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->ensureVisible(pos.x(), y);
 			pTrackView->setPlayHead(iFrame);
 			// Let the change get some immediate visual feedback...
 			if (pMainForm)
@@ -525,7 +525,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragPunchIn:
 		case DragEditHead:
 			// Edit-head positioning...
-			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->ensureVisible(pos.x(), y);
 			pTrackView->setEditHead(iFrame);
 			showToolTip(iFrame);
 			break;
@@ -533,13 +533,13 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragPunchOut:
 		case DragEditTail:
 			// Edit-tail positioning...
-			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->ensureVisible(pos.x(), y);
 			pTrackView->setEditTail(iFrame);
 			showToolTip(iFrame);
 			break;
 		case DragMarker:
 			// Marker positioning...
-			pTrackView->ensureVisible(pos.x(), y, 16, 0);
+			pTrackView->ensureVisible(pos.x(), y);
 			showToolTip(iFrame);
 			break;
 		case DragStart:

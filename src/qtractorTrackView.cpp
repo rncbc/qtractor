@@ -291,11 +291,13 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 			= pSession->pixelFromFrame(pSession->sessionEnd());
 		if (iContentsWidth < iSessionWidth)
 			iContentsWidth = iSessionWidth;
+	#if 0
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(iContentsWidth);
 		iContentsWidth += pNode->pixelFromBeat(
-			pNode->beat + 2 * pNode->beatsPerBar) - pNode->pixel;
-		if (iContentsWidth < qtractorScrollView::width())
+			pNode->beat + 2* pNode->beatsPerBar) - pNode->pixel;
+	#endif
+		if (iContentsWidth <  qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
 		m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
@@ -309,12 +311,6 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 	// Do the contents resize thing...
 	qtractorScrollView::resizeContents(
 		iContentsWidth, qtractorScrollView::contentsHeight());
-
-	// Keep selection (we'll update all contents anyway)...
-	if (m_bCurveEdit)
-		updateCurveSelect();
-	else
-		updateClipSelect();
 
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(
@@ -1140,7 +1136,7 @@ qtractorTrack *qtractorTrackView::dragClipMove (
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
 	m_iDragClipX = (pSession->pixelSnap(x + dx) - x);
-	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+	ensureVisible(pos.x(), pos.y());
 
 	showClipSelect();
 
@@ -1382,7 +1378,7 @@ void qtractorTrackView::dragCurveMove ( const QPoint& pos, bool /*bKeyStep*/ )
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
 	m_iDragCurveX = (pSession->pixelSnap(x + dx) - x);
-	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+	ensureVisible(pos.x(), pos.y());
 
 	updateRect(rectUpdate.united(rect.translated(m_iDragCurveX, 0)));
 }
@@ -1429,7 +1425,7 @@ void qtractorTrackView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 
 	// Kind of auto-scroll...
 	const QPoint& pos = viewportToContents(pDragMoveEvent->pos());
-	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+	ensureVisible(pos.x(), pos.y());
 }
 
 
@@ -1791,7 +1787,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragSelect:
 		m_rectDrag.setBottomRight(pos);
 		moveRubberBand(&m_pRubberBand, m_rectDrag);
-		qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+		ensureVisible(pos.x(), pos.y());
 		if (m_bCurveEdit) {
 			// Select all current track curve/automation
 			// nodes that fall inside the rubber-band...
@@ -2520,7 +2516,7 @@ void qtractorTrackView::selectClipFile ( qtractorTrack::TrackType trackType,
 		m_pTracks->selectionChangeNotify();
 		// Make sure the earliest is barely visible...
 		if (isClipSelected())
-			qtractorScrollView::ensureVisible(x0, y0, 24, 24);
+			ensureVisible(x0, y0);
 	}
 
 	// Make sure we keep focus... (maybe not:)
@@ -3193,7 +3189,7 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 		dx = m_rectDrag.right() - m_rectHandle.right();
 	m_iDragClipX = dx;
 	moveRubberBand(&m_pRubberBand, m_rectHandle);
-	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+	ensureVisible(pos.x(), pos.y());
 	
 	// Prepare to update the whole view area...
 	updateRect(m_rectDrag);
@@ -3280,7 +3276,7 @@ void qtractorTrackView::dragClipResizeMove ( const QPoint& pos )
 
 	moveRubberBand(&m_pRubberBand, rect, 3);
 	showToolTip(rect, 0);
-	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+	ensureVisible(pos.x(), pos.y());
 }
 
 
@@ -3401,13 +3397,13 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 		x = pSession->pixelFromFrame(iClipEnd);
 		if (x > x1)
 			iClipEnd = pSession->frameFromPixel(x1);
-		const unsigned long iClipLength = iClipEnd - iClipStart;
+		unsigned long iClipLength = iClipEnd - iClipStart;
 		// Now, its imperative to make a proper clone...
 		qtractorClip *pNewClip = cloneClip(m_pClipDrag);
 		// Add the new cloned clip...
 		if (pNewClip) {
-			// HACK: convert/override MIDI clip-offset times
-			// across potential tempo/time-sig changes...
+			// HACK: convert/override MIDI clip-offset, length
+			// times across potential tempo/time-sig changes...
 			unsigned long iClipOffset = m_pClipDrag->clipOffset();
 			if (pTrack->trackType() == qtractorTrack::Midi) {
 				const unsigned long iOldClipStart = m_pClipDrag->clipStart();
@@ -3416,8 +3412,13 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 				const unsigned long iClipOffsetTime
 					= pSession->tickFromFrameRange(
 						iOldClipStart, iOldClipStart + iClipOffset, true);
+				const unsigned long iClipLengthTime
+					= pSession->tickFromFrameRange(
+						iOldClipStart, iOldClipStart + iClipLength);
 				iClipOffset = pSession->frameFromTickRange(
 					iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+				iClipLength = pSession->frameFromTickRange(
+					iClipStartTime, iClipStartTime + iClipLengthTime);
 			}
 			// Clone clip properties...
 			pNewClip->setClipStart(iClipStart);
@@ -3482,7 +3483,7 @@ void qtractorTrackView::dragCurveNode ( const QPoint& pos, bool bToggle )
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 	}
 
-	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+	ensureVisible(pos.x(), pos.y());
 
 	const int h  = tvi.trackRect.height();
 	const int y2 = tvi.trackRect.bottom() + 1;
@@ -3879,6 +3880,18 @@ bool qtractorTrackView::keyStep ( int iKey )
 }
 
 
+// Make given contents position visible in view.
+void qtractorTrackView::ensureVisible ( int x, int y )
+{
+	const int w = qtractorScrollView::width();
+	const int wm = (w >> 3);
+	if (x > w - wm)
+		updateContentsWidth(x + wm);
+
+	qtractorScrollView::ensureVisible(x, y, 24, 24);
+}
+
+
 // Make given frame position visible in view.
 void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 {
@@ -3893,7 +3906,7 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 			x -= w3;
 		else if (x > x0 + w3)
 			x += w3;
-		qtractorScrollView::ensureVisible(x, y, 0, 0);
+		ensureVisible(x, y);
 	//	qtractorScrollView::setFocus();
 	}
 }
@@ -4789,9 +4802,10 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			qtractorClip *pNewClip = cloneClip(pClip);
 			// Add the new pasted clip...
 			if (pNewClip) {
-				// HACK: convert/override MIDI clip-offset times
-				// across potential tempo/time-sig changes...
+				// HACK: convert/override MIDI clip-offset, length
+				// times across potential tempo/time-sig changes...
 				unsigned long iClipOffset = pClipItem->clipOffset;
+				unsigned long iClipLength = pClipItem->clipLength;
 				if (pTrack->trackType() == qtractorTrack::Midi) {
 					const unsigned long iOldClipStart = pClipItem->clipStart;
 					const unsigned long iClipStartTime
@@ -4799,13 +4813,18 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 					const unsigned long iClipOffsetTime
 						= pSession->tickFromFrameRange(
 							iOldClipStart, iOldClipStart + iClipOffset, true);
+					const unsigned long iClipLengthTime
+						= pSession->tickFromFrameRange(
+							iOldClipStart, iOldClipStart + iClipLength);
 					iClipOffset = pSession->frameFromTickRange(
 						iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+					iClipLength = pSession->frameFromTickRange(
+						iClipStartTime, iClipStartTime + iClipLengthTime);
 				}
 				// Clone clip properties...
 				pNewClip->setClipStart(iClipStart);
 				pNewClip->setClipOffset(iClipOffset);
-				pNewClip->setClipLength(pClipItem->clipLength);
+				pNewClip->setClipLength(iClipLength);
 				pNewClip->setFadeInLength(pClipItem->fadeInLength);
 				pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
 				pClipCommand->addClip(pNewClip, pTrack);

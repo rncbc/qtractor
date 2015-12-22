@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Unlimited slack is now in effect on editing over and beyond
+  the current session or clip contents length, on both the main
+  tracks and MIDI clip editor (piano-roll) views. (EXPERIMENTAL)
+
 - Ctrl+click and dragging the right edge of a clip, in the main
   track view, will now make it spill over and repeat as many
   clones as the left-to-right extent goes. (EXPERIMENTAL)

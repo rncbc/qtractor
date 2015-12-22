@@ -214,6 +214,9 @@ public:
 	void setEditTail(unsigned long iEditTail);
 	int editTailX() const;
 
+	// Make given contents position visible in view.
+	void ensureVisible(int x, int y);
+
 	// Make given frame position visible in view.
 	void ensureVisibleFrame(unsigned long iFrame);
 
