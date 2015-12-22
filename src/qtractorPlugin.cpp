@@ -1654,16 +1654,16 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 		if (!isInteger()) {
 			const float fDecs
 				= ::log10f(maxValue() - minValue());
-			if (fDecs < -3.0f)
+			if (fDecs < 0.0f)
 				m_iDecimals = 6;
-			else if (fDecs < 0.0f)
+			else if (fDecs < 3.0f)
 				m_iDecimals = 3;
-			else if (fDecs < 1.0f)
-				m_iDecimals = 2;
 			else if (fDecs < 6.0f)
 				m_iDecimals = 1;
+		#if 0
 			if (isLogarithmic())
 				++m_iDecimals;
+		#endif
 		}
 		// Make this permanent...
 		m_subject.setToggled(isToggled());

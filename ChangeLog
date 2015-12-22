@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Slight increase on the number of decimal digits for the plugin
+  parmeters while on the generic plgin properties dialog.
+
 - Unlimited slack is now in effect on editing over and beyond
   the current session or clip contents length, on both the main
   tracks and MIDI clip editor (piano-roll) views. (EXPERIMENTAL)
