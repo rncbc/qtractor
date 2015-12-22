@@ -177,7 +177,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	qtractorSession *pSession = pTrack->session();
 	if (pSession && pTrack->trackType() == qtractorTrack::Midi) {
 		const unsigned long iOldClipStart = pClip->clipStart();
-		const unsigned long long iClipOffsetTime
+		const unsigned long iClipOffsetTime
 			= pSession->tickFromFrameRange(
 				iOldClipStart, iOldClipStart + iClipOffset, true);
 		const unsigned long iClipStartTime
