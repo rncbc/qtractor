@@ -6546,7 +6546,7 @@ Länge:	%3</translation>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1797"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1799"/>
         <source>MIDI Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8083,7 +8083,7 @@ Länge:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="263"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1831"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1833"/>
         <source>MOD</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8094,7 +8094,7 @@ Länge:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="271"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1836"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1838"/>
         <source>REC</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8143,17 +8143,17 @@ Do you want to save the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1811"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1813"/>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1814"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1816"/>
         <source>Track %1</source>
         <translation>Spur %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1821"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1823"/>
         <source>[modified]</source>
         <translation>[verändert]</translation>
     </message>

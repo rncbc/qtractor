@@ -6663,13 +6663,13 @@ Valor:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="263"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1831"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1833"/>
         <source>MOD</source>
         <translation>MOD</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="271"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1836"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1838"/>
         <source>REC</source>
         <translation>GRAVAR</translation>
     </message>
@@ -7400,12 +7400,12 @@ Valor:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1797"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1799"/>
         <source>MIDI Editor</source>
         <translation>Editor MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1811"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1813"/>
         <source>Channel %1</source>
         <translation>Canal %1</translation>
     </message>
@@ -7656,7 +7656,7 @@ Deseja salvar essas alterações?</translation>
         <translation>&amp;Controles</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1814"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1816"/>
         <source>Track %1</source>
         <translation>Pista %1</translation>
     </message>
@@ -7872,7 +7872,7 @@ Deseja salvar essas alterações?</translation>
         <translation>&amp;Eventos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1821"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1823"/>
         <source>[modified]</source>
         <translation>(modificado)</translation>
     </message>

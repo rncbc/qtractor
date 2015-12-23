@@ -6631,7 +6631,7 @@ Length:	%3</source>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1797"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1799"/>
         <source>MIDI Editor</source>
         <translation>MIDIエディタ</translation>
     </message>
@@ -8169,7 +8169,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="263"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1831"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1833"/>
         <source>MOD</source>
         <translation>変更</translation>
     </message>
@@ -8180,7 +8180,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="271"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1836"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1838"/>
         <source>REC</source>
         <translation>記録</translation>
     </message>
@@ -8233,17 +8233,17 @@ Do you want to save the changes?</source>
         <translation>MIDIファイルの保存: %1, トラックチャンネル: %2。</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1811"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1813"/>
         <source>Channel %1</source>
         <translation>チャンネル %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1814"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1816"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1821"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1823"/>
         <source>[modified]</source>
         <translation>[変更されました]</translation>
     </message>

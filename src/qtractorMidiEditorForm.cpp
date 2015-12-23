@@ -667,7 +667,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		const qtractorMidiControl::ControlType ctype
 			= m_pEventTypeGroup->controlTypeFromIndex(pOptions->iMidiEventType);
 		m_pEventTypeGroup->setControlType(ctype);
-		eventTypeChanged(pOptions->iMidiEventType);
+	//	eventTypeChanged(pOptions->iMidiEventType);
 		m_pEventTypeGroup->setControlParam(pOptions->iMidiEventParam);
 		viewTypeChanged(pOptions->iMidiViewType);
 	} else {
@@ -1529,9 +1529,11 @@ void qtractorMidiEditorForm::viewValueType (void)
 	if (pAction) {
 		const int iIndex = pAction->data().toInt();
 		// Update the other toolbar control...
-		m_pEventTypeComboBox->setCurrentIndex(iIndex);
+		const qtractorMidiControl::ControlType ctype
+			= m_pEventTypeGroup->controlTypeFromIndex(iIndex);
+		m_pEventTypeGroup->setControlType(ctype);
 		// Commit the change as usual...
-		eventTypeChanged(iIndex);
+		// eventTypeChanged(iIndex);
 	}
 }
 
