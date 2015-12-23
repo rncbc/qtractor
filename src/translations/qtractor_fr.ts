@@ -6707,12 +6707,12 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="105"/>
         <source>Not&amp;e Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ&amp;e note</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="110"/>
         <source>Val&amp;ue Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type vale&amp;ur</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="115"/>
@@ -12148,7 +12148,7 @@ Longueur:	%3</translation>
         <location filename="../qtractorTrackView.cpp" line="3395"/>
         <location filename="../qtractorTrackView.cpp" line="3476"/>
         <source>clip repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>répéter clip</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4271"/>
