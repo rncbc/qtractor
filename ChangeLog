@@ -13,9 +13,9 @@ GIT HEAD
   the current session or clip contents length, on both the main
   tracks and MIDI clip editor (piano-roll) views. (EXPERIMENTAL)
 
-- Ctrl+click and dragging the right edge of a clip, in the main
-  track view, will now make it spill over and repeat as many
-  clones as the left-to-right extent goes. (EXPERIMENTAL)
+- Ctrl+click and dragging the left or right edges of a clip will
+  now make it spill over and replicate as many clip clones as it
+  fits in the left or right horizontal extent. (EXPERIMENTAL)
 
 - Added View/Note Type and Value Type command menus to the MIDI
   clip editor (aka. piano-roll) which opens the possibility for
