@@ -115,6 +115,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pEditCurve = NULL;
 	m_pEditCurveNode = NULL;
 	m_pEditCurveNodeSpinBox = NULL;
+	m_iEditCurveNodeDirty = 0;
 
 	clear();
 
@@ -3660,6 +3661,7 @@ void qtractorTrackView::resetDragState (void)
 		m_dragState == DragCurvePaste      ||
 		m_dragState == DragCurveStep       ||
 		m_dragState == DragCurveMove) {
+		m_iEditCurveNodeDirty = 0;
 		closeEditCurveNode();
 		updateContents();
 	}
@@ -5285,17 +5287,18 @@ void qtractorTrackView::openEditCurveNode (
 
 	int iDecimals = 0;
 	if (pSubject->isDecimal()) {
-		const float fDecimals = ::log10f(fMaxValue - fMinValue);
-		if (fDecimals < -3.0f)
+		const float fDecs
+			= ::log10f(fMaxValue - fMinValue);
+		if (fDecs < 0.0f)
 			iDecimals = 6;
-		else if (fDecimals < 0.0f)
+		else if (fDecs < 3.0f)
 			iDecimals = 3;
-		else if (fDecimals < 1.0f)
-			iDecimals = 2;
-		else if (fDecimals < 6.0f)
+		else if (fDecs < 6.0f)
 			iDecimals = 1;
+	#if 0
 		if (m_pEditCurve->isLogarithmic())
 			++iDecimals;
+	#endif
 	}
 
 	m_pEditCurveNodeSpinBox = new QDoubleSpinBox(this);
@@ -5325,8 +5328,14 @@ void qtractorTrackView::openEditCurveNode (
 	m_pEditCurveNodeSpinBox->setFocus();
 
 	QObject::connect(m_pEditCurveNodeSpinBox,
+		SIGNAL(valueChanged(const QString&)),
+		SLOT(editCurveNodeChanged()));
+	QObject::connect(m_pEditCurveNodeSpinBox,
 		SIGNAL(editingFinished()),
 		SLOT(editCurveNodeFinished()));
+
+	// We'll start clean...
+	m_iEditCurveNodeDirty = 0;
 
 	setSyncViewHoldOn(true);
 }
@@ -5341,46 +5350,58 @@ void qtractorTrackView::closeEditCurveNode (void)
 	qDebug("qtractorTrackView::closeEditCurveNode()");
 #endif
 
+	// Have we changed anything?
+	if (m_iEditCurveNodeDirty > 0 && m_pEditCurveNode && m_pEditCurve) {
+		// Make it an undoable command...
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			const float fOldValue = m_pEditCurveNode->value;
+			const float fNewValue = m_pEditCurveNodeSpinBox->value();
+			if (::fabsf(fNewValue - fOldValue)
+				> float(m_pEditCurveNodeSpinBox->singleStep())) {
+				qtractorCurveEditCommand *pEditCurveNodeCommand
+					= new qtractorCurveEditCommand(m_pEditCurve);
+				pEditCurveNodeCommand->moveNode(m_pEditCurveNode,
+					m_pEditCurveNode->frame, fNewValue);
+				pSession->execute(pEditCurveNodeCommand);
+			}
+		}
+		// Reset editing references...
+		m_iEditCurveNodeDirty = 0;
+		m_pEditCurveNode = NULL;
+		m_pEditCurve = NULL;
+	}
+
+	// Time to close...
 	m_pEditCurveNodeSpinBox->blockSignals(true);
 	m_pEditCurveNodeSpinBox->clearFocus();
 	m_pEditCurveNodeSpinBox->close();
 
-	delete m_pEditCurveNodeSpinBox;
+	m_pEditCurveNodeSpinBox->deleteLater();
 	m_pEditCurveNodeSpinBox = NULL;
 
 	qtractorScrollView::setFocus();
 }
 
 
-void qtractorTrackView::editCurveNodeFinished (void)
+void qtractorTrackView::editCurveNodeChanged (void)
 {
-	if (m_pEditCurveNodeSpinBox == NULL)
-		return;
-
-	if (m_pEditCurve == NULL || m_pEditCurveNode == NULL)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTrackView::editCurveNodeFinished()");
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTrackView::editCurveNodeChanged()");
 #endif
 
-	// Make it an undoable command...
-	const float fOldValue = m_pEditCurveNode->value;
-	const float fNewValue = m_pEditCurveNodeSpinBox->value();
-	if (::fabsf(fNewValue - fOldValue) > 0.001f) {
-		qtractorCurveEditCommand *pEditCurveNodeCommand
-			= new qtractorCurveEditCommand(m_pEditCurve);
-		pEditCurveNodeCommand->moveNode(m_pEditCurveNode,
-			m_pEditCurveNode->frame, fNewValue);
-		pSession->execute(pEditCurveNodeCommand);
+	if (m_pEditCurveNodeSpinBox && m_pEditCurveNode && m_pEditCurve) {
+		++m_iEditCurveNodeDirty;
+		setSyncViewHoldOn(true);
 	}
+}
 
-	m_pEditCurveNode = NULL;
-	m_pEditCurve = NULL;
+
+void qtractorTrackView::editCurveNodeFinished (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTrackView::editCurveNodeFinished()");
+#endif
 
 	closeEditCurveNode();
 }
