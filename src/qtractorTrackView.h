@@ -395,6 +395,7 @@ protected slots:
 	void dragTimeout();
 
 	// Automatio/curve node editor slots.
+	void editCurveNodeChanged();
 	void editCurveNodeFinished();
 
 private:
@@ -569,6 +570,7 @@ private:
 	qtractorCurve       *m_pEditCurve;
 	qtractorCurve::Node *m_pEditCurveNode;
 	QDoubleSpinBox      *m_pEditCurveNodeSpinBox;
+	int                  m_iEditCurveNodeDirty;
 };
 
 

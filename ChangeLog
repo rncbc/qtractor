@@ -7,7 +7,8 @@ ChangeLog
 GIT HEAD
 
 - Slight increase on the number of decimal digits for the plugin
-  parmeters while on the generic plgin properties dialog.
+  parmeters while on the generic plgin properties dialog. Also
+  applied to automation curve node value editing. (EXPERIMENTAL)
 
 - Unlimited slack is now in effect on editing over and beyond
   the current session or clip contents length, on both the main
