@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="it_IT">
+<TS version="2.0" language="it_IT">
 <context>
     <name>QObject</name>
     <message>
@@ -6708,12 +6708,12 @@ Durata:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="105"/>
         <source>Not&amp;e Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tipo di nota</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="110"/>
         <source>Val&amp;ue Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tipo di valore</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="115"/>
@@ -12148,7 +12148,7 @@ Lunghezza:   %3</translation>
         <location filename="../qtractorTrackView.cpp" line="3395"/>
         <location filename="../qtractorTrackView.cpp" line="3476"/>
         <source>clip repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>ripeti clip</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4271"/>
