@@ -890,8 +890,10 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 
 	if (bCreate) {
 		// Build up the plugin form...
+	#if 0
 		if (pParent == NULL)
 			pParent = qtractorMainForm::getInstance();
+	#endif
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
