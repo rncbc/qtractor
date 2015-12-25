@@ -3398,6 +3398,8 @@ void qtractorTrackView::dragClipRepeatLeft ( const QPoint& pos )
 	int x = x0;
 
 	while (x > x2) {
+		// Let's remember this, just in case...
+		const unsigned long iOldClipStart = iClipStart;
 		// Next clone starts backward...
 		if (iClipStart > iClipLength) {
 			iClipStart = pSession->frameSnap(iClipStart - iClipLength);
@@ -3429,7 +3431,6 @@ void qtractorTrackView::dragClipRepeatLeft ( const QPoint& pos )
 			// HACK: convert/override MIDI clip-offset, length
 			// times across potential tempo/time-sig changes...
 			if (pTrack->trackType() == qtractorTrack::Midi) {
-				const unsigned long iOldClipStart = m_pClipDrag->clipStart();
 				const unsigned long iClipStartTime
 					= pSession->tickFromFrame(iClipStart);
 				const unsigned long iClipOffsetTime
@@ -3494,6 +3495,8 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 	int x = x0;
 
 	while (x < x2) {
+		// Let's remember this, just in case...
+		const unsigned long iOldClipStart = iClipStart;
 		// Next clone starts forward...
 		iClipStart = pSession->frameSnap(iClipStart + iClipLength);
 		// Get next clone pixel position...
@@ -3510,7 +3513,6 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 			// HACK: convert/override MIDI clip-offset, length
 			// times across potential tempo/time-sig changes...
 			if (pTrack->trackType() == qtractorTrack::Midi) {
-				const unsigned long iOldClipStart = m_pClipDrag->clipStart();
 				const unsigned long iClipStartTime
 					= pSession->tickFromFrame(iClipStart);
 				const unsigned long iClipOffsetTime
