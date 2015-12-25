@@ -3397,18 +3397,30 @@ void qtractorTrackView::dragClipRepeatLeft ( const QPoint& pos )
 
 	int x = x0;
 
-	while (x > x2 && iClipStart > iClipLength) {
+	while (x > x2) {
 		// Next clone starts backward...
-		iClipStart = pSession->frameSnap(iClipStart - iClipLength);
-		// Get next clone pixel position...
-		x = pSession->pixelFromFrame(iClipStart);
-		if (x < x2) {
+		if (iClipStart > iClipLength) {
+			iClipStart = pSession->frameSnap(iClipStart - iClipLength);
+			// Get next clone pixel position...
+			x = pSession->pixelFromFrame(iClipStart);
+			if (x < x2) {
+				const unsigned long iClipStart2
+					= pSession->frameSnap(pSession->frameFromPixel(x2));
+				const unsigned long iClipDelta2 = iClipStart2 - iClipStart;
+				iClipStart   = iClipStart2;
+				iClipOffset += iClipDelta2;
+				iClipLength -= iClipDelta2;
+			}
+		} else {
 			const unsigned long iClipStart2
-				= pSession->frameSnap(pSession->frameFromPixel(x2));
-			const unsigned long iClipDelta2 = iClipStart2 - iClipStart;
-			iClipStart   = iClipStart2;
-			iClipOffset += iClipDelta2;
-			iClipLength -= iClipDelta2;
+				= iClipStart + iClipLength;
+			const unsigned long iClipDelta2
+				= pSession->frameSnap(iClipStart2) - iClipStart2;
+			const unsigned long iClipLength2 = iClipStart - iClipDelta2;
+			iClipStart   = 0;
+			iClipOffset += iClipLength - iClipLength2;
+			iClipLength  = iClipLength2;
+			x = x2; // break on next...
 		}
 		// Now, its imperative to make a proper clone...
 		qtractorClip *pNewClip = cloneClip(m_pClipDrag);
