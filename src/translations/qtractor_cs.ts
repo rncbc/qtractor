@@ -7368,12 +7368,12 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="105"/>
         <source>Not&amp;e Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ &amp;poznámky</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="110"/>
         <source>Val&amp;ue Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ &amp;hodnoty</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="433"/>
@@ -12150,7 +12150,7 @@ Délka:	%3</translation>
         <location filename="../qtractorTrackView.cpp" line="3388"/>
         <location filename="../qtractorTrackView.cpp" line="3485"/>
         <source>clip repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Opakování záznamu</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4286"/>
