@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 20
+%define release 21
 
 %define _prefix	@ac_prefix@
 
@@ -107,6 +107,8 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}.1.gz
 
 %changelog
+* Tue Dec 29 2015 Rui Nuno Capela <rncbc@rncbc.org> 0.7.3
+- Tackier Gluon Beta release.
 * Thu Dec 10 2015 Rui Nuno Capela <rncbc@rncbc.org> 0.7.2
 - Tacky Gluon Beta release.
 * Fri Oct  9 2015 Rui Nuno Capela <rncbc@rncbc.org> 0.7.1

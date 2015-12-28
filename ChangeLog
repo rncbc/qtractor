@@ -4,19 +4,19 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.7.3  2015-12-19  Tackier Gluon Beta
 
 - Slight increase on the number of decimal digits for the plugin
-  parmeters while on the generic plgin properties dialog. Also
-  applied to automation curve node value editing. (EXPERIMENTAL)
+  parameters while on the generic plugin properties dialog. Also
+  applied to automation curve node value editing.
 
 - Unlimited slack is now in effect on editing over and beyond
   the current session or clip contents length, on both the main
-  tracks and MIDI clip editor (piano-roll) views. (EXPERIMENTAL)
+  tracks and MIDI clip editor (piano-roll) views.
 
 - Ctrl+click and dragging the left or right edges of a clip will
   now make it spill over and replicate as many clip clones as it
-  fits in the left or right horizontal extent. (EXPERIMENTAL)
+  fits in the left or right horizontal extent.
 
 - Added View/Note Type and Value Type command menus to the MIDI
   clip editor (aka. piano-roll) which opens the possibility for
@@ -35,7 +35,7 @@ GIT HEAD
 
 - Fixed LV2UI_Resize handle from extension_data(LV2_UI__resize), 
   now passing LV2UI_Handle in first argument to ui_resize(), as
-  found correct and needed for resizable/scalable LV2 UI's, most
+  found correct and needed for resizable/scaleable LV2 UI's, most
   specially to ssj71's so called Infamous Plugins, thanks.
 
 
