@@ -1694,7 +1694,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			m_posDrag   = pos;
 			m_pClipDrag = clipAt(m_posDrag, true, &m_rectDrag);
 			// Should it be selected(toggled)?
-			if (m_pClipDrag && !dragMoveStart(pos)) {
+			if (m_pClipDrag && !dragMoveStart(pos, modifiers)) {
 				// Show that we're about to something...
 				m_dragCursor = m_dragState;
 				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
@@ -1758,7 +1758,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragNone:
 		// Try to catch mouse over the fade or resize handles...
-		dragMoveStart(pos);
+		dragMoveStart(pos, modifiers);
 		break;
 	case DragClipMove:
 	case DragClipPaste:
@@ -1772,6 +1772,8 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragClipFadeOut:
 		dragClipFadeMove(pos);
 		break;
+	case DragClipRepeatLeft:
+	case DragClipRepeatRight:
 	case DragClipResizeLeft:
 	case DragClipResizeRight:
 		dragClipResizeMove(pos);
@@ -1781,7 +1783,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		dragCurveMove(pos + m_posStep);
 		break;
 	case DragCurveNode:
-		dragCurveNode(pos, modifiers & Qt::ControlModifier);
+		dragCurveNode(pos, modifiers);
 		break;
 	case DragSelect:
 		m_rectDrag.setBottomRight(pos);
@@ -1807,7 +1809,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			> QApplication::startDragDistance()) {
 			// Check if we're pointing in some fade-in/out,
 			// resize handle or a automation curve node...
-			if (dragMoveStart(m_posDrag)) {
+			if (dragMoveStart(m_posDrag, modifiers)) {
 				m_dragState = m_dragCursor;
 				if (m_dragState == DragCurveMove) {
 					// DragCurveMove...
@@ -1916,21 +1918,25 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragClipFadeOut:
 			dragClipFadeDrop(pos);
 			break;
-		case DragClipResizeLeft:
+		case DragClipRepeatLeft:
 			// HACK: Reaper-like feature shameless plug...
-			if ((modifiers & Qt::ControlModifier) &&
-				(pos.x() < m_posDrag.x()))
+			if (pos.x() < m_posDrag.x()) {
 				dragClipRepeatLeft(pos);
-			else
-				dragClipResizeDrop(pos, bModifier);
+				break;
+			}
+			// Fall thru...
+		case DragClipResizeLeft:
+			dragClipResizeDrop(pos, bModifier);
 			break;
-		case DragClipResizeRight:
+		case DragClipRepeatRight:
 			// HACK: Reaper-like feature shameless plug...
-			if ((modifiers & Qt::ControlModifier) &&
-				(pos.x() > m_posDrag.x()))
+			if (pos.x() > m_posDrag.x()) {
 				dragClipRepeatRight(pos);
-			else
-				dragClipResizeDrop(pos, bModifier);
+				break;
+			}
+			// Fall thru...
+		case DragClipResizeRight:
+			dragClipResizeDrop(pos, bModifier);
 			break;
 		case DragCurveMove:
 			// Let's move them...
@@ -1949,7 +1955,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			} else {
 				// As long we're editing curve/automation...
 				if (m_bCurveEdit)
-					dragCurveNode(pos, modifiers & Qt::ControlModifier);
+					dragCurveNode(pos, modifiers);
 				// As long we're not editing anything...
 				if (m_dragCursor == DragNone && bModifier) {
 					// Direct play-head positioning:
@@ -3107,7 +3113,8 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 
 
 // Check whether we're up to drag a clip fade-in/out or resize handle.
-bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
+bool qtractorTrackView::dragMoveStart (
+	const QPoint& pos, const Qt::KeyboardModifiers& modifiers )
 {
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
@@ -3155,13 +3162,15 @@ bool qtractorTrackView::dragMoveStart ( const QPoint& pos )
 		}
 		// Resize-right check...
 		if (pos.x() >= rectClip.right() - 4) {
-			m_dragCursor = DragClipResizeRight;
+			m_dragCursor = (modifiers & Qt::ControlModifier
+				? DragClipRepeatRight : DragClipResizeRight);
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
 		// Resize-left check...
 		if (pos.x() < rectClip.left() + 4) {
-			m_dragCursor = DragClipResizeLeft;
+			m_dragCursor = (modifiers & Qt::ControlModifier
+				? DragClipRepeatLeft : DragClipResizeLeft);
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
@@ -3259,7 +3268,8 @@ void qtractorTrackView::dragClipResizeMove ( const QPoint& pos )
 	int x = 0;
 	const int dx = (pos.x() - m_posDrag.x());
 	QRect rect(m_rectDrag);
-	if (m_dragState == DragClipResizeLeft) {
+	if (m_dragState == DragClipResizeLeft ||
+		m_dragState == DragClipRepeatLeft) {
 		if (rect.left() > -(dx))
 			x = pSession->pixelSnap(rect.left() + dx);
 		if (x < 0)
@@ -3270,7 +3280,8 @@ void qtractorTrackView::dragClipResizeMove ( const QPoint& pos )
 		rect.setLeft(x);
 	}
 	else
-	if (m_dragState == DragClipResizeRight) {
+	if (m_dragState == DragClipResizeRight ||
+		m_dragState == DragClipRepeatRight) {
 		if (rect.right() > -(dx))
 			x = pSession->pixelSnap(rect.right() + dx);
 		if (x < rect.left() + 8)
@@ -3546,7 +3557,8 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 
 
 // Automation curve node drag-move methods.
-void qtractorTrackView::dragCurveNode ( const QPoint& pos, bool bToggle )
+void qtractorTrackView::dragCurveNode (
+	const QPoint& pos, const Qt::KeyboardModifiers& modifiers )
 {
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
@@ -3611,7 +3623,7 @@ void qtractorTrackView::dragCurveNode ( const QPoint& pos, bool bToggle )
 		const int y = y2 - int(s * float(h));
 		const QRect rectUpdate = m_pCurveSelect->rect();
 		m_pCurveSelect->selectItem(pCurve, pNode,
-			QRect(x - 4, y - 4, 8, 8), true, bToggle);
+			QRect(x - 4, y - 4, 8, 8), true, modifiers & Qt::ControlModifier);
 		m_pCurveSelect->update(true);
 		updateRect(rectUpdate.united(m_pCurveSelect->rect()));
 		m_pDragCurveNode = pNode;
@@ -3665,7 +3677,9 @@ void qtractorTrackView::resetDragState (void)
 		m_pClipSelect->clear();
 	if (m_dragState == DragCurveStep)
 		m_pCurveSelect->clear();
-	if (m_dragState == DragClipResizeLeft  ||
+	if (m_dragState == DragClipRepeatLeft  ||
+		m_dragState == DragClipRepeatRight ||
+		m_dragState == DragClipResizeLeft  ||
 		m_dragState == DragClipResizeRight ||
 		m_dragState == DragClipPasteDrop   ||
 		m_dragState == DragClipPaste       ||
