@@ -3747,6 +3747,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackView::keyPressEvent(%d)", pKeyEvent->key());
 #endif
+	const Qt::KeyboardModifiers& modifiers = pKeyEvent->modifiers();
 	const int iKey = pKeyEvent->key();
 	switch (iKey) {
 	case Qt::Key_Insert: // Aha, joking :)
@@ -3777,7 +3778,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		resetDragState();
 		break;
 	case Qt::Key_Home:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(0, 0);
 		} else {
 			qtractorScrollView::setContentsPos(
@@ -3785,7 +3786,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		}
 		break;
 	case Qt::Key_End:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsWidth(),
 				qtractorScrollView::contentsHeight());
@@ -3796,51 +3797,51 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		}
 		break;
 	case Qt::Key_Left:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() - qtractorScrollView::width(),
 				qtractorScrollView::contentsY());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() - 16,
 				qtractorScrollView::contentsY());
 		}
 		break;
 	case Qt::Key_Right:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() + qtractorScrollView::width(),
 				qtractorScrollView::contentsY());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() + 16,
 				qtractorScrollView::contentsY());
 		}
 		break;
 	case Qt::Key_Up:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() - qtractorScrollView::height());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() - 16);
 		}
 		break;
 	case Qt::Key_Down:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() + qtractorScrollView::height());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() + 16);
 		}
 		break;
 	case Qt::Key_PageUp:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(), 16);
 		} else {
@@ -3850,7 +3851,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		}
 		break;
 	case Qt::Key_PageDown:
-		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+		if (modifiers & Qt::ControlModifier) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsHeight());
@@ -3868,7 +3869,8 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 
 
 // Keyboard step handler.
-bool qtractorTrackView::keyStep ( int iKey )
+bool qtractorTrackView::keyStep (
+	int iKey, const Qt::KeyboardModifiers& modifiers )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -3935,9 +3937,13 @@ bool qtractorTrackView::keyStep ( int iKey )
 		int x1 = x0 + m_posStep.x();
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
-		const unsigned short iSnapPerBeat = pSession->snapPerBeat();
-		if (iSnapPerBeat > 0)
-			iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		if (modifiers & Qt::ShiftModifier) {
+			iHorizontalStep = pNode->pixelsPerBeat() * pNode->beatsPerBar;
+		} else {
+			const unsigned short iSnapPerBeat = pSession->snapPerBeat();
+			if (iSnapPerBeat > 0)
+				iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		}
 		if (iHorizontalStep < 1)
 			iHorizontalStep = 1;
 		if (iKey == Qt::Key_Left)

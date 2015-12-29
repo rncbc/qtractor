@@ -2549,7 +2549,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 // Start immediate some drag-edit mode...
 qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers modifiers )
+	const Qt::KeyboardModifiers& modifiers )
 {
 	if (m_pMidiClip == NULL)
 		return NULL;
@@ -2797,7 +2797,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 // Track drag-move-select cursor and mode...
 qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers modifiers )
+	const Qt::KeyboardModifiers& modifiers )
 {
 	qtractorMidiEvent *pEvent = eventAt(pScrollView, pos, &m_rectDrag);
 
@@ -2884,7 +2884,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 // Start drag-move-selecting...
 void qtractorMidiEditor::dragMoveStart (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers modifiers )
+	const Qt::KeyboardModifiers& modifiers )
 {
 	// Are we already step-moving or pasting something?
 	switch (m_dragState) {
@@ -2937,7 +2937,7 @@ void qtractorMidiEditor::dragMoveStart (
 // Update drag-move-selection...
 void qtractorMidiEditor::dragMoveUpdate (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers modifiers )
+	const Qt::KeyboardModifiers& modifiers )
 {
 	int flags = SelectNone;
 	
@@ -3049,7 +3049,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 // Commit drag-move-selection...
 void qtractorMidiEditor::dragMoveCommit (
 	qtractorScrollView *pScrollView, const QPoint& pos,
-	Qt::KeyboardModifiers modifiers )
+	const Qt::KeyboardModifiers& modifiers )
 {
 	int flags = qtractorMidiEditor::SelectCommit;
 
@@ -4896,7 +4896,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 
 // Keyboard event handler (common).
 bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
-	int iKey, Qt::KeyboardModifiers modifiers )
+	int iKey, const Qt::KeyboardModifiers& modifiers )
 {
 	switch (iKey) {
 	case Qt::Key_Insert: // Aha, joking :)
@@ -4941,7 +4941,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() - pScrollView->width(),
 				pScrollView->contentsY());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() - 16,
 				pScrollView->contentsY());
@@ -4952,7 +4952,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() + pScrollView->width(),
 				pScrollView->contentsY());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() + 16,
 				pScrollView->contentsY());
@@ -4963,7 +4963,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() - pScrollView->height());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() - 16);
@@ -4974,7 +4974,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() + pScrollView->height());
-		} else if (!keyStep(iKey)) {
+		} else if (!keyStep(iKey, modifiers)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() + 16);
@@ -5012,7 +5012,8 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 
 
 // Keyboard step handler.
-bool qtractorMidiEditor::keyStep ( int iKey )
+bool qtractorMidiEditor::keyStep (
+	int iKey, const Qt::KeyboardModifiers& modifiers )
 {
 	// Only applicable if something is selected...
 	if (m_select.items().isEmpty())
@@ -5057,9 +5058,13 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		int x1 = x0 + m_posStep.x();
 		qtractorTimeScale::Cursor cursor(m_pTimeScale);
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
-		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
-		if (iSnapPerBeat > 0)
-			iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		if (modifiers & Qt::ShiftModifier) {
+			iHorizontalStep = pNode->pixelsPerBeat() * pNode->beatsPerBar;
+		} else {
+			unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
+			if (iSnapPerBeat > 0)
+				iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		}
 		if (iHorizontalStep < 1)
 			iHorizontalStep = 1;
 		if (iKey == Qt::Key_Left)
