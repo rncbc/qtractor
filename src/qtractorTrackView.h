@@ -347,7 +347,8 @@ protected:
 		const QRect& rectDrag, int thick = 1) const;
 
 	// Clip fade-in/out handle and resize detection.
-	bool dragMoveStart(const QPoint& pos);
+	bool dragMoveStart(const QPoint& pos,
+		const Qt::KeyboardModifiers& modifiers);
 
 	// Clip fade-in/out handle drag-move methods.
 	void dragClipFadeMove(const QPoint& pos);
@@ -362,7 +363,8 @@ protected:
 	void dragClipRepeatRight(const QPoint& pos);
 
 	// Automation curve node drag-move methods.
-	void dragCurveNode(const QPoint& pos, bool bToggle);
+	void dragCurveNode(const QPoint& pos,
+		const Qt::KeyboardModifiers& modifiers);
 
 	// Common tool-tip builder for automation nodes.
 	QString nodeToolTip(qtractorCurve *pCurve, qtractorCurve::Node *pNode) const;
@@ -446,6 +448,7 @@ private:
 		DragClipPaste, DragClipPasteDrop,
 		DragClipFadeIn, DragClipFadeOut,
 		DragClipResizeLeft, DragClipResizeRight,
+		DragClipRepeatLeft, DragClipRepeatRight,
 		DragCurveMove, DragCurveStep,
 		DragCurvePaste, DragCurveNode
 	} m_dragState, m_dragCursor;
