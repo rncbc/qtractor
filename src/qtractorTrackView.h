@@ -284,7 +284,6 @@ protected:
 
 	// Drag-n-drop event stuffers (for clips).
 	qtractorTrack *dragClipMove(const QPoint& pos, bool bKeyStep = false);
-
 	qtractorTrack *dragClipDrop(const QPoint& pos, bool bKeyStep = false,
 		const QMimeData *pMimeData = NULL);
 	qtractorTrack *dragClipDropEvent(QDropEvent *pDropEvent);
@@ -376,7 +375,7 @@ protected:
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Keyboard step handler.
-	bool keyStep(int iKey);
+	bool keyStep(int iKey, const Qt::KeyboardModifiers& modifiers);
 
 	// Vertical line positioning.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView = false);

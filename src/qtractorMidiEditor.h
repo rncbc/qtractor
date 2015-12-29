@@ -281,23 +281,23 @@ public:
 
 	// Start immediate some drag-edit mode...
 	qtractorMidiEvent *dragEditEvent(qtractorScrollView *pScrollView,
-		const QPoint& pos, Qt::KeyboardModifiers modifiers);
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 	
 	// Track drag-move-select cursor and mode...
 	qtractorMidiEvent *dragMoveEvent (qtractorScrollView *pScrollView,
-		const QPoint& pos, Qt::KeyboardModifiers modifiers);
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Start drag-move-selecting...
 	void dragMoveStart(qtractorScrollView *pScrollView,
-		const QPoint& pos, Qt::KeyboardModifiers modifiers);
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Update drag-move-selection...
 	void dragMoveUpdate(qtractorScrollView *pScrollView,
-		const QPoint& pos, Qt::KeyboardModifiers modifiers);
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Commit drag-move-selection...
 	void dragMoveCommit(qtractorScrollView *pScrollView,
-		const QPoint& pos, Qt::KeyboardModifiers modifiers);
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Trap for help/tool-tip and leave events.
 	bool dragMoveFilter(qtractorScrollView *pScrollView,
@@ -305,10 +305,10 @@ public:
 
 	// Keyboard event handler (common).
 	bool keyPress(qtractorScrollView *pScrollView,
-		int iKey, Qt::KeyboardModifiers modifiers);
+		int iKey, const Qt::KeyboardModifiers& modifiers);
 
 	// Keyboard step handler.
-	bool keyStep(int iKey);
+	bool keyStep(int iKey, const Qt::KeyboardModifiers& modifiers);
 
 	// Lost focus handler.
 	void focusOut(qtractorScrollView *pScrollView);
