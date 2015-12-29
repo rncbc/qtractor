@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-0.7.3  2015-12-19  Tackier Gluon Beta
+0.7.3  2015-12-29  Tackier Gluon Beta
 
 - Slight increase on the number of decimal digits for the plugin
   parameters while on the generic plugin properties dialog. Also
@@ -281,7 +281,7 @@ ChangeLog
   (a request by AutoStatic aka. Jeremy Jongepier, thanks).
 
 - JACK client/port pretty-name (metadata) support is being
-  seamlessly introduced. (EXPERIMENTAL)
+  seamlessly introduced.
 
 - Audio frame/MIDI time drift correction is now an option on
   View/Options.../MIDI/Playback/Enable MIDI queue time drift
