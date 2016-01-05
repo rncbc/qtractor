@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Improved Mixer multi-row layout (patch by Holger Marzen aka.
+  bluebell, thanks).
+
 - Fixed the Ctrl+drag/cloning left of a clip when towards near
   the beginning of session.
 
