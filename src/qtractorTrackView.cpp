@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3425,15 +3425,26 @@ void qtractorTrackView::dragClipRepeatLeft ( const QPoint& pos )
 				iClipLength -= iClipDelta2;
 			}
 		} else {
-			const unsigned long iClipStart2
-				= iClipStart + iClipLength;
-			const unsigned long iClipDelta2
-				= pSession->frameSnap(iClipStart2) - iClipStart2;
-			const unsigned long iClipLength2 = iClipStart - iClipDelta2;
-			iClipStart   = 0;
-			iClipOffset += iClipLength - iClipLength2;
-			iClipLength  = iClipLength2;
-			x = x2; // break on next...
+			// Get next clone pixel position...
+			if (x2 > 0) {
+				const unsigned long iClipStart2
+					= pSession->frameSnap(pSession->frameFromPixel(x2));
+				const unsigned long iClipLength2 = iClipStart - iClipStart2;
+				iClipStart   = iClipStart2;
+				iClipOffset += iClipLength - iClipLength2;
+				iClipLength  = iClipLength2;
+			} else {
+				const unsigned long iClipStart2
+					= iClipStart + iClipLength;
+				const unsigned long iClipDelta2
+					= pSession->frameSnap(iClipStart2) - iClipStart2;
+				const unsigned long iClipLength2 = iClipStart - iClipDelta2;
+				iClipStart   = 0;
+				iClipOffset += iClipLength - iClipLength2;
+				iClipLength  = iClipLength2;
+			}
+			// break out next...
+			x = x2;
 		}
 		// Now, its imperative to make a proper clone...
 		qtractorClip *pNewClip = cloneClip(m_pClipDrag);

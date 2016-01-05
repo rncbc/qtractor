@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed the Ctrl+drag/cloning left of a clip when towards near
+  the beginning of session.
+
+
 0.7.3  2015-12-29  Tackier Gluon Beta
 
 - Slight increase on the number of decimal digits for the plugin
