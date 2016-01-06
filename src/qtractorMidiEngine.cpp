@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1196,7 +1196,6 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iTimeStart    = 0;
 	m_iTimeDrift    = 0;
 	m_iFrameStart   = 0;
-	m_iFrameDrift   = 0;
 
 	m_iTimeStartEx  = 0;
 	m_iFrameStartEx = 0;
@@ -1719,7 +1718,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			 iTimeEx <  pSession->punchOutTime()));
 	}
 
-	const long f0 = m_iFrameStart - m_iFrameDrift;
+	const long f0 = m_iFrameStart;
 	pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
@@ -2080,8 +2079,7 @@ void qtractorMidiEngine::resetDrift (void)
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 //--DRIFT-SKEW-END--
 
-	m_iFrameDrift = 0;
-	m_iTimeDrift  = 0;
+	m_iTimeDrift = 0;
 }
 
 
@@ -2107,7 +2105,6 @@ void qtractorMidiEngine::driftCheck (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-	//	const unsigned long iAudioFrame = pSession->playHead();
 		const long iAudioFrame = m_iFrameStart
 			+ pSession->audioEngine()->jackFrame() - m_iFrameStartEx;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
@@ -2124,8 +2121,8 @@ void qtractorMidiEngine::driftCheck (void)
 				iDeltaTime = 0;
 		}
 		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
-			m_iTimeDrift += iDeltaTime;
-		if ((m_iTimeDrift || m_iFrameDrift) && (iAudioTime > -m_iTimeDrift)) {
+			m_iTimeDrift += (iDeltaTime << 1);
+		if (m_iTimeDrift && (iAudioTime > -m_iTimeDrift)) {
 		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
 			snd_seq_queue_tempo_alloca(&pAlsaTempo);
@@ -2141,15 +2138,10 @@ void qtractorMidiEngine::driftCheck (void)
 				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 			}
 		//--DRIFT-SKEW-END--
-			pNode = m_pMetroCursor->seekTick(iMidiTime);
-			const unsigned long iMidiFrame
-				= pNode->frameFromTick(iMidiTime);
-			m_iFrameDrift += long(iAudioFrame - iMidiFrame);
 		#ifdef CONFIG_DEBUG//_0
 			qDebug("qtractorMidiEngine::driftCheck(%u): "
-				"iAudioTime=%ld iMidiTime=%ld (%ld) "
-				"iTimeDrift=%ld iFrameDrift=%ld (%.2g%%)", m_iDriftCount,
-				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift, m_iFrameDrift,
+				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.2g%%)",
+				m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
 			if (m_iDriftCheck > DRIFT_CHECK_MIN && iDeltaTime)
@@ -2434,9 +2426,7 @@ void qtractorMidiEngine::clean (void)
 	// And all other timing tracers.
 	m_iTimeStart = 0;
 	m_iTimeDrift = 0;
-
 	m_iFrameStart = 0;
-	m_iFrameDrift = 0;
 
 	m_iTimeStartEx = 0;
 	m_iFrameStartEx = 0;
@@ -2455,8 +2445,7 @@ void qtractorMidiEngine::restartLoop (void)
 		m_iTimeStart  += pSession->tickFromFrame(iLoopStart);
 	//	m_iTimeStart  += m_iTimeDrift; -- Drift correction?
 	//	resetDrift();
-		m_iFrameDrift = 0;
-		m_iTimeDrift  = 0;
+		m_iTimeDrift = 0;
 	}
 }
 

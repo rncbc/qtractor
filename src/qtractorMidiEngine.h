@@ -1,7 +1,7 @@
 // qtractorMidiEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -323,7 +323,6 @@ private:
 	long m_iTimeStart;
 	long m_iTimeDrift;
 	long m_iFrameStart;
-	long m_iFrameDrift;
 
 	// The absolute-time/frame when playback started.
 	unsigned long m_iTimeStartEx;
