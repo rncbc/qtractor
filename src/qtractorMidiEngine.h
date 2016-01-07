@@ -262,6 +262,9 @@ public:
 	// Free overriden SysEx queued events.
 	void clearSysexCache();
 
+	// Reset ouput queue drift stats (audio vs. MIDI)...
+	void resetDrift();
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -270,9 +273,6 @@ protected:
 	void stop();
 	void deactivate();
 	void clean();
-
-	// Reset ouput queue drift stats (audio vs. MIDI)...
-	void resetDrift();
 
 	// Metronome (de)activation methods.
 	void createMetroBus();
