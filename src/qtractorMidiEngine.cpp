@@ -2034,7 +2034,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	// Do it for the MIDI track plugins too...
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	const long f0 = m_iFrameStart; // - m_iFrameDrift;
+	const long f0 = m_iFrameStart;
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
@@ -2108,15 +2108,16 @@ void qtractorMidiEngine::driftCheck (void)
 		const long iAudioFrame = m_iFrameStart
 			+ pSession->audioEngine()->jackFrame() - m_iFrameStartEx;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
-		const long iAudioTime = long(pNode->tickFromFrame(iAudioFrame));
-		const long iMidiTime = m_iTimeStart
-			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
+		const long iAudioTime
+			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
+		const long iMidiTime
+			= long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		long iDeltaTime = (iAudioTime - iMidiTime);
 		if (pSession->isLooping()) {
 			const long iDeadTime
 				= pSession->tickFromFrame(iAudioFrame + readAhead())
-				- iAudioTime;
-			const long iDeadTime2 = long(iDeadTime >> 2);
+				- iAudioTime - m_iTimeStart;
+			const long iDeadTime2 = long(iDeadTime >> 4);
 			if (iDeltaTime < -iDeadTime2 || iDeltaTime > +iDeadTime2)
 				iDeltaTime = 0;
 		}
@@ -2144,11 +2145,12 @@ void qtractorMidiEngine::driftCheck (void)
 				m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
-			if (m_iDriftCheck > DRIFT_CHECK_MIN && iDeltaTime)
-				--m_iDriftCount;
+			// Adaptive drift check...
+			if (m_iDriftCheck > DRIFT_CHECK_MIN &&  iDeltaTime)
+				m_iDriftCount >>= 1;
 			else
-			if (m_iDriftCheck < DRIFT_CHECK_MAX)
-				++m_iDriftCount;
+			if (m_iDriftCheck < DRIFT_CHECK_MAX && !iDeltaTime)
+				m_iDriftCount <<= 1;
 		}
 	}
 
