@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -797,7 +797,7 @@ void qtractorPluginListView::loadPresetPlugin (void)
 	if (pAction == NULL)
 		return;
 
-	pPlugin->loadPresetEx(pAction->text());
+	pPlugin->loadPresetEx(pAction->text().remove('&'));
 }
 
 
@@ -965,7 +965,7 @@ void qtractorPluginListView::audioOutputBusName (void)
 	if (pAction == NULL)
 		return;
 
-	const QString& sAudioOutputBusName = pAction->text();
+	const QString& sAudioOutputBusName = pAction->text().remove('&');
 	if (sAudioOutputBusName.isEmpty())
 		return;
 
