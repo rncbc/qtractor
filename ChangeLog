@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Added application keywords to freedesktop.org's AppData.
+
 - Fixed local keyboard shortcuts on the Files organizer widget
   actions and context-menu.
 
