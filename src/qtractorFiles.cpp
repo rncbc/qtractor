@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -120,6 +120,8 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pPlayItemAction->setCheckable(true);
 	m_pCleanupAction = new QAction(tr("Cl&eanup"), this);
 
+	// Some actions surely need those
+	// shortcuts firmly attached...
 //	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
 //	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
 	m_pCutItemAction->setShortcut(tr("Ctrl+X"));
@@ -129,20 +131,27 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pRemoveItemAction->setShortcut(tr("Del"));
 //	m_pPlayItemAction->setShortcut(tr("Ctrl+Y"));
 //	m_pCleanupAction->setShortcut(tr("Ctrl+E"));
-
-	// Some actions surely need those
-	// shortcuts firmly attached...
 #if 0
-	QDockWidget::addAction(m_pNewGroupAction);
-	QDockWidget::addAction(m_pOpenFileAction);
+//	QDockWidget::addAction(m_pNewGroupAction);
+//	QDockWidget::addAction(m_pOpenFileAction);
 	QDockWidget::addAction(m_pCutItemAction);
 	QDockWidget::addAction(m_pCopyItemAction);
 	QDockWidget::addAction(m_pPasteItemAction);
-	QDockWidget::addAction(m_pRenameItemAction);
+//	QDockWidget::addAction(m_pRenameItemAction);
 	QDockWidget::addAction(m_pRemoveItemAction);
-	QDockWidget::addAction(m_pPlayItemAction);
-	QDockWidget::addAction(m_pCleanupAction);
+//	QDockWidget::addAction(m_pPlayItemAction);
+//	QDockWidget::addAction(m_pCleanupAction);
 #endif
+//	m_pNewGroupAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+//	m_pOpenFileAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+	m_pCutItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+	m_pCopyItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+	m_pPasteItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+//	m_pRenameItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+	m_pRemoveItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+//	m_pPlayItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+//	m_pCleanupAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pTabWidget);
 	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);

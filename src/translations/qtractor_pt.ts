@@ -1930,7 +1930,7 @@ Posso continuar?</translation>
 <context>
     <name>qtractorFiles</name>
     <message>
-        <location filename="../qtractorFiles.cpp" line="129"/>
+        <location filename="../qtractorFiles.cpp" line="131"/>
         <source>Del</source>
         <translation></translation>
     </message>
@@ -1955,7 +1955,7 @@ Posso continuar?</translation>
         <translation>Áudio</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="155"/>
+        <location filename="../qtractorFiles.cpp" line="164"/>
         <source>Files</source>
         <translation>Arquivos</translation>
     </message>
@@ -1965,7 +1965,7 @@ Posso continuar?</translation>
         <translation>&amp;Tocar</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="517"/>
+        <location filename="../qtractorFiles.cpp" line="526"/>
         <source>Audio Files</source>
         <translation>Arquivos de Áudio</translation>
     </message>
@@ -1975,17 +1975,17 @@ Posso continuar?</translation>
         <translation>Co&amp;lar</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="126"/>
+        <location filename="../qtractorFiles.cpp" line="128"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="127"/>
+        <location filename="../qtractorFiles.cpp" line="129"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="125"/>
+        <location filename="../qtractorFiles.cpp" line="127"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
@@ -2005,7 +2005,7 @@ Posso continuar?</translation>
         <translation>&amp;Adicionar Arquivos...</translation>
     </message>
     <message>
-        <location filename="../qtractorFiles.cpp" line="513"/>
+        <location filename="../qtractorFiles.cpp" line="522"/>
         <source>MIDI Files</source>
         <translation>Arquivos MIDI</translation>
     </message>

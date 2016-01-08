@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed local keyboard shortcuts on the Files organizer widget
+  actions and context-menu.
+
 - Improved Mixer multi-row layout (patch by Holger Marzen aka.
   bluebell, thanks).
 
