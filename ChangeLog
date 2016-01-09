@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed some vertical scrolling and play-head line re-drawing
+  glitches introduced by the recent unlimited slack to editing
+  beyond current contents length on main tracks view.
+
 - Added one decimal digit to the Pitch-shift spin-box on audio
   Clip/Edit... properties dialog window.
 

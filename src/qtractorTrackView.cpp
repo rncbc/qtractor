@@ -298,9 +298,11 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 			pNode->beat + (pNode->beatsPerBar << 1)) - pNode->pixel;
 		if (iContentsWidth  < qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
+	#if 0
 		m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 		m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
+	#endif
 	}
 
 #ifdef CONFIG_DEBUG_0
@@ -314,7 +316,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(
 		iContentsWidth + 100, m_pTracks->trackTime()->viewport()->height());
-	m_pTracks->trackTime()->updateContents();
+//	m_pTracks->trackTime()->updateContents();
 }
 
 
@@ -1135,7 +1137,7 @@ qtractorTrack *qtractorTrackView::dragClipMove (
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
 	m_iDragClipX = (pSession->pixelSnap(x + dx) - x);
-	ensureVisible(pos.x(), pos.y());
+	ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	showClipSelect();
 
@@ -1377,7 +1379,7 @@ void qtractorTrackView::dragCurveMove ( const QPoint& pos, bool /*bKeyStep*/ )
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
 	m_iDragCurveX = (pSession->pixelSnap(x + dx) - x);
-	ensureVisible(pos.x(), pos.y());
+	ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	updateRect(rectUpdate.united(rect.translated(m_iDragCurveX, 0)));
 }
@@ -1424,7 +1426,7 @@ void qtractorTrackView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 
 	// Kind of auto-scroll...
 	const QPoint& pos = viewportToContents(pDragMoveEvent->pos());
-	ensureVisible(pos.x(), pos.y());
+	ensureVisible(pos.x(), pos.y(), 24, 24);
 }
 
 
@@ -1788,7 +1790,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragSelect:
 		m_rectDrag.setBottomRight(pos);
 		moveRubberBand(&m_pRubberBand, m_rectDrag);
-		ensureVisible(pos.x(), pos.y());
+		ensureVisible(pos.x(), pos.y(), 24, 24);
 		if (m_bCurveEdit) {
 			// Select all current track curve/automation
 			// nodes that fall inside the rubber-band...
@@ -2526,7 +2528,7 @@ void qtractorTrackView::selectClipFile ( qtractorTrack::TrackType trackType,
 		m_pTracks->selectionChangeNotify();
 		// Make sure the earliest is barely visible...
 		if (isClipSelected())
-			ensureVisible(x0, y0);
+			ensureVisible(x0, y0, 24, 24);
 	}
 
 	// Make sure we keep focus... (maybe not:)
@@ -3202,7 +3204,7 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 		dx = m_rectDrag.right() - m_rectHandle.right();
 	m_iDragClipX = dx;
 	moveRubberBand(&m_pRubberBand, m_rectHandle);
-	ensureVisible(pos.x(), pos.y());
+	ensureVisible(pos.x(), pos.y(), 24, 24);
 	
 	// Prepare to update the whole view area...
 	updateRect(m_rectDrag);
@@ -3291,7 +3293,7 @@ void qtractorTrackView::dragClipResizeMove ( const QPoint& pos )
 
 	moveRubberBand(&m_pRubberBand, rect, 3);
 	showToolTip(rect, 0);
-	ensureVisible(pos.x(), pos.y());
+	ensureVisible(pos.x(), pos.y(), 24, 24);
 }
 
 
@@ -3613,7 +3615,7 @@ void qtractorTrackView::dragCurveNode (
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 	}
 
-	ensureVisible(pos.x(), pos.y());
+	ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	const int h  = tvi.trackRect.height();
 	const int y2 = tvi.trackRect.bottom() + 1;
@@ -4020,14 +4022,14 @@ bool qtractorTrackView::keyStep (
 
 
 // Make given contents position visible in view.
-void qtractorTrackView::ensureVisible ( int x, int y )
+void qtractorTrackView::ensureVisible ( int cx, int cy, int mx, int my )
 {
 	const int w = qtractorScrollView::width();
 	const int wm = (w >> 3);
-	if (x > w - wm)
-		updateContentsWidth(x + wm);
+	if (cx > w - wm)
+		updateContentsWidth(cx + wm);
 
-	qtractorScrollView::ensureVisible(x, y, 24, 24);
+	qtractorScrollView::ensureVisible(cx, cy, mx, my);
 }
 
 
@@ -4045,7 +4047,7 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 			x -= w3;
 		else if (x > x0 + w3)
 			x += w3;
-		ensureVisible(x, y);
+		ensureVisible(x, y, 24, 0);
 	//	qtractorScrollView::setFocus();
 	}
 }

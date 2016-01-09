@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -494,7 +494,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragSelect:
 			// Rubber-band selection...
 			m_rectDrag.setRight(pos.x());
-			pTrackView->ensureVisible(pos.x(), y);
+			pTrackView->ensureVisible(pos.x(), y, 24, 0);
 			if (pTrackView->isCurveEdit()) {
 				// Select all current track curve/automation
 				// nodes that fall inside range...
@@ -514,7 +514,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragPlayHead:
 			// Play-head positioning...
-			pTrackView->ensureVisible(pos.x(), y);
+			pTrackView->ensureVisible(pos.x(), y, 24, 0);
 			pTrackView->setPlayHead(iFrame);
 			// Let the change get some immediate visual feedback...
 			if (pMainForm)
@@ -525,7 +525,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragPunchIn:
 		case DragEditHead:
 			// Edit-head positioning...
-			pTrackView->ensureVisible(pos.x(), y);
+			pTrackView->ensureVisible(pos.x(), y, 24, 0);
 			pTrackView->setEditHead(iFrame);
 			showToolTip(iFrame);
 			break;
@@ -533,13 +533,13 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragPunchOut:
 		case DragEditTail:
 			// Edit-tail positioning...
-			pTrackView->ensureVisible(pos.x(), y);
+			pTrackView->ensureVisible(pos.x(), y, 24, 0);
 			pTrackView->setEditTail(iFrame);
 			showToolTip(iFrame);
 			break;
 		case DragMarker:
 			// Marker positioning...
-			pTrackView->ensureVisible(pos.x(), y);
+			pTrackView->ensureVisible(pos.x(), y, 24, 0);
 			showToolTip(iFrame);
 			break;
 		case DragStart:

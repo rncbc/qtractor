@@ -215,7 +215,7 @@ public:
 	int editTailX() const;
 
 	// Make given contents position visible in view.
-	void ensureVisible(int x, int y);
+	void ensureVisible(int cx, int cy, int mx, int my);
 
 	// Make given frame position visible in view.
 	void ensureVisibleFrame(unsigned long iFrame);
