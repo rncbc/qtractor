@@ -1166,9 +1166,13 @@ Do you want to discard the changes?</source>
         <translation>Buscar el archivo del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="108"/>
         <source>Track/&amp;Channel:</source>
-        <translation>Pista/&amp;Canal:</translation>
+        <translation type="vanished">Pista/&amp;Canal:</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.ui" line="108"/>
+        <source>&amp;Track/Channel:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
@@ -1221,99 +1225,99 @@ Do you want to discard the changes?</source>
         <translation>Ganancia/volumen del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="281"/>
+        <location filename="../qtractorClipForm.ui" line="284"/>
         <source>Format</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="287"/>
+        <location filename="../qtractorClipForm.ui" line="290"/>
         <source>Time display format</source>
         <translation>Formato para desplegar tiempo</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="291"/>
+        <location filename="../qtractorClipForm.ui" line="294"/>
         <source>Frames</source>
         <translation>Cuadros</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="296"/>
+        <location filename="../qtractorClipForm.ui" line="299"/>
         <source>Time</source>
         <translation>Tiempo</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="301"/>
+        <location filename="../qtractorClipForm.ui" line="304"/>
         <source>BBT</source>
         <translation>BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="312"/>
+        <location filename="../qtractorClipForm.ui" line="315"/>
         <source>Fade In/Out</source>
         <translation>Fade In/Out</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="324"/>
+        <location filename="../qtractorClipForm.ui" line="327"/>
         <source>Fade &amp;In:</source>
         <translation>Fade &amp;In:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="340"/>
+        <location filename="../qtractorClipForm.ui" line="343"/>
         <source>Clip fade-in length</source>
         <translation>Duración del fade in del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="347"/>
+        <location filename="../qtractorClipForm.ui" line="350"/>
         <source>Clip fade-in type</source>
         <translation>Tipo de fade in del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="373"/>
+        <location filename="../qtractorClipForm.ui" line="376"/>
         <source>Fade &amp;Out:</source>
         <translation>Fade &amp;Out:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="389"/>
+        <location filename="../qtractorClipForm.ui" line="392"/>
         <source>Clip fade-out length</source>
         <translation>Duración del fade out del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="396"/>
+        <location filename="../qtractorClipForm.ui" line="399"/>
         <source>Clip fade-out type</source>
         <translation>Tipo de fade out del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="406"/>
+        <location filename="../qtractorClipForm.ui" line="409"/>
         <location filename="../qtractorClipForm.cpp" line="636"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="431"/>
+        <location filename="../qtractorClipForm.ui" line="434"/>
         <source>Time St&amp;retch:</source>
         <translation>Time St&amp;retch:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="447"/>
+        <location filename="../qtractorClipForm.ui" line="450"/>
         <source>Clip time-stretch percentage</source>
         <translation>Porcentaje de time stretch del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="450"/>
+        <location filename="../qtractorClipForm.ui" line="456"/>
         <location filename="../qtractorClipForm.cpp" line="290"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="469"/>
+        <location filename="../qtractorClipForm.ui" line="478"/>
         <source>Pitch S&amp;hift:</source>
         <translation>&amp;Transponer:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="488"/>
+        <location filename="../qtractorClipForm.ui" line="497"/>
         <source>Clip pitch-shift in semitones</source>
         <translation>Transponer clip en semitonos</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="491"/>
+        <location filename="../qtractorClipForm.ui" line="503"/>
         <source> semitones</source>
         <translation> semitonos</translation>
     </message>

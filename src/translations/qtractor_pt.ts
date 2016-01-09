@@ -1136,7 +1136,7 @@ Você deseja descartar essas alterações?</translation>
 <context>
     <name>qtractorClipForm</name>
     <message>
-        <location filename="../qtractorClipForm.ui" line="450"/>
+        <location filename="../qtractorClipForm.ui" line="456"/>
         <location filename="../qtractorClipForm.cpp" line="290"/>
         <source> %</source>
         <translation></translation>
@@ -1147,7 +1147,7 @@ Você deseja descartar essas alterações?</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="301"/>
+        <location filename="../qtractorClipForm.ui" line="304"/>
         <source>BBT</source>
         <translation>CPS (Compasso Pulso Subpulso)</translation>
     </message>
@@ -1157,7 +1157,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="296"/>
+        <location filename="../qtractorClipForm.ui" line="299"/>
         <source>Time</source>
         <translation>Tempo (h:m:s)</translation>
     </message>
@@ -1167,7 +1167,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>Nome da Sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="406"/>
+        <location filename="../qtractorClipForm.ui" line="409"/>
         <location filename="../qtractorClipForm.cpp" line="636"/>
         <source>Audio</source>
         <translation>Áudio</translation>
@@ -1178,7 +1178,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>editar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="389"/>
+        <location filename="../qtractorClipForm.ui" line="392"/>
         <source>Clip fade-out length</source>
         <translation>Extensão da diminuição de volume no fim da Sequência</translation>
     </message>
@@ -1208,7 +1208,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>&amp;Nome:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="469"/>
+        <location filename="../qtractorClipForm.ui" line="478"/>
         <source>Pitch S&amp;hift:</source>
         <translation>&amp;Mudança de Altura:</translation>
     </message>
@@ -1218,7 +1218,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>Com&amp;primento:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="491"/>
+        <location filename="../qtractorClipForm.ui" line="503"/>
         <source> semitones</source>
         <translation> semitons</translation>
     </message>
@@ -1233,22 +1233,22 @@ Você deseja descartar essas alterações?</translation>
         <translation>Volume/Ganho da Sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="396"/>
+        <location filename="../qtractorClipForm.ui" line="399"/>
         <source>Clip fade-out type</source>
         <translation>Tipo de Fade de Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="312"/>
+        <location filename="../qtractorClipForm.ui" line="315"/>
         <source>Fade In/Out</source>
         <translation>Fade de Entrada/Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="281"/>
+        <location filename="../qtractorClipForm.ui" line="284"/>
         <source>Format</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="291"/>
+        <location filename="../qtractorClipForm.ui" line="294"/>
         <source>Frames</source>
         <translation>Amostras</translation>
     </message>
@@ -1272,12 +1272,17 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Procurar por arquivo para sequência</translation>
     </message>
     <message>
+        <location filename="../qtractorClipForm.ui" line="108"/>
+        <source>&amp;Track/Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>Pista da sequência/canal</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="447"/>
+        <location filename="../qtractorClipForm.ui" line="450"/>
         <source>Clip time-stretch percentage</source>
         <translation>Porcentagem de &quot;distorcer-tempo&quot; de uma Sequência (Devagar/Rápido)</translation>
     </message>
@@ -1287,7 +1292,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Deslocamento da Sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="373"/>
+        <location filename="../qtractorClipForm.ui" line="376"/>
         <source>Fade &amp;Out:</source>
         <translation>Fade de &amp;Saída:</translation>
     </message>
@@ -1297,7 +1302,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Tamanho da Sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="488"/>
+        <location filename="../qtractorClipForm.ui" line="497"/>
         <source>Clip pitch-shift in semitones</source>
         <translation>Mudança de altura em semitons de uma Sequência (Grave/Agudo)</translation>
     </message>
@@ -1307,17 +1312,16 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Parâmetros</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="108"/>
         <source>Track/&amp;Channel:</source>
-        <translation>Pista/&amp;Canal:</translation>
+        <translation type="vanished">Pista/&amp;Canal:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="324"/>
+        <location filename="../qtractorClipForm.ui" line="327"/>
         <source>Fade &amp;In:</source>
         <translation>Fade &amp;Entrada:    </translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="347"/>
+        <location filename="../qtractorClipForm.ui" line="350"/>
         <source>Clip fade-in type</source>
         <translation>Tipo de Fade de Entrada</translation>
     </message>
@@ -1337,7 +1341,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>nova sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="340"/>
+        <location filename="../qtractorClipForm.ui" line="343"/>
         <source>Clip fade-in length</source>
         <translation>Extensão do aumento de volume no começo da Sequência</translation>
     </message>
@@ -1357,7 +1361,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Arquivos MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="287"/>
+        <location filename="../qtractorClipForm.ui" line="290"/>
         <source>Time display format</source>
         <translation>Formato de exibição do tempo</translation>
     </message>
@@ -1367,7 +1371,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Atenção</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.ui" line="431"/>
+        <location filename="../qtractorClipForm.ui" line="434"/>
         <source>Time St&amp;retch:</source>
         <translation>Estica-e-Puxa &amp;Tempo:</translation>
     </message>

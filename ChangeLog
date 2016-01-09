@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added one decimal digit to the Pitch-shift spin-box on audio
+  Clip/Edit... properties dialog window.
+
 - Added application keywords to freedesktop.org's AppData.
 
 - Fixed local keyboard shortcuts on the Files organizer widget
