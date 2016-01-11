@@ -2062,7 +2062,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 // Reset ouput queue drift stats (audio vs. MIDI)...
 void qtractorMidiEngine::resetDrift (void)
 {
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiEngine::resetDrift()");
 #endif
 
@@ -2145,13 +2145,13 @@ void qtractorMidiEngine::driftCheck (void)
 				m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
-			// Adaptive drift check...
-			if (m_iDriftCheck > DRIFT_CHECK_MIN &&  iDeltaTime)
-				m_iDriftCount >>= 1;
-			else
-			if (m_iDriftCheck < DRIFT_CHECK_MAX && !iDeltaTime)
-				m_iDriftCount <<= 1;
 		}
+		// Adaptive drift check...
+		if (m_iDriftCheck > DRIFT_CHECK_MIN &&  iDeltaTime)
+			m_iDriftCount >>= 1;
+		else
+		if (m_iDriftCheck < DRIFT_CHECK_MAX && !iDeltaTime)
+			m_iDriftCount <<= 1;
 	}
 
 	// Restart counting...
@@ -2445,9 +2445,8 @@ void qtractorMidiEngine::restartLoop (void)
 		m_iFrameStart -= long(iLoopEnd - iLoopStart);
 		m_iTimeStart  -= pSession->tickFromFrame(iLoopEnd);
 		m_iTimeStart  += pSession->tickFromFrame(iLoopStart);
-	//	m_iTimeStart  += m_iTimeDrift; -- Drift correction?
+	//	m_iTimeDrift = 0; -- Drift correction?
 	//	resetDrift();
-		m_iTimeDrift = 0;
 	}
 }
 
