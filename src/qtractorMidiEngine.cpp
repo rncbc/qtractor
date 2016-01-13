@@ -74,7 +74,7 @@
 // Audio vs. MIDI time drift cycle
 #define DRIFT_CHECK         8
 
-#define DRIFT_CHECK_MIN     (DRIFT_CHECK >> 1)
+#define DRIFT_CHECK_MIN     (DRIFT_CHECK >> 2)
 #define DRIFT_CHECK_MAX     (DRIFT_CHECK << 2)
 
 
@@ -2145,13 +2145,20 @@ void qtractorMidiEngine::driftCheck (void)
 				m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
+			// Adaptive drift check... plan A.
+			if ((iSkewNext > iSkewBase && iSkewNext > iSkewPrev) ||
+				(iSkewNext < iSkewBase && iSkewNext < iSkewPrev)) {
+				if (m_iDriftCheck > DRIFT_CHECK_MIN)
+					m_iDriftCount >>= 1;
+			}
+			else
+			// Adaptive drift check... plan B.
+			if (m_iDriftCheck < DRIFT_CHECK_MAX && !iDeltaTime) {
+				m_iDriftCount <<= 1;
+				// Adaptive drift check... plan 9.
+				m_iTimeDrift  >>= 1;
+			}
 		}
-		// Adaptive drift check...
-		if (m_iDriftCheck > DRIFT_CHECK_MIN &&  iDeltaTime)
-			m_iDriftCount >>= 1;
-		else
-		if (m_iDriftCheck < DRIFT_CHECK_MAX && !iDeltaTime)
-			m_iDriftCount <<= 1;
 	}
 
 	// Restart counting...
