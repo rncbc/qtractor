@@ -1187,7 +1187,7 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="108"/>
         <source>&amp;Track/Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pis&amp;te/Canal :</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="169"/>
