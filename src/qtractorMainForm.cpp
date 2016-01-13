@@ -7216,7 +7216,8 @@ void qtractorMainForm::timerSlot (void)
 		(m_iXrunTimer -= QTRACTOR_TIMER_MSECS) < 0) {
 		 m_iXrunTimer  = 0;
 		// Reset audio/MIDI drift correction...
-		pMidiEngine->resetDrift();
+		if (bPlaying)
+			pMidiEngine->resetDrift();
 		// Did we skip any?
 		if (m_iXrunSkip > 0) {
 			appendMessagesColor(
