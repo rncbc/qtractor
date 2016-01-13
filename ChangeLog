@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Try making Help/Shortcuts... dialog window modeless, as far
+  as under MIDI Controller, Inputs/Outputs Connections window
+  also gets accessible enough.
+
 - Fixed some vertical scrolling and play-head line re-drawing
   glitches introduced by the recent unlimited slack to editing
   beyond current contents length on main tracks view.
