@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -159,14 +159,20 @@ public:
 			if (m_bValueInit && !m_bValueSync) {
 				const float v0 = m_fValue;
 				const float v1 = fOldValue;
+			#if 0
 				if ((fValue > v0 && v1 >= v0 && fValue >= v1) ||
 					(fValue < v0 && v0 >= v1 && v1 >= fValue))
-		             m_bValueSync = true;
+					 m_bValueSync = true;
+			#else
+				const float d1 = (v1 - fValue);
+				const float d2 = (v1 - v0) * d1;
+				m_bValueSync = (d2 < 0.001f);
+			#endif
 			}
-		
+
 			if (!m_bValueSync)
 				m_bValueInit = true;
-		
+
 			m_fValue = fValue;
 
 			return m_bValueSync;
