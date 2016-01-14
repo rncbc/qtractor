@@ -1163,10 +1163,6 @@ Do you want to discard the changes?</source>
         <translation>クリップファイルの選択</translation>
     </message>
     <message>
-        <source>Track/&amp;Channel:</source>
-        <translation type="vanished">トラック/チャンネル(&amp;C):</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>クリップのトラック/チャンネル</translation>

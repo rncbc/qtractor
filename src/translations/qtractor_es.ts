@@ -1166,10 +1166,6 @@ Do you want to discard the changes?</source>
         <translation>Buscar el archivo del clip</translation>
     </message>
     <message>
-        <source>Track/&amp;Channel:</source>
-        <translation type="vanished">Pista/&amp;Canal:</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="108"/>
         <source>&amp;Track/Channel:</source>
         <translation type="unfinished"></translation>

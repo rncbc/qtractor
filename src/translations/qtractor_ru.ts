@@ -1228,10 +1228,6 @@ Do you want to apply the changes?</source>
         <translation>Указать файл клипа</translation>
     </message>
     <message>
-        <source>Track/&amp;Channel:</source>
-        <translation type="vanished">Дорожка/&amp;Канал:</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>Дорожка/канал клипа</translation>

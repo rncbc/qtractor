@@ -1233,10 +1233,6 @@ Chcete použít tyto změny?</translation>
         <translation>Procházet pro soubor se záznamem</translation>
     </message>
     <message>
-        <source>Track/&amp;Channel:</source>
-        <translation type="vanished">Stopa/&amp;Kanál:</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>Stopa se záznamem/Kanál</translation>

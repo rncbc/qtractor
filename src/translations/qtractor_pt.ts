@@ -1312,10 +1312,6 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Parâmetros</translation>
     </message>
     <message>
-        <source>Track/&amp;Channel:</source>
-        <translation type="vanished">Pista/&amp;Canal:</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="327"/>
         <source>Fade &amp;In:</source>
         <translation>Fade &amp;Entrada:    </translation>

@@ -1167,10 +1167,6 @@ Vuoi annullare le modifiche?</translation>
         <translation>Sfoglia file di clip</translation>
     </message>
     <message>
-        <source>Track/&amp;Channel:</source>
-        <translation type="vanished">Traccia/&amp;Canale:</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>Traccia clip/canale</translation>

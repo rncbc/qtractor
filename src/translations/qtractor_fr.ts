@@ -1166,10 +1166,6 @@ Voulez-vous abandonner les changements ?</translation>
         <translation>Parcourir les fichiers clip</translation>
     </message>
     <message>
-        <source>Track/&amp;Channel:</source>
-        <translation type="vanished">Piste/&amp;Canal :</translation>
-    </message>
-    <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
         <source>Clip track/channel</source>
         <translation>Clip piste/canal</translation>
