@@ -115,6 +115,16 @@ void qtractorMidiControl::clear (void)
 }
 
 
+// Clear track (catch-up) map.
+void qtractorMidiControl::clearControlMap (void)
+{
+	ControlMap::Iterator it = m_controlMap.begin();
+	const ControlMap::Iterator& it_end = m_controlMap.end();
+	for ( ; it != it_end; ++it)
+		it.value().clear();
+}
+
+
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelParam (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
@@ -289,7 +299,9 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	if (pTrack == NULL)
 		return bResult;
 
-	Scale scale(ctle.type());
+	ControlScale scale(ctle.type());
+
+	MapVal::Track& ctlv = val.track(iTrack);
 
 	float fValue;
 	switch (val.command()) {
@@ -297,47 +309,47 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		fValue = scale.valueFromMidi(ctle.value());
 		if (pTrack->trackType() == qtractorTrack::Audio)
 			fValue = ::cubef2(fValue);
-		if (val.sync(fValue, pTrack->gain())) {
+		if (ctlv.sync(fValue, pTrack->gain())) {
 			bResult = pSession->execute(
-				new qtractorTrackGainCommand(pTrack, val.value(), true));
+				new qtractorTrackGainCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_PANNING:
 		fValue = scale.valueSignedFromMidi(ctle.value());
-		if (val.sync(fValue, pTrack->panning())) {
+		if (ctlv.sync(fValue, pTrack->panning())) {
 			bResult = pSession->execute(
-				new qtractorTrackPanningCommand(pTrack, val.value(), true));
+				new qtractorTrackPanningCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_MONITOR:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (val.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
-				new qtractorTrackMonitorCommand(pTrack, val.value(), true));
+				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_RECORD:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (val.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Record, val.value(), true));
+					qtractorTrack::Record, ctlv.value(), true));
 		}
 		break;
 	case TRACK_MUTE:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (val.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Mute, val.value(), true));
+					qtractorTrack::Mute, ctlv.value(), true));
 		}
 		break;
 	case TRACK_SOLO:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (val.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Solo, val.value(), true));
+					qtractorTrack::Solo, ctlv.value(), true));
 		}
 		break;
 	default:
@@ -374,12 +386,12 @@ void qtractorMidiControl::sendTrackController (
 		const MapKey& key = it.key();
 		MapVal& val = it.value();
 		if (val.command() == command) {
-			val.syncReset();
+			val.syncReset(iTrack);
 			if (!val.isFeedback())
 				continue;
 			// Convert/normalize value...
 			const ControlType ctype = key.type();
-			const Scale scale(ctype);
+			const ControlScale scale(ctype);
 			unsigned short iValue = 0;
 			switch (command) {
 			case TRACK_GAIN:
@@ -417,7 +429,7 @@ void qtractorMidiControl::sendTrackController (
 	ControlType ctype, qtractorTrack *pTrack,
 	Command command, unsigned short iChannel, unsigned short iParam ) const
 {
-	const Scale scale(ctype);
+	const ControlScale scale(ctype);
 	unsigned short iValue = 0;
 
 	switch (command) {

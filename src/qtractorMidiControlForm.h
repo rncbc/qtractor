@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -47,31 +47,31 @@ public:
 
 protected slots:
 
-    void reject();
+	void reject();
 
-    void importSlot();
-    void removeSlot();
-    void moveUpSlot();
-    void moveDownSlot();
+	void importSlot();
+	void removeSlot();
+	void moveUpSlot();
+	void moveDownSlot();
 	void mapSlot();
 	void unmapSlot();
-    void reloadSlot();
-    void exportSlot();
+	void reloadSlot();
+	void exportSlot();
 
 	void typeChangedSlot();
 	void keyChangedSlot();
 	void valueChangedSlot();
 
-    void stabilizeForm();
+	void stabilizeForm();
 
 protected:
 
 	void stabilizeTypeChange();
 	void stabilizeKeyChange();
-    void stabilizeValueChange();
+	void stabilizeValueChange();
 
-    void refreshFiles();
-    void refreshControlMap();
+	void refreshFiles();
+	void refreshControlMap();
 
 	unsigned short channelFromText(const QString& sText) const;
 	QString textFromChannel(unsigned short iChannel) const;

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed some track control issues related to MIDI Controllers
+  generic mapping (cf. View/Controllers...). (EXPERIMENTAL)
+
 - Try making Help/Shortcuts... dialog window modeless, as far
   as under MIDI Controller, Inputs/Outputs Connections window
   also gets accessible enough.
