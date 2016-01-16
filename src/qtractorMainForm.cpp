@@ -1631,6 +1631,8 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->fTempo = m_pTempoSpinBox->tempo();
 			m_pOptions->iBeatsPerBar = m_pTempoSpinBox->beatsPerBar();
 			m_pOptions->iBeatDivisor = m_pTempoSpinBox->beatDivisor();
+			// Save MIDI control non catch-up/hook global option...
+			m_pOptions->bMidiControlSync = qtractorMidiControl::isSync();
 			// Save the dock windows state.
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// Audio master bus auto-connection option...

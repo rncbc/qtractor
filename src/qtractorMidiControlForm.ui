@@ -267,7 +267,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" rowspan="5" colspan="7">
+   <item row="6" column="0" rowspan="7" colspan="7">
     <widget class="QTreeWidget" name="ControlMapListView">
      <property name="minimumSize">
       <size>
@@ -352,6 +352,26 @@
     </spacer>
    </item>
    <item row="8" column="7">
+    <widget class="QCheckBox" name="SyncCheckBox">
+     <property name="text">
+      <string>&amp;Sync</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="7">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint">
+      <size>
+       <width>20</width>
+       <height>8</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="10" column="7">
     <widget class="QPushButton" name="ReloadPushButton">
      <property name="toolTip">
       <string>Reload/apply all controller files</string>
@@ -364,7 +384,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="7">
+   <item row="11" column="7">
     <widget class="QPushButton" name="ExportPushButton">
      <property name="toolTip">
       <string>Export to controller file</string>
@@ -377,7 +397,7 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="7">
+   <item row="12" column="7">
     <widget class="QPushButton" name="ClosePushButton">
      <property name="toolTip">
       <string>Close this dialog</string>
@@ -406,6 +426,7 @@
   <tabstop>MapPushButton</tabstop>
   <tabstop>ControlMapListView</tabstop>
   <tabstop>UnmapPushButton</tabstop>
+  <tabstop>SyncCheckBox</tabstop>
   <tabstop>ReloadPushButton</tabstop>
   <tabstop>ExportPushButton</tabstop>
   <tabstop>ClosePushButton</tabstop>

@@ -55,6 +55,7 @@ protected slots:
 	void moveDownSlot();
 	void mapSlot();
 	void unmapSlot();
+	void syncSlot(bool);
 	void reloadSlot();
 	void exportSlot();
 
