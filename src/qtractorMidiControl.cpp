@@ -976,4 +976,18 @@ const QString& qtractorMidiControl::nameFromCommand ( Command command )
 }
 
 
+// MIDI control non catch-up/hook global option.
+bool qtractorMidiControl::g_bSync = false;
+
+void qtractorMidiControl::setSync ( bool bSync )
+{
+	g_bSync = bSync;
+}
+
+bool qtractorMidiControl::isSync (void)
+{
+	return g_bSync;
+}
+
+
 // end of qtractorMidiControl.cpp

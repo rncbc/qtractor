@@ -159,31 +159,30 @@ public:
 
 			// Constructor.
 			Track(float fValue = 0.0f)
-				: m_bValueInit(false), m_bValueSync(false), m_fValue(fValue) {}
+				: m_fValue(fValue), m_bValueSync(false) {}
 
 			// Tracking/catch-up methods.
 			bool sync(float fValue, float fOldValue)
 			{
-				if (m_bValueInit && !m_bValueSync) {
+				bool bSync = qtractorMidiControl::isSync();
+				if (!bSync) {
 					const float v0 = m_fValue;
 					const float v1 = fOldValue;
 				#if 0
 					if ((fValue > v0 && v1 >= v0 && fValue >= v1) ||
 						(fValue < v0 && v0 >= v1 && v1 >= fValue))
-						 m_bValueSync = true;
+						 bSync = true;
 				#else
 					const float d1 = (v1 - fValue);
-					const float d2 = (v1 - v0) * d1;
-					m_bValueSync = (d2 < 0.001f);
+					const float d2 = (m_bValueSync ? (v1 - v0) : d1) * d1;
+					bSync = (d2 < 0.001f);
 				#endif
 				}
-
-				if (!m_bValueSync)
-					m_bValueInit = true;
-
-				m_fValue = fValue;
-
-				return m_bValueSync;
+				if (bSync) {
+					m_fValue = fValue;
+					m_bValueSync = true;
+				}
+				return bSync;
 			}
 
 			void syncReset()
@@ -195,9 +194,8 @@ public:
 		private:
 
 			// Tracking/catch-up members.
-			bool  m_bValueInit;
-			bool  m_bValueSync;
 			float m_fValue;
+			bool  m_bValueSync;
 		};
 
 		Track& track(int iTrack)
@@ -336,6 +334,10 @@ public:
 	static Command commandFromName(const QString& sName);
 	static const QString& nameFromCommand(Command command);
 
+	// MIDI control non catch-up/hook global option.
+	static void setSync(bool bSync);
+	static bool isSync();
+
 protected:
 
 	// Find incoming controller event map.
@@ -404,6 +406,9 @@ private:
 	typedef QHash<MapKey, qtractorMidiControlObserver *> ObserverMap;
 
 	ObserverMap m_observerMap;
+
+	// MIDI control non catch-up/hook global option.
+	static bool g_bSync;
 
 	// Pseudo-singleton instance.
 	static qtractorMidiControl *g_pMidiControl;

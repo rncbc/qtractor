@@ -1350,6 +1350,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions->loadWidgetGeometry(m_pMixer);
 	m_pOptions->loadWidgetGeometry(m_pConnections);
 
+	// Set MIDI control non catch-up/hook global option...
+	qtractorMidiControl::setSync(m_pOptions->bMidiControlSync);
+
 	// Load MIDI controller configuration files...
 	QStringListIterator it(m_pOptions->midiControlFiles);
 	while (it.hasNext())
