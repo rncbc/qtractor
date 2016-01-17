@@ -6035,137 +6035,142 @@ este en funcionamiento y reinicie la sesión.</translation>
         <translation>C&amp;omando</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="202"/>
+        <location filename="../qtractorMidiControlForm.ui" line="215"/>
         <source>MIDI Event type</source>
         <translation>Tipo de Evento MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="209"/>
+        <location filename="../qtractorMidiControlForm.ui" line="222"/>
         <source>MIDI Channel</source>
         <translation>Canal MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="216"/>
+        <location filename="../qtractorMidiControlForm.ui" line="229"/>
         <source>MIDI Controller (parameter)</source>
         <translation>Controlador MIDI (parámetro)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="223"/>
+        <location filename="../qtractorMidiControlForm.ui" line="236"/>
         <source>MIDI parameter (track offset)</source>
         <translation>Parámetro MIDI (offset de pista)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="226"/>
+        <location filename="../qtractorMidiControlForm.ui" line="239"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="233"/>
+        <location filename="../qtractorMidiControlForm.ui" line="246"/>
         <source>Track offset</source>
         <translation>Offset de la Pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="243"/>
+        <location filename="../qtractorMidiControlForm.ui" line="256"/>
         <source>Command action</source>
         <translation>Acción del comando</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="250"/>
+        <location filename="../qtractorMidiControlForm.ui" line="263"/>
         <source>Command feedback</source>
         <translation>Retroalimentación del comando</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="253"/>
+        <location filename="../qtractorMidiControlForm.ui" line="266"/>
         <source>&amp;Feedback</source>
         <translation>&amp;Feedback</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="260"/>
+        <location filename="../qtractorMidiControlForm.ui" line="273"/>
         <source>Map/update controller command</source>
         <translation>Mapear/actualizar comando del controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="263"/>
+        <location filename="../qtractorMidiControlForm.ui" line="276"/>
         <source>&amp;Map</source>
         <translation>&amp;Mapear</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="279"/>
+        <location filename="../qtractorMidiControlForm.ui" line="292"/>
         <source>Controller map</source>
         <translation>Mapa del controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="298"/>
+        <location filename="../qtractorMidiControlForm.ui" line="311"/>
         <source>Type</source>
         <translation>Tipo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="303"/>
+        <location filename="../qtractorMidiControlForm.ui" line="316"/>
         <source>Channel</source>
         <translation>Canal</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="308"/>
+        <location filename="../qtractorMidiControlForm.ui" line="321"/>
         <source>Parameter</source>
         <translation>Parámetro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="313"/>
+        <location filename="../qtractorMidiControlForm.ui" line="326"/>
         <source>Track</source>
         <translation>Pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="318"/>
+        <location filename="../qtractorMidiControlForm.ui" line="331"/>
         <source>Command</source>
         <translation>Comando</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="323"/>
+        <location filename="../qtractorMidiControlForm.ui" line="336"/>
         <source>Feedback</source>
         <translation>Feedback</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="331"/>
+        <location filename="../qtractorMidiControlForm.ui" line="344"/>
         <source>Unmap/remove controller command</source>
         <translation>Des-mapear/quitar comando del controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="334"/>
+        <location filename="../qtractorMidiControlForm.ui" line="347"/>
         <source>U&amp;nmap</source>
         <translation>De&amp;s-mapear</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="357"/>
+        <location filename="../qtractorMidiControlForm.ui" line="370"/>
+        <source>Enable all controllers immediate sync (hook)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="373"/>
         <source>&amp;Sync</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="377"/>
+        <location filename="../qtractorMidiControlForm.ui" line="393"/>
         <source>Reload/apply all controller files</source>
         <translation>Recargar/aplicar todos los archivos del controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="380"/>
+        <location filename="../qtractorMidiControlForm.ui" line="396"/>
         <source>Relo&amp;ad</source>
         <translation>Rec&amp;argar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="390"/>
+        <location filename="../qtractorMidiControlForm.ui" line="406"/>
         <source>Export to controller file</source>
         <translation>Exportar a archivo de controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="393"/>
+        <location filename="../qtractorMidiControlForm.ui" line="409"/>
         <source>E&amp;xport...</source>
         <translation>E&amp;xportar...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="403"/>
+        <location filename="../qtractorMidiControlForm.ui" line="419"/>
         <source>Close this dialog</source>
         <translation>Cerrar este diálogo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="406"/>
+        <location filename="../qtractorMidiControlForm.ui" line="422"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>

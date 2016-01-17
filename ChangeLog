@@ -6,9 +6,12 @@ ChangeLog
 
 GIT HEAD
 
-- Fixed some track control issues related to MIDI Controllers
-  generic mapping (cf. View/Controllers...). (EXPERIMENTAL)
+- Added brand new and global option to disable the so called
+  "catch-up" default behavior (cf. View/Controllers.../Sync).
 
+- Fixed some track control issues related to MIDI Controllers
+  generic mapping (cf. View/Controllers...).
+  
 - Try making Help/Shortcuts... dialog window modeless, as far
   as under MIDI Controller, Inputs/Outputs Connections window
   also gets accessible enough.
