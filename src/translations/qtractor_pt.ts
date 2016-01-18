@@ -8723,7 +8723,7 @@ Você quer mesmo manter essas alterações?</translation>
         <translation>Tempo (m:s:ms)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="767"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="766"/>
         <source>none</source>
         <translation>nenhum</translation>
     </message>
@@ -8743,7 +8743,7 @@ Você quer mesmo manter essas alterações?</translation>
         <translation>Eventos de mudança de velocidade</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="742"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="741"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -8815,8 +8815,8 @@ Posso continuar?</translation>
         <translation>Quantizar eventos selecionados</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="784"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1078"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="783"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1079"/>
         <source>timeshift</source>
         <translation>mudança de tempo</translation>
     </message>
@@ -8847,8 +8847,8 @@ P &lt; 0 : desascelera (mais devagar).
 Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocidade.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="778"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="953"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="777"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="954"/>
         <source>randomize</source>
         <translation>aleatorizar</translation>
     </message>
@@ -8905,8 +8905,8 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Salvar pré configuração</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="780"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1015"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="779"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1016"/>
         <source>resize</source>
         <translation>redimensionar</translation>
     </message>
@@ -8953,8 +8953,8 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Transposição</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="774"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="902"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="773"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="903"/>
         <source>transpose</source>
         <translation>transpor</translation>
     </message>
@@ -8972,8 +8972,8 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Parâmetro de mudança de velocidade (log)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="782"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1039"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="781"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1040"/>
         <source>rescale</source>
         <translation>reescalonar</translation>
     </message>
@@ -8995,8 +8995,8 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Normalizar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="776"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="923"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="775"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="924"/>
         <source>normalize</source>
         <translation>normalizar</translation>
     </message>
@@ -9037,8 +9037,8 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Quantizar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="772"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="836"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="771"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="835"/>
         <source>quantize</source>
         <translation>quantizar</translation>
     </message>
@@ -9056,7 +9056,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Valor:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="148"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="147"/>
         <source>(default)</source>
         <translation>(padrão)</translation>
     </message>
@@ -9086,7 +9086,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Parâmetro de mudança de velocidade</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="741"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="740"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>

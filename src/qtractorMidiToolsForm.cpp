@@ -63,11 +63,9 @@ public:
 			t = ::sqrtf(1.0f - ((1.0f - t) * ::powf(1.0f + (::logf(1.0f - t) / p), -p)));
 	#else
 		if (p > 0.0f)
-		//	t = ::powf(t, 1.0f - 0.01f * p);
 			t = 1.0f - ::powf(1.0f - t, 1.0f / (1.0f - 0.01f * (p + 1e-9f)));
 		else
 		if (p < 0.0f)
-		//	t = ::powf(t, 1.0f / (1.0f + 0.01f * (p + 1e-9f)));
 			t = 1.0f - ::powf(1.0f - t, 1.0f + 0.01f * p);
 	#endif
 		return t;
@@ -135,6 +133,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	// Special timeshift characteristic curve display...
 	m_pTimeshiftCurve = new TimeshiftCurve();
+
 	QVBoxLayout *pFrameLayout = new QVBoxLayout();
 	pFrameLayout->setMargin(1);
 	pFrameLayout->addWidget(m_pTimeshiftCurve);
@@ -841,18 +840,18 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				const unsigned long q = pNode->ticksPerBeat / p;
 				if (q > 0) {
 					const unsigned long t0 = q * (iTime / q);
-					long d0 = 0;
+					float d0 = 0.0f;
 					if ((iTime / q) % 2)
-						d0 = long(t0 + q) - long(iTime);
+						d0 = float(long(t0 + q) - long(iTime));
 					else
-						d0 = long(iTime) - long(t0);
-					float ds = float(m_ui.QuantizeSwingSpinBox->value());
-					ds = 0.01f * ds * float(d0);
+						d0 = float(long(iTime) - long(t0));
+					float ds = 0.01f * float(m_ui.QuantizeSwingSpinBox->value());
+					ds = ds * d0;
 					switch (m_ui.QuantizeSwingTypeComboBox->currentIndex()) {
 					case 2: // Cubic...
-						ds = (ds * float(d0)) / float(q);
+						ds = (ds * d0) / float(q);
 					case 1: // Quadratic...
-						ds = (ds * float(d0)) / float(q);
+						ds = (ds * d0) / float(q);
 					case 0: // Linear...
 						iTime += long(ds);
 						if (iTime < long(iTimeOffset))
@@ -868,9 +867,10 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				const unsigned long q = pNode->ticksPerBeat / p;
 				iTime = q * ((iTime + (q >> 1)) / q);
 				// Time percent quantize...
-				float per = 100.0f - float(m_ui.QuantizeTimeSpinBox->value());
-				per *= float(long(pEvent->time() + iTimeOffset) - iTime);
-				iTime += long(0.01f * per);
+				const float delta = 0.01f
+					* (100.0f - float(m_ui.QuantizeTimeSpinBox->value()))
+					* float(long(pEvent->time() + iTimeOffset) - iTime);
+				iTime += long(delta);
 				if (iTime < long(iTimeOffset))
 					iTime = long(iTimeOffset);
 			}
@@ -882,9 +882,10 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				const unsigned long q = pNode->ticksPerBeat / p;
 				iDuration = q * ((iDuration + q - 1) / q);
 				// Duration percent quantize...
-				float per = 100.0f - float(m_ui.QuantizeDurationSpinBox->value());
-				per *= float(long(pEvent->duration()) - iDuration);
-				iDuration += long(0.01f * per);
+				const float delta = 0.01f
+					* (100.0f - float(m_ui.QuantizeDurationSpinBox->value()))
+					* float(long(pEvent->duration()) - iDuration);
+				iDuration += long(delta);
 				if (iDuration < 0)
 					iDuration = 0;
 			}
@@ -931,7 +932,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				q *= 100.0f;
 			}
 			if (q > 0.0f) {
-				iValue = long((p * float(iValue)) / q);
+				iValue = int((p * float(iValue)) / q);
 				if (bPitchBend) {
 					if (iValue > +8191)
 						iValue = +8191;
@@ -992,7 +993,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				p = 0.01f * float(m_ui.RandomizeValueSpinBox->value());
 				q = (bPitchBend ? 8192 : 128);
 				if (p > 0.0f) {
-					iValue += long(p * float(q - (::rand() % (q << 1))));
+					iValue += int(p * float(q - (::rand() % (q << 1))));
 					if (bPitchBend) {
 						if (iValue > +8191)
 							iValue = +8191;
@@ -1056,7 +1057,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			}
 			if (m_ui.RescaleValueCheckBox->isChecked()) {
 				p = 0.01f * float(m_ui.RescaleValueSpinBox->value());
-				iValue = long(p * float(iValue));
+				iValue = int(p * float(iValue));
 				if (bPitchBend) {
 					if (iValue > +8191)
 						iValue = +8191;
