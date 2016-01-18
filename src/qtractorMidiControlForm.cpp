@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -130,6 +130,8 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_SOLO));
 
+	m_ui.SyncCheckBox->setChecked(qtractorMidiControl::isSync());
+
 	stabilizeTypeChange();
 
 	refreshFiles();
@@ -181,6 +183,9 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	QObject::connect(m_ui.UnmapPushButton,
 		SIGNAL(clicked()),
 		SLOT(unmapSlot()));
+	QObject::connect(m_ui.SyncCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(syncSlot(bool)));
 	QObject::connect(m_ui.ReloadPushButton,
 		SIGNAL(clicked()),
 		SLOT(reloadSlot()));
@@ -508,6 +513,13 @@ void qtractorMidiControlForm::exportSlot (void)
 			reloadSlot();
 		}
 	}
+}
+
+
+// MIDI controller catchup/hook sync state.
+void qtractorMidiControlForm::syncSlot ( bool bOn )
+{
+	qtractorMidiControl::setSync(bOn);
 }
 
 

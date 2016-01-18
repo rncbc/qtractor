@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@
      </column>
     </widget>
    </item>
-   <item row="0" column="7">
+   <item row="0" column="7" colspan="2">
     <widget class="QPushButton" name="ImportPushButton">
      <property name="toolTip">
       <string>Import controller files</string>
@@ -79,7 +79,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="7">
+   <item row="1" column="7" colspan="2">
     <widget class="QPushButton" name="RemovePushButton">
      <property name="toolTip">
       <string>Remove controller file</string>
@@ -92,7 +92,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="7">
+   <item row="2" column="7" colspan="2">
     <widget class="QPushButton" name="MoveUpPushButton">
      <property name="toolTip">
       <string>Move controller file up on list order</string>
@@ -105,7 +105,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="7">
+   <item row="3" column="7" colspan="2">
     <widget class="QPushButton" name="MoveDownPushButton">
      <property name="toolTip">
       <string>Move controller file down on list order</string>
@@ -196,6 +196,19 @@
      </property>
     </spacer>
    </item>
+   <item row="4" column="7" colspan="2">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint">
+      <size>
+       <width>20</width>
+       <height>8</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="5" column="0">
     <widget class="QComboBox" name="ControlTypeComboBox">
      <property name="toolTip">
@@ -254,7 +267,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="7">
+   <item row="5" column="7" colspan="2">
     <widget class="QPushButton" name="MapPushButton">
      <property name="toolTip">
       <string>Map/update controller command</string>
@@ -267,7 +280,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" rowspan="5" colspan="7">
+   <item row="6" column="0" rowspan="7" colspan="7">
     <widget class="QTreeWidget" name="ControlMapListView">
      <property name="minimumSize">
       <size>
@@ -325,7 +338,7 @@
      </column>
     </widget>
    </item>
-   <item row="6" column="7">
+   <item row="6" column="7" colspan="2">
     <widget class="QPushButton" name="UnmapPushButton">
      <property name="toolTip">
       <string>Unmap/remove controller command</string>
@@ -338,7 +351,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="7">
+   <item row="7" column="7" colspan="2">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -351,7 +364,30 @@
      </property>
     </spacer>
    </item>
-   <item row="8" column="7">
+   <item row="8" column="8">
+    <widget class="QCheckBox" name="SyncCheckBox">
+     <property name="toolTip">
+      <string>Enable all controllers immediate sync (hook)</string>
+     </property>
+     <property name="text">
+      <string>&amp;Sync</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="7" colspan="2">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint">
+      <size>
+       <width>20</width>
+       <height>8</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="10" column="7" colspan="2">
     <widget class="QPushButton" name="ReloadPushButton">
      <property name="toolTip">
       <string>Reload/apply all controller files</string>
@@ -364,7 +400,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="7">
+   <item row="11" column="7" colspan="2">
     <widget class="QPushButton" name="ExportPushButton">
      <property name="toolTip">
       <string>Export to controller file</string>
@@ -377,7 +413,7 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="7">
+   <item row="12" column="7" colspan="2">
     <widget class="QPushButton" name="ClosePushButton">
      <property name="toolTip">
       <string>Close this dialog</string>
@@ -406,6 +442,7 @@
   <tabstop>MapPushButton</tabstop>
   <tabstop>ControlMapListView</tabstop>
   <tabstop>UnmapPushButton</tabstop>
+  <tabstop>SyncCheckBox</tabstop>
   <tabstop>ReloadPushButton</tabstop>
   <tabstop>ExportPushButton</tabstop>
   <tabstop>ClosePushButton</tabstop>

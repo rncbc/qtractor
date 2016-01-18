@@ -4,6 +4,40 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Added one decimal digit to all percentage input spin-boxes
+  on the MIDI Tools dialog. (EXPERIMENTAL)
+
+- Added brand new and global option to disable the so called
+  "catch-up" default behavior (cf. View/Controllers.../Sync).
+
+- Fixed some track control issues related to MIDI Controllers
+  generic mapping (cf. View/Controllers...).
+  
+- Try making Help/Shortcuts... dialog window modeless, as far
+  as under MIDI Controller, Inputs/Outputs Connections window
+  also gets accessible enough.
+
+- Fixed some vertical scrolling and play-head line re-drawing
+  glitches introduced by the recent unlimited slack to editing
+  beyond current contents length on main tracks view.
+
+- Added one decimal digit to the Pitch-shift spin-box on audio
+  Clip/Edit... properties dialog window.
+
+- Added application keywords to freedesktop.org's AppData.
+
+- Fixed local keyboard shortcuts on the Files organizer widget
+  actions and context-menu.
+
+- Improved Mixer multi-row layout (patch by Holger Marzen aka.
+  bluebell, thanks).
+
+- Fixed the Ctrl+drag/cloning left of a clip when towards near
+  the beginning of session.
+
+
 0.7.3  2015-12-29  Tackier Gluon Beta
 
 - Slight increase on the number of decimal digits for the plugin

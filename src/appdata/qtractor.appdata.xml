@@ -21,6 +21,20 @@
    <caption>The main window showing the application in action</caption>
   </screenshot>
  </screenshots>
+ <keywords>
+  <keyword>Audio</keyword>
+  <keyword>MIDI</keyword>
+  <keyword>Multitrack</keyword>
+  <keyword>Sequencer</keyword>
+  <keyword>DAW</keyword>
+  <keyword>ALSA</keyword>
+  <keyword>JACK</keyword>
+  <keyword>LADSPA</keyword>
+  <keyword>DSSI</keyword>
+  <keyword>VST</keyword>
+  <keyword>LV2</keyword>
+  <keyword>Qt</keyword>
+ </keywords>
  <url type="homepage">http://qtractor.sourceforge.net</url>
  <updatecontact>rncbc@rncbc.org</updatecontact>
  <project_group>rncbc.org</project_group>

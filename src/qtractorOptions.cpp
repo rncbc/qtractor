@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -209,6 +209,7 @@ void qtractorOptions::loadOptions (void)
 	iCurveMode      = m_settings.value("/CurveMode", 0).toInt();
 	iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
 	bMidButtonModifier = m_settings.value("/MidButtonModifier", false).toBool();
+	bMidiControlSync = m_settings.value("/MidiControlSync", false).toBool();
 	m_settings.endGroup();
 
 	// Session auto-save group.
@@ -498,6 +499,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/CurveMode", iCurveMode);
 	m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
+	m_settings.setValue("/MidiControlSync", bMidiControlSync);
 	m_settings.endGroup();
 
 	// Session auto-save group.

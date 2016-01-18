@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1360,6 +1360,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions->loadWidgetGeometry(m_pMixer);
 	m_pOptions->loadWidgetGeometry(m_pConnections);
 
+	// Set MIDI control non catch-up/hook global option...
+	qtractorMidiControl::setSync(m_pOptions->bMidiControlSync);
+
 	// Load MIDI controller configuration files...
 	QStringListIterator it(m_pOptions->midiControlFiles);
 	while (it.hasNext())
@@ -1639,6 +1642,8 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->fTempo = m_pTempoSpinBox->tempo();
 			m_pOptions->iBeatsPerBar = m_pTempoSpinBox->beatsPerBar();
 			m_pOptions->iBeatDivisor = m_pTempoSpinBox->beatDivisor();
+			// Save MIDI control non catch-up/hook global option...
+			m_pOptions->bMidiControlSync = qtractorMidiControl::isSync();
 			// Save the dock windows state.
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// Audio master bus auto-connection option...
@@ -7246,6 +7251,9 @@ void qtractorMainForm::timerSlot (void)
 	if ( m_iXrunTimer  > 0 &&
 		(m_iXrunTimer -= QTRACTOR_TIMER_MSECS) < 0) {
 		 m_iXrunTimer  = 0;
+		// Reset audio/MIDI drift correction...
+		if (bPlaying)
+			pMidiEngine->resetDrift();
 		// Did we skip any?
 		if (m_iXrunSkip > 0) {
 			appendMessagesColor(

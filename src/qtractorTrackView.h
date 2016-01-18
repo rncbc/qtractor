@@ -1,7 +1,7 @@
 // qtractorTrackView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -215,7 +215,7 @@ public:
 	int editTailX() const;
 
 	// Make given contents position visible in view.
-	void ensureVisible(int x, int y);
+	void ensureVisible(int cx, int cy, int mx, int my);
 
 	// Make given frame position visible in view.
 	void ensureVisibleFrame(unsigned long iFrame);

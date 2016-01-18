@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -132,8 +132,7 @@ public:
 
 		// Constructor.
 		MapVal(Command command = Command(0), int iTrack = 0, bool bFeedback = false)
-			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback),
-				m_bValueInit(false), m_bValueSync(false), m_fValue(0.0f) {}
+			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
 
 		// Command accessors
 		void setCommand(Command command)
@@ -153,30 +152,60 @@ public:
 		int isFeedback() const
 			{ return m_bFeedback; }
 
-		// Tracking/catch-up methods.
-		bool sync(float fValue, float fOldValue)
+		// MIDI control track (catch-up) value.
+		class Track
 		{
-			if (m_bValueInit && !m_bValueSync) {
-				const float v0 = m_fValue;
-				const float v1 = fOldValue;
-				if ((fValue > v0 && v1 >= v0 && fValue >= v1) ||
-					(fValue < v0 && v0 >= v1 && v1 >= fValue))
-		             m_bValueSync = true;
+		public:
+
+			// Constructor.
+			Track(float fValue = 0.0f)
+				: m_fValue(fValue), m_bValueSync(false) {}
+
+			// Tracking/catch-up methods.
+			bool sync(float fValue, float fOldValue)
+			{
+				bool bSync = qtractorMidiControl::isSync();
+				if (!bSync) {
+					const float v0 = m_fValue;
+					const float v1 = fOldValue;
+				#if 0
+					if ((fValue > v0 && v1 >= v0 && fValue >= v1) ||
+						(fValue < v0 && v0 >= v1 && v1 >= fValue))
+						 bSync = true;
+				#else
+					const float d1 = (v1 - fValue);
+					const float d2 = (m_bValueSync ? (v1 - v0) : d1) * d1;
+					bSync = (d2 < 0.001f);
+				#endif
+				}
+				if (bSync) {
+					m_fValue = fValue;
+					m_bValueSync = true;
+				}
+				return bSync;
 			}
-		
-			if (!m_bValueSync)
-				m_bValueInit = true;
-		
-			m_fValue = fValue;
 
-			return m_bValueSync;
-		}
+			void syncReset()
+				{ m_bValueSync = false; }
 
-		void syncReset()
-			{ m_bValueSync = false; }
+			float value() const
+				{ return m_fValue; }
 
-		float value() const
-			{ return m_fValue; }
+		private:
+
+			// Tracking/catch-up members.
+			float m_fValue;
+			bool  m_bValueSync;
+		};
+
+		Track& track(int iTrack)
+			{ return m_trackMap[iTrack]; }
+
+		void syncReset(int iTrack)
+			{ m_trackMap[iTrack].syncReset(); }
+
+		void clear()
+			{ m_trackMap.clear(); }
 
 	private:
 
@@ -185,10 +214,7 @@ public:
 		int     m_iTrack;
 		bool    m_bFeedback;
 
-		// Tracking/catch-up members.
-		bool    m_bValueInit;
-		bool    m_bValueSync;
-		float   m_fValue;
+		QHash<int, Track> m_trackMap;
 	};
 
 	// MIDI control map type.
@@ -204,6 +230,9 @@ public:
 
 	// Clear control map (reset to default).
 	void clear();
+
+	// Clear track (catch-up) map.
+	void clearControlMap();
 
 	// Insert new controller mappings.
 	void mapChannelParam(ControlType ctype,
@@ -222,53 +251,6 @@ public:
 	// Check if given channel, param triplet is currently mapped.
 	bool isChannelParamMapped(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam) const;
-
-	// MIDI control scale (7bit vs. 14bit).
-	class Scale
-	{
-	public:
-
-		// Constructor
-		Scale(ControlType ctype)
-		{
-			m_iMaxScale = (
-				ctype == qtractorMidiEvent::PITCHBEND   ||
-				ctype == qtractorMidiEvent::REGPARAM    ||
-				ctype == qtractorMidiEvent::NONREGPARAM ||
-				ctype == qtractorMidiEvent::CONTROL14
-				? 0x3fff : 0x7f);
-			m_fMaxScale = float(m_iMaxScale);
-			const unsigned short mid = (m_iMaxScale >> 1);
-			m_fMidScale = float(mid);
-			m_iMidScale = int(mid + 1);
-		}
-
-		// Scale value converters (unsigned).
-		float valueFromMidi(unsigned short iValue) const
-			{ return float(iValue) / m_fMaxScale; }
-		unsigned short midiFromValue(float fValue) const
-			{ return m_fMaxScale * fValue; }
-
-		// Scale value converters (signed).
-		float valueSignedFromMidi(unsigned short iValue) const
-			{ return float(int(iValue) - m_iMidScale) / m_fMidScale; }
-		unsigned short midiFromValueSigned(float fValue) const
-			{ return m_iMidScale + int(m_fMidScale * fValue); }
-
-		// Scale value converters (toggled).
-		float valueToggledFromMidi(unsigned short iValue) const
-			{ return (iValue > m_iMidScale ? 1.0f : 0.0f); }
-		unsigned short midiFromValueToggled(float fValue) const
-			{ return (fValue > 0.5f ? m_iMaxScale : 0); }
-
-	private:
-
-		// Scale helpers factors.
-		float m_fMaxScale;
-		float m_fMidScale;
-		int   m_iMaxScale;
-		int   m_iMidScale;
-	};
 
 	// Re-send all (track) controllers.
 	void sendAllControllers(int iFirstTrack = 0) const;
@@ -301,7 +283,6 @@ public:
 		ControlType ctype,
 		unsigned short iChannel,
 		unsigned short iParam) const;
-
 
 	// Forward declaration.
 	class Document;
@@ -353,6 +334,10 @@ public:
 	static Command commandFromName(const QString& sName);
 	static const QString& nameFromCommand(Command command);
 
+	// MIDI control non catch-up/hook global option.
+	static void setSync(bool bSync);
+	static bool isSync();
+
 protected:
 
 	// Find incoming controller event map.
@@ -365,6 +350,53 @@ protected:
 	void sendTrackController(
 		int iTrack, Command command, float fValue, bool bCubic);
 
+	// MIDI control scale (7bit vs. 14bit).
+	class ControlScale
+	{
+	public:
+
+		// Constructor
+		ControlScale(ControlType ctype)
+		{
+			m_iMaxScale = (
+				ctype == qtractorMidiEvent::PITCHBEND   ||
+				ctype == qtractorMidiEvent::REGPARAM    ||
+				ctype == qtractorMidiEvent::NONREGPARAM ||
+				ctype == qtractorMidiEvent::CONTROL14
+				? 0x3fff : 0x7f);
+			m_fMaxScale = float(m_iMaxScale);
+			const unsigned short mid = (m_iMaxScale >> 1);
+			m_fMidScale = float(mid);
+			m_iMidScale = int(mid + 1);
+		}
+
+		// Scale value converters (unsigned).
+		float valueFromMidi(unsigned short iValue) const
+			{ return float(iValue) / m_fMaxScale; }
+		unsigned short midiFromValue(float fValue) const
+			{ return m_fMaxScale * fValue; }
+
+		// Scale value converters (signed).
+		float valueSignedFromMidi(unsigned short iValue) const
+			{ return float(int(iValue) - m_iMidScale) / m_fMidScale; }
+		unsigned short midiFromValueSigned(float fValue) const
+			{ return m_iMidScale + int(m_fMidScale * fValue); }
+
+		// Scale value converters (toggled).
+		float valueToggledFromMidi(unsigned short iValue) const
+			{ return (iValue > m_iMidScale ? 1.0f : 0.0f); }
+		unsigned short midiFromValueToggled(float fValue) const
+			{ return (fValue > 0.5f ? m_iMaxScale : 0); }
+
+	private:
+
+		// Scale helpers factors.
+		float m_fMaxScale;
+		float m_fMidScale;
+		int   m_iMaxScale;
+		int   m_iMidScale;
+	};
+
 private:
 
 	// MIDI control map.
@@ -373,8 +405,10 @@ private:
 	// MIDI observer map.
 	typedef QHash<MapKey, qtractorMidiControlObserver *> ObserverMap;
 
-	// MIDI observer map.
 	ObserverMap m_observerMap;
+
+	// MIDI control non catch-up/hook global option.
+	static bool g_bSync;
 
 	// Pseudo-singleton instance.
 	static qtractorMidiControl *g_pMidiControl;
