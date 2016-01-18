@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>455</width>
-    <height>276</height>
+    <width>480</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -171,7 +171,7 @@
         </widget>
        </item>
        <item row="1" column="3">
-        <widget class="QSpinBox" name="QuantizeTimeSpinBox">
+        <widget class="QDoubleSpinBox" name="QuantizeTimeSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -184,14 +184,23 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="minimum">
-          <number>0</number>
+          <double>0.0</double>
          </property>
          <property name="maximum">
-          <number>100</number>
+          <double>100.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
          <property name="value">
-          <number>100</number>
+          <double>100.0</double>
          </property>
         </widget>
        </item>
@@ -223,7 +232,7 @@
         </widget>
        </item>
        <item row="2" column="3">
-        <widget class="QSpinBox" name="QuantizeDurationSpinBox">
+        <widget class="QDoubleSpinBox" name="QuantizeDurationSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -236,14 +245,23 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="minimum">
-          <number>0</number>
+          <double>0.0</double>
          </property>
          <property name="maximum">
-          <number>100</number>
+          <double>100.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
          <property name="value">
-          <number>100</number>
+          <double>100.0</double>
          </property>
         </widget>
        </item>
@@ -262,7 +280,7 @@
         </widget>
        </item>
        <item row="3" column="3">
-        <widget class="QSpinBox" name="QuantizeSwingSpinBox">
+        <widget class="QDoubleSpinBox" name="QuantizeSwingSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -275,14 +293,23 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="minimum">
-          <number>-100</number>
+          <double>-100.0</double>
          </property>
          <property name="maximum">
-          <number>100</number>
+          <double>100.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
          <property name="value">
-          <number>0</number>
+          <double>0.0</double>
          </property>
         </widget>
        </item>
@@ -548,7 +575,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QSpinBox" name="NormalizePercentSpinBox">
+        <widget class="QDoubleSpinBox" name="NormalizePercentSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -561,8 +588,17 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="maximum">
-          <number>150</number>
+          <double>150.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
         </widget>
        </item>
@@ -662,7 +698,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QSpinBox" name="RandomizeNoteSpinBox">
+        <widget class="QDoubleSpinBox" name="RandomizeNoteSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -675,8 +711,17 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="maximum">
-          <number>150</number>
+          <double>150.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
         </widget>
        </item>
@@ -701,7 +746,7 @@
         </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QSpinBox" name="RandomizeTimeSpinBox">
+        <widget class="QDoubleSpinBox" name="RandomizeTimeSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -714,8 +759,17 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="maximum">
-          <number>150</number>
+          <double>150.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
         </widget>
        </item>
@@ -727,7 +781,7 @@
         </widget>
        </item>
        <item row="3" column="2">
-        <widget class="QSpinBox" name="RandomizeDurationSpinBox">
+        <widget class="QDoubleSpinBox" name="RandomizeDurationSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -740,8 +794,17 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="maximum">
-          <number>150</number>
+          <double>150.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
         </widget>
        </item>
@@ -753,7 +816,7 @@
         </widget>
        </item>
        <item row="4" column="2">
-        <widget class="QSpinBox" name="RandomizeValueSpinBox">
+        <widget class="QDoubleSpinBox" name="RandomizeValueSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -766,8 +829,17 @@
          <property name="suffix">
           <string> %</string>
          </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
          <property name="maximum">
-          <number>150</number>
+          <double>150.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
         </widget>
        </item>
@@ -1007,7 +1079,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QSpinBox" name="RescaleTimeSpinBox">
+        <widget class="QDoubleSpinBox" name="RescaleTimeSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -1020,14 +1092,23 @@
          <property name="suffix">
           <string> %</string>
          </property>
-         <property name="minimum">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
           <number>1</number>
          </property>
+         <property name="minimum">
+          <double>0.1</double>
+         </property>
          <property name="maximum">
-          <number>1000</number>
+          <double>1000.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
          <property name="value">
-          <number>100</number>
+          <double>100.0</double>
          </property>
         </widget>
        </item>
@@ -1052,7 +1133,7 @@
         </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QSpinBox" name="RescaleDurationSpinBox">
+        <widget class="QDoubleSpinBox" name="RescaleDurationSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -1065,14 +1146,23 @@
          <property name="suffix">
           <string> %</string>
          </property>
-         <property name="minimum">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
           <number>1</number>
          </property>
+         <property name="minimum">
+          <double>0.1</double>
+         </property>
          <property name="maximum">
-          <number>1000</number>
+          <double>1000.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
          <property name="value">
-          <number>100</number>
+          <double>100.0</double>
          </property>
         </widget>
        </item>
@@ -1084,7 +1174,7 @@
         </widget>
        </item>
        <item row="3" column="2">
-        <widget class="QSpinBox" name="RescaleValueSpinBox">
+        <widget class="QDoubleSpinBox" name="RescaleValueSpinBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -1097,14 +1187,23 @@
          <property name="suffix">
           <string> %</string>
          </property>
-         <property name="minimum">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
           <number>1</number>
          </property>
+         <property name="minimum">
+          <double>0.1</double>
+         </property>
          <property name="maximum">
-          <number>1000</number>
+          <double>1000.0</double>
+         </property>
+         <property name="singleStep">
+          <double>0.1</double>
          </property>
          <property name="value">
-          <number>100</number>
+          <double>100.0</double>
          </property>
         </widget>
        </item>

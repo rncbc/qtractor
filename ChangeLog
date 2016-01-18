@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added one decimal digit to all percentage input spin-boxes
+  on the MIDI Tools dialog. (EXPERIMENTAL)
+
 - Added brand new and global option to disable the so called
   "catch-up" default behavior (cf. View/Controllers.../Sync).
 
