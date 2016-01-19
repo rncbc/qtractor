@@ -1288,6 +1288,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		++iEnabled;
 	m_ui.ResizeValueSpinBox->setEnabled(bEnabled2);
+	m_ui.ResizeValue2ComboBox->setEnabled(bEnabled2);
 	if (bEnabled2)
 		bEnabled2 = (m_ui.ResizeValue2ComboBox->currentIndex() > 0);
 	m_ui.ResizeValue2SpinBox->setEnabled(bEnabled2);
