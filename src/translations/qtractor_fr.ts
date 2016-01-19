@@ -6138,12 +6138,12 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer la synchronisation immédiate de tous les controleurs (hook)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
         <source>&amp;Sync</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sync</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="393"/>
