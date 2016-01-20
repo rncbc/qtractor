@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -649,7 +649,7 @@ static QHash<AEffect *, qtractorVstPlugin *> g_vstPlugins;
 qtractorVstPlugin::qtractorVstPlugin (
 	qtractorPluginList *pList, qtractorVstPluginType *pVstType )
 	: qtractorPlugin(pList, pVstType), m_ppEffects(NULL),
-		m_ppIBuffer(NULL), m_ppOBuffer(NULL),
+		m_ppIBuffer(NULL), m_ppOBuffer(NULL), m_pfXBuffer(NULL),
 		m_pEditorWidget(NULL), m_bEditorClosed(false)
 {
 #ifdef CONFIG_DEBUG
@@ -687,6 +687,9 @@ qtractorVstPlugin::~qtractorVstPlugin (void)
 		delete [] m_ppIBuffer;
 	if (m_ppOBuffer)
 		delete [] m_ppOBuffer;
+
+	if (m_pfXBuffer)
+		delete [] m_pfXBuffer;
 }
 
 
@@ -751,20 +754,33 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	}
 
 	// Setup all those instance alright...
+	const unsigned int iSampleRate = sampleRate();
+	const unsigned int iBufferSize = bufferSize();
+//	const unsigned short iAudioIns = audioIns();
+	const unsigned short iAudioOuts = audioOuts();
+
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
 	//	pEffect->vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
-		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
-		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
+		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(iSampleRate));
+		pEffect->vst_dispatch(effSetBlockSize,  0, iBufferSize, NULL, 0.0f);
 	//	pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
 	#if 0 // !VST_FORCE_DEPRECATED
 		unsigned short j;
-		for (j = 0; j < pVstType->audioIns(); ++j)
+		for (j = 0; j < iAudioIns; ++j)
 			pEffect->vst_dispatch(effConnectInput, j, 1, NULL, 0.0f);
-		for (j = 0; j < pVstType->audioOuts(); ++j)
+		for (j = 0; j < iAudioOuts; ++j)
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	#endif
+	}
+
+	// Allocate the dummy audio I/O buffer...
+	if (iChannels < iAudioOuts) {
+		if (m_pfXBuffer)
+			delete [] m_pfXBuffer;
+		m_pfXBuffer = new float [iBufferSize];
+		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
 	}
 
 	// (Re)issue all configuration as needed...
@@ -813,8 +829,8 @@ void qtractorVstPlugin::process (
 
 	// To process MIDI events, if any...
 	qtractorMidiManager *pMidiManager = NULL;
-	const unsigned short iMidiIns  = type()->midiIns();
-	const unsigned short iMidiOuts = type()->midiOuts();
+	const unsigned short iMidiIns  = midiIns();
+	const unsigned short iMidiOuts = midiOuts();
 	if (iMidiIns > 0)
 		pMidiManager = list()->midiManager();
 
@@ -839,10 +855,12 @@ void qtractorVstPlugin::process (
 		}
 		// For each instance audio output port...
 		for (j = 0; j < iAudioOuts; ++j) {
-			m_ppOBuffer[j] = ppOBuffer[iOChannel];
-			::memset(m_ppOBuffer[j], 0, nframes * sizeof(float));
-			if (++iOChannel >= iChannels)
-				iOChannel = 0;
+			if (iOChannel < iChannels) {
+				m_ppOBuffer[j] = ppOBuffer[iOChannel++];
+				::memset(m_ppOBuffer[j], 0, nframes * sizeof(float));
+			} else {
+				m_ppOBuffer[j] = m_pfXBuffer; // dummy output!
+			}
 		}
 		// Make it run MIDI, if applicable...
 		if (pMidiManager) {

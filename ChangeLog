@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed all core processing when any plug-in has more audio
+  outputs than channels on a track/bus where it's inserted.
+
 - Added one decimal digit to all percentage input spin-boxes
   on the MIDI Tools dialog. (EXPERIMENTAL)
 

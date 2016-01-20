@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -161,7 +161,7 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 	qtractorLadspaPluginType *pLadspaType )
 	: qtractorPlugin(pList, pLadspaType), m_phInstances(NULL),
 		m_piControlOuts(NULL), m_pfControlOuts(NULL),
-		m_piAudioIns(NULL), m_piAudioOuts(NULL)
+		m_piAudioIns(NULL), m_piAudioOuts(NULL), m_pfXBuffer(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLadspaPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -228,6 +228,9 @@ qtractorLadspaPlugin::~qtractorLadspaPlugin (void)
 		delete [] m_piControlOuts;
 	if (m_pfControlOuts)
 		delete [] m_pfControlOuts;
+
+	if (m_pfXBuffer)
+		delete [] m_pfXBuffer;
 }
 
 
@@ -309,6 +312,15 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		}
 		// This is it...
 		m_phInstances[i] = handle;
+	}
+
+	// Allocate the dummy audio I/O buffer...
+	if (iChannels < audioOuts()) {
+		const unsigned int iBufferSize = bufferSize();
+		if (m_pfXBuffer)
+			delete [] m_pfXBuffer;
+		m_pfXBuffer = new float [iBufferSize];
+		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
 	}
 
 	// (Re)issue all configuration as needed...
@@ -400,10 +412,13 @@ void qtractorLadspaPlugin::process (
 		}
 		// For each instance audio output port...
 		for (j = 0; j < iAudioOuts; ++j) {
-			(*pLadspaDescriptor->connect_port)(handle,
-				m_piAudioOuts[j], ppOBuffer[iOChannel]);
-			if (++iOChannel >= iChannels)
-				iOChannel = 0;
+			if (iOChannel < iChannels) {
+				(*pLadspaDescriptor->connect_port)(handle,
+					m_piAudioOuts[j], ppOBuffer[iOChannel++]);
+			} else {
+				(*pLadspaDescriptor->connect_port)(handle,
+					m_piAudioOuts[j], m_pfXBuffer); // dummy output!
+			}
 		}
 		// Make it run...
 		(*pLadspaDescriptor->run)(handle, nframes);

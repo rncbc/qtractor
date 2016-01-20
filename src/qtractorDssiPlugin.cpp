@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1055,10 +1055,13 @@ void qtractorDssiPlugin::process (
 		}
 		// For each instance audio output port...
 		for (j = 0; j < iAudioOuts; ++j) {
-			(*pLadspaDescriptor->connect_port)(handle,
-				m_piAudioOuts[j], ppOBuffer[iOChannel]);
-			if (++iOChannel >= iChannels)
-				iOChannel = 0;
+			if (iOChannel < iChannels) {
+				(*pLadspaDescriptor->connect_port)(handle,
+					m_piAudioOuts[j], ppOBuffer[iOChannel++]);
+			} else {
+				(*pLadspaDescriptor->connect_port)(handle,
+					m_piAudioOuts[j], m_pfXBuffer); // dummy output!
+			}
 		}
 		// Care of multiple instances here...
 		if (m_pDssiMulti)

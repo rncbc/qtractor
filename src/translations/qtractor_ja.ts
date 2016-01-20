@@ -50,7 +50,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1469"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1487"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -98,7 +98,8 @@ Audio:	%1 channels, %2 Hz</source>
         <location filename="../qtractorClip.cpp" line="566"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
-        <translation type="unfinished"></translation>
+        <translation>開始:	%1	オフセット:	%2
+終了:	%3	長さ:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="574"/>
@@ -251,12 +252,12 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorInstrument.cpp" line="412"/>
         <source>Version</source>
-        <translation type="unfinished">バージョン</translation>
+        <translation>バージョン</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="414"/>
         <source>Build</source>
-        <translation type="unfinished">ビルド</translation>
+        <translation>ビルド</translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="418"/>
@@ -581,7 +582,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="247"/>
         <source>duplicate track</source>
-        <translation type="unfinished"></translation>
+        <translation>トラックの複製</translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="456"/>
@@ -645,7 +646,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="1238"/>
         <source>track instrument</source>
-        <translation type="unfinished"></translation>
+        <translation>トラックのインストルメント</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="92"/>
@@ -693,7 +694,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>バージョン:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1466"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1484"/>
         <source>%1 (*.%2)</source>
         <translation></translation>
     </message>
@@ -1180,7 +1181,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="108"/>
         <source>&amp;Track/Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>トラック/チャンネル(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="169"/>
@@ -2266,7 +2267,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorInstrumentMenu.cpp" line="350"/>
         <location filename="../qtractorInstrumentMenu.cpp" line="403"/>
         <source>(None)</source>
-        <translation type="unfinished">(なし)</translation>
+        <translation>(なし)</translation>
     </message>
 </context>
 <context>
@@ -2365,7 +2366,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="276"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation>インストルメント(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="335"/>
@@ -3087,22 +3088,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1113"/>
         <source>&amp;Duplicate Track</source>
-        <translation type="unfinished"></translation>
+        <translation>トラックの複製(&amp;D)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1116"/>
         <source>Duplicate Track</source>
-        <translation type="unfinished"></translation>
+        <translation>トラックの複製</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1119"/>
         <source>Duplicate track</source>
-        <translation type="unfinished"></translation>
+        <translation>トラックを複製</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1122"/>
         <source>Duplicate current track</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のトラックを複製します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1130"/>
@@ -5207,7 +5208,7 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="635"/>
         <source>Session XRUN state</source>
-        <translation type="unfinished"></translation>
+        <translation>セッションのXRUN状態</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1788"/>
@@ -5517,12 +5518,12 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5422"/>
         <source>LV2 Plug-in UI support disabled.</source>
-        <translation>LV2プラグインユーザーインターフェイスサポートは無効です。</translation>
+        <translation>LV2プラグインUIサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5425"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
-        <translation>LV2プラグインユーザーインターフェイスサポート (libsuil) は無効です。</translation>
+        <translation>LV2プラグインUIサポート (libsuil) は無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5444"/>
@@ -5532,22 +5533,22 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5463"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインUIのアイドルインターフェイスサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5466"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインUIの表示インターフェイスは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5470"/>
         <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインUIのGTK2ネイティブサポートは有効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5473"/>
         <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインUIのX11ネイティブサポートが有効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5485"/>
@@ -5557,7 +5558,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5925"/>
         <source>XRUN</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6134"/>
@@ -6134,12 +6135,12 @@ JACK音声サーバー(jackd)が起動し実行されているなら
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation type="unfinished"></translation>
+        <translation>全コントローラーの即時同期を有効にする (フック)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
         <source>&amp;Sync</source>
-        <translation type="unfinished"></translation>
+        <translation>同期 (&amp;S)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="393"/>
@@ -6555,7 +6556,9 @@ Type:	</source>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>ノートオン (%1) %2
+ベロシティ:	%3
+デュレーション: %4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4831"/>
@@ -6696,7 +6699,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="58"/>
         <source>Instrum&amp;ent</source>
-        <translation type="unfinished"></translation>
+        <translation>インストルメント(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="88"/>
@@ -6711,12 +6714,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="105"/>
         <source>Not&amp;e Type</source>
-        <translation type="unfinished"></translation>
+        <translation>ノートタイプ(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="110"/>
         <source>Val&amp;ue Type</source>
-        <translation type="unfinished"></translation>
+        <translation>値の種類(&amp;U)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="115"/>
@@ -10563,7 +10566,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPluginForm.ui" line="34"/>
         <source>Plugin Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのプロパティ</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="55"/>
@@ -10694,7 +10697,11 @@ Do you want to apply the changes?</source>
 &quot;%1&quot;.
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>プリセットをファイルからろーどできませんでした:
+
+&quot;%1&quot;.
+
+ごめんなさい。</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="581"/>
@@ -10708,7 +10715,11 @@ Sorry.</source>
 &quot;%1&quot;.
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>プリセットをファイルに保存できませんでした:
+
+&quot;%1&quot;.
+
+ごめんなさい。</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="657"/>
@@ -12145,7 +12156,7 @@ Length:	%3</source>
         <location filename="../qtractorTrackView.cpp" line="3401"/>
         <location filename="../qtractorTrackView.cpp" line="3509"/>
         <source>clip repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>クリップのリピート</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4319"/>

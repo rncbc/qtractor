@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -478,6 +478,12 @@ public:
 		{ return m_pType->audioIns(); }
 	unsigned short audioOuts() const
 		{ return m_pType->audioOuts(); }
+
+	// Instance capped number of MIDI ports.
+	unsigned short midiIns() const
+		{ return m_pType->midiIns(); }
+	unsigned short midiOuts() const
+		{ return m_pType->midiOuts(); }
 
 	// Plugin state serialization methods.
 	void setValueList(const QStringList& vlist);

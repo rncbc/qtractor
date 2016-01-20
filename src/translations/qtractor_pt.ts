@@ -152,7 +152,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1466"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1484"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -542,7 +542,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1469"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1487"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
@@ -1274,7 +1274,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="108"/>
         <source>&amp;Track/Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pista/Canal:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
@@ -6004,12 +6004,12 @@ Salvar esta sessão em um novo arquivo é altamente recomendável.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar todos os controladores em sync (hook)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
         <source>&amp;Sync</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sync</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="422"/>
@@ -6933,12 +6933,12 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="105"/>
         <source>Not&amp;e Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de &amp;Nota</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="110"/>
         <source>Val&amp;ue Type</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Valor do Tipo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="453"/>
@@ -12150,7 +12150,7 @@ Tamanho:	%3</translation>
         <location filename="../qtractorTrackView.cpp" line="3401"/>
         <location filename="../qtractorTrackView.cpp" line="3509"/>
         <source>clip repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>repetidor de sequência</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4392"/>
