@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1815,6 +1815,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pfControlOutsLast(NULL)
 		, m_piAudioIns(NULL)
 		, m_piAudioOuts(NULL)
+		, m_pfXBuffer(NULL)
 	#ifdef CONFIG_LV2_EVENT
 		, m_piEventIns(NULL)
 		, m_piEventOuts(NULL)
@@ -2284,6 +2285,9 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	if (m_pfControlOutsLast)
 		delete [] m_pfControlOutsLast;
 
+	if (m_pfXBuffer)
+		delete [] m_pfXBuffer;
+
 	if (m_lv2_features)
 		delete [] m_lv2_features;
 }
@@ -2405,6 +2409,15 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		m_ppInstances[i] = instance;
 	}
 
+	// Allocate the dummy audio I/O buffer...
+	if (iChannels < audioOuts()) {
+		const unsigned int iBufferSize = bufferSize();
+		if (m_pfXBuffer)
+			delete [] m_pfXBuffer;
+		m_pfXBuffer = new float [iBufferSize];
+		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
+	}
+
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
 	realizeValues();
@@ -2518,10 +2531,13 @@ void qtractorLv2Plugin::process (
 			}
 			// For each instance audio output port...
 			for (j = 0; j < iAudioOuts; ++j) {
-				lilv_instance_connect_port(instance,
-					m_piAudioOuts[j], ppOBuffer[iOChannel]);
-				if (++iOChannel >= iChannels)
-					iOChannel = 0;
+				if (iOChannel < iChannels) {
+					lilv_instance_connect_port(instance,
+						m_piAudioOuts[j], ppOBuffer[iOChannel++]);
+				} else {
+					lilv_instance_connect_port(instance,
+						m_piAudioOuts[j], m_pfXBuffer); // dummy output!
+				}
 			}
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input event/MIDI ports...
