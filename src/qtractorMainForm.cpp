@@ -7329,6 +7329,10 @@ void qtractorMainForm::timerSlot (void)
 	qtractorLv2Plugin::idleEditorAll();
 #endif
 #endif
+#ifdef CONFIG_VST
+	// Crispy plugin VST UI idle-updates...
+	qtractorVstPlugin::idleEditorAll();
+#endif
 
 	// Slower plugin UI idle cycle...
 	if ((m_iIdleTimer -= QTRACTOR_TIMER_MSECS) < 0) {
@@ -7337,9 +7341,6 @@ void qtractorMainForm::timerSlot (void)
 	#ifdef CONFIG_LIBLO
 		qtractorDssiPlugin::idleEditorAll();
 	#endif
-	#endif
-	#ifdef CONFIG_VST
-		qtractorVstPlugin::idleEditorAll();
 	#endif
 		// Auto-save option routine...
 		if (m_iAutoSavePeriod > 0 && m_iDirtyCount > 0) {
