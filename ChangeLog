@@ -6,11 +6,13 @@ ChangeLog
 
 GIT HEAD
 
-- Fixed all core processing when any plug-in has more audio
+- Faster and crispier VST plugin editor (GUI) idle cycles.
+
+- Fixed all core processing when any plugin has more audio
   outputs than channels on a track/bus where it's inserted.
 
 - Added one decimal digit to all percentage input spin-boxes
-  on the MIDI Tools dialog. (EXPERIMENTAL)
+  on the MIDI Tools dialog.
 
 - Added brand new and global option to disable the so called
   "catch-up" default behavior (cf. View/Controllers.../Sync).
