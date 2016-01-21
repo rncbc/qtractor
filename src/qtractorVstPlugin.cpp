@@ -1707,7 +1707,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 		break;
 
 	case audioMasterGetCurrentProcessLevel:
-		VST_HC_DEBUG("audioMasterGetCurrentProcessLevel");
+	//	VST_HC_DEBUG("audioMasterGetCurrentProcessLevel");
 		break;
 
 	case audioMasterGetAutomationState:
