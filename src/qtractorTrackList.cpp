@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1394,18 +1394,18 @@ bool qtractorTrackList::ensureVisibleRect ( const QRect& rect )
 {
 	if (!rect.isValid())
 		return false;
-		
+
 	const int hh = m_pHeader->sizeHint().height();
 	const int cx = qtractorScrollView::contentsX();
 	const int cy = qtractorScrollView::contentsY();
 
-	if (rect.top() < hh) {
-		qtractorScrollView::ensureVisible(cx, cy + rect.top(), 0, 24);
+	if (rect.top() < cy + hh) {
+		qtractorScrollView::ensureVisible(cx, rect.top(), 0, 24);
 		return true;
 	}
 
-	if (rect.bottom() > qtractorScrollView::viewport()->height()) {
-		qtractorScrollView::ensureVisible(cx, cy + rect.bottom() - hh, 0, 24);
+	if (rect.bottom() > cy + qtractorScrollView::viewport()->height()) {
+		qtractorScrollView::ensureVisible(cx, rect.bottom() - hh, 0, 24);
 		return true;
 	}
 
