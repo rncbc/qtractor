@@ -5891,12 +5891,12 @@ is up and running and then restart session.</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="34"/>
         <source>Controllers - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="43"/>
         <source>Controller files</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller-Dateien</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="59"/>
@@ -5911,7 +5911,7 @@ is up and running and then restart session.</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="72"/>
         <source>Import controller files</source>
-        <translation type="unfinished"></translation>
+        <translation>Importiere Controller-Dateien</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="75"/>
@@ -5921,7 +5921,7 @@ is up and running and then restart session.</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="85"/>
         <source>Remove controller file</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne Controller-Datei</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="88"/>
@@ -6096,7 +6096,7 @@ is up and running and then restart session.</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="406"/>
         <source>Export to controller file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportiere in Controller-Datei</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="409"/>
@@ -6116,13 +6116,13 @@ is up and running and then restart session.</source>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="230"/>
         <source>Import Controller Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Importiere Controller-Dateien</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="231"/>
         <location filename="../qtractorMidiControlForm.cpp" line="437"/>
         <source>Controller files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller-Dateien (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="309"/>
@@ -6144,7 +6144,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="436"/>
         <source>Export Controller File</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller-Datei exportieren</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="441"/>
@@ -6158,7 +6158,11 @@ Are you sure?</source>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Controller-Datei existiert bereits:
+
+&quot;%1&quot;
+
+Soll diese überschrieben werden?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="499"/>
@@ -6197,7 +6201,7 @@ Do you want to apply to controller files?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="34"/>
         <source>MIDI Controller - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI Controller - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="43"/>
@@ -6217,7 +6221,7 @@ Do you want to apply to controller files?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="70"/>
         <source>MIDI channel</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI Kanal</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="96"/>
@@ -6277,14 +6281,16 @@ Do you want to apply to controller files?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="190"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI Controller</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="358"/>
         <source>MIDI controller is already assigned.
 
 Do you want to replace the mapping?</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI Controller ist schon zugeordnet.
+
+Wollen sie die Zuordnung ersetzen?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="405"/>
@@ -6297,7 +6303,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="541"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;MIDI Controller...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="647"/>
@@ -11070,7 +11076,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">MIDI Controller</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="421"/>
@@ -11102,7 +11108,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="553"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;MIDI Controller...</translation>
     </message>
 </context>
 <context>
