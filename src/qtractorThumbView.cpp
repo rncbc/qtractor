@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -132,11 +132,14 @@ void qtractorThumbView::updateContents (void)
 			int h2 = ((h * pTrack->zoomHeight()) / ch);
 			if (h2 < 2)
 				h2 = 2;
+			QColor bg(pTrack->background());
+			if (pTrack->isMute() || (!pTrack->isSolo() && pSession->soloTracks()))
+				bg = bg.darker();
 			qtractorClip *pClip = pTrack->clips().first();
 			while (pClip) {
 				x2 = int(pClip->clipStart()  / f2);
 				w2 = int(pClip->clipLength() / f2);
-				painter.fillRect(x2, y2, w2, h2 - 1, pTrack->background());
+				painter.fillRect(x2, y2, w2, h2 - 1, bg);
 				pClip = pClip->next();
 			}
 			y2 += h2;

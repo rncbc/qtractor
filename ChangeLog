@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Eye-candy warning: muted/non-soloed tracks are now shaded
+  over the main thumb-view.
+
 - Faster and crispier VST plugin editor (GUI) idle cycles.
 
 - Fixed all core processing when any plugin has more audio
@@ -19,7 +22,7 @@ GIT HEAD
 
 - Fixed some track control issues related to MIDI Controllers
   generic mapping (cf. View/Controllers...).
-  
+
 - Try making Help/Shortcuts... dialog window modeless, as far
   as under MIDI Controller, Inputs/Outputs Connections window
   also gets accessible enough.
