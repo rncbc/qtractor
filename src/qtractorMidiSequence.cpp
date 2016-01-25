@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -90,7 +90,7 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 			const unsigned long t1 = pNoteEvent->time();	// NOTEON
 			const unsigned long t2 = pEvent->time();		// NOTEOFF
 			if (t1 > t2) {
-				pNoteEvent->setDuration(t1 - m_duration);
+				pNoteEvent->setDuration(m_duration - t1);
 			} else {
 				pNoteEvent->setDuration(t2 - t1);
 				if (m_duration < t2)

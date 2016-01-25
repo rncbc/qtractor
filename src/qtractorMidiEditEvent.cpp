@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -414,7 +414,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		if (t2 > iTimeEnd)
 			t2 = iTimeEnd;
 		// Filter event type!...
-		if (pEvent->type() == m_eventType && t2 >= iTickStart
+		if (pEvent->type() == m_eventType && t2 > iTickStart
 			&& (!bEventParam || pEvent->param() == m_eventParam)) {
 			if (m_eventType == qtractorMidiEvent::REGPARAM    ||
 				m_eventType == qtractorMidiEvent::NONREGPARAM ||
