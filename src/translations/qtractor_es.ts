@@ -1168,7 +1168,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="108"/>
         <source>&amp;Track/Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pista/Canal:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="124"/>
@@ -6137,12 +6137,12 @@ este en funcionamiento y reinicie la sesión.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar sincronia inmediata a todos los controladores (hook)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
         <source>&amp;Sync</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sync</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="393"/>
