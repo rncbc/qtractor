@@ -378,6 +378,7 @@
     <addaction name="clipNormalizeAction"/>
     <addaction name="separator"/>
     <addaction name="clipTempoAdjustAction"/>
+    <addaction name="clipCrossFadeAction"/>
     <addaction name="separator"/>
     <addaction name="clipRangeSetAction"/>
     <addaction name="clipLoopSetAction"/>
@@ -1782,7 +1783,7 @@
   </action>
   <action name="clipNormalizeAction">
    <property name="text">
-    <string>N&amp;ormalize</string>
+    <string>Normali&amp;ze</string>
    </property>
    <property name="iconText">
     <string>Normalize Clip</string>
@@ -1907,6 +1908,20 @@
    </property>
    <property name="shortcut">
     <string>F7</string>
+   </property>
+  </action>
+  <action name="clipCrossFadeAction">
+   <property name="text">
+    <string>&amp;Cross Fade</string>
+   </property>
+   <property name="iconText">
+    <string>Clip Cross-fade</string>
+   </property>
+   <property name="toolTip">
+    <string>Clip cross-fade</string>
+   </property>
+   <property name="statusTip">
+    <string>Cross-fade current overlapped clips</string>
    </property>
   </action>
   <action name="clipRangeSetAction">

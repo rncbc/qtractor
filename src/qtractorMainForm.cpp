@@ -907,6 +907,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipTempoAdjustAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipTempoAdjust()));
+	QObject::connect(m_ui.clipCrossFadeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipCrossFade()));
 	QObject::connect(m_ui.clipRangeSetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipRangeSet()));
@@ -4147,6 +4150,18 @@ void qtractorMainForm::clipTempoAdjust (void)
 }
 
 
+// Cross-fade current overllaping clips...
+void qtractorMainForm::clipCrossFade (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipCrossFade()");
+#endif
+
+	if (m_pTracks)
+		m_pTracks->crossFadeClip();
+}
+
+
 // Set edit-range from current clip.
 void qtractorMainForm::clipRangeSet (void)
 {
@@ -6791,6 +6806,7 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(bClipSelected);
 	m_ui.clipTempoAdjustAction->setEnabled(bClipSelectable);
+	m_ui.clipCrossFadeAction->setEnabled(bClipSelected);
 	m_ui.clipRangeSetAction->setEnabled(bClipSelected);
 	m_ui.clipLoopSetAction->setEnabled(bClipSelected);
 //	m_ui.clipImportAction->setEnabled(bTracks);

@@ -201,6 +201,7 @@ public slots:
 	void clipMerge();
 	void clipNormalize();
 	void clipTempoAdjust();
+	void clipCrossFade();
 	void clipRangeSet();
 	void clipLoopSet();
 	void clipImport();

@@ -92,7 +92,7 @@ public:
 	bool rangeClip(qtractorClip *pClip = NULL);
 	bool loopClip(qtractorClip *pClip = NULL);
 	bool tempoClip(qtractorClip *pClip = NULL);
-	bool crossfadeClip(qtractorClip *pClip = NULL);
+	bool crossFadeClip(qtractorClip *pClip = NULL);
 	bool executeClipTool(int iTool, qtractorClip *pClip = NULL);
 	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();

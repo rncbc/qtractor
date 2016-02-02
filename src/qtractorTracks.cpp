@@ -1762,7 +1762,7 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 }
 
 // Auto-crossfade a give clip.
-bool qtractorTracks::crossfadeClip ( qtractorClip *pClip )
+bool qtractorTracks::crossFadeClip ( qtractorClip *pClip )
 {
 	if (pClip == NULL)
 		pClip = m_pTrackView->currentClip();
@@ -1786,10 +1786,11 @@ bool qtractorTracks::crossfadeClip ( qtractorClip *pClip )
 
 	qtractorClip *pClip2 = pTrack->clips().first();
 
-	while (pClip2 && pClip2->clipStart() < iClipStart) {
+	while (pClip2 && pClip2->clipStart() < iClipEnd) {
+		// Avoid cross-fading over the very self...
 		const unsigned long iClipStart2 = pClip2->clipStart();
 		const unsigned long iClipEnd2 = iClipStart2 + pClip2->clipLength();
-		if (iClipEnd2 > iClipStart) {
+		if (iClipEnd2 > iClipStart && iClipStart > iClipStart2) {
 			const unsigned long iCrossFadeLength = iClipEnd2 - iClipStart;
 			if (pClip2->fadeOutLength() != iCrossFadeLength) {
 				pClipCommand->fadeOutClip(pClip2,
@@ -1800,17 +1801,19 @@ bool qtractorTracks::crossfadeClip ( qtractorClip *pClip )
 					iCrossFadeLength, pClip->fadeInType());
 			}
 		}
-		if (iClipStart2 < iClipEnd) {
+		else
+		if (iClipStart2 < iClipEnd && iClipEnd < iClipEnd2) {
 			const unsigned long iCrossFadeLength = iClipEnd - iClipStart2;
-			if (pClip->fadeInLength() != iCrossFadeLength) {
+			if (pClip->fadeOutLength() != iCrossFadeLength) {
 				pClipCommand->fadeOutClip(pClip,
 					iCrossFadeLength, pClip->fadeOutType());
 			}
-			if (pClip2->fadeOutLength() != iCrossFadeLength) {
+			if (pClip2->fadeInLength() != iCrossFadeLength) {
 				pClipCommand->fadeInClip(pClip2,
 					iCrossFadeLength, pClip2->fadeInType());
 			}
 		}
+		// Move forward...
 		pClip2 = pClip2->next();
 	}
 
