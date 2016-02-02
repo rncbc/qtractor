@@ -346,11 +346,11 @@ protected:
 		const QRect& rectDrag, int thick = 1) const;
 
 	// Check whether we're up to drag something on a track or one of its clips.
-	qtractorClip *dragMoveStart(const QPoint& pos,
+	qtractorClip *dragClipStart(const QPoint& pos,
 		const Qt::KeyboardModifiers& modifiers,
 		bool bSelectTrack = false, QRect *pClipRect = NULL);
 	// Check whether we're up to drag a clip fade-in/out or resize handles.
-	bool dragClipStart(const QPoint& pos,
+	bool dragClipStartEx(const QPoint& pos,
 		const Qt::KeyboardModifiers& modifiers,
 		qtractorClip *pClip, const QRect& rectClip);
 

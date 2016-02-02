@@ -1694,7 +1694,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			// Remember what and where we'll be dragging/selecting...
 			m_dragState = DragStart;
 			m_posDrag   = pos;
-			m_pClipDrag = dragMoveStart(pos, modifiers, true, &m_rectDrag);
+			m_pClipDrag = dragClipStart(pos, modifiers, true, &m_rectDrag);
 			// Should it be selected(toggled)?
 			if (m_pClipDrag && m_dragCursor == DragNone) {
 				// Show that we're about to something...
@@ -1760,7 +1760,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragNone:
 		// Try to catch mouse over the fade or resize handles...
-		dragMoveStart(pos, modifiers);
+		dragClipStart(pos, modifiers);
 		break;
 	case DragClipMove:
 	case DragClipPaste:
@@ -1811,7 +1811,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			> QApplication::startDragDistance()) {
 			// Check if we're pointing in some fade-in/out,
 			// resize handle or a automation curve node...
-			m_pClipDrag = dragMoveStart(m_posDrag, modifiers, false, &m_rectDrag);
+			m_pClipDrag = dragClipStart(m_posDrag, modifiers, false, &m_rectDrag);
 			if (m_dragCursor != DragNone) {
 				m_dragState = m_dragCursor;
 				if (m_dragState == DragCurveMove) {
@@ -3116,7 +3116,7 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 
 
 // Check whether we're up to drag something on a track or one of its clips.
-qtractorClip *qtractorTrackView::dragMoveStart (
+qtractorClip *qtractorTrackView::dragClipStart (
 	const QPoint& pos, const Qt::KeyboardModifiers& modifiers,
 	bool bSelectTrack, QRect *pClipRect )
 {
@@ -3166,7 +3166,7 @@ qtractorClip *qtractorTrackView::dragMoveStart (
 			rectClip.setX(x);
 			rectClip.setWidth(w);
 			if (pClipRect) *pClipRect = rectClip;
-			if (dragClipStart(pos, modifiers, pClipAt, rectClip))
+			if (dragClipStartEx(pos, modifiers, pClipAt, rectClip))
 				return pClipAt;
 		}
 		pClip = pClip->next();
@@ -3184,7 +3184,7 @@ qtractorClip *qtractorTrackView::dragMoveStart (
 
 
 // Check whether we're up to drag a clip fade-in/out or resize handles.
-bool qtractorTrackView::dragClipStart (
+bool qtractorTrackView::dragClipStartEx (
 	const QPoint& pos, const Qt::KeyboardModifiers& modifiers,
 	qtractorClip *pClip, const QRect& rectClip )
 {
