@@ -245,13 +245,6 @@ public:
 	qtractorPluginType::Hint typeHint() const
 		{ return m_typeHint; }
 
-	// Main properties accessors.
-	void setPaths(qtractorPluginType::Hint typeHint, const QString& sPaths);
-	void setPaths(qtractorPluginType::Hint typeHint, const QStringList& paths)
-		{ m_paths.insert(typeHint, paths); }
-	QStringList paths(qtractorPluginType::Hint typeHint) const
-		{ return m_paths.value(typeHint); }
-
 	// Executive methods.
 	bool open();
 	void close();
@@ -266,6 +259,10 @@ public:
 	// Type list reset method.
 	void clear() { qDeleteAll(m_types); m_types.clear(); }
 
+	// Global plugin-paths executive methods.
+	static QStringList pluginPaths(qtractorPluginType::Hint typeHint);
+	static void updatePluginPaths();
+
 protected:
 
 	// Recursive plugin file/path inventory method.
@@ -276,11 +273,12 @@ private:
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
 
-	QHash<qtractorPluginType::Hint, QStringList> m_paths;
-	
 	// Internal plugin file/type list.
 	QList<qtractorPluginFile *> m_files;
 	QList<qtractorPluginType *> m_types;
+
+	// Global plugin-paths.
+	static QHash<qtractorPluginType::Hint, QStringList> g_paths;
 };
 
 

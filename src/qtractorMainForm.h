@@ -400,7 +400,6 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
-	void updatePluginPaths();
 	void updateTransportMode();
 	void updateTimebase();
 	void updateMidiControlModes();

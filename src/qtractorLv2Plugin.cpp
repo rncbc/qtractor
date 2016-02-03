@@ -749,9 +749,9 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_TYPE_NONE       0
 #define LV2_UI_TYPE_QT4        1
 #define LV2_UI_TYPE_QT5        2
-#define LV2_UI_TYPE_EXTERNAL   3
-#define LV2_UI_TYPE_GTK        4
-#define LV2_UI_TYPE_X11        5
+#define LV2_UI_TYPE_GTK        3
+#define LV2_UI_TYPE_X11        4
+#define LV2_UI_TYPE_EXTERNAL   5
 
 #ifndef LV2_UI__Qt5UI
 #define LV2_UI__Qt5UI	LV2_UI_PREFIX "Qt5UI"
@@ -1486,6 +1486,22 @@ void qtractorLv2PluginType::lv2_open (void)
 	qDebug("qtractorLv2PluginType::lv2_open()");
 #endif
 
+	// HACK: set special environment for LV2...
+	const char *LV2_PATH = "LV2_PATH";
+	const QStringList& lv2_paths
+		= qtractorPluginPath::pluginPaths(qtractorPluginType::Lv2);
+	if (lv2_paths.isEmpty()) {
+		::unsetenv(LV2_PATH);
+	} else {
+	#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+		const QString sPathSep(';');
+	#else
+		const QString sPathSep(':');
+	#endif
+		::setenv(LV2_PATH, lv2_paths.join(sPathSep).toUtf8().constData(), 1);
+	}
+
+	// Taking on all the world...
 	g_lv2_world = lilv_world_new();
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();

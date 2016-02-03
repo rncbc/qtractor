@@ -1376,7 +1376,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
-	updatePluginPaths();
 	updateTransportMode();
 	updateTimebase();
 	updateAudioPlayer();
@@ -4744,17 +4743,6 @@ void qtractorMainForm::viewOptions (void)
 	if (m_pOptions == NULL)
 		return;
 
-#ifdef CONFIG_LV2
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	const QString sPathSep(';');
-#else
-	const QString sPathSep(':');
-#endif
-	const QString sOldLv2Path = m_pOptions->lv2Paths.join(sPathSep);
-	const QString sOldLv2PresetDir = m_pOptions->sLv2PresetDir;
-	const bool bOldLv2DynManifest = m_pOptions->bLv2DynManifest;
-#endif
-
 	// Check out some initial nullities(tm)...
 	if (m_pOptions->sMessagesFont.isEmpty() && m_pMessages)
 		m_pOptions->sMessagesFont = m_pMessages->messagesFont().toString();
@@ -4807,6 +4795,9 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
+#ifdef CONFIG_LV2
+	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
+#endif
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -4849,11 +4840,6 @@ void qtractorMainForm::viewOptions (void)
 			iNeedRestart |= RestartSession;
 		}
 	#ifdef CONFIG_LV2
-		if ((sOldLv2Path != m_pOptions->lv2Paths.join(sPathSep)) ||
-			(sOldLv2PresetDir != m_pOptions->sLv2PresetDir)) {
-			updatePluginPaths();
-			iNeedRestart |= RestartSession;
-		}
 		if (( bOldLv2DynManifest && !m_pOptions->bLv2DynManifest) ||
 			(!bOldLv2DynManifest &&  m_pOptions->bLv2DynManifest)) {
 			iNeedRestart |= RestartSession;
@@ -6261,22 +6247,6 @@ void qtractorMainForm::updateDisplayFormat (void)
 
 	m_pSession->timeScale()->setDisplayFormat(displayFormat);
 	m_pTimeSpinBox->setDisplayFormat(displayFormat);
-}
-
-
-// Update plugins search paths (LV2_PATH).
-void qtractorMainForm::updatePluginPaths (void)
-{
-	if (m_pOptions == NULL)
-		return;
-
-#ifdef CONFIG_LV2
-	// HACK: reset special environment for LV2...
-	if (m_pOptions->lv2Paths.isEmpty())	::unsetenv("LV2_PATH");
-	qtractorPluginPath path(qtractorPluginType::Lv2);
-	path.setPaths(qtractorPluginType::Lv2, m_pOptions->lv2Paths);
-	path.open();
-#endif
 }
 
 
