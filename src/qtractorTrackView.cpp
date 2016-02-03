@@ -3146,7 +3146,7 @@ qtractorClip *qtractorTrackView::dragClipStart (
 #if 0
 	QRect rectClip;
 	qtractorClip *pClip = clipAtTrack(pos, &rectClip, pTrack, &tvi);
-	if (pClip && dragClipStart(pos, modifiers, pClip, rectClip))
+	if (pClip && dragClipStartEx(pos, modifiers, pClip, rectClip))
 		return pClip;
 #else
 	if (m_pSessionCursor == NULL)
