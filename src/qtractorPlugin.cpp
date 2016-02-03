@@ -2242,14 +2242,18 @@ bool qtractorPluginList::loadElement (
 					posForm.setY(sxy.at(1).toInt());
 				}
 			}
-			qtractorPlugin *pPlugin
-				= qtractorPluginFile::createPlugin(this,
+			// Try to find some alternative, if it doesn't exist...
+			qtractorPlugin *pPlugin = NULL;
+			if (checkPluginFile(sFilename, typeHint)) {
+				pPlugin = qtractorPluginFile::createPlugin(this,
 					sFilename, iIndex, typeHint);
+			}
 		#if 0
 			if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
 				((pPlugin == NULL) || ((pPlugin->type())->label() != sLabel))) {
 				iIndex = 0;
 				do {
+					if (pPlugin) delete pPlugin;
 					pPlugin = qtractorPluginFile::createPlugin(this,
 						sFilename, iIndex++, typeHint);
 				} while (pPlugin && (pPlugin->type())->label() != sLabel);
@@ -2448,6 +2452,61 @@ unsigned long qtractorPluginList::createUniqueID ( qtractorPluginType *pType )
 bool qtractorPluginList::isUniqueID ( qtractorPluginType *pType ) const
 {
 	return (m_uniqueIDs.value(pType->uniqueID(), 0) > 1);
+}
+
+
+// Check/sanitize plugin file-path;
+bool qtractorPluginList::checkPluginFile (
+	QString& sFilename, qtractorPluginType::Hint typeHint ) const
+{
+	// Care of internal pseudo-plugins...
+	if (sFilename.isEmpty()) {
+		return (typeHint == qtractorPluginType::Insert)
+			|| (typeHint == qtractorPluginType::AuxSend);
+	}
+
+	// LV2 plug-ins are identified by URI...
+	if (typeHint == qtractorPluginType::Lv2)
+		return true;
+
+	// Primary check for plugin pathname...
+	QFileInfo fi(sFilename);
+	if (fi.exists() && fi.isReadable())
+		return true;
+
+	// Otherwise search for an alternative
+	// under each respective search paths...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return false;
+
+	QStringList paths;
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		paths = pOptions->ladspaPaths;
+		break;
+	case qtractorPluginType::Dssi:
+		paths = pOptions->dssiPaths;
+		break;
+	case qtractorPluginType::Vst:
+		paths = pOptions->vstPaths;
+		break;
+	default:
+		return false;
+	}
+
+	const QString fname = fi.fileName();
+	QStringListIterator iter(paths);
+	while (iter.hasNext()) {
+		fi.setFile(QDir(iter.next()), fname);
+		if (fi.exists() && fi.isReadable()) {
+			sFilename = fi.absoluteFilePath();
+			return true;
+		}
+	}
+
+	// No alternative has been found, sorry.
+	return false;
 }
 
 

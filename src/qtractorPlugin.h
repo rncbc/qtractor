@@ -969,6 +969,12 @@ public:
 	// Whether unique plugin identifiers are in chain.
 	bool isUniqueID(qtractorPluginType *pType) const;
 
+protected:
+
+	// Check/sanitize plugin file-path.
+	bool checkPluginFile(QString& sFilename,
+		qtractorPluginType::Hint typeHint) const;
+
 private:
 
 	// Instance variables.
