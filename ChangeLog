@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Finally added this brand new menu Clip/Cross Fade command,
+  aimed on setting fade-in/out ranges properly, just as far
+  to (auto)cross-fade consecutive overlapping clips.
+
+
 0.7.4  2016-01-28  Tackiest Gluon Beta
 
 - Eye-candy warning: muted/non-soloed tracks are now shaded
