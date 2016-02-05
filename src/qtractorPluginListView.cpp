@@ -209,10 +209,12 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 	QString sText;
 	qtractorPluginType *pType = m_pPlugin->type();
 	if (pType->typeHint() == qtractorPluginType::AuxSend) {
-		qtractorAuxSendPlugin *pAuxSendPlugin
-			= static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
-		if (pAuxSendPlugin)
-			sText = pAuxSendPlugin->audioBusName();
+		if (pType->index() > 0) {
+			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+				= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
+			if (pAudioAuxSendPlugin)
+				sText = pAudioAuxSendPlugin->audioBusName();
+		}
 	}
 
 	QListWidgetItem::setText(sText.isEmpty() ? pType->name() : sText);
@@ -909,15 +911,19 @@ void qtractorPluginListView::insertPluginBus (
 	if (pPlugin == NULL)
 		return;
 
-	if ((pPlugin->type())->typeHint() == qtractorPluginType::Insert) {
-		qtractorInsertPlugin *pInsertPlugin
-			= static_cast<qtractorInsertPlugin *> (pPlugin);
-		if (pInsertPlugin) {
-			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-			if (pMainForm && pMainForm->connections()) {
-				(pMainForm->connections())->showBus(
-					pInsertPlugin->audioBus(),
-					qtractorBus::BusMode(iBusMode));
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType->typeHint() == qtractorPluginType::Insert) {
+		// Might be an audio-insert pseudo-plugin...
+		if (pType->index() > 0) {
+			qtractorAudioInsertPlugin *pAudioInsertPlugin
+				= static_cast<qtractorAudioInsertPlugin *> (pPlugin);
+			if (pAudioInsertPlugin) {
+				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+				if (pMainForm && pMainForm->connections()) {
+					(pMainForm->connections())->showBus(
+						pAudioInsertPlugin->audioBus(),
+						qtractorBus::BusMode(iBusMode));
+				}
 			}
 		}
 	}

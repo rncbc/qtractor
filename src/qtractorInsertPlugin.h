@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -29,7 +29,6 @@
 // Forward declarations.
 class qtractorAudioBus;
 class qtractorInsertPluginParam;
-class qtractorAuxSendPluginParam;
 
 
 //----------------------------------------------------------------------------
@@ -44,9 +43,27 @@ public:
 	qtractorInsertPluginType(unsigned short iChannels)
 		: qtractorPluginType(NULL, iChannels, qtractorPluginType::Insert) {}
 
-	// Destructor.
-	~qtractorInsertPluginType()
-		{ close(); }
+	// Factory method (static)
+	static qtractorPlugin *createPlugin(
+		qtractorPluginList *pList, unsigned short iChannels);
+
+	// Specific named accessors.
+	unsigned short channels() const
+		{ return index(); }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioInsertPluginType -- Audio-insert pseudo-plugin type instance.
+//
+
+class qtractorAudioInsertPluginType : public qtractorInsertPluginType
+{
+public:
+
+	// Constructor.
+	qtractorAudioInsertPluginType(unsigned short iChannels)
+		: qtractorInsertPluginType(iChannels) {}
 
 	// Derived methods.
 	bool open();
@@ -56,34 +73,27 @@ public:
 	// for the given input/output audio channels.
 	unsigned short instances(
 		unsigned short iChannels, bool /*bMidi*/) const
-		{ return (iChannels == m_iAudioOuts ? 1 : 0); }
+		{ return (iChannels == audioOuts() ? 1 : 0); }
 
-	// Factory method (static)
-	static qtractorInsertPluginType *createType(unsigned short iChannels);
-
-	// Specific named accessors.
-	unsigned short channels() const
-		{ return index(); }
-
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorInsertPlugin -- Insert pseudo-plugin instance.
+// qtractorAudioInsertPlugin -- Audio-insert pseudo-plugin instance.
 //
 
-class qtractorInsertPlugin : public qtractorPlugin
+class qtractorAudioInsertPlugin : public qtractorPlugin
 {
 public:
 
 	// Constructors.
-	qtractorInsertPlugin(qtractorPluginList *pList,
+	qtractorAudioInsertPlugin(qtractorPluginList *pList,
 		qtractorInsertPluginType *pInsertType);
 
 	// Destructor.
-	~qtractorInsertPlugin();
+	~qtractorAudioInsertPlugin();
 
 	// Channel/intsance number accessors.
 	void setChannels(unsigned short iChannels);
@@ -162,9 +172,27 @@ public:
 	qtractorAuxSendPluginType(unsigned short iChannels)
 		: qtractorPluginType(NULL, iChannels, qtractorPluginType::AuxSend) {}
 
-	// Destructor.
-	~qtractorAuxSendPluginType()
-		{ close(); }
+	// Factory method (static)
+	static qtractorPlugin *createPlugin(
+		qtractorPluginList *pList, unsigned short iChannels);
+
+	// Specific named accessors.
+	unsigned short channels() const
+		{ return index(); }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioAuxSendPluginType -- Audio aux-send pseudo-plugin type.
+//
+
+class qtractorAudioAuxSendPluginType : public qtractorAuxSendPluginType
+{
+public:
+
+	// Constructor.
+	qtractorAudioAuxSendPluginType(unsigned short iChannels)
+		: qtractorAuxSendPluginType(iChannels) {}
 
 	// Derived methods.
 	bool open();
@@ -174,14 +202,7 @@ public:
 	// for the given input/output audio channels.
 	unsigned short instances(
 		unsigned short iChannels, bool /*bMidi*/) const
-		{ return (iChannels == m_iAudioOuts ? 1 : 0); }
-
-	// Factory method (static)
-	static qtractorAuxSendPluginType *createType(unsigned short iChannels);
-
-	// Specific named accessors.
-	unsigned short channels() const
-		{ return index(); }
+		{ return (iChannels == audioOuts() ? 1 : 0); }
 
 	// Instance cached-deferred accesors.
 	const QString& aboutText();
@@ -189,19 +210,19 @@ public:
 
 
 //----------------------------------------------------------------------------
-// qtractorAuxSendPlugin -- Aux-send pseudo-plugin instance.
+// qtractorAudioAuxSendPlugin -- Audio aux-send pseudo-plugin instance.
 //
 
-class qtractorAuxSendPlugin : public qtractorPlugin
+class qtractorAudioAuxSendPlugin : public qtractorPlugin
 {
 public:
 
 	// Constructors.
-	qtractorAuxSendPlugin(qtractorPluginList *pList,
-		qtractorAuxSendPluginType *pInsertType);
+	qtractorAudioAuxSendPlugin(qtractorPluginList *pList,
+		qtractorAuxSendPluginType *pAuxSendType);
 
 	// Destructor.
-	~qtractorAuxSendPlugin();
+	~qtractorAudioAuxSendPlugin();
 
 	// Channel/intsance number accessors.
 	void setChannels(unsigned short iChannels);

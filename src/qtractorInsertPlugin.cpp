@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -95,7 +95,7 @@ static inline void sse_process_dry_wet (
 		float *pFrames = ppFrames[i];
 		unsigned int nframes = iFrames;
 		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
-			*pBuffer++ += fGain * *pFrames++;	
+			*pBuffer++ += fGain * *pFrames++;
 		for (; nframes >= 4; nframes -= 4) {
 			_mm_store_ps(pBuffer,
 				_mm_add_ps(
@@ -108,7 +108,7 @@ static inline void sse_process_dry_wet (
 			pBuffer += 4;
 		}
 		for (; nframes > 0; --nframes)
-			*pBuffer++ += fGain * *pFrames++;	
+			*pBuffer++ += fGain * *pFrames++;
 	}
 }
 
@@ -141,11 +141,35 @@ static inline void std_process_dry_wet (
 
 
 //----------------------------------------------------------------------------
-// qtractorInsertPluginType -- Insert pseudo-plugin type instance.
+// qtractorInsertPluginType -- Insert pseudo-plugin type impl.
+//
+
+// Factory method (static)
+qtractorPlugin *qtractorInsertPluginType::createPlugin (
+	qtractorPluginList *pList, unsigned short iChannels )
+{
+	// Sanity check...
+	if (iChannels < 1)
+		return NULL;
+
+	// Check whether it's a valid insert pseudo-plugin...
+	qtractorInsertPluginType *pInsertType
+		= new qtractorAudioInsertPluginType(iChannels);
+
+	if (pInsertType->open())
+		return new qtractorAudioInsertPlugin(pList, pInsertType);
+
+	delete pInsertType;
+	return NULL;
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioInsertPluginType -- Audio-insert pseudo-plugin type instance.
 //
 
 // Derived methods.
-bool qtractorInsertPluginType::open (void)
+bool qtractorAudioInsertPluginType::open (void)
 {
 	// Sanity check...
 	const unsigned short iChannels = index();
@@ -153,13 +177,14 @@ bool qtractorInsertPluginType::open (void)
 		return false;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorInsertPluginType[%p]::open() channels=%u",
+	qDebug("qtractorAudioInsertPluginType[%p]::open() channels=%u",
 		this, iChannels);
 #endif
 
 	// Pseudo-plugin type names.
 	m_sName  = "Insert";
 	m_sLabel = m_sName;
+//	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
 	m_iUniqueID = qHash(m_sLabel) ^ qHash(iChannels);
@@ -181,29 +206,16 @@ bool qtractorInsertPluginType::open (void)
 }
 
 
-void qtractorInsertPluginType::close (void)
+void qtractorAudioInsertPluginType::close (void)
 {
 }
 
 
-// Factory method (static)
-qtractorInsertPluginType *qtractorInsertPluginType::createType (
-	unsigned short iChannels )
-{
-	// Sanity check...
-	if (iChannels < 1)
-		return NULL;
-
-	// Yep, most probably its a valid pseu-plugin...
-	return new qtractorInsertPluginType(iChannels);
-}
-
-
-// Instance cached-deferred accesors.
-const QString& qtractorInsertPluginType::aboutText (void)
+// Instance cached-deferred accessors.
+const QString& qtractorAudioInsertPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText += QObject::tr("Insert Send/Return pseudo-plugin.");
+		m_sAboutText += QObject::tr("Audio Insert Send/Return pseudo-plugin.");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
@@ -215,16 +227,16 @@ const QString& qtractorInsertPluginType::aboutText (void)
 
 
 //----------------------------------------------------------------------------
-// qtractorInsertPlugin -- Insert pseudo-plugin instance.
+// qtractorAudioInsertPlugin -- Audio-insert pseudo-plugin instance.
 //
 
 // Constructors.
-qtractorInsertPlugin::qtractorInsertPlugin (
+qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	qtractorPluginList *pList, qtractorInsertPluginType *pInsertType )
 	: qtractorPlugin(pList, pInsertType), m_pAudioBus(NULL)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorInsertPlugin[%p] channels=%u",
+	qDebug("qtractorAudioInsertPlugin[%p] channels=%u",
 		this, pInsertType->channels());
 #endif
 
@@ -264,7 +276,7 @@ qtractorInsertPlugin::qtractorInsertPlugin (
 
 
 // Destructor.
-qtractorInsertPlugin::~qtractorInsertPlugin (void)
+qtractorAudioInsertPlugin::~qtractorAudioInsertPlugin (void)
 {
 	// Cleanup plugin instance...
 	setChannels(0);
@@ -272,7 +284,7 @@ qtractorInsertPlugin::~qtractorInsertPlugin (void)
 
 
 // Channel/instance number accessors.
-void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
+void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 {
 	// Check our type...
 	qtractorPluginType *pType = type();
@@ -315,13 +327,13 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 	}
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorInsertPlugin[%p]::setChannels(%u) instances=%u",
+	qDebug("qtractorAudioInsertPlugin[%p]::setChannels(%u) instances=%u",
 		this, iChannels, iInstances);
 #endif
 
 	// Audio bus name -- it must be unique...
 	const QString& sBusNamePrefix
-		= qtractorSession::sanitize(list()->name() + '/' + pType->name());
+		= qtractorSession::sanitize(list()->name() + ' ' + pType->name());
 
 	int iBusName = 1;
 	QString sBusName = sBusNamePrefix;
@@ -355,19 +367,19 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 
 
 // Do the actual activation.
-void qtractorInsertPlugin::activate (void)
+void qtractorAudioInsertPlugin::activate (void)
 {
 }
 
 
 // Do the actual deactivation.
-void qtractorInsertPlugin::deactivate (void)
+void qtractorAudioInsertPlugin::deactivate (void)
 {
 }
 
 
 // The main plugin processing procedure.
-void qtractorInsertPlugin::process (
+void qtractorAudioInsertPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
 	if (m_pAudioBus == NULL)
@@ -397,7 +409,8 @@ void qtractorInsertPlugin::process (
 
 
 // Pseudo-plugin configuration handlers.
-void qtractorInsertPlugin::configure ( const QString& sKey, const QString& sValue )
+void qtractorAudioInsertPlugin::configure (
+	const QString& sKey, const QString& sValue )
 {
 	if (m_pAudioBus == NULL)
 		return;
@@ -436,10 +449,10 @@ void qtractorInsertPlugin::configure ( const QString& sKey, const QString& sValu
 
 
 // Pseudo-plugin configuration/state snapshot.
-void qtractorInsertPlugin::freezeConfigs (void)
+void qtractorAudioInsertPlugin::freezeConfigs (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorInsertPlugin[%p]::freezeConfigs()",	this);
+	qDebug("qtractorAudioInsertPlugin[%p]::freezeConfigs()",	this);
 #endif
 
 	clearConfigs();
@@ -449,17 +462,17 @@ void qtractorInsertPlugin::freezeConfigs (void)
 }
 
 
-void qtractorInsertPlugin::releaseConfigs (void)
+void qtractorAudioInsertPlugin::releaseConfigs (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorInsertPlugin[%p]::releaseConfigs()", this);
+	qDebug("qtractorAudioInsertPlugin[%p]::releaseConfigs()", this);
 #endif
 
 	clearConfigs();
 }
 
 
-void qtractorInsertPlugin::freezeConfigs ( int iBusMode )
+void qtractorAudioInsertPlugin::freezeConfigs ( int iBusMode )
 {
 	if (m_pAudioBus == NULL)
 		return;
@@ -490,18 +503,42 @@ void qtractorInsertPlugin::freezeConfigs ( int iBusMode )
 
 
 // Audio specific accessor.
-qtractorAudioBus *qtractorInsertPlugin::audioBus (void) const
+qtractorAudioBus *qtractorAudioInsertPlugin::audioBus (void) const
 {
 	return m_pAudioBus;
 }
 
 
 //----------------------------------------------------------------------------
-// qtractorAuxSendPluginType -- Aux-send pseudo-plugin type instance.
+// qtractorAuxSendPluginType -- Aux-send pseudo-plugin impl.
+//
+
+// Factory method (static)
+qtractorPlugin *qtractorAuxSendPluginType::createPlugin (
+	qtractorPluginList *pList, unsigned short iChannels )
+{
+	// Sanity check...
+	if (iChannels < 1)
+		return NULL;
+
+	// Check whether it's a valid aux-send pseudo-plugin...
+	qtractorAuxSendPluginType *pAuxSendType
+		= new qtractorAudioAuxSendPluginType(iChannels);
+
+	if (pAuxSendType->open())
+		return new qtractorAudioAuxSendPlugin(pList, pAuxSendType);
+
+	delete pAuxSendType;
+	return NULL;
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioAuxSendPluginType -- Audio aux-send pseudo-plugin type.
 //
 
 // Derived methods.
-bool qtractorAuxSendPluginType::open (void)
+bool qtractorAudioAuxSendPluginType::open (void)
 {
 	// Sanity check...
 	const unsigned short iChannels = index();
@@ -509,7 +546,7 @@ bool qtractorAuxSendPluginType::open (void)
 		return false;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorAuxSendPluginType[%p]::open() channels=%u",
+	qDebug("qtractorAudioAuxSendPluginType[%p]::open() channels=%u",
 		this, iChannels);
 #endif
 
@@ -538,29 +575,16 @@ bool qtractorAuxSendPluginType::open (void)
 }
 
 
-void qtractorAuxSendPluginType::close (void)
+void qtractorAudioAuxSendPluginType::close (void)
 {
-}
-
-
-// Factory method (static)
-qtractorAuxSendPluginType *qtractorAuxSendPluginType::createType (
-	unsigned short iChannels )
-{
-	// Sanity check...
-	if (iChannels < 1)
-		return NULL;
-
-	// Yep, most probably its a valid pseu-plugin...
-	return new qtractorAuxSendPluginType(iChannels);
 }
 
 
 // Instance cached-deferred accesors.
-const QString& qtractorAuxSendPluginType::aboutText (void)
+const QString& qtractorAudioAuxSendPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText += QObject::tr("Aux Send pseudo-plugin.");
+		m_sAboutText += QObject::tr("Audio Aux Send pseudo-plugin.");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
@@ -572,16 +596,16 @@ const QString& qtractorAuxSendPluginType::aboutText (void)
 
 
 //----------------------------------------------------------------------------
-// qtractorAuxSendPlugin -- Aux-send pseudo-plugin instance.
+// qtractorAudioAuxSendPlugin -- Audio aux-send pseudo-plugin instance.
 //
 
 // Constructors.
-qtractorAuxSendPlugin::qtractorAuxSendPlugin (
+qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	qtractorPluginList *pList, qtractorAuxSendPluginType *pAuxSendType )
 	: qtractorPlugin(pList, pAuxSendType), m_pAudioBus(NULL)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorAuxSendPlugin[%p] channels=%u",
+	qDebug("qtractorAudioAuxSendPlugin[%p] channels=%u",
 		this, pAuxSendType->channels());
 #endif
 
@@ -608,7 +632,7 @@ qtractorAuxSendPlugin::qtractorAuxSendPlugin (
 
 
 // Destructor.
-qtractorAuxSendPlugin::~qtractorAuxSendPlugin (void)
+qtractorAudioAuxSendPlugin::~qtractorAudioAuxSendPlugin (void)
 {
 	// Cleanup plugin instance...
 	setChannels(0);
@@ -616,7 +640,7 @@ qtractorAuxSendPlugin::~qtractorAuxSendPlugin (void)
 
 
 // Channel/instance number accessors.
-void qtractorAuxSendPlugin::setChannels ( unsigned short iChannels )
+void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 {
 	// Check our type...
 	qtractorPluginType *pType = type();
@@ -655,7 +679,7 @@ void qtractorAuxSendPlugin::setChannels ( unsigned short iChannels )
 	}
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorAuxSendPlugin[%p]::setChannels(%u) instances=%u",
+	qDebug("qtractorAudioAuxSendPlugin[%p]::setChannels(%u) instances=%u",
 		this, iChannels, iInstances);
 #endif
 
@@ -689,9 +713,8 @@ void qtractorAuxSendPlugin::setChannels ( unsigned short iChannels )
 }
 
 
-
 // Audio bus specific accessors.
-void qtractorAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
+void qtractorAudioAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
 {
 	if (sAudioBusName.isEmpty())
 		return;
@@ -719,14 +742,14 @@ void qtractorAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
 	updateAudioBusName();
 }
 
-const QString& qtractorAuxSendPlugin::audioBusName (void) const
+const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
 {
 	return m_sAudioBusName;
 }
 
 
 // Audio bus to appear on plugin lists.
-void qtractorAuxSendPlugin::updateAudioBusName (void) const
+void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 {
 	const QString& sText = (m_pAudioBus ? m_sAudioBusName : type()->name());
 	QListIterator<qtractorPluginListItem *> iter(items());
@@ -736,7 +759,7 @@ void qtractorAuxSendPlugin::updateAudioBusName (void) const
 
 
 // The main plugin processing procedure.
-void qtractorAuxSendPlugin::process (
+void qtractorAudioAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
 	if (m_pAudioBus == NULL)
@@ -759,22 +782,22 @@ void qtractorAuxSendPlugin::process (
 
 
 // Do the actual activation.
-void qtractorAuxSendPlugin::activate (void)
+void qtractorAudioAuxSendPlugin::activate (void)
 {
 }
 
 
 // Do the actual deactivation.
-void qtractorAuxSendPlugin::deactivate (void)
+void qtractorAudioAuxSendPlugin::deactivate (void)
 {
 }
 
 
 // Pseudo-plugin configuration handlers.
-void qtractorAuxSendPlugin::configure ( const QString& sKey, const QString& sValue )
+void qtractorAudioAuxSendPlugin::configure ( const QString& sKey, const QString& sValue )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorAuxSendPlugin[%p]::configure()", this);
+	qDebug("qtractorAudioAuxSendPlugin[%p]::configure()", this);
 #endif
 
 	if (sKey == "audioBusName")
@@ -783,10 +806,10 @@ void qtractorAuxSendPlugin::configure ( const QString& sKey, const QString& sVal
 
 
 // Pseudo-plugin configuration/state snapshot.
-void qtractorAuxSendPlugin::freezeConfigs (void)
+void qtractorAudioAuxSendPlugin::freezeConfigs (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorAuxSendPlugin[%p]::freezeConfigs()", this);
+	qDebug("qtractorAudioAuxSendPlugin[%p]::freezeConfigs()", this);
 #endif
 
 	clearConfigs();
@@ -795,10 +818,10 @@ void qtractorAuxSendPlugin::freezeConfigs (void)
 }
 
 
-void qtractorAuxSendPlugin::releaseConfigs (void)
+void qtractorAudioAuxSendPlugin::releaseConfigs (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorAuxSendPlugin[%p]::releaseConfigs()", this);
+	qDebug("qtractorAudioAuxSendPlugin[%p]::releaseConfigs()", this);
 #endif
 
 	clearConfigs();

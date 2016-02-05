@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -188,8 +188,8 @@ bool qtractorAddAuxSendPluginCommand::undo (void)
 
 // Constructor.
 qtractorAuxSendPluginCommand::qtractorAuxSendPluginCommand (
-	qtractorAuxSendPlugin *pAuxSendPlugin, const QString& sAudioBusName )
-	: qtractorPluginCommand(QObject::tr("aux-send bus"), pAuxSendPlugin),
+	qtractorPlugin *pPlugin, const QString& sAudioBusName )
+	: qtractorPluginCommand(QObject::tr("aux-send bus"), pPlugin),
 		m_sAudioBusName(sAudioBusName)
 {
 }
@@ -198,16 +198,23 @@ qtractorAuxSendPluginCommand::qtractorAuxSendPluginCommand (
 // Plugin insertion command methods.
 bool qtractorAuxSendPluginCommand::redo (void)
 {
-	qtractorAuxSendPlugin *pAuxSendPlugin
-		= static_cast<qtractorAuxSendPlugin *> (plugins().first());
-	if (pAuxSendPlugin == NULL)
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == NULL)
 		return false;
 
-	const QString sAudioBusName = pAuxSendPlugin->audioBusName();
-	pAuxSendPlugin->setAudioBusName(m_sAudioBusName);
+	if ((pPlugin->type())->index() < 1)
+		return false;
+
+	qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+		= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+	if (pAudioAuxSendPlugin == NULL)
+		return false;
+
+	const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
+	pAudioAuxSendPlugin->setAudioBusName(m_sAudioBusName);
 	m_sAudioBusName = sAudioBusName;
 
-	pAuxSendPlugin->updateFormAudioBusName();
+	pAudioAuxSendPlugin->updateFormAudioBusName();
 
 	return true;
 }
