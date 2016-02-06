@@ -1524,6 +1524,18 @@ void qtractorMidiEngine::shutOffAllTracks (void) const
 }
 
 
+// ALSA port input registry methods.
+void qtractorMidiEngine::addInputBus ( qtractorMidiBus *pMidiBus )
+{
+	m_inputBuses.insert(pMidiBus->alsaPort(), pMidiBus);
+}
+
+void qtractorMidiEngine::removeInputBus ( qtractorMidiBus *pMidiBus )
+{
+	m_inputBuses.remove(pMidiBus->alsaPort());
+}
+
+
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -1809,37 +1821,34 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		}
 	}
 
-	// Bus monitoring...
-	for (qtractorBus *pBus = buses().first(); pBus; pBus = pBus->next()) {
-		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pBus);
-		if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
-			// Input monitoring...
-			if (pMidiBus->midiMonitor_in())
-				pMidiBus->midiMonitor_in()->enqueue(type, value);
-			// Do it for the MIDI input plugins too...
-			if (pMidiBus->pluginList_in()) {
-				pMidiManager = (pMidiBus->pluginList_in())->midiManager();
+	// MIDI Bus monitoring...
+	qtractorMidiBus *pMidiBus = m_inputBuses.value(iAlsaPort, NULL);
+	if (pMidiBus) {
+		// Input monitoring...
+		if (pMidiBus->midiMonitor_in())
+			pMidiBus->midiMonitor_in()->enqueue(type, value);
+		// Do it for the MIDI input plugins too...
+		if (pMidiBus->pluginList_in()) {
+			pMidiManager = (pMidiBus->pluginList_in())->midiManager();
+			if (pMidiManager)
+				pMidiManager->queued(pEv, t1, t2);
+		}
+		// Output monitoring on passthru...
+		if (pMidiBus->isMonitor()) {
+			// Do it for the MIDI output plugins too...
+			if (pMidiBus->pluginList_out()) {
+				pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 				if (pMidiManager)
 					pMidiManager->queued(pEv, t1, t2);
 			}
-			// Output monitoring on passthru...
-			if (pMidiBus->isMonitor()) {
-				// Do it for the MIDI output plugins too...
-				if (pMidiBus->pluginList_out()) {
-					pMidiManager = (pMidiBus->pluginList_out())->midiManager();
-					if (pMidiManager)
-						pMidiManager->queued(pEv, t1, t2);
-				}
-				if (pMidiBus->midiMonitor_out()) {
-					// MIDI-thru: same event redirected...
-					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
-					snd_seq_ev_set_subs(pEv);
-					snd_seq_ev_set_direct(pEv);
-					snd_seq_event_output_direct(m_pAlsaSeq, pEv);
-					// Done with MIDI-thru.
-					pMidiBus->midiMonitor_out()->enqueue(type, value);
-				}
+			if (pMidiBus->midiMonitor_out()) {
+				// MIDI-thru: same event redirected...
+				snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
+				snd_seq_ev_set_subs(pEv);
+				snd_seq_ev_set_direct(pEv);
+				snd_seq_event_output_direct(m_pAlsaSeq, pEv);
+				// Done with MIDI-thru.
+				pMidiBus->midiMonitor_out()->enqueue(type, value);
 			}
 		}
 	}
@@ -3802,6 +3811,10 @@ bool qtractorMidiBus::open (void)
 	if (m_pOPluginList)
 		updatePluginList(m_pOPluginList, qtractorPluginList::MidiOutBus);
 
+	// Finally add this to the elligible input registry...
+	if (m_pIMidiMonitor)
+		pMidiEngine->addInputBus(this);
+
 	// Done.
 	return true;
 }
@@ -3818,6 +3831,9 @@ void qtractorMidiBus::close (void)
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
 	if (pAlsaSeq == NULL)
 		return;
+
+	if (m_pIMidiMonitor)
+		pMidiEngine->removeInputBus(this);
 
 	shutOff(true);
 
