@@ -273,8 +273,6 @@ public:
 #endif
 
 #ifdef CONFIG_LV2_STATE
-	void loadDefaultState();
-
 	// LV2 State extension data interface accessor.
 	const LV2_State_Interface *lv2_state_interface(unsigned short iInstance) const;
 
@@ -282,6 +280,9 @@ public:
 		uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags);
 	const void *lv2_state_retrieve(
 		uint32_t key, size_t *size, uint32_t *type, uint32_t *flags);
+
+	// Load default plugin state.
+	void lv2_state_load_default();
 
 #endif
 
@@ -484,7 +485,7 @@ private:
 #ifdef CONFIG_LV2_STATE
 	QHash<QString, QByteArray> m_lv2_state_configs;
 	QHash<QString, uint32_t>   m_lv2_state_ctypes;
-	LV2_Feature                m_lv2_state_load_default_state_feature;
+	LV2_Feature                m_lv2_state_load_default_feature;
 #endif
 
 #ifdef CONFIG_LV2_STATE_FILES

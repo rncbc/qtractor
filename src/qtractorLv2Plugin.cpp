@@ -904,7 +904,7 @@ static LilvNode *g_lv2_worker_schedule_hint = NULL;
 
 #ifdef CONFIG_LV2_STATE
 static LilvNode *g_lv2_state_interface_hint = NULL;
-static LilvNode *g_lv2_state_load_default_state_hint = NULL;
+static LilvNode *g_lv2_state_load_default_hint = NULL;
 #endif
 
 // Supported port properties (hints).
@@ -1563,7 +1563,7 @@ void qtractorLv2PluginType::lv2_open (void)
 	// LV2 State: set up supported interface and types...
 	g_lv2_state_interface_hint = lilv_new_uri(g_lv2_world,
 		LV2_STATE__interface);
-	g_lv2_state_load_default_state_hint = lilv_new_uri(g_lv2_world,
+	g_lv2_state_load_default_hint = lilv_new_uri(g_lv2_world,
 		LV2_STATE__loadDefaultState);
 #endif
 
@@ -1916,11 +1916,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 
 #ifdef CONFIG_LV2_STATE
 
-	m_lv2_state_load_default_state_feature.URI = LV2_STATE__loadDefaultState;
-	m_lv2_state_load_default_state_feature.data = NULL;
-	m_lv2_features[iFeatures++] = &m_lv2_state_load_default_state_feature;
+	m_lv2_state_load_default_feature.URI = LV2_STATE__loadDefaultState;
+	m_lv2_state_load_default_feature.data = NULL;
+	m_lv2_features[iFeatures++] = &m_lv2_state_load_default_feature;
 
-#endif	// CONFIG_LV2_STATE_MAKE_PATH
+#endif	// CONFIG_LV2_STATE
 
 #ifdef CONFIG_LV2_STATE_FILES
 
@@ -2446,9 +2446,9 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	}
 
 #ifdef CONFIG_LV2_STATE
-	// load default state as needed...
-	if (lilv_plugin_has_feature(lv2_plugin(), g_lv2_state_load_default_state_hint))
-		loadDefaultState();
+	// Load default state as needed...
+	if (lilv_plugin_has_feature(lv2_plugin(), g_lv2_state_load_default_hint))
+		lv2_state_load_default();
 #endif
 
 	// (Re)issue all configuration as needed...
@@ -3723,14 +3723,14 @@ const LV2_Worker_Interface *qtractorLv2Plugin::lv2_worker_interface (
 #ifdef CONFIG_LV2_STATE
 
 // Load default plugin state
-void qtractorLv2Plugin::loadDefaultState ()
+void qtractorLv2Plugin::lv2_state_load_default (void)
 {
 	const LilvNode *default_state = lilv_plugin_get_uri(lv2_plugin());
 	if (default_state == NULL)
 		return;
 
 	LilvState *state = lilv_state_new_from_world(g_lv2_world,
-			&g_lv2_urid_map, default_state);
+		&g_lv2_urid_map, default_state);
 	if (state == NULL)
 		return;
 
@@ -3742,6 +3742,7 @@ void qtractorLv2Plugin::loadDefaultState ()
 
 	lilv_state_free(state);
 }
+
 
 // LV2 State extension data descriptor accessor.
 const LV2_State_Interface *qtractorLv2Plugin::lv2_state_interface (
