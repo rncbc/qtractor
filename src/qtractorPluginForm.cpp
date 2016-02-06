@@ -255,6 +255,15 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Show insert tool options...
 	const bool bInsertPlugin = (pType->typeHint() == qtractorPluginType::Insert);
+	if (bInsertPlugin) {
+		if (pType->index() > 0) {
+			m_ui.SendsToolButton->setIcon(QIcon(":/images/itemAudioPortOut.png"));
+			m_ui.ReturnsToolButton->setIcon(QIcon(":/images/itemAudioPortIn.png"));
+		} else {
+			m_ui.SendsToolButton->setIcon(QIcon(":/images/itemMidiPortOut.png"));
+			m_ui.ReturnsToolButton->setIcon(QIcon(":/images/itemMidiPortIn.png"));
+		}
+	}
 	m_ui.SendsToolButton->setVisible(bInsertPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 

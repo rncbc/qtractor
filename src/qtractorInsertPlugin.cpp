@@ -706,12 +706,11 @@ void qtractorMidiInsertPlugin::deactivate (void)
 
 // The main plugin processing procedure.
 void qtractorMidiInsertPlugin::process (
-	float **/*ppIBuffer*/, float **/*ppOBuffer*/, unsigned int /*nframes*/ )
+	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
-	if (m_pMidiBus == NULL)
-		return;
-
-//	TODO: m_pMidiBus->process() ...
+	const unsigned short iChannels = channels();
+	for (unsigned short i = 0; i < iChannels; ++i)
+		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
 }
 
 
@@ -1357,12 +1356,11 @@ void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 
 // The main plugin processing procedure.
 void qtractorMidiAuxSendPlugin::process (
-	float **/*ppIBuffer*/, float **/*ppOBuffer*/, unsigned int /*nframes*/ )
+	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
-	if (m_pMidiBus == NULL)
-		return;
-
-//	TODO: m_pMidiBus->process() ...
+	const unsigned short iChannels = channels();
+	for (unsigned short i = 0; i < iChannels; ++i)
+		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
 }
 
 

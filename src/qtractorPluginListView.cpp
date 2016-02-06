@@ -522,74 +522,6 @@ void qtractorPluginListView::addPlugin (void)
 }
 
 
-// Add an insert pseudo-plugin slot.
-void qtractorPluginListView::addInsertPlugin (void)
-{
-	if (m_pPluginList == NULL)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	// Tell the world we'll take some time...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-	// Create our special pseudo-plugin type...
-	qtractorPlugin *pPlugin
-		= qtractorPluginFile::createPlugin(m_pPluginList,
-			QString(), // Empty filename!
-			m_pPluginList->channels(),
-			qtractorPluginType::Insert);
-
-	if (pPlugin) {
-		// Show the plugin form right away...
-		pPlugin->openForm();
-		// Make it a undoable command...
-		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
-	}
-
-	// We're formerly done.
-	QApplication::restoreOverrideCursor();
-
-	emit contentsChanged();
-}
-
-
-// Add an insert pseudo-plugin slot.
-void qtractorPluginListView::addAuxSendPlugin (void)
-{
-	if (m_pPluginList == NULL)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	// Tell the world we'll take some time...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-	// Create our special pseudo-plugin type...
-	qtractorPlugin *pPlugin
-		= qtractorPluginFile::createPlugin(m_pPluginList,
-			QString(), // Empty filename!
-			m_pPluginList->channels(),
-			qtractorPluginType::AuxSend);
-
-	if (pPlugin) {
-		// Show the plugin form right away...
-		pPlugin->openForm();
-		// Make it a undoable command...
-		pSession->execute(new qtractorAddAuxSendPluginCommand(pPlugin));
-	}
-
-	// We're formerly done.
-	QApplication::restoreOverrideCursor();
-
-	emit contentsChanged();
-}
-
-
 // Remove an existing plugin slot.
 void qtractorPluginListView::removePlugin (void)
 {
@@ -881,7 +813,133 @@ void qtractorPluginListView::editPlugin (void)
 }
 
 
-// Insert specific slots.
+// Add an audio-insert pseudo-plugin slot.
+void qtractorPluginListView::addAudioInsertPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorInsertPluginType::createPlugin(
+			m_pPluginList, m_pPluginList->channels());
+
+	if (pPlugin) {
+		// Show the plugin form right away...
+		pPlugin->openForm();
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
+	}
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
+// Add an audio-insert pseudo-plugin slot.
+void qtractorPluginListView::addAudioAuxSendPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorAuxSendPluginType::createPlugin(
+			m_pPluginList, m_pPluginList->channels());
+
+	if (pPlugin) {
+		// Show the plugin form right away...
+		pPlugin->openForm();
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddAuxSendPluginCommand(pPlugin));
+	}
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
+// Add a MIDI-insert pseudo-plugin slot.
+void qtractorPluginListView::addMidiInsertPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorInsertPluginType::createPlugin(m_pPluginList, 0); // MIDI!
+
+	if (pPlugin) {
+		// Show the plugin form right away...
+		pPlugin->openForm();
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
+	}
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
+// Add a MIDI-insert pseudo-plugin slot.
+void qtractorPluginListView::addMidiAuxSendPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorAuxSendPluginType::createPlugin(m_pPluginList, 0); // MIDI!
+
+	if (pPlugin) {
+		// Show the plugin form right away...
+		pPlugin->openForm();
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddAuxSendPluginCommand(pPlugin));
+	}
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
+// Send/return insert specific slots.
 void qtractorPluginListView::insertPluginOutputs (void)
 {
 	insertPluginBus(qtractorBus::Output);
@@ -1469,28 +1527,55 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("&Add Plugin..."), this, SLOT(addPlugin()));
 //	pAction->setEnabled(true);
 
-	QMenu *pInsertMenu = menu.addMenu(tr("&Inserts"));
-	pAction = pInsertMenu->addAction(
+	QMenu *pInsertsMenu = menu.addMenu(tr("&Inserts"));
+
+	QMenu *pAudioInsertsMenu = pInsertsMenu->addMenu(
+		QIcon(":/images/trackAudio.png"), tr("&Audio"));
+	pAudioInsertsMenu->setEnabled(m_pPluginList->channels() > 0);
+	pAction = pAudioInsertsMenu->addAction(
 		QIcon(":/images/formAdd.png"),
-		tr("Add &Insert"), this, SLOT(addInsertPlugin()));
-	pAction->setEnabled(m_pPluginList->channels() > 0);
-	pAction = pInsertMenu->addAction(
+		tr("Add &Insert"), this, SLOT(addAudioInsertPlugin()));
+	pAction = pAudioInsertsMenu->addAction(
 		QIcon(":/images/formAdd.png"),
-		tr("Add &Aux Send"), this, SLOT(addAuxSendPlugin()));
-	pAction->setEnabled(m_pPluginList->channels() > 0
-		&& (m_pPluginList->flags() != qtractorPluginList::AudioOutBus));
-	pInsertMenu->addSeparator();
-	const bool bInsertEnabled
-		= (pType && pType->typeHint() == qtractorPluginType::Insert);
-	pAction = pInsertMenu->addAction(
+		tr("Add &Aux Send"), this, SLOT(addAudioAuxSendPlugin()));
+	pAction->setEnabled(
+		m_pPluginList->flags() != qtractorPluginList::AudioOutBus);
+	pAudioInsertsMenu->addSeparator();
+	const bool bAudioInsertPlugin = (pType
+		&& pType->typeHint() == qtractorPluginType::Insert
+		&& pType->index() > 0);
+	pAction = pAudioInsertsMenu->addAction(
 		QIcon(":/images/itemAudioPortOut.png"),
 		tr("&Sends"), this, SLOT(insertPluginOutputs()));
-	pAction->setEnabled(bInsertEnabled);
-	pAction = pInsertMenu->addAction(
+	pAction->setEnabled(bAudioInsertPlugin);
+	pAction = pAudioInsertsMenu->addAction(
 		QIcon(":/images/itemAudioPortIn.png"),
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
-	pAction->setEnabled(bInsertEnabled);
+	pAction->setEnabled(bAudioInsertPlugin);
 
+	QMenu *pMidiInsertsMenu = pInsertsMenu->addMenu(
+		QIcon(":/images/trackMidi.png"), tr("&MIDI"));
+	pMidiInsertsMenu->setEnabled(m_pPluginList->isMidi());
+	pAction = pMidiInsertsMenu->addAction(
+		QIcon(":/images/formAdd.png"),
+		tr("Add &Insert"), this, SLOT(addMidiInsertPlugin()));
+	pAction = pMidiInsertsMenu->addAction(
+		QIcon(":/images/formAdd.png"),
+		tr("Add &Aux Send"), this, SLOT(addMidiAuxSendPlugin()));
+	pAction->setEnabled(
+		m_pPluginList->flags() != qtractorPluginList::MidiOutBus);
+	pMidiInsertsMenu->addSeparator();
+	const bool bMidiInsertPlugin = (pType
+		&& pType->typeHint() == qtractorPluginType::Insert
+		&& pType->index() == 0);
+	pAction = pMidiInsertsMenu->addAction(
+		QIcon(":/images/itemMidiPortOut.png"),
+		tr("&Sends"), this, SLOT(insertPluginOutputs()));
+	pAction->setEnabled(bMidiInsertPlugin);
+	pAction = pMidiInsertsMenu->addAction(
+		QIcon(":/images/itemMidiPortIn.png"),
+		tr("&Returns"), this, SLOT(insertPluginInputs()));
+	pAction->setEnabled(bMidiInsertPlugin);
 	menu.addSeparator();
 
 	pAction = menu.addAction(
