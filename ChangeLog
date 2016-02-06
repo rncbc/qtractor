@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Implement LV2_STATE__loadDefaultState feature (after pull
+  request by Hanspeter Portner aka. ventosus, thanks).
+
 - Plugi-ins search paths internal logic has been refactored;
   an alternative file-name based search is now in effect for
   LADSPA, DSSI and VST plug-ins, whenever not found on their
