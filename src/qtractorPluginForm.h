@@ -63,7 +63,7 @@ public:
 
 	void updateActivated();
 	void updateParamValue(unsigned long iIndex);
-	void updateAudioBusName();
+	void updateAuxSendBusName();
 
 	void toggleEditor(bool bOn);
 
@@ -85,8 +85,8 @@ protected slots:
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
 
-	void changeAudioBusNameSlot(const QString& sAudioBusName);
-	void clickAudioBusNameSlot();
+	void changeAuxSendBusNameSlot(const QString& sAuxSendBusName);
+	void clickAuxSendBusNameSlot();
 
 	void updateDirectAccessParamSlot();
 	void changeDirectAccessParamSlot();

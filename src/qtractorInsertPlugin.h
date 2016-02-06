@@ -28,6 +28,8 @@
 
 // Forward declarations.
 class qtractorAudioBus;
+class qtractorMidiBus;
+
 class qtractorInsertPluginParam;
 
 
@@ -74,6 +76,32 @@ public:
 	unsigned short instances(
 		unsigned short iChannels, bool /*bMidi*/) const
 		{ return (iChannels == audioOuts() ? 1 : 0); }
+
+	// Instance cached-deferred accessors.
+	const QString& aboutText();
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiInsertPluginType -- MIDI-insert pseudo-plugin type instance.
+//
+
+class qtractorMidiInsertPluginType : public qtractorInsertPluginType
+{
+public:
+
+	// Constructor.
+	qtractorMidiInsertPluginType()
+		: qtractorInsertPluginType(0) {}
+
+	// Derived methods.
+	bool open();
+	void close();
+
+	// Compute the number of instances needed.
+	unsigned short instances(
+		unsigned short /*iChannels*/, bool bMidi) const
+		{ return (bMidi ? 1 : 0); }
 
 	// Instance cached-deferred accessors.
 	const QString& aboutText();
@@ -133,6 +161,55 @@ private:
 		unsigned short, float);
 	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
 		unsigned short, float);
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiInsertPlugin -- MIDI-insert pseudo-plugin instance.
+//
+
+class qtractorMidiInsertPlugin : public qtractorPlugin
+{
+public:
+
+	// Constructors.
+	qtractorMidiInsertPlugin(qtractorPluginList *pList,
+		qtractorInsertPluginType *pInsertType);
+
+	// Destructor.
+	~qtractorMidiInsertPlugin();
+
+	// Channel/intsance number accessors.
+	void setChannels(unsigned short iChannels);
+
+	// Do the actual (de)activation.
+	void activate();
+	void deactivate();
+
+	// The main plugin processing procedure.
+	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
+
+	// Plugin configuration handlers.
+	void configure(const QString& sKey, const QString& sValue);
+
+	// Plugin configuration/state snapshot.
+	void freezeConfigs();
+	void releaseConfigs();
+
+	// Audio specific accessor.
+	qtractorMidiBus *midiBus() const;
+
+protected:
+
+	// Plugin configuration (connections).
+	void freezeConfigs(int iBusMode);
+
+private:
+
+	// Instance variables.
+	qtractorMidiBus *m_pMidiBus;
+
+	qtractorInsertPluginParam *m_pSendVolumeParam;
 };
 
 
@@ -210,6 +287,33 @@ public:
 
 
 //----------------------------------------------------------------------------
+// qtractorMidiAuxSendPluginType -- MIDI Aux-send pseudo-plugin type.
+//
+
+class qtractorMidiAuxSendPluginType : public qtractorAuxSendPluginType
+{
+public:
+
+	// Constructor.
+	qtractorMidiAuxSendPluginType()
+		: qtractorAuxSendPluginType(0) {}
+
+	// Derived methods.
+	bool open();
+	void close();
+
+	// Compute the number of instances needed
+	// for the given input/output audio channels.
+	unsigned short instances(
+		unsigned short /*iChannels*/, bool bMidi) const
+		{ return (bMidi ? 1 : 0); }
+
+	// Instance cached-deferred accesors.
+	const QString& aboutText();
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorAudioAuxSendPlugin -- Audio aux-send pseudo-plugin instance.
 //
 
@@ -261,6 +365,57 @@ private:
 	// Custom optimized processors.
 	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
 		unsigned short, float);
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiAuxSendPlugin -- MIDI aux-send pseudo-plugin instance.
+//
+
+class qtractorMidiAuxSendPlugin : public qtractorPlugin
+{
+public:
+
+	// Constructors.
+	qtractorMidiAuxSendPlugin(qtractorPluginList *pList,
+		qtractorAuxSendPluginType *pAuxSendType);
+
+	// Destructor.
+	~qtractorMidiAuxSendPlugin();
+
+	// Channel/intsance number accessors.
+	void setChannels(unsigned short iChannels);
+
+	// The main plugin processing procedure.
+	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
+
+	// Plugin configuration handlers.
+	void configure(const QString& sKey, const QString& sValue);
+
+	// Plugin configuration/state snapshot.
+	void freezeConfigs();
+	void releaseConfigs();
+
+	// Audio bus specific accessors.
+	void setMidiBusName(const QString& sMidiBusName);
+	const QString& midiBusName() const;
+
+	// Audio bus to appear on plugin lists.
+	void updateMidiBusName() const;
+
+protected:
+
+	// Do the actual (de)activation.
+	void activate();
+	void deactivate();
+
+private:
+
+	// Instance variables.
+	qtractorMidiBus *m_pMidiBus;
+	QString          m_sMidiBusName;
+
+	qtractorInsertPluginParam *m_pSendVolumeParam;
 };
 
 

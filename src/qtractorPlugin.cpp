@@ -967,10 +967,10 @@ void qtractorPlugin::updateFormParamValue ( unsigned long iIndex )
 }
 
 
-void qtractorPlugin::updateFormAudioBusName (void)
+void qtractorPlugin::updateFormAuxSendBusName (void)
 {
 	if (m_pForm && m_pForm->isVisible())
-		m_pForm->updateAudioBusName();
+		m_pForm->updateAuxSendBusName();
 }
 
 

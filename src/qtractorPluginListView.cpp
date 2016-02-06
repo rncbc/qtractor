@@ -32,6 +32,7 @@
 #include "qtractorMainForm.h"
 
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 #include "qtractorMidiBuffer.h"
 #include "qtractorConnections.h"
 
@@ -913,17 +914,25 @@ void qtractorPluginListView::insertPluginBus (
 
 	qtractorPluginType *pType = pPlugin->type();
 	if (pType->typeHint() == qtractorPluginType::Insert) {
-		// Might be an audio-insert pseudo-plugin...
+		// Might be either an audio or MIDI insert pseudo-plugin...
+		qtractorBus *pInsertPluginBus = NULL;
 		if (pType->index() > 0) {
 			qtractorAudioInsertPlugin *pAudioInsertPlugin
 				= static_cast<qtractorAudioInsertPlugin *> (pPlugin);
-			if (pAudioInsertPlugin) {
-				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-				if (pMainForm && pMainForm->connections()) {
-					(pMainForm->connections())->showBus(
-						pAudioInsertPlugin->audioBus(),
-						qtractorBus::BusMode(iBusMode));
-				}
+			if (pAudioInsertPlugin)
+				pInsertPluginBus = pAudioInsertPlugin->audioBus();
+		} else {
+			qtractorMidiInsertPlugin *pMidiInsertPlugin
+				= static_cast<qtractorMidiInsertPlugin *> (pPlugin);
+			if (pMidiInsertPlugin)
+				pInsertPluginBus = pMidiInsertPlugin->midiBus();
+		}
+		// Show insert bus connections...
+		if (pInsertPluginBus) {
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm && pMainForm->connections()) {
+				(pMainForm->connections())->showBus(
+					pInsertPluginBus, qtractorBus::BusMode(iBusMode));
 			}
 		}
 	}

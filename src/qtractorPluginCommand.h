@@ -131,8 +131,8 @@ class qtractorAuxSendPluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorAuxSendPluginCommand(qtractorPlugin *pPlugin,
-		const QString& sAudioBusName);
+	qtractorAuxSendPluginCommand(
+		qtractorPlugin *pPlugin, const QString& sAuxSendBusName);
 
 	// Plugin insertion command methods.
 	bool redo();
@@ -141,7 +141,7 @@ public:
 private:
 
 	// Instance variables.
-	QString m_sAudioBusName;
+	QString m_sAuxSendBusName;
 };
 
 

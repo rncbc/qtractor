@@ -188,9 +188,9 @@ bool qtractorAddAuxSendPluginCommand::undo (void)
 
 // Constructor.
 qtractorAuxSendPluginCommand::qtractorAuxSendPluginCommand (
-	qtractorPlugin *pPlugin, const QString& sAudioBusName )
+	qtractorPlugin *pPlugin, const QString& sAuxSendBusName )
 	: qtractorPluginCommand(QObject::tr("aux-send bus"), pPlugin),
-		m_sAudioBusName(sAudioBusName)
+		m_sAuxSendBusName(sAuxSendBusName)
 {
 }
 
@@ -202,19 +202,25 @@ bool qtractorAuxSendPluginCommand::redo (void)
 	if (pPlugin == NULL)
 		return false;
 
-	if ((pPlugin->type())->index() < 1)
-		return false;
-
-	qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
-		= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
-	if (pAudioAuxSendPlugin == NULL)
-		return false;
-
-	const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
-	pAudioAuxSendPlugin->setAudioBusName(m_sAudioBusName);
-	m_sAudioBusName = sAudioBusName;
-
-	pAudioAuxSendPlugin->updateFormAudioBusName();
+	if ((pPlugin->type())->index() > 0) {
+		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+			= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+		if (pAudioAuxSendPlugin == NULL)
+			return false;
+		const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
+		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName);
+		m_sAuxSendBusName = sAudioBusName;
+		pAudioAuxSendPlugin->updateFormAuxSendBusName();
+	} else {
+		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
+		if (pMidiAuxSendPlugin == NULL)
+			return false;
+		const QString sMidiBusName = pMidiAuxSendPlugin->midiBusName();
+		pMidiAuxSendPlugin->setMidiBusName(m_sAuxSendBusName);
+		m_sAuxSendBusName = sMidiBusName;
+		pMidiAuxSendPlugin->updateFormAuxSendBusName();
+	}
 
 	return true;
 }

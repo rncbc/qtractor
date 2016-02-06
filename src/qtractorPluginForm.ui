@@ -271,17 +271,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="AudioBusNameLabel">
+      <widget class="QLabel" name="AuxSendBusNameLabel">
        <property name="text">
         <string>Aux Send Bus:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="AudioBusNameComboBox"/>
+      <widget class="QComboBox" name="AuxSendBusNameComboBox"/>
      </item>
      <item>
-      <widget class="QToolButton" name="AudioBusNameToolButton">
+      <widget class="QToolButton" name="AuxSendBusNameToolButton">
        <property name="minimumSize">
         <size>
          <width>22</width>
@@ -359,8 +359,8 @@
   <tabstop>ActivateToolButton</tabstop>
   <tabstop>SendsToolButton</tabstop>
   <tabstop>ReturnsToolButton</tabstop>
-  <tabstop>AudioBusNameComboBox</tabstop>
-  <tabstop>AudioBusNameToolButton</tabstop>
+  <tabstop>AuxSendBusNameComboBox</tabstop>
+  <tabstop>AuxSendBusNameToolButton</tabstop>
   <tabstop>DirectAccessParamPushButton</tabstop>
  </tabstops>
  <resources>
