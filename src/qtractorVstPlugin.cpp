@@ -27,7 +27,7 @@
 
 #include "qtractorPluginForm.h"
 
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 #include "qtractorSession.h"
 
 #ifdef QTRACTOR_VST_EDITOR_TOOL

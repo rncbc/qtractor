@@ -33,7 +33,7 @@
 
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 #include "qtractorConnections.h"
 
 #include "qtractorInsertPlugin.h"

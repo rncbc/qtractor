@@ -56,7 +56,7 @@
 #include "qtractorMidiMeter.h"
 
 #include "qtractorMidiMonitor.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 
 #include "qtractorActionControl.h"
 

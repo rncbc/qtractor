@@ -33,7 +33,7 @@
 
 #include "qtractorMidiSequence.h"
 #include "qtractorMidiClip.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 #include "qtractorMidiControl.h"
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiSysex.h"

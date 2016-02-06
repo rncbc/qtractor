@@ -26,7 +26,7 @@
 #include "qtractorPluginForm.h"
 
 #include "qtractorAudioEngine.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 
 #include "qtractorOptions.h"
 #include "qtractorMainForm.h"

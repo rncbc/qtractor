@@ -28,7 +28,7 @@
 #include "qtractorInsertPlugin.h"
 
 #include "qtractorSession.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
