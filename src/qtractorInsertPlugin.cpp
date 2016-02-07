@@ -27,7 +27,8 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
+#include "qtractorMidiMonitor.h"
 
 #include "qtractorPluginListView.h"
 
@@ -380,7 +381,7 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	const bool bActivated = isActivated();
 	setActivated(false);
 
-	// TODO: Cleanup bus...
+	// Cleanup bus...
 	if (m_pAudioBus) {
 		pAudioEngine->removeBusEx(m_pAudioBus);
 		m_pAudioBus->close();
@@ -721,12 +722,20 @@ void qtractorMidiInsertPlugin::deactivate (void)
 void qtractorMidiInsertPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
-#ifdef CONFIG_DEBUG
-	// TODO: Merge buffered input events
-	// with list()->midiManager()->events()...
-	if (m_pMidiBuffer) {
-		snd_seq_event_t *pEv = m_pMidiBuffer->peek();
-		while (pEv) {
+	if (m_pMidiBuffer == NULL)
+		return;
+
+	qtractorMidiManager *pMidiManager = list()->midiManager();
+	if (pMidiManager) {
+		// Merge buffered input events...
+		pMidiManager->processInsertBuffer(m_pMidiBuffer);
+		// TODO: Enqueue merged events into sends/output bus...
+		// ...
+	#ifdef CONFIG_DEBUG
+		snd_seq_event_t *pEventBuffer = pMidiManager->events();
+		const unsigned int iEventCount = pMidiManager->count();
+		for (unsigned int i = 0; i < iEventCount; ++i) {
+			snd_seq_event_t *pEv = &pEventBuffer[i];
 			// - show event for debug purposes...
 			const unsigned long iTime = pEv->time.tick;
 			fprintf(stderr, "MIDI Ins %06lu 0x%02x", iTime, pEv->type);
@@ -741,10 +750,11 @@ void qtractorMidiInsertPlugin::process (
 					fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
 				fprintf(stderr, "\n");
 			}
-			pEv = m_pMidiBuffer->next();
 		}
+	#endif
+		// Done. Swap input/outbut buffers...
+		pMidiManager->swapEventBuffers();
 	}
-#endif
 
 	const unsigned short iChannels = channels();
 	for (unsigned short i = 0; i < iChannels; ++i)
@@ -1083,7 +1093,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	const bool bActivated = isActivated();
 	setActivated(false);
 
-	// TODO: Cleanup bus...
+	// Cleanup bus...
 	if (m_pAudioBus)
 		m_pAudioBus = NULL;
 
@@ -1306,7 +1316,7 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 	const bool bActivated = isActivated();
 	setActivated(false);
 
-	// TODO: Cleanup bus...
+	// Cleanup bus...
 	if (m_pMidiBus)
 		m_pMidiBus = NULL;
 
@@ -1401,6 +1411,36 @@ void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 void qtractorMidiAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+	qtractorMidiManager *pMidiManager = list()->midiManager();
+	if (m_pMidiBus && m_pMidiBus->pluginList_out() && pMidiManager) {
+		snd_seq_event_t *pEventBuffer = pMidiManager->events();
+		const unsigned int iEventCount = pMidiManager->count();
+		pMidiManager = (m_pMidiBus->pluginList_out())->midiManager();
+		qtractorMidiMonitor *pMidiMonitor = m_pMidiBus->midiMonitor_out();
+		for (unsigned int i = 0; i < iEventCount; ++i) {
+			snd_seq_event_t *pEv = &pEventBuffer[i];
+			const unsigned long tick = pEv->time.tick;
+			if (pMidiManager)
+				pMidiManager->queued(pEv, tick, tick);
+			if (pMidiMonitor) {
+				qtractorMidiEvent::EventType type
+					= qtractorMidiEvent::EventType(0);
+				unsigned short value = 0;
+				switch (pEv->type) {
+				case SND_SEQ_EVENT_NOTE:
+				case SND_SEQ_EVENT_NOTEON:
+					type = qtractorMidiEvent::NOTEON;
+					value = pEv->data.note.velocity;
+				default:
+					break;
+				}
+				pMidiMonitor->enqueue(type, value, tick);
+			}
+			// TODO: Enqueue merged events into sends/output bus...
+			// ...
+		}
+	}
+
 	const unsigned short iChannels = channels();
 	for (unsigned short i = 0; i < iChannels; ++i)
 		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));

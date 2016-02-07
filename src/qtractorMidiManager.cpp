@@ -243,7 +243,7 @@ qtractorMidiManager::qtractorMidiManager (
 	m_iPendingBankLSB(-1),
 	m_iPendingProg(-1)
 {
-	const unsigned int MaxMidiEvents = (bufferSize() << 1);
+	const unsigned int MaxMidiEvents = bufferSize();
 
 	m_pEventBuffer = new snd_seq_event_t [MaxMidiEvents];
 
@@ -467,76 +467,8 @@ void qtractorMidiManager::process (
 	}
 #endif
 
-#ifdef CONFIG_MIDI_PARSER
-	if (m_pMidiParser) {
-	#ifdef CONFIG_VST
-		VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[m_iEventBuffer & 1];
-	#endif
-	#ifdef CONFIG_LV2_EVENT
-		LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[m_iEventBuffer & 1];
-		LV2_Event_Iterator eiter;
-		lv2_event_begin(&eiter, pLv2EventBuffer);
-	#endif
-	#ifdef CONFIG_LV2_ATOM
-		LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[m_iEventBuffer & 1];
-		LV2_Atom_Buffer_Iterator aiter;
-		lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
-	#endif
-		const unsigned int MaxMidiEvents = (bufferSize() << 1);
-		unsigned int iMidiEvents = 0;
-		// AG: Untangle treatment of VST and LV2 plugins,
-		// so that we can use a larger buffer for the latter...
-	#ifdef CONFIG_VST
-		unsigned int iVstMidiEvents = 0;
-	#endif
-		unsigned char *pMidiData;
-		long iMidiData;
-		for (unsigned int i = 0; i < m_iEventCount; ++i) {
-			snd_seq_event_t *pEv = &m_pEventBuffer[i];
-			unsigned char midiData[c_iMaxMidiData];
-			pMidiData = &midiData[0];
-			iMidiData = sizeof(midiData);
-			iMidiData = snd_midi_event_decode(m_pMidiParser,
-				pMidiData, iMidiData, pEv);
-			if (iMidiData < 0)
-				break;
-		#ifdef CONFIG_DEBUG_0
-			// - show event for debug purposes...
-			unsigned long iTime = pEv->time.tick;
-			fprintf(stderr, "MIDI Raw %06lu {", iTime);
-			for (long i = 0; i < iMidiData; ++i)
-				fprintf(stderr, " %02x", pMidiData[i]);
-			fprintf(stderr, " }\n");
-		#endif
-		#ifdef CONFIG_LV2_EVENT
-			lv2_event_write(&eiter, pEv->time.tick, 0,
-				QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
-		#endif
-		#ifdef CONFIG_LV2_ATOM
-			lv2_atom_buffer_write(&aiter, pEv->time.tick, 0,
-				QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
-		#endif
-		#ifdef CONFIG_VST
-			VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[m_iEventBuffer & 1];
-			VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iVstMidiEvents];
-			if (iMidiData < long(sizeof(pVstMidiEvent->midiData))) {
-				::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
-				pVstMidiEvent->type = kVstMidiType;
-				pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
-				pVstMidiEvent->deltaFrames = pEv->time.tick;
-				::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
-				pVstEvents->events[iVstMidiEvents++] = (VstEvent *) pVstMidiEvent;
-			}
-		#endif
-			if (++iMidiEvents >= MaxMidiEvents)
-				break;
-		}
-	#ifdef CONFIG_VST
-		pVstEvents->numEvents = iVstMidiEvents;
-	//	pVstEvents->reserved = 0;
-	#endif
-	}
-#endif
+	// Process/decode into other/plugin event buffers...
+	processEventBuffers();
 
 	// Now's time to process the plugins as usual...
 	if (m_pAudioOutputBus) {
@@ -713,6 +645,108 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 	pSession->removeMidiManager(pMidiManager);
 
 	delete pMidiManager;
+}
+
+
+// Process specific MIDI insert buffer (merge).
+void qtractorMidiManager::processInsertBuffer ( qtractorMidiBuffer *pMidiBuffer )
+{
+	snd_seq_event_t *pEv;
+
+	for (unsigned int i = 0; i < m_iEventCount; ++i) {
+		pEv = &m_pEventBuffer[i];
+		if (!pMidiBuffer->insert(pEv, pEv->time.tick))
+			break;
+	}
+
+	m_iEventCount = 0;
+
+	pEv = pMidiBuffer->peek();
+	while (pEv) {
+		m_pEventBuffer[m_iEventCount++] = *pEv;
+		pEv = pMidiBuffer->next();
+	}
+
+	processEventBuffers();
+}
+
+
+// Process/decode into other/plugin event buffers...
+void qtractorMidiManager::processEventBuffers (void)
+{
+#ifdef CONFIG_MIDI_PARSER
+
+	if (m_pMidiParser == NULL)
+		return;
+
+#ifdef CONFIG_VST
+	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[m_iEventBuffer & 1];
+#endif
+#ifdef CONFIG_LV2_EVENT
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[m_iEventBuffer & 1];
+	LV2_Event_Iterator eiter;
+	lv2_event_begin(&eiter, pLv2EventBuffer);
+#endif
+#ifdef CONFIG_LV2_ATOM
+	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[m_iEventBuffer & 1];
+	LV2_Atom_Buffer_Iterator aiter;
+	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
+#endif
+	const unsigned int MaxMidiEvents = (bufferSize() << 1);
+	unsigned int iMidiEvents = 0;
+	// AG: Untangle treatment of VST and LV2 plugins,
+	// so that we can use a larger buffer for the latter...
+#ifdef CONFIG_VST
+	unsigned int iVstMidiEvents = 0;
+#endif
+	unsigned char *pMidiData;
+	long iMidiData;
+	for (unsigned int i = 0; i < m_iEventCount; ++i) {
+		snd_seq_event_t *pEv = &m_pEventBuffer[i];
+		unsigned char midiData[c_iMaxMidiData];
+		pMidiData = &midiData[0];
+		iMidiData = sizeof(midiData);
+		iMidiData = snd_midi_event_decode(m_pMidiParser,
+			pMidiData, iMidiData, pEv);
+		if (iMidiData < 0)
+			break;
+	#ifdef CONFIG_DEBUG_0
+		// - show event for debug purposes...
+		unsigned long iTime = pEv->time.tick;
+		fprintf(stderr, "MIDI Raw %06lu {", iTime);
+		for (long i = 0; i < iMidiData; ++i)
+			fprintf(stderr, " %02x", pMidiData[i]);
+		fprintf(stderr, " }\n");
+	#endif
+	#ifdef CONFIG_LV2_EVENT
+		lv2_event_write(&eiter, pEv->time.tick, 0,
+			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+	#endif
+	#ifdef CONFIG_LV2_ATOM
+		lv2_atom_buffer_write(&aiter, pEv->time.tick, 0,
+			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+	#endif
+	#ifdef CONFIG_VST
+		VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[m_iEventBuffer & 1];
+		VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iVstMidiEvents];
+		if (iMidiData < long(sizeof(pVstMidiEvent->midiData))) {
+			::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
+			pVstMidiEvent->type = kVstMidiType;
+			pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
+			pVstMidiEvent->deltaFrames = pEv->time.tick;
+			::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
+			pVstEvents->events[iVstMidiEvents++] = (VstEvent *) pVstMidiEvent;
+		}
+	#endif
+		if (++iMidiEvents >= MaxMidiEvents)
+			break;
+	}
+#ifdef CONFIG_VST
+	pVstEvents->numEvents = iVstMidiEvents;
+//	pVstEvents->reserved = 0;
+#endif
+
+#endif	// CONFIG_MIDI_PARSER
 }
 
 

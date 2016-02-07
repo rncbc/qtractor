@@ -202,14 +202,20 @@ public:
 	// Shut-off MIDI channel (panic)...
 	void shutOff(unsigned short iChannel);
 
+	// Process specific MIDI buffer (merge).
+	void processInsertBuffer(qtractorMidiBuffer *pMidiBuffer);
+
+	// Swap event buffers (in for out and vice-versa)
+	void swapEventBuffers();
+
 protected:
+
+	// Process/decode into other/plugin event buffers...
+	void processEventBuffers();
 
 	// Audio output (de)activation methods.
 	void createAudioOutputBus();
 	void deleteAudioOutputBus();
-
-	// Swap event buffers (in for out and vice-versa)
-	void swapEventBuffers();
 
 private:
 
