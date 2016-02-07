@@ -29,6 +29,7 @@
 // Forward declarations.
 class qtractorAudioBus;
 class qtractorMidiBus;
+class qtractorMidiBuffer;
 
 class qtractorInsertPluginParam;
 
@@ -196,8 +197,9 @@ public:
 	void freezeConfigs();
 	void releaseConfigs();
 
-	// Audio specific accessor.
+	// MIDI specific accessor.
 	qtractorMidiBus *midiBus() const;
+	qtractorMidiBuffer *midiBuffer() const;
 
 protected:
 
@@ -207,7 +209,8 @@ protected:
 private:
 
 	// Instance variables.
-	qtractorMidiBus *m_pMidiBus;
+	qtractorMidiBus    *m_pMidiBus;
+	qtractorMidiBuffer *m_pMidiBuffer;
 
 	qtractorInsertPluginParam *m_pSendVolumeParam;
 };

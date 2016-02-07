@@ -27,6 +27,7 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorMidiBuffer.h"
 
 #include "qtractorPluginListView.h"
 
@@ -189,7 +190,7 @@ bool qtractorAudioInsertPluginType::open (void)
 
 	// Pseudo-plugin type names.
 	m_sName  = "Insert";
-	m_sLabel = m_sName;
+	m_sLabel = "Audio" + m_sName;
 //	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
@@ -251,7 +252,7 @@ bool qtractorMidiInsertPluginType::open (void)
 
 	// Pseudo-plugin type names.
 	m_sName  = "Insert";
-	m_sLabel = m_sName;
+	m_sLabel = "Midi" + m_sName;
 //	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
@@ -339,7 +340,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	addParam(m_pDryWetParam);
 
 	// Setup plugin instance...
-	setChannels(channels());
+	//setChannels(channels());
 }
 
 
@@ -582,7 +583,7 @@ qtractorAudioBus *qtractorAudioInsertPlugin::audioBus (void) const
 // Constructors.
 qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	qtractorPluginList *pList, qtractorInsertPluginType *pInsertType )
-	: qtractorPlugin(pList, pInsertType), m_pMidiBus(NULL)
+	: qtractorPlugin(pList, pInsertType), m_pMidiBus(NULL), m_pMidiBuffer(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiInsertPlugin[%p] channels=%u",
@@ -599,7 +600,7 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	addParam(m_pSendVolumeParam);
 
 	// Setup plugin instance...
-	setChannels(channels());
+	//setChannels(channels());
 }
 
 
@@ -639,12 +640,18 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 	const bool bActivated = isActivated();
 	setActivated(false);
 
-	// TODO: Cleanup bus...
+	// Cleanup bus and buffers...
 	if (m_pMidiBus) {
+		pMidiEngine->removeInputBuffer(m_pMidiBus->alsaPort());
 		pMidiEngine->removeBusEx(m_pMidiBus);
 		m_pMidiBus->close();
 		delete m_pMidiBus;
 		m_pMidiBus = NULL;
+	}
+
+	if (m_pMidiBuffer) {
+		delete m_pMidiBuffer;
+		m_pMidiBuffer = NULL;
 	}
 
 	// Set new instance number...
@@ -672,6 +679,9 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 		qtractorBus::BusMode(qtractorBus::Duplex | qtractorBus::Ex),
 		false);
 
+	// Create the private audio bus...
+	m_pMidiBuffer = new qtractorMidiBuffer();
+
 	// Add this one to the engine's exo-bus list,
 	// for conection persistence purposes...
 	pMidiEngine->addBusEx(m_pMidiBus);
@@ -685,7 +695,8 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 	releaseValues();
 
 	// Open-up private bus...
-	m_pMidiBus->open();
+	if (m_pMidiBus->open())
+		pMidiEngine->addInputBuffer(m_pMidiBus->alsaPort(), m_pMidiBuffer);
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
@@ -701,6 +712,8 @@ void qtractorMidiInsertPlugin::activate (void)
 // Do the actual deactivation.
 void qtractorMidiInsertPlugin::deactivate (void)
 {
+	if (m_pMidiBuffer)
+		m_pMidiBuffer->reset();
 }
 
 
@@ -708,6 +721,31 @@ void qtractorMidiInsertPlugin::deactivate (void)
 void qtractorMidiInsertPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+#ifdef CONFIG_DEBUG
+	// TODO: Merge buffered input events
+	// with list()->midiManager()->events()...
+	if (m_pMidiBuffer) {
+		snd_seq_event_t *pEv = m_pMidiBuffer->peek();
+		while (pEv) {
+			// - show event for debug purposes...
+			const unsigned long iTime = pEv->time.tick;
+			fprintf(stderr, "MIDI Ins %06lu 0x%02x", iTime, pEv->type);
+			if (pEv->type == SND_SEQ_EVENT_SYSEX) {
+				fprintf(stderr, " sysex {");
+				unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
+				for (unsigned int i = 0; i < pEv->data.ext.len; ++i)
+					fprintf(stderr, " %02x", data[i]);
+				fprintf(stderr, " }\n");
+			} else {
+				for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); ++i)
+					fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
+				fprintf(stderr, "\n");
+			}
+			pEv = m_pMidiBuffer->next();
+		}
+	}
+#endif
+
 	const unsigned short iChannels = channels();
 	for (unsigned short i = 0; i < iChannels; ++i)
 		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
@@ -730,7 +768,7 @@ void qtractorMidiInsertPlugin::configure (
 	if (sClientName.isEmpty()) {
 		pItem->clientName = sClient;
 	} else {
-	//	pItem->client = sClient.section(':', 0, 0).toInt();
+		pItem->client = sClient.section(':', 0, 0).toInt();
 		pItem->clientName = sClientName;
 	}
 
@@ -739,7 +777,7 @@ void qtractorMidiInsertPlugin::configure (
 	if (sPortName.isEmpty()) {
 		pItem->portName = sPort;
 	} else {
-	//	pItem->port = sPort.section(':', 0, 0).toInt();
+		pItem->port = sPort.section(':', 0, 0).toInt();
 		pItem->portName = sPortName;
 	}
 
@@ -808,10 +846,15 @@ void qtractorMidiInsertPlugin::freezeConfigs ( int iBusMode )
 }
 
 
-// MIDI specific accessor.
+// MIDI specific accessors.
 qtractorMidiBus *qtractorMidiInsertPlugin::midiBus (void) const
 {
 	return m_pMidiBus;
+}
+
+qtractorMidiBuffer *qtractorMidiInsertPlugin::midiBuffer (void) const
+{
+	return m_pMidiBuffer;
 }
 
 
@@ -863,7 +906,7 @@ bool qtractorAudioAuxSendPluginType::open (void)
 
 	// Pseudo-plugin type names.
 	m_sName  = "Aux Send";
-	m_sLabel = m_sName;
+	m_sLabel = "Audio" + m_sName;
 	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
@@ -925,7 +968,7 @@ bool qtractorMidiAuxSendPluginType::open (void)
 
 	// Pseudo-plugin type names.
 	m_sName  = "Aux Send";
-	m_sLabel = m_sName;
+	m_sLabel = "Midi" + m_sName;
 	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.

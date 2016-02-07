@@ -1536,6 +1536,18 @@ void qtractorMidiEngine::removeInputBus ( qtractorMidiBus *pMidiBus )
 }
 
 
+void qtractorMidiEngine::addInputBuffer (
+	int iAlsaPort, qtractorMidiBuffer *pMidiBuffer )
+{
+	m_inputBuffers.insert(iAlsaPort, pMidiBuffer);
+}
+
+void qtractorMidiEngine::removeInputBuffer ( int iAlsaPort )
+{
+	m_inputBuffers.remove(iAlsaPort);
+}
+
+
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -1851,6 +1863,11 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				pMidiBus->midiMonitor_out()->enqueue(type, value);
 			}
 		}
+	} else {
+		// Input buffers (eg. insert returns)...
+		qtractorMidiBuffer *pMidiBuffer = m_inputBuffers.value(iAlsaPort, NULL);
+		if (pMidiBuffer)
+			pMidiBuffer->insert(pEv, t1);
 	}
 
 	// Trap controller commands...
