@@ -45,6 +45,236 @@
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiSyncThread -- MIDI sync thread decl.
+//
+
+class qtractorMidiSyncThread : public QThread
+{
+public:
+
+	// Constructor.
+	qtractorMidiSyncThread(unsigned int iSyncSize = 128);
+
+	// Destructor.
+	~qtractorMidiSyncThread();
+
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
+	// Wake from executive wait condition.
+	void sync(qtractorMidiSyncItem *pSyncItem = NULL);
+
+protected:
+
+	// The main thread executive.
+	void run();
+
+private:
+
+	// The thread launcher queue instance reference.
+	unsigned int m_iSyncSize;
+	unsigned int m_iSyncMask;
+
+	qtractorMidiSyncItem **m_ppSyncItems;
+
+	volatile unsigned int  m_iSyncRead;
+	volatile unsigned int  m_iSyncWrite;
+
+	// Whether the thread is logically running.
+	volatile bool m_bRunState;
+
+	// Thread synchronization objects.
+	QMutex m_mutex;
+	QWaitCondition m_cond;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiSyncThread -- MIDI sync thread decl.
+//
+
+// Constructor.
+qtractorMidiSyncThread::qtractorMidiSyncThread ( unsigned int iSyncSize )
+{
+	m_iSyncSize = (1 << 7);
+	while (m_iSyncSize < iSyncSize)
+		m_iSyncSize <<= 1;
+	m_iSyncMask = (m_iSyncSize - 1);
+	m_ppSyncItems = new qtractorMidiSyncItem * [m_iSyncSize];
+	m_iSyncRead   = 0;
+	m_iSyncWrite  = 0;
+
+	::memset(m_ppSyncItems, 0, m_iSyncSize * sizeof(qtractorMidiSyncItem *));
+
+	m_bRunState = false;
+}
+
+
+// Destructor.
+qtractorMidiSyncThread::~qtractorMidiSyncThread (void)
+{
+	delete [] m_ppSyncItems;
+}
+
+
+// Thread run state accessors.
+void qtractorMidiSyncThread::setRunState ( bool bRunState )
+{
+	QMutexLocker locker(&m_mutex);
+
+	m_bRunState = bRunState;
+}
+
+bool qtractorMidiSyncThread::runState (void) const
+{
+	return m_bRunState;
+}
+
+
+// The main thread executive.
+void qtractorMidiSyncThread::run (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiSyncThread[%p]::run(): started...", this);
+#endif
+
+	m_mutex.lock();
+
+	m_bRunState = true;
+
+	while (m_bRunState) {
+		// Wait for sync...
+		m_cond.wait(&m_mutex);
+	#ifdef CONFIG_DEBUG_0
+		qDebug("qtractorMidiSyncThread[%p]::run(): waked.", this);
+	#endif
+		// Call control process cycle.
+		unsigned int r = m_iSyncRead;
+		unsigned int w = m_iSyncWrite;
+		while (r != w) {
+			m_ppSyncItems[r]->processSyncItem();
+			++r &= m_iSyncMask;
+			w = m_iSyncWrite;
+		}
+		m_iSyncRead = r;
+	}
+
+	m_mutex.unlock();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiSyncThread[%p]::run(): stopped.", this);
+#endif
+}
+
+
+// Wake from executive wait condition.
+void qtractorMidiSyncThread::sync ( qtractorMidiSyncItem *pSyncItem )
+{
+	if (pSyncItem == NULL) {
+		unsigned int r = m_iSyncRead;
+		unsigned int w = m_iSyncWrite;
+		while (r != w) {
+			qtractorMidiSyncItem *pSyncItem = m_ppSyncItems[r];
+			if (pSyncItem)
+				pSyncItem->setWaitSync(false);
+			++r &= m_iSyncMask;
+			w = m_iSyncWrite;
+		}
+		m_iSyncRead = r;
+	} else {
+		// !pSyncItem->isWaitSync()
+		unsigned int n;
+		unsigned int r = m_iSyncRead;
+		unsigned int w = m_iSyncWrite;
+		if (w > r) {
+			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
+		} else if (r > w) {
+			n = (r - w) - 1;
+		} else {
+			n = m_iSyncSize - 1;
+		}
+		if (n > 0) {
+			pSyncItem->setWaitSync(true);
+			m_ppSyncItems[w] = pSyncItem;
+			m_iSyncWrite = (w + 1) & m_iSyncMask;
+		}
+	}
+
+	if (m_mutex.tryLock()) {
+		m_cond.wakeAll();
+		m_mutex.unlock();
+	}
+#ifdef CONFIG_DEBUG_0
+	else qDebug("qtractorMidiSyncThread[%p]::sync(): tryLock() failed.", this);
+#endif
+}
+
+//----------------------------------------------------------------------
+// class qtractorMidiSyncItem -- MIDI sync item impl.
+//
+
+qtractorMidiSyncThread *qtractorMidiSyncItem::g_pSyncThread         = NULL;
+unsigned int            qtractorMidiSyncItem::g_iSyncThreadRefCount = 0;
+
+// Constructor.
+qtractorMidiSyncItem::qtractorMidiSyncItem (void)
+	: m_bWaitSync(false)
+{
+	if (++g_iSyncThreadRefCount == 1 && g_pSyncThread == NULL) {
+		g_pSyncThread = new qtractorMidiSyncThread();
+		g_pSyncThread->start();
+	}
+}
+
+
+// Destructor.
+qtractorMidiSyncItem::~qtractorMidiSyncItem (void)
+{
+	if (--g_iSyncThreadRefCount == 0 && g_pSyncThread != NULL) {
+		// Try to wake and terminate executive thread,
+		// but give it a bit of time to cleanup...
+		if (g_pSyncThread->isRunning()) do {
+			g_pSyncThread->setRunState(false);
+		//	g_pSyncThread->terminate();
+			g_pSyncThread->sync();
+		} while (!g_pSyncThread->wait(100));
+		delete g_pSyncThread;
+		g_pSyncThread = NULL;
+	}
+}
+
+
+// Sync thread state flags accessors.
+void qtractorMidiSyncItem::setWaitSync ( bool bWaitSync )
+{
+	m_bWaitSync = bWaitSync;
+}
+
+bool qtractorMidiSyncItem::isWaitSync (void) const
+{
+	return m_bWaitSync;
+}
+
+
+// Process item (in asynchronous controller thread).
+void qtractorMidiSyncItem::processSyncItem (void)
+{
+	if (m_bWaitSync) {
+		processSync();
+		m_bWaitSync = false;
+	}
+}
+
+
+// Post/schedule item for process sync. (static)
+void qtractorMidiSyncItem::sync ( qtractorMidiSyncItem *pSyncItem )
+{
+	if (g_pSyncThread) g_pSyncThread->sync(pSyncItem);
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiManagerThread -- MIDI controller thread.
 //
 
@@ -90,131 +320,8 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiManagerThread -- MIDI output thread (singleton).
-//
-
-// Constructor.
-qtractorMidiManagerThread::qtractorMidiManagerThread ( unsigned int iSyncSize )
-{
-	m_iSyncSize = (1 << 7);
-	while (m_iSyncSize < iSyncSize)
-		m_iSyncSize <<= 1;
-	m_iSyncMask = (m_iSyncSize - 1);
-	m_ppSyncItems = new qtractorMidiManager * [m_iSyncSize];
-	m_iSyncRead   = 0;
-	m_iSyncWrite  = 0;
-
-	::memset(m_ppSyncItems, 0, m_iSyncSize * sizeof(qtractorMidiManager *));
-
-	m_bRunState = false;	
-}
-
-
-// Destructor.
-qtractorMidiManagerThread::~qtractorMidiManagerThread (void)
-{
-	delete [] m_ppSyncItems;
-}
-
-
-// Thread run state accessors.
-void qtractorMidiManagerThread::setRunState ( bool bRunState )
-{
-	QMutexLocker locker(&m_mutex);
-
-	m_bRunState = bRunState;
-}
-
-bool qtractorMidiManagerThread::runState (void) const
-{
-	return m_bRunState;
-}
-
-
-// The main thread executive.
-void qtractorMidiManagerThread::run (void)
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiManagerThread[%p]::run(): started...", this);
-#endif
-
-	m_mutex.lock();
-
-	m_bRunState = true;
-
-	while (m_bRunState) {
-		// Wait for sync...
-		m_cond.wait(&m_mutex);
-#ifdef CONFIG_DEBUG_0
-		qDebug("qtractorMidiManagerThread[%p]::run(): waked.", this);
-#endif
-		// Call control process cycle.
-		unsigned int r = m_iSyncRead;
-		unsigned int w = m_iSyncWrite;
-		while (r != w) {
-			m_ppSyncItems[r]->processSync();
-			++r &= m_iSyncMask;
-			w = m_iSyncWrite;
-		}
-		m_iSyncRead = r;
-	}
-
-	m_mutex.unlock();
-
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiManagerThread[%p]::run(): stopped.", this);
-#endif
-}
-
-
-// Wake from executive wait condition.
-void qtractorMidiManagerThread::sync ( qtractorMidiManager *pMidiManager )
-{
-	if (pMidiManager == NULL) {
-		unsigned int r = m_iSyncRead;
-		unsigned int w = m_iSyncWrite;
-		while (r != w) {
-			qtractorMidiManager *pSyncItem = m_ppSyncItems[r];
-			if (pSyncItem)
-				pSyncItem->setWaitSync(false);
-			++r &= m_iSyncMask;
-			w = m_iSyncWrite;
-		}
-		m_iSyncRead = r;
-	} else {
-		// !pMidiManager->isWaitSync()
-		unsigned int n;
-		unsigned int r = m_iSyncRead;
-		unsigned int w = m_iSyncWrite;
-		if (w > r) {
-			n = ((r - w + m_iSyncSize) & m_iSyncMask) - 1;
-		} else if (r > w) {
-			n = (r - w) - 1;
-		} else {
-			n = m_iSyncSize - 1;
-		}
-		if (n > 0) {
-			pMidiManager->setWaitSync(true);
-			m_ppSyncItems[w] = pMidiManager;
-			m_iSyncWrite = (w + 1) & m_iSyncMask;
-		}
-	}
-
-	if (m_mutex.tryLock()) {
-		m_cond.wakeAll();
-		m_mutex.unlock();
-	}
-#ifdef CONFIG_DEBUG_0
-	else qDebug("qtractorMidiManagerThread[%p]::sync(): tryLock() failed.", this);
-#endif
-}
-
-
-//----------------------------------------------------------------------
 // class qtractorMidiManager -- MIDI internal plugin list manager.
 //
-qtractorMidiManagerThread *qtractorMidiManager::g_pSyncThread = NULL;
-unsigned int               qtractorMidiManager::g_iSyncThreadRefCount = 0;
 
 bool qtractorMidiManager::g_bAudioOutputBus = false;
 bool qtractorMidiManager::g_bAudioOutputAutoConnect = true;
@@ -225,6 +332,7 @@ const long c_iMaxMidiData = 512;
 // Constructor.
 qtractorMidiManager::qtractorMidiManager (
 	qtractorPluginList *pPluginList, unsigned int iBufferSize ) :
+	m_pSyncItem(new SyncItem(this)),
 	m_pPluginList(pPluginList),
 	m_directBuffer(iBufferSize >> 1),
 	m_queuedBuffer(iBufferSize),
@@ -281,13 +389,6 @@ qtractorMidiManager::qtractorMidiManager (
 	#endif
 	}
 
-	m_bWaitSync = false;
-
-	if (++g_iSyncThreadRefCount == 1 && g_pSyncThread == NULL) {
-		g_pSyncThread = new qtractorMidiManagerThread();
-		g_pSyncThread->start();
-	}
-	
 	createAudioOutputBus();
 }
 
@@ -295,18 +396,6 @@ qtractorMidiManager::qtractorMidiManager (
 qtractorMidiManager::~qtractorMidiManager (void)
 {
 	deleteAudioOutputBus();
-
-	if (--g_iSyncThreadRefCount == 0 && g_pSyncThread != NULL) {
-		// Try to wake and terminate executive thread,
-		// but give it a bit of time to cleanup...
-		if (g_pSyncThread->isRunning()) do {
-			g_pSyncThread->setRunState(false);
-		//	g_pSyncThread->terminate();
-			g_pSyncThread->sync();
-		} while (!g_pSyncThread->wait(100));
-		delete g_pSyncThread;
-		g_pSyncThread = NULL;
-	}
 
 	// Destroy event_buffers...
 	for (unsigned short i = 0; i < 2; ++i) {
@@ -331,6 +420,8 @@ qtractorMidiManager::~qtractorMidiManager (void)
 
 	if (m_pEventBuffer)
 		delete [] m_pEventBuffer;
+
+	delete m_pSyncItem;
 }
 
 
@@ -412,9 +503,8 @@ void qtractorMidiManager::process (
 	clear();
 
 	// Check for program changes and controller messages...
-	if (g_pSyncThread
-		&& (m_iPendingProg >= 0 || !m_controllerBuffer.isEmpty()))
-		g_pSyncThread->sync(this);
+	if (m_iPendingProg >= 0 || !m_controllerBuffer.isEmpty())
+		qtractorMidiSyncItem::sync(m_pSyncItem);
 
 	// Merge events in buffer for plugin processing...
 	snd_seq_event_t *pEv0 = m_directBuffer.peek();
@@ -490,9 +580,6 @@ void qtractorMidiManager::process (
 // Process buffers (in asynchronous controller thread).
 void qtractorMidiManager::processSync (void)
 {
-	if (!m_bWaitSync)
-		return;
-
 	// Check for programn change...
 	if (m_iPendingProg >= 0) {
 		m_iCurrentBank = 0;
@@ -534,8 +621,6 @@ void qtractorMidiManager::processSync (void)
 	}
 
 	m_controllerBuffer.clear();
-
-	m_bWaitSync = false;
 }
 
 
@@ -595,18 +680,6 @@ void qtractorMidiManager::shutOff ( unsigned short iChannel )
 	setController(iChannel, ALL_SOUND_OFF, 0);
 	setController(iChannel, ALL_NOTES_OFF, 0);
 	setController(iChannel, ALL_CONTROLLERS_OFF, 0);
-}
-
-
-// Sync thread state flags accessors.
-void qtractorMidiManager::setWaitSync ( bool bWaitSync )
-{
-	m_bWaitSync = bWaitSync;
-}
-
-bool qtractorMidiManager::isWaitSync (void) const
-{
-	return m_bWaitSync;
 }
 
 

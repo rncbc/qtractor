@@ -46,7 +46,45 @@ class qtractorPluginList;
 class qtractorPlugin;
 class qtractorAudioBus;
 
-class qtractorMidiManagerThread;
+class qtractorMidiSyncThread;
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiSyncItem -- MIDI sync item decl.
+//
+
+class qtractorMidiSyncItem
+{
+public:
+
+	// Constructor.
+	qtractorMidiSyncItem();
+
+	// Destructor.
+	virtual ~qtractorMidiSyncItem();
+
+	// Sync thread state flags accessors.
+	void setWaitSync(bool bWaitSync);
+	bool isWaitSync() const;
+
+	// Process item (in asynchronous controller thread).
+	virtual void processSync() = 0;
+
+	// Process item (in asynchronous controller thread).
+	void processSyncItem();
+
+	// Post/schedule item for process sync.
+	static void sync(qtractorMidiSyncItem *pSyncItem);
+
+private:
+
+	// Instance mmembers.
+	volatile bool m_bWaitSync;
+
+	// Async manager thread (singleton)
+	static qtractorMidiSyncThread *g_pSyncThread;
+	static unsigned int g_iSyncThreadRefCount;
+};
 
 
 //----------------------------------------------------------------------
@@ -219,6 +257,24 @@ protected:
 
 private:
 
+	// MIDI process sync item class.
+	//
+	class SyncItem : public qtractorMidiSyncItem
+	{
+	public:
+		// Constructor.
+		SyncItem(qtractorMidiManager *pMidiManager)
+			: qtractorMidiSyncItem(), m_pMidiManager(pMidiManager) {}
+		// Processor sync method.
+		void processSync() { m_pMidiManager->processSync(); }
+		//
+	private:
+		// Instance member.
+		qtractorMidiManager *m_pMidiManager;
+	};
+
+	SyncItem *m_pSyncItem;
+
 	// Instance variables
 	qtractorPluginList *m_pPluginList;
 
@@ -230,8 +286,6 @@ private:
 
 	snd_seq_event_t    *m_pEventBuffer;
 	unsigned int        m_iEventCount;
-
-	volatile bool       m_bWaitSync;
 
 #ifdef CONFIG_MIDI_PARSER
 	snd_midi_event_t   *m_pMidiParser;
@@ -265,10 +319,6 @@ private:
 	int m_iPendingProg;
 
 	Instruments m_instruments;
-
-	// Aync manager thread.
-	static qtractorMidiManagerThread *g_pSyncThread;
-	static unsigned int g_iSyncThreadRefCount;
 
 	// Global factory options.
 	static bool g_bAudioOutputBus;
