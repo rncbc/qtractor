@@ -40,6 +40,7 @@ class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
 class qtractorMidiMonitor;
 class qtractorMidiSysexList;
+class qtractorMidiBuffer;
 class qtractorMidiPlayer;
 class qtractorPluginList;
 class qtractorCurveList;
@@ -129,6 +130,13 @@ public:
 
 	// Shut-off all MIDI tracks (panic)...
 	void shutOffAllTracks() const;
+
+	// ALSA port input registry methods.
+	void addInputBus(qtractorMidiBus *pMidiBus);
+	void removeInputBus(qtractorMidiBus *pMidiBus);
+
+	void addInputBuffer(int iAlsaPort, qtractorMidiBuffer *pMidiBuffer);
+	void removeInputBuffer(int iAlsaPort);
 
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
@@ -311,6 +319,10 @@ private:
 	// Name says it all.
 	qtractorMidiInputThread  *m_pInputThread;
 	qtractorMidiOutputThread *m_pOutputThread;
+
+	// ALSA port input registries.
+	QHash<int, qtractorMidiBus *> m_inputBuses;
+	QHash<int, qtractorMidiBuffer *> m_inputBuffers;
 
 	// Whether to check for time drift.
 	bool m_bDriftCorrect;

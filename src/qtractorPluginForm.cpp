@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@
 #include "qtractorPluginForm.h"
 #include "qtractorPluginCommand.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 
 #include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
@@ -116,12 +117,12 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.ReturnsToolButton,
 		SIGNAL(clicked()),
 		SLOT(returnsSlot()));
-	QObject::connect(m_ui.AudioBusNameComboBox,
+	QObject::connect(m_ui.AuxSendBusNameComboBox,
 		SIGNAL(activated(const QString&)),
-		SLOT(changeAudioBusNameSlot(const QString&)));
-	QObject::connect(m_ui.AudioBusNameToolButton,
+		SLOT(changeAuxSendBusNameSlot(const QString&)));
+	QObject::connect(m_ui.AuxSendBusNameToolButton,
 		SIGNAL(clicked()),
-		SLOT(clickAudioBusNameSlot()));
+		SLOT(clickAuxSendBusNameSlot()));
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
@@ -254,14 +255,23 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Show insert tool options...
 	const bool bInsertPlugin = (pType->typeHint() == qtractorPluginType::Insert);
+	if (bInsertPlugin) {
+		if (pType->index() > 0) {
+			m_ui.SendsToolButton->setIcon(QIcon(":/images/itemAudioPortOut.png"));
+			m_ui.ReturnsToolButton->setIcon(QIcon(":/images/itemAudioPortIn.png"));
+		} else {
+			m_ui.SendsToolButton->setIcon(QIcon(":/images/itemMidiPortOut.png"));
+			m_ui.ReturnsToolButton->setIcon(QIcon(":/images/itemMidiPortIn.png"));
+		}
+	}
 	m_ui.SendsToolButton->setVisible(bInsertPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 
 	// Show aux-send tool options...
-	const bool bAuxSendPlugin	= (pType->typeHint() == qtractorPluginType::AuxSend );
-	m_ui.AudioBusNameComboBox->setVisible(bAuxSendPlugin);
-	m_ui.AudioBusNameLabel->setVisible(bAuxSendPlugin);
-	m_ui.AudioBusNameToolButton->setVisible(bAuxSendPlugin);
+	const bool bAuxSendPlugin	= (pType->typeHint() == qtractorPluginType::AuxSend);
+	m_ui.AuxSendBusNameComboBox->setVisible(bAuxSendPlugin);
+	m_ui.AuxSendBusNameLabel->setVisible(bAuxSendPlugin);
+	m_ui.AuxSendBusNameToolButton->setVisible(bAuxSendPlugin);
 		
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
@@ -377,46 +387,72 @@ void qtractorPluginForm::updateParamValue ( unsigned long /*iIndex*/ )
 }
 
 
-// Update specific aux-send audio bus settings.
-void qtractorPluginForm::updateAudioBusName (void)
+// Update specific aux-send bus name settings.
+void qtractorPluginForm::updateAuxSendBusName (void)
 {
-	if (m_pPlugin == NULL)
-		return;
-
-	m_ui.AudioBusNameComboBox->clear();
-
-	const QIcon icon(":/images/trackAudio.png");
-	m_ui.AudioBusNameComboBox->addItem(icon, tr("(none)"));
-
-	qtractorAuxSendPlugin *pAuxSendPlugin = NULL;
-	if ((m_pPlugin->type())->typeHint() == qtractorPluginType::AuxSend)
-		pAuxSendPlugin = static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
-	if (pAuxSendPlugin == NULL)
-		return;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (m_pPlugin == NULL)
 		return;
 
-	for (qtractorBus *pBus = pAudioEngine->buses().first();
-			pBus; pBus = pBus->next()) {
-		if (pBus->busMode() & qtractorBus::Output) {
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
-				m_ui.AudioBusNameComboBox->addItem(icon, pAudioBus->busName());
+	m_ui.AuxSendBusNameComboBox->clear();
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	QString sAuxSendBusName;
+
+	if (pType->index() > 0) {
+		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+			= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
+		if (pAudioAuxSendPlugin == NULL)
+			return;
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine == NULL)
+			return;
+		const QIcon iconAudio(":/images/trackAudio.png");
+		m_ui.AuxSendBusNameComboBox->addItem(iconAudio, tr("(none)"));
+		for (qtractorBus *pBus = pAudioEngine->buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				qtractorAudioBus *pAudioBus
+					= static_cast<qtractorAudioBus *> (pBus);
+				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
+					m_ui.AuxSendBusNameComboBox->addItem(iconAudio,
+						pAudioBus->busName());
+			}
 		}
+		sAuxSendBusName = pAudioAuxSendPlugin->audioBusName();
+	} else {
+		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+			= static_cast<qtractorMidiAuxSendPlugin *> (m_pPlugin);
+		if (pMidiAuxSendPlugin == NULL)
+			return;
+		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+		if (pMidiEngine == NULL)
+			return;
+		const QIcon iconMidi(":/images/trackMidi.png");
+		m_ui.AuxSendBusNameComboBox->addItem(iconMidi, tr("(none)"));
+		for (qtractorBus *pBus = pMidiEngine->buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				qtractorMidiBus *pMidiBus
+					= static_cast<qtractorMidiBus *> (pBus);
+				if (pMidiBus)
+					m_ui.AuxSendBusNameComboBox->addItem(iconMidi,
+						pMidiBus->busName());
+			}
+		}
+		sAuxSendBusName = pMidiAuxSendPlugin->midiBusName();
 	}
 
-	const QString& sAudioBusName = pAuxSendPlugin->audioBusName();
-	int iIndex = m_ui.AudioBusNameComboBox->findText(sAudioBusName);
+	int iIndex = m_ui.AuxSendBusNameComboBox->findText(sAuxSendBusName);
 	if (iIndex < 0)
 		iIndex = 0;
-	m_ui.AudioBusNameComboBox->setCurrentIndex(iIndex);
+	m_ui.AuxSendBusNameComboBox->setCurrentIndex(iIndex);
 }
 
 
@@ -720,58 +756,59 @@ void qtractorPluginForm::returnsSlot (void)
 
 
 // Audio bus name (aux-send) select slot.
-void qtractorPluginForm::changeAudioBusNameSlot ( const QString& sAudioBusName )
+void qtractorPluginForm::changeAuxSendBusNameSlot ( const QString& sAuxSendBusName )
 {
-	if (m_pPlugin == NULL)
-		return;
-
-	qtractorAuxSendPlugin *pAuxSendPlugin = NULL;
-	if (m_pPlugin->type()->typeHint() == qtractorPluginType::AuxSend)
-		pAuxSendPlugin = static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
-	if (pAuxSendPlugin == NULL)
-		return;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
+	if (m_pPlugin == NULL)
+		return;
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
 	pSession->execute(
-		new qtractorAuxSendPluginCommand(pAuxSendPlugin, sAudioBusName));
+		new qtractorAuxSendPluginCommand(m_pPlugin, sAuxSendBusName));
 }
 
 
 // Audio bus name (aux-send) browse slot.
-void qtractorPluginForm::clickAudioBusNameSlot (void)
+void qtractorPluginForm::clickAuxSendBusNameSlot (void)
 {
-	if (m_pPlugin == NULL)
-		return;
-
-	qtractorAuxSendPlugin *pAuxSendPlugin = NULL;
-	if (m_pPlugin->type()->typeHint() == qtractorPluginType::AuxSend)
-		pAuxSendPlugin = static_cast<qtractorAuxSendPlugin *> (m_pPlugin);
-	if (pAuxSendPlugin == NULL)
-		return;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (m_pPlugin == NULL)
 		return;
-	
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	qtractorEngine *pEngine = NULL;
+	if (pType->index() > 0)
+		pEngine = pSession->audioEngine();
+	else
+		pEngine = pSession->midiEngine();
+	if (pEngine == NULL)
+		return;
+
 	// Call here the bus management form.
 	qtractorBusForm busForm(this);
 	// Pre-select bus...
-	const QString& sAudioBusName = m_ui.AudioBusNameComboBox->currentText();
-	if (!sAudioBusName.isEmpty())
-		busForm.setBus(pAudioEngine->findBus(sAudioBusName));
+	const QString& sAuxSendBusName
+		= m_ui.AuxSendBusNameComboBox->currentText();
+	if (!sAuxSendBusName.isEmpty())
+		busForm.setBus(pEngine->findBus(sAuxSendBusName));
 	// Go for it...
 	busForm.exec();
 
 	// Check if any buses have changed...
 	if (busForm.isDirty())
-		updateAudioBusName();
+		updateAuxSendBusName();
 }
 
 
@@ -891,7 +928,7 @@ void qtractorPluginForm::refresh (void)
 	for ( ; iter != iter_end; ++iter)
 		iter.value()->refresh();
 
-	updateAudioBusName();
+	updateAuxSendBusName();
 
 	m_pPlugin->idleEditor();
 

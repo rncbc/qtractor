@@ -576,7 +576,7 @@ public:
 
 	void toggleFormEditor(bool bOn);
 	void updateFormParamValue(unsigned long iIndex);
-	void updateFormAudioBusName();
+	void updateFormAuxSendBusName();
 	void refreshForm();
 
 	void freezeFormPos();

@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Brand new MIDI Insert and Aux-Send pseudo-plugins are now 
+  implemented with very similar semantics as the respective
+  and existing audio counterparts. (EXPERIMENTAL)
+
 - Implement LV2_STATE__loadDefaultState feature (after pull
   request by Hanspeter Portner aka. ventosus, thanks).
 

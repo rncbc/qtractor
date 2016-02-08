@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -243,9 +243,6 @@
        <property name="text">
         <string>Sends</string>
        </property>
-       <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemAudioPortOut.png</iconset>
-       </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
@@ -262,26 +259,23 @@
        <property name="text">
         <string>Returns</string>
        </property>
-       <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemAudioPortIn.png</iconset>
-       </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="AudioBusNameLabel">
+      <widget class="QLabel" name="AuxSendBusNameLabel">
        <property name="text">
         <string>Aux Send Bus:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="AudioBusNameComboBox"/>
+      <widget class="QComboBox" name="AuxSendBusNameComboBox"/>
      </item>
      <item>
-      <widget class="QToolButton" name="AudioBusNameToolButton">
+      <widget class="QToolButton" name="AuxSendBusNameToolButton">
        <property name="minimumSize">
         <size>
          <width>22</width>
@@ -359,8 +353,8 @@
   <tabstop>ActivateToolButton</tabstop>
   <tabstop>SendsToolButton</tabstop>
   <tabstop>ReturnsToolButton</tabstop>
-  <tabstop>AudioBusNameComboBox</tabstop>
-  <tabstop>AudioBusNameToolButton</tabstop>
+  <tabstop>AuxSendBusNameComboBox</tabstop>
+  <tabstop>AuxSendBusNameToolButton</tabstop>
   <tabstop>DirectAccessParamPushButton</tabstop>
  </tabstops>
  <resources>

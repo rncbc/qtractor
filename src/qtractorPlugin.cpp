@@ -26,7 +26,7 @@
 #include "qtractorPluginForm.h"
 
 #include "qtractorAudioEngine.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 
 #include "qtractorOptions.h"
 #include "qtractorMainForm.h"
@@ -442,25 +442,12 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 
 	// Attend to insert pseudo-plugin hints...
 	if (sFilename.isEmpty()) {
-		if (typeHint == qtractorPluginType::Insert) {
-			qtractorInsertPluginType *pInsertType
-				= qtractorInsertPluginType::createType(iIndex);
-			if (pInsertType) {
-				if (pInsertType->open())
-					return new qtractorInsertPlugin(pList, pInsertType);
-				delete pInsertType;
-			}
-		}
+		if (typeHint == qtractorPluginType::Insert)
+			return qtractorInsertPluginType::createPlugin(pList, iIndex);
 		else
-		if (typeHint == qtractorPluginType::AuxSend) {
-			qtractorAuxSendPluginType *pAuxSendType
-				= qtractorAuxSendPluginType::createType(iIndex);
-			if (pAuxSendType) {
-				if (pAuxSendType->open())
-					return new qtractorAuxSendPlugin(pList, pAuxSendType);
-				delete pAuxSendType;
-			}
-		}
+		if (typeHint == qtractorPluginType::AuxSend)
+			return qtractorAuxSendPluginType::createPlugin(pList, iIndex);
+		else
 		// Don't bother with anything else.
 		return NULL;
 	}
@@ -980,10 +967,10 @@ void qtractorPlugin::updateFormParamValue ( unsigned long iIndex )
 }
 
 
-void qtractorPlugin::updateFormAudioBusName (void)
+void qtractorPlugin::updateFormAuxSendBusName (void)
 {
 	if (m_pForm && m_pForm->isVisible())
-		m_pForm->updateAudioBusName();
+		m_pForm->updateAuxSendBusName();
 }
 
 
