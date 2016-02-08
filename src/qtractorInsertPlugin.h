@@ -214,7 +214,7 @@ private:
 	qtractorMidiBuffer        *m_pMidiInputBuffer;
 	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
 
-	qtractorInsertPluginParam *m_pSendVolumeParam;
+	qtractorInsertPluginParam *m_pSendGainParam;
 };
 
 
@@ -422,7 +422,7 @@ private:
 
 	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
 
-	qtractorInsertPluginParam *m_pSendVolumeParam;
+	qtractorInsertPluginParam *m_pSendGainParam;
 };
 
 

@@ -589,7 +589,14 @@ public:
 	// Constructor.
 	qtractorMidiOutputBuffer(qtractorMidiBus *pMidiBus,
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
-		: qtractorMidiSyncItem(), m_pMidiBus(pMidiBus), m_midiBuffer(iBufferSize) {}
+		: qtractorMidiSyncItem(), m_pMidiBus(pMidiBus),
+			m_midiBuffer(iBufferSize), m_pGainSubject(NULL) {}
+
+	// Velocity/gain accessors.
+	void setGainSubject(qtractorSubject *pGainSubject)
+		{ m_pGainSubject = pGainSubject; }
+	qtractorSubject *gaiSubject() const
+		{ return m_pGainSubject; }
 
 	// Event enqueuer.
 	void enqueue(snd_seq_event_t *pEv, unsigned long iTime)
@@ -606,6 +613,7 @@ private:
 	// Instance mmembers.
 	qtractorMidiBus   *m_pMidiBus;
 	qtractorMidiBuffer m_midiBuffer;
+	qtractorSubject   *m_pGainSubject;
 };
 
 
@@ -643,6 +651,26 @@ void qtractorMidiOutputBuffer::processSync (void)
 		pNode = cursor.seekFrame(t1);
 		const long iTime = long(pNode->tickFromFrame(t1));
 		const unsigned long tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
+		qtractorMidiEvent::EventType type = qtractorMidiEvent::EventType(0);
+		unsigned short val = 0;
+		switch (pEv->type) {
+		case SND_SEQ_EVENT_NOTE:
+		case SND_SEQ_EVENT_NOTEON:
+			type = qtractorMidiEvent::NOTEON;
+			val  = pEv->data.note.velocity;
+			if (m_pGainSubject) {
+				val = (unsigned short) (m_pGainSubject->value() * float(val));
+				if (val < 1)
+					val = 1;
+				else
+				if (val > 127)
+					val = 127;
+				pEv->data.note.velocity = val;
+			}
+			// Fall thru...
+		default:
+			break;
+		}
 	#ifdef CONFIG_DEBUG
 		// - show event for debug purposes...
 		fprintf(stderr, "MIDI Out %06lu 0x%02x", tick, pEv->type);
@@ -666,18 +694,7 @@ void qtractorMidiOutputBuffer::processSync (void)
 		if (pMidiManager)
 			pMidiManager->queued(pEv, t1, t1);
 		if (pMidiMonitor) {
-			qtractorMidiEvent::EventType type
-				= qtractorMidiEvent::EventType(0);
-			unsigned short value = 0;
-			switch (pEv->type) {
-			case SND_SEQ_EVENT_NOTE:
-			case SND_SEQ_EVENT_NOTEON:
-				type = qtractorMidiEvent::NOTEON;
-				value = pEv->data.note.velocity;
-			default:
-				break;
-			}
-			pMidiMonitor->enqueue(type, value, tick);
+			pMidiMonitor->enqueue(type, val, tick);
 		}
 		// And next...
 		pEv = m_midiBuffer.next();
@@ -701,13 +718,13 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendVolumeParam = new qtractorInsertPluginParam(this, 0);
-	m_pSendVolumeParam->setName(QObject::tr("Send Volume"));
-	m_pSendVolumeParam->setMinValue(0.0f);
-	m_pSendVolumeParam->setMaxValue(2.0f);
-	m_pSendVolumeParam->setDefaultValue(1.0f);
-	m_pSendVolumeParam->setValue(1.0f, false);
-	addParam(m_pSendVolumeParam);
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam->setName(QObject::tr("Send Gain"));
+	m_pSendGainParam->setMinValue(0.0f);
+	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setDefaultValue(1.0f);
+	m_pSendGainParam->setValue(1.0f, false);
+	addParam(m_pSendGainParam);
 
 	// Setup plugin instance...
 	//setChannels(channels());
@@ -799,6 +816,7 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 	// Create the private MIDI buffers...
 	m_pMidiInputBuffer = new qtractorMidiBuffer();
 	m_pMidiOutputBuffer = new qtractorMidiOutputBuffer(m_pMidiBus);
+	m_pMidiOutputBuffer->setGainSubject(m_pSendGainParam->subject());
 
 	// Add this one to the engine's exo-bus list,
 	// for conection persistence purposes...
@@ -1152,8 +1170,8 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(2.0f);
-	m_pSendGainParam->setDefaultValue(0.0f);
-	m_pSendGainParam->setValue(0.0f, false);
+	m_pSendGainParam->setDefaultValue(1.0f);
+	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 }
 
@@ -1372,13 +1390,13 @@ qtractorMidiAuxSendPlugin::qtractorMidiAuxSendPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendVolumeParam = new qtractorInsertPluginParam(this, 0);
-	m_pSendVolumeParam->setName(QObject::tr("Send Volume"));
-	m_pSendVolumeParam->setMinValue(0.0f);
-	m_pSendVolumeParam->setMaxValue(2.0f);
-	m_pSendVolumeParam->setDefaultValue(0.0f);
-	m_pSendVolumeParam->setValue(0.0f, false);
-	addParam(m_pSendVolumeParam);
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam->setName(QObject::tr("Send Gain"));
+	m_pSendGainParam->setMinValue(0.0f);
+	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setDefaultValue(1.0f);
+	m_pSendGainParam->setValue(1.0f, false);
+	addParam(m_pSendGainParam);
 }
 
 
@@ -1502,8 +1520,10 @@ void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 		m_pMidiOutputBuffer = NULL;
 	}
 
-	if (m_pMidiBus && m_pMidiOutputBuffer == NULL)
+	if (m_pMidiBus && m_pMidiOutputBuffer == NULL) {
 		m_pMidiOutputBuffer = new qtractorMidiOutputBuffer(m_pMidiBus);
+		m_pMidiOutputBuffer->setGainSubject(m_pSendGainParam->subject());
+	}
 
 	updateMidiBusName();
 }
