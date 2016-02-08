@@ -671,7 +671,7 @@ void qtractorMidiOutputBuffer::processSync (void)
 		default:
 			break;
 		}
-	#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG_0
 		// - show event for debug purposes...
 		fprintf(stderr, "MIDI Out %06lu 0x%02x", tick, pEv->type);
 		if (pEv->type == SND_SEQ_EVENT_SYSEX) {
