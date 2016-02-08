@@ -30,6 +30,7 @@
 class qtractorAudioBus;
 class qtractorMidiBus;
 class qtractorMidiBuffer;
+class qtractorMidiOutputBuffer;
 
 class qtractorInsertPluginParam;
 
@@ -199,7 +200,6 @@ public:
 
 	// MIDI specific accessor.
 	qtractorMidiBus *midiBus() const;
-	qtractorMidiBuffer *midiBuffer() const;
 
 protected:
 
@@ -209,8 +209,10 @@ protected:
 private:
 
 	// Instance variables.
-	qtractorMidiBus    *m_pMidiBus;
-	qtractorMidiBuffer *m_pMidiBuffer;
+	qtractorMidiBus *m_pMidiBus;
+
+	qtractorMidiBuffer        *m_pMidiInputBuffer;
+	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
 
 	qtractorInsertPluginParam *m_pSendVolumeParam;
 };
@@ -417,6 +419,8 @@ private:
 	// Instance variables.
 	qtractorMidiBus *m_pMidiBus;
 	QString          m_sMidiBusName;
+
+	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
 
 	qtractorInsertPluginParam *m_pSendVolumeParam;
 };

@@ -153,7 +153,11 @@ void qtractorMidiSyncThread::run (void)
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
 		while (r != w) {
-			m_ppSyncItems[r]->processSyncItem();
+			qtractorMidiSyncItem *pSyncItem = m_ppSyncItems[r];
+			if (pSyncItem->isWaitSync()) {
+				pSyncItem->processSync();
+				pSyncItem->setWaitSync(false);
+			}
 			++r &= m_iSyncMask;
 			w = m_iSyncWrite;
 		}
@@ -257,20 +261,11 @@ bool qtractorMidiSyncItem::isWaitSync (void) const
 }
 
 
-// Process item (in asynchronous controller thread).
-void qtractorMidiSyncItem::processSyncItem (void)
-{
-	if (m_bWaitSync) {
-		processSync();
-		m_bWaitSync = false;
-	}
-}
-
-
 // Post/schedule item for process sync. (static)
-void qtractorMidiSyncItem::sync ( qtractorMidiSyncItem *pSyncItem )
+void qtractorMidiSyncItem::syncItem ( qtractorMidiSyncItem *pSyncItem )
 {
-	if (g_pSyncThread) g_pSyncThread->sync(pSyncItem);
+	if (g_pSyncThread)
+		g_pSyncThread->sync(pSyncItem);
 }
 
 
@@ -504,7 +499,7 @@ void qtractorMidiManager::process (
 
 	// Check for program changes and controller messages...
 	if (m_iPendingProg >= 0 || !m_controllerBuffer.isEmpty())
-		qtractorMidiSyncItem::sync(m_pSyncItem);
+		qtractorMidiSyncItem::syncItem(m_pSyncItem);
 
 	// Merge events in buffer for plugin processing...
 	snd_seq_event_t *pEv0 = m_directBuffer.peek();
@@ -722,19 +717,15 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 }
 
 
-// Process specific MIDI insert buffer (merge).
-void qtractorMidiManager::processInsertBuffer ( qtractorMidiBuffer *pMidiBuffer )
+// Process specific MIDI input buffer (eg. insert/merge).
+void qtractorMidiManager::processInputBuffer ( qtractorMidiBuffer *pMidiBuffer )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
-		return;
-
 	const unsigned long iTimeStart
-		= pAudioEngine->sessionCursor()->frame();
+		= (pSession->isPlaying() ? pSession->playHead() : 0);
 
 	snd_seq_event_t *pEv;
 

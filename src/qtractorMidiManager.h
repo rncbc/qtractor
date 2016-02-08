@@ -70,11 +70,8 @@ public:
 	// Process item (in asynchronous controller thread).
 	virtual void processSync() = 0;
 
-	// Process item (in asynchronous controller thread).
-	void processSyncItem();
-
 	// Post/schedule item for process sync.
-	static void sync(qtractorMidiSyncItem *pSyncItem);
+	static void syncItem(qtractorMidiSyncItem *pSyncItem);
 
 private:
 
@@ -241,7 +238,7 @@ public:
 	void shutOff(unsigned short iChannel);
 
 	// Process specific MIDI buffer (merge).
-	void processInsertBuffer(qtractorMidiBuffer *pMidiBuffer);
+	void processInputBuffer(qtractorMidiBuffer *pMidiBuffer);
 
 	// Swap event buffers (in for out and vice-versa)
 	void swapEventBuffers();
