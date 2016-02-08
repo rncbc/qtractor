@@ -22,6 +22,7 @@
 #include "qtractorMidiManager.h"
 
 #include "qtractorSession.h"
+#include "qtractorSessionCursor.h"
 #include "qtractorPlugin.h"
 
 #include "qtractorMidiEngine.h"
@@ -95,7 +96,7 @@ private:
 // Constructor.
 qtractorMidiManagerThread::qtractorMidiManagerThread ( unsigned int iSyncSize )
 {
-	m_iSyncSize = (64 << 1);
+	m_iSyncSize = (1 << 7);
 	while (m_iSyncSize < iSyncSize)
 		m_iSyncSize <<= 1;
 	m_iSyncMask = (m_iSyncSize - 1);
@@ -651,11 +652,22 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 // Process specific MIDI insert buffer (merge).
 void qtractorMidiManager::processInsertBuffer ( qtractorMidiBuffer *pMidiBuffer )
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	const unsigned long iTimeStart
+		= pAudioEngine->sessionCursor()->frame();
+
 	snd_seq_event_t *pEv;
 
 	for (unsigned int i = 0; i < m_iEventCount; ++i) {
 		pEv = &m_pEventBuffer[i];
-		if (!pMidiBuffer->insert(pEv, pEv->time.tick))
+		if (!pMidiBuffer->insert(pEv, iTimeStart + pEv->time.tick))
 			break;
 	}
 
@@ -663,6 +675,8 @@ void qtractorMidiManager::processInsertBuffer ( qtractorMidiBuffer *pMidiBuffer 
 
 	pEv = pMidiBuffer->peek();
 	while (pEv) {
+		const unsigned long iTime = pEv->time.tick;
+		pEv->time.tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
 		m_pEventBuffer[m_iEventCount++] = *pEv;
 		pEv = pMidiBuffer->next();
 	}

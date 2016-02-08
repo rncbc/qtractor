@@ -2123,6 +2123,10 @@ void qtractorMidiEngine::driftCheck (void)
 //	if (pSession->isRecording())
 //		return;
 
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
 	if (m_pMetroCursor == NULL)
 		return;
 
@@ -2131,8 +2135,8 @@ void qtractorMidiEngine::driftCheck (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		const long iAudioFrame = m_iFrameStart
-			+ pSession->audioEngine()->jackFrame() - m_iFrameStartEx;
+		const long iAudioFrame
+			= m_iFrameStart	+ pAudioEngine->jackFrame() - m_iFrameStartEx;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
