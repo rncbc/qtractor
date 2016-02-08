@@ -215,6 +215,11 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 				= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
 			if (pAudioAuxSendPlugin)
 				sText = pAudioAuxSendPlugin->audioBusName();
+		} else {
+			qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+				= static_cast<qtractorMidiAuxSendPlugin *> (m_pPlugin);
+			if (pMidiAuxSendPlugin)
+				sText = pMidiAuxSendPlugin->midiBusName();
 		}
 	}
 
