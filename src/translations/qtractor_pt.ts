@@ -189,18 +189,18 @@ Fim:	%3	Tamanho:	%4 </translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="329"/>
         <location filename="../qtractorInsertPlugin.cpp" line="722"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1170"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1394"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1171"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1395"/>
         <source>Send Gain</source>
         <translation>Volume da Mandada</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1070"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1071"/>
         <source>Audio Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1132"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1133"/>
         <source>MIDI Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>

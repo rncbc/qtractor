@@ -563,8 +563,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="329"/>
         <location filename="../qtractorInsertPlugin.cpp" line="722"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1170"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1394"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1171"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1395"/>
         <source>Send Gain</source>
         <translation>Poslat zesílení</translation>
     </message>
@@ -574,12 +574,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Poměr směšování mezi původním (nefiltrovaným)/filtrovaným signálem</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1070"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1071"/>
         <source>Audio Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1132"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1133"/>
         <source>MIDI Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>

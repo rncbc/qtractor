@@ -599,8 +599,8 @@ public:
 		{ return m_pGainSubject; }
 
 	// Event enqueuer.
-	void enqueue(snd_seq_event_t *pEv, unsigned long iTime)
-		{ m_midiBuffer.push(pEv, iTime); }
+	bool enqueue(snd_seq_event_t *pEv)
+		{ return m_midiBuffer.push(pEv, pEv->time.tick); }
 
 	// Buffer reset.
 	void clear() { m_midiBuffer.clear(); }
@@ -871,7 +871,8 @@ void qtractorMidiInsertPlugin::process (
 			const unsigned int iEventCount = pMidiManager->count();
 			for (unsigned int i = 0; i < iEventCount; ++i) {
 				snd_seq_event_t *pEv = &pEventBuffer[i];
-				m_pMidiOutputBuffer->enqueue(pEv, pEv->time.tick);
+				if (!m_pMidiOutputBuffer->enqueue(pEv))
+					break;
 			}
 			// Wake the asynchronous working thread...
 			qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
@@ -1555,7 +1556,8 @@ void qtractorMidiAuxSendPlugin::process (
 		const unsigned int iEventCount = pMidiManager->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
 			snd_seq_event_t *pEv = &pEventBuffer[i];
-			m_pMidiOutputBuffer->enqueue(pEv, pEv->time.tick);
+			if (!m_pMidiOutputBuffer->enqueue(pEv))
+				break;
 		}
 		// Wake the asynchronous working thread...
 		qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
