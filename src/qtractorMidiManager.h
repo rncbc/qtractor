@@ -45,6 +45,8 @@ class qtractorTimeScale;
 class qtractorPluginList;
 class qtractorPlugin;
 class qtractorAudioBus;
+class qtractorMidiBus;
+class qtractorSubject;
 
 class qtractorMidiSyncThread;
 
@@ -81,6 +83,74 @@ private:
 	// Async manager thread (singleton)
 	static qtractorMidiSyncThread *g_pSyncThread;
 	static unsigned int g_iSyncThreadRefCount;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiInputBuffer -- MIDI input buffer decl.
+//
+
+class qtractorMidiInputBuffer : public qtractorMidiBuffer
+{
+public:
+
+	// Constructor.
+	qtractorMidiInputBuffer(
+		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
+		: qtractorMidiBuffer(iBufferSize), m_pGainSubject(NULL) {}
+
+	// Velocity/gain accessors.
+	void setGainSubject(qtractorSubject *pGainSubject)
+		{ m_pGainSubject = pGainSubject; }
+	qtractorSubject *gaiSubject() const
+		{ return m_pGainSubject; }
+
+	// Input event enqueuer.
+	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime);
+
+private:
+
+	// Instance mmembers.
+	qtractorSubject *m_pGainSubject;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiOutputBuffer -- MIDI output buffer decl.
+//
+
+class qtractorMidiOutputBuffer : public qtractorMidiSyncItem
+{
+public:
+
+	// Constructor.
+	qtractorMidiOutputBuffer(qtractorMidiBus *pMidiBus,
+		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
+		: qtractorMidiSyncItem(), m_pMidiBus(pMidiBus),
+			m_midiBuffer(iBufferSize), m_pGainSubject(NULL) {}
+
+	// Velocity/gain accessors.
+	void setGainSubject(qtractorSubject *pGainSubject)
+		{ m_pGainSubject = pGainSubject; }
+	qtractorSubject *gaiSubject() const
+		{ return m_pGainSubject; }
+
+	// Event enqueuer.
+	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime)
+		{ return m_midiBuffer.push(pEv, iTime); }
+
+	// Buffer reset.
+	void clear() { m_midiBuffer.clear(); }
+
+	// Process buffer (in asynchronous thread).
+	void processSync();
+
+private:
+
+	// Instance mmembers.
+	qtractorMidiBus   *m_pMidiBus;
+	qtractorMidiBuffer m_midiBuffer;
+	qtractorSubject   *m_pGainSubject;
 };
 
 
@@ -238,7 +308,7 @@ public:
 	void shutOff(unsigned short iChannel);
 
 	// Process specific MIDI buffer (merge).
-	void processInputBuffer(qtractorMidiBuffer *pMidiBuffer);
+	void processInputBuffer(qtractorMidiInputBuffer *pMidiInputBuffer);
 
 	// Swap event buffers (in for out and vice-versa)
 	void swapEventBuffers();

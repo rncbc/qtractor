@@ -26,6 +26,7 @@
 #include "qtractorPlugin.h"
 
 #include "qtractorMidiEngine.h"
+#include "qtractorMidiMonitor.h"
 #include "qtractorAudioEngine.h"
 
 #include "qtractorMixer.h"
@@ -270,48 +271,118 @@ void qtractorMidiSyncItem::syncItem ( qtractorMidiSyncItem *pSyncItem )
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiManagerThread -- MIDI controller thread.
+// class qtractorMidiInputBuffer -- MIDI input buffer impl.
 //
 
-class qtractorMidiManagerThread : public QThread
+// Input event enqueuer.
+bool qtractorMidiInputBuffer::enqueue (
+	snd_seq_event_t *pEv, unsigned long iTime )
 {
-public:
+	if (pEv->type == SND_SEQ_EVENT_NOTE ||
+		pEv->type == SND_SEQ_EVENT_NOTEON) {
+		if (m_pGainSubject) {
+			const float fGain = m_pGainSubject->value();
+			int val = int(fGain * float(pEv->data.note.velocity));
+			if (val < 1)
+				val = 1;
+			else
+			if (val > 127)
+				val = 127;
+			pEv->data.note.velocity = val;
+		}
+	}
 
-	// Constructor.
-	qtractorMidiManagerThread(unsigned int iSyncSize = 128);
+	return qtractorMidiBuffer::insert(pEv, iTime);
+}
 
-	// Destructor.
-	~qtractorMidiManagerThread();
 
-	// Thread run state accessors.
-	void setRunState(bool bRunState);
-	bool runState() const;
+//----------------------------------------------------------------------
+// class qtractorMidiOutputBuffer -- MIDI output buffer impl.
+//
 
-	// Wake from executive wait condition.
-	void sync(qtractorMidiManager *pMidiManager = NULL);
+// Process buffer (in asynchronous controller thread).
+void qtractorMidiOutputBuffer::processSync (void)
+{
+	if (m_pMidiBus == NULL)
+		return;
 
-protected:
+	if (!(m_pMidiBus->busMode() & qtractorBus::Output))
+		return;
 
-	// The main thread executive.
-	void run();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
 
-private:
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
 
-	// The thread launcher queue instance reference.
-	unsigned int           m_iSyncSize;
-	unsigned int           m_iSyncMask;
-	qtractorMidiManager  **m_ppSyncItems;
+	const unsigned long t0 = (pSession->isPlaying() ? pSession->playHead() : 0);
+	const long iTimeStart = pMidiEngine->timeStart();
 
-	volatile unsigned int  m_iSyncRead;
-	volatile unsigned int  m_iSyncWrite;
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(t0);
 
-	// Whether the thread is logically running.
-	volatile bool m_bRunState;
+	qtractorMidiManager *pMidiManager = NULL;
+	if (m_pMidiBus->pluginList_out())
+		pMidiManager = (m_pMidiBus->pluginList_out())->midiManager();
+	qtractorMidiMonitor *pMidiMonitor = m_pMidiBus->midiMonitor_out();
 
-	// Thread synchronization objects.
-	QMutex         m_mutex;
-	QWaitCondition m_cond;
-};
+	snd_seq_event_t *pEv = m_midiBuffer.peek();
+	while (pEv) {
+		const unsigned long t1 = t0 + pEv->time.tick;
+		pNode = cursor.seekFrame(t1);
+		const long iTime = long(pNode->tickFromFrame(t1));
+		const unsigned long tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
+		qtractorMidiEvent::EventType type = qtractorMidiEvent::EventType(0);
+		unsigned short val = 0;
+		switch (pEv->type) {
+		case SND_SEQ_EVENT_NOTE:
+		case SND_SEQ_EVENT_NOTEON:
+			type = qtractorMidiEvent::NOTEON;
+			val  = pEv->data.note.velocity;
+			if (m_pGainSubject) {
+				val = (unsigned short) (m_pGainSubject->value() * float(val));
+				if (val < 1)
+					val = 1;
+				else
+				if (val > 127)
+					val = 127;
+				pEv->data.note.velocity = val;
+			}
+			// Fall thru...
+		default:
+			break;
+		}
+	#ifdef CONFIG_DEBUG_0
+		// - show event for debug purposes...
+		fprintf(stderr, "MIDI Out %06lu 0x%02x", tick, pEv->type);
+		if (pEv->type == SND_SEQ_EVENT_SYSEX) {
+			fprintf(stderr, " sysex {");
+			unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
+			for (unsigned int i = 0; i < pEv->data.ext.len; ++i)
+				fprintf(stderr, " %02x", data[i]);
+			fprintf(stderr, " }\n");
+		} else {
+			for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); ++i)
+				fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
+			fprintf(stderr, "\n");
+		}
+	#endif
+		// Schedule into sends/output bus...
+		snd_seq_ev_set_source(pEv, m_pMidiBus->alsaPort());
+		snd_seq_ev_set_subs(pEv);
+		snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
+		snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
+		if (pMidiManager)
+			pMidiManager->queued(pEv, t1, t1);
+		if (pMidiMonitor) {
+			pMidiMonitor->enqueue(type, val, tick);
+		}
+		// And next...
+		pEv = m_midiBuffer.next();
+	}
+}
 
 
 //----------------------------------------------------------------------
@@ -718,7 +789,8 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 
 
 // Process specific MIDI input buffer (eg. insert/merge).
-void qtractorMidiManager::processInputBuffer ( qtractorMidiBuffer *pMidiBuffer )
+void qtractorMidiManager::processInputBuffer (
+	qtractorMidiInputBuffer *pMidiInputBuffer )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -731,18 +803,18 @@ void qtractorMidiManager::processInputBuffer ( qtractorMidiBuffer *pMidiBuffer )
 
 	for (unsigned int i = 0; i < m_iEventCount; ++i) {
 		pEv = &m_pEventBuffer[i];
-		if (!pMidiBuffer->insert(pEv, iTimeStart + pEv->time.tick))
+		if (!pMidiInputBuffer->insert(pEv, iTimeStart + pEv->time.tick))
 			break;
 	}
 
 	m_iEventCount = 0;
 
-	pEv = pMidiBuffer->peek();
+	pEv = pMidiInputBuffer->peek();
 	while (pEv) {
 		const unsigned long iTime = pEv->time.tick;
 		pEv->time.tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
 		m_pEventBuffer[m_iEventCount++] = *pEv;
-		pEv = pMidiBuffer->next();
+		pEv = pMidiInputBuffer->next();
 	}
 
 	processEventBuffers();

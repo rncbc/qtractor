@@ -1537,9 +1537,9 @@ void qtractorMidiEngine::removeInputBus ( qtractorMidiBus *pMidiBus )
 
 
 void qtractorMidiEngine::addInputBuffer (
-	int iAlsaPort, qtractorMidiBuffer *pMidiBuffer )
+	int iAlsaPort, qtractorMidiInputBuffer *pMidiInputBuffer )
 {
-	m_inputBuffers.insert(iAlsaPort, pMidiBuffer);
+	m_inputBuffers.insert(iAlsaPort, pMidiInputBuffer);
 }
 
 void qtractorMidiEngine::removeInputBuffer ( int iAlsaPort )
@@ -1865,9 +1865,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		}
 	} else {
 		// Input buffers (eg. insert returns)...
-		qtractorMidiBuffer *pMidiBuffer = m_inputBuffers.value(iAlsaPort, NULL);
-		if (pMidiBuffer)
-			pMidiBuffer->insert(pEv, t1);
+		qtractorMidiInputBuffer *pMidiInputBuffer
+			= m_inputBuffers.value(iAlsaPort, NULL);
+		if (pMidiInputBuffer)
+			pMidiInputBuffer->enqueue(pEv, t1);
 	}
 
 	// Trap controller commands...

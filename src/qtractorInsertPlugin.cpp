@@ -29,7 +29,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiManager.h"
-#include "qtractorMidiMonitor.h"
 
 #include "qtractorPluginListView.h"
 
@@ -261,7 +260,7 @@ bool qtractorMidiInsertPluginType::open (void)
 	m_iUniqueID = qHash(m_sLabel);//^ qHash(iChannels);
 
 	// Pseudo-plugin port counts...
-	m_iControlIns  = 1;
+	m_iControlIns  = 2;
 	m_iControlOuts = 0;
 	m_iAudioIns    = 0;
 	m_iAudioOuts   = 0;
@@ -325,7 +324,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorAudioInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(2.0f);
@@ -333,12 +332,12 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 
-	m_pDryWetParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryWetParam = new qtractorAudioInsertPluginParam(this, 1);
 	m_pDryWetParam->setName(QObject::tr("Dry / Wet"));
 	m_pDryWetParam->setMinValue(0.0f);
 	m_pDryWetParam->setMaxValue(2.0f);
-	m_pDryWetParam->setDefaultValue(0.0f);
-	m_pDryWetParam->setValue(0.0f, false);
+	m_pDryWetParam->setDefaultValue(1.0f);
+	m_pDryWetParam->setValue(1.0f, false);
 	addParam(m_pDryWetParam);
 
 	// Setup plugin instance...
@@ -578,130 +577,6 @@ qtractorAudioBus *qtractorAudioInsertPlugin::audioBus (void) const
 }
 
 
-//----------------------------------------------------------------------
-// class qtractorMidiOutputBuffer -- MIDI output buffer decl.
-//
-
-class qtractorMidiOutputBuffer : public qtractorMidiSyncItem
-{
-public:
-
-	// Constructor.
-	qtractorMidiOutputBuffer(qtractorMidiBus *pMidiBus,
-		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
-		: qtractorMidiSyncItem(), m_pMidiBus(pMidiBus),
-			m_midiBuffer(iBufferSize), m_pGainSubject(NULL) {}
-
-	// Velocity/gain accessors.
-	void setGainSubject(qtractorSubject *pGainSubject)
-		{ m_pGainSubject = pGainSubject; }
-	qtractorSubject *gaiSubject() const
-		{ return m_pGainSubject; }
-
-	// Event enqueuer.
-	bool enqueue(snd_seq_event_t *pEv)
-		{ return m_midiBuffer.push(pEv, pEv->time.tick); }
-
-	// Buffer reset.
-	void clear() { m_midiBuffer.clear(); }
-
-	// Process buffer (in asynchronous thread).
-	void processSync();
-
-private:
-
-	// Instance mmembers.
-	qtractorMidiBus   *m_pMidiBus;
-	qtractorMidiBuffer m_midiBuffer;
-	qtractorSubject   *m_pGainSubject;
-};
-
-
-// Process buffer (in asynchronous controller thread).
-void qtractorMidiOutputBuffer::processSync (void)
-{
-	if (m_pMidiBus == NULL)
-		return;
-
-	if (!(m_pMidiBus->busMode() & qtractorBus::Output))
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	if (pMidiEngine == NULL)
-		return;
-
-	const unsigned long t0 = (pSession->isPlaying() ? pSession->playHead() : 0);
-	const long iTimeStart = pMidiEngine->timeStart();
-
-	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(t0);
-
-	qtractorMidiManager *pMidiManager = NULL;
-	if (m_pMidiBus->pluginList_out())
-		pMidiManager = (m_pMidiBus->pluginList_out())->midiManager();
-	qtractorMidiMonitor *pMidiMonitor = m_pMidiBus->midiMonitor_out();
-
-	snd_seq_event_t *pEv = m_midiBuffer.peek();
-	while (pEv) {
-		const unsigned long t1 = t0 + pEv->time.tick;
-		pNode = cursor.seekFrame(t1);
-		const long iTime = long(pNode->tickFromFrame(t1));
-		const unsigned long tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
-		qtractorMidiEvent::EventType type = qtractorMidiEvent::EventType(0);
-		unsigned short val = 0;
-		switch (pEv->type) {
-		case SND_SEQ_EVENT_NOTE:
-		case SND_SEQ_EVENT_NOTEON:
-			type = qtractorMidiEvent::NOTEON;
-			val  = pEv->data.note.velocity;
-			if (m_pGainSubject) {
-				val = (unsigned short) (m_pGainSubject->value() * float(val));
-				if (val < 1)
-					val = 1;
-				else
-				if (val > 127)
-					val = 127;
-				pEv->data.note.velocity = val;
-			}
-			// Fall thru...
-		default:
-			break;
-		}
-	#ifdef CONFIG_DEBUG_0
-		// - show event for debug purposes...
-		fprintf(stderr, "MIDI Out %06lu 0x%02x", tick, pEv->type);
-		if (pEv->type == SND_SEQ_EVENT_SYSEX) {
-			fprintf(stderr, " sysex {");
-			unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
-			for (unsigned int i = 0; i < pEv->data.ext.len; ++i)
-				fprintf(stderr, " %02x", data[i]);
-			fprintf(stderr, " }\n");
-		} else {
-			for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); ++i)
-				fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
-			fprintf(stderr, "\n");
-		}
-	#endif
-		// Schedule into sends/output bus...
-		snd_seq_ev_set_source(pEv, m_pMidiBus->alsaPort());
-		snd_seq_ev_set_subs(pEv);
-		snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
-		snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
-		if (pMidiManager)
-			pMidiManager->queued(pEv, t1, t1);
-		if (pMidiMonitor) {
-			pMidiMonitor->enqueue(type, val, tick);
-		}
-		// And next...
-		pEv = m_midiBuffer.next();
-	}
-}
-
-
 //----------------------------------------------------------------------------
 // qtractorMidiInsertPlugin -- MIDI-insert pseudo-plugin instance.
 //
@@ -718,13 +593,21 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorMidiInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(2.0f);
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
+
+	m_pDryWetParam = new qtractorMidiInsertPluginParam(this, 1);
+	m_pDryWetParam->setName(QObject::tr("Dry / Wet"));
+	m_pDryWetParam->setMinValue(0.0f);
+	m_pDryWetParam->setMaxValue(2.0f);
+	m_pDryWetParam->setDefaultValue(1.0f);
+	m_pDryWetParam->setValue(1.0f, false);
+	addParam(m_pDryWetParam);
 
 	// Setup plugin instance...
 	//setChannels(channels());
@@ -814,7 +697,9 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 		false);
 
 	// Create the private MIDI buffers...
-	m_pMidiInputBuffer = new qtractorMidiBuffer();
+	m_pMidiInputBuffer = new qtractorMidiInputBuffer();
+	m_pMidiInputBuffer->setGainSubject(m_pDryWetParam->subject());
+
 	m_pMidiOutputBuffer = new qtractorMidiOutputBuffer(m_pMidiBus);
 	m_pMidiOutputBuffer->setGainSubject(m_pSendGainParam->subject());
 
@@ -871,7 +756,7 @@ void qtractorMidiInsertPlugin::process (
 			const unsigned int iEventCount = pMidiManager->count();
 			for (unsigned int i = 0; i < iEventCount; ++i) {
 				snd_seq_event_t *pEv = &pEventBuffer[i];
-				if (!m_pMidiOutputBuffer->enqueue(pEv))
+				if (!m_pMidiOutputBuffer->enqueue(pEv, pEv->time.tick))
 					break;
 			}
 			// Wake the asynchronous working thread...
@@ -1167,7 +1052,7 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorAudioInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(2.0f);
@@ -1391,7 +1276,7 @@ qtractorMidiAuxSendPlugin::qtractorMidiAuxSendPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorMidiInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(2.0f);
@@ -1556,7 +1441,7 @@ void qtractorMidiAuxSendPlugin::process (
 		const unsigned int iEventCount = pMidiManager->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
 			snd_seq_event_t *pEv = &pEventBuffer[i];
-			if (!m_pMidiOutputBuffer->enqueue(pEv))
+			if (!m_pMidiOutputBuffer->enqueue(pEv, pEv->time.tick))
 				break;
 		}
 		// Wake the asynchronous working thread...

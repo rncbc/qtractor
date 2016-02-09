@@ -29,10 +29,8 @@
 // Forward declarations.
 class qtractorAudioBus;
 class qtractorMidiBus;
-class qtractorMidiBuffer;
+class qtractorMidiInputBuffer;
 class qtractorMidiOutputBuffer;
-
-class qtractorInsertPluginParam;
 
 
 //----------------------------------------------------------------------------
@@ -111,6 +109,54 @@ public:
 
 
 //----------------------------------------------------------------------------
+// qtractorAudioInsertPluginParam -- Audio insert plugin control input port.
+//
+
+class qtractorAudioInsertPluginParam : public qtractorPluginParam
+{
+public:
+
+	// Constructors.
+	qtractorAudioInsertPluginParam(qtractorPlugin *pPlugin,
+		unsigned long iIndex) : qtractorPluginParam(pPlugin, iIndex) {}
+
+	// Port range hints predicate methods.
+	bool isBoundedBelow() const { return true; }
+	bool isBoundedAbove() const { return true; }
+	bool isDefaultValue() const { return true; }
+	bool isLogarithmic() const { return true; }
+	bool isSampleRate() const { return false; }
+	bool isInteger() const { return false; }
+	bool isToggled() const { return false; }
+	bool isDisplay() const { return false; }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiInsertPluginParam -- MIDI Insert plugin control input port.
+//
+
+class qtractorMidiInsertPluginParam : public qtractorPluginParam
+{
+public:
+
+	// Constructors.
+	qtractorMidiInsertPluginParam(qtractorPlugin *pPlugin,
+		unsigned long iIndex) : qtractorPluginParam(pPlugin, iIndex) {}
+
+	// Port range hints predicate methods.
+	bool isBoundedBelow() const { return true; }
+	bool isBoundedAbove() const { return true; }
+	bool isDefaultValue() const { return true; }
+	bool isLogarithmic() const { return false; }
+	bool isSampleRate() const { return false; }
+	bool isInteger() const { return false; }
+	bool isToggled() const { return false; }
+	bool isDisplay() const { return false; }
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorAudioInsertPlugin -- Audio-insert pseudo-plugin instance.
 //
 
@@ -155,8 +201,8 @@ private:
 	// Instance variables.
 	qtractorAudioBus *m_pAudioBus;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
-	qtractorInsertPluginParam *m_pDryWetParam;
+	qtractorAudioInsertPluginParam *m_pSendGainParam;
+	qtractorAudioInsertPluginParam *m_pDryWetParam;
 
 	// Custom optimized processors.
 	void (*m_pfnProcessSendGain)(float **, unsigned int,
@@ -211,34 +257,11 @@ private:
 	// Instance variables.
 	qtractorMidiBus *m_pMidiBus;
 
-	qtractorMidiBuffer        *m_pMidiInputBuffer;
+	qtractorMidiInputBuffer   *m_pMidiInputBuffer;
 	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorInsertPluginParam -- Insert plugin control input port instance.
-//
-
-class qtractorInsertPluginParam : public qtractorPluginParam
-{
-public:
-
-	// Constructors.
-	qtractorInsertPluginParam(qtractorPlugin *pPlugin,
-		unsigned long iIndex) : qtractorPluginParam(pPlugin, iIndex) {}
-
-	// Port range hints predicate methods.
-	bool isBoundedBelow() const { return true; }
-	bool isBoundedAbove() const { return true; }
-	bool isDefaultValue() const { return true; }
-	bool isLogarithmic() const { return true; }
-	bool isSampleRate() const { return false; }
-	bool isInteger() const { return false; }
-	bool isToggled() const { return false; }
-	bool isDisplay() const { return false; }
+	qtractorMidiInsertPluginParam *m_pSendGainParam;
+	qtractorMidiInsertPluginParam *m_pDryWetParam;
 };
 
 
@@ -365,7 +388,7 @@ private:
 	qtractorAudioBus *m_pAudioBus;
 	QString           m_sAudioBusName;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
+	qtractorAudioInsertPluginParam *m_pSendGainParam;
 
 	// Custom optimized processors.
 	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
@@ -420,9 +443,9 @@ private:
 	qtractorMidiBus *m_pMidiBus;
 	QString          m_sMidiBusName;
 
-	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
+	qtractorMidiOutputBuffer *m_pMidiOutputBuffer;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
+	qtractorMidiInsertPluginParam *m_pSendGainParam;
 };
 
 

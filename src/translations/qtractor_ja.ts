@@ -30,16 +30,16 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2416"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3935"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4494"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3936"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4495"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2425"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3944"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4494"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3945"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4495"/>
         <source>%1 Out</source>
         <translation>%1 出力</translation>
     </message>
@@ -224,35 +224,36 @@ End:	%3	Length:	%4</source>
         <translation>バスのパン</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="227"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="226"/>
         <source>Audio Insert Send/Return pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="289"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="288"/>
         <source>MIDI Insert Send/Return pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="329"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="722"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1171"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1395"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="328"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="597"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1056"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1280"/>
         <source>Send Gain</source>
         <translation>センドのゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="337"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="336"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="605"/>
         <source>Dry / Wet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1071"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="956"/>
         <source>Audio Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1133"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1018"/>
         <source>MIDI Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -287,7 +288,7 @@ End:	%3	Length:	%4</source>
         <translation>%1 バンク %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1245"/>
+        <location filename="../qtractorMidiManager.cpp" line="1317"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - バンク %2</translation>
     </message>
@@ -559,8 +560,8 @@ MIDI:	</translation>
         <translation>%1 ソロ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="3937"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3946"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3938"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3947"/>
         <location filename="../qtractorTrack.cpp" line="681"/>
         <source>%1 Volume</source>
         <translation>%1 ボリューム</translation>
@@ -575,8 +576,8 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2420"/>
         <location filename="../qtractorAudioEngine.cpp" line="2429"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3939"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3948"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3940"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3949"/>
         <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Pan</source>
         <translation>%1 パニング</translation>
