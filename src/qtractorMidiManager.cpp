@@ -227,7 +227,7 @@ qtractorMidiSyncItem::qtractorMidiSyncItem (void)
 {
 	if (++g_iSyncThreadRefCount == 1 && g_pSyncThread == NULL) {
 		g_pSyncThread = new qtractorMidiSyncThread();
-		g_pSyncThread->start();
+		g_pSyncThread->start(QThread::HighestPriority);
 	}
 }
 
