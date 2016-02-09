@@ -317,7 +317,8 @@ void qtractorMidiOutputBuffer::processSync (void)
 	if (pMidiEngine == NULL)
 		return;
 
-	const unsigned long t0 = (pSession->isPlaying() ? pSession->playHead() : 0);
+	const bool bPlaying = pSession->isPlaying();
+	const unsigned long t0 = (bPlaying ? pSession->playHead() : 0);
 	const long iTimeStart = pMidiEngine->timeStart();
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
@@ -372,8 +373,13 @@ void qtractorMidiOutputBuffer::processSync (void)
 		// Schedule into sends/output bus...
 		snd_seq_ev_set_source(pEv, m_pMidiBus->alsaPort());
 		snd_seq_ev_set_subs(pEv);
-		snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
-		snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
+		if (t0 < t1) {
+			snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
+			snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
+		} else {
+			snd_seq_ev_set_direct(pEv);
+			snd_seq_event_output_direct(pMidiEngine->alsaSeq(), pEv);
+		}
 		if (pMidiManager)
 			pMidiManager->queued(pEv, t1, t1);
 		if (pMidiMonitor) {
@@ -786,7 +792,6 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 
 	delete pMidiManager;
 }
-
 
 // Process specific MIDI input buffer (eg. insert/merge).
 void qtractorMidiManager::processInputBuffer (

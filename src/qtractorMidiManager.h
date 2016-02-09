@@ -106,7 +106,7 @@ public:
 		{ return m_pGainSubject; }
 
 	// Input event enqueuer.
-	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime);
+	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime = 0);
 
 private:
 
