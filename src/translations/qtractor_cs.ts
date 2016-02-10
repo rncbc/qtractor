@@ -31,16 +31,16 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2416"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3936"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4495"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3940"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4499"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2425"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3945"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4495"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3949"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4499"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -563,8 +563,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="328"/>
         <location filename="../qtractorInsertPlugin.cpp" line="597"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1056"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1280"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1054"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1278"/>
         <source>Send Gain</source>
         <translation>Poslat zesílení</translation>
     </message>
@@ -575,12 +575,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Poměr směšování mezi původním (nefiltrovaným)/filtrovaným signálem</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="956"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="954"/>
         <source>Audio Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1018"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1016"/>
         <source>MIDI Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -610,8 +610,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 Sólo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="3938"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3947"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3942"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3951"/>
         <location filename="../qtractorTrack.cpp" line="681"/>
         <source>%1 Volume</source>
         <translation>%1 Hlasitost</translation>
@@ -626,8 +626,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2420"/>
         <location filename="../qtractorAudioEngine.cpp" line="2429"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3940"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3949"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3944"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3953"/>
         <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Pan</source>
         <translation>%1 Vyvážení (Pan)</translation>

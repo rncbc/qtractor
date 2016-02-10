@@ -762,8 +762,6 @@ void qtractorMidiInsertPlugin::process (
 			// Wake the asynchronous working thread...
 			qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
 		}
-		// Done. Swap input/outbut buffers...
-		pMidiManager->swapEventBuffers();
 	}
 
 	const unsigned short iChannels = channels();
