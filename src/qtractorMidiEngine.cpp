@@ -1592,13 +1592,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 #endif
 
 	switch (pEv->type) {
-	case SND_SEQ_EVENT_NOTE:
+//	case SND_SEQ_EVENT_NOTE: -- Unlikely real-time input.
 	case SND_SEQ_EVENT_NOTEON:
 		type     = qtractorMidiEvent::NOTEON;
 		channel  = pEv->data.note.channel;
 		param    = pEv->data.note.note;
 		value    = pEv->data.note.velocity;
-		duration = pEv->data.note.duration;
+	//	duration = pEv->data.note.duration;
 		if (value == 0) {
 			pEv->type = SND_SEQ_EVENT_NOTEOFF;
 			type = qtractorMidiEvent::NOTEOFF;
@@ -1609,7 +1609,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		channel  = pEv->data.note.channel;
 		param    = pEv->data.note.note;
 		value    = pEv->data.note.velocity;
-		duration = pEv->data.note.duration;
+	//	duration = pEv->data.note.duration;
 		break;
 	case SND_SEQ_EVENT_KEYPRESS:
 		type     = qtractorMidiEvent::KEYPRESS;
@@ -1712,7 +1712,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Node *pNode;
-	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+
 	const unsigned long iTime = m_iTimeStart + tick;
 
 	// Wrap in recording, if any...
@@ -1741,7 +1742,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			(iTimeEx >= pSession->punchInTime() &&
 			 iTimeEx <  pSession->punchOutTime()));
 	}
-
+#if 0//-- Unlikely real-time input.
 	const long f0 = m_iFrameStart;
 	pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
@@ -1753,7 +1754,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		pNode = cursor.seekTick(iTimeOff);
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
-
+#endif
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1818,12 +1819,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						pMidiManager = (pTrack->pluginList())->midiManager();
 						if (pMidiManager)
-							pMidiManager->queued(pEv, t1, t2);
+							pMidiManager->direct(pEv);//queued(pEv, t1, t2);
 						if (!pMidiBus->isMonitor()
 							&& pMidiBus->pluginList_out()) {
 							pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 							if (pMidiManager)
-								pMidiManager->queued(pEv, t1, t2);
+								pMidiManager->direct(pEv);//queued(pEv, t1, t2);
 						}
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
@@ -1843,7 +1844,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pMidiBus->pluginList_in()) {
 			pMidiManager = (pMidiBus->pluginList_in())->midiManager();
 			if (pMidiManager)
-				pMidiManager->queued(pEv, t1, t2);
+				pMidiManager->direct(pEv);//queued(pEv, t1, t2);
 		}
 		// Output monitoring on passthru...
 		if (pMidiBus->isMonitor()) {
@@ -1851,7 +1852,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus->pluginList_out()) {
 				pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 				if (pMidiManager)
-					pMidiManager->queued(pEv, t1, t2);
+					pMidiManager->direct(pEv);//queued(pEv, t1, t2);
 			}
 			if (pMidiBus->midiMonitor_out()) {
 				// MIDI-thru: same event redirected...
