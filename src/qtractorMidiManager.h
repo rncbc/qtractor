@@ -190,7 +190,7 @@ public:
 
 	// Queued buffering.
 	bool queued(snd_seq_event_t *pEvent,
-		unsigned long iTime, unsigned long iTimeOff);
+		unsigned long iTime, unsigned long iTimeOff = 0);
 
 	// Process buffers.
 	void process(unsigned long iTimeStart, unsigned long iTimeEnd);
@@ -310,17 +310,17 @@ public:
 	// Process specific MIDI buffer (merge).
 	void processInputBuffer(qtractorMidiInputBuffer *pMidiInputBuffer);
 
-	// Swap event buffers (in for out and vice-versa)
-	void swapEventBuffers();
-
 protected:
-
-	// Process/decode into other/plugin event buffers...
-	void processEventBuffers();
 
 	// Audio output (de)activation methods.
 	void createAudioOutputBus();
 	void deleteAudioOutputBus();
+
+	// Process/decode into other/plugin event buffers...
+	void processEventBuffers();
+
+	// Swap event buffers (in for out and vice-versa)
+	void swapEventBuffers();
 
 private:
 

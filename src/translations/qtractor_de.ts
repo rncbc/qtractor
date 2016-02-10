@@ -31,16 +31,16 @@ Audio:	%1 Kanäle, %2 Hz</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2416"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3936"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4495"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3938"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4497"/>
         <source>%1 In</source>
         <translation>%1 Ein</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2425"/>
         <location filename="../qtractorAudioEngine.cpp" line="2752"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3945"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4495"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3947"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4497"/>
         <source>%1 Out</source>
         <translation>%1 Aus</translation>
     </message>
@@ -236,8 +236,8 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="328"/>
         <location filename="../qtractorInsertPlugin.cpp" line="597"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1056"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1280"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1054"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1278"/>
         <source>Send Gain</source>
         <translation type="unfinished"></translation>
     </message>
@@ -248,12 +248,12 @@ End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="956"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="954"/>
         <source>Audio Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1018"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1016"/>
         <source>MIDI Aux Send pseudo-plugin.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -558,8 +558,8 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="3938"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3947"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3940"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3949"/>
         <location filename="../qtractorTrack.cpp" line="681"/>
         <source>%1 Volume</source>
         <translation type="unfinished"></translation>
@@ -574,8 +574,8 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2420"/>
         <location filename="../qtractorAudioEngine.cpp" line="2429"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3940"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3949"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3942"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3951"/>
         <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Pan</source>
         <translation type="unfinished"></translation>

@@ -278,7 +278,7 @@ void qtractorMidiSyncItem::syncItem ( qtractorMidiSyncItem *pSyncItem )
 bool qtractorMidiInputBuffer::enqueue (
 	snd_seq_event_t *pEv, unsigned long iTime )
 {
-	if (pEv->type == SND_SEQ_EVENT_NOTE ||
+	if (pEv->type == SND_SEQ_EVENT_NOTE || // Unlikely real-time input...
 		pEv->type == SND_SEQ_EVENT_NOTEON) {
 		if (m_pGainSubject) {
 			const float fGain = m_pGainSubject->value();
@@ -318,11 +318,12 @@ void qtractorMidiOutputBuffer::processSync (void)
 		return;
 
 	const bool bPlaying = pSession->isPlaying();
-	const unsigned long t0 = (bPlaying ? pSession->playHead() : 0);
+	const unsigned long iFrameTime  = (bPlaying ? pSession->frameTime() : 0);
+	const unsigned long iFrameStart = (bPlaying ? pSession->playHead()  : 0);
 	const long iTimeStart = pMidiEngine->timeStart();
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(t0);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
 
 	qtractorMidiManager *pMidiManager = NULL;
 	if (m_pMidiBus->pluginList_out())
@@ -331,9 +332,9 @@ void qtractorMidiOutputBuffer::processSync (void)
 
 	snd_seq_event_t *pEv = m_midiBuffer.peek();
 	while (pEv) {
-		const unsigned long t1 = t0 + pEv->time.tick;
-		pNode = cursor.seekFrame(t1);
-		const long iTime = long(pNode->tickFromFrame(t1));
+		const unsigned long iFrame = iFrameStart + pEv->time.tick;
+		pNode = cursor.seekFrame(iFrame);
+		const long iTime = long(pNode->tickFromFrame(iFrame));
 		const unsigned long tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
 		qtractorMidiEvent::EventType type = qtractorMidiEvent::EventType(0);
 		unsigned short val = 0;
@@ -373,7 +374,7 @@ void qtractorMidiOutputBuffer::processSync (void)
 		// Schedule into sends/output bus...
 		snd_seq_ev_set_source(pEv, m_pMidiBus->alsaPort());
 		snd_seq_ev_set_subs(pEv);
-		if (t0 < t1) {
+		if (iFrameStart < iFrame) {
 			snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
 			snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
 		} else {
@@ -381,10 +382,9 @@ void qtractorMidiOutputBuffer::processSync (void)
 			snd_seq_event_output_direct(pMidiEngine->alsaSeq(), pEv);
 		}
 		if (pMidiManager)
-			pMidiManager->queued(pEv, t1, t1);
-		if (pMidiMonitor) {
+			pMidiManager->queued(pEv, iFrameTime + pEv->time.tick);
+		if (pMidiMonitor)
 			pMidiMonitor->enqueue(type, val, tick);
-		}
 		// And next...
 		pEv = m_midiBuffer.next();
 	}
@@ -525,7 +525,7 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 bool qtractorMidiManager::queued (
 	snd_seq_event_t *pEvent, unsigned long iTime, unsigned long iTimeOff )
 {
-	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
+	if (pEvent->type == SND_SEQ_EVENT_NOTE && iTime < iTimeOff) {
 		snd_seq_event_t ev = *pEvent;
 		ev.type = SND_SEQ_EVENT_NOTEON;
 		if (!m_queuedBuffer.insert(&ev, iTime))
@@ -801,14 +801,14 @@ void qtractorMidiManager::processInputBuffer (
 	if (pSession == NULL)
 		return;
 
-	const unsigned long iTimeStart
-		= (pSession->isPlaying() ? pSession->playHead() : 0);
+	const unsigned long iFrameTime
+		= (pSession->isPlaying() ? pSession->frameTime() : 0);
 
 	snd_seq_event_t *pEv;
 
 	for (unsigned int i = 0; i < m_iEventCount; ++i) {
 		pEv = &m_pEventBuffer[i];
-		if (!pMidiInputBuffer->insert(pEv, iTimeStart + pEv->time.tick))
+		if (!pMidiInputBuffer->insert(pEv, iFrameTime + pEv->time.tick))
 			break;
 	}
 
@@ -817,7 +817,7 @@ void qtractorMidiManager::processInputBuffer (
 	pEv = pMidiInputBuffer->peek();
 	while (pEv) {
 		const unsigned long iTime = pEv->time.tick;
-		pEv->time.tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
+		pEv->time.tick = (iTime > iFrameTime ? iTime - iFrameTime : 0);
 		m_pEventBuffer[m_iEventCount++] = *pEv;
 		pEv = pMidiInputBuffer->next();
 	}
