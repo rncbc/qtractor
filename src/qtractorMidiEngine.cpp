@@ -1742,13 +1742,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			(iTimeEx >= pSession->punchInTime() &&
 			 iTimeEx <  pSession->punchOutTime()));
 	}
-#if 0//-- Unlikely real-time input.
+
 	const long f0 = m_iFrameStart;
 	pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
-
+#if 0//-- Unlikely real-time input.
 	if (type == qtractorMidiEvent::NOTEON && duration > 0) {
 		const unsigned long iTimeOff = iTime + (duration - 1);
 		pNode = cursor.seekTick(iTimeOff);
@@ -1819,12 +1819,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						pMidiManager = (pTrack->pluginList())->midiManager();
 						if (pMidiManager)
-							pMidiManager->direct(pEv);//queued(pEv, t1, t2);
+							pMidiManager->queued(pEv, t1, t2);
 						if (!pMidiBus->isMonitor()
 							&& pMidiBus->pluginList_out()) {
 							pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 							if (pMidiManager)
-								pMidiManager->direct(pEv);//queued(pEv, t1, t2);
+								pMidiManager->queued(pEv, t1, t2);
 						}
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
@@ -1844,7 +1844,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pMidiBus->pluginList_in()) {
 			pMidiManager = (pMidiBus->pluginList_in())->midiManager();
 			if (pMidiManager)
-				pMidiManager->direct(pEv);//queued(pEv, t1, t2);
+				pMidiManager->queued(pEv, t1, t2);
 		}
 		// Output monitoring on passthru...
 		if (pMidiBus->isMonitor()) {
@@ -1852,7 +1852,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus->pluginList_out()) {
 				pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 				if (pMidiManager)
-					pMidiManager->direct(pEv);//queued(pEv, t1, t2);
+					pMidiManager->queued(pEv, t1, t2);
 			}
 			if (pMidiBus->midiMonitor_out()) {
 				// MIDI-thru: same event redirected...
