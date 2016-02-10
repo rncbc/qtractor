@@ -1750,14 +1750,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 #if 0//-- Unlikely real-time input.
 	unsigned long t2 = t1;
-
 	if (type == qtractorMidiEvent::NOTEON && duration > 0) {
 		const unsigned long iTimeOff = iTime + (duration - 1);
 		pNode = cursor.seekTick(iTimeOff);
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
 #endif
-
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1822,12 +1820,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						pMidiManager = (pTrack->pluginList())->midiManager();
 						if (pMidiManager)
-							pMidiManager->queued(pEv, t1);
+							pMidiManager->queued(pEv, t1); //..t2
 						if (!pMidiBus->isMonitor()
 							&& pMidiBus->pluginList_out()) {
 							pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 							if (pMidiManager)
-								pMidiManager->queued(pEv, t1);
+								pMidiManager->queued(pEv, t1); //..t2
 						}
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
@@ -1847,7 +1845,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pMidiBus->pluginList_in()) {
 			pMidiManager = (pMidiBus->pluginList_in())->midiManager();
 			if (pMidiManager)
-				pMidiManager->queued(pEv, t1);
+				pMidiManager->queued(pEv, t1); //..t2
 		}
 		// Output monitoring on passthru...
 		if (pMidiBus->isMonitor()) {
@@ -1855,7 +1853,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus->pluginList_out()) {
 				pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 				if (pMidiManager)
-					pMidiManager->queued(pEv, t1);
+					pMidiManager->queued(pEv, t1); //..t2
 			}
 			if (pMidiBus->midiMonitor_out()) {
 				// MIDI-thru: same event redirected...
@@ -1872,7 +1870,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		qtractorMidiInputBuffer *pMidiInputBuffer
 			= m_inputBuffers.value(iAlsaPort, NULL);
 		if (pMidiInputBuffer)
-			pMidiInputBuffer->enqueue(pEv, t0);
+			pMidiInputBuffer->enqueue(pEv); //..t0
 	}
 
 	// Trap controller commands...
