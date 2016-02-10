@@ -190,7 +190,7 @@ public:
 
 	// Queued buffering.
 	bool queued(snd_seq_event_t *pEvent,
-		unsigned long iTime, unsigned long iTimeOff);
+		unsigned long iTime, unsigned long iTimeOff = 0);
 
 	// Process buffers.
 	void process(unsigned long iTimeStart, unsigned long iTimeEnd);
