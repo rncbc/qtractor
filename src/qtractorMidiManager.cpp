@@ -292,7 +292,7 @@ bool qtractorMidiInputBuffer::enqueue (
 		}
 	}
 
-	return qtractorMidiBuffer::insert(pEv, iTime);
+	return qtractorMidiBuffer::push(pEv, iTime);
 }
 
 
