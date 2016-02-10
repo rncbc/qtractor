@@ -1718,8 +1718,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// Wrap in recording, if any...
 	unsigned long iTimeEx = 0;
-	const bool bPlaying = isPlaying();
-	bool bRecording = (pSession->isRecording() && bPlaying);
+	bool bRecording = (pSession->isRecording() && isPlaying());
 	if (bRecording ) {
 		iTimeEx = m_iTimeStartEx + tick;
 		// Take care of recording loop-range...
@@ -1744,7 +1743,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			 iTimeEx <  pSession->punchOutTime()));
 	}
 
-	const long f0 = (bPlaying ? m_iFrameStart : 0);
+	const long f0 = m_iFrameStart;
 	pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
