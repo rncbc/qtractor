@@ -190,8 +190,8 @@ bool qtractorAudioInsertPluginType::open (void)
 #endif
 
 	// Pseudo-plugin type names.
-	m_sName  = "Insert";
-	m_sLabel = "Audio" + m_sName;
+	m_sName  = "Insert (Audio)";
+	m_sLabel = "AudioInsert";
 //	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
@@ -252,8 +252,8 @@ bool qtractorMidiInsertPluginType::open (void)
 #endif
 
 	// Pseudo-plugin type names.
-	m_sName  = "Insert";
-	m_sLabel = "Midi" + m_sName;
+	m_sName  = "Insert (MIDI)";
+	m_sLabel = "MidiInsert";
 //	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
@@ -403,7 +403,7 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// Audio bus name -- it must be unique...
 	int iBusName = 1;
-	const QString& sBusNamePrefix = pType->name() + "_%1";
+	const QString sBusNamePrefix("Insert_%1");
 	QString sBusName = sBusNamePrefix.arg(iBusName);
 	while (pAudioEngine->findBus(sBusName)
 		|| pAudioEngine->findBusEx(sBusName))
@@ -685,7 +685,7 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// MIDI bus name -- it must be unique...
 	int iBusName = 1;
-	const QString& sBusNamePrefix = pType->name() + "_%1";
+	const QString& sBusNamePrefix = "Insert_%1";
 	QString sBusName = sBusNamePrefix.arg(iBusName);
 	while (pMidiEngine->findBus(sBusName)
 		|| pMidiEngine->findBusEx(sBusName))
@@ -918,9 +918,9 @@ bool qtractorAudioAuxSendPluginType::open (void)
 #endif
 
 	// Pseudo-plugin type names.
-	m_sName  = "Aux Send";
-	m_sLabel = "Audio" + m_sName;
-	m_sLabel.remove(' ');
+	m_sName  = QObject::tr("Aux Send (Audio)");
+	m_sLabel = "AudioAuxSend";
+//	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
 	m_iUniqueID = qHash(m_sLabel) ^ qHash(iChannels);
@@ -980,9 +980,9 @@ bool qtractorMidiAuxSendPluginType::open (void)
 #endif
 
 	// Pseudo-plugin type names.
-	m_sName  = "Aux Send";
-	m_sLabel = "Midi" + m_sName;
-	m_sLabel.remove(' ');
+	m_sName  = "Aux Send (MIDI)";
+	m_sLabel = "MidiAuxSend";
+//	m_sLabel.remove(' ');
 
 	// Pseudo-plugin unique identifier.
 	m_iUniqueID = qHash(m_sLabel);//^ qHash(iChannels);
@@ -1180,8 +1180,8 @@ const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
 // Audio bus to appear on plugin lists.
 void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 {
-	const QString& sText = QObject::tr("%1 (Audio)")
-		.arg(m_pAudioBus ? m_sAudioBusName : type()->name());
+	const QString sText(m_pAudioBus
+		? QObject::tr("%1 (Audio)").arg(m_sAudioBusName) : type()->name());
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
 		iter.next()->setText(sText);
@@ -1422,8 +1422,8 @@ const QString& qtractorMidiAuxSendPlugin::midiBusName (void) const
 // Audio bus to appear on plugin lists.
 void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 {
-	const QString& sText = QObject::tr("%1 (MIDI)")
-		.arg(m_pMidiBus ? m_sMidiBusName : type()->name());
+	const QString sText(m_pMidiBus
+		? QObject::tr("%1 (MIDI)").arg(m_sMidiBusName) : type()->name());
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
 		iter.next()->setText(sText);

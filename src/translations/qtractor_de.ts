@@ -248,6 +248,11 @@ End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorInsertPlugin.cpp" line="921"/>
+        <source>Aux Send (Audio)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorInsertPlugin.cpp" line="954"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
         <translation type="unfinished"></translation>
@@ -258,13 +263,13 @@ End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1183"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1184"/>
         <location filename="../qtractorPluginListView.cpp" line="214"/>
         <source>%1 (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1425"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1426"/>
         <location filename="../qtractorPluginListView.cpp" line="234"/>
         <source>%1 (MIDI)</source>
         <translation type="unfinished"></translation>
