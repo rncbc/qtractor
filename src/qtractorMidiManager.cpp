@@ -292,7 +292,7 @@ bool qtractorMidiInputBuffer::enqueue (
 		}
 	}
 
-	return qtractorMidiBuffer::push(pEv, iTime);
+	return qtractorMidiBuffer::insert(pEv, iTime);
 }
 
 
@@ -330,7 +330,7 @@ void qtractorMidiOutputBuffer::processSync (void)
 		pMidiManager = (m_pMidiBus->pluginList_out())->midiManager();
 	qtractorMidiMonitor *pMidiMonitor = m_pMidiBus->midiMonitor_out();
 
-	snd_seq_event_t *pEv = m_midiBuffer.peek();
+	snd_seq_event_t *pEv = m_outputBuffer.peek();
 	while (pEv) {
 		const unsigned long iFrame = iFrameStart + pEv->time.tick;
 		pNode = cursor.seekFrame(iFrame);
@@ -374,19 +374,14 @@ void qtractorMidiOutputBuffer::processSync (void)
 		// Schedule into sends/output bus...
 		snd_seq_ev_set_source(pEv, m_pMidiBus->alsaPort());
 		snd_seq_ev_set_subs(pEv);
-		if (iFrameStart < iFrame) {
-			snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
-			snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
-		} else {
-			snd_seq_ev_set_direct(pEv);
-			snd_seq_event_output_direct(pMidiEngine->alsaSeq(), pEv);
-		}
+		snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
+		snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
 		if (pMidiManager)
 			pMidiManager->queued(pEv, iFrameTime + pEv->time.tick);
 		if (pMidiMonitor)
 			pMidiMonitor->enqueue(type, val, tick);
 		// And next...
-		pEv = m_midiBuffer.next();
+		pEv = m_outputBuffer.next();
 	}
 }
 
@@ -808,7 +803,7 @@ void qtractorMidiManager::processInputBuffer (
 
 	for (unsigned int i = 0; i < m_iEventCount; ++i) {
 		pEv = &m_pEventBuffer[i];
-		if (!pMidiInputBuffer->insert(pEv, iFrameTime + pEv->time.tick))
+		if (!pMidiInputBuffer->enqueue(pEv, iFrameTime + pEv->time.tick))
 			break;
 	}
 

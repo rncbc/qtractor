@@ -106,7 +106,7 @@ public:
 		{ return m_pGainSubject; }
 
 	// Input event enqueuer.
-	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime = 0);
+	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime);
 
 private:
 
@@ -127,7 +127,7 @@ public:
 	qtractorMidiOutputBuffer(qtractorMidiBus *pMidiBus,
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
 		: qtractorMidiSyncItem(), m_pMidiBus(pMidiBus),
-			m_midiBuffer(iBufferSize), m_pGainSubject(NULL) {}
+			m_outputBuffer(iBufferSize), m_pGainSubject(NULL) {}
 
 	// Velocity/gain accessors.
 	void setGainSubject(qtractorSubject *pGainSubject)
@@ -137,10 +137,10 @@ public:
 
 	// Event enqueuer.
 	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime)
-		{ return m_midiBuffer.push(pEv, iTime); }
+		{ return m_outputBuffer.push(pEv, iTime); }
 
 	// Buffer reset.
-	void clear() { m_midiBuffer.clear(); }
+	void clear() { m_outputBuffer.clear(); }
 
 	// Process buffer (in asynchronous thread).
 	void processSync();
@@ -149,7 +149,7 @@ private:
 
 	// Instance mmembers.
 	qtractorMidiBus   *m_pMidiBus;
-	qtractorMidiBuffer m_midiBuffer;
+	qtractorMidiBuffer m_outputBuffer;
 	qtractorSubject   *m_pGainSubject;
 };
 

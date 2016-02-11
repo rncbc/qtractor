@@ -223,7 +223,7 @@ void qtractorAudioInsertPluginType::close (void)
 const QString& qtractorAudioInsertPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText += QObject::tr("Audio Insert Send/Return pseudo-plugin.");
+		m_sAboutText += QObject::tr("Insert Send/Return pseudo-plugin (Audio)");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
@@ -285,7 +285,7 @@ void qtractorMidiInsertPluginType::close (void)
 const QString& qtractorMidiInsertPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText += QObject::tr("MIDI Insert Send/Return pseudo-plugin.");
+		m_sAboutText += QObject::tr("Insert Send/Return pseudo-plugin (MIDI)");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
@@ -747,10 +747,7 @@ void qtractorMidiInsertPlugin::process (
 {
 	qtractorMidiManager *pMidiManager = list()->midiManager();
 	if (pMidiManager) {
-		// Merge buffered input events...
-		if (m_pMidiInputBuffer)
-			pMidiManager->processInputBuffer(m_pMidiInputBuffer);
-		// Enqueue merged events into sends/output bus...
+		// Enqueue input events into sends/output bus...
 		if (m_pMidiOutputBuffer) {
 			snd_seq_event_t *pEventBuffer = pMidiManager->events();
 			const unsigned int iEventCount = pMidiManager->count();
@@ -762,6 +759,9 @@ void qtractorMidiInsertPlugin::process (
 			// Wake the asynchronous working thread...
 			qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
 		}
+		// Merge events from returns/input events...
+		if (m_pMidiInputBuffer)
+			pMidiManager->processInputBuffer(m_pMidiInputBuffer);
 	}
 
 	const unsigned short iChannels = channels();
@@ -951,7 +951,7 @@ void qtractorAudioAuxSendPluginType::close (void)
 const QString& qtractorAudioAuxSendPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText += QObject::tr("Audio Aux Send pseudo-plugin.");
+		m_sAboutText += QObject::tr("Aux Send pseudo-plugin (Audio)");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
@@ -1013,7 +1013,7 @@ void qtractorMidiAuxSendPluginType::close (void)
 const QString& qtractorMidiAuxSendPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		m_sAboutText += QObject::tr("MIDI Aux Send pseudo-plugin.");
+		m_sAboutText += QObject::tr("Aux Send pseudo-plugin (MIDI)");
 		m_sAboutText += '\n';
 		m_sAboutText += QTRACTOR_WEBSITE;
 		m_sAboutText += '\n';
@@ -1180,7 +1180,8 @@ const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
 // Audio bus to appear on plugin lists.
 void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 {
-	const QString& sText = (m_pAudioBus ? m_sAudioBusName : type()->name());
+	const QString& sText = QObject::tr("%1 (Audio)")
+		.arg(m_pAudioBus ? m_sAudioBusName : type()->name());
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
 		iter.next()->setText(sText);
@@ -1421,7 +1422,8 @@ const QString& qtractorMidiAuxSendPlugin::midiBusName (void) const
 // Audio bus to appear on plugin lists.
 void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 {
-	const QString& sText = (m_pMidiBus ? m_sMidiBusName : type()->name());
+	const QString& sText = QObject::tr("%1 (MIDI)")
+		.arg(m_pMidiBus ? m_sMidiBusName : type()->name());
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
 		iter.next()->setText(sText);
