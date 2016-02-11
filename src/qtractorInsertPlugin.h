@@ -109,15 +109,15 @@ public:
 
 
 //----------------------------------------------------------------------------
-// qtractorAudioInsertPluginParam -- Audio insert plugin control input port.
+// qtractorInsertPluginParam -- Common insert plugin control input port.
 //
 
-class qtractorAudioInsertPluginParam : public qtractorPluginParam
+class qtractorInsertPluginParam : public qtractorPluginParam
 {
 public:
 
 	// Constructors.
-	qtractorAudioInsertPluginParam(qtractorPlugin *pPlugin,
+	qtractorInsertPluginParam(qtractorPlugin *pPlugin,
 		unsigned long iIndex) : qtractorPluginParam(pPlugin, iIndex) {}
 
 	// Port range hints predicate methods.
@@ -125,30 +125,6 @@ public:
 	bool isBoundedAbove() const { return true; }
 	bool isDefaultValue() const { return true; }
 	bool isLogarithmic() const { return true; }
-	bool isSampleRate() const { return false; }
-	bool isInteger() const { return false; }
-	bool isToggled() const { return false; }
-	bool isDisplay() const { return false; }
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorMidiInsertPluginParam -- MIDI Insert plugin control input port.
-//
-
-class qtractorMidiInsertPluginParam : public qtractorPluginParam
-{
-public:
-
-	// Constructors.
-	qtractorMidiInsertPluginParam(qtractorPlugin *pPlugin,
-		unsigned long iIndex) : qtractorPluginParam(pPlugin, iIndex) {}
-
-	// Port range hints predicate methods.
-	bool isBoundedBelow() const { return true; }
-	bool isBoundedAbove() const { return true; }
-	bool isDefaultValue() const { return true; }
-	bool isLogarithmic() const { return false; }
 	bool isSampleRate() const { return false; }
 	bool isInteger() const { return false; }
 	bool isToggled() const { return false; }
@@ -201,13 +177,14 @@ private:
 	// Instance variables.
 	qtractorAudioBus *m_pAudioBus;
 
-	qtractorAudioInsertPluginParam *m_pSendGainParam;
-	qtractorAudioInsertPluginParam *m_pDryWetParam;
+	qtractorInsertPluginParam *m_pSendGainParam;
+	qtractorInsertPluginParam *m_pDryGainParam;
+	qtractorInsertPluginParam *m_pWetGainParam;
 
 	// Custom optimized processors.
-	void (*m_pfnProcessSendGain)(float **, unsigned int,
+	void (*m_pfnProcessGain)(float **, unsigned int,
 		unsigned short, float);
-	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
+	void (*m_pfnProcessAdd)(float **, float **, unsigned int,
 		unsigned short, float);
 };
 
@@ -260,8 +237,9 @@ private:
 	qtractorMidiInputBuffer   *m_pMidiInputBuffer;
 	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
 
-	qtractorMidiInsertPluginParam *m_pSendGainParam;
-	qtractorMidiInsertPluginParam *m_pDryWetParam;
+	qtractorInsertPluginParam *m_pSendGainParam;
+	qtractorInsertPluginParam *m_pDryGainParam;
+	qtractorInsertPluginParam *m_pWetGainParam;
 };
 
 
@@ -388,10 +366,10 @@ private:
 	qtractorAudioBus *m_pAudioBus;
 	QString           m_sAudioBusName;
 
-	qtractorAudioInsertPluginParam *m_pSendGainParam;
+	qtractorInsertPluginParam *m_pSendGainParam;
 
 	// Custom optimized processors.
-	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
+	void (*m_pfnProcessAdd)(float **, float **, unsigned int,
 		unsigned short, float);
 };
 
@@ -445,7 +423,7 @@ private:
 
 	qtractorMidiOutputBuffer *m_pMidiOutputBuffer;
 
-	qtractorMidiInsertPluginParam *m_pSendGainParam;
+	qtractorInsertPluginParam *m_pSendGainParam;
 };
 
 

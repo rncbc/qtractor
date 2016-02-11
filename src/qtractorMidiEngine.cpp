@@ -1869,7 +1869,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		qtractorMidiInputBuffer *pMidiInputBuffer
 			= m_inputBuffers.value(iAlsaPort, NULL);
 		if (pMidiInputBuffer)
-			pMidiInputBuffer->push(pEv); //..t0
+			pMidiInputBuffer->enqueue(pEv); //..t0
 	}
 
 	// Trap controller commands...

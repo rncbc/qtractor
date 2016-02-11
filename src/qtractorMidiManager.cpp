@@ -280,9 +280,9 @@ bool qtractorMidiInputBuffer::enqueue (
 {
 	if (pEv->type == SND_SEQ_EVENT_NOTE || // Unlikely real-time input...
 		pEv->type == SND_SEQ_EVENT_NOTEON) {
-		if (m_pGainSubject) {
-			const float fGain = m_pGainSubject->value();
-			int val = int(fGain * float(pEv->data.note.velocity));
+		if (m_pWetGainSubject) {
+			const float fWetGain = m_pWetGainSubject->value();
+			int val = int(fWetGain * float(pEv->data.note.velocity));
 			if (val < 1)
 				val = 1;
 			else
@@ -292,7 +292,7 @@ bool qtractorMidiInputBuffer::enqueue (
 		}
 	}
 
-	return qtractorMidiBuffer::insert(pEv, iTime);
+	return qtractorMidiBuffer::push(pEv, iTime);
 }
 
 
@@ -801,9 +801,25 @@ void qtractorMidiManager::processInputBuffer (
 
 	snd_seq_event_t *pEv;
 
+	qtractorSubject *pDryGainSubject = pMidiInputBuffer->dryGainSubject();
+
 	for (unsigned int i = 0; i < m_iEventCount; ++i) {
 		pEv = &m_pEventBuffer[i];
-		if (!pMidiInputBuffer->enqueue(pEv, iFrameTime + pEv->time.tick))
+		// Apply gain (through/dry)...
+		if (pDryGainSubject
+			&& (pEv->type == SND_SEQ_EVENT_NOTE || // Unlikely real-time input...
+				pEv->type == SND_SEQ_EVENT_NOTEON)) {
+			const float fDryGain = pDryGainSubject->value();
+			int val = int(fDryGain * float(pEv->data.note.velocity));
+			if (val < 1)
+				val = 1;
+			else
+			if (val > 127)
+				val = 127;
+			pEv->data.note.velocity = val;
+		}
+		// Merge input through...
+		if (!pMidiInputBuffer->insert(pEv, iFrameTime + pEv->time.tick))
 			break;
 	}
 

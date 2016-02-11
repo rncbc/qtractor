@@ -97,21 +97,28 @@ public:
 	// Constructor.
 	qtractorMidiInputBuffer(
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
-		: qtractorMidiBuffer(iBufferSize), m_pGainSubject(NULL) {}
+		: qtractorMidiBuffer(iBufferSize),
+			m_pDryGainSubject(NULL), m_pWetGainSubject(NULL) {}
 
 	// Velocity/gain accessors.
-	void setGainSubject(qtractorSubject *pGainSubject)
-		{ m_pGainSubject = pGainSubject; }
-	qtractorSubject *gaiSubject() const
-		{ return m_pGainSubject; }
+	void setDryGainSubject(qtractorSubject *pDryGainSubject)
+		{ m_pDryGainSubject = pDryGainSubject; }
+	qtractorSubject *dryGainSubject() const
+		{ return m_pDryGainSubject; }
+
+	void setWetGainSubject(qtractorSubject *pWetGainSubject)
+		{ m_pWetGainSubject = pWetGainSubject; }
+	qtractorSubject *wetGainSubject() const
+		{ return m_pWetGainSubject; }
 
 	// Input event enqueuer.
-	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime);
+	bool enqueue(snd_seq_event_t *pEv, unsigned long iTime = 0);
 
 private:
 
 	// Instance mmembers.
-	qtractorSubject *m_pGainSubject;
+	qtractorSubject *m_pDryGainSubject;
+	qtractorSubject *m_pWetGainSubject;
 };
 
 

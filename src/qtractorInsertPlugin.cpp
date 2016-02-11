@@ -63,7 +63,7 @@ static inline bool sse_enabled (void)
 }
 
 // SSE enabled processor versions.
-static inline void sse_process_send_gain (
+static inline void sse_process_gain (
 	float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
 {
@@ -87,7 +87,7 @@ static inline void sse_process_send_gain (
 	}
 }
 
-static inline void sse_process_dry_wet (
+static inline void sse_process_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
 {
@@ -119,7 +119,7 @@ static inline void sse_process_dry_wet (
 
 
 // Standard processor versions.
-static inline void std_process_send_gain (
+static inline void std_process_gain (
 	float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
 {
@@ -130,7 +130,7 @@ static inline void std_process_send_gain (
 	}
 }
 
-static inline void std_process_dry_wet (
+static inline void std_process_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
 {
@@ -313,32 +313,40 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	// Custom optimized processors.
 #if defined(__SSE__)
 	if (sse_enabled()) {
-		m_pfnProcessSendGain = sse_process_send_gain;
-		m_pfnProcessDryWet = sse_process_dry_wet;
+		m_pfnProcessGain = sse_process_gain;
+		m_pfnProcessAdd = sse_process_add;
 	} else {
 #endif
-	m_pfnProcessSendGain = std_process_send_gain;
-	m_pfnProcessDryWet = std_process_dry_wet;
+	m_pfnProcessGain = std_process_gain;
+	m_pfnProcessAdd = std_process_add;
 #if defined(__SSE__)
 	}
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorAudioInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
-	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setMaxValue(4.0f);
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 
-	m_pDryWetParam = new qtractorAudioInsertPluginParam(this, 1);
-	m_pDryWetParam->setName(QObject::tr("Dry / Wet"));
-	m_pDryWetParam->setMinValue(0.0f);
-	m_pDryWetParam->setMaxValue(2.0f);
-	m_pDryWetParam->setDefaultValue(1.0f);
-	m_pDryWetParam->setValue(1.0f, false);
-	addParam(m_pDryWetParam);
+	m_pDryGainParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryGainParam->setName(QObject::tr("Dry Gain"));
+	m_pDryGainParam->setMinValue(0.0f);
+	m_pDryGainParam->setMaxValue(4.0f);
+	m_pDryGainParam->setDefaultValue(1.0f);
+	m_pDryGainParam->setValue(1.0f, false);
+	addParam(m_pDryGainParam);
+
+	m_pWetGainParam = new qtractorInsertPluginParam(this, 2);
+	m_pWetGainParam->setName(QObject::tr("Wet Gain"));
+	m_pWetGainParam->setMinValue(0.0f);
+	m_pWetGainParam->setMaxValue(4.0f);
+	m_pWetGainParam->setDefaultValue(1.0f);
+	m_pWetGainParam->setValue(1.0f, false);
+	addParam(m_pWetGainParam);
 
 	// Setup plugin instance...
 	//setChannels(channels());
@@ -466,11 +474,13 @@ void qtractorAudioInsertPlugin::process (
 	}
 
 	const float fSendGain = m_pSendGainParam->value();
-	(*m_pfnProcessSendGain)(ppOut, nframes, iChannels, fSendGain);
+	(*m_pfnProcessGain)(ppOut, nframes, iChannels, fSendGain);
 
-	const float fDryWet = m_pDryWetParam->value();
-	if (fDryWet > 0.001f)
-		(*m_pfnProcessDryWet)(ppOBuffer, ppIBuffer, nframes, iChannels, fDryWet);
+	const float fWetGain = m_pWetGainParam->value();
+	(*m_pfnProcessGain)(ppOBuffer, nframes, iChannels, fWetGain);
+
+	const float fDryGain = m_pDryGainParam->value();
+	(*m_pfnProcessAdd)(ppOBuffer, ppIBuffer, nframes, iChannels, fDryGain);
 
 //	m_pAudioBus->process_commit(nframes);
 }
@@ -593,21 +603,29 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorMidiInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
-	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setMaxValue(4.0f);
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 
-	m_pDryWetParam = new qtractorMidiInsertPluginParam(this, 1);
-	m_pDryWetParam->setName(QObject::tr("Dry / Wet"));
-	m_pDryWetParam->setMinValue(0.0f);
-	m_pDryWetParam->setMaxValue(2.0f);
-	m_pDryWetParam->setDefaultValue(1.0f);
-	m_pDryWetParam->setValue(1.0f, false);
-	addParam(m_pDryWetParam);
+	m_pDryGainParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryGainParam->setName(QObject::tr("Dry Gain"));
+	m_pDryGainParam->setMinValue(0.0f);
+	m_pDryGainParam->setMaxValue(4.0f);
+	m_pDryGainParam->setDefaultValue(1.0f);
+	m_pDryGainParam->setValue(1.0f, false);
+	addParam(m_pDryGainParam);
+
+	m_pWetGainParam = new qtractorInsertPluginParam(this, 2);
+	m_pWetGainParam->setName(QObject::tr("Wet Gain"));
+	m_pWetGainParam->setMinValue(0.0f);
+	m_pWetGainParam->setMaxValue(4.0f);
+	m_pWetGainParam->setDefaultValue(1.0f);
+	m_pWetGainParam->setValue(1.0f, false);
+	addParam(m_pWetGainParam);
 
 	// Setup plugin instance...
 	//setChannels(channels());
@@ -698,7 +716,8 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// Create the private MIDI buffers...
 	m_pMidiInputBuffer = new qtractorMidiInputBuffer();
-	m_pMidiInputBuffer->setGainSubject(m_pDryWetParam->subject());
+	m_pMidiInputBuffer->setDryGainSubject(m_pDryGainParam->subject());
+	m_pMidiInputBuffer->setWetGainSubject(m_pWetGainParam->subject());
 
 	m_pMidiOutputBuffer = new qtractorMidiOutputBuffer(m_pMidiBus);
 	m_pMidiOutputBuffer->setGainSubject(m_pSendGainParam->subject());
@@ -1041,19 +1060,19 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	// Custom optimized processors.
 #if defined(__SSE__)
 	if (sse_enabled()) {
-		m_pfnProcessDryWet = sse_process_dry_wet;
+		m_pfnProcessAdd = sse_process_add;
 	} else {
 #endif
-		m_pfnProcessDryWet = std_process_dry_wet;
+		m_pfnProcessAdd = std_process_add;
 #if defined(__SSE__)
 	}
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorAudioInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
-	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setMaxValue(4.0f);
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
@@ -1205,7 +1224,7 @@ void qtractorAudioAuxSendPlugin::process (
 		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
 
 	const float fSendGain = m_pSendGainParam->value();
-	(*m_pfnProcessDryWet)(ppOut, ppOBuffer, nframes, iChannels, fSendGain);
+	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iChannels, fSendGain);
 
 //	m_pAudioBus->process_commit(nframes);
 }
@@ -1275,10 +1294,10 @@ qtractorMidiAuxSendPlugin::qtractorMidiAuxSendPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorMidiInsertPluginParam(this, 0);
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
-	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setMaxValue(4.0f);
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
