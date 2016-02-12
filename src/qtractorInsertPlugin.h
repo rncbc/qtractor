@@ -184,8 +184,8 @@ private:
 	// Custom optimized processors.
 	void (*m_pfnProcessGain)(float **, unsigned int,
 		unsigned short, float);
-	void (*m_pfnProcessAdd)(float **, float **, unsigned int,
-		unsigned short, float);
+	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
+		unsigned short, float, float);
 };
 
 

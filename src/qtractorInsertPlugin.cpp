@@ -87,6 +87,44 @@ static inline void sse_process_gain (
 	}
 }
 
+static inline void sse_process_dry_wet (
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, float fDry, float fWet )
+{
+	__m128 v0 = _mm_load_ps1(&fDry);
+	__m128 v1 = _mm_load_ps1(&fWet);
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pBuffer = ppBuffer[i];
+		float *pFrames = ppFrames[i];
+		unsigned int nframes = iFrames;
+		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes) {
+			*pBuffer   *= fWet;
+			*pBuffer++ += fDry * *pFrames++;
+		}
+		for (; nframes >= 4; nframes -= 4) {
+			_mm_store_ps(pBuffer,
+				_mm_mul_ps(
+					_mm_loadu_ps(pBuffer), v1
+				)
+			);
+			_mm_store_ps(pBuffer,
+				_mm_add_ps(
+					_mm_loadu_ps(pBuffer),
+					_mm_mul_ps(
+						_mm_loadu_ps(pFrames), v0)
+					)
+			);
+			pFrames += 4;
+			pBuffer += 4;
+		}
+		for (; nframes > 0; --nframes) {
+			*pBuffer   *= fWet;
+			*pBuffer++ += fDry * *pFrames++;
+		}
+	}
+}
+
 static inline void sse_process_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
@@ -127,6 +165,20 @@ static inline void std_process_gain (
 		float *pFrames = ppFrames[i];
 		for (unsigned int n = 0; n < iFrames; ++n)
 			*pFrames++ *= fGain;
+	}
+}
+
+static inline void std_process_dry_wet (
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, float fDry, float fWet )
+{
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pBuffer = ppBuffer[i];
+		float *pFrames = ppFrames[i];
+		for (unsigned int n = 0; n < iFrames; ++n) {
+			*pBuffer   *= fWet;
+			*pBuffer++ += fDry * *pFrames++;
+		}
 	}
 }
 
@@ -314,11 +366,11 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 #if defined(__SSE__)
 	if (sse_enabled()) {
 		m_pfnProcessGain = sse_process_gain;
-		m_pfnProcessAdd = sse_process_add;
+		m_pfnProcessDryWet = sse_process_dry_wet;
 	} else {
 #endif
 	m_pfnProcessGain = std_process_gain;
-	m_pfnProcessAdd = std_process_add;
+	m_pfnProcessDryWet = std_process_dry_wet;
 #if defined(__SSE__)
 	}
 #endif
@@ -473,14 +525,12 @@ void qtractorAudioInsertPlugin::process (
 		::memcpy(ppOBuffer[i], ppIn[i], nframes * sizeof(float));
 	}
 
-	const float fSendGain = m_pSendGainParam->value();
-	(*m_pfnProcessGain)(ppOut, nframes, iChannels, fSendGain);
+	const float fGain = m_pSendGainParam->value();
+	(*m_pfnProcessGain)(ppOut, nframes, iChannels, fGain);
 
-	const float fWetGain = m_pWetGainParam->value();
-	(*m_pfnProcessGain)(ppOBuffer, nframes, iChannels, fWetGain);
-
-	const float fDryGain = m_pDryGainParam->value();
-	(*m_pfnProcessAdd)(ppOBuffer, ppIBuffer, nframes, iChannels, fDryGain);
+	const float fDry = m_pDryGainParam->value();
+	const float fWet = m_pWetGainParam->value();
+	(*m_pfnProcessDryWet)(ppOBuffer, ppIBuffer, nframes, iChannels, fDry, fWet);
 
 //	m_pAudioBus->process_commit(nframes);
 }
@@ -1223,8 +1273,8 @@ void qtractorAudioAuxSendPlugin::process (
 	for (unsigned short i = 0; i < iChannels; ++i)
 		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
 
-	const float fSendGain = m_pSendGainParam->value();
-	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iChannels, fSendGain);
+	const float fGain = m_pSendGainParam->value();
+	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iChannels, fGain);
 
 //	m_pAudioBus->process_commit(nframes);
 }

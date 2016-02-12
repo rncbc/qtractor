@@ -7,8 +7,8 @@ ChangeLog
 GIT HEAD
 
 - Old Dry/Wet Insert and Aux-send pseudo-plugin parameters
-  are now split this couple of respective Dry and Wet Gain
-  ones. What else could it be? :) (EXPERIMENTAL)
+  are now split into separate Dry and Wet controls, what
+  else could it possibly be? :) (EXPERIMENTAL)
 
 - Brand new MIDI Insert and Aux-Send pseudo-plugins are now 
   implemented with very similar semantics as the respective
