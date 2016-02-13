@@ -1348,8 +1348,10 @@ void qtractorPlugin::realizeValues (void)
 		qtractorPluginParam *pParam = findParam(iIndex);
 		if (pParam) {
 			const QString& sName = m_values.names.value(iIndex);
-			if (!sName.isEmpty() && sName != pParam->name())
-				pParam = findParamName(sName);
+			if (!sName.isEmpty() && sName != pParam->name()) {
+				qtractorPluginParam *pParamEx = findParamName(sName);
+				if (pParamEx) pParam = pParamEx;
+			}
 			if (pParam)
 				pParam->setValue(param.value(), true);
 		}
