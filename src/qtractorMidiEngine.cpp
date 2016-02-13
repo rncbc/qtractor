@@ -1758,17 +1758,21 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		// Must be a MIDI track in capture/passthru
-		// mode and for the intended channel...
-		if (pTrack->trackType() == qtractorTrack::Midi
-			&& (pTrack->isRecord() || pSession->isTrackMonitor(pTrack))
+		// Must be a MIDI track...
+		if (pTrack->trackType() != qtractorTrack::Midi)
+			continue;
+		// Must be capture/passthru mode
+		// and for the intended channel...
+		const bool bRecord  = pTrack->isRecord();
+		const bool bMonitor = pSession->isTrackMonitor(pTrack);
+		if ((bRecord || bMonitor)
 		//	&& !pTrack->isMute() && (!pSession->soloTracks() || pTrack->isSolo())
 			&& pSession->isTrackMidiChannel(pTrack, channel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
-				if (pTrack->isRecord() && bRecording) {
+				if (bRecord && bRecording) {
 					qtractorMidiSequence *pSeq = NULL;
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
@@ -1802,7 +1806,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pMidiMonitor)
 					pMidiMonitor->enqueue(type, value);
 				// Output monitoring on record...
-				if (pSession->isTrackMonitor(pTrack)) {
+				if (bMonitor) {
 					pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
 					if (pMidiBus && pMidiBus->midiMonitor_out()) {
 						// FIXME: MIDI-thru channel filtering prolog... 

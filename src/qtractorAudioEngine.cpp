@@ -853,13 +853,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	qtractorBus *pBus;
 	qtractorAudioBus *pAudioBus;
 
-	// Prepare all current audio buses...
-	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
-		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus)
-			pAudioBus->process_prepare(nframes);
-	}
-
 	// Prepare all extra audio buses...
 	for (pBus = busesEx().first(); pBus; pBus = pBus->next()) {
 		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
@@ -867,11 +860,13 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pAudioBus->process_prepare(nframes);
 	}
 
-	// Monitor all current audio buses...
+	// Prepare and monitor all current audio buses...
 	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
 		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus)
+		if (pAudioBus) {
+			pAudioBus->process_prepare(nframes);
 			pAudioBus->process_monitor(nframes);
+		}
 	}
 
 	// The owned buses too, if any...
