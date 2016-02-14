@@ -749,9 +749,9 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_TYPE_NONE       0
 #define LV2_UI_TYPE_QT4        1
 #define LV2_UI_TYPE_QT5        2
-#define LV2_UI_TYPE_GTK        3
-#define LV2_UI_TYPE_X11        4
-#define LV2_UI_TYPE_EXTERNAL   5
+#define LV2_UI_TYPE_EXTERNAL   3
+#define LV2_UI_TYPE_GTK        4
+#define LV2_UI_TYPE_X11        5
 
 #ifndef LV2_UI__Qt5UI
 #define LV2_UI__Qt5UI	LV2_UI_PREFIX "Qt5UI"

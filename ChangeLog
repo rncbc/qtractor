@@ -22,9 +22,6 @@ GIT HEAD
   LADSPA, DSSI and VST plug-ins, whenever not found on their
   original file-path locations saved in a previous session.
 
-- Demote LV2 plug-in External UI to last resort when more
-  than one single LV2 UI option is provided. (EXPERIMENTAL)
-  
 - Finally added this brand new menu Clip/Cross Fade command,
   aimed on setting fade-in/out ranges properly, just as far
   to (auto)cross-fade consecutive overlapping clips.
