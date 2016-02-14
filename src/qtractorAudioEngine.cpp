@@ -928,8 +928,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 					}
 					// Monitor passthru processing...
 					if (pSession->isTrackMonitor(pTrack)) {
-						pAudioMonitor->process(
-							pInputBus->in(), nframes, pInputBus->channels());
 						// Plugin-chain processing...
 						qtractorAudioBus *pOutputBus
 							= static_cast<qtractorAudioBus *> (pTrack->outputBus());
@@ -938,6 +936,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 							if ((pTrack->pluginList())->activated() > 0)
 								(pTrack->pluginList())->process(
 									pOutputBus->buffer(), nframes);
+							pAudioMonitor->process(pOutputBus->buffer(), nframes);
 							pOutputBus->buffer_commit(nframes);
 							++iOutputBus;
 						}
