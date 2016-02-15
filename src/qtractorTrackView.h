@@ -345,9 +345,14 @@ protected:
 	void moveRubberBand(qtractorRubberBand **ppRubberBand,
 		const QRect& rectDrag, int thick = 1) const;
 
-	// Clip fade-in/out handle and resize detection.
-	bool dragMoveStart(const QPoint& pos,
-		const Qt::KeyboardModifiers& modifiers);
+	// Check whether we're up to drag something on a track or one of its clips.
+	qtractorClip *dragClipStart(const QPoint& pos,
+		const Qt::KeyboardModifiers& modifiers,
+		bool bSelectTrack = false, QRect *pClipRect = NULL);
+	// Check whether we're up to drag a clip fade-in/out or resize handles.
+	bool dragClipStartEx(const QPoint& pos,
+		const Qt::KeyboardModifiers& modifiers,
+		qtractorClip *pClip, const QRect& rectClip);
 
 	// Clip fade-in/out handle drag-move methods.
 	void dragClipFadeMove(const QPoint& pos);

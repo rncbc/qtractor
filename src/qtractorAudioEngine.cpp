@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@
 #include "qtractorMonitor.h"
 #include "qtractorSessionCursor.h"
 #include "qtractorMidiEngine.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 #include "qtractorPlugin.h"
 #include "qtractorClip.h"
 
@@ -853,13 +853,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	qtractorBus *pBus;
 	qtractorAudioBus *pAudioBus;
 
-	// Prepare all current audio buses...
-	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
-		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus)
-			pAudioBus->process_prepare(nframes);
-	}
-
 	// Prepare all extra audio buses...
 	for (pBus = busesEx().first(); pBus; pBus = pBus->next()) {
 		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
@@ -867,11 +860,13 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pAudioBus->process_prepare(nframes);
 	}
 
-	// Monitor all current audio buses...
+	// Prepare and monitor all current audio buses...
 	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
 		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus)
+		if (pAudioBus) {
+			pAudioBus->process_prepare(nframes);
 			pAudioBus->process_monitor(nframes);
+		}
 	}
 
 	// The owned buses too, if any...
@@ -925,27 +920,27 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
 				// Pre-monitoring...
-				if (pAudioMonitor && pInputBus) {
-					// Record non-passthru metering...
-					if (pTrack->isRecord()) {
-						pAudioMonitor->process_meter(
-							pInputBus->in(), nframes, pInputBus->channels());
-					}
-					// Monitor passthru processing...
-					if (pSession->isTrackMonitor(pTrack)) {
-						pAudioMonitor->process(
-							pInputBus->in(), nframes, pInputBus->channels());
-						// Plugin-chain processing...
-						qtractorAudioBus *pOutputBus
-							= static_cast<qtractorAudioBus *> (pTrack->outputBus());
-						if (pOutputBus) {
-							pOutputBus->buffer_prepare(nframes, pInputBus);
-							if ((pTrack->pluginList())->activated() > 0)
-								(pTrack->pluginList())->process(
-									pOutputBus->buffer(), nframes);
-							pOutputBus->buffer_commit(nframes);
-							++iOutputBus;
-						}
+				if (pAudioMonitor == NULL)
+					continue;
+				// Record non-passthru metering...
+				if (pTrack->isRecord() && pInputBus) {
+					pAudioMonitor->process_meter(
+						pInputBus->in(), nframes, pInputBus->channels());
+				}
+				// Monitor passthru/insert processing...
+				qtractorPluginList *pPluginList = pTrack->pluginList();
+				if (pSession->isTrackMonitor(pTrack)
+					|| pPluginList->isAudioInsertActivated()) {
+					// Plugin-chain processing...
+					qtractorAudioBus *pOutputBus
+						= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+					if (pOutputBus) {
+						pOutputBus->buffer_prepare(nframes, pInputBus);
+						if (pPluginList->isActivated())
+							pPluginList->process(pOutputBus->buffer(), nframes);
+						pAudioMonitor->process(pOutputBus->buffer(), nframes);
+						pOutputBus->buffer_commit(nframes);
+						++iOutputBus;
 					}
 				}
 			}
@@ -2472,7 +2467,7 @@ void qtractorAudioBus::process_monitor ( unsigned int nframes )
 		= qtractorAudioBus::busMode();
 
 	if (busMode & qtractorBus::Input) {
-		if (m_pIPluginList && m_pIPluginList->activated())
+		if (m_pIPluginList && m_pIPluginList->isActivated())
 			m_pIPluginList->process(m_ppIBuffer, nframes);
 		if (m_pIAudioMonitor)
 			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
@@ -2490,7 +2485,7 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	if (m_pOPluginList && m_pOPluginList->activated())
+	if (m_pOPluginList && m_pOPluginList->isActivated())
 		m_pOPluginList->process(m_ppOBuffer, nframes);
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->process(m_ppOBuffer, nframes);

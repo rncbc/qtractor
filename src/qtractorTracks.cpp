@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1718,7 +1718,7 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	unsigned long iRangeLength = pSession->editTail() - iRangeStart;
 
 	if (pClip == NULL)
-		pClip = currentClip();
+		pClip = m_pTrackView->currentClip();
 	if (pClip) {
 		if (pClip->isClipSelected()) {
 			iRangeStart  = pClip->clipSelectStart();
@@ -1759,6 +1759,72 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 
 	selectionChangeNotify();
 	return true;
+}
+
+// Auto-crossfade a give clip.
+bool qtractorTracks::crossFadeClip ( qtractorClip *pClip )
+{
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// We'll build a command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip cross-fade"));
+
+	const unsigned long iClipStart = pClip->clipStart();
+	const unsigned long iClipEnd = iClipStart + pClip->clipLength();
+
+	qtractorClip *pClip2 = pTrack->clips().first();
+
+	while (pClip2 && pClip2->clipStart() < iClipEnd) {
+		// Avoid cross-fading over the very self...
+		const unsigned long iClipStart2 = pClip2->clipStart();
+		const unsigned long iClipEnd2 = iClipStart2 + pClip2->clipLength();
+		if (iClipEnd2 > iClipStart && iClipStart > iClipStart2) {
+			const unsigned long iCrossFadeLength = iClipEnd2 - iClipStart;
+			if (pClip2->fadeOutLength() != iCrossFadeLength) {
+				pClipCommand->fadeOutClip(pClip2,
+					iCrossFadeLength, pClip2->fadeOutType());
+			}
+			if (pClip->fadeInLength() != iCrossFadeLength) {
+				pClipCommand->fadeInClip(pClip,
+					iCrossFadeLength, pClip->fadeInType());
+			}
+		}
+		else
+		if (iClipStart2 < iClipEnd && iClipEnd < iClipEnd2) {
+			const unsigned long iCrossFadeLength = iClipEnd - iClipStart2;
+			if (pClip->fadeOutLength() != iCrossFadeLength) {
+				pClipCommand->fadeOutClip(pClip,
+					iCrossFadeLength, pClip->fadeOutType());
+			}
+			if (pClip2->fadeInLength() != iCrossFadeLength) {
+				pClipCommand->fadeInClip(pClip2,
+					iCrossFadeLength, pClip2->fadeInType());
+			}
+		}
+		// Move forward...
+		pClip2 = pClip2->next();
+	}
+
+	// Check if valid...
+	if (pClipCommand->isEmpty()) {
+		delete pClipCommand;
+		return false;
+	}
+
+	// Make it undoable command
+	return pSession->execute(pClipCommand);
 }
 
 

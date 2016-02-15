@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,10 +116,6 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 			pOptions->sPluginSearch);
 		m_ui.PluginTypeComboBox->setCurrentIndex(pOptions->iPluginType);
 		m_ui.PluginActivateCheckBox->setChecked(pOptions->bPluginActivate);
-		g_pluginPath.setPaths(qtractorPluginType::Ladspa, pOptions->ladspaPaths);
-		g_pluginPath.setPaths(qtractorPluginType::Dssi, pOptions->dssiPaths);
-		g_pluginPath.setPaths(qtractorPluginType::Vst, pOptions->vstPaths);
-		g_pluginPath.setPaths(qtractorPluginType::Lv2, pOptions->lv2Paths);
 	}
 
 	// Let the search begin...

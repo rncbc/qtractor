@@ -245,13 +245,6 @@ public:
 	qtractorPluginType::Hint typeHint() const
 		{ return m_typeHint; }
 
-	// Main properties accessors.
-	void setPaths(qtractorPluginType::Hint typeHint, const QString& sPaths);
-	void setPaths(qtractorPluginType::Hint typeHint, const QStringList& paths)
-		{ m_paths.insert(typeHint, paths); }
-	QStringList paths(qtractorPluginType::Hint typeHint) const
-		{ return m_paths.value(typeHint); }
-
 	// Executive methods.
 	bool open();
 	void close();
@@ -266,6 +259,10 @@ public:
 	// Type list reset method.
 	void clear() { qDeleteAll(m_types); m_types.clear(); }
 
+	// Global plugin-paths executive methods.
+	static QStringList pluginPaths(qtractorPluginType::Hint typeHint);
+	static void updatePluginPaths();
+
 protected:
 
 	// Recursive plugin file/path inventory method.
@@ -276,11 +273,12 @@ private:
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
 
-	QHash<qtractorPluginType::Hint, QStringList> m_paths;
-	
 	// Internal plugin file/type list.
 	QList<qtractorPluginFile *> m_files;
 	QList<qtractorPluginType *> m_types;
+
+	// Global plugin-paths.
+	static QHash<qtractorPluginType::Hint, QStringList> g_paths;
 };
 
 
@@ -578,7 +576,7 @@ public:
 
 	void toggleFormEditor(bool bOn);
 	void updateFormParamValue(unsigned long iIndex);
-	void updateFormAudioBusName();
+	void updateFormAuxSendBusName();
 	void refreshForm();
 
 	void freezeFormPos();
@@ -870,11 +868,19 @@ public:
 		{ return m_pMidiManager; }
 
 	// Special activation methods.
-	bool isActivatedAll() const;
-	void updateActivated(bool bActivated);
+	void updateActivated(bool bActivated)
+	{
+		if (bActivated)
+			++m_iActivated;
+		else
+		if (m_iActivated > 0)
+			--m_iActivated;
+	}
 
-	unsigned int activated() const
-		{ return m_iActivated;  }
+	bool isActivatedAll() const
+		{ return (m_iActivated > 0 && m_iActivated >= (unsigned int) count()); }
+	unsigned int isActivated() const
+		{ return (m_iActivated > 0);  }
 
 	// Guarded plugin methods.
 	void addPlugin(qtractorPlugin *pPlugin);
@@ -969,6 +975,25 @@ public:
 	// Whether unique plugin identifiers are in chain.
 	bool isUniqueID(qtractorPluginType *pType) const;
 
+	// Special audio inserts activation state methods.
+	void setAudioInsertActivated(bool bAudioInsertActivated)
+	{
+		if (bAudioInsertActivated)
+			++m_iAudioInsertActivated;
+		else
+		if (m_iAudioInsertActivated > 0)
+			--m_iAudioInsertActivated;
+	}
+
+	bool isAudioInsertActivated() const
+		{ return (m_iAudioInsertActivated > 0); }
+
+protected:
+
+	// Check/sanitize plugin file-path.
+	bool checkPluginFile(QString& sFilename,
+		qtractorPluginType::Hint typeHint) const;
+
 private:
 
 	// Instance variables.
@@ -1000,6 +1025,9 @@ private:
 	QString m_sAudioOutputBusName;
 
 	qtractorBus::ConnectList m_audioOutputs;
+
+	// Audio inserts activation state.
+	unsigned int m_iAudioInsertActivated;
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];

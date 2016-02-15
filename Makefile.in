@@ -70,6 +70,7 @@ headers = \
 	src/qtractorMidiFile.h \
 	src/qtractorMidiFileTempo.h \
 	src/qtractorMidiListView.h \
+	src/qtractorMidiManager.h \
 	src/qtractorMidiMeter.h \
 	src/qtractorMidiMonitor.h \
 	src/qtractorMidiRpn.h \
@@ -174,7 +175,6 @@ sources = \
 	src/qtractorMessageList.h \
 	src/qtractorMessages.cpp \
 	src/qtractorMeter.cpp \
-	src/qtractorMidiBuffer.cpp \
 	src/qtractorMidiClip.cpp \
 	src/qtractorMidiConnect.cpp \
 	src/qtractorMidiControl.cpp \
@@ -193,6 +193,7 @@ sources = \
 	src/qtractorMidiFile.cpp \
 	src/qtractorMidiFileTempo.cpp \
 	src/qtractorMidiListView.cpp \
+	src/qtractorMidiManager.cpp \
 	src/qtractorMidiMeter.cpp \
 	src/qtractorMidiMonitor.cpp \
 	src/qtractorMidiRpn.cpp \

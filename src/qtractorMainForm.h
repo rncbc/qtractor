@@ -203,6 +203,7 @@ public slots:
 	void clipMerge();
 	void clipNormalize();
 	void clipTempoAdjust();
+	void clipCrossFade();
 	void clipRangeSet();
 	void clipLoopSet();
 	void clipImport();
@@ -402,7 +403,6 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
-	void updatePluginPaths();
 	void updateTransportMode();
 	void updateTimebase();
 	void updateMidiControlModes();

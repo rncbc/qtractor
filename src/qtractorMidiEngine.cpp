@@ -33,7 +33,7 @@
 
 #include "qtractorMidiSequence.h"
 #include "qtractorMidiClip.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 #include "qtractorMidiControl.h"
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiSysex.h"
@@ -1524,6 +1524,30 @@ void qtractorMidiEngine::shutOffAllTracks (void) const
 }
 
 
+// ALSA port input registry methods.
+void qtractorMidiEngine::addInputBus ( qtractorMidiBus *pMidiBus )
+{
+	m_inputBuses.insert(pMidiBus->alsaPort(), pMidiBus);
+}
+
+void qtractorMidiEngine::removeInputBus ( qtractorMidiBus *pMidiBus )
+{
+	m_inputBuses.remove(pMidiBus->alsaPort());
+}
+
+
+void qtractorMidiEngine::addInputBuffer (
+	int iAlsaPort, qtractorMidiInputBuffer *pMidiInputBuffer )
+{
+	m_inputBuffers.insert(iAlsaPort, pMidiInputBuffer);
+}
+
+void qtractorMidiEngine::removeInputBuffer ( int iAlsaPort )
+{
+	m_inputBuffers.remove(iAlsaPort);
+}
+
+
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -1568,13 +1592,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 #endif
 
 	switch (pEv->type) {
-	case SND_SEQ_EVENT_NOTE:
+//	case SND_SEQ_EVENT_NOTE: -- Unlikely real-time input.
 	case SND_SEQ_EVENT_NOTEON:
 		type     = qtractorMidiEvent::NOTEON;
 		channel  = pEv->data.note.channel;
 		param    = pEv->data.note.note;
 		value    = pEv->data.note.velocity;
-		duration = pEv->data.note.duration;
+	//	duration = pEv->data.note.duration;
 		if (value == 0) {
 			pEv->type = SND_SEQ_EVENT_NOTEOFF;
 			type = qtractorMidiEvent::NOTEOFF;
@@ -1585,7 +1609,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		channel  = pEv->data.note.channel;
 		param    = pEv->data.note.note;
 		value    = pEv->data.note.velocity;
-		duration = pEv->data.note.duration;
+	//	duration = pEv->data.note.duration;
 		break;
 	case SND_SEQ_EVENT_KEYPRESS:
 		type     = qtractorMidiEvent::KEYPRESS;
@@ -1688,7 +1712,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	qtractorMidiManager *pMidiManager;
 	qtractorTimeScale::Node *pNode;
-	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+
 	const unsigned long iTime = m_iTimeStart + tick;
 
 	// Wrap in recording, if any...
@@ -1722,28 +1747,32 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
+#if 0//-- Unlikely real-time input.
 	unsigned long t2 = t1;
-
 	if (type == qtractorMidiEvent::NOTEON && duration > 0) {
 		const unsigned long iTimeOff = iTime + (duration - 1);
 		pNode = cursor.seekTick(iTimeOff);
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
-
+#endif
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		// Must be a MIDI track in capture/passthru
-		// mode and for the intended channel...
-		if (pTrack->trackType() == qtractorTrack::Midi
-			&& (pTrack->isRecord() || pSession->isTrackMonitor(pTrack))
+		// Must be a MIDI track...
+		if (pTrack->trackType() != qtractorTrack::Midi)
+			continue;
+		// Must be capture/passthru mode
+		// and for the intended channel...
+		const bool bRecord  = pTrack->isRecord();
+		const bool bMonitor = pSession->isTrackMonitor(pTrack);
+		if ((bRecord || bMonitor)
 		//	&& !pTrack->isMute() && (!pSession->soloTracks() || pTrack->isSolo())
 			&& pSession->isTrackMidiChannel(pTrack, channel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
-				if (pTrack->isRecord() && bRecording) {
+				if (bRecord && bRecording) {
 					qtractorMidiSequence *pSeq = NULL;
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
@@ -1777,7 +1806,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pMidiMonitor)
 					pMidiMonitor->enqueue(type, value);
 				// Output monitoring on record...
-				if (pSession->isTrackMonitor(pTrack)) {
+				if (bMonitor) {
 					pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
 					if (pMidiBus && pMidiBus->midiMonitor_out()) {
 						// FIXME: MIDI-thru channel filtering prolog... 
@@ -1794,12 +1823,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						pMidiManager = (pTrack->pluginList())->midiManager();
 						if (pMidiManager)
-							pMidiManager->queued(pEv, t1, t2);
+							pMidiManager->queued(pEv, t1); //..t2
 						if (!pMidiBus->isMonitor()
 							&& pMidiBus->pluginList_out()) {
 							pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 							if (pMidiManager)
-								pMidiManager->queued(pEv, t1, t2);
+								pMidiManager->queued(pEv, t1); //..t2
 						}
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
@@ -1809,39 +1838,42 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		}
 	}
 
-	// Bus monitoring...
-	for (qtractorBus *pBus = buses().first(); pBus; pBus = pBus->next()) {
-		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pBus);
-		if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
-			// Input monitoring...
-			if (pMidiBus->midiMonitor_in())
-				pMidiBus->midiMonitor_in()->enqueue(type, value);
-			// Do it for the MIDI input plugins too...
-			if (pMidiBus->pluginList_in()) {
-				pMidiManager = (pMidiBus->pluginList_in())->midiManager();
+	// MIDI Bus monitoring...
+	qtractorMidiBus *pMidiBus = m_inputBuses.value(iAlsaPort, NULL);
+	if (pMidiBus) {
+		// Input monitoring...
+		if (pMidiBus->midiMonitor_in())
+			pMidiBus->midiMonitor_in()->enqueue(type, value);
+		// Do it for the MIDI input plugins too...
+		if (pMidiBus->pluginList_in()) {
+			pMidiManager = (pMidiBus->pluginList_in())->midiManager();
+			if (pMidiManager)
+				pMidiManager->queued(pEv, t1); //..t2
+		}
+		// Output monitoring on passthru...
+		if (pMidiBus->isMonitor()) {
+			// Do it for the MIDI output plugins too...
+			if (pMidiBus->pluginList_out()) {
+				pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 				if (pMidiManager)
-					pMidiManager->queued(pEv, t1, t2);
+					pMidiManager->queued(pEv, t1); //..t2
 			}
-			// Output monitoring on passthru...
-			if (pMidiBus->isMonitor()) {
-				// Do it for the MIDI output plugins too...
-				if (pMidiBus->pluginList_out()) {
-					pMidiManager = (pMidiBus->pluginList_out())->midiManager();
-					if (pMidiManager)
-						pMidiManager->queued(pEv, t1, t2);
-				}
-				if (pMidiBus->midiMonitor_out()) {
-					// MIDI-thru: same event redirected...
-					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
-					snd_seq_ev_set_subs(pEv);
-					snd_seq_ev_set_direct(pEv);
-					snd_seq_event_output_direct(m_pAlsaSeq, pEv);
-					// Done with MIDI-thru.
-					pMidiBus->midiMonitor_out()->enqueue(type, value);
-				}
+			if (pMidiBus->midiMonitor_out()) {
+				// MIDI-thru: same event redirected...
+				snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
+				snd_seq_ev_set_subs(pEv);
+				snd_seq_ev_set_direct(pEv);
+				snd_seq_event_output_direct(m_pAlsaSeq, pEv);
+				// Done with MIDI-thru.
+				pMidiBus->midiMonitor_out()->enqueue(type, value);
 			}
 		}
+	} else {
+		// Input buffers (eg. insert returns)...
+		qtractorMidiInputBuffer *pMidiInputBuffer
+			= m_inputBuffers.value(iAlsaPort, NULL);
+		if (pMidiInputBuffer)
+			pMidiInputBuffer->enqueue(pEv); //..t0
 	}
 
 	// Trap controller commands...
@@ -2097,6 +2129,10 @@ void qtractorMidiEngine::driftCheck (void)
 //	if (pSession->isRecording())
 //		return;
 
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
 	if (m_pMetroCursor == NULL)
 		return;
 
@@ -2105,8 +2141,8 @@ void qtractorMidiEngine::driftCheck (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		const long iAudioFrame = m_iFrameStart
-			+ pSession->audioEngine()->jackFrame() - m_iFrameStartEx;
+		const long iAudioFrame
+			= m_iFrameStart	+ pAudioEngine->jackFrame() - m_iFrameStartEx;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
@@ -3802,6 +3838,10 @@ bool qtractorMidiBus::open (void)
 	if (m_pOPluginList)
 		updatePluginList(m_pOPluginList, qtractorPluginList::MidiOutBus);
 
+	// Finally add this to the elligible input registry...
+	if (m_pIMidiMonitor)
+		pMidiEngine->addInputBus(this);
+
 	// Done.
 	return true;
 }
@@ -3818,6 +3858,9 @@ void qtractorMidiBus::close (void)
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
 	if (pAlsaSeq == NULL)
 		return;
+
+	if (m_pIMidiMonitor)
+		pMidiEngine->removeInputBus(this);
 
 	shutOff(true);
 

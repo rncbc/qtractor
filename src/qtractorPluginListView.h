@@ -122,8 +122,6 @@ public slots:
 
 	// User interaction slots.
 	void addPlugin();
-	void addInsertPlugin();
-	void addAuxSendPlugin();
 	void removePlugin();
 	void moveUpPlugin();
 	void moveDownPlugin();
@@ -140,7 +138,15 @@ protected slots:
 	void deactivateAllPlugins();
 	void removeAllPlugins();
 
-	// Insert specific slots.
+	// Audio inserts specific slots.
+	void addAudioInsertPlugin();
+	void addAudioAuxSendPlugin();
+
+	// MIDI inserts specific slots.
+	void addMidiInsertPlugin();
+	void addMidiAuxSendPlugin();
+
+	// Send/return insert specific slots.
 	void insertPluginOutputs();
 	void insertPluginInputs();
 

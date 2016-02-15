@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@
 #include "qtractorAudioBuffer.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiMonitor.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 #include "qtractorInstrument.h"
 #include "qtractorPlugin.h"
 #include "qtractorMixer.h"
@@ -1265,7 +1265,7 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	// Audio buffers needs monitoring and commitment...
 	if (pAudioMonitor && pOutputBus) {
 		// Plugin chain post-processing...
-		if (m_pPluginList->activated() > 0)
+		if (m_pPluginList->isActivated())
 			m_pPluginList->process(pOutputBus->buffer(), nframes);
 		// Monitor passthru...
 		pAudioMonitor->process(pOutputBus->buffer(), nframes);
@@ -1308,7 +1308,7 @@ void qtractorTrack::process_export ( qtractorClip *pClip,
 	// Audio buffers needs monitoring and commitment...
 	if (pAudioMonitor && pOutputBus) {
 		// Plugin chain post-processing...
-		if (m_pPluginList->activated() > 0)
+		if (m_pPluginList->isActivated())
 			m_pPluginList->process(pOutputBus->buffer(), nframes);
 		// Monitor passthru...
 		pAudioMonitor->process(pOutputBus->buffer(), nframes);

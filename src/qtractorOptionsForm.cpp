@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -838,6 +838,7 @@ void qtractorOptionsForm::accept (void)
 		// Reset dirty flags.
 		if (m_iDirtyPluginPaths > 0) {
 			qtractorPluginSelectForm::clearPluginPaths();
+			qtractorPluginPath::updatePluginPaths();
 			m_iDirtyPluginPaths = 0;
 		}
 		m_iDirtyCount = 0;

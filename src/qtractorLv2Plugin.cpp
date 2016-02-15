@@ -26,7 +26,7 @@
 #include "qtractorLv2Plugin.h"
 
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 #endif
 
 #ifdef CONFIG_LV2_PRESETS
@@ -904,6 +904,7 @@ static LilvNode *g_lv2_worker_schedule_hint = NULL;
 
 #ifdef CONFIG_LV2_STATE
 static LilvNode *g_lv2_state_interface_hint = NULL;
+static LilvNode *g_lv2_state_load_default_hint = NULL;
 #endif
 
 // Supported port properties (hints).
@@ -1486,6 +1487,22 @@ void qtractorLv2PluginType::lv2_open (void)
 	qDebug("qtractorLv2PluginType::lv2_open()");
 #endif
 
+	// HACK: set special environment for LV2...
+	const char *LV2_PATH = "LV2_PATH";
+	const QStringList& lv2_paths
+		= qtractorPluginPath::pluginPaths(qtractorPluginType::Lv2);
+	if (lv2_paths.isEmpty()) {
+		::unsetenv(LV2_PATH);
+	} else {
+	#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+		const QString sPathSep(';');
+	#else
+		const QString sPathSep(':');
+	#endif
+		::setenv(LV2_PATH, lv2_paths.join(sPathSep).toUtf8().constData(), 1);
+	}
+
+	// Taking on all the world...
 	g_lv2_world = lilv_world_new();
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -1546,6 +1563,8 @@ void qtractorLv2PluginType::lv2_open (void)
 	// LV2 State: set up supported interface and types...
 	g_lv2_state_interface_hint = lilv_new_uri(g_lv2_world,
 		LV2_STATE__interface);
+	g_lv2_state_load_default_hint = lilv_new_uri(g_lv2_world,
+		LV2_STATE__loadDefaultState);
 #endif
 
 	// Set up the port properties we support (as hints).
@@ -1891,9 +1910,17 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 5];
+	m_lv2_features = new LV2_Feature * [iFeatures + 6];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
+
+#ifdef CONFIG_LV2_STATE
+
+	m_lv2_state_load_default_feature.URI = LV2_STATE__loadDefaultState;
+	m_lv2_state_load_default_feature.data = NULL;
+	m_lv2_features[iFeatures++] = &m_lv2_state_load_default_feature;
+
+#endif	// CONFIG_LV2_STATE
 
 #ifdef CONFIG_LV2_STATE_FILES
 
@@ -2417,6 +2444,12 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		m_pfXBuffer = new float [iBufferSize];
 		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
 	}
+
+#ifdef CONFIG_LV2_STATE
+	// Load default state as needed...
+	if (lilv_plugin_has_feature(lv2_plugin(), g_lv2_state_load_default_hint))
+		lv2_state_load_default();
+#endif
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
@@ -3688,6 +3721,28 @@ const LV2_Worker_Interface *qtractorLv2Plugin::lv2_worker_interface (
 
 
 #ifdef CONFIG_LV2_STATE
+
+// Load default plugin state
+void qtractorLv2Plugin::lv2_state_load_default (void)
+{
+	const LilvNode *default_state = lilv_plugin_get_uri(lv2_plugin());
+	if (default_state == NULL)
+		return;
+
+	LilvState *state = lilv_state_new_from_world(g_lv2_world,
+		&g_lv2_urid_map, default_state);
+	if (state == NULL)
+		return;
+
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i) {
+		lilv_state_restore(state, m_ppInstances[i],
+			qtractor_lv2_set_port_value, this, 0, NULL);
+	}
+
+	lilv_state_free(state);
+}
+
 
 // LV2 State extension data descriptor accessor.
 const LV2_State_Interface *qtractorLv2Plugin::lv2_state_interface (

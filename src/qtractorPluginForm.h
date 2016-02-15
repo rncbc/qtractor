@@ -1,7 +1,7 @@
 // qtractorPluginForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,7 +63,7 @@ public:
 
 	void updateActivated();
 	void updateParamValue(unsigned long iIndex);
-	void updateAudioBusName();
+	void updateAuxSendBusName();
 
 	void toggleEditor(bool bOn);
 
@@ -85,8 +85,8 @@ protected slots:
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
 
-	void changeAudioBusNameSlot(const QString& sAudioBusName);
-	void clickAudioBusNameSlot();
+	void changeAuxSendBusNameSlot(const QString& sAuxSendBusName);
+	void clickAuxSendBusNameSlot();
 
 	void updateDirectAccessParamSlot();
 	void changeDirectAccessParamSlot();

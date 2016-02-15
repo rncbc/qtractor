@@ -56,7 +56,7 @@
 #include "qtractorMidiMeter.h"
 
 #include "qtractorMidiMonitor.h"
-#include "qtractorMidiBuffer.h"
+#include "qtractorMidiManager.h"
 
 #include "qtractorActionControl.h"
 
@@ -913,6 +913,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipTempoAdjustAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipTempoAdjust()));
+	QObject::connect(m_ui.clipCrossFadeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipCrossFade()));
 	QObject::connect(m_ui.clipRangeSetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipRangeSet()));
@@ -1386,7 +1389,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
-	updatePluginPaths();
 	updateTransportMode();
 	updateTimebase();
 	updateAudioPlayer();
@@ -4158,6 +4160,18 @@ void qtractorMainForm::clipTempoAdjust (void)
 }
 
 
+// Cross-fade current overllaping clips...
+void qtractorMainForm::clipCrossFade (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipCrossFade()");
+#endif
+
+	if (m_pTracks)
+		m_pTracks->crossFadeClip();
+}
+
+
 // Set edit-range from current clip.
 void qtractorMainForm::clipRangeSet (void)
 {
@@ -4755,17 +4769,6 @@ void qtractorMainForm::viewOptions (void)
 	if (m_pOptions == NULL)
 		return;
 
-#ifdef CONFIG_LV2
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	const QString sPathSep(';');
-#else
-	const QString sPathSep(':');
-#endif
-	const QString sOldLv2Path = m_pOptions->lv2Paths.join(sPathSep);
-	const QString sOldLv2PresetDir = m_pOptions->sLv2PresetDir;
-	const bool bOldLv2DynManifest = m_pOptions->bLv2DynManifest;
-#endif
-
 	// Check out some initial nullities(tm)...
 	if (m_pOptions->sMessagesFont.isEmpty() && m_pMessages)
 		m_pOptions->sMessagesFont = m_pMessages->messagesFont().toString();
@@ -4819,6 +4822,10 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	const int     iOldOscServerPort      = m_pOptions->iOscServerPort;
+#ifdef CONFIG_LV2
+	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
+#endif
+
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -4861,11 +4868,6 @@ void qtractorMainForm::viewOptions (void)
 			iNeedRestart |= RestartSession;
 		}
 	#ifdef CONFIG_LV2
-		if ((sOldLv2Path != m_pOptions->lv2Paths.join(sPathSep)) ||
-			(sOldLv2PresetDir != m_pOptions->sLv2PresetDir)) {
-			updatePluginPaths();
-			iNeedRestart |= RestartSession;
-		}
 		if (( bOldLv2DynManifest && !m_pOptions->bLv2DynManifest) ||
 			(!bOldLv2DynManifest &&  m_pOptions->bLv2DynManifest)) {
 			iNeedRestart |= RestartSession;
@@ -6279,22 +6281,6 @@ void qtractorMainForm::updateDisplayFormat (void)
 }
 
 
-// Update plugins search paths (LV2_PATH).
-void qtractorMainForm::updatePluginPaths (void)
-{
-	if (m_pOptions == NULL)
-		return;
-
-#ifdef CONFIG_LV2
-	// HACK: reset special environment for LV2...
-	if (m_pOptions->lv2Paths.isEmpty())	::unsetenv("LV2_PATH");
-	qtractorPluginPath path(qtractorPluginType::Lv2);
-	path.setPaths(qtractorPluginType::Lv2, m_pOptions->lv2Paths);
-	path.open();
-#endif
-}
-
-
 // Update audio player parameters.
 void qtractorMainForm::updateAudioPlayer (void)
 {
@@ -6822,6 +6808,7 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(bClipSelected);
 	m_ui.clipTempoAdjustAction->setEnabled(bClipSelectable);
+	m_ui.clipCrossFadeAction->setEnabled(bClipSelected);
 	m_ui.clipRangeSetAction->setEnabled(bClipSelected);
 	m_ui.clipLoopSetAction->setEnabled(bClipSelected);
 //	m_ui.clipImportAction->setEnabled(bTracks);
