@@ -435,6 +435,7 @@ bool qtractorActivatePluginCommand::undo (void)
 	return redo();
 }
 
+
 //----------------------------------------------------------------------
 // class qtractorPresetPluginCommand - implementation
 //

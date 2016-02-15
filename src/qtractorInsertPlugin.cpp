@@ -497,12 +497,14 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 // Do the actual activation.
 void qtractorAudioInsertPlugin::activate (void)
 {
+	list()->setAudioInsertActivated(true);
 }
 
 
 // Do the actual deactivation.
 void qtractorAudioInsertPlugin::deactivate (void)
 {
+	list()->setAudioInsertActivated(false);
 }
 
 

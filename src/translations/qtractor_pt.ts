@@ -50,8 +50,8 @@
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2410"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2746"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2411"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2747"/>
         <location filename="../qtractorMidiEngine.cpp" line="3941"/>
         <location filename="../qtractorMidiEngine.cpp" line="4500"/>
         <source>%1 In</source>
@@ -115,12 +115,12 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>remover pista</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="491"/>
+        <location filename="../qtractorPluginCommand.cpp" line="492"/>
         <source>reset plugin</source>
         <translation>resetar plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="445"/>
+        <location filename="../qtractorPluginCommand.cpp" line="446"/>
         <source>preset plugin</source>
         <translation>pré-configurações do plugin</translation>
     </message>
@@ -135,8 +135,8 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>Mostrar informações da versão</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2414"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2423"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2415"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2424"/>
         <location filename="../qtractorMidiEngine.cpp" line="3945"/>
         <location filename="../qtractorMidiEngine.cpp" line="3954"/>
         <location filename="../qtractorTrack.cpp" line="687"/>
@@ -144,8 +144,8 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>%1 Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2419"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2746"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2420"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2747"/>
         <location filename="../qtractorMidiEngine.cpp" line="3950"/>
         <location filename="../qtractorMidiEngine.cpp" line="4500"/>
         <source>%1 Out</source>
@@ -188,47 +188,47 @@ Fim:	%3	Tamanho:	%4 </translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="380"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="657"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1123"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1348"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="659"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1125"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1350"/>
         <source>Send Gain</source>
         <translation>Volume da Mandada</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="388"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="665"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="667"/>
         <source>Dry Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="396"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="673"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="675"/>
         <source>Wet Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="990"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="992"/>
         <source>Aux Send (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1023"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1025"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1085"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1087"/>
         <source>Aux Send pseudo-plugin (MIDI)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1253"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1255"/>
         <location filename="../qtractorPluginListView.cpp" line="214"/>
         <source>%1 (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1495"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1497"/>
         <location filename="../qtractorPluginListView.cpp" line="234"/>
         <source>%1 (MIDI)</source>
         <translation type="unfinished"></translation>
@@ -389,7 +389,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="664"/>
+        <location filename="../qtractorPluginCommand.cpp" line="665"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -414,7 +414,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="709"/>
+        <location filename="../qtractorPluginCommand.cpp" line="710"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>
@@ -429,8 +429,8 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2412"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2421"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2413"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2422"/>
         <location filename="../qtractorTrack.cpp" line="684"/>
         <source>%1 Gain</source>
         <translation>%1 Ganho</translation>
@@ -743,7 +743,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Ativar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="541"/>
+        <location filename="../qtractorPluginCommand.cpp" line="542"/>
         <source>program plugin</source>
         <translation>Plugin do programa</translation>
     </message>
@@ -753,7 +753,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2307"/>
+        <location filename="../qtractorPlugin.cpp" line="2292"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>

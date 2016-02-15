@@ -1771,6 +1771,8 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	m_bAudioOutputAutoConnect
 		= qtractorMidiManager::isDefaultAudioOutputAutoConnect();
 
+	m_iAudioInsertActivated = 0;
+
 	setBuffer(iChannels, iBufferSize, iSampleRate, iFlags);
 }
 
@@ -1911,23 +1913,6 @@ void qtractorPluginList::resetBuffer (void)
 	// Restore activation count.
 	m_iActivated = iActivated;
 #endif
-}
-
-
-// Special guard activation methods.
-bool qtractorPluginList::isActivatedAll (void) const
-{
-	return (m_iActivated > 0 && m_iActivated >= (unsigned int) count());
-}
-
-
-void qtractorPluginList::updateActivated ( bool bActivated )
-{
-	if (bActivated) {
-		++m_iActivated;
-	} else  {
-		--m_iActivated;
-	}
 }
 
 

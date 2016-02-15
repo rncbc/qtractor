@@ -644,7 +644,7 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 		return;
 
 	// Check whether everyone is already dectivated...
-	if (m_pPluginList->activated() < 1)
+	if (!m_pPluginList->isActivated())
 		return;
 
 	// Make it an undoable command...
@@ -1625,7 +1625,7 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setChecked(bActivatedAll);
 	pAction->setEnabled(bEnabled && !bActivatedAll);
 
-	const bool bDeactivatedAll = (m_pPluginList->activated() < 1);
+	const bool bDeactivatedAll = !m_pPluginList->isActivated();
 	pAction = menu.addAction(
 		tr("Deactivate Al&l"), this, SLOT(deactivateAllPlugins()));
 	pAction->setCheckable(true);

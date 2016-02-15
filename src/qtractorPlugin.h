@@ -868,11 +868,19 @@ public:
 		{ return m_pMidiManager; }
 
 	// Special activation methods.
-	bool isActivatedAll() const;
-	void updateActivated(bool bActivated);
+	void updateActivated(bool bActivated)
+	{
+		if (bActivated)
+			++m_iActivated;
+		else
+		if (m_iActivated > 0)
+			--m_iActivated;
+	}
 
-	unsigned int activated() const
-		{ return m_iActivated;  }
+	bool isActivatedAll() const
+		{ return (m_iActivated > 0 && m_iActivated >= (unsigned int) count()); }
+	unsigned int isActivated() const
+		{ return (m_iActivated > 0);  }
 
 	// Guarded plugin methods.
 	void addPlugin(qtractorPlugin *pPlugin);
@@ -967,6 +975,19 @@ public:
 	// Whether unique plugin identifiers are in chain.
 	bool isUniqueID(qtractorPluginType *pType) const;
 
+	// Special audio inserts activation state methods.
+	void setAudioInsertActivated(bool bAudioInsertActivated)
+	{
+		if (bAudioInsertActivated)
+			++m_iAudioInsertActivated;
+		else
+		if (m_iAudioInsertActivated > 0)
+			--m_iAudioInsertActivated;
+	}
+
+	bool isAudioInsertActivated() const
+		{ return (m_iAudioInsertActivated > 0); }
+
 protected:
 
 	// Check/sanitize plugin file-path.
@@ -1004,6 +1025,9 @@ private:
 	QString m_sAudioOutputBusName;
 
 	qtractorBus::ConnectList m_audioOutputs;
+
+	// Audio inserts activation state.
+	unsigned int m_iAudioInsertActivated;
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];
