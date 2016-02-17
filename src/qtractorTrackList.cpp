@@ -374,7 +374,8 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 	}
 
 	const QPixmap pm(track->trackIcon());
-	icon = pm.scaled(22, 22, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	const int w = pTrackList->header()->sectionSize(Number) - 4;
+	icon = pm.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
 	text << track->trackName();
 
@@ -939,8 +940,12 @@ void qtractorTrackList::drawCell (
 		pPainter->drawText(rectText,
 			Qt::AlignHCenter | Qt::AlignTop,
 			QString::number(iRow + 1));
-		if (!pItem->icon.isNull())
-			pPainter->drawPixmap(rect.left() + 2, rect.bottom() - 24, pItem->icon);
+		if (!pItem->icon.isNull()) {
+			const int w = rect.width() - 4;
+			const int x = rect.left() + 2; 
+			const int y = rect.top() + ((rect.height() - w) >> 1);
+			pPainter->drawPixmap(x, y, pItem->icon) ;
+		}
 	} else if (iCol == Channel) {
 		pPainter->drawText(rectText,
 			Qt::AlignHCenter | Qt::AlignTop,

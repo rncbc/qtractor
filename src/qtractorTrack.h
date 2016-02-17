@@ -86,7 +86,6 @@ public:
 	// Track icon (filename) accessors.
 	void setTrackIcon(const QString& sTrackIcon);
 	const QString& trackIcon() const;
-	void updateTrackIcon();
 
 	// Track type accessors.
 	void setTrackType(TrackType trackType);

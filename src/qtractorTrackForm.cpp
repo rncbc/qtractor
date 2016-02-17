@@ -1527,8 +1527,8 @@ void qtractorTrackForm::updateTrackIcon (void)
 
 	const QPixmap pm(m_props.trackIcon);
 	if (!pm.isNull()) {
-		m_ui.TrackIconToolButton->setIcon(
-			pm.scaled(m_ui.TrackIconToolButton->size()));
+		m_ui.TrackIconToolButton->setIcon(pm.scaled(m_ui.TrackIconToolButton->size(),
+			Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 	}
 }
 
