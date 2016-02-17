@@ -68,6 +68,7 @@ protected slots:
 
 	void pluginListChanged();
 
+	void trackIconClicked();
 	void trackTypeChanged();
 	void inputBusNameChanged(const QString& sBusName);
 	void outputBusNameChanged(const QString& sBusName);
@@ -119,6 +120,9 @@ protected:
 	// Save/load default bus names...
 	void loadDefaultBusNames(qtractorTrack::TrackType trackType);
 	void saveDefaultBusNames(qtractorTrack::TrackType trackType) const;
+
+	// Track icon refresh.
+	void updateTrackIcon();
 
 private:
 

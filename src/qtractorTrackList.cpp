@@ -373,6 +373,9 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		widget->lower();
 	}
 
+	const QPixmap pm(track->trackIcon());
+	icon = pm.scaled(22, 22, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
 	text << track->trackName();
 
 	const QString s = " - -";
@@ -936,6 +939,8 @@ void qtractorTrackList::drawCell (
 		pPainter->drawText(rectText,
 			Qt::AlignHCenter | Qt::AlignTop,
 			QString::number(iRow + 1));
+		if (!pItem->icon.isNull())
+			pPainter->drawPixmap(rect.left() + 2, rect.bottom() - 24, pItem->icon);
 	} else if (iCol == Channel) {
 		pPainter->drawText(rectText,
 			Qt::AlignHCenter | Qt::AlignTop,

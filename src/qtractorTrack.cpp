@@ -209,6 +209,7 @@ private:
 void qtractorTrack::Properties::clear (void)
 {
 	trackName.clear();
+	trackIcon.clear();
 	trackType   = None;
 	monitor     = false;
 	record      = false;
@@ -233,6 +234,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 {
 	if (&props != this) {
 		trackName   = props.trackName;
+		trackIcon   = props.trackIcon;
 		trackType   = props.trackType;
 		monitor     = props.monitor;
 		record      = props.record;
@@ -688,6 +690,18 @@ void qtractorTrack::updateTrackName (void)
 	}
 
 	m_pPluginList->setName(sTrackName);
+}
+
+
+// Track icon (filename) accessors.
+const QString& qtractorTrack::trackIcon (void) const
+{
+	return m_props.trackIcon;
+}
+
+void qtractorTrack::setTrackIcon ( const QString& sTrackIcon )
+{
+	m_props.trackIcon = sTrackIcon;
 }
 
 
@@ -1646,6 +1660,8 @@ bool qtractorTrack::loadElement (
 					qtractorTrack::setMidiBank(eProp.text().toInt());
 				else if (eProp.tagName() == "midi-program")
 					qtractorTrack::setMidiProg(eProp.text().toInt());
+				else if (eProp.tagName() == "icon")
+					qtractorTrack::setTrackIcon(eProp.text());
 			}
 		}
 		else
@@ -1783,6 +1799,12 @@ bool qtractorTrack::saveElement (
 			pDocument->saveTextElement("midi-program",
 				QString::number(qtractorTrack::midiProg()), &eProps);
 		}
+	}
+	const QString& sTrackIcon = qtractorTrack::trackIcon();
+	if (!sTrackIcon.isEmpty()) {
+		const QFileInfo fi(sTrackIcon);
+		if (fi.exists())
+			pDocument->saveTextElement("icon", fi.canonicalFilePath(), &eProps);
 	}
 	pElement->appendChild(eProps);
 

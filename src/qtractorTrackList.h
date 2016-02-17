@@ -246,6 +246,7 @@ private:
 		void update(qtractorTrackList *pTrackList);
 		// Item members.
 		qtractorTrack *track;
+		QPixmap        icon;
 		QStringList    text;
 		unsigned int   flags;
 		// Track-list item widget.

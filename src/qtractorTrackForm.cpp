@@ -32,10 +32,12 @@
 #include "qtractorMidiManager.h"
 #include "qtractorPlugin.h"
 
+#include "qtractorOptions.h"
 #include "qtractorCommand.h"
 
 #include "qtractorBusForm.h"
 
+#include <QFileDialog>
 #include <QColorDialog>
 #include <QItemDelegate>
 #include <QMessageBox>
@@ -184,6 +186,9 @@ qtractorTrackForm::qtractorTrackForm (
 	QObject::connect(m_ui.TrackNameTextEdit,
 		SIGNAL(textChanged()),
 		SLOT(changed()));
+	QObject::connect(m_ui.TrackIconToolButton,
+		SIGNAL(clicked()),
+		SLOT(trackIconClicked()));
 	QObject::connect(m_ui.AudioRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(trackTypeChanged()));
@@ -332,6 +337,8 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	// Update colors...
 	updateColorItem(m_ui.ForegroundColorComboBox, m_props.foreground);
 	updateColorItem(m_ui.BackgroundColorComboBox, m_props.background);
+
+	updateTrackIcon();
 
 	// Cannot change track type, if track is already chained in session..
 	m_ui.AudioRadioButton->setEnabled(m_props.trackType != qtractorTrack::Midi);
@@ -1056,6 +1063,7 @@ void qtractorTrackForm::foregroundColorChanged ( const QString& sText )
 		return;
 
 	updateColorText(m_ui.ForegroundColorComboBox, QColor(sText));
+	updateTrackIcon();
 
 	++m_iDirtyCount;
 	stabilizeForm();
@@ -1068,6 +1076,7 @@ void qtractorTrackForm::backgroundColorChanged ( const QString& sText )
 		return;
 
 	updateColorText(m_ui.BackgroundColorComboBox, QColor(sText));
+	updateTrackIcon();
 
 	++m_iDirtyCount;
 	stabilizeForm();
@@ -1088,6 +1097,47 @@ void qtractorTrackForm::changed (void)
 
 	++m_iDirtyCount;
 	stabilizeForm();
+}
+
+
+// Make changes to track icon.
+void qtractorTrackForm::trackIconClicked (void)
+{
+	QString sFilename = m_props.trackIcon;
+
+	QStringList filters;
+	filters.append(tr("Image files (%1)").arg("*.png *.xpm *.jpg *.jpeg"));
+	filters.append(tr("All files (*.*)"));
+
+	const QString& sTitle  = tr("Track Icon") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = filters.join(";;");
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to open...
+	QFileDialog::Options options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialogs)
+		options |= QFileDialog::DontUseNativeDialog;
+	sFilename = QFileDialog::getOpenFileName(this,
+		sTitle, sFilename, sFilter, NULL, options);
+#else
+	// Construct open-file dialog...
+	QFileDialog fileDialog(this, sTitle, sFilename, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::AnyFile);
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialogs)
+		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
+
+	if (!sFilename.isEmpty()) {
+		m_props.trackIcon = sFilename;
+		updateTrackIcon();
+		changed();
+	}
 }
 
 
@@ -1463,6 +1513,22 @@ void qtractorTrackForm::saveDefaultBusNames (
 		break;
 	default:
 		break;
+	}
+}
+
+
+// Track icon refresh.
+void qtractorTrackForm::updateTrackIcon (void)
+{
+	QPalette pal(m_ui.TrackIconToolButton->palette());
+	pal.setColor(QPalette::ButtonText, m_props.foreground);
+	pal.setColor(QPalette::Button, m_props.background);
+	m_ui.TrackIconToolButton->setPalette(pal);
+
+	const QPixmap pm(m_props.trackIcon);
+	if (!pm.isNull()) {
+		m_ui.TrackIconToolButton->setIcon(
+			pm.scaled(m_ui.TrackIconToolButton->size()));
 	}
 }
 
