@@ -1778,6 +1778,9 @@ bool qtractorTrack::saveElement (
 
 	// Save track properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
+	const QString& sTrackIcon = qtractorTrack::trackIcon();
+	if (!sTrackIcon.isEmpty())
+		pDocument->saveTextElement("icon", sTrackIcon, &eProps);
 	pDocument->saveTextElement("input-bus",
 		qtractorTrack::inputBusName(), &eProps);
 	pDocument->saveTextElement("output-bus",
@@ -1799,12 +1802,6 @@ bool qtractorTrack::saveElement (
 			pDocument->saveTextElement("midi-program",
 				QString::number(qtractorTrack::midiProg()), &eProps);
 		}
-	}
-	const QString& sTrackIcon = qtractorTrack::trackIcon();
-	if (!sTrackIcon.isEmpty()) {
-		const QFileInfo fi(sTrackIcon);
-		if (fi.exists())
-			pDocument->saveTextElement("icon", fi.canonicalFilePath(), &eProps);
 	}
 	pElement->appendChild(eProps);
 

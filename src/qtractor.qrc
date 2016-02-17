@@ -75,6 +75,10 @@
 		<file>images/trackCurveEnabled.png</file>
 		<file>images/trackCurveNone.png</file>
 		<file>images/trackCurveProcess.png</file>
+		<file>images/trackIconBass1.png</file>
+		<file>images/trackIconDrums1.png</file>
+		<file>images/trackIconGuitar1.png</file>
+		<file>images/trackIconPiano1.png</file>
 		<file>images/trackMidi.png</file>
 		<file>images/trackMidiOff.png</file>
 		<file>images/trackMidiOn.png</file>

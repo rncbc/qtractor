@@ -182,6 +182,22 @@ qtractorTrackForm::qtractorTrackForm (
 	m_iDirtyCount = 0;
 	m_iDirtyPatch = 0;
 
+	// Add generic/standard track icons drop-down menu...
+	addTrackIconAction(tr("Drums"),  ":/images/trackIconDrums1.png");
+	addTrackIconAction(tr("Bass"),   ":/images/trackIconBass1.png");
+	addTrackIconAction(tr("Guitar"), ":/images/trackIconGuitar1.png");
+	addTrackIconAction(tr("Piano"),  ":/images/trackIconPiano1.png");
+
+	QAction *pAction = new QAction(this);
+	pAction->setSeparator(true);
+	m_ui.TrackIconToolButton->addAction(pAction);
+
+	pAction = new QAction(tr("(None)"), this);
+	QObject::connect(pAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackIconAction()));
+	m_ui.TrackIconToolButton->addAction(pAction);
+
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TrackNameTextEdit,
 		SIGNAL(textChanged()),
@@ -338,7 +354,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	updateColorItem(m_ui.ForegroundColorComboBox, m_props.foreground);
 	updateColorItem(m_ui.BackgroundColorComboBox, m_props.background);
 
-	updateTrackIcon();
+	trackIconChanged();
 
 	// Cannot change track type, if track is already chained in session..
 	m_ui.AudioRadioButton->setEnabled(m_props.trackType != qtractorTrack::Midi);
@@ -1016,8 +1032,8 @@ bool qtractorTrackForm::updateProgramsAdd (
 
 
 // Update and set a color item.
-void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
-	const QColor& color )
+void qtractorTrackForm::updateColorItem (
+	QComboBox *pComboBox, const QColor& color )
 {
 	// Have some immediate feedback...
 	updateColorText(pComboBox, color);
@@ -1036,8 +1052,8 @@ void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
 
 
 // Update color item visual text.
-void qtractorTrackForm::updateColorText ( QComboBox *pComboBox,
-	const QColor& color )
+void qtractorTrackForm::updateColorText (
+	QComboBox *pComboBox, const QColor& color )
 {
 	QPalette pal;
 //	pal.setColor(QPalette::Window, color);
@@ -1062,11 +1078,10 @@ void qtractorTrackForm::foregroundColorChanged ( const QString& sText )
 	if (m_iDirtySetup > 0)
 		return;
 
-	updateColorText(m_ui.ForegroundColorComboBox, QColor(sText));
-	updateTrackIcon();
+	m_props.foreground = QColor(sText);
 
-	++m_iDirtyCount;
-	stabilizeForm();
+	updateColorText(m_ui.ForegroundColorComboBox, m_props.foreground);
+	trackIconChanged();
 }
 
 
@@ -1075,11 +1090,10 @@ void qtractorTrackForm::backgroundColorChanged ( const QString& sText )
 	if (m_iDirtySetup > 0)
 		return;
 
-	updateColorText(m_ui.BackgroundColorComboBox, QColor(sText));
-	updateTrackIcon();
+	m_props.background = QColor(sText);
 
-	++m_iDirtyCount;
-	stabilizeForm();
+	updateColorText(m_ui.BackgroundColorComboBox, m_props.background);
+	trackIconChanged();
 }
 
 
@@ -1101,9 +1115,18 @@ void qtractorTrackForm::changed (void)
 
 
 // Make changes to track icon.
+void qtractorTrackForm::trackIconAction (void)
+{
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		m_props.trackIcon = pAction->data().toString();
+		trackIconChanged();
+	}
+}
+
 void qtractorTrackForm::trackIconClicked (void)
 {
-	QString sFilename = m_props.trackIcon;
+	QString sFilename = m_props.trackIcon.remove(':');
 
 	QStringList filters;
 	filters.append(tr("Image files (%1)").arg("*.png *.xpm *.jpg *.jpeg"));
@@ -1135,8 +1158,7 @@ void qtractorTrackForm::trackIconClicked (void)
 
 	if (!sFilename.isEmpty()) {
 		m_props.trackIcon = sFilename;
-		updateTrackIcon();
-		changed();
+		trackIconChanged();
 	}
 }
 
@@ -1389,8 +1411,9 @@ void qtractorTrackForm::selectForegroundColor (void)
 		tr("Foreground Color") + " - " QTRACTOR_TITLE);
 
 	if (color.isValid()) {
+		m_props.foreground = color;
 		updateColorItem(m_ui.ForegroundColorComboBox, color);
-		changed();
+		trackIconChanged();
 	}
 }
 
@@ -1403,8 +1426,9 @@ void qtractorTrackForm::selectBackgroundColor (void)
 		tr("Background Color") + " - " QTRACTOR_TITLE);
 
 	if (color.isValid()) {
+		m_props.background = color;
 		updateColorItem(m_ui.BackgroundColorComboBox, color);
-		changed();
+		trackIconChanged();
 	}
 }
 
@@ -1517,19 +1541,36 @@ void qtractorTrackForm::saveDefaultBusNames (
 }
 
 
+// Track icon generic/standard action setup.
+void qtractorTrackForm::addTrackIconAction (
+	const QString& sIconText, const QString& sTrackIcon )
+{
+	QAction *pAction = new QAction(QIcon(sTrackIcon), sIconText, this);
+	pAction->setData(sTrackIcon);
+
+	QObject::connect(pAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackIconAction()));
+
+	m_ui.TrackIconToolButton->addAction(pAction);
+}
+
+
 // Track icon refresh.
-void qtractorTrackForm::updateTrackIcon (void)
+void qtractorTrackForm::trackIconChanged (void)
 {
 	QPalette pal(m_ui.TrackIconToolButton->palette());
-	pal.setColor(QPalette::ButtonText, m_props.foreground);
-	pal.setColor(QPalette::Button, m_props.background);
+	pal.setColor(QPalette::ButtonText, m_props.background);
+	pal.setColor(QPalette::Button, m_props.foreground.lighter());
 	m_ui.TrackIconToolButton->setPalette(pal);
 
 	const QPixmap pm(m_props.trackIcon);
-	if (!pm.isNull()) {
-		m_ui.TrackIconToolButton->setIcon(pm.scaled(m_ui.TrackIconToolButton->size(),
-			Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-	}
+	const QSize& size = m_ui.TrackIconToolButton->size() - QSize(8, 8);
+	m_ui.TrackIconToolButton->setIconSize(size);
+	m_ui.TrackIconToolButton->setIcon(
+		pm.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+	changed();
 }
 
 

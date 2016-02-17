@@ -68,7 +68,6 @@ protected slots:
 
 	void pluginListChanged();
 
-	void trackIconClicked();
 	void trackTypeChanged();
 	void inputBusNameChanged(const QString& sBusName);
 	void outputBusNameChanged(const QString& sBusName);
@@ -89,6 +88,10 @@ protected slots:
 	void removePlugin();
 	void moveUpPlugin();
 	void moveDownPlugin();
+
+	void trackIconAction();
+	void trackIconClicked();
+	void trackIconChanged();
 
 protected:
 
@@ -121,8 +124,8 @@ protected:
 	void loadDefaultBusNames(qtractorTrack::TrackType trackType);
 	void saveDefaultBusNames(qtractorTrack::TrackType trackType) const;
 
-	// Track icon refresh.
-	void updateTrackIcon();
+	// Track icon generic/standard action setup.
+	void addTrackIconAction(const QString& sText, const QString& sTrackIcon);
 
 private:
 

@@ -941,9 +941,8 @@ void qtractorTrackList::drawCell (
 			Qt::AlignHCenter | Qt::AlignTop,
 			QString::number(iRow + 1));
 		if (!pItem->icon.isNull()) {
-			const int w = rect.width() - 4;
 			const int x = rect.left() + 2; 
-			const int y = rect.top() + ((rect.height() - w) >> 1);
+			const int y = rect.bottom() - rect.width();
 			pPainter->drawPixmap(x, y, pItem->icon) ;
 		}
 	} else if (iCol == Channel) {
