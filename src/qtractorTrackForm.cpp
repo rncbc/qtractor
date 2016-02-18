@@ -183,10 +183,18 @@ qtractorTrackForm::qtractorTrackForm (
 	m_iDirtyPatch = 0;
 
 	// Add generic/standard track icons drop-down menu...
-	addTrackIconAction(tr("Drums"),  ":/images/trackIconDrums1.png");
-	addTrackIconAction(tr("Bass"),   ":/images/trackIconBass1.png");
+	addTrackIconAction(tr("Drums"), ":/images/trackIconDrums1.png");
+	addTrackIconAction(tr("Bass"), ":/images/trackIconBass1.png");
+	addTrackIconAction(tr("Acoustic Bass"), ":/images/trackIconBass2.png");
 	addTrackIconAction(tr("Guitar"), ":/images/trackIconGuitar1.png");
-	addTrackIconAction(tr("Piano"),  ":/images/trackIconPiano1.png");
+	addTrackIconAction(tr("Electric Guitar"), ":/images/trackIconGuitar2.png");
+	addTrackIconAction(tr("Piano"), ":/images/trackIconPiano1.png");
+	addTrackIconAction(tr("Acoustic Piano"), ":/images/trackIconPiano2.png");
+	addTrackIconAction(tr("Microphone"), ":/images/trackIconMicrophone1.png");
+	addTrackIconAction(tr("Vintage Microphone"), ":/images/trackIconMicrophone2.png");
+	addTrackIconAction(tr("Speaker"), ":/images/trackIconSpeaker1.png");
+	addTrackIconAction(tr("Trumpet"), ":/images/trackIconTrumpet1.png");
+	addTrackIconAction(tr("Violin"), ":/images/trackIconViolin1.png");
 
 	QAction *pAction = new QAction(this);
 	pAction->setSeparator(true);
