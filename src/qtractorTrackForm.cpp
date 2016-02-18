@@ -185,12 +185,13 @@ qtractorTrackForm::qtractorTrackForm (
 
 	// Add generic/standard track icons drop-down menu...
 	m_pIconMenu = new QMenu(this);
-	m_pIconMenu->addAction(tr("Track &Icon..."), this, SLOT(trackIconClicked()));
+	m_pIconMenu->addAction(QIcon(":/images/fileOpen.png"),
+		tr("Track &Icon..."), this, SLOT(trackIconClicked()));
 	m_pIconMenu->addSeparator();
 	addIconMenuAction(tr("&Drums"), ":/images/trackIconDrums1.png");
 	addIconMenuAction(tr("Drum &Kit"), ":/images/trackIconDrums2.png");
 	addIconMenuAction(tr("&Bass"), ":/images/trackIconBass1.png");
-	addIconMenuAction(tr("Ac&oustic Bass"), ":/images/trackIconBass2.png");
+	addIconMenuAction(tr("A&coustic Bass"), ":/images/trackIconBass2.png");
 	addIconMenuAction(tr("&Guitar"), ":/images/trackIconGuitar1.png");
 	addIconMenuAction(tr("&Electric Guitar"), ":/images/trackIconGuitar2.png");
 	addIconMenuAction(tr("&Piano"), ":/images/trackIconPiano1.png");
