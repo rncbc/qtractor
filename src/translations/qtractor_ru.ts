@@ -440,17 +440,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished">Автоматизация</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="388"/>
+        <location filename="../qtractorTrackList.cpp" line="397"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="401"/>
+        <location filename="../qtractorTrackList.cpp" line="410"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="460"/>
+        <location filename="../qtractorTrackList.cpp" line="469"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
@@ -521,7 +521,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="418"/>
-        <location filename="../qtractorTrack.cpp" line="673"/>
+        <location filename="../qtractorTrack.cpp" line="675"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -614,31 +614,31 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="674"/>
+        <location filename="../qtractorTrack.cpp" line="676"/>
         <source>%1 Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="675"/>
+        <location filename="../qtractorTrack.cpp" line="677"/>
         <source>%1 Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="676"/>
+        <location filename="../qtractorTrack.cpp" line="678"/>
         <source>%1 Solo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="3943"/>
         <location filename="../qtractorMidiEngine.cpp" line="3952"/>
-        <location filename="../qtractorTrack.cpp" line="681"/>
+        <location filename="../qtractorTrack.cpp" line="683"/>
         <source>%1 Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2413"/>
         <location filename="../qtractorAudioEngine.cpp" line="2422"/>
-        <location filename="../qtractorTrack.cpp" line="684"/>
+        <location filename="../qtractorTrack.cpp" line="686"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
@@ -647,7 +647,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <location filename="../qtractorAudioEngine.cpp" line="2424"/>
         <location filename="../qtractorMidiEngine.cpp" line="3945"/>
         <location filename="../qtractorMidiEngine.cpp" line="3954"/>
-        <location filename="../qtractorTrack.cpp" line="687"/>
+        <location filename="../qtractorTrack.cpp" line="689"/>
         <source>%1 Pan</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11704,32 +11704,102 @@ Do you want to discard the changes?</source>
 <context>
     <name>qtractorTrackForm</name>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="145"/>
+        <location filename="../qtractorTrackForm.cpp" line="148"/>
         <source>Normal</source>
         <translation>Обычный</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="146"/>
+        <location filename="../qtractorTrackForm.cpp" line="149"/>
         <source>Bank MSB</source>
         <translation>Банк MSB</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="147"/>
+        <location filename="../qtractorTrackForm.cpp" line="150"/>
         <source>Bank LSB</source>
         <translation>Банк LSB</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="148"/>
+        <location filename="../qtractorTrackForm.cpp" line="151"/>
         <source>Patch</source>
         <translation>Патч</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="426"/>
+        <location filename="../qtractorTrackForm.cpp" line="189"/>
+        <source>Track &amp;Icon...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="191"/>
+        <source>&amp;Drums</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="192"/>
+        <source>Drum &amp;Kit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="193"/>
+        <source>&amp;Bass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="194"/>
+        <source>A&amp;coustic Bass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="195"/>
+        <source>&amp;Guitar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="196"/>
+        <source>&amp;Electric Guitar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="197"/>
+        <source>&amp;Piano</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="198"/>
+        <source>&amp;Acoustic Piano</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="199"/>
+        <source>&amp;Microphone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="200"/>
+        <source>Vi&amp;ntage Microphone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="201"/>
+        <source>&amp;Speaker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="202"/>
+        <source>&amp;Trumpet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="203"/>
+        <source>&amp;Violin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="459"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="427"/>
+        <location filename="../qtractorTrackForm.cpp" line="460"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11738,23 +11808,39 @@ Do you want to apply the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="562"/>
+        <location filename="../qtractorTrackForm.cpp" line="595"/>
         <source>(No instrument)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1339"/>
+        <location filename="../qtractorTrackForm.cpp" line="1142"/>
+        <source>Image files (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1143"/>
+        <source>All files (*.*)</source>
+        <translation type="unfinished">Все файлы (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1145"/>
+        <source>Track Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1421"/>
         <source>Foreground Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1353"/>
+        <location filename="../qtractorTrackForm.cpp" line="1436"/>
         <source>Background Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="757"/>
-        <location filename="../qtractorTrackForm.cpp" line="868"/>
+        <location filename="../qtractorTrackForm.cpp" line="205"/>
+        <location filename="../qtractorTrackForm.cpp" line="790"/>
+        <location filename="../qtractorTrackForm.cpp" line="901"/>
         <source>(None)</source>
         <translation>(нет)</translation>
     </message>
@@ -11769,209 +11855,214 @@ Do you want to apply the changes?</source>
         <translation>Дорожка</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="55"/>
+        <location filename="../qtractorTrackForm.ui" line="57"/>
         <source>&amp;Name:</source>
         <translation>Н&amp;азвание:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="77"/>
+        <location filename="../qtractorTrackForm.ui" line="79"/>
         <source>Track name description</source>
         <translation>Описание дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="92"/>
+        <location filename="../qtractorTrackForm.ui" line="101"/>
+        <source>Track icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.ui" line="118"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="104"/>
+        <location filename="../qtractorTrackForm.ui" line="130"/>
         <source>Audio track type</source>
         <translation>Звуковая дорожка</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="107"/>
+        <location filename="../qtractorTrackForm.ui" line="133"/>
         <source>&amp;Audio</source>
         <translation>&amp;Звуковая</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="114"/>
+        <location filename="../qtractorTrackForm.ui" line="140"/>
         <source>MIDI track type</source>
         <translation>MIDI-дорожка</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="117"/>
+        <location filename="../qtractorTrackForm.ui" line="143"/>
         <source>&amp;MIDI</source>
         <translation>&amp;MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="127"/>
+        <location filename="../qtractorTrackForm.ui" line="153"/>
         <source>Input / Output</source>
         <translation>Вход / выход</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="153"/>
+        <location filename="../qtractorTrackForm.ui" line="179"/>
         <source>Input bus name</source>
         <translation>Название шины на входе</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="174"/>
+        <location filename="../qtractorTrackForm.ui" line="200"/>
         <source>Output bus name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="196"/>
+        <location filename="../qtractorTrackForm.ui" line="222"/>
         <source>Manage buses</source>
         <translation>Настроить шины</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="199"/>
-        <location filename="../qtractorTrackForm.ui" line="396"/>
-        <location filename="../qtractorTrackForm.ui" line="469"/>
+        <location filename="../qtractorTrackForm.ui" line="225"/>
+        <location filename="../qtractorTrackForm.ui" line="422"/>
+        <location filename="../qtractorTrackForm.ui" line="495"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="211"/>
+        <location filename="../qtractorTrackForm.ui" line="237"/>
         <source>MIDI / Instrument</source>
         <translation>MIDI / инструмент</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="223"/>
+        <location filename="../qtractorTrackForm.ui" line="249"/>
         <source>&amp;Program:</source>
         <translation>&amp;Программа:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="233"/>
+        <location filename="../qtractorTrackForm.ui" line="259"/>
         <source>&amp;Bank:</source>
         <translation>&amp;Банк:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="243"/>
+        <location filename="../qtractorTrackForm.ui" line="269"/>
         <source>Bank &amp;Select Method:</source>
         <translation>Способ &amp;выбора банка:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="253"/>
+        <location filename="../qtractorTrackForm.ui" line="279"/>
         <source>&amp;Omni</source>
         <translation>Ом&amp;ни</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="256"/>
+        <location filename="../qtractorTrackForm.ui" line="282"/>
         <source>MIDI Omni: Capture All Channels</source>
         <translation>MIDI-омни: захватить все каналы</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="263"/>
+        <location filename="../qtractorTrackForm.ui" line="289"/>
         <source>&amp;Channel:</source>
         <translation>&amp;Канал:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="279"/>
+        <location filename="../qtractorTrackForm.ui" line="305"/>
         <source>MIDI Channel (1-16)</source>
         <translation>Канал MIDI (1-16)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="292"/>
+        <location filename="../qtractorTrackForm.ui" line="318"/>
         <source>MIDI Patch: Instrument</source>
         <translation>Патч MIDI: инструмент</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="307"/>
+        <location filename="../qtractorTrackForm.ui" line="333"/>
         <source>MIDI Patch: Bank Select Method</source>
         <translation>Патч MIDI: способ выбора банка</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="314"/>
+        <location filename="../qtractorTrackForm.ui" line="340"/>
         <source>MIDI Patch: Bank</source>
         <translation>Патч MIDI: банк</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="324"/>
+        <location filename="../qtractorTrackForm.ui" line="350"/>
         <source>MIDI Patch: Program</source>
         <translation>Патч MIDI: прогромма</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="337"/>
+        <location filename="../qtractorTrackForm.ui" line="363"/>
         <source>View / Colors</source>
         <translation>Вид / цвета</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="349"/>
+        <location filename="../qtractorTrackForm.ui" line="375"/>
         <source>&amp;Foreground:</source>
         <translation>П&amp;ередний план:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="365"/>
+        <location filename="../qtractorTrackForm.ui" line="391"/>
         <source>Foreground color</source>
         <translation>Цвет переднего плана</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="390"/>
+        <location filename="../qtractorTrackForm.ui" line="416"/>
         <source>Select custom track foreground color</source>
         <translation>Укажите другой цвет переднего плана дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="419"/>
+        <location filename="../qtractorTrackForm.ui" line="445"/>
         <source>Bac&amp;kground:</source>
         <translation>&amp;Фон:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="438"/>
+        <location filename="../qtractorTrackForm.ui" line="464"/>
         <source>Background color</source>
         <translation>Цвет фона</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="463"/>
+        <location filename="../qtractorTrackForm.ui" line="489"/>
         <source>Select custom track background color</source>
         <translation>Укажите другой цвет фона дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="480"/>
+        <location filename="../qtractorTrackForm.ui" line="506"/>
         <source>Plugins</source>
         <translation>Эффекты</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="489"/>
+        <location filename="../qtractorTrackForm.ui" line="515"/>
         <source>Track plugins</source>
         <translation>Эффекты дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="504"/>
+        <location filename="../qtractorTrackForm.ui" line="530"/>
         <source>Add plugin</source>
         <translation>Добавить эффект</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="507"/>
+        <location filename="../qtractorTrackForm.ui" line="533"/>
         <source>&amp;Add...</source>
         <translation>&amp;Добавить</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="526"/>
+        <location filename="../qtractorTrackForm.ui" line="552"/>
         <source>Remove plugin</source>
         <translation>Удалить эффект</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="529"/>
+        <location filename="../qtractorTrackForm.ui" line="555"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="561"/>
+        <location filename="../qtractorTrackForm.ui" line="587"/>
         <source>Move plugin up</source>
         <translation>Переместить эффект на одно положение вверх</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="564"/>
+        <location filename="../qtractorTrackForm.ui" line="590"/>
         <source>&amp;Up</source>
         <translation>&amp;Выше</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="583"/>
+        <location filename="../qtractorTrackForm.ui" line="609"/>
         <source>Move plugin down</source>
         <translation>Переместить эффект на одно положение вниз</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="586"/>
+        <location filename="../qtractorTrackForm.ui" line="612"/>
         <source>&amp;Down</source>
         <translation>&amp;Ниже</translation>
     </message>
