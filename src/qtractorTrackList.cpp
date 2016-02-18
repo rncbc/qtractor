@@ -374,10 +374,13 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 	}
 
 	const QPixmap pm(track->trackIcon());
-	const int h0 = track->zoomHeight() - 16; // Account for track nr.
-	const int w0 = pTrackList->header()->sectionSize(Number) - 4;
-	const int w1 = (w0 < h0 ? w0 : h0);
-	icon = pm.scaled(w1, w1, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	if (!pm.isNull()) {
+		const int h0 = track->zoomHeight() - 16; // Account for track nr.
+		const int w0 = pTrackList->header()->sectionSize(Number) - 4;
+		const int w1 = (w0 < h0 ? w0 : h0);
+		icon = pm.scaled(w1, w1, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	}
+	else icon = pm;
 
 	text << track->trackName();
 

@@ -43,6 +43,7 @@
 #include <QMessageBox>
 #include <QValidator>
 #include <QPainter>
+#include <QMenu>
 
 
 //----------------------------------------------------------------------
@@ -183,28 +184,25 @@ qtractorTrackForm::qtractorTrackForm (
 	m_iDirtyPatch = 0;
 
 	// Add generic/standard track icons drop-down menu...
-	addTrackIconAction(tr("Drums"), ":/images/trackIconDrums1.png");
-	addTrackIconAction(tr("Bass"), ":/images/trackIconBass1.png");
-	addTrackIconAction(tr("Acoustic Bass"), ":/images/trackIconBass2.png");
-	addTrackIconAction(tr("Guitar"), ":/images/trackIconGuitar1.png");
-	addTrackIconAction(tr("Electric Guitar"), ":/images/trackIconGuitar2.png");
-	addTrackIconAction(tr("Piano"), ":/images/trackIconPiano1.png");
-	addTrackIconAction(tr("Acoustic Piano"), ":/images/trackIconPiano2.png");
-	addTrackIconAction(tr("Microphone"), ":/images/trackIconMicrophone1.png");
-	addTrackIconAction(tr("Vintage Microphone"), ":/images/trackIconMicrophone2.png");
-	addTrackIconAction(tr("Speaker"), ":/images/trackIconSpeaker1.png");
-	addTrackIconAction(tr("Trumpet"), ":/images/trackIconTrumpet1.png");
-	addTrackIconAction(tr("Violin"), ":/images/trackIconViolin1.png");
-
-	QAction *pAction = new QAction(this);
-	pAction->setSeparator(true);
-	m_ui.TrackIconToolButton->addAction(pAction);
-
-	pAction = new QAction(tr("(None)"), this);
-	QObject::connect(pAction,
-		SIGNAL(triggered(bool)),
-		SLOT(trackIconAction()));
-	m_ui.TrackIconToolButton->addAction(pAction);
+	m_pIconMenu = new QMenu(this);
+	m_pIconMenu->addAction(tr("Track &Icon..."), this, SLOT(trackIconClicked()));
+	m_pIconMenu->addSeparator();
+	addIconMenuAction(tr("&Drums"), ":/images/trackIconDrums1.png");
+	addIconMenuAction(tr("Drum &Kit"), ":/images/trackIconDrums2.png");
+	addIconMenuAction(tr("&Bass"), ":/images/trackIconBass1.png");
+	addIconMenuAction(tr("Ac&oustic Bass"), ":/images/trackIconBass2.png");
+	addIconMenuAction(tr("&Guitar"), ":/images/trackIconGuitar1.png");
+	addIconMenuAction(tr("&Electric Guitar"), ":/images/trackIconGuitar2.png");
+	addIconMenuAction(tr("&Piano"), ":/images/trackIconPiano1.png");
+	addIconMenuAction(tr("&Acoustic Piano"), ":/images/trackIconPiano2.png");
+	addIconMenuAction(tr("&Microphone"), ":/images/trackIconMicrophone1.png");
+	addIconMenuAction(tr("Vi&ntage Microphone"), ":/images/trackIconMicrophone2.png");
+	addIconMenuAction(tr("&Speaker"), ":/images/trackIconSpeaker1.png");
+	addIconMenuAction(tr("&Trumpet"), ":/images/trackIconTrumpet1.png");
+	addIconMenuAction(tr("&Violin"), ":/images/trackIconViolin1.png");
+	m_pIconMenu->addSeparator();
+	m_pIconMenu->addAction(tr("(None)"), this, SLOT(trackIconAction()));
+	m_ui.TrackIconToolButton->setMenu(m_pIconMenu);
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TrackNameTextEdit,
@@ -293,6 +291,9 @@ qtractorTrackForm::~qtractorTrackForm (void)
 	// Free up the MIDI bank/program observer...
 	if (m_pMidiProgramObserver)
 		delete m_pMidiProgramObserver;
+
+	// Maybe the track icon menu perhaps...
+	delete m_pIconMenu;
 }
 
 
@@ -1550,17 +1551,12 @@ void qtractorTrackForm::saveDefaultBusNames (
 
 
 // Track icon generic/standard action setup.
-void qtractorTrackForm::addTrackIconAction (
+void qtractorTrackForm::addIconMenuAction (
 	const QString& sIconText, const QString& sTrackIcon )
 {
-	QAction *pAction = new QAction(QIcon(sTrackIcon), sIconText, this);
+	QAction *pAction = m_pIconMenu->addAction(
+		QIcon(sTrackIcon), sIconText, this, SLOT(trackIconAction()));
 	pAction->setData(sTrackIcon);
-
-	QObject::connect(pAction,
-		SIGNAL(triggered(bool)),
-		SLOT(trackIconAction()));
-
-	m_ui.TrackIconToolButton->addAction(pAction);
 }
 
 
@@ -1573,10 +1569,13 @@ void qtractorTrackForm::trackIconChanged (void)
 	m_ui.TrackIconToolButton->setPalette(pal);
 
 	const QPixmap pm(m_props.trackIcon);
-	const QSize& size = m_ui.TrackIconToolButton->size() - QSize(8, 8);
-	m_ui.TrackIconToolButton->setIconSize(size);
-	m_ui.TrackIconToolButton->setIcon(
-		pm.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+	if (!pm.isNull()) {
+		const QSize& size = m_ui.TrackIconToolButton->size() - QSize(8, 8);
+		m_ui.TrackIconToolButton->setIconSize(size);
+		m_ui.TrackIconToolButton->setIcon(
+			pm.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+	}
+	else m_ui.TrackIconToolButton->setIcon(pm);
 
 	changed();
 }
