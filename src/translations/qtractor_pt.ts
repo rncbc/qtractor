@@ -75,7 +75,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>(Todos)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="781"/>
+        <location filename="../qtractorTrackCommand.cpp" line="793"/>
         <source>track record</source>
         <translation>gravação da pista</translation>
     </message>
@@ -125,7 +125,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>pré-configurações do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="569"/>
+        <location filename="../qtractorTrackCommand.cpp" line="581"/>
         <source>import track</source>
         <translation>importar pista</translation>
     </message>
@@ -394,7 +394,7 @@ MIDI:	</translation>
         <translation>saídas de áudio dedicadas</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1151"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1163"/>
         <source>track pan</source>
         <translation>panorâmico da pista</translation>
     </message>
@@ -515,22 +515,22 @@ MIDI:	</translation>
         <translation>duplicar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="787"/>
+        <location filename="../qtractorTrackCommand.cpp" line="799"/>
         <source>track solo</source>
         <translation>pista solo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1062"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1074"/>
         <source>track gain</source>
         <translation>ganho da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1238"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1250"/>
         <source>track instrument</source>
         <translation>pista de instrumento</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="784"/>
+        <location filename="../qtractorTrackCommand.cpp" line="796"/>
         <source>track mute</source>
         <translation>deixar pista muda</translation>
     </message>
@@ -540,7 +540,7 @@ MIDI:	</translation>
         <translation>gravar todas as automações</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="961"/>
+        <location filename="../qtractorTrackCommand.cpp" line="973"/>
         <source>track monitor</source>
         <translation>monitoração da pista</translation>
     </message>
@@ -631,7 +631,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>ativar plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="703"/>
+        <location filename="../qtractorTrackCommand.cpp" line="715"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -686,7 +686,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>mandada de canal principal</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="656"/>
+        <location filename="../qtractorTrackCommand.cpp" line="668"/>
         <source>track properties</source>
         <translation>propriedades da pista</translation>
     </message>

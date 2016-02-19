@@ -380,7 +380,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		const int w1 = (w0 < h0 ? w0 : h0);
 		icon = pm.scaled(w1, w1, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 	}
-	else icon = pm;
+	else icon = pm; // Null pixmap!
 
 	text << track->trackName();
 
@@ -768,8 +768,36 @@ void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
 // Check/update header resize.
 void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 {
+	const bool bBlockSignals = m_pHeader->blockSignals(true);
 	if (iCol == Name && iColSize < 110)
 		m_pHeader->resizeSection(iCol, 110);
+	else
+	if (iCol == Number) {
+		// Resize all icons anyway...
+		QListIterator<Item *> iter(m_items);
+		while (iter.hasNext())
+			iter.next()->update(this);
+	}
+	m_pHeader->blockSignals(bBlockSignals);
+
+	updateHeader();
+}
+
+
+// Reset header extents.
+void qtractorTrackList::resetHeaderSize ( int iCol )
+{
+	static const int s_aiDefaultHeaderSizes[] = { 26, 120, 100, 24, 100, 100 };
+
+	const bool bBlockSignals = m_pHeader->blockSignals(true);
+	m_pHeader->resizeSection(iCol, s_aiDefaultHeaderSizes[iCol]);
+	if (iCol == Number) {
+		// Resize all icons anyway...
+		QListIterator<Item *> iter(m_items);
+		while (iter.hasNext())
+			iter.next()->update(this);
+	}
+	m_pHeader->blockSignals(bBlockSignals);
 
 	updateHeader();
 }
@@ -790,15 +818,6 @@ void qtractorTrackList::updateHeader (void)
 		iContentsWidth, qtractorScrollView::contentsHeight());
 
 	updateContents();
-}
-
-
-// Reset header extents.
-void qtractorTrackList::resetHeaderSize ( int iCol )
-{
-	static const int s_aiDefaultHeaderSizes[] = { 26, 120, 100, 24, 100, 100 };
-
-	m_pHeader->resizeSection(iCol, s_aiDefaultHeaderSizes[iCol]);
 }
 
 

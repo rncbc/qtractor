@@ -203,13 +203,13 @@ qtractorTrackForm::qtractorTrackForm (
 	addIconMenuAction(tr("&Violin"), ":/images/trackIconViolin1.png");
 	m_pIconMenu->addSeparator();
 	m_pIconMenu->addAction(tr("(None)"), this, SLOT(trackIconAction()));
-	m_ui.TrackIconToolButton->setMenu(m_pIconMenu);
+	m_ui.TrackIconPushButton->setMenu(m_pIconMenu);
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TrackNameTextEdit,
 		SIGNAL(textChanged()),
 		SLOT(changed()));
-	QObject::connect(m_ui.TrackIconToolButton,
+	QObject::connect(m_ui.TrackIconPushButton,
 		SIGNAL(clicked()),
 		SLOT(trackIconClicked()));
 	QObject::connect(m_ui.AudioRadioButton,
@@ -1564,19 +1564,19 @@ void qtractorTrackForm::addIconMenuAction (
 // Track icon refresh.
 void qtractorTrackForm::trackIconChanged (void)
 {
-	QPalette pal(m_ui.TrackIconToolButton->palette());
+	QPalette pal(m_ui.TrackIconPushButton->palette());
 	pal.setColor(QPalette::ButtonText, m_props.background);
 	pal.setColor(QPalette::Button, m_props.foreground.lighter());
-	m_ui.TrackIconToolButton->setPalette(pal);
+	m_ui.TrackIconPushButton->setPalette(pal);
 
 	const QPixmap pm(m_props.trackIcon);
 	if (!pm.isNull()) {
-		const QSize& size = m_ui.TrackIconToolButton->size() - QSize(8, 8);
-		m_ui.TrackIconToolButton->setIconSize(size);
-		m_ui.TrackIconToolButton->setIcon(
+		const QSize& size = m_ui.TrackIconPushButton->size() - QSize(8, 8);
+		m_ui.TrackIconPushButton->setIconSize(size);
+		m_ui.TrackIconPushButton->setIcon(
 			pm.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 	}
-	else m_ui.TrackIconToolButton->setIcon(pm);
+	else m_ui.TrackIconPushButton->setIcon(pm);
 
 	changed();
 }
