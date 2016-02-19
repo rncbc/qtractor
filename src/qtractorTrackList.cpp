@@ -373,14 +373,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		widget->lower();
 	}
 
-	const QPixmap pm(track->trackIcon());
-	if (!pm.isNull()) {
-		const int h0 = track->zoomHeight() - 16; // Account for track nr.
-		const int w0 = pTrackList->header()->sectionSize(Number) - 4;
-		const int w1 = (w0 < h0 ? w0 : h0);
-		icon = pm.scaled(w1, w1, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-	}
-	else icon = pm; // Null pixmap!
+	update_icon(pTrackList);
 
 	text << track->trackName();
 
@@ -472,6 +465,19 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 	}
 
 	widget->curveButton()->updateTrack();
+}
+
+
+void qtractorTrackList::Item::update_icon ( qtractorTrackList *pTrackList )
+{
+	const QPixmap pm(track->trackIcon());
+	if (!pm.isNull()) {
+		const int h0 = track->zoomHeight() - 16; // Account for track nr.
+		const int w0 = pTrackList->header()->sectionSize(Number) - 4;
+		const int w1 = (w0 < h0 ? w0 : h0);
+		icon = pm.scaled(w1, w1, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	}
+	else icon = pm; // Null pixmap!
 }
 
 
@@ -776,7 +782,7 @@ void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 		// Resize all icons anyway...
 		QListIterator<Item *> iter(m_items);
 		while (iter.hasNext())
-			iter.next()->update(this);
+			iter.next()->update_icon(this);
 	}
 	m_pHeader->blockSignals(bBlockSignals);
 
@@ -795,7 +801,7 @@ void qtractorTrackList::resetHeaderSize ( int iCol )
 		// Resize all icons anyway...
 		QListIterator<Item *> iter(m_items);
 		while (iter.hasNext())
-			iter.next()->update(this);
+			iter.next()->update_icon(this);
 	}
 	m_pHeader->blockSignals(bBlockSignals);
 

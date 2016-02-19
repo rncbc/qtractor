@@ -702,17 +702,17 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Automation</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="397"/>
+        <location filename="../qtractorTrackList.cpp" line="390"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="410"/>
+        <location filename="../qtractorTrackList.cpp" line="403"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="469"/>
+        <location filename="../qtractorTrackList.cpp" line="462"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>

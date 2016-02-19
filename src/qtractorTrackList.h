@@ -242,8 +242,9 @@ private:
 		bool updateBankProgram (qtractorMidiManager *pMidiManager,
 			const QString& sInstrument,
 			QString& sBank, QString& sProgram ) const;
-		// Item updater.
+		// Item updaters.
 		void update(qtractorTrackList *pTrackList);
+		void update_icon(qtractorTrackList *pTrackList);
 		// Item members.
 		qtractorTrack *track;
 		QPixmap        icon;
