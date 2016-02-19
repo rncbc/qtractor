@@ -506,6 +506,7 @@ qtractorMonitor *qtractorMixerStrip::monitor (void) const
 // Common mixer-strip caption title updater.
 void qtractorMixerStrip::updateName (void)
 {
+	QPixmap icon;
 	QString sName;
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
@@ -516,6 +517,8 @@ void qtractorMixerStrip::updateName (void)
 		pal.setColor(QPalette::ButtonText, m_pTrack->background().lighter());
 		m_pLabel->setPalette(pal);
 		m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+		if (icon.load(m_pTrack->trackIcon()))
+			icon = icon.scaled(16, 16, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	} else if (m_pBus) {
 		meterType = m_pBus->busType();
 		if (m_busMode & qtractorBus::Input) {
@@ -525,15 +528,17 @@ void qtractorMixerStrip::updateName (void)
 		}
 		m_pLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	}
-	
+
 	QString sType;
 	switch (meterType) {
 	case qtractorTrack::Audio:
-		m_pLabel->setIcon(QIcon(":/images/trackAudio.png"));
+		if (icon.isNull())
+			icon.load(":/images/trackAudio.png");
 		sType = tr("(Audio)");
 		break;
 	case qtractorTrack::Midi:
-		m_pLabel->setIcon(QIcon(":/images/trackMidi.png"));
+		if (icon.isNull())
+			icon.load(":/images/trackMidi.png");
 		sType = tr("(MIDI)");
 		break;
 	case qtractorTrack::None:
@@ -542,7 +547,9 @@ void qtractorMixerStrip::updateName (void)
 		break;
 	}
 
+	m_pLabel->setIcon(icon);
 	m_pLabel->setText(sName);
+	m_pLabel->update(); // Make sure icon and text gets visibly updated!
 
 	QFrame::setToolTip(sName + ' ' + sType);
 }
