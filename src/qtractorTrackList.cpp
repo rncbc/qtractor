@@ -968,9 +968,12 @@ void qtractorTrackList::drawCell (
 #endif
 	pPainter->setPen(fg);
 	if (iCol == Number) {
-		pPainter->drawText(rectText,
-			Qt::AlignHCenter | Qt::AlignTop,
-			QString::number(iRow + 1));
+		if (pItem->icon.isNull()
+			|| rect.height() > qtractorTrack::HeightMin + 4) {
+			pPainter->drawText(rectText,
+				Qt::AlignHCenter | Qt::AlignTop,
+				QString::number(iRow + 1));
+		}
 		if (!pItem->icon.isNull()) {
 			const int x = rect.left()
 				+ ((rect.width() - pItem->icon.width()) >> 1);
@@ -1130,6 +1133,9 @@ void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 		const int iTrack = trackRowAt(pos);
 		if (iTrack >= 0 && trackColumnAt(pos) == Number) {
 			const QRect& rect = trackRect(iTrack);
+			if (iTrack > 0 && pos.y() >= rect.top() && pos.y() < rect.top() + 4)
+				pTrack = track(iTrack - 1);
+			else
 			if (pos.y() >= rect.bottom() - 4 && pos.y() < rect.bottom() + 4)
 				pTrack = track(iTrack);
 		}
@@ -1280,6 +1286,14 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				if (trackColumnAt(pos) == Number) {
 					qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
 					const QRect& rect = trackRect(m_iDragTrack);
+					if (m_iDragTrack > 0 &&
+						m_posDrag.y() >= rect.top() &&
+						m_posDrag.y() <  rect.top() + 4) {
+						m_dragState = DragResize;
+						m_posDrag = rect.topLeft();
+						--m_iDragTrack;
+					}
+					else
 					if (m_posDrag.y() >= rect.bottom() - 4 &&
 						m_posDrag.y() <  rect.bottom() + 4) {
 						m_dragState = DragResize;
@@ -1303,7 +1317,6 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		if (iTrack >= 0 && trackColumnAt(pos) == Number) {
 			m_posDrag = pos;
 			const QRect& rect = trackRect(iTrack);
-		#if 0
 			if (pos.y() >= rect.top() && pos.y() < rect.top() + 4) {
 				if (--iTrack >= 0) {
 					if (m_iDragTrack < 0)
@@ -1314,7 +1327,6 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				}
 			}
 			else
-		#endif
 			if (pos.y() >= rect.bottom() - 4 && pos.y() < rect.bottom() + 4) {
 				if (m_iDragTrack < 0)
 					qtractorScrollView::setCursor(QCursor(Qt::SplitVCursor));
