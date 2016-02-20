@@ -1336,7 +1336,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			}
 		}
 		// If something has been going on, turn it off...
- 		if (m_iDragTrack >= 0) {
+		if (m_iDragTrack >= 0) {
 			qtractorScrollView::unsetCursor();
 			m_iDragTrack = -1;
 			m_iDragY = 0;
