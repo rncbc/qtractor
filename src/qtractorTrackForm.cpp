@@ -186,7 +186,7 @@ qtractorTrackForm::qtractorTrackForm (
 	// Add generic/standard track icons drop-down menu...
 	m_pIconMenu = new QMenu(this);
 	m_pIconMenu->addAction(QIcon(":/images/fileOpen.png"),
-		tr("Track &Icon..."), this, SLOT(trackIconClicked()));
+		tr("Custom &Icon..."), this, SLOT(trackIconClicked()));
 	m_pIconMenu->addSeparator();
 	addIconMenuAction(tr("&Drums"), ":/images/trackIconDrums1.png");
 	addIconMenuAction(tr("Drum &Kit"), ":/images/trackIconDrums2.png");
@@ -1136,7 +1136,10 @@ void qtractorTrackForm::trackIconAction (void)
 
 void qtractorTrackForm::trackIconClicked (void)
 {
-	QString sFilename = m_props.trackIcon.remove(':');
+	QString sFilename = m_props.trackIcon;
+
+	if (sFilename.at(0) == ':')
+		sFilename.clear();
 
 	QStringList filters;
 	filters.append(tr("Image files (%1)").arg("*.png *.xpm *.jpg *.jpeg"));

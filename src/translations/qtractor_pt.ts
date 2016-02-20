@@ -11905,7 +11905,7 @@ Você deseja descartar essas alterações?</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="189"/>
-        <source>Track &amp;Icon...</source>
+        <source>Custom &amp;Icon...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11990,17 +11990,17 @@ Do you want to apply the changes?</source>
 Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1142"/>
+        <location filename="../qtractorTrackForm.cpp" line="1145"/>
         <source>Image files (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1143"/>
+        <location filename="../qtractorTrackForm.cpp" line="1146"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Tudo (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1145"/>
+        <location filename="../qtractorTrackForm.cpp" line="1148"/>
         <source>Track Icon</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12160,12 +12160,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Remover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1421"/>
+        <location filename="../qtractorTrackForm.cpp" line="1424"/>
         <source>Foreground Color</source>
         <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1436"/>
+        <location filename="../qtractorTrackForm.cpp" line="1439"/>
         <source>Background Color</source>
         <translation>Cor do segundo plano</translation>
     </message>

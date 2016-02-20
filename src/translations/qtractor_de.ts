@@ -11905,11 +11905,6 @@ Wollen Sie diese verwerfen?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="189"/>
-        <source>Track &amp;Icon...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorTrackForm.cpp" line="191"/>
         <source>&amp;Drums</source>
         <translation type="unfinished"></translation>
@@ -12000,27 +11995,32 @@ Wollen Sie diese übernehmen?</translation>
         <translation>(Keine)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1142"/>
+        <location filename="../qtractorTrackForm.cpp" line="189"/>
+        <source>Custom &amp;Icon...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1145"/>
         <source>Image files (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1143"/>
+        <location filename="../qtractorTrackForm.cpp" line="1146"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1145"/>
+        <location filename="../qtractorTrackForm.cpp" line="1148"/>
         <source>Track Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1421"/>
+        <location filename="../qtractorTrackForm.cpp" line="1424"/>
         <source>Foreground Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1436"/>
+        <location filename="../qtractorTrackForm.cpp" line="1439"/>
         <source>Background Color</source>
         <translation>Hintergrundfarbe</translation>
     </message>

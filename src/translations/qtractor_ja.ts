@@ -12047,11 +12047,6 @@ Do you want to discard the changes?</source>
         <translation>パッチ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="189"/>
-        <source>Track &amp;Icon...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorTrackForm.cpp" line="191"/>
         <source>&amp;Drums</source>
         <translation type="unfinished"></translation>
@@ -12143,27 +12138,32 @@ Do you want to apply the changes?</source>
         <translation>(なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1142"/>
+        <location filename="../qtractorTrackForm.cpp" line="189"/>
+        <source>Custom &amp;Icon...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1145"/>
         <source>Image files (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1143"/>
+        <location filename="../qtractorTrackForm.cpp" line="1146"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1145"/>
+        <location filename="../qtractorTrackForm.cpp" line="1148"/>
         <source>Track Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1421"/>
+        <location filename="../qtractorTrackForm.cpp" line="1424"/>
         <source>Foreground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1436"/>
+        <location filename="../qtractorTrackForm.cpp" line="1439"/>
         <source>Background Color</source>
         <translation>背景の色</translation>
     </message>

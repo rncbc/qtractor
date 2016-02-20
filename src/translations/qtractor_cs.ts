@@ -11830,7 +11830,7 @@ Chcete zahodit tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="189"/>
-        <source>Track &amp;Icon...</source>
+        <source>Custom &amp;Icon...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11918,27 +11918,27 @@ Chcete použít tyto změny?</translation>
         <translation>(Žádný nástroj)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1142"/>
+        <location filename="../qtractorTrackForm.cpp" line="1145"/>
         <source>Image files (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1143"/>
+        <location filename="../qtractorTrackForm.cpp" line="1146"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1145"/>
+        <location filename="../qtractorTrackForm.cpp" line="1148"/>
         <source>Track Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1421"/>
+        <location filename="../qtractorTrackForm.cpp" line="1424"/>
         <source>Foreground Color</source>
         <translation>Barva popředí</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1436"/>
+        <location filename="../qtractorTrackForm.cpp" line="1439"/>
         <source>Background Color</source>
         <translation>Barva pozadí</translation>
     </message>
