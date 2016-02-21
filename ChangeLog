@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing brand new track icon property (EXPERIMENTAL).
+
 - Old Dry/Wet Insert and Aux-send pseudo-plugin parameters
   are now split into separate Dry and Wet controls, what
   else could it possibly be? :) (EXPERIMENTAL)

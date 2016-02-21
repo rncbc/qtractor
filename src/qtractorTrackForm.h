@@ -34,6 +34,8 @@ class qtractorMidiBus;
 class qtractorMidiManager;
 class qtractorCommand;
 
+class QMenu;
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackForm -- UI wrapper form.
@@ -89,6 +91,10 @@ protected slots:
 	void moveUpPlugin();
 	void moveDownPlugin();
 
+	void trackIconAction();
+	void trackIconClicked();
+	void trackIconChanged();
+
 protected:
 
 	qtractorMidiBus *midiBus() const;
@@ -120,6 +126,9 @@ protected:
 	void loadDefaultBusNames(qtractorTrack::TrackType trackType);
 	void saveDefaultBusNames(qtractorTrack::TrackType trackType) const;
 
+	// Track icon generic/standard action setup.
+	void addIconMenuAction(const QString& sText, const QString& sTrackIcon);
+
 private:
 
 	// The Qt-designer UI struct...
@@ -144,6 +153,9 @@ private:
 
 	// Keep last acceptable command.
 	qtractorCommand *m_pLastCommand;
+
+	// Track icon menu.
+	QMenu *m_pIconMenu;
 
 	// MIDI bank/program observer.
 	class MidiProgramObserver;

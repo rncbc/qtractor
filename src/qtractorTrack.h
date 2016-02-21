@@ -83,6 +83,10 @@ public:
 	const QString& trackName() const;
 	void updateTrackName();
 
+	// Track icon (filename) accessors.
+	void setTrackIcon(const QString& sTrackIcon);
+	const QString& trackIcon() const;
+
 	// Track type accessors.
 	void setTrackType(TrackType trackType);
 	TrackType trackType() const;
@@ -292,6 +296,7 @@ public:
 		void clear();
 		// Members.
 		QString        trackName;
+		QString        trackIcon;
 		TrackType      trackType;
 		bool           monitor;
 		bool           record;

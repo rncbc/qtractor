@@ -373,6 +373,8 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		widget->lower();
 	}
 
+	update_icon(pTrackList);
+
 	text << track->trackName();
 
 	const QString s = " - -";
@@ -463,6 +465,20 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 	}
 
 	widget->curveButton()->updateTrack();
+}
+
+
+void qtractorTrackList::Item::update_icon ( qtractorTrackList *pTrackList )
+{
+	const QPixmap pm(track->trackIcon());
+	if (!pm.isNull()) {
+		const int h0 = track->zoomHeight() - 4; // Account for track nr.
+		const int h1 = (h0 < qtractorTrack::HeightMin ? h0 : h0 - 12);
+		const int w0 = pTrackList->header()->sectionSize(Number) - 4;
+		const int w1 = (w0 < h1 ? w0 : h1);
+		icon = pm.scaled(w1, w1, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	}
+	else icon = pm; // Null pixmap!
 }
 
 
@@ -759,8 +775,36 @@ void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
 // Check/update header resize.
 void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 {
+	const bool bBlockSignals = m_pHeader->blockSignals(true);
 	if (iCol == Name && iColSize < 110)
 		m_pHeader->resizeSection(iCol, 110);
+	else
+	if (iCol == Number) {
+		// Resize all icons anyway...
+		QListIterator<Item *> iter(m_items);
+		while (iter.hasNext())
+			iter.next()->update_icon(this);
+	}
+	m_pHeader->blockSignals(bBlockSignals);
+
+	updateHeader();
+}
+
+
+// Reset header extents.
+void qtractorTrackList::resetHeaderSize ( int iCol )
+{
+	static const int s_aiDefaultHeaderSizes[] = { 26, 120, 100, 24, 100, 100 };
+
+	const bool bBlockSignals = m_pHeader->blockSignals(true);
+	m_pHeader->resizeSection(iCol, s_aiDefaultHeaderSizes[iCol]);
+	if (iCol == Number) {
+		// Resize all icons anyway...
+		QListIterator<Item *> iter(m_items);
+		while (iter.hasNext())
+			iter.next()->update_icon(this);
+	}
+	m_pHeader->blockSignals(bBlockSignals);
 
 	updateHeader();
 }
@@ -781,15 +825,6 @@ void qtractorTrackList::updateHeader (void)
 		iContentsWidth, qtractorScrollView::contentsHeight());
 
 	updateContents();
-}
-
-
-// Reset header extents.
-void qtractorTrackList::resetHeaderSize ( int iCol )
-{
-	static const int s_aiDefaultHeaderSizes[] = { 26, 120, 100, 24, 100, 100 };
-
-	m_pHeader->resizeSection(iCol, s_aiDefaultHeaderSizes[iCol]);
 }
 
 
@@ -933,9 +968,18 @@ void qtractorTrackList::drawCell (
 #endif
 	pPainter->setPen(fg);
 	if (iCol == Number) {
-		pPainter->drawText(rectText,
-			Qt::AlignHCenter | Qt::AlignTop,
-			QString::number(iRow + 1));
+		if (pItem->icon.isNull()
+			|| rect.height() > qtractorTrack::HeightMin + 4) {
+			pPainter->drawText(rectText,
+				Qt::AlignHCenter | Qt::AlignTop,
+				QString::number(iRow + 1));
+		}
+		if (!pItem->icon.isNull()) {
+			const int x = rect.left()
+				+ ((rect.width() - pItem->icon.width()) >> 1);
+			const int y = rect.bottom()	- (pItem->icon.height() + 2);
+			pPainter->drawPixmap(x, y, pItem->icon) ;
+		}
 	} else if (iCol == Channel) {
 		pPainter->drawText(rectText,
 			Qt::AlignHCenter | Qt::AlignTop,
@@ -1079,38 +1123,66 @@ void qtractorTrackList::contextMenuEvent (
 
 
 // Handle mouse double-clicks.
-void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
+void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 {
+	qtractorTrack *pTrack = NULL;
+
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		const QPoint& pos
+			= qtractorScrollView::viewportToContents(pMouseEvent->pos());
+		const int iTrack = trackRowAt(pos);
+		if (iTrack >= 0 && trackColumnAt(pos) == Number) {
+			const QRect& rect = trackRect(iTrack);
+			if (iTrack > 0 && pos.y() >= rect.top() && pos.y() < rect.top() + 4)
+				pTrack = track(iTrack - 1);
+			else
+			if (pos.y() >= rect.bottom() - 4 && pos.y() < rect.bottom() + 4)
+				pTrack = track(iTrack);
+		}
+	}
+
 	// Avoid lingering mouse press/release states...
 	resetDragState();
 
-	// We'll need a reference for issuing commands...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->trackProperties();
+	// Do we reset track height or go for its properties?
+	if (pTrack) {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			const int iZoomHeight = qtractorTrack::HeightBase;
+			pSession->execute(
+				new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+		}
+	} else {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->trackProperties();
+	}
 }
 
 
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
+	// Now set ready for drag something...
 	const QPoint& pos
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 
 	// Select current track...
 	const int iTrack = trackRowAt(pos);
 
-	// Look for the mouse hovering around some item boundary...
-	if (iTrack >= 0) {
-		// Special attitude, only of interest on
-		// the first left-most column (track-number)...
-		if (trackColumnAt(pos) == Number) {
-			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
-				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
-			qtractorScrollView::setFocus(); // get focus back anyway.
-		}
-		// Now set ready for drag something...
-		if (pMouseEvent->button() == Qt::LeftButton) {
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		// Try for drag-move/resize/select later...
+		m_dragState = DragStart;
+		m_posDrag = pos;
+		// Look for the mouse hovering around some item boundary...
+		if (iTrack >= 0) {
+			// Special attitude, only of interest on
+			// the first left-most column (track-number)...
+			if (trackColumnAt(pos) == Number) {
+				m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
+					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
+				qtractorScrollView::setFocus(); // get focus back anyway.
+			}
 			// Make current row always selected...
 			const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
 			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
@@ -1119,19 +1191,19 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 				selectTrack(iTrack, true, (modifiers & Qt::ControlModifier));
 				updateSelect(true);
 			}
-			// Try for drag-resize...
-			m_posDrag = pos;
 			if (m_iDragTrack >= 0) {
-				m_dragState  = DragResize;
+				// Most probably DragResize is next...
+				qtractorScrollView::setCursor(QCursor(Qt::SplitVCursor));
 			} else {
-				m_iDragTrack = iTrack;
-				m_iDragY     = 0;
-				m_dragState  = DragStart;
+				// Most probably DragMove is next...
 				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+				m_iDragTrack = iTrack;
+				m_iDragY = 0;
 			}
 		}
 	}
 
+	// Make it current anyway...
 	setCurrentTrackRow(iTrack);
 
 	// Probably this would be done ahead,
@@ -1175,7 +1247,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			moveRubberBand(m_posDrag);
 		}
 		break;
-	case DragSelect:
+	case DragSelect: {
 		// Currently selecting an group of items...
 		if (m_iDragTrack >= 0 && m_iCurrentTrack >= 0) {
 			const int iTrack = trackRowAt(pos);
@@ -1201,23 +1273,41 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				updateSelect(false);
 				m_iDragTrack = iTrack;
 			}
-			moveRubberBand(QRect(m_posDrag, pos));
 		}
+		// Update the rubber-band anyway...
+		moveRubberBand(QRect(m_posDrag, pos));
 		break;
+	}
 	case DragStart:
 		// About to start dragging an item...
-		if (m_iDragTrack >= 0
-			&& (m_posDrag - pos).manhattanLength()
+		if ((m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
-			if (trackColumnAt(pos) == Number) {
-				qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
-				m_dragState = DragMove;
-				m_posDrag   = trackRect(m_iDragTrack).topLeft();
-				moveRubberBand(m_posDrag);
-			} else {
-				qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
-				m_dragState = DragSelect;
-				moveRubberBand(QRect(m_posDrag, pos));
+			if (m_iDragTrack >= 0) {
+				if (trackColumnAt(pos) == Number) {
+					qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
+					const QRect& rect = trackRect(m_iDragTrack);
+					if (m_iDragTrack > 0 &&
+						m_posDrag.y() >= rect.top() &&
+						m_posDrag.y() <  rect.top() + 4) {
+						m_dragState = DragResize;
+						m_posDrag = rect.topLeft();
+						--m_iDragTrack;
+					}
+					else
+					if (m_posDrag.y() >= rect.bottom() - 4 &&
+						m_posDrag.y() <  rect.bottom() + 4) {
+						m_dragState = DragResize;
+						m_posDrag = rect.bottomLeft();
+					} else {
+						m_dragState = DragMove;
+						m_posDrag = rect.topLeft();
+					}
+					moveRubberBand(m_posDrag);
+				} else {
+					qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
+					m_dragState = DragSelect;
+					moveRubberBand(QRect(m_posDrag, pos));
+				}
 			}
 		}
 		break;
@@ -1225,7 +1315,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Look for the mouse hovering around first column item boundary...
 		int iTrack = trackRowAt(pos);
 		if (iTrack >= 0 && trackColumnAt(pos) == Number) {
-			m_posDrag  = pos;
+			m_posDrag = pos;
 			const QRect& rect = trackRect(iTrack);
 			if (pos.y() >= rect.top() && pos.y() < rect.top() + 4) {
 				if (--iTrack >= 0) {
@@ -1246,7 +1336,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			}
 		}
 		// If something has been going on, turn it off...
- 		if (m_iDragTrack >= 0) {
+		if (m_iDragTrack >= 0) {
 			qtractorScrollView::unsetCursor();
 			m_iDragTrack = -1;
 			m_iDragY = 0;
