@@ -540,7 +540,7 @@ void qtractorPluginListView::addPlugin (void)
 			pAddPluginCommand->addPlugin(pPlugin);
 			// Show the plugin form right away...
 			if (bOpenEditor && (pPlugin->type())->isEditor())
-				pPlugin->openEditor(NULL);
+				pPlugin->openEditor();
 			else
 				pPlugin->openForm();
 		}
@@ -843,7 +843,7 @@ void qtractorPluginListView::editPlugin (void)
 	if (pPlugin->isEditorVisible())
 		pPlugin->closeEditor();
 	else
-		pPlugin->openEditor(NULL);
+		pPlugin->openEditor();
 }
 
 
@@ -1146,7 +1146,7 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 		bOpenEditor = !bOpenEditor;
 
 	if (bOpenEditor && (pPlugin->type())->isEditor())
-		pPlugin->openEditor(NULL);
+		pPlugin->openEditor();
 	else
 		pPlugin->openForm();
 }

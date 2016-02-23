@@ -1126,9 +1126,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 		if (pParent == NULL)
 			pParent = qtractorMainForm::getInstance();
 	}
-	else
 #endif
-	pParent = NULL;
 
 	// Do it...
 	m_pEditorWidget = new EditorWidget(pParent, wflags);

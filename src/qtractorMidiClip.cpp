@@ -1084,9 +1084,7 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 			if (pParent == NULL)
 				pParent = qtractorMainForm::getInstance();
 		}
-		else
 	#endif
-		pParent = NULL;
 		// Do it...
 		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
 		m_pMidiEditorForm->show();

@@ -126,7 +126,7 @@ public:
 		unsigned long iClipOffset);
 
 	// Clip editor methods.
-	bool startEditor(QWidget *pParent);
+	bool startEditor(QWidget *pParent = NULL);
 	void resetEditor(bool bSelectClear);
 	void updateEditor(bool bSelectClear);
 	void updateEditorContents();

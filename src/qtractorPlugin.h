@@ -535,7 +535,7 @@ public:
 	virtual void realizeConfigs();
 	
 	// GUI Editor stuff.
-	virtual void openEditor(QWidget */*pParent*/) {}
+	virtual void openEditor(QWidget */*pParent*/= NULL) {}
 	virtual void closeEditor() {};
 	virtual void idleEditor()  {};
 

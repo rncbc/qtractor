@@ -912,15 +912,15 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 
 	if (bCreate) {
 		// Build up the plugin form...
-	#if 0
-		if (pParent == NULL)
-			pParent = qtractorMainForm::getInstance();
-	#endif
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bKeepToolsOnTop)
+		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;
+			// Make sure it has a parent...
+			if (pParent == NULL)
+				pParent = qtractorMainForm::getInstance();
+		}
 		// Do it...
 		m_pForm = new qtractorPluginForm(pParent, wflags);
 		m_pForm->setPlugin(this);
@@ -1925,8 +1925,8 @@ void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 
 
 // Insert-guarded plugin method.
-void qtractorPluginList::insertPlugin ( qtractorPlugin *pPlugin,
-	qtractorPlugin *pNextPlugin )
+void qtractorPluginList::insertPlugin (
+	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin )
 {
 	// We'll get prepared before plugging it in...
 	pPlugin->setChannels(m_iChannels);

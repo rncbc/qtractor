@@ -1,7 +1,7 @@
 // qtractorClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -176,7 +176,7 @@ public:
 		unsigned long iClipOffset) = 0;
 
 	// Clip editor methods.
-	virtual bool startEditor(QWidget *pParent);
+	virtual bool startEditor(QWidget *pParent = NULL);
 	virtual void resetEditor(bool bSelectClear);
 	virtual void updateEditor(bool bSelectClear);
 	virtual void updateEditorContents();
