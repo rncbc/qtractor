@@ -322,7 +322,7 @@ $(name).mak:	$(name).pro
 
 
 translations_lupdate:	$(name).pro
-	@$(LUPDATE) -verbose $(name).pro
+	@$(LUPDATE) -verbose -no-obsolete $(name).pro
 
 translations_lrelease:	translations_lupdate $(translations_targets)
 
