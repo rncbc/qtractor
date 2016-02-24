@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1357,8 +1357,8 @@ void qtractorFileListView::moveRubberBand ( QTreeWidgetItem *pDropItem, bool bOu
 	QRect rect = QTreeWidget::visualItemRect(pDropItem);
 	if (pDropItem->type() == GroupItem && !bOutdent)
 		rect.setX(rect.x() + QTreeWidget::indentation());
-	rect.setTop(rect.bottom());
-	rect.setHeight(2);
+	rect.setTop(rect.bottom() + 1);
+	rect.setHeight(3);
 	m_pRubberBand->setGeometry(rect);
 
 	// Ah, and make it visible, of course...

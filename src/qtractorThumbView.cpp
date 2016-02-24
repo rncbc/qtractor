@@ -66,10 +66,12 @@ qtractorThumbView::qtractorThumbView( QWidget *pParent )
 
 	m_dragState   = DragNone;
 	m_pRubberBand = new qtractorRubberBand(QRubberBand::Rectangle, this, 2);
-//	QPalette pal(m_pRubberBand->palette());
-//	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
-//	m_pRubberBand->setPalette(pal);
-//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+#if 0
+	QPalette pal(m_pRubberBand->palette());
+	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
+	m_pRubberBand->setPalette(pal);
+	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+#endif
 	m_pRubberBand->show();
 
 	QFrame::setToolTip(tr("Thumb view"));

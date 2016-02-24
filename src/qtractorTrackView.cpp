@@ -3098,10 +3098,12 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 	if (pRubberBand == NULL) {
 		pRubberBand = new qtractorRubberBand(
 			QRubberBand::Rectangle, qtractorScrollView::viewport(), thick);
-	//	QPalette pal(pRubberBand->palette());
-	//	pal.setColor(pRubberBand->foregroundRole(), Qt::blue);
-	//	pRubberBand->setPalette(pal);
-	//	pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#if 0
+		QPalette pal(pRubberBand->palette());
+		pal.setColor(pRubberBand->foregroundRole(), pal.highlight().color());
+		pRubberBand->setPalette(pal);
+		pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#endif
 		// Do not ever forget to set it back...
 		*ppRubberBand = pRubberBand;
 	}

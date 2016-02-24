@@ -1,7 +1,7 @@
 // qtractorMidiThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -68,10 +68,12 @@ qtractorMidiThumbView::qtractorMidiThumbView(
 
 	m_dragState   = DragNone;
 	m_pRubberBand = new qtractorRubberBand(QRubberBand::Rectangle, this, 2);
-//	QPalette pal(m_pRubberBand->palette());
-//	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
-//	m_pRubberBand->setPalette(pal);
-//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+#if 0
+	QPalette pal(m_pRubberBand->palette());
+	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
+	m_pRubberBand->setPalette(pal);
+	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+#endif
 	m_pRubberBand->show();
 
 	QFrame::setToolTip(tr("MIDI Thumb view"));

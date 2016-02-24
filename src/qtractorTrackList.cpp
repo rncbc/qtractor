@@ -1437,15 +1437,17 @@ void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 	if (m_pRubberBand == NULL) {
 		m_pRubberBand = new qtractorRubberBand(
 			QRubberBand::Line, qtractorScrollView::viewport());
-	//	QPalette pal(m_pRubberBand->palette());
-	//	pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
-	//	m_pRubberBand->setPalette(pal);
-	//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#if 0
+		QPalette pal(m_pRubberBand->palette());
+		pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
+		m_pRubberBand->setPalette(pal);
+		m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#endif
 	}
 	
 	// Just move it
 	m_pRubberBand->setGeometry(
-		QRect(0, pos.y(), qtractorScrollView::viewport()->width(), 4));
+		QRect(0, pos.y() - 1, qtractorScrollView::viewport()->width(), 3));
 
 	// Ah, and make it visible, of course...
 	if (!m_pRubberBand->isVisible())
@@ -1464,10 +1466,12 @@ void qtractorTrackList::moveRubberBand ( const QRect& rectDrag )
 	if (m_pRubberBand == NULL) {
 		m_pRubberBand = new qtractorRubberBand(
 			QRubberBand::Rectangle, qtractorScrollView::viewport());
-	//	QPalette pal(m_pRubberBand->palette());
-	//	pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
-	//	m_pRubberBand->setPalette(pal);
-	//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#if 0
+		QPalette pal(m_pRubberBand->palette());
+		pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
+		m_pRubberBand->setPalette(pal);
+		m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#endif
 	}
 
 	// Just move it
@@ -1508,8 +1512,11 @@ void qtractorTrackList::resetDragState (void)
 {
 	// Cancel any dragging out there...
 	// Just hide the rubber-band...
-	if (m_pRubberBand)
-		m_pRubberBand->hide();
+	if (m_pRubberBand) {
+	//	m_pRubberBand->hide();
+		delete m_pRubberBand;
+		m_pRubberBand = NULL;
+	}
 
 	// Should fallback mouse cursor...
 	if (m_dragState != DragNone || m_iDragTrack >= 0)
