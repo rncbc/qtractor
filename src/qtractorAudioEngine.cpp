@@ -1424,7 +1424,7 @@ bool qtractorAudioEngine::fileExport (
 	// Wait for the export to end.
 	while (m_bExporting && !m_bExportDone) {
 		qtractorSession::stabilize(200);
-		QThread::usleep(33000); // Ain't that enough?...
+		::usleep(33000); // Ain't that enough?...
 		pProgressBar->setValue(pSession->playHead());
 	}
 
