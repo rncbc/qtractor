@@ -216,7 +216,7 @@ public:
 #ifdef CONFIG_LV2_UI
 
 	// GUI Editor stuff.
-	void openEditor(QWidget *pParent);
+	void openEditor(QWidget *pParent = NULL);
 	void closeEditor();
 	void idleEditor();
 

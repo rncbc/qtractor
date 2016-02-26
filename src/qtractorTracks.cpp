@@ -512,7 +512,7 @@ bool qtractorTracks::newClip (void)
 				pClipCommand->addClip(pClip, pTrack);
 				pSession->execute(pClipCommand);
 				// Just start the MIDI editor on it...
-				return pClip->startEditor(pMainForm);
+				return pClip->startEditor();
 			}
 		}
 	}
@@ -538,12 +538,8 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 	if (pClip == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
 	// All else hasn't fail.
-	return pClip->startEditor(pMainForm);
+	return pClip->startEditor();
 }
 
 

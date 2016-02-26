@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -841,9 +841,19 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 			continue;
 		const QString& sTagName = eItem.tagName();
 		if (sTagName == "Patch") {
-			const QString& sProg = eItem.attribute("Name");
-			const int iProg = eItem.attribute("ProgramChange").toInt();
-			patches[iProg] = sProg;
+			int iBank = -1;
+			int iProg = -1;
+			const QString& sProgramChange = eItem.attribute("ProgramChange");
+			const QString& sPatchNumber	= eItem.attribute("Number");
+			QString sPatchName = eItem.attribute("Name");
+			if (sPatchName.isEmpty())
+				sPatchName = sName;
+			if (!sPatchNumber.isEmpty())
+				sPatchName = sPatchNumber + ' ' + sPatchName;
+			if (!sProgramChange.isEmpty()) {
+				iProg = sProgramChange.toInt();
+				patches[iProg] = sPatchName;
+			}
 			for (QDomNode nSubItem = eItem.firstChild();
 					!nSubItem.isNull();
 						nSubItem = nSubItem.nextSibling()) {
@@ -852,10 +862,34 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 					continue;
 				QString sSubName = eSubItem.attribute("Name");
 				if (sSubName.isEmpty())
-					sSubName = sProg;
-				if (sSubName.isEmpty())
-					sSubName = sName;
+					sSubName = sPatchName;
 				const QString& sSubTagName = eSubItem.tagName();
+				if (sSubTagName == "PatchMIDICommands") {
+					iBank = 0;
+					for (QDomNode nCommand = eSubItem.firstChild();
+							!nCommand.isNull();
+								nCommand = nCommand.nextSibling()) {
+						QDomElement eCommand = nCommand.toElement();
+						if (eCommand.isNull())
+							continue;
+						const QString& sCommandTagName = eCommand.tagName();
+						if (sCommandTagName == "ControlChange") {
+							const unsigned short iControl
+								= eCommand.attribute("Control").toUShort();
+							const unsigned short iValue
+								= eCommand.attribute("Value").toUShort();
+							if (iControl == 0)	// Bank MSB.
+								iBank |= ((iValue << 7) & 0x3f80);
+							else
+							if (iControl == 32)	// Bank LSB.
+								iBank |= (iValue & 0x7f);
+						}
+						else
+						if (sCommandTagName == "ProgramChange")
+							iProg = eCommand.attribute("Number").toInt();
+					}
+				}
+				else
 				if (sSubTagName == "NoteNameList")
 					loadMidiNoteNameList(&eSubItem, sSubName);
 				else
@@ -863,7 +897,7 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 					loadMidiControlNameList(&eSubItem, sSubName);
 				else
 				if (sSubTagName == "UsesNoteNameList")
-					instr.setNotes(-1, iProg, m_notes[sSubName]);
+					instr.setNotes(iBank, iProg, m_notes[sSubName]);
 				else
 				if (sSubTagName == "UsesControlNameList") {
 					instr.setControllers(m_controllers[sSubName]);
@@ -871,6 +905,25 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 					instr.setNrpns(m_nrpns[sSubName]);
 				}
 			}
+			// Is it a brand new patch bank, program?...
+			if (iBank >= 0) {
+				const QString& sBank
+					= QString(" (%1)").arg(iBank);
+				QString sBankName = instr.bankName(iBank);
+				if (sBankName.isEmpty()) {
+					sBankName = sName + sBank;
+				} else {
+					const QString sep(", ");
+					QStringList list = sBankName
+						.remove(sName).remove(sBank)
+						.split(sep, QString::SkipEmptyParts);
+					list.append(sName + sBank);
+					sBankName = list.join(sep);
+				}
+				instr.setBankName(iBank, sBankName);
+			}
+			if (iProg >= 0)
+				instr.setProgName(iBank, iProg, sPatchName);
 		}
 	}
 }

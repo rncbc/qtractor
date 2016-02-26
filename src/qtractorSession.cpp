@@ -1121,8 +1121,7 @@ void qtractorSession::stabilize ( int msecs )
 	qDebug("qtractorSession::stabilize(%d)", msecs);
 #endif
 	// Wait a litle bit before continue...
-	QTime t;
-	t.start();
+	QTime t; t.start();
 	while (t.elapsed() < msecs) {
 		QThread::yieldCurrentThread();
 		QApplication::processEvents(/* QEventLoop::ExcludeUserInputEvents */);

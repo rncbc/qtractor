@@ -151,7 +151,7 @@ public:
 	bool savePresetFile(const QString& sFilename);
 
 	// GUI Editor stuff.
-	void openEditor(QWidget *pParent);
+	void openEditor(QWidget *pParent = NULL);
 	void closeEditor();
 	void idleEditor();
 

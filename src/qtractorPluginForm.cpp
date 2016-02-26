@@ -733,7 +733,7 @@ void qtractorPluginForm::editSlot ( bool bOn )
 	++m_iUpdate;
 
 	if (bOn)
-		m_pPlugin->openEditor(NULL);
+		m_pPlugin->openEditor();
 	else
 		m_pPlugin->closeEditor();
 

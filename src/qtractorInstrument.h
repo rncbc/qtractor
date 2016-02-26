@@ -1,7 +1,7 @@
 // qtractorInstrument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -187,6 +187,16 @@ public:
 	const qtractorInstrumentData& patch(int iBank) const;
 	void setPatch(int iBank, const qtractorInstrumentData& patch)
 		{ m_pData->patches[iBank] = patch; }
+
+	void setBankName(int iBank, const QString& sBankName)
+		{ m_pData->patches[iBank].setName(sBankName); }
+	const QString& bankName(int iBank) const
+		{ return m_pData->patches[iBank].name(); }
+
+	void setProgName(int iBank, int iProg, const QString& sProgName)
+		{ m_pData->patches[iBank][iProg] = sProgName; }
+	const QString& progName(int iBank, int iProg) const
+		{ return m_pData->patches[iBank][iProg]; }
 
 	// Control names accessors.
 	void setControllersName(const QString& sControllersName)

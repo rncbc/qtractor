@@ -540,7 +540,7 @@ void qtractorPluginListView::addPlugin (void)
 			pAddPluginCommand->addPlugin(pPlugin);
 			// Show the plugin form right away...
 			if (bOpenEditor && (pPlugin->type())->isEditor())
-				pPlugin->openEditor(NULL);
+				pPlugin->openEditor();
 			else
 				pPlugin->openForm();
 		}
@@ -843,7 +843,7 @@ void qtractorPluginListView::editPlugin (void)
 	if (pPlugin->isEditorVisible())
 		pPlugin->closeEditor();
 	else
-		pPlugin->openEditor(NULL);
+		pPlugin->openEditor();
 }
 
 
@@ -1146,7 +1146,7 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 		bOpenEditor = !bOpenEditor;
 
 	if (bOpenEditor && (pPlugin->type())->isEditor())
-		pPlugin->openEditor(NULL);
+		pPlugin->openEditor();
 	else
 		pPlugin->openForm();
 }
@@ -1496,10 +1496,12 @@ void qtractorPluginListView::moveRubberBand ( qtractorPluginListItem *pDropItem 
 	if (m_pRubberBand == NULL) {
 		m_pRubberBand = new qtractorRubberBand(
 			QRubberBand::Line, QListWidget::viewport());
-	//	QPalette pal(m_pRubberBand->palette());
-	//	pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
-	//	m_pRubberBand->setPalette(pal);
-	//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#if 0
+		QPalette pal(m_pRubberBand->palette());
+		pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
+		m_pRubberBand->setPalette(pal);
+		m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	#endif
 	}
 
 	// Just move it...
@@ -1517,8 +1519,9 @@ void qtractorPluginListView::moveRubberBand ( qtractorPluginListItem *pDropItem 
 			rect = QListWidget::viewport()->rect();
 		}
 	}
+
 	// Set always this height:
-	rect.setHeight(2);
+	rect.setHeight(3);
 
 	m_pRubberBand->setGeometry(rect);
 
