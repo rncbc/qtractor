@@ -1422,9 +1422,13 @@ bool qtractorAudioEngine::fileExport (
 	jack_set_freewheel(m_pJackClient, 1);
 
 	// Wait for the export to end.
+	struct timespec ts;
+	ts.tv_sec  = 0;
+	ts.tv_nsec = 20000000L; // 20msec.
+
 	while (m_bExporting && !m_bExportDone) {
 		qtractorSession::stabilize(200);
-		::usleep(33000); // Ain't that enough?...
+		::nanosleep(&ts, NULL); // Ain't that enough?...
 		pProgressBar->setValue(pSession->playHead());
 	}
 
