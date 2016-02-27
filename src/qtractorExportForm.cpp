@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +28,7 @@
 #include "qtractorAudioFile.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorTracks.h"
 
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
@@ -100,6 +101,9 @@ qtractorExportForm::qtractorExportForm (
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
+	QObject::connect(m_ui.AddTrackCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -159,8 +163,10 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	m_ui.ExportPathComboBox->setObjectName(
 		m_sExportType + m_ui.ExportPathComboBox->objectName());
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions)
+	if (pOptions) {
 		pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
+		m_ui.AddTrackCheckBox->setChecked(pOptions->bExportAddTrack);
+	}
 
 	// Suggest a brand new export filename...
 	if (pSession) {
@@ -271,8 +277,15 @@ void qtractorExportForm::accept (void)
 					m_ui.ExportEndSpinBox->value());
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
+					// Add new tracks if necessary...
+					qtractorTracks *pTracks = pMainForm->tracks();
+					if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
+						pTracks->addAudioTracks(
+							QStringList(sExportPath),
+							m_ui.ExportStartSpinBox->value());
+					}
+					else pMainForm->addAudioFile(sExportPath);
 					// Log the success...
-					pMainForm->addAudioFile(sExportPath);
 					pMainForm->appendMessages(
 						tr("Audio file export: \"%1\" complete.")
 						.arg(sExportPath));
@@ -311,8 +324,15 @@ void qtractorExportForm::accept (void)
 					m_ui.ExportEndSpinBox->value());
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
+					// Add new tracks if necessary...
+					qtractorTracks *pTracks = pMainForm->tracks();
+					if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
+						pTracks->addMidiTracks(
+							QStringList(sExportPath),
+							m_ui.ExportStartSpinBox->value());
+					}
+					else pMainForm->addMidiFile(sExportPath);
 					// Log the success...
-					pMainForm->addMidiFile(sExportPath);
 					pMainForm->appendMessages(
 						tr("MIDI file export: \"%1\" complete.")
 						.arg(sExportPath));
@@ -326,8 +346,10 @@ void qtractorExportForm::accept (void)
 		}
 		// Save other conveniency options...
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions)
+		if (pOptions) {
 			pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
+			pOptions->bExportAddTrack = m_ui.AddTrackCheckBox->isChecked();
+		}
 	}
 
 	// Just go with dialog acceptance.

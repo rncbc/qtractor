@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -312,14 +312,34 @@
     </widget>
    </item>
    <item row="4" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="DialogButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <layout class="QHBoxLayout">
+     <property name="spacing">
+      <number>4</number>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="margin">
+      <number>8</number>
      </property>
-    </widget>
+     <item>
+      <widget class="QCheckBox" name="AddTrackCheckBox">
+       <property name="toolTip">
+        <string>Whether to add new track(s) with export result</string>
+       </property>
+       <property name="text">
+        <string>&amp;Add new track(s)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="DialogButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -343,6 +363,7 @@
   <tabstop>ExportEndSpinBox</tabstop>
   <tabstop>ExportBusNameListBox</tabstop>
   <tabstop>FormatComboBox</tabstop>
+  <tabstop>AddTrackCheckBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc"/>

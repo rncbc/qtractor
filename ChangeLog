@@ -6,7 +6,10 @@ ChangeLog
 
 GIT HEAD
 
-- Introducing brand new track icon property (EXPERIMENTAL).
+- New option on the audio/MIDI export dialog, on whether to
+  add/import the exported result as brand new track(s).
+
+- Introducing brand new track icons property (EXPERIMENTAL).
 
 - Old Dry/Wet Insert and Aux-send pseudo-plugin parameters
   are now split into separate Dry and Wet controls, what

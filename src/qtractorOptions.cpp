@@ -210,6 +210,7 @@ void qtractorOptions::loadOptions (void)
 	iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
 	bMidButtonModifier = m_settings.value("/MidButtonModifier", false).toBool();
 	bMidiControlSync = m_settings.value("/MidiControlSync", false).toBool();
+	bExportAddTrack = m_settings.value("/ExportAddTrack", false).toBool();
 	m_settings.endGroup();
 
 	// Session auto-save group.
@@ -495,6 +496,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
 	m_settings.setValue("/MidiControlSync", bMidiControlSync);
+	m_settings.setValue("/ExportAddTrack", bExportAddTrack);
 	m_settings.endGroup();
 
 	// Session auto-save group.
