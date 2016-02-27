@@ -322,7 +322,7 @@
      <item>
       <widget class="QCheckBox" name="AddTrackCheckBox">
        <property name="toolTip">
-        <string>Whether to add new track(s) with export result</string>
+        <string>Whether to add/import new track(s) with export result</string>
        </property>
        <property name="text">
         <string>&amp;Add new track(s)</string>
