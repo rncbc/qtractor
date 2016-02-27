@@ -1830,7 +1830,7 @@ Vuoi applicare le modifiche?</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="325"/>
-        <source>Whether to add new track(s) with export result</source>
+        <source>Whether to add/import new track(s) with export result</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1877,12 +1877,12 @@ Vuoi sostituirlo?</translation>
         <translation>Esportazione file audio: &quot;%1&quot; iniziata...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="290"/>
+        <location filename="../qtractorExportForm.cpp" line="291"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Esportazione file audio: &quot;%1&quot; completata.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="295"/>
+        <location filename="../qtractorExportForm.cpp" line="296"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -1895,17 +1895,17 @@ failed.</source>
 fallita.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="317"/>
+        <location filename="../qtractorExportForm.cpp" line="318"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Esportazione file MIDI: &quot;%1&quot; iniziata...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="337"/>
+        <location filename="../qtractorExportForm.cpp" line="339"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Esportazione file MIDI: &quot;%1&quot; completata.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="342"/>
+        <location filename="../qtractorExportForm.cpp" line="344"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -1918,12 +1918,12 @@ failed.</source>
 fallita.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="398"/>
+        <location filename="../qtractorExportForm.cpp" line="400"/>
         <source>Export %1 File</source>
         <translation>Esporta %1 File</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="399"/>
+        <location filename="../qtractorExportForm.cpp" line="401"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 file (*.%1)</translation>
     </message>

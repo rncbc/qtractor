@@ -282,7 +282,8 @@ void qtractorExportForm::accept (void)
 					if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
 						pTracks->addAudioTracks(
 							QStringList(sExportPath),
-							m_ui.ExportStartSpinBox->value());
+							m_ui.ExportStartSpinBox->value(),
+							pTracks->currentTrack());
 					}
 					else pMainForm->addAudioFile(sExportPath);
 					// Log the success...
@@ -329,7 +330,8 @@ void qtractorExportForm::accept (void)
 					if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
 						pTracks->addMidiTracks(
 							QStringList(sExportPath),
-							m_ui.ExportStartSpinBox->value());
+							m_ui.ExportStartSpinBox->value(),
+							pTracks->currentTrack());
 					}
 					else pMainForm->addMidiFile(sExportPath);
 					// Log the success...

@@ -1827,7 +1827,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="325"/>
-        <source>Whether to add new track(s) with export result</source>
+        <source>Whether to add/import new track(s) with export result</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1874,12 +1874,12 @@ Do you want to replace it?</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="290"/>
+        <location filename="../qtractorExportForm.cpp" line="291"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="295"/>
+        <location filename="../qtractorExportForm.cpp" line="296"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -1892,17 +1892,17 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="317"/>
+        <location filename="../qtractorExportForm.cpp" line="318"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="337"/>
+        <location filename="../qtractorExportForm.cpp" line="339"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="342"/>
+        <location filename="../qtractorExportForm.cpp" line="344"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -1915,12 +1915,12 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="398"/>
+        <location filename="../qtractorExportForm.cpp" line="400"/>
         <source>Export %1 File</source>
         <translation>%1 ファイルのエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="399"/>
+        <location filename="../qtractorExportForm.cpp" line="401"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 ファイル (*.%1)</translation>
     </message>
