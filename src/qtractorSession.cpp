@@ -1120,10 +1120,16 @@ void qtractorSession::stabilize ( int msecs )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorSession::stabilize(%d)", msecs);
 #endif
+
 	// Wait a litle bit before continue...
+	struct timespec ts;
+	ts.tv_sec  = 0;
+	ts.tv_nsec = long(msecs << 12);
+
 	QTime t; t.start();
 	while (t.elapsed() < msecs) {
 		QThread::yieldCurrentThread();
+		::nanosleep(&ts, NULL);
 		QApplication::processEvents(/* QEventLoop::ExcludeUserInputEvents */);
 	}
 }

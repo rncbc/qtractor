@@ -75,7 +75,7 @@
 #define DRIFT_CHECK         8
 
 #define DRIFT_CHECK_MIN     (DRIFT_CHECK >> 2)
-#define DRIFT_CHECK_MAX     (DRIFT_CHECK << 2)
+#define DRIFT_CHECK_MAX     (DRIFT_CHECK << 1)
 
 
 //----------------------------------------------------------------------
