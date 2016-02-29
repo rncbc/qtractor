@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Default PC-Keyboard shortcuts may now be erasable and re-
+  assigned (cf. Help/Shortcuts...). (EXPERIMENTAL)
+
 - New option on the audio/MIDI export dialog, on whether to
   add/import the exported result as brand new track(s).
 

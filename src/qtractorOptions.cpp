@@ -920,19 +920,16 @@ void qtractorOptions::loadActionShortcuts ( QObject *pObject )
 {
 	m_settings.beginGroup("/Shortcuts/" + pObject->objectName());
 
-	const QStringList& keys = m_settings.childKeys();
-	QStringListIterator iter(keys);
+	QList<QAction *> actions = pObject->findChildren<QAction *> ();
+	QListIterator<QAction *> iter(actions);
 	while (iter.hasNext()) {
-		const QString& sObjectName = iter.next();
-		const QList<QAction *>& actions
-			= pObject->findChildren<QAction *> (sObjectName);
-		if (actions.isEmpty())
+		QAction *pAction = iter.next();
+		if (pAction->objectName().isEmpty())
 			continue;
-		const QString& sKey = '/' + sObjectName;
+		const QString& sKey = '/' + pAction->objectName();
 		const QString& sValue = m_settings.value(sKey).toString();
-		if (sValue.isEmpty())
+		if (sValue.isEmpty() && pAction->shortcut().isEmpty())
 			continue;
-		QAction *pAction = actions.first();
 		pAction->setShortcut(QKeySequence(sValue));
 	}
 
