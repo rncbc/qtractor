@@ -94,6 +94,9 @@ public:
 	void setPluginList(qtractorPluginList *pPluginList);
 	qtractorPluginList *pluginList() const;
 
+	// Common tiny scrollbar style decl.
+	class TinyScrollBarStyle;
+
 	// Special scrollbar style accessors.
 	void setTinyScrollBar(bool bTinyScrollBar);
 	bool isTinyScrollBar() const;
@@ -240,6 +243,9 @@ private:
 
 	// To show the point where drop will go.
 	qtractorRubberBand *m_pRubberBand;
+
+	// Common tiny scrollbar style stuff.
+	TinyScrollBarStyle *m_pTinyScrollBarStyle;
 
 	// Common pixmap stuff.
 	static QIcon *g_pItemIcons[2];
