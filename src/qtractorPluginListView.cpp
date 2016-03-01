@@ -60,32 +60,29 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorTinyScrollBarStyle -- Custom style to have some tiny scrollbars
+// qtractorPluginListView::TinyScrollBarStyle -- Custom tiny scrollbar style.
 //
 #if QT_VERSION < 0x050000
 #include <QCDEStyle>
 #else
-#include <QCommonStyle>
-class QCDEStyle : public QCommonStyle {};
+#include <QProxyStyle>
+class QCDEStyle : public QProxyStyle {};
 #endif
 
-class qtractorTinyScrollBarStyle : public QCDEStyle
+class qtractorPluginListView::TinyScrollBarStyle : public QCDEStyle
 {
 protected:
 
 	// Custom virtual override.
-	int pixelMetric( PixelMetric pm,
-		const QStyleOption *option = 0, const QWidget *pWidget = 0 ) const
+	int pixelMetric(PixelMetric pm,
+		const QStyleOption *option = 0, const QWidget *pWidget = 0) const
 	{
 		if (pm == QStyle::PM_ScrollBarExtent)
 			return 8;
 
-		return QCommonStyle::pixelMetric(pm, option, pWidget);
+		return QCDEStyle::pixelMetric(pm, option, pWidget);
 	}
 };
-
-static qtractorTinyScrollBarStyle g_tinyScrollBarStyle;
-
 
 
 //----------------------------------------------------------------------------
@@ -287,6 +284,8 @@ void qtractorPluginListItem::updateActivated (void)
 int    qtractorPluginListView::g_iItemRefCount = 0;
 QIcon *qtractorPluginListView::g_pItemIcons[2] = { NULL, NULL };
 
+qtractorPluginListView::TinyScrollBarStyle *g_pTinyScrollBarStyle = NULL;
+
 // Construcctor.
 qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	: QListWidget(pParent), m_pPluginList(NULL), m_pClickedItem(NULL)
@@ -302,6 +301,9 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	m_pDragItem   = NULL;
 	m_pDropItem   = NULL;
 	m_pRubberBand = NULL;
+
+	// Common tiny scrollbar style stuff.
+	m_pTinyScrollBarStyle = NULL;
 
 //	QListWidget::setDragEnabled(true);
 	QListWidget::setAcceptDrops(true);
@@ -344,6 +346,11 @@ qtractorPluginListView::~qtractorPluginListView (void)
 
 	setPluginList(NULL);
 
+	if (m_pTinyScrollBarStyle) {
+		delete m_pTinyScrollBarStyle;
+		m_pTinyScrollBarStyle = NULL;
+	}
+
 	if (--g_iItemRefCount == 0) {
 		for (int i = 0; i < 2; ++i) {
 			delete g_pItemIcons[i];
@@ -377,18 +384,23 @@ qtractorPluginList *qtractorPluginListView::pluginList (void) const
 void qtractorPluginListView::setTinyScrollBar ( bool bTinyScrollBar )
 {
 	if (bTinyScrollBar) {
-		QListWidget::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
-		QListWidget::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);
+		m_pTinyScrollBarStyle = new TinyScrollBarStyle();
+		QListWidget::verticalScrollBar()->setStyle(m_pTinyScrollBarStyle);
+		QListWidget::horizontalScrollBar()->setStyle(m_pTinyScrollBarStyle);
 	} else {
 		QListWidget::verticalScrollBar()->setStyle(NULL);
 		QListWidget::horizontalScrollBar()->setStyle(NULL);
+		if (m_pTinyScrollBarStyle) {
+			delete m_pTinyScrollBarStyle;
+			m_pTinyScrollBarStyle = NULL;
+		}
 	}
 }
 
 bool qtractorPluginListView::isTinyScrollBar (void) const
 {
-	return QListWidget::verticalScrollBar()->style() == &g_tinyScrollBarStyle
-		&& QListWidget::horizontalScrollBar()->style() == &g_tinyScrollBarStyle;
+	return QListWidget::verticalScrollBar()->style()   == g_pTinyScrollBarStyle
+		&& QListWidget::horizontalScrollBar()->style() == g_pTinyScrollBarStyle;
 }
 
 
