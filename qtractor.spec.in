@@ -61,7 +61,7 @@ the personal home-studio.
 
 %build
 %configure
-%__make
+%__make %{?_smp_mflags}
 
 %install
 %__make DESTDIR=%{buildroot} install

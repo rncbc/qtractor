@@ -1219,7 +1219,7 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="108"/>
         <source>&amp;Track/Channel:</source>
-        <translation>Pis&amp;te/Canal :</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="169"/>
@@ -6204,12 +6204,12 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation>Activer la synchronisation immédiate de tous les controleurs (hook)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
         <source>&amp;Sync</source>
-        <translation>&amp;Sync</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="393"/>
@@ -12088,6 +12088,11 @@ Voulez-vous abandonner ces changements ?</translation>
         <translation>Patch</translation>
     </message>
     <message>
+        <location filename="../qtractorTrackForm.cpp" line="189"/>
+        <source>Custom &amp;Icon...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTrackForm.cpp" line="191"/>
         <source>&amp;Drums</source>
         <translation type="unfinished"></translation>
@@ -12177,11 +12182,6 @@ Voulez-vous appliquer les changements ?</translation>
         <location filename="../qtractorTrackForm.cpp" line="901"/>
         <source>(None)</source>
         <translation>(Rien)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackForm.cpp" line="189"/>
-        <source>Custom &amp;Icon...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1145"/>
