@@ -910,6 +910,11 @@ void qtractorOptions::loadActionShortcuts ( QObject *pObject )
 {
 	m_settings.beginGroup("/Shortcuts/" + pObject->objectName());
 
+	if (m_settings.childKeys().isEmpty()) {
+		m_settings.endGroup();
+		return;
+	}
+
 	QList<QAction *> actions = pObject->findChildren<QAction *> ();
 	QListIterator<QAction *> iter(actions);
 	while (iter.hasNext()) {
