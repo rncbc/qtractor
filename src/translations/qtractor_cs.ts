@@ -553,12 +553,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="278"/>
         <source>Insert Send/Return pseudo-plugin (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit nepravý přídavný modul pro odeslání/vrácení (Audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="340"/>
         <source>Insert Send/Return pseudo-plugin (MIDI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit nepravý přídavný modul pro odeslání/vrácení (MIDI)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="380"/>
@@ -572,40 +572,40 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorInsertPlugin.cpp" line="388"/>
         <location filename="../qtractorInsertPlugin.cpp" line="667"/>
         <source>Dry Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkušební zesílení</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="396"/>
         <location filename="../qtractorInsertPlugin.cpp" line="675"/>
         <source>Wet Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostré zesílení</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="992"/>
         <source>Aux Send (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomocné odeslání (Audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1025"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomocný nepravý přídavný modul pro odeslání (Audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1087"/>
         <source>Aux Send pseudo-plugin (MIDI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomocný nepravý přídavný modul pro odeslání (MIDI)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1255"/>
         <location filename="../qtractorPluginListView.cpp" line="211"/>
         <source>%1 (Audio)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (Audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1497"/>
         <location filename="../qtractorPluginListView.cpp" line="231"/>
         <source>%1 (MIDI)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (MIDI)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlCommand.h" line="70"/>
@@ -1905,12 +1905,12 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="325"/>
         <source>Whether to add/import new track(s) with export result</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda se má/mají přidat/zavést nová stopa/nové stopy s výsledkem vyvedení</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="328"/>
         <source>&amp;Add new track(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Přidat novou stopu(y)</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="286"/>
@@ -4605,27 +4605,27 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1786"/>
         <source>Normali&amp;ze</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Normalizovat</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1915"/>
         <source>&amp;Cross Fade</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Prolínat</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1918"/>
         <source>Clip Cross-fade</source>
-        <translation type="unfinished"></translation>
+        <translation>Prolínání záznamu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1921"/>
         <source>Clip cross-fade</source>
-        <translation type="unfinished"></translation>
+        <translation>Prolínání záznamu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1924"/>
         <source>Cross-fade current overlapped clips</source>
-        <translation type="unfinished"></translation>
+        <translation>Prolínat nyní se překrývající se záznamy</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1988"/>
@@ -10865,7 +10865,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1582"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished">&amp;Zvuk</translation>
+        <translation>&amp;Zvuk</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1586"/>
@@ -10894,7 +10894,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1606"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1631"/>
@@ -11841,72 +11841,72 @@ Chcete zahodit tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="189"/>
         <source>Custom &amp;Icon...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastní &amp;ikona...</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="191"/>
         <source>&amp;Drums</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bicí</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="192"/>
         <source>Drum &amp;Kit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sada bicích</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="193"/>
         <source>&amp;Bass</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bas</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="194"/>
         <source>A&amp;coustic Bass</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Akustický bas</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="195"/>
         <source>&amp;Guitar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kytara</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="196"/>
         <source>&amp;Electric Guitar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Elektrická kytara</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="197"/>
         <source>&amp;Piano</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Klavír</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="198"/>
         <source>&amp;Acoustic Piano</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;kustické piano</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="199"/>
         <source>&amp;Microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mikrofon</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="200"/>
         <source>Vi&amp;ntage Microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Š&amp;pičkový mikrofon</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="201"/>
         <source>&amp;Speaker</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reproduktor</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="202"/>
         <source>&amp;Trumpet</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Trubka</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="203"/>
         <source>&amp;Violin</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Housle</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="459"/>
@@ -11930,17 +11930,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1145"/>
         <source>Image files (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázkové soubory (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1146"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1148"/>
         <source>Track Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikona stopy</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1424"/>
@@ -11982,7 +11982,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="101"/>
         <source>Track icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikona stopy</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="118"/>
@@ -12532,7 +12532,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="1778"/>
         <source>clip cross-fade</source>
-        <translation type="unfinished"></translation>
+        <translation>Prolínání záznamu</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2033"/>
