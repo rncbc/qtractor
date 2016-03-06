@@ -383,6 +383,8 @@ void qtractorMidiOutputBuffer::processSync (void)
 		// And next...
 		pEv = m_outputBuffer.next();
 	}
+
+	pMidiEngine->flush();
 }
 
 

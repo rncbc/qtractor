@@ -828,7 +828,8 @@ void qtractorMidiInsertPlugin::process (
 					break;
 			}
 			// Wake the asynchronous working thread...
-			qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
+			if (iEventCount > 0)
+				qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
 		}
 		// Merge events from returns/input events...
 		if (m_pMidiInputBuffer)
@@ -1516,7 +1517,8 @@ void qtractorMidiAuxSendPlugin::process (
 				break;
 		}
 		// Wake the asynchronous working thread...
-		qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
+		if (iEventCount > 0)
+			qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
 	}
 
 	const unsigned short iChannels = channels();
