@@ -2397,7 +2397,8 @@ void qtractorMidiEngine::stop (void)
 
 	// Stop queue timer...
 	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
-	snd_seq_drain_output(m_pAlsaSeq);
+
+	flush();
 
 	// Shut-off all MIDI buses...
 	shutOffAllBuses();
