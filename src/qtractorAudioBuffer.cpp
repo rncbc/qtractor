@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -237,7 +237,7 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	m_pTimeStretcher = NULL;
 
-	m_fNextGain      = 1.0f;
+	m_fNextGain      = 0.0f;
 	m_iRampGain      = 1;
 
 #ifdef CONFIG_LIBSAMPLERATE
@@ -446,6 +446,18 @@ void qtractorAudioBuffer::close (void)
 	}
 
 	// Release internal I/O buffers.
+	if (m_ppFrames && m_pRingBuffer) {
+		const unsigned short iBuffers = m_pRingBuffer->channels();
+		for (unsigned short i = 0; i < iBuffers; ++i) {
+			if (m_ppFrames[i]) {
+				delete [] m_ppFrames[i];
+				m_ppFrames[i] = NULL;
+			}
+		}
+		delete [] m_ppFrames;
+		m_ppFrames = NULL;
+	}
+
 	if (m_pRingBuffer) {
 		deleteIOBuffers();
 		delete m_pRingBuffer;
@@ -473,7 +485,7 @@ void qtractorAudioBuffer::close (void)
 
 	ATOMIC_SET(&m_seekPending, 0);
 
-	m_fNextGain = 1.0f;
+	m_fNextGain = 0.0f;
 	m_iRampGain = 1;
 
 	m_pPeak = NULL;
@@ -674,8 +686,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	}
 
 	// Take care of end-of-stream...
-	if (ro + iFrames >= m_iFileLength)
-		fGain = 0.0f;
+	if (ro + iFrames >= m_iOffset + m_iLength)
+		m_iRampGain = -1;
 
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
@@ -736,7 +748,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return false;
 
 	// Reset running gain...
-	m_fNextGain = 1.0f;
+	m_fNextGain = 0.0f;
 	m_iRampGain = 1;
 
 	// Are we off-limits?
@@ -841,7 +853,7 @@ void qtractorAudioBuffer::initSync (void)
 	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
-	m_fNextGain = 1.0f;
+	m_fNextGain = 0.0f;
 	m_iRampGain = 1;
 
 	// Set to initial offset...
@@ -1248,64 +1260,54 @@ int qtractorAudioBuffer::readMixFrames (
 	if (rs == 0)
 		return 0;
 
-	// Reset running gain...
-	float fPrevGain = m_fNextGain;
-	m_fNextGain = fGain;
+	const int nread = m_pRingBuffer->read(m_ppFrames, iFrames, iOffset);
 
-	// HACK: Case of clip ramp out-set...
-	if (m_fNextGain < 1e-9f && fPrevGain > (1.0f - 1e-9f)) {
-		// Final micro fade-out...
-		// (anti-glitch out-set ramp)
-		m_fNextGain = 1.0f;
-		m_iRampGain = -1;
-	}
-
-	if (m_iRampGain)
-		fPrevGain = m_fNextGain;
-
-	float fGainStep = (m_fNextGain - fPrevGain) / float(iFrames);
-
-	if (iFrames > rs)
-		iFrames = rs;
-
-	const unsigned int r = m_pRingBuffer->readIndex();
-
-	unsigned int n, n1, n2;
-	unsigned int bs = m_pRingBuffer->bufferSize();
-	if (r + iFrames > bs) {
-		n1 = (bs - r);
-		n2 = (r + iFrames) & m_pRingBuffer->bufferMask();
-	} else {
-		n1 = iFrames;
-		n2 = 0;
-	}
-
-	float fGainIter;
 	unsigned short i, j;
+	float fGainIter, fGainStep;
 	const unsigned short iBuffers = m_pRingBuffer->channels();
-	float **ppBuffer = m_pRingBuffer->buffer();
 	float *pFrames, *pBuffer;
+	int n;
+
+	// HACK: Case of clip ramp in/out-set in this run...
+	if (m_iRampGain) {
+		const unsigned int nramp
+			= (nread < QTRACTOR_RAMP_LENGTH ? nread : QTRACTOR_RAMP_LENGTH);
+		const int n0 = (m_iRampGain < 0 ? nread - nramp : nramp);
+		const int n1 = (m_iRampGain < 0 ? n0 : 0);
+		const int n2 = (m_iRampGain < 0 ? nread : n0);
+		fGainStep = float(m_iRampGain) / float(nramp);
+		for (i = 0; i < iBuffers; ++i) {
+			fGainIter = (m_iRampGain < 0 ? 1.0f : 0.0f);
+			pBuffer = m_ppFrames[i] + n1;
+			for (n = n1; n < n2; ++n, fGainIter += fGainStep)
+				*pBuffer++ *= fGainIter;
+		}
+		m_iRampGain = (m_iRampGain < 0 ? 1 : 0);
+	//	fPrevGain = fGain;
+	}
+
+	// Reset running gain...
+	const float fPrevGain = m_fNextGain;
+	m_fNextGain = fGain;
+	fGainStep = (m_fNextGain - fPrevGain) / float(nread);
+
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; ++i) {
 			pFrames = ppFrames[i] + iOffset;
-			pBuffer = ppBuffer[i];
+			pBuffer = m_ppFrames[i];
 			fGainIter = fPrevGain;
-			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
-				*pFrames++ += fGainIter * pBuffer[n + r];
-			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
-				*pFrames++ += fGainIter * pBuffer[n];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+				*pFrames++ += fGainIter * *pBuffer++;
 		}
 	}
 	else if (iChannels > iBuffers) {
 		j = 0;
 		for (i = 0; i < iChannels; ++i) {
 			pFrames = ppFrames[i] + iOffset;
-			pBuffer = ppBuffer[j];
+			pBuffer = m_ppFrames[j];
 			fGainIter = fPrevGain;
-			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
-				*pFrames++ += fGainIter * pBuffer[n + r];
-			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
-				*pFrames++ += fGainIter * pBuffer[n];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+				*pFrames++ += fGainIter * *pBuffer++;
 			if (++j >= iBuffers)
 				j = 0;
 		}
@@ -1314,36 +1316,16 @@ int qtractorAudioBuffer::readMixFrames (
 		i = 0;
 		for (j = 0; j < iBuffers; ++j) {
 			pFrames = ppFrames[i] + iOffset;
-			pBuffer = ppBuffer[j];
+			pBuffer = m_ppFrames[j];
 			fGainIter = fPrevGain;
-			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
-				*pFrames++ += fGainIter * pBuffer[n + r];
-			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
-				*pFrames++ += fGainIter * pBuffer[n];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+				*pFrames++ += fGainIter * *pBuffer++;
 			if (++i >= iChannels)
 				i = 0;
 		}
 	}
 
-	m_pRingBuffer->setReadIndex(r + iFrames);
-
-	// HACK: Case of clip ramp outset in this run...
-	if (m_iRampGain) {
-		unsigned int iLength = QTRACTOR_RAMP_LENGTH;
-		if (iLength > iFrames)
-			iLength = iFrames;
-		iOffset += (m_iRampGain < 0 ? iFrames - iLength : 0);
-		fGainStep = float(m_iRampGain) / float(iLength);
-		for (i = 0; i < iChannels; ++i) {
-			pFrames = ppFrames[i] + iOffset;
-			fGainIter = (m_iRampGain < 0 ? 1.0f : 0.0f);
-			for (n = 0; n < iLength; ++n, fGainIter += fGainStep)
-				*pFrames++ *= fGainIter;
-		}
-		m_iRampGain = (m_iRampGain < 0 ? 1 : 0);
-	}
-	
-	return iFrames;
+	return nread;
 }
 
 
@@ -1374,17 +1356,6 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 	}
 	m_iInputPending = 0;
 #endif
-
-	if (m_ppFrames) {
-		for (unsigned short i = 0; i < m_pRingBuffer->channels(); ++i) {
-			if (m_ppFrames[i]) {
-				delete [] m_ppFrames[i];
-				m_ppFrames[i] = NULL;
-			}
-		}
-		delete [] m_ppFrames;
-		m_ppFrames = NULL;
-	}
 }
 
 
