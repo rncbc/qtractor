@@ -110,7 +110,7 @@ public:
 
 		// Constructor.
 		Data(qtractorTrack *pTrack,
-			 unsigned short iChannels, unsigned int iSampleRate)
+			unsigned short iChannels, unsigned int iSampleRate)
 			: m_pBuff(new qtractorAudioBuffer(pTrack->syncThread(),
 				iChannels, iSampleRate)) {}
 

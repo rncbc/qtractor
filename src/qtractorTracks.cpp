@@ -1240,6 +1240,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 
 	const unsigned short iChannels = pAudioBus->channels();
 	const unsigned int iSampleRate = pSession->sampleRate();
+	const unsigned int iBufferSize = pSession->audioEngine()->bufferSize();
 
 	// Multi-selection extents (in frames)...
 	QList<audioClipBufferItem *> list;
@@ -1271,7 +1272,6 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	}
 
 	// Allocate merge audio scratch buffer...
-	const unsigned int iBufferSize = pSession->audioEngine()->bufferSize();
 	unsigned short i;
 	float **ppFrames = new float * [iChannels];
 	for (i = 0; i < iChannels; ++i)

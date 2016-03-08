@@ -267,6 +267,7 @@ private:
 	qtractorAtomic m_seekPending;
 
 	float        **m_ppFrames;
+	float        **m_ppBuffer;
 
 	bool           m_bTimeStretch;
 	float          m_fTimeStretch;

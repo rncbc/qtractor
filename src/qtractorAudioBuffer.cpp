@@ -25,8 +25,6 @@
 
 #include "qtractorTimeStretcher.h"
 
-#include "qtractorSession.h"
-
 
 // Glitch, click, pop-free ramp length (in frames).
 #define QTRACTOR_RAMP_LENGTH	32
@@ -225,9 +223,11 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 	m_iLoopEnd       = 0;
 
 	m_iSeekOffset    = 0;
+
 	ATOMIC_SET(&m_seekPending, 0);
 
 	m_ppFrames       = NULL;
+	m_ppBuffer       = NULL;
 
 	m_bTimeStretch   = false;
 	m_fTimeStretch   = 1.0f;
@@ -325,9 +325,10 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	}
 
 	// Check samplerate and how many channels there really are.
-	const unsigned short iChannels = m_pFile->channels();
+	const unsigned short iBuffers = m_pFile->channels();
+
 	// Just one more sanity check...
-	if (iChannels < 1 || m_pFile->sampleRate() < 1) {
+	if (iBuffers < 1 || m_pFile->sampleRate() < 1) {
 		m_pFile->close();
 		delete m_pFile;
 		m_pFile = NULL;
@@ -341,9 +342,9 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	m_bResample = (m_iSampleRate != m_pFile->sampleRate());
 	if (m_bResample) {
 		m_fResampleRatio = float(m_iSampleRate) / float(m_pFile->sampleRate());
-		m_ppInBuffer  = new float *     [iChannels];
-		m_ppOutBuffer = new float *     [iChannels];
-		m_ppSrcState  = new SRC_STATE * [iChannels];
+		m_ppInBuffer  = new float *     [iBuffers];
+		m_ppOutBuffer = new float *     [iBuffers];
+		m_ppSrcState  = new SRC_STATE * [iBuffers];
 	}
 #endif
 
@@ -364,7 +365,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	if (iBufferSize > (m_iSampleRate << 2))
 		iBufferSize = (m_iSampleRate << 2);
 
-	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, iBufferSize);
+	m_pRingBuffer = new qtractorRingBuffer<float> (iBuffers, iBufferSize);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
 	m_iBufferSize = (m_iThreshold >> 2);
 
@@ -377,8 +378,10 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 #endif
 
 	// Allocate actual buffer stuff...
-	m_ppFrames = new float * [iChannels];
-	for (unsigned short i = 0; i < iChannels; ++i)
+	unsigned short i;
+
+	m_ppFrames = new float * [iBuffers];
+	for (i = 0; i < iBuffers; ++i)
 		m_ppFrames[i] = new float [m_iBufferSize];
 
 	// Allocate time-stretch engine whether needed...
@@ -388,7 +391,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
 		if (g_bWsolaQuickSeek)
 			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
-		m_pTimeStretcher = new qtractorTimeStretcher(iChannels, m_iSampleRate,
+		m_pTimeStretcher = new qtractorTimeStretcher(iBuffers, m_iSampleRate,
 			m_fTimeStretch, m_fPitchShift, iFlags, m_iBufferSize);
 	}
 
@@ -396,7 +399,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Sample rate converter stuff, whether needed...
 	if (m_bResample) {
 		int err = 0;
-		for (unsigned short i = 0; i < iChannels; ++i) {
+		for (i = 0; i < iBuffers; ++i) {
 			m_ppInBuffer[i]  = m_ppFrames[i];
 			m_ppOutBuffer[i] = new float [m_iBufferSize];
 			m_ppSrcState[i]  = src_new(g_iResampleType, 1, &err);
@@ -405,8 +408,14 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 #endif
 
 	// Consider it done when recording...
-	if (m_pFile->mode() & qtractorAudioFile::Write)
+	if (m_pFile->mode() & qtractorAudioFile::Write) {
 		setSyncFlag(InitSync);
+	} else {
+		// Allocate buffers for readMixFrames()...
+		m_ppBuffer = new float * [iBuffers];
+		for (i = 0; i < iBuffers; ++i)
+			m_ppBuffer[i] = new float [m_iBufferSize];
+	}
 
 	// Make it sync-managed...
 	if (m_pSyncThread)
@@ -426,7 +435,7 @@ void qtractorAudioBuffer::close (void)
 	if (m_pSyncThread) {
 		setSyncFlag(CloseSync);
 		m_pSyncThread->sync(this);
-		do QThread::yieldCurrentThread(); // qtractorSession::stabilize();
+		do QThread::yieldCurrentThread();
 		while (isSyncFlag(CloseSync));
 	}
 
@@ -446,16 +455,16 @@ void qtractorAudioBuffer::close (void)
 	}
 
 	// Release internal I/O buffers.
-	if (m_ppFrames && m_pRingBuffer) {
+	if (m_ppBuffer && m_pRingBuffer) {
 		const unsigned short iBuffers = m_pRingBuffer->channels();
 		for (unsigned short i = 0; i < iBuffers; ++i) {
-			if (m_ppFrames[i]) {
-				delete [] m_ppFrames[i];
-				m_ppFrames[i] = NULL;
+			if (m_ppBuffer[i]) {
+				delete [] m_ppBuffer[i];
+				m_ppBuffer[i] = NULL;
 			}
 		}
-		delete [] m_ppFrames;
-		m_ppFrames = NULL;
+		delete [] m_ppBuffer;
+		m_ppBuffer = NULL;
 	}
 
 	if (m_pRingBuffer) {
@@ -1078,7 +1087,8 @@ bool qtractorAudioBuffer::seekSync ( unsigned long iFrame )
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample) {
 		m_iInputPending = 0;
-		for (unsigned short i = 0; i < m_pRingBuffer->channels(); ++i) {
+		const unsigned short iBuffers = m_pRingBuffer->channels();
+		for (unsigned short i = 0; i < iBuffers; ++i) {
 			if (m_ppSrcState && m_ppSrcState[i])
 				src_reset(m_ppSrcState[i]);
 			m_ppInBuffer[i] = m_ppFrames[i];
@@ -1153,7 +1163,8 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 	// Zero-flush till known end-of-clip (avoid sure drifting)...
 	if ((nread < 1) && (m_iWriteOffset + iFrames > m_iOffset + m_iLength)) {
 		const unsigned int nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
-		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i)
+		const unsigned short iBuffers = m_pRingBuffer->channels();
+		for (unsigned short i = 0; i < iBuffers; ++i)
 			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
 		nread += m_pRingBuffer->write(m_ppFrames, nahead);
 	}
@@ -1182,7 +1193,9 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 		int ngen = 0;
 		SRC_DATA src_data;
 
-		for (unsigned short i = 0; i < m_pRingBuffer->channels(); ++i) {
+		const unsigned short iBuffers = m_pRingBuffer->channels();
+
+		for (unsigned short i = 0; i < iBuffers; ++i) {
 			// Fill all resampler parameter data...
 			src_data.data_in       = m_ppFrames[i];
 			src_data.data_out      = m_ppOutBuffer[i];
@@ -1256,15 +1269,15 @@ int qtractorAudioBuffer::readMixFrames (
 	if (iFrames == 0)
 		return 0;
 
-	const int nread = m_pRingBuffer->read(m_ppFrames, iFrames, iOffset);
+	const int nread = m_pRingBuffer->read(m_ppBuffer, iFrames);
 	if (nread == 0)
 		return 0;
 
-	unsigned short i, j;
-	float fGainIter, fGainStep;
 	const unsigned short iBuffers = m_pRingBuffer->channels();
+
+	unsigned short i, j; int n;
+	float fGainIter, fGainStep;
 	float *pFrames, *pBuffer;
-	int n;
 
 	// HACK: Case of clip ramp in/out-set in this run...
 	if (m_iRampGain) {
@@ -1276,7 +1289,7 @@ int qtractorAudioBuffer::readMixFrames (
 		fGainStep = float(m_iRampGain) / float(nramp);
 		for (i = 0; i < iBuffers; ++i) {
 			fGainIter = (m_iRampGain < 0 ? 1.0f : 0.0f);
-			pBuffer = m_ppFrames[i] + n1;
+			pBuffer = m_ppBuffer[i] + n1;
 			for (n = n1; n < n2; ++n, fGainIter += fGainStep)
 				*pBuffer++ *= fGainIter;
 		}
@@ -1292,7 +1305,7 @@ int qtractorAudioBuffer::readMixFrames (
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; ++i) {
 			pFrames = ppFrames[i] + iOffset;
-			pBuffer = m_ppFrames[i];
+			pBuffer = m_ppBuffer[i];
 			fGainIter = fPrevGain;
 			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
 				*pFrames++ += fGainIter * *pBuffer++;
@@ -1302,7 +1315,7 @@ int qtractorAudioBuffer::readMixFrames (
 		j = 0;
 		for (i = 0; i < iChannels; ++i) {
 			pFrames = ppFrames[i] + iOffset;
-			pBuffer = m_ppFrames[j];
+			pBuffer = m_ppBuffer[j];
 			fGainIter = fPrevGain;
 			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
 				*pFrames++ += fGainIter * *pBuffer++;
@@ -1314,7 +1327,7 @@ int qtractorAudioBuffer::readMixFrames (
 		i = 0;
 		for (j = 0; j < iBuffers; ++j) {
 			pFrames = ppFrames[i] + iOffset;
-			pBuffer = m_ppFrames[j];
+			pBuffer = m_ppBuffer[j];
 			fGainIter = fPrevGain;
 			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
 				*pFrames++ += fGainIter * *pBuffer++;
@@ -1330,9 +1343,13 @@ int qtractorAudioBuffer::readMixFrames (
 // I/O buffer release.
 void qtractorAudioBuffer::deleteIOBuffers (void)
 {
+	const unsigned short iBuffers = m_pRingBuffer->channels();
+
+	unsigned short i;
+
 #ifdef CONFIG_LIBSAMPLERATE
 	// Release internal and resampler buffers.
-	for (unsigned short i = 0; i < m_pRingBuffer->channels(); ++i) {
+	for (i = 0; i < iBuffers; ++i) {
 		if (m_ppSrcState && m_ppSrcState[i])
 			m_ppSrcState[i] = src_delete(m_ppSrcState[i]);
 		if (m_ppOutBuffer && m_ppOutBuffer[i]) {
@@ -1354,6 +1371,17 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 	}
 	m_iInputPending = 0;
 #endif
+
+	if (m_ppFrames) {
+		for (i = 0; i < iBuffers; ++i) {
+			if (m_ppFrames[i]) {
+				delete [] m_ppFrames[i];
+				m_ppFrames[i] = NULL;
+			}
+		}
+		delete [] m_ppFrames;
+		m_ppFrames = NULL;
+	}
 }
 
 
