@@ -1256,11 +1256,9 @@ int qtractorAudioBuffer::readMixFrames (
 	if (iFrames == 0)
 		return 0;
 
-	const unsigned int rs = m_pRingBuffer->readable();
-	if (rs == 0)
-		return 0;
-
 	const int nread = m_pRingBuffer->read(m_ppFrames, iFrames, iOffset);
+	if (nread == 0)
+		return 0;
 
 	unsigned short i, j;
 	float fGainIter, fGainStep;

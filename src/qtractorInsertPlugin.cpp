@@ -816,15 +816,18 @@ void qtractorMidiInsertPlugin::deactivate (void)
 void qtractorMidiInsertPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
 	qtractorMidiManager *pMidiManager = list()->midiManager();
-	if (pMidiManager) {
+	if (pMidiManager && pSession) {
+		const unsigned long t0
+			= (pSession->isPlaying() ? pSession->playHead() : 0);
 		// Enqueue input events into sends/output bus...
 		if (m_pMidiOutputBuffer) {
 			snd_seq_event_t *pEventBuffer = pMidiManager->events();
 			const unsigned int iEventCount = pMidiManager->count();
 			for (unsigned int i = 0; i < iEventCount; ++i) {
 				snd_seq_event_t *pEv = &pEventBuffer[i];
-				if (!m_pMidiOutputBuffer->enqueue(pEv, pEv->time.tick))
+				if (!m_pMidiOutputBuffer->enqueue(pEv, t0 + pEv->time.tick))
 					break;
 			}
 			// Wake the asynchronous working thread...
@@ -833,7 +836,7 @@ void qtractorMidiInsertPlugin::process (
 		}
 		// Merge events from returns/input events...
 		if (m_pMidiInputBuffer)
-			pMidiManager->processInputBuffer(m_pMidiInputBuffer);
+			pMidiManager->processInputBuffer(m_pMidiInputBuffer, t0);
 	}
 
 	const unsigned short iChannels = channels();
@@ -1506,14 +1509,17 @@ void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 void qtractorMidiAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
 	qtractorMidiManager *pMidiManager = list()->midiManager();
-	if (m_pMidiBus && m_pMidiOutputBuffer && pMidiManager) {
+	if (m_pMidiBus && m_pMidiOutputBuffer && pMidiManager && pSession) {
 		// Enqueue events into sends/output bus...
+		const unsigned long t0
+			= (pSession->isPlaying() ? pSession->playHead() : 0);
 		snd_seq_event_t *pEventBuffer = pMidiManager->events();
 		const unsigned int iEventCount = pMidiManager->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
 			snd_seq_event_t *pEv = &pEventBuffer[i];
-			if (!m_pMidiOutputBuffer->enqueue(pEv, pEv->time.tick))
+			if (!m_pMidiOutputBuffer->enqueue(pEv, t0 + pEv->time.tick))
 				break;
 		}
 		// Wake the asynchronous working thread...
