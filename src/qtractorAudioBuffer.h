@@ -104,8 +104,7 @@ public:
 
 	// Constructor.
 	qtractorAudioBuffer(
-		qtractorAudioBufferThread *pSyncThread,
-		unsigned short iChannels, unsigned int iSampleRate);
+		qtractorAudioBufferThread *pSyncThread,	unsigned short iChannels);
 
 	// Default destructor.
 	~qtractorAudioBuffer();
@@ -116,7 +115,6 @@ public:
 	// File implementation properties.
 	unsigned short channels() const;
 	unsigned long frames() const;
-	unsigned int sampleRate() const;
 
 	// Operational properties.
 	unsigned int bufferSize() const;
@@ -217,7 +215,7 @@ protected:
 
 	// Last-mile frame buffer-helper processor.
 	int writeFrames(float **ppFrames, unsigned int iFrames);
-	int flushFrames(unsigned int iFrames);
+	int flushFrames(float **ppFrames, unsigned int iFrames);
 
 	// Buffer process methods.
 	int readBuffer  (unsigned int iFrames);
@@ -240,7 +238,6 @@ private:
 	qtractorAudioBufferThread *m_pSyncThread;
 
 	unsigned short m_iChannels;
-	unsigned int   m_iSampleRate;
 
 	qtractorAudioFile *m_pFile;
 

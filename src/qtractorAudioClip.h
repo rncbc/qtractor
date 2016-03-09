@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -109,10 +109,9 @@ public:
 	public:
 
 		// Constructor.
-		Data(qtractorTrack *pTrack,
-			unsigned short iChannels, unsigned int iSampleRate)
-			: m_pBuff(new qtractorAudioBuffer(pTrack->syncThread(),
-				iChannels, iSampleRate)) {}
+		Data(qtractorTrack *pTrack, unsigned short iChannels)
+			: m_pBuff(new qtractorAudioBuffer(
+				pTrack->syncThread(), iChannels)) {}
 
 		// Destructor.
 		~Data() { clear(); delete m_pBuff; }

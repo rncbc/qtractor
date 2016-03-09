@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -302,7 +302,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	}
 
 	// Initialize audio buffer container...
-	m_pData = new Data(pTrack, iChannels, pSession->sampleRate());
+	m_pData = new Data(pTrack, iChannels);
 	m_pData->attach(this);
 
 	qtractorAudioBuffer *pBuff = m_pData->buffer();
@@ -405,7 +405,7 @@ void qtractorAudioClip::unlinkHashData (void)
 
 	qtractorAudioBuffer *pBuff = m_pData->buffer();
 
-	Data *pNewData = new Data(track(), pBuff->channels(), pBuff->sampleRate());
+	Data *pNewData = new Data(track(), pBuff->channels());
 
 	qtractorAudioBuffer *pNewBuff = pNewData->buffer();
 
@@ -844,8 +844,9 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	if (iLength < 1)
 		iLength = clipLength();
 
-	qtractorAudioBuffer *pBuff = new qtractorAudioBuffer(
-		pTrack->syncThread(), iChannels, pSession->sampleRate());
+	qtractorAudioBuffer *pBuff
+		= new qtractorAudioBuffer(pTrack->syncThread(), iChannels);
+
 	pBuff->setOffset(iOffset);
 	pBuff->setLength(iLength);
 	pBuff->setTimeStretch(timeStretch());

@@ -25,6 +25,9 @@
 
 #include "qtractorTimeStretcher.h"
 
+#include "qtractorSession.h"
+#include "qtractorAudioEngine.h"
+
 
 // Glitch, click, pop-free ramp length (in frames).
 #define QTRACTOR_RAMP_LENGTH	32
@@ -194,13 +197,11 @@ void qtractorAudioBufferThread::checkSyncSize ( unsigned int iSyncSize )
 
 // Constructors.
 qtractorAudioBuffer::qtractorAudioBuffer (
-	qtractorAudioBufferThread *pSyncThread,
-	unsigned short iChannels, unsigned int iSampleRate )
+	qtractorAudioBufferThread *pSyncThread, unsigned short iChannels )
 {
 	m_pSyncThread    = pSyncThread;
 
 	m_iChannels      = iChannels;
-	m_iSampleRate    = iSampleRate;
 
 	m_pFile          = NULL;
 
@@ -280,13 +281,6 @@ unsigned long qtractorAudioBuffer::frames (void) const
 }
 
 
-// Working sample rate.
-unsigned int qtractorAudioBuffer::sampleRate (void) const
-{
-	return m_iSampleRate;
-}
-
-
 // Operational properties.
 unsigned int qtractorAudioBuffer::bufferSize (void) const
 {
@@ -311,9 +305,15 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Make sure everything starts closed.
 	close();
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	const unsigned int iSampleRate = pSession->sampleRate();
+
 	// Get proper file type class...
 	m_pFile = qtractorAudioFileFactory::createAudioFile(
-		sFilename, m_iChannels, m_iSampleRate);
+		sFilename, m_iChannels, iSampleRate);
 	if (m_pFile == NULL)
 		return false;
 
@@ -339,9 +339,9 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Compute sample rate converter stuff.
 	m_iInputPending  = 0;
 	m_fResampleRatio = 1.0f;
-	m_bResample = (m_iSampleRate != m_pFile->sampleRate());
+	m_bResample = (iSampleRate != m_pFile->sampleRate());
 	if (m_bResample) {
-		m_fResampleRatio = float(m_iSampleRate) / float(m_pFile->sampleRate());
+		m_fResampleRatio = float(iSampleRate) / float(m_pFile->sampleRate());
 		m_ppInBuffer  = new float *     [iBuffers];
 		m_ppOutBuffer = new float *     [iBuffers];
 		m_ppSrcState  = new SRC_STATE * [iBuffers];
@@ -360,10 +360,10 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Allocate ring-buffer now.
 	unsigned int iBufferSize = m_iLength;
 	if (iBufferSize == 0)
-		iBufferSize = (m_iSampleRate >> 1);
+		iBufferSize = (iSampleRate >> 1);
 	else
-	if (iBufferSize > (m_iSampleRate << 2))
-		iBufferSize = (m_iSampleRate << 2);
+	if (iBufferSize > (iSampleRate << 2))
+		iBufferSize = (iSampleRate << 2);
 
 	m_pRingBuffer = new qtractorRingBuffer<float> (iBuffers, iBufferSize);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
@@ -391,7 +391,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
 		if (g_bWsolaQuickSeek)
 			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
-		m_pTimeStretcher = new qtractorTimeStretcher(iBuffers, m_iSampleRate,
+		m_pTimeStretcher = new qtractorTimeStretcher(iBuffers, iSampleRate,
 			m_fTimeStretch, m_fPitchShift, iFlags, m_iBufferSize);
 	}
 
@@ -411,10 +411,14 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	if (m_pFile->mode() & qtractorAudioFile::Write) {
 		setSyncFlag(InitSync);
 	} else {
-		// Allocate buffers for readMixFrames()...
+		// Get a reasonablebuffer size for readMix()...
+		iBufferSize = pSession->audioEngine()->bufferSize();
+		if (iBufferSize < (m_iBufferSize >> 2))
+			iBufferSize = (m_iBufferSize >> 2);
+		// Allocate those minimal buffers for readMix()...
 		m_ppBuffer = new float * [iBuffers];
 		for (i = 0; i < iBuffers; ++i)
-			m_ppBuffer[i] = new float [m_iBufferSize];
+			m_ppBuffer[i] = new float [iBufferSize];
 	}
 
 	// Make it sync-managed...
@@ -694,10 +698,6 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 		return nread;
 	}
 
-	// Take care of end-of-stream...
-	if (ro + iFrames >= m_iOffset + m_iLength)
-		m_iRampGain = -1;
-
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
@@ -723,10 +723,15 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 		}
 	}
 
+	// Take care of end-of-stream...
+	const unsigned long re = m_iOffset + m_iLength;
+	if (ro + iFrames >= re)
+		m_iRampGain = -1;
+
 	// Mix the (remaining) data around...
 	nread = readMixFrames(ppFrames, iFrames, iChannels, iOffset, fGain);
 	m_iReadOffset = (ro + nread);
-	if (m_iReadOffset >= m_iOffset + m_iLength) {
+	if (m_iReadOffset >= re) {
 		// Force out-of-sync...
 		setSyncFlag(ReadSync, false);
 	}
@@ -1136,7 +1141,7 @@ int qtractorAudioBuffer::writeFrames (
 
 
 // Flush buffer-helper processor.
-int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
+int qtractorAudioBuffer::flushFrames ( float **ppFrames, unsigned int iFrames )
 {
 	int nread = 0;
 
@@ -1151,9 +1156,9 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 			if (nahead > nwrite)
 				nahead = nwrite;
 			if (nahead > 0)
-				nahead = m_pTimeStretcher->retrieve(m_ppFrames, nahead);
+				nahead = m_pTimeStretcher->retrieve(ppFrames, nahead);
 			if (nahead > 0) {
-				nread += m_pRingBuffer->write(m_ppFrames, nahead);
+				nread += m_pRingBuffer->write(ppFrames, nahead);
 				nwrite = m_pRingBuffer->writable();
 				nahead = m_pTimeStretcher->available();
 			}
@@ -1165,8 +1170,8 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 		const unsigned int nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
 		const unsigned short iBuffers = m_pRingBuffer->channels();
 		for (unsigned short i = 0; i < iBuffers; ++i)
-			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
-		nread += m_pRingBuffer->write(m_ppFrames, nahead);
+			::memset(ppFrames[i], 0, nahead * sizeof(float));
+		nread += m_pRingBuffer->write(ppFrames, nahead);
 	}
 
 	return (nread > 0 ? nread : -1);
@@ -1224,7 +1229,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 			nread = writeFrames(m_ppOutBuffer, ngen);
 		else
 		if (nread < 1)
-			nread = flushFrames(iFrames); // Maybe EoF!
+			nread = flushFrames(m_ppFrames, iFrames); // Maybe EoF!
 
 	} else {
 #endif   // CONFIG_LIBSAMPLERATE
@@ -1233,7 +1238,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 		if (nread > 0)
 			nread = writeFrames(m_ppFrames, nread);
 		else
-			nread = flushFrames(iFrames); // Maybe EoF!
+			nread = flushFrames(m_ppFrames, iFrames); // Maybe EoF!
 
 #ifdef CONFIG_LIBSAMPLERATE
 	}
@@ -1544,7 +1549,9 @@ void qtractorAudioBuffer::setPeak ( qtractorAudioPeak *pPeak )
 	m_pPeak = pPeak;
 
  	// Reset for building the peak file on-the-fly...
-	if (!m_pPeak->openWrite(m_iChannels, m_iSampleRate))
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL
+		|| !m_pPeak->openWrite(m_iChannels, pSession->sampleRate()))
 		m_pPeak = NULL;
 }
 
