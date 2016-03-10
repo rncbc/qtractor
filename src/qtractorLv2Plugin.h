@@ -273,6 +273,7 @@ public:
 #endif
 
 #ifdef CONFIG_LV2_STATE
+
 	// LV2 State extension data interface accessor.
 	const LV2_State_Interface *lv2_state_interface(unsigned short iInstance) const;
 
@@ -284,6 +285,11 @@ public:
 	// Load default plugin state.
 	void lv2_state_load_default();
 
+#endif
+
+#ifdef CONFIG_LV2_STATE_FILES
+	// LV2 State save directory (when not the default session one).
+	const QString& lv2_state_save_dir() const;
 #endif
 
 	// URID map/unmap helpers.
@@ -495,6 +501,7 @@ private:
 	LV2_Feature                m_lv2_state_make_path_feature;
 	LV2_State_Make_Path        m_lv2_state_make_path;
 #endif
+	QString                    m_lv2_state_save_dir;
 #endif
 
 #ifdef CONFIG_LV2_PROGRAMS

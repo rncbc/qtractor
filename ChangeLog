@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed an old hack on LV2 State Files abstract/relative
+  file-path mapping when saving custom LV2 Presets (after
+  a related issue on Fabla2, by Harry Van Haaren, thanks).
+  (EXPERIMENTAL)
+
 - Default PC-Keyboard shortcuts may now be erasable and re-
   assigned (cf. Help/Shortcuts...). (EXPERIMENTAL)
 
