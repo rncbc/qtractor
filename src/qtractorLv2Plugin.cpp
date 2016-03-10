@@ -643,39 +643,6 @@ static char *qtractor_lv2_state_absolute_path (
 
 #ifdef CONFIG_LV2_STATE_MAKE_PATH
 
-static QString qtractor_lv2_state_prefix ( qtractorLv2Plugin *pLv2Plugin )
-{
-	QString sPrefix;
-
-	const QString& sPresetName = pLv2Plugin->preset();
-	if (sPresetName.isEmpty()) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession) {
-			const QString& sSessionName = pSession->sessionName();
-			if (!sSessionName.isEmpty()) {
-				sPrefix += qtractorSession::sanitize(sSessionName);
-				sPrefix += '-';
-			}
-		}
-		const QString& sListName = pLv2Plugin->list()->name();
-		if (!sListName.isEmpty()) {
-			sPrefix += qtractorSession::sanitize(sListName);
-			sPrefix += '-';
-		}
-	}
-
-	sPrefix += pLv2Plugin->type()->label();
-	sPrefix += '-';
-
-	if (sPresetName.isEmpty()) {
-		sPrefix += QString::number(pLv2Plugin->uniqueID(), 16);
-	} else {
-		sPrefix += qtractorSession::sanitize(sPresetName);
-	}
-
-	return sPrefix;
-}
-
 static char *qtractor_lv2_state_make_path (
     LV2_State_Make_Path_Handle handle, const char *relative_path )
 {
@@ -692,25 +659,25 @@ static char *qtractor_lv2_state_make_path (
 	qDebug("qtractor_lv2_state_make_path(%p, \"%s\")", pLv2Plugin, relative_path);
 #endif
 
+	// make_path from relative_path...
+
+	QString sDir = pLv2Plugin->lv2_state_save_dir();
+	if (sDir.isEmpty())
+		sDir = pSession->sessionDir();
+
 	QFileInfo fi(relative_path);
 
-	const QDir dir(pSession->sessionDir());
-	if (fi.isAbsolute())
-		fi.setFile(dir, fi.fileName());
-	else
+	const QDir dir(sDir);
+	if (fi.isRelative())
 		fi.setFile(dir, fi.filePath());
+	else
+		fi.setFile(dir, fi.fileName());
 
-	const QString& sFilePath = fi.filePath();
-	if (!QDir(sFilePath).exists())
-		dir.mkpath(sFilePath);
+	const QString& sMakeDir = fi.absolutePath();
+	if (!QDir(sMakeDir).exists())
+		dir.mkpath(sMakeDir);
 
-	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin)
-		+ ".lv2_state";	// '.' + fi.fileName();
-
-	// make_path...
-	const QString& sMakePath
-		= QFileInfo(QDir(sFilePath), sFileName).filePath();
+	const QString& sMakePath = fi.absoluteFilePath();
 	return ::strdup(sMakePath.toUtf8().constData());
 }
 
