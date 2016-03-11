@@ -634,8 +634,12 @@ static char *qtractor_lv2_state_absolute_path (
 		sDir = pSession->sessionDir();
 
 	QFileInfo fi(abstract_path);
+
+	const QDir dir(sDir);
 	if (fi.isRelative())
-		fi.setFile(QDir(sDir), fi.filePath());
+		fi.setFile(dir, fi.filePath());
+	else
+		fi.setFile(dir, fi.fileName());
 
 	const QString& sAbsolutePath = fi.absoluteFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
@@ -662,8 +666,23 @@ static char *qtractor_lv2_state_make_path (
 	// make_path from relative_path...
 
 	QString sDir = pLv2Plugin->lv2_state_save_dir();
-	if (sDir.isEmpty())
-		sDir = pSession->sessionDir();
+	if (sDir.isEmpty()) {
+		sDir  = pSession->sessionDir();
+		sDir += QDir::separator();
+		const QString& sSessionName = pSession->sessionName();
+		if (!sSessionName.isEmpty()) {
+			sDir += qtractorSession::sanitize(sSessionName);
+			sDir += '-';
+		}
+		const QString& sListName = pLv2Plugin->list()->name();
+		if (!sListName.isEmpty()) {
+			sDir += qtractorSession::sanitize(sListName);
+			sDir += '-';
+		}
+		sDir += pLv2Plugin->type()->label();
+		sDir += '-';
+		sDir += QString::number(pLv2Plugin->uniqueID(), 16);
+	}
 
 	QFileInfo fi(relative_path);
 
