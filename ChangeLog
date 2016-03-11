@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Beat unit divisor, aka. the denominator or lower numeral
+  in the time-signature, have now a visible and practical
+  effect over the time-line, even though the standard MIDI
+  tempo(BPM) is always denoted in beats as quarter-notes
+  (1/4, crotchet, seminima) per minute. (EXPERIMENTAL)
+
 - Fixed an old hack on LV2 State Files abstract/relative
   file-path mapping when saving custom LV2 Presets (after
   a related issue on Fabla2, by Harry Van Haaren, thanks).

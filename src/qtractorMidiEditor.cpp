@@ -2672,7 +2672,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		}
 		// Default duration...
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			unsigned long iDuration = m_pTimeScale->ticksPerBeat();
+			unsigned long iDuration = pNode->ticksPerBeat;
 			if (m_pTimeScale->snapPerBeat() > 0)
 				iDuration /= m_pTimeScale->snapPerBeat();
 			pEvent->setDuration(iDuration);
