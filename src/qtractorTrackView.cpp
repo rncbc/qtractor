@@ -1851,10 +1851,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					m_rectDrag.setTopLeft(m_posDrag);
 					m_rectDrag.setBottomRight(pos);
 					m_dragState = m_dragCursor = DragSelect;
-					// Set a proper cursor...
-					qtractorScrollView::setCursor(QCursor(
-						m_selectMode == SelectRange ?
-							Qt::SizeHorCursor : Qt::CrossCursor));
+					qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
 					// Create the rubber-band if there's none...
 					moveRubberBand(&m_pRubberBand, m_rectDrag);
 				}
