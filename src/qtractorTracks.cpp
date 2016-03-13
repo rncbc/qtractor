@@ -1125,11 +1125,10 @@ struct audioClipBufferItem
 	// Constructor.
 	audioClipBufferItem(qtractorClip *pClip,
 		qtractorAudioBufferThread *pSyncThread,
-		unsigned short iChannels,
-		unsigned int iSampleRate)
+		unsigned short iChannels)
 		: clip(static_cast<qtractorAudioClip *> (pClip))
 	{
-		buff = new qtractorAudioBuffer(pSyncThread, iChannels, iSampleRate);
+		buff = new qtractorAudioBuffer(pSyncThread, iChannels);
 		buff->setOffset(clip->clipOffset());
 		buff->setLength(clip->clipLength());
 		buff->setTimeStretch(clip->timeStretch());
@@ -1239,7 +1238,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 
 	const unsigned short iChannels = pAudioBus->channels();
-	const unsigned int iSampleRate = pSession->sampleRate();
+	const unsigned int iBufferSize = pSession->audioEngine()->bufferSize();
 
 	// Multi-selection extents (in frames)...
 	QList<audioClipBufferItem *> list;
@@ -1256,7 +1255,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 			if (iSelectEnd < pClip->clipSelectEnd())
 				iSelectEnd = pClip->clipSelectEnd();
 			list.append(new audioClipBufferItem(
-				pClip, pSyncThread, iChannels, iSampleRate));
+				pClip, pSyncThread, iChannels));
 		}
 	}
 
@@ -1271,7 +1270,6 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	}
 
 	// Allocate merge audio scratch buffer...
-	const unsigned int iBufferSize = pSession->audioEngine()->bufferSize();
 	unsigned short i;
 	float **ppFrames = new float * [iChannels];
 	for (i = 0; i < iChannels; ++i)

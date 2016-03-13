@@ -164,6 +164,9 @@ public:
 	// MIDI output process cycle iteration (locked).
 	void processSync();
 
+	// MIDI output flush/drain (locked).
+	void flushSync();
+
 	// Wake from executive wait condition.
 	void sync();
 
@@ -615,7 +618,7 @@ void qtractorMidiOutputThread::process (void)
 	pMidiCursor->process(m_iReadAhead);
 
 	// Flush the MIDI engine output queue...
-	m_pMidiEngine->flush();
+	snd_seq_drain_output(m_pMidiEngine->alsaSeq());
 
 	// Always do the queue drift stats
 	// at the bottom of the pack...
@@ -631,6 +634,17 @@ void qtractorMidiOutputThread::processSync (void)
 	qDebug("qtractorMidiOutputThread[%p]::processSync()", this);
 #endif
 	process();
+}
+
+
+// MIDI output flush/drain (locked).
+void qtractorMidiOutputThread::flushSync (void)
+{
+	QMutexLocker locker(&m_mutex);
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiOutputThread[%p]::flushSync()", this);
+#endif
+	snd_seq_drain_output(m_pMidiEngine->alsaSeq());
 }
 
 
@@ -674,7 +688,7 @@ void qtractorMidiOutputThread::trackSync (
 	}
 
 	// Surely must realize the output queue...
-	m_pMidiEngine->flush();
+	snd_seq_drain_output(m_pMidiEngine->alsaSeq());
 }
 
 
@@ -700,7 +714,7 @@ void qtractorMidiOutputThread::metroSync ( unsigned long iFrameStart )
 	m_pMidiEngine->processMetro(iFrameStart, iFrameEnd);
 
 	// Surely must realize the output queue...
-	m_pMidiEngine->flush();
+	snd_seq_drain_output(m_pMidiEngine->alsaSeq());
 }
 
 
@@ -2206,7 +2220,8 @@ void qtractorMidiEngine::driftCheck (void)
 void qtractorMidiEngine::flush (void)
 {
 	// Really flush MIDI output...
-	snd_seq_drain_output(m_pAlsaSeq);
+	if (m_pOutputThread)
+		m_pOutputThread->flushSync();
 }
 
 
@@ -2382,7 +2397,8 @@ void qtractorMidiEngine::stop (void)
 
 	// Stop queue timer...
 	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
-	snd_seq_drain_output(m_pAlsaSeq);
+
+	flush();
 
 	// Shut-off all MIDI buses...
 	shutOffAllBuses();

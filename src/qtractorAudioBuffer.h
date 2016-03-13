@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -104,8 +104,7 @@ public:
 
 	// Constructor.
 	qtractorAudioBuffer(
-		qtractorAudioBufferThread *pSyncThread,
-		unsigned short iChannels, unsigned int iSampleRate);
+		qtractorAudioBufferThread *pSyncThread,	unsigned short iChannels);
 
 	// Default destructor.
 	~qtractorAudioBuffer();
@@ -116,7 +115,6 @@ public:
 	// File implementation properties.
 	unsigned short channels() const;
 	unsigned long frames() const;
-	unsigned int sampleRate() const;
 
 	// Operational properties.
 	unsigned int bufferSize() const;
@@ -217,7 +215,7 @@ protected:
 
 	// Last-mile frame buffer-helper processor.
 	int writeFrames(float **ppFrames, unsigned int iFrames);
-	int flushFrames(unsigned int iFrames);
+	int flushFrames(float **ppFrames, unsigned int iFrames);
 
 	// Buffer process methods.
 	int readBuffer  (unsigned int iFrames);
@@ -240,7 +238,6 @@ private:
 	qtractorAudioBufferThread *m_pSyncThread;
 
 	unsigned short m_iChannels;
-	unsigned int   m_iSampleRate;
 
 	qtractorAudioFile *m_pFile;
 
@@ -267,6 +264,7 @@ private:
 	qtractorAtomic m_seekPending;
 
 	float        **m_ppFrames;
+	float        **m_ppBuffer;
 
 	bool           m_bTimeStretch;
 	float          m_fTimeStretch;

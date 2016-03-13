@@ -1422,8 +1422,13 @@ bool qtractorAudioEngine::fileExport (
 	jack_set_freewheel(m_pJackClient, 1);
 
 	// Wait for the export to end.
+	struct timespec ts;
+	ts.tv_sec  = 0;
+	ts.tv_nsec = 20000000L; // 20msec.
+
 	while (m_bExporting && !m_bExportDone) {
 		qtractorSession::stabilize(200);
+		::nanosleep(&ts, NULL); // Ain't that enough?
 		pProgressBar->setValue(pSession->playHead());
 	}
 
@@ -1657,12 +1662,10 @@ bool qtractorAudioEngine::openMetroBus (void)
 	}
 
 	// We got it...
-	const unsigned int iSampleRate = sampleRate();
-	m_pMetroBarBuff = new qtractorAudioBuffer(
-		m_pSyncThread, iChannels, iSampleRate);
+	m_pMetroBarBuff = new qtractorAudioBuffer(m_pSyncThread, iChannels);
 	m_pMetroBarBuff->open(m_sMetroBarFilename);
-	m_pMetroBeatBuff = new qtractorAudioBuffer(
-		m_pSyncThread, iChannels, iSampleRate);
+
+	m_pMetroBeatBuff = new qtractorAudioBuffer(m_pSyncThread, iChannels);
 	m_pMetroBeatBuff->open(m_sMetroBeatFilename);
 
 	return true;
@@ -1852,8 +1855,7 @@ bool qtractorAudioEngine::openPlayerBus (void)
 	}
 
 	// We got it...
-	m_pPlayerBuff = new qtractorAudioBuffer(
-		m_pSyncThread, iChannels, sampleRate());
+	m_pPlayerBuff = new qtractorAudioBuffer(m_pSyncThread, iChannels);
 
 	return true;
 }

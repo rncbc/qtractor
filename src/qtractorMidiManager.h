@@ -315,7 +315,8 @@ public:
 	void shutOff(unsigned short iChannel);
 
 	// Process specific MIDI buffer (merge).
-	void processInputBuffer(qtractorMidiInputBuffer *pMidiInputBuffer);
+	void processInputBuffer(
+		qtractorMidiInputBuffer *pMidiInputBuffer, unsigned long t0 = 0);
 
 protected:
 

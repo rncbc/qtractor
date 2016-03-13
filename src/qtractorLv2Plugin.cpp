@@ -598,8 +598,16 @@ static char *qtractor_lv2_state_abstract_path (
 #endif
 
 	// abstract_path from absolute_path...
-	const QString& sAbstractPath = qtractorDocument::addArchiveFile(
-		QDir(pSession->sessionDir()).relativeFilePath(absolute_path));
+
+	QString sDir = pLv2Plugin->lv2_state_save_dir();
+	const bool bSessionDir = sDir.isEmpty();
+	if (bSessionDir)
+		sDir = pSession->sessionDir();
+
+	QString sAbstractPath = QDir(sDir).relativeFilePath(absolute_path);
+	if (bSessionDir)
+		sAbstractPath = qtractorDocument::addArchiveFile(sAbstractPath);
+
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
@@ -619,49 +627,25 @@ static char *qtractor_lv2_state_absolute_path (
 	qDebug("qtractor_lv2_state_absolute_path(%p, \"%s\")", pLv2Plugin, abstract_path);
 #endif
 
-	QFileInfo fi(abstract_path);
-	if (fi.isRelative())
-		fi.setFile(QDir(pSession->sessionDir()), fi.filePath());
-
 	// absolute_path from abstract_path...
+
+	QString sDir = pLv2Plugin->lv2_state_save_dir();
+	if (sDir.isEmpty())
+		sDir = pSession->sessionDir();
+
+	QFileInfo fi(abstract_path);
+
+	const QDir dir(sDir);
+	if (fi.isRelative())
+		fi.setFile(dir, fi.filePath());
+	else
+		fi.setFile(dir, fi.fileName());
+
 	const QString& sAbsolutePath = fi.absoluteFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
 #ifdef CONFIG_LV2_STATE_MAKE_PATH
-
-static QString qtractor_lv2_state_prefix ( qtractorLv2Plugin *pLv2Plugin )
-{
-	QString sPrefix;
-
-	const QString& sPresetName = pLv2Plugin->preset();
-	if (sPresetName.isEmpty()) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession) {
-			const QString& sSessionName = pSession->sessionName();
-			if (!sSessionName.isEmpty()) {
-				sPrefix += qtractorSession::sanitize(sSessionName);
-				sPrefix += '-';
-			}
-		}
-		const QString& sListName = pLv2Plugin->list()->name();
-		if (!sListName.isEmpty()) {
-			sPrefix += qtractorSession::sanitize(sListName);
-			sPrefix += '-';
-		}
-	}
-
-	sPrefix += pLv2Plugin->type()->label();
-	sPrefix += '-';
-
-	if (sPresetName.isEmpty()) {
-		sPrefix += QString::number(pLv2Plugin->uniqueID(), 16);
-	} else {
-		sPrefix += qtractorSession::sanitize(sPresetName);
-	}
-
-	return sPrefix;
-}
 
 static char *qtractor_lv2_state_make_path (
     LV2_State_Make_Path_Handle handle, const char *relative_path )
@@ -679,25 +663,40 @@ static char *qtractor_lv2_state_make_path (
 	qDebug("qtractor_lv2_state_make_path(%p, \"%s\")", pLv2Plugin, relative_path);
 #endif
 
+	// make_path from relative_path...
+
+	QString sDir = pLv2Plugin->lv2_state_save_dir();
+	if (sDir.isEmpty()) {
+		sDir  = pSession->sessionDir();
+		sDir += QDir::separator();
+		const QString& sSessionName = pSession->sessionName();
+		if (!sSessionName.isEmpty()) {
+			sDir += qtractorSession::sanitize(sSessionName);
+			sDir += '-';
+		}
+		const QString& sListName = pLv2Plugin->list()->name();
+		if (!sListName.isEmpty()) {
+			sDir += qtractorSession::sanitize(sListName);
+			sDir += '-';
+		}
+		sDir += pLv2Plugin->type()->label();
+		sDir += '-';
+		sDir += QString::number(pLv2Plugin->uniqueID(), 16);
+	}
+
 	QFileInfo fi(relative_path);
 
-	const QDir dir(pSession->sessionDir());
-	if (fi.isAbsolute())
-		fi.setFile(dir, fi.fileName());
-	else
+	const QDir dir(sDir);
+	if (fi.isRelative())
 		fi.setFile(dir, fi.filePath());
+	else
+		fi.setFile(dir, fi.fileName());
 
-	const QString& sFilePath = fi.filePath();
-	if (!QDir(sFilePath).exists())
-		dir.mkpath(sFilePath);
+	const QString& sMakeDir = fi.absolutePath();
+	if (!QDir(sMakeDir).exists())
+		dir.mkpath(sMakeDir);
 
-	const QString& sFileName
-		= qtractor_lv2_state_prefix(pLv2Plugin)
-		+ ".lv2_state";	// '.' + fi.fileName();
-
-	// make_path...
-	const QString& sMakePath
-		= QFileInfo(QDir(sFilePath), sFileName).filePath();
+	const QString& sMakePath = fi.absoluteFilePath();
 	return ::strdup(sMakePath.toUtf8().constData());
 }
 
@@ -3832,8 +3831,18 @@ const void *qtractorLv2Plugin::lv2_state_retrieve (
 	return data.constData();
 }
 
-
 #endif	// CONFIG_LV2_STATE
+
+
+#ifdef CONFIG_LV2_STATE_FILES
+
+// LV2 State save directory (when not the default session one).
+const QString& qtractorLv2Plugin::lv2_state_save_dir (void) const
+{
+	return m_lv2_state_save_dir;
+}
+
+#endif	// CONFIG_LV2_STATE_FILES
 
 
 #ifdef CONFIG_LV2_PROGRAMS
@@ -4170,34 +4179,6 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 	if (pLv2Type == NULL)
 		return false;
 
-	LV2_Feature *features[] = { NULL, NULL };
-
-#ifdef CONFIG_LV2_STATE_FILES
-
-	LV2_State_Map_Path map_path;
-	map_path.handle = this;
-	map_path.abstract_path = &qtractor_lv2_state_absolute_path; // yes, absolutely!
-	map_path.absolute_path = &qtractor_lv2_state_absolute_path;
-
-	LV2_Feature map_path_feature;
-	map_path_feature.URI = LV2_STATE__mapPath;
-	map_path_feature.data = &map_path;
-
-	features[0] = &map_path_feature;
-
-#endif
-
-	LilvState *state = lilv_state_new_from_instance(
-		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
-		NULL, NULL, NULL, NULL,
-		qtractor_lv2_get_port_value, this,
-		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, features);
-
-	if (state == NULL)
-		return false;
-
-	lilv_state_set_label(state, sPreset.toUtf8().constData());
-
 	const QString sDotLv2(".lv2");
 	const QString& sep = QDir::separator();
 
@@ -4211,6 +4192,25 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 	sDir += '_' + QString::number(pLv2Type->uniqueID(), 16);
 	sDir += '-' + sPreset + sDotLv2;
 
+#ifdef CONFIG_LV2_STATE_FILES
+	m_lv2_state_save_dir = sDir;
+#endif
+
+	LilvState *state = lilv_state_new_from_instance(
+		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
+		NULL, NULL, NULL, NULL,
+		qtractor_lv2_get_port_value, this,
+		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, NULL);
+
+	if (state == NULL) {
+	#ifdef CONFIG_LV2_STATE_FILES
+		m_lv2_state_save_dir.clear();
+	#endif
+		return false;
+	}
+
+	lilv_state_set_label(state, sPreset.toUtf8().constData());
+
 	const QString& sFile = sPreset + ".ttl";
 
 	int ret = lilv_state_save(g_lv2_world,
@@ -4218,6 +4218,10 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 		sDir.toUtf8().constData(), sFile.toUtf8().constData());
 
 	lilv_state_free(state);
+
+#ifdef CONFIG_LV2_STATE_FILES
+	m_lv2_state_save_dir.clear();
+#endif
 
 	if (ret == 0) {
 		m_lv2_presets.insert(sPreset,
