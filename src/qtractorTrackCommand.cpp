@@ -30,6 +30,7 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiControl.h"
+#include "qtractorMidiManager.h"
 #include "qtractorMidiClip.h"
 #include "qtractorMixer.h"
 
@@ -352,6 +353,29 @@ bool qtractorCopyTrackCommand::redo (void)
 						pNewCurrentCurve = pNewCurve;
 				}
 			}
+		}
+		// And other MIDI specific plugins-list properties as well
+		qtractorMidiManager *pMidiManager = pPluginList->midiManager();
+		qtractorMidiManager *pNewMidiManager = pNewPluginList->midiManager();
+		if (pMidiManager && pNewMidiManager) {
+			// The basic ones...
+			pNewPluginList->setMidiBank(
+				pPluginList->midiBank());
+			pNewPluginList->setMidiProg(
+				pPluginList->midiProg());
+			pNewPluginList->setAudioOutputBusName(
+				pPluginList->audioOutputBusName());
+			pNewPluginList->setAudioOutputAutoConnect(
+				pPluginList->isAudioOutputAutoConnect());
+			pNewPluginList->setAudioOutputBus(
+				pPluginList->isAudioOutputBus());
+			// The effective ones...
+			pNewMidiManager->setAudioOutputBusName(
+				pMidiManager->audioOutputBusName());
+			pNewMidiManager->setAudioOutputAutoConnect(
+				pMidiManager->isAudioOutputAutoConnect());
+			pNewMidiManager->setAudioOutputBus(
+				pMidiManager->isAudioOutputBus());
 		}
 	}
 
