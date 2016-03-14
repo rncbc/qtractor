@@ -348,79 +348,79 @@ MIDI:	</translation>
         <translation>Такт</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="198"/>
+        <location filename="../qtractorTrackCommand.cpp" line="199"/>
         <source>add track</source>
         <translation>добавление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="222"/>
+        <location filename="../qtractorTrackCommand.cpp" line="223"/>
         <source>remove track</source>
         <translation>удаление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="247"/>
+        <location filename="../qtractorTrackCommand.cpp" line="248"/>
         <source>duplicate track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="456"/>
+        <location filename="../qtractorTrackCommand.cpp" line="480"/>
         <source>move track</source>
         <translation>перемещение дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="534"/>
+        <location filename="../qtractorTrackCommand.cpp" line="558"/>
         <source>resize track</source>
         <translation>смена размера дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="581"/>
+        <location filename="../qtractorTrackCommand.cpp" line="605"/>
         <source>import track</source>
         <translation>импорт дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="668"/>
+        <location filename="../qtractorTrackCommand.cpp" line="692"/>
         <source>track properties</source>
         <translation>свойства дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="715"/>
+        <location filename="../qtractorTrackCommand.cpp" line="739"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="793"/>
+        <location filename="../qtractorTrackCommand.cpp" line="817"/>
         <source>track record</source>
         <translation>запись дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="796"/>
+        <location filename="../qtractorTrackCommand.cpp" line="820"/>
         <source>track mute</source>
         <translation>приглушение дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="799"/>
+        <location filename="../qtractorTrackCommand.cpp" line="823"/>
         <source>track solo</source>
         <translation>солирование дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="973"/>
+        <location filename="../qtractorTrackCommand.cpp" line="997"/>
         <source>track monitor</source>
         <translation>мониторинг дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1074"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1098"/>
         <source>track gain</source>
         <translation>усиление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1163"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1187"/>
         <source>track pan</source>
         <translation>панорама дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1250"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1274"/>
         <source>track instrument</source>
         <translation type="unfinished"></translation>
     </message>
