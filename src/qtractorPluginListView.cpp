@@ -778,7 +778,12 @@ void qtractorPluginListView::loadPresetPlugin (void)
 	if (pAction == NULL)
 		return;
 
-	pPlugin->loadPresetEx(pAction->text().remove('&'));
+	const QString sPreset
+		= pAction->text().remove('&');
+	if (sPreset.isEmpty())
+		return;
+
+	pPlugin->loadPresetEx(sPreset);
 }
 
 
@@ -1084,7 +1089,8 @@ void qtractorPluginListView::audioOutputBusName (void)
 	if (pAction == NULL)
 		return;
 
-	const QString& sAudioOutputBusName = pAction->text().remove('&');
+	const QString sAudioOutputBusName
+		= pAction->text().remove('&');
 	if (sAudioOutputBusName.isEmpty())
 		return;
 
