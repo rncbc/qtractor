@@ -742,13 +742,13 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1785"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1791"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1793"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1799"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
