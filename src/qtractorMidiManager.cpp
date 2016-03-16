@@ -318,12 +318,17 @@ void qtractorMidiOutputBuffer::processSync (void)
 		return;
 
 	const bool bPlaying = pSession->isPlaying();
-	const unsigned long t0
-		= (bPlaying ? pSession->playHead() : 0);
-	const unsigned long t1
-		= (bPlaying ? pMidiEngine->sessionCursor()->frame() : 0);
-	const long iTimeStart
-		= (bPlaying && t1 >= t0 ? pMidiEngine->timeStart() : 0);
+	const unsigned long t0 = (bPlaying ? pSession->playHead() : 0);
+
+	long iTimeDelta = 0;
+
+	if (bPlaying && pSession->isLooping()
+		&& t0 > pMidiEngine->sessionCursor()->frame()) {
+		iTimeDelta += long(pSession->tickFromFrame(pSession->loopEnd()));
+		iTimeDelta -= long(pSession->tickFromFrame(pSession->loopStart()));
+	}
+
+	const long iTimeStart = pMidiEngine->timeStart() + iTimeDelta;
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(t0);
