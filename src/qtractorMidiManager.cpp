@@ -317,10 +317,16 @@ void qtractorMidiOutputBuffer::processSync (void)
 	if (pMidiEngine == NULL)
 		return;
 
-	const long iTimeStart = pMidiEngine->timeStart();
+	const bool bPlaying = pSession->isPlaying();
+	const unsigned long t0
+		= (bPlaying ? pSession->playHead() : 0);
+	const unsigned long t1
+		= (bPlaying ? pMidiEngine->sessionCursor()->frame() : 0);
+	const long iTimeStart
+		= (bPlaying && t1 >= t0 ? pMidiEngine->timeStart() : 0);
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(pSession->playHead());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(t0);
 
 	qtractorMidiManager *pMidiManager = NULL;
 	if (m_pMidiBus->pluginList_out())
