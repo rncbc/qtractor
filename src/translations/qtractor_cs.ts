@@ -51,7 +51,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1486"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1485"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
@@ -152,31 +152,31 @@ Konec:	%2	Délka:	%3</translation>
         <translation>%1 - Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1195"/>
+        <location filename="../qtractorMidiClip.cpp" line="1197"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formát %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1197"/>
+        <location filename="../qtractorMidiClip.cpp" line="1199"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1199"/>
+        <location filename="../qtractorMidiClip.cpp" line="1201"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1202"/>
+        <location filename="../qtractorMidiClip.cpp" line="1204"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 stopy, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1208"/>
+        <location filename="../qtractorMidiClip.cpp" line="1210"/>
         <source> (%1% vol)</source>
         <translation> (%1% hlasitost)</translation>
     </message>
@@ -464,22 +464,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Neznámý</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="617"/>
+        <location filename="../qtractorVstPlugin.cpp" line="616"/>
         <source>Product: </source>
         <translation>Výrobek: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="625"/>
+        <location filename="../qtractorVstPlugin.cpp" line="624"/>
         <source>Vendor: </source>
         <translation>Prodejce: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="633"/>
+        <location filename="../qtractorVstPlugin.cpp" line="632"/>
         <source>Version: </source>
         <translation>Verze: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1483"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1482"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
