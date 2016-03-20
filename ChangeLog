@@ -4,34 +4,33 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.7.5  2016-03-21  The Hazy Photon Beta
 
 - Beat unit divisor, aka. the denominator or lower numeral
   in the time-signature, have now a visible and practical
   effect over the time-line, even though the standard MIDI
   tempo(BPM) is always denoted in beats as quarter-notes
-  (1/4, crotchet, seminima) per minute. (EXPERIMENTAL)
+  (1/4, crotchet, seminima) per minute.
 
 - Fixed an old hack on LV2 State Files abstract/relative
   file-path mapping when saving custom LV2 Presets (after
   a related issue on Fabla2, by Harry Van Haaren, thanks).
-  (EXPERIMENTAL)
 
 - Default PC-Keyboard shortcuts may now be erasable and re-
-  assigned (cf. Help/Shortcuts...). (EXPERIMENTAL)
+  assigned (cf. Help/Shortcuts...).
 
 - New option on the audio/MIDI export dialog, on whether to
   add/import the exported result as brand new track(s).
 
-- Introducing brand new track icons property (EXPERIMENTAL).
+- Introducing brand new track icons property.
 
 - Old Dry/Wet Insert and Aux-send pseudo-plugin parameters
   are now split into separate Dry and Wet controls, what
-  else could it possibly be? :) (EXPERIMENTAL)
+  else could it possibly be? :)
 
 - Brand new MIDI Insert and Aux-Send pseudo-plugins are now 
   implemented with very similar semantics as the respective
-  and existing audio counterparts. (EXPERIMENTAL)
+  and existing audio counterparts.
 
 - Implement LV2_STATE__loadDefaultState feature (after pull
   request by Hanspeter Portner aka. ventosus, thanks).
