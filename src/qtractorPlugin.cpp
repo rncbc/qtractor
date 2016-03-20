@@ -28,8 +28,9 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 
-#include "qtractorOptions.h"
 #include "qtractorMainForm.h"
+
+#include "qtractorOptions.h"
 
 #include "qtractorSession.h"
 #include "qtractorDocument.h"
@@ -917,9 +918,11 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;
+		#if 0//QTRACTOR_PLUGIN_FORM_PARENT
 			// Make sure it has a parent...
 			if (pParent == NULL)
 				pParent = qtractorMainForm::getInstance();
+		#endif
 		}
 		// Do it...
 		m_pForm = new qtractorPluginForm(pParent, wflags);

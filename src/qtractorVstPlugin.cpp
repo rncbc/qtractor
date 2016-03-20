@@ -30,10 +30,11 @@
 #include "qtractorMidiManager.h"
 #include "qtractorSession.h"
 
-#ifdef QTRACTOR_VST_EDITOR_TOOL
-#include "qtractorOptions.h"
+#if 0//QTRACTOR_VST_EDITOR_PARENT
 #include "qtractorMainForm.h"
 #endif
+
+#include "qtractorOptions.h"
 
 #include <QApplication>
 #include <QFileDialog>
@@ -1118,15 +1119,15 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
-#ifdef QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
+	#if 0//QTRACTOR_VST_EDITOR_PARENT
 		// Make sure it has a parent...
 		if (pParent == NULL)
 			pParent = qtractorMainForm::getInstance();
+	#endif
 	}
-#endif
 
 	// Do it...
 	m_pEditorWidget = new EditorWidget(pParent, wflags);
