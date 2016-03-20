@@ -918,7 +918,7 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;
-		#if 0//QTRACTOR_PLUGIN_FORM_PARENT
+		#if 0//QTRACTOR_PLUGIN_FORM_TOOL_PARENT
 			// Make sure it has a parent...
 			if (pParent == NULL)
 				pParent = qtractorMainForm::getInstance();
