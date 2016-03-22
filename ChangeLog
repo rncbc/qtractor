@@ -6,8 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Fixed the relative path mapping when loading custom LV2
-  State Presets.
+- Fixed relative/absolute path mapping when saving/loading
+  custom LV2 Plug-in State Presets.
 
 
 0.7.5  2016-03-21  The Hazy Photon Beta

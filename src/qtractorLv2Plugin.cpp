@@ -634,12 +634,8 @@ static char *qtractor_lv2_state_absolute_path (
 		sDir = pSession->sessionDir();
 
 	QFileInfo fi(abstract_path);
-
-	const QDir dir(sDir);
 	if (fi.isRelative())
-		fi.setFile(dir, fi.filePath());
-	else
-		fi.setFile(dir, fi.fileName());
+		fi.setFile(QDir(sDir), fi.filePath());
 
 	const QString& sAbsolutePath = fi.absoluteFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
@@ -692,11 +688,8 @@ static char *qtractor_lv2_state_make_path (
 	while (dir.exists());
 
 	QFileInfo fi(relative_path);
-
 	if (fi.isRelative())
 		fi.setFile(dir, fi.filePath());
-	else
-		fi.setFile(dir, fi.fileName());
 
 	const QString& sMakeDir = fi.absolutePath();
 	if (!QDir(sMakeDir).exists())
@@ -4182,7 +4175,7 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 	const unsigned short iInstances = instances();
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		lilv_state_restore(state, m_ppInstances[i],
-			qtractor_lv2_set_port_value, this, 0, NULL);
+			qtractor_lv2_set_port_value, this, 0, m_lv2_features);
 	}
 
 	lilv_state_free(state);
@@ -4224,7 +4217,7 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
 		NULL, NULL, NULL, NULL,
 		qtractor_lv2_get_port_value, this,
-		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, NULL);
+		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
 
 	if (state == NULL) {
 	#ifdef CONFIG_LV2_STATE_FILES
