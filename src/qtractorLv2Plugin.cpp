@@ -4153,7 +4153,7 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 	if (sUri.isEmpty())
 		return false;
 
-	LilvNode *preset
+	LilvNode *preset_uri
 		= lilv_new_uri(g_lv2_world, sUri.toUtf8().constData());
 
 	LilvState *state = NULL;
@@ -4164,18 +4164,18 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 		m_lv2_state_save_dir = fi.absolutePath();
 	#endif
 		state = lilv_state_new_from_file(g_lv2_world,
-			&g_lv2_urid_map, preset,
+			&g_lv2_urid_map, preset_uri,
 			sPath.toUtf8().constData());
 	} else {
 		state = lilv_state_new_from_world(g_lv2_world,
-			&g_lv2_urid_map, preset);
+			&g_lv2_urid_map, preset_uri);
 	}
 
 	if (state == NULL) {
+		lilv_node_free(preset_uri);
 	#ifdef CONFIG_LV2_STATE_FILES
-		m_lv2_state_save_dir = fi.absolutePath();
+		m_lv2_state_save_dir.clear();
 	#endif
-		lilv_node_free(preset);
 		return false;
 	}
 
@@ -4186,7 +4186,7 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 	}
 
 	lilv_state_free(state);
-	lilv_node_free(preset);
+	lilv_node_free(preset_uri);
 
 #ifdef CONFIG_LV2_STATE_FILES
 	m_lv2_state_save_dir.clear();
@@ -4235,7 +4235,7 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 
 	lilv_state_set_label(state, sPreset.toUtf8().constData());
 
-	const QString& sFile = sPreset + ".ttl";
+	const QString sFile = sPreset + ".ttl";
 
 	int ret = lilv_state_save(g_lv2_world,
 		&g_lv2_urid_map, &g_lv2_urid_unmap, state, NULL,
