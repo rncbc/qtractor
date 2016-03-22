@@ -4157,8 +4157,12 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 		= lilv_new_uri(g_lv2_world, sUri.toUtf8().constData());
 
 	LilvState *state = NULL;
-	const QString& sPath = QUrl(sUri).toLocalFile();
-	if (!sPath.isEmpty() && QFileInfo(sPath).exists()) {
+	const QString sPath = QUrl(sUri).toLocalFile();
+	const QFileInfo fi(sPath);
+	if (!sPath.isEmpty() && fi.exists()) {
+	#ifdef CONFIG_LV2_STATE_FILES
+		m_lv2_state_save_dir = fi.absolutePath();
+	#endif
 		state = lilv_state_new_from_file(g_lv2_world,
 			&g_lv2_urid_map, preset,
 			sPath.toUtf8().constData());
@@ -4166,7 +4170,11 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 		state = lilv_state_new_from_world(g_lv2_world,
 			&g_lv2_urid_map, preset);
 	}
+
 	if (state == NULL) {
+	#ifdef CONFIG_LV2_STATE_FILES
+		m_lv2_state_save_dir = fi.absolutePath();
+	#endif
 		lilv_node_free(preset);
 		return false;
 	}
@@ -4179,6 +4187,10 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 
 	lilv_state_free(state);
 	lilv_node_free(preset);
+
+#ifdef CONFIG_LV2_STATE_FILES
+	m_lv2_state_save_dir.clear();
+#endif
 
 	return true;
 }

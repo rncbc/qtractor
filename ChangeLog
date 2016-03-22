@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed the relative path mapping when loading custom LV2
+  State Presets.
+
+
 0.7.5  2016-03-21  The Hazy Photon Beta
 
 - Beat unit divisor, aka. the denominator or lower numeral
