@@ -196,9 +196,9 @@ void qtractorPluginPath::updatePluginPaths (void)
 		lv2_paths.append(sLv2PresetDir);
 #endif
 	g_paths.insert(qtractorPluginType::Lv2, lv2_paths);
-#endif
 	// HACK: set special environment for LV2...
 	::setenv("LV2_PATH", lv2_paths.join(PATH_SEP).toUtf8().constData(), 1);
+#endif
 }
 
 
@@ -248,7 +248,7 @@ bool qtractorPluginPath::open (void)
 			path_list.append(paths);
 	}
 #endif
-#ifdef CONFIG_LV2
+#if 0//CONFIG_LV2
 	// LV2 default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Lv2) {
