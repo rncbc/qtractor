@@ -26,8 +26,9 @@
 
 #include "qtractorMidiControlObserver.h"
 
-#include <QStringList>
 #include <QLibrary>
+
+#include <QStringList>
 #include <QPoint>
 #include <QSize>
 
@@ -171,7 +172,7 @@ public:
 
 	// Factory method (static)
 	static qtractorDummyPluginType *createType(
-		qtractorPluginFile *pFile, unsigned long iIndex = 0, Hint typeHint = Vst);
+		qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint = Vst);
 
 	// Instance cached-deferred accesors.
 	const QString& aboutText();
@@ -209,12 +210,7 @@ public:
 
 	// Plugin type listing.
 	bool getTypes(qtractorPluginPath& path,
-		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
-
-	// Plugin factory method.
-	static qtractorPlugin *createPlugin(qtractorPluginList *pList,
-		const QString& sFilename, unsigned long iIndex = 0,
-		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
+		qtractorPluginType::Hint typeHint);
 
 private:
 
@@ -262,6 +258,12 @@ public:
 	// Global plugin-paths executive methods.
 	static QStringList pluginPaths(qtractorPluginType::Hint typeHint);
 	static void updatePluginPaths();
+
+	// Plugin factory method.
+	static qtractorPlugin *createPlugin(
+		qtractorPluginList *pList,
+		const QString& sFilename, unsigned long iIndex,
+		qtractorPluginType::Hint typeHint);
 
 protected:
 
