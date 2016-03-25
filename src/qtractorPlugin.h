@@ -259,9 +259,6 @@ public:
 	bool addTypes(const QString& sFilename,
 		qtractorPluginType::Hint typeHint);
 
-	void addType(qtractorPluginType *pType)
-		{ m_types.append(pType); }
-
 	// Plugin factory method.
 	static qtractorPlugin *createPlugin(
 		qtractorPluginList *pList,
@@ -271,7 +268,7 @@ public:
 protected:
 
 	// Recursive plugin file/path inventory method.
-	void addFilenames(const QString& sPath);
+	void addFiles(const QString& sPath);
 
 private:
 

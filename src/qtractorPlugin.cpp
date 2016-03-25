@@ -256,7 +256,7 @@ bool qtractorPluginPath::open (void)
 
 	QStringListIterator path_iter(path_list);
 	while (path_iter.hasNext())
-		addFilenames(path_iter.next());
+		addFiles(path_iter.next());
 
 #ifdef CONFIG_LV2
 	// LV2 default path...
@@ -283,7 +283,7 @@ void qtractorPluginPath::close (void)
 
 
 // Recursive plugin file/path inventory method.
-void qtractorPluginPath::addFilenames ( const QString& sPath )
+void qtractorPluginPath::addFiles ( const QString& sPath )
 {
 	const QDir dir(sPath);
 	QDir::Filters filters = QDir::Files;
@@ -295,7 +295,7 @@ void qtractorPluginPath::addFilenames ( const QString& sPath )
 		const QFileInfo& info = info_iter.next();
 		const QString& sFilename = info.absoluteFilePath();
 		if (info.isDir() && info.isReadable())
-			addFilenames(sFilename);
+			addFiles(sFilename);
 		else
 		if (QLibrary::isLibrary(sFilename))
 			m_filenames.append(sFilename);
@@ -406,7 +406,7 @@ bool qtractorPluginPath::addTypes (
 		typeHint == qtractorPluginType::Lv2) {
 		pType = qtractorLv2PluginType::createType(sFilename);
 		if (pType && pType->open()) {
-			addType(pType);
+			m_types.append(pType);
 			pType->close();
 			return true;
 		}
@@ -433,7 +433,7 @@ bool qtractorPluginPath::addTypes (
 			if (pType == NULL)
 				break;
 			if (pType->open()) {
-				addType(pType);
+				m_types.append(pType);
 				pType->close();
 				++iIndex;
 			} else {
@@ -444,8 +444,8 @@ bool qtractorPluginPath::addTypes (
 	}
 	// Have we found some, already?
 	if (iIndex > 0) {
-		pFile->close();
 		m_files.append(pFile);
+		pFile->close();
 		return true;
 	}
 #endif
@@ -459,7 +459,7 @@ bool qtractorPluginPath::addTypes (
 			if (pType == NULL)
 				break;
 			if (pType->open()) {
-				addType(pType);
+				m_types.append(pType);
 				pType->close();
 				++iIndex;
 			} else {
@@ -470,8 +470,8 @@ bool qtractorPluginPath::addTypes (
 	}
 	// Have we found some, already?
 	if (iIndex > 0) {
-		pFile->close();
 		m_files.append(pFile);
+		pFile->close();
 		return true;
 	}
 #endif
@@ -490,7 +490,7 @@ bool qtractorPluginPath::addTypes (
 			if (pType == NULL)
 				break;
 			if (pType->open()) {
-				addType(pType);
+				m_types.append(pType);
 				pType->close();
 				++iIndex;
 			} else {
@@ -501,8 +501,8 @@ bool qtractorPluginPath::addTypes (
 	}
 	// Have we found some, already?
 	if (iIndex > 0) {
-		pFile->close();
 		m_files.append(pFile);
+		pFile->close();
 		return true;
 	}
 #endif
