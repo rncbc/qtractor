@@ -125,7 +125,7 @@ typedef void (*qtractorPluginFile_Function)(void);
 // qtractorPluginPath -- Plugin path helper.
 //
 
-QHash<qtractorPluginType::Hint, QStringList> qtractorPluginPath::g_paths;
+qtractorPluginPath::Paths qtractorPluginPath::g_paths;
 
 void qtractorPluginPath::updatePluginPaths (void)
 {
@@ -276,9 +276,6 @@ void qtractorPluginPath::close (void)
 
 	qDeleteAll(m_types);
 	m_types.clear();
-
-	qDeleteAll(m_files);
-	m_files.clear();
 }
 
 
@@ -342,11 +339,9 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 #endif
 
 	// Try to fill the types list at this moment...
-	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
-	if (!pFile->open()) {
-		delete pFile;
+	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
+	if (pFile == NULL)
 		return NULL;
-	}
 
 #ifdef CONFIG_DSSI
 	// Try DSSI plugin types first...
@@ -388,7 +383,8 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 #endif
 
 	// Bad luck, no valid plugin found...
-	delete pFile;
+	qtractorPluginFile::removeFile(pFile);
+
 	return NULL;
 }
 
@@ -416,11 +412,9 @@ bool qtractorPluginPath::addTypes (
 	}
 #endif
 
-	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
-	if (!pFile->open()) {
-		delete pFile;
+	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
+	if (pFile == NULL)
 		return false;
-	}
 
 	unsigned long iIndex = 0;
 
@@ -444,7 +438,6 @@ bool qtractorPluginPath::addTypes (
 	}
 	// Have we found some, already?
 	if (iIndex > 0) {
-		m_files.append(pFile);
 		pFile->close();
 		return true;
 	}
@@ -470,7 +463,6 @@ bool qtractorPluginPath::addTypes (
 	}
 	// Have we found some, already?
 	if (iIndex > 0) {
-		m_files.append(pFile);
 		pFile->close();
 		return true;
 	}
@@ -501,15 +493,13 @@ bool qtractorPluginPath::addTypes (
 	}
 	// Have we found some, already?
 	if (iIndex > 0) {
-		m_files.append(pFile);
 		pFile->close();
 		return true;
 	}
 #endif
 
 	// We probably have nothing here.
-	pFile->close();
-	delete pFile;
+	qtractorPluginFile::removeFile(pFile);
 
 	return false;
 }
@@ -559,6 +549,40 @@ void qtractorPluginFile::close (void)
 	// until freed and unloaded on exit();
 	// nb. some VST might choke on auto-unload.
 	if (m_bAutoUnload) QLibrary::unload();
+}
+
+
+// Plugin file resgistry methods.
+qtractorPluginFile::Files qtractorPluginFile::g_files;
+
+qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
+{
+	qtractorPluginFile *pFile = g_files.value(sFilename, NULL);
+
+	if (pFile == NULL) {
+		pFile = new qtractorPluginFile(sFilename);
+		if (pFile->open()) {
+			g_files.insert(pFile->filename(), pFile);
+		} else {
+			delete pFile;
+			pFile = NULL;
+		}
+	}
+
+	if (pFile)
+		pFile->addRef();
+
+	return pFile;
+}
+
+
+void qtractorPluginFile::removeFile ( qtractorPluginFile *pFile )
+{
+	if (pFile && pFile->removeRef()) {
+		g_files.remove(pFile->filename());
+		pFile->close();
+		delete pFile;
+	}
 }
 
 
@@ -755,12 +779,7 @@ qtractorPlugin::~qtractorPlugin (void)
 	m_params.clear();
 
 	// Rest of stuff goes cleaned too...
-	if (m_pType) {
-		qtractorPluginFile *pFile = m_pType->file();
-		delete m_pType;
-		if (pFile)
-			delete pFile;
-	}
+	if (m_pType) delete m_pType;
 }
 
 
