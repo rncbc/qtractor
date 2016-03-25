@@ -260,18 +260,14 @@ void qtractorPluginSelectForm::refresh (void)
 		g_pluginPath.open();
 		int iFile = 0;
 		const qtractorPluginType::Hint typeHint = g_pluginPath.typeHint();
-		m_ui.PluginTypeProgressBar->setMaximum(g_pluginPath.files().count());
+		const QStringList& filenames = g_pluginPath.filenames();
+		m_ui.PluginTypeProgressBar->setMaximum(filenames.count());
 		m_ui.PluginTypeProgressBar->show();
-		g_pluginPath.addTypes(NULL, typeHint);
-		QListIterator<qtractorPluginFile *> file_iter(g_pluginPath.files());
+		QStringListIterator file_iter(filenames);
 		while (file_iter.hasNext()) {
 			m_ui.PluginTypeProgressBar->setValue(++iFile);
 			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-			qtractorPluginFile *pFile = file_iter.next();
-			if (pFile->open()) {
-				g_pluginPath.addTypes(pFile, typeHint);
-				pFile->close();
-			}
+			g_pluginPath.addTypes(file_iter.next(), typeHint);
 		}
 		m_ui.PluginTypeProgressBar->hide();
 		// We're formerly done.

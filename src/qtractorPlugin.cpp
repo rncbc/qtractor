@@ -265,21 +265,34 @@ bool qtractorPluginPath::open (void)
 
 	QStringListIterator path_iter(path_list);
 	while (path_iter.hasNext())
-		addFiles(path_iter.next());
+		addFilenames(path_iter.next());
 
-	return (m_files.count() > 0);
+#if 1//CONFIG_LV2
+	// LV2 default path...
+	if (m_typeHint == qtractorPluginType::Any ||
+		m_typeHint == qtractorPluginType::Lv2) {
+		m_filenames.append(qtractorLv2PluginType::lv2_plugins());
+	}
+#endif
+
+	return (m_filenames.count() > 0);
 }
 
 
 void qtractorPluginPath::close (void)
 {
+	m_filenames.clear();
+
+	qDeleteAll(m_types);
+	m_types.clear();
+
 	qDeleteAll(m_files);
 	m_files.clear();
 }
 
 
 // Recursive plugin file/path inventory method.
-void qtractorPluginPath::addFiles ( const QString& sPath )
+void qtractorPluginPath::addFilenames ( const QString& sPath )
 {
 	const QDir dir(sPath);
 	QDir::Filters filters = QDir::Files;
@@ -291,10 +304,10 @@ void qtractorPluginPath::addFiles ( const QString& sPath )
 		const QFileInfo& info = info_iter.next();
 		const QString& sFilename = info.absoluteFilePath();
 		if (info.isDir() && info.isReadable())
-			addFiles(sFilename);
+			addFilenames(sFilename);
 		else
 		if (QLibrary::isLibrary(sFilename))
-			m_files.append(new qtractorPluginFile(sFilename));
+			m_filenames.append(sFilename);
 	}
 }
 
@@ -390,27 +403,38 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 
 
 // Plugin type listing.
-bool qtractorPluginPath::addTypes ( qtractorPluginFile *pFile,
-	qtractorPluginType::Hint typeHint )
+bool qtractorPluginPath::addTypes (
+	const QString& sFilename, qtractorPluginType::Hint typeHint )
 {
-	// Sanity check...
-	if (pFile == NULL) {
-	#ifdef CONFIG_LV2
-		// Try LV2 plugin types if no file is given...
-		if (typeHint == qtractorPluginType::Any ||
-			typeHint == qtractorPluginType::Lv2)
-			return qtractorLv2PluginType::getTypes(*this);
-		else
-	#endif
+	// Try to fill the types list at this moment...
+	qtractorPluginType *pType;
+
+#ifdef CONFIG_LV2
+	// Try LV2 plugin types first...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Lv2) {
+		pType = qtractorLv2PluginType::createType(sFilename);
+		if (pType && pType->open()) {
+			addType(pType);
+			pType->close();
+			return true;
+		}
+		// Not a valid LV2 URI)...
+		if (pType) delete pType;
+		// Fall thru...
+	}
+#endif
+
+	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
+	if (!pFile->open()) {
+		delete pFile;
 		return false;
 	}
 
-	// Try to fill the types list at this moment...
-	qtractorPluginType *pType;
 	unsigned long iIndex = 0;
 
 #ifdef CONFIG_DSSI
-	// Try DSSI plugin types first...
+	// Try DSSI plugin types second...
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Dssi) {
 		while (true) {
@@ -428,8 +452,11 @@ bool qtractorPluginPath::addTypes ( qtractorPluginFile *pFile,
 		}
 	}
 	// Have we found some, already?
-	if (iIndex > 0)
+	if (iIndex > 0) {
+		pFile->close();
+		m_files.append(pFile);
 		return true;
+	}
 #endif
 
 #ifdef CONFIG_LADSPA
@@ -451,8 +478,11 @@ bool qtractorPluginPath::addTypes ( qtractorPluginFile *pFile,
 		}
 	}
 	// Have we found some, already?
-	if (iIndex > 0)
+	if (iIndex > 0) {
+		pFile->close();
+		m_files.append(pFile);
 		return true;
+	}
 #endif
 
 #ifdef CONFIG_VST
@@ -478,10 +508,19 @@ bool qtractorPluginPath::addTypes ( qtractorPluginFile *pFile,
 			}
 		}
 	}
+	// Have we found some, already?
+	if (iIndex > 0) {
+		pFile->close();
+		m_files.append(pFile);
+		return true;
+	}
 #endif
 
-	// Have we something?
-	return (iIndex > 0);
+	// We probably have nothing here.
+	pFile->close();
+	delete pFile;
+
+	return false;
 }
 
 

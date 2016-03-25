@@ -124,8 +124,7 @@ public:
 	void close();
 
 	// Factory method (static)
-	static qtractorLv2PluginType *createType(
-		const QString& sUri, LilvPlugin *plugin = NULL);
+	static qtractorLv2PluginType *createType(const QString& sUri);
 
 	// LV2 plugin URI (virtual override).
 	QString filename() const
@@ -142,8 +141,8 @@ public:
 	static void lv2_open();
 	static void lv2_close();
 
-	// Plugin type listing (static).
-	static bool getTypes(qtractorPluginPath& path);
+	// Plugin type (URI) listing (static).
+	static QStringList lv2_plugins();
 
 #ifdef CONFIG_LV2_EVENT
 	unsigned short eventIns()   const { return m_iEventIns;   }

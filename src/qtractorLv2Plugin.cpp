@@ -1417,15 +1417,13 @@ void qtractorLv2PluginType::close (void)
 
 
 // Factory method (static)
-qtractorLv2PluginType *qtractorLv2PluginType::createType (
-	const QString& sUri, LilvPlugin *plugin )
+qtractorLv2PluginType *qtractorLv2PluginType::createType ( const QString& sUri )
 {
 	// Sanity check...
 	if (sUri.isEmpty())
 		return NULL;
 
-	if (plugin == NULL)
-		plugin = lv2_plugin(sUri);
+	LilvPlugin *plugin = lv2_plugin(sUri);
 	if (plugin == NULL)
 		return NULL;
 
@@ -1744,32 +1742,20 @@ void qtractorLv2PluginType::lv2_close (void)
 }
 
 
-// Plugin type listing (static).
-bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
+// Plugin URI listing (static).
+QStringList qtractorLv2PluginType::lv2_plugins (void)
 {
-	if (g_lv2_plugins == NULL)
-		return false;
+	QStringList list;
 
-	unsigned long iIndex = 0;
-
-	LILV_FOREACH(plugins, i, g_lv2_plugins) {
-		LilvPlugin *plugin = const_cast<LilvPlugin *> (
-			lilv_plugins_get(g_lv2_plugins, i));
-		const char *pszUri = lilv_node_as_uri(lilv_plugin_get_uri(plugin));
-		qtractorLv2PluginType *pLv2Type
-			= qtractorLv2PluginType::createType(pszUri, plugin);
-		if (pLv2Type) {
-			if (pLv2Type->open()) {
-				path.addType(pLv2Type);
-				pLv2Type->close();
-				++iIndex;
-			} else {
-				delete pLv2Type;
-			}
+	if (g_lv2_plugins) {
+		LILV_FOREACH(plugins, i, g_lv2_plugins) {
+			const LilvPlugin *plugin = lilv_plugins_get(g_lv2_plugins, i);
+			const char *pszUri = lilv_node_as_uri(lilv_plugin_get_uri(plugin));
+			list.append(QString::fromLocal8Bit(pszUri));
 		}
 	}
 
-	return (iIndex > 0);
+	return list;
 }
 
 

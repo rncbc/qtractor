@@ -241,7 +241,10 @@ public:
 	bool open();
 	void close();
 
-	// Plugin file/types list.
+	// Plugin filenames list.
+	const QStringList& filenames() const { return m_filenames; }
+
+	// Plugin files/types list.
 	const QList<qtractorPluginFile *>& files() const { return m_files; }
 	const QList<qtractorPluginType *>& types() const { return m_types; }
 
@@ -253,7 +256,7 @@ public:
 	static void updatePluginPaths();
 
 	// Plugin type listing.
-	bool addTypes(qtractorPluginFile *pFile,
+	bool addTypes(const QString& sFilename,
 		qtractorPluginType::Hint typeHint);
 
 	void addType(qtractorPluginType *pType)
@@ -268,14 +271,17 @@ public:
 protected:
 
 	// Recursive plugin file/path inventory method.
-	void addFiles(const QString& sPath);
+	void addFilenames(const QString& sPath);
 
 private:
 
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
 
-	// Internal plugin file/type list.
+	// Internal plugin files list.
+	QStringList m_filenames;
+
+	// Internal plugin files/types list.
 	QList<qtractorPluginFile *> m_files;
 	QList<qtractorPluginType *> m_types;
 
