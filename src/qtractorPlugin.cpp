@@ -389,6 +389,102 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 }
 
 
+// Plugin type listing.
+bool qtractorPluginPath::addTypes ( qtractorPluginFile *pFile,
+	qtractorPluginType::Hint typeHint )
+{
+	// Sanity check...
+	if (pFile == NULL) {
+	#ifdef CONFIG_LV2
+		// Try LV2 plugin types if no file is given...
+		if (typeHint == qtractorPluginType::Any ||
+			typeHint == qtractorPluginType::Lv2)
+			return qtractorLv2PluginType::getTypes(*this);
+		else
+	#endif
+		return false;
+	}
+
+	// Try to fill the types list at this moment...
+	qtractorPluginType *pType;
+	unsigned long iIndex = 0;
+
+#ifdef CONFIG_DSSI
+	// Try DSSI plugin types first...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Dssi) {
+		while (true) {
+			pType = qtractorDssiPluginType::createType(pFile, iIndex);
+			if (pType == NULL)
+				break;
+			if (pType->open()) {
+				addType(pType);
+				pType->close();
+				++iIndex;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+	// Have we found some, already?
+	if (iIndex > 0)
+		return true;
+#endif
+
+#ifdef CONFIG_LADSPA
+	// Try LADSPA plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Ladspa) {
+		while (true) {
+			pType = qtractorLadspaPluginType::createType(pFile, iIndex);
+			if (pType == NULL)
+				break;
+			if (pType->open()) {
+				addType(pType);
+				pType->close();
+				++iIndex;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+	// Have we found some, already?
+	if (iIndex > 0)
+		return true;
+#endif
+
+#ifdef CONFIG_VST
+	// Try VST plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Vst) {
+		// Need to look at the options...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		while (true) {
+			if (pOptions && pOptions->bDummyVstScan)
+				pType = qtractorDummyPluginType::createType(pFile, iIndex);
+			else
+				pType = qtractorVstPluginType::createType(pFile, iIndex);
+			if (pType == NULL)
+				break;
+			if (pType->open()) {
+				addType(pType);
+				pType->close();
+				++iIndex;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+#endif
+
+	// Have we something?
+	return (iIndex > 0);
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorPluginFile -- Plugin file library instance.
 //
@@ -433,90 +529,6 @@ void qtractorPluginFile::close (void)
 	// until freed and unloaded on exit();
 	// nb. some VST might choke on auto-unload.
 	if (m_bAutoUnload) QLibrary::unload();
-}
-
-
-// Plugin type listing.
-bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
-	qtractorPluginType::Hint typeHint )
-{
-	// Try to fill the types list at this moment...
-	qtractorPluginType *pType;
-	unsigned long iIndex = 0;
-
-#ifdef CONFIG_DSSI
-	// Try DSSI plugin types first...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Dssi) {
-		while (true) {
-			pType = qtractorDssiPluginType::createType(this, iIndex);
-			if (pType == NULL)
-				break;
-			if (pType->open()) {
-				path.addType(pType);
-				pType->close();
-				++iIndex;
-			} else {
-				delete pType;
-				break;
-			}
-		}
-	}
-	// Have we found some, already?
-	if (iIndex > 0)
-		return true;
-#endif
-
-#ifdef CONFIG_LADSPA
-	// Try LADSPA plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Ladspa) {
-		while (true) {
-			pType = qtractorLadspaPluginType::createType(this, iIndex);
-			if (pType == NULL)
-				break;
-			if (pType->open()) {
-				path.addType(pType);
-				pType->close();
-				++iIndex;
-			} else {
-				delete pType;
-				break;
-			}
-		}
-	}
-	// Have we found some, already?
-	if (iIndex > 0)
-		return true;
-#endif
-
-#ifdef CONFIG_VST
-	// Try VST plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Vst) {
-		// Need to look at the options...
-		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		while (true) {
-			if (pOptions && pOptions->bDummyVstScan)
-				pType = qtractorDummyPluginType::createType(this, iIndex);
-			else
-				pType = qtractorVstPluginType::createType(this, iIndex);
-			if (pType == NULL)
-				break;
-			if (pType->open()) {
-				path.addType(pType);
-				pType->close();
-				++iIndex;
-			} else {
-				delete pType;
-				break;
-			}
-		}
-	}
-#endif
-
-	// Have we something?
-	return (iIndex > 0);
 }
 
 

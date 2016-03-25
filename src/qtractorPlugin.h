@@ -208,10 +208,6 @@ public:
 	bool isAutoUnload() const
 		{ return m_bAutoUnload; }
 
-	// Plugin type listing.
-	bool getTypes(qtractorPluginPath& path,
-		qtractorPluginType::Hint typeHint);
-
 private:
 
 	// Instance variables.
@@ -249,15 +245,19 @@ public:
 	const QList<qtractorPluginFile *>& files() const { return m_files; }
 	const QList<qtractorPluginType *>& types() const { return m_types; }
 
-	// Plugin type adder.
-	void addType(qtractorPluginType *pType)	{ m_types.append(pType); }
-
 	// Type list reset method.
 	void clear() { qDeleteAll(m_types); m_types.clear(); }
 
 	// Global plugin-paths executive methods.
 	static QStringList pluginPaths(qtractorPluginType::Hint typeHint);
 	static void updatePluginPaths();
+
+	// Plugin type listing.
+	bool addTypes(qtractorPluginFile *pFile,
+		qtractorPluginType::Hint typeHint);
+
+	void addType(qtractorPluginType *pType)
+		{ m_types.append(pType); }
 
 	// Plugin factory method.
 	static qtractorPlugin *createPlugin(
