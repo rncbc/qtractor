@@ -248,15 +248,6 @@ bool qtractorPluginPath::open (void)
 			path_list.append(paths);
 	}
 #endif
-#if 0//CONFIG_LV2
-	// LV2 default path...
-	if (m_typeHint == qtractorPluginType::Any ||
-		m_typeHint == qtractorPluginType::Lv2) {
-		const QStringList& paths = g_paths.value(qtractorPluginType::Lv2);
-		if (!paths.isEmpty())
-			path_list.append(paths);
-	}
-#endif
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginPath[%p]::open() paths=\"%s\" typeHint=%d",
@@ -267,7 +258,7 @@ bool qtractorPluginPath::open (void)
 	while (path_iter.hasNext())
 		addFilenames(path_iter.next());
 
-#if 1//CONFIG_LV2
+#ifdef CONFIG_LV2
 	// LV2 default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Lv2) {
