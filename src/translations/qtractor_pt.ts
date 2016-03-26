@@ -152,7 +152,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1482"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1479"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -578,7 +578,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1485"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1482"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
