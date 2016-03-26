@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Plug-ins search path and file inventory scanning is under
+  some overhaul refactoring... (EXPERIMENTAL)
+
 - Fixed relative/absolute path mapping when saving/loading
   custom LV2 Plug-in State Presets.
 

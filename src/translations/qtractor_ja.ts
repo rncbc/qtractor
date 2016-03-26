@@ -372,7 +372,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="686"/>
+        <location filename="../qtractorPlugin.cpp" line="750"/>
         <source>(default)</source>
         <translation>(デフォルト)</translation>
     </message>
@@ -428,22 +428,22 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="614"/>
+        <location filename="../qtractorPlugin.cpp" line="678"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="670"/>
+        <location filename="../qtractorPlugin.cpp" line="734"/>
         <source>Dummy plugin type.</source>
         <translation>ダミープラグインタイプ。</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="702"/>
+        <location filename="../qtractorPlugin.cpp" line="766"/>
         <source>Activate</source>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2295"/>
+        <location filename="../qtractorPlugin.cpp" line="2354"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 プラグインが見つかりません。</translation>
     </message>
@@ -740,13 +740,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>コピーライト:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1784"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1770"/>
         <source>Project: </source>
         <translation>プロジェクト:</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1792"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1778"/>
         <source>Author: </source>
         <translation>作者:</translation>
     </message>
@@ -11052,17 +11052,17 @@ Are you sure?</source>
         <translation>プラグインを検索中です...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="320"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="307"/>
         <source>GUI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="322"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="309"/>
         <source>EXT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="324"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="311"/>
         <source>RT</source>
         <translation></translation>
     </message>

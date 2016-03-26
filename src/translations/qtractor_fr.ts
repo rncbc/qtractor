@@ -373,7 +373,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="686"/>
+        <location filename="../qtractorPlugin.cpp" line="750"/>
         <source>(default)</source>
         <translation>(défaut)</translation>
     </message>
@@ -430,22 +430,22 @@ MIDI:	</translation>
 </translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="614"/>
+        <location filename="../qtractorPlugin.cpp" line="678"/>
         <source>(Any)</source>
         <translation>(Tous)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="670"/>
+        <location filename="../qtractorPlugin.cpp" line="734"/>
         <source>Dummy plugin type.</source>
         <translation>Type de greffon factice.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="702"/>
+        <location filename="../qtractorPlugin.cpp" line="766"/>
         <source>Activate</source>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2295"/>
+        <location filename="../qtractorPlugin.cpp" line="2354"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
@@ -742,13 +742,13 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1784"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1770"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1792"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1778"/>
         <source>Author: </source>
         <translation>Auteur: </translation>
     </message>
@@ -11054,17 +11054,17 @@ Are you sure?</source>
         <translation>Scan des greffons en cours...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="320"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="307"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="322"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="309"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="324"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="311"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>

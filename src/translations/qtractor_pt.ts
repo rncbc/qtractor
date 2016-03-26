@@ -70,7 +70,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>Arquivo:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="614"/>
+        <location filename="../qtractorPlugin.cpp" line="678"/>
         <source>(Any)</source>
         <translation>(Todos)</translation>
     </message>
@@ -167,7 +167,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation> (%1% vol)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="670"/>
+        <location filename="../qtractorPlugin.cpp" line="734"/>
         <source>Dummy plugin type.</source>
         <translation>Plugin de tipo dummy.</translation>
     </message>
@@ -325,7 +325,7 @@ MIDI:	</translation>
         <translation>gravador de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1784"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1770"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
@@ -601,7 +601,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="686"/>
+        <location filename="../qtractorPlugin.cpp" line="750"/>
         <source>(default)</source>
         <translation>(padrão)</translation>
     </message>
@@ -646,7 +646,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1792"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1778"/>
         <source>Author: </source>
         <translation>Autor:</translation>
     </message>
@@ -738,7 +738,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>remover marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="702"/>
+        <location filename="../qtractorPlugin.cpp" line="766"/>
         <source>Activate</source>
         <translation>Ativar</translation>
     </message>
@@ -753,7 +753,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2295"/>
+        <location filename="../qtractorPlugin.cpp" line="2354"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>
@@ -10969,17 +10969,17 @@ Posso continuar?</translation>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="324"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="311"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="322"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="309"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="320"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="307"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
