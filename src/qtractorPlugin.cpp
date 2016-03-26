@@ -262,17 +262,17 @@ bool qtractorPluginPath::open (void)
 	// LV2 default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Lv2) {
-		m_filenames.append(qtractorLv2PluginType::lv2_plugins());
+		m_files.append(qtractorLv2PluginType::lv2_plugins());
 	}
 #endif
 
-	return (m_filenames.count() > 0);
+	return (m_files.count() > 0);
 }
 
 
 void qtractorPluginPath::close (void)
 {
-	m_filenames.clear();
+	m_files.clear();
 
 	qDeleteAll(m_types);
 	m_types.clear();
@@ -295,7 +295,7 @@ void qtractorPluginPath::addFiles ( const QString& sPath )
 			addFiles(sFilename);
 		else
 		if (QLibrary::isLibrary(sFilename))
-			m_filenames.append(sFilename);
+			m_files.append(sFilename);
 	}
 }
 

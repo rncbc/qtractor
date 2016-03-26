@@ -241,8 +241,8 @@ class qtractorPluginPath
 public:
 
 	// Constructor.
-	qtractorPluginPath(qtractorPluginType::Hint typeHint = qtractorPluginType::Any)
-		: m_typeHint(typeHint) {}
+	qtractorPluginPath()
+		: m_typeHint(qtractorPluginType::Any) {}
 
 	// Destructor.
 	~qtractorPluginPath()
@@ -259,7 +259,7 @@ public:
 	void close();
 
 	// Plugin filenames list.
-	const QStringList& filenames() const { return m_filenames; }
+	const QStringList& files() const { return m_files; }
 
 	// Plugin files/types list.
 	const QList<qtractorPluginType *>& types() const { return m_types; }
@@ -294,8 +294,8 @@ private:
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
 
-	// Internal plugin files list.
-	QStringList m_filenames;
+	// Internal plugin filenames list.
+	QStringList m_files;
 
 	// Internal plugin types list.
 	QList<qtractorPluginType *> m_types;

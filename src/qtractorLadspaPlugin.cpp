@@ -161,7 +161,8 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 	qtractorLadspaPluginType *pLadspaType )
 	: qtractorPlugin(pList, pLadspaType), m_phInstances(NULL),
 		m_piControlOuts(NULL), m_pfControlOuts(NULL),
-		m_piAudioIns(NULL), m_piAudioOuts(NULL), m_pfXBuffer(NULL)
+		m_piAudioIns(NULL), m_piAudioOuts(NULL),
+		m_pfIDummy(NULL), m_pfODummy(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLadspaPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -229,8 +230,10 @@ qtractorLadspaPlugin::~qtractorLadspaPlugin (void)
 	if (m_pfControlOuts)
 		delete [] m_pfControlOuts;
 
-	if (m_pfXBuffer)
-		delete [] m_pfXBuffer;
+	if (m_pfIDummy)
+		delete [] m_pfIDummy;
+	if (m_pfODummy)
+		delete [] m_pfODummy;
 }
 
 
@@ -281,11 +284,33 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
+	// Allocate the dummy audio I/O buffers...
+	const unsigned int iBufferSize = bufferSize();
+	const unsigned short iAudioIns = pType->audioIns();
+	const unsigned short iAudioOuts = pType->audioOuts();
+
+	if (iChannels < iAudioIns) {
+		if (m_pfIDummy)
+			delete [] m_pfIDummy;
+		m_pfIDummy = new float [iBufferSize];
+		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+	}
+
+	if (iChannels < iAudioOuts) {
+		if (m_pfODummy)
+			delete [] m_pfODummy;
+		m_pfODummy = new float [iBufferSize];
+		::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+	}
+
 	// We'll need output control (not dummy anymore) port indexes...
 	const unsigned short iControlOuts = pType->controlOuts();
+
+	unsigned short i, j;
+
 	// Allocate new instances...
 	m_phInstances = new LADSPA_Handle [iInstances];
-	for (unsigned short i = 0; i < iInstances; ++i) {
+	for (i = 0; i < iInstances; ++i) {
 		// Instantiate them properly first...
 		LADSPA_Handle handle
 			= (*pLadspaDescriptor->instantiate)(pLadspaDescriptor, sampleRate());
@@ -306,21 +331,22 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 			*pfValue = fValue;
 		}
 		// Connect all existing output control ports...
-		for (unsigned short j = 0; j < iControlOuts; ++j) {
+		for (j = 0; j < iControlOuts; ++j) {
 			(*pLadspaDescriptor->connect_port)(handle,
 				m_piControlOuts[j], &m_pfControlOuts[j]);
 		}
+		// Connect all dummy input ports...
+		if (m_pfIDummy) for (j = iChannels; j < iAudioIns; ++j) {
+			(*pLadspaDescriptor->connect_port)(handle,
+				m_piAudioIns[j], m_pfIDummy); // dummy input port!
+		}
+		// Connect all dummy output ports...
+		if (m_pfODummy) for (j = iChannels; j < iAudioOuts; ++j) {
+			(*pLadspaDescriptor->connect_port)(handle,
+				m_piAudioOuts[j], m_pfODummy); // dummy input port!
+		}
 		// This is it...
 		m_phInstances[i] = handle;
-	}
-
-	// Allocate the dummy audio I/O buffer...
-	if (iChannels < audioOuts()) {
-		const unsigned int iBufferSize = bufferSize();
-		if (m_pfXBuffer)
-			delete [] m_pfXBuffer;
-		m_pfXBuffer = new float [iBufferSize];
-		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
 	}
 
 	// (Re)issue all configuration as needed...
@@ -404,21 +430,14 @@ void qtractorLadspaPlugin::process (
 	for (i = 0; i < iInstances; ++i) {
 		LADSPA_Handle handle = m_phInstances[i];
 		// For each instance audio input port...
-		for (j = 0; j < iAudioIns; ++j) {
+		for (j = 0; j < iAudioIns && iIChannel < iChannels; ++j) {
 			(*pLadspaDescriptor->connect_port)(handle,
-				m_piAudioIns[j], ppIBuffer[iIChannel]);
-			if (++iIChannel >= iChannels)
-				iIChannel = 0;
+				m_piAudioIns[j], ppIBuffer[iIChannel++]);
 		}
 		// For each instance audio output port...
-		for (j = 0; j < iAudioOuts; ++j) {
-			if (iOChannel < iChannels) {
-				(*pLadspaDescriptor->connect_port)(handle,
-					m_piAudioOuts[j], ppOBuffer[iOChannel++]);
-			} else {
-				(*pLadspaDescriptor->connect_port)(handle,
-					m_piAudioOuts[j], m_pfXBuffer); // dummy output!
-			}
+		for (j = 0; j < iAudioOuts && iOChannel < iChannels; ++j) {
+			(*pLadspaDescriptor->connect_port)(handle,
+				m_piAudioOuts[j], ppOBuffer[iOChannel++]);
 		}
 		// Make it run...
 		(*pLadspaDescriptor->run)(handle, nframes);

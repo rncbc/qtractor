@@ -364,8 +364,9 @@ private:
 	unsigned long *m_piAudioIns;
 	unsigned long *m_piAudioOuts;
 
-	// Dummy I/O buffer.
-	float *m_pfXBuffer;
+	// Dummy I/O buffers.
+	float *m_pfIDummy;
+	float *m_pfODummy;
 
 #ifdef CONFIG_LV2_EVENT
 	// List of LV2 Event/MIDI port indexes.

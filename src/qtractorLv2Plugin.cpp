@@ -1818,7 +1818,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pfControlOutsLast(NULL)
 		, m_piAudioIns(NULL)
 		, m_piAudioOuts(NULL)
-		, m_pfXBuffer(NULL)
+		, m_pfIDummy(NULL)
+		, m_pfODummy(NULL)
 	#ifdef CONFIG_LV2_EVENT
 		, m_piEventIns(NULL)
 		, m_piEventOuts(NULL)
@@ -2296,8 +2297,10 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	if (m_pfControlOutsLast)
 		delete [] m_pfControlOutsLast;
 
-	if (m_pfXBuffer)
-		delete [] m_pfXBuffer;
+	if (m_pfIDummy)
+		delete [] m_pfIDummy;
+	if (m_pfODummy)
+		delete [] m_pfODummy;
 
 	if (m_lv2_features)
 		delete [] m_lv2_features;
@@ -2372,12 +2375,33 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		features = m_lv2_worker->lv2_features();
 #endif
 
+	// Allocate the dummy audio I/O buffers...
+	const unsigned int iBufferSize = bufferSize();
+	const unsigned short iAudioIns = pLv2Type->audioIns();
+	const unsigned short iAudioOuts = pLv2Type->audioOuts();
+
+	if (iChannels < iAudioIns) {
+		if (m_pfIDummy)
+			delete [] m_pfIDummy;
+		m_pfIDummy = new float [iBufferSize];
+		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+	}
+
+	if (iChannels < iAudioOuts) {
+		if (m_pfODummy)
+			delete [] m_pfODummy;
+		m_pfODummy = new float [iBufferSize];
+		::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+	}
+
 	// We'll need output control (not dummy anymore) port indexes...
 	const unsigned short iControlOuts = pLv2Type->controlOuts();
 
+	unsigned short i, j;
+
 	// Allocate new instances...
 	m_ppInstances = new LilvInstance * [iInstances];
-	for (unsigned short i = 0; i < iInstances; ++i) {
+	for (i = 0; i < iInstances; ++i) {
 		// Instantiate them properly first...
 		LilvInstance *instance
 			= lilv_plugin_instantiate(plugin, sampleRate(), features);
@@ -2396,9 +2420,19 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 					pParam->index(), pParam->subject()->data());
 			}
 			// Connect all existing output control ports...
-			for (unsigned short j = 0; j < iControlOuts; ++j) {
+			for (j = 0; j < iControlOuts; ++j) {
 				lilv_instance_connect_port(instance,
 					m_piControlOuts[j], &m_pfControlOuts[j]);
+			}
+			// Connect all dummy input ports...
+			if (m_pfIDummy) for (j = iChannels; j < iAudioIns; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piAudioIns[j], m_pfIDummy); // dummy input port!
+			}
+			// Connect all dummy output ports...
+			if (m_pfODummy) for (j = iChannels; j < iAudioOuts; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piAudioOuts[j], m_pfODummy); // dummy input port!
 			}
 		#if 0//def CONFIG_LV2_TIME
 			// Connect time-pos designated ports, if any...
@@ -2418,15 +2452,6 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	#endif
 		// This is it...
 		m_ppInstances[i] = instance;
-	}
-
-	// Allocate the dummy audio I/O buffer...
-	if (iChannels < audioOuts()) {
-		const unsigned int iBufferSize = bufferSize();
-		if (m_pfXBuffer)
-			delete [] m_pfXBuffer;
-		m_pfXBuffer = new float [iBufferSize];
-		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
 	}
 
 #ifdef CONFIG_LV2_STATE
@@ -2541,10 +2566,13 @@ void qtractorLv2Plugin::process (
 		if (instance) {
 			// For each instance audio input port...
 			for (j = 0; j < iAudioIns; ++j) {
-				lilv_instance_connect_port(instance,
-					m_piAudioIns[j], ppIBuffer[iIChannel]);
-				if (++iIChannel >= iChannels)
-					iIChannel = 0;
+				if (iIChannel < iChannels) {
+					lilv_instance_connect_port(instance,
+						m_piAudioIns[j], ppIBuffer[iIChannel++]);
+				} else {
+					lilv_instance_connect_port(instance,
+						m_piAudioIns[j], m_pfIDummy); // dummy input!
+				}
 			}
 			// For each instance audio output port...
 			for (j = 0; j < iAudioOuts; ++j) {
@@ -2553,7 +2581,7 @@ void qtractorLv2Plugin::process (
 						m_piAudioOuts[j], ppOBuffer[iOChannel++]);
 				} else {
 					lilv_instance_connect_port(instance,
-						m_piAudioOuts[j], m_pfXBuffer); // dummy output!
+						m_piAudioOuts[j], m_pfODummy); // dummy output!
 				}
 			}
 		#ifdef CONFIG_LV2_EVENT

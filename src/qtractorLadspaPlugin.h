@@ -120,8 +120,9 @@ protected:
 	unsigned long *m_piAudioIns;
 	unsigned long *m_piAudioOuts;
 
-	// Dummy I/O buffer.
-	float *m_pfXBuffer;
+	// Dummy I/O buffers.
+	float *m_pfIDummy;
+	float *m_pfODummy;
 };
 
 
