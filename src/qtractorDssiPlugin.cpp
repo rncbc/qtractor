@@ -1047,21 +1047,14 @@ void qtractorDssiPlugin::process (
 	for (i = 0; i < iInstances; ++i) {
 		LADSPA_Handle handle = m_phInstances[i];
 		// For each instance audio input port...
-		for (j = 0; j < iAudioIns; ++j) {
+		for (j = 0; j < iAudioIns && iIChannel < iChannels; ++j) {
 			(*pLadspaDescriptor->connect_port)(handle,
-				m_piAudioIns[j], ppIBuffer[iIChannel]);
-			if (++iIChannel >= iChannels)
-				iIChannel = 0;
+				m_piAudioIns[j], ppIBuffer[iIChannel++]);
 		}
 		// For each instance audio output port...
-		for (j = 0; j < iAudioOuts; ++j) {
-			if (iOChannel < iChannels) {
-				(*pLadspaDescriptor->connect_port)(handle,
-					m_piAudioOuts[j], ppOBuffer[iOChannel++]);
-			} else {
-				(*pLadspaDescriptor->connect_port)(handle,
-					m_piAudioOuts[j], m_pfXBuffer); // dummy output!
-			}
+		for (j = 0; j < iAudioOuts && iOChannel < iChannels; ++j) {
+			(*pLadspaDescriptor->connect_port)(handle,
+				m_piAudioOuts[j], ppOBuffer[iOChannel++]);
 		}
 		// Care of multiple instances here...
 		if (m_pDssiMulti)

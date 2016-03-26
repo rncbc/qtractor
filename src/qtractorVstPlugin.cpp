@@ -848,11 +848,8 @@ void qtractorVstPlugin::process (
 	for (i = 0; i < iInstances; ++i) {
 		AEffect *pVstEffect = vst_effect(i);
 		// For each instance audio input port...
-		for (j = 0; j < iAudioIns; ++j) {
-			m_ppIBuffer[j] = ppIBuffer[iIChannel];
-			if (++iIChannel >= iChannels)
-				iIChannel = 0;
-		}
+		for (j = 0; j < iAudioIns && iIChannel < iChannels; ++j)
+			m_ppIBuffer[j] = ppIBuffer[iIChannel++];
 		// For each instance audio output port...
 		for (j = 0; j < iAudioOuts; ++j) {
 			if (iOChannel < iChannels) {
