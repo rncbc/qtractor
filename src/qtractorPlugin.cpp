@@ -125,7 +125,7 @@ typedef void (*qtractorPluginFile_Function)(void);
 // qtractorPluginPath -- Plugin path helper.
 //
 
-QHash<qtractorPluginType::Hint, QStringList> qtractorPluginPath::g_paths;
+qtractorPluginPath::Paths qtractorPluginPath::g_paths;
 
 void qtractorPluginPath::updatePluginPaths (void)
 {
@@ -196,9 +196,9 @@ void qtractorPluginPath::updatePluginPaths (void)
 		lv2_paths.append(sLv2PresetDir);
 #endif
 	g_paths.insert(qtractorPluginType::Lv2, lv2_paths);
-#endif
 	// HACK: set special environment for LV2...
 	::setenv("LV2_PATH", lv2_paths.join(PATH_SEP).toUtf8().constData(), 1);
+#endif
 }
 
 
@@ -248,15 +248,6 @@ bool qtractorPluginPath::open (void)
 			path_list.append(paths);
 	}
 #endif
-#ifdef CONFIG_LV2
-	// LV2 default path...
-	if (m_typeHint == qtractorPluginType::Any ||
-		m_typeHint == qtractorPluginType::Lv2) {
-		const QStringList& paths = g_paths.value(qtractorPluginType::Lv2);
-		if (!paths.isEmpty())
-			path_list.append(paths);
-	}
-#endif
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginPath[%p]::open() paths=\"%s\" typeHint=%d",
@@ -267,14 +258,24 @@ bool qtractorPluginPath::open (void)
 	while (path_iter.hasNext())
 		addFiles(path_iter.next());
 
+#ifdef CONFIG_LV2
+	// LV2 default path...
+	if (m_typeHint == qtractorPluginType::Any ||
+		m_typeHint == qtractorPluginType::Lv2) {
+		m_files.append(qtractorLv2PluginType::lv2_plugins());
+	}
+#endif
+
 	return (m_files.count() > 0);
 }
 
 
 void qtractorPluginPath::close (void)
 {
-	qDeleteAll(m_files);
 	m_files.clear();
+
+	qDeleteAll(m_types);
+	m_types.clear();
 }
 
 
@@ -294,8 +295,213 @@ void qtractorPluginPath::addFiles ( const QString& sPath )
 			addFiles(sFilename);
 		else
 		if (QLibrary::isLibrary(sFilename))
-			m_files.append(new qtractorPluginFile(sFilename));
+			m_files.append(sFilename);
 	}
+}
+
+
+// Plugin factory method (static).
+qtractorPlugin *qtractorPluginPath::createPlugin (
+	qtractorPluginList *pList,
+	const QString& sFilename, unsigned long iIndex,
+	qtractorPluginType::Hint typeHint )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginPath::createPlugin(%p, \"%s\", %lu, %d)",
+		pList, sFilename.toUtf8().constData(), iIndex, int(typeHint));
+#endif
+
+	// Attend to insert pseudo-plugin hints...
+	if (sFilename.isEmpty()) {
+		if (typeHint == qtractorPluginType::Insert)
+			return qtractorInsertPluginType::createPlugin(pList, iIndex);
+		else
+		if (typeHint == qtractorPluginType::AuxSend)
+			return qtractorAuxSendPluginType::createPlugin(pList, iIndex);
+		else
+		// Don't bother with anything else.
+		return NULL;
+	}
+
+#ifdef CONFIG_LV2
+	// Try LV2 plugins hints before anything else...
+	if (typeHint == qtractorPluginType::Lv2) {
+		qtractorLv2PluginType *pLv2Type
+			= qtractorLv2PluginType::createType(sFilename);
+		if (pLv2Type) {
+			if (pLv2Type->open())
+				return new qtractorLv2Plugin(pList, pLv2Type);
+			delete pLv2Type;
+		}
+		// Bail out.
+		return NULL;
+	}
+#endif
+
+	// Try to fill the types list at this moment...
+	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
+	if (pFile == NULL)
+		return NULL;
+
+#ifdef CONFIG_DSSI
+	// Try DSSI plugin types first...
+	if (typeHint == qtractorPluginType::Dssi) {
+		qtractorDssiPluginType *pDssiType
+			= qtractorDssiPluginType::createType(pFile, iIndex);
+		if (pDssiType) {
+			if (pDssiType->open())
+				return new qtractorDssiPlugin(pList, pDssiType);
+			delete pDssiType;
+		}
+	}
+#endif
+
+#ifdef CONFIG_LADSPA
+	// Try LADSPA plugin types...
+	if (typeHint == qtractorPluginType::Ladspa) {
+		qtractorLadspaPluginType *pLadspaType
+			= qtractorLadspaPluginType::createType(pFile, iIndex);
+		if (pLadspaType) {
+			if (pLadspaType->open())
+				return new qtractorLadspaPlugin(pList, pLadspaType);
+			delete pLadspaType;
+		}
+	}
+#endif
+
+#ifdef CONFIG_VST
+	// Try VST plugin types...
+	if (typeHint == qtractorPluginType::Vst) {
+		qtractorVstPluginType *pVstType
+			= qtractorVstPluginType::createType(pFile, iIndex);
+		if (pVstType) {
+			if (pVstType->open())
+				return new qtractorVstPlugin(pList, pVstType);
+			delete pVstType;
+		}
+	}
+#endif
+
+	// Bad luck, no valid plugin found...
+	qtractorPluginFile::removeFile(pFile);
+
+	return NULL;
+}
+
+
+// Plugin type listing.
+bool qtractorPluginPath::addTypes (
+	const QString& sFilename, qtractorPluginType::Hint typeHint )
+{
+	// Try to fill the types list at this moment...
+	qtractorPluginType *pType;
+
+#ifdef CONFIG_LV2
+	// Try LV2 plugin types first...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Lv2) {
+		pType = qtractorLv2PluginType::createType(sFilename);
+		if (pType && pType->open()) {
+			m_types.append(pType);
+			pType->close();
+			return true;
+		}
+		// Not a valid LV2 URI)...
+		if (pType) delete pType;
+		// Fall thru...
+	}
+#endif
+
+	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
+	if (pFile == NULL)
+		return false;
+
+	unsigned long iIndex = 0;
+
+#ifdef CONFIG_DSSI
+	// Try DSSI plugin types second...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Dssi) {
+		while (true) {
+			pType = qtractorDssiPluginType::createType(pFile, iIndex);
+			if (pType == NULL)
+				break;
+			if (pType->open()) {
+				m_types.append(pType);
+				pType->close();
+				++iIndex;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+	// Have we found some, already?
+	if (iIndex > 0) {
+		pFile->close();
+		return true;
+	}
+#endif
+
+#ifdef CONFIG_LADSPA
+	// Try LADSPA plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Ladspa) {
+		while (true) {
+			pType = qtractorLadspaPluginType::createType(pFile, iIndex);
+			if (pType == NULL)
+				break;
+			if (pType->open()) {
+				m_types.append(pType);
+				pType->close();
+				++iIndex;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+	// Have we found some, already?
+	if (iIndex > 0) {
+		pFile->close();
+		return true;
+	}
+#endif
+
+#ifdef CONFIG_VST
+	// Try VST plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Vst) {
+		// Need to look at the options...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		while (true) {
+			if (pOptions && pOptions->bDummyVstScan)
+				pType = qtractorDummyPluginType::createType(pFile, iIndex);
+			else
+				pType = qtractorVstPluginType::createType(pFile, iIndex);
+			if (pType == NULL)
+				break;
+			if (pType->open()) {
+				m_types.append(pType);
+				pType->close();
+				++iIndex;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+	// Have we found some, already?
+	if (iIndex > 0) {
+		pFile->close();
+		return true;
+	}
+#endif
+
+	// We probably have nothing here.
+	qtractorPluginFile::removeFile(pFile);
+
+	return false;
 }
 
 
@@ -346,179 +552,37 @@ void qtractorPluginFile::close (void)
 }
 
 
-// Plugin type listing.
-bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
-	qtractorPluginType::Hint typeHint )
+// Plugin file resgistry methods.
+qtractorPluginFile::Files qtractorPluginFile::g_files;
+
+qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
-	// Try to fill the types list at this moment...
-	qtractorPluginType *pType;
-	unsigned long iIndex = 0;
+	qtractorPluginFile *pFile = g_files.value(sFilename, NULL);
 
-#ifdef CONFIG_DSSI
-	// Try DSSI plugin types first...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Dssi) {
-		while (true) {
-			pType = qtractorDssiPluginType::createType(this, iIndex);
-			if (pType == NULL)
-				break;
-			if (pType->open()) {
-				path.addType(pType);
-				pType->close();
-				++iIndex;
-			} else {
-				delete pType;
-				break;
-			}
+	if (pFile == NULL) {
+		pFile = new qtractorPluginFile(sFilename);
+		if (pFile->open()) {
+			g_files.insert(pFile->filename(), pFile);
+		} else {
+			delete pFile;
+			pFile = NULL;
 		}
 	}
-	// Have we found some, already?
-	if (iIndex > 0)
-		return true;
-#endif
 
-#ifdef CONFIG_LADSPA
-	// Try LADSPA plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Ladspa) {
-		while (true) {
-			pType = qtractorLadspaPluginType::createType(this, iIndex);
-			if (pType == NULL)
-				break;
-			if (pType->open()) {
-				path.addType(pType);
-				pType->close();
-				++iIndex;
-			} else {
-				delete pType;
-				break;
-			}
-		}
-	}
-	// Have we found some, already?
-	if (iIndex > 0)
-		return true;
-#endif
+	if (pFile)
+		pFile->addRef();
 
-#ifdef CONFIG_VST
-	// Try VST plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Vst) {
-		// Need to look at the options...
-		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		while (true) {
-			if (pOptions && pOptions->bDummyVstScan)
-				pType = qtractorDummyPluginType::createType(this, iIndex);
-			else
-				pType = qtractorVstPluginType::createType(this, iIndex);
-			if (pType == NULL)
-				break;
-			if (pType->open()) {
-				path.addType(pType);
-				pType->close();
-				++iIndex;
-			} else {
-				delete pType;
-				break;
-			}
-		}
-	}
-#endif
-
-	// Have we something?
-	return (iIndex > 0);
+	return pFile;
 }
 
 
-// Plugin factory method (static).
-qtractorPlugin *qtractorPluginFile::createPlugin (
-	qtractorPluginList *pList,
-	const QString& sFilename, unsigned long iIndex,
-	qtractorPluginType::Hint typeHint )
+void qtractorPluginFile::removeFile ( qtractorPluginFile *pFile )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginFile::createPlugin(%p, \"%s\", %lu, %d)",
-		pList, sFilename.toUtf8().constData(), iIndex, int(typeHint));
-#endif
-
-	// Attend to insert pseudo-plugin hints...
-	if (sFilename.isEmpty()) {
-		if (typeHint == qtractorPluginType::Insert)
-			return qtractorInsertPluginType::createPlugin(pList, iIndex);
-		else
-		if (typeHint == qtractorPluginType::AuxSend)
-			return qtractorAuxSendPluginType::createPlugin(pList, iIndex);
-		else
-		// Don't bother with anything else.
-		return NULL;
-	}
-
-#ifdef CONFIG_LV2
-	// Try LV2 plugins hints before anything else...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Lv2) {
-		qtractorLv2PluginType *pLv2Type
-			= qtractorLv2PluginType::createType(sFilename);
-		if (pLv2Type) {
-			if (pLv2Type->open())
-				return new qtractorLv2Plugin(pList, pLv2Type);
-			delete pLv2Type;
-		}
-	}
-#endif
-
-	// Try to fill the types list at this moment...
-	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
-	if (!pFile->open()) {
+	if (pFile && pFile->removeRef()) {
+		g_files.remove(pFile->filename());
+		pFile->close();
 		delete pFile;
-		return NULL;
 	}
-
-#ifdef CONFIG_DSSI
-	// Try DSSI plugin types first...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Dssi) {
-		qtractorDssiPluginType *pDssiType
-			= qtractorDssiPluginType::createType(pFile, iIndex);
-		if (pDssiType) {
-			if (pDssiType->open())
-				return new qtractorDssiPlugin(pList, pDssiType);
-			delete pDssiType;
-		}
-	}
-#endif
-
-#ifdef CONFIG_LADSPA
-	// Try LADSPA plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Ladspa) {
-		qtractorLadspaPluginType *pLadspaType
-			= qtractorLadspaPluginType::createType(pFile, iIndex);
-		if (pLadspaType) {
-			if (pLadspaType->open())
-				return new qtractorLadspaPlugin(pList, pLadspaType);
-			delete pLadspaType;
-		}
-	}
-#endif
-
-#ifdef CONFIG_VST
-	// Try VST plugin types...
-	if (typeHint == qtractorPluginType::Any ||
-		typeHint == qtractorPluginType::Vst) {
-		qtractorVstPluginType *pVstType
-			= qtractorVstPluginType::createType(pFile, iIndex);
-		if (pVstType) {
-			if (pVstType->open())
-				return new qtractorVstPlugin(pList, pVstType);
-			delete pVstType;
-		}
-	}
-#endif
-
-	// Bad luck, no valid plugin found...
-	delete pFile;
-	return NULL;
 }
 
 
@@ -715,12 +779,7 @@ qtractorPlugin::~qtractorPlugin (void)
 	m_params.clear();
 
 	// Rest of stuff goes cleaned too...
-	if (m_pType) {
-		qtractorPluginFile *pFile = m_pType->file();
-		delete m_pType;
-		if (pFile)
-			delete pFile;
-	}
+	if (m_pType) delete m_pType;
 }
 
 
@@ -2063,7 +2122,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 
 	// Filename is empty for insert pseudo-plugins.
 	const QString& sFilename = pType->filename();
-	qtractorPlugin *pNewPlugin = qtractorPluginFile::createPlugin(this,
+	qtractorPlugin *pNewPlugin = qtractorPluginPath::createPlugin(this,
 		sFilename, pType->index(), pType->typeHint());
 	if (pNewPlugin) {
 		pNewPlugin->setPreset(pPlugin->preset());
@@ -2257,7 +2316,7 @@ bool qtractorPluginList::loadElement (
 			// Try to find some alternative, if it doesn't exist...
 			qtractorPlugin *pPlugin = NULL;
 			if (checkPluginFile(sFilename, typeHint)) {
-				pPlugin = qtractorPluginFile::createPlugin(this,
+				pPlugin = qtractorPluginPath::createPlugin(this,
 					sFilename, iIndex, typeHint);
 			}
 		#if 0

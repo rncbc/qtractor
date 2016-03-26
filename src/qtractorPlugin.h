@@ -26,8 +26,9 @@
 
 #include "qtractorMidiControlObserver.h"
 
-#include <QStringList>
 #include <QLibrary>
+
+#include <QStringList>
 #include <QPoint>
 #include <QSize>
 
@@ -36,7 +37,6 @@
 
 // Forward declarations.
 class qtractorPluginPath;
-class qtractorPluginFile;
 class qtractorPluginList;
 class qtractorPluginParam;
 class qtractorPluginForm;
@@ -53,6 +53,59 @@ class qtractorCurveFile;
 
 class QDomDocument;
 class QDomElement;
+
+
+//----------------------------------------------------------------------------
+// qtractorPluginFile -- Plugin file library instance.
+//
+
+class qtractorPluginFile : public QLibrary
+{
+public:
+
+	// Constructor.
+	qtractorPluginFile(const QString& sFilename, bool bAutoUnload = true)
+		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload), m_iRefCount(0) {}
+
+	// Destructor.
+	~qtractorPluginFile()
+		{ close(); }
+
+	// Helper property accessors.
+	QString filename() const { return QLibrary::fileName(); }
+
+	// Executive methods.
+	bool open();
+	void close();
+
+	// Auto-unload flag accessors.
+	void setAutoUnload(bool bAutoUnload)
+		{ m_bAutoUnload = bAutoUnload; }
+	bool isAutoUnload() const
+		{ return m_bAutoUnload; }
+
+	// Ref-counting methods.
+	void addRef()
+		{ ++m_iRefCount; }
+	bool removeRef()
+		{ return (--m_iRefCount < 1); }
+
+	// Plugin file resgistry.
+	typedef QHash<QString, qtractorPluginFile *> Files;
+
+	// Plugin file resgistry methods.
+	static qtractorPluginFile *addFile(const QString& sFilename);
+	static void removeFile(qtractorPluginFile *pFile);
+
+private:
+
+	// Instance variables.
+	bool m_bAutoUnload;
+	unsigned int m_iRefCount;
+
+	// Global plugin-files.
+	static Files g_files;
+};
 
 
 //----------------------------------------------------------------------------
@@ -74,7 +127,8 @@ public:
 			m_pFile(pFile), m_iIndex(iIndex), m_typeHint(typeHint) {}
 
 	// Destructor (virtual)
-	virtual ~qtractorPluginType() {}
+	virtual ~qtractorPluginType()
+		{ qtractorPluginFile::removeFile(m_pFile); }
 
 	// Main properties accessors.
 	qtractorPluginFile *file() const { return m_pFile; }
@@ -171,55 +225,10 @@ public:
 
 	// Factory method (static)
 	static qtractorDummyPluginType *createType(
-		qtractorPluginFile *pFile, unsigned long iIndex = 0, Hint typeHint = Vst);
+		qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint = Vst);
 
 	// Instance cached-deferred accesors.
 	const QString& aboutText();
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorPluginFile -- Plugin file library instance.
-//
-
-class qtractorPluginFile : public QLibrary
-{
-public:
-
-	// Constructor.
-	qtractorPluginFile(const QString& sFilename, bool bAutoUnload = true)
-		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload) {}
-
-	// Destructor.
-	~qtractorPluginFile()
-		{ close(); }
-
-	// Helper property accessors.
-	QString filename() const { return QLibrary::fileName(); }
-
-	// Executive methods.
-	bool open();
-	void close();
-
-	// Auto-unload flag accessors.
-	void setAutoUnload(bool bAutoUnload)
-		{ m_bAutoUnload = bAutoUnload; }
-	bool isAutoUnload() const
-		{ return m_bAutoUnload; }
-
-	// Plugin type listing.
-	bool getTypes(qtractorPluginPath& path,
-		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
-
-	// Plugin factory method.
-	static qtractorPlugin *createPlugin(qtractorPluginList *pList,
-		const QString& sFilename, unsigned long iIndex = 0,
-		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
-
-private:
-
-	// Instance variables.
-	bool m_bAutoUnload;
 };
 
 
@@ -232,8 +241,8 @@ class qtractorPluginPath
 public:
 
 	// Constructor.
-	qtractorPluginPath(qtractorPluginType::Hint typeHint = qtractorPluginType::Any)
-		: m_typeHint(typeHint) {}
+	qtractorPluginPath()
+		: m_typeHint(qtractorPluginType::Any) {}
 
 	// Destructor.
 	~qtractorPluginPath()
@@ -249,12 +258,11 @@ public:
 	bool open();
 	void close();
 
-	// Plugin file/types list.
-	const QList<qtractorPluginFile *>& files() const { return m_files; }
-	const QList<qtractorPluginType *>& types() const { return m_types; }
+	// Plugin filenames list.
+	const QStringList& files() const { return m_files; }
 
-	// Plugin type adder.
-	void addType(qtractorPluginType *pType)	{ m_types.append(pType); }
+	// Plugin files/types list.
+	const QList<qtractorPluginType *>& types() const { return m_types; }
 
 	// Type list reset method.
 	void clear() { qDeleteAll(m_types); m_types.clear(); }
@@ -262,6 +270,19 @@ public:
 	// Global plugin-paths executive methods.
 	static QStringList pluginPaths(qtractorPluginType::Hint typeHint);
 	static void updatePluginPaths();
+
+	// Plugin factory method.
+	static qtractorPlugin *createPlugin(
+		qtractorPluginList *pList,
+		const QString& sFilename, unsigned long iIndex,
+		qtractorPluginType::Hint typeHint);
+
+	// Plugin type listing.
+	bool addTypes(const QString& sFilename,
+		qtractorPluginType::Hint typeHint);
+
+	// Plugin path resgistry.
+	typedef QHash<qtractorPluginType::Hint, QStringList> Paths;
 
 protected:
 
@@ -273,12 +294,14 @@ private:
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
 
-	// Internal plugin file/type list.
-	QList<qtractorPluginFile *> m_files;
+	// Internal plugin filenames list.
+	QStringList m_files;
+
+	// Internal plugin types list.
 	QList<qtractorPluginType *> m_types;
 
 	// Global plugin-paths.
-	static QHash<qtractorPluginType::Hint, QStringList> g_paths;
+	static Paths g_paths;
 };
 
 

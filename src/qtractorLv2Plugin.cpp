@@ -634,12 +634,8 @@ static char *qtractor_lv2_state_absolute_path (
 		sDir = pSession->sessionDir();
 
 	QFileInfo fi(abstract_path);
-
-	const QDir dir(sDir);
 	if (fi.isRelative())
-		fi.setFile(dir, fi.filePath());
-	else
-		fi.setFile(dir, fi.fileName());
+		fi.setFile(QDir(sDir), fi.filePath());
 
 	const QString& sAbsolutePath = fi.absoluteFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
@@ -692,11 +688,8 @@ static char *qtractor_lv2_state_make_path (
 	while (dir.exists());
 
 	QFileInfo fi(relative_path);
-
 	if (fi.isRelative())
 		fi.setFile(dir, fi.filePath());
-	else
-		fi.setFile(dir, fi.fileName());
 
 	const QString& sMakeDir = fi.absolutePath();
 	if (!QDir(sMakeDir).exists())
@@ -1424,15 +1417,13 @@ void qtractorLv2PluginType::close (void)
 
 
 // Factory method (static)
-qtractorLv2PluginType *qtractorLv2PluginType::createType (
-	const QString& sUri, LilvPlugin *plugin )
+qtractorLv2PluginType *qtractorLv2PluginType::createType ( const QString& sUri )
 {
 	// Sanity check...
 	if (sUri.isEmpty())
 		return NULL;
 
-	if (plugin == NULL)
-		plugin = lv2_plugin(sUri);
+	LilvPlugin *plugin = lv2_plugin(sUri);
 	if (plugin == NULL)
 		return NULL;
 
@@ -1751,32 +1742,20 @@ void qtractorLv2PluginType::lv2_close (void)
 }
 
 
-// Plugin type listing (static).
-bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
+// Plugin URI listing (static).
+QStringList qtractorLv2PluginType::lv2_plugins (void)
 {
-	if (g_lv2_plugins == NULL)
-		return false;
+	QStringList list;
 
-	unsigned long iIndex = 0;
-
-	LILV_FOREACH(plugins, i, g_lv2_plugins) {
-		LilvPlugin *plugin = const_cast<LilvPlugin *> (
-			lilv_plugins_get(g_lv2_plugins, i));
-		const char *pszUri = lilv_node_as_uri(lilv_plugin_get_uri(plugin));
-		qtractorLv2PluginType *pLv2Type
-			= qtractorLv2PluginType::createType(pszUri, plugin);
-		if (pLv2Type) {
-			if (pLv2Type->open()) {
-				path.addType(pLv2Type);
-				pLv2Type->close();
-				++iIndex;
-			} else {
-				delete pLv2Type;
-			}
+	if (g_lv2_plugins) {
+		LILV_FOREACH(plugins, i, g_lv2_plugins) {
+			const LilvPlugin *plugin = lilv_plugins_get(g_lv2_plugins, i);
+			const char *pszUri = lilv_node_as_uri(lilv_plugin_get_uri(plugin));
+			list.append(QString::fromLocal8Bit(pszUri));
 		}
 	}
 
-	return (iIndex > 0);
+	return list;
 }
 
 
@@ -1839,7 +1818,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pfControlOutsLast(NULL)
 		, m_piAudioIns(NULL)
 		, m_piAudioOuts(NULL)
-		, m_pfXBuffer(NULL)
+		, m_pfIDummy(NULL)
+		, m_pfODummy(NULL)
 	#ifdef CONFIG_LV2_EVENT
 		, m_piEventIns(NULL)
 		, m_piEventOuts(NULL)
@@ -2317,8 +2297,10 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	if (m_pfControlOutsLast)
 		delete [] m_pfControlOutsLast;
 
-	if (m_pfXBuffer)
-		delete [] m_pfXBuffer;
+	if (m_pfIDummy)
+		delete [] m_pfIDummy;
+	if (m_pfODummy)
+		delete [] m_pfODummy;
 
 	if (m_lv2_features)
 		delete [] m_lv2_features;
@@ -2393,12 +2375,33 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		features = m_lv2_worker->lv2_features();
 #endif
 
+	// Allocate the dummy audio I/O buffers...
+	const unsigned int iBufferSize = bufferSize();
+	const unsigned short iAudioIns = pLv2Type->audioIns();
+	const unsigned short iAudioOuts = pLv2Type->audioOuts();
+
+	if (iChannels < iAudioIns) {
+		if (m_pfIDummy)
+			delete [] m_pfIDummy;
+		m_pfIDummy = new float [iBufferSize];
+		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+	}
+
+	if (iChannels < iAudioOuts) {
+		if (m_pfODummy)
+			delete [] m_pfODummy;
+		m_pfODummy = new float [iBufferSize];
+		::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+	}
+
 	// We'll need output control (not dummy anymore) port indexes...
 	const unsigned short iControlOuts = pLv2Type->controlOuts();
 
+	unsigned short i, j;
+
 	// Allocate new instances...
 	m_ppInstances = new LilvInstance * [iInstances];
-	for (unsigned short i = 0; i < iInstances; ++i) {
+	for (i = 0; i < iInstances; ++i) {
 		// Instantiate them properly first...
 		LilvInstance *instance
 			= lilv_plugin_instantiate(plugin, sampleRate(), features);
@@ -2417,9 +2420,19 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 					pParam->index(), pParam->subject()->data());
 			}
 			// Connect all existing output control ports...
-			for (unsigned short j = 0; j < iControlOuts; ++j) {
+			for (j = 0; j < iControlOuts; ++j) {
 				lilv_instance_connect_port(instance,
 					m_piControlOuts[j], &m_pfControlOuts[j]);
+			}
+			// Connect all dummy input ports...
+			if (m_pfIDummy) for (j = iChannels; j < iAudioIns; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piAudioIns[j], m_pfIDummy); // dummy input port!
+			}
+			// Connect all dummy output ports...
+			if (m_pfODummy) for (j = iChannels; j < iAudioOuts; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piAudioOuts[j], m_pfODummy); // dummy input port!
 			}
 		#if 0//def CONFIG_LV2_TIME
 			// Connect time-pos designated ports, if any...
@@ -2439,15 +2452,6 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	#endif
 		// This is it...
 		m_ppInstances[i] = instance;
-	}
-
-	// Allocate the dummy audio I/O buffer...
-	if (iChannels < audioOuts()) {
-		const unsigned int iBufferSize = bufferSize();
-		if (m_pfXBuffer)
-			delete [] m_pfXBuffer;
-		m_pfXBuffer = new float [iBufferSize];
-		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
 	}
 
 #ifdef CONFIG_LV2_STATE
@@ -2562,10 +2566,13 @@ void qtractorLv2Plugin::process (
 		if (instance) {
 			// For each instance audio input port...
 			for (j = 0; j < iAudioIns; ++j) {
-				lilv_instance_connect_port(instance,
-					m_piAudioIns[j], ppIBuffer[iIChannel]);
-				if (++iIChannel >= iChannels)
-					iIChannel = 0;
+				if (iIChannel < iChannels) {
+					lilv_instance_connect_port(instance,
+						m_piAudioIns[j], ppIBuffer[iIChannel++]);
+				} else {
+					lilv_instance_connect_port(instance,
+						m_piAudioIns[j], m_pfIDummy); // dummy input!
+				}
 			}
 			// For each instance audio output port...
 			for (j = 0; j < iAudioOuts; ++j) {
@@ -2574,7 +2581,7 @@ void qtractorLv2Plugin::process (
 						m_piAudioOuts[j], ppOBuffer[iOChannel++]);
 				} else {
 					lilv_instance_connect_port(instance,
-						m_piAudioOuts[j], m_pfXBuffer); // dummy output!
+						m_piAudioOuts[j], m_pfODummy); // dummy output!
 				}
 			}
 		#ifdef CONFIG_LV2_EVENT
@@ -4153,32 +4160,44 @@ bool qtractorLv2Plugin::loadPreset ( const QString& sPreset )
 	if (sUri.isEmpty())
 		return false;
 
-	LilvNode *preset
+	LilvNode *preset_uri
 		= lilv_new_uri(g_lv2_world, sUri.toUtf8().constData());
 
 	LilvState *state = NULL;
-	const QString& sPath = QUrl(sUri).toLocalFile();
-	if (!sPath.isEmpty() && QFileInfo(sPath).exists()) {
+	const QString sPath = QUrl(sUri).toLocalFile();
+	const QFileInfo fi(sPath);
+	if (!sPath.isEmpty() && fi.exists()) {
+	#ifdef CONFIG_LV2_STATE_FILES
+		m_lv2_state_save_dir = fi.absolutePath();
+	#endif
 		state = lilv_state_new_from_file(g_lv2_world,
-			&g_lv2_urid_map, preset,
+			&g_lv2_urid_map, preset_uri,
 			sPath.toUtf8().constData());
 	} else {
 		state = lilv_state_new_from_world(g_lv2_world,
-			&g_lv2_urid_map, preset);
+			&g_lv2_urid_map, preset_uri);
 	}
+
 	if (state == NULL) {
-		lilv_node_free(preset);
+		lilv_node_free(preset_uri);
+	#ifdef CONFIG_LV2_STATE_FILES
+		m_lv2_state_save_dir.clear();
+	#endif
 		return false;
 	}
 
 	const unsigned short iInstances = instances();
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		lilv_state_restore(state, m_ppInstances[i],
-			qtractor_lv2_set_port_value, this, 0, NULL);
+			qtractor_lv2_set_port_value, this, 0, m_lv2_features);
 	}
 
 	lilv_state_free(state);
-	lilv_node_free(preset);
+	lilv_node_free(preset_uri);
+
+#ifdef CONFIG_LV2_STATE_FILES
+	m_lv2_state_save_dir.clear();
+#endif
 
 	return true;
 }
@@ -4212,7 +4231,7 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
 		NULL, NULL, NULL, NULL,
 		qtractor_lv2_get_port_value, this,
-		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, NULL);
+		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
 
 	if (state == NULL) {
 	#ifdef CONFIG_LV2_STATE_FILES
@@ -4223,7 +4242,7 @@ bool qtractorLv2Plugin::savePreset ( const QString& sPreset )
 
 	lilv_state_set_label(state, sPreset.toUtf8().constData());
 
-	const QString& sFile = sPreset + ".ttl";
+	const QString sFile = sPreset + ".ttl";
 
 	int ret = lilv_state_save(g_lv2_world,
 		&g_lv2_urid_map, &g_lv2_urid_unmap, state, NULL,

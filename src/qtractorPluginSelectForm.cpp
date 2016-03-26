@@ -22,10 +22,6 @@
 #include "qtractorAbout.h"
 #include "qtractorPluginSelectForm.h"
 
-#ifdef CONFIG_LV2
-#include "qtractorLv2Plugin.h"
-#endif
-
 #include "qtractorOptions.h"
 
 #include <QHeaderView>
@@ -264,24 +260,15 @@ void qtractorPluginSelectForm::refresh (void)
 		g_pluginPath.open();
 		int iFile = 0;
 		const qtractorPluginType::Hint typeHint = g_pluginPath.typeHint();
-		m_ui.PluginTypeProgressBar->setMaximum(g_pluginPath.files().count());
+		const QStringList& files = g_pluginPath.files();
+		m_ui.PluginTypeProgressBar->setMaximum(files.count());
 		m_ui.PluginTypeProgressBar->show();
-		QListIterator<qtractorPluginFile *> file_iter(g_pluginPath.files());
+		QStringListIterator file_iter(files);
 		while (file_iter.hasNext()) {
 			m_ui.PluginTypeProgressBar->setValue(++iFile);
 			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-			qtractorPluginFile *pFile = file_iter.next();
-			if (pFile->open()) {
-				pFile->getTypes(g_pluginPath, typeHint);
-				pFile->close();
-			}
+			g_pluginPath.addTypes(file_iter.next(), typeHint);
 		}
-	#ifdef CONFIG_LV2
-		if (typeHint == qtractorPluginType::Any ||
-			typeHint == qtractorPluginType::Lv2) {
-			qtractorLv2PluginType::getTypes(g_pluginPath);
-		}
-	#endif
 		m_ui.PluginTypeProgressBar->hide();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();

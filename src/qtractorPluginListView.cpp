@@ -543,7 +543,7 @@ void qtractorPluginListView::addPlugin (void)
 	for (int i = 0; i < selectForm.pluginCount(); ++i) {
 		// Add an actual plugin item...
 		qtractorPlugin *pPlugin
-			= qtractorPluginFile::createPlugin(m_pPluginList,
+			= qtractorPluginPath::createPlugin(m_pPluginList,
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i),
 				selectForm.pluginTypeHint(i));
