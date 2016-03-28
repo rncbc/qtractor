@@ -86,6 +86,7 @@ headers = \
 	src/qtractorOscControl.h \
 	src/qtractorOptions.h \
 	src/qtractorPlugin.h \
+	src/qtractorPluginPath.h \
 	src/qtractorPluginCommand.h \
 	src/qtractorPluginListView.h \
 	src/qtractorPropertyCommand.h \
@@ -132,7 +133,8 @@ headers = \
 	src/qtractorTakeRangeForm.h \
 	src/qtractorTempoAdjustForm.h \
 	src/qtractorTimeScaleForm.h \
-	src/qtractorTrackForm.h
+	src/qtractorTrackForm.h \
+	src/qtractor_vst_scan.h
 
 sources = \
 	src/qtractor.cpp \
@@ -207,6 +209,7 @@ sources = \
 	src/qtractorOscControl.cpp \
 	src/qtractorOptions.cpp \
 	src/qtractorPlugin.cpp \
+	src/qtractorPluginPath.cpp \
 	src/qtractorPluginCommand.cpp \
 	src/qtractorPluginListView.cpp \
 	src/qtractorRubberBand.cpp \
@@ -251,7 +254,8 @@ sources = \
 	src/qtractorTakeRangeForm.cpp \
 	src/qtractorTempoAdjustForm.cpp \
 	src/qtractorTimeScaleForm.cpp \
-	src/qtractorTrackForm.cpp
+	src/qtractorTrackForm.cpp \
+	src/qtractor_vst_scan.cpp
 
 forms = \
 	src/qtractorBusForm.ui \
@@ -348,6 +352,5 @@ uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 
 clean:	$(name).mak
 	@$(MAKE) -f $(name).mak distclean
-	@rm -f $(target) $(target).mak $(name).mak
+	@rm -f $(target) $(name).mak
 	@rm -rf *.cache *.log *.status $(translations_targets)
-

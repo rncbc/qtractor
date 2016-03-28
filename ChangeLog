@@ -6,8 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- Plug-ins search path and file inventory scanning is under
-  some overhaul refactoring... (EXPERIMENTAL)
+- Plug-ins search path and out-of-process (aka. dummy) VST
+  plug-in inventory scanning is under heavy refactoring...
+  (EXPERIMENTAL)
 
 - Fixed and optimized all dummy processing for plugins with
   more audio inputs and/or outputs than channels on a track

@@ -96,6 +96,7 @@ the personal home-studio.
 #dir %{_datadir}/man
 #dir %{_datadir}/man/man1
 %{_bindir}/%{name}
+%{_bindir}/%{name}_vst_scan
 %{_datadir}/mime/packages/%{name}.xml
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png

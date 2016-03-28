@@ -21,6 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorPluginSelectForm.h"
+#include "qtractorPluginPath.h"
 
 #include "qtractorOptions.h"
 
@@ -257,18 +258,30 @@ void qtractorPluginSelectForm::refresh (void)
 	if (g_pluginPath.types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		g_pluginPath.open();
-		int iFile = 0;
-		const qtractorPluginType::Hint typeHint = g_pluginPath.typeHint();
-		const QStringList& files = g_pluginPath.files();
-		m_ui.PluginTypeProgressBar->setMaximum(files.count());
+		const int iFileCount = g_pluginPath.open();
+		m_ui.PluginTypeProgressBar->setMaximum(iFileCount);
 		m_ui.PluginTypeProgressBar->show();
-		QStringListIterator file_iter(files);
-		while (file_iter.hasNext()) {
-			m_ui.PluginTypeProgressBar->setValue(++iFile);
-			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-			g_pluginPath.addTypes(file_iter.next(), typeHint);
+		int iFile = 0;
+		qtractorPluginPathProxy *pProxy = g_pluginPath.proxy();
+		const qtractorPluginPath::Paths& files = g_pluginPath.files();
+		qtractorPluginPath::Paths::ConstIterator files_iter = files.constBegin();
+		const qtractorPluginPath::Paths::ConstIterator& files_end = files.constEnd();
+		for ( ; files_iter != files_end; ++files_iter) {
+			const qtractorPluginType::Hint typeHint = files_iter.key();
+			QStringListIterator file_iter(files_iter.value());
+			while (file_iter.hasNext()) {
+				g_pluginPath.addTypes(typeHint, file_iter.next());
+				QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+				m_ui.PluginTypeProgressBar->setValue(++iFile);
+			}
 		}
+		// Check the proxy (out-of-process) client closure...
+		if (pProxy) {
+			pProxy->closeWriteChannel();
+			while (!pProxy->waitForFinished(200))
+				QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+		}
+		// We're technically done.
 		m_ui.PluginTypeProgressBar->hide();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();

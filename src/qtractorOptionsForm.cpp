@@ -28,7 +28,7 @@
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
-#include "qtractorPlugin.h"
+#include "qtractorPluginPath.h"
 
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"

@@ -270,13 +270,13 @@ End:	%3	Length:	%4</source>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1259"/>
-        <location filename="../qtractorPluginListView.cpp" line="211"/>
+        <location filename="../qtractorPluginListView.cpp" line="212"/>
         <source>%1 (Audio)</source>
         <translation>%1 (音声)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1501"/>
-        <location filename="../qtractorPluginListView.cpp" line="231"/>
+        <location filename="../qtractorPluginListView.cpp" line="232"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
     </message>
@@ -372,7 +372,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="750"/>
+        <location filename="../qtractorPlugin.cpp" line="244"/>
         <source>(default)</source>
         <translation>(デフォルト)</translation>
     </message>
@@ -428,22 +428,17 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="678"/>
+        <location filename="../qtractorPlugin.cpp" line="235"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="734"/>
-        <source>Dummy plugin type.</source>
-        <translation>ダミープラグインタイプ。</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPlugin.cpp" line="766"/>
+        <location filename="../qtractorPlugin.cpp" line="260"/>
         <source>Activate</source>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2354"/>
+        <location filename="../qtractorPlugin.cpp" line="1848"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 プラグインが見つかりません。</translation>
     </message>
@@ -740,13 +735,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>コピーライト:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1770"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1772"/>
         <source>Project: </source>
         <translation>プロジェクト:</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1778"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1780"/>
         <source>Author: </source>
         <translation>作者:</translation>
     </message>
@@ -10844,146 +10839,146 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginListView</name>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="509"/>
+        <location filename="../qtractorPluginListView.cpp" line="510"/>
         <source>copy plugin</source>
         <translation>プラグインをコピー</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="638"/>
+        <location filename="../qtractorPluginListView.cpp" line="639"/>
         <source>activate all plugins</source>
         <translation>すべてのプラグインを有効化</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="669"/>
+        <location filename="../qtractorPluginListView.cpp" line="670"/>
         <source>deactivate all plugins</source>
         <translation>すべてのプラグインを無効化</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="700"/>
+        <location filename="../qtractorPluginListView.cpp" line="701"/>
         <source>remove all plugins</source>
         <translation>すべてのプラグインを除去</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1479"/>
+        <location filename="../qtractorPluginListView.cpp" line="1480"/>
         <source>&amp;Move Here</source>
         <translation>ここへ移動(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1480"/>
+        <location filename="../qtractorPluginListView.cpp" line="1481"/>
         <source>&amp;Copy Here</source>
         <translation>ここへコピー(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1483"/>
+        <location filename="../qtractorPluginListView.cpp" line="1484"/>
         <source>C&amp;ancel</source>
         <translation>キャンセル(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1582"/>
+        <location filename="../qtractorPluginListView.cpp" line="1583"/>
         <source>&amp;Add Plugin...</source>
         <translation>プラグインを追加(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1585"/>
+        <location filename="../qtractorPluginListView.cpp" line="1586"/>
         <source>&amp;Inserts</source>
         <translation>挿入(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1588"/>
+        <location filename="../qtractorPluginListView.cpp" line="1589"/>
         <source>&amp;Audio</source>
         <translation>音声(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1592"/>
-        <location filename="../qtractorPluginListView.cpp" line="1616"/>
+        <location filename="../qtractorPluginListView.cpp" line="1593"/>
+        <location filename="../qtractorPluginListView.cpp" line="1617"/>
         <source>Add &amp;Insert</source>
         <translation>インサートを追加(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1595"/>
-        <location filename="../qtractorPluginListView.cpp" line="1619"/>
+        <location filename="../qtractorPluginListView.cpp" line="1596"/>
+        <location filename="../qtractorPluginListView.cpp" line="1620"/>
         <source>Add &amp;Aux Send</source>
         <translation>Auxセンドを追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1604"/>
-        <location filename="../qtractorPluginListView.cpp" line="1628"/>
+        <location filename="../qtractorPluginListView.cpp" line="1605"/>
+        <location filename="../qtractorPluginListView.cpp" line="1629"/>
         <source>&amp;Sends</source>
         <translation>センド(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1608"/>
-        <location filename="../qtractorPluginListView.cpp" line="1632"/>
+        <location filename="../qtractorPluginListView.cpp" line="1609"/>
+        <location filename="../qtractorPluginListView.cpp" line="1633"/>
         <source>&amp;Returns</source>
         <translation>リターン(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1612"/>
+        <location filename="../qtractorPluginListView.cpp" line="1613"/>
         <source>&amp;MIDI</source>
         <translation>MIDI(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1637"/>
+        <location filename="../qtractorPluginListView.cpp" line="1638"/>
         <source>Ac&amp;tivate</source>
         <translation>アクティベート(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1644"/>
+        <location filename="../qtractorPluginListView.cpp" line="1645"/>
         <source>Acti&amp;vate All</source>
         <translation>すべてを有効化(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1651"/>
+        <location filename="../qtractorPluginListView.cpp" line="1652"/>
         <source>Deactivate Al&amp;l</source>
         <translation>すべてを無効化(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1660"/>
+        <location filename="../qtractorPluginListView.cpp" line="1661"/>
         <source>&amp;Remove</source>
         <translation>除去(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1664"/>
+        <location filename="../qtractorPluginListView.cpp" line="1665"/>
         <source>Re&amp;move All</source>
         <translation>すべてを除去(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1671"/>
+        <location filename="../qtractorPluginListView.cpp" line="1672"/>
         <source>Move &amp;Up</source>
         <translation>上に移動(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1676"/>
+        <location filename="../qtractorPluginListView.cpp" line="1677"/>
         <source>Move &amp;Down</source>
         <translation>下に移動(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1719"/>
+        <location filename="../qtractorPluginListView.cpp" line="1720"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1732"/>
+        <location filename="../qtractorPluginListView.cpp" line="1733"/>
         <source>&amp;Properties...</source>
         <translation>プロパティ(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1739"/>
+        <location filename="../qtractorPluginListView.cpp" line="1740"/>
         <source>&amp;Edit</source>
         <translation>編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1753"/>
+        <location filename="../qtractorPluginListView.cpp" line="1754"/>
         <source>&amp;Outputs</source>
         <translation>出力(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1770"/>
+        <location filename="../qtractorPluginListView.cpp" line="1771"/>
         <source>&amp;Dedicated</source>
         <translation>専用(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1774"/>
+        <location filename="../qtractorPluginListView.cpp" line="1775"/>
         <source>&amp;Auto-connect</source>
         <translation>自動接続(&amp;A)</translation>
     </message>
@@ -11081,17 +11076,17 @@ Are you sure?</source>
         <translation>プラグインを検索中です...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="307"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="320"/>
         <source>GUI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="309"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="322"/>
         <source>EXT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="311"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="324"/>
         <source>RT</source>
         <translation></translation>
     </message>
