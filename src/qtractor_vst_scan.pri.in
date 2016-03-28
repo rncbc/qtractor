@@ -1,0 +1,5 @@
+# qtractor_vst_scan.pri
+#
+PREFIX  = @ac_prefix@
+CONFIG += @ac_debug@
+INCLUDEPATH += @ac_incpath@

@@ -21,6 +21,7 @@
 
 #include "qtractorPluginListView.h"
 
+#include "qtractorPluginPath.h"
 #include "qtractorPluginCommand.h"
 #include "qtractorPluginSelectForm.h"
 #include "qtractorPluginForm.h"
