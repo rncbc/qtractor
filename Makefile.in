@@ -2,7 +2,7 @@ prefix  = @ac_prefix@
 
 name    = qtractor
 
-target  = src/$(name)
+targets = src/$(name) src/$(name)_vst_scan 
 
 headers = \
 	src/config.h \
@@ -85,6 +85,7 @@ headers = \
 	src/qtractorObserverWidget.h \
 	src/qtractorOptions.h \
 	src/qtractorPlugin.h \
+	src/qtractorPluginPath.h \
 	src/qtractorPluginCommand.h \
 	src/qtractorPluginListView.h \
 	src/qtractorPropertyCommand.h \
@@ -131,7 +132,8 @@ headers = \
 	src/qtractorTakeRangeForm.h \
 	src/qtractorTempoAdjustForm.h \
 	src/qtractorTimeScaleForm.h \
-	src/qtractorTrackForm.h
+	src/qtractorTrackForm.h \
+	src/qtractor_vst_scan.h
 
 sources = \
 	src/qtractor.cpp \
@@ -205,6 +207,7 @@ sources = \
 	src/qtractorObserverWidget.cpp \
 	src/qtractorOptions.cpp \
 	src/qtractorPlugin.cpp \
+	src/qtractorPluginPath.cpp \
 	src/qtractorPluginCommand.cpp \
 	src/qtractorPluginListView.cpp \
 	src/qtractorRubberBand.cpp \
@@ -249,7 +252,8 @@ sources = \
 	src/qtractorTakeRangeForm.cpp \
 	src/qtractorTempoAdjustForm.cpp \
 	src/qtractorTimeScaleForm.cpp \
-	src/qtractorTrackForm.cpp
+	src/qtractorTrackForm.cpp \
+	src/qtractor_vst_scan.cpp
 
 forms = \
 	src/qtractorBusForm.ui \
@@ -311,10 +315,10 @@ export LUPDATE = @ac_lupdate@
 export LRELEASE = @ac_lrelease@
 
 
-all:	$(target)
+all:	$(targets)
 
 
-$(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
+$(targets):	$(name).mak $(resources) ${forms} $(sources) $(headers)
 	@$(MAKE) -f $(name).mak
 
 $(name).mak:	$(name).pro
@@ -330,7 +334,7 @@ translations_lrelease:	translations_lupdate $(translations_targets)
 	@$(LRELEASE) -verbose $< -qm $@
 
 
-install:	$(target) translations_lrelease $(name).1
+install:	$(targets) translations_lrelease $(name).1
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
 	@install -d -v -m 0755 $(DESTDIR)$(translations_dir)
 	@install -d -v -m 0755 $(DESTDIR)$(mandir)/man1
@@ -346,6 +350,5 @@ uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 
 clean:	$(name).mak
 	@$(MAKE) -f $(name).mak distclean
-	@rm -f $(target) $(target).mak $(name).mak
+	@rm -f $(targets) $(name).mak
 	@rm -rf *.cache *.log *.status $(translations_targets)
-

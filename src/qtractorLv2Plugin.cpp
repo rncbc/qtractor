@@ -25,6 +25,8 @@
 
 #include "qtractorLv2Plugin.h"
 
+#include "qtractorPluginPath.h"
+
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 #include "qtractorMidiManager.h"
 #endif

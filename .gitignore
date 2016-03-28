@@ -14,3 +14,4 @@ qrc_*.cpp
 .obj
 .ui
 qtractor
+qtractor_vst_scan
