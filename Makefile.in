@@ -2,7 +2,7 @@ prefix  = @ac_prefix@
 
 name    = qtractor
 
-targets = src/$(name) src/$(name)_vst_scan 
+target  = src/$(name)
 
 headers = \
 	src/config.h \
@@ -315,10 +315,10 @@ export LUPDATE = @ac_lupdate@
 export LRELEASE = @ac_lrelease@
 
 
-all:	$(targets)
+all:	$(target)
 
 
-$(targets):	$(name).mak $(resources) ${forms} $(sources) $(headers)
+$(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
 	@$(MAKE) -f $(name).mak
 
 $(name).mak:	$(name).pro
@@ -334,7 +334,7 @@ translations_lrelease:	translations_lupdate $(translations_targets)
 	@$(LRELEASE) -verbose $< -qm $@
 
 
-install:	$(targets) translations_lrelease $(name).1
+install:	$(target) translations_lrelease $(name).1
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
 	@install -d -v -m 0755 $(DESTDIR)$(translations_dir)
 	@install -d -v -m 0755 $(DESTDIR)$(mandir)/man1
@@ -350,5 +350,5 @@ uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 
 clean:	$(name).mak
 	@$(MAKE) -f $(name).mak distclean
-	@rm -f $(targets) $(name).mak
+	@rm -f $(target) $(name).mak
 	@rm -rf *.cache *.log *.status $(translations_targets)
