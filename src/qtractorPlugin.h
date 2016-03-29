@@ -64,7 +64,8 @@ public:
 
 	// Constructor.
 	qtractorPluginFile(const QString& sFilename, bool bAutoUnload = true)
-		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload), m_iRefCount(0) {}
+		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload),
+			m_iOpenCount(0), m_iRefCount(0) {}
 
 	// Destructor.
 	~qtractorPluginFile()
@@ -100,6 +101,8 @@ private:
 
 	// Instance variables.
 	bool m_bAutoUnload;
+
+	unsigned int m_iOpenCount;
 	unsigned int m_iRefCount;
 
 	// Global plugin-files.

@@ -69,6 +69,10 @@ typedef void (*qtractorPluginFile_Function)(void);
 // Executive methods.
 bool qtractorPluginFile::open (void)
 {
+	// Check whether already open...
+	if (++m_iOpenCount > 1)
+		return true;
+
 	close();
 
 	// ATTN: Not really needed, as it would be
@@ -90,6 +94,9 @@ bool qtractorPluginFile::open (void)
 
 void qtractorPluginFile::close (void)
 {
+	if (--m_iOpenCount > 1)
+		return;
+
 	if (!QLibrary::isLoaded())
 		return;
 
@@ -116,7 +123,7 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
 	qtractorPluginFile *pFile = g_files.value(sFilename, NULL);
 
-	if (pFile == NULL) {
+	if (pFile == NULL && QLibrary::isLibrary(sFilename)) {
 		pFile = new qtractorPluginFile(sFilename);
 		if (pFile->open()) {
 			g_files.insert(pFile->filename(), pFile);
