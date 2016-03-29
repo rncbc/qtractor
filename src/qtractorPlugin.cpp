@@ -1413,12 +1413,14 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	if (m_iFlags & Midi) {
 		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
+	#if 0
 		// Set loaded/cached properties properly...
 		m_pMidiManager->setCurrentBank(m_iMidiBank);
 		m_pMidiManager->setCurrentProg(m_iMidiProg);
 		m_pMidiManager->setAudioOutputBusName(m_sAudioOutputBusName);
 		m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
+	#endif
 		if (m_pMidiManager->isAudioOutputBus()) {
 			qtractorAudioBus *pAudioOutputBus
 				= m_pMidiManager->audioOutputBus();
