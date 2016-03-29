@@ -26,12 +26,15 @@
 
 // Forward decls.
 class QLibrary;
-class AEffect;
 
+
+#ifdef CONFIG_VST
 
 //----------------------------------------------------------------------
 // class qtractor_vst_scan -- VST plugin (bare bones) interface.
 //
+
+class AEffect;
 
 class qtractor_vst_scan
 {
@@ -83,7 +86,9 @@ private:
 	QString       m_sName;
 };
 
+#endif	// CONFIG_VST
 
-#endif // __qtractor_vst_scan_h
+
+#endif	// __qtractor_vst_scan_h
 
 // end of qtractor_vst_scan.h
