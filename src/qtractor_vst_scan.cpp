@@ -30,6 +30,8 @@
 #include <stdint.h>
 
 
+#ifdef CONFIG_VST
+
 #if !defined(__WIN32__) && !defined(_WIN32) && !defined(WIN32)
 #define __cdecl
 #endif
@@ -396,6 +398,8 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 	}
 }
 
+#endif	// CONFIG_VST
+
 
 //-------------------------------------------------------------------------
 // main - The main program trunk.
@@ -403,14 +407,12 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 
 #include <QCoreApplication>
 
-
 int main ( int argc, char **argv )
 {
 	QCoreApplication app(argc, argv);
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_vst_scan: hello.");
+	qDebug("%s: hello.", argv[0]);
 #endif
-
 	QTextStream sin(stdin);
 	while (!sin.atEnd()) {
 		const QString& sLine = sin.readLine();
@@ -419,12 +421,13 @@ int main ( int argc, char **argv )
 		const QStringList& req = sLine.split(':');
 		const QString& sHint = req.at(0).toUpper();
 		const QString& sFilename = req.at(1);
+	#ifdef CONFIG_VST
 		if (sHint == "VST")
 			qtractor_vst_scan_file(sFilename);
+	#endif
 	}
-
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_vst_scan: bye.");
+	qDebug("%s: bye.", argv[0]);
 #endif
 	return 0;
 }
