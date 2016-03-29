@@ -69,6 +69,10 @@ typedef void (*qtractorPluginFile_Function)(void);
 // Executive methods.
 bool qtractorPluginFile::open (void)
 {
+	// Check whether already open...
+	if (++m_iOpenCount > 1)
+		return true;
+
 	close();
 
 	// ATTN: Not really needed, as it would be
@@ -90,6 +94,9 @@ bool qtractorPluginFile::open (void)
 
 void qtractorPluginFile::close (void)
 {
+	if (--m_iOpenCount > 1)
+		return;
+
 	if (!QLibrary::isLoaded())
 		return;
 
@@ -116,7 +123,7 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
 	qtractorPluginFile *pFile = g_files.value(sFilename, NULL);
 
-	if (pFile == NULL) {
+	if (pFile == NULL && QLibrary::isLibrary(sFilename)) {
 		pFile = new qtractorPluginFile(sFilename);
 		if (pFile->open()) {
 			g_files.insert(pFile->filename(), pFile);
@@ -1413,12 +1420,14 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	if (m_iFlags & Midi) {
 		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
+	#if 0
 		// Set loaded/cached properties properly...
 		m_pMidiManager->setCurrentBank(m_iMidiBank);
 		m_pMidiManager->setCurrentProg(m_iMidiProg);
 		m_pMidiManager->setAudioOutputBusName(m_sAudioOutputBusName);
 		m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
+	#endif
 		if (m_pMidiManager->isAudioOutputBus()) {
 			qtractorAudioBus *pAudioOutputBus
 				= m_pMidiManager->audioOutputBus();

@@ -419,11 +419,12 @@ qtractorMidiManager::qtractorMidiManager (
 	m_pMidiParser(NULL),
 #endif
 	m_iEventBuffer(0),
-	m_bAudioOutputBus(g_bAudioOutputBus),
-	m_bAudioOutputAutoConnect(g_bAudioOutputAutoConnect),
+	m_bAudioOutputBus(pPluginList->isAudioOutputBus()),
+	m_sAudioOutputBusName(pPluginList->audioOutputBusName()),
+	m_bAudioOutputAutoConnect(pPluginList->isAudioOutputAutoConnect()),
 	m_pAudioOutputBus(NULL),
-	m_iCurrentBank(-1),
-	m_iCurrentProg(-1),
+	m_iCurrentBank(pPluginList->midiBank()),
+	m_iCurrentProg(pPluginList->midiProg()),
 	m_iPendingBankMSB(-1),
 	m_iPendingBankLSB(-1),
 	m_iPendingProg(-1)
