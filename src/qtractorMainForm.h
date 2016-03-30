@@ -50,6 +50,8 @@ class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 class qtractorMidiManager;
 
+class qtractorPluginPath;
+
 class qtractorActionControl;
 class qtractorMidiControlObserver;
 class qtractorSubject;
@@ -448,6 +450,7 @@ private:
 	qtractorMixer *m_pMixer;
 	qtractorTracks *m_pTracks;
 	qtractorMessageList *m_pMessageList;
+	qtractorPluginPath *m_pPluginPath;
 	QString m_sFilename;
 	int m_iUntitled;
 	int m_iDirtyCount;

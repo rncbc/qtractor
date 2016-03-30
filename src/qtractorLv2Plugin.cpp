@@ -1486,18 +1486,21 @@ void qtractorLv2PluginType::lv2_open (void)
 #endif
 
 	// HACK: set special environment for LV2...
-	const char *LV2_PATH = "LV2_PATH";
-	const QStringList& lv2_paths
-		= qtractorPluginPath::pluginPaths(qtractorPluginType::Lv2);
-	if (lv2_paths.isEmpty()) {
-		::unsetenv(LV2_PATH);
-	} else {
-	#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-		const QString sPathSep(';');
-	#else
-		const QString sPathSep(':');
-	#endif
-		::setenv(LV2_PATH, lv2_paths.join(sPathSep).toUtf8().constData(), 1);
+	qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
+	if (pPluginPath) {
+		const char *LV2_PATH = "LV2_PATH";
+		const QStringList& lv2_paths
+			= pPluginPath->pluginPaths(qtractorPluginType::Lv2);
+		if (lv2_paths.isEmpty()) {
+			::unsetenv(LV2_PATH);
+		} else {
+		#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+			const QString sPathSep(';');
+		#else
+			const QString sPathSep(':');
+		#endif
+			::setenv(LV2_PATH, lv2_paths.join(sPathSep).toUtf8().constData(), 1);
+		}
 	}
 
 	// Taking on all the world...
