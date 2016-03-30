@@ -1,4 +1,4 @@
-// qtractorPluginPath.cpp
+// qtractorPluginFactory.cpp
 //
 /****************************************************************************
    Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "qtractorAbout.h"
-#include "qtractorPluginPath.h"
+#include "qtractorPluginFactory.h"
 
 #ifdef CONFIG_LADSPA
 #include "qtractorLadspaPlugin.h"
@@ -47,31 +47,31 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginPath -- Plugin path helper.
+// qtractorPluginFactory -- Plugin path helper.
 //
 
 // Singleton instance pointer.
-qtractorPluginPath *qtractorPluginPath::g_pPluginPath = NULL;
+qtractorPluginFactory *qtractorPluginFactory::g_pPluginFactory = NULL;
 
 // Singleton instance accessor (static).
-qtractorPluginPath *qtractorPluginPath::getInstance (void)
+qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 {
-	return g_pPluginPath;
+	return g_pPluginFactory;
 }
 
 
 // Contructor.
-qtractorPluginPath::qtractorPluginPath (void)
+qtractorPluginFactory::qtractorPluginFactory (void)
 	: m_typeHint(qtractorPluginType::Any), m_pProxy(NULL)
 {
-	g_pPluginPath = this;
+	g_pPluginFactory = this;
 }
 
 
 // Destructor.
-qtractorPluginPath::~qtractorPluginPath (void)
+qtractorPluginFactory::~qtractorPluginFactory (void)
 {
-	g_pPluginPath = NULL;
+	g_pPluginFactory = NULL;
 
 	close();
 	clear();
@@ -126,7 +126,7 @@ static QString default_paths ( const QString& suffix )
 }
 
 
-void qtractorPluginPath::updatePluginPaths (void)
+void qtractorPluginFactory::updatePluginPaths (void)
 {
 	m_paths.clear();
 
@@ -201,7 +201,8 @@ void qtractorPluginPath::updatePluginPaths (void)
 }
 
 
-QStringList qtractorPluginPath::pluginPaths ( qtractorPluginType::Hint typeHint )
+QStringList qtractorPluginFactory::pluginPaths (
+	qtractorPluginType::Hint typeHint )
 {
 	if (m_paths.isEmpty()) // Just in case...
 		updatePluginPaths();
@@ -211,7 +212,7 @@ QStringList qtractorPluginPath::pluginPaths ( qtractorPluginType::Hint typeHint 
 
 
 // Executive methods.
-int qtractorPluginPath::open (void)
+int qtractorPluginFactory::open (void)
 {
 	close();
 
@@ -248,7 +249,7 @@ int qtractorPluginPath::open (void)
 			iFileCount += addFiles(qtractorPluginType::Vst, paths);
 			qtractorOptions *pOptions = qtractorOptions::getInstance();
 			if (pOptions && pOptions->bDummyVstScan) {
-				m_pProxy = new qtractorPluginPathProxy(this);
+				m_pProxy = new qtractorPluginFactoryProxy(this);
 				m_pProxy->start();
 			}
 		}
@@ -268,7 +269,7 @@ int qtractorPluginPath::open (void)
 }
 
 
-void qtractorPluginPath::close (void)
+void qtractorPluginFactory::close (void)
 {
 	if (m_pProxy) {
 		m_pProxy->terminate();
@@ -280,7 +281,7 @@ void qtractorPluginPath::close (void)
 }
 
 
-void qtractorPluginPath::clear (void)
+void qtractorPluginFactory::clear (void)
 {
 	qDeleteAll(m_types);
 	m_types.clear();
@@ -288,7 +289,7 @@ void qtractorPluginPath::clear (void)
 
 
 // Recursive plugin file/path inventory method.
-int qtractorPluginPath::addFiles (
+int qtractorPluginFactory::addFiles (
 	qtractorPluginType::Hint typeHint, const QStringList& paths )
 {
 	int iFileCount = 0;
@@ -300,7 +301,7 @@ int qtractorPluginPath::addFiles (
 	return iFileCount;
 }
 
-int qtractorPluginPath::addFiles (
+int qtractorPluginFactory::addFiles (
 	qtractorPluginType::Hint typeHint, const QString& sPath )
 {
 	int iFileCount = 0;
@@ -328,13 +329,13 @@ int qtractorPluginPath::addFiles (
 
 
 // Plugin factory method (static).
-qtractorPlugin *qtractorPluginPath::createPlugin (
+qtractorPlugin *qtractorPluginFactory::createPlugin (
 	qtractorPluginList *pList,
 	const QString& sFilename, unsigned long iIndex,
 	qtractorPluginType::Hint typeHint )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginPath::createPlugin(%p, \"%s\", %lu, %d)",
+	qDebug("qtractorPluginFactory::createPlugin(%p, \"%s\", %lu, %d)",
 		pList, sFilename.toUtf8().constData(), iIndex, int(typeHint));
 #endif
 
@@ -420,7 +421,7 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 
 
 // Plugin type listing.
-bool qtractorPluginPath::addTypes (
+bool qtractorPluginFactory::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
 	// Try to fill the types list at this moment...
@@ -539,13 +540,13 @@ bool qtractorPluginPath::addTypes (
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginPathProxy -- Plugin path proxy (out-of-process client).
+// qtractorPluginFactoryProxy -- Plugin path proxy (out-of-process client).
 //
 
 // Constructor.
-qtractorPluginPathProxy::qtractorPluginPathProxy (
-	qtractorPluginPath *pPluginPath, QObject *pParent )
-	: QProcess(pParent), m_pPluginPath(pPluginPath)
+qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
+	qtractorPluginFactory *pPluginFactory, QObject *pParent )
+	: QProcess(pParent), m_pPluginFactory(pPluginFactory)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -557,7 +558,7 @@ qtractorPluginPathProxy::qtractorPluginPathProxy (
 
 
 // Start method.
-bool qtractorPluginPathProxy::start (void)
+bool qtractorPluginFactoryProxy::start (void)
 {
 	if (QProcess::state() != QProcess::NotRunning)
 		return false;
@@ -572,7 +573,7 @@ bool qtractorPluginPathProxy::start (void)
 }
 
 
-void qtractorPluginPathProxy::stdout_slot (void)
+void qtractorPluginFactoryProxy::stdout_slot (void)
 {
 	const QString sData(QProcess::readAllStandardOutput());
 	QStringListIterator iter = sData.split("\n");
@@ -582,21 +583,21 @@ void qtractorPluginPathProxy::stdout_slot (void)
 			continue;
 		qtractorPluginType *pType = qtractorDummyPluginType::createType(sText);
 		if (pType)
-			m_pPluginPath->addType(pType);
+			m_pPluginFactory->addType(pType);
 		else
 			QTextStream(stderr) << sText + '\n';
 	}
 }
 
 
-void qtractorPluginPathProxy::stderr_slot (void)
+void qtractorPluginFactoryProxy::stderr_slot (void)
 {
 	QTextStream(stderr) << QProcess::readAllStandardError();
 }
 
 
 // Service methods.
-bool qtractorPluginPathProxy::addTypes (
+bool qtractorPluginFactoryProxy::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
 	const QString& sHint = qtractorPluginType::textFromHint(typeHint);
@@ -679,4 +680,4 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 }
 
 
-// end of qtractorPluginPath.cpp
+// end of qtractorPluginFactory.cpp

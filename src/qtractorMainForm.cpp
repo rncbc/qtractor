@@ -80,7 +80,7 @@
 
 #include "qtractorMessageList.h"
 
-#include "qtractorPluginPath.h"
+#include "qtractorPluginFactory.h"
 
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
@@ -248,7 +248,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pSession = new qtractorSession();
 	m_pTempoCursor = new qtractorTempoCursor();
 	m_pMessageList = new qtractorMessageList();;
-	m_pPluginPath = new qtractorPluginPath();
+	m_pPluginFactory = new qtractorPluginFactory();
 
 	// Custom track/instrument proxy menu.
 	m_pInstrumentMenu = new qtractorInstrumentMenu(this);
@@ -1218,8 +1218,8 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pActionControl;
 
 	// Remove plugin path/files registry.
-	if (m_pPluginPath)
-		delete m_pPluginPath;
+	if (m_pPluginFactory)
+		delete m_pPluginFactory;
 
 	// Remove message list buffer.
 	if (m_pMessageList)

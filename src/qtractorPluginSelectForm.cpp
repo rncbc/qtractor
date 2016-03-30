@@ -21,7 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorPluginSelectForm.h"
-#include "qtractorPluginPath.h"
+#include "qtractorPluginFactory.h"
 
 #include "qtractorOptions.h"
 
@@ -227,10 +227,10 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
 
-	qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
-	if (pPluginPath && pPluginPath->typeHint() != typeHint) {
-		pPluginPath->setTypeHint(typeHint);
-		pPluginPath->clear();
+	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	if (pPluginFactory && pPluginFactory->typeHint() != typeHint) {
+		pPluginFactory->setTypeHint(typeHint);
+		pPluginFactory->clear();
 	}
 
 	refresh();
@@ -253,27 +253,27 @@ void qtractorPluginSelectForm::refresh (void)
 
 	m_ui.PluginListView->clear();
 
-	qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
-	if (pPluginPath == NULL)
+	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	if (pPluginFactory == NULL)
 		return;
 
 	// FIXME: Should this be a global (singleton) registry?
-	if (pPluginPath->types().isEmpty()) {
+	if (pPluginFactory->types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		const int iFileCount = pPluginPath->open();
+		const int iFileCount = pPluginFactory->open();
 		m_ui.PluginTypeProgressBar->setMaximum(iFileCount);
 		m_ui.PluginTypeProgressBar->show();
 		int iFile = 0;
-		qtractorPluginPathProxy *pProxy = pPluginPath->proxy();
-		const qtractorPluginPath::Files& files = pPluginPath->files();
-		qtractorPluginPath::Files::ConstIterator files_iter = files.constBegin();
-		const qtractorPluginPath::Files::ConstIterator& files_end = files.constEnd();
+		qtractorPluginFactoryProxy *pProxy = pPluginFactory->proxy();
+		const qtractorPluginFactory::Files& files = pPluginFactory->files();
+		qtractorPluginFactory::Files::ConstIterator files_iter = files.constBegin();
+		const qtractorPluginFactory::Files::ConstIterator& files_end = files.constEnd();
 		for ( ; files_iter != files_end; ++files_iter) {
 			const qtractorPluginType::Hint typeHint = files_iter.key();
 			QStringListIterator file_iter(files_iter.value());
 			while (file_iter.hasNext()) {
-				pPluginPath->addTypes(typeHint, file_iter.next());
+				pPluginFactory->addTypes(typeHint, file_iter.next());
 				QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 				m_ui.PluginTypeProgressBar->setValue(++iFile);
 			}
@@ -295,7 +295,7 @@ void qtractorPluginSelectForm::refresh (void)
 
 	QStringList cols;
 	QList<QTreeWidgetItem *> items;
-	QListIterator<qtractorPluginType *> type_iter(pPluginPath->types());
+	QListIterator<qtractorPluginType *> type_iter(pPluginFactory->types());
 	while (type_iter.hasNext()) {
 		qtractorPluginType *pType = type_iter.next();
 		const QString& sFilename = pType->filename();
