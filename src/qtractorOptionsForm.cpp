@@ -28,7 +28,8 @@
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
-#include "qtractorPluginPath.h"
+
+#include "qtractorPluginFactory.h"
 
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
@@ -830,10 +831,10 @@ void qtractorOptionsForm::accept (void)
 		// Reset dirty flags.
 		if (m_iDirtyPluginPaths > 0) {
 			m_iDirtyPluginPaths = 0;
-			qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
-			if (pPluginPath) {
-				pPluginPath->updatePluginPaths();
-				pPluginPath->clear();
+			qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+			if (pPluginFactory) {
+				pPluginFactory->updatePluginPaths();
+				pPluginFactory->clear();
 			}
 		}
 		m_iDirtyCount = 0;

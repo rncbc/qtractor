@@ -25,7 +25,7 @@
 
 #include "qtractorLv2Plugin.h"
 
-#include "qtractorPluginPath.h"
+#include "qtractorPluginFactory.h"
 
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 #include "qtractorMidiManager.h"
@@ -1486,11 +1486,11 @@ void qtractorLv2PluginType::lv2_open (void)
 #endif
 
 	// HACK: set special environment for LV2...
-	qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
-	if (pPluginPath) {
+	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	if (pPluginFactory) {
 		const char *LV2_PATH = "LV2_PATH";
 		const QStringList& lv2_paths
-			= pPluginPath->pluginPaths(qtractorPluginType::Lv2);
+			= pPluginFactory->pluginPaths(qtractorPluginType::Lv2);
 		if (lv2_paths.isEmpty()) {
 			::unsetenv(LV2_PATH);
 		} else {

@@ -91,7 +91,7 @@ HEADERS += config.h \
 	qtractorObserverWidget.h \
 	qtractorOptions.h \
 	qtractorPlugin.h \
-	qtractorPluginPath.h \
+	qtractorPluginFactory.h \
 	qtractorPluginCommand.h \
 	qtractorPluginListView.h \
 	qtractorPropertyCommand.h \
@@ -214,7 +214,7 @@ SOURCES += \
 	qtractorObserverWidget.cpp \
 	qtractorOptions.cpp \
 	qtractorPlugin.cpp \
-	qtractorPluginPath.cpp \
+	qtractorPluginFactory.cpp \
 	qtractorPluginCommand.cpp \
 	qtractorPluginListView.cpp \
 	qtractorRubberBand.cpp \

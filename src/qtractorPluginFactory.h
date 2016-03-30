@@ -1,4 +1,4 @@
-// qtractorPluginPath.h
+// qtractorPluginFactory.h
 //
 /****************************************************************************
    Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorPluginPath_h
-#define __qtractorPluginPath_h
+#ifndef __qtractorPluginFactory_h
+#define __qtractorPluginFactory_h
 
 #include "qtractorPlugin.h"
 
@@ -28,22 +28,22 @@
 
 
 // Forward decls.
-class qtractorPluginPathProxy;
+class qtractorPluginFactoryProxy;
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginPath -- Plugin path helper.
+// qtractorPluginFactory -- Plugin path helper.
 //
 
-class qtractorPluginPath
+class qtractorPluginFactory
 {
 public:
 
 	// Constructor.
-	qtractorPluginPath();
+	qtractorPluginFactory();
 
 	// Destructor.
-	~qtractorPluginPath();
+	~qtractorPluginFactory();
 
 	// Plugin type hint accessors.
 	void setTypeHint(qtractorPluginType::Hint typeHint)
@@ -85,10 +85,10 @@ public:
 		{ m_types.append(pType); }
 
 	// Proxy (out-of-process) accessor.
-	qtractorPluginPathProxy *proxy() const { return m_pProxy; }
+	qtractorPluginFactoryProxy *proxy() const { return m_pProxy; }
 
 	// Singleton instance accessor.
-	static qtractorPluginPath *getInstance();
+	static qtractorPluginFactory *getInstance();
 
 protected:
 
@@ -111,26 +111,26 @@ private:
 	Types m_types;
 
 	// Proxy (out-of-process) client.
-	qtractorPluginPathProxy *m_pProxy;
+	qtractorPluginFactoryProxy *m_pProxy;
 
 	// Pseudo-singleton instance.
-	static qtractorPluginPath *g_pPluginPath;
+	static qtractorPluginFactory *g_pPluginFactory;
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginPathProxy -- Plugin path proxy (out-of-process client).
+// qtractorPluginFactoryProxy -- Plugin path proxy (out-of-process client).
 //
 
-class qtractorPluginPathProxy : public QProcess
+class qtractorPluginFactoryProxy : public QProcess
 {
 	Q_OBJECT
 
 public:
 
 	// ctor.
-	qtractorPluginPathProxy(
-		qtractorPluginPath *pPluginPath, QObject *pParent = NULL);
+	qtractorPluginFactoryProxy(
+		qtractorPluginFactory *pPluginFactory, QObject *pParent = NULL);
 
 	// Start method.
 	bool start();
@@ -147,7 +147,7 @@ protected slots:
 private:
 
 	// Instance variables.
-	qtractorPluginPath *m_pPluginPath;
+	qtractorPluginFactory *m_pPluginFactory;
 };
 
 
@@ -181,6 +181,6 @@ private:
 };
 
 
-#endif  // __qtractorPluginPath_h
+#endif  // __qtractorPluginFactory_h
 
-// end of qtractorPluginPath.h
+// end of qtractorPluginFactory.h
