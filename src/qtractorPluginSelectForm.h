@@ -51,9 +51,6 @@ public:
 	qtractorPluginType::Hint pluginTypeHint(int iPlugin) const;
 	bool isPluginActivated() const;
 
-	// External accesss.
-	static void clearPluginPaths();
-
 protected slots:
 
 	void typeHintChanged(int iTypeHint);

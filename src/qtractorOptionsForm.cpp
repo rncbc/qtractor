@@ -829,9 +829,12 @@ void qtractorOptionsForm::accept (void)
 			m_pOptions->sCustomStyleTheme.clear();
 		// Reset dirty flags.
 		if (m_iDirtyPluginPaths > 0) {
-			qtractorPluginSelectForm::clearPluginPaths();
-			qtractorPluginPath::updatePluginPaths();
 			m_iDirtyPluginPaths = 0;
+			qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
+			if (pPluginPath) {
+				pPluginPath->updatePluginPaths();
+				pPluginPath->clear();
+			}
 		}
 		m_iDirtyCount = 0;
 	}
