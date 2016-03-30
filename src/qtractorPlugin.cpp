@@ -129,11 +129,11 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 		g_files.insert(pFile->filename(), pFile);
 	}
 
-	if (pFile && !pFile->open()) {
-		g_files.remove(pFile->filename());
-		delete pFile;
+	if (pFile && !pFile->open())
 		pFile = NULL;
-	}
+
+	if (pFile)
+		pFile->addRef();
 
 	return pFile;
 }
