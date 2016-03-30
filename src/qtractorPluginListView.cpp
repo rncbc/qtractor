@@ -21,7 +21,7 @@
 
 #include "qtractorPluginListView.h"
 
-#include "qtractorPluginPath.h"
+#include "qtractorPluginFactory.h"
 #include "qtractorPluginCommand.h"
 #include "qtractorPluginSelectForm.h"
 #include "qtractorPluginForm.h"
@@ -544,7 +544,7 @@ void qtractorPluginListView::addPlugin (void)
 	for (int i = 0; i < selectForm.pluginCount(); ++i) {
 		// Add an actual plugin item...
 		qtractorPlugin *pPlugin
-			= qtractorPluginPath::createPlugin(m_pPluginList,
+			= qtractorPluginFactory::createPlugin(m_pPluginList,
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i),
 				selectForm.pluginTypeHint(i));

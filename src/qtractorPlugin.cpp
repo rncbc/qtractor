@@ -21,7 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorPlugin.h"
-#include "qtractorPluginPath.h"
+#include "qtractorPluginFactory.h"
 #include "qtractorPluginListView.h"
 #include "qtractorPluginCommand.h"
 #include "qtractorPluginForm.h"
@@ -1621,7 +1621,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 
 	// Filename is empty for insert pseudo-plugins.
 	const QString& sFilename = pType->filename();
-	qtractorPlugin *pNewPlugin = qtractorPluginPath::createPlugin(this,
+	qtractorPlugin *pNewPlugin = qtractorPluginFactory::createPlugin(this,
 		sFilename, pType->index(), pType->typeHint());
 	if (pNewPlugin) {
 		pNewPlugin->setPreset(pPlugin->preset());
@@ -1815,7 +1815,7 @@ bool qtractorPluginList::loadElement (
 			// Try to find some alternative, if it doesn't exist...
 			qtractorPlugin *pPlugin = NULL;
 			if (checkPluginFile(sFilename, typeHint)) {
-				pPlugin = qtractorPluginPath::createPlugin(this,
+				pPlugin = qtractorPluginFactory::createPlugin(this,
 					sFilename, iIndex, typeHint);
 			}
 		#if 0
@@ -2046,10 +2046,10 @@ bool qtractorPluginList::checkPluginFile (
 
 	// Otherwise search for an alternative
 	// under each respective search paths...
-	qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
-	if (pPluginPath) {
+	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	if (pPluginFactory) {
 		const QString fname = fi.fileName();
-		QStringListIterator iter(pPluginPath->pluginPaths(typeHint));
+		QStringListIterator iter(pPluginFactory->pluginPaths(typeHint));
 		while (iter.hasNext()) {
 			fi.setFile(QDir(iter.next()), fname);
 			if (fi.exists() && fi.isReadable()) {

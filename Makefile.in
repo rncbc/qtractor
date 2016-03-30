@@ -85,7 +85,7 @@ headers = \
 	src/qtractorObserverWidget.h \
 	src/qtractorOptions.h \
 	src/qtractorPlugin.h \
-	src/qtractorPluginPath.h \
+	src/qtractorPluginFactory.h \
 	src/qtractorPluginCommand.h \
 	src/qtractorPluginListView.h \
 	src/qtractorPropertyCommand.h \
@@ -207,7 +207,7 @@ sources = \
 	src/qtractorObserverWidget.cpp \
 	src/qtractorOptions.cpp \
 	src/qtractorPlugin.cpp \
-	src/qtractorPluginPath.cpp \
+	src/qtractorPluginFactory.cpp \
 	src/qtractorPluginCommand.cpp \
 	src/qtractorPluginListView.cpp \
 	src/qtractorRubberBand.cpp \
