@@ -73,12 +73,12 @@ bool qtractorPluginFile::open (void)
 	if (++m_iOpenCount > 1)
 		return true;
 
-	close();
-
 	// ATTN: Not really needed, as it would be
 	// loaded automagically on resolve(), but ntl...
-	if (!QLibrary::load())
+	if (!QLibrary::load()) {
+		m_iOpenCount = 0;
 		return false;
+	}
 
 	// Do the openning dance...
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
@@ -88,16 +88,17 @@ bool qtractorPluginFile::open (void)
 		(*pfnInit)();
 #endif
 
+	// Done alright.
 	return true;
 }
 
 
 void qtractorPluginFile::close (void)
 {
-	if (--m_iOpenCount > 1)
+	if (!QLibrary::isLoaded())
 		return;
 
-	if (!QLibrary::isLoaded())
+	if (--m_iOpenCount > 0)
 		return;
 
 	// Do the closing dance...
@@ -125,16 +126,14 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 
 	if (pFile == NULL && QLibrary::isLibrary(sFilename)) {
 		pFile = new qtractorPluginFile(sFilename);
-		if (pFile->open()) {
-			g_files.insert(pFile->filename(), pFile);
-		} else {
-			delete pFile;
-			pFile = NULL;
-		}
+		g_files.insert(pFile->filename(), pFile);
 	}
 
-	if (pFile)
-		pFile->addRef();
+	if (pFile && !pFile->open()) {
+		g_files.remove(pFile->filename());
+		delete pFile;
+		pFile = NULL;
+	}
 
 	return pFile;
 }
@@ -144,7 +143,6 @@ void qtractorPluginFile::removeFile ( qtractorPluginFile *pFile )
 {
 	if (pFile && pFile->removeRef()) {
 		g_files.remove(pFile->filename());
-		pFile->close();
 		delete pFile;
 	}
 }
@@ -2048,13 +2046,16 @@ bool qtractorPluginList::checkPluginFile (
 
 	// Otherwise search for an alternative
 	// under each respective search paths...
-	const QString fname = fi.fileName();
-	QStringListIterator iter(qtractorPluginPath::pluginPaths(typeHint));
-	while (iter.hasNext()) {
-		fi.setFile(QDir(iter.next()), fname);
-		if (fi.exists() && fi.isReadable()) {
-			sFilename = fi.absoluteFilePath();
-			return true;
+	qtractorPluginPath *pPluginPath = qtractorPluginPath::getInstance();
+	if (pPluginPath) {
+		const QString fname = fi.fileName();
+		QStringListIterator iter(pPluginPath->pluginPaths(typeHint));
+		while (iter.hasNext()) {
+			fi.setFile(QDir(iter.next()), fname);
+			if (fi.exists() && fi.isReadable()) {
+				sFilename = fi.absoluteFilePath();
+				return true;
+			}
 		}
 	}
 

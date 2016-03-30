@@ -50,7 +50,35 @@
 // qtractorPluginPath -- Plugin path helper.
 //
 
-qtractorPluginPath::Paths qtractorPluginPath::g_paths;
+// Singleton instance pointer.
+qtractorPluginPath *qtractorPluginPath::g_pPluginPath = NULL;
+
+// Singleton instance accessor (static).
+qtractorPluginPath *qtractorPluginPath::getInstance (void)
+{
+	return g_pPluginPath;
+}
+
+
+// Contructor.
+qtractorPluginPath::qtractorPluginPath (void)
+	: m_typeHint(qtractorPluginType::Any), m_pProxy(NULL)
+{
+	g_pPluginPath = this;
+}
+
+
+// Destructor.
+qtractorPluginPath::~qtractorPluginPath (void)
+{
+	g_pPluginPath = NULL;
+
+	close();
+	clear();
+
+	m_paths.clear();
+}
+
 
 
 // A common scheme for (a default) plugin serach paths...
@@ -100,7 +128,7 @@ static QString default_paths ( const QString& suffix )
 
 void qtractorPluginPath::updatePluginPaths (void)
 {
-	g_paths.clear();
+	m_paths.clear();
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 
@@ -115,7 +143,7 @@ void qtractorPluginPath::updatePluginPaths (void)
 			sLadspaPaths = default_paths("ladspa");
 		ladspa_paths = sLadspaPaths.split(PATH_SEP);
 	}
-	g_paths.insert(qtractorPluginType::Ladspa, ladspa_paths);
+	m_paths.insert(qtractorPluginType::Ladspa, ladspa_paths);
 #endif
 
 #ifdef CONFIG_DSSI
@@ -129,7 +157,7 @@ void qtractorPluginPath::updatePluginPaths (void)
 			sDssiPaths = default_paths("dssi");
 		dssi_paths = sDssiPaths.split(PATH_SEP);
 	}
-	g_paths.insert(qtractorPluginType::Dssi, dssi_paths);
+	m_paths.insert(qtractorPluginType::Dssi, dssi_paths);
 #endif
 
 #ifdef CONFIG_VST
@@ -143,7 +171,7 @@ void qtractorPluginPath::updatePluginPaths (void)
 			sVstPaths = default_paths("vst");
 		vst_paths = sVstPaths.split(PATH_SEP);
 	}
-	g_paths.insert(qtractorPluginType::Vst, vst_paths);
+	m_paths.insert(qtractorPluginType::Vst, vst_paths);
 #endif
 
 #ifdef CONFIG_LV2
@@ -166,7 +194,7 @@ void qtractorPluginPath::updatePluginPaths (void)
 	if (!lv2_paths.contains(sLv2PresetDir))
 		lv2_paths.append(sLv2PresetDir);
 #endif
-	g_paths.insert(qtractorPluginType::Lv2, lv2_paths);
+	m_paths.insert(qtractorPluginType::Lv2, lv2_paths);
 	// HACK: set special environment for LV2...
 	::setenv("LV2_PATH", lv2_paths.join(PATH_SEP).toUtf8().constData(), 1);
 #endif
@@ -175,10 +203,10 @@ void qtractorPluginPath::updatePluginPaths (void)
 
 QStringList qtractorPluginPath::pluginPaths ( qtractorPluginType::Hint typeHint )
 {
-	if (g_paths.isEmpty()) // Just in case...
-		qtractorPluginPath::updatePluginPaths();
+	if (m_paths.isEmpty()) // Just in case...
+		updatePluginPaths();
 
-	return g_paths.value(typeHint);
+	return m_paths.value(typeHint);
 }
 
 
@@ -187,8 +215,8 @@ int qtractorPluginPath::open (void)
 {
 	close();
 
-	if (g_paths.isEmpty()) // Just in case...
-		qtractorPluginPath::updatePluginPaths();
+	if (m_paths.isEmpty()) // Just in case...
+		updatePluginPaths();
 
 	// Get paths based on hints...	
 	int iFileCount = 0;
@@ -197,7 +225,7 @@ int qtractorPluginPath::open (void)
 	// LADSPA default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Ladspa) {
-		const QStringList& paths = g_paths.value(qtractorPluginType::Ladspa);
+		const QStringList& paths = m_paths.value(qtractorPluginType::Ladspa);
 		if (!paths.isEmpty())
 			iFileCount += addFiles(qtractorPluginType::Ladspa, paths);
 	}
@@ -206,7 +234,7 @@ int qtractorPluginPath::open (void)
 	// DSSI default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Dssi) {
-		const QStringList& paths = g_paths.value(qtractorPluginType::Dssi);
+		const QStringList& paths = m_paths.value(qtractorPluginType::Dssi);
 		if (!paths.isEmpty())
 			iFileCount += addFiles(qtractorPluginType::Dssi, paths);
 	}
@@ -215,7 +243,7 @@ int qtractorPluginPath::open (void)
 	// VST default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Vst) {
-		const QStringList& paths = g_paths.value(qtractorPluginType::Vst);
+		const QStringList& paths = m_paths.value(qtractorPluginType::Vst);
 		if (!paths.isEmpty()) {
 			iFileCount += addFiles(qtractorPluginType::Vst, paths);
 			qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -249,6 +277,13 @@ void qtractorPluginPath::close (void)
 	}
 
 	m_files.clear();
+}
+
+
+void qtractorPluginPath::clear (void)
+{
+	qDeleteAll(m_types);
+	m_types.clear();
 }
 
 
@@ -341,6 +376,7 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 		qtractorDssiPluginType *pDssiType
 			= qtractorDssiPluginType::createType(pFile, iIndex);
 		if (pDssiType) {
+			pFile->addRef();
 			if (pDssiType->open())
 				return new qtractorDssiPlugin(pList, pDssiType);
 			delete pDssiType;
@@ -354,6 +390,7 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 		qtractorLadspaPluginType *pLadspaType
 			= qtractorLadspaPluginType::createType(pFile, iIndex);
 		if (pLadspaType) {
+			pFile->addRef();
 			if (pLadspaType->open())
 				return new qtractorLadspaPlugin(pList, pLadspaType);
 			delete pLadspaType;
@@ -367,6 +404,7 @@ qtractorPlugin *qtractorPluginPath::createPlugin (
 		qtractorVstPluginType *pVstType
 			= qtractorVstPluginType::createType(pFile, iIndex);
 		if (pVstType) {
+			pFile->addRef();
 			if (pVstType->open())
 				return new qtractorVstPlugin(pList, pVstType);
 			delete pVstType;
@@ -506,8 +544,8 @@ bool qtractorPluginPath::addTypes (
 
 // Constructor.
 qtractorPluginPathProxy::qtractorPluginPathProxy (
-	qtractorPluginPath *pPath, QObject *pParent )
-	: QProcess(pParent), m_pPath(pPath)
+	qtractorPluginPath *pPluginPath, QObject *pParent )
+	: QProcess(pParent), m_pPluginPath(pPluginPath)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -544,7 +582,7 @@ void qtractorPluginPathProxy::stdout_slot (void)
 			continue;
 		qtractorPluginType *pType = qtractorDummyPluginType::createType(sText);
 		if (pType)
-			m_pPath->addType(pType);
+			m_pPluginPath->addType(pType);
 		else
 			QTextStream(stderr) << sText + '\n';
 	}

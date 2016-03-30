@@ -97,6 +97,9 @@ public:
 	static qtractorPluginFile *addFile(const QString& sFilename);
 	static void removeFile(qtractorPluginFile *pFile);
 
+	unsigned int refCount()  const { return m_iRefCount;  }
+	unsigned int openCount() const { return m_iOpenCount; }
+
 private:
 
 	// Instance variables.

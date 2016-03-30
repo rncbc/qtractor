@@ -40,12 +40,10 @@ class qtractorPluginPath
 public:
 
 	// Constructor.
-	qtractorPluginPath()
-		: m_typeHint(qtractorPluginType::Any), m_pProxy(NULL) {}
+	qtractorPluginPath();
 
 	// Destructor.
-	~qtractorPluginPath()
-		{ close(); clear(); }
+	~qtractorPluginPath();
 
 	// Plugin type hint accessors.
 	void setTypeHint(qtractorPluginType::Hint typeHint)
@@ -57,21 +55,22 @@ public:
 	int open();
 	void close();
 
-	// Plugin path resgistry.
-	typedef QHash<qtractorPluginType::Hint, QStringList> Paths;
+	// Plugin files/paths resgistry.
+	typedef QHash<qtractorPluginType::Hint, QStringList> Files;
 
-	// Plugin filenames list.
-	const Paths& files() const { return m_files; }
+	const Files& files() const { return m_files; }
 
-	// Plugin files/types list.
-	const QList<qtractorPluginType *>& types() const { return m_types; }
+	// Plugin types registry.
+	typedef QList<qtractorPluginType *> Types;
+
+	const Types& types() const { return m_types; }
 
 	// Type list reset method.
-	void clear() { qDeleteAll(m_types); m_types.clear(); }
+	void clear();
 
 	// Global plugin-paths executive methods.
-	static QStringList pluginPaths(qtractorPluginType::Hint typeHint);
-	static void updatePluginPaths();
+	QStringList pluginPaths(qtractorPluginType::Hint typeHint);
+	void updatePluginPaths();
 
 	// Plugin factory method.
 	static qtractorPlugin *createPlugin(
@@ -88,6 +87,9 @@ public:
 	// Proxy (out-of-process) accessor.
 	qtractorPluginPathProxy *proxy() const { return m_pProxy; }
 
+	// Singleton instance accessor.
+	static qtractorPluginPath *getInstance();
+
 protected:
 
 	// Recursive plugin path/file inventory method (return estimated count).
@@ -99,20 +101,20 @@ private:
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
 
-	// Internal plugin filenames list.
-	Paths m_files;
+	// Internal plugin-paths.
+	Files m_paths;
 
-	// Estimated total number of files.
-	int m_iFileCount;
+	// Internal plugin filenames list.
+	Files m_files;
 
 	// Internal plugin types list.
-	QList<qtractorPluginType *> m_types;
+	Types m_types;
 
 	// Proxy (out-of-process) client.
 	qtractorPluginPathProxy *m_pProxy;
 
-	// Global plugin-paths.
-	static Paths g_paths;
+	// Pseudo-singleton instance.
+	static qtractorPluginPath *g_pPluginPath;
 };
 
 
@@ -128,7 +130,7 @@ public:
 
 	// ctor.
 	qtractorPluginPathProxy(
-		qtractorPluginPath *pPath, QObject *pParent = NULL);
+		qtractorPluginPath *pPluginPath, QObject *pParent = NULL);
 
 	// Start method.
 	bool start();
@@ -145,7 +147,7 @@ protected slots:
 private:
 
 	// Instance variables.
-	qtractorPluginPath *m_pPath;
+	qtractorPluginPath *m_pPluginPath;
 };
 
 
