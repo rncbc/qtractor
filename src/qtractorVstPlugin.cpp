@@ -784,10 +784,6 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	}
 
 	// (Re)issue all configuration as needed...
-	realizeConfigs();
-	realizeValues();
-
-	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 
@@ -1009,6 +1005,8 @@ void qtractorVstPlugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
+	qtractorPlugin::freezeConfigs();
+
 	AEffect *pVstEffect = vst_effect(0);
 	if (pVstEffect == NULL)
 		return;
@@ -1030,15 +1028,6 @@ void qtractorVstPlugin::freezeConfigs (void)
 	for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
 		data.insert(i, "\n       "); // Indentation.
 	setConfig("chunk", data.constData());
-}
-
-void qtractorVstPlugin::releaseConfigs (void)
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
-#endif
-
-	clearConfigs();
 }
 
 

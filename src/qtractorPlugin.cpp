@@ -667,9 +667,6 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 	}
 
 	// Make it real.
-	realizeConfigs();
-	realizeValues();
-
 	releaseConfigs();
 	releaseValues();
 
@@ -711,7 +708,7 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	ts << doc.toString() << endl;
 	file.close();
 
-	releaseConfigs();
+	clearConfigs();
 
 	return true;
 }
@@ -864,21 +861,11 @@ void qtractorPlugin::freezeValues (void)
 }
 
 
-void qtractorPlugin::releaseValues (void)
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPlugin[%p]::releaseValues()", this);
-#endif
-
-	clearValues();
-}
-
-
 // Plugin configure realization.
-void qtractorPlugin::realizeConfigs (void)
+void qtractorPlugin::releaseConfigs (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPlugin[%p]::realizeConfigs()", this);
+	qDebug("qtractorPlugin[%p]::releaseConfigs()", this);
 #endif
 
 	// Set configuration (CLOBs)...
@@ -891,14 +878,16 @@ void qtractorPlugin::realizeConfigs (void)
 	qtractorMidiManager *pMidiManager = m_pList->midiManager();
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
+
+	clearConfigs();
 }
 
 
 // Plugin parameter realization.
-void qtractorPlugin::realizeValues (void)
+void qtractorPlugin::releaseValues (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPlugin[%p]::realizeValues()", this);
+	qDebug("qtractorPlugin[%p]::releaseValues()", this);
 #endif
 
 	// (Re)set parameter values (initial)...
@@ -917,6 +906,8 @@ void qtractorPlugin::realizeValues (void)
 				pParam->setValue(param.value(), true);
 		}
 	}
+
+	clearValues();
 }
 
 
@@ -1628,8 +1619,6 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->setConfigs(pPlugin->configs());
 		pNewPlugin->setConfigTypes(pPlugin->configTypes());
 		pNewPlugin->setValues(pPlugin->values());
-		pNewPlugin->realizeConfigs();
-		pNewPlugin->realizeValues();
 		pNewPlugin->releaseConfigs();
 		pNewPlugin->releaseValues();
 		pNewPlugin->setActivated(pPlugin->isActivated());
@@ -1637,8 +1626,8 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 			pPlugin->directAccessParamIndex());
 	}
 
-	pPlugin->releaseConfigs();
-	pPlugin->releaseValues();
+	pPlugin->clearConfigs();
+	pPlugin->clearValues();
 
 	return pNewPlugin;
 }
@@ -1978,7 +1967,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pElement->appendChild(ePlugin);
 
 		// May release plugin state...
-		pPlugin->releaseConfigs();
+		pPlugin->clearConfigs();
 	}
 
 	// Save audio output-bus connects...

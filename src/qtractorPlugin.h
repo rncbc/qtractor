@@ -459,12 +459,14 @@ public:
 		const QString& /*sKey*/, const QString& /*sValue*/) {}
 
 	// Plugin configuration/state snapshot.
-	virtual void freezeConfigs() {}
-	virtual void releaseConfigs() {}
+	virtual void freezeConfigs()  { clearConfigs(); }
 
 	// Plugin configure realization.
-	virtual void realizeConfigs();
-	
+	virtual void releaseConfigs();
+
+	// Plugin configure clearance/release.
+	virtual void clearConfigs() { m_configs.clear(); m_ctypes.clear(); }
+
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/= NULL) {}
 	virtual void closeEditor() {};
@@ -593,19 +595,16 @@ public:
 
 	// Plugin parameter/state snapshot.
 	void freezeValues();
-	void releaseValues();
 
-	// Plugin aparameter/state realization.
-	void realizeValues();
+	// Plugin parameter/state realization.
+	void releaseValues();
 
 	void setValues(const Values& values)
 		{ m_values = values; }
 	const Values& values() const
 		{ return m_values; }
 
-	// Plugin configure clearance.
-	void clearConfigs()
-		{ m_configs.clear(); m_ctypes.clear(); }
+	// Plugin parameter/state clearance.
 	void clearValues()
 		{ m_values.names.clear(); m_values.index.clear(); }
 
