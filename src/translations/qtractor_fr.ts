@@ -51,7 +51,7 @@ Audio:	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1482"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1471"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -236,47 +236,47 @@ Fin:	%3	Longueur:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="380"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="659"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1129"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1354"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="645"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1101"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1312"/>
         <source>Send Gain</source>
         <translation>Gain d&apos;envoi</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="388"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="667"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="653"/>
         <source>Dry Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="396"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="675"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="661"/>
         <source>Wet Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="996"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="968"/>
         <source>Aux Send (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1029"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1001"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1091"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1063"/>
         <source>Aux Send pseudo-plugin (MIDI)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1259"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1227"/>
         <location filename="../qtractorPluginListView.cpp" line="212"/>
         <source>%1 (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1501"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1455"/>
         <location filename="../qtractorPluginListView.cpp" line="232"/>
         <source>%1 (MIDI)</source>
         <translation type="unfinished"></translation>
@@ -440,7 +440,7 @@ MIDI:	</translation>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="1855"/>
+        <location filename="../qtractorPlugin.cpp" line="1844"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
@@ -727,7 +727,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Version :</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1479"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1468"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
