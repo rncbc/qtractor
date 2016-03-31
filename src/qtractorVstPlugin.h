@@ -144,7 +144,6 @@ public:
 
 	// Plugin configuration/state snapshot.
 	void freezeConfigs();
-	void releaseConfigs();
 
 	// Plugin preset i/o (configuration from/to (fxp/fxb files).
 	bool loadPresetFile(const QString& sFilename);

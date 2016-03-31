@@ -261,10 +261,10 @@ public:
 	void freezeConfigs();
 
 	// Plugin configuration/state (load) realization.
-	void realizeConfigs();
+	void releaseConfigs();
 
 	// Plugin configuration/state release.
-	void releaseConfigs();
+	void clearConfigs();
 
 #ifdef CONFIG_LV2_WORKER
 	// LV2 Worker/Schedule extension data interface accessor.
