@@ -2037,7 +2037,8 @@ bool qtractorPluginList::checkPluginFile (
 
 	// Otherwise search for an alternative
 	// under each respective search paths...
-	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	qtractorPluginFactory *pPluginFactory
+		= qtractorPluginFactory::getInstance();
 	if (pPluginFactory) {
 		const QString fname = fi.fileName();
 		QStringListIterator iter(pPluginFactory->pluginPaths(typeHint));

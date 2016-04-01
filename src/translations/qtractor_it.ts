@@ -738,13 +738,13 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Copyright: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1775"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1776"/>
         <source>Project: </source>
         <translation>Progetto: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1783"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1784"/>
         <source>Author: </source>
         <translation>Autore: </translation>
     </message>
@@ -10493,12 +10493,12 @@ Sei sicuro?</translation>
         <translation>(Qualsiasi)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="871"/>
+        <location filename="../qtractorOptionsForm.cpp" line="872"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="872"/>
+        <location filename="../qtractorOptionsForm.cpp" line="873"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -10507,52 +10507,52 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="902"/>
+        <location filename="../qtractorOptionsForm.cpp" line="903"/>
         <source>Metronome Bar Audio File</source>
         <translation>File Audio Barra Metronomo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="916"/>
+        <location filename="../qtractorOptionsForm.cpp" line="917"/>
         <source>Metronome Beat Audio File</source>
         <translation>File Audio Battito Metronomo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1001"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1002"/>
         <source>Audio Meter Color</source>
         <translation>Colore del meter audio</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1013"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1014"/>
         <source>MIDI Meter Color</source>
         <translation>Colore del meter MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1097"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1098"/>
         <source>Plug-in Directory</source>
         <translation>Cartella Plug-in</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1333"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1334"/>
         <source>LV2 Presets Directory</source>
         <translation>Directory dei Preset LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1389"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1390"/>
         <source>Messages Log</source>
         <translation>Messaggi di Log</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1390"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1391"/>
         <source>Log files (*.%1)</source>
         <translation>File di Log (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1427"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1428"/>
         <source>Session Template</source>
         <translation>Template Sessione</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1428"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1429"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>File Template Sessione (*.qtr *.qts *.%1)</translation>
     </message>
@@ -11049,17 +11049,17 @@ Sei sicuro?</translation>
         <translation>Scansione plugin in corso...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="323"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="312"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="325"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="314"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="327"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="316"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>

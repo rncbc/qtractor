@@ -1486,7 +1486,8 @@ void qtractorLv2PluginType::lv2_open (void)
 #endif
 
 	// HACK: set special environment for LV2...
-	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	qtractorPluginFactory *pPluginFactory
+		= qtractorPluginFactory::getInstance();
 	if (pPluginFactory) {
 		const char *LV2_PATH = "LV2_PATH";
 		const QStringList& lv2_paths

@@ -839,7 +839,8 @@ void qtractorOptionsForm::accept (void)
 		// Reset dirty flags.
 		if (m_iDirtyPluginPaths > 0) {
 			m_iDirtyPluginPaths = 0;
-			qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+			qtractorPluginFactory *pPluginFactory
+				= qtractorPluginFactory::getInstance();
 			if (pPluginFactory) {
 				pPluginFactory->updatePluginPaths();
 				pPluginFactory->clear();

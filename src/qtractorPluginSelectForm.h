@@ -57,6 +57,7 @@ protected slots:
 
 	void reset();
 	void refresh();
+	void scanned(int iPercent);
 	void stabilize();
 	void accept();
 

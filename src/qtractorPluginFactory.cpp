@@ -61,8 +61,8 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 
 
 // Contructor.
-qtractorPluginFactory::qtractorPluginFactory (void)
-	: m_typeHint(qtractorPluginType::Any), m_pProxy(NULL)
+qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
+	: QObject(pParent), m_typeHint(qtractorPluginType::Any), m_pProxy(NULL)
 {
 	g_pPluginFactory = this;
 }
@@ -73,7 +73,7 @@ qtractorPluginFactory::~qtractorPluginFactory (void)
 {
 	g_pPluginFactory = NULL;
 
-	close();
+	reset();
 	clear();
 
 	m_paths.clear();
@@ -212,14 +212,15 @@ QStringList qtractorPluginFactory::pluginPaths (
 
 
 // Executive methods.
-int qtractorPluginFactory::open (void)
+void qtractorPluginFactory::scan (void)
 {
-	close();
+	// Start clean.
+	reset();
 
 	if (m_paths.isEmpty()) // Just in case...
 		updatePluginPaths();
 
-	// Get paths based on hints...	
+	// Get paths based on hints...
 	int iFileCount = 0;
 
 #ifdef CONFIG_LADSPA
@@ -265,11 +266,33 @@ int qtractorPluginFactory::open (void)
 	}
 #endif
 
-	return iFileCount;
+	// Do the real scan...
+	int iFile = 0;
+	Paths::ConstIterator files_iter = m_files.constBegin();
+	const Paths::ConstIterator& files_end = m_files.constEnd();
+	for ( ; files_iter != files_end; ++files_iter) {
+		const qtractorPluginType::Hint typeHint = files_iter.key();
+		QStringListIterator file_iter(files_iter.value());
+		while (file_iter.hasNext()) {
+			addTypes(typeHint, file_iter.next());
+			emit scanned((++iFile * 100) / iFileCount);
+			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+		}
+	}
+
+	// Check the proxy (out-of-process) client closure...
+	if (m_pProxy) {
+		m_pProxy->closeWriteChannel();
+		while (!m_pProxy->waitForFinished(200))
+			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+	}
+
+	// Done.
+	reset();
 }
 
 
-void qtractorPluginFactory::close (void)
+void qtractorPluginFactory::reset (void)
 {
 	if (m_pProxy) {
 		m_pProxy->terminate();
@@ -474,11 +497,11 @@ bool qtractorPluginFactory::addTypes (
 				break;
 			}
 		}
-	}
-	// Have we found some, already?
-	if (iIndex > 0) {
-		pFile->close();
-		return true;
+		// Have we found some, already?
+		if (iIndex > 0) {
+			pFile->close();
+			return true;
+		}
 	}
 #endif
 
@@ -499,11 +522,11 @@ bool qtractorPluginFactory::addTypes (
 				break;
 			}
 		}
-	}
-	// Have we found some, already?
-	if (iIndex > 0) {
-		pFile->close();
-		return true;
+		// Have we found some, already?
+		if (iIndex > 0) {
+			pFile->close();
+			return true;
+		}
 	}
 #endif
 
@@ -524,11 +547,11 @@ bool qtractorPluginFactory::addTypes (
 				break;
 			}
 		}
-	}
-	// Have we found some, already?
-	if (iIndex > 0) {
-		pFile->close();
-		return true;
+		// Have we found some, already?
+		if (iIndex > 0) {
+			pFile->close();
+			return true;
+		}
 	}
 #endif
 
@@ -545,8 +568,8 @@ bool qtractorPluginFactory::addTypes (
 
 // Constructor.
 qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
-	qtractorPluginFactory *pPluginFactory, QObject *pParent )
-	: QProcess(pParent), m_pPluginFactory(pPluginFactory)
+	qtractorPluginFactory *pPluginFactory )
+	: QProcess(pPluginFactory)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -575,6 +598,11 @@ bool qtractorPluginFactoryProxy::start (void)
 
 void qtractorPluginFactoryProxy::stdout_slot (void)
 {
+	qtractorPluginFactory *pPluginFactory
+		= static_cast<qtractorPluginFactory *> (QObject::parent());
+	if (pPluginFactory == NULL)
+		return;
+
 	const QString sData(QProcess::readAllStandardOutput());
 	QStringListIterator iter = sData.split("\n");
 	while (iter.hasNext()) {
@@ -583,7 +611,7 @@ void qtractorPluginFactoryProxy::stdout_slot (void)
 			continue;
 		qtractorPluginType *pType = qtractorDummyPluginType::createType(sText);
 		if (pType)
-			m_pPluginFactory->addType(pType);
+			pPluginFactory->addType(pType);
 		else
 			QTextStream(stderr) << sText + '\n';
 	}
