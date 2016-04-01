@@ -35,15 +35,20 @@ class qtractorPluginFactoryProxy;
 // qtractorPluginFactory -- Plugin path helper.
 //
 
-class qtractorPluginFactory
+class qtractorPluginFactory : public QObject
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
-	qtractorPluginFactory();
+	qtractorPluginFactory(QObject *pParent = NULL);
 
 	// Destructor.
 	~qtractorPluginFactory();
+
+	// Plugin files/paths resgistry.
+	typedef QHash<qtractorPluginType::Hint, QStringList> Paths;
 
 	// Plugin type hint accessors.
 	void setTypeHint(qtractorPluginType::Hint typeHint)
@@ -52,18 +57,13 @@ public:
 		{ return m_typeHint; }
 
 	// Executive methods.
-	int open();
-	void close();
-
-	// Plugin files/paths resgistry.
-	typedef QHash<qtractorPluginType::Hint, QStringList> Files;
-
-	const Files& files() const { return m_files; }
+	void scan();
 
 	// Plugin types registry.
 	typedef QList<qtractorPluginType *> Types;
-
 	const Types& types() const { return m_types; }
+	// Type register method.
+	void addType(qtractorPluginType *pType) { m_types.append(pType); }
 
 	// Type list reset method.
 	void clear();
@@ -78,23 +78,25 @@ public:
 		const QString& sFilename, unsigned long iIndex,
 		qtractorPluginType::Hint typeHint);
 
-	// Plugin type listing.
-	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
-
-	void addType(qtractorPluginType *pType)
-		{ m_types.append(pType); }
-
-	// Proxy (out-of-process) accessor.
-	qtractorPluginFactoryProxy *proxy() const { return m_pProxy; }
-
 	// Singleton instance accessor.
 	static qtractorPluginFactory *getInstance();
 
+signals:
+
+	// Scan progress feedback.
+	void scanned(int iPercent);
+
 protected:
 
-	// Recursive plugin path/file inventory method (return estimated count).
+	// Recursive plugin path/file inventory method (return partial file count).
 	int addFiles(qtractorPluginType::Hint typeHint, const QStringList& paths);
 	int addFiles(qtractorPluginType::Hint typeHint, const QString& sPath);
+
+	// Plugin type listing.
+	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
+
+	// Plugin scan reset method.
+	void reset();
 
 private:
 
@@ -102,10 +104,10 @@ private:
 	qtractorPluginType::Hint m_typeHint;
 
 	// Internal plugin-paths.
-	Files m_paths;
+	Paths m_paths;
 
-	// Internal plugin filenames list.
-	Files m_files;
+	// Internal plugin-paths.
+	Paths m_files;
 
 	// Internal plugin types list.
 	Types m_types;
@@ -129,8 +131,7 @@ class qtractorPluginFactoryProxy : public QProcess
 public:
 
 	// ctor.
-	qtractorPluginFactoryProxy(
-		qtractorPluginFactory *pPluginFactory, QObject *pParent = NULL);
+	qtractorPluginFactoryProxy(qtractorPluginFactory *pPluginFactory);
 
 	// Start method.
 	bool start();
@@ -143,11 +144,6 @@ protected slots:
 	// Service slots.
 	void stdout_slot();
 	void stderr_slot();
-
-private:
-
-	// Instance variables.
-	qtractorPluginFactory *m_pPluginFactory;
 };
 
 
