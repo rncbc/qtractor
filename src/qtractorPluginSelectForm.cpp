@@ -100,6 +100,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	m_ui.PluginListView->setSortingEnabled(true);
 	m_ui.PluginListView->sortItems(0, Qt::AscendingOrder);
 
+	m_ui.PluginTypeProgressBar->setMaximum(100);
 	m_ui.PluginTypeProgressBar->hide();
 
 	// Initialize conveniency options...
@@ -151,6 +152,14 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(rejected()),
 		SLOT(reject()));
+
+	qtractorPluginFactory *pPluginFactory
+		= qtractorPluginFactory::getInstance();
+	if (pPluginFactory) {
+		QObject::connect(pPluginFactory,
+			SIGNAL(scanned(int)),
+			SLOT(scanned(int)));
+	}
 }
 
 
@@ -227,7 +236,8 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
 
-	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	qtractorPluginFactory *pPluginFactory
+		= qtractorPluginFactory::getInstance();
 	if (pPluginFactory && pPluginFactory->typeHint() != typeHint) {
 		pPluginFactory->setTypeHint(typeHint);
 		pPluginFactory->clear();
@@ -253,7 +263,8 @@ void qtractorPluginSelectForm::refresh (void)
 
 	m_ui.PluginListView->clear();
 
-	qtractorPluginFactory *pPluginFactory = qtractorPluginFactory::getInstance();
+	qtractorPluginFactory *pPluginFactory
+		= qtractorPluginFactory::getInstance();
 	if (pPluginFactory == NULL)
 		return;
 
@@ -261,30 +272,8 @@ void qtractorPluginSelectForm::refresh (void)
 	if (pPluginFactory->types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		const int iFileCount = pPluginFactory->open();
-		m_ui.PluginTypeProgressBar->setMaximum(iFileCount);
 		m_ui.PluginTypeProgressBar->show();
-		int iFile = 0;
-		qtractorPluginFactoryProxy *pProxy = pPluginFactory->proxy();
-		const qtractorPluginFactory::Files& files = pPluginFactory->files();
-		qtractorPluginFactory::Files::ConstIterator files_iter = files.constBegin();
-		const qtractorPluginFactory::Files::ConstIterator& files_end = files.constEnd();
-		for ( ; files_iter != files_end; ++files_iter) {
-			const qtractorPluginType::Hint typeHint = files_iter.key();
-			QStringListIterator file_iter(files_iter.value());
-			while (file_iter.hasNext()) {
-				pPluginFactory->addTypes(typeHint, file_iter.next());
-				QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-				m_ui.PluginTypeProgressBar->setValue(++iFile);
-			}
-		}
-		// Check the proxy (out-of-process) client closure...
-		if (pProxy) {
-			pProxy->closeWriteChannel();
-			while (!pProxy->waitForFinished(200))
-				QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-		}
-		// We're technically done.
+		pPluginFactory->scan();
 		m_ui.PluginTypeProgressBar->hide();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();
@@ -360,6 +349,13 @@ void qtractorPluginSelectForm::refresh (void)
 	m_ui.PluginResetToolButton->setEnabled(!rx.isEmpty());
 
 	stabilize();
+}
+
+
+// Refresh plugin scan progress.
+void qtractorPluginSelectForm::scanned ( int iPercent )
+{
+	m_ui.PluginTypeProgressBar->setValue(iPercent);
 }
 
 
