@@ -2410,11 +2410,6 @@ Do you want to apply the changes?</source>
         <translation>インストルメント(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="335"/>
-        <source>Cl&amp;ip</source>
-        <translation>クリップ(&amp;I)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="339"/>
         <source>T&amp;ools</source>
         <translation>ツール(&amp;O)</translation>
@@ -2749,6 +2744,7 @@ Do you want to apply the changes?</source>
         <translation>削除</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.ui" line="335"/>
         <location filename="../qtractorMainForm.ui" line="813"/>
         <source>&amp;Clip</source>
         <translation>クリップ(&amp;C)</translation>

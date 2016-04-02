@@ -116,8 +116,6 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	// Let the search begin...
 	m_ui.PluginSearchComboBox->setFocus();
 	
-	typeHintChanged(m_ui.PluginTypeComboBox->currentIndex());
-
 	adjustSize();
 
 	// Restore last seen dialog position and extent...
@@ -160,6 +158,8 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 			SIGNAL(scanned(int)),
 			SLOT(scanned(int)));
 	}
+
+	typeHintChanged(m_ui.PluginTypeComboBox->currentIndex());
 }
 
 

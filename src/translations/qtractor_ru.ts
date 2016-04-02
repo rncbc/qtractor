@@ -3188,11 +3188,6 @@ Saving into another session file is highly recommended.</source>
         <translation>&amp;Инструменты</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="335"/>
-        <source>Cl&amp;ip</source>
-        <translation>К&amp;лип</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="198"/>
         <location filename="../qtractorMainForm.ui" line="2112"/>
         <source>&amp;File</source>
@@ -3521,6 +3516,7 @@ Saving into another session file is highly recommended.</source>
         <translation>Del</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.ui" line="335"/>
         <location filename="../qtractorMainForm.ui" line="813"/>
         <source>&amp;Clip</source>
         <translation>&amp;Клип</translation>

@@ -2412,11 +2412,6 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Instrum&amp;ent</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="335"/>
-        <source>Cl&amp;ip</source>
-        <translation>Cl&amp;ip</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="339"/>
         <source>T&amp;ools</source>
         <translation>&amp;Outils</translation>
@@ -2751,6 +2746,7 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Suppr</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.ui" line="335"/>
         <location filename="../qtractorMainForm.ui" line="813"/>
         <source>&amp;Clip</source>
         <translation>&amp;Clip</translation>
