@@ -2654,6 +2654,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>%1 Hz</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.ui" line="335"/>
         <location filename="../qtractorMainForm.ui" line="813"/>
         <source>&amp;Clip</source>
         <translation>&amp;Sequências</translation>
@@ -2833,11 +2834,6 @@ Deseja salvar essas modificações?</translation>
         <location filename="../qtractorMainForm.ui" line="2547"/>
         <source>Buses</source>
         <translation>Canais Primários</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.ui" line="335"/>
-        <source>Cl&amp;ip</source>
-        <translation>&amp;Sequências</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6932"/>

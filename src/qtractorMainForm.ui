@@ -332,7 +332,7 @@
    </widget>
    <widget class="QMenu" name="clipMenu">
     <property name="title">
-     <string>Cl&amp;ip</string>
+     <string>&amp;Clip</string>
     </property>
     <widget class="QMenu" name="clipToolsMenu">
      <property name="title">

@@ -3253,11 +3253,6 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Nástroj&amp;e</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="335"/>
-        <source>Cl&amp;ip</source>
-        <translation>&amp;Záběr</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="198"/>
         <location filename="../qtractorMainForm.ui" line="2112"/>
         <source>&amp;File</source>
@@ -3551,6 +3546,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
         <translation>Smazat</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.ui" line="335"/>
         <location filename="../qtractorMainForm.ui" line="813"/>
         <source>&amp;Clip</source>
         <translation>&amp;Záběr</translation>

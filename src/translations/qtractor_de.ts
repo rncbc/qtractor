@@ -2399,11 +2399,6 @@ Sollen die Änderungen übernommen werden?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="335"/>
-        <source>Cl&amp;ip</source>
-        <translation>Ausschn&amp;itt</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.ui" line="339"/>
         <source>T&amp;ools</source>
         <translation>Werk&amp;zeuge</translation>
@@ -2738,6 +2733,7 @@ Sollen die Änderungen übernommen werden?</translation>
         <translation>Entf</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.ui" line="335"/>
         <location filename="../qtractorMainForm.ui" line="813"/>
         <source>&amp;Clip</source>
         <translation>Au&amp;sschnitt</translation>

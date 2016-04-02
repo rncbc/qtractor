@@ -276,15 +276,20 @@ void qtractorPluginFactory::scan (void)
 		while (file_iter.hasNext()) {
 			addTypes(typeHint, file_iter.next());
 			emit scanned((++iFile * 100) / iFileCount);
-			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+			QApplication::processEvents(
+				QEventLoop::ExcludeUserInputEvents);
 		}
 	}
 
 	// Check the proxy (out-of-process) client closure...
 	if (m_pProxy) {
 		m_pProxy->closeWriteChannel();
-		while (!m_pProxy->waitForFinished(200))
-			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+		for (iFile = 0; iFile < iFileCount; ++iFile) {
+			if (m_pProxy->waitForFinished(200))
+				break;
+			QApplication::processEvents(
+				QEventLoop::ExcludeUserInputEvents);
+		}
 	}
 
 	// Done.
