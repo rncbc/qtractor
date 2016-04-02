@@ -11792,7 +11792,7 @@ Vuoi scartare le modifiche?</translation>
     <message>
         <location filename="../qtractorTrackButton.cpp" line="89"/>
         <source>Record</source>
-        <translation>Regisra</translation>
+        <translation>Registra</translation>
     </message>
     <message>
         <location filename="../qtractorTrackButton.cpp" line="94"/>
