@@ -170,6 +170,11 @@ AC_ARG_ENABLE(lv2-state-files,
   [ac_lv2_state_files="$enableval"],
   [ac_lv2_state_files="yes"])
 
+AC_ARG_ENABLE(lv2-state-make-path,
+  AC_HELP_STRING([--enable-lv2-state-make-path], [enable LV2 plug-in State Make Path support (default=no)]),
+  [ac_lv2_state_make_path="$enableval"],
+  [ac_lv2_state_make_path="no"])
+
 AC_ARG_ENABLE(lv2-programs,
   AC_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in Programs support (default=yes)]),
   [ac_lv2_programs="$enableval"],
@@ -803,6 +808,7 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_external_ui="no"
    ac_lv2_state="no"
    ac_lv2_state_files="no"
+   ac_lv2_state_make_path="no"
    ac_lv2_programs="no"
    ac_lv2_presets="no"
    ac_lv2_time="no"
@@ -1062,6 +1068,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
       ac_lv2_state_files="no"
+      ac_lv2_state_make_path="no"
       ac_lv2_programs="no"
       ac_lv2_presets="no"
       ac_lv2_time="no"
@@ -1153,17 +1160,23 @@ if test "x$ac_lv2_state" = "xyes"; then
       [ac_lv2_state="yes"], [ac_lv2_state="no"])
    if test "x$ac_lv2_state" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_STATE, 1, [Define if LV2 State extension is available.])
+      if test "x$ac_lv2_state_files" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 State Files feature is available.])
+         if test "x$ac_lv2_state_make_path" = "xyes"; then
+            AC_DEFINE(CONFIG_LV2_STATE_MAKE_PATH, 1, [Define if LV2 State Make Path feature is available.])
+         fi
+      else
+         AC_MSG_WARN([*** LV2 State Files feature will be disabled.])
+         ac_lv2_state_make_path="no"
+      fi
    else
       AC_MSG_WARN([*** LV2 State extension will be disabled.])
+      ac_lv2_state_make_path="no"
       ac_lv2_state_files="no"
       ac_lv2_presets="no"
    fi
-   if test "x$ac_lv2_state_files" = "xyes"; then
-       AC_DEFINE(CONFIG_LV2_STATE_FILES, 1, [Define if LV2 State Files feature is available.])
-   else
-       AC_MSG_WARN([*** LV2 State Files feature will be disabled.])
-   fi
 else
+   ac_lv2_state_make_path="no"
    ac_lv2_state_files="no"
    ac_lv2_presets="no"
 fi
