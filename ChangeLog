@@ -4,15 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.7.6  2016-04-05  A Hazier Photon Beta
 
 - Plug-ins search path and out-of-process (aka. dummy) VST
-  plug-in inventory scanning is under heavy refactoring...
-  (EXPERIMENTAL)
+  plug-in inventory scanning has been heavily refactored.
 
 - Fixed and optimized all dummy processing for plugins with
   more audio inputs and/or outputs than channels on a track
-  or bus where it's inserted. (EXPERIMENTAL)
+  or bus where it's inserted.
   
 - Fixed relative/absolute path mapping when saving/loading
   custom LV2 Plug-in State Presets.
