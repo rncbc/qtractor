@@ -2595,7 +2595,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// Compute onset time from given horizontal position...
 	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 
-	int x1 = x0 + pos.x();
+	int x1 = x0 + pos.x(); if (x1 < x0) x1 = x0;
 	int y1 = 0;
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);

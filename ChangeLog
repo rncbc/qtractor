@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed an old MIDI clip editor contents disapearing bug,
+  which manifested when drawing free-hand (ie. Edit/Select
+  Mode/Edit Draw is on) over and behind its start/beginning
+  position (while in the lower view pane).
+
+
 0.7.6  2016-04-05  A Hazier Photon Beta
 
 - Plug-ins search path and out-of-process (aka. dummy) VST
