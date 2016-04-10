@@ -6,6 +6,13 @@ ChangeLog
 
 GIT HEAD
 
+- Dropped the --enable-qt5 from configure as found redundant
+  given that's the build default anyway (suggestion by Guido
+  Scholz, thanks).
+
+- Immediate visual sync has been added to main and MIDI clip
+  editor thumb-views (a request by Frank Neuman thanks).
+
 - Fixed an old MIDI clip editor contents disapearing bug,
   which manifested when drawing free-hand (ie. Edit/Select
   Mode/Edit Draw is on) over and behind its start/beginning

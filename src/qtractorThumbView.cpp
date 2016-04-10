@@ -426,8 +426,10 @@ void qtractorThumbView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			&& (pos - m_posDrag).manhattanLength()
 				> QApplication::startDragDistance())
 			m_dragState = DragMove;
-		if (m_dragState == DragMove)
-			updateThumb(pos.x() - m_posDrag.x());
+		if (m_dragState == DragMove) {
+			updateView(pos.x() - m_posDrag.x());
+			m_posDrag.setX(pos.x());
+		}
 	}
 
 	QFrame::mouseMoveEvent(pMouseEvent);
