@@ -416,17 +416,18 @@ bool qtractorShortcutForm::commitEditor (
 		return false;
 
 	if (!sShortcutText.isEmpty()) {
-		if (m_shortcuts.contains(sShortcutText)) {
+		QTreeWidgetItem *pItem = m_shortcuts.value(sShortcutText, NULL);
+		if (pItem) {
 			QMessageBox::warning(this,
 				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("Keyboard shortcut (%1) already assigned.")
-					.arg(sShortcutText),
+				tr("Keyboard shortcut (%1) already assigned (%2).")
+					.arg(sShortcutText)
+					.arg(pItem->text(0).remove('&')),
 				QMessageBox::Cancel);
 			pItemEditor->clear();
 			return false;
 		}
-		QTreeWidgetItem *pItem
-			= m_ui.ShortcutTable->topLevelItem(index.row());
+		pItem = m_ui.ShortcutTable->topLevelItem(index.row());
 		if (pItem) m_shortcuts.insert(sShortcutText, pItem);
 	}
 
