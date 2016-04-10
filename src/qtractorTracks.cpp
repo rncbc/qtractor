@@ -1748,6 +1748,17 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 
 	// Done.
 	pSession->setAutoTimeStretch(bAutoTimeStretch);	
+
+	if (pClip) {
+		if (pClip->isClipSelected()) {
+			iRangeStart  = pClip->clipSelectStart();
+			iRangeLength = pClip->clipSelectEnd() - iRangeStart;
+		} else {
+			iRangeStart  = pClip->clipStart();
+			iRangeLength = pClip->clipLength();
+		}
+	}
+
 	pSession->setEditHead(iRangeStart);
 	pSession->setEditTail(iRangeStart + iRangeLength);
 

@@ -102,6 +102,7 @@ private:
 
 	// Thumb drag-states.
 	enum { DragNone = 0, DragStart, DragMove, DragClick } m_dragState;
+
 	QPoint m_posDrag;
 };
 
