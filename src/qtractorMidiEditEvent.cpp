@@ -414,7 +414,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		if (t2 > iTimeEnd)
 			t2 = iTimeEnd;
 		// Filter event type!...
-		if (pEvent->type() == m_eventType && t2 > iTickStart
+		if (pEvent->type() == m_eventType && t2 >= iTickStart
 			&& (!bEventParam || pEvent->param() == m_eventParam)) {
 			if (m_eventType == qtractorMidiEvent::REGPARAM    ||
 				m_eventType == qtractorMidiEvent::NONREGPARAM ||

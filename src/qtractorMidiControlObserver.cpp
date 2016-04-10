@@ -102,7 +102,7 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		if (fValue > vmid)
 			fValue = (m_fMidiValue > vmid ? vmin : vmax);
 		else
-			fValue = (m_fMidiValue > vmid ? vmax : vmin);
+			fValue = (m_fMidiValue < vmid ? vmax : vmin);
 	}
 
 	bool bSync = (m_bHook || !qtractorObserver::isDecimal());
@@ -119,14 +119,14 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		const float d2 = (m_bMidiSync ? (v1 - v0) : d1) * d1;
 		bSync = (d2 < 0.001f);
 	#endif
-		if (bSync) {
-			m_fMidiValue = fValue;
+		if (bSync)
 			m_bMidiSync = true;
-		}
 	}
 
-	if (bSync)
-		subject()->setValue(fValue);
+	if (bSync) {
+		m_fMidiValue = fValue;
+		qtractorObserver::subject()->setValue(fValue);
+	}
 }
 
 unsigned short qtractorMidiControlObserver::midiValue (void) const

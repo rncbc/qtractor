@@ -388,7 +388,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		if (t2 > iTimeEnd)
 			t2 = iTimeEnd;
 		// Filter event type!...
-		if (pEvent->type() == m_eventType && t2 > iTickStart) {
+		if (pEvent->type() == m_eventType && t2 >= iTickStart) {
 			y = ch - h1 * (pEvent->note() + 1);
 			if (y + h1 >= 0 && y < h) {
 				pNode = cursor.seekTick(t1);

@@ -11260,7 +11260,12 @@ Deseja criá-la?</translation>
 <context>
     <name>qtractorShortcutForm</name>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="498"/>
+        <location filename="../qtractorShortcutForm.cpp" line="423"/>
+        <source>Keyboard shortcut (%1) already assigned (%2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorShortcutForm.cpp" line="499"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11269,7 +11274,7 @@ Do you want to apply the changes?</source>
 Você quer aplicar essas alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="518"/>
+        <location filename="../qtractorShortcutForm.cpp" line="519"/>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11278,7 +11283,7 @@ Do you want to apply the changes?</source>
 Deseja aplicar as modificações?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="553"/>
+        <location filename="../qtractorShortcutForm.cpp" line="554"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controlador &amp;MIDI...</translation>
     </message>
@@ -11309,13 +11314,8 @@ Deseja aplicar as modificações?</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="422"/>
-        <source>Keyboard shortcut (%1) already assigned.</source>
-        <translation>O atalho (%1) já está sendo utilizado.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorShortcutForm.cpp" line="421"/>
-        <location filename="../qtractorShortcutForm.cpp" line="497"/>
-        <location filename="../qtractorShortcutForm.cpp" line="517"/>
+        <location filename="../qtractorShortcutForm.cpp" line="498"/>
+        <location filename="../qtractorShortcutForm.cpp" line="518"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
@@ -12375,7 +12375,7 @@ Tamanho:	%3</translation>
     <name>qtractorTracks</name>
     <message>
         <location filename="../qtractorTracks.cpp" line="1040"/>
-        <location filename="../qtractorTracks.cpp" line="2947"/>
+        <location filename="../qtractorTracks.cpp" line="2958"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Importar arquivo MIDI: &quot;%1&quot;, canal da pista: %2.</translation>
     </message>
@@ -12390,28 +12390,28 @@ Tamanho:	%3</translation>
         <translation>Arquivos de áudio (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1776"/>
+        <location filename="../qtractorTracks.cpp" line="1787"/>
         <source>clip cross-fade</source>
         <translation>crossfade da sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2276"/>
+        <location filename="../qtractorTracks.cpp" line="2287"/>
         <source>remove range</source>
         <translation>remover limite</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2051"/>
+        <location filename="../qtractorTracks.cpp" line="2062"/>
         <source>insert range</source>
         <translation>inserir limite</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1004"/>
-        <location filename="../qtractorTracks.cpp" line="2757"/>
+        <location filename="../qtractorTracks.cpp" line="2768"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Importar arquivo de áudio: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2871"/>
+        <location filename="../qtractorTracks.cpp" line="2882"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importar arquivo MIDI &quot;%1&quot; em %2 %3.</translation>
@@ -12422,19 +12422,19 @@ Tamanho:	%3</translation>
         <translation>unir sequências</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2256"/>
+        <location filename="../qtractorTracks.cpp" line="2267"/>
         <source>Remove Range</source>
         <translation>Remover Limite</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1034"/>
-        <location filename="../qtractorTracks.cpp" line="2941"/>
+        <location filename="../qtractorTracks.cpp" line="2952"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Importar arquivo MIDI: &quot;%1&quot;, canal da pista: %2 em%3 %4.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2031"/>
+        <location filename="../qtractorTracks.cpp" line="2042"/>
         <source>Insert Range</source>
         <translation>Inserir Limite</translation>
     </message>
@@ -12449,7 +12449,7 @@ Tamanho:	%3</translation>
         <translation>mudança de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2574"/>
+        <location filename="../qtractorTracks.cpp" line="2585"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -12468,7 +12468,7 @@ Posso continuar?</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="999"/>
-        <location filename="../qtractorTracks.cpp" line="2752"/>
+        <location filename="../qtractorTracks.cpp" line="2763"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Renderização do arquivo de áudio &quot;%1&quot; em %2 %3.</translation>
@@ -12489,7 +12489,7 @@ Posso continuar?</translation>
         <translation>importar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2876"/>
+        <location filename="../qtractorTracks.cpp" line="2887"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Importar arquivo de MIDI: &quot;%1&quot;.</translation>
     </message>
@@ -12524,7 +12524,7 @@ Posso continuar?</translation>
         <translation>quantizar</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2052"/>
+        <location filename="../qtractorTracks.cpp" line="2063"/>
         <source>insert track range</source>
         <translation>inserir limite à pista</translation>
     </message>
@@ -12554,12 +12554,12 @@ Posso continuar?</translation>
         <translation>Arquivos MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2573"/>
+        <location filename="../qtractorTracks.cpp" line="2584"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2277"/>
+        <location filename="../qtractorTracks.cpp" line="2288"/>
         <source>remove track range</source>
         <translation>remover limite da pista</translation>
     </message>

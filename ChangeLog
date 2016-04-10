@@ -4,6 +4,21 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Dropped the --enable-qt5 from configure as found redundant
+  given that's the build default anyway (suggestion by Guido
+  Scholz, thanks).
+
+- Immediate visual sync has been added to main and MIDI clip
+  editor thumb-views (a request by Frank Neuman thanks).
+
+- Fixed an old MIDI clip editor contents disapearing bug,
+  which manifested when drawing free-hand (ie. Edit/Select
+  Mode/Edit Draw is on) over and behind its start/beginning
+  position (while in the lower view pane).
+
+
 0.7.6  2016-04-05  A Hazier Photon Beta
 
 - Plug-ins search path and out-of-process (aka. dummy) VST
