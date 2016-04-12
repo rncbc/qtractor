@@ -11040,7 +11040,7 @@ Sei sicuro?</translation>
         <translation>Attiva plugin su insert</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="218"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
         <source>Plugin scanning in progress...</source>
         <translation>Scansione plugin in corso...</translation>
     </message>

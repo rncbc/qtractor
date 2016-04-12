@@ -11057,7 +11057,7 @@ Jste si jistý?</translation>
         <translation>Zapnout přídavný modul při vložení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="218"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
         <source>Plugin scanning in progress...</source>
         <translation>Běží hledání přídavných modulů...</translation>
     </message>

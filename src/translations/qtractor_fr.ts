@@ -11040,7 +11040,7 @@ Are you sure?</source>
         <translation>Activer le greffon à l&apos;insertion</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="218"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
         <source>Plugin scanning in progress...</source>
         <translation>Scan des greffons en cours...</translation>
     </message>
