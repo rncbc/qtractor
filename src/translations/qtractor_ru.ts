@@ -10864,17 +10864,17 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginSelectForm</name>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="312"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="329"/>
         <source>GUI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="314"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="331"/>
         <source>EXT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="316"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="333"/>
         <source>RT</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10967,6 +10967,16 @@ Are you sure?</source>
         <location filename="../qtractorPluginSelectForm.ui" line="218"/>
         <source>Plugin scanning in progress...</source>
         <translation>Выполняется сканирование эффектов</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginSelectForm.ui" line="241"/>
+        <source>Rescan for available plugins (refresh)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginSelectForm.ui" line="244"/>
+        <source>&amp;Rescan</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

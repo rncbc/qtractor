@@ -11045,17 +11045,27 @@ Are you sure?</source>
         <translation>Scan des greffons en cours...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="312"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="241"/>
+        <source>Rescan for available plugins (refresh)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginSelectForm.ui" line="244"/>
+        <source>&amp;Rescan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginSelectForm.cpp" line="329"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="314"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="331"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="316"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="333"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>

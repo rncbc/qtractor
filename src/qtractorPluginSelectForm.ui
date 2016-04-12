@@ -207,7 +207,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QProgressBar" name="PluginTypeProgressBar" >
+      <widget class="QProgressBar" name="PluginScanProgressBar" >
        <property name="minimumSize" >
         <size>
          <width>240</width>
@@ -218,6 +218,51 @@
         <string>Plugin scanning in progress...</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="PluginRescanPushButton" >
+       <property name="toolTip" >
+        <string>Rescan for available plugins (refresh)</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Rescan</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
+        </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
       <widget class="QDialogButtonBox" name="DialogButtonBox">
@@ -240,6 +285,7 @@
   <tabstop>PluginTypeComboBox</tabstop>
   <tabstop>PluginListView</tabstop>
   <tabstop>PluginActivateCheckBox</tabstop>
+  <tabstop>PluginRescanPushButton</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

@@ -56,6 +56,7 @@ protected slots:
 	void typeHintChanged(int iTypeHint);
 
 	void reset();
+	void rescan();
 	void refresh();
 	void scanned(int iPercent);
 	void stabilize();
