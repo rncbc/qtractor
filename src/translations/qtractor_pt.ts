@@ -11050,7 +11050,7 @@ Posso continuar?</translation>
         <translation>&amp;Ativar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="218"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
         <source>Plugin scanning in progress...</source>
         <translation>Procura por plugins em processo...</translation>
     </message>

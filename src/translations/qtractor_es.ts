@@ -11035,7 +11035,7 @@ Are you sure?</source>
         <translation>Activar plugin en inserción</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="218"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
         <source>Plugin scanning in progress...</source>
         <translation>Exploración de plugins en progreso...</translation>
     </message>

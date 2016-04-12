@@ -10964,7 +10964,7 @@ Are you sure?</source>
         <translation>Активировать эффект на вставке</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="218"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
         <source>Plugin scanning in progress...</source>
         <translation>Выполняется сканирование эффектов</translation>
     </message>

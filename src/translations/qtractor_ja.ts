@@ -11038,7 +11038,7 @@ Are you sure?</source>
         <translation>挿入時にプラグインを有効化する</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="218"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
         <source>Plugin scanning in progress...</source>
         <translation>プラグインを検索中です...</translation>
     </message>
