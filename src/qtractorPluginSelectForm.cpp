@@ -100,8 +100,8 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	m_ui.PluginListView->setSortingEnabled(true);
 	m_ui.PluginListView->sortItems(0, Qt::AscendingOrder);
 
-	m_ui.PluginTypeProgressBar->setMaximum(100);
-	m_ui.PluginTypeProgressBar->hide();
+	m_ui.PluginScanProgressBar->setMaximum(100);
+	m_ui.PluginScanProgressBar->hide();
 
 	// Initialize conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -144,6 +144,9 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	QObject::connect(m_ui.PluginActivateCheckBox,
 		SIGNAL(clicked()),
 		SLOT(stabilize()));
+	QObject::connect(m_ui.PluginRescanPushButton,
+		SIGNAL(clicked()),
+		SLOT(rescan()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -255,6 +258,18 @@ void qtractorPluginSelectForm::reset (void)
 }
 
 
+// Rescan plugin listing.
+void qtractorPluginSelectForm::rescan (void)
+{
+	qtractorPluginFactory *pPluginFactory
+		= qtractorPluginFactory::getInstance();
+	if (pPluginFactory)
+		pPluginFactory->clear();
+
+	refresh();
+}
+
+
 // Refresh plugin listing.
 void qtractorPluginSelectForm::refresh (void)
 {
@@ -272,9 +287,11 @@ void qtractorPluginSelectForm::refresh (void)
 	if (pPluginFactory->types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		m_ui.PluginTypeProgressBar->show();
+		m_ui.PluginRescanPushButton->hide();
+		m_ui.PluginScanProgressBar->show();
 		pPluginFactory->scan();
-		m_ui.PluginTypeProgressBar->hide();
+		m_ui.PluginScanProgressBar->hide();
+		m_ui.PluginRescanPushButton->show();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();
 	}
@@ -355,7 +372,7 @@ void qtractorPluginSelectForm::refresh (void)
 // Refresh plugin scan progress.
 void qtractorPluginSelectForm::scanned ( int iPercent )
 {
-	m_ui.PluginTypeProgressBar->setValue(iPercent);
+	m_ui.PluginScanProgressBar->setValue(iPercent);
 }
 
 

@@ -6,12 +6,15 @@ ChangeLog
 
 GIT HEAD
 
+- Plug-in rescan option has been added to plug-ins selection 
+  dialog (yet another suggestion by Frank Neumann, thanks).
+
 - Dropped the --enable-qt5 from configure as found redundant
   given that's the build default anyway (suggestion by Guido
   Scholz, thanks).
 
 - Immediate visual sync has been added to main and MIDI clip
-  editor thumb-views (a request by Frank Neuman thanks).
+  editor thumb-views (a request by Frank Neumann, thanks).
 
 - Fixed an old MIDI clip editor contents disapearing bug,
   which manifested when drawing free-hand (ie. Edit/Select
