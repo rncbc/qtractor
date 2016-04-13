@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -919,7 +919,7 @@ void qtractorClientListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		pDrag->setMimeData(pMimeData);
 		pDrag->setPixmap(m_pDragItem->icon(0).pixmap(16));
 		pDrag->setHotSpot(QPoint(-4, -12));
-		pDrag->start(Qt::LinkAction);
+		pDrag->exec(Qt::LinkAction);
 		// We've dragged and maybe dropped it by now...
 		m_pDragItem = NULL;
 	}

@@ -1293,7 +1293,7 @@ void qtractorPluginListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pDrag->setMimeData(pMimeData);
 			pDrag->setPixmap(m_pDragItem->icon().pixmap(16));
 			pDrag->setHotSpot(QPoint(-4, -12));
-			pDrag->start(Qt::MoveAction);
+			pDrag->exec(Qt::CopyAction | Qt::MoveAction);
 			// We've dragged and maybe dropped it by now...
 			m_pDragItem = NULL;
 		}
