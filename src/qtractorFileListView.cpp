@@ -817,7 +817,7 @@ QTreeWidgetItem *qtractorFileListView::findItem (
 	QList<QTreeWidgetItem *> items = QTreeWidget::findItems(sText,
 		Qt::MatchFlags(Qt::MatchExactly | Qt::MatchRecursive),
 		(iType == GroupItem ? 0 : pathColumn()));
-		
+
 	// Really check if it's of the intended type...
 	QListIterator<QTreeWidgetItem *> iter(items);
 	while (iter.hasNext()) {
@@ -850,7 +850,7 @@ QStringList qtractorFileListView::openFileNames (void)
 
 	// Remember recent directory...
 	if (!files.isEmpty())
-	    setRecentDir(QFileInfo(files.first()).absolutePath());
+		setRecentDir(QFileInfo(files.first()).absolutePath());
 
 	return files;
 }
@@ -958,7 +958,7 @@ void qtractorFileListView::timeoutSlot (void)
 // Recently used directory, if any.
 void qtractorFileListView::setRecentDir ( const QString& sRecentDir )
 {
-    m_sRecentDir = sRecentDir;
+	m_sRecentDir = sRecentDir;
 }
 
 const QString& qtractorFileListView::recentDir (void) const
@@ -1078,7 +1078,7 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pDrag->setMimeData(pMimeData);
 			pDrag->setPixmap(m_pDragItem->icon(0).pixmap(16));
 			pDrag->setHotSpot(QPoint(-4, -12));
-			pDrag->start(Qt::CopyAction | Qt:: MoveAction);
+			pDrag->exec(Qt::CopyAction | Qt:: MoveAction);
 			// We've dragged and maybe dropped it by now...
 			dragLeaveEvent(NULL);
 			m_pDragItem = NULL;
