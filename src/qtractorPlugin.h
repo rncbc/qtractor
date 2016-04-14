@@ -350,10 +350,7 @@ public:
 	unsigned short instances() const { return m_iInstances; }
 
 	// Chain helper ones.
-	unsigned int sampleRate() const;
-	unsigned int bufferSize() const;
 	unsigned short channels() const;
-	bool isMidi() const;
 
 	// Unique ID methods.
 	void setUniqueID(unsigned long iUniqueID)
@@ -755,11 +752,7 @@ public:
 	};
 
 	// Constructor.
-	qtractorPluginList(
-		unsigned short iChannels,
-		unsigned int iBufferSize,
-		unsigned int iSampleRate,
-		unsigned int iFlags);
+	qtractorPluginList(unsigned short iChannels, unsigned int iFlags);
 
 	// Destructor.
 	~qtractorPluginList();
@@ -769,20 +762,15 @@ public:
 	const QString& name() const
 		{ return m_sName; }
 
-	// Main-parameters accessor.
-	void setBuffer(
-		unsigned short iChannels,
-		unsigned int iBufferSize,
-		unsigned int iSampleRate,
-		unsigned int iFlags);
+	// Main-parameters accessors.
+	void setChannels(unsigned short iChannels, unsigned int iFlags);
+	void setChannelsEx(unsigned short iChannels, bool bReset = false);
 
 	// Reset and (re)activate all plugin chain.
-	void resetBuffer();
+	void resetBuffers();
 
 	// Brainless accessors.
 	unsigned short channels() const { return m_iChannels;   }
-	unsigned int sampleRate() const { return m_iSampleRate; }
-	unsigned int bufferSize() const { return m_iBufferSize; }
 	unsigned int flags()      const { return m_iFlags; }
 
 	// Brainless helpers.
@@ -928,8 +916,6 @@ private:
 
 	// Instance variables.
 	unsigned short m_iChannels;
-	unsigned int   m_iBufferSize;
-	unsigned int   m_iSampleRate;
 	unsigned int   m_iFlags;
 
 	// Activation state.

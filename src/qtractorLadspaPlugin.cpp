@@ -25,6 +25,9 @@
 
 #include "qtractorLadspaPlugin.h"
 
+#include "qtractorSession.h"
+#include "qtractorAudioEngine.h"
+
 #include <math.h>
 
 
@@ -285,7 +288,17 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 #endif
 
 	// Allocate the dummy audio I/O buffers...
-	const unsigned int iBufferSize = bufferSize();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	const unsigned int iSampleRate = pAudioEngine->sampleRate();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+
 	const unsigned short iAudioIns = pType->audioIns();
 	const unsigned short iAudioOuts = pType->audioOuts();
 
@@ -313,7 +326,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	for (i = 0; i < iInstances; ++i) {
 		// Instantiate them properly first...
 		LADSPA_Handle handle
-			= (*pLadspaDescriptor->instantiate)(pLadspaDescriptor, sampleRate());
+			= (*pLadspaDescriptor->instantiate)(pLadspaDescriptor, iSampleRate);
 		// Connect all existing input control ports...
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
@@ -466,12 +479,21 @@ qtractorLadspaPluginParam::qtractorLadspaPluginParam (
 	// Set nominal parameter name...
 	setName(pLadspaDescriptor->PortNames[iIndex]);
 
+	// Initialize default sample-rate...
+	unsigned int iSampleRate = 44100;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine)
+			iSampleRate = pAudioEngine->sampleRate();
+	}
+
 	// Initialize range values...
 	float fMinValue = 0.0f;
 	if (isBoundedBelow()) {
 		fMinValue = pPortRangeHint->LowerBound;
 		if (isSampleRate())
-			fMinValue *= float(pLadspaPlugin->sampleRate());
+			fMinValue *= float(iSampleRate);
 	}
 	setMinValue(fMinValue);
 
@@ -479,7 +501,7 @@ qtractorLadspaPluginParam::qtractorLadspaPluginParam (
 	if (isBoundedAbove()) {
 		fMaxValue = pPortRangeHint->UpperBound;
 		if (isSampleRate())
-			fMaxValue *= float(pLadspaPlugin->sampleRate());
+			fMaxValue *= float(iSampleRate);
 	}
 	setMaxValue(fMaxValue);
 

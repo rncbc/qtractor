@@ -723,7 +723,7 @@ void qtractorMidiManager::reset (void)
 	}
 #endif
 
-	m_pPluginList->resetBuffer();
+	m_pPluginList->resetBuffers();
 
 	m_controllerBuffer.clear();
 
@@ -1224,11 +1224,16 @@ void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 		return;
 
 	pSession->lock();
+
 	deleteAudioOutputBus();
 
 	m_bAudioOutputBus = bAudioOutputBus;
 
 	createAudioOutputBus();
+
+	if (m_pPluginList && m_pAudioOutputBus)
+		m_pPluginList->setChannelsEx(m_pAudioOutputBus->channels(), true);
+
 	pSession->unlock();
 }
 
@@ -1274,7 +1279,7 @@ void qtractorMidiManager::createAudioOutputBus (void)
 		m_pAudioOutputBus
 			= new qtractorAudioBus(pAudioEngine, m_pPluginList->name(),
 				qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex),
-				false, m_pPluginList->channels());
+				false, 2); // FIXME: Make it always stereo (2ch).
 		m_pAudioOutputBus->setAutoConnect(m_bAudioOutputAutoConnect);
 		if (pAudioEngine->isActivated()) {
 			pAudioEngine->addBusEx(m_pAudioOutputBus);

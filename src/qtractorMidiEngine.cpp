@@ -4488,18 +4488,8 @@ qtractorPluginList *qtractorMidiBus::pluginList_out (void) const
 // Create plugin-list properly.
 qtractorPluginList *qtractorMidiBus::createPluginList ( int iFlags ) const
 {
-	qtractorSession *pSession = engine()->session();
-	if (pSession == NULL)
-		return NULL;
-
 	// Create plugin-list alright...
-	unsigned int iSampleRate = 0;
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine)
-		iSampleRate = pAudioEngine->sampleRate();
-
-	qtractorPluginList *pPluginList
-		= new qtractorPluginList(0, 0, iSampleRate, iFlags);
+	qtractorPluginList *pPluginList	= new qtractorPluginList(0, iFlags);
 
 	// Set plugin-list title name...
 	updatePluginListName(pPluginList, iFlags);
@@ -4548,13 +4538,9 @@ void qtractorMidiBus::updatePluginList (
 		}
 	}
 
-	// Got it?
-	if (pAudioBus == NULL)
-		return;
-
 	// Set plugin-list buffer alright...
-	pPluginList->setBuffer(pAudioBus->channels(),
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
+	if (pAudioBus)
+		pPluginList->setChannels(pAudioBus->channels(), iFlags);
 }
 
 

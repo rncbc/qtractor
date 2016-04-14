@@ -2370,19 +2370,18 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
-#ifdef CONFIG_LV2_WORKER
-	if (lilv_plugin_has_feature(lv2_plugin(), g_lv2_worker_schedule_hint))
-		m_lv2_worker = new qtractorLv2Worker(this, m_lv2_features);
-#endif
-
-	LV2_Feature **features = m_lv2_features;
-#ifdef CONFIG_LV2_WORKER
-	if (m_lv2_worker)
-		features = m_lv2_worker->lv2_features();
-#endif
-
 	// Allocate the dummy audio I/O buffers...
-	const unsigned int iBufferSize = bufferSize();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	const unsigned int iSampleRate = pAudioEngine->sampleRate();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+
 	const unsigned short iAudioIns = pLv2Type->audioIns();
 	const unsigned short iAudioOuts = pLv2Type->audioOuts();
 
@@ -2400,6 +2399,17 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
 	}
 
+#ifdef CONFIG_LV2_WORKER
+	if (lilv_plugin_has_feature(lv2_plugin(), g_lv2_worker_schedule_hint))
+		m_lv2_worker = new qtractorLv2Worker(this, m_lv2_features);
+#endif
+
+	LV2_Feature **features = m_lv2_features;
+#ifdef CONFIG_LV2_WORKER
+	if (m_lv2_worker)
+		features = m_lv2_worker->lv2_features();
+#endif
+
 	// We'll need output control (not dummy anymore) port indexes...
 	const unsigned short iControlOuts = pLv2Type->controlOuts();
 
@@ -2410,7 +2420,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	for (i = 0; i < iInstances; ++i) {
 		// Instantiate them properly first...
 		LilvInstance *instance
-			= lilv_plugin_instantiate(plugin, sampleRate(), features);
+			= lilv_plugin_instantiate(plugin, iSampleRate, features);
 		if (instance) {
 			// (Dis)connect all ports...
 			const unsigned long iNumPorts = lilv_plugin_get_num_ports(plugin);
