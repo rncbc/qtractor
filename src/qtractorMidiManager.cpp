@@ -1274,7 +1274,7 @@ void qtractorMidiManager::createAudioOutputBus (void)
 		m_pAudioOutputBus
 			= new qtractorAudioBus(pAudioEngine, m_pPluginList->name(),
 				qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex),
-				false, m_pPluginList->channels());
+				false, 2); // FIXME: Make it always stereo (2ch).
 		m_pAudioOutputBus->setAutoConnect(m_bAudioOutputAutoConnect);
 		if (pAudioEngine->isActivated()) {
 			pAudioEngine->addBusEx(m_pAudioOutputBus);

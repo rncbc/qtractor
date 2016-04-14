@@ -283,16 +283,6 @@ qtractorPlugin::~qtractorPlugin (void)
 
 
 // Chain helper ones.
-unsigned int qtractorPlugin::sampleRate (void) const
-{
-	return (m_pList ? m_pList->sampleRate() : 0);
-}
-
-unsigned int qtractorPlugin::bufferSize (void) const
-{
-	return (m_pList ? m_pList->bufferSize() : 0);
-}
-
 unsigned short qtractorPlugin::channels (void) const
 {
 	return (m_pList ? m_pList->channels() : 0);
@@ -1305,11 +1295,12 @@ void qtractorPluginParam::Observer::update ( bool bUpdate )
 //
 
 // Constructor.
-qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
-	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
-	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
-		m_iFlags(0), m_iActivated(0), m_pMidiManager(NULL),
-		m_iMidiBank(-1), m_iMidiProg(-1), m_pMidiProgramSubject(NULL)
+qtractorPluginList::qtractorPluginList (
+	unsigned short iChannels, unsigned int iFlags )
+	: m_iChannels(iChannels), m_iFlags(iFlags),
+		m_iActivated(0), m_pMidiManager(NULL),
+		m_iMidiBank(-1), m_iMidiProg(-1),
+		m_pMidiProgramSubject(NULL)
 {
 	setAutoDelete(true);
 
@@ -1325,14 +1316,14 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 
 	m_iAudioInsertActivated = 0;
 
-	setBuffer(iChannels, iBufferSize, iSampleRate, iFlags);
+	setBuffer(iChannels, iFlags);
 }
 
 // Destructor.
 qtractorPluginList::~qtractorPluginList (void)
 {
 	// Reset allocated channel buffers.
-	setBuffer(0, 0, 0, 0);
+	setBuffer(0, 0);
 
 	// Clear out all dependables...
 	m_views.clear();
@@ -1357,8 +1348,8 @@ void qtractorPluginList::setName ( const QString& sName )
 
 
 // Main-parameters accessor.
-void qtractorPluginList::setBuffer ( unsigned short iChannels,
-	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
+void qtractorPluginList::setBuffer (
+	unsigned short iChannels, unsigned int iFlags )
 {
 	unsigned short i;
 
@@ -1384,26 +1375,23 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pMidiProgramSubject = NULL;
 	}
 
-	// Set proper sample-rate and flags at once.
-	m_iSampleRate = iSampleRate;
-	m_iFlags = iFlags;
-
 	// Some sanity is in order, at least for now...
-	if (iChannels == 0 || iBufferSize == 0)
+	if (iChannels == 0)
 		return;
 
-	// Go, go, go...
-	m_iChannels   = iChannels;
-	m_iBufferSize = iBufferSize;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
 
-	// Allocate new interim buffer...
-	if (m_iChannels > 0 && m_iBufferSize > 0) {
-		m_pppBuffers[1] = new float * [m_iChannels];
-		for (i = 0; i < m_iChannels; ++i) {
-			m_pppBuffers[1][i] = new float [m_iBufferSize];
-			::memset(m_pppBuffers[1][i], 0, m_iBufferSize * sizeof(float));
-		}
-	}
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+
+	// Go, go, go...
+	m_iChannels = iChannels;
+	m_iFlags = iFlags;
 
 	// Allocate new MIDI manager, if applicable...
 	if (m_iFlags & Midi) {
@@ -1417,11 +1405,23 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
 		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
 	#endif
-		if (m_pMidiManager->isAudioOutputBus()) {
-			qtractorAudioBus *pAudioOutputBus
-				= m_pMidiManager->audioOutputBus();
-			if (pAudioOutputBus)
+		qtractorAudioBus *pAudioOutputBus
+			= m_pMidiManager->audioOutputBus();
+		if (pAudioOutputBus) {
+			// Override number of channels from audio output bus...
+			m_iChannels = pAudioOutputBus->channels();
+			// Restore it's connections if dedicated...
+			if (m_pMidiManager->isAudioOutputBus())
 				pAudioOutputBus->outputs().copy(m_audioOutputs);
+		}
+	}
+
+	// Allocate new interim buffer...
+	if (m_iChannels > 0) {
+		m_pppBuffers[1] = new float * [m_iChannels];
+		for (i = 0; i < m_iChannels; ++i) {
+			m_pppBuffers[1][i] = new float [iBufferSize];
+			::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
 		}
 	}
 
@@ -1439,6 +1439,16 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 // Reset and (re)activate all plugin chain.
 void qtractorPluginList::resetBuffer (void)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+
 #if 0
 	// Save and reset activation count...
 	int iActivated = m_iActivated;
@@ -1452,9 +1462,9 @@ void qtractorPluginList::resetBuffer (void)
 	}
 #endif
 	// Reset interim buffer, if any...
-	if (m_pppBuffers[1]) {
+	if (m_iChannels > 0 && m_pppBuffers[1]) {
 		for (unsigned short i = 0; i < m_iChannels; ++i)
-			::memset(m_pppBuffers[1][i], 0, m_iBufferSize * sizeof(float));
+			::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
 	}
 #if 0
 	// Restore activation of all previously deactivated plugins...
@@ -1654,9 +1664,7 @@ void qtractorPluginList::removeView ( qtractorPluginListView *pView )
 void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 {
 	// Sanity checks...
-	if (ppBuffer == NULL || *ppBuffer == NULL)
-		return;
-	if (nframes > m_iBufferSize || m_pppBuffers[1] == NULL)
+	if (ppBuffer == NULL || *ppBuffer == NULL || m_pppBuffers[1] == NULL)
 		return;
 
 	// Start from first input buffer...

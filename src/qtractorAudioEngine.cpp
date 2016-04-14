@@ -2726,18 +2726,8 @@ unsigned int qtractorAudioBus::latency_out (void) const
 // Create plugin-list properly.
 qtractorPluginList *qtractorAudioBus::createPluginList ( int iFlags ) const
 {
-	qtractorSession *pSession = engine()->session();
-	if (pSession == NULL)
-		return NULL;
-
 	// Create plugin-list alright...
-	unsigned int iSampleRate = 0;
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine)
-		iSampleRate = pAudioEngine->sampleRate();
-
-	qtractorPluginList *pPluginList
-		= new qtractorPluginList(0, 0, iSampleRate, iFlags);
+	qtractorPluginList *pPluginList	= new qtractorPluginList(0, iFlags);
 
 	// Set plugin-list title name...
 	updatePluginListName(pPluginList, iFlags);
@@ -2759,18 +2749,11 @@ void qtractorAudioBus::updatePluginListName (
 void qtractorAudioBus::updatePluginList (
 	qtractorPluginList *pPluginList, int iFlags )
 {
-	// Sanity checks...
-	qtractorAudioEngine *pAudioEngine
-		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
-		return;
-
 	// Set plugin-list title name...
 	updatePluginListName(pPluginList, iFlags);
 
 	// Set plugin-list buffer alright...
-	pPluginList->setBuffer(m_iChannels,
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
+	pPluginList->setBuffer(m_iChannels, iFlags);
 }
 
 

@@ -28,7 +28,9 @@
 #include "qtractorPluginForm.h"
 
 #include "qtractorMidiManager.h"
+
 #include "qtractorSession.h"
+#include "qtractorAudioEngine.h"
 
 #if 0//QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorMainForm.h"
@@ -743,6 +745,17 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	const unsigned int iSampleRate = pAudioEngine->sampleRate();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+
 	// Allocate new instances...
 	m_ppEffects = new qtractorVstPluginType::Effect * [iInstances];
 	m_ppEffects[0] = pVstType->effect();
@@ -754,8 +767,6 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	}
 
 	// Setup all those instance alright...
-	const unsigned int iSampleRate = sampleRate();
-	const unsigned int iBufferSize = bufferSize();
 //	const unsigned short iAudioIns = audioIns();
 	const unsigned short iAudioOuts = audioOuts();
 
@@ -1671,15 +1682,27 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	case audioMasterGetSampleRate:
 		VST_HC_DEBUG("audioMasterGetSampleRate");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin)
-			ret = (VstIntPtr) pVstPlugin->sampleRate();
+		if (pVstPlugin) {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+				if (pAudioEngine)
+					ret = (VstIntPtr) pAudioEngine->sampleRate();
+			}
+		}
 		break;
 
 	case audioMasterGetBlockSize:
 		VST_HC_DEBUG("audioMasterGetBlockSize");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin)
-			ret = (VstIntPtr) pVstPlugin->bufferSize();
+		if (pVstPlugin) {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+				if (pAudioEngine)
+					ret = (VstIntPtr) pAudioEngine->bufferSize();
+			}
+		}
 		break;
 
 	case audioMasterGetInputLatency:

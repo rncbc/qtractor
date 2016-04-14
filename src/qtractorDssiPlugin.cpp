@@ -31,6 +31,7 @@
 #include "qtractorMidiManager.h"
 
 #include "qtractorSession.h"
+#include "qtractorAudioEngine.h"
 
 
 #include <QFileInfo>
@@ -628,7 +629,13 @@ public:
 
 		m_iInstances = iNewInstances;
 
-		const unsigned int iBufferSize = pDssiPlugin->list()->bufferSize();
+		unsigned int iBufferSize = 0x400; // FIXME: Sane default.
+		qtractorAudioEngine *pAudioEngine = NULL;
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine)
+			iBufferSize = pAudioEngine->bufferSize();
 		if (g_iDummyBufferSize < iBufferSize) {
 			g_iDummyBufferSize = iBufferSize;
 			if (g_pDummyBuffer)

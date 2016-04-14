@@ -31,17 +31,17 @@ Audio:	%1 canali, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2418"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2754"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2744"/>
         <location filename="../qtractorMidiEngine.cpp" line="3957"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4516"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4506"/>
         <source>%1 In</source>
         <translation>%1 Ingressi</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2427"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2754"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2744"/>
         <location filename="../qtractorMidiEngine.cpp" line="3966"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4516"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4506"/>
         <source>%1 Out</source>
         <translation>%1 Uscite</translation>
     </message>
@@ -52,7 +52,7 @@ Audio:	%1 canali, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="154"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1471"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1482"/>
         <source>All files (*.*)</source>
         <translation>Tutti i file (*.*)</translation>
     </message>
@@ -191,7 +191,7 @@ Fine:	%3	Lunghezza:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="418"/>
-        <location filename="../qtractorTrack.cpp" line="675"/>
+        <location filename="../qtractorTrack.cpp" line="668"/>
         <source>%1 Monitor</source>
         <translation>%1 Monitor</translation>
     </message>
@@ -441,7 +441,7 @@ MIDI:	</translation>
         <translation>Attiva</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="1844"/>
+        <location filename="../qtractorPlugin.cpp" line="1852"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin non trovata.</translation>
     </message>
@@ -566,31 +566,31 @@ MIDI:	</translation>
         <translation>sposta marker</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="676"/>
+        <location filename="../qtractorTrack.cpp" line="669"/>
         <source>%1 Record</source>
         <translation>%1 Registrazione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="677"/>
+        <location filename="../qtractorTrack.cpp" line="670"/>
         <source>%1 Mute</source>
         <translation>%1 Muto</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="678"/>
+        <location filename="../qtractorTrack.cpp" line="671"/>
         <source>%1 Solo</source>
         <translation>%1 Solo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="3959"/>
         <location filename="../qtractorMidiEngine.cpp" line="3968"/>
-        <location filename="../qtractorTrack.cpp" line="683"/>
+        <location filename="../qtractorTrack.cpp" line="676"/>
         <source>%1 Volume</source>
         <translation>%1 Volume</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2420"/>
         <location filename="../qtractorAudioEngine.cpp" line="2429"/>
-        <location filename="../qtractorTrack.cpp" line="686"/>
+        <location filename="../qtractorTrack.cpp" line="679"/>
         <source>%1 Gain</source>
         <translation>%1 Guadagno</translation>
     </message>
@@ -599,7 +599,7 @@ MIDI:	</translation>
         <location filename="../qtractorAudioEngine.cpp" line="2431"/>
         <location filename="../qtractorMidiEngine.cpp" line="3961"/>
         <location filename="../qtractorMidiEngine.cpp" line="3970"/>
-        <location filename="../qtractorTrack.cpp" line="689"/>
+        <location filename="../qtractorTrack.cpp" line="682"/>
         <source>%1 Pan</source>
         <translation>%1 Bilanciamento</translation>
     </message>
@@ -713,27 +713,27 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Sconosciuto</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="616"/>
+        <location filename="../qtractorVstPlugin.cpp" line="618"/>
         <source>Product: </source>
         <translation>Prodotto:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="624"/>
+        <location filename="../qtractorVstPlugin.cpp" line="626"/>
         <source>Vendor: </source>
         <translation>Produttore: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="632"/>
+        <location filename="../qtractorVstPlugin.cpp" line="634"/>
         <source>Version: </source>
         <translation>Versione: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1468"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1479"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorLadspaPlugin.cpp" line="146"/>
+        <location filename="../qtractorLadspaPlugin.cpp" line="149"/>
         <source>Copyright: </source>
         <translation>Copyright: </translation>
     </message>
@@ -743,7 +743,7 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Progetto: </translation>
     </message>
     <message>
-        <location filename="../qtractorLadspaPlugin.cpp" line="140"/>
+        <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
         <location filename="../qtractorLv2Plugin.cpp" line="1784"/>
         <source>Author: </source>
         <translation>Autore: </translation>

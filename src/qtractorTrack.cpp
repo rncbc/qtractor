@@ -342,16 +342,11 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pMuteObserver   = new StateObserver(this, Mute,   m_pMuteSubject);
 	m_pSoloObserver   = new StateObserver(this, Solo,   m_pSoloSubject);
 
-	unsigned int iSampleRate = 0;
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine)
-		iSampleRate = pAudioEngine->sampleRate();
-
 	unsigned int iFlags = qtractorPluginList::Track;
 	if (trackType == qtractorTrack::Midi)
 		iFlags |= qtractorPluginList::Midi;
 
-	m_pPluginList = new qtractorPluginList(0, 0, iSampleRate, iFlags);
+	m_pPluginList = new qtractorPluginList(0, iFlags);
 
 	m_pCurveFile = new qtractorCurveFile(m_pPluginList->curveList());
 
@@ -510,7 +505,6 @@ bool qtractorTrack::open (void)
 			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
 				m_props.gain, m_props.panning);
 			m_pPluginList->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
 				qtractorPluginList::AudioTrack);
 		}
 		break;
@@ -544,7 +538,6 @@ bool qtractorTrack::open (void)
 		// Set plugin-list buffer alright...
 		if (pAudioBus) {
 			m_pPluginList->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
 				qtractorPluginList::MidiTrack);
 		}
 		// Set MIDI bank/program observer...
@@ -735,12 +728,7 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	}
 
 	// (Re)set plugin-list...
-	unsigned int iSampleRate = 0;
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine)
-		iSampleRate = pAudioEngine->sampleRate();
-
-	m_pPluginList->setBuffer(0, 0, iSampleRate, iFlags);
+	m_pPluginList->setBuffer(0, iFlags);
 }
 
 
