@@ -762,11 +762,12 @@ public:
 	const QString& name() const
 		{ return m_sName; }
 
-	// Main-parameters accessor.
-	void setBuffer(unsigned short iChannels, unsigned int iFlags);
+	// Main-parameters accessors.
+	void setChannels(unsigned short iChannels, unsigned int iFlags);
+	void setChannelsEx(unsigned short iChannels, bool bReset = false);
 
 	// Reset and (re)activate all plugin chain.
-	void resetBuffer();
+	void resetBuffers();
 
 	// Brainless accessors.
 	unsigned short channels() const { return m_iChannels;   }

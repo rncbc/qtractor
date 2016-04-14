@@ -4540,7 +4540,7 @@ void qtractorMidiBus::updatePluginList (
 
 	// Set plugin-list buffer alright...
 	if (pAudioBus)
-		pPluginList->setBuffer(pAudioBus->channels(), iFlags);
+		pPluginList->setChannels(pAudioBus->channels(), iFlags);
 }
 
 

@@ -1316,14 +1316,14 @@ qtractorPluginList::qtractorPluginList (
 
 	m_iAudioInsertActivated = 0;
 
-	setBuffer(iChannels, iFlags);
+	setChannels(iChannels, iFlags);
 }
 
 // Destructor.
 qtractorPluginList::~qtractorPluginList (void)
 {
 	// Reset allocated channel buffers.
-	setBuffer(0, 0);
+	setChannels(0, 0);
 
 	// Clear out all dependables...
 	m_views.clear();
@@ -1348,19 +1348,9 @@ void qtractorPluginList::setName ( const QString& sName )
 
 
 // Main-parameters accessor.
-void qtractorPluginList::setBuffer (
+void qtractorPluginList::setChannels (
 	unsigned short iChannels, unsigned int iFlags )
 {
-	unsigned short i;
-
-	// Delete old interim buffer...
-	if (m_pppBuffers[1]) {
-		for (i = 0; i < m_iChannels; ++i)
-			delete [] m_pppBuffers[1][i];
-		delete [] m_pppBuffers[1];
-		m_pppBuffers[1] = NULL;
-	}
-
 	// Destroy any MIDI manager still there...
 	if (m_pMidiManager) {
 		m_bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
@@ -1373,6 +1363,49 @@ void qtractorPluginList::setBuffer (
 	if (m_pMidiProgramSubject) {
 		delete m_pMidiProgramSubject;
 		m_pMidiProgramSubject = NULL;
+	}
+
+	// Go, go, go...
+	m_iFlags = iFlags;
+
+	if (iChannels == 0)
+		return;
+
+	// Allocate new MIDI manager, if applicable...
+	if (m_iFlags & Midi) {
+		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
+		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
+		qtractorAudioBus *pAudioOutputBus
+			= m_pMidiManager->audioOutputBus();
+		if (pAudioOutputBus) {
+			// Override number of channels from audio output bus...
+			iChannels = pAudioOutputBus->channels();
+			// Restore it's connections if dedicated...
+			if (m_pMidiManager->isAudioOutputBus())
+				pAudioOutputBus->outputs().copy(m_audioOutputs);
+		}
+	}
+
+	// Allocate all new interim buffers...
+	setChannelsEx(iChannels, false);
+
+	// FIXME: This should be better managed...
+	if (m_pMidiManager)
+		m_pMidiManager->updateInstruments();
+}
+
+
+void qtractorPluginList::setChannelsEx (
+	unsigned short iChannels, bool bReset )
+{
+	unsigned short i;
+
+	// Delete old interim buffer...
+	if (m_pppBuffers[1]) {
+		for (i = 0; i < m_iChannels; ++i)
+			delete [] m_pppBuffers[1][i];
+		delete [] m_pppBuffers[1];
+		m_pppBuffers[1] = NULL;
 	}
 
 	// Some sanity is in order, at least for now...
@@ -1391,30 +1424,6 @@ void qtractorPluginList::setBuffer (
 
 	// Go, go, go...
 	m_iChannels = iChannels;
-	m_iFlags = iFlags;
-
-	// Allocate new MIDI manager, if applicable...
-	if (m_iFlags & Midi) {
-		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
-		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
-	#if 0
-		// Set loaded/cached properties properly...
-		m_pMidiManager->setCurrentBank(m_iMidiBank);
-		m_pMidiManager->setCurrentProg(m_iMidiProg);
-		m_pMidiManager->setAudioOutputBusName(m_sAudioOutputBusName);
-		m_pMidiManager->setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
-		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
-	#endif
-		qtractorAudioBus *pAudioOutputBus
-			= m_pMidiManager->audioOutputBus();
-		if (pAudioOutputBus) {
-			// Override number of channels from audio output bus...
-			m_iChannels = pAudioOutputBus->channels();
-			// Restore it's connections if dedicated...
-			if (m_pMidiManager->isAudioOutputBus())
-				pAudioOutputBus->outputs().copy(m_audioOutputs);
-		}
-	}
 
 	// Allocate new interim buffer...
 	if (m_iChannels > 0) {
@@ -1427,17 +1436,24 @@ void qtractorPluginList::setBuffer (
 
 	// Reset all plugin chain channels...
 	for (qtractorPlugin *pPlugin = first();
-			pPlugin; pPlugin = pPlugin->next())
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (bReset) {
+			pPlugin->freezeConfigs();
+			pPlugin->freezeValues();
+		}
 		pPlugin->setChannels(m_iChannels);
-
-	// FIXME: This should be better managed...
-	if (m_pMidiManager)
-		m_pMidiManager->updateInstruments();
+		if (bReset) {
+			pPlugin->releaseConfigs();
+			pPlugin->releaseValues();
+			pPlugin->clearConfigs();
+			pPlugin->clearValues();
+		}
+	}
 }
 
 
 // Reset and (re)activate all plugin chain.
-void qtractorPluginList::resetBuffer (void)
+void qtractorPluginList::resetBuffers (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)

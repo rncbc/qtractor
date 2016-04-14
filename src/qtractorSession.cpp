@@ -1082,7 +1082,7 @@ void qtractorSession::resetAllPlugins (void)
 	// All tracks...
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
-		(pTrack->pluginList())->resetBuffer();
+		(pTrack->pluginList())->resetBuffers();
 	}
 	
 	// All audio buses...
@@ -1092,9 +1092,9 @@ void qtractorSession::resetAllPlugins (void)
 			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
 			if (pAudioBus->pluginList_in())
-				pAudioBus->pluginList_in()->resetBuffer();
+				pAudioBus->pluginList_in()->resetBuffers();
 			if (pAudioBus->pluginList_out())
-				pAudioBus->pluginList_out()->resetBuffer();
+				pAudioBus->pluginList_out()->resetBuffers();
 		}
 	}
 }

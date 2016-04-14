@@ -1483,8 +1483,7 @@ bool qtractorAudioEngine::fileExport (
 // Special track-immediate methods.
 void qtractorAudioEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 {
-	if (bMute)
-		(pTrack->pluginList())->resetBuffer();
+	if (bMute) (pTrack->pluginList())->resetBuffers();
 
 	sessionCursor()->updateTrackClip(pTrack);
 }
@@ -2753,7 +2752,7 @@ void qtractorAudioBus::updatePluginList (
 	updatePluginListName(pPluginList, iFlags);
 
 	// Set plugin-list buffer alright...
-	pPluginList->setBuffer(m_iChannels, iFlags);
+	pPluginList->setChannels(m_iChannels, iFlags);
 }
 
 

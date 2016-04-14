@@ -504,7 +504,7 @@ bool qtractorTrack::open (void)
 		if (pAudioBus) {
 			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
 				m_props.gain, m_props.panning);
-			m_pPluginList->setBuffer(pAudioBus->channels(),
+			m_pPluginList->setChannels(pAudioBus->channels(),
 				qtractorPluginList::AudioTrack);
 		}
 		break;
@@ -537,7 +537,7 @@ bool qtractorTrack::open (void)
 		}
 		// Set plugin-list buffer alright...
 		if (pAudioBus) {
-			m_pPluginList->setBuffer(pAudioBus->channels(),
+			m_pPluginList->setChannels(pAudioBus->channels(),
 				qtractorPluginList::MidiTrack);
 		}
 		// Set MIDI bank/program observer...
@@ -728,7 +728,7 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	}
 
 	// (Re)set plugin-list...
-	m_pPluginList->setBuffer(0, iFlags);
+	m_pPluginList->setChannels(0, iFlags);
 }
 
 
