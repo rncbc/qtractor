@@ -456,7 +456,7 @@ public:
 		const QString& /*sKey*/, const QString& /*sValue*/) {}
 
 	// Plugin configuration/state snapshot.
-	virtual void freezeConfigs()  { clearConfigs(); }
+	virtual void freezeConfigs()  {}
 
 	// Plugin configure realization.
 	virtual void releaseConfigs();

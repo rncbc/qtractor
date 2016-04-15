@@ -869,7 +869,7 @@ void qtractorPlugin::releaseConfigs (void)
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
 
-	clearConfigs();
+//	clearConfigs();
 }
 
 
@@ -1398,6 +1398,10 @@ void qtractorPluginList::setChannels (
 void qtractorPluginList::setChannelsEx (
 	unsigned short iChannels, bool bReset )
 {
+	// Maybe we don't need to change a thing here...
+	if (iChannels == m_iChannels)
+		return;
+
 	unsigned short i;
 
 	// Delete old interim buffer...
@@ -1408,9 +1412,8 @@ void qtractorPluginList::setChannelsEx (
 		m_pppBuffers[1] = NULL;
 	}
 
-	// Some sanity is in order, at least for now...
-	if (iChannels == 0)
-		return;
+	// Go, go, go...
+	m_iChannels = iChannels;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1421,9 +1424,6 @@ void qtractorPluginList::setChannelsEx (
 		return;
 
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-
-	// Go, go, go...
-	m_iChannels = iChannels;
 
 	// Allocate new interim buffer...
 	if (m_iChannels > 0) {
@@ -1437,16 +1437,14 @@ void qtractorPluginList::setChannelsEx (
 	// Reset all plugin chain channels...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		if (bReset) {
+		if (bReset && m_iChannels > 0) {
 			pPlugin->freezeConfigs();
 			pPlugin->freezeValues();
 		}
 		pPlugin->setChannels(m_iChannels);
-		if (bReset) {
+		if (bReset && m_iChannels > 0) {
 			pPlugin->releaseConfigs();
 			pPlugin->releaseValues();
-			pPlugin->clearConfigs();
-			pPlugin->clearValues();
 		}
 	}
 }
@@ -1478,7 +1476,7 @@ void qtractorPluginList::resetBuffers (void)
 	}
 #endif
 	// Reset interim buffer, if any...
-	if (m_iChannels > 0 && m_pppBuffers[1]) {
+	if (m_pppBuffers[1]) {
 		for (unsigned short i = 0; i < m_iChannels; ++i)
 			::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
 	}
@@ -1993,7 +1991,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pElement->appendChild(ePlugin);
 
 		// May release plugin state...
-		pPlugin->clearConfigs();
+		pPlugin->releaseConfigs();
 	}
 
 	// Save audio output-bus connects...

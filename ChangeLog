@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI tracks and buses plug-in chains now honor the number
+  of effective audio channels from the assigned audio output
+  bus; dedicated audio output ports will keep default to the
+  stereo two channels. (EXPERIMENTAL)
+
 - Plug-in rescan option has been added to plug-ins selection 
   dialog (yet another suggestion by Frank Neumann, thanks).
 

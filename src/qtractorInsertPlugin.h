@@ -162,6 +162,7 @@ public:
 
 	// Plugin configuration/state snapshot.
 	void freezeConfigs();
+	void releaseConfigs();
 
 	// Audio specific accessor.
 	qtractorAudioBus *audioBus() const;
@@ -218,6 +219,7 @@ public:
 
 	// Plugin configuration/state snapshot.
 	void freezeConfigs();
+	void releaseConfigs();
 
 	// MIDI specific accessor.
 	qtractorMidiBus *midiBus() const;
@@ -343,6 +345,7 @@ public:
 
 	// Plugin configuration/state snapshot.
 	void freezeConfigs();
+	void releaseConfigs();
 
 	// Audio bus specific accessors.
 	void setAudioBusName(const QString& sAudioBusName);
@@ -397,6 +400,7 @@ public:
 
 	// Plugin configuration/state snapshot.
 	void freezeConfigs();
+	void releaseConfigs();
 
 	// Audio bus specific accessors.
 	void setMidiBusName(const QString& sMidiBusName);

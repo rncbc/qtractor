@@ -33,6 +33,7 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 
+#include "qtractorMainForm.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -318,8 +319,14 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 	// Save and send configuration to plugin...
 	++(pDssiEditor->busy);
+
 	pDssiPlugin->setConfig(key, value);
 	pDssiPlugin->configure(key, value);
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->dirtyNotifySlot();
+
 	--(pDssiEditor->busy);
 
 	return 0;
