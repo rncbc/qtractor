@@ -869,7 +869,7 @@ void qtractorPlugin::releaseConfigs (void)
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
 
-	clearConfigs();
+//	clearConfigs();
 }
 
 
@@ -1991,7 +1991,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pElement->appendChild(ePlugin);
 
 		// May release plugin state...
-		pPlugin->clearConfigs();
+		pPlugin->releaseConfigs();
 	}
 
 	// Save audio output-bus connects...

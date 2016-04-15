@@ -1041,6 +1041,15 @@ void qtractorVstPlugin::freezeConfigs (void)
 	setConfig("chunk", data.constData());
 }
 
+void qtractorVstPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
+}
+
 
 // Plugin preset i/o (configuration from/to (fxp/fxb files).
 bool qtractorVstPlugin::loadPresetFile ( const QString& sFilename )

@@ -588,6 +588,16 @@ void qtractorAudioInsertPlugin::freezeConfigs (void)
 }
 
 
+void qtractorAudioInsertPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioInsertPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
+}
+
+
 void qtractorAudioInsertPlugin::freezeConfigs ( int iBusMode )
 {
 	if (m_pAudioBus == NULL)
@@ -878,6 +888,16 @@ void qtractorMidiInsertPlugin::freezeConfigs (void)
 
 	freezeConfigs(qtractorBus::Input);
 	freezeConfigs(qtractorBus::Output);
+}
+
+
+void qtractorMidiInsertPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiInsertPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
 }
 
 
@@ -1292,6 +1312,17 @@ void qtractorAudioAuxSendPlugin::freezeConfigs (void)
 }
 
 
+void qtractorAudioAuxSendPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioAuxSendPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
+}
+
+
+
 //----------------------------------------------------------------------------
 // qtractorMidiAuxSendPlugin -- MIDI aux-send pseudo-plugin instance.
 //
@@ -1524,6 +1555,16 @@ void qtractorMidiAuxSendPlugin::freezeConfigs (void)
 	qtractorPlugin::freezeConfigs();
 
 	setConfig("midiBusName", m_sMidiBusName);
+}
+
+
+void qtractorMidiAuxSendPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiAuxSendPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
 }
 
 

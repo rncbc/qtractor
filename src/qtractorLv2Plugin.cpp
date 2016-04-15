@@ -3705,7 +3705,7 @@ void qtractorLv2Plugin::releaseConfigs (void)
 
 #endif	// CONFIG_LV2_STATE
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 
