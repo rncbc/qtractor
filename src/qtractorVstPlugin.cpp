@@ -795,6 +795,10 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	}
 
 	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 
@@ -1015,8 +1019,6 @@ void qtractorVstPlugin::freezeConfigs (void)
 
 	if (!type()->isConfigure())
 		return;
-
-	qtractorPlugin::freezeConfigs();
 
 	AEffect *pVstEffect = vst_effect(0);
 	if (pVstEffect == NULL)

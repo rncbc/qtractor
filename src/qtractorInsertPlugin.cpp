@@ -479,6 +479,10 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	pAudioEngine->addBusEx(m_pAudioBus);
 
 	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 
@@ -581,7 +585,7 @@ void qtractorAudioInsertPlugin::freezeConfigs (void)
 	qDebug("qtractorAudioInsertPlugin[%p]::freezeConfigs()",	this);
 #endif
 
-	qtractorPlugin::freezeConfigs();
+	clearConfigs();
 
 	freezeConfigs(qtractorBus::Input);
 	freezeConfigs(qtractorBus::Output);
@@ -775,6 +779,10 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 	pMidiEngine->addBusEx(m_pMidiBus);
 
 	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 
@@ -884,7 +892,7 @@ void qtractorMidiInsertPlugin::freezeConfigs (void)
 	qDebug("qtractorMidiInsertPlugin[%p]::freezeConfigs()",	this);
 #endif
 
-	qtractorPlugin::freezeConfigs();
+	clearConfigs();
 
 	freezeConfigs(qtractorBus::Input);
 	freezeConfigs(qtractorBus::Output);
@@ -1179,6 +1187,10 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 
@@ -1306,7 +1318,7 @@ void qtractorAudioAuxSendPlugin::freezeConfigs (void)
 	qDebug("qtractorAudioAuxSendPlugin[%p]::freezeConfigs()", this);
 #endif
 
-	qtractorPlugin::freezeConfigs();
+	clearConfigs();
 
 	setConfig("audioBusName", m_sAudioBusName);
 }
@@ -1320,7 +1332,6 @@ void qtractorAudioAuxSendPlugin::releaseConfigs (void)
 
 	clearConfigs();
 }
-
 
 
 //----------------------------------------------------------------------------
@@ -1407,6 +1418,10 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 
@@ -1552,7 +1567,7 @@ void qtractorMidiAuxSendPlugin::freezeConfigs (void)
 	qDebug("qtractorMidiAuxSendPlugin[%p]::freezeConfigs()", this);
 #endif
 
-	qtractorPlugin::freezeConfigs();
+	clearConfigs();
 
 	setConfig("midiBusName", m_sMidiBusName);
 }

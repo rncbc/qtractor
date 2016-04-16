@@ -457,9 +457,10 @@ public:
 
 	// Plugin configuration/state snapshot.
 	virtual void freezeConfigs()  {}
+	virtual void releaseConfigs() {}
 
 	// Plugin configure realization.
-	virtual void releaseConfigs();
+	virtual void realizeConfigs();
 
 	// Plugin configure clearance/release.
 	virtual void clearConfigs() { m_configs.clear(); m_ctypes.clear(); }
@@ -590,20 +591,20 @@ public:
 
 	} Values;
 
-	// Plugin parameter/state snapshot.
-	void freezeValues();
-
-	// Plugin parameter/state realization.
-	void releaseValues();
-
 	void setValues(const Values& values)
 		{ m_values = values; }
 	const Values& values() const
 		{ return m_values; }
 
+	// Plugin parameter/state snapshot.
+	void freezeValues();
+	void releaseValues();
+
+	// Plugin parameter/state realization.
+	void realizeValues();
+
 	// Plugin parameter/state clearance.
-	void clearValues()
-		{ m_values.names.clear(); m_values.index.clear(); }
+	void clearValues() { m_values.names.clear(); m_values.index.clear(); }
 
 	// Load plugin configuration/parameter values stuff.
 	static void loadConfigs(

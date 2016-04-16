@@ -657,6 +657,9 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 	}
 
 	// Make it real.
+	realizeConfigs();
+	realizeValues();
+
 	releaseConfigs();
 	releaseValues();
 
@@ -698,7 +701,7 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	ts << doc.toString() << endl;
 	file.close();
 
-	clearConfigs();
+	releaseConfigs();
 
 	return true;
 }
@@ -851,11 +854,21 @@ void qtractorPlugin::freezeValues (void)
 }
 
 
-// Plugin configure realization.
-void qtractorPlugin::releaseConfigs (void)
+void qtractorPlugin::releaseValues (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPlugin[%p]::releaseConfigs()", this);
+	qDebug("qtractorPlugin[%p]::releaseValues()", this);
+#endif
+
+	clearValues();
+}
+
+
+// Plugin configure realization.
+void qtractorPlugin::realizeConfigs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPlugin[%p]::realizeConfigs()", this);
 #endif
 
 	// Set configuration (CLOBs)...
@@ -868,16 +881,14 @@ void qtractorPlugin::releaseConfigs (void)
 	qtractorMidiManager *pMidiManager = m_pList->midiManager();
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
-
-//	clearConfigs();
 }
 
 
 // Plugin parameter realization.
-void qtractorPlugin::releaseValues (void)
+void qtractorPlugin::realizeValues (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPlugin[%p]::releaseValues()", this);
+	qDebug("qtractorPlugin[%p]::realizeValues()", this);
 #endif
 
 	// (Re)set parameter values (initial)...
@@ -896,8 +907,6 @@ void qtractorPlugin::releaseValues (void)
 				pParam->setValue(param.value(), true);
 		}
 	}
-
-	clearValues();
 }
 
 
@@ -1443,6 +1452,8 @@ void qtractorPluginList::setChannelsEx (
 		}
 		pPlugin->setChannels(m_iChannels);
 		if (bReset && m_iChannels > 0) {
+			pPlugin->realizeConfigs();
+			pPlugin->realizeValues();
 			pPlugin->releaseConfigs();
 			pPlugin->releaseValues();
 		}
@@ -1645,6 +1656,8 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->setConfigs(pPlugin->configs());
 		pNewPlugin->setConfigTypes(pPlugin->configTypes());
 		pNewPlugin->setValues(pPlugin->values());
+		pNewPlugin->realizeConfigs();
+		pNewPlugin->realizeValues();
 		pNewPlugin->releaseConfigs();
 		pNewPlugin->releaseValues();
 		pNewPlugin->setActivated(pPlugin->isActivated());
@@ -1652,8 +1665,8 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 			pPlugin->directAccessParamIndex());
 	}
 
-	pPlugin->clearConfigs();
-	pPlugin->clearValues();
+	pPlugin->releaseConfigs();
+	pPlugin->releaseValues();
 
 	return pNewPlugin;
 }
