@@ -363,6 +363,10 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	}
 
 	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 

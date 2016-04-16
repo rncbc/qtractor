@@ -2477,6 +2477,10 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 #endif
 
 	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
 
@@ -3638,8 +3642,6 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
-	qtractorPlugin::freezeConfigs();
-
 #ifdef CONFIG_LV2_STATE
 
 	const unsigned short iInstances = instances();
@@ -3658,7 +3660,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 
 
 // Plugin configuration/state (load) realization.
-void qtractorLv2Plugin::releaseConfigs (void)
+void qtractorLv2Plugin::realizeConfigs (void)
 {
 	if (!type()->isConfigure())
 		return;
@@ -3705,19 +3707,22 @@ void qtractorLv2Plugin::releaseConfigs (void)
 
 #endif	// CONFIG_LV2_STATE
 
-	qtractorPlugin::clearConfigs();
+	qtractorPlugin::realizeConfigs();
 }
 
 
 // Plugin configuration/state release.
-void qtractorLv2Plugin::clearConfigs (void)
+void qtractorLv2Plugin::releaseConfigs (void)
 {
+	if (!type()->isConfigure())
+		return;
+
 #ifdef CONFIG_LV2_STATE
 	m_lv2_state_configs.clear();
 	m_lv2_state_ctypes.clear();
 #endif
 
-	qtractorPlugin::clearConfigs();
+	qtractorPlugin::releaseConfigs();
 }
 
 
