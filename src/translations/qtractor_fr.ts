@@ -251,7 +251,7 @@ Fin:	%3	Longueur:	%4</translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="396"/>
         <location filename="../qtractorInsertPlugin.cpp" line="675"/>
-        <source>Wet Gain</source> 
+        <source>Wet Gain</source>
         <translation>Gain traité (wet)</translation>
     </message>
     <message>
