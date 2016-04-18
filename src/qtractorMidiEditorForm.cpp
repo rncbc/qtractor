@@ -1036,7 +1036,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			sFilename.clear();
 	#endif
 		// Have we cancelled it?
-		if (sFilename.isEmpty())
+		if (sFilename.isEmpty() || sFilename.at(0) == '.')
 			return false;
 		// Enforce .mid extension...
 		if (QFileInfo(sFilename).suffix().isEmpty())

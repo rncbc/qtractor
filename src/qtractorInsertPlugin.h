@@ -73,8 +73,7 @@ public:
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	unsigned short instances(
-		unsigned short iChannels, bool /*bMidi*/) const
+	unsigned short instances(unsigned short iChannels, bool /*bMidi*/) const
 		{ return (iChannels == audioOuts() ? 1 : 0); }
 
 	// Instance cached-deferred accessors.
@@ -99,8 +98,7 @@ public:
 	void close();
 
 	// Compute the number of instances needed.
-	unsigned short instances(
-		unsigned short iChannels, bool bMidi) const
+	unsigned short instances(unsigned short iChannels, bool bMidi) const
 		{ return (iChannels > 0 && bMidi ? 1 : 0); }
 
 	// Instance cached-deferred accessors.
@@ -283,8 +281,7 @@ public:
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	unsigned short instances(
-		unsigned short iChannels, bool /*bMidi*/) const
+	unsigned short instances(unsigned short iChannels, bool /*bMidi*/) const
 		{ return (iChannels == audioOuts() ? 1 : 0); }
 
 	// Instance cached-deferred accesors.
@@ -310,8 +307,7 @@ public:
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	unsigned short instances(
-		unsigned short iChannels, bool bMidi) const
+	unsigned short instances(unsigned short iChannels, bool bMidi) const
 		{ return (iChannels > 0 && bMidi ? 1 : 0); }
 
 	// Instance cached-deferred accesors.
