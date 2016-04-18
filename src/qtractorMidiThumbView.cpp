@@ -393,13 +393,12 @@ void qtractorMidiThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		const QRect& rect = m_pRubberBand->geometry();
 		m_posDrag = pMouseEvent->pos();
+		QFrame::setCursor(QCursor(Qt::PointingHandCursor));
 		if (rect.contains(m_posDrag)) {
 			m_dragState = DragStart;
-			QFrame::setCursor(QCursor(Qt::SizeHorCursor));
 		} else {
 			m_dragState = DragClick;
 			m_posDrag.setX(((rect.left() + rect.right()) >> 1));
-			QFrame::setCursor(QCursor(Qt::PointingHandCursor));
 		}
 	}
 	else
@@ -421,8 +420,10 @@ void qtractorMidiThumbView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		const QPoint& pos = pMouseEvent->pos();
 		if ((m_dragState == DragStart || m_dragState == DragClick)
 			&& (pos - m_posDrag).manhattanLength()
-				> QApplication::startDragDistance())
-			m_dragState =  DragMove;
+				> QApplication::startDragDistance()) {
+			m_dragState = DragMove;
+			QFrame::setCursor(QCursor(Qt::SizeHorCursor));
+		}
 		if (m_dragState == DragMove) {
 			updateView(pos.x() - m_posDrag.x());
 			m_posDrag.setX(pos.x());
