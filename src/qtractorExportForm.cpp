@@ -441,7 +441,7 @@ void qtractorExportForm::browseExportPath (void)
 #endif
 
 	// Have we cancelled it?
-	if (sExportPath.isEmpty())
+	if (sExportPath.isEmpty() || sExportPath.at(0) == '.')
 		return;
 
 	// Enforce default file extension...

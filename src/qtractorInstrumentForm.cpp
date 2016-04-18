@@ -405,7 +405,7 @@ void qtractorInstrumentForm::exportSlot (void)
 		sPath = fileDialog.selectedFiles().first();
 #endif
 
-	if (sPath.isEmpty())
+	if (sPath.isEmpty() || sPath.at(0) == '.')
 		return;
 
 	// Enforce .ins extension...

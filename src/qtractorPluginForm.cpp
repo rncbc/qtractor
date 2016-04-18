@@ -646,7 +646,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		#endif
 		}
 		// We've a filename to save the preset...
-		if (!sFilename.isEmpty()) {
+		if (!sFilename.isEmpty() && sFilename.at(0) != '.') {
 			fi.setFile(sFilename);
 			if (fi.suffix().isEmpty())
 				sFilename += '.' + sExt;

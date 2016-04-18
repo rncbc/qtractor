@@ -2018,7 +2018,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		}
 	#endif
 		// Have we cancelled it?
-		if (sFilename.isEmpty())
+		if (sFilename.isEmpty() || sFilename.at(0) == '.')
 			return false;
 		// Enforce extension...
 		if (QFileInfo(sFilename).suffix().isEmpty()) {

@@ -318,7 +318,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 		sPath = fileDialog.selectedFiles().first();
 #endif
 
-	if (sPath.isEmpty())
+	if (sPath.isEmpty() || sPath.at(0) == '.')
 		return;
 
 	// Enforce .ins extension...
@@ -542,7 +542,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 		}
 	}
 	// We've a filename to save the preset
-	if (!sFilename.isEmpty()) {
+	if (!sFilename.isEmpty() && sFilename.at(0) != '.') {
 		if (QFileInfo(sFilename).suffix().isEmpty())
 			sFilename += '.' + sExt;
 		// Get it saved alright...

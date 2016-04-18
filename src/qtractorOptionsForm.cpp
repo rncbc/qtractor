@@ -1419,7 +1419,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 		sFilename = fileDialog.selectedFiles().first();
 #endif
 
-	if (!sFilename.isEmpty()) {
+	if (!sFilename.isEmpty() && sFilename.at(0) != '.') {
 		m_ui.MessagesLogPathComboBox->setEditText(sFilename);
 		m_ui.MessagesLogPathComboBox->setFocus();
 		changed();

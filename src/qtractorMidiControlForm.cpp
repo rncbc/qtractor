@@ -471,7 +471,7 @@ void qtractorMidiControlForm::exportSlot (void)
 		sPath.clear();
 #endif
 
-	if (sPath.isEmpty())
+	if (sPath.isEmpty() || sPath.at(0) == '.')
 		return;
 
 	// Enforce .qtc extension...
