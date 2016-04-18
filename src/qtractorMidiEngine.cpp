@@ -2163,14 +2163,14 @@ void qtractorMidiEngine::driftCheck (void)
 		const long iMidiTime
 			= long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		long iDeltaTime = (iAudioTime - iMidiTime);
-		if (pSession->isLooping()) {
+	//	if (pSession->isLooping()) {
 			const long iDeadTime
 				= pSession->tickFromFrame(iAudioFrame + readAhead())
 				- iAudioTime - m_iTimeStart;
 			const long iDeadTime2 = long(iDeadTime >> 4);
 			if (iDeltaTime < -iDeadTime2 || iDeltaTime > +iDeadTime2)
 				iDeltaTime = 0;
-		}
+	//	}
 		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
 			m_iTimeDrift += (iDeltaTime << 1);
 		if (m_iTimeDrift && (iAudioTime > -m_iTimeDrift)) {
