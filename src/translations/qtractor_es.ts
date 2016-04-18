@@ -11042,12 +11042,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="241"/>
         <source>Rescan for available plugins (refresh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Reescanear plugins disponibles (refrescar)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="244"/>
         <source>&amp;Rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reescanear</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="329"/>
@@ -11299,7 +11299,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="423"/>
         <source>Keyboard shortcut (%1) already assigned (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Atajo de teclado (%1) ya asignado (%2).</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="499"/>
