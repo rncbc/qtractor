@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="pt_BR">
+<TS version="2.0" language="pt_BR">
 <context>
     <name>QObject</name>
     <message>
@@ -11057,12 +11057,12 @@ Posso continuar?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="241"/>
         <source>Rescan for available plugins (refresh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar novamente por plugins (atualizar)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="244"/>
         <source>&amp;Rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Atualizar</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="33"/>
@@ -11272,7 +11272,8 @@ Deseja criá-la?</translation>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="423"/>
         <source>Keyboard shortcut (%1) already assigned (%2).</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Atalho de teclado (%1) já utilizado por (%2)</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="499"/>
