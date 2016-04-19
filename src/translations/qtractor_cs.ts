@@ -11064,12 +11064,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="241"/>
         <source>Rescan for available plugins (refresh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Prohledat znovu na dostupné přídavné moduly (obnovit)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="244"/>
         <source>&amp;Rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Prohledat znovu...</translation>
     </message>
 </context>
 <context>
@@ -11281,7 +11281,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="423"/>
         <source>Keyboard shortcut (%1) already assigned (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Klávesová zkratka (%1) již přiřazena (%2).</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="499"/>

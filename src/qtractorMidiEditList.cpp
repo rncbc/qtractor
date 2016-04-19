@@ -1,7 +1,7 @@
 // qtractorMidiEditList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -266,7 +266,7 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 }
 
 
-// Piano keyboard handlers.
+// Piano keyboard note-on handler.
 void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 {
 	// If it ain't changed we won't change it ;)
@@ -274,15 +274,7 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		return;
 
 	// Were we pending on some sounding note?
-	if (m_iNoteOn >= 0) {
-		// Turn off old note...
-		if (m_iNoteVel > 0)
-			m_pEditor->sendNote(m_iNoteOn, 0);
-		m_iNoteOn = m_iNoteVel = -1;
-		qtractorScrollView::viewport()->update(
-			QRect(contentsToViewport(m_rectNote.topLeft()),
-			m_rectNote.size()));
-	}
+	dragNoteOff();
 
 	// Now for the sounding new one...
 	if (iNote >= 0) {
@@ -324,11 +316,31 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 	}
 }
 
+
+// Piano keyboard note-on position handler.
 void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 {
 	// Compute new key cordinates...
-	int ch = qtractorScrollView::contentsHeight();
+	const int ch = qtractorScrollView::contentsHeight();
 	dragNoteOn((ch - pos.y()) / m_iItemHeight, iVelocity);
+}
+
+
+// Piano keyboard note-on handler.
+void qtractorMidiEditList::dragNoteOff (void)
+{
+	if (m_iNoteOn < 0)
+		return;
+
+	// Turn off old note...
+	if (m_iNoteVel > 0)
+		m_pEditor->sendNote(m_iNoteOn, 0);
+
+	m_iNoteOn = m_iNoteVel = -1;
+
+	qtractorScrollView::viewport()->update(
+		QRect(contentsToViewport(m_rectNote.topLeft()),
+		m_rectNote.size()));
 }
 
 
@@ -368,7 +380,7 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	// Are we already moving/dragging something?
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
-	int x = m_pEditor->editView()->contentsX();
+	const int x = m_pEditor->editView()->contentsX();
 	switch (m_dragState) {
 	case DragSelect:
 		// Rubber-band selection...
@@ -384,7 +396,7 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		if ((m_posDrag - pos).manhattanLength()
 			> QApplication::startDragDistance()) {
 			// We'll start dragging alright...
-			int w = m_pEditor->editView()->contentsWidth();
+			const int w = m_pEditor->editView()->contentsWidth();
 			m_rectDrag.setTop(m_posDrag.y());
 			m_rectDrag.setLeft(0);
 			m_rectDrag.setRight(w);
@@ -457,7 +469,7 @@ void qtractorMidiEditList::keyPressEvent ( QKeyEvent *pKeyEvent )
 void qtractorMidiEditList::resetDragState (void)
 {
 	// Were we stuck on some keyboard note?
-	dragNoteOn(-1);
+	dragNoteOff();
 
 	// Cancel any dragging out there...
 	switch (m_dragState) {
@@ -501,7 +513,7 @@ bool qtractorMidiEditList::eventFilter ( QObject *pObject, QEvent *pEvent )
 		}
 		else
 		if (pEvent->type() == QEvent::Leave) {
-			dragNoteOn(-1);
+			dragNoteOff();
 			return true;
 		}
 	}
