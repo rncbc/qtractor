@@ -3156,7 +3156,7 @@ bool qtractorMidiEditor::dragMoveFilter (
 			m_dragState != DragStep) {
 			m_dragCursor = DragNone;
 			pScrollView->unsetCursor();
-			m_pEditList->dragNoteOn(-1);
+			m_pEditList->dragNoteOff();
 			return true;
 		}
 	}
@@ -4496,9 +4496,9 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			updateContents();
 		}
 	}
-	else
+
 	if (m_pEditList)
-		m_pEditList->dragNoteOn(-1);
+		m_pEditList->dragNoteOff();
 
 	m_dragState  = DragNone;
 	m_resizeMode = ResizeNone;
