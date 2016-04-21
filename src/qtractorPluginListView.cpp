@@ -520,7 +520,7 @@ void qtractorPluginListView::addPlugin (void)
 		return;
 
 	qtractorPluginSelectForm selectForm(this);
-	selectForm.setChannels(m_pPluginList->channels(), m_pPluginList->isMidi());
+	selectForm.setPluginList(m_pPluginList);
 	if (!selectForm.exec())
 		return;
 
@@ -1363,8 +1363,7 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 		return false;
 
 	// All that to check whether it will get properly instantiated.
-	if ((pPlugin->type())->instances(
-			m_pPluginList->channels(), m_pPluginList->isMidi()) < 1)
+	if ((pPlugin->type())->instances(m_pPluginList) < 1)
 		return false;
 
 	// This is the place we'll drop something

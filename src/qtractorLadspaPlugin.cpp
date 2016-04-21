@@ -250,8 +250,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
-	const unsigned short iInstances
-		= pType->instances(iChannels, list()->isMidi());
+	const unsigned short iInstances = pType->instances(list());
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
 		return;

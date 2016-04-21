@@ -47,8 +47,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::WindowModal);
 
-	m_iChannels = 0;
-	m_bMidi = false;
+	m_pPluginList = NULL;
 
 	// Populate plugin type hints...
 	m_ui.PluginTypeComboBox->addItem(
@@ -183,24 +182,16 @@ qtractorPluginSelectForm::~qtractorPluginSelectForm (void)
 
 
 // Base number of channels accessors.
-void qtractorPluginSelectForm::setChannels ( unsigned short iChannels, bool bMidi )
+void qtractorPluginSelectForm::setPluginList ( qtractorPluginList *pPluginList )
 {
-	m_iChannels = iChannels;
-	m_bMidi = bMidi;
+	m_pPluginList = pPluginList;
 
 	refresh();
 }
 
-
-unsigned short qtractorPluginSelectForm::channels (void) const
+qtractorPluginList *qtractorPluginSelectForm::pluginList (void) const
 {
-	return m_iChannels;
-}
-
-
-bool qtractorPluginSelectForm::isMidi (void) const
-{
-	return m_bMidi;
+	return m_pPluginList;
 }
 
 
@@ -273,9 +264,6 @@ void qtractorPluginSelectForm::rescan (void)
 // Refresh plugin listing.
 void qtractorPluginSelectForm::refresh (void)
 {
-//	if (m_iChannels == 0)
-//		return;
-
 	m_ui.PluginListView->clear();
 
 	qtractorPluginFactory *pPluginFactory
@@ -294,6 +282,11 @@ void qtractorPluginSelectForm::refresh (void)
 		m_ui.PluginRescanPushButton->show();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();
+	}
+
+	if (m_pPluginList == NULL) {
+		stabilize();
+		return;
 	}
 
 	QString sSearch = m_ui.PluginSearchComboBox->currentText().simplified();
@@ -318,7 +311,7 @@ void qtractorPluginSelectForm::refresh (void)
 			const int iControlOuts = pType->controlOuts();
 			// All that to check whether it will get properly instantiated.
 			const unsigned short iInstances
-				= pType->instances(m_iChannels, m_bMidi);
+				= pType->instances(m_pPluginList);
 			cols.clear();
 			cols << sName;
 			cols << QString("%1:%2").arg(iAudioIns).arg(iAudioOuts);

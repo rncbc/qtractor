@@ -145,9 +145,10 @@ public:
 	virtual void close() = 0;
 
 	// Cache accessors.
-	const QString& name()        const { return m_sName;        }
-	const QString& label()       const { return m_sLabel;       }
-	unsigned long uniqueID()     const { return m_iUniqueID;    }
+	const QString& name()  const { return m_sName;  }
+	const QString& label() const { return m_sLabel; }
+
+	unsigned long uniqueID() const { return m_iUniqueID; }
 
 	// Port count accessors..
 	unsigned short controlIns()  const { return m_iControlIns;  }
@@ -158,15 +159,15 @@ public:
 	unsigned short midiOuts()    const { return m_iMidiOuts;    }
 
 	// Attribute accessors.
-	bool           isRealtime()  const { return m_bRealtime;    }
-	bool           isConfigure() const { return m_bConfigure;   }
-	bool           isEditor()    const { return m_bEditor;      }
-	bool           isMidi()      const { return m_iMidiIns + m_iMidiOuts > 0; }
+	bool isRealtime()  const { return m_bRealtime;  }
+	bool isConfigure() const { return m_bConfigure; }
+	bool isEditor()    const { return m_bEditor;    }
+
+	bool isMidi() const { return m_iMidiIns + m_iMidiOuts > 0; }
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	virtual unsigned short instances(
-		unsigned short iChannels, bool bMidi) const;
+	virtual unsigned short instances(qtractorPluginList *pList) const;
 
 	// Plugin factory method.
 	static qtractorPlugin *createPlugin(qtractorPluginList *pList,
@@ -771,7 +772,7 @@ public:
 	void resetBuffers();
 
 	// Brainless accessors.
-	unsigned short channels() const { return m_iChannels;   }
+	unsigned short channels() const { return m_iChannels; }
 	unsigned int flags()      const { return m_iFlags; }
 
 	// Brainless helpers.
