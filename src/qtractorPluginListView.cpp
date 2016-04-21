@@ -1367,7 +1367,9 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 		return false;
 
 	// All that to check whether it will get properly instantiated.
-	if ((pPlugin->type())->instances(m_pPluginList) < 1)
+	const unsigned short iChannels = m_pPluginList->channels();
+	const bool bMidi = m_pPluginList->isMidi();
+	if ((pPlugin->type())->instances(iChannels, bMidi) < 1)
 		return false;
 
 	// This is the place we'll drop something

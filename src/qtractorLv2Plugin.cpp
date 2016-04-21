@@ -2324,13 +2324,14 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
-	const unsigned short iInstances = pLv2Type->instances(list());
+	const unsigned short iInstances
+		= pLv2Type->instances(iChannels, list()->isMidi());
 
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
 		return;
 
-	const LilvPlugin *plugin = lv2_plugin();
+	const LilvPlugin *plugin = pLv2Type->lv2_plugin();
 	if (plugin == NULL)
 		return;
 

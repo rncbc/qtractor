@@ -706,7 +706,8 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
-	const unsigned short iInstances = pVstType->instances(list());
+	const unsigned short iInstances
+		= pVstType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
 		return;

@@ -73,8 +73,8 @@ public:
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	unsigned short instances(qtractorPluginList *pList) const
-		{ return (pList->channels() == audioOuts() ? 1 : 0); }
+	unsigned short instances(unsigned short iChannels, bool /*bMidi*/) const
+		{ return (iChannels > 0 && iChannels == audioOuts() ? 1 : 0); }
 
 	// Instance cached-deferred accessors.
 	const QString& aboutText();
@@ -98,8 +98,8 @@ public:
 	void close();
 
 	// Compute the number of instances needed.
-	unsigned short instances(qtractorPluginList *pList) const
-		{ return (pList->channels() > 0 && pList->isMidi() ? 1 : 0); }
+	unsigned short instances(unsigned short iChannels, bool bMidi) const
+		{ return (iChannels > 0 && bMidi ? 1 : 0); }
 
 	// Instance cached-deferred accessors.
 	const QString& aboutText();
@@ -281,8 +281,8 @@ public:
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	unsigned short instances(qtractorPluginList *pList) const
-		{ return (pList->channels() == audioOuts() ? 1 : 0); }
+	unsigned short instances(unsigned short iChannels, bool /*bMidi*/) const
+		{ return (iChannels > 0 && iChannels == audioOuts() ? 1 : 0); }
 
 	// Instance cached-deferred accesors.
 	const QString& aboutText();
@@ -307,8 +307,8 @@ public:
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	unsigned short instances(qtractorPluginList *pList) const
-		{ return (pList->channels() > 0 && pList->isMidi() ? 1 : 0); }
+	unsigned short instances(unsigned short iChannels, bool bMidi) const
+		{ return (iChannels > 0 && bMidi ? 1 : 0); }
 
 	// Instance cached-deferred accesors.
 	const QString& aboutText();

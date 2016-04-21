@@ -431,7 +431,8 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Estimate the (new) number of instances...
-	const unsigned short iInstances = pType->instances(list());
+	const unsigned short iInstances
+		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == instances())
 		return;
@@ -709,7 +710,8 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Estimate the (new) number of instances...
-	const unsigned short iInstances = pType->instances(list());
+	const unsigned short iInstances
+		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == instances())
 		return;
@@ -1159,7 +1161,8 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Estimate the (new) number of instances...
-	const unsigned short iInstances = pType->instances(list());
+	const unsigned short iInstances
+		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == instances())
 		return;
@@ -1383,7 +1386,8 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	// Estimate the (new) number of instances...
-	const unsigned short iInstances = pType->instances(list());
+	const unsigned short iInstances
+		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == instances())
 		return;
