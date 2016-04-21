@@ -10808,141 +10808,141 @@ Are you sure?</source>
         <translation>copiar plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="639"/>
+        <location filename="../qtractorPluginListView.cpp" line="643"/>
         <source>activate all plugins</source>
         <translation>activar todos los plugins</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="670"/>
+        <location filename="../qtractorPluginListView.cpp" line="674"/>
         <source>deactivate all plugins</source>
         <translation>desactivar todos los plugins</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="701"/>
+        <location filename="../qtractorPluginListView.cpp" line="705"/>
         <source>remove all plugins</source>
         <translation>quitar todos los plugins</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1479"/>
+        <location filename="../qtractorPluginListView.cpp" line="1483"/>
         <source>&amp;Move Here</source>
         <translation>&amp;Mover Aquí</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1480"/>
+        <location filename="../qtractorPluginListView.cpp" line="1484"/>
         <source>&amp;Copy Here</source>
         <translation>&amp;Copiar Aquí</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1483"/>
+        <location filename="../qtractorPluginListView.cpp" line="1487"/>
         <source>C&amp;ancel</source>
         <translation>C&amp;ancelar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1582"/>
+        <location filename="../qtractorPluginListView.cpp" line="1586"/>
         <source>&amp;Add Plugin...</source>
         <translation>&amp;Añadir Plugin...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1585"/>
+        <location filename="../qtractorPluginListView.cpp" line="1589"/>
         <source>&amp;Inserts</source>
         <translation>&amp;Inserciones</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1588"/>
+        <location filename="../qtractorPluginListView.cpp" line="1592"/>
         <source>&amp;Audio</source>
         <translation>&amp;Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1592"/>
-        <location filename="../qtractorPluginListView.cpp" line="1616"/>
+        <location filename="../qtractorPluginListView.cpp" line="1596"/>
+        <location filename="../qtractorPluginListView.cpp" line="1620"/>
         <source>Add &amp;Insert</source>
         <translation>Añadir &amp;Inserción</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1595"/>
-        <location filename="../qtractorPluginListView.cpp" line="1619"/>
+        <location filename="../qtractorPluginListView.cpp" line="1599"/>
+        <location filename="../qtractorPluginListView.cpp" line="1623"/>
         <source>Add &amp;Aux Send</source>
         <translation>Añadir Envío &amp;Auxiliar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1604"/>
-        <location filename="../qtractorPluginListView.cpp" line="1628"/>
+        <location filename="../qtractorPluginListView.cpp" line="1608"/>
+        <location filename="../qtractorPluginListView.cpp" line="1632"/>
         <source>&amp;Sends</source>
         <translation>&amp;Envíos</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1608"/>
-        <location filename="../qtractorPluginListView.cpp" line="1632"/>
+        <location filename="../qtractorPluginListView.cpp" line="1612"/>
+        <location filename="../qtractorPluginListView.cpp" line="1636"/>
         <source>&amp;Returns</source>
         <translation>&amp;Retornos</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1612"/>
+        <location filename="../qtractorPluginListView.cpp" line="1616"/>
         <source>&amp;MIDI</source>
         <translation>&amp;MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1637"/>
+        <location filename="../qtractorPluginListView.cpp" line="1641"/>
         <source>Ac&amp;tivate</source>
         <translation>Ac&amp;tivar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1644"/>
+        <location filename="../qtractorPluginListView.cpp" line="1648"/>
         <source>Acti&amp;vate All</source>
         <translation>Acti&amp;var todo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1651"/>
+        <location filename="../qtractorPluginListView.cpp" line="1655"/>
         <source>Deactivate Al&amp;l</source>
         <translation>Desactivar &amp;Todo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1660"/>
+        <location filename="../qtractorPluginListView.cpp" line="1664"/>
         <source>&amp;Remove</source>
         <translation>&amp;Quitar</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1664"/>
+        <location filename="../qtractorPluginListView.cpp" line="1668"/>
         <source>Re&amp;move All</source>
         <translation>Qui&amp;tar Todo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1671"/>
+        <location filename="../qtractorPluginListView.cpp" line="1675"/>
         <source>Move &amp;Up</source>
         <translation>Mo&amp;ver Hacía Arriba</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1676"/>
+        <location filename="../qtractorPluginListView.cpp" line="1680"/>
         <source>Move &amp;Down</source>
         <translation>Mover &amp;Hacía Abajo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1719"/>
+        <location filename="../qtractorPluginListView.cpp" line="1723"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1732"/>
+        <location filename="../qtractorPluginListView.cpp" line="1736"/>
         <source>&amp;Properties...</source>
         <translation>&amp;Propiedades...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1739"/>
+        <location filename="../qtractorPluginListView.cpp" line="1743"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edición</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1753"/>
+        <location filename="../qtractorPluginListView.cpp" line="1757"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Salidas</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1770"/>
+        <location filename="../qtractorPluginListView.cpp" line="1774"/>
         <source>&amp;Dedicated</source>
         <translation>&amp;Dedicado</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1774"/>
+        <location filename="../qtractorPluginListView.cpp" line="1778"/>
         <source>&amp;Auto-connect</source>
         <translation>&amp;Auto-conectar</translation>
     </message>

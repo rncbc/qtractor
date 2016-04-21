@@ -348,6 +348,7 @@ public:
 	// Main properties accessors.
 	qtractorPluginList *list() const { return m_pList; }
 	qtractorPluginType *type() const { return m_pType; }
+
 	unsigned short instances() const { return m_iInstances; }
 
 	// Chain helper ones.
