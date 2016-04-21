@@ -167,7 +167,8 @@ public:
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
-	virtual unsigned short instances(qtractorPluginList *pList) const;
+	virtual unsigned short instances(
+		unsigned short iChannels, bool bMidi) const;
 
 	// Plugin factory method.
 	static qtractorPlugin *createPlugin(qtractorPluginList *pList,

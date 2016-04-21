@@ -289,6 +289,9 @@ void qtractorPluginSelectForm::refresh (void)
 		return;
 	}
 
+	const unsigned short iChannels = m_pPluginList->channels();
+	const bool bMidi = m_pPluginList->isMidi();
+
 	QString sSearch = m_ui.PluginSearchComboBox->currentText().simplified();
 	const QRegExp rx(sSearch.replace(QRegExp("[\\s]+"), ".*"), Qt::CaseInsensitive);
 
@@ -311,7 +314,7 @@ void qtractorPluginSelectForm::refresh (void)
 			const int iControlOuts = pType->controlOuts();
 			// All that to check whether it will get properly instantiated.
 			const unsigned short iInstances
-				= pType->instances(m_pPluginList);
+				= pType->instances(iChannels, bMidi);
 			cols.clear();
 			cols << sName;
 			cols << QString("%1:%2").arg(iAudioIns).arg(iAudioOuts);
@@ -327,7 +330,7 @@ void qtractorPluginSelectForm::refresh (void)
 			if (modes.isEmpty())
 				cols << "-";
 			else
-				cols << modes.join(",");
+				cols << modes.join(',');
 			cols << sFilename;
 			cols << QString::number(pType->index());
 			cols << QString::number(iInstances);

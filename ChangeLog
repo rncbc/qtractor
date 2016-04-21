@@ -6,9 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- MIDI aware plug-ins are now void from insertion on audio
-  tracks or buses and from multiple, parallel instantiation.
-  (EXPERIMENTAL)
+- MIDI aware plug-ins are now void from multiple or parallel
+  instantiation. (EXPERIMENTAL)
 
 - MIDI tracks and buses plug-in chains now honor the number
   of effective audio channels from the assigned audio output

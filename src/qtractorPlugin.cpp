@@ -161,13 +161,13 @@ QString qtractorPluginType::filename (void) const
 
 // Compute the number of instances needed
 // for the given input/output audio channels.
-unsigned short qtractorPluginType::instances ( qtractorPluginList *pList ) const
+unsigned short qtractorPluginType::instances (
+	unsigned short iChannels, bool bMidi ) const
 {
-	const unsigned short iChannels = pList->channels();
 	unsigned short iInstances = 0;
 	if (iChannels > 0) {
-		if (m_iMidiIns > 0 || m_iMidiOuts > 0)
-			iInstances = (pList->isMidi() ? 1 : 0);
+		if (bMidi && (m_iMidiIns > 0 || m_iMidiOuts > 0))
+			iInstances = 1;
 		else
 		if (m_iAudioOuts >= iChannels || m_iAudioIns >= iChannels)
 			iInstances = 1;

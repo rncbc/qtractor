@@ -244,18 +244,21 @@ qtractorLadspaPlugin::~qtractorLadspaPlugin (void)
 void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 {
 	// Check our type...
-	qtractorPluginType *pType = type();
-	if (pType == NULL)
+	qtractorLadspaPluginType *pLadspaType
+		= static_cast<qtractorLadspaPluginType *> (type());
+	if (pLadspaType == NULL)
 		return;
 		
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
-	const unsigned short iInstances = pType->instances(list());
+	const unsigned short iInstances
+		= pLadspaType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
 		return;
 
-	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
+	const LADSPA_Descriptor *pLadspaDescriptor
+		= pLadspaType->ladspa_descriptor();
 	if (pLadspaDescriptor == NULL)
 		return;
 
@@ -298,8 +301,8 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 
-	const unsigned short iAudioIns = pType->audioIns();
-	const unsigned short iAudioOuts = pType->audioOuts();
+	const unsigned short iAudioIns = pLadspaType->audioIns();
+	const unsigned short iAudioOuts = pLadspaType->audioOuts();
 
 	if (iChannels < iAudioIns) {
 		if (m_pfIDummy)
@@ -316,7 +319,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	}
 
 	// We'll need output control (not dummy anymore) port indexes...
-	const unsigned short iControlOuts = pType->controlOuts();
+	const unsigned short iControlOuts = pLadspaType->controlOuts();
 
 	unsigned short i, j;
 
