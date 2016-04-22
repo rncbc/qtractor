@@ -330,7 +330,7 @@ void qtractorPluginSelectForm::refresh (void)
 			if (modes.isEmpty())
 				cols << "-";
 			else
-				cols << modes.join(',');
+				cols << modes.join(",");
 			cols << sFilename;
 			cols << QString::number(pType->index());
 			cols << QString::number(iInstances);
