@@ -231,7 +231,7 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
 
 	// Rescan not applicable to LV2 plug-in world.
-	m_ui.PluginRescanPushButton->setEnabled(
+	m_ui.PluginRescanPushButton->setVisible(
 		typeHint != qtractorPluginType::Lv2);
 
 	qtractorPluginFactory *pPluginFactory
@@ -279,11 +279,12 @@ void qtractorPluginSelectForm::refresh (void)
 	if (pPluginFactory->types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		m_ui.PluginRescanPushButton->hide();
+		const bool bRescan = m_ui.PluginRescanPushButton->isVisible();
+		if (bRescan) m_ui.PluginRescanPushButton->hide();
 		m_ui.PluginScanProgressBar->show();
 		pPluginFactory->scan();
 		m_ui.PluginScanProgressBar->hide();
-		m_ui.PluginRescanPushButton->show();
+		if (bRescan) m_ui.PluginRescanPushButton->show();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();
 	}
