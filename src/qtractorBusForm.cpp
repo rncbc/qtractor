@@ -765,15 +765,15 @@ void qtractorBusForm::stabilizeForm (void)
 {
 	if (m_pBus) {
 		m_ui.CommonBusGroup->setEnabled(true);
-		m_ui.AudioBusGroup->setEnabled(
+		m_ui.AudioBusGroup->setVisible(
 			m_pBus->busType() == qtractorTrack::Audio);
-		m_ui.MidiBusGroup->setEnabled(
+		m_ui.MidiBusGroup->setVisible(
 			m_pBus->busType() == qtractorTrack::Midi &&
 			(m_pBus->busMode() & qtractorBus::Output));
 	} else {
 		m_ui.CommonBusGroup->setEnabled(false);
-		m_ui.AudioBusGroup->setEnabled(false);
-		m_ui.MidiBusGroup->setEnabled(false);
+		m_ui.AudioBusGroup->setVisible(false);
+		m_ui.MidiBusGroup->setVisible(false);
 	}
 
 	m_ui.MonitorCheckBox->setEnabled(
