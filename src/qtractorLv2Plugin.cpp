@@ -812,6 +812,27 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 #endif	// CONFIG_LV2_EXTERNAL_UI
 
 
+#ifdef CONFIG_LV2_UI_TOUCH
+
+static void qtractor_lv2_ui_touch (
+	LV2UI_Feature_Handle handle, uint32_t port_index, bool grabbed )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (handle);
+	if (pLv2Plugin == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_ui_touch(%p, %u, %d)", pLv2Plugin, port_index, int(grabbed));
+#endif
+
+	// Just flag up the closure...
+	pLv2Plugin->lv2_ui_touch(port_index, grabbed);
+}
+
+#endif	// CONFIG_LV2_UI_TOUCH
+
+
 #include <QResizeEvent>
 
 class qtractorLv2Plugin::EventFilter : public QObject
@@ -3000,6 +3021,10 @@ void qtractorLv2Plugin::closeEditor (void)
 
 	m_ui_params.clear();
 
+#ifdef CONFIG_LV2_UI_TOUCH
+	m_ui_params_touch.clear();
+#endif
+
 #ifdef CONFIG_LV2_UI_SHOW
 	m_lv2_ui_show_interface	= NULL;
 #endif
@@ -3377,6 +3402,11 @@ void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 	if (buffer_size != sizeof(float) || protocol != 0)
 		return;
 
+#ifdef CONFIG_LV2_UI_TOUCH
+	if (m_ui_params_touch.value(port_index, false))
+		return;
+#endif
+
 	const float val = *(float *) buffer;
 
 	// FIXME: Update plugin params...
@@ -3404,6 +3434,23 @@ uint32_t qtractorLv2Plugin::lv2_ui_port_index ( const char *port_symbol )
 		? lilv_port_get_index(plugin, port)
 		: LV2UI_INVALID_PORT_INDEX;
 }
+
+
+#ifdef CONFIG_LV2_UI_TOUCH
+
+// LV2 UI touch control (ui->host).
+void qtractorLv2Plugin::lv2_ui_touch ( uint32_t port_index, bool grabbed )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_touch(%u, %d)",
+		this, port_index, int(grabbed);
+#endif
+
+	m_ui_params_touch[port_index] = grabbed;
+}
+
+#endif	// CONFIG_LV2_UI_TOUCH
+
 
 // LV2 UI resize control (host->ui).
 void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
@@ -3445,7 +3492,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	int iFeatures = 0;
 	while (m_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_ui_features = new LV2_Feature * [iFeatures + 8];
+	m_lv2_ui_features = new LV2_Feature * [iFeatures + 9];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
 
@@ -3499,6 +3546,9 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 			qtractor_lv2_ui_port_index,
 			NULL, NULL);
 		if (m_suil_host) {
+		#ifdef CONFIG_LV2_UI_TOUCH
+			suil_host_set_touch_func(m_suil_host, qtractor_lv2_ui_touch);
+		#endif
 			m_suil_instance = suil_instance_new(m_suil_host, this,
 				ui_host_uri, plugin_uri, ui_uri, ui_type_uri,
 				ui_bundle_path, ui_binary_path, m_lv2_ui_features);
@@ -3553,6 +3603,14 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	m_lv2_ui_port_map_feature.URI  = LV2_UI__portMap;
 	m_lv2_ui_port_map_feature.data = &m_lv2_ui_port_map;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_port_map_feature;
+
+#ifdef CONFIG_LV2_UI_TOUCH
+	m_lv2_ui_touch.handle = this;
+	m_lv2_ui_touch.touch = qtractor_lv2_ui_touch;
+	m_lv2_ui_touch_feature.URI = LV2_UI__touch;
+	m_lv2_ui_touch_feature.data = &m_lv2_ui_touch;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_touch_feature;
+#endif
 
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_X11

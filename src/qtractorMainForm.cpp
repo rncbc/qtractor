@@ -5467,6 +5467,9 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("LV2 Plug-in Buf-size support disabled.");
 #endif
 #ifdef  CONFIG_LV2_UI
+#ifndef CONFIG_LV2_UI_TOUCH
+	list << tr("LV2 Plug-in UI Touch interface support disabled.");
+#endif
 #ifndef CONFIG_LV2_UI_IDLE
 	list << tr("LV2 Plug-in UI Idle interface support disabled.");
 #endif
