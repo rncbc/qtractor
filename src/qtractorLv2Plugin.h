@@ -244,6 +244,11 @@ public:
 	// LV2 UI portMap method.
 	uint32_t lv2_ui_port_index(const char *port_symbol);
 
+#ifdef CONFIG_LV2_UI_TOUCH
+	// LV2 UI touch control (ui->host).
+	void lv2_ui_touch(uint32_t port_index, bool grabbed);
+#endif
+
 	// LV2 UI resize control (host->ui).
 	void lv2_ui_resize(const QSize& size);
 
@@ -466,6 +471,12 @@ private:
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;
 
+#ifdef CONFIG_LV2_UI_TOUCH
+	LV2UI_Touch m_lv2_ui_touch;
+	LV2_Feature m_lv2_ui_touch_feature;
+	QHash<unsigned long, bool> m_ui_params_touch;
+#endif
+
 #ifdef CONFIG_LV2_UI_IDLE
 	// LV2 UI Idle extension data interface.
 	const LV2UI_Idle_Interface *m_lv2_ui_idle_interface;
@@ -474,6 +485,7 @@ private:
 	// LV2 UI Show extension data interface.
 	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
 #endif
+
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
 	struct _GtkWidget *m_pGtkWindow;

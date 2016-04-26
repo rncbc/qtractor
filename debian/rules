@@ -5,7 +5,7 @@ APPNAME := qtractor
 #export DH_VERBOSE=1
 
 # This is the debhelper compatibility version to use.
-#export DH_COMPAT=4
+#export DH_COMPAT=7
 
 # Set Qt5 environment for qtchooser.
 export QT_SELECT=5

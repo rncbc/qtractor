@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.6.14, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.6.15, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -198,6 +198,11 @@ AC_ARG_ENABLE(lv2-buf-size,
   AC_HELP_STRING([--enable-lv2-buf-size], [enable LV2 plug-in Buf-size support (default=yes)]),
   [ac_lv2_buf_size="$enableval"],
   [ac_lv2_buf_size="yes"])
+
+AC_ARG_ENABLE(lv2-ui-touch,
+  AC_HELP_STRING([--enable-lv2-ui-touch], [enable LV2 plug-in UI Touch interface support (default=yes)]),
+  [ac_lv2_ui_touch="$enableval"],
+  [ac_lv2_ui_touch="yes"])
 
 AC_ARG_ENABLE(lv2-ui-idle,
   AC_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 plug-in UI Idle interface support (default=yes)]),
@@ -723,6 +728,7 @@ fi
 if test "x$ac_lv2_ui" = "xno"; then
    ac_suil="no"
    ac_lv2_external_ui="no"
+   ac_lv2_ui_touch="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -799,6 +805,7 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_time_position="no";
    ac_lv2_options="no"
    ac_lv2_buf_size="no"
+   ac_lv2_ui_touch="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1059,6 +1066,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_time_position="no";
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
+      ac_lv2_ui_touch="no"
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
@@ -1074,6 +1082,7 @@ if test "x$ac_lv2_ui" = "xyes"; then
    else
       AC_MSG_WARN([*** LV2 UI support will be disabled.])
       ac_lv2_external_ui="no"
+      ac_lv2_ui_touch="no"
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
@@ -1081,6 +1090,7 @@ if test "x$ac_lv2_ui" = "xyes"; then
    fi
 else
    ac_lv2_external_ui="no"
+   ac_lv2_ui_touch="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1250,6 +1260,21 @@ if test "x$ac_lv2_time_position" = "xyes"; then
       fi
    else
       AC_MSG_WARN([*** LV2 Time/position support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_ui_touch" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Touch interface],
+      ac_cv_lv2_ui_touch, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Touch interface...
+         LV2UI_Touch touch;
+      ], ac_cv_lv2_ui_touch="yes", ac_cv_lv2_ui_touch="no")
+   ])
+   ac_lv2_ui_touch=$ac_cv_lv2_ui_touch
+   if test "x$ac_lv2_ui_touch" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_TOUCH, 1, [Define if LV2 UI Touch interface support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI Touch interface support will be disabled.])
    fi
 fi
 if test "x$ac_lv2_ui_idle" = "xyes"; then
@@ -1434,6 +1459,7 @@ echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
 echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_position"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
+echo "  LV2 plug-in UI Touch interface support . . . . . .: $ac_lv2_ui_touch"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 if test "x$ac_qt5" = "xyes"; then
