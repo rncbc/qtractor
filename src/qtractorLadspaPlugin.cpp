@@ -315,7 +315,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		if (m_pfODummy)
 			delete [] m_pfODummy;
 		m_pfODummy = new float [iBufferSize];
-		::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
 	}
 
 	// We'll need output control (not dummy anymore) port indexes...
@@ -456,13 +456,9 @@ void qtractorLadspaPlugin::process (
 		}
 		// Make it run...
 		(*pLadspaDescriptor->run)(handle, nframes);
-	#if 0
-		// Wrap channels?...
-		if (iIChannel < iChannels - 1)
-			++iIChannel;
-		if (iOChannel < iChannels - 1)
-			++iOChannel;
-	#endif
+		// Wrap dangling output channels?...
+		for (j = iOChannel; j < iChannels; ++j)
+			::memset(ppOBuffer[j], 0, nframes * sizeof(float));
 	}
 }
 

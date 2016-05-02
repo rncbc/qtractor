@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a recently introduced bug, that rendered all but one
+  plug-in instance to silence, affecting only DSSI plug-ins
+  which implement DSSI_Descriptor::run_multiple_synths() eg.
+  fluidsynth-dssi, hexter, etc. (EXPERIMENTAL)
+
+
 0.7.7  2016-04-27  Haziest Photon Beta
 
 - LV2 UI Touch feature/interface support added.

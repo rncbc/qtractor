@@ -1079,13 +1079,9 @@ void qtractorDssiPlugin::process (
 				pMidiManager->events(), pMidiManager->count());
 		}
 		else (*pLadspaDescriptor->run)(handle, nframes);
-	#if 0
-		// Wrap channels?...
-		if (iIChannel < iChannels - 1)
-			++iIChannel;
-		if (iOChannel < iChannels - 1)
-			++iOChannel;
-	#endif
+		// Wrap dangling output channels?...
+		for (j = iOChannel; j < iChannels; ++j)
+			::memset(ppOBuffer[j], 0, nframes * sizeof(float));
 	}
 }
 
