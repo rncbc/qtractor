@@ -202,8 +202,9 @@ private:
 	float **m_ppIBuffer;
 	float **m_ppOBuffer;
 
-	// Dummy I/O buffer.
-	float *m_pfXBuffer;
+	// Dummy I/O buffers.
+	float *m_pfIDummy;
+	float *m_pfODummy;
 
 	// Our own editor widget (parent frame).
 	EditorWidget *m_pEditorWidget;

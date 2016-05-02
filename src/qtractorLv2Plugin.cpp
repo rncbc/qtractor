@@ -2417,7 +2417,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		if (m_pfODummy)
 			delete [] m_pfODummy;
 		m_pfODummy = new float [iBufferSize];
-		::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
 	}
 
 #ifdef CONFIG_LV2_WORKER
@@ -2602,24 +2602,14 @@ void qtractorLv2Plugin::process (
 		LilvInstance *instance = m_ppInstances[i];
 		if (instance) {
 			// For each instance audio input port...
-			for (j = 0; j < iAudioIns; ++j) {
-				if (iIChannel < iChannels) {
-					lilv_instance_connect_port(instance,
-						m_piAudioIns[j], ppIBuffer[iIChannel++]);
-				} else {
-					lilv_instance_connect_port(instance,
-						m_piAudioIns[j], m_pfIDummy); // dummy input!
-				}
+			for (j = 0; j < iAudioIns && iIChannel < iChannels; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piAudioIns[j], ppIBuffer[iIChannel++]);
 			}
 			// For each instance audio output port...
-			for (j = 0; j < iAudioOuts; ++j) {
-				if (iOChannel < iChannels) {
-					lilv_instance_connect_port(instance,
-						m_piAudioOuts[j], ppOBuffer[iOChannel++]);
-				} else {
-					lilv_instance_connect_port(instance,
-						m_piAudioOuts[j], m_pfODummy); // dummy output!
-				}
+			for (j = 0; j < iAudioOuts && iOChannel < iChannels; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piAudioOuts[j], ppOBuffer[iOChannel++]);
 			}
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input event/MIDI ports...
@@ -2700,14 +2690,9 @@ void qtractorLv2Plugin::process (
 		#endif	// CONFIG_LV2_ATOM
 			// Make it run...
 			lilv_instance_run(instance, nframes);
-			// Done.
-		#if 0
-			// Wrap channels?...
-			if (iIChannel < iChannels - 1)
-				++iIChannel;
-			if (iOChannel < iChannels - 1)
-				++iOChannel;
-		#endif
+			// Wrap dangling output channels?...
+			for (j = iOChannel; j < iChannels; ++j)
+				::memset(ppOBuffer[j], 0, nframes * sizeof(float));
 		}
 	}
 

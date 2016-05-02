@@ -1685,12 +1685,6 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 	// Start from first input buffer...
 	m_pppBuffers[0] = ppBuffer;
 
-	// Better start clean on first output buffer...
-	unsigned short i;
-
-	for (i = 0 ; i < m_iChannels; ++i)
-		::memset(m_pppBuffers[1][i], 0, nframes * sizeof(float));
-
 	// Buffer binary iterator...
 	unsigned short iBuffer = 0;
 
@@ -1711,7 +1705,7 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 
 	// Now for the output buffer commitment...
 	if (iBuffer & 1) {
-		for (i = 0; i < m_iChannels; ++i) {
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			::memcpy(ppBuffer[i], m_pppBuffers[1][i],
 				nframes * sizeof(float));
 		}

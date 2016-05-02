@@ -651,7 +651,8 @@ static QHash<AEffect *, qtractorVstPlugin *> g_vstPlugins;
 qtractorVstPlugin::qtractorVstPlugin (
 	qtractorPluginList *pList, qtractorVstPluginType *pVstType )
 	: qtractorPlugin(pList, pVstType), m_ppEffects(NULL),
-		m_ppIBuffer(NULL), m_ppOBuffer(NULL), m_pfXBuffer(NULL),
+		m_ppIBuffer(NULL), m_ppOBuffer(NULL),
+		m_pfIDummy(NULL), m_pfODummy(NULL),
 		m_pEditorWidget(NULL), m_bEditorClosed(false)
 {
 #ifdef CONFIG_DEBUG
@@ -690,8 +691,10 @@ qtractorVstPlugin::~qtractorVstPlugin (void)
 	if (m_ppOBuffer)
 		delete [] m_ppOBuffer;
 
-	if (m_pfXBuffer)
-		delete [] m_pfXBuffer;
+	if (m_pfIDummy)
+		delete [] m_pfIDummy;
+	if (m_pfODummy)
+		delete [] m_pfODummy;
 }
 
 
@@ -766,10 +769,25 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		g_vstPlugins.insert(m_ppEffects[i]->vst_effect(), this);
 	}
 
-	// Setup all those instance alright...
-//	const unsigned short iAudioIns = audioIns();
+	// Allocate the dummy audio I/O buffers...
+	const unsigned short iAudioIns = audioIns();
 	const unsigned short iAudioOuts = audioOuts();
 
+	if (iChannels < iAudioIns) {
+		if (m_pfIDummy)
+			delete [] m_pfIDummy;
+		m_pfIDummy = new float [iBufferSize];
+		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+	}
+
+	if (iChannels < iAudioOuts) {
+		if (m_pfODummy)
+			delete [] m_pfODummy;
+		m_pfODummy = new float [iBufferSize];
+	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+	}
+
+	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
@@ -784,14 +802,6 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		for (j = 0; j < iAudioOuts; ++j)
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	#endif
-	}
-
-	// Allocate the dummy audio I/O buffer...
-	if (iChannels < iAudioOuts) {
-		if (m_pfXBuffer)
-			delete [] m_pfXBuffer;
-		m_pfXBuffer = new float [iBufferSize];
-		::memset(m_pfXBuffer, 0, iBufferSize * sizeof(float));
 	}
 
 	// (Re)issue all configuration as needed...
@@ -859,16 +869,18 @@ void qtractorVstPlugin::process (
 	for (i = 0; i < iInstances; ++i) {
 		AEffect *pVstEffect = vst_effect(i);
 		// For each instance audio input port...
-		for (j = 0; j < iAudioIns && iIChannel < iChannels; ++j)
-			m_ppIBuffer[j] = ppIBuffer[iIChannel++];
+		for (j = 0; j < iAudioIns; ++j) {
+			if (iIChannel < iChannels)
+				m_ppIBuffer[j] = ppIBuffer[iIChannel++];
+			else
+				m_ppIBuffer[j] = m_pfIDummy; // dummy input!
+		}
 		// For each instance audio output port...
 		for (j = 0; j < iAudioOuts; ++j) {
-			if (iOChannel < iChannels) {
+			if (iOChannel < iChannels)
 				m_ppOBuffer[j] = ppOBuffer[iOChannel++];
-				::memset(m_ppOBuffer[j], 0, nframes * sizeof(float));
-			} else {
-				m_ppOBuffer[j] = m_pfXBuffer; // dummy output!
-			}
+			else
+				m_ppOBuffer[j] = m_pfODummy; // dummy output!
 		}
 		// Make it run MIDI, if applicable...
 		if (pMidiManager) {
@@ -886,13 +898,9 @@ void qtractorVstPlugin::process (
 				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
 		}
 	#endif
-	#if 0
-		// Wrap channels?...
-		if (iIChannel < iChannels - 1)
-			++iIChannel;
-		if (iOChannel < iChannels - 1)
-			++iOChannel;
-	#endif
+		// Wrap dangling output channels?...
+		for (j = iOChannel; j < iChannels; ++j)
+			::memset(ppOBuffer[j], 0, nframes * sizeof(float));
 	}
 
 	if (pMidiManager && iMidiOuts > 0)
