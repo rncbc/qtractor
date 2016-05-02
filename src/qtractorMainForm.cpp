@@ -5437,7 +5437,7 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #endif // CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EVENT
-	list << tr("LV2 Plug-in MIDI/Event support enabled.");
+	list << tr("LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.");
 #endif
 #ifndef CONFIG_LV2_ATOM
 	list << tr("LV2 Plug-in MIDI/Atom support disabled.");
@@ -5448,9 +5448,13 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_STATE
 	list << tr("LV2 Plug-in State support disabled.");
 #endif
-#ifndef CONFIG_LV2_STATE_FILES
-	list << tr("LV2 Plug-in State Files support disabled.");
+#ifdef CONFIG_LV2_STATE_FILES
+#ifdef CONFIG_LV2_STATE_MAKE_PATH
+	list << tr("LV2 plug-in State Make Path support (DANGEROUS)	enabled.");
 #endif
+#else
+	list << tr("LV2 Plug-in State Files support disabled.");
+#endif // CONFIG_LV2_STATE_FILES
 #ifndef CONFIG_LV2_PROGRAMS
 	list << tr("LV2 Plug-in Programs support disabled.");
 #endif
