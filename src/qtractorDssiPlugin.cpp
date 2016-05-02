@@ -574,8 +574,8 @@ class DssiMulti
 public:
 
 	// Constructor.
-	DssiMulti() : m_iSize(0), m_ppPlugins(NULL),
-		m_iInstances(0), m_phInstances(NULL),
+	DssiMulti() : m_iSize(0), m_ppPlugins(NULL), m_iInstances(0),
+		m_piInstances(NULL), m_phInstances(NULL),
 		m_ppEvents(NULL), m_piEvents(NULL),
 		m_iProcess(0), m_iActivated(0), m_iRefCount(0) {}
 
@@ -588,6 +588,8 @@ public:
 			delete [] m_ppEvents;
 		if (m_phInstances)
 			delete [] m_phInstances;
+		if (m_piInstances)
+			delete [] m_piInstances;
 		if (m_ppPlugins)
 			delete [] m_ppPlugins;
 	}
@@ -604,26 +606,29 @@ public:
 			m_iSize += iNewInstances;
 			qtractorDssiPlugin **ppNewPlugins
 				= new qtractorDssiPlugin * [m_iSize];
-			LADSPA_Handle *phNewInstances
-				= new LADSPA_Handle [m_iSize];
+			unsigned long *piNewInstances
+				= new unsigned long [m_iSize];
 			qtractorDssiPlugin **ppOldPlugins = m_ppPlugins;
-			LADSPA_Handle *phOldInstances = m_phInstances;
-			if (ppOldPlugins && phOldInstances) {
+			unsigned long *piOldInstances = m_piInstances;
+			if (ppOldPlugins && piOldInstances) {
 				m_ppPlugins = NULL;
-				m_phInstances = NULL;
+				m_piInstances = NULL;
 				for (unsigned long i = 0; i < m_iInstances; ++i) {
 					ppNewPlugins[i] = ppOldPlugins[i];
-					phNewInstances[i] = phOldInstances[i];
+					piNewInstances[i] = piOldInstances[i];
 				}
-				delete [] phOldInstances;
+				delete [] piOldInstances;
 				delete [] ppOldPlugins;
 			}
 			m_ppPlugins = ppNewPlugins;
-			m_phInstances = phNewInstances;
+			m_piInstances = piNewInstances;
+			if (m_phInstances)
+				delete [] m_phInstances;
 			if (m_ppEvents)
 				delete [] m_ppEvents;
 			if (m_piEvents)
 				delete [] m_piEvents;
+			m_phInstances = new LADSPA_Handle  [m_iSize];
 			m_ppEvents = new snd_seq_event_t * [m_iSize];
 			m_piEvents = new unsigned long     [m_iSize];
 		}
@@ -631,7 +636,7 @@ public:
 		for (unsigned long i = 0; i < iInstances; ++i) {
 			const unsigned long iInstance = m_iInstances + i;
 			m_ppPlugins[iInstance] = pDssiPlugin;
-			m_phInstances[iInstance] = pDssiPlugin->ladspa_handle(i);
+			m_piInstances[iInstance] = i;
 		}
 
 		m_iInstances = iNewInstances;
@@ -663,8 +668,8 @@ public:
 			if (j > i) {
 				const unsigned long k = (j - i);
 				for (; j < m_iInstances; ++j, ++i) {
+					m_piInstances[i] = m_piInstances[j];
 					m_ppPlugins[i] = m_ppPlugins[j];
-					m_phInstances[i] = m_phInstances[j];
 				}
 				m_iInstances -= k;
 				break;
@@ -679,20 +684,29 @@ public:
 		if (++m_iProcess < m_iActivated)
 			return;
 
+		unsigned long iInstances = 0;
+
 		for (unsigned long i = 0; i < m_iInstances; ++i) {
+			qtractorDssiPlugin *pDssiPlugin = m_ppPlugins[i];
+			if (!pDssiPlugin->isActivated())
+				continue;
+			// Set proper instance handle...
+			m_phInstances[iInstances] = pDssiPlugin->ladspa_handle(m_piInstances[i]);
 			// Set MIDI event lists...
 			qtractorMidiManager *pMidiManager
-				= m_ppPlugins[i]->list()->midiManager();
+				= pDssiPlugin->list()->midiManager();
 			if (pMidiManager) {
-				m_ppEvents[i] = pMidiManager->events();
-				m_piEvents[i] = pMidiManager->count();
+				m_ppEvents[iInstances] = pMidiManager->events();
+				m_piEvents[iInstances] = pMidiManager->count();
 			} else {
-				m_ppEvents[i] = NULL;
-				m_piEvents[i] = 0;
+				m_ppEvents[iInstances] = NULL;
+				m_piEvents[iInstances] = 0;
 			}
+			// Count active instances...
+			++iInstances;
 		}
 
-		(*pDssiDescriptor->run_multiple_synths)(m_iInstances,
+		(*pDssiDescriptor->run_multiple_synths)(iInstances,
 			m_phInstances, nframes, m_ppEvents, m_piEvents);
 
 		m_iProcess = 0;
@@ -702,7 +716,7 @@ public:
 	void activate(qtractorDssiPlugin *pDssiPlugin)
 		{ m_iActivated += pDssiPlugin->instances(); }
 	void deactivate(qtractorDssiPlugin *pDssiPlugin)
-		{ m_iActivated -= pDssiPlugin->instances(); reset(pDssiPlugin); }
+		{ m_iActivated -= pDssiPlugin->instances(); }
 
 	// Reference count methods.
 	void addRef()
@@ -739,6 +753,7 @@ private:
 	unsigned long        m_iSize;
 	qtractorDssiPlugin **m_ppPlugins;
 	unsigned long        m_iInstances;
+	unsigned long       *m_piInstances;
 	LADSPA_Handle       *m_phInstances;
 	snd_seq_event_t    **m_ppEvents;
 	unsigned long       *m_piEvents;
