@@ -949,9 +949,6 @@ static LV2_Atom_Forge *g_lv2_atom_forge = NULL;
 		lv2_atom_forge_property_head(forge, key, 0)
 #endif
 
-static LilvNode *g_lv2_rdfs_label_prop = NULL;
-static LilvNode *g_lv2_rdfs_range_prop = NULL;
-
 static LilvNode *g_lv2_minimum_prop = NULL;
 static LilvNode *g_lv2_maximum_prop = NULL;
 static LilvNode *g_lv2_default_prop = NULL;
@@ -1611,9 +1608,6 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_atom_forge = new LV2_Atom_Forge();
 	lv2_atom_forge_init(g_lv2_atom_forge, &g_lv2_urid_map);
 
-	g_lv2_rdfs_label_prop = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
-	g_lv2_rdfs_range_prop = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "range");
-
 	g_lv2_maximum_prop = lilv_new_uri(g_lv2_world, LV2_CORE__maximum);
 	g_lv2_minimum_prop = lilv_new_uri(g_lv2_world, LV2_CORE__minimum);
 	g_lv2_default_prop = lilv_new_uri(g_lv2_world, LV2_CORE__default);
@@ -1729,9 +1723,6 @@ void qtractorLv2PluginType::lv2_close (void)
 		g_lv2_atom_forge = NULL;
 	}
 
-	lilv_node_free(g_lv2_rdfs_label_prop);
-	lilv_node_free(g_lv2_rdfs_range_prop);
-
 	lilv_node_free(g_lv2_maximum_prop);
 	lilv_node_free(g_lv2_minimum_prop);
 	lilv_node_free(g_lv2_default_prop);
@@ -1790,9 +1781,6 @@ void qtractorLv2PluginType::lv2_close (void)
 	g_lv2_logarithmic_prop = NULL;
 
 #ifdef CONFIG_LV2_ATOM
-
-	g_lv2_rdfs_label_prop = NULL;
-	g_lv2_rdfs_range_prop = NULL;
 
 	g_lv2_maximum_prop = NULL;
 	g_lv2_minimum_prop = NULL;
@@ -2271,7 +2259,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	#endif	// CONFIG_LV2_ATOM
 	#ifdef CONFIG_LV2_PRESETS
-		LilvNode *label_uri  = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
+		LilvNode *label_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
 		LilvNode *preset_uri = lilv_new_uri(g_lv2_world, LV2_PRESETS__Preset);
 		LilvNodes *presets = lilv_plugin_get_related(lv2_plugin(), preset_uri);
 		if (presets) {
