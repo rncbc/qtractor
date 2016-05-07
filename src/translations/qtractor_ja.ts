@@ -28,16 +28,16 @@ Audio:	%1 channels, %2 Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2417"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2743"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2423"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2749"/>
         <location filename="../qtractorMidiEngine.cpp" line="3957"/>
         <location filename="../qtractorMidiEngine.cpp" line="4506"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2426"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2743"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2432"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2749"/>
         <location filename="../qtractorMidiEngine.cpp" line="3966"/>
         <location filename="../qtractorMidiEngine.cpp" line="4506"/>
         <source>%1 Out</source>
@@ -585,15 +585,15 @@ MIDI:	</translation>
         <translation>%1 ボリューム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2419"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2428"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2425"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2434"/>
         <location filename="../qtractorTrack.cpp" line="679"/>
         <source>%1 Gain</source>
         <translation>%1 ゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2421"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2430"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2427"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2436"/>
         <location filename="../qtractorMidiEngine.cpp" line="3961"/>
         <location filename="../qtractorMidiEngine.cpp" line="3970"/>
         <location filename="../qtractorTrack.cpp" line="682"/>
@@ -735,13 +735,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>コピーライト:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1797"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1871"/>
         <source>Project: </source>
         <translation>プロジェクト:</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1805"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1879"/>
         <source>Author: </source>
         <translation>作者:</translation>
     </message>

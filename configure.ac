@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.7.1, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.7.2, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1109,19 +1109,23 @@ if test "x$ac_lv2_event" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_atom" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_atom_helpers.h, [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
+   AC_CHECK_HEADERS(lv2_atom_helpers.h \
+      lv2/lv2plug.in/ns/ext/atom/atom.h \
+      lv2/lv2plug.in/ns/ext/atom/forge.h \
+      lv2/lv2plug.in/ns/ext/atom/util.h,
+      [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
    if test "x$ac_lv2_atom" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_ATOM, 1, [Define if LV2 Atom/MIDI aupport is available.])
    else
       AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
+      ac_lv2_state="no"
       ac_lv2_options="no"
-      ac_lv2_buf_size="no"
-      ac_lv2_time_position="no";
+      ac_lv2_time_position="no"
    fi
 else
-   ac_options="no"
-   ac_buf_size="no"
-   ac_lv2_time_position="no";
+   ac_lv2_state="no"
+   ac_lv2_options="no"
+   ac_lv2_time_position="no"
 fi
 if test "x$ac_lv2_worker" = "xyes"; then
    AC_CHECK_HEADER(

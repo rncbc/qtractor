@@ -40,6 +40,12 @@
 
 #include "qtractorMainForm.h"
 
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_TIME
+#include "qtractorLv2Plugin.h"
+#endif
+#endif
+
 #ifdef CONFIG_JACK_SESSION
 #include <jack/session.h>
 #endif

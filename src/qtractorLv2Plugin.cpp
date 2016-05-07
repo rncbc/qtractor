@@ -27,14 +27,16 @@
 
 #include "qtractorPluginFactory.h"
 
-#if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
+#include "qtractorSession.h"
+#include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
-#endif
 
-#ifdef CONFIG_LV2_PRESETS
-// LV2 Presets: standard directory access.
 #include "qtractorOptions.h"
+
+#ifdef CONFIG_LV2_STATE
+// LV2 State/Presets: standard directory access.
 // For local file vs. URI manipulations.
+#include <QFileInfo>
 #include <QDir>
 #include <QUrl>
 #endif
@@ -577,11 +579,7 @@ void qtractorLv2Worker::process (void)
 
 #ifdef CONFIG_LV2_STATE_FILES
 
-#include "qtractorSession.h"
 #include "qtractorDocument.h"
-
-#include <QFileInfo>
-#include <QDir>
 
 static char *qtractor_lv2_state_abstract_path (
 	LV2_State_Map_Path_Handle handle, const char *absolute_path )
@@ -708,8 +706,7 @@ static char *qtractor_lv2_state_make_path (
 
 #ifdef CONFIG_LV2_BUF_SIZE
 
-#include "qtractorAudioEngine.h"
-
+// LV2 Buffer size option.
 #include "lv2/lv2plug.in/ns/ext/buf-size/buf-size.h"
 
 #ifndef LV2_BUF_SIZE__nominalBlockLength
@@ -934,10 +931,36 @@ static LilvNode *g_lv2_integer_prop     = NULL;
 static LilvNode *g_lv2_sample_rate_prop = NULL;
 static LilvNode *g_lv2_logarithmic_prop = NULL;
 
+
 #ifdef CONFIG_LV2_ATOM
-#include "lv2/lv2plug.in/ns/ext/resize-port/resize-port.h"
-static LilvNode *g_lv2_minimum_size_prop = NULL;
+
+#include "lv2/lv2plug.in/ns/ext/atom/forge.h"
+#include "lv2/lv2plug.in/ns/ext/atom/util.h"
+
+static LV2_Atom_Forge *g_lv2_atom_forge = NULL;
+
+#ifndef CONFIG_LV2_ATOM_FORGE_OBJECT
+#define lv2_atom_forge_object(forge, frame, id, otype) \
+		lv2_atom_forge_blank(forge, frame, id, otype)
 #endif
+
+#ifndef CONFIG_LV2_ATOM_FORGE_KEY
+#define lv2_atom_forge_key(forge, key) \
+		lv2_atom_forge_property_head(forge, key, 0)
+#endif
+
+static LilvNode *g_lv2_rdfs_label_prop = NULL;
+static LilvNode *g_lv2_rdfs_range_prop = NULL;
+
+static LilvNode *g_lv2_minimum_prop = NULL;
+static LilvNode *g_lv2_maximum_prop = NULL;
+static LilvNode *g_lv2_default_prop = NULL;
+
+#include "lv2/lv2plug.in/ns/ext/resize-port/resize-port.h"
+
+static LilvNode *g_lv2_minimum_size_prop = NULL;
+
+#endif	// CONFIG_LV2_ATOM
 
 
 // LV2 URIDs stock.
@@ -947,9 +970,13 @@ static struct qtractorLv2Urids
 	LV2_URID atom_eventTransfer;
 	LV2_URID atom_Chunk;
 	LV2_URID atom_Sequence;
-	LV2_URID atom_String;
-	LV2_URID atom_Float;
 	LV2_URID atom_Int;
+	LV2_URID atom_Long;
+	LV2_URID atom_Float;
+	LV2_URID atom_Double;
+	LV2_URID atom_Bool;
+	LV2_URID atom_String;
+	LV2_URID atom_Path;
 #endif
 #ifdef CONFIG_LV2_TIME
 #ifdef CONFIG_LV2_TIME_POSITION
@@ -992,9 +1019,9 @@ void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 #endif	// CONFIG_LV2_PROGRAMS
 
 
-#ifdef CONFIG_LV2_PRESETS
+#ifdef CONFIG_LV2_STATE
 
-// LV2 Presets: port value setter.
+// LV2 State/Presets: port value setter.
 static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	void *user_data, const void *value, uint32_t size, uint32_t type )
 {
@@ -1023,6 +1050,9 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	lilv_node_free(symbol);
 }
 
+#endif	// CONFIG_LV2_STATE
+
+#ifdef CONFIG_LV2_PRESETS
 
 // LV2 Presets: port value getter.
 static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
@@ -1148,26 +1178,11 @@ static uint32_t g_lv2_time_refcount = 0;
 #ifdef CONFIG_LV2_TIME_POSITION
 
 // LV2 Time position atoms...
-#include "lv2/lv2plug.in/ns/ext/atom/forge.h"
-
-static LilvNode       *g_lv2_time_position_class   = NULL;
+static LilvNode *g_lv2_time_position_class   = NULL;
+static uint8_t  *g_lv2_time_position_buffer  = NULL;
+static uint32_t  g_lv2_time_position_changed = 0;
 
 static QList<qtractorLv2Plugin *> *g_lv2_time_position_plugins = NULL;
-
-static LV2_Atom_Forge *g_lv2_time_position_forge   = NULL;
-static uint8_t        *g_lv2_time_position_buffer  = NULL;
-
-static uint32_t        g_lv2_time_position_changed = 0;
-
-#ifndef CONFIG_LV2_ATOM_FORGE_OBJECT
-#define lv2_atom_forge_object(forge, frame, id, otype) \
-		lv2_atom_forge_blank(forge, frame, id, otype)
-#endif
-
-#ifndef CONFIG_LV2_ATOM_FORGE_KEY
-#define lv2_atom_forge_key(forge, key) \
-		lv2_atom_forge_property_head(forge, key, 0)
-#endif
 
 static void qtractor_lv2_time_position_open ( qtractorLv2Plugin *pLv2Plugin )
 {
@@ -1179,11 +1194,6 @@ static void qtractor_lv2_time_position_open ( qtractorLv2Plugin *pLv2Plugin )
 		g_lv2_time_position_plugins = new QList<qtractorLv2Plugin *> ();
 
 	g_lv2_time_position_plugins->append(pLv2Plugin);
-
-	if (g_lv2_time_position_forge == NULL) {
-		g_lv2_time_position_forge = new LV2_Atom_Forge();
-		lv2_atom_forge_init(g_lv2_time_position_forge, &g_lv2_urid_map);
-	}
 
 	if (g_lv2_time_position_buffer == NULL)
 		g_lv2_time_position_buffer = new uint8_t [256];
@@ -1211,10 +1221,6 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 		if (g_lv2_time_position_buffer) {
 			delete [] g_lv2_time_position_buffer;
 			g_lv2_time_position_buffer = NULL;
-		}
-		if (g_lv2_time_position_forge) {
-			delete g_lv2_time_position_forge;
-			g_lv2_time_position_forge = NULL;
 		}
 	}
 }
@@ -1563,7 +1569,7 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_external_ui_deprecated_class
 		= lilv_new_uri(g_lv2_world, LV2_EXTERNAL_UI_DEPRECATED_URI);
 #endif
-#endif
+#endif	// CONFIG_LV2_EXTERNAL_UI
 	g_lv2_x11_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__X11UI);
 	g_lv2_gtk_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__GtkUI);
 	g_lv2_qt4_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__Qt4UI);
@@ -1601,9 +1607,21 @@ void qtractorLv2PluginType::lv2_open (void)
 		"http://lv2plug.in/ns/dev/extportinfo#logarithmic");
 
 #ifdef CONFIG_LV2_ATOM
+
+	g_lv2_atom_forge = new LV2_Atom_Forge();
+	lv2_atom_forge_init(g_lv2_atom_forge, &g_lv2_urid_map);
+
+	g_lv2_rdfs_label_prop = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
+	g_lv2_rdfs_range_prop = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "range");
+
+	g_lv2_maximum_prop = lilv_new_uri(g_lv2_world, LV2_CORE__maximum);
+	g_lv2_minimum_prop = lilv_new_uri(g_lv2_world, LV2_CORE__minimum);
+	g_lv2_default_prop = lilv_new_uri(g_lv2_world, LV2_CORE__default);
+
 	g_lv2_minimum_size_prop = lilv_new_uri(g_lv2_world,
 		LV2_RESIZE_PORT__minimumSize);
-#endif
+
+#endif	// CONFIG_LV2_ATOM
 
 	// LV2 URIDs stock setup...
 #ifdef CONFIG_LV2_ATOM
@@ -1613,12 +1631,20 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk);
 	g_lv2_urids.atom_Sequence
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
-	g_lv2_urids.atom_String
-		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
-	g_lv2_urids.atom_Float
-		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Float);
 	g_lv2_urids.atom_Int
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Int);
+	g_lv2_urids.atom_Long
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Long);
+	g_lv2_urids.atom_Float
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Float);
+	g_lv2_urids.atom_Double
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Double);
+	g_lv2_urids.atom_Bool
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Bool);
+	g_lv2_urids.atom_String
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
+	g_lv2_urids.atom_Path
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Path);
 #endif
 #ifdef CONFIG_LV2_TIME
 #ifdef CONFIG_LV2_TIME_POSITION
@@ -1658,7 +1684,7 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_time_position_class
 		= lilv_new_uri(g_lv2_world, LV2_TIME__Position);
 #endif
-#endif
+#endif	// CONFIG_LV2_TIME
 }
 
 
@@ -1687,9 +1713,8 @@ void qtractorLv2PluginType::lv2_close (void)
 	}
 #ifdef CONFIG_LV2_TIME_POSITION
 	lilv_node_free(g_lv2_time_position_class);
-	g_lv2_time_position_class = NULL;
 #endif
-#endif
+#endif	// CONFIG_LV2_TIME
 
 	// Clean up.
 	lilv_node_free(g_lv2_toggled_prop);
@@ -1698,8 +1723,22 @@ void qtractorLv2PluginType::lv2_close (void)
 	lilv_node_free(g_lv2_logarithmic_prop);
 
 #ifdef CONFIG_LV2_ATOM
+
+	if (g_lv2_atom_forge) {
+		delete g_lv2_atom_forge;
+		g_lv2_atom_forge = NULL;
+	}
+
+	lilv_node_free(g_lv2_rdfs_label_prop);
+	lilv_node_free(g_lv2_rdfs_range_prop);
+
+	lilv_node_free(g_lv2_maximum_prop);
+	lilv_node_free(g_lv2_minimum_prop);
+	lilv_node_free(g_lv2_default_prop);
+
 	lilv_node_free(g_lv2_minimum_size_prop);
-#endif
+
+#endif	// CONFIG_LV2_ATOM
 
 #ifdef CONFIG_LV2_STATE
 	lilv_node_free(g_lv2_state_interface_hint);
@@ -1730,7 +1769,7 @@ void qtractorLv2PluginType::lv2_close (void)
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 	lilv_node_free(g_lv2_external_ui_deprecated_class);
 #endif
-#endif
+#endif	// CONFIG_LV2_EXTERNAL_UI
 	lilv_node_free(g_lv2_x11_ui_class);
 	lilv_node_free(g_lv2_gtk_ui_class);
 	lilv_node_free(g_lv2_qt4_ui_class);
@@ -1738,6 +1777,41 @@ void qtractorLv2PluginType::lv2_close (void)
 #endif	// CONFIG_LV2_UI
 
 	lilv_world_free(g_lv2_world);
+
+#ifdef CONFIG_LV2_TIME
+#ifdef CONFIG_LV2_TIME_POSITION
+	g_lv2_time_position_class = NULL;
+#endif
+#endif
+
+	g_lv2_toggled_prop     = NULL;
+	g_lv2_integer_prop     = NULL;
+	g_lv2_sample_rate_prop = NULL;
+	g_lv2_logarithmic_prop = NULL;
+
+#ifdef CONFIG_LV2_ATOM
+
+	g_lv2_rdfs_label_prop = NULL;
+	g_lv2_rdfs_range_prop = NULL;
+
+	g_lv2_maximum_prop = NULL;
+	g_lv2_minimum_prop = NULL;
+	g_lv2_default_prop = NULL;
+
+	g_lv2_minimum_size_prop = NULL;
+
+#endif	// CONFIG_LV2_ATOM
+
+#ifdef CONFIG_LV2_STATE
+	g_lv2_state_interface_hint = NULL;
+#endif
+
+#ifdef CONFIG_LV2_WORKER
+	g_lv2_worker_schedule_hint = NULL;
+#endif
+
+	g_lv2_extension_data_hint = NULL;
+	g_lv2_realtime_hint = NULL;
 
 	g_lv2_input_class   = NULL;
 	g_lv2_output_class  = NULL;
@@ -1757,12 +1831,12 @@ void qtractorLv2PluginType::lv2_close (void)
 #ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
 	g_lv2_external_ui_deprecated_class = NULL;
 #endif
-#endif
+#endif	// CONFIG_LV2_EXTERNAL_UI
 	g_lv2_x11_ui_class = NULL;
 	g_lv2_gtk_ui_class = NULL;
 	g_lv2_qt4_ui_class = NULL;
 	g_lv2_qt5_ui_class = NULL;
-#endif
+#endif	// CONFIG_LV2_UI
 
 	g_lv2_plugins = NULL;
 	g_lv2_world   = NULL;
@@ -1969,7 +2043,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 
 #endif	// CONFIG_LV2_PROGRAMS
 
+#if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 	qtractorMidiManager *pMidiManager = list()->midiManager();
+#endif
 
 #ifdef CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_BUF_SIZE
@@ -4110,10 +4186,9 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 #ifdef CONFIG_LV2_TIME_POSITION
 	if (g_lv2_time_position_changed > 0 &&
 		g_lv2_time_position_plugins &&
-		g_lv2_time_position_forge &&
 		g_lv2_time_position_buffer) {
 		// Build LV2 Time position object to report change to plugin.
-		LV2_Atom_Forge *forge = g_lv2_time_position_forge;
+		LV2_Atom_Forge *forge = g_lv2_atom_forge;
 		uint8_t *buffer = g_lv2_time_position_buffer;
 		lv2_atom_forge_set_buffer(forge, buffer, 256);
 		LV2_Atom_Forge_Frame frame;
