@@ -30,17 +30,15 @@
 // LV2 Event/MIDI support.
 #include "lv2/lv2plug.in/ns/ext/event/event.h"
 #include "lv2/lv2plug.in/ns/ext/event/event-helpers.h"
-#ifndef QTRACTOR_LV2_MIDI_EVENT_ID
-#define QTRACTOR_LV2_MIDI_EVENT_ID 1
-#endif
 #endif
 
 #ifdef CONFIG_LV2_ATOM
 // LV2 Atom/MIDI support.
 #include "lv2_atom_helpers.h"
+#endif
+
 #ifndef QTRACTOR_LV2_MIDI_EVENT_ID
 #define QTRACTOR_LV2_MIDI_EVENT_ID 1
-#endif
 #endif
 
 #ifdef CONFIG_LV2_WORKER
