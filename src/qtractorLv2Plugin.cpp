@@ -959,15 +959,9 @@ static LilvNode *g_lv2_minimum_size_prop = NULL;
 
 #endif	// CONFIG_LV2_ATOM
 
-
 #ifdef CONFIG_LV2_PATCH
-
-#include "lv2/lv2plug.in/ns/ext/patch/patch.h"
-
 static LilvNode *g_lv2_patch_message_class = NULL;
-
 #endif
-
 
 // LV2 URIDs stock.
 static struct qtractorLv2Urids
@@ -1145,6 +1139,81 @@ static void qtractor_lv2_remove_dir ( const QString& sDir )
 }
 
 #endif	// CONFIG_LV2_PRESETS
+
+
+#ifdef CONFIG_LV2_PATCH
+
+//----------------------------------------------------------------------
+// class qtractorLv2Plugin::Property -- LV2 Patch/property registry item.
+//
+qtractorLv2Plugin::Property::Property ( const LilvNode *property )
+{
+	static const char *s_types[] = {
+		LV2_ATOM__Int,
+		LV2_ATOM__Long,
+		LV2_ATOM__Float,
+		LV2_ATOM__Double,
+		LV2_ATOM__Bool,
+		LV2_ATOM__String,
+		LV2_ATOM__Path,
+		NULL
+	};
+
+	LilvNode *label_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
+	LilvNode *range_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "range");
+
+	const char *prop_uri = lilv_node_as_uri(property);
+	m_key = qtractorLv2Plugin::lv2_urid_map(prop_uri);
+	m_uri = prop_uri;
+
+	LilvNode *label = lilv_nodes_get_first(
+		lilv_world_find_nodes(g_lv2_world, property, label_uri, NULL));
+	m_name = (label ? lilv_node_as_string(label) : prop_uri);
+	m_type = 0;
+	for (int i = 0; s_types[i]; ++i) {
+		const char *type = s_types[i];
+		LilvNode *range = lilv_new_uri(g_lv2_world, type);
+		const bool has_range = lilv_world_ask(
+			g_lv2_world, property, range_uri, range);
+		lilv_node_free(range);
+		if (has_range) {
+			m_type = qtractorLv2Plugin::lv2_urid_map(type);
+			break;
+		}
+	}
+
+	LilvNode *prop_min = lilv_world_get(
+		g_lv2_world, property, g_lv2_minimum_prop, NULL);
+	LilvNode *prop_max = lilv_world_get(
+		g_lv2_world, property, g_lv2_maximum_prop, NULL);
+	LilvNode *prop_def = lilv_world_get(
+		g_lv2_world, property, g_lv2_default_prop, NULL);
+
+	m_min = (prop_min ? lilv_node_as_float(prop_min) : 0.0f);
+	m_max = (prop_max ? lilv_node_as_float(prop_max) : 1.0f);
+	m_def = (prop_def ? lilv_node_as_float(prop_def) : 0.0f);
+
+	if (prop_min) lilv_node_free(prop_min);
+	if (prop_max) lilv_node_free(prop_max);
+	if (prop_def) lilv_node_free(prop_def);
+
+	lilv_node_free(label_uri);
+	lilv_node_free(range_uri);
+}
+
+bool qtractorLv2Plugin::Property::isToggled (void) const
+	{ return (m_type == g_lv2_urids.atom_Bool); }
+
+bool qtractorLv2Plugin::Property::isInteger (void) const
+	{ return (m_type == g_lv2_urids.atom_Int || m_type == g_lv2_urids.atom_Long); }
+
+bool qtractorLv2Plugin::Property::isString (void) const
+	{ return (m_type == g_lv2_urids.atom_String); }
+
+bool qtractorLv2Plugin::Property::isPath (void) const
+	{ return (m_type == g_lv2_urids.atom_Path); }
+
+#endif	// CONFIG_LV2_PATCH
 
 
 #ifdef CONFIG_LV2_TIME
@@ -2337,6 +2406,18 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		lilv_node_free(preset_uri);
 		lilv_node_free(label_uri);
 	#endif	// CONFIG_LV2_PRESETS
+	#ifdef CONFIG_LV2_PATCH
+		LilvNode *patch_uri = lilv_new_uri(g_lv2_world, LV2_PATCH__writable);
+		LilvNodes *properties = lilv_world_find_nodes(
+			g_lv2_world, lilv_plugin_get_uri(plugin), patch_uri, NULL);
+		LILV_FOREACH(nodes, prop, properties) {
+			const LilvNode *property = lilv_nodes_get(properties, prop);
+			Property *pProp = new Property(property);
+			m_lv2_properties.insert(pProp->key(), pProp);
+		}
+		lilv_nodes_free(properties);
+		lilv_node_free(patch_uri);
+	#endif
 	#ifdef CONFIG_LV2_TIME
 		// Set up time-pos designated port indexes, if any...
 		for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
@@ -2397,6 +2478,11 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 #endif	// CONFIG_LV2_TIME
 
 	// Free up all the rest...
+#ifdef CONFIG_LV2_PATCH
+	qDeleteAll(m_lv2_properties);
+	m_lv2_properties.clear();
+#endif
+
 #ifdef CONFIG_LV2_ATOM
 	qtractorLv2PluginType *pLv2Type
 		= static_cast<qtractorLv2PluginType *> (type());
@@ -2414,12 +2500,6 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 			lv2_atom_buffer_free(m_lv2_atom_buffer_ins[j]);
 		delete [] m_lv2_atom_buffer_ins;
 	}
-#ifdef CONFIG_LV2_UI
-	if (m_plugin_events)
-		::jack_ringbuffer_free(m_plugin_events);
-	if (m_ui_events)
-		::jack_ringbuffer_free(m_ui_events);
-#endif
 	if (m_piAtomOuts)
 		delete [] m_piAtomOuts;
 	if (m_piAtomIns)
@@ -2432,6 +2512,13 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	if (m_piEventIns)
 		delete [] m_piEventIns;
 #endif	// CONFIG_LV2_EVENT
+
+#ifdef CONFIG_LV2_UI
+	if (m_plugin_events)
+		::jack_ringbuffer_free(m_plugin_events);
+	if (m_ui_events)
+		::jack_ringbuffer_free(m_ui_events);
+#endif
 
 	if (m_piAudioOuts)
 		delete [] m_piAudioOuts;
@@ -3827,59 +3914,116 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 
 #ifdef CONFIG_LV2_PATCH
 
-// LV2 Patch/properties support...
+// LV2 Patch/properties changed, eventually from UI->plugin...
 void qtractorLv2Plugin::lv2_property_changed (
 	LV2_URID key, const LV2_Atom *value )
 {
-	const uint32_t size = value->size;
+	Property *pProp = m_lv2_properties.value(key, NULL);
+	if (pProp == NULL)
+		return;
+
 	const LV2_URID type = value->type;
+	const uint32_t size = value->size;
 	const void *body = value + 1;
 
+	if (type != pProp->type())
+		return;
+
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(%u, %p)"
-		" size=%u type=%u body=%p", this, key, value, size, type, body);
+	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(%u) [%s]",
+		this, key, pProp->name().toUtf8().constData());
 #endif
 
-	// TODO: Find registered property by "key"
-	// and then update its value to "var"...
+	if (type == g_lv2_urids.atom_Bool)
+		pProp->setValue(bool(*(const int32_t *) body));
+	else
+	if (type == g_lv2_urids.atom_Int)
+		pProp->setValue(int(*(const int32_t *) body));
+	else
+	if (type == g_lv2_urids.atom_Long)
+		pProp->setValue(qlonglong(*(const int64_t *) body));
+	else
+	if (type == g_lv2_urids.atom_Float)
+		pProp->setValue(float(*(const float *) body));
+	else
+	if (type == g_lv2_urids.atom_Double)
+		pProp->setValue(double(*(const double *) body));
+	else
+	if (type == g_lv2_urids.atom_String || type == g_lv2_urids.atom_Path)
+		pProp->setValue(QByteArray((const char *) body, size));
 
-#if 0
-	QVariant var;
-	if (type == g_lv2_urids.atom_Bool) {
-		var = bool(*(const int32_t *) body);
-		qDebug("DEBUG> qtractorLv2Plugin[%p]::lv2_property_changed(%u, (bool) %d) size=%u", this, key, int(var.toBool()), size);
-	}
+	// TODO: update the stock/generic form if visible...
+}
+
+// LV2 Patch/property updated, eventually from plugin->UI...
+void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
+{
+	qtractorLv2PluginType *pLv2Type
+		= static_cast<qtractorLv2PluginType *> (type());
+	if (pLv2Type == NULL)
+		return;
+
+	if (m_lv2_patch_port_in < pLv2Type->atomIns())
+		return;
+
+	Property *pProp = m_lv2_properties.value(key, NULL);
+	if (pProp == NULL)
+		return;
+
+	LV2_URID type = pProp->type();
+	const QVariant& value = pProp->value();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(%u) [%s]",
+		this, key, pProp->name().toUtf8().constData());
+#endif
+
+	// Set up forge to write to temporary buffer on the stack
+	LV2_Atom_Forge *forge = g_lv2_atom_forge;
+	LV2_Atom_Forge_Frame frame;
+	uint8_t buf[1024];
+	lv2_atom_forge_set_buffer(forge, buf, sizeof(buf));
+
+	// Serialize patch_Set message to set property...
+	lv2_atom_forge_object(forge, &frame, 1, g_lv2_urids.patch_Set);
+	lv2_atom_forge_key(forge, g_lv2_urids.patch_property);
+	lv2_atom_forge_urid(forge, key);
+	lv2_atom_forge_key(forge, g_lv2_urids.patch_value);
+
+	if (type == g_lv2_urids.atom_Bool)
+		lv2_atom_forge_bool(forge, value.toBool());
 	else
-	if (type == g_lv2_urids.atom_Int) {
-		var = int(*(const int32_t *) body);
-		qDebug("DEBUG> qtractorLv2Plugin[%p]::lv2_property_changed(%u, (int) %d) size=%u", this, key, var.toInt(), size);
-	}
+	if (type == g_lv2_urids.atom_Int)
+		lv2_atom_forge_int(forge, value.toInt());
 	else
-	if (type == g_lv2_urids.atom_Long) {
-		var = qlonglong(*(const int64_t *) body);
-		qDebug("DEBUG> qtractorLv2Plugin[%p]::lv2_property_changed(%u, (long) %ld) size=%u", this, key, long(var.toLongLong()), size);
-	}
+	if (type == g_lv2_urids.atom_Long)
+		lv2_atom_forge_long(forge, value.toLongLong());
 	else
-	if (type == g_lv2_urids.atom_Float) {
-		var = float(*(const float *) body);
-		qDebug("DEBUG> qtractorLv2Plugin[%p]::lv2_property_changed(%u, (float) %g) size=%u", this, key, var.toFloat(), size);
-	}
+	if (type == g_lv2_urids.atom_Float)
+		lv2_atom_forge_float(forge, value.toFloat());
 	else
-	if (type == g_lv2_urids.atom_Double) {
-		var = double(*(const double *) body);
-		qDebug("DEBUG> qtractorLv2Plugin[%p]::lv2_property_changed(%u, (double) %g) size=%u", this, key, var.toDouble(), size);
-	}
+	if (type == g_lv2_urids.atom_Double)
+		lv2_atom_forge_double(forge, value.toDouble());
 	else
 	if (type == g_lv2_urids.atom_String) {
-		var = QString((const char *) body);
-		qDebug("DEBUG> qtractorLv2Plugin[%p]::lv2_property_changed(%u, (string) \"%s\") size=%u", this, key, var.toString().toUtf8().constData(), size);
+		const QByteArray& aString = value.toByteArray();
+		lv2_atom_forge_string(forge, aString.data(), aString.size());
 	}
 	else
 	if (type == g_lv2_urids.atom_Path) {
-		var = QString((const char *) body);
-		qDebug("DEBUG> qtractorLv2Plugin[%p]::lv2_property_changed(%u, (path) \"%s\") size=%u", this, key, var.toString().toUtf8().constData(), size);
+		const QByteArray& aPath = value.toByteArray();
+		lv2_atom_forge_path(forge, aPath.data(), aPath.size());
 	}
-#endif
+
+	// Write message to UI...
+	const LV2_Atom *atom
+		= lv2_atom_forge_deref(forge, frame.ref);
+
+	lv2_ui_port_write(
+		m_piAtomIns[m_lv2_patch_port_in],
+		lv2_atom_total_size(atom),
+		g_lv2_urids.atom_eventTransfer,
+		(const void *) atom);
 }
 
 #endif	// CONFIG_LV2_PATCH

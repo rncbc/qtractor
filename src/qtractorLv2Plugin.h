@@ -97,7 +97,13 @@ class qtractorLv2Worker;
 #ifdef CONFIG_LV2_OPTIONS
 // LV2 Options support.
 #include "lv2/lv2plug.in/ns/ext/options/options.h"
-#endif	// CONFIG_LV2_OPTIONS
+#endif
+
+#ifdef CONFIG_LV2_PATCH
+// LV2 Patch/properties support.
+#include "lv2/lv2plug.in/ns/ext/patch/patch.h"
+#include <QVariant>
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -315,21 +321,84 @@ public:
 #endif
 
 #ifdef CONFIG_LV2_PRESETS
+
 	// Refresh and load preset labels listing.
 	QStringList presetList() const;
+
 	// Load/Save plugin state from/into a named preset.
 	bool loadPreset(const QString& sPreset);
 	bool savePreset(const QString& sPreset);
+
 	// Delete plugin state preset (from file-system).
 	bool deletePreset(const QString& sPreset);
+
 	// Whether given preset is internal/read-only.
 	bool isReadOnlyPreset(const QString& sPreset) const;
+
 #endif
 
 #ifdef CONFIG_LV2_PATCH
+
 	// LV2 Patch/properties support...
 	void lv2_property_changed(LV2_URID key, const LV2_Atom *value);
-#endif
+	void lv2_property_update( LV2_URID key);
+
+	// LV2 Patch/property registry item.
+	//
+	class Property
+	{
+	public:
+
+		Property(const LilvNode *property);
+
+		LV2_URID key() const
+			{ return m_key; }
+		const QString& uri() const
+			{ return m_uri; }
+		const QString& name() const
+			{ return m_name; }
+		LV2_URID type() const
+			{ return m_type; }
+
+		bool isToggled() const;
+		bool isInteger() const;
+		bool isString()  const;
+		bool isPath()    const;
+
+		float minValue() const
+			{ return m_min; }
+		float maxValue() const
+			{ return m_max; }
+		float defValue() const
+			{ return m_def; }
+
+		void setValue(const QVariant& value)
+			{ m_value = value; }
+		const QVariant& value() const
+			{ return m_value; }
+
+	private:
+
+		LV2_URID m_key;
+		QString  m_uri;
+		QString  m_name;
+		LV2_URID m_type;
+
+		float    m_min;
+		float    m_max;
+		float    m_def;
+
+		QVariant m_value;
+	};
+
+	// LV2 Patch/properties registry.
+	typedef QHash<LV2_URID, Property *> Properties;
+
+	// LV2 Patch/properties registry accessor.
+	const Properties& properties() const
+		{ return m_lv2_properties; }
+
+#endif	// CONFIG_LV2_PATCH
 
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
@@ -356,7 +425,7 @@ protected:
 
 	const void *lv2_ui_extension_data(const char *uri);
 
-#endif
+#endif	// CONFIG_LV2_UI
 
 private:
 
@@ -541,8 +610,11 @@ private:
 #endif
 
 #ifdef CONFIG_LV2_PATCH
+	// LV2 Patch/properties support.
 	unsigned long m_lv2_patch_port_in;
 	unsigned int  m_lv2_patch_changed;
+	// LV2 Patch/properties registry.
+	Properties m_lv2_properties;
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
