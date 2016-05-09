@@ -326,6 +326,11 @@ public:
 	bool isReadOnlyPreset(const QString& sPreset) const;
 #endif
 
+#ifdef CONFIG_LV2_PATCH
+	// LV2 Patch/properties support...
+	void lv2_property_changed(LV2_URID key, const LV2_Atom *value);
+#endif
+
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
 	static void updateTime(jack_client_t *pJackClient);
