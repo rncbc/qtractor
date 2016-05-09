@@ -535,6 +535,11 @@ private:
 #endif
 #endif
 
+#ifdef CONFIG_LV2_PATCH
+	unsigned long m_lv2_patch_port_in;
+	unsigned int  m_lv2_patch_changed;
+#endif
+
 #ifdef CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_BUF_SIZE
 	LV2_Feature        m_lv2_options_feature;
