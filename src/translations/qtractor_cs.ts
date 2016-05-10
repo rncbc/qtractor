@@ -737,13 +737,13 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1859"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1974"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1867"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1982"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
@@ -2338,7 +2338,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="589"/>
-        <location filename="../qtractorMainForm.cpp" line="5915"/>
+        <location filename="../qtractorMainForm.cpp" line="5918"/>
         <source>MOD</source>
         <translation>MOD</translation>
     </message>
@@ -2349,7 +2349,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="598"/>
-        <location filename="../qtractorMainForm.cpp" line="5920"/>
+        <location filename="../qtractorMainForm.cpp" line="5923"/>
         <source>REC</source>
         <translation>NAHRÁT</translation>
     </message>
@@ -2360,7 +2360,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="607"/>
-        <location filename="../qtractorMainForm.cpp" line="5925"/>
+        <location filename="../qtractorMainForm.cpp" line="5928"/>
         <source>MUTE</source>
         <translation>ZTLUMIT</translation>
     </message>
@@ -2371,7 +2371,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="616"/>
-        <location filename="../qtractorMainForm.cpp" line="5930"/>
+        <location filename="../qtractorMainForm.cpp" line="5933"/>
         <source>SOLO</source>
         <translation>SÓLO</translation>
     </message>
@@ -2382,7 +2382,7 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="625"/>
-        <location filename="../qtractorMainForm.cpp" line="5935"/>
+        <location filename="../qtractorMainForm.cpp" line="5938"/>
         <source>LOOP</source>
         <translation>SMYČKA</translation>
     </message>
@@ -2564,12 +2564,12 @@ Jste si jistý?</translation>
         <translation>Podpora pro soubory stavu přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5468"/>
+        <location filename="../qtractorMainForm.cpp" line="5471"/>
         <source>LV2 Plug-in Options support disabled.</source>
         <translation>Podpora pro volby přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5471"/>
+        <location filename="../qtractorMainForm.cpp" line="5474"/>
         <source>LV2 Plug-in Buf-size support disabled.</source>
         <translation>Podpora pro velikost vyrovnávací paměti přídavných modulů LV2 byla zakázána.</translation>
     </message>
@@ -2600,81 +2600,86 @@ Jste si jistý?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5465"/>
+        <source>LV2 Plug-in Patch support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5468"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
         <translation>Podpora pro čas/poloha přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5475"/>
+        <location filename="../qtractorMainForm.cpp" line="5478"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5478"/>
+        <location filename="../qtractorMainForm.cpp" line="5481"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
         <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5481"/>
+        <location filename="../qtractorMainForm.cpp" line="5484"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
         <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 Show byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5485"/>
+        <location filename="../qtractorMainForm.cpp" line="5488"/>
         <source>LV2 Plug-in UI GTK2 native support enabled.</source>
         <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v GTK byla povolena.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5488"/>
+        <location filename="../qtractorMainForm.cpp" line="5491"/>
         <source>LV2 Plug-in UI X11 native support enabled.</source>
         <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v X11 byla povolena.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5497"/>
+        <location filename="../qtractorMainForm.cpp" line="5500"/>
         <source>JACK Latency support disabled.</source>
         <translation>Podpora pro prodlevu JACK byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5500"/>
+        <location filename="../qtractorMainForm.cpp" line="5503"/>
         <source>JACK Metadata support disabled.</source>
         <translation>Podpora pro popisná data JACK byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5503"/>
+        <location filename="../qtractorMainForm.cpp" line="5506"/>
         <source>NSM support disabled.</source>
         <translation>Podpora pro NSM byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5940"/>
+        <location filename="../qtractorMainForm.cpp" line="5943"/>
         <source>XRUN</source>
         <translation>XRUN</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6716"/>
+        <location filename="../qtractorMainForm.cpp" line="6719"/>
         <source>&amp;Hold</source>
         <translation>&amp;Držet</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6721"/>
+        <location filename="../qtractorMainForm.cpp" line="6724"/>
         <source>&amp;Linear</source>
         <translation>&amp;Přímka</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6727"/>
+        <location filename="../qtractorMainForm.cpp" line="6730"/>
         <source>&amp;Spline</source>
         <translation>&amp;Křivka</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6842"/>
+        <location filename="../qtractorMainForm.cpp" line="6845"/>
         <source>Take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6849"/>
+        <location filename="../qtractorMainForm.cpp" line="6852"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7367"/>
+        <location filename="../qtractorMainForm.cpp" line="7370"/>
         <source>The audio engine has been shutdown.
 
 Make sure the JACK audio server (jackd)
@@ -2685,120 +2690,120 @@ Ujistěte se, že je zvukový server Jack (jackd)
 spuštěn a běží, a potom sezení začněte znovu.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7519"/>
-        <location filename="../qtractorMainForm.cpp" line="7687"/>
+        <location filename="../qtractorMainForm.cpp" line="7522"/>
+        <location filename="../qtractorMainForm.cpp" line="7690"/>
         <source>STOP</source>
         <translation>ZASTAVIT</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7524"/>
+        <location filename="../qtractorMainForm.cpp" line="7527"/>
         <source>PLAY</source>
         <translation>PŘEHRÁT</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7528"/>
+        <location filename="../qtractorMainForm.cpp" line="7531"/>
         <source>FFWD</source>
         <translation>RYCHLE DOPŘEDU</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7532"/>
+        <location filename="../qtractorMainForm.cpp" line="7535"/>
         <source>REW</source>
         <translation>PŘETOČIT</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7537"/>
+        <location filename="../qtractorMainForm.cpp" line="7540"/>
         <source>REC ON</source>
         <translation>NAHRÁVÁNÍ ZAPNUTO</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7545"/>
+        <location filename="../qtractorMainForm.cpp" line="7548"/>
         <source>REC OFF</source>
         <translation>NAHRÁVÁNÍ VYPNUTO</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7549"/>
+        <location filename="../qtractorMainForm.cpp" line="7552"/>
         <source>RESET</source>
         <translation>NASTAVIT ZNOVU</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7553"/>
+        <location filename="../qtractorMainForm.cpp" line="7556"/>
         <source>LOCATE %1</source>
         <translation>NAJÍT %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7557"/>
+        <location filename="../qtractorMainForm.cpp" line="7560"/>
         <source>SHUTTLE %1</source>
         <translation>JEZDIT TAM A ZPĚT %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7561"/>
+        <location filename="../qtractorMainForm.cpp" line="7564"/>
         <source>STEP %1</source>
         <translation>INTERVAL %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7567"/>
+        <location filename="../qtractorMainForm.cpp" line="7570"/>
         <source>TRACK RECORD %1 %2</source>
         <translation>NAHRÁVAT STOPU %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7572"/>
+        <location filename="../qtractorMainForm.cpp" line="7575"/>
         <source>TRACK MUTE %1 %2</source>
         <translation>ZTLUMIT STOPU %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7577"/>
+        <location filename="../qtractorMainForm.cpp" line="7580"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>SÓLO PRO STOPU %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7582"/>
+        <location filename="../qtractorMainForm.cpp" line="7585"/>
         <source>Unknown sub-command</source>
         <translation>Neznámý pod-příkaz</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7588"/>
-        <location filename="../qtractorMainForm.cpp" line="7699"/>
+        <location filename="../qtractorMainForm.cpp" line="7591"/>
+        <location filename="../qtractorMainForm.cpp" line="7702"/>
         <source>Not implemented</source>
         <translation>Neprovedeno</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7600"/>
+        <location filename="../qtractorMainForm.cpp" line="7603"/>
         <source>MIDI CTL: %1, Channel %2, Param %3, Value %4</source>
         <translation>MIDI CTL %1, Kanál %2, Parametr %3, Hodnota %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7712"/>
+        <location filename="../qtractorMainForm.cpp" line="7715"/>
         <source>%1 BPM</source>
         <translation>%1 ÚZM</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7646"/>
+        <location filename="../qtractorMainForm.cpp" line="7649"/>
         <source>(track %1, gain %2)</source>
         <translation>(stopa %1, zesílení %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7665"/>
+        <location filename="../qtractorMainForm.cpp" line="7668"/>
         <source>(track %1, panning %2)</source>
         <translation>(stopa %1, vyvažování %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7682"/>
+        <location filename="../qtractorMainForm.cpp" line="7685"/>
         <source>START</source>
         <translation>SPUSTIT</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7691"/>
+        <location filename="../qtractorMainForm.cpp" line="7694"/>
         <source>CONTINUE</source>
         <translation>POKRAČOVAT</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7695"/>
+        <location filename="../qtractorMainForm.cpp" line="7698"/>
         <source>SONGPOS %1</source>
         <translation>POLOHA V PÍSNI %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1797"/>
-        <location filename="../qtractorMainForm.cpp" line="7450"/>
+        <location filename="../qtractorMainForm.cpp" line="7453"/>
         <source>Untitled%1</source>
         <translation>Bez názvu %1</translation>
     </message>
@@ -2838,7 +2843,7 @@ spuštěn a běží, a potom sezení začněte znovu.</translation>
         <location filename="../qtractorMainForm.cpp" line="2778"/>
         <location filename="../qtractorMainForm.cpp" line="3928"/>
         <location filename="../qtractorMainForm.cpp" line="4030"/>
-        <location filename="../qtractorMainForm.cpp" line="6148"/>
+        <location filename="../qtractorMainForm.cpp" line="6151"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
@@ -2943,12 +2948,12 @@ next time you start this %1.</source>
 až při příštím spuštění %1.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5510"/>
+        <location filename="../qtractorMainForm.cpp" line="5513"/>
         <source>Version</source>
         <translation>Verze</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <location filename="../qtractorMainForm.cpp" line="5514"/>
         <source>Build</source>
         <translation>Sestavení</translation>
     </message>
@@ -3029,54 +3034,54 @@ až při příštím spuštění %1.</translation>
         <translation>Podpora pro rozhraní přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5494"/>
+        <location filename="../qtractorMainForm.cpp" line="5497"/>
         <source>JACK Session support disabled.</source>
         <translation>Podpora pro sezení JACK byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5519"/>
+        <location filename="../qtractorMainForm.cpp" line="5522"/>
         <source>Website</source>
         <translation>Webová stránka</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5524"/>
+        <location filename="../qtractorMainForm.cpp" line="5527"/>
         <source>This program is free software; you can redistribute it and/or modify it</source>
         <translation>Tento program je svobodným programovým vybavením. Můžete jej šířit a /nebo upravovat</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5525"/>
+        <location filename="../qtractorMainForm.cpp" line="5528"/>
         <source>under the terms of the GNU General Public License version 2 or later.</source>
         <translation>za podmínek GNU General Public License verze 2 nebo pozdější.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2920"/>
         <location filename="../qtractorMainForm.ui" line="2923"/>
-        <location filename="../qtractorMainForm.cpp" line="5529"/>
+        <location filename="../qtractorMainForm.cpp" line="5532"/>
         <source>About</source>
         <translation>O</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5608"/>
+        <location filename="../qtractorMainForm.cpp" line="5611"/>
         <source>record clip</source>
         <translation>Nahrát záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5826"/>
+        <location filename="../qtractorMainForm.cpp" line="5829"/>
         <source>[modified]</source>
         <translation>(upraveno)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5948"/>
+        <location filename="../qtractorMainForm.cpp" line="5951"/>
         <source>%1 Hz</source>
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6031"/>
+        <location filename="../qtractorMainForm.cpp" line="6034"/>
         <source>Session started.</source>
         <translation>Sezení začalo.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6123"/>
+        <location filename="../qtractorMainForm.cpp" line="6126"/>
         <source>The original session sample rate (%1 Hz)
 is not the same as the current audio engine (%2 Hz).
 
@@ -3089,7 +3094,7 @@ Velmi se doporučuje uložit sezení
 a znovu nahrát z nového souboru sezení.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6035"/>
+        <location filename="../qtractorMainForm.cpp" line="6038"/>
         <source>The audio/MIDI engine could not be started.
 
 Make sure the JACK audio server (jackd) and/or
@@ -3102,7 +3107,7 @@ Ujistěte se, že jsou zvukový server Jack (jackd) a/nebo
 spuštěny a běží, a potom sezení začněte znovu.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6149"/>
+        <location filename="../qtractorMainForm.cpp" line="6152"/>
         <source>The following issues were detected:
 
 %1
@@ -3115,38 +3120,38 @@ Saving into another session file is highly recommended.</source>
 Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6939"/>
+        <location filename="../qtractorMainForm.cpp" line="6942"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7229"/>
+        <location filename="../qtractorMainForm.cpp" line="7232"/>
         <source>XRUN(%1 skipped)</source>
         <translation>XRUN(%1 přeskočeno)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7234"/>
+        <location filename="../qtractorMainForm.cpp" line="7237"/>
         <source>XRUN(%1): some frames might have been lost.</source>
         <translation>XRUN(%1): některé snímky mohly být ztraceny.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7246"/>
+        <location filename="../qtractorMainForm.cpp" line="7249"/>
         <source>Audio connections change.</source>
         <translation>Změna zvukových připojení.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7262"/>
+        <location filename="../qtractorMainForm.cpp" line="7265"/>
         <source>MIDI connections change.</source>
         <translation>Změna MIDI připojení.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7278"/>
+        <location filename="../qtractorMainForm.cpp" line="7281"/>
         <source>Playing ended.</source>
         <translation>Přehrávání ukončeno.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7787"/>
-        <location filename="../qtractorMainForm.cpp" line="7846"/>
+        <location filename="../qtractorMainForm.cpp" line="7790"/>
+        <location filename="../qtractorMainForm.cpp" line="7849"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Přehrává &quot;%1&quot;...</translation>
     </message>
@@ -3636,7 +3641,7 @@ Důrazně se doporučuje uložit do jiného souboru se sezením.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="904"/>
-        <location filename="../qtractorMainForm.cpp" line="6591"/>
+        <location filename="../qtractorMainForm.cpp" line="6594"/>
         <source>&amp;None</source>
         <translation>&amp;Žádný</translation>
     </message>
@@ -10634,50 +10639,50 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="203"/>
+        <location filename="../qtractorPluginForm.cpp" line="215"/>
         <source>Page %1</source>
         <translation>Strana %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="291"/>
+        <location filename="../qtractorPluginForm.cpp" line="323"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 instance, %4 kanál(y).</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="417"/>
-        <location filename="../qtractorPluginForm.cpp" line="438"/>
+        <location filename="../qtractorPluginForm.cpp" line="442"/>
+        <location filename="../qtractorPluginForm.cpp" line="463"/>
         <source>(none)</source>
         <translation>(Žádné)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="526"/>
+        <location filename="../qtractorPluginForm.cpp" line="551"/>
         <source>Open Preset</source>
         <translation>Otevřít přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="527"/>
-        <location filename="../qtractorPluginForm.cpp" line="618"/>
+        <location filename="../qtractorPluginForm.cpp" line="552"/>
+        <location filename="../qtractorPluginForm.cpp" line="643"/>
         <source>Preset files (*.%1)</source>
         <translation>Soubory s přednastaveními (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="564"/>
-        <location filename="../qtractorPluginForm.cpp" line="659"/>
+        <location filename="../qtractorPluginForm.cpp" line="589"/>
+        <location filename="../qtractorPluginForm.cpp" line="684"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="841"/>
+        <location filename="../qtractorPluginForm.cpp" line="866"/>
         <source>&amp;None</source>
         <translation>&amp;Žádné</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="617"/>
+        <location filename="../qtractorPluginForm.cpp" line="642"/>
         <source>Save Preset</source>
         <translation>Uložit přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="565"/>
+        <location filename="../qtractorPluginForm.cpp" line="590"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -10690,7 +10695,7 @@ Sorry.</source>
 Promiňte.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="660"/>
+        <location filename="../qtractorPluginForm.cpp" line="685"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -10703,12 +10708,12 @@ Sorry.</source>
 Promiňte.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="693"/>
+        <location filename="../qtractorPluginForm.cpp" line="718"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="694"/>
+        <location filename="../qtractorPluginForm.cpp" line="719"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -10961,6 +10966,14 @@ Jste si jistý?</translation>
         <location filename="../qtractorPluginListView.cpp" line="1776"/>
         <source>&amp;Dedicated</source>
         <translation>&amp;Jednoúčelové</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorPluginPropertyWidget</name>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="1464"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
