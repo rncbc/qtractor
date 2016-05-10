@@ -5476,6 +5476,9 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_PRESETS
 	list << tr("LV2 Plug-in Presets support disabled.");
 #endif
+#ifndef CONFIG_LV2_PATCH
+	list << tr("LV2 Plug-in Patch support disabled.");
+#endif
 #ifndef CONFIG_LV2_TIME
 	list << tr("LV2 Plug-in Time/position support disabled.");
 #endif

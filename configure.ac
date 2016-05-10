@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.7.2, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.7.4, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -178,6 +178,11 @@ AC_ARG_ENABLE(lv2-presets,
   AC_HELP_STRING([--enable-lv2-presets], [enable LV2 plug-in Presets support (default=yes)]),
   [ac_lv2_presets="$enableval"],
   [ac_lv2_presets="yes"])
+
+AC_ARG_ENABLE(lv2-patch,
+  AC_HELP_STRING([--enable-lv2-patch], [enable LV2 plug-in Patch support (default=yes)]),
+  [ac_lv2_patch="$enableval"],
+  [ac_lv2_patch="yes"])
 
 AC_ARG_ENABLE(lv2-time,
   AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time support (default=yes)]),
@@ -801,6 +806,7 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_state_make_path="no"
    ac_lv2_programs="no"
    ac_lv2_presets="no"
+   ac_lv2_patch="no"
    ac_lv2_time="no"
    ac_lv2_time_position="no";
    ac_lv2_options="no"
@@ -1062,6 +1068,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_state_make_path="no"
       ac_lv2_programs="no"
       ac_lv2_presets="no"
+      ac_lv2_patch="no"
       ac_lv2_time="no"
       ac_lv2_time_position="no";
       ac_lv2_options="no"
@@ -1172,11 +1179,13 @@ if test "x$ac_lv2_state" = "xyes"; then
       ac_lv2_state_make_path="no"
       ac_lv2_state_files="no"
       ac_lv2_presets="no"
+      ac_lv2_patch="no"
    fi
 else
    ac_lv2_state_make_path="no"
    ac_lv2_state_files="no"
    ac_lv2_presets="no"
+   ac_lv2_patch="no"
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
    AC_CHECK_HEADER(lv2_programs.h, [ac_lv2_programs="yes"], [ac_lv2_programs="no"])
@@ -1193,7 +1202,17 @@ if test "x$ac_lv2_presets" = "xyes"; then
    if test "x$ac_lv2_presets" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PRESETS, 1, [Define if LV2 Presets are supported.])
    else
-      AC_MSG_WARN([*** LV2 Presets will be disabled.])
+      AC_MSG_WARN([*** LV2 Presets support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_patch" = "xyes"; then
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/patch/patch.h,
+      [ac_lv2_patch="yes"], [ac_lv2_patch="no"])
+   if test "x$ac_lv2_patch" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_PATCH, 1, [Define if LV2 Patch is supported.])
+   else
+      AC_MSG_WARN([*** LV2 Patch support will be disabled.])
    fi
 fi
 if test "x$ac_lv2_time" = "xyes"; then
@@ -1460,6 +1479,7 @@ echo "  LV2 plug-in State Files support  . . . . . . . . .: $ac_lv2_state_files"
 echo "  LV2 plug-in State Make Path support (DANGEROUS)  .: $ac_lv2_state_make_path"
 echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
 echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
+echo "  LV2 plug-in Patch support  . . . . . . . . . . . .: $ac_lv2_patch"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
 echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_position"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"

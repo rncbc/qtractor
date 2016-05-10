@@ -6,10 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 plug-in Patch support has been added and LV2 plug-ins
+  parameter properties manipulation is now accessible on the
+  generic plug-in properties dialog. (EXPERIMENTAL)
+
 - Fixed a recently introduced bug, that rendered all but one
   plug-in instance to silence, affecting only DSSI plug-ins
   which implement DSSI_Descriptor::run_multiple_synths() eg.
-  fluidsynth-dssi, hexter, etc. (EXPERIMENTAL)
+  fluidsynth-dssi, hexter, etc.
 
 
 0.7.7  2016-04-27  Haziest Photon Beta

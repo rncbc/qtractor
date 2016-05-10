@@ -31,6 +31,7 @@
 class qtractorPlugin;
 class qtractorPluginParam;
 class qtractorPluginParamWidget;
+class qtractorPluginPropertyWidget;
 
 class qtractorMidiControlObserver;
 
@@ -39,6 +40,12 @@ class qtractorObserverSlider;
 class qtractorObserverSpinBox;
 
 class qtractorPluginParamDisplay;
+
+class QCheckBox;
+class QDoubleSpinBox;
+class QLineEdit;
+class QToolButton;
+
 
 //----------------------------------------------------------------------------
 // qtractorPluginForm -- UI wrapper form.
@@ -106,6 +113,7 @@ protected:
 	void keyPressEvent(QKeyEvent *);
 
 	// Form show/hide events (restore/save position).
+	void showEvent(QShowEvent *);
 	void hideEvent(QHideEvent *);
 
 private:
@@ -116,8 +124,8 @@ private:
 	// Instance variables...
 	qtractorPlugin *m_pPlugin;
 
-	typedef QHash<unsigned long, qtractorPluginParamWidget *> ParamWidgets;
-	ParamWidgets m_paramWidgets;
+	QList<qtractorPluginPropertyWidget *> m_propWidgets;
+	QList<qtractorPluginParamWidget *> m_paramWidgets;
 
 	QMenu *m_pDirectAccessParamMenu;
 
@@ -166,6 +174,51 @@ private:
 	qtractorObserverSpinBox  *m_pSpinBox;
 
 	qtractorPluginParamDisplay *m_pDisplay;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorPluginPropertyWidget -- Plugin pproperty widget.
+//
+
+class qtractorPluginPropertyWidget : public QWidget
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorPluginPropertyWidget(qtractorPlugin *pPlugin,
+		unsigned long iProperty, QWidget *pParent = NULL);
+
+	// Main properties accessors.
+	qtractorPlugin *plugin() const
+		{ return m_pPlugin; }
+	unsigned long property() const
+		{ return m_iProperty; }
+
+	// Refreshner-loader method.
+	void refresh();
+
+protected slots:
+
+	// Property file selector.
+	void buttonClicked();
+
+	// Property value change slot.
+	void propertyChanged();
+
+private:
+
+	// Instance variables.
+	qtractorPlugin *m_pPlugin;
+	unsigned long   m_iProperty;
+
+	// Some possible managed widgets.
+	QCheckBox      *m_pCheckBox;
+	QDoubleSpinBox *m_pSpinBox;
+	QLineEdit      *m_pLineEdit;
+	QToolButton    *m_pToolButton;
 };
 
 
