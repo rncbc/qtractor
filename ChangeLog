@@ -6,8 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- LV2 Patch support and parameter properties manipulation is
-  being introduced. (EXPERIMENTAL)
+- LV2 plug-in Patch support has been added and LV2 plug-ins
+  parameter properties manipulation is now accessible on the
+  generic plug-in properties dialog. (EXPERIMENTAL)
 
 - Fixed a recently introduced bug, that rendered all but one
   plug-in instance to silence, affecting only DSSI plug-ins

@@ -341,7 +341,7 @@ public:
 
 	// LV2 Patch/properties support...
 	void lv2_property_changed(LV2_URID key, const LV2_Atom *value);
-	void lv2_property_update( LV2_URID key);
+	void lv2_property_update(LV2_URID key);
 
 	// LV2 Patch/property registry item.
 	//
@@ -392,10 +392,10 @@ public:
 	};
 
 	// LV2 Patch/properties registry.
-	typedef QHash<LV2_URID, Property *> Properties;
+	typedef QMap<LV2_URID, Property *> Properties;
 
 	// LV2 Patch/properties registry accessor.
-	const Properties& properties() const
+	const Properties& lv2_properties() const
 		{ return m_lv2_properties; }
 
 #endif	// CONFIG_LV2_PATCH

@@ -1470,8 +1470,8 @@ bool qtractorLv2PluginType::open (void)
 	// Query for state interface extension data...
 	LilvNodes *nodes = lilv_plugin_get_value(m_lv2_plugin,
 		g_lv2_extension_data_hint);
-	LILV_FOREACH(nodes, i, nodes) {
-		const LilvNode *node = lilv_nodes_get(nodes, i);
+	LILV_FOREACH(nodes, iter, nodes) {
+		const LilvNode *node = lilv_nodes_get(nodes, iter);
 		if (lilv_node_equals(node, g_lv2_state_interface_hint)) {
 			m_bConfigure = true;
 			break;
@@ -1482,8 +1482,8 @@ bool qtractorLv2PluginType::open (void)
 	// Check the UI inventory...
 	LilvUIs *uis = lilv_plugin_get_uis(m_lv2_plugin);
 	if (uis) {
-		LILV_FOREACH(uis, i, uis) {
-			const LilvUI *ui = lilv_uis_get(uis, i);
+		LILV_FOREACH(uis, iter, uis) {
+			const LilvUI *ui = lilv_uis_get(uis, iter);
 		#ifdef CONFIG_LV2_EXTERNAL_UI
 			if (lilv_ui_is_a(ui, g_lv2_external_ui_class)
 			#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
@@ -1952,8 +1952,8 @@ QStringList qtractorLv2PluginType::lv2_plugins (void)
 	QStringList list;
 
 	if (g_lv2_plugins) {
-		LILV_FOREACH(plugins, i, g_lv2_plugins) {
-			const LilvPlugin *plugin = lilv_plugins_get(g_lv2_plugins, i);
+		LILV_FOREACH(plugins, iter, g_lv2_plugins) {
+			const LilvPlugin *plugin = lilv_plugins_get(g_lv2_plugins, iter);
 			const char *pszUri = lilv_node_as_uri(lilv_plugin_get_uri(plugin));
 			list.append(QString::fromLocal8Bit(pszUri));
 		}
@@ -2388,8 +2388,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		LilvNode *preset_uri = lilv_new_uri(g_lv2_world, LV2_PRESETS__Preset);
 		LilvNodes *presets = lilv_plugin_get_related(lv2_plugin(), preset_uri);
 		if (presets) {
-			LILV_FOREACH(nodes, i, presets) {
-				const LilvNode *preset = lilv_nodes_get(presets, i);
+			LILV_FOREACH(nodes, iter, presets) {
+				const LilvNode *preset = lilv_nodes_get(presets, iter);
 				lilv_world_load_resource(g_lv2_world, preset);
 				LilvNodes *labels = lilv_world_find_nodes(
 					g_lv2_world, preset, label_uri, NULL);
@@ -2410,8 +2410,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		LilvNode *patch_uri = lilv_new_uri(g_lv2_world, LV2_PATCH__writable);
 		LilvNodes *properties = lilv_world_find_nodes(
 			g_lv2_world, lilv_plugin_get_uri(plugin), patch_uri, NULL);
-		LILV_FOREACH(nodes, prop, properties) {
-			const LilvNode *property = lilv_nodes_get(properties, prop);
+		LILV_FOREACH(nodes, iter, properties) {
+			const LilvNode *property = lilv_nodes_get(properties, iter);
 			Property *pProp = new Property(property);
 			m_lv2_properties.insert(pProp->key(), pProp);
 		}
@@ -3005,8 +3005,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 	QMap<int, LilvUI *> ui_map;
 
-	LILV_FOREACH(uis, i, m_lv2_uis) {
-		LilvUI *ui = const_cast<LilvUI *> (lilv_uis_get(m_lv2_uis, i));
+	LILV_FOREACH(uis, iter, m_lv2_uis) {
+		LilvUI *ui = const_cast<LilvUI *> (lilv_uis_get(m_lv2_uis, iter));
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		if (lilv_ui_is_a(ui, g_lv2_external_ui_class)
 		#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
@@ -3315,7 +3315,6 @@ void qtractorLv2Plugin::closeEditor (void)
 void qtractorLv2Plugin::idleEditor (void)
 {
 #ifdef CONFIG_LV2_ATOM
-
 	uint32_t read_space = ::jack_ringbuffer_read_space(m_plugin_events);
 	while (read_space > 0) {
 		ControlEvent ev;
@@ -3326,8 +3325,7 @@ void qtractorLv2Plugin::idleEditor (void)
 		lv2_ui_port_event(ev.index, ev.size, ev.protocol, buf);
 		read_space -= sizeof(ev) + ev.size;
 	}
-
-#endif	// CONFIG_LV2_ATOM
+#endif
 
 	if (m_ui_params.count() > 0) {
 		QHash<unsigned long, float>::ConstIterator iter
@@ -3952,7 +3950,8 @@ void qtractorLv2Plugin::lv2_property_changed (
 	if (type == g_lv2_urids.atom_String || type == g_lv2_urids.atom_Path)
 		pProp->setValue(QByteArray((const char *) body, size));
 
-	// TODO: update the stock/generic form if visible...
+	// Update the stock/generic form if visible...
+	refreshForm();
 }
 
 // LV2 Patch/property updated, eventually from plugin->UI...
@@ -3963,7 +3962,7 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	if (pLv2Type == NULL)
 		return;
 
-	if (m_lv2_patch_port_in < pLv2Type->atomIns())
+	if (m_lv2_patch_port_in >= pLv2Type->atomIns())
 		return;
 
 	Property *pProp = m_lv2_properties.value(key, NULL);
@@ -4782,8 +4781,8 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 	// m_display.clear();
 	LilvScalePoints *points = lilv_port_get_scale_points(plugin, port);
 	if (points) {
-		LILV_FOREACH(scale_points, i, points) {
-			const LilvScalePoint *point = lilv_scale_points_get(points, i);
+		LILV_FOREACH(scale_points, iter, points) {
+			const LilvScalePoint *point = lilv_scale_points_get(points, iter);
 			const LilvNode *value = lilv_scale_point_get_value(point);
 			const LilvNode *label = lilv_scale_point_get_label(point);
 			if (value && label) {
