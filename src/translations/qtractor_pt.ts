@@ -355,6 +355,16 @@ MIDI:	</translation>
         <translation>mover plugin</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginCommand.cpp" line="542"/>
+        <source>plugin program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginCommand.cpp" line="588"/>
+        <source>plugin property</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="599"/>
         <source>add marker</source>
         <translation>adicionar marcador</translation>
@@ -384,7 +394,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="665"/>
+        <location filename="../qtractorPluginCommand.cpp" line="723"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -409,7 +419,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="710"/>
+        <location filename="../qtractorPluginCommand.cpp" line="768"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>
@@ -736,11 +746,6 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <location filename="../qtractorPlugin.cpp" line="253"/>
         <source>Activate</source>
         <translation>Ativar</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginCommand.cpp" line="542"/>
-        <source>program plugin</source>
-        <translation>Plugin do programa</translation>
     </message>
     <message>
         <location filename="../qtractorCurveFile.cpp" line="213"/>
@@ -10970,7 +10975,7 @@ Posso continuar?</translation>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1464"/>
+        <location filename="../qtractorPluginForm.cpp" line="1468"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
