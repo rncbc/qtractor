@@ -169,40 +169,40 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
 	const int MaxRowsPerPage    = (bVstPlugin ? 12 : 8);
 	const int MaxColumnsPerPage = (bVstPlugin ?  2 : 3);
-	const int MaxParamsPerPage  = MaxRowsPerPage * MaxColumnsPerPage;
+	const int MaxItemsPerPage   = MaxRowsPerPage * MaxColumnsPerPage;
 
 	const qtractorPlugin::Params& params = m_pPlugin->params();
-	int iParams = params.count();
+	const int iParams = params.count();
 
+	int iItems = iParams;
 #ifdef CONFIG_LV2_PATCH
 	qtractorLv2Plugin *pLv2Plugin = NULL;
 	if (pType->typeHint() == qtractorPluginType::Lv2)
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
 	if (pLv2Plugin)
-		iParams += pLv2Plugin->lv2_properties().count();
+		iItems += pLv2Plugin->lv2_properties().count();
 #endif
-
-	int iParamsPerPage = iParams;
-	int iParamsOnLastPage = 0;
-	if (iParamsPerPage > MaxParamsPerPage) {
-		iParamsPerPage = MaxParamsPerPage;
-		iParamsOnLastPage = (iParams % iParamsPerPage);
-		while (iParamsOnLastPage > 0
-			&& iParamsOnLastPage < ((3 * iParamsPerPage) >> 2))
-			iParamsOnLastPage = (iParams % --iParamsPerPage);
+	int iItemsPerPage = iItems;
+	int iItemsOnLastPage = 0;
+	if (iItemsPerPage > MaxItemsPerPage) {
+		iItemsPerPage = MaxItemsPerPage;
+		iItemsOnLastPage = (iItems % iItemsPerPage);
+		while (iItemsOnLastPage > 0
+			&& iItemsOnLastPage < ((3 * iItemsPerPage) >> 2))
+			iItemsOnLastPage = (iItems % --iItemsPerPage);
 	}
 
 	int iPages = 1;
-	int iRowsPerPage = iParamsPerPage;
+	int iRowsPerPage = iItemsPerPage;
 	int iColumnsPerPage = 1;
 	if (iRowsPerPage > MaxRowsPerPage) {
-		iPages = (iParams / iParamsPerPage);
-		if (iParamsOnLastPage > 0)
+		iPages = (iItems / iItemsPerPage);
+		if (iItemsOnLastPage > 0)
 			++iPages;
 		while (iRowsPerPage > MaxRowsPerPage
 			&& iColumnsPerPage < MaxColumnsPerPage)
-			iRowsPerPage = (iParamsPerPage / ++iColumnsPerPage);
-		if (iParamsPerPage % iColumnsPerPage) // Adjust to balance.
+			iRowsPerPage = (iItemsPerPage / ++iColumnsPerPage);
+		if (iItemsPerPage % iColumnsPerPage) // Adjust to balance.
 			++iRowsPerPage;
 	}
 
@@ -213,7 +213,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	int iPage = 0;
 	const QString sPage = tr("Page %1");
-	if (iParams > 0) {
+	if (iItems > 0) {
 		pTabWidget  = m_ui.TabWidget;
 		pGridLayout = new QGridLayout();
 		pGridLayout->setMargin(8);
