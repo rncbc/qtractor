@@ -4408,7 +4408,7 @@ void qtractorLv2Plugin::lv2_program_changed ( int iIndex )
 			qtractorSession *pSession = qtractorSession::getInstance();
 			if (pSession) {
 				pSession->execute(
-					new qtractorProgramPluginCommand(
+					new qtractorPluginProgramCommand(
 						this, program.bank, program.prog));
 			}
 		}

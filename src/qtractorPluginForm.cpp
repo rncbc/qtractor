@@ -1212,15 +1212,14 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		pGridLayout->addWidget(m_pDisplay, 0, 2);
 	} else {
 		QLabel *pLabel = new QLabel(/*this*/);
+		pLabel->setText(m_pParam->name() + ':');
 		if (m_pParam->isDisplay()) {
 			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		//	pLabel->setFixedWidth(72);
 			pLabel->setMinimumWidth(64);
-			pLabel->setText(m_pParam->name());
 			pGridLayout->addWidget(pLabel, 0, 0);
 		} else {
 			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-			pLabel->setText(m_pParam->name() + ':');
 			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
 		}
 		m_pSlider = new qtractorObserverSlider(/*this*/);
@@ -1344,30 +1343,35 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 		//	m_pCheckBox->setChecked(pLv2Prop->value().toBool());
 			pGridLayout->addWidget(m_pCheckBox, 0, 0);
 		} else {
-		//	pGridLayout->setColumnMinimumWidth(0, 120);
-			QLabel *pLabel = new QLabel(/*this*/);
-			pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			pLabel->setText(pLv2Prop->name() + ':');
-			pGridLayout->addWidget(pLabel, 0, 0);
-			const bool bIsString = pLv2Prop->isString();
 			const bool bIsPath = pLv2Prop->isPath();
-			if (bIsString || bIsPath) {
+			QLabel *pLabel = new QLabel(/*this*/);
+			pLabel->setText(pLv2Prop->name() + ':');
+			if (pLv2Prop->isString() || bIsPath) {
+				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+				pGridLayout->addWidget(pLabel, 0, 0);
 				m_pLineEdit = new QLineEdit(/*this*/);
 				m_pLineEdit->setReadOnly(bIsPath);
+				m_pLineEdit->setMinimumWidth(120);
 			//	m_pLineEdit->setText(pLv2Prop->value().toString());
-				pGridLayout->addWidget(m_pLineEdit, 0, 1);
+				pGridLayout->addWidget(m_pLineEdit, 1, 0);
 				if (bIsPath) {
 					m_pToolButton = new QToolButton(/*this*/);
 					m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
-					pGridLayout->addWidget(m_pToolButton, 0, 2);
+					pGridLayout->addWidget(m_pToolButton, 1, 1);
 				}
 			} else {
+				pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+				pLabel->setMinimumWidth(64);
+				pGridLayout->addWidget(pLabel, 0, 0);
+				const bool bIsInteger = pLv2Prop->isInteger();
 				m_pSpinBox = new QDoubleSpinBox(/*this*/);
 				m_pSpinBox->setMaximumWidth(64);
-				m_pSpinBox->setDecimals(pLv2Prop->isInteger() ? 0 : 3);
+				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
 				m_pSpinBox->setMinimum(pLv2Prop->minValue());
 				m_pSpinBox->setMaximum(pLv2Prop->maxValue());
 				m_pSpinBox->setAlignment(Qt::AlignHCenter);
+				m_pSpinBox->setSingleStep(bIsInteger ? 1.0f : 0.001f);
+				m_pSpinBox->setAccelerated(!bIsInteger);
 			//	m_pSpinBox->setValue(pLv2Prop->value().toDouble());
 				pGridLayout->addWidget(m_pSpinBox, 0, 1);
 			}
@@ -1493,35 +1497,32 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 // Property value change slot.
 void qtractorPluginPropertyWidget::propertyChanged (void)
 {
+	if (m_pPlugin == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginPropertyWidget[%p]::propertyChanged()", this);
 #endif
 
-#ifdef CONFIG_LV2_PATCH
-	qtractorPluginType *pType = m_pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = NULL;
-	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
-	if (pLv2Plugin) {
-		const LV2_URID key = m_iProperty;
-		qtractorLv2Plugin::Property *pLv2Prop
-			= pLv2Plugin->lv2_properties().value(key, NULL);
-		if (pLv2Prop) {
-			if (m_pCheckBox) {
-				pLv2Prop->setValue(m_pCheckBox->isChecked());
-				pLv2Plugin->lv2_property_update(key);
-			}
-			if (m_pSpinBox) {
-				pLv2Prop->setValue(m_pSpinBox->value());
-				pLv2Plugin->lv2_property_update(key);
-			}
-			if (m_pLineEdit && m_pLineEdit->isModified()) {
-				pLv2Prop->setValue(m_pLineEdit->text());
-				pLv2Plugin->lv2_property_update(key);
-			}
-		}
+	QVariant value;
+
+	if (m_pCheckBox)
+		value = bool(m_pCheckBox->isChecked());
+	if (m_pSpinBox)
+		value = float(m_pSpinBox->value());
+	if (m_pLineEdit && m_pLineEdit->isModified()) {
+		value = m_pLineEdit->text();
+		m_pLineEdit->setModified(false);
 	}
-#endif
+
+	if (!value.isValid())
+		return;
+
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(
+			new qtractorPluginPropertyCommand(m_pPlugin, m_iProperty, value));
 }
 
 
