@@ -376,7 +376,7 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pSession->execute(
-			new qtractorProgramPluginCommand(pDssiPlugin, bank, prog));
+			new qtractorPluginProgramCommand(pDssiPlugin, bank, prog));
 	--(pDssiEditor->busy);
 
 	return 0;
