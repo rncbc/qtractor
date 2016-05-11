@@ -537,9 +537,9 @@ bool qtractorResetPluginCommand::undo (void)
 //
 
 // Constructor.
-qtractorProgramPluginCommand::qtractorProgramPluginCommand (
+qtractorPluginProgramCommand::qtractorPluginProgramCommand (
 	qtractorPlugin *pPlugin, int iBank, int iProg )
-	: qtractorPluginCommand(QObject::tr("program plugin"), pPlugin)
+	: qtractorPluginCommand(QObject::tr("plugin program"), pPlugin)
 {
 	m_iBank = iBank;
 	m_iProg = iProg;
@@ -547,7 +547,7 @@ qtractorProgramPluginCommand::qtractorProgramPluginCommand (
 
 
 // Plugin-preset command methods.
-bool qtractorProgramPluginCommand::redo (void)
+bool qtractorPluginProgramCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
 	if (pPlugin == NULL)
@@ -571,7 +571,65 @@ bool qtractorProgramPluginCommand::redo (void)
 	return true;
 }
 
-bool qtractorProgramPluginCommand::undo (void)
+bool qtractorPluginProgramCommand::undo (void)
+{
+	// As we swap the prev/state this is non-idempotent.
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorProgramPluginCommand - implementation
+//
+
+// Constructor.
+qtractorPluginPropertyCommand::qtractorPluginPropertyCommand (
+	qtractorPlugin *pPlugin, unsigned long iProperty, const QVariant& value )
+	: qtractorPluginCommand(QObject::tr("plugin property"), pPlugin)
+{
+	m_iProperty = iProperty;
+	m_value = value;
+
+	setRefresh(false);
+}
+
+
+// Plugin-property command methods.
+bool qtractorPluginPropertyCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == NULL)
+		return false;
+
+	// Save the current toggled state alright...
+	QVariant value;
+
+#ifdef CONFIG_LV2_PATCH
+	qtractorPluginType *pType = pPlugin->type();
+	qtractorLv2Plugin *pLv2Plugin = NULL;
+	qtractorLv2Plugin::Property *pLv2Prop = NULL;
+	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
+		pLv2Plugin = static_cast<qtractorLv2Plugin *> (pPlugin);
+	if (pLv2Plugin) {
+		const LV2_URID key = m_iProperty;
+		pLv2Prop = pLv2Plugin->lv2_properties().value(key, NULL);
+		if (pLv2Prop) {
+			value = pLv2Prop->value();
+			pLv2Prop->setValue(m_value);
+			pLv2Plugin->lv2_property_update(key);
+		}
+	}
+#endif
+
+	m_value = value;
+
+	// FIXME: Might no work the first time...
+	pPlugin->refreshForm();
+
+	return true;
+}
+
+bool qtractorPluginPropertyCommand::undo (void)
 {
 	// As we swap the prev/state this is non-idempotent.
 	return redo();

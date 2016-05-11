@@ -487,16 +487,21 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="542"/>
-        <source>program plugin</source>
+        <source>plugin program</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="665"/>
+        <location filename="../qtractorPluginCommand.cpp" line="588"/>
+        <source>plugin property</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginCommand.cpp" line="723"/>
         <source>dedicated audio outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="710"/>
+        <location filename="../qtractorPluginCommand.cpp" line="768"/>
         <source>direct access param</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10841,7 +10846,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1464"/>
+        <location filename="../qtractorPluginForm.cpp" line="1468"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
