@@ -1112,7 +1112,26 @@ static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
 }
 
 // Remove specific dir/file path.
-static void qtractor_lv2_remove_dir(const QString& sDir);
+static void qtractor_lv2_remove_file (const QFileInfo& info);
+
+static void qtractor_lv2_remove_dir ( const QString& sDir )
+{
+	const QDir dir(sDir);
+
+	const QList<QFileInfo>& list
+		= dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+	QListIterator<QFileInfo> iter(list);
+	while (iter.hasNext())
+		qtractor_lv2_remove_file(iter.next());
+
+	QDir cwd = QDir::current();
+	if (cwd.absolutePath() == dir.absolutePath()) {
+		cwd.cdUp();
+		QDir::setCurrent(cwd.path());
+	}
+
+	dir.rmdir(sDir);
+}
 
 static void qtractor_lv2_remove_file ( const QFileInfo& info )
 {
@@ -1124,29 +1143,6 @@ static void qtractor_lv2_remove_file ( const QFileInfo& info )
 			QFile::remove(sPath);
 		}
 	}
-}
-
-static void qtractor_lv2_remove_dir_list ( const QList<QFileInfo>& list )
-{
-	QListIterator<QFileInfo> iter(list);
-	while (iter.hasNext())
-		qtractor_lv2_remove_file(iter.next());
-}
-
-static void qtractor_lv2_remove_dir ( const QString& sDir )
-{
-	const QDir dir(sDir);
-
-	qtractor_lv2_remove_dir_list(
-		dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot));
-
-	QDir cwd = QDir::current();
-	if (cwd.absolutePath() == dir.absolutePath()) {
-		cwd.cdUp();
-		QDir::setCurrent(cwd.path());
-	}
-
-	dir.rmdir(sDir);
 }
 
 #endif	// CONFIG_LV2_PRESETS
