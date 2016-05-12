@@ -605,6 +605,10 @@ static char *qtractor_lv2_state_abstract_path (
 		sDir = pSession->sessionDir();
 
 	QString sAbstractPath = QDir(sDir).relativeFilePath(absolute_path);
+	if (sAbstractPath.length() > 2 &&
+		sAbstractPath.at(0) == '.' &&
+		sAbstractPath.at(1) == '.')
+		sAbstractPath = QDir::cleanPath(absolute_path);
 	if (bSessionDir)
 		sAbstractPath = qtractorDocument::addArchiveFile(sAbstractPath);
 
@@ -636,15 +640,17 @@ static char *qtractor_lv2_state_absolute_path (
 	QFileInfo fi(abstract_path);
 	if (fi.isRelative())
 		fi.setFile(QDir(sDir), fi.filePath());
+	if (fi.isSymLink())
+		fi.setFile(fi.symLinkTarget());
 
-	const QString& sAbsolutePath = fi.absoluteFilePath();
+	const QString& sAbsolutePath = fi.canonicalFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
 #ifdef CONFIG_LV2_STATE_MAKE_PATH
 
 static char *qtractor_lv2_state_make_path (
-    LV2_State_Make_Path_Handle handle, const char *relative_path )
+	LV2_State_Make_Path_Handle handle, const char *relative_path )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
@@ -690,12 +696,14 @@ static char *qtractor_lv2_state_make_path (
 	QFileInfo fi(relative_path);
 	if (fi.isRelative())
 		fi.setFile(dir, fi.filePath());
+	if (fi.isSymLink())
+		fi.setFile(fi.symLinkTarget());
 
 	const QString& sMakeDir = fi.absolutePath();
 	if (!QDir(sMakeDir).exists())
 		dir.mkpath(sMakeDir);
 
-	const QString& sMakePath = fi.absoluteFilePath();
+	const QString& sMakePath = fi.canonicalFilePath();
 	return ::strdup(sMakePath.toUtf8().constData());
 }
 
@@ -929,6 +937,9 @@ static LilvNode *g_lv2_state_load_default_hint = NULL;
 static LilvNode *g_lv2_toggled_prop     = NULL;
 static LilvNode *g_lv2_integer_prop     = NULL;
 static LilvNode *g_lv2_sample_rate_prop = NULL;
+
+#include "lv2/lv2plug.in/ns/ext/port-props/port-props.h"
+
 static LilvNode *g_lv2_logarithmic_prop = NULL;
 
 
@@ -1662,9 +1673,9 @@ void qtractorLv2PluginType::lv2_open (void)
 
 	// Set up the feature we may want to know (as hints).
 	g_lv2_realtime_hint = lilv_new_uri(g_lv2_world,
-		LV2_CORE_PREFIX "hardRtCapable");
+		LV2_CORE__hardRTCapable);
 	g_lv2_extension_data_hint = lilv_new_uri(g_lv2_world,
-		LV2_CORE_PREFIX "extensionData");
+		LV2_CORE__extensionData);
 
 #ifdef CONFIG_LV2_WORKER
 	// LV2 Worker/Schedule support hints...
@@ -1682,13 +1693,13 @@ void qtractorLv2PluginType::lv2_open (void)
 
 	// Set up the port properties we support (as hints).
 	g_lv2_toggled_prop = lilv_new_uri(g_lv2_world,
-		LV2_CORE_PREFIX "toggled");
+		LV2_CORE__toggled);
 	g_lv2_integer_prop = lilv_new_uri(g_lv2_world,
-		LV2_CORE_PREFIX "integer");
+		LV2_CORE__integer);
 	g_lv2_sample_rate_prop = lilv_new_uri(g_lv2_world,
-		LV2_CORE_PREFIX "sampleRate");
+		LV2_CORE__sampleRate);
 	g_lv2_logarithmic_prop = lilv_new_uri(g_lv2_world,
-		"http://lv2plug.in/ns/dev/extportinfo#logarithmic");
+		LV2_PORT_PROPS__logarithmic);
 
 #ifdef CONFIG_LV2_ATOM
 

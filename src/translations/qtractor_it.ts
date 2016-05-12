@@ -743,13 +743,13 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Copyright: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1974"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1985"/>
         <source>Project: </source>
         <translation>Progetto: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1982"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1993"/>
         <source>Author: </source>
         <translation>Autore: </translation>
     </message>

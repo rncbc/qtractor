@@ -738,13 +738,13 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Copyright:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="1974"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1985"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="1982"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="1993"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
