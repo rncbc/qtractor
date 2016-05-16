@@ -211,9 +211,12 @@ qtractorBusForm::qtractorBusForm (
 		SIGNAL(clicked()),
 		SLOT(moveDownOutputPlugin()));
 
-	QObject::connect(m_ui.RefreshPushButton,
+	QObject::connect(m_ui.MoveUpPushButton,
 		SIGNAL(clicked()),
-		SLOT(refreshBuses()));
+		SLOT(moveUpBus()));
+	QObject::connect(m_ui.MoveDownPushButton,
+		SIGNAL(clicked()),
+		SLOT(moveDownBus()));
 	QObject::connect(m_ui.CreatePushButton,
 		SIGNAL(clicked()),
 		SLOT(createBus()));
@@ -234,6 +237,9 @@ qtractorBusForm::qtractorBusForm (
 // Set current bus.
 void qtractorBusForm::setBus ( qtractorBus *pBus )
 {
+	if (pBus == NULL)
+		return;
+
 	// Get the device view root item...
 	QTreeWidgetItem *pRootItem = NULL;
 	if (pBus) {
@@ -255,7 +261,7 @@ void qtractorBusForm::setBus ( qtractorBus *pBus )
 	}
 
 	// For each child, test for identity...
-	int iChildCount = pRootItem->childCount();
+	const int iChildCount = pRootItem->childCount();
 	for (int i = 0; i < iChildCount; ++i) {
 		QTreeWidgetItem *pItem = pRootItem->child(i);
 		// If identities match, select as current device item.
@@ -468,8 +474,13 @@ unsigned int qtractorBusForm::flags (void) const
 	if (m_pBus == NULL)
 		return iFlags;
 
-	if (m_pBus->prev())
+	if (m_pBus->prev()) {
 		iFlags |= Delete;
+		if ((m_pBus->prev())->prev())
+			iFlags |= MoveUp;
+		if (m_pBus->next())
+			iFlags |= MoveDown;
+	}
 	
 	if (m_iDirtyCount == 0)
 		return iFlags;
@@ -574,6 +585,58 @@ bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 }
 
 
+// Move current bus up towards the list top.
+void qtractorBusForm::moveUpBus (void)
+{
+	if (m_pBus == NULL)
+		return;
+
+	qtractorBus *pNextBus = m_pBus->prev();
+	if (pNextBus == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Make it an undoable command...
+	if (pSession->execute(new qtractorMoveBusCommand(m_pBus, pNextBus))) {
+		++m_iDirtyTotal;
+		refreshBuses();
+	}
+
+	// Reselect current bus...
+	setBus(m_pBus);
+}
+
+
+// Move current bus down towards the list bottom.
+void qtractorBusForm::moveDownBus (void)
+{
+	if (m_pBus == NULL)
+		return;
+
+	qtractorBus *pNextBus = m_pBus->next();
+	if (pNextBus == NULL)
+		return;
+
+	pNextBus = pNextBus->next();
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Make it an undoable command...
+	if (pSession->execute(new qtractorMoveBusCommand(m_pBus, pNextBus))) {
+		++m_iDirtyTotal;
+		refreshBuses();
+	}
+
+	// Reselect current bus...
+	setBus(m_pBus);
+}
+
+
 // Create a new bus from current view.
 void qtractorBusForm::createBus (void)
 {
@@ -639,7 +702,14 @@ void qtractorBusForm::createBus (void)
 		refreshBuses();
 	}
 
-	// Reselect current bus...
+	// Get new one into view,
+	// usually created as last one...
+	qtractorBus *pBus = m_pBus;
+	while (pBus->next())
+		pBus = pBus->next();
+	showBus(pBus);
+
+	// Select the new bus...
 	setBus(m_pBus);
 }
 
@@ -780,7 +850,8 @@ void qtractorBusForm::stabilizeForm (void)
 		m_pBus && m_ui.BusModeComboBox->currentIndex() == 2);
 
 	unsigned int iFlags = flags();
-	m_ui.RefreshPushButton->setEnabled(m_iDirtyCount > 0);
+	m_ui.MoveUpPushButton->setEnabled(iFlags & MoveUp);
+	m_ui.MoveDownPushButton->setEnabled(iFlags & MoveDown);
 	m_ui.CreatePushButton->setEnabled(iFlags & Create);
 	m_ui.UpdatePushButton->setEnabled(iFlags & Update);
 	m_ui.DeletePushButton->setEnabled(iFlags & Delete);
@@ -860,9 +931,14 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formRefresh.png"),
-		tr("&Refresh"), this, SLOT(refreshBuses()));
-	pAction->setEnabled(m_iDirtyCount > 0);
+		QIcon(":/images/formMoveUp.png"),
+		tr("Move &Up"), this, SLOT(moveUpBus()));
+	pAction->setEnabled(iFlags & MoveUp);
+
+	pAction = menu.addAction(
+		QIcon(":/images/formMoveDown.png"),
+		tr("Move &Down"), this, SLOT(moveDownBus()));
+	pAction->setEnabled(iFlags & MoveDown);
 
 //	menu.exec(m_ui.BusListView->mapToGlobal(pos));
 	menu.exec(QCursor::pos());

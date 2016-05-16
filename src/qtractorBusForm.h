@@ -48,11 +48,16 @@ public:
 protected slots:
 
 	void reject();
-	void refreshBuses();
+
 	void selectBus();
+	
+	void moveUpBus();
+	void moveDownBus();
+
 	void createBus();
 	void updateBus();
 	void deleteBus();
+
 	void changed();
 	void stabilizeForm();
 
@@ -72,7 +77,7 @@ protected slots:
 
 protected:
 
-	enum { Create = 1, Update = 2, Delete = 4 };
+	enum { Create = 1, Update = 2, Delete = 4, MoveUp = 8, MoveDown = 16 };
 
 	unsigned int flags() const;
 
@@ -83,6 +88,8 @@ protected:
 	void updateMidiSysex();
 
 	void resetPluginLists();
+
+	void refreshBuses();
 
 private:
 

@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,6 +79,8 @@ public:
 
 	void addBus(qtractorBus *pBus);
 	void removeBus(qtractorBus *pBus);
+
+	void moveBus(qtractorBus *pBus, qtractorBus *pNextBus);
 
 	qtractorBus *findBus(const QString& sBusName) const;
 	qtractorBus *findInputBus(const QString& sInputBusName) const;

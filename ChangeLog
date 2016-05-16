@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- The common buses management dialog (View/Buses...) sees
+  the superfluous Refresh button finally removed, while two
+  new button commands take its place: (move) Up and Down.
+
 - LV2 plug-in Patch support has been added and LV2 plug-ins
   parameter properties manipulation is now accessible on the
   generic plug-in properties dialog. (EXPERIMENTAL)
