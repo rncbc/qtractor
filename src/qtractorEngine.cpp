@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -129,6 +129,19 @@ void qtractorEngine::addBus ( qtractorBus *pBus )
 void qtractorEngine::removeBus ( qtractorBus *pBus )
 {
 	m_buses.remove(pBus);
+}
+
+
+// Move bus on a device engine.
+void qtractorEngine::moveBus (
+	qtractorBus *pBus, qtractorBus *pNextBus )
+{
+	m_buses.unlink(pBus);
+
+	if (pNextBus)
+		m_buses.insertBefore(pBus, pNextBus);
+	else
+		m_buses.append(pBus);
 }
 
 

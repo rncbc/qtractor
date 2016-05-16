@@ -229,7 +229,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>%1 (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="418"/>
+        <location filename="../qtractorEngine.cpp" line="431"/>
         <location filename="../qtractorTrack.cpp" line="668"/>
         <source>%1 Monitor</source>
         <translation>%1 Monitoração</translation>
@@ -485,6 +485,11 @@ MIDI:	</translation>
         <translation>atualizar canal primário</translation>
     </message>
     <message>
+        <location filename="../qtractorEngineCommand.cpp" line="538"/>
+        <source>move bus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorEngineCommand.cpp" line="476"/>
         <source>create bus</source>
         <translation>criar canal primário</translation>
@@ -510,7 +515,7 @@ MIDI:	</translation>
         <translation>renderizar sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="661"/>
+        <location filename="../qtractorEngineCommand.cpp" line="714"/>
         <source>bus pan</source>
         <translation>panorâmico do canal primário</translation>
     </message>
@@ -626,7 +631,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Desconhecido</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="584"/>
+        <location filename="../qtractorEngineCommand.cpp" line="637"/>
         <source>bus gain</source>
         <translation>volume do canal primário</translation>
     </message>
@@ -671,7 +676,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>adicionar nó de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="538"/>
+        <location filename="../qtractorEngineCommand.cpp" line="591"/>
         <source>bus pass-through</source>
         <translation>repassar canal primário</translation>
     </message>
@@ -840,15 +845,15 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="104"/>
         <location filename="../qtractorBusForm.ui" line="127"/>
-        <location filename="../qtractorBusForm.cpp" line="356"/>
+        <location filename="../qtractorBusForm.cpp" line="362"/>
         <source>Bus</source>
         <translation>Canal Primário</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="278"/>
-        <location filename="../qtractorBusForm.cpp" line="330"/>
-        <location filename="../qtractorBusForm.cpp" line="402"/>
-        <location filename="../qtractorBusForm.cpp" line="681"/>
+        <location filename="../qtractorBusForm.cpp" line="336"/>
+        <location filename="../qtractorBusForm.cpp" line="408"/>
+        <location filename="../qtractorBusForm.cpp" line="751"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -865,9 +870,9 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="217"/>
-        <location filename="../qtractorBusForm.cpp" line="309"/>
-        <location filename="../qtractorBusForm.cpp" line="389"/>
-        <location filename="../qtractorBusForm.cpp" line="678"/>
+        <location filename="../qtractorBusForm.cpp" line="315"/>
+        <location filename="../qtractorBusForm.cpp" line="395"/>
+        <location filename="../qtractorBusForm.cpp" line="748"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
@@ -877,7 +882,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Canais Primários</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="655"/>
+        <location filename="../qtractorBusForm.ui" line="668"/>
         <source>Close</source>
         <translation>Fechar</translation>
     </message>
@@ -907,7 +912,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Opções do MIDI SysEx</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="652"/>
+        <location filename="../qtractorBusForm.ui" line="665"/>
         <source>Close this dialog</source>
         <translation>Fechar esta caixa de diálogo</translation>
     </message>
@@ -932,12 +937,22 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>&amp;Nome:</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="979"/>
+        <location filename="../qtractorBusForm.cpp" line="935"/>
+        <source>Move &amp;Up</source>
+        <translation type="unfinished">Mover Para &amp;Cima</translation>
+    </message>
+    <message>
+        <location filename="../qtractorBusForm.cpp" line="940"/>
+        <source>Move &amp;Down</source>
+        <translation type="unfinished">Mover para &amp;Baixo</translation>
+    </message>
+    <message>
+        <location filename="../qtractorBusForm.cpp" line="1055"/>
         <source>(none)</source>
         <translation>(nenhum)</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="982"/>
+        <location filename="../qtractorBusForm.cpp" line="1058"/>
         <source>(1 item)</source>
         <translation></translation>
     </message>
@@ -957,7 +972,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>&amp;Auto-conectar</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="438"/>
+        <location filename="../qtractorBusForm.cpp" line="444"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -986,7 +1001,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Propriedades</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="985"/>
+        <location filename="../qtractorBusForm.cpp" line="1061"/>
         <source>(%1 items)</source>
         <translation>(%1 itens)</translation>
     </message>
@@ -1006,23 +1021,17 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Canais Primários - Qtractor</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="626"/>
+        <location filename="../qtractorBusForm.ui" line="639"/>
         <source>Update bus</source>
         <translation>Atualizar lista de Canais Primários</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="613"/>
+        <location filename="../qtractorBusForm.ui" line="626"/>
         <source>Create bus</source>
         <translation>Criar Canal Primário</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="590"/>
-        <location filename="../qtractorBusForm.cpp" line="864"/>
-        <source>&amp;Refresh</source>
-        <translation>&amp;Atualizar</translation>
-    </message>
-    <message>
-        <location filename="../qtractorBusForm.cpp" line="902"/>
+        <location filename="../qtractorBusForm.cpp" line="978"/>
         <source>(No instrument)</source>
         <translation>(Sem instumento)</translation>
     </message>
@@ -1043,14 +1052,34 @@ Você quer mesmo manter as modificações?</translation>
         <translation>&amp;Adicionar...</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="616"/>
-        <location filename="../qtractorBusForm.cpp" line="847"/>
+        <location filename="../qtractorBusForm.ui" line="587"/>
+        <source>Move bus up towards the top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorBusForm.ui" line="590"/>
+        <source>U&amp;p</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorBusForm.ui" line="600"/>
+        <source>Move bus down towards the bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorBusForm.ui" line="603"/>
+        <source>Do&amp;wn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorBusForm.ui" line="629"/>
+        <location filename="../qtractorBusForm.cpp" line="918"/>
         <source>&amp;Create</source>
         <translation>&amp;Criar</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="642"/>
-        <location filename="../qtractorBusForm.cpp" line="857"/>
+        <location filename="../qtractorBusForm.ui" line="655"/>
+        <location filename="../qtractorBusForm.cpp" line="928"/>
         <source>&amp;Delete</source>
         <translation>A&amp;pagar</translation>
     </message>
@@ -1060,7 +1089,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Mover Plugin para Cima</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="689"/>
+        <location filename="../qtractorBusForm.cpp" line="759"/>
         <source>About to remove bus:
 
 &quot;%1&quot; (%2)
@@ -1084,8 +1113,8 @@ Posso continuar?</translation>
         <translation>&amp;Remover</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="629"/>
-        <location filename="../qtractorBusForm.cpp" line="852"/>
+        <location filename="../qtractorBusForm.ui" line="642"/>
+        <location filename="../qtractorBusForm.cpp" line="923"/>
         <source>&amp;Update</source>
         <translation>&amp;Atualizar</translation>
     </message>
@@ -1110,7 +1139,7 @@ Posso continuar?</translation>
         <translation>Auto-conectar Áudio</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.ui" line="639"/>
+        <location filename="../qtractorBusForm.ui" line="652"/>
         <source>Delete bus</source>
         <translation>Eliminar Canal Primário</translation>
     </message>
@@ -1120,9 +1149,9 @@ Posso continuar?</translation>
         <translation>Ca&amp;nais:</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="437"/>
-        <location filename="../qtractorBusForm.cpp" line="688"/>
-        <location filename="../qtractorBusForm.cpp" line="746"/>
+        <location filename="../qtractorBusForm.cpp" line="443"/>
+        <location filename="../qtractorBusForm.cpp" line="758"/>
+        <location filename="../qtractorBusForm.cpp" line="816"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
@@ -1130,11 +1159,6 @@ Posso continuar?</translation>
         <location filename="../qtractorBusForm.ui" line="496"/>
         <source>Remove output plugin</source>
         <translation>Retirar Plugin da Saída</translation>
-    </message>
-    <message>
-        <location filename="../qtractorBusForm.ui" line="587"/>
-        <source>Refresh bus list view</source>
-        <translation>Atualizar a lista de Canais Primários</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="431"/>
@@ -1147,7 +1171,7 @@ Posso continuar?</translation>
         <translation>Mover Plugin da Saída para Baixo</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="747"/>
+        <location filename="../qtractorBusForm.cpp" line="817"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>

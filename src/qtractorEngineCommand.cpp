@@ -529,6 +529,59 @@ bool qtractorDeleteBusCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorMoveBusCommand - implementation.
+//
+
+// Constructor.
+qtractorMoveBusCommand::qtractorMoveBusCommand (
+	qtractorBus *pBus, qtractorBus *pNextBus )
+	: qtractorBusCommand(QObject::tr("move bus"), pBus)
+{
+	m_pNextBus = pNextBus;
+}
+
+
+// Bus-move command methods.
+bool qtractorMoveBusCommand::redo (void)
+{
+	qtractorBus *pBus = bus();
+	if (pBus == NULL)
+		return false;
+
+	qtractorEngine *pEngine = pBus->engine();
+	if (pEngine == NULL)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	pSession->lock();
+
+	// Save the previous bus alright...
+	qtractorBus *pNextBus = pBus->next();
+
+	// Move it...
+	pEngine->moveBus(pBus, m_pNextBus);
+
+	// Swap it nice, finally.
+	m_pNextBus = pNextBus;
+
+	pSession->unlock();
+
+	// Update mixer (look for new strip order...)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer)
+			pMixer->updateBuses(true);
+	}
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorBusMonitorCommand - implementation.
 //
 

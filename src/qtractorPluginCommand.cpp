@@ -279,7 +279,7 @@ bool qtractorInsertPluginCommand::redo (void)
 	if (pSession == NULL)
 		return false;
 
-	// Save the previous track alright...
+	// Save the previous plugin alright...
 	qtractorPluginList *pPluginList = pPlugin->list();
 	if (pPluginList == NULL)
 		return false;
