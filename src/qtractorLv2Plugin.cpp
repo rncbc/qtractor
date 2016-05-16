@@ -2421,6 +2421,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			const LilvNode *property = lilv_nodes_get(properties, iter);
 			Property *pProp = new Property(property);
 			m_lv2_properties.insert(pProp->key(), pProp);
+			++m_lv2_patch_changed;
 		}
 		lilv_nodes_free(properties);
 		lilv_node_free(patch_uri);
@@ -3897,7 +3898,7 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 				lv2_atom_object_get(obj,
 					g_lv2_urids.patch_property, (const LV2_Atom *) &prop,
 					g_lv2_urids.patch_value, &value, 0);
-				if (prop && prop->atom.type == g_lv2_atom_forge->URID)
+				if (prop && value && prop->atom.type == g_lv2_atom_forge->URID)
 					lv2_property_changed(prop->body, value);
 			}
 			else
@@ -3905,6 +3906,8 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 				const LV2_Atom_Object *body = NULL;
 				lv2_atom_object_get(obj,
 					g_lv2_urids.patch_body, (const LV2_Atom *) &body, 0);
+				if (body == NULL) // HACK!
+					body = obj;
 				if (body && lv2_atom_forge_is_object_type(
 						g_lv2_atom_forge, body->atom.type)) {
 					LV2_ATOM_OBJECT_FOREACH(body, prop)
@@ -4103,16 +4106,41 @@ void qtractorLv2Plugin::realizeConfigs (void)
 		if (ctype != ctypes.constEnd())
 			aType = ctype.value().toUtf8();
 		const char *pszType = aType.constData();
-		const bool bTypeIsPath = (::strcmp(pszType, LV2_ATOM__Path) == 0);
-		const bool bTypeIsString = (::strcmp(pszType, LV2_ATOM__String) == 0);
-		if (aType.isEmpty() || bTypeIsPath || bTypeIsString) {
+		const LV2_URID type = lv2_urid_map(pszType);
+		const bool bIsPath = (type == g_lv2_urids.atom_Path);
+		const bool bIsString = (type == g_lv2_urids.atom_String);
+		if (aType.isEmpty() || bIsPath || bIsString)
 			m_lv2_state_configs.insert(sKey, config.value().toUtf8());
-		} else {
+		else
+		if (type == g_lv2_urids.atom_Bool || type == g_lv2_urids.atom_Int) {
+			const int32_t val = config.value().toInt();
+			m_lv2_state_configs.insert(sKey,
+				QByteArray((const char *) &val, sizeof(int32_t)));
+		}
+		else
+		if (type == g_lv2_urids.atom_Long) {
+			const int64_t val = config.value().toLongLong();
+			m_lv2_state_configs.insert(sKey,
+				QByteArray((const char *) &val, sizeof(int64_t)));
+		}
+		else
+		if (type == g_lv2_urids.atom_Float) {
+			const float val = config.value().toFloat();
+			m_lv2_state_configs.insert(sKey,
+				QByteArray((const char *) &val, sizeof(float)));
+		}
+		else
+		if (type == g_lv2_urids.atom_Double) {
+			const double val = config.value().toDouble();
+			m_lv2_state_configs.insert(sKey,
+				QByteArray((const char *) &val, sizeof(double)));
+		}
+		else {
 			m_lv2_state_configs.insert(sKey, qUncompress(
 				QByteArray::fromBase64(config.value().toUtf8())));
 		}
-		if (!aType.isEmpty() && !bTypeIsString)
-			m_lv2_state_ctypes.insert(sKey, lv2_urid_map(pszType));
+		if (!aType.isEmpty() && !bIsString)
+			m_lv2_state_ctypes.insert(sKey, type);
 	}
 
 	const unsigned short iInstances = instances();
@@ -4235,14 +4263,26 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 	if (pchValue == NULL)
 		return LV2_STATE_ERR_UNKNOWN;
 
-	const bool bTypeIsPath   = (::strcmp(pszType, LV2_ATOM__Path)   == 0);
-	const bool bTypeIsString = (::strcmp(pszType, LV2_ATOM__String) == 0);
+	const bool bIsPath   = (type == g_lv2_urids.atom_Path);
+	const bool bIsString = (type == g_lv2_urids.atom_String);
 
 	const QString& sKey = QString::fromUtf8(pszKey);
 
-	if (bTypeIsPath || bTypeIsString) {
+	if (bIsPath || bIsString)
 		setConfig(sKey, QString::fromUtf8(pchValue, ::strlen(pchValue)));
-	} else {
+	else
+	if (type == g_lv2_urids.atom_Bool || type == g_lv2_urids.atom_Int)
+		setConfig(sKey, QString::number(int(*(const int32_t *) pchValue)));
+	else
+	if (type == g_lv2_urids.atom_Long)
+		setConfig(sKey, QString::number(qlonglong(*(const int64_t *) pchValue)));
+	else
+	if (type == g_lv2_urids.atom_Float)
+		setConfig(sKey, QString::number(*(const float *) pchValue));
+	else
+	if (type == g_lv2_urids.atom_Double)
+		setConfig(sKey, QString::number(*(const double *) pchValue));
+	else {
 		QByteArray data = qCompress(
 			QByteArray(pchValue, size)).toBase64();
 		for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
@@ -4250,7 +4290,7 @@ LV2_State_Status qtractorLv2Plugin::lv2_state_store (
 		setConfig(sKey, data.constData());
 	}
 
-	if (!bTypeIsString)
+	if (!bIsString)
 		setConfigType(sKey, QString::fromUtf8(pszType));
 
 	return LV2_STATE_SUCCESS;

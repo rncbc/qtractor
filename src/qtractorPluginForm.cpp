@@ -1382,7 +1382,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	if (m_pCheckBox) {
 		QObject::connect(m_pCheckBox,
 			SIGNAL(toggled(bool)),
-			SLOT(propertuChanged()));
+			SLOT(propertyChanged()));
 	}
 
 	if (m_pSpinBox) {
