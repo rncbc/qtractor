@@ -55,7 +55,7 @@ static LV2_URID qtractor_lv2_urid_map (
 	LV2_URID_Map_Handle /*handle*/, const char *uri )
 {
 	if (strcmp(uri, LILV_URI_MIDI_EVENT) == 0)
-	    return QTRACTOR_LV2_MIDI_EVENT_ID;
+		return QTRACTOR_LV2_MIDI_EVENT_ID;
 	else
 		return qtractorLv2Plugin::lv2_urid_map(uri);
 }
@@ -982,11 +982,11 @@ static struct qtractorLv2Urids
 	LV2_URID atom_Chunk;
 	LV2_URID atom_Sequence;
 	LV2_URID atom_Object;
+	LV2_URID atom_Bool;
 	LV2_URID atom_Int;
 	LV2_URID atom_Long;
 	LV2_URID atom_Float;
 	LV2_URID atom_Double;
-	LV2_URID atom_Bool;
 	LV2_URID atom_String;
 	LV2_URID atom_Path;
 #endif
@@ -1156,11 +1156,11 @@ static void qtractor_lv2_remove_file ( const QFileInfo& info )
 qtractorLv2Plugin::Property::Property ( const LilvNode *property )
 {
 	static const char *s_types[] = {
+		LV2_ATOM__Bool,
 		LV2_ATOM__Int,
 		LV2_ATOM__Long,
 		LV2_ATOM__Float,
 		LV2_ATOM__Double,
-		LV2_ATOM__Bool,
 		LV2_ATOM__String,
 		LV2_ATOM__Path,
 		NULL
@@ -1725,6 +1725,8 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
 	g_lv2_urids.atom_Object
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Object);
+	g_lv2_urids.atom_Bool
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Bool);
 	g_lv2_urids.atom_Int
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Int);
 	g_lv2_urids.atom_Long
@@ -1733,8 +1735,6 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Float);
 	g_lv2_urids.atom_Double
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Double);
-	g_lv2_urids.atom_Bool
-		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Bool);
 	g_lv2_urids.atom_String
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 	g_lv2_urids.atom_Path
@@ -2420,7 +2420,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		LILV_FOREACH(nodes, iter, properties) {
 			const LilvNode *property = lilv_nodes_get(properties, iter);
 			Property *pProp = new Property(property);
-			m_lv2_properties.insert(pProp->key(), pProp);
+			m_lv2_properties.insert(pProp->uri(), pProp);
 			++m_lv2_patch_changed;
 		}
 		lilv_nodes_free(properties);
@@ -3926,7 +3926,11 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 void qtractorLv2Plugin::lv2_property_changed (
 	LV2_URID key, const LV2_Atom *value )
 {
-	Property *pProp = m_lv2_properties.value(key, NULL);
+	const char *pszKey = lv2_urid_unmap(key);
+	if (pszKey == NULL)
+		return;
+
+	Property *pProp = m_lv2_properties.value(pszKey, NULL);
 	if (pProp == NULL)
 		return;
 
@@ -3938,8 +3942,8 @@ void qtractorLv2Plugin::lv2_property_changed (
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(%u) [%s]",
-		this, key, pProp->name().toUtf8().constData());
+	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(\"%s\") [%s]",
+		this, pszKey, pProp->name().toUtf8().constData());
 #endif
 
 	if (type == g_lv2_urids.atom_Bool)
@@ -3952,10 +3956,10 @@ void qtractorLv2Plugin::lv2_property_changed (
 		pProp->setValue(qlonglong(*(const int64_t *) body));
 	else
 	if (type == g_lv2_urids.atom_Float)
-		pProp->setValue(float(*(const float *) body));
+		pProp->setValue(*(const float *) body);
 	else
 	if (type == g_lv2_urids.atom_Double)
-		pProp->setValue(double(*(const double *) body));
+		pProp->setValue(*(const double *) body);
 	else
 	if (type == g_lv2_urids.atom_String || type == g_lv2_urids.atom_Path)
 		pProp->setValue(QByteArray((const char *) body, size));
@@ -3975,7 +3979,11 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	if (m_lv2_patch_port_in >= pLv2Type->atomIns())
 		return;
 
-	Property *pProp = m_lv2_properties.value(key, NULL);
+	const char *pszKey = lv2_urid_unmap(key);
+	if (pszKey == NULL)
+		return;
+
+	Property *pProp = m_lv2_properties.value(pszKey, NULL);
 	if (pProp == NULL)
 		return;
 
@@ -3983,8 +3991,8 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	const QVariant& value = pProp->value();
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(%u) [%s]",
-		this, key, pProp->name().toUtf8().constData());
+	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(\"%s\") [%s]",
+		this, pszKey, pProp->name().toUtf8().constData());
 #endif
 
 	// Set up forge to write to temporary buffer on the stack

@@ -612,11 +612,14 @@ bool qtractorPluginPropertyCommand::redo (void)
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (pPlugin);
 	if (pLv2Plugin) {
 		const LV2_URID key = m_iProperty;
-		pLv2Prop = pLv2Plugin->lv2_properties().value(key, NULL);
-		if (pLv2Prop) {
-			value = pLv2Prop->value();
-			pLv2Prop->setValue(m_value);
-			pLv2Plugin->lv2_property_update(key);
+		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
+		if (pszKey) {
+			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, NULL);
+			if (pLv2Prop) {
+				value = pLv2Prop->value();
+				pLv2Prop->setValue(m_value);
+				pLv2Plugin->lv2_property_update(key);
+			}
 		}
 	}
 #endif
