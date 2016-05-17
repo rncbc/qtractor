@@ -427,6 +427,11 @@ protected:
 
 #endif	// CONFIG_LV2_UI
 
+#ifdef CONFIG_LV2_PATCH
+	// LV2 Patch/properties inventory.
+	void lv2_patch_properties(const char *pszPatch);
+#endif
+
 private:
 
 	// Instance variables.

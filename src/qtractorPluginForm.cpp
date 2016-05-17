@@ -1180,7 +1180,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	m_pDisplay  = NULL;
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(0);
+	pGridLayout->setMargin(4);
 	pGridLayout->setSpacing(4);
 
 	if (m_pParam->isToggled()) {
@@ -1320,7 +1320,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	m_pToolButton = NULL;
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(0);
+	pGridLayout->setMargin(4);
 	pGridLayout->setSpacing(4);
 
 #ifdef CONFIG_LV2_PATCH

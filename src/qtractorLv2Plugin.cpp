@@ -1196,9 +1196,26 @@ qtractorLv2Plugin::Property::Property ( const LilvNode *property )
 	LilvNode *prop_def = lilv_world_get(
 		g_lv2_world, property, g_lv2_default_prop, NULL);
 
-	m_min = (prop_min ? lilv_node_as_float(prop_min) : 0.0f);
-	m_max = (prop_max ? lilv_node_as_float(prop_max) : 1.0f);
-	m_def = (prop_def ? lilv_node_as_float(prop_def) : 0.0f);
+	if (m_type == g_lv2_urids.atom_Bool) {
+		m_min = float(prop_min ? lilv_node_as_bool(prop_min) : false);
+		m_max = float(prop_max ? lilv_node_as_bool(prop_max) : true);
+		m_def = float(prop_def ? lilv_node_as_bool(prop_def) : false);
+	}
+	else
+	if (m_type == g_lv2_urids.atom_Int ||
+		m_type == g_lv2_urids.atom_Long) {
+		m_min = float(prop_min ? lilv_node_as_int(prop_min) : 0);
+		m_max = float(prop_max ? lilv_node_as_int(prop_max) : 100);
+		m_def = float(prop_def ? lilv_node_as_int(prop_def) : 0);
+	}
+	else
+	if (m_type == g_lv2_urids.atom_Float ||
+		m_type == g_lv2_urids.atom_Double) {
+		m_min = (prop_min ? lilv_node_as_float(prop_min) : 0.0f);
+		m_max = (prop_max ? lilv_node_as_float(prop_max) : 1.0f);
+		m_def = (prop_def ? lilv_node_as_float(prop_def) : 0.0f);
+	}
+	else m_min = m_max = m_def = 0.0f;
 
 	if (prop_min) lilv_node_free(prop_min);
 	if (prop_max) lilv_node_free(prop_max);
@@ -2413,19 +2430,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		lilv_node_free(preset_uri);
 		lilv_node_free(label_uri);
 	#endif	// CONFIG_LV2_PRESETS
-	#ifdef CONFIG_LV2_PATCH
-		LilvNode *patch_uri = lilv_new_uri(g_lv2_world, LV2_PATCH__writable);
-		LilvNodes *properties = lilv_world_find_nodes(
-			g_lv2_world, lilv_plugin_get_uri(plugin), patch_uri, NULL);
-		LILV_FOREACH(nodes, iter, properties) {
-			const LilvNode *property = lilv_nodes_get(properties, iter);
-			Property *pProp = new Property(property);
-			m_lv2_properties.insert(pProp->uri(), pProp);
-			++m_lv2_patch_changed;
-		}
-		lilv_nodes_free(properties);
-		lilv_node_free(patch_uri);
-	#endif
 	#ifdef CONFIG_LV2_TIME
 		// Set up time-pos designated port indexes, if any...
 		for (int i = 0; i < int(qtractorLv2Time::numOfMembers); ++i) {
@@ -2451,6 +2455,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		if (!m_lv2_time_ports.isEmpty())
 			++g_lv2_time_refcount;
 	#endif	// CONFIG_LV2_TIME
+	#ifdef CONFIG_LV2_PATCH
+		lv2_patch_properties(LV2_PATCH__writable);
+		lv2_patch_properties(LV2_PATCH__readable);
+	#endif
 		// FIXME: instantiate each instance properly...
 		qtractorLv2Plugin::setChannels(channels());
 	}
@@ -3921,6 +3929,30 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 
 
 #ifdef CONFIG_LV2_PATCH
+
+// LV2 Patch/properties inventory.
+void qtractorLv2Plugin::lv2_patch_properties ( const char *pszPatch )
+{
+	const LilvPlugin *plugin = lv2_plugin();
+	if (plugin == NULL)
+		return;
+
+	LilvNode *patch_uri = lilv_new_uri(g_lv2_world, pszPatch);
+	LilvNodes *properties = lilv_world_find_nodes(
+		g_lv2_world, lilv_plugin_get_uri(plugin), patch_uri, NULL);
+	LILV_FOREACH(nodes, iter, properties) {
+		const LilvNode *property = lilv_nodes_get(properties, iter);
+		const char *pszKey = lilv_node_as_uri(property);
+		if (pszKey && !m_lv2_properties.contains(pszKey)) {
+			Property *pProp = new Property(property);
+			m_lv2_properties.insert(pProp->uri(), pProp);
+			++m_lv2_patch_changed;
+		}
+	}
+	lilv_nodes_free(properties);
+	lilv_node_free(patch_uri);
+}
+
 
 // LV2 Patch/properties changed, eventually from UI->plugin...
 void qtractorLv2Plugin::lv2_property_changed (
