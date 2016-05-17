@@ -392,7 +392,7 @@ public:
 	};
 
 	// LV2 Patch/properties registry.
-	typedef QMap<LV2_URID, Property *> Properties;
+	typedef QMap<QString, Property *> Properties;
 
 	// LV2 Patch/properties registry accessor.
 	const Properties& lv2_properties() const

@@ -309,12 +309,12 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="723"/>
+        <location filename="../qtractorPluginCommand.cpp" line="726"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="768"/>
+        <location filename="../qtractorPluginCommand.cpp" line="771"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
@@ -11000,7 +11000,7 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1468"/>
+        <location filename="../qtractorPluginForm.cpp" line="1472"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>

@@ -526,12 +526,12 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="723"/>
+        <location filename="../qtractorPluginCommand.cpp" line="726"/>
         <source>dedicated audio outputs</source>
         <translation>salidas de audio dedicadas</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="768"/>
+        <location filename="../qtractorPluginCommand.cpp" line="771"/>
         <source>direct access param</source>
         <translation>parametro de acceso directo</translation>
     </message>
@@ -10994,7 +10994,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1468"/>
+        <location filename="../qtractorPluginForm.cpp" line="1472"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>

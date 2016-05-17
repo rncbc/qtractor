@@ -232,9 +232,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		qtractorLv2Plugin::Properties::ConstIterator prop = props.constBegin();
 		const qtractorLv2Plugin::Properties::ConstIterator& prop_end = props.constEnd();
 		for ( ; prop != prop_end; ++prop) {
-		//	qtractorLv2Plugin::Property *pProp = prop.value();
+			qtractorLv2Plugin::Property *pProp = prop.value();
 			qtractorPluginPropertyWidget *pPropWidget
-				= new qtractorPluginPropertyWidget(pLv2Plugin, prop.key());
+				= new qtractorPluginPropertyWidget(pLv2Plugin, pProp->key());
 			m_propWidgets.append(pPropWidget);
 			widgets.append(pPropWidget);
 		}
@@ -1331,7 +1331,9 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
 	if (pLv2Plugin) {
 		const LV2_URID key = m_iProperty;
-		pLv2Prop = pLv2Plugin->lv2_properties().value(key, NULL);
+		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
+		if (pszKey)
+			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, NULL);
 	}
 #endif
 
@@ -1424,9 +1426,11 @@ void qtractorPluginPropertyWidget::refresh (void)
 	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
 	if (pLv2Plugin) {
+		qtractorLv2Plugin::Property *pLv2Prop = NULL;
 		const LV2_URID key = m_iProperty;
-		qtractorLv2Plugin::Property *pLv2Prop
-			= pLv2Plugin->lv2_properties().value(key, NULL);
+		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
+		if (pszKey)
+			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, NULL);
 		if (pLv2Prop) {
 			if (m_pCheckBox) {
 				const bool bCheckBox = m_pCheckBox->blockSignals(true);
