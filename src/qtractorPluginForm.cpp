@@ -48,7 +48,7 @@
 #include <QTabWidget>
 #include <QGridLayout>
 #include <QValidator>
-#include <QLineEdit>
+#include <QTextEdit>
 #include <QLabel>
 
 #include <QFileInfo>
@@ -1180,7 +1180,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	m_pDisplay  = NULL;
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(4);
+	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(4);
 
 	if (m_pParam->isToggled()) {
@@ -1316,7 +1316,8 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 {
 	m_pCheckBox   = NULL;
 	m_pSpinBox    = NULL;
-	m_pLineEdit   = NULL;
+	m_pTextEdit   = NULL;
+	m_pComboBox   = NULL;
 	m_pToolButton = NULL;
 
 	QGridLayout *pGridLayout = new QGridLayout();
@@ -1339,31 +1340,45 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 
 #ifdef CONFIG_LV2_PATCH
 	if (pLv2Prop) {
+	//	pGridLayout->setColumnMinimumWidth(0, 120);
+		pGridLayout->setColumnMinimumWidth(2, 32);
 		if (pLv2Prop->isToggled()) {
 			m_pCheckBox = new QCheckBox(/*this*/);
+		//	m_pCheckBox->setMinimumWidth(120);
 			m_pCheckBox->setText(pLv2Prop->name());
 		//	m_pCheckBox->setChecked(pLv2Prop->value().toBool());
-			pGridLayout->addWidget(m_pCheckBox, 0, 0);
+			pGridLayout->addWidget(m_pCheckBox, 0, 0, 1, 3);
 		} else {
-			const bool bIsPath = pLv2Prop->isPath();
 			QLabel *pLabel = new QLabel(/*this*/);
 			pLabel->setText(pLv2Prop->name() + ':');
-			if (pLv2Prop->isString() || bIsPath) {
+			if (pLv2Prop->isString()) {
 				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-				pGridLayout->addWidget(pLabel, 0, 0);
-				m_pLineEdit = new QLineEdit(/*this*/);
-				m_pLineEdit->setReadOnly(bIsPath);
-				m_pLineEdit->setMinimumWidth(120);
-			//	m_pLineEdit->setText(pLv2Prop->value().toString());
-				pGridLayout->addWidget(m_pLineEdit, 1, 0);
-				if (bIsPath) {
-					m_pToolButton = new QToolButton(/*this*/);
-					m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
-					pGridLayout->addWidget(m_pToolButton, 1, 1);
-				}
+			//	pLabel->setMinimumWidth(120);
+				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
+				m_pTextEdit = new QTextEdit(/*this*/);
+				m_pTextEdit->setTabChangesFocus(true);
+				m_pTextEdit->setMinimumWidth(120);
+				m_pTextEdit->setMaximumHeight(60);
+				m_pTextEdit->installEventFilter(this);
+			//	m_pTextEdit->setPlainText(pLv2Prop->value().toString());
+				pGridLayout->addWidget(m_pTextEdit, 1, 0, 2, 3);
+			}
+			else
+			if (pLv2Prop->isPath()) {
+				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+			//	pLabel->setMinimumWidth(120);
+				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
+				m_pComboBox = new QComboBox(/*this*/);
+				m_pComboBox->setEditable(false);
+				m_pComboBox->setMinimumWidth(120);
+			//	m_pComboBox->addItem(pLv2Prop->value().toString());
+				pGridLayout->addWidget(m_pComboBox, 1, 0, 1, 2);
+				m_pToolButton = new QToolButton(/*this*/);
+				m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
+				pGridLayout->addWidget(m_pToolButton, 1, 2);
 			} else {
 				pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-				pLabel->setMinimumWidth(64);
+			//	pLabel->setMinimumWidth(120);
 				pGridLayout->addWidget(pLabel, 0, 0);
 				const bool bIsInteger = pLv2Prop->isInteger();
 				m_pSpinBox = new QDoubleSpinBox(/*this*/);
@@ -1393,9 +1408,9 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 			SLOT(propertyChanged()));
 	}
 
-	if (m_pLineEdit) {
-		QObject::connect(m_pLineEdit,
-			SIGNAL(editingFinished()),
+	if (m_pComboBox) {
+		QObject::connect(m_pComboBox,
+			SIGNAL(activated(int)),
 			SLOT(propertyChanged()));
 	}
 
@@ -1442,11 +1457,24 @@ void qtractorPluginPropertyWidget::refresh (void)
 				m_pSpinBox->setValue(pLv2Prop->value().toDouble());
 				m_pSpinBox->blockSignals(bSpinBox);
 			}
-			if (m_pLineEdit) {
-				const bool bLineEdit = m_pLineEdit->blockSignals(true);
-				m_pLineEdit->setText(pLv2Prop->value().toString());
-				m_pLineEdit->setModified(false);
-				m_pLineEdit->blockSignals(bLineEdit);
+			if (m_pTextEdit) {
+				const bool bTextEdit = m_pTextEdit->blockSignals(true);
+				m_pTextEdit->setPlainText(pLv2Prop->value().toString());
+				m_pTextEdit->document()->setModified(false);
+				m_pTextEdit->blockSignals(bTextEdit);
+			}
+			if (m_pComboBox) {
+				const bool bComboBox = m_pComboBox->blockSignals(true);
+				const QFileInfo fi(pLv2Prop->value().toString());
+				const QString& sPath = fi.canonicalFilePath();
+				int iIndex = m_pComboBox->findData(sPath);
+				if (iIndex < 0) {
+					m_pComboBox->insertItem(0, fi.fileName(), sPath);
+					iIndex = 0;
+				}
+				m_pComboBox->setCurrentIndex(iIndex);
+				m_pComboBox->setToolTip(sPath);
+				m_pComboBox->blockSignals(bComboBox);
 			}
 		}
 	}
@@ -1458,7 +1486,7 @@ void qtractorPluginPropertyWidget::refresh (void)
 void qtractorPluginPropertyWidget::buttonClicked (void)
 {
 	// Sure we have this...
-	if (m_pLineEdit == NULL)
+	if (m_pComboBox == NULL)
 		return;
 
 	// We'll need this, sure.
@@ -1467,7 +1495,11 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 		return;
 
 	// Ask for the filename to open...
-	QString sFilename = m_pLineEdit->text();
+	const int iIndex = m_pComboBox->currentIndex();
+	if (iIndex < 0)
+		return;
+
+	QString sFilename = m_pComboBox->itemData(iIndex).toString();
 
 	const QString& sTitle = tr("Open File") + " - " QTRACTOR_TITLE;
 #if 1//QT_VERSION < 0x040400
@@ -1488,11 +1520,16 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
 #endif
-	if (m_pLineEdit && !sFilename.isEmpty()) {
-		const bool bLineEdit = m_pLineEdit->blockSignals(true);
-		m_pLineEdit->setText(sFilename);
-		m_pLineEdit->setModified(true);
-		m_pLineEdit->blockSignals(bLineEdit);
+	if (!sFilename.isEmpty()) {
+		const QFileInfo fi(sFilename);
+		const QString& sPath = fi.canonicalFilePath();
+		int iIndex = m_pComboBox->findData(sPath);
+		if (iIndex < 0) {
+			m_pComboBox->insertItem(0, fi.fileName(), sPath);
+			iIndex = 0;
+		}
+		m_pComboBox->setCurrentIndex(iIndex);
+		m_pComboBox->setToolTip(sPath);
 		propertyChanged();
 	}
 }
@@ -1514,9 +1551,14 @@ void qtractorPluginPropertyWidget::propertyChanged (void)
 		value = bool(m_pCheckBox->isChecked());
 	if (m_pSpinBox)
 		value = float(m_pSpinBox->value());
-	if (m_pLineEdit && m_pLineEdit->isModified()) {
-		value = m_pLineEdit->text();
-		m_pLineEdit->setModified(false);
+	if (m_pTextEdit && m_pTextEdit->document()->isModified()) {
+		value = m_pTextEdit->toPlainText();
+		m_pTextEdit->document()->setModified(false);
+	}
+	if (m_pComboBox) {
+		const int iIndex = m_pComboBox->currentIndex();
+		if (iIndex >= 0)
+			value = m_pComboBox->itemData(iIndex).toString();
 	}
 
 	if (!value.isValid())
@@ -1527,6 +1569,29 @@ void qtractorPluginPropertyWidget::propertyChanged (void)
 	if (pSession)
 		pSession->execute(
 			new qtractorPluginPropertyCommand(m_pPlugin, m_iProperty, value));
+}
+
+
+// Text edit (string) event filter.
+bool qtractorPluginPropertyWidget::eventFilter (
+	QObject *pObject, QEvent *pEvent )
+{
+	if (qobject_cast<QTextEdit *> (pObject) == m_pTextEdit) {
+		if(pEvent->type() == QEvent::KeyPress) {
+			QKeyEvent *pKeyEvent = static_cast<QKeyEvent*> (pEvent);
+			if (pKeyEvent->key() == Qt::Key_Return
+				&& (pKeyEvent->modifiers() &
+					(Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
+				propertyChanged();
+				return true;
+			}
+		}
+		else
+		if(pEvent->type() == QEvent::FocusOut)
+			propertyChanged();
+	}
+
+	return QWidget::eventFilter(pObject, pEvent);
 }
 
 

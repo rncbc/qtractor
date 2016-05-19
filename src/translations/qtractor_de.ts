@@ -10870,7 +10870,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1472"/>
+        <location filename="../qtractorPluginForm.cpp" line="1504"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>

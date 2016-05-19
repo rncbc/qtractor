@@ -43,7 +43,8 @@ class qtractorPluginParamDisplay;
 
 class QCheckBox;
 class QDoubleSpinBox;
-class QLineEdit;
+class QTextEdit;
+class QComboBox;
 class QToolButton;
 
 
@@ -208,6 +209,11 @@ protected slots:
 	// Property value change slot.
 	void propertyChanged();
 
+protected:
+
+	// Text edit (string) event filter.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
 private:
 
 	// Instance variables.
@@ -217,7 +223,8 @@ private:
 	// Some possible managed widgets.
 	QCheckBox      *m_pCheckBox;
 	QDoubleSpinBox *m_pSpinBox;
-	QLineEdit      *m_pLineEdit;
+	QTextEdit      *m_pTextEdit;
+	QComboBox      *m_pComboBox;
 	QToolButton    *m_pToolButton;
 };
 
