@@ -1205,7 +1205,7 @@ qtractorLv2Plugin::Property::Property ( const LilvNode *property )
 	if (m_type == g_lv2_urids.atom_Int ||
 		m_type == g_lv2_urids.atom_Long) {
 		m_min = float(prop_min ? lilv_node_as_int(prop_min) : 0);
-		m_max = float(prop_max ? lilv_node_as_int(prop_max) : 100);
+		m_max = float(prop_max ? lilv_node_as_int(prop_max) : INT32_MAX);
 		m_def = float(prop_def ? lilv_node_as_int(prop_def) : 0);
 	}
 	else
