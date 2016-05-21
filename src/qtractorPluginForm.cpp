@@ -1321,7 +1321,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	m_pToolButton = NULL;
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(4);
+	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(4);
 
 #ifdef CONFIG_LV2_PATCH
