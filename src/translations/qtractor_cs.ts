@@ -11000,7 +11000,7 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1507"/>
+        <location filename="../qtractorPluginForm.cpp" line="1504"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>

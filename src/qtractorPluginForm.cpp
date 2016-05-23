@@ -1464,20 +1464,17 @@ void qtractorPluginPropertyWidget::refresh (void)
 				m_pTextEdit->blockSignals(bTextEdit);
 			}
 			if (m_pComboBox) {
-				const QString& sFilename = pLv2Prop->value().toString();
-				if (!sFilename.isEmpty()) {
-					const bool bComboBox = m_pComboBox->blockSignals(true);
-					const QFileInfo fi(sFilename);
-					const QString& sPath = fi.canonicalFilePath();
-					int iIndex = m_pComboBox->findData(sPath);
-					if (iIndex < 0) {
-						m_pComboBox->insertItem(0, fi.fileName(), sPath);
-						iIndex = 0;
-					}
-					m_pComboBox->setCurrentIndex(iIndex);
-					m_pComboBox->setToolTip(sPath);
-					m_pComboBox->blockSignals(bComboBox);
+				const bool bComboBox = m_pComboBox->blockSignals(true);
+				const QFileInfo fi(pLv2Prop->value().toString());
+				const QString& sPath = fi.canonicalFilePath();
+				int iIndex = m_pComboBox->findData(sPath);
+				if (iIndex < 0) {
+					m_pComboBox->insertItem(0, fi.fileName(), sPath);
+					iIndex = 0;
 				}
+				m_pComboBox->setCurrentIndex(iIndex);
+				m_pComboBox->setToolTip(sPath);
+				m_pComboBox->blockSignals(bComboBox);
 			}
 		}
 	}
