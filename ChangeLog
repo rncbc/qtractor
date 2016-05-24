@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Prevent any visual updates while exporting (freewheeling)
+  audio tracks that have at least one plugin activate state
+  automation enabled for playback (as much for not showing
+  messages like "QObject::connect: Cannot queue arguments
+  of type 'QVector<int>'"... anymore).
+
 - The common buses management dialog (View/Buses...) sees
   the superfluous Refresh button finally removed, while two
   new button commands take its place: (move) Up and Down.
