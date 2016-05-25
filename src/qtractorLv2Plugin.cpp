@@ -43,6 +43,11 @@
 
 #include <math.h>
 
+#if !defined(INT32_MAX)
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+#endif
+
 
 // URI map/unmap features.
 #include "lv2/lv2plug.in/ns/ext/urid/urid.h"
@@ -4141,7 +4146,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 	const Configs::ConstIterator& config_end = configs.constEnd();
 	for ( ; config != config_end; ++config) {
 		const QString& sKey = config.key();
-		QByteArray aType;
+		QByteArray aType(LV2_ATOM__String);
 		ConfigTypes::ConstIterator ctype = ctypes.constFind(sKey);
 		if (ctype != ctypes.constEnd())
 			aType = ctype.value().toUtf8();
