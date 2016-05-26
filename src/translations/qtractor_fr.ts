@@ -747,13 +747,13 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2003"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2002"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2011"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2010"/>
         <source>Author: </source>
         <translation>Auteur: </translation>
     </message>
