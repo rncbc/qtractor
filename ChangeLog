@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing LV2 UI Show interface support for other types
+  than Qt, Gtk, X11 and lv2_external_ui. (EXPERIMENTAL)
+
 - Prevent any visual updates while exporting (freewheeling)
   audio tracks that have at least one plugin activate state
   automation enabled for playback (as much for not showing
