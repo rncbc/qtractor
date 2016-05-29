@@ -3758,7 +3758,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 
 #ifdef CONFIG_LIBSUIL
 	// Check whether special UI wrapping are supported...
-	if (suil_ui_supported(ui_host_uri, ui_type_uri) > 0) {
+	if (ui_type_uri && suil_ui_supported(ui_host_uri, ui_type_uri) > 0) {
 		m_suil_host = suil_host_new(
 			qtractor_lv2_ui_port_write,
 			qtractor_lv2_ui_port_index,
