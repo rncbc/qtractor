@@ -3019,8 +3019,22 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		if (lilv_ui_is_a(ui, g_lv2_qt5_ui_class))
 			ui_map.insert(LV2_UI_TYPE_QT5, ui);
 	#endif
-		else
-		ui_map.insert(LV2_UI_TYPE_OTHER, ui);
+		else {
+			const LilvNode *ui_uri = lilv_ui_get_uri(ui);
+			lilv_world_load_resource(g_lv2_world, ui_uri);
+			LilvNode *extension_data_uri
+				= lilv_new_uri(g_lv2_world, LV2_CORE__extensionData);
+			LilvNode *show_interface_uri
+				= lilv_new_uri(g_lv2_world, LV2_UI__showInterface);
+			const bool ui_show_interface
+				= lilv_world_ask(g_lv2_world, ui_uri,
+					extension_data_uri, show_interface_uri);
+			if (ui_show_interface)
+				ui_map.insert(LV2_UI_TYPE_OTHER, ui);
+			lilv_node_free(extension_data_uri);
+			lilv_node_free(show_interface_uri);
+			lilv_world_unload_resource(g_lv2_world, ui_uri);
+		}
 	}
 
 	if (ui_map.isEmpty()) {
