@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -472,7 +472,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					break;
 				}
 				if (meta == qtractorMidiEvent::TEMPO) {
-					m_pTempoMap->addNodeTempo(iTime,
+					m_pTempoMap->addNodeTempo(iTrackTime,
 						qtractorTimeScale::uroundf(
 							60000000.0f / float(readInt(len))));
 				} else {
@@ -490,13 +490,13 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					case qtractorMidiEvent::TIME:
 						// Beats per bar is the numerator of time signature...
 						if ((unsigned short) data[0] > 0) {
-							m_pTempoMap->addNodeTime(iTime,
+							m_pTempoMap->addNodeTime(iTrackTime,
 								(unsigned short) data[0],
 								(unsigned short) data[1]);
 						}
 						break;
 					case qtractorMidiEvent::MARKER:
-						m_pTempoMap->addMarker(iTime,
+						m_pTempoMap->addMarker(iTrackTime,
 							QString((const char *) data).simplified());
 						break;
 					default:
@@ -909,17 +909,17 @@ bool qtractorMidiFile::writeTracks (
 					while (pNode && iTime >= pNode->tick) {
 						while (pMarker && pMarker->tick < pNode->tick) {
 							writeMarker(pMarker, iLastTime);
-							iLastTime = pMarker->tick;
+							iLastTime = pSeq->timep(pMarker->tick, m_iTicksPerBeat);
 							pMarker = pMarker->next();
 						}
 						writeNode(pNode, iLastTime);
-						iLastTime = pNode->tick;
+						iLastTime = pSeq->timep(pNode->tick, m_iTicksPerBeat);
 						iLastStatus = 0;
 						pNode = pNode->next();
 					}
 					while (pMarker && iTime >= pMarker->tick) {
 						writeMarker(pMarker, iLastTime);
-						iLastTime = pMarker->tick;
+						iLastTime = pSeq->timep(pMarker->tick, m_iTicksPerBeat);
 						iLastStatus = 0;
 						pMarker = pMarker->next();
 					}
