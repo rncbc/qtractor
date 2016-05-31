@@ -5845,6 +5845,7 @@ void qtractorMainForm::stabilizeForm (void)
 	const bool bSelected   = (m_pTracks && m_pTracks->isSelected())
 		|| (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected());
 	const bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
+	const bool bClipboard  = qtractorTrackView::isClipboard();
 	const bool bPlaying    = m_pSession->isPlaying();
 	const bool bRecording  = m_pSession->isRecording();
 	const bool bPunching   = m_pSession->isPunching();
@@ -5864,10 +5865,15 @@ void qtractorMainForm::stabilizeForm (void)
 
 //	m_ui.editCutAction->setEnabled(bSelected);
 //	m_ui.editCopyAction->setEnabled(bSelected);
-	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
-	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
-		|| (pMimeData && pMimeData->hasUrls()));
-	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
+#if QT_VERSION >= 0x050000
+	const QMimeData *pMimeData
+	    = QApplication::clipboard()->mimeData();
+	m_ui.editPasteAction->setEnabled(bClipboard
+	    || (pMimeData && pMimeData->hasUrls()));
+#else
+	m_ui.editPasteAction->setEnabled(bClipboard);
+#endif
+	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 //	m_ui.editDeleteAction->setEnabled(bSelected);
 
 	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);
