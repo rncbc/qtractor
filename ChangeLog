@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI file tempo-map and location markers import/export is 
+  now hopefully corrected, after almost a decade in mistake,
+  regarding MIDI resolution conversion, when different than
+  current session's setting (TPQN, ticks-per-quarter-note
+  aka. ticks-per-beat, etc.) (EXPERIMENTAL)
+
 - Introducing LV2 UI Show interface support for other types
   than Qt, Gtk, X11 and lv2_external_ui. (EXPERIMENTAL)
 
