@@ -2000,7 +2000,6 @@ bool qtractorLv2PluginType::lv2_ui_show_interface ( LilvUI *ui ) const
 	if (m_lv2_plugin == NULL)
 		return false;
 
-
 	const LilvNode *ui_uri = lilv_ui_get_uri(ui);
 	lilv_world_load_resource(g_lv2_world, ui_uri);
 	LilvNode *extension_data_uri
