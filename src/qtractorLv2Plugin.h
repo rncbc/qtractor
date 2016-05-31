@@ -157,6 +157,11 @@ public:
 	unsigned short atomOuts()   const { return m_iAtomOuts;   }
 #endif
 
+#ifdef CONFIG_LV2_UI_SHOW
+	// Check for LV2 UI Show interface.
+	bool lv2_ui_show_interface(LilvUI *ui) const;
+#endif
+
 	// Instance cached-deferred accesors.
 	const QString& aboutText();
 
