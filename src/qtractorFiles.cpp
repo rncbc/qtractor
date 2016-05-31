@@ -433,10 +433,14 @@ void qtractorFiles::stabilizeSlot (void)
 			pItem && pItem->type() == qtractorFileListView::FileItem);
 		m_pCopyItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::FileItem);
+    #if QT_VERSION >= 0x0050000
 		const QMimeData *pMimeData
 			= QApplication::clipboard()->mimeData();
 		m_pPasteItemAction->setEnabled(
 			pMimeData && pMimeData->hasUrls());
+    #else
+		m_pPasteItemAction->setEnabled(false);
+    #endif
 		m_pRenameItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::GroupItem);
 		m_pRemoveItemAction->setEnabled(

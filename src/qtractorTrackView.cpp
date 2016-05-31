@@ -1186,6 +1186,7 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 	// Nothing more?
 	if (pMimeData == NULL)
 		return NULL;
+
 	// Can it be single track channel (MIDI for sure)?
 	if (qtractorFileChannelDrag::canDecode(pMimeData)) {
 		// Let's see how many track-channels are there...
@@ -4667,6 +4668,7 @@ void qtractorTrackView::pasteClipboard (
 	// Check if anything's really on clipboard...
 	if (g_clipboard.clips.isEmpty() &&
 		g_clipboard.nodes.isEmpty()) {
+    #if QT_VERSION >= 0x0050000
 		// System clipboard?
 		const QMimeData *pMimeData
 			= QApplication::clipboard()->mimeData();
@@ -4683,6 +4685,7 @@ void qtractorTrackView::pasteClipboard (
 				showClipDropRects();
 			}
 		}
+    #endif
 		// Woot!
 		return;
 	}

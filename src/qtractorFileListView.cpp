@@ -595,9 +595,11 @@ void qtractorFileListView::copyItem ( bool bCut )
 }
 
 
-// Paste file item(s9 from clipboard.
+// Paste file items from clipboard.
 void qtractorFileListView::pasteItem (void)
 {
+#if QT_VERSION >= 0x050000
+
 	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
 	if (pMimeData == NULL)
 		return;
@@ -626,6 +628,8 @@ void qtractorFileListView::pasteItem (void)
 	// Make proper notifications...
 	if (iUpdate > 0)
 		emit contentsChanged();
+
+#endif
 }
 
 
