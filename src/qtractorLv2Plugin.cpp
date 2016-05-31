@@ -1511,7 +1511,38 @@ bool qtractorLv2PluginType::open (void)
 	// Check the UI inventory...
 	LilvUIs *uis = lilv_plugin_get_uis(m_lv2_plugin);
 	if (uis) {
-		m_bEditor = (lilv_uis_size(uis) > 0);
+		int uis_count = 0;
+		LILV_FOREACH(uis, iter, uis) {
+			LilvUI *ui = const_cast<LilvUI *> (lilv_uis_get(uis, iter));
+		#ifdef CONFIG_LV2_EXTERNAL_UI
+			if (lilv_ui_is_a(ui, g_lv2_external_ui_class)
+			#ifdef LV2_EXTERNAL_UI_DEPRECATED_URI
+				|| lilv_ui_is_a(ui, g_lv2_external_ui_deprecated_class)
+			#endif
+			)	++uis_count;
+			else
+		#endif
+			if (lilv_ui_is_a(ui, g_lv2_x11_ui_class))
+				++uis_count;
+			else
+			if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
+				++uis_count;
+		#if QT_VERSION < 0x050000
+			else
+			if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
+				++uis_count;
+		#else
+			else
+			if (lilv_ui_is_a(ui, g_lv2_qt5_ui_class))
+				++uis_count;
+		#endif
+		#ifdef CONFIG_LV2_UI_SHOW
+			else
+			if (lv2_ui_show_interface(ui))
+				++uis_count;
+		#endif
+		}
+		m_bEditor = (uis_count > 0);
 		lilv_uis_free(uis);
 	}
 #endif
@@ -1959,6 +1990,36 @@ QStringList qtractorLv2PluginType::lv2_plugins (void)
 
 	return list;
 }
+
+
+#ifdef CONFIG_LV2_UI_SHOW
+
+// Check for LV2 UI Show interface.
+bool qtractorLv2PluginType::lv2_ui_show_interface ( LilvUI *ui ) const
+{
+	if (m_lv2_plugin == NULL)
+		return false;
+
+
+	const LilvNode *ui_uri = lilv_ui_get_uri(ui);
+	lilv_world_load_resource(g_lv2_world, ui_uri);
+	LilvNode *extension_data_uri
+		= lilv_new_uri(g_lv2_world, LV2_CORE__extensionData);
+	LilvNode *show_interface_uri
+		= lilv_new_uri(g_lv2_world, LV2_UI__showInterface);
+	const bool ui_show_interface
+		= lilv_world_ask(g_lv2_world, ui_uri,
+			extension_data_uri, show_interface_uri);
+	lilv_node_free(extension_data_uri);
+	lilv_node_free(show_interface_uri);
+#ifdef CONFIG_LILV_WORLD_UNLOAD_RESOURCE
+	lilv_world_unload_resource(g_lv2_world, ui_uri);
+#endif
+
+	return ui_show_interface;
+}
+
+#endif	// CONFIG_LV2_UI_SHOW
 
 
 // Instance cached-deferred accesors.
@@ -3019,22 +3080,11 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		if (lilv_ui_is_a(ui, g_lv2_qt5_ui_class))
 			ui_map.insert(LV2_UI_TYPE_QT5, ui);
 	#endif
-		else {
-			const LilvNode *ui_uri = lilv_ui_get_uri(ui);
-			lilv_world_load_resource(g_lv2_world, ui_uri);
-			LilvNode *extension_data_uri
-				= lilv_new_uri(g_lv2_world, LV2_CORE__extensionData);
-			LilvNode *show_interface_uri
-				= lilv_new_uri(g_lv2_world, LV2_UI__showInterface);
-			const bool ui_show_interface
-				= lilv_world_ask(g_lv2_world, ui_uri,
-					extension_data_uri, show_interface_uri);
-			if (ui_show_interface)
-				ui_map.insert(LV2_UI_TYPE_OTHER, ui);
-			lilv_node_free(extension_data_uri);
-			lilv_node_free(show_interface_uri);
-			lilv_world_unload_resource(g_lv2_world, ui_uri);
-		}
+	#ifdef CONFIG_LV2_UI_SHOW
+		else
+		if (pLv2Type->lv2_ui_show_interface(ui))
+			ui_map.insert(LV2_UI_TYPE_OTHER, ui);
+	#endif
 	}
 
 	if (ui_map.isEmpty()) {

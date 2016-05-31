@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.7.17, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.7.18, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -766,6 +766,12 @@ if test "x$ac_lilv" = "xyes"; then
       [ac_lilv_file_uri_parse="no"])
    if test "x$ac_lilv_file_uri_parse" = "xyes"; then
       AC_DEFINE(CONFIG_LILV_FILE_URI_PARSE, 1, [Define if lilv_file_uri_parse is available.])
+   fi
+   AC_CHECK_LIB(lilv-0, lilv_world_unload_resource,
+      [ac_lilv_world_unload_resource="yes"],
+      [ac_lilv_world_unload_resource="no"])
+   if test "x$ac_lilv_world_unload_resource" = "xyes"; then
+      AC_DEFINE(CONFIG_LILV_WORLD_UNLOAD_RESOURCE, 1, [Define if lilv_world_unload_resource is available.])
    fi
 fi
 
