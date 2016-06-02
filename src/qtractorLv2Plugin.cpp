@@ -2919,7 +2919,7 @@ void qtractorLv2Plugin::process (
 					LV2_Atom_Buffer_Iterator aiter;
 					lv2_atom_buffer_end(&aiter, abuf);
 					LV2_Atom_Object obj;
-					obj.atom.size  = sizeof(LV2_Atom_Object);
+					obj.atom.size  = sizeof(LV2_Atom_Object_Body);
 					obj.atom.type  = g_lv2_urids.atom_Object;
 					obj.body.id    = 0;
 					obj.body.otype = g_lv2_urids.patch_Get;
