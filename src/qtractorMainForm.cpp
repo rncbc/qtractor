@@ -4829,7 +4829,9 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	const int     iOldOscServerPort      = m_pOptions->iOscServerPort;
 #ifdef CONFIG_LV2
+	const QString sep(':'); 
 	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
+	const QString sOldLv2Paths           = m_pOptions->lv2Paths.join(sep);
 #endif
 
 	// Load the current setup settings.
@@ -4878,6 +4880,8 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldLv2DynManifest &&  m_pOptions->bLv2DynManifest)) {
 			iNeedRestart |= RestartSession;
 		}
+		if (sOldLv2Paths != m_pOptions->lv2Paths.join(sep))
+			iNeedRestart |= RestartProgram;
 	#endif
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||
 			(!bOldStdoutCapture &&  m_pOptions->bStdoutCapture)) {
