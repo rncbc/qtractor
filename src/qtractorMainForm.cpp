@@ -4818,7 +4818,9 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 #ifdef CONFIG_LV2
+	const QString sep(':'); 
 	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
+	const QString sOldLv2Paths           = m_pOptions->lv2Paths.join(sep);
 #endif
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
@@ -4866,6 +4868,8 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldLv2DynManifest &&  m_pOptions->bLv2DynManifest)) {
 			iNeedRestart |= RestartSession;
 		}
+		if (sOldLv2Paths != m_pOptions->lv2Paths.join(sep))
+			iNeedRestart |= RestartProgram;
 	#endif
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||
 			(!bOldStdoutCapture &&  m_pOptions->bStdoutCapture)) {
