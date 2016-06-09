@@ -25,6 +25,10 @@
 #include <sys/stat.h>
 
 
+// Frame list mutex.
+QMutex qtractorAudioMadFile::g_mutex;
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioMadFile -- Buffered audio file implementation.
 //
@@ -91,8 +95,12 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 	// We've been here before we'll the total decoded length of the file...
 	unsigned long iFramesEst = 0;
 
+	g_mutex.lock();
+
 	if (m_pFrameList->count() > 0)
 		iFramesEst = m_pFrameList->last().iOutputOffset;
+
+	g_mutex.unlock();
 
 #ifdef CONFIG_LIBMAD
 	mad_stream_init(&m_madStream);
@@ -195,6 +203,7 @@ bool qtractorAudioMadFile::input (void)
 		// Update the input offset, as for next time...
 		m_curr.iInputOffset += iRead;
 		// Time to add some frame mapping, on each 3rd iteration...
+		g_mutex.lock();
 		if ((++m_curr.iDecodeCount % 3) == 0 && (m_pFrameList->count() < 1
 			|| m_pFrameList->last().iOutputOffset < m_curr.iOutputOffset)) {
 			m_pFrameList->append(FrameNode(
@@ -202,6 +211,7 @@ bool qtractorAudioMadFile::input (void)
 				m_curr.iOutputOffset,
 				m_curr.iDecodeCount));
 		}
+		g_mutex.unlock();
 		// Add some decode buffer guard...
 		if (iRead < (int) iReadSize) {
 			::memset(pReadStart + iRead, 0, MAD_BUFFER_GUARD);
@@ -318,9 +328,11 @@ int qtractorAudioMadFile::read ( float **ppFrames, unsigned int iFrames )
 			iFrames = (m_iRingBufferSize >> 1);
 		while ((nread = readable()) < iFrames && !m_bEndOfStream) {
 			if (!decode()) {
+				g_mutex.lock();
 				if (m_pFrameList->count() < 1 ||
 					m_pFrameList->last().iOutputOffset < m_curr.iOutputOffset)
 					m_pFrameList->append(m_curr);
+				g_mutex.unlock();
 				m_bEndOfStream = true;
 			}
 		}
@@ -375,6 +387,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 
 	// Are qe seeking backward or forward 
 	// from last known decoded position?
+	g_mutex.lock();
 	if (m_pFrameList->count() > 0
 		&& m_pFrameList->last().iOutputOffset > iOffset) {
 		// Assume the worst case (seek to very beggining...)
@@ -391,6 +404,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 				break;
 			}
 		}
+		g_mutex.unlock();
 	#ifdef DEBUG_0
 		qDebug("qtractorAudioMadFile::seek(%lu) i=%lu o=%lu c=%u",
 			iOffset,
@@ -415,6 +429,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 		if (!input())
 			return false;
 	}
+	else g_mutex.unlock();
 
 	// Reset ring-buffer pointers.
 	m_iRingBufferRead  = 0;

@@ -25,6 +25,7 @@
 #include "qtractorAudioFile.h"
 
 #include <QList>
+#include <QMutex>
 
 #include <stdio.h>
 
@@ -124,6 +125,9 @@ private:
 	FrameList *m_pFrameList;
 	// Current decoded frame node.
 	FrameNode m_curr;
+
+	// Frame list mutex.
+	static QMutex g_mutex;
 };
 
 
