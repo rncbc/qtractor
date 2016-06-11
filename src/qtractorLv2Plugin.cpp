@@ -608,15 +608,13 @@ static char *qtractor_lv2_state_abstract_path (
 	if (bSessionDir)
 		sDir = pSession->sessionDir();
 
-	QString sAbstractPath = QDir(sDir).relativeFilePath(absolute_path);
+	const QFileInfo fi(absolute_path);
+	const QString& sAbsolutePath
+		= (fi.exists() ? fi.canonicalFilePath() : fi.absoluteFilePath());
+
+	QString sAbstractPath = QDir(sDir).relativeFilePath(sAbsolutePath);
 	if (bSessionDir)
 		sAbstractPath = qtractorDocument::addArchiveFile(sAbstractPath);
-	else
-	if (sAbstractPath.length() > 2 &&
-		sAbstractPath.at(0) == '.' &&
-		sAbstractPath.at(1) == '.')
-		sAbstractPath = QDir::cleanPath(absolute_path);
-
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
@@ -646,10 +644,9 @@ static char *qtractor_lv2_state_absolute_path (
 	QFileInfo fi(abstract_path);
 	if (fi.isRelative())
 		fi.setFile(QDir(sDir), fi.filePath());
-	if (!bSessionDir && fi.isSymLink())
-		fi.setFile(fi.symLinkTarget());
 
-	const QString& sAbsolutePath = fi.canonicalFilePath();
+	const QString& sAbsolutePath
+		= (fi.exists() ? fi.canonicalFilePath() : fi.absoluteFilePath());
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 

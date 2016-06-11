@@ -400,10 +400,10 @@ void qtractorPluginForm::updateActivated (void)
 
 
 // Update port widget state.
-void qtractorPluginForm::updateParamValue ( unsigned long /*iIndex*/ )
+void qtractorPluginForm::updateDirtyCount (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu)", this, iIndex);
+	qDebug("qtractorPluginForm[%p]::updateDirtyCount()", this);
 #endif
 
 	// Sure is dirty...

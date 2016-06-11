@@ -1287,7 +1287,7 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 			float fValue = pVstEffect->getParameter(pVstEffect, pParam->index());
 			if (pParam->value() != fValue) {
 				pParam->setValue(fValue, bUpdate);
-				updateFormParamValue(pParam->index());
+				updateFormDirtyCount();
 			}
 		}
 	}

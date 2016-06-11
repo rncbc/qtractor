@@ -70,7 +70,7 @@ public:
 	QString preset() const;
 
 	void updateActivated();
-	void updateParamValue(unsigned long iIndex);
+	void updateDirtyCount();
 	void updateAuxSendBusName();
 
 	void toggleEditor(bool bOn);

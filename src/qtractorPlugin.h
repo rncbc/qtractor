@@ -509,7 +509,7 @@ public:
 	bool isFormVisible() const;
 
 	void toggleFormEditor(bool bOn);
-	void updateFormParamValue(unsigned long iIndex);
+	void updateFormDirtyCount();
 	void updateFormAuxSendBusName();
 	void refreshForm();
 
