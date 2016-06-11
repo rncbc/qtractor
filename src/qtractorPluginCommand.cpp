@@ -626,6 +626,12 @@ bool qtractorPluginPropertyCommand::redo (void)
 
 	m_value = value;
 
+	// Update the form, showing it up as necessary...
+	pPlugin->updateFormDirtyCount();
+
+	// Update any GUI editor...
+	// pPlugin->idleEditor();
+
 	// FIXME: Might no work the first time...
 	pPlugin->refreshForm();
 
@@ -699,7 +705,7 @@ bool qtractorPluginParamCommand::redo (void)
 	m_bUpdate    = true;
 
 	// Update the form, showing it up as necessary...
-	pPlugin->updateFormParamValue(m_pParam->index());
+	pPlugin->updateFormDirtyCount();
 
 	// Update any GUI editor...
 	// pPlugin->idleEditor();

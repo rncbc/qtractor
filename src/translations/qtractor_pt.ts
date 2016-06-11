@@ -320,7 +320,7 @@ MIDI:	</translation>
         <translation>gravador de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2034"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2031"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
@@ -394,7 +394,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="726"/>
+        <location filename="../qtractorPluginCommand.cpp" line="732"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -419,7 +419,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="771"/>
+        <location filename="../qtractorPluginCommand.cpp" line="777"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>
@@ -656,7 +656,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2042"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2039"/>
         <source>Author: </source>
         <translation>Autor:</translation>
     </message>

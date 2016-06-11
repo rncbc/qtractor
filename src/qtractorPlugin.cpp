@@ -514,10 +514,10 @@ void qtractorPlugin::toggleFormEditor ( bool bOn )
 }
 
 
-void qtractorPlugin::updateFormParamValue ( unsigned long iIndex )
+void qtractorPlugin::updateFormDirtyCount (void)
 {
 	if (m_pForm && m_pForm->isVisible())
-		m_pForm->updateParamValue(iIndex);
+		m_pForm->updateDirtyCount();
 }
 
 
