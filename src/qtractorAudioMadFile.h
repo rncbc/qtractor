@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 #include "qtractorAudioFile.h"
 
 #include <QList>
+#include <QMutex>
 
 #include <stdio.h>
 
@@ -124,6 +125,9 @@ private:
 	FrameList *m_pFrameList;
 	// Current decoded frame node.
 	FrameNode m_curr;
+
+	// Frame list mutex.
+	static QMutex g_mutex;
 };
 
 

@@ -145,9 +145,10 @@ public:
 	virtual void close() = 0;
 
 	// Cache accessors.
-	const QString& name()        const { return m_sName;        }
-	const QString& label()       const { return m_sLabel;       }
-	unsigned long uniqueID()     const { return m_iUniqueID;    }
+	const QString& name()  const { return m_sName;  }
+	const QString& label() const { return m_sLabel; }
+
+	unsigned long uniqueID() const { return m_iUniqueID; }
 
 	// Port count accessors..
 	unsigned short controlIns()  const { return m_iControlIns;  }
@@ -158,10 +159,11 @@ public:
 	unsigned short midiOuts()    const { return m_iMidiOuts;    }
 
 	// Attribute accessors.
-	bool           isRealtime()  const { return m_bRealtime;    }
-	bool           isConfigure() const { return m_bConfigure;   }
-	bool           isEditor()    const { return m_bEditor;      }
-	bool           isMidi()      const { return m_iMidiIns + m_iMidiOuts > 0; }
+	bool isRealtime()  const { return m_bRealtime;  }
+	bool isConfigure() const { return m_bConfigure; }
+	bool isEditor()    const { return m_bEditor;    }
+
+	bool isMidi() const { return m_iMidiIns + m_iMidiOuts > 0; }
 
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
@@ -347,6 +349,7 @@ public:
 	// Main properties accessors.
 	qtractorPluginList *list() const { return m_pList; }
 	qtractorPluginType *type() const { return m_pType; }
+
 	unsigned short instances() const { return m_iInstances; }
 
 	// Chain helper ones.
@@ -506,7 +509,7 @@ public:
 	bool isFormVisible() const;
 
 	void toggleFormEditor(bool bOn);
-	void updateFormParamValue(unsigned long iIndex);
+	void updateFormDirtyCount();
 	void updateFormAuxSendBusName();
 	void refreshForm();
 
@@ -771,7 +774,7 @@ public:
 	void resetBuffers();
 
 	// Brainless accessors.
-	unsigned short channels() const { return m_iChannels;   }
+	unsigned short channels() const { return m_iChannels; }
 	unsigned int flags()      const { return m_iFlags; }
 
 	// Brainless helpers.

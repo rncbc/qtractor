@@ -328,9 +328,24 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 	m_bActivated = bActivated;
 }
 
+
 void qtractorPlugin::updateActivatedEx ( bool bActivated )
 {
 	updateActivated(bActivated);
+
+	// Get extra visual feedback as well,
+	// iif. we're not exporting/freewheeling...
+	//
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	if (pAudioEngine->isFreewheel())
+		return;
 
 	QListIterator<qtractorPluginListItem *> iter(m_items);
 	while (iter.hasNext())
@@ -499,10 +514,10 @@ void qtractorPlugin::toggleFormEditor ( bool bOn )
 }
 
 
-void qtractorPlugin::updateFormParamValue ( unsigned long iIndex )
+void qtractorPlugin::updateFormDirtyCount (void)
 {
 	if (m_pForm && m_pForm->isVisible())
-		m_pForm->updateParamValue(iIndex);
+		m_pForm->updateDirtyCount();
 }
 
 

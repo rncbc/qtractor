@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,10 @@
 #include "qtractorAudioMadFile.h"
 
 #include <sys/stat.h>
+
+
+// Frame list mutex.
+QMutex qtractorAudioMadFile::g_mutex;
 
 
 //----------------------------------------------------------------------
@@ -76,7 +80,7 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 	if (iMode != qtractorAudioMadFile::Read)
 		return false;
 
-	QByteArray aFilename = sFilename.toUtf8();
+	const QByteArray aFilename = sFilename.toUtf8();
 	m_pFile = ::fopen(aFilename.constData(), "rb");
 	if (m_pFile == NULL)
 		return false;
@@ -88,14 +92,24 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 		return false;
 	}
 
+	// We've been here before we'll the total decoded length of the file...
+	unsigned long iFramesEst = 0;
+
+	g_mutex.lock();
+
+	if (m_pFrameList->count() > 0)
+		iFramesEst = m_pFrameList->last().iOutputOffset;
+
+	g_mutex.unlock();
+
 #ifdef CONFIG_LIBMAD
 	mad_stream_init(&m_madStream);
 	mad_frame_init(&m_madFrame);
 	mad_synth_init(&m_madSynth);
 #endif  // CONFIG_LIBMAD
 
-	int fdFile = fileno(m_pFile);
 	struct stat st;
+	const int fdFile = fileno(m_pFile);
 	if (::fstat(fdFile, &st) < 0 || st.st_size == 0) {
 		close();
 		return false;
@@ -124,10 +138,12 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 	m_bEndOfStream = !decode();
 
 	// Get a rough estimate of the total decoded length of the file...
-	if (m_iBitRate > 0) {
-		m_iFramesEst = (unsigned long)
-			((float) m_iSampleRate * st.st_size * 8.0f / (float) m_iBitRate);
+	if (iFramesEst < 1 && m_iBitRate > 0) {
+		iFramesEst = (m_bEndOfStream ? m_curr.iOutputOffset : (unsigned long)
+			((float) m_iSampleRate * st.st_size * 8.0f / (float) m_iBitRate));
 	}
+
+	m_iFramesEst = iFramesEst;
 
 #ifdef DEBUG_0
 	qDebug("qtractorAudioMadFile::open(\"%s\", %d) bit_rate=%u farmes_est=%lu",
@@ -161,7 +177,10 @@ bool qtractorAudioMadFile::input (void)
 			iBufferSize <<= 1;
 		m_iInputBufferSize = iBufferSize;
 		m_pInputBuffer = new unsigned char [iBufferSize + MAD_BUFFER_GUARD];
-		m_curr.iInputOffset = 0;
+		// Decoder mapping initialization.
+		m_curr.iInputOffset  = 0;
+		m_curr.iOutputOffset = 0;
+		m_curr.iDecodeCount  = 0;
 	}
 
 	unsigned long  iRemaining;
@@ -184,12 +203,15 @@ bool qtractorAudioMadFile::input (void)
 		// Update the input offset, as for next time...
 		m_curr.iInputOffset += iRead;
 		// Time to add some frame mapping, on each 3rd iteration...
+		g_mutex.lock();
 		if ((++m_curr.iDecodeCount % 3) == 0 && (m_pFrameList->count() < 1
 			|| m_pFrameList->last().iOutputOffset < m_curr.iOutputOffset)) {
-			unsigned long iInputOffset = m_curr.iInputOffset - iRemaining;
-			m_pFrameList->append(FrameNode(iInputOffset,
-				m_curr.iOutputOffset, m_curr.iDecodeCount));
+			m_pFrameList->append(FrameNode(
+				m_curr.iInputOffset - iRemaining,
+				m_curr.iOutputOffset,
+				m_curr.iDecodeCount));
 		}
+		g_mutex.unlock();
 		// Add some decode buffer guard...
 		if (iRead < (int) iReadSize) {
 			::memset(pReadStart + iRead, 0, MAD_BUFFER_GUARD);
@@ -240,7 +262,8 @@ bool qtractorAudioMadFile::decode (void)
 
 	mad_synth_frame(&m_madSynth, &m_madFrame);
 
-	unsigned int iFrames = m_madSynth.pcm.length;
+	const unsigned int iFrames = m_madSynth.pcm.length;
+
 	if (m_ppRingBuffer == NULL) {
 		// Set initial stream parameters.
 		m_iBitRate    = m_madFrame.header.bitrate;
@@ -258,22 +281,18 @@ bool qtractorAudioMadFile::decode (void)
 		// Reset ring-buffer pointers.
 		m_iRingBufferRead  = 0;
 		m_iRingBufferWrite = 0;
-		// Decoder mapping initialization.
-		m_curr.iInputOffset  = 0;
-		m_curr.iOutputOffset = 0;
-		m_curr.iDecodeCount  = 0;
 	}
 
-	const float fScale = (float) (1L << MAD_F_FRACBITS);
+	const float fScale = 1.0f / (float) (1L << MAD_F_FRACBITS);
 	for (unsigned int n = 0; n < iFrames; ++n) {
 		if (m_curr.iOutputOffset >= m_iSeekOffset) {
 			for (unsigned short i = 0; i < m_iChannels; ++i) {
-				int iSample = bError ? 0 : *(m_madSynth.pcm.samples[i] + n);
-				m_ppRingBuffer[i][m_iRingBufferWrite] = (float) iSample / fScale;
+				const int iSample = bError ? 0 : *(m_madSynth.pcm.samples[i] + n);
+				m_ppRingBuffer[i][m_iRingBufferWrite] = fScale * (float) iSample;
 			}
 			++m_iRingBufferWrite &= m_iRingBufferMask;
 		}
-#ifdef DEBUG_0
+	#ifdef DEBUG_0
 		else if (n == 0) {
 			qDebug("qtractorAudioMadFile::decode(%lu) i=%lu o=%lu c=%u",
 				m_iSeekOffset,
@@ -281,7 +300,7 @@ bool qtractorAudioMadFile::decode (void)
 				m_curr.iOutputOffset,
 				m_curr.iDecodeCount);
 		}
-#endif
+	#endif
 		++m_curr.iOutputOffset;
 	}
 
@@ -307,8 +326,16 @@ int qtractorAudioMadFile::read ( float **ppFrames, unsigned int iFrames )
 	if (m_ppRingBuffer) {
 		if (iFrames > (m_iRingBufferSize >> 1))
 			iFrames = (m_iRingBufferSize >> 1);
-		while ((nread = readable()) < iFrames && !m_bEndOfStream)
-			m_bEndOfStream = !decode();
+		while ((nread = readable()) < iFrames && !m_bEndOfStream) {
+			if (!decode()) {
+				g_mutex.lock();
+				if (m_pFrameList->count() < 1 ||
+					m_pFrameList->last().iOutputOffset < m_curr.iOutputOffset)
+					m_pFrameList->append(m_curr);
+				g_mutex.unlock();
+				m_bEndOfStream = true;
+			}
+		}
 		if (nread > iFrames)
 			nread = iFrames;
 		// Move the data around...
@@ -360,6 +387,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 
 	// Are qe seeking backward or forward 
 	// from last known decoded position?
+	g_mutex.lock();
 	if (m_pFrameList->count() > 0
 		&& m_pFrameList->last().iOutputOffset > iOffset) {
 		// Assume the worst case (seek to very beggining...)
@@ -376,17 +404,18 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 				break;
 			}
 		}
-#ifdef DEBUG_0
+		g_mutex.unlock();
+	#ifdef DEBUG_0
 		qDebug("qtractorAudioMadFile::seek(%lu) i=%lu o=%lu c=%u",
 			iOffset,
 			m_curr.iInputOffset,
 			m_curr.iOutputOffset,
 			m_curr.iDecodeCount);
-#endif
+	#endif
 		// Rewind file position...
 		if (::fseek(m_pFile, m_curr.iInputOffset, SEEK_SET))
 			return false;
-#ifdef CONFIG_LIBMAD
+	#ifdef CONFIG_LIBMAD
 		// Release MAD structs...
 		mad_synth_finish(&m_madSynth);
 		mad_frame_finish(&m_madFrame);
@@ -395,11 +424,12 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 		mad_stream_init(&m_madStream);
 		mad_frame_init(&m_madFrame);
 		mad_synth_init(&m_madSynth);
-#endif	// CONFIG_LIBMAD
+	#endif	// CONFIG_LIBMAD
 		// Reread first seeked input bunch...
 		if (!input())
 			return false;
 	}
+	else g_mutex.unlock();
 
 	// Reset ring-buffer pointers.
 	m_iRingBufferRead  = 0;

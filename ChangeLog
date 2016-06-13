@@ -6,10 +6,46 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI file tempo-map and location markers import/export is 
+  now hopefully corrected, after almost a decade in mistake,
+  regarding MIDI resolution conversion, when different than
+  current session's setting (TPQN, ticks-per-quarter-note
+  aka. ticks-per-beat, etc.) (EXPERIMENTAL)
+
+- Introducing LV2 UI Show interface support for other types
+  than Qt, Gtk, X11 and lv2_external_ui. (EXPERIMENTAL)
+
+- Prevent any visual updates while exporting (freewheeling)
+  audio tracks that have at least one plugin activate state
+  automation enabled for playback (as much for not showing
+  messages like "QObject::connect: Cannot queue arguments
+  of type 'QVector<int>'"... anymore).
+
+- The common buses management dialog (View/Buses...) sees
+  the superfluous Refresh button finally removed, while two
+  new button commands take its place: (move) Up and Down.
+
+- LV2 plug-in Patch support has been added and LV2 plug-ins
+  parameter properties manipulation is now accessible on the
+  generic plug-in properties dialog. (EXPERIMENTAL)
+
+- Fixed a recently introduced bug, that rendered all but one
+  plug-in instance to silence, affecting only DSSI plug-ins
+  which implement DSSI_Descriptor::run_multiple_synths() eg.
+  fluidsynth-dssi, hexter, etc.
+
+
+0.7.7  2016-04-27  Haziest Photon Beta
+
+- LV2 UI Touch feature/interface support added.
+
+- MIDI aware plug-ins are now void from multiple or parallel
+  instantiation.
+
 - MIDI tracks and buses plug-in chains now honor the number
   of effective audio channels from the assigned audio output
   bus; dedicated audio output ports will keep default to the
-  stereo two channels. (EXPERIMENTAL)
+  stereo two channels.
 
 - Plug-in rescan option has been added to plug-ins selection 
   dialog (yet another suggestion by Frank Neumann, thanks).
@@ -27,7 +63,7 @@ GIT HEAD
   position (while in the lower view pane).
 
 
-0.7.6  2016-04-05  A Hazier Photon Beta
+0.7.6  2016-04-05  Hazier Photon Beta
 
 - Plug-ins search path and out-of-process (aka. dummy) VST
   plug-in inventory scanning has been heavily refactored.
@@ -40,7 +76,7 @@ GIT HEAD
   custom LV2 Plug-in State Presets.
 
 
-0.7.5  2016-03-21  The Hazy Photon Beta
+0.7.5  2016-03-21	Hazy Photon Beta
 
 - Beat unit divisor, aka. the denominator or lower numeral
   in the time-signature, have now a visible and practical

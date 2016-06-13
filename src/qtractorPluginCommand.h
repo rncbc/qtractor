@@ -26,8 +26,8 @@
 
 #include "qtractorPlugin.h"
 
+#include <QVariant>
 #include <QList>
-
 
 // Forward declarations...
 class qtractorAuxSendPlugin;
@@ -289,12 +289,12 @@ private:
 // class qtractorPluginProgramCommand - declaration.
 //
 
-class qtractorProgramPluginCommand : public qtractorPluginCommand
+class qtractorPluginProgramCommand : public qtractorPluginCommand
 {
 public:
 
 	// Constructor.
-	qtractorProgramPluginCommand(qtractorPlugin *pPlugin,
+	qtractorPluginProgramCommand(qtractorPlugin *pPlugin,
 		int iBank, int iProg);
 
 	// Plugin-change command methods.
@@ -306,6 +306,30 @@ private:
 	// Instance variables.
 	int m_iBank;
 	int m_iProg;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorPluginPropertyCommand - declaration.
+//
+
+class qtractorPluginPropertyCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorPluginPropertyCommand(qtractorPlugin *pPlugin,
+		unsigned long iProperty, const QVariant& value);
+
+	// Plugin-port command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	unsigned long m_iProperty;
+	QVariant m_value;
 };
 
 

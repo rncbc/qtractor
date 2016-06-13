@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.6.9, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.7.23, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -179,6 +179,11 @@ AC_ARG_ENABLE(lv2-presets,
   [ac_lv2_presets="$enableval"],
   [ac_lv2_presets="yes"])
 
+AC_ARG_ENABLE(lv2-patch,
+  AC_HELP_STRING([--enable-lv2-patch], [enable LV2 plug-in Patch support (default=yes)]),
+  [ac_lv2_patch="$enableval"],
+  [ac_lv2_patch="yes"])
+
 AC_ARG_ENABLE(lv2-time,
   AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time support (default=yes)]),
   [ac_lv2_time="$enableval"],
@@ -198,6 +203,11 @@ AC_ARG_ENABLE(lv2-buf-size,
   AC_HELP_STRING([--enable-lv2-buf-size], [enable LV2 plug-in Buf-size support (default=yes)]),
   [ac_lv2_buf_size="$enableval"],
   [ac_lv2_buf_size="yes"])
+
+AC_ARG_ENABLE(lv2-ui-touch,
+  AC_HELP_STRING([--enable-lv2-ui-touch], [enable LV2 plug-in UI Touch interface support (default=yes)]),
+  [ac_lv2_ui_touch="$enableval"],
+  [ac_lv2_ui_touch="yes"])
 
 AC_ARG_ENABLE(lv2-ui-idle,
   AC_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 plug-in UI Idle interface support (default=yes)]),
@@ -262,7 +272,7 @@ AC_ARG_ENABLE(stacktrace,
 
 
 # Standard installation base dirs.
-ac_with_paths="/usr /usr/local"
+ac_with_paths=""
 
 # Set for alternate Qt4/5 installation dir.
 AC_ARG_WITH(qt4,
@@ -723,6 +733,7 @@ fi
 if test "x$ac_lv2_ui" = "xno"; then
    ac_suil="no"
    ac_lv2_external_ui="no"
+   ac_lv2_ui_touch="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -755,6 +766,12 @@ if test "x$ac_lilv" = "xyes"; then
       [ac_lilv_file_uri_parse="no"])
    if test "x$ac_lilv_file_uri_parse" = "xyes"; then
       AC_DEFINE(CONFIG_LILV_FILE_URI_PARSE, 1, [Define if lilv_file_uri_parse is available.])
+   fi
+   AC_CHECK_LIB(lilv-0, lilv_world_unload_resource,
+      [ac_lilv_world_unload_resource="yes"],
+      [ac_lilv_world_unload_resource="no"])
+   if test "x$ac_lilv_world_unload_resource" = "xyes"; then
+      AC_DEFINE(CONFIG_LILV_WORLD_UNLOAD_RESOURCE, 1, [Define if lilv_world_unload_resource is available.])
    fi
 fi
 
@@ -795,10 +812,12 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_state_make_path="no"
    ac_lv2_programs="no"
    ac_lv2_presets="no"
+   ac_lv2_patch="no"
    ac_lv2_time="no"
    ac_lv2_time_position="no";
    ac_lv2_options="no"
    ac_lv2_buf_size="no"
+   ac_lv2_ui_touch="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1055,10 +1074,12 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_state_make_path="no"
       ac_lv2_programs="no"
       ac_lv2_presets="no"
+      ac_lv2_patch="no"
       ac_lv2_time="no"
       ac_lv2_time_position="no";
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
+      ac_lv2_ui_touch="no"
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
@@ -1074,6 +1095,7 @@ if test "x$ac_lv2_ui" = "xyes"; then
    else
       AC_MSG_WARN([*** LV2 UI support will be disabled.])
       ac_lv2_external_ui="no"
+      ac_lv2_ui_touch="no"
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
@@ -1081,6 +1103,7 @@ if test "x$ac_lv2_ui" = "xyes"; then
    fi
 else
    ac_lv2_external_ui="no"
+   ac_lv2_ui_touch="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1099,19 +1122,23 @@ if test "x$ac_lv2_event" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_atom" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_atom_helpers.h, [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
+   AC_CHECK_HEADERS(lv2_atom_helpers.h \
+      lv2/lv2plug.in/ns/ext/atom/atom.h \
+      lv2/lv2plug.in/ns/ext/atom/forge.h \
+      lv2/lv2plug.in/ns/ext/atom/util.h,
+      [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
    if test "x$ac_lv2_atom" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_ATOM, 1, [Define if LV2 Atom/MIDI aupport is available.])
    else
       AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
+      ac_lv2_state="no"
       ac_lv2_options="no"
-      ac_lv2_buf_size="no"
-      ac_lv2_time_position="no";
+      ac_lv2_time_position="no"
    fi
 else
-   ac_options="no"
-   ac_buf_size="no"
-   ac_lv2_time_position="no";
+   ac_lv2_state="no"
+   ac_lv2_options="no"
+   ac_lv2_time_position="no"
 fi
 if test "x$ac_lv2_worker" = "xyes"; then
    AC_CHECK_HEADER(
@@ -1158,11 +1185,13 @@ if test "x$ac_lv2_state" = "xyes"; then
       ac_lv2_state_make_path="no"
       ac_lv2_state_files="no"
       ac_lv2_presets="no"
+      ac_lv2_patch="no"
    fi
 else
    ac_lv2_state_make_path="no"
    ac_lv2_state_files="no"
    ac_lv2_presets="no"
+   ac_lv2_patch="no"
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
    AC_CHECK_HEADER(lv2_programs.h, [ac_lv2_programs="yes"], [ac_lv2_programs="no"])
@@ -1179,7 +1208,17 @@ if test "x$ac_lv2_presets" = "xyes"; then
    if test "x$ac_lv2_presets" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PRESETS, 1, [Define if LV2 Presets are supported.])
    else
-      AC_MSG_WARN([*** LV2 Presets will be disabled.])
+      AC_MSG_WARN([*** LV2 Presets support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_patch" = "xyes"; then
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/patch/patch.h,
+      [ac_lv2_patch="yes"], [ac_lv2_patch="no"])
+   if test "x$ac_lv2_patch" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_PATCH, 1, [Define if LV2 Patch is supported.])
+   else
+      AC_MSG_WARN([*** LV2 Patch support will be disabled.])
    fi
 fi
 if test "x$ac_lv2_time" = "xyes"; then
@@ -1250,6 +1289,21 @@ if test "x$ac_lv2_time_position" = "xyes"; then
       fi
    else
       AC_MSG_WARN([*** LV2 Time/position support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_ui_touch" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Touch interface],
+      ac_cv_lv2_ui_touch, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Touch interface...
+         LV2UI_Touch touch;
+      ], ac_cv_lv2_ui_touch="yes", ac_cv_lv2_ui_touch="no")
+   ])
+   ac_lv2_ui_touch=$ac_cv_lv2_ui_touch
+   if test "x$ac_lv2_ui_touch" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_TOUCH, 1, [Define if LV2 UI Touch interface support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI Touch interface support will be disabled.])
    fi
 fi
 if test "x$ac_lv2_ui_idle" = "xyes"; then
@@ -1428,12 +1482,15 @@ echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
 echo "  LV2 plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
 echo "  LV2 plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 plug-in State Files support  . . . . . . . . .: $ac_lv2_state_files"
+echo "  LV2 plug-in State Make Path support (DANGEROUS)  .: $ac_lv2_state_make_path"
 echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
 echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
+echo "  LV2 plug-in Patch support  . . . . . . . . . . . .: $ac_lv2_patch"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
 echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_position"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
+echo "  LV2 plug-in UI Touch interface support . . . . . .: $ac_lv2_ui_touch"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 if test "x$ac_qt5" = "xyes"; then

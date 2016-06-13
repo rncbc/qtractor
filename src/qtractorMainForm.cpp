@@ -4818,7 +4818,9 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 #ifdef CONFIG_LV2
+	const QString sep(':'); 
 	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
+	const QString sOldLv2Paths           = m_pOptions->lv2Paths.join(sep);
 #endif
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
@@ -4866,6 +4868,8 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldLv2DynManifest &&  m_pOptions->bLv2DynManifest)) {
 			iNeedRestart |= RestartSession;
 		}
+		if (sOldLv2Paths != m_pOptions->lv2Paths.join(sep))
+			iNeedRestart |= RestartProgram;
 	#endif
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||
 			(!bOldStdoutCapture &&  m_pOptions->bStdoutCapture)) {
@@ -5437,7 +5441,7 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #endif // CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EVENT
-	list << tr("LV2 Plug-in MIDI/Event support enabled.");
+	list << tr("LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.");
 #endif
 #ifndef CONFIG_LV2_ATOM
 	list << tr("LV2 Plug-in MIDI/Atom support disabled.");
@@ -5448,14 +5452,21 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_STATE
 	list << tr("LV2 Plug-in State support disabled.");
 #endif
-#ifndef CONFIG_LV2_STATE_FILES
-	list << tr("LV2 Plug-in State Files support disabled.");
+#ifdef CONFIG_LV2_STATE_FILES
+#ifdef CONFIG_LV2_STATE_MAKE_PATH
+	list << tr("LV2 plug-in State Make Path support (DANGEROUS)	enabled.");
 #endif
+#else
+	list << tr("LV2 Plug-in State Files support disabled.");
+#endif // CONFIG_LV2_STATE_FILES
 #ifndef CONFIG_LV2_PROGRAMS
 	list << tr("LV2 Plug-in Programs support disabled.");
 #endif
 #ifndef CONFIG_LV2_PRESETS
 	list << tr("LV2 Plug-in Presets support disabled.");
+#endif
+#ifndef CONFIG_LV2_PATCH
+	list << tr("LV2 Plug-in Patch support disabled.");
 #endif
 #ifndef CONFIG_LV2_TIME
 	list << tr("LV2 Plug-in Time/position support disabled.");
@@ -5467,6 +5478,9 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("LV2 Plug-in Buf-size support disabled.");
 #endif
 #ifdef  CONFIG_LV2_UI
+#ifndef CONFIG_LV2_UI_TOUCH
+	list << tr("LV2 Plug-in UI Touch interface support disabled.");
+#endif
 #ifndef CONFIG_LV2_UI_IDLE
 	list << tr("LV2 Plug-in UI Idle interface support disabled.");
 #endif
@@ -5835,6 +5849,7 @@ void qtractorMainForm::stabilizeForm (void)
 	const bool bSelected   = (m_pTracks && m_pTracks->isSelected())
 		|| (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected());
 	const bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
+	const bool bClipboard  = qtractorTrackView::isClipboard();
 	const bool bPlaying    = m_pSession->isPlaying();
 	const bool bRecording  = m_pSession->isRecording();
 	const bool bPunching   = m_pSession->isPunching();
@@ -5854,10 +5869,15 @@ void qtractorMainForm::stabilizeForm (void)
 
 //	m_ui.editCutAction->setEnabled(bSelected);
 //	m_ui.editCopyAction->setEnabled(bSelected);
-	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
-	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
-		|| (pMimeData && pMimeData->hasUrls()));
-	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
+#if QT_VERSION >= 0x050000
+	const QMimeData *pMimeData
+	    = QApplication::clipboard()->mimeData();
+	m_ui.editPasteAction->setEnabled(bClipboard
+	    || (pMimeData && pMimeData->hasUrls()));
+#else
+	m_ui.editPasteAction->setEnabled(bClipboard);
+#endif
+	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 //	m_ui.editDeleteAction->setEnabled(bSelected);
 
 	m_ui.editSelectAllAction->setEnabled(iSessionEnd > 0);

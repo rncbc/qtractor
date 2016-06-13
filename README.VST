@@ -10,8 +10,10 @@ from its site:
   http://www.steinberg.net
 
 It doesn't really matter much whether you pick the VST 2.3 or VST 2.4
-version, you need to pick one and just one only. Do not ask for the
-more recent VST 3.0 or later. It won't work and I won't care :)
+version, you need to pick one and just one only. Do not try for the
+more recent VST 3.0 or later. It won't work and I won't care :) but
+still, you may need to download the later anyway, as the former are
+probably included and distributed in that way only nowadays.
 
 Once you have downloaded the VST SDK zip-archive, for which you'll
 have to accept their license and supply some personal data, you'll
