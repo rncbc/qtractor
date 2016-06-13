@@ -104,7 +104,7 @@ Konec:	%2	Délka:	%3</translation>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="538"/>
         <source>move bus</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout sběrnici</translation>
     </message>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="591"/>
@@ -301,12 +301,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="542"/>
         <source>plugin program</source>
-        <translation type="unfinished"></translation>
+        <translation>Program přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="588"/>
         <source>plugin property</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastnost přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="732"/>
@@ -873,12 +873,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorBusForm.cpp" line="935"/>
         <source>Move &amp;Up</source>
-        <translation type="unfinished">Posunout &amp;nahoru</translation>
+        <translation>Posunout &amp;nahoru</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="940"/>
         <source>Move &amp;Down</source>
-        <translation type="unfinished">Posunout &amp;dolů</translation>
+        <translation>Posunout &amp;dolů</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="978"/>
@@ -1132,22 +1132,22 @@ Chcete zahodit tyto změny?</translation>
     <message>
         <location filename="../qtractorBusForm.ui" line="587"/>
         <source>Move bus up towards the top</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout sběrnici nahoru</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="590"/>
         <source>U&amp;p</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nahoru</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="600"/>
         <source>Move bus down towards the bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout sběrnici dolů</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="603"/>
         <source>Do&amp;wn</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dolů</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="626"/>
@@ -2615,12 +2615,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5444"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro MIDI/událost přídavných modulů LV2 (NESCHVÁLENO) byla povolena.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5457"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro cestu Make stavu přídavných modulů LV2 (NEBEZPEČNÉ) byla povolena.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5466"/>
@@ -2630,7 +2630,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5469"/>
         <source>LV2 Plug-in Patch support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro záplatu přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5472"/>
@@ -2640,7 +2640,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5482"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro rozhraní dotykového uživatelského rozhraní přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5485"/>
@@ -11002,7 +11002,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1504"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor</translation>
     </message>
 </context>
 <context>
