@@ -212,7 +212,7 @@ Fin:	%3	Longueur:	%4</translation>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="538"/>
         <source>move bus</source>
-        <translation type="unfinished"></translation>
+        <translation>déplacer le bus</translation>
     </message>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="591"/>
@@ -497,12 +497,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="542"/>
         <source>plugin program</source>
-        <translation type="unfinished"></translation>
+        <translation>programme du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="588"/>
         <source>plugin property</source>
-        <translation type="unfinished"></translation>
+        <translation>propriété du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="732"/>
@@ -1051,22 +1051,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="587"/>
         <source>Move bus up towards the top</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer le bus vers le haut</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="590"/>
         <source>U&amp;p</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha&amp;ut</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="600"/>
         <source>Move bus down towards the bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer le bus vers le bas</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="603"/>
         <source>Do&amp;wn</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="626"/>
@@ -1152,12 +1152,12 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorBusForm.cpp" line="935"/>
         <source>Move &amp;Up</source>
-        <translation type="unfinished">Déplacer vers le &amp;Haut</translation>
+        <translation>Déplacer vers le Ha&amp;ut</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="940"/>
         <source>Move &amp;Down</source>
-        <translation type="unfinished">Déplacer vers le &amp;Bas</translation>
+        <translation>&amp;Déplacer vers le Bas</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="978"/>
@@ -4154,7 +4154,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1924"/>
         <source>Cross-fade current overlapped clips</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondu enchaîné des clips courants en superposition</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1929"/>
@@ -5616,7 +5616,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5444"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supper MIDI/Event greffon LV2 (PERIME) activé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5447"/>
@@ -5626,7 +5626,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5457"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support Make Path State greffon LV2 (DANGEREUX)	activé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5460"/>
@@ -5636,12 +5636,12 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5469"/>
         <source>LV2 Plug-in Patch support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support Patch greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5482"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support UI Touch interface greffon LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5485"/>
@@ -6239,7 +6239,7 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer la sync immédiate de tous les contrôleirs (hook)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
@@ -11001,7 +11001,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1504"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le Fichier</translation>
     </message>
 </context>
 <context>
