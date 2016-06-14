@@ -218,7 +218,7 @@ Fin:	%3	Duración:	%4</translation>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="538"/>
         <source>move bus</source>
-        <translation type="unfinished"></translation>
+        <translation>mover bus</translation>
     </message>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="591"/>
@@ -518,12 +518,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="542"/>
         <source>plugin program</source>
-        <translation type="unfinished"></translation>
+        <translation>programar plugin</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="588"/>
         <source>plugin property</source>
-        <translation type="unfinished"></translation>
+        <translation>propiedad del plugin</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="732"/>
@@ -1051,22 +1051,22 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="587"/>
         <source>Move bus up towards the top</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover el bus hacia arriba</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="590"/>
         <source>U&amp;p</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;rriba</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="600"/>
         <source>Move bus down towards the bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover bus hacia abajo</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="603"/>
         <source>Do&amp;wn</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;bajo</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="626"/>
@@ -1152,12 +1152,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorBusForm.cpp" line="935"/>
         <source>Move &amp;Up</source>
-        <translation type="unfinished">Mo&amp;ver Hacía Arriba</translation>
+        <translation>Mo&amp;ver Hacía Arriba</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="940"/>
         <source>Move &amp;Down</source>
-        <translation type="unfinished">Mover &amp;Hacía Abajo</translation>
+        <translation>Mover &amp;Hacía Abajo</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="978"/>
@@ -5641,7 +5641,7 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5444"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte MIDI/Evento de plugin LV2 (EN DESUSO) habilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5447"/>
@@ -5661,7 +5661,7 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5457"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte para State Make Path de plug in LV2 (PELIGROSO)	habilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5460"/>
@@ -5681,7 +5681,7 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5469"/>
         <source>LV2 Plug-in Patch support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte para Patch de Plug in LV2 deshabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5472"/>
@@ -5701,7 +5701,7 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5482"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte de Plug in LV2 para la interfaz táctil de la interfaz de usuario deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5485"/>
@@ -10996,7 +10996,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1504"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir Archivo</translation>
     </message>
 </context>
 <context>
