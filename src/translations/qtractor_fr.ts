@@ -5624,9 +5624,8 @@ que la prochaine fois que vous démarrerez %1.</translation>
         <translation>SupporT MIDI/Atom greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5457"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS) enabled.</source>
-        <translation>Support Make Path State greffon LV2 (DANGEREUX) activé.</translation>
+        <translation type="vanished">Support Make Path State greffon LV2 (DANGEREUX) activé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5460"/>
@@ -5827,6 +5826,11 @@ est près et en fonctionnement puis redémarrer la session.</translation>
         <location filename="../qtractorMainForm.cpp" line="2259"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5457"/>
+        <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5510"/>
