@@ -1152,12 +1152,12 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorBusForm.cpp" line="935"/>
         <source>Move &amp;Up</source>
-        <translation>Déplacer vers le Ha&amp;ut</translation>
+        <translation>Déplacer vers le ha&amp;ut</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="940"/>
         <source>Move &amp;Down</source>
-        <translation>&amp;Déplacer vers le Bas</translation>
+        <translation>&amp;Déplacer vers le bas</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="978"/>
@@ -4324,7 +4324,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2061"/>
         <source>Take Range</source>
-        <translation>Plage de Prise</translation>
+        <translation>Plage de prise</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2064"/>
@@ -4350,7 +4350,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2084"/>
         <source>Show/hide the main program window menubar</source>
-        <translation>Montrer/Cacher la barre de menu de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher la barre de menu de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2087"/>
@@ -4371,7 +4371,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2104"/>
         <source>Show/hide the main program window statusbar</source>
-        <translation>Montrer/Cacher la barre de status de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher la barre de status de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2115"/>
@@ -4386,7 +4386,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2121"/>
         <source>Show/hide main program window file toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils fichier de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher la barre d&apos;outils fichier de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2132"/>
@@ -4401,7 +4401,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2138"/>
         <source>Show/hide main program window edit toolbar</source>
-        <translation>Montrer/Cacher l&apos;édition de la barre d&apos;outils de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher l&apos;édition de la barre d&apos;outils de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2149"/>
@@ -4416,7 +4416,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2155"/>
         <source>Show/hide main program window track toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils piste de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher la barre d&apos;outils piste de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2166"/>
@@ -4466,7 +4466,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2206"/>
         <source>Show/hide main program window transport toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils transport de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher la barre d&apos;outils transport de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2214"/>
@@ -4486,7 +4486,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2223"/>
         <source>Show/hide main program window time toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils temps de la fenêtre du programme principal</translation>
+        <translation>Montrer/cacher la barre d&apos;outils temps de la fenêtre du programme principal</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2231"/>
@@ -5616,17 +5616,16 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5444"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
-        <translation>Supper MIDI/Event greffon LV2 (PERIME) activé.</translation>
+        <translation>Support MIDI/Event greffon LV2 (PÉRIMÉ) activé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5447"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
-        <translation>Suppor MIDI/Atom greffon LV2 désactivé.</translation>
+        <translation>SupporT MIDI/Atom greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5457"/>
-        <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
-        <translation>Support Make Path State greffon LV2 (DANGEREUX)	activé.</translation>
+        <source>LV2 plug-in State Make Path support (DANGEROUS) enabled.</source>
+        <translation type="vanished">Support Make Path State greffon LV2 (DANGEREUX) activé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5460"/>
@@ -5827,6 +5826,11 @@ est près et en fonctionnement puis redémarrer la session.</translation>
         <location filename="../qtractorMainForm.cpp" line="2259"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5457"/>
+        <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5510"/>
@@ -6239,7 +6243,7 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation>Activer la sync immédiate de tous les contrôleirs (hook)</translation>
+        <translation>Activer la sync immédiate de tous les contrôleUrs (hook)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="373"/>
@@ -7513,7 +7517,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="986"/>
         <source>Show/hide the menubar</source>
-        <translation>Montrer/Cacher la barre de menu</translation>
+        <translation>Montrer/cacher la barre de menu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="989"/>
@@ -7534,7 +7538,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1006"/>
         <source>Show/hide the statusbar</source>
-        <translation>Montrer/Cacher la barre de status</translation>
+        <translation>Montrer/cacher la barre de status</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1020"/>
@@ -7549,7 +7553,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1026"/>
         <source>Show/hide the file toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils fichier</translation>
+        <translation>Montrer/cacher la barre d&apos;outils fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1037"/>
@@ -7564,7 +7568,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1043"/>
         <source>Show/hide the edit toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils édition</translation>
+        <translation>Montrer/cacher la barre d&apos;outils édition</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1054"/>
@@ -7599,7 +7603,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1077"/>
         <source>Show/hide the transport toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils transport</translation>
+        <translation>Montrer/cacher la barre d&apos;outils transport</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1085"/>
@@ -7619,7 +7623,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1094"/>
         <source>Show/hide the scale toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils échelle</translation>
+        <translation>Montrer/cacher la barre d&apos;outils échelle</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1102"/>
@@ -7639,7 +7643,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1111"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation>Montrer/Cacher la barre d&apos;outils vignette</translation>
+        <translation>Montrer/cacher la barre d&apos;outils vignette</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1119"/>
@@ -7715,7 +7719,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1191"/>
         <source>Show/hide the events list</source>
-        <translation>Montrer/Cacher la liste des évènements</translation>
+        <translation>Montrer/cacher la liste des évènements</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1202"/>
