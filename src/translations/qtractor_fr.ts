@@ -5624,10 +5624,6 @@ que la prochaine fois que vous démarrerez %1.</translation>
         <translation>SupporT MIDI/Atom greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <source>LV2 plug-in State Make Path support (DANGEROUS) enabled.</source>
-        <translation type="vanished">Support Make Path State greffon LV2 (DANGEREUX) activé.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5460"/>
         <source>LV2 Plug-in State Files support disabled.</source>
         <translation>Support fichiers état greffon LV2 désactivé.</translation>
