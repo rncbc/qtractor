@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI file track names (and any other SMF META events) are
+  now converted to and from the base ASCII/Latin-1 encoding,
+  as much to prevent invalid SMF whenever non-Latin-1 UTF-8
+  encoded MIDI track names are given.
+
 - MIDI file tempo-map and location markers import/export is 
   now hopefully corrected, after almost a decade in mistake,
   regarding MIDI resolution conversion, when different than

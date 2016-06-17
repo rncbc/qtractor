@@ -485,7 +485,8 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					// Now, we'll deal only with some...
 					switch (meta) {
 					case qtractorMidiEvent::TRACKNAME:
-						pSeq->setName(QString((const char *) data).simplified());
+						pSeq->setName(
+							QString::fromLatin1((const char *) data).simplified());
 						break;
 					case qtractorMidiEvent::TIME:
 						// Beats per bar is the numerator of time signature...
@@ -497,7 +498,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 						break;
 					case qtractorMidiEvent::MARKER:
 						m_pTempoMap->addMarker(iTrackTime,
-							QString((const char *) data).simplified());
+							QString::fromLatin1((const char *) data).simplified());
 						break;
 					default:
 						// Ignore all others...
@@ -730,7 +731,7 @@ bool qtractorMidiFile::writeTracks (
 			writeInt(qtractorMidiEvent::META, 1);
 			writeInt(qtractorMidiEvent::TRACKNAME, 1);
 			writeInt(sTrackName.length());
-			const QByteArray aTrackName = sTrackName.toUtf8();
+			const QByteArray aTrackName = sTrackName.toLatin1();
 			writeData((unsigned char *) aTrackName.constData(), aTrackName.length());
 		}
 
@@ -1275,7 +1276,7 @@ void qtractorMidiFile::writeMarker (
 	writeInt(qtractorMidiEvent::META, 1);
 	writeInt(qtractorMidiEvent::MARKER, 1);
 	writeInt(pMarker->text.length());
-	const QByteArray aMarker = pMarker->text.toUtf8();
+	const QByteArray aMarker = pMarker->text.toLatin1();
 	writeData((unsigned char *) aMarker.constData(), aMarker.length());
 }
 
