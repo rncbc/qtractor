@@ -434,7 +434,7 @@ public:
 		Patch() : bankSelMethod(-1), bank(-1), prog(-1) {}
 		// Validate members.
 		bool isValid() const
-			{ return bankSelMethod >= 0 && (bank >= 0 || prog >= 0); }
+			{ return (bankSelMethod >= 0 || bank >= 0 || prog >= 0); }
 		// Payload members.
 		QString instrumentName;
 		int     bankSelMethod;
