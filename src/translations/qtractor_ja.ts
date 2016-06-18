@@ -211,7 +211,7 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="538"/>
         <source>move bus</source>
-        <translation type="unfinished"></translation>
+        <translation>バスの移動</translation>
     </message>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="591"/>
@@ -495,12 +495,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="542"/>
         <source>plugin program</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのプログラム</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="588"/>
         <source>plugin property</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのプロパティ</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="732"/>
@@ -1049,22 +1049,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="587"/>
         <source>Move bus up towards the top</source>
-        <translation type="unfinished"></translation>
+        <translation>このバスを上に移動</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="590"/>
         <source>U&amp;p</source>
-        <translation type="unfinished"></translation>
+        <translation>上に移動(&amp;P)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="600"/>
         <source>Move bus down towards the bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>このバスを下に移動</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="603"/>
         <source>Do&amp;wn</source>
-        <translation type="unfinished"></translation>
+        <translation>下に移動(&amp;W)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="626"/>
@@ -1150,12 +1150,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorBusForm.cpp" line="935"/>
         <source>Move &amp;Up</source>
-        <translation type="unfinished">上に移動(&amp;U)</translation>
+        <translation>上に移動(&amp;U)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="940"/>
         <source>Move &amp;Down</source>
-        <translation type="unfinished">下に移動(&amp;D)</translation>
+        <translation>下に移動(&amp;D)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="978"/>
@@ -5614,12 +5614,12 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5444"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインのMIDI/Eventサポート（非推奨）が有効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5457"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインの状態作成パス(危険です)が有効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5460"/>
@@ -5629,12 +5629,12 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5469"/>
         <source>LV2 Plug-in Patch support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインのパッチサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5482"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインのUIタッチインターフェイスサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5485"/>
@@ -10999,7 +10999,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1504"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルを開く</translation>
     </message>
 </context>
 <context>
@@ -11097,12 +11097,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="241"/>
         <source>Rescan for available plugins (refresh)</source>
-        <translation type="unfinished"></translation>
+        <translation>利用可能なプラグインを再検索します(更新)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="244"/>
         <source>&amp;Rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>再検索(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="330"/>
@@ -11354,7 +11354,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="423"/>
         <source>Keyboard shortcut (%1) already assigned (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>キーボードショートカット(%1)は既に割り当てられています(%2)。</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="499"/>
