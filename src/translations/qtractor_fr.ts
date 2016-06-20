@@ -934,7 +934,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="265"/>
         <source>Audio auto-connect</source>
-        <translation>Auto-connection audio</translation>
+        <translation>Auto-connexion audio</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="268"/>
@@ -1447,12 +1447,12 @@ Voulez vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorConnect.cpp" line="1816"/>
         <source>Disconnect All</source>
-        <translation>Tout Déconnecter</translation>
+        <translation>Tout déconnecter</translation>
     </message>
     <message>
         <location filename="../qtractorConnect.cpp" line="1823"/>
         <source>Refresh</source>
-        <translation>Rafraichir</translation>
+        <translation>Rafraîchir</translation>
     </message>
 </context>
 <context>
@@ -1460,7 +1460,7 @@ Voulez vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorConnectForm.ui" line="42"/>
         <source>qtractorConnectTest</source>
-        <translation>qtractor Test Connection</translation>
+        <translation>qtractor Test Connexion</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="58"/>
@@ -1513,13 +1513,13 @@ Voulez vous appliquer les changements ?</translation>
         <location filename="../qtractorConnectForm.ui" line="166"/>
         <location filename="../qtractorConnectForm.ui" line="316"/>
         <source>Disconnect &amp;All</source>
-        <translation>&amp;Tout Déconnecter</translation>
+        <translation>&amp;Tout déconnecter</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="192"/>
         <location filename="../qtractorConnectForm.ui" line="342"/>
         <source>Refresh current connections view</source>
-        <translation>Rafraichir l&apos;affichage courante des connections</translation>
+        <translation>Rafraichir l&apos;affichage courante des connexions</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="195"/>
@@ -1543,7 +1543,7 @@ Voulez vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorConnections.cpp" line="71"/>
         <source>Connections</source>
-        <translation>Connections</translation>
+        <translation>Connexions</translation>
     </message>
 </context>
 <context>
@@ -3216,7 +3216,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1157"/>
         <source>Show current track input bus connections</source>
-        <translation>Afficher les connections du bus d&apos;entrée de la piste courante</translation>
+        <translation>Afficher les connexions du bus d&apos;entrée de la piste courante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1162"/>
@@ -3236,7 +3236,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1171"/>
         <source>Show current track output bus connections</source>
-        <translation>Afficher les connections du bus de sortie de la piste courante</translation>
+        <translation>Afficher les connexions du bus de sortie de la piste courante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1179"/>
@@ -4543,18 +4543,18 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2291"/>
         <source>&amp;Connections</source>
-        <translation>&amp;Connections</translation>
+        <translation>&amp;Connexions</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2294"/>
         <location filename="../qtractorMainForm.ui" line="2297"/>
         <source>Connections</source>
-        <translation>Connections</translation>
+        <translation>Connexions</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2300"/>
         <source>Show/hide the connections window</source>
-        <translation>Montrer/cacher la fenêtre des connections</translation>
+        <translation>Montrer/cacher la fenêtre des connexions</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2303"/>
@@ -5876,12 +5876,12 @@ est près et en fonctionnement puis redémarrer la session.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7259"/>
         <source>Audio connections change.</source>
-        <translation>Les connections audio changent.</translation>
+        <translation>Les connexions audio changent.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7275"/>
         <source>MIDI connections change.</source>
-        <translation>Les connections MIDI changent.</translation>
+        <translation>Les connexions MIDI changent.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7291"/>
@@ -6433,7 +6433,7 @@ Voulez-vous mettre à jour les fichiers contrôleur ?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="150"/>
         <source>Control input connections</source>
-        <translation>Connections des entrées de contrôles</translation>
+        <translation>Connexions des entrées de contrôles</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="153"/>
@@ -6443,7 +6443,7 @@ Voulez-vous mettre à jour les fichiers contrôleur ?</translation>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="163"/>
         <source>Control output connections</source>
-        <translation>Connections des sorties de contrôle</translation>
+        <translation>Connexions des sorties de contrôle</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="166"/>
@@ -6930,7 +6930,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="476"/>
         <source>Show current MIDI clip/track input bus connections</source>
-        <translation>Afficher les connections du bus d&apos;entrée du clip/piste MIDI courant</translation>
+        <translation>Afficher les connexions du bus d&apos;entrée du clip/piste MIDI courant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="481"/>
@@ -6950,7 +6950,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="490"/>
         <source>Show current MIDI clip/track output bus connections</source>
-        <translation>Afficher les connections du bus de sortie du clip/piste MIDI courant</translation>
+        <translation>Afficher les connexions du bus de sortie du clip/piste MIDI courant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="498"/>
