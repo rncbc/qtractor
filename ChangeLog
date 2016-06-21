@@ -15,10 +15,10 @@ GIT HEAD
   now hopefully corrected, after almost a decade in mistake,
   regarding MIDI resolution conversion, when different than
   current session's setting (TPQN, ticks-per-quarter-note
-  aka. ticks-per-beat, etc.) (EXPERIMENTAL)
+  aka. ticks-per-beat, etc.)
 
 - Introducing LV2 UI Show interface support for other types
-  than Qt, Gtk, X11 and lv2_external_ui. (EXPERIMENTAL)
+  than Qt, Gtk, X11 and lv2_external_ui.
 
 - Prevent any visual updates while exporting (freewheeling)
   audio tracks that have at least one plugin activate state
@@ -32,7 +32,7 @@ GIT HEAD
 
 - LV2 plug-in Patch support has been added and LV2 plug-ins
   parameter properties manipulation is now accessible on the
-  generic plug-in properties dialog. (EXPERIMENTAL)
+  generic plug-in properties dialog.
 
 - Fixed a recently introduced bug, that rendered all but one
   plug-in instance to silence, affecting only DSSI plug-ins
