@@ -529,9 +529,9 @@ void qtractorOptions::saveOptions (void)
 	QStringListIterator iter1(instrumentFiles);
     while (iter1.hasNext())
 		m_settings.setValue(sFilePrefix.arg(++iFile), iter1.next());
-    // Cleanup old entries, if any...
-    while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
-        m_settings.remove(sFilePrefix.arg(iFile));
+	// Cleanup old entries, if any...
+	while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
+		m_settings.remove(sFilePrefix.arg(iFile));
 	m_settings.endGroup();
 
 	// MIDI controller file list.

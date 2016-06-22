@@ -1,7 +1,7 @@
 // qtractorEditRangeForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,7 +48,7 @@ public:
 
 	// Retrieve the current range, if the case arises.
 	unsigned long rangeStart() const;
-    unsigned long rangeEnd() const;
+	unsigned long rangeEnd() const;
 
     // Range option flags.
     enum Option {
@@ -61,27 +61,27 @@ public:
 		TempoMap   = 32
     };
 
-    // Retrieve range option flags.
-    unsigned int rangeOptions() const;
+	// Retrieve range option flags.
+	unsigned int rangeOptions() const;
 
 protected:
 
-    // Option flags accessors.
-    void setOption(Option option, bool bOn);
-    bool isOption(Option option) const;
+	// Option flags accessors.
+	void setOption(Option option, bool bOn);
+	bool isOption(Option option) const;
 
-    // Update options settings.
-    void updateOptions();
+	// Update options settings.
+	void updateOptions();
 
 protected slots:
 
-    void optionsChanged();
-    void rangeChanged();
+	void optionsChanged();
+	void rangeChanged();
 	void formatChanged(int);
 	void valueChanged();
 	void stabilizeForm();
 
-    void accept();
+	void accept();
 
 private:
 
@@ -95,11 +95,11 @@ private:
 	unsigned long m_iSelectStart;
 	unsigned long m_iSelectEnd;
 
-    // Applicable options;
-    unsigned int m_options;
+	// Applicable options;
+	unsigned int m_options;
 
-    // Pseudo-mutex.
-    unsigned int m_iUpdate;
+	// Pseudo-mutex.
+	unsigned int m_iUpdate;
 };
 
 
