@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.7.8  2016-06-23  Snobby Graviton Beta
 
 - MIDI file track names (and any other SMF META events) are
   now converted to and from the base ASCII/Latin-1 encoding,
