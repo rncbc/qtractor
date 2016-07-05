@@ -4,6 +4,10 @@
 
 %define _prefix	@ac_prefix@
 
+%if %{defined fedora}
+%define debug_package %{nil}
+%endif
+
 Summary:	An Audio/MIDI multi-track sequencer
 Name:		%{name}
 Version:	%{version}
@@ -25,7 +29,11 @@ BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
 BuildRequires:	libqt5-qtx11extras-devel >= 5.1
 %endif
 BuildRequires:	libjack-devel >= 0.100.0
+%if %{defined fedora}
+BuildRequires:	alsa-lib-devel
+%else
 BuildRequires:	alsa-devel
+%endif
 BuildRequires:	libsndfile-devel >= 1.0.11
 BuildRequires:	libvorbis-devel
 #BuildRequires:	libmad-devel

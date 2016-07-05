@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a borderline mistake on plug-in parameter port index
+  mapping to its corresponding symbolic name, especially if
+  newer plug-in versions are loaded on older saved sessions.
+
+
 0.7.8  2016-06-23  Snobby Graviton Beta
 
 - MIDI file track names (and any other SMF META events) are

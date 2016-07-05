@@ -900,15 +900,14 @@ void qtractorPlugin::realizeValues (void)
 	for ( ; param != param_end; ++param) {
 		unsigned long iIndex = param.key();
 		qtractorPluginParam *pParam = findParam(iIndex);
-		if (pParam) {
-			const QString& sName = m_values.names.value(iIndex);
-			if (!sName.isEmpty() && sName != pParam->name()) {
-				qtractorPluginParam *pParamEx = findParamName(sName);
-				if (pParamEx) pParam = pParamEx;
-			}
-			if (pParam)
-				pParam->setValue(param.value(), true);
+		const QString& sName = m_values.names.value(iIndex);
+		if (!sName.isEmpty() && !(pParam && sName == pParam->name())) {
+			qtractorPluginParam *pParamEx = findParamName(sName);
+			if (pParamEx)
+				pParam = pParamEx;
 		}
+		if (pParam)
+			pParam->setValue(param.value(), true);
 	}
 }
 
