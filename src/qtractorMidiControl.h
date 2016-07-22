@@ -158,8 +158,7 @@ public:
 		public:
 
 			// Constructor.
-			Track(float fValue = 0.0f)
-				: m_fValue(fValue), m_bValueSync(false) {}
+			Track(float fValue = 0.0f) : m_fValue(fValue) {}
 
 			// Tracking/catch-up methods.
 			bool sync(float fValue, float fOldValue)
@@ -174,19 +173,14 @@ public:
 						 bSync = true;
 				#else
 					const float d1 = (v1 - fValue);
-					const float d2 = (m_bValueSync ? (v1 - v0) : d1) * d1;
+					const float d2 = (v1 - v0) * d1;
 					bSync = (d2 < 0.001f);
 				#endif
 				}
-				if (bSync) {
+				if (bSync)
 					m_fValue = fValue;
-					m_bValueSync = true;
-				}
 				return bSync;
 			}
-
-			void syncReset()
-				{ m_bValueSync = false; }
 
 			float value() const
 				{ return m_fValue; }
@@ -195,14 +189,10 @@ public:
 
 			// Tracking/catch-up members.
 			float m_fValue;
-			bool  m_bValueSync;
 		};
 
 		Track& track(int iTrack)
 			{ return m_trackMap[iTrack]; }
-
-		void syncReset(int iTrack)
-			{ m_trackMap[iTrack].syncReset(); }
 
 		void clear()
 			{ m_trackMap.clear(); }

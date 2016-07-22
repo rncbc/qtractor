@@ -385,7 +385,6 @@ void qtractorMidiControl::sendTrackController (
 		const MapKey& key = it.key();
 		MapVal& val = it.value();
 		if (val.command() == command) {
-			val.syncReset(iTrack);
 			if (!val.isFeedback())
 				continue;
 			// Convert/normalize value...

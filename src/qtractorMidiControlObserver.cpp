@@ -56,7 +56,7 @@ qtractorMidiControlObserver::qtractorMidiControlObserver (
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
 		m_bLogarithmic(false), m_bFeedback(false),
 		m_bInvert(false), m_bHook(false), m_bLatch(true),
-		m_fMidiValue(0.0f), m_bMidiSync(false), m_pCurveList(NULL)
+		m_fMidiValue(0.0f), m_pCurveList(NULL)
 {
 }
 
@@ -116,11 +116,9 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 			 bSync = true;
 	#else
 		const float d1 = (v1 - fValue);
-		const float d2 = (m_bMidiSync ? (v1 - v0) : d1) * d1;
+		const float d2 = (v1 - v0) * d1;
 		bSync = (d2 < 0.001f);
 	#endif
-		if (bSync)
-			m_bMidiSync = true;
 	}
 
 	if (bSync) {

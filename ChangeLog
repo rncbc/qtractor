@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Discretely fixed MIDI Controlllers catch-up algorithm.
+
 - Fixed a borderline mistake on plug-in parameter port index
   mapping to its corresponding symbolic name, especially if
   newer plug-in versions are loaded on older saved sessions.
