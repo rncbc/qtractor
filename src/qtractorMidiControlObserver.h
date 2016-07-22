@@ -131,7 +131,6 @@ private:
 
 	// Tracking/catch-up members.
 	float m_fMidiValue;
-	bool  m_bMidiSync;
 
 	// Special indirect automation relatives.
 	qtractorCurveList *m_pCurveList;
