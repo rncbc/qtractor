@@ -515,7 +515,14 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="1" colspan="5">
+       <item row="3" column="1" colspan="3">
+        <widget class="QCheckBox" name="TransposeReverseCheckBox">
+         <property name="text">
+          <string>&amp;Reverse</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="5">
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1426,6 +1433,7 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>TransposeTimeCheckBox</tabstop>
   <tabstop>TransposeTimeSpinBox</tabstop>
   <tabstop>TransposeFormatComboBox</tabstop>
+  <tabstop>TransposeReverseCheckBox</tabstop>
   <tabstop>NormalizeCheckBox</tabstop>
   <tabstop>NormalizePercentCheckBox</tabstop>
   <tabstop>NormalizePercentSpinBox</tabstop>

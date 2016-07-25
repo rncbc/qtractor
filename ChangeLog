@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- A brand new and discrete MIDI clip editor command tool has
+  been added: MIDI Tools/Transpose/Reverse. (EXPERIMENTAL)
+
 - Discretely fixed MIDI Controlllers catch-up algorithm.
 
 - Fixed a borderline mistake on plug-in parameter port index
