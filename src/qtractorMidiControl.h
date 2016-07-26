@@ -158,12 +158,15 @@ public:
 		public:
 
 			// Constructor.
-			Track(float fValue = 0.0f) : m_fValue(fValue) {}
+			Track(float fValue = 0.0f)
+				: m_fValue(fValue), m_bValueSync(false) {}
 
 			// Tracking/catch-up methods.
 			bool sync(float fValue, float fOldValue)
 			{
 				bool bSync = qtractorMidiControl::isSync();
+				if (!bSync)
+					bSync = m_bValueSync;
 				if (!bSync) {
 					const float v0 = m_fValue;
 					const float v1 = fOldValue;
@@ -177,10 +180,15 @@ public:
 					bSync = (d2 < 0.001f);
 				#endif
 				}
-				if (bSync)
+				if (bSync) {
 					m_fValue = fValue;
+					m_bValueSync = true;
+				}
 				return bSync;
 			}
+
+			void syncReset()
+				{ m_bValueSync = false; }
 
 			float value() const
 				{ return m_fValue; }
@@ -189,10 +197,14 @@ public:
 
 			// Tracking/catch-up members.
 			float m_fValue;
+			bool  m_bValueSync;
 		};
 
 		Track& track(int iTrack)
 			{ return m_trackMap[iTrack]; }
+
+		void syncReset(int iTrack)
+			{ m_trackMap[iTrack].syncReset(); }
 
 		void clear()
 			{ m_trackMap.clear(); }
