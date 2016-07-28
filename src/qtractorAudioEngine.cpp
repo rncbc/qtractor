@@ -947,8 +947,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 						= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 					if (pOutputBus) {
 						pOutputBus->buffer_prepare(nframes, pInputBus);
-						if (pPluginList->isActivated())
-							pPluginList->process(pOutputBus->buffer(), nframes);
+						pPluginList->process(pOutputBus->buffer(), nframes);
 						pAudioMonitor->process(pOutputBus->buffer(), nframes);
 						pOutputBus->buffer_commit(nframes);
 						++iOutputBus;
@@ -2479,7 +2478,7 @@ void qtractorAudioBus::process_monitor ( unsigned int nframes )
 		= qtractorAudioBus::busMode();
 
 	if (busMode & qtractorBus::Input) {
-		if (m_pIPluginList && m_pIPluginList->isActivated())
+		if (m_pIPluginList)
 			m_pIPluginList->process(m_ppIBuffer, nframes);
 		if (m_pIAudioMonitor)
 			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
@@ -2497,7 +2496,7 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	if (m_pOPluginList && m_pOPluginList->isActivated())
+	if (m_pOPluginList)
 		m_pOPluginList->process(m_ppOBuffer, nframes);
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
