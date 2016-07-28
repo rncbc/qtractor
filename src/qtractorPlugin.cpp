@@ -1693,6 +1693,9 @@ void qtractorPluginList::removeView ( qtractorPluginListView *pView )
 void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 {
 	// Sanity checks...
+	if (!isActivated())
+		return;
+
 	if (ppBuffer == NULL || *ppBuffer == NULL || m_pppBuffers[1] == NULL)
 		return;
 
