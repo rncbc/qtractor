@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a one first linking/ref-counting glitch, affecting
+  recently recorded MIDI clips which might have their initial
+  clip length still un-quantized to MIDI resolution (BBT).
+
 - A brand new and discrete MIDI clip editor command tool has
   been added: MIDI Tools/Transpose/Reverse. (EXPERIMENTAL)
 
