@@ -70,8 +70,8 @@ public:
 	{
 		qtractorTrack *pTrack = pMidiClip->track();
 		m_sFilename = pMidiClip->filename();;
-		m_iClipOffset = pMidiClip->clipOffset();
-		m_iClipLength = pMidiClip->clipLength();
+		m_iClipOffset = pMidiClip->clipOffsetTime();
+		m_iClipLength = pMidiClip->clipLengthTime();
 		m_iTrackChannel = pMidiClip->trackChannel();
 		m_iMidiChannel = (pTrack ? pTrack->midiChannel() : 0);
 	}
