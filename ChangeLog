@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Slight regression on the LV2 State Files abstract/relative
+  file-path mapping, trading QFileInfo::canonicalFilePath()
+  for QFileInfo::absoluteFilePath(), and thus skipping all
+  symlink dereferences in the process.
+
 - Fixed a one first linking/ref-counting glitch, affecting
   recently recorded MIDI clips which might have their initial
   clip length still un-quantized to MIDI resolution (BBT).

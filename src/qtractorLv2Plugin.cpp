@@ -609,8 +609,7 @@ static char *qtractor_lv2_state_abstract_path (
 		sDir = pSession->sessionDir();
 
 	const QFileInfo fi(absolute_path);
-	const QString& sAbsolutePath
-		= (fi.exists() ? fi.canonicalFilePath() : fi.absoluteFilePath());
+	const QString& sAbsolutePath = fi.absoluteFilePath();
 
 	QString sAbstractPath = QDir(sDir).relativeFilePath(sAbsolutePath);
 	if (bSessionDir)
@@ -645,8 +644,7 @@ static char *qtractor_lv2_state_absolute_path (
 	if (fi.isRelative())
 		fi.setFile(QDir(sDir), fi.filePath());
 
-	const QString& sAbsolutePath
-		= (fi.exists() ? fi.canonicalFilePath() : fi.absoluteFilePath());
+	const QString& sAbsolutePath = fi.absoluteFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
@@ -706,7 +704,7 @@ static char *qtractor_lv2_state_make_path (
 	if (!QDir(sMakeDir).exists())
 		dir.mkpath(sMakeDir);
 
-	const QString& sMakePath = fi.canonicalFilePath();
+	const QString& sMakePath = fi.absoluteFilePath();
 	return ::strdup(sMakePath.toUtf8().constData());
 }
 
