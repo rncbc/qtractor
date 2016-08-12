@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-201, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -316,11 +316,12 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 
 
 // Archive filename filter.
-QString qtractorDocument::addFile ( const QString& sFilename ) const
+QString qtractorDocument::addFile (
+	const QString& sFilename, const QString& sPrefix ) const
 {
 #ifdef CONFIG_LIBZ
 	if (isArchive() && m_pZipFile) {
-		const QString sAlias = m_pZipFile->alias(sFilename);
+		const QString sAlias = m_pZipFile->alias(sFilename, sPrefix);
 		m_pZipFile->addFile(sFilename, m_sName + '/' + sAlias);
 		return sAlias;
 	}

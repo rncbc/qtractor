@@ -1,7 +1,7 @@
 // qtractorDocument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,7 +65,8 @@ public:
 	bool isTemporary() const;
 
 	// Archive filename filter.
-	QString addFile (const QString& sFilename) const;
+	QString addFile (const QString& sFilename,
+		const QString& sPrefix = QString()) const;
 
 	// External storage simple methods.
 	bool load (const QString& sFilename, Flags flags = Default);
