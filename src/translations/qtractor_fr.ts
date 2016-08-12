@@ -5177,7 +5177,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2931"/>
         <source>About &amp;Qt...</source>
-        <translation>A propos de &amp;Qt...</translation>
+        <translation>À propos de &amp;Qt...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2934"/>
