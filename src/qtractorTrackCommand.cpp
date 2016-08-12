@@ -263,6 +263,9 @@ bool qtractorCopyTrackCommand::redo (void)
 	qtractorTrack *pTrack = afterTrack();
 	qtractorTrack *pNewTrack = track();
 
+	// Reset state properties...
+	pNewTrack->resetProperties();
+
 	// Copy all former clips depending of track type...
 	const qtractorTrack::TrackType trackType = pTrack->trackType();
 	for (qtractorClip *pClip = pTrack->clips().first();

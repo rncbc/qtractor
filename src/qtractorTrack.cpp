@@ -1238,6 +1238,26 @@ qtractorTrack::Properties& qtractorTrack::properties (void)
 }
 
 
+// Reset state properties (as needed on copy/dublicate)
+void qtractorTrack::resetProperties (void)
+{
+	const bool bMonitor = m_props.monitor;
+	const bool bRecord = m_props.record;
+	const bool bMute = m_props.mute;
+	const bool bSolo = m_props.solo;
+
+	m_props.monitor = false;
+	m_props.record = false;;
+	m_props.mute = false;
+	m_props.solo = false;
+
+	setMonitor(bMonitor);
+	setRecord(bRecord);
+	setMute(bMute);
+	setSolo(bSolo);
+}
+
+
 // Track special process cycle executive.
 void qtractorTrack::process ( qtractorClip *pClip,
 	unsigned long iFrameStart, unsigned long iFrameEnd )

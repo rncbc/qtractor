@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed track monitor, record, mute and solo dangling states,
+  on Track/Duplicate command.
+
 - Slight regression on the LV2 State Files abstract/relative
   file-path mapping, trading QFileInfo::canonicalFilePath()
   for QFileInfo::absoluteFilePath(), and thus skipping all

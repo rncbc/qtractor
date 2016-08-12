@@ -319,6 +319,9 @@ public:
 	void setProperties(const Properties& props);
 	Properties& properties();
 
+	// Reset state properties (as needed on copy/dublicate)
+	void resetProperties();
+
 	// Track type textual helper methods.
 	static TrackType trackTypeFromText (const QString& sText);
 	static QString   textFromTrackType (TrackType trackType);
