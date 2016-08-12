@@ -1,7 +1,7 @@
 // qtractorZipFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -622,24 +622,36 @@ bool qtractorZipDevice::extractAll (void)
 QString qtractorZipDevice::alias (
 	const QString& sFilename, const QString& sPrefix ) const
 {
-	QFileInfo info(sFilename);
+	const QFileInfo info(sFilename);
 
-	QString sAliasPrefix = sPrefix;
-	if (!sAliasPrefix.isEmpty() && !sAliasPrefix.endsWith('/'))
-		sAliasPrefix.append('/');
-	sAliasPrefix.append(info.baseName());
-	QString sAliasExt;
-	const QString& sAliasSuffix = info.completeSuffix();
+	QString sAliasPrefix = sPrefix.simplified();
+	QString sAliasName   = info.baseName();
+	QString sAliasSuffix = info.completeSuffix();
+
+	if (!sAliasPrefix.isEmpty())
+		sAliasPrefix.remove(QRegExp("[\\/]+$")); // remove any slash tail...
 	if (!sAliasSuffix.isEmpty())
-		sAliasExt = '.' + sAliasSuffix;
+		sAliasSuffix.prepend('.');
 
-	QString sAlias = sAliasPrefix + sAliasExt;
+	QString sAlias = sAliasPrefix;
+	if (!sAlias.isEmpty())
+		sAlias.append('/');
+	sAlias.append(sAliasName);
+	sAlias.append(sAliasSuffix);
 
 	if (!file_headers.contains(info.canonicalFilePath())) {
+		const QRegExp rxDashNumber("\\-[0-9]+$");
 		int i = 0;
 		while (file_aliases.contains(sAlias)) {
-			if (i == 0) sAliasPrefix.remove(QRegExp("\\-[0-9]+$"));
-			sAlias = sAliasPrefix + '-' + QString::number(++i) + sAliasExt;
+			const QString sDashNumber = '-' + QString::number(++i);
+			if (sAliasPrefix.isEmpty()) {
+				if (i == 0) sAliasName.remove(rxDashNumber);
+				sAlias = sAliasName + sDashNumber;
+			} else {
+				if (i == 0) sAliasPrefix.remove(rxDashNumber);
+				sAlias = sAliasPrefix + sDashNumber + '/' + sAliasName;
+			}
+			sAlias.append(sAliasSuffix);
 		}
 	}
 
@@ -944,7 +956,8 @@ bool qtractorZipFile::extractAll (void)
 
 
 // Returns the possible alias name avoiding file entry duplicates (write-only).
-QString qtractorZipFile::alias ( const QString& sFilename, const QString& sPrefix ) const
+QString qtractorZipFile::alias (
+	const QString& sFilename, const QString& sPrefix ) const
 {
 	return m_pZip->alias(sFilename, sPrefix);
 }
