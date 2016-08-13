@@ -65,8 +65,7 @@ public:
 	bool isTemporary() const;
 
 	// Archive filename filter.
-	QString addFile (const QString& sFilename,
-		const QString& sPrefix = QString()) const;
+	QString addFile (const QString& sFilename) const;
 
 	// External storage simple methods.
 	bool load (const QString& sFilename, Flags flags = Default);

@@ -625,8 +625,8 @@ QString qtractorZipDevice::alias (
 	const QFileInfo info(sFilename);
 
 	QString sAliasPrefix = sPrefix.simplified();
-	QString sAliasName   = info.baseName();
-	QString sAliasSuffix = info.completeSuffix();
+	QString sAliasName   = info.completeBaseName();
+	QString sAliasSuffix = info.suffix();
 
 	if (!sAliasPrefix.isEmpty())
 		sAliasPrefix.remove(QRegExp("[\\/]+$")); // remove any slash tail...
