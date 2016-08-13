@@ -319,17 +319,17 @@ QString qtractorDocument::addFile ( const QString& sFilename ) const
 {
 #ifdef CONFIG_LIBZ
 	if (isArchive() && m_pZipFile) {
-		QString sAlias = m_sName + '/';
+		QString sAlias;
 		const QFileInfo info(sFilename);
+		const QString& sPrefix = m_sName + '/';
 		const QString& sSuffix = info.suffix().toLower();
 		if (sSuffix == "sfz") {
 			// SFZ archive conversion...
-			const QString& sPrefix = sAlias + info.completeBaseName();
-			sAlias = m_pZipFile->alias(sFilename, sPrefix);
-			const QFileInfo temp1(sAlias);
-			const QFileInfo temp2(QDir::temp(), temp1.filePath());
-			QDir::temp().mkpath(temp2.absolutePath());
-			const QString& sTempname = temp2.absoluteFilePath();
+			sAlias = m_pZipFile->alias(sFilename, info.completeBaseName());
+			const QFileInfo alias(sAlias);
+			const QFileInfo temp(QDir::temp(), sPrefix + sAlias);
+			QDir::temp().mkpath(temp.absolutePath());
+			const QString& sTempname = temp.absoluteFilePath();
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorDocument::addFile(\"%s\"): sTempname=\"%s\"...",
 				sFilename.toUtf8().constData(), sTempname.toUtf8().constData());
@@ -370,8 +370,8 @@ QString qtractorDocument::addFile ( const QString& sFilename ) const
 							const QString& sSamplePath
 								= fi.absoluteFilePath();
 							const QString& sSampleAlias
-								= m_pZipFile->alias(sSamplePath, temp1.path());
-							m_pZipFile->addFile(sSamplePath, sSampleAlias);
+								= m_pZipFile->alias(sSamplePath, alias.path());
+							m_pZipFile->addFile(sSamplePath, sPrefix + sSampleAlias);
 							sTemp.remove(rxSample).simplified();
 							sLine.replace(rxSample, "sample=" + fi.fileName());
 						}
@@ -385,11 +385,11 @@ QString qtractorDocument::addFile ( const QString& sFilename ) const
 				ofile.close();
 				ifile.close();
 				// Done.
-				m_pZipFile->addFile(sTempname, sAlias);
+				m_pZipFile->addFile(sTempname, sPrefix + sAlias);
 			}
 		} else {
-			sAlias.append(m_pZipFile->alias(sFilename));
-			m_pZipFile->addFile(sFilename, sAlias);
+			sAlias = m_pZipFile->alias(sFilename);
+			m_pZipFile->addFile(sFilename, sPrefix + sAlias);
 		}
 		return sAlias;
 	}
