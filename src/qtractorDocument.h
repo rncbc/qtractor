@@ -93,7 +93,8 @@ public:
 	static void clearExtractedArchives(bool bRemove = false);
 
 	// Extra-ordinary archive files management.
-	static QString addArchiveFile(const QString& sFilename);
+	static QString addArchiveFile(
+		const QString& sDir, const QString& sFilename);
 
 private:
 
