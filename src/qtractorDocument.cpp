@@ -24,6 +24,7 @@
 
 #ifdef CONFIG_LIBZ
 #include "qtractorZipFile.h"
+#include <QTemporaryDir>
 #endif
 
 #include <QDomDocument>
@@ -338,7 +339,9 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 		if (sSuffix == "sfz") {
 			// SFZ archive conversion...
 			sAlias = m_pZipFile->alias(sFilename, info.completeBaseName(), true);
-			const QFileInfo temp(QDir::temp(), m_sName + '/' + sAlias);
+			QTemporaryDir temp_dir(QDir::tempPath() + '/' + m_sName);
+			temp_dir.setAutoRemove(false);
+			const QFileInfo temp(temp_dir.path() + '/' + sAlias);
 			const QString& sTempname = temp.absoluteFilePath();
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorDocument::addFile(\"%s\") SFZ: sTempname=\"%s\"...",
