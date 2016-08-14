@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- SFZ file conversion, and bundling of the respective sample
+  files, is now supported when saving as zip/archive (*.qtz).
+  (EXPERIMENTAL)
+
 - Fixed track monitor, record, mute and solo dangling states,
   on Track/Duplicate command.
 
