@@ -509,9 +509,15 @@ void qtractorDocument::clearExtractedArchives ( bool bRemove )
 // qtractorDocument -- extra-ordinary archive files management.
 //
 
-QString qtractorDocument::addArchiveFile ( const QString& sFilename )
+QString qtractorDocument::addArchiveFile (
+	const QString& sDir, const QString& sFilename )
 {
-	return (g_pArchive ? g_pArchive->addFile(sFilename) : sFilename);
+	if (g_pArchive) {
+		const QFileInfo info(QDir(sDir), sFilename);
+		return g_pArchive->addFile(info.absoluteFilePath());
+	}
+
+	return sFilename;
 }
 
 

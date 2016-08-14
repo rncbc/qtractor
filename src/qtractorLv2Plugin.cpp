@@ -613,7 +613,7 @@ static char *qtractor_lv2_state_abstract_path (
 
 	QString sAbstractPath = QDir(sDir).relativeFilePath(sAbsolutePath);
 	if (bSessionDir)
-		sAbstractPath = qtractorDocument::addArchiveFile(sAbstractPath);
+		sAbstractPath = qtractorDocument::addArchiveFile(sDir, sAbstractPath);
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
