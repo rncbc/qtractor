@@ -655,7 +655,7 @@ QString qtractorZipDevice::alias (
 	sAlias.append(sAliasName);
 	sAlias.append(sAliasSuffix);
 
-	if (!bTemp && !file_headers.contains(info.canonicalFilePath())) {
+	if (!bTemp && !file_headers.contains(info.absoluteFilePath())) {
 		const QRegExp rxDashNumber("\\-[0-9]+$");
 		int i = 0;
 		while (file_aliases.contains(sAlias)) {
@@ -690,7 +690,7 @@ bool qtractorZipDevice::addEntry (
 		return false;
 
 	const QString& sFilepath
-		= info.canonicalFilePath();
+		= info.absoluteFilePath();
 
 	QString sFakepath = (sAlias.isEmpty() ? alias(sFilepath) : sAlias);
 	if (sFakepath.isEmpty()) {
