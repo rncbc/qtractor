@@ -629,27 +629,27 @@ MIDI:	</translation>
         <translation>duplica traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="483"/>
+        <location filename="../qtractorTrackCommand.cpp" line="493"/>
         <source>move track</source>
         <translation>sposta traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="561"/>
+        <location filename="../qtractorTrackCommand.cpp" line="571"/>
         <source>resize track</source>
         <translation>ridimensiona traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="608"/>
+        <location filename="../qtractorTrackCommand.cpp" line="618"/>
         <source>import track</source>
         <translation>importa traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="695"/>
+        <location filename="../qtractorTrackCommand.cpp" line="705"/>
         <source>track properties</source>
         <translation>proprietà traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="742"/>
+        <location filename="../qtractorTrackCommand.cpp" line="752"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -658,37 +658,37 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="820"/>
+        <location filename="../qtractorTrackCommand.cpp" line="830"/>
         <source>track record</source>
         <translation>registra traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="823"/>
+        <location filename="../qtractorTrackCommand.cpp" line="833"/>
         <source>track mute</source>
         <translation>silenzia traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="826"/>
+        <location filename="../qtractorTrackCommand.cpp" line="836"/>
         <source>track solo</source>
         <translation>traccia in solo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1000"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1010"/>
         <source>track monitor</source>
         <translation>monitor traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1101"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1111"/>
         <source>track gain</source>
         <translation>guadagno traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1190"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1200"/>
         <source>track pan</source>
         <translation>bilanciamento traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1277"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1287"/>
         <source>track instrument</source>
         <translation>strumento della traccia</translation>
     </message>

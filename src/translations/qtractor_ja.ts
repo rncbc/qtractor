@@ -626,27 +626,27 @@ MIDI:	</translation>
         <translation>トラックの複製</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="483"/>
+        <location filename="../qtractorTrackCommand.cpp" line="493"/>
         <source>move track</source>
         <translation>トラックの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="561"/>
+        <location filename="../qtractorTrackCommand.cpp" line="571"/>
         <source>resize track</source>
         <translation>トラックのリサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="608"/>
+        <location filename="../qtractorTrackCommand.cpp" line="618"/>
         <source>import track</source>
         <translation>トラックのインポート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="695"/>
+        <location filename="../qtractorTrackCommand.cpp" line="705"/>
         <source>track properties</source>
         <translation>トラックのプロパティー</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="742"/>
+        <location filename="../qtractorTrackCommand.cpp" line="752"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -655,37 +655,37 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 トラック: &quot;%1&quot; 入力: &quot;%2&quot; 出力: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="820"/>
+        <location filename="../qtractorTrackCommand.cpp" line="830"/>
         <source>track record</source>
         <translation>トラックを録音</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="823"/>
+        <location filename="../qtractorTrackCommand.cpp" line="833"/>
         <source>track mute</source>
         <translation>トラックミュート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="826"/>
+        <location filename="../qtractorTrackCommand.cpp" line="836"/>
         <source>track solo</source>
         <translation>トラックをソロ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1000"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1010"/>
         <source>track monitor</source>
         <translation>トラックモニター</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1101"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1111"/>
         <source>track gain</source>
         <translation>トラックゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1190"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1200"/>
         <source>track pan</source>
         <translation>トラックパニング</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1277"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1287"/>
         <source>track instrument</source>
         <translation>トラックのインストルメント</translation>
     </message>
