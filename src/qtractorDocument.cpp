@@ -178,7 +178,9 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	const QFileInfo info(sFilename);
 	m_sName = info.completeBaseName();
 	QString sDocname = info.filePath();
-	QIODevice::OpenMode mode = QIODevice::ReadOnly;
+
+	const QIODevice::OpenMode mode
+		= QIODevice::ReadOnly;
 
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
@@ -197,6 +199,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 			m_pZipFile = NULL;
 			return false;
 		}
+		m_pZipFile->setPrefix(m_sName);
 		m_pZipFile->extractAll();
 		m_pZipFile->close();
 		delete m_pZipFile;
@@ -264,7 +267,9 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	const QFileInfo info(sFilename);
 	m_sName = info.completeBaseName();
 	QString sDocname = info.filePath();
-	QIODevice::OpenMode mode = QIODevice::WriteOnly | QIODevice::Truncate;
+
+	const QIODevice::OpenMode mode
+		= QIODevice::WriteOnly | QIODevice::Truncate;
 
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
@@ -275,6 +280,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 			return false;
 		}
 		sDocname = m_sName + '.' + g_sDefaultExt;
+		m_pZipFile->setPrefix(m_sName);
 		g_pArchive = this;
 	}
 #endif
@@ -300,7 +306,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	// Commit to archive.
 	if (m_pZipFile) {
 		// The session document itself, at last...
-		m_pZipFile->addFile(sDocname, m_sName + '/' + sDocname);
+		m_pZipFile->addFile(sDocname);
 		m_pZipFile->processAll();
 		m_pZipFile->close();
 		delete m_pZipFile;
@@ -331,7 +337,7 @@ QString qtractorDocument::addFile ( const QString& sFilename ) const
 			QDir::temp().mkpath(temp.absolutePath());
 			const QString& sTempname = temp.absoluteFilePath();
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractorDocument::addFile(\"%s\"): sTempname=\"%s\"...",
+			qDebug("qtractorDocument::addFile(\"%s\") SFZ: sTempname=\"%s\"...",
 				sFilename.toUtf8().constData(), sTempname.toUtf8().constData());
 		#endif
 			// Prepare the file streams...
@@ -371,7 +377,7 @@ QString qtractorDocument::addFile ( const QString& sFilename ) const
 								= fi.absoluteFilePath();
 							const QString& sSampleAlias
 								= m_pZipFile->alias(sSamplePath, alias.path());
-							m_pZipFile->addFile(sSamplePath, sPrefix + sSampleAlias);
+							m_pZipFile->addFile(sSamplePath, sSampleAlias);
 							sTemp.remove(rxSample).simplified();
 							sLine.replace(rxSample, "sample=" + fi.fileName());
 						}
@@ -385,11 +391,11 @@ QString qtractorDocument::addFile ( const QString& sFilename ) const
 				ofile.close();
 				ifile.close();
 				// Done.
-				m_pZipFile->addFile(sTempname, sPrefix + sAlias);
+				m_pZipFile->addFile(sTempname, sAlias);
 			}
 		} else {
 			sAlias = m_pZipFile->alias(sFilename);
-			m_pZipFile->addFile(sFilename, sPrefix + sAlias);
+			m_pZipFile->addFile(sFilename, sAlias);
 		}
 		return sAlias;
 	}

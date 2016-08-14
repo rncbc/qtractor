@@ -324,6 +324,9 @@ public:
 	bool extractEntry(const QString& sFilename, const FileHeader& fh);
 	bool extractAll();
 
+	void setPrefix(const QString& sPrefix);
+	const QString& prefix() const;
+
 	QString alias(const QString& sFilename,
 		const QString& sPrefix = QString()) const;
 
@@ -338,6 +341,7 @@ public:
 	bool own_device;
 	qtractorZipFile::Status status;
 	bool dirty_contents;
+	QString file_prefix;
 	QHash<QString, FileHeader> file_headers;
 	QHash<QString, int> file_aliases;
 	QByteArray comment;
@@ -518,7 +522,7 @@ bool qtractorZipDevice::extractEntry (
 		unsigned int nread  = 0;
 		unsigned int nwrite = 0;
 		z_stream zstream;
-		memset(&zstream, 0, sizeof(zstream));
+		::memset(&zstream, 0, sizeof(zstream));
 		unsigned int crc_32 = ::crc32(0, 0, 0);
 		int zrc = ::inflateInit2(&zstream, -MAX_WBITS);
 		while (zrc != Z_STREAM_END) {
@@ -618,6 +622,18 @@ bool qtractorZipDevice::extractAll (void)
 }
 
 
+// Fake directory prefix accessors.
+void qtractorZipDevice::setPrefix ( const QString& sPrefix )
+{
+	file_prefix = sPrefix.simplified();
+}
+
+const QString& qtractorZipDevice::prefix (void) const
+{
+	return file_prefix;
+}
+
+
 // Returns an zip archive entry alias name avoiding duplicates (write-only).
 QString qtractorZipDevice::alias (
 	const QString& sFilename, const QString& sPrefix ) const
@@ -639,7 +655,7 @@ QString qtractorZipDevice::alias (
 	sAlias.append(sAliasName);
 	sAlias.append(sAliasSuffix);
 
-	if (!file_headers.contains(info.canonicalFilePath())) {
+//	if (!file_headers.contains(info.canonicalFilePath())) {
 		const QRegExp rxDashNumber("\\-[0-9]+$");
 		int i = 0;
 		while (file_aliases.contains(sAlias)) {
@@ -653,17 +669,17 @@ QString qtractorZipDevice::alias (
 			}
 			sAlias.append(sAliasSuffix);
 		}
-	}
+//	}
 
 	return sAlias;
 }
 
 
 // Add an entry to a zip archive (write-only).
-bool qtractorZipDevice::addEntry ( EntryType type,
-	const QString& sFilename, const QString& sAlias )
+bool qtractorZipDevice::addEntry (
+	EntryType type, const QString& sFilename, const QString& sAlias )
 {
-	QFileInfo info(sFilename);
+	const QFileInfo info(sFilename);
 	if (info.isDir())
 		type = Directory;
 	else
@@ -673,12 +689,25 @@ bool qtractorZipDevice::addEntry ( EntryType type,
 	if (type == File && !info.exists())
 		return false;
 
-	const QString& sFilepath = info.canonicalFilePath();
-	if (file_headers.contains(sFilepath))
+	const QString& sFilepath
+		= info.canonicalFilePath();
+
+	QString sFakepath = (sAlias.isEmpty() ? alias(sFilepath) : sAlias);
+	if (sFakepath.isEmpty()) {
+		if (info.isAbsolute()) {
+			sFakepath = sFilepath;
+			sFakepath.remove(QRegExp('^' + QDir::rootPath()));
+		} else {
+			sFakepath = info.filePath();
+			sFakepath.remove(QRegExp("^[\\./]+"));
+		}
+	}
+
+	if (file_aliases.contains(sFakepath))
 		return true;
 
 	FileHeader fh;
-	memset(&fh.h, 0, sizeof(CentralFileHeader));
+	::memset(&fh.h, 0, sizeof(CentralFileHeader));
 	write_uint(fh.h.signature, 0x02014b50);
 
 	write_ushort(fh.h.version_needed, 0x14);
@@ -687,16 +716,10 @@ bool qtractorZipDevice::addEntry ( EntryType type,
 
 	total_uncompressed += info.size();
 
-	QString sFakename = sAlias;
-	if (sFakename.isEmpty()) {
-		if (info.isAbsolute()) {
-			sFakename = sFilepath;
-			sFakename.remove(QRegExp('^' + QDir::rootPath()));
-		} else {
-			sFakename = info.filePath();
-			sFakename.remove(QRegExp("^[\\./]+"));
-		}
-	}
+	QString sFakename = file_prefix;
+	if (!sFakename.isEmpty() && !sFakename.endsWith('/'))
+		sFakename.append('/');
+	sFakename.append(sFakepath);
 
 	fh.file_name = sFakename.toLocal8Bit();
 	write_ushort(fh.h.file_name_length, fh.file_name.length());
@@ -712,8 +735,8 @@ bool qtractorZipDevice::addEntry ( EntryType type,
 	write_uint(fh.h.offset_local_header, 0);  /* DEFERRED (write_offset) */
 	write_ushort(fh.h.compression_method, 0); /* DEFERRED */
 
-	file_headers.insert(sFilepath, fh);
-	file_aliases.insert(sFakename, file_aliases.count());
+	file_headers.insertMulti(sFilepath, fh);
+	file_aliases.insert(sFakepath, file_aliases.count());
 	dirty_contents = true;
 
 	return true;
@@ -761,7 +784,7 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 		unsigned int nread  = 0;
 		unsigned int nwrite = 0;
 		z_stream zstream;
-		memset(&zstream, 0, sizeof(zstream));
+		::memset(&zstream, 0, sizeof(zstream));
 		int zrc = ::deflateInit2(&zstream,
 			Z_DEFAULT_COMPRESSION,
 			Z_DEFLATED, -MAX_WBITS, 8,
@@ -955,6 +978,18 @@ bool qtractorZipFile::extractAll (void)
 }
 
 
+// Fake directory prefix accessors.
+void qtractorZipFile::setPrefix ( const QString& sPrefix )
+{
+	m_pZip->setPrefix(sPrefix);
+}
+
+const QString& qtractorZipFile::prefix (void) const
+{
+	return m_pZip->prefix();
+}
+
+
 // Returns the possible alias name avoiding file entry duplicates (write-only).
 QString qtractorZipFile::alias (
 	const QString& sFilename, const QString& sPrefix ) const
@@ -1014,7 +1049,7 @@ void qtractorZipFile::close (void)
 
 	// Write end of directory...
 	EndOfDirectory eod;
-	memset(&eod, 0, sizeof(EndOfDirectory));
+	::memset(&eod, 0, sizeof(EndOfDirectory));
 	write_uint(eod.signature, 0x06054b50);
 	write_ushort(eod.num_dir_entries_this_disk, m_pZip->file_headers.size());
 	write_ushort(eod.num_dir_entries, m_pZip->file_headers.size());
