@@ -328,7 +328,7 @@ public:
 	const QString& prefix() const;
 
 	QString alias(const QString& sFilename,
-		const QString& sPrefix = QString()) const;
+		const QString& sPrefix = QString(), bool bTemp = false) const;
 
 	enum EntryType { File = 0, Directory, SymLink };
 	bool addEntry(EntryType type, const QString& sFilename,
@@ -636,7 +636,7 @@ const QString& qtractorZipDevice::prefix (void) const
 
 // Returns an zip archive entry alias name avoiding duplicates (write-only).
 QString qtractorZipDevice::alias (
-	const QString& sFilename, const QString& sPrefix ) const
+	const QString& sFilename, const QString& sPrefix, bool bTemp ) const
 {
 	const QFileInfo info(sFilename);
 
@@ -655,7 +655,7 @@ QString qtractorZipDevice::alias (
 	sAlias.append(sAliasName);
 	sAlias.append(sAliasSuffix);
 
-	if (!file_headers.contains(info.canonicalFilePath())) {
+	if (!bTemp && !file_headers.contains(info.canonicalFilePath())) {
 		const QRegExp rxDashNumber("\\-[0-9]+$");
 		int i = 0;
 		while (file_aliases.contains(sAlias)) {
@@ -992,9 +992,9 @@ const QString& qtractorZipFile::prefix (void) const
 
 // Returns the possible alias name avoiding file entry duplicates (write-only).
 QString qtractorZipFile::alias (
-	const QString& sFilename, const QString& sPrefix ) const
+	const QString& sFilename, const QString& sPrefix, bool bTemp ) const
 {
-	return m_pZip->alias(sFilename, sPrefix);
+	return m_pZip->alias(sFilename, sPrefix, bTemp);
 }
 
 

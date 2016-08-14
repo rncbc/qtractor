@@ -22,7 +22,7 @@
 #ifndef __qtractorDocument_h
 #define __qtractorDocument_h
 
-#include <QString>
+#include <QStringList>
 
 // Forward declartions.
 class QDomDocument;
@@ -65,7 +65,7 @@ public:
 	bool isTemporary() const;
 
 	// Archive filename filter.
-	QString addFile (const QString& sFilename) const;
+	QString addFile (const QString& sFilename);
 
 	// External storage simple methods.
 	bool load (const QString& sFilename, Flags flags = Default);
@@ -107,6 +107,9 @@ private:
 
 	// Archive stuff.
 	qtractorZipFile *m_pZipFile;
+
+	// Temporary files;
+	QStringList m_tempFiles;
 
 	// Filename extensions (file suffixes).
 	static QString g_sDefaultExt;

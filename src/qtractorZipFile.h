@@ -75,7 +75,7 @@ public:
 	const QString& prefix () const;
 
 	QString alias(const QString& sFilename,
-		const QString& sPrefix = QString()) const;
+		const QString& sPrefix = QString(), bool bTemp = false) const;
 
 	bool addFile(const QString& sFilename,
 		const QString& sAlias = QString());
