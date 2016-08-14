@@ -432,6 +432,16 @@ bool qtractorCopyTrackCommand::redo (void)
 	if (pNewCurrentCurve)
 		pNewTrack->setCurrentCurve(pNewCurrentCurve);
 
+
+	if (trackType == qtractorTrack::Midi) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pNewTrack->outputBus());
+		if (pMidiBus) {
+			pMidiBus->setPanning(pNewTrack, pNewTrack->panning());
+			pMidiBus->setVolume(pNewTrack, pNewTrack->gain());
+		}
+	}
+
 	// Refresh to most recent things...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
