@@ -432,13 +432,13 @@ bool qtractorCopyTrackCommand::redo (void)
 	if (pNewCurrentCurve)
 		pNewTrack->setCurrentCurve(pNewCurrentCurve);
 
-
+	// Update monitor volume/panning for new MIDI track...
 	if (trackType == qtractorTrack::Midi) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pNewTrack->outputBus());
 		if (pMidiBus) {
-			pMidiBus->setPanning(pNewTrack, pNewTrack->panning());
 			pMidiBus->setVolume(pNewTrack, pNewTrack->gain());
+			pMidiBus->setPanning(pNewTrack, pNewTrack->panning());
 		}
 	}
 
