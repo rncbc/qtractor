@@ -347,7 +347,7 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 			const QFileInfo temp(temp_dir.path() + '/' + sAlias);
 		#else
 			const QString& sTempDir
-				= QDir::tempPath() + '/' + m_pZipFile->prefix() + ".%1";
+				= QDir::tempPath() + '/' + m_sName + ".%1";
 			unsigned int i = qHash(this) >> 7;
 			QDir temp_dir(sTempDir.arg(i, 0, 16));
 			while (temp_dir.exists())
@@ -416,9 +416,9 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 					ifile.close();
 					// Done.
 					m_pZipFile->addFile(sTempname, sAlias);
-					// Cache the new temporary file...
-					m_tempFiles.append(sTempname);
 				}
+				// Cache the temporary file-path for removal...
+				m_tempFiles.append(sTempname);
 			}
 		} else {
 			// Regular file archiving...

@@ -1459,11 +1459,9 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 			// MIDI track channel controllers...
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-			qtractorMidiMonitor *pMidiMonitor
-				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
-			if (pMidiBus && pMidiMonitor) {
-				pMidiBus->setVolume(pTrack, pMidiMonitor->gain());
-				pMidiBus->setPanning(pTrack, pMidiMonitor->panning());
+			if (pMidiBus) {
+				pMidiBus->setVolume(pTrack, pTrack->gain());
+				pMidiBus->setPanning(pTrack, pTrack->panning());
 			}
 		}
 	}
