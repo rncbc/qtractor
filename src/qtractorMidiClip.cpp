@@ -769,6 +769,18 @@ bool qtractorMidiClip::isHashLinked (void) const
 }
 
 
+// Get all hash-linked clips (including self).
+QList<qtractorMidiClip *> qtractorMidiClip::linkedClips (void) const
+{
+	QList<qtractorMidiClip *> clips;
+
+	if (m_pData)
+		clips = m_pData->clips();
+
+	return clips;
+}
+
+
 // Make sure the clip hash-table gets reset.
 void qtractorMidiClip::clearHashTable (void)
 {

@@ -380,6 +380,50 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	const int ch = qtractorScrollView::contentsHeight();
 	int x, w;
 
+	// Draw outline on current clip...
+	qtractorClip *pCurrentClip = currentClip();
+	if (pCurrentClip && pCurrentClip->track()) {
+		// Highlight current clip...
+		const QRect& rectView
+			= qtractorScrollView::viewport()->rect().adjusted(-2, -2, +2, +2);
+		const QPen old_pen = pPainter->pen();
+		QPen pen = old_pen;
+		pen.setWidth(5);
+		pen.setColor(QColor(60, 120, 255, 120));
+		pen.setStyle(Qt::SolidLine);
+		pPainter->setPen(pen);
+		QRect rectClip;
+		clipInfo(pCurrentClip, &rectClip);
+		rectClip.moveTopLeft(
+			qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+		rectClip = rectClip.intersected(rectView);
+		if (!rectClip.isEmpty())
+			pPainter->drawRect(rectClip);
+		// Highlight all hash-linked MIDI clips...
+		if (pCurrentClip->track()->trackType() == qtractorTrack::Midi) {
+			qtractorMidiClip *pCurrentMidiClip
+				= static_cast<qtractorMidiClip *> (pCurrentClip);
+			if (pCurrentMidiClip) {
+				pen.setStyle(Qt::DotLine);
+				pPainter->setPen(pen);
+				QListIterator<qtractorMidiClip *> iter(pCurrentMidiClip->linkedClips());
+				while (iter.hasNext()) {
+					qtractorMidiClip *pLinkedMidiClip = iter.next();
+					if (pLinkedMidiClip == pCurrentMidiClip)
+						continue;
+					clipInfo(pLinkedMidiClip, &rectClip);
+					rectClip.moveTopLeft(
+						qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+					rectClip = rectClip.intersected(rectView);
+					if (!rectClip.isEmpty())
+						pPainter->drawRect(rectClip);
+				}
+			}
+		}
+		// Restore previous drawing pen...
+		pPainter->setPen(old_pen);
+	}
+
 	// Draw track clip selection...
 	if (isClipSelected()) {
 		const QRect& rectView = qtractorScrollView::viewport()->rect();
@@ -1670,7 +1714,8 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
 			m_dragState = DragStart;//DragCurveNode;
 			m_posDrag   = pos;
-			m_pClipDrag = NULL;
+			m_pClipDrag = clipAt(pos, true);;
+			qtractorScrollView::viewport()->update();
 		//	qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
 		}
@@ -1712,6 +1757,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				if (!m_bCurveEdit && !bModifier)
 					clearSelect();
 			}
+			qtractorScrollView::viewport()->update();
 			break;
 		case Qt::MidButton:
 			// Mid-button positioning...
@@ -1741,6 +1787,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->selectionChangeNotify();
 			}
 		#endif
+			qtractorScrollView::viewport()->update();
 			// Fall thru...
 		default:
 			break;
@@ -1857,6 +1904,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					moveRubberBand(&m_pRubberBand, m_rectDrag);
 				}
 			}
+			qtractorScrollView::viewport()->update();
 		}
 		// Fall thru...
 	case DragClipStep:
