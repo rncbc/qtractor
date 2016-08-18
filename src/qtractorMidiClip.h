@@ -236,6 +236,9 @@ public:
 	// Whether local hash is being shared.
 	bool isHashLinked() const;
 
+	// Get all hash-linked clips (including self).
+	QList<qtractorMidiClip *> linkedClips() const;
+
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
 

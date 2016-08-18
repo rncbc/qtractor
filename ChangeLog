@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Eye-candy warning: the current clip, not necessarilty the
+  one currently selected, is now highligthed with a solid
+  outline; linked MIDi clips are also highlighted with an
+  alternate dashed outline. (EXPERIMENTAL)
+
 - SFZ file conversion, and bundling of the respective sample
   files, is now supported when saving as zip/archive (*.qtz).
   (EXPERIMENTAL)
