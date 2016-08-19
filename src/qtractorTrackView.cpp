@@ -393,7 +393,10 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		pen.setStyle(Qt::SolidLine);
 		pPainter->setPen(pen);
 		QRect rectClip;
-		clipInfo(pCurrentClip, &rectClip);
+		qtractorTrack *pCurrentTrack = pCurrentClip->track();
+		TrackViewInfo tvi;
+		trackInfo(pCurrentTrack, &tvi);
+		clipInfo(pCurrentClip, &rectClip, &tvi);
 		rectClip.moveTopLeft(
 			qtractorScrollView::contentsToViewport(rectClip.topLeft()));
 		rectClip = rectClip.intersected(rectView);
@@ -403,15 +406,21 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		if (pCurrentClip->track()->trackType() == qtractorTrack::Midi) {
 			qtractorMidiClip *pCurrentMidiClip
 				= static_cast<qtractorMidiClip *> (pCurrentClip);
-			if (pCurrentMidiClip) {
+			if (pCurrentMidiClip && pCurrentMidiClip->isHashLinked()) {
 				pen.setStyle(Qt::DotLine);
 				pPainter->setPen(pen);
-				QListIterator<qtractorMidiClip *> iter(pCurrentMidiClip->linkedClips());
+				const QList<qtractorMidiClip *>& list
+					= pCurrentMidiClip->linkedClips();
+				QListIterator<qtractorMidiClip *> iter(list);
 				while (iter.hasNext()) {
 					qtractorMidiClip *pLinkedMidiClip = iter.next();
-					if (pLinkedMidiClip == pCurrentMidiClip)
+					if (pCurrentMidiClip == pLinkedMidiClip)
 						continue;
-					clipInfo(pLinkedMidiClip, &rectClip);
+					if (pCurrentTrack != pLinkedMidiClip->track()) {
+						pCurrentTrack  = pLinkedMidiClip->track();
+						trackInfo(pCurrentTrack, &tvi);
+					}
+					clipInfo(pLinkedMidiClip, &rectClip, &tvi);
 					rectClip.moveTopLeft(
 						qtractorScrollView::contentsToViewport(rectClip.topLeft()));
 					rectClip = rectClip.intersected(rectView);
@@ -949,7 +958,7 @@ void qtractorTrackView::contentsYMovingSlot ( int /*cx*/, int cy )
 
 // Get track from given contents vertical position.
 qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
-	bool bSelectTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	bool bSelectTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL || m_pSessionCursor == NULL)
@@ -992,7 +1001,7 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 // Get clip from given contents position.
 qtractorClip *qtractorTrackView::clipAtTrack (
 	const QPoint& pos, QRect *pClipRect,
-	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	if (pTrack == NULL)
 		return NULL;
@@ -1029,7 +1038,7 @@ qtractorClip *qtractorTrackView::clipAtTrack (
 qtractorClip *qtractorTrackView::clipAt (
 	const QPoint& pos, bool bSelectTrack, QRect *pClipRect ) const
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
 	return clipAtTrack(pos, pClipRect, pTrack, &tvi);
 }
@@ -1037,7 +1046,7 @@ qtractorClip *qtractorTrackView::clipAt (
 
 // Get automation curve node from given contents position.
 qtractorCurve::Node *qtractorTrackView::nodeAtTrack ( const QPoint& pos,
-	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	if (pTrack == NULL)
 		return NULL;
@@ -1083,7 +1092,7 @@ qtractorCurve::Node *qtractorTrackView::nodeAtTrack ( const QPoint& pos,
 
 qtractorCurve::Node *qtractorTrackView::nodeAt ( const QPoint& pos ) const
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
 	return nodeAtTrack(pos, pTrack, &tvi);
 }
@@ -1091,7 +1100,7 @@ qtractorCurve::Node *qtractorTrackView::nodeAt ( const QPoint& pos ) const
 
 // Get contents visible rectangle from given track.
 bool qtractorTrackView::trackInfo (
-	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL || m_pSessionCursor == NULL)
@@ -1123,22 +1132,21 @@ bool qtractorTrackView::trackInfo (
 
 // Get contents rectangle from given clip.
 bool qtractorTrackView::clipInfo (
-	qtractorClip *pClip, QRect *pClipRect ) const
+	qtractorClip *pClip, QRect *pClipRect, TrackViewInfo *pTrackViewInfo ) const
 {
 	qtractorTrack *pTrack = pClip->track();
 	if (pTrack == NULL)
 		return false;
 
-	qtractorTrackViewInfo tvi;
-	if (!trackInfo(pTrack, &tvi))
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pTrack->session();
-	if (pSession) {
-		const int x = pSession->pixelFromFrame(pClip->clipStart());
-		const int w = pSession->pixelFromFrame(pClip->clipLength());
-		pClipRect->setRect(x, tvi.trackRect.y(), w, tvi.trackRect.height());
-	}
+	const int x = pSession->pixelFromFrame(pClip->clipStart());
+	const int w = pSession->pixelFromFrame(pClip->clipLength());
+	pClipRect->setRect(
+		x, pTrackViewInfo->trackRect.y(),
+		w, pTrackViewInfo->trackRect.height());
 
 	return true;
 }
@@ -1153,7 +1161,7 @@ qtractorTrack *qtractorTrackView::dragClipMove (
 		return NULL;
 
 	// Which track we're pointing at?
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 
 	// May change vertically, if we've only one track selected,
@@ -1199,7 +1207,7 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 		return NULL;
 
 	// Find the current pointer track...
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 
 	// Special update on keyboard vertical drag-stepping...
@@ -1698,7 +1706,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		if (m_dragCursor == DragCurveNode
 			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
-			qtractorTrackViewInfo tvi;
+			TrackViewInfo tvi;
 			qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 			if (pTrack && m_dragCursor == DragCurveNode) {
 				qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
@@ -2048,7 +2056,7 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 	if (pTrack) {
 		qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
@@ -2108,7 +2116,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			if (pHelpEvent) {
 				const QPoint& pos
 					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
-				qtractorTrackViewInfo tvi;
+				TrackViewInfo tvi;
 				qtractorTrack *pTrack = trackAt(pos, false, &tvi);
 				if (pTrack) {
 					qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
@@ -3168,7 +3176,7 @@ qtractorClip *qtractorTrackView::dragClipStart (
 	const QPoint& pos, const Qt::KeyboardModifiers& modifiers,
 	bool bSelectTrack, QRect *pClipRect )
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
 	if (pTrack == NULL)
 		return NULL;
@@ -3668,7 +3676,7 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 void qtractorTrackView::dragCurveNode (
 	const QPoint& pos, const Qt::KeyboardModifiers& modifiers )
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
 	if (pTrack == NULL)
 		return;
@@ -4505,13 +4513,16 @@ void qtractorTrackView::executeClipSelect (
 	if (pClipEx) {
 		// -- Single clip...
 		if (bClipboard) {
-			QRect rectClip;
-			clipInfo(pClipEx, &rectClip);
-			g_clipboard.addClip(pClipEx,
-				rectClip,
-				pClipEx->clipStart(),
-				pClipEx->clipOffset(),
-				pClipEx->clipLength());
+			TrackViewInfo tvi;
+			if (trackInfo(pClipEx->track(), &tvi)) {
+				QRect rectClip;
+				clipInfo(pClipEx, &rectClip, &tvi);
+				g_clipboard.addClip(pClipEx,
+					rectClip,
+					pClipEx->clipStart(),
+					pClipEx->clipOffset(),
+					pClipEx->clipLength());
+			}
 		}
 		if (pClipCommand && cmd != Split)
 			pClipCommand->removeClip(pClipEx);
@@ -4740,7 +4751,7 @@ void qtractorTrackView::pasteClipboard (
 
 	// FIXME: While pasting automation/curve nodes
 	// maybe we can only do it over the original...
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorCurve *pCurve = NULL;
 	if (m_bCurveEdit) {
 		if (g_clipboard.nodes.isEmpty())
@@ -5100,7 +5111,7 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 
 	dragCurveMove(pos);
 
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = m_pTracks->currentTrack();
 	if (pTrack == NULL || !trackInfo(pTrack, &tvi))
 		pTrack = trackAt(pos, true, &tvi);
@@ -5189,7 +5200,7 @@ void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 
 	dragCurveMove(pos);
 
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = m_pTracks->currentTrack();
 	if (pTrack == NULL || !trackInfo(pTrack, &tvi))
 		return;
