@@ -1180,8 +1180,7 @@ qtractorTrack *qtractorTrackView::dragClipMove (
 
 	// Special update on keyboard vertical drag-stepping...
 	if (bKeyStep)
-		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y()
-			+ (pTrack ? (tvi.trackRect.height() >> 1) : 0));
+		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y());
 
 	// Always change horizontally wise...
 	const int x = m_pClipSelect->rect().x();
@@ -4032,17 +4031,37 @@ bool qtractorTrackView::keyStep (
 	// Determine vertical step...
 	if (iKey == Qt::Key_Up || iKey == Qt::Key_Down)  {
 		if (bClipStep) {
-			int iVerticalStep = qtractorTrack::HeightMin;
-			qtractorTrack *pTrack = m_pTracks->currentTrack();
-			if (pTrack)
-				iVerticalStep += (pTrack->zoomHeight() >> 1);
-			int y0 = m_posDrag.y();
-			int y1 = y0 + m_posStep.y();
-			if (iKey == Qt::Key_Up)
-				y1 -= iVerticalStep;
-			else
-				y1 += iVerticalStep;
-			m_posStep.setY((y1 < 0 ? 0 : y1) - y0);
+			qtractorTrack *pTrack = m_pClipSelect->singleTrack();
+			if (pTrack) {
+				const qtractorTrack::TrackType trackType = pTrack->trackType();
+				int iVerticalStep = 0;
+				pTrack = m_pTracks->currentTrack();
+				if (iKey == Qt::Key_Up) {
+					if (pTrack)
+						pTrack = pTrack->prev();
+					else
+						pTrack = pSession->tracks().last();
+					if (pTrack)
+						iVerticalStep -= pTrack->zoomHeight();
+					while (pTrack && pTrack->trackType() != trackType) {
+						pTrack = pTrack->prev();
+						if (pTrack)
+							iVerticalStep -= pTrack->zoomHeight();
+					}
+				} else {
+					if (pTrack) {
+						iVerticalStep += pTrack->zoomHeight();
+						pTrack = pTrack->next();
+					}
+					while (pTrack && pTrack->trackType() != trackType) {
+						iVerticalStep += pTrack->zoomHeight();
+						pTrack = pTrack->next();
+					}
+				}
+				const int y0 = m_posDrag.y();
+				const int y1 = y0 + m_posStep.y() + iVerticalStep;
+				m_posStep.setY((y1 < 0 ? 0 : y1) - y0);
+			}
 		}
 	}
 	else
