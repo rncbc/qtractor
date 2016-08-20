@@ -380,59 +380,6 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	const int ch = qtractorScrollView::contentsHeight();
 	int x, w;
 
-	// Draw outline on current clip...
-	qtractorClip *pCurrentClip = currentClip();
-	if (pCurrentClip && pCurrentClip->track()) {
-		// Highlight current clip...
-		const QRect& rectView
-			= qtractorScrollView::viewport()->rect().adjusted(-2, -2, +2, +2);
-		const QPen old_pen = pPainter->pen();
-		QPen pen = old_pen;
-		pen.setWidth(5);
-		pen.setColor(QColor(60, 120, 255, 120));
-		pen.setStyle(Qt::SolidLine);
-		pPainter->setPen(pen);
-		QRect rectClip;
-		qtractorTrack *pCurrentTrack = pCurrentClip->track();
-		TrackViewInfo tvi;
-		trackInfo(pCurrentTrack, &tvi);
-		clipInfo(pCurrentClip, &rectClip, &tvi);
-		rectClip.moveTopLeft(
-			qtractorScrollView::contentsToViewport(rectClip.topLeft()));
-		rectClip = rectClip.intersected(rectView);
-		if (!rectClip.isEmpty())
-			pPainter->drawRect(rectClip);
-		// Highlight all hash-linked MIDI clips...
-		if (pCurrentClip->track()->trackType() == qtractorTrack::Midi) {
-			qtractorMidiClip *pCurrentMidiClip
-				= static_cast<qtractorMidiClip *> (pCurrentClip);
-			if (pCurrentMidiClip && pCurrentMidiClip->isHashLinked()) {
-				pen.setStyle(Qt::DotLine);
-				pPainter->setPen(pen);
-				const QList<qtractorMidiClip *>& list
-					= pCurrentMidiClip->linkedClips();
-				QListIterator<qtractorMidiClip *> iter(list);
-				while (iter.hasNext()) {
-					qtractorMidiClip *pLinkedMidiClip = iter.next();
-					if (pCurrentMidiClip == pLinkedMidiClip)
-						continue;
-					if (pCurrentTrack != pLinkedMidiClip->track()) {
-						pCurrentTrack  = pLinkedMidiClip->track();
-						trackInfo(pCurrentTrack, &tvi);
-					}
-					clipInfo(pLinkedMidiClip, &rectClip, &tvi);
-					rectClip.moveTopLeft(
-						qtractorScrollView::contentsToViewport(rectClip.topLeft()));
-					rectClip = rectClip.intersected(rectView);
-					if (!rectClip.isEmpty())
-						pPainter->drawRect(rectClip);
-				}
-			}
-		}
-		// Restore previous drawing pen...
-		pPainter->setPen(old_pen);
-	}
-
 	// Draw track clip selection...
 	if (isClipSelected()) {
 		const QRect& rectView = qtractorScrollView::viewport()->rect();
@@ -452,6 +399,60 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					pPainter->fillRect(rectClip, QColor(0, 0, 255, 120));
 			}
 		}
+	}
+
+	// Draw outline highlight on current clip...
+	qtractorClip *pCurrentClip = currentClip();
+	if (pCurrentClip && pCurrentClip->track()) {
+		// Highlight current clip...
+		const QRect& rectView
+			= qtractorScrollView::viewport()->rect().adjusted(-4, -4, +4, +4);
+		const QPen old_pen = pPainter->pen();
+		QPen pen = old_pen;
+		pen.setColor(QColor(60, 120, 255, 120));
+		pen.setStyle(Qt::SolidLine);
+		pen.setWidth(5);
+		pPainter->setPen(pen);
+		QRect rectClip;
+		qtractorTrack *pCurrentTrack = pCurrentClip->track();
+		TrackViewInfo tvi;
+		trackInfo(pCurrentTrack, &tvi);
+		clipInfo(pCurrentClip, &rectClip, &tvi);
+		rectClip.moveTopLeft(
+			qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+		rectClip = rectClip.intersected(rectView);
+		if (!rectClip.isEmpty())
+			pPainter->drawRect(rectClip);
+		// Highlight all hash-linked MIDI clips...
+		if (pCurrentClip->track()->trackType() == qtractorTrack::Midi) {
+			qtractorMidiClip *pCurrentMidiClip
+				= static_cast<qtractorMidiClip *> (pCurrentClip);
+			if (pCurrentMidiClip && pCurrentMidiClip->isHashLinked()) {
+				pen.setStyle(Qt::DotLine);
+				pen.setWidth(3);
+				pPainter->setPen(pen);
+				const QList<qtractorMidiClip *>& list
+					= pCurrentMidiClip->linkedClips();
+				QListIterator<qtractorMidiClip *> iter(list);
+				while (iter.hasNext()) {
+					qtractorMidiClip *pLinkedMidiClip = iter.next();
+					if (pCurrentMidiClip == pLinkedMidiClip)
+						continue;
+					if (pCurrentTrack != pLinkedMidiClip->track()) {
+						pCurrentTrack  = pLinkedMidiClip->track();
+						trackInfo(pCurrentTrack, &tvi);
+					}
+					clipInfo(pLinkedMidiClip, &rectClip, &tvi);
+					rectClip.moveTopLeft(
+						qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+					rectClip = rectClip.intersected(rectView);
+					if (!rectClip.isEmpty())
+						pPainter->drawRect(rectClip.adjusted(+2, +2, -2, -2));
+				}
+			}
+		}
+		// Restore previous drawing pen...
+		pPainter->setPen(old_pen);
 	}
 
 	// Common stuff for the job(s) ahead...
@@ -4037,12 +4038,15 @@ bool qtractorTrackView::keyStep (
 				int iVerticalStep = 0;
 				pTrack = m_pTracks->currentTrack();
 				if (iKey == Qt::Key_Up) {
-					if (pTrack)
+					if (pTrack) {
 						pTrack = pTrack->prev();
-					else
+						if (pTrack && pTrack->trackType() == trackType)
+							iVerticalStep -= pTrack->zoomHeight();
+					} else {
 						pTrack = pSession->tracks().last();
-					if (pTrack)
-						iVerticalStep -= pTrack->zoomHeight();
+						if (pTrack)
+							iVerticalStep -= pTrack->zoomHeight();
+					}
 					while (pTrack && pTrack->trackType() != trackType) {
 						pTrack = pTrack->prev();
 						if (pTrack)
