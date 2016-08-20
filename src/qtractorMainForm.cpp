@@ -6765,7 +6765,7 @@ void qtractorMainForm::updateClipMenu (void)
 
 	qtractorClip  *pClip  = NULL;
 	qtractorTrack *pTrack = NULL;
-	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
+	const bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
 	if (bTracks) {
 		pClip  = m_pTracks->currentClip();
 		pTrack = (pClip ? pClip->track() : m_pTracks->currentTrack());

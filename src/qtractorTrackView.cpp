@@ -402,8 +402,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw outline highlight on current clip...
-	qtractorClip *pCurrentClip = currentClip();
-	if (pCurrentClip && pCurrentClip->track()) {
+	if (m_pClipDrag && m_pClipDrag->track()) {
 		// Highlight current clip...
 		const QRect& rectView
 			= qtractorScrollView::viewport()->rect().adjusted(-4, -4, +4, +4);
@@ -414,8 +413,9 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		pen.setWidth(5);
 		pPainter->setPen(pen);
 		QRect rectClip;
-		qtractorTrack *pCurrentTrack = pCurrentClip->track();
 		TrackViewInfo tvi;
+		qtractorClip  *pCurrentClip  = m_pClipDrag;
+		qtractorTrack *pCurrentTrack = pCurrentClip->track();
 		trackInfo(pCurrentTrack, &tvi);
 		clipInfo(pCurrentClip, &rectClip, &tvi);
 		rectClip.moveTopLeft(
@@ -1722,7 +1722,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
 			m_dragState = DragStart;//DragCurveNode;
 			m_posDrag   = pos;
-			m_pClipDrag = clipAt(pos, true);;
+			m_pClipDrag = clipAt(pos, true);
 			qtractorScrollView::viewport()->update();
 		//	qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
@@ -2009,19 +2009,18 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				if (!m_bCurveEdit && m_selectMode != SelectClip)
 					selectClipFile(!bModifier);
 				// Nothing more has been deferred...
-			} else {
-				// As long we're editing curve/automation...
-				if (m_bCurveEdit)
-					dragCurveNode(pos, modifiers);
-				// As long we're not editing anything...
-				if (m_dragCursor == DragNone && bModifier) {
-					// Direct play-head positioning:
-					// first, set actual engine position...
-					pSession->setPlayHead(iFrame);
-					// Play-head positioning...
-					setPlayHead(iFrame);
-					// Done with (deferred) play-head positioning.
-				}
+			}
+			// As long we're editing curve/automation...
+			if (m_bCurveEdit)
+				dragCurveNode(pos, modifiers);
+			// As long we're not editing anything...
+			if (m_dragCursor == DragNone && bModifier) {
+				// Direct play-head positioning:
+				// first, set actual engine position...
+				pSession->setPlayHead(iFrame);
+				// Play-head positioning...
+				setPlayHead(iFrame);
+				// Done with (deferred) play-head positioning.
 			}
 			// Fall thru...
 		case DragCurveNode:
@@ -3192,7 +3191,7 @@ qtractorClip *qtractorTrackView::dragClipStart (
 		else
 			m_dragCursor = DragCurveNode;
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
-		return NULL;
+		return clipAt(pos, bSelectTrack);
 	}
 
 	qtractorSession *pSession = pTrack->session();
