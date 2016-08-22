@@ -742,7 +742,7 @@ void qtractorTrack::setMonitor ( bool bMonitor )
 {
 	m_props.monitor = bMonitor;
 
-	m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
+	m_pMonitorSubject->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 
@@ -755,7 +755,7 @@ void qtractorTrack::setRecord ( bool bRecord )
 
 	m_props.record = bRecord;
 
-	m_pRecordObserver->setValue(bRecord ? 1.0f : 0.0f);
+	m_pRecordSubject->setValue(bRecord ? 1.0f : 0.0f);
 
 	if (m_pSession->isRecording()) {
 		unsigned long iClipStart = m_pSession->playHead();
@@ -787,7 +787,7 @@ void qtractorTrack::setMute ( bool bMute )
 
 	m_props.mute = bMute;
 
-	m_pMuteObserver->setValue(bMute ? 1.0f : 0.0f);
+	m_pMuteSubject->setValue(bMute ? 1.0f : 0.0f);
 
 	if (m_pSession->isPlaying() && !bMute)
 		m_pSession->trackMute(this, bMute);
@@ -811,7 +811,7 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 	m_props.solo = bSolo;
 
-	m_pSoloObserver->setValue(bSolo ? 1.0f : 0.0f);
+	m_pSoloSubject->setValue(bSolo ? 1.0f : 0.0f);
 
 	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
