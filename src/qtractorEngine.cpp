@@ -449,8 +449,8 @@ qtractorBus::BusMode qtractorBus::busMode (void) const
 // Pass-thru mode accessor.
 void qtractorBus::setMonitor ( bool bMonitor )
 {
-	if (m_pMonitorObserver)
-		m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
+	if (m_pMonitorSubject)
+		m_pMonitorSubject->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 bool qtractorBus::isMonitor (void) const
