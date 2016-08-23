@@ -4041,13 +4041,14 @@ bool qtractorTrackView::keyStep (
 						pTrack = pTrack->prev();
 					else
 						pTrack = pSession->tracks().last();
-					if (pTrack && (pTrack->prev() || pTrack->trackType() == trackType))
-						iVerticalStep -= pTrack->zoomHeight();
 					while (pTrack && pTrack->trackType() != trackType) {
+						iVerticalStep -= pTrack->zoomHeight();
 						pTrack = pTrack->prev();
-						if (pTrack)
-							iVerticalStep -= pTrack->zoomHeight();
 					}
+					if (pTrack && pTrack->trackType() == trackType)
+						iVerticalStep -= pTrack->zoomHeight();
+					else
+						iVerticalStep = 0;
 				} else {
 					if (pTrack) {
 						iVerticalStep += pTrack->zoomHeight();
