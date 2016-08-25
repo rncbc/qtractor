@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed yet another old bummer that was reaping off assigned
+  MIDI controllers on existing track's gain/volume or panning
+  controls, when adding any single new track. (EXPERIMENTAL)
+
 - Fixed missing feedback on MIDI controllers assigned to any
   of monitor, record, mute and solo track/bus state buttons. 
   (EXPERIMENTAL)

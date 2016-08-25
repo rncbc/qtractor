@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -130,23 +130,21 @@ public:
 //----------------------------------------------------------------------------
 // qtractorMeter::PanObserver -- Local dedicated observer.
 
-class qtractorMeter::PanObserver : public qtractorMidiControlObserver
+class qtractorMeter::PanObserver : public qtractorObserver
 {
 public:
 
 	// Constructor.
 	PanObserver(qtractorMeter *pMeter)
-		: qtractorMidiControlObserver(NULL), m_pMeter(pMeter) {}
+		: qtractorObserver(NULL), m_pMeter(pMeter) {}
 
 protected:
 
 	// Update feedback.
 	void update(bool bUpdate)
 	{
-		m_pMeter->monitor()->update();
 		if (bUpdate)
 			m_pMeter->updatePanning();
-		qtractorMidiControlObserver::update(bUpdate);
 	}
 
 private:
@@ -159,23 +157,21 @@ private:
 //----------------------------------------------------------------------------
 // qtractorMeter::GainObserver -- Local dedicated observer.
 
-class qtractorMeter::GainObserver : public qtractorMidiControlObserver
+class qtractorMeter::GainObserver : public qtractorObserver
 {
 public:
 
 	// Constructor.
 	GainObserver(qtractorMeter *pMeter)
-		: qtractorMidiControlObserver(NULL), m_pMeter(pMeter) {}
+		: qtractorObserver(NULL), m_pMeter(pMeter) {}
 
 protected:
 
 	// Update feedback.
 	void update(bool bUpdate)
 	{
-		m_pMeter->monitor()->update();
 		if (bUpdate)
 			m_pMeter->updateGain();
-		qtractorMidiControlObserver::update(bUpdate);
 	}
 
 private:
@@ -306,11 +302,6 @@ qtractorSubject *qtractorMeter::panningSubject (void) const
 	return m_pPanObserver->subject();
 }
 
-qtractorMidiControlObserver *qtractorMeter::panningObserver (void) const
-{
-	return static_cast<qtractorMidiControlObserver *> (m_pPanObserver);
-}
-
 
 // Stereo panning accessors.
 void qtractorMeter::setPanning ( float fPanning )
@@ -346,11 +337,6 @@ void qtractorMeter::setGainSubject ( qtractorSubject *pSubject )
 qtractorSubject *qtractorMeter::gainSubject (void) const
 {
 	return m_pGainObserver->subject();
-}
-
-qtractorMidiControlObserver *qtractorMeter::gainObserver (void) const
-{
-	return static_cast<qtractorMidiControlObserver *> (m_pGainObserver);
 }
 
 

@@ -450,11 +450,11 @@ void qtractorMixerStrip::initMixerStrip (void)
 	if (m_pMeter) {
 		// Set MIDI controller & automation hooks...
 		qtractorMidiControlObserver *pMidiObserver;
-		pMidiObserver = m_pMeter->panningObserver();
+		pMidiObserver = m_pMeter->monitor()->panningObserver();
 		if (m_pTrack)
 			pMidiObserver->setCurveList(m_pTrack->curveList());
 		m_pMeter->addMidiControlAction(m_pMeter->panSlider(), pMidiObserver);
-		pMidiObserver = m_pMeter->gainObserver();
+		pMidiObserver = m_pMeter->monitor()->gainObserver();
 		if (m_pTrack)
 			pMidiObserver->setCurveList(m_pTrack->curveList());
 		m_pMeter->addMidiControlAction(m_pMeter->gainSlider(), pMidiObserver);

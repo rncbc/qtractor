@@ -1,7 +1,7 @@
 // qtractorMonitor.h
 //
 /****************************************************************************
-   Copyright (C) 2006-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2006-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
 #ifndef __qtractorMonitor_h
 #define __qtractorMonitor_h
 
-#include "qtractorObserver.h"
+#include "qtractorMidiControlObserver.h"
 
 
 //----------------------------------------------------------------------------
@@ -34,40 +34,90 @@ public:
 
 	// Constructor.
 	qtractorMonitor(float fGain = 1.0f, float fPanning = 0.0f)
-		: m_gain(fGain, 1.0f), m_panning(fPanning, 0.0f)
-		{ m_panning.setMinValue(-1.0f); }
+		: m_gainSubject(fGain, 1.0f), m_panningSubject(fPanning, 0.0f),
+			m_gainObserver(this), m_panningObserver(this)
+		{ m_panningSubject.setMinValue(-1.0f); }
 
 	// Virtual destructor.
 	virtual ~qtractorMonitor() {}
 
 	// Gain accessors.
 	qtractorSubject *gainSubject()
-		{ return &m_gain; }
+		{ return &m_gainSubject; }
+	qtractorMidiControlObserver *gainObserver()
+		{ return static_cast<qtractorMidiControlObserver *> (&m_gainObserver); }
+
 	void setGain(float fGain)
-		{ m_gain.setValue(fGain); update(); }
+		{ m_gainSubject.setValue(fGain); update(); }
 	float gain() const
-		{ return m_gain.value(); }
+		{ return m_gainSubject.value(); }
 	float prevGain() const
-		{ return m_gain.prevValue(); }
+		{ return m_gainSubject.prevValue(); }
 
 	// Stereo panning accessors.
 	qtractorSubject *panningSubject()
-		{ return &m_panning; }
+		{ return &m_panningSubject; }
+	qtractorMidiControlObserver *panningObserver()
+		{ return static_cast<qtractorMidiControlObserver *> (&m_panningObserver); }
+
 	void setPanning(float fPanning)
-		{ m_panning.setValue(fPanning); update(); }
+		{ m_panningSubject.setValue(fPanning); update(); }
 	float panning() const
-		{ return m_panning.value(); }
+		{ return m_panningSubject.value(); }
 	float prevPanning() const
-		{ return m_panning.prevValue(); }
+		{ return m_panningSubject.prevValue(); }
 
 	// Rebuild the whole panning-gain array...
 	virtual void update() = 0;
 
 private:
 
+	// Observer -- Local dedicated observers.
+	class Observer : public qtractorMidiControlObserver
+	{
+	public:
+
+		// Constructor.
+		Observer(qtractorMonitor *pMonitor, qtractorSubject *pSubject)
+			: qtractorMidiControlObserver(pSubject), m_pMonitor(pMonitor) {}
+
+	protected:
+
+		// Update feedback.
+		void update(bool bUpdate)
+		{
+			m_pMonitor->update();
+			qtractorMidiControlObserver::update(bUpdate);
+		}
+
+	private:
+
+		// Members.
+		qtractorMonitor *m_pMonitor;
+	};
+
+	class GainObserver : public Observer
+	{
+	public:
+		// Constructor.
+		GainObserver(qtractorMonitor *pMonitor)
+			: Observer(pMonitor, pMonitor->gainSubject()) {}
+	};
+
+	class PanningObserver : public Observer
+	{
+	public:
+		// Constructor.
+		PanningObserver(qtractorMonitor *pMonitor)
+			: Observer(pMonitor, pMonitor->panningSubject()) {}
+	};
+
 	// Instance variables.
-	qtractorSubject m_gain;
-	qtractorSubject m_panning;
+	qtractorSubject m_gainSubject;
+	qtractorSubject m_panningSubject;
+
+	GainObserver    m_gainObserver;
+	PanningObserver m_panningObserver;
 };
 
 

@@ -1930,17 +1930,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(m_pMonitor);
-	if (pMixerStrip == NULL)
+	if (m_pMonitor == NULL)
 		return;
 
 	qtractorMidiControl::Controllers controllers;
@@ -1961,8 +1951,7 @@ void qtractorTrack::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pPanObserver
-		= pMixerStrip->meter()->panningObserver();
+	qtractorMidiControlObserver *pPanObserver = m_pMonitor->panningObserver();
 	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -1979,8 +1968,7 @@ void qtractorTrack::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pGainObserver
-		= pMixerStrip->meter()->gainObserver();
+	qtractorMidiControlObserver *pGainObserver = m_pMonitor->gainObserver();
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -2059,17 +2047,7 @@ void qtractorTrack::mapControllers (void)
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(m_pMonitor);
-	if (pMixerStrip == NULL)
+	if (m_pMonitor == NULL)
 		return;
 
 	QListIterator<qtractorMidiControl::Controller *> iter(m_controllers);
@@ -2081,10 +2059,10 @@ void qtractorTrack::mapControllers (void)
 			pObserver = monitorObserver();
 			break;
 		case 1: // 1=PanObserver
-			pObserver = pMixerStrip->meter()->panningObserver();
+			pObserver = m_pMonitor->panningObserver();
 			break;
 		case 2: // 2=GainObserver
-			pObserver = pMixerStrip->meter()->gainObserver();
+			pObserver = m_pMonitor->gainObserver();
 			break;
 		case 3: // 3=RecordObserver
 			pObserver = recordObserver();
