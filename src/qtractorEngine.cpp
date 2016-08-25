@@ -29,10 +29,7 @@
 
 #include "qtractorEngineCommand.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorMonitor.h"
-#include "qtractorMeter.h"
-#include "qtractorMixer.h"
 
 #include "qtractorDocument.h"
 #include "qtractorCurveFile.h"
@@ -507,26 +504,12 @@ void qtractorBus::saveControllers (
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
 	qtractorMonitor *pMonitor = NULL;
-	qtractorMixerRack *pMixerRack = NULL;
-	if (busMode & Input) {
+	if (busMode & Input)
 		pMonitor = monitor_in();
-		pMixerRack = pMixer->inputRack();
-	} else {
+	else
 		pMonitor = monitor_out();
-		pMixerRack = pMixer->outputRack();
-	}
-
-	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
-	if (pMixerStrip == NULL)
+	if (pMonitor == NULL)
 		return;
 
 	qtractorMidiControl::Controllers controllers;
@@ -548,8 +531,7 @@ void qtractorBus::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pPanObserver
-		= pMixerStrip->meter()->panningObserver();
+	qtractorMidiControlObserver *pPanObserver = pMonitor->panningObserver();
 	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -566,8 +548,7 @@ void qtractorBus::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pGainObserver
-		= pMixerStrip->meter()->gainObserver();
+	qtractorMidiControlObserver *pGainObserver = pMonitor->gainObserver();
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -601,26 +582,12 @@ void qtractorBus::mapControllers ( BusMode busMode )
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
 	qtractorMonitor *pMonitor = NULL;
-	qtractorMixerRack *pMixerRack = NULL;
-	if (busMode & Input) {
+	if (busMode & Input)
 		pMonitor = monitor_in();
-		pMixerRack = pMixer->inputRack();
-	} else {
+	else
 		pMonitor = monitor_out();
-		pMixerRack = pMixer->outputRack();
-	}
-
-	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
-	if (pMixerStrip == NULL)
+	if (pMonitor == NULL)
 		return;
 
 	qtractorMidiControl::Controllers& controllers
@@ -634,10 +601,10 @@ void qtractorBus::mapControllers ( BusMode busMode )
 			pObserver = monitorObserver();
 			break;
 		case 1: // 1=PanObserver
-			pObserver = pMixerStrip->meter()->panningObserver();
+			pObserver = pMonitor->panningObserver();
 			break;
 		case 2: // 2=GainObserver
-			pObserver = pMixerStrip->meter()->gainObserver();
+			pObserver = pMonitor->gainObserver();
 			break;
 		}
 		if (pObserver) {
@@ -681,10 +648,6 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 
 	qtractorSession *pSession = m_pEngine->session();
 	if (pSession == NULL)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
 		return;
 
 	QString sBusName(busName());
@@ -788,10 +751,6 @@ void qtractorBus::applyCurveFile ( BusMode busMode, qtractorCurveFile *pCurveFil
 
 	qtractorSession *pSession = m_pEngine->session();
 	if (pSession == NULL)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
 		return;
 
 	qtractorMonitor *pMonitor = NULL;

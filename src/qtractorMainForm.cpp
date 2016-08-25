@@ -6643,17 +6643,8 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 	if (pCurveList == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return false;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(pTrack->monitor());
-	if (pMixerStrip == NULL)
+	qtractorMonitor *pMonitor = pTrack->monitor();
+	if (pMonitor == NULL)
 		return false;
 
 	qtractorCurve *pCurrentCurve
@@ -6664,9 +6655,9 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 	trackCurveSelectMenuAction(pMenu,
 		pTrack->monitorObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pMixerStrip->meter()->panningObserver(), pCurrentSubject);
+		pMonitor->panningObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pMixerStrip->meter()->gainObserver(), pCurrentSubject);
+		pMonitor->gainObserver(), pCurrentSubject);
 
 	pMenu->addSeparator();
 
