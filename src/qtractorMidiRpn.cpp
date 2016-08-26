@@ -1,7 +1,7 @@
 // qtractorMidiRpn.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -432,12 +432,12 @@ public:
 		else
 		if (event.param > CC14_MSB_MIN && event.param < CC14_MSB_MAX) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.type() != qtractorMidiRpn::CC14) {
-				if (item.is_ready())
-					enqueue(item);
+			if (item.is_any() && item.type() != qtractorMidiRpn::CC14) {
+				enqueue(item);
 				item.clear();
 				--m_count;
 			}
+			else
 			if (item.is_param_msb() || item.is_value_msb()
 				|| (item.type() == qtractorMidiRpn::CC14
 					&& item.param_lsb() != event.param + CC14_LSB_MIN))
@@ -457,12 +457,12 @@ public:
 		else
 		if (event.param > CC14_LSB_MIN && event.param < CC14_LSB_MAX) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.type() != qtractorMidiRpn::CC14) {
-				if (item.is_ready())
-					enqueue(item);
+			if (item.is_any() && item.type() != qtractorMidiRpn::CC14) {
+				enqueue(item);
 				item.clear();
 				--m_count;
 			}
+			else
 			if (item.is_param_lsb() || item.is_value_lsb()
 				|| (item.type() == qtractorMidiRpn::CC14
 					&& item.param_msb() != event.param - CC14_LSB_MIN))
@@ -513,7 +513,7 @@ protected:
 			--m_count;
 		}
 		else
-		if (item.is_ready()) {
+		if (item.is_14bit()) {
 			m_queue.push(time, port, item.status(), item.param(), item.value());
 			item.clear_value();
 		//	--m_count;
