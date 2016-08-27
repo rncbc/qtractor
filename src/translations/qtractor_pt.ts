@@ -51,7 +51,7 @@
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2422"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2748"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2730"/>
         <location filename="../qtractorMidiEngine.cpp" line="3955"/>
         <location filename="../qtractorMidiEngine.cpp" line="4504"/>
         <source>%1 In</source>
@@ -145,7 +145,7 @@ Fim:	%3	Tamanho:	%4 </translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2431"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2748"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2730"/>
         <location filename="../qtractorMidiEngine.cpp" line="3964"/>
         <location filename="../qtractorMidiEngine.cpp" line="4504"/>
         <source>%1 Out</source>
@@ -185,7 +185,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <location filename="../qtractorInsertPlugin.cpp" line="380"/>
         <location filename="../qtractorInsertPlugin.cpp" line="659"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1129"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1354"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1357"/>
         <source>Send Gain</source>
         <translation>Volume da Mandada</translation>
     </message>
@@ -223,7 +223,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>%1 (Áudio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1501"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1504"/>
         <location filename="../qtractorPluginListView.cpp" line="232"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>

@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a sure immediate crash on removing audio buses that
+  are current targets of any active Aux-send inserts.
+
+- MIDI RPN/NRPN running status is now supported (input only).
+  (EXPERIMENTAL)
+
 - Fixed yet another old bummer that was reaping off assigned
   MIDI controllers on existing track's gain/volume or panning
   controls, when adding any single new track. (EXPERIMENTAL)
