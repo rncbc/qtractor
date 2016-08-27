@@ -342,8 +342,7 @@ public:
 
 		if (event.param == RPN_MSB) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.is_param_msb()
-				|| (item.is_any() && item.type() != qtractorMidiRpn::RPN))
+			if (item.is_any() && item.type() != qtractorMidiRpn::RPN)
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
@@ -357,8 +356,7 @@ public:
 		else
 		if (event.param == RPN_LSB) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.is_param_lsb()
-				|| (item.is_any() && item.type() != qtractorMidiRpn::RPN))
+			if (item.is_any() && item.type() != qtractorMidiRpn::RPN)
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
@@ -372,8 +370,7 @@ public:
 		else
 		if (event.param == NRPN_MSB) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.is_param_msb()
-				|| (item.is_any() && item.type() != qtractorMidiRpn::NRPN))
+			if (item.is_any() && item.type() != qtractorMidiRpn::NRPN)
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
@@ -387,8 +384,7 @@ public:
 		else
 		if (event.param == NRPN_LSB) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.is_param_lsb()
-				|| (item.is_any() && item.type() != qtractorMidiRpn::NRPN))
+			if (item.is_any() && item.type() != qtractorMidiRpn::NRPN)
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
 				item.set_time(event.time);
@@ -402,8 +398,6 @@ public:
 		else
 		if (event.param == DATA_MSB) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.type() == qtractorMidiRpn::None)
-				return false;
 			if (item.type() != qtractorMidiRpn::RPN &&
 				item.type() != qtractorMidiRpn::NRPN) {
 				enqueue(item);
@@ -417,8 +411,6 @@ public:
 		else
 		if (event.param == DATA_LSB) {
 			xrpn_item& item = get_item(event.port, channel);
-			if (item.type() == qtractorMidiRpn::None)
-				return false;
 			if (item.type() != qtractorMidiRpn::RPN &&
 				item.type() != qtractorMidiRpn::NRPN) {
 				enqueue(item);
