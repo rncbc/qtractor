@@ -2571,24 +2571,6 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 }
 
 
-float **qtractorAudioBus::buffer (void) const
-{
-	return m_ppYBuffer;
-}
-
-
-// Frame buffer accessors.
-float **qtractorAudioBus::in (void) const
-{
-	return m_ppIBuffer;
-}
-
-float **qtractorAudioBus::out (void) const
-{
-	return m_ppOBuffer;
-}
-
-
 // Virtual I/O bus-monitor accessors.
 qtractorMonitor *qtractorAudioBus::monitor_in (void) const
 {

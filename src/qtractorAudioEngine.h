@@ -352,11 +352,14 @@ public:
 		qtractorAudioBus *pInputBus = NULL);
 	void buffer_commit(unsigned int nframes);
 
-	float **buffer() const;
+	// Up-and-running predicate.
+	bool isEnabled() const { return m_bEnabled; }
 
 	// Frame buffer accessors.
-	float **in()  const;
-	float **out() const;
+	float **buffer() const { return m_ppYBuffer; }
+
+	float **in()  const	{ return m_ppIBuffer; }
+	float **out() const { return m_ppOBuffer; }
 
 	// Virtual I/O bus-monitor accessors.
 	qtractorMonitor *monitor_in()  const;
@@ -436,7 +439,7 @@ private:
 
 	// Special under-work flag...
 	// (r/w access should be atomic)
-	bool m_bEnabled;
+	volatile bool m_bEnabled;
 
 	// Buffer mix-down processor.
 	void (*m_pfnBufferAdd)(float **, float **, unsigned int,
