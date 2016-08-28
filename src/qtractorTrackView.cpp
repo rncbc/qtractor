@@ -4299,24 +4299,28 @@ int qtractorTrackView::editTailX (void) const
 
 
 // Clear current selection (no notify).
-void qtractorTrackView::clearSelect (void)
+void qtractorTrackView::clearSelect ( bool bReset )
 {
 //	g_clipboard.clear();
 
-	int iUpdate = 0;
+	QRect rectUpdate;
 
-	QRect rectUpdate = m_pClipSelect->rect();
-	if (m_pClipSelect->items().count() > 0) {
-		m_pClipSelect->clear();
-		++iUpdate;
+	if (bReset && m_pClipDrag) {
+		rectUpdate = qtractorScrollView::viewport()->rect();
+		m_pClipDrag = NULL;
 	}
+
+	if (m_pClipSelect->items().count() > 0) {
+		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
+		m_pClipSelect->clear();
+	}
+
 	if (m_pCurveSelect->items().count() > 0) {
 		rectUpdate = rectUpdate.united(m_pCurveSelect->rect());
 		m_pCurveSelect->clear();
-		++iUpdate;
 	}
 
-	if (iUpdate > 0)
+	if (!rectUpdate.isEmpty())
 		updateRect(rectUpdate);
 }
 
