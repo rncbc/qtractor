@@ -146,7 +146,7 @@ public:
 	qtractorClipSelect *clipSelect() const;
 
 	// Clear current selection (no notify).
-	void clearSelect();
+	void clearSelect(bool bReset = false);
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;

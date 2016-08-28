@@ -7956,8 +7956,8 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 {
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMainForm::updateNotifySlot(%d)", int(bRefresh));
+#ifdef CONFIG_DEBUG//_0
+	qDebug("qtractorMainForm::updateNotifySlot(0x%02x)", int(flags));
 #endif
 
 	// Always reset any track view selection...
