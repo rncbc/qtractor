@@ -1882,7 +1882,9 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					m_iDragClipX = (pos.x() - m_posDrag.x());
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 					moveRubberBand(&m_pRubberBand, m_rectHandle);
-				} else if (m_pClipDrag) {
+				}
+				else
+				if (m_dragState != DragCurveNode && m_pClipDrag) {
 					// DragClipResize...
 					moveRubberBand(&m_pRubberBand, m_rectDrag, 3);
 				}

@@ -12206,7 +12206,7 @@ Länge:	%3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3071"/>
+        <location filename="../qtractorTrackView.cpp" line="3073"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12215,80 +12215,80 @@ Ende:	%2
 Länge:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3339"/>
+        <location filename="../qtractorTrackView.cpp" line="3341"/>
         <source>clip %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3340"/>
+        <location filename="../qtractorTrackView.cpp" line="3342"/>
         <source>fade-in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3340"/>
+        <location filename="../qtractorTrackView.cpp" line="3342"/>
         <source>fade-out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3418"/>
+        <location filename="../qtractorTrackView.cpp" line="3420"/>
         <source>clip stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3418"/>
+        <location filename="../qtractorTrackView.cpp" line="3420"/>
         <source>clip resize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3503"/>
-        <location filename="../qtractorTrackView.cpp" line="3611"/>
+        <location filename="../qtractorTrackView.cpp" line="3505"/>
+        <location filename="../qtractorTrackView.cpp" line="3613"/>
         <source>clip repeat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4446"/>
+        <location filename="../qtractorTrackView.cpp" line="4448"/>
         <source>%1 automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4519"/>
+        <location filename="../qtractorTrackView.cpp" line="4521"/>
         <source>%1 clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5159"/>
+        <location filename="../qtractorTrackView.cpp" line="5161"/>
         <source>move automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5240"/>
+        <location filename="../qtractorTrackView.cpp" line="5242"/>
         <source>paste automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4450"/>
-        <location filename="../qtractorTrackView.cpp" line="4523"/>
+        <location filename="../qtractorTrackView.cpp" line="4452"/>
+        <location filename="../qtractorTrackView.cpp" line="4525"/>
         <source>cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4453"/>
-        <location filename="../qtractorTrackView.cpp" line="4526"/>
+        <location filename="../qtractorTrackView.cpp" line="4455"/>
+        <location filename="../qtractorTrackView.cpp" line="4528"/>
         <source>delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4529"/>
+        <location filename="../qtractorTrackView.cpp" line="4531"/>
         <source>split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4891"/>
+        <location filename="../qtractorTrackView.cpp" line="4893"/>
         <source>move clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5021"/>
+        <location filename="../qtractorTrackView.cpp" line="5023"/>
         <source>paste clip</source>
         <translation type="unfinished"></translation>
     </message>
