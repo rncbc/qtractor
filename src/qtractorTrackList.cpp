@@ -1170,19 +1170,15 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Select current track...
 	const int iTrack = trackRowAt(pos);
 
+	// Make it current anyway...
+	setCurrentTrackRow(iTrack);
+
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		// Try for drag-move/resize/select later...
 		m_dragState = DragStart;
 		m_posDrag = pos;
 		// Look for the mouse hovering around some item boundary...
 		if (iTrack >= 0) {
-			// Special attitude, only of interest on
-			// the first left-most column (track-number)...
-			if (trackColumnAt(pos) == Number) {
-				m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
-					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
-				qtractorScrollView::setFocus(); // get focus back anyway.
-			}
 			// Make current row always selected...
 			const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
 			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
@@ -1203,12 +1199,6 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	// Make it current anyway...
-	setCurrentTrackRow(iTrack);
-
-	// Probably this would be done ahead,
-	// just 'coz we're using ruberbands, which are
-	// in fact based on real widgets (WM entities)...
 //	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
@@ -1341,7 +1331,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_iDragTrack = -1;
 			m_iDragY = 0;
 		}
-		break;
+		// Fall thru...
 	}
 	default:
 		break;
@@ -1401,8 +1391,16 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	case DragSelect:
 		if (m_iDragTrack >= 0)
 			updateSelect(true);
-		// Fall thru...
+		break;
 	case DragStart:
+		// Special attitude, only of interest on
+		// the first left-most column (track-number)...
+		if (trackColumnAt(pos) == Number) {
+			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
+				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
+			qtractorScrollView::setFocus(); // Get focus back anyway.
+		}
+		// Fall thru...
 	case DragNone:
 	default:
 		break;
