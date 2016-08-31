@@ -156,7 +156,8 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 	if (m_pTrack == NULL)
 		return false;
 
-	const QString& sInstrumentName = pBankMenu->title();
+	const QString sInstrumentName
+		= pBankMenu->title().remove('&');
 	const int iCurrentBank = m_pTrack->midiBank();
 
 	// Instrument plug-in banks sub-menu...
@@ -184,23 +185,25 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 	if (pInstruments == NULL)
 		return false;
 
-	const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
-	const qtractorInstrumentPatches& patches = instr.patches();
-	qtractorInstrumentPatches::ConstIterator patch_iter = patches.constBegin();
-	const qtractorInstrumentPatches::ConstIterator& patch_end = patches.constEnd();
-	for ( ; patch_iter != patch_end; ++patch_iter) {
-		const int iBank = patch_iter.key();
-		const qtractorInstrumentData& patch = patch_iter.value();
-		const QString& sBankName = patch.name();
-		if (iBank < 0 || sBankName.isEmpty()) continue;
-		QMenu *pProgMenu = pBankMenu->addMenu(icon, sBankName);
-		QAction *pAction = pProgMenu->menuAction();
-		pAction->setCheckable(true);
-		pAction->setChecked(iBank == iCurrentBank);
-		pAction->setData(iBank);
-		QObject::connect(pProgMenu,
-			SIGNAL(aboutToShow()),
-			SLOT(updateProgMenu()));
+	if (pInstruments->contains(sInstrumentName)) {
+		const qtractorInstrument& instr = pInstruments->value(sInstrumentName);
+		const qtractorInstrumentPatches& patches = instr.patches();
+		qtractorInstrumentPatches::ConstIterator patch_iter = patches.constBegin();
+		const qtractorInstrumentPatches::ConstIterator& patch_end = patches.constEnd();
+		for ( ; patch_iter != patch_end; ++patch_iter) {
+			const int iBank = patch_iter.key();
+			const qtractorInstrumentData& patch = patch_iter.value();
+			const QString& sBankName = patch.name();
+			if (iBank < 0 || sBankName.isEmpty()) continue;
+			QMenu *pProgMenu = pBankMenu->addMenu(icon, sBankName);
+			QAction *pAction = pProgMenu->menuAction();
+			pAction->setCheckable(true);
+			pAction->setChecked(iBank == iCurrentBank);
+			pAction->setData(iBank);
+			QObject::connect(pProgMenu,
+				SIGNAL(aboutToShow()),
+				SLOT(updateProgMenu()));
+		}
 	}
 
 	// There should always be a dummy bank (-1)...
@@ -296,7 +299,8 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 	if (pBankMenu == NULL)
 		return false;
 
-	const QString& sInstrumentName = pBankMenu->title();
+	const QString sInstrumentName
+		= pBankMenu->title().remove('&');
 	const int iBank = pBankAction->data().toInt();
 	const int iCurrentProg = m_pTrack->midiProg();
 
@@ -325,22 +329,24 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 	if (pInstruments == NULL)
 		return false;
 
-	const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
-	const qtractorInstrumentPatches& patches = instr.patches();
-	const qtractorInstrumentData& patch = patches[iBank];
-	qtractorInstrumentData::ConstIterator prog_iter = patch.constBegin();
-	const qtractorInstrumentData::ConstIterator& prog_end = patch.constEnd();
-	for ( ; prog_iter != prog_end; ++prog_iter) {
-		const int iProg = prog_iter.key();
-		if (iProg < 0) continue;
-		const QString& sProgName = prog_iter.value();
-		QAction *pAction = pProgMenu->addAction(icon, sProgName);
-		pAction->setCheckable(true);
-		pAction->setChecked(iProg == iCurrentProg);
-		pAction->setData(iProg);
-		QObject::connect(pAction,
-			SIGNAL(triggered(bool)),
-			SLOT(progActionTriggered(bool)));
+	if (pInstruments->contains(sInstrumentName)) {
+		const qtractorInstrument& instr = pInstruments->value(sInstrumentName);
+		const qtractorInstrumentPatches& patches = instr.patches();
+		const qtractorInstrumentData& patch = patches[iBank];
+		qtractorInstrumentData::ConstIterator prog_iter = patch.constBegin();
+		const qtractorInstrumentData::ConstIterator& prog_end = patch.constEnd();
+		for ( ; prog_iter != prog_end; ++prog_iter) {
+			const int iProg = prog_iter.key();
+			if (iProg < 0) continue;
+			const QString& sProgName = prog_iter.value();
+			QAction *pAction = pProgMenu->addAction(icon, sProgName);
+			pAction->setCheckable(true);
+			pAction->setChecked(iProg == iCurrentProg);
+			pAction->setData(iProg);
+			QObject::connect(pAction,
+				SIGNAL(triggered(bool)),
+				SLOT(progActionTriggered(bool)));
+		}
 	}
 
 	// There should always be a dummy program (-1)...
@@ -428,27 +434,29 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 		QListIterator<QWidget *> bank_iter(pProgAction->associatedWidgets());
 		while (bank_iter.hasNext()) {
 			QMenu *pBankMenu = qobject_cast<QMenu *> (bank_iter.next());
-			if (pBankMenu) {
-				QAction *pBankAction = pBankMenu->menuAction();
-				if (pBankAction) {
-					const int iBank = pBankAction->data().toInt();
-					QListIterator<QWidget *> iter(pBankAction->associatedWidgets());
-					while (iter.hasNext()) {
-						QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
-						if (pMenu) {
-							const QString& sInstrumentName = pMenu->title();
-							// Make it an undoable command...
-							pSession->execute(
-								new qtractorTrackInstrumentCommand(
-									m_pTrack, sInstrumentName, iBank, iProg));
-							// Done.
-							m_pTrack = NULL;
-							break;
-						}
+			if (pBankMenu == NULL)
+				continue;
+			QAction *pBankAction = pBankMenu->menuAction();
+			if (pBankAction) {
+				const int iBank = pBankAction->data().toInt();
+				QListIterator<QWidget *> iter(pBankAction->associatedWidgets());
+				while (iter.hasNext()) {
+					QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
+					if (pMenu) {
+						const QString sInstrumentName
+							= pMenu->title().remove('&');
+						// Make it an undoable command...
+						pSession->execute(
+							new qtractorTrackInstrumentCommand(
+								m_pTrack, sInstrumentName, iBank, iProg));
+						// Done.
+						m_pTrack = NULL;
+						break;
 					}
 				}
-				break;
 			}
+			// Bail out.
+			break;
 		}
 	}
 }

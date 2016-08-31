@@ -239,9 +239,9 @@ private:
 		// Destructor.
 		~Item();
 		// Bank/program names helper.
-		bool updateBankProgram (qtractorMidiManager *pMidiManager,
-			const QString& sInstrument,
-			QString& sBank, QString& sProgram ) const;
+		bool updateBankProgNames(qtractorMidiManager *pMidiManager,
+			const QString& sInstrumentName,
+			QString& sBankName, QString& sProgName) const;
 		// Item updaters.
 		void update(qtractorTrackList *pTrackList);
 		void update_icon(qtractorTrackList *pTrackList);

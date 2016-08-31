@@ -1516,8 +1516,13 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 
 	int iBankSelMethod = midiBankSelMethod();
 	if (iBankSelMethod < 0) {
-		if (!patch.instrumentName.isEmpty())
-			iBankSelMethod = (*pInstruments)[patch.instrumentName].bankSelMethod();
+		const QString& sInstrumentName = patch.instrumentName;
+		if (!sInstrumentName.isEmpty()
+			&& pInstruments->contains(sInstrumentName)) {
+			const qtractorInstrument& instr
+				= pInstruments->value(sInstrumentName);
+			iBankSelMethod = instr.bankSelMethod();
+		}
 		else if (iBank >= 0)
 			iBankSelMethod = 0;
 	}

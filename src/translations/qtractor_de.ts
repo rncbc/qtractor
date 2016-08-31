@@ -2321,10 +2321,10 @@ Sollen die Änderungen übernommen werden?</translation>
 <context>
     <name>qtractorInstrumentMenu</name>
     <message>
-        <location filename="../qtractorInstrumentMenu.cpp" line="210"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="258"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="350"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="403"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="213"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="261"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="356"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="409"/>
         <source>(None)</source>
         <translation>(Keine)</translation>
     </message>
@@ -6577,80 +6577,80 @@ Länge:	%3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4815"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4817"/>
         <source>Time:	%1
 Type:	</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4824"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4826"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4831"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4833"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4837"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4839"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4843"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4845"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4849"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4851"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4855"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4857"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4861"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4863"/>
         <source>Pgm Change (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4865"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4867"/>
         <source>Chan Press (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4869"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4871"/>
         <source>Pitch Bend (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4876"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4878"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4888"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4890"/>
         <source>Unknown (%1)</source>
         <translation>Unbekannt (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5143"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5145"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12058,7 +12058,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="205"/>
         <location filename="../qtractorTrackForm.cpp" line="790"/>
-        <location filename="../qtractorTrackForm.cpp" line="901"/>
+        <location filename="../qtractorTrackForm.cpp" line="902"/>
         <source>(None)</source>
         <translation>(Keine)</translation>
     </message>
@@ -12068,27 +12068,27 @@ Wollen Sie diese übernehmen?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1145"/>
+        <location filename="../qtractorTrackForm.cpp" line="1147"/>
         <source>Image files (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1146"/>
+        <location filename="../qtractorTrackForm.cpp" line="1148"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1148"/>
+        <location filename="../qtractorTrackForm.cpp" line="1150"/>
         <source>Track Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1424"/>
+        <location filename="../qtractorTrackForm.cpp" line="1426"/>
         <source>Foreground Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1439"/>
+        <location filename="../qtractorTrackForm.cpp" line="1441"/>
         <source>Background Color</source>
         <translation>Hintergrundfarbe</translation>
     </message>
