@@ -1,7 +1,7 @@
 // qtractorClipSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -145,6 +145,18 @@ qtractorClipSelect::Item *qtractorClipSelect::findItem ( qtractorClip *pClip ) c
 // Reset clip selection.
 void qtractorClipSelect::reset (void)
 {
+	ItemList::ConstIterator iter = m_items.constBegin();
+	const ItemList::ConstIterator& iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter)
+		iter.key()->setClipSelected(false);
+
+	clear();
+}
+
+
+// Clear clip selection.
+void qtractorClipSelect::clear (void)
+{
 	m_bTrackSingle = false;
 	m_pTrackSingle = NULL;
 
@@ -152,18 +164,6 @@ void qtractorClipSelect::reset (void)
 
 	qDeleteAll(m_items);
 	m_items.clear();
-}
-
-
-// Clear clip selection.
-void qtractorClipSelect::clear (void)
-{
-	ItemList::ConstIterator iter = m_items.constBegin();
-	const ItemList::ConstIterator& iter_end = m_items.constEnd();
-	for ( ; iter != iter_end; ++iter)
-		iter.key()->setClipSelected(false);
-
-	reset();
 }
 
 

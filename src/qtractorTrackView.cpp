@@ -2171,7 +2171,7 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 		m_pClipSelect->selectItem(m_pClipDrag, m_rectDrag, bSelect);
 		++iUpdate;
 	} else if (bSelect || m_selectMode != SelectClip) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		if (bSelect)
 			m_pClipSelect->selectItem(m_pClipDrag, m_rectDrag, true);
 		++iUpdate;
@@ -2274,7 +2274,7 @@ void qtractorTrackView::selectClipRect ( const QRect& rectDrag,
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
 	if ((flags & SelectClear) && (m_pClipSelect->items().count() > 0)) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2347,7 +2347,7 @@ void qtractorTrackView::selectClipTrackRange (
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
 	if (bReset && m_pClipSelect->items().count() > 0) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2409,7 +2409,7 @@ void qtractorTrackView::selectClipTrack (
 	QRect rectUpdate = m_pClipSelect->rect();
 	if (bReset && m_pClipSelect->items().count() > 0) {
 	//	&& m_pClipSelect->singleTrack() != pTrackPtr) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2456,7 +2456,7 @@ void qtractorTrackView::selectClipAll (void)
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
 	if (m_pClipSelect->items().count() > 0) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2542,7 +2542,7 @@ void qtractorTrackView::selectClipFile ( qtractorTrack::TrackType trackType,
 	if (m_pClipSelect->items().count() > 0
 		&& (QApplication::keyboardModifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -3791,7 +3791,7 @@ void qtractorTrackView::resetDragState (void)
 	if (m_dragCursor != DragNone)
 		qtractorScrollView::unsetCursor();
 	if (m_dragState == DragClipStep)
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 	if (m_dragState == DragCurveStep)
 		m_pCurveSelect->clear();
 	if (m_dragState == DragClipRepeatLeft  ||
@@ -4314,7 +4314,7 @@ void qtractorTrackView::clearSelect ( bool bReset )
 
 	if (m_pClipSelect->items().count() > 0) {
 		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 	}
 
 	if (m_pCurveSelect->items().count() > 0) {
@@ -4798,7 +4798,7 @@ void qtractorTrackView::pasteClipboard (
 		return;
 
 	// Reset any current selection, whatsoever...
-	m_pClipSelect->clear();
+	m_pClipSelect->reset();
 	m_pCurveSelect->clear();
 
 	resetDragState();
