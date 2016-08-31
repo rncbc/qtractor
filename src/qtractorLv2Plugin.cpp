@@ -1499,12 +1499,15 @@ bool qtractorLv2PluginType::open (void)
 	// Query for state interface extension data...
 	LilvNodes *nodes = lilv_plugin_get_value(m_lv2_plugin,
 		g_lv2_extension_data_hint);
-	LILV_FOREACH(nodes, iter, nodes) {
-		const LilvNode *node = lilv_nodes_get(nodes, iter);
-		if (lilv_node_equals(node, g_lv2_state_interface_hint)) {
-			m_bConfigure = true;
-			break;
+	if (nodes) {
+		LILV_FOREACH(nodes, iter, nodes) {
+			const LilvNode *node = lilv_nodes_get(nodes, iter);
+			if (lilv_node_equals(node, g_lv2_state_interface_hint)) {
+				m_bConfigure = true;
+				break;
+			}
 		}
+		lilv_nodes_free(nodes);
 	}
 #endif
 #ifdef CONFIG_LV2_UI

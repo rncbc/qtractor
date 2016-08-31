@@ -247,7 +247,7 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="1884"/>
+        <location filename="../qtractorPlugin.cpp" line="1881"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -743,13 +743,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2029"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2037"/>
         <source>Project: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2037"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2045"/>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
