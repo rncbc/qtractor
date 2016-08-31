@@ -1379,11 +1379,8 @@ void qtractorPluginList::setChannels (
 	// Go, go, go...
 	m_iFlags = iFlags;
 
-	if (iChannels == 0)
-		return;
-
 	// Allocate new MIDI manager, if applicable...
-	if (m_iFlags & Midi) {
+	if ((iChannels > 0) && (m_iFlags & Midi)) {
 		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
 		qtractorAudioBus *pAudioOutputBus
