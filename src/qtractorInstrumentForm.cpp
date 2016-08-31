@@ -551,11 +551,11 @@ void qtractorInstrumentForm::refreshForm (void)
 		for ( ; pat != pat_end; ++pat) {
 			pBankItem = new QTreeWidgetItem(pChildItem, pBankItem);
 			int iBank = pat.key();
-			const QString sBank = (iBank < 0
-				? QString("*") : QString::number(iBank));
+			const QString sBankName
+				= (iBank < 0 ? QString("*") : QString::number(iBank));
 			pBankItem->setIcon(0, QIcon(":/images/itemPatches.png"));
 			pBankItem->setText(0,
-				QString("%1 = %2").arg(sBank).arg(pat.value().name()));
+				QString("%1 = %2").arg(sBankName).arg(pat.value().name()));
 			// Patches/Progs...
 			const qtractorInstrumentData& patch = instr.patch(iBank);
 			QTreeWidgetItem *pProgItem = NULL;

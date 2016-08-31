@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Track/Instrument cascading menus have been broken as
+  empty on Qt5 builds, ever since, now fixed.
+
 - MIDI RPN/NRPN running status and RPN NULL reset command
   are now supported (input only). (EXPERIMENTAL)
 

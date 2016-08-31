@@ -1311,7 +1311,6 @@ bool qtractorTrackInstrumentCommand::redo (void)
 	if (pSession == NULL)
 		return false;
 
-
 	// Set undo values...
 	const unsigned short iChannel = pTrack->midiChannel();
 	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
