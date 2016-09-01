@@ -491,27 +491,27 @@ MIDI:	</translation>
         <translation>plugin di preset</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="492"/>
+        <location filename="../qtractorPluginCommand.cpp" line="493"/>
         <source>reset plugin</source>
         <translation>resetta plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="542"/>
+        <location filename="../qtractorPluginCommand.cpp" line="543"/>
         <source>plugin program</source>
         <translation>plugin di programma</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="588"/>
+        <location filename="../qtractorPluginCommand.cpp" line="589"/>
         <source>plugin property</source>
         <translation>proprietà della plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="732"/>
+        <location filename="../qtractorPluginCommand.cpp" line="733"/>
         <source>dedicated audio outputs</source>
         <translation>uscite audio dedicate</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="777"/>
+        <location filename="../qtractorPluginCommand.cpp" line="778"/>
         <source>direct access param</source>
         <translation>parametro di accesso diretto</translation>
     </message>

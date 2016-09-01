@@ -294,27 +294,27 @@ MIDI:	</translation>
         <translation>Přednastavit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="492"/>
+        <location filename="../qtractorPluginCommand.cpp" line="493"/>
         <source>reset plugin</source>
         <translation>Znovu spustit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="542"/>
+        <location filename="../qtractorPluginCommand.cpp" line="543"/>
         <source>plugin program</source>
         <translation>Program přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="588"/>
+        <location filename="../qtractorPluginCommand.cpp" line="589"/>
         <source>plugin property</source>
         <translation>Vlastnost přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="732"/>
+        <location filename="../qtractorPluginCommand.cpp" line="733"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="777"/>
+        <location filename="../qtractorPluginCommand.cpp" line="778"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>

@@ -490,27 +490,27 @@ MIDI:	</translation>
         <translation>pré-réglage du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="492"/>
+        <location filename="../qtractorPluginCommand.cpp" line="493"/>
         <source>reset plugin</source>
         <translation>réinitialiser le greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="542"/>
+        <location filename="../qtractorPluginCommand.cpp" line="543"/>
         <source>plugin program</source>
         <translation>programme du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="588"/>
+        <location filename="../qtractorPluginCommand.cpp" line="589"/>
         <source>plugin property</source>
         <translation>propriété du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="732"/>
+        <location filename="../qtractorPluginCommand.cpp" line="733"/>
         <source>dedicated audio outputs</source>
         <translation>sorties audio dédiées</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="777"/>
+        <location filename="../qtractorPluginCommand.cpp" line="778"/>
         <source>direct access param</source>
         <translation>paramètre accès direct</translation>
     </message>
