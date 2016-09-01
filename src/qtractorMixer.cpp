@@ -94,7 +94,7 @@ void qtractorMonitorButton::initMonitorButton (void)
 	icons.addPixmap(QPixmap(":/images/itemLedOn.png"),
 		QIcon::Normal, QIcon::On);
 	QPushButton::setIcon(icons);
-	QPushButton::setText(tr("monitor"));
+	QPushButton::setText(' ' + tr("monitor"));
 
 	QObject::connect(this, SIGNAL(toggled(bool)), SLOT(toggledSlot(bool)));
 }
