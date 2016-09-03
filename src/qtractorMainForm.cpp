@@ -4801,6 +4801,7 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	const float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
 	const float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
+	const unsigned long iOldMetroOffset  = m_pOptions->iMetroOffset;
 	const bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
 	const bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
 	const bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
@@ -4959,6 +4960,7 @@ void qtractorMainForm::viewOptions (void)
 			(sOldMetroBeatFilename != m_pOptions->sMetroBeatFilename) ||
 			(fOldMetroBarGain      != m_pOptions->fMetroBarGain)      ||
 			(fOldMetroBeatGain     != m_pOptions->fMetroBeatGain)     ||
+			(iOldMetroOffset       != m_pOptions->iMetroOffset)       ||
 			( bOldAudioMetroBus    && !m_pOptions->bAudioMetroBus)    ||
 			(!bOldAudioMetroBus    &&  m_pOptions->bAudioMetroBus)    ||
 			( bOldAudioMetroAutoConnect && !m_pOptions->bAudioMetroAutoConnect) ||
@@ -6418,6 +6420,8 @@ void qtractorMainForm::updateAudioMetronome (void)
 
 	pAudioEngine->setMetroBarGain(m_pOptions->fMetroBarGain);
 	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
+
+	pAudioEngine->setMetroOffset(m_pOptions->iMetroOffset);
 
 	const bool bAudioMetronome = m_pOptions->bAudioMetronome;
 	pAudioEngine->setMetroAutoConnect(m_pOptions->bAudioMetroAutoConnect);

@@ -452,6 +452,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pMetroBeatBuff  = NULL;
 	m_fMetroBarGain   = 1.0f;
 	m_fMetroBeatGain  = 1.0f;
+	m_iMetroOffset    = 0;
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat      = 0;
 	m_bMetroEnabled   = false;
@@ -995,7 +996,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pMetroBuff->readMix(m_pMetroBus->out(),
 				nframes, m_pMetroBus->channels(), 0, fMetroGain);
 		} else {
-			m_iMetroBeatStart = pNode->frameFromBeat(++m_iMetroBeat);
+			m_iMetroBeatStart = metro_offset(pNode->frameFromBeat(++m_iMetroBeat));
 			pMetroBuff->reset(false);
 		}
 		if (m_bMetroBus && m_pMetroBus)
@@ -1048,7 +1049,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		// Take special care on metronome too...
 		if (m_bMetronome) {
 			m_iMetroBeat = pSession->beatFromFrame(iFrameEnd);
-			m_iMetroBeatStart = pSession->frameFromBeat(m_iMetroBeat);
+			m_iMetroBeatStart = metro_offset(pSession->frameFromBeat(m_iMetroBeat));
 		}
 	}
 
@@ -1617,6 +1618,27 @@ float qtractorAudioEngine::metroBeatGain (void) const
 }
 
 
+// Metronome latency offset (in frames).
+void qtractorAudioEngine::setMetroOffset ( unsigned long iMetroOffset )
+{
+	m_iMetroOffset = iMetroOffset;
+}
+
+unsigned long qtractorAudioEngine::metroOffset (void) const
+{
+	return m_iMetroOffset;
+}
+
+
+// Metronome latency offset compensation.
+unsigned long qtractorAudioEngine::metro_offset ( unsigned long iFrame ) const
+{
+	const unsigned long iOffset = m_iMetroOffset
+		+ (m_pMetroBus ? m_pMetroBus->latency_out() : 0);
+	return (iFrame > iOffset ? iFrame - iOffset : iFrame);
+}
+
+
 // Create audio metronome stuff...
 void qtractorAudioEngine::createMetroBus (void)
 {
@@ -1745,7 +1767,7 @@ void qtractorAudioEngine::resetMetro (void)
 	const unsigned short iNextBeat = pNode->beatFromFrame(iFrame);
 	if (iNextBeat > 0) {
 		m_iMetroBeat = iNextBeat;
-		m_iMetroBeatStart = pNode->frameFromBeat(m_iMetroBeat);
+		m_iMetroBeatStart = metro_offset(pNode->frameFromBeat(m_iMetroBeat));
 		iMaxLength = (m_iMetroBeatStart / m_iMetroBeat);
 	} else {
 		m_iMetroBeat = 0;

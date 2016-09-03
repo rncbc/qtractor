@@ -123,6 +123,9 @@ public:
 	QString sMetroBeatFilename;
 	float   fMetroBeatGain;
 
+	// Audio metronome latency offset compensation.
+	unsigned long iMetroOffset;
+
 	// MIDI options...
 	int  iMidiCaptureFormat;
 	int  iMidiCaptureQuantize;
