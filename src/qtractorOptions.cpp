@@ -169,6 +169,7 @@ void qtractorOptions::loadOptions (void)
 	fMetroBarGain      = float(m_settings.value("/BarGain", 1.0).toDouble());
 	sMetroBeatFilename = m_settings.value("/BeatFilename").toString();
 	fMetroBeatGain     = float(m_settings.value("/BeatGain", 1.0).toDouble());
+	iMetroOffset       = (unsigned long) m_settings.value("/Offset", 0).toUInt();
 	// MIDI metronome...
 	iMetroChannel      = m_settings.value("/Channel", 9).toInt();
 	iMetroBarNote      = m_settings.value("/BarNote", 76).toInt();
@@ -460,6 +461,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/BarGain", double(fMetroBarGain));
 	m_settings.setValue("/BeatFilename", sMetroBeatFilename);
 	m_settings.setValue("/BeatGain", double(fMetroBeatGain));
+	m_settings.setValue("/Offset", uint(iMetroOffset));
 	// MIDI metronome...
 	m_settings.setValue("/Channel", iMetroChannel);
 	m_settings.setValue("/BarNote", iMetroBarNote);

@@ -6,11 +6,15 @@ ChangeLog
 
 GIT HEAD
 
-- Fixed LADSPA plug-in preset switching, incidentally broken
-  as NOP ever since late Haziest Photon's crash landed.
+- Audio metronome offset, kind to latency compensation, added
+  as an option (cf. View/Options.../Audio/Metronome/Offset).
+  (EXPERIMENTAL)
 
-- MIDI Track/Instrument cascading menus have been broken as
-  empty on Qt5 builds, ever since, now fixed.
+- Fixed LADSPA plug-in preset switching, incidentally broken
+  as NOP, ever since late Haziest Photon's crash-landed.
+
+- MIDI Track/Instrument cascading menus have been found empty
+  broken on Qt5 builds, now fixed.
 
 - MIDI RPN/NRPN running status and RPN NULL reset command
   are now supported (input only). (EXPERIMENTAL)

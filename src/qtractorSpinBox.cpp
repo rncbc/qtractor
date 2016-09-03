@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -229,10 +229,14 @@ void qtractorTimeSpinBox::stepBy ( int iSteps )
 			const int iPos = sText.section(':', 0, 0).length() + 1;
 			if (iCursorPos < iPos)
 				iSteps *= int(3600 * m_pTimeScale->sampleRate());
-			else if (iCursorPos < iPos + sText.section(':', 1, 1).length() + 1)
+			else
+			if (iCursorPos < iPos + sText.section(':', 1, 1).length() + 1)
 				iSteps *= int(60 * m_pTimeScale->sampleRate());
 			else
+			if (iCursorPos < sText.section('.', 0, 0).length() + 1)
 				iSteps *= int(m_pTimeScale->sampleRate());
+			else
+				iSteps *= int(m_pTimeScale->sampleRate() / 1000);
 			break;
 		}
 		case qtractorTimeScale::Frames:

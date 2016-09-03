@@ -28,6 +28,7 @@
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
+#include "qtractorSession.h"
 
 #include "qtractorPluginFactory.h"
 
@@ -93,6 +94,17 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// No settings descriptor initially (the caller will set it).
 	m_pOptions = NULL;
+
+	// Have some deafult time-scale for instance...
+	m_pTimeScale = NULL;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
+		m_ui.MetroOffsetSpinBox->setTimeScale(m_pTimeScale);
+		m_ui.MetroOffsetSpinBox->setMaximum(m_pTimeScale->sampleRate());
+		m_ui.MetroOffsetSpinBox->setDeltaValue(true);
+	}
 
 	// Populate the session format combo-box.
 	m_ui.SessionFormatComboBox->clear();
@@ -246,6 +258,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioMetroAutoConnectCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MetroOffsetSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -332,7 +347,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.DisplayFormatComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changed()));
+		SLOT(displayFormatChanged(int)));
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -480,6 +495,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 // Destructor.
 qtractorOptionsForm::~qtractorOptionsForm (void)
 {
+	if (m_pTimeScale) delete m_pTimeScale;
 }
 
 
@@ -543,6 +559,12 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MetroBeatGainSpinBox->setValue(log10f2(m_pOptions->fMetroBeatGain));
 	m_ui.AudioMetroBusCheckBox->setChecked(m_pOptions->bAudioMetroBus);
 	m_ui.AudioMetroAutoConnectCheckBox->setChecked(m_pOptions->bAudioMetroAutoConnect);
+
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(m_pOptions->iDisplayFormat);
+	if (m_pTimeScale) m_pTimeScale->setDisplayFormat(displayFormat);
+	m_ui.MetroOffsetSpinBox->setDisplayFormat(displayFormat);
+	m_ui.MetroOffsetSpinBox->setValue(m_pOptions->iMetroOffset);
 
 	// MIDI capture/export options.
 	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
@@ -747,6 +769,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->fMetroBeatGain       = pow10f2(m_ui.MetroBeatGainSpinBox->value());
 		m_pOptions->bAudioMetroBus       = m_ui.AudioMetroBusCheckBox->isChecked();
 		m_pOptions->bAudioMetroAutoConnect = m_ui.AudioMetroAutoConnectCheckBox->isChecked();
+		m_pOptions->iMetroOffset         = m_ui.MetroOffsetSpinBox->value();
 		// MIDI options...
 		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
 		m_pOptions->iMidiCaptureQuantize = m_ui.MidiCaptureQuantizeComboBox->currentIndex();
@@ -957,6 +980,21 @@ void qtractorOptionsForm::updateMetroNoteNames (void)
 	// Restore old selection...
 	m_ui.MetroBarNoteComboBox->setCurrentIndex(iOldBarNote);
 	m_ui.MetroBeatNoteComboBox->setCurrentIndex(iOldBeatNote);
+
+	changed();
+}
+
+
+// Display format has changed.
+void qtractorOptionsForm::displayFormatChanged ( int iDisplayFormat )
+{
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
+
+	m_ui.MetroOffsetSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
+		m_pTimeScale->setDisplayFormat(displayFormat);
 
 	changed();
 }
@@ -1516,6 +1554,8 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatGainTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatGainSpinBox->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
+	m_ui.MetroOffsetTextLabel->setEnabled(bAudioMetronome);
+	m_ui.MetroOffsetSpinBox->setEnabled(bAudioMetronome);
 
 	m_ui.AudioMetroAutoConnectCheckBox->setEnabled(
 		bAudioMetronome && m_ui.AudioMetroBusCheckBox->isChecked());
