@@ -6,8 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- Audio metronome offset, kind to latency compensation, added
-  as an option (cf. View/Options.../Audio/Metronome/Offset).
+- Introducing an audio and MIDI metronome anticipatory offset,
+  kind of latency compensation, to respective option settings
+  cf. View/Options.../Audio, MIDI/Metronome/Offset (latency).
   (EXPERIMENTAL)
 
 - Fixed LADSPA plug-in preset switching, incidentally broken

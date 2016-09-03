@@ -144,6 +144,7 @@ void qtractorOptions::loadOptions (void)
 	bAudioMasterAutoConnect = m_settings.value("/MasterAutoConnect", true).toBool();
 	bAudioPlayerAutoConnect = m_settings.value("/PlayerAutoConnect", true).toBool();
 	bAudioMetroAutoConnect = m_settings.value("/MetroAutoConnect", true).toBool();
+	iAudioMetroOffset  = (unsigned long) m_settings.value("/MetroOffset", 0).toUInt();
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
@@ -156,6 +157,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiControlBus    = m_settings.value("/ControlBus", false).toBool();
 	bMidiMetroBus      = m_settings.value("/MetroBus", false).toBool();
 	bMidiMetronome     = m_settings.value("/Metronome", true).toBool();
+	iMidiMetroOffset   = m_settings.value("/MetroOffset", 0).toInt();
 	iMidiMmcDevice     = m_settings.value("/MmcDevice", 0x7f).toInt();
 	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
 	iMidiSppMode       = m_settings.value("/SppMode", 3).toInt();
@@ -169,7 +171,6 @@ void qtractorOptions::loadOptions (void)
 	fMetroBarGain      = float(m_settings.value("/BarGain", 1.0).toDouble());
 	sMetroBeatFilename = m_settings.value("/BeatFilename").toString();
 	fMetroBeatGain     = float(m_settings.value("/BeatGain", 1.0).toDouble());
-	iMetroOffset       = (unsigned long) m_settings.value("/Offset", 0).toUInt();
 	// MIDI metronome...
 	iMetroChannel      = m_settings.value("/Channel", 9).toInt();
 	iMetroBarNote      = m_settings.value("/BarNote", 76).toInt();
@@ -431,6 +432,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MasterAutoConnect", bAudioMasterAutoConnect);
 	m_settings.setValue("/PlayerAutoConnect", bAudioPlayerAutoConnect);
 	m_settings.setValue("/MetroAutoConnect", bAudioMetroAutoConnect);
+	m_settings.setValue("/MetroOffset", uint(iAudioMetroOffset));
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
@@ -443,6 +445,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ControlBus", bMidiControlBus);
 	m_settings.setValue("/MetroBus", bMidiMetroBus);
 	m_settings.setValue("/Metronome", bMidiMetronome);
+	m_settings.setValue("/MetroOffset", iMidiMetroOffset);
 	m_settings.setValue("/MmcDevice", iMidiMmcDevice);
 	m_settings.setValue("/MmcMode", iMidiMmcMode);
 	m_settings.setValue("/SppMode", iMidiSppMode);
@@ -456,7 +459,6 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/BarGain", double(fMetroBarGain));
 	m_settings.setValue("/BeatFilename", sMetroBeatFilename);
 	m_settings.setValue("/BeatGain", double(fMetroBeatGain));
-	m_settings.setValue("/Offset", uint(iMetroOffset));
 	// MIDI metronome...
 	m_settings.setValue("/Channel", iMetroChannel);
 	m_settings.setValue("/BarNote", iMetroBarNote);

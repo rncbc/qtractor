@@ -4801,9 +4801,9 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	const float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
 	const float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
-	const unsigned long iOldMetroOffset  = m_pOptions->iMetroOffset;
-	const bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
 	const bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
+	const bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
+	const unsigned long iOldAudioMetroOffset = m_pOptions->iAudioMetroOffset;
 	const bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
 	const bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
 	const int     iOldMetroChannel       = m_pOptions->iMetroChannel;
@@ -4814,6 +4814,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMetroBeatVelocity  = m_pOptions->iMetroBeatVelocity;
 	const int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
+	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
 	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
@@ -4960,7 +4961,7 @@ void qtractorMainForm::viewOptions (void)
 			(sOldMetroBeatFilename != m_pOptions->sMetroBeatFilename) ||
 			(fOldMetroBarGain      != m_pOptions->fMetroBarGain)      ||
 			(fOldMetroBeatGain     != m_pOptions->fMetroBeatGain)     ||
-			(iOldMetroOffset       != m_pOptions->iMetroOffset)       ||
+			(iOldAudioMetroOffset  != m_pOptions->iAudioMetroOffset)  ||
 			( bOldAudioMetroBus    && !m_pOptions->bAudioMetroBus)    ||
 			(!bOldAudioMetroBus    &&  m_pOptions->bAudioMetroBus)    ||
 			( bOldAudioMetroAutoConnect && !m_pOptions->bAudioMetroAutoConnect) ||
@@ -4976,6 +4977,7 @@ void qtractorMainForm::viewOptions (void)
 			(iOldMetroBeatNote     != m_pOptions->iMetroBeatNote)     ||
 			(iOldMetroBeatVelocity != m_pOptions->iMetroBeatVelocity) ||
 			(iOldMetroBeatDuration != m_pOptions->iMetroBeatDuration) ||
+			(iOldMidiMetroOffset   != m_pOptions->iMidiMetroOffset)   ||
 			( bOldMidiMetroBus     && !m_pOptions->bMidiMetroBus)     ||
 			(!bOldMidiMetroBus     &&  m_pOptions->bMidiMetroBus))
 			updateMidiMetronome();
@@ -6421,7 +6423,7 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setMetroBarGain(m_pOptions->fMetroBarGain);
 	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
 
-	pAudioEngine->setMetroOffset(m_pOptions->iMetroOffset);
+	pAudioEngine->setMetroOffset(m_pOptions->iAudioMetroOffset);
 
 	const bool bAudioMetronome = m_pOptions->bAudioMetronome;
 	pAudioEngine->setMetroAutoConnect(m_pOptions->bAudioMetroAutoConnect);
@@ -6453,6 +6455,8 @@ void qtractorMainForm::updateMidiMetronome (void)
 		m_pOptions->iMetroBeatNote,
 		m_pOptions->iMetroBeatVelocity,
 		m_pOptions->iMetroBeatDuration);
+
+	pMidiEngine->setMetroOffset(m_pOptions->iMidiMetroOffset);
 
 	const bool bMidiMetronome = m_pOptions->bMidiMetronome;
 	pMidiEngine->setMetroEnabled(bMidiMetronome);

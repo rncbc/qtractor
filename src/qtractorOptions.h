@@ -117,14 +117,14 @@ public:
 	bool    bAudioPlayerAutoConnect;
 	bool    bAudioMetroAutoConnect;
 
+	// Audio metronome latency offset compensation.
+	unsigned long iAudioMetroOffset;
+
 	// Audio metronome parameters.
 	QString sMetroBarFilename;
 	float   fMetroBarGain;
 	QString sMetroBeatFilename;
 	float   fMetroBeatGain;
-
-	// Audio metronome latency offset compensation.
-	unsigned long iMetroOffset;
 
 	// MIDI options...
 	int  iMidiCaptureFormat;
@@ -148,6 +148,10 @@ public:
 	int iMetroBeatNote;
 	int iMetroBeatVelocity;
 	int iMetroBeatDuration;
+
+	// MIDI metronome latency offset compensation.
+	int iMidiMetroOffset;
+
 
 	// Default options...
 	QString sSessionDir;
