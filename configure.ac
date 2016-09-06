@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.8.25, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.8.26, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -740,7 +740,7 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_x11="no"
 fi
 
-if test "x$ac_qt5" = "xno"; then
+if test "x$ac_qt4" = "xyes"; then
    ac_lv2_ui_gtk2="no"
    ac_lv2_ui_x11="no"
 fi
@@ -1337,7 +1337,7 @@ if test "x$ac_lv2_ui_show" = "xyes"; then
    fi
 fi
 
-if test "x$ac_lv2_ui_gtk2" = "xyes" -a "x$ac_suil" = "xyes"; then
+if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    ac_old_libs=$LIBS
    LIBS=$ac_libs
    AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
@@ -1370,7 +1370,7 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    fi
 fi
 
-if test "x$ac_lv2_ui_x11" = "xyes" -a "x$ac_suil" = "xyes"; then
+if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    ac_old_libs=$LIBS
    LIBS=$ac_libs
    AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
@@ -1493,7 +1493,7 @@ echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo "  LV2 plug-in UI Touch interface support . . . . . .: $ac_lv2_ui_touch"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
-if test "x$ac_qt5" = "xyes"; then
+if test "x$ac_qt4" = "xno"; then
 echo "  LV2 plug-in UI GTK2 native support . . . . . . . .: $ac_lv2_ui_gtk2"
 echo "  LV2 plug-in UI X11 native support  . . . . . . . .: $ac_lv2_ui_x11"
 fi
