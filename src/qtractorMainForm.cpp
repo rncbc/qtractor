@@ -6070,6 +6070,15 @@ bool qtractorMainForm::startSession (void)
 			"are up and running and then restart the session."));
 	}
 
+	// Get on with the special ALSA sequencer notifier...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine && pMidiEngine->alsaNotifier()) {
+		m_pSession->resetAllMidiControllers(false); // Deferred++
+		QObject::connect(pMidiEngine->alsaNotifier(),
+			SIGNAL(activated(int)),
+			SLOT(alsaNotify()));
+	}
+
 	return bResult;
 }
 
@@ -6114,20 +6123,12 @@ void qtractorMainForm::updateSessionPre (void)
 	qDebug("qtractorMainForm::updateSessionPre()");
 #endif
 
-	//  Actually (re)start session engines...
-	if (startSession()) {
-		// (Re)set playhead...
-		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
-		// (Re)initialize MIDI instrument patching...
-		m_pSession->resetAllMidiControllers(false); // Deferred++
-		// Get on with the special ALSA sequencer notifier...
-		if (m_pSession->midiEngine()->alsaNotifier()) {
-			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),
-				SIGNAL(activated(int)),
-				SLOT(alsaNotify()));			
-		}
-	}
+	//  Actually (re)start session engines, no matter what...
+	startSession();
+
+	// (Re)set playhead...
+	if (m_ui.transportAutoBackwardAction->isChecked())
+		m_pSession->setPlayHead(playHeadBackward());
 
 	// Start collection of nested messages...
 	qtractorMessageList::clear();
