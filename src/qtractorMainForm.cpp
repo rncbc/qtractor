@@ -7399,7 +7399,11 @@ void qtractorMainForm::alsaNotify (void)
 // Custom audio shutdown event handler.
 void qtractorMainForm::audioShutNotify (void)
 {
-	// Engine shutdown is on demand...
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMainForm::audioShutNotify()");
+#endif
+
+	// Engines shutdown is on demand...
 	m_pSession->shutdown();
 	m_pConnections->clear();
 
@@ -7450,7 +7454,53 @@ void qtractorMainForm::audioBuffNotify (void)
 	qDebug("qtractorMainForm::audioBuffNotify()");
 #endif
 
-	audioShutNotify();
+	// Engines shutdown is on demand...
+	m_pSession->shutdown();
+	m_pConnections->clear();
+
+	// Always do auto-save here, hence...
+	autoSaveSession();
+
+	// Send an informative message box...
+	appendMessagesError(
+		tr("The audio engine buffer size has changed.\n\n"
+		"Reloading the current session\n"
+		"is highly recommended."));
+
+	// Reload the previously auto-saved session...
+	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
+	if (!sAutoSavePathname.isEmpty()
+		&& QFileInfo(sAutoSavePathname).exists()) {
+		// Reset (soft) subject/observer queue.
+		qtractorSubject::resetQueue();
+		// Reset all dependables to default.
+		m_pMixer->clear();
+		m_pFiles->clear();
+		// Close session engines.
+		//m_pSession->close();
+		m_pSession->clear();
+		m_pTempoCursor->clear();
+		// And last but not least.
+		//m_pConnections->clear();
+		m_pTracks->clear();
+		// Clear (hard) subject/observer queue.
+		qtractorSubject::clearQueue();
+		// Reset playhead.
+		m_iPlayHead = 0;
+	#ifdef CONFIG_LV2
+		qtractorLv2PluginType::lv2_close();
+	#endif
+		// Reload the auto-saved session alright...
+		if (loadSessionFileEx(sAutoSavePathname, false, false)) {
+			m_sFilename = m_pOptions->sAutoSaveFilename;
+			++m_iDirtyCount;
+		}
+		// Final view update, just in case...
+		selectionNotifySlot(NULL);
+	}
+	else
+	// Make things just bearable...
+	stabilizeForm();
 }
 
 

@@ -1231,7 +1231,7 @@ void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 
 	createAudioOutputBus();
 
-	if (m_pPluginList && m_pAudioOutputBus)
+	if (m_pAudioOutputBus)
 		m_pPluginList->setChannelsEx(m_pAudioOutputBus->channels(), true);
 
 	pSession->unlock();
