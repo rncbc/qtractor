@@ -458,9 +458,6 @@ private:
 	qtractorAtomic m_locks;
 	qtractorAtomic m_mutex;
 
-	// Re-entrancy mutex.
-	qtractorAtomic m_busy;
-
 	// Instrument names mapping.
 	qtractorInstrumentList *m_pInstruments;
 
