@@ -315,8 +315,8 @@ qtractorMainForm::qtractorMainForm (
 			SIGNAL(portEvent()),
 			SLOT(audioPortNotify()));
 		QObject::connect(pAudioEngine->proxy(),
-			SIGNAL(buffEvent()),
-			SLOT(audioBuffNotify()));
+			SIGNAL(buffEvent(unsigned int)),
+			SLOT(audioBuffNotify(unsigned int)));
 		QObject::connect(pAudioEngine->proxy(),
 			SIGNAL(sessEvent(void *)),
 			SLOT(audioSessNotify(void *)));
@@ -7448,24 +7448,26 @@ void qtractorMainForm::audioPortNotify (void)
 
 
 // Custom audio buffer size change event handler.
-void qtractorMainForm::audioBuffNotify (void)
+void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::audioBuffNotify()");
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMainForm::audioBuffNotify(%u)", iBufferSize);
 #endif
 
+	// HACK: Restart...
+	m_pSession->lock();
+
 	// Engines shutdown is on demand...
-	m_pSession->shutdown();
-	m_pConnections->clear();
+	//m_pSession->shutdown();
+	//m_pConnections->clear();
 
 	// Always do auto-save here, hence...
 	autoSaveSession();
 
 	// Send an informative message box...
 	appendMessagesError(
-		tr("The audio engine buffer size has changed.\n\n"
-		"Reloading the current session\n"
-		"is highly recommended."));
+		tr("The audio engine buffer size has changed (%1 frames).\n\n"
+		"The current session will restart immediately.").arg(iBufferSize));
 
 	// Reload the previously auto-saved session...
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
@@ -7477,11 +7479,11 @@ void qtractorMainForm::audioBuffNotify (void)
 		m_pMixer->clear();
 		m_pFiles->clear();
 		// Close session engines.
-		//m_pSession->close();
+		m_pSession->close();
 		m_pSession->clear();
 		m_pTempoCursor->clear();
 		// And last but not least.
-		//m_pConnections->clear();
+		m_pConnections->clear();
 		m_pTracks->clear();
 		// Clear (hard) subject/observer queue.
 		qtractorSubject::clearQueue();
@@ -7501,6 +7503,9 @@ void qtractorMainForm::audioBuffNotify (void)
 	else
 	// Make things just bearable...
 	stabilizeForm();
+
+	// HACK: Done.
+	m_pSession->unlock();
 }
 
 

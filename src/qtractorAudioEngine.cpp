@@ -329,7 +329,7 @@ static int qtractorAudioEngine_buffer_size ( jack_nframes_t nframes, void *pvArg
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
 	if (pAudioEngine->bufferSize() < (unsigned int) nframes)
-		pAudioEngine->notifyBuffEvent();
+		pAudioEngine->notifyBuffEvent(nframes);
 
 	return 0;
 }
@@ -497,9 +497,9 @@ void qtractorAudioEngine::notifyPortEvent (void)
 	m_proxy.notifyPortEvent();
 }
 
-void qtractorAudioEngine::notifyBuffEvent (void)
+void qtractorAudioEngine::notifyBuffEvent ( unsigned int iBufferSize )
 {
-	m_proxy.notifyBuffEvent();
+	m_proxy.notifyBuffEvent(iBufferSize);
 }
 
 void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )

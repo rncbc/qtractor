@@ -61,8 +61,8 @@ public:
 		{ emit xrunEvent(); }
 	void notifyPortEvent()
 		{ emit portEvent(); }
-	void notifyBuffEvent()
-		{ emit buffEvent(); }
+	void notifyBuffEvent(unsigned int iBufferSize)
+		{ emit buffEvent(iBufferSize); }
 	void notifySessEvent(void *pvSessionArg)
 		{ emit sessEvent(pvSessionArg); }
 	void notifySyncEvent(unsigned long iPlayHead)
@@ -76,7 +76,7 @@ signals:
 	void shutEvent();
 	void xrunEvent();
 	void portEvent();
-	void buffEvent();
+	void buffEvent(unsigned int iBufferSize);
 	void sessEvent(void *pvSessionArg);
 	void syncEvent(unsigned long iPlayHead);
 	void propEvent();
@@ -104,7 +104,7 @@ public:
 	void notifyShutEvent();
 	void notifyXrunEvent();
 	void notifyPortEvent();
-	void notifyBuffEvent();
+	void notifyBuffEvent(unsigned int iBufferSize);
 	void notifySessEvent(void *pvSessionArg);
 	void notifySyncEvent(unsigned long iPlayHead);
 	void notifyPropEvent();
