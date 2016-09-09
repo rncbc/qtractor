@@ -1406,9 +1406,11 @@ void qtractorPluginList::setChannels (
 void qtractorPluginList::setChannelsEx (
 	unsigned short iChannels, bool bReset )
 {
+#if 0
 	// Maybe we don't need to change a thing here...
 	if (iChannels == m_iChannels)
 		return;
+#endif
 
 	unsigned short i;
 
