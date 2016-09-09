@@ -3323,6 +3323,9 @@ void qtractorMainForm::trackInputs (void)
 	qDebug("qtractorMainForm::trackInputs()");
 #endif
 
+	// Make sure session is activated...
+	checkRestartSession();
+
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->inputBus(), qtractorBus::Input);
 }
@@ -3342,6 +3345,9 @@ void qtractorMainForm::trackOutputs (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::trackOutputs()");
 #endif
+
+	// Make sure session is activated...
+	checkRestartSession();
 
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->outputBus(), qtractorBus::Output);
@@ -6045,23 +6051,24 @@ bool qtractorMainForm::startSession (void)
 	autoSaveReset();
 
 	if (bResult) {
+		// Get on with the special ALSA sequencer notifier...
+		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+		if (pMidiEngine && pMidiEngine->alsaNotifier()) {
+			m_pSession->resetAllMidiControllers(false); // Deferred++
+			QObject::connect(pMidiEngine->alsaNotifier(),
+				SIGNAL(activated(int)),
+				SLOT(alsaNotify()));
+		}
+		// Game on...
 		appendMessages(tr("Session started."));
-	} else {
+	}
+	else {
 		// Uh-oh, we can't go on like this...
 		appendMessagesError(
 			tr("The audio/MIDI engine could not be started.\n\n"
 			"Make sure the JACK audio server (jackd) and/or\n"
 			"the ALSA Sequencer kernel module (snd-seq-midi)\n"
 			"are up and running and then restart the session."));
-	}
-
-	// Get on with the special ALSA sequencer notifier...
-	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine && pMidiEngine->alsaNotifier()) {
-		m_pSession->resetAllMidiControllers(false); // Deferred++
-		QObject::connect(pMidiEngine->alsaNotifier(),
-			SIGNAL(activated(int)),
-			SLOT(alsaNotify()));
 	}
 
 	return bResult;
@@ -7372,18 +7379,28 @@ void qtractorMainForm::audioShutNotify (void)
 	qDebug("qtractorMainForm::audioShutNotify()");
 #endif
 
+	// HACK: The audio engine (jackd) most probably
+	// is down, not up and running anymoere, but...
+	m_pSession->lock();
+
+	// Always do auto-save here, hence...
+	autoSaveSession();
+
 	// Engines shutdown is on demand...
 	m_pSession->shutdown();
 	m_pConnections->clear();
 
-	// Always do auto-save here, hence...
-	autoSaveSession();
+	// HACK: Done.
+	m_pSession->unlock();
 
 	// Send an informative message box...
 	appendMessagesError(
 		tr("The audio engine has been shutdown.\n\n"
 		"Make sure the JACK audio server (jackd)\n"
 		"is up and running and then restart session."));
+
+	// Try an immediate restart, though...
+	checkRestartSession();
 
 	// Make things just bearable...
 	stabilizeForm();
@@ -7423,21 +7440,27 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	qDebug("qtractorMainForm::audioBuffNotify(%u)", iBufferSize);
 #endif
 
-	// HACK: Restart...
+	// HACK: The audio engine (jackd) is still up
+	// and running, just with bigger buffer size...
 	m_pSession->lock();
-
-	// Engines shutdown is on demand...
-	//m_pSession->shutdown();
-	//m_pConnections->clear();
 
 	// Always do auto-save here, hence...
 	autoSaveSession();
 
+	// Engines shutdown is on demand...
+	m_pSession->shutdown();
+	m_pConnections->clear();
+
+	// HACK: Done.
+	m_pSession->unlock();
+
 	// Send an informative message box...
 	appendMessagesError(
-		tr("The audio engine buffer size has changed (%1 frames).\n\n"
-		"The current session will restart immediately.").arg(iBufferSize));
-
+		tr("The audio engine buffer size has changed\n\n"
+		"(%1 frames/period).\n\n"
+		"Reloading the current session file\n"
+		"is highly recommended.").arg(iBufferSize));
+#if 0
 	// Reload the previously auto-saved session...
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
 	if (!sAutoSavePathname.isEmpty()
@@ -7470,11 +7493,12 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 		selectionNotifySlot(NULL);
 	}
 	else
+#else
+	// Try an immediate restart, though...
+	checkRestartSession();
+#endif
 	// Make things just bearable...
 	stabilizeForm();
-
-	// HACK: Done.
-	m_pSession->unlock();
 }
 
 
