@@ -7510,7 +7510,7 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	};
 
 
-	class Connections : public QList<Connects *>
+	class Connections
 	{
 	public:
 
@@ -7522,7 +7522,7 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 		{
 			int iUpdate = 0;
 
-			QListIterator<Connects *> iter(*this);
+			QListIterator<Connects *> iter(m_list);
 			while (iter.hasNext()) {
 				Connects *pConnect = iter.next();
 				const QString& sBusName = pConnect->busName();
@@ -7551,8 +7551,8 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 
 		void clear()
 		{
-			qDeleteAll(*this);
-			QList<Connects *>::clear();
+			qDeleteAll(m_list);
+			m_list.clear();
 		}
 
 	protected:
@@ -7564,7 +7564,7 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 			for (; pBus; pBus = pBus->next()) {
 				Connects *pConnects = new Connects();
 				if (pConnects->save(pBus) > 0) {
-					append(pConnects);
+					m_list.append(pConnects);
 					++iUpdate;
 				}
 				else delete pConnects;
@@ -7572,6 +7572,10 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 
 			return iUpdate;
 		}
+
+	private:
+
+		QList<Connects *> m_list;
 	};
 
 	//---------------------------------------------------------------------
