@@ -7440,6 +7440,14 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	qDebug("qtractorMainForm::audioBuffNotify(%u)", iBufferSize);
 #endif
 
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
 	// HACK: The audio engine (jackd) is still up
 	// and running, just with bigger buffer size...
 	m_pSession->lock();
@@ -7452,12 +7460,8 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	qtractorBus::Connections midi_connections;
 
 	// Get all connections snapshot...
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine)
-		audio_connections.save(pAudioEngine);
-	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine)
-		midi_connections.save(pMidiEngine);
+	audio_connections.save(pAudioEngine);
+	midi_connections.save(pMidiEngine);
 
 	// Engines shutdown is on demand...
 	m_pSession->shutdown();
@@ -7468,10 +7472,12 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 
 	// Send an informative message box...
 	appendMessagesError(
-		tr("The audio engine buffer size has changed\n\n"
-		"(%1 frames/period).\n\n"
+		tr("The audio engine buffer size has changed,\n"
+		"increased from %1 to %2 frames/period.\n\n"
 		"Reloading the current session file\n"
-		"is highly recommended.").arg(iBufferSize));
+		"is highly recommended.")
+		.arg(pAudioEngine->bufferSize())
+		.arg(iBufferSize));
 #if 0
 	// Reload the previously auto-saved session...
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
@@ -7508,11 +7514,11 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 #else
 	// Try an immediate restart, and restore connections snapshot...
 	if (checkRestartSession()) {
-		if (pAudioEngine)
-			audio_connections.load(pAudioEngine);
-		if (pMidiEngine)
-			midi_connections.load(pMidiEngine);
+		audio_connections.load(pAudioEngine);
+		midi_connections.load(pMidiEngine);
 	}
+	// Shall make it dirty anyway...
+	updateDirtyCount(true);
 #endif
 	// Make things just bearable...
 	stabilizeForm();
