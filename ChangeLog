@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- JACK buffer-size change handling has been deeeply improved,
+  now doing an immediate session restart, while preserving all
+  external connections as much as possible. (EXPERIMENTAL)
+
 - Introducing an audio and MIDI metronome anticipatory offset,
   kind of latency compensation, to respective option settings
   cf. View/Options.../Audio, MIDI/Metronome/Offset (latency).

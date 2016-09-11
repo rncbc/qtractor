@@ -902,4 +902,105 @@ QString qtractorBus::textFromBusMode ( BusMode busMode )
 }
 
 
+// Bus connections snapshot executive mthods.
+int qtractorBus::Connects::save ( qtractorBus *pBus )
+{
+	m_sBusName = pBus->busName();
+	m_busMode  = pBus->busMode();
+
+	if (m_busMode & Input)
+		pBus->updateConnects(Input, m_inputs);
+	if (m_busMode & Output)
+		pBus->updateConnects(Output, m_outputs);
+
+	return m_inputs.count() + m_outputs.count();
+}
+
+
+// Bus connections snapshot executive mthods.
+int qtractorBus::Connects::load( qtractorBus *pBus )
+{
+	if (pBus->busName() != m_sBusName ||
+		pBus->busMode() != m_busMode)
+		return 0;
+
+	if (m_busMode & Input)
+		pBus->inputs().copy(m_inputs);
+	if (m_busMode & Output)
+		pBus->outputs().copy(m_outputs);
+
+	return pBus->inputs().count() + pBus->outputs().count();
+}
+
+
+// Bus connections snapshot cleaner.
+void qtractorBus::Connects::clear (void)
+{
+	m_sBusName.clear();
+	m_busMode = None;
+
+	m_inputs.clear();
+	m_outputs.clear();
+}
+
+
+// Engine connections snapshot executive mthods.
+bool qtractorBus::Connections::load(qtractorEngine *pEngine)
+{
+	int iUpdate = 0;
+
+	QListIterator<Connects *> iter(m_list);
+	while (iter.hasNext()) {
+		Connects *pConnect = iter.next();
+		const QString& sBusName = pConnect->busName();
+		const BusMode busMode = pConnect->busMode();
+		qtractorBus *pBus = NULL;
+		if (busMode & Ex)
+			pBus = pEngine->findBusEx(sBusName);
+		else
+			pBus = pEngine->findBus(sBusName);
+		if (pBus)
+			iUpdate += pConnect->load(pBus);
+	}
+
+	return (iUpdate > 0);
+}
+
+
+bool qtractorBus::Connections::save(qtractorEngine *pEngine)
+{
+	int iUpdate = 0;
+
+	iUpdate += save(pEngine->buses().first());
+	iUpdate += save(pEngine->busesEx().first());
+
+	return (iUpdate > 0);
+}
+
+
+int qtractorBus::Connections::save(qtractorBus *pBus)
+{
+	int iUpdate = 0;
+
+	for (; pBus; pBus = pBus->next()) {
+		Connects *pConnects = new Connects();
+		if (pConnects->save(pBus) > 0) {
+			m_list.append(pConnects);
+			++iUpdate;
+		}
+		else delete pConnects;
+	}
+
+	return iUpdate;
+}
+
+
+// Generic connections snapshot cleaner.
+void qtractorBus::Connections::clear (void)
+{
+	qDeleteAll(m_list);
+	m_list.clear();
+}
+
+
 // end of qtractorEngine.cpp

@@ -7447,141 +7447,9 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	// Always do auto-save here, hence...
 	autoSaveSession();
 
-	//---------------------------------------------------------------------
-	// About taking a snapshot of all buses connections (by name and mode)
-	//
-	class Connects
-	{
-	public:
-
-		Connects() : m_busMode(qtractorBus::None) {}
-
-		~Connects() { clear(); }
-
-		const QString& busName() const
-			{ return m_sBusName; }
-
-		qtractorBus::BusMode busMode() const
-			{ return m_busMode;  }
-
-		int save(qtractorBus *pBus)
-		{
-			m_sBusName = pBus->busName();
-			m_busMode  = pBus->busMode();
-
-			if (m_busMode & qtractorBus::Input)
-				pBus->updateConnects(qtractorBus::Input, m_inputs);
-			if (m_busMode & qtractorBus::Output)
-				pBus->updateConnects(qtractorBus::Output, m_outputs);
-
-			return m_inputs.count() + m_outputs.count();
-		}
-
-		int load(qtractorBus *pBus)
-		{
-			if (pBus->busMode() != m_busMode ||
-				pBus->busName() != m_sBusName)
-				return 0;
-
-			if (m_busMode & qtractorBus::Input)
-				pBus->inputs().copy(m_inputs);
-			if (m_busMode & qtractorBus::Output)
-				pBus->outputs().copy(m_outputs);
-
-			return pBus->inputs().count() + pBus->outputs().count();
-		}
-
-		void clear()
-		{
-			m_sBusName.clear();
-			m_busMode = qtractorBus::None;
-
-			m_inputs.clear();
-			m_outputs.clear();
-		}
-
-	private:
-
-		QString                  m_sBusName;
-		qtractorBus::BusMode     m_busMode;
-
-		qtractorBus::ConnectList m_inputs;
-		qtractorBus::ConnectList m_outputs;
-	};
-
-
-	class Connections
-	{
-	public:
-
-		Connections() {}
-
-		~Connections() { clear(); }
-
-		bool load(qtractorEngine *pEngine)
-		{
-			int iUpdate = 0;
-
-			QListIterator<Connects *> iter(m_list);
-			while (iter.hasNext()) {
-				Connects *pConnect = iter.next();
-				const QString& sBusName = pConnect->busName();
-				const qtractorBus::BusMode busMode = pConnect->busMode();
-				qtractorBus *pBus = NULL;
-				if (busMode & qtractorBus::Ex)
-					pBus = pEngine->findBusEx(sBusName);
-				else
-					pBus = pEngine->findBus(sBusName);
-				if (pBus)
-					iUpdate += pConnect->load(pBus);
-			}
-
-			return (iUpdate > 0);
-		}
-
-		bool save(qtractorEngine *pEngine)
-		{
-			int iUpdate = 0;
-
-			iUpdate += save(pEngine->buses().first());
-			iUpdate += save(pEngine->busesEx().first());
-
-			return (iUpdate > 0);
-		}
-
-		void clear()
-		{
-			qDeleteAll(m_list);
-			m_list.clear();
-		}
-
-	protected:
-
-		int save(qtractorBus *pBus)
-		{
-			int iUpdate = 0;
-
-			for (; pBus; pBus = pBus->next()) {
-				Connects *pConnects = new Connects();
-				if (pConnects->save(pBus) > 0) {
-					m_list.append(pConnects);
-					++iUpdate;
-				}
-				else delete pConnects;
-			}
-
-			return iUpdate;
-		}
-
-	private:
-
-		QList<Connects *> m_list;
-	};
-
-	//---------------------------------------------------------------------
-
-	Connections audio_connections;
-	Connections midi_connections;
+	// Connections snapshot stuff...
+	qtractorBus::Connections audio_connections;
+	qtractorBus::Connections midi_connections;
 
 	// Get all connections snapshot...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
@@ -7590,8 +7458,6 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine)
 		midi_connections.save(pMidiEngine);
-
-	//---------------------------------------------------------------------
 
 	// Engines shutdown is on demand...
 	m_pSession->shutdown();
@@ -7640,7 +7506,6 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	}
 	else
 #else
-	//---------------------------------------------------------------------
 	// Try an immediate restart, and restore connections snapshot...
 	if (checkRestartSession()) {
 		if (pAudioEngine)
@@ -7648,7 +7513,6 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 		if (pMidiEngine)
 			midi_connections.load(pMidiEngine);
 	}
-	//---------------------------------------------------------------------
 #endif
 	// Make things just bearable...
 	stabilizeForm();
