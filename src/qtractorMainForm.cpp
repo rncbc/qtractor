@@ -303,46 +303,52 @@ qtractorMainForm::qtractorMainForm (
 	}
 
 	// Configure the audio engine event handling...
+	const qtractorAudioEngineProxy *pAudioEngineProxy = NULL;
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine) {
-		QObject::connect(pAudioEngine->proxy(),
+	if (pAudioEngine)
+		pAudioEngineProxy = pAudioEngine->proxy();
+	if (pAudioEngineProxy) {
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(shutEvent()),
 			SLOT(audioShutNotify()));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(xrunEvent()),
 			SLOT(audioXrunNotify()));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(portEvent()),
 			SLOT(audioPortNotify()));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(buffEvent(unsigned int)),
 			SLOT(audioBuffNotify(unsigned int)));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(sessEvent(void *)),
 			SLOT(audioSessNotify(void *)));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(syncEvent(unsigned long)),
 			SLOT(audioSyncNotify(unsigned long)));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(propEvent()),
 			SLOT(audioPropNotify()));
 	}
 
 	// Configure the MIDI engine event handling...
+	const qtractorMidiEngineProxy *pMidiEngineProxy = NULL;
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine) {
+	if (pMidiEngine)
+		pMidiEngineProxy = pMidiEngine->proxy();
+	if (pMidiEngineProxy) {
 		qRegisterMetaType<qtractorMmcEvent> ("qtractorMmcEvent");
 		qRegisterMetaType<qtractorCtlEvent> ("qtractorCtlEvent");
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(mmcEvent(const qtractorMmcEvent&)),
 			SLOT(midiMmcNotify(const qtractorMmcEvent&)));
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(ctlEvent(const qtractorCtlEvent&)),
 			SLOT(midiCtlNotify(const qtractorCtlEvent&)));
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(sppEvent(int, unsigned short)),
 			SLOT(midiSppNotify(int, unsigned short)));
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(clkEvent(float)),
 			SLOT(midiClkNotify(float)));
 	}

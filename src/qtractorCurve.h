@@ -610,7 +610,7 @@ public:
 	}
 
 	// Signal/slot notifier accessor.
-	qtractorCurveListProxy *proxy()
+	const qtractorCurveListProxy *proxy() const
 		{ return &m_proxy; }
 
 	// Signal/slot notification.
