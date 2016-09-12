@@ -5688,7 +5688,11 @@ increased from %1 to %2 frames/period.
 
 Reloading the current session file
 is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>La taille du tampon du moteur audio a été modifiée,
+aumgentant de %1 à %2 trames/période.
+
+Le rechargement du fichier de session courant
+est hautement recommandé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="434"/>
@@ -5835,7 +5839,7 @@ est près et en fonctionnement puis redémarrer la session.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5473"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>support de LV2 plug-in State Make Path activé (DANGEREUX)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5526"/>
@@ -8975,13 +8979,13 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="521"/>
         <source>&amp;Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Renverser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="542"/>
         <location filename="../qtractorMidiToolsForm.ui" line="557"/>
         <source>&amp;Normalize</source>
-        <translation>&amp;normaliser</translation>
+        <translation>&amp;Normaliser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="554"/>
@@ -9707,12 +9711,12 @@ existantes :</translation>
         <location filename="../qtractorOptionsForm.ui" line="1320"/>
         <location filename="../qtractorOptionsForm.ui" line="2162"/>
         <source>&amp;Offset (latency):</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage (latence) &amp;O :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1339"/>
         <source>Metronome Audio offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage audio métronome (latence)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2509"/>
@@ -10020,7 +10024,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2007"/>
         <source>Metronome MIDI duration (bar)</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée MIDI métronome (barre)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2032"/>
@@ -10050,7 +10054,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2121"/>
         <source>Metronome MIDI duration (beat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée MIDI métronome (pulsation)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2146"/>
@@ -10065,7 +10069,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2181"/>
         <source>Metronome MIDI offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage MIDI métronome (latence)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2204"/>
