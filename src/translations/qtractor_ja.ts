@@ -5686,7 +5686,11 @@ increased from %1 to %2 frames/period.
 
 Reloading the current session file
 is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>音声エンジンのバッファーサイズが変更され、
+%1 から %2 frame/periodとなりました。
+
+現在のセッションファイルを再ロード
+してください。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="434"/>
@@ -8973,7 +8977,7 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="521"/>
         <source>&amp;Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>反転(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="542"/>
@@ -9705,27 +9709,27 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="1320"/>
         <location filename="../qtractorOptionsForm.ui" line="2162"/>
         <source>&amp;Offset (latency):</source>
-        <translation type="unfinished"></translation>
+        <translation>オフセット(レイテンシ)(&amp;O):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1339"/>
         <source>Metronome Audio offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームの音声オフセット(レイテンシ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2007"/>
         <source>Metronome MIDI duration (bar)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームのMIDIデュレーション(bar)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2121"/>
         <source>Metronome MIDI duration (beat)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームのMIDIデュレーション(beat)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2181"/>
         <source>Metronome MIDI offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームのMIDIオフセット(レイテンシ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2509"/>
