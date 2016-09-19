@@ -165,6 +165,8 @@ public:
 			bool sync(float fValue, float fOldValue)
 			{
 				bool bSync = qtractorMidiControl::isSync();
+				if (!bSync)
+					bSync = m_bValueSync;
 				if (!bSync) {
 					const float v0 = m_fValue;
 					const float v1 = fOldValue;
@@ -174,7 +176,7 @@ public:
 						 bSync = true;
 				#else
 					const float d1 = (v1 - fValue);
-					const float d2 = (m_bValueSync ? (v1 - v0) : d1) * d1;
+					const float d2 = (v1 - v0) * d1;
 					bSync = (d2 < 0.001f);
 				#endif
 				}

@@ -263,6 +263,9 @@ bool qtractorCopyTrackCommand::redo (void)
 	qtractorTrack *pTrack = afterTrack();
 	qtractorTrack *pNewTrack = track();
 
+	// Reset state properties...
+	pNewTrack->resetProperties();
+
 	// Copy all former clips depending of track type...
 	const qtractorTrack::TrackType trackType = pTrack->trackType();
 	for (qtractorClip *pClip = pTrack->clips().first();
@@ -428,6 +431,16 @@ bool qtractorCopyTrackCommand::redo (void)
 	// Set final new track properties...
 	if (pNewCurrentCurve)
 		pNewTrack->setCurrentCurve(pNewCurrentCurve);
+
+	// Update monitor volume/panning for new MIDI track...
+	if (trackType == qtractorTrack::Midi) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pNewTrack->outputBus());
+		if (pMidiBus) {
+			pMidiBus->setVolume(pNewTrack, pNewTrack->gain());
+			pMidiBus->setPanning(pNewTrack, pNewTrack->panning());
+		}
+	}
 
 	// Refresh to most recent things...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1297,7 +1310,6 @@ bool qtractorTrackInstrumentCommand::redo (void)
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return false;
-
 
 	// Set undo values...
 	const unsigned short iChannel = pTrack->midiChannel();

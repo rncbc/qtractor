@@ -19,7 +19,13 @@ Project page:
 Git repos:
 
   http://git.code.sf.net/p/qtractor/code
-  https://github.com/rncbc/qtractor
+  https://github.com/rncbc/qtractor.git
+  https://gitlab.com/rncbc/qtractor.git
+  https://bitbucket.org/rncbc/qtractor.git
+
+Wiki:
+
+  http://sourceforge.net/p/qtractor/wiki/
 
 Weblog:
 
@@ -205,8 +211,8 @@ web site (http://www.rncbc.org).
 Acknowledgments
 ---------------
 
-A newer Qtractor quick start guide and user manual has been updated
-for version 0.5.x by Seth Kenlon & Klaatu.
+The dated Qtractor quick start guide and user manual for version 0.5.x
+has been authored by Seth Kenlon & Klaatu.
 (http://downloads.sourceforge.net/qtractor/qtractor-0.5.x-user-manual.pdf)
 
 The older Qtractor user manual for version 0.3.0 and before, have
@@ -217,7 +223,11 @@ Qtractor logo/icon is an original work of Andy Fitzsimon, borrowed
 from the public domain openclipart.org gallery.
 
 A special mention should also go to the translators of Qtractor
-(see TRANSLATORS).
+(see TRANSLATORS) and of course, last but not least, to all the
+past, present and future contributors of the Qtractor Wiki.
+(http://sourceforge.net/p/qtractor/wiki/)
+
+Thank you all.
 
 
 References

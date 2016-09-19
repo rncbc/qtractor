@@ -28,6 +28,7 @@
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
+#include "qtractorSession.h"
 
 #include "qtractorPluginFactory.h"
 
@@ -93,6 +94,17 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// No settings descriptor initially (the caller will set it).
 	m_pOptions = NULL;
+
+	// Have some deafult time-scale for instance...
+	m_pTimeScale = NULL;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
+		m_ui.AudioMetroOffsetSpinBox->setTimeScale(m_pTimeScale);
+		m_ui.AudioMetroOffsetSpinBox->setMaximum(m_pTimeScale->sampleRate());
+		m_ui.AudioMetroOffsetSpinBox->setDeltaValue(true);
+	}
 
 	// Populate the session format combo-box.
 	m_ui.SessionFormatComboBox->clear();
@@ -246,6 +258,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioMetroAutoConnectCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioMetroOffsetSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -303,6 +318,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MidiMetroBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiMetroOffsetSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.ConfirmRemoveCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -332,7 +350,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.DisplayFormatComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changed()));
+		SLOT(displayFormatChanged(int)));
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -477,6 +495,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 // Destructor.
 qtractorOptionsForm::~qtractorOptionsForm (void)
 {
+	if (m_pTimeScale) delete m_pTimeScale;
 }
 
 
@@ -493,6 +512,12 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.Lv2PresetDirComboBox);
+
+	// Time-scale related options...
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(m_pOptions->iDisplayFormat);
+	if (m_pTimeScale)
+		m_pTimeScale->setDisplayFormat(displayFormat);
 
 	// Audio options.
 	int iIndex  = 0;
@@ -540,6 +565,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MetroBeatGainSpinBox->setValue(log10f2(m_pOptions->fMetroBeatGain));
 	m_ui.AudioMetroBusCheckBox->setChecked(m_pOptions->bAudioMetroBus);
 	m_ui.AudioMetroAutoConnectCheckBox->setChecked(m_pOptions->bAudioMetroAutoConnect);
+	m_ui.AudioMetroOffsetSpinBox->setDisplayFormat(displayFormat);
+	m_ui.AudioMetroOffsetSpinBox->setValue(m_pOptions->iAudioMetroOffset);
 
 	// MIDI capture/export options.
 	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
@@ -573,6 +600,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MetroBeatVelocitySpinBox->setValue(m_pOptions->iMetroBeatVelocity);
 	m_ui.MetroBeatDurationSpinBox->setValue(m_pOptions->iMetroBeatDuration);
 	m_ui.MidiMetroBusCheckBox->setChecked(m_pOptions->bMidiMetroBus);
+	m_ui.MidiMetroOffsetSpinBox->setValue(m_pOptions->iMidiMetroOffset);
 
 	// Mixer preferences.
 	m_ui.MixerAutoGridLayoutCheckBox->setChecked(m_pOptions->bMixerAutoGridLayout);
@@ -741,6 +769,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->fMetroBeatGain       = pow10f2(m_ui.MetroBeatGainSpinBox->value());
 		m_pOptions->bAudioMetroBus       = m_ui.AudioMetroBusCheckBox->isChecked();
 		m_pOptions->bAudioMetroAutoConnect = m_ui.AudioMetroAutoConnectCheckBox->isChecked();
+		m_pOptions->iAudioMetroOffset    = m_ui.AudioMetroOffsetSpinBox->value();
 		// MIDI options...
 		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
 		m_pOptions->iMidiCaptureQuantize = m_ui.MidiCaptureQuantizeComboBox->currentIndex();
@@ -763,6 +792,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMetroBeatVelocity   = m_ui.MetroBeatVelocitySpinBox->value();
 		m_pOptions->iMetroBeatDuration   = m_ui.MetroBeatDurationSpinBox->value();
 		m_pOptions->bMidiMetroBus        = m_ui.MidiMetroBusCheckBox->isChecked();
+		m_pOptions->iMidiMetroOffset     = m_ui.MidiMetroOffsetSpinBox->value();
 		// Display options...
 		m_pOptions->bConfirmRemove       = m_ui.ConfirmRemoveCheckBox->isChecked();
 		m_pOptions->bConfirmArchive      = m_ui.ConfirmArchiveCheckBox->isChecked();
@@ -949,6 +979,21 @@ void qtractorOptionsForm::updateMetroNoteNames (void)
 	// Restore old selection...
 	m_ui.MetroBarNoteComboBox->setCurrentIndex(iOldBarNote);
 	m_ui.MetroBeatNoteComboBox->setCurrentIndex(iOldBeatNote);
+
+	changed();
+}
+
+
+// Display format has changed.
+void qtractorOptionsForm::displayFormatChanged ( int iDisplayFormat )
+{
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
+
+	m_ui.AudioMetroOffsetSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
+		m_pTimeScale->setDisplayFormat(displayFormat);
 
 	changed();
 }
@@ -1508,6 +1553,8 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatGainTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatGainSpinBox->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
+	m_ui.AudioMetroOffsetTextLabel->setEnabled(bAudioMetronome);
+	m_ui.AudioMetroOffsetSpinBox->setEnabled(bAudioMetronome);
 
 	m_ui.AudioMetroAutoConnectCheckBox->setEnabled(
 		bAudioMetronome && m_ui.AudioMetroBusCheckBox->isChecked());
@@ -1532,6 +1579,8 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatDurationTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroBeatDurationSpinBox->setEnabled(bMidiMetronome);
 	m_ui.MidiMetroBusCheckBox->setEnabled(bMidiMetronome);
+	m_ui.MidiMetroOffsetTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MidiMetroOffsetSpinBox->setEnabled(bMidiMetronome);
 
 	const bool bMessagesLog = m_ui.MessagesLogCheckBox->isChecked();
 	m_ui.MessagesLogPathComboBox->setEnabled(bMessagesLog);

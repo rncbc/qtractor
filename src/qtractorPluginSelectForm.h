@@ -41,9 +41,8 @@ public:
 	// Destructor.
 	~qtractorPluginSelectForm();
 
-	void setChannels(unsigned short iChannels, bool bMidi = false);
-	unsigned short channels() const;
-	bool isMidi() const;
+	void setPluginList(qtractorPluginList *pPluginList);
+	qtractorPluginList *pluginList() const;
 
 	int pluginCount() const;
 	QString pluginFilename(int iPlugin) const;
@@ -67,8 +66,7 @@ private:
 	// The Qt-designer UI struct...
 	Ui::qtractorPluginSelectForm m_ui;
 
-	unsigned short m_iChannels;
-	bool m_bMidi;
+	qtractorPluginList *m_pPluginList;
 
 	QList<QTreeWidgetItem *> m_selectedItems;
 };

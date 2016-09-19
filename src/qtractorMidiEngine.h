@@ -194,6 +194,10 @@ public:
 	int metroBeatVelocity() const;
 	unsigned long metroBeatDuration() const;
 
+	// Metronome latency offset (in ticks).
+	void setMetroOffset(unsigned long iMetroOffset);
+	unsigned long metroOffset() const;
+
 	// Process metronome clicks.
 	void processMetro(unsigned long iFrameStart, unsigned long iFrameEnd);
 
@@ -357,6 +361,7 @@ private:
 	int              m_iMetroBeatNote;
 	int              m_iMetroBeatVelocity;
 	unsigned long    m_iMetroBeatDuration;
+	unsigned long    m_iMetroOffset;
 	bool             m_bMetroEnabled;
 
 	// Time-scale cursor (tempo/time-signature map)
@@ -434,7 +439,7 @@ public:
 		Patch() : bankSelMethod(-1), bank(-1), prog(-1) {}
 		// Validate members.
 		bool isValid() const
-			{ return bankSelMethod >= 0 && (bank >= 0 || prog >= 0); }
+			{ return (bankSelMethod >= 0 || bank >= 0 || prog >= 0); }
 		// Payload members.
 		QString instrumentName;
 		int     bankSelMethod;

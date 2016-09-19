@@ -1228,6 +1228,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iMetroBeatNote     = 77;	// GM Low-wood stick
 	m_iMetroBeatVelocity = 64;
 	m_iMetroBeatDuration = 24;
+	m_iMetroOffset       = 0;
 	m_bMetroEnabled      = false;
 
 	// Time-scale cursor (tempo/time-signature map)
@@ -1459,11 +1460,9 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 			// MIDI track channel controllers...
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-			qtractorMidiMonitor *pMidiMonitor
-				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
-			if (pMidiBus && pMidiMonitor) {
-				pMidiBus->setVolume(pTrack, pMidiMonitor->gain());
-				pMidiBus->setPanning(pTrack, pMidiMonitor->panning());
+			if (pMidiBus) {
+				pMidiBus->setVolume(pTrack, pTrack->gain());
+				pMidiBus->setPanning(pTrack, pTrack->panning());
 			}
 		}
 	}
@@ -3153,6 +3152,18 @@ unsigned long qtractorMidiEngine::metroBeatDuration (void) const
 }
 
 
+// Metronome latency offset (in ticks).
+void qtractorMidiEngine::setMetroOffset ( unsigned long iMetroOffset )
+{
+	m_iMetroOffset = iMetroOffset;
+}
+
+unsigned long qtractorMidiEngine::metroOffset (void) const
+{
+	return m_iMetroOffset;
+}
+
+
 // Process metronome clicks.
 void qtractorMidiEngine::processMetro (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
@@ -3173,7 +3184,7 @@ void qtractorMidiEngine::processMetro (
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
 		const unsigned long tick
-			= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+			= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 		ev.type = SND_SEQ_EVENT_TEMPO;
 		ev.data.queue.queue = m_iAlsaQueue;
@@ -3246,8 +3257,12 @@ void qtractorMidiEngine::processMetro (
 			}
 		}
 		if (m_bMetronome && iTime >= iTimeStart) {
+			// Have some latency compensation...
+			const unsigned long iTimeOffset = (m_iMetroOffset > 0
+				&& iTime > m_iMetroOffset ? iTime - m_iMetroOffset : iTime);
+			// Set proper event schedule time...
 			const unsigned long tick
-				= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
+				= (long(iTimeOffset) > m_iTimeStart ? iTimeOffset - m_iTimeStart : 0);
 			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 			// Set proper event data...
 			if (pNode->beatIsBar(iBeat)) {

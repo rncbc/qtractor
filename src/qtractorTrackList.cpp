@@ -329,29 +329,29 @@ qtractorTrackList::Item::~Item (void)
 
 
 // Track-list model item bank/program names helper.
-bool qtractorTrackList::Item::updateBankProgram (
-	qtractorMidiManager *pMidiManager, const QString& sInstrument,
-	QString& sBank, QString& sProgram ) const
+bool qtractorTrackList::Item::updateBankProgNames (
+	qtractorMidiManager *pMidiManager, const QString& sInstrumentName,
+	QString& sBankName, QString& sProgName ) const
 {
 	if (pMidiManager == NULL)
 		return false;
 
 	const qtractorMidiManager::Instruments& list
 		= pMidiManager->instruments();
-	if (!list.contains(sInstrument))
+	if (!list.contains(sInstrumentName))
 		return false;
 
 	const qtractorMidiManager::Banks& banks
-		= list[sInstrument];
+		= list[sInstrumentName];
 	const int iBank = track->midiBank();
 	if (banks.contains(iBank)) {
 		const qtractorMidiManager::Bank& bank
 			= banks[iBank];
 		const int iProg = track->midiProg();
 		if (bank.progs.contains(iProg)) {
-			sProgram = QString("%1 - %2").arg(iProg)
+			sBankName = bank.name;
+			sProgName = QString("%1 - %2").arg(iProg)
 				.arg(bank.progs[iProg]);
-			sBank = bank.name;
 		}
 	}
 
@@ -410,27 +410,27 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			const unsigned short iChannel = track->midiChannel();
 			text << sOmni + QString::number(iChannel + 1);
 			// Care of MIDI instrument, program and bank numbers vs.names...
-			QString sInstrument = s;
-			QString sProg = s;
-			QString sBank;
+			QString sInstrumentName = s;
+			QString sProgName = s;
+			QString sBankName;
 			const int iProg = track->midiProg();
 			if (iProg >= 0)
-				sProg = QString::number(iProg + 1) + s;
+				sProgName = QString::number(iProg + 1) + s;
 			const int iBank = track->midiBank();
 			if (iBank >= 0)
-				sBank = QString::number(iBank);
+				sBankName = QString::number(iBank);
 			if (pMidiBus) {
 				const qtractorMidiBus::Patch& patch
 					= pMidiBus->patch(iChannel);
 				if (!patch.instrumentName.isEmpty()) {
-					sInstrument = patch.instrumentName;
-					bool bMidiManager = updateBankProgram(
+					sInstrumentName = patch.instrumentName;
+					bool bMidiManager = updateBankProgNames(
 						(track->pluginList())->midiManager(),
-						sInstrument, sBank, sProg);
+						sInstrumentName, sBankName, sProgName);
 					if (!bMidiManager && pMidiBus->pluginList_out()) {
-						bMidiManager = updateBankProgram(
+						bMidiManager = updateBankProgNames(
 							(pMidiBus->pluginList_out())->midiManager(),
-							sInstrument, sBank, sProg);
+							sInstrumentName, sBankName, sProgName);
 					}
 					if (!bMidiManager) {
 						qtractorInstrumentList *pInstruments = NULL;
@@ -439,21 +439,21 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 						if (pSession)
 							pInstruments = pSession->instruments();
 						if (pInstruments
-							&& pInstruments->contains(sInstrument)) {
-							qtractorInstrument& instr
-								= (*pInstruments)[sInstrument];
+							&& pInstruments->contains(sInstrumentName)) {
+							const qtractorInstrument& instr
+								= pInstruments->value(sInstrumentName);
 							const qtractorInstrumentData& bank
 								= instr.patch(iBank);
 							if (bank.contains(iProg)) {
-								sProg = bank[iProg];
-								sBank = bank.name();
+								sProgName = bank[iProg];
+								sBankName = bank.name();
 							}
 						}
 					}
 				}
 			}
 			// This is it, MIDI Patch/Bank...
-			text << sProg + '\n' + sBank << sInstrument;
+			text << sProgName + '\n' + sBankName << sInstrumentName;
 			break;
 		}
 
@@ -1170,19 +1170,15 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Select current track...
 	const int iTrack = trackRowAt(pos);
 
+	// Make it current anyway...
+	setCurrentTrackRow(iTrack);
+
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		// Try for drag-move/resize/select later...
 		m_dragState = DragStart;
 		m_posDrag = pos;
 		// Look for the mouse hovering around some item boundary...
 		if (iTrack >= 0) {
-			// Special attitude, only of interest on
-			// the first left-most column (track-number)...
-			if (trackColumnAt(pos) == Number) {
-				m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
-					& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
-				qtractorScrollView::setFocus(); // get focus back anyway.
-			}
 			// Make current row always selected...
 			const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
 			if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
@@ -1203,12 +1199,6 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	// Make it current anyway...
-	setCurrentTrackRow(iTrack);
-
-	// Probably this would be done ahead,
-	// just 'coz we're using ruberbands, which are
-	// in fact based on real widgets (WM entities)...
 //	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
@@ -1341,7 +1331,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_iDragTrack = -1;
 			m_iDragY = 0;
 		}
-		break;
+		// Fall thru...
 	}
 	default:
 		break;
@@ -1401,8 +1391,16 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	case DragSelect:
 		if (m_iDragTrack >= 0)
 			updateSelect(true);
-		// Fall thru...
+		break;
 	case DragStart:
+		// Special attitude, only of interest on
+		// the first left-most column (track-number)...
+		if (trackColumnAt(pos) == Number) {
+			m_pTracks->selectCurrentTrack((pMouseEvent->modifiers()
+				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
+			qtractorScrollView::setFocus(); // Get focus back anyway.
+		}
+		// Fall thru...
 	case DragNone:
 	default:
 		break;

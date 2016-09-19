@@ -1,7 +1,7 @@
 // qtractorDocument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
 #ifndef __qtractorDocument_h
 #define __qtractorDocument_h
 
-#include <QString>
+#include <QStringList>
 
 // Forward declartions.
 class QDomDocument;
@@ -65,7 +65,7 @@ public:
 	bool isTemporary() const;
 
 	// Archive filename filter.
-	QString addFile (const QString& sFilename) const;
+	QString addFile (const QString& sFilename);
 
 	// External storage simple methods.
 	bool load (const QString& sFilename, Flags flags = Default);
@@ -93,7 +93,8 @@ public:
 	static void clearExtractedArchives(bool bRemove = false);
 
 	// Extra-ordinary archive files management.
-	static QString addArchiveFile(const QString& sFilename);
+	static QString addArchiveFile(
+		const QString& sDir, const QString& sFilename);
 
 private:
 
@@ -107,6 +108,9 @@ private:
 
 	// Archive stuff.
 	qtractorZipFile *m_pZipFile;
+
+	// Temporary files;
+	QStringList m_tempFiles;
 
 	// Filename extensions (file suffixes).
 	static QString g_sDefaultExt;

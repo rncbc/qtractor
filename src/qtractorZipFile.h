@@ -1,7 +1,7 @@
 // qtractorZipFile.h
 //
 /****************************************************************************
-   Copyright (C) 2010-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -71,8 +71,11 @@ public:
 	bool extractFile(const QString& sFilename);
 	bool extractAll();
 
+	void setPrefix(const QString& sPrefix);
+	const QString& prefix () const;
+
 	QString alias(const QString& sFilename,
-		const QString& sPrefix = QString()) const;
+		const QString& sPrefix = QString(), bool bTemp = false) const;
 
 	bool addFile(const QString& sFilename,
 		const QString& sAlias = QString());

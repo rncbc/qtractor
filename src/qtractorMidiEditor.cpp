@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3156,7 +3156,7 @@ bool qtractorMidiEditor::dragMoveFilter (
 			m_dragState != DragStep) {
 			m_dragCursor = DragNone;
 			pScrollView->unsetCursor();
-			m_pEditList->dragNoteOn(-1);
+			m_pEditList->dragNoteOff();
 			return true;
 		}
 	}
@@ -4496,9 +4496,9 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			updateContents();
 		}
 	}
-	else
+
 	if (m_pEditList)
-		m_pEditList->dragNoteOn(-1);
+		m_pEditList->dragNoteOff();
 
 	m_dragState  = DragNone;
 	m_resizeMode = ResizeNone;
@@ -4607,13 +4607,14 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 		return;
 
 	// Get instrument name from patch descriptor...
-	QString sInstrument;
+	QString sInstrumentName;
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 	if (pMidiBus)
-		sInstrument = pMidiBus->patch(pTrack->midiChannel()).instrumentName;
+		sInstrumentName = pMidiBus->patch(pTrack->midiChannel()).instrumentName;
 	// Do we have any?...
-	if (sInstrument.isEmpty() || !pInstruments->contains(sInstrument)) {
+	if (sInstrumentName.isEmpty()
+		|| !pInstruments->contains(sInstrumentName)) {
 		// Default drumk-key note names:
 		// at least have a GM Drums (Channel 10) help...
 		if (pTrack->midiChannel() == 9)
@@ -4623,7 +4624,8 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	}
 
 	// Finally, got instrument descriptor...
-	const qtractorInstrument& instr = (*pInstruments)[sInstrument];
+	const qtractorInstrument& instr
+		= pInstruments->value(sInstrumentName);
 
 	const int iBank = pTrack->midiBank();
 	const int iProg = pTrack->midiProg();

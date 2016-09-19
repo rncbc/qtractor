@@ -161,6 +161,28 @@ public:
 
 
 //----------------------------------------------------------------------
+// class qtractorMoveBusCommand - declaration.
+//
+
+class qtractorMoveBusCommand : public qtractorBusCommand
+{
+public:
+
+	// Constructor.
+	qtractorMoveBusCommand(qtractorBus *pBus, qtractorBus *pNextBus);
+
+	// Plugin-move command methods.
+	bool redo();
+	bool undo() { return redo(); }
+
+private:
+
+	// Instance variables.
+	qtractorBus *m_pNextBus;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorBusMonitorCommand - declaration.
 //
 

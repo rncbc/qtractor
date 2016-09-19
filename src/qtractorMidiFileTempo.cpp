@@ -222,8 +222,8 @@ void qtractorMidiFileTempo::fromTimeScale (
 	if (pTimeScale == NULL)
 		return;
 
-	const unsigned short p = pTimeScale->ticksPerBeat();
-	const unsigned short q = m_pMidiFile->ticksPerBeat();
+	const unsigned short p = m_pMidiFile->ticksPerBeat();
+	const unsigned short q = pTimeScale->ticksPerBeat();
 
 	if (q < 1) return;
 
@@ -261,8 +261,8 @@ void qtractorMidiFileTempo::intoTimeScale (
 	if (pTimeScale == NULL)
 		return;
 
-	const unsigned short p = m_pMidiFile->ticksPerBeat();
-	const unsigned short q = pTimeScale->ticksPerBeat();
+	const unsigned short p = pTimeScale->ticksPerBeat();
+	const unsigned short q = m_pMidiFile->ticksPerBeat();
 
 	if (q < 1) return;
 

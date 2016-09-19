@@ -61,8 +61,8 @@ public:
 		{ emit xrunEvent(); }
 	void notifyPortEvent()
 		{ emit portEvent(); }
-	void notifyBuffEvent()
-		{ emit buffEvent(); }
+	void notifyBuffEvent(unsigned int iBufferSize)
+		{ emit buffEvent(iBufferSize); }
 	void notifySessEvent(void *pvSessionArg)
 		{ emit sessEvent(pvSessionArg); }
 	void notifySyncEvent(unsigned long iPlayHead)
@@ -76,7 +76,7 @@ signals:
 	void shutEvent();
 	void xrunEvent();
 	void portEvent();
-	void buffEvent();
+	void buffEvent(unsigned int iBufferSize);
 	void sessEvent(void *pvSessionArg);
 	void syncEvent(unsigned long iPlayHead);
 	void propEvent();
@@ -104,7 +104,7 @@ public:
 	void notifyShutEvent();
 	void notifyXrunEvent();
 	void notifyPortEvent();
-	void notifyBuffEvent();
+	void notifyBuffEvent(unsigned int iBufferSize);
 	void notifySessEvent(void *pvSessionArg);
 	void notifySyncEvent(unsigned long iPlayHead);
 	void notifyPropEvent();
@@ -183,6 +183,10 @@ public:
 	void setMetroBeatGain(float fGain);
 	float metroBeatGain() const;
 
+	// Metronome latency offset (in frames).
+	void setMetroOffset(unsigned long iMetroOffset);
+	unsigned long metroOffset() const;
+
 	void resetMetro();
 
 	// Audition/pre-listening bus mode accessors.
@@ -241,6 +245,9 @@ protected:
 	// Freewheeling process cycle executive (needed for export).
 	void process_export(unsigned int nframes);
 
+	// Metronome latency offset compensation.
+	unsigned long metro_offset(unsigned long iFrame) const;
+
 private:
 
 	// Special event notifier proxy object.
@@ -290,6 +297,7 @@ private:
 	QString              m_sMetroBeatFilename;
 	float                m_fMetroBarGain;
 	float                m_fMetroBeatGain;
+	unsigned long        m_iMetroOffset;
 	unsigned long        m_iMetroBeatStart;
 	unsigned int         m_iMetroBeat;
 	bool                 m_bMetroEnabled;
@@ -352,11 +360,14 @@ public:
 		qtractorAudioBus *pInputBus = NULL);
 	void buffer_commit(unsigned int nframes);
 
-	float **buffer() const;
+	// Up-and-running predicate.
+	bool isEnabled() const { return m_bEnabled; }
 
 	// Frame buffer accessors.
-	float **in()  const;
-	float **out() const;
+	float **buffer() const { return m_ppYBuffer; }
+
+	float **in()  const	{ return m_ppIBuffer; }
+	float **out() const { return m_ppOBuffer; }
 
 	// Virtual I/O bus-monitor accessors.
 	qtractorMonitor *monitor_in()  const;
@@ -436,7 +447,7 @@ private:
 
 	// Special under-work flag...
 	// (r/w access should be atomic)
-	bool m_bEnabled;
+	volatile bool m_bEnabled;
 
 	// Buffer mix-down processor.
 	void (*m_pfnBufferAdd)(float **, float **, unsigned int,

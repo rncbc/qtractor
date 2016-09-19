@@ -57,18 +57,6 @@ class QCursor;
 
 
 //----------------------------------------------------------------------------
-// qtractorTrackViewInfo -- Track view state info.
-
-struct qtractorTrackViewInfo
-{
-	int           trackIndex;   // Track index.
-	unsigned long trackStart;   // First track frame on view.
-	unsigned long trackEnd;     // Last track frame on view.
-	QRect         trackRect;    // The track view rectangle.
-};
-
-
-//----------------------------------------------------------------------------
 // qtractorTrackView -- Track view widget.
 
 class qtractorTrackView : public qtractorScrollView
@@ -158,7 +146,7 @@ public:
 	qtractorClipSelect *clipSelect() const;
 
 	// Clear current selection (no notify).
-	void clearSelect();
+	void clearSelect(bool bReset = false);
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
@@ -260,27 +248,37 @@ protected:
 	// Draw the track view
 	void drawContents(QPainter *pPainter, const QRect& rect);
 
+	// Track view state info.
+	struct TrackViewInfo
+	{
+		int           trackIndex;   // Track index.
+		unsigned long trackStart;   // First track frame on view.
+		unsigned long trackEnd;     // Last track frame on view.
+		QRect         trackRect;    // The track view rectangle.
+	};
+
 	// Get track from given contents vertical position.
-	qtractorTrack *trackAt(const QPoint& pos, bool bSelectTrack = false,
-		qtractorTrackViewInfo *pTrackViewInfo = NULL) const;
+	qtractorTrack *trackAt(const QPoint& pos,
+		bool bSelectTrack = false, TrackViewInfo *pTrackViewInfo = NULL) const;
 
 	// Get clip from given contents position.
-	qtractorClip *clipAt(const QPoint& pos, bool bSelectTrack = false,
-		QRect *pClipRect = NULL) const;
+	qtractorClip *clipAt(const QPoint& pos,
+		bool bSelectTrack = false, QRect *pClipRect = NULL) const;
 	// Get clip from given contents position.
 	qtractorClip *clipAtTrack(const QPoint& pos, QRect *pClipRect,
-		qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo) const;
+		qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo) const;
 
 	// Get automation curve node from given contents position.
 	qtractorCurve::Node *nodeAtTrack(const QPoint& pos,
-		qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo) const;
+		qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo) const;
 	qtractorCurve::Node *nodeAt(const QPoint& pos) const;
 
 	// Get contents visible rectangle from given track.
 	bool trackInfo(qtractorTrack *pTrack,
-		qtractorTrackViewInfo *pTrackViewInfo) const;
+		TrackViewInfo *pTrackViewInfo) const;
 	// Get contents rectangle from given clip.
-	bool clipInfo(qtractorClip *pClip, QRect *pClipRect) const;
+	bool clipInfo(qtractorClip *pClip, QRect *pClipRect,
+		TrackViewInfo *pTrackViewInfo) const;
 
 	// Drag-n-drop event stuffers (for clips).
 	qtractorTrack *dragClipMove(const QPoint& pos, bool bKeyStep = false);

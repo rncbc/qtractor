@@ -70,8 +70,8 @@ public:
 	{
 		qtractorTrack *pTrack = pMidiClip->track();
 		m_sFilename = pMidiClip->filename();;
-		m_iClipOffset = pMidiClip->clipOffset();
-		m_iClipLength = pMidiClip->clipLength();
+		m_iClipOffset = pMidiClip->clipOffsetTime();
+		m_iClipLength = pMidiClip->clipLengthTime();
 		m_iTrackChannel = pMidiClip->trackChannel();
 		m_iMidiChannel = (pTrack ? pTrack->midiChannel() : 0);
 	}
@@ -766,6 +766,18 @@ void qtractorMidiClip::relinkHashData (void)
 bool qtractorMidiClip::isHashLinked (void) const
 {
 	return (m_pData && m_pData->count() > 1);
+}
+
+
+// Get all hash-linked clips (including self).
+QList<qtractorMidiClip *> qtractorMidiClip::linkedClips (void) const
+{
+	QList<qtractorMidiClip *> clips;
+
+	if (m_pData)
+		clips = m_pData->clips();
+
+	return clips;
 }
 
 

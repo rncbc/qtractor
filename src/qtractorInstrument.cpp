@@ -392,35 +392,35 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 // File save method.
 bool qtractorInstrumentList::save ( const QString& sFilename ) const
 {
-    // Open and write into real file.
-    QFile file(sFilename);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        return false;
+	// Open and write into real file.
+	QFile file(sFilename);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		return false;
 
 	// A visula separator line.
 	const QString sepl = "; -----------------------------"
 		"------------------------------------------------";
 
-    // Write the file.
-    QTextStream ts(&file);
+	// Write the file.
+	QTextStream ts(&file);
 
-    ts << sepl << endl;
+	ts << sepl << endl;
 	ts << "; " << QObject::tr("Cakewalk Instrument Definition File") << endl;
 #if 0
-    ts << ";"  << endl;
-    ts << "; " << QTRACTOR_TITLE " - " << QObject::tr(QTRACTOR_SUBTITLE) << endl;
-    ts << "; " << QObject::tr("Version")
-       << ": " QTRACTOR_VERSION << endl;
-    ts << "; " << QObject::tr("Build")
-       << ": " __DATE__ " " __TIME__ << endl;
+	ts << ";"  << endl;
+	ts << "; " << QTRACTOR_TITLE " - " << QObject::tr(QTRACTOR_SUBTITLE) << endl;
+	ts << "; " << QObject::tr("Version")
+		<< ": " QTRACTOR_VERSION << endl;
+	ts << "; " << QObject::tr("Build")
+		<< ": " __DATE__ " " __TIME__ << endl;
 #endif
-    ts << ";"  << endl;
-    ts << "; " << QObject::tr("File")
-       << ": " << QFileInfo(sFilename).fileName() << endl;
-    ts << "; " << QObject::tr("Date")
-       << ": " << QDate::currentDate().toString("MMM dd yyyy")
-       << " "  << QTime::currentTime().toString("hh:mm:ss") << endl;
-    ts << ";"  << endl;
+	ts << ";"  << endl;
+	ts << "; " << QObject::tr("File")
+		<< ": " << QFileInfo(sFilename).fileName() << endl;
+	ts << "; " << QObject::tr("Date")
+		<< ": " << QDate::currentDate().toString("MMM dd yyyy")
+		<< " "  << QTime::currentTime().toString("hh:mm:ss") << endl;
+	ts << ";"  << endl;
 
 	// - Patch Names...
     ts << sepl << endl << endl;

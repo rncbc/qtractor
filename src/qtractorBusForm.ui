@@ -582,15 +582,28 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="RefreshPushButton">
+      <widget class="QPushButton" name="MoveUpPushButton">
        <property name="toolTip">
-        <string>Refresh bus list view</string>
+        <string>Move bus up towards the top</string>
        </property>
        <property name="text">
-        <string>&amp;Refresh</string>
+        <string>U&amp;p</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRefresh.png</iconset>
+        <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="MoveDownPushButton">
+       <property name="toolTip">
+        <string>Move bus down towards the bottom</string>
+       </property>
+       <property name="text">
+        <string>Do&amp;wn</string>
+       </property>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
        </property>
       </widget>
      </item>
@@ -686,7 +699,8 @@
   <tabstop>RemoveOutputPluginToolButton</tabstop>
   <tabstop>MoveUpOutputPluginToolButton</tabstop>
   <tabstop>MoveDownOutputPluginToolButton</tabstop>
-  <tabstop>RefreshPushButton</tabstop>
+  <tabstop>MoveUpPushButton</tabstop>
+  <tabstop>MoveDownPushButton</tabstop>
   <tabstop>CreatePushButton</tabstop>
   <tabstop>UpdatePushButton</tabstop>
   <tabstop>DeletePushButton</tabstop>

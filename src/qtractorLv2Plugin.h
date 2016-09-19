@@ -30,17 +30,15 @@
 // LV2 Event/MIDI support.
 #include "lv2/lv2plug.in/ns/ext/event/event.h"
 #include "lv2/lv2plug.in/ns/ext/event/event-helpers.h"
-#ifndef QTRACTOR_LV2_MIDI_EVENT_ID
-#define QTRACTOR_LV2_MIDI_EVENT_ID 1
-#endif
 #endif
 
 #ifdef CONFIG_LV2_ATOM
 // LV2 Atom/MIDI support.
 #include "lv2_atom_helpers.h"
+#endif
+
 #ifndef QTRACTOR_LV2_MIDI_EVENT_ID
 #define QTRACTOR_LV2_MIDI_EVENT_ID 1
-#endif
 #endif
 
 #ifdef CONFIG_LV2_WORKER
@@ -99,7 +97,13 @@ class qtractorLv2Worker;
 #ifdef CONFIG_LV2_OPTIONS
 // LV2 Options support.
 #include "lv2/lv2plug.in/ns/ext/options/options.h"
-#endif	// CONFIG_LV2_OPTIONS
+#endif
+
+#ifdef CONFIG_LV2_PATCH
+// LV2 Patch/properties support.
+#include "lv2/lv2plug.in/ns/ext/patch/patch.h"
+#include <QVariant>
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -151,6 +155,11 @@ public:
 #ifdef CONFIG_LV2_ATOM
 	unsigned short atomIns()    const { return m_iAtomIns;    }
 	unsigned short atomOuts()   const { return m_iAtomOuts;   }
+#endif
+
+#ifdef CONFIG_LV2_UI_SHOW
+	// Check for LV2 UI Show interface.
+	bool lv2_ui_show_interface(LilvUI *ui) const;
 #endif
 
 	// Instance cached-deferred accesors.
@@ -244,6 +253,11 @@ public:
 	// LV2 UI portMap method.
 	uint32_t lv2_ui_port_index(const char *port_symbol);
 
+#ifdef CONFIG_LV2_UI_TOUCH
+	// LV2 UI touch control (ui->host).
+	void lv2_ui_touch(uint32_t port_index, bool grabbed);
+#endif
+
 	// LV2 UI resize control (host->ui).
 	void lv2_ui_resize(const QSize& size);
 
@@ -312,16 +326,84 @@ public:
 #endif
 
 #ifdef CONFIG_LV2_PRESETS
+
 	// Refresh and load preset labels listing.
 	QStringList presetList() const;
+
 	// Load/Save plugin state from/into a named preset.
 	bool loadPreset(const QString& sPreset);
 	bool savePreset(const QString& sPreset);
+
 	// Delete plugin state preset (from file-system).
 	bool deletePreset(const QString& sPreset);
+
 	// Whether given preset is internal/read-only.
 	bool isReadOnlyPreset(const QString& sPreset) const;
+
 #endif
+
+#ifdef CONFIG_LV2_PATCH
+
+	// LV2 Patch/properties support...
+	void lv2_property_changed(LV2_URID key, const LV2_Atom *value);
+	void lv2_property_update(LV2_URID key);
+
+	// LV2 Patch/property registry item.
+	//
+	class Property
+	{
+	public:
+
+		Property(const LilvNode *property);
+
+		LV2_URID key() const
+			{ return m_key; }
+		const QString& uri() const
+			{ return m_uri; }
+		const QString& name() const
+			{ return m_name; }
+		LV2_URID type() const
+			{ return m_type; }
+
+		bool isToggled() const;
+		bool isInteger() const;
+		bool isString()  const;
+		bool isPath()    const;
+
+		float minValue() const
+			{ return m_min; }
+		float maxValue() const
+			{ return m_max; }
+		float defValue() const
+			{ return m_def; }
+
+		void setValue(const QVariant& value)
+			{ m_value = value; }
+		const QVariant& value() const
+			{ return m_value; }
+
+	private:
+
+		LV2_URID m_key;
+		QString  m_uri;
+		QString  m_name;
+		LV2_URID m_type;
+
+		float    m_min;
+		float    m_max;
+		float    m_def;
+
+		QVariant m_value;
+	};
+
+	// LV2 Patch/properties registry.
+	typedef QMap<QString, Property *> Properties;
+
+	// LV2 Patch/properties registry accessor.
+	const Properties& lv2_properties() const
+		{ return m_lv2_properties; }
+
+#endif	// CONFIG_LV2_PATCH
 
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
@@ -348,6 +430,11 @@ protected:
 
 	const void *lv2_ui_extension_data(const char *uri);
 
+#endif	// CONFIG_LV2_UI
+
+#ifdef CONFIG_LV2_PATCH
+	// LV2 Patch/properties inventory.
+	void lv2_patch_properties(const char *pszPatch);
 #endif
 
 private:
@@ -466,6 +553,12 @@ private:
 	// Changed UI params hash-queue.
 	QHash<unsigned long, float> m_ui_params;
 
+#ifdef CONFIG_LV2_UI_TOUCH
+	LV2UI_Touch m_lv2_ui_touch;
+	LV2_Feature m_lv2_ui_touch_feature;
+	QHash<unsigned long, bool> m_ui_params_touch;
+#endif
+
 #ifdef CONFIG_LV2_UI_IDLE
 	// LV2 UI Idle extension data interface.
 	const LV2UI_Idle_Interface *m_lv2_ui_idle_interface;
@@ -474,6 +567,7 @@ private:
 	// LV2 UI Show extension data interface.
 	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
 #endif
+
 #if QT_VERSION >= 0x050100
 #ifdef CONFIG_LV2_UI_GTK2
 	struct _GtkWidget *m_pGtkWindow;
@@ -523,6 +617,14 @@ private:
 	unsigned long m_lv2_time_position_port_in;
 	unsigned int  m_lv2_time_position_changed;
 #endif
+#endif
+
+#ifdef CONFIG_LV2_PATCH
+	// LV2 Patch/properties support.
+	unsigned long m_lv2_patch_port_in;
+	unsigned int  m_lv2_patch_changed;
+	// LV2 Patch/properties registry.
+	Properties m_lv2_properties;
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS

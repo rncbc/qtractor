@@ -742,7 +742,7 @@ void qtractorTrack::setMonitor ( bool bMonitor )
 {
 	m_props.monitor = bMonitor;
 
-	m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
+	m_pMonitorSubject->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 
@@ -755,7 +755,7 @@ void qtractorTrack::setRecord ( bool bRecord )
 
 	m_props.record = bRecord;
 
-	m_pRecordObserver->setValue(bRecord ? 1.0f : 0.0f);
+	m_pRecordSubject->setValue(bRecord ? 1.0f : 0.0f);
 
 	if (m_pSession->isRecording()) {
 		unsigned long iClipStart = m_pSession->playHead();
@@ -787,7 +787,7 @@ void qtractorTrack::setMute ( bool bMute )
 
 	m_props.mute = bMute;
 
-	m_pMuteObserver->setValue(bMute ? 1.0f : 0.0f);
+	m_pMuteSubject->setValue(bMute ? 1.0f : 0.0f);
 
 	if (m_pSession->isPlaying() && !bMute)
 		m_pSession->trackMute(this, bMute);
@@ -811,7 +811,7 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 	m_props.solo = bSolo;
 
-	m_pSoloObserver->setValue(bSolo ? 1.0f : 0.0f);
+	m_pSoloSubject->setValue(bSolo ? 1.0f : 0.0f);
 
 	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
@@ -1238,6 +1238,26 @@ qtractorTrack::Properties& qtractorTrack::properties (void)
 }
 
 
+// Reset state properties (as needed on copy/dublicate)
+void qtractorTrack::resetProperties (void)
+{
+	const bool bMonitor = m_props.monitor;
+	const bool bRecord = m_props.record;
+	const bool bMute = m_props.mute;
+	const bool bSolo = m_props.solo;
+
+	m_props.monitor = false;
+	m_props.record = false;;
+	m_props.mute = false;
+	m_props.solo = false;
+
+	setMonitor(bMonitor);
+	setRecord(bRecord);
+	setMute(bMute);
+	setSolo(bSolo);
+}
+
+
 // Track special process cycle executive.
 void qtractorTrack::process ( qtractorClip *pClip,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
@@ -1270,8 +1290,7 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	// Audio buffers needs monitoring and commitment...
 	if (pAudioMonitor && pOutputBus) {
 		// Plugin chain post-processing...
-		if (m_pPluginList->isActivated())
-			m_pPluginList->process(pOutputBus->buffer(), nframes);
+		m_pPluginList->process(pOutputBus->buffer(), nframes);
 		// Monitor passthru...
 		pAudioMonitor->process(pOutputBus->buffer(), nframes);
 		// Actually render it...
@@ -1313,8 +1332,7 @@ void qtractorTrack::process_export ( qtractorClip *pClip,
 	// Audio buffers needs monitoring and commitment...
 	if (pAudioMonitor && pOutputBus) {
 		// Plugin chain post-processing...
-		if (m_pPluginList->isActivated())
-			m_pPluginList->process(pOutputBus->buffer(), nframes);
+		m_pPluginList->process(pOutputBus->buffer(), nframes);
 		// Monitor passthru...
 		pAudioMonitor->process(pOutputBus->buffer(), nframes);
 		// Actually render it...
@@ -1498,8 +1516,13 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 
 	int iBankSelMethod = midiBankSelMethod();
 	if (iBankSelMethod < 0) {
-		if (!patch.instrumentName.isEmpty())
-			iBankSelMethod = (*pInstruments)[patch.instrumentName].bankSelMethod();
+		const QString& sInstrumentName = patch.instrumentName;
+		if (!sInstrumentName.isEmpty()
+			&& pInstruments->contains(sInstrumentName)) {
+			const qtractorInstrument& instr
+				= pInstruments->value(sInstrumentName);
+			iBankSelMethod = instr.bankSelMethod();
+		}
 		else if (iBank >= 0)
 			iBankSelMethod = 0;
 	}
@@ -1912,17 +1935,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(m_pMonitor);
-	if (pMixerStrip == NULL)
+	if (m_pMonitor == NULL)
 		return;
 
 	qtractorMidiControl::Controllers controllers;
@@ -1943,8 +1956,7 @@ void qtractorTrack::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pPanObserver
-		= pMixerStrip->meter()->panningObserver();
+	qtractorMidiControlObserver *pPanObserver = m_pMonitor->panningObserver();
 	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -1961,8 +1973,7 @@ void qtractorTrack::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pGainObserver
-		= pMixerStrip->meter()->gainObserver();
+	qtractorMidiControlObserver *pGainObserver = m_pMonitor->gainObserver();
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -2041,17 +2052,7 @@ void qtractorTrack::mapControllers (void)
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(m_pMonitor);
-	if (pMixerStrip == NULL)
+	if (m_pMonitor == NULL)
 		return;
 
 	QListIterator<qtractorMidiControl::Controller *> iter(m_controllers);
@@ -2063,10 +2064,10 @@ void qtractorTrack::mapControllers (void)
 			pObserver = monitorObserver();
 			break;
 		case 1: // 1=PanObserver
-			pObserver = pMixerStrip->meter()->panningObserver();
+			pObserver = m_pMonitor->panningObserver();
 			break;
 		case 2: // 2=GainObserver
-			pObserver = pMixerStrip->meter()->gainObserver();
+			pObserver = m_pMonitor->gainObserver();
 			break;
 		case 3: // 3=RecordObserver
 			pObserver = recordObserver();

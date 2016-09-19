@@ -6,10 +6,113 @@ ChangeLog
 
 GIT HEAD
 
+- JACK buffer-size change handling has been deeeply improved,
+  now doing an immediate session restart, while preserving all
+  external connections as much as possible. (EXPERIMENTAL)
+
+- Introducing an audio and MIDI metronome anticipatory offset,
+  kind of latency compensation, to respective option settings
+  cf. View/Options.../Audio, MIDI/Metronome/Offset (latency).
+  (EXPERIMENTAL)
+
+- Fixed LADSPA plug-in preset switching, incidentally broken
+  as NOP, ever since late Haziest Photon's crash-landed.
+
+- MIDI Track/Instrument cascading menus have been found empty
+  broken on Qt5 builds, now fixed.
+
+- MIDI RPN/NRPN running status and RPN NULL reset command
+  are now supported (input only). (EXPERIMENTAL)
+
+- Fixed a sure immediate crash on removing audio buses that
+  are current targets of any active Aux-send inserts.
+
+- Fixed yet another old bummer that was reaping off assigned
+  MIDI controllers on existing track's gain/volume or panning
+  controls, when adding any single new track. (EXPERIMENTAL)
+
+- Fixed missing feedback on MIDI controllers assigned to any
+  of monitor, record, mute and solo track/bus state buttons. 
+  (EXPERIMENTAL)
+
+- Eye-candy warning: the current clip, not necessarilty the
+  one currently selected, is now highligthed with a solid
+  outline; linked MIDi clips are also highlighted with an
+  alternate dashed outline. (EXPERIMENTAL)
+
+- SFZ file conversion, and bundling of the respective sample
+  files, is now supported when saving as zip/archive (*.qtz).
+  (EXPERIMENTAL)
+
+- Fixed track monitor, record, mute and solo dangling states,
+  on Track/Duplicate command.
+
+- Slight regression on the LV2 State Files abstract/relative
+  file-path mapping, trading QFileInfo::canonicalFilePath()
+  for QFileInfo::absoluteFilePath(), and thus skipping all
+  symlink dereferences in the process.
+
+- Fixed a one first linking/ref-counting glitch, affecting
+  recently recorded MIDI clips which might have their initial
+  clip length still un-quantized to MIDI resolution (BBT).
+
+- A brand new and discrete MIDI clip editor command tool has
+  been added: MIDI Tools/Transpose/Reverse. (EXPERIMENTAL)
+
+- Discretely fixed MIDI Controlllers catch-up algorithm.
+
+- Fixed a borderline mistake on plug-in parameter port index
+  mapping to its corresponding symbolic name, especially if
+  newer plug-in versions are loaded on older saved sessions.
+
+
+0.7.8  2016-06-23  Snobby Graviton Beta
+
+- MIDI file track names (and any other SMF META events) are
+  now converted to and from the base ASCII/Latin-1 encoding,
+  as much to prevent invalid SMF whenever non-Latin-1 UTF-8
+  encoded MIDI track names are given.
+
+- MIDI file tempo-map and location markers import/export is 
+  now hopefully corrected, after almost a decade in mistake,
+  regarding MIDI resolution conversion, when different than
+  current session's setting (TPQN, ticks-per-quarter-note
+  aka. ticks-per-beat, etc.)
+
+- Introducing LV2 UI Show interface support for other types
+  than Qt, Gtk, X11 and lv2_external_ui.
+
+- Prevent any visual updates while exporting (freewheeling)
+  audio tracks that have at least one plugin activate state
+  automation enabled for playback (as much for not showing
+  messages like "QObject::connect: Cannot queue arguments
+  of type 'QVector<int>'"... anymore).
+
+- The common buses management dialog (View/Buses...) sees
+  the superfluous Refresh button finally removed, while two
+  new button commands take its place: (move) Up and Down.
+
+- LV2 plug-in Patch support has been added and LV2 plug-ins
+  parameter properties manipulation is now accessible on the
+  generic plug-in properties dialog.
+
+- Fixed a recently introduced bug, that rendered all but one
+  plug-in instance to silence, affecting only DSSI plug-ins
+  which implement DSSI_Descriptor::run_multiple_synths() eg.
+  fluidsynth-dssi, hexter, etc.
+
+
+0.7.7  2016-04-27  Haziest Photon Beta
+
+- LV2 UI Touch feature/interface support added.
+
+- MIDI aware plug-ins are now void from multiple or parallel
+  instantiation.
+
 - MIDI tracks and buses plug-in chains now honor the number
   of effective audio channels from the assigned audio output
   bus; dedicated audio output ports will keep default to the
-  stereo two channels. (EXPERIMENTAL)
+  stereo two channels.
 
 - Plug-in rescan option has been added to plug-ins selection 
   dialog (yet another suggestion by Frank Neumann, thanks).
@@ -27,7 +130,7 @@ GIT HEAD
   position (while in the lower view pane).
 
 
-0.7.6  2016-04-05  A Hazier Photon Beta
+0.7.6  2016-04-05  Hazier Photon Beta
 
 - Plug-ins search path and out-of-process (aka. dummy) VST
   plug-in inventory scanning has been heavily refactored.
@@ -40,7 +143,7 @@ GIT HEAD
   custom LV2 Plug-in State Presets.
 
 
-0.7.5  2016-03-21  The Hazy Photon Beta
+0.7.5  2016-03-21	Hazy Photon Beta
 
 - Beat unit divisor, aka. the denominator or lower numeral
   in the time-signature, have now a visible and practical

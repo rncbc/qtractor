@@ -520,7 +520,7 @@ void qtractorPluginListView::addPlugin (void)
 		return;
 
 	qtractorPluginSelectForm selectForm(this);
-	selectForm.setChannels(m_pPluginList->channels(), m_pPluginList->isMidi());
+	selectForm.setPluginList(m_pPluginList);
 	if (!selectForm.exec())
 		return;
 
@@ -533,9 +533,8 @@ void qtractorPluginListView::addPlugin (void)
 	if (pOptions)
 		bOpenEditor = pOptions->bOpenEditor;
 
-	// Tell the world we'll take some time, iif...
-	if (!bOpenEditor)
-		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Make it a undoable command...
 	qtractorAddPluginCommand *pAddPluginCommand
@@ -551,19 +550,24 @@ void qtractorPluginListView::addPlugin (void)
 		if (pPlugin) {
 			pPlugin->setActivated(selectForm.isPluginActivated());
 			pAddPluginCommand->addPlugin(pPlugin);
-			// Show the plugin form right away...
-			if (bOpenEditor && (pPlugin->type())->isEditor())
-				pPlugin->openEditor();
-			else
-				pPlugin->openForm();
 		}
 	}
 
+	// Instantiate selected plugins...
 	pSession->execute(pAddPluginCommand);
 
 	// We're formerly done.
-	if (!bOpenEditor)
-		QApplication::restoreOverrideCursor();
+	QApplication::restoreOverrideCursor();
+
+	// Show plugin forms/editors right away...
+	QListIterator<qtractorPlugin *> iter(pAddPluginCommand->plugins());
+	while (iter.hasNext()) {
+		qtractorPlugin *pPlugin = iter.next();
+		if (bOpenEditor && (pPlugin->type())->isEditor())
+			pPlugin->openEditor();
+		else
+			pPlugin->openForm();
+	}
 
 	emit contentsChanged();
 }
@@ -884,10 +888,10 @@ void qtractorPluginListView::addAudioInsertPlugin (void)
 			m_pPluginList, m_pPluginList->channels());
 
 	if (pPlugin) {
-		// Show the plugin form right away...
-		pPlugin->openForm();
 		// Make it a undoable command...
 		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
+		// Show the plugin form right away...
+		pPlugin->openForm();
 	}
 
 	// We're formerly done.
@@ -916,10 +920,10 @@ void qtractorPluginListView::addAudioAuxSendPlugin (void)
 			m_pPluginList, m_pPluginList->channels());
 
 	if (pPlugin) {
-		// Show the plugin form right away...
-		pPlugin->openForm();
 		// Make it a undoable command...
 		pSession->execute(new qtractorAddAuxSendPluginCommand(pPlugin));
+		// Show the plugin form right away...
+		pPlugin->openForm();
 	}
 
 	// We're formerly done.
@@ -947,10 +951,10 @@ void qtractorPluginListView::addMidiInsertPlugin (void)
 		= qtractorInsertPluginType::createPlugin(m_pPluginList, 0); // MIDI!
 
 	if (pPlugin) {
-		// Show the plugin form right away...
-		pPlugin->openForm();
 		// Make it a undoable command...
 		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
+		// Show the plugin form right away...
+		pPlugin->openForm();
 	}
 
 	// We're formerly done.
@@ -978,10 +982,10 @@ void qtractorPluginListView::addMidiAuxSendPlugin (void)
 		= qtractorAuxSendPluginType::createPlugin(m_pPluginList, 0); // MIDI!
 
 	if (pPlugin) {
-		// Show the plugin form right away...
-		pPlugin->openForm();
 		// Make it a undoable command...
 		pSession->execute(new qtractorAddAuxSendPluginCommand(pPlugin));
+		// Show the plugin form right away...
+		pPlugin->openForm();
 	}
 
 	// We're formerly done.
@@ -1363,8 +1367,9 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 		return false;
 
 	// All that to check whether it will get properly instantiated.
-	if ((pPlugin->type())->instances(
-			m_pPluginList->channels(), m_pPluginList->isMidi()) < 1)
+	const unsigned short iChannels = m_pPluginList->channels();
+	const bool bMidi = m_pPluginList->isMidi();
+	if ((pPlugin->type())->instances(iChannels, bMidi) < 1)
 		return false;
 
 	// This is the place we'll drop something

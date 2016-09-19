@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,10 +29,7 @@
 
 #include "qtractorEngineCommand.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorMonitor.h"
-#include "qtractorMeter.h"
-#include "qtractorMixer.h"
 
 #include "qtractorDocument.h"
 #include "qtractorCurveFile.h"
@@ -129,6 +126,19 @@ void qtractorEngine::addBus ( qtractorBus *pBus )
 void qtractorEngine::removeBus ( qtractorBus *pBus )
 {
 	m_buses.remove(pBus);
+}
+
+
+// Move bus on a device engine.
+void qtractorEngine::moveBus (
+	qtractorBus *pBus, qtractorBus *pNextBus )
+{
+	m_buses.unlink(pBus);
+
+	if (pNextBus)
+		m_buses.insertBefore(pBus, pNextBus);
+	else
+		m_buses.append(pBus);
 }
 
 
@@ -436,8 +446,8 @@ qtractorBus::BusMode qtractorBus::busMode (void) const
 // Pass-thru mode accessor.
 void qtractorBus::setMonitor ( bool bMonitor )
 {
-	if (m_pMonitorObserver)
-		m_pMonitorObserver->setValue(bMonitor ? 1.0f : 0.0f);
+	if (m_pMonitorSubject)
+		m_pMonitorSubject->setValue(bMonitor ? 1.0f : 0.0f);
 }
 
 bool qtractorBus::isMonitor (void) const
@@ -494,26 +504,12 @@ void qtractorBus::saveControllers (
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
 	qtractorMonitor *pMonitor = NULL;
-	qtractorMixerRack *pMixerRack = NULL;
-	if (busMode & Input) {
+	if (busMode & Input)
 		pMonitor = monitor_in();
-		pMixerRack = pMixer->inputRack();
-	} else {
+	else
 		pMonitor = monitor_out();
-		pMixerRack = pMixer->outputRack();
-	}
-
-	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
-	if (pMixerStrip == NULL)
+	if (pMonitor == NULL)
 		return;
 
 	qtractorMidiControl::Controllers controllers;
@@ -535,8 +531,7 @@ void qtractorBus::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pPanObserver
-		= pMixerStrip->meter()->panningObserver();
+	qtractorMidiControlObserver *pPanObserver = pMonitor->panningObserver();
 	if (pMidiControl->isMidiObserverMapped(pPanObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -553,8 +548,7 @@ void qtractorBus::saveControllers (
 		controllers.append(pController);
 	}
 
-	qtractorMidiControlObserver *pGainObserver
-		= pMixerStrip->meter()->gainObserver();
+	qtractorMidiControlObserver *pGainObserver = pMonitor->gainObserver();
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
@@ -588,26 +582,12 @@ void qtractorBus::mapControllers ( BusMode busMode )
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return;
-
 	qtractorMonitor *pMonitor = NULL;
-	qtractorMixerRack *pMixerRack = NULL;
-	if (busMode & Input) {
+	if (busMode & Input)
 		pMonitor = monitor_in();
-		pMixerRack = pMixer->inputRack();
-	} else {
+	else
 		pMonitor = monitor_out();
-		pMixerRack = pMixer->outputRack();
-	}
-
-	qtractorMixerStrip *pMixerStrip	= pMixerRack->findStrip(pMonitor);
-	if (pMixerStrip == NULL)
+	if (pMonitor == NULL)
 		return;
 
 	qtractorMidiControl::Controllers& controllers
@@ -621,10 +601,10 @@ void qtractorBus::mapControllers ( BusMode busMode )
 			pObserver = monitorObserver();
 			break;
 		case 1: // 1=PanObserver
-			pObserver = pMixerStrip->meter()->panningObserver();
+			pObserver = pMonitor->panningObserver();
 			break;
 		case 2: // 2=GainObserver
-			pObserver = pMixerStrip->meter()->gainObserver();
+			pObserver = pMonitor->gainObserver();
 			break;
 		}
 		if (pObserver) {
@@ -668,10 +648,6 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 
 	qtractorSession *pSession = m_pEngine->session();
 	if (pSession == NULL)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
 		return;
 
 	QString sBusName(busName());
@@ -775,10 +751,6 @@ void qtractorBus::applyCurveFile ( BusMode busMode, qtractorCurveFile *pCurveFil
 
 	qtractorSession *pSession = m_pEngine->session();
 	if (pSession == NULL)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
 		return;
 
 	qtractorMonitor *pMonitor = NULL;
@@ -927,6 +899,107 @@ QString qtractorBus::textFromBusMode ( BusMode busMode )
 		break;
 	}
 	return sText;
+}
+
+
+// Bus connections snapshot executive mthods.
+int qtractorBus::Connects::save ( qtractorBus *pBus )
+{
+	m_sBusName = pBus->busName();
+	m_busMode  = pBus->busMode();
+
+	if (m_busMode & Input)
+		pBus->updateConnects(Input, m_inputs);
+	if (m_busMode & Output)
+		pBus->updateConnects(Output, m_outputs);
+
+	return m_inputs.count() + m_outputs.count();
+}
+
+
+// Bus connections snapshot executive mthods.
+int qtractorBus::Connects::load( qtractorBus *pBus )
+{
+	if (pBus->busName() != m_sBusName ||
+		pBus->busMode() != m_busMode)
+		return 0;
+
+	if (m_busMode & Input)
+		pBus->inputs().copy(m_inputs);
+	if (m_busMode & Output)
+		pBus->outputs().copy(m_outputs);
+
+	return pBus->inputs().count() + pBus->outputs().count();
+}
+
+
+// Bus connections snapshot cleaner.
+void qtractorBus::Connects::clear (void)
+{
+	m_sBusName.clear();
+	m_busMode = None;
+
+	m_inputs.clear();
+	m_outputs.clear();
+}
+
+
+// Engine connections snapshot executive mthods.
+bool qtractorBus::Connections::load(qtractorEngine *pEngine)
+{
+	int iUpdate = 0;
+
+	QListIterator<Connects *> iter(m_list);
+	while (iter.hasNext()) {
+		Connects *pConnect = iter.next();
+		const QString& sBusName = pConnect->busName();
+		const BusMode busMode = pConnect->busMode();
+		qtractorBus *pBus = NULL;
+		if (busMode & Ex)
+			pBus = pEngine->findBusEx(sBusName);
+		else
+			pBus = pEngine->findBus(sBusName);
+		if (pBus)
+			iUpdate += pConnect->load(pBus);
+	}
+
+	return (iUpdate > 0);
+}
+
+
+bool qtractorBus::Connections::save(qtractorEngine *pEngine)
+{
+	int iUpdate = 0;
+
+	iUpdate += save(pEngine->buses().first());
+	iUpdate += save(pEngine->busesEx().first());
+
+	return (iUpdate > 0);
+}
+
+
+int qtractorBus::Connections::save(qtractorBus *pBus)
+{
+	int iUpdate = 0;
+
+	for (; pBus; pBus = pBus->next()) {
+		Connects *pConnects = new Connects();
+		if (pConnects->save(pBus) > 0) {
+			m_list.append(pConnects);
+			++iUpdate;
+		}
+		else delete pConnects;
+	}
+
+	return iUpdate;
+}
+
+
+// Generic connections snapshot cleaner.
+void qtractorBus::Connections::clear (void)
+{
+	qDeleteAll(m_list);
+	m_list.clear();
 }
 
 

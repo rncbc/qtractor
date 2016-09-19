@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,6 +24,9 @@
 
 #ifdef CONFIG_LIBZ
 #include "qtractorZipFile.h"
+#if QT_VERSION >= 0x050000
+#include <QTemporaryDir>
+#endif
 #endif
 
 #include <QDomDocument>
@@ -99,6 +102,13 @@ qtractorDocument::~qtractorDocument (void)
 #ifdef CONFIG_LIBZ
 	if (m_pZipFile) delete m_pZipFile;
 #endif
+
+	QStringListIterator iter(m_tempFiles);
+	while (iter.hasNext()) {
+		const QFileInfo temp(iter.next());
+		QFile::remove(temp.absoluteFilePath());
+		QDir::temp().rmpath(temp.absolutePath());
+	}
 }
 
 
@@ -178,7 +188,9 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	const QFileInfo info(sFilename);
 	m_sName = info.completeBaseName();
 	QString sDocname = info.filePath();
-	QIODevice::OpenMode mode = QIODevice::ReadOnly;
+
+	const QIODevice::OpenMode mode
+		= QIODevice::ReadOnly;
 
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
@@ -197,6 +209,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 			m_pZipFile = NULL;
 			return false;
 		}
+		m_pZipFile->setPrefix(m_sName);
 		m_pZipFile->extractAll();
 		m_pZipFile->close();
 		delete m_pZipFile;
@@ -264,7 +277,9 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	const QFileInfo info(sFilename);
 	m_sName = info.completeBaseName();
 	QString sDocname = info.filePath();
-	QIODevice::OpenMode mode = QIODevice::WriteOnly | QIODevice::Truncate;
+
+	const QIODevice::OpenMode mode
+		= QIODevice::WriteOnly | QIODevice::Truncate;
 
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
@@ -275,6 +290,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 			return false;
 		}
 		sDocname = m_sName + '.' + g_sDefaultExt;
+		m_pZipFile->setPrefix(m_sName);
 		g_pArchive = this;
 	}
 #endif
@@ -300,7 +316,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	// Commit to archive.
 	if (m_pZipFile) {
 		// The session document itself, at last...
-		m_pZipFile->addFile(sDocname, m_sName + '/' + sDocname);
+		m_pZipFile->addFile(sDocname);
 		m_pZipFile->processAll();
 		m_pZipFile->close();
 		delete m_pZipFile;
@@ -315,16 +331,103 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 }
 
 
-// Archive filename filter.
-QString qtractorDocument::addFile ( const QString& sFilename ) const
+QString qtractorDocument::addFile ( const QString& sFilename )
 {
 #ifdef CONFIG_LIBZ
 	if (isArchive() && m_pZipFile) {
-		const QString sAlias = m_pZipFile->alias(sFilename);
-		m_pZipFile->addFile(sFilename, m_sName + '/' + sAlias);
+		QString sAlias;
+		const QFileInfo info(sFilename);
+		const QString& sSuffix = info.suffix().toLower();
+		if (sSuffix == "sfz") {
+			// SFZ archive conversion...
+			sAlias = m_pZipFile->alias(sFilename, info.completeBaseName(), true);
+		#if QT_VERSION >= 0x050000
+			QTemporaryDir temp_dir(QDir::tempPath() + '/' + m_sName + '.');
+			temp_dir.setAutoRemove(false);
+			const QFileInfo temp(temp_dir.path() + '/' + sAlias);
+		#else
+			const QString& sTempDir
+				= QDir::tempPath() + '/' + m_sName + ".%1";
+			unsigned int i = qHash(this) >> 7;
+			QDir temp_dir(sTempDir.arg(i, 0, 16));
+			while (temp_dir.exists())
+				temp_dir.setPath(sTempDir.arg(++i, 0, 16));
+			const QFileInfo temp(temp_dir, sAlias);
+		#endif
+			const QString& sTempname = temp.absoluteFilePath();
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorDocument::addFile(\"%s\") SFZ: sTempname=\"%s\"...",
+				sFilename.toUtf8().constData(), sTempname.toUtf8().constData());
+		#endif
+			// Check if temporary file already exists...
+			if (!m_tempFiles.contains(sTempname) && !temp.exists()) {
+				// Create the new temporary path...
+				QDir::temp().mkpath(temp.absolutePath());
+				// Prepare and open both file streams...
+				QFile ifile(sFilename);
+				QFile ofile(sTempname);
+				if (ifile.open(QIODevice::ReadOnly) &&
+					ofile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+					// Ready, set, go...
+					const QFileInfo alias(sAlias);
+					const QRegExp rxComment("//.*$");
+					const QRegExp rxDefaultPath("default_path[\\s]*=(.+)$");
+					const QRegExp rxSample("sample[\\s]*=(.+\\.[\\w]+)");
+					// Care for default path...
+					QDir dir(QFileInfo(ifile).absoluteDir());
+					// Prepare the text streams...
+					QTextStream its(&ifile);
+					QTextStream ots(&ofile);
+					while (!its.atEnd()) {
+						// Read the line.
+						QString sLine = its.readLine();
+						QString sTemp = sLine.simplified();
+						// Remove any comments...
+						sTemp.remove(rxComment);
+						// While not empty...
+						while (!sTemp.isEmpty()) {
+							if (rxDefaultPath.indexIn(sTemp) >= 0) {
+								const QFileInfo fi(dir, rxDefaultPath.cap(1));
+								const QString& sDefaultPath
+									= fi.absoluteFilePath();
+								dir.setPath(sDefaultPath);
+								sTemp.remove(rxDefaultPath).simplified();
+								sLine.remove(rxDefaultPath);
+							}
+							else
+							if (rxSample.indexIn(sTemp) >= 0) {
+								const QFileInfo fi(dir, rxSample.cap(1));
+								const QString& sSamplePath
+									= fi.absoluteFilePath();
+								const QString& sSampleAlias
+									= m_pZipFile->alias(sSamplePath, alias.path());
+								m_pZipFile->addFile(sSamplePath, sSampleAlias);
+								sTemp.remove(rxSample).simplified();
+								sLine.replace(rxSample, "sample=" + fi.fileName());
+							}
+							else sTemp.clear();
+						}
+						// Write possibly altered line...
+						ots << sLine << endl;
+					}
+					// Almost done.
+					ots.flush();
+					ofile.close();
+					ifile.close();
+					// Done.
+					m_pZipFile->addFile(sTempname, sAlias);
+				}
+				// Cache the temporary file-path for removal...
+				m_tempFiles.append(sTempname);
+			}
+		} else {
+			// Regular file archiving...
+			sAlias = m_pZipFile->alias(sFilename);
+			m_pZipFile->addFile(sFilename, sAlias);
+		}
 		return sAlias;
 	}
-#endif
+#endif	// CONFIG_LIBZ
 
 	return sFilename;
 }
@@ -406,9 +509,15 @@ void qtractorDocument::clearExtractedArchives ( bool bRemove )
 // qtractorDocument -- extra-ordinary archive files management.
 //
 
-QString qtractorDocument::addArchiveFile ( const QString& sFilename )
+QString qtractorDocument::addArchiveFile (
+	const QString& sDir, const QString& sFilename )
 {
-	return (g_pArchive ? g_pArchive->addFile(sFilename) : sFilename);
+	if (g_pArchive) {
+		const QFileInfo info(QDir(sDir), sFilename);
+		return g_pArchive->addFile(info.absoluteFilePath());
+	}
+
+	return sFilename;
 }
 
 

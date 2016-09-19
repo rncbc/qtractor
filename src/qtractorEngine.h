@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,6 +79,8 @@ public:
 
 	void addBus(qtractorBus *pBus);
 	void removeBus(qtractorBus *pBus);
+
+	void moveBus(qtractorBus *pBus, qtractorBus *pNextBus);
 
 	qtractorBus *findBus(const QString& sBusName) const;
 	qtractorBus *findInputBus(const QString& sInputBusName) const;
@@ -275,6 +277,53 @@ public:
 	// Bus mode textual helper methods.
 	static BusMode busModeFromText (const QString& sText);
 	static QString textFromBusMode (BusMode busMode);
+
+	// Generic connections snapshot stuff.
+	//
+	class Connects
+	{
+	public:
+		// Constructor.
+		Connects() : m_busMode(None) {}
+		// Destructor.
+		~Connects() { clear(); }
+		// Property accessors.
+		const QString& busName() const
+			{ return m_sBusName; }
+		BusMode busMode() const
+			{ return m_busMode;  }
+		// Executive mthods.
+		int save(qtractorBus *pBus);
+		int load(qtractorBus *pBus);
+		// Cleaner.
+		void clear();
+		//
+	private:
+		// Instance members.
+		QString     m_sBusName;
+		BusMode     m_busMode;
+		ConnectList m_inputs;
+		ConnectList m_outputs;
+	};
+
+	class Connections
+	{
+	public:
+		// Constructor.
+		Connections() {}
+		// Destructor.
+		~Connections() { clear(); }
+		// Executive methods.
+		bool load(qtractorEngine *pEngine);
+		bool save(qtractorEngine *pEngine);
+		int save(qtractorBus *pBus);
+		// Cleaner.
+		void clear();
+		//
+	private:
+		// Container list.
+		QList<Connects *> m_list;
+	};
 
 protected:
 
