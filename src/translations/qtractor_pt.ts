@@ -2629,7 +2629,10 @@ increased from %1 to %2 frames/period.
 
 Reloading the current session file
 is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>O tamanho do buffer da interface da áudio foi modificado,
+aumente de %1 para %2 amostras/período.
+É altamente recomendável recarrgar
+a sessão atual.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7640"/>
@@ -9128,7 +9131,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="521"/>
         <source>&amp;Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reverso</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="799"/>
@@ -9508,27 +9511,27 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <location filename="../qtractorOptionsForm.ui" line="1320"/>
         <location filename="../qtractorOptionsForm.ui" line="2162"/>
         <source>&amp;Offset (latency):</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Desvio (latência):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1339"/>
         <source>Metronome Audio offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desvio do Metronomo de áudio (latência)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2007"/>
         <source>Metronome MIDI duration (bar)</source>
-        <translation type="unfinished"></translation>
+        <translation>Duração do metrônomo MIDI (compasso)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2121"/>
         <source>Metronome MIDI duration (beat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Duração do metrônomo MIDI (pulsação)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2181"/>
         <source>Metronome MIDI offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desvio do metrônomo MIDI (latência)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2419"/>
@@ -10246,7 +10249,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="422"/>
         <source>Whether to remove audio peak files on session close</source>
-        <translation>Sempre auto-excluir os arquivos com desenhos da forma de onda quando fechar a sessão</translation>
+        <translation>Sempre exclui os arquivos com as formas de onda dos clips de áudio ao fechar a sessão</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1393"/>
@@ -10410,7 +10413,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="409"/>
         <source>S&amp;how complete path of session files</source>
-        <translation>&amp;Mostrar localização completa do arquivo de sessão</translation>
+        <translation>&amp;Endereço completo do arquivo de sessão</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2852"/>
@@ -10606,7 +10609,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="425"/>
         <source>Auto-remove audio pea&amp;k files</source>
-        <translation>Auto-remover ar&amp;quivos com desenho de forma de onda</translation>
+        <translation>&amp;Eliminar aquivos de forma de onda</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1135"/>
